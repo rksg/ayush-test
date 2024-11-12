@@ -2,19 +2,35 @@ import _                                from 'lodash'
 import { useIntl }                      from 'react-intl'
 import { Path, useNavigate, useParams } from 'react-router-dom'
 
-import { Button, ColumnType, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { CountAndNamesTooltip }                                                       from '@acx-ui/rc/components'
-import { useDeleteApSnmpPolicyMutation, useGetApSnmpViewModelQuery }                  from '@acx-ui/rc/services'
+import {
+  Button,
+  ColumnType,
+  Loader,
+  PageHeader,
+  showActionModal,
+  Table,
+  TableProps
+} from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { CountAndNamesTooltip }   from '@acx-ui/rc/components'
+import {
+  useDeleteApSnmpPolicyMutation,
+  useGetApSnmpViewModelQuery
+} from '@acx-ui/rc/services'
 import {
   ApSnmpViewModelData,
+  filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
+  getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
-  useTableQuery } from '@acx-ui/rc/utils'
+  useTableQuery,
+  GetApiVersionHeader,
+  ApiVersionEnum
+} from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 const defaultPayload = {
   searchString: '',
@@ -37,8 +53,12 @@ export default function SnmpAgentTable () {
   const { tenantId } = useParams()
   const tenantBasePath: Path = useTenantLink('')
 
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  // eslint-disable-next-line
+  const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
   const filterResults = useTableQuery({
     useQuery: useGetApSnmpViewModelQuery,
+    enableRbac: isUseRbacApi,
     pagination: {
       pageSize: 100
     },
@@ -46,7 +66,11 @@ export default function SnmpAgentTable () {
       sortField: 'name',
       sortOrder: 'ASC'
     },
-    defaultPayload: filterPayload
+    defaultPayload: filterPayload,
+    customHeaders:
+    ( isUseRbacApi ?
+      GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)):
+      undefined)
   })
 
   const list = filterResults.data
@@ -67,16 +91,22 @@ export default function SnmpAgentTable () {
 
   const tableQuery = useTableQuery({
     useQuery: useGetApSnmpViewModelQuery,
+    enableRbac: isUseRbacApi,
     defaultPayload,
     search: {
       searchTargetFields: defaultPayload.searchTargetFields as string[]
-    }
+    },
+    customHeaders:
+    ( isUseRbacApi ?
+      GetApiVersionHeader((isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)):
+      undefined)
   })
 
   const [ deleteFn ] = useDeleteApSnmpPolicyMutation()
   const rowActions: TableProps<ApSnmpViewModelData>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
+      scopeKey: getScopeKeyByPolicy(PolicyType.SNMP_AGENT, PolicyOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,
       onClick: ([{ id }]) => {
         navigate({
@@ -91,6 +121,7 @@ export default function SnmpAgentTable () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      scopeKey: getScopeKeyByPolicy(PolicyType.SNMP_AGENT, PolicyOperation.DELETE),
       onClick: (selectedRows, clearSelection) => {
         const ids = selectedRows.map(row => row.id)
         const hasSnmpActivityVenues = _.some(selectedRows, (r) => {
@@ -104,20 +135,28 @@ export default function SnmpAgentTable () {
             title: $t({ defaultMessage: 'Delete a SNMP agent that is currently in use?' }),
             content: $t({
               // eslint-disable-next-line max-len
-              defaultMessage: 'This agent is currently activated on venues. Deleting it will deactivate the agent for those venues/ APs. Are you sure you want to delete it?'
+              defaultMessage: 'This agent is currently activated on <venuePlural></venuePlural>. Deleting it will deactivate the agent for those <venuePlural></venuePlural>/ APs. Are you sure you want to delete it?'
             }),
             onOk: () => {
-              deleteFn({ params: { tenantId, policyId: ids[0] } }).then(clearSelection)
+              deleteFn({
+                params: { tenantId, policyId: ids[0] },
+                enableRbac: isUseRbacApi
+              }).then(clearSelection)
             },
             onCancel: () => { clearSelection() },
             okText: $t({ defaultMessage: 'Delete' })
           })
         } else {
-          deleteFn({ params: { tenantId, policyId: ids[0] } }).then(clearSelection)
+          deleteFn({
+            params: { tenantId, policyId: ids[0] },
+            enableRbac: isUseRbacApi
+          }).then(clearSelection)
         }
       }
     }
   ]
+
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
     <>
@@ -135,8 +174,9 @@ export default function SnmpAgentTable () {
             link: getPolicyListRoutePath(true)
           }
         ]}
-        extra={((list?.totalCount as number) < 64) && filterByAccess([
+        extra={((list?.totalCount as number) < 64) && filterByAccessForServicePolicyMutation([
           <TenantLink
+            scopeKey={getScopeKeyByPolicy(PolicyType.SNMP_AGENT, PolicyOperation.CREATE)}
             to={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })}
           >
             <Button type='primary'>
@@ -154,8 +194,8 @@ export default function SnmpAgentTable () {
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowActions={allowedRowActions}
+          rowSelection={(allowedRowActions.length > 0) && { type: 'radio' }}
         />
       </Loader>
     </>
@@ -211,7 +251,7 @@ function useColumns (
     },
     {
       key: 'venues',
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venues',
       align: 'center',
       sorter: true,

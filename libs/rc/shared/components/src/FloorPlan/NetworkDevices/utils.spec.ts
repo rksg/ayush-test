@@ -227,16 +227,6 @@ const deviceData: NetworkDeviceResponse = {
         macAddress: 'ff:ff:12:34:22:33',
         networkDeviceType: NetworkDeviceType.rogue_ap
       }],
-      cloudpath: [{
-        deviceStatus: ApDeviceStatusEnum.INITIALIZING,
-        floorplanId: '94bed28abef24175ab58a3800d01e24a',
-        id: '3020020157412',
-        name: '3 02002015736',
-        serialNumber: '3020020157412',
-        xPercent: 65.20548,
-        yPercent: 9.839357,
-        networkDeviceType: NetworkDeviceType.cloudpath
-      }],
       DP: []
     }
   ]
@@ -277,8 +267,6 @@ describe('Floor Plans', () => {
       .toBe('ap-rogue-type-undefined')
     expect(calculateDeviceColor(deviceData.data[0].RogueAP[0], FloorplanContext.ap, true))
       .toBe('ap-rogue-type-undefined')
-    expect(calculateDeviceColor(deviceData.data[0].cloudpath[0], FloorplanContext.ap, false))
-      .toBe('cloudpath-server')
     expect(calculateDeviceColor(deviceData.data[0].switches[1], FloorplanContext.ap, false))
       .toBe('switch-status-operational')
     expect(calculateDeviceColor(deviceData.data[0].switches[2], FloorplanContext.ap, false))

@@ -78,12 +78,6 @@ describe('Add Stack Member Form', () => {
       })
 
     expect(await screen.findByText('Add Member to Stack')).toBeVisible()
-
-    const serialNumber1 = await screen.findByTestId(/serialNumber1/)
-    await userEvent.type(serialNumber1, 'FEK4124R20X')
-    serialNumber1.blur()
-
-    expect(await screen.findByText('ICX7150-C12P')).toBeVisible()
   })
   it('should render add and delete member field correctly', async () => {
     render(
@@ -146,7 +140,8 @@ describe('Add Stack Member Form', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
 
     expect(
-      await screen.findByText('Serial number is invalid since it\'s not support stacking')
+      // eslint-disable-next-line max-len
+      await screen.findByText('This switch model does not support stacking. Add it as a standalone switch.')
     ).toBeVisible()
   })
   it('should render invalid serial number correctly', async () => {

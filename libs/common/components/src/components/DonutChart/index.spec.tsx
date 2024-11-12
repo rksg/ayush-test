@@ -3,7 +3,7 @@ import { useIntl, defineMessage } from 'react-intl'
 import { intlFormats }    from '@acx-ui/formatter'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { cssStr }                              from '../../theme/helper'
+import { cssNumber, cssStr }                   from '../../theme/helper'
 import { EventParams, TooltipFormatterParams } from '../Chart/helper'
 
 import { DonutChart, onChartClick, tooltipFormatter } from '.'
@@ -41,7 +41,8 @@ describe('DonutChart - small', () => {
       style={{ width: 238, height: 176 }}
       data={data}
       showLegend
-      title='Donut Chart'/>)
+      title='Donut Chart'
+      titleColor='white'/>)
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(screen.getByText('Donut Chart').getAttribute('style'))
       .toEqual("font-size:12px;font-family:'Open Sans', sans-serif;font-weight:400;")
@@ -137,6 +138,40 @@ describe('DonutChart - small', () => {
       subTitle='Donut Chart subTitle'
     />)
     await screen.findByText('Donut Chart subTitle')
+  })
+  it('should render bold title and non bold secondary title', async () => {
+    const commonFontStyle = {
+      color: cssStr('--acx-primary-black'),
+      fontFamily: cssStr('--acx-neutral-brand-font'),
+      width: 100,
+      overflow: 'break' as const
+    }
+    const boldFontStyle = {
+      ...commonFontStyle,
+      fontSize: cssNumber('--acx-headline-5-font-size'),
+      lineHeight: cssNumber('--acx-headline-5-line-height'),
+      fontWeight: cssNumber('--acx-headline-5-font-weight-bold')
+    }
+    const nonBoldFontStyle = {
+      ...commonFontStyle,
+      fontSize: cssNumber('--acx-headline-5-font-size'),
+      lineHeight: cssNumber('--acx-headline-5-line-height'),
+      fontWeight: cssNumber('--acx-headline-5-font-weight')
+    }
+
+    render(<DonutChart
+      style={{ width: 238, height: 176 }}
+      data={data}
+      title='Bald Donut Chart'
+      value='NonBold secondary title'
+      titleTextStyle={boldFontStyle}
+      secondaryTitleTextStyle={nonBoldFontStyle}
+    />)
+
+    expect(screen.getByText('Bald Donut Chart').getAttribute('style'))
+      .toContain('font-size:12px;font-family:\'Open Sans\', sans-serif;font-weight:700;')
+    expect(screen.getByText('NonBold secondary title').getAttribute('style'))
+      .toContain('font-size:12px;font-family:\'Open Sans\', sans-serif;font-weight:400;')
   })
 })
 

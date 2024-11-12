@@ -1,5 +1,5 @@
-import { useParams } from '@acx-ui/react-router-dom'
-import { hasAccess } from '@acx-ui/user'
+import { useParams }                      from '@acx-ui/react-router-dom'
+import { goToNotFound, hasRaiPermission } from '@acx-ui/user'
 
 import { ApAnalyticsTab }       from './ApAnalyticsTab'
 import { ApClientsTab }         from './ApClientsTab'
@@ -15,7 +15,7 @@ import { ApTroubleshootingTab } from './ApTroubleshootingTab'
 
 const tabs = {
   overview: ApOverviewTab,
-  analytics: () => hasAccess() ? <ApAnalyticsTab/> : null,
+  analytics: () => hasRaiPermission('READ_INCIDENTS') ? <ApAnalyticsTab/> : null,
   troubleshooting: ApTroubleshootingTab,
   reports: ApReportsTab,
   networks: ApNetworksTab,
@@ -27,7 +27,7 @@ const tabs = {
 
 export default function ApDetails () {
   const { activeTab } = useParams()
-  const Tab = tabs[activeTab as keyof typeof tabs]
+  const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
   return <ApContextProvider>
     <ApPageHeader />
     { Tab && <Tab /> }

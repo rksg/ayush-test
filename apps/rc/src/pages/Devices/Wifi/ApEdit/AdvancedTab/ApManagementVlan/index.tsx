@@ -7,13 +7,11 @@ import { useParams }                          from 'react-router-dom'
 import { Loader, StepsFormLegacy, cssStr, showActionModal } from '@acx-ui/components'
 import { InformationSolid }                                 from '@acx-ui/icons'
 import {
-  useLazyGetVenueQuery,
   useGetApManagementVlanQuery,
   useUpdateApManagementVlanMutation,
-  useDeleteApManagementVlanMutation,
   useLazyGetVenueApManagementVlanQuery
 } from '@acx-ui/rc/services'
-import { ApManagementVlan, VenueExtended, validateVlanId } from '@acx-ui/rc/utils'
+import { ApManagementVlan } from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext } from '../..'
 import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
@@ -21,8 +19,9 @@ import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
 
 export function ApManagementVlanForm () {
   const { $t } = useIntl()
-  const { tenantId, serialNumber } = useParams()
-
+  const { serialNumber } = useParams()
+  const VLAN_ID_MIN = 1
+  const VLAN_ID_MAX = 4096
   const form = Form.useFormInstance()
   const vlanIdFieldName = 'vlanId'
 
@@ -33,42 +32,34 @@ export function ApManagementVlanForm () {
     setEditAdvancedContextData
   } = useContext(ApEditContext)
 
-  const { apData: apDetails } = useContext(ApDataContext)
+  const { venueData } = useContext(ApDataContext)
 
   const venueLevelDataRef = useRef<ApManagementVlan>()
   const initDataRef = useRef<ApManagementVlan>()
-  const [venue, setVenue] = useState({} as VenueExtended)
   const isUseVenueSettingsRef = useRef<boolean>(false)
   const [isUseVenueSettings, setIsUseVenueSettings] = useState(true)
+  const venueId = venueData?.id
 
-
-  const [getVenue] = useLazyGetVenueQuery()
   const [getVenueApManagementVlan] = useLazyGetVenueApManagementVlanQuery()
-  const getApManagementVlan = useGetApManagementVlanQuery({ params: { serialNumber } })
+  const getApManagementVlan = useGetApManagementVlanQuery({ params: { venueId, serialNumber } })
   const [updateApManagementVlan, { isLoading: isUpdatingVenueManagementVlan }] =
     useUpdateApManagementVlanMutation()
-  const [deleteApManagementVlan, { isLoading: isDeletingVenueManagementVlan }] =
-    useDeleteApManagementVlanMutation()
 
   useEffect(() => {
     const apMgmtVlanData = getApManagementVlan?.data
-    if(apDetails && apMgmtVlanData) {
-      const venueId = apDetails.venueId
+    if(apMgmtVlanData) {
       const setData = async () => {
-        const apVenue = (await getVenue({ params: { tenantId, venueId } }, true).unwrap())
         const venueApMgmtVlan =
           (await getVenueApManagementVlan({ params: { venueId } }, true).unwrap())
         initDataRef.current = apMgmtVlanData
         venueLevelDataRef.current = venueApMgmtVlan
-        setVenue(apVenue)
         form.setFieldsValue(apMgmtVlanData)
         setIsUseVenueSettings(apMgmtVlanData.useVenueSettings || false)
         isUseVenueSettingsRef.current = apMgmtVlanData.useVenueSettings || false
       }
       setData()
     }
-  }, [form, getVenue, getApManagementVlan?.data, getApManagementVlan.isLoading,
-    tenantId, apDetails, getVenueApManagementVlan])
+  }, [venueId, getApManagementVlan?.data])
 
   const onApMgmtVlanChange = () => {
     onFormDataChanged()
@@ -80,13 +71,15 @@ export function ApManagementVlanForm () {
     setDataToForm({ vlanId: initDataRef.current?.vlanId })
   }
 
-  const onFormDataChanged = () => {
+  const onFormDataChanged = async () => {
+    const { vlanId } = form.getFieldsValue()
+    const invalidVlanId = vlanId === null || vlanId < VLAN_ID_MIN || vlanId > VLAN_ID_MAX
     setEditContextData && setEditContextData({
       ...editContextData,
       unsavedTabKey: 'advanced',
       tabTitle: $t({ defaultMessage: 'Advanced' }),
       isDirty: true,
-      hasError: form.getFieldsError().map(item => item.errors).flat().length > 0
+      hasError: invalidVlanId
     })
 
     setEditAdvancedContextData && setEditAdvancedContextData({
@@ -133,15 +126,15 @@ export function ApManagementVlanForm () {
       okText: $t({ defaultMessage: 'Continue' }),
       onOk: async () => {
         try {
-          if(isUseVenueSettingsRef.current) {
-            await deleteApManagementVlan({ params: { serialNumber } }).unwrap()
-          } else {
-            const payload = getApManagementVlanDataFromFields()
-            await updateApManagementVlan({ params: { serialNumber }, payload }).unwrap()
+          const payload = isUseVenueSettingsRef.current
+            ? { useVenueSettings: true }
+            : getApManagementVlanDataFromFields()
 
-            // eslint-disable-next-line no-console
-            console.log(payload)
-          }
+          await updateApManagementVlan({ params: { venueId, serialNumber }, payload
+          }).unwrap()
+
+          // eslint-disable-next-line no-console
+          console.log(payload)
         } catch (error) {
           console.log(error) // eslint-disable-line no-console
         }
@@ -162,9 +155,9 @@ export function ApManagementVlanForm () {
   return (
     <Loader states={[{
       isLoading: getApManagementVlan.isLoading,
-      isFetching: isUpdatingVenueManagementVlan || isDeletingVenueManagementVlan
+      isFetching: isUpdatingVenueManagementVlan
     }]}>
-      <VenueSettingsHeader venue={venue}
+      <VenueSettingsHeader venue={venueData}
         isUseVenueSettings={isUseVenueSettings}
         handleVenueSetting={handleVenueSetting} />
       <Space align='start'>
@@ -174,27 +167,28 @@ export function ApManagementVlanForm () {
           {$t({ defaultMessage: 'AP Management VLAN' })}
           <Row>
             <Col style={{ marginTop: '6px' }}>
-              {(isUseVenueSettings)?
-                <span
-                  data-testid={'ap-managment-vlan-vlan-id-span'}
-                  style={{ display: 'flex' }}>{form.getFieldValue(vlanIdFieldName)}
-                </span>
-                :
-                <>
+              {isUseVenueSettings
+                ? <Form.Item
+                  dependencies={[vlanIdFieldName]}
+                  noStyle
+                >
+                  {({ getFieldValue }) => <span data-testid={'ap-managment-vlan-vlan-id-span'}>
+                    {getFieldValue(vlanIdFieldName)}
+                  </span>}
+                </Form.Item>
+                : <>
                   <Form.Item
                     data-testid={'ap-managment-vlan-vlan-id-input'}
                     name={vlanIdFieldName}
                     style={{ color: 'black' }}
                     rules={[
-                      { required: true },
-                      { validator: (_, value) => {
-                        if (value) return validateVlanId(value)
-                        return Promise.resolve()
-                      } }
+                      { required: true }
                     ]}
                     children={
                       <InputNumber
                         onChange={onApMgmtVlanChange}
+                        min={VLAN_ID_MIN}
+                        max={VLAN_ID_MAX}
                         style={{ width: '86px' }} />
                     }
                   />

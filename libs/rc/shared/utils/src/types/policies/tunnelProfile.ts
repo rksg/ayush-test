@@ -5,26 +5,36 @@ export interface TunnelProfile {
   name: string
   tags: string
   mtuType: MtuTypeEnum
-  mtuSize: number
+  mtuSize?: number
   forceFragmentation: boolean
   ageTimeMinutes: number
   type: TunnelTypeEnum
+  mtuRequestRetry?: number
+  mtuRequestTimeout?: number // unit is milliseconds
+  keepAliveRetry?: number
+  keepAliveInterval?: number // unit is seconds
 }
 
 export interface TunnelProfileViewData {
   id: string
   name: string
-  tags: string[]
+  tags?: string[]
   mtuType: MtuTypeEnum
   mtuSize: number
   forceFragmentation: boolean
   ageTimeMinutes: number
   personalIdentityNetworkIds: string[]
   networkIds: string[]
+  sdLanIds?: string[]
   type: TunnelTypeEnum
+  mtuRequestRetry: number
+  mtuRequestTimeout: number // unit is seconds
+  keepAliveRetry: number
+  keepAliveInterval: number // unit is milliseconds
 }
 
 export interface TunnelProfileFormType extends TunnelProfile {
   ageTimeUnit? : string
+  mtuRequestTimeoutUnit? : string
   disabledFields?: string[]
 }

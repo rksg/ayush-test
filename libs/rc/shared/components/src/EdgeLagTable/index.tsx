@@ -1,0 +1,253 @@
+import { useState } from 'react'
+
+import { Col, Row }            from 'antd'
+import _, { get, union, uniq } from 'lodash'
+import { useIntl }             from 'react-intl'
+
+import { Table, TableProps, Tooltip, showActionModal } from '@acx-ui/components'
+import {
+  ClusterNetworkSettings,
+  EdgeLag,
+  EdgeLagStatus,
+  EdgePort,
+  EdgeSerialNumber,
+  defaultSort,
+  getEdgePortDisplayName,
+  getEdgePortIpModeString,
+  isInterfaceInVRRPSetting,
+  sortProp
+} from '@acx-ui/rc/utils'
+import { EdgeScopes, ScopeKeys }         from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+
+import { LagDrawer } from './LagDrawer'
+
+interface EdgeLagTableType extends EdgeLag {
+  adminStatus: string
+}
+
+interface EdgeLagTableProps {
+  clusterId?: string
+  serialNumber?: EdgeSerialNumber
+  lagList?: EdgeLag[]
+  lagStatusList?: EdgeLagStatus[]
+  portList?: EdgePort[]
+  vipConfig?: ClusterNetworkSettings['virtualIpSettings']
+  onAdd: (serialNumber: string, data: EdgeLag) => Promise<void>
+  onEdit: (serialNumber: string, data: EdgeLag) => Promise<void>
+  onDelete: (serialNumber: string, id: string) => Promise<void>
+  actionScopes?: { [key in string]: ScopeKeys }
+}
+
+export const EdgeLagTable = (props: EdgeLagTableProps) => {
+  const {
+    clusterId = '', serialNumber = '', lagList,
+    lagStatusList, portList, vipConfig = [],
+    onAdd, onEdit, onDelete,
+    actionScopes
+  } = props
+  const { $t } = useIntl()
+  const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
+  const [currentEditData, setCurrentEditData] = useState<EdgeLag>()
+
+  const transToTableData = (edgeLagList?: EdgeLag[], edgeLagStatusList?: EdgeLagStatus[]) => {
+    return edgeLagList?.map(item => ({
+      ...item,
+      adminStatus: edgeLagStatusList?.find(status => status.lagId === item.id)?.adminStatus ?? ''
+    })) ?? []
+  }
+
+  const columns: TableProps<EdgeLagTableType>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'LAG Name' }),
+      key: 'id',
+      dataIndex: 'id',
+      render: (_data, row) => {
+        return `LAG ${row.id}`
+      },
+      defaultSortOrder: 'ascend',
+      sorter: { compare: sortProp('id', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'Description' }),
+      key: 'description',
+      dataIndex: 'description',
+      sorter: { compare: sortProp('description', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'LAG Type' }),
+      key: 'lagType',
+      dataIndex: 'lagType',
+      render: (_data, row) => {
+        return `${row.lagType} (${_.capitalize(row.lacpMode)})`
+      },
+      sorter: { compare: sortProp('lagType', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'LAG Members' }),
+      key: 'lagMembers',
+      dataIndex: 'lagMembers',
+      render: (_data, row) => {
+        const lagMemberSize = row.lagMembers?.length ?? 0
+        return lagMemberSize > 0 ?
+          <Tooltip
+            title={getToolTipContent(row.lagMembers)}
+            children={lagMemberSize}
+          /> :
+          0
+      },
+      align: 'center'
+    },
+    {
+      title: $t({ defaultMessage: 'Port Type' }),
+      key: 'portType',
+      dataIndex: 'portType',
+      sorter: { compare: sortProp('portType', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'IP Type' }),
+      key: 'ipMode',
+      dataIndex: 'ipMode',
+      render: (_data, { ipMode }) => getEdgePortIpModeString($t, ipMode),
+      sorter: { compare: sortProp('ipMode', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'IP Address' }),
+      key: 'ip',
+      dataIndex: 'ip',
+      sorter: { compare: sortProp('ip', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'Subnet Mask' }),
+      key: 'subnet',
+      dataIndex: 'subnet',
+      sorter: { compare: sortProp('subnet', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'Admin Status' }),
+      key: 'adminStatus',
+      dataIndex: 'adminStatus',
+      render: (_data, row) => {
+        return row.adminStatus ? row.adminStatus :
+          row.lagEnabled ? $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })
+      },
+      sorter: { compare: sortProp('adminStatus', defaultSort) }
+    }
+  ]
+
+  const getToolTipContent = (
+    lagMembers: {
+      portId: string,
+      portEnabled: boolean
+    }[]
+  ) => {
+    return lagMembers?.map(
+      lagMember =>
+        <Row>
+          <Col>
+            {
+              `${getEdgePortDisplayName((portList?.find(port =>
+                port.id === lagMember.portId)))} (${lagMember.portEnabled ?
+                $t({ defaultMessage: 'Enabled' }) :
+                $t({ defaultMessage: 'Disabled' })})`
+            }
+          </Col>
+        </Row>
+
+    )
+  }
+
+  const openDrawer = (data?: EdgeLagTableType) => {
+    setCurrentEditData(data)
+    setLagDrawerVisible(true)
+  }
+
+  const actionButtons = [
+    {
+      scopeKey: get(actionScopes, 'add') ?? [EdgeScopes.CREATE],
+      label: $t({ defaultMessage: 'Add LAG' }),
+      onClick: () => {
+        openDrawer()
+      },
+      disabled: (lagList?.length ?? 0) >= 4
+    }
+  ]
+
+  const checkInterfacesInVRRPSetting = (rows: EdgeLagTableType[]) => {
+    for(let row of rows) {
+      if(isInterfaceInVRRPSetting(serialNumber, `lag${row.id}`, vipConfig))
+        return true
+    }
+    return false
+  }
+
+  const editPermissionScopes = get(actionScopes, 'edit') ?? [EdgeScopes.UPDATE]
+  const deletePermissionScopes = get(actionScopes, 'delete') ?? [EdgeScopes.DELETE]
+
+  const rowActions: TableProps<EdgeLagTableType>['rowActions'] = [
+    {
+      scopeKey: editPermissionScopes,
+      label: $t({ defaultMessage: 'Edit' }),
+      onClick: (rows) => {
+        openDrawer(rows[0])
+      }
+    },
+    {
+      scopeKey: deletePermissionScopes,
+      label: $t({ defaultMessage: 'Delete' }),
+      disabled: (rows) => checkInterfacesInVRRPSetting(rows),
+      tooltip: (rows) => {
+        if(checkInterfacesInVRRPSetting(rows)) {
+          return $t({ defaultMessage: 'The LAG configured as VRRP interface cannot be deleted' })
+        }
+        return ''
+      },
+      onClick: (rows, clearSelection) => {
+        const targetData = rows[0]
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'LAG' }),
+            entityValue: `LAG ${targetData.id}`,
+            numOfEntities: rows.length
+          },
+          onOk: () => {
+            onDelete(serialNumber, targetData.id.toString()).then(clearSelection)
+          }
+        })
+      }
+    }
+  ]
+
+  const isSelectionVisible = hasPermission({
+    scopes: uniq(union(editPermissionScopes, deletePermissionScopes))
+  })
+
+  return (
+    <>
+      <Table<EdgeLagTableType>
+        actions={filterByAccess(actionButtons)}
+        dataSource={transToTableData(lagList, lagStatusList)}
+        columns={columns}
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={isSelectionVisible && {
+          type: 'radio'
+        }}
+        rowKey='id'
+      />
+      <LagDrawer
+        clusterId={clusterId}
+        serialNumber={serialNumber}
+        visible={lagDrawerVisible}
+        setVisible={setLagDrawerVisible}
+        data={currentEditData}
+        portList={portList}
+        existedLagList={lagList}
+        vipConfig={vipConfig}
+        onAdd={onAdd}
+        onEdit={onEdit}
+      />
+    </>
+  )
+}

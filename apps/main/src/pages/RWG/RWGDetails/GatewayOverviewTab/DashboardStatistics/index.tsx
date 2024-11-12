@@ -15,6 +15,7 @@ import {
   Drawer
 } from '@acx-ui/components'
 import { useGetGatewayAlarmsQuery, useGetGatewayDashboardQuery } from '@acx-ui/rc/services'
+import { TABLE_QUERY_POLLING_INTERVAL }                          from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 
@@ -24,17 +25,23 @@ import NameValueWidget             from './NameValueWidget'
 export function DashboardStatistics () {
 
   const { $t } = useIntl()
-  const { tenantId, gatewayId } = useParams()
+  const { tenantId, gatewayId, venueId, clusterNodeId } = useParams()
   const [visible, setVisible] = useState(false)
+
   const { data: alarm, isLoading: isAlarmLoading, isFetching: isAlarmFetching } =
-    useGetGatewayAlarmsQuery({ params: { tenantId, gatewayId } }, { skip: !gatewayId })
+    useGetGatewayAlarmsQuery({ params: { tenantId, gatewayId, venueId }, payload: {
+      ...(clusterNodeId ? {
+        filterBy: [{ key: 'CLUSTER_NODE_ID_IS', value: clusterNodeId }] } : {})
+    } }, { skip: !gatewayId, pollingInterval: TABLE_QUERY_POLLING_INTERVAL })
 
   const { data: dashboardData, isLoading: isDashboardLoading, isFetching: isDashboardFetching } =
-    useGetGatewayDashboardQuery({ params: { tenantId, gatewayId } }, { skip: !gatewayId })
+    useGetGatewayDashboardQuery({ params: { tenantId, gatewayId, venueId, clusterNodeId } },
+      { skip: !gatewayId, pollingInterval: TABLE_QUERY_POLLING_INTERVAL })
+
 
 
   const alarmData: DonutChartData[] = [
-    { value: alarm?.total || 0,
+    { value: alarm?.totalCount || 0,
       name: 'Total',
       color: cssStr('--acx-accents-orange-30') }
   ]
@@ -120,13 +127,13 @@ export function DashboardStatistics () {
           </UI.Wrapper>
         </GridCol>
       </GridRow>
-      <Drawer
+      { visible && <Drawer
         title={$t({ defaultMessage: 'Gateway Details' })}
         width={480}
         visible={visible}
         onClose={onClose}
         children={<GatewayDetailsContentSwitch/>}
-      />
+      /> }
     </Card>
   )
 }

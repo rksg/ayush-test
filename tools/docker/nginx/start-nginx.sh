@@ -1,3 +1,3 @@
 #!/bin/bash
-envsubst < /etc/nginx/env.json.template > /usr/share/nginx/html/tenant/t/env.json
+envsubst < /etc/nginx/globalValues.json.template > /usr/share/nginx/html/tenant/t/globalValues.json
 nginx -g 'daemon off;'

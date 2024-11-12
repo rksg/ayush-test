@@ -10,10 +10,10 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }          from '@acx-ui/rc/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                        from '@acx-ui/rc/components'
 import {
-  doProfileDelete, useAdaptivePolicySetListQuery,
+  doProfileDelete, useAdaptivePolicySetListByQueryQuery,
   useDeleteMacRegListMutation,
   useLazyNetworkListQuery,
   useSearchMacRegListsQuery
@@ -29,10 +29,11 @@ import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
   returnExpirationString,
-  useTableQuery
+  useTableQuery,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByPolicy
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
 export default function MacRegistrationListsTable () {
   const { $t } = useIntl()
@@ -42,6 +43,8 @@ export default function MacRegistrationListsTable () {
   const params = useParams()
 
   const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
+  const customHeaders = (isAsync) ? { Accept: 'application/vnd.ruckus.v2+json' } : undefined
 
   const filter = {
     filterKey: 'name',
@@ -49,6 +52,7 @@ export default function MacRegistrationListsTable () {
     value: ''
   }
 
+  const settingsId = 'mac-reg-list-table'
   const tableQuery = useTableQuery({
     useQuery: useSearchMacRegListsQuery,
     defaultPayload: {
@@ -56,7 +60,8 @@ export default function MacRegistrationListsTable () {
       searchCriteriaList: [
         { ...filter }
       ]
-    }
+    },
+    pagination: { settingsId }
   })
 
   const [
@@ -66,8 +71,8 @@ export default function MacRegistrationListsTable () {
 
   const [getNetworkList] = useLazyNetworkListQuery()
 
-  const { policySetMap, getPolicySetsLoading } = useAdaptivePolicySetListQuery(
-    { payload: { page: 1, pageSize: '2147483647' } }, {
+  const { policySetMap, getPolicySetsLoading } = useAdaptivePolicySetListByQueryQuery(
+    { payload: { page: 1, pageSize: '2000' } }, {
       selectFromResult: ({ data, isLoading }) => {
         const policySetMap = new Map(data?.data.map((policySet) =>
           [policySet.id, policySet.name]))
@@ -166,7 +171,7 @@ export default function MacRegistrationListsTable () {
         }
       },
       {
-        title: $t({ defaultMessage: 'Venues' }),
+        title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
         key: 'venueCount',
         dataIndex: 'venueCount',
         align: 'center',
@@ -186,6 +191,7 @@ export default function MacRegistrationListsTable () {
   }
 
   const rowActions: TableProps<MacRegistrationPool>['rowActions'] = [{
+    scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.EDIT),
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       navigate({
@@ -199,6 +205,7 @@ export default function MacRegistrationListsTable () {
     }
   },
   {
+    scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.DELETE),
     label: $t({ defaultMessage: 'Delete' }),
     onClick: ([selectedRow], clearSelection) => {
       doProfileDelete(
@@ -209,13 +216,16 @@ export default function MacRegistrationListsTable () {
           { fieldName: 'associationIds', fieldText: $t({ defaultMessage: 'Identity' }) },
           { fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }
         ],
-        async () => deleteMacRegList({ params: { policyId: selectedRow.id } })
+        async () => deleteMacRegList({ params: { policyId: selectedRow.id }, customHeaders })
           .unwrap()
           .then(() => {
-            showToast({
-              type: 'success',
-              content: $t({ defaultMessage: 'List {name} was deleted' }, { name: selectedRow.name })
-            })
+            if (!isAsync) {
+              showToast({
+                type: 'success',
+                content: $t({ defaultMessage: 'List {name} was deleted' },
+                  { name: selectedRow.name })
+              })
+            }
             clearSelection()
           }).catch((error) => {
             console.log(error) // eslint-disable-line no-console
@@ -233,6 +243,8 @@ export default function MacRegistrationListsTable () {
     tableQuery.setPayload(payload)
   }
 
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return (
     <>
       <PageHeader
@@ -242,10 +254,11 @@ export default function MacRegistrationListsTable () {
             link: getPolicyListRoutePath(true) }
         ]}
         title={$t({ defaultMessage: 'MAC Registration Lists' })}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             // eslint-disable-next-line max-len
             to={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
+            scopeKey={getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.CREATE)}
           >
             <Button type='primary'>{ $t({ defaultMessage: 'Add MAC Registration List' }) }</Button>
           </TenantLink>
@@ -257,15 +270,15 @@ export default function MacRegistrationListsTable () {
       ]}>
         <Table<MacRegistrationPool>
           enableApiFilter
-          settingsId='mac-reg-list-table'
+          settingsId={settingsId}
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
+          rowActions={allowedRowActions}
           onFilterChange={handleFilterChange}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
         />
       </Loader>
     </>

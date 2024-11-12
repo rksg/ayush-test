@@ -9,7 +9,7 @@ import {
 } from '@acx-ui/analytics/services'
 import { kpiConfig, productNames }       from '@acx-ui/analytics/utils'
 import { Tooltip, ProgressPill, Loader } from '@acx-ui/components'
-import { formatter }                     from '@acx-ui/formatter'
+import { formatter, FormatterType }      from '@acx-ui/formatter'
 import { InformationOutlined }           from '@acx-ui/icons'
 import { TimeStampRange }                from '@acx-ui/types'
 import type { AnalyticsFilter }          from '@acx-ui/utils'
@@ -18,23 +18,26 @@ import GenericError from '../../GenericError'
 import * as UI      from '../styledComponents'
 
 
-export type PillData = { success: number, total: number }
+export type PillData = { success: number, total: number, length?: number, maxCount?: number }
 
 export const transformTSResponse = (
   { data, time }: KPITimeseriesResponse,
   window: { startDate: string, endDate: string }
 ) : PillData => {
-  const [success, total] = data
+  const filteredData = data
     .filter((_, index) =>
       moment(time[index]).isBetween(
         moment(window.startDate), moment(window.endDate), undefined, '[]'
       )
     )
-    .reduce(([success, total], datum) => (
+  const [success, total, length, maxCount] = filteredData
+    .reduce(([success, total,length,maxCount], datum) => (
       datum && datum.length && (datum[0] !== null && datum[1] !== null )
-        ? [success + datum[0], total + datum[1]] : [success, total]
-    ), [0, 0])
-  return { success, total }
+        ? [success + datum[0], total + datum[1], length + 1, Math.max(maxCount,datum[1])]
+        : [success, total, length, maxCount]
+    ), [0, 0, 0, 0])
+
+  return { success, total, length, maxCount }
 }
 
 export const tranformHistResponse = (
@@ -51,9 +54,11 @@ export const tranformHistResponse = (
   return { success, total }
 }
 
-const formatPillText = (value: number = 0, suffix: string) => suffix
-  ? `${formatter('percentFormatRound')(value / 100)} ${suffix}`
-  : `${formatter('percentFormatRound')(value / 100)}`
+const formatPillText = (
+  value: number = 0, suffix: string, valueFormatter: FormatterType = 'percentFormatRound'
+) => suffix
+  ? `${formatter(valueFormatter)(value / 100)} ${suffix}`
+  : `${formatter(valueFormatter)(value / 100)}`
 
 type PillQueryProps = {
   kpi: string
@@ -67,15 +72,17 @@ type PillQueryProps = {
 }
 
 export const usePillQuery = ({ kpi, filters, timeWindow, threshold }: PillQueryProps) => {
-  const { histogram } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
-  const histogramQuery = healthApi.useKpiHistogramQuery({ ...filters, ...timeWindow, kpi }, {
+  const { histogram, enableSwitchFirmwareFilter } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
+  const histogramQuery = healthApi.useKpiHistogramQuery({ ...filters, ...timeWindow,
+    kpi, enableSwitchFirmwareFilter }, {
     skip: !Boolean(histogram),
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,
       data: data ? tranformHistResponse({ ...data!, kpi, threshold }) : { success: 0, total: 0 }
     })
   })
-  const timeseriesQuery = healthApi.useKpiTimeseriesQuery({ ...filters, kpi }, {
+  const timeseriesQuery = healthApi.useKpiTimeseriesQuery({ ...filters,
+    kpi, enableSwitchFirmwareFilter }, {
     skip: Boolean(histogram),
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,
@@ -84,10 +91,10 @@ export const usePillQuery = ({ kpi, filters, timeWindow, threshold }: PillQueryP
   })
   const queryResults = histogram ? histogramQuery : timeseriesQuery
 
-  const { success, total } = queryResults.data as PillData
+  const { success, total, length, maxCount } = queryResults.data as PillData
   const percent = total > 0 ? (success / total) : 0
 
-  return { queryResults, percent }
+  return { queryResults, percent, length, maxCount }
 }
 
 function HealthPill ({ filters, kpi, timeWindow, threshold }: {
@@ -101,12 +108,24 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
   const { queryResults, percent } = usePillQuery({
     kpi, filters, timeWindow: { startDate, endDate }, threshold
   })
-  const { success, total } = queryResults.data as PillData
+  let { success, total, length, maxCount } = queryResults.data as PillData
+  // We need this check in case if wrong data is reported by an ICX.
+  if ( success > total) success = total
 
-  const { pillSuffix, description, thresholdDesc, thresholdFormatter, tooltip } = pill
+  const {
+    pillSuffix,
+    description,
+    thresholdDesc,
+    thresholdFormatter,
+    tooltip,
+    valueFormatter
+  } = pill
   const countFormat = formatter('countFormat')
   const translatedDesc = description
-    ? $t(description, { successCount: countFormat(success), totalCount: countFormat(total) })
+    ? $t(description, { successCount: countFormat(success), totalCount: countFormat(total),
+      avgSuccessCount: countFormat(Math.ceil(success/(length || 1))),
+      avgTotalCount: countFormat(Math.ceil(total/(length || 1))),
+      maxCount })
     : ''
   const translatedThresholdDesc = []
   if (thresholdDesc.length) {
@@ -132,7 +151,7 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
     <UI.PillWrap>
       <ProgressPill
         percent={percent * 100}
-        formatter={value => formatPillText(value, pillSuffix && $t(pillSuffix))}
+        formatter={value => formatPillText(value, pillSuffix && $t(pillSuffix), valueFormatter)}
       />
     </UI.PillWrap>
     <UI.PillDesc>{translatedDesc}</UI.PillDesc>

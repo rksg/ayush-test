@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps  }              from '@acx-ui/components'
 import { DateFormatEnum, formatter }               from '@acx-ui/formatter'
-import { useAdminLogsQuery }                       from '@acx-ui/rc/services'
+import { useAdminLogsOnlyQuery }                   from '@acx-ui/rc/services'
 import { AdminLog, CommonUrlsInfo, useTableQuery } from '@acx-ui/rc/utils'
 import { noDataDisplay }                           from '@acx-ui/utils'
 
@@ -13,25 +13,21 @@ export function RecentLogin (props: { userEmail: string }) {
   const { userEmail } = props
 
   const tableQuery = useTableQuery({
-    useQuery: useAdminLogsQuery,
+    useQuery: useAdminLogsOnlyQuery,
     pagination: {
-      pageSize: 10000
+      pageSize: 5
     },
     defaultPayload: {
       url: CommonUrlsInfo.getEventList.url,
       fields: [
         'event_datetime',
-        'severity',
         'entity_type',
-        'entity_id',
-        'message',
-        'adminName',
         'id',
         'ipAddress'
       ],
-      searchString: 'logged',
       filters: {
-        entity_type: ['ADMIN', 'NOTIFICATION']
+        eventId: ['login-001'],
+        userName: [`${userEmail}`]
       }
     },
     sorter: {
@@ -39,13 +35,6 @@ export function RecentLogin (props: { userEmail: string }) {
       sortOrder: 'DESC'
     }
   })
-
-  const tableData = getProfilesByType(tableQuery.data?.data as AdminLog[])
-
-  function getProfilesByType (queryData: AdminLog[]) {
-    return queryData?.filter(p =>
-      p.message.includes('logged into') && p.message.includes(userEmail)).slice(0, 5)
-  }
 
   const columnsRecentLogin: TableProps<EventList>['columns'] = [
     {
@@ -71,7 +60,7 @@ export function RecentLogin (props: { userEmail: string }) {
       <Loader states={[tableQuery]}>
         <Table
           columns={columnsRecentLogin}
-          dataSource={tableData}
+          dataSource={tableQuery.data?.data}
           style={{ width: '600px' }}
           rowKey='id'
           type={'form'}

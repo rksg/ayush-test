@@ -1,5 +1,8 @@
 ARG CI_SERVICE_BASE
-FROM gcr.io/kumo-scratch/cache/nx-cache:latest as nx-cache
+ARG GAR_CONTAINER_URL
+ARG GAR_DOCKER_ROOT_URL
+
+FROM ${GAR_DOCKER_ROOT_URL}/acx-service/acx-ui-cache/nx-cache:latest as nx-cache
 FROM ${CI_SERVICE_BASE}node:master--latest as build-base
 
 WORKDIR /app
@@ -15,6 +18,7 @@ RUN source ${ENV_FILE} \
 # Install dependencies
 COPY package.json package-lock.json ./
 COPY patches ./patches
+COPY tools/dev/eslint-custom-rule ./tools/dev/eslint-custom-rule
 RUN npm install
 
 COPY .eslintignore \
@@ -23,6 +27,7 @@ COPY .eslintignore \
   jest.config.ts \
   jest.preset.ts \
   jest.setup.js \
+  jest.build.setup.js \
   nx.json \
   webpack.config.base.js \
   tsconfig.base.json \
@@ -32,8 +37,16 @@ COPY .eslintignore \
 COPY .storybook ./.storybook
 COPY apps ./apps
 COPY libs ./libs
+
+ENV NODE_OPTIONS=--max-old-space-size=4096
 ENV NX_CACHE_DIRECTORY=/app/node_modules/.cache/nx
+
 COPY --from=nx-cache /app/node_modules/.cache/nx /app/node_modules/.cache/nx
+
+# Remove files and folders older than 24 hours from the nx cache
+RUN find /app/node_modules/.cache/nx -type f -mtime +1 -delete && \
+    find /app/node_modules/.cache/nx -type d -empty -delete
+
 COPY tools/tests ./tools/tests
 
 # dump git information
@@ -50,7 +63,7 @@ RUN touch lint-done
 FROM build-base as acx-ui-tslint
 RUN node ./node_modules/.bin/nx run ra:tsc
 ###############################################################
-FROM node:14.21.1-alpine as build-locales
+FROM ${GAR_CONTAINER_URL}node:14.21.1-alpine as build-locales
 WORKDIR /app
 RUN apk add curl
 ARG ENV_FILE
@@ -68,11 +81,10 @@ RUN tools/docker/locales/generate.sh
 
 FROM build-base as build
 COPY --from=build-locales /app/apps/main/src/locales ./apps/main/src/locales
-RUN node ./node_modules/.bin/nx run-many --target=build --projects=main
+RUN node ./node_modules/.bin/nx run main:build
 
 ###############################################################
 FROM build-base as acx-ui-base-test
-ENV NODE_OPTIONS=--max-old-space-size=10240
 
 # Force dependency with lint & build stages
 COPY --from=acx-ui-lint   /app/lint-done   ./lint-done
@@ -81,13 +93,28 @@ COPY --from=build         /app/dist/apps   ./dist/apps
 FROM acx-ui-base-test as acx-ui-group1-test
 ARG PRECOMMIT
 ARG GIT_COMMIT_BRANCH
+
+ENV NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail"
+
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
-        node ./node_modules/.bin/nx run rc:test --coverage --maxWorkers=30% --noStackTrace --bail && \
-        node ./node_modules/.bin/nx run rc-components:test --coverage --maxWorkers=30%  --noStackTrace --bail && \
-        node ./node_modules/.bin/nx run main:test --coverage --maxWorkers=30%  --noStackTrace --bail && \
-        node ./node_modules/.bin/nx run analytics-components:test --coverage --maxWorkers=30%  --noStackTrace --bail && \
-        node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,rc-components,main,analytics-components --coverage --maxWorkers=30%  --noStackTrace --bail; \
+        CICD_BUILD=true node ./node_modules/.bin/nx run rc:test $NX_RUN_OPTIONS; \
     fi
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+        CICD_BUILD=true node ./node_modules/.bin/nx run rc-components:test $NX_RUN_OPTIONS; \
+    fi
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+        CICD_BUILD=true node ./node_modules/.bin/nx run-many --target=test --projects=main,main-components $NX_RUN_OPTIONS; \
+    fi
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+        CICD_BUILD=true node ./node_modules/.bin/nx run analytics-components:test $NX_RUN_OPTIONS; \
+    fi
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+        CICD_BUILD=true node ./node_modules/.bin/nx run-many --target=test --projects=msp,msp-components $NX_RUN_OPTIONS; \
+    fi
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+        CICD_BUILD=true node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,rc-components,main,analytics-components,msp,msp-components,main-components $NX_RUN_OPTIONS; \
+    fi
+
 RUN mkdir -p /app/coverage
 
 FROM build-base as acx-ui-sonar-run
@@ -96,7 +123,7 @@ WORKDIR /app
 RUN touch tests-done
 
 ###############################################################
-FROM nginx:1.21.6-alpine
+FROM ${GAR_CONTAINER_URL}nginx:1.21.6-alpine
 
 WORKDIR /usr/share/nginx/html
 
@@ -106,7 +133,7 @@ RUN rm -rf ./*
 COPY tools/docker/nginx/conf.d/* /etc/nginx/conf.d/
 COPY tools/docker/nginx/nginx.conf \
   tools/docker/nginx/start-nginx.sh \
-  tools/docker/nginx/env.json.template \
+  tools/docker/nginx/globalValues.json.template \
   /etc/nginx/
 
 COPY --from=build /app/dist/apps ./

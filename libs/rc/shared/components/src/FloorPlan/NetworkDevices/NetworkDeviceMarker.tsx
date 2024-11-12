@@ -6,7 +6,7 @@ import { useDrag }        from 'react-dnd'
 
 import { deviceCategoryColors } from '@acx-ui/components'
 import {
-  DeviceOutlined, SignalBad, SignalExcellent, SignalGood, SignalPoor,
+  DeviceOutlined, DevicesOutlined, SignalBad, SignalExcellent, SignalGood, SignalPoor,
   SignalUp
 } from '@acx-ui/icons'
 import { FloorplanContext, NetworkDevice, NetworkDeviceType, RogueApInfo } from '@acx-ui/rc/utils'
@@ -105,6 +105,17 @@ export function NetworkDeviceMarker ({
     return getDeviceName(device)
   }
 
+  const getDeviceIcon = (deviceType: NetworkDeviceType) => {
+    switch(deviceType) {
+      case NetworkDeviceType.switch:
+        return <DeviceOutlined/>
+      case NetworkDeviceType.rwg:
+        return <DevicesOutlined/>
+      default:
+        return <SignalUp/>
+    }
+  }
+
   return <div ref={markerContainerRef}>
     { (showRogueAp && device?.rogueCategory) && <UI.RogueApContainer className={`rogue-snr
       ${device.rogueCategoryType?.toLowerCase() || ' malicious'}
@@ -136,10 +147,7 @@ export function NetworkDeviceMarker ({
             cursor: 'pointer'
           }}>
           {
-            !contextAlbum && (
-              device?.networkDeviceType === NetworkDeviceType.switch
-                ? <DeviceOutlined/>
-                : <SignalUp />)
+            !contextAlbum && getDeviceIcon(device?.networkDeviceType)
           } </div>
         {isApMeshEnabled && getApMeshRoleIcon()}
         {

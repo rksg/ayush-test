@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
 import { Filter }             from '@acx-ui/components'
@@ -11,6 +12,8 @@ import {
   AdminLog,
   CommonUrlsInfo,
   TableResult,
+  ActivityIncompatibleFeatures,
+  ActivityApCompatibilityExtraParams,
   onSocketActivityChanged,
   downloadFile,
   SEARCH,
@@ -35,7 +38,9 @@ const metaFields = [
   'apGroupName',
   'floorPlanName',
   'recipientName',
-  'edgeName'
+  'edgeName',
+  'remoteedgeName',
+  'unitName'
 ]
 
 export type EventsExportPayload = {
@@ -68,12 +73,27 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
+    activityApCompatibilities: build.query<TableResult<ActivityIncompatibleFeatures, ActivityApCompatibilityExtraParams>, RequestPayload>({
+      providesTags: [{ type: 'Activity', id: 'Detail' }],
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(CommonUrlsInfo.getActivityApCompatibilitiesList, params),
+          body: payload
+        }
+      },
+      transformResponse: (res: { data: ActivityIncompatibleFeatures[], page: number, impactedCount: number, totalCount: number }) => {
+        const extra = { impactedCount: res.impactedCount } as ActivityApCompatibilityExtraParams
+        return { data: res.data ?? [], page: res.page, totalCount: res.totalCount, extra }
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
     events: build.query<TableResult<Event>, RequestPayload>({
       providesTags: [{ type: 'Event', id: 'LIST' }],
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const timeFilter = latestTimeFilter(arg.payload)
         const eventListInfo = {
           ...createHttpRequest(CommonUrlsInfo.getEventList, arg.params),
-          body: latestTimeFilter(arg.payload)
+          body: timeFilter
         }
         const baseListQuery = await fetchWithBQ(eventListInfo)
         const baseList = baseListQuery.data as TableResult<EventBase>
@@ -83,7 +103,8 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
 
         const metaListInfo = getMetaList<EventBase>(baseList, {
           urlInfo: createHttpRequest(CommonUrlsInfo.getEventListMeta, arg.params),
-          fields: metaFields
+          fields: metaFields,
+          filters: timeFilter.filters
         })
         const metaListQuery = await fetchWithBQ(metaListInfo)
         const metaList = metaListQuery.data as TableResult<EventMeta>
@@ -110,9 +131,10 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
     adminLogs: build.query<TableResult<AdminLog>, RequestPayload>({
       providesTags: [{ type: 'AdminLog', id: 'LIST' }],
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const timeFilter = latestTimeFilter(arg.payload)
         const adminlogListInfo = {
           ...createHttpRequest(CommonUrlsInfo.getEventList, arg.params),
-          body: latestTimeFilter(arg.payload)
+          body: timeFilter
         }
         const baseListQuery = await fetchWithBQ(adminlogListInfo)
         const baseList = baseListQuery.data as TableResult<AdminLogBase>
@@ -122,7 +144,8 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
 
         const metaListInfo = getMetaList<AdminLogBase>(baseList, {
           urlInfo: createHttpRequest(CommonUrlsInfo.getEventListMeta, arg.params),
-          fields: metaFields
+          fields: metaFields,
+          filters: timeFilter.filters
         })
         const metaListQuery = await fetchWithBQ(metaListInfo)
         const metaList = metaListQuery.data as TableResult<AdminLogMeta>
@@ -135,6 +158,32 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
               ...base,
               ...{ entity_type: base.entity_type.toUpperCase() },
               ...(metaListData.find(meta=>meta.id === base.id)),
+              ...{ tableKey: base.event_datetime + base.id }
+            })) as AdminLog[]
+          }
+        }
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    adminLogsOnly: build.query<TableResult<AdminLog>, RequestPayload>({
+      providesTags: [{ type: 'AdminLog', id: 'LIST' }],
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const adminlogListInfo = {
+          ...createHttpRequest(CommonUrlsInfo.getEventList, arg.params),
+          body: latestTimeFilter(arg.payload)
+        }
+        const baseListQuery = await fetchWithBQ(adminlogListInfo)
+        const baseList = baseListQuery.data as TableResult<AdminLogBase>
+        if(!baseList) return { error: baseListQuery.error as FetchBaseQueryError }
+
+        const { data: baseListData } = baseList
+
+        return {
+          data: {
+            ...baseList,
+            data: baseListData.map((base) => ({
+              ...base,
+              ...{ entity_type: base.entity_type.toUpperCase() },
               ...{ tableKey: base.event_datetime + base.id }
             })) as AdminLog[]
           }
@@ -203,8 +252,10 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
 
 export const {
   useActivitiesQuery,
+  useActivityApCompatibilitiesQuery,
   useEventsQuery,
   useAdminLogsQuery,
+  useAdminLogsOnlyQuery,
   useDownloadEventsCSVMutation,
   useAddExportSchedulesMutation,
   useUpdateExportSchedulesMutation,

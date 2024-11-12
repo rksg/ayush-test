@@ -82,11 +82,11 @@ export function nodeTypes (nodeType: NodeType|SliceType): string {
     case 'zone':
       return isMLISA
         ? $t({ defaultMessage: 'Zone' })
-        : $t({ defaultMessage: 'Venue' })
+        : $t({ defaultMessage: '<VenueSingular></VenueSingular>' })
     case 'switchGroup':
       return isMLISA
         ? $t({ defaultMessage: 'Switch Group' })
-        : $t({ defaultMessage: 'Venue' })
+        : $t({ defaultMessage: '<VenueSingular></VenueSingular>' })
     case 'switch':
       return $t({ defaultMessage: 'Switch' })
     case 'AP':
@@ -108,7 +108,7 @@ function formattedNodeName (
 ): string | undefined {
   const { $t } = getIntl()
   const type = node.type.toLocaleLowerCase()
-  const isComplexName = ['ap', 'switch'].includes(type) && sliceValue !== node.name
+  const isComplexName = ['ap', 'controller', 'switch'].includes(type) && sliceValue !== node.name
   return $t({
     defaultMessage: `{isComplexName, select,
       true {{name} ({nodeName})}
@@ -155,7 +155,7 @@ export function impactedArea (path: NetworkPath, sliceValue: string) {
     : sliceValue
 }
 
-export function incidentScope (incident: Incident) {
+export function incidentScope (incident: Pick<Incident, 'sliceType' | 'sliceValue' | 'path'>) {
   const { $t } = getIntl()
   const scope = $t({
     defaultMessage: '{nodeType}: {nodeName}',
@@ -170,7 +170,7 @@ export function incidentScope (incident: Incident) {
 export const getThreshold = (incident: Incident) => {
   const { code } = incident
   if (code === 'ttc') {
-    return kpiConfig.timeToConnect.histogram.initialThreshold
+    return incident.slaThreshold ?? kpiConfig.timeToConnect.histogram.initialThreshold
   } else {
     return undefined
   }
@@ -243,7 +243,8 @@ export const impactValues = <Type extends 'ap' | 'client'> (
 
 export const longDescription = (incident: Incident) => {
   const { clientImpactRatio, clientImpactRatioFormatted } = impactValues('client', incident)
-  return (clientImpactRatio === null)
+  const noRatioMap = [null, noDataDisplay] as (typeof clientImpactRatio)[]
+  return (noRatioMap.includes(clientImpactRatio))
     ? shortDescription(incident)
     : getIntl().$t(incident.longDescription, {
       scope: incidentScope(incident),

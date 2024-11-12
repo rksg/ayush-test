@@ -3,24 +3,33 @@ import { useEffect } from 'react'
 import { Row, Col, Form } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Subtitle }             from '@acx-ui/components'
-import { useParams }            from '@acx-ui/react-router-dom'
+import { Subtitle }                 from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { useGetTenantDetailsQuery } from '@acx-ui/rc/services'
+import { useParams }                from '@acx-ui/react-router-dom'
 import {
   MFAMethod,
+  MFAStatus,
   useGetMfaAdminDetailsQuery,
   useGetMfaTenantDetailsQuery
 } from '@acx-ui/user'
-import { isDelegationMode } from '@acx-ui/utils'
+import { AccountType, isDelegationMode } from '@acx-ui/utils'
 
 import { AuthenticationMethod }       from './AuthenticationMethod'
 import { BackupAuthenticationMethod } from './BackupAuthenticationMethod'
 
 export const MultiFactor = () => {
   const { $t } = useIntl()
+  const mfaNewApiToggle = useIsSplitOn(Features.MFA_NEW_API_TOGGLE)
+
   const { tenantId } = useParams()
   const [form] = Form.useForm()
-  const { data } = useGetMfaTenantDetailsQuery({ params: { tenantId } })
-  const mfaStatus = data?.enabled
+  const { data } = useGetMfaTenantDetailsQuery({ params: { tenantId },
+    enableRbac: mfaNewApiToggle })
+  const tenantDetailsData = useGetTenantDetailsQuery({ params: { tenantId } })
+
+  const mfaStatus = data?.enabled &&
+    tenantDetailsData?.data?.tenantMFA?.mfaStatus === MFAStatus.ENABLED
   const { data: details } = useGetMfaAdminDetailsQuery({
     params: { userId: data?.userId } },
   { skip: !mfaStatus })
@@ -43,6 +52,9 @@ export const MultiFactor = () => {
   }, [form, data, details])
 
   const configurable = mfaStatus && !isMasqueraded
+  const tenantType = tenantDetailsData.data?.tenantType
+  const hideRecoveryCode = tenantType === AccountType.MSP_EC ||
+    tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
 
   return (
     <Form
@@ -74,11 +86,11 @@ export const MultiFactor = () => {
           </Col>
         </Row>
       )}
-      {configurable && (
+      {configurable && !hideRecoveryCode && (
         <Row gutter={20}>
           <Col span={8}>
             <BackupAuthenticationMethod
-              recoveryCodes={data.recoveryCodes ? data.recoveryCodes : []}
+              recoveryCodes={data?.recoveryCodes ? data.recoveryCodes : []}
             />
           </Col>
         </Row>

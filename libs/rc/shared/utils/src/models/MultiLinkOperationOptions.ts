@@ -10,6 +10,6 @@ export class MultiLinkOperationOptions {
 
     this.enable50G = true
 
-    this.enable6G = false
+    this.enable6G = true
   }
 }

@@ -1,19 +1,52 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { EdgeUrlsInfo }                                    from '@acx-ui/rc/utils'
 import { Provider }                                        from '@acx-ui/store'
 import { mockServer, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { mockedEdges } from './__tests__/fixtures'
 
-import { useEdgeActions } from '.'
+import { useEdgeActions, useIsEdgeFeatureReady, useIsEdgeReady } from '.'
 
 const mockedDeleteApi = jest.fn()
-const mockedBuckDeleteApi = jest.fn()
 const mockedSendOtpApi = jest.fn()
 const mockedRebootApi = jest.fn()
+const mockedShutdownApi = jest.fn()
 const mockedResetApi = jest.fn()
+
+describe('Edge enabled evaluation', () => {
+  describe('useIsEdgeReady', () => {
+    it('should return true', async () => {
+      jest.mocked(useIsSplitOn).mockImplementationOnce(ff => ff === Features.EDGES_TOGGLE)
+      expect(useIsEdgeReady()).toBe(true)
+    })
+
+    it('should return false when edge toggle not ON', async () => {
+      jest.mocked(useIsSplitOn).mockImplementationOnce(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE)
+      expect(useIsEdgeReady()).toBe(false)
+    })
+  })
+
+  describe('useIsEdgeFeatureReady', () => {
+    it('should return true', async () => {
+      jest.mocked(useIsSplitOn)
+        .mockImplementation(ff => ff === Features.EDGES_TOGGLE || ff === Features.EDGE_HA_TOGGLE)
+      expect(useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)).toBe(true)
+    })
+
+    it('should return false when edge toggle not ON', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE)
+      expect(useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)).toBe(false)
+    })
+
+    it('should return false when target flag not ON', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGES_SD_LAN_HA_TOGGLE)
+      expect(useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)).toBe(false)
+    })
+  })
+})
 
 describe('useEdgeActions', () => {
 
@@ -23,13 +56,6 @@ describe('useEdgeActions', () => {
         EdgeUrlsInfo.deleteEdge.url,
         (req, res, ctx) => {
           mockedDeleteApi()
-          return res(ctx.status(202))
-        }
-      ),
-      rest.delete(
-        EdgeUrlsInfo.deleteEdges.url,
-        (req, res, ctx) => {
-          mockedBuckDeleteApi()
           return res(ctx.status(202))
         }
       ),
@@ -48,6 +74,13 @@ describe('useEdgeActions', () => {
         }
       ),
       rest.post(
+        EdgeUrlsInfo.shutdown.url,
+        (req, res, ctx) => {
+          mockedShutdownApi()
+          return res(ctx.status(202))
+        }
+      ),
+      rest.post(
         EdgeUrlsInfo.factoryReset.url,
         (req, res, ctx) => {
           mockedResetApi()
@@ -55,6 +88,10 @@ describe('useEdgeActions', () => {
         }
       )
     )
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
   })
 
   it('should reboot successfully', async () => {
@@ -68,10 +105,34 @@ describe('useEdgeActions', () => {
     const dialog = await screen.findByRole('dialog')
     expect(dialog).toHaveTextContent('Reboot "Smart Edge 1"?')
     // eslint-disable-next-line max-len
-    expect(dialog).toHaveTextContent('Rebooting the SmartEdge will disconnect all connected clients. Are you sure you want to reboot?')
+    expect(dialog).toHaveTextContent('Rebooting the RUCKUS Edge will disconnect all connected clients. Are you sure you want to reboot?')
     await userEvent.click(within(dialog).getByRole('button', { name: 'Reboot' }))
     await waitFor(() => {
       expect(mockedRebootApi).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(mockedCallback).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
+  })
+
+  it('should shutdown successfully', async () => {
+    const mockedCallback = jest.fn()
+    const { result } = renderHook(() => useEdgeActions(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    const { shutdown } = result.current
+    shutdown(mockedEdges[0], mockedCallback)
+    const dialog = await screen.findByRole('dialog')
+    expect(dialog).toHaveTextContent('Shutdown "Smart Edge 1"?')
+    // eslint-disable-next-line max-len
+    expect(dialog).toHaveTextContent('Shutdown will safely end all operations on RUCKUS Edge. You will need to manually restart the device. Are you sure you want to shut down this RUCKUS Edge?')
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Shutdown' }))
+    await waitFor(() => {
+      expect(mockedShutdownApi).toBeCalledTimes(1)
     })
     await waitFor(() => {
       expect(mockedCallback).toBeCalledTimes(1)
@@ -90,7 +151,7 @@ describe('useEdgeActions', () => {
     factoryReset(mockedEdges[0])
     const dialog = await screen.findByRole('dialog')
     // eslint-disable-next-line max-len
-    expect(dialog).toHaveTextContent('Reset & Recover "Smart Edge 1"?Are you sure you want to reset and recover this SmartEdge?Note: Reset & Recover can address anomalies, but may not resolve all issues, especially for complex, misconfigured, or hardware-related problems.CancelResetCancel')
+    expect(dialog).toHaveTextContent('Reset & Recover "Smart Edge 1"?Are you sure you want to reset and recover this RUCKUS Edge?Note: Reset & Recover can address anomalies, but may not resolve all issues, especially for complex, misconfigured, or hardware-related problems.CancelResetCancel')
     await userEvent.click(within(dialog).getByRole('button', { name: 'Reset' }))
     await waitFor(() => {
       expect(mockedResetApi).toBeCalledTimes(1)
@@ -111,7 +172,7 @@ describe('useEdgeActions', () => {
     const dialog = await screen.findByRole('dialog')
     expect(dialog).toHaveTextContent('Delete "Smart Edge 1"?')
     // eslint-disable-next-line max-len
-    expect(dialog).toHaveTextContent('Are you sure you want to delete this SmartEdge?')
+    expect(dialog).toHaveTextContent('Are you sure you want to delete this RUCKUS Edge?')
     await userEvent.click(within(dialog).getByRole('button', { name: 'Delete' }))
     await waitFor(() => {
       expect(mockedDeleteApi).toBeCalledTimes(1)
@@ -124,7 +185,7 @@ describe('useEdgeActions', () => {
     })
   })
 
-  it('should buck delete successfully', async () => {
+  it('should delete two edges successfully', async () => {
     const mockedCallback = jest.fn()
     const { result } = renderHook(() => useEdgeActions(), {
       wrapper: ({ children }) => <Provider children={children} />
@@ -133,13 +194,13 @@ describe('useEdgeActions', () => {
     const { deleteEdges } = result.current
     deleteEdges([mockedEdges[3], mockedEdges[4]], mockedCallback)
     const dialog = await screen.findByRole('dialog')
-    expect(dialog).toHaveTextContent('Delete "2 SmartEdges"?')
+    expect(dialog).toHaveTextContent('Delete "2 RUCKUS Edges"?')
     // eslint-disable-next-line max-len
-    expect(dialog).toHaveTextContent('Are you sure you want to delete these SmartEdges?')
+    expect(dialog).toHaveTextContent('Are you sure you want to delete these RUCKUS Edges?')
     await userEvent.type(within(dialog).getByRole('textbox'), 'Delete')
     await userEvent.click(within(dialog).getByRole('button', { name: 'Delete' }))
     await waitFor(() => {
-      expect(mockedBuckDeleteApi).toBeCalledTimes(1)
+      expect(mockedDeleteApi).toBeCalledTimes(2)
     })
     await waitFor(() => {
       expect(mockedCallback).toBeCalledTimes(1)

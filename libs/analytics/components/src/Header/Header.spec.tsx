@@ -20,7 +20,7 @@ jest.mock('@acx-ui/components', () => ({
 describe('Analytics header', () => {
   it('should render header correctly', async () => {
     render(<BrowserRouter><Provider>
-      <Header title={'Title'} shouldQuerySwitch/>
+      <Header title={'Title'} shouldQuerySwitch />
     </Provider></BrowserRouter>)
     expect(await screen.findByText('Title')).toBeVisible()
     expect(await screen.findByTestId('NetworkFilter')).toBeVisible()

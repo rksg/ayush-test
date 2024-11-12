@@ -1,36 +1,40 @@
-import { useEffect, useState, useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { TierFeatures, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                                  from '@acx-ui/icons'
 import {
   DpskPoolLink,
+  IdentityGroupLink,
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
-  IdentityGroupLink,
-  useDpskNewConfigFlowParams,
+  PersonaGroupDrawer,
+  usePersonaAsyncHeaders,
+  useIsEdgeFeatureReady,
   VenueLink,
-  PersonaGroupDrawer
+  CertTemplateLink
 } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeletePersonaGroupMutation,
-  useGetDpskListQuery,
-  useGetNetworkSegmentationGroupListQuery,
+  useGetCertificateTemplatesQuery,
+  useGetEnhancedDpskListQuery,
+  useGetEdgePinViewDataListQuery,
   useGetQueriablePropertyConfigsQuery,
   useLazyDownloadPersonaGroupsQuery,
+  useLazyGetCertificateTemplateQuery,
   useLazyGetDpskQuery,
   useLazyGetMacRegListQuery,
-  useLazyGetNetworkSegmentationGroupByIdQuery,
+  useLazyGetEdgePinByIdQuery,
   useLazyVenuesListQuery,
-  useMacRegListsQuery,
+  useSearchMacRegListsQuery,
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
 import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                   from '@acx-ui/user'
+import { filterByAccess, hasCrossVenuesPermission }    from '@acx-ui/user'
 import { exportMessageMapping }                        from '@acx-ui/utils'
 
 import { IdentityGroupContext } from '..'
@@ -42,22 +46,46 @@ const propertyConfigDefaultPayload = {
   pageSize: 100
 }
 
+const macRegSearchDefaultPayload = {
+  dataOption: 'all',
+  searchCriteriaList: [
+    {
+      filterKey: 'name',
+      operation: 'cn',
+      value: ''
+    }
+  ],
+  sortField: 'name',
+  sortOrder: 'ASC',
+  page: 1,
+  pageSize: 10000
+}
+
 function useColumns (
   macRegistrationPools: Map<string, string>,
   dpskPools: Map<string, string>,
   venuesMap: Map<string, string>,
-  nsgMap: Map<string, string>
+  pinMap: Map<string, string>,
+  certTemplateMap: Map<string, string>
 ) {
   const { $t } = useIntl()
-  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
+  const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isCertTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
 
-  const { data: dpskPool } = useGetDpskListQuery({ params: dpskNewConfigFlowParams })
-  const { data: macList } = useMacRegListsQuery({
+  const { data: dpskPool } = useGetEnhancedDpskListQuery({
     payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
   })
-  const { data: nsgList } = useGetNetworkSegmentationGroupListQuery(
-    { params: { page: '1', pageSize: '10000', sort: 'name,asc' } },
+  const { data: macList } = useSearchMacRegListsQuery({ payload: macRegSearchDefaultPayload })
+  const { data: pinList } = useGetEdgePinViewDataListQuery(
+    {
+      payload: {
+        page: 1,
+        pageSize: 10000,
+        fields: ['name', 'id'],
+        sortField: 'name',
+        sortOrder: 'ASC'
+      }
+    },
     { skip: !networkSegmentationEnabled }
   )
   const { venueOptions, isVenueOptionsLoading } = useGetQueriablePropertyConfigsQuery({
@@ -68,6 +96,17 @@ function useColumns (
         venueOptions: data?.data.map(item => ({ value: item.venueName!, key: item.venueId! })) ?? []
       }
     }
+  })
+  const { certTemplateOptions, isCertTemplatesLoading } = useGetCertificateTemplatesQuery({
+    payload: { page: 1, pageSize: 10000 }
+  }, {
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        isCertTemplatesLoading: isLoading,
+        certTemplateOptions: data?.data.map(t => ({ value: t.name, key: t.id! })) ?? []
+      }
+    },
+    skip: !isCertTemplateEnabled
   })
 
   const columns: TableProps<PersonaGroup>['columns'] = [
@@ -92,7 +131,7 @@ function useColumns (
     },
     {
       key: 'propertyId',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'propertyId',
       sorter: true,
       filterMultiple: false,
@@ -129,23 +168,36 @@ function useColumns (
           macRegistrationPoolId={row.macRegistrationPoolId}
         />
     },
-    ...(networkSegmentationEnabled ? [{
-      key: 'nsgId',
-      title: $t({ defaultMessage: 'Personal Identity Network' }),
-      dataIndex: 'nsgId',
+    ...(isCertTemplateEnabled ? [{
+      key: 'certificateTemplateId',
+      title: $t({ defaultMessage: 'Certificate Template' }),
+      dataIndex: 'certificateTemplateId',
       sorter: true,
       filterMultiple: false,
-      filterable: nsgList?.data.map(nsg => ({ key: nsg.id, value: nsg.name })) ?? [],
+      filterable: isCertTemplatesLoading ? [] : certTemplateOptions,
+      render: (_, row) =>
+        <CertTemplateLink
+          name={certTemplateMap.get(row.certificateTemplateId ?? '')}
+          id={row.certificateTemplateId}
+        />
+    } as TableColumn<PersonaGroup>] : []),
+    ...(networkSegmentationEnabled ? [{
+      key: 'personalIdentityNetworkId',
+      title: $t({ defaultMessage: 'Personal Identity Network' }),
+      dataIndex: 'personalIdentityNetworkId',
+      sorter: true,
+      filterMultiple: false,
+      filterable: pinList?.data.map(pin => ({ key: pin.id, value: pin.name })) ?? [],
       render: (_, row) =>
         <NetworkSegmentationLink
-          nsgId={row.nsgId}
-          name={nsgMap.get(row.nsgId ?? '')}
+          id={row.personalIdentityNetworkId}
+          name={pinMap.get(row.personalIdentityNetworkId ?? '')}
         />
     } as TableColumn<PersonaGroup>] : []),
     {
-      key: 'personaCount',
+      key: 'identityCount',
       title: $t({ defaultMessage: 'Identities' }),
-      dataIndex: 'personaCount',
+      dataIndex: 'identityCount',
       align: 'center'
     }
   ]
@@ -167,30 +219,36 @@ export function PersonaGroupTable () {
   const [venueMap, setVenueMap] = useState(new Map())
   const [macRegistrationPoolMap, setMacRegistrationPoolMap] = useState(new Map())
   const [dpskPoolMap, setDpskPoolMap] = useState(new Map())
-  const [nsgPoolMap, setNsgPoolMap] = useState(new Map())
+  const [pinPoolMap, setPinPoolMap] = useState(new Map())
+  const [certTemplateMap, setCertTemplateMap] = useState(new Map())
   const [drawerState, setDrawerState] = useState({
     isEdit: false,
     visible: false,
     data: {} as PersonaGroup | undefined
   })
   const { setIdentityGroupCount } = useContext(IdentityGroupContext)
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
+  const { isAsync, customHeaders } = usePersonaAsyncHeaders()
 
   const [getVenues] = useLazyVenuesListQuery()
+  const [getCertTemplate] = useLazyGetCertificateTemplateQuery()
   const [getDpskById] = useLazyGetDpskQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
-  const [getNsgById] = useLazyGetNetworkSegmentationGroupByIdQuery()
+  const [getPinById] = useLazyGetEdgePinByIdQuery()
   const [downloadCsv] = useLazyDownloadPersonaGroupsQuery()
   const [
     deletePersonaGroup,
     { isLoading: isDeletePersonaGroupUpdating }
   ] = useDeletePersonaGroupMutation()
 
+  const settingsId = 'persona-group-table'
   const tableQuery = useTableQuery( {
     useQuery: useSearchPersonaGroupListQuery,
     apiParams: { sort: 'name,ASC' },
-    defaultPayload: { keyword: '' }
+    defaultPayload: { keyword: '' },
+    pagination: { settingsId }
   })
+  const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isCertTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
 
   useEffect(() => {
     if (tableQuery.isLoading) return
@@ -198,13 +256,29 @@ export function PersonaGroupTable () {
     const venueIds: string[] = []
     const macPools = new Map()
     const dpskPools = new Map()
-    const nsgPools = new Map()
+    const pinPools = new Map()
+    const certTemplates = new Map()
 
     tableQuery.data?.data.forEach(personaGroup => {
-      const { macRegistrationPoolId, dpskPoolId, propertyId, nsgId } = personaGroup
+      const {
+        macRegistrationPoolId,
+        dpskPoolId,
+        propertyId,
+        personalIdentityNetworkId,
+        certificateTemplateId
+      } = personaGroup
 
       if (propertyId) {
         venueIds.push(propertyId)
+      }
+
+      if (isCertTemplateEnabled && certificateTemplateId) {
+        getCertTemplate({ params: { policyId: certificateTemplateId } })
+          .then(result => {
+            if (result.data) {
+              certTemplates.set(certificateTemplateId, result.data.name)
+            }
+          })
       }
 
       if (macRegistrationPoolId) {
@@ -217,7 +291,7 @@ export function PersonaGroupTable () {
       }
 
       if (dpskPoolId) {
-        getDpskById({ params: { serviceId: dpskPoolId, ...dpskNewConfigFlowParams } })
+        getDpskById({ params: { serviceId: dpskPoolId } })
           .then(result => {
             if (result.data) {
               dpskPools.set(dpskPoolId, result.data.name)
@@ -225,11 +299,11 @@ export function PersonaGroupTable () {
           })
       }
 
-      if (nsgId) {
-        getNsgById({ params: { tenantId, serviceId: nsgId } })
+      if (networkSegmentationEnabled && personalIdentityNetworkId) {
+        getPinById({ params: { tenantId, serviceId: personalIdentityNetworkId } })
           .then(result => {
             if (result.data) {
-              nsgPools.set(nsgId, result.data.name)
+              pinPools.set(personalIdentityNetworkId, result.data.name)
             }
           })
       }
@@ -247,7 +321,8 @@ export function PersonaGroupTable () {
 
     setDpskPoolMap(dpskPools)
     setMacRegistrationPoolMap(macPools)
-    setNsgPoolMap(nsgPools)
+    setPinPoolMap(pinPools)
+    setCertTemplateMap(certTemplates)
   }, [tableQuery.data])
 
   const downloadPersonaGroups = () => {
@@ -261,50 +336,59 @@ export function PersonaGroupTable () {
     doProfileDelete(
       [selectedRow],
       $t({ defaultMessage: 'Identity Group' }),
-      selectedRow.name,
+      name,
       [
-        { fieldName: 'nsgId', fieldText: $t({ defaultMessage: 'Personal Identity Network' }) },
-        { fieldName: 'propertyId', fieldText: $t({ defaultMessage: 'Venue' }) }
+        {
+          fieldName: 'personalIdentityNetworkId',
+          fieldText: $t({ defaultMessage: 'Personal Identity Network' })
+        },
+        // eslint-disable-next-line max-len
+        { fieldName: 'propertyId', fieldText: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }) }
       ],
-      async () => deletePersonaGroup({ params: { groupId: id } })
+      async () => deletePersonaGroup({ params: { groupId: id }, customHeaders })
         .then(() => {
-          showToast({
-            type: 'success',
-            content: $t({ defaultMessage: 'Identity Group {name} was deleted' }, { name })
-          })
+          if (!isAsync) {
+            showToast({
+              type: 'success',
+              content: $t({ defaultMessage: 'Identity Group {name} was deleted' }, { name })
+            })
+          }
           callback()
         })
     )
   }
 
-  const actions: TableProps<PersonaGroup>['actions'] = [
-    {
-      label: $t({ defaultMessage: 'Add Identity Group' }),
-      onClick: () => {
-        setDrawerState({ isEdit: false, visible: true, data: undefined })
-      }
-    }
-  ]
+  const actions: TableProps<PersonaGroup>['actions'] =
+    hasCrossVenuesPermission({ needGlobalPermission: true })
+      ? [{
+        label: $t({ defaultMessage: 'Add Identity Group' }),
+        onClick: () => {
+          setDrawerState({ isEdit: false, visible: true, data: undefined })
+        }
+      }] : []
 
-  const rowActions: TableProps<PersonaGroup>['rowActions'] = [
-    {
-      label: $t({ defaultMessage: 'Edit' }),
-      onClick: ([data], clearSelection) => {
-        setDrawerState({ data, isEdit: true, visible: true })
-        clearSelection()
-      }
-    },
-    {
-      label: $t({ defaultMessage: 'Delete' }),
-      disabled: (([selectedItem]) =>
-        (selectedItem && selectedItem.personaCount)
-          ? selectedItem.personaCount > 0 : false
-      ),
-      onClick: ([selectedRow], clearSelection) => {
-        doDelete(selectedRow, clearSelection)
-      }
-    }
-  ]
+  const rowActions: TableProps<PersonaGroup>['rowActions'] =
+    hasCrossVenuesPermission({ needGlobalPermission: true })
+      ? [
+        {
+          label: $t({ defaultMessage: 'Edit' }),
+          onClick: ([data], clearSelection) => {
+            setDrawerState({ data, isEdit: true, visible: true })
+            clearSelection()
+          }
+        },
+        {
+          label: $t({ defaultMessage: 'Delete' }),
+          disabled: (([selectedItem]) =>
+            selectedItem
+              ? (selectedItem.identityCount ?? 0) > 0 || !!selectedItem.certificateTemplateId
+              : false
+          ),
+          onClick: ([selectedRow], clearSelection) => {
+            doDelete(selectedRow, clearSelection)
+          }
+        }
+      ] : []
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = {
@@ -314,9 +398,12 @@ export function PersonaGroupTable () {
         ? customFilters?.dpskPoolId[0] : undefined,
       macRegistrationPoolId: Array.isArray(customFilters?.macRegistrationPoolId)
         ? customFilters?.macRegistrationPoolId[0] : undefined,
-      nsgId: Array.isArray(customFilters?.nsgId) ? customFilters?.nsgId[0] : undefined,
+      personalIdentityNetworkId: Array.isArray(customFilters?.personalIdentityNetworkId)
+        ? customFilters?.personalIdentityNetworkId[0] : undefined,
       propertyId: Array.isArray(customFilters?.propertyId)
-        ? customFilters?.propertyId[0] : undefined
+        ? customFilters?.propertyId[0] : undefined,
+      certificateTemplateId: Array.isArray(customFilters?.certificateTemplateId)
+        ? customFilters?.certificateTemplateId[0] : undefined
     }
 
     tableQuery.setPayload(payload)
@@ -332,8 +419,9 @@ export function PersonaGroupTable () {
     >
       <Table<PersonaGroup>
         enableApiFilter
-        settingsId='persona-group-table'
-        columns={useColumns(macRegistrationPoolMap, dpskPoolMap, venueMap, nsgPoolMap)}
+        settingsId={settingsId}
+        // eslint-disable-next-line max-len
+        columns={useColumns(macRegistrationPoolMap, dpskPoolMap, venueMap, pinPoolMap, certTemplateMap)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
@@ -341,7 +429,8 @@ export function PersonaGroupTable () {
         rowKey='id'
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'radio' }}
+        rowSelection={
+          hasCrossVenuesPermission({ needGlobalPermission: true }) && { type: 'radio' }}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-persona-group'} />,
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),

@@ -1,0 +1,323 @@
+import { ApiInfo } from '@acx-ui/utils'
+
+export const AdminRbacUrlsInfo: { [key: string]: ApiInfo } = {
+//   getTenantDetails: {
+//     method: 'get',
+//     url: '/tenants/self',
+//     oldUrl: '/api/tenant/:tenantId',
+//     newApi: true
+//   },
+//   getRegisteredUsersList: {
+//     method: 'get',
+//     url: '/admins/registered',
+//     oldUrl: '/api/tenant/:tenantId/admins/registered',
+//     newApi: true
+//   },
+//   getAdministrators: {
+//     method: 'get',
+//     url: '/admins',
+//     oldUrl: '/api/tenant/:tenantId/admin',
+//     newApi: true
+//   },
+//   updateAdmin: {
+//     method: 'put',
+//     url: '/admins',
+//     oldUrl: '/api/tenant/:tenantId/admin',
+//     newApi: true
+//   },
+//   deleteAdmin: {
+//     method: 'delete',
+//     url: '/admins/:adminId',
+//     oldUrl: '/api/tenant/:tenantId/admin/:adminId',
+//     newApi: true
+//   },
+//   deleteAdmins: {
+//     method: 'delete',
+//     url: '/admins',
+//     oldUrl: '/api/tenant/:tenantId/admin',
+//     newApi: true
+//   },
+//   addAdmin: {
+//     method: 'post',
+//     url: '/admins',
+//     oldUrl: '/api/tenant/:tenantId/admin',
+//     newApi: true
+//   },
+//   getAccountDetails: {
+//     method: 'get',
+//     url: '/tenants/accounts',
+//     oldUrl: '/api/tenant/:tenantId/account',
+//     newApi: true
+//   },
+//   getRecoveryPassphrase: {
+//     method: 'get',
+//     url: '/wifiNetworks/recoveryPassphraseSettings',
+//     oldUrl: '/recoveryPskSettings',
+//     newApi: true
+//   },
+//   updateRecoveryPassphrase: {
+//     method: 'put',
+//     url: '/wifiNetworks/recoveryPassphraseSettings',
+//     oldUrl: '/recoveryPskSettings',
+//     newApi: true
+//   },
+//   getDelegations: {
+//     method: 'get',
+//     url: '/tenants/delegations?type=VAR',
+//     oldUrl: '/api/tenant/:tenantId/delegation?type=VAR',
+//     newApi: true
+//   },
+//   getTenantDelegation: {
+//     method: 'get',
+//     url: '/tenants/delegations?type=SUPPORT',
+//     oldUrl: '/api/tenant/:tenantId/delegation?type=SUPPORT',
+//     newApi: true
+//   },
+//   getEcTenantDelegation: {
+//     method: 'get',
+//     url: '/tenants/delegations?type=SUPPORT_EC',
+//     oldUrl: '/api/tenant/:tenantId/delegation?type=SUPPORT_EC',
+//     newApi: true
+//   },
+//   getMspEcDelegations: {
+//     method: 'get',
+//     url: '/tenants/delegations?type=MSP',
+//     oldUrl: '/api/tenant/:tenantId/delegation?type=MSP',
+//     newApi: true
+//   },
+  enableAccessSupport: {
+    method: 'post',
+    url: '/tenants/delegations/support',
+    oldUrl: '/tenants/supportDelegations',
+    newApi: true
+  },
+  disableAccessSupport: {
+    method: 'delete',
+    url: '/tenants/delegations/support',
+    oldUrl: '/tenants/supportDelegations',
+    newApi: true
+  },
+  //   getPreferences: {
+  //     method: 'get',
+  //     url: '/tenants/preferences',
+  //     oldUrl: '/api/tenant/:tenantId/preferences',
+  //     newApi: true
+  //   },
+  //   updatePreferences: {
+  //     method: 'put',
+  //     url: '/tenants/preferences',
+  //     oldUrl: '/api/tenant/:tenantId/preferences',
+  //     newApi: true
+  //   },
+  //   revokeInvitation: {
+  //     method: 'delete',
+  //     url: '/tenants/delegations/:delegationId',
+  //     oldUrl: '/api/tenant/:tenantId/delegation/:delegationId',
+  //     newApi: true
+  //   },
+  //   inviteVAR: {
+  //     method: 'post',
+  //     url: '/tenants/delegations',
+  //     oldUrl: '/api/tenant/:tenantId/delegation',
+  //     newApi: true
+  //   },
+  findVAR: {
+    method: 'get',
+    url: '/tenants/self/query',
+    oldUrl: '/tenants/find-var',
+    newApi: true
+  },
+  //   getNotificationRecipients: {
+  //     method: 'get',
+  //     url: '/tenants/notificationRecipients',
+  //     oldUrl: '/api/tenant/:tenantId/notification-recipient',
+  //     newApi: true
+  //   },
+  //   addRecipient: {
+  //     method: 'post',
+  //     url: '/tenants/notificationRecipients',
+  //     oldUrl: '/api/tenant/:tenantId/notification-recipient',
+  //     newApi: true
+  //   },
+  //   updateRecipient: {
+  //     method: 'put',
+  //     url: '/tenants/notificationRecipients/:recipientId',
+  //     oldUrl: '/api/tenant/:tenantId/notification-recipient/:recipientId',
+  //     newApi: true
+  //   },
+  //   deleteNotificationRecipients: {
+  //     method: 'delete',
+  //     url: '/tenants/notificationRecipients',
+  //     oldUrl: '/api/tenant/:tenantId/notification-recipient',
+  //     newApi: true
+  //   },
+  //   deleteNotificationRecipient: {
+  //     method: 'delete',
+  //     url: '/tenants/notificationRecipients/:recipientId',
+  //     oldUrl: '/api/tenant/:tenantId/notification-recipient/:recipientId',
+  //     newApi: true
+  //   },
+  //   getEntitlementSummary: {
+  //     method: 'get',
+  //     url: '/entitlements/summaries',
+  //     oldUrl: '/api/tenant/:tenantId/entitlement/summary',
+  //     newApi: true
+  //   },
+  //   getEntitlementsList: {
+  //     method: 'get',
+  //     url: '/entitlements',
+  //     oldUrl: '/api/tenant/:tenantId/entitlement',
+  //     newApi: true
+  //   },
+  //   getEntitlementsActivations: {
+  //     method: 'post',
+  //     url: '/entitlements/orders/query',
+  //     newApi: true
+  //   },
+  //   patchEntitlementsActivations: {
+  //     method: 'PATCH',
+  //     url: '/entitlements/orders/:orderId',
+  //     newApi: true
+  //   },
+  //   refreshLicensesData: {
+  //     method: 'get',
+  //     url: '/entitlements/summaries?refresh=true',
+  //     oldMethod: 'post',
+  //     oldUrl: '/api/tenant/:tenantId/entitlement/internal-refresh',
+  //     newApi: true
+  //   },
+  //   internalRefreshLicensesData: {
+  //     method: 'get',
+  //     url: '/entitlements/summaries?refresh=true',
+  //     oldMethod: 'post',
+  //     oldUrl: '/api/tenant/:tenantId/entitlement/internal-refresh',
+  //     newApi: false
+  //   },
+  convertNonVARToMSP: {
+    method: 'post',
+    url: '/api/mspservice/mspNonVAR/:tenantId',
+    newApi: true
+  },
+  //   getTenantAuthentications: {
+  //     method: 'get',
+  //     url: '/tenants/authentications',
+  //     newApi: true
+  //   },
+  //   addTenantAuthentications: {
+  //     method: 'post',
+  //     url: '/tenants/authentications',
+  //     newApi: true
+  //   },
+  //   patchTenantAuthentications: {
+  //     method: 'PATCH',
+  //     url: '/tenants/authentications/:authenticationId',
+  //     newApi: true
+  //   },
+  //   updateTenantAuthentications: {
+  //     method: 'put',
+  //     url: '/tenants/authentications/:authenticationId',
+  //     newApi: true
+  //   },
+  //   deleteTenantAuthentications: {
+  //     method: 'delete',
+  //     url: '/tenants/authentications/:authenticationId',
+  //     newApi: true
+  //   },
+  //   getAdminGroups: {
+  //     method: 'get',
+  //     url: '/groups',
+  //     newApi: true
+  //   },
+  //   addAdminGroups: {
+  //     method: 'post',
+  //     url: '/groups',
+  //     newApi: true
+  //   },
+  //   updateAdminGroups: {
+  //     method: 'PATCH',
+  //     url: '/groups/:groupId',
+  //     newApi: true
+  //   },
+  //   deleteAdminGroups: {
+  //     method: 'delete',
+  //     url: '/groups',
+  //     newApi: true
+  //   },
+  //   getAdminGroupLastLogins: {
+  //     method: 'get',
+  //     url: '/events/adminGroups/:adminGroupId/latestLogins',
+  //     newApi: true
+  //   },
+  //   getCustomRoles: {
+  //     method: 'get',
+  //     url: '/roleAuthentications/customRoles',
+  //     newApi: true
+  //   },
+  //   addCustomRole: {
+  //     method: 'post',
+  //     url: '/roleAuthentications/customRoles',
+  //     newApi: true
+  //   },
+  //   updateCustomRole: {
+  //     method: 'put',
+  //     url: '/roleAuthentications/customRoles/:customRoleId',
+  //     newApi: true
+  //   },
+  //   deleteCustomRole: {
+  //     method: 'delete',
+  //     url: '/roleAuthentications/customRoles/:customRoleId',
+  //     newApi: true
+  //   },
+  getOnePrivilegeGroup: {
+    method: 'get',
+    url: '/roleAuthentications/privilegeGroups/:privilegeGroupId',
+    newApi: true
+  },
+  getPrivilegeGroups: {
+    method: 'get',
+    url: '/roleAuthentications/privilegeGroups',
+    newApi: true
+  },
+  addPrivilegeGroup: {
+    method: 'post',
+    url: '/roleAuthentications/privilegeGroups',
+    newApi: true
+  },
+  updatePrivilegeGroup: {
+    method: 'put',
+    url: '/roleAuthentications/privilegeGroups/:privilegeGroupId',
+    newApi: true
+  },
+  deletePrivilegeGroup: {
+    method: 'delete',
+    url: '/roleAuthentications/privilegeGroups/:privilegeGroupId',
+    newApi: true
+  },
+  getMspAggregations: {
+    method: 'get',
+    url: '/tenants/settings/query',
+    oldUrl: '/tenants/notificationAggregations',
+    newApi: true
+  },
+  //   addMspAggregations: {
+  //     method: 'post',
+  //     url: '/tenants/notificationAggregations',
+  //     newApi: true
+  //   },
+  updateMspAggregations: {
+    method: 'PATCH',
+    url: '/tenants/settings',
+    oldUrl: '/tenants/notificationAggregations',
+    newApi: true
+  },
+  getMspEcDelegatePrivilegeGroups: {
+    method: 'get',
+    url: '/roleAuthentications/privilegeGroupDelegations?tenantId=:mspEcTenantId',
+    newApi: true
+  }
+  //   deleteMspAggregations: {
+  //     method: 'delete',
+  //     url: '/tenants/notificationAggregations',
+  //     newApi: true
+  //   }
+}

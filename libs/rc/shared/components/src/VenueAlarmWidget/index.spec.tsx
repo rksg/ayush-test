@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {  Alarm, CommonUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider  }              from '@acx-ui/store'
 import { render,
@@ -52,10 +53,22 @@ const alarmListMeta = {
   ]
 }
 
+const data = {
+  summary: {
+    alarms: {
+      summary: {
+        critical: 1,
+        major: 1
+      },
+      totalCount: 2
+    }
+  }
+}
+
 const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 
 describe('Venue Overview Alarm Widget', () => {
-
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ALARM_NEW_API_TOGGLE)
   it('should render chart correctly', async () => {
     mockServer.use(
       rest.post(
@@ -65,7 +78,9 @@ describe('Venue Overview Alarm Widget', () => {
       rest.post(
         CommonUrlsInfo.getAlarmsListMeta.url,
         (_, res, ctx) => res(ctx.json(alarmListMeta))
-      )
+      ),
+      rest.post(CommonUrlsInfo.getAlarmSummaries.url,
+        (req, res, ctx) => res(ctx.json(data)))
     )
 
     const { asFragment } = render(
@@ -89,10 +104,12 @@ describe('Venue Overview Alarm Widget', () => {
       rest.post(
         CommonUrlsInfo.getAlarmsListMeta.url,
         (req, res, ctx) => res(ctx.json({ data: [] }))
-      )
+      ),
+      rest.post(CommonUrlsInfo.getAlarmSummaries.url,
+        (req, res, ctx) => res(ctx.json(data)))
     )
 
-    const { asFragment } = render(
+    render(
       <Provider>
         <VenueAlarmWidget />
       </Provider>,
@@ -100,7 +117,6 @@ describe('Venue Overview Alarm Widget', () => {
     )
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
   })
 })
 

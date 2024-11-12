@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
 
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { dataApiURL, Provider, store }                  from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen }             from '@acx-ui/test-utils'
 import type { AnalyticsFilter }                         from '@acx-ui/utils'
@@ -72,6 +73,26 @@ describe('SwitchesTrafficByVolumeWidget', () => {
     await screen.findByText('Traffic by Volume')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
+  })
+  it('should render ports selector', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_PORT_TRAFFIC)
+    mockGraphqlQuery(dataApiURL, 'SwitchesTrafficByVolumeWidget', {
+      data: { network: { hierarchyNode: { timeSeries: sample } } }
+    })
+    const portOptions = [
+      { label: 'All Ports', value: null },
+      { label: '1/1/1', value: '1/1/1' }
+    ]
+    render(
+      <Provider>
+        <SwitchesTrafficByVolume
+          filters={filters}
+          enableSelectPort={true}
+          portOptions={portOptions}
+        />
+      </Provider>)
+    await screen.findByText('Traffic by Volume')
+    expect(await screen.findByText('All Ports')).toBeVisible()
   })
   it('should render area chart and refresh interval', async () => {
     mockGraphqlQuery(dataApiURL, 'SwitchesTrafficByVolumeWidget', {

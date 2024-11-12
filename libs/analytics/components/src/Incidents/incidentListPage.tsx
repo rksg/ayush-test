@@ -1,10 +1,7 @@
-import { useIntl } from 'react-intl'
-
 import { useAnalyticsFilter }   from '@acx-ui/analytics/utils'
 import { GridRow, GridCol }     from '@acx-ui/components'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
-import { Header }             from '../Header'
 import { IncidentBySeverity } from '../IncidentBySeverity'
 import { IncidentTable }      from '../IncidentTable'
 import { NetworkHistory }     from '../NetworkHistory'
@@ -30,23 +27,5 @@ export const IncidentTabContent = (props: {
         <IncidentTable filters={incidentsPageFilters} />
       </GridCol>
     </GridRow>
-  )
-}
-
-export function IncidentListPage () {
-  const { $t } = useIntl()
-  return (
-    <>
-      <Header
-        title={$t({ defaultMessage: 'Incidents' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'AI Assurance' }) },
-          { text: $t({ defaultMessage: 'AI Analytics' }) }
-        ]}
-        shouldQuerySwitch
-        withIncidents
-      />
-      <IncidentTabContent/>
-    </>
   )
 }

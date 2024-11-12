@@ -7,6 +7,7 @@ import { DeviceConnectionStatus, ICX_MODELS_INFORMATION } from '../../constants'
 import {
   STACK_MEMBERSHIP,
   DHCP_OPTION_TYPE,
+  Switch,
   SwitchRow,
   SwitchClient,
   SwitchStatusEnum,
@@ -14,6 +15,8 @@ import {
   SWITCH_TYPE,
   SWITCH_SERIAL_PATTERN
 } from '../../types'
+
+import { compareSwitchVersion } from './switch.firmware.utils'
 
 export const modelMap: ReadonlyMap<string, string> = new Map([
   ['CRH', 'ICX7750-48F'],
@@ -66,6 +69,11 @@ export const modelMap: ReadonlyMap<string, string> = new Map([
   ['FMQ', 'ICX7550-48ZP'],
   ['FMR', 'ICX7550-24F'],
   ['FMS', 'ICX7550-48F'],
+  ['FNX', 'ICX8100-24'],
+  ['FNY', 'ICX8100-24P'],
+  ['FNZ', 'ICX8100-48'],
+  ['FPA', 'ICX8100-48P'],
+  ['FPB', 'ICX8100-C08PF'],
   ['FNC', 'ICX8200-24'],
   ['FND', 'ICX8200-24P'],
   ['FNF', 'ICX8200-48'],
@@ -78,10 +86,12 @@ export const modelMap: ReadonlyMap<string, string> = new Map([
   ['FNK', 'ICX8200-24FX'],
   ['FNL', 'ICX8200-48F'],
   ['FNN', 'ICX8200-48ZP2'],
-  ['FNR', 'ICX8200-C08ZP']
+  ['FNR', 'ICX8200-C08ZP'],
   // ['FNU', 'ICX8200-C08P-DC'],
   // ['FNQ', 'ICX8200-C08PT'],
   // ['FNP', 'ICX8200-C08P']
+  ['FPG', 'ICX8200-24PV'],
+  ['FPF', 'ICX8200-C08PFV']
 ])
 
 export const ICX_MODELS_MODULES = {
@@ -119,6 +129,13 @@ export const ICX_MODELS_MODULES = {
     '48F': [['48X1/10G'], ['8X40/100G']],
     '48C': [['48X1/10G'], ['8X40/100G']]
   },
+  ICX8100: {
+    '24': [['24X10/100/1000Mbps'], ['4X100M/1G']],
+    '24P': [['24X10/100/1000Mbps'], ['4X100M/1G']],
+    '48': [['48X10/100/1000Mbps'], ['4X100M/1G']],
+    '48P': [['48X10/100/1000Mbps'], ['4X100M/1G']],
+    'C08PF': [['8X10/100/1000Mbps'], ['2X100M/1G']]
+  },
   ICX8200: { //TODO: Need more information
     '24': [['24X10/100/1000Mbps'], ['4X1/10/25G']],
     '24P': [['24X10/100/1000Mbps'], ['4X1/10/25G']],
@@ -133,9 +150,11 @@ export const ICX_MODELS_MODULES = {
     '24FX': [['16X1/10G'], ['8X1/10/25G']],
     '24F': [['24X1G'], ['4X1/10/25G']],
     '48F': [['48X1G'], ['4X1/10/25G']],
-    'C08ZP': [['8X100/1000/2500Mbps/1/2.5/5/10G'], ['2X1/10/25G']]
+    'C08ZP': [['8X100/1000/2500Mbps/1/2.5/5/10G'], ['2X1/10/25G']],
     // 'C08PT': [['8X10/100/1000Mbps'], ['2X1G']],
     // 'C08PDC': [['8X10/100/1000Mbps'], ['2X1G']]
+    '24PV': [['24X10/100/1000Mbps'], ['4X1/10/25G']],
+    'C08PFV': [['8X10/100/1000Mbps'], ['2X1/10G']]
   }
 }
 
@@ -672,12 +691,14 @@ export const getDhcpOptionList = () => {
 }
 
 export const getClientIpAddr = (data?: SwitchClient) => {
-  if (data?.clientIpv4Addr !== '0.0.0.0') {
-    return data?.clientIpv4Addr
-  } else if (data?.clientIpv6Addr !== '0:0:0:0:0:0:0:0') {
-    return data?.clientIpv6Addr
+  const ipAddress: string[] = []
+  if (data?.clientIpv4Addr && !['', '0.0.0.0'].includes(data?.clientIpv4Addr)) {
+    ipAddress.push(data?.clientIpv4Addr)
   }
-  return noDataDisplay
+  if (data?.clientIpv6Addr && !['', '0:0:0:0:0:0:0:0'].includes(data?.clientIpv6Addr)) {
+    ipAddress.push(data?.clientIpv6Addr)
+  }
+  return ipAddress.length > 0 ? ipAddress.join(' / ') : noDataDisplay
 }
 
 export const getAdminPassword = (
@@ -700,4 +721,60 @@ export const getAdminPassword = (
       />
       : $t({ defaultMessage: 'Custom' })
     )
+}
+
+export const vlanPortsParser = (vlans: string, maxRangesToShow: number = 20) => {
+  const numbers = vlans.split(' ').map(Number).sort((a, b) => a - b)
+  let ranges = []
+
+  for (let i = 0; i < numbers.length; i++) {
+    let start = numbers[i]
+    while (numbers[i + 1] - numbers[i] === 1) {
+      i++
+    }
+    let end = numbers[i]
+    ranges.push(start === end ? `${start}` : `${start}-${end}`)
+  }
+
+  if (ranges.length > maxRangesToShow) {
+    const remainingCount = ranges.length - maxRangesToShow
+    ranges = ranges.slice(0, maxRangesToShow)
+    return `${ranges.join(', ')}, and ${remainingCount} more...`
+  }
+
+  return ranges.join(', ')
+}
+
+export const isFirmwareVersionAbove10 = (
+  firmwareVersion: string
+) => {
+  return firmwareVersion.slice(3,6) === '100'
+}
+
+export const isFirmwareSupportAdminPassword = (
+  firmwareVersion: string
+) => {
+  if (isFirmwareVersionAbove10(firmwareVersion)) {
+    return compareSwitchVersion(firmwareVersion, '10010c_cd1') > -1
+  }
+  return compareSwitchVersion(firmwareVersion, '09010j_cd1') > -1
+}
+
+export const convertInputToUppercase = (e: React.FormEvent<HTMLInputElement>) => {
+  (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.toUpperCase()
+}
+
+export const checkSwitchUpdateFields = function (
+  values: Switch, switchDetail?: SwitchViewModel, switchData?: Switch
+) {
+  const fields = Object.keys(values ?? {})
+  const currentValues = _.omitBy(values, (v) => v === undefined || v === '')
+  const originalValues = _.pick({ ...switchDetail, ...switchData }, fields) as Switch
+
+  return Object.keys(values ?? {}).reduce((result: string[], key) => {
+    if (!_.isEqual(originalValues[key as keyof Switch], currentValues[key as keyof Switch])) {
+      return [ ...result, key ]
+    }
+    return result
+  }, [])
 }

@@ -3,28 +3,30 @@ import { useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, PageHeader, Subtitle, GridRow, GridCol, SummaryCard } from '@acx-ui/components'
-import { Features, TierFeatures, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
+import { Button, GridCol, GridRow, PageHeader, Subtitle, SummaryCard } from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
 import {
+  BasePersonaTable,
+  CertTemplateLink,
   DpskPoolLink,
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
+  PersonaGroupDrawer,
   VenueLink,
-  useDpskNewConfigFlowParams,
-  PersonaGroupDrawer
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
 import {
-  useLazyGetVenueQuery,
-  useLazyGetDpskQuery,
   useGetPersonaGroupByIdQuery,
+  useLazyGetCertificateTemplateQuery,
+  useLazyGetDpskQuery,
   useLazyGetMacRegListQuery,
-  useLazyGetNetworkSegmentationGroupByIdQuery
+  useLazyGetEdgePinByIdQuery,
+  useLazyGetVenueQuery
 } from '@acx-ui/rc/services'
-import { PersonaGroup }   from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
-import { noDataDisplay }  from '@acx-ui/utils'
+import { PersonaGroup }             from '@acx-ui/rc/utils'
+import { hasCrossVenuesPermission } from '@acx-ui/user'
+import { noDataDisplay }            from '@acx-ui/utils'
 
-import { BasePersonaTable } from '../PersonaTable/BasePersonaTable'
 
 function PersonaGroupDetailsPageHeader (props: {
   title?: string,
@@ -33,11 +35,12 @@ function PersonaGroupDetailsPageHeader (props: {
   const { $t } = useIntl()
   const { title, onClick } = props
 
-  const extra = filterByAccess([
-    <Button type={'primary'} onClick={onClick}>
-      {$t({ defaultMessage: 'Configure' })}
-    </Button>
-  ])
+  const extra = hasCrossVenuesPermission({ needGlobalPermission: true })
+    && [
+      <Button type={'primary'} onClick={onClick} >
+        {$t({ defaultMessage: 'Configure' })}
+      </Button>
+    ]
 
   return (
     <PageHeader
@@ -62,28 +65,36 @@ function PersonaGroupDetailsPageHeader (props: {
 function PersonaGroupDetails () {
   const { $t } = useIntl()
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isCertTemplateEnable = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+
   const { personaGroupId, tenantId } = useParams()
   const [editVisible, setEditVisible] = useState(false)
   const [venueDisplay, setVenueDisplay] = useState<{ id?: string, name?: string }>()
   const [macPoolDisplay, setMacPoolDisplay] = useState<{ id?: string, name?: string }>()
   const [dpskPoolDisplay, setDpskPoolDisplay] = useState<{ id?: string, name?: string }>()
-  const [nsgDisplay, setNsgDisplay] = useState<{ id?: string, name?: string }>()
+  const [pinDisplay, setPinDisplay] = useState<{ id?: string, name?: string }>()
+  const [certTemplateDisplay, setCertTemplateDisplay] = useState<{ id?: string, name?: string }>()
 
   const [getVenue] = useLazyGetVenueQuery()
   const [getDpskPoolById] = useLazyGetDpskQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
-  const [getNsgById] = useLazyGetNetworkSegmentationGroupByIdQuery()
+  const [getPinById] = useLazyGetEdgePinByIdQuery()
+  const [getCertTemplateById] = useLazyGetCertificateTemplateQuery()
   const detailsQuery = useGetPersonaGroupByIdQuery({
     params: { groupId: personaGroupId }
   })
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
   useEffect(() => {
     if (detailsQuery.isLoading) return
 
-    const { macRegistrationPoolId, dpskPoolId, nsgId, propertyId }
-    = detailsQuery.data as PersonaGroup
+    const {
+      macRegistrationPoolId,
+      dpskPoolId,
+      personalIdentityNetworkId,
+      propertyId,
+      certificateTemplateId
+    } = detailsQuery.data as PersonaGroup
 
     if (macRegistrationPoolId) {
       getMacRegistrationById({ params: { policyId: macRegistrationPoolId } })
@@ -95,7 +106,7 @@ function PersonaGroupDetails () {
     }
 
     if (dpskPoolId) {
-      getDpskPoolById({ params: { serviceId: dpskPoolId, ...dpskNewConfigFlowParams } })
+      getDpskPoolById({ params: { serviceId: dpskPoolId } })
         .then(result => {
           if (result.data) {
             setDpskPoolDisplay({ id: dpskPoolId, name: result.data.name })
@@ -103,11 +114,11 @@ function PersonaGroupDetails () {
         })
     }
 
-    if (nsgId && networkSegmentationEnabled) {
+    if (personalIdentityNetworkId && networkSegmentationEnabled) {
       let name: string | undefined
-      getNsgById({ params: { tenantId, serviceId: nsgId } })
+      getPinById({ params: { tenantId, serviceId: personalIdentityNetworkId } })
         .then(result => name = result.data?.name)
-        .finally(() => setNsgDisplay({ id: nsgId, name }))
+        .finally(() => setPinDisplay({ id: personalIdentityNetworkId, name }))
     }
 
     if (propertyId) {
@@ -118,11 +129,21 @@ function PersonaGroupDetails () {
         .then(result => name = result.data?.name)
         .finally(() => setVenueDisplay({ id: venueId, name }))
     }
+
+    if (isCertTemplateEnable && certificateTemplateId) {
+      getCertTemplateById({ params: { policyId: certificateTemplateId } })
+        .then(result => {
+          setCertTemplateDisplay({
+            id: certificateTemplateId,
+            name: result?.data?.name
+          })
+        })
+    }
   }, [detailsQuery.data])
 
   const basicInfo = [
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       content:
       <VenueLink
         showNoData={true}
@@ -132,7 +153,7 @@ function PersonaGroupDetails () {
     },
     {
       title: $t({ defaultMessage: 'Identities' }),
-      content: detailsQuery.data?.personas?.length ?? 0
+      content: detailsQuery.data?.identities?.length ?? 0
     },
     {
       title: $t({ defaultMessage: 'DPSK Service' }),
@@ -157,8 +178,17 @@ function PersonaGroupDetails () {
       content:
         <NetworkSegmentationLink
           showNoData={true}
-          name={nsgDisplay?.name}
-          nsgId={detailsQuery.data?.nsgId}
+          name={pinDisplay?.name}
+          id={detailsQuery.data?.personalIdentityNetworkId}
+        />
+    }] : []),
+    ...(isCertTemplateEnable ? [{
+      title: $t({ defaultMessage: 'Certificate Template' }),
+      content:
+        <CertTemplateLink
+          showNoData={true}
+          name={certTemplateDisplay?.name}
+          id={detailsQuery.data?.certificateTemplateId}
         />
     }] : [])
   ]
@@ -181,7 +211,7 @@ function PersonaGroupDetails () {
           <div>
             <Subtitle level={4}>
               {/* eslint-disable-next-line max-len */}
-              {$t({ defaultMessage: 'Identities' })} ({detailsQuery.data?.personas?.length ?? noDataDisplay})
+              {$t({ defaultMessage: 'Identities' })} ({detailsQuery.data?.identities?.length ?? noDataDisplay})
             </Subtitle>
             <BasePersonaTable
               personaGroupId={personaGroupId}

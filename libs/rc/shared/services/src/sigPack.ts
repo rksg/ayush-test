@@ -1,35 +1,52 @@
 import {
   ApplicationPolicyMgmt,
+  ApplicationPolicyMgmtRbac,
+  CommonResult,
   downloadFile,
+  onActivityMessageReceived,
   onSocketActivityChanged,
-  SigPackUrlsInfo,
-  Transaction,
-  TxStatus
+  SigPackUrlsInfo
 } from '@acx-ui/rc/utils'
-import { baseSigPackApi }    from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseSigPackApi } from '@acx-ui/store'
+import { RequestPayload } from '@acx-ui/types'
+
+import { commonQueryFn } from './servicePolicy.utils'
 export const sigPackApi = baseSigPackApi.injectEndpoints({
   endpoints: (build) => ({
     getSigPack: build.query<ApplicationPolicyMgmt, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SigPackUrlsInfo.getSigPack, params)
-        return {
-          ...req
-        }
-      },
+      query: commonQueryFn(SigPackUrlsInfo.getSigPack, SigPackUrlsInfo.getSigPackRbac),
       providesTags: [{ type: 'SigPack', id: 'LIST' }],
+      // eslint-disable-next-line max-len
+      transformResponse: (response: ApplicationPolicyMgmt | ApplicationPolicyMgmtRbac, _meta, arg: RequestPayload) => {
+        if(arg.enableRbac) {
+          // eslint-disable-next-line max-len
+          const { version, updatedDate, releasedDate, ...rest } = response as ApplicationPolicyMgmtRbac
+          return {
+            ...rest,
+            currentVersion: version,
+            currentUpdatedDate: updatedDate,
+            currentReleasedDate: releasedDate
+          } as ApplicationPolicyMgmt
+        }
+        return response as ApplicationPolicyMgmt
+      },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          if (isTriggerSigPackFinished(msg)) {
+          onActivityMessageReceived(msg, [
+            'TriggerApplicationLibraryAction', 'PatchApplicationLibrarySettings'
+          ], () => {
             api.dispatch(sigPackApi.util.invalidateTags([{ type: 'SigPack', id: 'LIST' }]))
-          }
+          })
         })
       }
     }),
     exportAllSigPack: build.mutation<Blob, RequestPayload>({
-      query: () => {
-        const req = createHttpRequest(SigPackUrlsInfo.exportAllSigPack)
+      query: (queryArgs: RequestPayload) => {
+        const query = commonQueryFn(
+          SigPackUrlsInfo.exportAllSigPack,
+          SigPackUrlsInfo.exportAllSigPackRbac
+        )
+        const req = query(queryArgs)
         return {
           ...req,
           responseHandler: async (response) => {
@@ -38,60 +55,37 @@ export const sigPackApi = baseSigPackApi.injectEndpoints({
               ? headerContent.split('filename=')[1]
               : 'SIGPACK_All.csv'
             downloadFile(response, fileName)
-          },
-          headers: {
-            ...req.headers,
-            'Content-Type': 'text/csv',
-            'Accept': 'text/csv'
           }
         }
       }
     }),
     exportSigPack: build.mutation<Blob, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SigPackUrlsInfo.exportSigPack, params)
+      query: (queryArgs: RequestPayload) => {
+        const query = commonQueryFn(
+          SigPackUrlsInfo.exportSigPack,
+          SigPackUrlsInfo.exportSigPackRbac
+        )
+        const req = query(queryArgs)
         return {
           ...req,
           responseHandler: async (response) => {
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent
               ? headerContent.split('filename=')[1]
-              : ('SIGPACK_' + params?.type + '.csv')
+              : ('SIGPACK_' + queryArgs?.params?.type + '.csv')
             downloadFile(response, fileName)
-          },
-          headers: {
-            ...req.headers,
-            'Content-Type': 'text/csv',
-            'Accept': 'text/csv'
           }
         }
       }
     }),
-    updateSigPack: build.mutation<{ [key:string]: string }, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SigPackUrlsInfo.updateSigPack, params)
-        return {
-          ...req,
-          body: payload
-        }
-      }
+    updateSigPack: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(SigPackUrlsInfo.updateSigPack, SigPackUrlsInfo.updateSigPackRbac)
     })
   })
 })
 
-function isTriggerSigPackFinished (tx: Transaction): boolean {
-  const targetUseCase = 'TriggerApplicationLibraryAction'
-
-  if (tx.useCase !== targetUseCase) return false
-
-  const targetStep = tx.steps?.find(step => step.id === targetUseCase)
-
-  return targetStep ? targetStep.status !== TxStatus.IN_PROGRESS : false
-}
-
 export const {
   useGetSigPackQuery,
-  useLazyGetSigPackQuery,
   useExportAllSigPackMutation,
   useExportSigPackMutation,
   useUpdateSigPackMutation

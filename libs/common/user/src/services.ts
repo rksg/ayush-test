@@ -16,6 +16,33 @@ import {
   BetaStatus
 } from './types'
 
+const getUserUrls = (enableRbac?: boolean | unknown) => {
+  return enableRbac ? UserRbacUrlsInfo : UserUrlsInfo
+}
+
+interface VenueData {
+  id?: string
+}
+
+interface Venue {
+  data: VenueData[],
+  fields: string[],
+  page: number,
+  totalCount: number
+}
+
+export interface PrivilegeGroup {
+  id?: string,
+  name?: string,
+  type?: string,
+  description?: string,
+  roleName?: string,
+  scope?: string,
+  memberCount?: number,
+  allCustomers?: boolean,
+  allVenues?: boolean
+}
+
 export const UserUrlsInfo = {
   getCloudMessageBanner: {
     method: 'get',
@@ -60,40 +87,6 @@ export const UserUrlsInfo = {
     method: 'put',
     url: '/admins/admins-settings/ui/:productKey',
     oldUrl: '/api/tenant/:tenantId/admin-settings/ui/:productKey',
-    newApi: true
-  },
-  wifiAllowedOperations: {
-    method: 'get',
-    url: '/tenants/allowedOperations?service=wifi',
-    oldUrl: '/api/tenant/:tenantId/wifi/allowed-operations',
-    newApi: true
-  },
-  switchAllowedOperations: {
-    method: 'get',
-    url: '/tenants/allowedOperations?service=switch',
-    oldUrl: '/api/switch/tenant/:tenantId/allowed-operations',
-    newApi: true
-  },
-  tenantAllowedOperations: {
-    method: 'get',
-    url: '/tenants/allowed-operations',
-    oldUrl: '/api/tenant/:tenantId/allowed-operations',
-    newApi: true
-  },
-  venueAllowedOperations: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/venue/allowed-operations'
-  },
-  guestAllowedOperations: {
-    method: 'get',
-    url: '/tenants/allowedOperations?service=guest',
-    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/allowed-operations',
-    newApi: true
-  },
-  upgradeAllowedOperations: {
-    method: 'get',
-    url: '/tenants/allowedOperations?service=upgradeConfig',
-    oldUrl: '/api/upgrade/tenant/:tenantId/allowed-operations',
     newApi: true
   },
   getMfaTenantDetails: {
@@ -141,11 +134,69 @@ export const UserUrlsInfo = {
     method: 'put',
     url: '/tenants/betaStatus/:enable',
     newApi: true
+  },
+  getFeatureFlagStates: {
+    method: 'post',
+    url: '/featureFlagStates',
+    newApi: true
+  },
+  getVenuesList: {
+    method: 'post',
+    url: '/venues/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/venue',
+    newApi: true
+  }
+}
+
+export const UserRbacUrlsInfo = {
+  getAccountTier: {
+    method: 'get',
+    url: '/tenants/self/query?accountTier',
+    oldUrl: '/tenants/accountTier',
+    newApi: true
+  },
+  getAllUserSettings: {
+    method: 'get',
+    url: '/admins/settings/ui',
+    oldUrl: '/admins/admins-settings/ui',
+    newApi: true
+  },
+  saveUserSettings: {
+    method: 'PATCH',
+    url: '/admins/settings/ui/:productKey',
+    oldUrl: '/admins/admins-settings/ui/:productKey',
+    newApi: true
+  },
+  getBetaStatus: {
+    method: 'get',
+    url: '/tenants/self/query?betaStatus',
+    oldUrl: '/tenants/betaStatus',
+    newApi: true
+  },
+  toggleBetaStatus: {
+    method: 'PATCH',
+    url: '/tenants/self',
+    oldUrl: '/tenants/betaStatus/:enable',
+    newApi: true
+  },
+  getPrivilegeGroups: {
+    method: 'get',
+    url: '/roleAuthentications/privilegeGroups',
+    newApi: true
+  },
+  getMfaTenantDetails: {
+    method: 'get',
+    url: '/mfa',
+    newApi: true
+  },
+  toggleMFA: {
+    method: 'put',
+    url: '/mfa/setupTenant/:enable',
+    newApi: true
   }
 }
 
 export const {
-  useAllowedOperationsQuery,
   useGetAllUserSettingsQuery,
   useLazyGetAllUserSettingsQuery,
   useSaveUserSettingsMutation,
@@ -168,11 +219,17 @@ export const {
   useMfaResendOTPMutation,
   useDisableMFAMethodMutation,
   useGetBetaStatusQuery,
-  useToggleBetaStatusMutation
+  useToggleBetaStatusMutation,
+  useFeatureFlagStatesQuery,
+  useGetPrivilegeGroupsQuery,
+  useGetVenuesListQuery
 } = userApi.injectEndpoints({
   endpoints: (build) => ({
     getAllUserSettings: build.query<UserSettingsUIModel, RequestPayload>({
-      query: ({ params }) => createHttpRequest(UserUrlsInfo.getAllUserSettings, params),
+      query: ({ params, enableRbac }) =>
+        createHttpRequest(enableRbac
+          ? UserRbacUrlsInfo.getAllUserSettings
+          : UserUrlsInfo.getAllUserSettings, params),
       transformResponse (userSettings: UserSettings) {
         let result:UserSettingsUIModel = {}
         Object.keys(userSettings).forEach((key: string) => {
@@ -182,14 +239,17 @@ export const {
       }
     }),
     saveUserSettings: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => ({
-        ...createHttpRequest(UserUrlsInfo.saveUserSettings, params),
+      query: ({ params, payload, enableRbac }) => ({
+        ...createHttpRequest(enableRbac
+          ? UserRbacUrlsInfo.saveUserSettings
+          : UserUrlsInfo.saveUserSettings, params),
         body: payload
       })
     }),
     getAccountTier: build.query<TenantAccountTierValue, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(UserUrlsInfo.getAccountTier, params)
+      query: ({ params, enableRbac }) => {
+        const userUrlsInfo = getUserUrls(enableRbac)
+        const req = createHttpRequest(userUrlsInfo.getAccountTier, params)
         return {
           ...req
         }
@@ -226,23 +286,14 @@ export const {
     getPlmMessageBanner: build.query<PlmMessageBanner, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getCloudMessageBanner, params)
     }),
-    allowedOperations: build.query<string[], string>({
-      async queryFn (tenantId, _api, _extraOptions, query) {
-        const params = { tenantId }
-        const responses = await Promise.all([
-          createHttpRequest(UserUrlsInfo.wifiAllowedOperations, params),
-          createHttpRequest(UserUrlsInfo.switchAllowedOperations, params),
-          createHttpRequest(UserUrlsInfo.tenantAllowedOperations, params),
-          createHttpRequest(UserUrlsInfo.venueAllowedOperations, params),
-          createHttpRequest(UserUrlsInfo.guestAllowedOperations, params),
-          createHttpRequest(UserUrlsInfo.upgradeAllowedOperations, params)
-        ].map(query))
-
-        return { data: responses.flatMap(response => (response.data as string[])) }
-      }
-    }),
     getMfaTenantDetails: build.query<MfaDetailStatus, RequestPayload>({
-      query: ({ params }) => createHttpRequest(UserUrlsInfo.getMfaTenantDetails, params ),
+      query: ({ params, enableRbac }) => {
+        const userUrlsInfo = getUserUrls(enableRbac)
+        const req = createHttpRequest(userUrlsInfo.getMfaTenantDetails, params)
+        return {
+          ...req
+        }
+      },
       transformResponse (mfaDetail: MfaDetailStatus) {
         mfaDetail.enabled = mfaDetail.tenantStatus === 'ENABLED'
         return mfaDetail
@@ -258,7 +309,13 @@ export const {
       providesTags: [{ type: 'Mfa', id: 'DETAIL' }]
     }),
     toggleMFA: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => createHttpRequest(UserUrlsInfo.toggleMFA, params),
+      query: ({ params, enableRbac }) => {
+        const userUrlsInfo = getUserUrls(enableRbac)
+        const req = createHttpRequest(userUrlsInfo.toggleMFA, params)
+        return {
+          ...req
+        }
+      },
       invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
     }),
     // getMfaMasterCode: build.query<UserProfile, RequestPayload>({
@@ -300,14 +357,56 @@ export const {
       invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
     }),
     getBetaStatus: build.query<BetaStatus, RequestPayload>({
-      query: ({ params }) => createHttpRequest(UserUrlsInfo.getBetaStatus, params),
+      query: ({ params, enableRbac }) => {
+        const userUrlsInfo = getUserUrls(enableRbac)
+        const req = createHttpRequest(userUrlsInfo.getBetaStatus, params)
+        return {
+          ...req
+        }
+      },
       transformResponse: (betaStatus: { startDate: string, enabled: string }) =>
         ({ startDate: betaStatus?.startDate, enabled: betaStatus?.enabled }),
       providesTags: [{ type: 'Beta', id: 'DETAIL' }]
     }),
     toggleBetaStatus: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => createHttpRequest(UserUrlsInfo.toggleBetaStatus, params),
+      query: ({ params, payload, enableRbac }) => {
+        const userUrlsInfo = getUserUrls(enableRbac)
+        const req = createHttpRequest(userUrlsInfo.toggleBetaStatus, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
       invalidatesTags: [{ type: 'Beta', id: 'DETAIL' }]
+    }),
+    featureFlagStates: build.query<{ [key: string]: boolean }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(UserUrlsInfo.getFeatureFlagStates, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getPrivilegeGroups: build.query<PrivilegeGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(UserRbacUrlsInfo.getPrivilegeGroups, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getVenuesList: build.query<Venue, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req =
+          createHttpRequest(UserUrlsInfo.getVenuesList, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Venue', id: 'LIST' }]
     })
   })
 })

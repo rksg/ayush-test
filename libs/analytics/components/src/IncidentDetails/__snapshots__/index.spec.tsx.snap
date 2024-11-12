@@ -2,11 +2,377 @@
 
 exports[`incident details should render incident details correctly 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  .c10 > span {
+  -webkit-text-decoration: dotted underline;
+  text-decoration: dotted underline;
+}
+
+.c10 > span:after {
+  content: '';
+  display: block;
+}
+
+.c3 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c3 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c3 svg:before {
+  content: 'a';
+}
+
+.c3 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c3.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c3.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c3.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c3.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c3[disabled] svg path,
+.c3.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c3[disabled].ant-btn-link svg path,
+.c3.ant-btn-disabled.ant-btn-link svg path,
+.c3[disabled].ant-btn-default svg path,
+.c3.ant-btn-disabled.ant-btn-default svg path,
+.c3[disabled].ant-btn-primary svg path,
+.c3.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+.c11 {
+  height: 100%;
+  width: 100%;
+}
+
+.c11 .ant-card {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  border-radius: 8px;
+  padding: 12px 16px;
+  background-color: var(--acx-neutrals-10);
+}
+
+.c11 .ant-card-head {
+  display: none;
+  padding: 0;
+  border-bottom: none;
+  min-height: 0;
+  margin-bottom: 10px;
+}
+
+.c11 .ant-card-head-title {
+  padding: 0;
+}
+
+.c11 .ant-card-head-title .ant-space .ant-space-item:last-child {
+  line-height: 0;
+}
+
+.c11 .ant-card-head-wrapper {
+  -webkit-align-items: start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: start;
+}
+
+.c11 .ant-card-extra {
+  padding: 0;
+}
+
+.c11 .ant-card-body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  padding: 0;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c12 {
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-headline-4-line-height);
+  color: var(--acx-primary-black);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+}
+
+.c4 {
+  cursor: pointer;
+}
+
+.c4.c4.c4.ant-btn:not(.ant-btn-icon-only):not(.ant-btn-link):has(svg) {
+  padding-left: 11px;
+  padding-right: 7px;
+}
+
+.c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c5 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c6 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+.c1 {
+  position: -webkit-sticky;
+  position: sticky;
+  top: calc( var(--acx-header-height) + var(--acx-content-vertical-space) + (var(--acx-cloudmessagebanner-height) * var(--acx-has-cloudmessagebanner)) );
+  z-index: 7;
+  background-color: var(--acx-primary-white);
+  padding: 0 var(--acx-content-horizontal-space);
+  margin: 0 calc(var(--acx-content-horizontal-space) * -1);
+}
+
+.c1 .ant-page-header {
+  padding: 0;
+  margin: 4px 0 var(--acx-content-vertical-space);
+}
+
+.c1 .ant-page-header-heading {
+  gap: 12px;
+}
+
+.c1 .ant-page-header-heading h1 {
+  margin-bottom: 0;
+}
+
+.c1 .ant-page-header-heading-left {
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  margin: 0;
+}
+
+.c1 .ant-page-header-heading-extra {
+  margin: 0;
+}
+
+.c1 .ant-page-header-heading-extra > .ant-space {
+  gap: 12px !important;
+}
+
+.c1 .ant-page-header-heading-title {
+  width: 100%;
+  -webkit-align-self: flex-start;
+  -ms-flex-item-align: start;
+  align-self: flex-start;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c1 .ant-page-header-content {
+  padding: 6px 0 0;
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c1 .ant-page-header-content .ant-divider-vertical {
+  background-color: var(--acx-primary-black);
+  margin: 0 0.5em;
+  height: 0.9em;
+}
+
+.c1 .ant-page-header .ant-breadcrumb {
+  line-height: 16px;
+}
+
+.c1 .ant-page-header .ant-breadcrumb a:hover {
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+.c1 .ant-page-header .ant-breadcrumb + .ant-page-header-heading {
+  margin-top: 3px;
+}
+
+.c1 .ant-page-header.has-footer {
+  margin-bottom: 0;
+}
+
+.c1 .ant-page-header.has-footer .ant-page-header-content {
+  padding-bottom: 2px;
+}
+
+.c1 .ant-page-header.has-footer .ant-page-header-footer {
+  margin-top: 8px;
+}
+
+.c2 {
+  display: inline-block;
+  border-radius: 10px;
+  padding: 3px 8px;
+  background-color: var(--acx-semantics-yellow-50);
+  line-height: var(--acx-subtitle-6-line-height);
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-6-font-size);
+  color: var(--acx-primary-white);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+}
+
+.c9 {
+  cursor: pointer;
+  color: var(--acx-accents-blue-50);
+}
+
+.c9:hover {
+  color: var(--acx-accents-blue-60);
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+.c9:after {
+  content: '';
+  display: block;
+}
+
+.c8 .ant-descriptions-row > th {
+  padding-bottom: 0;
+}
+
+.c8 .ant-descriptions-item .ant-descriptions-item-label,
+.c8 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c8 .ant-descriptions-item .ant-descriptions-item-label {
+  color: var(--acx-neutrals-60);
+}
+
+.c8 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c8 .ant-descriptions-item .ant-descriptions-item-content {
+  color: var(--acx-primary-black);
+}
+
+.c8 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
+  top: -1px;
+}
+
+.c7 {
+  position: fixed;
+}
+
+.c14 {
+  width: 24px;
+  height: 24px;
+  margin-top: 2px;
+}
+
+.c15 {
+  margin-block-end: 1em;
+}
+
+.c13 ol,
+.c13 ul {
+  padding-inline-start: 1em;
+}
+
+.c13 li {
+  margin-block-end: 1em;
+}
+
+.c13 li:last-of-type {
+  margin-block-end: 0;
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
   >
     <div
-      class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
+      class="c1"
     >
       <div
         class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -101,7 +467,7 @@ exports[`incident details should render incident details correctly 1`] = `
                 </span>
               </h1>
               <span
-                class="styledComponents__Pill-sc-j61ge1-0 gSUyP"
+                class="c2"
                 type="P3"
               >
                 P3
@@ -118,7 +484,7 @@ exports[`incident details should render incident details correctly 1`] = `
                 class="ant-space-item"
               >
                 <button
-                  class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                  class="ant-btn ant-btn-default ant-btn-icon-only c3 ant-dropdown-trigger c4"
                   type="button"
                 >
                   <svg
@@ -158,25 +524,25 @@ exports[`incident details should render incident details correctly 1`] = `
       </div>
     </div>
     <div
-      class="ant-row Grid__GridRow-sc-5irhjd-2"
+      class="ant-row "
       style="margin: -10px -10px -10px -10px;"
     >
       <div
-        class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        class="ant-col ant-col-4 c5"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          class="c6"
         >
           <div
-            class="styledComponents__FixedAutoSizer-sc-1l4qm8r-2 bRNlMr"
+            class="c7"
             style="overflow: visible; height: 0px; width: 0px;"
           >
             <div
               style="width: 1280px;"
             >
               <div
-                class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
+                class="ant-descriptions c8"
               >
                 <div
                   class="ant-descriptions-view"
@@ -215,7 +581,7 @@ exports[`incident details should render incident details correctly 1`] = `
                               class="ant-descriptions-item-content"
                             >
                               <span
-                                class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                                class="c9"
                               >
                                 5 of 27 clients (18.52%)
                               </span>
@@ -255,7 +621,7 @@ exports[`incident details should render incident details correctly 1`] = `
                               class="ant-descriptions-item-content"
                             >
                               <span
-                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                                class=""
                               >
                                 Connection
                               </span>
@@ -295,7 +661,7 @@ exports[`incident details should render incident details correctly 1`] = `
                               class="ant-descriptions-item-content"
                             >
                               <span
-                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                                class=""
                               >
                                 EAP
                               </span>
@@ -335,7 +701,7 @@ exports[`incident details should render incident details correctly 1`] = `
                               class="ant-descriptions-item-content"
                             >
                               <span
-                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                                class=""
                               >
                                 Access Point
                               </span>
@@ -375,9 +741,13 @@ exports[`incident details should render incident details correctly 1`] = `
                               class="ant-descriptions-item-content"
                             >
                               <span
-                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                                class="c10"
                               >
-                                RuckusAP (70:CA:97:01:A0:C0)
+                                <span
+                                  class=""
+                                >
+                                  RuckusAP (70:CA:97:01:A0:C0)
+                                </span>
                               </span>
                             </span>
                           </div>
@@ -415,7 +785,7 @@ exports[`incident details should render incident details correctly 1`] = `
                               class="ant-descriptions-item-content"
                             >
                               <span
-                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                                class=""
                               >
                                 21 h 27 m
                               </span>
@@ -455,7 +825,7 @@ exports[`incident details should render incident details correctly 1`] = `
                               class="ant-descriptions-item-content"
                             >
                               <span
-                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                                class=""
                               >
                                 07/19/2022 05:15
                               </span>
@@ -495,7 +865,7 @@ exports[`incident details should render incident details correctly 1`] = `
                               class="ant-descriptions-item-content"
                             >
                               <span
-                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                                class=""
                               >
                                 07/20/2022 02:42
                               </span>
@@ -526,14 +896,14 @@ exports[`incident details should render incident details correctly 1`] = `
         </div>
       </div>
       <div
-        class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        class="ant-col ant-col-20 c5"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          class="c6"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 cxtoBn"
+            class="c11"
             type="solid-bg"
           >
             <div
@@ -555,7 +925,7 @@ exports[`incident details should render incident details correctly 1`] = `
                         class="ant-space-item"
                       >
                         <div
-                          class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                          class="c12"
                         />
                       </div>
                     </div>
@@ -573,7 +943,7 @@ exports[`incident details should render incident details correctly 1`] = `
                 class="ant-card-body"
               >
                 <section
-                  class="styledComponents__Wrapper-sc-1t8f1ur-3 lewDjh"
+                  class="c13"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-start"
@@ -583,7 +953,7 @@ exports[`incident details should render incident details correctly 1`] = `
                       style="margin-right: 6px;"
                     >
                       <svg
-                        class="styledComponents__BulbOutlinedIcon-sc-1t8f1ur-0 euNaoT"
+                        class="c14"
                         data-testid="BulbOutlined"
                       />
                     </div>
@@ -591,25 +961,25 @@ exports[`incident details should render incident details correctly 1`] = `
                       class="ant-space-item"
                     >
                       <h2
-                        class="ant-typography styledComponents__Title-sc-1t8f1ur-1"
+                        class="ant-typography "
                       >
                         Insights
                       </h2>
                     </div>
                   </div>
                   <div
-                    class="ant-row Grid__GridRow-sc-5irhjd-2"
+                    class="ant-row "
                     style="margin: -10px -10px -10px -10px;"
                   >
                     <div
-                      class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      class="ant-col ant-col-12 c5"
                       style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="Grid__Container-sc-5irhjd-1 dRhDDA"
+                        class="c6"
                       >
                         <div
-                          class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-1t8f1ur-2 hYNJuf ckWEAh"
+                          class="c12 c15"
                         >
                           Root Cause Analysis
                         </div>
@@ -619,14 +989,14 @@ exports[`incident details should render incident details correctly 1`] = `
                       </div>
                     </div>
                     <div
-                      class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      class="ant-col ant-col-12 c5"
                       style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="Grid__Container-sc-5irhjd-1 dRhDDA"
+                        class="c6"
                       >
                         <div
-                          class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-1t8f1ur-2 hYNJuf ckWEAh"
+                          class="c12 c15"
                         >
                           Recommended Action
                         </div>
@@ -643,11 +1013,11 @@ exports[`incident details should render incident details correctly 1`] = `
         </div>
       </div>
       <div
-        class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        class="ant-col ant-col-20 ant-col-offset-4 c5"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          class="c6"
           style="min-height: 228px;"
         >
           <div
@@ -656,11 +1026,11 @@ exports[`incident details should render incident details correctly 1`] = `
         </div>
       </div>
       <div
-        class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        class="ant-col ant-col-20 ant-col-offset-4 c5"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          class="c6"
           style="min-height: 250px;"
         >
           <div
@@ -675,11 +1045,377 @@ exports[`incident details should render incident details correctly 1`] = `
 
 exports[`incident details should render incident details correctly when there is impacted range 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  .c10 > span {
+  -webkit-text-decoration: dotted underline;
+  text-decoration: dotted underline;
+}
+
+.c10 > span:after {
+  content: '';
+  display: block;
+}
+
+.c3 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c3 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c3 svg:before {
+  content: 'a';
+}
+
+.c3 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c3.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c3.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c3.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c3.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c3[disabled] svg path,
+.c3.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c3[disabled].ant-btn-link svg path,
+.c3.ant-btn-disabled.ant-btn-link svg path,
+.c3[disabled].ant-btn-default svg path,
+.c3.ant-btn-disabled.ant-btn-default svg path,
+.c3[disabled].ant-btn-primary svg path,
+.c3.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+.c11 {
+  height: 100%;
+  width: 100%;
+}
+
+.c11 .ant-card {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  border-radius: 8px;
+  padding: 12px 16px;
+  background-color: var(--acx-neutrals-10);
+}
+
+.c11 .ant-card-head {
+  display: none;
+  padding: 0;
+  border-bottom: none;
+  min-height: 0;
+  margin-bottom: 10px;
+}
+
+.c11 .ant-card-head-title {
+  padding: 0;
+}
+
+.c11 .ant-card-head-title .ant-space .ant-space-item:last-child {
+  line-height: 0;
+}
+
+.c11 .ant-card-head-wrapper {
+  -webkit-align-items: start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: start;
+}
+
+.c11 .ant-card-extra {
+  padding: 0;
+}
+
+.c11 .ant-card-body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  padding: 0;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c12 {
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-headline-4-line-height);
+  color: var(--acx-primary-black);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+}
+
+.c4 {
+  cursor: pointer;
+}
+
+.c4.c4.c4.ant-btn:not(.ant-btn-icon-only):not(.ant-btn-link):has(svg) {
+  padding-left: 11px;
+  padding-right: 7px;
+}
+
+.c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c5 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c6 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+.c1 {
+  position: -webkit-sticky;
+  position: sticky;
+  top: calc( var(--acx-header-height) + var(--acx-content-vertical-space) + (var(--acx-cloudmessagebanner-height) * var(--acx-has-cloudmessagebanner)) );
+  z-index: 7;
+  background-color: var(--acx-primary-white);
+  padding: 0 var(--acx-content-horizontal-space);
+  margin: 0 calc(var(--acx-content-horizontal-space) * -1);
+}
+
+.c1 .ant-page-header {
+  padding: 0;
+  margin: 4px 0 var(--acx-content-vertical-space);
+}
+
+.c1 .ant-page-header-heading {
+  gap: 12px;
+}
+
+.c1 .ant-page-header-heading h1 {
+  margin-bottom: 0;
+}
+
+.c1 .ant-page-header-heading-left {
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  margin: 0;
+}
+
+.c1 .ant-page-header-heading-extra {
+  margin: 0;
+}
+
+.c1 .ant-page-header-heading-extra > .ant-space {
+  gap: 12px !important;
+}
+
+.c1 .ant-page-header-heading-title {
+  width: 100%;
+  -webkit-align-self: flex-start;
+  -ms-flex-item-align: start;
+  align-self: flex-start;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c1 .ant-page-header-content {
+  padding: 6px 0 0;
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c1 .ant-page-header-content .ant-divider-vertical {
+  background-color: var(--acx-primary-black);
+  margin: 0 0.5em;
+  height: 0.9em;
+}
+
+.c1 .ant-page-header .ant-breadcrumb {
+  line-height: 16px;
+}
+
+.c1 .ant-page-header .ant-breadcrumb a:hover {
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+.c1 .ant-page-header .ant-breadcrumb + .ant-page-header-heading {
+  margin-top: 3px;
+}
+
+.c1 .ant-page-header.has-footer {
+  margin-bottom: 0;
+}
+
+.c1 .ant-page-header.has-footer .ant-page-header-content {
+  padding-bottom: 2px;
+}
+
+.c1 .ant-page-header.has-footer .ant-page-header-footer {
+  margin-top: 8px;
+}
+
+.c2 {
+  display: inline-block;
+  border-radius: 10px;
+  padding: 3px 8px;
+  background-color: var(--acx-semantics-yellow-50);
+  line-height: var(--acx-subtitle-6-line-height);
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-6-font-size);
+  color: var(--acx-primary-white);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+}
+
+.c9 {
+  cursor: pointer;
+  color: var(--acx-accents-blue-50);
+}
+
+.c9:hover {
+  color: var(--acx-accents-blue-60);
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+.c9:after {
+  content: '';
+  display: block;
+}
+
+.c8 .ant-descriptions-row > th {
+  padding-bottom: 0;
+}
+
+.c8 .ant-descriptions-item .ant-descriptions-item-label,
+.c8 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c8 .ant-descriptions-item .ant-descriptions-item-label {
+  color: var(--acx-neutrals-60);
+}
+
+.c8 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c8 .ant-descriptions-item .ant-descriptions-item-content {
+  color: var(--acx-primary-black);
+}
+
+.c8 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
+  top: -1px;
+}
+
+.c7 {
+  position: fixed;
+}
+
+.c14 {
+  width: 24px;
+  height: 24px;
+  margin-top: 2px;
+}
+
+.c15 {
+  margin-block-end: 1em;
+}
+
+.c13 ol,
+.c13 ul {
+  padding-inline-start: 1em;
+}
+
+.c13 li {
+  margin-block-end: 1em;
+}
+
+.c13 li:last-of-type {
+  margin-block-end: 0;
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
   >
     <div
-      class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
+      class="c1"
     >
       <div
         class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -774,7 +1510,7 @@ exports[`incident details should render incident details correctly when there is
                 </span>
               </h1>
               <span
-                class="styledComponents__Pill-sc-j61ge1-0 gSUyP"
+                class="c2"
                 type="P3"
               >
                 P3
@@ -791,7 +1527,7 @@ exports[`incident details should render incident details correctly when there is
                 class="ant-space-item"
               >
                 <button
-                  class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                  class="ant-btn ant-btn-default ant-btn-icon-only c3 ant-dropdown-trigger c4"
                   type="button"
                 >
                   <svg
@@ -806,10 +1542,10 @@ exports[`incident details should render incident details correctly when there is
           class="ant-page-header-content"
         >
           <span
-            aria-label="Airtime Utilization is unusually high in 2.4 GHz in Access Point: RuckusAP (70:CA:97:01:A0:C0)"
+            aria-label="Airtime Busy is unusually high in 2.4 GHz in Access Point: RuckusAP (70:CA:97:01:A0:C0)"
             class="ant-typography ant-typography-ellipsis ant-typography-single-line"
           >
-            Airtime Utilization is unusually high in 2.4 GHz in Access Point: RuckusAP (70:CA:97:01:A0:C0)
+            Airtime Busy is unusually high in 2.4 GHz in Access Point: RuckusAP (70:CA:97:01:A0:C0)
             <span
               aria-hidden="true"
               style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
@@ -831,25 +1567,25 @@ exports[`incident details should render incident details correctly when there is
       </div>
     </div>
     <div
-      class="ant-row Grid__GridRow-sc-5irhjd-2"
+      class="ant-row "
       style="margin: -10px -10px -10px -10px;"
     >
       <div
-        class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        class="ant-col ant-col-4 c5"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          class="c6"
         >
           <div
-            class="styledComponents__FixedAutoSizer-sc-1l4qm8r-2 bRNlMr"
+            class="c7"
             style="overflow: visible; height: 0px; width: 0px;"
           >
             <div
               style="width: 1280px;"
             >
               <div
-                class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
+                class="ant-descriptions c8"
               >
                 <div
                   class="ant-descriptions-view"
@@ -888,7 +1624,7 @@ exports[`incident details should render incident details correctly when there is
                               class="ant-descriptions-item-content"
                             >
                               <span
-                                class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                                class="c9"
                               >
                                 5 of 27 clients (18.52%)
                               </span>
@@ -928,7 +1664,7 @@ exports[`incident details should render incident details correctly when there is
                               class="ant-descriptions-item-content"
                             >
                               <span
-                                class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                                class=""
                               >
                                 --
                               </span>
@@ -968,7 +1704,7 @@ exports[`incident details should render incident details correctly when there is
                               class="ant-descriptions-item-content"
                             >
                               <span
-                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                                class=""
                               >
                                 Performance
                               </span>
@@ -1008,7 +1744,7 @@ exports[`incident details should render incident details correctly when there is
                               class="ant-descriptions-item-content"
                             >
                               <span
-                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                                class=""
                               >
                                 Airtime
                               </span>
@@ -1048,7 +1784,7 @@ exports[`incident details should render incident details correctly when there is
                               class="ant-descriptions-item-content"
                             >
                               <span
-                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                                class=""
                               >
                                 Access Point
                               </span>
@@ -1088,9 +1824,13 @@ exports[`incident details should render incident details correctly when there is
                               class="ant-descriptions-item-content"
                             >
                               <span
-                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                                class="c10"
                               >
-                                RuckusAP (70:CA:97:01:A0:C0)
+                                <span
+                                  class=""
+                                >
+                                  RuckusAP (70:CA:97:01:A0:C0)
+                                </span>
                               </span>
                             </span>
                           </div>
@@ -1128,7 +1868,7 @@ exports[`incident details should render incident details correctly when there is
                               class="ant-descriptions-item-content"
                             >
                               <span
-                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                                class=""
                               >
                                 21 h 27 m
                               </span>
@@ -1168,7 +1908,7 @@ exports[`incident details should render incident details correctly when there is
                               class="ant-descriptions-item-content"
                             >
                               <span
-                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                                class=""
                               >
                                 07/19/2022 05:15
                               </span>
@@ -1189,7 +1929,7 @@ exports[`incident details should render incident details correctly when there is
                             <span
                               class="ant-descriptions-item-label"
                             >
-                              Event End Time
+                              Data Start Time
                             </span>
                           </div>
                         </th>
@@ -1208,7 +1948,47 @@ exports[`incident details should render incident details correctly when there is
                               class="ant-descriptions-item-content"
                             >
                               <span
-                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                                class=""
+                              >
+                                07/19/2022 02:42
+                              </span>
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <th
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Data End Time
+                            </span>
+                          </div>
+                        </th>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              <span
+                                class=""
                               >
                                 07/20/2022 02:42
                               </span>
@@ -1239,14 +2019,14 @@ exports[`incident details should render incident details correctly when there is
         </div>
       </div>
       <div
-        class="ant-col ant-col-20 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        class="ant-col ant-col-20 c5"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          class="c6"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 cxtoBn"
+            class="c11"
             type="solid-bg"
           >
             <div
@@ -1268,7 +2048,7 @@ exports[`incident details should render incident details correctly when there is
                         class="ant-space-item"
                       >
                         <div
-                          class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                          class="c12"
                         />
                       </div>
                     </div>
@@ -1286,7 +2066,7 @@ exports[`incident details should render incident details correctly when there is
                 class="ant-card-body"
               >
                 <section
-                  class="styledComponents__Wrapper-sc-1t8f1ur-3 lewDjh"
+                  class="c13"
                 >
                   <div
                     class="ant-space ant-space-horizontal ant-space-align-start"
@@ -1296,7 +2076,7 @@ exports[`incident details should render incident details correctly when there is
                       style="margin-right: 6px;"
                     >
                       <svg
-                        class="styledComponents__BulbOutlinedIcon-sc-1t8f1ur-0 euNaoT"
+                        class="c14"
                         data-testid="BulbOutlined"
                       />
                     </div>
@@ -1304,48 +2084,59 @@ exports[`incident details should render incident details correctly when there is
                       class="ant-space-item"
                     >
                       <h2
-                        class="ant-typography styledComponents__Title-sc-1t8f1ur-1"
+                        class="ant-typography "
                       >
                         Insights
                       </h2>
                     </div>
                   </div>
                   <div
-                    class="ant-row Grid__GridRow-sc-5irhjd-2"
+                    class="ant-row "
                     style="margin: -10px -10px -10px -10px;"
                   >
                     <div
-                      class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      class="ant-col ant-col-12 c5"
                       style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="Grid__Container-sc-5irhjd-1 dRhDDA"
+                        class="c6"
                       >
                         <div
-                          class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-1t8f1ur-2 hYNJuf ckWEAh"
+                          class="c12 c15"
                         >
                           Root Cause Analysis
                         </div>
                         <p>
-                          The connection was not completed because the client has left, or is leaving, the network.
+                          Airtime Busy is unusually high and this is typically caused by external sources of interference, such as neighboring WiFi networks, microwave ovens, Bluetooth devices, and other electronic devices operating in the same frequency range, can cause disruptions to your network.
                         </p>
                       </div>
                     </div>
                     <div
-                      class="ant-col ant-col-12 Grid__ColInner-sc-5irhjd-0 XtIJT"
+                      class="ant-col ant-col-12 c5"
                       style="padding: 10px 10px 10px 10px;"
                     >
                       <div
-                        class="Grid__Container-sc-5irhjd-1 dRhDDA"
+                        class="c6"
                       >
                         <div
-                          class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-1t8f1ur-2 hYNJuf ckWEAh"
+                          class="c12 c15"
                         >
                           Recommended Action
                         </div>
                         <p>
-                          This problem should be a transient issue in a network if many clients leave at the same time; but, it is usually associated with disconnect events, and should not impact connection attempts. If it does, this may be a data issue that can be reported to RUCKUS Support if it persists in your network.
+                          Identifying the sources of external interference is the key to resolving this issue:
                         </p>
+                         
+                        <ol>
+                           
+                          <li>
+                            Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises.
+                          </li>
+                          <li>
+                            Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.
+                          </li>
+                           
+                        </ol>
                       </div>
                     </div>
                   </div>
@@ -1356,11 +2147,11 @@ exports[`incident details should render incident details correctly when there is
         </div>
       </div>
       <div
-        class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        class="ant-col ant-col-20 ant-col-offset-4 c5"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          class="c6"
           style="min-height: 228px;"
         >
           <div
@@ -1369,11 +2160,11 @@ exports[`incident details should render incident details correctly when there is
         </div>
       </div>
       <div
-        class="ant-col ant-col-20 ant-col-offset-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        class="ant-col ant-col-20 ant-col-offset-4 c5"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          class="c6"
           style="min-height: 250px;"
         >
           <div

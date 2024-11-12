@@ -1,0 +1,95 @@
+import { Form }      from 'antd'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
+
+import { Drawer }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { ApSelector, ApMdnsProxySelector } from '@acx-ui/rc/components'
+import { useAddMdnsProxyApsMutation }      from '@acx-ui/rc/services'
+
+
+export interface AddMdnsProxyInstanceDrawerProps {
+  visible: boolean
+  setVisible: (v: boolean) => void
+  venueId?: string
+}
+
+interface AddMdnsProxyInstanceForm {
+  serviceId: string
+  apSerialNumber: string
+}
+
+export default function AddMdnsProxyInstanceDrawer (props: AddMdnsProxyInstanceDrawerProps) {
+  const { $t } = useIntl()
+  const params = useParams()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { visible, setVisible, venueId } = props
+  const [ form ] = Form.useForm<AddMdnsProxyInstanceForm>()
+  const [ addMdnsProxyAps ] = useAddMdnsProxyApsMutation()
+
+  const onSave = async (data: AddMdnsProxyInstanceForm) => {
+    try {
+      await addMdnsProxyAps({
+        params: { ...params, serviceId: data.serviceId },
+        payload: [data.apSerialNumber],
+        enableRbac
+      }).unwrap()
+
+      onClose()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+
+  const onClose = () => {
+    setVisible(false)
+  }
+
+  return (
+    <Drawer
+      title={$t({ defaultMessage: 'Add Instance' })}
+      visible={visible}
+      onClose={onClose}
+      destroyOnClose={true}
+      children={
+        <Form<AddMdnsProxyInstanceForm>
+          layout='vertical'
+          form={form}
+          preserve={false}
+        >
+          <ApSelector
+            formItemProps={{
+              name: 'apSerialNumber',
+              rules: [{ required: true }]
+            }}
+            venueId={venueId}
+          />
+          <ApMdnsProxySelector
+            formItemProps={{
+              name: 'serviceId',
+              rules: [{ required: true }]
+            }}
+          />
+        </Form>
+      }
+      footer={
+        <Drawer.FormFooter
+          showAddAnother={false}
+          buttonLabel={({
+            save: $t({ defaultMessage: 'Add' })
+          })}
+          onCancel={onClose}
+          onSave={async () => {
+            try {
+              await form.validateFields()
+              await onSave(form.getFieldsValue())
+            } catch (error) {
+              if (error instanceof Error) throw error
+            }
+          }}
+        />
+      }
+      width={'450px'}
+    />
+  )
+}

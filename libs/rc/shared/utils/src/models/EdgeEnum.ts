@@ -1,7 +1,8 @@
 export enum EdgePortTypeEnum {
   UNCONFIGURED = 'UNCONFIGURED',
   WAN = 'WAN',
-  LAN = 'LAN'
+  LAN = 'LAN',
+  CLUSTER = 'CLUSTER'
 }
 
 export enum EdgeIpModeEnum {
@@ -47,8 +48,11 @@ export enum EdgeStatusSeverityEnum {
 export enum EdgeServiceTypeEnum {
   DHCP = 'DHCP',
   FIREWALL = 'FIREWALL',
-  NETWORK_SEGMENTATION = 'NETWORK_SEGMENTATION',
-  SD_LAN = 'SDLAN'
+  PIN = 'PIN',
+  SD_LAN = 'SDLAN',
+  SD_LAN_P2 = 'SDLAN_P2',
+  MV_SD_LAN = 'MV_SDLAN',
+  MDNS = 'MDNS'
 }
 
 export enum EdgeServiceStatusEnum {
@@ -71,4 +75,45 @@ export enum EdgeLagLacpModeEnum {
 export enum EdgeLagTimeoutEnum {
   SHORT = 'SHORT',
   LONG = 'LONG'
+}
+
+export enum ClusterNodeStatusEnum {
+  CLUSTER_NODE_CONFIGS_NEEDED = 'CLUSTER_NODE_CONFIGS_NEEDED',
+  CLUSTER_NODE_GETTING_READY = 'CLUSTER_NODE_GETTING_READY',
+  CLUSTER_NODE_READY = 'CLUSTER_NODE_READY',
+  CLUSTER_NODE_UNHEALTHY = 'CLUSTER_NODE_UNHEALTHY'
+}
+
+export enum ClusterStatusEnum {
+  CLUSTER_CONFIGS_NEEDED = 'CLUSTER_CONFIGS_NEEDED',
+  CLUSTER_IS_FORMING = 'CLUSTER_IS_FORMING',
+  CLUSTER_READY = 'CLUSTER_READY',
+  CLUSTER_UNHEALTHY = 'CLUSTER_UNHEALTHY'
+}
+
+export enum NodeClusterRoleEnum {
+  CLUSTER_ROLE_ACTIVE = 'CLUSTER_ROLE_ACTIVE',
+  CLUSTER_ROLE_BACKUP = 'CLUSTER_ROLE_BACKUP'
+}
+
+export enum ClusterHighAvailabilityModeEnum {
+  ACTIVE_ACTIVE = 'ACTIVE_ACTIVE',
+  ACTIVE_STANDBY = 'ACTIVE_STANDBY'
+}
+
+export enum ClusterHaFallbackScheduleTypeEnum {
+  DAILY = 'DAILY',
+  WEEKLY = 'WEEKLY',
+  INTERVAL = 'INTERVAL'
+}
+
+export enum ClusterHaLoadDistributionEnum {
+  RANDOM = 'RANDOM',
+  AP_GROUP = 'AP_GROUP'
+}
+
+export enum CompatibilityEntityTypeEnum {
+  VENUE = 'venue',
+  CLUSTER = 'cluster',
+  DEVICE = 'device'
 }

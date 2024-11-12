@@ -187,6 +187,7 @@ function StepForm <FormValue = any> (
 
 StepsFormLegacy.StepForm = StepForm
 StepsFormLegacy.Title = UI.Title
+StepsFormLegacy.Subtitle = UI.Subtitle
 StepsFormLegacy.SectionTitle = UI.SectionTitle
 StepsFormLegacy.FieldLabel = UI.FieldLabel
 StepsFormLegacy.MultiSelect = UI.MultiSelect

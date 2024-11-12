@@ -5,16 +5,18 @@ import {
   Tabs,
   TimeRangeDropDownProvider
 } from '@acx-ui/components'
-import { get }                        from '@acx-ui/config'
-import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { DateRange }                  from '@acx-ui/utils'
+import { get }                                     from '@acx-ui/config'
+import { useIsSplitOn, Features }                  from '@acx-ui/feature-toggle'
+import { useNavigate, useTenantLink, useLocation } from '@acx-ui/react-router-dom'
+import { hasRaiPermission }                        from '@acx-ui/user'
+import { DateRange }                               from '@acx-ui/utils'
 
-import { ConfigChange }    from '../ConfigChange'
-import { useHeaderExtra }  from '../Header'
-import { HealthPage }      from '../Health'
-import { useServiceGuard } from '../ServiceGuard'
-import { useVideoCallQoe } from '../VideoCallQoe'
+import { ConfigChange }                        from '../ConfigChange'
+import { UseHeaderExtraProps, useHeaderExtra } from '../Header'
+import { HealthPage }                          from '../Health'
+import { HealthTabs }                          from '../HealthTabs'
+import { useServiceGuard }                     from '../ServiceGuard'
+import { useVideoCallQoe }                     from '../VideoCallQoe'
 
 export enum NetworkAssuranceTabEnum {
   HEALTH = 'health',
@@ -33,20 +35,49 @@ interface Tab {
 
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
+  const location = useLocation()
+  const basePath = useTenantLink('/analytics')
+
   const configChangeEnable = useIsSplitOn(Features.CONFIG_CHANGE)
-  const videoCallQoeEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
-  const healthTab = {
+  const isSwitchHealthEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
+    useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
+  ].some(Boolean)
+
+  const getHeaderExtraOptions = (): Partial<UseHeaderExtraProps> => {
+    const path = location.pathname.replace(basePath.pathname, '').split('/').slice(0, 3).join('/')
+    switch (path) {
+      case `/${NetworkAssuranceTabEnum.HEALTH}/overview`:
+        return {
+          shouldQuerySwitch: true,
+          shouldShowOnlyDomains: true
+        }
+      case `/${NetworkAssuranceTabEnum.HEALTH}/wired`:
+      case `/${NetworkAssuranceTabEnum.HEALTH}/wireless`:
+      default:
+        return {
+          shouldQueryAp: true,
+          shouldQuerySwitch: true
+        }
+    }
+  }
+
+  const useHealthTab = () => ({
     key: NetworkAssuranceTabEnum.HEALTH,
     title: $t({ defaultMessage: 'Health' }),
-    component: <HealthPage/>,
-    headerExtra: useHeaderExtra({ shouldQuerySwitch: false, withIncidents: false })
-  }
-  const serviceGuardTab = {
+    component: isSwitchHealthEnabled ? <HealthTabs /> : <HealthPage/>,
+    headerExtra: useHeaderExtra({
+      ...(isSwitchHealthEnabled ? getHeaderExtraOptions() : { shouldQuerySwitch: false }),
+      withIncidents: false
+    })
+  })
+
+  const useServiceGuardTab = () => ({
     key: NetworkAssuranceTabEnum.SERVICE_GUARD,
     url: 'serviceValidation',
     ...useServiceGuard()
-  }
-  const configChangeTab = {
+  })
+  const useConfigChangeTab = () => ({
     key: NetworkAssuranceTabEnum.CONFIG_CHANGE,
     title: $t({ defaultMessage: 'Config Change' }),
     component: <ConfigChange/>,
@@ -55,27 +86,48 @@ const useTabs = () : Tab[] => {
       withIncidents: false,
       datepicker: 'dropdown'
     })
-  }
-  const videoCallQoeTab = {
+  })
+  const useVideoCallQoeTab = () => ({
     key: NetworkAssuranceTabEnum.VIDEO_CALL_QOE,
     ...useVideoCallQoe()
+  })
+  const tabs = []
+  if (hasRaiPermission('READ_HEALTH')) {
+    tabs.push(useHealthTab)
   }
-  return [
-    healthTab,
-    serviceGuardTab,
-    ...(get('IS_MLISA_SA') || configChangeEnable ? [configChangeTab] : []),
-    ...(!get('IS_MLISA_SA') && videoCallQoeEnabled ? [videoCallQoeTab] : [])
-  ]
+  if (hasRaiPermission('READ_SERVICE_VALIDATION')) {
+    tabs.push(useServiceGuardTab)
+  }
+  if (hasRaiPermission('READ_CONFIG_CHANGE') && (get('IS_MLISA_SA') || configChangeEnable)) {
+    tabs.push(useConfigChangeTab)
+  }
+  if (hasRaiPermission('READ_VIDEO_CALL_QOE') && !get('IS_MLISA_SA')) {
+    tabs.push(useVideoCallQoeTab)
+  }
+  return tabs.map(tab => tab()) // prevent calling API we do not need to call (permissions)
 }
 
 export function NetworkAssurance ({ tab }:{ tab: NetworkAssuranceTabEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics')
+  const isSwitchHealthEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
+    useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
+  ].some(Boolean)
+  const massagePath = (path: string) => {
+    if (isSwitchHealthEnabled) {
+      return path.replace('health', 'health/overview')
+    }
+    return path
+  }
+
   const onTabChange = (tab: string) =>
     navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/${tabs.find(({ key }) => key === tab)?.url || tab}`
+      pathname: massagePath(
+        `${basePath.pathname}/${tabs.find(({ key }) => key === tab)?.url || tab}`
+      )
     })
   const tabs = useTabs()
   const TabComp = tabs.find(({ key }) => key === tab)?.component

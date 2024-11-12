@@ -4,10 +4,16 @@ import { Form, Radio, RadioChangeEvent, Space }     from 'antd'
 import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 import { useParams }                                from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, StepsFormLegacyInstance, showActionModal, AnchorContext }                               from '@acx-ui/components'
-import { useGetApMeshSettingsQuery, useLazyGetMeshUplinkApsQuery, useLazyGetVenueQuery, useUpdateApMeshSettingsMutation } from '@acx-ui/rc/services'
-import { APMeshSettings, MeshApNeighbor, MeshModeEnum, UplinkModeEnum, VenueExtended }                                    from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                     from '@acx-ui/react-router-dom'
+import { Loader, StepsFormLegacy, StepsFormLegacyInstance, showActionModal, AnchorContext } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import {
+  useGetApMeshSettingsQuery,
+  useGetVenueMeshQuery,
+  useLazyGetMeshUplinkApsQuery,
+  useUpdateApMeshSettingsMutation
+} from '@acx-ui/rc/services'
+import { APMeshSettings, MeshApNeighbor, MeshModeEnum, UplinkModeEnum } from '@acx-ui/rc/utils'
+import { TenantLink }                                                   from '@acx-ui/react-router-dom'
 
 
 import { ApDataContext, ApEditContext } from '../..'
@@ -45,9 +51,53 @@ const uplinkModes = [
   }
 ]
 
+const useApMeshSettingsData = (venueId: string | undefined) => {
+  const { serialNumber } = useParams()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
+  const { data: venueMeshSettings } = useGetVenueMeshQuery({
+    params: { venueId } },
+  { skip: !isWifiRbacEnabled })
+
+  let venueMeshEnabled = venueMeshSettings?.enabled
+
+  const getApMesh = useGetApMeshSettingsQuery({
+    params: { venueId, serialNumber },
+    enableRbac: isWifiRbacEnabled
+    // should skip request when venueMeshEnabled === false and using v1 API
+  }, { skip: !venueMeshEnabled && isWifiRbacEnabled })
+
+  // get venueMeshEnabled from ApMeshSettings when using non-RBAC API
+  if (!isWifiRbacEnabled)
+    venueMeshEnabled = getApMesh?.data?.venueMeshEnabled
+
+  return {
+    enabled: venueMeshEnabled,
+    data: getApMesh.data
+  }
+}
+
+function SettingMessage () {
+  const { venueData: venue } = useContext(ApDataContext)
+
+  return <VenueMeshNotEnabledInfo>
+    {<FormattedMessage
+    // eslint-disable-next-line max-len
+      defaultMessage={'Mesh is not enabled at the <venueSingular></venueSingular> where this AP is installed in (<venuelink></venuelink>). When mesh is enabled at the <venueSingular></venueSingular>, you will be able to set the AP\'s mesh role and select the uplink AP.'}
+      values={{
+        venuelink: () => venue?
+          <TenantLink
+            to={`venues/${venue.id}/edit/wifi/networking#Mesh-Network`}>{venue?.name}
+          </TenantLink>: ''
+      }} />
+    }
+  </VenueMeshNotEnabledInfo>
+}
+
 export function ApMesh () {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
+  const enableRbac = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -56,12 +106,13 @@ export function ApMesh () {
     setEditNetworkingContextData
   } = useContext(ApEditContext)
 
-  const { apData: apDetails } = useContext(ApDataContext)
+  const { venueData } = useContext(ApDataContext)
+  const venueId = venueData?.id
   const { setReadyToScroll } = useContext(AnchorContext)
+  const venueMeshSettings = useApMeshSettingsData(venueId)
+  const venueMeshEnabled: boolean = !!venueMeshSettings?.enabled
 
-  const getApMesh = useGetApMeshSettingsQuery({ params: { serialNumber } })
   const [updateApMesh, { isLoading: isUpdateingApMesh } ] = useUpdateApMeshSettingsMutation()
-  const [getVenue] = useLazyGetVenueQuery()
   const [getMeshUplinkAps] = useLazyGetMeshUplinkApsQuery()
 
   const formRef = useRef<StepsFormLegacyInstance<APMeshSettings>>()
@@ -69,22 +120,18 @@ export function ApMesh () {
 
   const [formInitializing, setFormInitializing] = useState(true)
   const [initData, setInitData] = useState({} as APMeshSettings)
-  const [venue, setVenue] = useState({} as VenueExtended)
   const [meshUplinkAps, setMeshUplinkAps] = useState([] as MeshApNeighbor[])
-  const [venueMeshEnabled, setVenueMeshEnabled] = useState(false)
   const [meshMode, setMeshMode] = useState(MeshModeEnum.AUTO)
   const [uplinkMode, setUplinkMode] = useState(UplinkModeEnum.SMART)
   const [uplinkMac, setUplinkMac] = useState<string[] | undefined>()
 
   const updateStates = (data: APMeshSettings) => {
     const {
-      venueMeshEnabled=false,
       meshMode,
       uplinkMode=UplinkModeEnum.SMART,
       uplinkMacAddresses
     } = data
 
-    setVenueMeshEnabled(venueMeshEnabled)
     setMeshMode(meshMode)
     setUplinkMode(uplinkMode)
     setUplinkMac(uplinkMacAddresses)
@@ -92,20 +139,21 @@ export function ApMesh () {
   }
 
   useEffect(() => {
-    const meshData = getApMesh?.data
-    if (apDetails && meshData) {
-      const venueId = apDetails.venueId
+    const meshData = venueMeshSettings.data
+    if (venueMeshSettings.enabled === false) {
+      setFormInitializing(false)
+      return
+    }
+
+    if (venueId && meshData) {
       const setData = async () => {
-        // get venue data
-        const apVenue = (await getVenue({
-          params: { tenantId, venueId } }, true).unwrap())
-        setVenue(apVenue)
-
-
         // get mesh uplink APs
         const params = { tenantId, serialNumber }
+        const fields = enableRbac
+          ? ['name', 'status', 'meshStatus.neighbors', 'healthStatus', 'venueId', 'serialNumber']
+          : ['name', 'deviceStatus', 'neighbors', 'venueId', 'serialNumber']
         const payload = {
-          fields: ['name', 'deviceStatus', 'neighbors'],
+          fields: fields,
           filters: {
             venueId: [venueId],
             serialNumber: [serialNumber]
@@ -114,7 +162,7 @@ export function ApMesh () {
           page: 1
         }
 
-        const uplinkAp = (await getMeshUplinkAps({ params, payload }, true).unwrap())
+        const uplinkAp = (await getMeshUplinkAps({ params, payload, enableRbac }, true).unwrap())
         setMeshUplinkAps(uplinkAp.neighbors)
 
         updateStates(meshData)
@@ -127,7 +175,7 @@ export function ApMesh () {
       setData()
     }
 
-  }, [apDetails, getApMesh?.data])
+  }, [venueId, venueMeshSettings.data, venueMeshSettings.enabled])
 
   const handleUpdateApMesh = async (formData: APMeshSettings) => {
     try {
@@ -158,10 +206,7 @@ export function ApMesh () {
         }
       }
 
-      await updateApMesh({
-        params: { serialNumber },
-        payload
-      }).unwrap()
+      await updateApMesh({ params: { venueId, serialNumber }, payload, enableRbac }).unwrap()
 
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -227,26 +272,27 @@ export function ApMesh () {
       onFormChange={handleChange}
     >
       <StepsFormLegacy.StepForm initialValues={initData}>
-        {venueMeshEnabled? <>
-          <Form.Item
-            name='meshMode'
-            label={$t({ defaultMessage: 'Mesh Role' })}
-            rules={[{ required: true }]}
-          >
-            <Radio.Group onChange={onMeshModeChanged}>
-              <Space direction='vertical'>
-                {meshModes.map(({ value, display, description }) => (
-                  <Radio key={value} value={value}>
-                    {$t(display)}
-                    <RadioDescription>
-                      {$t(description)}
-                    </RadioDescription>
-                  </Radio>
-                ))}
-              </Space>
-            </Radio.Group>
-          </Form.Item>
-          {(meshMode === MeshModeEnum.AUTO || meshMode === MeshModeEnum.MESH) &&
+        {venueMeshEnabled
+          ? <>
+            <Form.Item
+              name='meshMode'
+              label={$t({ defaultMessage: 'Mesh Role' })}
+              rules={[{ required: true }]}
+            >
+              <Radio.Group onChange={onMeshModeChanged}>
+                <Space direction='vertical'>
+                  {meshModes.map(({ value, display, description }) => (
+                    <Radio key={value} value={value}>
+                      {$t(display)}
+                      <RadioDescription>
+                        {$t(description)}
+                      </RadioDescription>
+                    </Radio>
+                  ))}
+                </Space>
+              </Radio.Group>
+            </Form.Item>
+            {(meshMode === MeshModeEnum.AUTO || meshMode === MeshModeEnum.MESH) &&
           <>
             <Form.Item
               name='uplinkMode'
@@ -275,22 +321,12 @@ export function ApMesh () {
             </div>
             }
           </>
-          }
-
-        </> : <VenueMeshNotEnabledInfo>
-          {<FormattedMessage
-            // eslint-disable-next-line max-len
-            defaultMessage={'Mesh is not enabled at the venue where this AP is installed in (<venuelink></venuelink>). When mesh is enabled at the venue, you will be able to set the AP\'s mesh role and select the uplink AP.'}
-            values={{
-              venuelink: () => venue?
-                <TenantLink
-                  to={`venues/${venue.id}/edit/wifi/networking#Mesh-Network`}>{venue?.name}
-                </TenantLink>: ''
-            }} />
-          }
-        </VenueMeshNotEnabledInfo>
+            }
+          </>
+          : <SettingMessage />
         }
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
   </Loader>)
 }
+

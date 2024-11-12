@@ -1,46 +1,48 @@
-import { useEffect, useState } from 'react'
+import { useContext } from 'react'
 
-import { Form, Space, Switch }    from 'antd'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { showActionModal, Tabs }                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable } from '@acx-ui/rc/components'
+import { Tabs }                                                         from '@acx-ui/components'
+import { Features }                                                     from '@acx-ui/feature-toggle'
+import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
-  useGetDhcpByEdgeIdQuery,
   useGetDhcpHostStatsQuery,
   useGetDhcpPoolStatsQuery,
-  useGetEdgeServiceListQuery,
-  usePatchEdgeDhcpServiceMutation
+  useGetDhcpStatsQuery
 } from '@acx-ui/rc/services'
 import {
   DhcpPoolStats,
   EdgeDhcpHostStatus,
-  EdgeServiceTypeEnum,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { useTenantLink }  from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
 
-import ManageDhcpDrawer from './ManageDhcpDrawer'
-import * as UI          from './styledComponents'
+import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
+
 
 export const EdgeDhcp = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { activeSubTab, serialNumber } = useParams()
-  const [isDhcpServiceActive, setIsDhcpServiceActive] = useState(false)
+  const { currentEdgeStatus } = useContext(EdgeDetailsDataContext)
   const basePath = useTenantLink(`/devices/edge/${serialNumber}/details/dhcp`)
-  const [updateEdgeDhcpService] = usePatchEdgeDhcpServiceMutation()
-  const [drawerVisible, setDrawerVisible] = useState(false)
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
-  const { isLeaseTimeInfinite } = useGetDhcpByEdgeIdQuery(
-    { params: { edgeId: serialNumber } },
+  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
+  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
+  const { isLeaseTimeInfinite } = useGetDhcpStatsQuery(
     {
-      skip: !!!serialNumber,
+      payload: {
+        fields: [
+          'leaseTime'
+        ],
+        filters: { edgeClusterIds: [currentEdgeStatus?.clusterId] }
+      }
+    },
+    {
+      skip: !isEdgeHaReady || !isEdgeDhcpHaReady,
       selectFromResult: ({ data }) => ({
-        isLeaseTimeInfinite: data?.leaseTime === -1
+        isLeaseTimeInfinite: data?.data[0]?.leaseTime === 'Infinite'
       })
     }
   )
@@ -56,13 +58,17 @@ export const EdgeDhcp = () => {
       'edgeId',
       'utilization'
     ],
-    filters: { edgeId: [serialNumber] },
-    sortField: 'name',
-    sortOrder: 'ASC'
+    filters: { edgeClusterId: [currentEdgeStatus?.clusterId] }
   }
+  const settingsId = 'edge-dhcp-pools-table'
   const poolTableQuery = useTableQuery<DhcpPoolStats, RequestPayload<unknown>, unknown>({
     useQuery: useGetDhcpPoolStatsQuery,
-    defaultPayload: getDhcpPoolStatsPayload
+    defaultPayload: getDhcpPoolStatsPayload,
+    sorter: {
+      sortField: 'poolName',
+      sortOrder: 'ASC'
+    },
+    pagination: { settingsId }
   })
 
   const getDhcpHostStatsPayload = {
@@ -73,79 +79,24 @@ export const EdgeDhcp = () => {
   const { data: dhcpHostStats } = useGetDhcpHostStatsQuery({
     payload: getDhcpHostStatsPayload
   },{
-    skip: !isEdgeReady
+    skip: !isEdgeHaReady || !isEdgeDhcpHaReady
   })
-  const { hasNsg } = useGetEdgeServiceListQuery({
-    payload: {
-      fields: ['serviceType'],
-      filters: { edgeId: [serialNumber] }
-    }
-  }, {
-    skip: !isEdgeReady,
-    selectFromResult: ({ data, isLoading }) => ({
-      hasNsg: isLoading || data?.data.some(
-        service => service.serviceType === EdgeServiceTypeEnum.NETWORK_SEGMENTATION
-      )
-    })
-  })
-
-  useEffect(() => {
-    setIsDhcpServiceActive((poolTableQuery.data?.totalCount || 0) > 0)
-  }, [poolTableQuery.data?.totalCount])
 
   const tabs = {
     pools: {
       title: $t({ defaultMessage: 'Pools' }),
-      content: <EdgeDhcpPoolTable tableQuery={poolTableQuery} />
+      content: <EdgeDhcpPoolTable tableQuery={poolTableQuery} settingsId={settingsId} />
     },
     leases: {
       title: $t(
         { defaultMessage: 'Leases ( {count} online )' },
         { count: dhcpHostStats?.totalCount || 0 }
       ),
-      content: <EdgeDhcpLeaseTable edgeId={serialNumber} isInfinite={isLeaseTimeInfinite} />
-    }
-  }
-
-  const handleActiveSwitch = (checked: boolean) => {
-    if(checked) {
-      setDrawerVisible(true)
-    } else {
-      showActionModal({
-        type: 'confirm',
-        title: $t({ defaultMessage: 'Deactive DHCP Service' }),
-        content: $t({ defaultMessage: 'Are you sure you want to deactive DHCP service?' }),
-        onOk: () => {
-          if((poolTableQuery.data?.totalCount || 0) > 0) {
-            const params = { id: poolTableQuery.data?.data[0].dhcpId }
-            const edgeIds = [poolTableQuery.data?.data[0].edgeId]
-            const payload = {
-              edgeIds: [
-                ...edgeIds.filter(id => id !== serialNumber)
-              ]
-            }
-            updateEdgeDhcpService({ params, payload })
-          }
-        }
-      })
-    }
-  }
-
-  const tabBarExtraContent = {
-    right:
-    <Space size='large' align='baseline'>
-      <Form.Item
-        label={$t({ defaultMessage: 'DHCP Service state' })}
-        children={
-          <Switch checked={isDhcpServiceActive} onChange={handleActiveSwitch} />
-        }
+      content: <EdgeDhcpLeaseTable
+        clusterId={currentEdgeStatus?.clusterId}
+        isInfinite={isLeaseTimeInfinite}
       />
-      <UI.SettingIcon
-        data-testid='setting-icon'
-        disabled={!isDhcpServiceActive}
-        onClick={()=> isDhcpServiceActive && setDrawerVisible(true)}
-      />
-    </Space>
+    }
   }
 
   const onTabChange = (activeKey: string) => {
@@ -156,26 +107,17 @@ export const EdgeDhcp = () => {
   }
 
   return (
-    <>
-      <ManageDhcpDrawer
-        visible={drawerVisible}
-        setVisible={setDrawerVisible}
-        inUseService={poolTableQuery.data?.data[0]?.dhcpId || null}
-        hasNsg={hasNsg}
-      />
-      <Tabs
-        onChange={onTabChange}
-        defaultActiveKey='pools'
-        activeKey={activeSubTab}
-        tabBarExtraContent={tabBarExtraContent}
-        type='card'
-      >
-        {Object.keys(tabs)
-          .map((key) =>
-            <Tabs.TabPane tab={tabs[key as keyof typeof tabs].title} key={key}>
-              {tabs[key as keyof typeof tabs].content}
-            </Tabs.TabPane>)}
-      </Tabs>
-    </>
+    <Tabs
+      onChange={onTabChange}
+      defaultActiveKey='pools'
+      activeKey={activeSubTab}
+      type='card'
+    >
+      {Object.keys(tabs)
+        .map((key) =>
+          <Tabs.TabPane tab={tabs[key as keyof typeof tabs].title} key={key}>
+            {tabs[key as keyof typeof tabs].content}
+          </Tabs.TabPane>)}
+    </Tabs>
   )
 }

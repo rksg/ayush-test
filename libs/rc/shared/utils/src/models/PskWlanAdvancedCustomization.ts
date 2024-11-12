@@ -1,6 +1,7 @@
 import { BasicServiceSetPriorityEnum } from './BasicServiceSetPriorityEnum'
 import { ClientIsolationOptions }      from './ClientIsolationOptions'
 import { DnsProxy }                    from './DnsProxy'
+import { FastRoamingOptions }          from './FastRoamingOptions'
 import { MultiLinkOperationOptions }   from './MultiLinkOperationOptions'
 import { QosMapSetOptions }            from './QosMapSetOptions'
 import { RadiusOptions }               from './RadiusOptions'
@@ -77,6 +78,8 @@ export class PskWlanAdvancedCustomization {
   l2AclEnable?: boolean
 
   l3AclEnable?: boolean
+
+  enableDeviceOs?: boolean
 
   wifiCallingEnabled?: boolean
 
@@ -162,6 +165,10 @@ export class PskWlanAdvancedCustomization {
   qosMapSetEnabled?: boolean
 
   qosMapSetOptions?: QosMapSetOptions
+
+  fastRoamingOptions?: FastRoamingOptions
+
+  applicationVisibilityEnabled?: boolean
 
   constructor () {
     this.maxClientsOnWlanPerRadio = 100
@@ -279,8 +286,14 @@ export class PskWlanAdvancedCustomization {
 
     this.multiLinkOperationEnabled = false
 
+    this.qosMirroringEnabled = true
+
     this.qosMapSetEnabled = false
 
     this.qosMapSetOptions = new QosMapSetOptions()
+
+    this.fastRoamingOptions = new FastRoamingOptions()
+
+    this.applicationVisibilityEnabled = true
   }
 }

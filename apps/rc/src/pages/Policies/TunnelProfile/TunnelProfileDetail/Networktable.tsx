@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps }                            from '@acx-ui/components'
-import { useNetworkListQuery }                                  from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
+import { useNetworkListQuery, useWifiNetworkListQuery }         from '@acx-ui/rc/services'
 import { Network, NetworkType, NetworkTypeEnum, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink }                                           from '@acx-ui/react-router-dom'
 
@@ -13,6 +14,8 @@ interface NetworkTableProps {
 
 export const NetworkTable = (props: NetworkTableProps) => {
 
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const { $t } = useIntl()
   const [isPayloadReady,setIsPayloadReady] = useState(false)
   const defaultNetworkPayload = {
@@ -20,12 +23,13 @@ export const NetworkTable = (props: NetworkTableProps) => {
       'id',
       'name',
       'nwSubType',
-      'venues'
+      'venues',
+      'venueApGroups'
     ],
     filters: { id: props.networkIds }
   }
   const tableQuery = useTableQuery({
-    useQuery: useNetworkListQuery,
+    useQuery: isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery,
     defaultPayload: defaultNetworkPayload,
     option: {
       skip: !isPayloadReady || props.networkIds.length === 0
@@ -73,7 +77,7 @@ export const NetworkTable = (props: NetworkTableProps) => {
       )
     },
     {
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       key: 'venues',
       dataIndex: 'venues',
       sorter: true,

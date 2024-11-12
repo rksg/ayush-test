@@ -5,8 +5,10 @@ import { getEmptyImage } from 'react-dnd-html5-backend'
 import { useIntl }       from 'react-intl'
 
 import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import { DeviceOutlined, SignalUp }                     from '@acx-ui/icons'
+import { DeviceOutlined, DevicesOutlined, SignalUp }    from '@acx-ui/icons'
 import { APMeshRole, NetworkDevice, NetworkDeviceType } from '@acx-ui/rc/utils'
+import { SwitchScopes, WifiScopes }                     from '@acx-ui/types'
+import { hasPermission }                                from '@acx-ui/user'
 
 import { NetworkDeviceContext } from '..'
 import { getDeviceName }        from '../NetworkDevices/utils'
@@ -28,6 +30,15 @@ export default function UnplacedDevice (props: { device: NetworkDevice }) {
   const deviceContext = useContext(NetworkDeviceContext) as Function
   const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
 
+  const canDrag = () => {
+    if(device?.networkDeviceType === NetworkDeviceType.ap) {
+      return hasPermission({ scopes: [WifiScopes.UPDATE] })
+    } else if(device?.networkDeviceType === NetworkDeviceType.switch) {
+      return hasPermission({ scopes: [SwitchScopes.UPDATE] })
+    }
+    return true
+  }
+
   const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
     type: 'device',
     item: { device: device, markerRef: null },
@@ -41,8 +52,20 @@ export default function UnplacedDevice (props: { device: NetworkDevice }) {
         // device unplaced
         deviceContext(item)
       }
-    }
+    },
+    canDrag: canDrag()
   }), [device])
+
+  const getDeviceIcon = (deviceType: NetworkDeviceType) => {
+    switch(deviceType) {
+      case NetworkDeviceType.switch:
+        return <DeviceOutlined/>
+      case NetworkDeviceType.rwg:
+        return <DevicesOutlined/>
+      default:
+        return <SignalUp/>
+    }
+  }
 
   const getApMeshRoleAbbr = () => {
     return device.meshRole && device.meshRole !== APMeshRole.DISABLED
@@ -57,7 +80,9 @@ export default function UnplacedDevice (props: { device: NetworkDevice }) {
   return <> <div key={device?.id}>
     <UI.ListItem
       ref={drag}
-      isdragging={isDragging ? true : false}>
+      isdragging={isDragging ? true : false}
+      disabled={!canDrag()}
+    >
       { isDragging ?
         <div style={{
           display: 'flex',
@@ -75,9 +100,7 @@ export default function UnplacedDevice (props: { device: NetworkDevice }) {
             height: '24px',
             margin: '0px 8px'
           }}>  {
-              device?.networkDeviceType === NetworkDeviceType.switch
-                ? <DeviceOutlined/>
-                : <SignalUp/>
+              getDeviceIcon(device?.networkDeviceType)
             }
           </div>{getDeviceName(device)} {isApMeshTopologyFFOn && getApMeshRoleAbbr()}
         </>

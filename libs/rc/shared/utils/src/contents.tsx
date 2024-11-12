@@ -3,7 +3,7 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 import {
   DHCPConfigTypeEnum
 } from './constants'
-import { BridgeServiceEnum } from './models'
+import { BridgeServiceEnum } from './models/BridgeServiceEnum'
 
 export enum PskWlanSecurityEnum {
   WPA2Personal = 'WPA2 (Recommended)',
@@ -11,6 +11,11 @@ export enum PskWlanSecurityEnum {
   WPA23Mixed = 'WPA2/WPA3 mixed mode',
   WPAPersonal = 'WPA',
   WEP = 'WEP'
+}
+
+export enum AAAWlanSecurityEnum {
+  WPA2Enterprise = 'WPA2 (Recommended)',
+  WPA3 = 'WPA3'
 }
 
 export enum SecurityOptionsDescription {
@@ -25,7 +30,7 @@ export enum SecurityOptionsDescription {
 }
 
 export enum WisprSecurityEnum {
-  NONE = 'Select...',
+  NONE = 'None',
   PSK = 'Pre-Share Key (PSK)',
   OWE = 'OWE encryption'
 }
@@ -34,7 +39,7 @@ export enum WisprSecurityOptionsDescription {
   /* eslint-disable max-len */
   NONE = '',
   PSK = 'Require users to enter a passphrase to connect',
-  OWE = 'In OWE mode, the Diffie-Hellman key exchange algorithm is used to encrypt data on the Wi-Fi network'
+  OWE = 'Secures open Wi-Fi networks by encrypting data without needing passwords.'
   /* eslint-enable */
 }
 
@@ -82,8 +87,49 @@ export const SwitchMessages = {
     defaultMessage: 'Based on the switch serial number you entered, compatible stacks of the same model are listed here.'
   }),
   MEMBER_NOT_SUPPORT_STACKING_TOOLTIP: defineMessage({
-    defaultMessage: 'ICX7150-C08P/C08PT does not support stacking'
+    defaultMessage: '{switchModel} does not support stacking'
+  }),
+  NONOPERATIONAL_SWITCH_NOT_SUPPORT_CONFIGURED: defineMessage({
+    defaultMessage: 'The port can not be edited since it is on a switch that is not operational'
+  }),
+  STACKING_PORT_NOT_SUPPORT_CONFIGURED: defineMessage({
+    defaultMessage: 'This is a stacking port and can not be configured'
+  }),
+  LAG_MEMBER_PORT_NOT_SUPPORT_CONFIGURED: defineMessage({
+    defaultMessage: 'This is a LAG member port and can not be configured'
+  }),
+  PLEASE_CHECK_INVALID_VALUES_AND_MODIFY_VIA_CLI: defineMessage({
+    defaultMessage: 'Please check the invalid field values under the settings tab and modify it via CLI'
+  }),
+  PLEASE_CHECK_INVALID_VALUES: defineMessage({
+    defaultMessage: 'Please check the invalid field values under the settings tab'
   })
+}
+
+export const SwitchCliMessages = {
+  INVALID_CLI: defineMessage({ defaultMessage: 'Please input CLI commands' }),
+  INVALID_CLI_VARIABLES: defineMessage({ defaultMessage: 'Please define variable(s) in CLI commands' }),
+  INVALID_CLI_ATTRIBUTES: defineMessage({ defaultMessage: 'Please define attribute(s) in CLI commands' }),
+  CLI_COMMANDS: defineMessage({ defaultMessage: 'You can use any combination of the following options: type the commands, copy/paste the configuration from another file, use the examples on the right pane.' }),
+  CLI_VARIABLES_REACH_MAX: defineMessage({ defaultMessage: 'The variables had reach to the maximum total 200 entries.' }),
+  NOTICE_INFO: defineMessage({ defaultMessage: 'Once the CLI Configuration profile is applied to a <venueSingular></venueSingular>, you will not be able to apply a regular switch configuration profile to the same <venueSingular></venueSingular>' }),
+  NOTICE_DESP: defineMessage({ defaultMessage: 'It is the user\'s responsibility to ensure the validity and ordering of CLI commands are accurate. The recommendation is to get familiarized with {link} to avoid configuration failures' }),
+  VARIABLE_NAME_RULE: defineMessage({ defaultMessage: 'Variable name may include letters and numbers. It must start with a letter.' }),
+  VARIABLE_RANGE_START_RULE: defineMessage({ defaultMessage: 'You may enter numbers between 0 and 65535. Start value must be lower than end value' }),
+  VARIABLE_RANGE_END_RULE: defineMessage({ defaultMessage: 'You may enter numbers between 0 and 65535. End value must be higher than start value' }),
+  VARIABLE_STRING_RULE: defineMessage({ defaultMessage: 'Special characters (other than space, $, -, . and _) are not allowed' }),
+  ALLOW_CUSTOMIZED_ADDRESS_TOOLTIP: defineMessage({ defaultMessage: 'Select an IP address from the subnet defined above.' }),
+  ALLOW_CUSTOMIZED_RANGE_TOOLTIP: defineMessage({ defaultMessage: 'Select a number from the range defined above.' }),
+  ALLOW_CUSTOMIZED_CLI_TOOLTIP: defineMessage({ defaultMessage: 'This section allows you to dictate the variable value getting assigned to the selected switch.' }),
+  NOT_ALLOWED_APPLY_PROFILE: defineMessage({ defaultMessage: 'This switch is already linked with a different configuration profile.' }),
+  PREPROVISIONED_SWITCH_LIST_TOOLTIP: defineMessage({ defaultMessage: 'Only the selected models from the previous step will be available for selection when customizing variables.' }),
+  PLEASE_ENTER_START_IP: defineMessage({ defaultMessage: 'Please enter Start IP Address first' }),
+  PLEASE_ENTER_END_IP: defineMessage({ defaultMessage: 'Please enter End IP Address first' }),
+  PLEASE_ENTER_MASK: defineMessage({ defaultMessage: 'Please enter Network Mask first' }),
+  PLEASE_ENTER_ADDRESS_VALUES: defineMessage({ defaultMessage: 'Please enter Start IP Address, End IP Address and Network Mask first' }),
+  OVERLAPPING_MODELS_TOOLTIP: defineMessage({ defaultMessage: 'A CLI configuration profile with overlapping switch models has been applied to this <venueSingular></venueSingular> so it cannot be selected.' }),
+  VENUE_STEP_DESP: defineMessage({ defaultMessage: 'The configuration will be applied to all switches of the selected models, as well as any switch that will be added to the <venueSingular></venueSingular> in the future' }),
+  PRE_SELECT_VENUE_FOR_CUSTOMIZED: defineMessage({ defaultMessage: 'Cannot unselect this <venueSingular></venueSingular> because some of it\'s switches have custom variables assigned from the previous step' })
 }
 
 /* eslint-disable max-len */
@@ -101,7 +147,7 @@ export const WifiNetworkMessages = {
     defaultMessage: 'MAC Authentication provides an additional level of security for corporate networks. Client MAC Addresses are passed to the configured RADIUS servers for authentication and accounting. Note that changing this option requires to re-create the network (no edit option)'
   }),
   ENABLE_OWE_TOOLTIP: defineMessage({
-    defaultMessage: 'In OWE mode, the Diffie-Hellman key exchange algorithm is used to encrypt data on the Wi-Fi network.'
+    defaultMessage: 'Secures open Wi-Fi networks by encrypting data without needing passwords.'
   }),
   ENABLE_OWE_TRANSITION_TOOLTIP: defineMessage({
     defaultMessage: 'For STAs that do not support OWE authentication, the OWE transition mode is available so that such STAs can access the network in open authentication mode.'
@@ -123,14 +169,20 @@ export const WifiNetworkMessages = {
   LAN_PORTS_VLAN_UNTAG_TOOLTIP: defineMessage({
     defaultMessage: 'Enter the native VLAN ID (no VLAN tag in its Ethernet frames)'
   }),
+  LAN_PORTS_TRUNK_PORT_VLAN_UNTAG_TOOLTIP: defineMessage({
+    defaultMessage: 'Enter the native VLAN ID (no VLAN tag in its Ethernet frames). Only APs with the supported firmware version can modify the untagged VLAN from the default value of 1. Supported model family: Wi-Fi 6, Wi-Fi 6E, Wi-Fi 7'
+  }),
   LAN_PORTS_VLAN_MEMBERS_TOOLTIP: defineMessage({
     defaultMessage: 'Can be a single VLAN ID, a VLAN ID range or a combination of both, separated with commas e.g. 1,3,5-7'
   }),
+  LAN_PORTS_RESET_TOOLTIP: defineMessage({
+    defaultMessage: 'Reset port settings to default'
+  }),
   AP_VENUE_DHCP_DISABLED_TOOLTIP: defineMessage({
-    defaultMessage: 'Not allow to change Venue on DHCP AP.'
+    defaultMessage: 'Not allow to change <VenueSingular></VenueSingular> on DHCP AP.'
   }),
   AP_VENUE_MESH_DISABLED_TOOLTIP: defineMessage({
-    defaultMessage: 'Mesh AP cannot be moved to a different venue'
+    defaultMessage: 'Mesh AP cannot be moved to a different <venueSingular></venueSingular>'
   }),
   AP_NAME_TOOLTIP: defineMessage({
     defaultMessage: 'Name must be between 2 and 32 alpha-numeric characters. Backtick "`" and the "$(" combination are not allowed.'
@@ -155,7 +207,7 @@ export const VenueMessages = {
   }),
   CLI_PROFILE_NOTIFICATION: defineMessage({
     defaultMessage: `<ul>
-      <li>Once CLI profiles are applied, the venue can no longer accept regular profiles</li>
+      <li>Once CLI profiles are applied, the <venueSingular></venueSingular> can no longer accept regular profiles</li>
       <li>The selected CLI profiles cannot contain overlapping switch models</li>
     </ul>`
   }),
@@ -163,7 +215,7 @@ export const VenueMessages = {
     defaultMessage: 'SNR threshold above which detected Rogue APs will be reported in RUCKUS One. Available range is 0-100.'
   }),
   CLI_APPLIED: defineMessage({
-    defaultMessage: 'These settings cannot be changed, since a CLI profile is applied on the venue.'
+    defaultMessage: 'These settings cannot be changed, since a CLI profile is applied on the <venueSingular></venueSingular>.'
   })
 }
 
@@ -181,7 +233,7 @@ export const ApErrorHandlingMessages = {
     defaultMessage: 'A configuration request is currently being executed and additional requests cannot be performed at this time.<br></br>Try again once the request has completed.'
   }),
   CELLULAR_AP_CANNOT_BE_MOVED: defineMessage({
-    defaultMessage: 'The cellular AP cannot be moved to the venue which doesn\'t enable DHCP service'
+    defaultMessage: 'The cellular AP cannot be moved to the <venueSingular></venueSingular> which doesn\'t enable DHCP service'
   }),
   ERROR_OCCURRED: defineMessage({
     defaultMessage: 'Error occurred while {action} AP'
@@ -205,19 +257,19 @@ export const EditPortMessages = {
     defaultMessage: 'The port must be a member of at least one VLAN'
   }),
   ADD_VLAN_DISABLE: defineMessage({
-    defaultMessage: 'Create and apply a configuration profile to this switch\'s venue to add/edit VLANs'
+    defaultMessage: 'Create and apply a configuration profile to this switch\'s <venueSingular></venueSingular> to add/edit VLANs'
   }),
   ADD_ACL_DISABLE: defineMessage({
-    defaultMessage: 'Create and apply a configuration profile to this switch\'s venue to add/edit ACL'
+    defaultMessage: 'Create and apply a configuration profile to this switch\'s <venueSingular></venueSingular> to add/edit ACL'
   }),
   ADD_LLDP_DISABLE: defineMessage({
-    defaultMessage: 'Create and apply a configuration profile to this switch\'s venue to add/edit LLDP QoS'
+    defaultMessage: 'Create and apply a configuration profile to this switch\'s <venueSingular></venueSingular> to add/edit LLDP QoS'
   }),
   VOICE_VLAN_DISABLE: defineMessage({
     defaultMessage: 'No profile VLAN or VLAN option'
   }),
   USE_VENUE_SETTINGS_DISABLE: defineMessage({
-    defaultMessage: 'Venue settings default VLAN ID is the same as one of switch VLANs'
+    defaultMessage: '<VenueSingular></VenueSingular> settings default VLAN ID is the same as one of switch VLANs'
   }),
   POE_CAPABILITY_DISABLE: defineMessage({
     defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since this port doesn\'t have PoE capability.'
@@ -233,6 +285,10 @@ export const EditPortMessages = {
   }),
   INVALID_VOICE_VLAN: defineMessage({
     defaultMessage: 'Voice VLAN needs to be configured together with Tagged VLAN.'
+  }),
+  RESET_PORT_WARNING: defineMessage({
+    defaultMessage: `Changing the port settings may result in loss of connectivity and
+      communication issues to your APs. Do you want to continue with these changes?`
   })
 }
 
@@ -244,6 +300,34 @@ export const MultipleEditPortMessages = {
     defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since one or more ports don\'t have PoE capability.'
   })
 }
+
+export const PortStatusMessages = {
+  SET_AS_TAGGED: defineMessage({
+    defaultMessage: 'Port set as tagged'
+  }),
+  SET_AS_UNTAGGED: defineMessage({
+    defaultMessage: 'Port set as untagged'
+  }),
+  USED_BY_LAG: defineMessage({
+    defaultMessage: 'Port is member of LAG – {lagName}'
+  }),
+  USED_UNTAGGED_VLAN: defineMessage({
+    defaultMessage: 'Port is already an untagged member of VLAN {vlanId}'
+  }),
+  USED_BY_OTHERS: defineMessage({
+    defaultMessage: 'Port used by other VLAN setting'
+  }),
+  CURRENT: defineMessage({
+    defaultMessage: 'VLANs'
+  })
+}
+
+export const LbsServerProfileMessages = {
+  CONNECTION_PROTOCOL_TOOLTIP: defineMessage({
+    defaultMessage: 'This server uses Transport Layer Security (TLS) version 1.2 to ensure secure and encrypted communication.'
+  })
+}
+
 /* eslint-enable */
 
 export enum IsolatePacketsTypeEnum {
@@ -343,7 +427,6 @@ export const mdnsProxyRuleTypeLabelMapping: Record<BridgeServiceEnum, MessageDes
   [BridgeServiceEnum.OPEN_DIRECTORY_MASTER]: defineMessage({ defaultMessage: 'Open Directory Master' }),
   // eslint-disable-next-line max-len
   [BridgeServiceEnum.OPTICAL_DISK_SHARING]: defineMessage({ defaultMessage: 'Optical Disk Sharing' }),
-  [BridgeServiceEnum.OTHER]: defineMessage({ defaultMessage: 'Other' }),
   // eslint-disable-next-line max-len
   [BridgeServiceEnum.SCREEN_SHARING]: defineMessage({ defaultMessage: 'Screen Sharing' }),
   // eslint-disable-next-line max-len
@@ -351,7 +434,8 @@ export const mdnsProxyRuleTypeLabelMapping: Record<BridgeServiceEnum, MessageDes
   [BridgeServiceEnum.SECURE_SHELL]: defineMessage({ defaultMessage: 'Secure Shell' }),
   [BridgeServiceEnum.WWW_HTTP]: defineMessage({ defaultMessage: 'WWW HTTP' }),
   [BridgeServiceEnum.WWW_HTTPS]: defineMessage({ defaultMessage: 'WWW HTTPs' }),
-  [BridgeServiceEnum.XGRID]: defineMessage({ defaultMessage: 'Xgrid' })
+  [BridgeServiceEnum.XGRID]: defineMessage({ defaultMessage: 'Xgrid' }),
+  [BridgeServiceEnum.OTHER]: defineMessage({ defaultMessage: 'Other' })
 }
 
 export const EditPropertyConfigMessages = {
@@ -365,5 +449,25 @@ export const EditPropertyConfigMessages = {
 export const PropertyUnitMessages = {
   /* eslint-disable max-len */
   RESEND_NOTIFICATION: defineMessage({ defaultMessage: 'The unit assignment SMS and/or Email has been sent to the unit contact.' })
+  /* eslint-enable */
+}
+
+export const EthernetPortProfileMessages = {
+  /* eslint-disable max-len */
+  AUTH_TYPE_ROLE_TRUNK: defineMessage({
+    defaultMessage: 'Choose Port-based Authenticator if the AP will authenticate devices connecting to it, or Supplicant if the AP needs to be authenticated by an upstream device, e.g.: Switch'
+  }),
+  AUTH_TYPE_ROLE_ACCESS: defineMessage({
+    defaultMessage: 'If multiple devices connect to an AP port, it can be configured as either Port-based or MAC-based Authenticator. In Port-based mode, one authorized MAC grants access to all hosts. In MAC-based mode, each MAC is individually authenticated.'
+  }),
+  MAC_AUTH_BYPASS: defineMessage({
+    defaultMessage: 'If MAC authentication bypass is enabled, the port first attempts to authenticate the attached device by MAC address, and if that fails, it attempts to authenticate the device using 802.1X.'
+  }),
+  DYNAMIC_VLAN: defineMessage({
+    defaultMessage: 'Enable dynamic VLAN assignment if you want the controller to assign VLAN IDs on a per-user basis.'
+  }),
+  GUEST_VLAN: defineMessage({
+    defaultMessage: 'A guest VLAN is used if you want to allow a device that fails authentication to access the Internet but restrict it from accessing internal network resources'
+  })
   /* eslint-enable */
 }

@@ -2,11 +2,10 @@ import { RadiusServer } from '../../models/RadiusServer'
 export interface AAAPolicyType{
   id?: string,
   name: string,
-  tags?: string[],
   primary?: RadiusServer,
   secondary?: RadiusServer,
   type?: 'ACCOUNTING' | 'AUTHENTICATION',
-  networkIds?: string[]
+  radSecOptions?: RadSecOptionsType
 }
 
 export interface AAATacacsServer{
@@ -15,20 +14,37 @@ export interface AAATacacsServer{
   sharedSecret: string,
   purpose: AAAPurposeEnum
 }
-export interface AAATempType {
-  id?: string,
-  name: string,
-  type?: 'ACCOUNTING' | 'AUTHENTICATION',
-  primary?: RadiusServer,
-  secondary?: RadiusServer
-}
 export interface AAAViewModalType {
   id?: string,
   name: string,
-  primary?: RadiusServer,
-  secondary?: RadiusServer,
-  type?: 'ACCOUNTING' | 'AUTHENTICATION',
-  networkIds?: string[]
+  primary: string, // Primary server IP:Port
+  secondary?: string, // Secondary server IP:Port
+  type: 'ACCOUNTING' | 'AUTHENTICATION',
+  networkIds?: string[],
+  hotspot20IdentityProviderIds?: string[],
+  radSecOptions?: RadSecOptionsType
+}
+export interface RadSecOptionsType {
+  tlsEnabled?: boolean,
+  cnSanIdentity?: string,
+  ocspUrl?: string,
+  certificateAuthorityId?: string,
+  clientCertificateId?: string,
+  serverCertificateId?: string,
+  // certificates only allow to activate once
+  originalCertificateAuthorityId?: string,
+  originalClientCertificateId?: string
+  originalServerCertificateId?: string
+}
+export interface RadSecOptionsViewModalType {
+  tlsEnabled?: boolean,
+  certificateAuthorityId?: string,
+  clientCertificateId?: string,
+  serverCertificateId?: string,
+  // certificates only allow to activate once
+  originalCertificateAuthorityId?: string,
+  originalClientCertificateId?: string,
+  originalServerCertificateId?: string
 }
 export enum AAAPurposeEnum{
   ALL = 'All (Default)',
@@ -36,9 +52,12 @@ export enum AAAPurposeEnum{
   AUTHORIZATION = 'Authorization',
   ACCOUNTING = 'Accounting RADIUS Server'
 }
-export interface AAAPolicyNetwork {
-  networkId: string,
-  networkName: string,
-  networkType: string,
-  guestNetworkType?: string
+export interface AAARbacViewModalType {
+  id?: string,
+  name: string,
+  primary: string, // Primary server IP:Port
+  secondary?: string, // Secondary server IP:Port
+  type: 'ACCOUNTING' | 'AUTHENTICATION',
+  wifiNetworkIds?: string[],
+  hotspot20IdentityProviderIds?: string[]
 }

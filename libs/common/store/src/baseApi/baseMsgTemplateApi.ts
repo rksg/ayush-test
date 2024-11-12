@@ -1,8 +1,8 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi, fetchBaseQuery } from './baseQuery'
 
 export const baseMsgTemplateApi = createApi({
   baseQuery: fetchBaseQuery(),
-  tagTypes: ['TemplateScope', 'Template', 'TemplateRegistration'],
+  tagTypes: ['MsgCategory', 'TemplateGroup', 'TemplateScope', 'Template', 'TemplateRegistration'],
   reducerPath: 'msgTemplateApi',
   refetchOnMountOrArgChange: true,
   endpoints: () => ({})

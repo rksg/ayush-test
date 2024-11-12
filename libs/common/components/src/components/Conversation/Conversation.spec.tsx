@@ -172,9 +172,24 @@ const fulfillmentMessagesWithList = [
   }
 ]
 
+const fulfillmentMessagesWithLongText = [
+  {
+    text: {
+      text: [
+        // eslint-disable-next-line max-len
+        'Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text '
+      ]
+    }
+  }
+]
+
 const contentData:Content[] =
   [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
     { type: 'bot', contentList: fulfillmentMessages }
+  ]
+const contentDataFromRuckusAi:Content[] =
+  [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
+    { type: 'bot', isRuckusAi: true, contentList: fulfillmentMessages }
   ]
 const contentLink:Content[] =
   [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
@@ -192,6 +207,14 @@ const contentList:Content[] =
   [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
     { type: 'bot', contentList: fulfillmentMessagesWithList }
   ]
+const contentListForMyNetwork:Content[] =
+  [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
+    { type: 'bot', mode: 'my-network', contentList: fulfillmentMessagesWithLongText }
+  ]
+const contentListForGeneral:Content[] =
+  [ { type: 'user', contentList: [{ text: { text: [contentUser] } }] },
+    { type: 'bot', mode: 'general', contentList: fulfillmentMessagesWithLongText }
+  ]
 describe('Conversation component', () => {
   it('should render Conversation component with text', () => {
     render(<Conversation content={contentData}
@@ -202,6 +225,15 @@ describe('Conversation component', () => {
     />)
     expect(screen.getByText('List zones with higher co-channel interference in 2.4 GHz band')
     ).toBeVisible()
+  })
+  it('should render Conversation component with text form RuckusAI', () => {
+    render(<Conversation content={contentDataFromRuckusAi}
+      classList='conversation'
+      isReplying={false}
+      listCallback={jest.fn()}
+      style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}
+    />)
+    expect(screen.getAllByText('RUCKUS AI').length).toBe(2)
   })
   it('should render Conversation component with link', () => {
     render(<BrowserRouter><Conversation content={contentLink}
@@ -226,6 +258,22 @@ describe('Conversation component', () => {
       listCallback={jest.fn()}
       style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}/>)
     expect(screen.getByText('Chart For Top Applications by Traffic')).toBeVisible()
+  })
+  it('should render Conversation component For My Network Mode', () => {
+    render(<Conversation content={contentListForMyNetwork}
+      classList='conversation'
+      isReplying={false}
+      listCallback={jest.fn()}
+      style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}/>)
+    expect(screen.getByText('My Network')).toBeVisible()
+  })
+  it('should render Conversation component For General Mode', () => {
+    render(<Conversation content={contentListForGeneral}
+      classList='conversation'
+      isReplying={false}
+      listCallback={jest.fn()}
+      style={{ height: 410, width: 416, whiteSpace: 'pre-line' }}/>)
+    expect(screen.getByText('General')).toBeVisible()
   })
   it('should render Conversation component with typing', () => {
     render(<Conversation content={contentData}

@@ -3,6 +3,7 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, Card, PageHeader, SummaryCard, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
 import {
   useGetWebAuthTemplateQuery,
   useGetWebAuthTemplateSwitchesQuery
@@ -11,13 +12,14 @@ import {
   ServiceOperation,
   ServiceType,
   WebAuthTemplate,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
   isDefaultWebAuth
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess }                     from '@acx-ui/user'
 
 
 export function NetworkSegAuthSummary ({ data }: { data?: WebAuthTemplate }) {
@@ -71,9 +73,14 @@ export default function NetworkSegAuthDetail () {
   const { $t } = useIntl()
   const params = useParams()
   const location = useLocation()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
-  const { data } = useGetWebAuthTemplateQuery({ params })
-  const { data: switches } = useGetWebAuthTemplateSwitchesQuery({ params })
+  const { data } = useGetWebAuthTemplateQuery({
+    params, enableRbac: isSwitchRbacEnabled
+  })
+  const { data: switches } = useGetWebAuthTemplateSwitchesQuery({
+    params, enableRbac: isSwitchRbacEnabled
+  })
 
   const columns: TableProps<WebAuthSwitchType>['columns'] = React.useMemo(() => {
     return [{
@@ -96,7 +103,7 @@ export default function NetworkSegAuthDetail () {
       sorter: true
     }, {
       key: 'venueName',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venueName',
       sorter: true,
       render: (data, row) => (
@@ -119,7 +126,7 @@ export default function NetworkSegAuthDetail () {
             })
           }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <Button disabled>
             {$t({ defaultMessage: 'Preview' })}
           </Button>,
@@ -128,7 +135,9 @@ export default function NetworkSegAuthDetail () {
               type: ServiceType.WEBAUTH_SWITCH,
               oper: ServiceOperation.EDIT,
               serviceId: params.serviceId as string
-            })}>
+            })}
+            scopeKey={getScopeKeyByService(ServiceType.WEBAUTH_SWITCH, ServiceOperation.EDIT)}
+          >
             <Button key='configure'
               disabled={isDefaultWebAuth(params.serviceId as string)}
               type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>

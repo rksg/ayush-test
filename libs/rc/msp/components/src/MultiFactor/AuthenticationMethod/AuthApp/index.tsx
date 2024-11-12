@@ -1,8 +1,10 @@
-import { Form, Input, Tooltip, Typography, Row } from 'antd'
+import { Form, Input, Row, Tooltip, Typography } from 'antd'
+import { QRCodeSVG }                             from 'qrcode.react'
 import { useIntl }                               from 'react-intl'
 import styled                                    from 'styled-components/macro'
 
-import { Drawer }              from '@acx-ui/components'
+import { Drawer }                 from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   MFAMethod,
   useMfaRegisterPhoneQuery,
@@ -24,6 +26,7 @@ export const AuthApp = styled((props: AuthAppProps) => {
   const [form] = Form.useForm()
   const { data } = useMfaRegisterPhoneQuery({ params: { userId: userId } })
   const [setupMFAAccount] = useSetupMFAAccountMutation()
+  const isAlternateQRcodeEnabled = useIsSplitOn(Features.MFA_ALTERNATE_QR_CODE_TOGGLE)
 
   const onClose = () => {
     setVisible(false)
@@ -90,15 +93,18 @@ export const AuthApp = styled((props: AuthAppProps) => {
                   { $t({ defaultMessage: 'Open the app, then select "Add Account"' }) }
                 </Typography.Text>
               </li>
-              <li>
+              {isAlternateQRcodeEnabled ? <li>
                 <Typography.Text>
                   { $t({ defaultMessage: 'Scan the QR code below:' }) }
                 </Typography.Text>
-
                 <UI.QRCodeImgWrapper direction='vertical' size='large'>
-                  <img
-                    src={data?.url ?? ''}
-                    alt={data?.url ?? ''}
+                  <QRCodeSVG
+                    value={data?.key?`otpauth://totp/RuckusCloud?secret=${data?.key}`:''}
+                    size={128}
+                    bgColor={'#ffffff'}
+                    fgColor={'#000000'}
+                    level={'L'}
+                    includeMargin={false}
                   />
                   <Row>
                     <Typography.Text>
@@ -110,6 +116,14 @@ export const AuthApp = styled((props: AuthAppProps) => {
                   </Row>
                 </UI.QRCodeImgWrapper>
               </li>
+                : <li>
+                  <div><Typography.Text>
+                    { $t({ defaultMessage: 'Enter this key into the app:' }) }
+                  </Typography.Text></div>
+                  <div><Typography.Text strong>
+                    { data?.key ?? '' }
+                  </Typography.Text></div>
+                </li>}
               <li>
                 <Typography.Text>
                   {

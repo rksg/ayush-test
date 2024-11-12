@@ -1,16 +1,14 @@
 /* eslint-disable max-len */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useContext } from 'react'
 
 import { Form, Switch } from 'antd'
 import { NamePath }     from 'antd/es/form/interface'
-import _                from 'lodash'
+import { clone, set }   from 'lodash'
 import { useIntl }      from 'react-intl'
 
-import { ApRadioTypeEnum, SelectItemOption, SingleRadioSettings, LPIButtonText } from '@acx-ui/rc/components'
-import { isAPLowPower }                                                          from '@acx-ui/rc/services'
-import { AFCStatus }                                                             from '@acx-ui/rc/utils'
-import { AFCProps }                                                              from '@acx-ui/rc/utils'
+import { ApRadioTypeEnum, SingleRadioSettings, LPIButtonText, SupportRadioChannelsContext } from '@acx-ui/rc/components'
+import { isAPLowPower }                                                                     from '@acx-ui/rc/services'
+import { AFCStatus,AFCProps }                                                               from '@acx-ui/rc/utils'
 
 import { ApEditContext, ApDataContext } from '../..'
 import { DisabledDiv, FieldLabel }      from '../../styledComponents'
@@ -24,13 +22,10 @@ export interface ApSingleRadioSettingsPorps {
   disable?: boolean,
   inherit5G?: boolean,
   radioType: ApRadioTypeEnum,
-  bandwidthOptions: SelectItemOption[],
-  supportChannels: any,
   handleChanged?: () => void,
   onResetDefaultValue?: Function,
   testId?: string,
   isUseVenueSettings?: boolean,
-  supportDfsChannels?: any,
   afcProps? : AFCProps
 }
 
@@ -39,12 +34,15 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
   const { $t } = useIntl()
 
   const { isEnabled, enabledFieldName, useVenueSettingsFieldName, radioTypeName, onEnableChanged } = props
-  const { radioType, supportChannels, bandwidthOptions,
-    handleChanged, supportDfsChannels, isUseVenueSettings, afcProps } = props
+  const { radioType, handleChanged, isUseVenueSettings, afcProps } = props
+
+  const { bandwidthRadioOptions } = useContext(SupportRadioChannelsContext)
+  const bandwidthOptions = bandwidthRadioOptions[radioType]
 
   const handleEnableChanged = (checked: boolean) => {
-    onEnableChanged(checked)
+    onEnableChanged(checked, radioType)
   }
+
   const [enableAfc, setEnableAfc] = useState(false)
 
   const {
@@ -57,7 +55,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
   const defaultButtonTextSetting: LPIButtonText = {
     buttonText:
       <p style={{ fontSize: '12px', margin: '0px' }}>
-        {$t({ defaultMessage: 'Standard power' })}
+        {$t({ defaultMessage: 'On' })}
       </p>
     ,
     LPIModeOnChange: setEnableAfc,
@@ -66,18 +64,19 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
   }
 
   function setLPIToggleText () {
-    let newButtonTextSetting = _.clone(defaultButtonTextSetting)
+    let newButtonTextSetting = clone(defaultButtonTextSetting)
     const afcInfo = apViewContextData?.apStatusData?.afcInfo || undefined
     let newButtonText : JSX.Element = (<p style={{ fontSize: '12px', margin: '0px' }}> {$t({ defaultMessage: 'Standard power' })} </p>)
 
-    if(isUseVenueSettings){
+    if (isUseVenueSettings) {
       newButtonText = ( <p style={{ fontSize: '12px', margin: '0px' }}>
         {enableAfc ?
-          $t({ defaultMessage: 'Standard power' }):
-          $t({ defaultMessage: 'Low power' })
+          $t({ defaultMessage: 'On ' }):
+          $t({ defaultMessage: 'Off' })
         }
       </p>)
     }
+
     else {
       if (isAPLowPower(afcInfo) && enableAfc) {
         let defaultButtonText = $t({ defaultMessage: 'Standard power' })
@@ -99,7 +98,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
       }
     }
 
-    _.set(newButtonTextSetting, 'buttonText', newButtonText)
+    set(newButtonTextSetting, 'buttonText', newButtonText)
     return newButtonTextSetting
   }
 
@@ -109,6 +108,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
         <Form.Item
           name={useVenueSettingsFieldName}
           hidden
+          children={<></>}
         />
         <FieldLabel width='180px'>
           {$t({ defaultMessage: 'Enable {radioTypeName} band:' }, { radioTypeName: radioTypeName })}
@@ -131,13 +131,11 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
           <SingleRadioSettings
             context='ap'
             radioType={radioType}
-            supportChannels={supportChannels}
-            bandwidthOptions={bandwidthOptions}
-            supportDfsChannels={supportDfsChannels}
             handleChanged={handleChanged}
             isUseVenueSettings={isUseVenueSettings}
             LPIButtonText={setLPIToggleText()}
             afcProps={afcProps}
+            firmwareProps={{ firmware: apViewContextData?.fwVersion }}
           />
         )
         }

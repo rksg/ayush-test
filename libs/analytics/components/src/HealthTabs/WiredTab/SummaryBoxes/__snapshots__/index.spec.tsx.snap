@@ -1,0 +1,2021 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Wired SummaryBoxes should open the drawer on more info click 1`] = `
+<DocumentFragment>
+  .c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c2 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+.c3 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-green-50);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c7 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-red-50);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c8 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-yellow-40);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c9 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-neutrals-30);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c4 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  -webkit-box-pack: space-evenly;
+  -webkit-justify-content: space-evenly;
+  -ms-flex-pack: space-evenly;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.c6 {
+  opacity: 0.7;
+  color: var(--acx-primary-white);
+  cursor: pointer;
+  font-size: var(--acx-subtitle-6-font-size);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+  line-height: var(--acx-subtitle-6-line-height);
+  border-bottom: 1px dotted var(--acx-primary-white);
+  padding: 10px 0px 0px 0px;
+}
+
+.c11 {
+  opacity: 0.7;
+  color: var(--acx-primary-black);
+  cursor: pointer;
+  font-size: var(--acx-subtitle-6-font-size);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+  line-height: var(--acx-subtitle-6-line-height);
+  border-bottom: 1px dotted var(--acx-primary-black);
+  padding: 10px 0px 0px 0px;
+}
+
+.c5 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column-reverse;
+  -ms-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+.c5 .ant-statistic-title {
+  color: var(--acx-primary-white);
+  font-size: var(--acx-body-4-font-size);
+  min-height: 0px;
+  margin-bottom: 0px;
+  padding: 0px 5px;
+}
+
+.c5 .ant-statistic-content {
+  color: var(--acx-primary-white);
+}
+
+.c5 .ant-statistic-content .ant-statistic-content-value {
+  font-size: 28px;
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+.c5 .ant-statistic-content .ant-statistic-content-suffix {
+  font-size: var(--acx-body-3-font-size);
+}
+
+.c10 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column-reverse;
+  -ms-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+.c10 .ant-statistic-title {
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-4-font-size);
+  min-height: 0px;
+  margin-bottom: 0px;
+  padding: 0px 5px;
+}
+
+.c10 .ant-statistic-content {
+  color: var(--acx-primary-black);
+}
+
+.c10 .ant-statistic-content .ant-statistic-content-value {
+  font-size: 28px;
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+.c10 .ant-statistic-content .ant-statistic-content-suffix {
+  font-size: var(--acx-body-3-font-size);
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
+  >
+    <div
+      class="ant-row "
+      style="margin: -10px -10px -10px -10px;"
+    >
+      <div
+        class="ant-col ant-col-6 c1"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c2"
+        >
+          <div
+            class="c3"
+          >
+            <div
+              class="c4"
+            >
+              <div
+                class="ant-statistic c5"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  DHCP Success
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    70.03%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="c6"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 c1"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c2"
+        >
+          <div
+            class="c7"
+          >
+            <div
+              class="c4"
+            >
+              <div
+                class="ant-statistic c5"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Congested Uplink Ports
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    2.58%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="c6"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 c1"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c2"
+        >
+          <div
+            class="c8"
+          >
+            <div
+              class="c4"
+            >
+              <div
+                class="ant-statistic c5"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Multicast Storm Ports
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    1%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="c6"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 c1"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c2"
+        >
+          <div
+            class="c9"
+          >
+            <div
+              class="c4"
+            >
+              <div
+                class="ant-statistic c10"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  High CPU
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    12.35%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="c11"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Wired SummaryBoxes should render correctly 1`] = `
+<DocumentFragment>
+  .c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c2 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+.c3 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-green-50);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c7 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-red-50);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c8 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-yellow-40);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c9 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-neutrals-30);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c4 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  -webkit-box-pack: space-evenly;
+  -webkit-justify-content: space-evenly;
+  -ms-flex-pack: space-evenly;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.c6 {
+  opacity: 0.7;
+  color: var(--acx-primary-white);
+  cursor: pointer;
+  font-size: var(--acx-subtitle-6-font-size);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+  line-height: var(--acx-subtitle-6-line-height);
+  border-bottom: 1px dotted var(--acx-primary-white);
+  padding: 10px 0px 0px 0px;
+}
+
+.c11 {
+  opacity: 0.7;
+  color: var(--acx-primary-black);
+  cursor: pointer;
+  font-size: var(--acx-subtitle-6-font-size);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+  line-height: var(--acx-subtitle-6-line-height);
+  border-bottom: 1px dotted var(--acx-primary-black);
+  padding: 10px 0px 0px 0px;
+}
+
+.c5 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column-reverse;
+  -ms-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+.c5 .ant-statistic-title {
+  color: var(--acx-primary-white);
+  font-size: var(--acx-body-4-font-size);
+  min-height: 0px;
+  margin-bottom: 0px;
+  padding: 0px 5px;
+}
+
+.c5 .ant-statistic-content {
+  color: var(--acx-primary-white);
+}
+
+.c5 .ant-statistic-content .ant-statistic-content-value {
+  font-size: 28px;
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+.c5 .ant-statistic-content .ant-statistic-content-suffix {
+  font-size: var(--acx-body-3-font-size);
+}
+
+.c10 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column-reverse;
+  -ms-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+.c10 .ant-statistic-title {
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-4-font-size);
+  min-height: 0px;
+  margin-bottom: 0px;
+  padding: 0px 5px;
+}
+
+.c10 .ant-statistic-content {
+  color: var(--acx-primary-black);
+}
+
+.c10 .ant-statistic-content .ant-statistic-content-value {
+  font-size: 28px;
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+.c10 .ant-statistic-content .ant-statistic-content-suffix {
+  font-size: var(--acx-body-3-font-size);
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
+  >
+    <div
+      class="ant-row "
+      style="margin: -10px -10px -10px -10px;"
+    >
+      <div
+        class="ant-col ant-col-6 c1"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c2"
+        >
+          <div
+            class="c3"
+          >
+            <div
+              class="c4"
+            >
+              <div
+                class="ant-statistic c5"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  DHCP Success
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    70.03%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="c6"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 c1"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c2"
+        >
+          <div
+            class="c7"
+          >
+            <div
+              class="c4"
+            >
+              <div
+                class="ant-statistic c5"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Congested Uplink Ports
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    2.58%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="c6"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 c1"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c2"
+        >
+          <div
+            class="c8"
+          >
+            <div
+              class="c4"
+            >
+              <div
+                class="ant-statistic c5"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Multicast Storm Ports
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    0.78%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="c6"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 c1"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c2"
+        >
+          <div
+            class="c9"
+          >
+            <div
+              class="c4"
+            >
+              <div
+                class="ant-statistic c10"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  High CPU
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    12.35%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="c11"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Wired SummaryBoxes should render correctly when 10010e FF is enabled 1`] = `
+<DocumentFragment>
+  .c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c2 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+.c3 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-green-50);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c7 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-red-50);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c8 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-yellow-40);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c9 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-neutrals-30);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c4 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  -webkit-box-pack: space-evenly;
+  -webkit-justify-content: space-evenly;
+  -ms-flex-pack: space-evenly;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.c6 {
+  opacity: 0.7;
+  color: var(--acx-primary-white);
+  cursor: pointer;
+  font-size: var(--acx-subtitle-6-font-size);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+  line-height: var(--acx-subtitle-6-line-height);
+  border-bottom: 1px dotted var(--acx-primary-white);
+  padding: 10px 0px 0px 0px;
+}
+
+.c11 {
+  opacity: 0.7;
+  color: var(--acx-primary-black);
+  cursor: pointer;
+  font-size: var(--acx-subtitle-6-font-size);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+  line-height: var(--acx-subtitle-6-line-height);
+  border-bottom: 1px dotted var(--acx-primary-black);
+  padding: 10px 0px 0px 0px;
+}
+
+.c5 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column-reverse;
+  -ms-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+.c5 .ant-statistic-title {
+  color: var(--acx-primary-white);
+  font-size: var(--acx-body-4-font-size);
+  min-height: 0px;
+  margin-bottom: 0px;
+  padding: 0px 5px;
+}
+
+.c5 .ant-statistic-content {
+  color: var(--acx-primary-white);
+}
+
+.c5 .ant-statistic-content .ant-statistic-content-value {
+  font-size: 28px;
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+.c5 .ant-statistic-content .ant-statistic-content-suffix {
+  font-size: var(--acx-body-3-font-size);
+}
+
+.c10 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column-reverse;
+  -ms-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+.c10 .ant-statistic-title {
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-4-font-size);
+  min-height: 0px;
+  margin-bottom: 0px;
+  padding: 0px 5px;
+}
+
+.c10 .ant-statistic-content {
+  color: var(--acx-primary-black);
+}
+
+.c10 .ant-statistic-content .ant-statistic-content-value {
+  font-size: 28px;
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+.c10 .ant-statistic-content .ant-statistic-content-suffix {
+  font-size: var(--acx-body-3-font-size);
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
+  >
+    <div
+      class="ant-row "
+      style="margin: -10px -10px -10px -10px;"
+    >
+      <div
+        class="ant-col ant-col-6 c1"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c2"
+        >
+          <div
+            class="c3"
+          >
+            <div
+              class="c4"
+            >
+              <div
+                class="ant-statistic c5"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  DHCP Success
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    70.03%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="c6"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 c1"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c2"
+        >
+          <div
+            class="c7"
+          >
+            <div
+              class="c4"
+            >
+              <div
+                class="ant-statistic c5"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Congested Uplink Ports
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    2.58%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="c6"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 c1"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c2"
+        >
+          <div
+            class="c8"
+          >
+            <div
+              class="c4"
+            >
+              <div
+                class="ant-statistic c5"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Multicast Storm Ports
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    1%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="c6"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 c1"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c2"
+        >
+          <div
+            class="c9"
+          >
+            <div
+              class="c4"
+            >
+              <div
+                class="ant-statistic c10"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  High CPU
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    12.35%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="c11"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Wired SummaryBoxes should show no data when no switches 1`] = `
+<DocumentFragment>
+  .c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c2 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+.c3 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-green-50);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c7 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-red-50);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c8 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-yellow-40);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c9 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-neutrals-30);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c4 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  -webkit-box-pack: space-evenly;
+  -webkit-justify-content: space-evenly;
+  -ms-flex-pack: space-evenly;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.c6 {
+  opacity: 0.7;
+  color: var(--acx-primary-white);
+  cursor: pointer;
+  font-size: var(--acx-subtitle-6-font-size);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+  line-height: var(--acx-subtitle-6-line-height);
+  border-bottom: 1px dotted var(--acx-primary-white);
+  padding: 10px 0px 0px 0px;
+}
+
+.c11 {
+  opacity: 0.7;
+  color: var(--acx-primary-black);
+  cursor: pointer;
+  font-size: var(--acx-subtitle-6-font-size);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+  line-height: var(--acx-subtitle-6-line-height);
+  border-bottom: 1px dotted var(--acx-primary-black);
+  padding: 10px 0px 0px 0px;
+}
+
+.c5 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column-reverse;
+  -ms-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+.c5 .ant-statistic-title {
+  color: var(--acx-primary-white);
+  font-size: var(--acx-body-4-font-size);
+  min-height: 0px;
+  margin-bottom: 0px;
+  padding: 0px 5px;
+}
+
+.c5 .ant-statistic-content {
+  color: var(--acx-primary-white);
+}
+
+.c5 .ant-statistic-content .ant-statistic-content-value {
+  font-size: 28px;
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+.c5 .ant-statistic-content .ant-statistic-content-suffix {
+  font-size: var(--acx-body-3-font-size);
+}
+
+.c10 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column-reverse;
+  -ms-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+.c10 .ant-statistic-title {
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-4-font-size);
+  min-height: 0px;
+  margin-bottom: 0px;
+  padding: 0px 5px;
+}
+
+.c10 .ant-statistic-content {
+  color: var(--acx-primary-black);
+}
+
+.c10 .ant-statistic-content .ant-statistic-content-value {
+  font-size: 28px;
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+.c10 .ant-statistic-content .ant-statistic-content-suffix {
+  font-size: var(--acx-body-3-font-size);
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
+  >
+    <div
+      class="ant-row "
+      style="margin: -10px -10px -10px -10px;"
+    >
+      <div
+        class="ant-col ant-col-6 c1"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c2"
+        >
+          <div
+            class="c3"
+          >
+            <div
+              class="c4"
+            >
+              <div
+                class="ant-statistic c5"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  DHCP Success
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    --
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="c6"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 c1"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c2"
+        >
+          <div
+            class="c7"
+          >
+            <div
+              class="c4"
+            >
+              <div
+                class="ant-statistic c5"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Congested Uplink Ports
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    --
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="c6"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 c1"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c2"
+        >
+          <div
+            class="c8"
+          >
+            <div
+              class="c4"
+            >
+              <div
+                class="ant-statistic c5"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Multicast Storm Ports
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    --
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="c6"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 c1"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c2"
+        >
+          <div
+            class="c9"
+          >
+            <div
+              class="c4"
+            >
+              <div
+                class="ant-statistic c10"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  High CPU
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    0%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="c11"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Wired SummaryBoxes should show when no data 1`] = `
+<DocumentFragment>
+  .c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c2 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+.c3 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-green-50);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c7 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-red-50);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c8 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-yellow-40);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c9 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-neutrals-30);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c4 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  -webkit-box-pack: space-evenly;
+  -webkit-justify-content: space-evenly;
+  -ms-flex-pack: space-evenly;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.c6 {
+  opacity: 0.7;
+  color: var(--acx-primary-white);
+  cursor: pointer;
+  font-size: var(--acx-subtitle-6-font-size);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+  line-height: var(--acx-subtitle-6-line-height);
+  border-bottom: 1px dotted var(--acx-primary-white);
+  padding: 10px 0px 0px 0px;
+}
+
+.c11 {
+  opacity: 0.7;
+  color: var(--acx-primary-black);
+  cursor: pointer;
+  font-size: var(--acx-subtitle-6-font-size);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+  line-height: var(--acx-subtitle-6-line-height);
+  border-bottom: 1px dotted var(--acx-primary-black);
+  padding: 10px 0px 0px 0px;
+}
+
+.c5 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column-reverse;
+  -ms-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+.c5 .ant-statistic-title {
+  color: var(--acx-primary-white);
+  font-size: var(--acx-body-4-font-size);
+  min-height: 0px;
+  margin-bottom: 0px;
+  padding: 0px 5px;
+}
+
+.c5 .ant-statistic-content {
+  color: var(--acx-primary-white);
+}
+
+.c5 .ant-statistic-content .ant-statistic-content-value {
+  font-size: 28px;
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+.c5 .ant-statistic-content .ant-statistic-content-suffix {
+  font-size: var(--acx-body-3-font-size);
+}
+
+.c10 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column-reverse;
+  -ms-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+.c10 .ant-statistic-title {
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-4-font-size);
+  min-height: 0px;
+  margin-bottom: 0px;
+  padding: 0px 5px;
+}
+
+.c10 .ant-statistic-content {
+  color: var(--acx-primary-black);
+}
+
+.c10 .ant-statistic-content .ant-statistic-content-value {
+  font-size: 28px;
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+.c10 .ant-statistic-content .ant-statistic-content-suffix {
+  font-size: var(--acx-body-3-font-size);
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
+  >
+    <div
+      class="ant-row "
+      style="margin: -10px -10px -10px -10px;"
+    >
+      <div
+        class="ant-col ant-col-6 c1"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c2"
+        >
+          <div
+            class="c3"
+          >
+            <div
+              class="c4"
+            >
+              <div
+                class="ant-statistic c5"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  DHCP Success
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    0%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="c6"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 c1"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c2"
+        >
+          <div
+            class="c7"
+          >
+            <div
+              class="c4"
+            >
+              <div
+                class="ant-statistic c5"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Congested Uplink Ports
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    0%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="c6"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 c1"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c2"
+        >
+          <div
+            class="c8"
+          >
+            <div
+              class="c4"
+            >
+              <div
+                class="ant-statistic c5"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  Multicast Storm Ports
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    0%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="c6"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 c1"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c2"
+        >
+          <div
+            class="c9"
+          >
+            <div
+              class="c4"
+            >
+              <div
+                class="ant-statistic c10"
+                style="width: 100%;"
+              >
+                <div
+                  class="ant-statistic-title"
+                >
+                  High CPU
+                </div>
+                <div
+                  class="ant-statistic-content"
+                >
+                  <span
+                    class="ant-statistic-content-value"
+                  >
+                    0%
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="c11"
+            >
+              (More details)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

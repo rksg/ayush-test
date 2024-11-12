@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { LayoutProps }                                            from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { LayoutProps, ItemType }                    from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   AIOutlined,
   AISolid,
@@ -23,37 +23,73 @@ import {
   SwitchSolid,
   WiFi,
   DevicesOutlined,
-  DevicesSolid
+  DevicesSolid,
+  DataStudioOutlined,
+  DataStudioSolid
 } from '@acx-ui/icons'
+import { useIsEdgeReady } from '@acx-ui/rc/components'
 import {
+  getPolicyListRoutePath,
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
   hasAdministratorTab
 } from '@acx-ui/rc/utils'
-import { RolesEnum }                       from '@acx-ui/types'
-import { hasRoles, useUserProfileContext } from '@acx-ui/user'
-import { useTenantId }                     from '@acx-ui/utils'
+import { RolesEnum }                                      from '@acx-ui/types'
+import { hasRoles, useUserProfileContext, RaiPermission } from '@acx-ui/user'
+import { useTenantId }                                    from '@acx-ui/utils'
 
 export function useMenuConfig () {
   const { $t } = useIntl()
   const tenantID = useTenantId()
-  const { data: userProfileData } = useUserProfileContext()
+  const { data: userProfileData, isCustomRole } = useUserProfileContext()
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
-  const showVideoCallQoe = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-  const isServiceEnabled = useIsSplitOn(Features.SERVICES)
-  const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
+  const isEdgeEnabled = useIsEdgeReady()
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
-  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
+  const isReportsAdmin = hasRoles([RolesEnum.REPORTS_ADMIN])
   const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantID)
-  const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
-  const crrmEnabled = useIsSplitOn(Features.AI_CRRM)
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
   const showApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
+  const isSwitchHealthEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
+    useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
+  ].some(Boolean)
+  const isIntentAIEnabled = useIsSplitOn(Features.INTENT_AI_TOGGLE)
+
+  type Item = ItemType & {
+    permission?: RaiPermission
+    hidden?: boolean
+    children?: Item[]
+  }
+  const aiAnalyticsMenu = [{
+    permission: 'READ_INCIDENTS',
+    uri: '/analytics/incidents',
+    label: $t({ defaultMessage: 'Incidents' })
+  }] as Item[]
+  if (isIntentAIEnabled) {
+    aiAnalyticsMenu.push({
+      permission: 'READ_INTENT_AI',
+      uri: '/analytics/intentAI',
+      label: $t({ defaultMessage: 'IntentAI' }),
+      superscript: $t({ defaultMessage: 'beta' })
+    })
+  } else {
+    aiAnalyticsMenu
+      .push({
+        permission: 'READ_AI_DRIVEN_RRM',
+        uri: '/analytics/recommendations/crrm',
+        label: $t({ defaultMessage: 'AI-Driven RRM' })
+      }, {
+        permission: 'READ_AI_OPERATIONS',
+        uri: '/analytics/recommendations/aiOps',
+        label: $t({ defaultMessage: 'AI Operations' })
+      })
+  }
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -62,7 +98,7 @@ export function useMenuConfig () {
       inactiveIcon: SpeedIndicatorOutlined,
       activeIcon: SpeedIndicatorSolid
     },
-    ...(isAdmin ? [{
+    {
       label: $t({ defaultMessage: 'AI Assurance' }),
       inactiveIcon: AIOutlined,
       activeIcon: AISolid,
@@ -70,27 +106,14 @@ export function useMenuConfig () {
         {
           type: 'group' as const,
           label: $t({ defaultMessage: 'AI Analytics' }),
-          children: [
-            {
-              uri: '/analytics/incidents',
-              label: $t({ defaultMessage: 'Incidents' })
-            },
-            ...(crrmEnabled ? [{
-              uri: '/analytics/recommendations/crrm',
-              label: $t({ defaultMessage: 'AI-Driven RRM' })
-            }] : []),
-            ...(recommendationsEnabled ? [{
-              uri: '/analytics/recommendations/aiOps',
-              label: $t({ defaultMessage: 'AI Operations' })
-            }] : [])
-          ]
+          children: aiAnalyticsMenu
         },
         {
           type: 'group' as const,
           label: $t({ defaultMessage: 'Network Assurance' }),
           children: [
             {
-              uri: '/analytics/health',
+              uri: `/analytics/health${isSwitchHealthEnabled ? '/overview' : ''}`,
               label: $t({ defaultMessage: 'Health' })
             },
             ...(isAnltAdvTier ? [{
@@ -101,17 +124,17 @@ export function useMenuConfig () {
               uri: '/analytics/configChange',
               label: $t({ defaultMessage: 'Config Change' })
             }] : []),
-            ...(isAnltAdvTier && showVideoCallQoe ? [{
+            ...(isAnltAdvTier ? [{
               uri: '/analytics/videoCallQoe',
               label: $t({ defaultMessage: 'Video Call QoE' })
             }] : [])
           ]
         }
       ]
-    }]: []),
+    },
     {
       uri: '/venues',
-      label: $t({ defaultMessage: 'Venues' }),
+      label: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       inactiveIcon: LocationOutlined,
       activeIcon: LocationSolid
     },
@@ -262,31 +285,29 @@ export function useMenuConfig () {
     ...(isEdgeEnabled ? [{
       uri: '/devices/edge',
       isActiveCheck: new RegExp('^/devices/edge'),
-      label: $t({ defaultMessage: 'SmartEdge' }),
+      label: $t({ defaultMessage: 'RUCKUS Edge' }),
       inactiveIcon: SmartEdgeOutlined,
       activeIcon: SmartEdgeSolid
     }] : []),
-    ...(isServiceEnabled || isPolicyEnabled ? [{
+    {
       label: $t({ defaultMessage: 'Network Control' }),
       inactiveIcon: ServicesOutlined,
       activeIcon: ServicesSolid,
       children: [
-        ...(isServiceEnabled ? [
-          {
-            uri: getServiceListRoutePath(true),
-            isActiveCheck: new RegExp('^(?=/services/)((?!catalog).)*$'),
-            label: $t({ defaultMessage: 'My Services' })
-          },
-          {
-            uri: getServiceCatalogRoutePath(true),
-            label: $t({ defaultMessage: 'Service Catalog' })
-          }
-        ] : []),
-        ...(isPolicyEnabled
-          ? [{ uri: '/policies', label: $t({ defaultMessage: 'Policies & Profiles' }) }]
-          : [])
+        {
+          uri: getServiceListRoutePath(true),
+          isActiveCheck: new RegExp('^(?=/services/)((?!catalog).)*$'),
+          label: $t({ defaultMessage: 'My Services' })
+        },
+        {
+          uri: getServiceCatalogRoutePath(true),
+          label: $t({ defaultMessage: 'Service Catalog' })
+        },
+        { uri: getPolicyListRoutePath(true),
+          label: $t({ defaultMessage: 'Policies & Profiles' })
+        }
       ]
-    }] : []),
+    },
     {
       label: $t({ defaultMessage: 'Business Insights' }),
       inactiveIcon: BulbOutlined,
@@ -324,31 +345,52 @@ export function useMenuConfig () {
           type: 'group' as const,
           label: $t({ defaultMessage: 'Account Management' }),
           children: [
-            {
-              uri: '/administration/accountSettings',
-              label: $t({ defaultMessage: 'Settings' })
-            },
-            ...(isAdministratorAccessible ? [{
-              uri: '/administration/administrators',
-              label: $t({ defaultMessage: 'Administrators' })
-            }] : []),
-            {
-              uri: '/administration/notifications',
-              label: $t({ defaultMessage: 'Notifications' })
-            },
-            {
-              uri: '/administration/subscriptions',
-              label: $t({ defaultMessage: 'Subscriptions' })
-            },
+            ...(
+              !isCustomRole ? [
+                {
+                  uri: '/administration/accountSettings',
+                  label: $t({ defaultMessage: 'Settings' })
+                }
+              ] : []
+            ),
+            ...(isAdministratorAccessible && !isCustomRole ? [
+              isAbacToggleEnabled ? {
+                uri: '/administration/userPrivileges',
+                label: $t({ defaultMessage: 'Users & Privileges' })
+              } : {
+                uri: '/administration/administrators',
+                label: $t({ defaultMessage: 'Administrators' })
+              }
+            ] : []),
+            ...(
+              !isCustomRole ? [
+                {
+                  uri: '/administration/notifications',
+                  label: $t({ defaultMessage: 'Notifications' })
+                },
+                {
+                  uri: '/administration/subscriptions',
+                  label: $t({ defaultMessage: 'Subscriptions' })
+                }
+              ] : []
+            ),
             {
               uri: '/administration/fwVersionMgmt',
               label: $t({ defaultMessage: 'Version Management' })
             },
-            {
-              uri: '/administration/onpremMigration',
-              label: $t({ defaultMessage: 'ZD Migration' })
-            },
-            ...(isRadiusClientEnabled ? [{
+            ...(
+              !isCustomRole ? [
+                {
+                  uri: '/administration/webhooks',
+                  label: $t({ defaultMessage: 'Webhooks' })
+                },
+                {
+                  uri: '/administration/onpremMigration',
+                  label: $t({ defaultMessage: 'ZD Migration' })
+                }
+              ] : []
+            ),
+            ...(isRadiusClientEnabled && !isCustomRole ? [{
               uri: '/administration/localRadiusServer',
               label: $t({ defaultMessage: 'Local RADIUS Server' })
             }] : [])
@@ -357,6 +399,35 @@ export function useMenuConfig () {
       ]
     }
   ]
-  if (isGuestManager || isDPSKAdmin) { return [] }
+  if (isGuestManager) {
+    return [
+      {
+        label: $t({
+          defaultMessage: 'Guest Pass Credentials'
+        }),
+        inactiveIcon: AccountCircleOutlined,
+        activeIcon: AccountCircleSolid,
+        uri: '/users/guestsManager'
+      }
+    ]}
+  if (isDPSKAdmin) { return [] }
+  if (isReportsAdmin) {
+    return [
+      {
+        label: $t({ defaultMessage: 'Data Studio' }),
+        inactiveIcon: DataStudioOutlined,
+        activeIcon: DataStudioSolid,
+        uri: '/dataStudio',
+        isActiveCheck: new RegExp('^/dataStudio')
+      },
+      {
+        label: $t({ defaultMessage: 'Reports' }),
+        inactiveIcon: DataStudioOutlined,
+        activeIcon: DataStudioSolid,
+        uri: '/reports',
+        isActiveCheck: new RegExp('^/reports')
+      }
+    ]
+  }
   return config
 }

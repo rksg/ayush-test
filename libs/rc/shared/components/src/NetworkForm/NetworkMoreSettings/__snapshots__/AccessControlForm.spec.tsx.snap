@@ -1,0 +1,236 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AccessControlForm should render Access Control form successfully 1`] = `
+<DocumentFragment>
+  .c2 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c2 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c2 svg:before {
+  content: 'a';
+}
+
+.c2 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c2.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c2.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c2.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c2.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c2[disabled] svg path,
+.c2.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c2[disabled].ant-btn-link svg path,
+.c2.ant-btn-disabled.ant-btn-link svg path,
+.c2[disabled].ant-btn-default svg path,
+.c2.ant-btn-disabled.ant-btn-default svg path,
+.c2[disabled].ant-btn-primary svg path,
+.c2.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+h1.c0.ant-typography {
+  line-height: var(--acx-subtitle-1-line-height);
+  font-size: var(--acx-subtitle-1-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-1-font-weight);
+}
+
+h2.c0.ant-typography {
+  line-height: var(--acx-subtitle-2-line-height);
+  font-size: var(--acx-subtitle-2-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-2-font-weight);
+}
+
+h3.c0.ant-typography {
+  line-height: var(--acx-subtitle-3-line-height);
+  font-size: var(--acx-subtitle-3-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-3-font-weight);
+}
+
+h4.c0.ant-typography {
+  line-height: var(--acx-subtitle-4-line-height);
+  font-size: var(--acx-subtitle-4-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-4-font-weight);
+}
+
+h5.c0.ant-typography {
+  line-height: var(--acx-subtitle-5-line-height);
+  font-size: var(--acx-subtitle-5-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-5-font-weight);
+}
+
+.c1.ant-typography {
+  margin-top: 20px;
+  margin-bottom: 12px;
+}
+
+.c3 {
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  line-height: 32px;
+  grid-template-columns: 175px 1fr;
+}
+
+<form
+    class="ant-form ant-form-horizontal"
+  >
+    <div
+      style="margin-bottom: 30px;"
+    >
+      <span
+        style="display: grid; grid-template-columns: 165px 140px 300px; align-items: baseline; margin: 20px 0px;"
+      >
+        <h4
+          class="ant-typography c0 c1"
+        >
+          Access Control
+        </h4>
+        <button
+          class="ant-btn ant-btn-link c2"
+          type="button"
+        >
+          <span>
+            Select separate profiles
+          </span>
+        </button>
+      </span>
+      <div
+        class="c3"
+        width="175px"
+      >
+        Access Control
+        <div
+          class="ant-form-item"
+          style="margin-bottom: 10px;"
+        >
+          <div
+            class="ant-row ant-form-item-row"
+          >
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                >
+                  <button
+                    aria-checked="false"
+                    class="ant-switch"
+                    id="accessControlProfileEnable"
+                    role="switch"
+                    type="button"
+                  >
+                    <div
+                      class="ant-switch-handle"
+                    />
+                    <span
+                      class="ant-switch-inner"
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="c3"
+        style="font-weight: 700;"
+        width="175px"
+      >
+        <span>
+          Access Policy
+        </span>
+        <span>
+          Policy Details
+        </span>
+      </div>
+      <div
+        class="c3"
+        width="175px"
+      >
+        Layer 2
+        <span>
+          --
+        </span>
+      </div>
+      <div
+        class="c3"
+        width="175px"
+      >
+        Layer 3
+        <span>
+          --
+        </span>
+      </div>
+      <div
+        class="c3"
+        width="175px"
+      >
+        Device & OS
+        <span>
+          --
+        </span>
+      </div>
+      <div
+        class="c3"
+        width="175px"
+      >
+        Applications
+        <span>
+          --
+        </span>
+      </div>
+      <div
+        class="c3"
+        width="175px"
+      >
+        Client Rate Limit
+        <span>
+          --
+        </span>
+      </div>
+    </div>
+  </form>
+</DocumentFragment>
+`;

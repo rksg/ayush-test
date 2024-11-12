@@ -1,11 +1,14 @@
 import { createContext, useEffect, useState } from 'react'
 
-import { showActionModal, CustomButtonProps }       from '@acx-ui/components'
-import { useGetApCapabilitiesQuery, useGetApQuery } from '@acx-ui/rc/services'
-import { ApDeep, ApModel, ApViewModel }             from '@acx-ui/rc/utils'
-import { useParams }                                from '@acx-ui/react-router-dom'
-import { getIntl }                                  from '@acx-ui/utils'
+import { CustomButtonProps, Loader, showActionModal }              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { useApViewModelQuery, useGetApQuery, useGetVenueQuery }    from '@acx-ui/rc/services'
+import { ApDeep, ApViewModel, CapabilitiesApModel, VenueExtended } from '@acx-ui/rc/utils'
+import { useParams }                                               from '@acx-ui/react-router-dom'
+import { goToNotFound }                                            from '@acx-ui/user'
+import { getIntl }                                                 from '@acx-ui/utils'
 
+import { useGetApCapabilities } from '../hooks'
 
 import { AdvancedTab, ApAdvancedContext }             from './AdvancedTab'
 import ApEditPageHeader                               from './ApEditPageHeader'
@@ -24,7 +27,8 @@ const tabs = {
 
 export const ApDataContext = createContext({} as {
   apData?: ApDeep,
-  apCapabilities?: ApModel
+  apCapabilities?: CapabilitiesApModel,
+  venueData?: VenueExtended
 })
 
 export interface ApEditContextType {
@@ -60,10 +64,25 @@ export interface ApEditContextExtendedProps extends ApEditContextProps {
 
 export const ApEditContext = createContext({} as ApEditContextExtendedProps)
 
+const apViewModelRbacPayloadFields = [
+  'name', 'venueId', 'venueName', 'apGroupName', 'description', 'lastSeenTime',
+  'serialNumber', 'macAddress', 'networkStatus', 'model', 'firmwareVersion',
+  'meshRole', 'hops', 'apUpRssi', 'status', 'statusSeverity',
+  'meshEnabled', 'lastUpdatedTime', 'deviceModelType',
+  'uplink', 'uptime', 'tags', 'radioStatuses', 'lanPortStatuses', 'afcStatus', 'cellularStatus']
+
+const apViewModelPayloadFields = [
+  'name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
+  'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
+  'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
+  'isMeshEnable', 'lastUpdTime', 'deviceModelType', 'apStatusData.APSystem.uptime',
+  'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags',
+  'apStatusData.afcInfo.powerMode', 'apStatusData.afcInfo.afcStatus','apRadioDeploy']
+
 export function ApEdit () {
-  const params = useParams()
-  const { activeTab } = params
-  const Tab = tabs[activeTab as keyof typeof tabs]
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const { serialNumber, activeTab } = useParams()
+  const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
 
   const [previousPath, setPreviousPath] = useState('')
   const [isOnlyOneTab, setIsOnlyOneTab] = useState(false)
@@ -78,57 +97,95 @@ export function ApEdit () {
   const [apViewContextData, setApViewContextData] = useState({} as ApViewModel)
 
   const [apData, setApData] = useState<ApDeep>()
-  const [apCapabilities, setApCapabilities] = useState<ApModel>()
+  const [apCapabilities, setApCapabilities] = useState<CapabilitiesApModel>()
   const [isLoaded, setIsLoaded] = useState(false)
 
-  const getAp = useGetApQuery({ params })
-  const getApCapabilities = useGetApCapabilitiesQuery({ params }, { skip: isLoaded })
+  const apViewModelPayload = {
+    fields: isUseWifiRbacApi ? apViewModelRbacPayloadFields : apViewModelPayloadFields,
+    filters: { serialNumber: [serialNumber] }
+  }
+  const { data: apViewmodel } = useApViewModelQuery({
+    payload: apViewModelPayload,
+    enableRbac: isUseWifiRbacApi
+  })
+
+  const { data: getedApData, isLoading: isGetApLoading } = useGetApQuery({
+    params: { serialNumber, venueId: apViewmodel?.venueId },
+    enableRbac: isUseWifiRbacApi
+  }, { skip: isUseWifiRbacApi && !apViewmodel?.venueId })
+
+  // venueId is not exist in RBAC version AP data
+  const targetVenueId = isUseWifiRbacApi ? apViewmodel?.venueId : getedApData?.venueId
+
+  const params = {
+    venueId: targetVenueId,
+    serialNumber
+  }
+
+  const { data: capabilities, isLoading: isGetApCapsLoading } = useGetApCapabilities({
+    params,
+    modelName: getedApData?.model,
+    skip: isLoaded,
+    enableRbac: isUseWifiRbacApi
+  })
+
+  // fetch venueName
+  const {
+    data: venueData
+  } = useGetVenueQuery({
+    params: {
+      venueId: targetVenueId
+    } }, { skip: !targetVenueId } )
+
 
   useEffect(() => {
-    const data = getAp?.data
-    const modelName = data?.model
-    const capabilities = getApCapabilities.data
-
-    if (modelName && capabilities) {
-      const setData = async () => {
-        const curApCapabilities = capabilities.apModels.find(cap => cap.model === modelName)
-
-        setApData(data)
-        setApCapabilities(curApCapabilities)
+    if (!isGetApLoading && !isGetApCapsLoading) {
+      const modelName = getedApData?.model
+      if (modelName && capabilities) {
+        setApData(getedApData)
+        setApCapabilities(capabilities)
 
         setIsLoaded(true)
       }
+    }
+  }, [isGetApLoading, getedApData?.venueId, isGetApCapsLoading, capabilities])
 
-      setData()
+  useEffect(() => {
+    if (apViewmodel) {
+      setIsOnlyOneTab(!apViewmodel?.model)
+      setApViewContextData(apViewmodel)
     }
 
-  }, [getAp?.data?.venueId, getApCapabilities?.data])
+  }, [apViewmodel])
 
-  return <ApEditContext.Provider value={{
-    editContextData,
-    setEditContextData,
-    previousPath,
-    setPreviousPath,
-    isOnlyOneTab,
-    setIsOnlyOneTab,
-    editRadioContextData,
-    setEditRadioContextData,
-    editNetworkingContextData,
-    setEditNetworkingContextData,
-    editNetworkControlContextData,
-    setEditNetworkControlContextData,
-    editAdvancedContextData,
-    setEditAdvancedContextData,
-    apViewContextData,
-    setApViewContextData
-  }}>
-    <ApEditPageHeader />
-    { Tab &&
-    <ApDataContext.Provider value={{ apData, apCapabilities }}>
-      <Tab />
-    </ApDataContext.Provider>
-    }
-  </ApEditContext.Provider>
+  // need to wait venueData ready, venueData.id is using inside all tabs.
+  const isLoading = !venueData
+
+  return <ApDataContext.Provider value={{ apData, apCapabilities, venueData }}>
+    <ApEditContext.Provider value={{
+      editContextData,
+      setEditContextData,
+      previousPath,
+      setPreviousPath,
+      isOnlyOneTab,
+      setIsOnlyOneTab,
+      editRadioContextData,
+      setEditRadioContextData,
+      editNetworkingContextData,
+      setEditNetworkingContextData,
+      editNetworkControlContextData,
+      setEditNetworkControlContextData,
+      editAdvancedContextData,
+      setEditAdvancedContextData,
+      apViewContextData,
+      setApViewContextData
+    }}>
+      <Loader states={[{ isLoading }]}>
+        <ApEditPageHeader />
+        { Tab && <Tab />}
+      </Loader>
+    </ApEditContext.Provider>
+  </ApDataContext.Provider>
 }
 
 interface ApEditSettingsProps {
@@ -152,6 +209,8 @@ const processApEditSettings = (props: ApEditSettingsProps) => {
       editRadioContextData.updateWifiRadio?.()
       editRadioContextData.updateClientAdmissionControl?.()
       editRadioContextData.updateExternalAntenna?.()
+      editRadioContextData.updateApAntennaType?.()
+      editRadioContextData.updateClientSteering?.()
       break
     case 'networking':
       editNetworkingContextData.updateIpSettings?.()
@@ -187,6 +246,8 @@ const discardApEditSettings = (props: ApEditSettingsProps) => {
       editRadioContextData.discardWifiRadioChanges?.()
       editRadioContextData.discardClientAdmissionControlChanges?.()
       editRadioContextData.discardExternalAntennaChanges?.()
+      editRadioContextData.discardApAntennaTypeChanges?.()
+      editRadioContextData.discardClientSteeringChanges?.()
       break
     case 'networking':
       editNetworkingContextData.discardIpSettingsChanges?.()
@@ -240,7 +301,10 @@ const resetApEditContextData = (props: ApEditContextProps) => {
       delete newRadioContextData.updateClientAdmissionControl
       delete newRadioContextData.discardClientAdmissionControlChanges
       delete newRadioContextData.updateExternalAntenna
+      delete newRadioContextData.updateApAntennaType
       delete newRadioContextData.discardWifiRadioChanges
+      delete newRadioContextData.updateClientSteering
+      delete newRadioContextData.discardClientSteeringChanges
 
       setEditRadioContextData(newRadioContextData)
       break

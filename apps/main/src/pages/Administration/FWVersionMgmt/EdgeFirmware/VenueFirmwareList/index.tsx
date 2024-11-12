@@ -9,7 +9,14 @@ import {
   Tooltip,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
+import { EdgeChangeScheduleDialog, EdgeUpdateNowDialog, useIsEdgeFeatureReady, useSwitchFirmwareUtils } from '@acx-ui/rc/components'
+import {
+  compareVersions,
+  getNextScheduleTpl,
+  isSwitchNextScheduleTooltipDisabled,
+  toUserDate
+} from '@acx-ui/rc/components'
 import {
   useGetAvailableEdgeFirmwareVersionsQuery,
   useGetEdgeUpgradePreferencesQuery,
@@ -18,7 +25,10 @@ import {
   useSkipEdgeUpgradeSchedulesMutation,
   useUpdateEdgeFirmwareNowMutation,
   useUpdateEdgeUpgradePreferencesMutation,
-  useUpdateEdgeVenueSchedulesMutation
+  useUpdateEdgeVenueSchedulesMutation,
+  useStartEdgeFirmwareVenueUpdateNowMutation,
+  useUpdateEdgeFirmwareVenueScheduleMutation,
+  useSkipEdgeFirmwareVenueScheduleMutation
 } from '@acx-ui/rc/services'
 import {
   EdgeFirmwareVersion,
@@ -32,28 +42,22 @@ import {
   firmwareTypeTrans,
   sortProp
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { noDataDisplay }             from '@acx-ui/utils'
-
+import { EdgeScopes, RolesEnum } from '@acx-ui/types'
 import {
-  compareVersions,
-  getNextScheduleTpl,
-  getSwitchNextScheduleTplTooltip,
-  isSwitchNextScheduleTooltipDisabled,
-  toUserDate
-} from '../../FirmwareUtils'
+  filterByAccess,
+  hasPermission,
+  hasRoles
+} from '@acx-ui/user'
+import { noDataDisplay } from '@acx-ui/utils'
+
 import { PreferencesDialog } from '../../PreferencesDialog'
 import * as UI               from '../../styledComponents'
-
-import { ChangeScheduleDialog } from './ChangeScheduleDialog'
-import { UpdateNowDialog }      from './UpdateNowDialog'
-
 
 export function VenueFirmwareList () {
   const intl = useIntl()
   const { $t } = intl
   const params = useParams()
-  const isScheduleUpdateReady = useIsSplitOn(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
+  const isScheduleUpdateReady = useIsEdgeFeatureReady(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
   const transform = firmwareTypeTrans($t)
   const [venueIds, setVenueIds] = useState<string[]>([])
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
@@ -64,6 +68,7 @@ export function VenueFirmwareList () {
   const [updateModalVisible, setUpdateModalVisible] = useState(false)
   const [preferenceModalVisible, setPreferenceModalVisible] = useState(false)
   const [changeScheduleModal, setChangeScheduleModal] = useState(false)
+  const { getSwitchNextScheduleTplTooltip } = useSwitchFirmwareUtils()
   const {
     data: venueFirmwareList,
     isLoading: isVenueFirmwareListLoading
@@ -91,9 +96,15 @@ export function VenueFirmwareList () {
   const [updateSchedule] = useUpdateEdgeVenueSchedulesMutation()
   const [skipSchedule] = useSkipEdgeUpgradeSchedulesMutation()
 
+  const isBatchOperationEnable = useIsSplitOn(
+    Features.EDGE_FIRMWARE_NOTIFICATION_BATCH_OPERATION_TOGGLE)
+  const [startEdgeFirmwareVenueUpdateNow] = useStartEdgeFirmwareVenueUpdateNowMutation()
+  const [updateEdgeFirmwareVenueSchedule] = useUpdateEdgeFirmwareVenueScheduleMutation()
+  const [skipEdgeFirmwareVenueSchedule] = useSkipEdgeFirmwareVenueScheduleMutation()
+
   const columns: TableProps<EdgeVenueFirmware>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Venue Name' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular> Name' }),
       key: 'name',
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },
@@ -160,6 +171,7 @@ export function VenueFirmwareList () {
 
   const rowActions: TableProps<EdgeVenueFirmware>['rowActions'] = [
     {
+      scopeKey: [EdgeScopes.UPDATE],
       visible: (selectedRows) => {
         const hasOutdatedFw = selectedRows?.every(
           item => latestReleaseVersion?.id &&
@@ -179,6 +191,7 @@ export function VenueFirmwareList () {
   if(isScheduleUpdateReady) {
     rowActions.push(...[
       {
+        scopeKey: [EdgeScopes.UPDATE],
         visible: (selectedRows: EdgeVenueFirmware[]) => {
           return selectedRows.every(row => hasSchedule(row))
         },
@@ -194,6 +207,7 @@ export function VenueFirmwareList () {
         }
       },
       {
+        scopeKey: [EdgeScopes.UPDATE],
         visible: (selectedRows: EdgeVenueFirmware[]) => {
           return selectedRows.every(row => hasSchedule(row))
         },
@@ -204,13 +218,27 @@ export function VenueFirmwareList () {
             width: 460,
             title: $t({ defaultMessage: 'Skip This Update?' }),
             // eslint-disable-next-line max-len
-            content: $t({ defaultMessage: 'Please confirm that you wish to exclude the selected venues from this scheduled update' }),
+            content: $t({ defaultMessage: 'Please confirm that you wish to exclude the selected <venuePlural></venuePlural> from this scheduled update' }),
             okText: $t({ defaultMessage: 'Skip' }),
             cancelText: $t({ defaultMessage: 'Cancel' }),
             onOk () {
-              skipSchedule({
-                payload: selectedRows.map((row) => row.id)
-              }).then(clearSelection)
+              const requests = []
+              try {
+                if (isBatchOperationEnable) {
+                  requests.push(skipEdgeFirmwareVenueSchedule({
+                    payload: { venueIds: selectedRows.map((row) => row.id) }
+                  }))
+                } else {
+                  for(let row of selectedRows) {
+                    requests.push(skipSchedule({
+                      params: { venueId: row.id }
+                    }))
+                  }
+                }
+                Promise.all(requests).then(() => clearSelection())
+              } catch (error) {
+                console.log(error) // eslint-disable-line no-console
+              }
             },
             onCancel () {}
           })
@@ -224,13 +252,28 @@ export function VenueFirmwareList () {
   }
 
   const handleUpdateModalSubmit = async (data: string) => {
+    const requests = []
     const payload = {
-      venueIds: venueIds,
       version: data
     }
     try {
-      await updateNow({ payload }).unwrap()
-      setSelectedRowKeys([])
+      if (isBatchOperationEnable) {
+        requests.push(startEdgeFirmwareVenueUpdateNow({
+          payload: {
+            venueIds: venueIds,
+            version: data,
+            state: 'UPDATE_NOW'
+          }
+        }))
+      } else {
+        for(let venueId of venueIds) {
+          requests.push(updateNow({
+            params: { venueId },
+            payload
+          }))
+        }
+      }
+      Promise.all(requests).then(() => setSelectedRowKeys([]))
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -253,14 +296,38 @@ export function VenueFirmwareList () {
   }
 
   const handleChangeScheduleModalSubmit = async (data: EdgeUpdateScheduleRequest) => {
-    const payload = { ...data, venueIds }
+    const requests = []
+    const payload = { ...data }
     try {
-      await updateSchedule({ payload }).unwrap()
-      setSelectedRowKeys([])
+      if (isBatchOperationEnable) {
+        requests.push(updateEdgeFirmwareVenueSchedule({
+          payload: {
+            venueIds: venueIds,
+            date: payload.date,
+            time: payload.time,
+            version: payload.version
+          }
+        }))
+      } else {
+        for(let venueId of venueIds) {
+          requests.push(updateSchedule({
+            params: { venueId },
+            payload
+          }))
+        }
+      }
+      Promise.all(requests).then(() => setSelectedRowKeys([]))
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
+
+  const isSelectionVisible = hasPermission({
+    scopes: [EdgeScopes.UPDATE]
+  })
+
+  const isPreferencesVisible
+  = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   return (
     <Loader states={[
@@ -271,19 +338,18 @@ export function VenueFirmwareList () {
         dataSource={venueFirmwareList}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'checkbox', selectedRowKeys }}
-        actions={[
-          ...(
-            isScheduleUpdateReady ? [
-              {
-                label: $t({ defaultMessage: 'Preferences' }),
-                onClick: () => setPreferenceModalVisible(true)
-              }
-            ] : []
-          )
-        ]}
+        rowSelection={isSelectionVisible && { type: 'checkbox', selectedRowKeys }}
+        actions={
+          isPreferencesVisible && isScheduleUpdateReady ? [{
+            label: $t({ defaultMessage: 'Preferences' }),
+            onClick: () => setPreferenceModalVisible(true)
+          }]
+            : []
+
+        }
+
       />
-      <UpdateNowDialog
+      <EdgeUpdateNowDialog
         visible={updateModalVisible}
         availableVersions={availableVersions}
         onCancel={handleUpdateModalCancel}
@@ -295,7 +361,7 @@ export function VenueFirmwareList () {
         onCancel={handlePreferenceModalCancel}
         onSubmit={handlePreferenceModalSubmit}
       />
-      <ChangeScheduleDialog
+      <EdgeChangeScheduleDialog
         visible={changeScheduleModal}
         availableVersions={changeScheduleAvailableVersions}
         onCancel={handleChangeScheduleModalCancel}

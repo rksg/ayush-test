@@ -2,11 +2,173 @@
 
 exports[`HealthWidget should render for empty data: NoData 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  .c6 {
+  width: 20px;
+  height: 20px;
+  margin-right: -8px;
+}
+
+.c3 {
+  width: 16px;
+  height: 16px;
+}
+
+.c3 path {
+  stroke: var(--acx-neutrals-50);
+}
+
+.c3 circle {
+  fill: var(--acx-neutrals-50);
+}
+
+.c5 {
+  border: none;
+  padding: 0;
+}
+
+.c5.c5.c5.c5.ant-btn-icon-only {
+  width: 16px;
+  height: 16px;
+  min-width: unset;
+}
+
+.c1 {
+  height: 100%;
+  width: 100%;
+}
+
+.c1 .ant-card {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  border-radius: 8px;
+  padding: 12px 16px;
+  border: 1px solid var(--acx-neutrals-20);
+  box-shadow: 0px 2px 4px rgba(51,51,51,0.08);
+}
+
+.c1 .ant-card-head {
+  padding: 0;
+  border-bottom: none;
+  min-height: 0;
+  margin-bottom: 10px;
+}
+
+.c1 .ant-card-head-title {
+  padding: 0;
+}
+
+.c1 .ant-card-head-title .ant-space .ant-space-item:last-child {
+  line-height: 0;
+}
+
+.c1 .ant-card-head-wrapper {
+  -webkit-align-items: start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: start;
+}
+
+.c1 .ant-card-extra {
+  padding: 0;
+}
+
+.c1 .ant-card-body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  padding: 0;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c2 {
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-headline-4-line-height);
+  color: var(--acx-primary-black);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+}
+
+.c4 {
+  margin-top: 4px;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  color: var(--acx-primary-black);
+  font-weight: var(--acx-body-font-weight);
+  white-space: normal;
+}
+
+.c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c7 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+  width: 100%;
+  padding: 0 16px;
+}
+
+.c8 {
+  text-align: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.c8 .ant-empty-normal {
+  margin: 0;
+  margin-block-end: 17px;
+}
+
+.c9 {
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-body-4-font-weight);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  color: var(--acx-primary-black);
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-4 kasAXB"
+      class="c1"
       type="default"
     >
       <div
@@ -29,7 +191,7 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
                   style="margin-right: 4px;"
                 >
                   <div
-                    class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                    class="c2"
                   >
                     Client Experience
                   </div>
@@ -38,13 +200,13 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
                   class="ant-space-item"
                 >
                   <svg
-                    class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 eSbgcz"
+                    class="c3"
                     data-testid="HistoricalOutlined"
                   />
                 </div>
               </div>
               <div
-                class="styledComponents__SubTitle-sc-13w5wfx-6 bFGkpe"
+                class="c4"
               >
                 Top Venues with poor experience
               </div>
@@ -59,12 +221,12 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
                   class="ant-space-item"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 jNPjCM"
+                    class="ant-btn ant-btn-default ant-btn-icon-only c5"
                     title="Expand"
                     type="button"
                   >
                     <svg
-                      class="styledComponents__ArrowChevronRightIcon-sc-13w5wfx-0 bIuzgA"
+                      class="c6"
                       data-testid="ArrowChevronRight"
                     />
                   </button>
@@ -83,10 +245,10 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
               style="display: block; height: 800px; width: 1280px;"
             >
               <div
-                class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                class="c7"
               >
                 <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                  class="ant-space ant-space-horizontal ant-space-align-center c8 c9"
                 >
                   <div
                     class="ant-space-item"
@@ -121,11 +283,365 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
 exports[`HealthWidget should render widget with proper data 1`] = `
 <DocumentFragment>
    
-  <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  .c6 {
+  width: 20px;
+  height: 20px;
+  margin-right: -8px;
+}
+
+.c3 {
+  width: 16px;
+  height: 16px;
+}
+
+.c3 path {
+  stroke: var(--acx-neutrals-50);
+}
+
+.c3 circle {
+  fill: var(--acx-neutrals-50);
+}
+
+.c5 {
+  border: none;
+  padding: 0;
+}
+
+.c5.c5.c5.c5.ant-btn-icon-only {
+  width: 16px;
+  height: 16px;
+  min-width: unset;
+}
+
+.c1 {
+  height: 100%;
+  width: 100%;
+}
+
+.c1 .ant-card {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  border-radius: 8px;
+  padding: 12px 16px;
+  border: 1px solid var(--acx-neutrals-20);
+  box-shadow: 0px 2px 4px rgba(51,51,51,0.08);
+}
+
+.c1 .ant-card-head {
+  padding: 0;
+  border-bottom: none;
+  min-height: 0;
+  margin-bottom: 10px;
+}
+
+.c1 .ant-card-head-title {
+  padding: 0;
+}
+
+.c1 .ant-card-head-title .ant-space .ant-space-item:last-child {
+  line-height: 0;
+}
+
+.c1 .ant-card-head-wrapper {
+  -webkit-align-items: start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: start;
+}
+
+.c1 .ant-card-extra {
+  padding: 0;
+}
+
+.c1 .ant-card-body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  padding: 0;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c2 {
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-headline-4-line-height);
+  color: var(--acx-primary-black);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+}
+
+.c4 {
+  margin-top: 4px;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  color: var(--acx-primary-black);
+  font-weight: var(--acx-body-font-weight);
+  white-space: normal;
+}
+
+.c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c8 .ant-pro-table {
+  --acx-table-cell-horizontal-space: 8px;
+}
+
+.c8 .ant-pro-table .ant-pro-card .ant-pro-card-body {
+  padding: 0px;
+}
+
+.c8 .ant-pro-table .ant-table .parent-row-data,
+.c8 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-row-hover,
+.c8 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-fix-right,
+.c8 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-fix-left,
+.c8 .ant-pro-table .ant-table .parent-row-data .ant-table-column-sort {
+  background-color: var(--acx-neutrals-20) !important;
+  overflow: visible !important;
+}
+
+.c8 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-with-append .ant-table-row-expand-icon {
+  display: none;
+}
+
+.c8 .ant-pro-table .ant-table .ant-table-cell-with-append .indent-level-2 {
+  padding-left: 10px !important;
+}
+
+.c8 .ant-pro-table .ant-table-cell-fix-left {
+  border-bottom: 1px solid var(--acx-neutrals-30) !important;
+}
+
+.c8 .ant-pro-table .ant-table-thead > tr:first-child > th {
+  padding-top: 12px;
+  font-size: var(--acx-subtitle-4-font-size);
+  line-height: var(--acx-subtitle-4-line-height);
+  font-weight: var(--acx-subtitle-4-font-weight);
+}
+
+.c8 .ant-pro-table .ant-table-thead > tr:not(:first-child) > th {
+  padding-top: 6px;
+  font-size: var(--acx-subtitle-5-font-size);
+  line-height: var(--acx-subtitle-5-line-height);
+  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+}
+
+.c8 .ant-pro-table .ant-table-thead > tr:last-child > th,
+.c8 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--acx-neutrals-30);
+}
+
+.c8 .ant-pro-table .ant-table-thead > tr > th {
+  border-bottom: 0;
+  padding: 0px var(--acx-table-cell-horizontal-space);
+}
+
+.c8 .ant-pro-table .ant-table-thead > tr > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+  width: 0px;
+}
+
+.c8 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: left;
+  -webkit-justify-content: left;
+  -ms-flex-pack: left;
+  justify-content: left;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c8 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-title {
+  -webkit-flex: unset;
+  -ms-flex: unset;
+  flex: unset;
+}
+
+.c8 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter {
+  --icon-size: 11px;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  margin: 0;
+}
+
+.c8 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-up,
+.c8 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-down {
+  visibility: hidden;
+  width: 0;
+}
+
+.c8 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-up.active,
+.c8 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-down.active {
+  visibility: visible;
+  width: unset;
+  margin-left: calc(var(--icon-size) / 2);
+}
+
+.c8 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-up {
+  margin-bottom: calc(var(--icon-size) / -2);
+}
+
+.c8 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-down {
+  margin-top: calc(var(--icon-size) / -2);
+}
+
+.c8 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter .anticon svg {
+  fill: var(--acx-primary-black);
+}
+
+.c8 .ant-pro-table .ant-table-thead > tr > th[style*="text-align: center"] .ant-table-column-sorters {
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.c8 .ant-pro-table .ant-table-thead > tr > th[style*="text-align: right"] .ant-table-column-sorters {
+  -webkit-box-pack: right;
+  -webkit-justify-content: right;
+  -ms-flex-pack: right;
+  justify-content: right;
+}
+
+.c8 .ant-pro-table .ant-table-tbody > tr > td {
+  border-bottom: 1px solid var(--acx-neutrals-30);
+  padding: 14px var(--acx-table-cell-horizontal-space);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c8 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-row-hover {
+  background-color: var(--acx-primary-white) !important;
+}
+
+.c8 .ant-pro-table .ant-table-tbody > tr > td a {
+  font-size: unset;
+}
+
+.c8 .ant-pro-table .ant-table-tbody > tr > td .ant-badge.ant-badge-status:not(.acx-chart-tooltip) {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: left;
+  -webkit-justify-content: left;
+  -ms-flex-pack: left;
+  justify-content: left;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c8 .ant-pro-table .ant-table-tbody > tr > td .ant-badge.ant-badge-status:not(.acx-chart-tooltip) .ant-badge-status-dot {
+  -webkit-flex-shrink: 0;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+}
+
+.c8 .ant-pro-table .ant-table-thead > tr:first-child > th,
+.c8 .ant-pro-table .ant-table-thead > tr:last-child > th {
+  font-size: var(--acx-body-5-font-size);
+  line-height: var(--acx-body-5-line-height);
+  font-weight: var(--acx-body-font-weight-bold);
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.c8 .ant-pro-table .ant-table-tbody > tr > td {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+  padding-top: 6px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--acx-neutrals-30) !important;
+}
+
+.c8 .ant-pro-table .ant-table .ant-table-thead > tr:last-child > th,
+.c8 .ant-pro-table .ant-table .ant-table-tbody > tr:last-child > td {
+  border-bottom: 0px !important;
+}
+
+.c8 .ant-pro-table .ant-table .ant-table-tbody > tr:first-child {
+  display: none;
+}
+
+.c10 .ant-progress-steps-outer .ant-progress-steps-item {
+  width: 6px !important;
+  border-radius: 2px;
+}
+
+.c10 .ant-progress-inner,
+.c10 .ant-progress-bg {
+  border-radius: 0px 3px 3px 0px !important;
+}
+
+.c11 {
+  display: block;
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-body-6-font-size);
+  line-height: var(--acx-body-6-line-height);
+  font-weight: var(--acx-body-font-weight);
+  color: var(--acx-neutrals-60);
+}
+
+.c9 {
+  white-space: nowrap;
+  width: 125px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.c7 .ant-table-tbody > tr > td {
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+}
+
+.c12 {
+  margin-bottom: -12px;
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-4 kasAXB"
+      class="c1"
       type="default"
     >
       <div
@@ -148,7 +664,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                   style="margin-right: 4px;"
                 >
                   <div
-                    class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                    class="c2"
                   >
                     Client Experience
                   </div>
@@ -157,13 +673,13 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                   class="ant-space-item"
                 >
                   <svg
-                    class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 eSbgcz"
+                    class="c3"
                     data-testid="HistoricalOutlined"
                   />
                 </div>
               </div>
               <div
-                class="styledComponents__SubTitle-sc-13w5wfx-6 bFGkpe"
+                class="c4"
               >
                 Top Venues with poor experience
               </div>
@@ -178,12 +694,12 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                   class="ant-space-item"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 jNPjCM"
+                    class="ant-btn ant-btn-default ant-btn-icon-only c5"
                     title="Expand"
                     type="button"
                   >
                     <svg
-                      class="styledComponents__ArrowChevronRightIcon-sc-13w5wfx-0 bIuzgA"
+                      class="c6"
                       data-testid="ArrowChevronRight"
                     />
                   </button>
@@ -202,10 +718,10 @@ exports[`HealthWidget should render widget with proper data 1`] = `
               style="display: block; height: 800px; width: 1280px;"
             >
               <div
-                class="styledComponents__Wrapper-sc-hs49h-1 ipmEhN"
+                class="c7"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-1abm7iv-12 hbBckc"
+                  class="c8"
                   style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
                 >
                   <div
@@ -369,7 +885,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                           >
                                             <div
-                                              class="styledComponents__VenueName-sc-hs49h-0 kJQqla"
+                                              class="c9"
                                             >
                                               <a
                                                 href="/ecc2d7cf9d2342fdb31ae0e24958fcac/t/venues/f0997ab93fa24670a961c98446d47ae6/venue-details/analytics/health/overview"
@@ -387,7 +903,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                               class="ant-progress-wrapper"
                                             >
                                               <div
-                                                class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
+                                                class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default c10"
                                               >
                                                 <div
                                                   class="ant-progress-steps-outer"
@@ -437,7 +953,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                                 1%
                                               </span>
                                               <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                                class="c11 c12"
                                               >
                                                 &lt; 2 s
                                               </span>
@@ -454,7 +970,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                                 100%
                                               </span>
                                               <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                                class="c11 c12"
                                               >
                                                 &gt; 10 Mbps
                                               </span>
@@ -471,7 +987,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                                 33%
                                               </span>
                                               <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                                class="c11 c12"
                                               >
                                                 &gt; 100 Mbps
                                               </span>
@@ -496,7 +1012,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                           >
                                             <div
-                                              class="styledComponents__VenueName-sc-hs49h-0 kJQqla"
+                                              class="c9"
                                             >
                                               <a
                                                 href="/ecc2d7cf9d2342fdb31ae0e24958fcac/t/venues/96bf314d575341cf95942caa2b072106/venue-details/analytics/health/overview"
@@ -514,7 +1030,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                               class="ant-progress-wrapper"
                                             >
                                               <div
-                                                class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
+                                                class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default c10"
                                               >
                                                 <div
                                                   class="ant-progress-steps-outer"
@@ -564,7 +1080,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                                 100%
                                               </span>
                                               <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                                class="c11 c12"
                                               >
                                                 &lt; 2 s
                                               </span>
@@ -581,7 +1097,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                                 18%
                                               </span>
                                               <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                                class="c11 c12"
                                               >
                                                 &gt; 10 Mbps
                                               </span>
@@ -598,7 +1114,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                                 100%
                                               </span>
                                               <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                                class="c11 c12"
                                               >
                                                 &gt; 5 Mbps
                                               </span>
@@ -623,7 +1139,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                           >
                                             <div
-                                              class="styledComponents__VenueName-sc-hs49h-0 kJQqla"
+                                              class="c9"
                                             >
                                               <a
                                                 href="/ecc2d7cf9d2342fdb31ae0e24958fcac/t/venues/e5d28cb30cb44be9bea1c8e7135da928/venue-details/analytics/health/overview"
@@ -641,7 +1157,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                               class="ant-progress-wrapper"
                                             >
                                               <div
-                                                class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
+                                                class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default c10"
                                               >
                                                 <div
                                                   class="ant-progress-steps-outer"
@@ -691,7 +1207,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                                 93%
                                               </span>
                                               <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                                class="c11 c12"
                                               >
                                                 &lt; 2 s
                                               </span>
@@ -708,7 +1224,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                                 100%
                                               </span>
                                               <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                                class="c11 c12"
                                               >
                                                 &gt; 10 Mbps
                                               </span>
@@ -741,7 +1257,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                           >
                                             <div
-                                              class="styledComponents__VenueName-sc-hs49h-0 kJQqla"
+                                              class="c9"
                                             >
                                               <a
                                                 href="/ecc2d7cf9d2342fdb31ae0e24958fcac/t/venues/1c0683276dce48679013dea12bf6abe0/venue-details/analytics/health/overview"
@@ -759,7 +1275,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                               class="ant-progress-wrapper"
                                             >
                                               <div
-                                                class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
+                                                class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default c10"
                                               >
                                                 <div
                                                   class="ant-progress-steps-outer"
@@ -809,7 +1325,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                                 100%
                                               </span>
                                               <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                                class="c11 c12"
                                               >
                                                 &lt; 2 s
                                               </span>
@@ -850,7 +1366,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                             class="ant-table-cell"
                                           >
                                             <div
-                                              class="styledComponents__VenueName-sc-hs49h-0 kJQqla"
+                                              class="c9"
                                             >
                                               <a
                                                 href="/ecc2d7cf9d2342fdb31ae0e24958fcac/t/venues/555548721e264115bda45a75043f65d7/venue-details/analytics/health/overview"
@@ -868,7 +1384,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                               class="ant-progress-wrapper"
                                             >
                                               <div
-                                                class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
+                                                class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default c10"
                                               >
                                                 <div
                                                   class="ant-progress-steps-outer"
@@ -926,7 +1442,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                                 100%
                                               </span>
                                               <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                                class="c11 c12"
                                               >
                                                 &gt; 10 Mbps
                                               </span>
@@ -943,7 +1459,7 @@ exports[`HealthWidget should render widget with proper data 1`] = `
                                                 75%
                                               </span>
                                               <span
-                                                class="styledComponents__KpiShortText-sc-s2cdzz-7 styledComponents__ThresholdText-sc-hs49h-2 fmqumW bBDJpT"
+                                                class="c11 c12"
                                               >
                                                 &gt; 100 Mbps
                                               </span>

@@ -1,9 +1,9 @@
 import { Button }                   from 'antd'
 import { defineMessage, IntlShape } from 'react-intl'
 
-import { ApDeviceStatusEnum, APExtended } from '@acx-ui/rc/utils'
-import { Params, TenantLink }             from '@acx-ui/react-router-dom'
-import { getIntl }                        from '@acx-ui/utils'
+import { ApDeviceStatusEnum, APExtended, PowerSavingStatusEnum } from '@acx-ui/rc/utils'
+import { Params, TenantLink }                                    from '@acx-ui/react-router-dom'
+import { getIntl }                                               from '@acx-ui/utils'
 
 import { APStatus } from '.'
 
@@ -46,7 +46,7 @@ const commonAttributes = ($t: IntlShape['$t']) => [
 export const getGroupableConfig = (
   params? :Readonly<Params<string>>,
   apAction?: {
-    showDeleteApGroups: (record: APExtended, tenantId: string) => void
+    showDeleteApGroups: (record: APExtended) => void
   } ) => {
   const { $t } = getIntl()
   const deviceStatusGroupableOptions = {
@@ -56,7 +56,10 @@ export const getGroupableConfig = (
       {
         key: 'deviceStatus',
         renderer: (record: APExtended) => (
-          <APStatus status={record.deviceStatus as ApDeviceStatusEnum} />
+          <APStatus
+            status={record.deviceStatus as ApDeviceStatusEnum}
+            powerSavingStatus={record.powerSavingStatus as PowerSavingStatusEnum}
+          />
         )
       },
       ...commonAttributes($t)
@@ -97,7 +100,7 @@ export const getGroupableConfig = (
             type='link'
             size='small'
             onClick={() => {
-              apAction?.showDeleteApGroups(record, params?.tenantId || '')
+              apAction?.showDeleteApGroups(record)
             }}
           >
             {$t(defineMessage({ defaultMessage: 'Delete' }))}
@@ -131,12 +134,11 @@ export const groupedFields = [
   'switchName',
   'clients',
   'deviceGroupName',
-  'apStatusData.APRadio.band',
   'tags',
   'serialNumber',
   'fwVersion',
   'cog',
   'venueId',
-  'apStatusData.APRadio.radioId',
-  'apStatusData.APRadio.channel'
+  'apStatusData',
+  'powerSavingStatus'
 ]

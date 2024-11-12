@@ -13,7 +13,7 @@ import {
 
 import { UserProfile } from './index'
 
-const params = { tenantId: 'tenant-id' }
+const params = { tenantId: 'tenant-id', activeTab: 'settings' }
 const mockedUsedNavigate = jest.fn()
 const userProfile = {
   initials: 'FL',
@@ -27,7 +27,8 @@ const userProfile = {
 
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
+  useNavigate: () => mockedUsedNavigate,
+  useLocation: () => ({ state: { from: '/test' } })
 }))
 
 jest.mock('@acx-ui/msp/components', () => ({
@@ -41,6 +42,15 @@ jest.mock('./PreferredLanguageFormItem', () => ({
 }))
 
 describe('UserProfile', () => {
+  beforeAll(() => {
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: {
+        ...window.location,
+        reload: jest.fn()
+      }
+    })
+  })
   it('should render correctly', async () => {
     setUserProfile({ profile: userProfile, allowedOperations: [] })
 
@@ -64,9 +74,34 @@ describe('UserProfile', () => {
 
     expect(screen.getByText('YYYY/MM/DD')).toBeVisible()
     expect(screen.getByText('Super User')).toBeVisible()
-
-    userEvent.click(screen.getByRole('tab', { name: 'Security' }))
-    expect(await screen.findByTestId('MultiFactor')).toBeVisible()
   })
+  it('should navigate tabs correctly', async () => {
+    setUserProfile({ profile: userProfile, allowedOperations: [] })
 
+    render(<Provider>
+      <UserProfileContext.Provider
+        value={{ data: userProfile } as UserProfileContextProps}
+      >
+        <UserProfile />
+      </UserProfileContext.Provider>
+    </Provider>, { route: { params } })
+
+    expect(screen.getByRole('tab', { name: 'Settings' })).toBeVisible()
+    expect(screen.getByRole('tab', { name: 'Security' })).toBeVisible()
+    expect(screen.getByRole('tab', { name: 'Recent Logins' })).toBeVisible()
+
+    await userEvent.click(screen.getByRole('tab', { name: 'Security' }))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      hash: '',
+      pathname: '/tenant-id/t/userprofile/security',
+      search: ''
+    })
+
+    await userEvent.click(screen.getByRole('tab', { name: 'Recent Logins' }))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      hash: '',
+      pathname: '/tenant-id/t/userprofile/recentLogins',
+      search: ''
+    })
+  })
 })

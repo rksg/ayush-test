@@ -1,43 +1,230 @@
+import { ReactElement } from 'react'
+
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { RolesEnum as Role } from '@acx-ui/types'
+import { get }            from '@acx-ui/config'
+import { TenantNavigate } from '@acx-ui/react-router-dom'
+import {
+  RolesEnum as Role,
+  ScopeKeys
+} from '@acx-ui/types'
 
-import { UserProfile } from './types'
+import {
+  type UserProfile,
+  type RaiPermission,
+  type RaiPermissions,
+  CustomRoleType
+} from './types'
+
+type Permission = {
+  needGlobalPermission: boolean
+}
 
 type Profile = {
   profile: UserProfile
   allowedOperations: string []
+  accountTier?: string
+  betaEnabled?: boolean
+  abacEnabled?: boolean
+  scopes?: ScopeKeys
+  isCustomRole?: boolean,
+  hasAllVenues?: boolean,
+  venuesList?: string[]
 }
 const userProfile: Profile = {
   profile: {} as UserProfile,
-  allowedOperations: []
+  allowedOperations: [],
+  accountTier: '',
+  betaEnabled: false,
+  abacEnabled: false,
+  scopes: []
 }
 const SHOW_WITHOUT_RBAC_CHECK = 'SHOW_WITHOUT_RBAC_CHECK'
+
+interface FilterItemType {
+  scopeKey?: ScopeKeys,
+  key?: string,
+  props?: {
+    scopeKey?: ScopeKeys,
+    key?: string
+  }
+}
 
 export const getUserProfile = () => userProfile
 export const setUserProfile = (profile: Profile) => {
   // Do not call this manually except in test env & UserProfileProvider
   userProfile.profile = profile.profile
   userProfile.allowedOperations = profile.allowedOperations
+  userProfile.accountTier = profile.accountTier
+  userProfile.betaEnabled = profile.betaEnabled
+  userProfile.abacEnabled = profile.abacEnabled
+  userProfile.isCustomRole = profile.isCustomRole
+  userProfile.scopes = profile?.scopes
+  userProfile.hasAllVenues = profile?.hasAllVenues
+  userProfile.venuesList = profile?.venuesList
 }
 
 export const getShowWithoutRbacCheckKey = (id:string) => {
   return SHOW_WITHOUT_RBAC_CHECK + '_' + id
 }
 
-export function hasAccess (id?: string) {
+/**
+ * Please use RBAC functions as follows,
+ * 1. filterByAccess -> Backward compatible
+ * 2. hasPermission -> For the new RBAC feature: replace the original "hasAccess" function
+ * 3. hasScope -> For the new RBAC feature: custom role
+ * 4. hasRoles -> No change
+ *
+ * DO NOT use hasAccess. It will be private after RBAC feature release.
+ */
+
+export function hasAccess (id?: string, roles?: Role[]) {
+  if (get('IS_MLISA_SA')) return true
+  // measure to permit all undefined id for admins
+  if (!id) return hasRoles(roles || [Role.PRIME_ADMIN, Role.ADMINISTRATOR, Role.DPSK_ADMIN])
+  return hasAllowedOperations(id)
+}
+
+function hasAllowedOperations (id:string) {
   const { allowedOperations } = getUserProfile()
 
-  // measure to permit all undefined id for admins
-  if (!id) return hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR, Role.DPSK_ADMIN])
-  if(id?.includes(SHOW_WITHOUT_RBAC_CHECK)) return true
-
-  return allowedOperations.includes(id)
+  if(id.startsWith(SHOW_WITHOUT_RBAC_CHECK)) return true
+  return allowedOperations?.includes(id)
 }
 
 export function filterByAccess <Item> (items: Item[]) {
-  return items.filter(item => hasAccess((item as { key?: string }).key))
+  if (get('IS_MLISA_SA')) {
+    return items
+  } else {
+    return items.filter(item => {
+      const filterItem = item as FilterItemType
+      const allowedOperations = filterItem?.key
+      const scopes = filterItem?.scopeKey || filterItem?.props?.scopeKey || []
+      return hasPermission({ scopes, allowedOperations })
+    })
+  }
 }
+
+let permissions: RaiPermissions = {} as RaiPermissions
+export const setRaiPermissions = (perms: RaiPermissions) => {
+  permissions = perms
+}
+
+// use hasRaiPermission to enforce permission in RAI standalone
+export function hasRaiPermission (permission: RaiPermission) {
+  return !get('IS_MLISA_SA') || permissions[permission]
+}
+
+/**
+* use hasPermission when enforcing for both R1 and RAI standalone at the same time
+* IMPORTANT: Suggest using hasPermission for action items, as it will always return FALSE for Role.READ_ONLY.
+*/
+export function hasPermission (props?: {
+    // RAI
+    permission?: RaiPermission,
+    // R1
+    scopes?: ScopeKeys,
+    allowedOperations?:string,
+    roles?: Role[]
+}): boolean {
+  const { scopes = [], allowedOperations, permission, roles } = props || {}
+  if (get('IS_MLISA_SA')) {
+    return !!(permission && permissions[permission])
+  } else {
+    const { abacEnabled, isCustomRole } = getUserProfile()
+    if(!abacEnabled) {
+      return hasAccess(allowedOperations, roles)
+    }else {
+      if(isCustomRole){
+        const isScopesValid = scopes.length > 0 ? hasScope(scopes): true
+        const isOperationsValid = allowedOperations ? hasAllowedOperations(allowedOperations): true
+        return !!(isScopesValid && isOperationsValid)
+      } else {
+        return hasAccess(allowedOperations, roles)
+      }
+    }
+  }
+}
+
+/**
+ * Check if the user has the required scopes based on the user's profile.
+ *
+ * @param userScopes The scopes to check against the user's profile.
+ *
+ * OR  -> WifiScopes|SwitchScopes|EdgeScopes: means the scope is optional, and the user can have any one of these scopes.
+ * AND -> (WifiScopes|SwitchScopes|EdgeScopes)[]: means the user must have these specific scopes.
+ *
+ */
+export function hasScope (userScopes: ScopeKeys) {
+  const { abacEnabled, scopes = [], isCustomRole } = getUserProfile()
+  if(abacEnabled && isCustomRole) {
+    return userScopes?.some(scope => {
+      if(Array.isArray(scope)) {
+        return scope.every(i => scopes.includes(i))
+      } else {
+        return scopes.includes(scope)
+      }
+    })
+  }
+  return true
+}
+
+
+export function hasRoles (roles: string | string[]) {
+  const { profile, abacEnabled } = getUserProfile()
+
+
+  if (!Array.isArray(roles)) roles = [roles]
+
+  if (abacEnabled &&
+    profile.customRoleType === CustomRoleType.SYSTEM &&
+    profile.customRoleName) {
+    return roles.includes(profile.customRoleName)
+  }
+
+  return profile?.roles?.some(role => roles.includes(role))
+}
+
+export function isCustomAdmin () {
+  const { profile, abacEnabled } = getUserProfile()
+  if (abacEnabled &&
+    profile.customRoleType === CustomRoleType.SYSTEM &&
+    profile.customRoleName === Role.ADMINISTRATOR) {
+    return !profile?.roles?.includes(Role.ADMINISTRATOR)
+  }
+  return false
+}
+
+export function hasCrossVenuesPermission (props?: Permission) {
+  if (get('IS_MLISA_SA')) {
+    return true
+  }
+  const { abacEnabled, hasAllVenues, isCustomRole } = getUserProfile()
+  if(!abacEnabled) return true
+  if(props?.needGlobalPermission) {
+    return !isCustomRole && hasAllVenues && hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR])
+  } else {
+    return hasAllVenues
+  }
+}
+
+export function AuthRoute (props: {
+    scopes?: ScopeKeys,
+    children: ReactElement,
+    requireCrossVenuesPermission?: boolean | Permission
+  }) {
+  const { scopes = [], children, requireCrossVenuesPermission } = props
+  if(typeof requireCrossVenuesPermission === 'object') {
+    return hasCrossVenuesPermission(requireCrossVenuesPermission)
+      ? children : <TenantNavigate replace to='/no-permissions' />
+  }
+  if(requireCrossVenuesPermission) {
+    return hasScope(scopes) && hasCrossVenuesPermission()
+      ? children : <TenantNavigate replace to='/no-permissions' />
+  }
+  return hasScope(scopes) ? children : <TenantNavigate replace to='/no-permissions' />
+}
+
 
 export function WrapIfAccessible ({ id, wrapper, children }: {
   id: string,
@@ -48,18 +235,13 @@ export function WrapIfAccessible ({ id, wrapper, children }: {
 }
 WrapIfAccessible.defaultProps = { id: undefined }
 
-export function hasRoles (roles: string | string[]) {
-  const { profile } = getUserProfile()
-
-  if (!Array.isArray(roles)) roles = [roles]
-
-  return profile.roles.some(role => roles.includes(role))
-}
 
 export const roleStringMap: Record<Role, MessageDescriptor> = {
   [Role.PRIME_ADMIN]: defineMessage({ defaultMessage: 'Prime Admin' }),
   [Role.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
   [Role.GUEST_MANAGER]: defineMessage({ defaultMessage: 'Guest Manager' }),
   [Role.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' }),
-  [Role.DPSK_ADMIN]: defineMessage({ defaultMessage: 'DPSK Manager' })
+  [Role.DPSK_ADMIN]: defineMessage({ defaultMessage: 'DPSK Manager' }),
+  [Role.TEMPLATES_ADMIN]: defineMessage({ defaultMessage: 'Templates Management' }),
+  [Role.REPORTS_ADMIN]: defineMessage({ defaultMessage: 'Reports Admin' })
 }

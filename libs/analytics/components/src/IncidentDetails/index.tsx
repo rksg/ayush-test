@@ -23,6 +23,7 @@ import { NetTime }                 from './Details/NetTime'
 import { RadiusFailure }           from './Details/RadiusFailure'
 import { SwitchMemoryHigh }        from './Details/SwitchMemoryHigh'
 import { SwitchPoePd }             from './Details/SwitchPoePd'
+import { SwitchTcpSynDDoS }        from './Details/SwitchTcpSynDDoS'
 import { SwitchVlanMismatch }      from './Details/SwitchVlanMismatch'
 import { Ttc }                     from './Details/Ttc'
 import {
@@ -61,7 +62,8 @@ export const incidentDetailsMap = {
   'p-airtime-rx-6(5)g-high': AirtimeRx,
   'p-airtime-tx-24g-high': AirtimeTx,
   'p-airtime-tx-5g-high': AirtimeTx,
-  'p-airtime-tx-6(5)g-high': AirtimeTx
+  'p-airtime-tx-6(5)g-high': AirtimeTx,
+  's-switch-tcp-syn-ddos': SwitchTcpSynDDoS
 }
 
 export function IncidentDetails () {

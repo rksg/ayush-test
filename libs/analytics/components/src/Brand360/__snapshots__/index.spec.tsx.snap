@@ -2,43 +2,514 @@
 
 exports[`Brand360 resets SLAs 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  .c2 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c2 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c2 svg:before {
+  content: 'a';
+}
+
+.c2 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c2.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c2.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c2.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c2.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c2[disabled] svg path,
+.c2.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c2[disabled].ant-btn-link svg path,
+.c2.ant-btn-disabled.ant-btn-link svg path,
+.c2[disabled].ant-btn-default svg path,
+.c2.ant-btn-disabled.ant-btn-default svg path,
+.c2[disabled].ant-btn-primary svg path,
+.c2.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+.c10 {
+  height: 100%;
+  width: 100%;
+}
+
+.c10 .ant-card {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  border-radius: 8px;
+  padding: 12px 16px;
+  border: 1px solid var(--acx-neutrals-20);
+  box-shadow: 0px 2px 4px rgba(51,51,51,0.08);
+}
+
+.c10 .ant-card-head {
+  padding: 0;
+  border-bottom: none;
+  min-height: 0;
+  margin-bottom: 10px;
+}
+
+.c10 .ant-card-head-title {
+  padding: 0;
+}
+
+.c10 .ant-card-head-title .ant-space .ant-space-item:last-child {
+  line-height: 0;
+}
+
+.c10 .ant-card-head-wrapper {
+  -webkit-align-items: start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: start;
+}
+
+.c10 .ant-card-extra {
+  padding: 0;
+}
+
+.c10 .ant-card-body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  padding: 0;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c11 {
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-headline-4-line-height);
+  color: var(--acx-primary-black);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+}
+
+.c5 .ant-picker-input .ant-picker-clear span[role=img] svg {
+  display: none;
+}
+
+.c5 .ant-picker-input .ant-picker-clear span[role=img]::after {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-size: 12px 12px;
+  background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20class%3D%22NestedListSingle__CloseIcon-sc-1yefg1u-0%20lilJnS%22%3E%3Cpath%20d%3D%22M14.0625%203.9375L3.9375%2014.0625%22%20stroke%3D%22%23333333%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3Cpath%20d%3D%22M14.0625%2014.0625L3.9375%203.9375%22%20stroke%3D%22%23333333%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-color: white;
+  margin-right: -4px;
+}
+
+.c5 .ant-picker-dropdown {
+  font-size: var(--acx-body-4-font-size);
+  padding: 10px 0;
+}
+
+.c5 .ant-picker-dropdown .ant-picker-panel {
+  border: none;
+}
+
+.c5 .ant-picker-dropdown .ant-picker-panel-container {
+  border-radius: 4px;
+  background: var(--acx-primary-white);
+  box-shadow: 0px 6px 16px rgba(51,51,51,0.2);
+  padding-left: var(--acx-date-picker-ranges-width);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-panel .ant-picker-header {
+  -webkit-align-items: baseline;
+  -webkit-box-align: baseline;
+  -ms-flex-align: baseline;
+  align-items: baseline;
+  border-bottom: none;
+}
+
+.c5 .ant-picker-dropdown .ant-picker-panel .ant-picker-header .ant-picker-header-view {
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-5-font-size);
+  font-weight: var(--acx-headline-5-font-weight-semi-bold);
+  color: var(--acx-neutrals-70);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-panel .ant-picker-header .ant-picker-header-view button:hover {
+  color: inherit;
+  cursor: default;
+}
+
+.c5 .ant-picker-dropdown .ant-picker-panel .ant-picker-body th {
+  font-size: var(--acx-subtitle-6-font-size);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+  color: var(--acx-neutrals-60);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-panel .ant-picker-body td {
+  font-size: var(--acx-subtitle-5-font-size);
+  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start .ant-picker-cell-inner,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end .ant-picker-cell-inner {
+  color: var(--acx-primary-white);
+  background: var(--acx-accents-blue-50);
+  border-radius: 20px;
+}
+
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view. ant-picker-cell-range-hover .ant-picker-cell-inner::before,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view. ant-picker-cell-range-hover-start .ant-picker-cell-inner::before,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view. ant-picker-cell-range-hover-end .ant-picker-cell-inner::before {
+  background: var(--acx-accents-blue-10);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover::before,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start.ant-picker-cell-range-hover::before,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end.ant-picker-cell-range-hover::before,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single).ant-picker-cell-range-hover-start::before,.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single).ant-picker-cell-range-hover-end::before,
+.c5 .ant-picker-dropdown .ant-picker-panel > :not(.ant-picker-date-panel) .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start::before,.c5 .ant-picker-dropdown .ant-picker-panel > :not(.ant-picker-date-panel) .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end::before,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-in-range::before,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single)::before,.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single)::before {
+  background: var(--acx-accents-blue-10);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-date-panel .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start .ant-picker-cell-inner::after,
+.c5 .ant-picker-dropdown .ant-picker-date-panel .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end .ant-picker-cell-inner::after {
+  background: var(--acx-accents-blue-10);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
+  border-color: var(--acx-accents-blue-50);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-hover:not(.ant-picker-cell-in-range)::after,.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-hover-start:not(.ant-picker-cell-in-range)::after,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-hover-end:not(.ant-picker-cell-in-range)::after {
+  border-color: var(--acx-accents-blue-50);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single):not(.ant-picker-cell-range-end) .ant-picker-cell-inner,.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single):not(.ant-picker-cell-range-start) .ant-picker-cell-inner {
+  border-radius: 20px;
+}
+
+.c5 .ant-picker-dropdown .ant-picker-cell:hover .ant-picker-cell-inner,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
+  border-radius: 20px;
+}
+
+.c5 .ant-picker-dropdown .ant-picker-footer {
+  display: none;
+}
+
+.c6 {
+  --acx-date-picker-ranges-width: 125px;
+  --acx-date-picker-left-padding: 25px;
+}
+
+.c6 > .ant-picker {
+  width: calc(var(--acx-date-picker-left-padding) + 14ch);
+  padding: 6px 11px 5px;
+  background: var(--acx-primary-white);
+  border-color: var(--acx-primary-black);
+}
+
+.c6 > .ant-picker:not(.ant-picker-focused) {
+  -webkit-transition: width 1ms linear 500ms;
+  transition: width 1ms linear 500ms;
+}
+
+.c6 > .ant-picker .ant-picker-range-separator,
+.c6 > .ant-picker .ant-picker-input:nth-child(3) {
+  display: none;
+}
+
+.c6 > .ant-picker > div:first-of-type {
+  margin-left: var(--acx-date-picker-left-padding);
+}
+
+.c6 > .ant-picker > .ant-picker-suffix {
+  position: absolute;
+  left: 8px;
+  width: 16px;
+}
+
+.c6 > .ant-picker .ant-picker-active-bar {
+  background: var(--acx-accents-blue-50);
+  margin-left: 33px;
+}
+
+.c6 .ant-picker-dropdown .ant-picker-header-super-prev-btn,
+.c6 .ant-picker-dropdown .ant-picker-header-super-next-btn {
+  display: none;
+}
+
+.c6 .ant-picker-dropdown .ant-picker-footer {
+  display: block;
+  border-bottom: 0;
+}
+
+.c6 .ant-picker-dropdown .ant-picker-footer .ant-picker-footer-extra {
+  padding: 0;
+  border-bottom: 0;
+}
+
+.c6 .ant-picker-dropdown .ant-picker-footer .ant-picker-ranges {
+  position: absolute;
+  width: var(--acx-date-picker-ranges-width);
+  top: 10px;
+  bottom: 10px;
+  left: 0px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  background-color: var(--acx-neutrals-10);
+  padding: 10px 20px;
+  border-radius: 4px 0 0 4px;
+}
+
+.c6 .ant-picker-dropdown .ant-picker-footer .ant-picker-ranges li:nth-child(1) {
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+.c6 .ant-picker-dropdown .ant-picker-footer .ant-picker-ranges li span.ant-tag {
+  padding: 0;
+  margin: 0;
+}
+
+.c6 .ant-picker-dropdown .ant-picker-footer .ant-picker-ranges .ant-picker-preset > .ant-tag-blue {
+  color: var(--acx-neutrals-100);
+  background: var(--acx-neutrals-10);
+  border-color: var(--acx-neutrals-10);
+  cursor: pointer;
+}
+
+.c3 {
+  cursor: pointer;
+}
+
+.c3.c3.c3.ant-btn:not(.ant-btn-icon-only):not(.ant-btn-link):has(svg) {
+  padding-left: 11px;
+  padding-right: 7px;
+}
+
+.c4 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c7 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c8 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+.c1 {
+  position: -webkit-sticky;
+  position: sticky;
+  top: calc( var(--acx-header-height) + var(--acx-content-vertical-space) + (var(--acx-cloudmessagebanner-height) * var(--acx-has-cloudmessagebanner)) );
+  z-index: 7;
+  background-color: var(--acx-primary-white);
+  padding: 0 var(--acx-content-horizontal-space);
+  margin: 0 calc(var(--acx-content-horizontal-space) * -1);
+}
+
+.c1 .ant-page-header {
+  padding: 0;
+  margin: 4px 0 var(--acx-content-vertical-space);
+}
+
+.c1 .ant-page-header-heading {
+  gap: 12px;
+}
+
+.c1 .ant-page-header-heading h1 {
+  margin-bottom: 0;
+}
+
+.c1 .ant-page-header-heading-left {
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  margin: 0;
+}
+
+.c1 .ant-page-header-heading-extra {
+  margin: 0;
+}
+
+.c1 .ant-page-header-heading-extra > .ant-space {
+  gap: 12px !important;
+}
+
+.c1 .ant-page-header-heading-title {
+  width: 100%;
+  -webkit-align-self: flex-start;
+  -ms-flex-item-align: start;
+  align-self: flex-start;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c1 .ant-page-header-content {
+  padding: 6px 0 0;
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c1 .ant-page-header-content .ant-divider-vertical {
+  background-color: var(--acx-primary-black);
+  margin: 0 0.5em;
+  height: 0.9em;
+}
+
+.c1 .ant-page-header .ant-breadcrumb {
+  line-height: 16px;
+}
+
+.c1 .ant-page-header .ant-breadcrumb a:hover {
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+.c1 .ant-page-header .ant-breadcrumb + .ant-page-header-heading {
+  margin-top: 3px;
+}
+
+.c1 .ant-page-header.has-footer {
+  margin-bottom: 0;
+}
+
+.c1 .ant-page-header.has-footer .ant-page-header-content {
+  padding-bottom: 2px;
+}
+
+.c1 .ant-page-header.has-footer .ant-page-header-footer {
+  margin-top: 8px;
+}
+
+.c12 {
+  padding-top: 5px;
+  color: var(--acx-neutrals-60);
+}
+
+.c13 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  gap: var(--acx-modal-footer-small-button-space);
+  padding: var(--acx-modal-footer-small-padding);
+}
+
+.c9 {
+  height: 300px;
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
   >
     <div
-      class="styledComponents__FallbackWrapper-sc-1352uh8-1 kymHqF"
-    >
-      <span
-        aria-label="loader"
-        class="SuspenseBoundary__SpinWrapper-sc-l6mvnr-0"
-        role="img"
-      >
-        <div
-          aria-busy="true"
-          aria-live="polite"
-          class="ant-spin ant-spin-lg ant-spin-spinning"
-        >
-          <span
-            class="ant-spin-dot ant-spin-dot-spin"
-          >
-            <i
-              class="ant-spin-dot-item"
-            />
-            <i
-              class="ant-spin-dot-item"
-            />
-            <i
-              class="ant-spin-dot-item"
-            />
-            <i
-              class="ant-spin-dot-item"
-            />
-          </span>
-        </div>
-      </span>
-    </div>
-    <div
-      class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
+      class="c1"
     >
       <div
         class="ant-page-header ant-page-header-ghost"
@@ -70,7 +541,7 @@ exports[`Brand360 resets SLAs 1`] = `
                 style="margin-right: 8px;"
               >
                 <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger styledComponents__Dropdown-sc-1k1l2q9-0 kaPToN"
+                  class="ant-btn ant-btn-default c2 ant-dropdown-trigger c3"
                   type="button"
                 >
                   <div
@@ -80,13 +551,13 @@ exports[`Brand360 resets SLAs 1`] = `
                       class="ant-space-item"
                       style="margin-right: 8px;"
                     >
-                      Property
+                      LSP
                     </div>
                     <div
                       class="ant-space-item"
                     >
                       <svg
-                        class="styledComponents__CaretDownSolidIcon-sc-1k1l2q9-4 fHsEza"
+                        class="c4"
                         data-testid="CaretDownSolid"
                       />
                     </div>
@@ -95,9 +566,10 @@ exports[`Brand360 resets SLAs 1`] = `
               </div>
               <div
                 class="ant-space-item"
+                style="margin-right: 8px;"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-8afdnk-0 styledComponents__RangePickerWrapper-sc-8afdnk-1 kgUmtO cGJIri"
+                  class="c5 c6"
                 >
                   <div
                     class="ant-picker ant-picker-range"
@@ -166,281 +638,316 @@ exports[`Brand360 resets SLAs 1`] = `
                   </div>
                 </div>
               </div>
+              <div
+                class="ant-space-item"
+              >
+                <div
+                  data-testid="settings"
+                />
+              </div>
             </div>
           </span>
         </div>
       </div>
     </div>
     <div
-      class="ant-row Grid__GridRow-sc-5irhjd-2"
+      class="ant-row "
       style="margin: -10px -10px -10px -10px;"
     >
       <div
-        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        class="ant-col ant-col-6 c7"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
-        >
-          incident
-        </div>
-      </div>
-      <div
-        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
-        style="padding: 10px 10px 10px 10px;"
-      >
-        <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
-        >
-          guest experience
-        </div>
-      </div>
-      <div
-        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
-        style="padding: 10px 10px 10px 10px;"
-      >
-        <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
-        >
-          brand ssid compliance
-        </div>
-      </div>
-      <div
-        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
-        style="padding: 10px 10px 10px 10px;"
-      >
-        <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          class="c8"
         >
           <div
-            class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+            class="c0"
           >
             <div
-              class="styledComponents__Wrapper-sc-13w5wfx-4 kasAXB"
-              type="default"
+              data-testid="brand360Tile"
+            >
+              {"chartKey":"incident","sliceType":"lsp","chartData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"prevData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"currData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 c7"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c8"
+        >
+          <div
+            class="c0"
+          >
+            <div
+              data-testid="brand360Tile"
+            >
+              {"chartKey":"experience","sliceType":"lsp","chartData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"prevData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"currData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 c7"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c8"
+        >
+          <div
+            class="c0"
+          >
+            <div
+              data-testid="brand360Tile"
+            >
+              {"chartKey":"mdu","sliceType":"lsp","chartData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"prevData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"currData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="ant-col ant-col-6 c7"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c8"
+        >
+          <div
+            class="c9"
+          >
+            <div
+              class="c0"
             >
               <div
-                class="ant-card"
+                class="c10"
+                type="default"
               >
                 <div
-                  class="ant-card-head"
+                  class="ant-card"
                 >
                   <div
-                    class="ant-card-head-wrapper"
+                    class="ant-card-head"
                   >
                     <div
-                      class="ant-card-head-title"
+                      class="ant-card-head-wrapper"
                     >
                       <div
-                        class="ant-space ant-space-horizontal ant-space-align-center"
+                        class="ant-card-head-title"
                       >
                         <div
-                          class="ant-space-item"
+                          class="ant-space ant-space-horizontal ant-space-align-center"
                         >
                           <div
-                            class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                            class="ant-space-item"
                           >
-                            Service Level Agreements
+                            <div
+                              class="c11"
+                            >
+                              Service Level Agreements
+                            </div>
                           </div>
                         </div>
                       </div>
+                      <div
+                        class="ant-card-extra"
+                      >
+                        <div
+                          class="ant-space ant-space-horizontal ant-space-align-center"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="ant-card-body"
+                  >
+                    <div
+                      class="c12"
+                    >
+                      P1 Incidents
                     </div>
                     <div
-                      class="ant-card-extra"
+                      class="ant-slider ant-slider-horizontal ant-slider-with-marks"
                     >
                       <div
-                        class="ant-space ant-space-horizontal ant-space-align-center"
+                        class="ant-slider-rail"
                       />
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="ant-card-body"
-                >
-                  <div
-                    class="styledComponents__SliderLabel-sc-i3rlsn-0 lprNRR"
-                  >
-                    P1 Incidents
-                  </div>
-                  <div
-                    class="ant-slider ant-slider-horizontal ant-slider-with-marks"
-                  >
-                    <div
-                      class="ant-slider-rail"
-                    />
-                    <div
-                      class="ant-slider-track"
-                      style="left: 0%; width: 1%;"
-                    />
-                    <div
-                      class="ant-slider-step"
-                    >
-                      <span
-                        class="ant-slider-dot ant-slider-dot-active"
-                        style="left: 0%; transform: translateX(-50%);"
+                      <div
+                        class="ant-slider-track"
+                        style="left: 0%; width: 1%;"
                       />
-                      <span
-                        class="ant-slider-dot"
-                        style="left: 100%; transform: translateX(-50%);"
-                      />
-                    </div>
-                    <div
-                      aria-disabled="false"
-                      aria-valuemax="100"
-                      aria-valuemin="0"
-                      aria-valuenow="1"
-                      class="ant-slider-handle"
-                      role="slider"
-                      style="left: 1%; transform: translateX(-50%);"
-                      tabindex="0"
-                    />
-                    <div
-                      class="ant-slider-mark"
-                    >
-                      <span
-                        class="ant-slider-mark-text ant-slider-mark-text-active"
-                        style="left: 0%; transform: translateX(-50%);"
+                      <div
+                        class="ant-slider-step"
                       >
-                        0
-                      </span>
-                      <span
-                        class="ant-slider-mark-text"
-                        style="left: 100%; transform: translateX(-50%);"
-                      >
-                        100
-                      </span>
-                    </div>
-                  </div>
-                  <div
-                    class="styledComponents__SliderLabel-sc-i3rlsn-0 lprNRR"
-                  >
-                    Guest Experience
-                  </div>
-                  <div
-                    class="ant-slider ant-slider-horizontal ant-slider-with-marks"
-                  >
-                    <div
-                      class="ant-slider-rail"
-                    />
-                    <div
-                      class="ant-slider-track"
-                      style="left: 0%; width: 2%;"
-                    />
-                    <div
-                      class="ant-slider-step"
-                    >
-                      <span
-                        class="ant-slider-dot ant-slider-dot-active"
-                        style="left: 0%; transform: translateX(-50%);"
+                        <span
+                          class="ant-slider-dot ant-slider-dot-active"
+                          style="left: 0%; transform: translateX(-50%);"
+                        />
+                        <span
+                          class="ant-slider-dot"
+                          style="left: 100%; transform: translateX(-50%);"
+                        />
+                      </div>
+                      <div
+                        aria-disabled="false"
+                        aria-valuemax="100"
+                        aria-valuemin="0"
+                        aria-valuenow="1"
+                        class="ant-slider-handle"
+                        role="slider"
+                        style="left: 1%; transform: translateX(-50%);"
+                        tabindex="0"
                       />
-                      <span
-                        class="ant-slider-dot"
-                        style="left: 100%; transform: translateX(-50%);"
+                      <div
+                        class="ant-slider-mark"
+                      >
+                        <span
+                          class="ant-slider-mark-text ant-slider-mark-text-active"
+                          style="left: 0%; transform: translateX(-50%);"
+                        >
+                          0
+                        </span>
+                        <span
+                          class="ant-slider-mark-text"
+                          style="left: 100%; transform: translateX(-50%);"
+                        >
+                          100
+                        </span>
+                      </div>
+                    </div>
+                    <div
+                      class="c12"
+                    >
+                      Resident Experience
+                    </div>
+                    <div
+                      class="ant-slider ant-slider-horizontal ant-slider-with-marks"
+                    >
+                      <div
+                        class="ant-slider-rail"
                       />
-                    </div>
-                    <div
-                      aria-disabled="false"
-                      aria-valuemax="100"
-                      aria-valuemin="0"
-                      aria-valuenow="2"
-                      class="ant-slider-handle"
-                      role="slider"
-                      style="left: 2%; transform: translateX(-50%);"
-                      tabindex="0"
-                    />
-                    <div
-                      class="ant-slider-mark"
-                    >
-                      <span
-                        class="ant-slider-mark-text ant-slider-mark-text-active"
-                        style="left: 0%; transform: translateX(-50%);"
-                      >
-                        0 %
-                      </span>
-                      <span
-                        class="ant-slider-mark-text"
-                        style="left: 100%; transform: translateX(-50%);"
-                      >
-                        100 %
-                      </span>
-                    </div>
-                  </div>
-                  <div
-                    class="styledComponents__SliderLabel-sc-i3rlsn-0 lprNRR"
-                  >
-                    SSID Compliance
-                  </div>
-                  <div
-                    class="ant-slider ant-slider-horizontal ant-slider-with-marks"
-                  >
-                    <div
-                      class="ant-slider-rail"
-                    />
-                    <div
-                      class="ant-slider-track"
-                      style="left: 0%; width: 3%;"
-                    />
-                    <div
-                      class="ant-slider-step"
-                    >
-                      <span
-                        class="ant-slider-dot ant-slider-dot-active"
-                        style="left: 0%; transform: translateX(-50%);"
+                      <div
+                        class="ant-slider-track"
+                        style="left: 0%; width: 2%;"
                       />
-                      <span
-                        class="ant-slider-dot"
-                        style="left: 100%; transform: translateX(-50%);"
+                      <div
+                        class="ant-slider-step"
+                      >
+                        <span
+                          class="ant-slider-dot ant-slider-dot-active"
+                          style="left: 0%; transform: translateX(-50%);"
+                        />
+                        <span
+                          class="ant-slider-dot"
+                          style="left: 100%; transform: translateX(-50%);"
+                        />
+                      </div>
+                      <div
+                        aria-disabled="false"
+                        aria-valuemax="100"
+                        aria-valuemin="0"
+                        aria-valuenow="2"
+                        class="ant-slider-handle"
+                        role="slider"
+                        style="left: 2%; transform: translateX(-50%);"
+                        tabindex="0"
                       />
+                      <div
+                        class="ant-slider-mark"
+                      >
+                        <span
+                          class="ant-slider-mark-text ant-slider-mark-text-active"
+                          style="left: 0%; transform: translateX(-50%);"
+                        >
+                          0 %
+                        </span>
+                        <span
+                          class="ant-slider-mark-text"
+                          style="left: 100%; transform: translateX(-50%);"
+                        >
+                          100 %
+                        </span>
+                      </div>
                     </div>
                     <div
-                      aria-disabled="false"
-                      aria-valuemax="100"
-                      aria-valuemin="0"
-                      aria-valuenow="3"
-                      class="ant-slider-handle"
-                      role="slider"
-                      style="left: 3%; transform: translateX(-50%);"
-                      tabindex="0"
-                    />
-                    <div
-                      class="ant-slider-mark"
+                      class="c12"
                     >
-                      <span
-                        class="ant-slider-mark-text ant-slider-mark-text-active"
+                      # of Prospects
+                    </div>
+                    <div
+                      class="ant-slider ant-slider-horizontal ant-slider-with-marks"
+                    >
+                      <div
+                        class="ant-slider-rail"
+                      />
+                      <div
+                        class="ant-slider-track"
+                        style="left: 0%; width: 0%;"
+                      />
+                      <div
+                        class="ant-slider-step"
+                      >
+                        <span
+                          class="ant-slider-dot ant-slider-dot-active"
+                          style="left: 0%; transform: translateX(-50%);"
+                        />
+                        <span
+                          class="ant-slider-dot"
+                          style="left: 100%; transform: translateX(-50%);"
+                        />
+                      </div>
+                      <div
+                        aria-disabled="false"
+                        aria-valuemax="100"
+                        aria-valuemin="0"
+                        aria-valuenow="0"
+                        class="ant-slider-handle"
+                        role="slider"
                         style="left: 0%; transform: translateX(-50%);"
+                        tabindex="0"
+                      />
+                      <div
+                        class="ant-slider-mark"
                       >
-                        0 %
-                      </span>
-                      <span
-                        class="ant-slider-mark-text"
-                        style="left: 100%; transform: translateX(-50%);"
-                      >
-                        100 %
-                      </span>
+                        <span
+                          class="ant-slider-mark-text ant-slider-mark-text-active"
+                          style="left: 0%; transform: translateX(-50%);"
+                        >
+                          0
+                        </span>
+                        <span
+                          class="ant-slider-mark-text"
+                          style="left: 100%; transform: translateX(-50%);"
+                        >
+                          100
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  <div
-                    class="styledComponents__Buttons-sc-i3rlsn-1 fChEcA"
-                  >
-                    <button
-                      class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
-                      disabled=""
-                      type="button"
+                    <div
+                      class="c13"
                     >
-                      <span>
-                        Apply
-                      </span>
-                    </button>
-                    <button
-                      ant-click-animating-without-extra-node="false"
-                      class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
-                      disabled=""
-                      type="button"
-                    >
-                      <span>
-                        Reset
-                      </span>
-                    </button>
+                      <button
+                        class="ant-btn ant-btn-primary ant-btn-sm c2"
+                        disabled=""
+                        type="button"
+                      >
+                        <span>
+                          Apply
+                        </span>
+                      </button>
+                      <button
+                        ant-click-animating-without-extra-node="false"
+                        class="ant-btn ant-btn-default ant-btn-sm c2"
+                        disabled=""
+                        type="button"
+                      >
+                        <span>
+                          Reset
+                        </span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -448,11 +955,21 @@ exports[`Brand360 resets SLAs 1`] = `
           </div>
         </div>
       </div>
+      <div
+        class="ant-col ant-col-24 c7"
+        style="padding: 10px 10px 10px 10px;"
+      >
+        <div
+          class="c8"
+        >
+          <div
+            data-testid="brand360Table"
+          >
+            lsp {"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}
+          </div>
+        </div>
+      </div>
     </div>
-    <div>
-      property {"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}
-    </div>
-    table
   </div>
 </DocumentFragment>
 `;

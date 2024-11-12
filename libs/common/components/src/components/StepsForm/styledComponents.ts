@@ -1,9 +1,9 @@
-import { Typography, Steps as AntSteps, Space } from 'antd'
-import styled, { css }                          from 'styled-components/macro'
+import { Typography, Steps as AntSteps, Space, Alert as AntAlert, AlertProps } from 'antd'
+import styled, { css }                                                         from 'styled-components/macro'
 
-import modifyVars                  from '../../theme/modify-vars'
-import { Subtitle }                from '../Subtitle'
-import { disableStickyPagination } from '../Table/styledComponents'
+import modifyVars                     from '../../theme/modify-vars'
+import { Subtitle as CommonSubtitle } from '../Subtitle'
+import { disableStickyPagination }    from '../Table/styledComponents'
 
 export const Wrapper = styled.section`
   --acx-steps-form-steps-title-color: var(--acx-primary-black);
@@ -17,8 +17,6 @@ export const Wrapper = styled.section`
   --acx-steps-form-form-title-font-weight: var(--acx-headline-3-font-weight);
   --acx-steps-form-form-title-line-height: var(--acx-headline-3-line-height);
   --acx-steps-form-form-title-margin-bottom: 16px;
-
-  --acx-steps-form-actions-vertical-space: 12px;
 
   padding-block-end: calc(var(--acx-steps-form-actions-vertical-space) * 2 + 32px);
 
@@ -198,7 +196,17 @@ export const Title = styled(Typography.Title).attrs({ level: 3 })`
   }
 `
 
-export const SectionTitle = styled(Subtitle).attrs({ level: 3 })`
+export const Subtitle = styled(CommonSubtitle).attrs({ level: 4 })`
+  &.ant-typography {
+    margin-top: 20px;
+    margin-bottom: 12px;
+  }
+  ${Title} + &.ant-typography {
+    margin-top: 4px;
+  }
+`
+
+export const SectionTitle = styled(CommonSubtitle).attrs({ level: 3 })`
   &.ant-typography {
     padding-bottom: 4px;
     border-bottom: 1px solid var(--acx-neutrals-30);
@@ -244,3 +252,84 @@ export const MultiSelect = styled.div`
     }
   }
 `
+export const AlertContainer = styled(AntAlert)<{ type: AlertProps['type'] }>`
+position: fixed;
+width: calc(
+  100%
+  - var(--acx-sider-width)
+  - var(--acx-content-horizontal-space) * 2
+);
+min-width: calc(
+  ${modifyVars['@screen-xl']}
+  - var(--acx-sider-width)
+  - var(--acx-content-horizontal-space) * 2
+);
+bottom: calc(
+  32px
+  + var(--acx-steps-form-actions-vertical-space) * 2
+);
+padding: 10px 0;
+&.ant-alert {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  border: none;
+  svg {
+    font-size: var(--acx-body-3-font-size);
+    display: block;
+  }
+  .ant-btn {
+    font-size: var(--acx-body-4-font-size);
+  }
+}
+background-color: var(--acx-neutrals-10);
+&.ant-alert.ant-alert-success, &.ant-alert.ant-alert-success::before {
+  background-color: var(--acx-semantics-green-10);
+}
+&.ant-alert.ant-alert-info, &.ant-alert.ant-alert-info::before {
+  background-color: var(--acx-accents-orange-10);
+}
+&.ant-alert.ant-alert-warning, &.ant-alert.ant-alert-warning::before {
+  background-color: #fffbe6;
+}
+&.ant-alert.ant-alert-error, &.ant-alert.ant-alert-error::before {
+  background-color: var(--acx-semantics-red-10);
+}
+z-index: 5;
+&::before {
+  content: '';
+  position: absolute;
+  inset: 0 -100% 0 -100%;
+  background-color: var(--acx-neutrals-10);
+}
+
+& > .ant-alert-content {
+  z-index: 1;
+}
+`
+
+export const greyTextStyles = css`
+  .greyText {
+    color: var(--acx-neutrals-50);
+  }
+`
+
+export const TextContent = styled.div`
+  &, .ant-list {
+    font-size: var(--acx-body-4-font-size);
+    line-height: var(--acx-body-4-line-height);
+    font-weight: var(--acx-body-font-weight);
+  }
+
+  & .ant-checkbox-wrapper-in-form-item {
+    color: var(--acx-neutrals-60);
+  }
+
+  & .indent {
+    margin-left: 24px;
+    flex-wrap: wrap;
+    align-content: flex-start;
+  }
+
+  ${greyTextStyles}
+`
+

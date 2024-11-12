@@ -6,7 +6,8 @@ import { List, Space, Popover }       from 'antd'
 import { createRoot }                 from 'react-dom/client'
 import { RawIntlProvider, IntlShape } from 'react-intl'
 
-import { cssStr } from '@acx-ui/components'
+import { cssStr }  from '@acx-ui/components'
+import { getIntl } from '@acx-ui/utils'
 
 import {
   getClusterSVG,
@@ -51,6 +52,7 @@ export const generateClusterInfoContent = (markers: google.maps.Marker[],
   isEdgeEnabled: boolean,
   onNavigate?: (params: NavigateProps) => void
 ) => {
+  const { $t } = getIntl()
   let data: VenueClusterTooltipData[] = []
 
   const sortedMarkers = Array.from(markers).sort((a,b) => {
@@ -76,7 +78,8 @@ export const generateClusterInfoContent = (markers: google.maps.Marker[],
 
   const pageSize = 5
   const header = <div className='venueInfoHeader'>
-    <span>{sortedMarkers?.length} Venues</span>
+    <span>{$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
+      { count: sortedMarkers?.length })}</span>
     <span style={{ float: 'right', cursor: 'pointer' }}
       onClick={() => {
         clusterInfoWindow.close()
@@ -140,7 +143,8 @@ export default class VenueClusterRenderer implements Renderer {
         fontSize: cssStr('--acx-body-2-font-size'),
         fontWeight: 'semibold'
       },
-      title: this.intl.$t({ defaultMessage: 'Cluster of {count} Venues' }, { count }),
+      // eslint-disable-next-line max-len
+      title: this.intl.$t({ defaultMessage: 'Cluster of {count} <VenuePlural></VenuePlural>' }, { count }),
       // adjust zIndex to be above other markers
       zIndex: Number(google.maps.Marker.MAX_ZINDEX) + count
     })

@@ -11,12 +11,14 @@ import { CascaderOption, Loader, StepsForm, useStepFormContext }  from '@acx-ui/
 import { get }                                                    from '@acx-ui/config'
 import { FilterListNode, DateRange, PathNode }                    from '@acx-ui/utils'
 
+import { APsSelectionInput }                                                                           from '../../../../APsSelectionInput'
+import { isAPListNodes, isNetworkNodes }                                                               from '../../../../APsSelectionInput/types'
 import { getNetworkFilterData }                                                                        from '../../../../NetworkFilter'
 import { useVenuesHierarchyQuery, Child as HierarchyNodeChild, useNetworkHierarchyQuery, NetworkNode } from '../../../../NetworkFilter/services'
-import { isAPListNodes, isNetworkNodes, ClientType as ClientTypeEnum }                                 from '../../../types'
+import { ClientType as ClientTypeEnum }                                                                from '../../../types'
 import { ClientType }                                                                                  from '../ClientType'
 
-import { APsSelectionInput }                          from './APsSelectionInput'
+
 import { DeviceRequirementsType, deviceRequirements } from './deviceRequirements'
 
 import type { ServiceGuardFormDto, NetworkNodes, NetworkPaths } from '../../../types'
@@ -49,15 +51,21 @@ function checkAP (
     ? { type: 'AP', name: node.name, mac: node.mac } : false
 }
 
-function transformSANetworkHierarchy (
+export function transformSANetworkHierarchy (
   nodes: NetworkNode[], parentPath: PathNode[]
 ) : CascaderOption[] {
   return nodes.map(node => {
     const path = [
       ...parentPath, { type: node.type, name: node.mac ?? node.name }
     ] as PathNode[]
+    let label
+    if (node.type === 'AP') {
+      label = `${node.name} (${node.mac}) (${nodeTypes(node.type)})`
+    } else {
+      label = `${node.name} (${nodeTypes(node.type)})`
+    }
     return{
-      label: `${node.name} (${nodeTypes(node.type)})` as string,
+      label: label,
       value: JSON.stringify(path),
       ...(node.children && {
         children: transformSANetworkHierarchy(node.children, path)
@@ -139,8 +147,7 @@ function filterAPwithDeviceRequirements (data: HierarchyNodeChild[], clientType:
   const { requiredAPFirmware, excludedTargetAPs } = deviceRequirements[clientType]
   return data.reduce((venues, { aps, ...rest }) => {
     const validAPs = aps!.filter(ap => {
-      /* istanbul ignore next */
-      if (ap.firmware === 'Unknown') return false // if (!ap.serial) return false TODO update new api to support this and uncomment
+      if (!ap.serial) return false
       if (excludedTargetAPs.find(a =>
         _.get(a, 'model') === ap.model &&
           !meetVersionRequirements(_.get(a, 'requiredAPFirmware'), ap.firmware)
@@ -170,7 +177,7 @@ export function APsSelection () {
         autoFocus
         placeholder={get('IS_MLISA_SA')
           ? $t({ defaultMessage: 'Select APs to test' })
-          : $t({ defaultMessage: 'Select Venues / APs to test' })}
+          : $t({ defaultMessage: 'Select <VenuePlural></VenuePlural> / APs to test' })}
         options={response.options}
       />}
     />

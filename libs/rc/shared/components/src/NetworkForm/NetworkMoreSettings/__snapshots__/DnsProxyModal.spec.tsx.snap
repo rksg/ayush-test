@@ -1,0 +1,79 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DnsProxyModal should render Dns Proxy Modal successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c0 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c0 svg:before {
+  content: 'a';
+}
+
+.c0 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c0.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c0.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c0.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c0.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c0[disabled] svg path,
+.c0.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c0[disabled].ant-btn-link svg path,
+.c0.ant-btn-disabled.ant-btn-link svg path,
+.c0[disabled].ant-btn-default svg path,
+.c0.ant-btn-disabled.ant-btn-default svg path,
+.c0[disabled].ant-btn-primary svg path,
+.c0.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+<form
+    class="ant-form ant-form-horizontal"
+  >
+    <button
+      class="ant-btn ant-btn-link c0"
+      style="margin-inline-start: 15px;"
+      type="button"
+    >
+      <span>
+        Manage
+      </span>
+    </button>
+  </form>
+</DocumentFragment>
+`;

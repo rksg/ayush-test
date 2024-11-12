@@ -5,9 +5,11 @@ import { Button, GridRow, Loader }               from '@acx-ui/components'
 import { EdgePortsTable }                        from '@acx-ui/rc/components'
 import { EdgeLagStatus, EdgePortStatus }         from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasAccess }                             from '@acx-ui/user'
+import { EdgeScopes }                            from '@acx-ui/types'
+import { hasPermission }                         from '@acx-ui/user'
 
 interface PortsTabProps {
+  isConfigurable: boolean
   portData: EdgePortStatus[]
   lagData: EdgeLagStatus[]
   isLoading: boolean
@@ -15,7 +17,7 @@ interface PortsTabProps {
 }
 
 export const PortsTab = (props: PortsTabProps) => {
-  const { portData, lagData, isLoading, handleClickLagName } = props
+  const { portData, lagData, isLoading, handleClickLagName, isConfigurable } = props
   const { $t } = useIntl()
   const { serialNumber } = useParams()
   const navigate = useNavigate()
@@ -24,12 +26,12 @@ export const PortsTab = (props: PortsTabProps) => {
   const handleClick = () => {
     navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/edit/ports/ports-general`
+      pathname: `${basePath.pathname}/edit/ports`
     })
   }
 
   return <GridRow justify='end'>
-    {hasAccess() &&
+    {hasPermission({ scopes: [EdgeScopes.UPDATE] }) && isConfigurable &&
       <Button
         size='small'
         type='link'

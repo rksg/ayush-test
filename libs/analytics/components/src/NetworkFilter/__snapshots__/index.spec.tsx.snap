@@ -2,14 +2,197 @@
 
 exports[`Network Filter should list only venues having APs 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Container-sc-1x390s8-1 jOumPT"
+  .c10 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c10 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c10 svg:before {
+  content: 'a';
+}
+
+.c10 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c10.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c10.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c10.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c10.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c10[disabled] svg path,
+.c10.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c10[disabled].ant-btn-link svg path,
+.c10.ant-btn-disabled.ant-btn-link svg path,
+.c10[disabled].ant-btn-default svg path,
+.c10.ant-btn-disabled.ant-btn-default svg path,
+.c10[disabled].ant-btn-primary svg path,
+.c10.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+.c3 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.c4 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.c2 .ant-select-focused .ant-select-selection-placeholder {
+  color: var(--acx-neutrals-50);
+}
+
+.c2 .ant-select-selection-overflow-item-rest > .ant-select-selection-item {
+  border: none;
+  background: var(--acx-primary-white);
+  min-width: 110px;
+  padding-right: 0px;
+  margin-right: 0px;
+  margin-bottom: 0px;
+}
+
+.c9 {
+  margin-top: 4px;
+  margin-bottom: -4px;
+  background-color: var(--acx-neutrals-10);
+  text-align: right;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  -webkit-align-items: flex-end;
+  -webkit-box-align: flex-end;
+  -ms-flex-align: flex-end;
+  align-items: flex-end;
+  padding: var(--acx-modal-footer-small-padding);
+  gap: var(--acx-modal-footer-small-button-space);
+}
+
+.c6 {
+  margin-top: 4px;
+  border-top: 1px solid var(--acx-neutrals-20);
+  padding: 10px;
+  width: 350px;
+}
+
+.c7 {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c8 .ant-checkbox-wrapper > span:last-child {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c1 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c0 {
+  min-width: 169px;
+  max-width: 322px;
+  width: 322px;
+}
+
+.c0 .ant-select-selector > .ant-select-selection-overflow > .ant-select-selection-overflow-item.ant-select-selection-overflow-item-suffix {
+  top: revert !important;
+}
+
+.c5 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  line-height: 8px;
+  -webkit-box-pack: right;
+  -webkit-justify-content: right;
+  -ms-flex-pack: right;
+  justify-content: right;
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
   >
     <div
-      class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+      class="c1"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-1a2oz4t-2 epNWLK ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader c2 ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
       >
         <div
           class="ant-select-selector"
@@ -113,16 +296,16 @@ exports[`Network Filter should list only venues having APs 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                          class="c3"
                           title="swg1"
                         >
                           <div
-                            class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                            class="c4"
                           >
                             swg1
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
+                            class="c5"
                           />
                         </div>
                       </div>
@@ -167,16 +350,16 @@ exports[`Network Filter should list only venues having APs 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                          class="c3"
                           title="venue"
                         >
                           <div
-                            class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                            class="c4"
                           >
                             venue
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
+                            class="c5"
                           />
                         </div>
                       </div>
@@ -221,16 +404,16 @@ exports[`Network Filter should list only venues having APs 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                          class="c3"
                           title="venue1"
                         >
                           <div
-                            class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                            class="c4"
                           >
                             venue1
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
+                            class="c5"
                           />
                         </div>
                       </div>
@@ -261,16 +444,16 @@ exports[`Network Filter should list only venues having APs 1`] = `
                   </ul>
                 </div>
                 <div
-                  class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-5 gXsA-DA"
+                  class="c6"
                 >
                   <span
-                    class="styledComponents__RadioBandLabel-sc-1a2oz4t-6 ACqzq"
+                    class="c7"
                     style="margin-right: 10px;"
                   >
                     Radio:
                   </span>
                   <div
-                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-7 sTxFe"
+                    class="ant-checkbox-group c8"
                   >
                     <label
                       class="ant-checkbox-wrapper ant-checkbox-group-item"
@@ -332,10 +515,10 @@ exports[`Network Filter should list only venues having APs 1`] = `
                   </div>
                 </div>
                 <div
-                  class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
+                  class="c9"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
+                    class="ant-btn ant-btn-default ant-btn-sm c10"
                     type="button"
                   >
                     <span>
@@ -343,7 +526,7 @@ exports[`Network Filter should list only venues having APs 1`] = `
                     </span>
                   </button>
                   <button
-                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
+                    class="ant-btn ant-btn-primary ant-btn-sm c10"
                     type="button"
                   >
                     <span>
@@ -363,14 +546,178 @@ exports[`Network Filter should list only venues having APs 1`] = `
 
 exports[`Network Filter should list only venues having Switches 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Container-sc-1x390s8-1 jOumPT"
+  .c7 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c7 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c7 svg:before {
+  content: 'a';
+}
+
+.c7 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c7.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c7.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c7.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c7.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c7[disabled] svg path,
+.c7.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c7[disabled].ant-btn-link svg path,
+.c7.ant-btn-disabled.ant-btn-link svg path,
+.c7[disabled].ant-btn-default svg path,
+.c7.ant-btn-disabled.ant-btn-default svg path,
+.c7[disabled].ant-btn-primary svg path,
+.c7.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+.c3 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.c4 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.c2 .ant-select-focused .ant-select-selection-placeholder {
+  color: var(--acx-neutrals-50);
+}
+
+.c2 .ant-select-selection-overflow-item-rest > .ant-select-selection-item {
+  border: none;
+  background: var(--acx-primary-white);
+  min-width: 110px;
+  padding-right: 0px;
+  margin-right: 0px;
+  margin-bottom: 0px;
+}
+
+.c6 {
+  margin-top: 4px;
+  margin-bottom: -4px;
+  background-color: var(--acx-neutrals-10);
+  text-align: right;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  -webkit-align-items: flex-end;
+  -webkit-box-align: flex-end;
+  -ms-flex-align: flex-end;
+  align-items: flex-end;
+  padding: var(--acx-modal-footer-small-padding);
+  gap: var(--acx-modal-footer-small-button-space);
+}
+
+.c1 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c0 {
+  min-width: 169px;
+  max-width: 322px;
+  width: 322px;
+}
+
+.c0 .ant-select-selector > .ant-select-selection-overflow > .ant-select-selection-overflow-item.ant-select-selection-overflow-item-suffix {
+  top: revert !important;
+}
+
+.c5 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  line-height: 8px;
+  -webkit-box-pack: right;
+  -webkit-justify-content: right;
+  -ms-flex-pack: right;
+  justify-content: right;
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
   >
     <div
-      class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+      class="c1"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-1a2oz4t-2 epNWLK ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader c2 ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
       >
         <div
           class="ant-select-selector"
@@ -450,16 +797,16 @@ exports[`Network Filter should list only venues having Switches 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                          class="c3"
                           title="swg"
                         >
                           <div
-                            class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                            class="c4"
                           >
                             swg
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
+                            class="c5"
                           />
                         </div>
                       </div>
@@ -497,16 +844,16 @@ exports[`Network Filter should list only venues having Switches 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                          class="c3"
                           title="swg1"
                         >
                           <div
-                            class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                            class="c4"
                           >
                             swg1
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
+                            class="c5"
                           />
                         </div>
                       </div>
@@ -544,16 +891,16 @@ exports[`Network Filter should list only venues having Switches 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                          class="c3"
                           title="venue"
                         >
                           <div
-                            class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                            class="c4"
                           >
                             venue
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
+                            class="c5"
                           />
                         </div>
                       </div>
@@ -584,10 +931,10 @@ exports[`Network Filter should list only venues having Switches 1`] = `
                   </ul>
                 </div>
                 <div
-                  class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
+                  class="c6"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
+                    class="ant-btn ant-btn-default ant-btn-sm c7"
                     type="button"
                   >
                     <span>
@@ -595,7 +942,7 @@ exports[`Network Filter should list only venues having Switches 1`] = `
                     </span>
                   </button>
                   <button
-                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
+                    class="ant-btn ant-btn-primary ant-btn-sm c7"
                     type="button"
                   >
                     <span>
@@ -615,14 +962,197 @@ exports[`Network Filter should list only venues having Switches 1`] = `
 
 exports[`Network Filter should select network node and bands 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Container-sc-1x390s8-1 jOumPT"
+  .c10 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c10 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c10 svg:before {
+  content: 'a';
+}
+
+.c10 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c10.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c10.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c10.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c10.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c10[disabled] svg path,
+.c10.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c10[disabled].ant-btn-link svg path,
+.c10.ant-btn-disabled.ant-btn-link svg path,
+.c10[disabled].ant-btn-default svg path,
+.c10.ant-btn-disabled.ant-btn-default svg path,
+.c10[disabled].ant-btn-primary svg path,
+.c10.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+.c3 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.c4 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.c2 .ant-select-focused .ant-select-selection-placeholder {
+  color: var(--acx-neutrals-50);
+}
+
+.c2 .ant-select-selection-overflow-item-rest > .ant-select-selection-item {
+  border: none;
+  background: var(--acx-primary-white);
+  min-width: 110px;
+  padding-right: 0px;
+  margin-right: 0px;
+  margin-bottom: 0px;
+}
+
+.c9 {
+  margin-top: 4px;
+  margin-bottom: -4px;
+  background-color: var(--acx-neutrals-10);
+  text-align: right;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  -webkit-align-items: flex-end;
+  -webkit-box-align: flex-end;
+  -ms-flex-align: flex-end;
+  align-items: flex-end;
+  padding: var(--acx-modal-footer-small-padding);
+  gap: var(--acx-modal-footer-small-button-space);
+}
+
+.c6 {
+  margin-top: 4px;
+  border-top: 1px solid var(--acx-neutrals-20);
+  padding: 10px;
+  width: 350px;
+}
+
+.c7 {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c8 .ant-checkbox-wrapper > span:last-child {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c1 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c0 {
+  min-width: 169px;
+  max-width: 322px;
+  width: 322px;
+}
+
+.c0 .ant-select-selector > .ant-select-selection-overflow > .ant-select-selection-overflow-item.ant-select-selection-overflow-item-suffix {
+  top: revert !important;
+}
+
+.c5 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  line-height: 8px;
+  -webkit-box-pack: right;
+  -webkit-justify-content: right;
+  -ms-flex-pack: right;
+  justify-content: right;
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
   >
     <div
-      class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+      class="c1"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-1a2oz4t-2 epNWLK ant-select-focused ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader c2 ant-select-focused ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
       >
         <div
           class="ant-select-selector"
@@ -740,16 +1270,16 @@ exports[`Network Filter should select network node and bands 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                          class="c3"
                           title="swg"
                         >
                           <div
-                            class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                            class="c4"
                           >
                             swg
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
+                            class="c5"
                           />
                         </div>
                       </div>
@@ -794,16 +1324,16 @@ exports[`Network Filter should select network node and bands 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                          class="c3"
                           title="swg1"
                         >
                           <div
-                            class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                            class="c4"
                           >
                             swg1
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
+                            class="c5"
                           />
                         </div>
                       </div>
@@ -848,16 +1378,16 @@ exports[`Network Filter should select network node and bands 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                          class="c3"
                           title="venue"
                         >
                           <div
-                            class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                            class="c4"
                           >
                             venue
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
+                            class="c5"
                           />
                         </div>
                       </div>
@@ -902,16 +1432,16 @@ exports[`Network Filter should select network node and bands 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                          class="c3"
                           title="venue1"
                         >
                           <div
-                            class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                            class="c4"
                           >
                             venue1
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
+                            class="c5"
                           />
                         </div>
                       </div>
@@ -961,16 +1491,16 @@ exports[`Network Filter should select network node and bands 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                          class="c3"
                           title="APs"
                         >
                           <div
-                            class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                            class="c4"
                           >
                             APs
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
+                            class="c5"
                           />
                         </div>
                       </div>
@@ -1015,16 +1545,16 @@ exports[`Network Filter should select network node and bands 1`] = `
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                          class="c3"
                           title="Switches"
                         >
                           <div
-                            class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                            class="c4"
                           >
                             Switches
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
+                            class="c5"
                           />
                         </div>
                       </div>
@@ -1055,16 +1585,16 @@ exports[`Network Filter should select network node and bands 1`] = `
                   </ul>
                 </div>
                 <div
-                  class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-5 gXsA-DA"
+                  class="c6"
                 >
                   <span
-                    class="styledComponents__RadioBandLabel-sc-1a2oz4t-6 ACqzq"
+                    class="c7"
                     style="margin-right: 10px;"
                   >
                     Radio:
                   </span>
                   <div
-                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-7 sTxFe"
+                    class="ant-checkbox-group c8"
                   >
                     <label
                       class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-group-item"
@@ -1126,10 +1656,10 @@ exports[`Network Filter should select network node and bands 1`] = `
                   </div>
                 </div>
                 <div
-                  class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
+                  class="c9"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
+                    class="ant-btn ant-btn-default ant-btn-sm c10"
                     type="button"
                   >
                     <span>
@@ -1137,7 +1667,7 @@ exports[`Network Filter should select network node and bands 1`] = `
                     </span>
                   </button>
                   <button
-                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
+                    class="ant-btn ant-btn-primary ant-btn-sm c10"
                     type="button"
                   >
                     <span>
@@ -1183,14 +1713,197 @@ exports[`Network Filter should select network node and bands 1`] = `
 
 exports[`Network Filter should select network node and bands with onApplyFn 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Container-sc-1x390s8-1 jOumPT"
+  .c10 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c10 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c10 svg:before {
+  content: 'a';
+}
+
+.c10 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c10.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c10.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c10.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c10.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c10[disabled] svg path,
+.c10.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c10[disabled].ant-btn-link svg path,
+.c10.ant-btn-disabled.ant-btn-link svg path,
+.c10[disabled].ant-btn-default svg path,
+.c10.ant-btn-disabled.ant-btn-default svg path,
+.c10[disabled].ant-btn-primary svg path,
+.c10.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+.c3 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.c4 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.c2 .ant-select-focused .ant-select-selection-placeholder {
+  color: var(--acx-neutrals-50);
+}
+
+.c2 .ant-select-selection-overflow-item-rest > .ant-select-selection-item {
+  border: none;
+  background: var(--acx-primary-white);
+  min-width: 110px;
+  padding-right: 0px;
+  margin-right: 0px;
+  margin-bottom: 0px;
+}
+
+.c9 {
+  margin-top: 4px;
+  margin-bottom: -4px;
+  background-color: var(--acx-neutrals-10);
+  text-align: right;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  -webkit-align-items: flex-end;
+  -webkit-box-align: flex-end;
+  -ms-flex-align: flex-end;
+  align-items: flex-end;
+  padding: var(--acx-modal-footer-small-padding);
+  gap: var(--acx-modal-footer-small-button-space);
+}
+
+.c6 {
+  margin-top: 4px;
+  border-top: 1px solid var(--acx-neutrals-20);
+  padding: 10px;
+  width: 350px;
+}
+
+.c7 {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c8 .ant-checkbox-wrapper > span:last-child {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c1 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c0 {
+  min-width: 169px;
+  max-width: 322px;
+  width: 322px;
+}
+
+.c0 .ant-select-selector > .ant-select-selection-overflow > .ant-select-selection-overflow-item.ant-select-selection-overflow-item-suffix {
+  top: revert !important;
+}
+
+.c5 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  line-height: 8px;
+  -webkit-box-pack: right;
+  -webkit-justify-content: right;
+  -ms-flex-pack: right;
+  justify-content: right;
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
   >
     <div
-      class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+      class="c1"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-1a2oz4t-2 epNWLK ant-select-focused ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader c2 ant-select-focused ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
       >
         <div
           class="ant-select-selector"
@@ -1294,16 +2007,16 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                          class="c3"
                           title="swg"
                         >
                           <div
-                            class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                            class="c4"
                           >
                             swg
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
+                            class="c5"
                           />
                         </div>
                       </div>
@@ -1348,16 +2061,16 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                          class="c3"
                           title="swg1"
                         >
                           <div
-                            class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                            class="c4"
                           >
                             swg1
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
+                            class="c5"
                           />
                         </div>
                       </div>
@@ -1402,16 +2115,16 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                          class="c3"
                           title="venue"
                         >
                           <div
-                            class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                            class="c4"
                           >
                             venue
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
+                            class="c5"
                           />
                         </div>
                       </div>
@@ -1456,16 +2169,16 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
                         class="ant-cascader-menu-item-content"
                       >
                         <div
-                          class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                          class="c3"
                           title="venue1"
                         >
                           <div
-                            class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                            class="c4"
                           >
                             venue1
                           </div>
                           <div
-                            class="styledComponents__SeverityContainer-sc-1x390s8-2 fgqcnq"
+                            class="c5"
                           />
                         </div>
                       </div>
@@ -1496,16 +2209,16 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
                   </ul>
                 </div>
                 <div
-                  class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-5 gXsA-DA"
+                  class="c6"
                 >
                   <span
-                    class="styledComponents__RadioBandLabel-sc-1a2oz4t-6 ACqzq"
+                    class="c7"
                     style="margin-right: 10px;"
                   >
                     Radio:
                   </span>
                   <div
-                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-7 sTxFe"
+                    class="ant-checkbox-group c8"
                   >
                     <label
                       class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-group-item"
@@ -1567,10 +2280,10 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
                   </div>
                 </div>
                 <div
-                  class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
+                  class="c9"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
+                    class="ant-btn ant-btn-default ant-btn-sm c10"
                     type="button"
                   >
                     <span>
@@ -1578,7 +2291,7 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
                     </span>
                   </button>
                   <button
-                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
+                    class="ant-btn ant-btn-primary ant-btn-sm c10"
                     type="button"
                   >
                     <span>
@@ -1598,14 +2311,140 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
 
 exports[`Network Filter with incident severity should not show any severity circle when venueHierarchy is empty 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Container-sc-1x390s8-1 jOumPT"
+  .c4 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c4 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c4 svg:before {
+  content: 'a';
+}
+
+.c4 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c4.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c4.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c4.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c4.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c4[disabled] svg path,
+.c4.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c4[disabled].ant-btn-link svg path,
+.c4.ant-btn-disabled.ant-btn-link svg path,
+.c4[disabled].ant-btn-default svg path,
+.c4.ant-btn-disabled.ant-btn-default svg path,
+.c4[disabled].ant-btn-primary svg path,
+.c4.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+.c2 .ant-select-focused .ant-select-selection-placeholder {
+  color: var(--acx-neutrals-50);
+}
+
+.c2 .ant-select-selection-overflow-item-rest > .ant-select-selection-item {
+  border: none;
+  background: var(--acx-primary-white);
+  min-width: 110px;
+  padding-right: 0px;
+  margin-right: 0px;
+  margin-bottom: 0px;
+}
+
+.c3 {
+  margin-top: 4px;
+  margin-bottom: -4px;
+  background-color: var(--acx-neutrals-10);
+  text-align: right;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  -webkit-align-items: flex-end;
+  -webkit-box-align: flex-end;
+  -ms-flex-align: flex-end;
+  align-items: flex-end;
+  padding: var(--acx-modal-footer-small-padding);
+  gap: var(--acx-modal-footer-small-button-space);
+}
+
+.c1 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c0 {
+  min-width: 169px;
+  max-width: 322px;
+  width: 322px;
+}
+
+.c0 .ant-select-selector > .ant-select-selection-overflow > .ant-select-selection-overflow-item.ant-select-selection-overflow-item-suffix {
+  top: revert !important;
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
   >
     <div
-      class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+      class="c1"
     >
       <div
-        class="ant-select ant-cascader styledComponents__Cascader-sc-1a2oz4t-2 epNWLK ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+        class="ant-select ant-cascader c2 ant-select-single ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
       >
         <div
           class="ant-select-selector"
@@ -1735,10 +2574,10 @@ exports[`Network Filter with incident severity should not show any severity circ
                   </ul>
                 </div>
                 <div
-                  class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
+                  class="c3"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
+                    class="ant-btn ant-btn-default ant-btn-sm c4"
                     type="button"
                   >
                     <span>
@@ -1746,7 +2585,7 @@ exports[`Network Filter with incident severity should not show any severity circ
                     </span>
                   </button>
                   <button
-                    class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
+                    class="ant-btn ant-btn-primary ant-btn-sm c4"
                     type="button"
                   >
                     <span>

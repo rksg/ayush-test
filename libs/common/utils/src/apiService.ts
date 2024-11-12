@@ -1,7 +1,11 @@
-import _                        from 'lodash'
-import { generatePath, Params } from 'react-router-dom'
+import { QueryReturnValue }                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { MaybePromise }                                       from '@reduxjs/toolkit/dist/query/tsHelpers'
+import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import _                                                      from 'lodash'
+import { generatePath, Params }                               from 'react-router-dom'
 
-import { get } from '@acx-ui/config'
+import { get }            from '@acx-ui/config'
+import { RequestPayload } from '@acx-ui/types'
 
 import { getTenantId }                       from './getTenantId'
 import { getJwtTokenPayload, getJwtHeaders } from './jwtToken'
@@ -12,6 +16,10 @@ export interface ApiInfo {
   newApi?: boolean;
   oldUrl?: string;
   oldMethod?: string;
+  defaultHeaders?: {
+    'Content-Type'?: string;
+    'Accept'?: string
+  };
 }
 
 export const isDelegationMode = () => {
@@ -76,6 +84,7 @@ export const createHttpRequest = (
   const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
+    ...(apiInfo.defaultHeaders),
     ...customHeaders,
     ...getJwtHeaders({ ignoreDelegation })
   }
@@ -101,6 +110,31 @@ export const createHttpRequest = (
     method: method,
     url: `${domain}${url}`
   }
+}
+
+export const batchApi = (apiInfo: ApiInfo, requests: RequestPayload<unknown>[],
+  fetchWithBQ:(arg: string | FetchArgs) => MaybePromise<
+  QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>>,
+  customHeaders?: Record<string, unknown>
+) => {
+  const promises = requests.map((arg) => {
+    const req = createHttpRequest(apiInfo, arg.params, customHeaders)
+    return fetchWithBQ({
+      ...req,
+      body: JSON.stringify(arg.payload)
+    })
+  })
+  return Promise.all(promises)
+    .then((results) => {
+      const error = results.find(i => i.error)
+      if(error) {
+        return { error }
+      }
+      return { data: results }
+    })
+    .catch((error)=>{
+      return error
+    })
 }
 
 export interface Filters {

@@ -18,6 +18,10 @@ const devicesCountMap = {
   ap: defineMessage({
     defaultMessage: '{count} {count, plural, one {AP} other {APs}}',
     description: 'Translation strings - AP, APs'
+  }),
+  device: defineMessage({
+    defaultMessage: '{count} {count, plural, one {Device} other {Devices}}',
+    description: 'Translation strings - Device, Devices'
   })
 }
 
@@ -46,7 +50,7 @@ export class EntitlementUtil {
       case EntitlementDeviceType.ANALYTICS:
         return $t({ defaultMessage: 'Analytics' })
       case EntitlementDeviceType.EDGE:
-        return $t({ defaultMessage: 'SmartEdge' })
+        return $t({ defaultMessage: 'RUCKUS Edge' })
       case EntitlementDeviceType.APSW:
       case EntitlementDeviceType.MSP_APSW:
       case EntitlementDeviceType.MSP_APSW_TEMP:
@@ -89,6 +93,7 @@ export class EntitlementUtil {
       case EntitlementNetworkDeviceType.SWITCH: type = 'switch'; break
       case EntitlementNetworkDeviceType.WIFI:
       case EntitlementNetworkDeviceType.LTE: type = 'ap'; break
+      case EntitlementNetworkDeviceType.APSW: type = 'device'; break
       default:
         return ''
     }

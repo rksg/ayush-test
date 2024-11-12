@@ -5,11 +5,16 @@ import { ChannelBandwidth6GEnum } from './ChannelBandwidth6GEnum'
 import { MgmtTxRate6GEnum }       from './MgmtTxRate6GEnum'
 import { ScanMethodEnum }         from './ScanMethodEnum'
 import { TxPowerEnum }            from './TxPowerEnum'
+import { VenueHeight }            from './VenueHeight'
 
 export class RadioParams6G {
   method: ScanMethodEnum
 
   allowedChannels?: Channel6GEnum[]
+
+  allowedIndoorChannels?: Channel6GEnum[]
+
+  allowedOutdoorChannels?: Channel6GEnum[]
 
   channelBandwidth: ChannelBandwidth6GEnum
 
@@ -27,10 +32,16 @@ export class RadioParams6G {
 
   enableAfc: boolean
 
+  venueHeight?: VenueHeight
+
   constructor () {
     this.method = ScanMethodEnum.CHANNELFLY
 
     this.allowedChannels = []
+
+    this.allowedIndoorChannels = []
+
+    this.allowedOutdoorChannels = []
 
     this.channelBandwidth = ChannelBandwidth6GEnum.AUTO
 
@@ -45,5 +56,7 @@ export class RadioParams6G {
     this.txPower = TxPowerEnum.MAX
 
     this.enableAfc = false
+
+    this.venueHeight = {}
   }
 }

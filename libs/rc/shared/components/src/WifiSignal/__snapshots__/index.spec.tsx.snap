@@ -2,55 +2,186 @@
 
 exports[`WifiSignal should render correctly 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__WifiSignal-sc-1jj0rsq-1 ebkhYz"
+  .c1 path {
+  stroke: var(--acx-neutrals-30);
+}
+
+.c1 path {
+  stroke: var(--acx-primary-black);
+}
+
+.c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-content: center;
+  -ms-flex-line-pack: center;
+  align-content: center;
+}
+
+.c0 span {
+  display: inherit;
+}
+
+.c0 svg {
+  margin-left: 4px;
+}
+
+<div
+    class="c0"
   >
     <span>
       49 dB
       <svg
-        class="styledComponents__SNRSolidIcon-sc-1jj0rsq-0 ceUMlw"
+        class="c1"
         data-testid="SNRSolid"
       />
     </span>
   </div>
-  <div
-    class="styledComponents__WifiSignal-sc-1jj0rsq-1 ebkhYz"
+  .c1 path {
+  stroke: var(--acx-neutrals-30);
+}
+
+.c1 path {
+  stroke: var(--acx-primary-black);
+}
+
+.c1 path:nth-child(3) {
+  stroke: var(--acx-neutrals-30);
+}
+
+.c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-content: center;
+  -ms-flex-line-pack: center;
+  align-content: center;
+}
+
+.c0 span {
+  display: inherit;
+}
+
+.c0 svg {
+  margin-left: 4px;
+}
+
+<div
+    class="c0"
   >
     <span>
       35 dB
       <svg
-        class="styledComponents__SNRSolidIcon-sc-1jj0rsq-0 kWFGMd"
+        class="c1"
         data-testid="SNRSolid"
       />
     </span>
   </div>
-  <div
-    class="styledComponents__WifiSignal-sc-1jj0rsq-1 ebkhYz"
+  .c1 path {
+  stroke: var(--acx-neutrals-30);
+}
+
+.c1 path:first-child,
+.c1 path:last-child {
+  stroke: var(--acx-primary-black);
+}
+
+.c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-content: center;
+  -ms-flex-line-pack: center;
+  align-content: center;
+}
+
+.c0 span {
+  display: inherit;
+}
+
+.c0 svg {
+  margin-left: 4px;
+}
+
+<div
+    class="c0"
   >
     <span>
       20 dB
       <svg
-        class="styledComponents__SNRSolidIcon-sc-1jj0rsq-0 gKUQIb"
+        class="c1"
         data-testid="SNRSolid"
       />
     </span>
   </div>
-  <div
-    class="styledComponents__WifiSignal-sc-1jj0rsq-1 ebkhYz"
+  .c1 path {
+  stroke: var(--acx-neutrals-30);
+}
+
+.c1 path:last-child {
+  stroke: var(--acx-primary-black);
+}
+
+.c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-content: center;
+  -ms-flex-line-pack: center;
+  align-content: center;
+}
+
+.c0 span {
+  display: inherit;
+}
+
+.c0 svg {
+  margin-left: 4px;
+}
+
+<div
+    class="c0"
   >
     <span>
       <svg
-        class="styledComponents__SNRSolidIcon-sc-1jj0rsq-0 jtOeon"
+        class="c1"
         data-testid="SNRSolid"
       />
     </span>
   </div>
-  <div
-    class="styledComponents__WifiSignal-sc-1jj0rsq-1 ebkhYz"
+  .c1 path {
+  stroke: var(--acx-neutrals-30);
+}
+
+.c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-content: center;
+  -ms-flex-line-pack: center;
+  align-content: center;
+}
+
+.c0 span {
+  display: inherit;
+}
+
+.c0 svg {
+  margin-left: 4px;
+}
+
+<div
+    class="c0"
   >
     <span>
       <svg
-        class="styledComponents__SNRSolidIcon-sc-1jj0rsq-0 dkPSSs"
+        class="c1"
         data-testid="SNRSolid"
       />
     </span>

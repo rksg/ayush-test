@@ -1,23 +1,55 @@
 
+import { generatePath, Params } from 'react-router-dom'
+
 import {
   reportsApi as reportsBaseApi,
   REPORT_BASE_RELATIVE_URL as BASE_RELATIVE_URL } from '@acx-ui/store'
-import { RequestPayload }             from '@acx-ui/types'
-import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
-
+import { RequestPayload }         from '@acx-ui/types'
+import { ApiInfo, getJwtHeaders } from '@acx-ui/utils'
 
 export interface GuestToken {
   token: string
 }
-export interface UrlInfo {
-  redirect_url: string
+
+export interface UserInfo {
+  tenant_id: string, // TODO: remove
+  is_franchisor: string, // TODO: remove
+  tenant_ids: string[], // TODO: remove
+  own_tenant_id: string,
+  cache_key: string
 }
 
-export interface DashboardMetadata {
+export interface DataStudioResponse {
+  redirect_url: string,
+  user_info?: UserInfo
+}
+
+export interface EmbeddedResponse {
   result: {
     uuid: string,
     dashboard_id: string,
     allowed_domains: string[]
+  },
+  user_info?: UserInfo
+}
+
+const createHttpRequest = (
+  apiInfo: ApiInfo,
+  paramValues?: Params<string>
+) => {
+  const headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    ...getJwtHeaders()
+  }
+
+  const url = generatePath(`${apiInfo.url}`, paramValues)
+  const method = apiInfo.method
+  return {
+    headers,
+    credentials: 'include' as RequestCredentials,
+    method: method,
+    url: `${window.location.origin}${url}`
   }
 }
 
@@ -54,7 +86,7 @@ export const reportsApi = reportsBaseApi.injectEndpoints({
         return response.token
       }
     }),
-    embeddedId: build.mutation<string, RequestPayload>({
+    embeddedId: build.mutation<EmbeddedResponse, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ReportUrlsInfo.getEmbeddedDashboardMeta, params)
         return {
@@ -62,11 +94,11 @@ export const reportsApi = reportsBaseApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse: (response : DashboardMetadata) => {
-        return response.result.uuid
+      transformResponse: (response : EmbeddedResponse) => {
+        return response
       }
     }),
-    authenticate: build.mutation<string, RequestPayload>({
+    authenticate: build.mutation<DataStudioResponse, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ReportUrlsInfo.authenticate, params)
         return {
@@ -74,8 +106,8 @@ export const reportsApi = reportsBaseApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse: (response : UrlInfo) => {
-        return response.redirect_url
+      transformResponse: (response : DataStudioResponse) => {
+        return response
       }
     })
   })

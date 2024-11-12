@@ -1,3 +1,4 @@
+import { EdgeMvSdLanViewData, MacAuthMacFormatEnum, Venue, VenueDetail } from '..'
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
@@ -7,6 +8,7 @@ import { AAAWlanAdvancedCustomization }   from '../models/AAAWlanAdvancedCustomi
 import { DpskWlanAdvancedCustomization }  from '../models/DpskWlanAdvancedCustomization'
 import { GuestPortal }                    from '../models/GuestPortal'
 import { GuestWlanAdvancedCustomization } from '../models/GuestWlanAdvancedCustomization'
+import { NetworkHotspot20Settings }       from '../models/NetworkHotspot20Settings'
 import { NetworkVenue }                   from '../models/NetworkVenue'
 import { OpenWlanAdvancedCustomization }  from '../models/OpenWlanAdvancedCustomization'
 import { PskWlanAdvancedCustomization }   from '../models/PskWlanAdvancedCustomization'
@@ -39,22 +41,44 @@ export interface BaseNetwork {
   nwSubType: string
   ssid: string
   vlan: number
-  aps: number
-  clients: number
+  aps: number // non-RBAC only
+  clients?: number  // non-RBAC only
   venues: { count: number, names: string[], ids: string[] }
   captiveType?: GuestNetworkTypeEnum
-  deepNetwork?: NetworkDetail
-  vlanPool?: { name: string }
+  deepNetwork?: NetworkDetail // non-RBAC only
+  vlanPool?: { name: string } // non-RBAC only
   activated?: { isActivated: boolean, isDisabled?: boolean, errors?: string[] }
-  allApDisabled?: boolean
+  allApDisabled?: boolean,
+  incompatible?: number
 }
+
+export type DsaeOnboardNetwork = {
+  id: string
+  name: string
+  description: string
+  nwSubType: string
+  ssid: string
+  vlan: number
+  vlanPool?: { name: string, vlanMembers: string[] }
+  securityProtocol?: string
+}
+
 export interface Network extends BaseNetwork{
   children?: BaseNetwork[]
-  dsaeOnboardNetwork?: BaseNetwork
+  dsaeOnboardNetwork?: DsaeOnboardNetwork
   securityProtocol?: string
   isOnBoarded?: boolean
   isOweMaster?: boolean
-  owePairNetworkId?: string
+  owePairNetworkId?: string,
+  certificateTemplateId?: string
+  apSerialNumbers?: string[]
+}
+
+export interface WifiNetwork extends Network{
+  apCount: number, // RBAC API only: replace the aps field
+  clientCount: number,  // RBAC API only: replace the client field
+  venueApGroups: VenueApGroup[], // RBAC API only: replace the venues field
+  tunnelWlanEnable?: boolean
 }
 
 export interface NetworkExtended extends Network {
@@ -105,7 +129,10 @@ export interface NetworkSaveData {
   authRadiusId?: string | null
   accountingRadiusId?: string
   enableDhcp?: boolean
+  enableDeviceOs?: boolean
   wlan?: {
+    accessControlEnabled?: boolean
+    accessControlProfileId?: string
     ssid?: string
     vlanId?: number
     enable?: boolean
@@ -113,6 +140,7 @@ export interface NetworkSaveData {
     bypassCPUsingMacAddressAuthentication?: boolean
     passphrase?: string
     saePassphrase?: string
+    isMacRegistrationList?: boolean
     managementFrameProtection?: string
     macAddressAuthentication?: boolean
     macRegistrationListId?: string
@@ -125,17 +153,52 @@ export interface NetworkSaveData {
       DpskWlanAdvancedCustomization |
       PskWlanAdvancedCustomization |
       GuestWlanAdvancedCustomization
+    macAddressAuthenticationConfiguration?: {
+      macAddressAuthentication?: boolean
+      macAuthMacFormat?: string
+    }
   };
   wlanSecurity?: WlanSecurityEnum
   dpskWlanSecurity?: WlanSecurityEnum
   authRadius?: Radius
   accountingRadius?: Radius
   dpskServiceProfileId?: string
+  useDpskService?: boolean
   isOweMaster?: boolean
   owePairNetworkId?: string
+  maxRate?: MaxRateEnum
+  totalUplinkLimited? : boolean
+  totalDownlinkLimited? : boolean
+  accessControlProfileEnable?: boolean
+  enableOwe?: boolean
+  isDsaeServiceNetwork?: boolean
+  dsaeNetworkPairId?: string
+  hotspot20Settings?: NetworkHotspot20Settings
+  useCertificateTemplate?: boolean
+  certificateTemplateId?: string
+  accountingInterimUpdates?: number
+  sdLanAssociationUpdate?: NetworkTunnelSdLanAction[],
+  softGreAssociationUpdate?: NetworkTunnelSoftGreAction
 }
+
+export interface NetworkSummaryExtracData {
+  directoryServer? : {
+    id:string,
+    name:string
+  }
+}
+
+export enum MaxRateEnum {
+  PER_AP = 'perAp',
+  UNLIMITED = 'unlimited'
+}
+
 export interface ExternalProviders{
   providers: Providers[]
+}
+
+export interface ExternalWifiProviders extends ExternalProviders{
+  wisprProviders: Providers[]
 }
 export interface Providers{
   customExternalProvider: boolean,
@@ -178,4 +241,40 @@ export interface ApGroupModalState { // subset of ApGroupModalWidgetProps
   network?: NetworkSaveData | null,
   networkVenue?: NetworkVenue,
   venueName?: string
+}
+
+export interface VenueApGroup {
+  venueId: string,
+  isAllApGroups: boolean,
+  apGroupIds: string[]
+}
+
+export type SchedulingModalState = {
+  visible: boolean,
+  networkVenue?: NetworkVenue,
+  venue?: Venue | VenueDetail
+  network?: Network
+}
+
+export interface NetworkRadiusSettings {
+  enableAccountingProxy?: boolean
+  enableAuthProxy?: boolean
+  macAuthMacFormat?: MacAuthMacFormatEnum
+}
+
+export interface NetworkTunnelSdLanAction {
+  serviceId: string,
+  venueId: string,
+  networkId: string,
+  guestEnabled: boolean, // forward guest traffic
+  enabled: boolean,      // is local breakout
+  venueSdLanInfo?: EdgeMvSdLanViewData
+}
+
+export interface NetworkTunnelSoftGreAction {
+  [name:string]: {
+    newProfileId: string,
+    newProfileName: string,
+    oldProfileId: string
+  }
 }

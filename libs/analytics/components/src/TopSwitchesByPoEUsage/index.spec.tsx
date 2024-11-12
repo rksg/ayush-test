@@ -77,6 +77,20 @@ describe('TopSwitchesByPoEUsageWidget', () => {
     jest.resetAllMocks()
   })
 
+  it('should handle cannot onClick',() => {
+    const { result: basePath } = renderHook(
+      () => useTenantLink('/some/path?another=param')
+    )
+    const { result: navigate } = renderHook(
+      () => useNavigate()
+    )
+    const handleOnClick = onClick(navigate.current,basePath.current)
+    const param = { componentType: 'series',
+      value: [1, 2, 3] } as EventParams
+    handleOnClick(param)
+    expect(mockedUseNavigate).not.toHaveBeenCalled()
+  })
+
   it('should handle onClick',() => {
     const { result: basePath } = renderHook(
       () => useTenantLink('/some/path?another=param')
@@ -85,7 +99,8 @@ describe('TopSwitchesByPoEUsageWidget', () => {
       () => useNavigate()
     )
     const handleOnClick = onClick(navigate.current,basePath.current)
-    const param = { componentType: 'series', value: [1,2,3] } as EventParams
+    const param = { componentType: 'series',
+      value: [1, 2, 3, 'mac', 'serialNumber'] } as EventParams
     handleOnClick(param)
     expect(mockedUseNavigate).toHaveBeenCalled()
   })

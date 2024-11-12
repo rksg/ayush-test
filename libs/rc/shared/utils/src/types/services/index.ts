@@ -3,10 +3,12 @@ export * from './edgeDhcpService'
 export * from './edgeFirewallService'
 export * from './dpskService'
 export * from './wifiCallingService'
-export * from './networkSegmentationService'
+export * from './edgePinService'
 export * from './mdnsProxyService'
 export * from './portalService'
 export * from './edgeSdLanService'
+export * from './edgeMdnsProxyService'
+export * from './edgeTnmService'
 
 export enum AccessEnum {
   ALLOW = 'Allow',
@@ -85,6 +87,21 @@ export interface AccessControlProfile {
   description?: string
 }
 
+export interface AccessControlProfileTemplate {
+  name: string,
+  id: string,
+  l2AclPolicyId?: string,
+  l2AclPolicyName?: string,
+  l3AclPolicyId?: string,
+  l3AclPolicyName?: string,
+  devicePolicyId?: string,
+  devicePolicyName?: string,
+  applicationPolicyId?: string,
+  applicationPolicyName?: string,
+  clientRateUpLinkLimit?: number,
+  clientRateDownLinkLimit?: number
+}
+
 export interface AccessControlFormFields {
   description: string | undefined
   enableApplications: boolean | undefined
@@ -105,21 +122,6 @@ export interface AccessControlFormFields {
   policyName: string
 }
 
-export interface CloudpathServer {
-  id: string
-  name: string
-  deploymentType: 'Cloud' | 'OnPremise'
-  deployedInVenueId?: string
-  deployedInVenueName?: string
-  authRadius: {
-    id: string
-    primary: RadiusService
-  }
-  accountingRadiu?: {
-    id: string
-    primary: RadiusService
-  }
-}
 export interface RadiusService {
   ip: string
   port: number
@@ -130,7 +132,3 @@ export enum VlanType {
   VLAN = 'vlanId',
   Pool = 'vlanPool'
 }
-
-
-
-

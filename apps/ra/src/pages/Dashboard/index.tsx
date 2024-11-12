@@ -13,12 +13,11 @@ import {
   AIDrivenRRM,
   AIOperations,
   ChatWithMelissa,
-  AppInsights
+  AppInsights,
+  IntentAIWidget
 } from '@acx-ui/analytics/components'
 import {
-  PERMISSION_MANAGE_CONFIG_RECOMMENDATION,
-  useAnalyticsFilter,
-  getUserProfile
+  useAnalyticsFilter
 } from '@acx-ui/analytics/utils'
 import {
   PageHeader,
@@ -27,6 +26,7 @@ import {
   useLayoutContext
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
+import { hasPermission }                                                                               from '@acx-ui/user'
 import { AnalyticsFilter, DateFilter, DateRange, getDatePickerValues, getDateRangeFilter, PathFilter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -79,12 +79,13 @@ type DashboardViewProps = {
 
 const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
   const height = useMonitorHeight(536)
-  const userProfile = getUserProfile()
   const enableAppInsights = useIsSplitOn(Features.APP_INSIGHTS)
-  const hasRecommendation =
-    userProfile.selectedTenant.permissions[
-      PERMISSION_MANAGE_CONFIG_RECOMMENDATION
-    ]
+  const isIntentAIEnabled = useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_TOGGLE)
+  const hasRecommendation = (
+    hasPermission({ permission: 'READ_INTENT_AI' }) ||
+    hasPermission({ permission: 'READ_AI_OPERATIONS' }) ||
+    hasPermission({ permission: 'READ_AI_DRIVEN_RRM' })
+  )
   if (!hasRecommendation) {
     return (
       <UI.NetworkAdminGrid style={{ height }}>
@@ -103,12 +104,12 @@ const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
         <div style={{ gridArea: 'd1' }}>
           <DidYouKnow
             filters={pathFilters}
-            maxFactPerSlide={3}
+            maxFactPerSlide={2}
             maxSlideChar={290}
           />
         </div>
         <div style={{ gridArea: 'd2' }}>
-          <ChatWithMelissa />
+          <ChatWithMelissa/>
         </div>
       </UI.NetworkAdminGrid>
     )
@@ -120,28 +121,39 @@ const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
         <ReportTile pathFilters={pathFilters} />
       </div>
       { enableAppInsights
-        ? [<div style={{ gridArea: 'a2-start/ a2-start/ a3-end / a3-end' }}><AppInsights /></div>]
+        ? [<div key='1' style={{ gridArea: 'a2-start/ a2-start/ a3-end / a3-end' }}>
+          <AppInsights />
+        </div>]
         : [
-          <div style={{ gridArea: 'a2' }}>
+          <div key='1' style={{ gridArea: 'a2' }}>
             <NetworkHistory hideLegend historicalIcon={false} filters={filters} />
           </div>,
-          <div style={{ gridArea: 'a3' }}>
+          <div key='2' style={{ gridArea: 'a3' }}>
             <SLA pathFilters={pathFilters} />
           </div>]
       }
       <div style={{ gridArea: 'b1' }}>
         <IncidentsCountBySeverities filters={filters} />
       </div>
-      <div style={{ gridArea: 'b2' }}>
-        <AIDrivenRRM
-          pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
-        />
-      </div>
-      <div style={{ gridArea: 'c2' }}>
-        <AIOperations
-          pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
-        />
-      </div>
+      {isIntentAIEnabled
+        ? <div style={{ gridArea: 'b2-start/ b2-start/ c2-end / c2-end' }}>
+          <IntentAIWidget
+            pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
+          />
+        </div>
+        : <>
+          <div style={{ gridArea: 'b2' }}>
+            <AIDrivenRRM
+              pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
+            />
+          </div>
+          <div style={{ gridArea: 'c2' }}>
+            <AIOperations
+              pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
+            />
+          </div>
+        </>
+      }
       <div style={{ gridArea: 'd1' }}>
         <DidYouKnow
           filters={pathFilters}
@@ -154,7 +166,7 @@ const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
           <SLA pathFilters={pathFilters} />
         </div>
         : <div style={{ gridArea: 'd2' }}>
-          <ChatWithMelissa />
+          <ChatWithMelissa/>
         </div> }
     </UI.AdminGrid>
   )

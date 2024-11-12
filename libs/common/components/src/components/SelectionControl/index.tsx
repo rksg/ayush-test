@@ -2,6 +2,8 @@ import React from 'react'
 
 import { Radio, RadioChangeEvent } from 'antd'
 
+import { Tooltip } from '../Tooltip'
+
 import { Wrapper, Container } from './styledComponents'
 
 export interface SelectionControlOptionProps {
@@ -9,6 +11,8 @@ export interface SelectionControlOptionProps {
   value: string
   icon?: React.ReactNode
   disabled?: boolean
+  noPadding?: boolean
+  tooltip?: string
 }
 
 export interface SelectionControlProps {
@@ -19,13 +23,14 @@ export interface SelectionControlProps {
   size?: 'small' | 'large'
   value?: string
   extra?: React.ReactNode;
+  noPadding?: boolean
 }
 
 export function SelectionControl (
   props: SelectionControlProps
 ) {
   return (
-    <Wrapper>
+    <Wrapper noPadding={props.noPadding}>
       <Radio.Group
         optionType='button'
         defaultValue={props.defaultValue}
@@ -35,12 +40,28 @@ export function SelectionControl (
         size={props.size || 'small'}
         value={props.value}
       >
-        {props.options.map(({ value, label, icon, disabled }) => (
-          <Radio.Button {...{ value, disabled, key: value }}>
-            {icon}
-            {label}
-          </Radio.Button>
-        ))}
+        {props.options.map(({ value, label, icon, disabled, tooltip }) => {
+          if(tooltip){
+            return (
+              <Tooltip
+                title={tooltip}
+                mouseEnterDelay={1}
+              >
+                <Radio.Button {...{ value, disabled, key: value }}>
+                  {icon}
+                  {label}
+                </Radio.Button>
+              </Tooltip>
+            )
+          }else{
+            return (
+              <Radio.Button {...{ value, disabled, key: value }}>
+                {icon}
+                {label}
+              </Radio.Button>
+            )
+          }
+        })}
       </Radio.Group>
       {props.extra ?
         <Container>{props.extra}</Container> : null}

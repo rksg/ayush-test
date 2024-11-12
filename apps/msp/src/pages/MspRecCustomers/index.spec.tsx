@@ -2,10 +2,11 @@ import '@testing-library/jest-dom'
 import userEvent      from '@testing-library/user-event'
 import { Path, rest } from 'msw'
 
-import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                                            from '@acx-ui/msp/utils'
+import { Features, useIsSplitOn, useIsTierAllowed }               from '@acx-ui/feature-toggle'
+import { MspAdministrator, MspRbacUrlsInfo, MspUrlsInfo }         from '@acx-ui/msp/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, within, waitFor } from '@acx-ui/test-utils'
+import { RolesEnum }                                              from '@acx-ui/types'
 import { AccountType }                                            from '@acx-ui/utils'
 
 import { MspRecCustomers } from '.'
@@ -156,6 +157,83 @@ const userProfile = {
 const mspPortal = {
   msp_label: 'eleu1658'
 }
+const fakedPrivilegeGroupList =
+  [
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8911',
+      name: 'ADMIN',
+      description: 'Admin Role',
+      roleName: 'ADMIN',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8912',
+      name: 'PRIME_ADMIN',
+      description: 'Prime Admin Role',
+      roleName: 'PRIME_ADMIN',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8913',
+      name: 'READ_ONLY',
+      description: 'Read only Role',
+      roleName: 'READ_ONLY',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8914',
+      name: 'OFFICE_ADMIN',
+      description: 'Guest Manager',
+      roleName: 'OFFICE_ADMIN',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8915',
+      name: 'DPSK_ADMIN',
+      description: 'DPSK Manager',
+      roleName: 'DPSK_ADMIN',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '99bb7b958a5544898cd0b938fa800a5a',
+      name: 'wi-fi privilege group',
+      description: 'privilege group for wi-fi',
+      roleName: 'new wi-fi custom role',
+      type: 'Custom',
+      delegation: false,
+      allCustomers: false
+    }
+  ]
+
+const fakeMSPAdminList = [
+  {
+    id: '22322506ed764da2afe726885845a359',
+    email: 'test.com',
+    createdDate: '2023-01-31T03:28:35.448+00:00',
+    updatedDate: '2023-01-31T03:28:35.448+00:00',
+    delegatedTo: 'f5ca6ac1a8cf4929ac5b78d6a1392599',
+    type: 'MSP',
+    status: 'ACCEPTED',
+    delegatedBy: 'abc@email.com',
+    delegatedToName: 'FisrtName 1551'
+  }
+]
+const fakeDelegatedAdminList = [
+  {
+    msp_admin_id: '22322506ed764da2afe726885845a359',
+    msp_admin_role: RolesEnum.PRIME_ADMIN
+  }
+]
 
 const services = require('@acx-ui/msp/services')
 jest.mock('@acx-ui/msp/services', () => ({
@@ -181,8 +259,9 @@ describe('MspRecCustomers', () => {
     services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
       return { data: mspPortal }
     })
+    const emptyList: MspAdministrator[] = []
     services.useMspAdminListQuery = jest.fn().mockImplementation(() => {
-      return { data: [] }
+      return { data: emptyList }
     })
     services.useGetMspEcDelegatedAdminsQuery = jest.fn().mockImplementation(() => {
       return { data: undefined }
@@ -197,6 +276,9 @@ describe('MspRecCustomers', () => {
     services.useCheckDelegateAdmin = jest.fn().mockImplementation(() => {
       const checkDelegateAdmin = jest.fn()
       return { checkDelegateAdmin }
+    })
+    rcServices.useGetPrivilegeGroupsWithAdminsQuery = jest.fn().mockImplementation(() => {
+      return { data: fakedPrivilegeGroupList }
     })
     jest.spyOn(services, 'useMspCustomerListQuery')
     jest.spyOn(services, 'useSupportMspCustomerListQuery')
@@ -217,6 +299,10 @@ describe('MspRecCustomers', () => {
         MspUrlsInfo.deleteMspEcAccount.url,
         (req, res, ctx) => res(ctx.json({ requestId: 'f638e92c-9d6f-45b2-a680-20047741ef2c' }))
       ),
+      rest.delete(
+        MspRbacUrlsInfo.deleteMspEcAccount.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 'f638e92c-9d6f-45b2-a680-20047741ef2c' }))
+      ),
       rest.post(
         MspUrlsInfo.deactivateMspEcAccount.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
@@ -228,6 +314,14 @@ describe('MspRecCustomers', () => {
       rest.post(
         MspUrlsInfo.getIntegratorCustomersList.url,
         (req, res, ctx) => res(ctx.json({ ...list }))
+      ),
+      rest.put(
+        MspRbacUrlsInfo.updateMspEcDelegatedAdmins.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+      ),
+      rest.put(
+        MspUrlsInfo.updateMspEcDelegatedAdmins.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '123' }))
       )
     )
     params = {
@@ -248,8 +342,8 @@ describe('MspRecCustomers', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
-    expect(screen.getByText('RUCKUS End Customers')).toBeVisible()
-    expect(screen.getByText('Add Customer')).toBeVisible()
+    expect(screen.getByText('Brand Properties')).toBeVisible()
+    expect(screen.getByText('Add Property')).toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
@@ -291,30 +385,6 @@ describe('MspRecCustomers', () => {
 
     expect(screen.queryByText('Wi-Fi Licenses')).toBeNull()
   })
-  it('should render correctly when feature flag turned off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    user.useUserProfileContext = jest.fn().mockImplementation(() => {
-      return { data: userProfile }
-    })
-    render(
-      <Provider>
-        <MspRecCustomers />
-      </Provider>, {
-        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
-      })
-    expect(await screen.findByText('My Customers')).toBeVisible()
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
-    })
-    expect(screen.getByText('Wi-Fi Licenses')).toBeVisible()
-    expect(screen.getByText('Wi-Fi License Utilization')).toBeVisible()
-    expect(screen.getByText('Switch Licenses')).toBeVisible()
-    expect(screen.getByText('SmartEdge Licenses')).toBeVisible()
-    expect(screen.queryByText('Tenant ID')).toBeNull()
-
-    expect(screen.queryByText('Installed Devices')).toBeNull()
-    expect(screen.queryByText('Device Subscriptions Utilization')).toBeNull()
-  })
   it('should delete selected row', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
@@ -333,7 +403,7 @@ describe('MspRecCustomers', () => {
     fireEvent.click(deleteButton)
 
     expect(await screen.findByRole('dialog')).toBeVisible()
-    const deleteEcButton = screen.getByRole('button', { name: 'Delete EC' })
+    const deleteEcButton = screen.getByRole('button', { name: 'Delete Property' })
     await userEvent.type(screen.getByRole('textbox',
       { name: 'Type the word "Delete" to confirm:' }), 'Delete')
     await waitFor(() =>
@@ -439,7 +509,7 @@ describe('MspRecCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    expect(screen.getByText('Add Customer')).not.toBeVisible()
+    expect(screen.getByText('Add Property')).not.toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
@@ -486,6 +556,7 @@ describe('MspRecCustomers', () => {
     expect(services.useDelegateToMspEcPath).toHaveBeenCalled()
   })
   it('should render table for integrator', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.ABAC_POLICIES_TOGGLE)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -520,7 +591,7 @@ describe('MspRecCustomers', () => {
     fireEvent.click(within(row).getByRole('link', { name: '0' }))
 
     expect(screen.getByRole('dialog')).toBeVisible()
-    expect(screen.getByText('Manage MSP Administrators')).toBeVisible()
+    expect(screen.getByText('Manage Tech Partner Administrators')).toBeVisible()
   })
   it('should render table for mspec', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
@@ -550,6 +621,7 @@ describe('MspRecCustomers', () => {
     expect(screen.getByText('Installer Count')).toBeVisible()
   })
   it('should open dialog when msp admin count link clicked', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.ABAC_POLICIES_TOGGLE)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -570,6 +642,7 @@ describe('MspRecCustomers', () => {
     expect(screen.getByText('Manage MSP Administrators')).toBeVisible()
   })
   it('should open dialog when integrator link clicked', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -589,6 +662,7 @@ describe('MspRecCustomers', () => {
     expect(screen.getByRole('dialog')).toBeVisible()
   })
   it('should open dialog when installer link clicked', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -648,5 +722,89 @@ describe('MspRecCustomers', () => {
       hash: '',
       search: ''
     }, { replace: true })
+  })
+  it('should show brand property instead Ruckus End Customer for HSP', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_HSP_SUPPORT)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <MspRecCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
+      })
+    expect(screen.getByText('Brand Properties')).toBeVisible()
+  })
+  it('should open msp delegations drawer for abac and rbac ff enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ABAC_POLICIES_TOGGLE
+      || ff === Features.RBAC_PHASE2_TOGGLE)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === Features.RBAC_IMPLICIT_P1)
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    user.hasRoles = jest.fn().mockImplementation(() => {
+      return true
+    })
+    render(
+      <Provider>
+        <MspRecCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+      })
+
+    // Click MSP Admin Count link
+    const row = await screen.findByRole('row', { name: /ec 111/i })
+    fireEvent.click(within(row).getByRole('link', { name: '1' }))
+
+    expect(screen.getByRole('dialog')).toBeVisible()
+    expect(await screen.findByText('Manage MSP Delegations')).toBeVisible()
+    expect(await screen.findByRole('tab', { name: 'Privilege Groups' })).toBeVisible()
+    fireEvent.click(screen.getByRole('tab', { name: 'Privilege Groups' }))
+    const checkbox = screen.getAllByRole('checkbox')[0]
+    expect(checkbox).toBeEnabled()
+    fireEvent.click(checkbox)
+    expect(checkbox).toBeChecked()
+
+    expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+  })
+  it('should open delegation admin drawer for abac enabled and rbac not enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.RBAC_PHASE2_TOGGLE)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === Features.RBAC_IMPLICIT_P1)
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    user.hasRoles = jest.fn().mockImplementation(() => {
+      return true
+    })
+    services.useGetMspEcDelegatedAdminsQuery = jest.fn().mockImplementation(() => {
+      return { data: fakeDelegatedAdminList }
+    })
+    services.useMspAdminListQuery = jest.fn().mockImplementation(() => {
+      return { data: fakeMSPAdminList }
+    })
+    render(
+      <Provider>
+        <MspRecCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+      })
+
+    // Click MSP Admin Count link
+    const row = await screen.findByRole('row', { name: /ec 111/i })
+    fireEvent.click(within(row).getByRole('link', { name: '1' }))
+
+    expect(screen.getByRole('dialog')).toBeVisible()
+    expect(await screen.findByText('Manage MSP Users')).toBeVisible()
+    const checkbox = screen.getAllByRole('checkbox')[0]
+    expect(checkbox).toBeEnabled()
+    fireEvent.click(checkbox)
+    expect(checkbox).toBeChecked()
+
+    expect(screen.getByRole('button', { name: 'Assign' })).toBeEnabled()
+    fireEvent.click(screen.getByRole('button', { name: 'Assign' }))
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
   })
 })

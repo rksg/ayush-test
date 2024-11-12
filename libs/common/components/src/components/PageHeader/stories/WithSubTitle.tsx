@@ -4,10 +4,10 @@ import { BrowserRouter } from '@acx-ui/react-router-dom'
 
 import { PageHeader } from '..'
 
-export function WithSubTitleText () {
+export function WithSubTitle () {
   return <BrowserRouter>
     <PageHeader
-      title='With Subtitle Text'
+      title='With Subtitle'
       breadcrumb={[
         { text: 'Networks', link: '/networks' }
       ]}
@@ -16,14 +16,18 @@ export function WithSubTitleText () {
   </BrowserRouter>
 }
 
-export function WithSubTitleComp () {
+export function WithSubTitlesAndDividers () {
   return <BrowserRouter>
     <PageHeader
-      title='With Subtitle Component'
+      title='With Subtitles & Dividers'
       breadcrumb={[
         { text: 'Networks', link: '/networks' }
       ]}
-      subTitle={<span style={{ background: 'yellow' }}>Custom Component</span>}
+      subTitle={[
+        { label: 'Label 1', value: ['Value 1'] },
+        { label: 'Label 2', value: ['Value 2'] },
+        { label: 'Label 3', value: ['Value 3', 'Value 4'] }
+      ]}
     />
   </BrowserRouter>
 }

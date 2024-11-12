@@ -23,12 +23,11 @@ import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import MigrationContext , { mainReducer } from '../MigrationContext'
 
-import { MigrationSettingForm } from './MigrationSettingForm'
-import { defaultAddress }       from './MigrationSettingForm'
-import SummaryForm              from './SummaryForm'
-import UploadForm               from './UploadForm'
-import ValidationForm           from './ValidationForm'
-import ValidationStatus         from './ValidationStatus'
+import { MigrationSettingForm, defaultAddress } from './MigrationSettingForm'
+import SummaryForm                              from './SummaryForm'
+import UploadForm                               from './UploadForm'
+import ValidationForm                           from './ValidationForm'
+import ValidationStatus                         from './ValidationStatus'
 
 
 const MigrationForm = () => {

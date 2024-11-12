@@ -2,11 +2,102 @@
 
 exports[`ContentSwitcher should render component 1`] = `
 <DocumentFragment>
-  <div
+  .c0 .ant-radio-group {
+  border-radius: 20px;
+  background-color: var(--acx-neutrals-20);
+  vertical-align: top;
+  overflow: hidden;
+}
+
+.c0 .ant-radio-button-wrapper {
+  color: var(--acx-primary-black);
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 20px;
+}
+
+.c0 .ant-radio-button-wrapper:not(:first-child)::before {
+  display: none;
+}
+
+.c0 .ant-radio-button-wrapper-checked {
+  color: var(--acx-primary-white);
+  background-color: var(--acx-primary-black);
+}
+
+.c0 .ant-radio-button-wrapper span:nth-child(2) {
+  vertical-align: middle;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c0 .ant-radio-button-wrapper:not(.ant-radio-button-wrapper-checked,.ant-radio-button-wrapper-disabled):hover {
+  background-color: var(--acx-neutrals-30);
+}
+
+.c0 svg {
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.c0 path {
+  stroke: var(--acx-primary-black);
+}
+
+.c0 .ant-radio-button-wrapper-checked path {
+  stroke: var(--acx-primary-white);
+}
+
+.c0 .ant-radio-button-wrapper-checked {
+  cursor: default;
+}
+
+.c0 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
+  color: var(--acx-primary-white);
+}
+
+.c0 .ant-radio-group-small svg {
+  width: var(--acx-body-4-font-size);
+  height: var(--acx-body-4-font-size);
+}
+
+.c0 .ant-radio-group-small .ant-radio-button-wrapper {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  height: 24px;
+}
+
+.c0 .ant-radio-group-small .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 16px;
+}
+
+.c0 .ant-radio-group-large svg {
+  width: var(--acx-body-3-font-size);
+  height: var(--acx-body-3-font-size);
+}
+
+.c0 .ant-radio-group-large .ant-radio-button-wrapper {
+  font-size: var(--acx-body-3-font-size);
+  line-height: var(--acx-body-3-line-height);
+  height: 28px;
+}
+
+.c0 .ant-radio-group-large .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 32px;
+}
+
+<div
     style="text-align: center;"
   >
     <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
+      class="c0"
     >
       <div
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -95,114 +186,123 @@ exports[`ContentSwitcher should render component 1`] = `
   <h1>
     Chart content
   </h1>
-</DocumentFragment>
-`;
-
-exports[`ContentSwitcher should render component with default selection 1`] = `
-<DocumentFragment>
-  <div
-    style="text-align: center;"
-  >
-    <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
-    >
-      <div
-        class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
-      >
-        <label
-          class="ant-radio-button-wrapper ant-radio-button-wrapper-disabled"
-        >
-          <span
-            class="ant-radio-button ant-radio-button-disabled"
-          >
-            <input
-              class="ant-radio-button-input"
-              disabled=""
-              type="radio"
-              value="chart"
-            />
-            <span
-              class="ant-radio-button-inner"
-            />
-          </span>
-          <span>
-            <span
-              aria-label="bar-chart"
-              class="anticon anticon-bar-chart"
-              role="img"
-            >
-              <svg
-                aria-hidden="true"
-                data-icon="bar-chart"
-                fill="currentColor"
-                focusable="false"
-                height="1em"
-                viewBox="64 64 896 896"
-                width="1em"
-              >
-                <path
-                  d="M888 792H200V168c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v688c0 4.4 3.6 8 8 8h752c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm-600-80h56c4.4 0 8-3.6 8-8V560c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v144c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V384c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v320c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V462c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v242c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V304c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v400c0 4.4 3.6 8 8 8z"
-                />
-              </svg>
-            </span>
-            Chart
-          </span>
-        </label>
-        <label
-          class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
-        >
-          <span
-            class="ant-radio-button ant-radio-button-checked"
-          >
-            <input
-              checked=""
-              class="ant-radio-button-input"
-              type="radio"
-              value="table"
-            />
-            <span
-              class="ant-radio-button-inner"
-            />
-          </span>
-          <span>
-            <span
-              aria-label="table"
-              class="anticon anticon-table"
-              role="img"
-            >
-              <svg
-                aria-hidden="true"
-                data-icon="table"
-                fill="currentColor"
-                focusable="false"
-                height="1em"
-                viewBox="64 64 896 896"
-                width="1em"
-              >
-                <path
-                  d="M928 160H96c-17.7 0-32 14.3-32 32v640c0 17.7 14.3 32 32 32h832c17.7 0 32-14.3 32-32V192c0-17.7-14.3-32-32-32zm-40 208H676V232h212v136zm0 224H676V432h212v160zM412 432h200v160H412V432zm200-64H412V232h200v136zm-476 64h212v160H136V432zm0-200h212v136H136V232zm0 424h212v136H136V656zm276 0h200v136H412V656zm476 136H676V656h212v136z"
-                />
-              </svg>
-            </span>
-            Table
-          </span>
-        </label>
-      </div>
-    </div>
-  </div>
-  <h2>
-    Table content
-  </h2>
 </DocumentFragment>
 `;
 
 exports[`ContentSwitcher should render component with extra components 1`] = `
 <DocumentFragment>
-  <div
+  .c0 .ant-radio-group {
+  border-radius: 20px;
+  background-color: var(--acx-neutrals-20);
+  vertical-align: top;
+  overflow: hidden;
+}
+
+.c0 .ant-radio-button-wrapper {
+  color: var(--acx-primary-black);
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 20px;
+}
+
+.c0 .ant-radio-button-wrapper:not(:first-child)::before {
+  display: none;
+}
+
+.c0 .ant-radio-button-wrapper-checked {
+  color: var(--acx-primary-white);
+  background-color: var(--acx-primary-black);
+}
+
+.c0 .ant-radio-button-wrapper span:nth-child(2) {
+  vertical-align: middle;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c0 .ant-radio-button-wrapper:not(.ant-radio-button-wrapper-checked,.ant-radio-button-wrapper-disabled):hover {
+  background-color: var(--acx-neutrals-30);
+}
+
+.c0 svg {
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.c0 path {
+  stroke: var(--acx-primary-black);
+}
+
+.c0 .ant-radio-button-wrapper-checked path {
+  stroke: var(--acx-primary-white);
+}
+
+.c0 .ant-radio-button-wrapper-checked {
+  cursor: default;
+}
+
+.c0 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
+  color: var(--acx-primary-white);
+}
+
+.c0 .ant-radio-group-small svg {
+  width: var(--acx-body-4-font-size);
+  height: var(--acx-body-4-font-size);
+}
+
+.c0 .ant-radio-group-small .ant-radio-button-wrapper {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  height: 24px;
+}
+
+.c0 .ant-radio-group-small .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 16px;
+}
+
+.c0 .ant-radio-group-large svg {
+  width: var(--acx-body-3-font-size);
+  height: var(--acx-body-3-font-size);
+}
+
+.c0 .ant-radio-group-large .ant-radio-button-wrapper {
+  font-size: var(--acx-body-3-font-size);
+  line-height: var(--acx-body-3-line-height);
+  height: 28px;
+}
+
+.c0 .ant-radio-group-large .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 32px;
+}
+
+.c1 {
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: right;
+  -webkit-justify-content: right;
+  -ms-flex-pack: right;
+  justify-content: right;
+  margin-top: -20px;
+  margin-right: 6px;
+}
+
+<div
     style="text-align: center;"
   >
     <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
+      class="c0"
     >
       <div
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -287,205 +387,9 @@ exports[`ContentSwitcher should render component with extra components 1`] = `
         </label>
       </div>
       <div
-        class="styledComponents__Container-sc-c4vpsp-1 bYqrkz"
+        class="c1"
       >
         Some text
-      </div>
-    </div>
-  </div>
-  <h2>
-    Table content
-  </h2>
-</DocumentFragment>
-`;
-
-exports[`ContentSwitcher should render properly with two tabs: chartContent 1`] = `
-<DocumentFragment>
-  <div
-    style="text-align: center;"
-  >
-    <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
-    >
-      <div
-        class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
-      >
-        <label
-          class="ant-radio-button-wrapper ant-radio-button-wrapper-checked ant-radio-button-wrapper-disabled"
-        >
-          <span
-            class="ant-radio-button ant-radio-button-checked ant-radio-button-disabled"
-          >
-            <input
-              checked=""
-              class="ant-radio-button-input"
-              disabled=""
-              type="radio"
-              value="chart"
-            />
-            <span
-              class="ant-radio-button-inner"
-            />
-          </span>
-          <span>
-            <span
-              aria-label="bar-chart"
-              class="anticon anticon-bar-chart"
-              role="img"
-            >
-              <svg
-                aria-hidden="true"
-                data-icon="bar-chart"
-                fill="currentColor"
-                focusable="false"
-                height="1em"
-                viewBox="64 64 896 896"
-                width="1em"
-              >
-                <path
-                  d="M888 792H200V168c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v688c0 4.4 3.6 8 8 8h752c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm-600-80h56c4.4 0 8-3.6 8-8V560c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v144c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V384c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v320c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V462c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v242c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V304c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v400c0 4.4 3.6 8 8 8z"
-                />
-              </svg>
-            </span>
-            Chart
-          </span>
-        </label>
-        <label
-          class="ant-radio-button-wrapper"
-        >
-          <span
-            class="ant-radio-button"
-          >
-            <input
-              class="ant-radio-button-input"
-              type="radio"
-              value="table"
-            />
-            <span
-              class="ant-radio-button-inner"
-            />
-          </span>
-          <span>
-            <span
-              aria-label="table"
-              class="anticon anticon-table"
-              role="img"
-            >
-              <svg
-                aria-hidden="true"
-                data-icon="table"
-                fill="currentColor"
-                focusable="false"
-                height="1em"
-                viewBox="64 64 896 896"
-                width="1em"
-              >
-                <path
-                  d="M928 160H96c-17.7 0-32 14.3-32 32v640c0 17.7 14.3 32 32 32h832c17.7 0 32-14.3 32-32V192c0-17.7-14.3-32-32-32zm-40 208H676V232h212v136zm0 224H676V432h212v160zM412 432h200v160H412V432zm200-64H412V232h200v136zm-476 64h212v160H136V432zm0-200h212v136H136V232zm0 424h212v136H136V656zm276 0h200v136H412V656zm476 136H676V656h212v136z"
-                />
-              </svg>
-            </span>
-            Table
-          </span>
-        </label>
-      </div>
-    </div>
-  </div>
-  <h1>
-    Chart content
-  </h1>
-</DocumentFragment>
-`;
-
-exports[`ContentSwitcher should render properly with two tabs: tableContent 1`] = `
-<DocumentFragment>
-  <div
-    style="text-align: center;"
-  >
-    <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
-    >
-      <div
-        class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
-      >
-        <label
-          class="ant-radio-button-wrapper ant-radio-button-wrapper-disabled"
-        >
-          <span
-            class="ant-radio-button ant-radio-button-disabled"
-          >
-            <input
-              checked=""
-              class="ant-radio-button-input"
-              disabled=""
-              type="radio"
-              value="chart"
-            />
-            <span
-              class="ant-radio-button-inner"
-            />
-          </span>
-          <span>
-            <span
-              aria-label="bar-chart"
-              class="anticon anticon-bar-chart"
-              role="img"
-            >
-              <svg
-                aria-hidden="true"
-                data-icon="bar-chart"
-                fill="currentColor"
-                focusable="false"
-                height="1em"
-                viewBox="64 64 896 896"
-                width="1em"
-              >
-                <path
-                  d="M888 792H200V168c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v688c0 4.4 3.6 8 8 8h752c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm-600-80h56c4.4 0 8-3.6 8-8V560c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v144c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V384c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v320c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V462c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v242c0 4.4 3.6 8 8 8zm152 0h56c4.4 0 8-3.6 8-8V304c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v400c0 4.4 3.6 8 8 8z"
-                />
-              </svg>
-            </span>
-            Chart
-          </span>
-        </label>
-        <label
-          class="ant-radio-button-wrapper ant-radio-button-wrapper-checked"
-        >
-          <span
-            class="ant-radio-button ant-radio-button-checked"
-          >
-            <input
-              class="ant-radio-button-input"
-              type="radio"
-              value="table"
-            />
-            <span
-              class="ant-radio-button-inner"
-            />
-          </span>
-          <span>
-            <span
-              aria-label="table"
-              class="anticon anticon-table"
-              role="img"
-            >
-              <svg
-                aria-hidden="true"
-                data-icon="table"
-                fill="currentColor"
-                focusable="false"
-                height="1em"
-                viewBox="64 64 896 896"
-                width="1em"
-              >
-                <path
-                  d="M928 160H96c-17.7 0-32 14.3-32 32v640c0 17.7 14.3 32 32 32h832c17.7 0 32-14.3 32-32V192c0-17.7-14.3-32-32-32zm-40 208H676V232h212v136zm0 224H676V432h212v160zM412 432h200v160H412V432zm200-64H412V232h200v136zm-476 64h212v160H136V432zm0-200h212v136H136V232zm0 424h212v136H136V656zm276 0h200v136H412V656zm476 136H676V656h212v136z"
-                />
-              </svg>
-            </span>
-            Table
-          </span>
-        </label>
       </div>
     </div>
   </div>

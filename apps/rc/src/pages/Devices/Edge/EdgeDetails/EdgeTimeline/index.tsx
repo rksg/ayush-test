@@ -16,13 +16,16 @@ import {
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
 const EdgeActivityTable = () => {
-
+  const settingsId = 'edge-activity-table'
   const { serialNumber } = useParams()
-  const tableQuery = useActivityTableQuery({ entityType: 'EDGE', entityId: serialNumber! })
+  const tableQuery = useActivityTableQuery(
+    { entityType: 'EDGE', entityId: serialNumber! },
+    { settingsId }
+  )
 
   return (
     <ActivityTable
-      settingsId='edge-activity-table'
+      settingsId={settingsId}
       tableQuery={tableQuery}
       filterables={['status']}
       columnState={activityTableColumnState}
@@ -31,16 +34,16 @@ const EdgeActivityTable = () => {
 }
 
 const EdgeEventTable = () => {
-
+  const settingsId = 'edge-event-table'
   const { serialNumber } = useParams()
   const tableQuery = useEventsTableQuery({
     serialNumber: [serialNumber],
     entity_type: [...eventDefaultFilters.entity_type, 'EDGE']
-  })
+  }, undefined, { settingsId })
 
   return (
     <EventTable
-      settingsId='edge-event-table'
+      settingsId={settingsId}
       tableQuery={tableQuery}
       filterables={['severity', 'entity_type']}
       eventTypeMap={pick(eventTypeMapping, 'EDGE')}

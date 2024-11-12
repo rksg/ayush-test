@@ -1,7 +1,8 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal, Tooltip }              from '@acx-ui/components'
-import { SimpleListTooltip }                                                                    from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                               from '@acx-ui/feature-toggle'
+import { DEFAULT_GUEST_DHCP_NAME, SimpleListTooltip }                                           from '@acx-ui/rc/components'
 import { useDeleteDHCPServiceMutation, useGetDHCPProfileListViewModelQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -13,13 +14,13 @@ import {
   DHCPSaveData,
   DHCP_LIMIT_NUMBER,
   DHCPPool,
-  IpUtilsService
+  IpUtilsService,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
-import { DEFAULT_GUEST_DHCP_NAME } from '../DHCPForm/DHCPForm'
-import * as UI                     from '../DHCPForm/styledComponents'
+import * as UI from './styledComponents'
 
 export default function DHCPTable () {
   const { $t } = useIntl()
@@ -27,6 +28,7 @@ export default function DHCPTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteDHCPServiceMutation()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const tableQuery = useTableQuery({
     useQuery: useGetDHCPProfileListViewModelQuery,
     defaultPayload: {
@@ -43,11 +45,13 @@ export default function DHCPTable () {
     search: {
       searchString: '',
       searchTargetFields: ['name']
-    }
+    },
+    enableRbac
   })
 
   const rowActions: TableProps<DHCPSaveData>['rowActions'] = [
     {
+      scopeKey: getScopeKeyByService(ServiceType.DHCP, ServiceOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedRows) => {
         return !selectedRows.some((row)=>{
@@ -64,12 +68,13 @@ export default function DHCPTable () {
             entityValue: name
           },
           onOk: () => {
-            deleteFn({ params: { tenantId, serviceId: id } }).then(clearSelection)
+            deleteFn({ params: { tenantId, serviceId: id }, enableRbac }).then(clearSelection)
           }
         })
       }
     },
     {
+      scopeKey: getScopeKeyByService(ServiceType.DHCP, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       disabled: (selectedRows) => {
         return selectedRows.some((row)=>{
@@ -88,24 +93,24 @@ export default function DHCPTable () {
       }
     }
   ]
+
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return (
     <>
       <PageHeader
         title={
-          $t({
-            defaultMessage: 'DHCP ({count})'
-          },
-          {
-            count: tableQuery.data?.totalCount
-          })
+          $t({ defaultMessage: 'DHCP ({count})' }, { count: tableQuery.data?.totalCount })
         }
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={filterByAccess([
-          // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}>
+        extra={filterByAccessForServicePolicyMutation([
+          <TenantLink
+            to={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
+            scopeKey={getScopeKeyByService(ServiceType.DHCP, ServiceOperation.CREATE)}
+          >
             <Button type='primary'
               disabled={tableQuery.data?.totalCount
                 ? tableQuery.data?.totalCount >= DHCP_LIMIT_NUMBER
@@ -121,8 +126,8 @@ export default function DHCPTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowActions={allowedRowActions}
+          rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
@@ -224,14 +229,16 @@ function useColumns () {
         }
         placement='bottom'
         overlayClassName={UI.toolTipClassName}
-        overlayInnerStyle={{ width: 515 }}>{dhcpPools.length}</Tooltip>
+        overlayInnerStyle={{ width: 515 }}
+        dottedUnderline={true}>{dhcpPools.length}</Tooltip>
       }
     },
     {
       key: 'venues',
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueCount',
       filterable: venueNameMap,
+      filterKey: 'venueIds',
       align: 'center',
       sorter: true,
       render: (_, row) =>{

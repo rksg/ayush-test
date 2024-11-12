@@ -14,14 +14,15 @@ export const eventTypeMapping = {
   CLIENT: defineMessage({ defaultMessage: 'Client' }),
   SWITCH: defineMessage({ defaultMessage: 'Switch' }),
   NETWORK: defineMessage({ defaultMessage: 'Network' }),
-  EDGE: defineMessage({ defaultMessage: 'SmartEdge' })
+  EDGE: defineMessage({ defaultMessage: 'RUCKUS Edge' }),
+  PROFILE: defineMessage({ defaultMessage: 'Profile' })
 }
 
 export const productMapping = {
   GENERAL: defineMessage({ defaultMessage: 'General' }),
   WIFI: defineMessage({ defaultMessage: 'Wi-Fi' }),
   SWITCH: defineMessage({ defaultMessage: 'Switch' }),
-  EDGE: defineMessage({ defaultMessage: 'SmartEdge' })
+  EDGE: defineMessage({ defaultMessage: 'RUCKUS Edge' })
 }
 
 export const adminLogTypeMapping = {

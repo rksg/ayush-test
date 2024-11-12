@@ -1,18 +1,9 @@
-import styled from 'styled-components/macro'
+import { Space } from 'antd'
+import styled    from 'styled-components/macro'
 
-import { Anchor, SearchBar } from '@acx-ui/components'
+import { Anchor } from '@acx-ui/components'
 
 const { Link } = Anchor
-
-export const ClientSearchBar = styled(SearchBar)`
-  width: 400px;
-  input{
-    width: 400px;
-  }
-  span{
-    width: 400px;
-  }
-`
 
 export const ClientLink = styled(Link)`
   &.ant-anchor-link {
@@ -31,11 +22,8 @@ export const ClientLink = styled(Link)`
   }
 `
 
-export const SearchBarDiv = styled.div`
-  width: 400px;
-  display: flex;
+export const SearchBarDiv = styled(Space).attrs({ size: 5 })`
   padding-bottom: 4px;
-  gap: 5px;
 `
 
 export const SearchCountDiv = styled.div`

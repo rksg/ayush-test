@@ -169,3 +169,10 @@ export const VoiceVlanSwitch = styled.div`
     }
   }
 `
+
+export const DrawerFooterDivider = styled.div`
+  .ant-divider-vertical {
+    height: 30px;
+    border-color: var(--acx-primary-black);
+  }
+`

@@ -5,6 +5,8 @@ import userEvent from '@testing-library/user-event'
 import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { Provider, serviceGuardApiURL }     from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
+import { RolesEnum }                        from '@acx-ui/types'
+import { getUserProfile, setUserProfile }   from '@acx-ui/user'
 
 import * as fixtures from './__tests__/fixtures'
 
@@ -41,6 +43,19 @@ describe('Service Validation', () => {
     }
     render(<Component/>, { wrapper: Provider, route: {} })
     expect(await screen.findByText('Create Test')).toBeVisible()
+  })
+  it('should hide extra header when role = READ_ONLY', async () => {
+    const profile = getUserProfile()
+    setUserProfile({ ...profile, profile: {
+      ...profile.profile, roles: [RolesEnum.READ_ONLY]
+    } })
+
+    const Component = () => {
+      const { headerExtra } = useServiceGuard()
+      return <span>{headerExtra}</span>
+    }
+    render(<Component/>, { wrapper: Provider, route: {} })
+    expect(screen.queryByText('Create Test')).not.toBeInTheDocument()
   })
   it('should update tab count by context', async () => {
     const Component = () => {

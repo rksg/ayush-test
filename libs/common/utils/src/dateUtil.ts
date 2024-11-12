@@ -1,6 +1,9 @@
+import tz_lookup                            from '@photostructure/tz-lookup'
 import { pick }                             from 'lodash'
 import moment                               from 'moment-timezone'
 import { defineMessage, MessageDescriptor } from 'react-intl'
+
+import { ITimeZone } from '@acx-ui/types'
 
 import { DateFilter } from './dateFilter'
 
@@ -83,15 +86,10 @@ export function computeRangeFilter <Filter extends object & { dateFilter?: DateR
 }
 
 export function dateRangeForLast (
-  duration: number,
-  durationType: string
+  duration: moment.DurationInputArg1,
+  durationType: moment.DurationInputArg2
 ): [moment.Moment, moment.Moment] {
-  return [
-    moment()
-      .subtract(duration as moment.DurationInputArg1, durationType as moment.DurationInputArg2)
-      .seconds(0),
-    moment().seconds(0)
-  ]
+  return [ceilMinute().subtract(duration, durationType), ceilMinute()]
 }
 
 export const dateRangeMap : Record<DateRange, MessageDescriptor> = {
@@ -117,4 +115,19 @@ export const dateRangeMap : Record<DateRange, MessageDescriptor> = {
 
 export function getCurrentDate (format: string) {
   return moment().format(format)
+}
+
+export function transformTimezoneDifference (timeOffset: number){
+  return 'UTC ' + (timeOffset >= 0 ? '+' : '-') + moment.utc(Math.abs(timeOffset) * 1000)
+    .format('HH:mm')
+}
+
+export const getVenueTimeZone = (lat: number, lng: number): ITimeZone => {
+  const timeZoneId = tz_lookup(lat, lng)
+  const timeZoneName = moment.utc().tz(timeZoneId).zoneAbbr()
+  const rawOffset = moment.utc().tz(timeZoneId).utcOffset()*60
+  return {
+    timeZoneId, timeZoneName: `${timeZoneId} ${timeZoneName}`,
+    rawOffset, dstOffset: 0
+  }
 }

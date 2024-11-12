@@ -1,11 +1,13 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, showActionModal, Table, TableProps, Tooltip }    from '@acx-ui/components'
-import { useDeleteCliTemplatesMutation, useGetCliTemplatesQuery } from '@acx-ui/rc/services'
-import { SwitchCliTemplateModel, usePollingTableQuery }           from '@acx-ui/rc/utils'
-import { useParams }                                              from '@acx-ui/react-router-dom'
-import { useNavigate }                                            from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                              from '@acx-ui/user'
+import { Loader, showActionModal, Table, TableProps, Tooltip }     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { useDeleteCliTemplatesMutation, useGetCliTemplatesQuery }  from '@acx-ui/rc/services'
+import { SwitchCliTemplateModel, usePollingTableQuery }            from '@acx-ui/rc/utils'
+import { useParams }                                               from '@acx-ui/react-router-dom'
+import { useNavigate }                                             from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                            from '@acx-ui/types'
+import { hasCrossVenuesPermission, filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { Notification  } from './styledComponents'
 
@@ -15,9 +17,16 @@ export function OnDemandCliTab () {
   const navigate = useNavigate()
   const [deleteCliTemplates] = useDeleteCliTemplatesMutation()
 
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const tableQuery = usePollingTableQuery<SwitchCliTemplateModel>({
     useQuery: useGetCliTemplatesQuery,
-    defaultPayload: {}
+    defaultPayload: {},
+    enableRbac: isSwitchRbacEnabled,
+    search: {
+      searchString: '',
+      searchTargetFields: ['name']
+    }
   })
 
   const columns: TableProps<SwitchCliTemplateModel>['columns'] = [{
@@ -25,6 +34,7 @@ export function OnDemandCliTab () {
     title: $t({ defaultMessage: 'CLI Template Name' }),
     dataIndex: 'name',
     defaultSortOrder: 'ascend',
+    searchable: true,
     sorter: true
   },{
     key: 'switches',
@@ -53,12 +63,14 @@ export function OnDemandCliTab () {
     {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
+      scopeKey: [SwitchScopes.UPDATE],
       onClick: (selectedRows) => {
         navigate(`${selectedRows[0].id}/edit`, { replace: false })
       }
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      scopeKey: [SwitchScopes.DELETE],
       onClick: (selectedRows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -72,13 +84,18 @@ export function OnDemandCliTab () {
           onOk: () => {
             deleteCliTemplates({
               params: { tenantId },
-              payload: selectedRows.map(r => r.id)
+              payload: selectedRows.map(r => r.id),
+              enableRbac: isSwitchRbacEnabled
             }).then(clearSelection)
           }
         })
       }
     }
   ]
+
+  const isSelectionVisible = hasPermission({
+    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
+  })
 
   return (
     <> <Loader states={[
@@ -101,15 +118,17 @@ export function OnDemandCliTab () {
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'checkbox' }}
-        actions={filterByAccess([{
+        rowSelection={hasCrossVenuesPermission() && isSelectionVisible && { type: 'checkbox' }}
+        actions={hasCrossVenuesPermission() ? filterByAccess([{
           label: $t({ defaultMessage: 'Add CLI Template' }),
+          scopeKey: [SwitchScopes.CREATE],
           onClick: () => {
             navigate('add', { replace: false })
           }
-        }])}
+        }]) : []}
       />
     </Loader></>
   )

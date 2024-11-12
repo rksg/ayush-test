@@ -9,6 +9,8 @@ import {
   mockGraphqlQuery, render, screen, waitFor,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
+import { RolesEnum }                                                         from '@acx-ui/types'
+import { getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile } from '@acx-ui/user'
 
 import {
   callQoeTestDetailsFixtures1,
@@ -19,6 +21,7 @@ import {
 import { clientSearchApi } from '../VideoCallQoe/services'
 
 import { VideoCallQoeDetails } from '.'
+
 
 jest.mock('@acx-ui/config')
 const get = jest.mocked(config.get)
@@ -57,7 +60,7 @@ describe('VideoCallQoe Details Page', () => {
     get.mockReturnValue('true')
     mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTestDetails',
       { data: callQoeTestDetailsFixtures1 })
-
+    setRaiPermissions({ WRITE_VIDEO_CALL_QOE: true } as RaiPermissions)
     const { asFragment } = render(
       <Provider>
         <VideoCallQoeDetails />
@@ -121,7 +124,7 @@ describe('VideoCallQoe Details Page', () => {
     await userEvent.click(radioButtons[2])
     await screen.findByText('1 selected')
     await userEvent.click(screen.getByText('Select'))
-    await waitForElementToBeRemoved(() => screen.queryByText('Select'))
+    await waitFor(() => { expect(screen.queryByText('Select')).not.toBeInTheDocument() })
   })
   it('should close client mac search drawer while click on cancel button', async () => {
     mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTestDetails',
@@ -160,7 +163,7 @@ describe('VideoCallQoe Details Page', () => {
       })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await userEvent.click(screen.getByTestId('EditOutlinedIcon'))
-    const searchInput = await screen.findByPlaceholderText(/search by mac, username or hostname/i)
+    const searchInput = await screen.findByPlaceholderText(/search mac, username, hostname/i)
     await userEvent.type(searchInput, 'DPSK_User_8709')
     await waitFor(() => {
       expect(screen.queryByRole('img', { name: 'loader' })).toBeVisible()
@@ -181,5 +184,21 @@ describe('VideoCallQoe Details Page', () => {
     fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
       .forEach((node: Element) => node.setAttribute('_echarts_instance_', 'ec_mock'))
     expect(fragment).toMatchSnapshot()
+  })
+  it('should hide edit when role = READ_ONLY', async () => {
+    const profile = getUserProfile()
+    setUserProfile({ ...profile, profile: {
+      ...profile.profile, roles: [RolesEnum.READ_ONLY]
+    } })
+    mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTestDetails',
+      { data: callQoeTestDetailsFixtures1 })
+    render(
+      <Provider>
+        <VideoCallQoeDetails />
+      </Provider>, {
+        route: { params }
+      })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    expect(screen.queryByTestId('EditOutlinedIcon')).not.toBeInTheDocument()
   })
 })

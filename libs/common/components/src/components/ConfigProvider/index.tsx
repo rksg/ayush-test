@@ -14,7 +14,8 @@ import {
   useLocaleContext,
   LocaleProviderProps,
   prepareAntdValidateMessages,
-  onIntlError
+  onIntlError,
+  getReSkinningElements
 } from '@acx-ui/utils'
 
 export type ConfigProviderProps = Omit<AntConfigProviderProps, 'locale'> & {
@@ -38,7 +39,11 @@ export function ConfigProvider (props: ConfigProviderProps) {
     <LocaleProvider lang={props.lang}>
       <LocaleContext.Consumer>
         {locale => (
-          <IntlProvider locale={locale.lang} messages={locale.messages} onError={onIntlError}>
+          <IntlProvider locale={locale.lang}
+            defaultRichTextElements={getReSkinningElements(locale)}
+            messages={locale.messages}
+            onError={onIntlError}
+          >
             <AntConfigProviders {...props} />
           </IntlProvider>
         )}

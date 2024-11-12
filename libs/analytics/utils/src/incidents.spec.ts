@@ -177,6 +177,11 @@ describe('impactedArea', () => {
     const sliceValue = 'AP'
     expect(impactedArea(apPath, sliceValue)).toEqual(`${sliceValue} (IP)`)
   })
+  it('return correct value for controller incident', () => {
+    const apPath = [...path, { type: 'controller', name: 'MAC_ADDRESS' }] as NetworkPath
+    const sliceValue = 'Controller Name'
+    expect(impactedArea(apPath, sliceValue)).toEqual(`${sliceValue} (MAC_ADDRESS)`)
+  })
   it('returns sliceValue when node name same as sliceValue', () => {
     const sameNamePath = [...path, { type: 'ap', name: 'AP' }] as NetworkPath
     const sliceValue = 'AP'
@@ -249,8 +254,10 @@ describe('impactValues', () => {
 
 describe('getThreshold', () => {
   it('should return the correct result for ttc', () => {
-    expect(getThreshold(fakeIncidentTtc))
+    expect(getThreshold(omit(fakeIncidentTtc, 'slaThreshold') as typeof fakeIncidentTtc))
       .toEqual(kpiConfig.timeToConnect.histogram.initialThreshold)
+    expect(getThreshold({ ...fakeIncidentTtc, slaThreshold: 10000.0 }))
+      .toEqual(10000.0)
   })
   it('should return undefined when code does not match', () => {
     expect(getThreshold(fakeIncidentApInfraWanthroughput)).toEqual(undefined)

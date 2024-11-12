@@ -1,8 +1,11 @@
 import { TypedUseMutationResult } from '@reduxjs/toolkit/dist/query/react'
-import _                          from 'lodash'
 
+import { DayAndTimeDropdownTypes }     from '@acx-ui/components'
 import { ServiceGuardBaseQuery }       from '@acx-ui/store'
 import { FilterListNode, NetworkPath } from '@acx-ui/utils'
+
+export { DayAndTimeDropdownTypes as ScheduleFrequency }
+type ScheduleFrequency = DayAndTimeDropdownTypes
 
 type UUID = string
 
@@ -33,16 +36,6 @@ export type APListNodes = [...NetworkPath, FilterListNode]
 export type NetworkNodes = NetworkPath
 export type NetworkPaths = Array<APListNodes| NetworkNodes>
 
-export function isAPListNodes (path: APListNodes | NetworkNodes): path is APListNodes {
-  const last = path[path.length - 1]
-  return _.has(last, 'list')
-}
-
-export function isNetworkNodes (path: APListNodes | NetworkNodes): path is NetworkNodes {
-  const last = path[path.length - 1]
-  return !_.has(last, 'list')
-}
-
 export enum ClientType {
   VirtualClient = 'virtual-client',
   VirtualWirelessClient = 'virtual-wireless-client'
@@ -51,12 +44,6 @@ export enum ClientType {
 export enum TestType {
   OnDemand = 'on-demand',
   Scheduled = 'scheduled'
-}
-
-export enum ScheduleFrequency {
-  Daily = 'daily',
-  Weekly = 'weekly',
-  Monthly = 'monthly'
 }
 
 export type TestTypeWithSchedule = TestType.OnDemand | ScheduleFrequency

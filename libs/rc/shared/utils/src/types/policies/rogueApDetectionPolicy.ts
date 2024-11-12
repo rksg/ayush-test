@@ -1,12 +1,15 @@
 import { ApDeviceStatusEnum } from '../../constants'
 
 export interface RogueAPDetectionContextType {
+  id?: string,
   policyName: string,
   name?: string,
   tags: string[],
   description: string,
   rules: RogueAPRule[],
-  venues: RogueVenue[]
+  venues: RogueVenue[],
+  oldVenues?: RogueVenue[],
+  defaultPolicyId?: string
 }
 
 export interface RogueAPDetailContextType {
@@ -69,6 +72,7 @@ export interface VenueRoguePolicyType {
 export interface EnhancedRoguePolicyType {
   id: string,
   name: string,
+  description: string,
   tenantId: string,
   numOfRules: number,
   venueIds: string[]
@@ -210,4 +214,22 @@ export type RogueAPDetectionActionPayload = {
 
 export enum RogueApConstant {
   DefaultProfile = 'Default profile'
+}
+
+export interface RoguePolicyRequest {
+  id: string | undefined,
+  name: string,
+  description: string,
+  rules: RogueAPRule[],
+  venues: RogueVenue[],
+  oldVenues: RogueVenue[],
+  defaultPolicyId: string
+}
+
+export interface RogueApSettingsRequest {
+  enabled: boolean | undefined,
+  reportThreshold: number | undefined,
+  roguePolicyId: string | undefined,
+  currentReportThreshold: number | undefined,
+  currentRoguePolicyId: string | undefined
 }

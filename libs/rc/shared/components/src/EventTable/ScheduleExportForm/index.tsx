@@ -21,8 +21,8 @@ import styled                                       from 'styled-components/macr
 import { Loader }                                      from '@acx-ui/components'
 import { EventExportSchedule, EventScheduleFrequency } from '@acx-ui/rc/utils'
 
-import { EmailRecipientDialog }                         from '../EmailRecipientDialog'
-import { productMapping, severityMapping, typeMapping } from '../mapping'
+import { EmailRecipientDialog }                              from '../EmailRecipientDialog'
+import { eventTypeMapping, productMapping, severityMapping } from '../mapping'
 
 
 export interface ScheduleExportFormProps {
@@ -102,7 +102,7 @@ export function ScheduleExportForm (props: ScheduleExportFormProps) {
   const { $t } = useIntl()
 
   const eventTypeList: DefaultOptionType[] =
-  Object.entries(typeMapping).map(([key, value]) => ({ value: key, label: $t(value) }))
+  Object.entries(eventTypeMapping).map(([key, value]) => ({ value: key, label: $t(value) }))
 
   const severityList: DefaultOptionType[] =
   Object.entries(severityMapping).map(([key, value]) => ({ value: key, label: $t(value) }))
@@ -138,7 +138,7 @@ export function ScheduleExportForm (props: ScheduleExportFormProps) {
           formScheduleExportData.context.product)
         form.setFieldValue([context, 'severity'],
           formScheduleExportData.context.severity)
-        if (formScheduleExportData.context.searchString?.length) {
+        if (formScheduleExportData.context?.searchString?.length) {
           // it will always be single string in array as per API implementation
           form.setFieldValue([context, 'searchString'],
             formScheduleExportData.context.searchString[0])
@@ -150,6 +150,13 @@ export function ScheduleExportForm (props: ScheduleExportFormProps) {
       }
 
       form.validateFields()
+    } else {
+      // set default values
+      form.setFieldValue('type', EventScheduleFrequency.Weekly)
+      form.setFieldValue('day', dayOfWeekOptions[0].value)
+      form.setFieldValue('hour', 12)
+      form.setFieldValue('minute', 0)
+      form.setFieldValue('dayOfMonth', 1)
     }
   }, [scheduleExportData])
 
@@ -190,192 +197,212 @@ export function ScheduleExportForm (props: ScheduleExportFormProps) {
           />}
         />
       </FieldLabel>
-      { exportScheduleEnabled && <>
-        <Form.Item
-          label={$t({ defaultMessage: 'Email Recipient' })}
-          required>
-          <Row gutter={8}>
-            <Col span={selectedRecipientsList?.length ? 18 : 0}>
-              <Form.Item
-                noStyle
-                name='recipients'
-                validateTrigger={['onBlur']}
-                rules={[
-                  { required: true }
-                ]}
-              >
-                <TextArea
-                  autoSize={selectedRecipientsList?.length
-                    ? { minRows: 3, maxRows: 5 } : { minRows: 0, maxRows: 0 }}
-                  bordered={false}
-                  disabled={true}
-                  style={
-                    {
-                      color: 'var(--acx-primary-black)',
-                      padding: 0
-                    }
+      <Form.Item
+        label={$t({ defaultMessage: 'Email Recipient' })}
+        hidden={!exportScheduleEnabled}
+        required>
+        <Row gutter={8}>
+          <Col span={selectedRecipientsList?.length ? 18 : 0}>
+            <Form.Item
+              noStyle
+              name='recipients'
+              validateTrigger={['onBlur']}
+              rules={[
+                { required: exportScheduleEnabled }
+              ]}
+            >
+              <TextArea
+                autoSize={selectedRecipientsList?.length
+                  ? { minRows: 3, maxRows: 5 } : { minRows: 0, maxRows: 0 }}
+                bordered={false}
+                disabled={true}
+                style={
+                  {
+                    color: 'var(--acx-primary-black)',
+                    padding: 0
                   }
-                />
-              </Form.Item>
-            </Col>
-            <Col span={selectedRecipientsList?.length ? 6 : 24}>
-              <Button
-                type='link'
-                onClick={openEmailRecipientDialog}
-              >{
-                  selectedRecipientsList?.length
-                    ? $t({ defaultMessage: 'Change' })
-                    : $t({ defaultMessage: 'Select Recipient' })
                 }
-              </Button>
-            </Col>
-          </Row>
-        </Form.Item>
-
-        <Form.Item
-          name={'type'}
-          label={$t({ defaultMessage: 'Frequency' })}
-          validateTrigger={['onBlur']}
-          children={<Select
-            options={frequencyListOptions} />
-          }
-          extra={
-            frequency === EventScheduleFrequency.Weekly
-              ? <label>{$t({ defaultMessage: 'Report duration will be last 7 days' })}</label>
-              : <label>{$t({ defaultMessage: 'Report duration will be last 30 days' })}</label>
-          }
-        />
-        <Form.Item
-          label={$t({ defaultMessage: 'Send reports on' })}
-          validateTrigger={['onBlur']}
-          children={
-            <Row align='middle'>
-              <FormattedMessage
-                {...(frequency === EventScheduleFrequency.Weekly)
-                  ? atDayHourMinute : atMonthDayHourMinute}
-                values={{
-                  d: (children) => <AtCol span={2} children={children} />,
-                  day: () => <Col span={10}>
-                    <Form.Item
-                      name={'day'}
-                      noStyle
-                    >
-                      <Select
-                        options={dayOfWeekOptions}
-                      />
-                    </Form.Item>
-                  </Col>,
-                  dayMonth: () => <Col span={5}>
-                    <Form.Item
-                      name={'dayOfMonth'}
-                      rules={[{ required: true,
-                        message: $t({ defaultMessage: 'Please enter month day' }) }]}
-                      noStyle
-                    >
-                      <Select
-                        options={dayOfMonthOptions()}
-                      />
-                    </Form.Item>
-                  </Col>,
-                  at: (children) => <AtCol span={
-                    frequency === EventScheduleFrequency.Weekly ? 2 : 9
-                  }
-                  children={children} />,
-                  hour: () => <Col span={3}>
-                    <Form.Item
-                      name={'hour'}
-                      initialValue={0}
-                      rules={
-                        [{
-                          required: true
-                        }]
-                      }
-                      noStyle
-                    >
-                      <InputNumber
-                        max={24}
-                        min={0}
-                        style={{ width: '40px' }}
-                        size={'middle'}
-                        controls={false}
-                      />
-                    </Form.Item>
-                  </Col>,
-                  at2: (children) => <AtCol span={2} children={children} />,
-                  minute: () => <Col span={frequency === EventScheduleFrequency.Weekly ? 5 : 3}>
-                    <Form.Item
-                      name={'minute'}
-                      initialValue={0}
-                      rules={
-                        [{
-                          required: true
-                        }]
-                      }
-                      noStyle
-                    >
-                      <InputNumber
-                        max={60}
-                        min={0}
-                        style={{ width: '40px' }}
-                        size={'middle'}
-                        controls={false}
-                      />
-                    </Form.Item>
-                  </Col>
-                }}
               />
-            </Row>
-          }
-        />
+            </Form.Item>
+          </Col>
+          <Col span={selectedRecipientsList?.length ? 6 : 24}>
+            <Button
+              type='link'
+              onClick={openEmailRecipientDialog}
+            >{
+                selectedRecipientsList?.length
+                  ? $t({ defaultMessage: 'Change' })
+                  : $t({ defaultMessage: 'Select Recipient' })
+              }
+            </Button>
+          </Col>
+        </Row>
+      </Form.Item>
 
-        <h4>{ $t({ defaultMessage: 'Filter by' }) }</h4>
+      <Form.Item
+        name={'type'}
+        label={$t({ defaultMessage: 'Frequency' })}
+        validateTrigger={['onBlur']}
+        children={<Select
+          options={frequencyListOptions} />
+        }
+        extra={
+          frequency === EventScheduleFrequency.Weekly
+            ? <label>{$t({ defaultMessage: 'Report duration will be last 7 days' })}</label>
+            : <label>{$t({ defaultMessage: 'Report duration will be last 30 days' })}</label>
+        }
+        hidden={!exportScheduleEnabled}
+      />
+      <Form.Item
+        label={$t({ defaultMessage: 'Send reports on' })}
+        validateTrigger={['onBlur']}
+        children={
+          <Row align='middle'>
+            <FormattedMessage
+              {...(frequency === EventScheduleFrequency.Weekly)
+                ? atDayHourMinute : atMonthDayHourMinute}
+              values={{
+                d: (children) => <AtCol span={2} children={children} />,
+                day: () => <Col span={10}>
+                  <Form.Item
+                    name={'day'}
+                    noStyle
+                  >
+                    <Select
+                      options={dayOfWeekOptions}
+                    />
+                  </Form.Item>
+                </Col>,
+                dayMonth: () => <Col
+                  span={
+                    frequency === EventScheduleFrequency.Weekly ? 5 : 6
+                  }>
+                  <Form.Item
+                    name={'dayOfMonth'}
+                    rules={[{ required: true,
+                      message: $t({ defaultMessage: 'Please enter month day' }) }]}
+                    noStyle
+                  >
+                    <Select
+                      options={dayOfMonthOptions()}
+                    />
+                  </Form.Item>
+                </Col>,
+                at: (children) => <AtCol span={
+                  frequency === EventScheduleFrequency.Weekly ? 2 : 9
+                }
+                children={children} />,
+                hour: () => <Col span={3}>
+                  <Form.Item
+                    name={'hour'}
+                    initialValue={0}
+                    rules={
+                      [{
+                        required: true
+                      }]
+                    }
+                    noStyle
+                  >
+                    <InputNumber
+                      max={23}
+                      min={0}
+                      style={{ width: '40px' }}
+                      size={'middle'}
+                      formatter={(value) => (value && value.toString().length < 2)
+                        ? '0' + value : '' + value}
+                      parser={(value) => parseInt(value as string, 10) as 0 | 23}
+                      controls={false}
+                    />
+                  </Form.Item>
+                </Col>,
+                at2: (children) => <AtCol span={
+                  frequency === EventScheduleFrequency.Weekly ? 2 : 1
+                }
+                children={children} />,
+                minute: () => <Col span={frequency === EventScheduleFrequency.Weekly ? 5 : 3}>
+                  <Form.Item
+                    name={'minute'}
+                    initialValue={0}
+                    rules={
+                      [{
+                        required: true
+                      }]
+                    }
+                    noStyle
+                  >
+                    <InputNumber
+                      max={59}
+                      min={0}
+                      style={{ width: '40px' }}
+                      size={'middle'}
+                      formatter={(value) => (value && value.toString().length < 2)
+                        ? '0' + value : '' + value}
+                      parser={(value) => parseInt(value as string, 10) as 0 | 59}
+                      controls={false}
+                    />
+                  </Form.Item>
+                </Col>
+              }}
+            />
+          </Row>
+        }
+        hidden={!exportScheduleEnabled}
+      />
 
-        <Form.Item
-          name={[context, 'product']}
-          label={$t({ defaultMessage: 'Product' })}
-          children={<Select
-            mode='multiple'
-            allowClear
-            options={productList}
-          />
-          }
-        />
+      { exportScheduleEnabled && <h4>{ $t({ defaultMessage: 'Filter by' }) }</h4> }
 
-        <Form.Item
-          name={[context, 'severity']}
-          label={$t({ defaultMessage: 'Severity' })}
-          children={<Select
-            mode='multiple'
-            allowClear
-            options={severityList}/>
-          }
+      <Form.Item
+        name={[context, 'product']}
+        label={$t({ defaultMessage: 'Product' })}
+        children={<Select
+          mode='multiple'
+          showArrow
+          allowClear
+          options={productList}
         />
+        }
+        hidden={!exportScheduleEnabled}
+      />
 
-        <Form.Item
-          name={[context, 'entity_type']}
-          label={$t({ defaultMessage: 'Event Type' })}
-          children={<Select
-            mode='multiple'
-            allowClear
-            options={eventTypeList}/>
-          }
-        />
+      <Form.Item
+        name={[context, 'severity']}
+        label={$t({ defaultMessage: 'Severity' })}
+        children={<Select
+          mode='multiple'
+          showArrow
+          allowClear
+          options={severityList}/>
+        }
+        hidden={!exportScheduleEnabled}
+      />
 
-        <Form.Item
-          name={[context, 'searchString']}
-          label={$t({ defaultMessage: 'Has Words' })}
-          children={<Input/>}
-        />
-      </>
-      }
+      <Form.Item
+        name={[context, 'entity_type']}
+        label={$t({ defaultMessage: 'Event Type' })}
+        children={<Select
+          mode='multiple'
+          showArrow
+          allowClear
+          options={eventTypeList}/>
+        }
+        hidden={!exportScheduleEnabled}
+      />
+
+      <Form.Item
+        name={[context, 'searchString']}
+        label={$t({ defaultMessage: 'Has Words' })}
+        children={<Input/>}
+        hidden={!exportScheduleEnabled}
+      />
+
     </Form>
 
-    <EmailRecipientDialog
+    { modalVisible && <EmailRecipientDialog
       visible={modalVisible}
       currentEmailList={selectedRecipientsList}
       onCancel={handleModalCancel}
       onSubmit={handleModalSubmit}
-    />
+    /> }
 
   </Loader>
 }

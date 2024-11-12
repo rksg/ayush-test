@@ -33,3 +33,33 @@ export const mockNetworkResult = {
     }
   ]
 }
+
+export const mockWifiNetworkResult = {
+  fields: [
+    'clientCount',
+    'apSerialNumbers',
+    'description',
+    'ssid',
+    'captiveType',
+    'vlan',
+    'name',
+    'venueApGroups',
+    'vlanPool',
+    'id',
+    'nwSubType'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      name: 'Open-Network',
+      id: '28ebc4915a94407faf8885bcd1fe7f0b',
+      vlan: 1,
+      nwSubType: 'open',
+      ssid: 'Open-Network',
+      venueApGroups: [],
+      apSerialNumbers: [],
+      clientCount: 0
+    }
+  ]
+}

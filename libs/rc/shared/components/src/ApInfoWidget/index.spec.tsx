@@ -1,8 +1,9 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import {  Alarm, CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, dataApiURL  }  from '@acx-ui/store'
+import { eventAlarmApi }                from '@acx-ui/rc/services'
+import {  Alarm, CommonUrlsInfo }       from '@acx-ui/rc/utils'
+import { Provider, store, dataApiURL  } from '@acx-ui/store'
 import { render,
   mockServer,
   screen,
@@ -87,9 +88,13 @@ const filters:AnalyticsFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
   path: [{ type: 'AP', name: '28:B3:71:28:6C:10' }],
-  range: DateRange.last24Hours
+  range: DateRange.last24Hours,
+  filter: {}
 }
 describe('AP Information Widget', () => {
+  beforeEach(() => {
+    store.dispatch(eventAlarmApi.util.resetApiState())
+  })
 
   it('should render alarms chart correctly', async () => {
     mockServer.use(

@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
-import { act }   from 'react-dom/test-utils'
 
 import { useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider  }              from '@acx-ui/store'
 import {
+  act,
   mockServer,
   renderHook,
   waitFor,

@@ -84,20 +84,39 @@ export function MacRegistrationPoolLink (props: {
   )
 }
 
-export function NetworkSegmentationLink (props: {
-  nsgId?: string,
+export function CertTemplateLink (props: {
+  id?: string,
   name?: string,
   showNoData?: boolean
 }) {
-  const { nsgId, name, showNoData } = props
+  const { id, name, showNoData } = props
   return (
-    nsgId
-      ? <TenantLink to={getServiceDetailsLink({
-        serviceId: nsgId,
-        oper: ServiceOperation.DETAIL,
-        type: ServiceType.NETWORK_SEGMENTATION
+    id
+      ? <TenantLink to={getPolicyDetailsLink({
+        policyId: id,
+        oper: PolicyOperation.DETAIL,
+        type: PolicyType.CERTIFICATE_TEMPLATE
       })}>
-        {name ?? nsgId}
+        {name ?? id}
+      </TenantLink>
+      : <>{showNoData && noDataDisplay}</>
+  )
+}
+
+export function NetworkSegmentationLink (props: {
+  id?: string,
+  name?: string,
+  showNoData?: boolean
+}) {
+  const { id, name, showNoData } = props
+  return (
+    id
+      ? <TenantLink to={getServiceDetailsLink({
+        serviceId: id,
+        oper: ServiceOperation.DETAIL,
+        type: ServiceType.PIN
+      })}>
+        {name ?? id}
       </TenantLink>
       : <>{showNoData && noDataDisplay}</>
   )

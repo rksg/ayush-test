@@ -1,15 +1,15 @@
-import { storiesOf } from '@storybook/react'
-import { Divider }   from 'antd'
+import { storiesOf }           from '@storybook/react'
+import { Divider, Typography } from 'antd'
 
 import { Button } from '../Button'
 import { Card }   from '../Card'
 import { Drawer } from '../Drawer'
 
-import { Descriptions } from '.'
+import { Descriptions, DescriptionsProps } from '.'
 
-export function DescriptionsContent () {
+export function DescriptionsContent (props: DescriptionsProps) {
   return <>
-    <Descriptions>
+    <Descriptions {...props}>
       <Descriptions.Item
         label='Venue'
         children={<Button type='link' size='small'>BDCSZ</Button>}
@@ -21,13 +21,14 @@ export function DescriptionsContent () {
       <Descriptions.Item
         label='GPS Coordinates'
         children={<>
-          {'37.411275, -122.019191'}<br />
-          {'(As venue)'}
+          {'37.411275, -122.019191'}
+          {!props.noSpace && <br />}
+          {!props.noSpace && '(As venue)'}
         </>}
       />
     </Descriptions>
     <Divider />
-    <Descriptions>
+    <Descriptions {...props}>
       <Descriptions.Item
         label='S/N'
         children='932173000117'
@@ -69,3 +70,8 @@ storiesOf('Descriptions', module)
       </Card>
     </div>
   ))
+
+  .add('In Page', () => (<>
+    <Typography.Title level={3}>Descriptions In Page</Typography.Title>
+    <DescriptionsContent noSpace />
+  </>))

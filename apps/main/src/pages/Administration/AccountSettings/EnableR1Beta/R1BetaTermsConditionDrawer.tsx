@@ -2,8 +2,9 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Drawer }              from '@acx-ui/components'
-import { useToggleBetaStatusMutation } from '@acx-ui/user'
+import { Button, Drawer, showActionModal } from '@acx-ui/components'
+import { useToggleBetaStatusMutation }     from '@acx-ui/user'
+import { userLogout }                      from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -17,7 +18,7 @@ export interface R1BetaTermsConditionDrawerProps {
   width?: number
 }
 
-export function R1BetaTermsConditionDrawer (
+function R1BetaTermsConditionDrawer (
   props: R1BetaTermsConditionDrawerProps
 ) {
   const { $t } = useIntl()
@@ -26,17 +27,26 @@ export function R1BetaTermsConditionDrawer (
   const [toggleBetaStatus ] = useToggleBetaStatusMutation()
 
   const onSave = async () => {
-    try {
-      await toggleBetaStatus({
-        params: {
-          enable: true + ''
-        }
-      }).unwrap()
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
     onClose()
-    window.location.reload()
+    showActionModal({
+      type: 'info',
+      width: 450,
+      title: $t({ defaultMessage: 'Enabling Early Access Features' }),
+      content: $t(MessageMapping.enable_r1_beta_logout_dialog_msg),
+      okText: $t({ defaultMessage: 'Log Out Now' }),
+      onOk: async () => {
+        try {
+          await toggleBetaStatus({
+            params: {
+              enable: true + ''
+            }
+          }).unwrap()
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
+        }
+        userLogout()
+      }
+    })
   }
 
   const onClose = () => {
@@ -46,7 +56,7 @@ export function R1BetaTermsConditionDrawer (
 
   return <Drawer
     destroyOnClose={resetField}
-    title={$t({ defaultMessage: 'RUCKUS One Beta Terms & Conditions' })}
+    title={$t({ defaultMessage: 'RUCKUS One Early Access Terms & Conditions' })}
     visible={visible}
     onClose={onClose}
     width={'430px'}
@@ -59,7 +69,7 @@ export function R1BetaTermsConditionDrawer (
         <Button
           type='primary'
           onClick={() => onSave()}>
-          {$t({ defaultMessage: 'Enable Beta' })}
+          {$t({ defaultMessage: 'Enable Early Access' })}
         </Button>
         <Button type='default' onClick={() => onClose()}>
           {$t({ defaultMessage: 'Cancel' })}
@@ -69,5 +79,5 @@ export function R1BetaTermsConditionDrawer (
   />
 }
 
-export default R1BetaTermsConditionDrawer
+export { R1BetaTermsConditionDrawer }
 

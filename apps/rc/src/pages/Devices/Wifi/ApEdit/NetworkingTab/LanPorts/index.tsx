@@ -1,7 +1,7 @@
 import { useContext, useRef, useState, useEffect } from 'react'
 
 import { Col, Form, Image, Row, Space, Switch } from 'antd'
-import { isObject }                             from 'lodash'
+import { cloneDeep, isObject }                  from 'lodash'
 import { FormChangeInfo }                       from 'rc-field-form/lib/FormContext'
 import { FormattedMessage, useIntl }            from 'react-intl'
 
@@ -11,24 +11,30 @@ import {
   Tabs,
   StepsFormLegacy,
   StepsFormLegacyInstance,
-  AnchorContext
+  AnchorContext,
+  showActionModal
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings } from '@acx-ui/rc/components'
 import {
-  useLazyGetVenueQuery,
-  useLazyGetVenueLanPortsQuery,
   useLazyGetVenueSettingsQuery,
-  useGetApLanPortsQuery,
+  useGetApLanPortsWithEthernetProfilesQuery,
   useUpdateApLanPortsMutation,
-  useResetApLanPortsMutation
+  useResetApLanPortsMutation,
+  useLazyGetDHCPProfileListViewModelQuery,
+  useGetDefaultApLanPortsQuery,
+  useUpdateApEthernetPortsMutation,
+  useLazyGetVenueLanPortWithEthernetSettingsQuery,
+  useLazyGetVenueLanPortsQuery
 } from '@acx-ui/rc/services'
 import {
   LanPort,
   WifiApSetting,
   CapabilitiesApModel,
-  VenueExtended,
-  VenueLanPorts
+  VenueLanPorts,
+  EditPortMessages,
+  isEqualLanPort,
+  ApLanPortTypeEnum
 } from '@acx-ui/rc/utils'
 import {
   useParams,
@@ -37,10 +43,44 @@ import {
 
 import { ApDataContext, ApEditContext } from '../..'
 
+const useFetchIsVenueDhcpEnabled = () => {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isServiceRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
+  const [getVenueSettings] = useLazyGetVenueSettingsQuery()
+  const [getDhcpList] = useLazyGetDHCPProfileListViewModelQuery()
+
+  return async (venueId: string) => {
+    let isDhcpEnabled: boolean = false
+
+    if (isWifiRbacEnabled) {
+      const dhcpList = await getDhcpList({
+        payload: {
+          fields: ['id', 'venueIds'],
+          filters: { venueIds: [venueId] }
+        },
+        enableRbac: isServiceRbacEnabled
+      }).unwrap()
+
+      isDhcpEnabled = !!dhcpList?.data[0]
+    } else {
+      const venueSettings = (await getVenueSettings({
+        params: { venueId } }, true).unwrap())
+
+      isDhcpEnabled = venueSettings?.dhcpServiceSetting?.enabled ?? false
+    }
+
+    return isDhcpEnabled
+  }
+}
+
 export function LanPorts () {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
   const navigate = useNavigate()
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isResetLanPortEnabled = useIsSplitOn(Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
+
 
   const {
     editContextData,
@@ -49,27 +89,38 @@ export function LanPorts () {
     setEditNetworkingContextData
   } = useContext(ApEditContext)
 
-  const { apData: apDetails, apCapabilities: apCaps } = useContext(ApDataContext)
+  const {
+    apData: apDetails,
+    apCapabilities: apCaps,
+    venueData } = useContext(ApDataContext)
+  const venueId = venueData?.id
   const { setReadyToScroll } = useContext(AnchorContext)
 
+  const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
 
   const formRef = useRef<StepsFormLegacyInstance<WifiApSetting>>()
-  const { data: apLanPortsData, isLoading: isApLanPortsLoading }
-    = useGetApLanPortsQuery({ params: { tenantId, serialNumber } })
+  const { data: apLanPortsData, isLoading: isApLanPortsLoading } =
+  useGetApLanPortsWithEthernetProfilesQuery({
+    params: { tenantId, serialNumber, venueId },
+    enableRbac: isUseWifiRbacApi,
+    enableEthernetProfile: isEthernetPortProfileEnabled
+  })
+  const { data: defaultLanPorts, isLoading: isDefaultPortsLoading } = useGetDefaultApLanPortsQuery({
+    params: { venueId, serialNumber }
+  }, { skip: !isResetLanPortEnabled })
 
-  const [getVenue] = useLazyGetVenueQuery()
+  const [getVenueLanPortsWithEthernet] = useLazyGetVenueLanPortWithEthernetSettingsQuery()
   const [getVenueLanPorts] = useLazyGetVenueLanPortsQuery()
-  const [getVenueSettings] = useLazyGetVenueSettingsQuery()
-
+  const getDhcpEnabled = useFetchIsVenueDhcpEnabled()
 
   const [updateApCustomization, {
     isLoading: isApLanPortsUpdating }] = useUpdateApLanPortsMutation()
+  const [updateEthernetPortProfile, {
+    isLoading: isEthernetPortProfileUpdating }] = useUpdateApEthernetPortsMutation()
   const [resetApCustomization, {
     isLoading: isApLanPortsResetting }] = useResetApLanPortsMutation()
 
-
-  const [venue, setVenue] = useState({} as VenueExtended)
   const [apLanPorts, setApLanPorts] = useState({} as WifiApSetting)
   const [venueLanPorts, setVenueLanPorts] = useState({})
   const [selectedModel, setSelectedModel] = useState({} as WifiApSetting)
@@ -80,54 +131,64 @@ export function LanPorts () {
   const [formInitializing, setFormInitializing] = useState(true)
   const [lanData, setLanData] = useState([] as LanPort[])
   const [activeTabIndex, setActiveTabIndex] = useState(0)
+  const isResetClick = useRef(false)
+
   // TODO: rbac
   const isAllowUpdate = true // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
   const isAllowReset = true // this.rbacService.isRoleAllowed('ResetWifiApSetting');
 
   useEffect(() => {
     if (apDetails && apCaps && apLanPortsData && !isApLanPortsLoading) {
-      const { venueId } = apDetails
       // eslint-disable-next-line max-len
       const convertToFormData = (lanPortsData: WifiApSetting | VenueLanPorts, lanPortsCap: LanPort[]) => {
         const poeOutFormData = ConvertPoeOutToFormData(lanPortsData, lanPortsCap)
-
-        return {
+        const formData = {
           ...lanPortsData,
           ...(poeOutFormData && { poeOut: poeOutFormData })
         }
+
+        formData.lanPorts = getLanPortsWithDefaultEthernetPortProfile(
+          formData.lanPorts, lanPortsCap, tenantId
+        )
+
+        return formData
       }
 
       const setData = async () => {
-        const venue = (await getVenue({
-          params: { tenantId, venueId } }, true).unwrap())
 
-        const venueLanPortsData = (await getVenueLanPorts({
-          params: { tenantId, venueId }
-        }, true).unwrap())?.filter(item => item.model === apDetails?.model)?.[0]
+        const queryPayload = {
+          params: { tenantId, venueId },
+          enableRbac: isUseWifiRbacApi
+        }
 
-        const venueSettings = (await getVenueSettings({
-          params: { tenantId, venueId } }, true).unwrap())
+        const venueLanPortsData = (
+          (isEthernetPortProfileEnabled)?
+            await getVenueLanPortsWithEthernet(queryPayload, true).unwrap():
+            // eslint-disable-next-line max-len
+            await getVenueLanPorts(queryPayload, true).unwrap())
+          ?.filter(item => item.model === apDetails?.model)?.[0]
+
+        const isDhcpEnabled = await getDhcpEnabled(venueId!)
 
         const apLanPortsCap = apCaps.lanPorts
         const lanPorts = convertToFormData(apLanPortsData, apLanPortsCap)
         const venueLanPorts = convertToFormData(venueLanPortsData, apLanPortsCap)
-
-        setVenue(venue)
         setApLanPorts(lanPorts)
         setVenueLanPorts(venueLanPorts)
         setSelectedModel(lanPorts)
         setSelectedModelCaps(apCaps as CapabilitiesApModel)
         setSelectedPortCaps(apLanPortsCap?.[activeTabIndex] as LanPort)
         setUseVenueSettings(lanPorts.useVenueSettings ?? true)
-        setIsDhcpEnabled(venueSettings?.dhcpServiceSetting?.enabled ?? false)
+        setIsDhcpEnabled(isDhcpEnabled)
         setLanData(lanPorts?.lanPorts as LanPort[])
         setFormInitializing(false)
 
         setReadyToScroll?.(r => [...(new Set(r.concat('LAN-Ports')))])
       }
       setData()
+
     }
-  }, [apDetails, apLanPortsData, apCaps])
+  }, [apDetails, venueId, apLanPortsData, apCaps])
 
   useEffect(() => {
     setSelectedModel({
@@ -144,9 +205,14 @@ export function LanPorts () {
 
   const handleCustomize = async (useVenueSettings: boolean) => {
     const lanPorts = (useVenueSettings ? venueLanPorts : apLanPorts) as WifiApSetting
+    lanPorts.lanPorts = getLanPortsWithDefaultEthernetPortProfile(
+      (lanPorts.lanPorts || []),
+      selectedModelCaps.lanPorts,
+      tenantId
+    )
+
     setUseVenueSettings(useVenueSettings)
     setSelectedModel(lanPorts)
-
     formRef?.current?.setFieldsValue({
       ...lanPorts,
       lan: lanPorts?.lanPorts,
@@ -164,11 +230,71 @@ export function LanPorts () {
       })
       setUseVenueSettings(values?.useVenueSettings)
 
+      if (isResetLanPortEnabled && isResetClick.current && isResetLanPort(values)) {
+        showActionModal({
+          type: 'confirm',
+          width: 450,
+          title: $t({ defaultMessage: 'Reset Port Settings to Default' }),
+          content: $t(EditPortMessages.RESET_PORT_WARNING),
+          okText: $t({ defaultMessage: 'Continue' }),
+          onOk: async () => {
+            try {
+              processUpdateLanPorts(values)
+              isResetClick.current = false
+            } catch (error) {
+              console.log(error) // eslint-disable-line no-console
+            }
+          }
+        })
+      } else {
+        processUpdateLanPorts(values)
+      }
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+
+  const isResetLanPort = (currentLans: WifiApSetting | undefined) => {
+    if (!currentLans) return false
+
+    const { lan, poeOut } = currentLans
+    const currentLanPorts: WifiApSetting = {
+      ...apLanPorts,
+      lanPorts: lan,
+      ...(poeOut && isObject(poeOut) &&
+          { poeOut: Object.values(poeOut).some(item => item === true) })
+    }
+
+    const eqOriginLan = isEqualLanPort(currentLanPorts!, apLanPortsData!)
+    if (eqOriginLan) return false
+
+    return isEqualLanPort(currentLanPorts!, defaultLanPorts!)
+  }
+
+  const processUpdateLanPorts = async (values: WifiApSetting) => {
+    const { lan, poeOut, useVenueSettings } = values
+
+    if (isUseWifiRbacApi || isEthernetPortProfileEnabled) {
+      const payload: WifiApSetting = {
+        ...apLanPorts,
+        lanPorts: lan,
+        ...(poeOut && isObject(poeOut) &&
+            { poeOut: Object.values(poeOut).some(item => item === true) }),
+        useVenueSettings
+      }
+
+      isEthernetPortProfileEnabled ? await updateEthernetPortProfile({
+        params: { venueId, serialNumber },
+        payload
+      }).unwrap() : await updateApCustomization({
+        params: { tenantId, serialNumber, venueId },
+        payload,
+        enableRbac: true
+      }).unwrap()
+    } else {
       if (values?.useVenueSettings) {
         await resetApCustomization({ params: { tenantId, serialNumber } }).unwrap()
       } else {
-        //const { lan, poeOut, poeMode } = values
-        const { lan, poeOut } = values
         const payload: WifiApSetting = {
           ...apLanPorts,
           lanPorts: lan,
@@ -177,14 +303,8 @@ export function LanPorts () {
               { poeOut: Object.values(poeOut).some(item => item === true) }),
           useVenueSettings: false
         }
-
-        //console.log('values: ', values)
-        //console.log('payload: ', payload)
-
         await updateApCustomization({ params: { tenantId, serialNumber }, payload }).unwrap()
       }
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -193,6 +313,7 @@ export function LanPorts () {
     setSelectedModel((apLanPorts?.useVenueSettings
       ? venueLanPorts : apLanPorts) as WifiApSetting)
 
+    isResetClick.current = false
     formRef?.current?.setFieldsValue({
       lan: apLanPorts?.lanPorts,
       useVenueSettings: apLanPorts?.useVenueSettings
@@ -225,13 +346,40 @@ export function LanPorts () {
     })
   }
 
+  const handleResetDefaultLanPorts = () => {
+    if (apCaps && defaultLanPorts && !isDefaultPortsLoading) {
+      const poeOutFormData = ConvertPoeOutToFormData(defaultLanPorts, apCaps.lanPorts)
+      const defaultLanPortsFormData = {
+        ...defaultLanPorts,
+        ...(poeOutFormData && { poeOut: poeOutFormData })
+      }
+
+      defaultLanPortsFormData.lanPorts = getLanPortsWithDefaultEthernetPortProfile(
+        defaultLanPortsFormData.lanPorts, apCaps.lanPorts, tenantId
+      )
+
+      setSelectedModel(defaultLanPortsFormData)
+      formRef?.current?.setFieldsValue({
+        ...defaultLanPortsFormData,
+        lan: defaultLanPortsFormData?.lanPorts,
+        useVenueSettings: useVenueSettings
+      })
+      isResetClick.current = true
+      updateEditContext(formRef?.current as StepsFormLegacyInstance)
+    }
+  }
+
   const navigateToVenue = (venueId: string | undefined) => {
     navigate(`../venues/${venueId}/venue-details/overview`)
   }
 
+  const onGUIChanged = () => {
+    updateEditContext(formRef?.current as StepsFormLegacyInstance)
+  }
+
   return <Loader states={[{
     isLoading: formInitializing,
-    isFetching: isApLanPortsUpdating || isApLanPortsResetting
+    isFetching: isApLanPortsUpdating || isApLanPortsResetting || isEthernetPortProfileUpdating
   }]}>
     {selectedModel?.lanPorts
       ? <StepsFormLegacy
@@ -241,7 +389,10 @@ export function LanPorts () {
         <StepsFormLegacy.StepForm
           initialValues={{ lan: selectedModel?.lanPorts }}
         >
-          <Row gutter={24}>
+          <Row gutter={24}
+            style={isResetLanPortEnabled ?
+              { position: 'absolute', right: '0', top: '0', whiteSpace: 'nowrap',
+                marginRight: '34%', transform: 'translateY(-326%)' } : {}}>
             <Col span={10}>
               <SettingMessage showButton={!!selectedModel?.lanPorts} />
             </Col>
@@ -292,6 +443,9 @@ export function LanPorts () {
                           isTrunkPortUntaggedVlanEnabled={supportTrunkPortUntaggedVlan}
                           index={index}
                           useVenueSettings={useVenueSettings}
+                          venueId={venueId}
+                          onGUIChanged={onGUIChanged}
+                          serialNumber={serialNumber}
                         />
                       </Col>
                     </Row>
@@ -321,30 +475,63 @@ export function LanPorts () {
 
   function SettingMessage ({ showButton }: { showButton: boolean }) {
     return <Space
-      style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}
-    >
+      style={isResetLanPortEnabled ? { display: 'flex', fontSize: '12px' } :
+        { display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
       {useVenueSettings
         ? <FormattedMessage
-          defaultMessage={'Currently using LAN port settings of the venue ({venue})'}
+          defaultMessage={
+            'Currently using LAN port settings of the <venueSingular></venueSingular> ({venue})'}
           values={{
             venue: <Button type='link'
               size='small'
               style={{ verticalAlign: 'middle' }}
-              onClick={() => navigateToVenue(venue?.id)}
+              onClick={() => navigateToVenue(venueData?.id)}
             >
-              {venue?.name}
+              {venueData?.name}
             </Button>
           }} />
-        : $t({ defaultMessage: 'Custom settings' })
+        : (isResetLanPortEnabled ? <>{$t({ defaultMessage: 'Custom settings' })}
+          <Button type='link' size='small' onClick={handleResetDefaultLanPorts}>
+            {$t({ defaultMessage: 'Reset to default' })}
+          </Button></> : $t({ defaultMessage: 'Custom settings' }) )
       }
+      {showButton && isResetLanPortEnabled && <div>|</div>}
       {showButton && <Button type='link'
         size='small'
         disabled={useVenueSettings ? !isAllowUpdate : !isAllowReset}
         onClick={() => handleCustomize(!useVenueSettings)}
       > {useVenueSettings
           ? $t({ defaultMessage: 'Customize' })
-          : $t({ defaultMessage: 'Use Venue Settings' })
+          : $t({ defaultMessage: 'Use <VenueSingular></VenueSingular> Settings' })
         }</Button>}
     </Space>
+  }
+
+  function getLanPortsWithDefaultEthernetPortProfile (
+    lanPorts: LanPort[],
+    lanPortsCap: LanPort[],
+    tenantId?: string) {
+
+    if(!lanPorts || !isEthernetPortProfileEnabled) {
+      return lanPorts
+    }
+
+    const newLanPorts = cloneDeep(lanPorts)
+    newLanPorts.forEach((lanPort: LanPort)=>{
+      if (!lanPort.hasOwnProperty('ethernetPortProfileId') ||
+           lanPort.ethernetPortProfileId === null) {
+        const defaultType = lanPortsCap.find(cap => cap.id === lanPort.portId)?.defaultType
+        switch (defaultType){
+          case ApLanPortTypeEnum.ACCESS:
+            lanPort.ethernetPortProfileId = tenantId + '_' + ApLanPortTypeEnum.ACCESS.toString()
+            break
+          case ApLanPortTypeEnum.TRUNK:
+            lanPort.ethernetPortProfileId = tenantId + '_' + ApLanPortTypeEnum.TRUNK.toString()
+            break
+        }
+      }
+    })
+
+    return newLanPorts
   }
 }

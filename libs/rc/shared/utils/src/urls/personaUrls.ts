@@ -1,17 +1,18 @@
 import { ApiInfo } from '@acx-ui/utils'
 
-export const NewPersonaBaseUrl = '/personaGroups'
+export const NewPersonaBaseUrl = '/identityGroups'
 
-export const PersonaBaseUrl = '/api/personaGroups'
+export const PersonaBaseUrl = '/api/identityGroups'
 
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
 type PersonaUrlType =
-  'addPersonaGroup' | 'getPersonaGroupList' | 'searchPersonaGroupList' | 'getPersonaGroupById' |
-  'updatePersonaGroup' | 'deletePersonaGroup' | 'addPersona' | 'getPersonaList' | 'getPersonaById' |
-  'listPersonaByGroupId' | 'searchPersonaList' | 'updatePersona' | 'deletePersona' |
+  'addPersonaGroup' | 'searchPersonaGroupList' | 'getPersonaGroupById' |
+  'updatePersonaGroup' | 'deletePersonaGroup' | 'addPersona' | 'getPersonaById' |
+  'searchPersonaList' | 'updatePersona' | 'deletePersona' |
   'addPersonaDevices' | 'deletePersonaDevices' | 'importPersonas' | 'exportPersona' |
-  'exportPersonaGroup' | 'deletePersonas' | 'allocateVni'
+  'exportPersonaGroup' | 'deletePersonas' | 'allocateVni' | 'associateMacRegistration' |
+  'associateDpskPool' | 'associateCertTemplate'
 
 export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   /** Persona Group API endpoints */
@@ -21,23 +22,36 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     oldUrl: PersonaBaseUrl,
     newApi: true
   },
-  getPersonaGroupList: {
-    method: 'get',
-    url: NewPersonaBaseUrl + paginationParams,
-    oldUrl: PersonaBaseUrl + paginationParams,
+  associateDpskPool: {
+    method: 'put',
+    url: `${NewPersonaBaseUrl}/:groupId/dpskPools/:poolId`,
     newApi: true
+  },
+  associateMacRegistration: {
+    method: 'put',
+    url: `${NewPersonaBaseUrl}/:groupId/macRegistrationPools/:poolId`,
+    newApi: true
+  },
+  associateCertTemplate: {
+    method: 'put',
+    url: `${NewPersonaBaseUrl}/:groupId/certificateTemplates/:templateId`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   searchPersonaGroupList: {
     method: 'post',
-    url: `${NewPersonaBaseUrl}/search${paginationParams}`,
-    oldUrl: `${PersonaBaseUrl}/search${paginationParams}`,
+    url: `${NewPersonaBaseUrl}/query${paginationParams}`,
+    oldUrl: `${PersonaBaseUrl}/query${paginationParams}`,
     newApi: true
   },
   exportPersonaGroup: {
     method: 'post',
-    url: `${NewPersonaBaseUrl}/search${paginationParams}`
+    url: `${NewPersonaBaseUrl}/csvFile${paginationParams}`
       + '&timezone=:timezone&date-format=:dateFormat',
-    oldUrl: `${PersonaBaseUrl}/search${paginationParams}`
+    oldUrl: `${PersonaBaseUrl}/csvFile${paginationParams}`
       + '&timezone=:timezone&date-format=:dateFormat',
     newApi: true
   },
@@ -62,82 +76,70 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   /** Persona API endpoints */
   addPersona: {
     method: 'post',
-    url: `${NewPersonaBaseUrl}/:groupId/personas`,
-    oldUrl: `${PersonaBaseUrl}/:groupId/personas`,
-    newApi: true
-  },
-  getPersonaList: {
-    method: 'get',
-    url: `${NewPersonaBaseUrl}/all/personas`,
-    oldUrl: `${PersonaBaseUrl}/all/personas`,
+    url: `${NewPersonaBaseUrl}/:groupId/identities`,
+    oldUrl: `${PersonaBaseUrl}/:groupId/identities`,
     newApi: true
   },
   getPersonaById: {
     method: 'get',
-    url: `${NewPersonaBaseUrl}/:groupId/personas/:id`,
-    oldUrl: `${PersonaBaseUrl}/:groupId/personas/:id`,
-    newApi: true
-  },
-  listPersonaByGroupId: {
-    method: 'get',
-    url: `${NewPersonaBaseUrl}/:groupId/personas`,
-    oldUrl: `${PersonaBaseUrl}/:groupId/personas`,
+    url: `${NewPersonaBaseUrl}/:groupId/identities/:id`,
+    oldUrl: `${PersonaBaseUrl}/:groupId/identities/:id`,
     newApi: true
   },
   searchPersonaList: {
     method: 'post',
-    url: `${NewPersonaBaseUrl}/all/personas/search${paginationParams}`,
-    oldUrl: `${PersonaBaseUrl}/all/personas/search${paginationParams}`,
+    url: `/identities/query${paginationParams}`,
+    oldUrl: `/identities/query${paginationParams}`,
     newApi: true
   },
   importPersonas: {
     method: 'post',
-    url: `${NewPersonaBaseUrl}/:groupId/personas`,
-    oldUrl: `${PersonaBaseUrl}/:groupId/personas`,
+    url: `${NewPersonaBaseUrl}/:groupId/identities/csvFile`,
+    oldUrl: `${PersonaBaseUrl}/:groupId/identities/csvFile`,
     newApi: true
   },
   exportPersona: {
     method: 'post',
-    url: `${NewPersonaBaseUrl}/all/personas/search${paginationParams}`
+    url: `/identities/csvFile${paginationParams}`
       + '&timezone=:timezone&date-format=:dateFormat',
-    oldUrl: `${PersonaBaseUrl}/all/personas/search${paginationParams}`
+    oldUrl: `/identities/csvFile${paginationParams}`
       + '&timezone=:timezone&date-format=:dateFormat',
     newApi: true
   },
   updatePersona: {
     method: 'PATCH',
-    url: `${NewPersonaBaseUrl}/:groupId/personas/:id`,
-    oldUrl: `${PersonaBaseUrl}/:groupId/personas/:id`,
+    url: `${NewPersonaBaseUrl}/:groupId/identities/:id`,
+    oldUrl: `${PersonaBaseUrl}/:groupId/identities/:id`,
     newApi: true
   },
   deletePersona: {
     method: 'delete',
-    url: `${NewPersonaBaseUrl}/:groupId/personas/:id`,
-    oldUrl: `${PersonaBaseUrl}/:groupId/personas/:id`,
+    url: `${NewPersonaBaseUrl}/:groupId/identities/:id`,
+    oldUrl: `${PersonaBaseUrl}/:groupId/identities/:id`,
     newApi: true
   },
   deletePersonas: {
     method: 'delete',
-    url: `${NewPersonaBaseUrl}/all/personas`,
-    oldUrl: `${PersonaBaseUrl}/all/personas`,
+    url: `${NewPersonaBaseUrl}/:groupId/identities`,
+    oldUrl: `${PersonaBaseUrl}/:groupId/identities`,
     newApi: true
   },
   addPersonaDevices: {
     method: 'post',
-    url: `${NewPersonaBaseUrl}/:groupId/personas/:id/devices`,
-    oldUrl: `${PersonaBaseUrl}/:groupId/personas/:id/devices`,
+    url: `${NewPersonaBaseUrl}/:groupId/identities/:id/devices`,
+    oldUrl: `${PersonaBaseUrl}/:groupId/identities/:id/devices`,
     newApi: true
   },
   deletePersonaDevices: {
     method: 'delete',
-    url: `${NewPersonaBaseUrl}/:groupId/personas/:id/devices/:macAddress`,
-    oldUrl: `${PersonaBaseUrl}/:groupId/personas/:id/devices/:macAddress`,
+    url: `${NewPersonaBaseUrl}/:groupId/identities/:id/devices/:macAddress`,
+    oldUrl: `${PersonaBaseUrl}/:groupId/identities/:id/devices/:macAddress`,
     newApi: true
   },
   allocateVni: {
     method: 'delete',
-    url: `${NewPersonaBaseUrl}/:groupId/personas/:id/vnis`,
-    oldUrl: `${PersonaBaseUrl}/:groupId/personas/:id/vnis`,
+    url: `${NewPersonaBaseUrl}/:groupId/identities/:id/vnis`,
+    oldUrl: `${PersonaBaseUrl}/:groupId/identities/:id/vnis`,
     newApi: true
   }
 }

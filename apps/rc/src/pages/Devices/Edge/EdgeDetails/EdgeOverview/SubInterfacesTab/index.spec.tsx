@@ -8,17 +8,14 @@ import {
   mockServer,
   render,
   screen,
-  waitFor
+  waitFor,
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-
-// import {
-//   edgePortsSetting
-// } from '../../../__tests__/fixtures'
 
 import { EdgeSubInterfacesTab } from '.'
 
 const { edgePortsSetting } = EdgePortConfigFixtures
-const { mockEdgeSubInterfacesStatus } = EdgeSubInterfaceFixtures
+const { mockEdgeSubInterfacesStatus, mockEdgeLagSubInterfacesStatus } = EdgeSubInterfaceFixtures
 const { mockEdgeLagStatusList } = EdgeLagFixtures
 
 const mockedUsedNavigate = jest.fn()
@@ -41,6 +38,14 @@ describe('Edge overview sub-interfaces tab', () => {
             ctx.json(mockEdgeSubInterfacesStatus)
           )
         }
+      ),
+      rest.post(
+        EdgeUrlsInfo.getLagSubInterfacesStatus.url.split('?')[0],
+        (_req, res, ctx) => {
+          return res(
+            ctx.json(mockEdgeLagSubInterfacesStatus)
+          )
+        }
       )
     )
   })
@@ -52,6 +57,7 @@ describe('Edge overview sub-interfaces tab', () => {
           isLoading={false}
           ports={edgePortsSetting}
           lags={mockEdgeLagStatusList.data}
+          isConfigurable={true}
         />
       </Provider>, {
         route: { params }
@@ -74,6 +80,7 @@ describe('Edge overview sub-interfaces tab', () => {
           isLoading={false}
           ports={edgePortsSetting}
           lags={mockEdgeLagStatusList.data}
+          isConfigurable={true}
         />
       </Provider>, {
         route: { params }
@@ -82,7 +89,7 @@ describe('Edge overview sub-interfaces tab', () => {
     const portTabs = await screen.findAllByRole('tab')
     expect(portTabs.length).toBe(4)
 
-    const port2Tab = await screen.findByRole('tab', { name: 'Port 2' })
+    const port2Tab = await screen.findByRole('tab', { name: 'Port2' })
     await userEvent.click(port2Tab)
     await waitFor(() => {
       expect(port2Tab).toHaveAttribute('aria-selected', 'true')
@@ -93,7 +100,7 @@ describe('Edge overview sub-interfaces tab', () => {
     await userEvent.click(configBtn)
     expect(mockedUsedNavigate)
       .toBeCalledWith({
-        pathname: '/tenant-id/t/devices/edge/edge-serialnum/edit/ports/sub-interface',
+        pathname: '/tenant-id/t/devices/edge/edge-serialnum/edit/sub-interfaces',
         hash: '',
         search: ''
       })
@@ -106,11 +113,35 @@ describe('Edge overview sub-interfaces tab', () => {
           isLoading={false}
           ports={[]}
           lags={[]}
+          isConfigurable={true}
         />
       </Provider>, {
         route: { params }
       })
 
     await screen.findByText('No data to display')
+  })
+
+  it('should correctly render LAG tab', async () => {
+    render(
+      <Provider>
+        <EdgeSubInterfacesTab
+          isLoading={false}
+          ports={edgePortsSetting}
+          lags={mockEdgeLagStatusList.data}
+          isConfigurable={true}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    const portTabs = await screen.findAllByRole('tab')
+    expect(portTabs.length).toBe(4)
+    const lag1Tab = await screen.findByRole('tab', { name: 'LAG 1' })
+    await userEvent.click(lag1Tab)
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByRole('row', {
+      name: 'LAN Up 1.1.1.1 Static IP 255.255.255.128 4'
+    })).toBeVisible()
   })
 })

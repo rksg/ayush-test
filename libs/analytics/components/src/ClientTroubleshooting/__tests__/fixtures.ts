@@ -214,8 +214,63 @@ export const connectionEvents: ConnectionEvent[] = [
     code: 'eap',
     state: 'normal',
     failedMsgId: '22',
+    messageIds: ['4', '22', '22'],
     radio: '5',
     key: 'seventh_event'
+  },
+  {
+    timestamp: '2022-11-14T06:35:04.571Z',
+    event: 'CCD_REASON_MIC_FAILURE',
+    ttc: null,
+    mac: '94:B3:4F:3D:15:B0',
+    apName: 'R750-11-112',
+    path: [
+      {
+        type: 'zone',
+        name: 'cliexp4'
+      },
+      {
+        type: 'apGroup',
+        name: 'No group (inherit from Venue)'
+      },
+      {
+        type: 'ap',
+        name: '94:B3:4F:3D:15:B0'
+      }
+    ],
+    code: 'eapol',
+    state: 'normal',
+    failedMsgId: '5',
+    messageIds: ['8', '21', '22', '5'],
+    radio: '5',
+    key: 'eight_event'
+  },
+  {
+    timestamp: '2022-11-14T06:35:04.571Z',
+    event: 'CCD_REASON_MIC_FAILURE',
+    ttc: null,
+    mac: '94:B3:4F:3D:15:B0',
+    apName: 'R750-11-112',
+    path: [
+      {
+        type: 'zone',
+        name: 'cliexp4'
+      },
+      {
+        type: 'apGroup',
+        name: 'No group (inherit from Venue)'
+      },
+      {
+        type: 'ap',
+        name: '94:B3:4F:3D:15:B0'
+      }
+    ],
+    code: 'eapol',
+    state: 'normal',
+    failedMsgId: '5',
+    messageIds: ['21', '22', '21', '5', '5'],
+    radio: '5',
+    key: 'ninth_event'
   },
   {
     timestamp: '2022-11-14T06:35:07.441Z',
@@ -294,6 +349,62 @@ export const connectionEvents: ConnectionEvent[] = [
     failedMsgId: null,
     radio: '5',
     key: 'first_event'
+  }
+]
+export const eapolEvent: ConnectionEvent[] = [
+  {
+    timestamp: '2022-11-14T06:35:04.571Z',
+    event: 'CCD_REASON_MIC_FAILURE',
+    ttc: null,
+    mac: '94:B3:4F:3D:15:B0',
+    apName: 'R750-11-112',
+    path: [
+      {
+        type: 'zone',
+        name: 'cliexp4'
+      },
+      {
+        type: 'apGroup',
+        name: 'No group (inherit from Venue)'
+      },
+      {
+        type: 'ap',
+        name: '94:B3:4F:3D:15:B0'
+      }
+    ],
+    code: 'eap',
+    state: 'normal',
+    failedMsgId: '5',
+    messageIds: ['21', '22', '5', '4'],
+    radio: '5',
+    key: 'first_event'
+  },
+  {
+    timestamp: '2022-11-14T06:35:04.571Z',
+    event: 'CCD_REASON_MIC_FAILURE',
+    ttc: null,
+    mac: '94:B3:4F:3D:15:B0',
+    apName: 'R750-11-112',
+    path: [
+      {
+        type: 'zone',
+        name: 'cliexp4'
+      },
+      {
+        type: 'apGroup',
+        name: 'No group (inherit from Venue)'
+      },
+      {
+        type: 'ap',
+        name: '94:B3:4F:3D:15:B0'
+      }
+    ],
+    code: 'eap',
+    state: 'normal',
+    failedMsgId: '5',
+    messageIds: ['3', '21', '5', '22', '22'],
+    radio: '5',
+    key: 'second_event'
   }
 ]
 export const connectionQualities = [

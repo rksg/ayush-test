@@ -12,12 +12,13 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { MdnsProxySelector }                                         from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
+import { ApMdnsProxySelector }                                       from '@acx-ui/rc/components'
 import { useGetApQuery }                                             from '@acx-ui/rc/services'
 import { useAddMdnsProxyApsMutation, useDeleteMdnsProxyApsMutation } from '@acx-ui/rc/services'
 import { useParams }                                                 from '@acx-ui/react-router-dom'
 
-import { ApEditContext } from '../..'
+import { ApDataContext, ApEditContext } from '../..'
 
 import * as UI from './styledComponents'
 
@@ -42,7 +43,7 @@ const MdnsProxyFormField = styled((props: { className?: string, serviceId?: stri
         </Form.Item>
       </StepsFormLegacy.FieldLabel>
       {serviceEnabled &&
-        <MdnsProxySelector
+        <ApMdnsProxySelector
           formItemProps={{
             name: 'serviceId',
             rules: [{ required: true }],
@@ -65,7 +66,9 @@ export function MdnsProxy () {
   const { $t } = useIntl()
   const params = useParams()
   const { serialNumber } = params
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [ isFormChangedHandled, setIsFormChangedHandled ] = useState(true)
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -74,6 +77,7 @@ export function MdnsProxy () {
     setEditNetworkControlContextData
   } = useContext(ApEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
+  const { venueData } = useContext(ApDataContext)
 
   const {
     data: apDetail,
@@ -81,7 +85,10 @@ export function MdnsProxy () {
     isLoading,
     isSuccess,
     refetch
-  } = useGetApQuery({ params })
+  } = useGetApQuery({
+    params: { ...params, venueId: venueData?.id },
+    enableRbac: isUseWifiRbacApi
+  })
 
   const [ addMdnsProxyAps, { isLoading: isUpdating } ] = useAddMdnsProxyApsMutation()
   const [ deleteMdnsProxyAps, { isLoading: isDeleting } ] = useDeleteMdnsProxyApsMutation()
@@ -140,15 +147,17 @@ export function MdnsProxy () {
     const originalServiceId = apDetail?.multicastDnsProxyServiceProfileId
 
     try {
-      if (formData.serviceEnabled) {
+      if (formData.serviceEnabled && serialNumber) {
         await addMdnsProxyAps({
-          params: { ...params, serviceId: formData.serviceId },
-          payload: [serialNumber]
+          params: { ...params, serviceId: formData.serviceId, venueId: apDetail?.venueId },
+          payload: [serialNumber],
+          enableRbac
         }).unwrap().then(resetForm)
-      } else if (originalServiceId) { // Disable the mDNS Proxy which has been applied before
+      } else if (originalServiceId && serialNumber) { // Disable the mDNS Proxy which has been applied before
         await deleteMdnsProxyAps({
-          params: { ...params, serviceId: originalServiceId },
-          payload: [serialNumber]
+          params: { ...params, serviceId: originalServiceId, venueId: apDetail?.venueId },
+          payload: [serialNumber],
+          enableRbac
         }).unwrap().then(resetForm)
       }
     } catch (error) {

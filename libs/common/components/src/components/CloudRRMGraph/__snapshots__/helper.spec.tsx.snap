@@ -85,7 +85,7 @@ Object {
         Object {
           "channel": 36,
           "channelList": Array [],
-          "channelWidth": "NaN",
+          "channelWidth": null,
           "group": undefined,
           "highlighted": false,
           "txPower": "_FULL",
@@ -99,7 +99,7 @@ Object {
         36,
       ],
       "channelWidth": Array [
-        "NaN",
+        null,
       ],
       "id": "00:00:00:00:00:01",
       "name": "name1",
@@ -559,7 +559,7 @@ Object {
         Object {
           "channel": 36,
           "channelList": Array [],
-          "channelWidth": "NaN",
+          "channelWidth": null,
           "group": undefined,
           "highlighted": false,
           "txPower": "_FULL",
@@ -573,7 +573,7 @@ Object {
         36,
       ],
       "channelWidth": Array [
-        "NaN",
+        null,
       ],
       "id": "00:00:00:00:00:01",
       "name": "name1",
@@ -1033,7 +1033,7 @@ Object {
         Object {
           "channel": 36,
           "channelList": Array [],
-          "channelWidth": "NaN",
+          "channelWidth": null,
           "group": undefined,
           "highlighted": false,
           "txPower": "_FULL",
@@ -1047,7 +1047,7 @@ Object {
         36,
       ],
       "channelWidth": Array [
-        "NaN",
+        null,
       ],
       "id": "00:00:00:00:00:01",
       "name": "name1",
@@ -1524,7 +1524,7 @@ Array [
           Object {
             "channel": 36,
             "channelList": Array [],
-            "channelWidth": "NaN",
+            "channelWidth": null,
             "group": undefined,
             "highlighted": false,
             "txPower": "_FULL",
@@ -1538,7 +1538,7 @@ Array [
           36,
         ],
         "channelWidth": Array [
-          "NaN",
+          null,
         ],
         "id": "00:00:00:00:00:01",
         "name": "name1",
@@ -2010,7 +2010,7 @@ Array [
           Object {
             "channel": 36,
             "channelList": Array [],
-            "channelWidth": "NaN",
+            "channelWidth": null,
             "group": undefined,
             "highlighted": false,
             "txPower": "_FULL",
@@ -2024,7 +2024,7 @@ Array [
           36,
         ],
         "channelWidth": Array [
-          "NaN",
+          null,
         ],
         "id": "00:00:00:00:00:01",
         "name": "name1",
@@ -2488,7 +2488,7 @@ Array [
           Object {
             "channel": 36,
             "channelList": Array [],
-            "channelWidth": "NaN",
+            "channelWidth": null,
             "group": undefined,
             "highlighted": false,
             "txPower": "_FULL",
@@ -2502,7 +2502,7 @@ Array [
           36,
         ],
         "channelWidth": Array [
-          "NaN",
+          null,
         ],
         "id": "00:00:00:00:00:01",
         "name": "name1",
@@ -3019,7 +3019,7 @@ Object {
         Object {
           "channel": 36,
           "channelList": Array [],
-          "channelWidth": "NaN",
+          "channelWidth": null,
           "group": undefined,
           "highlighted": false,
           "txPower": "_FULL",
@@ -3033,7 +3033,7 @@ Object {
         36,
       ],
       "channelWidth": Array [
-        "NaN",
+        null,
       ],
       "id": "00:00:00:00:00:01",
       "name": "name1",
@@ -3483,7 +3483,7 @@ Object {
         Object {
           "channel": 36,
           "channelList": Array [],
-          "channelWidth": "NaN",
+          "channelWidth": null,
           "group": undefined,
           "highlighted": false,
           "txPower": "_FULL",
@@ -3497,7 +3497,7 @@ Object {
         36,
       ],
       "channelWidth": Array [
-        "NaN",
+        null,
       ],
       "id": "00:00:00:00:00:01",
       "name": "name1",

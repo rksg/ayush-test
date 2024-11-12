@@ -4,19 +4,18 @@ import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
 import { SimpleListTooltip }                    from '@acx-ui/rc/components'
 import {
   doProfileDelete,
-  useAdaptivePolicyListQuery,
+  useAdaptivePolicyListByQueryQuery,
   useDeleteRadiusAttributeGroupMutation,
   useRadiusAttributeGroupListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
-  FILTER,
-  getPolicyDetailsLink, getPolicyRoutePath,
+  FILTER, filterByAccessForServicePolicyMutation,
+  getPolicyDetailsLink, getPolicyRoutePath, getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType, RadiusAttributeGroup, SEARCH,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                    from '@acx-ui/user'
 
 export default function RadiusAttributeGroupTable () {
   const { $t } = useIntl()
@@ -24,14 +23,16 @@ export default function RadiusAttributeGroupTable () {
   const tenantBasePath: Path = useTenantLink('')
 
   const RadiusAttributeGroupTable = () => {
+    const settingsId = 'radius-attribute-group-list-table'
     const tableQuery = useTableQuery({
       useQuery: useRadiusAttributeGroupListByQueryQuery,
       apiParams: { sort: 'name,ASC', excludeContent: 'false' },
-      defaultPayload: {}
+      defaultPayload: {},
+      pagination: { settingsId }
     })
 
-    const { policyListMap, getPolicyIsLoading } = useAdaptivePolicyListQuery(
-      { payload: { page: 1, pageSize: '2147483647', sort: 'name,ASC' } },
+    const { policyListMap, getPolicyIsLoading } = useAdaptivePolicyListByQueryQuery(
+      { payload: { page: 1, pageSize: '2000', sort: 'name,ASC' } },
       {
         selectFromResult ({ data, isLoading }) {
           return {
@@ -58,7 +59,8 @@ export default function RadiusAttributeGroupTable () {
             policyId: selectedRows[0].id!
           })
         })
-      }
+      },
+      scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.EDIT)
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -86,7 +88,8 @@ export default function RadiusAttributeGroupTable () {
               })
           }
         )
-      }
+      },
+      scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.DELETE)
     }]
 
     function useColumns () {
@@ -141,6 +144,8 @@ export default function RadiusAttributeGroupTable () {
       tableQuery.setPayload(payload)
     }
 
+    const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
     return (
       <Loader states={[
         tableQuery,
@@ -148,16 +153,18 @@ export default function RadiusAttributeGroupTable () {
       ]}>
         <Table
           enableApiFilter
-          settingsId='radius-attribute-group-list-table'
+          settingsId={settingsId}
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
+          rowActions={allowedRowActions}
           onFilterChange={handleFilterChange}
-          rowSelection={hasAccess() && { type: 'radio' }}
-          actions={filterByAccess([{
+          rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
+          actions={filterByAccessForServicePolicyMutation([{
+            // eslint-disable-next-line max-len
+            scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.CREATE),
             label: $t({ defaultMessage: 'Add Group' }),
             onClick: () => {
               navigate({

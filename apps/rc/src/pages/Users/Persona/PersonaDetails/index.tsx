@@ -1,55 +1,66 @@
-import { useEffect, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 
 import { Col, Row, Space, Tag, Typography } from 'antd'
 import { useIntl }                          from 'react-intl'
 import { useParams }                        from 'react-router-dom'
 
-import { Button, cssStr, Loader, PageHeader, showActionModal, Subtitle } from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
+import { Button, cssStr, Loader, PageHeader, showActionModal, Subtitle, Tabs } from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
 import {
+  CertificateTable,
   ConnectionMeteringLink,
   DpskPoolLink,
+  IdentityGroupLink,
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
-  IdentityGroupLink,
+  PassphraseViewer,
+  PersonaDrawer,
   PropertyUnitLink,
-  useDpskNewConfigFlowParams,
-  PassphraseViewer
+  useIsEdgeFeatureReady,
+  usePersonaAsyncHeaders
 } from '@acx-ui/rc/components'
 import {
-  useLazyGetDpskQuery,
+  useAllocatePersonaVniMutation,
+  useGetCertificatesByIdentityIdQuery,
+  useGetCertificateTemplateQuery,
   useGetPersonaByIdQuery,
-  useLazyGetMacRegListQuery,
-  useLazyGetPersonaGroupByIdQuery,
-  useLazyGetNetworkSegmentationGroupByIdQuery,
-  useLazyGetPropertyUnitByIdQuery,
   useLazyGetConnectionMeteringByIdQuery,
-  useUpdatePersonaMutation,
-  useAllocatePersonaVniMutation
+  useLazyGetDpskQuery,
+  useLazyGetMacRegListQuery,
+  useLazyGetEdgePinByIdQuery,
+  useLazyGetPersonaGroupByIdQuery,
+  useLazyGetPropertyUnitByIdQuery,
+  useUpdatePersonaMutation
 } from '@acx-ui/rc/services'
-import { ConnectionMetering, PersonaGroup } from '@acx-ui/rc/utils'
-import { filterByAccess }                   from '@acx-ui/user'
-import { noDataDisplay }                    from '@acx-ui/utils'
+import { ConnectionMetering, PersonaGroup, useTableQuery } from '@acx-ui/rc/utils'
+import { hasCrossVenuesPermission }                        from '@acx-ui/user'
+import { noDataDisplay }                                   from '@acx-ui/utils'
 
-import { PersonaDrawer }                       from '../PersonaDrawer'
 import { blockedTagStyle, PersonaBlockedIcon } from '../styledComponents'
 
 import { PersonaDevicesTable } from './PersonaDevicesTable'
 
+export const IdentityDeviceContext = createContext({} as {
+  setDeviceCount: (data: number) => void
+})
 
 function PersonaDetails () {
   const { $t } = useIntl()
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isCertTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const { tenantId, personaGroupId, personaId } = useParams()
+  const [activeTab, setActiveTab] = useState('device')
   const [personaGroupData, setPersonaGroupData] = useState<PersonaGroup>()
   const [connectionMetering, setConnectionMetering] = useState<ConnectionMetering>()
   const [macPoolData, setMacPoolData] = useState({} as { id?: string, name?: string } | undefined)
   const [dpskPoolData, setDpskPoolData] = useState({} as { id?: string, name?: string } | undefined)
-  const [nsgData, setNsgData] = useState({} as { id?: string, name?: string } | undefined)
+  const [pinData, setPinData] = useState({} as { id?: string, name?: string } | undefined)
   const [unitData, setUnitData] =
     useState({} as { venueId?: string, unitId?: string, name?: string } | undefined)
   const [editDrawerVisible, setEditDrawerVisible] = useState(false)
+
+  const [deviceCount, setDeviceCount] = useState(0)
 
   // TODO: isLoading state?
   const [updatePersona] = useUpdatePersonaMutation()
@@ -57,15 +68,29 @@ function PersonaDetails () {
   const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [getDpskPoolById] = useLazyGetDpskQuery()
-  const [getNsgById] = useLazyGetNetworkSegmentationGroupByIdQuery()
+  const [getPinById] = useLazyGetEdgePinByIdQuery()
   const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
   const personaDetailsQuery = useGetPersonaByIdQuery({
     params: { groupId: personaGroupId, id: personaId }
   })
+  const { data: certTemplateData } = useGetCertificateTemplateQuery({
+    params: { policyId: personaGroupData?.certificateTemplateId! }
+  }, { skip: !personaGroupData?.certificateTemplateId || !isCertTemplateEnabled })
+  const certTableQuery = useTableQuery({
+    useQuery: useGetCertificatesByIdentityIdQuery,
+    apiParams: {
+      templateId: personaGroupData?.certificateTemplateId!,
+      personaId: personaId!
+    },
+    defaultPayload: {},
+    option: {
+      skip: !isCertTemplateEnabled || !personaGroupData?.certificateTemplateId || !personaId
+    } })
+
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const [vniRetryable, setVniRetryable] = useState<boolean>(false)
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
+  const { customHeaders } = usePersonaAsyncHeaders()
 
   useEffect(() => {
     if (personaDetailsQuery.isLoading) return
@@ -101,17 +126,17 @@ function PersonaDetails () {
     if (personaGroupData.dpskPoolId) {
       let name: string | undefined
       getDpskPoolById({
-        params: { serviceId: personaGroupData.dpskPoolId, ...dpskNewConfigFlowParams }
+        params: { serviceId: personaGroupData.dpskPoolId }
       })
         .then(result => name = result.data?.name)
         .finally(() => setDpskPoolData({ id: personaGroupData.dpskPoolId, name }))
     }
 
-    if (personaGroupData.nsgId && networkSegmentationEnabled) {
+    if (personaGroupData.personalIdentityNetworkId && networkSegmentationEnabled) {
       let name: string | undefined
-      getNsgById({ params: { tenantId, serviceId: personaGroupData.nsgId } })
+      getPinById({ params: { tenantId, serviceId: personaGroupData.personalIdentityNetworkId } })
         .then(result => name = result.data?.name)
-        .finally(() => setNsgData({ id: personaGroupData.nsgId, name }))
+        .finally(() => setPinData({ id: personaGroupData.personalIdentityNetworkId, name }))
     }
 
     if (propertyEnabled && personaGroupData.propertyId && personaDetailsQuery?.data?.identityId) {
@@ -128,15 +153,16 @@ function PersonaDetails () {
   useEffect(() => {
     if (!personaGroupData || !personaDetailsQuery.data) return
     const { primary = true, revoked } = personaDetailsQuery.data
-    const hasNSG = !!personaGroupData?.nsgId
+    const hasPin = !!personaGroupData?.personalIdentityNetworkId
 
-    setVniRetryable(hasNSG && primary && !revoked)
+    setVniRetryable(hasPin && primary && !revoked)
   }, [personaGroupData, personaDetailsQuery])
 
   const revokePersona = async () => {
     return await updatePersona({
       params: { groupId: personaGroupId, id: personaId },
-      payload: { revoked: !personaDetailsQuery.data?.revoked }
+      payload: { revoked: !personaDetailsQuery.data?.revoked },
+      customHeaders
     })
   }
 
@@ -207,11 +233,11 @@ function PersonaDetails () {
     },
     { label: $t({ defaultMessage: 'Personal Identity Network' }),
       value:
-      personaGroupData?.nsgId
+      personaGroupData?.personalIdentityNetworkId
         && <NetworkSegmentationLink
           showNoData={true}
-          name={nsgData?.name}
-          nsgId={personaGroupData?.nsgId}
+          name={pinData?.name}
+          id={personaGroupData?.personalIdentityNetworkId}
         />
     },
     // TODO: API Integration - Fetch AP(get AP by port.macAddress?)
@@ -252,7 +278,7 @@ function PersonaDetails () {
             </Subtitle>
           </Col>
           <Col span={12}>
-            {(networkSegmentationEnabled && personaGroupData?.nsgId) &&
+            {(networkSegmentationEnabled && personaGroupData?.personalIdentityNetworkId) &&
               <Subtitle level={4}>
                 {$t({ defaultMessage: 'Personal Identity Network' })}
               </Subtitle>
@@ -274,7 +300,7 @@ function PersonaDetails () {
               )}
             </Loader>
           </Col>
-          {(networkSegmentationEnabled && personaGroupData?.nsgId) &&
+          {(networkSegmentationEnabled && personaGroupData?.personalIdentityNetworkId) &&
             <Col span={12}>
               {netSeg.map(item =>
                 <Row key={item.label} align={'middle'}>
@@ -310,12 +336,39 @@ function PersonaDetails () {
           }
         </Row>
 
-
-        <PersonaDevicesTable
-          disableAddButton={!personaGroupData?.macRegistrationPoolId}
-          persona={personaDetailsQuery.data}
-          dpskPoolId={personaGroupData?.dpskPoolId}
-        />
+        <Tabs onChange={setActiveTab} activeKey={activeTab}>
+          <Tabs.TabPane
+            key={'device'}
+            tab={$t(
+              { defaultMessage: 'Devices ({deviceCount})' },
+              { deviceCount }
+            )}
+          >
+            <IdentityDeviceContext.Provider value={{ setDeviceCount }}>
+              <PersonaDevicesTable
+                disableAddButton={!personaGroupData?.macRegistrationPoolId}
+                persona={personaDetailsQuery.data}
+                dpskPoolId={personaGroupData?.dpskPoolId}
+              />
+            </IdentityDeviceContext.Provider>
+          </Tabs.TabPane>
+          {(isCertTemplateEnabled && personaGroupData?.certificateTemplateId && certTemplateData) &&
+            <Tabs.TabPane
+              key={'certificate'}
+              tab={$t(
+                { defaultMessage: 'Certificates ({certificateCount})' },
+                { certificateCount: certTableQuery?.data?.totalCount ?? 0 }
+              )}
+            >
+              <CertificateTable
+                showGenerateCert={!personaDetailsQuery.data?.revoked ?? false}
+                templateData={certTemplateData}
+                tableQuery={certTableQuery}
+                specificIdentity={personaId}
+              />
+            </Tabs.TabPane>
+          }
+        </Tabs>
       </Space>
 
       {personaDetailsQuery.data &&
@@ -385,19 +438,21 @@ function PersonaDetailsPageHeader (props: {
     })
   }
 
-  const extra = filterByAccess([
-    <Button type='primary' onClick={showRevokedModal} disabled={!allowed}>
-      {$t({
-        defaultMessage: `{revokedStatus, select,
+  const extra = hasCrossVenuesPermission({ needGlobalPermission: true }) && [<Button
+    type='primary'
+    onClick={showRevokedModal}
+    disabled={!allowed}
+  >
+    {$t({
+      defaultMessage: `{revokedStatus, select,
         true {Unblock}
         other {Block Identity}}`,
-        description: 'Translation strings - Unblock, Block Identity'
-      }, { revokedStatus })}
-    </Button>,
-    <Button type={'primary'} onClick={onClick}>
-      {$t({ defaultMessage: 'Configure' })}
-    </Button>
-  ])
+      description: 'Translation strings - Unblock, Block Identity'
+    }, { revokedStatus })}
+  </Button>,
+  <Button type={'primary'} onClick={onClick} >
+    {$t({ defaultMessage: 'Configure' })}
+  </Button>]
 
   return (
     <PageHeader

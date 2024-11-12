@@ -22,9 +22,9 @@ import {
   StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
-import { formatter, DateFormatEnum }     from '@acx-ui/formatter'
-import { SearchOutlined }                from '@acx-ui/icons'
+import { useIsSplitOn, Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { formatter, DateFormatEnum }                from '@acx-ui/formatter'
+import { SearchOutlined }                           from '@acx-ui/icons'
 import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
@@ -57,21 +57,24 @@ import {
   useTableQuery,
   EntitlementDeviceType,
   EntitlementDeviceSubType,
-  whitespaceOnlyRegExp
+  whitespaceOnlyRegExp,
+  PrivilegeGroup
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }              from '@acx-ui/types'
-import { useGetUserProfileQuery } from '@acx-ui/user'
-import { AccountType  }           from '@acx-ui/utils'
+import { RolesEnum }                   from '@acx-ui/types'
+import { useUserProfileContext }       from '@acx-ui/user'
+import { AccountType, noDataDisplay  } from '@acx-ui/utils'
 
-import { AssignEcDrawer }     from '../AssignEcDrawer'
-import { ManageAdminsDrawer } from '../ManageAdminsDrawer'
+import { AssignEcDrawer }            from '../AssignEcDrawer'
+import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
+import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
 // eslint-disable-next-line import/order
-import * as UI from '../styledComponents'
+import { ManageMspDelegationDrawer } from '../ManageMspDelegations'
+import * as UI                       from '../styledComponents'
 
 interface AddressComponent {
   long_name?: string;
@@ -159,6 +162,11 @@ export function ManageIntegrator () {
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
+  const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+  const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
 
   const navigate = useNavigate()
   const linkToIntegrators = useTenantLink('/integrators', 'v')
@@ -167,6 +175,7 @@ export function ManageIntegrator () {
 
   const [mspAdmins, setAdministrator] = useState([] as MspAdministrator[])
   const [mspEcAdmins, setMspEcAdmins] = useState([] as MspAdministrator[])
+  const [privilegeGroups, setPrivilegeGroups] = useState([] as PrivilegeGroup[])
   const [availableWifiLicense, setAvailableWifiLicense] = useState(0)
   const [availableSwitchLicense, setAvailableSwitchLicense] = useState(0)
   const [availableApswLicense, setAvailableApswLicense] = useState(0)
@@ -191,7 +200,7 @@ export function ManageIntegrator () {
   const isEditMode = action === 'edit'
   const tenantType = type
 
-  const { data: userProfile } = useGetUserProfileQuery({ params: useParams() })
+  const { data: userProfile } = useUserProfileContext()
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
   const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
   const { data } =
@@ -199,7 +208,8 @@ export function ManageIntegrator () {
   const { data: Administrators } =
       useMspAdminListQuery({ params: useParams() }, { skip: action !== 'edit' })
   const { data: delegatedAdmins } =
-      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
+        { skip: action !== 'edit' })
   const { data: ecAdministrators } =
       useMspEcAdminListQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   const ecList = useTableQuery({
@@ -213,8 +223,8 @@ export function ManageIntegrator () {
   })
   const assignedEcs =
   useGetAssignedMspEcToIntegratorQuery(
-    { params: { mspIntegratorId: mspEcTenantId, mspIntegratorType: tenantType } },
-    { skip: action !== 'edit' })
+    { params: { mspIntegratorId: mspEcTenantId, mspIntegratorType: tenantType },
+      enable: isRbacEnabled }, { skip: action !== 'edit' })
 
   useEffect(() => {
     if (licenseSummary) {
@@ -262,7 +272,7 @@ export function ManageIntegrator () {
           lastName: userProfile.lastName,
           name: userProfile.firstName,
           email: userProfile.email,
-          role: userProfile.role as RolesEnum,
+          role: RolesEnum.PRIME_ADMIN,
           detailLevel: userProfile.detailLevel
         })
         setAdministrator(administrator)
@@ -417,8 +427,15 @@ export function ManageIntegrator () {
         customer.licenses = { assignments: licAssignment }
       }
 
+      if (isRbacPhase2Enabled && privilegeGroups.length > 0) {
+        const pgIds = privilegeGroups?.map((pg: PrivilegeGroup)=> pg.id)
+        customer.privilege_group_ids = pgIds
+      }
+
       const result =
-      await addIntegrator({ params: { tenantId: tenantId }, payload: customer }).unwrap()
+      await addIntegrator({ params: { tenantId: tenantId },
+        payload: isRbacEnabled ? { data: [customer] }: customer,
+        enableRbac: isRbacEnabled }).unwrap()
       if (result) {
       // const ecTenantId = result.tenant_id
       }
@@ -492,8 +509,9 @@ export function ManageIntegrator () {
         }
         customer.licenses = assignLicense
       }
-      await updateIntegrator({ params: { mspEcTenantId: mspEcTenantId },
-        payload: customer }).unwrap()
+      await updateIntegrator({
+        params: { mspEcTenantId: mspEcTenantId },
+        payload: customer, enableRbac: isRbacEnabled }).unwrap()
       navigate(linkToIntegrators, { replace: true })
       return true
     } catch (error) {
@@ -513,11 +531,24 @@ export function ManageIntegrator () {
 
   const displayMspAdmins = ( ) => {
     if (!mspAdmins || mspAdmins.length === 0)
-      return '--'
+      return noDataDisplay
     return <>
       {mspAdmins.map(admin =>
         <UI.AdminList key={admin.id}>
-          {admin.email} ({intl.$t(roleDisplayText[admin.role])})
+          {admin.email} ({roleDisplayText[admin.role]
+            ? intl.$t(roleDisplayText[admin.role]) : admin.role})
+        </UI.AdminList>
+      )}
+    </>
+  }
+
+  const displayPrivilegeGroups = () => {
+    if (!privilegeGroups || privilegeGroups.length === 0)
+      return noDataDisplay
+    return <>
+      {privilegeGroups.map(pg =>
+        <UI.AdminList key={pg.id}>
+          {pg.name}
         </UI.AdminList>
       )}
     </>
@@ -525,7 +556,7 @@ export function ManageIntegrator () {
 
   const displayAssignedEc = () => {
     if (!selectedEcs || selectedEcs.length === 0)
-      return '--'
+      return noDataDisplay
     return <>
       {selectedEcs.map(ec =>
         <UI.AdminList key={ec.id}>
@@ -546,7 +577,7 @@ export function ManageIntegrator () {
     } else if (assignedEcs?.data?.delegation_type) {
       return intl.$t({ defaultMessage: 'Unlimited' })
     }
-    return '--'
+    return noDataDisplay
   }
 
   const displayCustomerAdmins = () => {
@@ -563,16 +594,22 @@ export function ManageIntegrator () {
           <Paragraph>{mspEcAdmins[0].email}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
-          label={intl.$t({ defaultMessage: 'Role' })}
+          label={isAbacToggleEnabled
+            ? intl.$t({ defaultMessage: 'Privilege Group' })
+            : intl.$t({ defaultMessage: 'Role' })}
         >
-          <Paragraph>{intl.$t(roleDisplayText[mspEcAdmins[0].role])}</Paragraph>
+          <Paragraph>
+            {roleDisplayText[mspEcAdmins[0].role]
+              ? intl.$t(roleDisplayText[mspEcAdmins[0].role]) : mspEcAdmins[0].role}
+          </Paragraph>
         </Form.Item>
       </>
     }
     return <div style={{ marginTop: '5px', marginBottom: '30px' }}>
       {mspEcAdmins.map(admin =>
         <UI.AdminList>
-          {admin.email} ({intl.$t(roleDisplayText[admin.role])}
+          {admin.email} {roleDisplayText[admin.role]
+            ? intl.$t(roleDisplayText[admin.role]) : admin.role}
         </UI.AdminList>
       )}
     </div>
@@ -614,16 +651,35 @@ export function ManageIntegrator () {
   }
 
   const MspAdminsForm = () => {
-    return <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
-      <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
-      <Form.Item children={<div>{displayMspAdmins()}</div>} />
-      {!isEditMode && <Form.Item
-        children={<UI.FieldTextLink onClick={() => setDrawerAdminVisible(true)}>
-          {intl.$t({ defaultMessage: 'Manage' })}
-        </UI.FieldTextLink>
-        }
-      />}
-    </UI.FieldLabelAdmins>
+    return (isRbacPhase2Enabled && !isEditMode)
+      ? <div>
+        <UI.FieldLabelAdmins2 width='275px' style={{ marginTop: '15px' }}>
+          <label>{intl.$t({ defaultMessage: 'MSP Delegations' })}</label>
+          <Form.Item
+            children={<UI.FieldTextLink onClick={() => setDrawerAdminVisible(true)}>
+              {intl.$t({ defaultMessage: 'Manage' })}
+            </UI.FieldTextLink>
+            }
+          />
+        </UI.FieldLabelAdmins2>
+        <UI.FieldLabelDelegations width='260px'
+          style={{ marginLeft: '15px', marginTop: '5px', marginBottom: '20px' }}>
+          <label>{intl.$t({ defaultMessage: 'Users' })}</label>
+          <Form.Item children={<div>{displayMspAdmins()}</div>} />
+          <label>{intl.$t({ defaultMessage: 'Privilege Groups' })}</label>
+          <Form.Item children={<div>{displayPrivilegeGroups()}</div>} />
+        </UI.FieldLabelDelegations>
+      </div>
+      : <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
+        <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
+        <Form.Item children={<div>{displayMspAdmins()}</div>} />
+        {!isEditMode && <Form.Item
+          children={<UI.FieldTextLink onClick={() => setDrawerAdminVisible(true)}>
+            {intl.$t({ defaultMessage: 'Manage' })}
+          </UI.FieldTextLink>
+          }
+        />}
+      </UI.FieldLabelAdmins>
   }
 
   const ManageAssignedEcForm = () => {
@@ -654,6 +710,7 @@ export function ManageIntegrator () {
         style={{ width: '300px' }}
         rules={[
           { required: true },
+          { max: 255 },
           { validator: (_, value) => emailRegExp(value) },
           { message: intl.$t({ defaultMessage: 'Please enter a valid email address!' }) }
         ]}
@@ -664,6 +721,8 @@ export function ManageIntegrator () {
         label={intl.$t({ defaultMessage: 'First Name' })}
         rules={[
           { required: true },
+          { min: 2 },
+          { max: 64 },
           { validator: (_, value) => whitespaceOnlyRegExp(value) }
         ]}
         children={<Input />}
@@ -674,6 +733,8 @@ export function ManageIntegrator () {
         label={intl.$t({ defaultMessage: 'Last Name' })}
         rules={[
           { required: true },
+          { min: 2 },
+          { max: 64 },
           { validator: (_, value) => whitespaceOnlyRegExp(value) }
         ]}
         children={<Input />}
@@ -681,7 +742,9 @@ export function ManageIntegrator () {
       />
       <Form.Item
         name='admin_role'
-        label={intl.$t({ defaultMessage: 'Role' })}
+        label={isAbacToggleEnabled
+          ? intl.$t({ defaultMessage: 'Privilege Group' })
+          : intl.$t({ defaultMessage: 'Role' })}
         style={{ width: '300px' }}
         rules={[{ required: true }]}
         initialValue={RolesEnum.PRIME_ADMIN}
@@ -691,7 +754,8 @@ export function ManageIntegrator () {
               Object.entries(RolesEnum).map(([label, value]) => (
                 <Option
                   key={label}
-                  value={value}>{intl.$t(roleDisplayText[value])}
+                  value={value}>
+                  {roleDisplayText[value] ? intl.$t(roleDisplayText[value]) : value}
                 </Option>
               ))
             }
@@ -737,7 +801,7 @@ export function ManageIntegrator () {
 
     const content =
     <>
-      <Subtitle level={4}>{intl.$t({ defaultMessage: 'Access Periods' })}</Subtitle>
+      <Subtitle level={4}>{intl.$t({ defaultMessage: 'Access Period' })}</Subtitle>
       <Form.Item
         name='type'
         initialValue={true}
@@ -746,7 +810,7 @@ export function ManageIntegrator () {
         <Radio.Group onChange={onChange}>
           <Space direction='vertical'>
             <Radio value={true} disabled={false}>
-              { intl.$t({ defaultMessage: 'Not Limited' }) }
+              { intl.$t({ defaultMessage: 'Not Limited (Integrator)' }) }
             </Radio>
             <UI.FieldLabelAccessPeriod width='275px'>
               <Radio style={{ marginTop: '5px' }} value={false} disabled={false}>
@@ -772,7 +836,7 @@ export function ManageIntegrator () {
                 children={<Input disabled={unlimitSelected} type='number' min={1} max={60}/>}
                 style={{ paddingRight: '20px' }}
               />
-              <label>Day(s)</label>
+              <label>{intl.$t({ defaultMessage: 'Day(s) (Installer)' })}</label>
             </UI.FieldLabelAccessPeriod>
           </Space>
         </Radio.Group>
@@ -890,7 +954,10 @@ export function ManageIntegrator () {
   const ApswSubscription = () => {
     return <div >
       <UI.FieldLabelSubs width='275px'>
-        <label>{intl.$t({ defaultMessage: 'Device Subscription' })}</label>
+        <label>{isvSmartEdgeEnabled
+          ? intl.$t({ defaultMessage: 'Device Networking' })
+          : intl.$t({ defaultMessage: 'Device Subscription' })
+        }</label>
         <Form.Item
           name='apswLicense'
           label=''
@@ -903,8 +970,12 @@ export function ManageIntegrator () {
           style={{ paddingRight: '20px' }}
         />
         <label>
-          {intl.$t({ defaultMessage: 'devices out of {availableApswLicense} available' }, {
-            availableApswLicense: availableApswLicense })}
+          {isvSmartEdgeEnabled
+            ? intl.$t({ defaultMessage: 'licenses out of {availableApswLicense} available' }, {
+              availableApswLicense: availableApswLicense })
+            : intl.$t({ defaultMessage: 'devices out of {availableApswLicense} available' }, {
+              availableApswLicense: availableApswLicense })
+          }
         </label>
       </UI.FieldLabelSubs>
     </div>
@@ -949,10 +1020,15 @@ export function ManageIntegrator () {
           <Paragraph>{formData.admin_email}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
-          label={intl.$t({ defaultMessage: 'Role' })}
+          label={isAbacToggleEnabled
+            ? intl.$t({ defaultMessage: 'Privilege Group' })
+            : intl.$t({ defaultMessage: 'Role' })}
         >
           {formData?.admin_role &&
-          <Paragraph>{intl.$t(roleDisplayText[formData.admin_role as RolesEnum])}</Paragraph>}
+          <Paragraph>
+            {roleDisplayText[formData.admin_role]
+              ? intl.$t(roleDisplayText[formData.admin_role]) : formData.admin_role}
+          </Paragraph>}
         </Form.Item>
 
         {!isDeviceAgnosticEnabled && <div>
@@ -968,7 +1044,8 @@ export function ManageIntegrator () {
           </Form.Item>
         </div>}
         {isDeviceAgnosticEnabled && <Form.Item
-          label={intl.$t({ defaultMessage: 'Device Subscriptions' })}
+          label={isvSmartEdgeEnabled ? intl.$t({ defaultMessage: 'Device Networking' })
+            : intl.$t({ defaultMessage: 'Device Subscriptions' })}
         >
           <Paragraph>{formData.apswLicense}</Paragraph>
         </Form.Item>}
@@ -1016,6 +1093,8 @@ export function ManageIntegrator () {
             style={{ width: '300px' }}
             rules={[
               { required: true },
+              { min: 2 },
+              { max: 255 },
               { validator: (_, value) => whitespaceOnlyRegExp(value) }
             ]}
             validateFirst
@@ -1072,6 +1151,8 @@ export function ManageIntegrator () {
               style={{ width: '300px' }}
               rules={[
                 { required: true },
+                { min: 2 },
+                { max: 255 },
                 { validator: (_, value) => whitespaceOnlyRegExp(value) }
               ]}
               validateFirst
@@ -1152,12 +1233,27 @@ export function ManageIntegrator () {
 
       </StepsFormLegacy>
 
-      {drawerAdminVisible && <ManageAdminsDrawer
-        visible={drawerAdminVisible}
-        setVisible={setDrawerAdminVisible}
-        setSelected={selectedMspAdmins}
-        tenantId={mspEcTenantId}
-      />}
+      {drawerAdminVisible && (isAbacToggleEnabled
+        ? (isRbacPhase2Enabled
+          ? <ManageMspDelegationDrawer
+            visible={drawerAdminVisible}
+            setVisible={setDrawerAdminVisible}
+            setSelectedUsers={selectedMspAdmins}
+            selectedUsers={mspAdmins}
+            setSelectedPrivilegeGroups={setPrivilegeGroups}
+            selectedPrivilegeGroups={privilegeGroups}
+            tenantIds={mspEcTenantId ? [mspEcTenantId] : undefined}/>
+          : <ManageDelegateAdminDrawer
+            visible={drawerAdminVisible}
+            setVisible={setDrawerAdminVisible}
+            setSelected={selectedMspAdmins}
+            tenantId={mspEcTenantId}/>)
+        : <ManageAdminsDrawer
+          visible={drawerAdminVisible}
+          setVisible={setDrawerAdminVisible}
+          setSelected={selectedMspAdmins}
+          tenantId={mspEcTenantId}/>
+      )}
       {drawerAssignedEcVisible && <AssignEcDrawer
         visible={drawerAssignedEcVisible}
         setVisible={setDrawerAssignedEcVisible}

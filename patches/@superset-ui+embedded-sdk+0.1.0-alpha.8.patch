@@ -5,56 +5,58 @@ diff --git a/node_modules/@superset-ui/embedded-sdk/dist/index.d.ts b/node_modul
 index b8bf5ad..bcdf90c 100644
 --- a/node_modules/@superset-ui/embedded-sdk/dist/index.d.ts
 +++ b/node_modules/@superset-ui/embedded-sdk/dist/index.d.ts
-@@ -27,6 +27,10 @@ export declare type EmbedDashboardParams = {
+@@ -27,6 +27,13 @@ export declare type EmbedDashboardParams = {
      dashboardUiConfig?: UiConfigType;
      /** Are we in debug mode? */
      debug?: boolean;
 +    /** Custom header for all the xhr requests **/
 +    authToken?: string;
++    /** User info */
++    username?: string;
++    isReadOnly?: boolean;
 +    /** locale for i18n */
 +    locale?: string;
  };
  export declare type Size = {
      width: number;
-@@ -41,4 +45,4 @@ export declare type EmbeddedDashboard = {
+@@ -41,4 +48,4 @@ export declare function embedDashboard({ id, supersetD
  /**
   * Embeds a Superset dashboard into the page using an iframe.
   */
 -export declare function embedDashboard({ id, supersetDomain, mountPoint, fetchGuestToken, dashboardUiConfig, debug }: EmbedDashboardParams): Promise<EmbeddedDashboard>;
-+export declare function embedDashboard({ id, supersetDomain, mountPoint, fetchGuestToken, dashboardUiConfig, debug, authToken }: EmbedDashboardParams): Promise<EmbeddedDashboard>;
++export declare function embedDashboard({ id, supersetDomain, mountPoint, fetchGuestToken, dashboardUiConfig, debug, authToken, username, isReadOnly, locale }: EmbedDashboardParams): Promise<EmbeddedDashboard>;
 diff --git a/node_modules/@superset-ui/embedded-sdk/lib/index.js b/node_modules/@superset-ui/embedded-sdk/lib/index.js
 index 5c8591d..f86f958 100644
 --- a/node_modules/@superset-ui/embedded-sdk/lib/index.js
 +++ b/node_modules/@superset-ui/embedded-sdk/lib/index.js
-@@ -41,9 +41,13 @@ async function embedDashboard(_ref) {
+@@ -41,9 +41,15 @@ async function embedDashboard(_ref) {
      mountPoint,
      fetchGuestToken,
      dashboardUiConfig,
 -    debug = false
 +    debug = false,
 +    authToken,
++    username,
++    isReadOnly,
 +    locale
    } = _ref;
- 
+
 +  let refreshTokenTimeoutId = -1;
 +
    function log() {
      if (debug) {
        for (var _len = arguments.length, info = new Array(_len), _key = 0; _key < _len; _key++) {
-@@ -83,6 +87,12 @@ async function embedDashboard(_ref) {
+@@ -83,6 +89,9 @@ async function embedDashboard(_ref) {
        const filterConfig = dashboardUiConfig?.filters || {};
        const filterConfigKeys = Object.keys(filterConfig);
        const filterConfigUrlParams = filterConfigKeys.length > 0 ? "&" + filterConfigKeys.map(key => _const.DASHBOARD_UI_FILTER_CONFIG_URL_PARAM_KEY[key] + '=' + filterConfig[key]).join('&') : ""; // set up the iframe's sandbox configuration
-+      const jwtTokenPayload = authToken ? JSON.parse(window.atob(authToken.split('.')[1])) : {}
-+      const userNameParam = jwtTokenPayload.swuId ? `&username=${jwtTokenPayload.swuId}` : ''
-+      const isReadOnlyParam = jwtTokenPayload.roleName ? `&isReadOnly=${
-+        !(jwtTokenPayload.roleName.includes('PRIME_ADMIN') || jwtTokenPayload.roleName.includes('ADMIN'))
-+      }` : ''
++      const userNameParam = `&username=${username}`
++      const isReadOnlyParam = `&isReadOnly=${isReadOnly}`
 +      const localeParam = locale ? `&locale=${locale}` : ''
- 
+
        iframe.sandbox.add("allow-same-origin"); // needed for postMessage to work
- 
-@@ -120,30 +130,38 @@ async function embedDashboard(_ref) {
+
+@@ -120,30 +129,38 @@ async function embedDashboard(_ref) {
            debug
          }));
        });
@@ -64,7 +66,7 @@ index 5c8591d..f86f958 100644
        log('placed the iframe');
      });
    }
- 
+
 -  const [guestToken, ourPort] = await Promise.all([fetchGuestToken(), mountIframe()]);
 +  // const [guestToken, ourPort] = await Promise.all([fetchGuestToken(), mountIframe()]);
 +  // iframe was trying to load while guestToken was still not fetched
@@ -78,7 +80,7 @@ index 5c8591d..f86f958 100644
 +    authToken
    });
    log('sent guest token');
- 
+
    async function refreshGuestToken() {
      const newGuestToken = await fetchGuestToken();
      ourPort.emit('guestToken', {
@@ -89,13 +91,13 @@ index 5c8591d..f86f958 100644
 -    setTimeout(refreshGuestToken, (0, _guestTokenRefresh.getGuestTokenRefreshTiming)(newGuestToken));
 +    refreshTokenTimeoutId = setTimeout(refreshGuestToken, (0, _guestTokenRefresh.getGuestTokenRefreshTiming)(newGuestToken));
    }
- 
+
 -  setTimeout(refreshGuestToken, (0, _guestTokenRefresh.getGuestTokenRefreshTiming)(guestToken));
 +  refreshTokenTimeoutId = setTimeout(refreshGuestToken, (0, _guestTokenRefresh.getGuestTokenRefreshTiming)(guestToken));
- 
+
    function unmount() {
      log('unmounting');
 +    clearTimeout(refreshTokenTimeoutId);
      mountPoint.replaceChildren();
    }
- 
+

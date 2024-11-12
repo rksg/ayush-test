@@ -14,10 +14,10 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AccessCondition, CriteriaOption, EvaluationRule,
-  getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType
+  PolicyType,
+  useAdaptivePolicyBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -51,6 +51,8 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
     params: { policyId, templateId } }, { skip: !editMode })
 
   const [isUpdating, setIsUpdating] = useState(false)
+
+  const breadcrumb = useAdaptivePolicyBreadcrumb(PolicyType.ADAPTIVE_POLICY)
 
   useEffect(() => {
     if(data && editMode) {
@@ -173,15 +175,7 @@ export default function AdaptivePolicyForm (props: AdaptivePolicyFormProps) {
           title={editMode
             ? $t({ defaultMessage: 'Configure {name}' }, { name: data?.name })
             : $t({ defaultMessage: 'Add Adaptive Policy' })}
-          breadcrumb={[
-            { text: $t({ defaultMessage: 'Network Control' }) },
-            {
-              text: $t({ defaultMessage: 'Policies & Profiles' }),
-              link: getPolicyListRoutePath(true)
-            },
-            { text: $t({ defaultMessage: 'Adaptive Policy' }),
-              link: tablePath }
-          ]}
+          breadcrumb={breadcrumb}
         />
       }
       <StepsFormLegacy

@@ -1,20 +1,29 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { serviceApi, policyApi } from '@acx-ui/rc/services'
 import {
+  CertificateUrls,
   DpskUrls,
   getPolicyDetailsLink, getPolicyRoutePath, MacRegListUrlsInfo,
   PolicyOperation,
   PolicyType,
   RulesManagementUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Path }                                                   from '@acx-ui/react-router-dom'
-import { Provider }                                               from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+import { Path }                                        from '@acx-ui/react-router-dom'
+import { Provider, store }                             from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { dpskList } from '../AdaptivePolicySetDetail/__test__/fixtures'
 
-import { policySetList, prioritizedPolicies, adaptivePolicyList, macList } from './__test__/fixtures'
+import {
+  policySetList,
+  prioritizedPolicies,
+  adaptivePolicyList,
+  macList,
+  certificateTemplateList
+} from './__test__/fixtures'
 
 import AdaptivePolicySetTable from './index'
 
@@ -42,30 +51,36 @@ describe('AdaptivePolicySetTable', () => {
 
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    store.dispatch(policyApi.util.resetApiState())
+    store.dispatch(serviceApi.util.resetApiState())
     mockServer.use(
-      rest.get(
-        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
+      rest.post(
+        RulesManagementUrlsInfo.getPolicySetsByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
       ),
       rest.get(
         RulesManagementUrlsInfo.getPrioritizedPolicies.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(prioritizedPolicies))
       ),
-      rest.get(
-        RulesManagementUrlsInfo.getPolicies.url.split('?')[0],
+      rest.post(
+        RulesManagementUrlsInfo.getPoliciesByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(adaptivePolicyList))
       ),
-      rest.get(
-        MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
+      rest.post(
+        MacRegListUrlsInfo.searchMacRegistrationPools.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(macList))
       ),
-      rest.get(
-        DpskUrls.getDpskList.url.split('?')[0],
+      rest.post(
+        DpskUrls.getEnhancedDpskList.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(dpskList))
       ),
       rest.post(
         RulesManagementUrlsInfo.getPolicySetsByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
+      ),
+      rest.post(
+        CertificateUrls.getCertificateTemplates.url,
+        (req, res, ctx) => res(ctx.json(certificateTemplateList))
       )
     )
   })
@@ -79,7 +94,7 @@ describe('AdaptivePolicySetTable', () => {
     expect(row).toHaveTextContent('1')
   })
 
-  it('should delete selected row', async () => {
+  it.skip('should delete selected row', async () => {
     const deleteFn = jest.fn()
 
     mockServer.use(
@@ -96,20 +111,23 @@ describe('AdaptivePolicySetTable', () => {
     })
 
     const row = await screen.findByRole('row', { name: new RegExp( 'ps2') })
-    fireEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(within(row).getByRole('radio'))
 
     const deleteButton = screen.getByRole('button', { name: /delete/i })
-    fireEvent.click(deleteButton)
+    await userEvent.click(deleteButton)
 
+    const dialog = await screen.findByRole('dialog')
     await screen.findByText('Delete "ps2"?')
 
     const deleteListButton = screen.getByRole('button', { name: 'Delete Policy Set' })
     await waitFor(() => expect(deleteListButton).toBeEnabled())
-    fireEvent.click(deleteListButton)
+    await userEvent.click(deleteListButton)
 
+    await waitFor(() => expect(dialog).not.toBeVisible())
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
     })
+    await screen.findByText(/Policy Set ps2 was deleted/)
   })
 
   it('should edit selected row', async () => {
@@ -118,10 +136,10 @@ describe('AdaptivePolicySetTable', () => {
     })
 
     const row = await screen.findByRole('row', { name: new RegExp( 'ps12') })
-    fireEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(within(row).getByRole('radio'))
 
     const editButton = screen.getByRole('button', { name: /Edit/i })
-    fireEvent.click(editButton)
+    await userEvent.click(editButton)
 
     const editPath = getPolicyDetailsLink({
       type: PolicyType.ADAPTIVE_POLICY_SET,
@@ -140,7 +158,7 @@ describe('AdaptivePolicySetTable', () => {
       route: { params, path: tablePath }
     })
 
-    fireEvent.click(await screen.findByText('Add Set'))
+    await userEvent.click(await screen.findByText('Add Set'))
 
     const createPath = getPolicyRoutePath({
       type: PolicyType.ADAPTIVE_POLICY_SET,

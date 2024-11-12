@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Card, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { useApListQuery }          from '@acx-ui/rc/services'
 import { AP, useTableQuery }       from '@acx-ui/rc/utils'
 import { TenantLink }              from '@acx-ui/react-router-dom'
@@ -11,6 +12,7 @@ interface MdnsProxyInstancesTableProps {
 
 export function MdnsProxyInstancesTable (props: MdnsProxyInstancesTableProps) {
   const { $t } = useIntl()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const { apList } = props
 
   const tableQuery = useTableQuery({
@@ -18,7 +20,8 @@ export function MdnsProxyInstancesTable (props: MdnsProxyInstancesTableProps) {
     defaultPayload: {
       fields: ['name', 'model', 'apMac', 'venueName', 'venueId', 'clients', 'serialNumber'],
       filters: { serialNumber: apList ? apList : [''] }
-    }
+    },
+    enableRbac: isWifiRbacEnabled
   })
 
   const columns: TableProps<AP>['columns'] = [
@@ -35,7 +38,7 @@ export function MdnsProxyInstancesTable (props: MdnsProxyInstancesTableProps) {
       }
     },
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venueName',
       key: 'venueName',
       sorter: true,

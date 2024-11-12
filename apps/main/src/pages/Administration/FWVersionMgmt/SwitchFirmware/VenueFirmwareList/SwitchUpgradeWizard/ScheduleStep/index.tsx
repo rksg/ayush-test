@@ -6,8 +6,10 @@ import _                                                    from 'lodash'
 import { useIntl }                                          from 'react-intl'
 
 import { Subtitle, useStepFormContext } from '@acx-ui/components'
+import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
 import {
   AVAILABLE_SLOTS,
+  compareSwitchVersion,
   FirmwareCategory,
   FirmwareSwitchVenue,
   FirmwareVersion,
@@ -15,8 +17,8 @@ import {
   switchSchedule
 } from '@acx-ui/rc/utils'
 
-import * as UI                   from '../../styledComponents'
-import { getSwitchVersionLabel } from '../../switch.upgrade.util'
+import { DowngradeTag } from '../../../styledComponents'
+import * as UI          from '../../styledComponents'
 
 import { PreDownload } from './PreDownload'
 
@@ -42,10 +44,18 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
   const intl = useIntl()
   const { form, current } = useStepFormContext()
+  const { getSwitchVersionLabel } = useSwitchFirmwareUtils()
   const [selectedVersion, setSelectedVersion] = useState('')
   const [selectedAboveTenVersion, setSelectedAboveTenVersion] = useState<string>('')
   const [hasSelectedDate, setHasSelectedDate] = useState<boolean>(false)
-  const [checked, setChecked] = useState(false)
+  const getCurrentChecked = function () {
+    if (upgradeVenueList.length + upgradeSwitchList.length === 1) {
+      return upgradeVenueList.length === 1 ?
+        upgradeVenueList[0].preDownload : upgradeSwitchList[0].preDownload
+    } return false
+  }
+
+  const [checked, setChecked] = useState(getCurrentChecked())
 
   const getCurrentSchedule = function () {
     if (upgradeVenueList.length + upgradeSwitchList.length === 1) {
@@ -64,6 +74,21 @@ export function ScheduleStep (props: ScheduleStepProps) {
     setShowSubTitle(false)
   }, [current])
 
+  useEffect(() => {
+    if ((hasVenue || nonIcx8200Count > 0)) {
+      setSelectedVersion(currentScheduleVersion || '')
+      form.setFieldValue('switchVersion', currentScheduleVersion)
+    }
+
+    if ((hasVenue || icx8200Count > 0)) {
+      setSelectedAboveTenVersion(currentScheduleVersionAboveTen || '')
+      form.setFieldValue('switchVersionAboveTen', currentScheduleVersionAboveTen)
+    }
+
+    form.setFieldValue('preDownloadChecked', getCurrentChecked())
+
+  }, [upgradeVenueList, upgradeSwitchList])
+
   const getAvailableVersionsByPrefix = (availableVersions?: FirmwareVersion[],
     aboveTenPrefix?: boolean, currentScheduleVersion?: string) => {
     let firmwareAvailableVersions = availableVersions?.filter(
@@ -81,6 +106,12 @@ export function ScheduleStep (props: ScheduleStepProps) {
         } as FirmwareVersion)
       }
     }
+
+    if (_.isArray(firmwareAvailableVersions)) {
+      firmwareAvailableVersions =
+        firmwareAvailableVersions.sort((a, b) => compareSwitchVersion(a.id, b.id))
+    }
+
     return firmwareAvailableVersions
   }
 
@@ -121,6 +152,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
   return (
     <div
+      data-testid='schedule-step'
       style={{
         minHeight: '50vh',
         marginBottom: '30px'
@@ -161,7 +193,12 @@ export function ScheduleStep (props: ScheduleStepProps) {
                 { // eslint-disable-next-line max-len
                   getAvailableVersionsByPrefix(availableVersions, true, currentScheduleVersionAboveTen)?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                      {getSwitchVersionLabel(intl, v)}</Radio>)}
+                      <span style={{ lineHeight: '22px' }}>
+                        {getSwitchVersionLabel(intl, v)}
+                        {v.isDowngradeVersion && !v.inUse &&
+                          <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                      </span>
+                    </Radio>)}
                 <Radio value='' key='0'>
                   {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
                 </Radio>
@@ -186,7 +223,12 @@ export function ScheduleStep (props: ScheduleStepProps) {
                   { // eslint-disable-next-line max-len
                     getAvailableVersionsByPrefix(availableVersions, false, currentScheduleVersion)?.map(v =>
                       <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                        {getSwitchVersionLabel(intl, v)}</Radio>)}
+                        <span style={{ lineHeight: '22px' }}>
+                          {getSwitchVersionLabel(intl, v)}
+                          {v.isDowngradeVersion && !v.inUse &&
+                            <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                        </span>
+                      </Radio>)}
                   <Radio value='' key='0'>
                     {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
                   </Radio>
@@ -202,7 +244,8 @@ export function ScheduleStep (props: ScheduleStepProps) {
       </Subtitle>
       {<UI.TitleActive>
         {intl.$t({
-          defaultMessage: 'Venue\'s local time-zone is applied to the selection below.'
+          // eslint-disable-next-line max-len
+          defaultMessage: '<VenueSingular></VenueSingular>\'s local time-zone is applied to the selection below.'
         })}
       </UI.TitleActive>}
 

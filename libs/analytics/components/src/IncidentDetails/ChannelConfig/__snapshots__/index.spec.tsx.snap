@@ -2,8 +2,164 @@
 
 exports[`ChannelConfig should render for incidents on 2.4GHz 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-13w5wfx-4 cxtoBn"
+  .c0 {
+  height: 100%;
+  width: 100%;
+}
+
+.c0 .ant-card {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  border-radius: 8px;
+  padding: 12px 16px;
+  background-color: var(--acx-neutrals-10);
+}
+
+.c0 .ant-card-head {
+  display: none;
+  padding: 0;
+  border-bottom: none;
+  min-height: 0;
+  margin-bottom: 10px;
+}
+
+.c0 .ant-card-head-title {
+  padding: 0;
+}
+
+.c0 .ant-card-head-title .ant-space .ant-space-item:last-child {
+  line-height: 0;
+}
+
+.c0 .ant-card-head-wrapper {
+  -webkit-align-items: start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: start;
+}
+
+.c0 .ant-card-extra {
+  padding: 0;
+}
+
+.c0 .ant-card-body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  padding: 0;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c1 {
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-headline-4-line-height);
+  color: var(--acx-primary-black);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+}
+
+h1.c7.ant-typography {
+  line-height: var(--acx-subtitle-1-line-height);
+  font-size: var(--acx-subtitle-1-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-1-font-weight);
+}
+
+h2.c7.ant-typography {
+  line-height: var(--acx-subtitle-2-line-height);
+  font-size: var(--acx-subtitle-2-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-2-font-weight);
+}
+
+h3.c7.ant-typography {
+  line-height: var(--acx-subtitle-3-line-height);
+  font-size: var(--acx-subtitle-3-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-3-font-weight);
+}
+
+h4.c7.ant-typography {
+  line-height: var(--acx-subtitle-4-line-height);
+  font-size: var(--acx-subtitle-4-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-4-font-weight);
+}
+
+h5.c7.ant-typography {
+  line-height: var(--acx-subtitle-5-line-height);
+  font-size: var(--acx-subtitle-5-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-5-font-weight);
+}
+
+.c2 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c3 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c4 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+.c6 {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height) color:var(--acx-neutrals-70);
+  margin-bottom: 6px;
+}
+
+.c5 {
+  text-align: center;
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
     type="solid-bg"
   >
     <div
@@ -25,7 +181,7 @@ exports[`ChannelConfig should render for incidents on 2.4GHz 1`] = `
                 class="ant-space-item"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                  class="c1"
                 />
               </div>
             </div>
@@ -43,64 +199,64 @@ exports[`ChannelConfig should render for incidents on 2.4GHz 1`] = `
         class="ant-card-body"
       >
         <div
-          class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+          class="c2"
         >
           <div
-            class="ant-row Grid__GridRow-sc-5irhjd-2"
+            class="ant-row "
             style="margin: -10px -10px -10px -10px; flex-grow: 1; justify-content: space-around;"
           >
             <div
-              class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+              class="ant-col ant-col-4 c3"
               style="padding: 10px 10px 10px 10px;"
             >
               <div
-                class="Grid__Container-sc-5irhjd-1 dRhDDA styledComponents__GridCol-sc-1lmo0e0-1 fbWRHS"
+                class="c4 c5"
               >
                 <div
-                  class="styledComponents__Title-sc-1lmo0e0-0 kcWnkT"
+                  class="c6"
                 >
                   Channel
                 </div>
                 <h3
-                  class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                  class="ant-typography c7 "
                 >
                   Auto
                 </h3>
               </div>
             </div>
             <div
-              class="ant-col ant-col-4 Grid__ColInner-sc-5irhjd-0 XtIJT"
+              class="ant-col ant-col-4 c3"
               style="padding: 10px 10px 10px 10px;"
             >
               <div
-                class="Grid__Container-sc-5irhjd-1 dRhDDA styledComponents__GridCol-sc-1lmo0e0-1 fbWRHS"
+                class="c4 c5"
               >
                 <div
-                  class="styledComponents__Title-sc-1lmo0e0-0 kcWnkT"
+                  class="c6"
                 >
                   Channelization
                 </div>
                 <h3
-                  class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                  class="ant-typography c7 "
                 >
                   Auto
                 </h3>
               </div>
             </div>
             <div
-              class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
+              class="ant-col ant-col-16 c3"
               style="padding: 10px 10px 10px 10px;"
             >
               <div
-                class="Grid__Container-sc-5irhjd-1 dRhDDA styledComponents__GridCol-sc-1lmo0e0-1 fbWRHS"
+                class="c4 c5"
               >
                 <div
-                  class="styledComponents__Title-sc-1lmo0e0-0 kcWnkT"
+                  class="c6"
                 >
                   Channel Range (2.4 GHz)
                 </div>
                 <h3
-                  class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+                  class="ant-typography c7 "
                 >
                   10, 20
                 </h3>

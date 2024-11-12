@@ -1,9 +1,9 @@
-import { serviceGuardApiURL, Provider }     from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
+import { serviceGuardApiURL, Provider }                          from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, renderHook, waitFor } from '@acx-ui/test-utils'
 
 import { fetchServiceGuardTest } from '../../__tests__/fixtures'
 
-import { Title, SubTitle } from '.'
+import { Title, useSubTitle } from '.'
 
 describe('Title', () => {
   it('should render', async () => {
@@ -26,7 +26,7 @@ describe('Title', () => {
   })
 })
 
-describe('SubTitle', () => {
+describe('useSubTitle', () => {
   it('should render', async () => {
     const serviceGuardTest = {
       ...fetchServiceGuardTest.serviceGuardTest,
@@ -36,18 +36,18 @@ describe('SubTitle', () => {
         apsSuccessCount: 2
       }
     }
-    mockGraphqlQuery( serviceGuardApiURL, 'FetchServiceGuardTest', { data: { serviceGuardTest } })
-    render(<SubTitle/>, {
+    mockGraphqlQuery(serviceGuardApiURL, 'FetchServiceGuardTest', { data: { serviceGuardTest } })
+    const { result } = renderHook(() => useSubTitle(), {
       wrapper: Provider,
       route: { params: { tenantId: 't-id', testId: '1' } }
     })
-    expect(await screen.findByText([
-      'APs Under Test: 2',
-      'Test Result: 100% pass',
-      'Network: Wifi Name',
-      'Radio Band: 2.4 GHz',
-      'Authentication Method: Pre-Shared Key (PSK)'
-    ].join(' | '))).toBeVisible()
+    await waitFor(() => expect(result.current).toEqual([
+      { label: 'APs Under Test', value: ['2'] },
+      { label: 'Test Result', value: ['100% pass'] },
+      { label: 'Network', value: ['Wifi Name'] },
+      { label: 'Radio Band', value: ['2.4 GHz'] },
+      { label: 'Authentication Method', value: ['Pre-Shared Key (PSK)'] }
+    ]))
   })
   it('should render - on going test', async () => {
     const serviceGuardTest = {
@@ -58,18 +58,20 @@ describe('SubTitle', () => {
         apsSuccessCount: 0
       }
     }
-    mockGraphqlQuery( serviceGuardApiURL, 'FetchServiceGuardTest', { data: { serviceGuardTest } })
-    render(<SubTitle/>, {
+    mockGraphqlQuery(serviceGuardApiURL, 'FetchServiceGuardTest', { data: { serviceGuardTest } })
+    const { result } = renderHook(() => useSubTitle(), {
       wrapper: Provider,
       route: { params: { tenantId: 't-id', testId: '1' } }
     })
-    expect(await screen.findByText([
-      'APs Under Test: 0 of 2 APs tested',
-      'Test Result: In progress...',
-      'Network: Wifi Name',
-      'Radio Band: 2.4 GHz',
-      'Authentication Method: Pre-Shared Key (PSK)'
-    ].join(' | '))).toBeVisible()
+    await waitFor(() => {
+      expect(result.current).toEqual([
+        { label: 'APs Under Test', value: ['0 of 2 APs tested'] },
+        { label: 'Test Result', value: ['In progress...'] },
+        { label: 'Network', value: ['Wifi Name'] },
+        { label: 'Radio Band', value: ['2.4 GHz'] },
+        { label: 'Authentication Method', value: ['Pre-Shared Key (PSK)'] }
+      ])
+    })
   })
   it('should handle when no data for test', async () => {
     const serviceGuardTest = {
@@ -77,24 +79,28 @@ describe('SubTitle', () => {
       config: { wlanName: '', radio: '', authenticationMethod: '' },
       summary: {}
     }
-    mockGraphqlQuery( serviceGuardApiURL, 'FetchServiceGuardTest', { data: { serviceGuardTest } })
-    render(<SubTitle/>, {
+    mockGraphqlQuery(serviceGuardApiURL, 'FetchServiceGuardTest', { data: { serviceGuardTest } })
+    const { result } = renderHook(() => useSubTitle(), {
       wrapper: Provider,
       route: { params: { tenantId: 't-id', testId: '1' } }
     })
-    expect(await screen.findByText([
-      'Network: Unknown',
-      'Radio Band: Unknown',
-      'Authentication Method: Unknown'
-    ].join(' | '))).toBeVisible()
+    await waitFor(() => {
+      expect(result.current).toEqual([
+        { label: 'Network', value: ['Unknown'] },
+        { label: 'Radio Band', value: ['Unknown'] },
+        { label: 'Authentication Method', value: ['Unknown'] }
+      ])
+    })
   })
   it('should handle when no data (when loading)', async () => {
     mockGraphqlQuery(
       serviceGuardApiURL, 'FetchServiceGuardTest', { data: { serviceGuardTest: null } })
-    render(<SubTitle/>, {
+    const { result } = renderHook(() => useSubTitle(), {
       wrapper: Provider,
       route: { params: { tenantId: 't-id', testId: '1' } }
     })
-    expect(await screen.findByText('Test details')).toBeVisible()
+    await waitFor(() => {
+      expect(result.current).toEqual([])
+    })
   })
 })

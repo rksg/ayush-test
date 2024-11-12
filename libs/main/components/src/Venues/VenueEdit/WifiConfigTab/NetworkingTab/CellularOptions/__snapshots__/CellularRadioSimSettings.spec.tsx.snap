@@ -1,0 +1,88 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CellularRadioSimSettings should render CellularRadioSimSettings successfully 1`] = `
+<DocumentFragment>
+  .c1,
+.ant-form .c1 {
+  color: var(--acx-primary-black);
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  border: 0;
+  margin: 0;
+}
+
+.c1,
+.ant-form .c1,
+.c1 > label,
+.ant-form .c1 > label {
+  padding: 0 4px;
+  font-size: var(--acx-subtitle-5-font-size);
+  font-weight: var(--acx-subtitle-5-font-weight);
+  line-height: var(--acx-subtitle-5-line-height);
+  cursor: pointer;
+}
+
+fieldset:disabled .c0,
+fieldset:disabled .ant-form .c1,
+fieldset:disabled .c1 > label,
+fieldset:disabled .ant-form .c1 > label {
+  cursor: not-allowed;
+}
+
+.c1 .ant-switch {
+  margin-left: 50px;
+  position: absolute;
+  background: var(--acx-primary-white);
+}
+
+<form
+    class="ant-form ant-form-horizontal"
+  >
+    <div
+      class="ant-form-item"
+    >
+      <div
+        class="ant-row ant-form-item-row"
+      >
+        <div
+          class="ant-col ant-form-item-control"
+        >
+          <div
+            class="ant-form-item-control-input"
+          >
+            <div
+              class="ant-form-item-control-input-content"
+            >
+              <fieldset
+                class=""
+              >
+                <legend
+                  class="c0 c1"
+                >
+                  <label>
+                    0 Secondary SIM
+                    <button
+                      aria-checked="false"
+                      class="ant-switch"
+                      role="switch"
+                      type="button"
+                    >
+                      <div
+                        class="ant-switch-handle"
+                      />
+                      <span
+                        class="ant-switch-inner"
+                      />
+                    </button>
+                  </label>
+                </legend>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</DocumentFragment>
+`;

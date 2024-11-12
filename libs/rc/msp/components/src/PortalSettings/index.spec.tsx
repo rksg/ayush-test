@@ -2,10 +2,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { BaseUrl, MspPortal, MspUrlsInfo } from '@acx-ui/msp/utils'
-import { CommonUrlsInfo }                  from '@acx-ui/rc/utils'
-import { ExternalProviders }               from '@acx-ui/rc/utils'
-import { Provider  }                       from '@acx-ui/store'
+import { BaseUrl, MspPortal, MspUrlsInfo }    from '@acx-ui/msp/utils'
+import { CommonUrlsInfo, CommonRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { ExternalProviders }                  from '@acx-ui/rc/utils'
+import { Provider  }                          from '@acx-ui/store'
 import {
   render,
   mockServer,
@@ -97,7 +97,8 @@ jest.mock('@acx-ui/msp/services', () => ({
   ...jest.requireActual('@acx-ui/msp/services'),
   useAddMspLabelMutation: () => (''),
   useUpdateMspLabelMutation: () => (''),
-  useGetUploadURLMutation: () => ('')
+  useGetUploadURLMutation: () => (''),
+  useGetMspUploadURLMutation: () => ('')
 }))
 const utils = require('@acx-ui/utils')
 jest.mock('@acx-ui/utils', () => ({
@@ -112,6 +113,7 @@ jest.mock('react-router-dom', () => ({
 describe('PortalSettings', () => {
   const params = { tenantId: '3061bd56e37445a8993ac834c01e2710' }
   const fileUrl: string = '/api/file/tenant/' + params.tenantId + '/'
+  const unmockedFetch = global.fetch
 
   beforeEach(async () => {
     rcServices.useExternalProvidersQuery = jest.fn().mockImplementation(() => {
@@ -124,9 +126,14 @@ describe('PortalSettings', () => {
       return Promise.resolve(fileUrl + imageId)
     })
     jest.spyOn(services, 'useGetUploadURLMutation')
+    jest.spyOn(services, 'useGetMspUploadURLMutation')
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getUploadURL.url,
+        (req, res, ctx) => res(ctx.json({ fileId: 'f1-001/xml', signedUrl: 'www.storage.com' }))
+      ),
+      rest.post(
+        MspUrlsInfo.getUploadURL.url,
         (req, res, ctx) => res(ctx.json({ fileId: 'f1-001/xml', signedUrl: 'www.storage.com' }))
       )
     )
@@ -142,7 +149,9 @@ describe('PortalSettings', () => {
       rest.post(
         MspUrlsInfo.addMspLabel.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
-      )
+      ),
+      rest.get(CommonRbacUrlsInfo.getExternalProviders.url,
+        (_, res, ctx) => res(ctx.json( externalProviders )))
     )
     global.URL.createObjectURL = jest.fn()
     jest.spyOn(global.URL, 'createObjectURL')
@@ -155,6 +164,7 @@ describe('PortalSettings', () => {
   })
   afterEach(() => {
     jest.clearAllMocks()
+    global.fetch = unmockedFetch
   })
   it('should render correctly for add', async () => {
     services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {
@@ -170,7 +180,7 @@ describe('PortalSettings', () => {
 
     expect(services.useGetMspLabelQuery).toHaveBeenCalled()
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Settings' })).toBeVisible()
+    expect(screen.getByRole('heading', { level: 1, name: 'Portal Settings' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 3, name: 'Branding' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo:' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo Preview:' })).toBeVisible()
@@ -193,7 +203,7 @@ describe('PortalSettings', () => {
     await waitFor(() =>
       expect(utils.loadImageWithJWT).toHaveBeenCalledTimes(8))
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Settings' })).toBeVisible()
+    expect(screen.getByRole('heading', { level: 1, name: 'Portal Settings' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 3, name: 'Branding' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo:' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo Preview:' })).toBeVisible()
@@ -846,7 +856,7 @@ describe('PortalSettings', () => {
     await waitFor(() =>
       expect(utils.loadImageWithJWT).toHaveBeenCalledTimes(8))
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Settings' })).toBeVisible()
+    expect(screen.getByRole('heading', { level: 1, name: 'Portal Settings' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 3, name: 'Branding' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo:' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo Preview:' })).toBeVisible()
@@ -883,7 +893,7 @@ describe('PortalSettings', () => {
 
     expect(services.useGetMspLabelQuery).toHaveBeenCalled()
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Settings' })).toBeVisible()
+    expect(screen.getByRole('heading', { level: 1, name: 'Portal Settings' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 3, name: 'Branding' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo:' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo Preview:' })).toBeVisible()
@@ -942,7 +952,7 @@ describe('PortalSettings', () => {
     await waitFor(() =>
       expect(utils.loadImageWithJWT).toHaveBeenCalledTimes(8))
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Settings' })).toBeVisible()
+    expect(screen.getByRole('heading', { level: 1, name: 'Portal Settings' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 3, name: 'Branding' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo:' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo Preview:' })).toBeVisible()

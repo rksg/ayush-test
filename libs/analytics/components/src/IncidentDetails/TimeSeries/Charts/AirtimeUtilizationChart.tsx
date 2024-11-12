@@ -24,10 +24,10 @@ export const AirtimeUtilizationChart = ({ chartRef, data, incident }: TimeSeries
   const { $t } = intl
 
   const seriesMapping = [
-    { key: 'airtimeBusy', name: $t({ defaultMessage: 'Airtime Busy' }) },
-    { key: 'airtimeRx', name: $t({ defaultMessage: 'Airtime Rx' }) },
-    { key: 'airtimeTx', name: $t({ defaultMessage: 'Airtime Tx' }) },
-    { key: 'airtimeUtilization', name: $t({ defaultMessage: 'Airtime Utilization' }) }
+    { key: 'airtimeBusy', name: $t({ defaultMessage: 'Avg Airtime Busy' }) },
+    { key: 'airtimeRx', name: $t({ defaultMessage: 'Avg Airtime Rx' }) },
+    { key: 'airtimeTx', name: $t({ defaultMessage: 'Avg Airtime Tx' }) },
+    { key: 'airtimeUtilization', name: $t({ defaultMessage: 'Avg Airtime Utilization' }) }
   ]
 
   const chartResults = getSeriesData(

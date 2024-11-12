@@ -1,5 +1,5 @@
 import { gql }           from 'graphql-request'
-import _                 from 'lodash'
+import _, { uniqueId }   from 'lodash'
 import moment            from 'moment'
 import { defineMessage } from 'react-intl'
 
@@ -8,10 +8,10 @@ import {
   formattedPath,
   productNames
 } from '@acx-ui/analytics/utils'
-import { DateFormatEnum, formatter }      from '@acx-ui/formatter'
-import { recommendationApi }              from '@acx-ui/store'
-import { NodeType, getIntl, NetworkPath } from '@acx-ui/utils'
-import type { PathFilter }                from '@acx-ui/utils'
+import { DateFormatEnum, formatter }                          from '@acx-ui/formatter'
+import { recommendationApi }                                  from '@acx-ui/store'
+import { NodeType, getIntl, NetworkPath, computeRangeFilter } from '@acx-ui/utils'
+import type { PathFilter }                                    from '@acx-ui/utils'
 
 import {
   states,
@@ -22,6 +22,8 @@ import {
   crrmStates
 } from './config'
 import { kpiHelper, RecommendationKpi } from './RecommendationDetails/services'
+import { CRRMStates }                   from './states'
+import { isDataRetained }               from './utils'
 
 export type CrrmListItem = {
   id: string
@@ -30,8 +32,9 @@ export type CrrmListItem = {
   sliceValue: string
   statusTrail: StatusTrail
   crrmOptimizedState?: IconValue
-  crrmInterferingLinksText?: React.ReactNode
   summary?: string
+  updatedAt: string
+  metadata: {}
 } & Partial<RecommendationKpi>
 
 export type CrrmList = {
@@ -42,6 +45,14 @@ export type CrrmList = {
   recommendations: CrrmListItem[]
 }
 
+export type CrrmKpi = {
+  recommendation: {
+    status: StateType
+    dataEndTime: string
+    kpi_number_of_interfering_links: RecommendationKpi['']
+  }
+}
+
 export type AiOpsListItem = {
   id: string
   code: string
@@ -50,11 +61,18 @@ export type AiOpsListItem = {
   priority?: IconValue
   category?: string
   summary?: string
+  status: string
+  metadata: {}
 }
 
 export type AiOpsList = {
   aiOpsCount: number
   recommendations: AiOpsListItem[]
+}
+
+export type RecommendationWlan = {
+  name: string
+  ssid: string
 }
 
 export type Recommendation = {
@@ -65,11 +83,21 @@ export type Recommendation = {
   updatedAt: string
   sliceType: string
   sliceValue: string
-  metadata: { scheduledAt: string }
+  metadata: object & {
+    scheduledAt: string
+    wlans?: RecommendationWlan[]
+  }
   isMuted: boolean
   mutedBy: string
   mutedAt: string | null
   path: NetworkPath
+  idPath: NetworkPath
+  preferences?: {
+    crrmFullOptimization: boolean
+  }
+  statusTrail: StatusTrail
+  toggles?: { crrmFullOptimization: boolean }
+  trigger: string
 }
 
 export type RecommendationListItem = Recommendation & {
@@ -84,29 +112,30 @@ export type RecommendationListItem = Recommendation & {
   crrmOptimizedState?: IconValue
 }
 
-export interface MutationPayload {
-  id: string
-  mute: boolean
-}
-export interface MutationResponse {
-  toggleMute: {
-    success: boolean
-    errorMsg: string
-    errorCode: string
-  }
-}
+type MutationPayload = { id: string }
+type MutationResponse = { success: boolean, errorMsg: string, errorCode: string }
 
-interface SchedulePayload {
-  id: string
+export interface MuteMutationPayload extends MutationPayload { mute: boolean }
+export interface MuteMutationResponse { toggleMute: MutationResponse }
+
+export interface SchedulePayload extends MutationPayload {
+  type: string
   scheduledAt: string
+  isRecommendationRevertEnabled?: boolean
+  wlans?: RecommendationWlan[]
 }
-interface ScheduleResponse {
-  schedule: {
-    errorCode: string;
-    errorMsg: string;
-    success: boolean;
+interface ScheduleResponse { schedule: MutationResponse }
+
+interface DeleteMutationPayload extends MutationPayload { }
+interface DeleteMutationResponse { deleteRecommendation: MutationResponse }
+
+interface PreferencePayload {
+  path: NetworkPath
+  preferences: {
+    crrmFullOptimization: boolean
   }
 }
+interface PreferenceResponse { setPreference: MutationResponse }
 
 type Metadata = {
   error?: {
@@ -162,12 +191,22 @@ const getStatusTooltip = (code: string, state: StateType, metadata: Metadata) =>
   })
 }
 
-const optimizedStates = ['applied', 'applyscheduleinprogress', 'applyscheduled']
+const optimizedStates = [ 'applied', 'applyscheduleinprogress', 'applyscheduled']
+export const unknownStates = [
+  CRRMStates.insufficientLicenses,
+  CRRMStates.verificationError,
+  CRRMStates.verified,
+  CRRMStates.unqualifiedZone,
+  CRRMStates.noAps,
+  CRRMStates.unknown
+]
 
 export const getCrrmOptimizedState = (state: StateType) => {
   return optimizedStates.includes(state)
     ? crrmStates.optimized
-    : crrmStates.nonOptimized
+    : unknownStates.includes(state as CRRMStates)
+      ? crrmStates[state as CRRMStates]
+      : crrmStates.nonOptimized
 }
 
 export function extractBeforeAfter (value: CrrmListItem['kpis']) {
@@ -179,9 +218,12 @@ export function extractBeforeAfter (value: CrrmListItem['kpis']) {
 
 export const getCrrmInterferingLinksText = (
   status: StateType,
+  dataEndTime: string,
   kpi_number_of_interfering_links: RecommendationKpi['']
 ) => {
   const { $t } = getIntl()
+  if (!isDataRetained(dataEndTime))
+    return $t({ defaultMessage: 'Beyond data retention period' })
   if (status === 'reverted') return $t(states.reverted.text)
   if (status === 'applyfailed') return $t(states.applyfailed.text)
   if (status === 'revertfailed') return $t(states.revertfailed.text)
@@ -191,20 +233,20 @@ export const getCrrmInterferingLinksText = (
     // eslint-disable-next-line max-len
     defaultMessage: '{before} interfering {before, plural, one {link} other {links}} can be optimized to {after}',
     description: 'Translation string - interfering, link, links, can be optimized to'
-  }, { before, after })
+  }, { before, after }) as string
 
   return $t({
     // eslint-disable-next-line max-len
     defaultMessage: 'From {before} to {after} interfering {after, plural, one {link} other {links}}',
     description: 'Translation string - From, to, interfering, link, links'
-  }, { before, after })
+  }, { before, after }) as string
 }
 
 export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
     crrmList: build.query<
       CrrmList,
-      PathFilter & { n: number }
+      PathFilter & { n: number } & { selectedTenants?: string | null }
     >({
       query: (payload) => ({
         // kpiHelper hard-coded to c-crrm-channel24g-auto as it's the same for all crrm
@@ -231,7 +273,7 @@ export const api = recommendationApi.injectEndpoints({
           )
           crrmScenarios(start: $startDate, end: $endDate, path: $path)
           recommendations(start: $startDate, end: $endDate, path: $path, n: $n, crrm: true) {
-            id code status sliceValue ${kpiHelper('c-crrm-channel24g-auto')}
+            id code status sliceValue updatedAt metadata
           }
         }
         `,
@@ -247,21 +289,41 @@ export const api = recommendationApi.injectEndpoints({
           zoneCount: response.zoneCount,
           optimizedZoneCount: response.optimizedZoneCount,
           crrmScenarios: response.crrmScenarios,
-          recommendations: response.recommendations.map(recommendation => {
-            const { code, status, kpi_number_of_interfering_links } = recommendation
-            return {
+          recommendations: response.recommendations.reduce((recommendations, recommendation) => {
+            const { id, code, status } = recommendation
+            const newId = id === 'unknown' ? uniqueId() : id
+            const getCode = code === 'unknown'
+              ? status as keyof typeof codes
+              : code as keyof typeof codes
+            const detail = codes[getCode]
+            detail && recommendations.push({
               ...recommendation,
+              id: newId,
               crrmOptimizedState: getCrrmOptimizedState(status),
-              crrmInterferingLinksText: getCrrmInterferingLinksText(
-                status,
-                kpi_number_of_interfering_links!
-              ),
-              summary: $t(codes[code as keyof typeof codes].summary)
-            } as unknown as CrrmListItem
-          })
+              summary: $t(detail.summary)
+            } as unknown as CrrmListItem)
+            return recommendations
+          }, [] as CrrmListItem[])
         }
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
+    }),
+    recommendationWlans: build.query<RecommendationWlan[], { id: String }>({
+      query: ({ id }) => ({
+        document: gql`
+        query Wlans($id: String) {
+          recommendation(id: $id) {
+            WLANs {
+              name
+              ssid
+            }
+          }
+        }
+        `,
+        variables: { id }
+      }),
+      transformResponse: (response: { recommendation: { WLANs: RecommendationWlan[] } }) =>
+        response.recommendation.WLANs
     }),
     aiOpsList: build.query<
       AiOpsList,
@@ -276,7 +338,7 @@ export const api = recommendationApi.injectEndpoints({
             start: $startDate, end: $endDate, path: $path, crrm: false
           )
           recommendations(start: $startDate, end: $endDate, path: $path, n: $n, crrm: false) {
-            id code updatedAt sliceValue
+            id code updatedAt sliceValue status metadata
           }
         }
         `,
@@ -286,22 +348,28 @@ export const api = recommendationApi.injectEndpoints({
         const { $t } = getIntl()
         return {
           aiOpsCount: response.aiOpsCount,
-          recommendations: response.recommendations.map(recommendation => {
-            const { code } = recommendation
-            return {
+          recommendations: response.recommendations.reduce((recommendations, recommendation) => {
+            const { code, status } = recommendation
+            const getCode = code === 'unknown'
+              ? status as keyof typeof codes
+              : code as keyof typeof codes
+            const detail = codes[getCode]
+            detail && recommendations.push({
               ...recommendation,
-              priority: codes[code as keyof typeof codes].priority,
-              category: $t(codes[code as keyof typeof codes].category),
-              summary: $t(codes[code as keyof typeof codes].summary)
-            } as unknown as AiOpsListItem
-          })
+              priority: detail.priority,
+              category: $t(detail.category),
+              summary: $t(detail.summary)
+
+            } as unknown as AiOpsListItem)
+            return recommendations
+          }, [] as AiOpsListItem[])
         }
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
     }),
     recommendationList: build.query<
       RecommendationListItem[],
-      PathFilter & { crrm?: boolean }
+      PathFilter & { crrm?: boolean, isCrrmPartialEnabled: boolean }
     >({
       query: (payload) => ({
         document: gql`
@@ -320,39 +388,86 @@ export const api = recommendationApi.injectEndpoints({
             isMuted
             mutedBy
             mutedAt
+            ${payload.isCrrmPartialEnabled ? 'preferences' : ''}
             path {
               type
               name
             }
+            idPath {
+              type
+              name
+            }
+            statusTrail { status }
+            trigger
           }
         }
         `,
-        variables: _.pick(payload, ['path', 'startDate', 'endDate', 'crrm'])
+        variables: {
+          ...(_.pick(payload,['path', 'crrm'])),
+          ...computeRangeFilter({
+            dateFilter: _.pick(payload, ['startDate', 'endDate', 'range'])
+          })
+        }
       }),
       transformResponse: (response: Response<Recommendation>) => {
         const { $t } = getIntl()
-        return response.recommendations.map(recommendation => {
-          const { path, sliceValue, sliceType, code, status, metadata, updatedAt } = recommendation
+        const items = response.recommendations.reduce((recommendations, recommendation) => {
+          const {
+            id, path, sliceValue, sliceType, code, status, metadata, updatedAt
+          } = recommendation
+          const isFullOptimization = !!_.get(metadata, 'algorithmData.isCrrmFullOptimization', true)
+          const newId = id === 'unknown' ? uniqueId() : id
           const statusEnum = status as StateType
-          return {
+          const getCode = code === 'unknown'
+            ? status as keyof typeof codes
+            : code as keyof typeof codes
+          const detail = codes[getCode]
+          detail && recommendations.push({
             ...recommendation,
+            id: newId,
+            pathKey: JSON.stringify(recommendation.idPath),
             scope: formattedPath(path, sliceValue),
             type: nodeTypes(sliceType as NodeType),
-            priority: codes[code as keyof typeof codes].priority,
-            category: $t(codes[code as keyof typeof codes].category),
-            summary: $t(codes[code as keyof typeof codes].summary),
+            priority: {
+              ...detail.priority,
+              text: $t(detail.priority.label)
+            },
+            category: $t(detail.category),
+            summary: isFullOptimization || code === 'unknown'
+              ? $t(detail.summary)
+              : $t(detail.partialOptimizedSummary!),
             status: $t(states[statusEnum].text),
             statusTooltip: getStatusTooltip(code, statusEnum, { ...metadata, updatedAt }),
             statusEnum,
-            ...(code.includes('crrm') && {
-              crrmOptimizedState: getCrrmOptimizedState(statusEnum)
+            ...((code.includes('crrm') || code === 'unknown') && {
+              crrmOptimizedState: {
+                ...getCrrmOptimizedState(statusEnum),
+                text: $t(getCrrmOptimizedState(statusEnum).label)
+              }
             })
+          } as unknown as (RecommendationListItem & { pathKey: string }))
+          return recommendations
+        }, [] as Array<RecommendationListItem & { pathKey: string }>)
+
+        // eslint-disable-next-line max-len
+        const appliedStates = ['applyscheduled', 'applyscheduleinprogress', 'applied', 'revertscheduled', 'revertscheduleinprogress', 'revertfailed', 'applywarning']
+        const grouped = _.groupBy(items, 'pathKey')
+
+        return items.map(({ pathKey, ...item }) => {
+          if (item.code === 'unknown') return { ...item, toggles: { crrmFullOptimization: true } }
+          if (!item.code.startsWith('c-crrm')) return item
+          return {
+            ...item,
+            toggles: {
+              crrmFullOptimization: grouped[pathKey]
+                .every(v => !appliedStates.includes(v.statusEnum))
+            }
           }
         })
       },
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_LIST' }]
     }),
-    muteRecommendation: build.mutation<MutationResponse, MutationPayload>({
+    muteRecommendation: build.mutation<MuteMutationResponse, MuteMutationPayload>({
       query: (payload) => ({
         document: gql`
           mutation MuteRecommendation($id: String, $mute: Boolean) {
@@ -375,13 +490,20 @@ export const api = recommendationApi.injectEndpoints({
       ]
     }),
     scheduleRecommendation: build.mutation<ScheduleResponse, SchedulePayload>({
-      query: (payload) => ({
+      query: ({ isRecommendationRevertEnabled, ...payload }) => ({
         document: gql`
           mutation ScheduleRecommendation(
             $id: String,
+            ${isRecommendationRevertEnabled ? '$actionType: String,' : ''}
             $scheduledAt: DateTime
+            ${payload.wlans ? '$wlans: [WLANInput]' : ''}
           ) {
-            schedule(id: $id, scheduledAt: $scheduledAt) {
+            schedule(
+              id: $id,
+              ${isRecommendationRevertEnabled ? 'actionType: $actionType,' : '' }
+              ${payload.wlans ? 'wlans: $wlans,' : ''}
+              scheduledAt: $scheduledAt
+            ) {
               success
               errorMsg
               errorCode
@@ -390,6 +512,8 @@ export const api = recommendationApi.injectEndpoints({
         `,
         variables: {
           id: payload.id,
+          actionType: payload.type,
+          wlans: payload.wlans,
           scheduledAt: payload.scheduledAt
         }
       }),
@@ -421,6 +545,63 @@ export const api = recommendationApi.injectEndpoints({
         { type: 'Monitoring', id: 'RECOMMENDATION_CODE' },
         { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
       ]
+    }),
+    deleteRecommendation: build.mutation<DeleteMutationResponse, DeleteMutationPayload>({
+      query: (payload) => ({
+        document: gql`
+          mutation DeleteRecommendation($id: String) {
+            deleteRecommendation(id: $id) {
+              success
+              errorMsg
+              errorCode
+            }
+          }
+        `,
+        variables: { id: payload.id }
+      }),
+      invalidatesTags: [
+        { type: 'Monitoring', id: 'RECOMMENDATION_LIST' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_CODE' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
+      ]
+    }),
+    crrmKpi: build.query<{ text: string }, Pick<CrrmListItem, 'id' | 'code'>>({
+      query: ({ id, code }) => ({
+        document: gql`
+          query CrrmKpi($id: String) {
+            recommendation(id: $id) {
+              id status dataEndTime ${kpiHelper(code!)}
+            }
+          }
+        `,
+        variables: { id }
+      }),
+      transformResponse: (response: CrrmKpi) => {
+        const { status, dataEndTime, kpi_number_of_interfering_links } = response.recommendation
+        return {
+          text: getCrrmInterferingLinksText(
+            status,
+            dataEndTime,
+            kpi_number_of_interfering_links!
+          )
+        }
+      },
+      providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }]
+    }),
+    setPreference: build.mutation<PreferenceResponse, PreferencePayload>({
+      query: (variables) => ({
+        variables,
+        document: gql`
+          mutation SetPreference($path: [HierarchyNodeInput], $preferences: JSON) {
+            setPreference(path: $path, preferences: $preferences) { success errorMsg errorCode }
+          }
+        `
+      }),
+      invalidatesTags: [
+        { type: 'Monitoring', id: 'RECOMMENDATION_LIST' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_CODE' },
+        { type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }
+      ]
     })
   })
 })
@@ -434,7 +615,12 @@ export const {
   useCrrmListQuery,
   useAiOpsListQuery,
   useRecommendationListQuery,
+  useRecommendationWlansQuery,
+  useLazyRecommendationWlansQuery,
   useMuteRecommendationMutation,
   useScheduleRecommendationMutation,
-  useCancelRecommendationMutation
+  useCancelRecommendationMutation,
+  useDeleteRecommendationMutation,
+  useCrrmKpiQuery,
+  useSetPreferenceMutation
 } = api

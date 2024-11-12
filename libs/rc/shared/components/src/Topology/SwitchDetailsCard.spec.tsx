@@ -72,16 +72,27 @@ const switchDetail = {
 const sample = { P1: 1, P2: 2, P3: 3, P4: 4 }
 
 jest.mock('@acx-ui/analytics/components', () => ({
+  useIncidentToggles: () => ({}),
   useIncidentsBySeverityQuery: () => sample
 }))
 
 describe('Topology Switch Card', () => {
   it('should render orrectly', async () => {
-    const { asFragment } = render(<Provider><SwitchDetailsCard
-      switchDetail={switchDetail as SwitchViewModel}
-      isLoading={false}
-    /></Provider>, { route: {} })
-
+    const services = require('@acx-ui/analytics/components')
+    const spy = jest.spyOn(services, 'useIncidentsBySeverityQuery')
+    const { asFragment } = render(<Provider>
+      <SwitchDetailsCard
+        switchDetail={switchDetail as SwitchViewModel}
+        isLoading={false}
+        onClose={jest.fn()}
+      /></Provider>, { route: {} })
     expect(asFragment()).toMatchSnapshot()
+    expect(spy).toBeCalledWith(expect.objectContaining({ filter: {
+      networkNodes: [[]],
+      switchNodes: [[
+        { name: switchDetail.switchMac.toUpperCase(), type: 'switch' },
+        { name: switchDetail.venueId, type: 'switchGroup' }
+      ]]
+    } }), expect.anything())
   })
 })

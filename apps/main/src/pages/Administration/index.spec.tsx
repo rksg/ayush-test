@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { AdministrationUrlsInfo }         from '@acx-ui/rc/utils'
-import { Provider  }                      from '@acx-ui/store'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { AdministrationUrlsInfo }                   from '@acx-ui/rc/utils'
+import { Provider  }                                from '@acx-ui/store'
 import {
   render,
   screen,
@@ -81,10 +81,16 @@ jest.mock('./Subscriptions', () => ({
     return <div data-testid='mocked-Subscriptions'></div>
   }
 }))
+jest.mock('@acx-ui/analytics/components', () => {
+  const sets = Object
+    .keys(jest.requireActual('@acx-ui/analytics/components'))
+    .map(key => [key, () => <div data-testid={key} />])
+  return Object.fromEntries(sets)
+})
 describe('Administration page', () => {
   let params: { tenantId: string, activeTab: string } =
   { tenantId: fakeUserProfile.tenantId, activeTab: 'accountSettings' }
-  jest.mocked(useIsSplitOn).mockReturnValue(true)
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RADIUS_CLIENT_CONFIG)
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
   beforeEach(() => {
@@ -147,7 +153,24 @@ describe('Administration page', () => {
       })
 
     const tabs = screen.getAllByRole('tab')
-    expect(tabs.length).toBe(7 )
+    expect(tabs.length).toBe(8)
+  })
+
+  it('should have correct tabs amount for custom role', async () => {
+    params.activeTab = 'fwVersionMgmt'
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={{ ...userProfileContextValues, isCustomRole: true }}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+    const tab = screen.queryByRole('tab', { name: /Version Management/ })
+    expect(tab).not.toBeInTheDocument()
+    expect(await screen.findByTestId('mocked-FWVersionMgmt')).toBeVisible()
   })
 
   it('should handle tab changes', async () => {
@@ -206,13 +229,14 @@ describe('Administration page', () => {
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
 
-  it('should not have administrators tab', async () => {
+  it('should not have administrators tab for abac enabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     params.activeTab = 'notifications'
 
     render(
       <Provider>
         <UserProfileContext.Provider
-          value={{ data: fakeSupportUser, isPrimeAdmin } as UserProfileContextProps}
+          value={userProfileContextValues}
         >
           <Administration />
         </UserProfileContext.Provider>
@@ -225,7 +249,24 @@ describe('Administration page', () => {
 
     const tab = screen.queryByRole('tab', { name: /Administrators/ })
     expect(tab).not.toBeInTheDocument()
-    expect(mockedAdminsReqFn).not.toBeCalled()
+  })
+
+  it('should not allow administrators tab access for support user', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    params.activeTab = 'administrators'
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={{ data: fakeSupportUser, isPrimeAdmin } as UserProfileContextProps}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Administrators is not allowed to access.')).toBeVisible()
   })
 
   it('should render subscriptions tab correctly', async () => {
@@ -301,8 +342,8 @@ describe('Administration page', () => {
     expect(tab.getAttribute('aria-selected')).toBeTruthy()
   })
 
-  it('should render administrator title with count', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  it('should render administrator title with count for group login disabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.GROUP_BASED_LOGIN_TOGGLE && ff !== Features.ABAC_POLICIES_TOGGLE)
     params.activeTab = 'administrators'
 
     render(
@@ -320,5 +361,24 @@ describe('Administration page', () => {
     expect(adminTab.getAttribute('aria-selected')).toBeTruthy()
     const notificationTab = screen.getByRole('tab', { name: 'Notifications (3)' })
     expect(notificationTab.getAttribute('aria-selected')).toBeTruthy()
+  })
+
+  it('should render administrator title without count for group login enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.GROUP_BASED_LOGIN_TOGGLE)
+    params.activeTab = 'administrators'
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={userProfileContextValues}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    const adminTab = await screen.findByRole('tab', { name: 'Administrators' })
+    expect(adminTab.getAttribute('aria-selected')).toBeTruthy()
   })
 })

@@ -1,7 +1,7 @@
 'use strict';
 
 // Called when the user clicks on the browser action.
-chrome.browserAction.onClicked.addListener(function(tab) {
+chrome.action.onClicked.addListener(function(tab) {
   console.log("Extract cookie extension clicked");
   var source_domain = 'dev.ruckus.cloud';
 
@@ -15,11 +15,11 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 });
 
 function execute_copy(source_domain, tab) {
-  const domain = tab.url.startsWith('https://staging.mlisa.io')
-    ? 'staging.mlisa.io'
-    : tab.url.startsWith('https://local.mlisa.io')
-      ? 'local.mlisa.io'
-      : source_domain
+  const url = new URL(tab.url)
+  const isRAI = /^\/(analytics|ai)/gi.test(url.pathname)
+  const domain = isRAI
+    ? url.hostname
+    : source_domain
 
   console.log('copying cookies from domain', domain)
   chrome.cookies.getAll({ domain: "localhost" }, function (cookies) {
@@ -36,18 +36,10 @@ function execute_copy(source_domain, tab) {
       chrome.cookies.set(localCookieItem);
     });
 
-    var opt = {
-      type: "basic",
-      title: domain + ' cookies are copied to localhost',
-      message: '',
-      iconUrl: chrome.runtime.getURL("wallet.png")
-    };
-
-    chrome.notifications.create('', opt);
-    if (['staging.mlisa.io', 'local.mlisa.io'].includes(domain)) {
+    if (isRAI) {
       open_localhostRA(tab)
     } else {
-      open_localhost(tab);// ACX/R1
+      open_localhost(tab); // R1
     }
   });
 }
@@ -65,12 +57,15 @@ function open_localhost(tab) {
     return;
   }
 
-  let tenantId;
+  let redirectUrl;
 
   const matchedIds = tab.url.match(/[a-f0-9]{32}/)
+  const matchedMspIds = tab.url.match(/[a-f0-9]{32}\/v\//)
 
   if (matchedIds) {
-    tenantId = matchedIds[0];
+    redirectUrl = matchedMspIds
+      ? `http://localhost:3000/${matchedIds[0]}/v`
+      : `http://localhost:3000/${matchedIds[0]}/t`
   } else {
     console.log('Tenant id not found in url');
     return;
@@ -79,13 +74,14 @@ function open_localhost(tab) {
   chrome.tabs.create({
     active: true,
     index: tab.index + 1,
-    url: `http://localhost:3000/${tenantId}/t`
+    url: redirectUrl
   }, (tab) => {
     console.log('tab opened');
   });
 
 }
 function open_localhostRA(tab) {
+  const url = new URL(tab.url)
   console.log('Current tab URL = ' + tab.url);
 
   if (!tab.url) {
@@ -93,16 +89,14 @@ function open_localhostRA(tab) {
     return;
   }
 
-  const isNotRAUrl = ['staging.mlisa.io', 'local.mlisa.io']
-    .every(hostname => tab.url.indexOf(hostname) === -1);
-  if (isNotRAUrl) {
-    console.log('Not a RUCKUS Analytics URL. Do not open new tab');
-    return;
-  }
+  const link = url.pathname.startsWith('/analytics')
+    ? 'http://localhost:3333/'
+    : `http://localhost:3333${url.pathname}${url.search}`
+
   chrome.tabs.create({
     active: true,
     index: tab.index + 1,
-    url: `http://localhost:3333/`
+    url: link
   }, (tab) => {
     console.log('tab opened');
   });

@@ -2,28 +2,72 @@
 
 exports[`DescriptionRow should match snapshot 1`] = `
 <DocumentFragment>
-  <span
-    class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+  .c0 > span {
+  -webkit-text-decoration: dotted underline;
+  text-decoration: dotted underline;
+}
+
+.c0 > span:after {
+  content: '';
+  display: block;
+}
+
+.c1 {
+  cursor: pointer;
+  color: var(--acx-accents-blue-50);
+}
+
+.c1:hover {
+  color: var(--acx-accents-blue-60);
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+.c1:after {
+  content: '';
+  display: block;
+}
+
+<span
+    class="c0"
   >
-    <div
-      data-testid="children"
+    <span
+      class="c1"
     >
-      Children
-    </div>
+      <div
+        data-testid="children"
+      >
+        Children
+      </div>
+    </span>
   </span>
 </DocumentFragment>
 `;
 
 exports[`DescriptionRow should match snapshot 2`] = `
 <DocumentFragment>
-  <span
-    class="styledComponents__TextContent-sc-1l4qm8r-0"
+  .c0 > span {
+  -webkit-text-decoration: dotted underline;
+  text-decoration: dotted underline;
+}
+
+.c0 > span:after {
+  content: '';
+  display: block;
+}
+
+<span
+    class="c0"
   >
-    <div
-      data-testid="children"
+    <span
+      class=""
     >
-      Children
-    </div>
+      <div
+        data-testid="children"
+      >
+        Children
+      </div>
+    </span>
   </span>
 </DocumentFragment>
 `;
@@ -31,7 +75,7 @@ exports[`DescriptionRow should match snapshot 2`] = `
 exports[`DescriptionRow should match snapshot 3`] = `
 <DocumentFragment>
   <span
-    class="styledComponents__TextContent-sc-1l4qm8r-0"
+    class=""
   >
     children
   </span>
@@ -41,7 +85,7 @@ exports[`DescriptionRow should match snapshot 3`] = `
 exports[`DescriptionRow should match snapshot 4`] = `
 <DocumentFragment>
   <span
-    class="styledComponents__TextContent-sc-1l4qm8r-0"
+    class=""
   >
     <div
       data-testid="children"
@@ -52,8 +96,62 @@ exports[`DescriptionRow should match snapshot 4`] = `
 
 exports[`DescriptionSection should match snapshot 1`] = `
 <DocumentFragment>
-  <div
-    class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
+  .c1 > span {
+  -webkit-text-decoration: dotted underline;
+  text-decoration: dotted underline;
+}
+
+.c1 > span:after {
+  content: '';
+  display: block;
+}
+
+.c2 {
+  cursor: pointer;
+  color: var(--acx-accents-blue-50);
+}
+
+.c2:hover {
+  color: var(--acx-accents-blue-60);
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+.c2:after {
+  content: '';
+  display: block;
+}
+
+.c0 .ant-descriptions-row > th {
+  padding-bottom: 0;
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-label,
+.c0 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-label {
+  color: var(--acx-neutrals-60);
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-content {
+  color: var(--acx-primary-black);
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
+  top: -1px;
+}
+
+<div
+    class="ant-descriptions c0"
   >
     <div
       class="ant-descriptions-view"
@@ -92,11 +190,15 @@ exports[`DescriptionSection should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                    class="c1"
                   >
-                    <div
-                      data-testid="children-0"
-                    />
+                    <span
+                      class="c2"
+                    >
+                      <div
+                        data-testid="children-0"
+                      />
+                    </span>
                   </span>
                 </span>
               </div>
@@ -134,11 +236,15 @@ exports[`DescriptionSection should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                    class="c1"
                   >
-                    <div
-                      data-testid="children-1"
-                    />
+                    <span
+                      class="c2"
+                    >
+                      <div
+                        data-testid="children-1"
+                      />
+                    </span>
                   </span>
                 </span>
               </div>
@@ -176,11 +282,15 @@ exports[`DescriptionSection should match snapshot 1`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                    class="c1"
                   >
-                    <div
-                      data-testid="children-2"
-                    />
+                    <span
+                      class="c2"
+                    >
+                      <div
+                        data-testid="children-2"
+                      />
+                    </span>
                   </span>
                 </span>
               </div>
@@ -195,8 +305,62 @@ exports[`DescriptionSection should match snapshot 1`] = `
 
 exports[`DescriptionSection should match snapshot 2`] = `
 <DocumentFragment>
-  <div
-    class="ant-descriptions styledComponents__Descriptions-sc-1l4qm8r-1 kAAHeP"
+  .c1 > span {
+  -webkit-text-decoration: dotted underline;
+  text-decoration: dotted underline;
+}
+
+.c1 > span:after {
+  content: '';
+  display: block;
+}
+
+.c2 {
+  cursor: pointer;
+  color: var(--acx-accents-blue-50);
+}
+
+.c2:hover {
+  color: var(--acx-accents-blue-60);
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+.c2:after {
+  content: '';
+  display: block;
+}
+
+.c0 .ant-descriptions-row > th {
+  padding-bottom: 0;
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-label,
+.c0 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-label {
+  color: var(--acx-neutrals-60);
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-content {
+  color: var(--acx-primary-black);
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-content .ant-badge-status-dot {
+  top: -1px;
+}
+
+<div
+    class="ant-descriptions c0"
   >
     <div
       class="ant-descriptions-view"
@@ -263,11 +427,15 @@ exports[`DescriptionSection should match snapshot 2`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                    class="c1"
                   >
-                    <div
-                      data-testid="children-0"
-                    />
+                    <span
+                      class="c2"
+                    >
+                      <div
+                        data-testid="children-0"
+                      />
+                    </span>
                   </span>
                 </span>
               </div>
@@ -283,11 +451,15 @@ exports[`DescriptionSection should match snapshot 2`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                    class="c1"
                   >
-                    <div
-                      data-testid="children-1"
-                    />
+                    <span
+                      class="c2"
+                    >
+                      <div
+                        data-testid="children-1"
+                      />
+                    </span>
                   </span>
                 </span>
               </div>
@@ -303,11 +475,15 @@ exports[`DescriptionSection should match snapshot 2`] = `
                   class="ant-descriptions-item-content"
                 >
                   <span
-                    class="styledComponents__TextContent-sc-1l4qm8r-0 fsFDDX"
+                    class="c1"
                   >
-                    <div
-                      data-testid="children-2"
-                    />
+                    <span
+                      class="c2"
+                    >
+                      <div
+                        data-testid="children-2"
+                      />
+                    </span>
                   </span>
                 </span>
               </div>

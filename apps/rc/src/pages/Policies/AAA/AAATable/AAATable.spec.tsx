@@ -4,9 +4,11 @@ import { Path }  from 'react-router-dom'
 
 import {
   AaaUrls,
+  CertificateUrls,
   CommonUrlsInfo,
   getPolicyDetailsLink,
   getPolicyRoutePath,
+  IdentityProviderUrls,
   PolicyOperation,
   PolicyType
 } from '@acx-ui/rc/utils'
@@ -22,7 +24,7 @@ import {
 import AAATable from './AAATable'
 
 const mockTableResult = {
-  totalCount: 2,
+  totalCount: 3,
   data: [{
     id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
     name: 'My AAA Server 1',
@@ -35,6 +37,24 @@ const mockTableResult = {
     type: 'AUTHENTICATION',
     primary: '34.72.60.107:1811',
     networkIds: ['123', '456']
+  },
+  {
+    id: '637f6dc0-26e2-4498-9c3c-594c51840112',
+    name: 'Test HS20 AAA Server',
+    type: 'AUTHENTICATION',
+    primary: '34.72.60.108:1811',
+    hotspot20IdentityProviderIds: ['789', '012']
+  },
+  {
+    id: '485617d8-816c-493e-9854-fc6126f7e83d',
+    name: 'Test RadSec AAA Server',
+    type: 'AUTHENTICATION',
+    primary: '34.72.60.108:1811',
+    radSecOptions: {
+      tlsEnabled: true,
+      certificateAuthorityId: '2ce780df-fd3f-4b22-b9d0-deefed397410',
+      clientCertificateId: ''
+    }
   }]
 }
 
@@ -70,7 +90,20 @@ describe('AAATable', () => {
         (_, res, ctx) => res(ctx.json({
           data: [],
           totalCount: 0
-        })))
+        }))
+      ),
+      rest.post(
+        IdentityProviderUrls.getIdentityProviderList.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        CertificateUrls.getCAs.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        CertificateUrls.getCertificateList.url,
+        (req, res, ctx) => res(ctx.json({}))
+      )
     )
   })
 
@@ -129,10 +162,12 @@ describe('AAATable', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
 
+    const dialog = await screen.findByRole('dialog')
     expect(await screen.findByText('Delete "' + target.name + '"?')).toBeVisible()
 
     await userEvent.click(await screen.findByRole('button', { name: /Delete Policy/i }))
 
+    await waitFor(() => expect(dialog).not.toBeVisible())
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
     })
@@ -155,6 +190,25 @@ describe('AAATable', () => {
 
     // eslint-disable-next-line max-len
     expect(await screen.findByText('You are unable to delete this record due to its usage in Network')).toBeVisible()
+  })
+
+  it('should not delete selected row when it is applied to a identity provder', async () => {
+    render(
+      <Provider>
+        <AAATable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+
+    const target = mockTableResult.data[2]
+    const row = await screen.findByRole('row', { name: new RegExp(target.name) })
+    await userEvent.click(within(row).getByRole('checkbox'))
+
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('You are unable to delete this record due to its usage in Identity Provider')).toBeVisible()
   })
 
   it('should navigate to the Edit view', async () => {

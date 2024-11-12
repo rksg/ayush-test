@@ -15,7 +15,7 @@ import {
 import { GroupTable }                           from './stories/GroupTable'
 import { defaultColumnWidth, settingsKeyWidth } from './useColumnsState'
 
-import { Table, TableProps, NestedTableExpandableDefaultConfig } from '.'
+import { Table, TableProps, NestedTableExpandableDefaultConfig, AsyncColumnLoader } from '.'
 
 const { type, clear } = userEvent
 
@@ -39,6 +39,13 @@ type TestRow = {
   address: string,
   isFirstLevel?: boolean
 }
+
+describe('Async Column Loader Test case', () => {
+  it('should render correctly', () => {
+    render(<AsyncColumnLoader />)
+    expect(screen.getByTestId('async-column-loader-animation')).toBeInTheDocument()
+  })
+})
 
 describe('Table component', () => {
   afterEach(() => cleanup())
@@ -71,6 +78,17 @@ describe('Table component', () => {
   it('should render correctly', () => {
     const { asFragment } = render(<Table
       columns={testColumns}
+      dataSource={testData}
+    />)
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should render table with Beta indicator correctly', () => {
+    const { asFragment } = render(<Table
+      columns={[
+        { ...testColumns[0], isBetaFeature: true },
+        ...testColumns.slice(1, 3)
+      ]}
       dataSource={testData}
     />)
     expect(asFragment()).toMatchSnapshot()
@@ -210,8 +228,9 @@ describe('Table component', () => {
   it('shows search/filter when no selected bar and row selected', async () => {
     const props: TableProps<TestRow> = {
       columns: [
-        { ...testColumns[0], searchable: true },
-        ...testColumns.slice(1, 3)
+        { ...testColumns[0], searchable: true, tooltip: 'Name tooltip', isBetaFeature: true },
+        { ...testColumns[1], isBetaFeature: true },
+        ...testColumns.slice(2, 3)
       ],
       dataSource: testData,
       rowSelection: { type: 'radio' },
@@ -1073,6 +1092,19 @@ describe('Table component', () => {
       fireEvent.change(input, { target: { value: 'John Doe' } })
       expect(onDisplayRowChange).toHaveBeenNthCalledWith(2, filteredData)
     })
+
+    it('Enabled the persistent filtering', async () => {
+      sessionStorage.setItem('storybook-demo-filter', '{"age":[32]}')
+      render(<Table
+        settingsId={'storybook-demo'}
+        columns={filteredColumns}
+        dataSource={filteredData}
+        alwaysShowFilters={true}
+        filterPersistence={true}
+      />)
+      const tbody = await findTBody()
+      expect(await within(tbody).findAllByRole('row')).toHaveLength(1)
+    })
   })
 
   describe('show/hide columnSort', () => {
@@ -1239,7 +1271,9 @@ describe('Table component', () => {
     it.skip('should render select data from all pages option correctly', async () => {
       render(<GroupTable rowSelection={{
         type: 'checkbox'
-      }} />)
+      }}
+      columns={[]}
+      />)
       const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
       expect(filters.length).toBe(4)
       const groupBySelector = filters[3]
@@ -1258,9 +1292,11 @@ describe('Table component', () => {
       render(<GroupTable rowSelection={{
         type: 'checkbox',
         getCheckboxProps: (record) => ({
-          disabled: record.deviceStatus
+          disabled: !!record.deviceStatus
         })
-      }}/>)
+      }}
+      columns={[]}
+      />)
       const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
       expect(filters.length).toBe(4)
       const groupBySelector = filters[3]
@@ -1353,6 +1389,7 @@ describe('Table component', () => {
       const targetElems = await screen.findAllByText('Members: 2')
       expect(targetElems).toHaveLength(1)
 
+      jest.runOnlyPendingTimers()
       jest.useRealTimers()
     })
   })

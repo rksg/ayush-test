@@ -2,31 +2,106 @@
 
 exports[`Legend should render properly 1`] = `
 <DocumentFragment>
-  <div
-    class="sc-llJcti iHjIcw"
+  .c0 {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: min-content;
+  grid-row-gap: 20px;
+}
+
+.c2 {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  grid-column-gap: 10px;
+  grid-row-gap: 10px;
+  padding: 10px 0px;
+}
+
+.c1 {
+  color: var(--acx-primary-black);
+  font-size: var(--acx-subtitle-5-font-size);
+  line-height: var(--acx-subtitle-5-line-height);
+  font-weight: var(--acx-subtitle-5-font-weight);
+}
+
+.c4 {
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-5-font-size);
+  line-height: var(--acx-body-5-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c3 {
+  display: inline-block;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--acx-neutrals-60);
+  justify-self: end;
+}
+
+.c5 {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--acx-neutrals-60);
+  justify-self: end;
+}
+
+.c6 {
+  background-color: #ED1C24;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  justify-self: end;
+}
+
+.c7 {
+  background-color: #EC7100;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  justify-self: end;
+}
+
+.c8 {
+  background-color: #ACAEB0;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  justify-self: end;
+}
+
+<div
+    class="c0"
   >
     <span>
       <div
-        class="sc-gicCDI kfhUWy"
+        class="c1"
       >
         Channel Bandwidth
       </div>
       <div
-        class="sc-iIPllB kabiIp"
+        class="c2"
       >
         <span
-          class="sc-bZkfAO ffETox"
+          class="c3"
         />
         <div
-          class="sc-ezWOiH iZbpmX"
+          class="c4"
         >
           40 MHz
         </div>
         <span
-          class="sc-bZkfAO gAIqVZ"
+          class="c5"
         />
         <div
-          class="sc-ezWOiH iZbpmX"
+          class="c4"
         >
           20 MHz
         </div>
@@ -34,36 +109,36 @@ exports[`Legend should render properly 1`] = `
     </span>
     <span>
       <div
-        class="sc-gicCDI kfhUWy"
+        class="c1"
       >
         Transmit Power
       </div>
       <div
-        class="sc-iIPllB kabiIp"
+        class="c2"
       >
         <span
-          class="sc-kLLXSd hlhjQs"
+          class="c6"
         />
         <div
-          class="sc-ezWOiH iZbpmX"
-        >
-          No interfering links
-        </div>
-        <span
-          class="sc-kLLXSd AUEOR"
-        />
-        <div
-          class="sc-ezWOiH iZbpmX"
+          class="c4"
         >
           Has interfering links
         </div>
         <span
-          class="sc-kLLXSd duiips"
+          class="c7"
         />
         <div
-          class="sc-ezWOiH iZbpmX"
+          class="c4"
         >
           Reduction in transmit power
+        </div>
+        <span
+          class="c8"
+        />
+        <div
+          class="c4"
+        >
+          No interfering links
         </div>
       </div>
     </span>

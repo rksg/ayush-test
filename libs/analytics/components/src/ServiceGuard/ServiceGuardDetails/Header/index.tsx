@@ -23,7 +23,7 @@ interface Subtitle {
   format?: (details: ServiceGuardTest | undefined, $t: IntlShape['$t']) => string
 }
 
-const subtitles: Subtitle[] = [
+const testProperties: Subtitle[] = [
   {
     keys: ['summary.apsTestedCount'],
     title: defineMessage({ defaultMessage: 'APs Under Test' }),
@@ -54,19 +54,18 @@ const subtitles: Subtitle[] = [
   }
 ]
 
-const SubTitle = () => {
+const useSubTitle = () => {
   const { $t } = useIntl()
   const queryResults = useServiceGuardTest()
-  return <Loader states={[queryResults]} fallback={<Spinner size='small' />}>
-    {subtitles
-      .filter(({ keys }) => keys.every(key => _.has(queryResults.data, key)))
-      .map(({ keys, title, format }) => [
-        $t(title),
-        format
-          ? format(queryResults.data, $t)
-          : (_.get(queryResults.data, keys[0]) || $t({ defaultMessage: 'Unknown' }))
-      ].join(': ')).join(' | ') || $t({ defaultMessage: 'Test details' })}
-  </Loader>
+  return testProperties
+    .filter(({ keys }) => keys.every(key => _.has(queryResults.data, key)))
+    .map(({ keys, title, format }) => ({
+      label: $t(title),
+      value: [format
+        ? format(queryResults.data, $t)
+        : (_.get(queryResults.data, keys[0]) || $t({ defaultMessage: 'Unknown' }))
+      ]
+    }))
 }
 
 const Title = () => {
@@ -77,4 +76,4 @@ const Title = () => {
   </Loader>
 }
 
-export { Title, SubTitle, ReRunButton, TestRunButton }
+export { Title, useSubTitle, ReRunButton, TestRunButton }

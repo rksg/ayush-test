@@ -1,11 +1,9 @@
 import '@testing-library/jest-dom'
 
-import { renderHook } from '@testing-library/react'
-import { Form }       from 'antd'
-import { act }        from 'react-dom/test-utils'
+import { Form } from 'antd'
 
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { Provider }                            from '@acx-ui/store'
+import { render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
 
 import FloorPlanForm from '.'
 
@@ -31,10 +29,9 @@ describe('Floor Plan Form', () => {
     })
     const form: Form = await screen.findByTestId('floor-plan-form')
     form.form = formRef.current
-    await act(() => {
-      form.submit()
-    })
-    expect(onFormSubmit).toBeCalled()
+    form.submit()
+
+    await waitFor(() => expect(onFormSubmit).toBeCalled())
     expect(asFragment()).toMatchSnapshot()
   })
 

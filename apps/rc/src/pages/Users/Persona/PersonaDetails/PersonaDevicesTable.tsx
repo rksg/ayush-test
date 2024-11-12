@@ -1,21 +1,25 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import moment        from 'moment-timezone'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showActionModal, showToast, Subtitle, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
-import { SuccessSolid }                                                             from '@acx-ui/icons'
-import { OSIconContainer, useDpskNewConfigFlowParams }                              from '@acx-ui/rc/components'
+import { Loader, showActionModal, showToast, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { SuccessSolid }                                                   from '@acx-ui/icons'
+import {
+  OSIconContainer,
+  PersonaDeviceItem,
+  PersonaDevicesImportDialog,
+  usePersonaAsyncHeaders
+} from '@acx-ui/rc/components'
 import {
   useAddPersonaDevicesMutation,
   useDeletePersonaDevicesMutation,
   useGetDpskPassphraseDevicesQuery,
-  useLazyGetClientListQuery
+  useLazyGetClientsQuery
 } from '@acx-ui/rc/services'
 import {
-  ClientList,
+  ClientInfo,
   dateSort,
   defaultSort,
   DPSKDeviceInfo,
@@ -25,17 +29,20 @@ import {
   PersonaErrorResponse,
   sortProp
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { noDataDisplay }             from '@acx-ui/utils'
+import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
+import { noDataDisplay }                            from '@acx-ui/utils'
 
-import { PersonaDeviceItem }          from '../PersonaForm/PersonaDevicesForm'
-import { PersonaDevicesImportDialog } from '../PersonaForm/PersonaDevicesImportDialog'
+import { IdentityDeviceContext } from './index'
 
-const defaultPayload = {
+
+const defaultClientPayload = {
   searchString: '',
-  searchTargetFields: ['clientMac', 'ipAddress', 'Username', 'hostname', 'osType'],
-  fields: ['hostname','osType','clientMac','ipAddress','Username', 'venueName',
-    'apName', 'lastUpdateTime', 'authmethod']
+  searchTargetFields: ['macAddress', 'ipAddress', 'username', 'hostname', 'osType'],
+  fields: ['macAddress','ipAddress','username', 'hostname','osType',
+    'venueInformation.name', 'apInformation.name',
+    'lastUpdatedTime', 'networkInformation.authenticationMethod'],
+  page: 1,
+  pageSize: 10000
 }
 
 export function PersonaDevicesTable (props: {
@@ -51,16 +58,16 @@ export function PersonaDevicesTable (props: {
   const [dpskDevices, setDpskDevices] = useState<PersonaDevice[]>([])
   const [clientMac, setClientMac] = useState<Set<string>>(new Set())  // including the MAC auth and DPSK devices
   const addClientMac = (mac: string) => setClientMac(prev => new Set(prev.add(mac)))
-  const isNewConfigFlow = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
+  const { customHeaders } = usePersonaAsyncHeaders()
 
-  const [getClientList] = useLazyGetClientListQuery()
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
+  const { setDeviceCount } = useContext(IdentityDeviceContext)
+  const [getClientList] = useLazyGetClientsQuery()
+
   const { data: dpskDevicesData, ...dpskDevicesResult } = useGetDpskPassphraseDevicesQuery({
     params: {
       tenantId,
       serviceId: dpskPoolId,
-      passphraseId: persona?.dpskGuid,
-      ...dpskNewConfigFlowParams
+      passphraseId: persona?.dpskGuid
     }
   }, { skip: !persona?.dpskGuid || !dpskPoolId })
 
@@ -88,35 +95,37 @@ export function PersonaDevicesTable (props: {
     getClientList({
       params: { tenantId },
       payload: {
-        ...defaultPayload,
-        filters: { clientMac: [...clientMac] }
+        ...defaultClientPayload,
+        filters: { macAddress: [...clientMac] }
       }
     })
       .then(result => {
         if (!result.data?.data) return
         setMacDevices(aggregateMacAuthDevices(macDevices, result.data.data))
         setDpskDevices(aggregateDpskDevices(dpskDevices, result.data.data))
+        setDeviceCount(dpskDevices.length + macDevices.length)
       })
   }, [clientMac])
 
-  const aggregateDpskDevices = (devices: PersonaDevice[], clientList: ClientList[]) => {
+  const aggregateDpskDevices = (devices: PersonaDevice[], clientList: ClientInfo[]) => {
     return devices.map(device => {
       // PersonaMAC format: AB-AB-AB-AB-AB-AB
       // ClientMAC format: ab:ab:ab:ab:ab:ab
       const deviceMac = toClientMacFormat(device.macAddress)
       const client = clientList
-        .find(client => client.clientMac.toUpperCase() === deviceMac.toUpperCase())
+        .find(client => client.macAddress.toUpperCase() === deviceMac.toUpperCase())
       // if UE connected
       //  via MAC auth, the authmethod would be: "Standard+Mac"
       //  via DPSK,     the authmethod would be: "Standard+Open"
-      const isMacAuth = client?.authmethod?.toUpperCase()?.includes('MAC')
+      const authmethod = client?.networkInformation?.authenticationMethod
+      const isMacAuth = authmethod?.toUpperCase()?.includes('MAC')
 
       return client && !isMacAuth && device.online
         ? {
           ...device,
           os: client.osType,
           deviceName: client.hostname,
-          lastSeenAt: client.lastUpdateTime
+          lastSeenAt: client.lastUpdatedTime
         }
         : {
           ...device,
@@ -125,7 +134,7 @@ export function PersonaDevicesTable (props: {
     }) ?? []
   }
 
-  const aggregateMacAuthDevices = (devices: PersonaDevice[], clientList: ClientList[]) => {
+  const aggregateMacAuthDevices = (devices: PersonaDevice[], clientList: ClientInfo[]) => {
     // Combine client data and persona devices data
     return devices.map(device => {
       // this device does not register to MAC pool successfully.
@@ -135,18 +144,19 @@ export function PersonaDevicesTable (props: {
       // ClientMAC format: ab:ab:ab:ab:ab:ab
       const deviceMac = toClientMacFormat(device.macAddress)
       const client = clientList
-        .find(client => client.clientMac.toUpperCase() === deviceMac.toUpperCase())
+        .find(client => client.macAddress.toUpperCase() === deviceMac.toUpperCase())
       // if UE connected
       //  via MAC auth, the authmethod would be: "Standard+Mac"
       //  via DPSK,     the authmethod would be: "Standard+Open"
-      const isMacAuth = client?.authmethod?.toUpperCase()?.includes('MAC')
+      const authmethod = client?.networkInformation?.authenticationMethod
+      const isMacAuth = authmethod?.toUpperCase()?.includes('MAC')
 
       return client && isMacAuth
         ? {
           ...device,
           os: client.osType,
           deviceName: client.hostname,
-          lastSeenAt: client.lastUpdateTime
+          lastSeenAt: client.lastUpdatedTime
         }
         : device
     }) ?? []
@@ -158,12 +168,10 @@ export function PersonaDevicesTable (props: {
       .map(device => ({
         personaId: persona?.id ?? '',
         macAddress: device.mac,
-        online: isNewConfigFlow ? device.deviceConnectivity === 'CONNECTED' : device.online,
-        lastSeenAt: isNewConfigFlow
-          ? device.deviceConnectivity === 'CONNECTED'
-            ? device.lastConnectedTime ?? undefined
-            : undefined
-          : moment.utc(device.lastConnected, 'M/D/YYYY, h:mm:ss A').toISOString(),
+        online: device.deviceConnectivity === 'CONNECTED',
+        lastSeenAt: device.deviceConnectivity === 'CONNECTED'
+          ? device.lastConnectedTime ?? undefined
+          : undefined,
         hasDpskRegistered: true
       }))
   }
@@ -180,7 +188,8 @@ export function PersonaDevicesTable (props: {
   const deleteDevices = (devices: PersonaDevice[]) => {
     devices.forEach(device => {
       deletePersonaDevicesMutation({
-        params: { groupId: persona?.groupId, id: persona?.id, macAddress: device.macAddress }
+        params: { groupId: persona?.groupId, id: persona?.id, macAddress: device.macAddress },
+        customHeaders
       }).unwrap()
         .then()
         .catch(error => {
@@ -246,38 +255,42 @@ export function PersonaDevicesTable (props: {
     }
   ]
 
-  const rowActions: TableProps<PersonaDevice>['rowActions'] = [
-    {
-      label: $t({ defaultMessage: 'Delete' }),
-      onClick: (selectedItems, clearSelection) => {
+  const rowActions: TableProps<PersonaDevice>['rowActions'] =
+    hasCrossVenuesPermission({ needGlobalPermission: true })
+      ? [
+        {
+          label: $t({ defaultMessage: 'Delete' }),
+          onClick: (selectedItems, clearSelection) => {
 
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: selectedItems.length > 1 ? 'devices' : '',
-            entityValue: selectedItems.length === 1 ? selectedItems[0].macAddress : undefined,
-            numOfEntities: selectedItems.length
-          },
-          // FIXME: Need to add mac registration list id into this dialog
-          // eslint-disable-next-line max-len
-          content: $t({ defaultMessage: 'It will remove these devices from the MAC Registration list associated with this identity. Are you sure you want to delete them?' }),
-          onOk: () => {
-            deleteDevices(selectedItems)
-            clearSelection()
+            showActionModal({
+              type: 'confirm',
+              customContent: {
+                action: 'DELETE',
+                entityName: selectedItems.length > 1 ? 'devices' : '',
+                entityValue: selectedItems.length === 1 ? selectedItems[0].macAddress : undefined,
+                numOfEntities: selectedItems.length
+              },
+              // FIXME: Need to add mac registration list id into this dialog
+              // eslint-disable-next-line max-len
+              content: $t({ defaultMessage: 'It will remove these devices from the MAC Registration list associated with this identity. Are you sure you want to delete them?' }),
+              onOk: () => {
+                deleteDevices(selectedItems)
+                clearSelection()
+              }
+            })
           }
-        })
-      }
-    }
-  ]
+        }
+      ] : []
 
-  const actions: TableProps<PersonaDevice>['actions'] = [
-    {
-      label: $t({ defaultMessage: 'Add Device' }),
-      onClick: () => {setModelVisible(true)},
-      disabled: disableAddButton
-    }
-  ]
+  const actions: TableProps<PersonaDevice>['actions'] =
+    hasCrossVenuesPermission({ needGlobalPermission: true })
+      ? [{
+        label: $t({ defaultMessage: 'Add Device' }),
+        onClick: () => {
+          setModelVisible(true)
+        },
+        disabled: disableAddButton
+      }] : []
 
   const handleModalCancel = () => {
     setModelVisible(false)
@@ -286,7 +299,8 @@ export function PersonaDevicesTable (props: {
   const handleModalSubmit = (data: Partial<PersonaDeviceItem>[]) => {
     addPersonaDevicesMutation({
       params: { groupId: persona?.groupId, id: persona?.id },
-      payload: data
+      payload: data,
+      customHeaders
     }).unwrap()
       .then(() => handleModalCancel())
       .catch(error => {
@@ -329,19 +343,13 @@ export function PersonaDevicesTable (props: {
         { isLoading: false, isFetching: dpskDevicesResult.isFetching }
       ]}
     >
-      <Subtitle level={4}>
-        {$t(
-          { defaultMessage: 'Devices ({deviceCount})' },
-          { deviceCount: dpskDevices.length + macDevices.length }
-        )}
-      </Subtitle>
       <Table
         rowKey={'macAddress'}
         columns={columns}
         dataSource={macDevices.concat(dpskDevices)}
         rowActions={filterByAccess(rowActions)}
         actions={filterByAccess(actions)}
-        rowSelection={hasAccess() ? {
+        rowSelection={hasCrossVenuesPermission({ needGlobalPermission: true }) ? {
           type: 'checkbox',
           getCheckboxProps: (item) => ({
             // Those devices auth by DPSK can not edit on this page

@@ -2,8 +2,147 @@
 
 exports[`Cascader renders simple list with bands, triggers onApply with multi-select 1`] = `
 <DocumentFragment>
-  <div
-    class="ant-select ant-cascader styledComponents__Cascader-sc-1a2oz4t-2 epNWLK ant-select-focused ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+  .c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.c2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.c0 .ant-select-focused .ant-select-selection-placeholder {
+  color: var(--acx-neutrals-50);
+}
+
+.c0 .ant-select-selection-overflow-item-rest > .ant-select-selection-item {
+  border: none;
+  background: var(--acx-primary-white);
+  min-width: 110px;
+  padding-right: 0px;
+  margin-right: 0px;
+  margin-bottom: 0px;
+}
+
+.c6 {
+  margin-top: 4px;
+  margin-bottom: -4px;
+  background-color: var(--acx-neutrals-10);
+  text-align: right;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  -webkit-align-items: flex-end;
+  -webkit-box-align: flex-end;
+  -ms-flex-align: flex-end;
+  align-items: flex-end;
+  padding: var(--acx-modal-footer-small-padding);
+  gap: var(--acx-modal-footer-small-button-space);
+}
+
+.c3 {
+  margin-top: 4px;
+  border-top: 1px solid var(--acx-neutrals-20);
+  padding: 10px;
+  width: 350px;
+}
+
+.c4 {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c5 .ant-checkbox-wrapper > span:last-child {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c7 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c7 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c7 svg:before {
+  content: 'a';
+}
+
+.c7 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c7.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c7.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c7.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c7.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c7[disabled] svg path,
+.c7.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c7[disabled].ant-btn-link svg path,
+.c7.ant-btn-disabled.ant-btn-link svg path,
+.c7[disabled].ant-btn-default svg path,
+.c7.ant-btn-disabled.ant-btn-default svg path,
+.c7[disabled].ant-btn-primary svg path,
+.c7.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+<div
+    class="ant-select ant-cascader c0 ant-select-focused ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
   >
     <div
       class="ant-select-selector"
@@ -121,11 +260,11 @@ exports[`Cascader renders simple list with bands, triggers onApply with multi-se
                     class="ant-cascader-menu-item-content"
                   >
                     <div
-                      class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                      class="c1"
                       title="SSID 1"
                     >
                       <div
-                        class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                        class="c2"
                       >
                         SSID 1
                       </div>
@@ -149,11 +288,11 @@ exports[`Cascader renders simple list with bands, triggers onApply with multi-se
                     class="ant-cascader-menu-item-content"
                   >
                     <div
-                      class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                      class="c1"
                       title="SSID 2"
                     >
                       <div
-                        class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                        class="c2"
                       >
                         SSID 2
                       </div>
@@ -177,11 +316,11 @@ exports[`Cascader renders simple list with bands, triggers onApply with multi-se
                     class="ant-cascader-menu-item-content"
                   >
                     <div
-                      class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                      class="c1"
                       title="SSID 3"
                     >
                       <div
-                        class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                        class="c2"
                       >
                         SSID 3
                       </div>
@@ -205,11 +344,11 @@ exports[`Cascader renders simple list with bands, triggers onApply with multi-se
                     class="ant-cascader-menu-item-content"
                   >
                     <div
-                      class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                      class="c1"
                       title="SSID 4"
                     >
                       <div
-                        class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                        class="c2"
                       >
                         SSID 4
                       </div>
@@ -219,16 +358,16 @@ exports[`Cascader renders simple list with bands, triggers onApply with multi-se
               </ul>
             </div>
             <div
-              class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-5 gXsA-DA"
+              class="c3"
             >
               <span
-                class="styledComponents__RadioBandLabel-sc-1a2oz4t-6 ACqzq"
+                class="c4"
                 style="margin-right: 10px;"
               >
                 Radio:
               </span>
               <div
-                class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-7 sTxFe"
+                class="ant-checkbox-group c5"
               >
                 <label
                   class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-group-item"
@@ -290,10 +429,10 @@ exports[`Cascader renders simple list with bands, triggers onApply with multi-se
               </div>
             </div>
             <div
-              class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
+              class="c6"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
+                class="ant-btn ant-btn-default ant-btn-sm c7"
                 type="button"
               >
                 <span>
@@ -301,7 +440,7 @@ exports[`Cascader renders simple list with bands, triggers onApply with multi-se
                 </span>
               </button>
               <button
-                class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
+                class="ant-btn ant-btn-primary ant-btn-sm c7"
                 type="button"
               >
                 <span>
@@ -345,8 +484,151 @@ exports[`Cascader renders simple list with bands, triggers onApply with multi-se
 
 exports[`Cascader should render bands disabled, reset default bands and apply 1`] = `
 <DocumentFragment>
-  <div
-    class="ant-select ant-cascader styledComponents__Cascader-sc-1a2oz4t-2 epNWLK ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
+  .c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.c2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.c0 .ant-select-focused .ant-select-selection-placeholder {
+  color: var(--acx-neutrals-50);
+}
+
+.c0 .ant-select-selection-overflow-item-rest > .ant-select-selection-item {
+  border: none;
+  background: var(--acx-primary-white);
+  min-width: 110px;
+  padding-right: 0px;
+  margin-right: 0px;
+  margin-bottom: 0px;
+}
+
+.c7 {
+  margin-top: 4px;
+  margin-bottom: -4px;
+  background-color: var(--acx-neutrals-10);
+  text-align: right;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  -webkit-align-items: flex-end;
+  -webkit-box-align: flex-end;
+  -ms-flex-align: flex-end;
+  align-items: flex-end;
+  padding: var(--acx-modal-footer-small-padding);
+  gap: var(--acx-modal-footer-small-button-space);
+}
+
+.c3 {
+  margin-top: 4px;
+  border-top: 1px solid var(--acx-neutrals-20);
+  padding: 10px;
+  width: 350px;
+}
+
+.c4 {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c5 .ant-checkbox-wrapper > span:last-child {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c6 {
+  margin-bottom: -5px;
+}
+
+.c8 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c8 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c8 svg:before {
+  content: 'a';
+}
+
+.c8 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c8.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c8.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c8.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c8.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c8[disabled] svg path,
+.c8.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c8[disabled].ant-btn-link svg path,
+.c8.ant-btn-disabled.ant-btn-link svg path,
+.c8[disabled].ant-btn-default svg path,
+.c8.ant-btn-disabled.ant-btn-default svg path,
+.c8[disabled].ant-btn-primary svg path,
+.c8.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+<div
+    class="ant-select ant-cascader c0 ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-open ant-select-show-search"
   >
     <div
       class="ant-select-selector"
@@ -490,11 +772,11 @@ exports[`Cascader should render bands disabled, reset default bands and apply 1`
                     class="ant-cascader-menu-item-content"
                   >
                     <div
-                      class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                      class="c1"
                       title="SSID 1"
                     >
                       <div
-                        class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                        class="c2"
                       >
                         SSID 1
                       </div>
@@ -518,11 +800,11 @@ exports[`Cascader should render bands disabled, reset default bands and apply 1`
                     class="ant-cascader-menu-item-content"
                   >
                     <div
-                      class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                      class="c1"
                       title="SSID 2"
                     >
                       <div
-                        class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                        class="c2"
                       >
                         SSID 2
                       </div>
@@ -546,11 +828,11 @@ exports[`Cascader should render bands disabled, reset default bands and apply 1`
                     class="ant-cascader-menu-item-content"
                   >
                     <div
-                      class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                      class="c1"
                       title="SSID 3"
                     >
                       <div
-                        class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                        class="c2"
                       >
                         SSID 3
                       </div>
@@ -574,11 +856,11 @@ exports[`Cascader should render bands disabled, reset default bands and apply 1`
                     class="ant-cascader-menu-item-content"
                   >
                     <div
-                      class="styledComponents__LabelContainer-sc-1a2oz4t-0 chYmtY"
+                      class="c1"
                       title="SSID 4"
                     >
                       <div
-                        class="styledComponents__Label-sc-1a2oz4t-1 cLCbpU"
+                        class="c2"
                       >
                         SSID 4
                       </div>
@@ -588,16 +870,16 @@ exports[`Cascader should render bands disabled, reset default bands and apply 1`
               </ul>
             </div>
             <div
-              class="styledComponents__RadioBandsWrapper-sc-1a2oz4t-5 gXsA-DA"
+              class="c3"
             >
               <span
-                class="styledComponents__RadioBandLabel-sc-1a2oz4t-6 ACqzq"
+                class="c4"
                 style="margin-right: 10px;"
               >
                 Radio:
               </span>
               <div
-                class="ant-checkbox-group styledComponents__CheckboxGroup-sc-1a2oz4t-7 sTxFe"
+                class="ant-checkbox-group c5"
               >
                 <label
                   class="ant-checkbox-wrapper ant-checkbox-wrapper-disabled ant-checkbox-group-item"
@@ -661,15 +943,15 @@ exports[`Cascader should render bands disabled, reset default bands and apply 1`
                 </label>
               </div>
               <svg
-                class="styledComponents__InfoIcon-sc-1a2oz4t-8 fudJRN"
+                class="c6"
                 data-testid="InformationOutlined"
               />
             </div>
             <div
-              class="styledComponents__ButtonDiv-sc-1a2oz4t-3 cuRSsl"
+              class="c7"
             >
               <button
-                class="ant-btn ant-btn-default ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
+                class="ant-btn ant-btn-default ant-btn-sm c8"
                 type="button"
               >
                 <span>
@@ -677,7 +959,7 @@ exports[`Cascader should render bands disabled, reset default bands and apply 1`
                 </span>
               </button>
               <button
-                class="ant-btn ant-btn-primary ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
+                class="ant-btn ant-btn-primary ant-btn-sm c8"
                 type="button"
               >
                 <span>

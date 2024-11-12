@@ -5,6 +5,7 @@ import { useIntl } from 'react-intl'
 import { AP, useApListQuery }                                                           from '@acx-ui/analytics/services'
 import { defaultSort, sortProp ,formattedPath, useAnalyticsFilter, QueryParamsForZone } from '@acx-ui/analytics/utils'
 import { Table, TableProps, Tooltip, useDateRange, Loader, Filter }                     from '@acx-ui/components'
+import { formatter }                                                                    from '@acx-ui/formatter'
 import { TenantLink }                                                                   from '@acx-ui/react-router-dom'
 
 import {  Ul, Chevron, Li } from './styledComponents'
@@ -90,6 +91,16 @@ export function APList ({
       sorter: { compare: sortProp('version', defaultSort) }
     },
     {
+      title: $t({ defaultMessage: 'Traffic (Total)' }),
+      width: 110,
+      dataIndex: 'traffic',
+      key: 'traffic',
+      render: (_, { traffic }) => {
+        return formatter('bytesFormat')(traffic)
+      },
+      sorter: { compare: sortProp('traffic', defaultSort) }
+    },
+    {
       title: $t({ defaultMessage: 'Network' }),
       width: 450,
       dataIndex: 'networkPath',
@@ -111,10 +122,16 @@ export function APList ({
     }
   ]
 
+  const data = results.data?.aps?.map((item: AP, i) => ({
+    ...item,
+    rowId: i+1
+  }))
+
   return <Loader states={[results]}>
     <Table<AP>
+      rowKey='rowId'
       columns={apTablecolumnHeaders}
-      dataSource={(results.data)?.aps as AP[]}
+      dataSource={data as AP[]}
       pagination={pagination}
       settingsId='ap-search-table'
       onFilterChange={updateSearchString}

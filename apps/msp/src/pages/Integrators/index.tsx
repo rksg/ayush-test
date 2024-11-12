@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { SortOrder } from 'antd/lib/table/interface'
 import { useIntl }   from 'react-intl'
@@ -11,11 +11,13 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   AssignEcDrawer,
   ResendInviteModal,
-  ManageAdminsDrawer
+  ManageAdminsDrawer,
+  ManageDelegateAdminDrawer,
+  ManageMspDelegationDrawer
 } from '@acx-ui/msp/components'
 import {
   useDeleteMspEcMutation,
@@ -34,24 +36,10 @@ import {
   AccountType, isDelegationMode
 } from '@acx-ui/utils'
 
+import HspContext from '../../HspContext'
+
 const transformAssignedCustomerCount = (row: MspEc) => {
   return row.assignedMspEcList.length
-}
-
-const defaultPayload = {
-  searchString: '',
-  filters: { tenantType: [AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER] },
-  fields: [
-    'check-all',
-    'id',
-    'name',
-    'tenantType',
-    'mspAdminCount',
-    'mspEcAdminCount',
-    'wifiLicense',
-    'switchLicens'
-  ],
-  searchTargetFields: ['name']
 }
 
 export function Integrators () {
@@ -59,18 +47,46 @@ export function Integrators () {
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const params = useParams()
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
+  const {
+    state
+  } = useContext(HspContext)
+  const { isHsp: isHspSupportEnabled } = state
+
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
+  const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
 
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerEcVisible, setDrawerEcVisible] = useState(false)
   const [tenantId, setTenantId] = useState('')
   const [tenantType, setTenantType] = useState('')
   const { data: userProfile } = useUserProfileContext()
-  const { data: mspLabel } = useGetMspLabelQuery({ params })
-  const { checkDelegateAdmin } = useCheckDelegateAdmin()
+  const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isRbacEnabled })
+  const { checkDelegateAdmin } = useCheckDelegateAdmin(isRbacEnabled)
   const onBoard = mspLabel?.msp_label
+  const ecFilters = isPrimeAdmin || isSupportToMspDashboardAllowed
+    ? { tenantType: [AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER] }
+    : { mspAdmins: [userProfile?.adminId],
+      tenantType: [AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER] }
+
+  const defaultPayload = {
+    searchString: '',
+    filters: ecFilters,
+    fields: [
+      'check-all',
+      'id',
+      'name',
+      'tenantType',
+      'mspAdminCount',
+      'mspEcAdminCount',
+      'wifiLicense',
+      'switchLicens'
+    ],
+    searchTargetFields: ['name']
+  }
 
   const columns: TableProps<MspEc>['columns'] = [
     {
@@ -163,12 +179,14 @@ export function Integrators () {
     const [selTenantId, setSelTenantId] = useState('')
     const navigate = useNavigate()
     const basePath = useTenantLink('/integrators/edit', 'v')
+    const settingsId = 'msp-integrators-table'
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
       defaultPayload,
       search: {
         searchTargetFields: defaultPayload.searchTargetFields as string[]
-      }
+      },
+      pagination: { settingsId }
     })
     const [
       deleteMspEc,
@@ -204,7 +222,7 @@ export function Integrators () {
               entityValue: name,
               confirmationText: $t({ defaultMessage: 'Delete' })
             },
-            onOk: () => deleteMspEc({ params: { mspEcTenantId: id } })
+            onOk: () => deleteMspEc({ params: { mspEcTenantId: id }, enableRbac: isRbacEnabled })
               .then(clearSelection)
           })
         }
@@ -216,7 +234,7 @@ export function Integrators () {
         tableQuery,
         { isLoading: false, isFetching: isDeleteEcUpdating }]}>
         <Table
-          settingsId='msp-integrators-table'
+          settingsId={settingsId}
           columns={columns}
           rowActions={filterByAccess(rowActions)}
           dataSource={tableQuery.data?.data}
@@ -257,12 +275,26 @@ export function Integrators () {
           ]}
       />
       <IntegratorssTable />
-      {drawerAdminVisible && <ManageAdminsDrawer
-        visible={drawerAdminVisible}
-        setVisible={setDrawerAdminVisible}
-        setSelected={() => {}}
-        tenantId={tenantId}
-      />}
+      {drawerAdminVisible && (isAbacToggleEnabled && isRbacPhase2Enabled
+        ? <ManageMspDelegationDrawer
+          visible={drawerAdminVisible}
+          tenantIds={[tenantId]}
+          setVisible={setDrawerAdminVisible}
+          setSelectedUsers={() => {}}
+          setSelectedPrivilegeGroups={() => {}}/>
+        : (isAbacToggleEnabled
+          ? <ManageDelegateAdminDrawer
+            visible={drawerAdminVisible}
+            setVisible={setDrawerAdminVisible}
+            setSelected={() => {}}
+            tenantId={tenantId}
+          />
+          : <ManageAdminsDrawer
+            visible={drawerAdminVisible}
+            setVisible={setDrawerAdminVisible}
+            setSelected={() => {}}
+            tenantId={tenantId}
+          />))}
       {drawerEcVisible && <AssignEcDrawer
         visible={drawerEcVisible}
         setVisible={setDrawerEcVisible}

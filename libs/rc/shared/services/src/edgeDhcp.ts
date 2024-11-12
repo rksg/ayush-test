@@ -6,111 +6,92 @@ import {
   DhcpUeSummaryStats,
   EdgeDhcpSetting,
   EdgeDhcpUrls,
+  EdgeServiceCompatibilitiesResponse,
   onActivityMessageReceived,
   onSocketActivityChanged,
-  PaginationQueryResult,
   TableResult
 } from '@acx-ui/rc/utils'
-import { baseEdgeDhcpApi }                                   from '@acx-ui/store'
-import { RequestPayload }                                    from '@acx-ui/types'
-import { createHttpRequest, ignoreErrorModal, showApiError } from '@acx-ui/utils'
+import { baseEdgeDhcpApi }                 from '@acx-ui/store'
+import { RequestPayload }                  from '@acx-ui/types'
+import { createHttpRequest, showApiError } from '@acx-ui/utils'
 
 import { edgeApi } from './edge'
+
+const versionHeader = {
+  'Content-Type': 'application/vnd.ruckus.v1+json',
+  'Accept': 'application/vnd.ruckus.v1+json'
+}
+
+enum EdgeDhcpActivityEnum {
+  ADD = 'Add Dhcp',
+  UPDATE = 'Update Dhcp',
+  DELETE = 'Delete Dhcp',
+  ACTIVATE = 'Activate Dhcp',
+  DEACTIVATE = 'Deactivate Dhcp',
+  RESTART = 'Restart Dhcp'
+}
 
 export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
   endpoints: (build) => ({
     addEdgeDhcpService: build.mutation<CommonResult, RequestPayload>({
       query: ({ payload }) => {
-        const req = createHttpRequest(EdgeDhcpUrls.addDhcpService)
+        const req = createHttpRequest(EdgeDhcpUrls.addDhcpService, undefined, versionHeader)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'EdgeDhcp', id: 'LIST' }]
     }),
     updateEdgeDhcpService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgeDhcpUrls.updateDhcpService, params)
+        const req = createHttpRequest(EdgeDhcpUrls.updateDhcpService, params, versionHeader)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'EdgeDhcp', id: 'LIST' }, { type: 'EdgeDhcp', id: 'DETAIL' }]
     }),
     patchEdgeDhcpService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgeDhcpUrls.patchDhcpService, params)
+        const req = createHttpRequest(EdgeDhcpUrls.patchDhcpService, params, versionHeader)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
       // If get data before the viewmodel has been written, it will get the wrong data.
       // invalidatesTags: [{ type: 'EdgeDhcp', id: 'LIST' }, { type: 'EdgeDhcp', id: 'DETAIL' }]
     }),
     deleteEdgeDhcpServices: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        if(payload){ //delete multiple rows
-          const req = createHttpRequest(EdgeDhcpUrls.bulkDeleteDhcpServices, params, {
-            ...showApiError
-          })
-          return {
-            ...req,
-            body: payload
-          }
-        }else{ //delete single row
-          const req = createHttpRequest(EdgeDhcpUrls.deleteDhcpService, params, {
-            ...showApiError
-          })
-          return {
-            ...req
-          }
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeDhcpUrls.deleteDhcpService, params, {
+          ...versionHeader,
+          ...showApiError
+        })
+        return {
+          ...req
         }
       },
       invalidatesTags: [{ type: 'EdgeDhcp', id: 'LIST' }]
     }),
     getEdgeDhcpService: build.query<EdgeDhcpSetting, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(EdgeDhcpUrls.getDhcp, params)
+        const req = createHttpRequest(EdgeDhcpUrls.getDhcp, params, versionHeader)
         return {
           ...req
         }
       },
-      providesTags: [{ type: 'EdgeDhcp', id: 'DETAIL' }]
-    }),
-    getEdgeDhcpList: build.query<PaginationQueryResult<EdgeDhcpSetting>, RequestPayload>({
-      query: ({ payload, params }) => {
-        const { page, pageSize } = payload as { page: number, pageSize: number }
-        const req = createHttpRequest(EdgeDhcpUrls.getDhcpList, params)
-        return {
-          ...req,
-          params: { page, pageSize }
-        }
-      },
-      providesTags: [{ type: 'EdgeDhcp', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'Add DHCP',
-            'Update DHCP',
-            'Delete DHCP'
+            EdgeDhcpActivityEnum.UPDATE
           ]
           onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(edgeDhcpApi.util.invalidateTags([{ type: 'EdgeDhcp', id: 'LIST' }]))
+            api.dispatch(edgeDhcpApi.util.invalidateTags([{ type: 'EdgeDhcp', id: 'DETAIL' }]))
           })
         })
-      }
-    }),
-    getDhcpByEdgeId: build.query<EdgeDhcpSetting, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(EdgeDhcpUrls.getDhcpByEdgeId, params, {
-          ...ignoreErrorModal
-        })
-        return {
-          ...req
-        }
       },
       providesTags: [{ type: 'EdgeDhcp', id: 'DETAIL' }]
     }),
@@ -126,7 +107,7 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'Update DHCP'
+            EdgeDhcpActivityEnum.UPDATE
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(edgeDhcpApi.util.invalidateTags([{ type: 'EdgeDhcp', id: 'LIST' }]))
@@ -148,9 +129,11 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'Add DHCP',
-            'Update DHCP',
-            'Delete DHCP'
+            EdgeDhcpActivityEnum.ADD,
+            EdgeDhcpActivityEnum.UPDATE,
+            EdgeDhcpActivityEnum.DELETE,
+            EdgeDhcpActivityEnum.ACTIVATE,
+            EdgeDhcpActivityEnum.DEACTIVATE
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(edgeDhcpApi.util.invalidateTags([{ type: 'EdgeDhcp', id: 'LIST' }]))
@@ -179,6 +162,44 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'EdgeDhcp', id: 'LIST' }]
+    }),
+    restartEdgeDhcpService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeDhcpUrls.restartDhcpService, params, versionHeader)
+        return {
+          ...req,
+          body: JSON.stringify({ action: 'RESTART_NOW' })
+        }
+      },
+      invalidatesTags: [{ type: 'EdgeDhcp', id: 'LIST' }, { type: 'EdgeDhcp', id: 'DETAIL' }]
+    }),
+    activateEdgeDhcpService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeDhcpUrls.activateDhcpService, params, versionHeader)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'EdgeDhcp', id: 'LIST' }, { type: 'EdgeDhcp', id: 'DETAIL' }]
+    }),
+    deactivateEdgeDhcpService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeDhcpUrls.deactivateDhcpService, params, versionHeader)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'EdgeDhcp', id: 'LIST' }, { type: 'EdgeDhcp', id: 'DETAIL' }]
+    }),
+    getDhcpEdgeCompatibilities: build.query<EdgeServiceCompatibilitiesResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeDhcpUrls.getDhcpEdgeCompatibilities, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'EdgeDhcp', id: 'COMPATIBILITY' }]
     })
   })
 })
@@ -189,10 +210,13 @@ export const {
   usePatchEdgeDhcpServiceMutation,
   useDeleteEdgeDhcpServicesMutation,
   useGetEdgeDhcpServiceQuery,
-  useGetEdgeDhcpListQuery,
-  useGetDhcpByEdgeIdQuery,
+  useLazyGetEdgeDhcpServiceQuery,
   useGetDhcpPoolStatsQuery,
   useGetDhcpStatsQuery,
   useGetDhcpHostStatsQuery,
-  useGetDhcpUeSummaryStatsQuery
+  useGetDhcpUeSummaryStatsQuery,
+  useActivateEdgeDhcpServiceMutation,
+  useDeactivateEdgeDhcpServiceMutation,
+  useRestartEdgeDhcpServiceMutation,
+  useGetDhcpEdgeCompatibilitiesQuery
 } = edgeDhcpApi

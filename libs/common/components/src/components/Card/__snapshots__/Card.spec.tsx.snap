@@ -2,8 +2,79 @@
 
 exports[`Card component should render card with grey background 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-13w5wfx-4 cxtoBn"
+  .c0 {
+  height: 100%;
+  width: 100%;
+}
+
+.c0 .ant-card {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  border-radius: 8px;
+  padding: 12px 16px;
+  background-color: var(--acx-neutrals-10);
+}
+
+.c0 .ant-card-head {
+  display: none;
+  padding: 0;
+  border-bottom: none;
+  min-height: 0;
+  margin-bottom: 10px;
+}
+
+.c0 .ant-card-head-title {
+  padding: 0;
+}
+
+.c0 .ant-card-head-title .ant-space .ant-space-item:last-child {
+  line-height: 0;
+}
+
+.c0 .ant-card-head-wrapper {
+  -webkit-align-items: start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: start;
+}
+
+.c0 .ant-card-extra {
+  padding: 0;
+}
+
+.c0 .ant-card-body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  padding: 0;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c1 {
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-headline-4-line-height);
+  color: var(--acx-primary-black);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+}
+
+<div
+    class="c0"
     type="solid-bg"
   >
     <div
@@ -25,7 +96,7 @@ exports[`Card component should render card with grey background 1`] = `
                 class="ant-space-item"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                  class="c1"
                 />
               </div>
             </div>
@@ -51,8 +122,77 @@ exports[`Card component should render card with grey background 1`] = `
 
 exports[`Card component should render card with no border 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-13w5wfx-4 eXKnGb"
+  .c0 {
+  height: 100%;
+  width: 100%;
+}
+
+.c0 .ant-card {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  border-radius: 8px;
+}
+
+.c0 .ant-card-head {
+  display: none;
+  padding: 0;
+  border-bottom: none;
+  min-height: 0;
+  margin-bottom: 10px;
+}
+
+.c0 .ant-card-head-title {
+  padding: 0;
+}
+
+.c0 .ant-card-head-title .ant-space .ant-space-item:last-child {
+  line-height: 0;
+}
+
+.c0 .ant-card-head-wrapper {
+  -webkit-align-items: start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: start;
+}
+
+.c0 .ant-card-extra {
+  padding: 0;
+}
+
+.c0 .ant-card-body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  padding: 0;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c1 {
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-headline-4-line-height);
+  color: var(--acx-primary-black);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+}
+
+<div
+    class="c0"
     type="no-border"
   >
     <div
@@ -74,7 +214,7 @@ exports[`Card component should render card with no border 1`] = `
                 class="ant-space-item"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                  class="c1"
                 />
               </div>
             </div>

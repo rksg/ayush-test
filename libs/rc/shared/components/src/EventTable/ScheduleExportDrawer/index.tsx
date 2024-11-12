@@ -6,7 +6,9 @@ import { useParams }                  from 'react-router-dom'
 import { Drawer, showToast }                                                                           from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
 import { useAddExportSchedulesMutation, useGetExportSchedulesQuery, useUpdateExportSchedulesMutation } from '@acx-ui/rc/services'
+import { EventScheduleFrequency }                                                                      from '@acx-ui/rc/utils'
 
+import { eventTypeMapping }   from '../mapping'
 import { ScheduleExportForm } from '../ScheduleExportForm'
 
 export interface ScheduleExportDrawerProps {
@@ -42,17 +44,16 @@ export const ScheduleExportDrawer = (props: ScheduleExportDrawerProps) => {
           sortField: 'event_datetime',
           context: {
             ...formData?.context,
-            ...(formData?.context?.searchString
-              ? { searchString: [formData?.context?.searchString] }
-              : {})
+            searchString: [formData?.context?.searchString || ''],
+            event_entity_type_all: Object.entries(eventTypeMapping).map(([key]) => key)
           },
-          enable: formData.enable,
+          enable: !!formData.enable,
           reportSchedule: {
-            type: formData?.type,
-            hour: formData?.hour,
-            minute: formData?.minute,
-            dayOfWeek: formData?.day,
-            dayOfMonth: formData?.dayOfMonth
+            type: formData?.type || EventScheduleFrequency.Weekly,
+            hour: formData?.hour || 12,
+            minute: formData?.minute || 0,
+            dayOfWeek: formData?.day || 'SUN',
+            dayOfMonth: formData?.dayOfMonth || 1
           },
           recipients: formData?.recipients || []
         }

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { Col, Row, Form } from 'antd'
 import { Radio }          from 'antd'
 import _                  from 'lodash'
+import { useIntl }        from 'react-intl'
 
 import { Tooltip }                 from '@acx-ui/components'
 import { AFCProps }                from '@acx-ui/rc/utils'
@@ -21,7 +22,7 @@ type ChannelGroup = {
 }
 
 /* eslint-disable max-len */
-const ChannelGroup_320MHz_Manual: ChannelGroup = {
+const ChannelGroup_Indoor_320MHz_Manual: ChannelGroup = {
   '320MHz-1': [
     '1', '5', '9', '13', '17', '21', '25', '29', '33', '37', '41', '45', '49', '53', '57', '61',
     '65', '69', '73', '77', '81', '85', '89', '93', '97', '101', '105', '109', '113', '117', '121', '125',
@@ -33,6 +34,17 @@ const ChannelGroup_320MHz_Manual: ChannelGroup = {
     '161', '165', '169', '173', '177', '181', '185', '189', '193', '197', '201', '205', '209', '213', '217', '221'
   ]
 }
+
+// US Country
+const ChannelGroup_Outdoor_320MHz_Manual: ChannelGroup = {
+  '320MHz-1': [
+    '1', '5', '9', '13', '17', '21', '25', '29', '33', '37', '41', '45', '49', '53', '57', '61'
+  ],
+  '320MHz-2': [
+    '33', '37', '41', '45', '49', '53', '57', '61', '65', '69', '73', '77', '81', '85', '89', '93'
+  ]
+}
+
 /* eslint-enable max-len */
 export function RadioSettingsChannelsManual320Mhz (props: {
   formName: string[],
@@ -41,15 +53,18 @@ export function RadioSettingsChannelsManual320Mhz (props: {
   disabled?: boolean
   handleChanged?: () => void,
   channelMethod?: string,
-  afcProps?: AFCProps
+  afcProps?: AFCProps,
+  indoor?: boolean
 }) {
+  let { disabled = false, handleChanged, afcProps, indoor } = props
 
+  const intl = useIntl()
   const form = Form.useFormInstance()
+  const channelGroup_320MHz_Manual =
+    indoor ? ChannelGroup_Indoor_320MHz_Manual : ChannelGroup_Outdoor_320MHz_Manual
   const [checkedGroup, setCheckGroup] = useState('320MHz-1')
   const [checkedChannel, setCheckedChannel] = useState([] as CheckboxValueType[])
-  const [manualGroupChannelState, setManualGroupChannelState] = useState(ChannelGroup_320MHz_Manual)
-
-  let { disabled = false, handleChanged, afcProps } = props
+  const [manualGroupChannelState, setManualGroupChannelState] = useState(channelGroup_320MHz_Manual)
 
   const handleClickGroupChannels = (event: RadioChangeEvent) => {
     const selected320MhzGroup = event.target.value
@@ -58,7 +73,7 @@ export function RadioSettingsChannelsManual320Mhz (props: {
 
     // If 320MHz-1's channel is selected, and that channel is overlap with 320MHz-2
     // Keep that channel selected, clear state if it's not.
-    if(!_.intersection(ChannelGroup_320MHz_Manual[selected320MhzGroup], checkedChannel)) {
+    if(!_.intersection(channelGroup_320MHz_Manual[selected320MhzGroup], checkedChannel)) {
       form.setFieldValue(props.formName, [])
       setCheckedChannel([])
     }
@@ -103,14 +118,15 @@ export function RadioSettingsChannelsManual320Mhz (props: {
     }
     /* eslint-disable max-len */
     // Available channel initialization
-    const manualChannels = _.clone(ChannelGroup_320MHz_Manual)
+    const manualChannels = _.clone(channelGroup_320MHz_Manual)
     const supportedChannel: string[] = []
     props.channelList.forEach((channel) => { supportedChannel.push(channel.value)})
-    const shouldDisplay320MhzGroup1 = _.intersection(ChannelGroup_320MHz_Manual['320MHz-1'], supportedChannel)
-    const shouldDisplay320MhzGroup2 = _.intersection(ChannelGroup_320MHz_Manual['320MHz-2'], supportedChannel)
+    const shouldDisplay320MhzGroup1 = _.intersection(channelGroup_320MHz_Manual['320MHz-1'], supportedChannel)
+    const shouldDisplay320MhzGroup2 = _.intersection(channelGroup_320MHz_Manual['320MHz-2'], supportedChannel)
 
     _.set(manualChannels, '320MHz-1', shouldDisplay320MhzGroup1)
     _.set(manualChannels, '320MHz-2', shouldDisplay320MhzGroup2)
+
     setManualGroupChannelState(manualChannels)
 
   }, [form, props.formName])
@@ -133,7 +149,7 @@ export function RadioSettingsChannelsManual320Mhz (props: {
                 <Tooltip
                   key={value}
                   // eslint-disable-next-line
-                  title={disabled ? '' : ChannelButtonTextRender(Array.of(Number(value)), checkedChannel.includes(value), afcProps)}
+                  title={disabled ? '' : ChannelButtonTextRender(intl, Array.of(Number(value)), checkedChannel.includes(value), afcProps)}
                 >
                   {value}
                 </Tooltip>,
@@ -159,7 +175,7 @@ export function RadioSettingsChannelsManual320Mhz (props: {
                 <Tooltip
                   key={value}
                   // eslint-disable-next-line
-                  title={disabled ? '' : ChannelButtonTextRender(Array.of(Number(value)), checkedChannel.includes(value), afcProps)}
+                  title={disabled ? '' : ChannelButtonTextRender(intl, Array.of(Number(value)), checkedChannel.includes(value), afcProps)}
                 >
                   {value}
                 </Tooltip>,
@@ -170,8 +186,8 @@ export function RadioSettingsChannelsManual320Mhz (props: {
         </Col>
       </Row>}
     </Radio.Group>
-    <Form.Item name={props.channelBandwidth320MhzGroupFieldName} hidden/>
-    <Form.Item name={props.formName} hidden/>
+    <Form.Item name={props.channelBandwidth320MhzGroupFieldName} hidden children={<></>}/>
+    <Form.Item name={props.formName} hidden children={<></>}/>
   </>
   )
 }

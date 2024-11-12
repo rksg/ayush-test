@@ -3,9 +3,9 @@ import userEvent      from '@testing-library/user-event'
 import { Form }       from 'antd'
 import { rest }       from 'msw'
 
-import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, getUrlForTest, AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
+import { useIsSplitOn }                           from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, AdministrationUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                               from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -44,25 +44,20 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+const mockedGetTimezone = jest.fn().mockResolvedValue({ data: timezoneResult })
 
-describe('Venues Form', () => {
+describe('MigrationSettingForm', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
     mockServer.use(
-      rest.post(
-        getUrlForTest(CommonUrlsInfo.getVenuesList),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(venuelist))
       ),
-      rest.get(
-        getUrlForTest(CommonUrlsInfo.getVenue),
+      rest.get(CommonUrlsInfo.getVenue.url,
         (req, res, ctx) => res(ctx.json(venueResponse))
-      ),
-      rest.get(
-        'https://maps.googleapis.com/maps/api/timezone/*',
-        (req, res, ctx) => res(ctx.json(timezoneResult))
       ),
       rest.get(
         AdministrationUrlsInfo.getPreferences.url,
@@ -104,7 +99,7 @@ describe('Venues Form', () => {
     // fireEvent.click(screen.getByText('Add'))
   })
   it('should call address parser', async () => {
-    const { address } = await addressParser(autocompleteResult)
+    const { address } = await addressParser(autocompleteResult, mockedGetTimezone)
 
     const addressResult = {
       addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA',

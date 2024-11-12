@@ -378,17 +378,6 @@ export const switchRelease = [
   }
 ]
 
-export const switchCurrentVersions = {
-  currentVersions: [
-    '09010e_b392',
-    '09010f_b19'
-  ],
-  currentVersionsAboveTen: [
-    '10010_b176',
-    '10010_rc3'
-  ]
-}
-
 export const switchUpgradeStatusDetails_KittoVenue1 = {
   upgradeStatusDetailsViewList: [
     {
@@ -402,6 +391,7 @@ export const switchUpgradeStatusDetails_KittoVenue1 = {
       switchId: 'd4:c1:9e:15:f7:2d',
       switchName: 'DEV-EZD3317P008',
       status: 'FW_UPD_FAIL',
+      switchStatus: 'FIRMWARE_UPGRADING',
       targetFirmware: '09010f_b19',
       upgradeStatusDetailsViewList: null
     },
@@ -410,6 +400,7 @@ export const switchUpgradeStatusDetails_KittoVenue1 = {
       switchId: 'c0:c5:20:aa:32:55',
       switchName: 'FEK3224R0AA',
       status: 'FW_UPD_COMPLETE',
+      switchStatus: 'ONLINE',
       targetFirmware: '09010h_cd2_b4',
       upgradeStatusDetailsViewList: null
     }

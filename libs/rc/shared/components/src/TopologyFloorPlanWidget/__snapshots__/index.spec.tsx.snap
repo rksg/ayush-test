@@ -2,8 +2,171 @@
 
 exports[`TopologyFloorPlanWidget should render correctly 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+  .c0 {
+  height: 100%;
+  width: 100%;
+}
+
+.c0 .ant-card {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  border-radius: 8px;
+  padding: 12px 16px;
+  border: 1px solid var(--acx-neutrals-20);
+  box-shadow: 0px 2px 4px rgba(51,51,51,0.08);
+}
+
+.c0 .ant-card-head {
+  display: none;
+  padding: 0;
+  border-bottom: none;
+  min-height: 0;
+  margin-bottom: 10px;
+}
+
+.c0 .ant-card-head-title {
+  padding: 0;
+}
+
+.c0 .ant-card-head-title .ant-space .ant-space-item:last-child {
+  line-height: 0;
+}
+
+.c0 .ant-card-head-wrapper {
+  -webkit-align-items: start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: start;
+}
+
+.c0 .ant-card-extra {
+  padding: 0;
+}
+
+.c0 .ant-card-body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  padding: 0;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c1 {
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-headline-4-line-height);
+  color: var(--acx-primary-black);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+}
+
+.c2 .ant-radio-group {
+  border-radius: 20px;
+  background-color: var(--acx-neutrals-20);
+  vertical-align: top;
+  overflow: hidden;
+}
+
+.c2 .ant-radio-button-wrapper {
+  color: var(--acx-primary-black);
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 20px;
+}
+
+.c2 .ant-radio-button-wrapper:not(:first-child)::before {
+  display: none;
+}
+
+.c2 .ant-radio-button-wrapper-checked {
+  color: var(--acx-primary-white);
+  background-color: var(--acx-primary-black);
+}
+
+.c2 .ant-radio-button-wrapper span:nth-child(2) {
+  vertical-align: middle;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c2 .ant-radio-button-wrapper:not(.ant-radio-button-wrapper-checked,.ant-radio-button-wrapper-disabled):hover {
+  background-color: var(--acx-neutrals-30);
+}
+
+.c2 svg {
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.c2 path {
+  stroke: var(--acx-primary-black);
+}
+
+.c2 .ant-radio-button-wrapper-checked path {
+  stroke: var(--acx-primary-white);
+}
+
+.c2 .ant-radio-button-wrapper-checked {
+  cursor: default;
+}
+
+.c2 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
+  color: var(--acx-primary-white);
+}
+
+.c2 .ant-radio-group-small svg {
+  width: var(--acx-body-4-font-size);
+  height: var(--acx-body-4-font-size);
+}
+
+.c2 .ant-radio-group-small .ant-radio-button-wrapper {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  height: 24px;
+}
+
+.c2 .ant-radio-group-small .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 16px;
+}
+
+.c2 .ant-radio-group-large svg {
+  width: var(--acx-body-3-font-size);
+  height: var(--acx-body-3-font-size);
+}
+
+.c2 .ant-radio-group-large .ant-radio-button-wrapper {
+  font-size: var(--acx-body-3-font-size);
+  line-height: var(--acx-body-3-line-height);
+  height: 28px;
+}
+
+.c2 .ant-radio-group-large .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 32px;
+}
+
+<div
+    class="c0"
     type="default"
   >
     <div
@@ -25,7 +188,7 @@ exports[`TopologyFloorPlanWidget should render correctly 1`] = `
                 class="ant-space-item"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                  class="c1"
                 />
               </div>
             </div>
@@ -52,7 +215,7 @@ exports[`TopologyFloorPlanWidget should render correctly 1`] = `
               style="text-align: left;"
             >
               <div
-                class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
+                class="c2"
               >
                 <div
                   class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -126,8 +289,171 @@ exports[`TopologyFloorPlanWidget should render correctly 1`] = `
 
 exports[`TopologyFloorPlanWidget should render floorplan topology widget under AP overview 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+  .c0 {
+  height: 100%;
+  width: 100%;
+}
+
+.c0 .ant-card {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  border-radius: 8px;
+  padding: 12px 16px;
+  border: 1px solid var(--acx-neutrals-20);
+  box-shadow: 0px 2px 4px rgba(51,51,51,0.08);
+}
+
+.c0 .ant-card-head {
+  display: none;
+  padding: 0;
+  border-bottom: none;
+  min-height: 0;
+  margin-bottom: 10px;
+}
+
+.c0 .ant-card-head-title {
+  padding: 0;
+}
+
+.c0 .ant-card-head-title .ant-space .ant-space-item:last-child {
+  line-height: 0;
+}
+
+.c0 .ant-card-head-wrapper {
+  -webkit-align-items: start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: start;
+}
+
+.c0 .ant-card-extra {
+  padding: 0;
+}
+
+.c0 .ant-card-body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  padding: 0;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c1 {
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-headline-4-line-height);
+  color: var(--acx-primary-black);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+}
+
+.c2 .ant-radio-group {
+  border-radius: 20px;
+  background-color: var(--acx-neutrals-20);
+  vertical-align: top;
+  overflow: hidden;
+}
+
+.c2 .ant-radio-button-wrapper {
+  color: var(--acx-primary-black);
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 20px;
+}
+
+.c2 .ant-radio-button-wrapper:not(:first-child)::before {
+  display: none;
+}
+
+.c2 .ant-radio-button-wrapper-checked {
+  color: var(--acx-primary-white);
+  background-color: var(--acx-primary-black);
+}
+
+.c2 .ant-radio-button-wrapper span:nth-child(2) {
+  vertical-align: middle;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c2 .ant-radio-button-wrapper:not(.ant-radio-button-wrapper-checked,.ant-radio-button-wrapper-disabled):hover {
+  background-color: var(--acx-neutrals-30);
+}
+
+.c2 svg {
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.c2 path {
+  stroke: var(--acx-primary-black);
+}
+
+.c2 .ant-radio-button-wrapper-checked path {
+  stroke: var(--acx-primary-white);
+}
+
+.c2 .ant-radio-button-wrapper-checked {
+  cursor: default;
+}
+
+.c2 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
+  color: var(--acx-primary-white);
+}
+
+.c2 .ant-radio-group-small svg {
+  width: var(--acx-body-4-font-size);
+  height: var(--acx-body-4-font-size);
+}
+
+.c2 .ant-radio-group-small .ant-radio-button-wrapper {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  height: 24px;
+}
+
+.c2 .ant-radio-group-small .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 16px;
+}
+
+.c2 .ant-radio-group-large svg {
+  width: var(--acx-body-3-font-size);
+  height: var(--acx-body-3-font-size);
+}
+
+.c2 .ant-radio-group-large .ant-radio-button-wrapper {
+  font-size: var(--acx-body-3-font-size);
+  line-height: var(--acx-body-3-line-height);
+  height: 28px;
+}
+
+.c2 .ant-radio-group-large .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 32px;
+}
+
+<div
+    class="c0"
     type="default"
   >
     <div
@@ -149,7 +475,7 @@ exports[`TopologyFloorPlanWidget should render floorplan topology widget under A
                 class="ant-space-item"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                  class="c1"
                 />
               </div>
             </div>
@@ -176,7 +502,7 @@ exports[`TopologyFloorPlanWidget should render floorplan topology widget under A
               style="text-align: left;"
             >
               <div
-                class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
+                class="c2"
               >
                 <div
                   class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -332,8 +658,171 @@ exports[`TopologyFloorPlanWidget should render floorplan topology widget under A
 
 exports[`TopologyFloorPlanWidget should render floorplan topology widget under Switch overview 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-13w5wfx-4 lhrXqm"
+  .c0 {
+  height: 100%;
+  width: 100%;
+}
+
+.c0 .ant-card {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  border-radius: 8px;
+  padding: 12px 16px;
+  border: 1px solid var(--acx-neutrals-20);
+  box-shadow: 0px 2px 4px rgba(51,51,51,0.08);
+}
+
+.c0 .ant-card-head {
+  display: none;
+  padding: 0;
+  border-bottom: none;
+  min-height: 0;
+  margin-bottom: 10px;
+}
+
+.c0 .ant-card-head-title {
+  padding: 0;
+}
+
+.c0 .ant-card-head-title .ant-space .ant-space-item:last-child {
+  line-height: 0;
+}
+
+.c0 .ant-card-head-wrapper {
+  -webkit-align-items: start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: start;
+}
+
+.c0 .ant-card-extra {
+  padding: 0;
+}
+
+.c0 .ant-card-body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  padding: 0;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c1 {
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-headline-4-line-height);
+  color: var(--acx-primary-black);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+}
+
+.c2 .ant-radio-group {
+  border-radius: 20px;
+  background-color: var(--acx-neutrals-20);
+  vertical-align: top;
+  overflow: hidden;
+}
+
+.c2 .ant-radio-button-wrapper {
+  color: var(--acx-primary-black);
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 20px;
+}
+
+.c2 .ant-radio-button-wrapper:not(:first-child)::before {
+  display: none;
+}
+
+.c2 .ant-radio-button-wrapper-checked {
+  color: var(--acx-primary-white);
+  background-color: var(--acx-primary-black);
+}
+
+.c2 .ant-radio-button-wrapper span:nth-child(2) {
+  vertical-align: middle;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c2 .ant-radio-button-wrapper:not(.ant-radio-button-wrapper-checked,.ant-radio-button-wrapper-disabled):hover {
+  background-color: var(--acx-neutrals-30);
+}
+
+.c2 svg {
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.c2 path {
+  stroke: var(--acx-primary-black);
+}
+
+.c2 .ant-radio-button-wrapper-checked path {
+  stroke: var(--acx-primary-white);
+}
+
+.c2 .ant-radio-button-wrapper-checked {
+  cursor: default;
+}
+
+.c2 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
+  color: var(--acx-primary-white);
+}
+
+.c2 .ant-radio-group-small svg {
+  width: var(--acx-body-4-font-size);
+  height: var(--acx-body-4-font-size);
+}
+
+.c2 .ant-radio-group-small .ant-radio-button-wrapper {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  height: 24px;
+}
+
+.c2 .ant-radio-group-small .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 16px;
+}
+
+.c2 .ant-radio-group-large svg {
+  width: var(--acx-body-3-font-size);
+  height: var(--acx-body-3-font-size);
+}
+
+.c2 .ant-radio-group-large .ant-radio-button-wrapper {
+  font-size: var(--acx-body-3-font-size);
+  line-height: var(--acx-body-3-line-height);
+  height: 28px;
+}
+
+.c2 .ant-radio-group-large .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 32px;
+}
+
+<div
+    class="c0"
     type="default"
   >
     <div
@@ -355,7 +844,7 @@ exports[`TopologyFloorPlanWidget should render floorplan topology widget under S
                 class="ant-space-item"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                  class="c1"
                 />
               </div>
             </div>
@@ -382,7 +871,7 @@ exports[`TopologyFloorPlanWidget should render floorplan topology widget under S
               style="text-align: left;"
             >
               <div
-                class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
+                class="c2"
               >
                 <div
                   class="ant-radio-group ant-radio-group-outline ant-radio-group-small"

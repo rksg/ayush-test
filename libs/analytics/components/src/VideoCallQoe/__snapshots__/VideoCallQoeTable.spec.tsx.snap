@@ -2,15 +2,321 @@
 
 exports[`VideoCallQoe Table should render no data when no data is returned 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  .c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c2 {
+  height: 36px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  z-index: 4;
+  background-color: var(--acx-primary-white);
+}
+
+.c3 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 12px;
+}
+
+.c1 .ant-pro-table {
+  --acx-table-cell-horizontal-space: 8px;
+}
+
+.c1 .ant-pro-table .ant-pro-card .ant-pro-card-body {
+  padding: 0px;
+}
+
+.c1 .ant-pro-table .ant-table .parent-row-data,
+.c1 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-row-hover,
+.c1 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-fix-right,
+.c1 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-fix-left,
+.c1 .ant-pro-table .ant-table .parent-row-data .ant-table-column-sort {
+  background-color: var(--acx-neutrals-20) !important;
+  overflow: visible !important;
+}
+
+.c1 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-with-append .ant-table-row-expand-icon {
+  display: none;
+}
+
+.c1 .ant-pro-table .ant-table .ant-table-cell-with-append .indent-level-2 {
+  padding-left: 10px !important;
+}
+
+.c1 .ant-pro-table .ant-table-cell-fix-left {
+  border-bottom: 1px solid var(--acx-neutrals-30) !important;
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr:first-child > th {
+  padding-top: 12px;
+  font-size: var(--acx-subtitle-4-font-size);
+  line-height: var(--acx-subtitle-4-line-height);
+  font-weight: var(--acx-subtitle-4-font-weight);
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr:not(:first-child) > th {
+  padding-top: 6px;
+  font-size: var(--acx-subtitle-5-font-size);
+  line-height: var(--acx-subtitle-5-line-height);
+  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr:last-child > th,
+.c1 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--acx-neutrals-30);
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th {
+  border-bottom: 0;
+  padding: 0px var(--acx-table-cell-horizontal-space);
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+  width: 0px;
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: left;
+  -webkit-justify-content: left;
+  -ms-flex-pack: left;
+  justify-content: left;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-title {
+  -webkit-flex: unset;
+  -ms-flex: unset;
+  flex: unset;
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter {
+  --icon-size: 11px;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  margin: 0;
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-up,
+.c1 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-down {
+  visibility: hidden;
+  width: 0;
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-up.active,
+.c1 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-down.active {
+  visibility: visible;
+  width: unset;
+  margin-left: calc(var(--icon-size) / 2);
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-up {
+  margin-bottom: calc(var(--icon-size) / -2);
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-down {
+  margin-top: calc(var(--icon-size) / -2);
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter .anticon svg {
+  fill: var(--acx-primary-black);
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th[style*="text-align: center"] .ant-table-column-sorters {
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th[style*="text-align: right"] .ant-table-column-sorters {
+  -webkit-box-pack: right;
+  -webkit-justify-content: right;
+  -ms-flex-pack: right;
+  justify-content: right;
+}
+
+.c1 .ant-pro-table .ant-table-tbody > tr > td {
+  border-bottom: 1px solid var(--acx-neutrals-30);
+  padding: 14px var(--acx-table-cell-horizontal-space);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c1 .ant-pro-table .ant-table-tbody > tr > td a {
+  font-size: unset;
+}
+
+.c1 .ant-pro-table .ant-table-tbody > tr > td .ant-badge.ant-badge-status:not(.acx-chart-tooltip) {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: left;
+  -webkit-justify-content: left;
+  -ms-flex-pack: left;
+  justify-content: left;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c1 .ant-pro-table .ant-table-tbody > tr > td .ant-badge.ant-badge-status:not(.acx-chart-tooltip) .ant-badge-status-dot {
+  -webkit-flex-shrink: 0;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr:last-child > th:not(.ant-table-selection-column):not(.ant-table-cell-fix-right):hover,.c1 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan]:not(.ant-table-selection-column):not(.ant-table-cell-fix-right):hover {
+  background: var(--acx-accents-orange-10);
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th {
+  -webkit-user-select: none;
+}
+
+.c1 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis a span.ant-typography {
+  color: inherit;
+  -webkit-text-decoration: inherit;
+  text-decoration: inherit;
+}
+
+.c1 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis .ant-btn.ant-btn-link:not(.ant-btn-icon-only) {
+  width: 100%;
+  max-width: -webkit-fit-content;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+}
+
+.c1 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis .ant-btn.ant-btn-link:not(.ant-btn-icon-only) span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.c1 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis .ant-badge-status .ant-badge-status-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.c1 .ant-pro-table .ant-table-footer {
+  background: transparent;
+  padding: 8px 0;
+}
+
+.c1 .ant-pro-table .ant-pro-card-body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c1 .ant-pro-table-list-toolbar {
+  -webkit-order: 2;
+  -ms-flex-order: 2;
+  order: 2;
+  height: 45px;
+  pointer-events: none;
+  z-index: 4;
+  overflow: visible;
+}
+
+.c1 .ant-pro-table-list-toolbar-container {
+  padding: 0;
+  position: relative;
+  height: 100%;
+}
+
+.c1 .ant-pro-table-list-toolbar-setting-item {
+  pointer-events: all;
+}
+
+.c1 .ant-pro-table-list-toolbar-setting-item svg {
+  margin-top: 3px;
+}
+
+.c1 .ant-pro-table-alert {
+  -webkit-order: 1;
+  -ms-flex-order: 1;
+  order: 1;
+  margin: 0px;
+  z-index: 4;
+  overflow: visible;
+}
+
+.c1 .ant-pro-table-alert .ant-alert {
+  height: 36px;
+  background-color: var(--acx-accents-blue-10);
+  border: var(--acx-accents-blue-10);
+  padding: 10px 16px;
+}
+
+.c1 .ant-pro-table-alert .ant-alert .ant-pro-table-alert-info {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c1 .ant-pro-table .ant-table-wrapper {
+  -webkit-order: 3;
+  -ms-flex-order: 3;
+  order: 3;
+  margin-top: -45px;
+}
+
+.c1 .ant-pro-table .ant-pagination {
+  position: relative;
+  z-index: 4;
+  background-color: var(--acx-primary-white);
+  padding: 16px 0;
+  margin: unset;
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 ejDZLO"
+      class="c1"
       style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 1;"
     >
       <div
-        class="styledComponents__Header-sc-1abm7iv-10 chCEgN"
+        class="c2"
       >
         <div>
           <div
@@ -21,7 +327,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
               style="margin-right: 12px;"
             >
               <span
-                class="ant-input-affix-wrapper styledComponents__SearchInput-sc-1abm7iv-3"
+                class="ant-input-affix-wrapper "
                 style="width: 292px;"
               >
                 <span
@@ -74,7 +380,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
               class="ant-space-item"
             >
               <div
-                class="ant-select styledComponents__FilterSelect-sc-1abm7iv-4 ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                class="ant-select ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
                 data-testid="options-selector"
                 style="width: 200px;"
               >
@@ -154,7 +460,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
           </div>
         </div>
         <div
-          class="styledComponents__HeaderComps-sc-1abm7iv-11 gashjk"
+          class="c3"
         />
       </div>
       <div
@@ -226,10 +532,10 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                                 class="ant-table-cell ant-table-selection-column react-resizable"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class=""
                                 />
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  class=""
                                 />
                               </th>
                               <th
@@ -237,7 +543,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class=""
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -295,7 +601,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  class=""
                                 />
                               </th>
                               <th
@@ -305,7 +611,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class=""
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -363,7 +669,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  class=""
                                 />
                               </th>
                               <th
@@ -372,7 +678,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class=""
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -430,7 +736,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  class=""
                                 />
                               </th>
                               <th
@@ -439,7 +745,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class=""
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -497,7 +803,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  class=""
                                 />
                               </th>
                               <th
@@ -506,7 +812,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class=""
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -564,7 +870,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  class=""
                                 />
                               </th>
                               <th
@@ -573,7 +879,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class=""
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -631,7 +937,7 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  class=""
                                 />
                               </th>
                               <th
@@ -639,10 +945,10 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                                 style="position: sticky; right: 0px;"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class=""
                                 />
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  class=""
                                 />
                               </th>
                             </tr>
@@ -759,11 +1065,406 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
 
 exports[`VideoCallQoe Table should render table 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  .c4 > span {
+  -webkit-text-decoration: dotted underline;
+  text-decoration: dotted underline;
+}
+
+.c4 > span:after {
+  content: '';
+  display: block;
+}
+
+.c3 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c3 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c3 svg:before {
+  content: 'a';
+}
+
+.c3 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c3.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c3.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c3.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c3.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c3[disabled] svg path,
+.c3.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c3[disabled].ant-btn-link svg path,
+.c3.ant-btn-disabled.ant-btn-link svg path,
+.c3[disabled].ant-btn-default svg path,
+.c3.ant-btn-disabled.ant-btn-default svg path,
+.c3[disabled].ant-btn-primary svg path,
+.c3.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+.c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c2 {
+  border: none;
+  box-shadow: none;
+  color: var(--acx-accents-blue-50);
+  padding: 0;
+}
+
+.c2.c2.c2.c2.ant-btn-icon-only {
+  width: 16px;
+  height: 16px;
+  min-width: unset;
+}
+
+.c1 .ant-pro-table {
+  --acx-table-cell-horizontal-space: 8px;
+}
+
+.c1 .ant-pro-table .ant-pro-card .ant-pro-card-body {
+  padding: 0px;
+}
+
+.c1 .ant-pro-table .ant-table .parent-row-data,
+.c1 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-row-hover,
+.c1 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-fix-right,
+.c1 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-fix-left,
+.c1 .ant-pro-table .ant-table .parent-row-data .ant-table-column-sort {
+  background-color: var(--acx-neutrals-20) !important;
+  overflow: visible !important;
+}
+
+.c1 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-with-append .ant-table-row-expand-icon {
+  display: none;
+}
+
+.c1 .ant-pro-table .ant-table .ant-table-cell-with-append .indent-level-2 {
+  padding-left: 10px !important;
+}
+
+.c1 .ant-pro-table .ant-table-cell-fix-left {
+  border-bottom: 1px solid var(--acx-neutrals-30) !important;
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr:first-child > th {
+  padding-top: 12px;
+  font-size: var(--acx-subtitle-4-font-size);
+  line-height: var(--acx-subtitle-4-line-height);
+  font-weight: var(--acx-subtitle-4-font-weight);
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr:not(:first-child) > th {
+  padding-top: 6px;
+  font-size: var(--acx-subtitle-5-font-size);
+  line-height: var(--acx-subtitle-5-line-height);
+  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr:last-child > th,
+.c1 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--acx-neutrals-30);
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th {
+  border-bottom: 0;
+  padding: 0px var(--acx-table-cell-horizontal-space);
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+  width: 0px;
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: left;
+  -webkit-justify-content: left;
+  -ms-flex-pack: left;
+  justify-content: left;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-title {
+  -webkit-flex: unset;
+  -ms-flex: unset;
+  flex: unset;
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter {
+  --icon-size: 11px;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  margin: 0;
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-up,
+.c1 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-down {
+  visibility: hidden;
+  width: 0;
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-up.active,
+.c1 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-down.active {
+  visibility: visible;
+  width: unset;
+  margin-left: calc(var(--icon-size) / 2);
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-up {
+  margin-bottom: calc(var(--icon-size) / -2);
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-down {
+  margin-top: calc(var(--icon-size) / -2);
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter .anticon svg {
+  fill: var(--acx-primary-black);
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th[style*="text-align: center"] .ant-table-column-sorters {
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th[style*="text-align: right"] .ant-table-column-sorters {
+  -webkit-box-pack: right;
+  -webkit-justify-content: right;
+  -ms-flex-pack: right;
+  justify-content: right;
+}
+
+.c1 .ant-pro-table .ant-table-tbody > tr > td {
+  border-bottom: 1px solid var(--acx-neutrals-30);
+  padding: 14px var(--acx-table-cell-horizontal-space);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c1 .ant-pro-table .ant-table-tbody > tr > td a {
+  font-size: unset;
+}
+
+.c1 .ant-pro-table .ant-table-tbody > tr > td .ant-badge.ant-badge-status:not(.acx-chart-tooltip) {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: left;
+  -webkit-justify-content: left;
+  -ms-flex-pack: left;
+  justify-content: left;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c1 .ant-pro-table .ant-table-tbody > tr > td .ant-badge.ant-badge-status:not(.acx-chart-tooltip) .ant-badge-status-dot {
+  -webkit-flex-shrink: 0;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr:last-child > th:not(.ant-table-selection-column):not(.ant-table-cell-fix-right):hover,.c1 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan]:not(.ant-table-selection-column):not(.ant-table-cell-fix-right):hover {
+  background: var(--acx-accents-orange-10);
+}
+
+.c1 .ant-pro-table .ant-table-thead > tr > th {
+  -webkit-user-select: none;
+}
+
+.c1 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis a span.ant-typography {
+  color: inherit;
+  -webkit-text-decoration: inherit;
+  text-decoration: inherit;
+}
+
+.c1 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis .ant-btn.ant-btn-link:not(.ant-btn-icon-only) {
+  width: 100%;
+  max-width: -webkit-fit-content;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+}
+
+.c1 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis .ant-btn.ant-btn-link:not(.ant-btn-icon-only) span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.c1 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis .ant-badge-status .ant-badge-status-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.c1 .ant-pro-table .ant-table-footer {
+  background: transparent;
+  padding: 8px 0;
+}
+
+.c1 .ant-pro-table .ant-pro-card-body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c1 .ant-pro-table-list-toolbar {
+  -webkit-order: 2;
+  -ms-flex-order: 2;
+  order: 2;
+  height: 45px;
+  pointer-events: none;
+  z-index: 4;
+  overflow: visible;
+}
+
+.c1 .ant-pro-table-list-toolbar-container {
+  padding: 0;
+  position: relative;
+  height: 100%;
+}
+
+.c1 .ant-pro-table-list-toolbar-setting-item {
+  pointer-events: all;
+}
+
+.c1 .ant-pro-table-list-toolbar-setting-item svg {
+  margin-top: 3px;
+}
+
+.c1 .ant-pro-table-alert {
+  -webkit-order: 1;
+  -ms-flex-order: 1;
+  order: 1;
+  margin: 0px;
+  z-index: 4;
+  overflow: visible;
+}
+
+.c1 .ant-pro-table-alert .ant-alert {
+  height: 36px;
+  background-color: var(--acx-accents-blue-10);
+  border: var(--acx-accents-blue-10);
+  padding: 10px 16px;
+}
+
+.c1 .ant-pro-table-alert .ant-alert .ant-pro-table-alert-info {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c1 .ant-pro-table .ant-table-wrapper {
+  -webkit-order: 3;
+  -ms-flex-order: 3;
+  order: 3;
+  margin-top: -45px;
+}
+
+.c1 .ant-pro-table .ant-pagination {
+  position: relative;
+  z-index: 4;
+  background-color: var(--acx-primary-white);
+  padding: 16px 0;
+  margin: unset;
+}
+
+.c6 {
+  display: inline-block;
+  border-radius: 10px;
+  padding: 3px 8px;
+  background-color: var(--acx-semantics-red-50);
+  line-height: var(--acx-subtitle-6-line-height);
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-6-font-size);
+  color: var(--acx-primary-white);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+}
+
+.c7 {
+  display: inline-block;
+  border-radius: 10px;
+  padding: 3px 8px;
+  background-color: var(--acx-semantics-green-50);
+  line-height: var(--acx-subtitle-6-line-height);
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-6-font-size);
+  color: var(--acx-primary-white);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+}
+
+.c5 {
+  color: var(--acx-semantics-red-50);
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
   >
     <div
-      class="styledComponents__Wrapper-sc-1abm7iv-12 ejDZLO"
+      class="c1"
       style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 1;"
     >
       <div
@@ -821,7 +1522,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 class="ant-space-item"
                               >
                                 <button
-                                  class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__CloseButton-sc-1abm7iv-5 kxlBHG"
+                                  class="ant-btn ant-btn-default ant-btn-icon-only c2"
                                   data-id="table-clear-btn"
                                   title="Clear selection"
                                   type="button"
@@ -843,7 +1544,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 class="ant-space-item"
                               >
                                 <button
-                                  class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
+                                  class="ant-btn ant-btn-link ant-btn-sm c3"
                                   type="button"
                                 >
                                   <span>
@@ -916,10 +1617,10 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 class="ant-table-cell ant-table-selection-column react-resizable"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class=""
                                 />
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  class=""
                                 />
                               </th>
                               <th
@@ -927,7 +1628,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class=""
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -985,7 +1686,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  class=""
                                 />
                               </th>
                               <th
@@ -995,7 +1696,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class=""
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -1053,7 +1754,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  class=""
                                 />
                               </th>
                               <th
@@ -1062,7 +1763,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class=""
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -1120,7 +1821,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  class=""
                                 />
                               </th>
                               <th
@@ -1129,7 +1830,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class=""
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -1187,7 +1888,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  class=""
                                 />
                               </th>
                               <th
@@ -1196,7 +1897,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class=""
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -1254,7 +1955,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  class=""
                                 />
                               </th>
                               <th
@@ -1263,7 +1964,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 tabindex="0"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class=""
                                 />
                                 <div
                                   class="ant-table-column-sorters"
@@ -1321,7 +2022,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                   </span>
                                 </div>
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  class=""
                                 />
                               </th>
                               <th
@@ -1329,10 +2030,10 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 style="position: sticky; right: 0px;"
                               >
                                 <div
-                                  class="styledComponents__ResizableHover-sc-1abm7iv-8"
+                                  class=""
                                 />
                                 <div
-                                  class="styledComponents__ResizableHandle-sc-1abm7iv-9"
+                                  class=""
                                 />
                               </th>
                             </tr>
@@ -1474,9 +2175,13 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 style="text-align: center;"
                               >
                                 <span
-                                  class="sc-ftvSup cYsZHL"
+                                  class="c4"
                                 >
-                                  Invalid
+                                  <span
+                                    class="c5"
+                                  >
+                                    Invalid
+                                  </span>
                                 </span>
                               </td>
                               <td
@@ -1547,9 +2252,13 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 style="text-align: center;"
                               >
                                 <span
-                                  class="sc-ftvSup cYsZHL"
+                                  class="c4"
                                 >
-                                  Invalid
+                                  <span
+                                    class="c5"
+                                  >
+                                    Invalid
+                                  </span>
                                 </span>
                               </td>
                               <td
@@ -1631,7 +2340,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 style="text-align: center;"
                               >
                                 <span
-                                  class="styledComponents__Pill-sc-j61ge1-0 igIonA"
+                                  class="c6"
                                   type="negative"
                                 >
                                   Bad
@@ -1709,7 +2418,7 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 style="text-align: center;"
                               >
                                 <span
-                                  class="styledComponents__Pill-sc-j61ge1-0 iWtJKw"
+                                  class="c7"
                                   type="positive"
                                 >
                                   Good

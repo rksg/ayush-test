@@ -4,9 +4,10 @@ import { useForm } from 'antd/lib/form/Form'
 import { Key }     from 'antd/lib/table/interface'
 import { useIntl } from 'react-intl'
 
-import { Loader, Modal, Table, TableProps } from '@acx-ui/components'
-import { useGetAdminListQuery }             from '@acx-ui/rc/services'
-import { useParams }                        from '@acx-ui/react-router-dom'
+import { Loader, Modal, Table, TableProps }  from '@acx-ui/components'
+import { useGetNotificationRecipientsQuery } from '@acx-ui/rc/services'
+import { NotificationEndpointType }          from '@acx-ui/rc/utils'
+import { useParams }                         from '@acx-ui/react-router-dom'
 
 
 export interface EmailRecipientDialogProps {
@@ -28,18 +29,35 @@ export function EmailRecipientDialog (props: EmailRecipientDialogProps) {
   const [form] = useForm()
   const { visible, onCancel, onSubmit, currentEmailList } = props
   const [selectedRecipientsList, setSelectedRecipientsList] = useState<EmailRecipientType[]>([])
+  const [emailRecipientsList, setEmailRecipientsList] = useState<EmailRecipientType[]>([])
 
-  const { data: adminList, isFetching: fetchingAdmins } =
-    useGetAdminListQuery({ params }, { skip: !visible })
+  const{ data: notificationRecipientsList, isFetching: fetchingAdmins } =
+    useGetNotificationRecipientsQuery({ params }, { skip: !visible })
 
   useEffect(() => {
 
-    if (adminList?.length && currentEmailList && currentEmailList.length){
-      const existingEmails = adminList.filter(admin => currentEmailList.includes(admin.email) )
-      setSelectedRecipientsList(existingEmails)
+    if (notificationRecipientsList?.length){
+      let _emailRecipientsList: EmailRecipientType[] = []
+      notificationRecipientsList?.map(recipient => {
+        const recipientDetails = recipient.endpoints
+          .filter(endpoint => endpoint.type === NotificationEndpointType.email)
+          .map(record => { return {
+            id: recipient?.id,
+            name: recipient?.description,
+            email: record.destination
+          }
+          })
+        _emailRecipientsList.push(...recipientDetails)
+      })
+      setEmailRecipientsList(_emailRecipientsList)
+      if (currentEmailList && currentEmailList.length) {
+        const existingEmails =
+        _emailRecipientsList.filter(admin => currentEmailList.includes(admin.email))
+        setSelectedRecipientsList(existingEmails)
+      }
     }
 
-  }, [adminList, currentEmailList])
+  }, [currentEmailList, notificationRecipientsList])
 
 
   const columns:TableProps<EmailRecipientType>['columns'] = [
@@ -67,8 +85,9 @@ export function EmailRecipientDialog (props: EmailRecipientDialogProps) {
     onSubmit(emailRecipients)
   }
 
-  const handleRowSelectChange = (selectedRowKeys: Key[], selectedRows: EmailRecipientType[]) => {
-    setSelectedRecipientsList(selectedRows)
+  const handleRowSelectChange = (selectedRowKeys: Key[]) => {
+    const _selectedRows = emailRecipientsList.filter(record => selectedRowKeys.includes(record.id))
+    setSelectedRecipientsList(_selectedRows)
   }
 
   return (
@@ -90,16 +109,17 @@ export function EmailRecipientDialog (props: EmailRecipientDialogProps) {
       }]}>
         <Table
           columns={columns}
-          dataSource={adminList}
-          rowKey='email'
+          dataSource={emailRecipientsList}
+          rowKey='id'
           rowSelection={{
-            type: 'checkbox',
             onChange: handleRowSelectChange,
+            type: 'checkbox',
             getCheckboxProps: (record: EmailRecipientType) => ({
+              id: record.id,
               name: record.name,
               email: record.email
             }),
-            selectedRowKeys: currentEmailList
+            selectedRowKeys: selectedRecipientsList.map(record => record.id)
           }}
         />
       </Loader>

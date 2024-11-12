@@ -245,6 +245,14 @@ export const CcdMsg: Record<number, MessageDescriptor> = {
     defaultMessage: 'ID Authentication Reject',
     description: 'CCD Message ID 66'
   }),
+  83: defineMessage({
+    defaultMessage: '802.11 ANQP Request',
+    description: 'CCD Message ID 83'
+  }),
+  84: defineMessage({
+    defaultMessage: '802.11 ANQP Response',
+    description: 'CCD Message ID 84'
+  }),
   91: defineMessage({
     defaultMessage: 'Message Redirect',
     description: 'CCD Message ID 91'

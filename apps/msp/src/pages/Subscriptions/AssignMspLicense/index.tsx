@@ -12,7 +12,8 @@ import { useIntl } from 'react-intl'
 import {
   PageHeader,
   StepsForm,
-  Subtitle
+  Subtitle,
+  showActionModal
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
@@ -21,7 +22,8 @@ import {
   useMspAssignmentHistoryQuery,
   useAddMspAssignmentMutation,
   useUpdateMspAssignmentMutation,
-  useDeleteMspAssignmentMutation
+  useDeleteMspAssignmentMutation,
+  useMspRbacAssignmentHistoryQuery
 } from '@acx-ui/msp/services'
 import {
   dateDisplayText,
@@ -30,7 +32,10 @@ import {
   MspAssignmentSummary
 } from '@acx-ui/msp/utils'
 import {
-  EntitlementDeviceType, EntitlementUtil
+  CatchErrorDetails,
+  EntitlementDeviceType,
+  EntitlementUtil,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -43,6 +48,7 @@ import * as UI from '../styledComponent'
 interface SubscriptionAssignmentForm {
   startDate: string
   serviceExpirationDate: string
+  trialServiceExpirationDate: string
   wifiLicenses?: number
   switchLicenses?: number
   apswLicenses?: number
@@ -50,10 +56,15 @@ interface SubscriptionAssignmentForm {
 }
 
 interface MspAssignment {
-  ownAssignments: boolean
-  startDate: string
-  endDate: string
-  assignments: Assignment[]
+  ownAssignments?: boolean
+  startDate?: string
+  endDate?: string
+  assignments?: Assignment[]
+  effectiveDate?: string
+  expirationDate?: string
+  quantity?: number
+  licenseType?: string
+  trial?: boolean
 }
 
 interface Assignment {
@@ -62,12 +73,46 @@ interface Assignment {
   useTemporaryMspEntitlement?: boolean
 }
 
+interface CatchErrorResponse<T> {
+  data: {
+    error: T,
+    requestId: string
+  },
+  status: number
+}
+
+export const entitlementAssignmentPayload = {
+  fields: [
+    'id',
+    'licenseType',
+    'quantity',
+    'effectiveDate',
+    'expirationDate',
+    'isTrial',
+    'createdDate',
+    'revokedDate',
+    'status'
+  ],
+  page: 1,
+  pageSize: 20,
+  sortField: 'expirationDate',
+  sortOrder: 'DESC',
+  filters: {
+    createdBy: [],
+    licenseType: [],
+    status: [
+      'VALID'
+    ]
+  }
+}
+
 export function AssignMspLicense () {
   const intl = useIntl()
 
   const navigate = useNavigate()
   const linkToSubscriptions = useTenantLink('/msplicenses', 'v')
   const { tenantId } = useParams()
+  const params = useParams()
   const [form] = Form.useForm()
 
   const [availableWifiLicense, setAvailableWifiLicense] = useState(0)
@@ -76,14 +121,26 @@ export function AssignMspLicense () {
   const [availableApswTrialLicense, setAvailableApswTrialLicense] = useState(0)
   const [assignedLicense, setAssignedLicense] = useState([] as MspAssignmentHistory[])
   const [customDate, setCustomeDate] = useState(true)
+  const [customTrialDate, setCustomeTrialDate] = useState(true)
   const [subscriptionStartDate, setSubscriptionStartDate] = useState<moment.Moment>()
   // const [subscriptionEndDate, setSubscriptionEndDate] = useState<moment.Moment>()
 
   const { Option } = Select
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
+  const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+  const isSeparateServicedateEnabled =
+    useIsSplitOn(Features.ENTITLEMENT_SEPARATE_SERVICEDATE_TOGGLE)
 
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
-  const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
+  const { data: assignment } =
+    useMspAssignmentHistoryQuery({ params: params }, { skip: isEntitlementRbacApiEnabled })
+  const { data: rbacAssignment } = useTableQuery({
+    useQuery: useMspRbacAssignmentHistoryQuery,
+    defaultPayload: entitlementAssignmentPayload,
+    option: { skip: !isEntitlementRbacApiEnabled }
+  })
+  const licenseAssignment = isEntitlementRbacApiEnabled ? rbacAssignment?.data : assignment
   const [addMspSubscription] = useAddMspAssignmentMutation()
   const [updateMspSubscription] = useUpdateMspAssignmentMutation()
   const [deleteMspSubscription] = useDeleteMspAssignmentMutation()
@@ -95,8 +152,10 @@ export function AssignMspLicense () {
   }
 
   const getDeviceAssignmentId = (deviceType: string, isTrial: boolean) => {
-    const license =
-      assignedLicense.filter(en => en.deviceType === deviceType && en.status === 'VALID' &&
+    const license = isEntitlementRbacApiEnabled
+      ? assignedLicense.filter(en => en.licenseType === deviceType && en.status === 'VALID' &&
+        en.isTrial === isTrial)
+      : assignedLicense.filter(en => en.deviceType === deviceType && en.status === 'VALID' &&
         en.trialAssignment === isTrial)
     return license.length > 0 ? license[0].id : 0
   }
@@ -104,7 +163,7 @@ export function AssignMspLicense () {
   useEffect(() => {
     if (licenseSummary) {
       if (licenseAssignment) {
-        const assigned = licenseAssignment.filter(
+        const assigned = isEntitlementRbacApiEnabled ?licenseAssignment : licenseAssignment.filter(
           en => en.mspEcTenantId === tenantId && en.status === 'VALID')
         setAssignedLicense(assigned)
         const wifi =
@@ -113,13 +172,15 @@ export function AssignMspLicense () {
         const sw =
           assigned.filter(en => en.deviceType === EntitlementDeviceType.MSP_SWITCH)
         const sLic = sw.length > 0 ? sw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
-        const apsw =
-          assigned.filter(en => en.deviceType === EntitlementDeviceType.MSP_APSW &&
-            en.trialAssignment === false)
+        const apsw = isEntitlementRbacApiEnabled
+          ? assigned.filter(en => en.isTrial === false)
+          : assigned.filter(en => en.deviceType === EntitlementDeviceType.MSP_APSW &&
+              en.trialAssignment === false)
         const apswLic = apsw.length > 0 ? apsw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
 
-        const apswTrial =
-          assigned.filter(en => en.deviceType === EntitlementDeviceType.MSP_APSW &&
+        const apswTrial = isEntitlementRbacApiEnabled
+          ? assigned.filter(en => en.isTrial === true)
+          : assigned.filter(en => en.deviceType === EntitlementDeviceType.MSP_APSW &&
             en.trialAssignment === true)
         const apswTrialLic =
           apswTrial.length > 0 ? apswTrial.reduce((acc, cur) => cur.quantity + acc, 0) : 0
@@ -128,7 +189,9 @@ export function AssignMspLicense () {
 
         isDeviceAgnosticEnabled ?
           form.setFieldsValue({
-            serviceExpirationDate: moment(apsw[0]?.dateExpires || moment().add(30,'days')),
+            serviceExpirationDate: moment(apsw[0]?.expirationDate || moment().add(30,'days')),
+            trialServiceExpirationDate: isSeparateServicedateEnabled
+              ? moment(apswTrial[0]?.expirationDate || moment().add(30,'days')) : '',
             apswLicenses: apswLic,
             apswTrialLicenses: apswTrialLic
           }) :
@@ -155,6 +218,27 @@ export function AssignMspLicense () {
     return Promise.resolve()
   }
 
+  const handleSubmitFailed = (error: CatchErrorResponse<CatchErrorDetails>) => {
+    const errData = error?.data
+    let title = intl.$t({ defaultMessage: 'Assign Subscription Failed' })
+    let message
+    const status = error.status
+    if (status === 409) {
+      // eslint-disable-next-line max-len
+      message = (errData?.error?.message) ?? intl.$t({ defaultMessage: 'Operation failed' })
+    } else {
+      const status = error.status
+      title = intl.$t({ defaultMessage: 'Server Error' })
+      // eslint-disable-next-line max-len
+      message = intl.$t({ defaultMessage: 'Error has occurred. Backend returned code {status}' }, { status })
+    }
+    showActionModal({
+      type: 'error',
+      title: title,
+      content: message
+    })
+  }
+
   const handleAssignLicense = async (values: SubscriptionAssignmentForm) => {
     try {
       const ecFormData = { ...values }
@@ -167,9 +251,11 @@ export function AssignMspLicense () {
       if (isDeviceAgnosticEnabled) {
         // paid device assignment
         if (availableApswLicense) {
-          const apswAssignId = getDeviceAssignmentId(EntitlementDeviceType.MSP_APSW, false)
+          const apswAssignId =
+            isEntitlementRbacApiEnabled ? getDeviceAssignmentId(EntitlementDeviceType.APSW, false)
+              : getDeviceAssignmentId(EntitlementDeviceType.MSP_APSW, false)
           const quantityApsw = ecFormData.apswLicenses || 0
-          apswAssignId ?
+          if (apswAssignId) {
             quantityApsw > 0 ?
               updateAssignment.push({
                 startDate: today,
@@ -180,31 +266,42 @@ export function AssignMspLicense () {
               deleteAssignment.push({
                 assignmentId: apswAssignId
               })
-            : addAssignment.push({
+          } else if (quantityApsw > 0) {
+            addAssignment.push({
+              endDate: expirationDate,
               quantity: quantityApsw,
               deviceType: EntitlementDeviceType.MSP_APSW
             })
+          }
         }
         // trial license assignment
         if (availableApswTrialLicense) {
-          const apswTrialAssignId = getDeviceAssignmentId(EntitlementDeviceType.MSP_APSW, true)
+          const trialExpirationDate = isSeparateServicedateEnabled
+            ? EntitlementUtil.getServiceStartDate((ecFormData.trialServiceExpirationDate))
+            : EntitlementUtil.getServiceStartDate((ecFormData.serviceExpirationDate))
+          const apswTrialAssignId =
+            isEntitlementRbacApiEnabled ? getDeviceAssignmentId(EntitlementDeviceType.APSW, true)
+              : getDeviceAssignmentId(EntitlementDeviceType.MSP_APSW, true)
           const quantityApswTrial = ecFormData.apswTrialLicenses || 0
-          apswTrialAssignId ?
+          if (apswTrialAssignId) {
             quantityApswTrial > 0 ?
               updateAssignment.push({
                 startDate: today,
-                endDate: expirationDate,
+                endDate: trialExpirationDate,
                 quantity: quantityApswTrial,
                 assignmentId: apswTrialAssignId
               }) :
               deleteAssignment.push({
                 assignmentId: apswTrialAssignId
               })
-            : addAssignment.push({
+          } else if (quantityApswTrial > 0 ) {
+            addAssignment.push({
+              endDate: trialExpirationDate,
               quantity: quantityApswTrial,
               deviceType: EntitlementDeviceType.MSP_APSW,
               useTemporaryMspEntitlement: true
             })
+          }
         }
       }
       else {
@@ -238,23 +335,67 @@ export function AssignMspLicense () {
           })
       }
       if (addAssignment.length > 0) {
-        const mspAssignments: MspAssignment = {
-          ownAssignments: true,
-          startDate: today,
-          endDate: expirationDate,
-          assignments: addAssignment
+        const mspAssignments: MspAssignment = isEntitlementRbacApiEnabled
+          ? {
+            effectiveDate: today,
+            expirationDate: addAssignment[0].endDate,
+            quantity: addAssignment[0].quantity,
+            licenseType: 'APSW',
+            trial: addAssignment[0].useTemporaryMspEntitlement ?? false
+          }: {
+            ownAssignments: true,
+            startDate: today,
+            endDate: expirationDate,
+            assignments: addAssignment
+          }
+        await addMspSubscription({ params: { tenantId: tenantId }, payload: mspAssignments,
+          enableRbac: isEntitlementRbacApiEnabled }).unwrap()
+        if(isEntitlementRbacApiEnabled && addAssignment.length > 1) {
+          const addPayload = {
+            effectiveDate: today,
+            expirationDate: addAssignment[1].endDate,
+            quantity: addAssignment[1].quantity,
+            licenseType: 'APSW',
+            trial: addAssignment[1].useTemporaryMspEntitlement ?? false
+          }
+          await addMspSubscription({ params: { tenantId: tenantId }, payload: addPayload,
+            enableRbac: isEntitlementRbacApiEnabled }).unwrap()
         }
-        await addMspSubscription({ payload: mspAssignments }).unwrap()
       }
       if (updateAssignment.length > 0) {
-        await updateMspSubscription({ payload: updateAssignment }).unwrap()
+        const assignId = updateAssignment[0].assignmentId.toString()
+        const updatePayload = isEntitlementRbacApiEnabled
+          ? {
+            quantity: updateAssignment[0].quantity,
+            expirationDate: updateAssignment[0].endDate }
+          : updateAssignment
+        await updateMspSubscription({ params: { tenantId: tenantId, assignmentId: assignId },
+          payload: updatePayload, enableRbac: isEntitlementRbacApiEnabled }).unwrap()
+        if(isEntitlementRbacApiEnabled && updateAssignment.length > 1) {
+          const assignId = updateAssignment[1].assignmentId.toString()
+          const updatePayload = {
+            quantity: updateAssignment[1].quantity,
+            expirationDate: updateAssignment[1].endDate }
+          await updateMspSubscription({ params: { tenantId: tenantId, assignmentId: assignId },
+            payload: updatePayload, enableRbac: isEntitlementRbacApiEnabled }).unwrap()
+        }
       }
       if (deleteAssignment.length > 0) {
-        await deleteMspSubscription({ payload: deleteAssignment }).unwrap()
+        const assignId = deleteAssignment[0].assignmentId.toString()
+        await isEntitlementRbacApiEnabled
+          ? deleteMspSubscription({ params: { tenantId: tenantId, assignmentId: assignId },
+            enableRbac: isEntitlementRbacApiEnabled }).unwrap()
+          : deleteMspSubscription({ payload: deleteAssignment }).unwrap()
+        if(isEntitlementRbacApiEnabled && deleteAssignment.length > 1) {
+          const assignId = deleteAssignment[1].assignmentId.toString()
+          deleteMspSubscription({ params: { tenantId: tenantId, assignmentId: assignId },
+            enableRbac: isEntitlementRbacApiEnabled }).unwrap()
+        }
       }
       navigate(linkToSubscriptions, { replace: true })
     } catch (error) {
-      console.log(error) // eslint-disable-line no-console
+      const respData = error as CatchErrorResponse<CatchErrorDetails>
+      handleSubmitFailed(respData)
     }
   }
 
@@ -295,28 +436,45 @@ export function AssignMspLicense () {
 
   }
 
+  const getSelectExpirationDate = (value: string) => {
+    let expirationDate = moment().add(30,'days')
+    if (value === DateSelectionEnum.THIRTY_DAYS) {
+      expirationDate = moment().add(30,'days')
+    } else if (value === DateSelectionEnum.SIXTY_DAYS) {
+      expirationDate = moment().add(60,'days')
+    } else if (value === DateSelectionEnum.NINETY_DAYS) {
+      expirationDate = moment().add(90,'days')
+    } else if (value === DateSelectionEnum.ONE_YEAR) {
+      expirationDate = moment().add(1,'years')
+    } else if (value === DateSelectionEnum.THREE_YEARS) {
+      expirationDate = moment().add(3,'years')
+    } else if (value === DateSelectionEnum.FIVE_YEARS) {
+      expirationDate = moment().add(5,'years')
+    }
+    return expirationDate
+  }
+
   const onSelectChange = (value: string) => {
     if (value === DateSelectionEnum.CUSTOME_DATE) {
       setCustomeDate(true)
     } else {
-      let expirationDate = moment().add(30,'days')
-      if (value === DateSelectionEnum.THIRTY_DAYS) {
-        expirationDate = moment().add(30,'days')
-      } else if (value === DateSelectionEnum.SIXTY_DAYS) {
-        expirationDate = moment().add(60,'days')
-      } else if (value === DateSelectionEnum.NINETY_DAYS) {
-        expirationDate = moment().add(90,'days')
-      } else if (value === DateSelectionEnum.ONE_YEAR) {
-        expirationDate = moment().add(1,'years')
-      } else if (value === DateSelectionEnum.THREE_YEARS) {
-        expirationDate = moment().add(3,'years')
-      } else if (value === DateSelectionEnum.FIVE_YEARS) {
-        expirationDate = moment().add(5,'years')
-      }
+      const expirationDate = getSelectExpirationDate(value)
       form.setFieldsValue({
         serviceExpirationDate: expirationDate
       })
       setCustomeDate(false)
+    }
+  }
+
+  const onTrialSelectChange = (value: string) => {
+    if (value === DateSelectionEnum.CUSTOME_DATE) {
+      setCustomeTrialDate(true)
+    } else {
+      const expirationDate = getSelectExpirationDate(value)
+      form.setFieldsValue({
+        trialServiceExpirationDate: expirationDate
+      })
+      setCustomeTrialDate(false)
     }
   }
 
@@ -327,7 +485,10 @@ export function AssignMspLicense () {
 
       {isDeviceAgnosticEnabled &&
       <div>{(availableApswLicense > 0) && <UI.FieldLabelSubs width='315px'>
-        <label>{intl.$t({ defaultMessage: 'Assigned Paid Device Subscriptions' })}</label>
+        <label>{isvSmartEdgeEnabled
+          ? intl.$t({ defaultMessage: 'Assigned Device Networking' })
+          : intl.$t({ defaultMessage: 'Assigned Paid Device Subscriptions' })
+        }</label>
         <Form.Item
           name='apswLicenses'
           label=''
@@ -342,12 +503,19 @@ export function AssignMspLicense () {
           style={{ paddingRight: '20px' }}
         />
         <label>
-          {intl.$t({ defaultMessage: 'devices out of {availableApswLicense} available' }, {
-            availableApswLicense: availableApswLicense })}
+          {isvSmartEdgeEnabled
+            ? intl.$t({ defaultMessage: 'paid licenses out of {availableApswLicense} available' }, {
+              availableApswLicense: availableApswLicense })
+            : intl.$t({ defaultMessage: 'devices out of {availableApswLicense} available' }, {
+              availableApswLicense: availableApswLicense })
+          }
         </label>
       </UI.FieldLabelSubs>}
       {(availableApswTrialLicense > 0) && <UI.FieldLabelSubs width='315px'>
-        <label>{intl.$t({ defaultMessage: 'Assigned Trial Device Subscriptions' })}</label>
+        <label>{isvSmartEdgeEnabled
+          ? intl.$t({ defaultMessage: 'Assigned Device Networking' })
+          : intl.$t({ defaultMessage: 'Assigned Trial Device Subscriptions' })
+        }</label>
         <Form.Item
           name='apswTrialLicenses'
           label=''
@@ -362,8 +530,13 @@ export function AssignMspLicense () {
           style={{ paddingRight: '20px' }}
         />
         <label>
-          {intl.$t({ defaultMessage: 'devices out of {availableApswTrialLicense} available' }, {
-            availableApswTrialLicense: availableApswTrialLicense })}
+          {isvSmartEdgeEnabled
+          // eslint-disable-next-line max-len
+            ? intl.$t({ defaultMessage: 'trial licenses out of {availableApswTrialLicense} available' }, {
+              availableApswTrialLicense: availableApswTrialLicense })
+            : intl.$t({ defaultMessage: 'devices out of {availableApswTrialLicense} available' }, {
+              availableApswTrialLicense: availableApswTrialLicense })
+          }
         </label>
       </UI.FieldLabelSubs>}</div>}
 
@@ -456,10 +629,154 @@ export function AssignMspLicense () {
     </div>
   }
 
+  const EditSeparateCustomerSubscriptionForm = () => {
+    return <>
+      {(availableApswLicense > 0) && <div>
+        <Subtitle level={4}>
+          { intl.$t({ defaultMessage: 'Paid Subscriptions' }) }</Subtitle>
+        <UI.FieldLabelSubs2 width='315px'>
+          <label>{intl.$t({ defaultMessage: 'Assigned Device Networking' })}</label>
+          <Form.Item
+            name='apswLicenses'
+            label=''
+            initialValue={0}
+            rules={[
+              { required: true,
+                message: intl.$t({ defaultMessage: 'Please enter device subscription' })
+              },
+              { validator: (_, value) => fieldValidator(value, availableApswLicense) }
+            ]}
+            children={<InputNumber/>}
+            style={{ paddingRight: '20px' }}
+          />
+          <label>
+            {intl.$t({ defaultMessage: 'paid licenses out of {availableApswLicense} available' }, {
+              availableApswLicense: availableApswLicense })}
+          </label>
+        </UI.FieldLabelSubs2>
+
+        <UI.FieldLabel2 width='275px'>
+          <label>{intl.$t({ defaultMessage: 'Subscription Start Date' })}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionStartDate)}</label>
+        </UI.FieldLabel2>
+
+        <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
+          <label>{intl.$t({ defaultMessage: 'Paid Licenses Expiration Date' })}</label>
+          <Form.Item
+            name='expirationDateSelection'
+            label=''
+            rules={[{ required: true } ]}
+            initialValue={DateSelectionEnum.CUSTOME_DATE}
+            children={
+              <Select onChange={onSelectChange}>
+                {
+                  Object.entries(DateSelectionEnum).map(([label, value]) => (
+                    <Option key={label} value={value}>{intl.$t(dateDisplayText[value])}</Option>
+                  ))
+                }
+              </Select>
+            }
+          />
+          <Form.Item
+            name='serviceExpirationDate'
+            label=''
+            rules={[
+              { required: true,
+                message: intl.$t({ defaultMessage: 'Please select expiration date' })
+              }
+            ]}
+            children={
+              <DatePicker
+                format={formatter(DateFormatEnum.DateFormat)}
+                disabled={!customDate}
+                disabledDate={(current) => {
+                  return current && current < moment().endOf('day')
+                }}
+                style={{ marginLeft: '4px' }}
+              />
+            }
+          />
+        </UI.FieldLabeServiceDate>
+      </div>}
+
+      {availableApswTrialLicense > 0 && <div style={{ marginTop: '25px' }}>
+        <Subtitle level={4}>
+          { intl.$t({ defaultMessage: 'Trial Subscriptions' }) }</Subtitle>
+        <UI.FieldLabelSubs2 width='315px'>
+          <label>{intl.$t({ defaultMessage: 'Assigned Device Networking' })}</label>
+          <Form.Item
+            name='apswTrialLicenses'
+            label=''
+            initialValue={0}
+            rules={[
+              { required: true,
+                message: intl.$t({ defaultMessage: 'Please enter device trial subscription' })
+              },
+              { validator: (_, value) => fieldValidator(value, availableApswTrialLicense) }
+            ]}
+            children={<InputNumber/>}
+            style={{ paddingRight: '20px' }}
+          />
+          <label>
+            {
+            // eslint-disable-next-line max-len
+              intl.$t({ defaultMessage: 'trial licenses out of {availableApswTrialLicense} available' }, {
+                availableApswTrialLicense: availableApswTrialLicense })
+            }
+          </label>
+        </UI.FieldLabelSubs2>
+
+        <UI.FieldLabel2 width='275px'>
+          <label>{intl.$t({ defaultMessage: 'Subscription Start Date' })}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionStartDate)}</label>
+        </UI.FieldLabel2>
+
+        <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
+          <label>{intl.$t({ defaultMessage: 'Trial Licenses Expiration Date' })}</label>
+          <Form.Item
+            name='trialExpirationDateSelection'
+            label=''
+            rules={[{ required: true } ]}
+            initialValue={DateSelectionEnum.CUSTOME_DATE}
+            children={
+              <Select onChange={onTrialSelectChange}>
+                {
+                  Object.entries(DateSelectionEnum).map(([label, value]) => (
+                    <Option key={label} value={value}>{intl.$t(dateDisplayText[value])}</Option>
+                  ))
+                }
+              </Select>
+            }
+          />
+          <Form.Item
+            name='trialServiceExpirationDate'
+            label=''
+            rules={[
+              { required: true,
+                message: intl.$t({ defaultMessage: 'Please select expiration date' })
+              }
+            ]}
+            children={
+              <DatePicker
+                format={formatter(DateFormatEnum.DateFormat)}
+                disabled={!customTrialDate}
+                disabledDate={(current) => {
+                  return current && current < moment().endOf('day')
+                }}
+                style={{ marginLeft: '4px' }}
+              />
+            }
+          />
+        </UI.FieldLabeServiceDate>
+      </div>}
+
+    </>
+  }
+
   return (
     <>
       <PageHeader
-        title={intl.$t({ defaultMessage: 'Assign Subscription' })}
+        title={intl.$t({ defaultMessage: 'Assign Subscriptions' })}
         breadcrumb={[
           { text: intl.$t({ defaultMessage: ' Subscriptions' }),
             link: '/msplicenses', tenantType: 'v' }
@@ -472,7 +789,8 @@ export function AssignMspLicense () {
         buttonLabel={{ submit: intl.$t({ defaultMessage: 'Save' }) }}
       >
         <StepsForm.StepForm>
-          <EditCustomerSubscriptionForm></EditCustomerSubscriptionForm>
+          {isSeparateServicedateEnabled ? <EditSeparateCustomerSubscriptionForm/>
+            : <EditCustomerSubscriptionForm/>}
         </StepsForm.StepForm>
 
       </StepsForm>

@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`MelissaBot should chat with chatbot 1`] = `
-"<div><svg data-testid=\\"MelissaIcon\\" style=\\"width: 56px; position: fixed; right: 15px; bottom: 15px; z-index: 999999; cursor: pointer;\\"></svg></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-gsnTZi hmesgK styledComponents__MelissaDrawer-sc-3sduv5-0 rBGsp ant-drawer-open\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper\\" style=\\"width: 464px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-hKMtZM lctlMc\\"><svg data-testid=\\"MelissaHeaderIcon\\"></svg><span class=\\"styledComponents__Title-sc-3sduv5-1 TQyia\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-2 eTPFOk\\">with Generative AI</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 416px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">There are 24 clients similar to iphone.
-Showing the last active one</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">Client IP: 10.111.111.193
+"<div><div data-testid=\\"MelissaIcon\\" class=\\"styledComponents__MelissaIcon-sc-3sduv5-0 dqFukx\\"></div></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-dkzDqf bQJLdB styledComponents__MelissaDrawer-sc-3sduv5-1 cczHDc ant-drawer-open\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper\\" style=\\"width: 390px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-eCYdqJ loZezt\\"><img src=\\"MelissaHeaderIcon\\" alt=\\"melissa header icon\\"><span class=\\"styledComponents__Title-sc-3sduv5-2 jkLqOm\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-3 dBdATx\\">with Generative AI ᴮᴱᵀᴬ</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 350px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
        Hostname: 02:da:f2:f1:c5:aa
        Username: aaron
        MAC Address: 02:DA:F2:F1:C5:AA
@@ -12,8 +12,20 @@ Showing the last active one</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-
        OS: Apple iPhone/iOS 17.0.3
 
        Average Rate: 96.1Kbps
-... <button type=\\"button\\" class=\\"ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup\\"><span>read more</span></button></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\"><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\">Go to Client Troubleshooting</a></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\"><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\">Go to Client Report</a></div><div class=\\"styledComponents__User-sc-1g2m1gj-4 gYLTbU\\">What is cloud RRM?</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">There are 24 clients similar to iphone.
-Showing the last active one</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">Client IP: 10.111.111.193
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a><div class=\\"styledComponents__User-sc-1g2m1gj-4 fQa-DPo\\">What is cloud RRM?</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
        Hostname: 02:da:f2:f1:c5:aa
        Username: aaron
        MAC Address: 02:DA:F2:F1:C5:AA
@@ -23,12 +35,533 @@ Showing the last active one</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-
        OS: Apple iPhone/iOS 17.0.3
 
        Average Rate: 96.1Kbps
-... <button type=\\"button\\" class=\\"ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup\\"><span>read more</span></button></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\"><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\">Go to Client Troubleshooting</a></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\"><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\">Go to Client Report</a></div></div></div><div class=\\"ant-drawer-footer\\"><input placeholder=\\"Ask Anything\\" style=\\"height: 52px;\\" class=\\"ant-input\\" type=\\"text\\" value=\\"\\"></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div>"
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a></div></div><div class=\\"ant-drawer-footer\\"><div style=\\"display: block; width: 100%;\\"><div style=\\"text-align: center;\\"><div class=\\"styledComponents__Wrapper-sc-c4vpsp-0 lexJCV\\"><div class=\\"ant-radio-group ant-radio-group-outline ant-radio-group-small\\"><label class=\\"ant-radio-button-wrapper ant-radio-button-wrapper-checked\\"><span class=\\"ant-radio-button ant-radio-button-checked\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"my-network\\" checked=\\"\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>My Network</span></label><label class=\\"ant-radio-button-wrapper\\"><span class=\\"ant-radio-button\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"general\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>General</span></label></div></div></div><div></div><textarea placeholder=\\"Ask me anything about your network...\\" class=\\"ant-input\\" style=\\"height: -12px; border-color: #e3e4e5; min-height: -8px; max-height: -12px;\\">What is cloud RRM?
+</textarea></div></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div><textarea tab-index=\\"-1\\" aria-hidden=\\"true\\" style=\\"letter-spacing:normal;line-height:normal;padding-top:2px;padding-bottom:2px;font-family:-webkit-small-control;font-weight:;font-size:;font-variant:;text-rendering:auto;text-transform:none;width:;text-indent:0;padding-left:2px;padding-right:2px;border-width:1px;box-sizing:;word-break:;
+  min-height:0 !important;
+  max-height:none !important;
+  height:0 !important;
+  visibility:hidden !important;
+  overflow:hidden !important;
+  position:absolute !important;
+  z-index:-1000 !important;
+  top:0 !important;
+  right:0 !important
+\\"></textarea>"
+`;
+
+exports[`MelissaBot should chat with chatbot in general mode and handle DF session timeout: after-session-timeout 1`] = `
+"<textarea tab-index=\\"-1\\" aria-hidden=\\"true\\" style=\\"letter-spacing:normal;line-height:normal;padding-top:2px;padding-bottom:2px;font-family:-webkit-small-control;font-weight:;font-size:;font-variant:;text-rendering:auto;text-transform:none;width:;text-indent:0;padding-left:2px;padding-right:2px;border-width:1px;box-sizing:;word-break:;
+  min-height:0 !important;
+  max-height:none !important;
+  height:0 !important;
+  visibility:hidden !important;
+  overflow:hidden !important;
+  position:absolute !important;
+  z-index:-1000 !important;
+  top:0 !important;
+  right:0 !important
+\\"></textarea><div><div data-testid=\\"MelissaIcon\\" class=\\"styledComponents__MelissaIcon-sc-3sduv5-0 dqFukx\\"></div></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-dkzDqf bQJLdB styledComponents__MelissaDrawer-sc-3sduv5-1 cczHDc ant-drawer-open\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper\\" style=\\"width: 390px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-eCYdqJ loZezt\\"><img src=\\"MelissaHeaderIcon\\" alt=\\"melissa header icon\\"><span class=\\"styledComponents__Title-sc-3sduv5-2 jkLqOm\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-3 dBdATx\\">with Generative AI ᴮᴱᵀᴬ</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 350px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
+       Hostname: 02:da:f2:f1:c5:aa
+       Username: aaron
+       MAC Address: 02:DA:F2:F1:C5:AA
+       Last AP Name: Aaron_Home_H550_GstBdr
+       Last AP Mac: 80:BC:37:01:1F:E0
+       Last Status: Connected
+       OS: Apple iPhone/iOS 17.0.3
+
+       Average Rate: 96.1Kbps
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a><div class=\\"styledComponents__User-sc-1g2m1gj-4 fQa-DPo\\">What is cloud RRM?</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
+       Hostname: 02:da:f2:f1:c5:aa
+       Username: aaron
+       MAC Address: 02:DA:F2:F1:C5:AA
+       Last AP Name: Aaron_Home_H550_GstBdr
+       Last AP Mac: 80:BC:37:01:1F:E0
+       Last Status: Connected
+       OS: Apple iPhone/iOS 17.0.3
+
+       Average Rate: 96.1Kbps
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a><div class=\\"styledComponents__System-sc-1g2m1gj-6 gTMXzn\\">Response from AI.</div><div class=\\"styledComponents__User-sc-1g2m1gj-4 fQa-DPo\\">How does wifi works?</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Response from AI.<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>General</div></div><div class=\\"styledComponents__System-sc-1g2m1gj-6 gTMXzn\\">Session Timed out.</div><div class=\\"styledComponents__System-sc-1g2m1gj-6 gTMXzn\\">Response from AI.</div></div></div><div class=\\"ant-drawer-footer\\"><div style=\\"display: block; width: 100%;\\"><div style=\\"text-align: center;\\"><div class=\\"styledComponents__Wrapper-sc-c4vpsp-0 lexJCV\\"><div class=\\"ant-radio-group ant-radio-group-outline ant-radio-group-small\\"><label class=\\"ant-radio-button-wrapper ant-radio-button-wrapper-checked\\"><span class=\\"ant-radio-button ant-radio-button-checked\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"my-network\\" checked=\\"\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>My Network</span></label><label class=\\"ant-radio-button-wrapper\\"><span class=\\"ant-radio-button\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"general\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>General</span></label></div></div></div><div></div><textarea placeholder=\\"Ask me anything about your network...\\" class=\\"ant-input\\" style=\\"height: -12px; border-color: #e3e4e5; min-height: -8px; max-height: -12px;\\">How does wifi works?
+</textarea></div></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div>"
+`;
+
+exports[`MelissaBot should chat with chatbot in general mode and handle DF session timeout: data-mode 1`] = `
+"<textarea tab-index=\\"-1\\" aria-hidden=\\"true\\" style=\\"letter-spacing:normal;line-height:normal;padding-top:2px;padding-bottom:2px;font-family:-webkit-small-control;font-weight:;font-size:;font-variant:;text-rendering:auto;text-transform:none;width:;text-indent:0;padding-left:2px;padding-right:2px;border-width:1px;box-sizing:;word-break:;
+  min-height:0 !important;
+  max-height:none !important;
+  height:0 !important;
+  visibility:hidden !important;
+  overflow:hidden !important;
+  position:absolute !important;
+  z-index:-1000 !important;
+  top:0 !important;
+  right:0 !important
+\\"></textarea><div><div data-testid=\\"MelissaIcon\\" class=\\"styledComponents__MelissaIcon-sc-3sduv5-0 dqFukx\\"></div></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-dkzDqf bQJLdB styledComponents__MelissaDrawer-sc-3sduv5-1 cczHDc ant-drawer-open\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper\\" style=\\"width: 390px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-eCYdqJ loZezt\\"><img src=\\"MelissaHeaderIcon\\" alt=\\"melissa header icon\\"><span class=\\"styledComponents__Title-sc-3sduv5-2 jkLqOm\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-3 dBdATx\\">with Generative AI ᴮᴱᵀᴬ</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 350px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
+       Hostname: 02:da:f2:f1:c5:aa
+       Username: aaron
+       MAC Address: 02:DA:F2:F1:C5:AA
+       Last AP Name: Aaron_Home_H550_GstBdr
+       Last AP Mac: 80:BC:37:01:1F:E0
+       Last Status: Connected
+       OS: Apple iPhone/iOS 17.0.3
+
+       Average Rate: 96.1Kbps
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a><div class=\\"styledComponents__User-sc-1g2m1gj-4 fQa-DPo\\">What is cloud RRM?</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
+       Hostname: 02:da:f2:f1:c5:aa
+       Username: aaron
+       MAC Address: 02:DA:F2:F1:C5:AA
+       Last AP Name: Aaron_Home_H550_GstBdr
+       Last AP Mac: 80:BC:37:01:1F:E0
+       Last Status: Connected
+       OS: Apple iPhone/iOS 17.0.3
+
+       Average Rate: 96.1Kbps
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a></div></div><div class=\\"ant-drawer-footer\\"><div style=\\"display: block; width: 100%;\\"><div style=\\"text-align: center;\\"><div class=\\"styledComponents__Wrapper-sc-c4vpsp-0 lexJCV\\"><div class=\\"ant-radio-group ant-radio-group-outline ant-radio-group-small\\"><label class=\\"ant-radio-button-wrapper ant-radio-button-wrapper-checked\\"><span class=\\"ant-radio-button ant-radio-button-checked\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"my-network\\" checked=\\"\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>My Network</span></label><label class=\\"ant-radio-button-wrapper\\"><span class=\\"ant-radio-button\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"general\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>General</span></label></div></div></div><div></div><textarea placeholder=\\"Ask me anything about your network...\\" class=\\"ant-input\\" style=\\"height: -12px; border-color: #e3e4e5; min-height: -8px; max-height: -12px;\\">What is cloud RRM?
+</textarea></div></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div>"
+`;
+
+exports[`MelissaBot should chat with chatbot in general mode and handle DF session timeout: general-mode 1`] = `
+"<textarea tab-index=\\"-1\\" aria-hidden=\\"true\\" style=\\"letter-spacing:normal;line-height:normal;padding-top:2px;padding-bottom:2px;font-family:-webkit-small-control;font-weight:;font-size:;font-variant:;text-rendering:auto;text-transform:none;width:;text-indent:0;padding-left:2px;padding-right:2px;border-width:1px;box-sizing:;word-break:;
+  min-height:0 !important;
+  max-height:none !important;
+  height:0 !important;
+  visibility:hidden !important;
+  overflow:hidden !important;
+  position:absolute !important;
+  z-index:-1000 !important;
+  top:0 !important;
+  right:0 !important
+\\"></textarea><div><div data-testid=\\"MelissaIcon\\" class=\\"styledComponents__MelissaIcon-sc-3sduv5-0 dqFukx\\"></div></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-dkzDqf bQJLdB styledComponents__MelissaDrawer-sc-3sduv5-1 cczHDc ant-drawer-open\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper\\" style=\\"width: 390px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-eCYdqJ loZezt\\"><img src=\\"MelissaHeaderIcon\\" alt=\\"melissa header icon\\"><span class=\\"styledComponents__Title-sc-3sduv5-2 jkLqOm\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-3 dBdATx\\">with Generative AI ᴮᴱᵀᴬ</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 350px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
+       Hostname: 02:da:f2:f1:c5:aa
+       Username: aaron
+       MAC Address: 02:DA:F2:F1:C5:AA
+       Last AP Name: Aaron_Home_H550_GstBdr
+       Last AP Mac: 80:BC:37:01:1F:E0
+       Last Status: Connected
+       OS: Apple iPhone/iOS 17.0.3
+
+       Average Rate: 96.1Kbps
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a><div class=\\"styledComponents__User-sc-1g2m1gj-4 fQa-DPo\\">What is cloud RRM?</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
+       Hostname: 02:da:f2:f1:c5:aa
+       Username: aaron
+       MAC Address: 02:DA:F2:F1:C5:AA
+       Last AP Name: Aaron_Home_H550_GstBdr
+       Last AP Mac: 80:BC:37:01:1F:E0
+       Last Status: Connected
+       OS: Apple iPhone/iOS 17.0.3
+
+       Average Rate: 96.1Kbps
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a><div class=\\"styledComponents__System-sc-1g2m1gj-6 gTMXzn\\">Response from AI.</div><div class=\\"styledComponents__User-sc-1g2m1gj-4 fQa-DPo\\">How does wifi works?</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Response from AI.<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>General</div></div></div></div><div class=\\"ant-drawer-footer\\"><div style=\\"display: block; width: 100%;\\"><div style=\\"text-align: center;\\"><div class=\\"styledComponents__Wrapper-sc-c4vpsp-0 lexJCV\\"><div class=\\"ant-radio-group ant-radio-group-outline ant-radio-group-small\\"><label class=\\"ant-radio-button-wrapper\\"><span class=\\"ant-radio-button\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"my-network\\" checked=\\"\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>My Network</span></label><label class=\\"ant-radio-button-wrapper ant-radio-button-wrapper-checked\\"><span class=\\"ant-radio-button ant-radio-button-checked\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"general\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>General</span></label></div></div></div><div></div><textarea placeholder=\\"Ask me anything about Ruckus products and technical information...\\" class=\\"ant-input\\" style=\\"height: -12px; border-color: #e3e4e5; min-height: -8px; max-height: -12px;\\">How does wifi works?
+</textarea></div></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div>"
+`;
+
+exports[`MelissaBot should chat with chatbot in general mode: data-mode 1`] = `
+"<textarea tab-index=\\"-1\\" aria-hidden=\\"true\\" style=\\"letter-spacing:normal;line-height:normal;padding-top:2px;padding-bottom:2px;font-family:-webkit-small-control;font-weight:;font-size:;font-variant:;text-rendering:auto;text-transform:none;width:;text-indent:0;padding-left:2px;padding-right:2px;border-width:1px;box-sizing:;word-break:;
+  min-height:0 !important;
+  max-height:none !important;
+  height:0 !important;
+  visibility:hidden !important;
+  overflow:hidden !important;
+  position:absolute !important;
+  z-index:-1000 !important;
+  top:0 !important;
+  right:0 !important
+\\"></textarea><div><div data-testid=\\"MelissaIcon\\" class=\\"styledComponents__MelissaIcon-sc-3sduv5-0 dqFukx\\"></div></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-dkzDqf bQJLdB styledComponents__MelissaDrawer-sc-3sduv5-1 cczHDc ant-drawer-open\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper\\" style=\\"width: 390px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-eCYdqJ loZezt\\"><img src=\\"MelissaHeaderIcon\\" alt=\\"melissa header icon\\"><span class=\\"styledComponents__Title-sc-3sduv5-2 jkLqOm\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-3 dBdATx\\">with Generative AI ᴮᴱᵀᴬ</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 350px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
+       Hostname: 02:da:f2:f1:c5:aa
+       Username: aaron
+       MAC Address: 02:DA:F2:F1:C5:AA
+       Last AP Name: Aaron_Home_H550_GstBdr
+       Last AP Mac: 80:BC:37:01:1F:E0
+       Last Status: Connected
+       OS: Apple iPhone/iOS 17.0.3
+
+       Average Rate: 96.1Kbps
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a><div class=\\"styledComponents__User-sc-1g2m1gj-4 fQa-DPo\\">What is cloud RRM?</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
+       Hostname: 02:da:f2:f1:c5:aa
+       Username: aaron
+       MAC Address: 02:DA:F2:F1:C5:AA
+       Last AP Name: Aaron_Home_H550_GstBdr
+       Last AP Mac: 80:BC:37:01:1F:E0
+       Last Status: Connected
+       OS: Apple iPhone/iOS 17.0.3
+
+       Average Rate: 96.1Kbps
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a></div></div><div class=\\"ant-drawer-footer\\"><div style=\\"display: block; width: 100%;\\"><div style=\\"text-align: center;\\"><div class=\\"styledComponents__Wrapper-sc-c4vpsp-0 lexJCV\\"><div class=\\"ant-radio-group ant-radio-group-outline ant-radio-group-small\\"><label class=\\"ant-radio-button-wrapper ant-radio-button-wrapper-checked\\"><span class=\\"ant-radio-button ant-radio-button-checked\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"my-network\\" checked=\\"\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>My Network</span></label><label class=\\"ant-radio-button-wrapper\\"><span class=\\"ant-radio-button\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"general\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>General</span></label></div></div></div><div></div><textarea placeholder=\\"Ask me anything about your network...\\" class=\\"ant-input\\" style=\\"height: -12px; border-color: #e3e4e5; min-height: -8px; max-height: -12px;\\">What is cloud RRM?
+</textarea></div></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div>"
+`;
+
+exports[`MelissaBot should chat with chatbot in general mode: general-mode 1`] = `
+"<textarea tab-index=\\"-1\\" aria-hidden=\\"true\\" style=\\"letter-spacing:normal;line-height:normal;padding-top:2px;padding-bottom:2px;font-family:-webkit-small-control;font-weight:;font-size:;font-variant:;text-rendering:auto;text-transform:none;width:;text-indent:0;padding-left:2px;padding-right:2px;border-width:1px;box-sizing:;word-break:;
+  min-height:0 !important;
+  max-height:none !important;
+  height:0 !important;
+  visibility:hidden !important;
+  overflow:hidden !important;
+  position:absolute !important;
+  z-index:-1000 !important;
+  top:0 !important;
+  right:0 !important
+\\"></textarea><div><div data-testid=\\"MelissaIcon\\" class=\\"styledComponents__MelissaIcon-sc-3sduv5-0 dqFukx\\"></div></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-dkzDqf bQJLdB styledComponents__MelissaDrawer-sc-3sduv5-1 cczHDc ant-drawer-open\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper\\" style=\\"width: 390px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-eCYdqJ loZezt\\"><img src=\\"MelissaHeaderIcon\\" alt=\\"melissa header icon\\"><span class=\\"styledComponents__Title-sc-3sduv5-2 jkLqOm\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-3 dBdATx\\">with Generative AI ᴮᴱᵀᴬ</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 350px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
+       Hostname: 02:da:f2:f1:c5:aa
+       Username: aaron
+       MAC Address: 02:DA:F2:F1:C5:AA
+       Last AP Name: Aaron_Home_H550_GstBdr
+       Last AP Mac: 80:BC:37:01:1F:E0
+       Last Status: Connected
+       OS: Apple iPhone/iOS 17.0.3
+
+       Average Rate: 96.1Kbps
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a><div class=\\"styledComponents__User-sc-1g2m1gj-4 fQa-DPo\\">What is cloud RRM?</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
+       Hostname: 02:da:f2:f1:c5:aa
+       Username: aaron
+       MAC Address: 02:DA:F2:F1:C5:AA
+       Last AP Name: Aaron_Home_H550_GstBdr
+       Last AP Mac: 80:BC:37:01:1F:E0
+       Last Status: Connected
+       OS: Apple iPhone/iOS 17.0.3
+
+       Average Rate: 96.1Kbps
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a><div class=\\"styledComponents__System-sc-1g2m1gj-6 gTMXzn\\">Response from AI.</div><div class=\\"styledComponents__User-sc-1g2m1gj-4 fQa-DPo\\">How does wifi works?</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Response from AI.<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>General</div></div></div></div><div class=\\"ant-drawer-footer\\"><div style=\\"display: block; width: 100%;\\"><div style=\\"text-align: center;\\"><div class=\\"styledComponents__Wrapper-sc-c4vpsp-0 lexJCV\\"><div class=\\"ant-radio-group ant-radio-group-outline ant-radio-group-small\\"><label class=\\"ant-radio-button-wrapper\\"><span class=\\"ant-radio-button\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"my-network\\" checked=\\"\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>My Network</span></label><label class=\\"ant-radio-button-wrapper ant-radio-button-wrapper-checked\\"><span class=\\"ant-radio-button ant-radio-button-checked\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"general\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>General</span></label></div></div></div><div></div><textarea placeholder=\\"Ask me anything about Ruckus products and technical information...\\" class=\\"ant-input\\" style=\\"height: -12px; border-color: #e3e4e5; min-height: -8px; max-height: -12px;\\">How does wifi works?
+</textarea></div></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div>"
+`;
+
+exports[`MelissaBot should chat with chatbot in general mode: switch-back-to-my-network-mode 1`] = `
+"<textarea tab-index=\\"-1\\" aria-hidden=\\"true\\" style=\\"letter-spacing:normal;line-height:normal;padding-top:2px;padding-bottom:2px;font-family:-webkit-small-control;font-weight:;font-size:;font-variant:;text-rendering:auto;text-transform:none;width:;text-indent:0;padding-left:2px;padding-right:2px;border-width:1px;box-sizing:;word-break:;
+  min-height:0 !important;
+  max-height:none !important;
+  height:0 !important;
+  visibility:hidden !important;
+  overflow:hidden !important;
+  position:absolute !important;
+  z-index:-1000 !important;
+  top:0 !important;
+  right:0 !important
+\\"></textarea><div><div data-testid=\\"MelissaIcon\\" class=\\"styledComponents__MelissaIcon-sc-3sduv5-0 dqFukx\\"></div></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-dkzDqf bQJLdB styledComponents__MelissaDrawer-sc-3sduv5-1 cczHDc ant-drawer-open\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper\\" style=\\"width: 390px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-eCYdqJ loZezt\\"><img src=\\"MelissaHeaderIcon\\" alt=\\"melissa header icon\\"><span class=\\"styledComponents__Title-sc-3sduv5-2 jkLqOm\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-3 dBdATx\\">with Generative AI ᴮᴱᵀᴬ</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 350px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
+       Hostname: 02:da:f2:f1:c5:aa
+       Username: aaron
+       MAC Address: 02:DA:F2:F1:C5:AA
+       Last AP Name: Aaron_Home_H550_GstBdr
+       Last AP Mac: 80:BC:37:01:1F:E0
+       Last Status: Connected
+       OS: Apple iPhone/iOS 17.0.3
+
+       Average Rate: 96.1Kbps
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a><div class=\\"styledComponents__User-sc-1g2m1gj-4 fQa-DPo\\">What is cloud RRM?</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
+       Hostname: 02:da:f2:f1:c5:aa
+       Username: aaron
+       MAC Address: 02:DA:F2:F1:C5:AA
+       Last AP Name: Aaron_Home_H550_GstBdr
+       Last AP Mac: 80:BC:37:01:1F:E0
+       Last Status: Connected
+       OS: Apple iPhone/iOS 17.0.3
+
+       Average Rate: 96.1Kbps
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a><div class=\\"styledComponents__System-sc-1g2m1gj-6 gTMXzn\\">Response from AI.</div><div class=\\"styledComponents__User-sc-1g2m1gj-4 fQa-DPo\\">How does wifi works?</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Response from AI.<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>General</div></div><div class=\\"styledComponents__System-sc-1g2m1gj-6 gTMXzn\\">Response from AI.</div></div></div><div class=\\"ant-drawer-footer\\"><div style=\\"display: block; width: 100%;\\"><div style=\\"text-align: center;\\"><div class=\\"styledComponents__Wrapper-sc-c4vpsp-0 lexJCV\\"><div class=\\"ant-radio-group ant-radio-group-outline ant-radio-group-small\\"><label class=\\"ant-radio-button-wrapper ant-radio-button-wrapper-checked\\"><span class=\\"ant-radio-button ant-radio-button-checked\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"my-network\\" checked=\\"\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>My Network</span></label><label class=\\"ant-radio-button-wrapper\\"><span class=\\"ant-radio-button\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"general\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>General</span></label></div></div></div><div></div><textarea placeholder=\\"Ask me anything about your network...\\" class=\\"ant-input\\" style=\\"height: -12px; border-color: #e3e4e5; min-height: -8px; max-height: -12px;\\">How does wifi works?
+</textarea></div></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div>"
+`;
+
+exports[`MelissaBot should chat with chatbot in my network mode and handle DF session timeout: after-session-timeout 1`] = `
+"<textarea tab-index=\\"-1\\" aria-hidden=\\"true\\" style=\\"letter-spacing:normal;line-height:normal;padding-top:2px;padding-bottom:2px;font-family:-webkit-small-control;font-weight:;font-size:;font-variant:;text-rendering:auto;text-transform:none;width:;text-indent:0;padding-left:2px;padding-right:2px;border-width:1px;box-sizing:;word-break:;
+  min-height:0 !important;
+  max-height:none !important;
+  height:0 !important;
+  visibility:hidden !important;
+  overflow:hidden !important;
+  position:absolute !important;
+  z-index:-1000 !important;
+  top:0 !important;
+  right:0 !important
+\\"></textarea><div><div data-testid=\\"MelissaIcon\\" class=\\"styledComponents__MelissaIcon-sc-3sduv5-0 dqFukx\\"></div></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-dkzDqf bQJLdB styledComponents__MelissaDrawer-sc-3sduv5-1 cczHDc ant-drawer-open\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper\\" style=\\"width: 390px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-eCYdqJ loZezt\\"><img src=\\"MelissaHeaderIcon\\" alt=\\"melissa header icon\\"><span class=\\"styledComponents__Title-sc-3sduv5-2 jkLqOm\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-3 dBdATx\\">with Generative AI ᴮᴱᵀᴬ</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 350px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
+       Hostname: 02:da:f2:f1:c5:aa
+       Username: aaron
+       MAC Address: 02:DA:F2:F1:C5:AA
+       Last AP Name: Aaron_Home_H550_GstBdr
+       Last AP Mac: 80:BC:37:01:1F:E0
+       Last Status: Connected
+       OS: Apple iPhone/iOS 17.0.3
+
+       Average Rate: 96.1Kbps
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a><div class=\\"styledComponents__User-sc-1g2m1gj-4 fQa-DPo\\">What is cloud RRM?</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
+       Hostname: 02:da:f2:f1:c5:aa
+       Username: aaron
+       MAC Address: 02:DA:F2:F1:C5:AA
+       Last AP Name: Aaron_Home_H550_GstBdr
+       Last AP Mac: 80:BC:37:01:1F:E0
+       Last Status: Connected
+       OS: Apple iPhone/iOS 17.0.3
+
+       Average Rate: 96.1Kbps
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a></div></div><div class=\\"ant-drawer-footer\\"><div style=\\"display: block; width: 100%;\\"><div style=\\"text-align: center;\\"><div class=\\"styledComponents__Wrapper-sc-c4vpsp-0 lexJCV\\"><div class=\\"ant-radio-group ant-radio-group-outline ant-radio-group-small\\"><label class=\\"ant-radio-button-wrapper ant-radio-button-wrapper-checked\\"><span class=\\"ant-radio-button ant-radio-button-checked\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"my-network\\" checked=\\"\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>My Network</span></label><label class=\\"ant-radio-button-wrapper\\"><span class=\\"ant-radio-button\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"general\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>General</span></label></div></div></div><div></div><textarea placeholder=\\"Ask me anything about your network...\\" class=\\"ant-input\\" style=\\"height: -12px; border-color: #e3e4e5; min-height: -8px; max-height: -12px;\\">What is cloud RRM?
+</textarea></div></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div>"
+`;
+
+exports[`MelissaBot should chat with chatbot in my network mode and handle DF session timeout: data-mode 1`] = `
+"<textarea tab-index=\\"-1\\" aria-hidden=\\"true\\" style=\\"letter-spacing:normal;line-height:normal;padding-top:2px;padding-bottom:2px;font-family:-webkit-small-control;font-weight:;font-size:;font-variant:;text-rendering:auto;text-transform:none;width:;text-indent:0;padding-left:2px;padding-right:2px;border-width:1px;box-sizing:;word-break:;
+  min-height:0 !important;
+  max-height:none !important;
+  height:0 !important;
+  visibility:hidden !important;
+  overflow:hidden !important;
+  position:absolute !important;
+  z-index:-1000 !important;
+  top:0 !important;
+  right:0 !important
+\\"></textarea><div><div data-testid=\\"MelissaIcon\\" class=\\"styledComponents__MelissaIcon-sc-3sduv5-0 dqFukx\\"></div></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-dkzDqf bQJLdB styledComponents__MelissaDrawer-sc-3sduv5-1 cczHDc ant-drawer-open\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper\\" style=\\"width: 390px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-eCYdqJ loZezt\\"><img src=\\"MelissaHeaderIcon\\" alt=\\"melissa header icon\\"><span class=\\"styledComponents__Title-sc-3sduv5-2 jkLqOm\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-3 dBdATx\\">with Generative AI ᴮᴱᵀᴬ</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 350px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
+       Hostname: 02:da:f2:f1:c5:aa
+       Username: aaron
+       MAC Address: 02:DA:F2:F1:C5:AA
+       Last AP Name: Aaron_Home_H550_GstBdr
+       Last AP Mac: 80:BC:37:01:1F:E0
+       Last Status: Connected
+       OS: Apple iPhone/iOS 17.0.3
+
+       Average Rate: 96.1Kbps
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a><div class=\\"styledComponents__User-sc-1g2m1gj-4 fQa-DPo\\">What is cloud RRM?</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
+       Hostname: 02:da:f2:f1:c5:aa
+       Username: aaron
+       MAC Address: 02:DA:F2:F1:C5:AA
+       Last AP Name: Aaron_Home_H550_GstBdr
+       Last AP Mac: 80:BC:37:01:1F:E0
+       Last Status: Connected
+       OS: Apple iPhone/iOS 17.0.3
+
+       Average Rate: 96.1Kbps
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a></div></div><div class=\\"ant-drawer-footer\\"><div style=\\"display: block; width: 100%;\\"><div style=\\"text-align: center;\\"><div class=\\"styledComponents__Wrapper-sc-c4vpsp-0 lexJCV\\"><div class=\\"ant-radio-group ant-radio-group-outline ant-radio-group-small\\"><label class=\\"ant-radio-button-wrapper ant-radio-button-wrapper-checked\\"><span class=\\"ant-radio-button ant-radio-button-checked\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"my-network\\" checked=\\"\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>My Network</span></label><label class=\\"ant-radio-button-wrapper\\"><span class=\\"ant-radio-button\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"general\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>General</span></label></div></div></div><div></div><textarea placeholder=\\"Ask me anything about your network...\\" class=\\"ant-input\\" style=\\"height: -12px; border-color: #e3e4e5; min-height: -8px; max-height: -12px;\\">What is cloud RRM?
+</textarea></div></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div>"
 `;
 
 exports[`MelissaBot should handle error message from chatbot: after:error1 1`] = `
-"<div><svg data-testid=\\"MelissaIcon\\" style=\\"width: 56px; position: fixed; right: 15px; bottom: 15px; z-index: 999999; cursor: pointer;\\"></svg></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-gsnTZi hmesgK styledComponents__MelissaDrawer-sc-3sduv5-0 rBGsp ant-drawer-open\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper\\" style=\\"width: 464px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-hKMtZM lctlMc\\"><svg data-testid=\\"MelissaHeaderIcon\\"></svg><span class=\\"styledComponents__Title-sc-3sduv5-1 TQyia\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-2 eTPFOk\\">with Generative AI</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 416px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">There are 24 clients similar to iphone.
-Showing the last active one</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">Client IP: 10.111.111.193
+"<textarea tab-index=\\"-1\\" aria-hidden=\\"true\\" style=\\"letter-spacing:normal;line-height:normal;padding-top:2px;padding-bottom:2px;font-family:-webkit-small-control;font-weight:;font-size:;font-variant:;text-rendering:auto;text-transform:none;width:;text-indent:0;padding-left:2px;padding-right:2px;border-width:1px;box-sizing:;word-break:;
+  min-height:0 !important;
+  max-height:none !important;
+  height:0 !important;
+  visibility:hidden !important;
+  overflow:hidden !important;
+  position:absolute !important;
+  z-index:-1000 !important;
+  top:0 !important;
+  right:0 !important
+\\"></textarea><div><div data-testid=\\"MelissaIcon\\" class=\\"styledComponents__MelissaIcon-sc-3sduv5-0 dqFukx\\"></div></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-dkzDqf bQJLdB styledComponents__MelissaDrawer-sc-3sduv5-1 cczHDc ant-drawer-open\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper\\" style=\\"width: 390px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-eCYdqJ loZezt\\"><img src=\\"MelissaHeaderIcon\\" alt=\\"melissa header icon\\"><span class=\\"styledComponents__Title-sc-3sduv5-2 jkLqOm\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-3 dBdATx\\">with Generative AI ᴮᴱᵀᴬ</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 350px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
        Hostname: 02:da:f2:f1:c5:aa
        Username: aaron
        MAC Address: 02:DA:F2:F1:C5:AA
@@ -38,12 +571,35 @@ Showing the last active one</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-
        OS: Apple iPhone/iOS 17.0.3
 
        Average Rate: 96.1Kbps
-... <button type=\\"button\\" class=\\"ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup\\"><span>read more</span></button></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\"><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\">Go to Client Troubleshooting</a></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\"><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\">Go to Client Report</a></div><div class=\\"styledComponents__User-sc-1g2m1gj-4 gYLTbU\\">What is cloud RRM?</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">Some Error</div></div></div><div class=\\"ant-drawer-footer\\"><input placeholder=\\"Ask Anything\\" style=\\"height: 52px;\\" class=\\"ant-input\\" type=\\"text\\" value=\\"\\"></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div>"
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a><div class=\\"styledComponents__User-sc-1g2m1gj-4 fQa-DPo\\">What is cloud RRM?</div><div class=\\"styledComponents__System-sc-1g2m1gj-6 gTMXzn\\">Oops! We are currently experiencing unexpected technical difficulties. Please try again later.</div></div></div><div class=\\"ant-drawer-footer\\"><div style=\\"display: block; width: 100%;\\"><div style=\\"text-align: center;\\"><div class=\\"styledComponents__Wrapper-sc-c4vpsp-0 lexJCV\\"><div class=\\"ant-radio-group ant-radio-group-outline ant-radio-group-small\\"><label class=\\"ant-radio-button-wrapper ant-radio-button-wrapper-checked\\"><span class=\\"ant-radio-button ant-radio-button-checked\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"my-network\\" checked=\\"\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>My Network</span></label><label class=\\"ant-radio-button-wrapper\\"><span class=\\"ant-radio-button\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"general\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>General</span></label></div></div></div><div></div><textarea placeholder=\\"Ask me anything about your network...\\" class=\\"ant-input\\" style=\\"height: -12px; border-color: #e3e4e5; min-height: -8px; max-height: -12px;\\">What is cloud RRM?
+</textarea></div></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div>"
 `;
 
 exports[`MelissaBot should handle error message from chatbot: after:error2 1`] = `
-"<div><svg data-testid=\\"MelissaIcon\\" style=\\"width: 56px; position: fixed; right: 15px; bottom: 15px; z-index: 999999; cursor: pointer;\\"></svg></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-gsnTZi hmesgK styledComponents__MelissaDrawer-sc-3sduv5-0 rBGsp ant-drawer-open\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper\\" style=\\"width: 464px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-hKMtZM lctlMc\\"><svg data-testid=\\"MelissaHeaderIcon\\"></svg><span class=\\"styledComponents__Title-sc-3sduv5-1 TQyia\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-2 eTPFOk\\">with Generative AI</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 416px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">There are 24 clients similar to iphone.
-Showing the last active one</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">Client IP: 10.111.111.193
+"<textarea tab-index=\\"-1\\" aria-hidden=\\"true\\" style=\\"letter-spacing:normal;line-height:normal;padding-top:2px;padding-bottom:2px;font-family:-webkit-small-control;font-weight:;font-size:;font-variant:;text-rendering:auto;text-transform:none;width:;text-indent:0;padding-left:2px;padding-right:2px;border-width:1px;box-sizing:;word-break:;
+  min-height:0 !important;
+  max-height:none !important;
+  height:0 !important;
+  visibility:hidden !important;
+  overflow:hidden !important;
+  position:absolute !important;
+  z-index:-1000 !important;
+  top:0 !important;
+  right:0 !important
+\\"></textarea><div><div data-testid=\\"MelissaIcon\\" class=\\"styledComponents__MelissaIcon-sc-3sduv5-0 dqFukx\\"></div></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-dkzDqf bQJLdB styledComponents__MelissaDrawer-sc-3sduv5-1 cczHDc ant-drawer-open\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper\\" style=\\"width: 390px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-eCYdqJ loZezt\\"><img src=\\"MelissaHeaderIcon\\" alt=\\"melissa header icon\\"><span class=\\"styledComponents__Title-sc-3sduv5-2 jkLqOm\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-3 dBdATx\\">with Generative AI ᴮᴱᵀᴬ</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 350px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
        Hostname: 02:da:f2:f1:c5:aa
        Username: aaron
        MAC Address: 02:DA:F2:F1:C5:AA
@@ -53,12 +609,35 @@ Showing the last active one</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-
        OS: Apple iPhone/iOS 17.0.3
 
        Average Rate: 96.1Kbps
-... <button type=\\"button\\" class=\\"ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup\\"><span>read more</span></button></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\"><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\">Go to Client Troubleshooting</a></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\"><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\">Go to Client Report</a></div><div class=\\"styledComponents__User-sc-1g2m1gj-4 gYLTbU\\">What is cloud RRM?</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">Some Error</div><div class=\\"styledComponents__User-sc-1g2m1gj-4 gYLTbU\\">What is datastudio?</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">Something went wrong.</div></div></div><div class=\\"ant-drawer-footer\\"><input placeholder=\\"Ask Anything\\" style=\\"height: 52px;\\" class=\\"ant-input\\" type=\\"text\\" value=\\"\\"></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div>"
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a><div class=\\"styledComponents__User-sc-1g2m1gj-4 fQa-DPo\\">What is cloud RRM?</div><div class=\\"styledComponents__System-sc-1g2m1gj-6 gTMXzn\\">Oops! We are currently experiencing unexpected technical difficulties. Please try again later.</div><div class=\\"styledComponents__User-sc-1g2m1gj-4 fQa-DPo\\">What is datastudio?</div><div class=\\"styledComponents__System-sc-1g2m1gj-6 gTMXzn\\">Oops! We are currently experiencing unexpected technical difficulties. Please try again later.</div></div></div><div class=\\"ant-drawer-footer\\"><div style=\\"display: block; width: 100%;\\"><div style=\\"text-align: center;\\"><div class=\\"styledComponents__Wrapper-sc-c4vpsp-0 lexJCV\\"><div class=\\"ant-radio-group ant-radio-group-outline ant-radio-group-small\\"><label class=\\"ant-radio-button-wrapper ant-radio-button-wrapper-checked\\"><span class=\\"ant-radio-button ant-radio-button-checked\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"my-network\\" checked=\\"\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>My Network</span></label><label class=\\"ant-radio-button-wrapper\\"><span class=\\"ant-radio-button\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"general\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>General</span></label></div></div></div><div></div><textarea placeholder=\\"Ask me anything about your network...\\" class=\\"ant-input\\" style=\\"height: -12px; border-color: #e3e4e5; min-height: -8px; max-height: -12px;\\">What is datastudio?
+</textarea></div></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div>"
 `;
 
 exports[`MelissaBot should handle error message from chatbot: before:error 1`] = `
-"<div><svg data-testid=\\"MelissaIcon\\" style=\\"width: 56px; position: fixed; right: 15px; bottom: 15px; z-index: 999999; cursor: pointer;\\"></svg></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-gsnTZi hmesgK styledComponents__MelissaDrawer-sc-3sduv5-0 rBGsp ant-drawer-open\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper\\" style=\\"width: 464px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-hKMtZM lctlMc\\"><svg data-testid=\\"MelissaHeaderIcon\\"></svg><span class=\\"styledComponents__Title-sc-3sduv5-1 TQyia\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-2 eTPFOk\\">with Generative AI</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 416px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">There are 24 clients similar to iphone.
-Showing the last active one</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">Client IP: 10.111.111.193
+"<textarea tab-index=\\"-1\\" aria-hidden=\\"true\\" style=\\"letter-spacing:normal;line-height:normal;padding-top:2px;padding-bottom:2px;font-family:-webkit-small-control;font-weight:;font-size:;font-variant:;text-rendering:auto;text-transform:none;width:;text-indent:0;padding-left:2px;padding-right:2px;border-width:1px;box-sizing:;word-break:;
+  min-height:0 !important;
+  max-height:none !important;
+  height:0 !important;
+  visibility:hidden !important;
+  overflow:hidden !important;
+  position:absolute !important;
+  z-index:-1000 !important;
+  top:0 !important;
+  right:0 !important
+\\"></textarea><div><div data-testid=\\"MelissaIcon\\" class=\\"styledComponents__MelissaIcon-sc-3sduv5-0 dqFukx\\"></div></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-dkzDqf bQJLdB styledComponents__MelissaDrawer-sc-3sduv5-1 cczHDc ant-drawer-open\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper\\" style=\\"width: 390px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-eCYdqJ loZezt\\"><img src=\\"MelissaHeaderIcon\\" alt=\\"melissa header icon\\"><span class=\\"styledComponents__Title-sc-3sduv5-2 jkLqOm\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-3 dBdATx\\">with Generative AI ᴮᴱᵀᴬ</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 350px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
        Hostname: 02:da:f2:f1:c5:aa
        Username: aaron
        MAC Address: 02:DA:F2:F1:C5:AA
@@ -68,20 +647,55 @@ Showing the last active one</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-
        OS: Apple iPhone/iOS 17.0.3
 
        Average Rate: 96.1Kbps
-... <button type=\\"button\\" class=\\"ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup\\"><span>read more</span></button></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\"><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\">Go to Client Troubleshooting</a></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\"><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\">Go to Client Report</a></div></div></div><div class=\\"ant-drawer-footer\\"><input placeholder=\\"Ask Anything\\" style=\\"height: 52px;\\" class=\\"ant-input\\" type=\\"text\\" value=\\"\\"></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div>"
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a></div></div><div class=\\"ant-drawer-footer\\"><div style=\\"display: block; width: 100%;\\"><div style=\\"text-align: center;\\"><div class=\\"styledComponents__Wrapper-sc-c4vpsp-0 lexJCV\\"><div class=\\"ant-radio-group ant-radio-group-outline ant-radio-group-small\\"><label class=\\"ant-radio-button-wrapper ant-radio-button-wrapper-checked\\"><span class=\\"ant-radio-button ant-radio-button-checked\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"my-network\\" checked=\\"\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>My Network</span></label><label class=\\"ant-radio-button-wrapper\\"><span class=\\"ant-radio-button\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"general\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>General</span></label></div></div></div><div></div><textarea placeholder=\\"Ask me anything about your network...\\" class=\\"ant-input\\" style=\\"height: 52px; border-color: #e3e4e5;\\"></textarea></div></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div>"
 `;
 
-exports[`MelissaBot should not render anything if chatbot FF disabled 1`] = `
-<div>
-  <div />
-</div>
+exports[`MelissaBot should not render floating button for dashboard page 1`] = `"<div></div>"`;
+
+exports[`MelissaBot should not render floating button for dashboard page and open chatbot on trigger event with summary: after:event 1`] = `
+"<div></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-dkzDqf bQJLdB styledComponents__MelissaDrawer-sc-3sduv5-1 cczHDc ant-drawer-open\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper\\" style=\\"width: 390px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-eCYdqJ loZezt\\"><img src=\\"MelissaHeaderIcon\\" alt=\\"melissa header icon\\"><span class=\\"styledComponents__Title-sc-3sduv5-2 jkLqOm\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-3 dBdATx\\">with Generative AI ᴮᴱᵀᴬ</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 350px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
+       Hostname: 02:da:f2:f1:c5:aa
+       Username: aaron
+       MAC Address: 02:DA:F2:F1:C5:AA
+       Last AP Name: Aaron_Home_H550_GstBdr
+       Last AP Mac: 80:BC:37:01:1F:E0
+       Last Status: Connected
+       OS: Apple iPhone/iOS 17.0.3
+
+       Average Rate: 96.1Kbps
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\"><strong><u>RUCKUS AI</u></strong><br><br>summary</div></div></div><div class=\\"ant-drawer-footer\\"><div style=\\"display: block; width: 100%;\\"><div style=\\"text-align: center;\\"><div class=\\"styledComponents__Wrapper-sc-c4vpsp-0 lexJCV\\"><div class=\\"ant-radio-group ant-radio-group-outline ant-radio-group-small\\"><label class=\\"ant-radio-button-wrapper ant-radio-button-wrapper-checked\\"><span class=\\"ant-radio-button ant-radio-button-checked\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"my-network\\" checked=\\"\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>My Network</span></label><label class=\\"ant-radio-button-wrapper\\"><span class=\\"ant-radio-button\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"general\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>General</span></label></div></div></div><div></div><textarea placeholder=\\"Ask me anything about your network...\\" class=\\"ant-input\\" style=\\"height: 52px; border-color: #e3e4e5;\\"></textarea></div></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div>"
 `;
 
-exports[`MelissaBot should not render floating button for dashboard page 1`] = `<div />`;
+exports[`MelissaBot should not render floating button for dashboard page and open chatbot on trigger event with summary: before:event 1`] = `"<div></div>"`;
 
 exports[`MelissaBot should not render floating button for dashboard page and open chatbot on trigger event: after:event 1`] = `
-"<div></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-gsnTZi hmesgK styledComponents__MelissaDrawer-sc-3sduv5-0 rBGsp ant-drawer-open\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper\\" style=\\"width: 464px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-hKMtZM lctlMc\\"><svg data-testid=\\"MelissaHeaderIcon\\"></svg><span class=\\"styledComponents__Title-sc-3sduv5-1 TQyia\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-2 eTPFOk\\">with Generative AI</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 416px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">There are 24 clients similar to iphone.
-Showing the last active one</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">Client IP: 10.111.111.193
+"<div></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-dkzDqf bQJLdB styledComponents__MelissaDrawer-sc-3sduv5-1 cczHDc ant-drawer-open\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper\\" style=\\"width: 390px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-eCYdqJ loZezt\\"><img src=\\"MelissaHeaderIcon\\" alt=\\"melissa header icon\\"><span class=\\"styledComponents__Title-sc-3sduv5-2 jkLqOm\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-3 dBdATx\\">with Generative AI ᴮᴱᵀᴬ</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 350px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
        Hostname: 02:da:f2:f1:c5:aa
        Username: aaron
        MAC Address: 02:DA:F2:F1:C5:AA
@@ -91,14 +705,26 @@ Showing the last active one</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-
        OS: Apple iPhone/iOS 17.0.3
 
        Average Rate: 96.1Kbps
-... <button type=\\"button\\" class=\\"ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup\\"><span>read more</span></button></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\"><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\">Go to Client Troubleshooting</a></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\"><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\">Go to Client Report</a></div></div></div><div class=\\"ant-drawer-footer\\"><input placeholder=\\"Ask Anything\\" style=\\"height: 52px;\\" class=\\"ant-input\\" type=\\"text\\" value=\\"\\"></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div>"
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a></div></div><div class=\\"ant-drawer-footer\\"><div style=\\"display: block; width: 100%;\\"><div style=\\"text-align: center;\\"><div class=\\"styledComponents__Wrapper-sc-c4vpsp-0 lexJCV\\"><div class=\\"ant-radio-group ant-radio-group-outline ant-radio-group-small\\"><label class=\\"ant-radio-button-wrapper ant-radio-button-wrapper-checked\\"><span class=\\"ant-radio-button ant-radio-button-checked\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"my-network\\" checked=\\"\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>My Network</span></label><label class=\\"ant-radio-button-wrapper\\"><span class=\\"ant-radio-button\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"general\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>General</span></label></div></div></div><div></div><textarea placeholder=\\"Ask me anything about your network...\\" class=\\"ant-input\\" style=\\"height: 52px; border-color: #e3e4e5;\\"></textarea></div></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div>"
 `;
 
 exports[`MelissaBot should not render floating button for dashboard page and open chatbot on trigger event: before:event 1`] = `"<div></div>"`;
 
 exports[`MelissaBot should open the chat window by clicking floating button and then close: after:close 1`] = `
-"<div><svg data-testid=\\"MelissaIcon\\" style=\\"width: 56px; position: fixed; right: 15px; bottom: 15px; z-index: 999999; cursor: pointer;\\"></svg></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-gsnTZi hmesgK styledComponents__MelissaDrawer-sc-3sduv5-0 rBGsp\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper ant-drawer-content-wrapper-hidden\\" style=\\"width: 464px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-hKMtZM lctlMc\\"><svg data-testid=\\"MelissaHeaderIcon\\"></svg><span class=\\"styledComponents__Title-sc-3sduv5-1 TQyia\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-2 eTPFOk\\">with Generative AI</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 416px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">There are 24 clients similar to iphone.
-Showing the last active one</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">Client IP: 10.111.111.193
+"<div><div data-testid=\\"MelissaIcon\\" class=\\"styledComponents__MelissaIcon-sc-3sduv5-0 dqFukx\\"></div></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-dkzDqf bQJLdB styledComponents__MelissaDrawer-sc-3sduv5-1 cczHDc\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper ant-drawer-content-wrapper-hidden\\" style=\\"width: 390px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-eCYdqJ loZezt\\"><img src=\\"MelissaHeaderIcon\\" alt=\\"melissa header icon\\"><span class=\\"styledComponents__Title-sc-3sduv5-2 jkLqOm\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-3 dBdATx\\">with Generative AI ᴮᴱᵀᴬ</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 350px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
        Hostname: 02:da:f2:f1:c5:aa
        Username: aaron
        MAC Address: 02:DA:F2:F1:C5:AA
@@ -108,12 +734,24 @@ Showing the last active one</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-
        OS: Apple iPhone/iOS 17.0.3
 
        Average Rate: 96.1Kbps
-... <button type=\\"button\\" class=\\"ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup\\"><span>read more</span></button></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\"><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\">Go to Client Troubleshooting</a></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\"><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\">Go to Client Report</a></div></div></div><div class=\\"ant-drawer-footer\\"><input placeholder=\\"Ask Anything\\" style=\\"height: 52px;\\" class=\\"ant-input\\" type=\\"text\\" value=\\"\\"></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div>"
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a></div></div><div class=\\"ant-drawer-footer\\"><div style=\\"display: block; width: 100%;\\"><div style=\\"text-align: center;\\"><div class=\\"styledComponents__Wrapper-sc-c4vpsp-0 lexJCV\\"><div class=\\"ant-radio-group ant-radio-group-outline ant-radio-group-small\\"><label class=\\"ant-radio-button-wrapper ant-radio-button-wrapper-checked\\"><span class=\\"ant-radio-button ant-radio-button-checked\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"my-network\\" checked=\\"\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>My Network</span></label><label class=\\"ant-radio-button-wrapper\\"><span class=\\"ant-radio-button\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"general\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>General</span></label></div></div></div><div></div><textarea placeholder=\\"Ask me anything about your network...\\" class=\\"ant-input\\" style=\\"height: 52px; border-color: #e3e4e5;\\"></textarea></div></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div>"
 `;
 
 exports[`MelissaBot should open the chat window by clicking floating button and then close: after:open 1`] = `
-"<div><svg data-testid=\\"MelissaIcon\\" style=\\"width: 56px; position: fixed; right: 15px; bottom: 15px; z-index: 999999; cursor: pointer;\\"></svg></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-gsnTZi hmesgK styledComponents__MelissaDrawer-sc-3sduv5-0 rBGsp ant-drawer-open\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper\\" style=\\"width: 464px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-hKMtZM lctlMc\\"><svg data-testid=\\"MelissaHeaderIcon\\"></svg><span class=\\"styledComponents__Title-sc-3sduv5-1 TQyia\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-2 eTPFOk\\">with Generative AI</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 416px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">There are 24 clients similar to iphone.
-Showing the last active one</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\">Client IP: 10.111.111.193
+"<div><div data-testid=\\"MelissaIcon\\" class=\\"styledComponents__MelissaIcon-sc-3sduv5-0 dqFukx\\"></div></div><div><div class=\\"ant-drawer ant-drawer-right no-mask sc-dkzDqf bQJLdB styledComponents__MelissaDrawer-sc-3sduv5-1 cczHDc ant-drawer-open\\" tabindex=\\"-1\\"><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"start\\"></div><div class=\\"ant-drawer-content-wrapper\\" style=\\"width: 390px;\\"><div class=\\"ant-drawer-content\\" aria-modal=\\"true\\" role=\\"dialog\\"><div class=\\"ant-drawer-wrapper-body\\"><div class=\\"ant-drawer-header\\"><div class=\\"ant-drawer-header-title\\"><button type=\\"button\\" aria-label=\\"Close\\" class=\\"ant-drawer-close\\"><svg data-testid=\\"CloseSymbol\\"></svg></button><div class=\\"ant-drawer-title\\"><div class=\\"sc-eCYdqJ loZezt\\"><img src=\\"MelissaHeaderIcon\\" alt=\\"melissa header icon\\"><span class=\\"styledComponents__Title-sc-3sduv5-2 jkLqOm\\">Melissa</span><span class=\\"styledComponents__SubTitle-sc-3sduv5-3 dBdATx\\">with Generative AI ᴮᴱᵀᴬ</span></div></div></div></div><div class=\\"ant-drawer-body\\"><div style=\\"height: 410px; width: 350px; white-space: pre-line;\\" class=\\"styledComponents__Wrapper-sc-1g2m1gj-3 fDvHpg conversation\\"><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">There are 24 clients similar to iphone.
+Showing the last active one<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Here is the summary of client 02:DA:F2:F1:C5:AA from Oct 16 2023 16:58 to Oct 17 2023 16:58:<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 lbkQOm\\">Client IP: 10.111.111.193
        Hostname: 02:da:f2:f1:c5:aa
        Username: aaron
        MAC Address: 02:DA:F2:F1:C5:AA
@@ -123,14 +761,19 @@ Showing the last active one</div><div class=\\"styledComponents__Bot-sc-1g2m1gj-
        OS: Apple iPhone/iOS 17.0.3
 
        Average Rate: 96.1Kbps
-... <button type=\\"button\\" class=\\"ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup\\"><span>read more</span></button></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\"><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\">Go to Client Troubleshooting</a></div><div class=\\"styledComponents__Bot-sc-1g2m1gj-5 iDAcyY\\"><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\">Go to Client Report</a></div></div></div><div class=\\"ant-drawer-footer\\"><input placeholder=\\"Ask Anything\\" style=\\"height: 52px;\\" class=\\"ant-input\\" type=\\"text\\" value=\\"\\"></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div>"
+       Total Traffic: 962 MB
+       Average Sessions Length: 1m 54s
+       Applications: null
+       APs Connected: 4
+       Sessions: 440
+
+       Average SNR: 39 dB
+       Max SNR: 43 dB
+       Min SNR: 36 dB
+
+       Average RSS: -57 dBm
+       Max RSS: -53 dBm
+       Min RSS: -60 dBm<div class=\\"styledComponents__ModeText-sc-1g2m1gj-9 kIJYtO\\"><br>My Network</div></div><a href=\\"/analytics/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Troubleshooting</span></button></a><a href=\\"/analytics/report/client/02:DA:F2:F1:C5:AA?date=eyJyYW5nZSI6IkN1c3RvbSIsImVuZERhdGUiOiIyMDIzLTEwLTE3VDExOjI4OjAwLjAwMFoiLCJzdGFydERhdGUiOiIyMDIzLTEwLTE2VDExOjI4OjAwLjAwMFoifQ==\\"><button style=\\"font-size: 12px; margin-top: 10px;\\" type=\\"button\\" class=\\"ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 ejdvsu\\"><svg data-testid=\\"ChatbotLink\\" class=\\"styledComponents__StyledChatbotLink-sc-1g2m1gj-8 lxblO\\"></svg><span>Go to Client Report</span></button></a></div></div><div class=\\"ant-drawer-footer\\"><div style=\\"display: block; width: 100%;\\"><div style=\\"text-align: center;\\"><div class=\\"styledComponents__Wrapper-sc-c4vpsp-0 lexJCV\\"><div class=\\"ant-radio-group ant-radio-group-outline ant-radio-group-small\\"><label class=\\"ant-radio-button-wrapper ant-radio-button-wrapper-checked\\"><span class=\\"ant-radio-button ant-radio-button-checked\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"my-network\\" checked=\\"\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>My Network</span></label><label class=\\"ant-radio-button-wrapper\\"><span class=\\"ant-radio-button\\"><input type=\\"radio\\" class=\\"ant-radio-button-input\\" value=\\"general\\"><span class=\\"ant-radio-button-inner\\"></span></span><span>General</span></label></div></div></div><div></div><textarea placeholder=\\"Ask me anything about your network...\\" class=\\"ant-input\\" style=\\"height: 52px; border-color: #e3e4e5;\\"></textarea></div></div></div></div></div><div tabindex=\\"0\\" style=\\"width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;\\" aria-hidden=\\"true\\" data-sentinel=\\"end\\"></div></div></div>"
 `;
 
-exports[`MelissaBot should render floating button 1`] = `
-<div>
-  <svg
-    data-testid="MelissaIcon"
-    style="width: 56px; position: fixed; right: 15px; bottom: 15px; z-index: 999999; cursor: pointer;"
-  />
-</div>
-`;
+exports[`MelissaBot should render floating button 1`] = `"<div><div data-testid=\\"MelissaIcon\\" class=\\"styledComponents__MelissaIcon-sc-3sduv5-0 dqFukx\\"></div></div>"`;

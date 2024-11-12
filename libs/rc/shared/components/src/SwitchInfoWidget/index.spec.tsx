@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import {  Alarm, CommonUrlsInfo, SwitchViewModel } from '@acx-ui/rc/utils'
@@ -7,8 +8,8 @@ import { Provider  }                               from '@acx-ui/store'
 import { render,
   mockServer,
   screen,
-  fireEvent,
-  waitFor } from '@acx-ui/test-utils'
+  waitFor
+} from '@acx-ui/test-utils'
 import { DateRange }            from '@acx-ui/utils'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
@@ -144,11 +145,11 @@ describe('Switch Information Widget', () => {
       { route: { params } }
     )
     await waitFor(() => expect(requestMetasSpy).toHaveBeenCalledTimes(1))
-    fireEvent.click(screen.getByText('More Details'))
+    await userEvent.click(screen.getByText('More Details'))
     expect(screen.getByText('Switch Details')).toBeVisible()
     expect(await screen.findByText('FMF2249Q0JT')).toBeVisible()
     const button = screen.getByRole('button', { name: /close/i })
-    fireEvent.click(button)
+    await userEvent.click(button)
   })
 
   it('should render switch drawer correctly when feature flag is on', async () => {
@@ -160,12 +161,34 @@ describe('Switch Information Widget', () => {
       { route: { params } }
     )
     await waitFor(() => expect(requestMetasSpy).toHaveBeenCalledTimes(1))
-    fireEvent.click(screen.getByText('More Details'))
+    await userEvent.click(screen.getByText('More Details'))
     expect(screen.getByText('Switch Details')).toBeVisible()
     expect(await screen.findByText('FMF2249Q0JT')).toBeVisible()
     expect(await screen.findByText(/Admin Password/)).toBeVisible()
     const button = screen.getByRole('button', { name: /close/i })
-    fireEvent.click(button)
+    await userEvent.click(button)
+  })
+
+  it(`should not render Admin Password column
+    when switch firmware does not support Admin Password feature`, async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <SwitchInfoWidget switchDetail={{
+          ...switchDetail,
+          firmware: 'SPR09010f'
+        } as unknown as SwitchViewModel}
+        filters={filters}/>
+      </Provider>,
+      { route: { params } }
+    )
+    await waitFor(() => expect(requestMetasSpy).toHaveBeenCalledTimes(1))
+    await userEvent.click(screen.getByText('More Details'))
+    expect(screen.getByText('Switch Details')).toBeVisible()
+    expect(await screen.findByText('FMF2249Q0JT')).toBeVisible()
+    expect(screen.queryByText(/Admin Password/)).toBeNull()
+    const button = screen.getByRole('button', { name: /close/i })
+    await userEvent.click(button)
   })
 
   it('should render stack drawer correctly', async () => {
@@ -176,11 +199,11 @@ describe('Switch Information Widget', () => {
       { route: { params } }
     )
     await waitFor(() => expect(requestMetasSpy).toHaveBeenCalledTimes(1))
-    fireEvent.click(screen.getByText('More Details'))
+    await userEvent.click(screen.getByText('More Details'))
     expect(screen.getByText('Stack Details')).toBeVisible()
     expect(await screen.findByText('FEK4224R19X')).toBeVisible()
     const button = screen.getByRole('button', { name: /close/i })
-    fireEvent.click(button)
+    await userEvent.click(button)
   })
 })
 

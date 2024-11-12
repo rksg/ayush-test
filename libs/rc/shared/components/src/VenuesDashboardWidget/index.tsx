@@ -1,9 +1,10 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { cssStr, Loader, Card , DonutChart }                      from '@acx-ui/components'
-import type { DonutChartData }                                    from '@acx-ui/components'
-import { useDashboardOverviewQuery, useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
+import { cssStr, Loader, Card , DonutChart }                   from '@acx-ui/components'
+import type { DonutChartData }                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { useDashboardV2OverviewQuery, useVenueSummariesQuery } from '@acx-ui/rc/services'
 import {
   Dashboard,
   ApVenueStatusEnum
@@ -12,6 +13,9 @@ import { useNavigateToPath, useParams } from '@acx-ui/react-router-dom'
 import { useDashboardFilter }           from '@acx-ui/utils'
 
 import { getAPStatusDisplayName } from '../MapWidget/VenuesMap/helper'
+
+import * as UI from './styledComponents'
+
 
 const seriesMapping = () => [
   { key: ApVenueStatusEnum.REQUIRES_ATTENTION,
@@ -45,40 +49,16 @@ export const getVenuesDonutChartData = (overviewData?: Dashboard): DonutChartDat
   return chartData
 }
 
-export function VenuesDashboardWidget () {
-  const { $t } = useIntl()
-  const onArrowClick = useNavigateToPath('/venues/')
-
-  const queryResults = useDashboardOverviewQuery({
-    params: useParams()
-  },{
-    selectFromResult: ({ data, ...rest }) => ({
-      data: getVenuesDonutChartData(data),
-      ...rest
-    })
-  })
-  return (
-    <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Venues' })} onArrowClick={onArrowClick}>
-        <AutoSizer>
-          {({ height, width }) => (
-            <DonutChart
-              style={{ width, height }}
-              data={queryResults.data} />
-          )}
-        </AutoSizer>
-      </Card>
-    </Loader>
-  )
-}
-
 export function VenuesDashboardWidgetV2 () {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/venues/')
 
   const { venueIds } = useDashboardFilter()
 
-  const queryResults = useDashboardV2OverviewQuery({
+  const isNewDashboardQueryEnabled = useIsSplitOn(Features.DASHBOARD_NEW_API_TOGGLE)
+  const query = isNewDashboardQueryEnabled ? useVenueSummariesQuery : useDashboardV2OverviewQuery
+
+  const queryResults = query({
     params: useParams(),
     payload: {
       filters: {
@@ -93,13 +73,16 @@ export function VenuesDashboardWidgetV2 () {
   })
   return (
     <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Venues' })} onArrowClick={onArrowClick}>
+      <Card title={$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
+        onArrowClick={onArrowClick}>
         <AutoSizer>
           {({ height, width }) => (
-            <DonutChart
-              style={{ width, height }}
-              size={'medium'}
-              data={queryResults.data} />
+            <UI.Container onClick={onArrowClick}>
+              <DonutChart
+                style={{ width, height }}
+                size={'medium'}
+                data={queryResults.data} />
+            </UI.Container>
           )}
         </AutoSizer>
       </Card>

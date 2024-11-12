@@ -3,10 +3,18 @@ import TextArea                                       from 'antd/lib/input/TextA
 import { useIntl }                                    from 'react-intl'
 import styled                                         from 'styled-components/macro'
 
-import { Card, showActionModal }                            from '@acx-ui/components'
-import { SpaceWrapper }                                     from '@acx-ui/rc/components'
-import { useParams }                                        from '@acx-ui/react-router-dom'
-import { MFAStatus, MfaDetailStatus, useToggleMFAMutation } from '@acx-ui/user'
+import { Card, showActionModal }                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { SpaceWrapper }                                from '@acx-ui/rc/components'
+import { administrationApi, useGetTenantDetailsQuery } from '@acx-ui/rc/services'
+import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
+import { store }                                       from '@acx-ui/store'
+import {
+  MFAStatus,
+  MfaDetailStatus,
+  hasCrossVenuesPermission,
+  useToggleMFAMutation
+} from '@acx-ui/user'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -18,13 +26,18 @@ interface MFAFormItemProps {
   className?: string;
   mfaTenantDetailsData?: MfaDetailStatus;
   isPrimeAdminUser: boolean;
+  isMspEc: boolean;
 }
 
 const MFAFormItem = styled((props: MFAFormItemProps) => {
   const { $t } = useIntl()
-  const { className, mfaTenantDetailsData, isPrimeAdminUser } = props
+  const mfaNewApiToggle = useIsSplitOn(Features.MFA_NEW_API_TOGGLE)
+  const { className, mfaTenantDetailsData, isPrimeAdminUser, isMspEc } = props
   const params = useParams()
   const [toggleMFA, { isLoading: isUpdating }] = useToggleMFAMutation()
+  const tenantDetailsData = useGetTenantDetailsQuery({ params })
+  const navigate = useNavigate()
+  const linkToUserProfile = useTenantLink('/userprofile/security')
 
   const handleEnableMFAChange = (e: CheckboxChangeEvent) => {
     const isChecked = e.target.checked
@@ -49,8 +62,16 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
             params: {
               tenantId: params.tenantId,
               enable: isChecked + ''
-            }
+            }, enableRbac: mfaNewApiToggle
           }).unwrap()
+          if (isMspEc) {
+            store.dispatch(
+              administrationApi.util.invalidateTags([
+                { type: 'Administration', id: 'DETAIL' }
+              ]))
+          }
+          if (isChecked)
+            navigate(linkToUserProfile)
         } catch (error) {
           console.log(error) // eslint-disable-line no-console
         }
@@ -63,9 +84,12 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
     navigator.clipboard.writeText(codes?.join('\n'))
   }
 
-  const isMfaEnabled = mfaTenantDetailsData?.tenantStatus === MFAStatus.ENABLED
+  const isMfaEnabled = isMspEc
+    ? tenantDetailsData?.data?.tenantMFA?.mfaStatus === MFAStatus.ENABLED
+    : mfaTenantDetailsData?.tenantStatus === MFAStatus.ENABLED
   const recoveryCodes = mfaTenantDetailsData?.recoveryCodes
-  const isDisabled = !isPrimeAdminUser || isUpdating
+  const isDisabled = !hasCrossVenuesPermission() || !isPrimeAdminUser ||
+    isUpdating || (isMspEc && isMfaEnabled)
 
   return (
     <Row gutter={24} className={className}>
@@ -81,7 +105,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
           </Checkbox>
         </Form.Item>
 
-        <SpaceWrapper full className='descriptionsWrapper'>
+        <SpaceWrapper full className='indent'>
           <List
             split={false}
             size='small'
@@ -93,20 +117,20 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
             ]}
             renderItem={(item) => (
               <List.Item>
-                <Typography.Text className='description greyText'>
+                <Typography.Text className='greyText'>
                   {item}
                 </Typography.Text>
               </List.Item>
             )}
           />
-          <Card
+          {!isMspEc && <Card
             title={$t({ defaultMessage: 'Recovery Codes' })}
             type='no-border'
           >
-            <Typography.Text className='description darkGreyText'>
+            <Typography.Text className='darkGreyText'>
               {$t(MessageMapping.enable_mfa_copy_codes_help_1)}
             </Typography.Text>
-            <Typography.Text className='description darkGreyText'>
+            <Typography.Text className='darkGreyText'>
               {$t(MessageMapping.enable_mfa_copy_codes_help_2)}
             </Typography.Text>
             <TextArea
@@ -119,7 +143,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
                 {$t({ defaultMessage: 'Copy Codes' })}
               </Typography.Link>
             </SpaceWrapper>
-          </Card>
+          </Card>}
         </SpaceWrapper>
       </Col>
     </Row>

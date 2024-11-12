@@ -38,6 +38,6 @@ export function SimpleListTooltip (props: SimpleListTooltipProps) {
   </SimpleListUl>
 
   return (
-    <Tooltip title={displayedComp}>{displayText}</Tooltip>
+    <Tooltip title={displayedComp} dottedUnderline>{displayText}</Tooltip>
   )
 }

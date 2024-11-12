@@ -1,14 +1,17 @@
 import { rest } from 'msw'
 
-import { RadioBand }                          from '@acx-ui/components'
-import { showActionModal }                    from '@acx-ui/components'
-import * as config                            from '@acx-ui/config'
-import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import {  ReportUrlsInfo, reportsApi }        from '@acx-ui/reports/services'
-import type { GuestToken, DashboardMetadata } from '@acx-ui/reports/services'
-import { Provider, store, rbacApiURL }        from '@acx-ui/store'
-import { render, mockServer, act, waitFor }   from '@acx-ui/test-utils'
-import { NetworkPath, useLocaleContext }      from '@acx-ui/utils'
+import { getUserProfile as getUserProfileRA, Roles as RolesEnumRA } from '@acx-ui/analytics/utils'
+import { RadioBand }                                                from '@acx-ui/components'
+import { showActionModal }                                          from '@acx-ui/components'
+import * as config                                                  from '@acx-ui/config'
+import { useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import {  ReportUrlsInfo, reportsApi }                              from '@acx-ui/reports/services'
+import type { GuestToken, EmbeddedResponse }                        from '@acx-ui/reports/services'
+import { Provider, store, rbacApiURL, refreshJWT }                  from '@acx-ui/store'
+import { render, mockServer, act, waitFor }                         from '@acx-ui/test-utils'
+import { RolesEnum as RolesEnumR1 }                                 from '@acx-ui/types'
+import { CustomRoleType, getUserProfile as getUserProfileR1 }       from '@acx-ui/user'
+import { NetworkPath, useLocaleContext }                            from '@acx-ui/utils'
 
 import { ReportType } from '../mapping/reportsMapping'
 
@@ -47,6 +50,13 @@ jest.mock('@acx-ui/utils', () => ({
 }))
 const localeContext = jest.mocked(useLocaleContext)
 
+jest.mock('@acx-ui/store', () => ({
+  __esModule: true,
+  ...jest.requireActual('@acx-ui/store'),
+  refreshJWT: jest.fn()
+}))
+const refreshJWTMock = jest.mocked(refreshJWT)
+
 jest.mock('@acx-ui/config')
 const get = jest.mocked(config.get)
 
@@ -56,11 +66,23 @@ jest.mock('@acx-ui/components', () => ({
 }))
 const actionModal = jest.mocked(showActionModal)
 
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  getUserProfile: jest.fn()
+}))
+const userProfileRA = getUserProfileRA as jest.Mock
+
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  getUserProfile: jest.fn()
+}))
+const userProfileR1 = getUserProfileR1 as jest.Mock
+
 const guestTokenReponse = {
   token: 'some token'
 } as GuestToken
 
-const getEmbeddedReponse = {
+const embeddedResponse1 = {
   result: {
     allowed_domains: [
       'localhost:8088'
@@ -70,7 +92,28 @@ const getEmbeddedReponse = {
     dashboard_id: '6',
     uuid: 'ac940866-a6f3-4113-81c1-ffb82983ce51'
   }
-} as DashboardMetadata
+} as EmbeddedResponse
+
+const embeddedResponse2 = {
+  result: {
+    allowed_domains: [
+      'localhost:8088'
+    ],
+    changed_by: null,
+    changed_on: '2022-12-06T05:57:51.442545',
+    dashboard_id: '6',
+    uuid: 'ac940866-a6f3-4113-81c1-ffb82983ce51'
+  },
+  user_info: {
+    is_franchisor: 'false',
+    tenant_ids: [
+      '1235'
+    ],
+    tenant_id: '1234',
+    own_tenant_id: '1234',
+    cache_key: 'cache-key'
+  }
+} as EmbeddedResponse
 
 describe('convertDateTimeToSqlFormat', () => {
   it('should convert date to sqlDateTimeFormat', () => {
@@ -89,7 +132,7 @@ describe('EmbeddedDashboard', () => {
         ReportUrlsInfo.getEmbeddedDashboardMeta.url,
         (_, res, ctx) => {
           embedDashboardSpy()
-          return res(ctx.json(getEmbeddedReponse))
+          return res(ctx.json(embeddedResponse1))
         }
       ),
       rest.post(
@@ -99,16 +142,43 @@ describe('EmbeddedDashboard', () => {
       rest.get(`${rbacApiURL}/systems`,
         (_req, res, ctx) => res(ctx.json(systems)))
     )
+    userProfileR1.mockReturnValue({
+      profile: {
+        scopes: [
+          'wifi-u',
+          'switch-u'
+        ],
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'n9bKZ@example.com',
+        roles: [RolesEnumRA.PRIME_ADMINISTRATOR],
+        externalId: '1234',
+        tenantId: '1234'
+      }
+    })
   })
   afterEach(() => {
     process.env = oldEnv
     store.dispatch(reportsApi.util.resetApiState())
-    get.mockReturnValue('')
+    jest.clearAllMocks()
     embedDashboardSpy.mockClear()
   })
 
   const params = { tenantId: 'tenant-id' }
-  it('should render the dashboard', async () => {
+  it.each([
+    RolesEnumRA.PRIME_ADMINISTRATOR, RolesEnumRA.ADMINISTRATOR, RolesEnumRA.READ_ONLY
+  ])('should render the dashboard for SA', async (role) => {
+    get.mockReturnValue('true')
+    userProfileRA.mockReturnValue({
+      accountId: 'account-id',
+      tenants: [],
+      invitations: [],
+      selectedTenant: {
+        id: 'tenant-id',
+        permissions: {},
+        role
+      }
+    })
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     localeContext.mockReturnValue({
       messages: { locale: null as unknown as string },
@@ -119,6 +189,88 @@ describe('EmbeddedDashboard', () => {
     render(<Provider>
       <EmbeddedReport
         reportName={ReportType.AP_DETAIL} />
+    </Provider>, { route: { params } })
+
+    await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
+  })
+
+  it('should render AP dashboard for ALTO with custom scopes', async () => {
+    get.mockReturnValue('')
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    localeContext.mockReturnValue({
+      messages: { locale: null as unknown as string },
+      lang: 'en-US',
+      setLang: () => {}
+    })
+
+    render(<Provider>
+      <EmbeddedReport
+        reportName={ReportType.AP_DETAIL} />
+    </Provider>, { route: { params } })
+
+    await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
+  })
+
+  it('should render SWITCH dashboard for ALTO with custom scopes', async () => {
+    get.mockReturnValue('')
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    localeContext.mockReturnValue({
+      messages: { locale: null as unknown as string },
+      lang: 'en-US',
+      setLang: () => {}
+    })
+
+    render(<Provider>
+      <EmbeddedReport
+        reportName={ReportType.SWITCH} />
+    </Provider>, { route: { params } })
+
+    await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
+  })
+
+  it('should render OVERVIEW dashboard for ALTO wihout custom scopes', async () => {
+    userProfileR1.mockReturnValue({
+      profile: {
+        scopes: undefined,
+        roles: [RolesEnumR1.ADMINISTRATOR]
+      }
+    })
+    get.mockReturnValue('')
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    localeContext.mockReturnValue({
+      messages: { locale: null as unknown as string },
+      lang: 'en-US',
+      setLang: () => {}
+    })
+
+    render(<Provider>
+      <EmbeddedReport
+        reportName={ReportType.OVERVIEW} />
+    </Provider>, { route: { params } })
+
+    await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
+  })
+
+  it('should render OVERVIEW dashboard for ALTO wihout scopes and custom system role', async () => {
+    userProfileR1.mockReturnValue({
+      profile: {
+        scopes: undefined,
+        customRoleType: CustomRoleType.SYSTEM,
+        customRoleName: RolesEnumR1.ADMINISTRATOR,
+        roles: ['custom-system-role']
+      }
+    })
+    get.mockReturnValue('')
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    localeContext.mockReturnValue({
+      messages: { locale: null as unknown as string },
+      lang: 'en-US',
+      setLang: () => {}
+    })
+
+    render(<Provider>
+      <EmbeddedReport
+        reportName={ReportType.OVERVIEW} />
     </Provider>, { route: { params } })
 
     await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
@@ -173,10 +325,11 @@ describe('EmbeddedDashboard', () => {
       setLang: () => {}
     })
 
-    rest.post(
-      ReportUrlsInfo.getEmbeddedDashboardMeta.url,
-      (_, res, ctx) => res(ctx.json(getEmbeddedReponse))
-    )
+    mockServer.use(
+      rest.post(
+        ReportUrlsInfo.getEmbeddedDashboardMeta.url,
+        (_, res, ctx) => res(ctx.json(embeddedResponse2))
+      ))
     render(<Provider>
       <EmbeddedReport
         reportName={ReportType.AP_DETAIL}
@@ -184,17 +337,7 @@ describe('EmbeddedDashboard', () => {
     </Provider>, { route: { params } })
   })
 
-  describe('401 Unauthorized', () => {
-    beforeAll(() => {
-      Object.defineProperty(window, 'location', {
-        writable: true,
-        value: {
-          ...window.location,
-          reload: jest.fn()
-        }
-      })
-    })
-
+  describe('Event listener', () => {
     let addEventListenerMock: jest.SpyInstance
     let removeEventListenerMock: jest.SpyInstance
 
@@ -212,7 +355,7 @@ describe('EmbeddedDashboard', () => {
     it('should call showExpiredSessionModal when event type is unauthorized', () => {
       render(<Provider>
         <EmbeddedReport
-          reportName={ReportType.AP_DETAIL}
+          reportName={ReportType.OVERVIEW}
           rlsClause='venue filter'/>
       </Provider>, { route: { params } })
 
@@ -223,9 +366,7 @@ describe('EmbeddedDashboard', () => {
       expect(actionModal).toHaveBeenCalled()
 
       actionModal.mock.calls[0][0].onOk!()
-      expect(window.location.reload).toHaveBeenCalled()
     })
-
     it('should NOT call showExpiredSessionModal when event type is NOT unauthorized', () => {
       const { unmount } = render(<Provider>
         <EmbeddedReport
@@ -241,6 +382,21 @@ describe('EmbeddedDashboard', () => {
 
       unmount()
       expect(removeEventListenerMock).toHaveBeenCalledWith('message', expect.any(Function))
+    })
+    it('should call refreshJWT when event type is refreshToken', () => {
+      render(<Provider>
+        <EmbeddedReport
+          reportName={ReportType.OVERVIEW}
+          rlsClause='venue filter'/>
+      </Provider>, { route: { params } })
+
+      act(() => {
+        window.dispatchEvent(new MessageEvent('message',
+          { data: { type: 'refreshToken', headers: { 'login-token': 'token' } } }))
+      })
+      expect(addEventListenerMock).toHaveBeenCalledWith('message', expect.any(Function))
+      expect(refreshJWTMock).toHaveBeenCalledWith(
+        { headers: { 'login-token': 'token' }, type: 'refreshToken' })
     })
   })
 })

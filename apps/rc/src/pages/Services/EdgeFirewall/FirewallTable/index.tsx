@@ -27,7 +27,9 @@ import {
   useTableQuery,
   DdosAttackType,
   getDDoSAttackTypeString,
-  getACLDirectionString
+  getACLDirectionString,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -35,7 +37,6 @@ import {
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 const edgeOptionsDefaultPayload = {
   fields: ['name', 'serialNumber'],
@@ -48,6 +49,7 @@ const FirewallTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
+  const settingsId = 'services-firewall-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeFirewallViewDataListQuery,
     defaultPayload: {},
@@ -57,7 +59,8 @@ const FirewallTable = () => {
     },
     search: {
       searchTargetFields: ['firewallName']
-    }
+    },
+    pagination: { settingsId }
   })
   const { edgeOptions } = useGetEdgeListQuery(
     { payload: edgeOptionsDefaultPayload },
@@ -155,7 +158,7 @@ const FirewallTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'SmartEdges' }),
+      title: $t({ defaultMessage: 'RUCKUS Edges' }),
       key: 'edgeIds',
       dataIndex: 'edgeIds',
       align: 'center',
@@ -230,6 +233,7 @@ const FirewallTable = () => {
 
   const rowActions: TableProps<EdgeFirewallViewData>['rowActions'] = [
     {
+      scopeKey: getScopeKeyByService(ServiceType.EDGE_FIREWALL, ServiceOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -246,11 +250,12 @@ const FirewallTable = () => {
       }
     },
     {
+      scopeKey: getScopeKeyByService(ServiceType.EDGE_FIREWALL, ServiceOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       disabled: isDeleteBtnDisable,
       tooltip: (selectedRows) => isDeleteBtnDisable(selectedRows)
         // eslint-disable-next-line max-len
-        ? $t({ defaultMessage: 'Please deactivate the SmartEdge Firewall Service under Scope menu first' })
+        ? $t({ defaultMessage: 'Please deactivate the RUCKUS Edge Firewall Service under Scope menu first' })
         : undefined,
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -275,6 +280,8 @@ const FirewallTable = () => {
     }
   ]
 
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return (
     <>
       <PageHeader
@@ -289,12 +296,13 @@ const FirewallTable = () => {
             link: getServiceListRoutePath(true)
           }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getServiceRoutePath({
               type: ServiceType.EDGE_FIREWALL,
               oper: ServiceOperation.CREATE
             })}
+            scopeKey={getScopeKeyByService(ServiceType.EDGE_FIREWALL, ServiceOperation.CREATE)}
           >
             <Button type='primary'>
               {$t({ defaultMessage: 'Add Firewall Service' })}
@@ -309,11 +317,11 @@ const FirewallTable = () => {
         ]}
       >
         <Table
-          settingsId='services-firewall-table'
+          settingsId={settingsId}
           rowKey='id'
           columns={columns}
-          rowSelection={hasAccess() && { type: 'checkbox' }}
-          rowActions={filterByAccess(rowActions)}
+          rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
+          rowActions={allowedRowActions}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}

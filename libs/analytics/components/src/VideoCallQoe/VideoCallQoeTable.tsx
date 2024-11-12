@@ -11,6 +11,8 @@ import { Button, Table, TableProps, Tooltip, TrendPill, showActionModal, showToa
 import { Loader }                                                                    from '@acx-ui/components'
 import { DateFormatEnum, formatter }                                                 from '@acx-ui/formatter'
 import { TenantLink }                                                                from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                                from '@acx-ui/types'
+import { filterByAccess, hasCrossVenuesPermission, hasPermission }                   from '@acx-ui/user'
 import { TABLE_DEFAULT_PAGE_SIZE }                                                   from '@acx-ui/utils'
 
 import { useVideoCallQoeTestsQuery, useDeleteCallQoeTestMutation } from '../VideoCallQoe/services'
@@ -33,7 +35,7 @@ export function VideoCallQoeTable () {
   const meetingList: Meeting[] = []
 
   allCallQoeTests?.forEach((qoeTest) => {
-    const { name, meetings } = qoeTest
+    const { name, meetings, id: testId } = qoeTest
 
     meetings.forEach(meeting => {
       // As part of mugration, some calls were marked as invalid
@@ -45,7 +47,7 @@ export function VideoCallQoeTable () {
       if (meeting.status === MeetingType.INVALID.toUpperCase() && meeting.mos > 0) {
         meetingCopy.mos = -1
       }
-      meetingList.push({ ...meetingCopy, name })
+      meetingList.push({ ...meetingCopy, name, testId })
     })
   })
 
@@ -66,11 +68,11 @@ export function VideoCallQoeTable () {
       searchable: true,
       render: (_, row) => {
         const status = startCase(toLower(row.status as string))
-        const meetingId = row.id
+        const testId = row.testId
 
         if ([MeetingType.ENDED].includes(status)) {
           return (
-            <TenantLink to={`/analytics/videoCallQoe/${meetingId}`}>
+            <TenantLink to={`/analytics/videoCallQoe/${testId}`}>
               {row.name}
             </TenantLink>
           )
@@ -81,7 +83,7 @@ export function VideoCallQoeTable () {
           }
 
           return (
-            <Button type='link' onClick={handleClick}>
+            <Button type='link' onClick={handleClick} size='small'>
               {row.name}
             </Button>
           )
@@ -138,7 +140,7 @@ export function VideoCallQoeTable () {
 
         const invalidReason = messageMapping[row.invalidReason as keyof typeof messageMapping]
         return (
-          <Tooltip placement='top' title={$t(invalidReason)}>
+          <Tooltip placement='top' title={$t(invalidReason)} dottedUnderline={true}>
             <UI.Invalid>
               {meetingStatus}
             </UI.Invalid>
@@ -187,6 +189,7 @@ export function VideoCallQoeTable () {
   const actions: TableProps<(typeof meetingList)[0]>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
+      scopeKey: [WifiScopes.DELETE],
       onClick: ([{ name, id }], clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -214,9 +217,12 @@ export function VideoCallQoeTable () {
       <Table
         columns={columnHeaders}
         dataSource={meetingList}
-        rowActions={actions}
+        rowActions={filterByAccess(actions)}
         rowKey='id'
-        rowSelection={{ type: 'radio' }}
+        rowSelection={hasCrossVenuesPermission() && hasPermission({
+          permission: 'WRITE_VIDEO_CALL_QOE',
+          scopes: [WifiScopes.UPDATE]
+        }) && { type: 'radio' }}
         pagination={{
           pageSize: TABLE_DEFAULT_PAGE_SIZE,
           defaultPageSize: TABLE_DEFAULT_PAGE_SIZE

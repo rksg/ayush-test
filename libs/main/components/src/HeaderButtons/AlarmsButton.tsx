@@ -5,15 +5,19 @@ import { Badge } from 'antd'
 
 import {
   LayoutUI } from '@acx-ui/components'
-import { NotificationSolid } from '@acx-ui/icons'
-import { AlarmsDrawer }      from '@acx-ui/rc/components'
+import { useIsSplitOn, Features }                 from '@acx-ui/feature-toggle'
+import { NotificationSolid }                      from '@acx-ui/icons'
+import { AlarmsDrawer }                           from '@acx-ui/rc/components'
 import {
-  useGetAlarmCountQuery }  from '@acx-ui/rc/services'
+  useGetAlarmCountQuery, useGetAlarmsCountQuery }  from '@acx-ui/rc/services'
 import { useParams } from '@acx-ui/react-router-dom'
 
 export default function AlarmsHeaderButton () {
   const params = useParams()
-  const { data } = useGetAlarmCountQuery({ params })
+  const payload = { filters: { } }
+  const isNewAlarmQueryEnabled = useIsSplitOn(Features.ALARM_NEW_API_TOGGLE)
+  const query = isNewAlarmQueryEnabled ? useGetAlarmsCountQuery : useGetAlarmCountQuery
+  const { data } = query({ params, payload })
 
   const [visible, setVisible] = useState(false)
 
@@ -42,7 +46,12 @@ export default function AlarmsHeaderButton () {
       offset={[getOffset(getCount()), 0]}
       children={<LayoutUI.ButtonSolid
         icon={<NotificationSolid />}
-        onClick={()=> setVisible(!visible)}
+        onClick={()=> {
+          setVisible(!visible)
+          const event = new CustomEvent('showAlarmDrawer',
+            { detail: { data: { name: 'all' } } })
+          window.dispatchEvent(event)
+        }}
       />}
     />
     <AlarmsDrawer visible={visible} setVisible={setVisible}/>

@@ -3,13 +3,16 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { venueApi }                              from '@acx-ui/rc/services'
-import { EdgeUrlsInfo }                          from '@acx-ui/rc/utils'
-import { Provider, store }                       from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { venueApi }                                      from '@acx-ui/rc/services'
+import { EdgeGeneralFixtures, EdgeStatus, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                               from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen }         from '@acx-ui/test-utils'
+
+import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 
 import { EdgePingForm } from './edgePingForm'
 
+const { mockEdgeList } = EdgeGeneralFixtures
 const params = { tenantId: 'tenant-id', serialNumber: 'serial-number' }
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
@@ -34,14 +37,31 @@ describe('EdgePingForm', () => {
   })
 
   it('should render correctly', async () => {
-    render(<Provider><EdgePingForm /></Provider>, { route: { params } })
+    render(
+      <Provider>
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgePingForm />
+        </EdgeDetailsDataContext.Provider>
+      </Provider>, { route: { params } })
     expect(screen.getByRole('textbox', { name: /target host or ip address/i })).toBeVisible()
   })
 
   it('should run validation correctly', async () => {
     render(
       <Provider>
-        <EdgePingForm />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgePingForm />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, { route: { params } })
 
     const ipAddressField = screen.getByRole('textbox', {
@@ -54,7 +74,14 @@ describe('EdgePingForm', () => {
   it('should run ping correctly', async () => {
     render(
       <Provider>
-        <EdgePingForm />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgePingForm />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, { route: { params } })
 
     const ipAddressField = screen.getByRole('textbox', {

@@ -4,15 +4,18 @@ import { Divider, List, Space } from 'antd'
 import moment                   from 'moment-timezone'
 import { useIntl }              from 'react-intl'
 
-import { Card, Loader, Subtitle, Tooltip, Descriptions }            from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                from '@acx-ui/formatter'
-import { PassphraseViewer, WifiSignal, useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
+import { Card, Loader, Subtitle, Tooltip, Descriptions }           from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                               from '@acx-ui/formatter'
+import { PassphraseViewer, WifiSignal, networkDisplayTransformer } from '@acx-ui/rc/components'
 import {
   useGetPassphraseClientQuery,
   useLazyGetApQuery,
   useLazyGetGuestsListQuery,
   useLazyGetNetworkQuery,
-  useLazyGetVenueQuery
+  useLazyGetVenueQuery,
+  useLazyGetClientListQuery,
+  useLazyGetClientsQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeep,
@@ -41,7 +44,23 @@ interface ClientExtended extends Client {
   hasSwitch: boolean,
   enableLinkToAp: boolean,
   enableLinkToVenue: boolean,
-  enableLinkToNetwork: boolean
+  enableLinkToNetwork: boolean,
+  radioType: string
+}
+
+// eslint-disable-next-line
+const getRadioTypeFromRbacAndNonRbacAPI = (nonRbacRadioType: any, rbacRadioType: any, ff: boolean) : string => {
+  let radioType = undefined
+  if (ff) {
+    radioType = rbacRadioType?.data.data[0]?.radioStatus?.type
+  } else {
+    radioType = nonRbacRadioType?.data?.data[0]?.radio?.mode
+  }
+
+  if(radioType === undefined || radioType === '') {
+    radioType = '--'
+  }
+  return radioType
 }
 
 export function ClientProperties ({ clientStatus, clientDetails }: {
@@ -56,14 +75,19 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
   const [getVenue] = useLazyGetVenueQuery()
   const [getNetwork] = useLazyGetNetworkQuery()
   const [getGuestsList] = useLazyGetGuestsListQuery()
+  const [getClientNonRbac] = useLazyGetClientListQuery()
+  const [getClientRbac] = useLazyGetClientsQuery()
   const [guestDetail, setGuestDetail] = useState({} as Guest)
   const [isExternalDpskClient, setIsExternalDpskClient] = useState(false)
+
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   useEffect(() => {
     if (Object.keys(clientDetails)?.length) {
       let apData = null as unknown as ApDeep
       let venueData = null as unknown as VenueExtended
       let networkData = null as NetworkSaveData | null
+      let radioType = null as string | null
       const serialNumber = clientDetails?.apSerialNumber || clientDetails?.serialNumber
 
       const getGuestData = async () => {
@@ -75,7 +99,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
         if (list.length > 0) {
           const name = getClientUsername(clientDetails)
           setGuestDetail(list.filter(item => (
-            item.networkId === clientDetails.networkId
+            item.wifiNetworkId === clientDetails.networkId
             && item.name === name
           ))[0])
         }
@@ -93,13 +117,30 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
             ...( shouldGetVenue
               ? [getVenue({ params: { tenantId, venueId: clientDetails?.venueId } }, true)] : [[]]
             ),
-            getNetwork({ params: { tenantId, networkId: clientDetails?.networkId } }, true)
-          ]).then(([ ap, venue, network ]) => {
+            getNetwork({ params: { tenantId, networkId: clientDetails?.networkId } }, true),
+            ...(!isWifiRbacEnabled ? [getClientNonRbac({ payload: {
+              fields: [
+                'clientMac','radio.mode'
+              ],
+              filters: {
+                clientMac: [clientDetails.clientMac]
+              }
+            } })]: [[]]),
+            ...(isWifiRbacEnabled ? [getClientRbac({ payload: {
+              fields: [
+                'macAddress','radioStatus.type'
+              ],
+              filters: {
+                macAddress: [clientDetails.clientMac]
+              }
+            } })] : [[]])
+          ]).then(([ ap, venue, network, nonRbacRadioType, rbacRadioType ]) => {
             /* eslint-disable @typescript-eslint/no-explicit-any */
             setData(
               ((ap as any)?.data ?? null) as unknown as ApDeep,
               ((venue as any)?.data ?? null) as unknown as VenueExtended,
-              ((network as any)?.data ?? null) as unknown as NetworkSaveData
+              ((network as any)?.data ?? null) as unknown as NetworkSaveData,
+              getRadioTypeFromRbacAndNonRbacAPI(nonRbacRadioType, rbacRadioType, isWifiRbacEnabled)
             )
             /* eslint-enable @typescript-eslint/no-explicit-any */
           }).catch((error) => {
@@ -107,11 +148,14 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
           })
 
         } catch {
-          setData(apData, venueData, networkData)
+          setData(apData, venueData, networkData, radioType)
         }
       }
 
-      const setData = (apData: ApDeep, venueData: VenueExtended, networkData: NetworkSaveData | null
+      const setData = (apData: ApDeep,
+        venueData: VenueExtended,
+        networkData: NetworkSaveData | null,
+        clientMacAndRadioType: string | null
       ) => {
         setNetworkType(networkData?.type)
         setGuestType(networkData?.guestPortal?.guestNetworkType)
@@ -125,7 +169,8 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
             !!clientDetails.isApExists : !!apData,
           enableLinkToVenue: clientDetails.hasOwnProperty('isVenueExists') ?
             !!clientDetails.isVenueExists : !!venueData,
-          enableLinkToNetwork: !!networkData
+          enableLinkToNetwork: !!networkData,
+          radioType: (clientMacAndRadioType === null ? '--' : clientMacAndRadioType)
         })
         setIsExternalDpskClient(!networkData?.dpskServiceProfileId)
 
@@ -255,9 +300,10 @@ function ClientDetails ({ client }: { client: ClientExtended }) {
 }
 
 function Connection ({ client }: { client: ClientExtended }) {
-  const { $t } = getIntl()
+  const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
+  const intl = useIntl()
+  const { $t } = intl
   const showVni = !!client.vni
-
   return <>
     <Subtitle level={4}>
       {$t({ defaultMessage: 'Connection' })}
@@ -292,7 +338,7 @@ function Connection ({ client }: { client: ClientExtended }) {
         }
       />}
       <Descriptions.Item
-        label={$t({ defaultMessage: 'Venue' })}
+        label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
         children={
           client?.enableLinkToVenue
             ? <TenantLink to={`venues/${client.venueId}/venue-details/overview`}>
@@ -345,6 +391,14 @@ function Connection ({ client }: { client: ClientExtended }) {
         </Tooltip>}
         children={client?.bssid || '--'}
       />
+      { wifiEDAClientRevokeToggle && <Descriptions.Item
+        label={<Tooltip
+          placement='bottom'
+          title={$t({ defaultMessage: 'Network Type' })}
+        >{$t({ defaultMessage: 'Network Type' })}
+        </Tooltip>}
+        children={networkDisplayTransformer(intl, client?.networkType)}
+      /> }
       <Descriptions.Item
         label={$t({ defaultMessage: 'Auth Method' })}
         children={client?.authmethod || '--'}
@@ -436,7 +490,10 @@ function OperationalData ({ client }: { client: ClientExtended }) {
           </Tooltip>
         </Space>}
       />
-
+      <Descriptions.Item
+        label={intl.$t({ defaultMessage: 'Radio Type' })}
+        children={client?.radioType ? client?.radioType : '--'}
+      />
     </Descriptions>
   </>
 }
@@ -534,7 +591,7 @@ function LastSession ({ client }: { client: ClientExtended }) {
         }
       />
       <Descriptions.Item
-        label={$t({ defaultMessage: 'Last Venue' })}
+        label={$t({ defaultMessage: 'Last <VenueSingular></VenueSingular>' })}
         children={
           client?.enableLinkToVenue
             ? <TenantLink to={`venues/${client.venueId}/venue-details/overview`}>
@@ -597,14 +654,14 @@ function GuestDetails ({ guestDetail, clientMac }: {
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Other devices' })}
-        children={guestDetail?.clients?.filter(client => clientMac !== client.clientMac).map(
+        children={guestDetail?.clients?.filter(client => clientMac !== client.macAddress).map(
           client =>
             <TenantLink
               // eslint-disable-next-line max-len
-              to={`/users/wifi/clients/${client.clientMac}/details/overview`}
-              key={client.clientMac}
+              to={`/users/wifi/clients/${client.macAddress}/details/overview`}
+              key={client.macAddress}
             >
-              {client.clientMac}
+              {client.macAddress}
             </TenantLink>) || '--'}
       />
     </Descriptions>
@@ -615,9 +672,7 @@ function GuestDetails ({ guestDetail, clientMac }: {
 function DpskPassphraseDetails (props: { networkId: string, clientMac: string, username?: string }) {
   const { networkId, clientMac, username } = props
   const intl = getIntl()
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const { passphraseClient } = useGetPassphraseClientQuery({
-    params: dpskNewConfigFlowParams,
     payload: { networkId, mac: clientMac, username: username ?? '' }
   }, {
     selectFromResult: ({ data }) => {
@@ -717,7 +772,7 @@ function getClientUsername (client?: Client): string | undefined {
 
 function getAuthStatus (client?: Client) {
   const { $t } = getIntl()
-  const statusInt = parseInt((client?.status || ''), 10)
+  const statusInt = parseInt(client?.status ?? '', 10)
   if (isNaN(statusInt)) return '--'
 
   let statusText = '--'

@@ -3,31 +3,34 @@ import _          from 'lodash'
 
 import { NetworkSaveData } from '@acx-ui/rc/utils'
 
-interface ActivateNetworkSwitchButtonProps {
+export interface ActivateNetworkSwitchButtonProps {
   row: NetworkSaveData,
+  rows: NetworkSaveData[],
   activated: string[],
+  disabled?: boolean,
   onChange?: (
     data: NetworkSaveData,
     checked: boolean,
-    activated: string[]
+    activated: NetworkSaveData[]
     ) => void
 }
 
 export const ActivateNetworkSwitchButton = (props: ActivateNetworkSwitchButtonProps) => {
-  const { row, activated, onChange } = props
+  const { row, rows, activated, disabled, onChange } = props
+
   const isActivated = _.findIndex(activated, i => i === row.id)
+  let newSelected = rows.filter(item => activated.includes(item.id!))
 
   return <Switch
     aria-label={`activate-btn-${row.id}`}
     checked={isActivated !== -1}
+    disabled={!!disabled}
     onChange={(checked: boolean) => {
-      let newSelected
-
       if (checked) {
-        newSelected = _.union(activated, [row.id!])
+        newSelected = _.unionBy(newSelected, [row], 'id')
       } else {
-        newSelected = [...activated!]
-        _.remove(newSelected, i => i === row.id)
+        _.remove(newSelected,
+          i => i.id === row.id)
       }
 
       onChange?.(_.omit(row, 'children'), checked, newSelected)

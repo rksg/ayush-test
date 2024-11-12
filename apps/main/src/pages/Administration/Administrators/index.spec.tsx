@@ -1,9 +1,8 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import { MspUrlsInfo }            from '@acx-ui/msp/utils'
-import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }               from '@acx-ui/store'
+import { AdministrationUrlsInfo, TenantType } from '@acx-ui/rc/utils'
+import { Provider }                           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -35,6 +34,9 @@ jest.mock('./AdministratorsTable', () => ({
     return <div data-testid='mocked-AdministratorsTable'></div>
   }
 }))
+const services = require('@acx-ui/msp/services')
+const rcServices = require('@acx-ui/rc/services')
+
 describe('Administrators', () => {
   let params: { tenantId: string }
 
@@ -45,14 +47,18 @@ describe('Administrators', () => {
       tenantId: '8c36a0a9ab9d4806b060e112205add6f'
     }
 
+    services.useGetMspEcProfileQuery = jest.fn().mockImplementation(() => {
+      return { data: fakeMspEcProfile }
+    })
+
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getTenantDetails.url,
         (req, res, ctx) => res(ctx.json(fakeTenantDetails))
       ),
       rest.get(
-        MspUrlsInfo.getMspEcProfile.url,
-        (req, res, ctx) => res(ctx.json(fakeMspEcProfile))
+        AdministrationUrlsInfo.getTenantAuthentications.url,
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
   })
@@ -74,16 +80,15 @@ describe('Administrators', () => {
   })
 
   it('should correctly render when delegation not ready', async () => {
-    const fakeVARUSer = { ...fakeUserProfile }
-    fakeVARUSer.var = true
+    const tenantDetails = { ...fakeTenantDetails, tenantType: TenantType.VAR }
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+      return { data: tenantDetails }
+    })
 
     render(
       <Provider>
         <UserProfileContext.Provider
-          value={{
-            data: fakeVARUSer,
-            isPrimeAdmin
-          } as UserProfileContextProps}
+          value={userProfileContextValues}
         >
           <Administrators />
         </UserProfileContext.Provider>

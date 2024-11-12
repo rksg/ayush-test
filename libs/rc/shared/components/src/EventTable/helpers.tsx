@@ -1,17 +1,29 @@
+import { Typography }                          from 'antd'
 import _                                       from 'lodash'
 import { FormattedMessage, MessageDescriptor } from 'react-intl'
 
-import { Table, TableHighlightFnArgs, Tooltip } from '@acx-ui/components'
-import { Event, replaceStrings }                from '@acx-ui/rc/utils'
-import { TenantLink, generatePath }             from '@acx-ui/react-router-dom'
-import { getIntl, noDataDisplay }               from '@acx-ui/utils'
+import { Table, TableHighlightFnArgs, Tooltip }            from '@acx-ui/components'
+import { Event, replaceStrings, formatTurnOnOffTimestamp } from '@acx-ui/rc/utils'
+import { TenantLink, generatePath }                        from '@acx-ui/react-router-dom'
+import { getIntl, noDataDisplay }                          from '@acx-ui/utils'
 
 import { typeMapping } from './mapping'
-import * as UI         from './styledComponents'
 
 type EntityType = typeof entityTypes[number]
 type EntityExistsKey = `is${Capitalize<EntityType>}Exists`
-const entityTypes = ['ap', 'client', 'network', 'switch', 'venue', 'transaction', 'edge'] as const
+const entityTypes
+  = [
+    'ap',
+    'client',
+    'network',
+    'switch',
+    'venue',
+    'transaction',
+    'edge',
+    'remoteedge',
+    'unit',
+    'clientMldMac'
+  ] as const
 const configurationUpdate = 'Configuration Update' as const
 
 export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
@@ -33,6 +45,10 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
       path: 'networks/wireless/:networkId/network-details/overview',
       params: ['networkId']
     },
+    clientMldMac: {
+      path: 'users/wifi/clients/search/:clientMldMac',
+      params: ['clientMldMac']
+    },
     switch: {
       path: 'devices/switch/:switchMac/:serialNumber/details/overview',
       params: ['switchMac', 'serialNumber']
@@ -48,10 +64,23 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
     edge: {
       path: 'devices/edge/:serialNumber/details/overview',
       params: ['serialNumber']
+    },
+    remoteedge: {
+      path: 'devices/edge/:remoteEdgeId/details/overview',
+      params: ['remoteEdgeId']
+    },
+    unit: {
+      path: 'venues/:venueId/venue-details/units',
+      params: ['venueId']
     }
   }
+  let entity: EntityType
 
-  const [entity] = _.kebabCase(entityKey).split('-') as [EntityType]
+  if (entityTypes.includes(entityKey as EntityType)) {
+    entity = entityKey as EntityType
+  } else {
+    [entity] = _.kebabCase(entityKey).split('-') as [EntityType]
+  }
   const name = <>{highlightFn(String(data[entityKey] || extraHandle(entity)))}</>
 
   if (!entityTypes.includes(entity)) return name
@@ -61,7 +90,7 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
 
   if (!exists) return <Tooltip
     title={<FormattedMessage defaultMessage='Not available' />}
-    children={<UI.Disabled>{name}</UI.Disabled>}
+    children={<Typography.Text disabled children={name} />}
   />
 
   const spec = pathSpecs[entity]
@@ -102,42 +131,49 @@ export const getSource = (data: Event, highlightFn?: TableHighlightFnArgs) => {
     ADMINACTIVITY: 'adminName',
     ADMIN: 'adminName',
     NOTIFICATION: 'adminName',
-    EDGE: 'edgeName'
+    EDGE: 'edgeName',
+    PROFILE: 'profileName'
   }
   const entityKey = sourceMapping[data.entity_type as keyof typeof sourceMapping]
   return <EntityLink {...{ entityKey, data, highlightFn }} />
 }
 
 export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) => {
+  const formatData = formatTurnOnOffTimestamp(data)
   try {
-    let message = String(data.message && JSON.parse(data.message).message_template)
+    let message = String(formatData.message && JSON.parse(formatData.message).message_template)
       // escape ' by replacing with ''
       .replaceAll("'", "''")
       // escape < { by replacing with '<' or '{'
       .replaceAll(/([<{])/g, "'$1'")
 
-    const template = replaceStrings(message, data, (key) => `<entity>${key}</entity>`)
+    const template = replaceStrings(message, formatData, (key) => `<entity>${key}</entity>`)
     const highlighted = (highlightFn
       ? highlightFn(template, (key) => `<b>${key}</b>`)
       : template) as string
+
+    const cleanedHighlighted = highlighted.replace(/<entity>(.*?)<\/entity>/g, (match, p1) => {
+      const cleanedContent = p1.replace(/<\/?b>/g, '')
+      return `<entity>${cleanedContent}</entity>`
+    })
 
     // rename to prevent it being parse by extraction process
     const FormatMessage = FormattedMessage
 
     return <FormatMessage
       id='events-description-template'
-      defaultMessage={highlighted}
+      defaultMessage={cleanedHighlighted}
       values={{
         entity: (chunks) => <EntityLink
           entityKey={String(chunks[0]) as keyof Event}
-          data={data}
+          data={formatData}
           highlightFn={highlightFn}
         />,
         b: (chunks) => <Table.Highlighter>{chunks}</Table.Highlighter>
       }}
     />
   } catch {
-    return noDataDisplay
+    return formatData.message
   }
 }
 
@@ -150,7 +186,6 @@ export const getDetail = (data: Event) => {
 
     // rename to prevent it being parse by extraction process
     const FormatMessage = FormattedMessage
-
     return <FormatMessage
       id='events-detailedDescription-template'
       // escape ' by replacing with '' as it is special character of formatjs
@@ -173,5 +208,12 @@ const extraHandle = (entityType: EntityType) => {
 }
 
 const identifyExistKey = (entityType: EntityType) => {
-  return 'transaction' === entityType ? 'switch' : entityType
+  switch (entityType) {
+    case 'transaction':
+      return 'switch'
+    case 'clientMldMac':
+      return 'client'
+    default:
+      return entityType
+  }
 }

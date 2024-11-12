@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { apApi, venueApi }                             from '@acx-ui/rc/services'
-import { CommonUrlsInfo, getUrlForTest, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                             from '@acx-ui/store'
+import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { apApi, venueApi }                from '@acx-ui/rc/services'
+import { WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -44,33 +44,35 @@ jest.mock('react-router-dom', () => ({
 }))
 
 describe('AP Directed Multicast', () => {
+  const defaultR760ApCtxData = { apData: r760Ap, venueData }
+
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(apApi.util.resetApiState())
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
-      rest.get(
-        getUrlForTest(CommonUrlsInfo.getVenue),
-        (_, res, ctx) => res(ctx.json(venueData))),
-      rest.get(
-        getUrlForTest(WifiUrlsInfo.getVenueDirectedMulticast),
+      rest.get(WifiUrlsInfo.getVenueDirectedMulticast.url,
         (_, res, ctx) => res(ctx.json(mockVenueDirectedMulticast))),
-      rest.get(
-        getUrlForTest(WifiUrlsInfo.getApDirectedMulticast),
+      rest.get(WifiUrlsInfo.getApDirectedMulticast.url,
         (_, res, ctx) => res(ctx.json(mockApDirectedMulticast))),
-      rest.delete(
-        getUrlForTest(WifiUrlsInfo.resetApDirectedMulticast),
-        (req, res, ctx) => res(ctx.status(202))),
-      rest.put(
-        getUrlForTest(WifiUrlsInfo.updateApDirectedMulticast),
-        (req, res, ctx) => res(ctx.status(202)))
+      rest.delete(WifiUrlsInfo.resetApDirectedMulticast.url,
+        (_, res, ctx) => res(ctx.status(202))),
+      rest.put(WifiUrlsInfo.updateApDirectedMulticast.url,
+        (_, res, ctx) => res(ctx.status(202))),
+      // rbac API
+      rest.get(WifiRbacUrlsInfo.getVenueDirectedMulticast.url,
+        (_, res, ctx) => res(ctx.json(mockVenueDirectedMulticast))),
+      rest.get(WifiRbacUrlsInfo.getApDirectedMulticast.url,
+        (_, res, ctx) => res(ctx.json(mockApDirectedMulticast))),
+      rest.put(WifiRbacUrlsInfo.updateApDirectedMulticast.url,
+        (_, res, ctx) => res(ctx.status(202)))
     )
   })
 
   it('should render correctly', async () => {
     render(
       <Provider>
-        <ApDataContext.Provider value={{ apData: r760Ap }}>
+        <ApDataContext.Provider value={defaultR760ApCtxData}>
           <DirectedMulticast />
         </ApDataContext.Provider>
       </Provider>, {
@@ -99,7 +101,7 @@ describe('AP Directed Multicast', () => {
           },
           setEditContextData: jest.fn()
         }}>
-          <ApDataContext.Provider value={{ apData: r760Ap }}>
+          <ApDataContext.Provider value={defaultR760ApCtxData}>
             <DirectedMulticast />
           </ApDataContext.Provider>
         </ApEditContext.Provider>
@@ -144,7 +146,7 @@ describe('AP Directed Multicast', () => {
           },
           setEditContextData: jest.fn()
         }}>
-          <ApDataContext.Provider value={{ apData: r760Ap }}>
+          <ApDataContext.Provider value={defaultR760ApCtxData}>
             <DirectedMulticast />
           </ApDataContext.Provider>
         </ApEditContext.Provider>
@@ -172,7 +174,7 @@ describe('AP Directed Multicast', () => {
   it('should handle turn On/Off switch buttons changed with use venue settings', async () => {
     render(
       <Provider>
-        <ApDataContext.Provider value={{ apData: r760Ap }}>
+        <ApDataContext.Provider value={defaultR760ApCtxData}>
           <DirectedMulticast />
         </ApDataContext.Provider>
       </Provider>, {

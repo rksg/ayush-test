@@ -1,6 +1,5 @@
-import { within } from '@testing-library/react'
-import userEvent  from '@testing-library/user-event'
-import { rest }   from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
@@ -11,8 +10,8 @@ import {
   ClientUrlsInfo,
   ConnectionMeteringUrls
 } from '@acx-ui/rc/utils'
-import { Provider }                                                         from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved, fireEvent } from '@acx-ui/test-utils'
+import { Provider }                                                                 from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved,within,  fireEvent } from '@acx-ui/test-utils'
 
 import {
   mockConnectionMeterings,
@@ -77,15 +76,15 @@ describe.skip('Identity Details', () => {
         (req, res, ctx) => res(ctx.json(mockDpskPool))
       ),
       rest.post(
-        ClientUrlsInfo.getClientList.url,
+        ClientUrlsInfo.getClients.url,
         (_, res, ctx) => res(ctx.json({ data: [{
           osType: 'Windows',
-          clientMac: '28:B3:71:28:78:50',
+          macAddress: '28:B3:71:28:78:50',
           ipAddress: '10.206.1.93',
-          Username: '24418cc316df',
+          username: '24418cc316df',
           hostname: 'LP-XXXXX',
-          venueName: 'UI-TEST-VENUE',
-          apName: 'UI team ONLY'
+          venueInformation: { name: 'UI-TEST-VENUE' },
+          apInformation: { name: 'UI team ONLY' }
         }] }))
       ),
       rest.get(

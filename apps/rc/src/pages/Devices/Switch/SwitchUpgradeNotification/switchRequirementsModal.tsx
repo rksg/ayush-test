@@ -171,7 +171,7 @@ export function SwitchRequirementsModal (props: {
         <br />
         {$t({ defaultMessage: 'If it is the first time the ICX switch is connected to the cloud, the switch reloads after the necessary firmware is applied.' })}
         <br />
-        {$t({ defaultMessage: 'RUCKUS One assigns a username and password to the switch once it is managed by RUCKUS One. Even if the switch is disconnected from the cloud, the switch username and password remain the same. The password can be obtained from RUCKUS One GUI under the Venue’s ‘Switch Settings’.' })}
+        {$t({ defaultMessage: 'RUCKUS One assigns a username and password to the switch once it is managed by RUCKUS One. Even if the switch is disconnected from the cloud, the switch username and password remain the same. The password can be obtained from RUCKUS One GUI under the ‘Switch Settings’ of <VenueSingular></VenueSingular>.' })}
       </UI.DescriptionBody>
 
       <Subtitle level={5}>

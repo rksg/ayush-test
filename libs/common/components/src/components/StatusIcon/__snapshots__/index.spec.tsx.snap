@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`StatusIcon render FAIL StatusIcon 1`] = `
+<DocumentFragment>
+  .c0 path:nth-child(1) {
+  fill: var(--acx-semantics-red-50);
+}
+
+.c0 path:nth-child(2) {
+  stroke: var(--acx-semantics-red-50);
+}
+
+<svg
+    class="c0"
+    data-testid="CancelCircleSolid"
+  />
+</DocumentFragment>
+`;
+
+exports[`StatusIcon render INPROGRESS StatusIcon 1`] = `
+<DocumentFragment>
+  .c0 {
+  -webkit-animation: rotate 1s linear infinite;
+  animation: rotate 1s linear infinite;
+}
+
+.c0 circle {
+  fill: var(--acx-neutrals-60);
+  stroke: var(--acx-neutrals-60);
+}
+
+<svg
+    class="c0"
+    data-testid="InProgress"
+  />
+</DocumentFragment>
+`;
+
+exports[`StatusIcon render PENDING StatusIcon 1`] = `
+<DocumentFragment>
+  .c0 circle {
+  fill: var(--acx-neutrals-60);
+  stroke: var(--acx-neutrals-60);
+}
+
+<svg
+    class="c0"
+    data-testid="Pending"
+  />
+</DocumentFragment>
+`;
+
+exports[`StatusIcon render SUCCESS StatusIcon 1`] = `
+<DocumentFragment>
+  .c0 path:nth-child(1) {
+  fill: var(--acx-semantics-green-50);
+}
+
+.c0 path:nth-child(3) {
+  stroke: var(--acx-semantics-green-50);
+}
+
+<svg
+    class="c0"
+    data-testid="CheckMarkCircleSolid"
+  />
+</DocumentFragment>
+`;

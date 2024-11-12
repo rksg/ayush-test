@@ -26,20 +26,21 @@ import {
   GridCol,
   GridRow
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAddMspLabelMutation,
   useGetMspBaseURLQuery,
   useGetMspLabelQuery,
+  useGetMspUploadURLMutation,
   useUpdateMspLabelMutation
 } from '@acx-ui/msp/services'
 import {
   MspPortal,
   MspLogoFile
 } from '@acx-ui/msp/utils'
-import { PhoneInput }       from '@acx-ui/rc/components'
+import { PhoneInput }         from '@acx-ui/rc/components'
 import {
-  useExternalProvidersQuery,
-  useGetUploadURLMutation
+  useExternalProvidersQuery
 } from '@acx-ui/rc/services'
 import {
   emailRegExp,
@@ -79,7 +80,9 @@ export function PortalSettings () {
   const navigate = useNavigate()
   const [form] = Form.useForm()
   const params = useParams()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const linkDashboard = useTenantLink('/dashboard', 'v')
 
   const [selectedLogo, setSelectedLogo] = useState('defaultLogo')
@@ -89,7 +92,7 @@ export function PortalSettings () {
   const [loginLogoUrl, setLoginLogoUrl] = useState('')
   const [supportLogoUrl, setSupportLogoUrl] = useState('')
   const [alarmLogoUrl, setAlarmLogoUrl] = useState('')
-  const [getUploadURL] = useGetUploadURLMutation()
+  const [getUploadURL] = useGetMspUploadURLMutation()
 
   const [preferredProvider, setPreferredProvider] = useState<string>('')
   const [customProfileName, setCustomProfileName] = useState<string>('')
@@ -109,14 +112,15 @@ export function PortalSettings () {
   const [addMspLabel] = useAddMspLabelMutation()
   const [updateMspLabel] = useUpdateMspLabelMutation()
 
-  const { data: provider } = useExternalProvidersQuery({ params })
-  const { data: baseUrl } = useGetMspBaseURLQuery({ params })
-  const { data: mspLabel } = useGetMspLabelQuery({ params })
+  const { data: provider } = useExternalProvidersQuery({ params, enableRbac: isUseRbacApi })
+  const { data: baseUrl } = useGetMspBaseURLQuery({ params, enableRbac: isRbacEnabled })
+  const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isRbacEnabled })
 
   useEffect(() => {
     const fetchImages = async (mspLabel: MspPortal) => {
       const defaultList = await Promise.all(mspLabel.mspLogoFileDataList?.map((file) => {
-        return loadImageWithJWT(file.logo_fileuuid)
+        return loadImageWithJWT(file.logo_fileuuid,
+          isRbacEnabled ? `/tenants/${file.logo_fileuuid}/urls` : undefined)
           .then((fileUrl) => {
             return {
               uid: file.logo_fileuuid,
@@ -131,16 +135,21 @@ export function PortalSettings () {
       setFileList(defaultList)
       setSelectedLogo('myLogo')
       mspLabel.logo_uuid
-        ? setPortalLogoUrl(await loadImageWithJWT(mspLabel.logo_uuid))
+        ? setPortalLogoUrl(await loadImageWithJWT(mspLabel.logo_uuid,
+          isRbacEnabled ? `/tenants/${mspLabel.logo_uuid}/urls` : undefined))
         : setPortalLogoUrl(defaultPortalLogo)
       mspLabel.ping_login_logo_uuid
-        ? setLoginLogoUrl(await loadImageWithJWT(mspLabel.ping_login_logo_uuid))
+        ? setLoginLogoUrl(await loadImageWithJWT(mspLabel.ping_login_logo_uuid,
+          isRbacEnabled ? `/tenants/${mspLabel.ping_login_logo_uuid}/urls` : undefined))
         : setLoginLogoUrl(defaultLoginLogo)
       mspLabel.ping_notification_logo_uuid
-        ? setSupportLogoUrl(await loadImageWithJWT(mspLabel.ping_notification_logo_uuid))
+        ? setSupportLogoUrl(
+          await loadImageWithJWT(mspLabel.ping_notification_logo_uuid,
+            isRbacEnabled ? `/tenants/${mspLabel.ping_notification_logo_uuid}/urls` : undefined))
         : setSupportLogoUrl(defaultSupportLogo)
       mspLabel.alarm_notification_logo_uuid
-        ? setAlarmLogoUrl(await loadImageWithJWT(mspLabel.alarm_notification_logo_uuid))
+        ? setAlarmLogoUrl(await loadImageWithJWT(mspLabel.alarm_notification_logo_uuid,
+          isRbacEnabled ? `/tenants/${mspLabel.alarm_notification_logo_uuid}/urls` : undefined))
         : setAlarmLogoUrl(defaultAlarmLogo)
     }
     if (provider) {
@@ -273,7 +282,8 @@ export function PortalSettings () {
       const extension: string = getFileExtension(file.name)
       return getUploadURL({
         params: { ...params },
-        payload: { fileExtension: extension }
+        payload: { fileExtension: extension },
+        enableRbac: isRbacEnabled
       }).unwrap().then((uploadUrl) => {
         fetch(uploadUrl.signedUrl, { method: 'put', body: file as unknown as File, headers: {
           'Content-Type': ''
@@ -374,13 +384,14 @@ export function PortalSettings () {
     }
     if (preferredProvider) {
       if (isOtherProvider) {
+        const wisprProvider = values.preferredWisprProvider || mspLabel?.preferredWisprProvider
         portal.preferredWisprProvider = {
-          providerName: values.preferredWisprProvider?.providerName as string,
+          providerName: wisprProvider?.providerName || '',
           apiKey: '',
           apiSecret: '',
           customExternalProvider: true,
-          auth: values.preferredWisprProvider?.auth,
-          acct: values.preferredWisprProvider?.acct
+          auth: wisprProvider?.auth,
+          acct: wisprProvider?.acct
         }
       } else {
         portal.preferredWisprProvider = {
@@ -397,7 +408,7 @@ export function PortalSettings () {
   const handleAddMspLabel = async (values: MspPortal) => {
     try {
       const formData = await getMspPortalToSave(values)
-      await addMspLabel({ params, payload: formData }).unwrap()
+      await addMspLabel({ params, payload: formData, enableRbac: isRbacEnabled }).unwrap()
       navigate(linkDashboard, { replace: true })
       window.location.reload()
     } catch(error) {
@@ -414,7 +425,7 @@ export function PortalSettings () {
   const handleUpdateMspLabel = async (values: MspPortal) => {
     try {
       const portal: MspPortal = await getMspPortalToSave(values)
-      await updateMspLabel({ params, payload: portal }).unwrap()
+      await updateMspLabel({ params, payload: portal, enableRbac: isRbacEnabled }).unwrap()
       navigate(linkDashboard, { replace: true })
     } catch(error) {
       const respData = error as { status: number, data: { [key: string]: string } }
@@ -786,7 +797,7 @@ export function PortalSettings () {
   return (
     <>
       <PageHeader
-        title={intl.$t({ defaultMessage: 'Settings' })}
+        title={intl.$t({ defaultMessage: 'Portal Settings' })}
       />
       {mspLabel &&
         <StepsForm
@@ -947,14 +958,14 @@ export function PortalSettings () {
                         />
                       </Form.Item>
                     }
-                    <UI.ImagePreviewLight width='355px' height='80px'>
+                    <UI.ImagePreviewDark width='355px' height='80px'>
                       {(selectedLogo === 'defaultLogo' || loginLogoUrl) &&
                         <img alt='customer login logo'
                           src={selectedLogo === 'defaultLogo' ? defaultLoginLogo : loginLogoUrl}
                           style={{ margin: 'auto', maxHeight: '80px', maxWidth: '320px' }}
                         />
                       }
-                    </UI.ImagePreviewLight>
+                    </UI.ImagePreviewDark>
                   </Space>
                 </Card>
                 <Card

@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react'
+import { render } from '@acx-ui/test-utils'
 
 import { StatusLight } from './index'
 

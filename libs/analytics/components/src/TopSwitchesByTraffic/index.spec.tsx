@@ -91,7 +91,7 @@ describe('TopSwitchesByTrafficWidget', () => {
     expect(tooltipFormatter(singleparameters)).toMatchSnapshot()
   })
 
-  it('should handle onClick',() => {
+  it('should handle cannot onClick',() => {
     const { result: basePath } = renderHook(
       () => useTenantLink('/some/path?another=param')
     )
@@ -101,6 +101,20 @@ describe('TopSwitchesByTrafficWidget', () => {
     const handleOnClick = onClick(navigate.current,basePath.current)
     const param = { componentType: 'series', value: [1,2,3] } as EventParams
     handleOnClick(param)
+    expect(mockedUseNavigate).not.toHaveBeenCalled()
+  })
+
+  it('should handle onClick',() => {
+    const { result: basePath } = renderHook(
+      () => useTenantLink('/some/path?another=param')
+    )
+    const { result: navigate } = renderHook(
+      () => useNavigate()
+    )
+    const handleOnClick = onClick(navigate.current,basePath.current)
+    const param = { componentType: 'series', value: [1,'mac',3, 4, 'serialNumber'] } as EventParams
+    handleOnClick(param)
     expect(mockedUseNavigate).toHaveBeenCalled()
   })
+
 })

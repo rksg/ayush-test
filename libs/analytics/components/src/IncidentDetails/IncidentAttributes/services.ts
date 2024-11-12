@@ -38,9 +38,11 @@ export const impactedApi = dataApi.injectEndpoints({
           query ImpactedAPs(
             $id: String,
             $n: Int,
-            $search: String
+            $search: String,
+            $impactedStart: DateTime,
+            $impactedEnd: DateTime
           ) {
-            incident(id: $id) {
+            incident(id: $id, impactedStart: $impactedStart, impactedEnd: $impactedEnd) {
               impactedAPs: getImpactedAPs(n: $n, search: $search) {
                 name
                 mac
@@ -61,9 +63,11 @@ export const impactedApi = dataApi.injectEndpoints({
           query ImpactedClients(
             $id: String,
             $n: Int,
-            $search: String
+            $search: String,
+            $impactedStart: DateTime,
+            $impactedEnd: DateTime
           ) {
-            incident(id: $id) {
+            incident(id: $id, impactedStart: $impactedStart, impactedEnd: $impactedEnd) {
               impactedClients: getImpactedClients(n: $n, search: $search) {
                 mac
                 manufacturer

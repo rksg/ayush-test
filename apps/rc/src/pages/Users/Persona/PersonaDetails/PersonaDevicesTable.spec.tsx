@@ -1,15 +1,16 @@
-import { waitFor, within } from '@testing-library/react'
-import userEvent           from '@testing-library/user-event'
-import { rest }            from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
-import { ClientUrlsInfo, DpskUrls, PersonaUrls } from '@acx-ui/rc/utils'
-import { Provider }                              from '@acx-ui/store'
-import { mockServer, render, screen }            from '@acx-ui/test-utils'
+import { useIsSplitOn, useIsTierAllowed }              from '@acx-ui/feature-toggle'
+import { ClientUrlsInfo, DpskUrls, PersonaUrls }       from '@acx-ui/rc/utils'
+import { Provider }                                    from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { mockedDpskPassphraseDevices, mockPersona } from '../__tests__/fixtures'
 
 import { PersonaDevicesTable } from './PersonaDevicesTable'
+
+import { IdentityDeviceContext } from '.'
 
 type MockModalProps = React.PropsWithChildren<{
   visible: boolean
@@ -17,7 +18,8 @@ type MockModalProps = React.PropsWithChildren<{
   onCancel: () => void
 }>
 
-jest.mock('../PersonaForm/PersonaDevicesImportDialog', () => ({
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
   PersonaDevicesImportDialog: ({ onSubmit, onCancel, visible }: MockModalProps) =>
     visible && <div data-testid='PersonaDevicesImportDialog' >
       <button onClick={(e) => {
@@ -34,12 +36,11 @@ jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
 describe('PersonaDevicesTable', () => {
   const deleteDeviceFn = jest.fn()
-  const metaRequestSpy = jest.fn()
   let params: { tenantId: string, personaGroupId: string, personaId: string }
 
   beforeEach( async () => {
     deleteDeviceFn.mockClear()
-    metaRequestSpy.mockClear()
+
     mockServer.use(
       rest.post(
         PersonaUrls.addPersonaDevices.url,
@@ -53,36 +54,29 @@ describe('PersonaDevicesTable', () => {
         }
       ),
       rest.post(
-        ClientUrlsInfo.getClientList.url,
+        ClientUrlsInfo.getClients.url,
         (_, res, ctx) => res(ctx.json({ data: [
           {
             osType: 'Windows',
-            clientMac: '11:11:11:11:11:11',
+            macAddress: '11:11:11:11:11:11',
             ipAddress: '10.206.1.93',
-            Username: 'mac-device',
+            username: 'mac-device',
             hostname: 'Persona_Host_name',
-            venueName: 'UI-TEST-VENUE',
-            apName: 'UI team ONLY',
-            authmethod: 'Standard+Mac'  // for MAC auth devices
+            venueInformation: { name: 'UI-TEST-VENUE' },
+            apInformation: { name: 'UI team ONLY' },
+            networkInformation: { authenticationMethod: 'Standard+Mac' }  // for MAC auth devices
           },
           {
             osType: 'Windows',
-            clientMac: '22:22:22:22:22:22',
+            macAddress: '22:22:22:22:22:22',
             ipAddress: '10.206.1.93',
-            Username: 'dpsk-device',
+            username: 'dpsk-device',
             hostname: 'dpsk-hostname',
-            venueName: 'UI-TEST-VENUE',
-            apName: 'UI team ONLY',
-            authmethod: 'Standard+Open' // for DPSK auth devices
+            venueInformation: { name: 'UI-TEST-VENUE' },
+            apInformation: { name: 'UI team ONLY' },
+            networkInformation: { authenticationMethod: 'Standard+Open' }// for DPSK auth devices
           }
         ] }))
-      ),
-      rest.post(
-        ClientUrlsInfo.getClientMeta.url,
-        (req, res, ctx) => {
-          metaRequestSpy()
-          return res(ctx.json({ data: [] }))
-        }
       )
     )
     params = {
@@ -94,9 +88,12 @@ describe('PersonaDevicesTable', () => {
 
 
   it('should render persona devices table without dpsk devices', async () => {
+    const setValueFn = jest.fn()
     render(
       <Provider>
-        <PersonaDevicesTable disableAddButton={false} persona={mockPersona}/>
+        <IdentityDeviceContext.Provider value={{ setDeviceCount: setValueFn }}>
+          <PersonaDevicesTable disableAddButton={false} persona={mockPersona}/>
+        </IdentityDeviceContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -108,7 +105,6 @@ describe('PersonaDevicesTable', () => {
 
     const expectedMacAddress = mockPersona?.devices ? mockPersona.devices[0].macAddress : ''
 
-    await screen.findByRole('heading', { name: /devices/i })
     await screen.findByRole('cell', { name: expectedMacAddress })
     // await screen.findByRole('cell', { name: 'Persona_Host_name' })  // to make sure that clients/metas api done
 
@@ -128,12 +124,16 @@ describe('PersonaDevicesTable', () => {
     // Cancel the modal
     await userEvent.click(await within(addDeviceModal).findByRole('button', { name: /cancel/i }))
     expect(addDeviceModal).not.toBeInTheDocument()
+    expect(setValueFn).toHaveBeenCalled()
   })
 
   it('should delete selected persona devices', async () => {
+    const setValueFn = jest.fn()
     render(
       <Provider>
-        <PersonaDevicesTable disableAddButton={false} persona={mockPersona}/>
+        <IdentityDeviceContext.Provider value={{ setDeviceCount: setValueFn }}>
+          <PersonaDevicesTable disableAddButton={false} persona={mockPersona}/>
+        </IdentityDeviceContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -145,7 +145,6 @@ describe('PersonaDevicesTable', () => {
 
     const expectedMacAddress = mockPersona?.devices ? mockPersona.devices[0].macAddress : ''
 
-    await screen.findByRole('heading', { name: /devices/i })
     const row = await screen.findByRole('row', { name: new RegExp(expectedMacAddress) })
     await userEvent.click(await within(row).findByRole('checkbox'))
 
@@ -159,6 +158,7 @@ describe('PersonaDevicesTable', () => {
   })
 
   it.skip('should render persona device table with dpsk devices', async () => {
+    const setValueFn = jest.fn()
     mockServer.use(
       rest.get(
         DpskUrls.getPassphraseDevices.url.split('?')[0],
@@ -167,11 +167,13 @@ describe('PersonaDevicesTable', () => {
     )
     render(
       <Provider>
-        <PersonaDevicesTable
-          disableAddButton={true}
-          persona={mockPersona}
-          dpskPoolId={'dpsk-pool-id'}
-        />
+        <IdentityDeviceContext.Provider value={{ setDeviceCount: setValueFn }}>
+          <PersonaDevicesTable
+            disableAddButton={true}
+            persona={mockPersona}
+            dpskPoolId={'dpsk-pool-id'}
+          />
+        </IdentityDeviceContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -183,16 +185,17 @@ describe('PersonaDevicesTable', () => {
 
     const expectedMacAddress = mockedDpskPassphraseDevices[0].mac.replaceAll(':', '-')
 
-    await waitFor(() => expect(metaRequestSpy).toHaveBeenCalled())
-    await screen.findByRole('heading', { name: /devices \(4\)/i })
     await screen.findByRole('row', { name: new RegExp(expectedMacAddress) })
     await screen.findByRole('cell', { name: 'dpsk-hostname' })  // to make sure that clients/metas api done
   })
 
   it('should disable `add device` while does not associate with MacPool', async () => {
+    const setValueFn = jest.fn()
     render(
       <Provider>
-        <PersonaDevicesTable disableAddButton={true} />
+        <IdentityDeviceContext.Provider value={{ setDeviceCount: setValueFn }}>
+          <PersonaDevicesTable disableAddButton={true} />
+        </IdentityDeviceContext.Provider>
       </Provider>, {
         route: {
           params,

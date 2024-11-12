@@ -42,6 +42,10 @@ export class NetworkVenue {
 
   id?: string
 
+  vlanPoolName?: string
+
+  vlanMembers?: string[]
+
   constructor () {
     this.dual5gEnabled = true
 
@@ -57,4 +61,31 @@ export class NetworkVenue {
 
     this.allApGroupsRadioTypes = []
   }
+}
+
+export interface NetworkVenueRbac {
+  name: string
+  id: string
+  vlan: number
+  nwType: string
+  nwSubType: string
+  captiveType: string
+  crtTime: string
+  lastUpdTime: string
+  ssid: string
+  enableDhcp: boolean
+  tunnelWlanEnable: boolean
+  securityProtocol: string
+  venueApGroups: VenueAPGroupRbac[]
+  apSerialNumbers: string[]
+}
+
+export interface VenueAPGroupRbac {
+  venueId: string
+  isAllApGroups: boolean
+  apGroupIds: string[]
+  validationError?: string
+  validationErrorReachedMaxConnectedNetworksLimit?: boolean
+  validationErrorSsidAlreadyActivated?: boolean
+  validationErrorReachedMaxConnectedCaptiveNetworksLimit?: boolean
 }

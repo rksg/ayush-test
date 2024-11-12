@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { Col, Row, Form, Checkbox } from 'antd'
 import _                            from 'lodash'
-
+import { useIntl }                  from 'react-intl'
 
 import { Tooltip }                 from '@acx-ui/components'
 import { AFCProps }                from '@acx-ui/rc/utils'
@@ -30,6 +30,7 @@ export function RadioSettingsChannels320Mhz (props: {
     handleChanged?: () => void,
     afcProps?: AFCProps
 }) {
+  const intl = useIntl()
 
   let { disabled = false, channelList, handleChanged, afcProps } = props
 
@@ -188,7 +189,7 @@ export function RadioSettingsChannels320Mhz (props: {
 
     const { channelGroupNumber, availability } = props
     const channels = complexGroupChannelState.ChannelGroup_160MHz[channelGroupNumber].channels
-    let message = ChannelButtonTextRender(channels.map(Number), availability, afcProps)
+    let message = ChannelButtonTextRender(intl, channels.map(Number), availability, afcProps)
 
     /* eslint-disable max-len */
     return (
@@ -252,7 +253,7 @@ export function RadioSettingsChannels320Mhz (props: {
   }
 
   return (<>
-    <Form.Item name={props.formName} hidden/>
+    <Form.Item name={props.formName} hidden children={<></>} />
     <CheckboxGroupFor320Mhz
       style={{ width: '100%' }}
       disabled={disabled}

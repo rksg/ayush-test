@@ -1,6 +1,5 @@
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
@@ -35,16 +34,15 @@ jest.mock('./DirectedMulticast', () => ({
 }))
 
 describe('AP Networking Tab', () => {
-  beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-  })
+  const defaultT750SeApCtxData = {
+    apData: ApData_T750SE,
+    apCapabilities: ApCap_T750SE
+  }
 
   it('should render correctly',async () => {
     render(
       <Provider>
-        <ApDataContext.Provider value={{
-          apData: ApData_T750SE,
-          apCapabilities: ApCap_T750SE }} >
+        <ApDataContext.Provider value={defaultT750SeApCtxData}>
           <NetworkingTab />
         </ApDataContext.Provider>
       </Provider>, {
@@ -87,7 +85,9 @@ describe('AP Networking Tab', () => {
       updateMesh: jest.fn(),
       discardMeshChanges: jest.fn(),
       updateDirectedMulticast: jest.fn(),
-      discardDirectedMulticastChanges: jest.fn()
+      discardDirectedMulticastChanges: jest.fn(),
+      updateSmartMonitor: jest.fn(),
+      discardSmartMonitorChanges: jest.fn()
     }
 
     render(
@@ -98,9 +98,7 @@ describe('AP Networking Tab', () => {
           editNetworkingContextData: newEditNetworkingContextData,
           setEditNetworkingContextData: jest.fn()
         }} >
-          <ApDataContext.Provider value={{
-            apData: ApData_T750SE,
-            apCapabilities: ApCap_T750SE }} >
+          <ApDataContext.Provider value={defaultT750SeApCtxData}>
             <NetworkingTab />
           </ApDataContext.Provider>
         </ApEditContext.Provider>
@@ -131,7 +129,9 @@ describe('AP Networking Tab', () => {
       updateMesh: jest.fn(),
       discardMeshChanges: jest.fn(),
       updateDirectedMulticast: jest.fn(),
-      discardDirectedMulticastChanges: jest.fn()
+      discardDirectedMulticastChanges: jest.fn(),
+      updateSmartMonitor: jest.fn(),
+      discardSmartMonitorChanges: jest.fn()
     }
 
     render(

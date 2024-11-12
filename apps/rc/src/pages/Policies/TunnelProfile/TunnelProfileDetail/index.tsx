@@ -6,18 +6,21 @@ import { Features }                                      from '@acx-ui/feature-t
 import { useIsEdgeFeatureReady }                         from '@acx-ui/rc/components'
 import { useGetTunnelProfileViewDataListQuery }          from '@acx-ui/rc/services'
 import {
+  filterByAccessForServicePolicyMutation,
+  getPolicyDetailsLink,
+  getPolicyListRoutePath,
+  getPolicyRoutePath,
+  getScopeKeyByPolicy,
+  getTunnelTypeString,
+  isDefaultTunnelProfile as getIsDefaultTunnelProfile,
+  mtuRequestTimeoutUnitConversion,
   MtuTypeEnum,
   PolicyOperation,
   PolicyType,
   TunnelProfileViewData,
-  getPolicyDetailsLink,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
-  getTunnelTypeString,
   TunnelTypeEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess }        from '@acx-ui/user'
 
 import { ageTimeUnitConversion } from '../util'
 
@@ -26,6 +29,8 @@ import * as UI          from './styledComponents'
 
 const TunnelProfileDetail = () => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeVxLanKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
   const { $t } = useIntl()
   const params = useParams()
   const tablePath = getPolicyRoutePath({
@@ -46,19 +51,41 @@ const TunnelProfileDetail = () => {
     }
   )
 
-  const isDefaultTunnelProfile = tunnelProfileData.id === params.tenantId
+  const isDefaultTunnelProfile = getIsDefaultTunnelProfile(tunnelProfileData)
 
   const tunnelInfo = [
     // {
     //   title: $t({ defaultMessage: 'Tags' }),
     //   content: () => (tunnelProfileData.tags)
     // },
+    ...(isEdgeVxLanKaReady && (isEdgeSdLanReady || isEdgeSdLanHaReady) ? [{
+      title: $t({ defaultMessage: 'Network Segment Type' }),
+      content: () => {
+        return getTunnelTypeString($t, tunnelProfileData.type || TunnelTypeEnum.VXLAN,
+          isEdgeVxLanKaReady)
+      }
+    }] : []),
     {
       title: $t({ defaultMessage: 'Gateway Path MTU Mode' }),
       content: MtuTypeEnum.AUTO === tunnelProfileData.mtuType ?
         $t({ defaultMessage: 'Auto' }) :
         `${$t({ defaultMessage: 'Manual' })} (${tunnelProfileData.mtuSize})`
     },
+    ...(isEdgeVxLanKaReady ? [
+      {
+        title: $t({ defaultMessage: 'PMTU Timeout' }),
+        content: () => {
+          if(!tunnelProfileData.mtuRequestTimeout) return
+          const result = mtuRequestTimeoutUnitConversion(tunnelProfileData.mtuRequestTimeout)
+          return $t({ defaultMessage: '{value} {unit}' }, {
+            value: result?.value,
+            unit: result?.unit
+          })
+        }
+      }, {
+        title: $t({ defaultMessage: 'PMTU Retries' }),
+        content: `${tunnelProfileData.mtuRequestRetry ?? ''} ${$t({ defaultMessage: 'retries' })}`
+      }] : []),
     {
       title: $t({ defaultMessage: 'Force Fragmentation' }),
       content: tunnelProfileData.forceFragmentation ?
@@ -66,7 +93,7 @@ const TunnelProfileDetail = () => {
         $t({ defaultMessage: 'OFF' })
     },
     {
-      title: $t({ defaultMessage: 'Idle Period' }),
+      title: $t({ defaultMessage: 'Tunnel Idle Timeout' }),
       content: () => {
         if(!tunnelProfileData.ageTimeMinutes) return
         const result = ageTimeUnitConversion(tunnelProfileData.ageTimeMinutes)
@@ -76,12 +103,22 @@ const TunnelProfileDetail = () => {
         })
       }
     },
-    ...(isEdgeSdLanReady ? [{
+    ...(!isEdgeVxLanKaReady && (isEdgeSdLanReady || isEdgeSdLanHaReady) ? [{
       title: $t({ defaultMessage: 'Tunnel Type' }),
       content: () => {
         return getTunnelTypeString($t, tunnelProfileData.type || TunnelTypeEnum.VXLAN)
       }
-    }] : [])
+    }] : []),
+    ...(isEdgeVxLanKaReady ? [
+      {
+        title: $t({ defaultMessage: 'Keep Alive Interval' }),
+        content: `${tunnelProfileData.keepAliveInterval ?? ''}
+        ${$t({ defaultMessage: 'seconds' })}`
+      },
+      {
+        title: $t({ defaultMessage: 'Keep Alive Reties' }),
+        content: `${tunnelProfileData.keepAliveRetry ?? ''} ${$t({ defaultMessage: 'retries' })}`
+      }] : [])
   ]
 
   return (
@@ -100,12 +137,14 @@ const TunnelProfileDetail = () => {
           }
         ]}
         extra={
-          filterByAccess([
-            <TenantLink to={getPolicyDetailsLink({
-              type: PolicyType.TUNNEL_PROFILE,
-              oper: PolicyOperation.EDIT,
-              policyId: params.policyId as string
-            })}>
+          filterByAccessForServicePolicyMutation([
+            <TenantLink
+              scopeKey={getScopeKeyByPolicy(PolicyType.TUNNEL_PROFILE, PolicyOperation.EDIT)}
+              to={getPolicyDetailsLink({
+                type: PolicyType.TUNNEL_PROFILE,
+                oper: PolicyOperation.EDIT,
+                policyId: params.policyId as string
+              })}>
               <Button key={'configure'} type={'primary'} disabled={isDefaultTunnelProfile}>
                 {$t({ defaultMessage: 'Configure' })}
               </Button></TenantLink>

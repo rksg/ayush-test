@@ -1,10 +1,16 @@
 import { MissingDataError, MissingTranslationError } from '@formatjs/intl'
 import { rest }                                      from 'msw'
 
+import { get }        from '@acx-ui/config'
 import { mockServer } from '@acx-ui/test-utils'
 
 import * as intlUtil  from './intlUtil'
 import { loadLocale } from './locales'
+
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn().mockImplementation(() => '')
+}))
+const mockGet = get as jest.Mock
 
 describe('IntlUtils', () => {
   const messages = {
@@ -114,4 +120,71 @@ describe('IntlUtils', () => {
     /* eslint-enable no-console */
   })
 
+  describe('getReSkinningElements', () => {
+    it('get default re-skinning elements', () => {
+      const expected = {
+        venueSingular: 'venue',
+        venuePlural: 'venues',
+        VenueSingular: 'Venue',
+        VenuePlural: 'Venues'
+      }
+      const ret = intlUtil.getReSkinningElements()
+      for(const key of Object.keys(expected)) {
+        const fnName = key as keyof typeof expected
+        expect(ret[fnName]()).toEqual(expected[fnName])
+      }
+
+      const retWithIntl = intlUtil.getReSkinningElements({ lang: 'en-US' })
+      for(const key of Object.keys(expected)) {
+        const fnName = key as keyof typeof expected
+        expect(retWithIntl[fnName]()).toEqual(expected[fnName])
+      }
+    })
+    it('get default re-skinning elements with HSP user', () => {
+      require('./jwtToken').getJwtTokenPayload = jest.fn().mockImplementation(() => ({
+        acx_account_vertical: 'Hospitality'
+      }))
+      const expected = {
+        venueSingular: 'space',
+        venuePlural: 'spaces',
+        VenueSingular: 'Space',
+        VenuePlural: 'Spaces'
+      }
+      const ret = intlUtil.getReSkinningElements()
+      for(const key of Object.keys(expected)) {
+        const fnName = key as keyof typeof expected
+        expect(ret[fnName]()).toEqual(expected[fnName])
+      }
+
+      const retWithIntl = intlUtil.getReSkinningElements({ lang: 'en-US' })
+      for(const key of Object.keys(expected)) {
+        const fnName = key as keyof typeof expected
+        expect(retWithIntl[fnName]()).toEqual(expected[fnName])
+      }
+    })
+    it('get zone elements with RAI users', () => {
+      jest.isolateModules(() => {
+        const expected = {
+          venueSingular: 'zone',
+          venuePlural: 'zones',
+          VenueSingular: 'Zone',
+          VenuePlural: 'Zones'
+        }
+        mockGet.mockReturnValue('true')
+        const intlUtil = require('./intlUtil')
+        const ret = intlUtil.getReSkinningElements()
+        for(const key of Object.keys(expected)) {
+          const fnName = key as keyof typeof expected
+          expect(ret[fnName]()).toEqual(expected[fnName])
+        }
+
+        const retWithIntl = intlUtil.getReSkinningElements({ lang: 'en-US' })
+        for(const key of Object.keys(expected)) {
+          const fnName = key as keyof typeof expected
+          expect(retWithIntl[fnName]()).toEqual(expected[fnName])
+        }
+      })
+    })
+  })
 })
+

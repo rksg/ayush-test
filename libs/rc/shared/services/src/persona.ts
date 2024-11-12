@@ -1,3 +1,5 @@
+import { Params } from 'react-router-dom'
+
 import {
   PersonaUrls,
   PersonaGroup,
@@ -9,57 +11,110 @@ import {
   createNewTableHttpRequest,
   TableChangePayload,
   downloadFile,
-  RequestFormData,
   onSocketActivityChanged,
   onActivityMessageReceived
 } from '@acx-ui/rc/utils'
-import { basePersonaApi }                      from '@acx-ui/store'
-import { RequestPayload }                      from '@acx-ui/types'
-import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { basePersonaApi }                               from '@acx-ui/store'
+import { RequestPayload }                               from '@acx-ui/types'
+import { ApiInfo, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+
+import { CommonAsyncResponse } from './common'
+
+const defaultPersonaVersioningHeaders = {
+  'Content-Type': 'application/vnd.ruckus.v1+json',
+  'Accept': 'application/vnd.ruckus.v1+json'
+}
+
+const createPersonaHttpRequest = (
+  apiInfo: ApiInfo,
+  paramValues?: Params<string>,
+  customHeaders?: Record<string, unknown>,
+  ignoreDelegation?: boolean
+) => {
+  const headers = { ...defaultPersonaVersioningHeaders, ...customHeaders }
+  return createHttpRequest(apiInfo, paramValues, headers, ignoreDelegation)
+}
 
 export const personaApi = basePersonaApi.injectEndpoints({
   endpoints: build => ({
     // PersonaGroup
-    addPersonaGroup: build.mutation<PersonaGroup, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.addPersonaGroup, params)
+    // eslint-disable-next-line max-len
+    addPersonaGroup: build.mutation<CommonAsyncResponse, RequestPayload<PersonaGroup> & { callback?: (response: CommonAsyncResponse) => void }>({
+      query: ({ params, payload, customHeaders }) => {
+        const req = createPersonaHttpRequest(PersonaUrls.addPersonaGroup, params, customHeaders)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'PersonaGroup', id: 'LIST' }]
-    }),
-    getPersonaGroupList: build.query<TableResult<PersonaGroup>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createNewTableHttpRequest({
-          apiInfo: PersonaUrls.getPersonaGroupList,
-          params,
-          payload: payload as TableChangePayload
+      invalidatesTags: [{ type: 'PersonaGroup', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+
+            if (response.data.requestId === msg.requestId
+              && msg.status === 'SUCCESS'
+              && msg.useCase === 'CreateGroup') {
+              requestArgs.callback?.(response.data)
+            }
+          } catch { }
         })
+      }
+    }),
+    associateIdentityGroupWithDpsk: build.mutation({
+      query: ({ params }) => {
         return {
-          ...req
+          ...createPersonaHttpRequest(PersonaUrls.associateDpskPool, params)
         }
       },
-      transformResponse (result: NewTableResult<PersonaGroup>) {
-        return transferToTableResult<PersonaGroup>(result)
+      invalidatesTags: [{ type: 'PersonaGroup' }]
+    }),
+    associateIdentityGroupWithMacRegistration: build.mutation({
+      query: ({ params }) => {
+        return {
+          ...createPersonaHttpRequest(PersonaUrls.associateMacRegistration, params)
+        }
       },
-      providesTags: [{ type: 'PersonaGroup', id: 'LIST' }]
+      invalidatesTags: [{ type: 'PersonaGroup' }]
+    }),
+    associateIdentityGroupWithCertificateTemplate: build.mutation({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(PersonaUrls.associateCertTemplate, params)
+        }
+      },
+      invalidatesTags: [{ type: 'PersonaGroup' }]
     }),
     searchPersonaGroupList: build.query<TableResult<PersonaGroup>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createNewTableHttpRequest({
           apiInfo: PersonaUrls.searchPersonaGroupList,
           params,
-          payload: payload as TableChangePayload
+          payload: payload as TableChangePayload,
+          headers: defaultPersonaVersioningHeaders
         })
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       transformResponse (result: NewTableResult<PersonaGroup>) {
         return transferToTableResult<PersonaGroup>(result)
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'CreateGroup',
+            'UpdateGroup',
+            'DeleteGroup'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(personaApi.util.invalidateTags([
+              { type: 'PersonaGroup', id: 'LIST' }
+            ]))
+          })
+        })
       },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'PersonaGroup', id: 'LIST' }],
@@ -67,7 +122,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
     }),
     getPersonaGroupById: build.query<PersonaGroup, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(PersonaUrls.getPersonaGroupById, params)
+        const req = createPersonaHttpRequest(PersonaUrls.getPersonaGroupById, params)
         return {
           ...req
         }
@@ -78,19 +133,19 @@ export const personaApi = basePersonaApi.injectEndpoints({
         { type: 'Persona', id: 'ID' }
       ]
     }),
-    updatePersonaGroup: build.mutation<PersonaGroup, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.updatePersonaGroup, params)
+    updatePersonaGroup: build.mutation<CommonAsyncResponse, RequestPayload>({
+      query: ({ params, payload, customHeaders }) => {
+        const req = createPersonaHttpRequest(PersonaUrls.updatePersonaGroup, params, customHeaders)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'PersonaGroup' }]
     }),
     deletePersonaGroup: build.mutation({
-      query: ({ params }) => {
-        const req = createHttpRequest(PersonaUrls.deletePersonaGroup, params)
+      query: ({ params, customHeaders }) => {
+        const req = createPersonaHttpRequest(PersonaUrls.deletePersonaGroup, params, customHeaders)
         return {
           ...req
         }
@@ -99,7 +154,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
     }),
     downloadPersonaGroups: build.query<Blob, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.exportPersonaGroup, {
+        const req = createPersonaHttpRequest(PersonaUrls.exportPersonaGroup, {
           ...{ pageSize: '2147483647', page: '0', sort: 'name,asc' },
           timezone: params?.timezone ?? 'UTC',
           dateFormat: params?.dateFormat ?? 'dd/MM/yyyy HH:mm'
@@ -109,7 +164,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
 
         return {
           ...req,
-          body: payload,
+          body: JSON.stringify(payload),
           responseHandler: async (response) => {
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent
@@ -123,19 +178,21 @@ export const personaApi = basePersonaApi.injectEndpoints({
 
     // Persona
     addPersona: build.mutation<Persona, RequestPayload>({
-      query: ( { params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.addPersona, params)
+      query: ( { params, payload, customHeaders }) => {
+        const req = createPersonaHttpRequest(PersonaUrls.addPersona, params, customHeaders)
+
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Persona' }]
     }),
-    importPersonas: build.mutation<{}, RequestFormData>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.importPersonas, params, {
+    importPersonas: build.mutation<{}, RequestPayload>({
+      query: ({ params, payload, customHeaders }) => {
+        const req = createPersonaHttpRequest(PersonaUrls.importPersonas, params, {
           ...ignoreErrorModal,
+          ...customHeaders,
           'Content-Type': undefined
         })
         return {
@@ -145,55 +202,39 @@ export const personaApi = basePersonaApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Persona' }]
     }),
-    getPersonaList: build.query<TableResult<Persona>, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(PersonaUrls.getPersonaList, params)
-        return {
-          ...req,
-          params
-        }
-      },
-      transformResponse (result: NewTableResult<Persona>) {
-        return transferToTableResult<Persona>(result)
-      },
-      providesTags: [{ type: 'Persona', id: 'LIST' }]
-    }),
     getPersonaById: build.query<Persona, RequestPayload<{ groupId: string, id: string }>>({
       query: ({ params }) => {
-        const req = createHttpRequest(PersonaUrls.getPersonaById, params)
+        const req = createPersonaHttpRequest(PersonaUrls.getPersonaById, params)
         return {
           ...req
         }
       },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'CreateDevice',
+            'DeleteDevice'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(personaApi.util.invalidateTags([
+              { type: 'Persona', id: 'ID' }
+            ]))
+          })
+        })
+      },
       providesTags: [{ type: 'Persona', id: 'ID' }]
-    }),
-    listPersonaByGroupId: build.query<TableResult<Persona>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.listPersonaByGroupId, params)
-        return {
-          ...req,
-          params,
-          payload
-        }
-      },
-      transformResponse (result: NewTableResult<Persona>) {
-        return transferToTableResult<Persona>(result)
-      },
-      providesTags: [
-        { type: 'Persona', id: 'LIST' },
-        { type: 'PersonaGroup', id: 'ID' }
-      ]
     }),
     searchPersonaList: build.query<TableResult<Persona>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createNewTableHttpRequest({
           apiInfo: PersonaUrls.searchPersonaList,
           params,
-          payload: payload as TableChangePayload
+          payload: payload as TableChangePayload,
+          headers: defaultPersonaVersioningHeaders
         })
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       transformResponse (result: NewTableResult<Persona>) {
@@ -204,7 +245,12 @@ export const personaApi = basePersonaApi.injectEndpoints({
           const activities = [
             'ADD_UNIT',
             'UPDATE_UNIT',
-            'DELETE_UNIT'
+            'DELETE_UNIT',
+            'CreatePersona',
+            'UpdatePersona',
+            'DeletePersona',
+            'BulkDeletePersona',
+            'ImportPersona'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(personaApi.util.invalidateTags([
@@ -218,11 +264,11 @@ export const personaApi = basePersonaApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     updatePersona: build.mutation<Persona, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.updatePersona, params)
+      query: ({ params, payload, customHeaders }) => {
+        const req = createPersonaHttpRequest(PersonaUrls.updatePersona, params, customHeaders)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [
@@ -230,8 +276,8 @@ export const personaApi = basePersonaApi.injectEndpoints({
       ]
     }),
     deletePersona: build.mutation({
-      query: ({ params }) => {
-        const req = createHttpRequest(PersonaUrls.deletePersona, params)
+      query: ({ params, customHeaders }) => {
+        const req = createPersonaHttpRequest(PersonaUrls.deletePersona, params, customHeaders)
         return {
           ...req
         }
@@ -239,39 +285,38 @@ export const personaApi = basePersonaApi.injectEndpoints({
       invalidatesTags: [{ type: 'Persona' }]
     }),
     deletePersonas: build.mutation({
-      query: ({ payload }) => {
-        const req = createHttpRequest(PersonaUrls.deletePersonas)
+      query: ({ params, payload, customHeaders }) => {
+        const req = createPersonaHttpRequest(PersonaUrls.deletePersonas, params, customHeaders)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Persona' }]
     }),
     addPersonaDevices: build.mutation<PersonaDevice, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.addPersonaDevices, params, {
-          ...ignoreErrorModal
+      query: ({ params, payload, customHeaders }) => {
+        const req = createPersonaHttpRequest(PersonaUrls.addPersonaDevices, params, {
+          ...ignoreErrorModal, ...customHeaders
         })
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Persona' }]
     }),
     deletePersonaDevices: build.mutation<PersonaDevice, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(PersonaUrls.deletePersonaDevices, params)
+      query: ({ params, customHeaders }) => {
         return {
-          ...req
+          ...createPersonaHttpRequest(PersonaUrls.deletePersonaDevices, params, customHeaders)
         }
       },
       invalidatesTags: [{ type: 'Persona' }]
     }),
     downloadPersonas: build.query<Blob, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(PersonaUrls.exportPersona, {
+        const req = createPersonaHttpRequest(PersonaUrls.exportPersona, {
           ...{ pageSize: '2147483647', page: '0', sort: 'name,asc' },
           timezone: params?.timezone ?? 'UTC',
           dateFormat: params?.dateFormat ?? 'dd/MM/yyyy HH:mm'
@@ -281,7 +326,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
 
         return {
           ...req,
-          body: payload,
+          body: JSON.stringify(payload),
           responseHandler: async (response) => {
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent
@@ -295,7 +340,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
     allocatePersonaVni: build.mutation({
       query: ({ params }) => {
         return {
-          ...createHttpRequest(PersonaUrls.allocateVni, params)
+          ...createPersonaHttpRequest(PersonaUrls.allocateVni, params)
         }
       },
       invalidatesTags: [{ type: 'Persona', id: 'ID' }]
@@ -305,7 +350,9 @@ export const personaApi = basePersonaApi.injectEndpoints({
 
 export const {
   useAddPersonaGroupMutation,
-  useGetPersonaGroupListQuery,
+  useAssociateIdentityGroupWithDpskMutation,
+  useAssociateIdentityGroupWithMacRegistrationMutation,
+  useAssociateIdentityGroupWithCertificateTemplateMutation,
   useSearchPersonaGroupListQuery,
   useLazySearchPersonaGroupListQuery,
   useGetPersonaGroupByIdQuery,

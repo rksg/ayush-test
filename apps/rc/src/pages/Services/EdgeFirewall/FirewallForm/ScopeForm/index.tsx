@@ -51,15 +51,15 @@ const FirewallEdgesTable = (props: { data?: FirewallFormEdge[] }) => {
 
   const columns: TableProps<EdgeStatus>['columns'] = useMemo(() => ([
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
-      tooltip: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'RUCKUS Edge' }),
+      tooltip: $t({ defaultMessage: 'RUCKUS Edge' }),
       key: 'name',
       dataIndex: 'name',
       defaultSortOrder: 'ascend',
       fixed: 'left'
     },
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'venue',
       dataIndex: 'venueName'
     },
@@ -165,14 +165,15 @@ const FirewallEdgesTable = (props: { data?: FirewallFormEdge[] }) => {
       wanPortEnabled: ['TRUE']
     }
   }
+  const settingsId = 'edgefirewall-edge-table'
 
   return (
     <EdgesTable
-      settingsId='edgefirewall-edge-table'
+      settingsId={settingsId}
       columns={columns}
       rowSelection={{ type: 'checkbox' }}
       rowActions={rowActions}
-      tableQuery={{ defaultPayload: edgeOptionsDefaultPayload }}
+      tableQuery={{ defaultPayload: edgeOptionsDefaultPayload, pagination: { settingsId } }}
     />
   )}
 
@@ -189,7 +190,7 @@ export const ScopeForm = () => {
       <Row >
         <Col span={24}>
           <Typography.Text>
-            {$t({ defaultMessage: 'Select the SmartEdges to run the Firewall Service on:' })}
+            {$t({ defaultMessage: 'Select the RUCKUS Edges to run the Firewall Service on:' })}
           </Typography.Text>
         </Col>
       </Row>

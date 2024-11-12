@@ -85,7 +85,7 @@ describe('tooltipFormatter', () => {
   })
   it('should return correct Html string for single value for isPercent', async () => {
     const params = {
-      color: 'color1', value: [0.85]
+      color: 'color1', value: [0.84654321]
     } as TooltipFormatterParams
     const formatter = jest.fn(value=>`formatted-${value}`)
     expect(tooltipFormatter(formatter,undefined,100)(params))

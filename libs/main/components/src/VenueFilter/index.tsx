@@ -40,8 +40,8 @@ export function VenueFilter () {
       <Loader states={[queryResults]}>
         <Cascader
           entityName={{
-            singular: defineMessage({ defaultMessage: 'venue' }),
-            plural: defineMessage({ defaultMessage: 'venues' })
+            singular: defineMessage({ defaultMessage: '<venueSingular></venueSingular>' }),
+            plural: defineMessage({ defaultMessage: '<venuePlural></venuePlural>' })
           }}
           placeholder={$t({ defaultMessage: 'Entire Organization' })}
           multiple

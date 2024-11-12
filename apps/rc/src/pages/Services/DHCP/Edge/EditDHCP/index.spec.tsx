@@ -2,13 +2,15 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { EdgeDhcpUrls } from '@acx-ui/rc/utils'
-import { Provider }     from '@acx-ui/store'
+import { edgeDhcpApi }        from '@acx-ui/rc/services'
+import { EdgeDhcpUrls }       from '@acx-ui/rc/utils'
+import { Provider, store }    from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
-  waitFor
+  waitFor,
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
 import { mockEdgeDhcpData } from '../__tests__/fixtures'
@@ -34,6 +36,7 @@ describe('EditEdgeDhcp', () => {
       serviceId: 'test'
     }
 
+    store.dispatch(edgeDhcpApi.util.resetApiState())
     mockedGetReq.mockClear()
     mockedUpdateReq.mockClear()
 
@@ -74,7 +77,7 @@ describe('EditEdgeDhcp', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
   })
 
-  it('should correctly render `use for NSG` when relay is on', async () => {
+  it('should correctly render `use for PIN` when relay is on', async () => {
     const mockedReqFn = jest.fn()
     const mockedData = { ...mockEdgeDhcpData, dhcpPools: [] }
 
@@ -97,9 +100,9 @@ describe('EditEdgeDhcp', () => {
     await waitFor(() => expect(mockedReqFn).toBeCalled())
     await screen.findByRole('textbox', { name: 'FQDN Name or IP Address' })
     // eslint-disable-next-line max-len
-    const usedForNSG = await screen.findByRole('switch', { name: 'Use for Personal Identity Network' })
+    const usedForPin = await screen.findByRole('switch', { name: 'Use for Personal Identity Network' })
     const poolsRow = screen.queryAllByRole('row')
-    expect(usedForNSG).not.toBeChecked()
+    expect(usedForPin).not.toBeChecked()
     expect(poolsRow.length).toBe(0)
     expect(screen.queryAllByRole('alert').length).toBe(0)
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
@@ -112,13 +115,14 @@ describe('EditEdgeDhcp', () => {
       </Provider>, {
         route: { params, path: editPagePath }
       })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await waitFor(() => expect(mockedGetReq).toBeCalled())
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'My Services'
     })).toBeVisible()
     expect(screen.getByRole('link', {
-      name: 'DHCP for SmartEdge'
+      name: 'DHCP for RUCKUS Edge'
     })).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
   })
@@ -133,7 +137,7 @@ describe('EditEdgeDhcp', () => {
     mockServer.use(
       rest.get(
         EdgeDhcpUrls.getDhcp.url,
-        (req, res, ctx) => {
+        (_req, res, ctx) => {
           mockFn()
           return res(ctx.json(mockEdgeDhcpData2))
         }
@@ -149,8 +153,7 @@ describe('EditEdgeDhcp', () => {
 
     await waitFor(() => expect(mockFn).toBeCalled())
     await screen.findByRole('row', { name: /PoolTest1/ })
-    await screen.findByRole('radio', { name: 'Infinite' })
-    const serviceNameInput = await screen.findByRole('textbox', { name: 'Service Name' })
+    const serviceNameInput = screen.getByRole('textbox', { name: 'Service Name' })
     await waitFor(() => expect(serviceNameInput).toHaveValue(mockEdgeDhcpData2.serviceName))
     await userEvent.clear(serviceNameInput)
     expect(screen.getByRole('radio', { name: 'Infinite' })).toBeChecked()

@@ -6,8 +6,8 @@ import { apApi }                                        from '@acx-ui/rc/service
 import { CommonUrlsInfo, WifiUrlsInfo }                 from '@acx-ui/rc/utils'
 import { Provider, store }                              from '@acx-ui/store'
 import { mockRestApiQuery, mockServer, render, screen } from '@acx-ui/test-utils'
-import { RolesEnum }                                    from '@acx-ui/types'
-import { getUserProfile, setUserProfile }               from '@acx-ui/user'
+import { RaiPermissions, setRaiPermissions }            from '@acx-ui/user'
+
 
 import { apDetailData } from './__tests__/fixtures'
 import { activities }   from './ApTimelineTab/__tests__/fixtures'
@@ -45,11 +45,6 @@ jest.mock('./ApOverviewTab/ApProperties', () => ({
 
 jest.mock('./ApNeighbors', () => ({
   ApNeighborsTab: () => <div data-testid='ApNeighborsTab' />
-}))
-
-jest.mock('./ApNeighbors/useApNeighbors', () => ({
-  ...jest.requireActual('./ApNeighbors/useApNeighbors'),
-  useIsApNeighborsOn: () => true
 }))
 
 const mockedUsedNavigate = jest.fn()
@@ -111,10 +106,19 @@ describe('ApDetails', () => {
         (_, res, ctx) => res(ctx.json(list))
       ),
       rest.get(CommonUrlsInfo.getApDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(apDetailData))),
+        (_, res, ctx) => res(ctx.json(apDetailData))
+      ),
       rest.patch(
         WifiUrlsInfo.detectApNeighbors.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123456789' }))
+      ),
+      rest.get(
+        WifiUrlsInfo.getApValidChannel.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        WifiUrlsInfo.getApCapabilities.url,
+        (_, res, ctx) => res(ctx.json({}))
       )
     )
   })
@@ -277,11 +281,8 @@ describe('ApDetails', () => {
     )
   })
 
-  it('should hide analytics when role is READ_ONLY', async () => {
-    setUserProfile({
-      allowedOperations: [],
-      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
-    })
+  it('should hide incidents when READ_INCIDENTS permission is false', async () => {
+    setRaiPermissions({ READ_INCIDENTS: false } as RaiPermissions)
     const params = {
       tenantId: 'tenant-id',
       apId: 'ap-id',

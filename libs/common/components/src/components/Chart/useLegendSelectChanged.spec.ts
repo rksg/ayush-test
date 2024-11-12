@@ -1,8 +1,9 @@
 import { RefObject } from 'react'
 
-import { renderHook } from '@testing-library/react'
-import { ECharts }    from 'echarts'
-import ReactECharts   from 'echarts-for-react'
+import { ECharts }  from 'echarts'
+import ReactECharts from 'echarts-for-react'
+
+import { renderHook } from '@acx-ui/test-utils'
 
 import { useLegendSelectChanged } from './useLegendSelectChanged'
 

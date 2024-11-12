@@ -4,13 +4,12 @@ import { Row, Col, Upload, Slider } from 'antd'
 import Cropper                      from 'react-easy-crop'
 import { useIntl }                  from 'react-intl'
 
-import { Button, Drawer }     from '@acx-ui/components'
+import { Button, Drawer }         from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetApPhotoQuery,
   useAddApPhotoMutation,
-  useDeleteApPhotoMutation,
-  useApViewModelQuery,
-  useGetApCapabilitiesQuery
+  useDeleteApPhotoMutation
 } from '@acx-ui/rc/services'
 import { generateHexKey, useApContext } from '@acx-ui/rc/utils'
 
@@ -33,10 +32,11 @@ interface cropImageType {
 }
 
 export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const { $t } = useIntl()
   const params = useApContext()
 
-  const apPhoto = useGetApPhotoQuery({ params })
+  const apPhoto = useGetApPhotoQuery({ params, enableRbac: isUseRbacApi })
   const [addApPhoto] = useAddApPhotoMutation()
   const [deleteApPhoto] = useDeleteApPhotoMutation()
 
@@ -54,25 +54,15 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
     height: 0
   })
 
-  const apViewModelPayload = {
-    entityType: 'aps',
-    fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
-      'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
-      'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
-      'isMeshEnable', 'lastUpdTime', 'deviceModelType', 'apStatusData.APSystem.uptime',
-      'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags'],
-    filters: { serialNumber: [params.serialNumber] }
-  }
-  const apViewModelQuery = useApViewModelQuery({ params, payload: apViewModelPayload })
-  const wifiCapabilities = useGetApCapabilitiesQuery({ params })
-
   useEffect(() => {
     if (!apPhoto.isLoading && apPhoto?.data) {
-      setImageUrl(apPhoto?.data.imageUrl)
-      setImageName(apPhoto?.data.imageName)
+      const { url, imageUrl, name, imageName } = apPhoto.data
+      setImageUrl((isUseRbacApi? url : imageUrl)!)
+      setImageName((isUseRbacApi? name : imageName)!)
       setKey(generateHexKey(10))
     }
-  }, [apPhoto, wifiCapabilities, apViewModelQuery])
+  }, [apPhoto])
+
   const onCropComplete = useCallback(
     (croppedArea: cropImageType, croppedAreaPixels: cropImageType) => {
       setCroppedAreaPixels(croppedAreaPixels)}, [])
@@ -89,12 +79,14 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
 
       await addApPhoto({
         params: { ...params },
-        payload: formData
+        payload: formData,
+        enableRbac: isUseRbacApi
       })
 
       setZoom(1)
     } catch (e) {
-      return e
+      // eslint-disable-next-line no-console
+      console.log(e)
     }
   }, [croppedAreaPixels])
 
@@ -132,7 +124,7 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
         <Button type='link'
           key='view'
           onClick={() => {
-            deleteApPhoto({ params })
+            deleteApPhoto({ params, enableRbac: isUseRbacApi })
             setVisible(false)
           }}
           data-testid='delete'

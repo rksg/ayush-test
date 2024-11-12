@@ -18,6 +18,9 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
+import { RolesEnum, WifiScopes }                          from '@acx-ui/types'
+import { CustomRoleType, getUserProfile, setUserProfile } from '@acx-ui/user'
+
 
 import { mockedPortalList, networksResponse } from './__tests__/fixtures'
 
@@ -52,6 +55,10 @@ describe('PortalTable', () => {
       ),
       rest.post(CommonUrlsInfo.getVMNetworksList.url, (_, res, ctx) =>
         res(ctx.json(networksResponse))
+      ),
+      rest.post(
+        CommonUrlsInfo.getWifiNetworksList.url,
+        (req, res, ctx) => res(ctx.json(networksResponse))
       ),
       rest.get(PortalUrlsInfo.getPortalLang.url,
         (_, res, ctx) => {
@@ -151,5 +158,54 @@ describe('PortalTable', () => {
       ...mockedTenantPath,
       pathname: `${mockedTenantPath.pathname}/${portalEditPath}`
     })
+  })
+
+  describe('ABAC permission', () => {
+    it('should dispaly with custom scopeKeys', async () => {
+      setUserProfile({
+        profile: {
+          ...getUserProfile().profile,
+          customRoleType: CustomRoleType.SYSTEM,
+          customRoleName: RolesEnum.ADMINISTRATOR
+        },
+        allowedOperations: [],
+        abacEnabled: true,
+        isCustomRole: false,
+        hasAllVenues: true
+      })
+
+      render(
+        <Provider>
+          <PortalTable />
+        </Provider>, {
+          route: { params, path: tablePath }
+        }
+      )
+
+      expect(await screen.findByRole('button', { name: /Add Guest Portal/i })).toBeVisible()
+    })
+
+    it('should correctly hide with custom scopeKeys', async () => {
+      setUserProfile({
+        profile: {
+          ...getUserProfile().profile
+        },
+        allowedOperations: [],
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [WifiScopes.DELETE]
+      })
+
+      render(
+        <Provider>
+          <PortalTable />
+        </Provider>, {
+          route: { params, path: tablePath }
+        }
+      )
+
+      expect(screen.queryByRole('button', { name: /Add Guest Portal/i })).toBeNull()
+    })
+
   })
 })

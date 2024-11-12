@@ -17,6 +17,10 @@ export interface LicenseEntitlement {
   graceEndDate: string;
 }
 
+export interface EntitlementBannersData {
+  data: EntitlementBanner[];
+}
+
 export interface EntitlementBanner {
   deviceCount: number;
   deviceType: EntitlementDeviceType;
@@ -26,3 +30,23 @@ export interface EntitlementBanner {
   type: LicenseBannerTypeEnum;
 }
 
+export interface EntitlementSummaries {
+  quantity: number;
+  purchasedQuantity: number,
+  courtesyQuantity: number,
+  usedQuantity: number,
+  usedQuantityForOwnAssignment: number,
+  isTrial: boolean,
+  licenseType: EntitlementDeviceType,
+  remainingLicenses: number,
+  usageType: string
+}
+
+export interface RbacEntitlementSummary {
+  data: EntitlementSummaries[];
+}
+
+export enum TrialType {
+  TRIAL = 'TRIAL',
+  EXTENDED_TRIAL = 'EXTENDED_TRIAL'
+}

@@ -3,8 +3,10 @@ import { useEffect, useRef, useState } from 'react'
 
 import { DndProvider }     from 'react-dnd'
 import { HTML5Backend }    from 'react-dnd-html5-backend'
+import { useIntl }         from 'react-intl'
 import { Link, useParams } from 'react-router-dom'
 
+import { Features, useIsSplitOn }                                                                           from '@acx-ui/feature-toggle'
 import { useGetFloorPlanQuery, useSwitchListQuery }                                                         from '@acx-ui/rc/services'
 import { FloorplanContext, getImageFitPercentage, NetworkDevice, NetworkDevicePosition, NetworkDeviceType } from '@acx-ui/rc/utils'
 import { useTenantLink }                                                                                    from '@acx-ui/react-router-dom'
@@ -19,6 +21,7 @@ export function SwitchFloorplan (props: { activeDevice: NetworkDevice,
 
   const { activeDevice, venueId, switchPosition } = props
 
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const params = useParams()
   const imageRef = useRef<HTMLImageElement>(null)
   const imageContainerRef = useRef<HTMLDivElement>(null)
@@ -26,14 +29,19 @@ export function SwitchFloorplan (props: { activeDevice: NetworkDevice,
   const [switchList, setSwitchList] = useState<NetworkDevice[]>([] as NetworkDevice[])
   const [containerWidth, setContainerWidth] = useState<number>(1)
   const [imageUrl, setImageUrl] = useState('')
+  const { $t } = useIntl()
 
-  const { data: extendedSwitchList } = useSwitchListQuery({ params, payload: {
-    pageSize: 10000,
-    page: 1,
-    filters: {
-      floorplanId: [switchPosition?.floorplanId]
-    }
-  } })
+  const { data: extendedSwitchList } = useSwitchListQuery({
+    params,
+    payload: {
+      pageSize: 10000,
+      page: 1,
+      filters: {
+        floorplanId: [switchPosition?.floorplanId]
+      }
+    },
+    enableRbac: isSwitchRbacEnabled
+  })
 
   useEffect(() => {
     if (extendedSwitchList) {
@@ -70,7 +78,8 @@ export function SwitchFloorplan (props: { activeDevice: NetworkDevice,
 
   useEffect(() => {
     if (floorplan?.imageId) {
-      const response = loadImageWithJWT(floorplan?.imageId)
+      const fileUrl = `/venues/${venueId}/signurls/${floorplan?.imageId}/urls`
+      const response = loadImageWithJWT(floorplan?.imageId, fileUrl)
       response.then((_imageUrl) => {
         setImageUrl(_imageUrl)
       })
@@ -108,7 +117,14 @@ export function SwitchFloorplan (props: { activeDevice: NetworkDevice,
     state={{
       param: { floorplan: floorplan }
     }}>
-      {floorplan?.name}
+      {floorplan?.name} {
+        $t({ defaultMessage: `({floor, selectordinal,
+                one {#st}
+                two {#nd}
+                few {#rd}
+                other {#th}
+            } Floor)` },
+        { floor: floorplan?.floorNumber })}
     </Link>
     <div
       ref={imageContainerRef}

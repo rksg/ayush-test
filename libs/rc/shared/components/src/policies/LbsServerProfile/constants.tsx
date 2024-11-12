@@ -1,0 +1,1 @@
+export const LBS_SERVER_PROFILE_MAX_COUNT = 128

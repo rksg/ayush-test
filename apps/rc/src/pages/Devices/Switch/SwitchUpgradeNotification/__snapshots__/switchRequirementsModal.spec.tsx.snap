@@ -2,35 +2,150 @@
 
 exports[`Switch Requriements Modal should render correctly 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__UpgradeNotification-sc-1yoazt9-0 kfoDVJ"
+  .c9 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c9 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c9 svg:before {
+  content: 'a';
+}
+
+.c9 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c9.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c9.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c9.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c9.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c9[disabled] svg path,
+.c9.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c9[disabled].ant-btn-link svg path,
+.c9.ant-btn-disabled.ant-btn-link svg path,
+.c9[disabled].ant-btn-default svg path,
+.c9.ant-btn-disabled.ant-btn-default svg path,
+.c9[disabled].ant-btn-primary svg path,
+.c9.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+.c0 {
+  display: grid;
+  margin: 8px 0 12px;
+}
+
+.c1 {
+  grid-column: 2;
+  border: 1px solid;
+  border-color: var(--acx-neutrals-30);
+  border-radius: 4px;
+}
+
+.c2 {
+  margin-bottom: 8px;
+  padding: 8px;
+  border-bottom: 1px solid;
+  border-color: var(--acx-neutrals-30);
+}
+
+.c4 {
+  font-weight: var(--acx-headline-5-font-weight-bold);
+}
+
+.c5 {
+  line-height: 1.6;
+  padding: 4px 8px 12px;
+  font-size: var(--acx-body-5-font-size);
+}
+
+.c7 {
+  padding-left: 3px;
+  font-weight: var(--acx-headline-4-font-weight-bold);
+}
+
+.c8 {
+  padding: 4px 0px;
+  color: var(--acx-semantics-red-50);
+}
+
+.c6 {
+  padding-bottom: 4px;
+}
+
+.c10 {
+  font-size: var(--acx-body-5-font-size);
+}
+
+.c3 {
+  margin-bottom: 3px;
+  vertical-align: middle;
+  height: 16px;
+  width: 16px;
+  margin-right: 3px;
+}
+
+<div
+    class="c0"
   >
     <div
-      class="styledComponents__Wrapper-sc-1yoazt9-1 kFLMla"
+      class="c1"
     >
       <div
-        class="styledComponents__Header-sc-1yoazt9-2 QdkW"
+        class="c2"
       >
         Switch Model: 
         <svg
-          class="styledComponents__WarningTriangle-sc-1yoazt9-9 WDtEO"
+          class="c3"
           data-testid="WarningTriangleOutlined"
         />
         <span
-          class="styledComponents__ValidateModel-sc-1yoazt9-3 iNbArI"
+          class="c4"
         >
           ICX7150-C08P
         </span>
       </div>
       <div
-        class="styledComponents__Content-sc-1yoazt9-4 jqbVQu"
+        class="c5"
       >
         <div
-          class="styledComponents__FirmwareDescription-sc-1yoazt9-7 icvtsZ"
+          class="c6"
         >
           Minimum firmware version:
           <span
-            class="styledComponents__MinFwVersion-sc-1yoazt9-5 eEVNHa"
+            class="c7"
           >
             08.0.92d
           </span>
@@ -38,12 +153,12 @@ exports[`Switch Requriements Modal should render correctly 1`] = `
         If the switch is not running FI 08.0.92d (UFI), then the switch must be upgraded to the venue’s firmware version. This applies even if there is ‘Cloud Ready’ listed on the switch label.
         <br />
         <div
-          class="styledComponents__Warning-sc-1yoazt9-6 euQKpb"
+          class="c8"
         >
            Do not proceed unless the switch has minimum FW version running or is manually upgraded.
         </div>
         <button
-          class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 kBDiup styledComponents__LinkButton-sc-1yoazt9-8 IktvO"
+          class="ant-btn ant-btn-link c9 c10"
           type="button"
         >
           <span>

@@ -12,7 +12,7 @@ type PropertyUrlType =
   'getUnitById' |
   'getPropertyUnitList' |
   'updatePropertyUnit' |
-  'deletePropertyUnits' |
+  'deletePropertyUnit' |
   'notifyPropertyUnits' |
   'getResidentPortalList' |
   'getResidentPortalsQuery' |
@@ -23,7 +23,8 @@ type PropertyUrlType =
   'getResidentPortalLogo' |
   'getResidentPortalFavicon' |
   'deleteResidentPortalLogo' |
-  'deleteResidentPortalFavicon'
+  'deleteResidentPortalFavicon' |
+  'bulkUpdateUnitProfile'
 
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
@@ -78,10 +79,14 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
     newApi: true,
     url: '/venues/:venueId/units/:unitId'
   },
-  deletePropertyUnits: {
+  deletePropertyUnit: {
     method: 'delete',
     newApi: true,
-    url: '/venues/:venueId/units'
+    url: '/venues/:venueId/units/:unitId',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   notifyPropertyUnits: {
     method: 'post',
@@ -137,5 +142,10 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
     method: 'delete',
     newApi: true,
     url: '/residentPortals/:serviceId/files/favIcon'
+  },
+  bulkUpdateUnitProfile: {
+    method: 'put',
+    newApi: true,
+    url: '/venues/:venueId/units/qosProfileAssignments/:profileId'
   }
 }

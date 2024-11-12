@@ -1,5 +1,5 @@
-import { ApDeviceStatusEnum, APView, FloorplanContext, NetworkDevice, NetworkDeviceType, RogueApInfo, SwitchStatusEnum } from '@acx-ui/rc/utils'
-import { getIntl }                                                                                                       from '@acx-ui/utils'
+import { ApDeviceStatusEnum, APView, FloorplanContext, NetworkDevice, NetworkDeviceType, RogueApInfo, RWGStatusEnum, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { getIntl }                                                                                                                      from '@acx-ui/utils'
 
 export function calculateDeviceColor (device: NetworkDevice,
   context: FloorplanContext, showRogueApMode: boolean): string {
@@ -20,8 +20,8 @@ export function calculateDeviceColor (device: NetworkDevice,
       const rogueType = device.rogueCategoryType?.toLowerCase()
       deviceColor = `ap-rogue-type-${rogueType}`
       break
-    case NetworkDeviceType.cloudpath:
-      deviceColor = 'cloudpath-server'
+    case NetworkDeviceType.rwg:
+      deviceColor = getRwgStatusColorClass(deviceStatus as RWGStatusEnum)
       break
   }
   return deviceColor
@@ -39,7 +39,35 @@ function getSwitchStatusColorClass (venueStatus: SwitchStatusEnum): string {
   return ''
 }
 
-export function apStatusTransform (value: ApDeviceStatusEnum | SwitchStatusEnum, apView?: APView) {
+function getRwgStatusColorClass (deviceStatus: RWGStatusEnum): string {
+  switch (deviceStatus) {
+    case RWGStatusEnum.DATA_INCOMPLETE:
+      return 'rwg-status-disconnected'
+    case RWGStatusEnum.INSUFFICIENT_LICENSE:
+      return 'switch-status-operational'
+    case RWGStatusEnum.INVALID_APIKEY:
+      return 'rwg-status-invalid-api'
+    case RWGStatusEnum.INVALID_CERTIFICATE:
+      return 'rwg-status-disconnected'
+    case RWGStatusEnum.INVALID_HOSTNAME:
+      return 'switch-status-disconnected'
+    case RWGStatusEnum.INVALID_LICENSE:
+      return 'switch-status-disconnected'
+    case RWGStatusEnum.OFFLINE:
+      return 'rwg-status-disconnected'
+    case RWGStatusEnum.ONLINE:
+      return 'rwg-status-operational'
+    case RWGStatusEnum.RWG_STATUS_UNKNOWN:
+      return 'rwg-status-never-contacted-cloud'
+    case RWGStatusEnum.STAGING:
+      return 'rwg-status-never-contacted-cloud'
+  }
+
+  return ''
+}
+
+export function apStatusTransform (value: ApDeviceStatusEnum | SwitchStatusEnum | RWGStatusEnum,
+  apView?: APView) {
   let message = ''
   let icon = ''
   let color = ''
@@ -129,9 +157,10 @@ export function apStatusTransform (value: ApDeviceStatusEnum | SwitchStatusEnum,
   return { message, icon, color }
 }
 
-export function calculateApColor (deviceStatus: ApDeviceStatusEnum | SwitchStatusEnum,
-  showRogueApMode: boolean,
-  context: FloorplanContext, device: NetworkDevice): RogueApInfo {
+export function calculateApColor (deviceStatus: ApDeviceStatusEnum | SwitchStatusEnum
+  | RWGStatusEnum,
+showRogueApMode: boolean,
+context: FloorplanContext, device: NetworkDevice): RogueApInfo {
   const status = apStatusTransform(deviceStatus)
   const deviceIcon = status.icon
   // TODO: Rogue AP need to handle later [needs discussion]

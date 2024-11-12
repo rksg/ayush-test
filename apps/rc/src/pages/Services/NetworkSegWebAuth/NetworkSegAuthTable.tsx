@@ -3,6 +3,7 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, showActionModal, Table, TableProps, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { useDeleteWebAuthTemplateMutation, useWebAuthTemplateListQuery }  from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -12,10 +13,11 @@ import {
   getServiceListRoutePath,
   useTableQuery,
   WebAuthTemplateTableData,
-  isDefaultWebAuth
+  isDefaultWebAuth,
+  getScopeKeyByService,
+  filterByAccessForServicePolicyMutation
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                           from '@acx-ui/user'
 
 const getNetworkSegAuthPayload = {
   fields: [
@@ -33,9 +35,11 @@ export default function NetworkSegAuthTable () {
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('')
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const tableQuery = useTableQuery({
     useQuery: useWebAuthTemplateListQuery,
-    defaultPayload: getNetworkSegAuthPayload
+    defaultPayload: getNetworkSegAuthPayload,
+    enableRbac: isSwitchRbacEnabled
   })
 
   const [
@@ -71,7 +75,7 @@ export default function NetworkSegAuthTable () {
         return switchCount || 0
       }
     }, {
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       key: 'venueCount',
       dataIndex: 'venueCount',
       render: (_, { venueCount }) => {
@@ -94,6 +98,7 @@ export default function NetworkSegAuthTable () {
 
   const rowActions: TableProps<WebAuthTemplateTableData>['rowActions'] = [
     {
+      scopeKey: getScopeKeyByService(ServiceType.WEBAUTH_SWITCH, ServiceOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1 && !isDefaultWebAuth(selectedRows[0].id),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -107,6 +112,7 @@ export default function NetworkSegAuthTable () {
         }, { state: { from: location } })
       }
     }, {
+      scopeKey: getScopeKeyByService(ServiceType.WEBAUTH_SWITCH, ServiceOperation.DELETE),
       visible: (selectedRows) => selectedRows.length === 1 && !isDefaultWebAuth(selectedRows[0].id),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
@@ -120,12 +126,14 @@ export default function NetworkSegAuthTable () {
           },
           okText: $t({ defaultMessage: 'Delete' }),
           onOk: () => {
-            deleteWebAuthTemplate({ params: { serviceId: rows[0].id } })
-              .then(clearSelection)
+            deleteWebAuthTemplate({
+              params: { serviceId: rows[0].id }, enableRbac: isSwitchRbacEnabled
+            }).then(clearSelection)
           }
         })
       }
     }, {
+      scopeKey: getScopeKeyByService(ServiceType.WEBAUTH_SWITCH, ServiceOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Update Now' }),
       onClick: (rows, clearSelection) => {
@@ -144,6 +152,8 @@ export default function NetworkSegAuthTable () {
     }
   ]
 
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return (<>
     <PageHeader
       title={$t({ defaultMessage: 'Personal Identity Network Auth Page for Switch ({count})' },
@@ -152,11 +162,13 @@ export default function NetworkSegAuthTable () {
         { text: $t({ defaultMessage: 'Network Control' }) },
         { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
       ]}
-      extra={filterByAccess([
+      extra={filterByAccessForServicePolicyMutation([
         <TenantLink state={{ from: location }}
           to={getServiceRoutePath({
             type: ServiceType.WEBAUTH_SWITCH, oper: ServiceOperation.CREATE
-          })}>
+          })}
+          scopeKey={getScopeKeyByService(ServiceType.WEBAUTH_SWITCH, ServiceOperation.EDIT)}
+        >
           <Button type='primary'>{$t({ defaultMessage: 'Add Auth Page Template' })}</Button>
         </TenantLink>
       ])} />
@@ -167,8 +179,8 @@ export default function NetworkSegAuthTable () {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'radio' }} />
+        rowActions={allowedRowActions}
+        rowSelection={allowedRowActions.length > 0 && { type: 'radio' }} />
     </Loader>
   </>)
 }

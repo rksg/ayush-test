@@ -2,12 +2,13 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { firmwareApi }                       from '@acx-ui/rc/services'
 import {
-  FirmwareUrlsInfo
+  FirmwareUrlsInfo, SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
 import {
-  Provider
+  Provider, store
 } from '@acx-ui/store'
 import {
   mockServer,
@@ -22,16 +23,22 @@ import {
   switchVenue,
   preference,
   switchRelease,
-  switchCurrentVersions,
   switchLatest
 } from '../../__tests__/fixtures'
 
 import { VenueFirmwareListLegacy } from '.'
 
-
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchCurrentVersionsQuery: () => ({
+    data: mockSwitchCurrentVersions
+  })
+}))
 describe('Firmware Venues Table', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    store.dispatch(firmwareApi.util.resetApiState())
     Modal.destroyAll()
     mockServer.use(
       rest.post(
@@ -54,7 +61,7 @@ describe('Firmware Venues Table', () => {
       ),
       rest.get(
         FirmwareUrlsInfo.getSwitchCurrentVersions.url,
-        (req, res, ctx) => res(ctx.json(switchCurrentVersions))
+        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersions))
       ),
       rest.post(
         FirmwareUrlsInfo.updateSwitchVenueSchedules.url,
@@ -62,6 +69,10 @@ describe('Firmware Venues Table', () => {
       ),
       rest.get(
         FirmwareUrlsInfo.getSwitchLatestFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(switchLatest))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getSwitchDefaultFirmwareList.url,
         (req, res, ctx) => res(ctx.json(switchLatest))
       )
     )
@@ -133,7 +144,8 @@ describe('Firmware Venues Table', () => {
   })
 
   it('should selected default options in dialog when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.SUPPORT_SWITCH_TWO_VERSION_UPGRADE)
 
     render(
       <Provider>

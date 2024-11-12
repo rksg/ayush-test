@@ -1,5 +1,5 @@
-import { useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { Provider  }        from '@acx-ui/store'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { Provider  }              from '@acx-ui/store'
 import { render,
   screen
 } from '@acx-ui/test-utils'
@@ -13,7 +13,7 @@ describe('Devices widget', () => {
     }
     const { asFragment } = render(
       <Provider>
-        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} />
+        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]} />
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
@@ -26,7 +26,7 @@ describe('Devices widget', () => {
     }
     const { asFragment } = render(
       <Provider>
-        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} enableArrowClick/>
+        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]} enableArrowClick/>
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
@@ -35,9 +35,6 @@ describe('Devices widget', () => {
 })
 
 describe('Devices widget V2', () => {
-  beforeEach(() => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(false)
-  })
   it('should render loader and then chart', async () => {
     const params = {
       tenantId: 'tenant-id'
@@ -47,9 +44,11 @@ describe('Devices widget V2', () => {
         <DevicesWidgetv2 apStackedData={[]}
           switchStackedData={[]}
           edgeStackedData={[]}
+          rwgStackedData={{ chartData: [], stackedColors: [] }}
           apTotalCount={1}
           switchTotalCount={1}
           edgeTotalCount={0}
+          rwgTotalCount={0}
         />
       </Provider>,
       { route: { params } })
@@ -67,9 +66,11 @@ describe('Devices widget V2', () => {
         <DevicesWidgetv2 apStackedData={[]}
           switchStackedData={[]}
           edgeStackedData={[]}
+          rwgStackedData={{ chartData: [], stackedColors: [] }}
           apTotalCount={0}
           switchTotalCount={0}
           edgeTotalCount={0}
+          rwgTotalCount={0}
         />
       </Provider>,
       { route: { params } })
@@ -87,9 +88,11 @@ describe('Devices widget V2', () => {
         <DevicesWidgetv2 apStackedData={[]}
           switchStackedData={[]}
           edgeStackedData={[]}
+          rwgStackedData={{ chartData: [], stackedColors: [] }}
           apTotalCount={0}
           switchTotalCount={0}
           edgeTotalCount={0}
+          rwgTotalCount={0}
           enableArrowClick
         />
       </Provider>,
@@ -106,7 +109,7 @@ describe('Devices widget v1', () => {
     }
     const { asFragment } = render(
       <Provider>
-        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} />
+        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]}/>
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
@@ -119,7 +122,7 @@ describe('Devices widget v1', () => {
     }
     const { asFragment } = render(
       <Provider>
-        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} enableArrowClick/>
+        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]} enableArrowClick/>
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
@@ -129,7 +132,7 @@ describe('Devices widget v1', () => {
 
 describe('Devices widget V2 edge enabled', () => {
   beforeEach(() => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE)
   })
   it('should render loader and then chart', async () => {
     const params = {
@@ -141,20 +144,22 @@ describe('Devices widget V2 edge enabled', () => {
           apStackedData={[]}
           switchStackedData={[]}
           edgeStackedData={[]}
+          rwgStackedData={{ chartData: [], stackedColors: [] }}
           apTotalCount={1}
           switchTotalCount={1}
           edgeTotalCount={2}
+          rwgTotalCount={0}
         />
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
     await screen.findByText('Access Points')
     await screen.findByText('Switches')
-    await screen.findByText('SmartEdges')
+    await screen.findByText('RUCKUS Edges')
     expect(asFragment().querySelectorAll('svg').length).toBe(3)
   })
 
-  it('should render add smartEdge when no edge', async () => {
+  it('should render add RUCKUS Edge when no edge', async () => {
     const params = {
       tenantId: 'tenant-id'
     }
@@ -164,18 +169,20 @@ describe('Devices widget V2 edge enabled', () => {
           apStackedData={[]}
           switchStackedData={[]}
           edgeStackedData={[]}
+          rwgStackedData={{ chartData: [], stackedColors: [] }}
           apTotalCount={1}
           switchTotalCount={1}
           edgeTotalCount={0}
+          rwgTotalCount={0}
         />
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
     await screen.findByText('Access Points')
     await screen.findByText('Switches')
-    await screen.findByText('No SmartEdges')
+    await screen.findByText('No RUCKUS Edges')
     expect(asFragment().querySelectorAll('svg').length).toBe(2)
-    expect(screen.getByRole('link', { name: 'Add SmartEdge' }))
+    expect(screen.getByRole('link', { name: 'Add RUCKUS Edge' }))
       .toHaveAttribute('href', '/tenant-id/t/devices/edge/add')
   })
 

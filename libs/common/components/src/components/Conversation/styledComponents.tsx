@@ -1,6 +1,8 @@
 import { Collapse as AntdCollapse } from 'antd'
 import styled                       from 'styled-components/macro'
 
+import { ChatbotLink } from '@acx-ui/icons'
+
 import { cssStr }              from '../../theme/helper'
 import { Button as AcxButton } from '../Button'
 
@@ -13,7 +15,7 @@ export const Button = styled(AcxButton)`
 `
 
 export const Collapse = styled(AntdCollapse)`
-  width: 416px;
+  width: 327px;
   border: 1px solid ${cssStr('--acx-neutrals-25')};
   margin-top: 16px;
   border-radius: 5px;
@@ -78,36 +80,53 @@ export const Wrapper = styled.div`
   flex-direction: column;
 `
 export const User = styled.div`
-  width: 327px;
+  width: max-content;
+  max-width: 327px;
   height: auto;
   border: 1px solid ${cssStr('--acx-neutrals-25')};
-  border-radius: 5px;
+  border-radius: 10px 0px 10px 10px;
+  background: ${cssStr('--acx-primary-white')};
   color: ${cssStr('--acx-primary-black')};
-  text-align: left;
   font-weight: ${cssStr('--acx-body-font-weight')};
   font-family: ${cssStr('--acx-neutral-brand-font')};
   font-style: normal;
   font-size: ${cssStr('--acx-body-4-font-size')};
   line-height: ${cssStr('--acx-body-4-line-height')};
   margin-left: auto;
-  margin-top: 16px;
-  padding: 10px;
+  margin-top: 10px;
+  padding: 14px 15px;
 `
 export const Bot = styled.div`
-  width: 377px;
+  width: max-content;
+  max-width: 327px;
   height: auto;
-  border: 1px solid ${cssStr('--acx-neutrals-25')};
-  border-radius: 5px;
-  background: linear-gradient(0deg, ${cssStr('--acx-neutrals-15')}, ${cssStr('--acx-neutrals-15')});
+  border: none;
+  border-radius: 0px 10px 10px 10px;
+  background: #F5F8FB;
   color: ${cssStr('--acx-primary-black')};
   font-weight: ${cssStr('--acx-body-font-weight')};
   font-family: ${cssStr('--acx-neutral-brand-font')};
   font-style: normal;
   font-size: ${cssStr('--acx-body-4-font-size')};
   line-height: ${cssStr('--acx-body-4-line-height')};
-  margin-top: 16px;
+  margin-top: 10px;
   text-align: left;
-  padding: 10px;
+  padding: 14px 15px 14px 15px;
+`
+
+export const System = styled.div`
+  max-width: 350px;
+  height: auto;
+  border: none;
+  color: ${cssStr('--acx-primary-black')};
+  font-weight: ${cssStr('--acx-body-font-weight')};
+  font-family: ${cssStr('--acx-neutral-brand-font')};
+  font-style: italic;
+  font-size: ${cssStr('--acx-body-4-font-size')};
+  line-height: ${cssStr('--acx-body-4-line-height')};
+  margin-top: 10px;
+  text-align: center;
+  padding: 14px 15px 14px 15px;
 `
 
 const ChatTypingWrapper = styled.div`
@@ -153,6 +172,19 @@ const ChatTypingWrapper = styled.div`
     background-color: ${cssStr('--acx-semantics-yellow-30')};
   }
 }
+`
+
+export const StyledChatbotLink = styled(ChatbotLink)`
+  width: unset !important;
+  height: unset !important;
+path {
+    stroke: unset !important;
+  }
+`
+
+export const ModeText = styled.div`
+  font-size: 10px;
+  color: gray;
 `
 
 export const ChatTyping=()=>{

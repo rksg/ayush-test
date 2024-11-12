@@ -8,6 +8,12 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/mspeclist',
     newApi: true
   },
+  getMspECList: {
+    method: 'post',
+    url: '/ecs/query?delegations=true',
+    oldUrl: '/mspecs/query',
+    newApi: true
+  },
   getIntegratorCustomersList: {
     method: 'post',
     url: '/techpartners/mspecs/query',
@@ -121,8 +127,8 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMspEcProfile: {
     method: 'get',
-    url: '/mspCustomers/:tenantId',
-    oldUrl: '/api/mspservice/tenant/:tenantId',
+    url: '/tenants/:tenantId',
+    oldUrl: '/mspCustomers/:tenantId',
     newApi: true
   },
   getMspEcAdmin: {
@@ -283,6 +289,12 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/mspservice/tenant/:tenantId/logourl',
     newApi: true
   },
+  getBrandingData: {
+    method: 'get',
+    url: '/brandingsData',
+    oldUrl: '/api/mspservice/tenant/:tenantId/brandingdata',
+    newApi: true
+  },
   assignMultiMspEcDelegatedAdmins: {
     method: 'PATCH',
     url: '/mspCustomers/mspAdmins/associations',
@@ -330,6 +342,22 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   addMspRecCustomer: {
     method: 'post',
     url: '/mspCustomers/mspRecs',
+    newApi: true
+  },
+  patchCustomer: {
+    method: 'PATCH',
+    url: '/tenants/:tenantId',
+    newApi: true
+  },
+  addBrandCustomers: {
+    method: 'post',
+    url: '/tenants',
+    newApi: true
+  },
+  getUploadURL: {
+    method: 'post',
+    url: '/files/uploadurls',
+    oldUrl: '/api/file/tenant/:tenantId/upload-url',
     newApi: true
   }
 }

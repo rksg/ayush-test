@@ -2,8 +2,20 @@
 
 exports[`ColorPill renders color pill 1`] = `
 <DocumentFragment>
-  <span
-    class="styledComponents__Pill-sc-j61ge1-0 eVLHtf"
+  .c0 {
+  display: inline-block;
+  border-radius: 10px;
+  padding: 3px 8px;
+  background-color: red;
+  line-height: var(--acx-subtitle-6-line-height);
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-6-font-size);
+  color: var(--acx-primary-white);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+}
+
+<span
+    class="c0"
     color="red"
     type="color"
   >
@@ -14,8 +26,45 @@ exports[`ColorPill renders color pill 1`] = `
 
 exports[`ProgressPill should render correctly 1`] = `
 <DocumentFragment>
-  <div
-    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 bWlKpi"
+  .c0 {
+  height: 20px;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+}
+
+.c0 .ant-progress-outer {
+  padding: 0;
+}
+
+.c0 .ant-progress-outer .ant-progress-inner {
+  border-radius: 25px !important;
+}
+
+.c0 .ant-progress-text {
+  margin: 0px;
+  text-align: center;
+  vertical-align: middle;
+  width: 100%;
+  position: relative;
+  top: -20px;
+  line-height: 20px;
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-6-font-size);
+  color: var(--acx-primary-white);
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+<div
+    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default c0"
   >
     <div
       class="ant-progress-outer"
@@ -42,8 +91,45 @@ exports[`ProgressPill should render correctly 1`] = `
 
 exports[`ProgressPill should render correctly 2`] = `
 <DocumentFragment>
-  <div
-    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 bWlKpi"
+  .c0 {
+  height: 20px;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+}
+
+.c0 .ant-progress-outer {
+  padding: 0;
+}
+
+.c0 .ant-progress-outer .ant-progress-inner {
+  border-radius: 25px !important;
+}
+
+.c0 .ant-progress-text {
+  margin: 0px;
+  text-align: center;
+  vertical-align: middle;
+  width: 100%;
+  position: relative;
+  top: -20px;
+  line-height: 20px;
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-6-font-size);
+  color: var(--acx-primary-white);
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+<div
+    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default c0"
   >
     <div
       class="ant-progress-outer"
@@ -70,8 +156,45 @@ exports[`ProgressPill should render correctly 2`] = `
 
 exports[`ProgressPill should render correctly 3`] = `
 <DocumentFragment>
-  <div
-    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 bWlKpi"
+  .c0 {
+  height: 20px;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+}
+
+.c0 .ant-progress-outer {
+  padding: 0;
+}
+
+.c0 .ant-progress-outer .ant-progress-inner {
+  border-radius: 25px !important;
+}
+
+.c0 .ant-progress-text {
+  margin: 0px;
+  text-align: center;
+  vertical-align: middle;
+  width: 100%;
+  position: relative;
+  top: -20px;
+  line-height: 20px;
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-6-font-size);
+  color: var(--acx-primary-white);
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+<div
+    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default c0"
   >
     <div
       class="ant-progress-outer"
@@ -98,8 +221,45 @@ exports[`ProgressPill should render correctly 3`] = `
 
 exports[`ProgressPill should render correctly 4`] = `
 <DocumentFragment>
-  <div
-    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 bWlKpi"
+  .c0 {
+  height: 20px;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+}
+
+.c0 .ant-progress-outer {
+  padding: 0;
+}
+
+.c0 .ant-progress-outer .ant-progress-inner {
+  border-radius: 25px !important;
+}
+
+.c0 .ant-progress-text {
+  margin: 0px;
+  text-align: center;
+  vertical-align: middle;
+  width: 100%;
+  position: relative;
+  top: -20px;
+  line-height: 20px;
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-6-font-size);
+  color: var(--acx-primary-white);
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+<div
+    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default c0"
   >
     <div
       class="ant-progress-outer"
@@ -126,8 +286,45 @@ exports[`ProgressPill should render correctly 4`] = `
 
 exports[`ProgressPill should render correctly 5`] = `
 <DocumentFragment>
-  <div
-    class="ant-progress ant-progress-line ant-progress-status-success ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 bWlKpi"
+  .c0 {
+  height: 20px;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+}
+
+.c0 .ant-progress-outer {
+  padding: 0;
+}
+
+.c0 .ant-progress-outer .ant-progress-inner {
+  border-radius: 25px !important;
+}
+
+.c0 .ant-progress-text {
+  margin: 0px;
+  text-align: center;
+  vertical-align: middle;
+  width: 100%;
+  position: relative;
+  top: -20px;
+  line-height: 20px;
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-6-font-size);
+  color: var(--acx-primary-white);
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+<div
+    class="ant-progress ant-progress-line ant-progress-status-success ant-progress-show-info ant-progress-default c0"
   >
     <div
       class="ant-progress-outer"
@@ -154,8 +351,45 @@ exports[`ProgressPill should render correctly 5`] = `
 
 exports[`ProgressPill should render correctly 6`] = `
 <DocumentFragment>
-  <div
-    class="ant-progress ant-progress-line ant-progress-status-success ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 bWlKpi"
+  .c0 {
+  height: 20px;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+}
+
+.c0 .ant-progress-outer {
+  padding: 0;
+}
+
+.c0 .ant-progress-outer .ant-progress-inner {
+  border-radius: 25px !important;
+}
+
+.c0 .ant-progress-text {
+  margin: 0px;
+  text-align: center;
+  vertical-align: middle;
+  width: 100%;
+  position: relative;
+  top: -20px;
+  line-height: 20px;
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-6-font-size);
+  color: var(--acx-primary-white);
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+<div
+    class="ant-progress ant-progress-line ant-progress-status-success ant-progress-show-info ant-progress-default c0"
   >
     <div
       class="ant-progress-outer"
@@ -182,8 +416,45 @@ exports[`ProgressPill should render correctly 6`] = `
 
 exports[`ProgressPill should render with customized props 1`] = `
 <DocumentFragment>
-  <div
-    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default styledComponents__Progress-sc-j61ge1-1 bWlKpi"
+  .c0 {
+  height: 20px;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+}
+
+.c0 .ant-progress-outer {
+  padding: 0;
+}
+
+.c0 .ant-progress-outer .ant-progress-inner {
+  border-radius: 25px !important;
+}
+
+.c0 .ant-progress-text {
+  margin: 0px;
+  text-align: center;
+  vertical-align: middle;
+  width: 100%;
+  position: relative;
+  top: -20px;
+  line-height: 20px;
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-6-font-size);
+  color: var(--acx-primary-white);
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+<div
+    class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-show-info ant-progress-default c0"
   >
     <div
       class="ant-progress-outer"
@@ -210,8 +481,20 @@ exports[`ProgressPill should render with customized props 1`] = `
 
 exports[`SeverityPill renders P1 1`] = `
 <DocumentFragment>
-  <span
-    class="styledComponents__Pill-sc-j61ge1-0 igIonA"
+  .c0 {
+  display: inline-block;
+  border-radius: 10px;
+  padding: 3px 8px;
+  background-color: var(--acx-semantics-red-50);
+  line-height: var(--acx-subtitle-6-line-height);
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-6-font-size);
+  color: var(--acx-primary-white);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+}
+
+<span
+    class="c0"
     type="P1"
   >
     P1
@@ -221,8 +504,20 @@ exports[`SeverityPill renders P1 1`] = `
 
 exports[`SeverityPill renders P2 1`] = `
 <DocumentFragment>
-  <span
-    class="styledComponents__Pill-sc-j61ge1-0 gceAYH"
+  .c0 {
+  display: inline-block;
+  border-radius: 10px;
+  padding: 3px 8px;
+  background-color: var(--acx-accents-orange-50);
+  line-height: var(--acx-subtitle-6-line-height);
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-6-font-size);
+  color: var(--acx-primary-white);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+}
+
+<span
+    class="c0"
     type="P2"
   >
     P2
@@ -232,8 +527,20 @@ exports[`SeverityPill renders P2 1`] = `
 
 exports[`SeverityPill renders P3 1`] = `
 <DocumentFragment>
-  <span
-    class="styledComponents__Pill-sc-j61ge1-0 gSUyP"
+  .c0 {
+  display: inline-block;
+  border-radius: 10px;
+  padding: 3px 8px;
+  background-color: var(--acx-semantics-yellow-50);
+  line-height: var(--acx-subtitle-6-line-height);
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-6-font-size);
+  color: var(--acx-primary-white);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+}
+
+<span
+    class="c0"
     type="P3"
   >
     P3
@@ -243,8 +550,20 @@ exports[`SeverityPill renders P3 1`] = `
 
 exports[`SeverityPill renders P4 1`] = `
 <DocumentFragment>
-  <span
-    class="styledComponents__Pill-sc-j61ge1-0 ehvnaF"
+  .c0 {
+  display: inline-block;
+  border-radius: 10px;
+  padding: 3px 8px;
+  background-color: var(--acx-semantics-yellow-30);
+  line-height: var(--acx-subtitle-6-line-height);
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-6-font-size);
+  color: var(--acx-primary-white);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+}
+
+<span
+    class="c0"
     type="P4"
   >
     P4
@@ -252,10 +571,99 @@ exports[`SeverityPill renders P4 1`] = `
 </DocumentFragment>
 `;
 
+exports[`StatusPill renders color pill 1`] = `
+<DocumentFragment>
+  .c0 {
+  display: inline-block;
+  border-radius: 20px;
+  padding: 3px 8px;
+  background-color: var(--acx-semantics-red-50);
+  line-height: 14px;
+  font-size: var(--acx-subtitle-5-font-size);
+  color: var(--acx-primary-white);
+  min-width: 50px;
+  text-align: center;
+}
+
+<span
+    class="c0"
+    color="red"
+  >
+    Red
+  </span>
+  .c0 {
+  display: inline-block;
+  border-radius: 20px;
+  padding: 3px 8px;
+  background-color: var(--acx-semantics-green-50);
+  line-height: 14px;
+  font-size: var(--acx-subtitle-5-font-size);
+  color: var(--acx-primary-white);
+  min-width: 50px;
+  text-align: center;
+}
+
+<span
+    class="c0"
+    color="green"
+  >
+    Green
+  </span>
+  .c0 {
+  display: inline-block;
+  border-radius: 20px;
+  padding: 3px 8px;
+  background-color: var(--acx-semantics-yellow-50);
+  line-height: 14px;
+  font-size: var(--acx-subtitle-5-font-size);
+  color: var(--acx-primary-white);
+  min-width: 50px;
+  text-align: center;
+}
+
+<span
+    class="c0"
+    color="yellow"
+  >
+    Yellow
+  </span>
+  .c0 {
+  display: inline-block;
+  border-radius: 20px;
+  padding: 3px 8px;
+  background-color: var(--acx-semantics-green-50);
+  line-height: 14px;
+  font-size: var(--acx-subtitle-5-font-size);
+  color: var(--acx-primary-white);
+  min-width: 50px;
+  text-align: center;
+}
+
+<span
+    class="c0"
+    color="test"
+  >
+    Green
+  </span>
+</DocumentFragment>
+`;
+
 exports[`TrendPill renders negative trend 1`] = `
 <DocumentFragment>
-  <span
-    class="styledComponents__Pill-sc-j61ge1-0 igIonA"
+  .c0 {
+  display: inline-block;
+  border-radius: 10px;
+  padding: 3px 8px;
+  background-color: var(--acx-semantics-red-50);
+  line-height: var(--acx-subtitle-6-line-height);
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-6-font-size);
+  color: var(--acx-primary-white);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+}
+
+<span
+    class="c0"
     type="negative"
   >
     -123
@@ -265,8 +673,20 @@ exports[`TrendPill renders negative trend 1`] = `
 
 exports[`TrendPill renders no trend 1`] = `
 <DocumentFragment>
-  <span
-    class="styledComponents__Pill-sc-j61ge1-0 khRlTl"
+  .c0 {
+  display: inline-block;
+  border-radius: 10px;
+  padding: 3px 8px;
+  background-color: var(--acx-neutrals-50);
+  line-height: var(--acx-subtitle-6-line-height);
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-6-font-size);
+  color: var(--acx-primary-white);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+}
+
+<span
+    class="c0"
     type="none"
   >
     0
@@ -276,8 +696,20 @@ exports[`TrendPill renders no trend 1`] = `
 
 exports[`TrendPill renders positive trend 1`] = `
 <DocumentFragment>
-  <span
-    class="styledComponents__Pill-sc-j61ge1-0 iWtJKw"
+  .c0 {
+  display: inline-block;
+  border-radius: 10px;
+  padding: 3px 8px;
+  background-color: var(--acx-semantics-green-50);
+  line-height: var(--acx-subtitle-6-line-height);
+  font-family: var(--acx-neutral-brand-font);
+  font-size: var(--acx-subtitle-6-font-size);
+  color: var(--acx-primary-white);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+}
+
+<span
+    class="c0"
     type="positive"
   >
     123

@@ -341,3 +341,7 @@ export const PcapSpin = styled(Spin)`
   position: relative;
   left: 15%;
 `
+
+export const TooltipTextWrapper = styled.div`
+  max-width: 130px;
+`

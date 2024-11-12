@@ -1,18 +1,24 @@
-import { renderHook, waitFor } from '@testing-library/react'
-import userEvent               from '@testing-library/user-event'
-import { Form }                from 'antd'
-import { rest }                from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
 import {
   CommonUrlsInfo,
   MdnsProxyScopeData,
   ServiceType,
-  websocketServerUrl,
   getServiceRoutePath,
   ServiceOperation
 } from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
-import { mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { Provider } from '@acx-ui/store'
+import {
+  mockServer,
+  render,
+  renderHook,
+  screen,
+  waitFor,
+  within
+} from '@acx-ui/test-utils'
+import { websocketServerUrl } from '@acx-ui/utils'
 
 import {
   mockedScope,

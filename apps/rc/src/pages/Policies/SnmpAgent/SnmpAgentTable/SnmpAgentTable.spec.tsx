@@ -2,9 +2,15 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
+import { policyApi }                                                   from '@acx-ui/rc/services'
 import { ApSnmpUrls, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
-import { Provider }                                                    from '@acx-ui/store'
-import { mockServer, render, screen, within }                          from '@acx-ui/test-utils'
+import { Provider, store }                                             from '@acx-ui/store'
+import {
+  mockServer,
+  render,
+  screen,
+  waitForElementToBeRemoved,
+  within }                          from '@acx-ui/test-utils'
 
 import SnmpAgentTable from './SnmpAgentTable'
 
@@ -51,6 +57,7 @@ describe('SnmpAgentTable', () => {
   const tablePath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })
 
   beforeEach(async () => {
+    store.dispatch(policyApi.util.resetApiState())
     mockServer.use(
       rest.post(
         ApSnmpUrls.getApSnmpFromViewModel.url,
@@ -82,6 +89,7 @@ describe('SnmpAgentTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'Policies & Profiles'
@@ -108,6 +116,7 @@ describe('SnmpAgentTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     let target = mockTableResult.data[0]
     let row = await screen.findByRole('row', { name: new RegExp(target.name) })
@@ -119,6 +128,7 @@ describe('SnmpAgentTable', () => {
     row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('radio'))
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
     /*
     expect(await screen.findByText('Delete a SNMP agent that is currently in use?')).toBeVisible()
 
@@ -134,7 +144,6 @@ describe('SnmpAgentTable', () => {
 
     await userEvent.click(deleteBtns[1])
     */
-
   })
 
   it('should navigate to the Edit view', async () => {
@@ -152,5 +161,6 @@ describe('SnmpAgentTable', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /Edit/ }))
 
+    expect(screen.queryByText('Edit')).toBeNull()
   })
 })

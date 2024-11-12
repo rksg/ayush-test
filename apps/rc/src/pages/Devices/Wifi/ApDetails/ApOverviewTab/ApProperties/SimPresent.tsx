@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl'
 
 import { Fieldset, Descriptions } from '@acx-ui/components'
 import { SimPresentData }         from '@acx-ui/rc/utils'
+import { noDataDisplay }          from '@acx-ui/utils'
 
 interface SimPresentProps {
   title: string
@@ -24,39 +25,39 @@ export const SimPresent = (props: SimPresentProps) => {
       <Descriptions labelWidthPercent={50}>
         <Descriptions.Item
           label={$t({ defaultMessage: 'IMSI' })}
-          children={currentCellularInfo.cellularIMSI || $t({ defaultMessage: 'None' })}
+          children={currentCellularInfo.cellularIMSI || noDataDisplay}
         />
         <Descriptions.Item
           label={$t({ defaultMessage: 'ICCID' })}
-          children={currentCellularInfo.cellularICCID || $t({ defaultMessage: 'None' })}
+          children={currentCellularInfo.cellularICCID || noDataDisplay}
         />
         <Descriptions.Item
           label={$t({ defaultMessage: 'IMSI' })}
-          children={currentCellularInfo.cellularIMSI || $t({ defaultMessage: 'None' })}
+          children={currentCellularInfo.cellularIMSI || noDataDisplay}
         />
         <Descriptions.Item
           label={$t({ defaultMessage: 'Tx (bytes)' })}
-          children={currentCellularInfo.cellularTxBytes || $t({ defaultMessage: 'None' })}
+          children={currentCellularInfo.cellularTxBytes || noDataDisplay}
         />
         <Descriptions.Item
           label={$t({ defaultMessage: 'Rx (bytes)' })}
-          children={currentCellularInfo.cellularRxBytes || $t({ defaultMessage: 'None' })}
+          children={currentCellularInfo.cellularRxBytes || noDataDisplay}
         />
         <Descriptions.Item
           label={$t({ defaultMessage: 'Switch count' })}
-          children={currentCellularInfo.cellularSwitchCount || $t({ defaultMessage: 'None' })}
+          children={currentCellularInfo.cellularSwitchCount || noDataDisplay}
         />
         <Descriptions.Item
           label={$t({ defaultMessage: 'Network lost count' })}
-          children={currentCellularInfo.cellularNWLostCount || $t({ defaultMessage: 'None' })}
+          children={currentCellularInfo.cellularNWLostCount || noDataDisplay}
         />
         <Descriptions.Item
           label={$t({ defaultMessage: 'Card removal count' })}
-          children={currentCellularInfo.cellularCardRemovalCount || $t({ defaultMessage: 'None' })}
+          children={currentCellularInfo.cellularCardRemovalCount || noDataDisplay}
         />
         <Descriptions.Item
           label={$t({ defaultMessage: 'DHCP timeout count' })}
-          children={currentCellularInfo.cellularDHCPTimeoutCount || $t({ defaultMessage: 'None' })}
+          children={currentCellularInfo.cellularDHCPTimeoutCount || noDataDisplay}
         />
       </Descriptions>
     </Fieldset>

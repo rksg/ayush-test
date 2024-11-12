@@ -37,10 +37,7 @@ export function getIncidentTimeSeriesPeriods (incident: Incident, incidentBuffer
 
 export const Api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    Charts: build.query<
-      TimeSeriesChartResponse,
-      ChartDataProps
-    >({
+    Charts: build.query< TimeSeriesChartResponse, ChartDataProps>({
       query: (payload) => {
         const queries = payload.charts.map(
           chart => timeSeriesCharts[chart].query(payload.incident)
@@ -74,8 +71,14 @@ export const Api = dataApi.injectEndpoints({
           }
         }
       },
-      transformResponse: (response: Response<TimeSeriesChartResponse>) =>
-        response.network.hierarchyNode
+      transformResponse: (response: Response<TimeSeriesChartResponse>, _, args) => {
+        return args.charts.reduce((results, chart) => {
+          const config = timeSeriesCharts[chart]
+          return config.transformResponse
+            ? config.transformResponse(args.incident, results)
+            : results
+        }, response.network.hierarchyNode)
+      }
     })
   })
 })

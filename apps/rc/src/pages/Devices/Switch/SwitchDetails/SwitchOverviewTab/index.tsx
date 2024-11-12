@@ -72,6 +72,8 @@ export function SwitchOverviewTab () {
 
       setSwitchDetail({
         ...switchDetailHeader,
+        description: switchData.description,
+        enableStack: switchData.enableStack,
         venueDescription: venue.description,
         unitDetails: syncedStackMember
       })
@@ -108,7 +110,7 @@ export function SwitchOverviewTab () {
     <GridRow>
       <GridCol col={{ span: 24 }} style={{ height: '148px' }}>
         <Loader states={[{ isLoading: !switchDetail }]}>
-          { switchDetail &&
+          { switchDetail?.switchMac &&
           <SwitchInfoWidget
             switchDetail={switchDetail as SwitchViewModel}
             filters={switchFilter} /> }
@@ -122,26 +124,33 @@ export function SwitchOverviewTab () {
       style={{ marginTop: '25px' }}
     >
       <Tabs.TabPane tab={$t({ defaultMessage: 'Panel' })} key='panel'>
-        <SwitchOverviewPanel
+        {switchDetail?.switchMac && <SwitchOverviewPanel
           filters={switchFilter}
           stackMember={syncedStackMember as StackMember[]}
           switchDetail={switchDetail}
           currentSwitchDevice={currentSwitchDevice} />
+        }
       </Tabs.TabPane>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Ports' })} key='ports'>
-        <SwitchOverviewPorts />
+        <SwitchOverviewPorts
+          switchDetail={switchDetail}
+        />
       </Tabs.TabPane>
       {supportRoutedInterfaces &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Routed Interfaces' })} key='routeInterfaces'>
-          <SwitchOverviewRouteInterfaces />
+          <SwitchOverviewRouteInterfaces switchDetail={switchDetail} />
         </Tabs.TabPane>
       }
-      <Tabs.TabPane tab={$t({ defaultMessage: 'VLANs' })} key='vlans'>
-        <SwitchOverviewVLANs />
-      </Tabs.TabPane>
-      <Tabs.TabPane tab={$t({ defaultMessage: 'ACLs' })} key='acls'>
-        <SwitchOverviewACLs />
-      </Tabs.TabPane>
+      {switchDetail &&
+        <Tabs.TabPane tab={$t({ defaultMessage: 'VLANs' })} key='vlans'>
+          <SwitchOverviewVLANs switchDetail={switchDetail} />
+        </Tabs.TabPane>
+      }
+      {switchDetail &&
+        <Tabs.TabPane tab={$t({ defaultMessage: 'ACLs' })} key='acls'>
+          <SwitchOverviewACLs switchDetail={switchDetail} />
+        </Tabs.TabPane>
+      }
     </Tabs>
   </>
 }

@@ -8,6 +8,9 @@ import {
   TableProps,
   Drawer
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { useSwitchFirmwareUtils }            from '@acx-ui/rc/components'
+import { getNextScheduleTpl }                from '@acx-ui/rc/components'
 import { useLazyGetSwitchFirmwareListQuery } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
@@ -17,12 +20,10 @@ import {
 } from '@acx-ui/rc/utils'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
-import { getNextScheduleTpl, getSwitchNextScheduleTplTooltip } from '../../../FirmwareUtils'
-import * as UI                                                 from '../../../styledComponents'
+import * as UI               from '../../../styledComponents'
 import {
   enableSwitchScheduleTooltip,
-  getSwitchNextScheduleTpl,
-  getSwitchScheduleTpl
+  getSwitchNextScheduleTpl
 } from '../switch.upgrade.util'
 export interface SwitchScheduleDrawerProps {
   visible: boolean,
@@ -32,6 +33,12 @@ export interface SwitchScheduleDrawerProps {
 
 export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
   const intl = useIntl()
+  const {
+    getSwitchNextScheduleTplTooltip,
+    getSwitchScheduleTpl
+  } = useSwitchFirmwareUtils()
+
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const [ getSwitchFirmwareStatusList ] = useLazyGetSwitchFirmwareListQuery({
     pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL
@@ -41,7 +48,9 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
 
   const setSwitchList = async () => {
     const switchList = (await getSwitchFirmwareStatusList({
-      payload: { venueIdList: [props.data.id] }
+      params: { venueId: props.data.id },
+      payload: { venueIdList: [props.data.id] },
+      enableRbac: isSwitchRbacEnabled
     }, false)).data?.data
     if (switchList) {
       const filterSwitchList = switchList.filter(row => row.isSwitchLevelSchedule)
@@ -124,7 +133,8 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
     children={<>
       <Row style={{ lineHeight: '24px' }}>
         <Typography.Text>
-          <b>  {intl.$t({ defaultMessage: 'Venue:' })}</b> {props.data.name}
+          <b> {intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>:' })}</b>{
+            props.data.name}
         </Typography.Text>
       </Row>
       <Row style={{ lineHeight: '24px' }}>

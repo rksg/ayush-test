@@ -1,5 +1,5 @@
-import _                 from 'lodash'
-import { defineMessage } from 'react-intl'
+import { assign, findIndex } from 'lodash'
+import { defineMessage }     from 'react-intl'
 
 import { getIntl } from '@acx-ui/utils'
 
@@ -56,7 +56,7 @@ const radioTypeEnumToRadioEnum = (radioTypes: RadioTypeEnum[]) => {
     return RadioEnum.Both
   } else {
     const radioEnum = [RadioEnum._2_4_GHz, RadioEnum._5_GHz]
-    return radioEnum[_.findIndex([RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz], (r)=>radioTypes.includes(r))]
+    return radioEnum[findIndex([RadioTypeEnum._2_4_GHz, RadioTypeEnum._5_GHz], (r)=>radioTypes.includes(r))]
   }
 }
 
@@ -68,34 +68,35 @@ export const aggregateApGroupPayload = (info: FormFinishInfo, oldData?: NetworkV
   }
 
   if (newData.isAllApGroups) {
-    _.assign(newData, {
+    assign(newData, {
       allApGroupsRadio: radioTypeEnumToRadioEnum(allApGroupsRadioTypes),
       allApGroupsRadioTypes: allApGroupsRadioTypes,
       apGroups: []
     })
   } else {
-    _.assign(newData, {
+    assign(newData, {
       apGroups: (apgroups || []).filter((ag:{ selected: boolean }) => ag.selected).map((editedApGroup: NetworkApGroup) => {
         const currentApGroup = (oldData?.apGroups || []).find((ag) => ag.apGroupId === editedApGroup.apGroupId)
         let ret = { ...currentApGroup }
+        const { apGroupId, radioTypes, vlanPoolId, vlanId } = editedApGroup
 
-        ret.apGroupId = editedApGroup.apGroupId
-        ret.radioTypes = editedApGroup.radioTypes
-        ret.radio = editedApGroup.radioTypes ? radioTypeEnumToRadioEnum(editedApGroup.radioTypes) : RadioEnum.Both
-        if (editedApGroup.vlanPoolName) {
-          ret.vlanPoolId = editedApGroup.vlanPoolId
-          ret.vlanPoolName = editedApGroup.vlanPoolName
+        ret.apGroupId = apGroupId
+        ret.radioTypes = radioTypes
+        ret.radio = radioTypes ? radioTypeEnumToRadioEnum(radioTypes) : RadioEnum.Both
+        if (vlanPoolId) {
+          ret.vlanPoolId = vlanPoolId
           delete ret.vlanId
         } else {
-          ret.vlanId = editedApGroup.vlanId
+          ret.vlanId = vlanId
           delete ret.vlanPoolName
           delete ret.vlanPoolId
         }
 
         if (keepApGroupBasicData) { //For Networkform > Venues page
-          ret.isDefault = editedApGroup.isDefault
-          if(!editedApGroup.isDefault) {
-            ret.apGroupName = editedApGroup.apGroupName
+          const { isDefault, apGroupName } = editedApGroup
+          ret.isDefault = isDefault
+          if (!isDefault) {
+            ret.apGroupName = apGroupName
           }
         }
 

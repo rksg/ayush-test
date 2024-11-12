@@ -1,11 +1,17 @@
-import { APMeshRole, ApDeviceStatusEnum }               from '../constants'
-import { ApPosition, CapabilitiesApModel, PoeModeEnum } from '../models'
-import { ApDeep }                                       from '../models/ApDeep'
-import { ApPacketCaptureStateEnum }                     from '../models/ApPacketCaptureEnum'
-import { DeviceGps }                                    from '../models/DeviceGps'
-import { DhcpApInfo }                                   from '../models/DhcpApInfo'
-import { ExternalAntenna }                              from '../models/ExternalAntenna'
-import { VenueLanPort }                                 from '../models/VenueLanPort'
+import { APMeshRole, ApDeviceStatusEnum } from '../constants'
+import {
+  ApAntennaTypeEnum,
+  ApDeep,
+  ApDhcpRoleEnum,
+  ApPacketCaptureStateEnum,
+  ApPosition,
+  BandModeEnum,
+  DeviceGps,
+  DhcpApInfo,
+  ExternalAntenna,
+  PoeModeEnum,
+  VenueLanPort
+} from '../models'
 
 import { ApVenueStatusEnum, CountAndNames } from '.'
 
@@ -15,6 +21,27 @@ export interface IpSettings {
   gateway?: string,
   primaryDnsServer?: string,
   secondaryDnsServer?: string
+}
+
+interface NewApNetworkStatus {
+  ipAddress: string
+  externalIpAddress: string
+  ipAddressType: string
+  netmask: string
+  gateway: string
+  primaryDnsServer: string
+  secondaryDnsServer: string
+  managementTrafficVlan: number
+}
+
+interface NewApRadioProperties {
+    id: number
+    band: string
+    transmitterPower: string
+    channel: number
+    channelBandwidth: string
+    rssi: number
+    actualTxPower?: number
 }
 
 export interface APSystem extends IpSettings {
@@ -61,8 +88,47 @@ export interface AP {
   apUpRssi?: number,
   poePort?: string,
   healthStatus?: string,
-  downLinkCount?: number,
-  apRadioDeploy?: string
+  downlinkCount?: number,
+  apRadioDeploy?: string,
+  powerSavingStatus?: string,
+  lbsStatus?: {
+    managementConnected?: boolean,
+    serverConnected?: boolean
+  }
+  switchId?: string,
+  switchName?: string,
+  switchPort?: string,
+  switchSerialNumber?: string
+}
+
+export interface NewAPModel {
+  serialNumber: string
+  name?: string
+  apGroupId?: string
+  venueId?: string
+  tags?: string[]
+  model?: string
+  supportSecureBoot?: boolean
+  macAddress?: string
+  firmwareVersion?: string
+  uptime?: number
+  lastUpdatedTime?: Date
+  lastSeenTime?: Date
+  statusSeverity?: ApVenueStatusEnum
+  status?: ApDeviceStatusEnum
+  meshRole?: string
+  clientCount?: number
+  networkStatus?: NewApNetworkStatus
+  lanPortStatuses?: {
+    id: string
+    physicalLink: string
+  }[]
+  radioStatuses?: NewApRadioProperties[]
+  cellularStatus?: NewCelluarInfo
+  afcStatus?: NewAFCInfo
+  floorplanId?: string
+  powerSavingStatus?: string
+  meshStatus?: MeshStatus
 }
 
 export interface ApViewModel extends AP {
@@ -94,7 +160,87 @@ export interface APExtended extends AP {
   switchSerialNumber?: string,
   switchId?: string,
   switchName?: string,
+  rogueCategory?: { [key: string]: number },
+  incompatible?: number
+}
+
+export interface NewAPModelExtended extends NewAPModel {
+  venueName?: string
+  poePort?: string
+  apGroupName?: string
+  deviceModelType?: ApModelTypeEnum
+  channel24?: string | number
+  channel50?: string | number
+  channelL50?: string | number
+  channelU50?: string | number
+  channel60?: string | number
+  actualTxPower24?: string | number
+  actualTxPower50?: string | number
+  actualTxPowerL50?: string | number
+  actualTxPowerU50?: string | number
+  actualTxPower60?: string | number
+  hasPoeStatus?: boolean
+  isPoEStatusUp?: boolean
+  poePortInfo?: string
+  xPercent?: number
+  yPercent?: number
+  members?: number
+  incidents?: number
+  clients?: number
+  networks?: {
+    count?: number
+  }
+  switchSerialNumber?: string
+  switchId?: string
+  switchName?: string
+  switchPort?: string
   rogueCategory?: { [key: string]: number }
+  incompatible?: number
+  compatibilityStatus?: string
+}
+export interface NewCelluarInfo {
+  activeSim: string,
+  imei: string,
+  lteFirmware: string,
+  country: string,
+  operator: string,
+  connectionStatus: string,
+  connectionChannel: number,
+  rfBand: string,
+  wanInterface: string,
+  ipAddress: string,
+  netmask: string,
+  gateway: string,
+  roamingStatus: string,
+  radioUptime: number,
+  uplinkBandwidth: string,
+  downlinkBandwidth: string,
+  signalStrength: string,
+  ecio: number,
+  rscp: number,
+  rsrp: number,
+  rsrq: number,
+  sinr: number,
+  primarySimStatus: {
+    iccid: string,
+    imsi: string,
+    txBytes: number,
+    rxBytes: number,
+    cardRemovalCount: number,
+    dhcpTimeoutCount: number,
+    networkLostCount: number,
+    switchCount: number,
+  },
+  secondarySimStatus: {
+    iccid: string,
+    imsi: string,
+    txBytes: number,
+    rxBytes: number,
+    cardRemovalCount: number,
+    dhcpTimeoutCount: number,
+    networkLostCount: number,
+    switchCount: number,
+  }
 }
 
 export interface CelluarInfo {
@@ -190,8 +336,27 @@ export interface ApGroupViewModel extends ApGroup {
   incidents?: unknown
 }
 
+export interface NewApGroupViewModelResponseType {
+  id?: string,
+  name?: string,
+  description?: string,
+  isDefault?: boolean,
+  venueId?: string,
+  apSerialNumbers?: string[],
+  wifiNetworkIds?: string[],
+  clientCount?: number
+}
+
+export interface NewGetApGroupResponseType {
+  id: string,
+  name: string,
+  description: string,
+  isDefault: boolean,
+  apSerialNumbers?: string[],  // undefined: when no ap associated
+}
+
 export interface AddApGroup {
-  venueId: string,
+  venueId: string,  // deprecated in v1.1
   apSerialNumbers?: unknown[],
   name: string,
   id?: string
@@ -234,6 +399,18 @@ export interface ApStatusDetails {
   name: string,
   serialNumber: string
 }
+
+export interface MeshLinkStatus {
+  macAddress: string,
+  rssi: number
+}
+export interface MeshStatus {
+  hopCount: number,
+  uplinks?: MeshLinkStatus[],
+  downlinks?: MeshLinkStatus[],
+  neighbors?: MeshLinkStatus[],
+  radios?: MeshRadioStatus[]
+}
 export interface APMesh {
   IP?: string
   apMac?: string
@@ -241,6 +418,7 @@ export interface APMesh {
     APRadio?: Array<RadioProperties>
   },
   clients?: CountAndNames,
+  clientCount?: number
   deviceGroupId?: string,
   deviceGroupName?: string,
   deviceStatus?: string,
@@ -265,9 +443,22 @@ export interface APMesh {
   type?: number,
   upMac?: string,
   downlinkCount?: number,
+  meshBand?: string
 }
+
+export interface RbacAPMesh {
+  root: NewAPModel,
+  members: NewAPModel[]
+}
+
+export interface MeshRadioStatus {
+  band: string
+}
+
 export interface FloorPlanMeshAP extends APMesh {
   floorplanId?: string;
+  xPercent?: number;
+  yPercent?: number;
 }
 export interface Uplink{
   txFrames: string,
@@ -291,10 +482,15 @@ export interface LanPort {
   enabled?: boolean,
   portId?: string,
   type?: 'ACCESS' | 'GENERAL' | 'TRUNK',
-  vni: number
+  vni: number,
+  ethernetPortProfileId: string
 }
 
-export interface ApModel {
+export enum ApModelTypeEnum {
+  INDOOR = 'indoor',
+  OUTDOOR = 'outdoor'
+}
+export interface CapabilitiesApModel {
   allowDfsCountry: string[],
   canSupportCellular: boolean,
   canSupportLacp: boolean,
@@ -326,7 +522,14 @@ export interface ApModel {
   externalAntenna?: ExternalAntenna,
   supportMesh?: boolean,
   version?: string,
-  support11AX?: boolean
+  support11AX?: boolean,
+  supportAntennaType?: boolean,
+  antennaTypeCapabilities?: ApAntennaTypeEnum[],
+  defaultAntennaType?: ApAntennaTypeEnum,
+  supportBandCombination?: boolean,
+  bandCombinationCapabilities?: BandModeEnum[],
+  defaultBandCombination?: BandModeEnum,
+  supportApStickyClientSteering?: boolean
 }
 
 export interface PingAp {
@@ -336,6 +539,7 @@ export interface PingAp {
 export interface RadioProperties {
   Rssi: string | null,
   txPower?: string | null,
+  actualTxPower?: number,
   channel: string | number,
   band?: string,
   radioId?: number,
@@ -348,7 +552,19 @@ export interface LanPortStatusProperties {
 }
 
 export interface VxlanStatus {
-  vxlanMtu: number
+  vxlanMtu: number,
+  tunStatus: VxlanTunnelStatus,
+  primaryRvtepInfo: VxlanRvtepInfo,
+  activeRvtepInfo: VxlanRvtepInfo
+}
+
+export enum VxlanTunnelStatus {
+  CONNECTED = 'VxLAN_TUN_STATUS_CONNECTED',
+  DISCONNECTED = 'VxLAN_TUN_STATUS_DISCONNECTED'
+}
+
+export interface VxlanRvtepInfo {
+  deviceId: string
 }
 
 export enum GpsFieldStatus {
@@ -364,6 +580,16 @@ export interface ApLanPort {
 
 export interface ApLedSettings {
   ledEnabled: boolean,
+  useVenueSettings: boolean
+}
+
+export interface ApBandModeSettings {
+  bandMode: BandModeEnum,
+  useVenueSettings: boolean
+}
+
+export type ApAntennaTypeSettings = {
+  antennaType: ApAntennaTypeEnum,
   useVenueSettings: boolean
 }
 
@@ -385,9 +611,11 @@ export interface ApRadio {
 export interface APPhoto {
   createdDate: string,
   id: string,
-  imageId: string,
-  imageName: string,
-  imageUrl: string,
+  imageId?: string,   // nonRBAC API
+  imageName?: string, // nonRBAC API
+  imageUrl?: string,  // nonRBAC API
+  name?: string,      // RBAC API
+  url?: string,       // RBAC API
   updatedDate: string
 }
 
@@ -398,8 +626,21 @@ export type DhcpApResponse = {
 
 export type DhcpAp = DhcpApResponse | DhcpApInfo[]
 
+export interface NewDhcpAp {
+  dhcpApRole: ApDhcpRoleEnum
+  serialNumber: string
+}
+
 export interface PacketCaptureState {
   status: ApPacketCaptureStateEnum,
+  fileName?: string,
+  fileUrl?: string,
+  sessionId?: string
+}
+
+export interface NewPacketCaptureState {
+  errorMsg?: string
+  state: ApPacketCaptureStateEnum,
   fileName?: string,
   fileUrl?: string,
   sessionId?: string
@@ -446,6 +687,12 @@ export interface ApDirectedMulticast {
   networkEnabled: boolean
 }
 
+export interface ApSmartMonitor {
+  useVenueSettings: boolean,
+  enabled: boolean,
+  interval: number,
+  threshold: number
+}
 
 export interface APExtendedGrouped extends APExtended {
   networks: {
@@ -464,6 +711,19 @@ export interface APExtendedGrouped extends APExtended {
   children?: APExtended[],
   id?: number | string
 }
+export interface NewAPExtendedGrouped extends NewAPModelExtended {
+  groupedField: string
+  groupedValue: string
+  members: number
+  incidents: number
+  model: string
+  clients: number
+  aps: NewAPModelExtended[],
+  children?: NewAPModelExtended[],
+  id?: number | string
+  deviceGroupName?: string // For the legacy usage of editing/deleting apGroup
+  deviceGroupId?: string // For the legacy usage of editing/deleting apGroup
+}
 export type ImportErrorRes = {
   errors: {
     code: number
@@ -473,6 +733,7 @@ export type ImportErrorRes = {
   downloadUrl?: string
   txId: string
   fileErrorsCount: number
+  fileErrorCount?: number
 }
 
 export enum MeshModeEnum {
@@ -501,8 +762,8 @@ export type MeshApNeighbor = {
 
 export type MeshUplinkAp = {
   name: string,
-  deviceStatus: string,
-  healthStatus: string,
+  deviceStatus?: string,
+  healthStatus?: string,
   neighbors: MeshApNeighbor[]
 }
 
@@ -529,6 +790,15 @@ export type AFCInfo = {
   maxPowerDbm?: number
 }
 
+export type NewAFCInfo = {
+  afcState?: AFCStatus,
+  availableChannels?: number[]
+  geoLocationSource?: string
+  hasGeoLocation?: boolean
+  maxPower?: number
+  powerState?: AFCPowerMode
+}
+
 export interface GeoLocation {
   height?: number,
   lateralUncertainty?: number,
@@ -547,6 +817,7 @@ export enum AFCStatus {
   AFC_NOT_REQUIRED = 'AFC_NOT_REQUIRED',
   WAIT_FOR_LOCATION = 'WAIT_FOR_LOCATION',
   WAIT_FOR_RESPONSE = 'WAIT_FOR_RESPONSE',
+  AFC_SERVER_FAILURE = 'AFC_SERVER_FAILURE',
   REJECTED = 'REJECTED',
   PASSED = 'PASSED'
 }
@@ -614,6 +885,13 @@ export interface ApLldpNeighborsResponse {
   neighbors: ApLldpNeighbor[]
 }
 
+export interface ApNeighborsResponse {
+  neighbors: (ApRfNeighbor|ApLldpNeighbor)[]
+  page: number
+  totalCount: number
+  totalPages: number
+}
+
 export interface SupportCcdVenue {
   id: string,
   name: string
@@ -625,4 +903,25 @@ export interface SupportCcdApGroup {
   venueId: string,
   members: number,
   aps: APExtended[]
+}
+
+export enum DiagnosisCommands {
+  PING = 'PING',
+  TRACE_ROUTE = 'TRACE_ROUTE',
+  BLINK_LED = 'BLINK_LED'
+}
+
+export enum SystemCommands {
+  REBOOT = 'REBOOT',
+  FACTORY_RESET = 'FACTORY_RESET'
+}
+
+export interface StickyClientSteering {
+  enabled?: boolean
+  snrThreshold?: number
+  neighborApPercentageThreshold?: number
+}
+
+export interface ApStickyClientSteering extends StickyClientSteering {
+  useVenueSettings?: boolean
 }

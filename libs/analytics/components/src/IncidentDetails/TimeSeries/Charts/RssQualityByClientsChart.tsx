@@ -1,14 +1,15 @@
 import { useMemo } from 'react'
 
+
 import { gql }     from 'graphql-request'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { getSeriesData }                  from '@acx-ui/analytics/utils'
-import { Card, cssStr, StackedAreaChart } from '@acx-ui/components'
-import { formatter }                      from '@acx-ui/formatter'
-import {  getIntl }                       from '@acx-ui/utils'
+import { getSeriesData, overlapsRollup }                     from '@acx-ui/analytics/utils'
+import { Card, cssStr, NoGranularityText, StackedAreaChart } from '@acx-ui/components'
+import { formatter }                                         from '@acx-ui/formatter'
+import { getIntl }                                           from '@acx-ui/utils'
 
 import type { TimeSeriesChartProps } from '../types'
 
@@ -56,7 +57,7 @@ export function formatWithPercentageAndCount (
   })
 }
 
-export const RssQualityByClientsChart = ({ data }: TimeSeriesChartProps) => {
+export const RssQualityByClientsChart = ({ data, incident }: TimeSeriesChartProps) => {
   const { rssQualityByClientsChart: items } = data
   const { $t } = useIntl()
 
@@ -88,19 +89,22 @@ export const RssQualityByClientsChart = ({ data }: TimeSeriesChartProps) => {
   }, [$t, items])
 
   return <Card title={$t({ defaultMessage: 'RSS Quality by Clients' })} type='no-border'>
-    <AutoSizer>
-      {({ height, width }) => (
-        <StackedAreaChart
-          style={{ height, width }}
-          data={chartData}
-          dataFormatter={formatter('percentFormat')}
-          yAxisProps={{ max: 1, min: 0 }}
-          seriesFormatters={seriesFormatters}
-          stackColors={lineColors}
-          disableLegend={true}
-        />
-      )}
-    </AutoSizer>
+    {overlapsRollup(incident.startTime)
+      ? <NoGranularityText />
+      : <AutoSizer>
+        {({ height, width }) => (
+          <StackedAreaChart
+            style={{ height, width }}
+            data={chartData}
+            dataFormatter={formatter('percentFormat')}
+            yAxisProps={{ max: 1, min: 0 }}
+            seriesFormatters={seriesFormatters}
+            stackColors={lineColors}
+            disableLegend={true}
+          />
+        )}
+      </AutoSizer>
+    }
   </Card>
 }
 

@@ -3,9 +3,8 @@ import '@testing-library/jest-dom'
 import { rest }         from 'msw'
 import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import { act }          from 'react-dom/test-utils'
 
-import { useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import { ApDeviceStatusEnum,
   ApMeshLink,
   CommonUrlsInfo,
@@ -30,7 +29,6 @@ import {
 } from './__tests__/fixtures'
 import PlainView, { setUpdatedLocation } from './PlainView'
 import Thumbnail                         from './Thumbnail'
-
 
 jest.mock('../../ApMeshConnection', () => ({
   ...jest.requireActual('../../ApMeshConnection'),
@@ -98,8 +96,8 @@ const networkDevices: {
     }],
     LTEAP: [],
     RogueAP: [],
-    cloudpath: [],
-    DP: []
+    DP: [],
+    rwg: []
   }
 }
 
@@ -129,7 +127,7 @@ describe('Floor Plan Plain View', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        `${window.location.origin}/api/file/tenant/:tenantId/:imageId/url`,
+        'venues/:venueId/signurls/:imageId/urls',
         (req, res, ctx) => {
           const { imageId } = req.params as { imageId: keyof typeof imageObj }
           return res(ctx.json({ ...imageObj[imageId], imageId }))
@@ -358,10 +356,12 @@ describe('Floor Plan Plain View', () => {
         setCoordinates={jest.fn()}/></DndProvider></Provider>)
     const component = await screen.findByRole('button', { name: /Edit/i })
     await fireEvent.click(component)
+
+    const dialog = await screen.findByRole('dialog')
     const editForm: HTMLFormElement = await screen.findByTestId('floor-plan-form')
-    await act(() => {
-      editForm.submit()
-    })
+    editForm.submit()
+
+    await waitFor(() => expect(dialog).not.toBeVisible())
     await expect(editHandler).toBeCalledTimes(1)
   })
 
@@ -487,7 +487,7 @@ describe('Floor Plan Plain View', () => {
   })
 
   it('should render correctly Plain View with AP Mesh Topology enabled', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API)
 
     mockServer.use(
       rest.post(
@@ -540,4 +540,3 @@ describe('Floor Plan Plain View', () => {
     })
   })
 })
-

@@ -2,36 +2,41 @@ import { useEffect, useState } from 'react'
 
 import { Col, Form, Row, Typography, Checkbox, Tooltip } from 'antd'
 import { useIntl }                                       from 'react-intl'
-import { useParams }                                     from 'react-router-dom'
 
-import { Loader, showActionModal }                                        from '@acx-ui/components'
-import { SpaceWrapper }                                                   from '@acx-ui/rc/components'
-import { BetaStatus, useGetBetaStatusQuery, useToggleBetaStatusMutation } from '@acx-ui/user'
+import { Loader, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { SpaceWrapper }            from '@acx-ui/rc/components'
+import {
+  useUserProfileContext,
+  useToggleBetaStatusMutation,
+  hasCrossVenuesPermission
+} from '@acx-ui/user'
+import { userLogout } from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
-import BetaFeaturesDrawer         from './BetaFeaturesDrawer'
-import R1BetaTermsConditionDrawer from './R1BetaTermsConditionDrawer'
+import { BetaFeaturesDrawer }         from './BetaFeaturesDrawer'
+import { R1BetaTermsConditionDrawer } from './R1BetaTermsConditionDrawer'
 
 import type { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 /* eslint-disable-next-line */
 export interface EnableR1BetaProps {
   className?: string;
-  betaStatusData?: BetaStatus;
+  betaStatus?: boolean;
   isPrimeAdminUser: boolean;
 }
 
-export function EnableR1Beta (props: EnableR1BetaProps) {
+function EnableR1Beta (props: EnableR1BetaProps) {
   const { $t } = useIntl()
-  const params = useParams()
-  const { data: betaStatus } = useGetBetaStatusQuery({ params })
-  const { className, betaStatusData } = props
+  const { betaEnabled } = useUserProfileContext()
+  const { className, betaStatus } = props
   const [showBetaTermsConditionDrawer, setBetaTermsConditionDrawer] = useState(false)
   const [showShowBetaFeaturesDrawer, setShowBetaFeaturesDrawer] = useState(false)
-  const [checked, setChecked] = useState(betaStatus?.enabled === 'true'?? false)
+  const [checked, setChecked] = useState(betaEnabled)
   const [toggleBetaStatus, { isLoading: isUpdating }] = useToggleBetaStatusMutation()
-  const isDisabled = isUpdating
+  const isDisabled = !hasCrossVenuesPermission() || isUpdating
+  const isPtenantRbacApiEnabled = useIsSplitOn(Features.PTENANT_RBAC_API)
 
   const openR1BetaTermsConditionDrawer = () => {
     setBetaTermsConditionDrawer(true)
@@ -39,27 +44,24 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
 
   const handleEnableR1BetaChange = async (e: CheckboxChangeEvent) => {
     const isChecked = e.target.checked
-    const modalMsg = $t(MessageMapping.enable_r1_beta_disable_description)
 
     if (!isChecked) {
       showActionModal({
         type: 'confirm',
-        width: 450,
-        title: $t({ defaultMessage: 'Disable Beta Features?' }),
-        content: modalMsg,
-        okText: $t({ defaultMessage: 'Disable Beta Features' }),
-        cancelText: $t({ defaultMessage: 'Keep Beta Features' }),
+        width: 460,
+        title: $t({ defaultMessage: 'Disable Early Access Features?' }),
+        content: $t(MessageMapping.enable_r1_beta_disable_description, { br1: <br/>, br2: <br/> }),
+        okText: $t({ defaultMessage: 'Disable Early Access Features' }),
+        cancelText: $t({ defaultMessage: 'Keep Early Access Features' }),
         onOk: async () => {
           try {
-            await toggleBetaStatus({
-              params: {
-                enable: isChecked + ''
-              }
+            await toggleBetaStatus({ params: { enable: isChecked + '' },
+              payload: { enabled: isChecked }, enableRbac: isPtenantRbacApiEnabled
             }).unwrap()
           } catch (error) {
             console.log(error) // eslint-disable-line no-console
           }
-          window.location.reload()
+          userLogout()
         }
       })
     } else openR1BetaTermsConditionDrawer()
@@ -68,7 +70,7 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
   const openBetaFeaturesDrawer = () => {
     setShowBetaFeaturesDrawer(true)
   }
-  const isBetaEnabled = betaStatusData?.enabled === 'true'?? false
+  const isBetaEnabled = betaStatus
 
   useEffect(() => {
     setChecked(isBetaEnabled)
@@ -90,18 +92,18 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
                 checked={checked}
                 disabled={isDisabled}
               >
-                {$t({ defaultMessage: 'Enable RUCKUS One Beta features' })}
+                {$t({ defaultMessage: 'Enable RUCKUS One Early Access features' })}
               </Checkbox>
             </Tooltip>
 
             <Typography.Link role='link' onClick={openBetaFeaturesDrawer}>
-              {$t({ defaultMessage: 'Current beta features' })}
+              {$t({ defaultMessage: 'Current Early Access features' })}
             </Typography.Link>
           </SpaceWrapper>
         </Form.Item>
 
-        <SpaceWrapper full className='descriptionsWrapper' justifycontent='flex-start'>
-          <Typography.Paragraph className='description greyText'>
+        <SpaceWrapper full className='indent' justifycontent='flex-start'>
+          <Typography.Paragraph className='greyText'>
             {$t(MessageMapping.enable_r1_beta_access_description, { br: <br/> })}
           </Typography.Paragraph>
         </SpaceWrapper>
@@ -116,14 +118,15 @@ export function EnableR1Beta (props: EnableR1BetaProps) {
       />
     }
 
-    {
+    { showShowBetaFeaturesDrawer &&
       <BetaFeaturesDrawer
         visible={showShowBetaFeaturesDrawer}
         setVisible={() => setShowBetaFeaturesDrawer(false)}
         onClose={() => setShowBetaFeaturesDrawer(false)}
+        width={500}
       />
     }
   </Loader>
 }
 
-export default EnableR1Beta
+export { EnableR1Beta }

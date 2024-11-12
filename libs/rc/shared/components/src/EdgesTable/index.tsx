@@ -1,11 +1,15 @@
+import { useMemo, useState } from 'react'
+
 import { Badge }   from 'antd'
-import _           from 'lodash'
+import _, { find } from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
   Loader,
   Table,
-  TableProps
+  TableProps,
+  ColumnState,
+  ColumnType
 } from '@acx-ui/components'
 import {
   Features,
@@ -23,17 +27,19 @@ import {
   EdgeStatusEnum,
   TABLE_QUERY,
   TableQuery,
-  allowRebootForStatus,
+  allowRebootShutdownForStatus,
   allowResetForStatus,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }                         from '@acx-ui/types'
+import { EdgeScopes, RequestPayload }             from '@acx-ui/types'
 import { filterByAccess }                         from '@acx-ui/user'
 import { exportMessageMapping }                   from '@acx-ui/utils'
 
-import { seriesMappingAP } from '../DevicesWidget'
-import { useEdgeActions }  from '../useEdgeActions'
+import { ApCompatibilityFeature }                         from '../ApCompatibility/ApCompatibilityFeature'
+import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../Compatibility/EdgeCompatibilityDrawer'
+import { seriesMappingAP }                                from '../DevicesWidget'
+import { useEdgeActions, useIsEdgeFeatureReady }          from '../useEdgeActions'
 
 import { EdgeStatusLight } from './EdgeStatusLight'
 import { useExportCsv }    from './useExportCsv'
@@ -50,6 +56,8 @@ interface EdgesTableProps extends Omit<TableProps<EdgeStatus>, 'columns'> {
   filterColumns?: string[];
   // custom column is optional
   columns?: TableProps<EdgeStatus>['columns']
+  incompatibleCheck?: boolean,
+  filterables?: { [key: string]: ColumnType['filterable'] }
 }
 
 export const defaultEdgeTablePayload = {
@@ -77,18 +85,33 @@ const venueOptionsDefaultPayload = {
 
 export const EdgesTable = (props: EdgesTableProps) => {
   const {
+    settingsId = 'edges-table',
     tableQuery: customTableQuery,
     columns,
     filterColumns,
+    incompatibleCheck,
+    filterables,
     ...otherProps
   } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
+  const isGracefulShutdownReady = useIsEdgeFeatureReady(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
+  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+  const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
+
+  const [ showFeatureCompatibilitiy, setShowFeatureCompatibilitiy ] = useState(false)
+  // eslint-disable-next-line max-len
+  const [ compatibilitiesDrawerEdgeId, setCompatibilitiesDrawerEdgeId ] = useState<string|undefined>()
 
   const tableQuery = usePollingTableQuery({
     useQuery: useGetEdgeListQuery,
-    defaultPayload: defaultEdgeTablePayload,
+    defaultPayload: incompatibleCheck
+      ? {
+        ...defaultEdgeTablePayload,
+        fields: (defaultEdgeTablePayload.fields as string[]).concat(['incompatible'])
+      }
+      : defaultEdgeTablePayload,
     sorter: {
       sortField: 'name',
       sortOrder: 'ASC'
@@ -96,6 +119,8 @@ export const EdgesTable = (props: EdgesTableProps) => {
     search: {
       searchTargetFields: ['name', 'serialNumber', 'ip']
     },
+
+    pagination: { settingsId },
     ...customTableQuery
   })
   const statusFilterOptions = seriesMappingAP().map(({ key, name, color }) => ({
@@ -110,14 +135,21 @@ export const EdgesTable = (props: EdgesTableProps) => {
       }
     })
 
-  const { deleteEdges, factoryReset, reboot, sendOtp } = useEdgeActions()
+  const { deleteEdges, factoryReset, reboot, shutdown, sendOtp } = useEdgeActions()
   // eslint-disable-next-line max-len
   const { exportCsv, disabled } = useExportCsv<EdgeStatus>(tableQuery as TableQuery<EdgeStatus, RequestPayload<unknown>, unknown>)
-  const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
 
-  const defaultColumns: TableProps<EdgeStatus>['columns'] = [
+  const handleColumnStateChange = (state: ColumnState) => {
+    if (isEdgeCompatibilityEnabled) {
+      if (showFeatureCompatibilitiy !== state['incompatible']) {
+        setShowFeatureCompatibilitiy(state['incompatible'])
+      }
+    }
+  }
+
+  const defaultColumns: TableProps<EdgeStatus>['columns'] = useMemo(() => [
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'RUCKUS Edge' }),
       key: 'name',
       dataIndex: 'name',
       sorter: true,
@@ -176,10 +208,11 @@ export const EdgesTable = (props: EdgesTableProps) => {
       title: $t({ defaultMessage: 'Ports' }),
       key: 'ports',
       dataIndex: 'ports',
-      sorter: true
+      sorter: true,
+      align: 'center'
     },
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'venue',
       dataIndex: ['venueName'],
       sorter: true,
@@ -208,8 +241,34 @@ export const EdgesTable = (props: EdgesTableProps) => {
       dataIndex: 'firmwareVersion',
       sorter: true,
       show: false
-    }
-  ]
+    },
+    ...(isEdgeCompatibilityEnabled && incompatibleCheck ? [{
+      key: 'incompatible',
+      // eslint-disable-next-line max-len
+      tooltip: $t({ defaultMessage: 'Check for the RUCKUS Edge features of <venueSingular></venueSingular> not supported by earlier versions.' }),
+      title: $t({ defaultMessage: 'Feature Compatibility' }),
+      filterPlaceholder: $t({ defaultMessage: 'Feature Incompatibility' }),
+      filterValueArray: true,
+      dataIndex: 'incompatible',
+      filterKey: 'firmwareVersion',
+      width: 200,
+      filterableWidth: 200,
+      // eslint-disable-next-line max-len
+      filterable: showFeatureCompatibilitiy && filterables ? filterables['featureIncompatible']: false,
+      filterMultiple: false,
+      show: false,
+      sorter: false,
+      render: (_: React.ReactNode, row: EdgeStatus) => {
+        return (<ApCompatibilityFeature
+          count={row?.incompatible}
+          deviceStatus={row?.deviceStatus}
+          onClick={() => {
+            setCompatibilitiesDrawerEdgeId(row.serialNumber)
+          }} />
+        )
+      }
+    }] : [])
+  ], [showFeatureCompatibilitiy, statusFilterOptions, venueOptions, incompatibleCheck])
 
   if (filterColumns) {
     filterColumns.forEach((columnTofilter) => {
@@ -219,6 +278,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
 
   const rowActions: TableProps<EdgeStatus>['rowActions'] = [
     {
+      scopeKey: [EdgeScopes.UPDATE],
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -230,20 +290,32 @@ export const EdgesTable = (props: EdgesTableProps) => {
       }
     },
     {
+      scopeKey: [EdgeScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         deleteEdges(rows, clearSelection)
       }
     },
     {
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       visible: (selectedRows) => (selectedRows.length === 1 &&
-        allowRebootForStatus(selectedRows[0]?.deviceStatus)),
+        allowRebootShutdownForStatus(selectedRows[0]?.deviceStatus)),
       label: $t({ defaultMessage: 'Reboot' }),
       onClick: (rows, clearSelection) => {
         reboot(rows[0], clearSelection)
       }
     },
     {
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
+      visible: (selectedRows) => (isGracefulShutdownReady && selectedRows.length === 1 &&
+        allowRebootShutdownForStatus(selectedRows[0]?.deviceStatus)),
+      label: $t({ defaultMessage: 'Shutdown' }),
+      onClick: (rows, clearSelection) => {
+        shutdown(rows[0], clearSelection)
+      }
+    },
+    {
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       visible: (selectedRows) => (selectedRows.length === 1 &&
         EdgeStatusEnum.NEVER_CONTACTED_CLOUD === selectedRows[0]?.deviceStatus),
       label: $t({ defaultMessage: 'Send OTP' }),
@@ -251,6 +323,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
         sendOtp(rows[0], clearSelection)
       }
     },{
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       visible: (selectedRows) => (
         selectedRows.length === 1 &&
         allowResetForStatus(selectedRows[0]?.deviceStatus)
@@ -264,7 +337,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
   return (
     <Loader states={[tableQuery]}>
       <Table
-        settingsId='edges-table'
+        settingsId={settingsId}
         rowKey='serialNumber'
         rowActions={filterByAccess(rowActions)}
         columns={columns ?? defaultColumns}
@@ -272,6 +345,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
+        columnState={isEdgeCompatibilityEnabled?{ onChange: handleColumnStateChange } : {}}
         enableApiFilter
         iconButton={(exportDevice && false) ? {
           icon: <DownloadOutlined />,
@@ -281,6 +355,18 @@ export const EdgesTable = (props: EdgesTableProps) => {
         } : undefined}
         {...otherProps}
       />
+      {isEdgeCompatibilityEnabled && <EdgeCompatibilityDrawer
+        visible={!!compatibilitiesDrawerEdgeId}
+        title={$t({ defaultMessage: 'Incompatibility Details: {edgeName}' },
+          { edgeName:
+            find(tableQuery?.data?.data, { serialNumber: compatibilitiesDrawerEdgeId })?.name
+          })}
+        type={EdgeCompatibilityType.DEVICE}
+        onClose={() => setCompatibilitiesDrawerEdgeId(undefined)}
+        // eslint-disable-next-line max-len
+        venueId={find(tableQuery?.data?.data, { serialNumber: compatibilitiesDrawerEdgeId })?.venueId}
+        edgeId={compatibilitiesDrawerEdgeId}
+      />}
     </Loader>
   )
 }

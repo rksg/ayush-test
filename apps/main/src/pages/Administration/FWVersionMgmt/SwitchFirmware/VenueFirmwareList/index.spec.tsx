@@ -1,11 +1,12 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { firmwareApi }                       from '@acx-ui/rc/services'
 import {
-  FirmwareUrlsInfo
+  FirmwareUrlsInfo, SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
 import {
-  Provider
+  Provider, store
 } from '@acx-ui/store'
 import {
   mockServer,
@@ -19,12 +20,13 @@ import {
   switchVenue,
   preference,
   switchRelease,
-  switchCurrentVersions,
   switchLatest,
   switchVenueWithEmptyFirmware
 } from './__test__/fixtures'
 
 import { VenueFirmwareList } from '.'
+
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 
 jest.mock('./SwitchUpgradeWizard', () => ({
   ...jest.requireActual('./SwitchUpgradeWizard'),
@@ -40,10 +42,23 @@ jest.mock('./VenueStatusDrawer', () => ({
   }
 }))
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitcDefaultVersionsQuery: () => ({
+    data: mockSwitchCurrentVersions
+  })
+}))
+
+
 describe('SwitchFirmware - VenueFirmwareList', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
+      rest.get(
+        FirmwareUrlsInfo.getSwitchCurrentVersions.url,
+        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersions))
+      ),
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
         (req, res, ctx) => res(ctx.json(switchVenue))
@@ -61,10 +76,6 @@ describe('SwitchFirmware - VenueFirmwareList', () => {
         (req, res, ctx) => res(ctx.json({
           preDownload: false
         }))
-      ),
-      rest.get(
-        FirmwareUrlsInfo.getSwitchCurrentVersions.url,
-        (req, res, ctx) => res(ctx.json(switchCurrentVersions))
       ),
       rest.post(
         FirmwareUrlsInfo.updateSwitchVenueSchedules.url,
@@ -120,7 +131,7 @@ describe('SwitchFirmware - VenueFirmwareList', () => {
 
     const row = await screen.findByRole('row', { name: /My-Venue/i })
     await userEvent.click(within(row).getByRole('checkbox'))
-    await userEvent.click(await screen.findByRole('button', { name: 'Update Now' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Update Now' }))
     expect(await screen.findByTestId('test-SwitchUpgradeWizard')).toBeInTheDocument()
   })
 
@@ -134,7 +145,7 @@ describe('SwitchFirmware - VenueFirmwareList', () => {
 
     const row = await screen.findByRole('row', { name: /My-Venue/i })
     await userEvent.click(within(row).getByRole('checkbox'))
-    await userEvent.click(await screen.findByRole('button', { name: /Change Update Schedule/i }))
+    await userEvent.click(screen.getByRole('button', { name: /Change Update Schedule/i }))
     expect(await screen.findByTestId('test-SwitchUpgradeWizard')).toBeInTheDocument()
   })
 
@@ -161,7 +172,6 @@ describe('SwitchFirmware - VenueFirmwareList', () => {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
     const checkStatusButton = await screen.findByRole('button', { name: 'Check Status' })
-    expect(checkStatusButton).toBeInTheDocument()
     await userEvent.click(checkStatusButton)
     expect(await screen.findByTestId('test-VenueStatusDrawer')).toBeInTheDocument()
   })

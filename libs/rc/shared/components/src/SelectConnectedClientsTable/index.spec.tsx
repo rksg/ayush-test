@@ -14,19 +14,16 @@ describe('Select connected clients table', () => {
 
   it('Should render connected client table', async () => {
     mockServer.use(
-      rest.post(ClientUrlsInfo.getClientMeta.url,
-        (_, res, ctx) => res(ctx.json({}))
-      ),
       rest.post(
-        ClientUrlsInfo.getClientList.url,
+        ClientUrlsInfo.getClients.url,
         (_, res, ctx) => res(ctx.json({ data: [{
           osType: 'Windows',
-          clientMac: '28:B3:71:28:78:50',
+          macAddress: '28:b3:71:28:78:50',
           ipAddress: '10.206.1.93',
-          Username: '24418cc316df',
+          username: '24418cc316df',
           hostname: 'LP-XXXXX',
-          venueName: 'UI-TEST-VENUE',
-          apName: 'UI team ONLY'
+          venueInformation: { name: 'UI-TEST-VENUE' },
+          apInformation: { name: 'UI team ONLY' }
         }] }))
       )
     )
@@ -39,6 +36,6 @@ describe('Select connected clients table', () => {
     )
 
     await screen.findByText('MAC Address')
-    await screen.findByText('28:B3:71:28:78:50')
+    await screen.findByText('28:b3:71:28:78:50')
   })
 })

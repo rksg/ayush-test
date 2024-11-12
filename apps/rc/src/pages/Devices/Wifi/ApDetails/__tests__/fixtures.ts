@@ -128,7 +128,7 @@ export const apViewModel = {
 }
 
 export const currentAP = {
-  serialNumber: '',
+  serialNumber: '892838227723',
   lastUpdTime: '2022-11-14T07:37:21.976Z',
   lastSeenTime: '11/14/2022 17:55:55',
   name: 'UI team ONLY',
@@ -254,7 +254,11 @@ export const currentAP = {
     band: '5G',
     Rssi: '',
     radioId: 2
-  }
+  },
+  switchId: 'c0:c5:20:b2:08:11',
+  switchName: 'R2',
+  switchPort: '1/1/7',
+  switchSerialNumber: 'FMF3250Q06K'
   // channel60: false
 }
 
@@ -553,6 +557,21 @@ export const apNoPhoto = {
   updatedDate: '2022-11-23T07:51:17.448+0000'
 }
 
+export const apPhotoFromRbacApi = {
+  id: '744e96b2c2a447ef949e7ede25e959c0-001.jpeg',
+  name: 'download.jpeg',
+  url: '/ap/sample.png',
+  createdDate: '2022-11-17T09:27:56.566+0000',
+  updatedDate: '2022-11-23T07:51:17.448+0000'
+}
+
+export const apNoPhotoFromRbacApi = {
+  id: '744e96b2c2a447ef949e7ede25e959c0-001.jpeg',
+  name: 'download.jpeg',
+  createdDate: '2022-11-17T09:27:56.566+0000',
+  updatedDate: '2022-11-23T07:51:17.448+0000'
+}
+
 export const wifiCapabilities = {
   version: '6.2.0.103.513',
   apModels: [
@@ -612,4 +631,60 @@ export const wifiCapabilities = {
       maxChannelization5G: 160
     }
   ]
+}
+
+export const ApCapabilitiesR650 = {
+  model: 'R650',
+  lanPorts: [
+    {
+      id: '1',
+      defaultType: 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      trunkPortOnly: false,
+      supportDisable: true,
+      isPoePort: false,
+      isPoeOutPort: false
+    },
+    {
+      id: '2',
+      defaultType: 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      trunkPortOnly: false,
+      supportDisable: false,
+      isPoePort: true,
+      isPoeOutPort: false
+    }
+  ],
+  allowDfsCountry: ['US', 'SG'],
+  allowCbandCountry: ['GB'],
+  lldpEnable: true,
+  lldpAdInterval: 30,
+  lldpHoldTime: 120,
+  lldpMgmtEnable: true,
+  ledOn: true,
+  isOutdoor: false,
+  has160MHzChannelBandwidth: true,
+  canSupportPoeOut: false,
+  canSupportPoeMode: true,
+  canSupportLacp: true,
+  requireOneEnabledTrunkPort: true,
+  poeModeCapabilities: ['Auto', '802.3af', '802.3at'],
+  lanPortPictureDownloadUrl:
+    'r650.jpg',
+  // eslint-disable-next-line max-len
+  pictureDownloadUrl: '/ap/sample.png',
+  canSupportCellular: false,
+  simCardPrimaryEnabled: true,
+  simCardPrimaryRoaming: true,
+  simCardSecondaryEnabled: true,
+  simCardSecondaryRoaming: true,
+  capabilityScore: 140,
+  supportTriRadio: false,
+  supportDual5gMode: false,
+  supportChannel144: true,
+  support11AX: true,
+  maxChannelization24G: 40,
+  maxChannelization5G: 160
 }

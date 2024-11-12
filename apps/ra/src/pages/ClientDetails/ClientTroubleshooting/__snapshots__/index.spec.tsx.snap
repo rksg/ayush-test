@@ -2,7 +2,152 @@
 
 exports[`ClientTroubleshootingTab should render correctly 1`] = `
 <DocumentFragment>
-  <div
+  .c0 .ant-select-focused .ant-select-selection-placeholder {
+  color: var(--acx-neutrals-50);
+}
+
+.c0 .ant-select-selection-overflow-item-rest > .ant-select-selection-item {
+  border: none;
+  background: var(--acx-primary-white);
+  min-width: 110px;
+  padding-right: 0px;
+  margin-right: 0px;
+  margin-bottom: 0px;
+}
+
+.c2 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c10 {
+  border-radius: 4px;
+  border: 1px solid var(--acx-neutrals-25);
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
+
+.c11 {
+  padding: 12px 0 12px 16px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c14 {
+  padding: 0 16px 0px 16px;
+  overflow: auto;
+}
+
+.c14 .ant-list-item {
+  border-bottom: none;
+  padding: 0 0 8px 0;
+  pointer-events: auto;
+}
+
+.c14 .ant-list-item-meta-title {
+  color: var(--acx-neutrals-70);
+  font-size: var(--acx-subtitle-6-font-size);
+}
+
+.c14 .ant-list-item-meta-description {
+  color: var(--acx-neutrals-100);
+  font-size: var(--acx-subtitle-6-font-size);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.c14 .ant-list-item-meta-avatar {
+  margin-right: 5px;
+}
+
+.c14 .ant-list-item-meta {
+  pointer-events: auto;
+}
+
+.c12 {
+  font-weight: var(--acx-headline-4-font-weight-bold);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-subtitle-4-line-height);
+  color: var(--acx-primary-black);
+}
+
+.c13 {
+  margin-left: auto;
+  margin-right: 16px;
+  cursor: pointer;
+}
+
+.c3 {
+  width: 16px;
+}
+
+.c3 path {
+  stroke: var(--acx-accents-blue-50);
+}
+
+.c6 {
+  width: 16px;
+}
+
+.c6 path {
+  stroke: var(--acx-neutrals-50);
+}
+
+.c4 {
+  line-height: 24px;
+  font-weight: var(--acx-body-font-weight-bold);
+  font-size: var(--acx-body-4-font-size);
+}
+
+.c5 {
+  font-weight: var(--acx-body-font-weight-bold);
+  font-size: var(--acx-body-4-font-size);
+}
+
+.c1 {
+  height: 100%;
+  padding-top: 5px;
+}
+
+.c9 {
+  cursor: pointer;
+}
+
+.c9 .ant-popover-inner-content {
+  padding: 0px;
+}
+
+.c7 path[d="M1 0A1 1 0 1 1 1 -0.0001"] {
+  cursor: pointer !important;
+}
+
+.c8 path[d="M1 0A1 1 0 1 1 1 -0.0001"] {
+  cursor: pointer !important;
+}
+
+.c8 div[_echarts_instance_] g[clip-path] {
+  cursor: pointer !important;
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
     class="ant-row"
     style="margin: -8px -10px -8px -10px; flex: 1;"
   >
@@ -27,7 +172,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
               style="padding: 3px 6px 3px 6px; flex: 0 0 185px; min-width: 0;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-1a2oz4t-2 epNWLK ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                class="ant-select ant-cascader c0 ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
                 style="min-width: 150px;"
               >
                 <div
@@ -108,7 +253,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
               style="padding: 3px 6px 3px 6px; flex: 0 0 185px; min-width: 0;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-1a2oz4t-2 epNWLK ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                class="ant-select ant-cascader c0 ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
                 style="min-width: 150px;"
               >
                 <div
@@ -189,7 +334,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
               style="padding: 3px 6px 3px 6px; flex: 0 0 185px; min-width: 0;"
             >
               <div
-                class="ant-select ant-cascader styledComponents__Cascader-sc-1a2oz4t-2 epNWLK ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
+                class="ant-select ant-cascader c0 ant-select-multiple ant-select-allow-clear ant-select-show-arrow ant-select-show-search"
                 style="min-width: 150px;"
               >
                 <div
@@ -272,10 +417,10 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
           style="padding: 16px 10px 16px 10px;"
         >
           <div
-            class="styledComponents__TimelineLoaderWrapper-sc-hmshlr-16 cgZiZV"
+            class="c1"
           >
             <div
-              class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+              class="c2"
             >
               <div
                 class="ant-row ant-row-no-wrap"
@@ -294,7 +439,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <svg
-                        class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq"
+                        class="c3"
                         data-testid="PlusSquareOutlined"
                         style="cursor: pointer;"
                       />
@@ -304,7 +449,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
                     >
                       <span
-                        class="styledComponents__TimelineTitle-sc-hmshlr-10 edPJbi"
+                        class="c4"
                       >
                         Connection Events
                       </span>
@@ -314,7 +459,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px; line-height: 25px;"
                     >
                       <span
-                        class="styledComponents__TimelineCount-sc-hmshlr-11 hyemHj"
+                        class="c5"
                       >
                         0
                       </span>
@@ -324,7 +469,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <svg
-                        class="styledComponents__StyledDisabledPlusSquareOutline-sc-hmshlr-9 kevnXA"
+                        class="c6"
                         data-testid="PlusSquareOutlined"
                         style="cursor: not-allowed;"
                       />
@@ -334,7 +479,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
                     >
                       <span
-                        class="styledComponents__TimelineTitle-sc-hmshlr-10 edPJbi"
+                        class="c4"
                       >
                         Roaming
                       </span>
@@ -344,7 +489,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px; line-height: 25px;"
                     >
                       <span
-                        class="styledComponents__TimelineCount-sc-hmshlr-11 hyemHj"
+                        class="c5"
                       >
                         0
                       </span>
@@ -354,7 +499,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <svg
-                        class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq"
+                        class="c3"
                         data-testid="PlusSquareOutlined"
                         style="cursor: pointer;"
                       />
@@ -364,7 +509,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
                     >
                       <span
-                        class="styledComponents__TimelineTitle-sc-hmshlr-10 edPJbi"
+                        class="c4"
                       >
                         Connection Quality
                       </span>
@@ -378,7 +523,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <svg
-                        class="styledComponents__StyledPlusSquareOutlined-sc-hmshlr-7 iWQXdq"
+                        class="c3"
                         data-testid="PlusSquareOutlined"
                         style="cursor: pointer;"
                       />
@@ -388,7 +533,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px; margin-bottom: 38px;"
                     >
                       <span
-                        class="styledComponents__TimelineTitle-sc-hmshlr-10 edPJbi"
+                        class="c4"
                       >
                         Network Incidents
                       </span>
@@ -398,7 +543,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px; line-height: 25px;"
                     >
                       <span
-                        class="styledComponents__TimelineCount-sc-hmshlr-11 hyemHj"
+                        class="c5"
                       >
                         0
                       </span>
@@ -418,7 +563,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        class="styledComponents__ChartWrapper-sc-hmshlr-30 gEDJPb"
+                        class="c7"
                       >
                         <div
                           _echarts_instance_="ec_mock"
@@ -530,7 +675,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        class="styledComponents__ChartWrapper-sc-hmshlr-30 gEDJPb"
+                        class="c7"
                       >
                         <div
                           _echarts_instance_="ec_mock"
@@ -642,7 +787,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        class="styledComponents__ChartWrapper-sc-hmshlr-30 gEDJPb"
+                        class="c7"
                       >
                         <div
                           _echarts_instance_="ec_mock"
@@ -709,6 +854,17 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                                   stroke-width="4"
                                 />
                                 <path
+                                  d="M10 11L1280 11L1280 55L10 55Z"
+                                  fill="none"
+                                  stroke="#5470c6"
+                                  stroke-width="0"
+                                />
+                                <path
+                                  d="M0 0l0 0l0 0l0 0Z"
+                                  fill="none"
+                                  transform="transform_mock"
+                                />
+                                <path
                                   d="M-5 -5l26 0l0 10l-26 0Z"
                                   fill="none"
                                   stroke="#ccc"
@@ -754,7 +910,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                       style="padding: 8px 8px 8px 8px;"
                     >
                       <div
-                        class="styledComponents__ChartWrapper-sc-hmshlr-30 iBONva"
+                        class="c8"
                       >
                         <div
                           _echarts_instance_="ec_mock"
@@ -964,6 +1120,17 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                                   Feb
                                 </text>
                                 <path
+                                  d="M10 11L1280 11L1280 55L10 55Z"
+                                  fill="none"
+                                  stroke="#5470c6"
+                                  stroke-width="0"
+                                />
+                                <path
+                                  d="M0 0l0 0l0 0l0 0Z"
+                                  fill="none"
+                                  transform="transform_mock"
+                                />
+                                <path
                                   d="M-5 -5l26 0l0 10l-26 0Z"
                                   fill="none"
                                   stroke="#ccc"
@@ -1008,7 +1175,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                 </div>
               </div>
               <div
-                class="styledComponents__PopoverWrapper-sc-hmshlr-17 hEWkuG"
+                class="c9"
               >
                 <div
                   data-testid="popover-child"
@@ -1024,21 +1191,21 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
       style="padding: 8px 10px 8px 10px;"
     >
       <div
-        class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+        class="c2"
       >
         <div
-          class="styledComponents__History-sc-hmshlr-0 jYwBlN"
+          class="c10"
         >
           <div
-            class="styledComponents__HistoryHeader-sc-hmshlr-1 gsNMaa"
+            class="c11"
           >
             <span
-              class="styledComponents__HistoryContentTitle-sc-hmshlr-3 hWeTZJ"
+              class="c12"
             >
               History
             </span>
             <span
-              class="styledComponents__HistoryIcon-sc-hmshlr-4 jqwToA"
+              class="c13"
             >
               <svg
                 data-testid="history-collapse"
@@ -1049,7 +1216,7 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
             style="overflow: visible; height: 0px; width: 0px;"
           >
             <div
-              class="styledComponents__HistoryContent-sc-hmshlr-2 kpgGXS"
+              class="c14"
               style="height: 756px; width: 1280px;"
             >
               <div

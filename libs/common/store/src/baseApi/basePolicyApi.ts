@@ -10,7 +10,9 @@ export const basePolicyApi = createApi({
     'MacRegistrationPool',
     'MacRegistration',
     'ClientIsolation',
+    'WifiOperator',
     'IdentityProvider',
+    'LbsServerProfile',
     'Syslog',
     'SnmpAgent',
     'VLANPool',
@@ -22,7 +24,11 @@ export const basePolicyApi = createApi({
     'AdaptivePolicy',
     'AdaptivePolicySet',
     'AdaptivePrioritizedPolicy',
-    'AdaptivePolicyCondition'
+    'AdaptivePolicyCondition',
+    'CertificateTemplate',
+    'CertificateAuthority',
+    'Certificate',
+    'ServerCertificate'
   ],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })

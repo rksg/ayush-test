@@ -1,15 +1,14 @@
 import { Form, Divider } from 'antd'
 import styled            from 'styled-components/macro'
 
-import { Loader }                                                          from '@acx-ui/components'
+import { Loader, StepsForm }                                               from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                        from '@acx-ui/feature-toggle'
 import { useGetMspEcProfileQuery }                                         from '@acx-ui/msp/services'
 import { MSPUtils }                                                        from '@acx-ui/msp/utils'
 import { useGetRecoveryPassphraseQuery, useGetTenantAuthenticationsQuery } from '@acx-ui/rc/services'
 import {
   useUserProfileContext,
-  useGetMfaTenantDetailsQuery,
-  useGetBetaStatusQuery
+  useGetMfaTenantDetailsQuery
 } from '@acx-ui/user'
 import { isDelegationMode, useTenantId } from '@acx-ui/utils'
 
@@ -21,6 +20,7 @@ import { EnableR1Beta }                  from './EnableR1Beta'
 import { MapRegionFormItem }             from './MapRegionFormItem'
 import { MFAFormItem }                   from './MFAFormItem'
 import { RecoveryPassphraseFormItem }    from './RecoveryPassphraseFormItem'
+import { SmsProviderItem }               from './SmsProviderItem'
 import * as UI                           from './styledComponents'
 
 interface AccountSettingsProps {
@@ -30,17 +30,17 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const { className } = props
   const params = { tenantId: useTenantId() }
   const betaButtonToggle = useIsSplitOn(Features.BETA_BUTTON)
+  const mfaNewApiToggle = useIsSplitOn(Features.MFA_NEW_API_TOGGLE)
   const {
     data: userProfileData,
-    isPrimeAdmin
+    isPrimeAdmin,
+    betaEnabled
   } = useUserProfileContext()
   const mspUtils = MSPUtils()
 
   const recoveryPassphraseData = useGetRecoveryPassphraseQuery({ params })
-  const mfaTenantDetailsData = useGetMfaTenantDetailsQuery({ params })
+  const mfaTenantDetailsData = useGetMfaTenantDetailsQuery({ params, enableRbac: mfaNewApiToggle })
   const mspEcProfileData = useGetMspEcProfileQuery({ params })
-  const betaStatusData = useGetBetaStatusQuery({ params }, { skip: !betaButtonToggle })
-
   const canMSPDelegation = isDelegationMode() === false
   const hasMSPEcLabel = mspUtils.isMspEc(mspEcProfileData.data)
   // has msp-ec label AND non-delegationMode
@@ -48,19 +48,18 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const isDogfood = userProfileData?.dogfood
 
   const isPrimeAdminUser = isPrimeAdmin()
-  const isI18n = useIsSplitOn(Features.I18N_TOGGLE)
   const isSsoAllowed = useIsTierAllowed(Features.SSO)
   const isIdmDecoupling = useIsSplitOn(Features.IDM_DECOUPLING) && isSsoAllowed
   const isApiKeyEnabled = useIsSplitOn(Features.IDM_APPLICATION_KEY_TOGGLE)
+  const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
 
   const showRksSupport = isMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading
     || mfaTenantDetailsData.isLoading || mspEcProfileData.isLoading
-    || betaStatusData.isLoading
 
   const showSsoSupport = isPrimeAdminUser && isIdmDecoupling && !isDogfood
     && canMSPDelegation && !isMspEc
-  const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled && canMSPDelegation && !isMspEc
+  const showApiKeySupport = isPrimeAdminUser && isApiKeyEnabled && canMSPDelegation
   const showBetaButton = isPrimeAdminUser && betaButtonToggle && showRksSupport
 
   const authenticationData =
@@ -74,70 +73,79 @@ const AccountSettings = (props : AccountSettingsProps) => {
         layout='horizontal'
         labelAlign='left'
       >
-        <RecoveryPassphraseFormItem recoveryPassphraseData={recoveryPassphraseData?.data} />
+        <StepsForm.TextContent>
+          <RecoveryPassphraseFormItem recoveryPassphraseData={recoveryPassphraseData?.data} />
 
-        { (isPrimeAdminUser && isI18n) && (
-          <>
-            <Divider />
-            <DefaultSystemLanguageFormItem />
-          </>
-        )}
+          { (isPrimeAdminUser) && (
+            <>
+              <Divider />
+              <DefaultSystemLanguageFormItem />
+            </>
+          )}
 
-        { isPrimeAdminUser && (
-          <>
-            <Divider />
-            <MapRegionFormItem />
-          </>
-        )}
+          { isSmsProviderEnabled && (
+            <>
+              <Divider />
+              <SmsProviderItem/>
+            </>
+          )}
 
-        { showRksSupport && (
-          <>
-            <Divider />
-            <AccessSupportFormItem
-              hasMSPEcLabel={hasMSPEcLabel}
-              canMSPDelegation={canMSPDelegation}
-            />
-          </>
-        )}
+          { isPrimeAdminUser && (
+            <>
+              <Divider />
+              <MapRegionFormItem />
+            </>
+          )}
 
-        { showBetaButton && (
-          <>
-            <Divider />
-            <EnableR1Beta
-              betaStatusData={betaStatusData.data}
-              isPrimeAdminUser={isPrimeAdminUser}
-            />
-          </>
-        )}
+          { showRksSupport && (
+            <>
+              <Divider />
+              <AccessSupportFormItem
+                hasMSPEcLabel={hasMSPEcLabel}
+                canMSPDelegation={canMSPDelegation}
+              />
+            </>
+          )}
 
-        {canMSPDelegation && (
-          <>
-            <Divider />
-            <MFAFormItem
-              mfaTenantDetailsData={mfaTenantDetailsData.data}
-              isPrimeAdminUser={isPrimeAdminUser}
-            />
-          </>
-        )}
+          { showBetaButton && (
+            <>
+              <Divider />
+              <EnableR1Beta
+                betaStatus={betaEnabled}
+                isPrimeAdminUser={isPrimeAdminUser}
+              />
+            </>
+          )}
 
-        { showSsoSupport && (
-          <>
-            <Divider />
-            <AuthServerFormItem
-              tenantAuthenticationData={authenticationData.data}
-            />
-          </>
-        )}
+          {canMSPDelegation && (
+            <>
+              <Divider />
+              <MFAFormItem
+                mfaTenantDetailsData={mfaTenantDetailsData.data}
+                isPrimeAdminUser={isPrimeAdminUser}
+                isMspEc={isMspEc as boolean}
+              />
+            </>
+          )}
 
-        { showApiKeySupport && (
-          <>
-            <Divider />
-            <AppTokenFormItem
-              tenantAuthenticationData={authenticationData.data}
-            />
-          </>
-        )}
+          { showSsoSupport && (
+            <>
+              <Divider />
+              <AuthServerFormItem
+                tenantAuthenticationData={authenticationData.data}
+              />
+            </>
+          )}
 
+          { showApiKeySupport && (
+            <>
+              <Divider />
+              <AppTokenFormItem
+                tenantAuthenticationData={authenticationData.data}
+              />
+            </>
+          )}
+        </StepsForm.TextContent>
       </Form>
     </Loader>
   )

@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { apApi }                        from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store  }             from '@acx-ui/store'
-import { mockServer, render, screen }   from '@acx-ui/test-utils'
+import { apApi }                                          from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store  }                               from '@acx-ui/store'
+import { mockServer, render, screen }                     from '@acx-ui/test-utils'
 
 import { apDetailData, apDetails, apLanPorts, apRadio, apViewModel } from '../__tests__/fixtures'
 
@@ -70,6 +70,10 @@ describe('ApOverviewTab', () => {
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getApLanPorts.url,
+        (_, res, ctx) => res(ctx.json(apLanPorts))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApLanPorts.url,
         (_, res, ctx) => res(ctx.json(apLanPorts))
       )
     )

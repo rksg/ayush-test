@@ -30,7 +30,6 @@ export const PreferencesSection = styled.div`
 export const TitleActive = styled.div`
   color: #333333;
   font-weight: 600;
-  margin: 12px 0 0 0;
   .empty {
     color: var(--acx-neutrals-50);
     font-style: italic;

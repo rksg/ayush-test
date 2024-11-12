@@ -1,21 +1,21 @@
-import {
-  screen,
-  fireEvent,
-  act,
-  within,
-  waitFor
-} from '@testing-library/react'
 import { message, Modal } from 'antd'
 import { rest }           from 'msw'
 import '@testing-library/jest-dom'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   SwitchStatusEnum,
   SwitchUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }               from '@acx-ui/store'
-import { mockServer, renderHook } from '@acx-ui/test-utils'
+import { Provider } from '@acx-ui/store'
+import {
+  act,
+  fireEvent,
+  mockServer,
+  renderHook,
+  screen,
+  within,
+  waitFor } from '@acx-ui/test-utils'
 
 import { useSwitchActions } from '.'
 
@@ -89,7 +89,31 @@ describe('Test useSwitchActions', () => {
   })
 
   it('showDeleteSwitches', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
+
+    const { result } = renderHook(() => useSwitchActions(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    const { showDeleteSwitches } = result.current
+    const callback = jest.fn()
+
+    act(() => {
+      showDeleteSwitches(switchList.data, tenantId, callback)
+    })
+    const dialog = await screen.findByRole('dialog')
+
+    const deleteBtn = within(dialog).getByRole('button', { name: 'Delete Switches' })
+
+    fireEvent.click(deleteBtn)
+
+    await waitFor(async () => expect(callback).toBeCalled())
+
+    expect(dialog).not.toBeVisible()
+  })
+
+  it('showDeleteSwitches: patch API', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     const { result } = renderHook(() => useSwitchActions(), {
       wrapper: ({ children }) => <Provider children={children} />
@@ -113,7 +137,7 @@ describe('Test useSwitchActions', () => {
   })
 
   it('showDeleteSwitch', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     const { result } = renderHook(() => useSwitchActions(), {
       wrapper: ({ children }) => <Provider children={children} />
@@ -134,7 +158,7 @@ describe('Test useSwitchActions', () => {
   })
 
   it('showRebootSwitch', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     const { result } = renderHook(() => useSwitchActions(), {
       wrapper: ({ children }) => <Provider children={children} />
@@ -153,7 +177,7 @@ describe('Test useSwitchActions', () => {
   })
 
   it('showRebootSwitch - stack', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     const { result } = renderHook(() => useSwitchActions(), {
       wrapper: ({ children }) => <Provider children={children} />
@@ -172,7 +196,7 @@ describe('Test useSwitchActions', () => {
   })
 
   it('doSyncData', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     const { result } = renderHook(() => useSwitchActions(), {
       wrapper: ({ children }) => <Provider children={children} />
@@ -187,7 +211,7 @@ describe('Test useSwitchActions', () => {
   })
 
   it('doRetryFirmwareUpdate', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     const { result } = renderHook(() => useSwitchActions(), {
       wrapper: ({ children }) => <Provider children={children} />
@@ -196,7 +220,7 @@ describe('Test useSwitchActions', () => {
     const { doRetryFirmwareUpdate } = result.current
     const callback = jest.fn()
     act(() => {
-      doRetryFirmwareUpdate('switch-id', tenantId, callback)
+      doRetryFirmwareUpdate({ switchId: 'switch-id', tenantId: tenantId }, callback)
     })
 
     await waitFor(async () => expect(callback).toBeCalled())
@@ -229,7 +253,7 @@ describe('Handle error occurred', () => {
   })
 
   it('showRebootSwitch', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     const { result } = renderHook(() => useSwitchActions(), {
       wrapper: ({ children }) => <Provider children={children} />
@@ -248,7 +272,7 @@ describe('Handle error occurred', () => {
   })
 
   it('doSyncData', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     const { result } = renderHook(() => useSwitchActions(), {
       wrapper: ({ children }) => <Provider children={children} />
@@ -263,8 +287,8 @@ describe('Handle error occurred', () => {
   })
 
   it('doRetryFirmwareUpdate', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const { result } = renderHook(() => useSwitchActions(), {
       wrapper: ({ children }) => <Provider children={children} />
     })
@@ -272,7 +296,7 @@ describe('Handle error occurred', () => {
     const { doRetryFirmwareUpdate } = result.current
     const callback = jest.fn()
     act(() => {
-      doRetryFirmwareUpdate('switch-id', tenantId, callback)
+      doRetryFirmwareUpdate({ switchId: 'switch-id', tenantId: tenantId }, callback)
     })
 
     expect(callback).not.toBeCalled()

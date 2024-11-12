@@ -2,10 +2,12 @@ import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }                                    from '@acx-ui/components'
 import { generatePath, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { WifiScopes }                                          from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasPermission }             from '@acx-ui/user'
 
-import { Details }                                     from './DetailsTable'
-import { Title, SubTitle, ReRunButton, TestRunButton } from './Header'
-import { Overview }                                    from './Overview'
+import { Details }                                        from './DetailsTable'
+import { Title, useSubTitle, ReRunButton, TestRunButton } from './Header'
+import { Overview }                                       from './Overview'
 
 type ServiceGuardTabs = 'overview' | 'details' | 'progress'
 
@@ -44,7 +46,7 @@ export function ServiceGuardDetails () {
     <>
       <PageHeader
         title={<Title />}
-        subTitle={<SubTitle />}
+        subTitle={useSubTitle()}
         breadcrumb={[
           { text: $t({ defaultMessage: 'AI Assurance' }) },
           { text: $t({ defaultMessage: 'Network Assurance' }) },
@@ -54,7 +56,13 @@ export function ServiceGuardDetails () {
           }
         ]}
         extra={[
-          <ReRunButton key='re-run' />,
+          ...(hasCrossVenuesPermission() && hasPermission({
+            permission: 'WRITE_SERVICE_VALIDATION',
+            scopes: [WifiScopes.UPDATE]
+          })
+            ? [ <ReRunButton key='re-run' /> ]
+            : []
+          ),
           <TestRunButton key='past-tests' />
         ]}
         footer={

@@ -1,10 +1,11 @@
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, Dashboard } from '@acx-ui/rc/utils'
 import { Provider  }                 from '@acx-ui/store'
 import { render,
   screen, mockRestApiQuery,
   waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import { VenuesDashboardWidget, VenuesDashboardWidgetV2, getVenuesDonutChartData } from '.'
+import { VenuesDashboardWidgetV2, getVenuesDonutChartData } from '.'
 
 const data: Dashboard = {
   summary: {
@@ -41,31 +42,10 @@ jest.mock('@acx-ui/utils', () => ({
   })
 }))
 
-describe('Venues widget', () => {
-
-  beforeEach(() => {
-    mockRestApiQuery(CommonUrlsInfo.getDashboardOverview.url, 'get', { data })
-  })
-
-  it('should render loader and then chart', async () => {
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-    }
-    const { asFragment } = render(
-      <Provider><VenuesDashboardWidget /></Provider>,
-      { route: { params } }
-    )
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('Venues')
-    expect(asFragment().querySelector('svg')).toBeDefined()
-  })
-})
-
 describe('Venues widget v2', () => {
-
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DASHBOARD_NEW_API_TOGGLE)
   beforeEach(() => {
-    mockRestApiQuery(CommonUrlsInfo.getDashboardV2Overview.url, 'post', { data })
+    mockRestApiQuery(CommonUrlsInfo.getVenueSummaries.url, 'post', { data })
   })
 
   it('should render loader and then chart', async () => {

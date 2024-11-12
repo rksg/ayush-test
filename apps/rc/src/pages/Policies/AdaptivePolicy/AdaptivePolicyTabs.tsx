@@ -2,9 +2,9 @@ import { Tabs }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
-  useAdaptivePolicyListQuery,
-  useAdaptivePolicySetListQuery,
-  useRadiusAttributeGroupListQuery
+  useAdaptivePolicyListByQueryQuery,
+  useAdaptivePolicySetListByQueryQuery,
+  useRadiusAttributeGroupListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
@@ -21,17 +21,20 @@ export default function AdaptivePolicyTabs (props: { activeTab: AdaptivePolicyTa
   const navigate = useNavigate()
 
   const attributeGroupTableQuery = useTableQuery({
-    useQuery: useRadiusAttributeGroupListQuery,
+    useQuery: useRadiusAttributeGroupListByQueryQuery,
+    apiParams: { excludeContent: 'true' },
     defaultPayload: {}
   })
 
   const policyTableQuery = useTableQuery({
-    useQuery: useAdaptivePolicyListQuery,
+    useQuery: useAdaptivePolicyListByQueryQuery,
+    apiParams: { excludeContent: 'true' },
     defaultPayload: {}
   })
 
   const policySetTableQuery = useTableQuery({
-    useQuery: useAdaptivePolicySetListQuery,
+    useQuery: useAdaptivePolicySetListByQueryQuery,
+    apiParams: { excludeContent: 'true' },
     defaultPayload: {}
   })
 

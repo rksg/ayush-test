@@ -4,12 +4,14 @@ import { Row, Col, Form, Typography, Space } from 'antd'
 import { useIntl }                           from 'react-intl'
 import { useParams }                         from 'react-router-dom'
 
-import { cssStr, Modal }       from '@acx-ui/components'
+import { cssStr, Modal }          from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   MFAMethod,
   useGetMfaTenantDetailsQuery,
   useGetMfaAdminDetailsQuery
 } from '@acx-ui/user'
+import { userLogout } from '@acx-ui/utils'
 
 import { AuthenticationMethod }       from '../AuthenticationMethod'
 import { BackupAuthenticationMethod } from '../BackupAuthenticationMethod'
@@ -22,7 +24,8 @@ export const MFASetupModal = (props: MFASetupModalProps) => {
   const { onFinish } = props
   const params = useParams()
   const { $t } = useIntl()
-  const { data } = useGetMfaTenantDetailsQuery({ params })
+  const mfaNewApiToggle = useIsSplitOn(Features.MFA_NEW_API_TOGGLE)
+  const { data } = useGetMfaTenantDetailsQuery({ params, enableRbac: mfaNewApiToggle })
   const mfaEnabled= data?.enabled
   const { data: details } = useGetMfaAdminDetailsQuery({
     params: { userId: data?.userId } },
@@ -33,10 +36,7 @@ export const MFASetupModal = (props: MFASetupModalProps) => {
   const authAppToggle = Form.useWatch('authAppToggle', form)
 
   const handleCancel = () => {
-    // redirect to login page
-    const token = sessionStorage.getItem('jwt')?? null
-    sessionStorage.removeItem('jwt')
-    window.location.href = token? `/logout?token=${token}` : '/logout'
+    userLogout()
   }
 
   useEffect(() => {
@@ -58,7 +58,7 @@ export const MFASetupModal = (props: MFASetupModalProps) => {
   const disableBtn = mfaEnabled && !otpToggle && !authAppToggle
 
   return <Modal
-    title={$t({ defaultMessage: 'Multi-Factors Authentication Setup' })}
+    title={$t({ defaultMessage: 'Multi-Factor Authentication Setup' })}
     width={510}
     visible={true}
     okText={$t({ defaultMessage: 'Log in' })}

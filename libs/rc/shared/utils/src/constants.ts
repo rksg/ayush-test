@@ -2,10 +2,13 @@ import { defineMessage } from 'react-intl'
 
 import { SwitchModelInfoMap } from './types'
 
+export const SWITCH_DEFAULT_VLAN_NAME = 'DEFAULT-VLAN'
+
 export enum NetworkTypeEnum {
   PSK = 'psk',
   OPEN = 'open',
   AAA = 'aaa',
+  HOTSPOT20 = 'hotspot20',
   CAPTIVEPORTAL = 'guest',
   DPSK = 'dpsk'
 }
@@ -16,7 +19,8 @@ export enum GuestNetworkTypeEnum {
   HostApproval = 'HostApproval',
   GuestPass = 'GuestPass',
   WISPr = 'WISPr',
-  Cloudpath = 'Cloudpath'
+  Cloudpath = 'Cloudpath',
+  Directory = 'Directory'
 }
 
 export enum WlanSecurityEnum {
@@ -99,11 +103,6 @@ export enum AaaServerOrderEnum {
   SECONDARY = 'secondary',
 }
 
-export enum CloudpathDeploymentTypeEnum {
-  OnPremise = 'OnPremise',
-  Cloud = 'Cloud',
-}
-
 export enum QosPriorityEnum {
   WIFICALLING_PRI_VOICE = 'WIFICALLING_PRI_VOICE',
   WIFICALLING_PRI_VIDEO = 'WIFICALLING_PRI_VIDEO',
@@ -119,10 +118,13 @@ export enum ServiceType {
   WIFI_CALLING = 'Wi-Fi Calling',
   MDNS_PROXY = 'mDNS Proxy',
   DPSK = 'DPSK',
-  NETWORK_SEGMENTATION = 'Personal Identity Network',
+  PIN = 'Personal Identity Network',
   WEBAUTH_SWITCH = 'Web Auth',
   RESIDENT_PORTAL = 'Resident Portal',
-  EDGE_SD_LAN = 'SD-LAN'
+  EDGE_SD_LAN = 'SD-LAN',
+  EDGE_SD_LAN_P2 = 'SD-LAN-P2', // temporary type before SD-LAN GA2 dev done.
+  EDGE_MDNS_PROXY = 'Edge mDNS Proxy',
+  EDGE_TNM_SERVICE = 'Edge Thirdparty Network Management'
 }
 
 export enum ServiceStatus {
@@ -177,7 +179,8 @@ export enum AclRuleProtocolEnum {
 
 export enum AclTypeEnum {
   STANDARD = 'standard',
-  EXTENDED = 'extended'
+  EXTENDED = 'extended',
+  IPv6 = 'IPv6'
 }
 
 export enum AclRuleActionEnum {
@@ -190,6 +193,7 @@ export enum TrustedPortTypeEnum {
   DHCP = 'dhcp',
   ARP = 'arp'
 }
+
 export enum WanConnectionEnum {
   ETH_WITH_CELLULAR_FAILOVER = 'ETH_WITH_CELLULAR_FAILOVER',
   CELLULAR_WITH_ETH_FAILOVER = 'CELLULAR_WITH_ETH_FAILOVER',
@@ -210,11 +214,17 @@ export enum CellularNetworkSelectionEnum {
   ThreeG = 'ThreeG',
 }
 
+export enum MdnsProxyFeatureTypeEnum {
+  WIFI = 'WIFI',
+  EDGE = 'EDGE',
+}
+
 export enum ConfigTypeEnum {
   AAA_SERVER = 'AAA_SERVER',
   AAA_SETTING = 'AAA_SETTING',
   DNS_SERVER = 'DNS_SERVER',
   DHCP_SERVER = 'DHCP_SERVER',
+  NTP_SERVER = 'NTP_SERVER',
   LAG_SETTINGS = 'LAG_SETTINGS',
   MODEL ='MODEL',
   OVERWRITE = 'OVERWRITE',
@@ -816,6 +826,7 @@ export enum UnitStatus {
   OTHER = 'OTHER', // Somehow SZ may send 'Other' status
 }
 
+// Deprecated: no port prefix for all models
 export enum PortLabelType {
   GENERAL = '', // 1, 2. For high end models, fiber port doesn't have port label too
   COPPER = 'C', // C1, C2
@@ -828,75 +839,75 @@ export const ICX_MODELS_INFORMATION: SwitchModelInfoMap = {
     'C12P': {
       powerSlots: 1, fanSlots: 0, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     'C08P': {
       powerSlots: 1, fanSlots: 0, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.FIBER_1G }
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     'C08PT': {
       powerSlots: 1, fanSlots: 0, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.FIBER_1G }
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     'C10ZP': {
       powerSlots: 1, fanSlots: 0, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     '24': {
       powerSlots: 1, fanSlots: 0, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     '24P': {
       powerSlots: 1, fanSlots: 2, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     '24F': {
       powerSlots: 1, fanSlots: 2, portModuleSlots: [
-        { portLabel: PortLabelType.FIBER },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     '48': {
       powerSlots: 1, fanSlots: 0, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     '48P': {
       powerSlots: 1, fanSlots: 2, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     '48PF': {
       powerSlots: 1, fanSlots: 3, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.COPPER },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
       ]
     },
     '48ZP': {
       powerSlots: 2, fanSlots: 2, portModuleSlots: [
         { portLabel: PortLabelType.GENERAL },
-        { portLabel: PortLabelType.FIBER }
+        { portLabel: PortLabelType.GENERAL }
       ]
     }
   },
@@ -1093,7 +1104,7 @@ export const ICX_MODELS_INFORMATION: SwitchModelInfoMap = {
         { portLabel: PortLabelType.GENERAL },
         { portLabel: PortLabelType.GENERAL }
       ]
-    }
+    },
     // 'C08PT': {
     //   powerSlots: 1, fanSlots: 0, portModuleSlots: [
     //     { portLabel: PortLabelType.GENERAL },
@@ -1106,6 +1117,50 @@ export const ICX_MODELS_INFORMATION: SwitchModelInfoMap = {
     //     { portLabel: PortLabelType.GENERAL }
     //   ]
     // }
+    '24PV': {
+      powerSlots: 1, fanSlots: 2, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    'C08PFV': {
+      powerSlots: 1, fanSlots: 0, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    }
+  },
+  ICX8100: {
+    '24': {
+      powerSlots: 1, fanSlots: 1, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '24P': {
+      powerSlots: 1, fanSlots: 2, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '48': {
+      powerSlots: 1, fanSlots: 1, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '48P': {
+      powerSlots: 1, fanSlots: 2, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    'C08PF': {
+      powerSlots: 1, fanSlots: 0, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    }
   }
 }
 
@@ -1114,7 +1169,17 @@ export const VLAN_PREFIX = {
   POOL: 'VLAN Pool: '
 }
 
+export enum PowerSavingStatusEnum {
+  NORMAL = 'NORMAL',
+  POWER_SAVING = 'POWER_SAVING',
+  POWER_SAVING_PLUS = 'POWER_SAVING_PLUS'
+}
+
 export const PORTAL_LIMIT_NUMBER = 256
 export const DHCP_LIMIT_NUMBER = 120
 export const VLAN_LIMIT_NUMBER = 64
 export const AAA_LIMIT_NUMBER = 32
+export const CLIENT_ISOLATION_LIMIT_NUMBER = 64
+export const DIRECTORY_SERVER_LIMIT_NUMBER = 64
+export const ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY = 'ACX-ap-compatibiliy-note-hidden'
+export const ACX_UI_EDGE_COMPATIBILITY_NOTE_HIDDEN_KEY = 'ACX-edge-compatibiliy-note-hidden'

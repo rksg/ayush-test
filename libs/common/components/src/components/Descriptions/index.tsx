@@ -4,6 +4,7 @@ import * as UI from './styledComponents'
 
 export interface DescriptionsProps extends AntDescriptionsProps {
   labelWidthPercent?: number
+  noSpace?: boolean
 }
 
 export function Descriptions (props: DescriptionsProps) {
@@ -11,6 +12,7 @@ export function Descriptions (props: DescriptionsProps) {
 }
 Descriptions.defaultProps = {
   labelWidthPercent: 40,
+  noSpace: false,
   column: 1
 }
 

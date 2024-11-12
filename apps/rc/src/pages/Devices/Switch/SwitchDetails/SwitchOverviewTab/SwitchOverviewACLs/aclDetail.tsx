@@ -3,11 +3,17 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { TableProps } from '@acx-ui/components'
+import { TableProps }  from '@acx-ui/components'
+import { Table }       from '@acx-ui/components'
 import {
-  Table
-} from '@acx-ui/components'
-import { Acl, AclRule, transformTitleCase } from '@acx-ui/rc/utils'
+  Acl,
+  AclRule,
+  AclTypeEnum,
+  defaultSort,
+  sortProp,
+  transformIPv6,
+  transformTitleCase
+} from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 export const AclDetail = (props: { row : Acl }) => {
@@ -21,6 +27,7 @@ export const AclDetail = (props: { row : Acl }) => {
       key: 'sequence',
       title: $t({ defaultMessage: 'Sequence#' }),
       dataIndex: 'sequence',
+      sorter: { compare: sortProp('sequence', defaultSort) },
       defaultSortOrder: 'ascend'
     },
 
@@ -39,6 +46,7 @@ export const AclDetail = (props: { row : Acl }) => {
     {
       key: 'sequence',
       title: $t({ defaultMessage: 'Sequence#' }),
+      sorter: { compare: sortProp('sequence', defaultSort) },
       dataIndex: 'sequence',
       defaultSortOrder: 'ascend'
     },
@@ -53,7 +61,9 @@ export const AclDetail = (props: { row : Acl }) => {
       title: $t({ defaultMessage: 'Protocol' }),
       dataIndex: 'protocol',
       render: (__, { protocol }) => {
-        return _.isString(protocol) ? _.toUpper(protocol) : protocol
+        return _.isString(protocol)
+          ? (protocol === 'ipv6' ? transformIPv6(protocol) : _.toUpper(protocol))
+          : protocol
       }
     },
     {
@@ -90,18 +100,20 @@ export const AclDetail = (props: { row : Acl }) => {
       <Form.Item
         style={{ paddingBottom: '50px' }}
         label={$t({ defaultMessage: 'Type:' })}
-        children={transformTitleCase(row.aclType)}
+        children={row.aclType === AclTypeEnum.IPv6
+          ? transformIPv6(row.aclType)
+          : transformTitleCase(row.aclType)
+        }
       />
 
-      {row.aclType === 'standard' && <Table
+      {row.aclType === AclTypeEnum.STANDARD && <Table
         columns={standardColumns}
         type={'form'}
         dataSource={row.aclRules}
         rowKey='id'
       />}
 
-
-      {row.aclType === 'extended' && <Table
+      {(row.aclType === AclTypeEnum.EXTENDED || row.aclType === AclTypeEnum.IPv6) && <Table
         columns={extendedColumns}
         type={'form'}
         dataSource={row.aclRules}

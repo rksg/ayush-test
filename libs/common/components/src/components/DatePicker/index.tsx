@@ -7,6 +7,7 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
+import { get }                                            from '@acx-ui/config'
 import {  DateFormatEnum, formatter, userDateTimeFormat } from '@acx-ui/formatter'
 import { ClockOutlined }                                  from '@acx-ui/icons'
 import {
@@ -14,8 +15,6 @@ import {
   DateRange,
   dateRangeMap,
   resetRanges,
-  getJwtTokenPayload,
-  AccountTier,
   dateRangeForLast
 } from '@acx-ui/utils'
 
@@ -45,8 +44,23 @@ interface DatePickerProps {
   selectionType: DateRange;
   showAllTime?: boolean;
   showLast8hours?: boolean;
+  isReport?: boolean;
 }
 const AntRangePicker = AntDatePicker.RangePicker
+
+export const restrictDateTo3Months = (values: RangeValueType, range: string) => {
+  let startDate = values?.[0] || null
+  let endDate = values?.[1] || null
+  if (endDate && startDate && endDate.diff(startDate, 'months') > 3) {
+    if (range === 'start') {
+      endDate = startDate.clone().add(3, 'months')
+    }
+    if (range === 'end') {
+      startDate = endDate.clone().subtract(3, 'months')
+    }
+  }
+  return { startDate, endDate }
+}
 
 export const RangePicker = ({
   showTimePicker,
@@ -55,9 +69,11 @@ export const RangePicker = ({
   onDateApply,
   showAllTime,
   selectionType,
+  isReport,
   showLast8hours
 }: DatePickerProps) => {
   const { $t } = useIntl()
+  const isRA = get('IS_MLISA_SA')
   const { translatedRanges, translatedOptions } = useMemo(() => {
     const ranges = defaultRanges(rangeOptions)
     const translatedRanges: RangesType = {}
@@ -72,16 +88,21 @@ export const RangePicker = ({
   const componentRef = useRef<HTMLDivElement | null>(null)
   const rangeRef = useRef<RangeRef>(null)
   const [range, setRange] = useState<DateRangeType>(selectedRange)
+  const [boundary, setBoundary] = useState<string>('')
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
-  const { acx_account_tier: accountTier } = getJwtTokenPayload()
-  const allowedDateRange = accountTier === AccountTier.GOLD
-    ? dateRangeForLast(1,'month')
-    : dateRangeForLast(3,'months')
+  const allowedDateRange = isReport
+    ? dateRangeForLast(12, 'months')
+    : isRA
+      ? dateRangeForLast(3, 'months')
+      : dateRangeForLast(1, 'month')
+
   const disabledDate = useCallback(
-    (current: Moment) => {
-      return allowedDateRange[0] >= current || allowedDateRange[1] < current.seconds(0)
-    },
-    [allowedDateRange]
+    (current: Moment) => (
+      (boundary === 'start' && current.isAfter(range.startDate?.clone().add(3, 'months'))) ||
+      (boundary === 'end' && current.isBefore(range.endDate?.clone().subtract(3, 'months'))) ||
+      !current.isBetween(allowedDateRange[0], allowedDateRange[1], null, '[]')
+    ),
+    [allowedDateRange, boundary, range.endDate, range.startDate]
   )
 
   useEffect(
@@ -131,8 +152,11 @@ export const RangePicker = ({
         onClick={() => setIsCalendarOpen(true)}
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
         suffixIcon={<ClockOutlined />}
-        onCalendarChange={(values: RangeValueType) =>
-          setRange({ startDate: values?.[0] || null, endDate: values?.[1] || null })}
+        onCalendarChange={(values: RangeValueType, _: string[], info: { range: string }) => {
+          const { range } = info
+          setBoundary(range)
+          setRange(restrictDateTo3Months(values, range))
+        }}
         mode={['date', 'date']}
         renderExtraFooter={() => (
           <DatePickerFooter
@@ -166,7 +190,7 @@ export const DatePicker = (props: AntDatePickerProps) => (
 )
 
 interface DateTimePickerProps {
-  applyFooterMsg?: string;
+  extraFooter?: ReactNode;
   disabled?: boolean;
   icon?: ReactNode;
   initialDate: MutableRefObject<Moment>;
@@ -176,7 +200,8 @@ interface DateTimePickerProps {
     disabledDate?: (value: Moment) => boolean,
     disabledHours?: (value: Moment) => number[],
     disabledMinutes?: (value: Moment) => number[],
-  }
+  },
+  placement?: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topRight'
 }
 
 let currentDateTimePicker: {
@@ -196,24 +221,26 @@ export function useClosePreviousDateTimePicker (onClose: CallableFunction, visib
 }
 
 export const DateTimePicker = ({
-  applyFooterMsg,
+  extraFooter,
   disabled,
   icon,
   initialDate,
   onApply,
   title,
-  disabledDateTime
+  disabledDateTime,
+  placement
 }: DateTimePickerProps) => {
   const { disabledDate, disabledHours, disabledMinutes } = disabledDateTime || {}
   const wrapperRef = useRef<HTMLDivElement | null>(null)
   const [date, setDate] = useState(() => initialDate.current)
   const [open, setOpen] = useState(false)
   useClosePreviousDateTimePicker(() => setOpen(false), Boolean(open))
-  return <Tooltip placement='right' title={title}>
+  return <Tooltip placement='top' title={title}>
+    <UI.HiddenDateInputGlobalOverride />
     <UI.HiddenDateInput ref={wrapperRef}>
       <AntDatePicker
-        className='datepicker'
-        dropdownClassName='datepicker-popover'
+        className='hidden-date-input'
+        dropdownClassName='hidden-date-input-popover'
         picker='date'
         disabled={disabled}
         value={date}
@@ -222,18 +249,18 @@ export const DateTimePicker = ({
         showTime={false}
         showNow={false}
         showToday={false}
-        placement='topLeft'
+        placement={placement ?? 'topLeft'}
         bordered={false}
         allowClear={false}
         suffixIcon={icon ? icon : <ClockOutlined />}
         disabledDate={disabledDate}
-        getPopupContainer={(node) => node}
+        getPopupContainer={() => document.body}
         onChange={value => setDate(value!)}
         renderExtraFooter={() =>
           <DateTimePickerFooter
             value={date}
             setValue={setDate}
-            applyFooterMsg={applyFooterMsg}
+            extraFooter={extraFooter}
             onApply={() => {
               onApply(date)
               setOpen(false)
@@ -247,3 +274,4 @@ export const DateTimePicker = ({
     </UI.HiddenDateInput>
   </Tooltip>
 }
+

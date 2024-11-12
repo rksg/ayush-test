@@ -1,11 +1,12 @@
 import '@testing-library/jest-dom'
 import { useEffect } from 'react'
 
-import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { BrowserRouter }                  from '@acx-ui/react-router-dom'
-import { Provider }                       from '@acx-ui/store'
-import { fireEvent, render, screen }      from '@acx-ui/test-utils'
-import {  DateRange }                     from '@acx-ui/utils'
+import { useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { useIsEdgeReady }            from '@acx-ui/rc/components'
+import { BrowserRouter }             from '@acx-ui/react-router-dom'
+import { Provider }                  from '@acx-ui/store'
+import { fireEvent, render, screen } from '@acx-ui/test-utils'
+import { DateRange }                 from '@acx-ui/utils'
 
 import Dashboard, { DashboardFilterProvider, useDashBoardUpdatedFilter } from '.'
 
@@ -33,7 +34,8 @@ jest.mock('@acx-ui/rc/components', () => ({
   ClientsWidgetV2: () => <div data-testid={'rc-ClientsWidgetV2'} title='ClientsWidgetV2' />,
   DevicesDashboardWidgetV2: () => <div data-testid={'rc-DevicesDashboardWidgetV2'} title='DevicesDashboardWidgetV2' />,
   MapWidgetV2: () => <div data-testid={'rc-MapWidgetV2'} title='MapWidgetV2' />,
-  VenuesDashboardWidgetV2: () => <div data-testid={'rc-VenuesDashboardWidgetV2'} title='VenuesDashboardWidgetV2' />
+  VenuesDashboardWidgetV2: () => <div data-testid={'rc-VenuesDashboardWidgetV2'} title='VenuesDashboardWidgetV2' />,
+  useIsEdgeReady: jest.fn().mockReturnValue(true)
 }))
 jest.mock('@acx-ui/main/components', () => ({
   VenueFilter: () => <div data-testid={'rc-VenueFilter'} title='VenueFilter' />
@@ -58,7 +60,6 @@ describe('Dashboard', () => {
   })
 
   it('switches between tabs', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
     expect(localStorage.getItem('dashboard-tab')).toBe(undefined)
@@ -82,7 +83,7 @@ describe('Dashboard', () => {
     ]
     switchWidgets.forEach(widget => expect(screen.getByTitle(widget)).toBeVisible())
 
-    fireEvent.click(screen.getByRole('radio', { name: 'SmartEdge' }))
+    fireEvent.click(screen.getByRole('radio', { name: 'RUCKUS Edge' }))
     expect(localStorage.getItem('dashboard-tab')).toBe('edge')
 
     const edgeWidgets = [
@@ -105,18 +106,11 @@ describe('Dashboard', () => {
   })
 
   it('should hide edge tab when FF is off', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(false)
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsEdgeReady).mockReturnValue(false)
     render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
     expect(await screen.findAllByRole('radio')).toHaveLength(2)
   })
 
-  it('should hide edge tab when EDGE_STATS_TOGGLE is off', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<BrowserRouter><Provider><Dashboard /></Provider></BrowserRouter>)
-    expect(await screen.findAllByRole('radio')).toHaveLength(2)
-  })
   it('DashboardFilterProvider provides default value', async () => {
     const TestComponent = () => {
       const { dashboardFilters } = useDashBoardUpdatedFilter()
@@ -152,4 +146,5 @@ describe('Dashboard', () => {
       ,{ wrapper: Provider })
     expect(await screen.findByText('2021-12-31T00:01:00+00:00')).toBeInTheDocument()
   })
+
 })

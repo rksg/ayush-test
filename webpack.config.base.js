@@ -17,10 +17,33 @@ const modifyVars = require('./libs/common/components/src/theme/modify-vars')
       config.mode = 'production'
       config.optimization.minimize = true
     } else {
-      config.cache = true
+      config.cache = {
+        type: 'filesystem',
+        allowCollectingMemory: true,
+        buildDependencies: {
+          config: [__filename],
+        },
+      }
       config.watchOptions = {
         ignored: /node_modules/
       }
+    }
+
+    if (process.env.NODE_ENV === 'production') {
+      // Root cause: https://github.com/TypeStrong/fork-ts-checker-webpack-plugin/issues/271
+      // Disable fork-ts-checker-webpack-plugin
+      config.resolve = {
+        alias: {
+          'fork-ts-checker-webpack-plugin': false // Prevent the plugin from being resolved
+        },
+        ...config.resolve // Retain the existing resolve configuration
+      }
+
+      // Remove ForkTsCheckerWebpackPlugin from the plugins list
+      config.plugins = config.plugins.filter(plugin => {
+        return plugin.constructor.name !== 'ForkTsCheckerWebpackPlugin'; // Filter out the ForkTsCheckerWebpackPlugin
+      })
+
     }
 
     config.module.rules = config.module.rules.map(rule => {
@@ -29,6 +52,7 @@ const modifyVars = require('./libs/common/components/src/theme/modify-vars')
       rule.test = /\.css$|\.scss$|\.sass$|\.styl$/
       return rule
     })
+
 
     config.module.rules.push({
       test: /\.less$/,

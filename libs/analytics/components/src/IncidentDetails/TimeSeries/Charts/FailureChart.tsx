@@ -1,17 +1,17 @@
-import { gql }     from 'graphql-request'
-import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import { gql }   from 'graphql-request'
+import AutoSizer from 'react-virtualized-auto-sizer'
 
 import {
   Incident,
   getSeriesData,
   mapCodeToReason,
-  codeToFailureTypeMap,
   TimeSeriesDataType
 }                                         from '@acx-ui/analytics/utils'
 import { Card, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
 import { formatter }                              from '@acx-ui/formatter'
 import { useNavigate, useTenantLink }             from '@acx-ui/react-router-dom'
+
+import { codeToFailureTypeMap } from '../../rootCauseRecommendation'
 
 import { onMarkAreaClick, getMarkers } from './incidentTimeSeriesMarker'
 
@@ -31,10 +31,9 @@ const failureChartQuery = (incident: Incident) => gql`
 
 export const FailureChart = ({ chartRef, data, incident }: TimeSeriesChartProps) => {
   const { failureChart, relatedIncidents } = data
-  const intl = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics/incidents/')
-  const title = mapCodeToReason(codeToFailureTypeMap[incident.code], intl)
+  const title = mapCodeToReason(codeToFailureTypeMap[incident.code])
 
   const seriesMapping = [{
     key: codeToFailureTypeMap[incident.code as keyof typeof codeToFailureTypeMap],

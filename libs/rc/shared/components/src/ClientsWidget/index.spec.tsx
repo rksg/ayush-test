@@ -1,8 +1,9 @@
 import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
-import { CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }      from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo }         from '@acx-ui/rc/utils'
+import { Provider  }              from '@acx-ui/store'
 import { render,
   screen,
   mockRestApiQuery,
@@ -11,8 +12,7 @@ import { render,
   mockServer
 } from '@acx-ui/test-utils'
 
-import { ClientsWidget, ClientsWidgetV2,
-  getAPClientChartData,
+import { ClientsWidgetV2,
   getSwitchClientChartData } from '.'
 
 jest.mock('@acx-ui/utils', () => ({
@@ -37,28 +37,10 @@ jest.mock('@acx-ui/utils', () => ({
   })
 }))
 
-describe('Clients widget', () => {
-
-  beforeEach(() => {
-    mockRestApiQuery(CommonUrlsInfo.getDashboardOverview.url, 'get',{})
-  })
-
-  it('should render loader and then chart', async () => {
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-    }
-    const { asFragment } = render(<Provider><ClientsWidget /></Provider>,
-      { route: { params } })
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('Clients')
-    expect(asFragment().querySelector('svg')).toBeDefined()
-  })
-})
-
 describe('Clients widget v2', () => {
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DASHBOARD_NEW_API_TOGGLE)
   it('should render loader and then content for no data', async () => {
-    mockRestApiQuery(CommonUrlsInfo.getDashboardV2Overview.url, 'post',{})
+    mockRestApiQuery(CommonUrlsInfo.getClientSummaries.url, 'post',{})
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -74,7 +56,7 @@ describe('Clients widget v2', () => {
   it('should render properly with chart', async () => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getDashboardV2Overview.url,
+        CommonUrlsInfo.getClientSummaries.url,
         (req, res, ctx) => res(ctx.json({
           summary: {
             switchClients: {
@@ -82,21 +64,8 @@ describe('Clients widget v2', () => {
               totalCount: 2
             },
             clients: {
-              summary: {},
-              totalCount: 4,
-              clientDto: [{
-                healthCheckStatus: 'Good'
-              },{
-                healthCheckStatus: 'Poor'
-              },{
-                healthCheckStatus: 'Good'
-              },{
-                healthCheckStatus: 'Unknown'
-              },
-              {
-                someKey: 'someValue'
-              }
-              ]
+              summary: { Good: 2, Poor: 1, Unknown: 1 },
+              totalCount: 4
             }
           }
         }))
@@ -113,46 +82,6 @@ describe('Clients widget v2', () => {
     await screen.findByText('Wi-Fi')
     await screen.findByText('Wired')
     expect(asFragment().querySelectorAll('svg').length).toBe(3)
-  })
-})
-
-describe('getAPClientChartData', () => {
-  const data = {
-    summary: {
-      clients: {
-        summary: {},
-        totalCount: 0,
-        clientDto: [{
-          healthCheckStatus: 'Good'
-        },{
-          healthCheckStatus: 'Poor'
-        },{
-          healthCheckStatus: 'Good'
-        },{
-          healthCheckStatus: 'Unknown'
-        }]
-      }
-    }
-  }
-  it('should return correct formatted data', async () => {
-    const { result } = renderHook(() => getAPClientChartData(data, useIntl()))
-    expect(result.current).toEqual([{
-      color: '#ED1C24',
-      name: 'Poor',
-      value: 1
-    }, {
-      color: '#23AB36',
-      name: 'Good',
-      value: 2
-    }, {
-      color: '#ACAEB0',
-      name: 'Unknown',
-      value: 1
-    }])
-  })
-  it('should return empty array if no data', ()=>{
-    const { result } = renderHook(() => getAPClientChartData(undefined, useIntl()))
-    expect(result.current).toEqual([])
   })
 })
 

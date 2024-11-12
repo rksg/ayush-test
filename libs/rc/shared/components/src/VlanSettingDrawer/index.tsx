@@ -10,22 +10,39 @@ import {
   Select,
   Switch
 } from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Drawer, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import {
   SwitchModel,
   SwitchModelPortData,
-  validateDuplicateVlanId,
+  SwitchSlot,
+  StackMember,
+  PortStatusMessages,
   validateVlanName,
+  validateDuplicateVlanId,
   validateVlanNameWithoutDVlans,
   Vlan
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
+import { getIntl }        from '@acx-ui/utils'
 
 
 import * as UI            from './styledComponents'
+import * as VlanPortsUI   from './VlanPortsSetting/styledComponents'
 import { VlanPortsModal } from './VlanPortsSetting/VlanPortsModal'
+
+export interface PortsUsedByProps {
+  lag?: Record<string, string>
+  untagged?: Record<string, number>
+}
+
+export interface GptObjectProps {
+  vlanId: string,
+  vlanName: string
+}
 
 export interface VlanSettingDrawerProps {
   vlan?: Vlan
@@ -34,11 +51,21 @@ export interface VlanSettingDrawerProps {
   visible: boolean
   setVisible: (v: boolean) => void
   vlansList: Vlan[]
+  isProfileLevel?: boolean
+  enablePortModelConfigure?: boolean
+  switchFamilyModel?: string
+  portSlotsData?: SwitchSlot[][]
+  portsUsedBy?: PortsUsedByProps
+  stackMember?: StackMember[],
+  gptObject?: GptObjectProps
 }
 
 export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
   const { $t } = useIntl()
-  const { vlan, setVlan, visible, setVisible, editMode, vlansList } = props
+  const { vlan, setVlan, visible, setVisible, editMode,
+    vlansList, isProfileLevel, switchFamilyModel,
+    enablePortModelConfigure = true, portSlotsData, portsUsedBy,
+    stackMember, gptObject } = props
   const [form] = Form.useForm<Vlan>()
 
   const onClose = () => {
@@ -62,6 +89,13 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
           vlan={vlan}
           setVlan={setVlan}
           vlansList={vlansList || []}
+          isProfileLevel={isProfileLevel}
+          enablePortModelConfigure={enablePortModelConfigure}
+          switchFamilyModel={switchFamilyModel}
+          portSlotsData={portSlotsData}
+          portsUsedBy={portsUsedBy}
+          stackMember={stackMember}
+          gptObject={gptObject}
         />
       }
       footer={
@@ -94,6 +128,13 @@ interface VlanSettingFormProps {
   vlan?: Vlan
   setVlan: (r: Vlan) => void
   vlansList: Vlan[]
+  isProfileLevel?: boolean
+  switchFamilyModel?: string
+  enablePortModelConfigure?: boolean
+  portSlotsData?: SwitchSlot[][]
+  portsUsedBy?: PortsUsedByProps
+  stackMember?: StackMember[],
+  gptObject?: GptObjectProps
 }
 
 function VlanSettingForm (props: VlanSettingFormProps) {
@@ -105,10 +146,28 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const [multicastVersionDisabled, setMulticastVersionDisabled] = useState(true)
   const [selected, setSelected] = useState<SwitchModelPortData>()
   const [ruleList, setRuleList] = useState<SwitchModelPortData[]>([])
-  const { form, vlan, setVlan, vlansList } = props
+  const [hasPortsUsedByLag, setHasPortsUsedByLag] = useState(false)
+
+  const { form, vlan, setVlan, vlansList, isProfileLevel, editMode,
+    switchFamilyModel, portSlotsData, enablePortModelConfigure = true,
+    portsUsedBy, stackMember, gptObject } = props
+
+  const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
+  const isSwitchLevel = !!switchFamilyModel
+  const isRuckusAiMode = !_.isEmpty(gptObject)
+
+  const multicastVersionEnabled = () : boolean => {
+    const igmpSnooping = form.getFieldValue('igmpSnooping')
+    return (igmpSnooping === 'active' || igmpSnooping === 'passive')
+  }
 
   useEffect(() => {
-    if(vlan){
+    form.resetFields()
+  }, [])
+
+  useEffect(() => {
+    if(vlan && editMode){
+      form.resetFields()
       form.setFieldsValue(vlan)
       const vlanPortsData = vlan.switchFamilyModels?.map(item => {
         return {
@@ -123,17 +182,32 @@ function VlanSettingForm (props: VlanSettingFormProps) {
       setArpInspection(vlan.arpInspection || false)
       setIpv4DhcpSnooping(vlan.ipv4DhcpSnooping || false)
     }
-  }, [form, vlan])
+    if (multicastVersionEnabled()) {
+      setMulticastVersionDisabled(false)
+    }
+  }, [vlan])
+
+  useEffect(() => {
+    if(vlan && isSwitchLevelVlanEnabled){
+      const portsUsedByLag = Object.keys(portsUsedBy?.lag ?? {})
+      const isPortsUsedByLag = vlan?.switchVlanPortModels?.filter(port =>
+        _.intersection(port.taggedPorts?.split(','), portsUsedByLag)?.length > 0
+          || _.intersection(port.untaggedPorts?.split(','), portsUsedByLag)?.length > 0
+      )?.length
+
+      setHasPortsUsedByLag(!!isPortsUsedByLag)
+    }
+  }, [vlan, portsUsedBy, isSwitchLevelVlanEnabled])
 
   const columns: TableProps<SwitchModelPortData>['columns'] = [
-    {
+    ...(!isSwitchLevel ? [{
       title: $t({ defaultMessage: 'Model' }),
       dataIndex: 'model',
       key: 'model',
       width: 100
-    },
+    }] : []),
     {
-      title: $t({ defaultMessage: 'Untagged Port' }),
+      title: $t({ defaultMessage: 'Untagged Ports' }),
       dataIndex: 'untaggedPorts',
       key: 'untaggedPorts',
       width: 180,
@@ -164,14 +238,22 @@ function VlanSettingForm (props: VlanSettingFormProps) {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      visible: !hasPortsUsedByLag,
       onClick: (selectedRows, clearSelection) => {
         showActionModal({
           type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Model' }),
-            entityValue: selectedRows[0].model
-          },
+          ...( isSwitchLevel
+            ? { title: $t({ defaultMessage: 'Delete Ports?' }),
+              content: $t({ defaultMessage: 'Are you sure you want to delete this item?' }),
+              okText: $t({ defaultMessage: 'Delete Ports' })
+            } : {
+              customContent: {
+                action: 'DELETE',
+                entityName: isSwitchLevel
+                  ? $t({ defaultMessage: 'Ports' }) : $t({ defaultMessage: 'Model' }),
+                entityValue: isSwitchLevel ? $t({ defaultMessage: 'Ports' }) : selectedRows[0].model
+              }
+            }),
           onOk: () => {
             setRuleList(
               ruleList?.filter((option: { model: string }) => {
@@ -233,21 +315,29 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           label={$t({ defaultMessage: 'VLAN ID' })}
           name='vlanId'
           validateFirst
+          initialValue={isRuckusAiMode ? gptObject?.vlanId : ''}
           rules={[
             { required: true },
             { validator: (_, value) => validateVlanName(value) },
-            { validator: (_, value) => validateDuplicateVlanId(value, vlansList) }
+            {
+              validator: (_, value) => {
+                if (isRuckusAiMode) {return Promise.resolve()}
+                return validateDuplicateVlanId(
+                  value, vlansList.filter(v => editMode ? v.vlanId !== vlan?.vlanId : v)
+                )
+              }
+            }
           ]}
-          children={<Input style={{ width: '400px' }} />}
+          children={<Input style={{ width: '400px' }} disabled={isRuckusAiMode} />}
         />
         <Form.Item
           name='vlanName'
           label={$t({ defaultMessage: 'VLAN Name' })}
-          initialValue={''}
+          initialValue={isRuckusAiMode ? gptObject?.vlanName : ''}
           rules={[
             { validator: (_, value) => validateVlanNameWithoutDVlans(value) }
           ]}
-          children={<Input style={{ width: '400px' }} maxLength={32} />}
+          children={<Input style={{ width: '400px' }} maxLength={32} disabled={isRuckusAiMode} />}
         />
         <UI.FieldLabel width='130px'>
           { $t({ defaultMessage: 'IPv4 DHCP Snooping' }) }
@@ -260,7 +350,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           />
         </UI.FieldLabel>
         <UI.FieldLabel width='500px' style={{ marginTop: '-10px', paddingBottom: '10px' }}>
-          {ipv4DhcpSnooping &&
+          {ipv4DhcpSnooping && isProfileLevel &&
             <label>{
               $t({ defaultMessage:
                 'If DHCP Snooping is turned ON, you must select trusted ports' }) }
@@ -277,7 +367,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           />
         </UI.FieldLabel>
         <UI.FieldLabel width='500px' style={{ marginTop: '-10px', paddingBottom: '10px' }}>
-          {arpInspection &&
+          {arpInspection && isProfileLevel &&
             <label>{
               $t({ defaultMessage:
                 'If ARP Inspection is turned ON, you must select trusted ports' }) }
@@ -335,45 +425,79 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           children={<Input type='hidden' />}
         />
       </Form>
-      <Row justify='space-between' style={{ margin: '25px 0 10px' }}>
-        <Col>
-          <label style={{ color: 'var(--acx-neutrals-60)' }}>Ports</label>
-        </Col>
-        <Col>
-          <Button
-            type='link'
-            onClick={() => {
-              setSelected(undefined)
-              setOpenModal(true)
-            }}
-          >
-            {$t({ defaultMessage: 'Add Model' })}
-          </Button>
-        </Col>
-      </Row>
-      <Table
-        rowKey='model'
-        rowActions={filterByAccess(rowActions)}
-        columns={columns}
-        rowSelection={{
-          type: 'radio',
-          selectedRowKeys: selected ? [selected.model] : [],
-          onChange: (keys: React.Key[]) => {
-            setSelected(
-              ruleList?.find((i: { model: Key }) => i.model === keys[0])
-            )
-          }
-        }}
-        dataSource={ruleList || undefined}
-      />
-      <VlanPortsModal
-        open={openModal}
-        editRecord={selected}
-        currrentRecords={ruleList}
-        onCancel={onCancel}
-        onSave={onSaveVlan}
-        vlanList={vlansList}
-      />
+      { (!isSwitchLevelVlanEnabled || enablePortModelConfigure) && <>
+        <Row justify='space-between' style={{ margin: '25px 0 10px' }}>
+          <Col>
+            <label style={{ color: 'var(--acx-neutrals-60)' }}>Ports</label>
+          </Col>
+          <Col>
+            <Button
+              type='link'
+              disabled={isSwitchLevel && ruleList?.length > 0}
+              onClick={() => {
+                setSelected(undefined)
+                setOpenModal(true)
+              }}
+            >
+              {isSwitchLevel
+                ? $t({ defaultMessage: 'Add Ports' })
+                : $t({ defaultMessage: 'Add Model' })
+              }
+            </Button>
+          </Col>
+        </Row>
+        <Table
+          rowKey='model'
+          rowActions={filterByAccess(rowActions)}
+          columns={columns}
+          rowSelection={{
+            type: 'radio',
+            selectedRowKeys: selected ? [selected.model] : [],
+            onChange: (keys: React.Key[]) => {
+              setSelected(
+                ruleList?.find((i: { model: Key }) => i.model === keys[0])
+              )
+            }
+          }}
+          dataSource={ruleList || undefined}
+        />
+        <VlanPortsModal
+          open={openModal}
+          editRecord={selected}
+          currrentRecords={ruleList}
+          onCancel={onCancel}
+          onSave={onSaveVlan}
+          vlanList={vlansList}
+          switchFamilyModel={isSwitchLevelVlanEnabled ? switchFamilyModel : undefined}
+          portSlotsData={portSlotsData}
+          portsUsedBy={portsUsedBy}
+          stackMember={stackMember}
+        />
+      </>}
     </div>
   )
+}
+
+export function getTooltipTemplate (untaggedModel: Vlan[], taggedModel: Vlan[]) {
+  const { $t } = getIntl()
+  return <div>
+    <VlanPortsUI.TooltipTitle>{
+      $t(PortStatusMessages.CURRENT)
+    }</VlanPortsUI.TooltipTitle>
+    <div>
+      <VlanPortsUI.TagsTitle>
+        <VlanPortsUI.TagsOutlineIcon />{ $t({ defaultMessage: 'Untagged' }) }
+      </VlanPortsUI.TagsTitle>
+      <VlanPortsUI.PortSpan>
+        {untaggedModel[0] ? untaggedModel[0].vlanId : '-'}
+      </VlanPortsUI.PortSpan></div>
+    <div>
+      <VlanPortsUI.TagsTitle>
+        <VlanPortsUI.TagsSolidIcon />{ $t({ defaultMessage: 'Tagged' }) }
+      </VlanPortsUI.TagsTitle>
+      <VlanPortsUI.PortSpan>
+        {taggedModel.length > 0 ? taggedModel.map(item => item.vlanId).join(', ') : '-'}
+      </VlanPortsUI.PortSpan>
+    </div>
+  </div>
 }

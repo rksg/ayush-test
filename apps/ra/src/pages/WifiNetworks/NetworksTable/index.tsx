@@ -124,6 +124,7 @@ export function NetworkList ({
   return <Loader states={[results]}>
     <Table<Network>
       columns={networkTableColumnHeaders}
+      rowKey={'name'}
       dataSource={results.data?.wifiNetworks as unknown as Network[]}
       pagination={pagination}
       settingsId='wifi-network-search-table'

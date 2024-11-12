@@ -1,11 +1,31 @@
 import '@testing-library/jest-dom'
-import { render, screen } from '@testing-library/react'
-import userEvent          from '@testing-library/user-event'
-import { Menu }           from 'antd'
+
+import userEvent from '@testing-library/user-event'
+import { Menu }  from 'antd'
+
+import { render, screen } from '@acx-ui/test-utils'
 
 import { regionMenu } from './stories'
 
 import { Dropdown } from '.'
+
+jest.mock('antd', () => {
+  const components = jest.requireActual('antd')
+  const Select = ({
+    children,
+    showSearch, // remove and left unassigned to prevent warning
+    ...props
+  }: React.PropsWithChildren<{ showSearch: boolean, onChange?: (value: string) => void }>) => {
+    return (<select {...props} onChange={(e) => props.onChange?.(e.target.value)}>
+      {/* Additional <option> to ensure it is possible to reset value to empty */}
+      <option value={undefined}></option>
+      {children}
+    </select>)
+  }
+  Select.Option = 'option'
+  Select.OptGroup = 'optgroup'
+  return { ...components, Select }
+})
 
 describe('Dropdown', () => {
   it('renders dropdown and handle events', async () => {

@@ -1,6 +1,5 @@
-import { useIntl } from 'react-intl'
-
 import { Incident }   from '@acx-ui/analytics/utils'
+import { cssStr }     from '@acx-ui/components'
 import { renderHook } from '@acx-ui/test-utils'
 
 import {
@@ -8,7 +7,12 @@ import {
   getDominance,
   getWLANDominance,
   getDominanceByThreshold,
-  getAPRebootReason
+  getAPRebootReason,
+  transformAirtimeMetricKey,
+  transformAirtimeFrame,
+  transformAirtimeCast,
+  transformAirtimeClientsByAP,
+  getAirtimeMetricColorSet
 } from './config'
 
 describe('getDataWithPercentage', () => {
@@ -110,12 +114,51 @@ describe('getWLANDominance', () => {
 describe('getAPRebootReason', () => {
   it('return key if no mapping', () => {
     const key = 'random_key_123'
-    const { current } = renderHook(() => getAPRebootReason(key, useIntl())).result
+    const { current } = renderHook(() => getAPRebootReason(key)).result
     expect(current).toEqual(key)
   })
   it('return value of given key', () => {
     const key = 'system recovery by watchdog'
-    const { current } = renderHook(() => getAPRebootReason(key, useIntl())).result
+    const { current } = renderHook(() => getAPRebootReason(key)).result
     expect(current).toEqual('system recovery by WatchDog')
   })
+})
+
+it('transformAirtimeMetricKey should return correct key', () => {
+  expect(transformAirtimeMetricKey('airtimeBusy')).toBe('Avg Airtime Busy')
+  expect(transformAirtimeMetricKey('airtimeRx')).toBe('Avg Airtime Rx')
+  expect(transformAirtimeMetricKey('airtimeTx')).toBe('Avg Airtime Tx')
+  expect(transformAirtimeMetricKey('airtimeIdle')).toBe('Avg Airtime Idle')
+  expect(transformAirtimeMetricKey('random')).toBe('')
+})
+
+it('transformAirtimeFrame should return correct key', () => {
+  expect(transformAirtimeFrame('mgmtFrames')).toBe('Mgmt. Frames')
+  expect(transformAirtimeFrame('dataFrames')).toBe('Data Frames')
+})
+
+it('transformAirtimeCast should return correct key', () => {
+  expect(transformAirtimeCast('txUnicastFrames')).toBe('Unicast Frames')
+  expect(transformAirtimeCast('txBroadcastFrames')).toBe('Broadcast Frames')
+  expect(transformAirtimeCast('txMulticastFrames')).toBe('Multicast Frames')
+})
+
+it('transformAirtimeClientsByAP should return correct key', () => {
+  expect(transformAirtimeClientsByAP('small')).toBe('Less than 30 clients')
+  expect(transformAirtimeClientsByAP('medium')).toBe('31 to 50 clients')
+  expect(transformAirtimeClientsByAP('large')).toBe('More than 50 clients')
+})
+
+it('getAirtimeMetricColorSet', () => {
+  expect(getAirtimeMetricColorSet()).toEqual([
+    cssStr('--acx-viz-qualitative-1'),
+    cssStr('--acx-viz-qualitative-2'),
+    cssStr('--acx-viz-qualitative-3'),
+    cssStr('--acx-viz-qualitative-5'),
+    cssStr('--acx-viz-qualitative-6'),
+    cssStr('--acx-viz-qualitative-7'),
+    cssStr('--acx-viz-qualitative-8'),
+    cssStr('--acx-viz-qualitative-9'),
+    cssStr('--acx-viz-qualitative-10')
+  ])
 })

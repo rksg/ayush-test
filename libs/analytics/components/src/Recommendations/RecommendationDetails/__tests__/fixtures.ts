@@ -176,6 +176,7 @@ export const mockedRecommendationCRRM = {
   code: 'c-crrm-channel24g-auto',
   status: 'applyscheduled',
   appliedTime: '2023-06-25T00:00:25.772Z',
+  dataEndTime: '2023-06-26T00:00:25.772Z',
   updatedAt: '06/26/2023 06:04',
   originalValue: [
     {
@@ -385,7 +386,8 @@ export const mockedRecommendationCRRM = {
     current: 2,
     previous: null,
     projected: 0
-  }
+  },
+  trigger: 'daily'
 } as unknown as RecommendationDetails
 
 export const mockedRecommendationCRRMnew = { // this fixture is used to test new crrm recommendation
@@ -393,6 +395,7 @@ export const mockedRecommendationCRRMnew = { // this fixture is used to test new
   code: 'c-crrm-channel5g-auto',
   status: 'new',
   appliedTime: '2023-06-25T00:00:25.772Z',
+  dataEndTime: '2023-06-26T00:00:25.772Z',
   originalValue: [
     {
       channelMode: 'CHANNEL_FLY',
@@ -446,6 +449,7 @@ export const mockedRecommendationCRRMApplied = { // this fixture is used to test
   code: 'c-crrm-channel5g-auto',
   status: 'applied',
   appliedTime: '2023-06-25T00:00:25.772Z',
+  dataEndTime: '2023-06-26T00:00:25.772Z',
   originalValue: [
     {
       channelMode: 'CHANNEL_FLY',
@@ -628,7 +632,9 @@ export const mockedRecommendationFirmware = {
     ],
     previous: null,
     projected: null
-  }
+  },
+  preferences: { crrmFullOptimization: true },
+  trigger: 'once'
 } as unknown as RecommendationDetails
 
 export const mockedRecommendationClientLoad = {
@@ -693,7 +699,6 @@ export const mockedRecommendationApFirmware = [
   }
 ]
 
-
 export const mockRecommendationAutoBackground = {
   id: 'c5218138-d14c-4cec-9ee4-3164cdd15f15',
   code: 'c-bgscan24g-enable',
@@ -728,3 +733,114 @@ export const mockRecommendationAutoBackground = {
     }
   ]
 } as unknown as RecommendationDetails
+
+export const mockRecommendationProbeflexNew = {
+  id: '49c8ec53-a266-4dc1-a872-91a242791a53',
+  code: 'c-probeflex-24g',
+  status: 'new',
+  appliedTime: null,
+  isMuted: false,
+  originalValue: null,
+  currentValue: false,
+  recommendedValue: true,
+  metadata: {
+    dataEndTime: 1710720000000
+  },
+  sliceType: 'zone',
+  sliceValue: 'Divya-REC-Venue-AX-APs',
+  updatedAt: '2024-04-03T06:44:25.951Z',
+  dataEndTime: '2024-03-18T00:00:00.000Z',
+  preferences: {
+    crrmFullOptimization: true
+  },
+  path: [
+    {
+      type: 'zone',
+      name: 'Divya-REC-Venue-AX-APs'
+    }
+  ],
+  statusTrail: [
+    {
+      status: 'new',
+      createdAt: '2024-04-03T06:41:48.733Z'
+    }
+  ],
+  kpi_curr_avg_mgmt_traffic_per_client: {
+    current: 364395419,
+    projected: null
+  }
+}
+
+export const mockRecommendationProbeflexApplied = {
+  id: '49c8ec53-a266-4dc1-a872-91a242791a53',
+  code: 'c-probeflex-24g',
+  status: 'applied',
+  appliedTime: '2024-03-17T00:00:00.000Z',
+  isMuted: false,
+  originalValue: null,
+  currentValue: false,
+  recommendedValue: true,
+  metadata: {
+    dataEndTime: 1710720000000,
+    wlans: [
+      {
+        name: '985a2e7fca3f43db8deb9eaf7a9c25d8',
+        ssid: 'GKSS'
+      },
+      {
+        name: 'e1304efc68ed48fa9e7477fe1bffe7b2',
+        ssid: 'Shine'
+      }
+    ]
+  },
+  sliceType: 'zone',
+  sliceValue: 'Divya-REC-Venue-AX-APs',
+  updatedAt: '2024-04-03T06:44:25.951Z',
+  dataEndTime: '2024-03-18T00:00:00.000Z',
+  preferences: {
+    crrmFullOptimization: true
+  },
+  path: [
+    {
+      type: 'zone',
+      name: '23A-IND-BNG-D23-Keshav-Home'
+    }
+  ],
+  statusTrail: [
+    {
+      status: 'applied',
+      createdAt: '2024-04-03T06:41:48.733Z'
+    }
+  ],
+  kpi_curr_avg_mgmt_traffic_per_client: {
+    current: 364395419,
+    projected: null
+  },
+  kpi_prev_avg_mgmt_traffic_per_client: {
+    current: 364395419,
+    projected: null
+  }
+} as unknown as RecommendationDetails
+
+
+export const mockWifiNetworkList = {
+  fields: [
+    'name',
+    'id',
+    'ssid'
+  ],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      name: 'GKSS',
+      id: '985a2e7fca3f43db8deb9eaf7a9c25d8',
+      ssid: 'GKSS'
+    },
+    {
+      name: 'Shine',
+      id: 'e1304efc68ed48fa9e7477fe1bffe7b2',
+      ssid: 'Shine'
+    }
+  ]
+}

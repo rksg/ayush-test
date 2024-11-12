@@ -7,7 +7,7 @@ export enum BandEnum {
 export type CloudRRMNode = {
   apMac: string
   apName: string
-  channelWidth: (number|'NaN')[]
+  channelWidth: (number|null)[]
   channel: number[]
   txPower: (string|null)[]
 }
@@ -39,7 +39,7 @@ export interface ProcessedCloudRRMLink extends CloudRRMLink {
 }
 
 export type AggregatedNodeSet = {
-  channelWidth: number| 'NaN'
+  channelWidth: number| null
   channel: number
   txPower: string | null
   group: number | undefined
@@ -61,4 +61,6 @@ export interface ProcessedCloudRRMGraph {
   nodes: ProcessedCloudRRMNode[]
   links: ProcessedCloudRRMLink[]
   categories: Array<{ name: CategoryState }>
+  interferingLinks?: number
+  affectedAPs?: number
 }

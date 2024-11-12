@@ -27,7 +27,7 @@ export const BackupAuthenticationMethod = (props: { recoveryCodes: string[] }) =
             <UI.OtpLabel>
               {$t({ defaultMessage: 'Recovery Codes' })}
               {$t({ defaultMessage:
-                  'User recovery codes to log in if you can’t receive a verification code via ' +
+                  'Use recovery codes to log in if you can’t receive a verification code via ' +
                   'email, SMS, or an auth app' })}
             </UI.OtpLabel>
             <Form.Item

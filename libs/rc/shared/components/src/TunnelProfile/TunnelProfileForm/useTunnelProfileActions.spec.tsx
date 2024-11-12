@@ -1,9 +1,8 @@
 import { rest } from 'msw'
-import { act }  from 'react-dom/test-utils'
 
 import { TunnelProfileFormType, TunnelProfileUrls } from '@acx-ui/rc/utils'
 import { Provider }                                 from '@acx-ui/store'
-import { mockServer, renderHook, waitFor }          from '@acx-ui/test-utils'
+import { act, mockServer, renderHook, waitFor }     from '@acx-ui/test-utils'
 
 import { useTunnelProfileActions } from './useTunnelProfileActions'
 
@@ -30,7 +29,7 @@ describe('useTunnelProfileActions', () => {
     )
   })
 
-  it('should create dhcp successful', async () => {
+  it('should create tunnel profile successful', async () => {
     const { result } = renderHook(() => useTunnelProfileActions(), {
       wrapper: ({ children }) => <Provider children={children} />
     })
@@ -42,7 +41,7 @@ describe('useTunnelProfileActions', () => {
     await waitFor(() =>expect(mockedCreateTunnelApi).toBeCalledTimes(1))
   })
 
-  it('should update dhcp successful', async () => {
+  it('should update tunnel profile successful', async () => {
     const { result } = renderHook(() => useTunnelProfileActions(), {
       wrapper: ({ children }) => <Provider children={children} />
     })

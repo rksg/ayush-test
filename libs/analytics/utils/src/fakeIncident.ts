@@ -175,11 +175,8 @@ export const fakeIncidentSwitchMemory = fakeIncident({
     }
   ],
   metadata: {
-    dominant: {},
-    rootCauseChecks: {
-      checks: [],
-      params: {}
-    }
+    upper_bound: 0.95,
+    projected_time: 0
   },
   clientCount: -1,
   impactedClientCount: -1,
@@ -302,7 +299,7 @@ export const fakeIncidentDowntimeHigh = fakeIncident({
 
 export const fakeIncidentVlan = fakeIncident({
   severity: 0.75,
-  startTime: '2022-08-30T07:00:00.000Z',
+  startTime: '2022-09-30T07:00:00.000Z',
   endTime: '2022-10-05T01:00:00.000Z',
   code: 'i-switch-vlan-mismatch',
   sliceType: 'switchGroup',
@@ -603,10 +600,12 @@ export const fakeIncidentLoadSzCpuLoad = fakeIncident({
   connectedPowerDeviceCount: 0
 })
 
-export const fakeIncidentAirtimeB = fakeIncident({
+const fakeAirtimeB: FakeIncidentProps = {
   severity: 0.75,
   startTime: '2023-11-08T00:00:00.000Z',
   endTime: '2023-11-09T00:00:00.000Z',
+  impactedStart: '2023-11-08T01:00:00.000Z',
+  impactedEnd: '2023-11-10T00:00:00.000Z',
   code: 'p-airtime-b-24g-high',
   sliceType: 'zone',
   sliceValue: '19-US-CA-D19-Andre-Home',
@@ -649,6 +648,156 @@ export const fakeIncidentAirtimeB = fakeIncident({
   apCount: -1,
   impactedApCount: -1,
   switchCount: -1,
+  vlanCount: -1,
+  connectedPowerDeviceCount: -1
+}
+export const fakeIncidentAirtimeB = fakeIncident(fakeAirtimeB)
+export const fakeIncidentAirtimeBWithSameTime = fakeIncident({
+  ...fakeAirtimeB, impactedStart: '2023-11-08T00:00:00.000Z' })
+
+const fakeAirtimeRx: FakeIncidentProps = {
+  severity: 0.75,
+  startTime: '2024-01-24T00:00:00.000Z',
+  endTime: '2024-01-25T00:00:00.000Z',
+  impactedStart: '2024-01-24T01:00:00.000Z',
+  impactedEnd: '2024-01-25T16:00:00.000Z',
+  code: 'p-airtime-tx-24g-high',
+  sliceType: 'zone',
+  sliceValue: '19-US-CA-D19-Andre-Home',
+  id: '704be7ee-cefd-4064-bdc6-00b6fbc92066',
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '19-US-CA-D19-Andre-Home'
+    },
+    {
+      type: 'zone',
+      name: '19-US-CA-D19-Andre-Home'
+    }
+  ],
+  metadata: {
+    rootCauseChecks: {
+      checks: [
+        { HighDensityWifiDevices: true },
+        { isAclbRaised: true },
+        { isHighSsidCountPerRadio: true },
+        { isLargeMgmtFrameCount: true },
+        { isCRRMRaised: true },
+        { isChannelFlyEnabled: true },
+        { isHighLegacyWifiDevicesCount: true }
+      ],
+      params: {}
+    },
+    avgAnomalousAirtime: 54.620060790273556
+  },
+  clientCount: 10,
+  impactedClientCount: 1,
+  isMuted: false,
+  mutedBy: null,
+  mutedAt: null,
+  slaThreshold: null,
+  currentSlaThreshold: null,
+  apCount: -1,
+  impactedApCount: -1,
+  switchCount: -1,
+  vlanCount: -1,
+  connectedPowerDeviceCount: -1
+}
+export const fakeIncidentAirtimeRx = fakeIncident(fakeAirtimeRx)
+export const fakeIncidentAirtimeRxWithSameTime = fakeIncident({
+  ...fakeAirtimeRx, impactedStart: '2024-01-24T00:00:00.000Z' })
+
+const fakeAirtimeTx: FakeIncidentProps = {
+  severity: 0.75,
+  startTime: '2024-01-24T00:00:00.000Z',
+  endTime: '2024-01-25T00:00:00.000Z',
+  impactedStart: '2024-01-24T01:00:00.000Z',
+  impactedEnd: '2024-01-25T16:00:00.000Z',
+  code: 'p-airtime-rx-24g-high',
+  sliceType: 'zone',
+  sliceValue: '19-US-CA-D19-Andre-Home',
+  id: '704be7ee-cefd-4064-bdc6-00b6fbc92066',
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '19-US-CA-D19-Andre-Home'
+    },
+    {
+      type: 'zone',
+      name: '19-US-CA-D19-Andre-Home'
+    }
+  ],
+  metadata: {
+    rootCauseChecks: {
+      checks: [
+        { HighDensityWifiDevices: true },
+        { isAclbRaised: true },
+        { isHighSsidCountPerRadio: true },
+        { isLargeMgmtFrameCount: true },
+        { isHighPacketErrorCount: true },
+        { isHighMcbcTraffic: true },
+        { isHighLegacyWifiDevicesCount: true }
+      ],
+      params: {}
+    },
+    avgAnomalousAirtime: 54.620060790273556
+  },
+  clientCount: 10,
+  impactedClientCount: 1,
+  isMuted: false,
+  mutedBy: null,
+  mutedAt: null,
+  slaThreshold: null,
+  currentSlaThreshold: null,
+  apCount: -1,
+  impactedApCount: -1,
+  switchCount: -1,
+  vlanCount: -1,
+  connectedPowerDeviceCount: -1
+}
+export const fakeIncidentAirtimeTx = fakeIncident(fakeAirtimeTx)
+export const fakeIncidentAirtimeTxWithSameTime = fakeIncident({
+  ...fakeAirtimeTx, impactedStart: '2024-01-24T00:00:00.000Z' })
+
+export const fakeIncidentDDoS = fakeIncident({
+  severity: 0.75,
+  startTime: '2022-09-30T07:00:00.000Z',
+  endTime: '2022-10-05T01:00:00.000Z',
+  code: 's-switch-tcp-syn-ddos',
+  sliceType: 'switchGroup',
+  sliceValue: 'GRP2',
+  id: '9bce5e7b-7959-44da-8dc6-b176456a2bfd',
+  path: [
+    {
+      type: 'switchGroup',
+      name: 'GRP2'
+    }
+  ],
+  metadata: {
+    dominant: {},
+    rootCauseChecks: {
+      checks: [],
+      params: {}
+    }
+  },
+  clientCount: -1,
+  impactedClientCount: -1,
+  isMuted: false,
+  mutedBy: null,
+  mutedAt: null,
+  slaThreshold: null,
+  currentSlaThreshold: null,
+  apCount: -1,
+  impactedApCount: -1,
+  switchCount: 1,
   vlanCount: -1,
   connectedPowerDeviceCount: -1
 })

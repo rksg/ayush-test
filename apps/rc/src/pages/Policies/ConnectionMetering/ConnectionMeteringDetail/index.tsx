@@ -1,18 +1,18 @@
-
-
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, Card, Loader, PageHeader,  GridRow, GridCol, SummaryCard } from '@acx-ui/components'
 import { useGetConnectionMeteringByIdQuery }                                from '@acx-ui/rc/services'
 import {
-  getPolicyListRoutePath,
+  filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
-  PolicyType,
-  PolicyOperation, getPolicyRoutePath
+  getPolicyListRoutePath,
+  getPolicyRoutePath,
+  getScopeKeyByPolicy,
+  PolicyOperation,
+  PolicyType
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { DataConsumptionLabel }  from '../DataConsumptionHelper'
 import { RateLimitingTableCell } from '../RateLimitingHelper'
@@ -60,12 +60,18 @@ export default function ConnectionMeteringDetail () {
             })
           }
         ]}
-        extra={filterByAccess([
-          <TenantLink to={getPolicyDetailsLink({
-            policyId: policyId!,
-            type: PolicyType.CONNECTION_METERING,
-            oper: PolicyOperation.EDIT
-          })}>
+        extra={filterByAccessForServicePolicyMutation([
+          <TenantLink
+            scopeKey={getScopeKeyByPolicy(
+              PolicyType.CONNECTION_METERING,
+              PolicyOperation.EDIT
+            )}
+            to={getPolicyDetailsLink({
+              policyId: policyId!,
+              type: PolicyType.CONNECTION_METERING,
+              oper: PolicyOperation.EDIT
+            })}
+          >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
         ])}
@@ -80,7 +86,7 @@ export default function ConnectionMeteringDetail () {
         </GridCol>
         <GridCol col={{ span: 24 }}>
           <Card>
-            <ConnectionMeteringInstanceTable data={profileQuery.data?.personas ?? []} />
+            <ConnectionMeteringInstanceTable data={profileQuery.data?.identities ?? []} />
           </Card>
         </GridCol>
       </GridRow>

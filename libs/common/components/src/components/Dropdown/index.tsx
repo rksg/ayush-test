@@ -1,21 +1,41 @@
 import React, { useState } from 'react'
 
-import * as UI from './styledComponents'
-
-import type {
+import {
   DropdownProps as AntDropdownProps,
   MenuProps as AntMenuProps
 } from 'antd'
+import { MenuItemType } from 'rc-menu/lib/interface'
+
+import { ScopeKeys } from '@acx-ui/types'
+
+import * as UI from './styledComponents'
 
 export interface DropdownProps extends Omit<AntDropdownProps, 'overlay' | 'trigger' | 'children'> {
   overlay: React.ReactElement<AntMenuProps>
+  scopeKey?: ScopeKeys,
   children: (selectedKeys: string | null) => React.ReactElement
 }
 
-export function Dropdown ({ overlay, children, ...props }: DropdownProps) {
+export interface DropdownItemType extends MenuItemType {
+  scopeKey?: ScopeKeys,
+  allowedOperationUrl?: string
+}
+
+export function Dropdown ({ overlay, children, scopeKey, ...props }: DropdownProps) {
   const { defaultSelectedKeys, onClick } = overlay.props
   const [selectedKeys, setSelectedKeys] = useState<string[] | undefined>(defaultSelectedKeys)
-  const menu = React.cloneElement(overlay, {
+  const transformedOverlay = {
+    ...overlay,
+    props: {
+      ...overlay.props,
+      items: (overlay?.props?.items as DropdownItemType[])?.map(item => {
+        const itemProps = item ?? {}
+        const { scopeKey, allowedOperationUrl, ...props } = itemProps
+        return props
+      })
+    }
+  }
+  const menu = React.cloneElement(transformedOverlay, {
     onClick: ((event) => {
       onClick && onClick(event)
       setSelectedKeys([event.key])

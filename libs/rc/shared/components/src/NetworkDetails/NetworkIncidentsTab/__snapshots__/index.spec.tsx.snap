@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NetworkIncidentsTab should render network incidents tab successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+<form
+    class="ant-form ant-form-horizontal"
+  >
+    <div
+      class="c0"
+    >
+      <div />
+    </div>
+  </form>
+</DocumentFragment>
+`;

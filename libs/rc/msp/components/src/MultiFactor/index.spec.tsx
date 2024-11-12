@@ -2,6 +2,7 @@
 import  userEvent from '@testing-library/user-event'
 import { rest }   from 'msw'
 
+import { AdministrationUrlsInfo }   from '@acx-ui/rc/utils'
 import { Provider, userApi, store } from '@acx-ui/store'
 import {
   mockServer,
@@ -15,7 +16,8 @@ import {
   fakeMFADisabledTenantDetail,
   fakeMFADisabledAdminDetail,
   fakeMFAEnabledTenantDetail,
-  fakeMFAEnabledAdminDetail
+  fakeMFAEnabledAdminDetail,
+  fakeTenantDetails
 } from './__tests__/fixtures'
 
 import { MultiFactor } from '.'
@@ -50,6 +52,10 @@ describe('Multi-Factor Authentication Form', () => {
           mockedDisableMFAMethodFn()
           return res(ctx.status(202))
         }
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getTenantDetails.url,
+        (req, res, ctx) => res(ctx.json(fakeTenantDetails))
       )
     )
   })

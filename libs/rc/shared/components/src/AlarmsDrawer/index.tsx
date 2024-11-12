@@ -12,18 +12,26 @@ import {
   Tooltip,
   Button
 } from '@acx-ui/components'
-import { formatter } from '@acx-ui/formatter'
+import { formatter }  from '@acx-ui/formatter'
 import {
   useAlarmsListQuery,
   useClearAlarmMutation,
-  useClearAllAlarmMutation,
-  useGetAlarmCountQuery,
   eventAlarmApi,
-  networkApi
-}  from '@acx-ui/rc/services'
-import { Alarm, CommonUrlsInfo, useTableQuery, EventSeverityEnum, EventTypeEnum } from '@acx-ui/rc/utils'
-import { useParams, TenantLink }                                                  from '@acx-ui/react-router-dom'
-import { store }                                                                  from '@acx-ui/store'
+  networkApi,
+  useClearAlarmByVenueMutation,
+  useGetVenuesQuery
+} from '@acx-ui/rc/services'
+import {
+  Alarm,
+  CommonUrlsInfo,
+  useTableQuery,
+  EventSeverityEnum,
+  EventTypeEnum
+} from '@acx-ui/rc/utils'
+import { useParams, TenantLink } from '@acx-ui/react-router-dom'
+import { store }                 from '@acx-ui/store'
+import { RolesEnum }             from '@acx-ui/types'
+import { hasRoles }              from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -38,7 +46,8 @@ const defaultPayload: {
     fields: string[]
     filters?: {
       severity?: string[],
-      serialNumber?: string[]
+      serialNumber?: string[],
+      venueId?: string[]
     }
   } = {
     url: CommonUrlsInfo.getAlarmsList.url,
@@ -57,22 +66,44 @@ const defaultPayload: {
       'apName',
       'switchName',
       'sourceType',
-      'switchMacAddress'
+      'switchMacAddress',
+      'apModel',
+      'minimumRequiredVersion'
     ]
   }
 
 export function AlarmsDrawer (props: AlarmsType) {
   const params = useParams()
-  const { data } = useGetAlarmCountQuery({ params })
   const { $t } = useIntl()
-  const { visible, setVisible, serialNumber } = props
+  const { visible, setVisible } = props
 
   window.addEventListener('showAlarmDrawer',(function (e:CustomEvent){
     setVisible(true)
     setSeverity(e.detail.data.name)
+
+    if(e.detail.data.venueId){
+      setVenueId(e.detail.data.venueId)
+    }else{
+      setVenueId('')
+    }
+
+    if(e.detail.data.serialNumber){
+      setSerialNumber(e.detail.data.serialNumber)
+    }else{
+      setSerialNumber('')
+    }
   }) as EventListener)
 
   const [severity, setSeverity] = useState('all')
+  const [venueId, setVenueId] = useState('')
+  const [serialNumber, setSerialNumber] = useState('')
+
+  const venuesListPayload = {
+    fields: ['name', 'country', 'id'],
+    pageSize: 10000,
+    sortField: 'name',
+    sortOrder: 'ASC'
+  }
 
   const [
     clearAlarm,
@@ -80,9 +111,13 @@ export function AlarmsDrawer (props: AlarmsType) {
   ] = useClearAlarmMutation()
 
   const [
-    clearAllAlarm,
-    { isLoading: isAllAlarmCleaning }
-  ] = useClearAllAlarmMutation()
+    clearAlarmByVenue,
+    { isLoading: isAlarmByVenueCleaning }
+  ] = useClearAlarmByVenueMutation()
+
+  const { data: venuesList } =
+    useGetVenuesQuery({ params: useParams(), payload: venuesListPayload }, { skip: !visible })
+
 
   const tableQuery = useTableQuery({
     useQuery: useAlarmsListQuery,
@@ -97,8 +132,18 @@ export function AlarmsDrawer (props: AlarmsType) {
     option: { skip: !visible }
   })
 
+  const allAlarmsPayload = { ...defaultPayload,
+    filters: {},
+    sortField: 'startTime',
+    sortOrder: 'DESC',
+    page: 1,
+    pageSize: 10000 }
+
+  const { data: allAlarms } = useAlarmsListQuery({ payload: allAlarmsPayload },
+    { skip: !visible })
+
   useEffect(()=>{
-    const { payload } = tableQuery
+    const { payload, pagination: paginationValue } = tableQuery
     let filters = severity === 'all' ? {} : { severity: [severity] }
     tableQuery.setPayload({
       ...payload,
@@ -113,8 +158,33 @@ export function AlarmsDrawer (props: AlarmsType) {
       })
     }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tableQuery.data, severity, data, serialNumber])
+    if(venueId){
+      filters = { ...filters, ...{ venueId: [venueId] } }
+      tableQuery.setPayload({
+        ...payload,
+        filters
+      })
+    }
+
+    if(tableQuery.data?.totalCount && tableQuery.data?.data.length === 0){
+      const totalPage = Math.ceil(tableQuery.data.totalCount / paginationValue.pageSize)
+      if(paginationValue.page > totalPage){
+        const pagination = {
+          current: totalPage,
+          pageSize: paginationValue.pageSize
+        }
+        const sorter = {
+          field: 'startTime',
+          order: 'descend'
+        } as SorterResult<Alarm>
+        const extra = {
+          currentDataSource: [] as Alarm[],
+          action: 'paginate' as const
+        }
+        tableQuery?.handleTableChange?.(pagination, {}, sorter, extra)
+      }
+    }
+  }, [tableQuery.data, severity, serialNumber, venueId])
 
   const getIconBySeverity = (severity: EventSeverityEnum)=>{
 
@@ -138,10 +208,10 @@ export function AlarmsDrawer (props: AlarmsType) {
       }
       case EventTypeEnum.SWITCH: {
         const switchId = alarm.switchMacAddress || alarm.serialNumber
-        return <TenantLink
-          to={`/devices/switch/${switchId}/${alarm.serialNumber}/details/timeline`}>
+        return alarm.isSwitchExists ? <TenantLink
+          to={`/devices/switch/${switchId}/${alarm.serialNumber}/details/overview`}>
           {alarm.switchName}
-        </TenantLink>
+        </TenantLink> : alarm.switchName
       }
       case EventTypeEnum.EDGE: {
         return <TenantLink
@@ -154,13 +224,23 @@ export function AlarmsDrawer (props: AlarmsType) {
     }
   }
 
+  const getVenueIdsOfAlarms = (venueNames: string[]) => {
+    const venueIds = (venuesList?.data.filter(venue =>
+      venueNames.includes(venue.name)) || []).map(venue => venue.id)
+
+    return venueIds
+  }
+
+  const hasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+
   const alarmList = <>
     <UI.FilterRow>
       <Select value={severity}
         size='small'
         onChange={(val)=>{
           setSeverity(val)
-        }}>
+        }}
+        dropdownMatchSelectWidth={false}>
         <Select.Option value={'all'}>
           { $t({ defaultMessage: 'All Severities' }) }
         </Select.Option>
@@ -172,11 +252,39 @@ export function AlarmsDrawer (props: AlarmsType) {
         </Select.Option>
       </Select>
       <Button type='link'
-        disabled={tableQuery.data?.totalCount===0}
+        disabled={!hasPermission || tableQuery.data?.totalCount === 0}
         size='small'
         style={{ fontWeight: 'var(--acx-body-font-weight-bold)' }}
         onClick={async ()=>{
-          await clearAllAlarm({ params: { ...params } })
+          const venueNames: string[] = []
+          const alarmIds: string[] = []
+          allAlarms?.data.forEach(alarm => {
+            if(alarm?.venueName) {
+              if (!venueNames.includes(alarm?.venueName)) {
+                venueNames.push(alarm?.venueName)
+              }
+            } else {
+              if (!alarmIds.includes(alarm.id)) {
+                alarmIds.push(alarm.id)
+              }
+            }})
+
+          if (venueNames.length) {
+            const venueIds = getVenueIdsOfAlarms(venueNames)
+            if (venueIds.length) {
+              await Promise.all(venueIds.map(async (venueId) => {
+                await clearAlarmByVenue({ params: { ...params,
+                  venueId } })
+              }))
+            }
+          }
+
+          if (alarmIds.length) {
+            await Promise.all(alarmIds.map(async (alarmId) => {
+              await clearAlarm({ params: { ...params, alarmId } })
+            }))
+          }
+
           //FIXME: temporary workaround to waiting for backend add websocket to refresh the RTK cache automatically
           setTimeout(() => {
             store.dispatch(
@@ -195,7 +303,8 @@ export function AlarmsDrawer (props: AlarmsType) {
       </Button>
     </UI.FilterRow>
     <Loader states={[
-      tableQuery,{ isLoading: false, isFetching: isAlarmCleaning||isAllAlarmCleaning }
+      tableQuery,{ isLoading: false,
+        isFetching: isAlarmCleaning || isAlarmByVenueCleaning }
     ]}>
       <UI.ListTable
         itemLayout='horizontal'
@@ -228,6 +337,7 @@ export function AlarmsDrawer (props: AlarmsType) {
                 arrowPointAtCenter>
                 <UI.ClearButton
                   ghost={true}
+                  disabled={!hasPermission}
                   icon={<UI.AcknowledgeCircle/>}
                   onClick={async ()=>{
                     await clearAlarm({ params: { ...params, alarmId: alarm.id } })
@@ -269,6 +379,7 @@ export function AlarmsDrawer (props: AlarmsType) {
     visible={visible}
     onClose={() => {
       setVisible(false)
+      setVenueId('')
     }}
     children={alarmList}
   />

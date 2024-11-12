@@ -11,7 +11,7 @@ import { AccessConditionDrawer, RadiusAttributeGroupSelectDrawer }              
 import {
   useLazyAdaptivePolicyListByQueryQuery,
   useLazyGetRadiusAttributeGroupQuery,
-  usePolicyTemplateListQuery
+  usePolicyTemplateListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
   AccessCondition,
@@ -20,7 +20,6 @@ import {
   CriteriaOption, defaultSort,
   RadiusAttributeGroup, sortProp, trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 interface AdaptivePolicySettingFormProps {
   editMode?: boolean,
@@ -50,12 +49,12 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
 
   const [getPolicyList] = useLazyAdaptivePolicyListByQueryQuery()
 
-  const { data: templateList, isLoading } = usePolicyTemplateListQuery({
+  const { data: templateList, isLoading } = usePolicyTemplateListByQueryQuery({
     payload: {
       page: '1',
       pageSize: '1000',
-      sortField: 'name',
-      sortOrder: 'desc' }
+      sort: 'name,asc'
+    }
   })
 
   const [getAttributeGroup] = useLazyGetRadiusAttributeGroupQuery()
@@ -240,9 +239,9 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
                 rowKey='id'
                 columns={useColumns()}
                 dataSource={evaluationRules}
-                rowActions={filterByAccess(rowActions)}
-                rowSelection={hasAccess() && { type: 'radio' }}
-                actions={filterByAccess([{
+                rowActions={rowActions}
+                rowSelection={{ type: 'radio' }}
+                actions={[{
                   disabled: !templateId,
                   // eslint-disable-next-line max-len
                   tooltip: !templateId ? $t({ defaultMessage: 'Please select Policy Type' }) : undefined,
@@ -252,7 +251,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
                     setEditCondition(undefined)
                     setAccessConditionsVisible(true)
                   }
-                }])}
+                }]}
               />
             </>
           </Form.Item>

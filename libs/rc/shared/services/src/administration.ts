@@ -23,11 +23,25 @@ import {
   EntitlementSummary,
   Entitlement,
   NewEntitlementSummary,
-  TenantAuthentications
+  TenantAuthentications,
+  AdminGroup,
+  AdminGroupLastLogins,
+  CustomRole,
+  PrivilegeGroup,
+  EntitlementPendingActivations,
+  AdminRbacUrlsInfo,
+  NotificationSmsUsage,
+  NotificationSmsConfig,
+  TwiliosIncommingPhoneNumbers,
+  TwiliosMessagingServices
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
 import { ApiInfo, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+
+const getAdminUrls = (enableRbac?: boolean | unknown) => {
+  return enableRbac ? AdminRbacUrlsInfo : AdministrationUrlsInfo
+}
 
 export const administrationApi = baseAdministrationApi.injectEndpoints({
   endpoints: (build) => ({
@@ -37,7 +51,18 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Administration', id: 'DETAIL' }]
+    }),
+    updateTenantSelf: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateTenantSelf, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'DETAIL' }]
     }),
     getAccountDetails: build.query<AccountDetails, RequestPayload>({
       query: ({ params }) => {
@@ -167,8 +192,9 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       }
     }),
     enableAccessSupport: build.mutation<TenantDelegationResponse, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(AdministrationUrlsInfo.enableAccessSupport, params)
+      query: ({ params, payload, enableRbac }) => {
+        const adminUrls = getAdminUrls(enableRbac)
+        const req = createHttpRequest(adminUrls.enableAccessSupport, params)
         return {
           ...req,
           body: payload
@@ -184,8 +210,9 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       invalidatesTags: [{ type: 'Administration', id: 'ACCESS_SUPPORT' }]
     }),
     disableAccessSupport: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(AdministrationUrlsInfo.disableAccessSupport, params)
+      query: ({ params, payload, enableRbac }) => {
+        const adminUrls = getAdminUrls(enableRbac)
+        const req = createHttpRequest(adminUrls.disableAccessSupport, params)
         return {
           ...req,
           body: payload
@@ -483,6 +510,37 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         return result
       }
     }),
+    getEntitlementActivations: build.query<EntitlementPendingActivations, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getEntitlementsActivations, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'License', id: 'ACTIVATIONS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'Activate Entitlement'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'License', id: 'ACTIVATIONS' }
+            ]))
+          })
+        })
+      }
+    }),
+    patchEntitlementsActivations: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.patchEntitlementsActivations, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     refreshEntitlements: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.refreshLicensesData, params)
@@ -568,9 +626,292 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       }
     }),
+    patchTenantAuthentications: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.patchTenantAuthentications, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     updateTenantAuthentications: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.updateTenantAuthentications, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getAdminGroups: build.query<AdminGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getAdminGroups, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'ADMINGROUP_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'addGroup',
+            'patchGroup',
+            'deleteGroups'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'ADMINGROUP_LIST' }
+            ]))
+          })
+        })
+      }
+
+    }),
+    deleteAdminGroups: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteAdminGroups, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    addAdminGroups: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.addAdminGroups, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateAdminGroups: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateAdminGroups, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getAdminGroupLastLogins: build.query<AdminGroupLastLogins, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getAdminGroupLastLogins, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'ADMINGROUP_LIST' }]
+    }),
+    getCustomRoles: build.query<CustomRole[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getCustomRoles, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'CUSTOMROLE_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'addCustomRole',
+            'updateCustomRole',
+            'deleteCustomRole'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'CUSTOMROLE_LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    addCustomRole: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.addCustomRole, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateCustomRole: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateCustomRole, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    deleteCustomRole: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteCustomRole, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getMspEcPrivilegeGroups: build.query<PrivilegeGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const CUSTOM_HEADER = {
+          'x-rks-tenantid': params?.mspEcTenantId
+        }
+        const req = createHttpRequest(
+          AdministrationUrlsInfo.getPrivilegeGroups, params, CUSTOM_HEADER, true)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'PRIVILEGEGROUP_LIST' }]
+    }),
+    getOnePrivilegeGroup: build.query<PrivilegeGroup, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getOnePrivilegeGroup, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'PRIVILEGEGROUP_LIST' }]
+    }),
+    getPrivilegeGroups: build.query<PrivilegeGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getPrivilegeGroups, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'PRIVILEGEGROUP_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'addPrivilegeGroup',
+            'updatePrivilegeGroup',
+            'deletePrivilegeGroup'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'PRIVILEGEGROUP_LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    getPrivilegeGroupsWithAdmins: build.query<PrivilegeGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getPrivilegeGroupsWithAdmins, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    addPrivilegeGroup: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.addPrivilegeGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updatePrivilegeGroup: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updatePrivilegeGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    deletePrivilegeGroup: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deletePrivilegeGroup, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getMspEcDelegatePrivilegeGroups: build.query<PrivilegeGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          AdminRbacUrlsInfo.getMspEcDelegatePrivilegeGroups, params)
+        return{
+          ...req
+        }
+      },
+      transformResponse: (result: PrivilegeGroup[]) => {
+        return result.map(item => {
+          item.id = item.parentPrivilegeGroupId as string
+          return item
+        })
+      }
+    }),
+    getNotificationSms: build.query<NotificationSmsUsage, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getNotificationSms, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
+    }),
+    updateNotificationSms: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateNotificationSms, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
+    }),
+    getNotificationSmsProvider: build.query<NotificationSmsConfig, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getNotificationSmsProvider, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateNotificationSmsProvider: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateNotificationSmsProvider, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
+    }),
+    deleteNotificationSmsProvider: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteNotificationSmsProvider, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
+    }),
+    getTwiliosIncomingPhoneNumbers: build.query<TwiliosIncommingPhoneNumbers, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getTwiliosIncomingPhoneNumbers,
+          params, { ...ignoreErrorModal })
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getTwiliosMessagingServices: build.query<TwiliosMessagingServices, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getTwiliosMessagingServices,
+          params, { ...ignoreErrorModal })
         return {
           ...req,
           body: payload
@@ -592,6 +933,7 @@ const transformAdministratorList = (data: Administrator[]) => {
 
 export const {
   useGetTenantDetailsQuery,
+  useUpdateTenantSelfMutation,
   useLazyGetTenantDetailsQuery,
   useGetAccountDetailsQuery,
   useGetRecoveryPassphraseQuery,
@@ -622,6 +964,8 @@ export const {
   useDeleteNotificationRecipientMutation,
   useGetEntitlementSummaryQuery,
   useGetEntitlementsListQuery,
+  useGetEntitlementActivationsQuery,
+  usePatchEntitlementsActivationsMutation,
   useRefreshEntitlementsMutation,
   useInternalRefreshEntitlementsMutation,
   useConvertNonVARToMSPMutation,
@@ -631,5 +975,32 @@ export const {
   useGetTenantAuthenticationsQuery,
   useDeleteTenantAuthenticationsMutation,
   useAddTenantAuthenticationsMutation,
-  useUpdateTenantAuthenticationsMutation
+  usePatchTenantAuthenticationsMutation,
+  useUpdateTenantAuthenticationsMutation,
+  useGetAdminGroupsQuery,
+  useDeleteAdminGroupsMutation,
+  useAddAdminGroupsMutation,
+  useUpdateAdminGroupsMutation,
+  useGetAdminGroupLastLoginsQuery,
+  useGetCustomRolesQuery,
+  useAddCustomRoleMutation,
+  useUpdateCustomRoleMutation,
+  useDeleteCustomRoleMutation,
+  useGetMspEcPrivilegeGroupsQuery,
+  useGetOnePrivilegeGroupQuery,
+  useGetPrivilegeGroupsQuery,
+  useGetPrivilegeGroupsWithAdminsQuery,
+  useAddPrivilegeGroupMutation,
+  useUpdatePrivilegeGroupMutation,
+  useDeletePrivilegeGroupMutation,
+  useGetMspEcDelegatePrivilegeGroupsQuery,
+  useGetNotificationSmsQuery,
+  useUpdateNotificationSmsMutation,
+  useGetNotificationSmsProviderQuery,
+  useUpdateNotificationSmsProviderMutation,
+  useDeleteNotificationSmsProviderMutation,
+  useGetTwiliosIncomingPhoneNumbersQuery,
+  useLazyGetTwiliosIncomingPhoneNumbersQuery,
+  useGetTwiliosMessagingServicesQuery,
+  useLazyGetTwiliosMessagingServicesQuery
 } = administrationApi

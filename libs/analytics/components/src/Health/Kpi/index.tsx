@@ -14,9 +14,11 @@ import {
   kpisForTab,
   kpiConfig
 } from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Loader, Button } from '@acx-ui/components'
-import { get }                              from '@acx-ui/config'
-import type { AnalyticsFilter }             from '@acx-ui/utils'
+import { GridCol, GridRow, Loader, Button }        from '@acx-ui/components'
+import { get }                                     from '@acx-ui/config'
+import { SwitchScopes, WifiScopes }                from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import type { AnalyticsFilter }                    from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
@@ -35,6 +37,11 @@ export const defaultThreshold: KpiThresholdType = {
   apServiceUptime: kpiConfig.apServiceUptime.histogram.initialThreshold,
   apToSZLatency: kpiConfig.apToSZLatency.histogram.initialThreshold,
   switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold,
+  switchMemoryUtilization: kpiConfig.switchMemoryUtilization.histogram.initialThreshold,
+  switchCpuUtilization: kpiConfig.switchCpuUtilization.histogram.initialThreshold,
+  switchStormControl: kpiConfig.switchStormControl.histogram.initialThreshold,
+  switchUplinkPortUtilization: kpiConfig.switchUplinkPortUtilization.histogram.initialThreshold,
+  switchPortUtilization: kpiConfig.switchPortUtilization.histogram.initialThreshold,
   clusterLatency: kpiConfig.clusterLatency.histogram.initialThreshold
 }
 
@@ -60,7 +67,7 @@ export const useKpiThresholdsQuery = (
 export default function KpiSections (props: { tab: CategoryTab, filters: AnalyticsFilter }) {
   const { tab, filters } = props
   const { filter } = filters
-  const { kpis } = kpisForTab(isMLISA)[tab]
+  const { kpis } = kpisForTab(isMLISA)[tab as keyof typeof kpisForTab]
   const { useFetchThresholdPermissionQuery } = healthApi
   const { thresholds, kpiThresholdsQueryResults } = useKpiThresholdsQuery({ filters })
   const thresholdPermissionQuery = useFetchThresholdPermissionQuery({ filter })
@@ -76,13 +83,14 @@ export default function KpiSections (props: { tab: CategoryTab, filters: Analyti
   </Loader>
 }
 
-function KpiSection (props: {
+export function KpiSection (props: {
+  isSwitch?: boolean
   kpis: string[]
   thresholds: KpiThresholdType
   mutationAllowed: boolean
   filters : AnalyticsFilter
 }) {
-  const { kpis, filters, thresholds } = props
+  const { kpis, filters, thresholds, isSwitch } = props
   const { timeWindow, setTimeWindow } = useContext(HealthPageContext)
   const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(thresholds)
   const [ loadMore, setLoadMore ] = useState<boolean>(true)
@@ -98,6 +106,8 @@ function KpiSection (props: {
     moment(filters.endDate).isSame(timeWindow[1])
   )
   useEffect(() => { connect('timeSeriesGroup') }, [])
+  useEffect(() => { setLoadMore(kpis?.length > 1) }, [kpis])
+
   const displayKpis = loadMore ? kpis.slice(0, 1) : kpis
   return (
     <>
@@ -128,13 +138,22 @@ function KpiSection (props: {
           <GridCol col={{ span: 8 }} style={{ height: '160px' }}>
             {Object(kpiConfig[kpi as keyof typeof kpiConfig])?.histogram ? (
               <Histogram
-                filters={filters}
+                filters={{
+                  ...filters,
+                  startDate: timeWindow[0] as string,
+                  endDate: timeWindow[1] as string
+                }
+                }
                 kpi={kpi as keyof typeof kpiConfig}
                 threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
                 setKpiThreshold={setKpiThreshold}
                 thresholds={kpiThreshold}
                 mutationAllowed={props.mutationAllowed}
                 isNetwork={!filters.filter.networkNodes}
+                disabled={!(hasCrossVenuesPermission() && hasPermission({
+                  permission: 'WRITE_HEALTH',
+                  scopes: [isSwitch ? SwitchScopes.UPDATE : WifiScopes.UPDATE]
+                }))}
               />
             ) : (
               <BarChart

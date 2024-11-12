@@ -2,8 +2,12 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
+  ApiVersionEnum,
+  CommonRbacUrlsInfo,
   CommonUrlsInfo,
+  GetApiVersionHeader,
   getServiceDetailsLink,
   getServiceRoutePath,
   ServiceOperation,
@@ -66,6 +70,41 @@ const mockTableResult = {
   ]
 }
 
+const mockRbacTableResult = {
+  fields: [
+    'qosPriority',
+    'networkIds',
+    'epdgs',
+    'name',
+    'tenantId',
+    'id'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: '80c6403876084097940538bc0dfbb520',
+      name: 'wifi-calling-profile',
+      qosPriority: 'WIFICALLING_PRI_VOICE',
+      wifiNetworkIds: [
+        // '0bbf69eb7027417283738dd9399abad0',
+        // '70c8003abd32448da6fd078b4bf3cf81',
+        // '9d8c045bc7754635bf5ccd3c7c2199e6'
+      ],
+      epdgs: [
+        {
+          ip: '127.0.0.1',
+          domain: 'my.domain'
+        },
+        {
+          ip: '9.9.9.9',
+          domain: 'test.com'
+        }
+      ]
+    }
+  ]
+}
+
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
   pathname: 't/__tenantId__',
@@ -90,15 +129,15 @@ describe('WifiCallingTable', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getServicesList.url,
-        (req, res, ctx) => res(ctx.json(mockTableResult))
-      ),
-      rest.post(
         WifiCallingUrls.getEnhancedWifiCallingList.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
       ),
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => res(ctx.json(mockNetworkResult))
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
         (req, res, ctx) => res(ctx.json(mockNetworkResult))
       )
     )
@@ -197,5 +236,58 @@ describe('WifiCallingTable', () => {
       ...mockedTenantPath,
       pathname: `${mockedTenantPath.pathname}/${editPath}`
     })
+  })
+
+  it('should call rbac api and render correctly', async () => {
+    const rbacQueryHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+    const rbacDeleteHeaders = GetApiVersionHeader(ApiVersionEnum.v1_1)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const queryFn = jest.fn()
+    const deleteFn = jest.fn()
+
+    mockServer.use(
+      rest.post(
+        WifiCallingUrls.queryWifiCalling.url,
+        (req, res, ctx) => {
+          if (req.headers.get('content-type') === rbacQueryHeaders?.['Content-Type']
+          && req.headers.get('accept') === rbacQueryHeaders.Accept) {
+            queryFn()
+            return res(ctx.json(mockRbacTableResult))
+          } else {
+            return res(ctx.json({}))
+          }
+        }
+      ),
+      rest.delete(
+        WifiCallingUrls.deleteWifiCalling.url,
+        (req, res, ctx) => {
+          if (req.headers.get('content-type') === rbacDeleteHeaders?.['Content-Type']
+          && req.headers.get('accept') === rbacDeleteHeaders.Accept) {
+            deleteFn()
+            return res(ctx.json({ requestId: '12345' }))
+          } else {
+            return res(ctx.status(400))
+          }
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <WifiCallingTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+
+    await waitFor(() => expect(queryFn).toHaveBeenCalled())
+
+    const target = mockRbacTableResult.data[0]
+    const row = await screen.findByRole('row', { name: new RegExp(target.name) })
+    await userEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+    await userEvent.click(await screen.findByRole('button', { name: /Delete Service/i }))
+
+    await waitFor(() => expect(deleteFn).toHaveBeenCalled())
   })
 })

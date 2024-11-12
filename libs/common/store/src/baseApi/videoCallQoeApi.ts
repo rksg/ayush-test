@@ -1,8 +1,9 @@
-import { createApi }               from '@reduxjs/toolkit/query/react'
-import { graphqlRequestBaseQuery } from '@rtk-query/graphql-request-base-query'
+import { createApi } from '@reduxjs/toolkit/query/react'
 
 import { get }           from '@acx-ui/config'
 import { getJwtHeaders } from '@acx-ui/utils'
+
+import { graphqlRequestBaseQuery } from './baseQuery'
 
 export const r1VideoCallQoeURL =
   `${window.location.origin}/api/a4rc/api/rsa-mlisa-call-manager/graphql`
@@ -19,7 +20,7 @@ const baseQuery = graphqlRequestBaseQuery({
 })
 
 export const videoCallQoeApi = createApi({
-  baseQuery: baseQuery,
+  baseQuery,
   reducerPath: 'video-call-qoe-api',
   refetchOnMountOrArgChange: true,
   tagTypes: ['VideoCallQoe'],

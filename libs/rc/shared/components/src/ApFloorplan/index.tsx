@@ -55,6 +55,8 @@ export function ApFloorplan (props: {
   const [imageUrl, setImageUrl] = useState('')
   const { $t } = useIntl()
   const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   // eslint-disable-next-line max-len
   const [isApMeshTopologyEnabled, setIsApMeshTopologyEnabled] = useState<boolean>(isApMeshTopologyFFOn)
 
@@ -62,10 +64,12 @@ export function ApFloorplan (props: {
     params, payload: {
       pageSize: 10000,
       page: 1,
+      fields: ['serialNumber','name', 'deviceStatus', 'rogueCategory', 'xPercent', 'yPercent'],
       filters: {
         floorplanId: [apPosition?.floorplanId]
       }
-    }
+    },
+    enableRbac: isWifiRbacEnabled
   })
 
   const { data: rogueApDevices } = useGetRogueApLocationQuery({ params: {
@@ -92,7 +96,7 @@ export function ApFloorplan (props: {
         }
         return true
       })
-      .map(apDevice => {
+      .forEach(apDevice => {
         let rogueApLocationInfo = {}
         if (rogueApMac && detectingNodes) {
           rogueApLocationInfo = {
@@ -133,16 +137,8 @@ export function ApFloorplan (props: {
 
   useEffect(() => {
     if (floorplan?.imageId) {
-      const response = loadImageWithJWT(floorplan?.imageId)
-      response.then((_imageUrl) => {
-        setImageUrl(_imageUrl)
-      })
-    }
-  }, [floorplan?.imageId])
-
-  useEffect(() => {
-    if (floorplan?.imageId) {
-      const response = loadImageWithJWT(floorplan?.imageId)
+      const fileUrl = `/venues/${venueId}/signurls/${floorplan?.imageId}/urls`
+      const response = loadImageWithJWT(floorplan?.imageId, fileUrl)
       response.then((_imageUrl) => {
         setImageUrl(_imageUrl)
       })
@@ -180,7 +176,15 @@ export function ApFloorplan (props: {
           state={{
             param: { floorplan: floorplan }
           }}>
-          {floorplan?.name}
+          {floorplan?.name} {
+            $t({ defaultMessage: `({floor, selectordinal,
+                one {#st}
+                two {#nd}
+                few {#rd}
+                other {#th}
+            } Floor)` },
+            { floor: floorplan?.floorNumber })
+          }
         </Link>
       </Col>
       <Col>

@@ -7,26 +7,24 @@ import { SimpleListTooltip }                                   from '@acx-ui/rc/
 import {
   useAdaptivePolicyListByQueryQuery,
   useGetRadiusAttributeGroupQuery,
-  usePolicyTemplateListQuery
+  usePolicyTemplateListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicy,
-  AttributeAssignment, getAdaptivePolicyDetailLink,
-  getPolicyDetailsLink, getPolicyListRoutePath,
-  getPolicyRoutePath,
+  AttributeAssignment, filterByAccessForServicePolicyMutation,
+  getAdaptivePolicyDetailLink,
+  getPolicyDetailsLink, getScopeKeyByPolicy,
   PolicyOperation,
-  PolicyType, useTableQuery
+  PolicyType, useAdaptivePolicyBreadcrumb, useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 export default function RadiusAttributeGroupDetail () {
   const { $t } = useIntl()
   const { policyId } = useParams()
   const { data, isFetching, isLoading } = useGetRadiusAttributeGroupQuery({ params: { policyId } })
   const { Paragraph } = Typography
-  const tablePath = getPolicyRoutePath(
-    { type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })
+  const breadcrumb = useAdaptivePolicyBreadcrumb(PolicyType.RADIUS_ATTRIBUTE_GROUP)
 
   const tableQuery = useTableQuery({
     useQuery: useAdaptivePolicyListByQueryQuery,
@@ -37,7 +35,7 @@ export default function RadiusAttributeGroupDetail () {
   })
 
   // eslint-disable-next-line max-len
-  const { templateList } = usePolicyTemplateListQuery({ payload: { page: '1', pageSize: '2147483647' } }, {
+  const { templateList } = usePolicyTemplateListByQueryQuery({ payload: { page: '1', pageSize: '1000' } }, {
     selectFromResult ({ data }) {
       const templateIds = new Map()
       data?.data.forEach( template => {
@@ -103,23 +101,15 @@ export default function RadiusAttributeGroupDetail () {
     <>
       <PageHeader
         title={data?.name || ''}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          {
-            text: $t({ defaultMessage: 'RADIUS Attribute Groups' }),
-            link: tablePath }
-        ]}
-        extra={filterByAccess([
+        breadcrumb={breadcrumb}
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getPolicyDetailsLink({
               type: PolicyType.RADIUS_ATTRIBUTE_GROUP,
               oper: PolicyOperation.EDIT,
               policyId: policyId!
             })}
+            scopeKey={getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.EDIT)}
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>

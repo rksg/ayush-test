@@ -1,16 +1,17 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Provider }     from '@acx-ui/store'
+import { useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { getDocsMappingURL, getDocsURL } from '@acx-ui/rc/utils'
+import { Provider }                      from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
-import Firewall                                from './Firewall'
-import HelpPage, { getMappingURL, getDocsURL } from './HelpPage'
+import Firewall from './Firewall'
+import HelpPage from './HelpPage'
 
 import HelpButton from './'
 
@@ -39,7 +40,7 @@ describe('HelpPage Component', () => {
 
   it('should render <HelpPage/> component correctly', async () => {
     mockServer.use(
-      rest.get(getMappingURL(false), (_, res, ctx) =>
+      rest.get(getDocsMappingURL(false), (_, res, ctx) =>
         res(ctx.json({
           'dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html',
           'administration/accountSettings': 'GUID-95DB93A0-D295-4D31-8F53-47659D019295.html',
@@ -64,7 +65,7 @@ describe('HelpPage Component', () => {
 
   it('Render <HelpPage/> component failing case', async () => {
     mockServer.use(
-      rest.get(getMappingURL(false), (_, res, ctx) =>
+      rest.get(getDocsMappingURL(false), (_, res, ctx) =>
         res(ctx.json({
           empty: ''
         }))
@@ -86,7 +87,7 @@ describe('HelpPage Component', () => {
   it('Render <HelpPage/> component retrieve mapping file failing case', async () => {
 
     mockServer.use(
-      rest.get(getMappingURL(false), (_, res, ctx) =>
+      rest.get(getDocsMappingURL(false), (_, res, ctx) =>
         res(
           // Send a valid HTTP status code
           ctx.status(404),
@@ -115,7 +116,7 @@ describe('HelpPage Component', () => {
   it('Render <HelpPage/> component retrieve HTML file failing case', async () => {
 
     mockServer.use(
-      rest.get(getMappingURL(false), (_, res, ctx) =>
+      rest.get(getDocsMappingURL(false), (_, res, ctx) =>
         res(ctx.json({
           'dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html',
           'administration/accountSettings': 'GUID-95DB93A0-D295-4D31-8F53-47659D019295.html',
@@ -160,7 +161,7 @@ describe('HelpPage Component URLs', () => {
     process.env = originalEnv
   })
   it('<HelpPage/> component retrieve URL correctly', async () => {
-    const mappingURL = getMappingURL(false)
+    const mappingURL = getDocsMappingURL(false)
     expect(mappingURL).not.toBeNull()
     const docURL = getDocsURL(false)
     expect(docURL).not.toBeNull()
@@ -175,7 +176,7 @@ describe('HelpPage menus Button', () => {
   it('should invoke menus link correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
-      rest.get(getMappingURL(false), (_, res, ctx) =>
+      rest.get(getDocsMappingURL(false), (_, res, ctx) =>
         res(ctx.json({
           'dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html',
           'administration/accountSettings': 'GUID-95DB93A0-D295-4D31-8F53-47659D019295.html',

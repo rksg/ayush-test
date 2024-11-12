@@ -4,13 +4,15 @@ import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Button, GridRow, Loader, NestedTableExpandableDefaultConfig, Table, TableProps } from '@acx-ui/components'
-import { EdgeIpModeEnum, EdgeLagMemberStatus, EdgeLagStatus, EdgeLagTimeoutEnum }         from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                  from '@acx-ui/react-router-dom'
-import { hasAccess }                                                                      from '@acx-ui/user'
-import { getIntl }                                                                        from '@acx-ui/utils'
+import { Button, GridRow, Loader, NestedTableExpandableDefaultConfig, Table, TableProps }  from '@acx-ui/components'
+import { EdgeLagMemberStatus, EdgeLagStatus, EdgeLagTimeoutEnum, getEdgePortIpModeString } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                   from '@acx-ui/react-router-dom'
+import { EdgeScopes }                                                                      from '@acx-ui/types'
+import { hasPermission }                                                                   from '@acx-ui/user'
+import { getIntl }                                                                         from '@acx-ui/utils'
 
 interface LagsTabProps {
+  isConfigurable: boolean
   data: EdgeLagStatus[]
   isLoading?: boolean
 }
@@ -26,7 +28,7 @@ interface LagMemberTableType extends EdgeLagMemberStatus {
 
 export const LagsTab = (props: LagsTabProps) => {
 
-  const { data, isLoading = false } = props
+  const { data, isLoading = false, isConfigurable } = props
   const { $t } = useIntl()
   const { serialNumber } = useParams()
   const navigate = useNavigate()
@@ -86,29 +88,20 @@ export const LagsTab = (props: LagsTabProps) => {
       title: $t({ defaultMessage: 'IP Type' }),
       key: 'ipMode',
       dataIndex: 'ipMode',
-      render: (_, { ipMode }) => {
-        switch(ipMode) {
-          case EdgeIpModeEnum.DHCP:
-            return $t({ defaultMessage: 'DHCP' })
-          case EdgeIpModeEnum.STATIC:
-            return $t({ defaultMessage: 'Static IP' })
-          default:
-            return ''
-        }
-      }
+      render: (_data, { ipMode }) => getEdgePortIpModeString($t, ipMode)
     }
   ]
 
   const navigateToLagConfigPage = () => {
     navigate({
       ...basePath,
-      pathname: `${basePath.pathname}/edit/ports/lag`
+      pathname: `${basePath.pathname}/edit/lags`
     })
   }
 
   return (
     <GridRow justify='end'>
-      {hasAccess() &&
+      {hasPermission({ scopes: [EdgeScopes.UPDATE] }) && isConfigurable &&
       <Button
         size='small'
         type='link'
@@ -143,7 +136,8 @@ const expandedRowRender = (memberStatus: LagMemberTableType[] = []) => {
     {
       title: $t({ defaultMessage: 'Port Name' }),
       key: 'name',
-      dataIndex: 'name'
+      dataIndex: 'name',
+      render: (_data, row) => _.capitalize(row.name)
     },
     {
       title: $t({ defaultMessage: 'LACP State' }),
@@ -165,7 +159,7 @@ const expandedRowRender = (memberStatus: LagMemberTableType[] = []) => {
       title: $t({ defaultMessage: 'Timeout' }),
       key: 'lacpTimeout',
       dataIndex: 'lacpTimeout',
-      render: (data, row) => {
+      render: (_data, row) => {
         return row.lacpTimeout && `${row.lacpTimeout} (${_.capitalize(row.lacpTimeout)})`
       }
     },

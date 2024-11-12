@@ -1,12 +1,12 @@
 import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
-import { act }        from 'react-dom/test-utils'
 
 import { venueApi }        from '@acx-ui/rc/services'
 import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
+  act,
   fireEvent,
   mockServer,
   render,

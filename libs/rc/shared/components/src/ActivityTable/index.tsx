@@ -1,11 +1,9 @@
-import { useEffect, useState } from 'react'
-import React                   from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { omit }                   from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Button } from '@acx-ui/components'
-import { TierFeatures, useIsTierAllowed }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { useActivitiesQuery }                from '@acx-ui/rc/services'
 import {
@@ -22,6 +20,7 @@ import { RequestPayload }                                                  from 
 import { useDateFilter, noDataDisplay, TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
+import { useIsEdgeReady } from '../useEdgeActions'
 
 export const columnState = {
   defaultValue: {
@@ -52,13 +51,17 @@ const defaultPayload = {
   ]
 }
 
-export function useActivityTableQuery (baseFilters: Record<string, string> = {}) {
+export function useActivityTableQuery (
+  baseFilters: Record<string, string> = {},
+  pagination?: Record<string, unknown>
+) {
   const { dateFilter } = useDateFilter()
   const filters = { ...baseFilters, dateFilter }
 
   const tableQuery = useTableQuery<Activity>({
     useQuery: useActivitiesQuery,
     defaultPayload: { ...defaultPayload, filters },
+    pagination,
     sorter: defaultSorter,
     option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
   })
@@ -90,7 +93,7 @@ const ActivityTable = ({
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [current, setCurrent] = useState<Activity>()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
 
   const excludeProduct = [

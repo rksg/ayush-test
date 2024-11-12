@@ -254,7 +254,7 @@ export const ClientConnectionDiagnosis = forwardRef((props: unknown, ref: Ref<un
         />
 
         <Form.Item required
-          label={$t({ defaultMessage: 'Venue' })}
+          label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
           name='venue'
           labelCol={{ span: 24 }}
           wrapperCol={{ span: 24 }}

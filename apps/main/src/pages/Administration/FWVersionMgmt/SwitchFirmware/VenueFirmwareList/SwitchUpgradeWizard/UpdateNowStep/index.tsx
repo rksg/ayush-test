@@ -2,20 +2,22 @@
 import { useEffect, useState } from 'react'
 
 
-import { Form, Radio, RadioChangeEvent, Space } from 'antd'
-import _                                        from 'lodash'
-import { useIntl }                              from 'react-intl'
+import { Form, Radio, RadioChangeEvent, Space, Tag } from 'antd'
+import _                                             from 'lodash'
+import { useIntl }                                   from 'react-intl'
 
 import {
+  Button,
   Subtitle, useStepFormContext
 } from '@acx-ui/components'
+import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {
+  compareSwitchVersion,
   FirmwareVersion
 } from '@acx-ui/rc/utils'
 
-
-import * as UI                   from '../../styledComponents'
-import { getSwitchVersionLabel } from '../../switch.upgrade.util'
+import { DowngradeTag } from '../../../styledComponents'
+import * as UI          from '../../styledComponents'
 
 export interface UpdateNowStepProps {
   visible: boolean,
@@ -32,6 +34,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   const { form, current } = useStepFormContext()
   const { availableVersions,hasVenue,
     nonIcx8200Count, icx8200Count, setShowSubTitle } = props
+  const { getSwitchVersionLabel } = useSwitchFirmwareUtils()
   const [selectedVersion, setSelectedVersion] = useState<string>('')
   const [selectedAboveTenVersion, setSelectedAboveTenVersion] = useState<string>('')
   const [disableSave, setDisableSave] = useState(true)
@@ -40,8 +43,10 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
 
   const firmware10AvailableVersions =
     availableVersions?.filter((v: FirmwareVersion) => v.id.startsWith('100'))
+      .sort((a, b) => compareSwitchVersion(a.id, b.id))
   const firmware90AvailableVersions =
     availableVersions?.filter((v: FirmwareVersion) => !v.id.startsWith('100'))
+      .sort((a, b) => compareSwitchVersion(a.id, b.id))
 
   useEffect(()=>{
     setShowSubTitle(false)
@@ -67,6 +72,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
 
   return (
     <div
+      data-testid='update-now-step'
       style={{
         minHeight: '50vh',
         marginBottom: '30px'
@@ -105,7 +111,12 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             <Space direction={'vertical'}>
               {firmware10AvailableVersions?.map(v =>
                 <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                  {getSwitchVersionLabel(intl, v)}</Radio>)}
+                  <span style={{ lineHeight: '22px' }}>
+                    {getSwitchVersionLabel(intl, v)}
+                    {v.isDowngradeVersion && !v.inUse &&
+                      <DowngradeTag>{$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                  </span>
+                </Radio>)}
               <Radio value='' key='0'>
                 {$t({ defaultMessage: 'Do not update firmware on these switches' })}
               </Radio>
@@ -126,7 +137,12 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
                 <Space direction={'vertical'}>
                   {firmware90AvailableVersions?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                      {getSwitchVersionLabel(intl, v)}</Radio>)}
+                      <span style={{ lineHeight: '22px' }}>
+                        {getSwitchVersionLabel(intl, v)}
+                        {v.isDowngradeVersion && !v.inUse &&
+                          <DowngradeTag>{$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                      </span>
+                    </Radio>)}
                   <Radio value='' key='0'>
                     {$t({ defaultMessage: 'Do not update firmware on these switches' })}
                   </Radio>
@@ -139,7 +155,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             <li>
               <label>
                 { // eslint-disable-next-line max-len
-                  $t({ defaultMessage: 'Please note that during the firmware update, the switches in this venue will reboot, and your network will be unavailable for customer operation.' })}
+                  $t({ defaultMessage: 'Please note that during the firmware update, the switches in this <venueSingular></venueSingular> will reboot, and your network will be unavailable for customer operation.' })}
               </label>
             </li>
             <li>

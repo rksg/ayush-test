@@ -7,6 +7,8 @@ import { Card, Loader, NoActiveData, ColorPill } from '@acx-ui/components'
 import { intlFormats }                           from '@acx-ui/formatter'
 import { useNavigateToPath }                     from '@acx-ui/react-router-dom'
 
+import { useIncidentToggles } from '../useIncidentToggles'
+
 import { useIncidentsCountBySeveritiesQuery } from './services'
 import * as UI                                from './styledComponents'
 
@@ -20,7 +22,8 @@ export function IncidentsCountBySeverities ({ filters }: IncidentsCountBySeverit
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/analytics/incidents/')
 
-  const response = useIncidentsCountBySeveritiesQuery(filters)
+  const toggles = useIncidentToggles()
+  const response = useIncidentsCountBySeveritiesQuery({ ...filters, toggles })
   const noData = response.data?.total === 0
 
   const title = {

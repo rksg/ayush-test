@@ -1,38 +1,60 @@
 import { rest } from 'msw'
 
+import { Features }                                                                           from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady }                                                              from '@acx-ui/rc/components'
+import { networkApi, tunnelProfileApi }                                                       from '@acx-ui/rc/services'
 import { CommonUrlsInfo, getPolicyRoutePath, PolicyOperation, PolicyType, TunnelProfileUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                           from '@acx-ui/store'
-import { mockServer, render, screen }                                                         from '@acx-ui/test-utils'
+import { EdgeTunnelProfileFixtures }                                                          from '@acx-ui/rc/utils'
+import { Provider, store }                                                                    from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                     from '@acx-ui/test-utils'
 
-import { mockedNetworkViewData, mockedTunnelProfileViewData, mockedDefaultTunnelProfileViewData } from '../__tests__/fixtures'
+import { mockedNetworkViewData } from '../__tests__/fixtures'
 
 import TunnelProfileDetail from '.'
+
+const {
+  mockedTunnelProfileViewData,
+  mockedDefaultTunnelProfileViewData,
+  mockedDefaultVlanVxlanTunnelProfileViewData
+} = EdgeTunnelProfileFixtures
+const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
+
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getTenantId: jest.fn().mockReturnValue(tenantId)
+}))
+
 describe('TunnelProfileDetail', () => {
   let params: { tenantId: string, policyId: string }
   const detailPath = '/:tenantId/' + getPolicyRoutePath({
     type: PolicyType.TUNNEL_PROFILE,
     oper: PolicyOperation.DETAIL
   })
+  const mockedGetVMNetworksList = jest.fn()
   beforeEach(() => {
     params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      tenantId: tenantId,
       policyId: 'testPolicyId'
     }
-
+    store.dispatch(tunnelProfileApi.util.resetApiState())
+    store.dispatch(networkApi.util.resetApiState())
+    mockedGetVMNetworksList.mockClear()
     mockServer.use(
       rest.post(
         TunnelProfileUrls.getTunnelProfileViewDataList.url,
-        (req, res, ctx) => res(ctx.json(mockedTunnelProfileViewData))
+        (_, res, ctx) => res(ctx.json(mockedTunnelProfileViewData))
       ),
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
-        (req, res, ctx) => res(ctx.json(mockedNetworkViewData))
+        (_, res, ctx) => {
+          mockedGetVMNetworksList()
+          return res(ctx.json(mockedNetworkViewData))
+        }
       )
     )
   })
@@ -44,35 +66,20 @@ describe('TunnelProfileDetail', () => {
       </Provider>, {
         route: { params, path: detailPath }
       })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(mockedGetVMNetworksList).toBeCalled())
     await screen.findByText('tunnelProfile1')
     // await screen.findByText('tag1')
     await screen.findByText('Manual (1450)')
     await screen.findByText('ON')
-    const row = await screen.findAllByRole('row', { name: /TestNetwork/i })
-    expect(row.length).toBe(2)
-  })
-
-  it('should render breadcrumb correctly', async () => {
-    render(
-      <Provider>
-        <TunnelProfileDetail />
-      </Provider>, {
-        route: { params, path: detailPath }
-      })
-    expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'Policies & Profiles'
-    })).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'Tunnel Profile'
-    })).toBeVisible()
+    await checkNetworkTable()
   })
 
   it('Should disable Configure button in Default Tunnel Profile', async () => {
     mockServer.use(
       rest.post(
         TunnelProfileUrls.getTunnelProfileViewDataList.url,
-        (req, res, ctx) => res(ctx.json(mockedDefaultTunnelProfileViewData))
+        (_, res, ctx) => res(ctx.json(mockedDefaultTunnelProfileViewData))
       )
     )
     render(
@@ -81,13 +88,18 @@ describe('TunnelProfileDetail', () => {
       </Provider>, {
         route: { params, path: detailPath }
       })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(mockedGetVMNetworksList).toBeCalled())
     await screen.findByText('Default')
     expect(screen.queryByRole('button', { name: 'Configure' })).toBeDisabled()
+    await checkNetworkTable()
   })
 
-  describe('when SD-LAN ready', () => {
+  describe('when SD-LAN ready, Keep Alive not ready', () => {
     beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff =>(ff === Features.EDGES_SD_LAN_TOGGLE
+          || ff === Features.EDGES_SD_LAN_HA_TOGGLE))
     })
 
     it('should display tunnel type', async () => {
@@ -97,14 +109,19 @@ describe('TunnelProfileDetail', () => {
         </Provider>, {
           route: { params, path: detailPath }
         })
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      await waitFor(() => expect(mockedGetVMNetworksList).toBeCalled())
       await screen.findByText('Tunnel Type')
       await screen.findByText('VxLAN')
+      await checkNetworkTable()
+      expect(screen.queryByText('Network Segment Type')).not.toBeInTheDocument()
     })
 
     it('should display VxLAN as default tunnel type', async () => {
       const mockedDataWithoutType = {
         ...mockedTunnelProfileViewData
       }
+      mockedDataWithoutType.data[0].name = 'tunnelProfile2'
       mockedDataWithoutType.data[0].type = ''
 
       mockServer.use(
@@ -119,8 +136,63 @@ describe('TunnelProfileDetail', () => {
         </Provider>, {
           route: { params, path: detailPath }
         })
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      await waitFor(() => expect(mockedGetVMNetworksList).toBeCalled())
+      await screen.findByText('tunnelProfile2')
       await screen.findByText('Tunnel Type')
       await screen.findByText('VxLAN')
+      await checkNetworkTable()
+    })
+
+    it('Should disable Configure button in VLAN_VXLAN Default Tunnel Profile', async () => {
+      mockServer.use(
+        rest.post(
+          TunnelProfileUrls.getTunnelProfileViewDataList.url,
+          (_, res, ctx) => res(ctx.json(mockedDefaultVlanVxlanTunnelProfileViewData))
+        )
+      )
+      render(
+        <Provider>
+          <TunnelProfileDetail />
+        </Provider>, {
+          route: { params, path: detailPath }
+        })
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      await waitFor(() => expect(mockedGetVMNetworksList).toBeCalled())
+      await screen.findByText('Default tunnel profile (SD-LAN)')
+      await screen.findByText('VLAN-VxLAN')
+      expect(screen.queryByRole('button', { name: 'Configure' })).toBeDisabled()
+      await checkNetworkTable()
+    })
+  })
+
+  describe('when SD-LAN and Keep Alive ready', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff =>(ff === Features.EDGES_SD_LAN_TOGGLE
+          || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
+          || ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
+    })
+
+    it('should display network segment type and keep alive related columns', async () => {
+      render(
+        <Provider>
+          <TunnelProfileDetail />
+        </Provider>, {
+          route: { params, path: detailPath }
+        })
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
+      expect(screen.queryByText('Tunnel Type')).not.toBeInTheDocument()
+      expect(screen.getByText('PMTU Timeout')).toBeInTheDocument()
+      expect(screen.getByText('PMTU Retries')).toBeInTheDocument()
+      expect(screen.getByText('Keep Alive Interval')).toBeInTheDocument()
+      expect(screen.getByText('Keep Alive Reties')).toBeInTheDocument()
     })
   })
 })
+
+const checkNetworkTable = async () => {
+  const row = await screen.findAllByRole('row', { name: /TestNetwork/i })
+  expect(row.length).toBe(2)
+}

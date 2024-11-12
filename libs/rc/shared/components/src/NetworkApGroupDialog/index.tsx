@@ -11,21 +11,22 @@ import {
   Radio,
   Row,
   Space,
-  Spin,
-  Select
+  Spin
 } from 'antd'
-import _             from 'lodash'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useWatch } from 'antd/lib/form/Form'
+import _            from 'lodash'
+import { useIntl }  from 'react-intl'
 
 import {
   Modal,
+  Select,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
-  useGetNetworkApGroupsQuery,
-  useVlanPoolListQuery
+  useGetEnhancedVlanPoolPolicyTemplateListQuery,
+  useGetNetworkApGroupsV2Query, useGetRbacNetworkApGroupsQuery,
+  useGetVLANPoolPolicyViewModelListQuery
 } from '@acx-ui/rc/services'
 import {
   RadioEnum,
@@ -37,7 +38,8 @@ import {
   NetworkVenue,
   NetworkSaveData,
   IsNetworkSupport6g,
-  WlanSecurityEnum
+  WlanSecurityEnum, NetworkTypeEnum,
+  useConfigTemplate, useConfigTemplateQueryFnSwitcher, TableResult, VLANPoolViewModelType
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -83,14 +85,53 @@ export interface ApGroupModalWidgetProps extends AntdModalProps {
   tenantId?: string
 }
 
+type RadioSelectProps = SelectProps & {
+  isSupport6G: boolean
+}
+
+const RadioSelect = (props: RadioSelectProps) => {
+  const { $t } = useIntl()
+  const { isSupport6G, ...otherProps } = props
+  const disabledBandTooltip = $t({ defaultMessage: '6GHz disabled for non-WPA3 networks. To enable 6GHz operation, configure a WLAN for WPA3 operation.' })
+  if (!isSupport6G) {
+    _.remove(otherProps.value, (v) => v === RadioTypeEnum._6_GHz)
+  }
+  return (
+    <Select
+      {...otherProps}
+      mode='multiple'
+      showArrow
+      style={{ width: '220px' }}
+    >
+      <Select.Option value={RadioTypeEnum._2_4_GHz} title=''>{radioTypeEnumToString(RadioTypeEnum._2_4_GHz)}</Select.Option>
+      <Select.Option value={RadioTypeEnum._5_GHz} title=''>{radioTypeEnumToString(RadioTypeEnum._5_GHz)}</Select.Option>
+      <Select.Option
+        value={RadioTypeEnum._6_GHz}
+        disabled={!isSupport6G}
+        title={!isSupport6G ? disabledBandTooltip : ''}
+      >
+        {radioTypeEnumToString(RadioTypeEnum._6_GHz)}
+      </Select.Option>
+    </Select>
+  )
+}
+
 export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const { $t } = useIntl()
-  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
+
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const { isTemplate } = useConfigTemplate()
 
   const { networkVenue, venueName, network, formName, tenantId } = props
-  const { wlan } = network || {}
+  const { wlan, type } = network || {}
+  const isSupport6G = IsNetworkSupport6g(network)
+
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const [vlanPoolSelectOptions, setVlanPoolSelectOptions] = useState<VlanPool[]>()
 
   const [form] = Form.useForm()
+
+  const selectionType = useWatch('selectionType', form)
 
   const open = !!props.visible
 
@@ -108,22 +149,42 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
     }
   }, [form, prevOpen, open])
 
-  const defaultVlanString = getVlanString(wlan?.advancedCustomization?.vlanPool, wlan?.vlanId)
+  const defaultVlanString = getVlanString(networkVenue?.vlanPoolId ? {
+    id: networkVenue?.vlanPoolId,
+    name: networkVenue?.vlanPoolName ?? '',
+    vlanMembers: networkVenue?.vlanMembers ?? []
+  } : null, wlan?.vlanId)
 
-  const networkApGroupsQuery = useGetNetworkApGroupsQuery({ params: { tenantId },
-    payload: [{
-      networkId: networkVenue?.networkId,
-      ssids: [wlan?.ssid],
-      venueId: networkVenue?.venueId
-    }]
-  }, { skip: !networkVenue || !wlan })
+  const networkApGroupsQuery = useNetworkApGroupsInstance()
+
+  function useNetworkApGroupsInstance () {
+    const networkApGroupsV2Query = useGetNetworkApGroupsV2Query({ params: { tenantId },
+      payload: [{
+        networkId: networkVenue?.networkId,
+        venueId: networkVenue?.venueId,
+        isTemplate: isTemplate
+      }]
+    }, { skip: isWifiRbacEnabled || !networkVenue || !wlan })
+
+    const networkApGroupsRbacQuery = useGetRbacNetworkApGroupsQuery({ params: { tenantId },
+      payload: [{
+        networkId: networkVenue?.networkId,
+        venueId: networkVenue?.venueId,
+        isTemplate: isTemplate
+      }]
+    }, { skip: !isWifiRbacEnabled || !networkVenue || !wlan })
+
+    return isWifiRbacEnabled ? networkApGroupsRbacQuery : networkApGroupsV2Query
+  }
 
   const formInitData = useMemo(() => {
     // if specific AP groups were selected or the  All APs option is disabled,
     // then the "select specific AP group" option should be selected
     const isAllAps = networkVenue?.isAllApGroups !== false && !isDisableAllAPs(networkVenue?.apGroups)
 
-    let allApGroups: NetworkApGroupWithSelected[] = (networkApGroupsQuery.data || [])
+    const networkApGroupsData = networkApGroupsQuery.data
+
+    let allApGroups: NetworkApGroupWithSelected[] = (networkApGroupsData || [])
       .map(nv => nv.apGroups || []).flat()
       .map(allAg => {
         const apGroup = _.find(networkVenue?.apGroups, ['apGroupId', allAg.apGroupId])
@@ -145,46 +206,32 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
   const [loading, setLoading] = useState(false)
 
-  const { vlanPoolSelectOptions } = useVlanPoolListQuery({ params: useParams() }, {
-    selectFromResult ({ data }) {
-      return {
-        vlanPoolSelectOptions: data
-      }
-    }
+  const { data: instanceListResult } = useConfigTemplateQueryFnSwitcher<TableResult<VLANPoolViewModelType>>({
+    useQueryFn: useGetVLANPoolPolicyViewModelListQuery,
+    useTemplateQueryFn: useGetEnhancedVlanPoolPolicyTemplateListQuery,
+    skip: false,
+    payload: {
+      fields: ['name', 'id', 'vlanMembers'], sortField: 'name',
+      sortOrder: 'ASC', page: 1, pageSize: 10000
+    },
+    enableRbac: isPolicyRbacEnabled
   })
 
-
-  const RadioSelect = (props: SelectProps) => {
-    const isSupport6G = IsNetworkSupport6g(network)
-    const disabledBandTooltip = $t({ defaultMessage: '6GHz disabled for non-WPA3 networks. To enable 6GHz operation, configure a WLAN for WPA3 operation.' })
-    if (!triBandRadioFeatureFlag || !isSupport6G) {
-      _.remove(props.value, (v) => v === RadioTypeEnum._6_GHz)
+  useEffect(() => {
+    if (instanceListResult) {
+      setVlanPoolSelectOptions(instanceListResult.data.map(m => {
+        return { name: m.name, id: m.id } as VlanPool
+      }) as VlanPool[])
     }
-    return (
-      <Select
-        {...props}
-        mode='multiple'
-        style={{ width: '220px' }}
-      >
-        <Select.Option value={RadioTypeEnum._2_4_GHz} title=''>{radioTypeEnumToString(RadioTypeEnum._2_4_GHz)}</Select.Option>
-        <Select.Option value={RadioTypeEnum._5_GHz} title=''>{radioTypeEnumToString(RadioTypeEnum._5_GHz)}</Select.Option>
-        { triBandRadioFeatureFlag && (
-          <Select.Option
-            value={RadioTypeEnum._6_GHz}
-            disabled={!isSupport6G}
-            title={!isSupport6G ? disabledBandTooltip : ''}
-          >{radioTypeEnumToString(RadioTypeEnum._6_GHz)}</Select.Option>
-        )}
-      </Select>
-    )
-  }
+  },[instanceListResult])
+
 
   const ApGroupItem = ({ apgroup, name }: { apgroup: NetworkApGroup, name: number }) => {
     const apGroupName = apgroup?.isDefault ? $t({ defaultMessage: 'APs not assigned to any group' }) : apgroup?.apGroupName
 
     const apGroupVlanId = apgroup?.vlanId || wlan?.vlanId
     const apGroupVlanPool = apgroup?.vlanPoolId ? {
-      name: apgroup.vlanPoolName || '',
+      name: vlanPoolSelectOptions?.find((vlanPool) => vlanPool.id === apgroup?.vlanPoolId)?.name || '',
       id: apgroup.vlanPoolId || '',
       vlanMembers: []
     } : wlan?.advancedCustomization?.vlanPool
@@ -258,9 +305,17 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                   }
                   return Promise.resolve()
                 }
+              },
+              {
+                validator: (obj, value) => {
+                  if (form.getFieldsValue().apgroups[name].selected)
+                    return validateRadioBandForDsaeNetwork(value)
+
+                  return Promise.resolve()
+                }
               }
             ]}>
-            { selected ? <RadioSelect /> : <Input type='hidden' /> }
+            { selected ? <RadioSelect isSupport6G={isSupport6G}/> : <Input type='hidden' /> }
           </UI.FormItemRounded>
         </Col>
       </>
@@ -280,12 +335,13 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
   function validateRadioBandForDsaeNetwork (radios: string[]) {
     if (wlan?.wlanSecurity
+         && type === NetworkTypeEnum.DPSK
          && wlan?.wlanSecurity === WlanSecurityEnum.WPA23Mixed
          && radios.length
          && radios.length === 1
          && radios.includes(RadioTypeEnum._6_GHz)) {
       return Promise.reject($t({ defaultMessage:
-        'Configure a Venue using only 6 GHz, in WPA2/WPA3 Mixed Mode DPSK Network, requires a combination of other Radio Bands. To use 6 GHz, other radios must be added.' }))
+        'Configure a <VenueSingular></VenueSingular> using only 6 GHz, in WPA2/WPA3 Mixed Mode DPSK Network, requires a combination of other Radio Bands. To use 6 GHz, other radios must be added.' }))
     }
     return Promise.resolve()
   }
@@ -294,7 +350,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
     <Modal
       {...props}
       title={$t({ defaultMessage: 'Select APs' })}
-      subTitle={$t({ defaultMessage: 'Define how this network will be activated on venue "{venueName}"' }, { venueName: venueName })}
+      subTitle={$t({ defaultMessage: 'Define how this network will be activated on <venueSingular></venueSingular> "{venueName}"' }, { venueName: venueName })}
       okText={$t({ defaultMessage: 'Apply' })}
       maskClosable={true}
       keyboard={false}
@@ -327,26 +383,23 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
           <Radio.Group>
             <Space direction='vertical' size='middle'>
               <Radio value={0} disabled={isDisableAllAPs(networkVenue?.apGroups)}>{$t({ defaultMessage: 'All APs' })}
-                <UI.RadioDescription>{$t({ defaultMessage: 'Including any AP that will be added to this venue in the future.' })}</UI.RadioDescription>
+                <UI.RadioDescription>{$t({ defaultMessage: 'Including any AP that will be added to this <venueSingular></venueSingular> in the future.' })}</UI.RadioDescription>
               </Radio>
-              <Form.Item noStyle
-                shouldUpdate={(prevValues, currentValues) => prevValues.selectionType !== currentValues.selectionType}>
-                { ({ getFieldValue }) => getFieldValue('selectionType') === 0 && (
-                  <UI.FormItemRounded>
-                    <Form.Item label={$t({ defaultMessage: 'VLAN' })} labelCol={{ span: 5 }}>
-                      {defaultVlanString.vlanText}
-                    </Form.Item>
-                    <Form.Item name='allApGroupsRadioTypes'
-                      label={$t({ defaultMessage: 'Radio Band' })}
-                      rules={[{ required: true },
-                        {
-                          validator: (_, value) => validateRadioBandForDsaeNetwork(value)
-                        }]}
-                      labelCol={{ span: 5 }}>
-                      <RadioSelect />
-                    </Form.Item>
-                  </UI.FormItemRounded>
-                )}
+              <Form.Item noStyle>
+                { selectionType === 0 && <UI.FormItemRounded>
+                  <Form.Item label={$t({ defaultMessage: 'VLAN' })} labelCol={{ span: 5 }}>
+                    {defaultVlanString.vlanText}
+                  </Form.Item>
+                  <Form.Item name='allApGroupsRadioTypes'
+                    label={$t({ defaultMessage: 'Radio Band' })}
+                    rules={[{ required: true },
+                      {
+                        validator: (_, value) => validateRadioBandForDsaeNetwork(value)
+                      }]}
+                    labelCol={{ span: 5 }}>
+                    <RadioSelect isSupport6G={isSupport6G}/>
+                  </Form.Item>
+                </UI.FormItemRounded>}
               </Form.Item>
 
               <Radio value={1}>{$t({ defaultMessage: 'Select specific AP groups' })}
@@ -354,24 +407,21 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
               </Radio>
               <Form.List name='apgroups'>
                 { (fields) => (
-                  <Form.Item noStyle
-                    shouldUpdate={(prevValues, currentValues) => prevValues.selectionType !== currentValues.selectionType}>
-                    { ({ getFieldValue }) => getFieldValue('selectionType') === 1 && (
-                      <Row gutter={[4, 0]} style={{ width: '750px' }}>
-                        <Col span={8}></Col>
-                        <Col span={8}>
-                          <UI.VerticalLabel>{$t({ defaultMessage: 'VLAN' })}</UI.VerticalLabel>
-                        </Col>
-                        <Col span={8}>
-                          <UI.VerticalLabel>{$t({ defaultMessage: 'Radio Band' })}</UI.VerticalLabel>
-                        </Col>
-                        { fields.map((field, index) => (
-                          <Form.Item key={field.key} noStyle>
-                            <ApGroupItem name={field.name} apgroup={formInitData.apgroups[index]} />
-                          </Form.Item>
-                        ))}
-                      </Row>
-                    )}
+                  <Form.Item noStyle>
+                    { selectionType === 1 && <Row gutter={[4, 0]} style={{ width: '750px' }}>
+                      <Col span={8}></Col>
+                      <Col span={8}>
+                        <UI.VerticalLabel>{$t({ defaultMessage: 'VLAN' })}</UI.VerticalLabel>
+                      </Col>
+                      <Col span={8}>
+                        <UI.VerticalLabel>{$t({ defaultMessage: 'Radio Band' })}</UI.VerticalLabel>
+                      </Col>
+                      { fields.map((field, index) => (
+                        <Form.Item key={field.key} noStyle>
+                          <ApGroupItem name={field.name} apgroup={formInitData.apgroups[index]} />
+                        </Form.Item>
+                      ))}
+                    </Row>}
                   </Form.Item>
                 )}
               </Form.List>

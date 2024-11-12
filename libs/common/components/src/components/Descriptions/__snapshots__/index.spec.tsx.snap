@@ -2,8 +2,144 @@
 
 exports[`Descriptions should render 1`] = `
 <DocumentFragment>
-  <div
-    class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 fNUlwo"
+  .c0 {
+  padding: calc(var(--acx-descriptions-space) / 2) 0;
+}
+
+.c0 .ant-descriptions-row:last-child .ant-descriptions-item {
+  padding-bottom: 0;
+}
+
+.c0 .ant-descriptions-item {
+  padding: 0;
+  padding-bottom: var(--acx-descriptions-space);
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-label,
+.c0 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-label {
+  color: var(--acx-neutrals-60);
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-content {
+  color: var(--acx-primary-black);
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-container {
+  -webkit-align-items: baseline;
+  -webkit-box-align: baseline;
+  -ms-flex-align: baseline;
+  align-items: baseline;
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label {
+  width: 30%;
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-content {
+  display: unset;
+}
+
+<div
+    class="ant-descriptions c0"
+  >
+    <div
+      class="ant-descriptions-view"
+    >
+      <table>
+        <tbody>
+          <tr
+            class="ant-descriptions-row"
+          >
+            <td
+              class="ant-descriptions-item"
+              colspan="1"
+            >
+              <div
+                class="ant-descriptions-item-container"
+              >
+                <span
+                  class="ant-descriptions-item-label"
+                >
+                  S/N
+                </span>
+                <span
+                  class="ant-descriptions-item-content"
+                >
+                  932173000117
+                </span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Descriptions should render with no space 1`] = `
+<DocumentFragment>
+  .c0 {
+  padding: calc(var(--acx-descriptions-space) / 2) 0;
+}
+
+.c0 .ant-descriptions-row:last-child .ant-descriptions-item {
+  padding-bottom: 0;
+}
+
+.c0 .ant-descriptions-item {
+  padding: 0;
+  padding-bottom: calc(var(--acx-body-4-line-height) - var(--acx-body-4-font-size));
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-label,
+.c0 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-label {
+  color: var(--acx-neutrals-60);
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-content {
+  color: var(--acx-primary-black);
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-container {
+  -webkit-align-items: baseline;
+  -webkit-box-align: baseline;
+  -ms-flex-align: baseline;
+  align-items: baseline;
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label {
+  width: unset;
+}
+
+.c0 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-content {
+  display: unset;
+}
+
+<div
+    class="ant-descriptions c0"
   >
     <div
       class="ant-descriptions-view"

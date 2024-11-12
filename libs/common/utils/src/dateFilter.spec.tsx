@@ -1,11 +1,11 @@
-import { renderHook, render } from '@testing-library/react'
+import moment from 'moment-timezone'
 
-import { BrowserRouter } from '@acx-ui/react-router-dom'
-
+import { BrowserRouter }      from '@acx-ui/react-router-dom'
+import { renderHook, render } from '@acx-ui/test-utils'
 
 import { useDateFilter }                                             from './dateFilter'
 import { defaultRanges, DateRange, getDateRangeFilter, resetRanges } from './dateUtil'
-import { fixedEncodeURIComponent }                                   from './encodedParameter'
+import { fixedEncodeURIComponent }                                   from './encodeURIComponent'
 
 const original = Date.now
 describe('useDateFilter', () => {
@@ -51,6 +51,17 @@ describe('useDateFilter', () => {
     const { asFragment, rerender } = render(component(true))
     expect(asFragment()).toMatchSnapshot()
     rerender(component(false))
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('ignores period params when it is set beyond available start date', async () => {
+    function Component () {
+      const filters = useDateFilter(moment('2020-07-23T18:31:00+08:00'))
+      return <div>{JSON.stringify(filters)}</div>
+    }
+    const component = () => <BrowserRouter>
+      <Component />
+    </BrowserRouter>
+    const { asFragment } = render(component())
     expect(asFragment()).toMatchSnapshot()
   })
   it('should render correctly with default date from url', () => {

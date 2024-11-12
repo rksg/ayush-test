@@ -14,9 +14,17 @@ import { TransferItem }      from 'antd/lib/transfer'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { Button, Drawer, Modal, showActionModal, StepsFormLegacy, Tooltip, Transfer } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                                                 from '@acx-ui/icons'
+import {
+  Button,
+  Drawer,
+  Modal,
+  showActionModal,
+  StepsFormLegacy,
+  Tooltip,
+  Transfer
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   useAddLagMutation,
   useGetDefaultVlanQuery,
@@ -26,7 +34,8 @@ import {
   useLazyGetSwitchConfigurationProfileByVenueQuery,
   useSwitchDetailHeaderQuery,
   useSwitchPortlistQuery,
-  useUpdateLagMutation } from '@acx-ui/rc/services'
+  useUpdateLagMutation
+} from '@acx-ui/rc/services'
 import {
   SwitchVlanUnion,
   EditPortMessages,
@@ -35,14 +44,19 @@ import {
   Lag,
   LAG_TYPE,
   sortPortFunction,
-  VenueMessages
+  VenueMessages,
+  VlanModalType
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 
 import { getAllSwitchVlans, sortOptions, updateSwitchVlans } from '../SwitchPortTable/editPortDrawer.utils'
 import { SelectVlanModal }                                   from '../SwitchPortTable/selectVlanModal'
-import { SelectVlanModal as SelectVlanModalLegacy }          from '../SwitchPortTable/selectVlanModalLegacy'
+
+export interface SwitchLagParams {
+  switchMac: string,
+  serialNumber: string
+}
 
 interface SwitchLagProps {
   visible: boolean
@@ -50,14 +64,19 @@ interface SwitchLagProps {
   editData: Lag[]
   setVisible: (visible: boolean) => void
   type?: string
+  params?: SwitchLagParams
 }
 
 export const SwitchLagModal = (props: SwitchLagProps) => {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const { visible, setVisible, isEditMode, editData } = props
-  const { tenantId, switchId, serialNumber } = useParams()
-  const isSwitchVoiceVlanEnhanced = useIsSplitOn(Features.SWITCH_VOICE_VLAN)
+  const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
+
+  const urlParams = useParams()
+  const tenantId = urlParams.tenantId
+  const switchId = urlParams.switchId || props.params?.switchMac || props.params?.serialNumber
+  const serialNumber = urlParams.serialNumber || props.params?.serialNumber
 
   const portPayload = {
     fields: ['id', 'portIdentifier', 'opticsType', 'usedInFormingStack'],
@@ -68,20 +87,36 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
     sortOrder: 'ASC'
   }
 
-  const portList = useSwitchPortlistQuery({ params: { tenantId }, payload: portPayload })
-  const lagList = useGetLagListQuery({ params: { tenantId, switchId } })
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
+  const { data: switchDetailHeader } =
+  useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
+
+  const portList = useSwitchPortlistQuery({
+    params: { tenantId },
+    payload: portPayload,
+    enableRbac: isSwitchRbacEnabled
+  })
+  const lagList = useGetLagListQuery({
+    params: { tenantId, switchId, venueId: switchDetailHeader?.venueId },
+    enableRbac: isSwitchRbacEnabled
+  }, { skip: !switchDetailHeader?.venueId })
+
   const [getVlansByVenue] = useLazyGetVlansByVenueQuery()
   const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
   const [getSwitchConfigurationProfileByVenue]
     = useLazyGetSwitchConfigurationProfileByVenueQuery()
-  const { data: switchDetailHeader } =
-  useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
-  const { data: switchesDefaultVlan }
-  = useGetDefaultVlanQuery({ params: { tenantId }, payload: [switchId] })
+
+  const { data: switchesDefaultVlan } = useGetDefaultVlanQuery({
+    params: { tenantId, venueId: switchDetailHeader?.venueId },
+    payload: [switchId],
+    enableRbac: isSwitchRbacEnabled
+  }, { skip: !switchDetailHeader?.venueId })
 
   const [addLag] = useAddLagMutation()
   const [updateLag] = useUpdateLagMutation()
 
+  const [vlanModalActivityTab, setVlanModalActivityTab] = useState(VlanModalType.UNTAGGED)
   const [currentPortType, setCurrentPortType] = useState(null as null | string)
   const [cliApplied, setCliApplied] = useState(false)
   const [availablePorts, setAvailablePorts] = useState([] as TransferItem[])
@@ -103,12 +138,20 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   useEffect(() => {
     const setVlanData = async () => {
       const venueId = switchDetailHeader?.venueId
-      const switchVlans = await getSwitchVlan({ params: { tenantId, switchId } }, true).unwrap()
+      const switchVlans = await getSwitchVlan({
+        params: { tenantId, switchId, venueId },
+        options: { skip: !venueId },
+        enableRbac: isSwitchRbacEnabled
+      }, true).unwrap()
       const vlansByVenue = await getVlansByVenue({
-        params: { tenantId, venueId: venueId }
+        params: { tenantId, venueId },
+        options: { skip: !venueId },
+        enableRbac: isSwitchRbacEnabled
       }, true).unwrap()
       const switchProfile = await getSwitchConfigurationProfileByVenue({
-        params: { tenantId, venueId: venueId }
+        params: { tenantId, venueId },
+        options: { skip: !venueId },
+        enableRbac: isSwitchRbacEnabled
       }, true).unwrap()
       setVenueVlans(vlansByVenue)
       setSwitchVlans(switchVlans)
@@ -180,7 +223,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       setDefaultVlanId(defaultVlan)
       form.setFieldValue('untaggedVlan', defaultVlan)
     }
-  }, [switchesDefaultVlan])
+  }, [form, isEditMode, switchesDefaultVlan])
 
   const onClose = () => {
     setVisible(false)
@@ -207,15 +250,26 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
       try {
         let payload = {
           ...value,
+          ..._.omit(value, 'portsType'),
           lagId: editData[0].lagId,
           id: editData[0].id,
           realRemove: editData[0].realRemove,
           switchId: editData[0].switchId,
           taggedVlans: taggedVlans.filter((vlan: string) => !_.isEmpty(vlan))
         }
-        delete payload.portsType
+
         setLoading(true)
-        await updateLag({ params: { tenantId, switchId, lagId: editData[0].id }, payload }).unwrap()
+        await updateLag({
+          params: {
+            tenantId,
+            switchId,
+            venueId: switchDetailHeader?.venueId,
+            lagId: editData[0].id
+          },
+          payload,
+          enableRbac: isSwitchRbacEnabled
+        }).unwrap()
+
         setLoading(false)
         onClose()
       } catch (err) {
@@ -231,7 +285,11 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
           taggedVlans: taggedVlans.filter((vlan: string) => !_.isEmpty(vlan))
         }
         delete payload.portsType
-        await addLag({ params: { tenantId, switchId }, payload }).unwrap()
+        await addLag({
+          params: { tenantId, switchId, venueId: switchDetailHeader?.venueId },
+          payload,
+          enableRbac: isSwitchRbacEnabled
+        }).unwrap()
         onClose()
       } catch (err) {
         console.log(err) // eslint-disable-line no-console
@@ -381,7 +439,12 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [useVenueSettings, setUseVenueSettings] = useState(true)
   const [switchVlans, setSwitchVlans] = useState({} as SwitchVlanUnion)
-  const onClickEditVlan = () =>{
+  const onClickEditUntaggedVlan = () =>{
+    setVlanModalActivityTab(VlanModalType.UNTAGGED)
+    setSelectModalVisible(true)
+  }
+  const onClickEditTaggedVlan = () =>{
+    setVlanModalActivityTab(VlanModalType.TAGGED)
     setSelectModalVisible(true)
   }
 
@@ -515,7 +578,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                 vlan: untaggedVlan
               }) : '--'}</div>
 
-            <Button type='link' onClick={onClickEditVlan} disabled={cliApplied}>
+            <Button type='link' onClick={onClickEditUntaggedVlan} disabled={cliApplied}>
               {$t({ defaultMessage: 'Edit' })}
             </Button>
           </div>
@@ -541,7 +604,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                   vlan: sortOptions(
                     taggedVlans?.toString().split(','), 'number').join(', ')
                 }) : '--'}</div>
-            <Button type='link' onClick={onClickEditVlan} disabled={cliApplied}>
+            <Button type='link' onClick={onClickEditTaggedVlan} disabled={cliApplied}>
               {$t({ defaultMessage: 'Edit' })}
             </Button>
           </div>
@@ -571,46 +634,38 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             children={lagForm}
           />
       }
+
       {
-        !isSwitchVoiceVlanEnhanced &&
-        <SelectVlanModalLegacy
-          form={form}
-          selectModalvisible={selectModalVisible}
-          setSelectModalvisible={setSelectModalVisible}
-          setUseVenueSettings={setUseVenueSettings}
-          onValuesChange={()=>{form.validateFields(['taggedVlans'])}}
-          defaultVlan={String(defaultVlanId)}
-          switchVlans={getAllSwitchVlans(switchVlans)}
-          venueVlans={venueVlans}
-          taggedVlans={taggedVlans}
-          untaggedVlan={untaggedVlan}
-          vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
-          hasSwitchProfile={hasSwitchProfile}
-          profileId={switchConfigurationProfileId}
-          updateSwitchVlans={async (values: Vlan) =>
-            updateSwitchVlans(values, switchVlans, setSwitchVlans, venueVlans, setVenueVlans)
-          }
-        />
-      }
-      { isSwitchVoiceVlanEnhanced &&
-        <SelectVlanModal
-          form={form}
-          selectModalvisible={selectModalVisible}
-          setSelectModalvisible={setSelectModalVisible}
-          setUseVenueSettings={setUseVenueSettings}
-          onValuesChange={()=>{form.validateFields(['taggedVlans'])}}
-          defaultVlan={String(defaultVlanId)}
-          switchVlans={getAllSwitchVlans(switchVlans)}
-          venueVlans={venueVlans}
-          taggedVlans={taggedVlans}
-          untaggedVlan={untaggedVlan}
-          vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
-          hasSwitchProfile={hasSwitchProfile}
-          profileId={switchConfigurationProfileId}
-          updateSwitchVlans={async (values: Vlan) =>
-            updateSwitchVlans(values, switchVlans, setSwitchVlans, venueVlans, setVenueVlans)
-          }
-        />
+        selectModalVisible &&
+          <SelectVlanModal
+            form={form}
+            selectModalvisible={selectModalVisible}
+            setSelectModalvisible={setSelectModalVisible}
+            setUseVenueSettings={setUseVenueSettings}
+            onValuesChange={()=>{form.validateFields(['taggedVlans'])}}
+            defaultVlan={String(defaultVlanId)}
+            defaultTabKey={vlanModalActivityTab}
+            switchVlans={getAllSwitchVlans(switchVlans)}
+            venueVlans={venueVlans}
+            taggedVlans={taggedVlans}
+            untaggedVlan={untaggedVlan}
+            vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
+            cliApplied={cliApplied}
+            hasSwitchProfile={hasSwitchProfile}
+            profileId={switchConfigurationProfileId}
+            switchIds={switchId ? [switchId] : []}
+            venueId={switchDetailHeader?.venueId}
+            updateSwitchVlans={async (values: Vlan) =>
+              updateSwitchVlans(
+                values,
+                switchVlans,
+                setSwitchVlans,
+                venueVlans,
+                setVenueVlans,
+                isSwitchLevelVlanEnabled
+              )
+            }
+          />
       }
     </>
   )

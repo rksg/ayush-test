@@ -1,7 +1,6 @@
 import { Key, useState } from 'react'
 
 import {
-  Checkbox,
   Form,
   Input
   // Radio,
@@ -26,6 +25,7 @@ import {
   useMspCustomerListQuery
 } from '@acx-ui/msp/services'
 import {
+  MSPUtils,
   MspEc
 } from '@acx-ui/msp/utils'
 import { useTableQuery } from '@acx-ui/rc/utils'
@@ -36,7 +36,7 @@ import * as UI from '../styledComponents'
 interface IntegratorDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  setSelected: (selected: MspEc[], assignedEcAdmin?: boolean) => void
+  setSelected: (selected: MspEc[]) => void
   tenantId?: string
   tenantType?: string
 }
@@ -48,6 +48,8 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm()
   const techPartnerAssignEcsEnabled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
+  const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const isSkip = tenantId === undefined
 
@@ -65,13 +67,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   const [ assignMspCustomers_v1 ] = useAssignMspEcToIntegrator_v1Mutation()
 
   const handleSave = () => {
-    const assignedEcAdmin = form.getFieldValue(['assignedEcAdmin']) ?? false
-    let payload = techPartnerAssignEcsEnabled ? {
-      delegation_type: tenantType as string,
-      number_of_days: form.getFieldValue(['number_of_days']),
-      mspec_list: [] as string[],
-      isManageAllEcs: assignedEcAdmin
-    } : {
+    let payload = {
       delegation_type: tenantType as string,
       number_of_days: form.getFieldValue(['number_of_days']),
       mspec_list: [] as string[]
@@ -85,7 +81,8 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
 
     if (tenantId) {
       techPartnerAssignEcsEnabled
-        ? assignMspCustomers_v1({ payload, params: { mspIntegratorId: tenantId } })
+        ? assignMspCustomers_v1({ payload, params: { mspIntegratorId: tenantId },
+          enableRbac: isRbacEnabled })
           .then(() => {
             setVisible(false)
             resetFields()
@@ -96,9 +93,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
             resetFields()
           })
     } else {
-      techPartnerAssignEcsEnabled
-        ? setSelected(selectedRows.ecCustomers, assignedEcAdmin)
-        : setSelected(selectedRows.ecCustomers)
+      setSelected(selectedRows.ecCustomers)
     }
 
     setVisible(false)
@@ -126,24 +121,33 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
       width: 200,
       sorter: true
     },
-    {
-      title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
-      dataIndex: 'wifiLicenses',
-      key: 'wifiLicenses',
-      align: 'center',
-      render: function (_, row) {
-        return row.wifiLicenses ? row.wifiLicenses : 0
+    ...(isDeviceAgnosticEnabled ? [
+      {
+        title: $t({ defaultMessage: 'Devices Subscriptions' }),
+        dataIndex: 'apswLicense',
+        key: 'apswLicense',
+        sorter: true,
+        render: function (_data: React.ReactNode, row: MspEc) {
+          return MSPUtils().transformDeviceEntitlement(row.entitlements)
+        }
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Switch Licenses' }),
-      dataIndex: 'switchLicenses',
-      key: 'switchLicenses',
-      align: 'center',
-      render: function (_, row) {
-        return row.switchLicenses ? row.switchLicenses : 0
-      }
-    }
+    ] : [
+      {
+        title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
+        dataIndex: 'wifiLicenses',
+        key: 'wifiLicenses',
+        render: function (_: React.ReactNode, row: MspEc) {
+          return row.wifiLicenses ? row.wifiLicenses : 0
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Switch Licenses' }),
+        dataIndex: 'switchLicenses',
+        key: 'switchLicenses',
+        render: function (_: React.ReactNode, row: MspEc) {
+          return row.switchLicenses ? row.switchLicenses : 0
+        }
+      }])
   ]
 
   const defaultPayload = {
@@ -163,8 +167,8 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   const CustomerTable = () => {
     const assignedEcs =
       useGetAssignedMspEcToIntegratorQuery(
-        { params: { mspIntegratorId: tenantId, mspIntegratorType: tenantType } },
-        { skip: isSkip })
+        { params: { mspIntegratorId: tenantId, mspIntegratorType: tenantType },
+          enableRbac: isRbacEnabled }, { skip: isSkip })
     const queryResults = useTableQuery({
       useQuery: useMspCustomerListQuery,
       pagination: {
@@ -217,20 +221,10 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
 
   const content =
   <Form layout='vertical' form={form} onFinish={onClose}>
-    {techPartnerAssignEcsEnabled && <Form.Item name='assignedEcAdmin'>
-      <Checkbox
-        onChange={(e)=> {
-          form.setFieldValue('assignedEcAdmin', e.target.checked)
-        }}
-      >
-        {$t({ defaultMessage:
-          'Automatically assign selected Customers to Tech Partner Administrators.' })}
-      </Checkbox>
-    </Form.Item>}
-
     {tenantId && <div>
-      <Subtitle level={4}>{$t({ defaultMessage: 'Access Periods' })}</Subtitle>
-      {tenantType === AccountType.MSP_INTEGRATOR && <label>Not Limited</label>}
+      <Subtitle level={4}>{$t({ defaultMessage: 'Access Period' })}</Subtitle>
+      {tenantType === AccountType.MSP_INTEGRATOR && <label>
+        {$t({ defaultMessage: 'Not Limited (Integrator)' })}</label>}
       {tenantType === AccountType.MSP_INSTALLER && <UI.FieldLabelAccessPeriod width='275px'>
         <label>{$t({ defaultMessage: 'Limited To' })}</label>
         <Form.Item
@@ -249,7 +243,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
           children={<Input type='number'/>}
           style={{ marginLeft: '10px', paddingRight: '20px' }}
         />
-        <label>{$t({ defaultMessage: 'Day(s)' })}</label>
+        <label>{$t({ defaultMessage: 'Day(s) (Installer)' })}</label>
       </UI.FieldLabelAccessPeriod>}</div>}
 
 

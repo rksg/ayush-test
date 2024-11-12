@@ -1,10 +1,11 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
-import { FirmwareUrlsInfo }                      from '@acx-ui/rc/utils'
-import { Provider }                              from '@acx-ui/store'
-import { render, screen, mockServer, fireEvent } from '@acx-ui/test-utils'
-import { UserUrlsInfo }                          from '@acx-ui/user'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { FirmwareRbacUrlsInfo, FirmwareUrlsInfo } from '@acx-ui/rc/utils'
+import { EdgeFirmwareFixtures }                   from '@acx-ui/rc/utils'
+import { Provider }                               from '@acx-ui/store'
+import { render, screen, mockServer, fireEvent }  from '@acx-ui/test-utils'
+import { UserRbacUrlsInfo, UserUrlsInfo }         from '@acx-ui/user'
 
 import {
   allUserSettings,
@@ -12,13 +13,13 @@ import {
   cloudVersion,
   scheduleVersion,
   switchVenueVersionList,
-  venueEdgeFirmwareList
+  venueApModelFirmwareList
 } from './__tests__/fixtures'
 
 import { CloudMessageBanner } from '.'
 
-jest.mocked(useIsTierAllowed).mockReturnValue(true)
-jest.mocked(useIsSplitOn).mockReturnValue(true)
+const { mockedVenueFirmwareList } = EdgeFirmwareFixtures
+jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
 const mockedUseLayoutContext = jest.fn()
 jest.mock('@acx-ui/components', () => ({
@@ -45,6 +46,10 @@ describe('cloud Message Banner', () => {
         (_, res, ctx) => res(ctx.json(cloudMessageBanner))
       ),
       rest.get(
+        UserRbacUrlsInfo.getAllUserSettings.url,
+        (_, res, ctx) => res(ctx.json(allUserSettings))
+      ),
+      rest.get(
         UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json(allUserSettings))
       ),
@@ -53,16 +58,28 @@ describe('cloud Message Banner', () => {
         (_, res, ctx) => res(ctx.json(cloudVersion))
       ),
       rest.get(
-        UserUrlsInfo.getCloudScheduleVersion.url,
+        FirmwareUrlsInfo.getScheduledFirmware.url.replace('?status=scheduled', ''),
         (_, res, ctx) => res(ctx.json(scheduleVersion))
+      ),
+      rest.post(
+        FirmwareUrlsInfo.getVenueApModelFirmwareList.url,
+        (_, res, ctx) => res(ctx.json(venueApModelFirmwareList))
       ),
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
         (_, res, ctx) => res(ctx.json(switchVenueVersionList))
       ),
-      rest.get(
+      rest.post(
+        FirmwareRbacUrlsInfo.getSwitchVenueVersionList.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
         FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
-        (_, res, ctx) => res(ctx.json(venueEdgeFirmwareList))
+        (_, res, ctx) => res(ctx.json(mockedVenueFirmwareList))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getAllApModelFirmwareList.url,
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
   })

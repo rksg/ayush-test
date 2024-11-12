@@ -1,21 +1,39 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
+import { getReleaseFirmware }           from '@acx-ui/rc/components'
 import {
+  useGetSwitchDefaultFirmwareListQuery,
   useGetSwitchLatestFirmwareListQuery
 } from '@acx-ui/rc/services'
-import { parseSwitchVersion } from '@acx-ui/rc/utils'
+import { FirmwareCategory } from '@acx-ui/rc/utils'
 
-import { FirmwareBanner }     from '../../FirmwareBanner'
-import { getReleaseFirmware } from '../../FirmwareUtils'
+import { SwitchFirmwareBanner } from '../../SwitchFirmwareBanner'
 
 export const VersionBanner = () => {
-  const { $t } = useIntl()
   const params = useParams()
-  const { data: latestReleaseVersions } = useGetSwitchLatestFirmwareListQuery({ params })
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
+  const { $t } = useIntl()
+  const { data: latestReleaseVersions } = useGetSwitchLatestFirmwareListQuery({
+    params,
+    enableRbac: isSwitchRbacEnabled
+  })
+  const { data: defaultReleaseVersions } = useGetSwitchDefaultFirmwareListQuery({
+    params,
+    enableRbac: isSwitchRbacEnabled
+  })
+  const { parseSwitchVersion } = useSwitchFirmwareUtils()
+
   const versions = getReleaseFirmware(latestReleaseVersions)
   const firmware = versions.filter(v => v.id.startsWith('090'))[0]
   const rodanFirmware = versions.filter(v => v.id.startsWith('100'))[0]
+
+  const recommendedVersions = getReleaseFirmware(defaultReleaseVersions)
+  const recommendedFirmware = recommendedVersions.filter(v => v.id.startsWith('090'))[0]
+  const recommendedRodanFirmware = recommendedVersions.filter(v => v.id.startsWith('100'))[0]
 
   if (!firmware && !rodanFirmware) return null
 
@@ -23,28 +41,34 @@ export const VersionBanner = () => {
 
   if(rodanFirmware) {
     versionInfo.push({
-      label: $t({ defaultMessage: 'For ICX Models (8200):' }),
+      label: $t({ defaultMessage: 'For ICX Models (8200)' }),
       firmware: {
         version: parseSwitchVersion(rodanFirmware?.name),
-        category: rodanFirmware?.category,
-        releaseDate: rodanFirmware?.createdDate
+        category: FirmwareCategory.LATEST,
+        releaseDate: rodanFirmware?.createdDate,
+        recommendedVersion: parseSwitchVersion(recommendedRodanFirmware?.name),
+        recommendedCategory: FirmwareCategory.RECOMMENDED,
+        recommendedDate: recommendedRodanFirmware?.createdDate
       }
     })
   }
 
   if(firmware) {
     versionInfo.push({
-      label: $t({ defaultMessage: 'For ICX Models (7150-7850):' }),
+      label: $t({ defaultMessage: 'For ICX Models (7150-7850)' }),
       firmware: {
         version: parseSwitchVersion(firmware?.name),
-        category: firmware?.category,
-        releaseDate: firmware?.createdDate
+        category: FirmwareCategory.LATEST,
+        releaseDate: firmware?.createdDate,
+        recommendedVersion: parseSwitchVersion(recommendedFirmware?.name),
+        recommendedCategory: FirmwareCategory.RECOMMENDED,
+        recommendedDate: recommendedFirmware?.createdDate
       }
     })
   }
 
   return (
-    <FirmwareBanner data={versionInfo} />
+    <SwitchFirmwareBanner data={versionInfo} />
   )
 }
 

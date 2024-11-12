@@ -1,11 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   MdnsProxyUrls,
   ServiceType,
-  websocketServerUrl,
   getServiceRoutePath,
   ServiceOperation
 } from '@acx-ui/rc/utils'
@@ -15,15 +15,18 @@ import {
   mockServer,
   render,
   renderHook,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
+import { websocketServerUrl } from '@acx-ui/utils'
 
 import {
   mockedTenantId,
   mockedVenueList,
   mockedGetApiResponse,
   mockedServiceId,
-  mockedMdnsProxyList
+  mockedMdnsProxyList,
+  mockedGetApiResponseWithoutApsRbac
 } from './__tests__/fixtures'
 import MdnsProxyForm from './MdnsProxyForm'
 
@@ -132,6 +135,62 @@ describe('MdnsProxyForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
   })
 
+  it('should create a service profile via RBAC api', async () => {
+    const createRbacFn = jest.fn()
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+
+    mockServer.use(
+      rest.post(
+        MdnsProxyUrls.queryMdnsProxy.url,
+        (_, res, ctx) => res(ctx.json({
+          data: [mockedGetApiResponseWithoutApsRbac],
+          page: 0,
+          totalCount: 1
+        }))
+      ),
+      rest.post(
+        MdnsProxyUrls.addMdnsProxyRbac.url,
+        (_, res, ctx) => {
+          createRbacFn()
+          return res(ctx.json({}))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <MdnsProxyForm editMode={false} />
+      </Provider>, {
+        route: { params, path: createPath }
+      }
+    )
+
+    await userEvent.type(await screen.findByRole('textbox', { name: /Service Name/ }), 'My mDNS')
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Add Rule' }))
+
+    await userEvent.selectOptions(
+      await screen.findByRole('combobox', { name: 'Type' }),
+      await screen.findByRole('option', { name: 'AirDisk' })
+    )
+    await userEvent.type(screen.getByRole('spinbutton', { name: /From VLAN/i }), '1')
+    await userEvent.type(screen.getByRole('spinbutton', { name: /To VLAN/i }), '2')
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    await screen.findByRole('heading', { name: 'Scope', level: 3 })
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    await screen.findByRole('heading', { name: 'Summary', level: 3 })
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    await waitFor(() => expect(createRbacFn).toHaveBeenCalled())
+
+    jest.mocked(useIsSplitOn).mockReset()
+  })
+
   it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
@@ -195,6 +254,44 @@ describe('MdnsProxyForm', () => {
     )
 
     await screen.findByDisplayValue(mockedGetApiResponse.serviceName)
+  })
+
+  it('should render edit form and trigger update api via RBAC api', async () => {
+    const updateFn = jest.fn()
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+
+    mockServer.use(
+      rest.post(
+        MdnsProxyUrls.queryMdnsProxy.url,
+        (_, res, ctx) => res(ctx.json({
+          data: [mockedGetApiResponseWithoutApsRbac],
+          page: 0,
+          totalCount: 1
+        }))
+      ),
+      rest.put(
+        MdnsProxyUrls.updateMdnsProxyRbac.url,
+        (_, res, ctx) => {
+          updateFn()
+          return res(ctx.json({}))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <MdnsProxyForm editMode={true} />
+      </Provider>, {
+        route: { params: { ...params, serviceId: mockedServiceId }, path: editPath }
+      }
+    )
+
+    await screen.findByDisplayValue(mockedGetApiResponseWithoutApsRbac.name)
+
+    await(userEvent.click(await screen.findByRole('button', { name: 'Apply' })))
+
+    await waitFor(() => expect(updateFn).toHaveBeenCalled())
+    jest.mocked(useIsSplitOn).mockReset()
   })
 
   it('should navigate to the table view when clicking Cancel button', async () => {

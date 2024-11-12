@@ -12,6 +12,9 @@ export interface AskMelissaBody {
         languageCode: string,
         text: string
       }
+    },
+    queryParams?:{
+      resetContexts?:boolean
     }
   }
 

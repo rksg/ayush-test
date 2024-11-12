@@ -7,11 +7,12 @@ export interface PersonaGroup {
   macRegistrationPoolId?: string,
   dpskPoolId?: string,
   propertyId?: string,
-  nsgId?: string,
+  personalIdentityNetworkId?: string,
   createdAt?: string,
   updatedAt?: string,
-  personas?: Persona[],
-  personaCount?: number
+  identities?: Persona[],
+  identityCount?: number,
+  certificateTemplateId?: string
 }
 
 export interface Persona {
@@ -20,6 +21,7 @@ export interface Persona {
   groupId: string,
   revoked: boolean,
   deviceCount?: number,
+  certificateCount?: number,  // Calculate from UI
   description?: string,
   tenantId?: string,
   email?: string,

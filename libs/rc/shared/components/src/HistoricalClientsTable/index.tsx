@@ -1,10 +1,11 @@
-import { useEffect } from 'react'
+import { memo, useEffect } from 'react'
 
 import { Typography } from 'antd'
 import moment         from 'moment-timezone'
 import { useIntl }    from 'react-intl'
 
 import { cssStr, Subtitle, Table, TableProps, Loader } from '@acx-ui/components'
+import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
 import { formatter, DateFormatEnum }                   from '@acx-ui/formatter'
 import { useGetHistoricalClientListQuery }             from '@acx-ui/rc/services'
 import {
@@ -16,7 +17,8 @@ import { TenantLink, useParams }                  from '@acx-ui/react-router-dom
 import { RequestPayload }                         from '@acx-ui/types'
 import { encodeParameter, DateFilter, DateRange } from '@acx-ui/utils'
 
-function getCols (intl: ReturnType<typeof useIntl>) {
+function GetCols (intl: ReturnType<typeof useIntl>) {
+  const { networkId } = useParams()
   const dateTimeFormatter = formatter(DateFormatEnum.DateTimeFormat)
   const columns: TableProps<Client>['columns'] = [{
     key: 'hostname',
@@ -27,7 +29,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
     fixed: 'left',
     render: (_, { hostname, disconnectTime, clientMac }) => {
       const period = encodeParameter<DateFilter>({
-        startDate: moment((disconnectTime as number) * 1000).subtract(24, 'hours').format(),
+        startDate: moment((disconnectTime as number) * 1000).subtract(8, 'hours').format(),
         endDate: moment((disconnectTime as number) * 1000).format(),
         range: DateRange.custom
       })
@@ -58,7 +60,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
     render: (_, { userName }) => userName ? userName : '--'
   }, {
     key: 'venueId',
-    title: intl.$t({ defaultMessage: 'Last Venue' }),
+    title: intl.$t({ defaultMessage: 'Last <VenueSingular></VenueSingular>' }),
     dataIndex: 'venueId',
     sorter: true,
     render: (_, row) => row?.isVenueExists && row?.venueId
@@ -76,17 +78,18 @@ function getCols (intl: ReturnType<typeof useIntl>) {
         {row?.apName}
       </TenantLink>
       : row?.apName
-  }, {
+  },
+  ...(networkId ? [] : [{
     key: 'ssid',
     title: intl.$t({ defaultMessage: 'Last SSID' }),
     dataIndex: 'ssid',
     sorter: true,
-    render: (_, row) => row?.networkId
+    render: (_: React.ReactNode, row: Client) => row?.networkId
       ? <TenantLink to={`/networks/wireless/${row?.networkId}/network-details/overview`}>
         {row?.ssid}
       </TenantLink>
       : row?.ssid
-  }, {
+  }]), {
     key: 'disconnectTime',
     title: intl.$t({ defaultMessage: 'Last Seen' }),
     dataIndex: 'disconnectTime',
@@ -116,24 +119,28 @@ const defaultFilters = {
   eventId: ['204', '205', '208', '218']
 }
 
-export function HistoricalClientsTable
-({ searchString, setHistoricalClientCount } :
+export const HistoricalClientsTable =
+memo(({ searchString, setHistoricalClientCount } :
   { searchString: string, setHistoricalClientCount: (historicalClientCount: number) => void
-  }) {
+  }) => {
   const { $t } = useIntl()
   const params = useParams()
+  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
 
   defaultHistoricalClientPayload.searchString = searchString
   defaultHistoricalClientPayload.filters =
     params.venueId ? { ...defaultFilters, venueId: [params.venueId] } :
       params.serialNumber ? { ...defaultFilters, serialNumber: [params.serialNumber] } :
         params.apId ? { ...defaultFilters, serialNumber: [params.apId] } :
-          defaultFilters
+          params.networkId ? { ...defaultFilters, networkId: [params.networkId] } :
+            defaultFilters
 
   const HistoricalClientsTable = () => {
+    const settingsId = 'historical-clients-table'
     const tableQuery = useTableQuery({
       useQuery: useGetHistoricalClientListQuery,
-      defaultPayload: defaultHistoricalClientPayload
+      defaultPayload: defaultHistoricalClientPayload,
+      pagination: { settingsId }
     })
 
     useEffect(() => {
@@ -151,12 +158,13 @@ export function HistoricalClientsTable
             {$t({ defaultMessage: 'Historical Clients' })}
           </Subtitle>
           <Table
-            settingsId='historical-clients-table'
-            columns={getCols(useIntl())}
+            settingsId={settingsId}
+            columns={GetCols(useIntl())}
             dataSource={tableQuery.data?.data}
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
             rowKey='clientMac'
+            filterPersistence={enabledUXOptFeature}
           />
           {!!tableQuery.data?.data?.length && <Typography.Text style={{
             fontSize: '10px',
@@ -174,7 +182,7 @@ export function HistoricalClientsTable
   return (
     <HistoricalClientsTable />
   )
-}
+})
 
 export const GlobalSearchHistoricalClientsTable = (props: {
   tableQuery?: TableQuery<Client, RequestPayload<unknown>, unknown>
@@ -184,7 +192,7 @@ export const GlobalSearchHistoricalClientsTable = (props: {
   return (
     <Table
       settingsId='historical-clients-table'
-      columns={getCols(useIntl())}
+      columns={GetCols(useIntl())}
       dataSource={tableQuery?.data?.data}
       onChange={tableQuery?.handleTableChange}
       rowKey='clientMac'

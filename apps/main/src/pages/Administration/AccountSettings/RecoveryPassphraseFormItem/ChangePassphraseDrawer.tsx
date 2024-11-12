@@ -43,7 +43,7 @@ export const ChangePassphraseDrawer = styled((props: ChangePassphraseDrawerProps
     try {
       await updateRecoveryPassphrase({
         params: { tenantId },
-        payload: { psk: passphrase.join('') }
+        payload: { passphrase: passphrase.join('') }
       }).unwrap()
 
       onClose()

@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { render, screen } from '@testing-library/react'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { SelectionControl } from '.'
 
@@ -8,6 +8,7 @@ describe('SelectionControl', () => {
     const onChange = jest.fn()
     render(<SelectionControl
       onChange={onChange}
+      noPadding
       options={[{
         label: 'l1',
         value: 'v1',

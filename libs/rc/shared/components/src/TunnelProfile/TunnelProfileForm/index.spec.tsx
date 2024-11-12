@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
+import { Features }                          from '@acx-ui/feature-toggle'
 import { getTunnelProfileFormDefaultValues } from '@acx-ui/rc/utils'
 import { render, renderHook, screen }        from '@acx-ui/test-utils'
 
@@ -47,8 +48,8 @@ describe('TunnelProfileForm', () => {
     // screen.getByRole('combobox', { name: 'Tags' })
     expect(screen.getByRole('radio', { name: 'Auto' })).toBeVisible()
     expect(screen.getByRole('radio', { name: 'Manual' })).toBeVisible()
-    expect(screen.getByRole('switch', { name: 'Force Fragmentation' })).toBeVisible()
-    expect(screen.getByText('Idle Period')).toBeVisible()
+    expect(screen.getByRole('switch')).toBeVisible()
+    expect(screen.getByText('Tunnel Idle Timeout')).toBeVisible()
     expect(screen.getByRole('spinbutton')).toBeVisible()
   })
 
@@ -59,8 +60,11 @@ describe('TunnelProfileForm', () => {
         <TunnelProfileForm />
       </Form>
     )
-    user.click(screen.getByRole('radio', { name: 'Manual' }))
-    expect(await screen.findByRole('spinbutton')).toBeVisible()
+    await user.click(screen.getByRole('radio', { name: 'Manual' }))
+    const spinBtns = await screen.findAllByRole('spinbutton') // MTU size / idleTime unit
+    expect(spinBtns.length).toBe(2)
+    expect(spinBtns.filter(i => i.id === 'mtuSize').length).toBe(1)
+    expect(screen.getByText(/Please check Ethernet MTU on AP/i)).toBeVisible()
   })
 
   it('should show error when ageTime is invalid', async () => {
@@ -137,14 +141,28 @@ describe('TunnelProfileForm', () => {
     expect(await screen.findByRole('textbox', { name: 'Profile Name' })).toBeDisabled()
     expect(screen.getByRole('radio', { name: 'Auto' })).toBeDisabled()
     expect(screen.getByRole('radio', { name: 'Manual' })).toBeDisabled()
-    expect(screen.getByRole('switch', { name: 'Force Fragmentation' })).toBeDisabled()
+    const fragmentToggle = screen.getByRole('switch')
+    expect(fragmentToggle.id).toBe('forceFragmentation')
+    expect(fragmentToggle).toBeDisabled()
     expect(screen.getByRole('spinbutton')).toBeDisabled()
     expect(screen.getByRole('combobox')).toBeDisabled()
   })
 
-  describe('when SD-LAN is ready', () => {
+  it('MTU help message should only display when manual', async () => {
+    render(
+      <Form initialValues={defaultValues}>
+        <TunnelProfileForm />
+      </Form>
+    )
+
+  })
+
+
+  describe('when SD-LAN is ready and Keep Alive is not ready', () => {
     beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff => ff === Features.EDGES_SD_LAN_TOGGLE
+          || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
     })
 
     it('should correctly set tunnel type', async () => {
@@ -162,6 +180,7 @@ describe('TunnelProfileForm', () => {
 
       const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
       expect(typeField).not.toBeDisabled()
+      expect(screen.queryByText('Network Segment Type')).not.toBeInTheDocument()
       await userEvent.selectOptions(
         typeField,
         await screen.findByRole('option', { name: 'VxLAN' })
@@ -183,6 +202,96 @@ describe('TunnelProfileForm', () => {
 
       const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
       expect(typeField).toBeDisabled()
+    })
+  })
+
+  describe('when SD-LAN and Keep Alive are ready', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff =>(ff === Features.EDGES_SD_LAN_TOGGLE
+          || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
+          || ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
+    })
+
+    it('should display network segment type and keep alive related columns', async () => {
+      render(
+        <Form initialValues={defaultValues}>
+          <TunnelProfileForm />
+        </Form>
+      )
+      expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
+      expect(screen.queryByText('Tunnel Type')).not.toBeInTheDocument()
+      expect(screen.getByText('Path MTU Request Timeout')).toBeInTheDocument()
+      expect(screen.getByText('Path MTU Request Retries')).toBeInTheDocument()
+      expect(screen.getByText('Tunnel Keep Alive Interval')).toBeInTheDocument()
+      expect(screen.getByText('Tunnel Keep Alive Retries')).toBeInTheDocument()
+    })
+
+    it('should show error when mtuRequestTimeout is invalid', async () => {
+      render(
+        <Form initialValues={defaultValues}>
+          <TunnelProfileForm />
+        </Form>
+      )
+
+      const spinBtns = (await screen.findAllByRole('spinbutton'))
+        .filter(p => p.id === 'mtuRequestTimeout')[0]
+      userEvent.clear(spinBtns)
+      expect(await screen.findByText('Please enter Path MTU Request Timeout')).toBeVisible()
+
+      userEvent.type(spinBtns, '0')
+      expect(await screen.findByText('Value must between 10-10000 milliseconds or 1-10 seconds'))
+        .toBeVisible()
+
+      await userEvent.clear(spinBtns)
+      await userEvent.type(spinBtns, '11')
+      expect(await screen.findByText('Value must between 10-10000 milliseconds or 1-10 seconds'))
+        .toBeVisible()
+    })
+
+    it('should trigger mtuRequestTime validate when change unit', async () => {
+      render(
+        <Form initialValues={defaultValues}>
+          <TunnelProfileForm />
+        </Form>
+      )
+      const mtuTimeInput = (await screen.findAllByRole('spinbutton'))
+        .filter(p => p.id === 'mtuRequestTimeout')[0]
+      await userEvent.clear(mtuTimeInput)
+      await userEvent.type(mtuTimeInput, '10001')
+      const mtuTimeUnitSelect =
+        (await screen.findAllByRole('combobox')).filter(p => p.id === 'mtuRequestTimeoutUnit')[0]
+      await userEvent.selectOptions(
+        mtuTimeUnitSelect,
+        await screen.findByRole('option', { name: 'Milliseconds' })
+      )
+      expect(await screen.findByText('Value must between 10-10000 milliseconds or 1-10 seconds'))
+        .toBeVisible()
+    })
+
+    it('should show error when keepAliveRetry and keepAliveInterval are invalid', async () => {
+      render(
+        <Form initialValues={defaultValues}>
+          <TunnelProfileForm />
+        </Form>
+      )
+      const keepAliveRetryInput = (await screen.findAllByRole('spinbutton'))
+        .filter(p => p.id === 'keepAliveRetry')[0]
+      const keepAliveIntervalInput = (await screen.findAllByRole('spinbutton'))
+        .filter(p => p.id === 'keepAliveInterval')[0]
+      await userEvent.clear(keepAliveIntervalInput)
+      expect(await screen.findByText('Please enter Tunnel Keep Alive Interval')).toBeVisible()
+
+      await userEvent.clear(keepAliveRetryInput)
+      expect(await screen.findByText('Please enter Tunnel Keep Alive Retries')).toBeVisible()
+
+      await userEvent.type(keepAliveRetryInput, '0')
+      expect(await screen.findByText('Tunnel Keep Alive Retries must be between 3 and 10'))
+        .toBeVisible()
+
+      await userEvent.type(keepAliveIntervalInput, '0')
+      expect(await screen.findByText('Tunnel Keep Alive Interval must be between 1 and 5'))
+        .toBeVisible()
     })
   })
 })

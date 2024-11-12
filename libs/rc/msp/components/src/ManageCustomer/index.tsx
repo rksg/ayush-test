@@ -18,16 +18,15 @@ import {
   Button,
   DatePicker,
   PageHeader,
+  showActionModal,
   showToast,
   StepsFormLegacy,
   StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
-import { useIsSplitOn, useIsTierAllowed, Features, TierFeatures } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
-import { SearchOutlined }                                         from '@acx-ui/icons'
-import {
-} from '@acx-ui/msp/services'
+import { useIsSplitOn, Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
+import { SearchOutlined }                           from '@acx-ui/icons'
 import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
@@ -40,7 +39,9 @@ import {
   useMspAssignmentSummaryQuery,
   useMspAssignmentHistoryQuery,
   useMspAdminListQuery,
-  useMspCustomerListQuery
+  useMspCustomerListQuery,
+  usePatchCustomerMutation,
+  useMspRbacEcAssignmentHistoryQuery
 } from '@acx-ui/msp/services'
 import {
   dateDisplayText,
@@ -52,9 +53,12 @@ import {
   MspAssignmentSummary,
   MspEcDelegatedAdmins,
   MspIntegratorDelegated,
-  AssignActionEnum
+  AssignActionEnum,
+  MspEcTierEnum,
+  MspEcTierPayload
 } from '@acx-ui/msp/utils'
-import { GoogleMapWithPreference, usePlacesAutocomplete } from '@acx-ui/rc/components'
+import { GoogleMapWithPreference, useIsEdgeReady, usePlacesAutocomplete } from '@acx-ui/rc/components'
+import { useGetTenantDetailsQuery }                                       from '@acx-ui/rc/services'
 import {
   Address,
   emailRegExp,
@@ -63,22 +67,25 @@ import {
   useTableQuery,
   EntitlementDeviceType,
   EntitlementDeviceSubType,
-  whitespaceOnlyRegExp
+  whitespaceOnlyRegExp,
+  PrivilegeGroup
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }              from '@acx-ui/types'
-import { useGetUserProfileQuery } from '@acx-ui/user'
-import { AccountType }            from '@acx-ui/utils'
+import { RolesEnum }                  from '@acx-ui/types'
+import { useUserProfileContext }      from '@acx-ui/user'
+import { AccountType, noDataDisplay } from '@acx-ui/utils'
 
-import { ManageAdminsDrawer } from '../ManageAdminsDrawer'
+import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
+import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
 // eslint-disable-next-line import/order
-import { SelectIntegratorDrawer } from '../SelectIntegratorDrawer'
-import { StartSubscriptionModal } from '../StartSubscriptionModal'
-import * as UI                    from '../styledComponents'
+import { ManageMspDelegationDrawer } from '../ManageMspDelegations'
+import { SelectIntegratorDrawer }    from '../SelectIntegratorDrawer'
+import { StartSubscriptionModal }    from '../StartSubscriptionModal'
+import * as UI                       from '../styledComponents'
 
 interface AddressComponent {
   long_name?: string;
@@ -97,7 +104,16 @@ interface EcFormData {
     admin_role: RolesEnum,
     wifiLicense: number,
     switchLicense: number,
-    apswLicense: number
+    apswLicense: number,
+    apswTrialLicense: number,
+    tier: MspEcTierEnum,
+    subscriptionMode: string
+}
+
+enum ServiceType {
+  TRIAL = 'TRIAL',
+  EXTENDED_TRIAL = 'EXTENDED_TRIAL',
+  PAID = 'PAID'
 }
 
 export const retrieveCityState = (addressComponents: Array<AddressComponent>, country: string) => {
@@ -164,9 +180,17 @@ export function ManageCustomer () {
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const optionalAdminFF = useIsSplitOn(Features.MSPEC_OPTIONAL_ADMIN)
-  const edgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
-  const techPartnerAssignEcsEnabled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
+  const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
+  const isPatchTierEnabled = useIsSplitOn(Features.MSP_PATCH_TIER)
+  const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
+  const isExtendedTrialToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_EXTENDED_TRIAL_TOGGLE)
+  const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+  const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -175,21 +199,21 @@ export function ManageCustomer () {
 
   const [isTrialMode, setTrialMode] = useState(false)
   const [isTrialActive, setTrialActive] = useState(false)
+  const [serviceTypeSelected, setServiceType] = useState(ServiceType.PAID)
   const [trialSelected, setTrialSelected] = useState(true)
   const [ecSupportEnabled, setEcSupport] = useState(false)
   const [mspAdmins, setAdministrator] = useState([] as MspAdministrator[])
+  const [privilegeGroups, setPrivilegeGroups] = useState([] as PrivilegeGroup[])
   const [mspIntegrator, setIntegrator] = useState([] as MspEc[])
   const [mspInstaller, setInstaller] = useState([] as MspEc[])
-  const [autoIntegratorAssignEcAdmin, setIntegratorAssignAdmin] = useState(false)
-  const [autoInstallerAssignEcAdmin, setInstallerAssignAdmin] = useState(false)
   const [mspEcAdmins, setMspEcAdmins] = useState([] as MspAdministrator[])
   const [availableWifiLicense, setAvailableWifiLicense] = useState(0)
   const [availableSwitchLicense, setAvailableSwitchLicense] = useState(0)
   const [availableApswLicense, setAvailableApswLicense] = useState(0)
+  const [availableApswTrialLicense, setAvailableApswTrialLicense] = useState(0)
   const [assignedLicense, setAssignedLicense] = useState([] as MspAssignmentHistory[])
   const [assignedWifiLicense, setWifiLicense] = useState(0)
   const [assignedSwitchLicense, setSwitchLicense] = useState(0)
-  const [assignedApswLicense, setApswLicense] = useState(0)
   const [assignedApswTrialLicense, setApswTrialLicense] = useState(0)
   const [customDate, setCustomeDate] = useState(true)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
@@ -202,27 +226,47 @@ export function ManageCustomer () {
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
   const [formData, setFormData] = useState({} as Partial<EcFormData>)
   const [optionalEcAdmin, setOptionalEcAdmin] = useState(false)
+  const [originalTier, setOriginalTier] = useState('')
   const [addCustomer] = useAddCustomerMutation()
   const [updateCustomer] = useUpdateCustomerMutation()
+  const [patchCustomer] = usePatchCustomerMutation()
+  const params = useParams()
 
   const { Option } = Select
   const { Paragraph } = Typography
   const isEditMode = action === 'edit'
   const isTrialEditMode = action === 'edit' && status === 'Trial'
+  const isExtendedTrialEditMode = action === 'edit' && status === 'ExtendedTrial'
 
-  const { data: userProfile } = useGetUserProfileQuery({ params: useParams() })
+  const { data: userProfile } = useUserProfileContext()
+  const { data: tenantDetailsData } = useGetTenantDetailsQuery({ params })
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
-  const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
+  const { data: assignment } = useMspAssignmentHistoryQuery({ params: params },
+    { skip: isEntitlementRbacApiEnabled })
+  const { data: rbacAssignment } = useTableQuery({
+    useQuery: useMspRbacEcAssignmentHistoryQuery,
+    apiParams: { tenantId: mspEcTenantId as string },
+    defaultPayload: {},
+    pagination: {
+      pageSize: 10000
+    },
+    option: {
+      skip: !isEntitlementRbacApiEnabled || action !== 'edit'
+    }
+  })
+  const licenseAssignment = isEntitlementRbacApiEnabled ? rbacAssignment?.data : assignment
   const { data } =
       useGetMspEcQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   const { data: Administrators } =
       useMspAdminListQuery({ params: useParams() }, { skip: action !== 'edit' })
   const { data: delegatedAdmins } =
-      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
+        { skip: action !== 'edit' })
   const { data: ecAdministrators } =
       useMspEcAdminListQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   const { data: ecSupport } =
-      useGetMspEcSupportQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+      useGetMspEcSupportQuery({
+        params: { mspEcTenantId }, enableRbac: isRbacEnabled }, { skip: action !== 'edit' })
   const { data: techPartners } = useTableQuery({
     useQuery: useMspCustomerListQuery,
     pagination: {
@@ -241,6 +285,7 @@ export function ManageCustomer () {
     option: { skip: action !== 'edit' }
   })
 
+  const showExtendedTrial = tenantDetailsData?.extendedTrial && isExtendedTrialToggleEnabled
   const [
     enableMspEcSupport
   ] = useEnableMspEcSupportMutation()
@@ -250,6 +295,12 @@ export function ManageCustomer () {
   ] = useDisableMspEcSupportMutation()
 
   useEffect(() => {
+    if (ecSupport && ecSupport.length > 0 ) {
+      setEcSupport(true)
+    }
+  }, [ecSupport])
+
+  useEffect(() => {
     if (licenseSummary) {
       checkAvailableLicense(licenseSummary)
 
@@ -257,10 +308,8 @@ export function ManageCustomer () {
         if (ecAdministrators) {
           setMspEcAdmins(ecAdministrators)
         }
-        if (ecSupport && ecSupport.length > 0 ) {
-          setEcSupport(true)
-        }
-        const assigned = licenseAssignment.filter(en => en.mspEcTenantId === mspEcTenantId)
+        const assigned = isEntitlementRbacApiEnabled ? licenseAssignment
+          : licenseAssignment.filter(en => en.mspEcTenantId === mspEcTenantId)
         setAssignedLicense(assigned)
         const wifi = assigned.filter(en =>
           en.deviceType === EntitlementDeviceType.MSP_WIFI && en.status === 'VALID')
@@ -268,18 +317,21 @@ export function ManageCustomer () {
         const sw = assigned.filter(en =>
           en.deviceType === EntitlementDeviceType.MSP_SWITCH && en.status === 'VALID')
         const sLic = sw.length > 0 ? sw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
-        const apsw = assigned.filter(en =>
-          en.deviceType === EntitlementDeviceType.MSP_APSW
+        const apsw = isEntitlementRbacApiEnabled
+          ? assigned.filter(en => en.status === 'VALID' && en.isTrial === false)
+          : assigned.filter(en => en.deviceType === EntitlementDeviceType.MSP_APSW
           && en.status === 'VALID' && en.trialAssignment === false)
         const apswLic = apsw.length > 0 ? apsw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
-        const apswTrial = assigned.filter(en =>
-          en.deviceType === EntitlementDeviceType.MSP_APSW
+        const apswTrial = isEntitlementRbacApiEnabled
+          ? assigned.filter(en => en.status === 'VALID' && en.isTrial === true)
+          : assigned.filter(en =>
+            en.deviceType === EntitlementDeviceType.MSP_APSW
           && en.status === 'VALID' && en.trialAssignment === true)
         const apswTrialLic = apswTrial.length > 0 ?
           apswTrial.reduce((acc, cur) => cur.quantity + acc, 0) : 0
 
         isTrialEditMode ? checkAvailableLicense(licenseSummary)
-          : checkAvailableLicense(licenseSummary, wLic, sLic, apswLic)
+          : checkAvailableLicense(licenseSummary, wLic, sLic, apswLic, apswTrialLic)
 
         formRef.current?.setFieldsValue({
           name: data?.name,
@@ -287,8 +339,13 @@ export function ManageCustomer () {
           wifiLicense: wLic,
           switchLicense: sLic,
           apswLicense: apswLic,
-          service_expiration_date: moment(data?.service_expiration_date)
+          apswTrialLicense: apswTrialLic,
+          service_expiration_date: moment(data?.service_expiration_date),
+          tier: data?.tier ?? MspEcTierEnum.Professional,
+          subscriptionMode: isExtendedTrialEditMode ? ServiceType.EXTENDED_TRIAL
+            : ServiceType.PAID
         })
+        setOriginalTier(data?.tier ?? '')
         formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
         data?.is_active === 'true' ? setTrialActive(true) : setTrialActive(false)
         status === 'Trial' ? setTrialMode(true) : setTrialMode(false)
@@ -297,12 +354,12 @@ export function ManageCustomer () {
         setSubscriptionEndDate(moment(data?.service_expiration_date))
         setSubscriptionOrigEndDate(moment(data?.service_expiration_date))
         if (isDeviceAgnosticEnabled) {
-          setApswLicense(apswLic)
           setApswTrialLicense(apswTrialLic)
         } else {
           setWifiLicense(wLic)
           setSwitchLicense(sLic)
         }
+        setServiceType(isExtendedTrialEditMode ? ServiceType.EXTENDED_TRIAL : ServiceType.PAID)
       }
     }
 
@@ -316,7 +373,7 @@ export function ManageCustomer () {
           lastName: userProfile.lastName,
           name: userProfile.firstName,
           email: userProfile.email,
-          role: userProfile.role as RolesEnum,
+          role: RolesEnum.PRIME_ADMIN,
           detailLevel: userProfile.detailLevel
         })
         setAdministrator(administrator)
@@ -324,7 +381,7 @@ export function ManageCustomer () {
       setSubscriptionStartDate(moment())
       setSubscriptionEndDate(moment().add(30,'days'))
     }
-  }, [data, licenseSummary, licenseAssignment, ecSupport, userProfile, ecAdministrators])
+  }, [data, licenseSummary, licenseAssignment, userProfile, ecAdministrators])
 
   useEffect(() => {
     if (delegatedAdmins && Administrators) {
@@ -401,7 +458,7 @@ export function ManageCustomer () {
 
   const ecSupportOnChange = (checked: boolean) => {
     if (checked) {
-      enableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId } })
+      enableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId }, enableRbac: isRbacEnabled })
         .then(() => {
           showToast({
             type: 'success',
@@ -410,7 +467,7 @@ export function ManageCustomer () {
           setEcSupport(true)
         })
     } else {
-      disableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId } })
+      disableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId }, enableRbac: isRbacEnabled })
         .then(() => {
           showToast({
             type: 'success',
@@ -437,12 +494,15 @@ export function ManageCustomer () {
         ? parseInt(ecFormData.switchLicense, 10) : ecFormData.switchLicense
       const quantityApsw = _.isString(ecFormData.apswLicense)
         ? parseInt(ecFormData.apswLicense, 10) : ecFormData.apswLicense
+      const quantityApswTrial = _.isString(ecFormData.apswTrialLicense)
+        ? parseInt(ecFormData.apswTrialLicense, 10) : ecFormData.apswTrialLicense
       const assignLicense = trialSelected ? { trialAction: AssignActionEnum.ACTIVATE }
         : isDeviceAgnosticEnabled
           ? { assignments: [{
-            quantity: quantityApsw,
+            quantity: serviceTypeSelected === ServiceType.EXTENDED_TRIAL
+              ? quantityApswTrial : quantityApsw,
             action: AssignActionEnum.ADD,
-            isTrial: false,
+            isTrial: serviceTypeSelected === ServiceType.EXTENDED_TRIAL,
             deviceType: EntitlementDeviceType.MSP_APSW
           }] }
           : { assignments: [{
@@ -474,7 +534,8 @@ export function ManageCustomer () {
         service_effective_date: today,
         service_expiration_date: expirationDate,
         admin_delegations: delegations,
-        licenses: assignLicense
+        licenses: assignLicense,
+        tier: createEcWithTierEnabled ? ecFormData.tier : undefined
       }
       if (ecFormData.admin_email) {
         customer.admin_email = ecFormData.admin_email
@@ -486,23 +547,27 @@ export function ManageCustomer () {
       mspIntegrator.forEach((integrator: MspEc) => {
         ecDelegations.push({
           delegation_type: AccountType.MSP_INTEGRATOR,
-          delegation_id: integrator.id,
-          isManageAllEcs: techPartnerAssignEcsEnabled ? autoIntegratorAssignEcAdmin : undefined
+          delegation_id: integrator.id
         })
       })
       mspInstaller.forEach((installer: MspEc) => {
         ecDelegations.push({
           delegation_type: AccountType.MSP_INSTALLER,
-          delegation_id: installer.id,
-          isManageAllEcs: techPartnerAssignEcsEnabled ? autoInstallerAssignEcAdmin : undefined
+          delegation_id: installer.id
         })
       })
       if (ecDelegations.length > 0) {
         customer.delegations = ecDelegations
       }
+      if (isRbacPhase2Enabled && privilegeGroups.length > 0) {
+        const pgIds = privilegeGroups?.map((pg: PrivilegeGroup)=> pg.id)
+        customer.privilege_group_ids = pgIds
+      }
 
       const result =
-      await addCustomer({ params: { tenantId: tenantId }, payload: customer }).unwrap()
+      await addCustomer({ params: { tenantId: tenantId },
+        payload: isRbacEnabled ? { data: [customer] } : customer,
+        enableRbac: isRbacEnabled }).unwrap()
       if (result) {
       // const ecTenantId = result.tenant_id
       }
@@ -524,29 +589,16 @@ export function ManageCustomer () {
 
       const licAssignment = []
       if (isTrialEditMode) {
-        const quantityWifi = _.isString(ecFormData.wifiLicense)
-          ? parseInt(ecFormData.wifiLicense, 10) : ecFormData.wifiLicense
-        licAssignment.push({
-          quantity: quantityWifi,
-          action: AssignActionEnum.ADD,
-          isTrial: false,
-          deviceType: EntitlementDeviceType.MSP_WIFI
-        })
-        const quantitySwitch = _.isString(ecFormData.switchLicense)
-          ? parseInt(ecFormData.switchLicense, 10) : ecFormData.switchLicense
-        licAssignment.push({
-          quantity: quantitySwitch,
-          action: AssignActionEnum.ADD,
-          isTrial: false,
-          deviceType: EntitlementDeviceType.MSP_SWITCH
-        })
         if (isDeviceAgnosticEnabled) {
           const quantityApsw = _.isString(ecFormData.apswLicense)
             ? parseInt(ecFormData.apswLicense, 10) : ecFormData.apswLicense
+          const quantityApswTrial = _.isString(ecFormData.apswTrialLicense)
+            ? parseInt(ecFormData.apswTrialLicense, 10) : ecFormData.apswTrialLicense
           licAssignment.push({
-            quantity: quantityApsw,
+            quantity: serviceTypeSelected === ServiceType.EXTENDED_TRIAL
+              ? quantityApswTrial : quantityApsw,
             action: AssignActionEnum.ADD,
-            isTrial: false,
+            isTrial: serviceTypeSelected === ServiceType.EXTENDED_TRIAL,
             deviceType: EntitlementDeviceType.MSP_APSW
           })
         }
@@ -579,8 +631,12 @@ export function ManageCustomer () {
         }
 
         if (isDeviceAgnosticEnabled ) {
-          if (_.isString(ecFormData.apswLicense) || needUpdateLicense) {
-            const apswAssignId = getDeviceAssignmentId(EntitlementDeviceType.MSP_APSW, false)
+          if (serviceTypeSelected === ServiceType.PAID &&
+            (_.isString(ecFormData.apswLicense) || needUpdateLicense)) {
+            const apswAssignId =
+              isEntitlementRbacApiEnabled ? getDeviceAssignmentId(EntitlementDeviceType.APSW, false)
+                : getDeviceAssignmentId(EntitlementDeviceType.MSP_APSW, false)
+
             const quantityApsw = _.isString(ecFormData.apswLicense)
               ? parseInt(ecFormData.apswLicense, 10) : ecFormData.apswLicense
             const actionApsw = apswAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
@@ -588,6 +644,23 @@ export function ManageCustomer () {
               quantity: quantityApsw,
               assignmentId: apswAssignId,
               action: actionApsw,
+              deviceType: EntitlementDeviceType.MSP_APSW
+            })
+          }
+          if (serviceTypeSelected === ServiceType.EXTENDED_TRIAL &&
+            (_.isString(ecFormData.apswTrialLicense) || needUpdateLicense)) {
+            const apswAssignId =
+              isEntitlementRbacApiEnabled ? getDeviceAssignmentId(EntitlementDeviceType.APSW, true)
+                : getDeviceAssignmentId(EntitlementDeviceType.MSP_APSW, true)
+
+            const quantityApsw = _.isString(ecFormData.apswTrialLicense)
+              ? parseInt(ecFormData.apswTrialLicense, 10) : ecFormData.apswTrialLicense
+            const actionApsw = apswAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
+            licAssignment.push({
+              quantity: quantityApsw,
+              assignmentId: apswAssignId,
+              action: actionApsw,
+              isTrial: actionApsw === AssignActionEnum.ADD ? true : undefined,
               deviceType: EntitlementDeviceType.MSP_APSW
             })
           }
@@ -601,7 +674,8 @@ export function ManageCustomer () {
         city: address.city,
         country: address.country,
         service_effective_date: today,
-        service_expiration_date: expirationDate
+        service_expiration_date: expirationDate,
+        tier: (createEcWithTierEnabled && !isPatchTierEnabled) ? ecFormData.tier : undefined
       }
       if (!isTrialMode && licAssignment.length > 0) {
         let assignLicense = {
@@ -611,8 +685,17 @@ export function ManageCustomer () {
         }
         customer.licenses = assignLicense
       }
+      await updateCustomer({
+        params: { mspEcTenantId: mspEcTenantId }, payload: customer,
+        enableRbac: isRbacEnabled }).unwrap()
 
-      await updateCustomer({ params: { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
+      if (isPatchTierEnabled && originalTier !== ecFormData.tier) {
+        const patchTier: MspEcTierPayload = {
+          type: 'serviceTierStatus',
+          serviceTierStatus: ecFormData.tier
+        }
+        await patchCustomer({ params: { tenantId: mspEcTenantId }, payload: patchTier }).unwrap()
+      }
       navigate(linkToCustomers, { replace: true })
       return true
     } catch (error) {
@@ -625,25 +708,30 @@ export function ManageCustomer () {
     setAdministrator(selected)
   }
 
-  const selectedIntegrators = (tenantType: string, selected: MspEc[], assignEcAdmin?: boolean ) => {
-    assignEcAdmin = assignEcAdmin ?? false
-    if (tenantType === AccountType.MSP_INTEGRATOR) {
-      setIntegrator(selected)
-      setIntegratorAssignAdmin(assignEcAdmin)
-    }
-    else {
-      setInstaller(selected)
-      setInstallerAssignAdmin(assignEcAdmin)
-    }
+  const selectedIntegrators = (tenantType: string, selected: MspEc[] ) => {
+    (tenantType === AccountType.MSP_INTEGRATOR) ? setIntegrator(selected) : setInstaller(selected)
   }
 
   const displayMspAdmins = () => {
     if (!mspAdmins || mspAdmins.length === 0)
-      return '--'
+      return noDataDisplay
     return <>
       {mspAdmins.map(admin =>
         <UI.AdminList key={admin.id}>
-          {admin.email} ({intl.$t(roleDisplayText[admin.role])})
+          {admin.email} ({roleDisplayText[admin.role]
+            ? intl.$t(roleDisplayText[admin.role]) : admin.role})
+        </UI.AdminList>
+      )}
+    </>
+  }
+
+  const displayPrivilegeGroups = () => {
+    if (!privilegeGroups || privilegeGroups.length === 0)
+      return noDataDisplay
+    return <>
+      {privilegeGroups.map(pg =>
+        <UI.AdminList key={pg.id}>
+          {pg.name}
         </UI.AdminList>
       )}
     </>
@@ -651,7 +739,7 @@ export function ManageCustomer () {
 
   const displayIntegrator = () => {
     if (!mspIntegrator || mspIntegrator.length === 0)
-      return '--'
+      return noDataDisplay
     return <>
       {mspIntegrator.map(integrator =>
         <UI.AdminList key={integrator.id}>
@@ -663,7 +751,7 @@ export function ManageCustomer () {
 
   const displayInstaller = () => {
     if (!mspInstaller || mspInstaller.length === 0)
-      return '--'
+      return noDataDisplay
     return <>
       {mspInstaller.map(installer =>
         <UI.AdminList key={installer.id}>
@@ -687,16 +775,22 @@ export function ManageCustomer () {
           <Paragraph>{mspEcAdmins[0].email}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
-          label={intl.$t({ defaultMessage: 'Role' })}
+          label={isAbacToggleEnabled
+            ? intl.$t({ defaultMessage: 'Privilege Group' })
+            : intl.$t({ defaultMessage: 'Role' })}
         >
-          <Paragraph>{intl.$t(roleDisplayText[mspEcAdmins[0].role])}</Paragraph>
+          <Paragraph>
+            {roleDisplayText[mspEcAdmins[0].role]
+              ? intl.$t(roleDisplayText[mspEcAdmins[0].role]) : mspEcAdmins[0].role}
+          </Paragraph>
         </Form.Item>
       </>
     }
     return <div style={{ marginTop: '5px', marginBottom: '30px' }}>
       {mspEcAdmins.map(admin =>
         <UI.AdminList>
-          {admin.email} {intl.$t(roleDisplayText[admin.role])}
+          {admin.email} {roleDisplayText[admin.role]
+            ? intl.$t(roleDisplayText[admin.role]) : admin.role}
         </UI.AdminList>
       )}
     </div>
@@ -706,11 +800,15 @@ export function ManageCustomer () {
     if (startDate) {
       setSubscriptionStartDate(moment(startDate))
       setTrialMode(false)
+      formRef.current?.setFieldsValue({
+        apswTrialLicense: 0
+      })
     }
   }
 
   const checkAvailableLicense =
-  (entitlements: MspAssignmentSummary[], wLic?: number, swLic?: number, apswLic?: number) => {
+  (entitlements: MspAssignmentSummary[], wLic?: number, swLic?: number, apswLic?: number,
+    apswTrialLic?: number ) => {
     const wifiLicenses = entitlements.filter(p =>
       p.remainingDevices > 0 && p.deviceType === EntitlementDeviceType.MSP_WIFI)
     let remainingWifi = 0
@@ -734,8 +832,17 @@ export function ManageCustomer () {
     apswLicenses.forEach( (lic: MspAssignmentSummary) => {
       remainingApsw += lic.remainingDevices
     })
+    const apswTrialLicenses = entitlements.filter(p => p.remainingDevices > 0 &&
+      p.deviceType === EntitlementDeviceType.MSP_APSW && p.trial === true)
+    let remainingApswTrial = 0
+    apswTrialLicenses.forEach( (lic: MspAssignmentSummary) => {
+      remainingApswTrial += lic.remainingDevices
+    })
+
     apswLic ? setAvailableApswLicense(remainingApsw+apswLic)
       : setAvailableApswLicense(remainingApsw)
+    apswTrialLic ? setAvailableApswTrialLicense(remainingApswTrial+apswTrialLic)
+      : setAvailableApswTrialLicense(remainingApswTrial)
   }
 
   const getAssignmentId = (deviceType: string) => {
@@ -744,25 +851,48 @@ export function ManageCustomer () {
     return license.length > 0 ? license[0].id : 0
   }
 
-  const getDeviceAssignmentId = (deviceType: string, trialAssignment: boolean) => {
-    const license = assignedLicense.filter(en => en.deviceType === deviceType
-     && en.trialAssignment === trialAssignment && en.status === 'VALID')
+  const getDeviceAssignmentId = (deviceType: string, isTrial: boolean) => {
+    const license = isEntitlementRbacApiEnabled
+      ? assignedLicense.filter(en => en.licenseType === deviceType && en.status === 'VALID' &&
+        en.isTrial === isTrial)
+      : assignedLicense.filter(en => en.deviceType === deviceType && en.status === 'VALID' &&
+        en.trialAssignment === isTrial && en.ownAssignment === false)
     return license.length > 0 ? license[0].id : 0
+
   }
 
   const MspAdminsForm = () => {
     return <>
-      <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
-        <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
-        <Form.Item children={<div>{displayMspAdmins()}</div>} />
-        {!isEditMode && <Form.Item
-          children={<UI.FieldTextLink onClick={() => setDrawerAdminVisible(true)}>
-            {intl.$t({ defaultMessage: 'Manage' })}
-          </UI.FieldTextLink>
-          }
-        />}
-      </UI.FieldLabelAdmins>
-      <UI.FieldLabelAdmins width='275px' style={{ marginTop: '-12px' }}>
+      {(isRbacPhase2Enabled && !isEditMode)
+        ? <div>
+          <UI.FieldLabelAdmins2 width='275px' style={{ marginTop: '15px' }}>
+            <label>{intl.$t({ defaultMessage: 'MSP Delegations' })}</label>
+            <Form.Item
+              children={<UI.FieldTextLink onClick={() => setDrawerAdminVisible(true)}>
+                {intl.$t({ defaultMessage: 'Manage' })}
+              </UI.FieldTextLink>
+              }
+            />
+          </UI.FieldLabelAdmins2>
+          <UI.FieldLabelDelegations width='260px' style={{ marginLeft: '15px', marginTop: '5px' }}>
+            <label>{intl.$t({ defaultMessage: 'Users' })}</label>
+            <Form.Item children={<div>{displayMspAdmins()}</div>} />
+            <label>{intl.$t({ defaultMessage: 'Privilege Groups' })}</label>
+            <Form.Item children={<div>{displayPrivilegeGroups()}</div>} />
+          </UI.FieldLabelDelegations>
+        </div>
+        : <UI.FieldLabelAdmins width='275px' style={{ marginTop: '15px' }}>
+          <label>{intl.$t({ defaultMessage: 'MSP Administrators' })}</label>
+          <Form.Item children={<div>{displayMspAdmins()}</div>} />
+          {!isEditMode && <Form.Item
+            children={<UI.FieldTextLink onClick={() => setDrawerAdminVisible(true)}>
+              {intl.$t({ defaultMessage: 'Manage' })}
+            </UI.FieldTextLink>
+            }
+          />}
+        </UI.FieldLabelAdmins>}
+
+      <UI.FieldLabelAdmins width='275px'>
         <label>{intl.$t({ defaultMessage: 'Integrator' })}</label>
         <Form.Item children={displayIntegrator()} />
         {!isEditMode && <Form.Item
@@ -781,6 +911,58 @@ export function ManageCustomer () {
         />}
       </UI.FieldLabelAdmins>
     </>
+  }
+
+  const handleServiceTierChange = function (tier: RadioChangeEvent) {
+    if(isEditMode && createEcWithTierEnabled && originalTier !== tier.target.value) {
+      const modalContent = (
+        <>
+          <p>{intl.$t({ defaultMessage: `Changing Service Tier will impact available features. 
+          Downgrade from Professional to Essentials may also result in data loss.` })}</p>
+          <p>{intl.$t({ defaultMessage: 'Are you sure you want to save the changes?' })}</p>
+        </>
+      )
+      showActionModal({
+        type: 'confirm',
+        title: intl.$t({
+          defaultMessage: 'Save'
+        }),
+        content: modalContent,
+        okText: intl.$t({ defaultMessage: 'Save' }),
+        onCancel: () => {
+          if (tier.target.value === MspEcTierEnum.Essentials) {
+            formRef.current?.setFieldValue('tier', MspEcTierEnum.Professional)
+          } else {
+            formRef.current?.setFieldValue('tier', MspEcTierEnum.Essentials)
+          }
+        }
+      })
+    }
+  }
+
+  const EcTierForm = () => {
+    return <Form.Item
+      name='tier'
+      label={intl.$t({ defaultMessage: 'Service Tier' })}
+      style={{ width: '300px' }}
+      rules={[{ required: true }]}
+      children={
+        <Radio.Group>
+          <Space direction='vertical'>
+            {
+              Object.entries(MspEcTierEnum).map(([label, value]) => {
+                return <Radio
+                  onChange={handleServiceTierChange}
+                  key={value}
+                  value={value}
+                  children={intl.$t({
+                    defaultMessage: '{label}' }, { label })} />
+              })
+            }
+          </Space>
+        </Radio.Group>
+      }
+    />
   }
 
   const CustomerAdminsForm = () => {
@@ -804,6 +986,7 @@ export function ManageCustomer () {
           style={{ width: '300px' }}
           rules={[
             { required: true },
+            { max: 255 },
             { validator: (_, value) => emailRegExp(value) },
             { message: intl.$t({ defaultMessage: 'Please enter a valid email address!' }) }
           ]}
@@ -814,6 +997,8 @@ export function ManageCustomer () {
           label={intl.$t({ defaultMessage: 'First Name' })}
           rules={[
             { required: true },
+            { min: 2 },
+            { max: 64 },
             { validator: (_, value) => whitespaceOnlyRegExp(value) }
           ]}
           children={<Input />}
@@ -824,6 +1009,8 @@ export function ManageCustomer () {
           label={intl.$t({ defaultMessage: 'Last Name' })}
           rules={[
             { required: true },
+            { min: 2 },
+            { max: 64 },
             { validator: (_, value) => whitespaceOnlyRegExp(value) }
           ]}
           children={<Input />}
@@ -831,7 +1018,9 @@ export function ManageCustomer () {
         />
         <Form.Item
           name='admin_role'
-          label={intl.$t({ defaultMessage: 'Role' })}
+          label={isAbacToggleEnabled
+            ? intl.$t({ defaultMessage: 'Privilege Group' })
+            : intl.$t({ defaultMessage: 'Role' })}
           style={{ width: '300px' }}
           rules={[{ required: true }]}
           initialValue={RolesEnum.PRIME_ADMIN}
@@ -839,10 +1028,13 @@ export function ManageCustomer () {
             <Select>
               {
                 Object.entries(RolesEnum).map(([label, value]) => (
-                  !(value === RolesEnum.DPSK_ADMIN || value === RolesEnum.GUEST_MANAGER )
+                  !(value === RolesEnum.DPSK_ADMIN || value === RolesEnum.GUEST_MANAGER ||
+                    value === RolesEnum.TEMPLATES_ADMIN || value === RolesEnum.REPORTS_ADMIN
+                  )
                   && <Option
                     key={label}
-                    value={value}>{intl.$t(roleDisplayText[value])}
+                    value={value}>
+                    {roleDisplayText[value] ? intl.$t(roleDisplayText[value]) : value}
                   </Option>
                 ))
               }
@@ -903,21 +1095,34 @@ export function ManageCustomer () {
   const ApswSubscription = () => {
     return <div >
       <UI.FieldLabelSubs width='275px'>
-        <label>{intl.$t({ defaultMessage: 'Device Subscription' })}</label>
+        <label>{isvSmartEdgeEnabled
+          ? intl.$t({ defaultMessage: 'Device Networking' })
+          : intl.$t({ defaultMessage: 'Device Subscription' })
+        }</label>
         <Form.Item
           name='apswLicense'
           label=''
           initialValue={0}
           rules={[
             { required: true },
-            { validator: (_, value) => fieldValidator(value, availableApswLicense) }
+            { validator: (_, value) =>
+              fieldValidator(value,
+                serviceTypeSelected === ServiceType.EXTENDED_TRIAL || isExtendedTrialEditMode
+                  ? availableApswTrialLicense : availableApswLicense) }
           ]}
           children={<Input type='number'/>}
           style={{ paddingRight: '20px' }}
         />
         <label>
-          {intl.$t({ defaultMessage: 'devices out of {availableApswLicense} available' }, {
-            availableApswLicense: availableApswLicense })}
+          {isvSmartEdgeEnabled
+            ? (serviceTypeSelected === ServiceType.EXTENDED_TRIAL || isExtendedTrialEditMode
+              ? intl.$t({ defaultMessage: 'licenses out of {availableLicense} available' }, {
+                availableLicense: availableApswTrialLicense })
+              : intl.$t({ defaultMessage: 'licenses out of {availableApswLicense} available' }, {
+                availableApswLicense: availableApswLicense }))
+            : intl.$t({ defaultMessage: 'devices out of {availableApswLicense} available' }, {
+              availableApswLicense: availableApswLicense })
+          }
           {assignedApswTrialLicense > 0 &&
           <span style={{ marginLeft: 10 }}>
             {intl.$t({ defaultMessage: '(active trial license : {apswTrial})' },
@@ -928,6 +1133,46 @@ export function ManageCustomer () {
     </div>
   }
 
+  const ApswSubscriptionExtendedTrial = () => {
+    return <div >
+      <UI.FieldLabelSubs width='275px'>
+        <label>{intl.$t({ defaultMessage: 'Device Networking' })}</label>
+        {serviceTypeSelected === ServiceType.PAID
+          ? <Form.Item
+            name='apswLicense'
+            label=''
+            initialValue={0}
+            rules={[
+              { required: true },
+              { validator: (_, value) =>
+                fieldValidator(value, availableApswLicense) }
+            ]}
+            children={<Input type='number'/>}
+            style={{ paddingRight: '20px' }}
+          />
+          : <Form.Item
+            name='apswTrialLicense'
+            label=''
+            initialValue={0}
+            rules={[
+              { required: true },
+              { validator: (_, value) =>
+                fieldValidator(value, availableApswTrialLicense) }
+            ]}
+            children={<Input type='number'/>}
+            style={{ paddingRight: '20px' }}
+          />}
+        <label>
+          {(serviceTypeSelected === ServiceType.EXTENDED_TRIAL
+            ? intl.$t({ defaultMessage: 'licenses out of {availableLicense} available' }, {
+              availableLicense: availableApswTrialLicense })
+            : intl.$t({ defaultMessage: 'licenses out of {availableApswLicense} available' }, {
+              availableApswLicense: availableApswLicense }))
+          }
+        </label>
+      </UI.FieldLabelSubs>
+    </div>
+  }
 
   const EnableSupportForm = () => {
     return <>
@@ -994,8 +1239,11 @@ export function ManageCustomer () {
           </UI.FieldLabel2>
         </div>}
         {isDeviceAgnosticEnabled && <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
-          <label>{intl.$t({ defaultMessage: 'Device Subscription' })}</label>
-          <label>{assignedApswLicense}</label>
+          <label>{isvSmartEdgeEnabled
+            ? intl.$t({ defaultMessage: 'Device Networking' })
+            : intl.$t({ defaultMessage: 'Device Subscription' })
+          }</label>
+          <label>{assignedApswTrialLicense}</label>
         </UI.FieldLabel2>}
 
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
@@ -1016,6 +1264,114 @@ export function ManageCustomer () {
           <SwitchSubscription />
         </div>}
         {isDeviceAgnosticEnabled && <ApswSubscription />}
+
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
+          <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionStartDate)}</label>
+        </UI.FieldLabel2>
+
+        <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
+          <label>{intl.$t({ defaultMessage: 'Service Expiration Date' })}</label>
+          <Form.Item
+            name='expirationDateSelection'
+            label=''
+            rules={[{ required: true } ]}
+            initialValue={DateSelectionEnum.CUSTOME_DATE}
+            children={
+              <Select onChange={onSelectChange}>
+                {
+                  Object.entries(DateSelectionEnum).map(([label, value]) => (
+                    <Option key={label} value={value}>{intl.$t(dateDisplayText[value])}</Option>
+                  ))
+                }
+              </Select>
+            }
+          />
+          <Form.Item
+            name='service_expiration_date'
+            label=''
+            rules={[
+              { required: true,
+                message: intl.$t({ defaultMessage: 'Please select expiration date' })
+              }
+            ]}
+            children={
+              <DatePicker
+                allowClear={false}
+                disabled={!customDate}
+                disabledDate={(current) => {
+                  return current && current < moment().endOf('day')
+                }}
+                style={{ marginLeft: '4px' }}
+              />
+            }
+          />
+        </UI.FieldLabeServiceDate>
+      </div>}
+    </>
+  }
+
+  const EditCustomerSubscriptionFormExtendedTrial = () => {
+    const trialSubscriptionSubtitle = isTrialActive
+      ? intl.$t({ defaultMessage: 'Subscriptions (Trial Mode)' })
+      : intl.$t({ defaultMessage: 'Inactive Subscriptions' })
+    return <>
+      {isTrialMode && <div>
+        <Subtitle level={3} style={{ display: 'inline-block' }}>
+          {trialSubscriptionSubtitle}</Subtitle>
+        <Button
+          type='primary'
+          style={{ display: 'inline-block', marginLeft: '80px' }}
+          onClick={() => setStartSubscriptionVisible(true)}
+        >{intl.$t({ defaultMessage: 'Start Subscription' })}
+        </Button>
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
+          <label>{intl.$t({ defaultMessage: 'Device Networking' })}</label>
+          <label>{assignedApswTrialLicense}</label>
+        </UI.FieldLabel2>
+
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
+          <label>{intl.$t({ defaultMessage: 'Trial Start Date' })}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionStartDate)}</label>
+        </UI.FieldLabel2>
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
+          <label>{intl.$t({ defaultMessage: '30 Day Trial Ends on' })}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionEndDate)}</label>
+        </UI.FieldLabel2></div>
+      }
+
+      {!isTrialMode && <div>
+        {(isTrialEditMode || isExtendedTrialEditMode || (isEditMode && showExtendedTrial) ) &&
+        <Form.Item
+          name='subscriptionMode'
+          initialValue={serviceTypeSelected === ServiceType.EXTENDED_TRIAL
+            ? ServiceType.EXTENDED_TRIAL : ServiceType.PAID}
+        >
+          <Radio.Group onChange={(e: RadioChangeEvent) => {
+            setServiceType(e.target.value)
+          }}>
+            <Space direction='vertical'>
+              <Radio
+                style={{ marginTop: '2px' }}
+                value={ServiceType.EXTENDED_TRIAL}
+                disabled={false}>
+                { intl.$t({ defaultMessage: 'Extended Trial Mode' }) }
+              </Radio>
+              <Radio
+                style={{ marginTop: '2px' }}
+                value={ServiceType.PAID}
+                disabled={false}>
+                { intl.$t({ defaultMessage: 'Paid Subscription' }) }
+              </Radio>
+            </Space>
+          </Radio.Group>
+        </Form.Item>}
+
+        <Subtitle level={3}>
+          { serviceTypeSelected === ServiceType.EXTENDED_TRIAL
+            ? intl.$t({ defaultMessage: 'Extended Trial Mode' })
+            : intl.$t({ defaultMessage: 'Paid Subscriptions' }) }</Subtitle>
+        {isDeviceAgnosticEnabled && <ApswSubscriptionExtendedTrial />}
 
         <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
           <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
@@ -1105,14 +1461,20 @@ export function ManageCustomer () {
             <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
             <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
           </UI.FieldLabel2>
-          {edgeEnabled && <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
-            <label>{intl.$t({ defaultMessage: 'SmartEdge Subscription' })}</label>
+          {isEdgeEnabled && <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
+            <label>{intl.$t({ defaultMessage: 'RUCKUS Edge Subscription' })}</label>
             <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
           </UI.FieldLabel2>}
         </div>}
         {isDeviceAgnosticEnabled && <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
-          <label>{intl.$t({ defaultMessage: 'Device Subscription' })}</label>
-          <label>{intl.$t({ defaultMessage: '50 devices' })}</label>
+          <label>{isvSmartEdgeEnabled
+            ? intl.$t({ defaultMessage: 'Device Networking' })
+            : intl.$t({ defaultMessage: 'Device Subscription' })
+          }</label>
+          <label>{isvSmartEdgeEnabled
+            ? intl.$t({ defaultMessage: '50 trial licenses' })
+            : intl.$t({ defaultMessage: '50 devices' })
+          }</label>
         </UI.FieldLabel2>}
 
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
@@ -1178,12 +1540,119 @@ export function ManageCustomer () {
     </>
   }
 
+  const CustomerSubscriptionExtendedTrial = () => {
+    return <>
+      <Subtitle level={3}>{intl.$t({ defaultMessage: 'Start service in' })}</Subtitle>
+      <Form.Item
+        name='trialMode'
+        initialValue={ServiceType.TRIAL}
+      >
+        <Radio.Group onChange={(e: RadioChangeEvent) => {
+          if (e.target.value === ServiceType.TRIAL) {
+            setSubscriptionStartDate(moment())
+            setSubscriptionEndDate(moment().add(30,'days'))
+          }
+          setTrialSelected(e.target.value === ServiceType.TRIAL)
+          setServiceType(e.target.value)
+        }}>
+          <Space direction='vertical'>
+            <Radio
+              value={ServiceType.TRIAL}
+              disabled={false}>
+              { intl.$t({ defaultMessage: 'Trial Mode' }) }
+            </Radio>
+            <Radio
+              style={{ marginTop: '2px' }}
+              value={ServiceType.EXTENDED_TRIAL}
+              disabled={false}>
+              { intl.$t({ defaultMessage: 'Extended Trial Mode' }) }
+            </Radio>
+            <Radio
+              style={{ marginTop: '2px', marginBottom: '50px' }}
+              value={ServiceType.PAID}
+              disabled={false}>
+              { intl.$t({ defaultMessage: 'Paid Subscription' }) }
+            </Radio>
+          </Space>
+        </Radio.Group>
+      </Form.Item>
+
+      {trialSelected && <div>
+        <Subtitle level={4}>
+          { intl.$t({ defaultMessage: 'Trial Mode' }) }</Subtitle>
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
+          <label>{intl.$t({ defaultMessage: 'Device Subscription' })}</label>
+          <label>{intl.$t({ defaultMessage: '50 devices' })}</label>
+        </UI.FieldLabel2>
+
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
+          <label>{intl.$t({ defaultMessage: 'Trial Start Date' })}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionStartDate)}</label>
+        </UI.FieldLabel2>
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
+          <label>{intl.$t({ defaultMessage: '30 Day Trial Ends on' })}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionEndDate)}</label>
+        </UI.FieldLabel2></div>
+      }
+
+      {!trialSelected && <div>
+        <Subtitle level={4}>
+          { serviceTypeSelected === ServiceType.EXTENDED_TRIAL
+            ? intl.$t({ defaultMessage: 'Extended Trial Mode' })
+            : intl.$t({ defaultMessage: 'Paid Subscriptions' }) }</Subtitle>
+        <ApswSubscriptionExtendedTrial />
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
+          <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionStartDate)}</label>
+        </UI.FieldLabel2>
+
+        <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
+          <label>{intl.$t({ defaultMessage: 'Service Expiration Date' })}</label>
+          <Form.Item
+            name='expirationDateSelection'
+            label=''
+            rules={[{ required: true } ]}
+            initialValue={DateSelectionEnum.CUSTOME_DATE}
+            children={
+              <Select onChange={onSelectChange}>
+                {
+                  Object.entries(DateSelectionEnum).map(([label, value]) => (
+                    <Option key={label} value={value}>{intl.$t(dateDisplayText[value])}</Option>
+                  ))
+                }
+              </Select>
+            }
+          />
+          <Form.Item
+            name='service_expiration_date'
+            label=''
+            rules={[
+              { required: true,
+                message: intl.$t({ defaultMessage: 'Please select expiration date' })
+              }
+            ]}
+            children={
+              <DatePicker
+                allowClear={false}
+                disabled={!customDate}
+                disabledDate={(current) => {
+                  return current && current < moment().endOf('day')
+                }}
+                style={{ marginLeft: '4px' }}
+              />
+            }
+          />
+        </UI.FieldLabeServiceDate></div>}
+    </>
+  }
+
   const CustomerSummary = () => {
     const intl = useIntl()
     const { Paragraph } = Typography
     const wifiAssigned = trialSelected ? '25' : formData.wifiLicense
     const switchAssigned = trialSelected ? '25' : formData.switchLicense
-    const apswAssigned = trialSelected ? '50' : formData.apswLicense
+    const apswAssigned = trialSelected ? '50' : (serviceTypeSelected === ServiceType.EXTENDED_TRIAL
+      ? formData.apswTrialLicense : formData.apswLicense)
 
     return (
       <>
@@ -1199,10 +1668,18 @@ export function ManageCustomer () {
           <Paragraph>{address.addressLine}</Paragraph>
         </Form.Item>
 
-        <Form.Item
+        <Form.Item style={{ height: '20px', margin: '0' }}
           label={intl.$t({ defaultMessage: 'MSP Administrators' })}
+        />
+        <Form.Item style={{ margin: '0' }}
+          label={intl.$t({ defaultMessage: 'Users' })}
         >
           <Paragraph>{displayMspAdmins()}</Paragraph>
+        </Form.Item>
+        <Form.Item
+          label={intl.$t({ defaultMessage: 'Privilege Groups' })}
+        >
+          <Paragraph>{displayPrivilegeGroups()}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Integrator' })}
@@ -1226,10 +1703,15 @@ export function ManageCustomer () {
           <Paragraph>{formData?.admin_email}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
-          label={intl.$t({ defaultMessage: 'Role' })}
+          label={isAbacToggleEnabled
+            ? intl.$t({ defaultMessage: 'Privilege Group' })
+            : intl.$t({ defaultMessage: 'Role' })}
         >
           {formData?.admin_role &&
-          <Paragraph>{intl.$t(roleDisplayText[formData.admin_role as RolesEnum])}</Paragraph>}
+          <Paragraph>
+            {roleDisplayText[formData.admin_role]
+              ? intl.$t(roleDisplayText[formData.admin_role]) : formData.admin_role}
+          </Paragraph>}
         </Form.Item>
 
         {!isDeviceAgnosticEnabled && <div>
@@ -1243,15 +1725,16 @@ export function ManageCustomer () {
           >
             <Paragraph>{switchAssigned}</Paragraph>
           </Form.Item>
-          {edgeEnabled && <Form.Item style={{ marginTop: '-22px' }}
-            label={intl.$t({ defaultMessage: 'SmartEdge Subscriptions' })}
+          {isEdgeEnabled && <Form.Item style={{ marginTop: '-22px' }}
+            label={intl.$t({ defaultMessage: 'RUCKUS Edge Subscriptions' })}
           >
             <Paragraph>25</Paragraph>
           </Form.Item>}
         </div>}
 
         {isDeviceAgnosticEnabled && <Form.Item
-          label={intl.$t({ defaultMessage: 'Device Subscriptions' })}
+          label={isvSmartEdgeEnabled ? intl.$t({ defaultMessage: 'Device Networking' })
+            : intl.$t({ defaultMessage: 'Device Subscriptions' })}
         >
           <Paragraph>{apswAssigned}</Paragraph>
         </Form.Item>}
@@ -1322,6 +1805,8 @@ export function ManageCustomer () {
             style={{ width: '300px' }}
             rules={[
               { required: true },
+              { min: 2 },
+              { max: 255 },
               { validator: (_, value) => whitespaceOnlyRegExp(value) }
             ]}
             validateFirst
@@ -1352,10 +1837,12 @@ export function ManageCustomer () {
           </Form.Item >
 
           <MspAdminsForm></MspAdminsForm>
+          {createEcWithTierEnabled && <EcTierForm />}
           <Subtitle level={3}>
             { intl.$t({ defaultMessage: 'Customer Administrator' }) }</Subtitle>
           <Form.Item children={displayCustomerAdmins()} />
-          <EditCustomerSubscriptionForm></EditCustomerSubscriptionForm>
+          {showExtendedTrial ? <EditCustomerSubscriptionFormExtendedTrial />
+            : <EditCustomerSubscriptionForm />}
           <EnableSupportForm></EnableSupportForm>
         </StepsFormLegacy.StepForm>}
 
@@ -1377,6 +1864,8 @@ export function ManageCustomer () {
               style={{ width: '300px' }}
               rules={[
                 { required: true },
+                { min: 2 },
+                { max: 255 },
                 { validator: (_, value) => whitespaceOnlyRegExp(value) }
               ]}
               validateFirst
@@ -1410,6 +1899,7 @@ export function ManageCustomer () {
             </Form.Item>
 
             <MspAdminsForm></MspAdminsForm>
+            {createEcWithTierEnabled && <EcTierForm />}
             <CustomerAdminsForm></CustomerAdminsForm>
           </StepsFormLegacy.StepForm>
 
@@ -1421,7 +1911,7 @@ export function ManageCustomer () {
               return true
             }}
           >
-            <CustomerSubscription />
+            {showExtendedTrial ? <CustomerSubscriptionExtendedTrial /> : <CustomerSubscription />}
           </StepsFormLegacy.StepForm>
 
           <StepsFormLegacy.StepForm name='summary'
@@ -1432,12 +1922,27 @@ export function ManageCustomer () {
 
       </StepsFormLegacy>
 
-      {drawerAdminVisible && <ManageAdminsDrawer
-        visible={drawerAdminVisible}
-        setVisible={setDrawerAdminVisible}
-        setSelected={selectedMspAdmins}
-        tenantId={mspEcTenantId}
-      />}
+      {drawerAdminVisible && (isAbacToggleEnabled
+        ? (isRbacPhase2Enabled
+          ? <ManageMspDelegationDrawer
+            visible={drawerAdminVisible}
+            setVisible={setDrawerAdminVisible}
+            setSelectedUsers={selectedMspAdmins}
+            selectedUsers={mspAdmins}
+            setSelectedPrivilegeGroups={setPrivilegeGroups}
+            selectedPrivilegeGroups={privilegeGroups}
+            tenantIds={mspEcTenantId ? [mspEcTenantId] : undefined}/>
+          : <ManageDelegateAdminDrawer
+            visible={drawerAdminVisible}
+            setVisible={setDrawerAdminVisible}
+            setSelected={selectedMspAdmins}
+            tenantId={mspEcTenantId}/>)
+        : <ManageAdminsDrawer
+          visible={drawerAdminVisible}
+          setVisible={setDrawerAdminVisible}
+          setSelected={selectedMspAdmins}
+          tenantId={mspEcTenantId}/>
+      )}
       {drawerIntegratorVisible && <SelectIntegratorDrawer
         visible={drawerIntegratorVisible}
         tenantType={AccountType.MSP_INTEGRATOR}

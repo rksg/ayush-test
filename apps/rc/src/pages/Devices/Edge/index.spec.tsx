@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { useIsTierAllowed }                                  from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                          from '@acx-ui/store'
 import {
@@ -8,6 +8,7 @@ import {
   render,
   screen
 } from '@acx-ui/test-utils'
+
 
 import EdgeList from './index'
 
@@ -17,11 +18,14 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+jest.mock('./EdgeClusterTable', () => ({
+  EdgeClusterTable: () => <div data-testid='edge-cluster-table' />
+}))
 
 describe('EdgeList', () => {
   let params: { tenantId: string }
   beforeEach(() => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -39,17 +43,19 @@ describe('EdgeList', () => {
   })
 
   it('feature flag off', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
         <EdgeList />
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge' }
       })
-    await screen.findByText('SmartEdge is not enabled')
+    await screen.findByText('RUCKUS Edge is not enabled')
   })
 
   it('should create EdgeList successfully', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE)
+
     render(
       <Provider>
         <EdgeList />
@@ -58,5 +64,16 @@ describe('EdgeList', () => {
       })
     const row = await screen.findAllByRole('row', { name: /Smart Edge/i })
     expect(row.length).toBe(5)
+  })
+
+  it('should show edge cluster table when HA FF is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(
+      <Provider>
+        <EdgeList />
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge' }
+      })
+    expect(screen.getByTestId('edge-cluster-table')).toBeVisible()
   })
 })

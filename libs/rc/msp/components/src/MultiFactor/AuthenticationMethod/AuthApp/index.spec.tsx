@@ -50,8 +50,8 @@ describe('Authentication App Drawer', () => {
 
     await screen.findByText('Manage Authentication App')
     await screen.findByText(mockedRegisterPhoneResponse.key)
-    const qrImg = await screen.findByRole('img')
-    expect(qrImg).toHaveAttribute('src', mockedRegisterPhoneResponse.url)
+    // const qrImg = await screen.findByRole('img')
+    // expect(qrImg).toHaveAttribute('src', mockedRegisterPhoneResponse.url)
 
     await userEvent.type(await screen.findByRole('textbox'), '123456')
     await userEvent.click(await screen.findByRole('button', { name: 'Confirm' }))

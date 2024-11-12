@@ -121,7 +121,7 @@ describe('Layout', () => {
     })
     await screen.findByTestId('SpeedIndicatorSolid')
   })
-  it('should render correctly when adminItem = true', () => {
+  it('should render correctly when adminItem = true', async () => {
     const config = [
       {
         uri: '/dashboard',
@@ -144,9 +144,10 @@ describe('Layout', () => {
         wrapRoutes: false
       }
     })
+    await waitFor(() => screen.findByText('Left header'))
     expect(asFragment()).toMatchSnapshot()
   })
-  it('should render correctly when openNewTab = true', () => {
+  it('should render correctly when openNewTab = true', async () => {
     get.mockReturnValue('true')
     const config = [
       {
@@ -170,6 +171,35 @@ describe('Layout', () => {
         wrapRoutes: false
       }
     })
+    await waitFor(() => screen.findByText('Left header'))
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should render correctly when menu has superscript', async () => {
+    get.mockReturnValue('true')
+    const config = [
+      {
+        uri: '/analytics/dashboard',
+        label: 'Dashboard',
+        inactiveIcon: SpeedIndicatorOutlined,
+        activeIcon: SpeedIndicatorSolid,
+        openNewTab: false,
+        superscript: 'beta'
+      }
+    ]
+    const { asFragment } = render(<Layout
+      logo={<div />}
+      menuConfig={config}
+      leftHeaderContent={<div>Left header</div>}
+      rightHeaderContent={<div>Right header</div>}
+      content={<div>content</div>}
+    />, {
+      route: {
+        path: '/ai/dashboard',
+        params: { page: 'dashboard' },
+        wrapRoutes: false
+      }
+    })
+    await waitFor(() => screen.findByText('Left header'))
     expect(asFragment()).toMatchSnapshot()
   })
   it('should render IframeContent when location pathname has "dataStudio"', async () => {

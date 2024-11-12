@@ -1,15 +1,30 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useReducer } from 'react'
 
+import { Form }                   from 'antd'
+import { cloneDeep }              from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { PageHeader, showActionModal, StepsFormLegacy, StepsFormLegacyInstance }                 from '@acx-ui/components'
-import { useAddApSnmpPolicyMutation, useGetApSnmpPolicyQuery, useUpdateApSnmpPolicyMutation }    from '@acx-ui/rc/services'
-import { ApSnmpPolicy, getPolicyListRoutePath, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                         from '@acx-ui/react-router-dom'
+import { PageHeader, showActionModal, StepsForm } from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import {
+  useAddApSnmpPolicyMutation,
+  useGetApSnmpPolicyQuery,
+  useUpdateApSnmpPolicyMutation
+} from '@acx-ui/rc/services'
+import {
+  ApSnmpActionType,
+  ApSnmpPolicy,
+  usePolicyPageHeaderTitle,
+  getPolicyRoutePath,
+  PolicyOperation,
+  PolicyType,
+  usePolicyListBreadcrumb
+} from '@acx-ui/rc/utils'
+import { useTenantLink } from '@acx-ui/react-router-dom'
 
-import SnmpAgentSettingForm from './SnmpAgentSettingForm'
-import * as UI              from './styledComponents'
+import SnmpAgentFormContext, { mainReducer } from './SnmpAgentFormContext'
+import SnmpAgentSettingForm                  from './SnmpAgentSettingForm'
 
 
 type SnmpAgentFormProps = {
@@ -21,101 +36,112 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
   const navigate = useNavigate()
   const tablePath = getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })
   const linkToPolicies = useTenantLink(tablePath)
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  // eslint-disable-next-line
+  const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
+
 
   const params = useParams()
-
   const { editMode } = props
-  const formRef = useRef<StepsFormLegacyInstance<ApSnmpPolicy>>()
 
-  const { data } = useGetApSnmpPolicyQuery({ params }, { skip: !editMode })
-
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.SNMP_AGENT)
+  const pageTitle = usePolicyPageHeaderTitle(editMode, PolicyType.SNMP_AGENT)
+  //eslint-disable-next-line
+  const { data } = useGetApSnmpPolicyQuery({ params, enableRbac: isUseRbacApi, isSNMPv3PassphraseOn }, { skip: !editMode })
   const [ createApSnmpPolicy ] = useAddApSnmpPolicyMutation()
-
   const [ updateApSnmpPolicy ] = useUpdateApSnmpPolicyMutation()
 
-  const [saveState, updateSaveState] = useState<ApSnmpPolicy>({} as ApSnmpPolicy )
 
-  const updateSaveData = (saveData: Partial<ApSnmpPolicy>) => {
-    updateSaveState({ ...saveState, ...saveData })
-  }
+  const [form] = Form.useForm()
+  const [state, dispatch] = useReducer(mainReducer, {
+    policyName: '',
+    snmpV2Agents: [],
+    snmpV3Agents: []
+  })
 
   useEffect(() => {
-    if (data) {
-      formRef?.current?.resetFields()
-      formRef?.current?.setFieldsValue(data)
-      updateSaveData(data)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data])
+    if (editMode && data) {
+      const policyName = data.name || data.policyName
+      const newData = cloneDeep(data)
+      // update state from API data
+      if (state.policyName === '') {
+        const payload = {
+          state: {
+            ...state,
+            ...newData,
+            policyName
+          } }
 
-  const handleSaveApSnmpAgentPolicy = async (data: ApSnmpPolicy) => {
-    try {
-      const payload = { ...data }
-      if (!payload.snmpV2Agents) payload.snmpV2Agents = []
-      if (!payload.snmpV3Agents) payload.snmpV3Agents = []
-
-      const { snmpV2Agents, snmpV3Agents } = payload
-      if (snmpV2Agents.length === 0 && snmpV3Agents.length === 0) {
-        showActionModal({
-          type: 'error',
-          content:
-            $t({
-              defaultMessage: 'At least one SNMPv2 agent or SNMPv3 agent must be created.'
-            })
+        dispatch({
+          type: ApSnmpActionType.UPDATE_STATE,
+          payload
         })
-      } else {
+      }
+
+      if (form) {
+        form.setFieldsValue({ ...newData, policyName })
+      }
+    }
+  }, [form, editMode, data])
+
+  const isDataValid = (data: ApSnmpPolicy) => {
+    const { snmpV2Agents, snmpV3Agents } = data
+    if (snmpV2Agents.length === 0 && snmpV3Agents.length === 0) {
+      showActionModal({
+        type: 'error',
+        content:
+          $t({
+            defaultMessage: 'At least one SNMPv2 agent or SNMPv3 agent must be created.'
+          })
+      })
+      return false
+    }
+
+    return true
+  }
+
+  const handleSaveApSnmpAgentPolicy = async () => {
+    try {
+      const clonedData = cloneDeep(state)
+      if (isDataValid(clonedData)) {
+        const { policyName, ...others } = clonedData
+        const payload = (isUseRbacApi) ? { ...others, name: policyName } : clonedData
         if (!editMode) {
           await createApSnmpPolicy({
-            params,
-            payload
-          }).unwrap().then((res)=>{
-            data.id = res?.response?.id
-          })
+            params, payload, enableRbac: isUseRbacApi, isSNMPv3PassphraseOn
+          }).unwrap()
         } else {
           await updateApSnmpPolicy({
-            params,
-            payload: data
+            params, payload, enableRbac: isUseRbacApi, isSNMPv3PassphraseOn
           }).unwrap()
         }
 
         navigate(linkToPolicies, { replace: true })
       }
+
     } catch(error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
 
-  const handleCancel = () => {
-    navigate(linkToPolicies)
-  }
-
   return (
     <>
       <PageHeader
-        title={editMode
-          ? $t({ defaultMessage: 'Edit SNMP Agent' })
-          : $t({ defaultMessage: 'Add SNMP Agent' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: $t({ defaultMessage: 'SNMP Agent' }), link: tablePath }
-        ]}
+        title={pageTitle}
+        breadcrumb={breadcrumb}
       />
-      <StepsFormLegacy<ApSnmpPolicy>
-        formRef={formRef}
-        onCancel={handleCancel}
-        onFinish={async (data) => { return handleSaveApSnmpAgentPolicy(data) }}
-      >
-        <UI.OverwriteStepsForm
-          name='settings'
-          title={$t({ defaultMessage: 'SNMP Agent Settings' })}
+      <SnmpAgentFormContext.Provider value={{ state, dispatch }}>
+        <StepsForm<ApSnmpPolicy>
+          form={form}
+          editMode={editMode}
+          onCancel={() => navigate(linkToPolicies, { replace: true })}
+          onFinish={handleSaveApSnmpAgentPolicy}
         >
-          <SnmpAgentSettingForm editMode={editMode} saveState={saveState} />
-        </UI.OverwriteStepsForm>
-      </StepsFormLegacy>
+          <StepsForm.StepForm>
+            <SnmpAgentSettingForm />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </SnmpAgentFormContext.Provider>
     </>
   )
 }

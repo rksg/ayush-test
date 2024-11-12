@@ -32,6 +32,9 @@ describe('HealthPage', () => {
     mockGraphqlQuery(dataApiURL, 'NetworkHierarchy', {
       data: { network: { hierarchyNode: networkHierarchy } }
     })
+    mockGraphqlQuery(dataApiURL, 'VenueHierarchy', {
+      data: { network: { hierarchyNode: networkHierarchy } }
+    })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: [] } } }
     })
@@ -76,7 +79,7 @@ describe('HealthPage', () => {
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     fireEvent.click(await screen.findByText('Connection'))
     expect(mockedUseNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/analytics/health/tab/connection`,
+      pathname: `/${params.tenantId}/t/analytics/health/wireless/tab/connection`,
       hash: '',
       search: ''
     })

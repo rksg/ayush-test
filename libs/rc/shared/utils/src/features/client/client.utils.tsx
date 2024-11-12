@@ -1,6 +1,5 @@
 import { IntlShape } from 'react-intl'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { cssStr } from '@acx-ui/components'
 import {
   Amazon,
@@ -25,7 +24,31 @@ import {
   TabletOutlined,
   Ubuntu,
   VoIpOutlined,
-  WdsOutlined
+  WdsOutlined,
+  Avaya,
+  Bose,
+  Brother,
+  Canon,
+  Cisco,
+  Dell,
+  Epson,
+  Panasonic,
+  Nortel,
+  Nintendo,
+  Nest,
+  Libratone,
+  Linksys,
+  Hp,
+  Roku,
+  Playstation,
+  Sonos,
+  Sony,
+  Samsung,
+  Wemo,
+  Xerox,
+  Xbox,
+  WifiSmartPlug,
+  Telnet
 } from '@acx-ui/icons'
 
 export const getDeviceTypeIcon = (deviceType: string) => {
@@ -58,38 +81,39 @@ export const getOsTypeIcon = (osType: string) => {
   type Type = keyof typeof osIconMap
   const type = convertClientOsType(osType)
   const defaultIcon = <GenericOs />
-  const osIconMap = { // TODO: Add icons (Waiting for designer)
-    apple: <Apple />,
-    // avaya:
-    android: <Android />,
-    blackberry: <Blackberry />,
-    // bose:
-    // brother:
-    // canon:
-    chrome: <Chrome />,
-    // cisco:
-    // dell:
-    // epson:
-    // panasonic:
-    // nortel:
-    // nintendo:
-    // nest:
-    linux: <Linux />,
-    // linksys:
-    // libratone:
-    kindle: <Amazon />,
-    // hp:
-    // playstation:
-    // roku:
-    // samsung:
-    // sonos:
-    // sony:
-    ubuntu: <Ubuntu />,
-    // wemo:
-    windows: <Microsoft />
-    // xbox:
-    // xerox:
-    // 'wifi smart plug':
+  const osIconMap = {
+    'apple': <Apple />,
+    'avaya': <Avaya />,
+    'android': <Android />,
+    'blackberry': <Blackberry />,
+    'bose': <Bose />,
+    'brother': <Brother />,
+    'canon': <Canon />,
+    'chrome': <Chrome />,
+    'cisco': <Cisco />,
+    'dell': <Dell />,
+    'epson': <Epson />,
+    'panasonic': <Panasonic />,
+    'nortel': <Nortel />,
+    'nintendo': <Nintendo />,
+    'nest': <Nest />,
+    'linux': <Linux />,
+    'linksys': <Linksys />,
+    'libratone': <Libratone />,
+    'kindle': <Amazon />,
+    'hp': <Hp />,
+    'playstation': <Playstation />,
+    'roku': <Roku />,
+    'samsung': <Samsung />,
+    'sonos': <Sonos />,
+    'sony': <Sony />,
+    'telnet': <Telnet />,
+    'ubuntu': <Ubuntu />,
+    'wemo': <Wemo />,
+    'windows': <Microsoft />,
+    'xbox': <Xbox />,
+    'xerox': <Xerox />,
+    'wifi smart plug': <WifiSmartPlug />
   }
   return osIconMap[type as Type] || defaultIcon
 }

@@ -1,8 +1,7 @@
 
-import { waitFor, within } from '@testing-library/react'
-import userEvent           from '@testing-library/user-event'
-import { rest }            from 'msw'
-import { useNavigate }     from 'react-router-dom'
+import userEvent       from '@testing-library/user-event'
+import { rest }        from 'msw'
+import { useNavigate } from 'react-router-dom'
 
 import { useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
@@ -14,8 +13,16 @@ import {
   PersonaUrls,
   PropertyUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }                                                          from '@acx-ui/store'
-import { mockServer, render, renderHook, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { Provider } from '@acx-ui/store'
+import {
+  mockServer,
+  render,
+  renderHook,
+  screen,
+  waitForElementToBeRemoved,
+  waitFor,
+  within
+} from '@acx-ui/test-utils'
 
 import {
   mockDpskList,
@@ -23,9 +30,10 @@ import {
   mockPersonaGroupList,
   replacePagination,
   mockedTemplateScope,
-  mockEnabledNoNSGPropertyConfig,
+  mockEnabledNoPinPropertyConfig,
   mockPropertyUnitList,
-  mockResidentPortalProfileList
+  mockResidentPortalProfileList,
+  mockAllTemplates
 } from './__tests__/fixtures'
 
 import { PropertyManagementForm } from '.'
@@ -54,7 +62,7 @@ describe('Property Config Form', () => {
         PropertyUrlsInfo.getPropertyConfigs.url,
         (req, res, ctx) => {
           if (req.params.venueId === enabledParams.venueId) {
-            return res(ctx.json(mockEnabledNoNSGPropertyConfig))
+            return res(ctx.json(mockEnabledNoPinPropertyConfig))
           } else {
             return res(ctx.status(404))
           }
@@ -102,6 +110,22 @@ describe('Property Config Form', () => {
       rest.get(
         MsgTemplateUrls.getTemplateScopeByIdWithRegistration.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(mockedTemplateScope))
+      ),
+      rest.get(
+        MsgTemplateUrls.getAllTemplatesByTemplateScopeId.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json(mockAllTemplates))
+      ),
+      rest.post(
+        PersonaUrls.searchPersonaGroupList.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        MsgTemplateUrls.getAllTemplateGroupsByCategoryId.url,
+        (_, res, ctx) => res(ctx.json({ paging: { totalCount: 0 } }))
+      ),
+      rest.get(
+        MsgTemplateUrls.getCategoryById.url,
+        (_, res, ctx) => res(ctx.json({}))
       )
     )
   })
@@ -197,7 +221,7 @@ describe('Property Config Form', () => {
     await waitFor(() => expect(saveConfigFn).toHaveBeenCalled())
   })
 
-  it.skip('should render Property config tab with msg-template', async () => {
+  it('should render Property config tab with msg-template and save', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     render(
@@ -212,8 +236,45 @@ describe('Property Config Form', () => {
     const enableSwitch = await screen.findByTestId('property-enable-switch')
     await waitFor(() => expect(enableSwitch).toHaveAttribute('aria-checked', 'true'))
 
-    // check rending msg-template tab list view
-    await screen.findByRole('tablist')
+    // Trigger save form
+    const formSaveBtn = await screen.findByRole('button', { name: /save/i })
+    await userEvent.click(formSaveBtn)
+  })
+
+  it('should render resident portal selector correctly without residentPortalId', async () => {
+    mockServer.use(
+      rest.get(
+        PropertyUrlsInfo.getPropertyConfigs.url,
+        (req, res, ctx) => {
+          return res(ctx.json({
+            ...mockEnabledNoPinPropertyConfig,
+            residentPortalId: undefined,
+            unitConfig: {
+              ...mockEnabledNoPinPropertyConfig.unitConfig,
+              residentApiAllowed: true,
+              residentPortalAllowed: false
+            }
+          }))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <PropertyManagementForm
+          venueId={enabledParams.venueId}
+        />
+      </Provider>, { route: { params: enabledParams } }
+    )
+
+    // check toggle with 'true' value
+    const enableSwitch = await screen.findByTestId('property-enable-switch')
+    await waitFor(() => expect(enableSwitch).toHaveAttribute('aria-checked', 'true'))
+
+    // Trigger save form
+    const formSaveBtn = await screen.findByRole('button', { name: /save/i })
+    await userEvent.click(formSaveBtn)
+    expect(saveConfigFn).toHaveBeenCalled()
   })
 
   it('should pop up warning dialog while disable property', async () => {

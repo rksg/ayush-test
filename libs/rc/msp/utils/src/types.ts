@@ -5,7 +5,8 @@ import {
   EntitlementDeviceType,
   EntitlementDeviceSubType,
   EntitlementNetworkDeviceType,
-  Entitlement
+  Entitlement,
+  TenantMspEc
 } from '@acx-ui/rc/utils'
 import { RolesEnum } from '@acx-ui/types'
 
@@ -32,7 +33,7 @@ export interface DelegationEntitlementRecord {
   entitlementDeviceSubType?: EntitlementDeviceSubType;
   expirationDate: string;
   quantity: string;
-  toBeRemovedQuantity: string;
+  toBeRemovedQuantity: number;
   tenantId: string;
   type: string;
   subTypeText?: string;
@@ -40,6 +41,10 @@ export interface DelegationEntitlementRecord {
   outOfComplianceDevices?: number;
   futureOutOfComplianceDevices?: number;
   futureOfComplianceDate?: number;
+  wifiDeviceCount?: number;
+  switchDeviceCount?: number;
+  rwgDeviceCount?: number;
+  edgeDeviceCount?: number
 }
 
 export interface MspEc {
@@ -67,6 +72,7 @@ export interface MspEc {
   assignedMspEcList: string[];
   creationDate: number;
   entitlements: DelegationEntitlementRecord[];
+  accountTier?: MspEcTierEnum;
 }
 
 export interface MspEcData {
@@ -94,8 +100,10 @@ export interface MspEcData {
   licenses?: {};
   delegations?: MspIntegratorDelegated[];
   admin_delegations?: MspEcDelegatedAdmins[];
+  privilege_group_ids?: string[];
   number_of_days?: string;
   isManageAllEcs?: boolean;
+  tier?: MspEcTierEnum;
 }
 
 export interface VarCustomer {
@@ -208,6 +216,14 @@ export interface MspAssignmentHistory {
   mspTenantId: string;
   trialAssignment: boolean;
   status: string;
+  ownAssignment?: boolean;
+  // RBAC
+  licenseType?: string;
+  effectiveDate?: string;
+  expirationDate?: string;
+  isTrial?: boolean,
+  createdDate?: string;
+  revokedDate?: string;
 }
 
 export interface MspAssignmentSummary {
@@ -275,6 +291,7 @@ export interface TenantDetail {
   tenantType: string;
   updatedDate?: string;
   upgradeGroup?: string;
+  mspEc?: TenantMspEc;
 }
 
 export interface MspProfile {
@@ -416,10 +433,21 @@ export interface UpgradeFirmwareVer {
   branches: string[]
 }
 
+export interface RecommendFirmwareUpgradeByApModel {
+  id?: string,
+  supportedApModels: string[]
+}
+
 export interface MspRecData {
   account_id?: string;
+  name?: string;
   delegations?: MspIntegratorDelegated[];
   admin_delegations?: MspEcDelegatedAdmins[];
+}
+
+export interface MspMultiRecData {
+  data: MspRecData[]
+  delegations?: MspIntegratorDelegated[];
 }
 
 export interface AvailableMspRecCustomers {
@@ -444,4 +472,138 @@ export interface MspRecCustomer {
   flexera_llm_account_id?: string,
   acx_trial_in_progress?: boolean,
   email_id?: string
+}
+
+export enum MspEcTierEnum {
+  Essentials = 'Gold',
+  Professional = 'Platinum'
+}
+
+export interface MspEcWithVenue extends MspEc {
+  isFirstLevel?: boolean,
+  isUnauthorizedAccess?: boolean,
+  allVenues?: boolean,
+  children: {
+    name: string,
+    id: string,
+    selected: boolean
+  }[]
+}
+
+export interface MspEcTierPayload {
+  type: string,
+  serviceTierStatus: string
+}
+
+export enum DeviceComplianceType {
+  WIFI = 'WIFI',
+  SWITCH = 'SWITCH',
+  EDGE = 'EDGE',
+  VIRTUAL_EDGE = 'VIRTUAL_EDGE',
+  RWG = 'RWG'
+}
+
+export interface DeviceCompliance {
+  deviceType: DeviceComplianceType,
+  installedDeviceCount: number,
+  usedLicenseCount: number
+}
+
+export interface ComplianceData {
+  licenseType: string,
+  tenantId: string,
+  tenantName: string,
+  deviceCompliances: DeviceCompliance[]
+  totalActivePaidLicenseCount: number,
+  totalActiveTrialLicenseCount: number,
+  nextPaidExpirationDate: string,
+  nextTotalPaidExpiringLicenseCount: number,
+  nextTrialExpirationDate: string,
+  nextTotalTrialExpiringLicenseCount: number,
+  totalActivePaidAssignedLicenseCount: number,
+  totalActiveTrialAssignedLicenseCount: number,
+  licensesUsed: number,
+  licenseGap: number
+}
+
+export interface MspCompliances {
+  compliances: {
+    licenseType: string,
+    self?: ComplianceData,
+    mspEcSummary?: ComplianceData
+  }[]
+}
+
+export enum MspEcAccountType {
+  PAID = 'PAID',
+  TRIAL = 'TRIAL',
+  EXTENDED_TRIAL = 'EXTENDED_TRIAL'
+}
+
+export interface LicenseCardProps {
+  title: string
+  subTitle: string
+  data: ComplianceData
+  isMsp: boolean
+  trialType?: string,
+  footerContent?: React.ReactElement
+}
+
+export interface LicenseCalculatorCardProps {
+  title: string
+  subTitle: string
+  footerContent?: React.ReactElement
+}
+
+export enum ComplianceMspCustomersDevicesTypes {
+  AP='AP',
+  SWITCH='SWITCH',
+  EDGE='EDGE',
+  RWG='RWG'
+}
+
+export interface LicenseAttentionNotes {
+  data: {
+    summary?: string,
+    details?: string
+  }[]
+}
+
+export const MspAttentionNotesPayload = {
+  page: 1,
+  pageSize: 20,
+  fields: ['summary', 'details'],
+  sortField: 'status',
+  sortOrder: 'DESC',
+  filters: {
+    type: ['STOP_COURTESY'],
+    tenantType: ['MSP', 'ALL'],
+    status: ['VALID'],
+    licenseCheck: true
+  }
+}
+
+export interface LicenseCalculatorData {
+    effectiveDate: string,
+    expirationDate: string,
+    quantity: number,
+    licenseType: EntitlementDeviceType,
+    isTrial: boolean,
+    maxQuantity: number
+}
+
+export interface LicenseCalculatorDataResponse {
+  data: LicenseCalculatorData,
+  message: string
+}
+export interface SelectedMspMspAdmins {
+  mspAdminId: string
+  mspAdminRole: RolesEnum
+}
+
+export interface AssignedMultiEcMspAdmins {
+  operation: string
+  mspEcId: string
+  mspAdminRoles: SelectedMspMspAdmins[]
+  privilege_group_ids?: string[]
 }

@@ -4,6 +4,7 @@ import { Descriptions, PasswordInput } from '@acx-ui/components'
 import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
 import { GatewayDetailsGeneral }       from '@acx-ui/rc/utils'
 import { TenantLink }                  from '@acx-ui/react-router-dom'
+import { noDataDisplay }               from '@acx-ui/utils'
 
 import * as UI from '../../styledComponents'
 
@@ -22,51 +23,51 @@ export default function GatewayDetailsGeneralContent (props: {
     }}
     labelWidthPercent={40}>
     <Descriptions.Item
-      label={$t({ defaultMessage: 'Venue' })}
+      label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
       children={
-        <TenantLink to={`venues/${gatewayDetails?.venueId}/venue-details/overview`}>
-          {gatewayDetails?.venueName}
-        </TenantLink>
+        gatewayDetails?.venueName
+          ? <TenantLink to={`venues/${gatewayDetails?.venueId}/venue-details/overview`}>
+            {gatewayDetails?.venueName}
+          </TenantLink>
+          : noDataDisplay
       }
     />
     <Descriptions.Item
       label={$t({ defaultMessage: 'Hostname' })}
-      children={gatewayDetails?.hostname}
+      children={gatewayDetails?.hostname || noDataDisplay}
     />
     <Descriptions.Item
-      label={$t({ defaultMessage: 'Username' })}
-      children={gatewayDetails?.username}
-    />
-    <Descriptions.Item
-      label={$t({ defaultMessage: 'Password' })}
-      children={<UI.DetailsPassword>
+      label={$t({ defaultMessage: 'API Key' })}
+      children={gatewayDetails?.apiKey ? <UI.DetailsPassword>
         <PasswordInput
           readOnly
           bordered={false}
-          value={gatewayDetails?.password}
+          value={gatewayDetails?.apiKey}
         />
-      </UI.DetailsPassword>}
+      </UI.DetailsPassword> : noDataDisplay}
     />
     <Descriptions.Item
       label={$t({ defaultMessage: 'Uptime' })}
-      children={longDurationFormat(gatewayDetails?.uptimeInSeconds, 'long')}
+      children={longDurationFormat(+(gatewayDetails?.uptimeInSeconds || 0) * 1000, 'long')}
     />
     <Descriptions.Item
       label={$t({ defaultMessage: 'Booted at' })}
-      children={dateTimeFormatter(gatewayDetails?.bootedAt)}
+      children={dateTimeFormatter(gatewayDetails?.bootedAt || noDataDisplay)}
     />
     <Descriptions.Item
       label={$t({ defaultMessage: 'Processor Temperature' })}
-      children={$t({ defaultMessage: '{temperature} C' },
-        { temperature: Math.round(Number(gatewayDetails?.temperature)) })}
+      children={$t({ defaultMessage: '{temperature}' },
+        { temperature: gatewayDetails?.temperature
+          ? Math.round(Number(gatewayDetails?.temperature)) + ' C'
+          : noDataDisplay })}
     />
     <Descriptions.Item
       label={$t({ defaultMessage: 'Created' })}
-      children={gatewayDetails?.created}
+      children={gatewayDetails?.created || noDataDisplay}
     />
     <Descriptions.Item
       label={$t({ defaultMessage: 'Updated By' })}
-      children={gatewayDetails?.updated}
+      children={gatewayDetails?.updated || noDataDisplay}
     />
   </Descriptions>
 }

@@ -1,4 +1,3 @@
-import { getUserProfile }       from '@acx-ui/analytics/utils'
 import { Provider, dataApiURL } from '@acx-ui/store'
 import {
   render,
@@ -6,6 +5,7 @@ import {
   fireEvent,
   mockGraphqlQuery
 } from '@acx-ui/test-utils'
+import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
 
 import ClientDetails from '.'
 
@@ -29,13 +29,6 @@ jest.mock('@acx-ui/reports/components', () => ({
   EmbeddedReport: () => <div data-testid='report'></div>
 }))
 
-jest.mock('@acx-ui/analytics/utils', () => ({
-  ...jest.requireActual('@acx-ui/analytics/utils'),
-  getUserProfile: jest.fn(),
-  updateSelectedTenant: jest.fn()
-}))
-const userProfile = getUserProfile as jest.Mock
-
 describe('ClientDetails', () => {
   const params = {
     clientId: 'mockClientId',
@@ -58,17 +51,11 @@ describe('ClientDetails', () => {
       }
     }
   }
-  const defaultUserProfile = {
-    accountId: 'aid',
-    tenants: [],
-    invitations: [],
-    selectedTenant: {
-      id: 'aid',
-      role: 'admin'
-    }
-  }
   beforeEach(() => {
-    userProfile.mockReturnValue(defaultUserProfile)
+    setRaiPermissions({
+      READ_WIRELESS_CLIENTS_REPORT: true,
+      READ_CLIENT_TROUBLESHOOTING: true
+    } as RaiPermissions)
   })
   it('should render correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', {
@@ -146,14 +133,11 @@ describe('ClientDetails', () => {
     expect(await screen.findByTestId('troubleshooting')).toBeVisible()
   })
 
-  it('should render for report-only user correctly', async () => {
-    userProfile.mockReturnValue({
-      ...defaultUserProfile,
-      selectedTenant: {
-        ...defaultUserProfile.selectedTenant,
-        role: 'report-only'
-      }
-    })
+  it('should render for BI (previous report-only) user correctly', async () => {
+    setRaiPermissions({
+      READ_CLIENT_TROUBLESHOOTING: true,
+      READ_WIRELESS_CLIENTS_REPORT: true
+    } as RaiPermissions)
     mockGraphqlQuery(dataApiURL, 'Network', {
       data: clientsList
     })
@@ -167,9 +151,70 @@ describe('ClientDetails', () => {
         path: '/users/wifi/clients/:clientId/details/:activeTab'
       }
     })
-    expect(screen.queryByRole('tab', { name: 'Troubleshooting' }))
-      .toBeNull()
-    expect(screen.queryByTestId('troubleshooting')).toBeNull()
-    expect(await screen.findByRole('tab', { name: 'Reports', selected: true })).toBeVisible()
+    expect(await screen.findByRole('tab', { name: 'Troubleshooting' })).toBeVisible()
+    expect(await screen.findByRole('tab', { name: 'Reports' })).toBeVisible()
+  })
+  it('should not render tabs for reports user', async () => {
+    setRaiPermissions({
+      READ_CLIENT_TROUBLESHOOTING: false,
+      READ_WIRELESS_CLIENTS_REPORT: false
+    } as RaiPermissions)
+    mockGraphqlQuery(dataApiURL, 'Network', {
+      data: clientsList
+    })
+    render(<ClientDetails/>, {
+      wrapper: Provider,
+      route: {
+        params: {
+          ...params,
+          activeTab: 'reports'
+        },
+        path: '/users/wifi/clients/:clientId/details/:activeTab'
+      }
+    })
+    expect(screen.queryByRole('tab', { name: 'Troubleshooting' })).toBeNull()
+    expect(screen.queryByRole('tab', { name: 'Reports' })).toBeNull()
+  })
+  it('should not render tabs for a single tab with troubleshooting permission', async () => {
+    setRaiPermissions({
+      READ_CLIENT_TROUBLESHOOTING: true,
+      READ_WIRELESS_CLIENTS_REPORT: false
+    } as RaiPermissions)
+    mockGraphqlQuery(dataApiURL, 'Network', {
+      data: clientsList
+    })
+    render(<ClientDetails/>, {
+      wrapper: Provider,
+      route: {
+        params: {
+          ...params,
+          activeTab: 'troubleshooting'
+        },
+        path: '/users/wifi/clients/:clientId/details/:activeTab'
+      }
+    })
+    expect(screen.queryByRole('tab', { name: 'Troubleshooting' })).toBeNull()
+    expect(screen.queryByRole('tab', { name: 'Reports' })).toBeNull()
+  })
+  it('should not render tabs for a single tab with client report permission', async () => {
+    setRaiPermissions({
+      READ_CLIENT_TROUBLESHOOTING: false,
+      READ_WIRELESS_CLIENTS_REPORT: true
+    } as RaiPermissions)
+    mockGraphqlQuery(dataApiURL, 'Network', {
+      data: clientsList
+    })
+    render(<ClientDetails/>, {
+      wrapper: Provider,
+      route: {
+        params: {
+          ...params,
+          activeTab: 'reports'
+        },
+        path: '/users/wifi/clients/:clientId/details/:activeTab'
+      }
+    })
+    expect(screen.queryByRole('tab', { name: 'Troubleshooting' })).toBeNull()
+    expect(screen.queryByRole('tab', { name: 'Reports' })).toBeNull()
   })
 })

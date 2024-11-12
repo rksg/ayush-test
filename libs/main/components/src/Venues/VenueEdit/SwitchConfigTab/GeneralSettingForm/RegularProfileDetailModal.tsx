@@ -1,0 +1,121 @@
+import { Typography } from 'antd'
+
+import { Modal, Table, TableProps }                                               from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
+import { useGetSwitchConfigProfileQuery, useGetSwitchConfigProfileTemplateQuery } from '@acx-ui/rc/services'
+import {
+  Acl,
+  Vlan,
+  SwitchModel,
+  VenueSwitchConfiguration,
+  SpanningTreeProtocolName,
+  transformTitleCase,
+  useConfigTemplateQueryFnSwitcher,
+  ConfigurationProfile
+} from '@acx-ui/rc/utils'
+import { getIntl } from '@acx-ui/utils'
+
+import { FormState } from './index'
+
+export function RegularProfileDetailModal (props: {
+  formState: FormState,
+  formData: VenueSwitchConfiguration,
+  setFormState: (data: FormState) => void
+}) {
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const { $t } = getIntl()
+  const { formState, setFormState, formData } = props
+  const { data } = useConfigTemplateQueryFnSwitcher<ConfigurationProfile>({
+    useQueryFn: useGetSwitchConfigProfileQuery,
+    useTemplateQueryFn: useGetSwitchConfigProfileTemplateQuery,
+    extraParams: { profileId: formData?.profileId?.[0] as string },
+    enableRbac: isSwitchRbacEnabled
+  })
+
+  const vlansColumns: TableProps<Vlan>['columns']= [{
+    title: $t({ defaultMessage: 'VLAN ID' }),
+    dataIndex: 'vlanId',
+    key: 'vlanId'
+  }, {
+    title: $t({ defaultMessage: 'VLAN Name' }),
+    dataIndex: 'vlanName',
+    key: 'vlanName'
+  }, {
+    title: $t({ defaultMessage: 'IGMP Snooping' }),
+    dataIndex: 'igmpSnooping',
+    key: 'igmpSnooping',
+    render: (_, { igmpSnooping }) => transformTitleCase(igmpSnooping as string)
+  }, {
+    title: $t({ defaultMessage: 'Multicast Version' }),
+    dataIndex: 'multicastVersion',
+    key: 'multicastVersion'
+  }, {
+    title: $t({ defaultMessage: 'Spanning Tree' }),
+    dataIndex: 'spanningTreeProtocol',
+    key: 'spanningTreeProtocol',
+    render: (_, { spanningTreeProtocol }) => {
+      return data ? SpanningTreeProtocolName[spanningTreeProtocol] : null
+    }
+  }, {
+    title: $t({ defaultMessage: '# of Ports' }),
+    dataIndex: 'switchFamilyModels',
+    key: 'switchFamilyModels',
+    render: (_, { switchFamilyModels }) => {
+      return switchFamilyModels
+        ? switchFamilyModels?.reduce((result:number, row: SwitchModel) => {
+          const taggedPortsCount = row.taggedPorts?.split(',').length ?? 0
+          const untaggedPortsCount = row?.untaggedPorts?.split(',').length ?? 0
+          return result + taggedPortsCount + untaggedPortsCount
+        }, 0)
+        : 0
+    }
+  }]
+
+  const aclsColumns: TableProps<Acl>['columns']= [{
+    title: $t({ defaultMessage: 'ACL Name' }),
+    dataIndex: 'name',
+    key: 'name'
+  }, {
+    title: $t({ defaultMessage: 'ACL Type' }),
+    dataIndex: 'aclType',
+    key: 'aclType',
+    render: (_, { aclType }) => transformTitleCase(aclType)
+  }]
+
+  const closeModal = () => {
+    setFormState({
+      ...formState,
+      regularModalvisible: false
+    })
+  }
+
+  return (<Modal
+    title={$t({ defaultMessage: 'VLAN (L2) Profile Details' })}
+    visible={formState?.regularModalvisible}
+    width={900}
+    cancelButtonProps={{ style: { display: 'none' } }}
+    destroyOnClose={true}
+    onOk={closeModal}
+    onCancel={closeModal}
+  >
+    <Typography.Text style={{ display: 'block', marginBottom: '10px' }}>
+      {$t({ defaultMessage: 'Profile Name' })}: {data?.name}
+    </Typography.Text>
+    <Typography.Text>
+      {$t({ defaultMessage: 'VLANs' })} ({data?.vlans?.length ?? 0 })
+    </Typography.Text>
+    <Table
+      rowKey='id'
+      columns={vlansColumns}
+      dataSource={data?.vlans}
+    />
+    <Typography.Text style={{ display: 'inline-block', marginTop: '20px' }}>
+      {$t({ defaultMessage: 'ACLs' })} ({ data?.acls?.length ?? 0 })
+    </Typography.Text>
+    <Table
+      rowKey='id'
+      columns={aclsColumns}
+      dataSource={data?.acls}
+    />
+  </Modal>)
+}

@@ -1,84 +1,49 @@
-import { Row, Col, Form, Select, Typography } from 'antd'
-import { useIntl }                            from 'react-intl'
+import { Row, Col, Form, Select } from 'antd'
+import { useIntl }                from 'react-intl'
 
+import { PageHeader, StepsForm, Tabs, UserProfileSection } from '@acx-ui/components'
+import { MultiFactor }                                     from '@acx-ui/msp/components'
 import {
-  PageHeader,
-  StepsForm,
-  Tabs
-} from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { MultiFactor }            from '@acx-ui/msp/components'
-import {
-  useLocation,
   useNavigate,
-  useParams
+  useParams,
+  useTenantLink
 } from '@acx-ui/react-router-dom'
+import { RolesEnum } from '@acx-ui/types'
 import {
   DetailLevel,
   UserProfile as UserProfileInterface,
   useUserProfileContext,
   useUpdateUserProfileMutation,
-  roleStringMap
+  roleStringMap,
+  hasRoles
 } from '@acx-ui/user'
 
 import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
 import {
   RecentLogin
 } from './RecentLogin'
-import * as UI from './styledComponents'
-
-interface fromLoc {
-  from: string
-}
 
 export function UserProfile () {
   const { $t } = useIntl()
-  const isI18n2 = useIsSplitOn(Features.I18N_PHASE2_TOGGLE)
   const { Option } = Select
-  const { Paragraph } = Typography
-  const { tenantId } = useParams()
+  const { tenantId, activeTab } = useParams()
   const navigate = useNavigate()
   const { data: userProfile } = useUserProfileContext()
   const [ updateUserProfile ] = useUpdateUserProfileMutation()
-  const location = useLocation().state as fromLoc
+  const basePath = useTenantLink('/userprofile')
+  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+  const rootPath = useTenantLink('/')
 
   const handleUpdateSettings = async (data: Partial<UserProfileInterface>) => {
     await updateUserProfile({ payload: data, params: { tenantId } })
-    navigate({
-      pathname: location.from
-    }, { replace: true })
+    window.location.reload()
+    navigate(-1)
   }
 
   const handleCancel = () => {
-    navigate({
-      pathname: location.from
-    }, { replace: true })
-  }
-
-  const UserData = () => {
-    return (
-      <UI.UserDataWrapper>
-        <UI.UserData>
-          <UI.UserCircle>{userProfile?.initials}</UI.UserCircle>
-          {userProfile && <div>
-            <UI.UserName>{userProfile?.fullName}</UI.UserName>
-            <UI.UserRole>
-              {$t(roleStringMap[userProfile?.role])}
-            </UI.UserRole>
-            <UI.UserAttributes>
-              <div>
-                <b><UI.EnvelopClosedSolidIcon /></b>
-                <Paragraph>{userProfile?.email}</Paragraph>
-              </div>
-              <div>
-                <b>Tenant ID</b>
-                <Paragraph copyable>{tenantId}</Paragraph>
-              </div>
-            </UI.UserAttributes>
-          </div>}
-        </UI.UserData>
-      </UI.UserDataWrapper>
-    )
+    isGuestManager ?
+      navigate({ pathname: rootPath.pathname }):
+      navigate(-1)
   }
 
   const SettingsTab = () => {
@@ -123,9 +88,7 @@ export function UserProfile () {
                   </Select>
                 }
               />
-              { isI18n2 && (
-                <PreferredLanguageFormItem />
-              )}
+              <PreferredLanguageFormItem />
             </Col>
           </Row>
         </StepsForm.StepForm>
@@ -137,32 +100,53 @@ export function UserProfile () {
     return <MultiFactor/>
   }
 
+  const onTabChange = (tab: string) => {
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${tab}`
+    })
+  }
+  const tabs = [
+    {
+      key: 'settings',
+      title: $t({ defaultMessage: 'Settings' }),
+      component: <SettingsTab />
+    },
+    {
+      key: 'security',
+      title: $t({ defaultMessage: 'Security' }),
+      component: <SecurityTab />
+    },
+    {
+      key: 'recentLogins',
+      title: $t({ defaultMessage: 'Recent Logins' }),
+      disabled: hasRoles([RolesEnum.DPSK_ADMIN]),
+      component: userProfile && <RecentLogin userEmail={userProfile!.email} />
+    }
+  ]
+
+  const ActiveTabPane = tabs.find(({ key }) => key === activeTab)?.component
+
   return (
     <>
       <PageHeader
         title={$t({ defaultMessage: 'User Profile' })}
       />
-      <UserData/>
+      <UserProfileSection
+        userProfile={userProfile}
+        tenantId={tenantId}
+        roleStringMap={roleStringMap}
+      />
 
-      <Tabs type='line' defaultActiveKey={'Settings'}>
-        <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Settings' })}
-          key='Settings'>
-          <SettingsTab />
-        </Tabs.TabPane>
-
-        <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Security' })}
-          key='Security'>
-          <SecurityTab />
-        </Tabs.TabPane>
-
-        <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Recent Logins' })}
-          key='RecentLogins'>
-          {userProfile && <RecentLogin userEmail={userProfile!.email} />}
-        </Tabs.TabPane>
+      <Tabs
+        defaultActiveKey='settings'
+        activeKey={activeTab}
+        onChange={onTabChange}
+      >
+        {tabs.map(({ key, title, disabled }) =>
+          <Tabs.TabPane tab={title} key={key} disabled={disabled} />)}
       </Tabs>
+      {ActiveTabPane}
     </>
   )
 }

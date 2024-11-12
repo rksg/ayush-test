@@ -12,13 +12,12 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                      from '@acx-ui/feature-toggle'
-import { CsvSize, ImportFileDrawer, PassphraseViewer, ImportFileDrawerType, useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
+import { Features, useIsTierAllowed }                                                     from '@acx-ui/feature-toggle'
+import { CsvSize, ImportFileDrawer, PassphraseViewer, ImportFileDrawerType, NetworkForm } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteDpskPassphraseListMutation,
   useLazyDownloadNewFlowPassphrasesQuery,
-  useDownloadPassphrasesMutation,
   useGetEnhancedDpskPassphraseListQuery,
   useRevokeDpskPassphraseListMutation,
   useUploadPassphrasesMutation,
@@ -31,17 +30,19 @@ import {
   MAX_PASSPHRASES_PER_TENANT,
   NetworkTypeEnum,
   NewDpskPassphrase,
+  ServiceOperation,
+  ServiceType,
   getPassphraseStatus,
+  getScopeKeyByService,
+  hasDpskAccess,
   transformAdvancedDpskExpirationText,
   unlimitedNumberOfDeviceLabel,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams }                           from '@acx-ui/react-router-dom'
-import { RolesEnum }                           from '@acx-ui/types'
-import { filterByAccess, hasAccess, hasRoles } from '@acx-ui/user'
-import { getIntl, validationMessages }         from '@acx-ui/utils'
-
-import NetworkForm from '../../../Networks/wireless/NetworkForm/NetworkForm'
+import { useParams }                                               from '@acx-ui/react-router-dom'
+import { WifiScopes }                                              from '@acx-ui/types'
+import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { getIntl, validationMessages }                             from '@acx-ui/utils'
 
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 import ManageDevicesDrawer                              from './ManageDevicesDrawer'
@@ -57,7 +58,7 @@ const defaultPayload = {
 }
 
 const defaultSearch = {
-  searchTargetFields: ['username'],
+  searchTargetFields: ['username', 'mac'],
   searchString: ''
 }
 
@@ -76,11 +77,8 @@ export default function DpskPassphraseManagement () {
     passphrasesDrawerEditMode,
     setPassphrasesDrawerEditMode
   ] = useState<DpskPassphraseEditMode>({ isEdit: false })
-  const isNewConfigFlow = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const [ deletePassphrases ] = useDeleteDpskPassphraseListMutation()
   const [ uploadCsv, uploadCsvResult ] = useUploadPassphrasesMutation()
-  const [ downloadCsv ] = useDownloadPassphrasesMutation()
   const [ downloadNewFlowCsv ] = useLazyDownloadNewFlowPassphrasesQuery()
   const [ revokePassphrases ] = useRevokeDpskPassphraseListMutation()
   const [ uploadCsvDrawerVisible, setUploadCsvDrawerVisible ] = useState(false)
@@ -88,42 +86,28 @@ export default function DpskPassphraseManagement () {
   const params = useParams()
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
+  const settingsId = 'dpsk-passphrase-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDpskPassphraseListQuery,
     sorter: defaultSorter,
     defaultPayload,
     search: defaultSearch,
     enableSelectAllPagesData: ['id'],
-    apiParams: dpskNewConfigFlowParams
+    pagination: { settingsId }
   })
 
   const downloadPassphrases = async () => {
-    const apiParams = { ...params, ...dpskNewConfigFlowParams }
-
     try {
-      if (isNewConfigFlow) {
-        const payload = {
-          page: 1,
-          pageSize: MAX_PASSPHRASES_PER_TENANT,
-          ...tableQuery.search
-        }
-        downloadNewFlowCsv({ params: apiParams, payload }).unwrap()
-      } else {
-        downloadCsv({ params: apiParams }).unwrap()
+      const payload = {
+        page: 1,
+        pageSize: MAX_PASSPHRASES_PER_TENANT,
+        ...tableQuery.search
       }
+      downloadNewFlowCsv({ params, payload }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
-
-  const macColumn = isNewConfigFlow ? [] : [
-    {
-      key: 'mac',
-      title: $t({ defaultMessage: 'MAC Address' }),
-      dataIndex: 'mac',
-      sorter: true
-    }
-  ]
 
   const columns: TableProps<NewDpskPassphrase>['columns'] = [
     {
@@ -155,7 +139,6 @@ export default function DpskPassphraseManagement () {
           : $t(unlimitedNumberOfDeviceLabel)
       }
     },
-    ...macColumn,
     {
       key: 'passphrase',
       title: $t({ defaultMessage: 'Passphrase' }),
@@ -163,6 +146,15 @@ export default function DpskPassphraseManagement () {
       sorter: false,
       render: function (_, { passphrase }) {
         return <PassphraseViewer passphrase={passphrase}/>
+      }
+    },
+    {
+      key: 'devices',
+      title: $t({ defaultMessage: 'MAC Address' }),
+      dataIndex: 'devices',
+      searchable: true,
+      render: function (_, { devices }) {
+        return devices?.map(device => device.mac).join(', ')
       }
     },
     {
@@ -225,7 +217,7 @@ export default function DpskPassphraseManagement () {
       selectedRows[0].username,
       [{ fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Identity' }) }],
       async () => deletePassphrases({
-        params: { ...params, ...dpskNewConfigFlowParams },
+        params: { ...params },
         payload: selectedRows.map(p => p.id)
       }).then(callback)
     )
@@ -252,20 +244,12 @@ export default function DpskPassphraseManagement () {
   }
 
   const allowManageDevices = (selectedRows: NewDpskPassphrase[]) => {
-    if (isNewConfigFlow) {
-      return isCloudpathEnabled && selectedRows.length === 1
-    }
-
-    if (!isCloudpathEnabled || selectedRows.length !== 1) return false
-
-    const row = selectedRows[0]
-    if (row && row.hasOwnProperty('numberOfDevices')) return row.numberOfDevices! > 1
-
-    return false
+    return isCloudpathEnabled && selectedRows.length === 1
   }
 
   const rowActions: TableProps<NewDpskPassphrase>['rowActions'] = [
     {
+      scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Edit Passphrase' }),
       visible: canEdit,
       onClick: ([selectedRow]) => {
@@ -275,6 +259,7 @@ export default function DpskPassphraseManagement () {
       }
     },
     {
+      scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Manage Devices' }),
       visible: (selectedRows: NewDpskPassphrase[]) => allowManageDevices(selectedRows),
       onClick: ([selectedRow]) => {
@@ -284,6 +269,7 @@ export default function DpskPassphraseManagement () {
       }
     },
     {
+      scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Revoke' }),
       visible: isCloudpathEnabled,
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
@@ -293,7 +279,7 @@ export default function DpskPassphraseManagement () {
             selectedRows[0].username ?? '',
             async (revocationReason: string) => {
               await revokePassphrases({
-                params: { ...params, ...dpskNewConfigFlowParams },
+                params: { ...params },
                 payload: {
                   ids: selectedRows.map(p => p.id),
                   changes: { revocationReason }
@@ -306,12 +292,13 @@ export default function DpskPassphraseManagement () {
       }
     },
     {
+      scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Unrevoke' }),
       visible: isCloudpathEnabled,
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
         canRevoke('unrevoke', selectedRows, () => {
           revokePassphrases({
-            params: { ...params, ...dpskNewConfigFlowParams },
+            params: { ...params },
             payload: {
               ids: selectedRows.map(p => p.id),
               changes: { revocationReason: null }
@@ -321,6 +308,7 @@ export default function DpskPassphraseManagement () {
       }
     },
     {
+      scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
         doDelete(selectedRows, clearSelection)
@@ -328,23 +316,25 @@ export default function DpskPassphraseManagement () {
     }
   ]
 
+  const allowedRowActions = (hasDpskAccess() && filterByAccess(rowActions)) || []
+
   const actions = [
-    {
+    ...hasDpskAccess() ? [{
       label: $t({ defaultMessage: 'Add Passphrases' }),
       onClick: () => {
         setPassphrasesDrawerEditMode({ isEdit: false })
         setAddPassphrasesDrawerVisible(true)
       }
-    },
-    {
+    }]: [],
+    ...hasDpskAccess() ? [{
       label: $t({ defaultMessage: 'Import From File' }),
       onClick: () => setUploadCsvDrawerVisible(true)
-    },
+    }]: [],
     {
       label: $t({ defaultMessage: 'Export To File' }),
       onClick: () => downloadPassphrases()
     },
-    ...!hasRoles(RolesEnum.DPSK_ADMIN) ? [{
+    ...(hasCrossVenuesPermission() && hasPermission({ scopes: [WifiScopes.CREATE] })) ? [{
       label: $t({ defaultMessage: 'Add DPSK Network' }),
       onClick: () => setNetworkModalVisible(true)
     }]: []
@@ -377,7 +367,7 @@ export default function DpskPassphraseManagement () {
         }
         try {
           await uploadCsv({
-            params: { ...params, ...dpskNewConfigFlowParams },
+            params: { ...params },
             payload: formData
           }).unwrap()
           setUploadCsvDrawerVisible(false)
@@ -414,15 +404,15 @@ export default function DpskPassphraseManagement () {
     />
     <Loader states={[tableQuery]}>
       <Table<NewDpskPassphrase>
-        settingsId='dpsk-passphrase-table'
+        settingsId={settingsId}
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         getAllPagesData={tableQuery.getAllPagesData}
         onChange={tableQuery.handleTableChange}
-        actions={filterByAccess(actions)}
-        rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'checkbox' }}
+        actions={actions}
+        rowActions={allowedRowActions}
+        rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
         rowKey='id'
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}

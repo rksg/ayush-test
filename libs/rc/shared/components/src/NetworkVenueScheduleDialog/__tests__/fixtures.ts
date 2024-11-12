@@ -203,11 +203,3 @@ export const networkResponseWithNoSchedule = {
   enableAccountingProxy: true,
   id: '1ab720533d624ee4b5745b67d84fa422'
 }
-
-export const timezoneResult = {
-  dstOffset: 3600,
-  rawOffset: -28800,
-  status: 'OK',
-  timeZoneId: 'America/Los_Angeles',
-  timeZoneName: 'Pacific Daylight Time'
-}

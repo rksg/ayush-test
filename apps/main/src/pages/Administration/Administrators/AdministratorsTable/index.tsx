@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import React        from 'react'
+import React, { useState } from 'react'
 
 import { Tooltip }   from 'antd'
 import _             from 'lodash'
@@ -21,7 +20,7 @@ import {
   useDeleteAdminMutation,
   useDeleteAdminsMutation
 } from '@acx-ui/rc/services'
-import { Administrator, sortProp, defaultSort, TenantType }     from '@acx-ui/rc/utils'
+import { Administrator, sortProp, defaultSort }                 from '@acx-ui/rc/utils'
 import { RolesEnum }                                            from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/user'
 import { AccountType }                                          from '@acx-ui/utils'
@@ -57,13 +56,11 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
   const allowDeleteAdminFF = useIsSplitOn(Features.MSPEC_ALLOW_DELETE_ADMIN)
   const isSsoAllowed = useIsTierAllowed(Features.SSO)
   const idmDecouplngFF = useIsSplitOn(Features.IDM_DECOUPLING) && isSsoAllowed
-  const techPartnerAssignEcsEanbled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
-  const isTechPartner =
-     tenantType === TenantType.MSP_INSTALLER || tenantType === TenantType.MSP_INTEGRATOR
+  const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
+  const isMspRbacMspEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
-  const { data: mspProfile } = useGetMspProfileQuery({ params })
-  const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile) ||
-     (techPartnerAssignEcsEanbled && isTechPartner)
+  const { data: mspProfile } = useGetMspProfileQuery({ params, enableRbac: isMspRbacMspEnabled })
+  const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
 
   const { data: adminList, isLoading, isFetching } = useGetAdminListQuery({ params })
 
@@ -125,6 +122,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
       title: $t({ defaultMessage: 'Name' }),
       key: 'id',
       dataIndex: 'fullName',
+      defaultSortOrder: 'ascend',
       sorter: { compare: sortProp('fullName', defaultSort) }
     },
     {
@@ -246,11 +244,11 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
         isFetching: isFetching || isDeleteAdminUpdating || isDeleteAdminsUpdating
       }
     ]}>
-      <UI.TableTitleWrapper direction='vertical'>
+      {!isGroupBasedLoginEnabled && <UI.TableTitleWrapper direction='vertical'>
         <Subtitle level={4}>
           {$t({ defaultMessage: 'Local Administrators' })}
         </Subtitle>
-      </UI.TableTitleWrapper>
+      </UI.TableTitleWrapper>}
       <Table
         columns={columns}
         dataSource={adminList}

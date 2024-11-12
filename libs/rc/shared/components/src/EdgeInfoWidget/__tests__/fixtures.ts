@@ -1,4 +1,4 @@
-import { Alarm, ApVenueStatusEnum, EdgeDnsServers, EdgeIpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePasswordDetail, EdgePortStatus, EdgePortTypeEnum, EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
+import { Alarm, ApVenueStatusEnum, EdgeDnsServers, EdgePasswordDetail, EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
 
 export const tenantID = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 export const currentEdge:EdgeStatus = {
@@ -6,6 +6,7 @@ export const currentEdge:EdgeStatus = {
   serialNumber: 'edge-111000001',
   venueId: '97b77f8a82324a1faa0f4cc3f56d1ef0',
   venueName: 'testVenue_Edge',
+  clusterId: 'cluster-1',
   model: 'test',
   type: 'test',
   deviceStatus: EdgeStatusEnum.OPERATIONAL,
@@ -25,37 +26,6 @@ export const currentEdge:EdgeStatus = {
   diskUsed: 250 * Math.pow(1024, 3),
   diskTotal: 162 * Math.pow(1024, 3)
 }
-
-export const edgePortsSetting:EdgePortStatus[] = [{
-  portId: '1',
-  name: 'description1',
-  status: 'Up',
-  adminStatus: 'Enabled',
-  type: EdgePortTypeEnum.WAN,
-  mac: 'AA:BB:CC:DD:EE:FF',
-  speedKbps: 12* Math.pow(12, 6),
-  duplex: 'Full',
-  ip: '1.1.1.1/24',
-  ipMode: 'DHCP',
-  sortIdx: 1,
-  vlan: '0',
-  subnet: '255.255.255.0'
-},
-{
-  portId: '2',
-  name: 'description2',
-  status: 'Down',
-  adminStatus: 'Disabled',
-  type: EdgePortTypeEnum.LAN,
-  mac: 'AA:BB:CC:DD:EE:FF',
-  speedKbps: 10* Math.pow(12, 6),
-  duplex: 'Half',
-  ip: '1.1.1.2/24',
-  ipMode: 'Static',
-  sortIdx: 2,
-  vlan: '0',
-  subnet: '255.255.255.0'
-}]
 
 export const edgeDnsServers: EdgeDnsServers = {
   primary: '1.1.1.1',
@@ -120,62 +90,4 @@ export const alarmListMeta = {
 export const passwordDetail:EdgePasswordDetail = {
   loginPassword: 'admin!234',
   enablePassword: 'admin!234'
-}
-
-export const mockEdgeLagList = {
-  totalCount: 2,
-  page: 1,
-  data: [
-    {
-      lagId: '11',
-      name: 'LAG 1',
-      description: '',
-      lagType: EdgeLagTypeEnum.LACP,
-      status: 'Up',
-      adminStatus: 'Enabled',
-      lagMembers: [
-        {
-          portId: '1',
-          name: 'Port 1',
-          lacpState: 'Up',
-          systemId: '00:aa:bb:cc:dd:ee',
-          key: '100',
-          lacpTimeout: EdgeLagTimeoutEnum.SHORT,
-          peerSystemId: '00:aa:bb:cc:dd:aa',
-          peerKey: '200',
-          lacpRxCount: 10,
-          lacpTxCount: 10
-        },
-        {
-          portId: '2',
-          name: 'Port 2',
-          lacpState: 'Up',
-          systemId: '00:aa:bb:cc:11:22',
-          key: '100',
-          lacpTimeout: EdgeLagTimeoutEnum.SHORT,
-          peerSystemId: '00:aa:bb:cc:33:44',
-          peerKey: '200',
-          lacpRxCount: 10,
-          lacpTxCount: 10
-        }
-      ],
-      portType: EdgePortTypeEnum.WAN,
-      mac: 'AA:BB:CC:DD:EE:FF',
-      ip: '1.1.1.1',
-      ipMode: EdgeIpModeEnum.DHCP
-    },
-    {
-      lagId: '12',
-      name: 'LAG 2',
-      description: '',
-      lagType: EdgeLagTypeEnum.LACP,
-      status: 'Down',
-      adminStatus: 'Enabled',
-      lagMembers: [],
-      portType: EdgePortTypeEnum.LAN,
-      mac: 'A1:BB:2D:DD:EE:FF',
-      ip: '123.1.2.1',
-      ipMode: EdgeIpModeEnum.STATIC
-    }
-  ]
 }

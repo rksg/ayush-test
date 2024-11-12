@@ -7,11 +7,13 @@ import { useIntl }                                          from 'react-intl'
 import {
   Modal
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import {
   useUpdateSwitchFirmwarePredownloadMutation
 } from '@acx-ui/rc/services'
-import { UpgradePreferences } from '@acx-ui/rc/utils'
-import { useParams }          from '@acx-ui/react-router-dom'
+import { UpgradePreferences }       from '@acx-ui/rc/utils'
+import { useParams }                from '@acx-ui/react-router-dom'
+import { hasCrossVenuesPermission } from '@acx-ui/user'
 
 import { ChangeSlotDialog } from './ChangeSlotDialog'
 import { PreDownload }      from './PreDownload'
@@ -36,6 +38,7 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
   const params = useParams()
   const [form] = useForm()
   const { visible, onSubmit, onCancel, data, isSwitch, preDownload } = props
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [updateSwitchFirmwarePredownload] = useUpdateSwitchFirmwarePredownloadMutation()
   // eslint-disable-next-line max-len
   const [scheduleMode, setScheduleMode] = useState(data.autoSchedule ? ScheduleMode.Automatically : ScheduleMode.Manually)
@@ -106,7 +109,10 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
   const triggerSubmit = async () => {
     if (isSwitch) {
       try {
-        await updateSwitchFirmwarePredownload({ params, payload: checked }).unwrap()
+        await updateSwitchFirmwarePredownload({
+          params, payload: checked,
+          enableRbac: isSwitchRbacEnabled
+        }).unwrap()
       } catch (error) {
         console.log(error) // eslint-disable-line no-console
       }
@@ -156,25 +162,28 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
               <Radio.Group
                 style={{ margin: 12 }}
                 onChange={onScheduleModeChange}
+                disabled={!hasCrossVenuesPermission()}
                 value={scheduleMode}>
                 <Space direction={'vertical'}>
                   <Radio value={ScheduleMode.Automatically}>
                     {$t({ defaultMessage: 'Schedule Automatically' })}
                     { // eslint-disable-next-line max-len
-                      <div>{$t({ defaultMessage: 'Upgrade preference saved for each venue based on venue’s local time-zone' })}</div>}
+                      <div>{$t({ defaultMessage: 'Upgrade preference saved for each <venueSingular></venueSingular> based on local time-zone of <venueSingular></venueSingular>' })}</div>}
                     <UI.PreferencesSection>
                       { // eslint-disable-next-line max-len
                         <div style={{ fontWeight: 600, marginLeft: 8, paddingTop: 8 }}>{$t({ defaultMessage: 'Preferred update slot(s):' })}</div>}
                       <div style={{ marginTop: 4, marginLeft: 8 }}>{valueDays.join(', ')}</div>
                       <div style={{ marginLeft: 8, paddingBottom: 8 }}>{valueTimes.join(', ')}</div>
                     </UI.PreferencesSection>
-                    <UI.ChangeButton type='link' onClick={showSlotModal} block>
-                      {$t({ defaultMessage: 'Change' })}
-                    </UI.ChangeButton>
+                    {hasCrossVenuesPermission() &&
+                      <UI.ChangeButton type='link' onClick={showSlotModal} block>
+                        {$t({ defaultMessage: 'Change' })}
+                      </UI.ChangeButton>
+                    }
                   </Radio>
                   <Radio value={ScheduleMode.Manually}>
-                    {$t({ defaultMessage: 'Schedule Manually' })}
-                    <div>{$t({ defaultMessage: 'Manually update firmware per venue' })}</div>
+                    {$t({ defaultMessage: 'Schedule Manually' })} { /*eslint-disable-next-line max-len*/ }
+                    <div>{$t({ defaultMessage: 'Manually update firmware per <venueSingular></venueSingular>' })}</div>
                   </Radio>
                 </Space>
               </Radio.Group>

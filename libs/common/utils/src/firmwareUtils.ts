@@ -9,3 +9,7 @@ export const compareVersions = (a?: string, b?: string): number => {
   }
   return 0
 }
+
+export function isApFwVersionLargerThan711 (fwVersion : string | undefined) : boolean {
+  return fwVersion !== undefined && compareVersions(fwVersion, '7.1.1') >= 0
+}

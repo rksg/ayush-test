@@ -1,59 +1,42 @@
-import React, { useState, useEffect, useMemo, useContext, useImperativeHandle, forwardRef, Ref } from 'react'
+/* eslint-disable max-len */
+import { forwardRef, Ref } from 'react'
 
-import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
-import { Badge }               from 'antd'
-import { useIntl }             from 'react-intl'
+import { Badge, Space } from 'antd'
+import { useIntl }      from 'react-intl'
 
 import {
-  Loader,
-  Table,
-  TableProps,
-  deviceStatusColors,
   ColumnType,
-  showToast
+  deviceStatusColors,
+  TableProps,
+  Tooltip
 } from '@acx-ui/components'
 import {
-  Features, TierFeatures,
-  useIsSplitOn, useIsTierAllowed
+  Features,
+  useIsSplitOn
 } from '@acx-ui/feature-toggle'
-import {
-  CheckMark,
-  DownloadOutlined
-} from '@acx-ui/icons'
-import {
-  useApListQuery, useImportApOldMutation, useImportApMutation, useLazyImportResultQuery
-} from '@acx-ui/rc/services'
+import { LeafSolidIcon } from '@acx-ui/icons'
 import {
   ApDeviceStatusEnum,
   APExtended,
+  APExtendedGrouped,
   ApExtraParams,
   APMeshRole,
   APView,
   DeviceConnectionStatus,
-  transformApStatus,
-  transformDisplayNumber,
-  transformDisplayText,
+  getPowerSavingStatusEnabledApStatus,
+  NewAPExtendedGrouped,
+  NewAPModelExtended,
+  PowerSavingStatusEnum,
   TableQuery,
-  usePollingTableQuery,
-  APExtendedGrouped,
-  AFCMaxPowerRender,
-  AFCPowerStateRender
+  TableResult,
+  transformApStatus,
+  transformDisplayText
 } from '@acx-ui/rc/utils'
-import { getFilters, CommonResult, ImportErrorRes, FILTER }  from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }                                    from '@acx-ui/types'
-import { filterByAccess }                                    from '@acx-ui/user'
-import { exportMessageMapping }                              from '@acx-ui/utils'
+import { RequestPayload } from '@acx-ui/types'
 
-import { seriesMappingAP }                                 from '../DevicesWidget/helper'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
-import { useApActions }                                    from '../useApActions'
 
-import {
-  getGroupableConfig, groupedFields
-} from './config'
-import { ApsTabContext } from './context'
-import { useExportCsv }  from './useExportCsv'
+import { NewApTable } from './NewApTable'
+import { OldApTable } from './OldApTable'
 
 export const defaultApPayload = {
   searchString: '',
@@ -61,12 +44,8 @@ export const defaultApPayload = {
   fields: [
     'name', 'deviceStatus', 'model', 'IP', 'apMac', 'venueName',
     'switchName', 'meshRole', 'clients', 'deviceGroupName',
-    'apStatusData.APRadio.band', 'tags', 'serialNumber',
-    'venueId', 'apStatusData.APRadio.radioId', 'apStatusData.APRadio.channel',
-    'poePort', 'apStatusData.lanPortStatus.phyLink', 'apStatusData.lanPortStatus.port',
-    'fwVersion', 'apStatusData.afcInfo.powerMode', 'apStatusData.afcInfo.afcStatus','apRadioDeploy',
-    'apStatusData.APSystem.secureBootEnabled', 'apStatusData.APSystem.managementVlan',
-    'apStatusData.afcInfo.maxPowerDbm'
+    'apStatusData', 'tags', 'serialNumber',
+    'venueId', 'poePort', 'fwVersion', 'apRadioDeploy', 'powerSavingStatus'
   ]
 }
 
@@ -74,14 +53,14 @@ const handleStatusColor = (status: DeviceConnectionStatus) => {
   return `var(${deviceStatusColors[status]})`
 }
 
-const channelTitleMap: Record<keyof ApExtraParams, string> = {
+export const channelTitleMap: Record<keyof ApExtraParams, string> = {
   channel24: '2.4 GHz',
   channel50: '5 GHz',
   channelL50: 'LO 5 GHz',
   channelU50: 'HI 5 GHz',
   channel60: '6 GHz'
 }
-const transformMeshRole = (value: APMeshRole) => {
+export const transformMeshRole = (value: APMeshRole) => {
   let meshRole = ''
   switch (value) {
     case APMeshRole.EMAP:
@@ -94,510 +73,62 @@ const transformMeshRole = (value: APMeshRole) => {
   return transformDisplayText(meshRole)
 }
 
+export const retriedApIds = (
+  result: TableResult<APExtended|NewAPModelExtended|APExtendedGrouped|NewAPExtendedGrouped, ApExtraParams>,
+  hasGroupBy:boolean
+) => {
+  const apIds:string[] = []
+  if (hasGroupBy) {
+    result.data?.forEach(item => {
+      (item as unknown as { aps: APExtended[] }).aps?.forEach(ap => apIds.push(ap.serialNumber))
+    })
+  } else {
+    result.data?.forEach(ap => apIds.push(ap.serialNumber))
+  }
+  return apIds
+}
+
 export const APStatus = (
-  { status, showText = true }: { status: ApDeviceStatusEnum, showText?: boolean }
+  { status, showText = true, powerSavingStatus = PowerSavingStatusEnum.NORMAL }: { status: ApDeviceStatusEnum, showText?: boolean, powerSavingStatus?: PowerSavingStatusEnum }
 ) => {
   const intl = useIntl()
+  const { $t } = useIntl()
   const apStatus = transformApStatus(intl, status, APView.AP_LIST)
+  const isSupportPowerSavingMode = useIsSplitOn(Features.WIFI_POWER_SAVING_MODE_TOGGLE)
+
   return (
-    <span>
+    <Space>
       <Badge color={handleStatusColor(apStatus.deviceStatus)}
         text={showText ? apStatus.message : ''}
       />
-    </span>
+      { isSupportPowerSavingMode &&
+        getPowerSavingStatusEnabledApStatus(status, powerSavingStatus) &&
+        <Tooltip
+          title={$t({ defaultMessage: 'Device is controlled by EcoFlexAI. Radio may not be broadcasting.' })}
+          placement='bottom'
+        >
+          <LeafSolidIcon/>
+        </Tooltip>}
+    </Space>
   )
 }
 
 export type ApTableRefType = { openImportDrawer: ()=>void }
 
-interface ApTableProps
-  extends Omit<TableProps<APExtended>, 'columns'> {
-  tableQuery?: TableQuery<APExtended, RequestPayload<unknown>, ApExtraParams>
+export interface ApTableProps<T>
+  extends Omit<TableProps<T>, 'columns'> {
+  tableQuery?: TableQuery<T, RequestPayload<unknown>, ApExtraParams>
   searchable?: boolean
   enableActions?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
-  enableGroups?: boolean
+  enableGroups?: boolean,
+  enableApCompatibleCheck?: boolean
 }
 
-export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefType>) => {
-  const { $t } = useIntl()
-  const navigate = useNavigate()
-  const params = useParams()
-  const filters = getFilters(params) as FILTER
-  const { searchable, filterables, enableGroups=true } = props
-  const { setApsCount } = useContext(ApsTabContext)
-  const apListTableQuery = usePollingTableQuery({
-    useQuery: useApListQuery,
-    defaultPayload: {
-      ...defaultApPayload,
-      groupByFields: groupedFields,
-      filters
-    },
-    search: {
-      searchTargetFields: defaultApPayload.searchTargetFields
-    },
-    option: { skip: Boolean(props.tableQuery) },
-    enableSelectAllPagesData: ['id', 'name', 'serialNumber', 'deviceGroupName', 'deviceGroupId',
-      'deviceStatus', 'fwVersion']
-  })
-  const tableQuery = props.tableQuery || apListTableQuery
-  const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
-  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
-  const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
-  const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
+export const ApTable = forwardRef((props : ApTableProps<APExtended|NewAPModelExtended>, ref?: Ref<ApTableRefType>) => {
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
-
-  useEffect(() => {
-    setApsCount?.(tableQuery.data?.totalCount || 0)
-  }, [tableQuery.data])
-
-  const apAction = useApActions()
-  const statusFilterOptions = seriesMappingAP().map(({ key, name, color }) => ({
-    key, value: name, label: <Badge color={color} text={name} />
-  }))
-  const tableData = tableQuery?.data?.data ?? []
-  const linkToEditAp = useTenantLink('/devices/wifi/')
-
-  const columns = useMemo(() => {
-    const extraParams = tableQuery?.data?.extra ?? {
-      channel24: false,
-      channel50: false,
-      channelL50: false,
-      channelU50: false,
-      channel60: false
-    }
-
-    const columns: TableProps<APExtended | APExtendedGrouped>['columns'] = [{
-      key: 'name',
-      title: $t({ defaultMessage: 'AP Name' }),
-      dataIndex: 'name',
-      sorter: true,
-      fixed: 'left',
-      searchable: searchable,
-      render: (_, row : APExtended, __, highlightFn) => (
-        <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>
-          {searchable ? highlightFn(row.name || '--') : row.name}</TenantLink>
-      )
-    }, {
-      key: 'deviceStatus',
-      width: 200,
-      title: $t({ defaultMessage: 'Status' }),
-      dataIndex: 'deviceStatus',
-      sorter: true,
-      fixed: 'left',
-      filterKey: 'deviceStatusSeverity',
-      filterable: filterables ? statusFilterOptions : false,
-      groupable: enableGroups ?
-        filterables && getGroupableConfig()?.deviceStatusGroupableOptions : undefined,
-      render: (_, { deviceStatus }) => <APStatus status={deviceStatus as ApDeviceStatusEnum} />
-    }, {
-      key: 'model',
-      title: $t({ defaultMessage: 'Model' }),
-      dataIndex: 'model',
-      searchable: searchable,
-      sorter: true,
-      groupable: enableGroups ?
-        filterables && getGroupableConfig()?.modelGroupableOptions : undefined
-    }, {
-      key: 'ip',
-      title: $t({ defaultMessage: 'IP Address' }),
-      dataIndex: 'IP',
-      searchable: searchable,
-      sorter: true
-    }, {
-      key: 'apMac',
-      title: $t({ defaultMessage: 'MAC Address' }),
-      dataIndex: 'apMac',
-      searchable: searchable,
-      sorter: true
-    },
-    // TODO:  Waiting for backend support
-    // {
-    //   key: 'incidents',
-    //   title: () => (
-    //     <>
-    //       { $t({ defaultMessage: 'Incidents' }) }
-    //       <Table.SubTitle children={$t({ defaultMessage: 'Last 24 hours' })} />
-    //     </>
-    //   ),
-    //   dataIndex: 'incidents',
-    //   sorter: false,
-    //   render: (data, row) => {
-    //     //TODO: Shows breakdown by severity - with a counter for each severity
-    //     return (<Space direction='horizontal'>
-    //       <StackedBarChart
-    //         style={{ height: 10, width: 40 }}
-    //         data={[{
-    //           category: 'emptyStatus',
-    //           series: [{
-    //             name: '',
-    //             value: 1
-    //           }]
-    //         }]}
-    //         showTooltip={false}
-    //         showLabels={false}
-    //         showTotal={false}
-    //         barColors={[cssStr(deviceStatusColors.empty)]}
-    //       />
-    //       <TenantLink to={`/devices/wifi/${row.serialNumber}/details/analytics/incidents/overview`}>
-    //         {data ? data: 0}
-    //       </TenantLink>
-    //     </Space>)
-    //   }
-    // },
-    ...((params.venueId || params.apGroupId) ? [] : [{
-      key: 'venueName',
-      title: $t({ defaultMessage: 'Venue' }),
-      dataIndex: 'venueName',
-      filterKey: 'venueId',
-      filterable: filterables ? filterables['venueId'] : false,
-      sorter: true,
-      render: (_: React.ReactNode, row : APExtended) => (
-        <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
-          {row.venueName}
-        </TenantLink>
-      )
-    }]),
-    ...(params.apGroupId ? [] : [{
-      key: 'switchName',
-      title: $t({ defaultMessage: 'Switch' }),
-      dataIndex: 'switchName',
-      render: (_: React.ReactNode, row : APExtended) => {
-        const { switchId, switchSerialNumber, switchName } = row
-        return (
-          <TenantLink to={`/devices/switch/${switchId}/${switchSerialNumber}/details/overview`}>
-            {switchName}
-          </TenantLink>
-        )
-      }
-    }]),
-    {
-      key: 'meshRole',
-      title: $t({ defaultMessage: 'Mesh Role' }),
-      dataIndex: 'meshRole',
-      sorter: true,
-      render: (_, { meshRole }) => transformMeshRole(meshRole as APMeshRole)
-    }, {
-      key: 'clients',
-      title: $t({ defaultMessage: 'Clients' }),
-      dataIndex: 'clients',
-      align: 'center',
-      render: (_, row: APExtended) => {
-        return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/clients`}>
-          {transformDisplayNumber(row.clients)}
-        </TenantLink>
-      }
-    },
-    ...(params.apGroupId ? [] : [{
-      key: 'deviceGroupName',
-      title: $t({ defaultMessage: 'AP Group' }),
-      dataIndex: 'deviceGroupName',
-      filterKey: 'deviceGroupId',
-      filterable: filterables ? filterables['deviceGroupId'] : false,
-      sorter: true,
-      groupable: enableGroups
-        ? filterables && getGroupableConfig(params, apAction)?.deviceGroupNameGroupableOptions
-        : undefined
-    }]),
-    {
-      key: 'rf-channels',
-      dataIndex: 'rf-channels',
-      title: $t({ defaultMessage: 'RF Channels' }),
-      children: Object.entries(extraParams).reduce((acc, [channel, visible]) => {
-        if (!visible) return acc
-        const key = channel as keyof ApExtraParams
-        acc.push({
-          key: channel,
-          width: 80,
-          dataIndex: channel,
-          title: <Table.SubTitle children={channelTitleMap[key]} />,
-          align: 'center',
-          render: (_, row) =>
-            transformDisplayText(row[key] as string)
-        })
-        return acc
-      }, [] as TableProps<APExtended | APExtendedGrouped>['columns'])
-    }, {
-      key: 'tags',
-      title: $t({ defaultMessage: 'Tags' }),
-      dataIndex: 'tags',
-      searchable: searchable,
-      sorter: true
-    }, {
-      key: 'serialNumber',
-      title: $t({ defaultMessage: 'Serial Number' }),
-      dataIndex: 'serialNumber',
-      show: false,
-      searchable: searchable,
-      sorter: true
-    }, {
-      key: 'fwVersion',
-      title: $t({ defaultMessage: 'Version' }),
-      dataIndex: 'fwVersion',
-      show: false,
-      sorter: true
-    }, {
-      key: 'poePort',
-      title: $t({ defaultMessage: 'PoE Port' }),
-      dataIndex: 'poePort',
-      show: false,
-      sorter: false,
-      render: (_, row : APExtended) => {
-        if (!row.hasPoeStatus) {
-          return <span></span>
-        }
-
-        const iconColor = (row.isPoEStatusUp) ? '--acx-semantics-green-50' : '--acx-neutrals-50'
-        return (
-          <span>
-            <Badge color={`var(${iconColor})`}
-              text={transformDisplayText(row.poePortInfo)}
-            />
-          </span>
-        )
-      }
-    },
-    ...(secureBootFlag && enableAP70 ? [
-      {
-        key: 'secureBoot',
-        title: $t({ defaultMessage: 'Secure Boot' }),
-        dataIndex: 'secureBootEnabled',
-        show: false,
-        sorter: false,
-        render: (data: React.ReactNode, row: APExtended) => {
-          const secureBootEnabled = row.apStatusData?.APSystem?.secureBootEnabled || false
-
-          return (secureBootEnabled ? <CheckMark /> : null)
-        }
-      }] : []),
-    ...(apMgmtVlanFlag ? [
-      {
-        key: 'managementVlan',
-        title: $t({ defaultMessage: 'Management VLAN' }),
-        dataIndex: 'managementVlan',
-        show: false,
-        sorter: false,
-        render: (data: React.ReactNode, row: APExtended) => {
-          const mgmtVlanId = row.apStatusData?.APSystem?.managementVlan
-
-          return (mgmtVlanId ? mgmtVlanId : null)
-        }
-      }] : []),
-    ...(AFC_Featureflag ? [{
-      key: 'afcPowerMode',
-      title: $t({ defaultMessage: 'AFC Power State' }),
-      dataIndex: ['apStatusData','afcInfo','powerMode'],
-      show: false,
-      sorter: false,
-      render: (data: React.ReactNode, row: APExtended) => {
-        return AFCPowerStateRender(row.apStatusData?.afcInfo, row.apRadioDeploy, false)
-      }
-    },
-    { key: 'afcMaxPower',
-      title: $t({ defaultMessage: 'AFC Max Power' }),
-      dataIndex: ['apStatusData','afcInfo','maxPowerDbm'],
-      show: false,
-      sorter: false,
-      render: (data: React.ReactNode, row: APExtended) => {
-        return AFCMaxPowerRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
-      }
-    }
-    ]: [])
-    ]
-
-    return columns
-  }, [$t, tableQuery.data?.extra])
-
-  const isActionVisible = (
-    selectedRows: APExtended[],
-    { selectOne, isOperational }: { selectOne?: boolean, isOperational?: boolean }) => {
-    let visible = true
-    if (isOperational) {
-      visible = selectedRows.every(ap => ap.deviceStatus === ApDeviceStatusEnum.OPERATIONAL)
-    }
-    if (selectOne) {
-      visible = visible && selectedRows.length === 1
-    }
-    return visible
-  }
-
-
-  const rowActions: TableProps<APExtended>['rowActions'] = [{
-    label: $t({ defaultMessage: 'Edit' }),
-    visible: (rows) => isActionVisible(rows, { selectOne: true }),
-    onClick: (rows) => {
-      navigate(`${linkToEditAp.pathname}/${rows[0].serialNumber}/edit/general`, { replace: false })
-    }
-  }, {
-    label: $t({ defaultMessage: 'Delete' }),
-    onClick: async (rows, clearSelection) => {
-      apAction.showDeleteAps(rows, params.tenantId, clearSelection)
-    }
-  }, {
-  // ACX-25402: Waiting for integration with group by table
-  //   label: $t({ defaultMessage: 'Delete AP Group' }),
-  //   onClick: async (rows, clearSelection) => {
-  //     apAction.showDeleteApGroups(rows, params.tenantId, clearSelection)
-  //   }
-  // }, {
-    label: $t({ defaultMessage: 'Reboot' }),
-    visible: (rows) => isActionVisible(rows, { selectOne: true, isOperational: true }),
-    onClick: (rows, clearSelection) => {
-      const showSendingToast = () => {
-        showToast({
-          type: 'success',
-          content: $t(
-            { defaultMessage: 'Sending command: [reboot] to the AP: {ap}' },
-            { ap: rows[0]?.serialNumber }
-          )
-        })
-      }
-      const callback = () => {
-        clearSelection()
-        showSendingToast()
-      }
-      apAction.showRebootAp(rows[0].serialNumber, params.tenantId, callback)
-    }
-  }, {
-    label: $t({ defaultMessage: 'Download Log' }),
-    visible: (rows) => isActionVisible(rows, { selectOne: true, isOperational: true }),
-    onClick: (rows) => {
-      apAction.showDownloadApLog(rows[0].serialNumber, params.tenantId)
-    }
-  }]
-  const [ isImportResultLoading, setIsImportResultLoading ] = useState(false)
-  const [ importVisible, setImportVisible ] = useState(false)
-  const [ importAps, importApsResult ] = useImportApOldMutation()
-  const [ importCsv ] = useImportApMutation()
-  const [ importQuery ] = useLazyImportResultQuery()
-  const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
-  const [ importErrors, setImportErrors ] = useState<ImportErrorRes>({} as ImportErrorRes)
-  const apGpsFlag = useIsSplitOn(Features.AP_GPS)
-  const wifiEdaFlag = useIsSplitOn(Features.WIFI_EDA_READY_TOGGLE)
-  const importTemplateLink = apGpsFlag ?
-    'assets/templates/aps_import_template_with_gps.csv' :
-    'assets/templates/aps_import_template.csv'
-  // eslint-disable-next-line max-len
-  const { exportCsv, disabled } = useExportCsv<APExtended>(tableQuery as TableQuery<APExtended, RequestPayload<unknown>, unknown>)
-  const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
-
-  useEffect(()=>{
-    if (wifiEdaFlag) {
-      return
-    }
-
-    setIsImportResultLoading(false)
-    if (importApsResult.isSuccess) {
-      setImportVisible(false)
-    } else if (importApsResult.isError && importApsResult?.error &&
-      'data' in importApsResult.error) {
-      setImportResult(importApsResult?.error.data as ImportErrorRes)
-    }
-  },[importApsResult])
-
-  useEffect(()=>{
-    if (!wifiEdaFlag) {
-      return
-    }
-
-    setIsImportResultLoading(false)
-    if (importResult?.fileErrorsCount === 0) {
-      setImportVisible(false)
-    } else {
-      setImportErrors(importResult)
-    }
-  },[importResult])
-
-  useImperativeHandle(ref, () => ({
-    openImportDrawer: () => {
-      setImportVisible(true)
-    }
-  }))
-
-  const basePath = useTenantLink('/devices')
-  const handleTableChange: TableProps<APExtended>['onChange'] = (
-    pagination, filters, sorter, extra
-  ) => {
-    const customSorter = Array.isArray(sorter)
-      ? sorter[0] : sorter
-    if ('IP'.includes(customSorter.field as string)) {
-      customSorter.field = 'IP.keyword'
-    }
-    tableQuery.handleTableChange?.(pagination, filters, customSorter, extra)
-  }
-  return (
-    <Loader states={[tableQuery]}>
-      <Table<APExtended | APExtendedGrouped>
-        {...props}
-        settingsId='ap-table'
-        columns={columns}
-        dataSource={tableData}
-        getAllPagesData={tableQuery.getAllPagesData}
-        rowKey='serialNumber'
-        pagination={tableQuery.pagination}
-        onChange={handleTableChange}
-        onFilterChange={tableQuery.handleFilterChange}
-        enableApiFilter={true}
-        rowActions={filterByAccess(rowActions)}
-        actions={props.enableActions ? filterByAccess([{
-          label: $t({ defaultMessage: 'Add AP' }),
-          onClick: () => {
-            navigate({
-              ...basePath,
-              pathname: `${basePath.pathname}/wifi/add`
-            }, { state: { venueId: params.venueId } })
-          }
-        }, {
-          label: $t({ defaultMessage: 'Add AP Group' }),
-          onClick: () => {
-            navigate({
-              ...basePath,
-              pathname: `${basePath.pathname}/apgroups/add`
-            })
-          }
-        }, {
-          label: $t({ defaultMessage: 'Import APs' }),
-          onClick: () => {
-            setImportVisible(true)
-          }
-        }]) : []}
-        searchableWidth={260}
-        filterableWidth={150}
-        iconButton={exportDevice ? {
-          icon: <DownloadOutlined />,
-          disabled,
-          onClick: exportCsv,
-          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV)
-        } : undefined
-        }
-      />
-      <ImportFileDrawer
-        type={ImportFileDrawerType.AP}
-        title={$t({ defaultMessage: 'Import APs from file' })}
-        maxSize={CsvSize['5MB']}
-        maxEntries={512}
-        acceptType={['csv']}
-        templateLink={importTemplateLink}
-        visible={importVisible}
-        isLoading={isImportResultLoading}
-        importError={{ data: importErrors } as FetchBaseQueryError}
-        importRequest={(formData) => {
-          setIsImportResultLoading(true)
-          if (wifiEdaFlag) {
-            importCsv({ params: {}, payload: formData,
-              callback: async (res: CommonResult) => {
-                const result = await importQuery(
-                  { payload: { requestId: res.requestId } }, true)
-                  .unwrap()
-                setImportResult(result)
-              } }).unwrap().catch(() => {
-              setIsImportResultLoading(false)
-            })
-          } else {
-            importAps({ params: {}, payload: formData })
-          }
-        }}
-        onClose={() => setImportVisible(false)}/>
-    </Loader>
-  )
+  return isUseWifiRbacApi ?
+    <NewApTable {...(props as ApTableProps<NewAPModelExtended>)} ref={ref} /> :
+    <OldApTable {...(props as ApTableProps<APExtended|APExtendedGrouped>)} ref={ref} />
 })

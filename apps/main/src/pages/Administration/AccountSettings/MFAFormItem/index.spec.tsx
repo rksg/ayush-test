@@ -2,7 +2,8 @@
 import _        from 'lodash'
 import { rest } from 'msw'
 
-import { Provider  } from '@acx-ui/store'
+import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }              from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -12,7 +13,7 @@ import {
 } from '@acx-ui/test-utils'
 import { UserUrlsInfo, MFAStatus } from '@acx-ui/user'
 
-import { fakeMFATenantDetail } from '../__tests__/fixtures'
+import { fakeMFATenantDetail, fakeTenantDetails } from '../__tests__/fixtures'
 
 import  { MFAFormItem } from './'
 
@@ -25,6 +26,10 @@ describe('Enable MFA Checkbox', () => {
       rest.put(
         UserUrlsInfo.toggleMFA.url,
         (_req, res, ctx) => res(ctx.status(200))
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getTenantDetails.url,
+        (req, res, ctx) => res(ctx.json(fakeTenantDetails))
       )
     )
 
@@ -41,6 +46,7 @@ describe('Enable MFA Checkbox', () => {
         <MFAFormItem
           mfaTenantDetailsData={fakeMFATenantDetail}
           isPrimeAdminUser={true}
+          isMspEc={false}
         />
       </Provider>, {
         route: { params }
@@ -68,6 +74,7 @@ describe('Enable MFA Checkbox', () => {
         <MFAFormItem
           mfaTenantDetailsData={enabledData}
           isPrimeAdminUser={true}
+          isMspEc={false}
         />
       </Provider>, {
         route: { params }
@@ -90,6 +97,7 @@ describe('Enable MFA Checkbox', () => {
         <MFAFormItem
           mfaTenantDetailsData={enabledData}
           isPrimeAdminUser={true}
+          isMspEc={false}
         />
       </Provider>, {
         route: { params }
@@ -126,6 +134,7 @@ describe('Enable MFA Checkbox', () => {
         <MFAFormItem
           mfaTenantDetailsData={enabledData}
           isPrimeAdminUser={true}
+          isMspEc={false}
         />
       </Provider>, {
         route: { params }
@@ -153,6 +162,7 @@ describe('Enable MFA Checkbox', () => {
         <MFAFormItem
           mfaTenantDetailsData={fakeMFATenantDetail}
           isPrimeAdminUser={false}
+          isMspEc={false}
         />
       </Provider>, {
         route: { params }
@@ -168,6 +178,7 @@ describe('Enable MFA Checkbox', () => {
         <MFAFormItem
           mfaTenantDetailsData={undefined}
           isPrimeAdminUser={false}
+          isMspEc={false}
         />
       </Provider>, {
         route: { params }

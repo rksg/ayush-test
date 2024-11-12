@@ -1,19 +1,29 @@
+/* eslint-disable max-len */
 import { useState, useEffect } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Button }                                                 from '@acx-ui/components'
-import { NetworkTabContext, NetworkTable, defaultNetworkPayload } from '@acx-ui/rc/components'
-import { useNetworkListQuery }                                    from '@acx-ui/rc/services'
-import { Network, usePollingTableQuery }                          from '@acx-ui/rc/utils'
-import { TenantLink }                                             from '@acx-ui/react-router-dom'
+import { Button }                                                                            from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
+import { NetworkTabContext, NetworkTable, defaultNetworkPayload, defaultRbacNetworkPayload } from '@acx-ui/rc/components'
+import { useEnhanceWifiNetworkTableQuery, useNetworkTableQuery, useWifiNetworkTableQuery }   from '@acx-ui/rc/services'
+import { Network, usePollingTableQuery, WifiNetwork }                                        from '@acx-ui/rc/utils'
+import { TenantLink }                                                                        from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                                        from '@acx-ui/types'
+import { hasCrossVenuesPermission }                                                          from '@acx-ui/user'
 
 export default function useNetworksTable () {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
+
   const { $t } = useIntl()
   const [ networkCount, setNetworkCount ] = useState(0)
-  const tableQuery = usePollingTableQuery<Network>({
-    useQuery: useNetworkListQuery,
-    defaultPayload: defaultNetworkPayload
+
+  const settingsId = 'network-table'
+  const tableQuery = usePollingTableQuery<Network|WifiNetwork>({
+    useQuery: isApCompatibilitiesByModel? useEnhanceWifiNetworkTableQuery : (isWifiRbacEnabled? useWifiNetworkTableQuery : useNetworkTableQuery),
+    defaultPayload: (isApCompatibilitiesByModel || isWifiRbacEnabled)? defaultRbacNetworkPayload : defaultNetworkPayload,
+    pagination: { settingsId }
   })
 
   useEffect(() => {
@@ -25,14 +35,15 @@ export default function useNetworksTable () {
     description: 'Translation strings - Network List'
   })
 
-  const extra = [
-    <TenantLink to='/networks/wireless/add'>
+  const extra = hasCrossVenuesPermission()? [
+    <TenantLink to='/networks/wireless/add'
+      scopeKey={[WifiScopes.CREATE]}>
       <Button type='primary'>{ $t({ defaultMessage: 'Add Wi-Fi Network' }) }</Button>
     </TenantLink>
-  ]
+  ] : []
 
   const component = <NetworkTabContext.Provider value={{ setNetworkCount }}>
-    <NetworkTable tableQuery={tableQuery} selectable={true} />
+    <NetworkTable tableQuery={tableQuery} selectable={true} settingsId={settingsId} />
   </NetworkTabContext.Provider>
 
   return {

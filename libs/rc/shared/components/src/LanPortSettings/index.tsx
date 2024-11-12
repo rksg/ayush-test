@@ -1,19 +1,39 @@
-import { Form, Input, InputNumber, Select, Space, Switch } from 'antd'
-import { FormattedMessage, useIntl }                       from 'react-intl'
+import { useEffect, useState } from 'react'
 
-import { cssStr, Tooltip } from '@acx-ui/components'
+import { Form, Input, InputNumber, Select, Space, Switch } from 'antd'
+import { DefaultOptionType }                               from 'antd/lib/select'
+import { FormattedMessage, useIntl }                       from 'react-intl'
+import { useParams }                                       from 'react-router-dom'
+
+import { cssStr, Tooltip }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import {
+  useQueryEthernetPortProfilesWithOverwritesQuery
+} from '@acx-ui/rc/services'
 import {
   ApLanPortTypeEnum,
-  ApModel,
   CapabilitiesApModel,
   CapabilitiesLanPort,
   checkVlanMember,
+  EthernetPortAuthType,
+  EthernetPortProfileViewData,
+  EthernetPortType,
   LanPort,
+  useConfigTemplate,
   VenueLanPorts,
   WifiApSetting,
   WifiNetworkMessages
 } from '@acx-ui/rc/utils'
 
+import {
+  ApCompatibilityDrawer,
+  ApCompatibilityToolTip,
+  ApCompatibilityType,
+  InCompatibilityFeatures
+} from '../ApCompatibility'
+
+import EthernetPortProfileDrawer from './EthernetPortProfileDrawer'
+import EthernetPortProfileInput  from './EthernetPortProfileInput'
 
 export const ConvertPoeOutToFormData = (
   lanPortsData: WifiApSetting | VenueLanPorts,
@@ -41,12 +61,14 @@ export function LanPortSettings (props: {
   selectedPortCaps: LanPort,
   setSelectedPortCaps: (data: LanPort) => void,
   selectedModel: VenueLanPorts | WifiApSetting,
-  selectedModelCaps: ApModel | CapabilitiesApModel,
+  selectedModelCaps: CapabilitiesApModel,
   onGUIChanged?: (fieldName: string) => void,
   isDhcpEnabled?: boolean,
   isTrunkPortUntaggedVlanEnabled?: boolean,
   readOnly?: boolean,
-  useVenueSettings?: boolean
+  useVenueSettings?: boolean,
+  venueId?: string,
+  serialNumber?: string
 }) {
   const { $t } = useIntl()
   const {
@@ -59,11 +81,25 @@ export function LanPortSettings (props: {
     isDhcpEnabled,
     isTrunkPortUntaggedVlanEnabled,
     readOnly,
-    useVenueSettings
+    useVenueSettings,
+    venueId,
+    serialNumber
   } = props
 
+  const [ drawerVisible, setDrawerVisible ] = useState(false)
   const form = Form.useFormInstance()
   const lan = form?.getFieldValue('lan')?.[index]
+  const params = useParams()
+
+  // Ethernet Port Profile
+  const { isTemplate } = useConfigTemplate()
+  const ethernetPortProfileId = Form.useWatch( ['lan', index, 'ethernetPortProfileId'] ,form)
+  const [currentEthernetPortData, setCurrentEthernetPortData] =
+    useState<EthernetPortProfileViewData>()
+  const [ethernetProfileCreateId, setEthernetProfileCreateId] = useState<String>()
+  const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
+
+  // Non ethernet port profile
   const handlePortTypeChange = (value: string, index:number) => {
     const lanPorts = selectedModel?.lanPorts?.map((lan: LanPort, idx: number) =>
       index === idx ? {
@@ -88,6 +124,55 @@ export function LanPortSettings (props: {
     onGUIChanged?.(fieldName)
   }
 
+  const convertEthernetPortListToDropdownItems = (
+    ethernetPortList?: EthernetPortProfileViewData[]): DefaultOptionType[] => {
+    return ethernetPortList?.filter((m) => {
+      // Not allow port-based ethernet port when LAN port is single port
+      if(selectedModelCaps.lanPorts.length === 1 &&
+        m.authType === EthernetPortAuthType.PORT_BASED) {
+        return false
+      }
+
+      return !(selectedPortCaps.trunkPortOnly && m.type !== EthernetPortType.TRUNK)
+    })
+      .map(m => ({ label: m.name, value: m.id })) ?? []
+  }
+
+  // Ethernet Port Profile
+  const { ethernetPortDropdownItems, ethernetPortListQuery,
+    isLoading: isLoadingEthPortList } =
+    useQueryEthernetPortProfilesWithOverwritesQuery({
+      payload: {
+        sortField: 'name',
+        sortOrder: 'ASC',
+        pageSize: 1000
+      },
+      params: { ...params, venueId },
+      selectedModelCaps
+    }, {
+      skip: isTemplate || !isEthernetPortProfileEnabled,
+      selectFromResult: ({ data: queryResult, ...rest }) => ({
+        ethernetPortDropdownItems: (queryResult)?
+          convertEthernetPortListToDropdownItems(queryResult.data) :
+          [],
+        ethernetPortListQuery: queryResult,
+        ...rest
+      })
+    })
+
+  useEffect(()=> {
+    if (!isLoadingEthPortList && ethernetPortListQuery?.data) {
+      const ethProfile = ethernetPortListQuery.data.find((profile)=> ethernetProfileCreateId ?
+        profile.id === ethernetProfileCreateId : profile.id === ethernetPortProfileId)
+
+      setCurrentEthernetPortData(ethProfile)
+      if (ethProfile && ethernetProfileCreateId) {
+        form.setFieldValue(['lan', index, 'ethernetPortProfileId'], ethernetProfileCreateId)
+        setEthernetProfileCreateId(undefined)
+      }
+    }
+  }, [ethernetPortProfileId, ethernetPortListQuery?.data])
+
   return (<>
     {selectedPortCaps?.isPoeOutPort && <Form.Item
       name={['poeOut', index]}
@@ -102,7 +187,7 @@ export function LanPortSettings (props: {
       defaultMessage={`<section>
         <p>* The following LAN Port settings can’t work because DHCP is enabled.</p>
         <p>You cannot edit LAN Port setting on this device because it has assigned
-          to the venue which already has enabled DHCP service.</p>
+          to the <venueSingular></venueSingular> which already has enabled DHCP service.</p>
       </section>`}
       values={{
         section: (contents) => <Space
@@ -133,87 +218,117 @@ export function LanPortSettings (props: {
       name={['lan', index, 'portId']}
       children={<Input />}
     />
-    <Form.Item
-      name={['lan', index, 'type']}
-      label={<>
-        {$t({ defaultMessage: 'Port type' })}
-        <Tooltip.Question
-          title={$t(WifiNetworkMessages.LAN_PORTS_PORT_TOOLTIP)}
-          placement='bottom'
-        />
-      </>}
-      children={<Select
-        disabled={readOnly
-          || isDhcpEnabled
-          || !lan?.enabled
-          || selectedPortCaps?.trunkPortOnly
-          || lan?.vni > 0
-        }
-        options={Object.keys(ApLanPortTypeEnum).map(type => ({ label: type, value: type }))}
-        onChange={(value) => handlePortTypeChange(value, index)}
-      />}
-    />
-    <Form.Item
-      name={['lan', index, 'untagId']}
-      label={<>
-        {$t({ defaultMessage: 'VLAN untag ID' })}
-        <Tooltip.Question
-          title={$t(WifiNetworkMessages.LAN_PORTS_VLAN_UNTAG_TOOLTIP)}
-          placement='bottom'
-        />
-      </>}
-      rules={[{
-        required: true,
-        message: $t({ defaultMessage: 'This field is invalid' })
-      }]}
-      children={<InputNumber min={1}
-        max={4094}
-        style={{ width: '100%' }}
-        disabled={readOnly
-          || isDhcpEnabled
-          || !lan?.enabled
-          || (lan?.type === ApLanPortTypeEnum.TRUNK && !isTrunkPortUntaggedVlanEnabled)
-          || lan?.vni > 0
-        }
-        onChange={(value) => {
-          const isTrunkPort = lan?.type === ApLanPortTypeEnum.TRUNK
-          if (!isTrunkPort || isTrunkPortUntaggedVlanEnabled) {
-            const lanPorts = selectedModel?.lanPorts?.map((lan: LanPort, idx: number) =>
-              index === idx ? {
+    {!isTemplate && isEthernetPortProfileEnabled ?
+      (<><Space>
+        <Form.Item
+          name={['lan', index, 'ethernetPortProfileId']}
+          label={$t({ defaultMessage: 'Ethernet Port Profile' })}
+          children={<Select
+            disabled={readOnly
+              || isDhcpEnabled
+              || !lan?.enabled
+              || lan?.vni > 0}
+            options={[
+              { label: $t({ defaultMessage: 'No ethernet port profile selected' }), value: null },
+              ...ethernetPortDropdownItems
+            ]}
+            onChange={() => onChangedByCustom('ethernetPortProfileId')}
+          />} />
+        <EthernetPortProfileDrawer
+          updateInstance={(createId) => {
+            setEthernetProfileCreateId(createId)
+          }}
+          currentEthernetPortData={currentEthernetPortData} />
+      </Space>
+      <EthernetPortProfileInput
+        currentEthernetPortData={currentEthernetPortData}
+        currentIndex={index}
+        onGUIChanged={onGUIChanged}
+        isEditable={!!serialNumber} /></>) :
+      (<>
+        <Form.Item
+          name={['lan', index, 'type']}
+          label={<>
+            {$t({ defaultMessage: 'Port type' })}
+            <Tooltip.Question
+              title={$t(WifiNetworkMessages.LAN_PORTS_PORT_TOOLTIP)}
+              placement='bottom' />
+          </>}
+          children={<Select
+            disabled={readOnly
+            || isDhcpEnabled
+            || !lan?.enabled
+            || selectedPortCaps?.trunkPortOnly
+            || lan?.vni > 0}
+            options={Object.keys(ApLanPortTypeEnum).map(type => ({ label: type, value: type }))}
+            onChange={(value) => handlePortTypeChange(value, index)} />} />
+        <Form.Item
+          name={['lan', index, 'untagId']}
+          label={<>
+            {$t({ defaultMessage: 'VLAN untag ID' })}
+            {lan?.type === ApLanPortTypeEnum.TRUNK && isTrunkPortUntaggedVlanEnabled ?
+              <ApCompatibilityToolTip
+                title={$t(WifiNetworkMessages.LAN_PORTS_TRUNK_PORT_VLAN_UNTAG_TOOLTIP)}
+                visible={true}
+                placement='bottom'
+                onClick={() => setDrawerVisible(true)} />
+              :
+              <Tooltip.Question
+                title={$t(WifiNetworkMessages.LAN_PORTS_VLAN_UNTAG_TOOLTIP)}
+                placement='bottom' />}
+            <ApCompatibilityDrawer
+              visible={drawerVisible}
+              type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+              venueId={venueId}
+              featureName={InCompatibilityFeatures.TRUNK_PORT_VLAN_UNTAG_ID}
+              onClose={() => setDrawerVisible(false)} />
+          </>}
+          rules={[{
+            required: true,
+            message: $t({ defaultMessage: 'This field is invalid' })
+          }]}
+          children={<InputNumber min={1}
+            max={4094}
+            style={{ width: '100%' }}
+            disabled={readOnly
+              || isDhcpEnabled
+              || !lan?.enabled
+              || (lan?.type === ApLanPortTypeEnum.TRUNK && !isTrunkPortUntaggedVlanEnabled)
+              || lan?.vni > 0}
+            onChange={(value) => {
+              const isTrunkPort = lan?.type === ApLanPortTypeEnum.TRUNK
+              if (!isTrunkPort || isTrunkPortUntaggedVlanEnabled) {
+                const lanPorts =
+              selectedModel?.lanPorts?.map((lan: LanPort, idx: number) => index === idx ? {
                 ...lan,
                 untagId: value,
                 vlanMembers: isTrunkPort ? lan?.vlanMembers : value?.toString()
               } : lan
-            )
-            form?.setFieldValue('lan', lanPorts)
-            onChangedByCustom('untagId')
-          }
-        }}
-      />}
-    />
-    <Form.Item
-      name={['lan', index, 'vlanMembers']}
-      label={<>
-        {$t({ defaultMessage: 'VLAN member' })}
-        <Tooltip.Question
-          title={$t(WifiNetworkMessages.LAN_PORTS_VLAN_MEMBERS_TOOLTIP)}
-          placement='bottom'
-        />
-      </>}
-      rules={[
-        { validator: (_, value) => checkVlanMember(value) }
-      ]}
-      children={<Input
-        value={lan?.type === ApLanPortTypeEnum.ACCESS ? lan?.untagId : ''}
-        disabled={readOnly
-          || isDhcpEnabled
-          || !lan?.enabled
-          || lan?.type !== ApLanPortTypeEnum.GENERAL
-          || lan?.vni > 0
-        }
-        onChange={() => onChangedByCustom('vlanMembers')}
-      />}
-    />
+              )
+                form?.setFieldValue('lan', lanPorts)
+                onChangedByCustom('untagId')
+              }
+            }} />} />
+        <Form.Item
+          name={['lan', index, 'vlanMembers']}
+          label={<>
+            {$t({ defaultMessage: 'VLAN member' })}
+            <Tooltip.Question
+              title={$t(WifiNetworkMessages.LAN_PORTS_VLAN_MEMBERS_TOOLTIP)}
+              placement='bottom' />
+          </>}
+          rules={[
+            { validator: (_, value) => checkVlanMember(value) }
+          ]}
+          children={<Input
+            value={lan?.type === ApLanPortTypeEnum.ACCESS ? lan?.untagId : ''}
+            disabled={readOnly
+              || isDhcpEnabled
+              || !lan?.enabled
+              || lan?.type !== ApLanPortTypeEnum.GENERAL
+              || lan?.vni > 0}
+            onChange={() => onChangedByCustom('vlanMembers')} />} />
+      </>)}
     <Form.Item
       hidden={true}
       name={['lan', index, 'vni']}

@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { defaultSort, sortProp, formattedPath }                                                              from '@acx-ui/analytics/utils'
@@ -8,6 +10,8 @@ import {
 import { intlFormats }                                           from '@acx-ui/formatter'
 import { TenantLink, resolvePath }                               from '@acx-ui/react-router-dom'
 import {  NetworkPath, DateRange, encodeParameter, DateFilter  } from '@acx-ui/utils'
+
+import { getZoneUrl } from '../ZoneDetails/ZoneTabs'
 
 import { useZonesListQuery, Zone } from './services'
 import * as UI                     from './styledComponents'
@@ -34,13 +38,10 @@ function ZonesList () {
       fixed: 'left',
       searchable: true,
       width: 200,
-      render: (_, row: Zone, __, highlightFn) => (
-        <TenantLink
-          to={resolvePath(`/zones/${row.systemName}/${row.zoneName}/assurance?period=${period}`)}>
-          {highlightFn(row.zoneName)}
-        </TenantLink>
-      )
-      ,
+      render: (_, row: Zone, __, highlightFn) => <TenantLink
+        to={resolvePath(`${getZoneUrl(row.systemName, row.zoneName)}/assurance?period=${period}`)}>
+        {highlightFn(row.zoneName)}
+      </TenantLink>,
       sorter: { compare: sortProp('name', defaultSort) }
     },
     {
@@ -94,7 +95,10 @@ function ZonesList () {
       )
     }
   ]
-  const count = results.data?.zones?.length ?? 0
+  const [count, setCount] = useState(0)
+  useEffect(() => {
+    Array.isArray(results.data?.zones) && setCount(results.data?.zones?.length!)
+  }, [results.data])
   return (
     <Loader states={[results]}>
       <PageHeader
@@ -106,6 +110,8 @@ function ZonesList () {
         dataSource={results.data?.zones as Zone[]}
         pagination={pagination}
         settingsId='zonesList-table'
+        rowKey='id'
+        onDisplayRowChange={(data) => setCount(data.length)}
       />
     </Loader>
   )

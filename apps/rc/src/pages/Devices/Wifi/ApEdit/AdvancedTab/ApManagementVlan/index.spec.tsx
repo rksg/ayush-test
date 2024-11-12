@@ -2,10 +2,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { apApi, venueApi }                                       from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo, getUrlForTest }           from '@acx-ui/rc/utils'
-import { Provider, store }                                       from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { apApi, venueApi }                                                from '@acx-ui/rc/services'
+import { WifiUrlsInfo }                                                   from '@acx-ui/rc/utils'
+import { Provider, store }                                                from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { ApDataContext, ApEditContext } from '../..'
 import { r760Ap, venueData }            from '../../../../__tests__/fixtures'
@@ -20,8 +20,7 @@ const params = {
 }
 
 const mockVenueApManagementVlan = {
-  vlanId: 1,
-  vlanOverrideEnabled: true
+  vlanId: 1
 }
 
 const mockApManagementVlan = {
@@ -31,22 +30,24 @@ const mockApManagementVlan = {
 }
 
 const resetApLedSpy = jest.fn()
+const getVenueApManagementVlanSpy = jest.fn()
 
 describe('ApManagementVlanForm', () => {
+  const defaultR760ApCtxData = { apData: r760Ap, venueData }
+
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(apApi.util.resetApiState())
 
     resetApLedSpy.mockClear()
+    getVenueApManagementVlanSpy.mockClear()
     mockServer.use(
-      rest.get(
-        getUrlForTest(CommonUrlsInfo.getVenue),
-        (_, res, ctx) => res(ctx.json(venueData))),
-      rest.get(
-        getUrlForTest(WifiUrlsInfo.getVenueApManagementVlan),
-        (_, res, ctx) => res(ctx.json(mockVenueApManagementVlan))),
-      rest.get(
-        getUrlForTest(WifiUrlsInfo.getApManagementVlan),
+      rest.get(WifiUrlsInfo.getVenueApManagementVlan.url,
+        (_, res, ctx) => {
+          getVenueApManagementVlanSpy()
+          return res(ctx.json(mockVenueApManagementVlan))
+        }),
+      rest.get(WifiUrlsInfo.getApManagementVlan.url,
         (_, res, ctx) => res(ctx.json(mockApManagementVlan)))
     )
   })
@@ -55,7 +56,7 @@ describe('ApManagementVlanForm', () => {
     render(
       <Provider>
         <Form>
-          <ApDataContext.Provider value={{ apData: r760Ap }}>
+          <ApDataContext.Provider value={defaultR760ApCtxData}>
             <ApManagementVlanForm />
           </ApDataContext.Provider>
         </Form>
@@ -64,9 +65,12 @@ describe('ApManagementVlanForm', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitFor(() => expect(getVenueApManagementVlanSpy).toBeCalledTimes(1))
 
     expect(await screen.findByRole('button', { name: /Customize/ })).toBeVisible()
-    expect(await screen.findByTestId('ap-managment-vlan-vlan-id-span')).toBeVisible()
+    const vlanId = screen.getByTestId('ap-managment-vlan-vlan-id-span')
+    expect(vlanId).toBeVisible()
+    await waitFor(() => expect(vlanId).toHaveTextContent('1'))
   })
 
   it('should handle click Customize/Use Venue settings link', async () => {
@@ -88,7 +92,7 @@ describe('ApManagementVlanForm', () => {
             },
             setEditAdvancedContextData: jest.fn()
           }}>
-            <ApDataContext.Provider value={{ apData: r760Ap }}>
+            <ApDataContext.Provider value={defaultR760ApCtxData}>
               <ApManagementVlanForm />
             </ApDataContext.Provider>
           </ApEditContext.Provider>
@@ -97,20 +101,25 @@ describe('ApManagementVlanForm', () => {
         route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/advanced' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitFor(() => expect(getVenueApManagementVlanSpy).toBeCalledTimes(1))
 
-    expect(await screen.findByRole('button', { name: /Customize/ })).toBeVisible()
-    expect(await screen.findByTestId('ap-managment-vlan-vlan-id-span')).toBeVisible()
+    const customizeBtn = screen.getByRole('button', { name: /Customize/ })
+    expect(customizeBtn).toBeVisible()
+    const vlanId = screen.getByTestId('ap-managment-vlan-vlan-id-span')
+    expect(vlanId).toBeVisible()
+    await waitFor(() => expect(vlanId).toHaveTextContent('1'))
     expect(screen.queryByTestId('ap-managment-vlan-vlan-id-input')).toBeNull()
 
-    await userEvent.click(await screen.findByRole('button', { name: /Customize/ }))
+    await userEvent.click(customizeBtn)
 
-    expect(await screen.findByRole('button', { name: /Use Venue Settings/ })).toBeVisible()
+    const venueSettingBtn = await screen.findByRole('button', { name: /Use Venue Settings/ })
+    expect(venueSettingBtn).toBeVisible()
     expect(screen.queryByTestId('ap-managment-vlan-vlan-id-span')).toBeNull()
-    expect(await screen.findByTestId('ap-managment-vlan-vlan-id-input')).toBeVisible()
+    expect(screen.getByTestId('ap-managment-vlan-vlan-id-input')).toBeVisible()
 
-    await userEvent.click(await screen.findByRole('button', { name: /Use Venue Settings/ }))
-    expect(await screen.findByTestId('ap-managment-vlan-vlan-id-span')).toBeVisible()
+    await userEvent.click(venueSettingBtn)
+    await screen.findByRole('button', { name: /Customize/ })
+    expect(screen.getByTestId('ap-managment-vlan-vlan-id-span')).toBeVisible()
     expect(screen.queryByTestId('ap-managment-vlan-vlan-id-input')).toBeNull()
   })
 })

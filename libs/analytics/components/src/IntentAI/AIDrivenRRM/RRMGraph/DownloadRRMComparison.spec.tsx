@@ -1,0 +1,38 @@
+import { Provider, intentAIUrl }            from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
+
+import { mockIntentContext }                  from '../../__tests__/fixtures'
+import { mockedCRRMGraphs, mockedIntentCRRM } from '../__tests__/fixtures'
+
+import { DownloadRRMComparison } from './DownloadRRMComparison'
+
+jest.mock('../../IntentContext')
+
+describe('DownloadRRMComparison', () => {
+  const intent = mockedIntentCRRM
+  const params = {
+    root: mockedIntentCRRM.root,
+    sliceId: mockedIntentCRRM.sliceId,
+    code: intent.code
+  }
+
+  beforeEach(() => {
+    global.URL.createObjectURL = jest.fn().mockReturnValue('blob:csv-url')
+    global.URL.revokeObjectURL = jest.fn()
+
+    mockIntentContext({ intent, kpis: [] })
+    mockGraphqlQuery(intentAIUrl, 'IntentAIRRMGraph', {
+      data: { intent: mockedCRRMGraphs }
+    })
+  })
+
+  it('renders download button', async () => {
+    render(<DownloadRRMComparison />, { wrapper: Provider, route: { params } })
+    expect(await screen.findByText('Download RRM comparison')).toBeVisible()
+  })
+
+  it('renders download button with custom title', async () => {
+    render(<DownloadRRMComparison title='Test title' />, { wrapper: Provider, route: { params } })
+    expect(await screen.findByText('Test title')).toBeVisible()
+  })
+})

@@ -1,4 +1,5 @@
-import moment from 'moment'
+import moment            from 'moment'
+import { defineMessage } from 'react-intl'
 
 import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
 import { EntitlementNetworkDeviceType } from '@acx-ui/rc/utils'
@@ -10,12 +11,14 @@ import {
   MspEc,
   MspEcProfile,
   MspProfile,
-  MspRecCustomer
+  MspRecCustomer,
+  MspEcAccountType,
+  ComplianceMspCustomersDevicesTypes
 } from './types'
 
 export * from './types'
 export * from './urls'
-
+export * from './mspRbacUrls'
 export const MSP_USER_SETTING = 'COMMON$MSP'
 
 export const MSPUtils = () => {
@@ -29,7 +32,7 @@ export const MSPUtils = () => {
   }
 
   const isOnboardedMsp = (msp: MspProfile | undefined): boolean => {
-    if (msp?.msp_label !== '') {
+    if (!!msp?.msp_label) {
       return true
     }
 
@@ -103,14 +106,22 @@ export const MSPUtils = () => {
 
   const transformFutureOutOfComplianceDevices = (entitlements: DelegationEntitlementRecord[]) => {
     return entitlements && entitlements.length > 0
-      ? `${(entitlements[0].futureOutOfComplianceDevices || 0)} 
+      ? `${(entitlements[0].futureOutOfComplianceDevices || 0)}
         / ${futureOfComplianceDays(entitlements[0].futureOfComplianceDate)}` : '0 / --'
   }
 
   const getStatus = (row: MspEc) => {
-    const isTrial = row.accountType === 'TRIAL'
-    const value = row.status === 'Active' ? (isTrial ? 'Trial' : row.status) : 'Inactive'
-    return value
+    if (row.status === 'Active') {
+      switch(row.accountType) {
+        case MspEcAccountType.TRIAL:
+          return defineMessage({ defaultMessage: 'Trial' })
+        case MspEcAccountType.EXTENDED_TRIAL:
+          return defineMessage({ defaultMessage: 'Extended Trial' })
+      }
+      return defineMessage({ defaultMessage: 'Active' })
+    } else {
+      return defineMessage({ defaultMessage: 'Inactive' })
+    }
   }
 
   const transformApEntitlement = (row: MspEc) => {
@@ -162,7 +173,7 @@ export const MSPUtils = () => {
           target = entitlement
         }
       }
-      expirationDate = target ? formatter(DateFormatEnum.DateFormat)(target.expirationDate) : '--'
+      expirationDate = target ? target.expirationDate : '--'
     })
     return expirationDate
   }
@@ -175,7 +186,7 @@ export const MSPUtils = () => {
 
   const transformMspRecAddress = (data: MspRecCustomer) => {
     const address =
-    `${data.billing_street}, ${data.billing_city}, ${data.billing_state}, 
+    `${data.billing_street}, ${data.billing_city}, ${data.billing_state},
     ${data.billing_postal_code}, ${data.billing_country}`
     return address
   }
@@ -202,6 +213,27 @@ export const MSPUtils = () => {
         ? 'Integrator Admin Count' : 'MSP Admin Count')
   }
 
+  const getConfiguredDevices = (deviceType: ComplianceMspCustomersDevicesTypes,
+    entitlements: DelegationEntitlementRecord[]) => {
+    entitlements = entitlements ?? []
+
+    switch(deviceType) {
+      case ComplianceMspCustomersDevicesTypes.AP:
+        return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
+          sum + (en.wifiDeviceCount || 0), 0)
+      case ComplianceMspCustomersDevicesTypes.SWITCH:
+        return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
+          sum + (en.switchDeviceCount || 0), 0)
+      case ComplianceMspCustomersDevicesTypes.EDGE:
+        return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
+          sum + (en.edgeDeviceCount || 0), 0)
+      case ComplianceMspCustomersDevicesTypes.RWG:
+        return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
+          sum + (en.rwgDeviceCount || 0), 0)
+      default: return 0
+    }
+  }
+
   return {
     isMspEc,
     isOnboardedMsp,
@@ -221,6 +253,7 @@ export const MSPUtils = () => {
     transformTechPartner,
     transformTechPartnerCount,
     transformAdminCount,
-    transformAdminCountHeader
+    transformAdminCountHeader,
+    getConfiguredDevices
   }
 }

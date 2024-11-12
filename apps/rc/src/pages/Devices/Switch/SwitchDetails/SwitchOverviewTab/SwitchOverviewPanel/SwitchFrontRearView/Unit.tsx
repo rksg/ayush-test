@@ -5,6 +5,7 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, Descriptions, Drawer, showActionModal, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { useAcknowledgeSwitchMutation,
   useDeleteStackMemberMutation,
   useLazySwitchPortlistQuery,
@@ -14,14 +15,17 @@ import { getPoeUsage,
   getSwitchPortLabel,
   isEmpty,
   StackMember,
-  SwitchFrontView
-  , SwitchModelInfo,
+  SwitchFrontView,
+  SwitchModelInfo,
+  SwitchPortViewModelQueryFields,
   SwitchRearViewUISlot,
   SwitchSlot,
   SwitchStatusEnum,
   SwitchViewModel,
   transformSwitchUnitStatus } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
+import { SwitchScopes }                      from '@acx-ui/types'
+import { hasPermission }                     from '@acx-ui/user'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
 import { SwitchDetailsContext } from '../../..'
@@ -31,7 +35,6 @@ import { FrontViewTooltip } from './FrontViewTooltip'
 import { RearView }         from './RearView'
 import * as UI              from './styledComponents'
 
-import { SwitchPanelContext } from '.'
 interface unitType {
   switchUnit: number
   model: string
@@ -95,16 +98,14 @@ export function Unit (props:{
   isOnline: boolean
 }) {
   const { member, isStack, isOnline } = props
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const {
     switchDetailsContextData
   } = useContext(SwitchDetailsContext)
-  const {
-    editPortsFromPanelEnabled
-  } = useContext(SwitchPanelContext)
   const [ deleteStackMember ] = useDeleteStackMemberMutation()
   const [ acknowledgeSwitch ] = useAcknowledgeSwitchMutation()
   const { switchDetailHeader: switchDetail, switchDetailViewModelQuery, switchQuery } = switchDetailsContextData
-  const { serialNumber, switchMac } = switchDetail
+  const { serialNumber, switchMac, venueId } = switchDetail
 
   const { $t } = useIntl()
   const [ visible, setVisible ] = useState(false)
@@ -161,7 +162,11 @@ export function Unit (props:{
   }
 
   const getSwitchPortDetail = async (switchMac: string, serialNumber: string, unitId: string) => {
-    const { data: rearStatus } = await switchRearView({ params: { tenantId, switchId: serialNumber, unitId } })
+    const { data: rearStatusData } = await switchRearView({
+      params: { tenantId, switchId: serialNumber, unitId, venueId },
+      enableRbac: isSwitchRbacEnabled
+    })
+    const rearStatus = isSwitchRbacEnabled ? rearStatusData?.data?.[0] : rearStatusData
     const { data: portsData } = await switchPortlist({
       params: { tenantId },
       payload: {
@@ -170,17 +175,9 @@ export function Unit (props:{
         sortOrder: 'ASC',
         page: 1,
         pageSize: 10000,
-        fields: ['portIdentifier', 'name', 'status', 'adminStatus', 'portSpeed',
-          'poeUsed', 'vlanIds', 'neighborName', 'tag', 'cog', 'cloudPort', 'portId', 'switchId',
-          'switchSerial', 'switchMac', 'switchName', 'switchUnitId', 'switchModel',
-          'unitStatus', 'unitState', 'deviceStatus', 'poeEnabled', 'poeTotal', 'unTaggedVlan',
-          'lagId', 'syncedSwitchConfig', 'ingressAclName', 'egressAclName', 'usedInFormingStack',
-          'id', 'poeType', 'signalIn', 'signalOut', 'lagName', 'opticsType',
-          'broadcastIn', 'broadcastOut', 'multicastIn', 'multicastOut', 'inErr', 'outErr',
-          'crcErr', 'inDiscard', 'usedInFormingStack', 'mediaType', 'poeUsage',
-          'neighborMacAddress'
-        ]
-      }
+        fields: SwitchPortViewModelQueryFields
+      },
+      enableRbac: isSwitchRbacEnabled
     })
     const portStatusData = {
       slots: [] as SwitchSlot[]
@@ -338,7 +335,10 @@ export function Unit (props:{
         numOfEntities: 1
       },
       onOk: () => {
-        deleteStackMember({ params: { tenantId, stackSwitchSerialNumber: unit.serialNumber } }).then(() => {
+        deleteStackMember({
+          params: { tenantId, stackSwitchSerialNumber: unit.serialNumber, venueId },
+          enableRbac: isSwitchRbacEnabled
+        }).then(() => {
           switchQuery?.refetch()
           switchDetailViewModelQuery?.refetch()
         })
@@ -362,7 +362,11 @@ export function Unit (props:{
       ackPayload.add.push(unit.serialNumber)
     }
 
-    acknowledgeSwitch({ params: { tenantId, switchId }, payload: ackPayload })
+    acknowledgeSwitch({
+      params: { tenantId, switchId, venueId },
+      payload: ackPayload,
+      enableRbac: isSwitchRbacEnabled
+    })
   }
 
   const ViewModeButton = <Button
@@ -425,7 +429,7 @@ export function Unit (props:{
       }
       <div className='view-button'>
         {
-          enableDeleteStackMember &&
+          enableDeleteStackMember && hasPermission({ scopes: [SwitchScopes.DELETE] }) &&
           <Button
             type='link'
             size='small'
@@ -444,7 +448,7 @@ export function Unit (props:{
       </div>
     </UI.TitleBar>
     {
-      (editPortsFromPanelEnabled && !isRearView && props.index === 0) && (
+      (!isRearView && props.index === 0) && (
         <UI.FrontViewTooltipContainer>
           <FrontViewTooltip />
         </UI.FrontViewTooltipContainer>

@@ -8,8 +8,10 @@ import {
   Loader,
   Card
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  useNetworkListQuery
+  useNetworkListQuery,
+  useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import { useTableQuery, Network, NetworkTypeEnum, NetworkType } from '@acx-ui/rc/utils'
 import { TenantLink }                                           from '@acx-ui/react-router-dom'
@@ -42,7 +44,7 @@ function useColumns () {
     },
     {
       key: 'venues',
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: ['venues', 'count'],
       sorter: true,
       render: function (_, { venues }) {
@@ -60,13 +62,16 @@ const defaultPayload = {
     'name',
     'nwSubType',
     'venues',
-    'id'
+    'id',
+    'venueApGroups'
   ],
   sortField: 'name',
   sortOrder: 'ASC'
 }
 
 export function NetworkTable (props: { networkIds?: string[] }) {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const { $t } = useIntl()
   const { networkIds } = props
 
@@ -79,7 +84,7 @@ export function NetworkTable (props: { networkIds?: string[] }) {
   }, [networkIds])
 
   const networkTableQuery = useTableQuery({
-    useQuery: useNetworkListQuery,
+    useQuery: isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery,
     defaultPayload: {
       ...defaultPayload,
       filters: { id: networkIds && networkIds?.length > 0 ? networkIds : [''] }

@@ -6,8 +6,9 @@ import { useIntl } from 'react-intl'
 
 import { StepsFormLegacy, Table, Loader, TableProps } from '@acx-ui/components'
 import { useVenuesListQuery }                         from '@acx-ui/rc/services'
-import { useTableQuery, Venue, MdnsProxyScopeData }   from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                  from '@acx-ui/user'
+import { useTableQuery, Venue, ApMdnsProxyScopeData } from '@acx-ui/rc/utils'
+import { WifiScopes }                                 from '@acx-ui/types'
+import { filterByAccess,  hasPermission }             from '@acx-ui/user'
 
 import MdnsProxyFormContext from '../MdnsProxyForm/MdnsProxyFormContext'
 
@@ -56,9 +57,9 @@ export function MdnsProxyScope () {
 
   const handleSetAps = (venue: Venue, aps: SimpleApRecord[]) => {
     const currentScope = form.getFieldValue('scope')
-    const resultScope: MdnsProxyScopeData[] = currentScope?.slice() ?? []
+    const resultScope: ApMdnsProxyScopeData[] = currentScope?.slice() ?? []
 
-    _.remove(resultScope, (s: MdnsProxyScopeData) => s.venueId === venue.id)
+    _.remove(resultScope, (s: ApMdnsProxyScopeData) => s.venueId === venue.id)
 
     resultScope.push({
       venueName: venue.name,
@@ -69,12 +70,12 @@ export function MdnsProxyScope () {
     updateField(resultScope)
   }
 
-  const updateField = (scope: MdnsProxyScopeData[] = []) => {
+  const updateField = (scope: ApMdnsProxyScopeData[] = []) => {
     form.setFieldValue('scope', scope)
   }
 
   const getActivatedApsId = (venueId: string): string[] => {
-    const scope: MdnsProxyScopeData[] = form.getFieldValue('scope')
+    const scope: ApMdnsProxyScopeData[] = form.getFieldValue('scope')
     const target = scope.find(s => s.venueId === venueId)
     return target ? target.aps.map(ap => ap.serialNumber) : []
   }
@@ -84,13 +85,14 @@ export function MdnsProxyScope () {
       label: $t({ defaultMessage: 'Select APs' }),
       onClick: (rows: Venue[]) => {
         handleSelectAps(rows)
-      }
+      },
+      scopeKey: [WifiScopes.UPDATE, WifiScopes.CREATE]
     }
   ]
 
   const columns: TableProps<Venue>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'name',
       key: 'name',
       sorter: true
@@ -106,7 +108,7 @@ export function MdnsProxyScope () {
       dataIndex: ['activatedApsId', 'length'],
       key: 'activatedApsId',
       render: function (_, row) {
-        const scope: MdnsProxyScopeData[] = form.getFieldValue('scope') ?? []
+        const scope: ApMdnsProxyScopeData[] = form.getFieldValue('scope') ?? []
         const target = scope.find(v => v.venueId === row.id)
 
         return target ? target.aps.length : 0
@@ -118,7 +120,8 @@ export function MdnsProxyScope () {
     <>
       <StepsFormLegacy.Title>{ $t({ defaultMessage: 'Scope' }) }</StepsFormLegacy.Title>
       <p>{ $t({
-        defaultMessage: 'Select the venues and APs where the mDNS Proxy Service will be applied:'
+        // eslint-disable-next-line max-len
+        defaultMessage: 'Select the <venuePlural></venuePlural> and APs where the mDNS Proxy Service will be applied:'
       }) }</p>
       {selectedVenue
         ? <MdnsProxyScopeApDrawer
@@ -135,7 +138,10 @@ export function MdnsProxyScope () {
           <Table
             rowKey='id'
             rowActions={filterByAccess(rowActions)}
-            rowSelection={hasAccess() && { type: 'radio' }}
+            rowSelection={
+              hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.CREATE] }) &&
+              { type: 'radio' }
+            }
             columns={columns}
             dataSource={tableData}
             pagination={tableQuery.pagination}

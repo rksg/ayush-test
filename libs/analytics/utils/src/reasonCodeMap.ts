@@ -1,5 +1,7 @@
 import { defineMessage, IntlShape, MessageDescriptor } from 'react-intl'
 
+import { getIntl } from '@acx-ui/utils'
+
 import { disconnectReasonCodeMap } from './mapping/80211MgmtDeauthAndDisassociationFramesMap'
 import { ccd80211ReasonCodes }     from './mapping/ccd80211ReasonCodeMap'
 import { ccdFailureTypes }         from './mapping/ccdFailureTypeMap'
@@ -37,7 +39,7 @@ const attemptTitles = {
   ...readCodesIntoMap('attemptsText')(ccdFailureTypes as MapElement[])
 }
 
-const ccdReasonCodeMap = readCodesIntoMap()(
+export const ccdReasonCodeMap = readCodesIntoMap()(
   (ccdReasonCodes as MapElement[]).concat(
   ccd80211ReasonCodes.filter(({ code }) => !code.startsWith('SG_DHCP')) as MapElement[]))
 
@@ -66,9 +68,10 @@ export function clientEventDescription (
     : clientEventsMap[event as ClientEventEnum]
 }
 
-export function mapCodeToReason (code: string, intl: IntlShape) {
+export function mapCodeToReason (code: string) {
+  const { $t } = getIntl()
   const reason = failureTitles[code as keyof typeof failureTitles] || clientEventDescription(code)
-  return (typeof reason === 'string') ? reason : intl.$t(reason)
+  return (typeof reason === 'string') ? reason : $t(reason)
 }
 
 export function mapDisconnectCode (code: string | null): MessageDescriptor {
@@ -83,9 +86,10 @@ export function mapDisconnectCodeToReason (
     || defineMessage({ defaultMessage: 'Unknown' })
 }
 
-export function mapCodeToAttempt (code: string, intl: IntlShape) {
+export function mapCodeToAttempt (code: string) {
+  const { $t } = getIntl()
   const reason = attemptTitles[code as keyof typeof attemptTitles] || clientEventDescription(code)
-  return (typeof reason === 'string') ? reason : intl.$t(reason)
+  return (typeof reason === 'string') ? reason : $t(reason)
 }
 
 export const mapCodeToFailureText = (code: string, intl: IntlShape) =>

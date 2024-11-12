@@ -11,7 +11,8 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchUpgradePreferences: {
     method: 'get',
-    url: '/api/upgrade/tenant/:tenantId/switchPreference'
+    url: '/upgradeConfig/switchPreference',
+    newApi: true
   },
   updateUpgradePreferences: {
     method: 'put',
@@ -21,7 +22,8 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   },
   updateSwitchUpgradePreferences: {
     method: 'put',
-    url: '/api/upgrade/tenant/:tenantId/switchPreference'
+    url: '/upgradeConfig/switchPreference',
+    newApi: true
   },
   getVenueVersionList: {
     method: 'get',
@@ -45,6 +47,11 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/apFirmwares?status=release&abf=all',
     oldUrl: '/api/tenant/:tenantId/wifi/upgrade/version/release/all',
+    newApi: true
+  },
+  getApModelFamilies: {
+    method: 'post',
+    url: '/apModelFamilies/query',
     newApi: true
   },
   getFirmwareVersionIdList: {
@@ -72,6 +79,11 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/upgrade/update-now',
     newApi: true
   },
+  updateDowngrade: {
+    method: 'put',
+    url: '/venues/:venueId/apFirmwares/:firmwareVersion',
+    newApi: true
+  },
   skipSwitchUpgradeSchedules: {
     method: 'delete',
     url: '/venues/switchFirmwares/schedules',
@@ -88,6 +100,11 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/venues/switchFirmwares/versions/latest',
     oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/version/latest',
+    newApi: true
+  },
+  getSwitchDefaultFirmwareList: {
+    method: 'get',
+    url: '/venues/switchFirmwares/versions/default',
     newApi: true
   },
   getSwitchFirmwareVersionIdList: {
@@ -161,9 +178,8 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getVenueEdgeFirmwareList: {
-    method: 'get',
-    url: '/venues/edgeFirmwares/releases',
-    oldUrl: '/venues/edgeFirmwares/releases',
+    method: 'post',
+    url: '/edgeFirmwares/schedules/query',
     newApi: true
   },
   getAvailableEdgeFirmwareVersions: {
@@ -174,8 +190,7 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   },
   updateEdgeFirmware: {
     method: 'PATCH',
-    url: '/venues/edgeFirmwares/releases',
-    oldUrl: '/venues/edgeFirmwares/releases',
+    url: '/venues/:venueId/edgeFirmwares',
     newApi: true
   },
   getEdgeUpgradePreferences: {
@@ -192,14 +207,122 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   },
   skipEdgeUpgradeSchedules: {
     method: 'delete',
-    url: '/venues/edgeFirmwares/releases',
-    oldUrl: '/venues/edgeFirmwares/releases',
+    url: '/venues/:venueId/edgeFirmwares/schedules',
     newApi: true
   },
   updateEdgeVenueSchedules: {
     method: 'post',
-    url: '/venues/edgeFirmwares/releases',
-    oldUrl: '/venues/edgeFirmwares/releases',
+    url: '/venues/:venueId/edgeFirmwares/schedules',
     newApi: true
+  },
+  getScheduledFirmware: {
+    method: 'get',
+    url: '/apFirmwares?status=scheduled',
+    oldUrl: '/api/tenant/:tenantId/wifi/upgrade/schedule-version',
+    newApi: true
+  },
+  getVenueApModelFirmwareList: {
+    method: 'post',
+    url: '/venues/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getAllApModelFirmwareList: {
+    method: 'get',
+    url: '/apModelFirmwares',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
+  },
+  patchVenueApModelFirmwares: {
+    method: 'put',
+    url: '/apModelFirmwares/batchOperations/:batchId/venues/:venueId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getVenueApModelFirmwares: {
+    method: 'get',
+    url: '/venues/:venueId/apModelFirmwares',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
+  },
+  updateVenueSchedulesPerApModel: {
+    method: 'put',
+    url: '/apModelFirmwares/batchOperations/:batchId/venues/:venueId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  skipVenueSchedulesPerApModel: {
+    method: 'delete',
+    url: '/apModelFirmwares/batchOperations/:batchId/venues/:venueId',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getDistinctFirmwareIdList: {
+    method: 'get',
+    url: '/apModelFirmwares?status=distinctFirmwareVersion',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
+  },
+  startFirmwareBatchOperation: {
+    method: 'post',
+    url: '/apModelFirmwares/batchOperations',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  startEdgeFirmwareBatchOperation: {
+    method: 'post',
+    url: '/edgeFirmwares/batchOperations',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  startEdgeFirmwareVenueUpdateNow: {
+    method: 'PATCH',
+    url: '/edgeFirmwares/batchOperations/:batchId/venues/:venueId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  updateEdgeFirmwareVenueSchedule: {
+    method: 'post',
+    url: '/edgeFirmwares/batchOperations/:batchId/venues/:venueId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  skipEdgeFirmwareVenueSchedule: {
+    method: 'delete',
+    url: '/edgeFirmwares/batchOperations/:batchId/venues/:venueId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

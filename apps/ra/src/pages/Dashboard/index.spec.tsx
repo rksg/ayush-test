@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
 
-import { defaultNetworkPath, getUserProfile } from '@acx-ui/analytics/utils'
-import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import { BrowserRouter }                      from '@acx-ui/react-router-dom'
-import { act, render, renderHook, screen }    from '@acx-ui/test-utils'
-import { DateRange }                          from '@acx-ui/utils'
+import { defaultNetworkPath, getUserProfile }                    from '@acx-ui/analytics/utils'
+import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { BrowserRouter }                                         from '@acx-ui/react-router-dom'
+import { act, render, renderHook, screen }                       from '@acx-ui/test-utils'
+import { RaiPermissions, raiPermissionsList, setRaiPermissions } from '@acx-ui/user'
+import { DateRange }                                             from '@acx-ui/utils'
 
 import Dashboard, { useMonitorHeight, useDashBoardUpdatedFilters, getFiltersForRecommendationWidgets } from '.'
 
@@ -28,19 +29,8 @@ jest.mock('@acx-ui/analytics/utils', () => (
     ...jest.requireActual('@acx-ui/analytics/utils'),
     getUserProfile: jest.fn()
   }))
-const defaultMockPermissions = {
-  'view-analytics': true,
-  'view-report-controller-inventory': true,
-  'view-data-explorer': true,
-  'manage-service-guard': true,
-  'manage-call-manager': true,
-  'manage-mlisa': true,
-  'manage-occupancy': true,
-  'manage-label': true,
-  'manage-tenant-settings': true,
-  'manage-config-recommendation': true,
-  'franchisor': true
-}
+const defaultMockPermissions = Object.keys(raiPermissionsList)
+  .reduce((permissions, name) => ({ ...permissions, [name]: true }), {})
 const defaultMockUserProfile = {
   accountId: 'accountId',
   selectedTenant: {
@@ -62,41 +52,18 @@ const defaultMockUserProfile = {
 describe('Dashboard', () => {
   beforeEach(() => {
     mockedUseLayoutContext.mockReturnValue({ pageHeaderY: 100 })
+    const mockUseUserProfileContext = getUserProfile as jest.Mock
+    mockUseUserProfileContext.mockReturnValue(defaultMockUserProfile)
   })
   afterEach(() => jest.restoreAllMocks())
 
   it('renders correct components for admin', async () => {
-    const mockUseUserProfileContext = getUserProfile as jest.Mock
-    mockUseUserProfileContext.mockReturnValue(defaultMockUserProfile)
-    render(<Dashboard />, { route: true })
-
-    expect(await screen.findByTestId('DidYouKnow')).toBeVisible()
-    expect(await screen.findByTestId('IncidentsCountBySeverities')).toBeVisible()
-    expect(await screen.findByTestId('SLA')).toBeVisible()
-    expect(await screen.findByTestId('ReportTile')).toBeVisible()
-    expect(await screen.findByTestId('SANetworkFilter')).toBeVisible()
-    expect(await screen.findByTestId('AIDrivenRRM')).toBeVisible()
-    expect(await screen.findByTestId('AIOperations')).toBeVisible()
-  })
-
-  it('renders correct components for network admin', async () => {
-    const mockUseUserProfileContext = getUserProfile as jest.Mock
-    const mockPermissions = {
-      ...defaultMockPermissions,
-      'manage-config-recommendation': false
-    }
-    const mockUserProfile = {
-      accountId: 'accountId',
-      selectedTenant: { permissions: mockPermissions },
-      tenants: [
-        {
-          id: 'accountId',
-          permissions: mockPermissions
-        }
-      ]
-    }
-
-    mockUseUserProfileContext.mockReturnValue(mockUserProfile)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    setRaiPermissions({
+      READ_AI_DRIVEN_RRM: true,
+      READ_AI_OPERATIONS: true,
+      READ_INTENT_AI: true
+    } as RaiPermissions)
     render(<Dashboard />, { route: true })
 
     expect(await screen.findByTestId('DidYouKnow')).toBeVisible()
@@ -106,12 +73,31 @@ describe('Dashboard', () => {
     expect(await screen.findByTestId('SANetworkFilter')).toBeVisible()
     expect(screen.queryByTestId('AIDrivenRRM')).toBeNull()
     expect(screen.queryByTestId('AIOperations')).toBeNull()
+    expect(await screen.findByTestId('IntentAIWidget')).toBeVisible()
+  })
+
+  it('renders correct components for network admin', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    setRaiPermissions({
+      READ_AI_DRIVEN_RRM: false,
+      READ_AI_OPERATIONS: false,
+      READ_INTENT_AI: false
+    } as RaiPermissions)
+    render(<Dashboard />, { route: true })
+
+    expect(await screen.findByTestId('DidYouKnow')).toBeVisible()
+    expect(await screen.findByTestId('IncidentsCountBySeverities')).toBeVisible()
+    expect(await screen.findByTestId('SLA')).toBeVisible()
+    expect(await screen.findByTestId('ReportTile')).toBeVisible()
+    expect(await screen.findByTestId('SANetworkFilter')).toBeVisible()
+    expect(screen.queryByTestId('AIDrivenRRM')).toBeNull()
+    expect(screen.queryByTestId('AIOperations')).toBeNull()
+    expect(screen.queryByTestId('IntentAIWidget')).toBeNull()
   })
 
   it('renders correct component when appInsight FF is on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    const mockUseUserProfileContext = getUserProfile as jest.Mock
-    mockUseUserProfileContext.mockReturnValue(defaultMockUserProfile)
+    setRaiPermissions({ READ_INTENT_AI: true } as RaiPermissions)
     render(<Dashboard />, { route: true })
 
     expect(await screen.findByTestId('DidYouKnow')).toBeVisible()
@@ -119,8 +105,9 @@ describe('Dashboard', () => {
     expect(await screen.findByTestId('SLA')).toBeVisible()
     expect(await screen.findByTestId('ReportTile')).toBeVisible()
     expect(await screen.findByTestId('SANetworkFilter')).toBeVisible()
-    expect(await screen.findByTestId('AIDrivenRRM')).toBeVisible()
-    expect(await screen.findByTestId('AIOperations')).toBeVisible()
+    expect(screen.queryByTestId('AIDrivenRRM')).toBeNull()
+    expect(screen.queryByTestId('AIOperations')).toBeNull()
+    expect(await screen.findByTestId('IntentAIWidget')).toBeVisible()
   })
 
   describe('useMonitorHeight', () => {
@@ -209,5 +196,40 @@ describe('Dashboard', () => {
         endDate: 'endDate'
       })
     })
+  })
+
+  // eslint-disable-next-line max-len
+  it('render intentAI and not render RRM when intentAI FF is on and has intentAI permission', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    setRaiPermissions({ READ_INTENT_AI: true } as RaiPermissions)
+    render(<Dashboard />, { route: true })
+
+    expect(await screen.findByTestId('IntentAIWidget')).toBeVisible()
+    expect(screen.queryByTestId('AIDrivenRRM')).toBeNull()
+    expect(screen.queryByTestId('AIOperations')).toBeNull()
+  })
+  // eslint-disable-next-line max-len
+  it('not render intentAI and not render RRM when intentAI FF is on and has no intentAI permission', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    setRaiPermissions({ READ_INTENT_AI: false } as RaiPermissions)
+    render(<Dashboard />, { route: true })
+
+    expect(screen.queryByTestId('IntentAIWidget')).toBeNull()
+    expect(screen.queryByTestId('AIDrivenRRM')).toBeNull()
+    expect(screen.queryByTestId('AIOperations')).toBeNull()
+  })
+  // eslint-disable-next-line max-len
+  it('not render intentAI and render RRM when intentAI FF is off and has RRM permission', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    setRaiPermissions({
+      READ_AI_DRIVEN_RRM: true,
+      READ_AI_OPERATIONS: true,
+      READ_INTENT_AI: true
+    } as RaiPermissions)
+    render(<Dashboard />, { route: true })
+
+    expect(screen.queryByTestId('IntentAIWidget')).toBeNull()
+    expect(await screen.findByTestId('AIDrivenRRM')).toBeVisible()
+    expect(await screen.findByTestId('AIOperations')).toBeVisible()
   })
 })

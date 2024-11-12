@@ -1,8 +1,8 @@
 import { BrowserRouter } from 'react-router-dom'
 
-import { fakeIncidentRss }          from '@acx-ui/analytics/utils'
-import { dataApiURL, store }        from '@acx-ui/store'
-import { mockGraphqlQuery, render } from '@acx-ui/test-utils'
+import { fakeIncidentRss, overlapsRollup }  from '@acx-ui/analytics/utils'
+import { dataApiURL, store, Provider }      from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { noBuffer }             from '../__tests__/fixtures'
 import { TimeSeriesChartTypes } from '../config'
@@ -14,6 +14,12 @@ import {
 } from './RssQualityByClientsChart'
 
 import type { TimeSeriesChartResponse } from '../types'
+
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  overlapsRollup: jest.fn().mockReturnValue(false)
+}))
+const mockOverlapsRollup = overlapsRollup as jest.Mock
 
 const expectedResult = {
   rssQualityByClientsChart: {
@@ -36,17 +42,36 @@ beforeEach(() => store.dispatch(Api.util.resetApiState()))
 describe('RssQualityByClientsChart', () => {
   it('should render chart', () => {
     const { asFragment } = render(
-      <BrowserRouter>
-        <RssQualityByClientsChart
-          chartRef={()=>{}}
-          buffer={noBuffer}
-          incident={fakeIncidentRss}
-          data={expectedResult}
-        />
-      </BrowserRouter>
+      <Provider>
+        <BrowserRouter>
+          <RssQualityByClientsChart
+            chartRef={()=>{}}
+            buffer={noBuffer}
+            incident={fakeIncidentRss}
+            data={expectedResult}
+          />
+        </BrowserRouter>
+      </Provider>
     )
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('svg')).toBeDefined()
+  })
+  it('should hide chart when under druidRollup', async () => {
+    jest.mocked(mockOverlapsRollup).mockReturnValue(true)
+    render(
+      <Provider>
+        <BrowserRouter>
+          <RssQualityByClientsChart
+            chartRef={()=>{}}
+            buffer={noBuffer}
+            incident={fakeIncidentRss}
+            data={expectedResult}
+          />
+        </BrowserRouter>
+      </Provider>
+    )
+    await screen.findByText('Data granularity at this level is not available')
+    jest.mocked(mockOverlapsRollup).mockReturnValue(false)
   })
   it('should call corresponding api', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {

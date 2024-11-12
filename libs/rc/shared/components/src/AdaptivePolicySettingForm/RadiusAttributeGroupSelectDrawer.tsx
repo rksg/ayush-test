@@ -3,10 +3,14 @@ import React, { useEffect, useState } from 'react'
 import { Form, FormInstance } from 'antd'
 import {  useIntl }           from 'react-intl'
 
-import { Card, Descriptions, Drawer, Loader, Table, TableProps }    from '@acx-ui/components'
-import { useRadiusAttributeGroupListQuery }                         from '@acx-ui/rc/services'
-import { AttributeAssignment, RadiusAttributeGroup, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                                from '@acx-ui/user'
+import { Card, Descriptions, Drawer, Loader, Table, TableProps } from '@acx-ui/components'
+import { useRadiusAttributeGroupListByQueryQuery }               from '@acx-ui/rc/services'
+import {
+  AttributeAssignment,
+  filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, PolicyOperation, PolicyType,
+  RadiusAttributeGroup,
+  useTableQuery
+} from '@acx-ui/rc/utils'
 
 import { RadiusAttributeGroupFormDrawer } from './RadiusAttributeGroupFormDrawer'
 
@@ -64,8 +68,9 @@ export function RadiusAttributeGroupSelectDrawer (props: RadiusAttributeDrawerPr
   const selectedGroupId = Form.useWatch('attributeGroupId', settingForm)
 
   const tableQuery = useTableQuery({
-    useQuery: useRadiusAttributeGroupListQuery,
+    useQuery: useRadiusAttributeGroupListByQueryQuery,
     defaultPayload: {},
+    apiParams: { excludeContent: 'false' },
     pagination: {
       pageSize: 2000,
       page: 1
@@ -129,13 +134,15 @@ export function RadiusAttributeGroupSelectDrawer (props: RadiusAttributeDrawerPr
             dataSource={tableQuery.data?.data}
             showHeader={false}
             tableAlertRender={false}
-            rowSelection={hasAccess() && {
+            rowSelection={{
               type: 'radio',
               onChange: onSelectChange,
               selectedRowKeys: selectedRowKeys }}
             rowKey='id'
             type={'form'}
-            actions={filterByAccess([{
+            actions={filterByAccessForServicePolicyMutation([{
+              // eslint-disable-next-line max-len
+              scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.CREATE),
               label: $t({ defaultMessage: 'Add Group' }),
               onClick: () => {
                 setRadiusAttributeGroupFormDrawerVisible(true)

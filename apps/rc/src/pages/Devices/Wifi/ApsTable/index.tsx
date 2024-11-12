@@ -7,20 +7,54 @@ import {
   Button,
   Dropdown
 } from '@acx-ui/components'
-import { ApTable, ApTableRefType, ApsTabContext, defaultApPayload, groupedFields } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
+import { ApTable, ApTableRefType, ApsTabContext, groupedFields, useApGroupsFilterOpts } from '@acx-ui/rc/components'
 import {
-  useApGroupsListQuery,
+  useNewApListQuery,
   useApListQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
 import { usePollingTableQuery }  from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { WifiScopes }            from '@acx-ui/types'
+
+const apsCountQueryPayload = {
+  fields: ['serialNumber', 'name'],
+  groupByFields: groupedFields
+}
+
+const useApsCount = (): [number, React.Dispatch<React.SetStateAction<number>>] => {
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const [ apsCount, setApsCount ] = useState(0)
+
+  const nonRbacQuery = usePollingTableQuery({
+    useQuery: useApListQuery,
+    defaultPayload: apsCountQueryPayload,
+    option: { skip: isUseWifiRbacApi }
+  })
+
+  const rbacQuery = usePollingTableQuery({
+    useQuery: useNewApListQuery,
+    defaultPayload: apsCountQueryPayload,
+    option: { skip: !isUseWifiRbacApi }
+  })
+
+  useEffect(() => {
+    setApsCount(isUseWifiRbacApi
+      ? rbacQuery.data?.totalCount!
+      : nonRbacQuery.data?.totalCount!
+    )
+  }, [isUseWifiRbacApi, nonRbacQuery.data, rbacQuery.data])
+
+  return [apsCount, setApsCount]
+}
 
 export default function useApsTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const [ apsCount, setApsCount ] = useState(0)
   const apTableRef = useRef<ApTableRefType>(null)
+  const [apsCount, setApsCount] = useApsCount()
+  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
 
   const { venueFilterOptions } = useVenuesListQuery(
     {
@@ -37,35 +71,8 @@ export default function useApsTable () {
         venueFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
       })
     })
-  const { apgroupFilterOptions } = useApGroupsListQuery(
-    {
-      params: { tenantId },
-      payload: {
-        fields: ['name', 'venueId', 'clients', 'networks', 'venueName', 'id'],
-        pageSize: 10000,
-        sortField: 'name',
-        sortOrder: 'ASC',
-        filters: { isDefault: [false] }
-      }
-    },
-    {
-      selectFromResult: ({ data }) => ({
-        apgroupFilterOptions: data?.data.map((v) => ({ key: v.id, value: v.name })) || true
-      })
-    }
-  )
 
-  const apListTableQuery = usePollingTableQuery({
-    useQuery: useApListQuery,
-    defaultPayload: {
-      ...defaultApPayload,
-      groupByFields: groupedFields
-    }
-  })
-
-  useEffect(() => {
-    setApsCount(apListTableQuery.data?.totalCount!)
-  }, [apListTableQuery.data])
+  const apgroupFilterOptions = useApGroupsFilterOpts()
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     if (e.key === 'import-from-file') {
@@ -94,9 +101,12 @@ export default function useApsTable () {
   })
 
   const extra = [
-    <Dropdown overlay={addMenu}>{() =>
-      <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
-    }</Dropdown>
+    <Dropdown
+      scopeKey={[WifiScopes.CREATE]}
+      overlay={addMenu}>{() =>
+        <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
+      }
+    </Dropdown>
   ]
 
   const component =
@@ -110,6 +120,7 @@ export default function useApsTable () {
         rowSelection={{
           type: 'checkbox'
         }}
+        filterPersistence={enabledUXOptFeature}
       />
     </ApsTabContext.Provider>
 

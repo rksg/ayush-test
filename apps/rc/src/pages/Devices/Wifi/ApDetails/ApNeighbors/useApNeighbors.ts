@@ -10,12 +10,18 @@ import { useDetectApNeighborsMutation }                                         
 import { ApErrorHandlingMessages, CatchErrorResponse, closePokeSocket, initPokeSocket } from '@acx-ui/rc/utils'
 import { getIntl }                                                                      from '@acx-ui/utils'
 
-import { ApNeighborTypes, defaultSocketTimeout } from './constants'
-import { errorTypeMapping }                      from './contents'
+import { ApNeighborStatus, ApNeighborTypes, NewApNeighborTypes, defaultSocketTimeout } from './constants'
+import { errorTypeMapping }                                                            from './contents'
 
-export function useApNeighbors (type: ApNeighborTypes, serialNumber: string, handler: () => void) {
+export function useApNeighbors (
+  type: ApNeighborTypes,
+  serialNumber: string,
+  handler: () => void,
+  venueId?: string
+) {
   const [ isDetecting, setIsDetecting ] = useState(false)
   const [ detectApNeighbors ] = useDetectApNeighborsMutation()
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const pokeSocketRef = useRef<SocketIOClient.Socket>()
   const pokeSocketTimeoutIdRef = useRef<NodeJS.Timeout>()
   const pokeSocketSubscriptionIdRef = useRef<string>(getSocketSubscriptionId(type, serialNumber))
@@ -67,14 +73,22 @@ export function useApNeighbors (type: ApNeighborTypes, serialNumber: string, han
   const doDetect = async (isSystemDriven = false) => {
     setIsDetecting(true)
     isSystemDrivenDetectRef.current = isSystemDriven
+    const payload = isUseWifiRbacApi ?
+      {
+        status: ApNeighborStatus.CURRENT,
+        type: type === 'lldp' ? NewApNeighborTypes.LLDP_NEIGHBOR : NewApNeighborTypes.RF_NEIGHBOR,
+        subscriptionId: pokeSocketSubscriptionIdRef.current
+      }:
+      {
+        action: type === 'lldp' ? 'DETECT_LLDP_NEIGHBOR': 'DETECT_RF_NEIGHBOR',
+        subscriptionId: pokeSocketSubscriptionIdRef.current
+      }
 
     try {
       await detectApNeighbors({
-        params: { serialNumber },
-        payload: {
-          action: type === 'lldp' ? 'DETECT_LLDP_NEIGHBOR': 'DETECT_RF_NEIGHBOR',
-          subscriptionId: pokeSocketSubscriptionIdRef.current
-        }
+        params: { serialNumber, venueId },
+        payload,
+        enableRbac: isUseWifiRbacApi
       }).unwrap()
     } catch (error) {
       handleError('api', error as CatchErrorResponse)
@@ -129,10 +143,4 @@ function showError (errorMessage: string) {
     type: 'error',
     content: errorMessage
   })
-}
-
-export function useIsApNeighborsOn (): boolean {
-  const isApNeighborsOn = useIsSplitOn(Features.WIFI_EDA_NEIGHBORS_TOGGLE)
-
-  return isApNeighborsOn
 }

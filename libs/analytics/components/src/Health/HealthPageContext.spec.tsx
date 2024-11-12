@@ -17,13 +17,13 @@ import {
 const original = Date.now
 describe('HealthPageContextProvider', () => {
   beforeEach(() => {
-    Date.now = jest.fn(() => new Date('2022-01-01T00:00:00+00:00').getTime())
+    Date.now = jest.fn(() => new Date('2022-01-01T00:00:00Z').getTime())
     resetRanges()
   })
   afterAll(() => Date.now = original)
   const expectedTimeWindow: TimeStampRange = [
-    '2021-12-31T00:01:00+00:00',
-    '2022-01-01T00:01:00+00:00'
+    '2021-12-31T00:01:00Z',
+    '2022-01-01T00:01:00Z'
   ]
 
   it('load analytics filter context with timeWindow set to start/end of filter', async () => {
@@ -46,8 +46,8 @@ describe('HealthPageContextProvider', () => {
     expect(result.current.timeWindow).toEqual(expectedTimeWindow)
 
     const nextTimeWindow: TimeStampRange = [
-      '2022-01-01T01:00:00+00:00',
-      '2022-01-01T02:00:00+00:00'
+      '2022-01-01T01:00:00Z',
+      '2022-01-01T02:00:00Z'
     ]
 
     act(() => result.current.setTimeWindow(nextTimeWindow))
@@ -65,8 +65,8 @@ describe('HealthPageContextProvider', () => {
     expect(result.current.timeWindow).toEqual(expectedTimeWindow)
 
     const nextTimeWindow: TimeStampRange = [
-      '2022-01-01T01:00:00+00:00',
-      '2022-01-01T02:00:00+00:00'
+      '2022-01-01T01:00:00Z',
+      '2022-01-01T02:00:00Z'
     ]
 
     act(() => result.current.setTimeWindow(nextTimeWindow, true))
@@ -83,8 +83,8 @@ describe('HealthPageContextProvider', () => {
 
     const { result, rerender } = renderHook(() => {
       const context = useContext(HealthPageContext)
-      const startDate = moment(context.startDate).format()
-      const endDate = moment(context.endDate).format()
+      const startDate = moment(context.startDate).tz('UTC').format()
+      const endDate = moment(context.endDate).tz('UTC').format()
       return { ...context, startDate, endDate }
     }, {
       wrapper: ({ children }) => <Router><Wrapper children={children} /></Router>
@@ -96,8 +96,8 @@ describe('HealthPageContextProvider', () => {
     ])
 
     const nextTimeWindow = [
-      moment('2021-01-01T00:00:00+00:00').format(),
-      moment('2021-12-31T00:00:00+00:00').format()
+      moment('2021-01-01T00:00:00+00:00').tz('UTC').format(),
+      moment('2021-12-31T00:00:00+00:00').tz('UTC').format()
     ]
 
     act(() => result.current.setTimeWindow!(nextTimeWindow as TimeStampRange))
@@ -111,8 +111,8 @@ describe('HealthPageContextProvider', () => {
 describe('formatTimeWindow', () => {
   it('should convert numeric window to valid date', () => {
     const stringTimeWindow: TimeStampRange = [
-      '2022-09-25T12:15:57+00:00',
-      '2022-09-26T09:00:00+00:00'
+      '2022-09-25T12:15:57Z',
+      '2022-09-26T09:00:00Z'
     ]
 
     const numericTimeWindow: TimeStampRange = [
@@ -125,8 +125,8 @@ describe('formatTimeWindow', () => {
   })
   it('sorts start and end', () => {
     const stringTimeWindow: TimeStampRange = [
-      '2022-09-25T12:15:57+00:00',
-      '2022-09-26T09:00:00+00:00'
+      '2022-09-25T12:15:57Z',
+      '2022-09-26T09:00:00Z'
     ]
 
     const numericTimeWindow: TimeStampRange = [

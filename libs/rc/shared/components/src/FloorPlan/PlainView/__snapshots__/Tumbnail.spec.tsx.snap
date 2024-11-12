@@ -2,12 +2,43 @@
 
 exports[`Floor Plan Thumbnail Image should render correctly 1`] = `
 <DocumentFragment>
-  <div
-    class="sc-evZas hiznOM"
+  .c1 {
+  width: 100px;
+  padding: 6px;
+  border-radius: 4px;
+  height: 68px;
+  border: 1px solid;
+  border-color: var(--acx-neutrals-30);
+  box-shadow: none;
+}
+
+.c2 {
+  position: absolute;
+  width: 100px;
+  height: 20px;
+  top: 48px;
+  opacity: 0.95;
+  border-radius: 0px 0px 4px 4px;
+  color: var(--acx-primary-white);
+  text-align: center;
+  font-style: normal;
+  font-weight: var(--acx-subtitle-6-font-weight);
+  font-size: var(--acx-subtitle-6-font-size);
+  line-height: var(--acx-subtitle-4-line-height);
+  background: var(--acx-neutrals-80);
+}
+
+.c0 {
+  position: relative;
+  cursor: pointer;
+}
+
+<div
+    class="c0"
   >
     <div
       active="0"
-      class="ant-card-grid sc-jqUVSM DFPpS"
+      class="ant-card-grid c1"
       data-testid="thumbnailBg"
     >
       <div
@@ -25,7 +56,7 @@ exports[`Floor Plan Thumbnail Image should render correctly 1`] = `
       </div>
     </div>
     <div
-      class="sc-crXcEl jIytKA"
+      class="c2"
     >
       TEST_2
     </div>

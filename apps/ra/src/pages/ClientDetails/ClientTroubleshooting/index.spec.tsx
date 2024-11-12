@@ -7,13 +7,29 @@ import {
   screen,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-import { DateRange, useDateFilter } from '@acx-ui/utils'
+import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
+import { DateRange, useDateFilter }          from '@acx-ui/utils'
 
 import { ClientTroubleshootingTab } from './index'
 
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  overlapsRollup: jest.fn().mockReturnValue(false)
+}))
+
 describe('ClientTroubleshootingTab', () => {
   beforeEach(() => {
+    Date.now = jest.fn(() => new Date('2023-02-21T00:00:00.000Z').getTime())
     mockGraphqlQuery(dataApiURL, 'ClientInfo', {
+      data: {
+        client: {
+          connectionDetailsByAp: [],
+          connectionEvents: [],
+          connectionQualities: []
+        }
+      }
+    })
+    mockGraphqlQuery(dataApiURL, 'ClientIncidentsInfo', {
       data: {
         client: {
           connectionDetailsByAp: [],
@@ -23,6 +39,11 @@ describe('ClientTroubleshootingTab', () => {
         }
       }
     })
+    setRaiPermissions({
+      READ_WIRELESS_CLIENTS_REPORT: true,
+      READ_CLIENT_TROUBLESHOOTING: true,
+      READ_INCIDENTS: true
+    } as RaiPermissions)
   })
 
   it('should render correctly', async () => {
@@ -36,7 +57,12 @@ describe('ClientTroubleshootingTab', () => {
       client: {
         connectionDetailsByAp: [],
         connectionEvents: [],
-        connectionQualities: [],
+        connectionQualities: []
+      }
+    } })
+
+    mockGraphqlQuery(dataApiURL, 'ClientIncidentsInfo', { data: {
+      client: {
         incidents: []
       }
     } })
@@ -46,8 +72,8 @@ describe('ClientTroubleshootingTab', () => {
       useEffect(() => {
         setDateFilter({
           range: DateRange.custom,
-          startDate: '02/01/2023',
-          endDate: '02/01/2023'
+          startDate: '2023-02-01T00:00:00.000Z',
+          endDate: '2023-02-01T00:00:00.000Z'
         })
       }, [])
       return <Provider><ClientTroubleshootingTab /></Provider>

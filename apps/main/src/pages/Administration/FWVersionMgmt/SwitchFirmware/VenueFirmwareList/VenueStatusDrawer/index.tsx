@@ -9,19 +9,20 @@ import {
   Drawer,
   showToast
 } from '@acx-ui/components'
-import { useSwitchActions }                        from '@acx-ui/rc/components'
-import { useLazyGetSwitchFirmwareStatusListQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { useSwitchActions, useSwitchFirmwareUtils } from '@acx-ui/rc/components'
+import { toUserDate }                               from '@acx-ui/rc/components'
+import { useLazyGetSwitchFirmwareStatusListQuery }  from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
   SwitchFirmwareStatus,
   SwitchFwStatusEnum,
-  SwitchStatusEnum,
+  SwitchStatusRdbEnum,
   defaultSort,
-  parseSwitchVersion,
   sortProp
 } from '@acx-ui/rc/utils'
-import { useParams }                         from '@acx-ui/react-router-dom'
-import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
+import { useParams }                                        from '@acx-ui/react-router-dom'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL, noDataDisplay } from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 
@@ -32,7 +33,10 @@ export interface VenueStatusDrawerProps {
 }
 
 export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const { $t } = useIntl()
+  const { parseSwitchVersion } = useSwitchFirmwareUtils()
+
   const params = useParams()
   const switchAction = useSwitchActions()
 
@@ -44,9 +48,13 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
 
   const setSwitchList = async () => {
     const switchList = (await getSwitchFirmwareStatusList({
-      payload: { venueId: props.data.id }
+      ...isSwitchRbacEnabled ? undefined : { payload: { venueId: props.data.id } },
+      params: { venueId: props.data.id },
+      enableRbac: isSwitchRbacEnabled
     }, false)).data?.data
-    setSwitchFirmwareStatusList(switchList as unknown as SwitchFirmwareStatus[])
+    if (switchList) {
+      setSwitchFirmwareStatusList(switchList as unknown as SwitchFirmwareStatus[])
+    }
   }
 
   const onClose = () => {
@@ -94,15 +102,20 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
               $t({ defaultMessage: 'Firmware Update - Pre-download Completed' }),
             [SwitchFwStatusEnum.FW_UPD_FAIL]:
               $t({ defaultMessage: 'Firmware Update - Failed' }),
-            [SwitchStatusEnum.DISCONNECTED]:
+            [SwitchFwStatusEnum.FW_UPD_WAITING_RESPONSE]:
+              $t({ defaultMessage: 'Firmware Update - Awaiting Response from Switch' }),
+            [SwitchStatusRdbEnum.DISCONNECTED]:
               $t({ defaultMessage: 'Disconnected from cloud' })
           }
 
-          if (row.switchStatus === SwitchStatusEnum.DISCONNECTED) {
+          if (row.switchStatus === SwitchStatusRdbEnum.DISCONNECTED) {
             return fwMappings[row.switchStatus]
           }
 
-          if (row.status === SwitchFwStatusEnum.FW_UPD_FAIL) {
+          // If the upgrade fails, the RDB switch status will stay at 'firmware_upgrading',
+          // and only then the retry button will appear.
+          if (row.status === SwitchFwStatusEnum.FW_UPD_FAIL &&
+            row.switchStatus === SwitchStatusRdbEnum.FIRMWARE_UPGRADING ) {
             return <div>
               <Typography.Text
                 style={{ lineHeight: '24px' }}>
@@ -119,7 +132,11 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
                       content: $t({ defaultMessage: 'Start firmware upgrade retry' })
                     })
                   }
-                  switchAction.doRetryFirmwareUpdate(switchId, params.tenantId, callback)
+                  switchAction.doRetryFirmwareUpdate({
+                    switchId,
+                    tenantId: params.tenantId,
+                    venueId: props.data.id || props.data.venueId
+                  }, callback)
                 }}>
                 {$t({ defaultMessage: 'Retry' })}
               </UI.TextButton></div>
@@ -140,6 +157,14 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
           return '--'
         }
       }
+    }, {
+      key: 'lastStatusUpdateTime',
+      title: $t({ defaultMessage: 'Last Update' }),
+      dataIndex: 'lastStatusUpdateTime',
+      sorter: false,
+      render: function (_, row) {
+        return toUserDate(row.lastStatusUpdateTime || noDataDisplay)
+      }
     }
   ]
   return (<Drawer
@@ -149,7 +174,7 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
     width={580}
     children={<>
       <Typography.Text>
-        <b>  {$t({ defaultMessage: 'Venue:' })}</b> {props.data.name}
+        <b>  {$t({ defaultMessage: '<VenueSingular></VenueSingular>:' })}</b> {props.data.name}
       </Typography.Text>
       <Table
         columns={columns}

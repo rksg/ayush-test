@@ -3,7 +3,7 @@ import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { networkHierarchy } from '../__tests__/fixtures'
 
-import { IncidentListPage, IncidentTabContent } from './incidentListPage'
+import { IncidentTabContent } from './incidentListPage'
 
 jest.mock('../IncidentBySeverity', () => ({
   IncidentBySeverity: () => <div data-testid='IncidentBySeverity' />
@@ -36,19 +36,6 @@ const mockQueries = () => {
     } } } }
   })
 }
-
-describe('IncidentListPage', () => {
-  beforeEach(() => mockQueries())
-  it('should render page header and grid layout', async () => {
-    render(<IncidentListPage/>, { wrapper: Provider, route: { params } })
-    expect(await screen.findByText('Incidents')).toBeVisible()
-    expect(await screen.findByText('AI Assurance')).toBeVisible()
-    expect(await screen.findByText('AI Analytics')).toBeVisible()
-    expect(await screen.findByTestId('IncidentBySeverity')).toBeVisible()
-    expect(await screen.findByTestId('NetworkHistory')).toBeVisible()
-    expect(await screen.findByTestId('IncidentTable')).toBeVisible()
-  })
-})
 
 describe('IncidentTabContent', () => {
   beforeEach(() => mockQueries())

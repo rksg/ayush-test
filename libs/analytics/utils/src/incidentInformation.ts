@@ -258,10 +258,10 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
     category: defineMessage({ defaultMessage: 'Performance' }),
     subCategory: defineMessage({ defaultMessage: 'Airtime' }),
     shortDescription: defineMessage({
-      defaultMessage: 'Airtime Utilization is unusually high in 2.4 GHz in {scope}'
+      defaultMessage: 'Airtime Busy is unusually high in 2.4 GHz in {scope}'
     }),
     longDescription: defineMessage({
-      defaultMessage: 'Airtime Utilization is unusually high in 2.4 GHz in {scope}.'
+      defaultMessage: 'Airtime Busy is unusually high in 2.4 GHz in {scope}.'
     }),
     incidentType: 'network'
   },
@@ -269,10 +269,10 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
     category: defineMessage({ defaultMessage: 'Performance' }),
     subCategory: defineMessage({ defaultMessage: 'Airtime' }),
     shortDescription: defineMessage({
-      defaultMessage: 'Airtime Utilization is unusually high in 5 GHz in {scope}'
+      defaultMessage: 'Airtime Busy is unusually high in 5 GHz in {scope}'
     }),
     longDescription: defineMessage({
-      defaultMessage: 'Airtime Utilization is unusually high in 5 GHz in {scope}.'
+      defaultMessage: 'Airtime Busy is unusually high in 5 GHz in {scope}.'
     }),
     incidentType: 'network'
   },
@@ -280,10 +280,10 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
     category: defineMessage({ defaultMessage: 'Performance' }),
     subCategory: defineMessage({ defaultMessage: 'Airtime' }),
     shortDescription: defineMessage({
-      defaultMessage: 'Airtime Utilization is unusually high in 6 GHz in {scope}'
+      defaultMessage: 'Airtime Busy is unusually high in 6 GHz in {scope}'
     }),
     longDescription: defineMessage({
-      defaultMessage: 'Airtime Utilization is unusually high in 6 GHz in {scope}.'
+      defaultMessage: 'Airtime Busy is unusually high in 6 GHz in {scope}.'
     }),
     incidentType: 'network'
   },
@@ -291,10 +291,10 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
     category: defineMessage({ defaultMessage: 'Performance' }),
     subCategory: defineMessage({ defaultMessage: 'Airtime' }),
     shortDescription: defineMessage({
-      defaultMessage: 'Airtime Utilization is unusually high in 2.4 GHz in {scope}'
+      defaultMessage: 'Airtime Rx is unusually high in 2.4 GHz in {scope}'
     }),
     longDescription: defineMessage({
-      defaultMessage: 'Airtime Utilization is unusually high in 2.4 GHz in {scope}.'
+      defaultMessage: 'Airtime Rx is unusually high in 2.4 GHz in {scope}.'
     }),
     incidentType: 'network'
   },
@@ -302,10 +302,10 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
     category: defineMessage({ defaultMessage: 'Performance' }),
     subCategory: defineMessage({ defaultMessage: 'Airtime' }),
     shortDescription: defineMessage({
-      defaultMessage: 'Airtime Utilization is unusually high in 5 GHz in {scope}'
+      defaultMessage: 'Airtime Rx is unusually high in 5 GHz in {scope}'
     }),
     longDescription: defineMessage({
-      defaultMessage: 'Airtime Utilization is unusually high in 5 GHz in {scope}.'
+      defaultMessage: 'Airtime Rx is unusually high in 5 GHz in {scope}.'
     }),
     incidentType: 'network'
   },
@@ -313,10 +313,10 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
     category: defineMessage({ defaultMessage: 'Performance' }),
     subCategory: defineMessage({ defaultMessage: 'Airtime' }),
     shortDescription: defineMessage({
-      defaultMessage: 'Airtime Utilization is unusually high in 6 GHz in {scope}'
+      defaultMessage: 'Airtime Rx is unusually high in 6 GHz in {scope}'
     }),
     longDescription: defineMessage({
-      defaultMessage: 'Airtime Utilization is unusually high in 6 GHz in {scope}.'
+      defaultMessage: 'Airtime Rx is unusually high in 6 GHz in {scope}.'
     }),
     incidentType: 'network'
   },
@@ -324,10 +324,10 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
     category: defineMessage({ defaultMessage: 'Performance' }),
     subCategory: defineMessage({ defaultMessage: 'Airtime' }),
     shortDescription: defineMessage({
-      defaultMessage: 'Airtime Utilization is unusually high in 2.4 GHz in {scope}'
+      defaultMessage: 'Airtime Tx is unusually high in 2.4 GHz in {scope}'
     }),
     longDescription: defineMessage({
-      defaultMessage: 'Airtime Utilization is unusually high in 2.4 GHz in {scope}.'
+      defaultMessage: 'Airtime Tx is unusually high in 2.4 GHz in {scope}.'
     }),
     incidentType: 'network'
   },
@@ -335,10 +335,10 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
     category: defineMessage({ defaultMessage: 'Performance' }),
     subCategory: defineMessage({ defaultMessage: 'Airtime' }),
     shortDescription: defineMessage({
-      defaultMessage: 'Airtime Utilization is unusually high in 5 GHz in {scope}'
+      defaultMessage: 'Airtime Tx is unusually high in 5 GHz in {scope}'
     }),
     longDescription: defineMessage({
-      defaultMessage: 'Airtime Utilization is unusually high in 5 GHz in {scope}.'
+      defaultMessage: 'Airtime Tx is unusually high in 5 GHz in {scope}.'
     }),
     incidentType: 'network'
   },
@@ -346,11 +346,22 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
     category: defineMessage({ defaultMessage: 'Performance' }),
     subCategory: defineMessage({ defaultMessage: 'Airtime' }),
     shortDescription: defineMessage({
-      defaultMessage: 'Airtime Utilization is unusually high in 6 GHz in {scope}'
+      defaultMessage: 'Airtime Tx is unusually high in 6 GHz in {scope}'
     }),
     longDescription: defineMessage({
-      defaultMessage: 'Airtime Utilization is unusually high in 6 GHz in {scope}.'
+      defaultMessage: 'Airtime Tx is unusually high in 6 GHz in {scope}.'
     }),
     incidentType: 'network'
+  },
+  's-switch-tcp-syn-ddos': {
+    category: defineMessage({ defaultMessage: 'Security' }),
+    subCategory: defineMessage({ defaultMessage: 'TCP-SYN DDoS' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'TCP SYN DDoS attack found in {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'TCP SYN DDoS attack found in {scope}.'
+    }),
+    incidentType: 'switch'
   }
 }

@@ -15,6 +15,7 @@ export type Zone = {
     apCount: number
     clientCount: number
     network: string
+    id: string
 }
 
 export interface ZonesList {
@@ -47,7 +48,8 @@ export const zonesListApi = dataApi.injectEndpoints({
           network:
             zone.domain === '1||Administration Domain'
               ? `${zone.systemName}`
-              : `${zone.systemName} > ${zone.domain?.split('||')?.[1]}`
+              : `${zone.systemName} > ${zone.domain?.split('||')?.[1]}`,
+          id: `${zone.systemName}-${zone.domain}-${zone.zoneName}`
         }))
       })
     })

@@ -24,8 +24,12 @@ import {
   sortProp,
   defaultSort
 } from '@acx-ui/rc/utils'
-import { useParams }                 from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { useParams }         from '@acx-ui/react-router-dom'
+import {
+  filterByAccess,
+  hasAccess,
+  hasCrossVenuesPermission
+} from '@acx-ui/user'
 
 import { AINotificationDrawer } from './AINotificationDrawer'
 import { PreferenceDrawer }     from './PreferenceDrawer'
@@ -47,7 +51,7 @@ export const NotificationsTable = () => {
   const [showDialog, setShowDialog] = useState(false)
   const [showDrawer, setShowDrawer] = useState(false)
   const [editMode, setEditMode] = useState(false)
-  const allowIncidentsEmail = useIsSplitOn(Features.INCIDENTS_EMAIL_NOTIFICATION_TOGGLE)
+  const notificationChannelEnabled = useIsSplitOn(Features.NOTIFICATION_CHANNEL_SELECTION_TOGGLE)
   // eslint-disable-next-line max-len
   const [editData, setEditData] = useState<NotificationRecipientUIModel>({} as NotificationRecipientUIModel)
 
@@ -166,17 +170,19 @@ export const NotificationsTable = () => {
     }
   ]
 
+  const titleNotification = notificationChannelEnabled
+    ? $t({ defaultMessage: 'Notifications Preferences' })
+    : $t({ defaultMessage: 'AI Notifications' })
+
   const tableActions = [
     {
       label: $t({ defaultMessage: 'Add Recipient' }),
       onClick: handleClickAddRecipient
     },
-    ...(allowIncidentsEmail
-      ? [{
-        label: $t({ defaultMessage: 'AI Notifications' }),
-        onClick: handleEnableIncidents
-      }]
-      : [])
+    {
+      label: titleNotification,
+      onClick: handleEnableIncidents
+    }
   ]
 
   const isLoading = deleteOneState.isLoading || deleteMultipleState.isLoading
@@ -191,8 +197,8 @@ export const NotificationsTable = () => {
           dataSource={notificationList.data}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'checkbox' }}
-          actions={filterByAccess(tableActions)}
+          rowSelection={hasCrossVenuesPermission() && hasAccess() && { type: 'checkbox' }}
+          actions={hasCrossVenuesPermission() ? filterByAccess(tableActions) : []}
         />
       </Loader>
 
@@ -215,7 +221,8 @@ export const NotificationsTable = () => {
 const Notifications = () => {
   const { $t } = useIntl()
   const mspUtils = MSPUtils()
-  const { data: mspProfile } = useGetMspProfileQuery({})
+  const isMspRbacMspEnabled = useIsSplitOn(Features.MSP_RBAC_API)
+  const { data: mspProfile } = useGetMspProfileQuery({ enableRbac: isMspRbacMspEnabled })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
   const isMspAggregateNotification =
     useIsSplitOn(Features.MSP_AGGREGATE_NOTIFICATION_TOGGLE) && isOnboardedMsp
@@ -233,7 +240,7 @@ const Notifications = () => {
             type='link'
             size='small'
             onClick={() => { setShowPreference(true) }}>
-            {$t({ defaultMessage: 'Preference' })}
+            {$t({ defaultMessage: 'Preferences' })}
           </Button>}
         </Typography>
 

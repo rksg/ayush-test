@@ -49,7 +49,16 @@ const defaultPayload = {
     'transactionId',
     'name',
     'ipAddress',
-    'detailedDescription'
+    'detailedDescription',
+    'Persona-ID',
+    'duration',
+    'remoteEdgeId',
+    'apModel',
+    'minimumRequiredVersion',
+    'clientMldMac',
+    'turnOnTimestamp',
+    'turnOffTimestamp',
+    'portList'
   ]
 }
 

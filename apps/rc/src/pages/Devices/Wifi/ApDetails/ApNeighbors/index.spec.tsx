@@ -24,11 +24,6 @@ jest.mock('./ApRfNeighbors', () => () => {
   return <div data-testid='ap-rf-neighbors' />
 })
 
-jest.mock('./useApNeighbors', () => ({
-  ...jest.requireActual('./useApNeighbors'),
-  useIsApNeighborsOn: () => true
-}))
-
 const wrapper = (props: { children: JSX.Element }) => <Provider>
   <ApContextProvider {...props} />
 </Provider>
@@ -50,6 +45,10 @@ describe('ApNeighborsTab', () => {
       rest.patch(
         WifiUrlsInfo.detectApNeighbors.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123456789' }))
+      ),
+      rest.get(
+        WifiUrlsInfo.getApValidChannel.url,
+        (_, res, ctx) => res(ctx.json({}))
       )
     )
   })

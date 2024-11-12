@@ -1,21 +1,26 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                               from '@acx-ui/feature-toggle'
-import { EdgeGeneralFixtures, EdgeLagFixtures, EdgePortConfigFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }                                                                  from '@acx-ui/store'
+import { useIsSplitOn }                                                                           from '@acx-ui/feature-toggle'
+import { edgeApi }                                                                                from '@acx-ui/rc/services'
+import { EdgeGeneralFixtures, EdgeLagFixtures, EdgePortConfigFixtures, EdgeStatus, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store  }                                                                       from '@acx-ui/store'
 import {
   render,
   screen,
   mockServer,
-  waitForElementToBeRemoved
+  waitForElementToBeRemoved,
+  within
 } from '@acx-ui/test-utils'
+
+import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 
 import { EdgeOverview } from '.'
 
-const { mockEdgeData: currentEdge } = EdgeGeneralFixtures
+const { mockEdgeData: currentEdge, mockEdgeList } = EdgeGeneralFixtures
 const { mockEdgePortStatus } = EdgePortConfigFixtures
 const { mockEdgeLagStatusList } = EdgeLagFixtures
+const { mockEdgeCluster } = EdgeGeneralFixtures
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -51,6 +56,8 @@ describe('Edge Detail Overview', () => {
   { tenantId: 'tenant-id', serialNumber: 'edge-serialnum' }
 
   beforeEach(() => {
+    store.dispatch(edgeApi.util.resetApiState())
+
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     mockServer.use(
@@ -84,7 +91,16 @@ describe('Edge Detail Overview', () => {
   it('should correctly render', async () => {
     render(
       <Provider>
-        <EdgeOverview />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeOverview />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -99,7 +115,16 @@ describe('Edge Detail Overview', () => {
   it('should correctly change tab', async () => {
     render(
       <Provider>
-        <EdgeOverview />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeOverview />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -119,7 +144,7 @@ describe('Edge Detail Overview', () => {
     await userEvent.click(configBtn)
     expect(mockedUsedNavigate)
       .toBeCalledWith({
-        pathname: '/tenant-id/t/devices/edge/edge-serialnum/edit/ports/ports-general',
+        pathname: '/tenant-id/t/devices/edge/edge-serialnum/edit/ports',
         hash: '',
         search: ''
       })
@@ -128,7 +153,16 @@ describe('Edge Detail Overview', () => {
   it('should correctly dispaly active tab by router', async () => {
     render(
       <Provider>
-        <EdgeOverview />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeOverview />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params: { ...params, activeSubTab: 'ports' } }
       })
@@ -145,7 +179,16 @@ describe('Edge Detail Overview', () => {
   it('should correctly change tab when click ports widget', async () => {
     render(
       <Provider>
-        <EdgeOverview />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeOverview />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -169,7 +212,16 @@ describe('Edge Detail Overview', () => {
   it('should do nothing when click other widget', async () => {
     render(
       <Provider>
-        <EdgeOverview />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeOverview />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -189,7 +241,16 @@ describe('Edge Detail Overview', () => {
 
     render(
       <Provider>
-        <EdgeOverview />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeOverview />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -205,7 +266,16 @@ describe('Edge Detail Overview', () => {
   it('should show lags tab correctly', async () => {
     render(
       <Provider>
-        <EdgeOverview />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeOverview />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -216,10 +286,13 @@ describe('Edge Detail Overview', () => {
     expect(configBtn).toBeVisible()
     const portsRow = await screen.findAllByRole('row')
     expect(portsRow.length).toBe(3)
+    const row = await screen.findByRole('row', { name: /LAG 1 LACP/i })
+    const expandBtn = await within(row).findByTestId('PlusSquareOutlined')
+    await userEvent.click(expandBtn)
     await userEvent.click(configBtn)
     expect(mockedUsedNavigate)
       .toBeCalledWith({
-        pathname: '/tenant-id/t/devices/edge/edge-serialnum/edit/ports/lag',
+        pathname: '/tenant-id/t/devices/edge/edge-serialnum/edit/lags',
         hash: '',
         search: ''
       })

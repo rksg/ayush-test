@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import { BrowserRouter } from 'react-router-dom'
 
 import { IncidentFilter }              from '@acx-ui/analytics/utils'
+import { get }                         from '@acx-ui/config'
 import { Provider, store, dataApiURL } from '@acx-ui/store'
 import {
   cleanup,
@@ -10,9 +11,8 @@ import {
   screen,
   waitForElementToBeRemoved
 }                    from '@acx-ui/test-utils'
-import { RolesEnum }                      from '@acx-ui/types'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
-import { DateRange }                      from '@acx-ui/utils'
+import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
+import { DateRange }                         from '@acx-ui/utils'
 
 import { expectedIncidentDashboardData } from './__tests__/fixtures'
 import { api }                           from './services'
@@ -25,7 +25,10 @@ const filters : IncidentFilter = {
   range: DateRange.last24Hours,
   filter: {}
 }
-
+const mockGet = get as jest.Mock
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
 describe('IncidentDashboardv2', () => {
 
   beforeEach(() => store.dispatch(api.util.resetApiState()))
@@ -47,11 +50,9 @@ describe('IncidentDashboardv2', () => {
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
-  it('should hide arrow button when role is READ_ONLY', async () => {
-    setUserProfile({
-      allowedOperations: [],
-      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
-    })
+  it('should hide arrow button when READ_INCIDENTS permission is false', async () => {
+    mockGet.mockReturnValue('true')
+    setRaiPermissions({ READ_INCIDENTS: false } as RaiPermissions)
     mockGraphqlQuery(dataApiURL, 'IncidentsDashboardWidget', {
       data: { network: { hierarchyNode: expectedIncidentDashboardData } }
     })

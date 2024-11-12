@@ -10,7 +10,8 @@ import {
   InputNumber,
   Radio,
   Row,
-  Select
+  Select,
+  RadioChangeEvent
 } from 'antd'
 import { HumanizeDuration, HumanizeDurationLanguage } from 'humanize-duration-ts'
 import _                                              from 'lodash'
@@ -18,13 +19,14 @@ import moment, { LocaleSpecifier }                    from 'moment-timezone'
 import { useIntl }                                    from 'react-intl'
 import { useParams }                                  from 'react-router-dom'
 
-import { Button, Drawer, cssStr, showActionModal } from '@acx-ui/components'
-import { DateFormatEnum, formatter }               from '@acx-ui/formatter'
-import { PhoneInput }                              from '@acx-ui/rc/components'
+import { Button, Drawer, cssStr, showActionModal, PasswordInput } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
+import { PhoneInput }                                             from '@acx-ui/rc/components'
 import {
   useLazyGetGuestNetworkListQuery,
   useAddGuestPassMutation,
-  useLazyGetNetworkQuery
+  useValidateGuestPasswordMutation
 } from '@acx-ui/rc/services'
 import {
   phoneRegExp,
@@ -37,7 +39,8 @@ import {
   PdfGeneratorService,
   Guest,
   LangCode,
-  trailingNorLeadingSpaces
+  trailingNorLeadingSpaces,
+  guestPasswordValidator
 } from '@acx-ui/rc/utils'
 import { GuestErrorRes } from '@acx-ui/user'
 import { getIntl }       from '@acx-ui/utils'
@@ -47,7 +50,8 @@ import {
   EnvelopClosedSolidIcon,
   PrintIcon,
   CheckboxLabel,
-  FooterDiv
+  FooterDiv,
+  FullWidthSpace
 } from '../styledComponents'
 
 interface AddGuestProps {
@@ -244,29 +248,31 @@ export const genTemplate = (guestDetails: any, langDictionary: any) => {
 
 export type GuestResponse = {
   requestId: string,
-  response: Guest[] | { data: Guest[], downloadUrl: string } }
+  response: Guest | { data: Guest[], downloadUrl: string } }
 
-export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boolean }) {
+export function GuestFields ({ withBasicFields = true, from }: { withBasicFields?: boolean, from?: string }) {
   const { $t } = useIntl()
   const params = useParams()
   const form = Form.useFormInstance()
   // Don't disable phone and email if withBasicFields == false
   const [phoneNumberError, setPhoneNumberError] = useState(withBasicFields)
+  const [guestPasswordOption, setGuestPasswordOption] = useState('auto')
   const [emailError, setEmailError] = useState(withBasicFields)
 
   const timeTypeValidPassOptions = [
     { label: $t({ defaultMessage: 'Hours' }), value: 'Hour' },
     { label: $t({ defaultMessage: 'Days' }), value: 'Day' }
   ]
-
+  const isGuestManualPasswordEnabled = useIsSplitOn(Features.GUEST_MANUAL_PASSWORD_TOGGLE)
   const [getNetworkList] = useLazyGetGuestNetworkListQuery()
+  const [ validateGuestPassword ] = useValidateGuestPasswordMutation()
   const [allowedNetworkList, setAllowedNetworkList] = useState<Network[]>()
   const getAllowedNetworkList = async () => {
     const list = await (getNetworkList({ params, payload }, true).unwrap())
     setAllowedNetworkList(list.data)
     if(list.data.length === 1) {
       form.setFieldsValue({
-        networkId: list.data[0].id
+        wifiNetworkId: list.data[0].id
       })
     }
   }
@@ -322,6 +328,10 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
 
   const onUnitChange = (value: string) => {
     form.setFields([{ name: ['expiration', 'duration'], value: value === 'Day' ? 7 : 24, errors: [] }])
+  }
+
+  const guestPasswordOptionChange = (event: RadioChangeEvent) => {
+    setGuestPasswordOption(event.target.value)
   }
 
   const durationValidator = (value: number) => {
@@ -380,7 +390,7 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
 
     <Divider style={{ margin: '4px 0px 20px', background: cssStr('--acx-neutrals-30') }}/>
     <Form.Item
-      name={'networkId'}
+      name={'wifiNetworkId'}
       label={$t({ defaultMessage: 'Allowed Network' })}
       rules={[
         { required: true }
@@ -445,6 +455,60 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
         options={numberOfDevicesOptions}
       />}
     />
+    {/* Only display Guest Pass when render from AddGuestDrawer*/}
+    {isGuestManualPasswordEnabled && (from === 'add') &&
+    <Form.Item
+      label={$t({ defaultMessage: 'Guest Pass' })}
+      valuePropName={'checked'}
+      initialValue={'auto'}
+    >
+      <Radio.Group
+        style={{ width: '100%' }}
+        onChange={guestPasswordOptionChange}
+        value={guestPasswordOption}>
+        <FullWidthSpace
+          direction='vertical'
+          style={{ width: '100%' }}>
+          <Radio value='auto' data-testid='auto-radio'>Auto generated</Radio>
+          <Radio value='manual' style={{ width: '100%' }} data-testid='manual-radio'>
+            <Row>
+              <Col span={3}>
+                Manual
+              </Col>
+              <Col span={21}>
+                { (guestPasswordOption === 'manual') ? (
+                  <Form.Item
+                    name={'password'}
+                    style={{ width: '100%' }}
+                    rules={[
+                      { required: true },
+                      { min: 6 },
+                      { max: 16 },
+                      { validator: (_, value) => guestPasswordValidator(value) },
+                      { validator: async (_, value: string) => {
+                        // Add length limit otherwise it will still trigger validation and get 400 from backend.
+                        if(value && value.length >= 6 && value.length <= 16) {
+                          const formValues = form.getFieldsValue()
+                          const payload = { action: 'passwordValidation', password: value }
+                          try{
+                            await validateGuestPassword({ params: { ...params, networkId: formValues.wifiNetworkId }, payload }).unwrap()
+                          } catch(e) {
+                            return Promise.reject($t({ defaultMessage: 'Passwords on the same network should be unique.' }))
+                          }
+                          return Promise.resolve()
+                        }
+                      } }
+                    ]}
+                    children={<PasswordInput data-testid='manual-password-input' />}
+                  />
+                ) : <></> }
+              </Col>
+            </Row>
+          </Radio>
+        </FullWidthSpace>
+      </Radio.Group>
+    </Form.Item>
+    }
     <Form.Item
       name={'deliveryMethods'}
       initialValue={['PRINT']}
@@ -484,7 +548,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
   const [form] = Form.useForm()
   const { visible, setVisible } = props
   const params = useParams()
-  const { handleGuestPassResponse } = useHandleGuestPassResponse({ tenantId: params.tenantId! })
+  const { handleGuestPassResponse } = useHandleGuestPassResponse()
 
   const [
     addGuestPass
@@ -496,15 +560,15 @@ export function AddGuestDrawer (props: AddGuestProps) {
   }
 
   const onSave = async () => {
-    const payload = [form.getFieldsValue()]
+    const formValues = form.getFieldsValue()
+    const payload = { ...formValues, wifiNetworkId: undefined }
     if(form.getFieldValue('deliveryMethods').length === 0){
       showNoSendConfirm(()=>{
-        addGuestPass({ params: { tenantId: params.tenantId }, payload: payload })
-        setVisible(false)
+        addGuestPass({ params: { tenantId: params.tenantId, networkId: formValues.wifiNetworkId }, payload: payload })
+        onClose()
       })
-    }
-    else{
-      addGuestPass({ params: { tenantId: params.tenantId }, payload: payload })
+    } else{
+      addGuestPass({ params: { tenantId: params.tenantId, networkId: formValues.wifiNetworkId }, payload: payload })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((res: any) => {
           if (res.error &&
@@ -514,9 +578,8 @@ export function AddGuestDrawer (props: AddGuestProps) {
             handleGuestPassResponse(res.data)
           }
         })
-      setVisible(false)
+      onClose()
     }
-    form.resetFields()
   }
 
 
@@ -524,7 +587,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
     <Button
       data-testid='saveBtn'
       key='saveBtn'
-      onClick={() => form.submit()}
+      onClick={form.submit}
       type='primary'>
       {$t({ defaultMessage: 'Add' })}
     </Button>,
@@ -544,7 +607,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
       destroyOnClose={true}
       children={
         <Form layout='vertical' form={form} onFinish={onSave} data-testid='guest-form'>
-          <GuestFields />
+          <GuestFields from={'add'} />
         </Form>
       }
       footer={<FooterDiv>{footer}</FooterDiv>}
@@ -565,7 +628,7 @@ export function showNoSendConfirm (callback: ()=>void) {
       action: 'CUSTOM_BUTTONS',
       buttons: [{
         text: $t({ defaultMessage: 'Cancel' }),
-        type: 'link', // TODO: will change after DS update
+        type: 'default',
         key: 'cancel',
         closeAfterAction: true
       }, {
@@ -599,9 +662,7 @@ export function showGuestErrorModal (errorRes: GuestErrorRes) {
   }
 }
 
-export function useHandleGuestPassResponse (params: { tenantId: string }) {
-  const [getNetwork] = useLazyGetNetworkQuery()
-
+export function useHandleGuestPassResponse () {
   const getGuestPrintTemplate =
   (guestDetails: { langCode: LangCode }, useUpdatedTemplate: boolean) => {
     const langDictionary = getGuestDictionaryByLangCode(guestDetails.langCode)
@@ -629,9 +690,9 @@ export function useHandleGuestPassResponse (params: { tenantId: string }) {
         guestExpiresDate = guest.expirationDate
       } else {
         if (guest.expiration.unit === 'Hour') {
-          guestExpiresDate = currentMoment.clone().add('hours', guest.expiration.duration)
+          guestExpiresDate = currentMoment.clone().add(guest.expiration.duration, 'hours')
         } else {
-          guestExpiresDate = currentMoment.clone().add('days', guest.expiration.duration)
+          guestExpiresDate = currentMoment.clone().add(guest.expiration.duration, 'days')
         }
       }
     }
@@ -667,9 +728,11 @@ export function useHandleGuestPassResponse (params: { tenantId: string }) {
   const handleGuestPassResponse = async (jsonGuest: GuestResponse) => {
     let printCondition = false
     let guestsArr: Guest[] = []
-    let jsonGuestData = jsonGuest.response as Guest[]
+    let jsonGuestData: Guest[] = []
     if ('data' in jsonGuest.response) {
-      jsonGuestData = jsonGuest.response.data
+      jsonGuestData = jsonGuest.response.data as Guest[]
+    } else {
+      jsonGuestData = [jsonGuest.response as Guest]
     }
 
     if (jsonGuestData) {
@@ -680,9 +743,7 @@ export function useHandleGuestPassResponse (params: { tenantId: string }) {
     }
 
     if (printCondition) {
-      const networkData = await getNetwork({
-        params: { tenantId: params.tenantId, networkId: jsonGuestData[0].networkId } })
-      const langCode = (networkData?.data?.guestPortal?.guestPage?.langCode) || ''
+      const langCode = jsonGuestData[0].locale || ''
       for (let i = 0; i < guestsArr.length; i++) {
         guestsArr[i].langCode = langCode
       }

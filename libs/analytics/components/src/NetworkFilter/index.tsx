@@ -9,12 +9,13 @@ import {
   calculateSeverity,
   defaultNetworkPath,
   Incident } from '@acx-ui/analytics/utils'
-import { Cascader, Loader, RadioBand } from '@acx-ui/components'
-import type { CascaderOption }         from '@acx-ui/components'
-import { useReportsFilter }            from '@acx-ui/reports/utils'
-import { NetworkPath, getIntl }        from '@acx-ui/utils'
+import { Cascader, Loader, RadioBand }           from '@acx-ui/components'
+import type { CascaderOption }                   from '@acx-ui/components'
+import { useReportsFilter }                      from '@acx-ui/reports/utils'
+import { NetworkPath, getIntl, AnalyticsFilter } from '@acx-ui/utils'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'
+import { useIncidentToggles }    from '../useIncidentToggles'
 
 import { useVenuesHierarchyQuery } from './services'
 import { SeverityCircles }         from './SeverityCircles'
@@ -28,19 +29,22 @@ export type NodesWithSeverity = Pick<Incident, 'sliceType'> & {
   venueName: string;
   severity: { [key: string]: number };
 }
+
 export type VenuesWithSeverityNodes = { [key: string]: NodesWithSeverity[] }
 type ConnectedNetworkFilterProps = {
-    shouldQuerySwitch: boolean,
-    shouldQueryAp: boolean,
-    withIncidents?: boolean,
-    showRadioBand?: boolean,
-    multiple?: boolean,
-    filterFor?: 'analytics' | 'reports',
-    defaultValue?: SingleValueType | SingleValueType[],
-    defaultRadioBand?: RadioBand[],
-    isRadioBandDisabled?: boolean,
-    radioBandDisabledReason?: string
-  }
+  shouldQuerySwitch: boolean,
+  shouldQueryAp: boolean,
+  shouldShowOnlyVenues?: boolean,
+  withIncidents?: boolean,
+  showRadioBand?: boolean,
+  multiple?: boolean,
+  filterFor?: 'analytics' | 'reports',
+  defaultValue?: SingleValueType | SingleValueType[],
+  defaultRadioBand?: RadioBand[],
+  isRadioBandDisabled?: boolean,
+  radioBandDisabledReason?: string,
+  overrideFilters? : AnalyticsFilter | {}
+}
 const getSeverityFromIncidents = (
   incidentsList: Incident[]
 ): VenuesWithSeverityNodes =>
@@ -96,7 +100,8 @@ const getApsAndSwitches = ( data: Child[], name : string) =>
 export const getNetworkFilterData = (
   data: Child[],
   nodesWithSeverities: VenuesWithSeverityNodes,
-  replaceVenueNameWithId: boolean
+  replaceVenueNameWithId: boolean,
+  shouldShowOnlyVenues?: boolean
 ): CascaderOption[] => {
   const { $t } = getIntl()
   const venues: { [key: string]: CascaderOption } = {}
@@ -118,6 +123,10 @@ export const getNetworkFilterData = (
         children: [] as CascaderOption[]
       }
     }
+
+    // Don't show APs and switches in the network filter
+    if (shouldShowOnlyVenues) continue
+
     const venue = venues[name]
     if (aps?.length) {
       venue.children!.push({
@@ -136,7 +145,7 @@ export const getNetworkFilterData = (
             nodesWithSeverities[name]
           )
           return {
-            label: ap.name,
+            label: `${ap.name} (${ap.mac})`,
             extraLabel: <SeverityCircles severityCircles={severityData} />,
             value: JSON.stringify([...venuePath, { type: 'AP', name: ap.mac }])
           }
@@ -160,7 +169,7 @@ export const getNetworkFilterData = (
             nodesWithSeverities[name]
           )
           return {
-            label: switchNode.name,
+            label: `${switchNode.name} (${switchNode.mac})`,
             extraLabel: <SeverityCircles severityCircles={severityData} />,
             value: JSON.stringify([...venuePath, { type: 'switch', name: switchNode.mac }])
           }
@@ -183,28 +192,62 @@ export const onApply = (
   setNetworkPath(path, value || [])
 }
 
+/**
+ * Modify the raw values based on the provided criteria.
+ *
+ * @param {string[]} rawVal - The array of raw values to be modified
+ * @param {string} queriedData - The text data to compare with
+ * @param {string} targetType - The type to match in the raw values
+ * @param {string} replacementType - The text to replace in the raw values
+ * @return {string[]} The modified raw values array
+ */
+export const modifyRawValue = (
+  rawVal:string[], queriedData: string, targetType: string, replacementType: string
+) => {
+  const newRawVal = rawVal.map(value => {
+    if (value.startsWith('[') && value.endsWith(']')) {
+      return JSON.parse(value)
+        .map((item: { name: string, type: string }) => {
+          return item.type === targetType
+            && queriedData.includes(`{"type":"${item.type}","name":"${item.name}"}`)
+            ? item
+            : (item.type === 'zone' || item.type === 'switchGroup')
+              ? { ...item, type: replacementType } : item
+        })
+    }
+    return value
+  }).map(item => Array.isArray(item) ? JSON.stringify(item) : item)
+  // Should return [] if the queried data does not contain the selected node path present in rawVal
+  return newRawVal.some(value => queriedData.includes(value))
+    ? newRawVal
+    : []
+}
+
 export { ConnectedNetworkFilter as NetworkFilter }
 
-function ConnectedNetworkFilter (
-  { shouldQuerySwitch,
-    shouldQueryAp,
-    withIncidents,
-    showRadioBand,
-    filterFor='analytics',
-    multiple,
-    defaultValue,
-    defaultRadioBand,
-    isRadioBandDisabled=false,
-    radioBandDisabledReason } : ConnectedNetworkFilterProps
-) {
+function ConnectedNetworkFilter ({
+  shouldQuerySwitch,
+  shouldQueryAp,
+  shouldShowOnlyVenues,
+  withIncidents,
+  showRadioBand,
+  filterFor='analytics',
+  multiple,
+  defaultValue,
+  defaultRadioBand,
+  isRadioBandDisabled=false,
+  radioBandDisabledReason,
+  overrideFilters = {}
+} : ConnectedNetworkFilterProps) {
   const { $t } = useIntl()
+  const toggles = useIncidentToggles()
   const [ open, setOpen ] = useState(false)
   const { setNetworkPath, filters, raw } = useAnalyticsFilter()
   const { setNetworkPath: setReportsNetworkPath,
     raw: reportsRaw, filters: reportsFilter } = useReportsFilter()
   let { bands: selectedBands } = reportsFilter
   const incidentsList = useIncidentsListQuery(
-    { ...filters, includeMuted: false },
+    { ...filters, ...overrideFilters, toggles, includeMuted: false, filter: {} },
     {
       skip: !Boolean(withIncidents),
       selectFromResult: ({ data }) => ({
@@ -217,28 +260,45 @@ function ConnectedNetworkFilter (
     startDate: filters.startDate,
     endDate: filters.endDate,
     range: filters.range,
+    ...overrideFilters,
     shouldQuerySwitch,
     shouldQueryAp
   }, {
     selectFromResult: ({ data, ...rest }) => ({
-      data: data ? getNetworkFilterData(data, incidents, true) : [],
+      data: data ? getNetworkFilterData(data, incidents, true, shouldShowOnlyVenues) : [],
       ...rest
     })
   })
+
   const isReports = filterFor === 'reports'
-  let rawVal:string[][] = isReports ? reportsRaw : raw
-  // Below condition will avoid empty tags in the filter while switching between AP and Switch reports
-  if(!shouldQueryAp){
-    selectedBands=[]
-    rawVal=rawVal.filter(value=>{
-      return !value[0].includes('zone')
-    })
+  let rawVal:string[] = isReports ? reportsRaw : raw
+
+  if(isReports){
+    // Below condition will avoid empty tags in the filter while switching between AP and Switch reports
+    if(!shouldQueryAp){
+      selectedBands=[]
+      rawVal=rawVal.filter(value=>{
+        return !value[0].includes('zone')
+      })
+    }
+    if(!shouldQuerySwitch){
+      rawVal=rawVal.filter(value=>{
+        return !value[0].includes('switchGroup')
+      })
+    }
+  } else {
+    const dataText = queryResults.data
+      .filter(Boolean)
+      .map(({ value }) => value)
+      .join(',')
+
+    if(!shouldQueryAp && shouldQuerySwitch){
+      rawVal = modifyRawValue(rawVal, dataText, 'zone', 'switchGroup')
+    } else if(shouldQueryAp){
+      rawVal = modifyRawValue(rawVal, dataText, 'switchGroup', 'zone')
+    }
   }
-  if(!shouldQuerySwitch){
-    rawVal=rawVal.filter(value=>{
-      return !value[0].includes('switchGroup')
-    })
-  }
+
   return (
     <UI.Container $open={open}>
       <Loader states={[queryResults]}>

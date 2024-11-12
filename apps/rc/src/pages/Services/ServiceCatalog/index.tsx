@@ -1,12 +1,18 @@
-import { Typography }             from 'antd'
-import _                          from 'lodash'
-import { defineMessage, useIntl } from 'react-intl'
+import { useState } from 'react'
 
-import { GridCol, GridRow, PageHeader }                           from '@acx-ui/components'
-import { RadioCardCategory }                                      from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Typography } from 'antd'
+import { useIntl }    from 'react-intl'
+
+import { GridCol, GridRow, PageHeader }                                                                  from '@acx-ui/components'
+import { RadioCardCategory }                                                                             from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                      from '@acx-ui/feature-toggle'
+import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
-  ServiceType
+  ServiceType,
+  isServiceCardEnabled,
+  ServiceOperation,
+  isServiceCardSetEnabled,
+  IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 
 import { ServiceCard } from '../ServiceCard'
@@ -14,66 +20,112 @@ import { ServiceCard } from '../ServiceCard'
 
 import * as UI from './styledComponents'
 
+interface ServiceCardItem {
+  title: string
+  items: {
+    type: ServiceType
+    categories: RadioCardCategory[]
+    disabled?: boolean
+    helpIcon?: React.ReactNode
+  }[]
+}
 
 export default function ServiceCatalog () {
   const { $t } = useIntl()
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
-  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
+  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
+  const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
+  const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
+  const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
+  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+
+  // eslint-disable-next-line max-len
+  const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
 
   const sets = [
     {
-      key: 'connectivity',
-      title: defineMessage({ defaultMessage: 'Connectivity' }),
+      title: $t({ defaultMessage: 'Connectivity' }),
       items: [
         { type: ServiceType.DHCP, categories: [RadioCardCategory.WIFI] },
         {
           type: ServiceType.EDGE_DHCP,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled
+          helpIcon: <ApCompatibilityToolTip
+            title=''
+            visible
+            onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.DHCP)}
+          />,
+          disabled: !isEdgeHaReady || !isEdgeDhcpHaReady
         },
         { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
         {
-          type: ServiceType.NETWORK_SEGMENTATION,
+          type: ServiceType.PIN,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled || !isEdgeReady
+          helpIcon: <ApCompatibilityToolTip
+            title=''
+            visible
+            onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.PIN)}
+          />,
+          disabled: !isEdgePinReady
         },
         {
           type: ServiceType.EDGE_SD_LAN,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled || !isEdgeReady || !isEdgeSdLanReady
+          helpIcon: isEdgeCompatibilityEnabled
+            ? <ApCompatibilityToolTip
+              title={''}
+              visible={true}
+              onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.SD_LAN)}
+            />
+            : undefined,
+          disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
         }
       ]
     },
     {
-      key: 'security',
-      title: defineMessage({ defaultMessage: 'Security' }),
+      title: $t({ defaultMessage: 'Security' }),
       items: [
         { type: ServiceType.EDGE_FIREWALL,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled || !isEdgeReady
+          disabled: !isEdgeHaReady || !isEdgeFirewallHaReady
         }
       ]
     },
     {
-      key: 'application',
-      title: defineMessage({ defaultMessage: 'Application' }),
+      title: $t({ defaultMessage: 'Application' }),
       items: [
         { type: ServiceType.MDNS_PROXY, categories: [RadioCardCategory.WIFI] },
+        {
+          type: ServiceType.EDGE_MDNS_PROXY,
+          categories: [RadioCardCategory.EDGE],
+          disabled: !isEdgeMdnsReady,
+          helpIcon: <ApCompatibilityToolTip
+            title=''
+            visible
+            onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.EDGE_MDNS_PROXY)}
+          />
+        },
+        {
+          type: ServiceType.EDGE_TNM_SERVICE,
+          categories: [RadioCardCategory.EDGE],
+          disabled: !isEdgeTnmServiceReady
+        },
         { type: ServiceType.WIFI_CALLING, categories: [RadioCardCategory.WIFI] }
       ]
     },
     {
-      key: 'guests',
-      title: defineMessage({ defaultMessage: 'Guests & Residents' }),
+      title: $t({ defaultMessage: 'Guests & Residents' }),
       items: [
         { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
         {
           type: ServiceType.WEBAUTH_SWITCH,
           categories: [RadioCardCategory.SWITCH],
-          disabled: !isEdgeEnabled || !networkSegmentationSwitchEnabled
+          disabled: !isEdgePinReady || !networkSegmentationSwitchEnabled
         },
         {
           type: ServiceType.RESIDENT_PORTAL,
@@ -82,7 +134,7 @@ export default function ServiceCatalog () {
         }
       ]
     }
-  ]
+  ] as ServiceCardItem []
 
   return (
     <>
@@ -90,31 +142,33 @@ export default function ServiceCatalog () {
         title={$t({ defaultMessage: 'Service Catalog' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
       />
-      {sets.map(set => {
-        const isAllDisabled = _.findIndex(set.items,
-          (o) => o.disabled === undefined || o.disabled === false ) === -1
-
-        return isAllDisabled
-          ? null
-          : <UI.CategoryContainer key={set.key}>
-            <Typography.Title level={3}>
-              { $t(set.title) }
-            </Typography.Title>
-            <GridRow>
-              {set.items.map(item => item.disabled
-                ? null
-                : <GridCol key={item.type} col={{ span: 6 }}>
-                  <ServiceCard
-                    key={item.type}
-                    serviceType={item.type}
-                    categories={item.categories}
-                    type={'button'}
-                  />
-                </GridCol>)}
-            </GridRow>
-          </UI.CategoryContainer>
-      }
-      )}
+      {sets.filter(set => isServiceCardSetEnabled(set, ServiceOperation.LIST)).map(set => {
+        return <UI.CategoryContainer key={set.title}>
+          <Typography.Title level={3}>
+            { set.title }
+          </Typography.Title>
+          <GridRow>
+            {set.items.filter(i => isServiceCardEnabled(i, ServiceOperation.LIST)).map(item => {
+              return <GridCol key={item.type} col={{ span: 6 }}>
+                <ServiceCard
+                  key={item.type}
+                  serviceType={item.type}
+                  categories={item.categories}
+                  type={'button'}
+                  helpIcon={item.helpIcon}
+                />
+              </GridCol>
+            })}
+          </GridRow>
+        </UI.CategoryContainer>
+      })}
+      {isEdgeCompatibilityEnabled && <EdgeCompatibilityDrawer
+        visible={!!edgeCompatibilityFeature}
+        type={EdgeCompatibilityType.ALONE}
+        title={$t({ defaultMessage: 'Compatibility Requirement' })}
+        featureName={edgeCompatibilityFeature}
+        onClose={() => setEdgeCompatibilityFeature(undefined)}
+      />}
     </>
   )
 }

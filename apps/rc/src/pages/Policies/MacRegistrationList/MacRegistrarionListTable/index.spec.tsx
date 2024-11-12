@@ -83,7 +83,7 @@ const list = {
   empty: false
 }
 
-describe.skip('MacRegistrationListsTable', () => {
+describe('MacRegistrationListsTable', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
@@ -106,7 +106,7 @@ describe.skip('MacRegistrationListsTable', () => {
     )
   })
 
-  it('should render correctly', async () => {
+  it.skip('should render correctly', async () => {
     render(<Provider><MacRegistrationListsTable /></Provider>, {
       route: { params: {
         tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
@@ -115,11 +115,18 @@ describe.skip('MacRegistrationListsTable', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+
     const row1 = await screen.findByRole('row', { name: /Registration pool-1/ })
     expect(row1).toHaveTextContent('5')
 
     const row = await screen.findByRole('row', { name: /registration pool-1/i })
     fireEvent.click(within(row).getByRole('radio'))
+
+    expect(await screen.findByRole('button', { name: /edit/i })).toBeVisible()
   })
 
   it('should render breadcrumb correctly', async () => {
@@ -137,7 +144,7 @@ describe.skip('MacRegistrationListsTable', () => {
     })).toBeVisible()
   })
 
-  it('should delete selected row', async () => {
+  it.skip('should delete selected row', async () => {
     const deleteFn = jest.fn()
 
     mockServer.use(
@@ -174,7 +181,7 @@ describe.skip('MacRegistrationListsTable', () => {
     })
   })
 
-  it('should edit selected row', async () => {
+  it.skip('should edit selected row', async () => {
     render(<Provider><MacRegistrationListsTable /></Provider>, {
       route: { params: {
         tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'

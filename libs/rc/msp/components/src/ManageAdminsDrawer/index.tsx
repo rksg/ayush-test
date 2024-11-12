@@ -11,6 +11,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   useGetMspEcDelegatedAdminsQuery,
   useMspAdminListQuery,
@@ -21,29 +22,37 @@ import {
   MspEcDelegatedAdmins
 } from '@acx-ui/msp/utils'
 import {
-  roleDisplayText
+  defaultSort,
+  roleDisplayText,
+  sortProp
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { RolesEnum } from '@acx-ui/types'
+import { useParams }   from '@acx-ui/react-router-dom'
+import { RolesEnum }   from '@acx-ui/types'
+import { AccountType } from '@acx-ui/utils'
 
 interface ManageAdminsDrawerProps {
   visible: boolean
   tenantId?: string
   setVisible: (visible: boolean) => void
   setSelected: (selected: MspAdministrator[]) => void
+  tenantType?: string
 }
 
 export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
   const { $t } = useIntl()
 
-  const { visible, tenantId, setVisible, setSelected } = props
+  const { visible, tenantId, setVisible, setSelected, tenantType } = props
   const [isLoaded, setIsLoaded] = useState(false)
   const [resetField, setResetField] = useState(false)
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
   const [selectedRows, setSelectedRows] = useState<MspAdministrator[]>([])
   const [selectedRoles, setSelectedRoles] = useState<{ id: string, role: string }[]>([])
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const isSkip = tenantId === undefined
+  const isTechPartner =
+    (tenantType === AccountType.MSP_INSTALLER ||
+     tenantType === AccountType.MSP_INTEGRATOR)
 
   function getSelectedKeys (mspAdmins: MspAdministrator[], admins: string[]) {
     return mspAdmins.filter(rec => admins.includes(rec.id)).map(rec => rec.email)
@@ -58,8 +67,8 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
   }
 
   const delegatedAdmins =
-      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId: tenantId } },
-        { skip: isSkip })
+      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId: tenantId },
+        enableRbac: isRbacEnabled }, { skip: isSkip })
   const queryResults = useMspAdminListQuery({ params: useParams() })
 
   useEffect(() => {
@@ -127,14 +136,14 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       key: 'name',
-      sorter: true,
+      sorter: { compare: sortProp('name', defaultSort) },
       defaultSortOrder: 'ascend'
     },
     {
       title: $t({ defaultMessage: 'Email' }),
       dataIndex: 'email',
       key: 'email',
-      sorter: true,
+      sorter: { compare: sortProp('email', defaultSort) },
       searchable: true
     },
     {
@@ -171,7 +180,9 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
       onChange={value => handleRoleChange(id, value)}>
       {
         Object.entries(RolesEnum).map(([label, value]) => (
-          !(value === RolesEnum.DPSK_ADMIN)
+          !(value === RolesEnum.DPSK_ADMIN ||value === RolesEnum.TEMPLATES_ADMIN ||
+            value === RolesEnum.REPORTS_ADMIN
+          )
           && <Option
             key={label}
             value={value}>{$t(roleDisplayText[value])}
@@ -184,7 +195,9 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
   const content =
     <Space direction='vertical'>
       <Subtitle level={4}>
-        { $t({ defaultMessage: 'Select customer\'s MSP administrators' }) }</Subtitle>
+        { isTechPartner ? $t({ defaultMessage: 'Select customer\'s Tech Partner administrators' })
+          : $t({ defaultMessage: 'Select customer\'s MSP administrators' }) }
+      </Subtitle>
       <Loader states={[queryResults
       ]}>
         <Table
@@ -195,7 +208,21 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
             type: 'checkbox',
             selectedRowKeys: selectedKeys,
             onChange (selectedRowKeys, selRows) {
-              setSelectedRows(selRows)
+              if (selectedRowKeys.length === selRows.length) {
+                setSelectedRows(selRows)
+              }
+              else {
+                // On row click to deselect (i.e. clicking on row itself not checkbox) selRows is empty array
+                if (selRows.length === 0) {
+                  setSelectedRows([...selectedRows.filter(row =>
+                    selectedRowKeys.includes(row.email))])
+                }
+                // On row click to select (i.e. clicking on row itself not checkbox) selRows only has newly selected row
+                else {
+                  setSelectedRows([...selectedRows, ...selRows])
+                }
+              }
+              setSelectedKeys(selectedRowKeys)
             },
             getCheckboxProps: (record: MspAdministrator) => ({
               disabled:
@@ -209,7 +236,7 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
 
   const footer =<div>
     <Button
-      disabled={selectedRows.length === 0}
+      disabled={selectedKeys.length === 0}
       onClick={() => handleSave()}
       type='primary'
     >
@@ -225,7 +252,8 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Manage MSP Administrators' })}
+      title={isTechPartner ? $t({ defaultMessage: 'Manage Tech Partner Administrators' })
+        : $t({ defaultMessage: 'Manage MSP Administrators' })}
       visible={visible}
       onClose={onClose}
       footer={footer}

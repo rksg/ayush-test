@@ -1,4 +1,5 @@
 export interface ClientList {
+  apMac: string
   hostname: string
   osType: string
   healthCheckStatus: string
@@ -17,6 +18,7 @@ export interface ClientList {
   }
   clientAnalytics?: string
   clientVlan: string
+  vni?: string
   deviceTypeStr: string
   modelName: string
   totalTraffic: string
@@ -41,6 +43,7 @@ export interface ClientList {
   switchName?: string
   healthClass: string
   sessStartTimeParssed: boolean
+  networkType: string
   mldAddr: string
 }
 
@@ -56,7 +59,7 @@ export interface Guest {
     id: string
     userState: string
     guestType: string
-    networkId: string
+    wifiNetworkId: string
     expiration: string
     mobilePhoneNumber: string
     emailAddress: string
@@ -70,50 +73,41 @@ export interface Guest {
     name?: string
     maxNumberOfClients?: number,
     guestStatus: GuestStatusEnum,
-    clients?: GuestClient[],
+    clients?: ClientInfo[],
     langCode?: string,
     socialLogin?: string,
-    hostApprovalEmail?: string
+    hostApprovalEmail?: string,
+    devicesMac?: string[],
+    locale?: string
 }
 
-export interface GuestClient {
-    osType?: string
-    healthCheckStatus?: string
-    clientMac: string
-    ipAddress: string
-    username: string
-    hostname: string
-    venueId: string
-    venueName: string
-    apMac: string
-    apSerialNumber: string
-    apName: string
-    switchSerialNumber: string
-    switchName: string
-    networkId: string
-    networkName: string
-    networkSsid: string
-    timeConnectedMs: number
-    vlan?: number
-    bssid?: string
-    rfChannel?: number
-    status?: string
-    receivedBytes?: number
-    receivedPackets?: number
-    transmittedBytes?: number
-    transmittedPackets?: number
-    framesDropped?: number
-    receiveSignalStrength_dBm?: number
-    snr_dB?: number
-    lastSeenDateTime?: string
-    clientIP?: string
-    ssid?: string
-    serialNumber?: string
-    userId?: string
-    disconnectTime?: number
-    sessionDuration?: number
-    id?: string
-    connectSince?: string
+export interface UEDetail {
+  txBytes?: number
+  mac?: string,
+  apMac?: string,
+  apName?: string,
+  osType?: string,
+  venueId?: string,
+  venueName?: string,
+  connectedSince?: string,
+  apSerialNumber?: string,
+  networkId?: string,
+  ip?: string,
+  username?: string,
+  hostname?: string,
+  ssid?: string,
+  vlan?: number
+  bssid?: string,
+  rxBytes?: number
+  rxPackets?: number
+  txPackets?: number
+  snr_dB?: number
+  receiveSignalStrength_dBm: number,
+  noiseFloor_dBm: number,
+  radioChannel?: number
+  txDropDataPacket?: number
+  healthCheckStatus?: string,
+  networkType?: string
 }
 
 export interface GuestExpiration {
@@ -136,4 +130,89 @@ export enum GuestStatusEnum {
     NOT_APPLICABLE = 'Not Applicable',
     ONLINE = 'Online',
     DISABLED = 'Disabled'
+}
+
+export interface ClientInfo {
+  modelName: string
+  deviceType: string
+  macAddress: string
+  osType: string
+  ipAddress: string
+  username: string
+  hostname: string
+  authenticationStatus: number
+  connectedTime: string
+  lastUpdatedTime: string
+  venueInformation: VenueInformation
+  apInformation: ApInformation
+  networkInformation: NetworkInformation
+  wifiCallingEnabled: boolean
+  wifiCallingStatus: WifiCallingStatus
+  signalStatus: SignalStatus
+  radioStatus: RadioStatus
+  trafficStatus: TrafficStatus
+  mldMacAddress: string
+  cpeMacAddress: string
+  switchInformation?: SwitchInformation // form GUI
+  connectedTimeString: string // form GUI
+  connectedTimeParssed: boolean // form GUI
+}
+
+type VenueInformation = {
+  id: string
+  name: string
+}
+
+type ApInformation = {
+  serialNumber: string
+  name: string
+  macAddress: string
+  bssid: string
+}
+
+export type SwitchInformation = {
+  id: string
+  name: string
+  serialNumber: string
+  port?: string
+}
+
+type NetworkInformation = {
+  id: string
+  type: string
+  ssid: string
+  encryptionMethod: string
+  authenticationMethod: string
+  vlan: number,
+  vni?: string
+}
+
+type SignalStatus = {
+  snr: number
+  rssi: number
+  noiseFloor: number
+  health: string
+  healthDescription: string
+}
+
+type RadioStatus = {
+  type: string
+  channel: number
+}
+
+type TrafficStatus = {
+  trafficToClient: string
+  trafficFromClient: string
+  packetsToClient: string
+  packetsFromClient: string
+  framesDropped: string
+  totalTraffic: string
+}
+
+type WifiCallingStatus = {
+  carrierName: string
+  qosPriority: string
+  trafficFromClient: string
+  trafficToClient: string
+  totalTraffic: string
 }

@@ -30,4 +30,20 @@ describe('Threshold Histogram chart', () => {
     )
     expect(await screen.findByRole('slider')).toBeInTheDocument()
   })
+  it('should disable Slider', async () => {
+    render(
+      <Provider>
+        <HistogramSlider
+          splits={splits}
+          width={100}
+          height={100}
+          onSliderChange={onSliderChange}
+          sliderValue={2}
+          shortXFormat={jest.fn()}
+          disabled={true}
+        />
+      </Provider>
+    )
+    expect(await screen.findByRole('slider')).toHaveAttribute('aria-disabled', 'true')
+  })
 })

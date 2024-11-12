@@ -10,6 +10,7 @@ import { useIntl }                                                    from 'reac
 import { MinusSquareOutlined, PlusSquareOutlined, SettingsOutlined } from '@acx-ui/icons'
 import { TABLE_DEFAULT_PAGE_SIZE }                                   from '@acx-ui/utils'
 
+import { getTitleWithIndicator }               from '../BetaIndicator'
 import { Button, DisabledButton, ButtonProps } from '../Button'
 import { Dropdown }                            from '../Dropdown'
 import { useLayoutContext }                    from '../Layout'
@@ -50,7 +51,8 @@ export type {
   ColumnType,
   ColumnGroupType,
   RecordWithChildren,
-  TableColumn
+  TableColumn,
+  ColumnState
 } from './types'
 
 export interface TableProps <RecordType>
@@ -69,10 +71,12 @@ export interface TableProps <RecordType>
       & { alwaysShowAlert?: boolean }
     )
     extraSettings?: React.ReactNode[]
+    footer?: () => JSX.Element
     onResetState?: CallableFunction
     enableApiFilter?: boolean
     floatRightFilters?: boolean
     alwaysShowFilters? : boolean
+    selectedFilters?: Filter,
     onFilterChange?: (
       filters: Filter,
       search: { searchString?: string, searchTargetFields?: string[] },
@@ -84,8 +88,10 @@ export interface TableProps <RecordType>
     stickyHeaders?: boolean,
     stickyPagination?: boolean,
     enableResizableColumn?: boolean,
+    enablePagination?: boolean,
     onDisplayRowChange?: (displayRows: RecordType[]) => void,
-    getAllPagesData?: () => RecordType[]
+    getAllPagesData?: () => RecordType[],
+    filterPersistence?: boolean
   }
 
 export interface TableHighlightFnArgs {
@@ -112,9 +118,9 @@ const defaultPagination = {
   defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
   pageSizeOptions: [5, 10, 20, 25, 50, 100],
   position: ['bottomCenter'],
-  showTotal: false,
+  showTotal: undefined,
   showSizeChanger: true
-}
+} as TablePaginationConfig
 function useSelectedRowKeys <RecordType> (
   rowSelection?: TableProps<RecordType>['rowSelection']
 ): [Key[], React.Dispatch<React.SetStateAction<Key[]>>,
@@ -145,7 +151,8 @@ function useSelectedRowKeys <RecordType> (
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Table <RecordType extends Record<string, any>> ({
   type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId,
-  enableResizableColumn = true, onDisplayRowChange, stickyHeaders, stickyPagination, ...props
+  enableResizableColumn = true, onDisplayRowChange, stickyHeaders, stickyPagination,
+  enablePagination = false, selectedFilters = {}, filterPersistence = false, ...props
 }: TableProps<RecordType>) {
   const { dataSource, filterableWidth, searchableWidth, style } = props
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -153,7 +160,10 @@ function Table <RecordType extends Record<string, any>> ({
   const rowKey = (props.rowKey ?? 'key')
   const intl = useIntl()
   const { $t } = intl
-  const [filterValues, setFilterValues] = useState<Filter>({})
+  const storedFilters = sessionStorage.getItem(`${settingsId}-filter`) as string | null
+  const parseFilters = storedFilters ? JSON.parse(storedFilters) : {}
+  const [filterValues, setFilterValues] = useState<Filter>(
+    filterPersistence ? parseFilters : selectedFilters)
   const [searchValue, setSearchValue] = useState<string>('')
   const [groupByValue, setGroupByValue] = useState<string | undefined>(undefined)
   const onFilter = useRef(onFilterChange)
@@ -234,22 +244,28 @@ function Table <RecordType extends Record<string, any>> ({
       ? [...props.columns, settingsColumn] as typeof props.columns
       : props.columns
 
-    return cols.map(column => ({
-      ...column,
-      tooltip: null,
-      title: column.tooltip
-        ? <UI.TitleWithTooltip>
-          {column.title as React.ReactNode}
-          <UI.InformationTooltip title={column.tooltip as string} />
-        </UI.TitleWithTooltip>
-        : column.title,
-      disable: Boolean(column.fixed || column.disable),
-      show: Boolean(column.fixed || column.disable || (column.show ?? true)),
-      ellipsis: type === 'tall' && column.key !== settingsKey,
-      children: 'children' in column
-        ? column.children.map(child => ({ ...child, ellipsis: type === 'tall' }))
-        : undefined
-    }))
+    return cols.map(column => {
+      const columnTitle = (column?.isBetaFeature
+        ? getTitleWithIndicator(column?.title as string)
+        : column.title
+      ) as React.ReactNode
+      return {
+        ..._.omit(column, 'scopeKey'),
+        tooltip: null,
+        title: column.tooltip
+          ? <UI.TitleWithTooltip>
+            {columnTitle}
+            <UI.InformationTooltip title={column.tooltip as string} />
+          </UI.TitleWithTooltip>
+          : columnTitle,
+        disable: Boolean(column.fixed || column.disable),
+        show: Boolean(column.fixed || column.disable || (column.show ?? true)),
+        ellipsis: type === 'tall' && column.key !== settingsKey,
+        children: 'children' in column
+          ? column.children.map(child => ({ ...child, ellipsis: type === 'tall' }))
+          : undefined
+      }
+    })
   }, [props.columns, type]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const columnsState = useColumnsState({ settingsId, columns: baseColumns, columnState })
@@ -421,9 +437,22 @@ function Table <RecordType extends Record<string, any>> ({
       : {}
   } : undefined
 
+  const defaultPaginationMemo = useMemo<TablePaginationConfig>(() => ({
+    ...defaultPagination,
+    ...(!settingsId || type !== 'tall' ? {} : {
+      // Use localStorage if a tall table has settingsId and no pageSize specified.
+      // pageSize can usually be generated by useTableQuery
+      pageSize: (props.pagination && props.pagination.pageSize) ? undefined :
+        Number(sessionStorage.getItem(`${settingsId}-pagesize`)) || TABLE_DEFAULT_PAGE_SIZE,
+      onShowSizeChange: (current, size) => {
+        sessionStorage.setItem(`${settingsId}-pagesize`, size.toString())
+      }
+    })
+  }), [props.pagination, settingsId, type])
+
   let pagination: false | TablePaginationConfig = false
-  if (type === 'tall') {
-    pagination = { ...defaultPagination, ...props.pagination || {} } as TablePaginationConfig
+  if (type === 'tall' || !!enablePagination) {
+    pagination = { ...defaultPaginationMemo, ...props.pagination || {} } as TablePaginationConfig
     if (((pagination.total || dataSource?.length) || 0) <= pagination.defaultPageSize!) {
       pagination = false
     }
@@ -453,7 +482,12 @@ function Table <RecordType extends Record<string, any>> ({
           ? col.width
           : colWidth[col.key as keyof typeof colWidth] || col.width,
         onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
-          onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width }),
+          onResize: (width: number) => setColWidth({
+            ...colWidth,
+            [column.key]: width >
+              (typeof column.minWidth === 'number' ? column.minWidth : 0)
+              ? width : (column.minWidth || 0)
+          }),
           width: colWidth[column.key],
           ...(enableResizableColumn ? { definedWidth: col.width } : {})
         })
@@ -502,7 +536,8 @@ function Table <RecordType extends Record<string, any>> ({
         {filterables.map((column, i) =>
           renderFilter<RecordType>(
             column, i, dataSource, filterValues,
-            setFilterValues, !!enableApiFilter, filterWidth)
+            setFilterValues, !!enableApiFilter, column.filterableWidth ?? filterWidth,
+            settingsId, filterPersistence)
         )}
         {Boolean(groupable.length) && <GroupSelect<RecordType>
           $t={$t}
@@ -524,6 +559,7 @@ function Table <RecordType extends Record<string, any>> ({
             setFilterValues({} as Filter)
             setSearchValue('')
             setGroupByValue(undefined)
+            sessionStorage.removeItem(`${settingsId}-filter`)
           }}>
           {$t({ defaultMessage: 'Clear Filters' })}
         </Button>}
@@ -685,8 +721,13 @@ function Table <RecordType extends Record<string, any>> ({
 
 Table.SubTitle = UI.SubTitle
 Table.Highlighter = UI.Highlighter
+Table.SearchInput = UI.SearchInput
 
 export { Table }
+
+export function AsyncColumnLoader () {
+  return <UI.AsyncColumnLoader data-testid='async-column-loader-animation'/>
+}
 
 type ScrollXReducerColumn = {
   key: string

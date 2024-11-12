@@ -4,14 +4,15 @@ import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, cssStr, Loader, Modal, Table, TableProps, Descriptions, StackedBarChart } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
 import {
   useGetSwitchConfigHistoryQuery,
   useGetVenueConfigHistoryQuery,
   useLazyGetVenueConfigHistoryDetailQuery
 } from '@acx-ui/rc/services'
-import { ConfigTypeEnum, ConfigurationHistory, DispatchFailedReason, FILTER, transformConfigType, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                                                                                              from '@acx-ui/react-router-dom'
-import { getIntl }                                                                                                from '@acx-ui/utils'
+import { ConfigTypeEnum, ConfigurationHistory, DispatchFailedReason, FILTER, SwitchViewModel, transformConfigType, useTableQuery } from '@acx-ui/rc/utils'
+import { useParams }                                                                                                               from '@acx-ui/react-router-dom'
+import { getIntl }                                                                                                                 from '@acx-ui/utils'
 
 import { CodeMirrorWidget } from '../CodeMirrorWidget'
 
@@ -22,12 +23,15 @@ import { SwitchConfigDetailsTable } from './SwitchConfigDetailsTable'
 import type { RadioChangeEvent } from 'antd'
 
 export function SwitchConfigHistoryTable (props: {
-  isVenueLevel?: boolean
+  isVenueLevel?: boolean,
+  switchDetail?: SwitchViewModel
 }) {
   const { $t } = useIntl()
-  const { isVenueLevel } = props
+  const { isVenueLevel, switchDetail } = props
   const codeMirrorEl = useRef(null as unknown as { highlightLine: Function, removeHighlightLine: Function })
   const { tenantId, venueId } = useParams()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSwitchNtpServerEnabled = useIsSplitOn(Features.SWITCH_NTP_SERVER)
   const [visible, setVisible] = useState(false)
   const [showError, setShowError] = useState(true)
   const [showClis, setShowClis] = useState(true)
@@ -46,9 +50,17 @@ export function SwitchConfigHistoryTable (props: {
       sortInfo: { sortColumn: 'startTime', dir: 'DESC' },
       limit: 10
     }
-    return (await getVenueConfigHistoryDetail({
-      params: { tenantId, venueId, transactionId: transactionId }, payload }, true)
-    )?.data?.response?.list?.map((config, index: number) => ({ ...config, id: `${index}` })) ?? []
+    if(isSwitchRbacEnabled) {
+      return (await getVenueConfigHistoryDetail({
+        params: { tenantId, venueId, transactionId: transactionId }, payload,
+        enableRbac: isSwitchRbacEnabled }, true)
+      )?.data?.list?.map((config, index: number) => ({ ...config, id: `${index}` })) ?? []
+    } else{
+      return (await getVenueConfigHistoryDetail({
+        params: { tenantId, venueId, transactionId: transactionId }, payload }, true)
+      )?.data?.response?.list?.map((config, index: number) => ({ ...config, id: `${index}` })) ?? []
+    }
+
   }
 
   const showModal = async (selectedRow: ConfigurationHistory) => {
@@ -72,19 +84,31 @@ export function SwitchConfigHistoryTable (props: {
     setFilterType('ALL')
   }
 
+  const settingsId = 'switch-config-history-table'
   const tableQuery = useTableQuery({
     useQuery: isVenueLevel ? useGetVenueConfigHistoryQuery : useGetSwitchConfigHistoryQuery,
     defaultPayload: {
     },
+    apiParams: { venueId: (switchDetail?.venueId || venueId) as string },
     sorter: {
       sortField: 'startTime',
       sortOrder: 'DESC'
-    }
+    },
+    pagination: { settingsId },
+    enableRbac: isSwitchRbacEnabled
   })
 
-  const configTypeFilterOptions = Object.values(ConfigTypeEnum).map(ctype=>({
-    key: ctype, value: transformConfigType(ctype)
-  }))
+
+  const getConfigTypeFilterOptions = function () {
+    let configTypeOptions = Object.values(ConfigTypeEnum)
+    if (!isSwitchNtpServerEnabled) {
+      configTypeOptions = configTypeOptions.filter(ctype => ctype !== ConfigTypeEnum.NTP_SERVER)
+    }
+    return configTypeOptions.map(ctype=>({
+      key: ctype, value: transformConfigType(ctype)
+    }))
+  }
+
 
   const getCols = () => {
     const columns: TableProps<ConfigurationHistory>['columns'] = [{
@@ -103,7 +127,7 @@ export function SwitchConfigHistoryTable (props: {
       key: 'configType',
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'configType',
-      filterable: configTypeFilterOptions,
+      filterable: getConfigTypeFilterOptions(),
       filterMultiple: false,
       sorter: !isVenueLevel
     }, {
@@ -181,7 +205,7 @@ export function SwitchConfigHistoryTable (props: {
   return <>
     <Loader states={[tableQuery]}>
       <Table
-        settingsId='switch-config-history-table'
+        settingsId={settingsId}
         rowKey={(record) => record.transactionId + record.configType}
         columns={getCols()}
         dataSource={tableQuery.data?.data ?? []}

@@ -1,4 +1,6 @@
-import { multipleBy1000, divideBy100, noFormat, kpisForTab } from './healthKPIConfig'
+import { multipleBy1000, divideBy100, noFormat,
+  kpisForTab, wiredKPIsForTab,
+  numberWithPercentSymbol, shouldAddFirmwareFilter } from './healthKPIConfig'
 
 describe('Health KPI', () => {
   const mockGet = jest.fn()
@@ -25,6 +27,7 @@ describe('Health KPI', () => {
     expect(multipleBy1000(10)).toBe(10000)
     expect(divideBy100(100)).toBe(1)
     expect(noFormat(100)).toBe(100)
+    expect(numberWithPercentSymbol(100)).toBe('100%')
     expect(kpiConfig.apToSZLatency.histogram.initialThreshold).toBe(200)
     expect(kpiConfig.apToSZLatency.histogram.splits)
       .toEqual([50, 100, 150, 200, 250, 300, 350, 400])
@@ -36,7 +39,6 @@ describe('Health KPI', () => {
     expect(kpiConfig.apToSZLatency.histogram.splits)
       .toEqual([5, 10, 20, 40, 60, 100, 200, 500])
   })
-
   it('should return correct config for RA', () => {
     expect(kpisForTab('true')).toMatchObject({
       infrastructure: {
@@ -60,6 +62,83 @@ describe('Health KPI', () => {
           'onlineAPs'
         ]
       }
+    })
+  })
+  it('should return correct config for wired in RA', () => {
+    expect(wiredKPIsForTab()).toMatchObject({
+      overview: {
+        kpis: [
+          'switchUplinkPortUtilization'
+        ]
+      },
+      connection: {
+        kpis: [
+          'switchAuthentication'
+        ]
+      },
+      performance: {
+        kpis: [
+          'switchPortUtilization',
+          'switchUplinkPortUtilization'
+        ]
+      },
+      infrastructure: {
+        kpis: [
+          'switchMemoryUtilization',
+          'switchCpuUtilization',
+          'switchesTemperature',
+          'switchPoeUtilization'
+        ]
+      }
+    })
+  })
+  it('should return correct config for wired in RA with kpi 10010e FF', () => {
+    expect(wiredKPIsForTab(true)).toMatchObject({
+      overview: {
+        kpis: [
+          'switchUplinkPortUtilization'
+        ]
+      },
+      connection: {
+        kpis: [
+          'switchAuthentication',
+          'switchDhcp'
+        ]
+      },
+      performance: {
+        kpis: [
+          'switchPortUtilization',
+          'switchUplinkPortUtilization',
+          'switchInterfaceAnomalies',
+          'switchStormControl'
+        ]
+      },
+      infrastructure: {
+        kpis: [
+          'switchMemoryUtilization',
+          'switchCpuUtilization',
+          'switchesTemperature',
+          'switchPoeUtilization'
+        ]
+      }
+    })
+  })
+  describe('shouldAddFirmwareFilter', () => {
+    const mockPathname = jest.fn()
+    Object.defineProperty(window, 'location', {
+      value: {
+        get pathname () {
+          return mockPathname()
+        }
+      }
+    })
+    it('should return undefined if path name does not have wired', () => {
+      mockPathname.mockReturnValue('/health/overview')
+      expect(shouldAddFirmwareFilter()).toBe(undefined)
+    })
+    it('should return true if path name has wired', () => {
+      mockPathname.mockReturnValue('/health/wired')
+      expect(shouldAddFirmwareFilter()).toBe(true)
     })
   })
 })

@@ -14,18 +14,20 @@ import { Button,
   TableProps,
   Tooltip
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  DeleteOutlinedIcon,
-  EditOutlinedIcon
-} from '@acx-ui/icons'
+  DeleteOutlined,
+  EditOutlined
+} from '@acx-ui/icons-new'
 import {
   useDeleteLagMutation,
   useGetLagListQuery,
   useSwitchDetailHeaderQuery
 }                            from '@acx-ui/rc/services'
-import { isOperationalSwitch, Lag } from '@acx-ui/rc/utils'
-import { useParams }                from '@acx-ui/react-router-dom'
-import { filterByAccess }           from '@acx-ui/user'
+import { isOperationalSwitch, Lag }      from '@acx-ui/rc/utils'
+import { useParams }                     from '@acx-ui/react-router-dom'
+import { SwitchScopes }                  from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { SwitchLagModal } from './SwitchLagModal'
 
@@ -38,10 +40,17 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
   const { $t } = useIntl()
   const { tenantId, switchId } = useParams()
   const { visible, setVisible } = props
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
-  const { data, isLoading } = useGetLagListQuery({ params: { tenantId, switchId } })
-  const { data: switchDetail } = useSwitchDetailHeaderQuery({ params: { tenantId, switchId } })
-  const [deleteLag] = useDeleteLagMutation()
+  const [ deleteLag ] = useDeleteLagMutation()
+  const { data: switchDetail, isLoading: isSwitchDetailLoading }
+    = useSwitchDetailHeaderQuery({ params: { tenantId, switchId } })
+  const { data, isLoading } = useGetLagListQuery({
+    params: { tenantId, switchId, venueId: switchDetail?.venueId },
+    enableRbac: isSwitchRbacEnabled
+  }, {
+    skip: !switchDetail?.venueId || isSwitchDetailLoading
+  })
 
   const [modalVisible, setModalVisible] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
@@ -91,24 +100,24 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
       dataIndex: 'action',
       render: function (data, row) {
         return <>
-          <Button
+          { hasPermission({ scopes: [SwitchScopes.UPDATE] }) && <Button
+            type='link'
             key='edit'
             role='editBtn'
             disabled={!isOperational}
-            ghost={true}
-            icon={<EditOutlinedIcon />}
+            icon={<EditOutlined size='sm' />}
             style={{ height: '16px' }}
             onClick={() => handleEdit(row)}
-          />
-          <Button
+          />}
+          { hasPermission({ scopes: [SwitchScopes.DELETE] }) && <Button
+            type='link'
             key='delete'
             role='deleteBtn'
-            ghost={true}
             disabled={!isOperational}
-            icon={<DeleteOutlinedIcon />}
+            icon={<DeleteOutlined size='sm' />}
             style={{ height: '16px' }}
             onClick={() => handleDelete(row)}
-          />
+          />}
         </>
       }
     }]
@@ -123,7 +132,10 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
       okText: $t({ defaultMessage: 'OK' }),
       cancelText: $t({ defaultMessage: 'Cancel' }),
       onOk: async () => {
-        await deleteLag({ params: { lagId: row.id, tenantId } }).unwrap()
+        await deleteLag({
+          params: { tenantId, switchId, venueId: switchDetail?.venueId, lagId: row.id },
+          enableRbac: isSwitchRbacEnabled
+        }).unwrap()
       },
       onCancel: async () => {}
     })
@@ -160,7 +172,7 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
         children={
           <Loader
             states={[
-              { isLoading }
+              { isLoading: isLoading || isSwitchDetailLoading }
             ]}
           >
             <Table
@@ -170,6 +182,7 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
               rowKey='name'
               actions={filterByAccess([{
                 label: $t({ defaultMessage: 'Add LAG' }),
+                scopeKey: [SwitchScopes.CREATE],
                 disabled: !isOperational,
                 onClick: () => {
                   setModalVisible(true)
@@ -180,7 +193,7 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
           </Loader>
         }
       />
-      {<SwitchLagModal
+      { switchDetail && <SwitchLagModal
         isEditMode={isEditMode}
         editData={row}
         visible={modalVisible}

@@ -3,7 +3,7 @@ import { RefObject } from 'react'
 import { connect }  from 'echarts'
 import EChartsReact from 'echarts-for-react'
 
-import { Incident }                 from '@acx-ui/analytics/utils'
+import { Incident, overlapsRollup } from '@acx-ui/analytics/utils'
 import { Provider }                 from '@acx-ui/store'
 import { render, screen,fireEvent } from '@acx-ui/test-utils'
 
@@ -12,6 +12,13 @@ import  { TimeLine }                                                    from './
 import { ConnectionEvent, ConnectionQuality }                           from './services'
 
 import { Filters } from '.'
+
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  overlapsRollup: jest.fn().mockReturnValue(false)
+}))
+
+const mockOverlapsRollup = overlapsRollup as jest.Mock
 
 const incidents = [{
   id: '9cf271f8-fe98-4725-9ee3-baf89119164a',
@@ -114,6 +121,7 @@ const connectionEventsArray: ConnectionEvent[] = [
     radio: '5'
   }]
 describe('EventsTimeLine', () => {
+  beforeEach(() => jest.mocked(mockOverlapsRollup).mockReturnValue(false))
   const sharedChartName = 'testingChartConnections'
   it('should render correctly with out search params', async () => {
     const params = {
@@ -374,6 +382,64 @@ describe('EventsTimeLine', () => {
       }
     )
     expect((await screen.findAllByText('0'))[0]).toBeVisible()
+  })
+  it('should render correctly when data rolled up', async () => {
+    jest.mocked(mockOverlapsRollup).mockReturnValue(true)
+    const params = {
+      tenantId: 'tenant-id',
+      userId: 'user-id',
+      activeTab: 'troubleshooting'
+    }
+    const filters = {
+      category: ['performance'],
+      type: [['info-updated'], ['disconnected'], ['failure'], ['roamed']]
+    } as unknown as Filters
+    const data = {
+      connectionEvents: connectionEventsArray,
+      incidents,
+      connectionDetailsByAp: connectionDetailsByAp,
+      connectionQualities: connectionQualities as unknown as ConnectionQuality[]
+    }
+    const setEventState = jest.fn()
+    const setVisible = jest.fn()
+    const connectChart = jest.fn()
+    const popoverRef = {} as RefObject<HTMLDivElement>
+    const onChartReady = jest.fn()
+    render(
+      <Provider>
+        <TimeLine filters={filters}
+          data={data}
+          setEventState={setEventState}
+          setVisible={setVisible}
+          connectChart={connectChart}
+          popoverRef={popoverRef}
+          sharedChartName={sharedChartName}
+          onChartReady={onChartReady}
+        />
+      </Provider>,
+      {
+        route: {
+          params,
+          path: '/:tenantId/users/aps/:userId/details/:activeTab'
+        }
+      }
+    )
+
+    expect(await screen.findByText(
+      'Data granularity at this level is not available')).toBeVisible()
+
+    const PlusSquareOutline = (await screen.findAllByTestId('PlusSquareOutlined'))
+
+    fireEvent.mouseOver(PlusSquareOutline[0])
+    expect(screen.queryByRole('tooltip')).toBeNull()
+
+    fireEvent.mouseOver(PlusSquareOutline[1])
+    expect(await screen.findByRole('tooltip')).toHaveTextContent(
+      'Data granularity at this level is not available')
+
+    fireEvent.mouseOver(PlusSquareOutline[2])
+    expect(await screen.findByRole('tooltip')).toHaveTextContent(
+      'Data granularity at this level is not available')
   })
 
   it('should handle onDotClick for scatter properly', async () => {

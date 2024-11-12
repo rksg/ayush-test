@@ -3,9 +3,7 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Drawer }                     from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
+import { Drawer }                    from '@acx-ui/components'
 import {
   useCreateDpskPassphrasesMutation,
   useUpdateDpskPassphrasesMutation
@@ -33,11 +31,9 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
   const { $t } = useIntl()
   const { visible, setVisible, editMode } = props
   const params = useParams()
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
   const [ createPassphrases ] = useCreateDpskPassphrasesMutation()
   const [ updatePassphrases ] = useUpdateDpskPassphrasesMutation()
   const [ formInstance ] = Form.useForm<CreateDpskPassphrasesFormFields>()
-  const isNewConfigFlow = useIsSplitOn(Features.DPSK_NEW_CONFIG_FLOW_TOGGLE)
 
   const onClose = () => {
     setVisible(false)
@@ -50,12 +46,12 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
 
     if (editMode.isEdit) {
       await updatePassphrases({
-        params: { ...params, passphraseId: editMode.passphraseId, ...dpskNewConfigFlowParams },
+        params: { ...params, passphraseId: editMode.passphraseId },
         payload
       }).unwrap()
     } else {
       await createPassphrases({
-        params: { ...params, ...dpskNewConfigFlowParams },
+        params: { ...params },
         payload
       }).unwrap()
     }
@@ -64,14 +60,6 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
   }
 
   const onSave = async () => {
-    try {
-      await onManualSettingFormSave()
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
-  }
-
-  const onIsNewFlowSave = async () => {
     try {
       await onManualSettingFormSave()
     } catch (error) {
@@ -96,7 +84,7 @@ export default function DpskPassphraseDrawer (props: DpskPassphraseDrawerProps) 
             save: editMode.isEdit ? $t({ defaultMessage: 'Save' }) : $t({ defaultMessage: 'Add' })
           })}
           onCancel={onClose}
-          onSave={isNewConfigFlow ? onIsNewFlowSave : onSave}
+          onSave={onSave}
         />
       }
       width={'500px'}

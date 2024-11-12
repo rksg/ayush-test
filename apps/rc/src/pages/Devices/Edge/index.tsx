@@ -1,34 +1,68 @@
+import { Menu }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }             from '@acx-ui/components'
-import { TierFeatures, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { EdgesTable }                     from '@acx-ui/rc/components'
-import { TenantLink }                     from '@acx-ui/react-router-dom'
-import { filterByAccess }                 from '@acx-ui/user'
+import { Button, Dropdown, PageHeader }          from '@acx-ui/components'
+import { Features }                              from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
+import { CommonOperation, Device, getUrl }       from '@acx-ui/rc/utils'
+import { TenantLink }                            from '@acx-ui/react-router-dom'
+import { EdgeScopes }                            from '@acx-ui/types'
+import { hasPermission }                         from '@acx-ui/user'
+
+import { EdgeClusterTable } from './EdgeClusterTable'
+import { OldEdgeListPage }  from './OldEdgeListPage'
 
 
 const Edges = () => {
   const { $t } = useIntl()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
+  const isEdgeHaEnabled = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
 
   if (!isEdgeEnabled) {
-    return <span>{ $t({ defaultMessage: 'SmartEdge is not enabled' }) }</span>
+    return <span>{ $t({ defaultMessage: 'RUCKUS Edge is not enabled' }) }</span>
   }
 
-  return (
+  return isEdgeHaEnabled ?
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'SmartEdge' })}
-        extra={filterByAccess([
-          <TenantLink to='/devices/edge/add'>
-            <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
-          </TenantLink>
-        ])}
+        title={$t({ defaultMessage: 'RUCKUS Edge' })}
+        extra={hasPermission({ scopes: [EdgeScopes.CREATE] }) && <AddMenu />}
       />
-      <EdgesTable
-        rowSelection={{ type: 'checkbox' }}
-      />
+      <EdgeClusterTable />
     </>
+    : <OldEdgeListPage />
+}
+
+const AddMenu = () => {
+  const { $t } = useIntl()
+
+  const menuItems = [
+    {
+      key: 'add-edge',
+      label: <TenantLink to={getUrl({
+        feature: Device.Edge,
+        oper: CommonOperation.Add
+      })}>
+        {$t({ defaultMessage: 'RUCKUS Edge' })}
+      </TenantLink>
+    },
+    {
+      key: 'add-cluster',
+      label: <TenantLink to={getUrl({
+        feature: Device.EdgeCluster,
+        oper: CommonOperation.Add
+      })}>
+        {$t({ defaultMessage: 'Cluster' })}
+      </TenantLink>
+    }
+  ]
+
+  return (
+    <Dropdown overlay={<Menu items={menuItems} />} placement='bottom'>
+      {
+        () => <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
+      }
+    </Dropdown>
   )
 }
 

@@ -22,7 +22,9 @@ import {
   MLISA_BASE_PATH
 } from '@acx-ui/react-router-dom'
 
-import modifyVars from '../../theme/modify-vars'
+import modifyVars                from '../../theme/modify-vars'
+import { getTitleWithIndicator } from '../BetaIndicator'
+
 
 import { Content as ResponsiveContent } from './Responsive/content'
 import * as UI                          from './styledComponents'
@@ -43,7 +45,8 @@ type SideNavProps = {
 }
 
 type MenuItemType = Omit<RcMenuItemType, 'key' | 'label'> & SideNavProps & {
-  label: string
+  label: string,
+  superscript?: string
 }
 type SubMenuType = Omit<RcSubMenuType, 'children' | 'key' | 'label'> & SideNavProps & {
   label: string
@@ -52,9 +55,10 @@ type SubMenuType = Omit<RcSubMenuType, 'children' | 'key' | 'label'> & SideNavPr
 type MenuItemGroupType = Omit<RcMenuItemGroupType, 'children' | 'label'> & {
   label: string
   children?: ItemType[]
+  isBetaFeature?: boolean
 }
 
-type ItemType = MenuItemType | SubMenuType | MenuItemGroupType | null
+export type ItemType = MenuItemType | SubMenuType | MenuItemGroupType | null
 
 export function isSubMenuType (value: ItemType): value is SubMenuType {
   if (has(value, 'children') && !has(value, 'type')) return true
@@ -117,13 +121,14 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
       return {
         ...item,
         key: key,
-        label: item.label,
+        label: item?.isBetaFeature ? getTitleWithIndicator(item.label) : item.label,
         children: item.children?.map(child => getMenuItem(child, key))
       }
     }
 
     const { uri, tenantType, activeIcon, inactiveIcon, adminItem, ...rest } = item
     delete rest.isActiveCheck
+    delete rest.openNewTab
 
     const activePatterns = getActivePatterns(item)
     const isActive = activePatterns?.some(pattern => activeUri.match(pattern))
@@ -139,12 +144,20 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
     if (uri) {
       label = Boolean(item.openNewTab)
         ? <NewTabLink to={uri}>{label}</NewTabLink>
-        : <TenantNavLink
-          to={uri}
-          tenantType={tenantType}
-          data-label={item.label}>
-          {label}
-        </TenantNavLink>
+        : (!isMenuItemGroupType(item) && !isSubMenuType(item) && item.superscript)
+          ? <TenantNavLink
+            to={uri}
+            tenantType={tenantType}
+            data-label={item.label}
+            data-superscript={item.superscript}>
+            <span> {label} <sup>{item.superscript}</sup> </span>
+          </TenantNavLink>
+          : <TenantNavLink
+            to={uri}
+            tenantType={tenantType}
+            data-label={item.label}>
+            {label}
+          </TenantNavLink>
     }
     return {
       ...rest,

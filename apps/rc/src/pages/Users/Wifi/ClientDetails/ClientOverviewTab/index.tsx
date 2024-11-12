@@ -1,16 +1,16 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useMemo } from 'react'
+
 
 import { TrafficByBand, TrafficByUsage } from '@acx-ui/analytics/components'
 import { GridCol, GridRow }              from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import {
-  useLazyGetApQuery,
-  useLazyGetApCapabilitiesQuery,
-  useLazyGetHistoricalStatisticsReportsQuery,
-  useGetClientOrHistoryDetailQuery
+  useGetClientOrHistoryDetailQuery,
+  useGetClientsQuery
 } from '@acx-ui/rc/services'
 import {
   Client,
-  ClientStatistic,
+  ClientInfo,
   ClientStatusEnum
 } from '@acx-ui/rc/utils'
 import {
@@ -19,12 +19,15 @@ import {
 } from '@acx-ui/react-router-dom'
 import { useDateFilter } from '@acx-ui/utils'
 
-import { ClientOverviewWidget } from './ClientOverviewWidget'
-import { ClientProperties }     from './ClientProperties'
-import * as UI                  from './styledComponents'
-import { TopApplications }      from './TopApplications'
+import { ClientOverviewWidget }     from './ClientOverviewWidget'
+import { ClientProperties }         from './ClientProperties'
+import { RbacClientProperties }     from './RbacClientProperties'
+import { useClientStatisticsQuery } from './service'
+import * as UI                      from './styledComponents'
+import { TopApplications }          from './TopApplications'
 
 export function ClientOverviewTab () {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const { dateFilter } = useDateFilter()
   const filters = useMemo(() => ({
     filter: {},
@@ -32,63 +35,21 @@ export function ClientOverviewTab () {
   }), [dateFilter])
   const { tenantId, clientId } = useParams()
   const [searchParams] = useSearchParams()
-
-  const [getHistoricalStatisticsReports] = useLazyGetHistoricalStatisticsReportsQuery()
-  const [getAp] = useLazyGetApQuery()
-  const [getApCapabilities] = useLazyGetApCapabilitiesQuery()
-
-  const [clientStatistics, setClientStatistics] = useState({} as ClientStatistic)
-  const [isTribandAp, setIsTribandAp] = useState(false)
+  const clientStatus = searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED
+  const clientStats = useClientStatisticsQuery({ ...filters, clientMac: clientId!.toUpperCase() })
+  const clientInfo = useGetClientsQuery({ payload: {
+    filters: {
+      macAddress: [clientId]
+    }
+  } }, { skip: !isWifiRbacEnabled || clientStatus !== ClientStatusEnum.CONNECTED })
   const clientResult = useGetClientOrHistoryDetailQuery({
     params: {
       tenantId,
       clientId,
-      status: searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED
-    } })
+      status: clientStatus
+    } }, { skip: isWifiRbacEnabled && clientStatus === ClientStatusEnum.CONNECTED })
   const clientDetails = clientResult?.data?.data || {} as Client
-  const clientStatus = (clientResult?.data?.isHistorical && ClientStatusEnum.HISTORICAL)
-  || searchParams.get('clientStatus') || ClientStatusEnum.CONNECTED
 
-  useEffect(() => {
-    const serialNumber = clientDetails?.apSerialNumber || clientDetails?.serialNumber
-    const isApNotExists = clientDetails.isApExists === false
-    if (serialNumber && !isApNotExists) {
-      const checkTribandAp = async () => {
-        await Promise.all([
-          getAp({ params: { tenantId, serialNumber } }, true),
-          getApCapabilities({ params: { tenantId, serialNumber } }, true)
-        ]).then(([ apDetails, capabilities ]) => {
-          const apCapabilities = capabilities?.data?.apModels?.find(
-            cap => cap.model === apDetails?.data?.model)
-          setIsTribandAp(apCapabilities?.supportTriRadio ?? false)
-        }).catch((error) => {
-          console.log(error) // eslint-disable-line no-console
-        })
-      }
-      checkTribandAp()
-    }
-  }, [clientDetails])
-
-  useEffect(() => {
-    const getClientData = async () => {
-      try {
-        const clientStatistics = await getHistoricalStatisticsReports({
-          params: { tenantId },
-          payload: {
-            filters: {
-              clientMAC: [clientId],
-              dateFilter,
-              isTribandAp: isTribandAp
-            }
-          }
-        }, true)?.unwrap()
-        setClientStatistics(clientStatistics as ClientStatistic)
-      } catch (error) {
-        console.log(error) // eslint-disable-line no-console
-      }
-    }
-    getClientData()
-  }, [filters, isTribandAp])
 
   return <GridRow>
     <GridCol col={{ span: 18 }}>
@@ -96,10 +57,13 @@ export function ClientOverviewTab () {
         <GridCol col={{ span: 24 }}>
           <UI.CardWrapper>
             <ClientOverviewWidget
-              clientStatistic={clientStatistics}
+              clientStatistic={clientStats.data}
               clientStatus={clientStatus}
               clientDetails={clientDetails}
               filters={filters}
+              connectedTimeStamp={
+                clientInfo.data?.data[0].connectedTime ?? (new Date()).toISOString()
+              }
             />
           </UI.CardWrapper>
         </GridCol>
@@ -118,10 +82,19 @@ export function ClientOverviewTab () {
       </GridRow>
     </GridCol>
     <GridCol col={{ span: 6 }}>
-      <ClientProperties
-        clientStatus={clientStatus}
-        clientDetails={clientDetails}
-      />
+      {
+        (isWifiRbacEnabled && clientStatus === ClientStatusEnum.CONNECTED) ?
+          <RbacClientProperties
+            clientStatus={clientStatus}
+            clientInfo={clientInfo.data?.data[0] ?? {} as ClientInfo}
+          />
+          :
+          <ClientProperties
+            clientStatus={clientStatus}
+            clientDetails={clientDetails}
+          />
+      }
+
     </GridCol>
   </GridRow>
 }

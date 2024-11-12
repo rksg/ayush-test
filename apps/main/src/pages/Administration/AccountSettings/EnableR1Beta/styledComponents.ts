@@ -71,15 +71,16 @@ padding: var(--acx-content-vertical-space);
     font-weight: var(--acx-headline-5-font-weight-bold);
     font-size: var(--acx-subtitle-4-font-size);
     line-height: 19px;
-    padding-left: 15px;
-    padding-top: 14px;
+    padding-left: 0px;
+    padding-top: 0px;
     padding-bottom: 15px;
   }
 
   .ant-list-item {
-    margin-top: 10px;
+    margin-top: 0px;
     padding-top: 0px;
-    padding-bottom: 0px;
+    padding-bottom: 10px;
+    padding-left: 0px;
     border-bottom: 0px;
     height: auto;
     & .ant-list-item-meta {
@@ -103,10 +104,6 @@ padding: var(--acx-content-vertical-space);
   }
 `
 
-export const SectionTitle = styled.div`
-  font-weight: var(--acx-subtitle-6-font-weight-bold);
-`
-
 export const FooterWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -120,5 +117,5 @@ export const ButtonFooterWrapper = styled.div`
   align-items: flex-start;
   flex-wrap: nowrap;
   justify-content: space-between;
-  gap: 100%;
+  gap: 65%;
 `

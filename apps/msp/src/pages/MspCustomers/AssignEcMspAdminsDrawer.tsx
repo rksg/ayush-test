@@ -10,18 +10,23 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useMspAdminListQuery,
   useAssignMultiMspEcDelegatedAdminsMutation
 } from '@acx-ui/msp/services'
 import {
-  MspAdministrator
+  AssignedMultiEcMspAdmins,
+  MspAdministrator,
+  SelectedMspMspAdmins
 } from '@acx-ui/msp/utils'
 import {
-  roleDisplayText
+  defaultSort,
+  roleDisplayText,
+  sortProp
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { RolesEnum } from '@acx-ui/types'
+import { useParams }                          from '@acx-ui/react-router-dom'
+import { RolesEnum, SupportedDelegatedRoles } from '@acx-ui/types'
 
 interface AssignEcMspAdminsDrawerProps {
   visible: boolean
@@ -30,19 +35,11 @@ interface AssignEcMspAdminsDrawerProps {
   setSelected: (selected: MspAdministrator[]) => void
 }
 
-interface SelectedMspMspAdmins {
-  mspAdminId: string
-  mspAdminRole: RolesEnum
-}
-
-interface AssignedMultiEcMspAdmins {
-  operation: string
-  mspEcId: string
-  mspAdminRoles: SelectedMspMspAdmins[]
-}
-
 export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => {
   const { $t } = useIntl()
+  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const { visible, tenantIds, setVisible, setSelected } = props
   const [resetField, setResetField] = useState(false)
@@ -82,7 +79,8 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
       })
     })
 
-    saveMspAdmins({ params, payload: { associations: assignedEcMspAdmins } })
+    saveMspAdmins({ params, payload: { associations: assignedEcMspAdmins },
+      enableRbac: isRbacEnabled })
       .then(() => {
         setSelected(selectedRows)
         setVisible(false)
@@ -98,18 +96,19 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       key: 'name',
-      sorter: true,
+      sorter: { compare: sortProp('name', defaultSort) },
       defaultSortOrder: 'ascend'
     },
     {
       title: $t({ defaultMessage: 'Email' }),
       dataIndex: 'email',
       key: 'email',
-      sorter: true,
+      sorter: { compare: sortProp('email', defaultSort) },
       searchable: true
     },
     {
-      title: $t({ defaultMessage: 'Role' }),
+      title: isAbacToggleEnabled
+        ? $t({ defaultMessage: 'Privilege Group' }) : $t({ defaultMessage: 'Role' }),
       dataIndex: 'role',
       key: 'role',
       sorter: false,
@@ -121,8 +120,9 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
         }
       },
       render: function (_, row) {
-        return row.role === RolesEnum.GUEST_MANAGER || row.role === RolesEnum.DPSK_ADMIN
-          ? <span>{$t(roleDisplayText[row.role])}</span>
+        return row.role === RolesEnum.GUEST_MANAGER || row.role === RolesEnum.DPSK_ADMIN ||
+          !SupportedDelegatedRoles.includes(row.role)
+          ? <span>{roleDisplayText[row.role] ? $t(roleDisplayText[row.role]) : row.role}</span>
           : transformAdminRole(row.id, row.role)
       }
     }
@@ -134,13 +134,14 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
   }
 
   const transformAdminRole = (id: string, initialRole: RolesEnum) => {
-    const role = initialRole
+    const role = SupportedDelegatedRoles.includes(initialRole)
+      ? initialRole : RolesEnum.ADMINISTRATOR
     return <Select defaultValue={role}
       style={{ width: '150px' }}
       onChange={value => handleRoleChange(id, value)}>
       {
         Object.entries(RolesEnum).map(([label, value]) => (
-          !(value === RolesEnum.DPSK_ADMIN)
+          SupportedDelegatedRoles.includes(value)
           && <Option
             key={label}
             value={value}>{$t(roleDisplayText[value])}
@@ -158,6 +159,7 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
           columns={columns}
           dataSource={queryResults?.data}
           rowKey='email'
+          alwaysShowFilters={true}
           rowSelection={{
             type: 'checkbox',
             onChange (selectedRowKeys, selRows) {
@@ -165,7 +167,8 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
             },
             getCheckboxProps: (record: MspAdministrator) => ({
               disabled: record.role === RolesEnum.GUEST_MANAGER ||
-                        record.role === RolesEnum.DPSK_ADMIN
+                        record.role === RolesEnum.DPSK_ADMIN ||
+                        !SupportedDelegatedRoles.includes(record.role)
             })
           }}
         />

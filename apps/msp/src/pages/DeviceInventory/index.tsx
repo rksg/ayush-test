@@ -1,3 +1,5 @@
+import { useContext } from 'react'
+
 import { SortOrder }                         from 'antd/lib/table/interface'
 import _                                     from 'lodash'
 import { defineMessage, IntlShape, useIntl } from 'react-intl'
@@ -9,7 +11,6 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useDeviceInventoryListQuery,
   useExportDeviceInventoryMutation
@@ -30,6 +31,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }             from '@acx-ui/react-router-dom'
 import { AccountType, exportMessageMapping } from '@acx-ui/utils'
+
+import HspContext from '../../HspContext'
 
 export const deviceTypeMapping = {
   DVCNWTYPE_WIFI: defineMessage({ defaultMessage: 'Access Point' }),
@@ -87,7 +90,11 @@ export function DeviceInventory () {
   const intl = useIntl()
   const { $t } = intl
   const { tenantId } = useParams()
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT)
+
+  const {
+    state
+  } = useContext(HspContext)
+  const { isHsp: isHspSupportEnabled } = state
 
   const [ downloadCsv ] = useExportDeviceInventoryMutation()
   const tenantDetailsData = useGetTenantDetailsQuery({ params: { tenantId } })
@@ -207,7 +214,7 @@ export function DeviceInventory () {
       }
     },
     {
-      title: $t({ defaultMessage: "Customer'sVenue" }),
+      title: $t({ defaultMessage: "Customer's <VenueSingular></VenueSingular>" }),
       dataIndex: 'venueName',
       sorter: true,
       filterable: customerVenue?.map(inv => ({ key: inv, value: inv })),
@@ -258,19 +265,21 @@ export function DeviceInventory () {
   }
 
   const DeviceTable = () => {
+    const settingsId = 'device-inventory-table'
     const tableQuery = useTableQuery({
       useQuery: useDeviceInventoryListQuery,
       apiParams: { tenantId: isIntegrator ? (parentTenantId as string) : (tenantId as string) },
       defaultPayload,
       search: {
         searchTargetFields: defaultPayload.searchTargetFields as string[]
-      }
+      },
+      pagination: { settingsId }
     })
 
     return (
       <Loader states={[tableQuery]}>
         <Table
-          settingsId='device-inventory-table'
+          settingsId={settingsId}
           columns={columns}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

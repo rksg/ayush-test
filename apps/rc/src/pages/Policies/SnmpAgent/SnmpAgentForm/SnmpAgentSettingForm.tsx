@@ -1,36 +1,48 @@
+import { useContext } from 'react'
+
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 import { useParams }   from 'react-router-dom'
 
-import { GridCol, GridRow }                   from '@acx-ui/components'
-import { useLazyGetApSnmpPolicyListQuery }    from '@acx-ui/rc/services'
-import { ApSnmpPolicy, checkObjectNotExists } from '@acx-ui/rc/utils'
+import { GridCol, GridRow }                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { useLazyGetApSnmpPolicyListQuery }        from '@acx-ui/rc/services'
+import { ApSnmpActionType, checkObjectNotExists } from '@acx-ui/rc/utils'
 
-import SnmpAgentV2Table from './SnmpV2AgentTable'
-import SnmpAgentV3Table from './SnmpV3AgentTable'
+import SnmpAgentFormContext from './SnmpAgentFormContext'
+import SnmpAgentV2Table     from './SnmpV2AgentTable'
+import SnmpAgentV3Table     from './SnmpV3AgentTable'
 
 
-
-type SnmpAgentSettingFormProps = {
-  editMode: boolean,
-  saveState: ApSnmpPolicy
-}
-
-const SnmpAgentSettingForm = (props: SnmpAgentSettingFormProps) => {
+const SnmpAgentSettingForm = () => {
   const { $t } = useIntl()
-  const { saveState } = props
-  const { snmpV2Agents, snmpV3Agents } = saveState || {}
-
-
   const params = useParams()
+  const { dispatch } = useContext(SnmpAgentFormContext)
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  // eslint-disable-next-line
+  const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
+
   const [ getApSnmpPolicyList ] = useLazyGetApSnmpPolicyListQuery()
 
   const nameValidator = async (value: string) => {
-    const list = (await getApSnmpPolicyList({ params }).unwrap())
+    const list = (await getApSnmpPolicyList({
+      params,
+      enableRbac: isUseRbacApi,
+      isSNMPv3PassphraseOn
+    }).unwrap())
       .filter(policy => policy.id !== params.policyId)
-      .map(policy => ({ name: policy.policyName }))
-    return checkObjectNotExists(list, { name: value } ,
-      $t({ defaultMessage: 'SNMP agent' }))
+      .map(policy => policy.policyName)
+
+    return checkObjectNotExists(list, value, $t({ defaultMessage: 'SNMP agent' }))
+  }
+
+  const handleNameChanged = (name: string) => {
+    dispatch({
+      type: ApSnmpActionType.NAME,
+      payload: {
+        name: name
+      }
+    })
   }
 
   return (
@@ -38,7 +50,7 @@ const SnmpAgentSettingForm = (props: SnmpAgentSettingFormProps) => {
       <GridRow >
         <GridCol col={{ span: 8 }}>
           <Form.Item
-            name='policyName'
+            name={'policyName'}
             label={$t({ defaultMessage: 'Profile Name' })}
             rules={[
               { required: true },
@@ -49,22 +61,22 @@ const SnmpAgentSettingForm = (props: SnmpAgentSettingFormProps) => {
             validateFirst
             hasFeedback
             initialValue={''}
-            children={<Input/>}
+            children={<Input onChange={(e => {handleNameChanged(e.target.value)})} />}
             validateTrigger={'onBlur'}
           />
         </GridCol>
       </GridRow>
       <GridRow >
         <GridCol col={{ span: 14 }}>
-          <Form.Item name='snmpV2Agents'>
-            <SnmpAgentV2Table data={snmpV2Agents} />
+          <Form.Item>
+            <SnmpAgentV2Table />
           </Form.Item>
         </GridCol>
       </GridRow>
       <GridRow>
         <GridCol col={{ span: 14 }}>
-          <Form.Item name='snmpV3Agents' style={{ paddingTop: '50px' }}>
-            <SnmpAgentV3Table data={snmpV3Agents} />
+          <Form.Item style={{ paddingTop: '50px' }}>
+            <SnmpAgentV3Table />
           </Form.Item>
         </GridCol>
       </GridRow>

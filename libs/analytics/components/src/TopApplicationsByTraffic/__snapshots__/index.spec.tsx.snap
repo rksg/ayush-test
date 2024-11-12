@@ -2,11 +2,238 @@
 
 exports[`TopApplicationsByTrafficWidget should render for empty data: NoData 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  .c3 {
+  width: 16px;
+  height: 16px;
+}
+
+.c3 path {
+  stroke: var(--acx-neutrals-50);
+}
+
+.c3 circle {
+  fill: var(--acx-neutrals-50);
+}
+
+.c1 {
+  height: 100%;
+  width: 100%;
+}
+
+.c1 .ant-card {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  border-radius: 8px;
+  padding: 12px 16px;
+  border: 1px solid var(--acx-neutrals-20);
+  box-shadow: 0px 2px 4px rgba(51,51,51,0.08);
+}
+
+.c1 .ant-card-head {
+  padding: 0;
+  border-bottom: none;
+  min-height: 0;
+  margin-bottom: 10px;
+}
+
+.c1 .ant-card-head-title {
+  padding: 0;
+}
+
+.c1 .ant-card-head-title .ant-space .ant-space-item:last-child {
+  line-height: 0;
+}
+
+.c1 .ant-card-head-wrapper {
+  -webkit-align-items: start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: start;
+}
+
+.c1 .ant-card-extra {
+  padding: 0;
+}
+
+.c1 .ant-card-body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  padding: 0;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c2 {
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-headline-4-line-height);
+  color: var(--acx-primary-black);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+}
+
+.c4 .ant-radio-group {
+  border-radius: 20px;
+  background-color: var(--acx-neutrals-20);
+  vertical-align: top;
+  overflow: hidden;
+}
+
+.c4 .ant-radio-button-wrapper {
+  color: var(--acx-primary-black);
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 20px;
+}
+
+.c4 .ant-radio-button-wrapper:not(:first-child)::before {
+  display: none;
+}
+
+.c4 .ant-radio-button-wrapper-checked {
+  color: var(--acx-primary-white);
+  background-color: var(--acx-primary-black);
+}
+
+.c4 .ant-radio-button-wrapper span:nth-child(2) {
+  vertical-align: middle;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c4 .ant-radio-button-wrapper:not(.ant-radio-button-wrapper-checked,.ant-radio-button-wrapper-disabled):hover {
+  background-color: var(--acx-neutrals-30);
+}
+
+.c4 svg {
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.c4 path {
+  stroke: var(--acx-primary-black);
+}
+
+.c4 .ant-radio-button-wrapper-checked path {
+  stroke: var(--acx-primary-white);
+}
+
+.c4 .ant-radio-button-wrapper-checked {
+  cursor: default;
+}
+
+.c4 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
+  color: var(--acx-primary-white);
+}
+
+.c4 .ant-radio-group-small svg {
+  width: var(--acx-body-4-font-size);
+  height: var(--acx-body-4-font-size);
+}
+
+.c4 .ant-radio-group-small .ant-radio-button-wrapper {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  height: 24px;
+}
+
+.c4 .ant-radio-group-small .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 16px;
+}
+
+.c4 .ant-radio-group-large svg {
+  width: var(--acx-body-3-font-size);
+  height: var(--acx-body-3-font-size);
+}
+
+.c4 .ant-radio-group-large .ant-radio-button-wrapper {
+  font-size: var(--acx-body-3-font-size);
+  line-height: var(--acx-body-3-line-height);
+  height: 28px;
+}
+
+.c4 .ant-radio-group-large .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 32px;
+}
+
+.c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c5 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+  width: 100%;
+  padding: 0 16px;
+}
+
+.c6 {
+  text-align: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.c6 .ant-empty-normal {
+  margin: 0;
+  margin-block-end: 17px;
+}
+
+.c7 {
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-body-4-font-weight);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  color: var(--acx-primary-black);
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-4 kasAXB"
+      class="c1"
       type="default"
     >
       <div
@@ -29,7 +256,7 @@ exports[`TopApplicationsByTrafficWidget should render for empty data: NoData 1`]
                   style="margin-right: 4px;"
                 >
                   <div
-                    class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                    class="c2"
                   >
                     Top Applications by Traffic
                   </div>
@@ -38,7 +265,7 @@ exports[`TopApplicationsByTrafficWidget should render for empty data: NoData 1`]
                   class="ant-space-item"
                 >
                   <svg
-                    class="styledComponents__HistoricalOutlinedIcon-sc-13w5wfx-2 eSbgcz"
+                    class="c3"
                     data-testid="HistoricalOutlined"
                   />
                 </div>
@@ -66,7 +293,7 @@ exports[`TopApplicationsByTrafficWidget should render for empty data: NoData 1`]
                 style="text-align: center;"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
+                  class="c4"
                 >
                   <div
                     class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -114,10 +341,10 @@ exports[`TopApplicationsByTrafficWidget should render for empty data: NoData 1`]
                 </div>
               </div>
               <div
-                class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+                class="c5"
               >
                 <div
-                  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+                  class="ant-space ant-space-horizontal ant-space-align-center c6 c7"
                 >
                   <div
                     class="ant-space-item"
@@ -150,11 +377,106 @@ exports[`TopApplicationsByTrafficWidget should render for empty data: NoData 1`]
 `;
 
 exports[`TopApplicationsByTrafficWidget should render table with sparkline svg: contentSwitcher 1`] = `
+.c0 .ant-radio-group {
+  border-radius: 20px;
+  background-color: var(--acx-neutrals-20);
+  vertical-align: top;
+  overflow: hidden;
+}
+
+.c0 .ant-radio-button-wrapper {
+  color: var(--acx-primary-black);
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 20px;
+}
+
+.c0 .ant-radio-button-wrapper:not(:first-child)::before {
+  display: none;
+}
+
+.c0 .ant-radio-button-wrapper-checked {
+  color: var(--acx-primary-white);
+  background-color: var(--acx-primary-black);
+}
+
+.c0 .ant-radio-button-wrapper span:nth-child(2) {
+  vertical-align: middle;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c0 .ant-radio-button-wrapper:not(.ant-radio-button-wrapper-checked,.ant-radio-button-wrapper-disabled):hover {
+  background-color: var(--acx-neutrals-30);
+}
+
+.c0 svg {
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.c0 path {
+  stroke: var(--acx-primary-black);
+}
+
+.c0 .ant-radio-button-wrapper-checked path {
+  stroke: var(--acx-primary-white);
+}
+
+.c0 .ant-radio-button-wrapper-checked {
+  cursor: default;
+}
+
+.c0 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
+  color: var(--acx-primary-white);
+}
+
+.c0 .ant-radio-group-small svg {
+  width: var(--acx-body-4-font-size);
+  height: var(--acx-body-4-font-size);
+}
+
+.c0 .ant-radio-group-small .ant-radio-button-wrapper {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  height: 24px;
+}
+
+.c0 .ant-radio-group-small .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 16px;
+}
+
+.c0 .ant-radio-group-large svg {
+  width: var(--acx-body-3-font-size);
+  height: var(--acx-body-3-font-size);
+}
+
+.c0 .ant-radio-group-large .ant-radio-button-wrapper {
+  font-size: var(--acx-body-3-font-size);
+  line-height: var(--acx-body-3-line-height);
+  height: 28px;
+}
+
+.c0 .ant-radio-group-large .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 32px;
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
 <div
   style="text-align: center;"
 >
   <div
-    class="styledComponents__Wrapper-sc-c4vpsp-0 eBLcPR"
+    class="c0"
   >
     <div
       class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -206,7 +528,11 @@ exports[`TopApplicationsByTrafficWidget should render table with sparkline svg: 
 exports[`TopApplicationsByTrafficWidget should render table with sparkline svg: downloadRows 1`] = `
 Array [
   Array [
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       style="padding: 0px; border: 0px; height: 0px;"
     >
       <div
@@ -215,7 +541,11 @@ Array [
          
       </div>
     </td>,
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       style="padding: 0px; border: 0px; height: 0px;"
     >
       <div
@@ -224,7 +554,11 @@ Array [
          
       </div>
     </td>,
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       style="padding: 0px; border: 0px; height: 0px;"
     >
       <div
@@ -235,12 +569,24 @@ Array [
     </td>,
   ],
   Array [
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
     >
       ipsec
     </td>,
-    <td
+    .c0 {
+  color: var(--acx-neutrals-60);
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
     >
       <div
@@ -256,14 +602,18 @@ Array [
           class="ant-space-item"
         >
           <span
-            class="styledComponents__TrafficPercent-sc-9hgigm-0 hGpwjr"
+            class="c0"
           >
             (98%)
           </span>
         </div>
       </div>
     </td>,
-    <svg
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<svg
       baseProfile="full"
       height="800"
       style="position:absolute;left:0;top:0;user-select:none"
@@ -326,7 +676,11 @@ Array [
         </lineargradient>
       </defs>
     </svg>,
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
       style="text-align: right;"
     >
@@ -334,12 +688,24 @@ Array [
     </td>,
   ],
   Array [
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
     >
       apple
     </td>,
-    <td
+    .c0 {
+  color: var(--acx-neutrals-60);
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
     >
       <div
@@ -355,14 +721,18 @@ Array [
           class="ant-space-item"
         >
           <span
-            class="styledComponents__TrafficPercent-sc-9hgigm-0 hGpwjr"
+            class="c0"
           >
             (1%)
           </span>
         </div>
       </div>
     </td>,
-    <svg
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<svg
       baseProfile="full"
       height="800"
       style="position:absolute;left:0;top:0;user-select:none"
@@ -425,7 +795,11 @@ Array [
         </lineargradient>
       </defs>
     </svg>,
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
       style="text-align: right;"
     >
@@ -433,12 +807,24 @@ Array [
     </td>,
   ],
   Array [
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
     >
       outlook
     </td>,
-    <td
+    .c0 {
+  color: var(--acx-neutrals-60);
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
     >
       <div
@@ -454,14 +840,18 @@ Array [
           class="ant-space-item"
         >
           <span
-            class="styledComponents__TrafficPercent-sc-9hgigm-0 hGpwjr"
+            class="c0"
           >
             (0%)
           </span>
         </div>
       </div>
     </td>,
-    <svg
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<svg
       baseProfile="full"
       height="800"
       style="position:absolute;left:0;top:0;user-select:none"
@@ -524,7 +914,11 @@ Array [
         </lineargradient>
       </defs>
     </svg>,
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
       style="text-align: right;"
     >
@@ -532,12 +926,24 @@ Array [
     </td>,
   ],
   Array [
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
     >
       intellij.tips
     </td>,
-    <td
+    .c0 {
+  color: var(--acx-neutrals-60);
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
     >
       <div
@@ -553,14 +959,18 @@ Array [
           class="ant-space-item"
         >
           <span
-            class="styledComponents__TrafficPercent-sc-9hgigm-0 hGpwjr"
+            class="c0"
           >
             (0%)
           </span>
         </div>
       </div>
     </td>,
-    <svg
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<svg
       baseProfile="full"
       height="800"
       style="position:absolute;left:0;top:0;user-select:none"
@@ -623,7 +1033,11 @@ Array [
         </lineargradient>
       </defs>
     </svg>,
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
       style="text-align: right;"
     >
@@ -631,12 +1045,24 @@ Array [
     </td>,
   ],
   Array [
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
     >
       youtube.com
     </td>,
-    <td
+    .c0 {
+  color: var(--acx-neutrals-60);
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
     >
       <div
@@ -652,14 +1078,18 @@ Array [
           class="ant-space-item"
         >
           <span
-            class="styledComponents__TrafficPercent-sc-9hgigm-0 hGpwjr"
+            class="c0"
           >
             (0%)
           </span>
         </div>
       </div>
     </td>,
-    <svg
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<svg
       baseProfile="full"
       height="800"
       style="position:absolute;left:0;top:0;user-select:none"
@@ -722,7 +1152,11 @@ Array [
         </lineargradient>
       </defs>
     </svg>,
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
       style="text-align: right;"
     >
@@ -733,6 +1167,10 @@ Array [
 `;
 
 exports[`TopApplicationsByTrafficWidget should render table with sparkline svg: tableHeaders 1`] = `
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
 <thead
   class="ant-table-thead"
 >
@@ -765,7 +1203,11 @@ exports[`TopApplicationsByTrafficWidget should render table with sparkline svg: 
 exports[`TopApplicationsByTrafficWidget should render table with sparkline svg: uploadRows 1`] = `
 Array [
   Array [
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       style="padding: 0px; border: 0px; height: 0px;"
     >
       <div
@@ -774,7 +1216,11 @@ Array [
          
       </div>
     </td>,
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       style="padding: 0px; border: 0px; height: 0px;"
     >
       <div
@@ -783,7 +1229,11 @@ Array [
          
       </div>
     </td>,
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       style="padding: 0px; border: 0px; height: 0px;"
     >
       <div
@@ -794,12 +1244,24 @@ Array [
     </td>,
   ],
   Array [
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
     >
       ipsec
     </td>,
-    <td
+    .c0 {
+  color: var(--acx-neutrals-60);
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
     >
       <div
@@ -815,14 +1277,18 @@ Array [
           class="ant-space-item"
         >
           <span
-            class="styledComponents__TrafficPercent-sc-9hgigm-0 hGpwjr"
+            class="c0"
           >
             (100%)
           </span>
         </div>
       </div>
     </td>,
-    <svg
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<svg
       baseProfile="full"
       height="800"
       style="position:absolute;left:0;top:0;user-select:none"
@@ -885,7 +1351,11 @@ Array [
         </lineargradient>
       </defs>
     </svg>,
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
       style="text-align: right;"
     >
@@ -893,12 +1363,24 @@ Array [
     </td>,
   ],
   Array [
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
     >
       safebrowsing.googleapis.com
     </td>,
-    <td
+    .c0 {
+  color: var(--acx-neutrals-60);
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
     >
       <div
@@ -914,14 +1396,18 @@ Array [
           class="ant-space-item"
         >
           <span
-            class="styledComponents__TrafficPercent-sc-9hgigm-0 hGpwjr"
+            class="c0"
           >
             (0%)
           </span>
         </div>
       </div>
     </td>,
-    <svg
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<svg
       baseProfile="full"
       height="800"
       style="position:absolute;left:0;top:0;user-select:none"
@@ -984,7 +1470,11 @@ Array [
         </lineargradient>
       </defs>
     </svg>,
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
       style="text-align: right;"
     >
@@ -992,12 +1482,24 @@ Array [
     </td>,
   ],
   Array [
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
     >
       outlook
     </td>,
-    <td
+    .c0 {
+  color: var(--acx-neutrals-60);
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
     >
       <div
@@ -1013,14 +1515,18 @@ Array [
           class="ant-space-item"
         >
           <span
-            class="styledComponents__TrafficPercent-sc-9hgigm-0 hGpwjr"
+            class="c0"
           >
             (0%)
           </span>
         </div>
       </div>
     </td>,
-    <svg
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<svg
       baseProfile="full"
       height="800"
       style="position:absolute;left:0;top:0;user-select:none"
@@ -1083,7 +1589,11 @@ Array [
         </lineargradient>
       </defs>
     </svg>,
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
       style="text-align: right;"
     >
@@ -1091,12 +1601,24 @@ Array [
     </td>,
   ],
   Array [
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
     >
       apple
     </td>,
-    <td
+    .c0 {
+  color: var(--acx-neutrals-60);
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
     >
       <div
@@ -1112,14 +1634,18 @@ Array [
           class="ant-space-item"
         >
           <span
-            class="styledComponents__TrafficPercent-sc-9hgigm-0 hGpwjr"
+            class="c0"
           >
             (0%)
           </span>
         </div>
       </div>
     </td>,
-    <svg
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<svg
       baseProfile="full"
       height="800"
       style="position:absolute;left:0;top:0;user-select:none"
@@ -1182,7 +1708,11 @@ Array [
         </lineargradient>
       </defs>
     </svg>,
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
       style="text-align: right;"
     >
@@ -1190,12 +1720,24 @@ Array [
     </td>,
   ],
   Array [
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
     >
       google
     </td>,
-    <td
+    .c0 {
+  color: var(--acx-neutrals-60);
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
     >
       <div
@@ -1211,14 +1753,18 @@ Array [
           class="ant-space-item"
         >
           <span
-            class="styledComponents__TrafficPercent-sc-9hgigm-0 hGpwjr"
+            class="c0"
           >
             (0%)
           </span>
         </div>
       </div>
     </td>,
-    <svg
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<svg
       baseProfile="full"
       height="800"
       style="position:absolute;left:0;top:0;user-select:none"
@@ -1281,7 +1827,11 @@ Array [
         </lineargradient>
       </defs>
     </svg>,
-    <td
+    @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<td
       class="ant-table-cell"
       style="text-align: right;"
     >

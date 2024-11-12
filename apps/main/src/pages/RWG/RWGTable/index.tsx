@@ -1,13 +1,13 @@
 import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, ColumnType, Loader, PageHeader, Table, TableProps }                       from '@acx-ui/components'
-import { useGetVenuesQuery, useRwgListQuery }                                              from '@acx-ui/rc/services'
-import { defaultSort, FILTER, RWG, SEARCH, sortProp, transformDisplayText, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams }                                              from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                                       from '@acx-ui/user'
+import { Button, ColumnType, Loader, PageHeader, Table, TableProps }                                          from '@acx-ui/components'
+import { useRwgActions }                                                                                      from '@acx-ui/rc/components'
+import { useGetVenuesQuery, useRwgListQuery }                                                                 from '@acx-ui/rc/services'
+import { defaultSort, getRwgStatus, RWGRow, seriesMappingRWG, sortProp, transformDisplayText, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams }                                                                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess, useUserProfileContext }                                                   from '@acx-ui/user'
 
-import { useRwgActions } from '../useRwgActions'
 
 
 function useColumns (
@@ -16,24 +16,51 @@ function useColumns (
 ) {
   const { $t } = useIntl()
 
-  const columns: TableProps<RWG>['columns'] = [
+  const columns: TableProps<RWGRow>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Name' }),
+      title: $t({ defaultMessage: 'Gateway' }),
       key: 'name',
       dataIndex: 'name',
-      sorter: true,
+      sorter: { compare: sortProp('name', defaultSort) },
       fixed: 'left',
       searchable: searchable,
       defaultSortOrder: 'ascend',
       render: function (_, row, __, highlightFn) {
-        return (
-          <TenantLink to={`/ruckus-wan-gateway/${row.id}/gateway-details/overview`}>
-            {searchable ? highlightFn(row.name) : row.name}</TenantLink>
+        return row?.isCluster ? highlightFn(row.name) : (
+          <TenantLink
+            to={
+              row?.isNode
+                // eslint-disable-next-line max-len
+                ? `/ruckus-wan-gateway/${row.venueId}/${row.clusterId}/gateway-details/overview/${row.rwgId}`
+                : `/ruckus-wan-gateway/${row.venueId}/${row.rwgId}/gateway-details/overview`}>
+            {highlightFn(row.name)}</TenantLink>
         )
+      }
+    },{
+      title: $t({ defaultMessage: 'Cluster Status' }),
+      dataIndex: 'status',
+      key: 'status',
+      filterMultiple: false,
+      filterValueNullable: true,
+      filterKey: 'status',
+      filterable: filterables ? filterables['status'] : false,
+      sorter: false,
+      render: function (_, row) {
+        const { name, color } = getRwgStatus(row.status)
+
+        return row.isCluster ?
+          (
+            <span>
+              <Badge
+                color={`var(${color})`}
+                text={transformDisplayText(name)}
+              />
+            </span>
+          ) : <></>
       }
     },
     {
-      title: $t({ defaultMessage: 'Status' }),
+      title: $t({ defaultMessage: 'Gateway Status' }),
       dataIndex: 'status',
       key: 'status',
       filterMultiple: false,
@@ -42,35 +69,19 @@ function useColumns (
       filterable: filterables ? filterables['status'] : false,
       sorter: { compare: sortProp('status', defaultSort) },
       render: function (_, row) {
-        const iconColor = (row.status === 'Operational')
-          ? '--acx-semantics-green-50'
-          : '--acx-neutrals-50'
-        const statusText = row.status === 'Operational'
-          ? $t({ defaultMessage: 'Operational' })
-          : $t({ defaultMessage: 'Offline' })
-
-        return (
+        const { name, color } = getRwgStatus(row.status)
+        return !row.isCluster ? (
           <span>
             <Badge
-              color={`var(${iconColor})`}
-              text={transformDisplayText(statusText)}
+              color={`var(${color})`}
+              text={transformDisplayText(name)}
             />
           </span>
-        )
+        ) : <></>
       }
     },
     {
-      title: $t({ defaultMessage: 'URL' }),
-      dataIndex: 'loginUrl',
-      key: 'loginUrl',
-      filterMultiple: false,
-      sorter: false,
-      render: function (_, row) {
-        return row.loginUrl
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venueName',
       key: 'venueName',
       filterMultiple: false,
@@ -79,11 +90,21 @@ function useColumns (
       filterable: filterables ? filterables['venueName'] : false,
       sorter: { compare: sortProp('venueName', defaultSort) },
       render: function (_, row) {
-        return (
+        return !row.isCluster ? (
           <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
             {row.venueName}
           </TenantLink>
-        )
+        ) : <></>
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'FQDN / IP' }),
+      dataIndex: 'hostname',
+      key: 'hostname',
+      filterMultiple: false,
+      sorter: { compare: sortProp('hostname', defaultSort) },
+      render: function (_, row) {
+        return !row.isCluster ? row.hostname : ''
       }
     }
   ]
@@ -96,32 +117,24 @@ export function RWGTable () {
   const navigate = useNavigate()
   const { tenantId } = useParams()
   const rwgActions = useRwgActions()
+  const { isCustomRole } = useUserProfileContext()
 
   const rwgPayload = {
-    fields: [
-      'check-all',
-      'name',
-      'status',
-      'id'
-    ],
-    searchTargetFields: ['name'],
-    filters: {},
-    sortField: 'name',
-    sortOrder: 'ASC'
+    filters: {}
   }
-
+  const settingsId = 'rwg-table'
   const tableQuery = useTableQuery({
     useQuery: useRwgListQuery,
     defaultPayload: rwgPayload,
+    pagination: { settingsId },
     search: {
-      searchTargetFields: rwgPayload.searchTargetFields as string[]
-    },
-    enableSelectAllPagesData: ['id', 'name']
+      searchTargetFields: ['name']
+    }
   })
 
 
   const { venueFilterOptions } = useGetVenuesQuery({ params: useParams(), payload: {
-    fields: ['name', 'id'],
+    fields: ['name', 'rwgId'],
     sortField: 'name',
     sortOrder: 'ASC',
     page: 1,
@@ -135,19 +148,27 @@ export function RWGTable () {
     })
   })
 
-  const columns = useColumns(true, { venueName: venueFilterOptions, status: [{
-    key: 'Operational',
-    value: 'Operational'
-  }, {
-    key: 'OFFLINE',
-    value: 'Offline'
-  }] })
+  const columns = useColumns(true, { venueName: venueFilterOptions,
+    status: seriesMappingRWG().map(({ key, name }) => {
+      return {
+        key,
+        value: name
+      }
+    }) })
 
-  const rowActions: TableProps<RWG>['rowActions'] = [{
-    visible: (selectedRows) => selectedRows.length === 1,
+  const rowActions: TableProps<RWGRow>['rowActions'] = [{
+    visible: (selectedRows) => selectedRows.length === 1 && !selectedRows[0].isCluster,
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
-      navigate(`${selectedRows[0].id}/edit`, { replace: false })
+      navigate(`${selectedRows[0].venueId}/${selectedRows[0].rwgId}/edit`, { replace: false })
+    }
+  },
+  {
+    visible: (selectedRows) => selectedRows.length === 1,
+    label: $t({ defaultMessage: 'Configure' }),
+    onClick: (selectedRows) => {
+      window.open('https://' + (selectedRows[0]?.hostname)?.toString() + '/admin',
+        '_blank')
     }
   },
   {
@@ -157,17 +178,30 @@ export function RWGTable () {
     }
   }]
 
-  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
-    const payload = { ...tableQuery.payload, filters: { name: customSearch?.searchString ?? '' } }
-    tableQuery.setPayload(payload)
+  const handleTableChange: TableProps<RWGRow>['onChange'] = (
+    pagination, filters, sorter, extra
+  ) => {
+    tableQuery.setPayload({
+      ...tableQuery.payload
+    })
+    tableQuery.handleTableChange?.(pagination, filters, sorter, extra)
   }
 
+  const rowSelection = () => {
+    return {
+      getCheckboxProps: (record: RWGRow) => ({
+        disabled: !!record.isNode
+      })
+    }
+  }
+
+  const count = tableQuery?.data?.totalCount || 0
 
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'RUCKUS WAN Gateway' })}
-        extra={filterByAccess([
+        title={$t({ defaultMessage: 'RUCKUS WAN Gateway ({count})' }, { count })}
+        extra={!isCustomRole && filterByAccess([
           <TenantLink to='/ruckus-wan-gateway/add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add Gateway' }) }</Button>
           </TenantLink>
@@ -176,14 +210,16 @@ export function RWGTable () {
       <Loader states={[
         tableQuery
       ]}>
-        <Table
-          settingsId='rgw-table'
+        <Table<RWGRow>
+          settingsId={settingsId}
           columns={columns}
           dataSource={tableQuery?.data?.data}
-          onFilterChange={handleFilterChange}
-          rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'checkbox' }}
+          pagination={{ total: tableQuery?.data?.totalCount }}
+          onFilterChange={tableQuery.handleFilterChange}
+          rowKey='rowId'
+          rowActions={isCustomRole ? [] : filterByAccess(rowActions)}
+          rowSelection={hasAccess() && { ...rowSelection() }}
+          onChange={handleTableChange}
         />
       </Loader>
     </>

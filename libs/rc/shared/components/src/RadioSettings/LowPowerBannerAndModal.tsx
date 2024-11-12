@@ -1,185 +1,121 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable max-len */
-import { useState, useEffect } from 'react'
+import { useMemo } from 'react'
 
-import { Col, Row, Modal } from 'antd'
-import { useIntl }         from 'react-intl'
+import { Col, Row } from 'antd'
+import { useIntl }  from 'react-intl'
+import styled       from 'styled-components/macro'
 
-import { Button, cssStr }     from '@acx-ui/components'
-import { Android, Apple }     from '@acx-ui/icons'
-import { AFCStatus, AFCInfo } from '@acx-ui/rc/utils'
+import { Button, Alert }                       from '@acx-ui/components'
+import { AFCStatus, AFCInfo }                  from '@acx-ui/rc/utils'
+import { useNavigate, useLocation, useParams } from '@acx-ui/react-router-dom'
 
-interface LowerPowerBannerSetting {
-  bannerColSpan: number,
-  colStyle: {
-    backgroundColor: string,
-    padding: string,
-    color: string,
-    lineHeight?: string
-    paddingTop: string,
-    paddingBottom: string
-  },
-  buttonStyle: {
-    color?: string
-  }
-}
+import { usePathBasedOnConfigTemplate } from '../configTemplates'
 
-type settings = {
-  [key: string] : LowerPowerBannerSetting
-}
+const StyledAlert = styled(Alert)`
+  line-height: 20px;
+`
+
 
 export function LowPowerBannerAndModal (props: {
-    parent: string,
     afcInfo?: AFCInfo
+    from: string
+    isOutdoor?: boolean
 }) {
 
-  const { parent, afcInfo } = props
-
-
-  const { $t } = useIntl()
-
-  const lowPowerBannerSettings : settings = {
-    venue: {
-      bannerColSpan: 16,
-      colStyle: {
-        backgroundColor: cssStr('--acx-accents-orange-30'),
-        padding: '5px',
-        color: 'white',
-        paddingTop: '10px',
-        paddingBottom: '10px'
-      },
-      buttonStyle: { color: cssStr('--acx-accents-blue-20') }
-    },
-    ap: {
-      bannerColSpan: 22,
-      colStyle: {
-        backgroundColor: '#FEF4DE',
-        padding: '5px',
-        color: 'black',
-        lineHeight: '16px',
-        paddingTop: '10px',
-        paddingBottom: '10px'
-      },
-      buttonStyle: {}
-    }
-  }
-
-  const [displayLowPowerModeModal, setDisplayLowPowerModeModal] = useState(false)
-  const [bannerSettings, setBannerSettings] = useState(lowPowerBannerSettings['ap'])
-  const [bannerText, setBannerText] = useState('')
-
-
-  useEffect(()=> {
-    setBannerSettings(lowPowerBannerSettings[parent])
-
-    let APWarningMessage = $t({ defaultMessage: 'Degraded - AP in low power mode' })
-
-    if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
-      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(Geo Location not set)' })
-    }
-    if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
-      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(No channels available)' })
-    }
-    if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
-      APWarningMessage = APWarningMessage + ' ' + $t({ defaultMessage: '(Pending response from the AFC server)' })
-    }
-
-    setBannerText(APWarningMessage)
-  }, [])
-
-  return (<>
-    <LowerPowerInstructionModal
-      modelVisibility={displayLowPowerModeModal}
-      modalOff={() => {setDisplayLowPowerModeModal(false)}}
-    />
-    <Row
-      data-testid='low-power-banner'
-      style={{
-        marginTop: '10px',
-        marginBottom: '10px'
-      }}>
-      <Col span={bannerSettings.bannerColSpan}
-        style={bannerSettings.colStyle}>
-        {bannerText}
-      </Col>
-      <Col span={2}
-        style={bannerSettings.colStyle}>
-        <Button type='link'
-          data-testid='how-to-fix-this-button'
-          onClick={() => {
-            setDisplayLowPowerModeModal(true)
-          }}>
-          <span style={bannerSettings.buttonStyle}>
-            {$t({ defaultMessage: 'How to fix this' })}
-          </span>
-        </Button>
-      </Col>
-    </Row>
-  </>)
-}
-
-function LowerPowerInstructionModal (props: {
-  modelVisibility: boolean,
-  modalOff: () => void
-}) {
-
-  const { modelVisibility, modalOff } = props
+  const { afcInfo, from, isOutdoor } = props
 
   const { $t } = useIntl()
+  const { venueId } = useParams()
 
-  return (
-    <Modal
-      visible={modelVisibility}
-      closable={false}
-      data-testid='instruction-modal'
-      footer={[
-        <Button key='ok'
-          type='primary'
-          data-testid='ok-got-it-button'
-          onClick={() => {
-            modalOff()
-          }}>
-          {$t({ defaultMessage: 'OK, Got It' })}
-        </Button>
-      ]}
-    >
-      <Row style={{
-        fontSize: cssStr('--acx-headline-3-font-size'),
-        fontWeight: cssStr('--acx-headline-3-font-weight'),
-        marginTop: '10px',
-        marginBottom: '10px'
-      }}>
-        {$t({ defaultMessage: 'AP is running in Low Power Mode - How to fix this?' })}
-      </Row>
-      <Row>
-        {$t({ defaultMessage: 'Open the RUCKUS mobile app' })}
-      </Row>
-      <Row style={{
-        backgroundColor: 'lightgrey',
-        fontSize: '12px',
-        padding: '10px 10px 10px 10px'
-      }}>
-        <Col span={24}>
-          {$t({ defaultMessage: 'If you don’t have the app, you can download it here:' })}
-        </Col>
-        <Col span={24}>
-          <Apple/><Android/>
-        </Col>
-      </Row>
-      <Row style={{
-        marginTop: '20px'
-      }}>
-        {
-          $t({ defaultMessage: 'Follow the instructions on screen and provide the geo location details as directed' })
-        }
-      </Row>
-      <Row style={{
-        marginTop: '20px'
-      }}>
-        {
-          $t({ defaultMessage: 'Once the AP’s location has been established, it will start to operate in Full Power Mode and support the 6GHz radio band' })
-        }
-      </Row>
-    </Modal>
-  )
+  const navigate = useNavigate()
+  const location = useLocation()
+  const detailsPath = usePathBasedOnConfigTemplate(`/venues/${venueId}/edit/wifi/radio/Normal6GHz`)
+
+  const displayModalMessage = useMemo(() => {
+
+    let modalMessage = ''
+
+    if (from === 'venue') {
+      modalMessage = $t({ defaultMessage: 'AFC in the 6 GHz band requires a <venueSingular></venueSingular> height to be set for standard power operation.' })
+    }
+    else {
+      // when from 'AP'
+      const messageList: string[] = []
+
+      if (isOutdoor) {
+        messageList.push($t({ defaultMessage: 'The 6GHz radio is not currently operable.' }))
+      } else {
+        messageList.push($t({ defaultMessage: '6 GHz radio operating in Low Power Indoor Mode.' }))
+      }
+
+      if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
+        messageList.push($t({ defaultMessage: '(AFC Geo-Location not set)' }))
+      }
+      if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
+        messageList.push($t({ defaultMessage: '(Rejected by FCC DB due to no available channels)' }))
+      }
+      if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
+        messageList.push($t({ defaultMessage: '(Wait for AFC server response)' }))
+      }
+      if (afcInfo?.afcStatus === AFCStatus.PASSED) {
+        messageList.push($t({ defaultMessage: '(AP is working on LPI channel)' }))
+      }
+      if (afcInfo?.afcStatus === AFCStatus.AFC_SERVER_FAILURE) {
+        messageList.push($t({ defaultMessage: '(AFC Server failure)' }))
+      }
+
+      modalMessage = messageList.join(' ')
+
+    }
+
+    return modalMessage
+
+  }, [from, isOutdoor, afcInfo])
+
+  return <Row
+    data-testid='low-power-banner'
+    style={{
+      marginTop: '10px',
+      marginBottom: '10px'
+    }}>
+    <Col span={24}>
+      <StyledAlert showIcon={true}
+        style={{ verticalAlign: 'middle' }}
+        message={<>
+          {displayModalMessage}
+          { from === 'ap' ?
+            <Button type='link'
+              data-testid='how-to-fix-this-button'>
+              <span style={{
+                marginLeft: '50px',
+                fontSize: '12px'
+              }}>
+                <a href='https://docs.cloud.ruckuswireless.com/ruckusone/userguide/GUID-C1324048-5F2A-436C-A8BE-9B94BCB5CF14.html'
+                  target='_blank'
+                  rel='noreferrer'>
+                  {$t({ defaultMessage: 'More information' })}
+                </a>
+              </span>
+            </Button>
+            :
+            <Button type='link'
+              data-testid='set-it-up-button'
+              onClick={() => {
+                navigate(detailsPath, {
+                  state: {
+                    from: location
+                  }
+                })
+              }}>
+              <span style={{
+                marginLeft: '50px',
+                fontSize: '12px'
+              }}>
+                {$t({ defaultMessage: 'Set it up now' })}
+              </span>
+            </Button>}
+        </>} />
+    </Col>
+  </Row>
 }

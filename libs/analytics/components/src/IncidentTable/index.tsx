@@ -14,7 +14,6 @@ import {
   sortProp,
   Incident,
   IncidentFilter,
-  getRootCauseAndRecommendations,
   longDescription,
   formattedPath
 } from '@acx-ui/analytics/utils'
@@ -23,8 +22,13 @@ import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
-import { TenantLink, useNavigateToPath }                               from '@acx-ui/react-router-dom'
-import { exportMessageMapping, noDataDisplay, handleBlobDownloadFile } from '@acx-ui/utils'
+import { TenantLink, useNavigateToPath }                                                       from '@acx-ui/react-router-dom'
+import { SwitchScopes, WifiScopes }                                                            from '@acx-ui/types'
+import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { exportMessageMapping, noDataDisplay, handleBlobDownloadFile }                         from '@acx-ui/utils'
+
+import { getRootCauseAndRecommendations } from '../IncidentDetails/rootCauseRecommendation'
+import { useIncidentToggles }             from '../useIncidentToggles'
 
 import {
   useIncidentsListQuery,
@@ -78,6 +82,7 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
   const { $t } = useIntl()
   const { metadata, id } = props.selectedIncidentToShowDescription
   const [{ rootCauses }] = getRootCauseAndRecommendations(props.selectedIncidentToShowDescription)
+  const { rootCauseText, rootCauseValues } = rootCauses
   const gotoIncident = useNavigateToPath(`/analytics/incidents/${id}`)
   const values = {
     ...productNames,
@@ -100,7 +105,7 @@ const IncidentDrawerContent = (props: { selectedIncidentToShowDescription: Incid
         {$t(defineMessage({ defaultMessage: 'Root cause' }))}{':'}
       </UI.IncidentRootCauses>
       <div>
-        <FormattedMessage {...rootCauses} values={values} />
+        <FormattedMessage {...rootCauseText} values={{ ...values, ...rootCauseValues }} />
         <Button type='link' onClick={gotoIncident} size='small'>
           {$t({ defaultMessage: 'More Details' })}
         </Button>
@@ -118,8 +123,9 @@ const DateLink = ({ value }: { value: IncidentTableRow }) => {
 export function IncidentTable ({ filters }: {
    filters: IncidentFilter }) {
   const intl = useIntl()
+  const toggles = useIncidentToggles()
   const { $t } = intl
-  const queryResults = useIncidentsListQuery(filters)
+  const queryResults = useIncidentsListQuery({ ...filters, toggles })
   const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
   const [ showMuted, setShowMuted ] = useState<boolean>(false)
   const onDrawerClose = () => setDrawerSelection(null)
@@ -138,6 +144,11 @@ export function IncidentTable ({ filters }: {
 
   const rowActions: TableProps<IncidentTableRow>['rowActions'] = [
     {
+      key: getShowWithoutRbacCheckKey('mute'),
+      visible: ([row]) => row && hasPermission({
+        permission: 'WRITE_INCIDENTS',
+        scopes: [row.sliceType.startsWith('switch') ? SwitchScopes.UPDATE : WifiScopes.UPDATE]
+      }),
       label: $t(selectedIncident?.isMuted
         ? defineMessage({ defaultMessage: 'Unmute' })
         : defineMessage({ defaultMessage: 'Mute' })
@@ -237,7 +248,11 @@ export function IncidentTable ({ filters }: {
       dataIndex: 'scope',
       key: 'scope',
       render: (_, value, __, highlightFn ) => {
-        return <Tooltip placement='top' title={formattedPath(value.path, value.sliceValue)}>
+        return <Tooltip
+          placement='top'
+          title={formattedPath(value.path, value.sliceValue)}
+          dottedUnderline={true}
+        >
           {highlightFn(value.scope)}
         </Tooltip>
       },
@@ -262,7 +277,7 @@ export function IncidentTable ({ filters }: {
         type='tall'
         dataSource={data}
         columns={ColumnHeaders}
-        rowActions={rowActions}
+        rowActions={filterByAccess(rowActions)}
         iconButton={{
           icon: <DownloadOutlined />,
           disabled: !Boolean(data?.length),
@@ -270,7 +285,10 @@ export function IncidentTable ({ filters }: {
           onClick: () => {
             downloadIncidentList(data as IncidentNodeData, ColumnHeaders, filters)
           } }}
-        rowSelection={{
+        rowSelection={hasCrossVenuesPermission() && hasPermission({
+          permission: 'WRITE_INCIDENTS',
+          scopes: [WifiScopes.UPDATE, SwitchScopes.UPDATE]
+        }) && {
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
           onChange: (_, [row]) => {
@@ -297,7 +315,7 @@ export function IncidentTable ({ filters }: {
             children={$t({ defaultMessage: 'Show Muted Incidents' })}
           />
         ]}
-        rowClassName={(record) => record.isMuted ? 'table-row-muted' : 'table-row-normal'}
+        rowClassName={(record) => record.isMuted ? 'table-row-disabled' : 'table-row-normal'}
         filterableWidth={155}
         searchableWidth={240}
       />

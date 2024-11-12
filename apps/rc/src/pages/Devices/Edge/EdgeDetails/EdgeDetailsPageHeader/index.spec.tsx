@@ -2,8 +2,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeGeneralFixtures, EdgeStatusEnum, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                          from '@acx-ui/store'
+import { EdgeDHCPFixtures, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeStatus, EdgeStatusEnum, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                                      from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -12,17 +12,27 @@ import {
   within
 } from '@acx-ui/test-utils'
 
+import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
+
 import { EdgeDetailsPageHeader } from '.'
 
-const { mockEdgeList, mockEdgeServiceList } = EdgeGeneralFixtures
+const { mockEdgeList, mockEdgeServiceList, mockEdgeCluster } = EdgeGeneralFixtures
+const { mockDhcpStatsData } = EdgeDHCPFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
-
+jest.mock('../../HaStatusBadge', () => ({
+  HaStatusBadge: () => <div data-testid='ha-status-badge' />
+}))
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(true)
+}))
 const mockedDeleteApi = jest.fn()
 const mockedRebootApi = jest.fn()
+const mockedShutdownApi = jest.fn()
 const mockedResetApi = jest.fn()
 
 describe('Edge Detail Page Header', () => {
@@ -51,6 +61,13 @@ describe('Edge Detail Page Header', () => {
         }
       ),
       rest.post(
+        EdgeUrlsInfo.shutdown.url,
+        (req, res, ctx) => {
+          mockedShutdownApi()
+          return res(ctx.status(202))
+        }
+      ),
+      rest.post(
         EdgeUrlsInfo.factoryReset.url,
         (req, res, ctx) => {
           mockedResetApi()
@@ -58,8 +75,8 @@ describe('Edge Detail Page Header', () => {
         }
       ),
       rest.post(
-        EdgeUrlsInfo.getEdgeServiceList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeServiceList))
+        EdgeDhcpUrls.getDhcpStats.url,
+        (_req, res, ctx) => res(ctx.json(mockDhcpStatsData))
       )
     )
   })
@@ -67,19 +84,37 @@ describe('Edge Detail Page Header', () => {
   it('should more actions to be clickable', async () => {
     render(
       <Provider>
-        <EdgeDetailsPageHeader />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: currentEdge as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeDetailsPageHeader />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
 
     await userEvent.click(screen.getByRole('button', { name: 'More Actions' }))
-    expect((await screen.findAllByRole('menuitem')).length).toBe(3)
+    expect((await screen.findAllByRole('menuitem')).length).toBe(4)
   })
 
   it('should redirect to edge general setting page after clicked configure', async () => {
     render(
       <Provider>
-        <EdgeDetailsPageHeader />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: currentEdge as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeDetailsPageHeader />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -97,7 +132,16 @@ describe('Edge Detail Page Header', () => {
   it('should redirect to edge list after deleted edge', async () => {
     render(
       <Provider>
-        <EdgeDetailsPageHeader />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: currentEdge as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeDetailsPageHeader />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -105,7 +149,7 @@ describe('Edge Detail Page Header', () => {
     const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
     await userEvent.click(dropdownBtn)
 
-    const deleteBtn = await screen.findByRole('menuitem', { name: 'Delete SmartEdge' })
+    const deleteBtn = await screen.findByRole('menuitem', { name: 'Delete RUCKUS Edge' })
     await userEvent.click(deleteBtn)
 
     const deleteDialog = await screen.findByRole('dialog')
@@ -126,7 +170,16 @@ describe('Edge Detail Page Header', () => {
   it('should reboot edge correctly', async () => {
     render(
       <Provider>
-        <EdgeDetailsPageHeader />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: currentEdge as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeDetailsPageHeader />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -148,10 +201,53 @@ describe('Edge Detail Page Header', () => {
     })
   })
 
+  it('should shutdown edge correctly', async () => {
+    render(
+      <Provider>
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: currentEdge as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeDetailsPageHeader />
+        </EdgeDetailsDataContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
+    await userEvent.click(dropdownBtn)
+
+    const shutdownBtn = await screen.findByRole('menuitem', { name: 'Shutdown' })
+    await userEvent.click(shutdownBtn)
+
+    const shutdwonDialog = await screen.findByRole('dialog')
+    await within(shutdwonDialog).findByText(`Shutdown "${currentEdge.name}"?`)
+    await userEvent.click(within(shutdwonDialog).getByRole('button', { name: 'Shutdown' }))
+    await waitFor(() => {
+      expect(mockedShutdownApi).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(shutdwonDialog).not.toBeVisible()
+    })
+  })
+
   it('should factory rest edge correctly', async () => {
     render(
       <Provider>
-        <EdgeDetailsPageHeader />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: currentEdge as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeDetailsPageHeader />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -171,6 +267,26 @@ describe('Edge Detail Page Header', () => {
     await waitFor(() => {
       expect(resetDialog).not.toBeVisible()
     })
+  })
+
+  it('should render HaStatusBadge', async () => {
+    render(
+      <Provider>
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: currentEdge as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeDetailsPageHeader />
+        </EdgeDetailsDataContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(await screen.findByTestId('ha-status-badge')).toBeVisible()
   })
 })
 
@@ -209,6 +325,10 @@ describe('Edge Detail Page Header - action show up logic', () => {
       rest.post(
         EdgeUrlsInfo.getEdgeServiceList.url,
         (req, res, ctx) => res(ctx.json(mockEdgeServiceList))
+      ),
+      rest.post(
+        EdgeDhcpUrls.getDhcpStats.url,
+        (_req, res, ctx) => res(ctx.json(mockDhcpStatsData))
       )
     )
   })
@@ -228,7 +348,16 @@ describe('Edge Detail Page Header - action show up logic', () => {
       ))
     render(
       <Provider>
-        <EdgeDetailsPageHeader />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: currentEdge as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeDetailsPageHeader />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -255,7 +384,16 @@ describe('Edge Detail Page Header - action show up logic', () => {
       ))
     render(
       <Provider>
-        <EdgeDetailsPageHeader />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: currentEdge as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeDetailsPageHeader />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -282,7 +420,16 @@ describe('Edge Detail Page Header - action show up logic', () => {
       ))
     render(
       <Provider>
-        <EdgeDetailsPageHeader />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: currentEdge as EdgeStatus,
+            currentCluster: mockEdgeCluster,
+            isEdgeStatusLoading: false,
+            isClusterLoading: false
+          }}
+        >
+          <EdgeDetailsPageHeader />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })

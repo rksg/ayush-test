@@ -1,12 +1,21 @@
-import { useIntl } from 'react-intl'
+import { ReactNode } from 'react'
+
+import { AlignType } from 'rc-table/lib/interface'
+import { useIntl }   from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
-import { SimpleListTooltip }                             from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { CheckMark }                                     from '@acx-ui/icons'
+import { CertificateToolTip, SimpleListTooltip }         from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteAAAPolicyListMutation,
   useGetAAAPolicyViewModelListQuery,
-  useNetworkListQuery
+  useNetworkListQuery,
+  useWifiNetworkListQuery,
+  useGetIdentityProviderListQuery,
+  useGetCertificateListQuery,
+  useGetCertificateAuthoritiesQuery
 } from '@acx-ui/rc/services'
 import {
   PolicyType,
@@ -17,10 +26,12 @@ import {
   getPolicyRoutePath,
   AAAViewModalType,
   AAAPurposeEnum,
-  AAA_LIMIT_NUMBER
+  AAA_LIMIT_NUMBER,
+  getScopeKeyByPolicy,
+  filterByAccessForServicePolicyMutation,
+  CertificateStatusType
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                          from '@acx-ui/user'
 
 export default function AAATable () {
   const { $t } = useIntl()
@@ -28,6 +39,13 @@ export default function AAATable () {
   const { tenantId } = useParams()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteAAAPolicyListMutation()
+  const settingsId = 'policies-aaa-table'
+  const radiusMaxiumnNumber = useIsSplitOn(Features.WIFI_INCREASE_RADIUS_INSTANCE_1024)
+    ? 1024
+    : AAA_LIMIT_NUMBER
+
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
   const tableQuery = useTableQuery({
     useQuery: useGetAAAPolicyViewModelListQuery,
     defaultPayload: {
@@ -36,7 +54,9 @@ export default function AAATable () {
     search: {
       searchString: '',
       searchTargetFields: ['name']
-    }
+    },
+    pagination: { settingsId },
+    enableRbac
   })
 
   const doDelete = (selectedRows: AAAViewModalType[], callback: () => void) => {
@@ -44,20 +64,27 @@ export default function AAATable () {
       selectedRows,
       $t({ defaultMessage: 'Policy' }),
       selectedRows[0].name,
-      [{ fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
+      [
+        { fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) },
+        // eslint-disable-next-line max-len
+        { fieldName: 'hotspot20IdentityProviderIds', fieldText: $t({ defaultMessage: 'Identity Provider' }) }
+      ],
       async () => deleteFn({
         params: { tenantId },
-        payload: selectedRows.map(row => row.id)
+        payload: selectedRows.map(row => row.id!),
+        enableRbac
       }).then(callback)
     )
   }
 
   const rowActions: TableProps<AAAViewModalType>['rowActions'] = [
     {
+      scopeKey: getScopeKeyByPolicy(PolicyType.AAA, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => doDelete(selectedRows, clearSelection)
     },
     {
+      scopeKey: getScopeKeyByPolicy(PolicyType.AAA, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows: AAAViewModalType[]) => selectedRows?.length === 1,
       onClick: ([{ id }]) => {
@@ -72,16 +99,15 @@ export default function AAATable () {
       }
     }
   ]
+
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return (
     <>
       <PageHeader
         title={
-          $t({
-            defaultMessage: 'RADIUS Server ({count})'
-          },
-          {
-            count: tableQuery.data?.totalCount
-          })
+          $t({ defaultMessage: 'RADIUS Server ({count})' },
+            { count: tableQuery.data?.totalCount })
         }
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
@@ -90,26 +116,28 @@ export default function AAATable () {
             link: getPolicyListRoutePath(true)
           }
         ]}
-        extra={filterByAccess([
-          // eslint-disable-next-line max-len
-          <TenantLink to={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}>
+        extra={filterByAccessForServicePolicyMutation([
+          <TenantLink
+            to={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
+            scopeKey={getScopeKeyByPolicy(PolicyType.AAA, PolicyOperation.CREATE)}
+          >
             <Button type='primary'
               disabled={tableQuery.data?.totalCount
-                ? tableQuery.data?.totalCount >= AAA_LIMIT_NUMBER
+                ? tableQuery.data?.totalCount >= radiusMaxiumnNumber
                 : false} >{$t({ defaultMessage: 'Add RADIUS Server' })}</Button>
           </TenantLink>
         ])}
       />
       <Loader states={[tableQuery]}>
         <Table<AAAViewModalType>
-          settingsId='policies-aaa-table'
+          settingsId={settingsId}
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'checkbox' }}
+          rowActions={allowedRowActions}
+          rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
@@ -119,10 +147,19 @@ export default function AAATable () {
 }
 
 function useColumns () {
+
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const supportRadsec = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+
   const { $t } = useIntl()
   const params = useParams()
-  const emptyNetworks: { key: string, value: string }[] = []
-  const { networkNameMap } = useNetworkListQuery({
+  const emptyResult: { key: string, value: string }[] = []
+  const emptyCertificateResult:
+    { key: string, value: string, status: CertificateStatusType[] }[] = []
+
+  const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
+
+  const { networkNameMap } = getNetworkListQuery({
     params: { tenantId: params.tenantId },
     payload: {
       fields: ['name', 'id'],
@@ -135,9 +172,61 @@ function useColumns () {
     selectFromResult: ({ data }) => ({
       networkNameMap: data?.data
         ? data.data.map(network => ({ key: network.id, value: network.name }))
-        : emptyNetworks
+        : emptyResult
     })
   })
+
+  const { identityProviderNameMap } = useGetIdentityProviderListQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 2048
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      identityProviderNameMap: data?.data
+        ? data.data.map(idp => ({ key: idp.id, value: idp.name }))
+        : emptyResult
+    })
+  })
+
+  const { certificateAuthorityNameMap } = useGetCertificateAuthoritiesQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 2048
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      certificateAuthorityNameMap: data?.data
+        ? data.data.map(ca => ({ key: ca.id, value: ca.name }))
+        : emptyResult
+    })
+  })
+
+  const { certificateMap } = useGetCertificateListQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 2048
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      certificateMap: data?.data
+        ? data.data.map(cc => ({ key: cc.id, value: cc.name, status: cc.status }))
+        : emptyCertificateResult
+    })
+  })
+
   const columns: TableProps<AAAViewModalType>['columns'] = [
     {
       key: 'name',
@@ -165,8 +254,11 @@ function useColumns () {
       title: $t({ defaultMessage: 'RADIUS Type' }),
       dataIndex: 'type',
       sorter: true,
+      width: 160,
       render: (_, { type }) =>{
-        return type ? AAAPurposeEnum[type] : ''
+        return type ?
+          (supportRadsec ?
+            AAAPurposeEnum[type].replace(' RADIUS Server', '') : AAAPurposeEnum[type]) : ''
       }
     },
     {
@@ -181,6 +273,88 @@ function useColumns () {
       dataIndex: 'secondary',
       sorter: true
     },
+    ...(supportRadsec ? [{
+      key: 'radSecOptions.tlsEnabled',
+      title: $t({ defaultMessage: 'RadSec' }),
+      dataIndex: 'radSecOptions.tlsEnabled',
+      sorter: false,
+      align: 'center' as AlignType,
+      width: 80,
+      render: (data: ReactNode, row: AAAViewModalType) => {
+        return (row.radSecOptions?.tlsEnabled ? <CheckMark /> : null)
+      }
+    },
+    {
+      key: 'radSecOptions.certificateAuthorityId',
+      title: $t({ defaultMessage: 'CA' }),
+      dataIndex: 'radSecOptions.certificateAuthorityId',
+      filterable: certificateAuthorityNameMap,
+      render: (data: ReactNode, row: AAAViewModalType) => {
+        return (!row.radSecOptions?.certificateAuthorityId)
+          ? ''
+          : (<TenantLink to={getPolicyRoutePath({
+            type: PolicyType.CERTIFICATE_AUTHORITY,
+            oper: PolicyOperation.LIST
+          })}>
+            {certificateAuthorityNameMap.find(
+              c => c.key === row?.radSecOptions?.certificateAuthorityId)?.value || ''}
+          </TenantLink>)
+      }
+    },
+    {
+      key: 'radSecOptions.clientCertificateId',
+      title: $t({ defaultMessage: 'Client Certificate' }),
+      dataIndex: 'radSecOptions.clientCertificateId',
+      filterable: certificateMap,
+      render: (data: ReactNode, row: AAAViewModalType) => {
+        return (!row.radSecOptions?.clientCertificateId)
+          ? ''
+          : (<>
+            <TenantLink to={getPolicyRoutePath({
+              type: PolicyType.SERVER_CERTIFICATES,
+              oper: PolicyOperation.LIST })}>
+              {certificateMap.find(
+                c => c.key === row.radSecOptions?.clientCertificateId)?.value || ''}
+            </TenantLink>
+            {certificateMap.find(
+              c => c.key === row.radSecOptions?.clientCertificateId)?.status?.find(
+              (s) => s === CertificateStatusType.EXPIRED || s === CertificateStatusType.REVOKED) ?
+              <CertificateToolTip
+                placement='bottom'
+                status={certificateMap.find(
+                  c => c.key === row.radSecOptions?.clientCertificateId)?.status}
+              /> : []}
+          </> )
+      }
+    },
+    {
+      key: 'radSecOptions.serverCertificateId',
+      title: $t({ defaultMessage: 'Server Certificate' }),
+      dataIndex: 'radSecOptions.serverCertificateId',
+      filterable: certificateMap,
+      sorter: false,
+      render: (_: ReactNode, row: AAAViewModalType) => {
+        const serverCert = certificateMap.find(
+          cert => cert.key === row.radSecOptions?.serverCertificateId)
+        return (!row.radSecOptions?.serverCertificateId)
+          ? ''
+          : (<>
+            <TenantLink
+              to={getPolicyRoutePath({
+                type: PolicyType.SERVER_CERTIFICATES,
+                oper: PolicyOperation.LIST
+              })}>
+              {serverCert?.value || ''}
+            </TenantLink>
+            {serverCert?.status && !serverCert?.status.includes(CertificateStatusType.VALID) ?
+              <CertificateToolTip
+                placement='bottom'
+                policyType={PolicyType.SERVER_CERTIFICATES}
+                status={serverCert.status} /> : []}
+          </>
+          )
+      }
+    }] : []),
     {
       key: 'networkCount',
       title: $t({ defaultMessage: 'Networks' }),
@@ -188,13 +362,32 @@ function useColumns () {
       align: 'center',
       filterKey: 'networkIds',
       filterable: networkNameMap,
-      sorter: true,
+      sorter: !isWifiRbacEnabled,
       render: (_, row) =>{
         if (!row.networkIds || row.networkIds.length === 0) return 0
         const networkIds = row.networkIds
         // eslint-disable-next-line max-len
         const tooltipItems = networkNameMap.filter(v => networkIds!.includes(v.key)).map(v => v.value)
         return <SimpleListTooltip items={tooltipItems} displayText={networkIds.length} />
+      }
+    },
+    {
+      key: 'identityProviderCount',
+      title: $t({ defaultMessage: 'Identity Providers' }),
+      dataIndex: 'identityProviderCount',
+      align: 'center',
+      filterKey: 'hotspot20IdentityProviderIds',
+      filterable: identityProviderNameMap,
+      sorter: false,
+      render: (_, row) =>{
+        const hotspot20IdentityProviderIds = row.hotspot20IdentityProviderIds
+        if (!hotspot20IdentityProviderIds || hotspot20IdentityProviderIds.length === 0) return 0
+        // eslint-disable-next-line max-len
+        const tooltipItems = identityProviderNameMap.filter(v => hotspot20IdentityProviderIds!.includes(v.key || '')).map(v => v.value)
+        return <SimpleListTooltip
+          items={tooltipItems}
+          displayText={hotspot20IdentityProviderIds.length}
+        />
       }
     }
   ]

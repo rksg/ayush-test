@@ -9,7 +9,8 @@ import {
   showActionModal,
   Tooltip
 } from '@acx-ui/components'
-import { MdnsProxyForwardingRulesTable, SimpleListTooltip }                                from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
+import { MdnsProxyForwardingRulesTable, SimpleListTooltip, ToolTipTableStyle }             from '@acx-ui/rc/components'
 import { useDeleteMdnsProxyMutation, useGetEnhancedMdnsProxyListQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -18,13 +19,15 @@ import {
   ServiceOperation,
   getServiceListRoutePath,
   getServiceRoutePath,
-  MdnsProxyViewModel
+  MdnsProxyViewModel,
+  getScopeKeyByService,
+  filterByAccessForServicePolicyMutation,
+  MdnsProxyFeatureTypeEnum
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
 const defaultPayload = {
-  fields: ['id', 'name', 'rules', 'venueIds'],
+  fields: ['id', 'name', 'rules', 'venueIds', 'activations'],
   searchString: '',
   filters: {}
 }
@@ -34,30 +37,16 @@ export default function MdnsProxyTable () {
   const { tenantId } = useParams()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [ deleteFn ] = useDeleteMdnsProxyMutation()
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedMdnsProxyListQuery,
-    defaultPayload
+    defaultPayload,
+    enableRbac
   })
 
   const rowActions: TableProps<MdnsProxyViewModel>['rowActions'] = [
-    {
-      label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ id, name }], clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Service' }),
-            entityValue: name
-          },
-          onOk: () => {
-            deleteFn({ params: { tenantId, serviceId: id } }).unwrap().then(clearSelection)
-          }
-        })
-      }
-    },
     {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([{ id }]) => {
@@ -69,9 +58,32 @@ export default function MdnsProxyTable () {
             serviceId: id!
           })
         })
-      }
+      },
+      scopeKey: getScopeKeyByService(ServiceType.MDNS_PROXY, ServiceOperation.EDIT)
+    },
+    {
+      label: $t({ defaultMessage: 'Delete' }),
+      onClick: ([{ id, name }], clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          customContent: {
+            action: 'DELETE',
+            entityName: $t({ defaultMessage: 'Service' }),
+            entityValue: name
+          },
+          onOk: () => {
+            deleteFn({
+              params: { tenantId, serviceId: id },
+              enableRbac
+            }).unwrap().then(clearSelection)
+          }
+        })
+      },
+      scopeKey: getScopeKeyByService(ServiceType.MDNS_PROXY, ServiceOperation.DELETE)
     }
   ]
+
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
     <>
@@ -83,22 +95,28 @@ export default function MdnsProxyTable () {
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={filterByAccess([
-          // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}>
-            <Button type='primary'>{$t({ defaultMessage: 'Add mDNS Proxy Service' })}</Button>
+        extra={filterByAccessForServicePolicyMutation([
+          <TenantLink
+            scopeKey={getScopeKeyByService(ServiceType.MDNS_PROXY, ServiceOperation.CREATE)}
+            // eslint-disable-next-line max-len
+            to={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}
+          >
+            <Button type='primary'>
+              {$t({ defaultMessage: 'Add mDNS Proxy Service' })}</Button>
           </TenantLink>
         ])}
       />
+
       <Loader states={[tableQuery]}>
+        <ToolTipTableStyle.ToolTipStyle/>
         <Table<MdnsProxyViewModel>
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowActions={allowedRowActions}
+          rowSelection={(allowedRowActions.length > 0) && { type: 'radio' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
@@ -158,13 +176,17 @@ function useColumns () {
       render: function (_, { rules }) {
         return (rules && rules.length > 0
           ? <Tooltip
-            overlayInnerStyle={{ minWidth: '380px' }}
             title={<MdnsProxyForwardingRulesTable
+              featureType={MdnsProxyFeatureTypeEnum.WIFI}
               readonly={true}
               tableType={'compactBordered'}
               rules={rules}
             />}
             children={rules.length}
+            dottedUnderline={true}
+            placement='bottom'
+            overlayClassName={ToolTipTableStyle.toolTipClassName}
+            overlayInnerStyle={{ minWidth: '380px' }}
           />
           : 0
         )
@@ -172,7 +194,7 @@ function useColumns () {
     },
     {
       key: 'venueIds',
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueIds',
       align: 'center',
       filterKey: 'venueIds',

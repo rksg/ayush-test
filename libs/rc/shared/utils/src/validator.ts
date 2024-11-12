@@ -1,14 +1,19 @@
 /* eslint-disable max-len */
+import { DefaultOptionType }                from 'antd/lib/select'
 import { PhoneNumberType, PhoneNumberUtil } from 'google-libphonenumber'
 import {
   isEqual,
   includes,
   remove,
   split,
-  isEmpty
+  isEmpty,
+  uniq,
+  isInteger
 }                from 'lodash'
 
-import { getIntl, validationMessages } from '@acx-ui/utils'
+import { RolesEnum }                                from '@acx-ui/types'
+import { roleStringMap }                            from '@acx-ui/user'
+import { byteCounter, getIntl, validationMessages } from '@acx-ui/utils'
 
 import { AclTypeEnum }                from './constants'
 import { IpUtilsService }             from './ipUtilsService'
@@ -92,9 +97,10 @@ export function URLRegExp (value: string) {
 }
 export function URLProtocolRegExp (value: string) {
   const { $t } = getIntl()
-  // eslint-disable-next-line max-len
-  const re = new RegExp('^https?:\\/\\/([A-Za-z0-9]+([\\-\\.]{1}[A-Za-z0-9]+)*\\.[A-Za-z]{2,}|(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|localhost)(:([1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?(\\/.*)?([?#].*)?$')
-  if (value!=='' && !re.test(value)) {
+  let ok = true
+  try { new URL(value) }
+  catch { ok = false }
+  if (value !== '' && !ok) {
     return Promise.reject($t(validationMessages.validateURL))
   }
   return Promise.resolve()
@@ -121,6 +127,32 @@ export function domainsNameRegExp (value: string[], required: boolean) {
 
   return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.domains))
 }
+export function domainNameWildcardRegExp (value: string[]) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp(/(^(\*(\.[0-9A-Za-z]{1,63})+(\.\*)?|([0-9A-Za-z]{1,63}\.)+\*|([0-9A-Za-z]{1,63}(\.[0-9A-Za-z]{1,63})+))$)/)
+  const isValid = value?.every?.(domain => {
+    return re.test(domain)
+  })
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.domainWildcard))
+}
+
+export function domainNameDuplicationValidation (domainArray: string[]) {
+  const { $t } = getIntl()
+
+  let isValid = true
+
+  // Empty Guard
+  if(isEmpty(domainArray)) {return Promise.reject($t(validationMessages.domains))}
+
+  const uniqDomainArray = uniq(domainArray)
+
+  if(uniqDomainArray.length !== domainArray.length) {
+    isValid = false
+  }
+
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.domainDuplication))
+}
 
 export function walledGardensRegExp (value:string) {
   const { $t } = getIntl()
@@ -143,7 +175,15 @@ export function syslogServerRegExp (value: string) {
   }
   return Promise.resolve()
 }
-
+export function lbsServerVenueNameRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp(/(^[a-zA-Z0-9\-](?:[a-zA-Z0-9\-\ ]*[a-zA-Z0-9\-])?$)/)
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
 export function trailingNorLeadingSpaces (value: string) {
   const { $t } = getIntl()
   if (value && (value.endsWith(' ') || value.startsWith(' '))) {
@@ -344,7 +384,7 @@ export function checkVlanMember (value: string) {
       const nums = item.split('-').map((x: string) => Number(x))
       return nums[1] > nums[0] && nums[1] < 4095 && nums[0] > 0
     }
-    return num > 0 && num < 4095
+    return Number(num) > 0 && Number(num) < 4095
   }).filter((x:boolean) => !x).length === 0
 
   if (isValid) {
@@ -555,6 +595,17 @@ export function emailRegExp (value: string) {
   return Promise.resolve()
 }
 
+export function sfdcEmailRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp (/^(([^<>()\[\]\\.,;:+\s@"]+(\.[^<>()\[\]\\.,;:+\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.emailAddress))
+  }
+  return Promise.resolve()
+}
+
 export function emailsRegExp (value: string[]) {
 
   const { $t } = getIntl()
@@ -567,6 +618,41 @@ export function emailsRegExp (value: string[]) {
     return re.test(email.replace(/\n/, '').trim())
   })
   return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.emailAddress))
+}
+
+export function emailDuplicationValidation (emailArray: string[]) {
+
+  const { $t } = getIntl()
+
+  let isValid = true
+
+  // Empty Guard
+  if(isEmpty(emailArray)) {return Promise.reject($t(validationMessages.emailAddress))}
+
+  const uniqEmailArray = uniq(emailArray)
+
+  if(uniqEmailArray.length !== emailArray.length) {
+    isValid = false
+  }
+
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.emailDuplication))
+}
+
+export function emailMaxCountValidation (emailArray: string[], maxCount: number){
+
+  const { $t } = getIntl()
+
+  let isValid = true
+
+  // Empty Guard
+  if(isEmpty(emailArray)) {return Promise.reject($t(validationMessages.emailAddress))}
+
+  if (emailArray.length > maxCount) {
+    isValid = false
+  }
+
+  return isValid ? Promise.resolve() : Promise.reject($t(validationMessages.emailMaxCount, { maxCount }))
+
 }
 
 export function emailsSameDomainValidation (emailArray: string[]) {
@@ -712,6 +798,16 @@ export function subnetMaskPrefixRegExp (value: string) {
 export function specialCharactersRegExp (value: string) {
   const { $t } = getIntl()
   const re = new RegExp(/^[\.$A-Za-z0-9_ -]+$/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.specialCharactersInvalid))
+  }
+  return Promise.resolve()
+}
+
+export function specialCharactersWithNewLineRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^[\.$A-Za-z0-9_ \n-]+$/)
 
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.specialCharactersInvalid))
@@ -871,7 +967,7 @@ export function validateSwitchStaticRouteAdminDistance (ipAddress: string) {
 
 export function checkAclName (aclName: string, aclType: string) {
   const { $t } = getIntl()
-  if (!isNaN(parseFloat(aclName)) && isFinite(parseFloat(aclName))) {
+  if (!isNaN(Number(aclName)) && isInteger(Number(aclName))) {
     try {
       const iName = parseInt(aclName, 10)
       if ((iName < 1 || iName > 99) && aclType === AclTypeEnum.STANDARD) {
@@ -885,13 +981,13 @@ export function checkAclName (aclName: string, aclType: string) {
       return Promise.reject($t(validationMessages.aclNameStartWithoutAlphabetInvalid))
     }
   } else {
-    if (!aclName.match(/^[a-zA-Z_].*/)) {
+    if (!/^[a-zA-Z]/.test(aclName)) {
       return Promise.reject($t(validationMessages.aclNameStartWithoutAlphabetInvalid))
     }
-    if (aclName.match(/.*[\"]/)) {
+    if (/["]/.test(aclName)) {
       return Promise.reject($t(validationMessages.aclNameSpecialCharacterInvalid))
     }
-    if (aclName === 'test') {
+    if (aclName.toLowerCase() === 'test') {
       return Promise.reject($t(validationMessages.aclNameContainsTestInvalid))
     }
     return Promise.resolve()
@@ -909,6 +1005,16 @@ export function validateAclRuleSequence (sequence: number, currrentRecords: AclE
 export function validateDuplicateAclName (aclName: string, aclList: Acl[]) {
   const { $t } = getIntl()
   const index = aclList.filter(item => item.name === aclName)
+  if (index.length > 0) {
+    return Promise.reject($t(validationMessages.aclNameDuplicateInvalid))
+  } else {
+    return Promise.resolve()
+  }
+}
+
+export function validateDuplicateAclOption (aclName: string, aclList: DefaultOptionType[]) {
+  const { $t } = getIntl()
+  const index = aclList.filter(item => item.value === aclName)
   if (index.length > 0) {
     return Promise.reject($t(validationMessages.aclNameDuplicateInvalid))
   } else {
@@ -946,7 +1052,7 @@ export function validateDuplicateVlanName (vlanName: string, vlanList: Vlan[]) {
 
 export function validateDuplicateVlanId (vlanId: number, vlanList: Vlan[]) {
   const { $t } = getIntl()
-  const index = vlanList.filter(item => item.vlanId.toString() === vlanId.toString())
+  const index = vlanList.filter(item => item.vlanId?.toString() === vlanId?.toString())
   if (index.length > 0) {
     return Promise.reject($t(validationMessages.vlanIdInvalid))
   } else {
@@ -1054,10 +1160,11 @@ export function ipv6RegExp (value: string) {
   return Promise.resolve()
 }
 
-export function servicePolicyNameRegExp (value: string) {
+export function servicePolicyNameRegExp (value: string, maxLength: number=32) {
   const { $t } = getIntl()
+
   // regex from service and policy backend
-  const re = new RegExp('(?=^((?!(`|\\$\\()).){2,32}$)^(\\S.*\\S)$')
+  const re = new RegExp(`(?=^((?!(\`|\\$\\()).){2,${maxLength}}$)^(\\S.*\\S)$`)
 
   // make sure there is no special character in value
   if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {
@@ -1068,5 +1175,40 @@ export function servicePolicyNameRegExp (value: string) {
     return Promise.reject($t(validationMessages.servicePolicyNameInvalid))
   }
   return Promise.resolve()
+}
+
+export function validateByteLength (value: string, maxLength: number) {
+  const { $t } = getIntl()
+  const numOfByte = byteCounter(value)
+  if (numOfByte > maxLength) {
+    return Promise.reject($t(
+      { defaultMessage: 'Field exceeds {max} bytes' },
+      { max: maxLength } ))
+  }
+
+  return Promise.resolve()
+}
+
+export function systemDefinedNameValidator (value: string) {
+  const { $t } = getIntl()
+  const rolesList = Object.values(RolesEnum)
+  const list2 = rolesList.map((item) => {return $t(roleStringMap[item])})
+  if(rolesList.includes(value as RolesEnum ) || list2.includes(value)) {
+    return Promise.reject(
+      $t({ defaultMessage: 'Name can not be same as system defined name' })
+    )
+  }
+  return Promise.resolve()
+}
+
+export function guestPasswordValidator (value: string) {
+  const { $t } = getIntl()
+  const regex = /^[a-zA-Z0-9!@#$%^&*()\[\]{}_\-+=~`|:;"'<>,./?]{6,16}$/
+
+  if (value && !regex.test(value)) {
+    return Promise.reject($t(validationMessages.guestPasswordInvalid))
+  }
+  return Promise.resolve()
+
 }
 

@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 import { ConfigurationBackupStatus, PortLabelType, PortTaggedEnum, TrustedPortTypeEnum } from '../constants'
-import { NetworkVenue }                                                                  from '../models'
 import { PortSettingModel }                                                              from '../models/PortSetting'
 
 import { ProfileTypeEnum }                               from './../constants'
@@ -9,6 +8,61 @@ import { Acl, Vlan, SwitchModel, NetworkDevicePosition } from './venue'
 import { GridDataRow } from './'
 
 export const SWITCH_SERIAL_PATTERN=/^(FEG|FEM|FEA|FEB|FEH|FEJ|FEC|FED|FEE|FEF|FJN|FJP|FEK|FEL|FMD|FME|FMF|FMG|FMU|FMH|FMJ|EZC|EZD|EZE|FLU|FLV|FLW|FLX|FMK|FML|FMM|FMN|FMP|FMQ|FMR|FMS|FNC|FNF|FND|FNG|FNH|FNM|FNS|FNE|FNJ|FNK|FNL|FNN|FNR)([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})$/i
+export const SWITCH_SERIAL_PATTERN_INCLUDED_8100=/^(FEG|FEM|FEA|FEB|FEH|FEJ|FEC|FED|FEE|FEF|FJN|FJP|FEK|FEL|FMD|FME|FMF|FMG|FMU|FMH|FMJ|EZC|EZD|EZE|FLU|FLV|FLW|FLX|FMK|FML|FMM|FMN|FMP|FMQ|FMR|FMS|FNC|FNF|FND|FNG|FNH|FNM|FNS|FNE|FNJ|FNK|FNL|FNN|FNR|FNX|FNY|FNZ|FPA|FPB)([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})$/i
+export const SWITCH_SERIAL_PATTERN_INCLUDED_8200AV=/^(FEG|FEM|FEA|FEB|FEH|FEJ|FEC|FED|FEE|FEF|FJN|FJP|FEK|FEL|FMD|FME|FMF|FMG|FMU|FMH|FMJ|EZC|EZD|EZE|FLU|FLV|FLW|FLX|FMK|FML|FMM|FMN|FMP|FMQ|FMR|FMS|FNC|FNF|FND|FNG|FNH|FNM|FNS|FNE|FNJ|FNK|FNL|FNN|FNR|FPG|FPF)([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})$/i
+export const SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV=/^(FEG|FEM|FEA|FEB|FEH|FEJ|FEC|FED|FEE|FEF|FJN|FJP|FEK|FEL|FMD|FME|FMF|FMG|FMU|FMH|FMJ|EZC|EZD|EZE|FLU|FLV|FLW|FLX|FMK|FML|FMM|FMN|FMP|FMQ|FMR|FMS|FNC|FNF|FND|FNG|FNH|FNM|FNS|FNE|FNJ|FNK|FNL|FNN|FNR|FNX|FNY|FNZ|FPA|FPB|FPG|FPF)([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})$/i
+
+export const SwitchPortViewModelQueryFields = [
+  'adminStatus',
+  'broadcastIn',
+  'broadcastOut',
+  'cloudPort',
+  'cog',
+  'crcErr',
+  'deviceStatus',
+  'egressAclName',
+  'id',
+  'inDiscard',
+  'ingressAclName',
+  'inErr',
+  'lagId',
+  'lagName',
+  'mediaType',
+  'multicastIn',
+  'multicastOut',
+  'name',
+  'neighborMacAddress',
+  'neighborName',
+  'opticsType',
+  'outErr',
+  'poeEnabled',
+  'poeTotal',
+  'poeType',
+  'poeUsage',
+  'poeUsed',
+  'portId',
+  'portIdentifier',
+  'portSpeed',
+  'signalIn',
+  'signalOut',
+  'status',
+  'switchId',
+  'switchMac',
+  'switchModel',
+  'switchName',
+  'switchSerial',
+  'switchUnitId',
+  'syncedSwitchConfig',
+  'tags',
+  'unTaggedVlan',
+  'unitState',
+  'unitStatus',
+  'usedInFormingStack',
+  'venueId',
+  'vlanIds',
+  'vsixEgressAclName',
+  'vsixIngressAclName'
+]
 
 export enum IP_ADDRESS_TYPE {
   STATIC = 'static',
@@ -53,7 +107,8 @@ export enum TroubleshootingType {
   TRACE_ROUTE = 'trace-route',
   ROUTE_TABLE = 'route-table',
   MAC_ADDRESS_TABLE = 'mac-address-table',
-  DHCP_SERVER_LEASE_TABLE = 'dhcp-server-lease-table'
+  DHCP_SERVER_LEASE_TABLE = 'dhcp-server-lease-table',
+  CABLE_TEST = 'cable-test'
 }
 
 export enum DeviceRequestAction {
@@ -96,6 +151,7 @@ export class Switch {
   rearModule?: string
   serialNumber?: string
   firmwareVersion?: string
+  vlanCustomize?: boolean
 
   constructor () {
     this.name = ''
@@ -117,25 +173,35 @@ export class Switch {
     this.rearModule = 'none'
   }
 }
+export interface CableTestTable {
+  port: string
+  speed: string
+  overallStatus: string
+  pairAStatus: string
+  pairBStatus: string
+  pairCStatus: string
+  pairDStatus: string
+}
+export interface TroubleshootingResponse {
+  latestResultResponseTime: string
+  result: string
+  pingIp: string
+  syncing: boolean
+  traceRouteTarget: string
+  traceRouteTtl: number
+  troubleshootingType: TroubleshootingType
+  macAddressTablePortIdentify: string
+  macAddressTableVlanId: string
+  macAddressTableAddress: string,
+  macAddressTableType: TroubleshootingMacAddressOptionsEnum,
+  dhcpServerLeaseList?: SwitchDhcpLease[]
+  cableTestResult?: CableTestTable
+}
 
 export interface TroubleshootingResult {
   requestId: string
-  response: {
-      latestResultResponseTime: string
-      result: string
-      pingIp: string
-      syncing: boolean
-      traceRouteTarget: string
-      traceRouteTtl: number
-      troubleshootingType: TroubleshootingType
-      macAddressTablePortIdentify: string
-      macAddressTableVlanId: string
-      macAddressTableAddress: string,
-      macAddressTableType: TroubleshootingMacAddressOptionsEnum,
-      dhcpServerLeaseList?: SwitchDhcpLease[]
-  }
+  response: TroubleshootingResponse
 }
-
 export interface PingSwitch {
   targetHost: string
 }
@@ -148,7 +214,10 @@ export interface TraceRouteSwitch {
 export interface VeViewModel {
   ingressAclName?: string
   egressAclName?: string
+  vsixIngressAclName?: string
+  vsixEgressAclName?: string
   name?: string
+  connectedVe?: boolean
   dhcpRelayAgent?: string
   defaultVlan: boolean
   deviceStatus: SwitchStatusEnum
@@ -200,7 +269,7 @@ export class SwitchViewModel extends Switch {
   type?: string
   configReady = false
   syncedSwitchConfig = false
-  unitId = 1
+  unitId?: number
   isStack?: boolean
   deviceStatus?: SwitchStatusEnum
   model?: string
@@ -211,7 +280,6 @@ export class SwitchViewModel extends Switch {
   uptime?: string
   switchName?: string
   aclCustomize?: boolean
-  vlanCustomize?: boolean
   operationalWarning?: boolean
   cliApplied?: boolean
   formStacking?: boolean
@@ -237,6 +305,8 @@ export class SwitchViewModel extends Switch {
   position?: NetworkDevicePosition
   syncedAdminPassword?: boolean
   adminPassword?: string
+  extIp?: string
+  veCount?: number
 }
 
 export interface SwitchRow {
@@ -274,6 +344,8 @@ export interface SwitchRow {
   clientCount?: number
   syncedAdminPassword?: boolean
   adminPassword?: string
+  extIp?: string
+  ipAddress?: string
 }
 
 export interface StackMember {
@@ -435,8 +507,13 @@ export interface SwitchPortViewModel extends GridDataRow {
   unitState: SwitchStatusEnum; // stack unit status (Online/Offline)
   SwitchPortStackingPortField: boolean;
   mediaType?: string;
-  portnumber?: string
-  usedInUplink?: boolean
+  portnumber?: string;
+  portNumber?: string;
+  usedInUplink?: boolean;
+  id?: string;
+  venueId: string;
+  portSpeedConfig?: string;
+  portConnectorType?: string;
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {
@@ -457,6 +534,8 @@ export interface SwitchSlot {
     type: string
     status: string
   }
+  portNumber?: number;
+  portTagged?: string;
 }
 
 export interface SwitchPortModuleInfo {
@@ -568,6 +647,7 @@ export interface VePortRouted {
 export interface SwitchDefaultVlan {
   defaultVlanId: number
   switchId: string
+  vlanList: SwitchVlans[]
 }
 
 
@@ -650,6 +730,7 @@ export interface PortStatus{
   portNumber: number
   portTagged: string
   unitNumber?: number
+  portIdentifier?: string
 }
 
 export interface SwitchSlot2 { //TODO
@@ -701,6 +782,7 @@ export interface SwitchConfigurationProfile {
   trustedPorts: TrustedPort[]
   voiceVlanOptions?: VoiceVlanOption[]
   voiceVlanConfigs?: VoiceVlanConfig[]
+  applyOnboardOnly: boolean
 }
 
 export interface AclStandardRule {
@@ -735,10 +817,21 @@ export interface CliTemplateExample {
   version: string
 }
 
+export interface SwitchCustomizedVariable {
+  serialNumbers: string[] | string
+  value: string
+  key: string
+}
 export interface CliTemplateVariable {
   name: string
   type: string
   value: string
+  rangeStart?: number
+  rangeEnd?: number
+  ipAddressStart?: string
+  ipAddressEnd?: string
+  subMask?: string
+  switchVariables?: SwitchCustomizedVariable[]
 }
 
 export interface CliTemplateVenueSwitches {
@@ -813,15 +906,6 @@ export interface Lag {
   untaggedVlan: string
 }
 
-export interface SchedulingModalState {
-  visible: boolean,
-  networkVenue?: NetworkVenue,
-  venue?: {
-    latitude: string,
-    longitude: string,
-    name: string
-  }
-}
 export interface AclStandardRule {
   sequence: number
   action: string
@@ -838,4 +922,15 @@ export interface CliProfileModel{
 export interface CliProfileFamily {
   family: string,
   model: CliProfileModel[]
+}
+
+export enum VlanModalType {
+  UNTAGGED = 'untaggedVlan',
+  TAGGED = 'taggedVlans'
+}
+
+export interface SwitchFeatureSet {
+  featureName: string,
+  requiredFw?: string,
+  supportedModelFamilies?: string[]
 }

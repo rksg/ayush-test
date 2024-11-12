@@ -4,21 +4,15 @@ import { useIntl } from 'react-intl'
 
 import { Vlan, transformTitleCase, transformDisplayOnOff, SpanningTreeProtocolName } from '@acx-ui/rc/utils'
 
-import * as UI from './styledComponents'
-
 export const VlanDetail = (props: { row : Vlan }) => {
   const { $t } = useIntl()
   const { row } = props
-  // eslint-disable-next-line max-len
-  const subtitle = $t({ defaultMessage: 'VLAN settings as defined in the switch configuration profile or via CLI directly to the switch' })
 
   return (
-
     <Form
       labelCol={{ span: 12 }}
       labelAlign='left'
     >
-      <UI.SubTitle>{subtitle}</UI.SubTitle>
       <Form.Item
         label={$t({ defaultMessage: 'VLAN ID:' })}
         children={row.vlanId}

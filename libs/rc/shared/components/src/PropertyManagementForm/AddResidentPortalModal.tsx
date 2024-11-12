@@ -3,7 +3,7 @@ import { useIntl }      from 'react-intl'
 
 import { Modal, ModalType } from '@acx-ui/components'
 
-import { ResidentPortalForm } from '../ResidentPortal'
+import { ResidentPortalForm } from '../services/ResidentPortal'
 
 interface AddResidentPortalModalProps {
   visible: boolean

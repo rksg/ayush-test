@@ -1,8 +1,9 @@
-import { useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   ApDetails, ApDeviceStatusEnum, ApPosition, CommonUrlsInfo,
   FloorPlanDto, NetworkDeviceType, SwitchStatusEnum,
-  TypeWiseNetworkDevices, WifiUrlsInfo } from '@acx-ui/rc/utils'
+  TypeWiseNetworkDevices, WifiUrlsInfo,
+  CommonRbacUrlsInfo, APGeneralFixtures } from '@acx-ui/rc/utils'
 import { Provider }                                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
@@ -12,6 +13,7 @@ import '@testing-library/jest-dom'
 import { rest }        from 'msw'
 import { ApFloorplan } from '.'
 
+const { mockedMeshAps: mockedRbacMeshAps, mockedApPosition } = APGeneralFixtures
 
 const apDetails: ApDetails ={
   serialNumber: '422039000034',
@@ -69,8 +71,8 @@ const networkDevices: {
     }],
     LTEAP: [],
     RogueAP: [],
-    cloudpath: [],
-    DP: []
+    DP: [],
+    rwg: []
   }
 }
 
@@ -148,7 +150,7 @@ describe('AP floorplan', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        `${window.location.origin}/api/file/tenant/:tenantId/:imageId/url`,
+        'venues/:venueId/signurls/:imageId/urls',
         (req, res, ctx) => {
           const { imageId } = req.params as { imageId: keyof typeof imageObj }
           return res(ctx.json({ ...imageObj[imageId], imageId }))
@@ -165,6 +167,12 @@ describe('AP floorplan', () => {
       rest.post(
         CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json(apListData))
+      ),
+      rest.get(
+        CommonUrlsInfo.getApMeshTopology.url,
+        (req, res, ctx) => {
+          return res(ctx.json({}))
+        }
       )
     )
   })
@@ -191,7 +199,7 @@ describe('AP floorplan', () => {
   })
 
   it('should render floorplan with mesh info', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API)
 
     mockServer.use(
       rest.post(
@@ -201,8 +209,18 @@ describe('AP floorplan', () => {
       rest.get(
         CommonUrlsInfo.getApMeshTopology.url,
         (req, res, ctx) => {
-          return res(ctx.json({}))
+          return res(ctx.json({ data: [] }))
         }
+      ),
+
+      // rbac
+      rest.post(
+        CommonRbacUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json(mockedRbacMeshAps))
+      ),
+      rest.get(
+        CommonRbacUrlsInfo.GetApPosition.url,
+        (_, res, ctx) => res(ctx.json(mockedApPosition))
       )
     )
 
@@ -225,6 +243,7 @@ describe('AP floorplan', () => {
       expect(screen.getByRole('img')).toHaveAttribute('src',
         imageObj['01acff37331949c686d40b5a00822ec2-001.jpeg'].signedUrl)
     })
+
     fireEvent.load(screen.getByRole('img'))
 
     expect(await screen.findByTestId('APMeshRoleRoot')).toBeVisible()

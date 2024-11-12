@@ -2,6 +2,7 @@ module.exports = {
   displayName: 'rc',
   preset: '../../jest.preset.ts',
   transform: {
+    '^.+\\.mjs?$': 'babel-jest',
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nrwl/react/plugins/jest',
     '^.+\\.[tj]sx?$': 'babel-jest'
   },
@@ -9,10 +10,10 @@ module.exports = {
   coverageDirectory: '../../coverage/apps/rc',
   coverageThreshold: {
     global: {
-      statements: 78,
-      branches: 66,
-      functions: 77,
-      lines: 78
+      statements: 84.5,
+      branches: 72.5,
+      functions: 82.5,
+      lines: 85
     }
   }
 }

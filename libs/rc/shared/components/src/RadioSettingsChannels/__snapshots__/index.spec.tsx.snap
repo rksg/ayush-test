@@ -2,12 +2,216 @@
 
 exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
 <DocumentFragment>
-  <form
+  .c0 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c0 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c0 svg:before {
+  content: 'a';
+}
+
+.c0 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c0.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c0.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c0.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c0.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c0[disabled] svg path,
+.c0.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c0[disabled].ant-btn-link svg path,
+.c0.ant-btn-disabled.ant-btn-link svg path,
+.c0[disabled].ant-btn-default svg path,
+.c0.ant-btn-disabled.ant-btn-default svg path,
+.c0[disabled].ant-btn-primary svg path,
+.c0.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+.c4 .ant-checkbox-wrapper {
+  position: relative;
+  font-size: 10px;
+  width: 26px;
+  height: 0;
+  margin-right: 6px;
+  border-bottom: 16px solid var(--acx-neutrals-30);
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+}
+
+.c4 .ant-checkbox-wrapper .channels > span + span {
+  padding-left: 6px;
+}
+
+.c4 .ant-checkbox-wrapper > span {
+  width: 100%;
+  padding: 0;
+}
+
+.c4 .ant-checkbox-wrapper > span:first-child {
+  display: none;
+}
+
+.c4 .ant-checkbox-wrapper > span:last-child {
+  position: relative;
+  text-align: center;
+  font-size: var(--acx-body-5-font-size);
+  line-height: var(--acx-body-5-line-height);
+  color: var(--acx-primary-white);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.c4 .ant-checkbox-wrapper:hover {
+  border-bottom-color: var(--acx-neutrals-40);
+}
+
+.c4 .ant-checkbox-wrapper.ant-checkbox-wrapper-checked {
+  border-bottom-color: var(--acx-accents-blue-50);
+}
+
+.c4 .ant-checkbox-wrapper.ant-checkbox-wrapper-checked:hover {
+  border-bottom-color: var(--acx-accents-blue-55);
+}
+
+.c4 .ant-checkbox-wrapper.ant-checkbox-wrapper-disabled:not(.ant-checkbox-wrapper-checked) {
+  border-bottom-color: var(--acx-neutrals-30);
+}
+
+.c4 .ant-checkbox-wrapper.ant-checkbox-wrapper-disabled:not(.ant-checkbox-wrapper-checked) > span:last-child {
+  color: var(--acx-neutrals-30);
+}
+
+.c4 .ant-checkbox-wrapper.ant-checkbox-wrapper-disabled:not(.ant-checkbox-wrapper-checked):before {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  border-bottom: 14px solid var(--acx-primary-white);
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  width: calc(100% + 6px);
+  left: -3px;
+  top: 1px;
+}
+
+.c4.group-2 .ant-checkbox-wrapper {
+  width: calc(26px*2 + 6px);
+}
+
+.c4.group-4 .ant-checkbox-wrapper {
+  width: calc(26px*4 + 6px*3);
+}
+
+.c4.group-8 .ant-checkbox-wrapper {
+  width: calc(26px*8 + 6px*7);
+}
+
+.c4 span .channels {
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: baseline;
+  -webkit-box-align: baseline;
+  -ms-flex-align: baseline;
+  align-items: baseline;
+  -webkit-box-pack: space-around;
+  -webkit-justify-content: space-around;
+  -ms-flex-pack: space-around;
+  justify-content: space-around;
+}
+
+.c1 {
+  min-height: 16px !important;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  border-radius: 0;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  color: var(--acx-primary-black);
+  margin: 0 4px 3px 0;
+}
+
+.c2.ant-btn.ant-btn-default {
+  border: 1px solid var(--acx-accents-orange-25);
+  background: var(--acx-accents-orange-25);
+}
+
+.c2.ant-btn.ant-btn-default[disabled] {
+  border: 1px solid var(--acx-accents-orange-25);
+  background: var(--acx-accents-orange-25);
+  color: var(--acx-primary-black);
+}
+
+.c2.ant-btn.ant-btn-default:hover,
+.c2.ant-btn.ant-btn-default:focus,
+.c2.ant-btn.ant-btn-default:active {
+  border-color: var(--acx-accents-orange-30);
+  background: var(--acx-accents-orange-25);
+}
+
+.c3.ant-btn.ant-btn-default {
+  border: 1px solid var(--acx-accents-orange-10);
+  background: var(--acx-accents-orange-10);
+}
+
+.c3.ant-btn.ant-btn-default[disabled] {
+  border: 1px solid var(--acx-accents-orange-10);
+  background: var(--acx-accents-orange-10);
+  color: var(--acx-primary-black);
+}
+
+.c3.ant-btn.ant-btn-default:hover,
+.c3.ant-btn.ant-btn-default:focus,
+.c3.ant-btn.ant-btn-default:active {
+  border-color: var(--acx-accents-orange-20);
+  background: var(--acx-accents-orange-10);
+}
+
+<form
     class="ant-form ant-form-horizontal"
   >
     <div>
       <button
-        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup styledComponents__BarButton-sc-tbspz7-5 styledComponents__BarButton5G-sc-tbspz7-6 ekutnJ dsazGm"
+        class="ant-btn ant-btn-default c0 c1 c2"
         style="width: 250px;"
         type="button"
       >
@@ -16,7 +220,7 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
         </span>
       </button>
       <button
-        class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup styledComponents__BarButton-sc-tbspz7-5 styledComponents__BarButton5G-sc-tbspz7-6 ekutnJ dsazGm"
+        class="ant-btn ant-btn-default c0 c1 c2"
         style="width: 506px;"
         type="button"
       >
@@ -26,7 +230,7 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
       </button>
     </div>
     <button
-      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup styledComponents__BarButton-sc-tbspz7-5 styledComponents__BarButtonDFS-sc-tbspz7-8 ekutnJ jHFkHc"
+      class="ant-btn ant-btn-default c0 c1 c3"
       style="width: 506px; left: 128px;"
       type="button"
     >
@@ -57,7 +261,7 @@ exports[`RadioSettingsChannelse should render group size of 4 correctly 1`] = `
                   class="ant-form-item-control-input-content"
                 >
                   <div
-                    class="ant-checkbox-group styledComponents__CheckboxGroup-sc-tbspz7-3 fWTSQR group-4"
+                    class="ant-checkbox-group c4 group-4"
                     id="apRadioParams50G_allowedChannels"
                   >
                     <label

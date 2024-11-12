@@ -9,9 +9,15 @@ import {
   Loader,
   TableColumn
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                                               from '@acx-ui/feature-toggle'
-import { SimpleListTooltip, useDpskNewConfigFlowParams }                                            from '@acx-ui/rc/components'
-import { doProfileDelete, useDeleteDpskMutation, useGetEnhancedDpskListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                        from '@acx-ui/rc/components'
+import {
+  doProfileDelete,
+  useDeleteDpskMutation,
+  useGetEnhancedDpskListQuery,
+  useNetworkListQuery,
+  useWifiNetworkListQuery
+} from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
@@ -25,13 +31,14 @@ import {
   DpskDetailsTabKey,
   getServiceListRoutePath,
   PassphraseFormatEnum,
-  displayDeviceCountLimit
+  displayDeviceCountLimit,
+  displayDefaultAccess,
+  hasDpskAccess,
+  getScopeKeyByService
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                               from '@acx-ui/types'
-import { filterByAccess, hasAccess, hasRoles }                     from '@acx-ui/user'
-
-import { displayDefaultAccess } from '../utils'
+import { filterByAccess, hasRoles }                                from '@acx-ui/user'
 
 const defaultPayload = {
   filters: {}
@@ -46,13 +53,14 @@ export default function DpskTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteDpsk ] = useDeleteDpskMutation()
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
 
+  const settingsId = 'dpsk-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedDpskListQuery,
     defaultPayload,
     search: defaultSearch,
-    apiParams: dpskNewConfigFlowParams
+    apiParams: {},
+    pagination: { settingsId }
   })
 
   const doDelete = (selectedRow: DpskSaveData, callback: () => void) => {
@@ -65,17 +73,19 @@ export default function DpskTable () {
         { fieldName: 'networkIds', fieldText: intl.$t({ defaultMessage: 'Network' }) }
       ],
       async () => deleteDpsk({
-        params: { serviceId: selectedRow.id, ...dpskNewConfigFlowParams }
+        params: { serviceId: selectedRow.id }
       }).then(callback)
     )
   }
 
   const rowActions: TableProps<DpskSaveData>['rowActions'] = [
     {
+      scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.DELETE),
       label: intl.$t({ defaultMessage: 'Delete' }),
       onClick: ([selectedRow], clearSelection) => doDelete(selectedRow, clearSelection)
     },
     {
+      scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: intl.$t({ defaultMessage: 'Edit' }),
       onClick: ([{ id }]) => {
         navigate({
@@ -109,28 +119,31 @@ export default function DpskTable () {
       </span>
     </Space>
 
+  const allowedRowActions = (hasDpskAccess() && filterByAccess(rowActions)) || []
   return (
     <>
       <PageHeader
         title={title}
         breadcrumb={breadCrumb}
-        extra={filterByAccess([
-          // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}>
+        extra={hasDpskAccess() && filterByAccess([
+          <TenantLink
+            to={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
+            scopeKey={getScopeKeyByService(ServiceType.DPSK, ServiceOperation.CREATE)}
+          >
             <Button type='primary'>{intl.$t({ defaultMessage: 'Add DPSK Service' })}</Button>
           </TenantLink>
         ])}
       />
       <Loader states={[tableQuery]}>
         <Table<DpskSaveData>
-          settingsId='dpsk-table'
+          settingsId={settingsId}
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowActions={allowedRowActions}
+          rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
@@ -140,11 +153,13 @@ export default function DpskTable () {
 }
 
 function useColumns () {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const intl = useIntl()
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const params = useParams()
 
-  const { networkNameMap } = useNetworkListQuery({
+  const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
+  const { networkNameMap } = getNetworkListQuery({
     params: { tenantId: params.tenantId },
     payload: {
       fields: ['name', 'id'],

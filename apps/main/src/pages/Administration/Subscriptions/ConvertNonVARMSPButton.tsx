@@ -7,6 +7,7 @@ import {
   Loader,
   showActionModal
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { useGetMspEcProfileQuery } from '@acx-ui/msp/services'
 import {
   MspUserSettingType,
@@ -52,6 +53,8 @@ export const ConvertNonVARMSPButton = () => {
   const [getUserSettings] = useLazyGetAllUserSettingsQuery()
   const [convertNonVarToMsp] = useConvertNonVARToMSPMutation()
   const [saveUserSettings] = useSaveUserSettingsMutation()
+  const removeNonVarConversionButton = useIsSplitOn(Features.REC_TO_MSP_CONVERSION_TOGGLE)
+  const isPtenantRbacApiEnabled = useIsSplitOn(Features.PTENANT_RBAC_API)
 
   const checkMspLicenses = async () => {
     const { destroy } = showActionModal({
@@ -84,7 +87,8 @@ export const ConvertNonVARMSPButton = () => {
         okText: $t({ defaultMessage: 'Take me to the MSP dashboard' }),
         onOk: async () => {
           try {
-            const userSettings = await getUserSettings({ params }).unwrap()
+            const userSettings = await getUserSettings({ params,
+              enableRbac: isPtenantRbacApiEnabled }).unwrap()
             let mspSetting
             // eslint-disable-next-line max-len
             = getUserSettingsByPath(userSettings, MSP_USER_SETTING) as (MspUserSettingType | undefined)
@@ -161,7 +165,7 @@ export const ConvertNonVARMSPButton = () => {
 
   const canInitCheck = useCallback(() => {
     const user = userProfileCtx.data
-    if (!user) return false
+    if (!user || removeNonVarConversionButton) return false
 
     const mspUtils = MSPUtils()
     const isPrimeAdminUser = userProfileCtx.isPrimeAdmin()
@@ -198,7 +202,7 @@ export const ConvertNonVARMSPButton = () => {
   const canInit = canInitCheck()
   const displayConvertBtn = canInit && tenantInfo
                               && tenantInfo.tenantType !== TenantType.MSP_NON_VAR
-                              && !isLoadingMSPEC
+                              && !isLoadingMSPEC && !removeNonVarConversionButton
 
   return displayConvertBtn
     ? <Button size='middle' onClick={handleCheckMspLicensesClick}>

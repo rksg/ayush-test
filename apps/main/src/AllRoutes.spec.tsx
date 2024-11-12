@@ -1,15 +1,22 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed }      from '@acx-ui/feature-toggle'
-import { Provider }                            from '@acx-ui/store'
-import { render, screen, cleanup, mockServer } from '@acx-ui/test-utils'
-import { RolesEnum }                           from '@acx-ui/types'
-import { getUserProfile, setUserProfile }      from '@acx-ui/user'
+import { useIsSplitOn, useIsTierAllowed }                              from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }                                                 from '@acx-ui/msp/utils'
+import { Provider }                                                    from '@acx-ui/store'
+import { render, screen, cleanup, mockServer }                         from '@acx-ui/test-utils'
+import { RolesEnum }                                                   from '@acx-ui/types'
+import { getUserProfile, MFAStatus, setUserProfile, UserRbacUrlsInfo } from '@acx-ui/user'
 
 import AllRoutes from './AllRoutes'
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
+  useStreamActivityMessagesQuery: jest.fn(),
+  useGetPreferencesQuery: () => ({ data: {} }),
+  useGetTenantDetailsQuery: () => ({ data: {} })
+}))
+jest.mock('@acx-ui/msp/services', () => ({
+  ...jest.requireActual('@acx-ui/msp/services'),
   useStreamActivityMessagesQuery: jest.fn(),
   useGetMspEcProfileQuery: () => ({ data: {
     msp_label: '',
@@ -18,8 +25,10 @@ jest.mock('@acx-ui/rc/services', () => ({
     service_expiration_date: '',
     is_active: 'false'
   } }),
-  useGetPreferencesQuery: () => ({ data: {} }),
-  useGetTenantDetailsQuery: () => ({ data: {} })
+  useGetBrandingDataQuery: () => ({ data: {
+    msp_label: '',
+    name: ''
+  } })
 }))
 jest.mock('@acx-ui/main/components', () => ({
   ...jest.requireActual('@acx-ui/main/components'),
@@ -32,7 +41,8 @@ jest.mock('@acx-ui/main/components', () => ({
 }))
 jest.mock('@acx-ui/rc/components', () => ({
   CloudMessageBanner: () => <div data-testid='cloud-message-banner' />,
-  useUpdateGoogleMapRegion: () => { return { update: jest.fn() }}
+  useUpdateGoogleMapRegion: () => { return { update: jest.fn() }},
+  useIsEdgeReady: jest.fn().mockReturnValue(false)
 }))
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
@@ -60,7 +70,8 @@ jest.mock('@rc/Routes', () => () => {
     </>
   )
 },{ virtual: true })
-jest.mock('./pages/Venues/VenuesTable', () => ({
+jest.mock('./pages/Venues', () => ({
+  ...jest.requireActual('./pages/Venues'),
   VenuesTable: () => {
     return <div data-testid='venues' />
   }
@@ -86,7 +97,20 @@ describe('AllRoutes', () => {
     mockServer.use(
       rest.get('mspCustomers/', (req, res, ctx) => {
         return res(ctx.json({}))
-      })
+      }),
+      rest.post(
+        MspUrlsInfo.getVarDelegations.url,
+        (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.get(
+        UserRbacUrlsInfo.getMfaTenantDetails.url,
+        (_req, res, ctx) => res(ctx.json({
+          tenantStatus: MFAStatus.DISABLED,
+          mfaMethods: [],
+          userId: 'userId',
+          enabled: false
+        }))
+      )
     )
   })
 
@@ -161,19 +185,6 @@ describe('AllRoutes', () => {
     expect(await screen.findByTestId('services')).toBeInTheDocument()
   })
 
-  test('should not navigate to services/* if the feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-
-    render(<Provider><AllRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/services/some-page',
-        wrapRoutes: false
-      }
-    })
-
-    expect(await screen.findByText('Services is not enabled')).toBeInTheDocument()
-  })
-
   test('should navigate to policies/* if the feature flag is on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
@@ -185,19 +196,6 @@ describe('AllRoutes', () => {
     })
 
     expect(await screen.findByTestId('policies')).toBeInTheDocument()
-  })
-
-  test('should not navigate to policies/* if the feature flag is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-
-    render(<Provider><AllRoutes /></Provider>, {
-      route: {
-        path: '/tenantId/t/policies/some-page',
-        wrapRoutes: false
-      }
-    })
-
-    expect(await screen.findByText('Policies is not enabled')).toBeInTheDocument()
   })
 
   test('should navigate to venues/*', async () => {
@@ -234,7 +232,7 @@ describe('AllRoutes', () => {
     await screen.findByTestId('timeline')
   })
 
-  test('should not see anayltics & service validation if not admin', async () => {
+  test('should not see AI Assurance if guest manager', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     const { rerender } = render(<AllRoutes />, {
@@ -243,23 +241,43 @@ describe('AllRoutes', () => {
         path: '/tenantId/t/dashboard'
       }
     })
-
-    const menuItem = await screen.findByRole('menuitem', { name: 'AI Assurance' })
-    expect(menuItem).toBeVisible()
+    expect(await screen.findByRole('menuitem', { name: 'AI Assurance' })).toBeVisible()
 
     setUserProfile({
       allowedOperations: [],
       profile: {
         ...getUserProfile().profile,
-        roles: [RolesEnum.READ_ONLY]
+        roles: [RolesEnum.GUEST_MANAGER]
+      },
+      accountTier: 'Gold',
+      betaEnabled: false
+    })
+    rerender(<AllRoutes />)
+    expect(screen.queryByRole('menuitem', { name: 'AI Assurance' })).not.toBeInTheDocument()
+  })
+
+  test('should not see AI Assurance if DPSK admin', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+    const { rerender } = render(<AllRoutes />, {
+      wrapper: Provider,
+      route: {
+        path: '/tenantId/t/dashboard'
       }
     })
+    expect(await screen.findByRole('menuitem', { name: 'AI Assurance' })).toBeVisible()
 
+    setUserProfile({
+      allowedOperations: [],
+      profile: {
+        ...getUserProfile().profile,
+        roles: [RolesEnum.DPSK_ADMIN]
+      },
+      accountTier: 'Gold',
+      betaEnabled: false
+    })
     rerender(<AllRoutes />)
-
-    await screen.findAllByRole('menuitem')
-
-    expect(menuItem).not.toBeInTheDocument()
+    expect(screen.queryByRole('menuitem', { name: 'AI Assurance' })).not.toBeInTheDocument()
   })
 
   test('should navigate to ruckus-wan-gateway/*', async () => {

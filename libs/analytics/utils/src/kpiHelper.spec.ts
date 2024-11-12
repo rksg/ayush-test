@@ -1,7 +1,7 @@
 import { formatter } from '@acx-ui/formatter'
 
-import { kpiDelta }      from './kpiHelper'
-import { TrendTypeEnum } from './types/trendType'
+import { kpiDelta, limitRange } from './kpiHelper'
+import { TrendTypeEnum }        from './types/trendType'
 
 describe('kpiDelta', () => {
   it('should return correct data', () => {
@@ -28,5 +28,19 @@ describe('kpiDelta', () => {
       .toEqual({ trend: TrendTypeEnum.None, value: '=' })
     expect(kpiDelta(0.40006, ...args)) // rounding up
       .toEqual({ trend: TrendTypeEnum.None, value: '-0.01%' })
+  })
+})
+
+describe('limitRange', () => {
+  it('should return the correct value', async () => {
+    expect(limitRange(0.01)).toEqual(0.01)
+    expect(limitRange(-0.01)).toEqual(0)
+    expect(limitRange(1)).toEqual(1)
+    expect(limitRange(0)).toEqual(0)
+    expect(limitRange(1.1)).toEqual(1)
+    expect(limitRange(-10, 0, 100)).toEqual(0)
+    expect(limitRange(101, 0, 100)).toEqual(100)
+    expect(limitRange(undefined!)).toEqual(undefined)
+    expect(limitRange(null!)).toEqual(null)
   })
 })

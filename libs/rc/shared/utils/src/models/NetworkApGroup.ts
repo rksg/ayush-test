@@ -13,6 +13,8 @@ export class NetworkApGroup {
   // AP group radio types configuration
   radioTypes?: RadioTypeEnum[]
 
+  allApGroupsRadioTypes?: RadioTypeEnum[]
+
   isDefault?: boolean
 
   apGroupName?: string
@@ -34,6 +36,12 @@ export class NetworkApGroup {
   vlanPoolName?: string
 
   id?: string
+
+  venueId?: string
+
+  networkId?: string
+
+  isAllApGroups?: boolean
 
   constructor () {
     this.radio = RadioEnum.Both

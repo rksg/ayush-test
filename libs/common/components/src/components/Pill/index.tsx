@@ -9,6 +9,8 @@ import { cssStr } from '../../theme/helper'
 
 import * as UI from './styledComponents'
 
+export { Pill } from './styledComponents'
+
 export type { IncidentSeverities }
 
 interface TrendPillProps {
@@ -40,6 +42,12 @@ interface ColorPillProps {
 export function ColorPill ({ color, value }: ColorPillProps) {
   return (
     <UI.Pill type='color' color={color}>{value}</UI.Pill>
+  )
+}
+
+export function StatusPill ({ color, value }: ColorPillProps) {
+  return (
+    <UI.StatusPill color={color}>{value}</UI.StatusPill>
   )
 }
 

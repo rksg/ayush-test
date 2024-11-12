@@ -14,7 +14,6 @@ export interface EdgeDhcpSetting {
     dhcpPools?: EdgeDhcpPool[];
     hosts?: EdgeDhcpHost[];
     dhcpOptions?: EdgeDhcpOption[];
-    edgeIds: string[];
 }
 
 export interface EdgeDhcpPool {
@@ -69,9 +68,11 @@ export interface DhcpStats {
   currentVersion?: string
   tags?: string[]
   edgeAlarmSummary?: EdgeAlarmSummary[]
+  edgeClusterIds?: string[]
 }
 
 export interface DhcpHostStats {
+  hostName: string
   dhcpPoolName: string
   hostIpAddr: string
   hostMac: string
@@ -79,13 +80,13 @@ export interface DhcpHostStats {
   hostExpireDate: Date
   hostRemainingTime: number
   edgeId: string
+  venueId: string
+  dhcpId: string
 }
 
 export interface DhcpUeSummaryStats {
-  edgeName?: string
-  edgeId?: string
+  edgeClusterId?: string
   venueId?: string
-  venueName?: string
   successfulAllocation?: number
   remainsIps?: number
   droppedPackets?: number
@@ -94,5 +95,5 @@ export interface DhcpUeSummaryStats {
 export interface EdgeDhcpSettingFormData extends EdgeDhcpSetting {
   enableSecondaryDNSServer?: boolean
   leaseTimeType?: LeaseTimeType
-  usedForNSG?: boolean
+  usedForPin?: boolean
 }

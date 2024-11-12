@@ -14,13 +14,11 @@ import {
   screen,
   waitFor
 } from '@acx-ui/test-utils'
-import { hasRoles } from '@acx-ui/user'
+import { RolesEnum, WifiScopes }          from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import { ServiceCard } from '.'
 
-
-jest.mock('@acx-ui/user')
-const mockedHasRoles = hasRoles as jest.MockedFunction<typeof hasRoles>
 
 const mockedUseNavigate = jest.fn()
 const mockUseLocationValue = {
@@ -37,15 +35,8 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 describe('ServiceCard', () => {
-  const params = {
-    tenantId: '15320bc221d94d2cb537fa0189fee742'
-  }
-
+  const params = { tenantId: '15320bc221d94d2cb537fa0189fee742' }
   const path = '/t/:tenantId'
-
-  beforeEach(() => {
-    mockedHasRoles.mockReturnValue(true)
-  })
 
   it('should render LIST service card', async () => {
     const { result: listPath } = renderHook(() => {
@@ -113,7 +104,10 @@ describe('ServiceCard', () => {
   })
 
   it('should render readonly service card', async () => {
-    mockedHasRoles.mockReturnValue(false)
+    setUserProfile({
+      ...getUserProfile(),
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
+    })
 
     render(
       <ServiceCard
@@ -126,10 +120,47 @@ describe('ServiceCard', () => {
     )
 
     await waitFor(() => {
-      expect(screen.queryByRole('button', { name: 'Add' })).toBeNull()
-    }, {
-      timeout: 2000,
-      interval: 200
+      expect(screen.queryByRole('button', { name: 'Add' })).not.toBeInTheDocument()
+    })
+  })
+
+  describe('with specific permissions', () => {
+    it('should render correctly with the corresponding custom role', async () => {
+      setUserProfile({
+        ...getUserProfile(),
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [WifiScopes.READ, WifiScopes.UPDATE]
+      })
+      render(
+        <ServiceCard
+          serviceType={ServiceType.MDNS_PROXY}
+          categories={[RadioCardCategory.WIFI]}
+          type={'button'}
+        />
+      )
+      await waitFor(() => {
+        expect(screen.queryByRole('button', { name: 'Add' })).not.toBeInTheDocument()
+      })
+    })
+
+    it('shoulde render correctly with the DPSK access', async () => {
+      setUserProfile({
+        ...getUserProfile(),
+        profile: { ...getUserProfile().profile, roles: [RolesEnum.DPSK_ADMIN] }
+      })
+
+      render(
+        <ServiceCard
+          serviceType={ServiceType.DPSK}
+          categories={[RadioCardCategory.WIFI]}
+          type={'button'}
+        />, {
+          route: { params, path }
+        }
+      )
+
+      expect(await screen.findByRole('button', { name: 'Add' })).toBeInTheDocument()
     })
   })
 })

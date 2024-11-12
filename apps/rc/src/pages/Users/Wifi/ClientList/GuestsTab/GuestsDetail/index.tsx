@@ -6,7 +6,6 @@ import { Divider,
   Space } from 'antd'
 import { useIntl } from 'react-intl'
 
-
 import {
   Dropdown,
   CaretDownSolidIcon,
@@ -18,23 +17,25 @@ import {
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { ClientHealthIcon }          from '@acx-ui/rc/components'
-import { useGetGuestsListQuery }     from '@acx-ui/rc/services'
 import {
+  ClientInfo,
+  getClientHealthClass,
   getOsTypeIcon,
   Guest,
-  GuestClient,
   GuestStatusEnum,
-  transformDisplayText,
-  useTableQuery
+  GuestTypesEnum,
+  transformDisplayText
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }     from '@acx-ui/react-router-dom'
-import { RolesEnum, RequestPayload } from '@acx-ui/types'
-import { hasRoles }                  from '@acx-ui/user'
+import { TenantLink, useParams }                             from '@acx-ui/react-router-dom'
+import { RolesEnum, RequestPayload, WifiScopes }             from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasRoles, hasPermission } from '@acx-ui/user'
+import { noDataDisplay }                                     from '@acx-ui/utils'
 
 import {
   renderAllowedNetwork,
   renderExpires,
-  renderGuestType
+  renderGuestType,
+  operationRoles
 } from '../GuestsTable'
 import * as UI from '../styledComponents'
 
@@ -45,6 +46,19 @@ interface GuestDetailsDrawerProps {
   currentGuest: Guest,
   triggerClose: () => void,
   queryPayload?: RequestPayload
+}
+
+export const isEnabledGeneratePassword = (guestDetail:Guest) => {
+  // self-sign in & host approval should to use forget password
+  const isValidType = guestDetail.guestType !== GuestTypesEnum.SELF_SIGN_IN &&
+  guestDetail.guestType !== GuestTypesEnum.HOST_GUEST
+  const isOnline = guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1
+  const isOffline = guestDetail.guestStatus === GuestStatusEnum.OFFLINE &&
+  guestDetail.wifiNetworkId
+  const isUnlimit = guestDetail.maxNumberOfClients === -1 &&
+  guestDetail.guestStatus !== GuestStatusEnum.EXPIRED &&
+  (!guestDetail.emailAddress || !guestDetail.mobilePhoneNumber)
+  return Boolean(isValidType && (isOnline || isOffline || isUnlimit))
 }
 
 export const defaultGuestPayload = {
@@ -58,7 +72,7 @@ export const defaultGuestPayload = {
     'name',
     'passDurationHours',
     'id',
-    'networkId',
+    'wifiNetworkId',
     'maxNumberOfClients',
     'notes',
     'clients',
@@ -77,37 +91,20 @@ export const defaultGuestPayload = {
 
 export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
   const { $t } = useIntl()
-  const { currentGuest, queryPayload = {} } = props
+  const { currentGuest } = props
   const { tenantId } = useParams()
   const [guestDetail, setGuestDetail] = useState({} as Guest)
   const [generateModalVisible, setGenerateModalVisible] = useState(false)
   const guestAction = useGuestActions()
-
-  const tableQuery = useTableQuery({
-    useQuery: useGetGuestsListQuery,
-    defaultPayload: {
-      ...defaultGuestPayload,
-      ...queryPayload
-    }
-  })
+  const isReadOnly = !hasCrossVenuesPermission() || hasRoles([RolesEnum.READ_ONLY])
 
   const hasOnlineClient = function (row: Guest) {
     return row.guestStatus.indexOf(GuestStatusEnum.ONLINE) !== -1
   }
 
   useEffect(() => {
-    tableQuery.setPayload({
-      ...tableQuery.payload,
-      ...queryPayload
-    })
-  }, [queryPayload])
-
-  useEffect(() => {
-    const guest = tableQuery?.data?.data.filter((item: Guest) => item.id === currentGuest.id)[0]
-    if (guest) {
-      setGuestDetail(guest)
-    }
-  }, [currentGuest.id, tableQuery])
+    setGuestDetail(currentGuest)
+  }, [currentGuest])
 
   const renderStatus = function (row: Guest) {
     if(Object.keys(row).length === 0) {
@@ -129,7 +126,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
     return value ? (value === -1) ? $t({ defaultMessage: 'Unlimited' }) : value : '0'
   }
 
-  const columns: TableProps<GuestClient>['columns'] = [
+  const columns: TableProps<ClientInfo>['columns'] = [
     {
       key: 'osType',
       title: $t({ defaultMessage: 'OS' }),
@@ -140,59 +137,70 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         return <UI.IconContainer>{getOsTypeIcon(osType as string)}</UI.IconContainer>
       }
     }, {
-      key: 'healthCheckStatus',
+      key: 'signalStatus.health',
       title: $t({ defaultMessage: 'Health' }),
-      dataIndex: 'healthCheckStatus',
+      dataIndex: 'signalStatus.health',
       sorter: false,
       defaultSortOrder: 'ascend',
       render: (_, row) => {
-        return row.healthCheckStatus ? <ClientHealthIcon type={row.healthCheckStatus} /> : '--'
+        const health = row.signalStatus?.health
+        const healthClass = getClientHealthClass(health)
+        return health ? <ClientHealthIcon type={healthClass} /> : '--'
       }
     }, {
-      key: 'clientMac',
+      key: 'macAddress',
       title: $t({ defaultMessage: 'MAC Address' }),
-      dataIndex: 'clientMac',
+      dataIndex: 'macAddress',
       sorter: false,
       defaultSortOrder: 'ascend'
     }, {
-      key: 'venueId',
-      title: $t({ defaultMessage: 'Venue' }),
-      dataIndex: 'venueId',
+      key: 'venueInformation.id',
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
+      dataIndex: 'venueInformation.name',
       sorter: false,
       defaultSortOrder: 'ascend',
-      render: function (_, row) {
-        return <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
-          {row.venueName}
+      render: function (_, { venueInformation }) {
+        return <TenantLink to={`/venues/${venueInformation.id}/venue-details/overview`}>
+          {venueInformation.name}
         </TenantLink>
       }
     }, {
-      key: 'serialNumber',
+      key: 'apInformation.serialNumber',
       title: $t({ defaultMessage: 'AP' }),
-      dataIndex: 'serialNumber',
+      dataIndex: 'apInformation.name',
       sorter: false,
       defaultSortOrder: 'ascend',
-      render: function (_, row) {
-        return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>
-          {row.apName}
+      render: function (_, { apInformation }) {
+        return <TenantLink to={`/devices/wifi/${apInformation.serialNumber}/details/overview`}>
+          {apInformation.name}
         </TenantLink>
       }
     }, {
-      key: 'switchSerialNumber',
+      key: 'switchInformation.serialNumber',
       title: $t({ defaultMessage: 'Switch' }),
-      dataIndex: 'switchSerialNumber',
+      dataIndex: 'switchInformation.name',
       sorter: false,
       defaultSortOrder: 'ascend',
-      render: function (_, row) {
-        return transformDisplayText(row.switchSerialNumber)
+      render: function (_, { switchInformation }) {
+        const { name, id, serialNumber } = switchInformation || {}
+        if (!name) {
+          return noDataDisplay
+        } else {
+          return (
+            <TenantLink to={`/devices/switch/${id}/${serialNumber}/details/overview`}>
+              {name}
+            </TenantLink>
+          )
+        }
       }
     }, {
-      key: 'connectSince',
+      key: 'connectedTime',
       title: $t({ defaultMessage: 'Time Connected' }),
-      dataIndex: 'connectSince',
+      dataIndex: 'connectedTime',
       sorter: false,
       defaultSortOrder: 'ascend',
       render: function (_, row) {
-        return formatter(DateFormatEnum.DateTimeFormat)(row.connectSince)
+        return row.connectedTimeString
       }
     }
   ]
@@ -222,28 +230,41 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
   const menu = (
     <Menu
       onClick={handleMenuClick}
-      items={hasRoles([RolesEnum.READ_ONLY]) ? [
+      items={isReadOnly ? [
         {
           label: $t({ defaultMessage: 'Download Information' }),
           key: 'downloadInformation'
         }
-      ] : [
-        {
-          label: $t({ defaultMessage: 'Generate New Password' }),
-          key: 'generatePassword'
-        }, {
-          label: $t({ defaultMessage: 'Download Information' }),
-          key: 'downloadInformation'
-        }, {
-          label: $t({ defaultMessage: 'Disable Guest' }),
-          key: 'disableGuest'
-        }, {
-          label: $t({ defaultMessage: 'Enable Guest' }),
-          key: 'enableGuest'
-        }, {
-          label: $t({ defaultMessage: 'Delete Guest' }),
-          key: 'deleteGuest'
-        }].filter((item) => {
+      ] : [{
+        label: $t({ defaultMessage: 'Generate New Password' }),
+        key: 'generatePassword',
+        scopeKey: [WifiScopes.UPDATE],
+        roles: operationRoles
+      }, {
+        label: $t({ defaultMessage: 'Download Information' }),
+        key: 'downloadInformation',
+        scopeKey: [WifiScopes.READ],
+        roles: operationRoles
+      },
+      {
+        label: $t({ defaultMessage: 'Disable Guest' }),
+        key: 'disableGuest',
+        scopeKey: [WifiScopes.UPDATE],
+        roles: operationRoles
+      }, {
+        label: $t({ defaultMessage: 'Enable Guest' }),
+        key: 'enableGuest',
+        scopeKey: [WifiScopes.UPDATE],
+        roles: operationRoles
+      }, {
+        label: $t({ defaultMessage: 'Delete Guest' }),
+        key: 'deleteGuest',
+        scopeKey: [WifiScopes.DELETE],
+        roles: operationRoles
+      }].filter((item) => {
+        if (!hasPermission({ scopes: item.scopeKey, roles: item.roles })) {
+          return false
+        }
         if (item.key === 'enableGuest' &&
         guestDetail.guestStatus !== GuestStatusEnum.DISABLED) {
           return false
@@ -256,9 +277,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         }
 
         if (item.key === 'generatePassword') {
-          return(guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1) ||
-            ((guestDetail.guestStatus === GuestStatusEnum.OFFLINE) &&
-              guestDetail.networkId && !guestDetail.socialLogin)
+          return isEnabledGeneratePassword(guestDetail)
         }
 
         return true
@@ -325,11 +344,12 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
     <Descriptions>
       <Descriptions.Item
         label={$t({ defaultMessage: 'Status' })}
-        children={renderStatus(guestDetail)} />
+        children={<Space data-testid='guest-status'>{renderStatus(guestDetail)}</Space>} />
     </Descriptions>
 
     {guestDetail.clients &&
       <Table
+        rowKey='macAddress'
         columns={columns}
         dataSource={guestDetail.clients}
       />}

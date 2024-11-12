@@ -262,7 +262,7 @@ export const editStackDetail = {
   stackMemberOrder: 'FEK4124R28X',
   isStack: true,
   rearModule: 'none',
-  deviceStatus: 'OPERATIONAL',
+  deviceStatus: 'ONLINE',
   syncedSwitchConfig: true,
   sendedHostname: true,
   switchMac: '',
@@ -333,3 +333,224 @@ export const standaloneSwitches = [{
 }, {
   id: 'FEK3224R08X', model: 'ICX7150-C12P', serialNumber: 'FEK3224R08X', name: 'FEK3224R08X_name'
 }]
+
+
+export const switchVenueV1002 = [
+  {
+    venueId: 'a1f2bf4f969849d5a1ecfdfdb0664fac',
+    venueName: 'ccc',
+    versions: [
+      {
+        modelGroup: 'ICX82',
+        version: '10010_rc3'
+      },
+      {
+        modelGroup: 'ICX71',
+        version: '09010h_cd2_b4'
+      },
+      {
+        modelGroup: 'ICX7X',
+        version: '10010_rc3'
+      }
+    ],
+    lastScheduleUpdateTime: '2024-07-09T03:59:38.071+00:00',
+    preDownload: true,
+    status: 'NONE',
+    scheduleCount: 0
+  },
+  {
+    venueId: 'ea1afaea242d433c86c26884adad779d',
+    venueName: 'Karen-Venue-2',
+    versions: [
+      {
+        modelGroup: 'ICX82',
+        version: '10010_rc2'
+      },
+      {
+        modelGroup: 'ICX71',
+        version: '09010h_rc1'
+      },
+      {
+        modelGroup: 'ICX7X',
+        version: '09010h_cd2_b4'
+      }
+    ],
+    lastScheduleUpdateTime: '2024-06-29T10:45:43.155+00:00',
+    preDownload: true,
+    status: 'NONE',
+    scheduleCount: 0
+  },
+  {
+    venueId: '4d0a536ab6bf4838b43d99ae910a7edc',
+    venueName: 'jk-test-venue',
+    versions: [
+      {
+        modelGroup: 'ICX82',
+        version: '10010b_rc88'
+      },
+      {
+        modelGroup: 'ICX71',
+        version: '09010h_cd2_b4'
+      },
+      {
+        modelGroup: 'ICX7X',
+        version: '09010h_cd2_b4'
+      }
+    ],
+    preDownload: false,
+    status: 'NONE',
+    scheduleCount: 0
+  },
+  {
+    venueId: 'b2e9c96e150047f5a03f99dc36a34ac8',
+    venueName: 'sss',
+    versions: [
+      {
+        modelGroup: 'ICX82',
+        version: '10010a_cd1_b3'
+      },
+      {
+        modelGroup: 'ICX71',
+        version: '09010h_cd2_b4'
+      },
+      {
+        modelGroup: 'ICX7X',
+        version: '10010_rc2'
+      }
+    ],
+    nextSchedule: {
+      timeSlot: {
+        startDateTime: '2024-05-23T02:00:00-07:00',
+        endDateTime: '2024-05-23T04:00:00-07:00'
+      },
+      supportModelGroupVersions: [
+        {
+          modelGroup: 'ICX71',
+          version: '09010h_rc1'
+        },
+        {
+          modelGroup: 'ICX7X',
+          version: '09010h_rc1'
+        }
+      ]
+    },
+    lastScheduleUpdateTime: '2024-07-07T10:41:37.961+00:00',
+    preDownload: true,
+    status: 'NONE',
+    scheduleCount: 1
+  },
+  {
+    venueId: 'd04ece51606642cca31568238ef8f977',
+    venueName: 'eeew',
+    versions: [
+      {
+        modelGroup: 'ICX82',
+        version: '10010_rc2'
+      },
+      {
+        modelGroup: 'ICX71',
+        version: '09010h_cd2_b4'
+      },
+      {
+        modelGroup: 'ICX7X',
+        version: '10010_rc2'
+      }
+    ],
+    lastScheduleUpdateTime: '2024-07-02T02:38:06.961+00:00',
+    preDownload: true,
+    status: 'NONE',
+    scheduleCount: 0
+  },
+  {
+    venueId: 'e45b772da5504ea48af9fe472755ae22',
+    venueName: 'Karen-New',
+    versions: [
+      {
+        modelGroup: 'ICX82',
+        version: '10010_rc2'
+      },
+      {
+        modelGroup: 'ICX71',
+        version: '09010f_b19'
+      },
+      {
+        modelGroup: 'ICX7X',
+        version: '09010f_b19'
+      }
+    ],
+    lastScheduleUpdateTime: '2024-07-03T01:56:49.881+00:00',
+    preDownload: true,
+    status: 'NONE',
+    scheduleCount: 0
+  },
+  {
+    venueId: '188c9ed87b86428b8a21246cc1f88624',
+    venueName: 'My-Venue',
+    versions: [
+      {
+        modelGroup: 'ICX82',
+        version: '10010a_cd3_b11'
+      },
+      {
+        modelGroup: 'ICX71',
+        version: '09010h_rc1'
+      },
+      {
+        modelGroup: 'ICX7X',
+        version: '09010h_cd2_b4'
+      }
+    ],
+    nextSchedule: {
+      timeSlot: {
+        startDateTime: '2024-07-18T04:00:00-04:00',
+        endDateTime: '2024-07-18T06:00:00-04:00'
+      },
+      supportModelGroupVersions: [
+        {
+          modelGroup: 'ICX82',
+          version: '10010_rc2'
+        },
+        {
+          modelGroup: 'ICX7X',
+          version: '09010h_rc1'
+        },
+        {
+          modelGroup: 'ICX71',
+          version: '09010h_cd2_b4'
+        }
+      ]
+    },
+    lastScheduleUpdateTime: '2024-06-29T10:45:43.131+00:00',
+    preDownload: true,
+    switchCounts: [
+      {
+        modelGroup: 'ICX71',
+        count: 1
+      }
+    ],
+    status: 'NONE',
+    scheduleCount: 1
+  },
+  {
+    venueId: 'f3a4a81b24ad4d7b8b2ba4d6ea402b31',
+    venueName: 'longlonglonglonglonglonglongvv',
+    versions: [
+      {
+        modelGroup: 'ICX82',
+        version: '10010_rc2'
+      },
+      {
+        modelGroup: 'ICX71',
+        version: '09010h_rc1'
+      },
+      {
+        modelGroup: 'ICX7X',
+        version: '09010h_rc1'
+      }
+    ],
+    lastScheduleUpdateTime: '2024-07-07T11:06:32.307+00:00',
+    preDownload: false,
+    status: 'NONE',
+    scheduleCount: 0
+  }
+]

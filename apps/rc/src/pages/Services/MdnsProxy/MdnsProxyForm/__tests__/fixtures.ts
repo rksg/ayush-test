@@ -3,7 +3,8 @@ import {
   MdnsProxyForwardingRule,
   BridgeServiceEnum,
   MdnsProxyGetApiResponse,
-  MdnsProxyScopeData
+  MdnsProxyScopeData,
+  MdnsProxyViewModel
 } from '@acx-ui/rc/utils'
 
 export const mockedTenantId = '6de6a5239a1441cfb9c7fde93aa613fe'
@@ -237,6 +238,13 @@ export const mockedGetApiResponse: MdnsProxyGetApiResponse = {
 export const mockedGetApiResponseWithoutAps: MdnsProxyGetApiResponse = {
   id: '12345',
   serviceName: 'mDNS Proxy 123',
+  rules: mockedForwardingRules
+}
+
+export const mockedGetApiResponseWithoutApsRbac: MdnsProxyViewModel = {
+  id: '12345',
+  name: 'mDNS Proxy 123',
+  tenantId: mockedTenantId,
   rules: mockedForwardingRules
 }
 

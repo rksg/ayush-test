@@ -1,35 +1,42 @@
 /* eslint-disable max-len */
-import { useEffect } from 'react'
+import { useEffect, useContext } from 'react'
 
 
-import { Form, Slider, InputNumber, Space, Switch, Checkbox } from 'antd'
-import { CheckboxChangeEvent }                                from 'antd/lib/checkbox'
-import { FormattedMessage, useIntl }                          from 'react-intl'
 
-import { cssStr, Tooltip }                                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { Form, Slider, InputNumber, Space, Switch, Checkbox, Input } from 'antd'
+import { CheckboxChangeEvent }                                       from 'antd/lib/checkbox'
+import { isNumber }                                                  from 'lodash'
+import { useIntl }                                                   from 'react-intl'
+
+import { cssStr, Tooltip, Button, Alert }                  from '@acx-ui/components'
+import { get }                                             from '@acx-ui/config'
 import { InformationOutlined, QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { useNavigate, useLocation }                        from '@acx-ui/react-router-dom'
+import { validationMessages }                              from '@acx-ui/utils'
+
+import { usePathBasedOnConfigTemplate } from '../configTemplates'
 
 import {
   ApRadioTypeEnum,
   channelSelectionMethodsOptions,
-  txPowerAdjustmentOptions,
   SelectItemOption,
   bssMinRate6GOptions,
   mgmtTxRate6GOptions,
-  txPowerAdjustment6GOptions,
   apChannelSelectionMethodsOptions,
   apChannelSelectionMethods6GOptions,
   LPIButtonText
 } from './RadioSettingsContents'
+import { VenueRadioContext }                                   from './RadioSettingsContents'
 import { Label, FieldLabel, FormItemNoLabel, RadioFormSelect } from './styledComponents'
 
 const { useWatch } = Form
+
 
 export function RadioSettingsForm (props:{
   radioType: ApRadioTypeEnum,
   radioDataKey: string[],
   disabled?: boolean,
+  txPowerOptions: SelectItemOption[],
   channelBandwidthOptions: SelectItemOption[],
   context?: string
   isUseVenueSettings?: boolean,
@@ -38,11 +45,12 @@ export function RadioSettingsForm (props:{
   LPIButtonText?: LPIButtonText
 }) {
   const { $t } = useIntl()
-  const radio6GRateControlFeatureFlag = useIsSplitOn(Features.RADIO6G_RATE_CONTROL)
-  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
-  const { radioType,
+  const afcFeatureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
+  const {
+    radioType,
     disabled = false,
     radioDataKey,
+    txPowerOptions,
     channelBandwidthOptions,
     context = 'venue',
     isUseVenueSettings = false,
@@ -51,6 +59,9 @@ export function RadioSettingsForm (props:{
     LPIButtonText
   } = props
 
+  const showAfcItems = afcFeatureflag && ApRadioTypeEnum.Radio6G === radioType
+
+  const { venue, venueRadio } = useContext(VenueRadioContext)
   const methodFieldName = [...radioDataKey, 'method']
   const changeIntervalFieldName = [...radioDataKey, 'changeInterval']
   const scanIntervalFieldName = [...radioDataKey, 'scanInterval']
@@ -64,12 +75,16 @@ export function RadioSettingsForm (props:{
   const uploadLimitFieldName = [...radioDataKey, 'multicastUplinkRateLimiting']
   const downloadLimitFieldName = [...radioDataKey, 'multicastDownlinkRateLimiting']
   const enableAfcFieldName = [...radioDataKey, 'enableAfc']
+  const minFloorFieldName = [...radioDataKey, 'venueHeight', 'minFloor']
+  const maxFloorFieldName = [...radioDataKey, 'venueHeight', 'maxFloor']
 
   const channelSelectionOpts = (context === 'venue') ?
     channelSelectionMethodsOptions :
     (radioType === ApRadioTypeEnum.Radio6G) ?
       apChannelSelectionMethods6GOptions : apChannelSelectionMethodsOptions
-
+  const navigate = useNavigate()
+  const location = useLocation()
+  const detailsPath = usePathBasedOnConfigTemplate(`/venues/${venue?.id}/edit/wifi/radio/Normal6GHz`)
   const [channelMethod] = [useWatch<string>(methodFieldName)]
   const form = Form.useFormInstance()
   const [
@@ -77,18 +92,26 @@ export function RadioSettingsForm (props:{
     enableUploadLimit,
     enableDownloadLimit,
     channelBandwidth,
-    enableAfc
+    enableAfc,
+    minFloor,
+    maxFloor
   ] = [
     useWatch<boolean>(enableMulticastRateLimitingFieldName),
     useWatch<boolean>(enableUploadLimitFieldName),
     useWatch<boolean>(enableDownloadLimitFieldName),
     useWatch<string>(channelBandwidthFieldName),
-    useWatch<boolean>(enableAfcFieldName)
+    useWatch<boolean>(enableAfcFieldName),
+    useWatch<number>(minFloorFieldName),
+    useWatch<number>(maxFloorFieldName)
   ]
 
   useEffect(() => {
     form.setFieldValue(enableMulticastRateLimitingFieldName,
       form.getFieldValue(enableUploadLimitFieldName) || form.getFieldValue(enableDownloadLimitFieldName))
+
+    if (props?.isAFCEnabled === false) {
+      form.setFieldValue(enableAfcFieldName, false)
+    }
   }, [] )
 
   useEffect(()=> {
@@ -108,7 +131,6 @@ export function RadioSettingsForm (props:{
   }
 
   const getDownloadMaxValue = () => getDLMax(form.getFieldValue(bssMinRate6gFieldName))
-  const multicastRateLimitFlag = useIsSplitOn(Features.MULTICAST_RATE_LIMIT_TOGGLE)
 
   const handleBSSMinRateOnChange = (value: unknown) => {
     if (value) {
@@ -117,45 +139,201 @@ export function RadioSettingsForm (props:{
     onChangedByCustom('bssMinRate')
   }
 
+  const AFCEnableValidation = (ignoreFloorValidation: boolean) => {
+    const { maxFloor, minFloor } = venueRadio?.radioParams6G?.venueHeight || {}
+
+    if (ignoreFloorValidation) {
+      return [
+        (showAfcItems),
+        (context === 'ap'),
+        (enableAfc),
+        (!LPIButtonText?.isAPOutdoor)
+      ].every(Boolean)
+    } else {
+      return [
+        (showAfcItems),
+        (context === 'ap'),
+        (enableAfc),
+        (maxFloor === undefined || minFloor === undefined)
+      ].every(Boolean)
+    }
+  }
+
+  const displayEnableAFCFormItemTag = () => {
+    if (context === 'venue') {
+      if(isAFCEnabled) {
+        return (
+          <Space style={{ marginBottom: '10px', marginRight: '20px' }}>
+            {$t({ defaultMessage: 'Enable Indoor AFC:' })}
+            <Tooltip
+              title={$t({ defaultMessage: 'For outdoor APs, AFC will be enabled automatically.' })}
+              placement='bottom'>
+              <QuestionMarkCircleOutlined style={{ width: '14px', marginBottom: '-7px' }}/>
+            </Tooltip>
+          </Space>
+        )
+      } else {
+        return (
+          <Space style={{ marginBottom: '10px', marginRight: '20px' }}>
+            {$t({ defaultMessage: 'Enable Indoor AFC:' })}
+          </Space>
+        )
+      }
+    }
+
+    return (
+      <Space style={{ marginBottom: '10px', marginRight: '20px' }}>
+        {$t({ defaultMessage: 'Enable AFC:' })}
+      </Space>
+    )
+  }
+
 
 
   return (
     <>
-      { AFC_Featureflag && ApRadioTypeEnum.Radio6G === radioType &&
-        <FieldLabel width='180px' style={(context === 'ap' && LPIButtonText?.isAPOutdoor) ? { display: 'hidden' } : { display: 'flex' }}>
-          <div style={{ float: 'left' }}>
-            <p style={{ width: '180px' }}>{$t({ defaultMessage: 'Enable AFC:' })}</p>
-          </div>
+      { showAfcItems &&
+        <FieldLabel width='180px'
+        // Hide the label when afcEnable is false or ap is outdoor under ap context
+          style={(context === 'ap' && (LPIButtonText?.isAPOutdoor || props?.isAFCEnabled === false)) ?
+            { display: 'none' } : { display: 'flex' }}>
+          {displayEnableAFCFormItemTag()}
           <Form.Item
             style={{ width: '50px' }}
             name={enableAfcFieldName}
             valuePropName={'checked'}
-            initialValue={true}>
+            initialValue={false}
+            rules={[
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              { validator: (_, value) => AFCEnableValidation(false) ? Promise.reject($t(validationMessages.EnableAFCButNoVenueHeight)) : Promise.resolve() }
+            ]}>
             {isUseVenueSettings ?
-              LPIButtonText?.buttonText :
-              <Switch
-                disabled={!isAFCEnabled || isUseVenueSettings}
-                onChange={() => {
-                  onChangedByCustom('enableAfc')
-                }}
-              />}
+              LPIButtonText?.buttonText : (isAFCEnabled ?
+                <Switch
+                  disabled={!isAFCEnabled || isUseVenueSettings}
+                  onChange={() => {
+                    onChangedByCustom('enableAfc')
+                    form.validateFields()
+                  }}
+                /> :
+                <Tooltip title={
+                  <div style={{ textAlign: 'center' }}>
+                    <p>{$t({ defaultMessage: 'Your country does not support AFC.' })}</p>
+                  </div>
+                }>
+                  <Switch disabled={!isAFCEnabled || isUseVenueSettings} />
+                </Tooltip>
+              )
+            }
           </Form.Item>
-          <Tooltip title={
-            <FormattedMessage
-              values={{ br: () => <br /> }}
-              defaultMessage={'These settings apply only to indoor APs.'}
-            />
-          }
-          placement='bottom'>
-            <QuestionMarkCircleOutlined style={{ width: '18px', marginTop: '5px' }}/>
-          </Tooltip>
+        </FieldLabel>
+      }
+      {
+        AFCEnableValidation(true) && (
+          <Alert
+            type='info'
+            message={<>
+              <span style={{ marginRight: '30px' }}>
+                {$t({ defaultMessage: 'Please ensure that you are familiar with the requirements for AFC Geo-Location.' })}
+              </span>
+              <a href='https://docs.cloud.ruckuswireless.com/ruckusone/userguide/GUID-C1324048-5F2A-436C-A8BE-9B94BCB5CF14.html'
+                target='_blank'
+                rel='noreferrer'>
+                {$t({ defaultMessage: 'How to configure?' })}
+              </a>
+            </>
+            }
+            showIcon={true}
+          />
+        )
+      }
+      {
+        AFCEnableValidation(false) && (
+          <Alert
+            type='error'
+            message={<>
+              <span style={{ marginRight: '30px' }}>
+                {$t({ defaultMessage: 'AFC in the 6 GHz band requires a <venueSingular></venueSingular> height to be set for standard power operation.' })}
+              </span>
+              <Button type='link'
+                data-testid='set-it-up-button'
+                onClick={() => {
+                  navigate(detailsPath, {
+                    state: {
+                      from: location
+                    }
+                  })
+                }}
+              >
+                <span style={{
+                  fontSize: '12px'
+                }}>
+                  {$t({ defaultMessage: 'Set it up now' })}
+                </span>
+              </Button>
+            </>
+            }
+            showIcon={true}
+          />
+        )
+      }
+      {showAfcItems && context === 'venue' &&
+        <FieldLabel width='150px'
+          style={(isAFCEnabled === false) ? { display: 'none' } : {}}
+        >
+          {$t({ defaultMessage: 'AFC <VenueSingular></VenueSingular> Height:' })}
+          <Form.Item>
+            <Input.Group compact
+              style={{ width: '450px' }}
+            >
+              <Form.Item
+                name={minFloorFieldName}
+                dependencies={maxFloorFieldName}
+                style={{ width: '150px' }}
+                rules={[
+                  { validator: (_, value) => (isNumber(value) && value > maxFloor) ? Promise.reject($t(validationMessages.VenueMinFloorGreaterThanMaxFloor)) : Promise.resolve() },
+                  { validator: (_, value) => (isNumber(maxFloor) && !isNumber(value)) ? Promise.reject($t({ defaultMessage: 'Minimum floor can not be empty' })) : Promise.resolve() }
+                ]}>
+                <InputNumber
+                  style={{ width: '150px' }}
+                  controls={false}
+                  precision={0}
+                  placeholder={$t({ defaultMessage: 'Minimum Floor' })}
+                  onChange={() => form.validateFields()}
+                />
+              </Form.Item>
+              <p style={{ margin: '0px 10px', lineHeight: '30px' }}>Floor - </p>
+              <Form.Item
+                name={maxFloorFieldName}
+                dependencies={minFloorFieldName}
+                style={{ width: '150px' }}
+                rules={[
+                  { validator: (_, value) => (isNumber(value) && value < minFloor) ? Promise.reject($t(validationMessages.VenueMaxFloorLessThanMinFloor)) : Promise.resolve() },
+                  { validator: (_, value) => (isNumber(minFloor) && !isNumber(value)) ? Promise.reject($t({ defaultMessage: 'Maximum floor can not be empty' })) : Promise.resolve() }
+                ]}>
+                <InputNumber
+                  style={{ width: '150px' }}
+                  controls={false}
+                  precision={0}
+                  placeholder={$t({ defaultMessage: 'Maximum Floor' })}
+                  onChange={() => {form.validateFields()}}
+                />
+              </Form.Item>
+              <p style={{ margin: '0px 10px', lineHeight: '30px' }}>Floor</p>
+              <Tooltip
+                title={$t({ defaultMessage: 'Please enter the min and max floors, with the ground floor set to 0.' })}
+                placement='bottom'>
+                <QuestionMarkCircleOutlined style={{ width: '14px', marginBottom: '-7px' }}/>
+              </Tooltip>
+            </Input.Group>
+          </Form.Item>
         </FieldLabel>
       }
       <Form.Item
         label={$t({ defaultMessage: 'Channel selection method:' })}
         name={methodFieldName}>
         <RadioFormSelect
-          disabled={disabled || (context === 'venue' && radioType==='6G')}
+          disabled={disabled || (context === 'venue' && radioType === ApRadioTypeEnum.Radio6G)}
           bordered={!isUseVenueSettings}
           showArrow={!isUseVenueSettings}
           className={isUseVenueSettings? 'readOnly' : undefined}
@@ -223,7 +401,7 @@ export function RadioSettingsForm (props:{
           }}/>
           {$t(
             // eslint-disable-next-line max-len
-            { defaultMessage: '320 MHz applies only to R770. The other AP models will enable 160 MHz.' }
+            { defaultMessage: '320 MHz applies only to Wi-Fi 7 AP model family. The other AP models will enable 160 MHz.' }
           )}
         </div>
         : '' }
@@ -235,12 +413,11 @@ export function RadioSettingsForm (props:{
           bordered={!isUseVenueSettings}
           showArrow={!isUseVenueSettings}
           className={isUseVenueSettings? 'readOnly' : undefined}
-          options={(radioType === ApRadioTypeEnum.Radio6G)?
-            txPowerAdjustment6GOptions : txPowerAdjustmentOptions}
+          options={txPowerOptions}
           onChange={() => onChangedByCustom('txPower')}
         />
       </Form.Item>
-      {(radioType === ApRadioTypeEnum.Radio6G && radio6GRateControlFeatureFlag) &&
+      {radioType === ApRadioTypeEnum.Radio6G &&
       <>
         <Form.Item
           label={$t({ defaultMessage: 'BSS Min Rate:' })}
@@ -267,12 +444,12 @@ export function RadioSettingsForm (props:{
           />
         </Form.Item>
 
-        {multicastRateLimitFlag && <>
+        <>
           <FieldLabel width='175px'>
-            <Space>
+            <Space style={{ marginBottom: '10px' }}>
               {$t({ defaultMessage: 'Multicast Rate Limiting' })}
               <Tooltip.Question
-                title={$t({ defaultMessage: 'Note that enabling Directed Multicast in Venue/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
+                title={$t({ defaultMessage: 'Note that enabling Directed Multicast in <VenueSingular></VenueSingular>/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
                 placement='right'
                 iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
               />
@@ -308,36 +485,34 @@ export function RadioSettingsForm (props:{
                 initialValue={enableUploadLimit || enableDownloadLimit}
                 style={{ lineHeight: '50px' }}
               >
-                {
-                  <Checkbox data-testid='enableUploadLimit'
-                    onChange={function (e: CheckboxChangeEvent) {
-                      const value = e.target.checked ? 20 : 0
-                      form.setFieldValue(
-                        uploadLimitFieldName, value)
-                    }}
-                    children={$t({ defaultMessage: 'Upload Limit' })}
-                    disabled={disabled || isUseVenueSettings}/>}
+                <Checkbox data-testid='enableUploadLimit'
+                  children={$t({ defaultMessage: 'Upload Limit' })}
+                  disabled={disabled || isUseVenueSettings}
+                  onChange={function (e: CheckboxChangeEvent) {
+                    const value = e.target.checked ? 20 : 0
+                    form.setFieldValue(uploadLimitFieldName, value)
+                  }}
+                />
               </FormItemNoLabel>
-              {
-                enableUploadLimit ?
-                  <FormItemNoLabel
-                    name={uploadLimitFieldName}
-                    children={
-                      <Slider
-                        disabled={disabled || isUseVenueSettings}
-                        tooltipVisible={false}
-                        style={{ width: '245px' }}
-                        defaultValue={20}
-                        min={1}
-                        max={100}
-                        marks={{
-                          1: { label: '1 Mbps' },
-                          100: { label: '100 Mbps' }
-                        }}
-                      />
-                    }
-                  /> :
-                  <Unlimited />
+              {enableUploadLimit ?
+                <FormItemNoLabel
+                  name={uploadLimitFieldName}
+                  children={
+                    <Slider
+                      disabled={disabled || isUseVenueSettings}
+                      tooltipVisible={false}
+                      style={{ width: '245px' }}
+                      defaultValue={20}
+                      min={1}
+                      max={100}
+                      marks={{
+                        1: { label: '1 Mbps' },
+                        100: { label: '100 Mbps' }
+                      }}
+                    />
+                  }
+                /> :
+                <Unlimited />
               }
             </div>
 
@@ -349,37 +524,36 @@ export function RadioSettingsForm (props:{
                 style={{ lineHeight: '50px' }}
                 children={
                   <Checkbox data-testid='enableDownloadLimit'
+                    children={$t({ defaultMessage: 'Download Limit' })}
                     disabled={disabled || isUseVenueSettings}
-                    onChange={function (e: CheckboxChangeEvent) {
+                    onChange={(e: CheckboxChangeEvent) => {
                       const value = e.target.checked ? getDLMax(form.getFieldValue(bssMinRate6gFieldName)) : 0
-                      form.setFieldValue(
-                        downloadLimitFieldName, value)
+                      form.setFieldValue(downloadLimitFieldName, value)
                     }}
-                    children={$t({ defaultMessage: 'Download Limit' })} />}
+                  />}
               />
-              {
-                enableDownloadLimit ?
-                  <FormItemNoLabel
-                    name={downloadLimitFieldName}
-                    children={
-                      <Slider
-                        disabled={disabled || isUseVenueSettings}
-                        tooltipVisible={false}
-                        style={{ width: '245px' }}
-                        defaultValue={getDownloadMaxValue()}
-                        min={1}
-                        max={getDLMax(form.getFieldValue(bssMinRate6gFieldName))}
-                        marks={{
-                          1: { label: '1 Mbps' },
-                          [`${getDownloadMaxValue()}`]: { label: getDownloadMaxValue().toString() + ' Mbps' }
-                        }}
-                      />
-                    }
-                  /> : <Unlimited />
+              {enableDownloadLimit ?
+                <FormItemNoLabel
+                  name={downloadLimitFieldName}
+                  children={
+                    <Slider
+                      disabled={disabled || isUseVenueSettings}
+                      tooltipVisible={false}
+                      style={{ width: '245px' }}
+                      defaultValue={getDownloadMaxValue()}
+                      min={1}
+                      max={getDLMax(form.getFieldValue(bssMinRate6gFieldName))}
+                      marks={{
+                        1: { label: '1 Mbps' },
+                        [`${getDownloadMaxValue()}`]: { label: getDownloadMaxValue().toString() + ' Mbps' }
+                      }}
+                    />
+                  }
+                /> : <Unlimited />
               }
             </div>
           </>}
-        </>}
+        </>
       </>
       }
     </>

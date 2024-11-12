@@ -1,18 +1,37 @@
+/* eslint-disable max-len */
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query/fetchBaseQuery'
+import { findIndex }           from 'lodash'
+
 import {
   Filter
 } from '@acx-ui/components'
 import {
+  ClusterNetworkSettings,
+  ClusterSubInterfaceSettings,
   CommonResult,
   EdgeAllPortTrafficData,
+  EdgeCluster,
+  EdgeClusterStatus,
+  EdgeClusterTableDataType,
   EdgeDnsServers,
+  EdgeFeatureSets,
   EdgeGeneralSetting,
   EdgeLag,
   EdgeLagStatus,
+  EdgeNodesPortsInfo,
   EdgePasswordDetail,
+  EdgePort,
   EdgePortConfig,
+  EdgePortInfo,
   EdgePortStatus,
+  EdgePortTypeEnum,
+  EdgePortWithStatus,
   EdgeResourceUtilizationData,
+  EdgeSdLanApCompatibilitiesResponse,
+  EdgeSerialNumber,
   EdgeService,
+  EdgeServiceCompatibilitiesResponse,
+  EdgeServicesApCompatibilitiesResponse,
   EdgeStaticRouteConfig,
   EdgeStatus,
   EdgeSubInterface,
@@ -28,7 +47,9 @@ import {
   SORTER,
   TableResult,
   TraceRouteEdge,
+  VenueEdgeCompatibilitiesResponse,
   downloadFile,
+  getEdgePortIpModeEnumValue,
   onActivityMessageReceived,
   onSocketActivityChanged
 } from '@acx-ui/rc/utils'
@@ -36,16 +57,23 @@ import { baseEdgeApi }                         from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
+import { isPayloadHasField } from './utils'
+
 export type EdgesExportPayload = {
   filters: Filter
   tenantId: string
 } & SEARCH & SORTER
 
+const versionHeader = {
+  'Content-Type': 'application/vnd.ruckus.v1+json',
+  'Accept': 'application/vnd.ruckus.v1+json'
+}
+
 export const edgeApi = baseEdgeApi.injectEndpoints({
   endpoints: (build) => ({
-    addEdge: build.mutation<EdgeGeneralSetting, RequestPayload>({
-      query: ({ payload }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.addEdge, undefined, {
+    addEdge: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.addEdge, params, {
           ...ignoreErrorModal
         })
         return {
@@ -53,7 +81,10 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
+      invalidatesTags: [
+        { type: 'Edge', id: 'LIST' },
+        { type: 'Edge', id: 'CLUSTER_LIST' }
+      ]
     }),
     getEdge: build.query<EdgeGeneralSetting, RequestPayload>({
       query: ({ params }) => {
@@ -72,20 +103,52 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' }]
+      invalidatesTags: [
+        { type: 'Edge', id: 'LIST' },
+        { type: 'Edge', id: 'DETAIL' },
+        { type: 'Edge', id: 'CLUSTER_LIST' }
+      ]
     }),
     getEdgeList: build.query<TableResult<EdgeStatus>, RequestPayload>({
-      query: ({ payload, params }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.getEdgeList, params)
-        return {
-          ...req,
-          body: payload
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const edgeListReq = {
+          ...createHttpRequest(EdgeUrlsInfo.getEdgeList, arg.params),
+          body: arg.payload
         }
-      },
-      providesTags: [{ type: 'Edge', id: 'LIST' }],
-      transformResponse: (result: TableResult<EdgeStatus>) => {
-        EdgeStatusTransformer(result.data)
-        return result
+        const edgeListQuery = await fetchWithBQ(edgeListReq)
+        const edgeList = edgeListQuery.data as TableResult<EdgeStatus>
+        const edgesData = edgeList?.data as EdgeStatus[]
+
+        const edgeIds = edgesData.map(i => i.serialNumber)
+
+        // base on current usecase, no need to support cross venue-edges incompatible check
+        const venueFilter = ((arg.payload as Record<string, unknown>).filters as Record<string, unknown>)?.['venueId']
+        if (edgeIds.length && venueFilter && isPayloadHasField(arg.payload, 'incompatible')) {
+          try {
+            const compatibilityReq = {
+              ...createHttpRequest(EdgeUrlsInfo.getVenueEdgeCompatibilities, arg.params),
+              body: { filters: { venueIds: venueFilter, edgeIds: edgeIds } }
+            }
+
+            const compatibilityQuery = await fetchWithBQ(compatibilityReq)
+            const compatibilities = compatibilityQuery.data as VenueEdgeCompatibilitiesResponse
+
+            compatibilities.compatibilities?.forEach((item) => {
+              const idx = findIndex(edgesData, { serialNumber: item.id })
+              if (idx !== -1)
+                edgesData[idx].incompatible = item.incompatibleFeatures?.length ?? 0
+            })
+          } catch (e) {
+          // eslint-disable-next-line no-console
+            console.error('venuesTable getEdgeCompatibilitiesVenue error:', e)
+          }
+        }
+
+        edgeStatusTransformer(edgeList.data)
+
+        return edgeListQuery.data
+          ? { data: edgeList }
+          : { error: edgeListQuery.error as FetchBaseQueryError }
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -115,7 +178,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           }
         }
       },
-      invalidatesTags: [{ type: 'Edge', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'CLUSTER_LIST' }]
     }),
     sendOtp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -136,7 +199,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       transformResponse (result: TableResult<EdgeStatus>) {
-        EdgeStatusTransformer(result.data)
+        edgeStatusTransformer(result.data)
         return result.data[0]
       }
     }),
@@ -163,10 +226,16 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     }),
     getPortConfig: build.query<EdgePortConfig, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.getPortConfig, params)
+        const urlInfo = (params?.venueId && params?.edgeClusterId)
+          ? EdgeUrlsInfo.getPortConfig : EdgeUrlsInfo.getPortConfigDeprecated
+        const req = createHttpRequest(urlInfo, params)
         return {
           ...req
         }
+      },
+      transformResponse: (response: EdgePortConfig) => {
+        response.ports?.sort(physicalPortSorter)
+        return response
       },
       providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'PORT' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -182,7 +251,9 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     }),
     updatePortConfig: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.updatePortConfig, params)
+        const urlInfo = (params?.venueId && params?.edgeClusterId)
+          ? EdgeUrlsInfo.updatePortConfig : EdgeUrlsInfo.updatePortConfigDeprecated
+        const req = createHttpRequest(urlInfo, params)
         return {
           ...req,
           body: payload
@@ -193,7 +264,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     getSubInterfaces: build.query<TableResult<EdgeSubInterface>, RequestPayload>({
       query: ({ params, payload }) => {
         const { page, pageSize } = payload as { page: number, pageSize: number }
-        const req = createHttpRequest(EdgeUrlsInfo.getSubInterfaces, params)
+        const req = createHttpRequest(EdgeUrlsInfo.getSubInterfaces, params, versionHeader)
         return {
           ...req,
           params: { page, pageSize }
@@ -221,27 +292,27 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
     }),
     addSubInterfaces: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.addSubInterfaces, params)
+        const req = createHttpRequest(EdgeUrlsInfo.addSubInterfaces, params, versionHeader)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Edge', id: 'SUB_INTERFACE' }]
     }),
     updateSubInterfaces: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.updateSubInterfaces, params)
+        const req = createHttpRequest(EdgeUrlsInfo.updateSubInterfaces, params, versionHeader)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Edge', id: 'SUB_INTERFACE' }]
     }),
     deleteSubInterfaces: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.deleteSubInterfaces, params)
+        const req = createHttpRequest(EdgeUrlsInfo.deleteSubInterfaces, params, versionHeader)
         return {
           ...req
         }
@@ -267,7 +338,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Edge', id: 'ROUTES' }]
     }),
-    getEdgePortsStatusList: build.query<EdgePortStatus[], RequestPayload>({
+    getEdgePortsStatusList: build.query<TableResult<EdgePortStatus>, RequestPayload>({
       query: ({ payload, params }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getEdgePortStatusList, params)
         return {
@@ -275,12 +346,13 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse (result: TableResult<EdgePortStatus>) {
-        return result?.data
+      transformResponse: (response: TableResult<EdgePortStatus>) => {
+        response.data?.sort(physicalPortSorter)
+        return response
       },
       providesTags: [{ type: 'Edge', id: 'PORT' }]
     }),
-    getEdgeSubInterfacesStatusList: build.query<TableResult<EdgePortStatus>, RequestPayload>({
+    getEdgeSubInterfacesStatusList: build.query<TableResult<EdgePortInfo>, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getEdgeSubInterfacesStatusList)
         return {
@@ -288,19 +360,45 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      extraOptions: { maxRetries: 5 }
+      extraOptions: { maxRetries: 5 },
+      transformResponse (result: TableResult<EdgePortStatus>) {
+        return {
+          ...result,
+          data: convertToEdgePortInfo(result?.data)
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'SUB_INTERFACE' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update sub-interfaces'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'SUB_INTERFACE' }]))
+          })
+        })
+      }
     }),
     rebootEdge: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(EdgeUrlsInfo.reboot, params)
       },
-      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' }]
+      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' },
+        { type: 'Edge', id: 'CLUSTER_LIST' }]
+    }),
+    shutdownEdge: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(EdgeUrlsInfo.shutdown, params)
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' },
+        { type: 'Edge', id: 'CLUSTER_LIST' }]
     }),
     factoryResetEdge: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(EdgeUrlsInfo.factoryReset, params)
       },
-      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' }]
+      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' },
+        { type: 'Edge', id: 'CLUSTER_LIST' }]
     }),
     pingEdge: build.mutation<PingEdge, RequestPayload>({
       query: ({ params, payload }) => {
@@ -436,7 +534,8 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.importSubInterfacesCSV, params, {
           ...ignoreErrorModal,
-          'Content-Type': undefined
+          'Content-Type': undefined,
+          'Accept': versionHeader.Accept
         })
         return {
           ...req,
@@ -466,6 +565,46 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         })
       },
       providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'LAG' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    getEdgePortListWithStatus: build.query<EdgePortWithStatus[], RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const portsReq = createHttpRequest(
+          EdgeUrlsInfo.getPortConfig, arg.params)
+        const portQuery = await fetchWithBQ(portsReq)
+        const ports = portQuery.data as EdgePortConfig
+
+        // fetch physical port status
+        const portsStatusReq = createHttpRequest(
+          EdgeUrlsInfo.getEdgePortStatusList, arg.params)
+        const portStatusQuery = await fetchWithBQ({
+          ...portsStatusReq,
+          body: arg.payload
+        })
+
+        const portsStatusTableResult = portStatusQuery.data as TableResult<EdgePortStatus>
+        const statusIpMap = Object.fromEntries((portsStatusTableResult.data || [])
+          .map(status => [status.portId, status.ip]))
+
+        const portDataWithStatusIp = ports.ports.map((item) => {
+          return { ...item, statusIp: statusIpMap[item.id ?? ''] }
+        })
+
+        return portQuery.data
+          ? { data: portDataWithStatusIp }
+          : { error: portQuery.error as FetchBaseQueryError }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update ports'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'PORT' }]))
+          })
+        })
+      },
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'PORT' }],
       extraOptions: { maxRetries: 5 }
     }),
     getEdgeLagList: build.query<TableResult<EdgeLag>, RequestPayload>({
@@ -545,16 +684,17 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           totalCount: response.totalCount
         }
       },
-      // async onCacheEntryAdded (requestArgs, api) {
-      //   await onSocketActivityChanged(requestArgs, api, (msg) => {
-      //     const activities = [
-      //       'Update sub-interfaces'
-      //     ]
-      //     onActivityMessageReceived(msg, activities, () => {
-      //       api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'LAG_SUB_INTERFACE' }]))
-      //     })
-      //   })
-      // },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update LAG sub-interface',
+            'Update LAG sub-interfaces'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'LAG_SUB_INTERFACE' }]))
+          })
+        })
+      },
       providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'LAG_SUB_INTERFACE' }],
       extraOptions: { maxRetries: 5 }
     }),
@@ -598,11 +738,372 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getEdgeLagSubInterfacesStatusList: build.query<TableResult<EdgePortInfo>, RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getLagSubInterfacesStatus, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      transformResponse (result: TableResult<EdgeLagStatus>) {
+        return {
+          ...result,
+          data: convertToEdgePortInfo(result?.data)
+        }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update LAG sub-interface',
+            'Update LAG sub-interfaces'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'LAG_SUB_INTERFACE' }]))
+          })
+        })
+      },
+      providesTags: [{ type: 'Edge', id: 'DETAIL' }, { type: 'Edge', id: 'LAG_SUB_INTERFACE' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    getEdgeClusterList: build.query<TableResult<EdgeClusterStatus>, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeClusterStatusList)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'CLUSTER_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Add Edge',
+            'Delete Edges',
+            'Create SmartEdge cluster',
+            'Delete SmartEdge clusters'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'CLUSTER_LIST' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    getEdgeClusterListForTable: build.query<TableResult<EdgeClusterTableDataType>, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeClusterStatusList)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'CLUSTER_LIST' }],
+      transformResponse: (result: TableResult<EdgeClusterStatus>) => {
+        result.data = result.data.map(item => {
+          const tmp = {
+            ...item,
+            isFirstLevel: true
+          } as EdgeClusterTableDataType
+          if(item.edgeList) {
+            tmp.children = item.edgeList
+            delete item.edgeList
+            if (tmp.children.length < 2)
+              // remove the HA status for 1 node case
+              tmp.children.forEach((edgeStat: EdgeStatus) => delete edgeStat.haStatus)
+            edgeStatusTransformer(tmp.children)
+          }
+          return tmp
+        })
+        return result as TableResult<EdgeClusterTableDataType>
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Add Edge',
+            'Delete Edges',
+            'Create SmartEdge cluster',
+            'Delete SmartEdge clusters',
+            'Update SmartEdge cluster'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'CLUSTER_LIST' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    addEdgeCluster: build.mutation<unknown, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.addEdgeCluster, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'CLUSTER_LIST' }]
+    }),
+    deleteEdgeCluster: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(EdgeUrlsInfo.deleteEdgeCluster, params)
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'CLUSTER_LIST' }]
+    }),
+    getAllInterfacesByType: build.query<{ [key: string]: EdgePortInfo[] }, RequestPayload>({
+      queryFn: async ({ payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const { edgeIds, portTypes } = payload as { edgeIds: string[], portTypes: EdgePortTypeEnum[] }
+        const result = {} as { [key: string]: EdgePortInfo[] }
+        for(let edgeId of edgeIds) {
+          const tmp = [] as (EdgePortStatus | EdgeLagStatus)[]
+          const params = { serialNumber: edgeId }
+          const edgePortListReq = createHttpRequest(EdgeUrlsInfo.getEdgePortStatusList, params)
+          const edgePortList = await fetchWithBQ({ ...edgePortListReq, body: { filters: { type: portTypes } } })
+          tmp.push(...((edgePortList.data as TableResult<EdgePortStatus>).data))
+          const edgeLagListReq = createHttpRequest(EdgeUrlsInfo.getEdgeLagStatusList, params)
+          const edgeLagList = await fetchWithBQ({ ...edgeLagListReq, body: { filters: { portType: portTypes } } })
+          tmp.push(...((edgeLagList.data as TableResult<EdgeLagStatus>).data))
+          const edgeSubInterfaceListReq = createHttpRequest(EdgeUrlsInfo.getEdgeSubInterfacesStatusList)
+          const edgeSubInterfaceList = await fetchWithBQ({
+            ...edgeSubInterfaceListReq,
+            body: { filters: { type: portTypes, serialNumber: [edgeId] } } }
+          )
+          tmp.push(...((edgeSubInterfaceList.data as TableResult<EdgePortStatus>).data))
+          const edgeLagSubInterfaceListReq = createHttpRequest(EdgeUrlsInfo.getLagSubInterfacesStatus, params)
+          const edgeLagSubInterfaceList = await fetchWithBQ({ ...edgeLagSubInterfaceListReq, body: { filters: { portType: portTypes } } })
+          tmp.push(...((edgeLagSubInterfaceList.data as TableResult<EdgePortStatus>).data))
+          result[edgeId] = convertToEdgePortInfo(tmp)
+        }
+        return { data: result }
+      }
+    }),
+    patchEdgeCluster: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.patchEdgeCluster, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'CLUSTER_LIST' }, { type: 'Edge', id: 'CLUSTER_DETAIL' }]
+    }),
+    getEdgeCluster: build.query<EdgeCluster, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeCluster, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'CLUSTER_DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Create SmartEdge cluster',
+            'Delete SmartEdge clusters',
+            'Update SmartEdge cluster'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'CLUSTER_DETAIL' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    getEdgeFeatureSets: build.query<EdgeFeatureSets, RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeFeatureSets, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    getVenueEdgeCompatibilities: build.query<VenueEdgeCompatibilitiesResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getVenueEdgeCompatibilities, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'VENUE_COMPATIBILITY' }]
+    }),
+    getSdLanEdgeCompatibilities: build.query<EdgeServiceCompatibilitiesResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getSdLanEdgeCompatibilities, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'SDLAN_EDGE_COMPATIBILITY' }]
+    }),
+    getSdLanApCompatibilities: build.query<EdgeSdLanApCompatibilitiesResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getSdLanApCompatibilities, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'SDLAN_AP_COMPATIBILITY' }]
+    }),
+    patchEdgeClusterNetworkSettings: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.patchEdgeClusterNetworkSettings, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'CLUSTER_LIST' }, { type: 'Edge', id: 'CLUSTER_DETAIL' }]
+    }),
+    getEdgeClusterNetworkSettings: build.query<ClusterNetworkSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeClusterNetworkSettings, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse: (response: ClusterNetworkSettings) => {
+        response.portSettings?.forEach(portSetting => portSetting.ports?.sort(physicalPortSorter))
+        return response
+      },
+      providesTags: [{ type: 'Edge', id: 'CLUSTER_DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update LAG, port and virtual IP settings'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'CLUSTER_DETAIL' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    patchEdgeClusterSubInterfaceSettings: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.patchEdgeClusterSubInterfaceSettings, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'CLUSTER_DETAIL' }]
+    }),
+    getEdgeClusterSubInterfaceSettings: build.query<ClusterSubInterfaceSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeClusterSubInterfaceSettings, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'CLUSTER_DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'update-cluster-sub-interfaces'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'CLUSTER_DETAIL' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    getEdgesPortStatus: build.query<EdgeNodesPortsInfo, RequestPayload>({
+      queryFn: async ({ payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const { edgeIds, includeLags = false } = payload as {
+          edgeIds: EdgeSerialNumber[]
+          includeLags?: boolean
+        }
+        const result = {} as EdgeNodesPortsInfo
+
+        for(let edgeId of edgeIds) {
+          const tmp = [] as (EdgePortStatus | EdgeLagStatus)[]
+          const params = { serialNumber: edgeId }
+          const edgePortListReq = createHttpRequest(EdgeUrlsInfo.getEdgePortStatusList, params)
+          const edgePortList = await fetchWithBQ({
+            ...edgePortListReq,
+            body: {
+              sortField: 'sortIdx',
+              sortOrder: 'ASC'
+            }
+          })
+          const edgePorts = (edgePortList.data as TableResult<EdgePortStatus>).data
+          edgePorts?.sort(physicalPortSorter)
+          tmp.push(...edgePorts)
+
+          const edgeLagListReq = createHttpRequest(EdgeUrlsInfo.getEdgeLagStatusList, params)
+          const edgeLagList = await fetchWithBQ({ ...edgeLagListReq, body: {} })
+          tmp.push(...((edgeLagList.data as TableResult<EdgeLagStatus>).data))
+          // filter ports
+          result[edgeId] = convertToEdgePortInfo(tmp, !includeLags)
+        }
+
+        return { data: result }
+      },
+      providesTags: [{ type: 'Edge', id: 'PORT_STATUS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update LAG, port and virtual IP settings',
+            'Add LAG',
+            'Update LAG',
+            'Delete LAG'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'PORT_STATUS' }]))
+          })
+        })
+      }
+    }),
+    getHqosEdgeCompatibilities: build.query<EdgeServiceCompatibilitiesResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getHqosEdgeCompatibilities, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'HQOS_EDGE_COMPATIBILITY' }]
+    }),
+    getPinEdgeCompatibilities: build.query<EdgeServiceCompatibilitiesResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getPinEdgeCompatibilities, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'PIN_EDGE_COMPATIBILITY' }]
+    }),
+    getPinApCompatibilities: build.query<EdgeServicesApCompatibilitiesResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getPinApCompatibilities, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'PIN_AP_COMPATIBILITY' }]
+    }),
+    getMdnsEdgeCompatibilities: build.query<EdgeServiceCompatibilitiesResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getMdnsEdgeCompatibilities, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'MDNS_EDGE_COMPATIBILITY' }]
     })
   })
 })
 
-const EdgeStatusTransformer = (data: EdgeStatus[]) => {
+const edgeStatusTransformer = (data: EdgeStatus[]) => {
   data.forEach(item => {
     if (item?.memoryUsedKb)
       item.memoryUsed = item?.memoryUsedKb * 1024
@@ -616,9 +1117,68 @@ const EdgeStatusTransformer = (data: EdgeStatus[]) => {
   return data
 }
 
+const convertToEdgePortInfo = (interfaces: (EdgePortStatus | EdgeLagStatus)[], physicalOnly?: boolean) => {
+  const data = interfaces.map(item => {
+    const isPhysicalPort = item.hasOwnProperty('interfaceName')
+    const lagList = interfaces.filter(interfaceData => !interfaceData.hasOwnProperty('interfaceName'))
+
+    let portName = ''
+    let id = ''
+    let portType: EdgePortTypeEnum
+    let isLagMember = false
+    if (isPhysicalPort) {
+      const ifData = (item as EdgePortStatus)
+      id = ifData.portId
+      portName = ifData.interfaceName ?? ''
+      portType = ifData.type ?? ''
+      isLagMember = !!lagList?.some(lag =>
+        (lag as EdgeLagStatus).lagMembers?.some(member =>
+          member.name === ifData.interfaceName))
+    } else {
+      const ifData = (item as EdgeLagStatus)
+      id = `${ifData.lagId}`
+      portName = ifData.name
+      portType = ifData.portType
+    }
+
+    return (physicalOnly && !isPhysicalPort) ? '' : {
+      serialNumber: item.serialNumber ?? '',
+      id,
+      portName,
+      portType,
+      isLag: !isPhysicalPort,
+      isLagMember,
+      ipMode: getEdgePortIpModeEnumValue(item.ipMode),
+      ip: item.ip ?? '',
+      mac: item.mac ?? '',
+      subnet: item.subnet ?? '',
+      vlan: item.vlan,
+      status: item.status,
+      isCorePort: item.isCorePort === 'Enabled',
+      portEnabled: item.adminStatus === 'Enabled'
+    }
+  })
+
+  return data.filter(d => !!d) as EdgePortInfo[]
+}
+
+const physicalPortSorter = (
+  a: EdgePort | EdgePortStatus,
+  b: EdgePort | EdgePortStatus
+) => {
+  const aMatch = a.interfaceName?.match(/^port(\d+)$/)
+  const bMatch = b.interfaceName?.match(/^port(\d+)$/)
+
+  if (aMatch && bMatch) {
+    return parseInt(aMatch[1], 10) - parseInt(bMatch[1], 10)
+  }
+  return aMatch ? -1 : bMatch ? 1 : 0
+}
+
 export const {
   useAddEdgeMutation,
   useGetEdgeQuery,
+  useLazyGetEdgeQuery,
   usePingEdgeMutation,
   useTraceRouteEdgeMutation,
   useUpdateEdgeMutation,
@@ -629,6 +1189,7 @@ export const {
   useGetDnsServersQuery,
   useUpdateDnsServersMutation,
   useGetPortConfigQuery,
+  useLazyGetPortConfigQuery,
   useUpdatePortConfigMutation,
   useGetSubInterfacesQuery,
   useAddSubInterfacesMutation,
@@ -638,8 +1199,10 @@ export const {
   useUpdateStaticRoutesMutation,
   useEdgeBySerialNumberQuery,
   useGetEdgePortsStatusListQuery,
+  useLazyGetEdgePortsStatusListQuery,
   useGetEdgeSubInterfacesStatusListQuery,
   useRebootEdgeMutation,
+  useShutdownEdgeMutation,
   useFactoryResetEdgeMutation,
   useDownloadEdgesCSVMutation,
   useGetEdgeUptimeQuery,
@@ -656,10 +1219,39 @@ export const {
   useAddEdgeLagMutation,
   useDeleteEdgeLagMutation,
   useGetEdgeLagListQuery,
+  useLazyGetEdgeLagListQuery,
   useAddLagSubInterfacesMutation,
   useGetLagSubInterfacesQuery,
   useDeleteLagSubInterfacesMutation,
   useUpdateLagSubInterfacesMutation,
   useUpdateEdgeLagMutation,
-  useImportLagSubInterfacesCSVMutation
+  useImportLagSubInterfacesCSVMutation,
+  useGetEdgeLagSubInterfacesStatusListQuery,
+  useGetEdgePortListWithStatusQuery,
+  useGetEdgeClusterListForTableQuery,
+  useGetEdgeClusterListQuery,
+  useAddEdgeClusterMutation,
+  useDeleteEdgeClusterMutation,
+  useGetAllInterfacesByTypeQuery,
+  usePatchEdgeClusterMutation,
+  useGetEdgeClusterQuery,
+  usePatchEdgeClusterNetworkSettingsMutation,
+  useGetEdgeClusterNetworkSettingsQuery,
+  usePatchEdgeClusterSubInterfaceSettingsMutation,
+  useGetEdgeClusterSubInterfaceSettingsQuery,
+  useGetEdgesPortStatusQuery,
+  useLazyGetEdgesPortStatusQuery,
+  useGetEdgeFeatureSetsQuery,
+  useLazyGetEdgeFeatureSetsQuery,
+  useGetVenueEdgeCompatibilitiesQuery,
+  useLazyGetVenueEdgeCompatibilitiesQuery,
+  useGetSdLanEdgeCompatibilitiesQuery,
+  useLazyGetSdLanEdgeCompatibilitiesQuery,
+  useGetSdLanApCompatibilitiesQuery,
+  useLazyGetSdLanApCompatibilitiesQuery,
+  useGetHqosEdgeCompatibilitiesQuery,
+  useGetPinEdgeCompatibilitiesQuery,
+  useLazyGetPinEdgeCompatibilitiesQuery,
+  useLazyGetPinApCompatibilitiesQuery,
+  useLazyGetMdnsEdgeCompatibilitiesQuery
 } = edgeApi

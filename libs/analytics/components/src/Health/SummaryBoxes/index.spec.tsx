@@ -1,42 +1,23 @@
-import userEvent         from '@testing-library/user-event'
-import { defineMessage } from 'react-intl'
+import userEvent from '@testing-library/user-event'
 
-import { BrowserRouter as Router }                                          from '@acx-ui/react-router-dom'
-import { Provider, store, dataApiURL }                                      from '@acx-ui/store'
-import { render, waitForElementToBeRemoved, screen, mockGraphqlQuery, act } from '@acx-ui/test-utils'
-import type { AnalyticsFilter }                                             from '@acx-ui/utils'
-import { DateRange }                                                        from '@acx-ui/utils'
+import { BrowserRouter as Router }     from '@acx-ui/react-router-dom'
+import { Provider, store, dataApiURL } from '@acx-ui/store'
+import { render,
+  waitForElementToBeRemoved,
+  screen,
+  mockGraphqlQuery,
+  act,
+  within,
+  waitFor } from '@acx-ui/test-utils'
+import type { AnalyticsFilter } from '@acx-ui/utils'
+import { DateRange }            from '@acx-ui/utils'
 
-
-import { DrilldownSelection } from '../HealthDrillDown/config'
+import { mockConnectionDrillDown, mockTtcDrillDown } from '../HealthDrillDown/__tests__/fixtures'
 
 import { fakeSummary, fakeEmptySummary } from './__tests__/fixtures'
 import { api }                           from './services'
 
-import { SummaryBoxes, Box } from '.'
-
-describe('box', () => {
-  const boxProps = {
-    type: 'successCount',
-    title: defineMessage({ defaultMessage: 'test box' }),
-    suffix: '/suffix',
-    value: '100'
-  }
-  it('should render correctly with toggle enabled', async () => {
-    const onClick = jest.fn()
-    const { asFragment } = render(<Box {...boxProps} isOpen onClick={onClick}/>)
-    expect(asFragment()).toMatchSnapshot()
-    await userEvent.click(screen.getByTestId('CaretDoubleUpOutlined'))
-    expect(onClick).toBeCalledTimes(1)
-  })
-
-  it('should render correctly with toggle disabled', async () => {
-    const onClick = jest.fn()
-    const falseToggleBoxProps = { ...boxProps }
-    const { asFragment } = render(<Box {...falseToggleBoxProps} isOpen onClick={onClick}/>)
-    expect(asFragment()).toMatchSnapshot()
-  })
-})
+import { SummaryBoxes } from '.'
 
 const filters: AnalyticsFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
@@ -51,12 +32,9 @@ describe('Health Page', () => {
   })
   it('should match snapshot', async () => {
     mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
-    const drilldownSelection = null
     const { asFragment } = render(
       <Router><Provider><SummaryBoxes
         filters={filters}
-        drilldownSelection={drilldownSelection}
-        setDrilldownSelection={jest.fn()}
       /></Provider></Router>
     )
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -64,98 +42,99 @@ describe('Health Page', () => {
   })
   it('should show - when no data', async () => {
     mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeEmptySummary })
-    const drilldownSelection = null
     const { asFragment } = render(
-      <Router><Provider><SummaryBoxes filters={filters}
-        drilldownSelection={drilldownSelection}
-        setDrilldownSelection={jest.fn()}
-      /></Provider></Router>
+      <Router><Provider><SummaryBoxes filters={filters} /></Provider></Router>
     )
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('render when feature toggle is disabled', async () => {
-    mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeEmptySummary })
-    const drilldownSelection = null
-    const { asFragment } = render(
-      <Router><Provider><SummaryBoxes filters={filters}
-        drilldownSelection={drilldownSelection}
-        setDrilldownSelection={jest.fn()}
-      /></Provider></Router>
-    )
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(asFragment()).toMatchSnapshot()
-  })
-
-  describe('toggle stats', () => {
-    it('should handle toggle stats', async () => {
+  describe('SummaryBoxes open drawer', () => {
+    it('should match snapshot open drawer connectionFailure', async () => {
+      mockGraphqlQuery(dataApiURL, 'ConnectionDrilldown', { data: mockConnectionDrillDown })
       mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
-      let drilldownSelection: DrilldownSelection = null
-      const setDrilldownSelection = jest.fn(
-        (val: typeof drilldownSelection) => drilldownSelection = val
-      )
-      const { rerender } = render(<Router><Provider><SummaryBoxes
-        filters={filters}
-        drilldownSelection={drilldownSelection}
-        setDrilldownSelection={setDrilldownSelection}
-      /></Provider></Router>)
+      const { asFragment } = render(<Router><Provider>
+        <SummaryBoxes filters={filters} /></Provider></Router>)
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
-      const downArrows = screen.getAllByTestId('CaretDoubleDownOutlined')
-      expect(downArrows).toHaveLength(4)
-
-      await act(async () => await userEvent.click(downArrows[0]))
-      rerender(<Router><Provider><SummaryBoxes
-        filters={filters}
-        drilldownSelection={drilldownSelection}
-        setDrilldownSelection={setDrilldownSelection}
-      /></Provider></Router>)
-      const upArrows = screen.getAllByTestId('CaretDoubleUpOutlined')
-      expect(upArrows).toHaveLength(3)
-
-      await act(async () => await userEvent.click(upArrows[0]))
-      rerender(<Router><Provider><SummaryBoxes
-        filters={filters}
-        drilldownSelection={drilldownSelection}
-        setDrilldownSelection={setDrilldownSelection}
-      /></Provider></Router>)
-      expect(screen.getAllByTestId('CaretDoubleDownOutlined')).toHaveLength(4)
+      expect(await screen.findByText(/Successful Connections/i)).toBeVisible()
+      const tiles = screen.getAllByText(/\(more details\)/i)
+      expect(tiles).toHaveLength(4)
+      tiles.forEach( async tile => {
+        await userEvent.click(tile)
+      })
+      expect(asFragment()).toMatchSnapshot()
     })
 
-    it('should handle toggle ttc', async () => {
+    it('should handle open drawer Successful Connections', async () => {
+      mockGraphqlQuery(dataApiURL, 'ConnectionDrilldown', { data: mockConnectionDrillDown })
       mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
-      let drilldownSelection: DrilldownSelection = null
-      const setDrilldownSelection = jest.fn(
-        (val: typeof drilldownSelection) => drilldownSelection = val
-      )
-      const { rerender } = render(<Router><Provider><SummaryBoxes
-        filters={filters}
-        drilldownSelection={drilldownSelection}
-        setDrilldownSelection={setDrilldownSelection}
-      /></Provider></Router>)
+      render(<Router><Provider>
+        <SummaryBoxes filters={filters} /></Provider></Router>)
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(await screen.findByText(/Successful Connections/i)).toBeVisible()
+      const tiles = screen.getAllByText(/\(more details\)/i)
+      expect(tiles).toHaveLength(4)
+      await act(async () => await userEvent.click(tiles[0]))
+      const dialog = await screen.findByRole('dialog')
+      expect(await within(dialog).findByText(/Connection Failures/i)).toBeVisible()
+      const icon = await within(dialog).findByTestId('CloseSymbol')
+      expect(icon).toBeVisible()
+      await userEvent.click(icon)
+      await waitFor(() => expect(dialog).not.toBeVisible())
+    })
 
-      expect(screen.getAllByTestId('CaretDoubleDownOutlined')).toHaveLength(4)
+    it('should handle open drawer Failed Connections', async () => {
+      mockGraphqlQuery(dataApiURL, 'ConnectionDrilldown', { data: mockConnectionDrillDown })
+      mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
+      render(<Router><Provider>
+        <SummaryBoxes filters={filters} /></Provider></Router>)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(await screen.findByText(/Failed Connections/i)).toBeVisible()
+      const tiles = screen.getAllByText(/\(more details\)/i)
+      expect(tiles).toHaveLength(4)
+      await act(async () => await userEvent.click(tiles[1]))
+      const dialog = await screen.findByRole('dialog')
+      expect(await within(dialog).findByText(/Connection Failures/i)).toBeVisible()
+      const icon = await within(dialog).findByTestId('CloseSymbol')
+      expect(icon).toBeVisible()
+      await userEvent.click(icon)
+      await waitFor(() => expect(dialog).not.toBeVisible())
+    })
 
-      const button = screen.getByRole('button', { name: /time to connect/i })
-      await act(async () => await userEvent.click(button))
-      rerender(<Router><Provider><SummaryBoxes
-        filters={filters}
-        drilldownSelection={drilldownSelection}
-        setDrilldownSelection={setDrilldownSelection}
-      /></Provider></Router>)
+    it('should handle open drawer Connection Success Ratio', async () => {
+      mockGraphqlQuery(dataApiURL, 'ConnectionDrilldown', { data: mockConnectionDrillDown })
+      mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
+      render(<Router><Provider>
+        <SummaryBoxes filters={filters} /></Provider></Router>)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(await screen.findByText(/Connection Success Ratio/i)).toBeVisible()
+      const tiles = screen.getAllByText(/\(more details\)/i)
+      expect(tiles).toHaveLength(4)
+      await act(async () => await userEvent.click(tiles[2]))
+      const dialog = await screen.findByRole('dialog')
+      expect(await within(dialog).findByText(/Connection Failures/i)).toBeVisible()
+      const icon = await within(dialog).findByTestId('CloseSymbol')
+      expect(icon).toBeVisible()
+      await userEvent.click(icon)
+      await waitFor(() => expect(dialog).not.toBeVisible())
+    })
 
-      expect(screen.getAllByTestId('CaretDoubleUpOutlined')).toHaveLength(1)
-
-      await act(async () => await userEvent.click(button))
-      rerender(<Router><Provider><SummaryBoxes
-        filters={filters}
-        drilldownSelection={drilldownSelection}
-        setDrilldownSelection={setDrilldownSelection}
-      /></Provider></Router>)
-
-      expect(screen.getAllByTestId('CaretDoubleDownOutlined')).toHaveLength(4)
+    it('should handle open drawer ttc', async () => {
+      mockGraphqlQuery(dataApiURL, 'TTCDrilldown', { data: mockTtcDrillDown })
+      mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
+      render(<Router><Provider>
+        <SummaryBoxes filters={filters} /></Provider></Router>)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(await screen.findByText(/Avg Time To Connect/i)).toBeVisible()
+      const tiles = screen.getAllByText(/\(more details\)/i)
+      expect(tiles).toHaveLength(4)
+      await act(async () => await userEvent.click(tiles[3]))
+      const dialog = await screen.findByRole('dialog')
+      expect(await within(dialog).findByText(/Average Time To Connect/i)).toBeVisible()
+      const icon = await within(dialog).findByTestId('CloseSymbol')
+      expect(icon).toBeVisible()
+      await userEvent.click(icon)
+      await waitFor(() => expect(dialog).not.toBeVisible())
     })
   })
 })

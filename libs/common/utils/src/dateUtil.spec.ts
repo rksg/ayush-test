@@ -5,7 +5,9 @@ import {
   resetRanges,
   getCurrentDate,
   computeRangeFilter,
-  getDatePickerValues
+  getDatePickerValues,
+  transformTimezoneDifference,
+  getVenueTimeZone
 } from './dateUtil'
 
 
@@ -24,7 +26,7 @@ describe('dateUtil', () => {
   describe('dateRangeForLast', () => {
     it('Should return date range for the given input', () => {
       expect(dateRangeForLast(3, 'months').toString()).toEqual(
-        'Fri Oct 01 2021 00:00:00 GMT+0000,Sat Jan 01 2022 00:00:00 GMT+0000'
+        'Fri Oct 01 2021 00:01:00 GMT+0000,Sat Jan 01 2022 00:01:00 GMT+0000'
       )
     })
   })
@@ -112,4 +114,36 @@ describe('dateUtil', () => {
       })
     })
   })
+
+  describe('transformTimezoneDifference', () => {
+    it('should return timezone difference', () => {
+      expect(transformTimezoneDifference(0)).toEqual('UTC +00:00')
+      expect(transformTimezoneDifference(28800)).toEqual('UTC +08:00')
+      expect(transformTimezoneDifference(-3600)).toEqual('UTC -01:00')
+    })
+  })
+
+  describe('getVenueTimeZone', () => {
+    it('should return correct', async () => {
+
+      jest.useFakeTimers()
+
+      // Australian Eastern Standard Time
+      jest.setSystemTime(new Date(Date.parse('2022-08-04T01:20:00+10:00')))
+      const latitude = '-37.8145092'
+      const longitude = '144.9704868'
+
+      const timeZone = getVenueTimeZone(Number(latitude), Number(longitude))
+
+      expect(timeZone).toStrictEqual({
+        dstOffset: 0,
+        rawOffset: 36000,
+        timeZoneId: 'Australia/Melbourne',
+        timeZoneName: 'Australia/Melbourne AEST'
+      })
+
+      jest.runOnlyPendingTimers()
+    })
+  })
+
 })

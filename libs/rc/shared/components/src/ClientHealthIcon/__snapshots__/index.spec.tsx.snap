@@ -2,8 +2,17 @@
 
 exports[`ClientHealthIcon should render correctly 1`] = `
 <DocumentFragment>
-  <svg
-    class="styledComponents__HealthIcon-sc-y7jstt-0 imGkSc"
+  .c0 {
+  height: props.$height;
+}
+
+.c0 path:first-child {
+  stroke: var(--acx-semantics-green-50);
+  fill: var(--acx-semantics-green-50);
+}
+
+<svg
+    class="c0"
     data-testid="HealthSolid"
   />
 </DocumentFragment>

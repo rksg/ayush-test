@@ -1,36 +1,45 @@
-import { useState } from 'react'
-
+import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
 import { useAnalyticsFilter, categoryTabs, CategoryTab } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Tabs }                        from '@acx-ui/components'
 import { get }                                           from '@acx-ui/config'
-import {  useIsTierAllowed }                             from '@acx-ui/feature-toggle'
+import { useIsTierAllowed, useIsSplitOn, Features }      from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink }         from '@acx-ui/react-router-dom'
 import type { AnalyticsFilter }                          from '@acx-ui/utils'
 
 import { Header } from '../Header'
 
 import ConnectedClientsOverTime      from './ConnectedClientsOverTime'
-import { HealthDrillDown }           from './HealthDrillDown'
-import { DrilldownSelection }        from './HealthDrillDown/config'
 import { HealthPageContextProvider } from './HealthPageContext'
 import Kpis                          from './Kpi'
 import * as UI                       from './styledComponents'
 import { SummaryBoxes }              from './SummaryBoxes'
 
-const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
+const HealthPage = (props: { filters? : AnalyticsFilter, path?: string, showHeader?: boolean }) => {
   const { $t } = useIntl()
   const canUseAnltAdv = useIsTierAllowed('ANLT-ADV')
   const isMLISA = get('IS_MLISA_SA')
-  const { filters: widgetFilters } = props
+  const { filters: widgetFilters, showHeader = true } = props
   const params = useParams()
   const selectedTab = params['categoryTab'] ?? categoryTabs[0].value
   const navigate = useNavigate()
-  const basePath = useTenantLink(props.path ?? '/analytics/health/tab/')
-  const { filters } = useAnalyticsFilter()
-  const healthPageFilters = widgetFilters ? widgetFilters : filters
-  const [drilldownSelection, setDrilldownSelection] = useState<DrilldownSelection>(null)
+  const basePath = useTenantLink(props.path ?? '/analytics/health/wireless/tab/')
+  const isSwitchHealthEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
+    useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
+  ].some(Boolean)
+  const { filters } = useAnalyticsFilter({
+    revertToDefaultURLs: {
+      noSwitchSupportURLs: isSwitchHealthEnabled ? [] : ['/ai/health', '/analytics/health']
+    }
+  })
+  const healthPageFilters = {
+    ...filters,
+    ...widgetFilters,
+    startDate: moment(widgetFilters?.startDate || filters.startDate).tz('UTC').format(),
+    endDate: moment(widgetFilters?.endDate || filters.endDate).tz('UTC').format()
+  }
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -39,7 +48,7 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
     })
   return (
     <>
-      {!widgetFilters && !canUseAnltAdv && !isMLISA &&
+      {showHeader && !widgetFilters && !canUseAnltAdv && !isMLISA &&
       <Header
         title={$t({ defaultMessage: 'Health' })}
         breadcrumb={[
@@ -53,13 +62,6 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
         <GridCol col={{ span: 24 }} style={{ minHeight: '105px' }}>
           <SummaryBoxes
             filters={healthPageFilters}
-            drilldownSelection={drilldownSelection}
-            setDrilldownSelection={setDrilldownSelection}
-          />
-          <HealthDrillDown
-            filters={healthPageFilters}
-            drilldownSelection={drilldownSelection}
-            setDrilldownSelection={setDrilldownSelection}
           />
         </GridCol>
         <HealthPageContextProvider>

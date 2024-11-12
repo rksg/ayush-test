@@ -11,31 +11,28 @@ import {
   cssStr,
   useStepFormContext
 } from '@acx-ui/components'
+import { useIsSplitOn, Features }                    from '@acx-ui/feature-toggle'
 import { ArrowExpand, SearchOutlined, ChevronRight } from '@acx-ui/icons'
+import { useSwitchFirmwareUtils }                    from '@acx-ui/rc/components'
+import {
+  getNextScheduleTpl
+} from '@acx-ui/rc/components'
 import {
   useLazyGetSwitchFirmwareListQuery
 } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
-  SwitchFirmware,
-  parseSwitchVersion
+  SwitchFirmware
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
 import { noDataDisplay }  from '@acx-ui/utils'
 
 import { SwitchFirmwareWizardType } from '..'
-import {
-  getNextScheduleTpl,
-  getSwitchNextScheduleTplTooltip
-} from '../../../../FirmwareUtils'
 import * as UI                      from '../../styledComponents'
 import {
   getHightlightSearch,
-  getSwitchFirmwareList,
-  getSwitchNextScheduleTpl,
-  getSwitchScheduleTpl,
-  getSwitchVenueAvailableVersions
+  getSwitchNextScheduleTpl
 } from '../../switch.upgrade.util'
 
 const getTooltipText = function (value: string, customDisplayValue?: string | React.ReactNode) {
@@ -47,19 +44,26 @@ const getTooltipText = function (value: string, customDisplayValue?: string | Re
 }
 
 function useColumns () {
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const intl = useIntl()
+  const { getSwitchNextScheduleTplTooltip,
+    getSwitchFirmwareList,
+    getSwitchVenueAvailableVersions } = useSwitchFirmwareUtils()
 
   const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
     {
-      title: intl.$t({ defaultMessage: 'Venue' }),
-      key: 'name',
-      dataIndex: 'name',
+      title: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
+      key: isSwitchRbacEnabled ? 'venueName' : 'name',
+      dataIndex: isSwitchRbacEnabled ? 'venueName' : 'name',
       width: 150,
       defaultSortOrder: 'ascend',
       render: function (_, row) {
+        const venueName = isSwitchRbacEnabled ? row.venueName : row.name
         const customDisplayValue =
-          <div style={{ fontWeight: cssStr('--acx-subtitle-4-font-weight') }} > {row.name}</div >
-        return getTooltipText(row.name, customDisplayValue)
+          <div style={{ fontWeight: cssStr('--acx-subtitle-4-font-weight') }} >
+            {venueName}
+          </div >
+        return getTooltipText(venueName, customDisplayValue)
 
       }
     }, {
@@ -107,7 +111,7 @@ export const useDefaultVenuePayload = (): RequestPayload => {
   return {
     firmwareType: '',
     firmwareVersion: '',
-    search: '',
+    searchFilter: '',
     updateAvailable: ''
   }
 }
@@ -121,12 +125,15 @@ type SelectSwitchStepProps = {
 export const SelectSwitchStep = (
   { data, setShowSubTitle }: SelectSwitchStepProps) => {
 
-  const { form, current } = useStepFormContext()
   const columns = useColumns()
   const intl = useIntl()
-  const { tenantId } = useParams()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
-  const [ getSwitchList ] = useLazyGetSwitchFirmwareListQuery()
+  const { form, current } = useStepFormContext()
+  const { tenantId } = useParams()
+  const { parseSwitchVersion, getSwitchScheduleTpl } = useSwitchFirmwareUtils()
+
+  const [ getSwitchFirmwareList ] = useLazyGetSwitchFirmwareListQuery()
 
   const [searchText, setSearchText] = useState('' as string)
   const [selectedVenueRowKeys, setSelectedVenueRowKeys] = useState([] as Key[])
@@ -142,6 +149,7 @@ export const SelectSwitchStep = (
   })
   const [isLoading, setIsLoading] = useState(false)
   const totalSwitchCount = data.reduce((total, venue) => total + venue.switchCount, 0)
+
 
   useEffect(()=>{
     setShowSubTitle(true)
@@ -218,8 +226,10 @@ export const SelectSwitchStep = (
         venueIdList: [record.id]
       }
       const switchList = record.id
-        ? (await getSwitchList({
-          params: { tenantId: tenantId }, payload: switchListPayload
+        ? (await getSwitchFirmwareList({
+          params: { tenantId: tenantId },
+          payload: switchListPayload,
+          enableRbac: isSwitchRbacEnabled
         }, false)).data?.data
         : []
 
@@ -327,12 +337,17 @@ export const SelectSwitchStep = (
 
   const setSearchResultData = async function (searchText: string) {
     let selectedKey = [] as Key[]
-    const switchListPayload = {
+    const switchListPayload = isSwitchRbacEnabled ? {
+      venueIdList: data.map(d => d.id),
+      searchFilter: searchText
+    } : {
       venueIdList: data.map(d => d.id),
       search: searchText
     }
-    const searchSwitchList = (await getSwitchList({
-      params: { tenantId: tenantId }, payload: switchListPayload
+    const searchSwitchList = (await getSwitchFirmwareList({
+      params: { tenantId: tenantId },
+      payload: switchListPayload,
+      enableRbac: isSwitchRbacEnabled
     }, true)).data?.data || []
     setSearchSwitchList(searchSwitchList)
 
@@ -573,8 +588,10 @@ export const SelectSwitchStep = (
                         const switchListPayload = {
                           venueIdList: [venue]
                         }
-                        const switchList = (await getSwitchList({
-                          params: { tenantId: tenantId }, payload: switchListPayload
+                        const switchList = (await getSwitchFirmwareList({
+                          params: { tenantId: tenantId },
+                          payload: switchListPayload,
+                          enableRbac: isSwitchRbacEnabled
                         }, false)).data?.data
                         if (switchList) {
                           initialData = switchList

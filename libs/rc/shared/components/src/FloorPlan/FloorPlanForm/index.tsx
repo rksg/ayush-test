@@ -3,8 +3,8 @@ import { useState } from 'react'
 import { Form, Input, InputNumber, Space } from 'antd'
 import { FormInstance }                    from 'antd/es/form/Form'
 
-import { FileValidation } from '@acx-ui/rc/utils'
-import { getIntl }        from '@acx-ui/utils'
+import { FileValidation, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
+import { getIntl }                                  from '@acx-ui/utils'
 
 import FloorplanUpload from './FloorPlanUpload'
 import ground          from './ground_floor_0.png'
@@ -43,7 +43,8 @@ export default function FloorPlanForm ({ form, formLoading, onFormSubmit, imageF
         rules={[
           { type: 'string', required: true },
           { min: 2 },
-          { max: 32 }
+          { max: 32 },
+          { validator: (_, value) => trailingNorLeadingSpaces(value) }
         ]}>
         <Input />
       </Form.Item>

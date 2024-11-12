@@ -1,9 +1,12 @@
 import { defineMessage, useIntl } from 'react-intl'
 
-import { StackedBarChart, TableProps }     from '@acx-ui/components'
-import { Table }                           from '@acx-ui/components'
-import { getDeviceConnectionStatusColors } from '@acx-ui/components'
-import { VenueMarkerOptions }              from '@acx-ui/rc/utils'
+import {
+  StackedBarChart,
+  TableProps,
+  Table,
+  getDeviceConnectionStatusColors
+}     from '@acx-ui/components'
+import { VenueMarkerOptions } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -134,7 +137,7 @@ export function VenueMarkerTooltip (
   if (isEdgeEnabled) {
     data.push({
       key: '3',
-      name: $t({ defaultMessage: 'SmartEdge' }),
+      name: $t({ defaultMessage: 'RUCKUS Edge' }),
       networkDevices: edgesCount > 0
         ? <UI.ChartWrapper>
           <StackedBarChart
@@ -146,7 +149,7 @@ export function VenueMarkerTooltip (
           </UI.TotalCount>
         </UI.ChartWrapper>
         : <UI.TextWrapper>
-          {$t({ defaultMessage: 'No SmartEdges' })}
+          {$t({ defaultMessage: 'No RUCKUS Edges' })}
         </UI.TextWrapper>,
       clients: <></>
 

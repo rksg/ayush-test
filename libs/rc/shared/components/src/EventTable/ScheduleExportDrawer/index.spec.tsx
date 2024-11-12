@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import { userEvent, waitFor, waitForElementToBeRemoved } from '@storybook/testing-library'
-import { rest }                                          from 'msw'
-import { defineMessage }                                 from 'react-intl'
+import userEvent         from '@testing-library/user-event'
+import { rest }          from 'msw'
+import { defineMessage } from 'react-intl'
 
 import { useIsSplitOn }                           from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
@@ -9,20 +9,55 @@ import { Provider  }                              from '@acx-ui/store'
 import {
   render,
   screen,
-  mockServer
+  mockServer,
+  waitFor,
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-
 
 import { ScheduleExportDrawer } from '.'
 
-
 const adminList = [{
-  id: '0587cbeb13404f3b9943d21f9e1d1e9e',
-  email: 'efg.cheng@email.com',
-  name: 'primeAdmin',
-  role: 'PRIME_ADMIN',
-  delegateToAllECs: true,
-  detailLevel: 'debug'
+  id: '01b35c76411544999550f038304f18f8',
+  createdDate: '2023-08-16T19:12:05.983+00:00',
+  updatedDate: '2023-08-16T19:12:05.987+00:00',
+  description: 'primeAdmin',
+  endpoints: [
+    {
+      type: 'EMAIL',
+      id: 'bed16f134e28411ba6df5de8a3204df7',
+      createdDate: '2023-08-16T19:12:05.984+00:00',
+      updatedDate: '2023-08-16T19:12:05.984+00:00',
+      destination: 'efg.cheng@email.com',
+      active: true,
+      status: 'OK'
+    },
+    {
+      type: 'SMS',
+      id: 'bed16f134e28411ba6df5de8a3204df9',
+      createdDate: '2023-08-16T19:12:05.984+00:00',
+      updatedDate: '2023-08-16T19:12:05.984+00:00',
+      destination: 'efg2.cheng@email.com',
+      active: true,
+      status: 'OK'
+    }
+  ]
+},
+{
+  id: '01b35c76411544999550f038304f18f5',
+  createdDate: '2023-08-16T19:12:05.983+00:00',
+  updatedDate: '2023-08-16T19:12:05.987+00:00',
+  description: 'primeAdmin1',
+  endpoints: [
+    {
+      type: 'EMAIL',
+      id: 'bed16f134e28411ba6df5de8a3204df8',
+      createdDate: '2023-08-16T19:12:05.984+00:00',
+      updatedDate: '2023-08-16T19:12:05.984+00:00',
+      destination: 'efg1.cheng@email.com',
+      active: true,
+      status: 'OK'
+    }
+  ]
 }
 ]
 
@@ -104,6 +139,7 @@ describe('ScheduleExportDrawer', () => {
     await userEvent.click(saveButton)
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loading' }))
+    expect(saveButton).toBeInTheDocument()
 
   })
 
@@ -140,10 +176,20 @@ describe('ScheduleExportDrawer', () => {
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
+    await userEvent.click(await screen.findByRole('combobox', { name: 'Product' }))
+    await userEvent.click(await screen.findByRole('option', { name: 'General' }))
+
+    await userEvent.click(await screen.findByRole('combobox', { name: 'Severity' }))
+    await userEvent.click(await screen.findByText('Warning'))
+
+    await userEvent.click(await screen.findByRole('combobox', { name: 'Event Type' }))
+    await userEvent.click(await screen.findByRole('option', { name: 'AP' }))
+    await userEvent.click(await screen.findByRole('option', { name: 'Security' }))
+
     const saveButton = await screen.findByRole('button', { name: 'Apply' })
     await userEvent.click(saveButton)
     await waitFor(() => expect(mockedApplyFn).toBeCalled())
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loading' }))
+    expect(saveButton).toBeInTheDocument()
 
   })
 

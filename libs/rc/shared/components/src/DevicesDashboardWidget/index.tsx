@@ -1,48 +1,25 @@
-import {  Loader }                                                from '@acx-ui/components'
-import { useDashboardOverviewQuery, useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
-import {  useParams }                                             from '@acx-ui/react-router-dom'
-import { useDashboardFilter }                                     from '@acx-ui/utils'
+import {  Loader }                                                               from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
+import { useDashboardV2OverviewQuery, useDeviceSummariesQuery, useRwgListQuery } from '@acx-ui/rc/services'
+import { useParams }                                                             from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                             from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                                       from '@acx-ui/user'
+import { useDashboardFilter }                                                    from '@acx-ui/utils'
 
 import {
-  getApDonutChartData,
-  getEdgeDonutChartData,
-  getSwitchDonutChartData,
   getApStackedBarChartData,
   getSwitchStackedBarChartData,
-  getEdgeStackedBarChartData
-} from '../DevicesWidget/helper'
-import { DevicesWidget, DevicesWidgetv2 } from '../DevicesWidget/index'
-
-export function DevicesDashboardWidget () {
-  const queryResults = useDashboardOverviewQuery({
-    params: useParams()
-  },{
-    selectFromResult: ({ data, ...rest }) => ({
-      data: {
-        apData: getApDonutChartData(data?.summary?.aps?.summary),
-        switchData: getSwitchDonutChartData(data),
-        edgeData: getEdgeDonutChartData(data?.summary?.edges)
-      },
-      ...rest
-    })
-  })
-
-  return (
-    <Loader states={[queryResults]}>
-      <DevicesWidget
-        apData={queryResults.data.apData}
-        switchData={queryResults.data.switchData}
-        edgeData={queryResults.data.edgeData}
-        enableArrowClick
-      />
-    </Loader>
-  )
-}
+  getEdgeStackedBarChartData,
+  getRwgStackedBarChartData } from '../DevicesWidget/helper'
+import { DevicesWidgetv2 } from '../DevicesWidget/index'
 
 export function DevicesDashboardWidgetV2 () {
   const { venueIds } = useDashboardFilter()
 
-  const queryResults = useDashboardV2OverviewQuery({
+  const isNewDashboardQueryEnabled = useIsSplitOn(Features.DASHBOARD_NEW_API_TOGGLE)
+  const query = isNewDashboardQueryEnabled ? useDeviceSummariesQuery : useDashboardV2OverviewQuery
+
+  const queryResults = query({
     params: useParams(),
     payload: {
       filters: {
@@ -55,23 +32,35 @@ export function DevicesDashboardWidgetV2 () {
         apStackedData: getApStackedBarChartData(data?.summary?.aps?.summary),
         switchStackedData: getSwitchStackedBarChartData(data),
         edgeStackedData: getEdgeStackedBarChartData(data?.summary?.edges),
-        apTotalCount: data?.aps?.totalCount,
-        switchTotalCount: data?.switches?.totalCount,
+        apTotalCount: isNewDashboardQueryEnabled ?
+          data?.summary?.aps?.totalCount : data?.aps?.totalCount,
+        switchTotalCount: isNewDashboardQueryEnabled ?
+          data?.summary?.switches?.totalCount : data?.switches?.totalCount,
         edgeTotalCount: data?.summary?.edges?.totalCount
       },
       ...rest
     })
   })
+  const { isCustomRole } = useUserProfileContext()
+  const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
+  const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN,
+    RolesEnum.ADMINISTRATOR,
+    RolesEnum.READ_ONLY]) || isCustomRole
+
+  const { data: rwgs, isLoading: rwgLoading } =
+    useRwgListQuery({ params: useParams() }, { skip: !(showRwgUI && rwgHasPermission) })
 
   return (
-    <Loader states={[queryResults]}>
+    <Loader states={[queryResults, { isLoading: rwgLoading }]}>
       <DevicesWidgetv2
         apStackedData={queryResults.data.apStackedData}
         switchStackedData={queryResults.data.switchStackedData}
         edgeStackedData={queryResults.data.edgeStackedData}
+        rwgStackedData={getRwgStackedBarChartData(rwgs?.data || [])}
         apTotalCount={queryResults.data.apTotalCount || 0}
         switchTotalCount={queryResults.data.switchTotalCount || 0}
         edgeTotalCount={queryResults.data.edgeTotalCount || 0}
+        rwgTotalCount={rwgs?.totalCount || 0}
         enableArrowClick
       />
     </Loader>

@@ -15,6 +15,7 @@ import {
 } from '@acx-ui/components'
 import { formatter } from '@acx-ui/formatter'
 
+import { useIncidentToggles }                                   from '../../useIncidentToggles'
 import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from '../services'
 
 import * as UI from './styledComponents'
@@ -45,7 +46,8 @@ const getChartData = (data: IncidentsBySeverityData): BarChartData => ({
 export function IncidentBySeverityBarChart ({ filters }: { filters: IncidentFilter }) {
   const { startDate, endDate } = filters
   const { $t } = useIntl()
-  const currentResult = useIncidentsBySeverityQuery(filters, {
+  const toggles = useIncidentToggles()
+  const currentResult = useIncidentsBySeverityQuery({ ...filters, toggles }, {
     selectFromResult: ({ data, ...rest }) => ({
       data: { ...data } as IncidentsBySeverityData,
       ...rest
@@ -58,6 +60,7 @@ export function IncidentBySeverityBarChart ({ filters }: { filters: IncidentFilt
   const prevResult = useIncidentsBySeverityQuery(
     {
       ...filters,
+      toggles,
       startDate: moment(startDate).subtract(moment(endDate).diff(startDate)).format(),
       endDate: startDate
     },

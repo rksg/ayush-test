@@ -1886,8 +1886,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
         className="venueInfoHeader"
       >
         <span>
-          15
-           Venues
+          15 Venues
         </span>
         <span
           onClick={[Function]}
@@ -5031,8 +5030,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
         className="venueInfoHeader"
       >
         <span>
-          25
-           Venues
+          25 Venues
         </span>
         <span
           onClick={[Function]}
@@ -6946,8 +6944,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
         className="venueInfoHeader"
       >
         <span>
-          15
-           Venues
+          15 Venues
         </span>
         <span
           onClick={[Function]}
@@ -7385,8 +7382,7 @@ exports[`VenueClusterRenderer should match with snapshot for venue cluster toolt
         className="venueInfoHeader"
       >
         <span>
-          3
-           Venues
+          3 Venues
         </span>
         <span
           onClick={[Function]}

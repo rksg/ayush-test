@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                from '@acx-ui/feature-toggle'
-import { apApi, venueApi }                             from '@acx-ui/rc/services'
-import { CommonUrlsInfo, getUrlForTest, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                             from '@acx-ui/store'
+import { useIsSplitOn }                                                from '@acx-ui/feature-toggle'
+import { apApi, venueApi }                                             from '@acx-ui/rc/services'
+import { ApViewModel, CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                             from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -14,7 +14,8 @@ import {
   waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 
-import { ApEditContext } from '../..'
+import { ApDataContext, ApEditContext } from '../..'
+import { venueData }                    from '../../../../__tests__/fixtures'
 
 import { IpSettings } from './IpSettings'
 
@@ -53,16 +54,50 @@ describe('AP Network IP settings', () => {
     }]
   }
 
+  const defaultApEditCtxData = {
+    editContextData: {
+      tabTitle: '',
+      isDirty: false,
+      hasError: false,
+      updateChanges: jest.fn(),
+      discardChanges: jest.fn()
+    },
+    setEditContextData: jest.fn(),
+    apViewContextData: mockApViewModel.data[0] as ApViewModel
+  }
+
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(apApi.util.resetApiState())
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json(mockApViewModel))
+      ),
+      rest.get(
+        WifiUrlsInfo.getApNetworkSettings.url,
+        (_, res, ctx) => res(ctx.json(null))
+      ),
+      rest.put(
+        WifiUrlsInfo.updateApNetworkSettings.url,
+        (_, res, ctx) => res(ctx.json(202))
+      ),
+      // rbac
+      rest.get(WifiRbacUrlsInfo.getApNetworkSettings.url,
+        (_, res, ctx) => res(ctx.json(null))
+      ),
+      rest.put(
+        WifiRbacUrlsInfo.updateApNetworkSettings.url,
+        (_, res, ctx) => res(ctx.json(202))
+      )
+    )
   })
 
   it('should render correctly without AP viewModel and network data', async () => {
     mockServer.use(
-      rest.post(
-        getUrlForTest(CommonUrlsInfo.getApsList),
+      rest.post(CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json(
           {
             totalCount: 1,
@@ -70,27 +105,19 @@ describe('AP Network IP settings', () => {
             data: [{ }]
           }
         ))
-      ),
-      rest.get(
-        getUrlForTest(WifiUrlsInfo.getApNetworkSettings),
-        (_, res, ctx) => res(ctx.json(null))
       )
     )
 
     render(
       <Provider>
-        <ApEditContext.Provider value={{
-          editContextData: {
-            tabTitle: '',
-            isDirty: false,
-            hasError: false,
-            updateChanges: jest.fn(),
-            discardChanges: jest.fn()
-          },
-          setEditContextData: jest.fn()
-        }}>
-          <IpSettings />
-        </ApEditContext.Provider>
+        <ApDataContext.Provider value={{ venueData }}>
+          <ApEditContext.Provider value={{
+            ...defaultApEditCtxData,
+            apViewContextData: {} as ApViewModel
+          }}>
+            <IpSettings />
+          </ApEditContext.Provider>
+        </ApDataContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/networking' }
       })
@@ -106,35 +133,13 @@ describe('AP Network IP settings', () => {
   })
 
   it('should render correctly without AP network data', async () => {
-    mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json(mockApViewModel))
-      ),
-      rest.get(
-        WifiUrlsInfo.getApNetworkSettings.url,
-        (_, res, ctx) => res(ctx.json(null))
-      ),
-      rest.put(
-        WifiUrlsInfo.updateApNetworkSettings.url,
-        (_, res, ctx) => res(ctx.json(202))
-      )
-    )
-
     render(
       <Provider>
-        <ApEditContext.Provider value={{
-          editContextData: {
-            tabTitle: '',
-            isDirty: false,
-            hasError: false,
-            updateChanges: jest.fn(),
-            discardChanges: jest.fn()
-          },
-          setEditContextData: jest.fn()
-        }}>
-          <IpSettings />
-        </ApEditContext.Provider>
+        <ApDataContext.Provider value={{ venueData }}>
+          <ApEditContext.Provider value={defaultApEditCtxData}>
+            <IpSettings />
+          </ApEditContext.Provider>
+        </ApDataContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/networking' }
       })
@@ -157,34 +162,23 @@ describe('AP Network IP settings', () => {
 
   it('should render correctly with AP network data', async () => {
     mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json(mockApViewModel))
-      ),
       rest.get(
         WifiUrlsInfo.getApNetworkSettings.url,
         (_, res, ctx) => res(ctx.json(mockStaticIpSettings))
       ),
-      rest.put(
-        WifiUrlsInfo.updateApNetworkSettings.url,
-        (_, res, ctx) => res(ctx.json(202))
+      // rbac
+      rest.get(WifiRbacUrlsInfo.getApNetworkSettings.url,
+        (_, res, ctx) => res(ctx.json(mockStaticIpSettings))
       )
     )
 
     render(
       <Provider>
-        <ApEditContext.Provider value={{
-          editContextData: {
-            tabTitle: '',
-            isDirty: false,
-            hasError: false,
-            updateChanges: jest.fn(),
-            discardChanges: jest.fn()
-          },
-          setEditContextData: jest.fn()
-        }}>
-          <IpSettings />
-        </ApEditContext.Provider>
+        <ApDataContext.Provider value={{ venueData }}>
+          <ApEditContext.Provider value={defaultApEditCtxData}>
+            <IpSettings />
+          </ApEditContext.Provider>
+        </ApDataContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/networking' }
       })

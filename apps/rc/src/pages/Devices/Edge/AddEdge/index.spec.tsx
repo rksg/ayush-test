@@ -2,39 +2,37 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, EdgeErrorsFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                         from '@acx-ui/store'
+import { Features, useIsSplitOn }                                                                                              from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, EdgeErrorsFixtures, EdgeUrlsInfo, EdgeCompatibilityFixtures, FirmwareUrlsInfo, EdgeFirmwareFixtures } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                            from '@acx-ui/store'
 import {
   fireEvent, mockServer, render,
   screen,
   waitFor
 } from '@acx-ui/test-utils'
 
-import { mockVenueData } from '../__tests__/fixtures'
+import { mockClusterData, mockVenueData } from '../__tests__/fixtures'
 
 import AddEdge from './index'
 
-const { mockValidationFailedDataWithDefinedCode, mockValidationFailedDataWithUndefinedCode } = EdgeErrorsFixtures
+const {
+  mockValidationFailedDataWithDefinedCode,
+  mockValidationFailedDataWithUndefinedCode
+} = EdgeErrorsFixtures
+const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
+const { mockedVenueFirmwareList } = EdgeFirmwareFixtures
+
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 
-jest.mock('@acx-ui/utils', () => {
-  const reactIntl = jest.requireActual('react-intl')
-  const intl = reactIntl.createIntl({
-    locale: 'en'
-  })
-  return {
-    ...jest.requireActual('@acx-ui/utils'),
-    getIntl: () => intl
-  }
-})
-
 describe('AddEdge', () => {
   let params: { tenantId: string }
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE)
+
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -42,12 +40,22 @@ describe('AddEdge', () => {
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.addEdge.url,
-        (req, res, ctx) => res(ctx.status(202))
-      ),
+        (_, res, ctx) => res(ctx.status(202))),
+      rest.post(
+        EdgeUrlsInfo.addEdgeCluster.url,
+        (_, res, ctx) => res(ctx.status(202))),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json(mockVenueData))
-      )
+        (_, res, ctx) => res(ctx.json(mockVenueData))),
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_, res, ctx) => res(ctx.json(mockClusterData))),
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))),
+      rest.post(
+        FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
+        (_, res, ctx) => res(ctx.json(mockedVenueFirmwareList)))
     )
   })
 
@@ -72,7 +80,7 @@ describe('AddEdge', () => {
     await screen.findByRole('combobox', { name: 'Venue' })
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await screen.findByText('Please enter Venue')
-    await screen.findByText('Please enter SmartEdge Name')
+    await screen.findByText('Please enter RUCKUS Edge Name')
     await screen.findByText('Please enter Serial Number')
   })
 
@@ -84,13 +92,13 @@ describe('AddEdge', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/devices/edge/add' }
       })
-    const edgeNameInput = await screen.findByRole('textbox', { name: 'SmartEdge Name' })
+    const edgeNameInput = await screen.findByRole('textbox', { name: 'RUCKUS Edge Name' })
     fireEvent.change(edgeNameInput, { target: { value: '12345678901234567890123456789012345678901234567890123456789012345' } })
     const serialNumberInput = screen.getByRole('textbox', { name: 'Serial Number' })
     fireEvent.change(serialNumberInput, { target: { value: '9612345678901234567890123456789012345' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
-    expect(await screen.findByText('SmartEdge Name must be up to 64 characters')).toBeVisible()
-    expect(await screen.findByText('Field must be exactly 34 characters')).toBeVisible()
+    expect(await screen.findByText('RUCKUS Edge Name must be up to 64 characters')).toBeVisible()
+    expect(await screen.findByText('This field is invalid')).toBeVisible()
   })
 
   it('should be blocked when serial number is invalid', async () => {
@@ -107,7 +115,8 @@ describe('AddEdge', () => {
     expect(await screen.findByText('This field is invalid')).toBeVisible()
   })
 
-  it('should add edge successfully', async () => {
+  it('should add edge with cluster successfully', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE || ff === Features.EDGES_TOGGLE)
     const user = userEvent.setup()
     render(
       <Provider>
@@ -118,17 +127,45 @@ describe('AddEdge', () => {
     const venueDropdown = await screen.findByRole('combobox', { name: 'Venue' })
     await user.click(venueDropdown)
     await user.click(await screen.findByText('Mock Venue 1'))
-    const edgeNameInput = screen.getByRole('textbox', { name: 'SmartEdge Name' })
-    fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
+    const clusterDropdown = await screen.findByRole('combobox', { name: 'Cluster' })
+    await user.click(clusterDropdown)
+    await user.click(await screen.findByText('Mock Cluster 1'))
+    const edgeNameInput = screen.getByRole('textbox', { name: 'RUCKUS Edge Name' })
+    await user.type(edgeNameInput, 'edge_name_test')
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number' })
-    fireEvent.change(serialNumberInput, { target: { value: '967107237F423711EE948762BC9B5F795A' } })
+    await user.type(serialNumberInput, '967107237F423711EE948762BC9B5F795A')
     await user.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/devices/edge`,
       hash: '',
       search: ''
-    }, { replace: true }))
+    }))
+  })
+
+  it('should add edge without cluster successfully', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE || ff === Features.EDGES_TOGGLE)
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <AddEdge />
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/add' }
+      })
+    const venueDropdown = await screen.findByRole('combobox', { name: 'Venue' })
+    await user.click(venueDropdown)
+    await user.click(await screen.findByText('Mock Venue 1'))
+    const edgeNameInput = screen.getByRole('textbox', { name: 'RUCKUS Edge Name' })
+    fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
+    const serialNumberInput = screen.getByRole('textbox',
+      { name: 'Serial Number' })
+    fireEvent.change(serialNumberInput, { target: { value: '967107237F423711EE948762BC9B5F795A' } })
+    await user.click(screen.getByRole('button', { name: 'Add' }))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/t/devices/edge`,
+      hash: '',
+      search: ''
+    })
   })
 
   it('cancel and go back to device list', async () => {
@@ -150,20 +187,30 @@ describe('AddEdge', () => {
 
 describe('AddEdge api fail', () => {
   let params: { tenantId: string }
+
   beforeEach(() => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
 
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE || ff === Features.EDGES_TOGGLE)
+
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.addEdge.url,
-        (req, res, ctx) => res(ctx.status(422), ctx.json(mockValidationFailedDataWithDefinedCode))
-      ),
+        (_, res, ctx) => res(ctx.status(422), ctx.json(mockValidationFailedDataWithDefinedCode))),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json(mockVenueData))
-      )
+        (_, res, ctx) => res(ctx.json(mockVenueData))),
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_, res, ctx) => res(ctx.json(mockClusterData))),
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))),
+      rest.post(
+        FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
+        (_, res, ctx) => res(ctx.json(mockedVenueFirmwareList)))
     )
   })
 
@@ -178,13 +225,16 @@ describe('AddEdge api fail', () => {
     const venueDropdown = await screen.findByRole('combobox', { name: 'Venue' })
     await user.click(venueDropdown)
     await user.click(await screen.findByText('Mock Venue 1'))
-    const edgeNameInput = screen.getByRole('textbox', { name: 'SmartEdge Name' })
+    const edgeNameInput = screen.getByRole('textbox', { name: 'RUCKUS Edge Name' })
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
+    const clusterDropdown = await screen.findByRole('combobox', { name: 'Cluster' })
+    await user.click(clusterDropdown)
+    await user.click(await screen.findByText('Mock Cluster 1'))
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number' })
     fireEvent.change(serialNumberInput, { target: { value: '967107237F423711EE948762BC9B5F795A' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
-    await screen.findByText("There's no available SmartEdge license")
+    await screen.findByText("There's no available RUCKUS Edge license")
   })
 
   it('addEdge api fail with undefined error code', async () => {
@@ -208,7 +258,10 @@ describe('AddEdge api fail', () => {
     const venueDropdown = await screen.findByRole('combobox', { name: 'Venue' })
     await user.click(venueDropdown)
     await user.click(await screen.findByText('Mock Venue 1'))
-    const edgeNameInput = screen.getByRole('textbox', { name: 'SmartEdge Name' })
+    const clusterDropdown = await screen.findByRole('combobox', { name: 'Cluster' })
+    await user.click(clusterDropdown)
+    await user.click(await screen.findByText('Mock Cluster 1'))
+    const edgeNameInput = screen.getByRole('textbox', { name: 'RUCKUS Edge Name' })
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number' })

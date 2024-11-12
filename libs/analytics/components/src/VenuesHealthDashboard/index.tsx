@@ -220,7 +220,7 @@ export function VenuesHealthDashboard ({
     <Loader states={[queryResults]}>
       <HistoricalCard
         title={$t({ defaultMessage: 'Client Experience' })}
-        subTitle={$t({ defaultMessage: 'Top Venues with poor experience' })}
+        subTitle={$t({ defaultMessage: 'Top <VenuePlural></VenuePlural> with poor experience' })}
         onArrowClick={onArrowClick}
       >
         <AutoSizer>

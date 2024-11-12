@@ -3,21 +3,24 @@ import { useState, useEffect } from 'react'
 import {
   Loading3QuartersOutlined
 } from '@ant-design/icons'
+import { MenuProps }              from 'antd'
 import { get, omit }              from 'lodash'
 import moment                     from 'moment'
 import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
 import { Loader, Table, TableProps, Button, showToast, Filter }           from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }         from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                      from '@acx-ui/formatter'
 import { DownloadOutlined }                                               from '@acx-ui/icons'
 import { useAddExportSchedulesMutation }                                  from '@acx-ui/rc/services'
 import { Event, EventExportSchedule, EventScheduleFrequency, TableQuery } from '@acx-ui/rc/utils'
 import { RequestPayload }                                                 from '@acx-ui/types'
+import { hasCrossVenuesPermission, useUserProfileContext }                from '@acx-ui/user'
 import { computeRangeFilter, DateRangeFilter, exportMessageMapping }      from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
+import { useIsEdgeReady } from '../useEdgeActions'
 
 import { filtersFrom, getDescription, getDetail, getSource, valueFrom } from './helpers'
 import {
@@ -39,6 +42,15 @@ export const defaultColumnState = {
   message: true
 }
 
+export type IconButtonProps = {
+  key?: string
+  icon: React.ReactNode
+  disabled?: boolean
+  tooltip?: string
+  onClick?: () => void
+  dropdownMenu?: Omit<MenuProps, 'placement'>
+}
+
 interface EventTableProps {
   settingsId?: string
   tableQuery: TableQuery<Event, RequestPayload<unknown>, unknown>,
@@ -47,6 +59,7 @@ interface EventTableProps {
   eventTypeMap?: Partial<typeof eventTypeMapping>
   columnState?: TableProps<Event>['columnState']
   omitColumns?: string[]
+  showScheduleExport?: boolean
 }
 
 export const EventTable = ({
@@ -56,14 +69,15 @@ export const EventTable = ({
   filterables = true,
   eventTypeMap = eventTypeMapping,
   columnState,
-  omitColumns
+  omitColumns,
+  showScheduleExport = false
 }: EventTableProps) => {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [visible, setVisible] = useState(false)
   const [exportDrawerVisible, setExportDrawerVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
   const isRogueEventsFilterEnabled = useIsSplitOn(Features.ROGUE_EVENTS_FILTER)
   const { exportCsv, disabled } = useExportCsv<Event>(tableQuery)
   const [addExportSchedules] = useAddExportSchedulesMutation()
@@ -71,12 +85,25 @@ export const EventTable = ({
   const isExportEventsEnabled = useIsSplitOn(Features.EXPORT_EVENTS_TOGGLE)
   useEffect(() => { setVisible(false) },[tableQuery.data?.data])
 
+  const { isCustomRole } = useUserProfileContext()
+
   const openEventScheduler = () => {
     setExportDrawerVisible(true)
   }
 
+  const excludeEventType = [
+    ...(!isEdgeEnabled ? ['EDGE'] : []),
+    ...(!isRogueEventsFilterEnabled ? ['SECURITY'] : [])
+  ]
+
+  const supportedEventTypes =
+    filtersFrom(omit(eventTypeMap, excludeEventType), filterables, 'entity_type')
+
+  const allEventTypes = filtersFrom(typeMapping, true)
+
   const exportCsvImmediately = () => {
-    const filters = get(tableQuery?.payload, 'filters', {}) as { dateFilter: DateRangeFilter }
+    const filters = get(tableQuery?.payload, 'filters', {}) as {
+      dateFilter: DateRangeFilter, entity_type: string[] }
     const eventsPeriodForExport = computeRangeFilter(
       { dateFilter: filters.dateFilter },
       ['from', 'to']
@@ -89,7 +116,11 @@ export const EventTable = ({
       },
       period: eventsPeriodForExport,
       context: {
-        searchString: tableQuery.payload?.searchString as string[],
+        searchString: [tableQuery.payload?.searchString || ''] as string[],
+        event_entity_type_all: (supportedEventTypes && supportedEventTypes?.map(obj => obj['key']))
+        // if no set of required entity_types available then pass all entity_types
+        // this case is when we get Events table in global search result where we dont have event type filter
+         || filters.entity_type || (allEventTypes && allEventTypes?.map(obj => obj['key'])),
         ...omit(tableQuery?.payload?.filters as Filter, ['dateFilter'])
       },
       isSupport: true, // direct export needs to set isSupport true
@@ -126,22 +157,18 @@ export const EventTable = ({
           disabled: !((tableQuery.data?.data ?? []).length > 0),
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: exportCsvImmediately },
-        { key: 'scheduleExport', label: $t({ defaultMessage: 'Schedule Export' }),
-          onClick: openEventScheduler }
+        (showScheduleExport ?
+          { key: 'scheduleExport', label: $t({ defaultMessage: 'Schedule Export' }),
+            onClick: openEventScheduler } : {})
       ]
     }
-  }
+  } as IconButtonProps
     : {
       icon: <DownloadOutlined />,
       disabled,
       tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
       onClick: exportCsv
     }
-
-  const excludeEventType = [
-    ...(!isEdgeEnabled ? ['EDGE'] : []),
-    ...(!isRogueEventsFilterEnabled ? ['SECURITY'] : [])
-  ]
 
   const excludeProduct = [
     ...(!isEdgeEnabled ? ['EDGE'] : [])
@@ -259,7 +286,8 @@ export const EventTable = ({
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       enableApiFilter={true}
-      iconButton={tableIconButtonConfig}
+      iconButton={!isCustomRole && hasCrossVenuesPermission()
+        ? tableIconButtonConfig : {} as IconButtonProps}
     />
     {current && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Event Details' })}
@@ -267,7 +295,7 @@ export const EventTable = ({
       onClose={() => setVisible(false)}
       data={getDrawerData(current!)}
     />}
-    {isExportEventsEnabled && exportDrawerVisible
+    {showScheduleExport && isExportEventsEnabled && exportDrawerVisible
       && <ScheduleExportDrawer
         title={defineMessage({ defaultMessage: 'Schedule Event Export' })}
         visible={exportDrawerVisible}

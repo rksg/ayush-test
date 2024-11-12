@@ -51,6 +51,9 @@ describe('IncidentsDashboardv2: services', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentsBySeverityWidget', {
       error: new Error('something went wrong!')
     })
+    mockGraphqlQuery(dataApiURL, 'IncidentsDashboardWidget', {
+      error: new Error('something went wrong!')
+    })
     const { status, data, error } = await store.dispatch(
       api.endpoints.incidentsBySeverityDashboardv2.initiate(props)
     )

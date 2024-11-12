@@ -17,10 +17,11 @@ import {
   getServiceListRoutePath,
   useTableQuery,
   ResidentPortal,
-  getServiceDetailsLink
+  getServiceDetailsLink,
+  getScopeKeyByService,
+  filterByAccessForServicePolicyMutation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                    from '@acx-ui/user'
 
 export default function ResidentPortalTable () {
   const intl = useIntl()
@@ -40,6 +41,7 @@ export default function ResidentPortalTable () {
     {
       label: intl.$t({ defaultMessage: 'Delete' }),
       visible: ([selectedRow]) => selectedRow && !selectedRow.venueCount,
+      scopeKey: getScopeKeyByService(ServiceType.RESIDENT_PORTAL, ServiceOperation.DELETE),
       onClick: ([{ id, name }], clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -60,6 +62,7 @@ export default function ResidentPortalTable () {
     },
     {
       label: intl.$t({ defaultMessage: 'Edit' }),
+      scopeKey: getScopeKeyByService(ServiceType.RESIDENT_PORTAL, ServiceOperation.EDIT),
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,
@@ -110,10 +113,12 @@ export default function ResidentPortalTable () {
     },
     {
       key: 'venueCount',
-      title: intl.$t({ defaultMessage: 'Venues' }),
+      title: intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: ['venueCount']
     }
   ]
+
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
     <>
@@ -128,12 +133,14 @@ export default function ResidentPortalTable () {
             text: intl.$t({ defaultMessage: 'My Services' }),
             link: getServiceListRoutePath(true) }
         ]}
-        extra={filterByAccess([
-          // eslint-disable-next-line max-len
-          <TenantLink to={
-            getServiceRoutePath({
+        extra={filterByAccessForServicePolicyMutation([
+          <TenantLink
+            to={getServiceRoutePath({
               type: ServiceType.RESIDENT_PORTAL,
-              oper: ServiceOperation.CREATE })}>
+              oper: ServiceOperation.CREATE })
+            }
+            scopeKey={getScopeKeyByService(ServiceType.RESIDENT_PORTAL, ServiceOperation.CREATE)}
+          >
             <Button type='primary'>{intl.$t({ defaultMessage: 'Add Resident Portal' })}</Button>
           </TenantLink>
         ])}
@@ -145,8 +152,8 @@ export default function ResidentPortalTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowActions={allowedRowActions}
+          rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
         />
       </Loader>
     </>

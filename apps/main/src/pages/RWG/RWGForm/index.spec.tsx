@@ -2,10 +2,10 @@ import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
-import { useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { rwgApi }          from '@acx-ui/rc/services'
-import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
+import { rwgApi }                                                 from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, RWG, RWGStatusEnum } from '@acx-ui/rc/utils'
+import { Provider, store }                                        from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -59,34 +59,32 @@ const gatewayResponse = {
   requestId: 'request-id',
   response: {
     rwgId: 'bbc41563473348d29a36b76e95c50381',
-    tenantId: '7b8cb9e8e99a4f42884ae9053604a376',
     venueId: '3f10af1401b44902a88723cb68c4bc77',
     venueName: 'My-Venue',
     name: 'ruckusdemos',
-    loginUrl: 'https://rxgs5-vpoc.ruckusdemos.net',
-    username: 'inigo',
-    password: 'Inigo123!',
-    status: 'Operational',
-    id: 'bbc41563473348d29a36b76e95c50381',
-    new: false
-  }
+    hostname: 'rxgs5-vpoc.ruckusdemos.net',
+    apiKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+    status: RWGStatusEnum.ONLINE,
+    isCluster: false
+  } as RWG
 }
 
 const rwgList = {
   requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f',
-  response: [{
-    rwgId: 'bbc41563473348d29a36b76e95c50381',
-    tenantId: '7b8cb9e8e99a4f42884ae9053604a376',
-    venueId: '3f10af1401b44902a88723cb68c4bc77',
-    venueName: 'My-Venue',
-    name: 'ruckusdemos',
-    loginUrl: 'https://rxgs5-vpoc.ruckusdemos.net',
-    username: 'inigo',
-    password: 'Inigo123!',
-    status: null,
-    id: 'bbc41563473348d29a36b76e95c50381',
-    new: false
-  }]
+  response: {
+    totalCount: 1,
+    page: 1,
+    data: [{
+      rwgId: 'bbc41563473348d29a36b76e95c50381',
+      venueId: '3f10af1401b44902a88723cb68c4bc77',
+      venueName: 'My-Venue',
+      name: 'ruckusdemos',
+      hostname: 'rxgs5-vpoc.ruckusdemos.net',
+      apiKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+      status: RWGStatusEnum.OFFLINE,
+      isCluster: false
+    }] as RWG[]
+  }
 }
 
 const mockedUsedNavigate = jest.fn()
@@ -106,14 +104,14 @@ describe('Gateway Form', () => {
     mockServer.use(
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuelist))),
-      rest.get(CommonUrlsInfo.getRwgList.url,
+      rest.post(CommonRbacUrlsInfo.getRwgList.url,
         (req, res, ctx) => res(ctx.json(rwgList))),
-      rest.post(CommonUrlsInfo.addGateway.url,
+      rest.post(CommonRbacUrlsInfo.addGateway.url,
         (_, res, ctx) => {
           mockedReqFn()
           return res(ctx.status(200), ctx.json(successResponse))
         }),
-      rest.post(CommonUrlsInfo.updateGateway.url,
+      rest.post(CommonRbacUrlsInfo.updateGateway.url,
         (_, res, ctx) => {
           mockedReqFn()
           return res(ctx.status(200), ctx.json(successResponse))
@@ -145,14 +143,12 @@ describe('Gateway Form', () => {
     fireEvent.change(gatewayInput, { target: { value: 'ruckusdemos1' } })
     fireEvent.blur(gatewayInput)
 
-    const URLInput = await screen.findByLabelText('URL')
-    await fireEvent.change(URLInput, { target: { value: 'https://test.com' } })
+    const URLInput = screen.getByLabelText('FQDN / IP')
+    await fireEvent.change(URLInput, { target: { value: 'test.com' } })
 
-    const usernameInput = await screen.findByLabelText('Username')
-    await fireEvent.change(usernameInput, { target: { value: 'newUser' } })
-
-    const passwordInput = await screen.findByLabelText('Password')
-    await fireEvent.change(passwordInput, { target: { value: 'Temp!2345' } })
+    const passwordInput = screen.getByLabelText('API Key')
+    // eslint-disable-next-line max-len
+    await fireEvent.change(passwordInput, { target: { value: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' } })
 
     await userEvent.click(actions.getByRole('button', { name: 'Add' }))
 
@@ -165,7 +161,7 @@ describe('Gateway Form', () => {
     const mockFn = jest.fn()
 
     mockServer.use(
-      rest.get(CommonUrlsInfo.getGateway.url,
+      rest.get(CommonRbacUrlsInfo.getGateway.url,
         (req, res, ctx) => {
           mockFn()
           return res(ctx.json(gatewayResponse))
@@ -174,8 +170,9 @@ describe('Gateway Form', () => {
 
     const params = {
       tenantId: 'tenant-id',
+      venueId: '3f10af1401b44902a88723cb68c4bc77',
       action: 'edit',
-      gatewayId: gatewayResponse.response.id
+      gatewayId: gatewayResponse.response.rwgId
     }
 
     render(
@@ -215,18 +212,17 @@ describe('Gateway Form', () => {
 
     expect(await screen.findByText('Whitespace chars only are not allowed')).toBeVisible()
 
-    const gatewayInput1 = await screen.findByLabelText('Gateway Name')
-    fireEvent.change(gatewayInput1, { target: { value: '"test"with' } })
-    fireEvent.blur(gatewayInput1)
+    fireEvent.change(gatewayInput, { target: { value: '"test"with' } })
+    fireEvent.blur(gatewayInput)
 
     expect(await screen.findByText('Please enter a valid Name')).toBeVisible()
 
 
-    const password = await screen.findByLabelText('Password')
-    fireEvent.change(password, { target: { value: 'temp' } })
+    const password = screen.getByLabelText('FQDN / IP')
+    fireEvent.change(password, { target: { value: 'x' } })
     fireEvent.blur(password)
 
-    expect(await screen.findByText('Password must be more 8 or more characters long')).toBeVisible()
+    expect(await screen.findByText('Please enter a valid FQDN / IP')).toBeVisible()
 
   })
 
@@ -239,7 +235,7 @@ describe('Gateway Form', () => {
         route: { params, path: '/:tenantId/t/ruckus-wan-gateway/add' }
       })
 
-    await userEvent.click(await screen.findByText('Cancel'))
+    await userEvent.click(screen.getByText('Cancel'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/ruckus-wan-gateway`,
       hash: '',
@@ -253,12 +249,13 @@ describe('Gateway Form', () => {
 
     const params = {
       tenantId: 'tenant-id',
+      venueId: '3f10af1401b44902a88723cb68c4bc77',
       action: 'edit',
-      gatewayId: gatewayResponse.response.id
+      gatewayId: gatewayResponse.response.rwgId
     }
 
     mockServer.use(
-      rest.get(CommonUrlsInfo.getGateway.url,
+      rest.get(CommonRbacUrlsInfo.getGateway.url,
         (req, res, ctx) => {
           mockFn()
           return res(ctx.json(gatewayResponse))
@@ -278,7 +275,7 @@ describe('Gateway Form', () => {
     await userEvent.click(await screen.findByText('Back to Gateway details'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/${params.tenantId}/t/ruckus-wan-gateway/${params.gatewayId}/gateway-details/overview`,
+      pathname: `/${params.tenantId}/t/ruckus-wan-gateway/${params.venueId}/${params.gatewayId}/gateway-details/overview`,
       hash: '',
       search: ''
     })

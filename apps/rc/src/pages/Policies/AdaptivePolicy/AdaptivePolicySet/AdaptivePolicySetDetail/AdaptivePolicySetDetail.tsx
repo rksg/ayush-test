@@ -6,21 +6,19 @@ import { useParams }              from 'react-router-dom'
 
 import { Button, Card, GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 import { Features, useIsTierAllowed }                         from '@acx-ui/feature-toggle'
-import { useDpskNewConfigFlowParams }                         from '@acx-ui/rc/components'
 import {
   useGetAdaptivePolicySetQuery,
   useGetPrioritizedPoliciesQuery, useLazyGetDpskListQuery,
   useLazySearchMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
-  getPolicyDetailsLink,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
+  filterByAccessForServicePolicyMutation,
+  getPolicyDetailsLink, getScopeKeyByPolicy,
   PolicyOperation,
-  PolicyType
+  PolicyType,
+  useAdaptivePolicyBreadcrumb
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { NetworkTable } from './NetworkTable'
 
@@ -28,9 +26,6 @@ export default function AdaptivePolicySetDetail () {
   const { $t } = useIntl()
   const { policyId, tenantId } = useParams()
   const { Paragraph } = Typography
-  const tablePath = getPolicyRoutePath(
-    { type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })
-
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const [networkIdsInMacList, setNetworkIdsInMacList] = useState([] as string [])
   const [networkIdsInDpskList, setNetworkIdsInDpskList] = useState([] as string [])
@@ -44,7 +39,8 @@ export default function AdaptivePolicySetDetail () {
   const [ macRegList ] = useLazySearchMacRegListsQuery()
 
   const [ dpskList ] = useLazyGetDpskListQuery()
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
+
+  const breadcrumb = useAdaptivePolicyBreadcrumb(PolicyType.ADAPTIVE_POLICY_SET)
 
   useEffect(() => {
     if(isGetAdaptivePolicySetLoading) return
@@ -62,7 +58,7 @@ export default function AdaptivePolicySetDetail () {
     })
     if(isCloudpathEnabled) {
       // eslint-disable-next-line max-len
-      dpskList({ params: { size: '100000', page: '0', sort: 'name,desc', ...dpskNewConfigFlowParams } }).then(result => {
+      dpskList({ params: { size: '100000', page: '0', sort: 'name,desc' } }).then(result => {
         if (result.data) {
           // eslint-disable-next-line max-len
           setNetworkIdsInDpskList(result.data?.data.filter(pool => pool.policySetId === policyId).map(pool => pool.networkIds ?? []).flat() ?? [])
@@ -75,24 +71,16 @@ export default function AdaptivePolicySetDetail () {
     <>
       <PageHeader
         title={policySetData?.name || ''}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: $t({ defaultMessage: 'Adaptive Policy Sets' }),
-            link: tablePath }
-        ]}
-        extra={filterByAccess([
+        breadcrumb={breadcrumb}
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={
               getPolicyDetailsLink({
                 type: PolicyType.ADAPTIVE_POLICY_SET,
                 oper: PolicyOperation.EDIT,
                 policyId: policyId as string
-              })
-            }
+              })}
+            scopeKey={getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.EDIT)}
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>

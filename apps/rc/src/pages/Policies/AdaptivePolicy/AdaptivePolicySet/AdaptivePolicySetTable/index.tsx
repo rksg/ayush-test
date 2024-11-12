@@ -1,34 +1,36 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, showToast, Table, TableProps }          from '@acx-ui/components'
-import { Features, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
-import { SimpleListTooltip, useDpskNewConfigFlowParams } from '@acx-ui/rc/components'
+import { Loader, showToast, Table, TableProps }     from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                        from '@acx-ui/rc/components'
 import {
   doProfileDelete,
-  useAdaptivePolicySetLisByQueryQuery,
-  useDeleteAdaptivePolicySetMutation, useGetDpskListQuery,
-  useMacRegListsQuery
+  useAdaptivePolicySetListByQueryQuery,
+  useDeleteAdaptivePolicySetMutation, useGetCertificateTemplatesQuery, useGetEnhancedDpskListQuery,
+  useSearchMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
-  AdaptivePolicySet, FILTER,
+  AdaptivePolicySet, FILTER, filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
-  getPolicyRoutePath,
+  getPolicyRoutePath, getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType, SEARCH, useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                    from '@acx-ui/user'
 
 export default function AdaptivePolicySetTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
 
+  const settingsId = 'adaptive-policy-set-list-table'
   const tableQuery = useTableQuery({
-    useQuery: useAdaptivePolicySetLisByQueryQuery,
+    useQuery: useAdaptivePolicySetListByQueryQuery,
     apiParams: { sort: 'name,ASC', excludeContent: 'false' },
-    defaultPayload: {}
+    defaultPayload: {},
+    pagination: { settingsId }
   })
 
   const [
@@ -36,8 +38,18 @@ export default function AdaptivePolicySetTable () {
     { isLoading: isDeletePolicyUpdating }
   ] = useDeleteAdaptivePolicySetMutation()
 
-  const { macRegList, getMacListLoading } = useMacRegListsQuery(
-    { payload: { pageSize: 10000 } }, {
+  const { macRegList, getMacListLoading } = useSearchMacRegListsQuery(
+    {
+      payload: {
+        pageSize: 10000,
+        dataOption: 'all',
+        searchCriteriaList: [{
+          filterKey: 'name',
+          operation: 'cn',
+          value: ''
+        }]
+      }
+    }, {
       selectFromResult: ({ data, isLoading }) => {
         const macRegList = new Map(data?.data.map((mac) =>
           [mac.id, mac.name]))
@@ -48,10 +60,8 @@ export default function AdaptivePolicySetTable () {
       }, skip: !isCloudpathEnabled
     })
 
-  const dpskNewConfigFlowParams = useDpskNewConfigFlowParams()
-  const { dpskList, getDpsksLoading } = useGetDpskListQuery(
+  const { dpskList, getDpsksLoading } = useGetEnhancedDpskListQuery(
     {
-      params: dpskNewConfigFlowParams,
       payload: { pageSize: 10000 }
     }, {
       selectFromResult: ({ data, isLoading }) => {
@@ -62,6 +72,21 @@ export default function AdaptivePolicySetTable () {
           getDpsksLoading: isLoading
         }
       }, skip: !isCloudpathEnabled
+    })
+
+  // eslint-disable-next-line max-len
+  const { certificateTemplateList, getCertificateTemplateLoading } = useGetCertificateTemplatesQuery(
+    {
+      payload: { pageSize: 10000 }
+    }, {
+      selectFromResult: ({ data, isLoading }) => {
+        const certificateTemplateList = new Map(data?.data.map((template) =>
+          [template.id, template.name]))
+        return {
+          certificateTemplateList,
+          getCertificateTemplateLoading: isLoading
+        }
+      }, skip: !isCertificateTemplateEnabled
     })
 
   function useColumns () {
@@ -119,7 +144,13 @@ export default function AdaptivePolicySetTable () {
             .filter(id => dpskList.has(id))
             .map(id => dpskList.get(id) ?? '') ?? []
 
-          return <SimpleListTooltip items={[...macAssignments, ...dpskAssignments]}
+          const certTemplateAssignments = row.externalAssignments
+            .map(assignment => assignment.identityId).flat()
+            .filter(id => certificateTemplateList.has(id))
+            .map(id => certificateTemplateList.get(id) ?? '') ?? []
+
+          // eslint-disable-next-line max-len
+          return <SimpleListTooltip items={[...macAssignments, ...dpskAssignments, ...certTemplateAssignments]}
             displayText={row.assignmentCount}
             totalCountOfItems={row.assignmentCount}/>
         }
@@ -129,6 +160,7 @@ export default function AdaptivePolicySetTable () {
   }
 
   const rowActions: TableProps<AdaptivePolicySet>['rowActions'] = [{
+    scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.EDIT),
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       navigate({
@@ -142,6 +174,7 @@ export default function AdaptivePolicySetTable () {
     }
   },
   {
+    scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.DELETE),
     label: $t({ defaultMessage: 'Delete' }),
     onClick: ([selectedRow], clearSelection) => {
       const name = selectedRow.name
@@ -151,7 +184,7 @@ export default function AdaptivePolicySetTable () {
         name,
         [
           // eslint-disable-next-line max-len
-          { fieldName: 'assignmentCount', fieldText: $t({ defaultMessage: 'Mac Registration Lists or DPSK' }) }
+          { fieldName: 'assignmentCount', fieldText: $t({ defaultMessage: 'other services' }) }
         ],
         async () => {
           deletePolicy({ params: { policySetId: selectedRow.id } })
@@ -172,6 +205,7 @@ export default function AdaptivePolicySetTable () {
 
   const actions = [{
     label: $t({ defaultMessage: 'Add Set' }),
+    scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.CREATE),
     onClick: () => {
       navigate({
         ...tenantBasePath,
@@ -188,23 +222,26 @@ export default function AdaptivePolicySetTable () {
     tableQuery.setPayload(payload)
   }
 
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return (
     <Loader states={[
       tableQuery,
-      { isLoading: getMacListLoading || getDpsksLoading, isFetching: isDeletePolicyUpdating }
+      { isLoading: getMacListLoading || getDpsksLoading || getCertificateTemplateLoading,
+        isFetching: isDeletePolicyUpdating }
     ]}>
       <Table
         enableApiFilter
-        settingsId='adaptive-policy-set-list-table'
+        settingsId={settingsId}
         columns={useColumns()}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowActions={filterByAccess(rowActions)}
+        rowActions={allowedRowActions}
         onFilterChange={handleFilterChange}
-        rowSelection={hasAccess() && { type: 'radio' }}
-        actions={filterByAccess(actions)}
+        rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
+        actions={filterByAccessForServicePolicyMutation(actions)}
       />
     </Loader>
   )

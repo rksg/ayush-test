@@ -10,7 +10,10 @@ import {
   showToast,
   Loader
 } from '@acx-ui/components'
-import { SimpleListTooltip }            from '@acx-ui/rc/components'
+import {
+  SimpleListTooltip,
+  usePersonaAsyncHeaders
+} from '@acx-ui/rc/components'
 import {
   useDeleteConnectionMeteringMutation,
   useSearchConnectionMeteringListQuery,
@@ -29,7 +32,9 @@ import {
   FILTER,
   SEARCH,
   PropertyConfigs,
-  PropertyConfigQuery
+  PropertyConfigQuery,
+  getScopeKeyByPolicy,
+  filterByAccessForServicePolicyMutation
 } from '@acx-ui/rc/utils'
 import {
   TenantLink,
@@ -37,7 +42,6 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
 
 import {
   DataConsumptionLabel
@@ -80,18 +84,18 @@ function useColumns (venueMap: Map<string, string>, propertyMap: Map<string, Pro
       sorter: true,
       align: 'center',
       render: (_, row) => {
-        const tooltipItems = row.personas?.filter(v=>v.identityId && v.primary).map(v=>v.name)
+        const tooltipItems = row.identities?.filter(v=>v.identityId && v.primary).map(v=>v.name)
         return <SimpleListTooltip items={tooltipItems ?? []} displayText={row.unitCount ?? 0} />
       }
     },
     {
       key: 'venueCount',
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueCount',
       sorter: true,
       align: 'center',
       render: (_, row) => {
-        const groupIds = new Set(row.personas?.map(v=>v.groupId))
+        const groupIds = new Set(row.identities?.map(v=>v.groupId))
         const venues: string[] = []
         groupIds.forEach(id => {
           const venueName = propertyMap.get(id)?.venueName
@@ -104,7 +108,7 @@ function useColumns (venueMap: Map<string, string>, propertyMap: Map<string, Pro
     },
     {
       key: 'venue',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venue',
       show: false,
       filterable: Array.from(venueMap, (entry) => {
@@ -124,7 +128,7 @@ export default function ConnectionMeteringTable () {
   const navigate = useNavigate()
   const [venueMap, setVenueMap] = useState(new Map())
   const [propertyMap, setPropertyMap] = useState(new Map<string, PropertyConfigs>())
-
+  const { isAsync, customHeaders } = usePersonaAsyncHeaders()
   const { tenantId } = useParams()
   const venueListPayload = {
     fields: [
@@ -167,6 +171,7 @@ export default function ConnectionMeteringTable () {
 
   const rowActions: TableProps<ConnectionMetering>['rowActions'] = [
     {
+      scopeKey: getScopeKeyByPolicy(PolicyType.CONNECTION_METERING, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([data],clearSelection) => {
         navigate({
@@ -182,6 +187,7 @@ export default function ConnectionMeteringTable () {
       disabled: (selectedItems => selectedItems.length > 1)
     },
     {
+      scopeKey: getScopeKeyByPolicy(PolicyType.CONNECTION_METERING, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedItems, clearSelection) => {
         doProfileDelete(selectedItems,
@@ -191,14 +197,16 @@ export default function ConnectionMeteringTable () {
           async () => {
             const id = selectedItems[0].id
             const name = selectedItems[0].name
-            deleteConnectionMetering({ params: { id } })
+            deleteConnectionMetering({ params: { id }, customHeaders })
               .unwrap()
               .then(() => {
-                showToast({
-                  type: 'success',
-                  content: $t({ defaultMessage: 'Data Usage Metering {name} was deleted' },
-                    { name })
-                })
+                if (!isAsync) {
+                  showToast({
+                    type: 'success',
+                    content: $t({ defaultMessage: 'Data Usage Metering {name} was deleted' },
+                      { name })
+                  })
+                }
                 clearSelection()
               }).catch((e) => {
                 // eslint-disable-next-line no-console
@@ -208,6 +216,8 @@ export default function ConnectionMeteringTable () {
       }
     }
   ]
+
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = {
@@ -233,8 +243,12 @@ export default function ConnectionMeteringTable () {
               link: getPolicyListRoutePath(true) }
           ]}
         title={$t({ defaultMessage: 'Data Usage Metering' })}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
+            scopeKey={getScopeKeyByPolicy(
+              PolicyType.CONNECTION_METERING,
+              PolicyOperation.CREATE
+            )}
             to={getPolicyRoutePath({
               type: PolicyType.CONNECTION_METERING,
               oper: PolicyOperation.CREATE
@@ -249,13 +263,13 @@ export default function ConnectionMeteringTable () {
       <Table
         enableApiFilter
         columns={useColumns(venueMap, propertyMap)}
-        rowActions={rowActions}
+        rowActions={allowedRowActions}
         onFilterChange={handleFilterChange}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowSelection={{ type: 'radio' }}
+        rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
       />
     </Loader>
   )

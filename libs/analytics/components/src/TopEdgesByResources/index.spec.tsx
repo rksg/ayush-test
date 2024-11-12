@@ -32,7 +32,7 @@ type MockSelectProps = React.PropsWithChildren<{
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
   const Select = ({ loading, children, onChange, options, ...props }: MockSelectProps) => (
-    <select {...props} onChange={(e) => onChange?.(e.target.value)} value=''>
+    <select {...props} onChange={(e) => onChange?.(e.target.value)}>
       {/* Additional <option> to ensure it is possible to reset value to empty */}
       {children ? <><option value={undefined}></option>{children}</> : null}
       {options?.map((option, index) => (
@@ -68,7 +68,7 @@ describe('TopEdgesByResourcesWidget', () => {
       )
     )
     const { asFragment } =render(wrapper)
-    await screen.findByText('Top 5 SmartEdges by Resource Utilization')
+    await screen.findByText('Top 5 RUCKUS Edges by Resource Utilization')
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
@@ -82,7 +82,7 @@ describe('TopEdgesByResourcesWidget', () => {
       )
     )
     const { asFragment } =render(wrapper)
-    await screen.findByText('Top 5 SmartEdges by Resource Utilization')
+    await screen.findByText('Top 5 RUCKUS Edges by Resource Utilization')
     await user.selectOptions(
       await screen.findByRole('combobox'),
       await screen.findByRole('option', { name: 'CPU Usage' })

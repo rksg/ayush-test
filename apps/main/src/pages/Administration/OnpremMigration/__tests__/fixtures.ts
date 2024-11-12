@@ -100,7 +100,6 @@ export const autocompleteResult = {
 export const timezoneResult = {
   dstOffset: 3600,
   rawOffset: -28800,
-  status: 'OK',
   timeZoneId: 'America/Los_Angeles',
   timeZoneName: 'Pacific Daylight Time'
 }

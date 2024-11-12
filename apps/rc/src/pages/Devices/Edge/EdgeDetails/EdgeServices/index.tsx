@@ -1,22 +1,24 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, Loader, Table, TableProps, showActionModal }                                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                     from '@acx-ui/feature-toggle'
-import { DownloadOutlined }                                                                           from '@acx-ui/icons'
-import { EdgeServiceStatusLight, useEdgeExportCsv }                                                   from '@acx-ui/rc/components'
-import { useDeleteEdgeServicesMutation, useGetEdgeServiceListQuery, usePatchEdgeDhcpServiceMutation } from '@acx-ui/rc/services'
+import { Button, Loader, Table, TableProps, showActionModal }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                                                                    from '@acx-ui/icons'
+import { EdgeServiceStatusLight, useEdgeDhcpActions, useEdgeExportCsv, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { useDeleteEdgeServicesMutation, useGetEdgeServiceListQuery }                           from '@acx-ui/rc/services'
 import {
   EdgeService,
   EdgeServiceTypeEnum,
   TableQuery,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { RequestPayload }            from '@acx-ui/types'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { exportMessageMapping }      from '@acx-ui/utils'
+import { EdgeScopes, RequestPayload }    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { exportMessageMapping }          from '@acx-ui/utils'
+
+import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 
 import { ServiceDetailDrawer }      from './ServiceDetailDrawer'
 import { getEdgeServiceTypeString } from './utils'
@@ -25,9 +27,20 @@ export const EdgeServices = () => {
   const { $t } = useIntl()
   const params = useParams()
   const { serialNumber } = params
+
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
+  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
+  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
+  const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
+  const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
+
   const [currentData, setCurrentData] = useState({} as EdgeService)
   const [drawerVisible, setDrawerVisible] = useState(false)
+
+  const { currentEdgeStatus, isEdgeStatusLoading } = useContext(EdgeDetailsDataContext)
+
+  const settingsId = 'edge-services-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeServiceListQuery,
     defaultPayload: {
@@ -36,15 +49,33 @@ export const EdgeServices = () => {
     sorter: {
       sortField: 'serviceName',
       sortOrder: 'ASC'
-    }
+    },
+    pagination: { settingsId }
   })
+
   const { exportCsv, disabled } = useEdgeExportCsv<EdgeService>(
     tableQuery as unknown as TableQuery<EdgeService, RequestPayload<unknown>, unknown>
   )
   const [removeServices] = useDeleteEdgeServicesMutation()
-  const [restartServices] = usePatchEdgeDhcpServiceMutation()
+  const { restartEdgeDhcp } = useEdgeDhcpActions()
 
   const showServiceDetailsDrawer = (data: EdgeService) => {
+    switch (data.serviceType) {
+      case EdgeServiceTypeEnum.DHCP:
+        if (!isEdgeHaReady || !isEdgeDhcpHaReady) return
+        break
+      case EdgeServiceTypeEnum.FIREWALL:
+        if (!isEdgeHaReady || !isEdgeFirewallHaReady) return
+        break
+      case EdgeServiceTypeEnum.PIN:
+        if (!isEdgePinReady) return
+        break
+      case EdgeServiceTypeEnum.MDNS:
+        if (!isEdgeMdnsReady) return
+        break
+      default:
+    }
+
     setCurrentData(data)
     setDrawerVisible(true)
   }
@@ -84,7 +115,7 @@ export const EdgeServices = () => {
       title: $t({ defaultMessage: 'Health' }),
       key: 'edgeAlarmSummary',
       dataIndex: 'edgeAlarmSummary',
-      render: (data, row) =>
+      render: (_, row) =>
         <EdgeServiceStatusLight data={row.edgeAlarmSummary} />
     },
     {
@@ -113,15 +144,15 @@ export const EdgeServices = () => {
       .filter(EdgeService => EdgeService.serviceType === EdgeServiceTypeEnum.DHCP)
       .length > 0
 
-    let isNsgSelected = selectedRows
-      .filter(EdgeService => EdgeService.serviceType === EdgeServiceTypeEnum.NETWORK_SEGMENTATION)
+    let isPinSelected = selectedRows
+      .filter(EdgeService => EdgeService.serviceType === EdgeServiceTypeEnum.PIN)
       .length > 0
 
-    let isNsgExist = tableQuery?.data?.data ? tableQuery?.data?.data?.filter(EdgeService =>
-      EdgeService.serviceType === EdgeServiceTypeEnum.NETWORK_SEGMENTATION)
+    let isPinExist = tableQuery?.data?.data ? tableQuery?.data?.data?.filter(EdgeService =>
+      EdgeService.serviceType === EdgeServiceTypeEnum.PIN)
       .length > 0 : false
 
-    return isDhcpSelected ? isNsgSelected ? false : isNsgExist : false
+    return isDhcpSelected ? isPinSelected ? false : isPinExist : false
   }
 
   const isRestartBtnDisable = (selectedRows: EdgeService[]) => {
@@ -135,6 +166,7 @@ export const EdgeServices = () => {
   const rowActions: TableProps<EdgeService>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Remove' }),
+      scopeKey: [EdgeScopes.DELETE],
       disabled: isRemoveBtnDisable,
       tooltip: (selectedRows) => isRemoveBtnDisable(selectedRows)
         // eslint-disable-next-line max-len
@@ -169,7 +201,11 @@ export const EdgeServices = () => {
                 closeAfterAction: true,
                 handler: () => {
                   removeServices({
-                    params, payload: {
+                    params: {
+                      venueId: currentEdgeStatus?.venueId,
+                      edgeClusterId: currentEdgeStatus?.clusterId
+                    },
+                    payload: {
                       serviceList: selectedRows.map(item => ({
                         serviceId: item.serviceId,
                         serviceType: item.serviceType
@@ -185,9 +221,9 @@ export const EdgeServices = () => {
     },
     {
       label: $t({ defaultMessage: 'Restart' }),
-      disabled: isRestartBtnDisable,
+      scopeKey: [EdgeScopes.UPDATE],
+      disabled: (isEdgeHaReady && isEdgeDhcpHaReady) ? isRestartBtnDisable : true,
       tooltip: (selectedRows) => isRestartBtnDisable(selectedRows)
-        // eslint-disable-next-line max-len
         ? $t({ defaultMessage: 'Only DHCP can be restarted' }
         ) : undefined,
       onClick: (selectedRows, clearSelection) => {
@@ -217,11 +253,13 @@ export const EdgeServices = () => {
                 type: 'primary',
                 key: 'ok',
                 closeAfterAction: true,
-                handler: () => {
-                  restartServices({
-                    params: { id: selectedRows[0].serviceId },
-                    payload: { action: 'RESTART_NOW', restartEdgeIds: [selectedRows[0].edgeId] }
-                  }).then(clearSelection)
+                handler: async () => {
+                  await restartEdgeDhcp(
+                    selectedRows[0].serviceId,
+                    currentEdgeStatus?.venueId ?? '',
+                    currentEdgeStatus?.clusterId ?? ''
+                  )
+                  clearSelection()
                 }
               }
             ]
@@ -231,14 +269,17 @@ export const EdgeServices = () => {
     }
   ]
 
+  const isSelectionVisible = hasPermission({ scopes: [EdgeScopes.UPDATE, EdgeScopes.DELETE] })
+
   return (
     <Loader states={[
-      tableQuery
+      tableQuery,
+      { isLoading: isEdgeStatusLoading }
     ]}>
       <Table
-        settingsId='edge-services-table'
+        settingsId={settingsId}
         rowKey='serviceId'
-        rowSelection={hasAccess() && { type: 'checkbox' }}
+        rowSelection={isSelectionVisible && { type: 'checkbox' }}
         rowActions={filterByAccess(rowActions)}
         columns={columns}
         dataSource={tableQuery?.data?.data}

@@ -1,3 +1,5 @@
+import { TableChangePayload } from '../../useTableQuery'
+
 export interface ClientIsolationClient {
   mac: string
   description?: string
@@ -31,11 +33,23 @@ export interface VenueUsageByClientIsolation {
   networkNames: string[]
 }
 
+export interface ClientIsolationActivations {
+  venueId: string
+  wifiNetworkId: string
+}
+
 export interface ClientIsolationViewModel {
   id: string
   name: string
   description?: string
   clientEntries: string[]
-  tenantId: string
+  tenantId?: string
   venueIds?: string[]
+  venueCount?: number
+  activations?: ClientIsolationActivations[]
+}
+
+export interface ClientIsolationTableChangePayload extends TableChangePayload {
+  id: string,
+  searchVenueNameString: string
 }

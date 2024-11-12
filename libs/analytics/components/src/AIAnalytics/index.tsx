@@ -2,18 +2,22 @@ import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs, TimeRangeDropDownProvider } from '@acx-ui/components'
 import { get }                                         from '@acx-ui/config'
-import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
+import { getShowWithoutRbacCheckKey, hasPermission }   from '@acx-ui/user'
 import { DateRange }                                   from '@acx-ui/utils'
 
 import { useHeaderExtra }           from '../Header'
+import { Filter }                   from '../Header/Header'
 import { IncidentTabContent }       from '../Incidents'
+import { IntentAITabContent }       from '../IntentAI'
 import { RecommendationTabContent } from '../Recommendations'
 
 export enum AIAnalyticsTabEnum {
   INCIDENTS = 'incidents',
   CRRM = 'recommendations/crrm',
-  AIOPS = 'recommendations/aiOps'
+  AIOPS = 'recommendations/aiOps',
+  INTENTAI = 'intentAI'
 }
 
 interface Tab {
@@ -25,34 +29,65 @@ interface Tab {
 
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
-  const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
-  const crrmEnabled = useIsSplitOn(Features.AI_CRRM)
   const incidentsTab = {
     key: AIAnalyticsTabEnum.INCIDENTS,
     title: $t({ defaultMessage: 'Incidents' }),
     component: <IncidentTabContent/>,
     headerExtra: useHeaderExtra({ shouldQuerySwitch: true, withIncidents: true })
   }
-  const crrmTab = [
-    {
-      key: AIAnalyticsTabEnum.CRRM,
-      title: $t({ defaultMessage: 'AI-Driven RRM' }),
-      component: <RecommendationTabContent />,
-      headerExtra: useHeaderExtra({ shouldQuerySwitch: true, datepicker: 'dropdown' })
+  const crrmTab = {
+    key: AIAnalyticsTabEnum.CRRM,
+    title: $t({ defaultMessage: 'AI-Driven RRM' }),
+    component: <RecommendationTabContent />,
+    headerExtra: useHeaderExtra({ shouldQuerySwitch: true, datepicker: 'dropdown' })
+  }
+
+  const aiOpsTab = {
+    key: AIAnalyticsTabEnum.AIOPS,
+    title: $t({ defaultMessage: 'AI Operations' }),
+    component: <RecommendationTabContent />,
+    headerExtra: useHeaderExtra({ shouldQuerySwitch: true, datepicker: 'dropdown' })
+  }
+
+  const intentAITab = {
+    key: AIAnalyticsTabEnum.INTENTAI,
+    title: $t({ defaultMessage: 'IntentAI' }),
+    component: <IntentAITabContent />,
+    headerExtra: [<Filter key={getShowWithoutRbacCheckKey('network-filter')} />]
+  }
+
+  const getRecommendationTabs = () => {
+    let recommendationTabs = [] as Tab[]
+    if (get('IS_MLISA_SA')) { // RAI
+      if (hasPermission({ permission: 'READ_AI_DRIVEN_RRM' })) {
+        recommendationTabs.push(crrmTab as Tab)
+      }
+      if (hasPermission({ permission: 'READ_AI_OPERATIONS' })) {
+        recommendationTabs.push(aiOpsTab as Tab)
+      }
+    } else { // R1
+      recommendationTabs.push(crrmTab as Tab)
+      recommendationTabs.push(aiOpsTab as Tab)
     }
-  ]
-  const recommendationTab = [
-    {
-      key: AIAnalyticsTabEnum.AIOPS,
-      title: $t({ defaultMessage: 'AI Operations' }),
-      component: <RecommendationTabContent />,
-      headerExtra: useHeaderExtra({ shouldQuerySwitch: true, datepicker: 'dropdown' })
+    return recommendationTabs
+  }
+  const getIntentAItab = () => {
+    const intentTab = []
+    if (get('IS_MLISA_SA')) { // RAI
+      hasPermission({ permission: 'READ_INTENT_AI' }) && intentTab.push(intentAITab as Tab)
+    } else { // R1
+      intentTab.push(intentAITab as Tab)
     }
-  ]
+    return intentTab
+  }
+  const isIntentAIEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_TOGGLE),
+    useIsSplitOn(Features.INTENT_AI_TOGGLE)
+  ].some(Boolean)
+
   return [
     incidentsTab,
-    ...(get('IS_MLISA_SA') || crrmEnabled ? crrmTab : []),
-    ...(get('IS_MLISA_SA') || recommendationsEnabled ? recommendationTab : [])
+    ...(isIntentAIEnabled ? getIntentAItab() : getRecommendationTabs())
   ]
 }
 

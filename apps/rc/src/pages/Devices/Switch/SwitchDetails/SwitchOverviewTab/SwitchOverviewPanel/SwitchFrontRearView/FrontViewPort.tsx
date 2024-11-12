@@ -5,10 +5,13 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Tooltip }                from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { getInactiveTooltip }     from '@acx-ui/rc/components'
 import { useLazyGetLagListQuery } from '@acx-ui/rc/services'
 import { Lag, SwitchPortStatus }  from '@acx-ui/rc/utils'
 import { useParams }              from '@acx-ui/react-router-dom'
+import { SwitchScopes }           from '@acx-ui/types'
+import { hasPermission }          from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -23,11 +26,12 @@ export function FrontViewPort (props:{
   tooltipEnable: boolean,
   disabledClick?:boolean
 }) {
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const { $t } = useIntl()
   const { portData, portColor, portIcon, labelText, labelPosition, tooltipEnable,
     disabledClick } = props
   const {
-    editPortsFromPanelEnabled,
     setEditPortDrawerVisible,
     setSelectedPorts,
     setEditLagModalVisible,
@@ -110,8 +114,10 @@ export function FrontViewPort (props:{
     </div>
   }
 
+  const editable = hasPermission({ scopes: [SwitchScopes.UPDATE] })
+
   const showEditIcon = () => {
-    if(!editPortsFromPanelEnabled) {
+    if(!editable) {
       return false
     }
     if(portIcon ==='LagMember'){
@@ -121,14 +127,17 @@ export function FrontViewPort (props:{
   }
 
   const onEditLag = async () => {
-    const { data: lagList } = await getLagList({ params })
+    const { data: lagList } = await getLagList({
+      params: { ...params, venueId: portData.venueId },
+      enableRbac: isSwitchRbacEnabled
+    })
     const lagData = lagList?.find(item => item.lagId?.toString() === portData.lagId) as Lag
     setEditLagModalVisible(true)
     setEditLag([lagData])
   }
 
   const onPortClick = () => {
-    if(!showEditIcon() || disabledClick) {
+    if(!showEditIcon() || disabledClick || !editable) {
       return
     }
     setEditLagModalVisible(false)

@@ -64,11 +64,14 @@ export const onClick = (navigate: NavigateFunction, basePath: Path) => {
   return (params: EventParams) => {
     const serial = params.componentType ==='series' && Array.isArray(params.value)
       && params.value[4]
-    navigate({
-      ...basePath,
-      // TODO: Actual path to be updated later
-      pathname: `${basePath.pathname}/${serial}/${serial}/details/overview`
-    })
+    const mac = params.componentType === 'series' && Array.isArray(params.value)
+      && params.value[1]
+    if (serial && mac) {
+      navigate({
+        ...basePath,
+        pathname: `${basePath.pathname}/${mac.toString().toLowerCase()}/${serial}/details/overview`
+      })
+    }
   }
 }
 

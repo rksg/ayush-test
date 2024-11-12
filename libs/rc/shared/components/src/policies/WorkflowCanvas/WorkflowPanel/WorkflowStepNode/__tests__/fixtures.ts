@@ -1,0 +1,61 @@
+import {
+  ActionType,
+  DpskAction,
+  DpskSaveData, MacRegAction, MacRegistrationPool,
+  PassphraseFormatEnum,
+  PersonaGroup
+} from '@acx-ui/rc/utils'
+
+
+export const mockedDpskEnrollmentAction:DpskAction = {
+  name: 'dpsk-enrollment-action',
+  description: 'fake data for testing',
+  actionType: ActionType.DPSK,
+  id: '65d2f63d-b773-45f6-b81d-a2cb832e3841',
+  version: 0,
+  dpskPoolId: 'dpsk-pool-id-for-testing',
+  identityGroupId: 'identity-group-id-for-testing'
+}
+
+export const mockedDpskActionInvalid:DpskAction = {
+  name: 'dpsk-enrollment-action',
+  description: 'fake data for testing',
+  actionType: ActionType.DPSK,
+  id: '0d218f04-c61d-4267-92e9-dedf1649be3f',
+  version: 0,
+  dpskPoolId: 'dpsk-pool-id-for-testing',
+  identityGroupId: 'bogus-identity-group-id',
+  valid: false
+}
+
+export const mockedDpskData:DpskSaveData = {
+  name: 'My Dpsk Group For Testing',
+  passphraseLength: 0,
+  passphraseFormat: PassphraseFormatEnum.MOST_SECURED,
+  expirationType: null
+}
+
+export const mockedIdentityGroupData:PersonaGroup = {
+  id: 'fake-persona-group-id',
+  name: 'My Identity Group for Testing'
+}
+
+export const mockedMacRegData:MacRegistrationPool = {
+  id: 'test-mac-list-id',
+  name: 'test-mac-list-name',
+  registrationCount: 1,
+  defaultAccess: 'true',
+  autoCleanup: true,
+  enabled: true
+}
+
+export const mockedMacRegActionInvalid:MacRegAction = {
+  name: 'mac-reg-enrollment-action',
+  description: 'fake data for testing',
+  actionType: ActionType.MAC_REG,
+  id: 'invalid-mac-reg-id',
+  version: 0,
+  macRegListId: 'mac-reg-list-id-for-testing',
+  identityGroupId: 'bogus-identity-group-id',
+  valid: false
+}

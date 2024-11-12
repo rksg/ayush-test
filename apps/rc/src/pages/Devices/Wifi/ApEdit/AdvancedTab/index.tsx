@@ -42,9 +42,6 @@ export function AdvancedTab () {
 
   const { apCapabilities } = useContext(ApDataContext)
 
-  const supportLed = useIsSplitOn(Features.WIFI_FR_6029_FG3_2_TOGGLE)
-  const supportBssColor = useIsSplitOn(Features.WIFI_AP_BSS_COLORING_TOGGLE)
-    && apCapabilities?.support11AX
   const supportApMgmtVlan = useIsSplitOn(Features.AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE)
 
   const apLedTitle = $t({ defaultMessage: 'Access Point LEDs' })
@@ -52,7 +49,7 @@ export function AdvancedTab () {
   const apMgmtVlanTitle = $t({ defaultMessage: 'Access Point Management VLAN' })
 
   const anchorItems = [
-    ...(supportLed? [{
+    {
       title: apLedTitle,
       key: 'apLed',
       content: (
@@ -63,8 +60,8 @@ export function AdvancedTab () {
           <ApLed />
         </>
       )
-    }] : []),
-    ...(supportBssColor? [{
+    },
+    ...(apCapabilities?.support11AX? [{
       title: bssColoringTitle,
       key: 'bssColoring',
       content: (

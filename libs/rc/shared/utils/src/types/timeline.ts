@@ -26,7 +26,8 @@ export const eventTypeMapping = {
   CLIENT: defineMessage({ defaultMessage: 'Client' }),
   SWITCH: defineMessage({ defaultMessage: 'Switch' }),
   NETWORK: defineMessage({ defaultMessage: 'Network' }),
-  EDGE: defineMessage({ defaultMessage: 'SmartEdge' })
+  EDGE: defineMessage({ defaultMessage: 'RUCKUS Edge' }),
+  PROFILE: defineMessage({ defaultMessage: 'Profile' })
 }
 
 export const eventProductMapping = {
@@ -34,7 +35,7 @@ export const eventProductMapping = {
   GENERAL: defineMessage({ defaultMessage: 'General' }),
   WIFI: defineMessage({ defaultMessage: 'Wi-Fi' }),
   SWITCH: defineMessage({ defaultMessage: 'Switch' }),
-  EDGE: defineMessage({ defaultMessage: 'SmartEdge' }),
+  EDGE: defineMessage({ defaultMessage: 'RUCKUS Edge' }),
   POLICY_ENGINE: defineMessage({ defaultMessage: 'Policy Engine' })
 }
 
@@ -78,6 +79,22 @@ export interface Activity {
   linkTemplate?: string
 }
 
+export interface ActivityApCompatibility {
+  data: ActivityIncompatibleFeatures[]
+  page: number
+  totalCount: number
+}
+
+export interface ActivityApCompatibilityExtraParams {
+  impactedCount: number
+}
+
+export interface ActivityIncompatibleFeatures {
+  id: string
+  name: string
+  incompatibleFeatures: string[]
+}
+
 export interface EventBase {
   apMac: string
   adminName?: string
@@ -98,6 +115,11 @@ export interface EventBase {
   venueId: string
   clientMac?: string
   clientName?: string
+  remoteEdgeId?: string
+  clientMldMac?: string
+  turnOnTimestamp?: string
+  turnOffTimestamp?: string
+  portList?: string
 }
 
 export interface EventMeta {
@@ -108,14 +130,19 @@ export interface EventMeta {
   isClientExists?: boolean
   isNetworkExists?: boolean
   isSwitchExists: boolean
-  isVenueExists: boolean
+  isVenueExists: boolean,
+  isUnitExists: boolean,
+  isRemoteedgeExists: boolean,
   networkId?: string
   networkName?: string
   switchMac?: string
   switchName: string
   venueName: string
   tableKey?: string
-  edgeName: string
+  edgeName: string,
+  remoteedgeName: string,
+  unitName: string,
+  profileName: string
 }
 
 export type EventExportSchedule = {
@@ -130,6 +157,7 @@ export type EventExportSchedule = {
     product?: [typeof eventProductMapping],
     severity?: [typeof eventSeverityMapping],
     searchString?: string[] | null // API support string array with only one string.
+    event_entity_type_all?: string[]
   },
   tenantId?: string,
   period?: {

@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ClientIsolationUrls,
   CommonUrlsInfo,
@@ -16,8 +17,11 @@ import {
   render,
   screen,
   waitFor,
+  waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
+
+import { mockedClientIsolationQueryWithoutActivationData, mockedVenueData } from '../ClientIsolationDetail/__tests__/fixtures'
 
 import ClientIsolationTable from './ClientIsolationTable'
 
@@ -91,6 +95,7 @@ describe('ClientIsolationTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const targetName = mockedTableResult.data[0].name
     // eslint-disable-next-line max-len
@@ -106,6 +111,7 @@ describe('ClientIsolationTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
@@ -133,6 +139,7 @@ describe('ClientIsolationTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const target = mockedTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
@@ -162,6 +169,8 @@ describe('ClientIsolationTable', () => {
       }
     )
 
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
     const target = mockedTableResult.data[1]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('checkbox'))
@@ -180,6 +189,7 @@ describe('ClientIsolationTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const target = mockedTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
@@ -197,5 +207,42 @@ describe('ClientIsolationTable', () => {
       ...mockedTenantPath,
       pathname: `${mockedTenantPath.pathname}/${editPath}`
     })
+  })
+
+  it('should render table with rbac api', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+    const mockDeleteFn = jest.fn()
+    mockServer.use(
+      rest.post(
+        ClientIsolationUrls.queryClientIsolation.url,
+        (req, res, ctx) => res(ctx.json(mockedClientIsolationQueryWithoutActivationData))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenues.url,
+        (req, res, ctx) => res(ctx.json(mockedVenueData))
+      ),
+      rest.delete(
+        ClientIsolationUrls.deleteClientIsolationRbac.url,
+        (req, res, ctx) => {
+          mockDeleteFn()
+          return res(ctx.json({ requestId: '123' }))}
+      )
+    )
+
+    render(
+      <Provider>
+        <ClientIsolationTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    const row = await screen.findByRole('row', { name: /clientIsolation1/ })
+    expect(row).toBeVisible()
+    await userEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+    await userEvent.click(await screen.findByRole('button', { name: /Delete Policy/ }))
+    expect(mockDeleteFn).toBeCalledTimes(1)
   })
 })

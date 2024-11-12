@@ -5,10 +5,12 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Loader, Button, Drawer, Table, TableProps }                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { APStatus, seriesMappingAP }                                       from '@acx-ui/rc/components'
 import { useApListQuery }                                                  from '@acx-ui/rc/services'
 import { AP, ApDeviceStatusEnum, ApVenueStatusEnum, useTableQuery, Venue } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                                       from '@acx-ui/user'
+import { WifiScopes }                                                      from '@acx-ui/types'
+import { filterByAccess,  hasPermission }                                  from '@acx-ui/user'
 
 export interface SimpleApRecord {
   serialNumber: string;
@@ -25,6 +27,7 @@ export interface MdnsProxyScopeApDrawerProps {
 
 export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
   const { $t } = useIntl()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const { venue, selectedApsId, visible, setVisible, setAps } = props
   const [ activatedAps, setActivatedAps ] = useState<SimpleApRecord[]>([])
   const [ tableData, setTableData ] = useState<AP[]>([])
@@ -44,7 +47,8 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
       search: {
         searchTargetFields: ['name', 'model']
       }
-    }
+    },
+    enableRbac: isWifiRbacEnabled
   })
 
   // Set AP table data source
@@ -114,13 +118,15 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
       label: $t({ defaultMessage: 'Activate' }),
       onClick: (rows: AP[]) => {
         handleActivateAp(true, rows)
-      }
+      },
+      scopeKey: [WifiScopes.UPDATE]
     },
     {
       label: $t({ defaultMessage: 'Deactivate' }),
       onClick: (rows: AP[]) => {
         handleActivateAp(false, rows)
-      }
+      },
+      scopeKey: [WifiScopes.UPDATE]
     }
   ]
 
@@ -181,7 +187,7 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
   const content = <>
     <p>{ $t({
       // eslint-disable-next-line max-len
-      defaultMessage: 'Select the APs that the mDNS Proxy Service will be applied to at venue “{venueName}”.'
+      defaultMessage: 'Select the APs that the mDNS Proxy Service will be applied to at <venueSingular></venueSingular> “{venueName}”.'
     }, {
       venueName: venue.name
     }) }</p>
@@ -195,7 +201,10 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
         rowActions={filterByAccess(rowActions)}
         dataSource={tableData}
         rowKey='serialNumber'
-        rowSelection={hasAccess() && { type: 'checkbox', selectedRowKeys }}
+        rowSelection={
+          hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.CREATE] })
+          && { type: 'checkbox', selectedRowKeys }
+        }
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}

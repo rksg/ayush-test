@@ -1,9 +1,14 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { ApSnmpUrls, getPolicyDetailsLink, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
-import { Provider }                                                                          from '@acx-ui/store'
-import { mockServer, render, screen }                                                        from '@acx-ui/test-utils'
+import {
+  ApSnmpUrls,
+  getPolicyRoutePath,
+  PolicyOperation,
+  PolicyType
+} from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import SnmpAgentDetail from './SnmpAgentDetail'
 
@@ -27,14 +32,17 @@ const mockInstancesData = {
       apName: 'R550_0131',
       venueId: 'f44d4134ecbb4ce5a1a41baca4dfe5de',
       venueName: 'My-Venue'
+    }, {
+      apId: '302002030367',
+      venueId: 'f44d4134ecbb4ce5a1a41baca4dfe5de'
     }
   ],
-  totalCount: 1,
+  totalCount: 2,
   totalPages: 1,
   page: 1
 }
 
-describe('SnmpAgentForm', () => {
+describe('SnmpAgentDetail', () => {
   const params = {
     tenantId: '15320bc221d94d2cb537fa0189fee742',
     policyId: '4b76b1952c80401b8500b00d68106576'
@@ -68,13 +76,17 @@ describe('SnmpAgentForm', () => {
 
 
     // Verify the instances
-    await screen.findByText('Instances (1)')
+    await screen.findByText('Instances (2)')
     const targetVenue = mockInstancesData.data[0]
     // eslint-disable-next-line max-len
-    const venueLink = await screen.findByRole('link', { name: new RegExp(targetVenue.venueName) })
+    const venueLink = await screen.findByRole('link', { name: new RegExp(targetVenue.venueName!) })
     expect(venueLink).toBeVisible()
 
-    userEvent.click(venueLink)
+    await userEvent.click(venueLink)
+    expect(venueLink).toHaveAttribute(
+      'href',
+      `/${params.tenantId}/t/venues/${targetVenue.venueId}/venue-details/overview`
+    )
   })
 
   it('should render breadcrumb correctly', async () => {
@@ -95,22 +107,4 @@ describe('SnmpAgentForm', () => {
     })).toBeVisible()
   })
 
-  it('should navigate to the edit page', async () => {
-    const editLink = `/${params.tenantId}/t/` + getPolicyDetailsLink({
-      type: PolicyType.SNMP_AGENT,
-      oper: PolicyOperation.EDIT,
-      policyId: params.policyId
-    })
-
-    render(
-      <Provider>
-        <SnmpAgentDetail />
-      </Provider>, {
-        route: { params, path: detailPath }
-      }
-    )
-
-    // eslint-disable-next-line max-len
-    expect(await screen.findByRole('link', { name: 'Configure' })).toHaveAttribute('href', editLink)
-  })
 })

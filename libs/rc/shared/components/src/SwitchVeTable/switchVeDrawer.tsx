@@ -6,7 +6,8 @@ import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { Alert, Button, Drawer } from '@acx-ui/components'
+import { Alert, Button, Drawer }  from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAddVePortMutation,
   useLazyGetFreeVePortVlansQuery,
@@ -34,7 +35,8 @@ interface SwitchVeProps {
   isEditMode: boolean
   isVenueLevel: boolean
   editData: VeViewModel,
-  readOnly: boolean
+  readOnly: boolean,
+  switchInfo?: SwitchViewModel
 }
 
 export const SwitchVeDrawer = (props: SwitchVeProps) => {
@@ -42,15 +44,17 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
   const { visible, setVisible, isEditMode, isVenueLevel, editData, readOnly } = props
 
   const [form] = Form.useForm()
-  const [loading, setLoading] = useState<boolean>(false)
   const { switchId: sid, tenantId, venueId: vid } = useParams()
-  const [venueId, setVenueId] = useState(vid ?? '')
+
+  const [loading, setLoading] = useState<boolean>(false)
+  const [venueId, setVenueId] = useState(vid || props.switchInfo?.venueId || '')
   const [switchId, setSwitchId] = useState(isVenueLevel ? editData?.switchId : sid)
 
   const [switchDetailHeaderData, setSwitchDetailHeaderData]
     = useState(null as unknown as SwitchViewModel)
   const [aclUnionList, setAclUnionList] = useState(null as unknown as AclUnion)
   const [switchData, setSwitchData] = useState(null as unknown as Switch)
+  const [switchModelMap, setSwitchModelMap] = useState(new Map())
 
   const [getVePortVlansList] = useLazyGetFreeVePortVlansQuery()
   const [getAclUnion] = useLazyGetAclUnionQuery()
@@ -64,6 +68,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
   const [addVePort] = useAddVePortMutation()
   const [updateVePort] = useUpdateVePortMutation()
   const [resetField, setResetField] = useState(false)
+  const [ospfAreaEnabled, setOspfAreaEnabled] = useState(true)
 
   //Only for edit mode
   const [isIncludeIpSetting, setIsIncludeIpSetting] = useState(false)
@@ -73,23 +78,44 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
   const [ipAddressFromDH, setIpAddressFromDH] = useState('')
   const [ipSubnetFromDH, setIpSubnetFromDH] = useState('')
 
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
+
   const getSwitches = async () => {
     const payload = { filters: { venueId: [venueId] } }
-    const switches =(await getSwitchList({ params: { tenantId: tenantId }, payload }, true))
+    const switches = (await getSwitchList({
+      params: { tenantId, venueId },
+      payload,
+      enableRbac: isSwitchRbacEnabled
+    }, true))
       .data?.data?.filter(s => s.deviceStatus === 'ONLINE' && s.switchType === 'router')
-    setSwitchOption(switches?.map(s => ({ label: s.name, key: s.id, value: s.id })) ?? [])
+    setSwitchOption(switches?.filter(s => !(s.model?.startsWith('ICX8100') && (s.veCount ?? 0) > 0))
+      .map(s => ({ label: s.name, key: s.id, value: s.id })) ?? [])
+    if (isSupport8100) {
+      const switchModelMap = new Map(switches?.map((s) => [s.id, s.model]))
+      setSwitchModelMap(switchModelMap)
+    }
   }
 
   const getSwitchDetailHeader = async (switchId: string) => {
-    const { data } = await switchDetailHeader({ params: { tenantId, switchId } })
+    const { data } = await switchDetailHeader({
+      params: { tenantId, switchId, venueId },
+      enableRbac: isSwitchRbacEnabled
+    })
     setSwitchDetailHeaderData(data as SwitchViewModel)
   }
   const getAclUnionData = async (switchId: string) => {
-    const { data } = await getAclUnion({ params: { tenantId, switchId } })
+    const { data } = await getAclUnion({
+      params: { tenantId, switchId, venueId },
+      enableRbac: isSwitchRbacEnabled
+    })
     setAclUnionList(data as AclUnion)
   }
   const getSwitchData = async (switchId: string) => {
-    const { data } = await getSwitch({ params: { tenantId, switchId } })
+    const { data } = await getSwitch({
+      params: { tenantId, switchId, venueId },
+      enableRbac: isSwitchRbacEnabled
+    })
     setSwitchData(data as Switch)
   }
 
@@ -123,6 +149,9 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
       setDisableIpSetting( ipFullContentParsed === false)
       setIpAddressFromDH(switchDetailHeaderData.ipAddress || '')
       setIpSubnetFromDH(switchDetailHeaderData.subnetMask || '')
+      if (isSupport8100 && switchDetailHeaderData.model?.startsWith('ICX8100')) {
+        setOspfAreaEnabled(false)
+      }
     }
 
     if(switchData){
@@ -163,13 +192,15 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
 
   const handleVlanVePortOption = async () => {
     const option =
-      (await getVePortVlansList({ params: { tenantId, venueId, switchId } })).data
-        ?.map((item: VlanVePort) => ({
-          label: `VLAN-${item.vlanId}`,
-          key: item.vlanId,
-          value: item.vlanId,
-          disabled: item.usedByVePort && String(editData?.vlanId) !== item.vlanId
-        })) ?? []
+      (await getVePortVlansList({
+        params: { tenantId, venueId, switchId },
+        enableRbac: isSwitchRbacEnabled
+      })).data?.map((item: VlanVePort) => ({
+        label: `VLAN-${item.vlanId}`,
+        key: item.vlanId,
+        value: item.vlanId,
+        disabled: item.usedByVePort && String(editData?.vlanId) !== item.vlanId
+      })) ?? []
 
     setVlanVePortOption(option as DefaultOptionType[])
   }
@@ -184,7 +215,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
   }
 
   const onSubmit = async (data: VeForm) => {
-    const params = { switchId, tenantId, vePortId: editData.id || '' }
+    const params = { switchId, tenantId, vePortId: editData.id || '', venueId }
     setLoading(true)
     try {
       if (!isEditMode) {
@@ -194,7 +225,8 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
         }
         await addVePort({
           params,
-          payload
+          payload,
+          enableRbac: isSwitchRbacEnabled
         }).unwrap()
       } else {
         let payload = {
@@ -214,7 +246,8 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
 
         await updateVePort({
           params,
-          payload
+          payload,
+          enableRbac: isSwitchRbacEnabled
         }).unwrap()
       }
     }
@@ -253,6 +286,13 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
     </Space>
   ]
 
+  const updateOspfAreaEnabled = (switchId: string) => {
+    if (isSupport8100 && switchModelMap) {
+      const switchModel = switchModelMap.get(switchId) ?? ''
+      setOspfAreaEnabled(!switchModel.startsWith('ICX8100'))
+    }
+  }
+
   return (
     <Drawer
       title={isEditMode
@@ -283,7 +323,10 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
             initialValue={null}
           >
             <Select
-              onChange={(e)=> { setSwitchId(e) }}
+              onChange={(e)=> {
+                setSwitchId(e)
+                updateOspfAreaEnabled(e)
+              }}
               options={[{
                 label: $t({ defaultMessage: 'Select Switch...' }),
                 value: null
@@ -351,6 +394,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
           </Form.Item>
 
 
+          { ospfAreaEnabled &&
           <Form.Item
             label={$t({ defaultMessage: 'OSPF Area' })}
             name='ospfArea'
@@ -361,6 +405,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
           >
             <Input disabled={readOnly} />
           </Form.Item>
+          }
 
 
           <Form.Item
@@ -424,7 +469,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
           </Form.Item>
 
           <Form.Item
-            label={$t({ defaultMessage: 'Ingress ACL' })}
+            label={$t({ defaultMessage: 'Ingress ACL (IPv4)' })}
             name='ingressAcl'
             initialValue={''}
           >
@@ -440,9 +485,8 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
             />
           </Form.Item>
 
-
           <Form.Item
-            label={$t({ defaultMessage: 'Egress ACL' })}
+            label={$t({ defaultMessage: 'Egress ACL (IPv4)' })}
             name='egressAcl'
             initialValue={''}
           >

@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import _, { isNil } from 'lodash'
 
 import { formatter }     from '@acx-ui/formatter'
 import { noDataDisplay } from '@acx-ui/utils'
@@ -40,3 +40,10 @@ export function kpiDelta (
 
   return { trend, value }
 }
+
+//Normalize the value by bringing it within the range
+export function limitRange (value: number, min = 0.0, max = 1.0): number {
+  if(isNil(value)) return value
+  return Math.max(min, Math.min(max, value))
+}
+

@@ -2,21 +2,30 @@ import { useEffect, useState } from 'react'
 
 import { Row, Col, Form, Input, Select, Checkbox } from 'antd'
 import saveAs                                      from 'file-saver'
-import _                                           from 'lodash'
+import { cloneDeep }                               from 'lodash'
 import { useIntl }                                 from 'react-intl'
 
-import { Button, Loader, showToast } from '@acx-ui/components'
+import { Button, Loader, showToast, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import {
-  useGetApCapabilitiesQuery,
   useGetApLanPortsQuery,
   useGetApQuery,
   useGetApRadioCustomizationQuery,
   useGetPacketCaptureStateQuery,
+  useLazyGetApBandModeSettingsQuery,
   useStartPacketCaptureMutation,
   useStopPacketCaptureMutation
 } from '@acx-ui/rc/services'
-import { ApPacketCaptureStateEnum, CaptureInterfaceEnum, MacAddressFilterRegExp, useApContext } from '@acx-ui/rc/utils'
+import {
+  ApPacketCaptureStateEnum,
+  BandModeEnum,
+  CaptureInterfaceEnum,
+  MacAddressFilterRegExp,
+  useApContext
+} from '@acx-ui/rc/utils'
 
+
+import { useGetApCapabilities } from '../../hooks'
 
 import * as UI from './styledComponents'
 
@@ -31,17 +40,36 @@ export enum CaptureInterfaceEnumExtended {
 
 export function ApPacketCaptureForm () {
   const { $t } = useIntl()
-  const { tenantId, serialNumber } = useApContext()
+  const { tenantId, venueId, serialNumber } = useApContext()
+  const params = { tenantId, venueId, serialNumber }
   const [packetCaptureForm] = Form.useForm()
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const [startPacketCapture] = useStartPacketCaptureMutation()
   const [stopPacketCapture] = useStopPacketCaptureMutation()
-  const packetCaptureState = useGetPacketCaptureStateQuery({ params: { tenantId, serialNumber } })
-  const getAp = useGetApQuery({ params: { tenantId, serialNumber } })
-  const getApCapabilities = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber } })
-  const getApLanPorts = useGetApLanPortsQuery({ params: { tenantId, serialNumber } })
+  const packetCaptureState = useGetPacketCaptureStateQuery({
+    params: { tenantId, serialNumber, venueId },
+    enableRbac: isUseWifiRbacApi
+  })
+  const getAp = useGetApQuery({
+    params,
+    enableRbac: isUseWifiRbacApi
+  })
+
+  const { data: apCapabilities } = useGetApCapabilities({
+    params,
+    modelName: getAp?.data?.model,
+    enableRbac: isUseWifiRbacApi
+  })
+
+  const getApLanPorts = useGetApLanPortsQuery({
+    params: { serialNumber, venueId },
+    enableRbac: isUseWifiRbacApi
+  })
   const getApRadioCustomization =
-    useGetApRadioCustomizationQuery({ params: { tenantId, serialNumber } })
+    useGetApRadioCustomizationQuery({ params, enableRbac: isUseWifiRbacApi })
+
+  const [getApBandModeSettings] = useLazyGetApBandModeSettingsQuery()
 
   const [interfaceOptions, setInterfaceOptions] = useState([] as SelectOption[])
   const [lanPortOptions, setLanPortOptions] = useState([] as SelectOption[])
@@ -97,62 +125,81 @@ export function ApPacketCaptureForm () {
   )
 
   useEffect(() => {
-    const ap = getAp.data
-    const capabilities = getApCapabilities.data
-    const apRadioCustomization = getApRadioCustomization.data
+    const setRadioOptions = async () => {
+      const ap = getAp.data
+      const apRadioCustomization = getApRadioCustomization.data
 
-    if (ap && capabilities && apRadioCustomization) {
-      let captureInterfaceOptions = []
-      const apCapabilities = capabilities.apModels.find(cap => cap.model === ap.model)
-      const { supportTriRadio = false, supportDual5gMode = false } = apCapabilities || {}
-      const { enable24G, enable50G, enable6G, apRadioParamsDual5G } = apRadioCustomization
+      if (ap && apCapabilities && apRadioCustomization) {
 
-      if (enable24G) {
-        captureInterfaceOptions.push({
-          label: $t({ defaultMessage: '2.4 GHz' }),
-          value: CaptureInterfaceEnum.RADIO24
-        })
-      }
+        let captureInterfaceOptions = []
 
-      if (supportTriRadio && supportDual5gMode && apRadioParamsDual5G?.enabled) {
-        if (apRadioParamsDual5G.lower5gEnabled) {
+        const {
+          supportTriRadio = false,
+          supportDual5gMode = false,
+          supportBandCombination = false
+        } = apCapabilities || {}
+        const { enable24G, enable50G, enable6G, apRadioParamsDual5G } = apRadioCustomization
+
+        if (enable24G) {
+          captureInterfaceOptions.push({
+            label: $t({ defaultMessage: '2.4 GHz' }),
+            value: CaptureInterfaceEnum.RADIO24
+          })
+        }
+
+        if (supportTriRadio && supportDual5gMode && apRadioParamsDual5G?.enabled) {
+          if (apRadioParamsDual5G.lower5gEnabled) {
+            captureInterfaceOptions.push(
+              {
+                label: $t({ defaultMessage: 'Lower 5 GHz' }),
+                value: CaptureInterfaceEnum.RADIO50LOWER
+              }
+            )
+          }
+          if (apRadioParamsDual5G.upper5gEnabled) {
+            captureInterfaceOptions.push(
+              {
+                label: $t({ defaultMessage: 'Upper 5 GHz' }),
+                value: CaptureInterfaceEnum.RADIO50UPPER
+              }
+            )
+          }
+        } else {
+          if (enable50G) {
+            captureInterfaceOptions.push(
+              { label: $t({ defaultMessage: '5 GHz' }), value: CaptureInterfaceEnum.RADIO50 }
+            )
+          }
+        }
+
+        let isTriBandMode = true
+        if (supportBandCombination) {
+          const apBandMode = await getApBandModeSettings({
+            params,
+            enableRbac: isUseWifiRbacApi
+          }).unwrap()
+          isTriBandMode = apBandMode.bandMode === BandModeEnum.TRIPLE
+        }
+
+        if (supportTriRadio && enable6G && isTriBandMode) {
           captureInterfaceOptions.push(
-            {
-              label: $t({ defaultMessage: 'Lower 5 GHz' }),
-              value: CaptureInterfaceEnum.RADIO50LOWER
-            }
+            { label: $t({ defaultMessage: '6 GHz' }), value: CaptureInterfaceEnum.RADIO60 }
           )
         }
-        if (apRadioParamsDual5G.upper5gEnabled) {
-          captureInterfaceOptions.push(
-            {
-              label: $t({ defaultMessage: 'Upper 5 GHz' }),
-              value: CaptureInterfaceEnum.RADIO50UPPER
-            }
-          )
-        }
-      } else {
-        if (enable50G) {
-          captureInterfaceOptions.push(
-            { label: $t({ defaultMessage: '5 GHz' }), value: CaptureInterfaceEnum.RADIO50 }
-          )
-        }
-      }
 
-      if (supportTriRadio && enable6G) {
         captureInterfaceOptions.push(
-          { label: $t({ defaultMessage: '6 GHz' }), value: CaptureInterfaceEnum.RADIO60 }
+          { label: $t({ defaultMessage: 'Wired' }), value: CaptureInterfaceEnumExtended.WIRED }
         )
+
+        setInterfaceOptions(captureInterfaceOptions)
+        packetCaptureForm.setFieldValue('captureInterface', captureInterfaceOptions[0].value)
       }
-
-      captureInterfaceOptions.push(
-        { label: $t({ defaultMessage: 'Wired' }), value: CaptureInterfaceEnumExtended.WIRED }
-      )
-
-      setInterfaceOptions(captureInterfaceOptions)
-      packetCaptureForm.setFieldValue('captureInterface', captureInterfaceOptions[0].value)
     }
-  }, [getAp, getApCapabilities, getApRadioCustomization])
+
+
+    setRadioOptions()
+
+  }, [getAp, apCapabilities, getApRadioCustomization])
 
   useEffect(() => {
     const apLanPorts = getApLanPorts.data
@@ -176,26 +223,65 @@ export function ApPacketCaptureForm () {
 
   const handlePackeCapture = async () => {
     if (!isCapturing) { // Start
-      try {
-        const formValue = packetCaptureForm.getFieldsValue()
-        const payload = _.cloneDeep(formValue)
-        if (payload.captureInterface === CaptureInterfaceEnumExtended.WIRED) {
-          payload.captureInterface = payload.wiredCaptureInterface
-          payload.frameTypeFilter = []
+      showActionModal({
+        type: 'warning',
+        width: 450,
+        content: <p>
+          {$t({ defaultMessage: `After starting the packet capture, please ensure to manually {br}
+                <b>STOP</b> the packet capture once the investigation has been {br}
+                completed to avoid any performance degradation.` }, {
+            br: <br/>,
+            b: (chunk) => <b>{chunk}</b>
+          })}
+        </p>,
+        okText: $t({ defaultMessage: 'Start' }),
+        cancelText: $t({ defaultMessage: 'Cancel' }),
+        customContent: {
+          action: 'CUSTOM_BUTTONS',
+          buttons: [
+            {
+              text: 'Cancel',
+              type: 'default',
+              key: 'cancel'
+            },
+            {
+              text: 'Start',
+              type: 'primary',
+              key: 'start',
+              closeAfterAction: true,
+              handler: async () => {
+                try{
+                  const formValue = packetCaptureForm.getFieldsValue()
+                  const payload = cloneDeep(formValue)
+                  if (payload.captureInterface === CaptureInterfaceEnumExtended.WIRED) {
+                    payload.captureInterface = payload.wiredCaptureInterface
+                    payload.frameTypeFilter = []
+                  }
+                  delete payload.wiredCaptureInterface
+                  // eslint-disable-next-line
+                  const result = await startPacketCapture({ 
+                    params: { tenantId, serialNumber, venueId },
+                    payload,
+                    enableRbac: isUseWifiRbacApi
+                  }).unwrap()
+                  setIsCapturing(true)
+                  setSessionId(result.requestId || '')
+                } catch (error) {
+                  console.log(error) // eslint-disable-line no-console
+                }
+              }
+            }
+          ]
         }
-        delete payload.wiredCaptureInterface
-        const result =
-          await startPacketCapture({ params: { tenantId, serialNumber }, payload }).unwrap()
-        setIsCapturing(true)
-        setSessionId(result.requestId || '')
-
-      } catch (error) {
-        console.log(error) // eslint-disable-line no-console
-      }
+      })
     } else { // Stop
       const payload = { sessionId }
       try {
-        await stopPacketCapture({ params: { tenantId, serialNumber }, payload }).unwrap()
+        await stopPacketCapture({
+          params: { tenantId, serialNumber, venueId },
+          payload,
+          enableRbac: isUseWifiRbacApi
+        }).unwrap()
         packetCaptureStateRefetch()
         setIsPrepare(true)
         setHasRequest(true)

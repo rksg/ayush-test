@@ -1,10 +1,12 @@
 import { ReactNode } from 'react'
 
-import { defineMessage } from 'react-intl'
+import { MessageDescriptor, defineMessage } from 'react-intl'
 
 import { ClientEventEnum, categoryOptions, disconnectClientEventsMap } from '@acx-ui/analytics/utils'
+import { hasRaiPermission }                                            from '@acx-ui/user'
 
 import { ConnectionEvent } from './services'
+
 export const SUCCESS = 'success'
 export const SLOW = 'slow'
 export const DISCONNECT = 'disconnect'
@@ -75,7 +77,24 @@ export type DisplayEvent = ConnectionEvent & {
   event: string;
   category: string;
 }
+
 export type ChartMapping = { key: string; label: string; chartType: string; series: string }
+
+interface Subtitle {
+  title: MessageDescriptor;
+  value: string;
+  isLast?: boolean;
+}
+
+export type TimelineItem = {
+  title: MessageDescriptor;
+  value: string;
+  showCount: boolean;
+  hasXaxisLabel?: boolean;
+  chartMapping: ChartMapping[];
+  showResetZoom?: boolean;
+  subtitle?: Subtitle[];
+}
 
 export const eventColorByCategory = {
   [DISCONNECT]: '--acx-neutrals-50',
@@ -99,7 +118,8 @@ export const ClientTroubleShootingConfig = {
       selectionType: 'category',
       defaultValue: [],
       placeHolder: defineMessage({ defaultMessage: 'All Categories' }),
-      options: categoryOptions
+      options: categoryOptions,
+      isVisible: () => hasRaiPermission('READ_INCIDENTS')
     },
     {
       entityName: {
@@ -112,25 +132,31 @@ export const ClientTroubleShootingConfig = {
       options: [
         {
           value: INFO_UPDATED,
-          label: defineMessage({ defaultMessage: 'Client associated' })
+          label: defineMessage({ defaultMessage: 'Client associated' }),
+          isVisible: () => true
         },
         {
           value: ROAMED,
-          label: defineMessage({ defaultMessage: 'Client roamed' })
+          label: defineMessage({ defaultMessage: 'Client roamed' }),
+          isVisible: () => true
         },
         {
           value: DISCONNECTED,
-          label: defineMessage({ defaultMessage: 'Client disconnected' })
+          label: defineMessage({ defaultMessage: 'Client disconnected' }),
+          isVisible: () => true
         },
         {
           value: FAILURE,
-          label: defineMessage({ defaultMessage: 'Connection failure' })
+          label: defineMessage({ defaultMessage: 'Connection failure' }),
+          isVisible: () => true
         },
         {
           value: INCIDENT,
-          label: defineMessage({ defaultMessage: 'Incident' })
+          label: defineMessage({ defaultMessage: 'Incident' }),
+          isVisible: () => hasRaiPermission('READ_INCIDENTS')
         }
-      ]
+      ],
+      isVisible: () => true
     },
     {
       entityName: {
@@ -153,7 +179,8 @@ export const ClientTroubleShootingConfig = {
           value: RADIO65G,
           label: defineMessage({ defaultMessage: '6 GHz' })
         }
-      ]
+      ],
+      isVisible: () => true
     }
   ],
   timeLine: [
@@ -187,15 +214,17 @@ export const ClientTroubleShootingConfig = {
           value: DISCONNECT,
           isLast: true
         }
-      ]
+      ],
+      isVisible: () => true
     },
     {
-      title: defineMessage({ defaultMessage: 'Roaming' }),
+      title: defineMessage({ defaultMessage: 'Roaming' }), //hide
       value: TYPES.ROAMING,
       showCount: true,
       chartMapping: [
         { key: 'all', label: 'all', chartType: 'scatter', series: 'roaming' }
-      ] as ChartMapping[]
+      ] as ChartMapping[],
+      isVisible: () => true
     },
     {
       title: defineMessage({ defaultMessage: 'Connection Quality' }),
@@ -226,7 +255,8 @@ export const ClientTroubleShootingConfig = {
           value: 'AvgMCS',
           isLast: true
         }
-      ]
+      ],
+      isVisible: () => true
     },
     {
       title: defineMessage({ defaultMessage: 'Network Incidents' }),
@@ -253,7 +283,8 @@ export const ClientTroubleShootingConfig = {
           value: 'infrastructure',
           isLast: true
         }
-      ]
+      ],
+      isVisible: () => hasRaiPermission('READ_INCIDENTS')
     }
   ]
 }
@@ -342,6 +373,7 @@ export type NetworkIncidentCategoryMap = {
   connection:IncidentDetails[] |[],
   performance:IncidentDetails[] |[],
   infrastructure:IncidentDetails[] |[],
+  security:IncidentDetails[] |[],
   all: IncidentDetails[] | [];
 
 }

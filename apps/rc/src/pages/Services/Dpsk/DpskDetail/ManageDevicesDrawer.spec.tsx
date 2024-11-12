@@ -3,8 +3,7 @@ import { rest } from 'msw'
 import { serviceApi } from '@acx-ui/rc/services'
 import {
   DpskUrls,
-  CommonUrlsInfo,
-  ClientUrlsInfo
+  CommonUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -48,20 +47,12 @@ describe('ManageDevicesDrawer', () => {
         }
       ),
       rest.get(
-        DpskUrls.getNewFlowPassphraseDevices.url,
+        DpskUrls.getPassphraseDevices.url,
         (req, res, ctx) => res(ctx.json(mockedDevices))
       ),
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
-      ),
-      rest.post(
-        ClientUrlsInfo.getClientList.url,
-        (_, res, ctx) => res(ctx.json({ data: [], page: 1, totalCount: 0 }))
-      ),
-      rest.post(
-        ClientUrlsInfo.getClientMeta.url,
-        (_, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })

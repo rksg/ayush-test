@@ -3,11 +3,11 @@ import React from 'react'
 import { Root }          from 'react-dom/client'
 import { addMiddleware } from 'redux-dynamic-middlewares'
 
-import { getPendoConfig, setUserProfile } from '@acx-ui/analytics/utils'
+import { showExpiredSessionModal }                        from '@acx-ui/analytics/components'
+import { getPendoConfig, getUserProfile, setUserProfile } from '@acx-ui/analytics/utils'
 import {
   ConfigProvider,
   Loader,
-  showActionModal,
   SuspenseBoundary
 } from '@acx-ui/components'
 import { BrowserRouter } from '@acx-ui/react-router-dom'
@@ -16,86 +16,59 @@ import {
   renderPendo,
   useLocaleContext,
   LangKey,
-  DEFAULT_SYS_LANG,
-  LocaleProvider,
-  setUpIntl,
-  getIntl
+  getJwtHeaders,
+  userLogout
 } from '@acx-ui/utils'
 
-import AllRoutes from './AllRoutes'
+import AllRoutes           from './AllRoutes'
+import { errorMiddleware } from './errorMiddleware'
 
 import '@acx-ui/theme'
-import type { AnyAction } from '@reduxjs/toolkit'
-
-// Needed for Browser language detection
-const supportedLocales: Record<string, LangKey> = {
-  'en-US': 'en-US',
-  'en': 'en-US',
-  'es': 'es-ES',
-  'es-ES': 'es-ES',
-  'de-DE': 'de-DE',
-  'de': 'de-DE',
-  'ja-JP': 'ja-JP',
-  'ja': 'ja-JP',
-  'fr-FR': 'fr-FR',
-  'ko-KR': 'ko-KR',
-  'pt-BR': 'pt-BR'
-}
-
-export function loadMessages (locales: readonly string[]): LangKey {
-  const locale = locales.find(locale =>
-    supportedLocales[locale as keyof typeof supportedLocales]) || DEFAULT_SYS_LANG
-  return supportedLocales[locale as keyof typeof supportedLocales]
-}
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
-  const { lang } = useLocaleContext()
+  const { preferences, userId } = getUserProfile()
+  const preferredLanguage = preferences?.preferredLanguage || 'en-US'
   const { children } = props
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
-    children={<ConfigProvider children={children} lang={loadMessages([lang])} />}
+    states={[{ isLoading: !Boolean(userId) }]}
+    children={<ConfigProvider children={children} lang={preferredLanguage as LangKey} />}
   />
 }
 
-function showExpiredSessionModal () {
-  const { $t } = getIntl()
-  showActionModal({
-    type: 'info',
-    title: $t({ defaultMessage: 'Session Expired' }),
-    content: $t({ defaultMessage: 'Your session has expired. Please login again.' }),
-    onOk: () => window.location.reload()
-  })
-}
+function DataGuardLoader (props: React.PropsWithChildren) {
+  const locale = useLocaleContext()
 
-function detectExpiredSession (action: AnyAction, next: CallableFunction) {
-  if (action.meta?.baseQueryMeta?.response?.status === 401) {
-    showExpiredSessionModal()
-  } else {
-    return next(action)
-  }
+  return <Loader
+    fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
+    states={[{ isLoading: !Boolean(locale.messages) }]}
+    children={props.children}
+  />
 }
 
 export async function init (root: Root) {
-  addMiddleware(() => next => action => detectExpiredSession(action, next))
-  setUpIntl({ locale: 'en-US' })
-  const user = await fetch('/analytics/api/rsa-mlisa-rbac/users/profile')
+  addMiddleware(errorMiddleware)
+  const user = await fetch('/analytics/api/rsa-mlisa-rbac/users/profile', {
+    headers: { ...getJwtHeaders() }
+  })
+  const isDevModeOn = window.location.hostname === 'localhost'
   if (user.status === 401) {
-    showExpiredSessionModal()
+    !isDevModeOn ? userLogout() : showExpiredSessionModal()
   } else {
     setUserProfile(await(user).json())
   }
   root.render(
     <React.StrictMode>
       <Provider>
-        <LocaleProvider>
+        <BrowserRouter>
           <PreferredLangConfigProvider>
-            <BrowserRouter>
+            <DataGuardLoader>
               <React.Suspense fallback={null}>
                 <AllRoutes />
               </React.Suspense>
-            </BrowserRouter>
+            </DataGuardLoader>
           </PreferredLangConfigProvider>
-        </LocaleProvider>
+        </BrowserRouter>
       </Provider>
     </React.StrictMode>
   )

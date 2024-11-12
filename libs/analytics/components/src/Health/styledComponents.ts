@@ -5,7 +5,7 @@ import { Subtitle, Tabs } from '@acx-ui/components'
 const pillDescCommom = `
   font-size: var(--acx-subtitle-6-font-size);
   text-align: center;
-  color: var(--acx-neutrals-40);
+  color: var(--acx-neutrals-60);
 `
 export const ThresholdTitle = styled(Subtitle).attrs({ level: 4 })`
   padding: 16px 0px 11px;

@@ -2,14 +2,55 @@
 
 exports[`GoogleMap.NotEnabled should render correctly 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__MapContainer-sc-ii13ud-0 fIoBmJ"
+  .c1 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+  width: 100%;
+  padding: 0 16px;
+}
+
+.c2 {
+  text-align: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.c2 .ant-empty-normal {
+  margin: 0;
+  margin-block-end: 17px;
+}
+
+.c3 {
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-body-4-font-weight);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  color: var(--acx-primary-black);
+}
+
+.c0 {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  aspect-ratio: 470 / 260;
+}
+
+<div
+    class="c0"
   >
     <div
-      class="styledComponents__NoDataWrapper-sc-m7jeli-0 bvtRvB"
+      class="c1"
     >
       <div
-        class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 iRdLpd cMdQDn"
+        class="ant-space ant-space-horizontal ant-space-align-center c2 c3"
       >
         <div
           class="ant-space-item"

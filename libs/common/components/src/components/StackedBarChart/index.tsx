@@ -29,9 +29,13 @@ import { useOnAxisLabelClick } from '../Chart/useOnAxisLabelClick'
 import type { EChartsOption, RegisteredSeriesOption } from 'echarts'
 import type { EChartsReactProps }                     from 'echarts-for-react'
 
+type ItemStyle = {
+  borderRadius: number[]
+}
+
 type ChartData = {
   category: string
-  series: Array<{ name: string, value: number }>
+  series: Array<{ name: string, value: number, itemStyle?: ItemStyle }>
 }
 
 type Dimensions = [
@@ -81,16 +85,16 @@ const computeChartData = ({ category, series }: ChartData, isPercent:boolean) =>
   const values = _(series)
   const total = values.sumBy('value')
   const firstIndex = values.findIndex(v => v.value !== 0)
-  return series.map(({ name, value }, index) => {
+  return series.map(({ name, value, itemStyle }, index) => {
     let seriesValue = value
     if(isPercent){
       seriesValue = value/total
     }
     const data = {
       value: [seriesValue, category, name, total] as Dimensions,
-      itemStyle: { borderRadius: [0] }
+      itemStyle: itemStyle || { borderRadius: [0] }
     }
-    if (firstIndex === index) {
+    if (firstIndex === index && !itemStyle) {
       data.itemStyle.borderRadius = [0, 2, 2, 0]
     }
     return data
@@ -181,7 +185,7 @@ export const tooltipFormatter = (
   const name = param.seriesName?.replace(/<\d+>/,'')
   let toolTipValue = value[0]
   if(total){
-    toolTipValue = (Number(value[0]) * total).toString()
+    toolTipValue = Math.round(Number(value[0]) * total).toString()
   }
   const formattedValue = dataFormatter ? dataFormatter(toolTipValue) : toolTipValue
   const tooltipFormat = format ?? defineMessage({

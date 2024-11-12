@@ -1,73 +1,154 @@
 import userEvent from '@testing-library/user-event'
+import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
-import { ClientUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                       from '@acx-ui/store'
+import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { clientApi, networkApi, switchApi }                                  from '@acx-ui/rc/services'
+import { ClientUrlsInfo, CommonUrlsInfo, GuestFixtures, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                   from '@acx-ui/store'
 import {
-  fireEvent,
+  act,
   mockServer,
   render,
   screen,
   waitFor,
-  within
+  within,
+  fireEvent
 } from '@acx-ui/test-utils'
+import { RolesEnum, WifiScopes }          from '@acx-ui/types'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
-import { DateRange }                      from '@acx-ui/utils'
 
 import {
-  AllowedNetworkList,
-  GuestClient,
-  RegenerateGuestPassword
+  VenueList,
+  GuestClients
 } from '../../../__tests__/fixtures'
-
 
 import { GuestTabContext } from './context'
 
 import { GuestsTable } from '.'
 
-jest.mock('socket.io-client')
+const { GuestList, AllowedNetworkList } = GuestFixtures
 
-describe.skip('Guest Table', () => {
-  let params: { tenantId: string }
+const mockedDeleteReq = jest.fn()
+const mockedPatchReq = jest.fn()
+const mockedDownloadFileReq = jest.fn()
+const mockedImportFileReq = jest.fn()
+const setGuestCount = jest.fn()
+const mockedDownloadReq = jest.fn()
+jest.mock('socket.io-client')
+jest.spyOn(window, 'print').mockImplementation(jest.fn())
+
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  downloadFile: jest.fn().mockImplementation(() => mockedDownloadFileReq)
+}))
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  NetworkForm: () => <div data-testid='network-form' />
+}))
+
+const mockGuestData = { data: GuestList, isLoading: false }
+const mockNetworkData = { data: AllowedNetworkList, isLoading: false }
+
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetGuestsListQuery: () => mockGuestData,
+  useWifiNetworkListQuery: () => mockNetworkData,
+  useGetGuestsMutation: () => {
+    return [() => {
+      mockedDownloadReq()
+      return { unwrap: () => Promise.resolve(), catch: () => {} }
+    }, { isLoading: false }]
+  },
+  useDeleteGuestMutation: () => ([ mockedDeleteReq ]),
+  useEnableGuestsMutation: () => ([ mockedPatchReq ]),
+  useDisableGuestsMutation: () => ([ mockedPatchReq ])
+}))
+
+const openGuestDetailsAndClickAction = async (guestName: string) => {
+  const table = await screen.findByRole('table')
+  await userEvent.click(await within(table).findByText(guestName))
+  expect(await screen.findByText('Guest Details')).toBeVisible()
+
+  await userEvent.click(await screen.findByRole('button', { name: /actions/i }))
+  const menuitems = await screen.findAllByRole('menuitem')
+  expect(menuitems).toHaveLength(4)
+}
+
+describe('Guest Table', () => {
+  const params: { tenantId: string, networkId: string } = {
+    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+    networkId: 'tenant-id'
+  }
+  const userProfile = getUserProfile()
   global.URL.createObjectURL = jest.fn()
   HTMLAnchorElement.prototype.click = jest.fn()
 
-  const mockDateFilter = {
-    range: DateRange.allTime,
-    setRange: () => { },
-    startDate: '',
-    setStartDate: () => { },
-    endDate: '',
-    setEndDate: () => { }
-  }
+  afterEach(() => {
+    mockedDeleteReq.mockClear()
+    mockedPatchReq.mockClear()
+    mockedDownloadFileReq.mockClear()
+    mockedImportFileReq.mockClear()
+    setGuestCount.mockClear()
+    Modal.destroyAll()
+  })
 
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    act(() => {
+      store.dispatch(clientApi.util.resetApiState())
+      store.dispatch(networkApi.util.resetApiState())
+      store.dispatch(switchApi.util.resetApiState())
+    })
+
+    setUserProfile({
+      ...userProfile,
+      profile: {
+        ...userProfile.profile,
+        customRoleName: RolesEnum.GUEST_MANAGER
+      },
+      abacEnabled: false,
+      isCustomRole: false
+    })
+
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getGuestsList.url,
-        (req, res, ctx) => res(ctx.json(GuestClient))
+        (_, res, ctx) => res(ctx.json(GuestList))
+      ),
+      rest.post(
+        ClientUrlsInfo.getClients.url,
+        (_, res, ctx) => res(ctx.json(GuestClients))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenues.url,
+        (_, res, ctx) => res(ctx.json(VenueList))
+      ),
+      rest.post(
+        CommonUrlsInfo.getWifiNetworksList.url,
+        (_, res, ctx) => res(ctx.json(AllowedNetworkList))
+      ),
+      rest.delete(
+        ClientUrlsInfo.deleteGuest.url,
+        (_, res, ctx) => {
+          mockedDeleteReq()
+          return res(ctx.json({ requestId: '123' }))
+        }
       ),
       rest.post(
         ClientUrlsInfo.getGuests.url,
-        (req, res, ctx) => res(ctx.json({}))
+        (_, res, ctx) => {
+          mockedDownloadReq()
+          return res(ctx.json({}))
+        }
       ),
       rest.post(
-        CommonUrlsInfo.getVMNetworksList.url,
-        (req, res, ctx) => res(ctx.json(AllowedNetworkList))
-      ),
-      rest.patch(
-        ClientUrlsInfo.generateGuestPassword.url,
-        (req, res, ctx) => res(ctx.json(RegenerateGuestPassword))
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
       )
-
     )
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-    }
   })
-  const setGuestCount = jest.fn()
 
   it('should render table', async () => {
     jest.useFakeTimers()
@@ -75,390 +156,388 @@ describe.skip('Guest Table', () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
-    await screen.findByText('test1')
+    const table = await screen.findByRole('table')
+    expect(await within(table).findByText('test1')).toBeVisible()
+    jest.runOnlyPendingTimers()
     jest.useRealTimers()
   })
 
+  it('should render Add Guest drawer correctly', async () => {
+    render(
+      <Provider>
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable />
+        </GuestTabContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
+      })
+
+    await waitFor(async () =>
+      expect(await screen.findByRole('button', { name: 'Add Guest' })).toBeEnabled()
+    )
+    const table = await screen.findByRole('table')
+    expect(await within(table).findByText('test1')).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Add Guest' }))
+    expect(await screen.findByTestId('saveBtn')).toBeVisible()
+    const dialog = await screen.findByRole('dialog')
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
+  })
+
+  it('should render Add Guest Pass Network modal correctly', async () => {
+    render(
+      <Provider>
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable />
+        </GuestTabContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
+      })
+
+    const addNetworkBtn = await screen.findByRole('button', { name: /Add Guest Pass Network/ })
+    await waitFor(async () => expect(addNetworkBtn).toBeEnabled())
+
+    const table = await screen.findByRole('table')
+    expect(await within(table).findByText('test1')).toBeVisible()
+
+    await userEvent.click(addNetworkBtn)
+    await waitFor(async () => expect(await screen.findByRole('dialog')).toBeVisible())
+    const modal = await screen.findByRole('dialog')
+    expect(await within(modal).findByText('Add Guest Pass Network')).toBeVisible()
+    expect(await within(modal).findByTestId('network-form')).toBeVisible()
+  })
+
+  it('should delete guest correctly from the action bar', async () => {
+    render(
+      <Provider>
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable />
+        </GuestTabContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
+      })
+
+    const table = await screen.findByRole('table')
+    await userEvent.click(await within(table).findByText('+12015550123'))
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
+    const dialog = await screen.findByRole('dialog')
+    expect(await screen.findByText('Delete "test2"?')).toBeVisible()
+
+    await userEvent.click(await within(dialog).findByRole('button', { name: /Delete Guest/i }))
+    await waitFor(() => expect(mockedDeleteReq).toBeCalledTimes(1))
+    await waitFor(() => expect(dialog).not.toBeVisible())
+  })
+
+  it('should click "delete" on GuestDetailDrawer correctly', async () => {
+    render(
+      <Provider>
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable />
+        </GuestTabContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
+      })
+
+    await userEvent.click(await screen.findByText('test3'))
+    await screen.findByText('Guest Details')
+    await userEvent.click(await screen.findByText(/actions/i))
+    await userEvent.click(await screen.findByText(/delete guest/i))
+    const content = await screen.findByText(/are you sure you want to delete this guest\?/i)
+    await userEvent.click(screen.getByRole('button', {
+      name: /delete guest/i
+    }))
+    await waitFor(() => expect(content).not.toBeVisible())
+    await waitFor(() => expect(mockedDeleteReq).toBeCalledTimes(1))
+  })
+
+  it('should disable guest correctly from the action bar', async () => {
+    render(
+      <Provider>
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable />
+        </GuestTabContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
+      })
+
+    const table = await screen.findByRole('table')
+    await userEvent.click(await within(table).findByText('+12015550123'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Disable' }))
+    await waitFor(() => expect(mockedPatchReq).toBeCalledTimes(1))
+  })
+
+  it('should enable guest correctly from the action bar', async () => {
+    render(
+      <Provider>
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable />
+        </GuestTabContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
+      })
+
+    const table = await screen.findByRole('table')
+    await userEvent.click(await within(table).findByText('Disabled'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Enable' }))
+    await waitFor(() => expect(mockedPatchReq).toBeCalledTimes(1))
+  })
 
   it('should render detail by click name', async () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
 
-
-    fireEvent.click(await screen.findByText('test1'))
-    await screen.findByText('Guest Details')
+    const table = await screen.findByRole('table')
+    await userEvent.click(await within(table).findByText('test1'))
+    expect(await screen.findByText('Download Information')).toBeVisible()
+    expect(await screen.findByText('Guest Details')).toBeVisible()
+    const dialog = await screen.findByRole('dialog')
+    const closeButton = await within(dialog).findByTestId('CloseSymbol')
+    expect(closeButton).toBeVisible()
+    await userEvent.click(closeButton)
   })
 
   it('should render detail by click created time', async () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
 
     const userProfile = getUserProfile()
-    setUserProfile({ ...userProfile, profile: {
-      ...userProfile.profile, dateFormat: 'dd/mm/yyyy' } })
+    setUserProfile({
+      ...userProfile,
+      profile: {
+        ...userProfile.profile,
+        dateFormat: 'dd/mm/yyyy'
+      }
+    })
 
-    fireEvent.click(await screen.findByText('20/11/2022 08:57'))
-    await screen.findByText('Guest Details')
-  })
-
-  it('should render not applicable guest client detail', async () => {
-    render(
-      <Provider>
-        <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
-        </GuestTabContext.Provider>
-      </Provider>, {
-        route: { params, path: '/:tenantId/t/users/wifi/guests' }
-      })
-
-
-    fireEvent.click(await screen.findByText('test2'))
-    await screen.findByText('Guest Details')
-
-    const button = screen.getByRole('button', { name: 'Close' })
-    fireEvent.click(button)
+    const table = await screen.findByRole('table')
+    await userEvent.click(await within(table).findByText('20/11/2022 08:57'))
+    expect(await screen.findByText('Guest Details')).toBeVisible()
+    const dialog = await screen.findByRole('dialog')
+    const closeButton = await within(dialog).findByTestId('CloseSymbol')
+    expect(closeButton).toBeVisible()
+    await userEvent.click(closeButton)
   })
 
   it('should render online guest client detail', async () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
 
-
-    fireEvent.click(await screen.findByText('test4'))
-    await screen.findByText('Guest Details')
-    await screen.findByText('testVenue')
+    const table = await screen.findByRole('table')
+    await userEvent.click(await within(table).findByText('test4'))
+    expect(await screen.findByText('Guest Details')).toBeVisible()
+    expect(await screen.findByText('testVenue')).toBeVisible()
+    expect(await screen.findByTestId('guest-status')).toHaveTextContent('Online (1)')
   })
 
   it('should click "enable guest" correctly', async () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
 
-
-    fireEvent.click(await screen.findByText('disable_client'))
+    const table = await screen.findByRole('table')
+    await userEvent.click(await within(table).findByText('disable_client'))
     await screen.findByText('Guest Details')
-    await userEvent.click(await screen.findByText(/actions/i))
+
+    const drawer = await screen.findByRole('dialog')
+    expect(await within(drawer).findByTestId('guest-status')).toHaveTextContent('Disable')
+    await userEvent.click(await within(drawer).findByText(/actions/i))
     await userEvent.click(await screen.findByText(/enable guest/i))
+    await waitFor(() => expect(mockedPatchReq).toBeCalledTimes(1))
   })
 
   it('should click "disable guest" correctly', async () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
 
-
-    fireEvent.click(await screen.findByText('test3'))
+    const table = await screen.findByRole('table')
+    await userEvent.click(await within(table).findByText('test3'))
     await screen.findByText('Guest Details')
-    await userEvent.click(await screen.findByText(/actions/i))
+
+    const drawer = await screen.findByRole('dialog')
+    expect(await within(drawer).findByTestId('guest-status')).toHaveTextContent('Offline')
+    await userEvent.click(await within(drawer).findByText(/actions/i))
     await userEvent.click(await screen.findByText(/disable guest/i))
+    await waitFor(() => expect(mockedPatchReq).toBeCalledTimes(1))
   })
 
-  it('should click "generate new password" with mail and phone number', async () => {
-    render(
-      <Provider>
-        <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
-        </GuestTabContext.Provider>
-      </Provider>, {
-        route: { params, path: '/:tenantId/t/users/wifi/guests' },
-        wrapper: Provider
-      })
+  it('should show "Import from file" correctly', async () => {
 
-
-    fireEvent.click(await screen.findByText('test3'))
-    await screen.findByText('Guest Details')
-    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
-    fireEvent.click(await screen.findByText(/generate new password/i))
-    const cancelButton = screen.getByRole('button', { name: 'Cancel' })
-    await userEvent.click(cancelButton)
-
-  })
-
-  it('should click "generate new password" without mail and phone number', async () => {
-    render(
-      <Provider>
-        <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
-        </GuestTabContext.Provider>
-      </Provider>, {
-        route: { params, path: '/:tenantId/t/users/wifi/guests' }
-      })
-
-
-    fireEvent.click(await screen.findByText('test4'))
-    await screen.findByText('Guest Details')
-    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
-    fireEvent.click(await screen.findByText(/generate new password/i))
-    fireEvent.click(screen.getByRole('checkbox', {
-      name: /send to phone/i
-    }))
-    fireEvent.click(screen.getByRole('checkbox', {
-      name: /send to phone/i
-    }))
-    fireEvent.click(screen.getByRole('checkbox', {
-      name: /send to email/i
-    }))
-    fireEvent.click(screen.getByRole('checkbox', {
-      name: /print guest pass/i
-    }))
-    const generateButton = screen.getByRole('button', { name: 'Generate' })
-    await userEvent.click(generateButton)
-
-  })
-
-  it('should click "generate new password" validation 1', async () => {
-    const json = {
-      requestId: '96dcffb7-583a-499a-8305-def359adf8b4',
-      response: {
-        id: '0b71a2d4-6dc0-4616-8d1e-105deee0ad72',
-        createdDate: 1670475350467,
-        name: 'guest1',
-        disabled: false,
-        networkId: 'd50b652907b64a008e8af2d160b29b64',
-        notes: '',
-        email: 'test@commscope.com',
-        mobilePhoneNumber: '+886988000000',
-        macAddresses: [],
-        ssid: 'test guest',
-        deliveryMethods: ['PRINT'],
-        guestUserType: 'GuestPass',
-        expiration: {
-          activationType: 'Creation',
-          duration: 7,
-          unit: 'Day'
-        },
-        locale: 'en',
-        password: '886007'
-      }
-    }
     mockServer.use(
-      rest.patch(
-        ClientUrlsInfo.generateGuestPassword.url,
-        (req, res, ctx) => res(ctx.json(json))
+      rest.post(
+        ClientUrlsInfo.importGuestPass.url,
+        (_, res, ctx) => {
+          mockedImportFileReq()
+          return res(ctx.status(400), ctx.json({
+            requestId: '12b13705-fcf4-4fd2-94b9-2ef93106e396',
+            error: {
+              rootCauseErrors: [{
+                code: 'GUEST-400002',
+                message: 'File does not contain any entries'
+              }],
+              request: {},
+              status: 400
+            }
+          }))
+        }
       )
     )
-
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
 
-
-    fireEvent.click(await screen.findByText('test4'))
-    await screen.findByText('Guest Details')
-    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
-    fireEvent.click(await screen.findByText(/generate new password/i))
-    fireEvent.click(screen.getByRole('checkbox', {
-      name: /print guest pass/i
-    }))
-    const generateButton = screen.getByRole('button', { name: 'Generate' })
-    await userEvent.click(generateButton)
-  })
-
-  it('should click "generate new password" validation 2', async () => {
-    const json = {
-      requestId: '96dcffb7-583a-499a-8305-def359adf8b4',
-      response: {
-        id: '0b71a2d4-6dc0-4616-8d1e-105deee0ad72',
-        createdDate: 1670475350467,
-        name: 'guest1',
-        disabled: false,
-        networkId: 'd50b652907b64a008e8af2d160b29b64',
-        notes: '',
-        email: 'test@commscope.com',
-        mobilePhoneNumber: '+886988000000',
-        macAddresses: [],
-        ssid: 'test guest',
-        deliveryMethods: ['PRINT'],
-        guestUserType: 'GuestPass',
-        expiration: {
-          activationType: 'Creation',
-          duration: 7,
-          unit: 'Hour'
-        },
-        locale: 'en',
-        password: '886007'
-      }
-    }
-    mockServer.use(
-      rest.patch(
-        ClientUrlsInfo.generateGuestPassword.url,
-        (req, res, ctx) => res(ctx.json(json))
-      )
+    await waitFor(async () =>
+      expect(await screen.findByRole('button', { name: /Import from file/ })).toBeEnabled()
     )
 
+    const importBtn = await screen.findByRole('button', { name: 'Import from file' })
+    await userEvent.click(importBtn)
+    const dialog = await screen.findByRole('dialog')
+    const csvFile = new File([''], 'guests_import_template.csv', { type: 'text/csv' })
+    // eslint-disable-next-line testing-library/no-node-access
+    await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
+    const allowedNetworkCombo =
+      await within(dialog).findByLabelText('Allowed Network', { exact: false })
+    fireEvent.mouseDown(allowedNetworkCombo)
+    const option = await screen.findByText('guest pass wlan2')
+    await userEvent.click(option)
+    await userEvent.click(await within(dialog).findByRole('checkbox', { name: /Print Guest pass/ }))
+    expect(await screen.findByRole('checkbox', { name: /Print Guest pass/ })).not.toBeChecked()
+    await userEvent.click(await within(dialog).findByRole('button', { name: 'Import' }))
+    expect(await screen.findByText(/Guest pass won\’t be printed or sent/)).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Yes, create guest pass' }))
+    await waitFor(() => expect(mockedImportFileReq).toBeCalledTimes(1))
+    await waitFor(() => expect(dialog).toHaveTextContent('File does not contain any entries'))
+  })
+
+  it('should show correct template file after guest-manual-password-toggle turn on', async () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
 
+    await waitFor(async () =>
+      expect(await screen.findByRole('button', { name: /Import from file/ })).toBeEnabled()
+    )
 
-    fireEvent.click(await screen.findByText('test4'))
-    await screen.findByText('Guest Details')
-    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
-    fireEvent.click(await screen.findByText(/generate new password/i))
-    fireEvent.click(screen.getByRole('checkbox', {
-      name: /print guest pass/i
-    }))
-    const generateButton = screen.getByRole('button', { name: 'Generate' })
-    await userEvent.click(generateButton)
+    const importBtn = await screen.findByRole('button', { name: 'Import from file' })
+    await userEvent.click(importBtn)
+
+    const manualRadio = screen.queryByTestId('manual-radio')
+    expect(manualRadio).not.toBeInTheDocument()
+
+    const link = screen.getByRole('link', {
+      name: /download template/i
+    })
+    // eslint-disable-next-line max-len
+    expect(link).toHaveAttribute('href', 'assets/templates/guests_import_template_with_guestpass.csv')
   })
+
 
   it('should click "download" correctly', async () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
+          <GuestsTable />
         </GuestTabContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
 
-
-    fireEvent.click(await screen.findByText('test3'))
-    await screen.findByText('Guest Details')
-    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
-    fireEvent.click(await screen.findByText(/download information/i))
+    await openGuestDetailsAndClickAction('test5')
+    await userEvent.click(await screen.findByRole('menuitem', { name: /download information/i }))
+    await waitFor(() => expect(mockedDownloadReq).toBeCalledTimes(1))
   })
 
-  it('should click "delete" correctly', async () => {
-    render(
-      <Provider>
-        <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
-        </GuestTabContext.Provider>
-      </Provider>, {
-        route: { params, path: '/:tenantId/t/users/wifi/guests' }
+  describe('ABAC permission', () => {
+    it('should dispaly with custom scopeKeys', async () => {
+      setUserProfile({
+        ...userProfile,
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [WifiScopes.CREATE]
       })
 
+      render(
+        <Provider>
+          <GuestTabContext.Provider value={{ setGuestCount }}>
+            <GuestsTable />
+          </GuestTabContext.Provider>
+        </Provider>, {
+          route: { params, path: '/:tenantId/t/users/wifi/guests' }
+        })
 
-    fireEvent.click(await screen.findByText('test3'))
-    await screen.findByText('Guest Details')
-    await userEvent.click(await screen.findByText(/actions/i))
-    await userEvent.click(await screen.findByText(/delete guest/i))
-    await screen.findByText(/are you sure you want to delete this guest\?/i)
-    await userEvent.click(screen.getByRole('button', {
-      name: /delete guest/i
-    }))
-  })
+      expect(await screen.findByRole('button', { name: 'Add Guest' })).toBeEnabled()
+      const table = await screen.findByRole('table')
+      expect(await within(table).findByText('test1')).toBeVisible()
+      await userEvent.click(await screen.findByRole('button', { name: 'Add Guest' }))
+      const dialog = await screen.findByRole('dialog')
+      await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
+      await waitFor(() => expect(dialog).not.toBeVisible())
+    })
 
-  it('should handle error for generate password', async () => {
-    mockServer.use(
-      rest.patch(
-        ClientUrlsInfo.generateGuestPassword.url,
-        (req, res, ctx) => res(ctx.status(404), ctx.json({}))
-      )
-    )
-    render(
-      <Provider>
-        <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
-        </GuestTabContext.Provider>
-      </Provider>, {
-        route: { params, path: '/:tenantId/t/users/wifi/guests' }
+    it('should correctly hide with custom scopeKeys', async () => {
+      setUserProfile({
+        ...userProfile,
+        allowedOperations: [],
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [WifiScopes.DELETE]
       })
 
-    fireEvent.click(await screen.findByText('test4'))
-    await screen.findByText('Guest Details')
-    await fireEvent.mouseEnter(await screen.findByText(/actions/i))
-    fireEvent.click(await screen.findByText(/generate new password/i))
-    fireEvent.click(screen.getByRole('checkbox', {
-      name: /print guest pass/i
-    }))
-    const generateButton = screen.getByRole('button', { name: 'Generate' })
-    await userEvent.click(generateButton)
-    // TODO
-    // expect(await screen.findByText('Server Error')).toBeVisible()
-  })
-
-  it.skip('should show "Import from file" correctly', async () => {
-    mockServer.use(
-      rest.post(
-        ClientUrlsInfo.importGuestPass.url,
-        (req, res, ctx) => res(ctx.status(400), ctx.json({
-          requestId: '12b13705-fcf4-4fd2-94b9-2ef93106e396',
-          error: {
-            rootCauseErrors: [{
-              code: 'GUEST-400002',
-              message: 'File does not contain any entries'
-            }],
-            request: {},
-            status: 400
-          }
-        }))
-      )
-    )
-    render(
-      <Provider>
-        <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable dateFilter={mockDateFilter} />
-        </GuestTabContext.Provider>
-      </Provider>, {
-        route: { params, path: '/:tenantId/t/users/wifi/guests' }
-      })
-    await waitFor(() =>
-      expect(screen.getByRole('button', { name: 'Import from file' })).toBeEnabled())
-
-    const importBtn = await screen.findByRole('button', { name: 'Import from file' })
-    fireEvent.click(importBtn)
-    const dialog = await screen.findByRole('dialog')
-    const csvFile = new File([''], 'guests_import_template.csv', { type: 'text/csv' })
-    // eslint-disable-next-line testing-library/no-node-access
-    await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
-
-    const allowedNetworkCombo =
-      await within(dialog).findByLabelText('Allowed Network', { exact: false })
-    fireEvent.mouseDown(allowedNetworkCombo)
-    const option = await screen.findByText('guest pass wlan1')
-    fireEvent.click(option)
-
-    fireEvent.click(await within(dialog).findByLabelText('Print Guest pass', { exact: false }))
-
-    fireEvent.click(await within(dialog).findByRole('button', { name: 'Import' }))
-
-    fireEvent.click(await screen.findByRole('button', { name: 'Yes, create guest pass' }))
-
-    await waitFor(() => expect(dialog).toHaveTextContent('File does not contain any entries'))
+      render(
+        <Provider>
+          <GuestTabContext.Provider value={{ setGuestCount }}>
+            <GuestsTable />
+          </GuestTabContext.Provider>
+        </Provider>, {
+          route: { params, path: '/:tenantId/t/users/wifi/guests' }
+        })
+      expect(screen.queryByRole('button', { name: 'Add Guest' })).toBeNull()
+    })
   })
 })

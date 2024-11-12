@@ -1,5 +1,5 @@
 import { Form, Radio, Typography } from 'antd'
-import { defineMessage, useIntl }  from 'react-intl'
+import { useIntl }                 from 'react-intl'
 
 import {
   GridCol,
@@ -8,12 +8,15 @@ import {
   RadioCardCategory,
   StepsFormLegacy
 } from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                    from '@acx-ui/rc/components'
 import {
   ServiceType,
   getServiceListRoutePath,
   getServiceRoutePath,
-  ServiceOperation
+  ServiceOperation,
+  isServiceCardSetEnabled,
+  isServiceCardEnabled
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -27,9 +30,15 @@ export default function SelectServiceForm () {
   const myServicesPath: Path = useTenantLink(getServiceListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
-  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
+  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
+  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
+  const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
+  const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
+  const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
     const serviceCreatePath = getServiceRoutePath({
@@ -43,53 +52,66 @@ export default function SelectServiceForm () {
     })
   }
 
-  const sets = [
+  const set = [
     {
-      title: defineMessage({ defaultMessage: 'Connectivity' }),
+      title: $t({ defaultMessage: 'Connectivity' }),
       items: [
         { type: ServiceType.DHCP, categories: [RadioCardCategory.WIFI] },
         {
           type: ServiceType.EDGE_DHCP,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled
+          disabled: !isEdgeHaReady || !isEdgeDhcpHaReady
         },
-        { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
         {
-          type: ServiceType.NETWORK_SEGMENTATION,
+          type: ServiceType.DPSK,
+          categories: [RadioCardCategory.WIFI]
+        },
+        {
+          type: ServiceType.PIN,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled || !isEdgeReady
+          disabled: !isEdgeHaReady || !isEdgePinHaReady
         },
         {
           type: ServiceType.EDGE_SD_LAN,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled || !isEdgeReady || !isEdgeSdLanReady
+          disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
         }
       ]
     },
     {
-      title: defineMessage({ defaultMessage: 'Security' }),
+      title: $t({ defaultMessage: 'Security' }),
       items: [
         { type: ServiceType.EDGE_FIREWALL,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled || !isEdgeReady
+          disabled: !isEdgeHaReady || !isEdgeFirewallHaReady
         }
       ]
     },
     {
-      title: defineMessage({ defaultMessage: 'Application' }),
+      title: $t({ defaultMessage: 'Application' }),
       items: [
         { type: ServiceType.MDNS_PROXY, categories: [RadioCardCategory.WIFI] },
+        {
+          type: ServiceType.EDGE_MDNS_PROXY,
+          categories: [RadioCardCategory.EDGE],
+          disabled: !isEdgeMdnsReady
+        },
+        {
+          type: ServiceType.EDGE_TNM_SERVICE,
+          categories: [RadioCardCategory.EDGE],
+          disabled: !isEdgeTnmServiceReady
+        },
         { type: ServiceType.WIFI_CALLING, categories: [RadioCardCategory.WIFI] }
       ]
     },
     {
-      title: defineMessage({ defaultMessage: 'Guests & Residents' }),
+      title: $t({ defaultMessage: 'Guests & Residents' }),
       items: [
         { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
         {
           type: ServiceType.WEBAUTH_SWITCH,
           categories: [RadioCardCategory.SWITCH],
-          disabled: !isEdgeEnabled
+          disabled: !isEdgeHaReady || !isEdgePinHaReady || !networkSegmentationSwitchEnabled
         },
         {
           type: ServiceType.RESIDENT_PORTAL,
@@ -122,27 +144,31 @@ export default function SelectServiceForm () {
             rules={[{ required: true }]}
           >
             <Radio.Group style={{ width: '100%' }}>
-              {sets.map(set => {
-                const isAllDisabled = set.items.every(item => item.disabled)
-                return !isAllDisabled &&
-                <UI.CategoryContainer key={$t(set.title)}>
-                  <Typography.Title level={3}>
-                    { $t(set.title) }
-                  </Typography.Title>
-                  <GridRow>
-                    {set.items.map(item => item.disabled
-                      ? null
-                      : <GridCol key={item.type} col={{ span: 6 }}>
-                        <ServiceCard
-                          key={item.type}
-                          serviceType={item.type}
-                          categories={item.categories}
-                          type={'radio'}
-                        />
-                      </GridCol>)}
-                  </GridRow>
-                </UI.CategoryContainer>
-              })}
+              {
+                // eslint-disable-next-line max-len
+                set.filter(set => isServiceCardSetEnabled(set, ServiceOperation.CREATE)).map(set => {
+                  return <UI.CategoryContainer key={set.title}>
+                    <Typography.Title level={3}>
+                      { set.title }
+                    </Typography.Title>
+                    <GridRow>
+                      {
+                        // eslint-disable-next-line max-len
+                        set.items.filter(item => isServiceCardEnabled(item, ServiceOperation.CREATE)).map(item => {
+                          return <GridCol key={item.type} col={{ span: 6 }}>
+                            <ServiceCard
+                              key={item.type}
+                              serviceType={item.type}
+                              categories={item.categories}
+                              type={'radio'}
+                            />
+                          </GridCol>
+                        })
+                      }
+                    </GridRow>
+                  </UI.CategoryContainer>
+                })
+              }
             </Radio.Group>
           </Form.Item>
         </StepsFormLegacy.StepForm>

@@ -1,5 +1,9 @@
-import { Space }              from 'antd'
-import { IntlShape, useIntl } from 'react-intl'
+import { useState } from 'react'
+
+import { FetchBaseQueryError }  from '@reduxjs/toolkit/query'
+import { Alert, Button, Space } from 'antd'
+import moment                   from 'moment'
+import { IntlShape, useIntl }   from 'react-intl'
 
 import {
   Loader,
@@ -7,16 +11,17 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
-import { get }                                                    from '@acx-ui/config'
-import { useIsTierAllowed, Features, TierFeatures, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
-import { useGetMspProfileQuery }                                  from '@acx-ui/msp/services'
-import { MSPUtils }                                               from '@acx-ui/msp/utils'
-import { SpaceWrapper }                                           from '@acx-ui/rc/components'
+import { get }                                            from '@acx-ui/config'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                      from '@acx-ui/formatter'
+import { useGetMspEcProfileQuery, useGetMspProfileQuery } from '@acx-ui/msp/services'
+import { MSPUtils }                                       from '@acx-ui/msp/utils'
+import { SpaceWrapper, useIsEdgeReady }                   from '@acx-ui/rc/components'
 import {
   useGetEntitlementsListQuery,
   useRefreshEntitlementsMutation,
-  useInternalRefreshEntitlementsMutation
+  useInternalRefreshEntitlementsMutation,
+  useGetTenantDetailsQuery
 } from '@acx-ui/rc/services'
 import {
   EntitlementUtil,
@@ -27,11 +32,13 @@ import {
   defaultSort,
   dateSort
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { useParams }                                from '@acx-ui/react-router-dom'
+import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
+import { AccountType, noDataDisplay }               from '@acx-ui/utils'
 
 import * as UI                from './styledComponent'
 import { SubscriptionHeader } from './SubscriptionHeader'
+import { SubscriptionTabs }   from './SubscriptionsTab'
 
 const subscriptionTypeFilterOpts = ($t: IntlShape['$t']) => [
   { key: '', value: $t({ defaultMessage: 'All Subscriptions' }) },
@@ -66,14 +73,19 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   {
     key: 'expired',
     value: $t({ defaultMessage: 'Show Expired' })
+  },
+  {
+    key: 'future',
+    value: $t({ defaultMessage: 'Show Future' })
   }
 ]
 
-const SubscriptionTable = () => {
+export const SubscriptionTable = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const isMspRbacMspEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const queryResults = useGetEntitlementsListQuery({ params })
   const isNewApi = AdministrationUrlsInfo.refreshLicensesData.newApi
@@ -81,13 +93,20 @@ const SubscriptionTable = () => {
   const [ internalRefreshEntitlement ] = useInternalRefreshEntitlementsMutation()
   const licenseTypeOpts = subscriptionTypeFilterOpts($t)
   const mspUtils = MSPUtils()
-  const { data: mspProfile } = useGetMspProfileQuery({ params })
+  const { data: mspProfile } = useGetMspProfileQuery({ params, enableRbac: isMspRbacMspEnabled })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
+  const mspEcProfileData = useGetMspEcProfileQuery({ params })
+  const isMspEc = mspUtils.isMspEc(mspEcProfileData.data)
+
+  const [bannerRefreshLoading, setBannerRefreshLoading] = useState<boolean>(false)
+  const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
 
   const columns: TableProps<Entitlement>['columns'] = [
     ...(isDeviceAgnosticEnabled ? [
       {
-        title: $t({ defaultMessage: 'Part Number' }),
+        title: (isvSmartEdgeEnabled && isMspEc)
+          ? $t({ defaultMessage: 'Services' })
+          : $t({ defaultMessage: 'Part Number' }),
         dataIndex: 'sku',
         key: 'sku',
         sorter: { compare: sortProp('sku', defaultSort) }
@@ -97,7 +116,6 @@ const SubscriptionTable = () => {
         title: $t({ defaultMessage: 'Subscription' }),
         dataIndex: 'deviceType',
         key: 'deviceType',
-        // fixed: 'left',
         filterMultiple: false,
         filterValueNullable: true,
         filterable: licenseTypeOpts.filter(o =>
@@ -127,7 +145,8 @@ const SubscriptionTable = () => {
       }
     ]),
     {
-      title: $t({ defaultMessage: 'Device Count' }),
+      title: isvSmartEdgeEnabled ? $t({ defaultMessage: 'License Count' })
+        : $t({ defaultMessage: 'Device Count' }),
       dataIndex: 'quantity',
       key: 'quantity',
       sorter: { compare: sortProp('quantity', defaultSort) },
@@ -141,10 +160,11 @@ const SubscriptionTable = () => {
         dataIndex: 'assignedLicense',
         key: 'assignedLicense',
         show: isOnboardedMsp,
+        width: 120,
         sorter: { compare: sortProp('assignedLicense', defaultSort) },
         render: function (data: React.ReactNode, row: Entitlement) {
           return row.assignedLicense
-            ? $t({ defaultMessage: 'Assigned' }) : $t({ defaultMessage: 'Purchased' })
+            ? $t({ defaultMessage: 'Assigned' }) : $t({ defaultMessage: 'Paid' })
         }
       }] : []),
     {
@@ -179,7 +199,8 @@ const SubscriptionTable = () => {
           ? UI.Expired
           : (remainingDays <= 60 ? UI.Warning : Space)
         return <TimeLeftWrapper>{
-          EntitlementUtil.timeLeftValues(remainingDays)
+          (isvSmartEdgeEnabled && remainingDays < 0) ? noDataDisplay
+            : EntitlementUtil.timeLeftValues(remainingDays)
         }</TimeLeftWrapper>
       }
     },
@@ -192,12 +213,35 @@ const SubscriptionTable = () => {
       filterable: statusTypeFilterOpts($t),
       sorter: { compare: sortProp('status', defaultSort) },
       render: function (_, row) {
-        return row.status === 'active'
-          ? $t({ defaultMessage: 'Active' })
-          : $t({ defaultMessage: 'Expired' })
+        if (row.status === 'active') {
+          return $t({ defaultMessage: 'Active' })
+        } else if (row.status === 'future') {
+          return $t({ defaultMessage: 'Future' })
+        } else {
+          return $t({ defaultMessage: 'Expired' })
+        }
       }
     }
   ]
+
+  const refreshFunc = async () => {
+    setBannerRefreshLoading(true)
+    try {
+      await (isNewApi ? refreshEntitlement : internalRefreshEntitlement)({ params }).unwrap()
+      if (isNewApi === false) {
+        showToast({
+          type: 'success',
+          content: $t({
+            defaultMessage: 'Successfully refreshed.'
+          })
+        })
+      }
+      setBannerRefreshLoading(false)
+    } catch (error) {
+      setBannerRefreshLoading(false)
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
 
   const actions: TableProps<Entitlement>['actions'] = [
     {
@@ -209,42 +253,47 @@ const SubscriptionTable = () => {
     },
     {
       label: $t({ defaultMessage: 'Refresh' }),
-      onClick: async () => {
-        try {
-          await (isNewApi ? refreshEntitlement : internalRefreshEntitlement)({ params }).unwrap()
-          if (isNewApi === false) {
-            showToast({
-              type: 'success',
-              content: $t({
-                defaultMessage: 'Successfully refreshed.'
-              })
-            })
-          }
-        } catch (error) {
-          console.log(error) // eslint-disable-line no-console
-        }
-      }
+      onClick: refreshFunc
     }
   ]
 
-  const GetStatus = (expirationDate: string) => {
+  const GetStatus = (effectiveDate: string, expirationDate: string) => {
     const remainingDays = EntitlementUtil.timeLeftInDays(expirationDate)
-    return remainingDays < 0 ? 'expired' : 'active'
+    const isFuture = moment(new Date()).isBefore(effectiveDate)
+    return remainingDays < 0 ? 'expired' : isFuture ? 'future' : 'active'
   }
 
   const subscriptionData = queryResults.data?.map(response => {
     return {
       ...response,
-      status: GetStatus(response?.expirationDate)
+      status: GetStatus(response?.effectiveDate, response?.expirationDate)
     }
   }).filter(data => data.deviceType !== EntitlementDeviceType.EDGE || isEdgeEnabled)
 
+  const checkSubscriptionStatus = function () {
+    return (queryResults?.error as FetchBaseQueryError)?.status === 417
+  }
+
   return (
-    <Loader states={[queryResults]}>
+    <Loader states={checkSubscriptionStatus()
+      ? [] : [queryResults]}>
+      {checkSubscriptionStatus()
+      && <Alert
+        type='info'
+        message={<><span>{$t({ defaultMessage: `At least one active subscription must be available!
+        Please activate subscription and click on` })} </span>
+        <Button
+          type='link'
+          onClick={refreshFunc}
+          loading={bannerRefreshLoading}
+          data-testid='bannerRefreshLink'>
+          {$t({ defaultMessage: 'Refresh' })}</Button></>}
+        showIcon={true}/>
+      }
       <Table
         columns={columns}
-        actions={filterByAccess(actions)}
-        dataSource={subscriptionData}
+        actions={hasCrossVenuesPermission() ? filterByAccess(actions) : []}
+        dataSource={checkSubscriptionStatus() ? [] : subscriptionData}
         rowKey='id'
       />
     </Loader>
@@ -252,11 +301,19 @@ const SubscriptionTable = () => {
 }
 
 const Subscriptions = () => {
+  const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
+  const params = useParams()
+  const tenantDetailsData = useGetTenantDetailsQuery({ params })
+  const tenantType = tenantDetailsData.data?.tenantType
+
   return (
-    <SpaceWrapper fullWidth size='large' direction='vertical'>
-      <SubscriptionHeader />
-      <SubscriptionTable />
-    </SpaceWrapper>
+    (isPendingActivationEnabled &&
+      (tenantType === AccountType.REC || tenantType === AccountType.MSP_REC))
+      ? <SubscriptionTabs />
+      : <SpaceWrapper fullWidth size='large' direction='vertical'>
+        <SubscriptionHeader />
+        <SubscriptionTable />
+      </SpaceWrapper>
   )
 }
 

@@ -1,0 +1,878 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NetworkOverviewTab should render network overview tab successfully 1`] = `
+<DocumentFragment>
+  .c5 {
+  width: 16px;
+  height: 16px;
+}
+
+.c5 path {
+  stroke: var(--acx-neutrals-50);
+}
+
+.c5 circle {
+  fill: var(--acx-neutrals-50);
+}
+
+.c3 {
+  height: 100%;
+  width: 100%;
+}
+
+.c3 .ant-card {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  border-radius: 8px;
+  padding: 12px 16px;
+  border: 1px solid var(--acx-neutrals-20);
+  box-shadow: 0px 2px 4px rgba(51,51,51,0.08);
+}
+
+.c3 .ant-card-head {
+  padding: 0;
+  border-bottom: none;
+  min-height: 0;
+  margin-bottom: 10px;
+}
+
+.c3 .ant-card-head-title {
+  padding: 0;
+}
+
+.c3 .ant-card-head-title .ant-space .ant-space-item:last-child {
+  line-height: 0;
+}
+
+.c3 .ant-card-head-wrapper {
+  -webkit-align-items: start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: start;
+}
+
+.c3 .ant-card-extra {
+  padding: 0;
+}
+
+.c3 .ant-card-body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  padding: 0;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c4 {
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-headline-4-line-height);
+  color: var(--acx-primary-black);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+}
+
+.c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c2 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+<form
+    class="ant-form ant-form-horizontal"
+  >
+    <div
+      class="c0"
+    >
+      <div
+        class="ant-row "
+        style="margin: -10px -10px -10px -10px;"
+      >
+        <div
+          class="ant-col ant-col-24 c1"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="c2"
+            style="height: 152px;"
+          >
+            <div
+              class="c3"
+              type="default"
+            >
+              <div
+                class="ant-card"
+              >
+                <div
+                  class="ant-card-head"
+                >
+                  <div
+                    class="ant-card-head-wrapper"
+                  >
+                    <div
+                      class="ant-card-head-title"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-right: 4px;"
+                        >
+                          <div
+                            class="c4"
+                          >
+                            Passphrase (PSK/SAE)
+                          </div>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <svg
+                            class="c5"
+                            data-testid="HistoricalOutlined"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-card-extra"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-card-body"
+                >
+                  <div
+                    class="ant-row "
+                    style="margin: 8px -10px -10px -10px; flex-grow: 1;"
+                  >
+                    <div
+                      class="ant-col ant-col-6 c1"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="c2"
+                        style="margin: auto; align-items: center;"
+                      >
+                        <div />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-6 c1"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="c2"
+                        style="margin: auto;"
+                      >
+                        <div>
+                          {"ssids":[]}
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-6 c1"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="c2"
+                        style="margin: auto;"
+                      >
+                        <div />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-6 c1"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="c2"
+                        style="margin: auto;"
+                      >
+                        <div>
+                          {"ssids":[]}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 c1"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="c2"
+            style="height: 280px;"
+          >
+            <div />
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 c1"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="c2"
+            style="height: 280px;"
+          >
+            <div />
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 c1"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="c2"
+            style="height: 280px;"
+          >
+            <div />
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 c1"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="c2"
+            style="height: 280px;"
+          >
+            <div />
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</DocumentFragment>
+`;
+
+exports[`NetworkOverviewTab should render network overview tab successfully with no network data 1`] = `
+<DocumentFragment>
+  .c3 {
+  height: 100%;
+  width: 100%;
+}
+
+.c3 .ant-card {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  border-radius: 8px;
+  padding: 12px 16px;
+  border: 1px solid var(--acx-neutrals-20);
+  box-shadow: 0px 2px 4px rgba(51,51,51,0.08);
+}
+
+.c3 .ant-card-head {
+  padding: 0;
+  border-bottom: none;
+  min-height: 0;
+  margin-bottom: 10px;
+}
+
+.c3 .ant-card-head-title {
+  padding: 0;
+}
+
+.c3 .ant-card-head-title .ant-space .ant-space-item:last-child {
+  line-height: 0;
+}
+
+.c3 .ant-card-head-wrapper {
+  -webkit-align-items: start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: start;
+}
+
+.c3 .ant-card-extra {
+  padding: 0;
+}
+
+.c3 .ant-card-body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  padding: 0;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c4 {
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-headline-4-line-height);
+  color: var(--acx-primary-black);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+}
+
+.c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c2 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+<form
+    class="ant-form ant-form-horizontal"
+  >
+    <div
+      class="c0"
+    >
+      <div
+        class="ant-row "
+        style="margin: -10px -10px -10px -10px;"
+      >
+        <div
+          class="ant-col ant-col-24 c1"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="c2"
+            style="height: 152px;"
+          >
+            <div
+              class="c3"
+              type="default"
+            >
+              <div
+                class="ant-card"
+              >
+                <div
+                  class="ant-card-head"
+                >
+                  <div
+                    class="ant-card-head-wrapper"
+                  >
+                    <div
+                      class="ant-card-head-title"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-right: 4px;"
+                        >
+                          <div
+                            class="c4"
+                          />
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-card-extra"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-card-body"
+                >
+                  <div
+                    class="ant-row "
+                    style="margin: 8px -10px -10px -10px; flex-grow: 1;"
+                  >
+                    <div
+                      class="ant-col ant-col-6 c1"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="c2"
+                        style="margin: auto; align-items: center;"
+                      >
+                        <div />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-6 c1"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="c2"
+                        style="margin: auto;"
+                      >
+                        <div>
+                          {"ssids":[]}
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-6 c1"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="c2"
+                        style="margin: auto;"
+                      >
+                        <div />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-6 c1"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="c2"
+                        style="margin: auto;"
+                      >
+                        <div>
+                          {"ssids":[]}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 c1"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="c2"
+            style="height: 280px;"
+          >
+            <div />
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 c1"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="c2"
+            style="height: 280px;"
+          >
+            <div />
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 c1"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="c2"
+            style="height: 280px;"
+          >
+            <div />
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 c1"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="c2"
+            style="height: 280px;"
+          >
+            <div />
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</DocumentFragment>
+`;
+
+exports[`NetworkOverviewTab should render network overview tab with venue filter 1`] = `
+<DocumentFragment>
+  .c5 {
+  width: 16px;
+  height: 16px;
+}
+
+.c5 path {
+  stroke: var(--acx-neutrals-50);
+}
+
+.c5 circle {
+  fill: var(--acx-neutrals-50);
+}
+
+.c3 {
+  height: 100%;
+  width: 100%;
+}
+
+.c3 .ant-card {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  border-radius: 8px;
+  padding: 12px 16px;
+  border: 1px solid var(--acx-neutrals-20);
+  box-shadow: 0px 2px 4px rgba(51,51,51,0.08);
+}
+
+.c3 .ant-card-head {
+  padding: 0;
+  border-bottom: none;
+  min-height: 0;
+  margin-bottom: 10px;
+}
+
+.c3 .ant-card-head-title {
+  padding: 0;
+}
+
+.c3 .ant-card-head-title .ant-space .ant-space-item:last-child {
+  line-height: 0;
+}
+
+.c3 .ant-card-head-wrapper {
+  -webkit-align-items: start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: start;
+}
+
+.c3 .ant-card-extra {
+  padding: 0;
+}
+
+.c3 .ant-card-body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  padding: 0;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c4 {
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-headline-4-line-height);
+  color: var(--acx-primary-black);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+}
+
+.c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c2 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+<form
+    class="ant-form ant-form-horizontal"
+  >
+    <div
+      class="c0"
+    >
+      <div
+        class="ant-row "
+        style="margin: -10px -10px -10px -10px;"
+      >
+        <div
+          class="ant-col ant-col-24 c1"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="c2"
+            style="height: 152px;"
+          >
+            <div
+              class="c3"
+              type="default"
+            >
+              <div
+                class="ant-card"
+              >
+                <div
+                  class="ant-card-head"
+                >
+                  <div
+                    class="ant-card-head-wrapper"
+                  >
+                    <div
+                      class="ant-card-head-title"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-right: 4px;"
+                        >
+                          <div
+                            class="c4"
+                          >
+                            Passphrase (PSK/SAE)
+                          </div>
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          <svg
+                            class="c5"
+                            data-testid="HistoricalOutlined"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-card-extra"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-card-body"
+                >
+                  <div
+                    class="ant-row "
+                    style="margin: 8px -10px -10px -10px; flex-grow: 1;"
+                  >
+                    <div
+                      class="ant-col ant-col-6 c1"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="c2"
+                        style="margin: auto; align-items: center;"
+                      >
+                        <div />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-6 c1"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="c2"
+                        style="margin: auto;"
+                      >
+                        <div>
+                          {"ssids":[],"networkNodes":[[{"type":"zone","name":"venue1"}],[{"type":"zone","name":"venue2"}]],"switchNodes":[[{"type":"switchGroup","name":"venue1"}],[{"type":"switchGroup","name":"venue2"}]]}
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-6 c1"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="c2"
+                        style="margin: auto;"
+                      >
+                        <div />
+                      </div>
+                    </div>
+                    <div
+                      class="ant-col ant-col-6 c1"
+                      style="padding: 10px 10px 10px 10px;"
+                    >
+                      <div
+                        class="c2"
+                        style="margin: auto;"
+                      >
+                        <div>
+                          {"ssids":[],"networkNodes":[[{"type":"zone","name":"venue1"}],[{"type":"zone","name":"venue2"}]],"switchNodes":[[{"type":"switchGroup","name":"venue1"}],[{"type":"switchGroup","name":"venue2"}]]}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 c1"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="c2"
+            style="height: 280px;"
+          >
+            <div />
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 c1"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="c2"
+            style="height: 280px;"
+          >
+            <div />
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 c1"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="c2"
+            style="height: 280px;"
+          >
+            <div />
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-12 c1"
+          style="padding: 10px 10px 10px 10px;"
+        >
+          <div
+            class="c2"
+            style="height: 280px;"
+          >
+            <div />
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</DocumentFragment>
+`;

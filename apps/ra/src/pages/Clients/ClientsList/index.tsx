@@ -3,12 +3,18 @@ import { useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { useNetworkClientListQuery, ClientByTraffic }                           from '@acx-ui/analytics/services'
-import { defaultSort, sortProp, QueryParamsForZone, dateSort, getUserProfile  } from '@acx-ui/analytics/utils'
-import { Filter, Loader, Table, TableProps, useDateRange }                      from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                            from '@acx-ui/formatter'
-import { TenantLink }                                                           from '@acx-ui/react-router-dom'
-import { encodeParameter, DateFilter, DateRange, useDateFilter }                from '@acx-ui/utils'
+import { useNetworkClientListQuery, ClientByTraffic } from '@acx-ui/analytics/services'
+import {
+  defaultSort,
+  sortProp,
+  QueryParamsForZone,
+  dateSort
+} from '@acx-ui/analytics/utils'
+import { Filter, Loader, Table, TableProps, useDateRange }       from '@acx-ui/components'
+import { DateFormatEnum, formatter }                             from '@acx-ui/formatter'
+import { TenantLink }                                            from '@acx-ui/react-router-dom'
+import { hasPermission }                                         from '@acx-ui/user'
+import { encodeParameter, DateFilter, DateRange, useDateFilter } from '@acx-ui/utils'
 
 const pagination = { pageSize: 10, defaultPageSize: 10 }
 
@@ -43,9 +49,6 @@ export function ClientsList ({ searchVal='', queryParmsForZone }:
     setSearchString(search.searchString!)
   }
 
-  const { selectedTenant: { role } } = getUserProfile()
-  const isReportOnly = role === 'report-only'
-
   const clientTablecolumnHeaders: TableProps<ClientByTraffic>['columns'] = [
     {
       title: $t({ defaultMessage: 'Hostname' }),
@@ -57,13 +60,13 @@ export function ClientsList ({ searchVal='', queryParmsForZone }:
       render: (_, row : ClientByTraffic, __, highlightFn) => {
         const { lastSeen, mac, hostname } = row
         const period = encodeParameter<DateFilter>({
-          startDate: moment(lastSeen).subtract(24, 'hours').format(),
+          startDate: moment(lastSeen).subtract(8, 'hours').format(),
           endDate: moment(lastSeen).format(),
           range: DateRange.custom
         })
-        const link = isReportOnly
-          ? `/users/wifi/clients/${mac}/details/reports`
-          : `/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`
+        const link = hasPermission({ permission: 'READ_CLIENT_TROUBLESHOOTING' })
+          ? `/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`
+          : `/users/wifi/clients/${mac}/details/reports`
         return <TenantLink to={link}>
           {highlightFn(hostname)}
         </TenantLink>
@@ -134,6 +137,7 @@ export function ClientsList ({ searchVal='', queryParmsForZone }:
       pagination={pagination}
       settingsId='clients-list-table'
       onFilterChange={onSearch}
+      rowKey='mac'
     />
   </Loader>
 }

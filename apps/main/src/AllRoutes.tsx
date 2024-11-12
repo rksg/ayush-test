@@ -1,55 +1,72 @@
 import React from 'react'
 
-import { PageNotFound }                      from '@acx-ui/components'
+import { PageNoPermissions, PageNotFound }   from '@acx-ui/components'
 import { useStreamActivityMessagesQuery }    from '@acx-ui/rc/services'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
+import { RolesEnum }                         from '@acx-ui/types'
+import { AuthRoute, hasRoles }               from '@acx-ui/user'
 
-import Administration      from './pages/Administration'
-import MigrationForm       from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
-import MigrationSummary    from './pages/Administration/OnpremMigration/MigrationTable/summary'
-import AnalyticsBase       from './pages/Analytics'
+import Administration                                       from './pages/Administration'
+import MigrationForm                                        from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
+import MigrationSummary                                     from './pages/Administration/OnpremMigration/MigrationTable/summary'
+import { AddCustomRole }                                    from './pages/Administration/UserPrivileges/CustomRoles/AddCustomRole'
+import { AddPrivilegeGroup }                                from './pages/Administration/UserPrivileges/PrivilegeGroups/AddPrivilegeGroup'
+import { EditPrivilegeGroup }                               from './pages/Administration/UserPrivileges/PrivilegeGroups/EditPrivilegeGroup'
+import AnalyticsBase                                        from './pages/Analytics'
+import Dashboard                                            from './pages/Dashboard'
+import DevicesBase                                          from './pages/Devices'
+import Layout                                               from './pages/Layout'
+import { MFACheck }                                         from './pages/Layout/MFACheck'
+import NetworksBase                                         from './pages/Networks'
+import PoliciesBase                                         from './pages/Policies'
+import ReportsBase                                          from './pages/Reports'
+import { RWGDetails }                                       from './pages/RWG/RWGDetails'
+import { RWGForm }                                          from './pages/RWG/RWGForm'
+import { RWGTable }                                         from './pages/RWG/RWGTable'
+import SearchResults                                        from './pages/SearchResults'
+import ServicesBase                                         from './pages/Services'
+import TimelineBase                                         from './pages/Timeline'
+import { UserProfile }                                      from './pages/UserProfile'
+import UsersBase                                            from './pages/Users'
+import { VenueDetails, VenuesForm, VenueEdit, VenuesTable } from './pages/Venues'
 import CustomizedDashboard from './pages/CustomizedDashboard'
-import Dashboard           from './pages/Dashboard'
 import DashboardFF         from './pages/DashboardFF'
-import DevicesBase         from './pages/Devices'
 import Grid                from './pages/Grid'
-import Layout              from './pages/Layout'
-import { MFACheck }        from './pages/Layout/MFACheck'
-import NetworksBase        from './pages/Networks'
-import PoliciesBase        from './pages/Policies'
-import ReportsBase         from './pages/Reports'
-import { RWGDetails }      from './pages/RWG/RWGDetails'
-import { RWGForm }         from './pages/RWG/RWGForm'
-import { RWGTable }        from './pages/RWG/RWGTable'
-import SearchResults       from './pages/SearchResults'
-import ServicesBase        from './pages/Services'
-import TimelineBase        from './pages/Timeline'
-import { UserProfile }     from './pages/UserProfile'
-import UsersBase           from './pages/Users'
-import { VenueDetails }    from './pages/Venues/VenueDetails'
-import { VenueEdit }       from './pages/Venues/VenueEdit'
-import { VenuesForm }      from './pages/Venues/VenuesForm'
-import { VenuesTable }     from './pages/Venues/VenuesTable'
-/* eslint-disable @nrwl/nx/enforce-module-boundaries */
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 const MspRoutes = React.lazy(() => import('@msp/Routes'))
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 const RcRoutes = React.lazy(() => import('@rc/Routes'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
-/* eslint-enable @nrwl/nx/enforce-module-boundaries */
 const AnalyticsRoutes = React.lazy(() => import('./routes/AnalyticsRoutes'))
 
 function AllRoutes () {
+
+  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+  const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
+
+  const getSpecialRoleRoute = () => {
+    if (isGuestManager) {
+      return <Route index element={<TenantNavigate replace to='/users/guestsManager' />} />
+    } else if (isDPSKAdmin) {
+      return <Route index element={<TenantNavigate replace to='/users/dpskAdmin' />} />
+    } else {
+      return <Route index element={<TenantNavigate replace to='/dashboard' />} />
+    }
+  }
   useStreamActivityMessagesQuery({})
   return rootRoutes(
     <>
       <Route path=':tenantId/t' element={<MFACheck />}>
         <Route path='*' element={<Layout />}>
-          <Route index element={<TenantNavigate replace to='/dashboard' />} />
+          { getSpecialRoleRoute() }
           <Route path='*' element={<PageNotFound />} />
+          <Route path='not-found' element={<PageNotFound />} />
+          <Route path='no-permissions' element={<PageNoPermissions />} />
           <Route path='grid' element={<Grid />} />
           <Route path='dashboard' element={<DashboardFF />} />
           <Route path='dashboard1' element={<Dashboard />} />
           <Route path='dashboard2' element={<CustomizedDashboard />} />
-          <Route path='userprofile' element={<UserProfile />} />
+          <Route path='userprofile/*' element={<UserProfileRoutes />} />
           <Route path='analytics/*' element={<AnalyticsBase />}>
             <Route path='*' element={<AnalyticsRoutes />} />
           </Route>
@@ -104,7 +121,14 @@ function VenuesRoutes () {
     <Route path='/:tenantId/t/venues'>
       <Route index element={<VenuesTable />} />
       <Route path='*' element={<PageNotFound />} />
-      <Route path='add' element={<VenuesForm />} />
+      <Route
+        path='add'
+        element={
+          <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }}>
+            <VenuesForm />
+          </AuthRoute>
+        }
+      />
       <Route path=':venueId/venue-details/:activeTab' element={<VenueDetails />} />
       <Route
         path=':venueId/venue-details/:activeTab/:activeSubTab'
@@ -115,7 +139,9 @@ function VenuesRoutes () {
         element={<VenueDetails />}
       />
       <Route path=':venueId/:action/:activeTab' element={<VenueEdit />} />
+      <Route path=':venueId/edit' element={<VenueEdit />} />
       <Route path=':venueId/edit/:activeTab/:activeSubTab' element={<VenueEdit />} />
+      <Route path=':venueId/edit/:activeTab/:activeSubTab/:wifiRadioTab' element={<VenueEdit />} />
     </Route>
   )
 }
@@ -130,7 +156,17 @@ function AdministrationRoutes () {
       <Route path='*' element={<PageNotFound />} />
       <Route path=':activeTab' element={<Administration />} />
       <Route path=':activeTab/:activeSubTab' element={<Administration />} />
-      <Route path='onpremMigration/add' element={<MigrationForm />} />
+      <Route path='userPrivileges/privilegeGroups/create' element={<AddPrivilegeGroup />} />
+      <Route
+        path='userPrivileges/privilegeGroups/:action/:groupId'
+        element={<EditPrivilegeGroup />} />
+      <Route path='userPrivileges/customRoles/create' element={<AddCustomRole />} />
+      <Route path='userPrivileges/customRoles/:action/:customRoleId' element={<AddCustomRole />} />
+      <Route path='onpremMigration/add'
+        element={
+          <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }}>
+            <MigrationForm />
+          </AuthRoute>} />
       <Route path='onpremMigration/:taskId/summary' element={<MigrationSummary />} />
     </Route>
   )
@@ -142,8 +178,23 @@ function RWGRoutes () {
       <Route index element={<RWGTable />} />
       <Route path='*' element={<PageNotFound />} />
       <Route path='add' element={<RWGForm />} />
-      <Route path=':gatewayId/:action' element={<RWGForm />} />
-      <Route path=':gatewayId/gateway-details/:activeTab' element={<RWGDetails />} />
+      <Route path=':venueId/:gatewayId/:action' element={<RWGForm />} />
+      <Route path=':venueId/:gatewayId/gateway-details/:activeTab' element={<RWGDetails />} />
+      <Route path=':venueId/:gatewayId/gateway-details/:activeTab/:clusterNodeId'
+        element={<RWGDetails />} />
+    </Route>
+  )
+}
+
+function UserProfileRoutes () {
+  return rootRoutes(
+    <Route path=':tenantId/t/userprofile'>
+      <Route
+        index
+        element={<TenantNavigate replace to='/userprofile/settings' />}
+      />
+      <Route path='*' element={<PageNotFound />} />
+      <Route path=':activeTab' element={<UserProfile />} />
     </Route>
   )
 }

@@ -31,7 +31,7 @@ describe('ReportList', () => {
   it('should route to report when card is clicked', async () => {
     render(<ReportList />, { route: { path, params } })
     // eslint-disable-next-line testing-library/no-node-access
-    const card = screen.getByText('Overview').parentElement
+    const card = screen.getByText('Overview').parentElement?.parentElement?.parentElement
     await userEvent.click(within(card!).getByRole('button'))
     expect(mockedUseNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/reports/overview`,
@@ -39,4 +39,5 @@ describe('ReportList', () => {
       search: ''
     })
   })
+
 })

@@ -54,7 +54,7 @@ const testData = {
 describe('ClientHealth', () => {
 
   it('should render correctly for valid data', async () => {
-    mockGraphqlQuery(dataApiURL, 'ClientInfo', { data: testData })
+    mockGraphqlQuery(dataApiURL, 'ClientConnectionQualities', { data: testData })
 
     render(<Provider>
       <ClientHealth filter={filters} clientMac={testMac}/>
@@ -65,7 +65,7 @@ describe('ClientHealth', () => {
   })
 
   it('should render correctly for undefined data', async () => {
-    mockGraphqlQuery(dataApiURL, 'ClientInfo', { data: {
+    mockGraphqlQuery(dataApiURL, 'ClientConnectionQualities', { data: {
       client: { }
     } })
 
@@ -78,7 +78,7 @@ describe('ClientHealth', () => {
   })
 
   it('should render warning icon for max event error', async () => {
-    mockGraphqlQuery(dataApiURL, 'ClientInfo', { error: {
+    mockGraphqlQuery(dataApiURL, 'ClientConnectionQualities', { error: {
       message: 'CTP:MAX_EVENTS_EXCEEDED'
     } })
 

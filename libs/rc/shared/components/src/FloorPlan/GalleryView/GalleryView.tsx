@@ -1,7 +1,9 @@
 import { RefObject, useEffect, useRef, useState } from 'react'
 
-import { Col, Row }                            from 'antd'
+import { Col, Row, Typography }                from 'antd'
 import { DropTargetMonitor, useDrop, XYCoord } from 'react-dnd'
+import { useIntl }                             from 'react-intl'
+import { useParams }                           from 'react-router-dom'
 
 import { Card }                                                                   from '@acx-ui/components'
 import { FloorPlanDto, NetworkDevice, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
@@ -68,10 +70,13 @@ function GalleryCard (props: {
   } = { ...props }
 
   const [imageUrl, setImageUrl] = useState('')
+  const { venueId } = useParams()
+  const { $t } = useIntl()
 
   useEffect(() => {
     if (floorPlan?.imageId) {
-      const response = loadImageWithJWT(floorPlan?.imageId)
+      const fileUrl = `/venues/${venueId}/signurls/${floorPlan?.imageId}/urls`
+      const response = loadImageWithJWT(floorPlan?.imageId, fileUrl)
       response.then((_imageUrl) => {
         setImageUrl(_imageUrl)
       })
@@ -144,7 +149,23 @@ function GalleryCard (props: {
 
   return <Card>
     <Card.Title>
-      { floorPlan?.name }
+      <Typography.Text
+        style={{
+          maxWidth: '200px'
+        }}
+        ellipsis={
+          { tooltip: floorPlan?.name }
+        }
+      >
+        { floorPlan?.name }
+      </Typography.Text> {
+        $t({ defaultMessage: `({floor, selectordinal,
+                one {#st}
+                two {#nd}
+                few {#rd}
+                other {#th}
+            } Floor)` },
+        { floor: floorPlan?.floorNumber })}
     </Card.Title>
     <UI.StyledImageWrapper
       onClick={() => onFloorplanImageClick(floorPlan)}>

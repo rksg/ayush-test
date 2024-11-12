@@ -9,16 +9,19 @@ interface TabDetail {
   children: ReactNode
   icon?: ReactNode
   disabled?: boolean
+  tooltip?: string
 }
 
 export interface ContentSwitcherProps {
   defaultValue?: string
+  formInitValue?: string
   tabDetails: Array<TabDetail>
   size?: 'small' | 'large'
   align?: 'left' | 'right' | 'center'
   extra?: React.ReactNode;
   value?: string
   onChange?: (value: string) => void
+  noPadding?: boolean
 }
 
 const sizeSpaceMap = {
@@ -27,17 +30,22 @@ const sizeSpaceMap = {
 }
 
 export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
-  const { tabDetails, defaultValue, size, align, value, onChange, extra } = props
+  const { tabDetails, defaultValue, formInitValue, size, align, value, onChange,
+    extra, noPadding } = props
 
+  const initValue = defaultValue || formInitValue
   const options: SelectionControlOptionProps[] = tabDetails.map(tabDetail=>{
     return {
       label: tabDetail.label,
       value: tabDetail.value,
       icon: tabDetail.icon,
-      disabled: tabDetail.disabled
+      disabled: tabDetail.disabled,
+      tooltip: tabDetail.tooltip
     }
   })
-  const [activeContent, setActiveContent] = useState(defaultValue || options[0].value)
+  const isDefaultOptionVisible = options.find(o => o.value === initValue)
+  const defaultActiveContent = isDefaultOptionVisible ? initValue : options[0].value
+  const [activeContent, setActiveContent] = useState(defaultActiveContent)
   const padding = size === 'small'
     ? `${sizeSpaceMap[size!]} 0 calc(${sizeSpaceMap[size!]} * 2)`
     : `${sizeSpaceMap[size!]} 0`
@@ -48,16 +56,16 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
     }
     setActiveContent(e.target.value)
   }
-
   return (
     <>
       <div style={{ textAlign: align, padding }}>
         <SelectionControl options={options}
-          defaultValue={defaultValue || options[0].value}
+          defaultValue={initValue || options[0].value}
           size={size}
           value={value || activeContent}
           onChange={handleChange}
           extra={extra}
+          noPadding={noPadding}
         />
       </div>
       {

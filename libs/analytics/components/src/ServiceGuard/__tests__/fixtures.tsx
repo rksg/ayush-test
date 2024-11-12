@@ -161,7 +161,8 @@ export const mockHiddenAPs = {
       aps: [
         { name: 'AP 1', mac: '00:00:00:00:00:01', model: 'R500', firmware: '6.2.1.103.253', serial: '431802006001' },
         { name: 'AP 2', mac: '00:00:00:00:00:02', model: 'R760', firmware: '6.0.0.0.0', serial: '431802006002' },
-        { name: 'AP 3', mac: '00:00:00:00:00:03', model: 'R350', firmware: '6.2.1.103.253', serial: '431802006003' }
+        { name: 'AP 3', mac: '00:00:00:00:00:03', model: 'R350', firmware: '6.2.1.103.253', serial: '431802006003' },
+        { name: 'AP 3', mac: '00:00:00:00:00:03', model: 'R350', firmware: '6.2.1.103.253', serial: null }
       ]
     }]
   }
@@ -560,3 +561,22 @@ export const mockSystems = {
     { deviceId: '00000000-0000-0000-0000-000000000005', deviceName: 'system 5', onboarded: true, controllerVersion: '4.0' }
   ]
 }
+
+export const mockNetworkNodes = [
+  {
+    type: 'apGroup',
+    name: 'default',
+    children: [
+      {
+        type: 'AP',
+        name: 'RuckusAP',
+        mac: '60:D0:2C:18:7C:70'
+      },
+      {
+        type: 'AP',
+        name: 'RuckusAP',
+        mac: 'B4:79:C8:3E:C0:B0'
+      }
+    ]
+  }
+]

@@ -136,16 +136,18 @@ export const Expired = styled(WarningCircle)`
     stroke: var(--acx-accents-orange-55);
   }
 `
-export const WarnIcon = styled(WarningCircle).attrs((props: { isCritical: boolean }) => props)`
+export const WarnIcon = styled(WarningCircle).attrs((props: { $isCritical: boolean }) => props)`
   width: 20px !important;
   height: 20px !important;
   display: inline-block;
   path:nth-child(3) {
-    stroke: ${props => props.isCritical ? 'var(--acx-accents-orange-55);':'var(--acx-neutrals-90);'}
+    stroke: ${props => props.$isCritical
+    ? 'var(--acx-accents-orange-55);':'var(--acx-neutrals-90);'}
   }
   path:nth-child(4) {
-    stroke: ${props => props.isCritical ? 'var(--acx-accents-orange-55);':'var(--acx-neutrals-90);'}
-    fill: ${props => props.isCritical ? 'var(--acx-accents-orange-55);':'var(--acx-neutrals-90);'}
+    stroke: ${props => props.$isCritical
+    ? 'var(--acx-accents-orange-55);':'var(--acx-neutrals-90);'}
+    fill: ${props => props.$isCritical ? 'var(--acx-accents-orange-55);':'var(--acx-neutrals-90);'}
   }
 `
 

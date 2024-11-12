@@ -1,0 +1,181 @@
+import { useState } from 'react'
+
+import { Switch }  from 'antd'
+import { useIntl } from 'react-intl'
+
+import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import {
+  useGetMdnsProxyApsQuery,
+  useDeleteMdnsProxyApsMutation
+} from '@acx-ui/rc/services'
+import {
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService,
+  getServiceDetailsLink,
+  MdnsProxyAp,
+  ServiceOperation,
+  ServiceType,
+  useTableQuery
+}   from '@acx-ui/rc/utils'
+import { TenantLink, useParams }         from '@acx-ui/react-router-dom'
+import { WifiScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+
+import AddMdnsProxyInstanceDrawer from './AddMdnsProxyInstanceDrawer'
+import ChangeMdnsProxyDrawer      from './ChangeMdnsProxyDrawer'
+import * as UI                    from './styledComponents'
+
+export default function MdnsProxyInstances () {
+  const { $t } = useIntl()
+  const params = useParams()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const [ deleteInstances ] = useDeleteMdnsProxyApsMutation()
+  const [ changeServiceDrawerVisible, setChangeServiceDrawerVisible ] = useState(false)
+  const [ addInstanceDrawerVisible, setAddInstanceDrawerVisible ] = useState(false)
+  const [ selectedApIds, setSelectedApIds ] = useState<string[]>([])
+  const [ selectedServiceId, setSelectedServiceId ] = useState<string>()
+
+  const settingsId = 'venue-mdns-proxy-table'
+  const tableQuery = useTableQuery({
+    useQuery: useGetMdnsProxyApsQuery,
+    defaultPayload: {},
+    pagination: { settingsId },
+    enableRbac
+  })
+
+  const handleAddAction = () => {
+    setAddInstanceDrawerVisible(true)
+  }
+
+  const rowActions: TableProps<MdnsProxyAp>['rowActions'] = [
+    {
+      label: $t({ defaultMessage: 'Change' }),
+      scopeKey: [WifiScopes.UPDATE],
+      onClick: (rows: MdnsProxyAp[]) => {
+        setSelectedApIds(rows.map(r => r.serialNumber))
+        setSelectedServiceId(rows[0].serviceId)
+        setChangeServiceDrawerVisible(true)
+      }
+    },
+    {
+      label: $t({ defaultMessage: 'Remove' }),
+      scopeKey: [WifiScopes.UPDATE],
+      onClick: (rows: MdnsProxyAp[], clearSelection) => {
+        doDelete(rows, clearSelection)
+      }
+    }
+  ]
+
+  const columns: TableProps<MdnsProxyAp>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'AP Name' }),
+      dataIndex: 'apName',
+      key: 'apName',
+      sorter: true,
+      fixed: 'left',
+      render: (_, row) => {
+        return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>
+          {row.apName}
+        </TenantLink>
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Service' }),
+      dataIndex: 'serviceName',
+      key: 'serviceName',
+      sorter: true,
+      render: (_, row) => {
+        return <TenantLink
+          to={getServiceDetailsLink({
+            type: ServiceType.MDNS_PROXY,
+            oper: ServiceOperation.DETAIL,
+            serviceId: row.serviceId
+          })}>
+          {row.serviceName}
+        </TenantLink>
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Forwarding rules' }),
+      dataIndex: 'rules',
+      key: 'rules',
+      sorter: false,
+      render: (_, row) => {
+        return row.rules ? row.rules.length : 0
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Active' }),
+      dataIndex: 'multicasDnsProxyServiceProfileId',
+      key: 'multicasDnsProxyServiceProfileId',
+      render: function (_, row) {
+        return <Switch
+          checked={true}
+          disabled={!hasPermission({ scopes: [WifiScopes.UPDATE] })}
+          onChange={checked => {
+            if (checked) return
+
+            doDelete([row])
+          }}
+        />
+      }
+    }
+  ]
+
+  const doDelete = (rows: MdnsProxyAp[], callback = () => {}) => {
+    showActionModal({
+      type: 'confirm',
+      customContent: {
+        action: 'DELETE',
+        entityName: $t({ defaultMessage: 'Instance' }),
+        numOfEntities: rows.length,
+        entityValue: rows[0].apName
+      },
+      onOk: () => {
+        deleteInstances({
+          params: { ...params, serviceId: rows[0].serviceId },
+          payload: rows.map(r => r.serialNumber),
+          enableRbac
+        }).then(callback)
+      }
+    })
+  }
+
+  return (
+    <>
+      <UI.TableTitle>
+        { $t({ defaultMessage: 'APs Running mDNS Proxy service' }) }
+      </UI.TableTitle>
+      <Loader states={[tableQuery]}>
+        <Table<MdnsProxyAp>
+          settingsId={settingsId}
+          columns={columns}
+          dataSource={tableQuery.data?.data}
+          actions={filterByAccessForServicePolicyMutation([{
+            label: $t({ defaultMessage: 'Add Instance' }),
+            onClick: handleAddAction,
+            scopeKey: getScopeKeyByService(ServiceType.MDNS_PROXY, ServiceOperation.EDIT)
+          }])}
+          onChange={tableQuery.handleTableChange}
+          rowKey='serialNumber'
+          rowActions={filterByAccess(rowActions)}
+          rowSelection={
+            hasPermission({ scopes: [WifiScopes.UPDATE] }) && { type: 'radio' }
+          }
+        />
+      </Loader>
+      <AddMdnsProxyInstanceDrawer
+        visible={addInstanceDrawerVisible}
+        setVisible={setAddInstanceDrawerVisible}
+        venueId={params.venueId}
+      />
+      <ChangeMdnsProxyDrawer
+        visible={changeServiceDrawerVisible}
+        setVisible={setChangeServiceDrawerVisible}
+        apSerialNumberList={selectedApIds}
+        initialServiceId={selectedServiceId}
+      />
+    </>
+  )
+}

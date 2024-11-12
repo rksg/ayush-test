@@ -17,13 +17,12 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
+import { WifiScopes }                     from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import { mockedDetailedResidentPortalList, mockedResidentPortalList } from '../__tests__/fixtures'
 
 import ResidentPortalTable from './ResidentPortalTable'
-
-// import { mockedDpskList, mockedDpskListWithPersona } from './__tests__/fixtures'
-// import DpskTable                                     from './DpskTable'
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -70,6 +69,34 @@ describe('ResidentPortalTable', () => {
     expect(await screen.findByRole('row', { name: new RegExp(targetResidentPortal.name) }))
       .toBeVisible()
   })
+
+  it('should render the table without add button when not permitted', async () => {
+
+    setUserProfile({
+      profile: {
+        ...getUserProfile().profile
+      },
+      allowedOperations: [],
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [WifiScopes.READ]
+    })
+
+
+    render(
+      <Provider>
+        <ResidentPortalTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+
+    const targetResidentPortal = mockedResidentPortalList.content[0]
+    expect(screen.queryByRole('button', { name: /Add Resident Portal/i })).toBeNull()
+    expect(await screen.findByRole('row', { name: new RegExp(targetResidentPortal.name) }))
+      .toBeVisible()
+  })
+
 
   it('should render breadcrumb correctly', async () => {
     render(
@@ -125,6 +152,34 @@ describe('ResidentPortalTable', () => {
       expect(screen.queryByRole('dialog')).toBeNull()
     )
   })
+
+
+  it('should not allow delete or edit when not allowed by RBAC scope', async () => {
+
+    setUserProfile({
+      profile: {
+        ...getUserProfile().profile
+      },
+      allowedOperations: [],
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [WifiScopes.READ]
+    })
+
+    render(
+      <Provider>
+        <ResidentPortalTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+
+    const targetPortal = mockedDetailedResidentPortalList.content[1]
+    const row = await screen.findByRole('row', { name: new RegExp(targetPortal.name) })
+
+    expect(within(row).queryByRole('radio')).toBeNull()
+  })
+
 
   it('should not delete the selected row when it is mapped to Venue', async () => {
 

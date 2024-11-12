@@ -4,8 +4,8 @@ import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
 
 import { Loader, Table, TableProps, Tooltip }       from '@acx-ui/components'
-import { useGetClientListQuery }                    from '@acx-ui/rc/services'
-import { ClientList, getOsTypeIcon, useTableQuery } from '@acx-ui/rc/utils'
+import { useGetClientsQuery }                       from '@acx-ui/rc/services'
+import { ClientInfo, getOsTypeIcon, useTableQuery } from '@acx-ui/rc/utils'
 
 
 export const OSIconContainer = styled.div`
@@ -15,14 +15,15 @@ export const OSIconContainer = styled.div`
 `
 
 export interface SelectConnectedDevicesProps {
-  onRowChange: (_: Key[], selectedRows: ClientList[]) => void,
-  getCheckboxProps?: (row: ClientList) => object
+  onRowChange: (_: Key[], selectedRows: ClientInfo[]) => void,
+  getCheckboxProps?: (row: ClientInfo) => object
 }
 
 const defaultPayload = {
   searchString: '',
-  searchTargetFields: ['clientMac', 'ipAddress', 'Username', 'hostname', 'osType'],
-  fields: ['hostname','osType','clientMac','ipAddress','Username', 'venueName', 'apName']
+  searchTargetFields: ['macAddress', 'ipAddress', 'username', 'hostname', 'osType'],
+  fields: ['macAddress','ipAddress','username', 'hostname', 'osType',
+    'venueInformation.name', 'apInformation.name']
 }
 
 export function SelectConnectedClientsTable (props: SelectConnectedDevicesProps) {
@@ -30,11 +31,11 @@ export function SelectConnectedClientsTable (props: SelectConnectedDevicesProps)
   const { onRowChange, getCheckboxProps } = props
 
   const tableQuery = useTableQuery({
-    useQuery: useGetClientListQuery,
+    useQuery: useGetClientsQuery,
     defaultPayload
   })
 
-  const columns: TableProps<ClientList>['columns'] = [
+  const columns: TableProps<ClientInfo>['columns'] = [
     {
       key: 'osType',
       title: $t({ defaultMessage: 'OS' }),
@@ -51,13 +52,13 @@ export function SelectConnectedClientsTable (props: SelectConnectedDevicesProps)
       }
     },
     {
-      key: 'clientMac',
+      key: 'macAddress',
       title: $t({ defaultMessage: 'MAC Address' }),
-      dataIndex: 'clientMac',
+      dataIndex: 'macAddress',
       searchable: true,
       sorter: true,
       disable: true,
-      render: (_, { clientMac }) => clientMac || '--'
+      render: (_, { macAddress }) => macAddress || '--'
     },
     {
       key: 'ipAddress',
@@ -68,12 +69,12 @@ export function SelectConnectedClientsTable (props: SelectConnectedDevicesProps)
       render: (_, { ipAddress }) => ipAddress || '--'
     },
     {
-      key: 'Username',
+      key: 'username',
       title: $t({ defaultMessage: 'Username' }),
-      dataIndex: 'Username',
+      dataIndex: 'username',
       searchable: true,
       sorter: true,
-      render: (_, { Username: username }) => username || '--'
+      render: (_, { username }) => username || '--'
     },
     {
       key: 'hostname',
@@ -83,24 +84,26 @@ export function SelectConnectedClientsTable (props: SelectConnectedDevicesProps)
       sorter: true
     },
     {
-      key: 'venueName',
-      title: $t({ defaultMessage: 'Venue' }),
-      dataIndex: 'venueName'
+      key: 'venueInformation.name',
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
+      dataIndex: 'venueInformation.name',
+      render: (_, { venueInformation }) => venueInformation.name ?? ''
     },
     {
-      key: 'apName',
+      key: 'apInformation.name',
       title: $t({ defaultMessage: 'AP' }),
-      dataIndex: 'apName'
+      dataIndex: 'apInformation.name',
+      render: (_, { apInformation }) => apInformation.name ?? ''
     }
   ]
 
   return (
     <Loader states={[tableQuery]}>
-      <Table<ClientList>
+      <Table<ClientInfo>
         enableApiFilter
         columns={columns}
         dataSource={tableQuery.data?.data}
-        rowKey='clientMac'
+        rowKey='macAddress'
         rowSelection={{
           type: 'checkbox',
           onChange: onRowChange,

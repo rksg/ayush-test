@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   getServiceDetailsLink,
@@ -16,6 +17,7 @@ import {
   render,
   screen,
   waitFor,
+  waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
 
@@ -29,6 +31,22 @@ const mockedTableResult = {
     name: 'My mDNS Proxy 1',
     type: 'mDNS Proxy',
     scope: '5'
+  }]
+}
+
+const mockedTableResultRbac = {
+  totalCount: 1,
+  page: 1,
+  data: [{
+    id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
+    name: 'My mDNS Proxy 1',
+    type: 'mDNS Proxy',
+    activations: [
+      {
+        venueId: 'v1',
+        apSerialNumbers: []
+      }
+    ]
   }]
 }
 
@@ -83,10 +101,41 @@ describe('MdnsProxyTable', () => {
         route: { params, path: tablePath }
       }
     )
-
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const targetServiceName = mockedTableResult.data[0].name
     expect(await screen.findByRole('button', { name: /Add mDNS Proxy Service/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetServiceName) })).toBeVisible()
+  })
+
+  it('should render table via RBAC api', async () => {
+    const queryRbacFn = jest.fn()
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+
+    mockServer.use(
+      rest.post(
+        MdnsProxyUrls.queryMdnsProxy.url,
+        (_, res, ctx) => {
+          queryRbacFn()
+          return res(ctx.json(mockedTableResultRbac))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <MdnsProxyTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+
+    await waitFor(() => expect(queryRbacFn).toHaveBeenCalled())
+
+    const targetServiceName = mockedTableResultRbac.data[0].name
+    expect(await screen.findByRole('button', { name: /Add mDNS Proxy Service/i })).toBeVisible()
+    expect(await screen.findByRole('row', { name: new RegExp(targetServiceName) })).toBeVisible()
+
+    jest.mocked(useIsSplitOn).mockReset()
   })
 
   it('should render breadcrumb correctly', async () => {
@@ -97,6 +146,7 @@ describe('MdnsProxyTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'My Services'
@@ -123,6 +173,7 @@ describe('MdnsProxyTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const target = mockedTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
@@ -143,6 +194,54 @@ describe('MdnsProxyTable', () => {
     })
   })
 
+  it('should delete selected row via RBAC api', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+    const deleteFn = jest.fn()
+
+    mockServer.use(
+      rest.delete(
+        MdnsProxyUrls.deleteMdnsProxyRbac.url,
+        (req, res, ctx) => {
+          deleteFn(req.body)
+          return res(ctx.json({ requestId: '12345' }))
+        }
+      ),
+      rest.post(
+        MdnsProxyUrls.queryMdnsProxy.url,
+        (_, res, ctx) => res(ctx.json(mockedTableResultRbac))
+      )
+    )
+
+    render(
+      <Provider>
+        <MdnsProxyTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    const target = mockedTableResult.data[0]
+    const row = await screen.findByRole('row', { name: new RegExp(target.name) })
+    await userEvent.click(within(row).getByRole('radio'))
+
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
+    expect(await screen.findByText('Delete "' + target.name + '"?')).toBeVisible()
+
+    // eslint-disable-next-line max-len
+    await userEvent.click(await screen.findByRole('button', { name: /Delete Service/i }))
+
+    await waitFor(() => {
+      expect(deleteFn).toHaveBeenCalled()
+    })
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
+
+    jest.mocked(useIsSplitOn).mockRestore()
+  })
+
   it('should navigate to the Edit view', async () => {
     render(
       <Provider>
@@ -151,6 +250,7 @@ describe('MdnsProxyTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const target = mockedTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })

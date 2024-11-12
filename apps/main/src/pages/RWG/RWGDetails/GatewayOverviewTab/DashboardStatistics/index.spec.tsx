@@ -3,7 +3,7 @@ import { rest } from 'msw'
 
 import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
 import { venueApi }                                       from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                                 from '@acx-ui/rc/utils'
+import { CommonRbacUrlsInfo }                             from '@acx-ui/rc/utils'
 import { Provider, store }                                from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
@@ -18,8 +18,7 @@ const gatewayResponse = {
     venueName: 'My-Venue',
     name: 'ruckusdemos',
     loginUrl: 'https://rxgs5-vpoc.ruckusdemos.net',
-    username: 'inigo',
-    password: 'Inigo123!',
+    apiKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
     status: 'Operational',
     id: 'bbc41563473348d29a36b76e95c50381',
     new: false
@@ -53,6 +52,7 @@ const dashboard = {
 const params = {
   tenantId: '7b8cb9e8e99a4f42884ae9053604a376',
   gatewayId: 'bbc41563473348d29a36b76e95c50381',
+  venueId: '3f10af1401b44902a88723cb68c4bc77',
   activeTab: 'overview'
 }
 
@@ -62,21 +62,21 @@ describe('RWG Dashboard statistics', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getGateway.url,
+        CommonRbacUrlsInfo.getGateway.url,
         (req, res, ctx) => res(ctx.json(gatewayResponse))
       ),
-      rest.get(
-        CommonUrlsInfo.getGatewayAlarms.url,
+      rest.post(
+        CommonRbacUrlsInfo.getGatewayAlarms.url,
         (req, res, ctx) => res(ctx.json({
           total: 720
         }))
       ),
       rest.get(
-        CommonUrlsInfo.getGatewayDashboard.url,
+        CommonRbacUrlsInfo.getGatewayDashboard.url,
         (req, res, ctx) => res(ctx.json(dashboard))
       ),
       rest.get(
-        CommonUrlsInfo.getGatewayDetails.url,
+        CommonRbacUrlsInfo.getGatewayDetails.url,
         (req, res, ctx) => res(ctx.json({}))
       )
     )
@@ -118,7 +118,6 @@ describe('RWG Dashboard statistics', () => {
 
     expect(await screen.findByRole('radio', { name: 'General' })).toBeInTheDocument()
     expect(await screen.findByRole('radio', { name: 'Hardware' })).toBeInTheDocument()
-    expect(await screen.findByRole('radio', { name: 'OS' })).toBeInTheDocument()
     expect(await screen.findByRole('radio', { name: 'Disk & Memory' })).toBeInTheDocument()
 
   })

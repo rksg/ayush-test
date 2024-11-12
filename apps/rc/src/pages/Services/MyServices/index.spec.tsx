@@ -1,7 +1,9 @@
 import { rest } from 'msw'
 
-import { DHCPUrls, DpskUrls, getSelectServiceRoutePath, MdnsProxyUrls, PortalUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                      from '@acx-ui/store'
+import { Features }                                                                                                                                                                        from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                                                                                                                           from '@acx-ui/rc/components'
+import { DHCPUrls, DpskUrls, EdgeMdnsFixtures, EdgeMdnsProxyUrls, EdgeTnmServiceFixtures, EdgeTnmServiceUrls , getSelectServiceRoutePath, MdnsProxyUrls, PortalUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                                                                        from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -9,12 +11,17 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
+
 import { mockWifiCallingTableResult, mockedTableResult, dpskListResponse, mockedPortalList } from './__tests__/fixtures'
 
 import MyServices from '.'
 
-
-
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+const { mockEdgeMdnsViewDataList } = EdgeMdnsFixtures
+const { mockTnmServiceDataList } = EdgeTnmServiceFixtures
 describe('MyServices', () => {
   const params = {
     tenantId: '15320bc221d94d2cb537fa0189fee742'
@@ -26,24 +33,36 @@ describe('MyServices', () => {
     mockServer.use(
       rest.post(
         WifiCallingUrls.getEnhancedWifiCallingList.url,
-        (req, res, ctx) => res(ctx.json(mockWifiCallingTableResult))
+        (_, res, ctx) => res(ctx.json(mockWifiCallingTableResult))
       ),
       rest.post(
         MdnsProxyUrls.getEnhancedMdnsProxyList.url,
-        (req, res, ctx) => {
+        (_, res, ctx) => {
           getEnhancedMdnsProxyRequestSpy()
           return res(ctx.json(mockedTableResult))
         }
       ),
       rest.post(
         DHCPUrls.getDHCPProfilesViewModel.url,
-        (req, res, ctx) => res(ctx.json(mockedTableResult))
+        (_, res, ctx) => res(ctx.json(mockedTableResult))
       ),
       rest.get(DpskUrls.getDpskList.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(dpskListResponse))),
       rest.post(
         PortalUrlsInfo.getEnhancedPortalProfileList.url,
-        (req, res, ctx) => res(ctx.json(mockedPortalList))
+        (_, res, ctx) => res(ctx.json(mockedPortalList))
+      ),
+      rest.post(
+        EdgeMdnsProxyUrls.getEdgeMdnsProxyViewDataList.url,
+        (_, res, ctx) => res(ctx.json({
+          totalCount: mockEdgeMdnsViewDataList.length,
+          page: 1,
+          data: mockEdgeMdnsViewDataList
+        }))
+      ),
+      rest.get(
+        EdgeTnmServiceUrls.getEdgeTnmServiceList.url,
+        (_, res, ctx) => res(ctx.json(mockTnmServiceDataList))
       )
     )
   })
@@ -76,5 +95,50 @@ describe('MyServices', () => {
       }
     )
     expect(await screen.findByText('Network Control')).toBeVisible()
+  })
+
+  it('should not render anything when FF is off', async () => {
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+
+    render(
+      <Provider>
+        <MyServices />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    expect(screen.queryByText(/mDNS Proxy for RUCKUS Edge/)).toBeNull()
+    expect(screen.queryByText(/Thirdparty Network Management/)).toBeNull()
+  })
+
+  it('should render Edge MDNS when FF is ON', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_MDNS_PROXY_TOGGLE)
+
+    render(
+      <Provider>
+        <MyServices />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    expect(await screen.findByText('mDNS Proxy for RUCKUS Edge (2)')).toBeVisible()
+  })
+
+  it('should render Edge TNM SERVICE when FF is ON', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
+
+    render(
+      <Provider>
+        <MyServices />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    expect(await screen.findByText('Thirdparty Network Management (2)')).toBeVisible()
   })
 })

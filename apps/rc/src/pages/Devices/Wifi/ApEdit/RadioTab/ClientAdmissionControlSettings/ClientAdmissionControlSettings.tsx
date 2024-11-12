@@ -7,19 +7,19 @@ import { useParams } from 'react-router-dom'
 import styled        from 'styled-components/macro'
 
 import { AnchorContext, Loader }    from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
   ClientAdmissionControlForm,
   ClientAdmissionControlTypeEnum,
   ClientAdmissionControlLevelEnum
 } from '@acx-ui/rc/components'
 import {
-  useLazyGetVenueQuery,
   useLazyGetVenueClientAdmissionControlQuery,
   useGetApClientAdmissionControlQuery,
   useUpdateApClientAdmissionControlMutation,
   useDeleteApClientAdmissionControlMutation
 } from '@acx-ui/rc/services'
-import { ApClientAdmissionControl, VenueClientAdmissionControl, ClientAdmissionControl, VenueExtended } from '@acx-ui/rc/utils'
+import { ApClientAdmissionControl, VenueClientAdmissionControl, ClientAdmissionControl } from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext } from '../..'
 import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
@@ -35,8 +35,9 @@ export const FieldGroup = styled.div`
 
 export function ClientAdmissionControlSettings () {
   const { $t } = useIntl()
-  const { tenantId, serialNumber } = useParams()
+  const { serialNumber } = useParams()
   const form = Form.useFormInstance()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const enable24GFieldName = 'enableClientAdmissionControl24G'
   const enable50GFieldName = 'enableClientAdmissionControl50G'
@@ -59,13 +60,15 @@ export function ClientAdmissionControlSettings () {
     setEditRadioContextData
   } = useContext(ApEditContext)
 
-  const { apData: apDetails } = useContext(ApDataContext)
+  const { venueData } = useContext(ApDataContext)
   const { setReadyToScroll } = useContext(AnchorContext)
+  const venueId = venueData?.id
 
-  const [getVenue] = useLazyGetVenueQuery()
   const [getVenueClientAdmissionCtrl] = useLazyGetVenueClientAdmissionControlQuery()
   const getApClientAdmissionControl =
-    useGetApClientAdmissionControlQuery({ params: { serialNumber } })
+    useGetApClientAdmissionControlQuery(
+      { params: { venueId, serialNumber }, enableRbac: isUseRbacApi }
+    )
   const [updateClientAdmissionControl, { isLoading: isUpdatingClientAdmissionControl }] =
     useUpdateApClientAdmissionControlMutation()
   const [deleteClientAdmissionControl, { isLoading: isDeletingClientAdmissionControl }] =
@@ -75,14 +78,10 @@ export function ClientAdmissionControlSettings () {
   const initDataRef = useRef<ApClientAdmissionControl>()
   const isUseVenueSettingsRef = useRef<boolean>(false)
   const [isUseVenueSettings, setIsUseVenueSettings] = useState(true)
-  const [venue, setVenue] = useState({} as VenueExtended)
 
   useEffect(() => {
-    if(apDetails) {
-      const venueId = apDetails.venueId
+    if(!getApClientAdmissionControl.isLoading) {
       const setData = async () => {
-        const apVenue = (await getVenue({ params: { tenantId, venueId } }, true).unwrap())
-        setVenue(apVenue)
         const clientAdmissionControlData = getApClientAdmissionControl?.data
         if (clientAdmissionControlData) {
           initDataRef.current = clientAdmissionControlData
@@ -91,7 +90,7 @@ export function ClientAdmissionControlSettings () {
           isUseVenueSettingsRef.current = clientAdmissionControlData.useVenueSettings || false
         }
         const venueClientAdmissionCtrl = (await getVenueClientAdmissionCtrl(
-          { params: { venueId } }, true).unwrap())
+          { params: { venueId }, enableRbac: isUseRbacApi }, true).unwrap())
         venueRef.current = venueClientAdmissionCtrl
       }
       setData()
@@ -99,7 +98,7 @@ export function ClientAdmissionControlSettings () {
       setReadyToScroll?.(r => [...(new Set(r.concat('Client-Admission-Control')))])
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form, getApClientAdmissionControl?.data, apDetails])
+  }, [form, getApClientAdmissionControl?.data])
 
   const setDataToForm = (data: ClientAdmissionControl ) => {
     form.setFieldValue(enable24GFieldName, data.enable24G)
@@ -133,7 +132,14 @@ export function ClientAdmissionControlSettings () {
   const handleUpdateClientAdmissionControl = async () => {
     try {
       if(isUseVenueSettingsRef.current) {
-        await deleteClientAdmissionControl({ params: { serialNumber } }).unwrap()
+        if (isUseRbacApi) {
+          await updateClientAdmissionControl(
+            { params: { venueId, serialNumber },
+              payload: { useVenueSettings: true },
+              enableRbac: isUseRbacApi }).unwrap()
+        } else {
+          await deleteClientAdmissionControl({ params: { serialNumber } }).unwrap()
+        }
       } else {
         const payload: ApClientAdmissionControl = {
           enable24G: form.getFieldValue(enable24GFieldName),
@@ -146,10 +152,9 @@ export function ClientAdmissionControlSettings () {
           minClientThroughput50G: form.getFieldValue(minClientThroughput50GFieldName),
           useVenueSettings: isUseVenueSettingsRef.current
         }
-        await updateClientAdmissionControl({
-          params: { serialNumber },
-          payload
-        }).unwrap()
+        await updateClientAdmissionControl(
+          { params: { venueId, serialNumber }, payload, enableRbac: isUseRbacApi }
+        ).unwrap()
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -183,7 +188,7 @@ export function ClientAdmissionControlSettings () {
     isLoading: getApClientAdmissionControl.isLoading,
     isFetching: isUpdatingClientAdmissionControl || isDeletingClientAdmissionControl
   }]}>
-    <VenueSettingsHeader venue={venue}
+    <VenueSettingsHeader venue={venueData}
       isUseVenueSettings={isUseVenueSettings}
       handleVenueSetting={handleVenueSetting} />
     <ClientAdmissionControlForm

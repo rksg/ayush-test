@@ -7,10 +7,12 @@ import {
   getSeriesData,
   mapCodeToReason,
   mapCodeToAttempt,
-  codeToFailureTypeMap,
   TimeSeriesDataType
 } from '@acx-ui/analytics/utils'
 import { Card, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
+
+
+import { codeToFailureTypeMap } from '../../rootCauseRecommendation'
 
 import type { TimeSeriesChartProps } from '../types'
 
@@ -27,10 +29,9 @@ const attemptAndFailureChartQuery = (incident: Incident) => gql`
 
 export const AttemptAndFailureChart = ({ chartRef, data, incident }: TimeSeriesChartProps) => {
   const { attemptAndFailureChart } = data
-  const intl = useIntl()
-  const { $t } = intl
-  const title = mapCodeToReason(codeToFailureTypeMap[incident.code], intl)
-  const attempt = mapCodeToAttempt(codeToFailureTypeMap[incident.code], intl)
+  const { $t } = useIntl()
+  const title = mapCodeToReason(codeToFailureTypeMap[incident.code])
+  const attempt = mapCodeToAttempt(codeToFailureTypeMap[incident.code])
 
   const seriesMapping = [
     { key: 'totalFailureCount', name: $t({ defaultMessage: 'Total Failures' }) },

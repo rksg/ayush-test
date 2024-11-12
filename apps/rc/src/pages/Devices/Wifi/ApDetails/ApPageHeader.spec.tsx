@@ -12,6 +12,8 @@ import {
   within
 } from '@acx-ui/test-utils'
 
+import { deviceAps } from '../../__tests__/fixtures'
+
 import { apDetailData } from './__tests__/fixtures'
 import ApPageHeader     from './ApPageHeader'
 
@@ -38,6 +40,12 @@ describe('ApPageHeader', () => {
         (_, res, ctx) => res(ctx.json(apDetailData))
       )
     )
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json(deviceAps))
+      )
+    )
     render(<ApPageHeader />, { route: { params }, wrapper: Provider })
 
     fireEvent.click(await screen.findByRole('button', { name: 'Configure' }))
@@ -55,6 +63,12 @@ describe('ApPageHeader', () => {
         (_, res, ctx) => res(ctx.json(apDetailData))
       )
     )
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json(deviceAps))
+      )
+    )
     render(<ApPageHeader />, { route: { params }, wrapper: Provider })
 
     await userEvent.click(await screen.findByText('More Actions'))
@@ -70,6 +84,12 @@ describe('ApPageHeader', () => {
       rest.get(
         CommonUrlsInfo.getApDetailHeader.url,
         (_, res, ctx) => res(ctx.json(apDetailData))
+      )
+    )
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json(deviceAps))
       )
     )
     render(<ApPageHeader />, { route: { params }, wrapper: Provider })

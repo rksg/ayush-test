@@ -1,10 +1,45 @@
 import { useParams } from 'react-router-dom'
 
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { useApViewModelQuery, useSwitchDetailHeaderQuery } from '@acx-ui/rc/services'
 import { ApViewModel, DeviceTypes, Node, SwitchViewModel } from '@acx-ui/rc/utils'
 
 import { APDetailsCard }     from './APDetailsCard'
 import { SwitchDetailsCard } from './SwitchDetailsCard'
+
+const defaultApPayload = {
+  fields: [
+    'name',
+    'venueName',
+    'deviceGroupName',
+    'description',
+    'lastSeenTime',
+    'serialNumber',
+    'apMac',
+    'IP',
+    'extIp',
+    'model',
+    'fwVersion',
+    'meshRole',
+    'hops',
+    'apUpRssi',
+    'deviceStatus',
+    'deviceStatusSeverity',
+    'isMeshEnable',
+    'lastUpdTime',
+    'deviceModelType',
+    'apStatusData.APSystem.uptime',
+    'venueId',
+    'uplink',
+    'apStatusData',
+    'apStatusData.cellularInfo',
+    'healthStatus',
+    'clients',
+    'downLinkCount',
+    'powerSavingStatus',
+    'meshStatus'
+  ]
+}
 
 export default function NodeTooltip (props: { tooltipPosition: {
     x: number,
@@ -16,38 +51,7 @@ closeTooltip: Function
 
   const { tooltipPosition, tooltipNode, closeTooltip } = props
   const params = useParams()
-
-  const defaultApPayload = {
-    fields: [
-      'name',
-      'venueName',
-      'deviceGroupName',
-      'description',
-      'lastSeenTime',
-      'serialNumber',
-      'apMac',
-      'IP',
-      'extIp',
-      'model',
-      'fwVersion',
-      'meshRole',
-      'hops',
-      'apUpRssi',
-      'deviceStatus',
-      'deviceStatusSeverity',
-      'isMeshEnable',
-      'lastUpdTime',
-      'deviceModelType',
-      'apStatusData.APSystem.uptime',
-      'venueId',
-      'uplink',
-      'apStatusData',
-      'apStatusData.cellularInfo',
-      'healthStatus',
-      'clients',
-      'downLinkCount'
-    ]
-  }
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const { data: apList, isLoading: apLoading } = useApViewModelQuery({ params,
     payload: { ...defaultApPayload,
@@ -56,7 +60,8 @@ closeTooltip: Function
           tooltipNode?.serialNumber || tooltipNode?.serial
         ]
       }
-    }
+    },
+    enableRbac: isWifiRbacEnabled
   },
   { skip: skipAPCall(tooltipNode?.type as DeviceTypes)
   })

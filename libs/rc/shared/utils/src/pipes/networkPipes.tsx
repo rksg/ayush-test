@@ -130,9 +130,10 @@ export function transformNetworkEncryption (type: WlanSecurityEnum | undefined) 
 
 export const networkTypes: Record<NetworkTypeEnum, MessageDescriptor> = {
   [NetworkTypeEnum.OPEN]: defineMessage({ defaultMessage: 'Open Network' }),
-  [NetworkTypeEnum.PSK]: defineMessage({ defaultMessage: 'Pre-Shared Key (PSK)' }),
+  [NetworkTypeEnum.PSK]: defineMessage({ defaultMessage: 'Passphrase (PSK/SAE)' }),
   [NetworkTypeEnum.DPSK]: defineMessage({ defaultMessage: 'Dynamic Pre-Shared Key (DPSK)' }),
   [NetworkTypeEnum.AAA]: defineMessage({ defaultMessage: 'Enterprise AAA (802.1X)' }),
+  [NetworkTypeEnum.HOTSPOT20]: defineMessage({ defaultMessage: 'Hotspot 2.0 Access' }),
   [NetworkTypeEnum.CAPTIVEPORTAL]: defineMessage({ defaultMessage: 'Captive Portal' })
 }
 
@@ -211,6 +212,11 @@ export const captiveNetworkTypes: Record<GuestNetworkTypeEnum, MessageDescriptor
   [GuestNetworkTypeEnum.Cloudpath]: defineMessage({
     defaultMessage: 'Captive Portal',
     description: 'Guest network type - Captive Portal'
+  }),
+  [GuestNetworkTypeEnum.Directory]: defineMessage({
+    defaultMessage: 'Active Directory / LDAP Server',
+    // eslint-disable-next-line max-len
+    description: 'Users are required to enter an organizational username and password to gain access to the network'
   })
 }
 
@@ -246,6 +252,9 @@ export const NetworkType: React.FC<{
           }}
         />
         : <FormattedMessage {...message} />
+    case NetworkTypeEnum.HOTSPOT20:
+      const type = networkTypes[networkType]
+      return <FormattedMessage {...type} />
     case NetworkTypeEnum.CAPTIVEPORTAL:
       return <FormattedMessage
         defaultMessage={'Captive Portal - {captiveNetworkType}{oweSecurity}'}

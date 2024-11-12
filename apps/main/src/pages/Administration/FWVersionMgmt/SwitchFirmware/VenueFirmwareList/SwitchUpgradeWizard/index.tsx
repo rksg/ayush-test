@@ -9,14 +9,18 @@ import { useIntl } from 'react-intl'
 import {
   Modal, ModalType, StepsForm, showActionModal
 } from '@acx-ui/components'
-import { WarningCircleOutlined }          from '@acx-ui/icons'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { WarningCircleOutlined }               from '@acx-ui/icons'
+import { useSwitchFirmwareUtils }              from '@acx-ui/rc/components'
+import { getReleaseFirmware }                  from '@acx-ui/rc/components'
 import {
   useGetSwitchAvailableFirmwareListQuery,
-  useGetSwitchLatestFirmwareListQuery,
+  useGetSwitchDefaultFirmwareListQuery,
   useSkipSwitchUpgradeSchedulesMutation,
-  useUpdateSwitchVenueSchedulesMutation } from '@acx-ui/rc/services'
+  useUpdateSwitchVenueSchedulesMutation,
+  useBatchSkipSwitchUpgradeSchedulesMutation,
+  useBatchUpdateSwitchVenueSchedulesMutation } from '@acx-ui/rc/services'
 import {
-  DefaultSwitchVersion,
   FirmwareCategory,
   FirmwareSwitchVenue,
   FirmwareVersion,
@@ -25,8 +29,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { getReleaseFirmware } from '../../../FirmwareUtils'
-import * as UI                from '../styledComponents'
+import * as UI from '../styledComponents'
 
 import { ScheduleStep }     from './ScheduleStep'
 import { SelectSwitchStep } from './SelectSwitchStep'
@@ -48,11 +51,14 @@ export interface UpdateNowWizardProps {
 }
 
 export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [form] = Form.useForm()
   const { $t } = useIntl()
   const params = useParams()
   const { wizardType } = props
+  const { checkCurrentVersions } = useSwitchFirmwareUtils()
   const [updateVenueSchedules] = useUpdateSwitchVenueSchedulesMutation()
+  const [batchUpdateSwitchVenueSchedules] = useBatchUpdateSwitchVenueSchedulesMutation()
 
   const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
   const [showSubTitle, setShowSubTitle] = useState<boolean>(true)
@@ -67,16 +73,22 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
       } return version
     })
   }
-  const { data: availableVersions } = useGetSwitchAvailableFirmwareListQuery({ params })
-  const { data: latestReleaseVersions } = useGetSwitchLatestFirmwareListQuery({ params })
+  const { data: availableVersions } = useGetSwitchAvailableFirmwareListQuery({
+    params,
+    enableRbac: isSwitchRbacEnabled
+  })
+  const { data: defaultReleaseVersions } = useGetSwitchDefaultFirmwareListQuery({
+    params,
+    enableRbac: isSwitchRbacEnabled
+  })
 
   const isLatestVersion = function (currentVersion: FirmwareVersion) {
     if(_.isEmpty(currentVersion?.id)) return false
-    const latestVersions = getReleaseFirmware(latestReleaseVersions)
-    const latestFirmware = latestVersions.filter(v => v.id.startsWith('090'))[0]
-    const latestRodanFirmware = latestVersions.filter(v => v.id.startsWith('100'))[0]
-    return (currentVersion.id === latestFirmware?.id ||
-      currentVersion.id === latestRodanFirmware?.id)
+    const defaultVersions = getReleaseFirmware(defaultReleaseVersions)
+    const defaultFirmware = defaultVersions.filter(v => v.id.startsWith('090'))[0]
+    const defaultRodanFirmware = defaultVersions.filter(v => v.id.startsWith('100'))[0]
+    return (currentVersion.id === defaultFirmware?.id ||
+      currentVersion.id === defaultRodanFirmware?.id)
   }
 
   const [nonIcx8200Count, setNonIcx8200Count] = useState<number>(0)
@@ -104,19 +116,46 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
   }
 
   const [skipSwitchUpgradeSchedules] = useSkipSwitchUpgradeSchedulesMutation()
+  const [batchSkipSwitchUpgradeSchedules] = useBatchSkipSwitchUpgradeSchedulesMutation()
 
   const wizardFinish = {
     [SwitchFirmwareWizardType.update]: async () => {
       try {
-        await updateVenueSchedules({
-          params: { ...params },
-          payload: {
-            venueIds: form.getFieldValue('selectedVenueRowKeys') || [],
-            switchIds: _.map(upgradeSwitchList, 'switchId'),
-            switchVersion: form.getFieldValue('switchVersion') || '',
-            switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
-          }
-        }).unwrap()
+        if (isSwitchRbacEnabled) {
+          const venueIds = form.getFieldValue('selectedVenueRowKeys')
+          const venueRequests = Object.keys(venueIds).map(item => ({
+            params: { venueId: venueIds[item] },
+            payload: {
+              switchVersion: form.getFieldValue('switchVersion') || '',
+              switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
+            }
+          }))
+          await batchUpdateSwitchVenueSchedules(venueRequests)
+
+          const switchVenueGroups = _.groupBy(upgradeSwitchList, 'venueId')
+          const switchRequests = Object.keys(switchVenueGroups).map(key =>
+            ({
+              params: { venueId: key },
+              payload: {
+                switchIds: switchVenueGroups[key].map(item => item.switchId),
+                switchVersion: form.getFieldValue('switchVersion') || '',
+                switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
+              }
+            }))
+          await batchUpdateSwitchVenueSchedules(switchRequests)
+
+        } else {
+          await updateVenueSchedules({
+            params: { ...params },
+            payload: {
+              venueIds: form.getFieldValue('selectedVenueRowKeys') || [],
+              switchIds: _.map(upgradeSwitchList, 'switchId'),
+              switchVersion: form.getFieldValue('switchVersion') || '',
+              switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
+            }
+          }).unwrap()
+        }
+
         form.resetFields()
         props.setVisible(false)
       } catch (error) {
@@ -125,18 +164,51 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     },
     [SwitchFirmwareWizardType.schedule]: async () => {
       try {
-        await updateVenueSchedules({
-          params: { ...params },
-          payload: {
-            date: moment(form.getFieldValue('selectDateStep')).format('YYYY-MM-DD') || '',
-            time: form.getFieldValue('selectTimeStep') || '',
-            preDownload: form.getFieldValue('preDownloadChecked') || false,
-            venueIds: form.getFieldValue('selectedVenueRowKeys') || [],
-            switchIds: _.map(upgradeSwitchList, 'switchId'),
-            switchVersion: form.getFieldValue('switchVersion') || '',
-            switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
-          }
-        }).unwrap()
+        if (isSwitchRbacEnabled) {
+          const venueIds = form.getFieldValue('selectedVenueRowKeys')
+          const venueRequests = Object.keys(venueIds).map(item => ({
+            params: { venueId: venueIds[item] },
+            payload: {
+              date: moment(form.getFieldValue('selectDateStep')).format('YYYY-MM-DD') || '',
+              time: form.getFieldValue('selectTimeStep') || '',
+              preDownload: form.getFieldValue('preDownloadChecked') || false,
+              switchVersion: form.getFieldValue('switchVersion') || '',
+              switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
+            }
+          }))
+          await batchUpdateSwitchVenueSchedules(venueRequests)
+
+          const switchVenueGroups = _.groupBy(upgradeSwitchList, 'venueId')
+          const switchRequests = Object.keys(switchVenueGroups).map(key =>
+            ({
+              params: { venueId: key },
+              payload: {
+                date: moment(form.getFieldValue('selectDateStep')).format('YYYY-MM-DD') || '',
+                time: form.getFieldValue('selectTimeStep') || '',
+                preDownload: form.getFieldValue('preDownloadChecked') || false,
+                switchIds: switchVenueGroups[key].map(item => item.switchId),
+                switchVersion: form.getFieldValue('switchVersion') || '',
+                switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
+              }
+            }))
+          await batchUpdateSwitchVenueSchedules(switchRequests)
+
+
+        } else {
+          await updateVenueSchedules({
+            params: { ...params },
+            payload: {
+              date: moment(form.getFieldValue('selectDateStep')).format('YYYY-MM-DD') || '',
+              time: form.getFieldValue('selectTimeStep') || '',
+              preDownload: form.getFieldValue('preDownloadChecked') || false,
+              venueIds: form.getFieldValue('selectedVenueRowKeys') || [],
+              switchIds: _.map(upgradeSwitchList, 'switchId'),
+              switchVersion: form.getFieldValue('switchVersion') || '',
+              switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
+            }
+          }).unwrap()
+        }
+
         form.resetFields()
         props.setVisible(false)
       } catch (error) {
@@ -149,25 +221,54 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
         currentUpgradeVenueList: FirmwareSwitchVenue[]
       } = saveSwitchStep()
       form.validateFields()
+
+      const venueIds = form.getFieldValue('selectedVenueRowKeys') || []
+      const switchIds = _.map(upgradeList.currentUpgradeSwitchList, 'switchId')
+
+      const selectedItemMap = {
+        'true,true': $t({ defaultMessage: 'items' }),
+        'true,false': $t({ defaultMessage: '<venuePlural></venuePlural>' }),
+        'false,true': $t({ defaultMessage: 'switches' }),
+        'false,false': $t({ defaultMessage: 'items' })
+      }
+
+      const selectedItem = selectedItemMap[`${venueIds.length > 0},${switchIds.length > 0}`]
+
       showActionModal({
         type: 'confirm',
         width: 460,
         title: $t({ defaultMessage: 'Skip This Update?' }),
         content: $t({
           defaultMessage:
-            'Please confirm that you wish to exclude the selected venues from this scheduled update'
-        }),
+            // eslint-disable-next-line max-len
+            'Please confirm that you wish to exclude the selected {selectedItem} from this scheduled update'
+        }, { selectedItem }),
         okText: $t({ defaultMessage: 'Skip' }),
         cancelText: $t({ defaultMessage: 'Cancel' }),
         async onOk () {
           try {
-            await skipSwitchUpgradeSchedules({
-              params: { ...params },
-              payload: {
-                venueIds: form.getFieldValue('selectedVenueRowKeys') || [],
-                switchIds: _.map(upgradeList.currentUpgradeSwitchList, 'switchId')
-              }
-            })
+            if (isSwitchRbacEnabled) {
+              const venueRequests = Object.keys(venueIds).map(item => ({
+                params: { venueId: venueIds[item] },
+                payload: {}
+              }))
+              await batchSkipSwitchUpgradeSchedules(venueRequests)
+
+              const switchVenueGroups = _.groupBy(upgradeList.currentUpgradeSwitchList, 'venueId')
+              const switchRequests = Object.keys(switchVenueGroups).map(key =>
+                ({ params: { venueId: key },
+                  payload: { switchIds: switchVenueGroups[key].map(item => item.switchId) } }))
+              await batchSkipSwitchUpgradeSchedules(switchRequests)
+            } else {
+              await skipSwitchUpgradeSchedules({
+                params: { ...params },
+                payload: {
+                  venueIds,
+                  switchIds
+                }
+              })
+            }
+
             form.resetFields()
             props.setVisible(false)
           } catch (error) {
@@ -238,7 +339,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
           marginRight: '3px'
         }} />
       { // eslint-disable-next-line max-len
-        $t({ defaultMessage: 'The following list will only display the connected switch under the venue.' })}
+        $t({ defaultMessage: 'The following list will only display the connected switch under the <venueSingular></venueSingular>.' })}
       </div>
     }
   }
@@ -308,24 +409,4 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
   />
 }
 
-function checkCurrentVersions (version: string,
-  rodanVersion: string,
-  filterVersions: FirmwareVersion[]): FirmwareVersion[] {
-  let inUseVersions = [] as FirmwareVersion[]
-  const getParseVersion = function (version: string) {
-    if (DefaultSwitchVersion.includes(version)) {
-      return version.replace(/_[^_]*$/, '')
-    }
-    return version
-  }
-
-  filterVersions.forEach((v: FirmwareVersion) => {
-    if (getParseVersion(v.id) === getParseVersion(version) ||
-      getParseVersion(v.id) === getParseVersion(rodanVersion)) {
-      v = { ...v, inUse: true }
-    }
-    inUseVersions.push(v)
-  })
-  return inUseVersions
-}
 

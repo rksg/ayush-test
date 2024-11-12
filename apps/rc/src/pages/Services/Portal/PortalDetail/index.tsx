@@ -2,31 +2,32 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { PageHeader, Button, GridRow, Loader, GridCol } from '@acx-ui/components'
-import { useGetPortalProfileDetailQuery }               from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { PortalOverview, PortalInstancesTable }         from '@acx-ui/rc/components'
+import { useGetPortalQuery }                            from '@acx-ui/rc/services'
 import {
   Demo,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
-
-import PortalInstancesTable from './PortalInstancesTable'
-import PortalOverview       from './PortalOverview'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 
 export default function PortalServiceDetail () {
   const { $t } = useIntl()
   const params = useParams()
-  const queryResults = useGetPortalProfileDetailQuery({ params })
+  const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const queryResults = useGetPortalQuery({ params, enableRbac: isEnabledRbacService })
 
   return (
     <>
       <PageHeader
-        title={queryResults.data?.serviceName||''}
+        title={queryResults.data?.serviceName ?? queryResults.data?.name}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
@@ -35,13 +36,14 @@ export default function PortalServiceDetail () {
             link: getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.LIST })
           }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getServiceDetailsLink({
               type: ServiceType.PORTAL,
               oper: ServiceOperation.EDIT,
               serviceId: params.serviceId!
             })}
+            scopeKey={getScopeKeyByService(ServiceType.PORTAL, ServiceOperation.EDIT)}
           >
             <Button key={'configure'} type={'primary'}>
               {$t({ defaultMessage: 'Configure' })}

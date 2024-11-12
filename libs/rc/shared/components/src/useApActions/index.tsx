@@ -10,7 +10,7 @@ import { cssStr, showActionModal, showToast } from '@acx-ui/components'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
   useBlinkLedApMutation,
-  useDeleteApGroupsMutation,
+  useDeleteApGroupMutation,
   useDeleteApMutation,
   useDeleteSoloApMutation,
   useDownloadApLogMutation,
@@ -23,8 +23,11 @@ import {
   ApDeviceStatusEnum,
   ApDhcpRoleEnum,
   APExtended,
-  CountdownNode, DhcpAp, DhcpApResponse,
-  DhcpApInfo
+  CountdownNode, DhcpAp,
+  DhcpApInfo,
+  DiagnosisCommands,
+  NewAPModel,
+  SystemCommands
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -34,8 +37,7 @@ const blinkLedCount = 30
 
 export function useApActions () {
   const { $t } = useIntl()
-  const wifiEdaflag = useIsSplitOn(Features.WIFI_EDA_READY_TOGGLE)
-  const wifiEdaGatewayflag = useIsSplitOn(Features.WIFI_EDA_GATEWAY)
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const [ downloadApLog ] = useDownloadApLogMutation()
   const [ getDhcpAp ] = useLazyGetDhcpApQuery()
   const [ getApList ] = useLazyApListQuery()
@@ -43,11 +45,16 @@ export function useApActions () {
   const [ deleteAp ] = useDeleteApMutation()
   const [ deleteSoloAp ] = useDeleteSoloApMutation()
   const [ blinkLedAp ] = useBlinkLedApMutation()
-  const [ deleteApGroups ] = useDeleteApGroupsMutation()
+  const [ deleteApGroup ] = useDeleteApGroupMutation()
 
   const deleteSoloFlag = useIsSplitOn(Features.DELETE_SOLO)
 
-  const showRebootAp = (serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
+  const showRebootAp = (
+    serialNumber: string,
+    tenantId?: string,
+    venueId?: string,
+    callBack?: ()=>void
+  ) => {
 
     showActionModal({
       type: 'confirm',
@@ -64,8 +71,10 @@ export function useApActions () {
           closeAfterAction: true,
           handler: () => {
             rebootAp({
-              params: { tenantId: tenantId, serialNumber },
-              payload: { action: 'reboot' }
+              params: { tenantId: tenantId, serialNumber, venueId },
+              payload: {
+                ...(isUseWifiRbacApi ? { type: SystemCommands.REBOOT } : { action: 'reboot' }) },
+              enableRbac: isUseWifiRbacApi
             })
             callBack && callBack()
           }
@@ -78,7 +87,12 @@ export function useApActions () {
   }
 
 
-  const showDownloadApLog = ( serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
+  const showDownloadApLog = (
+    serialNumber: string,
+    tenantId?: string,
+    venueId?: string,
+    callBack?: ()=>void
+  ) => {
     const toastKey = showToast({
       type: 'info',
       closable: false,
@@ -89,7 +103,10 @@ export function useApActions () {
       content: $t({ defaultMessage: 'Preparing log ...' })
     })
 
-    downloadApLog({ params: { tenantId, serialNumber } })
+    downloadApLog({
+      params: { tenantId, serialNumber, venueId },
+      enableRbac: isUseWifiRbacApi
+    })
       .unwrap().then((result) => {
         showToast({
           key: toastKey,
@@ -98,7 +115,8 @@ export function useApActions () {
         })
 
         const timeString = moment().format('DDMMYYYY-HHmm')
-        saveAs(result.fileURL, `SupportLog_${serialNumber}_${timeString}.log.gz`) //TODO: CORS policy
+        const downloadLink = isUseWifiRbacApi ? result.fileUrl : result.fileURL
+        saveAs(downloadLink, `SupportLog_${serialNumber}_${timeString}.log.gz`) //TODO: CORS policy
 
         callBack && callBack()
       })
@@ -110,20 +128,19 @@ export function useApActions () {
   const showDeleteAp = async ( serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
     const payload = {
       entityType: 'apsList',
-      fields: ['serialNumber', 'name', 'deviceStatus', 'fwVersion'],
+      fields: ['serialNumber', 'name', 'deviceStatus', 'fwVersion', 'venueId'],
       filters: {
         serialNumber: [serialNumber]
       },
       pageSize: 1
     }
     const apList = await getApList({
-      params: { tenantId }, payload
+      params: { tenantId }, payload, enableRbac: isUseWifiRbacApi
     }, true).unwrap()
     showDeleteAps(apList.data, tenantId, callBack)
   }
 
-  const showDeleteApGroups = async (row: APExtended,
-    tenantId?: string, callBack?: () => void) => {
+  const showDeleteApGroups = async (row: APExtended, callBack?: () => void) => {
     showActionModal({
       type: 'confirm',
       customContent: {
@@ -133,19 +150,31 @@ export function useApActions () {
         numOfEntities: 1
       },
       onOk: () => {
-        deleteApGroups({ params: { tenantId }, payload: [row.deviceGroupId] })
-          .then(callBack)
+        deleteApGroup({
+          params: {
+            venueId: row.venueId,
+            apGroupId: row.deviceGroupId
+          },
+          enableRbac: isUseWifiRbacApi
+        }).then(callBack)
       }
     })
   }
 
-  const showDeleteAps = async ( rows: AP[], tenantId?: string, callBack?: ()=>void ) => {
+  const showDeleteAps = async (
+    rows: (AP|NewAPModel)[],
+    tenantId?: string,
+    callBack?: ()=>void
+  ) => {
     const dhcpAps = await getDhcpAp({
       params: { tenantId: tenantId },
-      payload: rows.map(row => row.serialNumber)
+      payload: isUseWifiRbacApi ?
+        rows.map(row => ({ venueId: row.venueId, serialNumber: row.serialNumber })):
+        rows.map(row => row.serialNumber),
+      enableRbac: isUseWifiRbacApi
     }, true).unwrap()
 
-    if (hasDhcpAps(dhcpAps, wifiEdaflag || wifiEdaGatewayflag)) {
+    if (hasDhcpAps(dhcpAps)) {
       showActionModal({
         type: 'warning',
         content: $t({ defaultMessage: 'Not allow to delete DHCP APs' })
@@ -155,18 +184,41 @@ export function useApActions () {
 
     genDeleteModal(rows, deleteSoloFlag, (resetType) => {
       const deleteApApi = resetType === 'solo' ? deleteSoloAp : deleteAp
-      rows.length === 1 ?
-        deleteApApi({ params: { tenantId: tenantId, serialNumber: rows[0].serialNumber } })
-          .then(callBack) :
-        deleteApApi({
-          params: { tenantId },
-          payload: rows.map(row => row.serialNumber)
-        }).then(callBack)
+      if(isUseWifiRbacApi) {
+        const requestArr = []
+        for(let apInfo of rows) {
+          requestArr.push(deleteApApi({
+            params: {
+              venueId: apInfo.venueId, serialNumber: apInfo.serialNumber
+            },
+            enableRbac: true
+          }))
+        }
+        Promise.all(requestArr).then(callBack)
+      } else {
+        rows.length === 1 ?
+          deleteApApi({ params: { tenantId: tenantId, serialNumber: rows[0].serialNumber } })
+            .then(callBack) :
+          deleteApApi({
+            params: { tenantId },
+            payload: rows.map(row => row.serialNumber)
+          }).then(callBack)
+      }
     })
   }
 
-  const showBlinkLedAp = ( serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
-    blinkLedAp({ params: { tenantId, serialNumber }, payload: { action: 'blinkLed' } })
+  const showBlinkLedAp = (
+    serialNumber: string,
+    tenantId?: string,
+    venueId?: string,
+    callBack?: ()=>void
+  ) => {
+    blinkLedAp({
+      params: { tenantId, serialNumber, venueId },
+      payload: {
+        ...(isUseWifiRbacApi ? { type: DiagnosisCommands.BLINK_LED } :{ action: 'blinkLed' }) },
+      enableRbac: isUseWifiRbacApi
+    })
       .unwrap().then(() => {
         let count = blinkLedCount
         const interval = setInterval(() => {
@@ -190,36 +242,48 @@ export function useApActions () {
   }
 }
 
-const hasContactedAp = (selectedRows: AP[]) => {
-  return !selectedRows.every(selectedAp =>
-    selectedAp.deviceStatus === ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD ||
+const hasContactedAp = (selectedRows: (AP|NewAPModel)[]) => {
+  return isNewDataModel(selectedRows) ?
+    !(selectedRows as NewAPModel[]).every(selectedAp =>
+      selectedAp.status === ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD ||
+    selectedAp.status === ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD) :
+    !(selectedRows as AP[]).every(selectedAp =>
+      selectedAp.deviceStatus === ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD ||
     selectedAp.deviceStatus === ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD)
 }
-const allOperationalAp = (selectedRows: AP[]) => {
-  return selectedRows.every(ap =>
-    ap.deviceStatus === ApDeviceStatusEnum.OPERATIONAL
-  )
+const allOperationalAp = (selectedRows: (AP|NewAPModel)[]) => {
+  return isNewDataModel(selectedRows) ?
+    (selectedRows as NewAPModel[]).every(ap =>
+      ap.status === ApDeviceStatusEnum.OPERATIONAL
+    ) :
+    (selectedRows as AP[]).every(ap =>
+      ap.deviceStatus === ApDeviceStatusEnum.OPERATIONAL
+    )
 }
-const hasInvalidAp = (selectedRows: AP[]) => {
-  return !selectedRows.every(ap => {
-    if (ap.fwVersion === undefined) {
-      return true
-    }
-    else {
-      return ap.fwVersion.localeCompare('6.2.0.103.486',
-        undefined, { numeric: true, sensitivity: 'base' }) >= 0
-    }
-  })
+const hasInvalidAp = (selectedRows: (AP|NewAPModel)[]) => {
+  return isNewDataModel(selectedRows) ?
+    !(selectedRows as NewAPModel[]).every(ap => {
+      if (ap.firmwareVersion === undefined) {
+        return true
+      }
+      else {
+        return ap.firmwareVersion.localeCompare('6.2.0.103.486',
+          undefined, { numeric: true, sensitivity: 'base' }) >= 0
+      }
+    }) :
+    !(selectedRows as AP[]).every(ap => {
+      if (ap.fwVersion === undefined) {
+        return true
+      }
+      else {
+        return ap.fwVersion.localeCompare('6.2.0.103.486',
+          undefined, { numeric: true, sensitivity: 'base' }) >= 0
+      }
+    })
 }
 
-const hasDhcpAps = (dhcpAps: DhcpAp, featureFlag: boolean) => {
-  let res: DhcpApInfo[] = []
-  if (dhcpAps && featureFlag) {
-    res = dhcpAps as DhcpApInfo[]
-  } else {
-    const response = dhcpAps as DhcpApResponse
-    res = Array.isArray(response.response) ? response.response : []
-  }
+const hasDhcpAps = (dhcpAps: DhcpAp) => {
+  const res: DhcpApInfo[] = Array.isArray(dhcpAps)? dhcpAps : []
 
   const dhcpApMap = res.filter(dhcpAp =>
     dhcpAp.venueDhcpEnabled === true &&
@@ -230,7 +294,7 @@ const hasDhcpAps = (dhcpAps: DhcpAp, featureFlag: boolean) => {
 }
 
 const genDeleteModal = (
-  rows: AP[],
+  rows: (AP|NewAPModel)[],
   deleteSoloFlag: boolean,
   okHandler: (resetType: string) => void
 ) => {
@@ -343,4 +407,8 @@ const genBlinkLedToast = (countdown: number, interval: ReturnType<typeof setInte
       clearInterval(interval)
     }
   })
+}
+
+const isNewDataModel = (selectedRows: (AP|NewAPModel)[]) => {
+  return selectedRows.filter(item => item.hasOwnProperty('status')).length > 0
 }

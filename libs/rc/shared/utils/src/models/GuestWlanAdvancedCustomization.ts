@@ -79,6 +79,8 @@ export class GuestWlanAdvancedCustomization {
 
   l3AclEnable?: boolean
 
+  enableDeviceOs?: boolean
+
   wifiCallingEnabled?: boolean
 
   wifiCallingIds?: string[]
@@ -166,6 +168,8 @@ export class GuestWlanAdvancedCustomization {
   qosMapSetEnabled?: boolean
 
   qosMapSetOptions?: QosMapSetOptions
+
+  applicationVisibilityEnabled?: boolean
 
   constructor () {
     this.clientIsolation = true
@@ -285,8 +289,12 @@ export class GuestWlanAdvancedCustomization {
 
     this.multiLinkOperationEnabled = false
 
+    this.qosMirroringEnabled = true
+
     this.qosMapSetEnabled = false
 
     this.qosMapSetOptions = new QosMapSetOptions()
+
+    this.applicationVisibilityEnabled = true
   }
 }

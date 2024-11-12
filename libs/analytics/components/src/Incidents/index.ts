@@ -1,1 +1,1 @@
-export { IncidentListPage, IncidentTabContent }             from './incidentListPage'
+export { IncidentTabContent }             from './incidentListPage'

@@ -25,28 +25,56 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
     url: '/radiusServerProfiles/:policyId',
     newApi: true
   },
-  getAAAPolicyList: {
-    method: 'get',
-    oldUrl: '/api/tenant/:tenantId/wifi/radius',
-    url: '/radiusServerProfiles',
-    newApi: true
-  },
   getAAAPolicyViewModelList: {
     method: 'post',
     oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedRadiusServerProfiles/query',
     url: '/enhancedRadiusServerProfiles/query',
     newApi: true
   },
-  getAAANetworkInstances: {
+  queryAAAPolicyList: {
     method: 'post',
-    oldUrl: '/api/radius/:policyId/networks',
-    url: '/radiusServerProfiles/:policyId/networks',
-    newApi: true
+    url: '/radiusServerProfiles/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
-  getAAAProfileDetail: {
+  deleteAAAPolicy: {
+    method: 'delete',
+    url: '/radiusServerProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
+  getAAAPolicyRbac: {
     method: 'get',
+    url: '/radiusServerProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1.1+json'
+    }
+  },
+  addAAAPolicyRbac: {
+    method: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/radius',
+    url: '/radiusServerProfiles',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
+  updateAAAPolicyRbac: {
+    method: 'put',
     oldUrl: '/api/tenant/:tenantId/wifi/radius/:policyId',
     url: '/radiusServerProfiles/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   }
 }

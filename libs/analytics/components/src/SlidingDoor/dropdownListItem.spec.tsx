@@ -1,4 +1,4 @@
-import { render, fireEvent, screen } from '@testing-library/react'
+import { render, fireEvent, screen } from '@acx-ui/test-utils'
 
 import { ListItemComponent } from './dropdownListItem'
 

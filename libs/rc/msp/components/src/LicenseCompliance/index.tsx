@@ -1,0 +1,141 @@
+import React, { useEffect, useState } from 'react'
+
+import { useIntl } from 'react-intl'
+
+import { Button, Drawer }                     from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { useGetEntitlementsCompliancesQuery } from '@acx-ui/msp/services'
+import { ComplianceData }                     from '@acx-ui/msp/utils'
+import { TrialType }                          from '@acx-ui/rc/utils'
+import { useParams }                          from '@acx-ui/react-router-dom'
+
+import { emptyCompliance }      from './__tests__/fixtures'
+import { ComplianceBanner }     from './ComplianceBanner'
+import { DeviceNetworkingCard } from './DeviceNetworkingCard'
+import LicenseCalculatorCard    from './LicenseCalculator'
+import MspCustomersLicences     from './MspCustomersLicences'
+import * as UI                  from './styledComponents'
+
+
+interface ComplianceProps {
+  isMsp: boolean
+  isExtendedTrial?: boolean
+}
+
+export const LicenseCompliance = (props: ComplianceProps) => {
+  const params = useParams()
+  const { $t } = useIntl()
+  const [selfData, setSelfData] = useState(emptyCompliance as ComplianceData)
+  const [ecSummaryData, setEcSummaryData] = useState(emptyCompliance as ComplianceData)
+  const [openMspCustLicencesDrawer, setOpenMspCustLicencesDrawer] = useState(false)
+  const { isMsp, isExtendedTrial } = props
+  const showCompliancePhase2UI = useIsSplitOn(Features.ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE)
+  const isComplianceNotesEnabled = useIsSplitOn(Features.ENTITLEMENT_COMPLIANCE_NOTES_TOGGLE)
+
+  const RecPayload = {
+    filters: {
+      licenseType: ['APSW'],
+      complianceType: 'SELF'
+    }
+  }
+  const MspPayload = {
+    filters: {
+      licenseType: ['APSW'],
+      complianceType: 'MSP_SUMMARY'
+    }
+  }
+  const queryData = useGetEntitlementsCompliancesQuery(
+    { params, payload: isMsp ? MspPayload : RecPayload })
+
+
+  function openMspCustomersDrawer () {
+    if(!openMspCustLicencesDrawer)
+      setOpenMspCustLicencesDrawer(true)
+  }
+
+  function closeMspCustomersDrawer () {
+    if(openMspCustLicencesDrawer)
+      setOpenMspCustLicencesDrawer(false)
+  }
+
+  useEffect(() => {
+    if (queryData?.data?.compliances) {
+      const retData = queryData.data.compliances.filter(comp => comp.licenseType === 'APSW')
+      if (retData.length > 0) {
+        setSelfData(retData[0].self ?? emptyCompliance as ComplianceData)
+        if (isMsp && retData[0].mspEcSummary)
+          setEcSummaryData(retData[0].mspEcSummary)
+      }
+    }
+  }, [queryData?.data])
+
+  return <>
+    {isComplianceNotesEnabled && <ComplianceBanner />}
+    {isMsp
+      ? <UI.ComplianceContainer>
+        <DeviceNetworkingCard
+          title={$t({ defaultMessage: 'Device Networking Subscriptions' })}
+          subTitle={$t({ defaultMessage: 'My Account License Expiration' })}
+          data={selfData}
+          isMsp={true}
+          trialType={TrialType.TRIAL}
+        />
+        <DeviceNetworkingCard
+          title={$t({ defaultMessage: 'Device Networking Subscriptions' })}
+          subTitle={$t({ defaultMessage: 'MSP Customers License Expiration' })}
+          isMsp={false}
+          data={ecSummaryData}
+          trialType={isExtendedTrial ? TrialType.EXTENDED_TRIAL : undefined}
+          footerContent={showCompliancePhase2UI ? <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'end'
+          }}>
+            <Button
+              size='small'
+              type={'link'}
+              onClick={openMspCustomersDrawer}>
+              {$t({ defaultMessage: 'View Details' })}
+            </Button>
+          </div> : <></>}
+        />
+        {
+          showCompliancePhase2UI && openMspCustLicencesDrawer && <Drawer
+            title={<>{$t({ defaultMessage: 'Device Networking Subscriptions' }) }
+              {ecSummaryData.licenseGap >= 0 ? <UI.GreenTickIcon /> : <UI.RedTickIcon />}</>}
+            visible={openMspCustLicencesDrawer}
+            onClose={closeMspCustomersDrawer}
+            destroyOnClose={true}
+            width={1080}
+          >
+            <MspCustomersLicences />
+          </Drawer>
+        }
+        { showCompliancePhase2UI && <LicenseCalculatorCard
+          title={$t({ defaultMessage: 'Device Networking Subscriptions' })}
+          subTitle={$t({ defaultMessage: 'License Distance Calculator' })}
+          footerContent={<div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'end',
+            borderTop: '1px solid #02a7f0',
+            paddingTop: '8px'
+          }}>
+            <span>{$t({ defaultMessage: 'To view currently available licenses timeline, ' })}</span>
+            <Button
+              size='small'
+              type={'link'}>
+              {$t({ defaultMessage: 'Click Here' })}
+            </Button>
+          </div>}
+        /> }
+      </UI.ComplianceContainer>
+      : <DeviceNetworkingCard
+        title={$t({ defaultMessage: 'Device Networking Subscriptions' })}
+        subTitle={$t({ defaultMessage: 'License Expiration' })}
+        isMsp={false}
+        data={selfData}
+        trialType={TrialType.TRIAL}
+      />}
+  </>
+}

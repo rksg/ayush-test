@@ -1,28 +1,26 @@
 import { Space, List } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { GridRow, GridCol }                   from '@acx-ui/components'
-import { CaretRightList, SearchResultNoData } from '@acx-ui/icons'
-import { TenantLink }                         from '@acx-ui/react-router-dom'
+import { GridRow, GridCol } from '@acx-ui/components'
+import { baseUrlFor }       from '@acx-ui/config'
+import { CaretRightList }   from '@acx-ui/icons'
+import { TenantLink }       from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
 const useLinkData = () => {
   const { $t } = useIntl()
   const linkData = [
-    { title: 'Venues', to: '/venues' },
-    { title: 'Networks', to: '/networks' },
-    { title: 'APs', to: '/devices/wifi' },
-    { title: 'Switches', to: '/devices/switch' },
-    { title: 'Wi-Fi Clients', to: '/users/wifi/clients' },
-    { title: 'Switch Clients', to: '/users/switch/clients' },
-    { title: 'Dashboard', to: '/dashboard' }
+    { title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }), to: '/venues' },
+    { title: $t({ defaultMessage: 'Networks' }), to: '/networks' },
+    { title: $t({ defaultMessage: 'APs' }), to: '/devices/wifi' },
+    { title: $t({ defaultMessage: 'Switches' }), to: '/devices/switch' },
+    { title: $t({ defaultMessage: 'Wi-Fi Clients' }), to: '/users/wifi/clients' },
+    { title: $t({ defaultMessage: 'Switch Clients' }), to: '/users/switch/clients' },
+    { title: $t({ defaultMessage: 'Dashboard' }), to: '/dashboard' }
   ]
 
-  const data = linkData.map(val => <TenantLink to={val.to}>
-    {$t({ defaultMessage: '{title}' }, { title: val.title })}
-  </TenantLink>)
-  return data
+  return linkData.map(val => <TenantLink to={val.to}>{ val.title }</TenantLink>)
 }
 
 function NoData () {
@@ -56,7 +54,7 @@ function NoData () {
       </UI.StyledGridCol>
       {/* Hide until we get final image */}
       <GridCol col={{ span: 12 }} style={{ display: 'none' }}>
-        <SearchResultNoData />
+        <img src={baseUrlFor('/assets/SearchResultNoData.png')} alt='No Data' />
       </GridCol>
     </GridRow>
   </>

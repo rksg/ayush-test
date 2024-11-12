@@ -29,7 +29,7 @@ const list =
     id: '0c96c591260542c188f6a12c62bb3923',
     email: 'guest@guest.com',
     lastName: 'Smith',
-    name: 'Jack',
+    name: 'Nick',
     role: RolesEnum.GUEST_MANAGER
   }
 ]

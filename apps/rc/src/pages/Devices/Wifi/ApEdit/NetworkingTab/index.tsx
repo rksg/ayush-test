@@ -5,7 +5,7 @@ import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { AnchorLayout, StepsFormLegacy } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }    from '@acx-ui/icons'
 import { redirectPreviousPage }          from '@acx-ui/rc/utils'
 import { useTenantLink }                 from '@acx-ui/react-router-dom'
@@ -17,6 +17,7 @@ import { DirectedMulticast } from './DirectedMulticast'
 import { IpSettings }        from './IpSettings/IpSettings'
 import { LanPorts }          from './LanPorts'
 import { ApMesh }            from './Mesh'
+import { SmartMonitor }      from './SmartMonitor'
 
 export interface ApNetworkingContext {
   updateIpSettings?: (data?: unknown) => void | Promise<void>
@@ -30,6 +31,9 @@ export interface ApNetworkingContext {
 
   updateDirectedMulticast?: (data?: unknown) => void | Promise<void>
   discardDirectedMulticastChanges?: (data?: unknown) => void | Promise<void>
+
+  updateSmartMonitor?: (data?: unknown) => void | Promise<void>
+  discardSmartMonitorChanges?: (data?: unknown) => void | Promise<void>
 }
 
 export function NetworkingTab () {
@@ -37,6 +41,7 @@ export function NetworkingTab () {
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
+  const isSmartMonitorFFEnabled = useIsSplitOn(Features.WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE)
 
   const {
     previousPath,
@@ -47,11 +52,6 @@ export function NetworkingTab () {
   } = useContext(ApEditContext)
 
   const { apCapabilities } = useContext(ApDataContext)
-
-  const supportStaticIpSettings = useIsSplitOn(Features.AP_STATIC_IP)
-  const isFeatureOnMeshEnhancement = useIsSplitOn(Features.MESH_ENHANCEMENTS)
-  const supportMeshEnhancement = isFeatureOnMeshEnhancement
-  const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
 
   const [isSupportMesh, setIsSupportMesh] = useState(false)
 
@@ -65,9 +65,10 @@ export function NetworkingTab () {
   const lanPortsTitle = $t({ defaultMessage: 'LAN Ports' })
   const meshTitle = $t({ defaultMessage: 'Mesh' })
   const direcedtMulticastTitle = $t({ defaultMessage: 'Directed Multicast' })
+  const smartMonitorTitle = $t({ defaultMessage: 'Smart Monitor' })
 
   const anchorItems = [
-    ...(supportStaticIpSettings? [{
+    {
       title: ipSettingTitle,
       content: (
         <>
@@ -77,7 +78,7 @@ export function NetworkingTab () {
           <IpSettings />
         </>
       )
-    }] : []),
+    },
     {
       title: lanPortsTitle,
       content: (
@@ -89,7 +90,7 @@ export function NetworkingTab () {
         </>
       )
     },
-    ...((supportMeshEnhancement && isSupportMesh)? [{
+    ...(isSupportMesh? [{
       title: meshTitle,
       content: (
         <>
@@ -101,7 +102,7 @@ export function NetworkingTab () {
       )
 
     }] : []),
-    ...(supportDirectedMulticast? [{
+    {
       title: direcedtMulticastTitle,
       content: (
         <>
@@ -123,7 +124,18 @@ export function NetworkingTab () {
           <DirectedMulticast />
         </>
       )
-    }]: [])
+    },
+    ...(isSmartMonitorFFEnabled? [{
+      title: smartMonitorTitle,
+      content: (
+        <>
+          <StepsFormLegacy.SectionTitle id='smart-monitor'>
+            { smartMonitorTitle }
+          </StepsFormLegacy.SectionTitle>
+          <SmartMonitor />
+        </>
+      )
+    }] : [])
   ]
 
   const resetEditContextData = () => {
@@ -143,6 +155,8 @@ export function NetworkingTab () {
       delete newData.discardMeshChanges
       delete newData.updateDirectedMulticast
       delete newData.discardDirectedMulticastChanges
+      delete newData.updateSmartMonitor
+      delete newData.discardSmartMonitorChanges
 
       setEditNetworkingContextData(newData)
     }
@@ -155,6 +169,7 @@ export function NetworkingTab () {
       await editNetworkingContextData.updateLanPorts?.()
       await editNetworkingContextData.updateMesh?.()
       await editNetworkingContextData.updateDirectedMulticast?.()
+      await editNetworkingContextData.updateSmartMonitor?.()
 
       resetEditContextData()
 
@@ -175,6 +190,7 @@ export function NetworkingTab () {
       await editNetworkingContextData.discardLanPortsChanges?.()
       await editNetworkingContextData.discardMeshChanges?.()
       await editNetworkingContextData.discardDirectedMulticastChanges?.()
+      await editNetworkingContextData.discardSmartMonitorChanges?.()
 
       resetEditContextData()
 

@@ -1,19 +1,23 @@
-import { useState, SyntheticEvent, useContext } from 'react'
+import { useState, SyntheticEvent, useEffect } from 'react'
 
+import { debounce }                                 from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { Anchor, Tooltip } from '@acx-ui/components'
+import { Anchor, Tooltip, Table } from '@acx-ui/components'
 
 import { ConnectedClientsTable }  from '../ConnectedClientsTable'
 import { HistoricalClientsTable } from '../HistoricalClientsTable'
 
-import { ClientTabContext }                                          from './context'
-import { ClientLink, ClientSearchBar, SearchBarDiv, SearchCountDiv } from './styledComponents'
+import { ClientLink, SearchBarDiv, SearchCountDiv } from './styledComponents'
 
-export function ClientDualTable () {
-  const { setClientCount } = useContext(ClientTabContext)
+type ClientDualTableProps = {
+  clientMac?: string;
+}
+
+export function ClientDualTable ({ clientMac }: ClientDualTableProps) {
   const { $t } = useIntl()
-  const [searchValue, setSearchValue] = useState('')
+  const [searchValue, setSearchValue] = useState( clientMac ?? '' )
+  const [searchInputRef, setSearchInputRef] = useState( clientMac ?? '' )
   const [connectedClientCount, setConnectedClientCount] = useState<number>(0)
   const [historicalClientCount, setHistoricalClientCount] = useState<number>(0)
 
@@ -36,19 +40,38 @@ export function ClientDualTable () {
       window.scrollTo({ top: element.offsetHeight })
     }
   }
-  setClientCount?.(connectedClientCount)
+
+  const updateSearch = debounce((value: string) => {
+    setSearchValue(value)
+  }, 1000)
+
+  useEffect(() => {
+    if(searchInputRef === '' || searchInputRef.length >= 2) {
+      updateSearch(searchInputRef)
+    }
+    return () => updateSearch.cancel()
+  }, [searchInputRef])
 
   return <>
     <div id='ClientsTable'>
       <SearchBarDiv>
-        <ClientSearchBar
-          placeHolder={
-            $t({ defaultMessage: 'Search for connected and historical clients...' })}
-          onChange={async (value)=>{
-            if(value.length === 0 || value.length >= 2){
+        <Table.SearchInput
+          disabled={!!clientMac}
+          value={searchInputRef}
+          onChange={(e) => {
+            const value = e.target.value
+            setSearchInputRef(value)
+            /*
+            if (value.length === 0 || value.length >= 2) {
               setSearchValue(value)
             }
+            */
           }}
+          placeholder={
+            $t({ defaultMessage: 'Search for connected and historical clients...' })}
+          style={{ width: 373 }}
+          maxLength={64}
+          allowClear
         />
         <Tooltip.Question
           title={<FormattedMessage {...getSearchToolTipText()}

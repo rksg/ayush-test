@@ -1,8 +1,9 @@
 import '@testing-library/jest-dom'
 
-import { screen, fireEvent, waitForElementToBeRemoved, waitFor, within } from '@testing-library/react'
-import userEvent                                                         from '@testing-library/user-event'
-import { Modal }                                                         from 'antd'
+import userEvent from '@testing-library/user-event'
+import { Modal } from 'antd'
+
+import { screen, fireEvent, waitForElementToBeRemoved, waitFor, within } from '@acx-ui/test-utils'
 
 import { showActionModal, convertToJSON, isErrorWithMessage } from '.'
 
@@ -433,6 +434,35 @@ describe('ActionModal', () => {
           handler: onOk2,
           shouldClose: true
         })
+      })
+    })
+
+    describe('custom code modal', () => {
+      beforeEach(async () => {
+        showActionModal({
+          type: 'warning',
+          width: 600,
+          title: 'This is a warning message',
+          customContent: {
+            action: 'CODE',
+            details: {
+              expanded: true,
+              label: 'Code Details',
+              code: 'Code\nDetails'
+            }
+          }
+        })
+
+        await assertModalVisible({
+          className: 'ant-modal-confirm-warning',
+          contents: [
+            'This is a warning message'
+          ]
+        })
+      })
+
+      it('renders modal with expanded code details', async () => {
+        expect((await screen.findByRole('textbox'))).toHaveValue('Code\nDetails')
       })
     })
   })

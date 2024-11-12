@@ -1,14 +1,25 @@
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Provider }     from '@acx-ui/store'
+import { useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
+  FirmwareRbacUrlsInfo,
+  FirmwareUrlsInfo,
+  SwitchFirmwareFixtures
+} from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
+import {
+  mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
-import { SwitchUpgradeNotification, SWITCH_UPGRADE_NOTIFICATION_TYPE } from '.'
+import {
+  SwitchUpgradeNotification,
+  SWITCH_UPGRADE_NOTIFICATION_TYPE
+} from '.'
 
+const { mockSwitchCurrentVersions, mockSwitchCurrentVersionsV1002 } = SwitchFirmwareFixtures
 
 jest.mock('./switchRequirementsModal', () => ({
   ...jest.requireActual('./switchRequirementsModal'),
@@ -19,6 +30,19 @@ jest.mock('./switchRequirementsModal', () => ({
 }))
 
 describe('Switch Requriements Modal', () => {
+  beforeEach(async () => {
+    mockServer.use(
+      rest.get(
+        FirmwareUrlsInfo.getSwitchCurrentVersions.url,
+        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersions))
+      ),
+      rest.get(
+        FirmwareRbacUrlsInfo.getSwitchCurrentVersions.url,
+        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersionsV1002))
+      )
+    )
+  })
+
   it('should render correctly', async () => {
     const { asFragment } = render(
       <Provider>

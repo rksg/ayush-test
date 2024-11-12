@@ -1,0 +1,111 @@
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
+
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { VlanPoolRbacUrls, VlanPoolUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                     from '@acx-ui/store'
+import {
+  mockServer,
+  render,
+  screen
+} from '@acx-ui/test-utils'
+
+import NetworkFormContext from '../NetworkFormContext'
+
+import VLANPoolInstance from '.'
+
+describe('VLAN Pool Instance Page', () => {
+  beforeEach(async () => {
+    mockServer.use(
+      rest.post(
+        WifiUrlsInfo.getVlanPoolViewModelList.url,
+        (_, res, ctx) => res(ctx.json({
+          page: 1,
+          totalCount: 1,
+          data: [{ id: '1', name: 'test1' }]
+        }))
+      ),
+      rest.get(
+        VlanPoolUrls.getVLANPoolPolicy.url,
+        (_, res, ctx) => {return res(
+          ctx.json({ requestId: 'request-id', id: '2', name: 'test2' }))}
+      ),
+      rest.put(
+        VlanPoolUrls.updateVLANPoolPolicy.url,
+        (_, res, ctx) => {return res(
+          ctx.json({ requestId: 'request-id', id: '2', name: 'test2' }))}
+      ),
+      rest.post(
+        VlanPoolRbacUrls.addVLANPoolPolicy.url,
+        (_, res, ctx) => {return res(
+          ctx.json({ requestId: 'request-id', id: '2', name: 'test2' }))}
+      ),
+      rest.post(
+        VlanPoolUrls.addVLANPoolPolicy.url,
+        (req, res, ctx) => res(ctx.json({}))
+      )
+    )
+  })
+
+  it('should render instance page', async () => {
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', policyId: 'test-id' }
+    render(<Provider><NetworkFormContext.Provider value={{
+      editMode: false, cloneMode: false, data: { guestPortal:
+        { enableSmsLogin: true, socialIdentities: {} } }
+    }}><Form><VLANPoolInstance />
+      </Form></NetworkFormContext.Provider></Provider>,
+    {
+      route: { params }
+    })
+    await userEvent.click(await screen.findByText('Add Pool'))
+    await userEvent.click((await screen.findAllByText('Cancel'))[0])
+    await userEvent.click(await screen.findByText('Add Pool'))
+    await userEvent.type(await screen.findByRole(
+      'textbox', { name: 'Policy Name' }),'create test')
+    await userEvent.type(await screen.findByRole('textbox', { name: 'VLANs' }),
+      '8')
+    await userEvent.click(await screen.findByText('Add'))
+    await userEvent.click((await screen.findAllByRole('combobox'))[0])
+    await userEvent.click((await screen.findAllByTitle('test1'))[0])
+  })
+
+  it('should render instance page with rbac api', async () => {
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', policyId: 'test-id' }
+    mockServer.use(
+      rest.put(
+        VlanPoolRbacUrls.addVLANPoolPolicy.url,
+        (_, res, ctx) => res(ctx.json({ requestId: 'request-id', id: '2' })
+        )
+      ),
+      rest.post(
+        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
+        (_, res, ctx) => res(ctx.json({
+          page: 1,
+          totalCount: 1,
+          data: [{ id: '1', name: 'test1', wifiNetworkIds: [], wifiNetworkVenueApGroups: [] }]
+        }))
+      )
+    )
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+    render(<Provider><NetworkFormContext.Provider value={{
+      editMode: false, cloneMode: false, data: { guestPortal:
+        { enableSmsLogin: true, socialIdentities: {} } }
+    }}><Form><VLANPoolInstance />
+      </Form></NetworkFormContext.Provider></Provider>,
+    {
+      route: { params }
+    })
+    await userEvent.click(await screen.findByText('Add Pool'))
+    await userEvent.click((await screen.findAllByText('Cancel'))[0])
+    await userEvent.click(await screen.findByText('Add Pool'))
+    await userEvent.type(await screen.findByRole(
+      'textbox', { name: 'Policy Name' }),'create test')
+    await userEvent.type(await screen.findByRole('textbox', { name: 'VLANs' }),
+      '8')
+    await userEvent.click(await screen.findByText('Add'))
+    await userEvent.click((await screen.findAllByRole('combobox'))[0])
+    await userEvent.click((await screen.findAllByTitle('test1'))[0])
+  })
+
+})

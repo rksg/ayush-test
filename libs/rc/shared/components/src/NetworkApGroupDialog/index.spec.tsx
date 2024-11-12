@@ -3,14 +3,18 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import { networkApi, policyApi, venueApi } from '@acx-ui/rc/services'
 import {
+  ApGroupConfigTemplateUrlsInfo,
   CommonUrlsInfo,
   RadioTypeEnum,
+  VlanPoolRbacUrls,
+  WifiRbacUrlsInfo,
   WifiUrlsInfo,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -24,7 +28,7 @@ import {
   networkVenue_apgroup,
   networkVenue_allAps,
   params,
-  vlanPoolList
+  vlanPoolList, vlanPoolListViewMode
 } from './__tests__/NetworkVenueTestData'
 
 import { NetworkApGroupDialog } from './index'
@@ -34,19 +38,54 @@ const venueName = 'My-Venue'
 
 describe('NetworkApGroupDialog', () => {
   beforeEach(() => {
+    store.dispatch(venueApi.util.resetApiState())
+    store.dispatch(networkApi.util.resetApiState())
+    store.dispatch(policyApi.util.resetApiState())
+
     mockServer.use(
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json({ response: [networkVenue_apgroup] }))
       ),
+      rest.post(
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json({ data: [networkVenue_apgroup] }))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApGroupsList.url,
+        (req, res, ctx) => res(ctx.json({ data: [{ id: 'fake_apg_id', name: 'fake_apg_name' }] }))
+      ),
+      rest.post(
+        WifiRbacUrlsInfo.getApGroupsList.url,
+        (req, res, ctx) => res(ctx.json({ data: [{ id: 'fake_apg_id', name: 'fake_apg_name' }] }))
+      ),
+      rest.post(
+        ApGroupConfigTemplateUrlsInfo.getApGroupsList.url,
+        (req, res, ctx) => res(ctx.json({ data: [{ id: 'fake_apg_id', name: 'fake_apg_name' }] }))
+      ),
       rest.get(
         WifiUrlsInfo.getVlanPools.url,
         (req, res, ctx) => res(ctx.json(vlanPoolList))
+      ),
+      rest.post(
+        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
+        (req, res, ctx) => res(ctx.json(vlanPoolList))
+      ),
+      rest.post(
+        WifiUrlsInfo.getVlanPoolViewModelList.url,
+        (req, res, ctx) => res(ctx.json(vlanPoolListViewMode))
       )
     )
   })
 
   it('should render correctly', async () => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json({ data: [networkVenue_apgroup] }))
+      )
+    )
+
     const props = {
       formName: 'networkApGroupForm',
       venueName: venueName,
@@ -100,7 +139,7 @@ describe('NetworkApGroupDialog', () => {
 
     expect(within(dialog).getByLabelText('Select specific AP groups', { exact: false, selector: 'input' })).toBeChecked()
 
-    await waitFor(() => expect(dialog).toHaveTextContent('VLAN Pool: pool1 (Custom)'))
+    await waitFor(() => expect(dialog).toHaveTextContent(`VLAN Pool: ${vlanPoolList[0].name} (Custom)`))
   })
 
   it('should has 6 GHz and could click apply', async () => {

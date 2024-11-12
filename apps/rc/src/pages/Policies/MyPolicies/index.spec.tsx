@@ -1,17 +1,23 @@
-import _        from 'lodash'
 import { rest } from 'msw'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }  from '@acx-ui/rc/components'
+import {
+  connectionMeteringApi,
+  policyApi
+} from '@acx-ui/rc/services'
 import {
   AaaUrls,
   AccessControlUrls,
   ApSnmpUrls,
   ClientIsolationUrls,
-  CommonUrlsInfo,
   ConnectionMeteringUrls,
+  EdgeHqosProfilesUrls,
+  WorkflowUrls,
   getSelectPolicyRoutePath,
-  PolicyType, RogueApUrls, SyslogUrls, WifiUrlsInfo
+  RogueApUrls, SoftGreUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -19,8 +25,10 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
+  mockedClientIsolationQueryData,
   mockedRogueApPoliciesList,
-  emptyPoliciesList
+  mockedVlanPoolProfilesQueryData,
+  mockSoftGreTable
 } from './__tests__/fixtures'
 
 import MyPolicies from '.'
@@ -31,6 +39,20 @@ const mockTableResult = {
   data: []
 }
 
+const mockNewTableResult = {
+  content: [],
+  paging: {
+    page: 0,
+    pageSize: 0,
+    totalCount: 0
+  }
+}
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
 describe('MyPolicies', () => {
   const params = {
     tenantId: '15320bc221d94d2cb537fa0189fee742'
@@ -38,10 +60,16 @@ describe('MyPolicies', () => {
 
   const path = '/:tenantId/t'
   beforeEach(() => {
+    store.dispatch(connectionMeteringApi.util.resetApiState())
+    store.dispatch(policyApi.util.resetApiState())
     mockServer.use(
       rest.post(
         AaaUrls.getAAAPolicyViewModelList.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
+      ),
+      rest.post(
+        AaaUrls.queryAAAPolicyList.url,
+        (_, res, ctx) => res(ctx.json(mockTableResult))
       ),
       rest.post(
         AccessControlUrls.getEnhancedAccessControlProfiles.url,
@@ -63,25 +91,39 @@ describe('MyPolicies', () => {
         ApSnmpUrls.getApSnmpFromViewModel.url,
         (_, res, ctx) => res(ctx.json(mockTableResult))
       ),
+      rest.post(
+        AaaUrls.queryAAAPolicyList.url,
+        (_, res, ctx) => res(ctx.json(mockTableResult))
+      ),
       rest.get(
         ConnectionMeteringUrls.getConnectionMeteringList.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(mockTableResult))
       ),
       rest.post(
-        CommonUrlsInfo.getPoliciesList.url,
-        (req, res, ctx) => {
-          const type = _.get(req, 'body.filters.type') as string[]
-
-          if (type.includes(PolicyType.ROGUE_AP_DETECTION)) {
-            return res(ctx.json({ ...mockedRogueApPoliciesList }))
-          }
-          return res(ctx.json({ ...emptyPoliciesList }))
-        }
-      ),
-      rest.post(
         RogueApUrls.getEnhancedRoguePolicyList.url,
         (req, res, ctx) => res(ctx.json(mockedRogueApPoliciesList))
-      )
+      ),
+      rest.post(
+        WorkflowUrls.searchInProgressWorkflows.url.split('?')[0],
+        (req, res, ctx ) => res(ctx.json(mockNewTableResult))
+      ),
+      rest.post(
+        RogueApUrls.getRoguePolicyListRbac.url,
+        (req, res, ctx) => res(ctx.json({
+          totalCount: 99,
+          data: []
+        }))
+      ),
+      rest.post(
+        AccessControlUrls.getAccessControlProfileQueryList.url,
+        (_, res, ctx) => res(ctx.json({
+          totalCount: 1,
+          data: []
+        }))
+      ),
+      rest.post(
+        SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockSoftGreTable)))
     )
   })
 
@@ -115,5 +157,92 @@ describe('MyPolicies', () => {
       }
     )
     expect(await screen.findByText('Network Control')).toBeVisible()
+  })
+
+  it('should render Rogue AP with RBAC on', async () => {
+    const mockQueryResult = {
+      totalCount: 1,
+      page: 1,
+      data: [{
+        id: 'b76d9aeb1d5e4fc8b62ed6250a6471ee',
+        name: 'Syslog 1',
+        venueIds: [],
+        primaryServer: '1.2.3.4:514 (UDP)',
+        secondaryServer: '',
+        facility: 'KEEP_ORIGINAL',
+        flowLevel: 'CLIENT_FLOW'
+      }]
+    }
+
+    mockServer.use(
+      rest.post(
+        SyslogUrls.querySyslog.url,
+        (_req, res, ctx) => res(ctx.json(mockQueryResult))
+      ),
+      rest.post(
+        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
+        (_req, res, ctx) => res(ctx.json(mockedVlanPoolProfilesQueryData))
+      ),
+      rest.post(
+        ClientIsolationUrls.queryClientIsolation.url,
+        (_req, res, ctx) => res(ctx.json(mockedClientIsolationQueryData))
+      )
+    )
+
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+
+    render(
+      <Provider>
+        <MyPolicies />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    const rogueApTitle = 'Rogue AP Detection (99)'
+    expect(await screen.findByText(rogueApTitle)).toBeVisible()
+
+    const vlanPoolTitle = 'VLAN Pools (0)'
+    expect(await screen.findByText(vlanPoolTitle)).toBeVisible()
+
+    const clientIsolationTitle = 'Client Isolation (1)'
+    expect(await screen.findByText(clientIsolationTitle)).toBeVisible()
+
+    const accessControlTitle = 'Access Control (1)'
+    expect(await screen.findByText(accessControlTitle)).toBeVisible()
+  })
+
+  it('should render edge hqos bandwidth correctly', async () => {
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
+      [Features.EDGE_QOS_TOGGLE, Features.EDGES_TOGGLE].includes(ff as Features))
+
+    mockServer.use(
+      rest.post(
+        EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList.url,
+        (_req, res, ctx) => res(ctx.json(mockedClientIsolationQueryData))
+      ),
+      rest.post(
+        ClientIsolationUrls.queryClientIsolation.url,
+        (_req, res, ctx) => res(ctx.json(mockedClientIsolationQueryData))
+      ),
+      rest.post(
+        SyslogUrls.querySyslog.url,
+        (_req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
+        (_req, res, ctx) => res(ctx.json({ data: [] }))
+      )
+    )
+    render(
+      <Provider>
+        <MyPolicies />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    const edgeQosBandwidthTitle = 'HQoS Bandwidth (1)'
+    expect(await screen.findByText(edgeQosBandwidthTitle)).toBeVisible()
   })
 })

@@ -2,279 +2,1273 @@
 
 exports[`Floor Plans Floor Plans should render correctly 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  .c2 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c2 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c2 svg:before {
+  content: 'a';
+}
+
+.c2 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c2.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c2.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c2.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c2.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c2[disabled] svg path,
+.c2.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c2[disabled].ant-btn-link svg path,
+.c2.ant-btn-disabled.ant-btn-link svg path,
+.c2[disabled].ant-btn-default svg path,
+.c2.ant-btn-disabled.ant-btn-default svg path,
+.c2[disabled].ant-btn-primary svg path,
+.c2.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+.c6 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--acx-neutrals-10);
+}
+
+.c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c7 {
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.c14.device-container {
+  z-index: 3;
+  width: 36px;
+  height: 36px;
+  position: absolute;
+}
+
+.c14.device-container:not(.context-Unplaced) {
+  margin: -21px 0 0 -21px;
+}
+
+.c14.device-container.context-Album {
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+}
+
+.c14.device-container svg {
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.c14.device-container .marker {
+  border: 3px solid white;
+  box-shadow: -2px 0px 4px -1px rgba(0,0,0,0.75);
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  border-radius: 50% 50% 50% 0;
+  position: absolute;
+  -webkit-transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  cursor: 'pointer';
+}
+
+.c14.device-container .marker path {
+  fill: var(--acx-primary-white);
+  stroke: var(--acx-neutrals-50);
+}
+
+.c14.device-container .marker.ap-status-severity-critical {
+  background-color: var(--acx-semantics-red-70) !important;
+}
+
+.c14.device-container .marker.ap-status-severity-cleared {
+  background-color: var(--acx-semantics-green-50) !important;
+}
+
+.c14.device-container .marker.ap-status-severity-attention {
+  background-color: var(--acx-neutrals-50) !important;
+}
+
+.c14.device-container .marker.ap-status-severity-critical {
+  background-color: var(--acx-semantics-red-50) !important;
+}
+
+.c14.device-container .marker.ap-status-severity-minor {
+  background-color: var(--acx-semantics-yellow-50) !important;
+}
+
+.c14.device-container .marker.ap-rogue-type-offline {
+  opacity: .3;
+}
+
+.c14.device-container .marker.switch-status-never-contacted-cloud {
+  background-color: var(--acx-neutrals-50) !important;
+}
+
+.c14.device-container .marker.switch-status-operational {
+  background-color: var(--acx-semantics-green-50) !important;
+}
+
+.c14.device-container .marker.switch-status-disconnected {
+  background-color: var(--acx-semantics-red-50) !important;
+}
+
+.c14.device-container .marker.rwg-status-never-contacted-cloud {
+  background-color: var(--acx-neutrals-50) !important;
+}
+
+.c14.device-container .marker.rwg-status-operational {
+  background-color: var(--acx-semantics-green-50) !important;
+}
+
+.c14.device-container .marker.rwg-status-disconnected {
+  background-color: var(--acx-semantics-red-50) !important;
+}
+
+.c14.device-container .marker.rwg-status-invalid-api {
+  background-color: var(--acx-semantics-yellow-40) !important;
+}
+
+.c14.device-container .marker.ap-rogue-type-malicious {
+  background-color: var(--acx-accents-orange-50);
+}
+
+.c14.device-container .marker.ap-rogue-type-ignored {
+  background-color: var(--acx-semantics-green-70);
+}
+
+.c14.device-container .marker.ap-rogue-type-unclassified {
+  background-color: var(--acx-accents-blue-60);
+}
+
+.c14.device-container .marker.ap-rogue-type-known {
+  background-color: var(--acx-semantics-green-50);
+}
+
+.c14.device-container .marker:after {
+  position: relative;
+  border-radius: 50%;
+  font-family: ruckus;
+  color: white;
+  font-size: 26px;
+  bottom: 5px;
+  left: 4px;
+  position: absolute;
+  -webkit-transform: rotate(41deg);
+  -webkit-transform: rotate(41deg);
+  -ms-transform: rotate(41deg);
+  transform: rotate(41deg);
+}
+
+.c14.device-container:not(.context-Venue):not(.context-Unplaced):not(.context-Ap):not(.context-LteAp):not(.context-Switch):not(.gallery):not(.context-RogueAp) .marker {
+  border-radius: 50% 50% 50% 50%;
+  border: 0;
+}
+
+.c14.device-container:not(.context-Venue):not(.context-Unplaced):not(.context-Ap):not(.context-LteAp):not(.context-Switch):not(.gallery):not(.context-RogueAp) .marker:not(.gallery-mode):after {
+  content: '';
+}
+
+.c14.device-container:not(.context-Venue):not(.context-Unplaced):not(.context-Ap):not(.context-LteAp):not(.context-Switch):not(.gallery):not(.context-RogueAp) .marker.gallery-mode:after {
+  bottom: 7px;
+  left: 7px;
+}
+
+.c14.device-container.gallery {
+  width: 24px;
+  height: 24px;
+}
+
+.c14.device-container.gallery .marker {
+  border-radius: 50% 50% 50% 50%;
+  border: 0;
+  padding: 4px;
+}
+
+.c14.device-container.gallery .marker.ap:after,
+.c14.device-container.gallery .marker.LTEAP:after,
+.c14.device-container.gallery .marker.switches:after {
+  font-size: 20px;
+  bottom: 2px;
+  left: 1px;
+}
+
+.c11 {
+  -webkit-scroll-behavior: smooth;
+  -moz-scroll-behavior: smooth;
+  -ms-scroll-behavior: smooth;
+  scroll-behavior: smooth;
+  overflow-x: scroll;
+  width: 100%;
+  height: 80px;
+  overflow-y: hidden;
+  overflow: overlay;
+}
+
+.c13 {
+  width: 100px;
+  padding: 6px;
+  border-radius: 4px;
+  height: 68px;
+  border: 1px solid;
+  border-color: var(--acx-accents-orange-55);
+  box-shadow: none;
+}
+
+.c16 {
+  width: 100px;
+  padding: 6px;
+  border-radius: 4px;
+  height: 68px;
+  border: 1px solid;
+  border-color: var(--acx-neutrals-30);
+  box-shadow: none;
+}
+
+.c9 {
+  padding-right: 4px;
+}
+
+.c10 {
+  border: 1px solid var(--acx-neutrals-30);
+  height: 68px;
+  width: 28px;
+}
+
+.c10 svg {
+  width: 18px;
+  height: 18px;
+}
+
+.c15 {
+  position: absolute;
+  width: 100px;
+  height: 20px;
+  top: 48px;
+  opacity: 0.95;
+  border-radius: 0px 0px 4px 4px;
+  color: var(--acx-primary-white);
+  text-align: center;
+  font-style: normal;
+  font-weight: var(--acx-subtitle-6-font-weight);
+  font-size: var(--acx-subtitle-6-font-size);
+  line-height: var(--acx-subtitle-4-line-height);
+  background: var(--acx-accents-orange-55);
+}
+
+.c17 {
+  position: absolute;
+  width: 100px;
+  height: 20px;
+  top: 48px;
+  opacity: 0.95;
+  border-radius: 0px 0px 4px 4px;
+  color: var(--acx-primary-white);
+  text-align: center;
+  font-style: normal;
+  font-weight: var(--acx-subtitle-6-font-weight);
+  font-size: var(--acx-subtitle-6-font-size);
+  line-height: var(--acx-subtitle-4-line-height);
+  background: var(--acx-neutrals-80);
+}
+
+.c12 {
+  position: relative;
+  cursor: pointer;
+}
+
+.c3 {
+  margin: 30px auto 20px;
+  position: relative;
+  display: block;
+  overflow: auto;
+  width: 100%;
+  height: 280px;
+  max-width: 100%;
+  max-height: 100%;
+  padding-right: 35px;
+}
+
+.c4 {
+  width: calc(100%);
+  position: relative;
+  margin: 0 auto;
+}
+
+.c5 {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c8 {
+  position: absolute;
+  bottom: 135px;
+  z-index: 1;
+  right: 15px;
+  border: 1px solid var(--acx-neutrals-30);
+  border-radius: 4px;
+}
+
+.c18 {
+  position: absolute;
+  top: -34px;
+  right: 0;
+}
+
+.c19 {
+  border: none;
+}
+
+.c1 {
+  overflow: overlay;
+  max-height: 460px;
+}
+
+.c20:hover svg path,
+.c20:visited svg path {
+  stroke: var(--acx-accents-blue-60) !important;
+}
+
+.c20 svg path {
+  stroke: var(--acx-accents-blue-50) !important;
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<form
+    class="ant-form ant-form-horizontal"
   >
     <div
-      class="sc-llJcti imHpNO"
+      class="c0"
     >
       <div
-        class="ant-row ant-row-space-between"
-        style="height: 2rem; align-items: center;"
+        class="c1"
       >
         <div
-          class="ant-col"
-        >
-          <h4
-            class="ant-typography"
-            style="font-weight: bold; margin-bottom: 0px;"
-          >
-            TEST_2
-          </h4>
-        </div>
-        <div
-          class="ant-col"
+          class="ant-row ant-row-space-between"
+          style="height: 2rem; align-items: center;"
         >
           <div
-            class="ant-space ant-space-horizontal ant-space-align-center"
+            class="ant-col"
+          >
+            <h4
+              class="ant-typography"
+              style="font-weight: bold; margin-bottom: 0px;"
+            >
+              TEST_2 (0th Floor)
+            </h4>
+          </div>
+          <div
+            class="ant-col"
           >
             <div
-              class="ant-space-item"
-              style="margin-right: 4px;"
+              class="ant-space ant-space-horizontal ant-space-align-center"
             >
-              <button
-                class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 kBDiup"
-                data-testid="AddEditLinks"
-                type="button"
-              >
-                <span>
-                  Edit
-                </span>
-              </button>
               <div
-                class="ant-modal-root"
+                class="ant-space-item"
+                style="margin-right: 4px;"
+              >
+                <button
+                  class="ant-btn ant-btn-link c2"
+                  data-testid="AddEditLinks"
+                  type="button"
+                >
+                  <span>
+                    Edit
+                  </span>
+                </button>
+                <div
+                  class="ant-modal-root"
+                >
+                  <div
+                    class="ant-modal-wrap"
+                    style="display: none;"
+                    tabindex="-1"
+                  />
+                </div>
+              </div>
+              <span
+                class="ant-space-item-split"
+                style="margin-right: 4px;"
               >
                 <div
-                  class="ant-modal-wrap"
-                  style="display: none;"
-                  tabindex="-1"
+                  class="ant-divider ant-divider-vertical"
+                  role="separator"
                 />
+              </span>
+              <div
+                class="ant-space-item"
+              >
+                <button
+                  class="ant-btn ant-btn-link c2"
+                  type="button"
+                >
+                  <span>
+                    Delete
+                  </span>
+                </button>
               </div>
             </div>
-            <span
-              class="ant-space-item-split"
-              style="margin-right: 4px;"
+          </div>
+        </div>
+        <div
+          class="ant-divider ant-divider-horizontal"
+          role="separator"
+          style="margin: 0px;"
+        />
+        <div
+          class="c3"
+        >
+          <div
+            class="c4"
+            data-testid="image-container"
+          >
+            <div
+              data-testid="dropContainer"
+              style="position: absolute; width: 100%; height: 100%;"
+            />
+            <img
+              alt="TEST_2"
+              data-testid="floorPlanImage"
+              src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+              style="max-height: 100%; width: 100%;"
+            />
+          </div>
+          <div
+            class="c5"
+          >
+            <div
+              class="c6"
             >
               <div
-                class="ant-divider ant-divider-vertical"
-                role="separator"
-              />
-            </span>
-            <div
-              class="ant-space-item"
-            >
-              <button
-                class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 kBDiup"
-                type="button"
+                class="c7"
               >
-                <span>
-                  Delete
-                </span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="ant-divider ant-divider-horizontal"
-        role="separator"
-        style="margin: 0px;"
-      />
-      <div
-        class="sc-idiyUo cZKUFO"
-      >
-        <div
-          class="sc-dIouRR cDjWRG"
-          data-testid="image-container"
-        >
-          <div
-            data-testid="dropContainer"
-            style="position: absolute; width: 100%; height: 100%;"
-          />
-          <img
-            alt="TEST_2"
-            data-testid="floorPlanImage"
-            src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
-            style="max-height: 100%; width: 100%;"
-          />
-        </div>
-        <div
-          class="sc-hHLeRK bmGzTd"
-        >
-          <div
-            class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
-          >
-            <div
-              class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
-            >
-              <span
-                aria-label="loader"
-                class="SuspenseBoundary__SpinWrapper-sc-l6mvnr-0"
-                role="img"
-              >
-                <div
-                  aria-busy="true"
-                  aria-live="polite"
-                  class="ant-spin ant-spin-lg ant-spin-spinning"
+                <span
+                  aria-label="loader"
+                  class=""
+                  role="img"
                 >
-                  <span
-                    class="ant-spin-dot ant-spin-dot-spin"
+                  <div
+                    aria-busy="true"
+                    aria-live="polite"
+                    class="ant-spin ant-spin-lg ant-spin-spinning"
                   >
-                    <i
-                      class="ant-spin-dot-item"
-                    />
-                    <i
-                      class="ant-spin-dot-item"
-                    />
-                    <i
-                      class="ant-spin-dot-item"
-                    />
-                    <i
-                      class="ant-spin-dot-item"
-                    />
-                  </span>
-                </div>
-              </span>
+                    <span
+                      class="ant-spin-dot ant-spin-dot-spin"
+                    >
+                      <i
+                        class="ant-spin-dot-item"
+                      />
+                      <i
+                        class="ant-spin-dot-item"
+                      />
+                      <i
+                        class="ant-spin-dot-item"
+                      />
+                      <i
+                        class="ant-spin-dot-item"
+                      />
+                    </span>
+                  </div>
+                </span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div
-        alignbottom="0"
-        class="ant-space ant-space-vertical sc-dmRaPn jdnaZo"
-      >
         <div
-          class="ant-space-item"
-          style="margin-bottom: 0px;"
-        >
-          <button
-            class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
-            data-testid="image-zoom-in"
-            type="button"
-          >
-            <svg
-              data-testid="MagnifyingGlassPlusOutlined"
-            />
-          </button>
-        </div>
-        <span
-          class="ant-space-item-split"
-          style="margin-bottom: 0px;"
+          alignbottom="0"
+          class="ant-space ant-space-vertical c8"
         >
           <div
-            class="ant-divider ant-divider-horizontal"
-            role="separator"
-            style="line-height: 0px; margin: 0px;"
-          />
-        </span>
-        <div
-          class="ant-space-item"
-          style="margin-bottom: 0px;"
-        >
-          <button
-            class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
-            data-testid="image-zoom-out"
-            type="button"
+            class="ant-space-item"
+            style="margin-bottom: 0px;"
           >
-            <svg
-              data-testid="MagnifyingGlassMinusOutlined"
+            <button
+              class="ant-btn ant-btn-link ant-btn-icon-only c2"
+              data-testid="image-zoom-in"
+              type="button"
+            >
+              <svg
+                data-testid="MagnifyingGlassPlusOutlined"
+              />
+            </button>
+          </div>
+          <span
+            class="ant-space-item-split"
+            style="margin-bottom: 0px;"
+          >
+            <div
+              class="ant-divider ant-divider-horizontal"
+              role="separator"
+              style="line-height: 0px; margin: 0px;"
             />
-          </button>
-        </div>
-        <span
-          class="ant-space-item-split"
-          style="margin-bottom: 0px;"
-        >
+          </span>
           <div
-            class="ant-divider ant-divider-horizontal"
-            role="separator"
-            style="line-height: 0px; margin: 0px;"
-          />
-        </span>
-        <div
-          class="ant-space-item"
-          style="margin-bottom: 0px;"
-        >
-          <button
-            class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
-            data-testid="image-zoom-original"
-            type="button"
+            class="ant-space-item"
+            style="margin-bottom: 0px;"
           >
-            <svg
-              data-testid="SearchFullOutlined"
+            <button
+              class="ant-btn ant-btn-link ant-btn-icon-only c2"
+              data-testid="image-zoom-out"
+              type="button"
+            >
+              <svg
+                data-testid="MagnifyingGlassMinusOutlined"
+              />
+            </button>
+          </div>
+          <span
+            class="ant-space-item-split"
+            style="margin-bottom: 0px;"
+          >
+            <div
+              class="ant-divider ant-divider-horizontal"
+              role="separator"
+              style="line-height: 0px; margin: 0px;"
             />
-          </button>
-        </div>
-        <span
-          class="ant-space-item-split"
-          style="margin-bottom: 0px;"
-        >
+          </span>
           <div
-            class="ant-divider ant-divider-horizontal"
-            role="separator"
-            style="line-height: 0px; margin: 0px;"
-          />
-        </span>
-        <div
-          class="ant-space-item"
-        >
-          <button
-            class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
-            data-testid="image-zoom-fit"
-            type="button"
+            class="ant-space-item"
+            style="margin-bottom: 0px;"
           >
-            <svg
-              data-testid="SearchFitOutlined"
+            <button
+              class="ant-btn ant-btn-link ant-btn-icon-only c2"
+              data-testid="image-zoom-original"
+              type="button"
+            >
+              <svg
+                data-testid="SearchFullOutlined"
+              />
+            </button>
+          </div>
+          <span
+            class="ant-space-item-split"
+            style="margin-bottom: 0px;"
+          >
+            <div
+              class="ant-divider ant-divider-horizontal"
+              role="separator"
+              style="line-height: 0px; margin: 0px;"
             />
-          </button>
-        </div>
-      </div>
-      <div
-        class="ant-row"
-      >
-        <div
-          class="ant-space ant-space-horizontal ant-space-align-center sc-hAZoDl kAhuYg"
-        >
+          </span>
           <div
             class="ant-space-item"
           >
             <button
-              class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup sc-fnykZs hJyCci"
-              data-testid="galleryIcon"
+              class="ant-btn ant-btn-link ant-btn-icon-only c2"
+              data-testid="image-zoom-fit"
               type="button"
             >
               <svg
-                data-testid="ApplicationsSolid"
+                data-testid="SearchFitOutlined"
               />
             </button>
           </div>
         </div>
         <div
-          class="ant-col ant-col-23"
+          class="ant-row"
         >
           <div
-            class="ant-space ant-space-horizontal ant-space-align-center sc-breuTD dpDQlg"
+            class="ant-space ant-space-horizontal ant-space-align-center c9"
           >
             <div
               class="ant-space-item"
-              style="margin-right: 4px;"
+            >
+              <button
+                class="ant-btn ant-btn-default ant-btn-icon-only c2 c10"
+                data-testid="galleryIcon"
+                type="button"
+              >
+                <svg
+                  data-testid="ApplicationsSolid"
+                />
+              </button>
+            </div>
+          </div>
+          <div
+            class="ant-col ant-col-23"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center c11"
             >
               <div
-                class="sc-bjUoiL cvisjM"
+                class="ant-space-item"
+                style="margin-right: 4px;"
               >
                 <div
-                  active="1"
-                  class="ant-card-grid sc-ksZaOG ZMwrC"
-                  data-testid="thumbnailBg"
+                  class="c12"
                 >
                   <div
-                    style="width: 100%; height: 53px; position: relative;"
+                    active="1"
+                    class="ant-card-grid c13"
+                    data-testid="thumbnailBg"
                   >
+                    <div
+                      style="width: 100%; height: 53px; position: relative;"
+                    >
+                      <div>
+                         
+                        <div>
+                          <div
+                            class="c14 device-container context-Album"
+                            draggable="true"
+                            style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
+                          >
+                            <div
+                              class="marker ap-status-severity-attention"
+                              style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
+                            >
+                               
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <div
+                            class="c14 device-container context-Album"
+                            draggable="true"
+                            style="top: calc(7.056452%); left: calc(52.739727%); opacity: 1;"
+                          >
+                            <div
+                              class="marker switch-status-never-contacted-cloud"
+                              style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
+                            >
+                               
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <img
+                        alt="Thumbnail for TEST_2"
+                        data-testid="thumbnailBgImage"
+                        src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
+                        style="width: 100%; height: 100%;"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="c15"
+                  >
+                    TEST_2
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-space-item"
+              >
+                <div
+                  class="c12"
+                >
+                  <div
+                    active="0"
+                    class="ant-card-grid c16"
+                    data-testid="thumbnailBg"
+                  >
+                    <div
+                      style="width: 100%; height: 53px; position: relative;"
+                    >
+                      <div>
+                         
+                      </div>
+                      <img
+                        alt="Thumbnail for dscx"
+                        data-testid="thumbnailBgImage"
+                        src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
+                        style="width: 100%; height: 100%;"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="c17"
+                  >
+                    dscx
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-space ant-space-horizontal ant-space-align-center c18"
+        >
+          <div
+            class="ant-space-item"
+            style="margin-right: 24px;"
+          >
+            <button
+              class="ant-btn ant-btn-link ant-btn-sm c2 c19 c20"
+              type="button"
+            >
+              <svg
+                data-testid="EyeOpenOutlined"
+              />
+              <span>
+                View Rogue APs
+              </span>
+            </button>
+          </div>
+          <div
+            class="ant-space-item"
+            style="margin-right: 24px;"
+          >
+            <button
+              class="ant-btn ant-btn-link ant-btn-sm c2"
+              data-testid="AddEditLinks"
+              type="button"
+            >
+              <span>
+                + Add Floor Plan
+              </span>
+            </button>
+            <div
+              class="ant-modal-root"
+            >
+              <div
+                class="ant-modal-wrap"
+                style="display: none;"
+                tabindex="-1"
+              />
+            </div>
+          </div>
+          <div
+            class="ant-space-item"
+          >
+            <button
+              class="ant-btn ant-btn-link ant-btn-sm c2 ant-dropdown-trigger"
+              type="button"
+            >
+              <span>
+                Unplaced Devices (2)
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</DocumentFragment>
+`;
+
+exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
+<DocumentFragment>
+  .c7 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c7 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c7 svg:before {
+  content: 'a';
+}
+
+.c7 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c7.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c7.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c7.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c7.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c7[disabled] svg path,
+.c7.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c7[disabled].ant-btn-link svg path,
+.c7.ant-btn-disabled.ant-btn-link svg path,
+.c7[disabled].ant-btn-default svg path,
+.c7.ant-btn-disabled.ant-btn-default svg path,
+.c7[disabled].ant-btn-primary svg path,
+.c7.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+.c2 {
+  height: 100%;
+  width: 100%;
+}
+
+.c2 .ant-card {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  border-radius: 8px;
+  padding: 12px 16px;
+  border: 1px solid var(--acx-neutrals-20);
+  box-shadow: 0px 2px 4px rgba(51,51,51,0.08);
+}
+
+.c2 .ant-card-head {
+  display: none;
+  padding: 0;
+  border-bottom: none;
+  min-height: 0;
+  margin-bottom: 10px;
+}
+
+.c2 .ant-card-head-title {
+  padding: 0;
+}
+
+.c2 .ant-card-head-title .ant-space .ant-space-item:last-child {
+  line-height: 0;
+}
+
+.c2 .ant-card-head-wrapper {
+  -webkit-align-items: start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: start;
+}
+
+.c2 .ant-card-extra {
+  padding: 0;
+}
+
+.c2 .ant-card-body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  padding: 0;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c3 {
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-headline-4-line-height);
+  color: var(--acx-primary-black);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+}
+
+.c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c5.device-container {
+  z-index: 3;
+  width: 36px;
+  height: 36px;
+  position: absolute;
+}
+
+.c5.device-container:not(.context-Unplaced) {
+  margin: -21px 0 0 -21px;
+}
+
+.c5.device-container.context-Album {
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+}
+
+.c5.device-container svg {
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.c5.device-container .marker {
+  border: 3px solid white;
+  box-shadow: -2px 0px 4px -1px rgba(0,0,0,0.75);
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  border-radius: 50% 50% 50% 0;
+  position: absolute;
+  -webkit-transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  cursor: 'pointer';
+}
+
+.c5.device-container .marker path {
+  fill: var(--acx-primary-white);
+  stroke: var(--acx-neutrals-50);
+}
+
+.c5.device-container .marker.ap-status-severity-critical {
+  background-color: var(--acx-semantics-red-70) !important;
+}
+
+.c5.device-container .marker.ap-status-severity-cleared {
+  background-color: var(--acx-semantics-green-50) !important;
+}
+
+.c5.device-container .marker.ap-status-severity-attention {
+  background-color: var(--acx-neutrals-50) !important;
+}
+
+.c5.device-container .marker.ap-status-severity-critical {
+  background-color: var(--acx-semantics-red-50) !important;
+}
+
+.c5.device-container .marker.ap-status-severity-minor {
+  background-color: var(--acx-semantics-yellow-50) !important;
+}
+
+.c5.device-container .marker.ap-rogue-type-offline {
+  opacity: .3;
+}
+
+.c5.device-container .marker.switch-status-never-contacted-cloud {
+  background-color: var(--acx-neutrals-50) !important;
+}
+
+.c5.device-container .marker.switch-status-operational {
+  background-color: var(--acx-semantics-green-50) !important;
+}
+
+.c5.device-container .marker.switch-status-disconnected {
+  background-color: var(--acx-semantics-red-50) !important;
+}
+
+.c5.device-container .marker.rwg-status-never-contacted-cloud {
+  background-color: var(--acx-neutrals-50) !important;
+}
+
+.c5.device-container .marker.rwg-status-operational {
+  background-color: var(--acx-semantics-green-50) !important;
+}
+
+.c5.device-container .marker.rwg-status-disconnected {
+  background-color: var(--acx-semantics-red-50) !important;
+}
+
+.c5.device-container .marker.rwg-status-invalid-api {
+  background-color: var(--acx-semantics-yellow-40) !important;
+}
+
+.c5.device-container .marker.ap-rogue-type-malicious {
+  background-color: var(--acx-accents-orange-50);
+}
+
+.c5.device-container .marker.ap-rogue-type-ignored {
+  background-color: var(--acx-semantics-green-70);
+}
+
+.c5.device-container .marker.ap-rogue-type-unclassified {
+  background-color: var(--acx-accents-blue-60);
+}
+
+.c5.device-container .marker.ap-rogue-type-known {
+  background-color: var(--acx-semantics-green-50);
+}
+
+.c5.device-container .marker:after {
+  position: relative;
+  border-radius: 50%;
+  font-family: ruckus;
+  color: white;
+  font-size: 26px;
+  bottom: 5px;
+  left: 4px;
+  position: absolute;
+  -webkit-transform: rotate(41deg);
+  -webkit-transform: rotate(41deg);
+  -ms-transform: rotate(41deg);
+  transform: rotate(41deg);
+}
+
+.c5.device-container:not(.context-Venue):not(.context-Unplaced):not(.context-Ap):not(.context-LteAp):not(.context-Switch):not(.gallery):not(.context-RogueAp) .marker {
+  border-radius: 50% 50% 50% 50%;
+  border: 0;
+}
+
+.c5.device-container:not(.context-Venue):not(.context-Unplaced):not(.context-Ap):not(.context-LteAp):not(.context-Switch):not(.gallery):not(.context-RogueAp) .marker:not(.gallery-mode):after {
+  content: '';
+}
+
+.c5.device-container:not(.context-Venue):not(.context-Unplaced):not(.context-Ap):not(.context-LteAp):not(.context-Switch):not(.gallery):not(.context-RogueAp) .marker.gallery-mode:after {
+  bottom: 7px;
+  left: 7px;
+}
+
+.c5.device-container.gallery {
+  width: 24px;
+  height: 24px;
+}
+
+.c5.device-container.gallery .marker {
+  border-radius: 50% 50% 50% 50%;
+  border: 0;
+  padding: 4px;
+}
+
+.c5.device-container.gallery .marker.ap:after,
+.c5.device-container.gallery .marker.LTEAP:after,
+.c5.device-container.gallery .marker.switches:after {
+  font-size: 20px;
+  bottom: 2px;
+  left: 1px;
+}
+
+.c4 {
+  height: 168px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  margin: 5px auto;
+  cursor: pointer;
+  -webkit-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
+}
+
+.c6 {
+  position: absolute;
+  top: -34px;
+  right: 0;
+}
+
+.c8 {
+  border: none;
+}
+
+.c1 {
+  overflow: overlay;
+  max-height: 460px;
+}
+
+.c9:hover svg path,
+.c9:visited svg path {
+  stroke: var(--acx-accents-blue-60) !important;
+}
+
+.c9 svg path {
+  stroke: var(--acx-accents-blue-50) !important;
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<form
+    class="ant-form ant-form-horizontal"
+  >
+    <div
+      class="c0"
+    >
+      <div
+        class="c1"
+      >
+        <div
+          class="ant-row"
+          style="margin: -10px 0px -10px 0px; padding-bottom: 8px;"
+        >
+          <div
+            class="ant-col ant-col-12"
+            style="padding: 10px 8px 10px 8px;"
+          >
+            <div
+              class="c2"
+              type="default"
+            >
+              <div
+                class="ant-card"
+              >
+                <div
+                  class="ant-card-head"
+                >
+                  <div
+                    class="ant-card-head-wrapper"
+                  >
+                    <div
+                      class="ant-card-head-title"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      >
+                        <div
+                          class="ant-space-item"
+                        >
+                          <div
+                            class="c3"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-card-extra"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-card-body"
+                >
+                  <div
+                    class="c3"
+                  >
+                    <span
+                      class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                      style="max-width: 200px;"
+                    >
+                      TEST_2
+                    </span>
+                     (0th Floor)
+                  </div>
+                  <div
+                    class="c4"
+                  >
+                    <div
+                      data-testid="dropContainer"
+                      style="position: absolute; width: 100%; height: 100%;"
+                    />
                     <div>
                        
                       <div>
                         <div
-                          class="sc-ftvSup bkrOCx device-container context-Album"
+                          class="c5 device-container gallery"
                           draggable="true"
                           style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                         >
@@ -282,13 +1276,16 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                             class="marker ap-status-severity-attention"
                             style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
                           >
+                            <svg
+                              data-testid="SignalUp"
+                            />
                              
                           </div>
                         </div>
                       </div>
                       <div>
                         <div
-                          class="sc-ftvSup bkrOCx device-container context-Album"
+                          class="c5 device-container gallery"
                           draggable="true"
                           style="top: calc(7.056452%); left: calc(52.739727%); opacity: 1;"
                         >
@@ -296,377 +1293,160 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                             class="marker switch-status-never-contacted-cloud"
                             style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
                           >
+                            <svg
+                              data-testid="DeviceOutlined"
+                            />
                              
                           </div>
                         </div>
                       </div>
                     </div>
                     <img
-                      alt="Thumbnail for TEST_2"
-                      data-testid="thumbnailBgImage"
+                      alt="img"
+                      data-testid="fpImage"
                       src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
-                      style="width: 100%; height: 100%;"
+                      style="width: auto; height: 100%;"
                     />
                   </div>
                 </div>
-                <div
-                  class="sc-fEOsli gPwQCn"
-                >
-                  TEST_2
-                </div>
               </div>
             </div>
+          </div>
+          <div
+            class="ant-col ant-col-12"
+            style="padding: 10px 8px 10px 8px;"
+          >
             <div
-              class="ant-space-item"
+              class="c2"
+              type="default"
             >
               <div
-                class="sc-bjUoiL cvisjM"
+                class="ant-card"
               >
                 <div
-                  active="0"
-                  class="ant-card-grid sc-ksZaOG cpIWPX"
-                  data-testid="thumbnailBg"
+                  class="ant-card-head"
                 >
                   <div
-                    style="width: 100%; height: 53px; position: relative;"
+                    class="ant-card-head-wrapper"
                   >
+                    <div
+                      class="ant-card-head-title"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      >
+                        <div
+                          class="ant-space-item"
+                        >
+                          <div
+                            class="c3"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="ant-card-extra"
+                    >
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="ant-card-body"
+                >
+                  <div
+                    class="c3"
+                  >
+                    <span
+                      class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+                      style="max-width: 200px;"
+                    >
+                      dscx
+                    </span>
+                     (2nd Floor)
+                  </div>
+                  <div
+                    class="c4"
+                  >
+                    <div
+                      data-testid="dropContainer"
+                      style="position: absolute; width: 100%; height: 100%;"
+                    />
                     <div>
                        
                     </div>
                     <img
-                      alt="Thumbnail for dscx"
-                      data-testid="thumbnailBgImage"
+                      alt="img"
+                      data-testid="fpImage"
                       src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
-                      style="width: 100%; height: 100%;"
+                      style="width: auto; height: 100%;"
                     />
                   </div>
-                </div>
-                <div
-                  class="sc-fEOsli hqOLAR"
-                >
-                  dscx
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div
-        class="ant-space ant-space-horizontal ant-space-align-center sc-bBrHrO egSxQs"
-      >
         <div
-          class="ant-space-item"
-          style="margin-right: 24px;"
+          class="ant-space ant-space-horizontal ant-space-align-center c6"
         >
-          <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup sc-cxabCf sc-gicCDI kksEMP cZszz"
-            type="button"
-          >
-            <svg
-              data-testid="EyeOpenOutlined"
-            />
-            <span>
-              View Rogue APs
-            </span>
-          </button>
-        </div>
-        <div
-          class="ant-space-item"
-          style="margin-right: 24px;"
-        >
-          <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
-            data-testid="AddEditLinks"
-            type="button"
-          >
-            <span>
-              + Add Floor Plan
-            </span>
-          </button>
           <div
-            class="ant-modal-root"
+            class="ant-space-item"
+            style="margin-right: 24px;"
           >
-            <div
-              class="ant-modal-wrap"
-              style="display: none;"
-              tabindex="-1"
-            />
+            <button
+              class="ant-btn ant-btn-link ant-btn-sm c7 c8 c9"
+              type="button"
+            >
+              <svg
+                data-testid="EyeOpenOutlined"
+              />
+              <span>
+                View Rogue APs
+              </span>
+            </button>
           </div>
-        </div>
-        <div
-          class="ant-space-item"
-          style="margin-right: 24px;"
-        >
-          <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger"
-            type="button"
+          <div
+            class="ant-space-item"
+            style="margin-right: 24px;"
           >
-            <span>
-              Unplaced Devices (2)
-            </span>
-          </button>
-        </div>
-        <div
-          class="ant-space-item"
-        >
-           
+            <button
+              class="ant-btn ant-btn-link ant-btn-sm c7"
+              data-testid="AddEditLinks"
+              type="button"
+            >
+              <span>
+                + Add Floor Plan
+              </span>
+            </button>
+            <div
+              class="ant-modal-root"
+            >
+              <div
+                class="ant-modal-wrap"
+                style="display: none;"
+                tabindex="-1"
+              />
+            </div>
+          </div>
+          <div
+            class="ant-space-item"
+          >
+            <button
+              class="ant-btn ant-btn-link ant-btn-sm c7 ant-dropdown-trigger"
+              disabled=""
+              type="button"
+            >
+              <span>
+                Unplaced Devices (2)
+              </span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
-<DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
-  >
-    <div
-      class="sc-llJcti imHpNO"
-    >
-      <div
-        class="ant-row"
-        style="margin: -10px 0px -10px 0px; padding-bottom: 8px;"
-      >
-        <div
-          class="ant-col ant-col-12"
-          style="padding: 10px 8px 10px 8px;"
-        >
-          <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
-            type="default"
-          >
-            <div
-              class="ant-card"
-            >
-              <div
-                class="ant-card-head"
-              >
-                <div
-                  class="ant-card-head-wrapper"
-                >
-                  <div
-                    class="ant-card-head-title"
-                  >
-                    <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-card-extra"
-                  >
-                    <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div
-                class="ant-card-body"
-              >
-                <div
-                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                >
-                  TEST_2
-                </div>
-                <div
-                  class="sc-evZas ikptan"
-                >
-                  <div
-                    data-testid="dropContainer"
-                    style="position: absolute; width: 100%; height: 100%;"
-                  />
-                  <div>
-                     
-                    <div>
-                      <div
-                        class="sc-ftvSup bkrOCx device-container gallery"
-                        draggable="true"
-                        style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
-                      >
-                        <div
-                          class="marker ap-status-severity-attention"
-                          style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
-                        >
-                          <svg
-                            data-testid="SignalUp"
-                          />
-                           
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <div
-                        class="sc-ftvSup bkrOCx device-container gallery"
-                        draggable="true"
-                        style="top: calc(7.056452%); left: calc(52.739727%); opacity: 1;"
-                      >
-                        <div
-                          class="marker switch-status-never-contacted-cloud"
-                          style="align-items: center; display: flex; justify-content: center; cursor: pointer;"
-                        >
-                          <svg
-                            data-testid="DeviceOutlined"
-                          />
-                           
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <img
-                    alt="img"
-                    data-testid="fpImage"
-                    src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/01acff37331949c686d40b5a00822ec2-001.jpeg"
-                    style="width: auto; height: 100%;"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="ant-col ant-col-12"
-          style="padding: 10px 8px 10px 8px;"
-        >
-          <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
-            type="default"
-          >
-            <div
-              class="ant-card"
-            >
-              <div
-                class="ant-card-head"
-              >
-                <div
-                  class="ant-card-head-wrapper"
-                >
-                  <div
-                    class="ant-card-head-title"
-                  >
-                    <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    >
-                      <div
-                        class="ant-space-item"
-                      >
-                        <div
-                          class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="ant-card-extra"
-                  >
-                    <div
-                      class="ant-space ant-space-horizontal ant-space-align-center"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div
-                class="ant-card-body"
-              >
-                <div
-                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
-                >
-                  dscx
-                </div>
-                <div
-                  class="sc-evZas ikptan"
-                >
-                  <div
-                    data-testid="dropContainer"
-                    style="position: absolute; width: 100%; height: 100%;"
-                  />
-                  <div>
-                     
-                  </div>
-                  <img
-                    alt="img"
-                    data-testid="fpImage"
-                    src="https://storage.googleapis.com/dev-alto-file-storage-0/tenant/fe892a451d7a486bbb3aee929d2dfcd1/7231da344778480d88f37f0cca1c534f-001.png"
-                    style="width: auto; height: 100%;"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="ant-space ant-space-horizontal ant-space-align-center sc-bBrHrO egSxQs"
-      >
-        <div
-          class="ant-space-item"
-          style="margin-right: 24px;"
-        >
-          <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup sc-cxabCf sc-gicCDI kksEMP cZszz"
-            type="button"
-          >
-            <svg
-              data-testid="EyeOpenOutlined"
-            />
-            <span>
-              View Rogue APs
-            </span>
-          </button>
-        </div>
-        <div
-          class="ant-space-item"
-          style="margin-right: 24px;"
-        >
-          <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
-            data-testid="AddEditLinks"
-            type="button"
-          >
-            <span>
-              + Add Floor Plan
-            </span>
-          </button>
-          <div
-            class="ant-modal-root"
-          >
-            <div
-              class="ant-modal-wrap"
-              style="display: none;"
-              tabindex="-1"
-            />
-          </div>
-        </div>
-        <div
-          class="ant-space-item"
-          style="margin-right: 24px;"
-        >
-          <button
-            class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger"
-            disabled=""
-            type="button"
-          >
-            <span>
-              Unplaced Devices (2)
-            </span>
-          </button>
-        </div>
-        <div
-          class="ant-space-item"
-        >
-           
-        </div>
-      </div>
-    </div>
-  </div>
+  </form>
 </DocumentFragment>
 `;

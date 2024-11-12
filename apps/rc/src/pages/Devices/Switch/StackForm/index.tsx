@@ -32,25 +32,33 @@ import {
   Table,
   Tabs,
   Tooltip,
-  Alert
+  Alert,
+  showToast
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }     from '@acx-ui/feature-toggle'
-import { DeleteOutlinedIcon, Drag }   from '@acx-ui/icons'
+import { useIsSplitOn, Features }          from '@acx-ui/feature-toggle'
+import { Drag }                            from '@acx-ui/icons'
+import { DeleteOutlined }                  from '@acx-ui/icons-new'
+import { useSwitchFirmwareUtils }          from '@acx-ui/rc/components'
 import {
+  switchApi,
   useGetSwitchQuery,
   useConvertToStackMutation,
   useSaveSwitchMutation,
   useUpdateSwitchMutation,
   useSwitchDetailHeaderQuery,
   useLazyGetVlansByVenueQuery,
-  useLazyGetStackMemberListQuery,
   useLazyGetSwitchListQuery,
-  useGetSwitchVenueVersionListQuery
+  useGetSwitchVenueVersionListQuery,
+  useGetSwitchListQuery,
+  useGetSwitchVenueVersionListV1001Query
 } from '@acx-ui/rc/services'
 import {
   Switch,
   getSwitchModel,
   SWITCH_SERIAL_PATTERN,
+  SWITCH_SERIAL_PATTERN_INCLUDED_8100,
+  SWITCH_SERIAL_PATTERN_INCLUDED_8200AV,
+  SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV,
   SwitchTable,
   SwitchStatusEnum,
   isOperationalSwitch,
@@ -59,10 +67,16 @@ import {
   LocationExtended,
   VenueMessages,
   SwitchRow,
-  StackMember,
+  SwitchMessages,
   isSameModelFamily,
+  checkSwitchUpdateFields,
   checkVersionAtLeast09010h,
-  getStackUnitsMinLimitation
+  getStackUnitsMinLimitation,
+  convertInputToUppercase,
+  FirmwareSwitchVenueVersionsV1002,
+  getStackUnitsMinLimitationV1002,
+  getSwitchFwGroupVersionV1002,
+  SwitchFirmwareModelGroup
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -70,6 +84,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { store }   from '@acx-ui/store'
 import { getIntl } from '@acx-ui/utils'
 
 import { getTsbBlockedSwitch, showTsbBlockedSwitchErrorDialog }        from '../SwitchForm/blockListRelatedTsb.util'
@@ -78,7 +93,6 @@ import { SwitchUpgradeNotification, SWITCH_UPGRADE_NOTIFICATION_TYPE } from '../
 
 import {
   TableContainer,
-  DisabledDeleteOutlinedIcon,
   RequiredDotSpan,
   StepFormTitle,
   TypographyText
@@ -90,11 +104,28 @@ const defaultPayload = {
   search: '', updateAvailable: ''
 }
 
-const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
+const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX8100-24', 'ICX8100-24P',
+  'ICX8100-48', 'ICX8100-48P', 'ICX8100-C08PF']
 
-export const validatorSwitchModel = (serialNumber: string, activeSerialNumber?: string) => {
+export type SwitchModelParams = {
+  serialNumber: string;
+  isSupport8200AV: boolean;
+  isSupport8100: boolean;
+  activeSerialNumber?: string;
+}
+
+export const validatorSwitchModel = ( props: SwitchModelParams ) => {
+  const { serialNumber, isSupport8200AV, isSupport8100, activeSerialNumber } = props
   const { $t } = getIntl()
-  const re = new RegExp(SWITCH_SERIAL_PATTERN)
+
+  const switchSerialPatterns = [
+    // eslint-disable-next-line max-len
+    { condition: isSupport8100 && isSupport8200AV, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV },
+    { condition: isSupport8100, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8100 },
+    { condition: isSupport8200AV, pattern: SWITCH_SERIAL_PATTERN_INCLUDED_8200AV }
+  ]
+  const matchedPattern = switchSerialPatterns.find(p => p.condition)
+  const re = new RegExp(matchedPattern ? matchedPattern.pattern : SWITCH_SERIAL_PATTERN)
   if (serialNumber && !re.test(serialNumber)) {
     return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
   }
@@ -103,7 +134,8 @@ export const validatorSwitchModel = (serialNumber: string, activeSerialNumber?: 
 
   if (modelNotSupportStack.indexOf(model) > -1) {
     return Promise.reject(
-      $t({ defaultMessage: "Serial number is invalid since it's not support stacking" })
+      // eslint-disable-next-line max-len
+      $t({ defaultMessage: 'This switch model does not support stacking. Add it as a standalone switch.' })
     )
   }
   if (serialNumber && activeSerialNumber && !isSameModelFamily(activeSerialNumber, serialNumber)) {
@@ -135,19 +167,20 @@ export function StackForm () {
   const stackSwitches = stackList?.split('_') ?? []
   const isStackSwitches = stackSwitches?.length > 0
 
-  const { data: venuesList, isLoading: isVenuesListLoading } =
-  useGetSwitchVenueVersionListQuery({ params: { tenantId }, payload: defaultPayload })
-  const [getVlansByVenue] = useLazyGetVlansByVenueQuery()
-  const { data: switchData, isLoading: isSwitchDataLoading } =
-    useGetSwitchQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
-  const { data: switchDetail, isLoading: isSwitchDetailLoading } =
-    useSwitchDetailHeaderQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
-  const [getStackMemberList] = useLazyGetStackMemberListQuery()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const enableStackUnitLimitationFlag = useIsSplitOn(Features.SWITCH_STACK_UNIT_LIMITATION)
+  const enableSwitchStackNameDisplayFlag = useIsSplitOn(Features.SWITCH_STACK_NAME_DISPLAY_TOGGLE)
+  const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
+  const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
+  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
+  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
+
   const [getSwitchList] = useLazyGetSwitchListQuery()
 
   const [previousPath, setPreviousPath] = useState('')
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [apGroupOption, setApGroupOption] = useState([] as DefaultOptionType[])
+  const [editVenueId, setEditVenueId] = useState('')
 
   const [validateModel, setValidateModel] = useState([] as string[])
   const [visibleNotification, setVisibleNotification] = useState(false)
@@ -156,19 +189,18 @@ export function StackForm () {
   const [readOnly, setReadOnly] = useState(false)
   const [disableIpSetting, setDisableIpSetting] = useState(false)
   const [standaloneSwitches, setStandaloneSwitches] = useState([] as SwitchRow[])
-  const [currentFW, setCurrentFw] = useState('')
+  const [currentFw, setCurrentFw] = useState('')
   const [currentAboveTenFW, setCurrentAboveTenFw] = useState('')
   const [currentVenueFw, setCurrentVenueFw] = useState('')
   const [currentVenueAboveTenFw, setCurrentVenueAboveTenFw] = useState('')
+  const [currentFirmwareV1002, setCurrentFirmwareV1002] =
+    useState([] as FirmwareSwitchVenueVersionsV1002[])
+  const { checkSwitchModelGroup } = useSwitchFirmwareUtils()
 
   const [activeRow, setActiveRow] = useState('1')
   const [rowKey, setRowKey] = useState(2)
 
   const dataFetchedRef = useRef(false)
-
-  const enableStackUnitLimitationFlag = useIsSplitOn(Features.SWITCH_STACK_UNIT_LIMITATION)
-  const enableSwitchStackNameDisplayFlag = useIsSplitOn(Features.SWITCH_STACK_NAME_DISPLAY_TOGGLE)
-  const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
 
   const defaultArray: SwitchTable[] = [
     { key: '1', id: '', model: '', active: true, disabled: false },
@@ -178,16 +210,69 @@ export function StackForm () {
 
   const activeSerialNumber = formRef.current?.getFieldValue(`serialNumber${activeRow}`)
 
+  const getSwitchInfo = useGetSwitchListQuery({
+    params: { tenantId },
+    payload: { filters: { id: [switchId] } }, enableRbac: isSwitchRbacEnabled
+  }, { skip: action === 'add' || !isSwitchRbacEnabled })
+
+  const { data: venuesList, isLoading: isVenuesListLoading } =
+    useGetSwitchVenueVersionListQuery({
+      params: { tenantId },
+      payload: defaultPayload, enableRbac: isSwitchRbacEnabled
+    }, { skip: isSwitchFirmwareV1002Enabled })
+
+  const { data: venuesListV1002, isLoading: isVenuesListV1002Loading } =
+    useGetSwitchVenueVersionListV1001Query({
+      params: { tenantId },
+      payload: {
+        firmwareType: '',
+        firmwareVersion: '',
+        search: '', updateAvailable: ''
+      }
+    }, { skip: !isSwitchFirmwareV1002Enabled })
+
+  const [getVlansByVenue] = useLazyGetVlansByVenueQuery()
+  const { data: switchData, isLoading: isSwitchDataLoading } =
+    useGetSwitchQuery({
+      params: { tenantId, switchId, venueId: venueId || editVenueId },
+      enableRbac: isSwitchRbacEnabled
+    }, {
+      skip: action === 'add' ||
+        (isSwitchRbacEnabled && (_.isEmpty(venueId) && _.isEmpty(editVenueId)))
+    })
+  const { data: switchDetail, isLoading: isSwitchDetailLoading } =
+    useSwitchDetailHeaderQuery({
+      params: { tenantId, switchId, venueId: venueId || editVenueId },
+      enableRbac: isSwitchRbacEnabled
+    }, {
+      skip: action === 'add' ||
+        (isSwitchRbacEnabled && (_.isEmpty(venueId) && _.isEmpty(editVenueId)))
+    })
+
   useEffect(() => {
-    if (!isVenuesListLoading) {
-      setVenueOption(
-        venuesList?.data?.map((item) => ({
-          label: item.name,
-          value: item.id
-        })) ?? []
-      )
+    if (getSwitchInfo.data) {
+      setEditVenueId(getSwitchInfo.data.data[0].venueId)
     }
-    if (switchData && switchDetail && venuesList) {
+  }, [getSwitchInfo])
+
+  useEffect(() => {
+    if (isSwitchFirmwareV1002Enabled && !isVenuesListV1002Loading) {
+      const venues = venuesListV1002?.data?.map((item) => ({
+        label: item.venueName,
+        value: item.venueId
+      })) ?? []
+      const sortedVenueOption = _.sortBy(venues, (v) => v.label)
+      setVenueOption(sortedVenueOption)
+    } else if (!isSwitchFirmwareV1002Enabled && !isVenuesListLoading) {
+      const venues = venuesList?.data?.map((item) => ({
+        label: isSwitchRbacEnabled ? item.venueName : item.name,
+        value: isSwitchRbacEnabled ? item.venueId : item.id
+      })) ?? []
+      const sortedVenueOption = _.sortBy(venues, (v) => v.label)
+      setVenueOption(sortedVenueOption)
+    }
+
+    if (switchData && switchDetail && (venuesList || venuesListV1002)) {
       if (dataFetchedRef.current) return
       dataFetchedRef.current = true
       formRef?.current?.resetFields()
@@ -200,18 +285,27 @@ export function StackForm () {
           switchDetail.deviceStatus as SwitchStatusEnum, switchDetail.syncedSwitchConfig)
       )
 
-      const switchFw = switchData.firmwareVersion
-      const venueFw = venuesList.data.find(
-        venue => venue.id === switchData.venueId)?.switchFirmwareVersion?.id
-      const venueAboveTenFw = venuesList.data.find(
-        venue => venue.id === switchData.venueId)?.switchFirmwareVersionAboveTen?.id
-      setCurrentFw(switchFw || venueFw || '')
-      setCurrentAboveTenFw(switchFw || venueAboveTenFw || '')
-      setCurrentVenueFw(venueFw || '')
-      setCurrentVenueAboveTenFw(venueAboveTenFw || '')
+      const switchFw = switchDetail?.firmware || switchData?.firmwareVersion
+      const venueId = switchData?.venueId || switchDetail?.venueId || ''
+      if (isSwitchFirmwareV1002Enabled && venuesListV1002) {
+        const venueVersions = venuesListV1002.data?.find(
+          venue => venue['venueId'] === venueId)?.versions
+        setCurrentFirmwareV1002(venueVersions || [])
+
+      } else if (!isSwitchFirmwareV1002Enabled && venuesList) {
+        const venueFw = venuesList.data.find(
+          venue => venue.id === venueId)?.switchFirmwareVersion?.id
+        const venueAboveTenFw = venuesList.data.find(
+          venue => venue.id === venueId)?.switchFirmwareVersionAboveTen?.id
+
+        setCurrentFw(switchFw || venueFw || '')
+        setCurrentAboveTenFw(switchFw || venueAboveTenFw || '')
+        setCurrentVenueFw(venueFw || '')
+        setCurrentVenueAboveTenFw(venueAboveTenFw || '')
+      }
 
       if (!!switchDetail.model?.includes('ICX7650')) {
-        formRef?.current?.setFieldValue('rearModule',
+        formRef?.current?.setFieldValue('rearModuleOption',
           formRef.current?.getFieldValue('rearModule') === 'stack-40g')
       }
 
@@ -220,33 +314,8 @@ export function StackForm () {
       }
 
       const getStackMembersList = async () => {
-        const stackMembersPayload = {
-          fields: [
-            'activeUnitId',
-            'unitId',
-            'unitStatus',
-            'name',
-            'deviceStatus',
-            'model',
-            'serialNumber',
-            'activeSerial',
-            'switchMac',
-            'ip',
-            'venueName',
-            'uptime'
-          ],
-          filters: { activeUnitId: [''] }
-        }
-
-        stackMembersPayload.filters.activeUnitId = [switchDetail?.activeSerial || '']
-        const stackMembersList = switchDetail?.activeSerial
-          ? (await getStackMemberList({
-            params: { tenantId, switchId }, payload: stackMembersPayload
-          }, false))
-          : []
-
-        const stackMembers = _.get(stackMembersList, 'data.data').map(
-          (item: { id: string; model: undefined }, index: number) => {
+        const stackMembers = switchData?.stackMembers?.map(
+          (item: { id: string; model: string }, index: number) => {
             const key: string = (index + 1).toString()
             formRef?.current?.setFieldValue(`serialNumber${key}`, item.id)
             if (_.get(switchDetail, 'activeSerial') === item.id) {
@@ -260,18 +329,13 @@ export function StackForm () {
                 ${_.get(switchDetail, 'activeSerial') === item.id ? '(Active)' : ''}`,
               active: _.get(switchDetail, 'activeSerial') === item.id,
               disabled: _.get(switchDetail, 'activeSerial') === item.id ||
-                !!switchDetail.cliApplied ||
                 switchDetail.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
                 switchDetail.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
             }
-          })
+          }) ?? []
 
-        const stackMemberIds = switchData?.stackMembers?.map(s => s.id)
-        const syncedStackMembers
-        = stackMembers?.filter((stack: StackMember) => stackMemberIds?.includes(stack.id))
-
-        setTableData(syncedStackMembers)
-        setRowKey(syncedStackMembers?.length)
+        setTableData(stackMembers)
+        setRowKey(stackMembers?.length)
       }
 
       getStackMembersList()
@@ -292,7 +356,10 @@ export function StackForm () {
           ]
         }
         const switchList = venueId
-          ? (await getSwitchList({ params: { tenantId: tenantId }, payload: switchListPayload
+          ? (await getSwitchList({
+            params: { tenantId: tenantId },
+            payload: switchListPayload,
+            enableRbac: isSwitchRbacEnabled
           }, false))?.data?.data
           : []
 
@@ -315,7 +382,7 @@ export function StackForm () {
 
       getStandaloneSwitches()
     }
-  }, [venuesList, switchData, switchDetail])
+  }, [venuesList, switchData, switchDetail, venuesListV1002])
 
   useEffect(() => {
     if (tableData || activeRow) {
@@ -327,11 +394,24 @@ export function StackForm () {
   useEffect(() => {
     if (activeSerialNumber) {
       const switchModel = getSwitchModel(activeSerialNumber) || ''
-      const miniMembers = getStackUnitsMinLimitation(switchModel, currentFW, currentAboveTenFW)
+      setIsIcx7650(switchModel.includes('ICX7650'))
+      const miniMembers = getMiniMembers(activeSerialNumber)
       setTableData(data => [...data].splice(0, miniMembers))
     }
-  }, [activeSerialNumber, currentAboveTenFW, currentFW])
+  }, [activeSerialNumber, currentAboveTenFW, currentFw, currentFirmwareV1002])
 
+
+  const getMiniMembers = function (activeSerialNumber: string) {
+    const switchModel = getSwitchModel(activeSerialNumber) || ''
+    if (isSwitchFirmwareV1002Enabled) {
+      const switchModelGroup = checkSwitchModelGroup(switchModel)
+      const currentVersion = currentFirmwareV1002?.find(v =>
+        v.modelGroup === switchModelGroup)?.version || ''
+      return getStackUnitsMinLimitationV1002(switchModel, currentVersion)
+    } else {
+      return getStackUnitsMinLimitation(switchModel, currentFw, currentAboveTenFW)
+    }
+  }
 
   useEffect(() => {
     setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
@@ -372,13 +452,27 @@ export function StackForm () {
   const [convertToStack] = useConvertToStackMutation()
 
   const hasBlockingTsb = function () {
-    return !checkVersionAtLeast09010h(currentFW) && isBlockingTsbSwitch
+    const fw = isSwitchFirmwareV1002Enabled
+      ? getSwitchFwGroupVersionV1002(currentFirmwareV1002, SwitchFirmwareModelGroup.ICX71)
+      : currentFw
+    return !checkVersionAtLeast09010h(fw) && isBlockingTsbSwitch
+  }
 
+  const transformSwitchData = (switchData: Switch) => {
+    // transform stack member data for compare data
+    const members = switchData?.stackMembers?.reduce((result, current, index) => ({
+      ...result,
+      [`serialNumber${index + 1}`]: current.id
+    }), {})
+    return {
+      ...switchData,
+      ...members
+    }
   }
 
   const handleAddSwitchStack = async (values: SwitchViewModel) => {
     if (hasBlockingTsb()) {
-      if (getTsbBlockedSwitch(tableData.map(item=>item.id))?.length > 0) {
+      if (getTsbBlockedSwitch(tableData.map(item => item.id))?.length > 0) {
         showTsbBlockedSwitchErrorDialog()
         return
       }
@@ -390,14 +484,18 @@ export function StackForm () {
         id: activeSerialNumber,
         description: values.description,
         venueId: values.venueId,
-        stackMembers: tableData.filter((item) => item.id !== '').map((item) => ({ id: item.id })),
+        stackMembers: tableData.filter(item => item.id).map(item => ({ id: item.id })),
         enableStack: true,
         jumboMode: false,
         igmpSnooping: 'none',
         spanningTreePriority: '',
-        initialVlanId: values?.initialVlanId
+        initialVlanId: values?.initialVlanId,
+        ...(isIcx7650 && { rearModule: values.rearModuleOption ? 'stack-40g' : 'none' })
       }
-      await saveSwitch({ params: { tenantId } , payload }).unwrap()
+      await saveSwitch({
+        params: { tenantId, venueId: values.venueId },
+        payload, enableRbac: isSwitchRbacEnabled
+      }).unwrap()
 
       navigate({
         ...basePath,
@@ -415,18 +513,11 @@ export function StackForm () {
         return
       }
     }
-    if (readOnly) {
-      navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/switch`
-      })
-      return
-    }
 
     try {
       let payload = {
         ...values,
-        stackMembers: tableData.map((item) => ({ id: item.id })),
+        stackMembers: tableData.filter(item => item.id).map(item => ({ id: item.id })),
         trustPorts: formRef.current?.getFieldValue('trustPorts')
       }
 
@@ -443,14 +534,42 @@ export function StackForm () {
         delete payload.rearModule
       }
 
-      await updateSwitch({ params: { tenantId, switchId }, payload }).unwrap()
+      await updateSwitch({
+        params: { tenantId, switchId, venueId: venueId || editVenueId },
+        payload,
+        enableRbac: isSwitchRbacEnabled
+      }).unwrap()
+        .then(() => {
+          const transformedSwitchData = transformSwitchData(switchData as Switch)
+          const updatedFields = checkSwitchUpdateFields(values, switchDetail, transformedSwitchData)
+          const noChange = updatedFields.length === 0
+          // TODO: should disable apply button while no changes
+          const onlyChangeDescription
+            = updatedFields.includes('description') && updatedFields.length === 1
+
+          // These cases won't trigger activity service: UpdateSwitch
+          if (noChange || onlyChangeDescription) {
+            store.dispatch(
+              switchApi.util.invalidateTags([
+                { type: 'Switch', id: 'DETAIL' },
+                { type: 'Switch', id: 'SWITCH' }
+              ])
+            )
+            showToast({
+              type: 'success',
+              content: $t(
+                { defaultMessage: 'Update switch {switchName} configuration success' },
+                { switchName: payload?.name }
+              )
+            })
+          }
+        })
 
       dataFetchedRef.current = false
 
-      navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/switch`
-      })
+      if (!deviceOnline) { // only one tab
+        redirectPreviousPage(navigate, previousPath, `${basePath.pathname}/switch`)
+      }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -458,18 +577,30 @@ export function StackForm () {
 
   const handleSaveStackSwitches = async (values: SwitchViewModel) => {
     try {
+      const enableRbac = isSwitchRbacEnabled
       const activeSwitchModel = getSwitchModel(activeSerialNumber)
       const isIcx7650 = activeSwitchModel?.includes('ICX7650')
-      const payload = {
+      const payload = enableRbac ? {
         name: values.name || '',
-        venueId: venueId,
-        activeSwitch: activeSerialNumber,
-        memberSwitch: tableData
+        memberSerials: tableData
           ?.filter((item) => item.id && item.id !== activeSerialNumber)
           ?.map((item) => item.id),
         ...(isIcx7650 && { rearModule: values.rearModuleOption ? 'stack-40g' : 'none' })
-      }
-      await convertToStack({ params: { tenantId } , payload }).unwrap()
+      } :
+        {
+          name: values.name || '',
+          venueId: venueId,
+          activeSwitch: activeSerialNumber,
+          memberSwitch: tableData
+            ?.filter((item) => item.id && item.id !== activeSerialNumber)
+            ?.map((item) => item.id),
+          ...(isIcx7650 && { rearModule: values.rearModuleOption ? 'stack-40g' : 'none' })
+        }
+      await convertToStack({
+        params: { tenantId, venueId, switchId: activeSerialNumber },
+        payload,
+        enableRbac
+      }).unwrap()
       navigate({
         ...basePath,
         pathname: `${basePath.pathname}/switch`
@@ -483,7 +614,7 @@ export function StackForm () {
     const tmpTableData = tableData.filter((item) => item.key !== row.key)
     setTableData(tmpTableData)
 
-    if(row.key === activeRow){
+    if (row.key === activeRow) {
       setActiveRow(tmpTableData[0].key)
     }
   }
@@ -535,19 +666,29 @@ export function StackForm () {
               required: activeRow === row.key ? true : false,
               message: $t({ defaultMessage: 'This field is required' })
             },
-            { validator: (_, value) => validatorSwitchModel(value,
-              activeRow === row.key ? value : activeSerialNumber) },
-            { validator: (_, value) => validatorUniqueMember(value,
-              // replace id here since tableData is not updated yet
-              tableData.map(d => ({ id: (d.key === row.key) ? value : d.id }))
-            ) }
+            {
+              validator: (_, value) => {
+                const switchModelParams: SwitchModelParams = {
+                  serialNumber: value,
+                  isSupport8200AV: isSupport8200AV,
+                  isSupport8100: isSupport8100,
+                  activeSerialNumber: activeRow === row.key ? value : activeSerialNumber
+                }
+                return validatorSwitchModel(switchModelParams)}
+            },
+            {
+              validator: (_, value) => validatorUniqueMember(value,
+                // replace id here since tableData is not updated yet
+                tableData.map(d => ({ id: (d.key === row.key) ? value : d.id }))
+              )
+            }
           ]}
           validateFirst
-        >{ isStackSwitches
+        >{isStackSwitches
             ? <Select
               options={standaloneSwitches?.filter(s =>
                 row.id === s.serialNumber ||
-                (!tableData.find(d => d.id === s.serialNumber)
+              (!tableData.find(d => d.id === s.serialNumber)
                 && modelNotSupportStack.indexOf(s.model) < 0)
               ).map(s => ({
                 label: s.serialNumber, value: s.serialNumber
@@ -562,7 +703,7 @@ export function StackForm () {
             : <Input
               data-testid={`serialNumber${row.key}`}
               onBlur={() => handleChange(row, index)}
-              style={{ textTransform: 'uppercase' }}
+              onInput={convertInputToUppercase}
               disabled={row.disabled}
             />
           }</Form.Item>)
@@ -619,13 +760,7 @@ export function StackForm () {
           type='link'
           key='delete'
           role='deleteBtn'
-          icon={
-            tableData.length <= 1 ? (
-              <DisabledDeleteOutlinedIcon />
-            ) : (
-              <DeleteOutlinedIcon />
-            )
-          }
+          icon={<DeleteOutlined size='sm' />}
           disabled={tableData.length <= 1 || (editMode && activeRow === row.key)}
           hidden={row.disabled}
           onClick={() => handleDelete(row)}
@@ -636,7 +771,10 @@ export function StackForm () {
 
   const getApGroupOptions = async (venueId: string) => {
     const list = venueId
-      ? (await getVlansByVenue({ params: { tenantId, venueId } }, true)).data
+      ? (await getVlansByVenue({
+        params: { tenantId, venueId },
+        enableRbac: isSwitchRbacEnabled
+      }, true)).data
       : []
 
     return (
@@ -655,7 +793,23 @@ export function StackForm () {
       formRef.current?.setFieldValue('initialVlanId', null)
     }
 
-    if(venuesList){
+
+    if (isSwitchFirmwareV1002Enabled) {
+
+      if (venuesListV1002 && venuesListV1002.data) {
+        const venueVersions = venuesListV1002.data?.find(
+          venue => venue['venueId'] === value)?.versions
+        setCurrentFirmwareV1002(venueVersions || [])
+      }
+      const switchModel = getSwitchModel(activeSerialNumber) || ''
+      const switchModelGroup = checkSwitchModelGroup(switchModel)
+      const currentVersion = currentFirmwareV1002?.find(v =>
+        v.modelGroup === switchModelGroup)?.version || ''
+      const miniMembers = getStackUnitsMinLimitationV1002(switchModel, currentVersion)
+      setTableData(tableData.splice(0, miniMembers))
+
+
+    } else if (!isSwitchFirmwareV1002Enabled && venuesList) {
       const venueFw =
         venuesList.data.find(venue => venue.id === value)?.switchFirmwareVersion?.id || ''
       const venueAboveTenFw =
@@ -670,6 +824,7 @@ export function StackForm () {
       const miniMembers = getStackUnitsMinLimitation(switchModel, venueFw, venueAboveTenFw)
       setTableData(tableData.splice(0, miniMembers))
     }
+
     setApGroupOption(options as DefaultOptionType[])
   }
 
@@ -713,11 +868,11 @@ export function StackForm () {
   }
 
   const enableAddMember = () => {
-    const switchModel = getSwitchModel(activeSerialNumber) || ''
     if (!enableStackUnitLimitationFlag) {
       return true
     }
-    return tableData.length < getStackUnitsMinLimitation(switchModel, currentFW, currentAboveTenFW)
+    const miniMembers = getMiniMembers(activeSerialNumber)
+    return tableData.length < miniMembers
   }
 
   return (
@@ -744,17 +899,38 @@ export function StackForm () {
           redirectPreviousPage(navigate, previousPath, `${basePath.pathname}/switch`)
         }
         buttonLabel={{
-          submit: readOnly ? $t({ defaultMessage: 'OK' }) :
-            editMode ?
-              $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' }),
-          cancel: readOnly ? '' : $t({ defaultMessage: 'Cancel' })
+          submit: editMode ?
+            $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' }),
+          cancel: $t({ defaultMessage: 'Cancel' })
         }}
       >
-        <StepsFormLegacy.StepForm>
+        <StepsFormLegacy.StepForm
+          onFinishFailed={({ errorFields }) => {
+            const detailsFields = ['venueId', 'name', 'description']
+            const hasErrorFields = !!errorFields.length
+            const isSettingsTabActive = currentTab === 'settings'
+            const isDetailsFieldsError = errorFields.filter(field => {
+              const errorFieldName = field.name[0] as string
+              return detailsFields.includes(errorFieldName)
+                || errorFieldName.includes('serialNumber')
+            }).length > 0
+
+            if (deviceOnline && hasErrorFields && !isDetailsFieldsError && !isSettingsTabActive) {
+              setCurrentTab('settings')
+              showToast({
+                type: 'error',
+                content: readOnly
+                  ? $t(SwitchMessages.PLEASE_CHECK_INVALID_VALUES_AND_MODIFY_VIA_CLI)
+                  : $t(SwitchMessages.PLEASE_CHECK_INVALID_VALUES)
+              })
+            }
+          }}
+        >
           <Loader
             states={[
               {
-                isLoading: isVenuesListLoading || isSwitchDataLoading || isSwitchDetailLoading
+                isLoading: isVenuesListLoading || isSwitchDataLoading
+                  || isSwitchDetailLoading || isVenuesListV1002Loading
               }
             ]}
           >
@@ -771,12 +947,10 @@ export function StackForm () {
                     <Tabs.TabPane tab={$t({ defaultMessage: 'Settings' })} key='settings' />}
                 </Tabs>
                 <div style={{ display: currentTab === 'details' ? 'block' : 'none' }}>
-                  {readOnly &&
-                    <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
                   <Col span={14} style={{ padding: '0' }}>
                     <Form.Item
                       name='venueId'
-                      label={$t({ defaultMessage: 'Venue' })}
+                      label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
                       rules={[
                         {
                           required: true,
@@ -796,14 +970,15 @@ export function StackForm () {
                       label={<>{$t({ defaultMessage: 'Stack Name' })}</>}
                       rules={[{ max: 255 }]}
                     >
-                      <Input disabled={readOnly} />
+                      <Input />
                     </Form.Item>
                     {!isStackSwitches && <Form.Item
                       name='description'
                       label={$t({ defaultMessage: 'Description' })}
                       rules={[{ max: 64 }]}
                       initialValue={''}
-                    ><Input.TextArea rows={4} maxLength={180} disabled={readOnly} /></Form.Item>}
+                    ><Input.TextArea rows={4} maxLength={180} />
+                    </Form.Item>}
                     {!editMode && !isStackSwitches && <Form.Item
                       name='initialVlanId'
                       label={
@@ -883,7 +1058,6 @@ export function StackForm () {
                           type='link'
                           size='small'
                           disabled={tableData.length >= 12}
-                          hidden={readOnly}
                         >
                           {$t({ defaultMessage: 'Add another member' })}
                         </Button>
@@ -892,15 +1066,14 @@ export function StackForm () {
                   </Col>
                   <SwitchUpgradeNotification
                     switchModel={getSwitchModel(activeSerialNumber)}
-                    stackUnitsMinLimitaion={getStackUnitsMinLimitation(
-                      getSwitchModel(activeSerialNumber)!, currentFW, currentAboveTenFW
-                    )}
+                    stackUnitsMinLimitaion={getMiniMembers(activeSerialNumber)}
                     venueFirmware={currentVenueFw}
                     venueAboveTenFirmware={currentVenueAboveTenFw}
                     isDisplay={visibleNotification}
                     isDisplayHeader={false}
                     type={SWITCH_UPGRADE_NOTIFICATION_TYPE.STACK}
                     validateModel={validateModel}
+                    venueFirmwareV1002={currentFirmwareV1002}
                   />
                 </div>
                 {editMode &&
@@ -914,9 +1087,13 @@ export function StackForm () {
                   <Input /></Form.Item>
                 {editMode &&
                   <div style={{ display: currentTab === 'settings' ? 'block' : 'none' }}>
+                    {readOnly &&
+                      <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
                     <SwitchStackSetting
+                      switchDetail={switchDetail}
                       apGroupOption={apGroupOption}
                       readOnly={readOnly}
+                      deviceOnline={deviceOnline}
                       isIcx7650={isIcx7650}
                       disableIpSetting={disableIpSetting}
                     />

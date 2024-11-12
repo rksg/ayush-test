@@ -1,6 +1,7 @@
 import _ from 'lodash'
 
 import { Filter }                        from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { useDownloadSwitchsCSVMutation } from '@acx-ui/rc/services'
 import { TableQuery }                    from '@acx-ui/rc/utils'
 import { RequestPayload }                from '@acx-ui/types'
@@ -10,6 +11,7 @@ export function useExportCsv<T> (
   tableQuery: TableQuery<T, RequestPayload<unknown>, unknown>
 ) {
   const [ downloadCsv ] = useDownloadSwitchsCSVMutation()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const payload = {
     fields: tableQuery.payload?.fields,
@@ -22,7 +24,7 @@ export function useExportCsv<T> (
   }
 
   return {
-    exportCsv: () => downloadCsv(payload),
+    exportCsv: () => downloadCsv({ payload, enableRbac: isSwitchRbacEnabled }),
     disabled: !((tableQuery.data?.data ?? []).length > 0)
   }
 }

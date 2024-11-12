@@ -9,7 +9,12 @@ import {
   NetworkHierarchy,
   Switch
 } from '@acx-ui/analytics/services'
-import { defaultSort, sortProp, formattedPath, getUserProfile, encodeFilterPath } from '@acx-ui/analytics/utils'
+import {
+  defaultSort,
+  sortProp,
+  formattedPath,
+  encodeFilterPath
+} from '@acx-ui/analytics/utils'
 import {
   PageHeader,
   Loader,
@@ -20,10 +25,12 @@ import {
   useDateRange,
   TimeRangeDropDownProvider
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                       from '@acx-ui/formatter'
 import { useParams, TenantLink }                                           from '@acx-ui/react-router-dom'
+import { hasRaiPermission }                                                from '@acx-ui/user'
 import { DateRange, fixedEncodeURIComponent, encodeParameter, DateFilter } from '@acx-ui/utils'
+
+import { getZoneUrl } from '../ZoneDetails/ZoneTabs'
 
 import NoData                               from './NoData'
 import { Collapse, Panel, Ul, Chevron, Li } from './styledComponents'
@@ -32,16 +39,12 @@ const pagination = { pageSize: 5, defaultPageSize: 5 }
 
 function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
   const { $t } = useIntl()
-  const { selectedTenant: { role } } = getUserProfile()
-  const isReportOnly = role === 'report-only'
-  const isZonesPageEnabled = useIsSplitOn(Features.RUCKUS_AI_ZONES_LIST)
   const { timeRange } = useDateRange()
   const results = useSearchQuery({
     start: timeRange[0].format(),
     end: timeRange[1].format(),
     limit: 100,
-    query: searchVal!,
-    isReportOnly
+    query: searchVal!
   })
   let count = 0
   results.data && Object.entries(results.data).forEach(([, value]) => {
@@ -56,9 +59,9 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       sorter: { compare: sortProp('apName', defaultSort) },
       render: (_, row: AP) => {
         const filter = encodeFilterPath('analytics', row.networkPath)
-        const link = role === 'report-only'
-          ? `/reports/aps?${filter}`
-          : `/devices/wifi/${row.macAddress}/details/ai`
+        const link = hasRaiPermission('READ_ACCESS_POINTS_LIST')
+          ? `/devices/wifi/${row.macAddress}/details/ai`
+          : `/reports/aps?${filter}`
         return <TenantLink to={link}>{row.apName}</TenantLink>
       }
     },
@@ -119,13 +122,13 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       render: (_, row: Client) => {
         const { lastActiveTime, mac, hostname } = row
         const period = encodeParameter<DateFilter>({
-          startDate: moment(lastActiveTime).subtract(24, 'hours').format(),
-          endDate: lastActiveTime,
+          startDate: moment(lastActiveTime).subtract(4, 'hours').format(),
+          endDate: moment.min([moment(), moment(lastActiveTime).add(4, 'hours')]).format(),
           range: DateRange.custom
         })
-        const link = isReportOnly
-          ? `/users/wifi/clients/${mac}/details/reports`
-          : `/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`
+        const link = hasRaiPermission('READ_CLIENT_TROUBLESHOOTING')
+          ? `/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`
+          : `/users/wifi/clients/${mac}/details/reports`
         return <TenantLink to={link}>{hostname}</TenantLink>
       },
       sorter: { compare: sortProp('hostname', defaultSort) }
@@ -214,15 +217,15 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       render: (_, row: NetworkHierarchy) => {
         const networkPath = row.networkPath.slice(1)
         const filter = encodeFilterPath('analytics', row.networkPath)
-        const defaultPath = row.type.toLowerCase() === 'zone' && isZonesPageEnabled
-          ? `/zones/${networkPath?.[0]?.name}/${networkPath?.[1]?.name}/assurance`
+        const defaultPath = row.type.toLowerCase() === 'zone'
+          ? `${getZoneUrl(networkPath?.[0]?.name, networkPath?.[1]?.name)}/assurance`
           : `/incidents?${filter}`
         const reportOnly = row.type.toLowerCase().includes('switch')
           ? `/reports/switches?${filter}`
           : `/reports/wireless?${filter}`
-        const link = role === 'report-only'
-          ? reportOnly
-          : defaultPath
+        const link = hasRaiPermission('READ_INCIDENTS')
+          ? defaultPath
+          : reportOnly
         return <TenantLink to={link}>{row.name}</TenantLink>
       },
       sorter: { compare: sortProp('name', defaultSort) }
@@ -364,6 +367,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
                 dataSource={results.data?.aps as unknown as AP[]}
                 pagination={pagination}
                 settingsId='ap-search-table'
+                rowKey='macAddress'
               />
             </Panel>
           }
@@ -380,6 +384,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
                 dataSource={results.data?.wifiNetworks as unknown as Network[]}
                 pagination={pagination}
                 settingsId='wifi-networks-search-table'
+                rowKey='name'
               />
             </Panel>
           }
@@ -392,6 +397,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
                 dataSource={results.data?.clients as unknown as Client[]}
                 pagination={pagination}
                 settingsId='clients-search-table'
+                rowKey='mac'
               />
             </Panel>
           }
@@ -404,6 +410,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
                 dataSource={results.data?.switches as unknown as Switch[]}
                 pagination={pagination}
                 settingsId='switch-search-table'
+                rowKey='switchMac'
               />
             </Panel>
           }
@@ -420,6 +427,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
                 dataSource={results.data?.networkHierarchy as unknown as NetworkHierarchy[]}
                 pagination={pagination}
                 settingsId='network-hierarchy-search-table'
+                rowKey='name'
               />
             </Panel>
           }
@@ -440,11 +448,12 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
 
 export default function SearchResults () {
   const { searchVal } = useParams()
+  const trimmedSearchVal = searchVal?.trim()
   return <TimeRangeDropDownProvider availableRanges={[
     DateRange.last24Hours,
     DateRange.last7Days,
     DateRange.last30Days
   ]}>
-    <SearchResult key={searchVal} searchVal={searchVal} />
+    <SearchResult key={trimmedSearchVal} searchVal={trimmedSearchVal} />
   </TimeRangeDropDownProvider>
 }

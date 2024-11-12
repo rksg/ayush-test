@@ -3,7 +3,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { policyApi }       from '@acx-ui/rc/services'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { policyApi }              from '@acx-ui/rc/services'
 import {
   PolicyType,
   ApSnmpUrls,
@@ -101,5 +102,19 @@ describe('SelectPolicyForm', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUseNavigate).toHaveBeenCalledWith(result.current)
+  })
+
+  it('should render Tunnel Profile when edge is enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE)
+
+    render(
+      <Provider>
+        <SelectPolicyForm />
+      </Provider>, {
+        route: { params, path: selectPolicyPath }
+      }
+    )
+
+    await screen.findByText(/Tunnel Profile/)
   })
 })

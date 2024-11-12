@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features }                                                 from '@acx-ui/feature-toggle'
 import { TunnelProfileFormType, TunnelProfileUrls, TunnelTypeEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                 from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within }              from '@acx-ui/test-utils'
@@ -13,7 +14,7 @@ jest.mock('../../useEdgeActions', () => ({
   ...jest.requireActual('../../useEdgeActions'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
-describe('NetworkSegmentation - WirelessNetworkForm > TunnelProfileAddModal', () => {
+describe('PersonalIdentityNetwork - WirelessNetworkForm > TunnelProfileAddModal', () => {
 
   beforeEach(() => {
     mockServer.use(
@@ -59,8 +60,10 @@ describe('NetworkSegmentation - WirelessNetworkForm > TunnelProfileAddModal', ()
 
   describe('when SD-LAN is ready', () => {
     beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
+        ff === Features.EDGES_SD_LAN_TOGGLE || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
     })
+
 
     it('should be able to set values via initialValues', async () => {
       const user = userEvent.setup()

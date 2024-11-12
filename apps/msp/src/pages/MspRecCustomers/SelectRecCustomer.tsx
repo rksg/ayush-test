@@ -10,6 +10,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useGetAvailableMspRecCustomersQuery
 } from '@acx-ui/msp/services'
@@ -24,17 +25,21 @@ interface SelectRecCustomerDrawerProps {
   tenantId?: string
   setVisible: (visible: boolean) => void
   setSelected: (selected: MspRecCustomer[]) => void
+  multiSelectionEnabled: boolean
 }
 
 export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => {
   const { $t } = useIntl()
   const mspUtils = MSPUtils()
 
-  const { visible, setVisible, setSelected } = props
+  const { visible, setVisible, setSelected, multiSelectionEnabled } = props
   const [resetField, setResetField] = useState(false)
   const [selectedRows, setSelectedRows] = useState<MspRecCustomer[]>([])
+  const MAX_ALLOWED_SELECTED_PROPERTIES = 100
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
-  const queryResults = useGetAvailableMspRecCustomersQuery({ params: useParams() })
+  const queryResults = useGetAvailableMspRecCustomersQuery({ params: useParams(),
+    enableRbac: isRbacEnabled })
 
   const onClose = () => {
     setVisible(false)
@@ -82,7 +87,7 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
           dataSource={queryResults?.data?.child_accounts}
           rowKey='account_name'
           rowSelection={{
-            type: 'radio',
+            type: multiSelectionEnabled ? 'checkbox' : 'radio',
             onChange (selectedRowKeys, selRows) {
               setSelectedRows(selRows)
             }
@@ -92,8 +97,15 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
     </Space>
 
   const footer =<div>
+    <div style={{ marginBottom: '18px', color: 'red' }}>
+      {selectedRows.length > MAX_ALLOWED_SELECTED_PROPERTIES &&
+      <label>{$t({ defaultMessage:
+        'Maximum allowed selection is {MAX_ALLOWED_SELECTED_PROPERTIES}' },
+      { MAX_ALLOWED_SELECTED_PROPERTIES })}</label>}
+    </div>
+
     <Button
-      disabled={selectedRows.length === 0}
+      disabled={selectedRows.length === 0 || selectedRows.length > MAX_ALLOWED_SELECTED_PROPERTIES}
       onClick={() => handleSave()}
       type='primary'
     >
@@ -109,7 +121,7 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Manage RUCKUS End Customer' })}
+      title={$t({ defaultMessage: 'Manage Brand Property' })}
       subTitle={$t({ defaultMessage: 'Properties for {propertyOowner}' },
         { propertyOowner: queryResults?.data?.parent_account_name })}
       visible={visible}

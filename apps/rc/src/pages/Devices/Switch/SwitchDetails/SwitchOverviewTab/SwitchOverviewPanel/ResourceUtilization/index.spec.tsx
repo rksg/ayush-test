@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
 
-import { dataApiURL, Provider, store }      from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
-import { DateRange }                        from '@acx-ui/utils'
-import type { AnalyticsFilter }             from '@acx-ui/utils'
+import { dataApiURL, Provider, store }                                 from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { DateRange }                                                   from '@acx-ui/utils'
+import type { AnalyticsFilter }                                        from '@acx-ui/utils'
 
 import { api } from './services'
 
@@ -47,12 +47,16 @@ describe('ResourceUtilizationWidget', () => {
     store.dispatch(api.util.resetApiState())
   )
 
-  it('should render loader', () => {
+  it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'SwitchResourceUtilizationMetrics', {
       data: { network: { hierarchyNode: { timeSeries: sample } } }
     })
     render(<Provider> <ResourceUtilization filters={filters}/></Provider>)
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(document.querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
   it('should render chart', async () => {
     mockGraphqlQuery(dataApiURL, 'SwitchResourceUtilizationMetrics', {

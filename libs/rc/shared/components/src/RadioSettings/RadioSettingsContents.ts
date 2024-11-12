@@ -1,5 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { createContext } from 'react'
+
 import { isEmpty }       from 'lodash'
 import { defineMessage } from 'react-intl'
+
+import { VenueExtended, VenueRadioCustomization } from '@acx-ui/rc/utils'
+
 
 export interface SelectItemOption {
 	value: string,
@@ -22,6 +28,10 @@ export interface LPIButtonText {
   LPIModeOnChange: Function,
   LPIModeState: boolean,
   isAPOutdoor?: boolean
+}
+
+export interface FirmwareProps {
+  firmware?: string
 }
 
 export const channelSelectionMethodsOptions = [
@@ -52,6 +62,22 @@ export const channelBandwidth5GOptions = channelBandwidth24GOptions.concat([
 export const channelBandwidth6GOptions = [
   ...channelBandwidth5GOptions,
   { label: '320 MHz', value: '320MHz' }
+]
+
+export const txPowerAdjustmentExtendedOptions = [
+  { label: '-11dB', value: '-11' },
+  { label: '-12dB', value: '-12' },
+  { label: '-13dB', value: '-13' },
+  { label: '-14dB', value: '-14' },
+  { label: '-15dB', value: '-15' },
+  { label: '-16dB', value: '-16' },
+  { label: '-17dB', value: '-17' },
+  { label: '-18dB', value: '-18' },
+  { label: '-19dB', value: '-19' },
+  { label: '-20dB', value: '-20' },
+  { label: '-21dB', value: '-21' },
+  { label: '-22dB', value: '-22' },
+  { label: '-23dB', value: '-23' }
 ]
 
 export const txPowerAdjustment6GOptions = [
@@ -139,3 +165,38 @@ export function split5GChannels (radio5GChannels: string[]) {
 
   return { lower5GChannels, upper5GChannels }
 }
+
+export const VenueRadioContext = createContext({} as {
+  venue?: VenueExtended,
+  venueRadio?: VenueRadioCustomization
+})
+
+export type BandwidthRadioOptions = {
+  [ApRadioTypeEnum.Radio24G]: SelectItemOption[],
+  [ApRadioTypeEnum.Radio5G]: SelectItemOption[],
+  [ApRadioTypeEnum.Radio6G]: SelectItemOption[],
+  [ApRadioTypeEnum.RadioLower5G]: SelectItemOption[],
+  [ApRadioTypeEnum.RadioUpper5G]: SelectItemOption[]
+}
+
+export type SupportRadioChannels = {
+  [ApRadioTypeEnum.Radio24G]: any,
+  [ApRadioTypeEnum.Radio5G]: any,
+  [ApRadioTypeEnum.Radio6G]: any,
+  [ApRadioTypeEnum.RadioLower5G]: any,
+  [ApRadioTypeEnum.RadioUpper5G]: any
+}
+
+export type SupportRadioDfsChannels = {
+  [ApRadioTypeEnum.Radio24G]: undefined,
+  [ApRadioTypeEnum.Radio5G]: any,
+  [ApRadioTypeEnum.Radio6G]: undefined,
+  [ApRadioTypeEnum.RadioLower5G]: any,
+  [ApRadioTypeEnum.RadioUpper5G]: any
+}
+
+export const SupportRadioChannelsContext = createContext({} as {
+  bandwidthRadioOptions: BandwidthRadioOptions,
+  supportRadioChannels: SupportRadioChannels,
+  supportRadioDfsChannels?: SupportRadioDfsChannels
+})

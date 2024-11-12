@@ -3,9 +3,69 @@
 exports[`Drawer FormFooter should render form footer 1`] = `
 <DocumentFragment>
   <div />
-  <div>
+  .c0 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c0 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c0 svg:before {
+  content: 'a';
+}
+
+.c0 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c0.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c0.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c0.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c0.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c0[disabled] svg path,
+.c0.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c0[disabled].ant-btn-link svg path,
+.c0.ant-btn-disabled.ant-btn-link svg path,
+.c0[disabled].ant-btn-default svg path,
+.c0.ant-btn-disabled.ant-btn-default svg path,
+.c0[disabled].ant-btn-primary svg path,
+.c0.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+<div>
     <button
-      class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup"
+      class="ant-btn ant-btn-default c0"
       type="button"
     >
       <span>
@@ -13,7 +73,7 @@ exports[`Drawer FormFooter should render form footer 1`] = `
       </span>
     </button>
     <button
-      class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kBDiup"
+      class="ant-btn ant-btn-primary c0"
       type="button"
     >
       <span>
@@ -26,7 +86,19 @@ exports[`Drawer FormFooter should render form footer 1`] = `
 
 exports[`Drawer should match snapshot for basic drawer 1`] = `
 Array [
-  <div
+  .c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 12px;
+}
+
+<div
     aria-modal="true"
     class="ant-drawer-content"
     role="dialog"
@@ -53,7 +125,7 @@ Array [
             class="ant-drawer-title"
           >
             <div
-              class="sc-dkzDqf bnYHGr"
+              class="c0"
             >
               Test Drawer
             </div>
@@ -74,7 +146,49 @@ Array [
 
 exports[`Drawer should match snapshot for custom drawer 1`] = `
 Array [
-  <div
+  .c0 {
+  border: none;
+  background: transparent;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 4px;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: var(--acx-headline-5-font-size);
+  line-height: var(--acx-headline-5-line-height);
+  padding: 0;
+  padding-bottom: 8px;
+}
+
+.c0:hover {
+  cursor: pointer;
+}
+
+.c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.c2 {
+  font-size: var(--acx-headline-5-font-size);
+  line-height: var(--acx-headline-5-line-height);
+  padding-top: 8px;
+  color: var(--acx-neutrals-60);
+  font-weight: var(--acx-headline-5-font-weight);
+}
+
+<div
     aria-modal="true"
     class="ant-drawer-content"
     role="dialog"
@@ -101,7 +215,7 @@ Array [
             class="ant-drawer-title"
           >
             <button
-              class="sc-gsnTZi jxJcEp"
+              class="c0"
             >
               <svg
                 data-testid="ArrowBack"
@@ -109,7 +223,7 @@ Array [
               Back
             </button>
             <div
-              class="sc-dkzDqf bnYHGr"
+              class="c1"
             >
               <svg
                 data-testid="BulbOutlined"
@@ -117,7 +231,7 @@ Array [
               Test Drawer
             </div>
             <div
-              class="sc-hKMtZM gfHSAl"
+              class="c2"
             >
               Test Drawer Subtitle
             </div>

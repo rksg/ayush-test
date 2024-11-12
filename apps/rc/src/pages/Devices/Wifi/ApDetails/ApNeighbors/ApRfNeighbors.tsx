@@ -1,8 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { APStatus }                               from '@acx-ui/rc/components'
-import { useLazyGetApRfNeighborsQuery }           from '@acx-ui/rc/services'
+import { Loader, Table, TableColumn, TableProps }                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { APStatus }                                                 from '@acx-ui/rc/components'
+import { useLazyGetApNeighborsQuery, useLazyGetApRfNeighborsQuery } from '@acx-ui/rc/services'
 import {
   ApRfNeighbor,
   CatchErrorResponse,
@@ -11,22 +12,28 @@ import {
   sortProp,
   useApContext
 } from '@acx-ui/rc/utils'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 import { getIntl }        from '@acx-ui/utils'
 
-import { defaultPagination } from './constants'
-import { useApNeighbors }    from './useApNeighbors'
+import { NewApNeighborTypes, defaultPagination } from './constants'
+import { useApNeighbors }                        from './useApNeighbors'
 
 import { apNeighborValueRender } from '.'
 
 export default function ApRfNeighbors () {
   const { $t } = useIntl()
-  const { serialNumber } = useApContext()
-  const [ getApRfNeighbors, getApRfNeighborsStates ] = useLazyGetApRfNeighborsQuery()
+  const { serialNumber, venueId } = useApContext()
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const apNeighborQuery = isUseWifiRbacApi ?
+    useLazyGetApNeighborsQuery :
+    useLazyGetApRfNeighborsQuery
+  const [ getApNeighbors, getApNeighborsStates ] = apNeighborQuery()
   // eslint-disable-next-line max-len
-  const { doDetect, isDetecting, handleApiError } = useApNeighbors('rf', serialNumber!, socketHandler)
+  const { doDetect, isDetecting, handleApiError } = useApNeighbors('rf', serialNumber!, socketHandler, venueId)
 
   const tableActions = [{
+    scopeKey: [WifiScopes.UPDATE],
     label: $t({ defaultMessage: 'Detect' }),
     disabled: isDetecting,
     onClick: () => doDetect()
@@ -34,25 +41,32 @@ export default function ApRfNeighbors () {
 
   async function socketHandler () {
     try {
-      await getApRfNeighbors({ params: { serialNumber } }).unwrap()
+      await getApNeighbors({
+        params: { serialNumber, venueId },
+        payload: {
+          filters: [{ type: NewApNeighborTypes.RF_NEIGHBOR }],
+          page: 1,
+          pageSize: 10000
+        }
+      }).unwrap()
     } catch (error) {
       handleApiError(error as CatchErrorResponse)
     }
   }
 
   const isTableFetching = () => {
-    return getApRfNeighborsStates.isFetching || isDetecting
+    return getApNeighborsStates.isFetching || isDetecting
   }
 
   return <Loader states={[{
-    isLoading: getApRfNeighborsStates.isLoading,
+    isLoading: getApNeighborsStates.isLoading,
     isFetching: isTableFetching()
   }]}>
     <Table
       settingsId='ap-rf-neighbors-table'
       rowKey='apMac'
       columns={getColumns()}
-      dataSource={getApRfNeighborsStates.data?.neighbors ?? []}
+      dataSource={(getApNeighborsStates.data?.neighbors as ApRfNeighbor[]) ?? []}
       pagination={defaultPagination}
       actions={filterByAccess(tableActions)}
     />
@@ -90,7 +104,7 @@ function getColumns (): TableProps<ApRfNeighbor>['columns'] {
     {
       key: 'venueName',
       dataIndex: 'venueName',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       render: (data, row, index, highlightFn) => apNeighborValueRender(row.venueName, highlightFn)
     },
     {

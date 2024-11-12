@@ -38,9 +38,26 @@ export const validationMessages = {
     defaultMessage: 'Please enter valid domain(s)',
     description: 'Validation - domains checks'
   }),
+  domainWildcard: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'Type a fully qualified domain name, and then try again. The wildcard (*) character is supported (for example, "* ruckuswireless.com").',
+    description: 'Validation - domain checks'
+  }),
+  domainDuplication: defineMessage({
+    defaultMessage: 'Domain(s) must not be duplicated.',
+    description: 'Validation - Domain duplication checks'
+  }),
   sameEmailDomain: defineMessage({
     defaultMessage: 'Please enter same email domain(s)',
     description: 'Validation - same email domains checks'
+  }),
+  emailDuplication: defineMessage({
+    defaultMessage: 'Email(s) must not be duplicated.',
+    description: 'Validation - email duplication checks'
+  }),
+  emailMaxCount: defineMessage({
+    defaultMessage: 'Email(s) count must not over {maxCount}.',
+    description: 'Validation - email max count checks'
   }),
   ipSubnetMask: defineMessage({
     defaultMessage: 'Please enter a valid IP address',
@@ -186,12 +203,13 @@ export const validationMessages = {
     description: 'Validation - target host checks'
   }),
   diffVenueCountry: defineMessage({
-    defaultMessage: 'Cannot move AP to another venue in different country code or country',
+    // eslint-disable-next-line max-len
+    defaultMessage: 'Cannot move AP to another <venueSingular></venueSingular> in different country code or country',
     description: 'Validation - Venue Country checks'
   }),
   cellularApDhcpLimitation: defineMessage({
     defaultMessage: `The cellular AP cannot
-      be moved to the venue which doesn’t enable DHCP service`,
+      be moved to the <venueSingular></venueSingular> which doesn’t enable DHCP service`,
     description: 'Validation - Cellular AP Dhcp checks'
   }),
   emailAddress: defineMessage({
@@ -443,6 +461,26 @@ export const validationMessages = {
   switchDhcpOptionIpMaxSize: defineMessage({
     defaultMessage: 'Max number of DHCP Option IPs is 3',
     description: 'Validation - DHCP option IPs max size checks'
+  }),
+  VenueMinFloorGreaterThanMaxFloor: defineMessage({
+    defaultMessage: 'Min floor can\'t be greater than max floor',
+    description: 'Validation - Venue minimum floor checks'
+  }),
+  VenueMaxFloorLessThanMinFloor: defineMessage({
+    defaultMessage: 'Max floor can\'t be less than min floor',
+    description: 'Validation - Venue minimum floor checks'
+  }),
+  EnableAFCButNoVenueHeight: defineMessage({
+    defaultMessage: 'Enable AFC but no <venueSingular></venueSingular> height was set.',
+    description: 'Validation - Enable AFC venue height checks'
+  }),
+  guestPasswordInvalid: defineMessage({
+    defaultMessage: 'Guest password is invalid.',
+    description: 'Validation - Guest password check'
+  }),
+  DirectoryServerNotSelected: defineMessage({
+    defaultMessage: 'Must select one directory server.',
+    description: 'Validation - Directory server'
   })
 }
 

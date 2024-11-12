@@ -9,8 +9,10 @@ import { useIntl }                                          from 'react-intl'
 
 import { Modal, Subtitle }        from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {
   AVAILABLE_SLOTS,
+  compareSwitchVersion,
   FirmwareCategory,
   FirmwareSwitchVenue,
   FirmwareVersion,
@@ -18,10 +20,8 @@ import {
   UpdateScheduleRequest
 } from '@acx-ui/rc/utils'
 
-import {
-  getSwitchVersionLabel
-} from '../../FirmwareUtils'
-import { PreDownload } from '../../PreDownload'
+import { PreDownload }  from '../../PreDownload'
+import { DowngradeTag } from '../styledComponents'
 
 import * as UI from './styledComponents'
 
@@ -41,6 +41,7 @@ export interface ChangeScheduleDialogProps {
 
 export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
   const { $t } = useIntl()
+  const { getSwitchVersionLabel } = useSwitchFirmwareUtils()
   const intl = useIntl()
   const [form] = useForm()
   const { visible, onSubmit, onCancel, data, availableVersions, nonIcx8200Count, icx8200Count,
@@ -118,6 +119,12 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
           category: FirmwareCategory.REGULAR } as FirmwareVersion)
       }
     }
+
+    if (_.isArray(firmwareAvailableVersions)) {
+      firmwareAvailableVersions =
+        firmwareAvailableVersions.sort((a, b) => compareSwitchVersion(a.id, b.id))
+    }
+
     return firmwareAvailableVersions
   }
 
@@ -253,7 +260,9 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
 
             {!enableSwitchTwoVersionUpgrade && <>
               <Subtitle level={4}>
-                {$t({ defaultMessage: 'Choose which version to update the venue to:' })}
+                { // eslint-disable-next-line max-len
+                  $t({ defaultMessage: 'Choose which version to update the <venueSingular></venueSingular> to:' })
+                }
               </Subtitle>
               <Radio.Group
                 style={{ margin: 12 }}
@@ -264,7 +273,12 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
                 <Space direction={'vertical'}>
                   {availableVersions?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                      {getSwitchVersionLabel(intl, v)}</Radio>)}
+                      <span style={{ lineHeight: '22px' }}>
+                        {getSwitchVersionLabel(intl, v)}
+                        {v.isDowngradeVersion && !v.inUse &&
+                          <DowngradeTag>{$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                      </span>
+                    </Radio>)}
                 </Space>
               </Radio.Group>
             </>}
@@ -283,7 +297,12 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
                   { // eslint-disable-next-line max-len
                     getAvailableVersionsByPrefix(availableVersions, true, currentScheduleVersionAboveTen)?.map(v =>
                       <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                        {getSwitchVersionLabel(intl, v)}</Radio>)}
+                        <span style={{ lineHeight: '22px' }}>
+                          {getSwitchVersionLabel(intl, v)}
+                          {v.isDowngradeVersion && !v.inUse &&
+                            <DowngradeTag>{$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                        </span>
+                      </Radio>)}
                   <Radio value='' key='0'>
                     {$t({ defaultMessage: 'Do not update firmware on these switches' })}
                   </Radio>
@@ -303,7 +322,12 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
                     { // eslint-disable-next-line max-len
                       getAvailableVersionsByPrefix(availableVersions, false, currentScheduleVersion)?.map(v =>
                         <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                          {getSwitchVersionLabel(intl, v)}</Radio>)}
+                          <span style={{ lineHeight: '22px' }}>
+                            {getSwitchVersionLabel(intl, v)}
+                            {v.isDowngradeVersion && !v.inUse &&
+                              <DowngradeTag>{$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                          </span>
+                        </Radio>)}
                     <Radio value='' key='0'>
                       {$t({ defaultMessage: 'Do not update firmware on these switches' })}
                     </Radio>
@@ -320,7 +344,8 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
         {
           <UI.TitleActive>
             {$t({
-              defaultMessage: 'Selected time will apply to each venue according to own time-zone'
+              // eslint-disable-next-line max-len
+              defaultMessage: 'Selected time will apply to each <venueSingular></venueSingular> according to own time-zone'
             })}
           </UI.TitleActive>}
 

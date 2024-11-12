@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
-import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
-import { EditPortDrawer, EditPortDrawerLegacy, SwitchLagModal } from '@acx-ui/rc/components'
+import { EditPortDrawer, SwitchLagModal }                       from '@acx-ui/rc/components'
 import { Lag, StackMember, SwitchPortStatus, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { useParams }                                            from '@acx-ui/react-router-dom'
 
@@ -17,7 +16,6 @@ interface SlotMember {
 }
 
 export interface SwitchPanel {
-  editPortsFromPanelEnabled: boolean
   editPortDrawerVisible: boolean
   setEditPortDrawerVisible: (data: boolean) => void
   breakoutPortDrawerVisible: boolean
@@ -40,8 +38,6 @@ export function SwitchFrontRearView (props:{
   stackMember: StackMember[]
 }) {
   const { stackMember } = props
-  const editPortsFromPanelEnabled = useIsSplitOn(Features.SWITCH_EDIT_PORTS_FROM_PANEL)
-  const isSwitchVoiceVlanEnhanced = useIsSplitOn(Features.SWITCH_VOICE_VLAN)
   const params = useParams()
   const [editPortDrawerVisible, setEditPortDrawerVisible] = useState(false)
   const [breakoutPortDrawerVisible, setBreakoutPortDrawerVisible] = useState(false)
@@ -89,7 +85,6 @@ export function SwitchFrontRearView (props:{
   }
 
   return <SwitchPanelContext.Provider value={{
-    editPortsFromPanelEnabled,
     editPortDrawerVisible,
     setEditPortDrawerVisible,
     breakoutPortDrawerVisible,
@@ -116,17 +111,7 @@ export function SwitchFrontRearView (props:{
         </UI.SwitchFrontRearViewWrapper>
       ))
     }
-    { editPortDrawerVisible && !isSwitchVoiceVlanEnhanced && <EditPortDrawerLegacy
-      key='edit-port'
-      visible={editPortDrawerVisible}
-      setDrawerVisible={setEditPortDrawerVisible}
-      isCloudPort={selectedPorts.map(item => item.cloudPort).includes(true)}
-      isMultipleEdit={selectedPorts?.length > 1}
-      isVenueLevel={false}
-      selectedPorts={selectedPorts}
-    />
-    }
-    { editPortDrawerVisible && isSwitchVoiceVlanEnhanced && <EditPortDrawer
+    { editPortDrawerVisible && <EditPortDrawer
       key='edit-port'
       visible={editPortDrawerVisible}
       setDrawerVisible={setEditPortDrawerVisible}
@@ -153,21 +138,7 @@ export function SwitchFrontRearView (props:{
         breakoutPorts={breakoutPorts}
       />
     }
-    { editBreakoutPortDrawerVisible && !isSwitchVoiceVlanEnhanced && <EditPortDrawerLegacy
-      key='edit-breakout-port'
-      visible={editBreakoutPortDrawerVisible}
-      setDrawerVisible={setEditBreakoutPortDrawerVisible}
-      isCloudPort={selectedPorts.map(item => item.cloudPort).includes(true)}
-      isMultipleEdit={selectedPorts?.length > 1}
-      isVenueLevel={false}
-      selectedPorts={selectedPorts}
-      onBackClick={() => {
-        setBreakoutPortDrawerVisible(true)
-        setSelectedPorts([])
-      }}
-    />
-    }
-    { editBreakoutPortDrawerVisible && isSwitchVoiceVlanEnhanced && <EditPortDrawer
+    { editBreakoutPortDrawerVisible && <EditPortDrawer
       key='edit-breakout-port'
       visible={editBreakoutPortDrawerVisible}
       setDrawerVisible={setEditBreakoutPortDrawerVisible}

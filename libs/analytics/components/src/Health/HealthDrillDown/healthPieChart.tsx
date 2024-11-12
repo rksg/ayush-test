@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 
+import { Space }                                     from 'antd'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
-import AutoSizer                                     from 'react-virtualized-auto-sizer'
 
-import { getSelectedNodePath } from '@acx-ui/analytics/utils'
+import { getSelectedNodePath, mapCodeToReason } from '@acx-ui/analytics/utils'
 import {
   ContentSwitcher,
   ContentSwitcherProps,
@@ -14,7 +14,8 @@ import {
 } from '@acx-ui/components'
 import { get }                  from '@acx-ui/config'
 import { formatter }            from '@acx-ui/formatter'
-import { NodesFilter }          from '@acx-ui/utils'
+import { InformationOutlined }  from '@acx-ui/icons'
+import { NodesFilter, getIntl } from '@acx-ui/utils'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import {
@@ -22,10 +23,10 @@ import {
   stageLabels,
   DrilldownSelection,
   stageNameToCodeMap,
-  showTopResult
+  showTopNPieChartResult
 } from './config'
-import { ImpactedNodesAndWlans, usePieChartQuery } from './services'
-import * as UI                                     from './styledComponents'
+import { ImpactedEntities, usePieChartQuery } from './services'
+import * as UI                                from './styledComponents'
 
 const topCount = 5
 
@@ -36,64 +37,90 @@ type PieChartData = {
   color: string
 }
 
-function getTopPieChartData (nodeData: Omit<PieChartData, 'color' | 'name'>[])
-: PieChartData[] {
+type TabKeyType = 'wlans' | 'nodes' | 'events' | 'osManufacturers'
+type NodeData = {
+  key: string
+  value: number
+  name?: string | null
+}
+function getTopPieChartData (nodeData: NodeData[])
+  : PieChartData[] {
   const colors = qualitativeColorSet()
   return nodeData
     .map((val, index) => ({
       ...val,
-      name: val.key,
+      name: val.name ? `${val.name} (${val.key})` : val.key,
       color: colors[index]
     }))
 }
 
-const transformData = (
-  data: ImpactedNodesAndWlans | undefined
+export const transformData = (
+  data: ImpactedEntities | undefined
 ): {
   nodes: PieChartData[];
   wlans: PieChartData[];
+  events: PieChartData[];
+  osManufacturers: PieChartData[];
 } => {
   if (data) {
-    let { wlans: rawWlans, nodes: rawNodes } = data.network.hierarchyNode
+    let { wlans: rawWlans, nodes: rawNodes, osManufacturers } = data.network.hierarchyNode
     const nodes = rawNodes ? getTopPieChartData(rawNodes) : []
     const wlans = getTopPieChartData(rawWlans)
-    return { nodes, wlans }
+    const events = data.network.hierarchyNode.events
+      ? getTopPieChartData(data.network.hierarchyNode.events).map((event) => ({
+        ...event,
+        key: mapCodeToReason(event.key),
+        name: mapCodeToReason(event.name)
+      }))
+      : []
+    const osManufacturersData = getTopPieChartData(osManufacturers)
+
+    return { nodes, wlans, events, osManufacturers: osManufacturersData }
   }
-  return { nodes: [], wlans: [] }
+  return { nodes: [], wlans: [], events: [], osManufacturers: [] }
 }
+
 
 export function pieNodeMap (filter: NodesFilter): MessageDescriptor {
   const isMLISA = get('IS_MLISA_SA')
   const node = getSelectedNodePath(filter)
   switch (node[node.length - 1].type) {
     case 'zone':
-      return defineMessage({ defaultMessage: `{ count, plural,
+      return defineMessage({
+        defaultMessage: `{ count, plural,
         one {AP Group}
         other {AP Groups}
       }` })
-    case 'AP':
-      return defineMessage({ defaultMessage: `{ count, plural,
+    case 'apGroup':
+      return defineMessage({
+        defaultMessage: `{ count, plural,
         one {AP}
         other {APs}
       }` })
     default:
       return !isMLISA ?
-        defineMessage({ defaultMessage: `{ count, plural,
-        one {Venue}
-        other {Venues}
+        defineMessage({
+          defaultMessage: `{ count, plural,
+        one {<VenueSingular></VenueSingular>}
+        other {<VenuePlural></VenuePlural>}
       }` })
-        : defineMessage({ defaultMessage: `{ count, plural,
+        : defineMessage({
+          defaultMessage: `{ count, plural,
         one {Zone}
         other {Zones}
       }` })
   }
 }
 
-function pieWlanMap () {
-  return defineMessage({ defaultMessage: ` { count, plural,
-    one {WLAN}
-    other {WLANs}
-  }` })
+const pieIntlMap = (type: Exclude<TabKeyType, 'nodes'>) => {
+  const messages: Record<Exclude<TabKeyType, 'nodes'>, { defaultMessage: string }> = {
+    events: defineMessage({ defaultMessage: '{ count, plural, one {Event} other {Events} }' }),
+    wlans: defineMessage({ defaultMessage: '{ count, plural, one {WLAN} other {WLANs} }' }),
+    osManufacturers: defineMessage({
+      defaultMessage: '{ count, plural, one {Manufacturer} other {Manufacturers} }'
+    })
+  }
+  return messages[type]
 }
 
 export const tooltipFormatter = (
@@ -104,35 +131,41 @@ export const tooltipFormatter = (
 
 function getHealthPieChart (
   data: { key: string; value: number; name: string; color: string }[],
-  dataFormatter: (value: unknown, tz?: string | undefined) => string
+  dataFormatter: (value: unknown, tz?: string | undefined) => string,
+  size: { width: number; height: number }
 ) {
-  const tops = data.slice(0, topCount)
+
+  let tops = data.slice(0, topCount)
+  if (data.slice(topCount)[0]?.key === 'Others') {
+    tops.push({
+      ...data.slice(topCount)[0],
+      key: getIntl().$t({ defaultMessage: 'Others' })
+    })
+  }
+
   const total = tops.reduce((total, { value }) => value + total, 0)
   return (
-    data.length > 0
-      ? <AutoSizer defaultHeight={150}>
-        {({ width, height }) => (
-          <DonutChart
-            data={tops}
-            style={{ height, width }}
-            legend='name'
-            size={'x-large'}
-            showLegend
-            showTotal={false}
-            dataFormatter={tooltipFormatter(total, dataFormatter)}
-          />
-        )}
-      </AutoSizer>
-      : <NoData />
+    data.length > 0 ? <DonutChart
+      data={tops}
+      style={{ width: size.width, height: Math.max(size.width * 0.5, 190) }} // min height 190px to have space to show "Others"
+      legend='name'
+      size={'x-large'}
+      showLegend
+      showTotal={false}
+      labelTextStyle={{ overflow: 'truncate', width: size.width * 0.5 }} // 50% of width
+      dataFormatter={tooltipFormatter(total, dataFormatter)}
+    /> : <NoData />
   )
 }
 
 export const HealthPieChart = ({
+  size,
   filters,
   queryType,
   selectedStage,
   valueFormatter
 }: {
+  size: { width: number; height: number }
   filters: AnalyticsFilter
   queryType: DrilldownSelection
   selectedStage: Stages
@@ -149,51 +182,68 @@ export const HealthPieChart = ({
       queryFilter: stageNameToCodeMap[selectedStage]
     }
   )
-  const { nodes, wlans } = transformData(queryResults.data)
-  const venueTitle = $t(pieNodeMap(filter), { count: nodes.length })
-  const wlansTitle = $t(pieWlanMap(), { count: wlans.length })
-  const tabDetails: ContentSwitcherProps['tabDetails'] = [{
-    label: wlansTitle,
-    value: 'wlans',
-    children: getHealthPieChart(wlans, valueFormatter)
-  }]
-  if (nodes.length > 0) {
-    tabDetails.unshift({
-      label: venueTitle,
-      value: 'nodes',
-      children: getHealthPieChart(nodes, valueFormatter)
-    })
-  }
-  const [chartKey, setChartKey] = useState('wlans')
-  const count = showTopResult($t, chartKey === 'wlans' ? wlans.length : nodes.length, topCount)
-  const title = chartKey === 'wlans' ? wlansTitle : venueTitle
+  const [chartKey, setChartKey] = useState<TabKeyType>('wlans')
+  const { nodes, wlans, events, osManufacturers } = transformData(queryResults.data)
 
-  useEffect(() => { setChartKey(tabDetails.length === 2 ? 'nodes' : 'wlans') }, [tabDetails.length])
+  const titleMap = {
+    wlans: $t(pieIntlMap('wlans'), { count: wlans.length }),
+    nodes: $t(pieNodeMap(filter), { count: nodes.length }),
+    events: $t(pieIntlMap('events'), { count: events.length }),
+    osManufacturers: $t(pieIntlMap('osManufacturers'), { count: osManufacturers.length })
+  }
+  const tabsList = [
+    ...(nodes.length > 0 ? [{ key: 'nodes', data: nodes }] : []),
+    { key: 'wlans', data: wlans },
+    { key: 'events', data: events },
+    { key: 'osManufacturers', data: osManufacturers }
+  ]
+
+  const tabDetails: ContentSwitcherProps['tabDetails'] = tabsList
+    .filter(({ key }) => !(key === 'events' && queryType === 'ttc'))
+    .map(({ key, data }) => ({
+      label: titleMap[key as TabKeyType],
+      value: key,
+      children: getHealthPieChart(data, valueFormatter, size)
+    }))
+  const count = showTopNPieChartResult(
+    $t,
+    tabsList.find((tab) => tab.key === chartKey)?.data.length as number,
+    topCount
+  )
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { setChartKey(tabDetails?.[0]?.value as TabKeyType) }, [tabDetails.length])
 
   return (
-    <Loader states={[queryResults]}>
-      <UI.HealthPieChartWrapper>
-        <UI.PieChartTitle>
-          <b>{$t(stageLabels[selectedStage])}</b>{' '}
-          {$t({ defaultMessage: '{count} Impacted {title}' }, { count, title })}
-        </UI.PieChartTitle>
-        <div style={{ height: 260, minWidth: 430 }}>
-          {(tabDetails.length === 2)
-            ? <ContentSwitcher
-              key={selectedStage}
-              value={chartKey}
-              defaultValue={'wlans'}
-              tabDetails={tabDetails}
-              align='center'
-              size='small'
-              onChange={key => setChartKey(key)}
-            />
-            : <UI.SinglePieChartWrapper>
-              {tabDetails[0].children}
-            </UI.SinglePieChartWrapper>
-          }
-        </div>
-      </UI.HealthPieChartWrapper>
+    <Loader states={[queryResults]} style={size}>
+      <UI.PieChartTitle>
+        <b>{$t(stageLabels[selectedStage])}</b>{' '}
+        {chartKey === 'events'
+          ? $t(
+            { defaultMessage: '{count} {title}' },
+            { count, title: titleMap[chartKey] }
+          )
+          : $t(
+            { defaultMessage: '{count} Impacted {title}' },
+            { count, title: titleMap[chartKey] }
+          )}
+      </UI.PieChartTitle>
+      <ContentSwitcher
+        key={selectedStage}
+        value={chartKey}
+        defaultValue={'wlans'}
+        tabDetails={tabDetails}
+        align='left'
+        size='small'
+        onChange={key => setChartKey(key as TabKeyType)}
+        noPadding
+      />
+      {(tabsList.find((tab) => tab.key === chartKey)?.data.length || 0) > topCount &&
+        <Space align='start'>
+          <InformationOutlined />
+          {$t({
+            defaultMessage: `Detailed breakup of all items beyond
+          Top 5 can be explored using Data Studio custom charts.` })}
+        </Space>}
     </Loader>
   )
 }

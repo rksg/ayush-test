@@ -312,48 +312,6 @@ export const rcToastTemplates:any = {
       FAIL: '${count} access control profiles were not deleted'
     }
   },
-  AddCloudpathServer: {
-    messages: {
-      PENDING: 'Adding cloudpath server "${attributes.name}"',
-      SUCCESS: 'Cloudpath server "${attributes.name}" was added',
-      FAIL: 'Cloudpath server "${attributes.name}" was not added'
-    }
-  },
-  UpdateCloudpathServer: {
-    messages: {
-      PENDING: 'Updating cloudpath server "${attributes.name}"',
-      SUCCESS: 'Cloudpath server "${attributes.name}" was updated',
-      FAIL: 'Cloudpath server "${attributes.name}" was not updated'
-    }
-  },
-  DeleteCloudpathServer: {
-    messages: {
-      PENDING: 'Deleting cloudpath server "${attributes.name}"',
-      SUCCESS: 'Cloudpath server "${attributes.name}" was deleted',
-      FAIL: 'Cloudpath server "${attributes.name}" was not deleted'
-    }
-  },
-  DeleteCloudpathServers: {
-    messages: {
-      PENDING: 'Deleting ${count} cloudpath servers',
-      SUCCESS: '${count} cloudpath servers were deleted',
-      FAIL: '${count} cloudpath servers were not deleted'
-    }
-  },
-  CloudpathServerPositionUpdateUnfloor: {
-    messages: {
-      PENDING: 'Removing cloudpath server from floor plan',
-      SUCCESS: 'Cloudpath server was removed from Floor plan',
-      FAIL: 'Cloudpath server was not removed on Floor plan'
-    }
-  },
-  UpdateCloudpathServerPosition: {
-    messages: {
-      PENDING: 'Placing cloudpath server on floor plan',
-      SUCCESS: 'Cloudpath server was placed on Floor plan',
-      FAIL: 'Cloudpath server was not placed on Floor plan'
-    }
-  },
   UpdateMeshOptions: {
     messages: {
       WAITING: 'Pending switching Mesh On/Off',

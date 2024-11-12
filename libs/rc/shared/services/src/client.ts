@@ -1,15 +1,15 @@
+import { QueryReturnValue }    from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import { cloneDeep }           from 'lodash'
 
-import { convertEpochToRelativeTime, formatter }    from '@acx-ui/formatter'
+import { convertEpochToRelativeTime, convertToRelativeTime, formatter } from '@acx-ui/formatter'
 import {
   Client,
   ClientList,
   ClientListMeta,
-  ClientStatistic,
   ClientUrlsInfo,
   CommonResult,
   CommonUrlsInfo,
-  DpskPassphrase,
   EventMeta,
   getClientHealthClass,
   Guest,
@@ -19,14 +19,22 @@ import {
   TableResult,
   downloadFile,
   transformByte,
-  WifiUrlsInfo,
-  RequestFormData, enableNewApi, ClientStatusEnum
+  RequestFormData,
+  ClientStatusEnum,
+  UEDetail,
+  ApiVersionEnum,
+  GetApiVersionHeader,
+  CommonRbacUrlsInfo,
+  ClientInfo,
+  SwitchRbacUrlsInfo,
+  SwitchClient,
+  SwitchInformation
 } from '@acx-ui/rc/utils'
 import { baseClientApi }                       from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
-import { latestTimeFilter } from './utils'
+import { isPayloadHasField, latestTimeFilter } from './utils'
 
 const historicalPayload = {
   fields: ['clientMac', 'clientIP', 'userId', 'username', 'userName', 'hostname', 'venueId',
@@ -36,6 +44,20 @@ const historicalPayload = {
   searchTargetFields: ['clientMac'],
   page: 1,
   pageSize: 10
+}
+
+const defaultRbacClientPayload = {
+  searchString: '',
+  searchTargetFields: ['macAddress'],
+  filters: {},
+  fields: [
+    'modelName', 'deviceType', 'macAddress', 'osType',
+    'ipAddress', 'username', 'hostname', 'connectedTime',
+    'venueInformation', 'apInformation', 'networkInformation', 'switchInformation',
+    'signalStatus', 'radioStatus', 'trafficStatus', 'authenticationStatus'
+  ],
+  page: 1,
+  pageSize: 10000
 }
 
 export const clientApi = baseClientApi.injectEndpoints({
@@ -68,16 +90,23 @@ export const clientApi = baseClientApi.injectEndpoints({
           : { error: clientListQuery.error as FetchBaseQueryError }
       },
       providesTags: [{ type: 'Client', id: 'LIST' }],
-      extraOptions: { maxRetries: 5 }
+      extraOptions: { maxRetries: 5 },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'PatchApClient'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(clientApi.util.invalidateTags([{ type: 'Client', id: 'LIST' }]))
+          })
+        })
+      }
     }),
     disconnectClient: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.disconnectClient, params)
-        if (enableNewApi(ClientUrlsInfo.disconnectClient)) {
-          payload = {
-            action: 'disconnect',
-            clients: payload
-          }
+        payload = {
+          status: 'DISCONNECTED'
         }
         return {
           ...req,
@@ -85,9 +114,86 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
       }
     }),
-    getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
+    revokeClient: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const body = latestTimeFilter(payload)
+        const req = createHttpRequest(ClientUrlsInfo.disconnectClient, params)
+        payload = {
+          status: 'REVOKED'
+        }
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    // RBAC API
+    getClients: build.query<TableResult<ClientInfo>, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const { params, payload } = arg
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const clientListInfo = {
+          ...createHttpRequest(ClientUrlsInfo.getClients, params, apiCustomHeader),
+          body: JSON.stringify(payload)
+        }
+        const clientListQuery = await fetchWithBQ(clientListInfo)
+        const clientList = clientListQuery.data as TableResult<ClientInfo>
+
+        const apMacSwitchMap = new Map<string, SwitchInformation>()
+
+        const needSwitchData = isPayloadHasField(payload, 'switchInformation')
+        if (needSwitchData && clientList.totalCount > 0) {
+          const unqueClientApMacs: Set<string> = new Set()
+          clientList.data.forEach((clientInfo) => {
+            unqueClientApMacs.add(clientInfo.apInformation.macAddress)
+          })
+          const switchClientMacs: string[] = Array.from(unqueClientApMacs)
+          const switchApiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+          const switchClientPayload = {
+            fields: ['clientMac', 'switchId', 'switchName', 'switchSerialNumber'],
+            page: 1,
+            pageSize: 10000,
+            filters: { clientMac: switchClientMacs }
+          }
+          const switchClistInfo = {
+            ...createHttpRequest(SwitchRbacUrlsInfo.getSwitchClientList, {}, switchApiCustomHeader),
+            body: JSON.stringify(switchClientPayload)
+          }
+          const switchClientsQuery = await fetchWithBQ(switchClistInfo)
+          const switchClients = switchClientsQuery.data as TableResult<SwitchClient>
+
+          switchClients?.data?.forEach((switchInfo) => {
+            const { clientMac, switchId, switchName, switchSerialNumber } = switchInfo
+            apMacSwitchMap.set(clientMac, {
+              id: switchId,
+              name: switchName,
+              serialNumber: switchSerialNumber
+            })
+          })
+        }
+
+        const aggregatedList = aggregatedRbacClientListData(clientList, apMacSwitchMap)
+
+        return clientListQuery.data
+          ? { data: aggregatedList }
+          : { error: clientListQuery.error as FetchBaseQueryError }
+
+      },
+      providesTags: [{ type: 'Client', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'PatchApClient'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(clientApi.util.invalidateTags([{ type: 'Client', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const body = latestTimeFilter(arg.payload)
         const filters = body.filters?.fromTime && body.filters?.toTime
           ? {
             ...body.filters,
@@ -95,10 +201,83 @@ export const clientApi = baseClientApi.injectEndpoints({
             toTime: [body.filters.toTime]
           }
           : body.filters
-        return {
-          ...createHttpRequest(CommonUrlsInfo.getGuestsList, params),
-          body: { ...body, filters }
+
+        const fields = [ ...(arg.payload as { fields: string[] }).fields, 'devicesMac' ]
+        const guestsListQuery = await fetchWithBQ({
+          ...createHttpRequest(CommonRbacUrlsInfo.getGuestsList,
+            arg.params,
+            GetApiVersionHeader(ApiVersionEnum.v1_1)),
+          body: JSON.stringify({ ...body, filters, fields })
+        })
+        const guestsList = guestsListQuery.data as TableResult<Guest>
+        const guestIdWithMacMaps: Map<string, string[]> = new Map()
+        const uniqueDeviceMacs: Set<string> = new Set()
+        const apMacSwitchMap = new Map<string, SwitchInformation>()
+
+        guestsList?.data?.filter(g =>
+          g.guestStatus?.indexOf('Online') > -1 &&
+          g.devicesMac && g.devicesMac.length > 0)
+          .forEach(g => {
+            const devicesMacs = g.devicesMac?.map((mac:string) => mac.toLowerCase()) ?? []
+            guestIdWithMacMaps.set(g.id, devicesMacs)
+            devicesMacs.forEach(mac => {
+              uniqueDeviceMacs.add(mac)
+            })
+          })
+        const distinctMacs: string[] = Array.from(uniqueDeviceMacs)
+        // no online client
+        if (distinctMacs && distinctMacs.length === 0) {
+          return { data: guestsList }
         }
+        // aggregated online clients
+        const filter = { clientMac: distinctMacs }
+        const clientPayload = { ...defaultRbacClientPayload, filter }
+        const clientListQuery = await fetchWithBQ({
+          ...createHttpRequest(ClientUrlsInfo.getClients,
+            arg.params,
+            GetApiVersionHeader(ApiVersionEnum.v1)),
+          body: JSON.stringify(clientPayload)
+        })
+        const clientList = clientListQuery.data as TableResult<ClientInfo>
+        // retireve switch infomation
+        if (clientList.totalCount > 0) {
+          const unqueClientApMacs: Set<string> = new Set()
+          clientList.data.forEach((clientInfo) => {
+            unqueClientApMacs.add(clientInfo.apInformation.macAddress)
+          })
+          const switchClientMacs: string[] = Array.from(unqueClientApMacs)
+          const switchApiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+          const switchClientPayload = {
+            fields: ['clientMac', 'switchId', 'switchName', 'switchSerialNumber'],
+            page: 1,
+            pageSize: 10000,
+            filters: { clientMac: switchClientMacs }
+          }
+          const switchClistInfo = {
+            ...createHttpRequest(SwitchRbacUrlsInfo.getSwitchClientList, {}, switchApiCustomHeader),
+            body: JSON.stringify(switchClientPayload)
+          }
+          const switchClientsQuery = await fetchWithBQ(switchClistInfo)
+          const switchClients = switchClientsQuery.data as TableResult<SwitchClient>
+
+          switchClients?.data?.forEach((switchInfo) => {
+            const { clientMac, switchId, switchName, switchSerialNumber } = switchInfo
+            apMacSwitchMap.set(clientMac, {
+              id: switchId,
+              name: switchName,
+              serialNumber: switchSerialNumber
+            })
+          })
+        }
+
+        const aggregatedRbacClientList = aggregatedRbacClientListData(clientList, apMacSwitchMap)
+
+        const aggregatedList = aggregatedGuestClientData(
+          guestsList, guestIdWithMacMaps, aggregatedRbacClientList.data)
+
+        return guestsListQuery.data
+          ? { data: aggregatedList }
+          : { error: guestsListQuery.error as FetchBaseQueryError }
       },
       providesTags: [{ type: 'Guest', id: 'LIST' }],
       keepUnusedDataFor: 0,
@@ -111,7 +290,8 @@ export const clientApi = baseClientApi.injectEndpoints({
               'EnableGuest',
               'AddGuest',
               'DeleteGuest',
-              'DeleteBulk'
+              'DeleteBulk',
+              'ImportGuests'
             ], () => {
               api.dispatch(clientApi.util.invalidateTags([{ type: 'Guest', id: 'LIST' }]))
             })
@@ -119,39 +299,72 @@ export const clientApi = baseClientApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    deleteGuests: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(ClientUrlsInfo.deleteGuests, params)
-        return {
-          ...req,
-          body: payload
-        }
+    deleteGuest: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(ClientUrlsInfo.deleteGuest,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
       },
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     }),
     disableGuests: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ClientUrlsInfo.disableGuests, params)
+        const req = createHttpRequest(ClientUrlsInfo.disableGuests,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     }),
     enableGuests: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ClientUrlsInfo.enableGuests, params)
+        const req = createHttpRequest(ClientUrlsInfo.enableGuests,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
+    }),
+    validateGuestPasswordByGuestId: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientUrlsInfo.enableGuests,
+          params,
+          { ...GetApiVersionHeader(ApiVersionEnum.v1),
+            ...ignoreErrorModal
+          })
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
+    }),
+    validateGuestPassword: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientUrlsInfo.validateGuestPassword,
+          params,
+          { ...GetApiVersionHeader(ApiVersionEnum.v1),
+            ...ignoreErrorModal
+          })
+        return {
+          ...req,
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     }),
     getGuests: build.mutation<{ data: BlobPart }, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ClientUrlsInfo.getGuests, params)
+        const req = createHttpRequest(ClientUrlsInfo.getGuests, params, {
+          'Accept': 'text/vnd.ruckus.v1.1+csv',
+          'Content-Type': 'application/vnd.ruckus.v1.1+json'
+        })
         return {
           ...req,
           responseHandler: async (response) => {
@@ -160,29 +373,21 @@ export const clientApi = baseClientApi.injectEndpoints({
               headerContent.split('filename=')[1]) : 'Guests Information.csv'
             downloadFile(response, fileName)
           },
-          body: payload,
+          body: JSON.stringify(payload),
           headers: {
-            ...req.headers,
-            Accept: 'application/json,text/plain,*/*'
+            ...req.headers
           }
         }
       }
     }),
     generateGuestPassword: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ClientUrlsInfo.generateGuestPassword, params)
+        const req = createHttpRequest(ClientUrlsInfo.generateGuestPassword,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
         return {
           ...req,
-          body: payload
-        }
-      }
-    }),
-    getDpskPassphraseByQuery: build.query<DpskPassphrase, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getDpskPassphraseByQuery, params)
-        return{
-          ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
@@ -240,25 +445,21 @@ export const clientApi = baseClientApi.injectEndpoints({
       providesTags: [{ type: 'HistoricalClient', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
-    getHistoricalStatisticsReports: build.query<ClientStatistic, RequestPayload>({
-      query: ({ params, payload }) => ({
-        ...createHttpRequest(CommonUrlsInfo.getHistoricalStatisticsReportsV2, params),
-        body: latestTimeFilter(payload)
-      })
-    }),
     addGuestPass: build.mutation<Guest, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.addGuestPass, params)
+        const req = createHttpRequest(CommonRbacUrlsInfo.addGuestPass,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     }),
     getGuestNetworkList: build.query<TableResult<Network>, RequestPayload>({
       query: ({ params, payload }) => {
-        const networkListReq = createHttpRequest(CommonUrlsInfo.getVMNetworksList, params)
+        const networkListReq = createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, params)
         return {
           ...networkListReq,
           body: payload
@@ -269,8 +470,8 @@ export const clientApi = baseClientApi.injectEndpoints({
     importGuestPass: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.importGuestPass, params, {
-          'Content-Type': undefined,
-          'Accept': '*/*'
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          'Content-Type': undefined
         })
         return {
           ...req,
@@ -321,6 +522,40 @@ export const clientApi = baseClientApi.injectEndpoints({
       },
       providesTags: [{ type: 'HistoricalClient', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
+    }),
+    getClientUEDetail: build.query<UEDetail, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(ClientUrlsInfo.getClientUEDetail, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getUEDetailAndDisconnect: build.mutation<CommonResult | 'done', RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ){
+        let serialNumber = arg.params?.serialNumber
+        if(!serialNumber) {
+          const ueDetailRequest = createHttpRequest(ClientUrlsInfo.getClientUEDetail, {
+            clientMacAddress: arg.params?.clientMacAddress
+          })
+          const ueDetailQuery = await fetchWithBQ(ueDetailRequest)
+          const result = ueDetailQuery?.data as UEDetail
+          serialNumber = result.apSerialNumber
+        }
+        if(serialNumber){
+          const disconnectRequest = createHttpRequest(ClientUrlsInfo.disconnectClient, {
+            venueId: arg.params?.venueId,
+            serialNumber: serialNumber,
+            clientMacAddress: arg.params?.clientMacAddress
+          })
+          const disconnectQuery = await fetchWithBQ({
+            ...disconnectRequest,
+            body: arg.payload
+          })
+          return disconnectQuery as QueryReturnValue<CommonResult, FetchBaseQueryError>
+        }
+        return { data: 'done' }
+      }
     })
   })
 })
@@ -338,7 +573,8 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
       healthClass: getClientHealthClass(client.healthCheckStatus),
       totalTraffic: transformByte(client.totalTraffic),
       trafficToClient: transformByte(client.trafficToClient),
-      trafficFromClient: transformByte(client.trafficFromClient)
+      trafficFromClient: transformByte(client.trafficFromClient),
+      clientMac: client.clientMac.toLowerCase()
     }
     if (tmp.sessStartTime && tmp.sessStartTime > 0 && !tmp.sessStartTimeParssed) {
       tmp.sessStartTimeString =
@@ -353,25 +589,89 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
     data
   }
 }
+
+export const aggregatedRbacClientListData = (clientList: TableResult<ClientInfo>,
+  apSwitchInfoMap:Map<string, SwitchInformation>) => {
+  const data:ClientInfo[] = []
+
+  clientList?.data.forEach(client => {
+    const apMac = client.apInformation?.macAddress ?? ''
+    const switchInformation = apSwitchInfoMap.get(apMac)
+
+    const trafficStatus = client.trafficStatus? {
+      ...client.trafficStatus,
+      totalTraffic: transformByte(client.trafficStatus.totalTraffic),
+      trafficToClient: transformByte(client.trafficStatus.trafficToClient),
+      trafficFromClient: transformByte(client.trafficStatus.trafficFromClient)
+    } : undefined
+
+    const tmp = {
+      ...client,
+      switchInformation: cloneDeep(switchInformation),
+      ...(trafficStatus && { trafficStatus: trafficStatus }),
+      macAddress: client.macAddress.toLowerCase()
+    }
+
+    if (tmp.connectedTime && !tmp.connectedTimeParssed) {
+      tmp.connectedTimeString =
+        formatter('longDurationFormat')(convertToRelativeTime(client.connectedTime))
+      tmp.connectedTimeParssed = true
+    }
+
+    data.push(tmp)
+  })
+
+  return {
+    ...clientList,
+    data
+  }
+}
+
+export const aggregatedGuestClientData = (guestsListResult: TableResult<Guest>,
+  guestIdWithMacMaps: Map<string, string[]>, clientList:ClientInfo[]) => {
+
+  const guestIdWithClientMaps: Map<string, ClientInfo[]> = new Map()
+
+  guestIdWithMacMaps.forEach((macs: string[], guestId: string) => {
+    const matchingClients = clientList
+      .filter(client => macs.includes(client.macAddress))
+    if (matchingClients.length > 0) {
+      guestIdWithClientMaps.set(guestId, matchingClients)
+    }
+  })
+  const guestsList = guestsListResult.data
+  guestsList.forEach((guest: Guest) => {
+    if (guestIdWithClientMaps.has(guest.id)) {
+      guest.clients = guestIdWithClientMaps.get(guest.id)!
+    }
+  })
+
+  return { ...guestsListResult, data: guestsList }
+}
+
+
 export const {
+  useGetClientListQuery,
+  useLazyGetClientListQuery,
+  useGetClientsQuery,
+  useLazyGetClientsQuery,
   useGetGuestsListQuery,
   useDisconnectClientMutation,
+  useRevokeClientMutation,
   useLazyGetGuestsListQuery,
   useAddGuestPassMutation,
   useLazyGetGuestNetworkListQuery,
-  useGetDpskPassphraseByQueryQuery,
-  useLazyGetDpskPassphraseByQueryQuery,
   useGetHistoricalClientListQuery,
   useLazyGetHistoricalClientListQuery,
-  useGetClientListQuery,
-  useLazyGetClientListQuery,
   useGetGuestsMutation,
-  useDeleteGuestsMutation,
+  useDeleteGuestMutation,
   useEnableGuestsMutation,
+  useValidateGuestPasswordMutation,
+  useValidateGuestPasswordByGuestIdMutation,
   useDisableGuestsMutation,
   useGenerateGuestPasswordMutation,
-  useGetHistoricalStatisticsReportsQuery,
-  useLazyGetHistoricalStatisticsReportsQuery,
   useImportGuestPassMutation,
-  useGetClientOrHistoryDetailQuery
+  useGetClientOrHistoryDetailQuery,
+  useGetClientUEDetailQuery,
+  useGetUEDetailAndDisconnectMutation
 } = clientApi

@@ -11,7 +11,7 @@ import { useIntl } from 'react-intl'
 
 import { Drawer, Table, Button, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { DeleteOutlinedIcon }                from '@acx-ui/icons'
+import { DeleteOutlined }                    from '@acx-ui/icons-new'
 import {
   useUpdateSwitchMutation,
   useGetSwitchQuery
@@ -21,7 +21,8 @@ import {
   SwitchTable,
   getSwitchModel,
   checkVersionAtLeast09010h,
-  SwitchViewModel
+  SwitchViewModel,
+  convertInputToUppercase
 } from '@acx-ui/rc/utils'
 import {
   useParams
@@ -35,9 +36,10 @@ import {
 } from '../../SwitchForm/blockListRelatedTsb.util'
 
 import {
-  TableContainer,
-  DisabledDeleteOutlinedIcon
+  TableContainer
 } from './styledComponents'
+
+import type { SwitchModelParams } from '../../StackForm'
 
 export interface AddStackMemberProps {
   visible: boolean
@@ -116,8 +118,6 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   const [rowKey, setRowKey] = useState(1)
 
   const [updateSwitch] = useUpdateSwitchMutation()
-  const { data: switchData } =
-    useGetSwitchQuery({ params: { tenantId, switchId } })
 
   const defaultArray: SwitchTable[] = [
     { key: '1', id: '', model: '', disabled: false }
@@ -125,6 +125,17 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   const [tableData, setTableData] = useState(defaultArray)
 
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
+  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
+
+  const { data: switchData } =
+    useGetSwitchQuery({
+      params: { tenantId, switchId, venueId: switchDetail?.venueId },
+      enableRbac: isSwitchRbacEnabled
+    }, {
+      skip: !switchDetail?.venueId
+    })
 
   const columns: TableProps<SwitchTable>['columns'] = [
     {
@@ -141,7 +152,15 @@ function AddMemberForm (props: DefaultVlanFormProps) {
               required: true,
               message: $t({ defaultMessage: 'This field is required' })
             },
-            { validator: (_, value) => validatorSwitchModel(value, switchDetail?.activeSerial) },
+            { validator: (_, value) => {
+              const switchModelParams: SwitchModelParams = {
+                serialNumber: value,
+                isSupport8200AV: isSupport8200AV,
+                isSupport8100: isSupport8100,
+                activeSerialNumber: switchDetail?.activeSerial
+              }
+              return validatorSwitchModel(switchModelParams)}
+            },
             { validator: (_, value) => validatorUniqueMember(value, [
               ...tableData.map(d => ({ id: (d.key === row.key) ? value : d.id })),
               ...(switchData?.stackMembers || [])
@@ -151,7 +170,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
         ><Input
             data-testid={`serialNumber${row.key}`}
             onBlur={() => handleChange(row, index)}
-            style={{ textTransform: 'uppercase' }}
+            onInput={convertInputToUppercase}
             disabled={row.disabled}
           />
         </Form.Item>)
@@ -174,13 +193,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
           type='link'
           key='delete'
           role='deleteBtn'
-          icon={
-            tableData.length <= 1 ? (
-              <DisabledDeleteOutlinedIcon />
-            ) : (
-              <DeleteOutlinedIcon />
-            )
-          }
+          icon={<DeleteOutlined size='sm' />}
           disabled={tableData.length <= 1}
           hidden={row.disabled}
           onClick={() => handleDelete(index, row)}
@@ -241,7 +254,11 @@ function AddMemberForm (props: DefaultVlanFormProps) {
           'ipAddress', 'subnetMask', 'defaultGateway', 'ipAddressType'])
       }
 
-      await updateSwitch({ params: { tenantId, switchId }, payload: stackPayload }).unwrap()
+      await updateSwitch({
+        params: { tenantId, switchId, venueId: switchDetail.venueId },
+        payload: stackPayload,
+        enableRbac: isSwitchRbacEnabled
+      }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

@@ -1,7 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { edgeApi, edgeDhcpApi }   from '@acx-ui/rc/services'
 import {
+  EdgeCompatibilityFixtures,
   EdgeDhcpUrls,
   EdgeGeneralFixtures,
   EdgeUrlsInfo,
@@ -9,18 +12,33 @@ import {
   getServiceRoutePath,
   ServiceOperation, ServiceType
 } from '@acx-ui/rc/utils'
-import { Provider }                                    from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+import { Provider, store } from '@acx-ui/store'
+import {
+  mockServer,
+  render,
+  screen,
+  waitFor,
+  waitForElementToBeRemoved,
+  within
+} from '@acx-ui/test-utils'
 
 import { mockDhcpStatsData } from '../__tests__/fixtures'
 
 import DHCPTable from '.'
 
-const { mockEdgeList } = EdgeGeneralFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockEdgeDhcpCompatibilities } = EdgeCompatibilityFixtures
+const mockedGetClusterList = jest.fn()
 const mockedUsedNavigate = jest.fn()
+const mockedUpdateFn = jest.fn()
+const test123 = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  ApCompatibilityToolTip: () => <div data-testid='ApCompatibilityToolTip' />
 }))
 
 describe('EdgeDhcpTable', () => {
@@ -33,7 +51,10 @@ describe('EdgeDhcpTable', () => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
-
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockedGetClusterList.mockReset()
+    store.dispatch(edgeApi.util.resetApiState())
+    store.dispatch(edgeDhcpApi.util.resetApiState())
     mockServer.use(
       rest.post(
         EdgeDhcpUrls.getDhcpStats.url,
@@ -43,17 +64,25 @@ describe('EdgeDhcpTable', () => {
         EdgeDhcpUrls.deleteDhcpService.url,
         (req, res, ctx) => res(ctx.status(202))
       ),
-      rest.delete(
-        EdgeDhcpUrls.bulkDeleteDhcpServices.url,
-        (req, res, ctx) => res(ctx.status(202))
-      ),
       rest.post(
-        EdgeUrlsInfo.getEdgeList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeList))
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => {
+          mockedGetClusterList()
+          return res(ctx.json(mockEdgeClusterList))
+        }
       ),
       rest.patch(
         EdgeDhcpUrls.patchDhcpService.url,
-        (req, res, ctx) => res(ctx.status(202))
+        (req, res, ctx) => {
+          mockedUpdateFn()
+          return res(ctx.status(202))
+        }
+      ),
+      rest.post(
+        EdgeDhcpUrls.getDhcpEdgeCompatibilities.url,
+        (req, res, ctx) => {
+          test123()
+          return res(ctx.json(mockEdgeDhcpCompatibilities))}
       )
     )
   })
@@ -65,8 +94,12 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(mockedGetClusterList).toBeCalled())
     const row = await screen.findAllByRole('row', { name: /TestDHCP-/i })
     expect(row.length).toBe(4)
+    await waitFor(() => expect(test123).toBeCalled())
+    expect(await screen.findByTestId('ApCompatibilityToolTip')).toBeVisible()
   })
 
   it('should render breadcrumb correctly', async () => {
@@ -76,6 +109,7 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'My Services'
@@ -89,6 +123,7 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const edgeDhcpServiceDetailLink = await screen.findByRole('link',
       { name: 'TestDHCP-1' }) as HTMLAnchorElement
     expect(edgeDhcpServiceDetailLink.href)
@@ -107,8 +142,10 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
-    const row = await screen.findByRole('row', { name: /TestDHCP-1/i })
-    await user.click(within(row).getByRole('radio'))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /TestDHCP-1/i })).toBeVisible()
+    await user.click(within(rows[1]).getByRole('radio'))
     await user.click(screen.getByRole('button', { name: 'Edit' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/${getServiceDetailsLink({
@@ -143,8 +180,10 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
-    const row = await screen.findByRole('row', { name: /TestDHCP-1/i })
-    await user.click(within(row).getByRole('radio'))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /TestDHCP-1/i })).toBeVisible()
+    await user.click(within(rows[1]).getByRole('radio'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "TestDHCP-1"?')
     const dialog = screen.queryByRole('dialog')
@@ -179,14 +218,17 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
-    const row = await screen.findByRole('row', { name: /DHCP-1/i })
-    await user.click(within(row).getByRole('radio'))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /DHCP-1/i })).toBeVisible()
+    await user.click(within(rows[1]).getByRole('radio'))
     await user.click(screen.getByRole('button', { name: 'Update Now' }))
     const dialog = await screen.findByRole('dialog')
     screen.getByText('Service Update')
     // eslint-disable-next-line max-len
     await screen.findByText('Are you sure you want to update this service to the latest version immediately?')
     await user.click(screen.getByRole('button', { name: 'Update' }))
+    await waitFor(() => expect(mockedUpdateFn).toHaveBeenCalled())
     await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
@@ -216,14 +258,37 @@ describe('EdgeDhcpTable', () => {
       </Provider>, {
         route: { params, path: tablePath }
       })
-    const row = await screen.findByRole('row', { name: /TestDHCP-1/i })
-    expect(await within(row).findByText('Yes')).toBeValid()
-    const row1 = await screen.findByRole('row', { name: /TestDHCP-2/i })
-    expect(await within(row1).findByText('Yes')).toBeValid()
-    expect(await within(row1).findByText('1.0.1, 1.0.2')).toBeValid()
-    const row2 = await screen.findByRole('row', { name: /TestDHCP-3/i })
-    expect(await within(row2).findByText('No')).toBeValid()
-    const row3 = await screen.findByRole('row', { name: /TestDHCP-4/i })
-    expect(await within(row3).findByText('No')).toBeValid()
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /TestDHCP-1/i })).toBeVisible()
+    expect(await within(rows[1]).findByText('Yes')).toBeValid() //TestDHCP-1
+    expect(within(rows[2]).getByRole('cell', { name: /TestDHCP-2/i })).toBeVisible()
+    expect(await within(rows[2]).findByText('Yes')).toBeValid() //TestDHCP-2
+    expect(await within(rows[2]).findByText('1.0.1, 1.0.2')).toBeValid() //TestDHCP-2
+    expect(within(rows[3]).getByRole('cell', { name: /TestDHCP-3/i })).toBeVisible()
+    expect(await within(rows[3]).findByText('No')).toBeValid() //TestDHCP-3
+    expect(within(rows[4]).getByRole('cell', { name: /TestDHCP-4/i })).toBeVisible()
+    expect(await within(rows[4]).findByText('No')).toBeValid() //TestDHCP-4
+  })
+
+  it('Should render EdgeDhcpTable data as expected', async () => {
+    render(
+      <Provider>
+        <DHCPTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      })
+    await waitFor(() => expect(mockedGetClusterList).toBeCalled())
+    const row = await screen.findAllByRole('row', { name: /TestDHCP-1/i })
+
+    const receivedClusterCount = within(row[0]).getAllByRole('cell')[3].textContent
+    const expectedClusterCount = mockDhcpStatsData.data[0].edgeClusterIds.length.toString()
+    expect(receivedClusterCount).toEqual(expectedClusterCount)
+
+    const clusterCountCells = screen.getAllByRole('cell', { name: expectedClusterCount })
+    await userEvent.hover(within(clusterCountCells[0]).getByText(expectedClusterCount))
+    expect(await screen.findByRole('tooltip', { hidden: false }))
+      .toHaveTextContent(mockEdgeClusterList.data[0].name)
   })
 })

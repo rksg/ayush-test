@@ -1,0 +1,431 @@
+import { useContext, useEffect, useState } from 'react'
+
+import { Input, Radio, Space } from 'antd'
+import {
+  Col,
+  Form,
+  Row,
+  Select,
+  Switch
+} from 'antd'
+import { FormattedMessage, useIntl } from 'react-intl'
+
+import {
+  Button,
+  GridCol,
+  GridRow,
+  Modal,
+  ModalType,
+  StepsFormLegacy,
+  Subtitle,
+  Tooltip
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { InformationSolid }                from '@acx-ui/icons'
+import { useGetCertificateTemplatesQuery } from '@acx-ui/rc/services'
+import {
+  AAAWlanSecurityEnum,
+  MacAuthMacFormatEnum,
+  ManagementFrameProtectionEnum,
+  NetworkSaveData,
+  PolicyOperation,
+  PolicyType,
+  Radius,
+  WifiNetworkMessages,
+  WlanSecurityEnum,
+  hasPolicyPermission,
+  macAuthMacFormatOptions,
+  useConfigTemplate
+} from '@acx-ui/rc/utils'
+
+import { CertificateTemplateForm, MAX_CERTIFICATE_PER_TENANT } from '../../policies'
+import { AAAInstance }                                         from '../AAAInstance'
+import { NetworkDiagram }                                      from '../NetworkDiagram/NetworkDiagram'
+import { MLOContext }                                          from '../NetworkForm'
+import NetworkFormContext                                      from '../NetworkFormContext'
+import { NetworkMoreSettingsForm }                             from '../NetworkMoreSettings/NetworkMoreSettingsForm'
+import * as UI                                                 from '../styledComponents'
+
+
+const { Option } = Select
+
+const { useWatch } = Form
+
+export function AaaSettingsForm () {
+  const { editMode, cloneMode, data, isRuckusAiMode } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+
+  // TODO: Remove deprecated codes below when RadSec feature is delivery
+  useEffect(()=>{
+    if(!supportRadsec && data && (editMode || cloneMode)) {
+      setFieldsValue()
+    }
+  }, [data])
+
+  useEffect(()=>{
+    if(supportRadsec && data && (editMode || cloneMode)) {
+      setFieldsValue()
+    }
+  }, [data?.id])
+
+  const setFieldsValue = () => {
+    data && form.setFieldsValue({
+      enableAuthProxy: data.enableAuthProxy,
+      enableAccountingProxy: data.enableAccountingProxy,
+      enableAccountingService: data.enableAccountingService,
+      authRadius: data.authRadius,
+      accountingRadius: data.accountingRadius,
+      accountingRadiusId: data.accountingRadiusId,
+      authRadiusId: data.authRadiusId,
+      useCertificateTemplate: data.useCertificateTemplate,
+      certificateTemplateId: data.certificateTemplateId,
+      wlan: {
+        wlanSecurity: data.wlan?.wlanSecurity,
+        managementFrameProtection: data.wlan?.managementFrameProtection,
+        // eslint-disable-next-line max-len
+        macAddressAuthenticationConfiguration: resolveMacAddressAuthenticationConfiguration(data, isWifiRbacEnabled)
+      }
+    })
+  }
+
+  return (<>
+    <Row gutter={20}>
+      <Col span={10}>
+        <SettingsForm />
+      </Col>
+      <Col span={14} style={{ height: '100%' }}>
+        <NetworkDiagram />
+      </Col>
+    </Row>
+    {!(editMode) && !(isRuckusAiMode) && <Row>
+      <Col span={24}>
+        <NetworkMoreSettingsForm wlanData={data} />
+      </Col>
+    </Row>}
+  </>)
+}
+
+function SettingsForm () {
+  const { $t } = useIntl()
+  const { editMode, cloneMode } = useContext(NetworkFormContext)
+  const { disableMLO } = useContext(MLOContext)
+  const form = Form.useFormInstance()
+  const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
+  const useCertificateTemplate = useWatch('useCertificateTemplate')
+  const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const { isTemplate } = useConfigTemplate()
+  const wpa2Description = <FormattedMessage
+    /* eslint-disable max-len */
+    defaultMessage={`
+      WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006.
+      WPA2 should be selected unless you have a specific reason to choose otherwise.
+      <highlight>
+        6GHz radios are only supported with WPA3.
+      </highlight>
+    `}
+    /* eslint-enable */
+    values={{
+      highlight: (chunks) => <Space align='start'>
+        <InformationSolid />
+        {chunks}
+      </Space>
+    }}
+  />
+
+  const wpa3Description = $t({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.'
+  })
+
+  useEffect(() => {
+    if (!editMode && !cloneMode) {
+      if (!wlanSecurity || !Object.keys(AAAWlanSecurityEnum).includes(wlanSecurity)) {
+        form.setFieldValue(['wlan', 'wlanSecurity'], WlanSecurityEnum.WPA2Enterprise)
+        // eslint-disable-next-line max-len
+        form.setFieldValue(['wlan', 'managementFrameProtection'], ManagementFrameProtectionEnum.Disabled)
+      }
+    }
+
+    if (wlanSecurity === WlanSecurityEnum.WPA3){
+      disableMLO(false)
+    } else {
+      disableMLO(true)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+    }
+
+
+  }, [cloneMode, editMode, form, wlanSecurity])
+
+  const handleWlanSecurityChanged = (v: WlanSecurityEnum) => {
+    const managementFrameProtection = (v === WlanSecurityEnum.WPA3)
+      ? ManagementFrameProtectionEnum.Required
+      : ManagementFrameProtectionEnum.Disabled
+
+    form.setFieldValue(['wlan', 'managementFrameProtection'], managementFrameProtection)
+  }
+
+  return (
+    <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
+      <div>
+        <StepsFormLegacy.Title>{ $t({ defaultMessage: 'AAA Settings' }) }</StepsFormLegacy.Title>
+        <Form.Item
+          label='Security Protocol'
+          name={['wlan', 'wlanSecurity']}
+          extra={
+            wlanSecurity === WlanSecurityEnum.WPA2Enterprise
+              ? wpa2Description
+              : wpa3Description
+          }
+        >
+          <Select onChange={handleWlanSecurityChanged}>
+            <Option value={WlanSecurityEnum.WPA2Enterprise}>
+              { $t({ defaultMessage: 'WPA2 (Recommended)' }) }
+            </Option>
+            <Option value={WlanSecurityEnum.WPA3}>{ $t({ defaultMessage: 'WPA3' }) }</Option>
+          </Select>
+        </Form.Item>
+        <Form.Item name={['wlan', 'managementFrameProtection']} noStyle>
+          <Input type='hidden' />
+        </Form.Item>
+      </div>
+      {!isTemplate && isCertificateTemplateEnabled ? <>
+        <div>
+          <Form.Item name='useCertificateTemplate' initialValue={!!useCertificateTemplate}>
+            <Radio.Group disabled={editMode}>
+              <Space direction={'vertical'}>
+                <Radio value={false}>{$t({ defaultMessage: 'Use External AAA Service' })}</Radio>
+                <Radio value={true}>{$t({ defaultMessage: 'Use Certificate Auth' })}</Radio>
+              </Space>
+            </Radio.Group>
+          </Form.Item>
+        </div>
+        <div>
+          {useCertificateTemplate ? <CertAuth /> : <AaaService />}
+        </div>
+      </> : <AaaService />}
+    </Space>
+  )
+}
+
+function CertAuth () {
+  const { $t } = useIntl()
+  const form = Form.useFormInstance()
+  const [certTempModalVisible, setCertTempModalVisible] = useState(false)
+  const { certTemplateOptions } =
+  useGetCertificateTemplatesQuery({ payload: { pageSize: MAX_CERTIFICATE_PER_TENANT, page: 1 } },
+    { selectFromResult: ({ data }) => {
+      return {
+        certTemplateOptions: data?.data.map(d => ({ value: d.id, label: d.name })) }} })
+  return (
+    <>
+      <GridRow>
+        <GridCol col={{ span: 12 }}>
+          <Form.Item
+            label={$t({ defaultMessage: 'Certificate Template' })}
+            name='certificateTemplateId'
+            rules={[{ required: true }]}
+          >
+            <Select
+              placeholder={$t({ defaultMessage: 'Select...' })}
+              options={certTemplateOptions}>
+            </Select>
+          </Form.Item>
+        </GridCol>
+        { hasPolicyPermission({
+          type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.CREATE }) &&
+        <Button
+          type='link'
+          style={{ top: '28px' }}
+          onClick={() => setCertTempModalVisible(true)}
+        >
+          { $t({ defaultMessage: 'Add' }) }
+        </Button> }
+      </GridRow>
+      <Modal
+        title={$t({ defaultMessage: 'Add Certificate Template' })}
+        visible={certTempModalVisible}
+        type={ModalType.ModalStepsForm}
+        children={<CertificateTemplateForm
+          modalMode={true}
+          modalCallBack={(id) => {
+            if (id) {
+              form.setFieldValue('certificateTemplateId', id)
+            }
+            setCertTempModalVisible(false)
+          }}
+        />}
+        onCancel={() => setCertTempModalVisible(false)}
+        width={1200}
+        destroyOnClose={true}
+      />
+    </ >
+  )
+}
+
+function AaaService () {
+  const { $t } = useIntl()
+  const { editMode, setData, data } = useContext(NetworkFormContext)
+  const form = Form.useFormInstance()
+  const enableAccountingService = useWatch('enableAccountingService', form)
+  const enableMacAuthentication = useWatch<boolean>(
+    ['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication'])
+  const [selectedAuthRadius, selectedAcctRadius] =
+    [useWatch<Radius>('authRadius'), useWatch<Radius>('accountingRadius')]
+  const support8021xMacAuth = useIsSplitOn(Features.WIFI_8021X_MAC_AUTH_TOGGLE)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const labelWidth = '250px'
+
+  const onProxyChange = (value: boolean, fieldName: string) => {
+    setData && setData({ ...data, [fieldName]: value })
+  }
+
+  const onMacAuthChange = (checked: boolean) => {
+    setData && setData({
+      ...data,
+      ...{
+        wlan: {
+          ...data?.wlan,
+          ...(isWifiRbacEnabled
+            ? { macAddressAuthentication: checked }
+            : { macAddressAuthenticationConfiguration: {
+              ...data?.wlan?.macAddressAuthenticationConfiguration,
+              macAddressAuthentication: checked
+            } })
+        }
+      }
+    })
+  }
+
+  useEffect(() => {
+    if (supportRadsec && selectedAuthRadius?.radSecOptions?.tlsEnabled) {
+      form.setFieldValue('enableAuthProxy', true)
+    }
+  }, [selectedAuthRadius])
+
+  useEffect(() => {
+    if (supportRadsec && selectedAcctRadius?.radSecOptions?.tlsEnabled) {
+      form.setFieldValue('enableAccountingProxy', true)
+    }
+  }, [selectedAcctRadius])
+
+  const proxyServiceTooltip = <Tooltip.Question
+    placement='bottom'
+    title={$t({
+      // eslint-disable-next-line max-len
+      defaultMessage: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.'
+    })}
+    iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+  />
+
+  const macAuthOptions = Object.keys(macAuthMacFormatOptions).map((key =>
+    <Option key={key}>
+      { macAuthMacFormatOptions[key as keyof typeof macAuthMacFormatOptions] }
+    </Option>
+  ))
+
+  return (
+    <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
+      <div>
+        <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
+        <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}
+          type='authRadius'/>
+        <UI.FieldLabel width={labelWidth}>
+          <Space align='start'>
+            { $t({ defaultMessage: 'Proxy Service' }) }
+            {proxyServiceTooltip}
+          </Space>
+          <Form.Item
+            name='enableAuthProxy'
+            valuePropName='checked'
+            initialValue={false}
+            children={<Switch
+              onChange={(value) => onProxyChange(value,'enableAuthProxy')}
+              disabled={supportRadsec && selectedAuthRadius?.radSecOptions?.tlsEnabled}/>}
+          />
+        </UI.FieldLabel>
+      </div>
+      <div>
+        <UI.FieldLabel width={labelWidth}>
+          <Subtitle level={3}>{ $t({ defaultMessage: 'Accounting Service' }) }</Subtitle>
+          <Form.Item
+            name='enableAccountingService'
+            valuePropName='checked'
+            initialValue={false}
+            style={{ marginTop: '-5px', marginBottom: '0' }}
+            children={<Switch
+              onChange={(value)=>onProxyChange(value,'enableAccountingService')}
+            />}
+          />
+        </UI.FieldLabel>
+        {enableAccountingService && <>
+          <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
+            type='accountingRadius'/>
+          <UI.FieldLabel width={labelWidth}>
+            <Space align='start'>
+              { $t({ defaultMessage: 'Proxy Service' }) }
+              {proxyServiceTooltip}
+            </Space>
+            <Form.Item
+              name='enableAccountingProxy'
+              valuePropName='checked'
+              initialValue={false}
+              children={<Switch
+                onChange={(value) => onProxyChange(value,'enableAccountingProxy')}
+                disabled={supportRadsec && selectedAcctRadius?.radSecOptions?.tlsEnabled}/>}
+            />
+          </UI.FieldLabel>
+        </>}
+      </div>
+      {support8021xMacAuth && <>
+        <UI.FieldLabel width={labelWidth}>
+          <Space align='start'>
+            { $t({ defaultMessage: 'MAC Authentication' }) }
+            <Tooltip.Question
+              title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
+              placement='bottom'
+              iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+            />
+          </Space>
+          <Form.Item
+            name={['wlan', 'macAddressAuthenticationConfiguration', 'macAddressAuthentication']}
+            initialValue={false}
+            valuePropName='checked'
+            children={<Switch
+              disabled={editMode}
+              onChange={onMacAuthChange}
+              data-testid='macAuth8021x'/>}
+          />
+        </UI.FieldLabel>
+        {enableMacAuthentication &&
+          <Form.Item
+            label={$t({ defaultMessage: 'MAC Address Format' })}
+            name={['wlan', 'macAddressAuthenticationConfiguration', 'macAuthMacFormat']}
+            initialValue={MacAuthMacFormatEnum.UpperDash}
+            children={<Select children={macAuthOptions} />}
+          />
+        }
+      </>}
+    </Space>
+  )
+}
+
+export function resolveMacAddressAuthenticationConfiguration (
+  data: NetworkSaveData,
+  isWifiRbacEnabled: boolean
+) : NonNullable<NetworkSaveData['wlan']>['macAddressAuthenticationConfiguration'] {
+  const config = data.wlan?.macAddressAuthenticationConfiguration
+
+  if (!isWifiRbacEnabled) return config
+
+  return {
+    ...(config ?? {}),
+    macAddressAuthentication: data.wlan?.macAddressAuthentication
+  }
+}

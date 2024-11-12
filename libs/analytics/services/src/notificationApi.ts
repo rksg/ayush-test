@@ -1,8 +1,7 @@
 import { notificationApi } from '@acx-ui/store'
-import { getJwtHeaders }   from '@acx-ui/utils'
 
 export type NotificationMethod = 'web' | 'email'
-export type AnalyticsPreferenceType = 'incident' | 'configRecommendation'
+export type AnalyticsPreferenceType = 'incident' | 'configRecommendation' | 'licenses' | 'intentAI'
 
 export type AnalyticsPreferences = {
   incident?: {
@@ -14,6 +13,15 @@ export type AnalyticsPreferences = {
   configRecommendation?: {
     crrm: NotificationMethod[]
     aiOps: NotificationMethod[]
+  }
+  licenses?: {
+    '60D': NotificationMethod[]
+    '30D': NotificationMethod[]
+    '7D': NotificationMethod[]
+  }
+  recipients?: string[]
+  intentAI?: {
+    all: NotificationMethod[]
   }
 }
 
@@ -33,7 +41,6 @@ export const preferencesApi = notificationApi.injectEndpoints({
           method: 'get',
           credentials: 'include',
           headers: {
-            ...getJwtHeaders(),
             'x-mlisa-tenant-id': tenantId,
             'x-mlisa-user-id': tenantId
           }
@@ -50,7 +57,6 @@ export const preferencesApi = notificationApi.injectEndpoints({
           credentials: 'include',
           body: JSON.stringify(preferences),
           headers: {
-            ...getJwtHeaders(),
             'x-mlisa-tenant-id': tenantId,
             'x-mlisa-user-id': tenantId,
             'content-type': 'application/json'

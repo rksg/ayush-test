@@ -1,16 +1,14 @@
 import { useState } from 'react'
 
 import { Space }   from 'antd'
-import _           from 'lodash'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { TimeSeriesDataType, TrendTypeEnum, aggregateDataBy, getSeriesData } from '@acx-ui/analytics/utils'
 import { Loader, PageHeader, Table, TableProps, Tooltip,
-  cssStr,  Card, GridCol, GridRow,
-  MultiLineTimeSeriesChart,NoData, Alert, TrendPill,
-  Drawer, SearchBar }                from '@acx-ui/components'
+  cssStr, Card, GridCol, GridRow, MultiLineTimeSeriesChart,
+  NoData, Alert, TrendPill, Drawer } from '@acx-ui/components'
 import { get }                       from '@acx-ui/config'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
@@ -18,6 +16,8 @@ import {
   EditOutlinedDisabledIcon
 } from '@acx-ui/icons'
 import { TenantLink, useParams }                                           from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                      from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasPermission }                         from '@acx-ui/user'
 import { DateFilter, DateRange, TABLE_DEFAULT_PAGE_SIZE, encodeParameter } from '@acx-ui/utils'
 
 import { zoomStatsThresholds }                                                                         from '../VideoCallQoe/constants'
@@ -127,6 +127,8 @@ export function VideoCallQoeDetails (){
                   : (
                     <div style={{ width: '100px' }}>-</div>
                   )}
+              {hasCrossVenuesPermission() &&
+               hasPermission({ permission: 'WRITE_VIDEO_CALL_QOE', scopes: [WifiScopes.UPDATE] }) &&
               <Tooltip title={$t({ defaultMessage: 'Select Client MAC' })}>
                 <EditOutlinedIcon
                   style={{ height: '16px', width: '16px', cursor: 'pointer' }}
@@ -136,7 +138,7 @@ export function VideoCallQoeDetails (){
                     setSelectedMac(null)
                   }}
                 />
-              </Tooltip>
+              </Tooltip>}
             </Space>
           )
         }
@@ -144,11 +146,13 @@ export function VideoCallQoeDetails (){
         return (
           <Space>
             <div style={{ width: '100px' }}>-</div>
+            {hasCrossVenuesPermission() &&
+             hasPermission({ permission: 'WRITE_VIDEO_CALL_QOE', scopes: [WifiScopes.UPDATE] }) &&
             <Tooltip title={$t({ defaultMessage: 'Not allowed as participant not on Wi-Fi' })}>
               <EditOutlinedDisabledIcon
                 style={{ height: '16px', width: '16px', cursor: 'not-allowed' }}
               />
-            </Tooltip>
+            </Tooltip>}
           </Space>
         )
       }
@@ -215,8 +219,12 @@ export function VideoCallQoeDetails (){
       dataIndex: 'leaveTime',
       key: 'leaveTime',
       render: (_, row)=>{
-        return <Tooltip title={row.leaveReason.replace('<br>','\n')}>
-          {formatter(DateFormatEnum.OnlyTime)(row.leaveTime)}</Tooltip>
+        return <Tooltip
+          title={row.leaveReason.replace('<br>','\n')}
+          dottedUnderline={true}
+        >
+          {formatter(DateFormatEnum.OnlyTime)(row.leaveTime)}
+        </Tooltip>
       }
     },
     {
@@ -355,15 +363,21 @@ export function VideoCallQoeDetails (){
       <Loader states={[queryResults]}>
         { callQoeDetails && currentMeeting && <PageHeader
           title={callQoeDetails.name}
-          subTitle={
-            `${$t({ defaultMessage: 'Start Time' })}:
-            ${formatter(DateFormatEnum.DateTimeFormatWithSeconds)(currentMeeting.startTime)}` +
-            ` | ${$t({ defaultMessage: 'End Time' })}:
-            ${formatter(DateFormatEnum.DateTimeFormatWithSeconds)(currentMeeting.endTime)}` +
-            ` | ${$t({ defaultMessage: 'Duration' })}:
-            ${formatter('durationFormat')(new Date(currentMeeting.endTime).getTime()
-              - new Date(currentMeeting.startTime).getTime())}`
-          }
+          subTitle={[
+            {
+              label: $t({ defaultMessage: 'Start Time' }),
+              value: [formatter(DateFormatEnum.DateTimeFormatWithSeconds)(currentMeeting.startTime)]
+            },
+            {
+              label: $t({ defaultMessage: 'End Time' }),
+              value: [formatter(DateFormatEnum.DateTimeFormatWithSeconds)(currentMeeting.endTime)]
+            },
+            {
+              label: $t({ defaultMessage: 'Duration' }),
+              value: [formatter('durationFormat')(new Date(currentMeeting.endTime).getTime()
+                - new Date(currentMeeting.startTime).getTime())]
+            }
+          ]}
           extra={[
             <div style={{ paddingTop: '4px' }}>{$t({ defaultMessage: 'Video Call QoE' })}</div>,
             <div style={{ paddingTop: '4px' }}>{getPill(currentMeeting.mos)}</div>
@@ -422,16 +436,6 @@ export function VideoCallQoeDetails (){
               onSave={onSelectClientMac}
             />}
           >
-            <SearchBar
-              placeHolder='Search by MAC, username or hostname'
-              onChange={(q) => q?.trim().length>=0 && _.debounce(
-                (search) => {
-                  setSearch(search)
-                  setSelectedMac(null)
-                }
-                ,1000
-              )(q.trim())}
-            />
             <Loader states={[searchQueryResults]}>
               <Table
                 rowKey='mac'
@@ -450,6 +454,8 @@ export function VideoCallQoeDetails (){
                   {
                     dataIndex: 'mac',
                     key: 'mac',
+                    title: 'MAC, Username, Hostname',
+                    searchable: true,
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     render: (_, row: any)=>{
                       return <>
@@ -470,6 +476,12 @@ export function VideoCallQoeDetails (){
                     }
                   }
                 ]}
+                searchableWidth={230}
+                onFilterChange={(_, { searchString }) => {
+                  setSearch(searchString || '')
+                  setSelectedMac(null)
+                }}
+                enableApiFilter
                 dataSource={searchQueryResults.data}
                 pagination={{
                   pageSize: TABLE_DEFAULT_PAGE_SIZE,

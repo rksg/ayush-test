@@ -2,8 +2,68 @@
 
 exports[`Floor Plan Modal handles click on add floorplan 1`] = `
 <DocumentFragment>
-  <button
-    class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
+  .c0 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c0 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c0 svg:before {
+  content: 'a';
+}
+
+.c0 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c0.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c0.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c0.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c0.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c0[disabled] svg path,
+.c0.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c0[disabled].ant-btn-link svg path,
+.c0.ant-btn-disabled.ant-btn-link svg path,
+.c0[disabled].ant-btn-default svg path,
+.c0.ant-btn-disabled.ant-btn-default svg path,
+.c0[disabled].ant-btn-primary svg path,
+.c0.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+<button
+    class="ant-btn ant-btn-link ant-btn-sm c0"
     data-testid="AddEditLinks"
     type="button"
   >
@@ -25,8 +85,68 @@ exports[`Floor Plan Modal handles click on add floorplan 1`] = `
 
 exports[`Floor Plan Modal should render correctly 1`] = `
 <DocumentFragment>
-  <button
-    class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup"
+  .c0 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c0 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c0 svg:before {
+  content: 'a';
+}
+
+.c0 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c0.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c0.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c0.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c0.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c0[disabled] svg path,
+.c0.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c0[disabled].ant-btn-link svg path,
+.c0.ant-btn-disabled.ant-btn-link svg path,
+.c0[disabled].ant-btn-default svg path,
+.c0.ant-btn-disabled.ant-btn-default svg path,
+.c0[disabled].ant-btn-primary svg path,
+.c0.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+<button
+    class="ant-btn ant-btn-link ant-btn-sm c0"
     data-testid="AddEditLinks"
     type="button"
   >

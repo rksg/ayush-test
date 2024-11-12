@@ -1,0 +1,188 @@
+import { useState, Key, useEffect } from 'react'
+
+import { Radio, Space, Typography } from 'antd'
+import _                            from 'lodash'
+import { FormattedMessage }         from 'react-intl'
+
+import { Button,
+  cssStr, Modal,
+  Table, TableProps,
+  Tabs, Tooltip } from '@acx-ui/components'
+import { usePathBasedOnConfigTemplate }     from '@acx-ui/rc/components'
+import { ConfigurationProfile, ProfileTypeEnum,
+  VenueMessages, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
+import { useNavigate }                   from '@acx-ui/react-router-dom'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { getIntl }                       from '@acx-ui/utils'
+
+import { Picker, Notification  } from './styledComponents'
+
+import { getProfilesByKeys, getProfilesByType, getProfileKeysByType, FormState } from './index'
+
+import type { RadioChangeEvent } from 'antd'
+
+export function ConfigProfileModal (props: {
+  formState: FormState,
+  formData: VenueSwitchConfiguration,
+  setFormState: (data: FormState) => void,
+  setFormData: (data: VenueSwitchConfiguration) => void,
+}) {
+  const { $t } = getIntl()
+  const addRegularProfilePath = usePathBasedOnConfigTemplate('/networks/wired/profiles/add')
+  const addCliProfilePath = usePathBasedOnConfigTemplate('/networks/wired/profiles/cli/add')
+  const navigate = useNavigate()
+  const { formState, setFormState, formData, setFormData } = props
+  const [disableButton, setDisableButton] = useState(false)
+  const [selectedProfileKeys, setSelectedProfileKeys] = useState('')
+  const [selectedCliProfileKeys, setSelectedCliProfileKeys] = useState([] as Key[])
+  const [isCliProfile, setIsCliProfile] = useState(false as boolean)
+
+  const { configProfiles, changeModalvisible } = formState
+  const selectedProfiles = getProfilesByKeys(configProfiles, formData.profileId)
+  const selectedCLIKeys = getProfileKeysByType(selectedProfiles, ProfileTypeEnum.CLI)
+  const regularProfiles = getProfilesByType(configProfiles, ProfileTypeEnum.REGULAR)
+  const cliProfiles = getProfilesByType(configProfiles, ProfileTypeEnum.CLI)
+
+  useEffect(() => {
+    if (selectedCLIKeys.length > 0) {
+      setIsCliProfile(true)
+    }
+  }, ([configProfiles]))
+
+  const onChangeRegular = (e: RadioChangeEvent) => {
+    setSelectedProfileKeys(e.target.value)
+  }
+
+  const onChangeCLI = (selectedRowKeys: Key[]) => {
+    const selected = getProfilesByKeys(formState.configProfiles, selectedRowKeys)
+    const switchModels = selected.flatMap(s => s?.venueCliTemplate?.switchModels?.split(','))
+    setDisableButton(switchModels.length !== _.uniq(switchModels).length)
+    setSelectedCliProfileKeys(selectedRowKeys)
+    setIsCliProfile(selectedRowKeys.length > 0)
+  }
+
+  const onCancel = () => {
+    setIsCliProfile(selectedCLIKeys.length > 0)
+    setFormState({ ...formState, changeModalvisible: false })
+  }
+
+  const onOk = () => {
+    const selectedProfileId = selectedCliProfileKeys.length
+      ? selectedCliProfileKeys
+      : [selectedProfileKeys]
+
+    setFormState({ ...formState, changeModalvisible: false })
+    setFormData({ ...formData, profileId: selectedProfileId })
+  }
+
+  const columns: TableProps<ConfigurationProfile>['columns'] = [{
+    title: $t({ defaultMessage: 'Profile Name' }),
+    dataIndex: 'name',
+    key: 'name',
+    sorter: true
+  }, {
+    title: $t({ defaultMessage: 'Model Affected' }),
+    dataIndex: ['venueCliTemplate', 'switchModels'],
+    key: 'venueCliTemplate',
+    render: (_, { venueCliTemplate }) => {
+      const models = venueCliTemplate?.switchModels?.split(',') ?? []
+      const title = <>{models.map((m, idx) => <div key={idx}>{m}</div>)}</>
+      const content = models?.length > 1 ? $t({
+        defaultMessage: '{count} models'
+      }, { count: models.length }) : venueCliTemplate?.switchModels
+      return <Tooltip title={title} placement='bottom'>{ content }</Tooltip>
+    }
+  }, {
+    title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
+    dataIndex: 'venues',
+    key: 'venues',
+    render: (_, { venues }) => {
+      const title = venues
+        ? <>{venues?.map((v, idx) => <div key={idx}>{v}</div>)}</>
+        : null
+      const count = venues?.length ?? 0
+      return <Tooltip title={title} placement='bottom'>{ count }</Tooltip>
+    }
+  }]
+
+  return (<Modal
+    title={$t({ defaultMessage: 'Select configuration profile' })}
+    visible={changeModalvisible}
+    width={500}
+    destroyOnClose={true}
+    onCancel={onCancel}
+    footer={[
+      <Button key='back' onClick={onCancel}>Cancel</Button>,
+      <Tooltip
+        placement='top'
+        key='disableTooltip'
+        title={disableButton ? $t(VenueMessages.MODEL_OVERLAPPING_TOOLTIP) : null}
+      >
+        <Space style={{ marginLeft: '8px' }}> {/* Fix Tooltip on disabled button */}
+          <Button key='submit' type='primary' disabled={disableButton} onClick={onOk}>
+            {$t({ defaultMessage: 'OK' })}
+          </Button>
+        </Space>
+      </Tooltip>
+    ]}
+  >
+    <Tabs type='line'
+      stickyTop={false}
+      defaultActiveKey={isCliProfile
+        ? ProfileTypeEnum.CLI
+        : ProfileTypeEnum.REGULAR}>
+      <Tabs.TabPane
+        tab={$t({ defaultMessage: 'Regular Profiles' })}
+        key={ProfileTypeEnum.REGULAR}
+        disabled={isCliProfile}
+      >
+        <Typography.Text>
+          {$t({ defaultMessage: 'Select a configuration profile to apply:' })}
+        </Typography.Text>
+        <Picker>
+          <Radio.Group defaultValue={'none'} onChange={onChangeRegular} value={selectedProfileKeys}>
+            { regularProfiles?.map(p =>
+              <Radio value={p.id} key={p.id}>{p.name}</Radio>)}
+            <Radio value='none' key='none' style={{ color: cssStr('--acx-semantics-red-50') }}>
+              {$t({ defaultMessage: 'No Profile' })}
+            </Radio>
+          </Radio.Group>
+        </Picker>
+        <Button type='link' size='small' onClick={() => { navigate(addRegularProfilePath) }}>
+          {$t({ defaultMessage: 'Add Configuration Profile' })}
+        </Button>
+      </Tabs.TabPane>
+
+      <Tabs.TabPane tab={$t({ defaultMessage: 'CLI Profiles' })} key={ProfileTypeEnum.CLI}>
+        <>
+          <Notification> {
+            <FormattedMessage
+              {...VenueMessages.CLI_PROFILE_NOTIFICATION}
+              values={{
+                ul: (text: string) => <ul>{text}</ul>,
+                li: (text: string) => <li>{text}</li>
+              }}
+            />
+          } </Notification>
+          <Table
+            columns={columns}
+            dataSource={cliProfiles}
+            rowKey='id'
+            rowSelection={hasPermission() && {
+              type: 'checkbox',
+              alwaysShowAlert: true,
+              defaultSelectedRowKeys: selectedCLIKeys,
+              onChange: onChangeCLI
+            }}
+            actions={filterByAccess([{
+              label: $t({ defaultMessage: 'Add CLI Profile' }),
+              onClick: () => {
+                navigate(addCliProfilePath)
+              }
+            }])}
+          />
+        </>
+      </Tabs.TabPane>
+    </Tabs>
+  </Modal>)
+}
