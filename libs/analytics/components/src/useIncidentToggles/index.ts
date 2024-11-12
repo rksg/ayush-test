@@ -18,6 +18,10 @@ export function useIncidentToggles () {
     [IncidentToggle.SwitchPortCongestionIncidents]: [
       !useIsSplitOn(Features.INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE),
       useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE)
+    ].some(Boolean),
+    [IncidentToggle.SwitchUplinkPortCongestionIncidents]: [
+      !useIsSplitOn(Features.INCIDENTS_SWITCH_UPLINK_PORT_CONGESTION_TOGGLE),
+      useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_SWITCH_UPLINK_PORT_CONGESTION_TOGGLE)
     ].some(Boolean)
   }
 }

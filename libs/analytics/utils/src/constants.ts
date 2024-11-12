@@ -13,6 +13,7 @@ export enum IncidentToggle {
   SwitchDDoSIncidents = 'switch-ddos-incidents',
   SwitchLoopDetectionIncidents = 'switch-loop-detection-incidents',
   SwitchPortCongestionIncidents = 'switch-port-congestion-incidents',
+  SwitchUplinkPortCongestionIncidents = 'switch-uplink-port-congestion-incidents',
 }
 
 export type IncidentsToggleFilter = {
@@ -53,6 +54,7 @@ const allIncidentCodes = [
   'p-airtime-tx-5g-high',
   'p-airtime-tx-6(5)g-high',
   'p-switch-port-congestion',
+  'p-switch-uplink-port-congestion',
   's-switch-tcp-syn-ddos'
 ] as const
 
@@ -85,6 +87,10 @@ const incidentsToggleMap: Record<
   [IncidentToggle.SwitchPortCongestionIncidents]: {
     categories: ['all', 'performance'],
     code: ['p-switch-port-congestion']
+  },
+  [IncidentToggle.SwitchUplinkPortCongestionIncidents]: {
+    categories: ['all', 'performance'],
+    code: ['p-switch-uplink-port-congestion']
   }
 }
 
@@ -168,7 +174,8 @@ export const categoryCodeMap = {
       'p-cov-clientrssi-low',
       'p-load-sz-cpu-load',
       'p-switch-memory-high',
-      'p-switch-port-congestion'
+      'p-switch-port-congestion',
+      'p-switch-uplink-port-congestion'
     ] as IncidentCode[]
   },
   infrastructure: {

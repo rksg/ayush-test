@@ -131,6 +131,7 @@ export const codeToFailureTypeMap: Record<IncidentCode, string> = {
   'p-airtime-b-5g-high': 'airtime-b',
   'p-airtime-b-6(5)g-high': 'airtime-b',
   'p-switch-port-congestion': 'port-congestion',
+  'p-switch-uplink-port-congestion': 'uplink-port-congestion',
   's-switch-tcp-syn-ddos': 'tcp-syn-ddos'
 }
 
@@ -1235,6 +1236,26 @@ export const rootCauseRecommendationMap = {
 4. Use Quality of Service (QoS): QoS mechanisms can prioritize certain types of traffic, ensuring that important data gets through even during times of congestion.
 5. Implement Load Balancing: Load balancing distributes network traffic across multiple servers to ensure no single server becomes overwhelmed with too much traffic.
 6. Monitor Network Traffic: Regular monitoring of network traffic can help identify patterns and trends, enabling proactive management of network congestion.</p>`
+      })
+    }
+  },
+  'uplink-port-congestion': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: `<p>This incident could be potentially triggered due to multiple reasons:
+
+1. Increased Data Traffic: As the number of connected devices and users on the network grows, the demand for data transfer increases, leading to congestion.
+2. Limited Uplink Speed: Many popular apps receive more data in downlink than they send in uplink. However, once uplink speed drops below a certain threshold, it becomes the bottleneck, limiting the speed at which content can be transferred in downlink.
+3. Network Performance: The performance of the network often determines time-to-content, as many popular content providers optimize the design and size of the content for smart devices.
+4. Unexpected Usage Patterns: Changes in app configuration or unexpected usage patterns, like network bandwidth spikes, can lead to uplink congestion.</p>`
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `<p>Resolving uplink congestion involves a combination of options depending on the circumstance of the incident:
+
+1. Traffic Management: Implementing Quality of Service (QoS) policies can help prioritize traffic and manage bandwidth usage.
+2. Bandwidth Expansion: Increasing the available bandwidth can alleviate congestion by providing more capacity for data transmission.
+3. Implementing Link Aggregation: This technique combines multiple network connections in parallel to increase throughput and provide redundancy.
+</p>`
       })
     }
   },
