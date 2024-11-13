@@ -100,7 +100,7 @@ beforeEach(() => {
 
 describe('LanPortSettings', () => {
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider>
+    render(<Provider>
       <Form initialValues={{ lan: lanData }}>
         <LanPortSettings
           index={0}
