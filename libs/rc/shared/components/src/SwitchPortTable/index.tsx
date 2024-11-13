@@ -23,10 +23,11 @@ import {
   SwitchViewModel,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
-import { SwitchScopes }                  from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { getIntl }                       from '@acx-ui/utils'
+import { useParams }                         from '@acx-ui/react-router-dom'
+import { SwitchScopes }                      from '@acx-ui/types'
+import { filterByAccess, hasPermission }     from '@acx-ui/user'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
+import { getIntl }                           from '@acx-ui/utils'
 
 import { SwitchLagDrawer }      from '../SwitchLagDrawer'
 import { defaultSwitchPayload } from '../SwitchTable'
@@ -130,7 +131,8 @@ export function SwitchPortTable (props: {
     },
     enableSelectAllPagesData: queryFields,
     enableRbac: isSwitchRbacEnabled,
-    pagination: { settingsId }
+    pagination: { settingsId },
+    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
   })
 
   const columns: TableProps<SwitchPortViewModel>['columns'] = [{
