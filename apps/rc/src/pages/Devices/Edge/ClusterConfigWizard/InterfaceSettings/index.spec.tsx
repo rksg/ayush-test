@@ -368,7 +368,7 @@ describe('InterfaceSettings', () => {
     // eslint-disable-next-line max-len
     const vipInputs = await within(stepsForm).findAllByRole('textbox', { name: 'Virtual IP Address' })
     await userEvent.clear(vipInputs[0])
-    await userEvent.type(vipInputs[0], '192.168.13.135')
+    await userEvent.type(vipInputs[0], '2.2.2.10')
     await userEvent.click(nextBtn)
     await within(stepsForm).findByTestId('rc-Summary')
     await userEvent.click(screen.getByRole('button', { name: 'Apply & Continue' }))
