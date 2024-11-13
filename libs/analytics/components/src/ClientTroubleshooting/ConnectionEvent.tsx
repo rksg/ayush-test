@@ -8,10 +8,10 @@ import {
   mapDisconnectCode,
   mapDisconnectCodeToReason
 }                    from '@acx-ui/analytics/utils'
-import { get } from '@acx-ui/config'
+import { get }                    from '@acx-ui/config'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { formatter } from '@acx-ui/formatter'
-import { getIntl }   from '@acx-ui/utils'
+import { formatter }              from '@acx-ui/formatter'
+import { getIntl }                from '@acx-ui/utils'
 
 import { FAILURE, DisplayEvent, SLOW, DISCONNECT, ROAMING } from './config'
 import { ConnectionSequenceDiagram }                        from './ConnectionSequenceDiagram'
@@ -23,6 +23,7 @@ export const getConnectionDetails = (event: DisplayEvent) => {
   const intl = getIntl()
   const { $t } = intl
   const isMLISA = get('IS_MLISA_SA')
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const isRoamingTypeEnabled = useIsSplitOn(Features.ROAMING_TYPE_EVENTS_TOGGLE)
   const { mac, apName, ssid, radio, code, ttc, state, type, roamingType } = event
   const showRoamingType = isMLISA || isRoamingTypeEnabled
