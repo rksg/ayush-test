@@ -344,7 +344,6 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
             </UI.FormItemWrapper>
             <Form.Item
               name={['radSecOptions', 'ocspValidationEnabled']}
-              initialValue={props.saveState?.radSecOptions?.cnSanIdentity ? true : false}
               valuePropName='checked'
               children={
                 <Switch checked={ocspValidationEnabled}/>
@@ -585,8 +584,8 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
           setVisible={setShowCertificateDrawer}
           handleSave={
             isGenerateClientCert ? handleSaveClientCertificate : handleSaveServerCertificate}
-          // extendedKeyUsages={isGenerateClientCert ?
-          //   [ExtendedKeyUsages.CLIENT_AUTH] : [ExtendedKeyUsages.SERVER_AUTH]}
+          extendedKeyUsages={isGenerateClientCert ?
+            [ExtendedKeyUsages.CLIENT_AUTH] : [ExtendedKeyUsages.SERVER_AUTH]}
         />
 
       </GridCol>

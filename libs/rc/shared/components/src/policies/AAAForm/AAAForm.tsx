@@ -114,23 +114,29 @@ export const AAAForm = (props: AAAFormProps) => {
   }
 
   const saveAAAPolicy = async (data: AAAPolicyType) => {
-    const requestPayload = { params, payload: data, enableRbac }
+    const cloneData = _.clone(_.omit(data,
+      'radSecOptions.ocspValidationEnabled',
+      'radSecOptions.originalCertificateAuthorityId',
+      'radSecOptions.originalClientCertificateId',
+      'radSecOptions.originalServerCertificateId'
+    ))
+    const requestPayload = { params, payload: cloneData, enableRbac }
     try {
       if (isEdit) {
         await updateInstance(requestPayload).unwrap()
         if (supportRadsec) {
-          updateRadSecActivations(data, requestPayload?.params?.policyId)
+          updateRadSecActivations(cloneData, requestPayload?.params?.policyId)
         }
       } else {
         await createInstance(requestPayload).unwrap().then(res => {
-          data.id = res?.response?.id
+          cloneData.id = res?.response?.id
           if (supportRadsec) {
-            addRadSecActivations(data, res?.response?.id)
+            addRadSecActivations(cloneData, res?.response?.id)
           }
         })
       }
 
-      networkView ? backToNetwork?.(data) : navigate(linkToInstanceList, { replace: true })
+      networkView ? backToNetwork?.(cloneData) : navigate(linkToInstanceList, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
