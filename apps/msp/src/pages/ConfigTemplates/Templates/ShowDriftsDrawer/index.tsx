@@ -16,8 +16,9 @@ import { ConfigTemplate }                                         from '@acx-ui/
 import { MAX_SYNC_EC_TENANTS } from '../../constants'
 import { useEcFilters }        from '../templateUtils'
 
-import { DriftInstance } from './DriftInstance'
-import * as UI           from './styledComponents'
+import { DriftInstance }    from './DriftInstance'
+import * as UI              from './styledComponents'
+import { DriftInstanceRow } from './utils'
 
 export interface ShowDriftsDrawerProps {
   setVisible: (visible: boolean) => void
@@ -201,10 +202,4 @@ function DriftInstanceListHeader (props: {
   </Space>
 }
 
-export function DriftInstanceRow (props: { head: React.ReactNode, body: React.ReactNode }) {
-  const { head, body } = props
-  return <div style={{ display: 'inline-flex', alignItems: 'center', width: '100%' }}>
-    <div style={{ flex: '0 0 26px' }}>{head}</div>
-    <div style={{ flex: '1 1 auto' }}>{body}</div>
-  </div>
-}
+

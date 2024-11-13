@@ -10,10 +10,7 @@ import { ConfigTemplateDriftSet }           from '@acx-ui/rc/utils'
 
 import { DriftComparisonSet } from './DriftComparisonSet'
 import * as UI                from './styledComponents'
-
-import { DriftInstanceRow } from '.'
-
-
+import { DriftInstanceRow }   from './utils'
 
 export interface DriftInstanceProps {
   templateId: string
