@@ -183,7 +183,7 @@ export const getFlexAuthDefaultValue = (
   hasMultipleValueFields?: string[]
 ) => {
   const defaultValue = {
-    authenticationProfileId: '',
+    authenticationProfileId: undefined,
     authenticationCustomize: false,
     flexibleAuthenticationEnabled: false,
     authenticationType: AuthenticationType._802_1X,
@@ -260,7 +260,7 @@ export const getFlexAuthButtonStatus = (props: {
       key: 'untaggedVlan', switchId: id, aggregateData,
       isMultipleEdit, portVlansCheckbox, hasMultipleValue, form
     })
-    return !!untaggedVlan?.length && Number(untaggedVlan[0]) !== Number(defaultVlan)
+    return !!untaggedVlan?.length && untaggedVlan.find(vlan => Number(vlan) !== Number(defaultVlan))
   }
 
   const aggregateUntaggedVlan = aggregateData.untaggedVlan

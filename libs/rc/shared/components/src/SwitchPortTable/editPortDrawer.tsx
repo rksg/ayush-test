@@ -1286,7 +1286,6 @@ export function EditPortDrawer ({
                     title={$t(EditPortMessages.GUIDE_TO_AUTHENTICATION)}
                   />
                 </>}
-                initialValue=''
                 validateFirst
                 // eslint-disable-next-line max-len
                 rules={(!isMultipleEdit || (flexibleAuthenticationEnabledCheckbox && flexibleAuthenticationEnabled))
@@ -1296,12 +1295,12 @@ export function EditPortDrawer ({
                     && !authenticationProfileIdCheckbox ? [{
                         validator: () => {
                         // eslint-disable-next-line max-len
-                          const appliedProfileIds = getUnionValuesByKey('authenticationProfileId', aggregatePortsData)?.filter(pid => pid)
-                          if (appliedProfileIds?.length !== switches.length) {
+                          // const appliedProfileIds = getUnionValuesByKey('authenticationProfileId', aggregatePortsData)?.filter(pid => pid)
+                          // if (appliedProfileIds?.length !== switches.length || appliedProfileIds?.length > 1) {
                           // TODO: checking with UX
-                            return Promise.reject($t(FlexAuthMessages.CANNOT_APPLIED_DIFF_PROFILES))
-                          }
-                          return Promise.resolve()
+                          return Promise.reject($t(FlexAuthMessages.CANNOT_APPLIED_DIFF_PROFILES))
+                          // }
+                          // return Promise.resolve()
                         }
                       }] : []),
                     { required: true, message: $t({ defaultMessage: 'Please select Profile' }) },
@@ -1432,21 +1431,22 @@ export function EditPortDrawer ({
                       && !authDefaultVlanCheckbox ? [{
                         validator: () => {
                           // eslint-disable-next-line max-len
-                          const authDefaultVlans = getUnionValuesByKey('authDefaultVlan', aggregatePortsData)
-                          if (authDefaultVlans?.length !== switches.length) {
-                            // TODO: checking with UX
-                            // eslint-disable-next-line max-len
-                            return Promise.reject($t(FlexAuthMessages.CANNOT_APPLIED_DIFF_AUTH_DEFAULT_VLAN))
-                          }
-                          return Promise.resolve()
+                          // const authDefaultVlans = getUnionValuesByKey('authDefaultVlan', aggregatePortsData)
+                          // const uniqAuthDefaultVlans = _.uniq(authDefaultVlans)
+                          // if (authDefaultVlans?.length !== selectedPorts.length || uniqAuthDefaultVlans?.length > 1) {
+                          // TODO: checking with UX
+                          // eslint-disable-next-line max-len
+                          return Promise.reject($t(FlexAuthMessages.CANNOT_APPLIED_DIFF_AUTH_DEFAULT_VLAN))
+                          // }
+                          // return Promise.resolve()
                         }
                       }] : []),
                     { validator: () => {
                       const isDisabled = getFieldDisabled('authDefaultVlan')
-                      const switchDefaultVlans
-                          = getUnionValuesByKey('defaultVlan', aggregatePortsData)
+                      const switchAuthDefaultVlans
+                          = getUnionValuesByKey('switchLevelAuthDefaultVlan', aggregatePortsData)
                       const isAnyForceControl = isForceControlType([dot1xPortControl])
-                      if (isDisabled && isAnyForceControl && switchDefaultVlans?.length > 1) {
+                      if (isDisabled && isAnyForceControl && switchAuthDefaultVlans?.length > 1) {
                         //TODO: checking wording with UX
                         // const type = dot1xPortControl as PortControl
                         return Promise.reject($t(FlexAuthMessages.CANNOT_SET_FORCE_CONTROL_TYPE))

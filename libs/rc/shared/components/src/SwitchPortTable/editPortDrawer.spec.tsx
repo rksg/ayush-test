@@ -3144,7 +3144,7 @@ describe('EditPortDrawer', () => {
             await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')
           )
           await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-          expect(await screen.findByText(/Please enter Auth Default VLAN/)).toBeVisible()
+          expect(await screen.findByText(/The selected ports may either be unset or assigned to different Auth Default VLAN/)).toBeVisible()
         })
 
         it('should validate with auth default vlan correctly when VLANs have multiple values', async () => {
