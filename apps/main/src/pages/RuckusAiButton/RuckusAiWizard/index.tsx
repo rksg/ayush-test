@@ -84,11 +84,17 @@ export default function RuckusAiWizard (props: {
         payload: JSON.stringify(updatedValues)
       }).unwrap()
 
+      if (response.hasChanged) {
+
+
+      }
+
 
       setPayloads((prevPayloads) => ({
         ...prevPayloads,
         [response.nextStep]: response
       }))
+      // formMapRef.current[stepIndex + 1].current?.resetFields()
 
       setIsLoading(false)
     } catch (error) {
@@ -134,7 +140,7 @@ export default function RuckusAiWizard (props: {
         <VlanStep
           formInstance={formMapRef.current[2].current}
           sessionId={props.sessionId}
-          description={props.description}
+          description={payloads[RuckusAiConfigurationStepsEnum.VLAN].description}
           payload={payloads[RuckusAiConfigurationStepsEnum.VLAN].payload} />
       ) : (
         null

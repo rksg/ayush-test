@@ -25,7 +25,7 @@ export enum RuckusAiStepsEnum {
   FINISHED= 'FINISHED'
 }
 
-export default function RuckusAiButton () {
+export default function RuckusAiButtonRuckusAiWizard () {
   const { $t } = useIntl()
   const [basicFormRef] = Form.useForm()
 
@@ -240,5 +240,5 @@ export default function RuckusAiButton () {
 }
 
 export {
-  RuckusAiButton
+  RuckusAiButtonRuckusAiWizard
 }

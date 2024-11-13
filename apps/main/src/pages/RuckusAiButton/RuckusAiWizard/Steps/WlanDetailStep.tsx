@@ -43,11 +43,31 @@ export function WlanDetailStep (props: {
 
   useEffect(() => {
     if (initialData !== data) {
+      formInstance?.setFieldsValue({ data: initialData })
       setData(initialData)
-      setSsidTypes(data.map(item => item['SSID Type']))
-      setConfiguredFlags(Array(data.length).fill(false))
+      setSsidTypes(initialData.map(item => item['SSID Type']))
+      setConfigFlags()
     }
   }, [props.payload])
+
+  const setConfigFlags = function () {
+    const newSsidTypes = initialData.map(item => item['SSID Type'])
+    const diffIndices = ssidTypes
+      .map((type, index) => (type !== newSsidTypes[index] ? index : -1))
+      .filter(index => index !== -1)
+
+    setConfiguredFlags(prevConfiguredFlags => {
+      const updatedFlags = [...prevConfiguredFlags]
+      diffIndices.forEach(index => {
+        updatedFlags[index] = false
+      })
+      return updatedFlags
+    })
+
+    if (data.length === 0) {
+      setConfiguredFlags(Array(initialData.length).fill(false))
+    }
+  }
 
   const networkOptions = [
     { value: NetworkTypeEnum.OPEN, label: $t(networkTypes[NetworkTypeEnum.OPEN]) },
