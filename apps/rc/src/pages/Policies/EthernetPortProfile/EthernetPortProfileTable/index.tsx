@@ -24,7 +24,6 @@ import {
   useTableQuery
 }                                                                  from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { WifiScopes }                                              from '@acx-ui/types'
 
 
 const EthernetPortProfileTable = () => {
@@ -202,7 +201,7 @@ const EthernetPortProfileTable = () => {
 
   const rowActions: TableProps<EthernetPortProfileViewData>['rowActions'] = [
     {
-      scopeKey: [WifiScopes.UPDATE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.EDIT),
       // Default Ethernet Port Profile cannot Edit
       visible: (selectedRows) => selectedRows.length === 1
             && !selectedRows[0].isDefault,
@@ -219,7 +218,7 @@ const EthernetPortProfileTable = () => {
       }
     },
     {
-      scopeKey: [WifiScopes.DELETE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.DELETE),
       // Default Ethernet Port Profile cannot Delete
       visible: (selectedRows) => {
         return !selectedRows.some(row => row.isDefault)
