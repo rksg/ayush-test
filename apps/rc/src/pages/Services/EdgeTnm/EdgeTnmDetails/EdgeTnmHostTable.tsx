@@ -127,7 +127,8 @@ function useColumns (setCurrentHost: (id: string) => void) {
       fixed: 'left',
       render: (_, row) => {
         return <Button type='link'
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation()
             setCurrentHost(row.hostid)
           }}
         >
