@@ -1,6 +1,10 @@
-import { Collapse }                                from '@acx-ui/components'
-import { MinusSquareOutlined, PlusSquareOutlined } from '@acx-ui/icons'
-import {  ConfigTemplateDriftSet }                 from '@acx-ui/rc/utils'
+import React from 'react'
+
+import { useIntl } from 'react-intl'
+
+import { Collapse, Tooltip }                                                   from '@acx-ui/components'
+import { MinusSquareOutlined, PlusSquareOutlined, QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import {  ConfigTemplateDriftSet }                                             from '@acx-ui/rc/utils'
 
 import { DriftComparison }           from './DriftComparison'
 import * as UI                       from './styledComponents'
@@ -8,13 +12,26 @@ import { filterDriftRecordIdByName } from './utils'
 
 export function DriftComparisonSet (props: ConfigTemplateDriftSet) {
   const { diffName, diffData } = props
+  const isUnknown = diffName.startsWith('?')
+
+  const header = isUnknown
+    ? <UnknownTooltip children={<UI.BoldLabel>{diffName}</UI.BoldLabel>} />
+    : <UI.BoldLabel>{diffName}</UI.BoldLabel>
 
   return <UI.DriftSetCollapse
     ghost
     expandIconPosition='start'
-    expandIcon={({ isActive }) => isActive ? <MinusSquareOutlined /> : <PlusSquareOutlined />}
+    expandIcon={({ isActive }) => {
+      return isUnknown
+        ? <UnknownTooltip children={<QuestionMarkCircleOutlined />} />
+        : isActive ? <MinusSquareOutlined /> : <PlusSquareOutlined />
+    }}
   >
-    <Collapse.Panel header={<UI.BoldLabel>{diffName}</UI.BoldLabel>} key={diffName}>
+    <Collapse.Panel
+      key={diffName}
+      collapsible={isUnknown ? 'disabled' : 'header'}
+      header={header}
+    >
       {filterDriftRecordIdByName(diffData).map((item, index) => {
         return <div key={index} style={{ marginLeft: '12px' }}>
           <DriftComparison {...item} />
@@ -22,4 +39,14 @@ export function DriftComparisonSet (props: ConfigTemplateDriftSet) {
       })}
     </Collapse.Panel>
   </UI.DriftSetCollapse>
+}
+
+
+function UnknownTooltip (props: React.PropsWithChildren<unknown>) {
+  const { children } = props
+  const { $t } = useIntl()
+  // eslint-disable-next-line max-len
+  return <Tooltip title={$t({ defaultMessage: 'Data comparison is unavailable due to the use of a non-RBAC API' })}>
+    {children}
+  </Tooltip>
 }
