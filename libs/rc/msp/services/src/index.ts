@@ -425,9 +425,10 @@ export const mspApi = baseMspApi.injectEndpoints({
       }
     }),
     mspEcAdminList: build.query<MspAdministrator[], RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
         const mspEcAdminListReq =
-          createHttpRequest(MspUrlsInfo.getMspEcAdminList, params)
+          createHttpRequest(mspUrlsInfo.getMspEcAdminList, params)
         return {
           ...mspEcAdminListReq
         }
