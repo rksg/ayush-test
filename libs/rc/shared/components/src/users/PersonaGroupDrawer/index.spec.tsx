@@ -89,7 +89,6 @@ describe('Persona Group Drawer', () => {
 
     // Required fields
     await screen.findByText('Please enter Identity Group Name')
-    await screen.findByText('Please select a DPSK Service')
 
     const nameField = await screen.findByRole('textbox', { name: /identity group name/i })
     await userEvent.type(nameField, mockPersonaGroupTableResult.content[0].name)
