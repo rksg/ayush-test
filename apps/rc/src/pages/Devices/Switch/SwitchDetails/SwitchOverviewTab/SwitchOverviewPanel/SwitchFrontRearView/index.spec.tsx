@@ -151,9 +151,6 @@ describe('SwitchFrontRearView', () => {
       rest.get(SwitchRbacUrlsInfo.getSwitchRearView.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(standaloneRear))
       ),
-      rest.post(SwitchRbacUrlsInfo.getSwitchList.url,
-        (_, res, ctx) => res(ctx.json({ data: [] }))
-      ),
       rest.post(SwitchUrlsInfo.getFlexAuthenticationProfiles.url,
         (req, res, ctx) => {
           mockedGetFlexAuthProfiles()
