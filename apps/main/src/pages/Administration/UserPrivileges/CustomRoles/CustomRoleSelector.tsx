@@ -28,11 +28,11 @@ const CustomRoleSelector = (props: CustomRoleSelectorProps) => {
   const { $t } = useIntl()
   const { disabled, isEditMode, isOnboardedMsp, setSelected } = props
   const params = useParams()
-  const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
+  const isRbacPhase2SsoEnabled = useIsSplitOn(Features.RBAC_PHASE2_SSO_TOGGLE)
 
   const { data: roleList } = useGetCustomRolesQuery({ params })
 
-  const rolesToBeRemoved = ((isRbacPhase2Enabled && isOnboardedMsp && !isEditMode) || disabled)
+  const rolesToBeRemoved = ((isRbacPhase2SsoEnabled && isOnboardedMsp && !isEditMode) || disabled)
     ? [...without(NonSupportedRoles, RolesEnum.PRIME_ADMIN)] : NonSupportedRoles
 
   const rolesList = roleList?.filter(item =>
