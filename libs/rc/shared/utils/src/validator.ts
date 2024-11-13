@@ -1211,13 +1211,3 @@ export function guestPasswordValidator (value: string) {
   return Promise.resolve()
 
 }
-
-export function normalNameRegExp (value: string) {
-  const { $t } = getIntl()
-  const re = new RegExp(/^[A-Za-z0-9]*$/)
-
-  if (value && !re.test(value)) {
-    return Promise.reject($t(validationMessages.nameInvalid))
-  }
-  return Promise.resolve()
-}

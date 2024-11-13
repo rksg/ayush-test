@@ -28,8 +28,7 @@ import { useParams, TenantLink }        from '@acx-ui/react-router-dom'
 import { RequestPayload, SwitchScopes } from '@acx-ui/types'
 import { hasPermission }                from '@acx-ui/user'
 
-import { authenticationTypeLabel, AuthenticationType } from '../FlexibleAuthentication'
-import { SwitchLagModal, SwitchLagParams }             from '../SwitchLagDrawer/SwitchLagModal'
+import { SwitchLagModal, SwitchLagParams } from '../SwitchLagDrawer/SwitchLagModal'
 import {
   getInactiveTooltip,
   isLAGMemberPort,
@@ -40,6 +39,8 @@ import { EditPortDrawer } from '../SwitchPortTable/editPortDrawer'
 
 import { SwitchClientContext } from './context'
 import * as UI                 from './styledComponents'
+
+import { getClientAuthType } from './index'
 
 export const defaultSwitchClientPayload = {
   searchString: '',
@@ -303,7 +304,7 @@ export function ClientsTable (props: {
     }]: []),
     ...(isSwitchFlexAuthEnabled ? [{
       key: 'clientAuthType',
-      title: intl.$t({ defaultMessage: 'Client Auth Type' }),
+      title: intl.$t({ defaultMessage: 'Authentication Type' }),
       dataIndex: 'clientAuthType',
       sorter: true,
       //TODO: BE checking
@@ -312,22 +313,9 @@ export function ClientsTable (props: {
       //   _: React.ReactNode, { clientAuthType }: SwitchClient, __: number, highlightFn: TableHighlightFnArgs
       // ) => {
       render: (_:React.ReactNode, { clientAuthType }: SwitchClient) => {
-        const convertType = (type?: string) => {
-          switch(type){
-            case 'DOT1X':
-              return intl.$t(authenticationTypeLabel[AuthenticationType._802_1X])
-            case 'MACAUTH':
-              return intl.$t(authenticationTypeLabel[AuthenticationType.MACAUTH])
-            case 'WEB_AUTH':
-              return intl.$t({ defaultMessage: 'WEB-AUTH' })
-            default:
-              return '--'
-          }
-        }
-        const authType = convertType(clientAuthType)
         //TODO: BE checking
         // return searchable && authType ? highlightFn(authType) : authType
-        return authType
+        return getClientAuthType(clientAuthType)
       }
     }]: []),
     {

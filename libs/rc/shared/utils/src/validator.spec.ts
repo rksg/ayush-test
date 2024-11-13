@@ -16,7 +16,6 @@ import {
   whitespaceOnlyRegExp,
   agreeRegExp,
   nameCannotStartWithNumberRegExp,
-  normalNameRegExp,
   cliVariableNameRegExp,
   cliIpAddressRegExp,
   subnetMaskPrefixRegExp,
@@ -393,17 +392,6 @@ describe('validator', () => {
     it('Should display error message if name value incorrectly', async () => {
       const result1 = nameCannotStartWithNumberRegExp('87test')
       await expect(result1).rejects.toEqual('Name cannot start with a number')
-    })
-  })
-
-  describe('normalNameRegExp', () => {
-    it('Should take care of name value correctly', async () => {
-      const result = normalNameRegExp('87test')
-      await expect(result).resolves.toEqual(undefined)
-    })
-    it('Should display error message if name value incorrectly', async () => {
-      const result1 = normalNameRegExp('test!@#$')
-      await expect(result1).rejects.toEqual('Name may include only letters and numbers')
     })
   })
 

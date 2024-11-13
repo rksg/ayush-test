@@ -1114,7 +1114,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const clientListReq = createHttpRequest(switchUrls.getSwitchClientDetail, params, headers)
         const payload = {
           fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
-            'clientName','clientDesc','clientType','switchPort','vlanName',
+            'clientName','clientDesc','clientType', 'clientAuthType', 'switchPort','vlanName',
             'switchName', 'venueName' ,'cog','id', 'clientIpv4Addr', 'clientIpv6Addr',
             'dhcpClientOsVendorName', 'dhcpClientHostName',
             'dhcpClientDeviceTypeName', 'dhcpClientModelName'],
