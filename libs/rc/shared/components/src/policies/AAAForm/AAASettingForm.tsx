@@ -10,12 +10,12 @@ import {
   AAAPolicyType, checkObjectNotExists, servicePolicyNameRegExp,
   networkWifiIpRegExp, networkWifiSecretRegExp,
   policyTypeLabelMapping, PolicyType,
-  URLRegExp,
   useConfigTemplate,
   hasPolicyPermission,
   PolicyOperation,
   CertificateStatusType,
-  ExtendedKeyUsages
+  ExtendedKeyUsages,
+  OcspURLRegExp
 } from '@acx-ui/rc/utils'
 
 import { CertificateWarning }                                     from '../AAAUtil/CertificateWarning'
@@ -356,7 +356,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
             rules={[
               { required: true },
               { max: 1024 },
-              { validator: (_, value) => URLRegExp(value) }
+              { validator: (_, value) => OcspURLRegExp(value) }
             ]}
             initialValue={''}
             children={<Input />}
