@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Form, Input, InputNumber, Radio, RadioChangeEvent, Space, Switch } from 'antd'
 import { useIntl }                                                          from 'react-intl'
@@ -58,10 +58,10 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
 
   const [showCertificateAuthorityDrawer, setShowCertificateAuthorityDrawer] = useState(false)
   const [showCertificateDrawer, setShowCertificateDrawer] = useState(false)
-  const [createdCaId, setCreatedCaId] = useState<string|null>(null)
-  const [createdClientCertId, setCreatedClientCertId] = useState<string|null>(null)
-  const [createdServerCertId, setCreatedServerCertId] = useState<string|null>(null)
   const [isGenerateClientCert, setIsGenerateClientCert] = useState(true)
+  const createdCaId = useRef<string>()
+  const createdClientCertId = useRef<string>()
+  const createdServerCertId = useRef<string>()
 
   const defaultPayload = {
     fields: ['name', 'id', 'wifiNetworkIds'],
@@ -193,21 +193,21 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
 
   const handleSaveCertificateAuthority = (id?: string) => {
     if (id) {
-      setCreatedCaId(id)
+      createdCaId.current = id
     }
     setShowCertificateAuthorityDrawer(false)
   }
 
   const handleSaveClientCertificate = (id?: string) => {
     if (id) {
-      setCreatedClientCertId(id)
+      createdClientCertId.current = id
     }
     setShowCertificateDrawer(false)
   }
 
   const handleSaveServerCertificate = (id?: string) => {
     if (id) {
-      setCreatedServerCertId(id)
+      createdServerCertId.current = id
     }
     setShowCertificateDrawer(false)
   }
@@ -228,6 +228,29 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
       }
     }
   }, [saveState])
+
+  useEffect(() => {
+    if (createdCaId.current && caSelectOptions.find(ca => ca.value === createdCaId.current)) {
+      form.setFieldValue(['radSecOptions', 'certificateAuthorityId'], createdCaId.current)
+      createdCaId.current = undefined
+    }
+  }, [caSelectOptions])
+
+  useEffect(() => {
+    if (createdClientCertId.current &&
+      clientCertOptions.find(c => c.value === createdClientCertId.current)) {
+      form.setFieldValue(['radSecOptions', 'clientCertificateId'], createdClientCertId.current)
+      createdClientCertId.current = undefined
+    }
+  }, [clientCertOptions])
+
+  useEffect(() => {
+    if (createdServerCertId.current &&
+      serverCertOptions.find(c => c.value === createdServerCertId.current)) {
+      form.setFieldValue(['radSecOptions', 'serverCertificateId'], createdServerCertId.current)
+      createdServerCertId.current = undefined
+    }
+  }, [serverCertOptions])
 
   const ACCT_FORBIDDEN_PORT = 1812
   const AUTH_FORBIDDEN_PORT = 1813
@@ -341,14 +364,12 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
             <Form.Item
               label={$t({ defaultMessage: 'Trusted Certificate Authority' })}
               name={['radSecOptions', 'certificateAuthorityId']}
-              initialValue={
-                createdCaId ?? (saveState.radSecOptions?.certificateAuthorityId ?? null)}
+              initialValue={saveState.radSecOptions?.certificateAuthorityId ?? null}
               rules={[
                 { required: true }
               ]}
               children={
                 <Select
-                  onChange={() => createdCaId && setCreatedCaId(null)}
                   options={[
                     { label: $t({ defaultMessage: 'Select...' }), value: null },
                     ...caSelectOptions]} />
@@ -365,9 +386,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
           <Form.Item
             label={$t({ defaultMessage: 'Client Certificate' })}
             name={['radSecOptions', 'clientCertificateId']}
-            initialValue={
-              createdClientCertId ?? (saveState.radSecOptions?.clientCertificateId ?? null)
-            }
+            initialValue={saveState.radSecOptions?.clientCertificateId ?? null}
             rules={[
               { required: false },
               { validator: (_, certId) => {
@@ -387,7 +406,6 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
               </div>
             }>
             <Select
-              onChange={() => createdClientCertId && setCreatedClientCertId(null)}
               options={[
                 { label: $t({ defaultMessage: 'None' }), value: null },
                 ...clientCertOptions
@@ -401,9 +419,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
                   title={$t(MessageMapping.server_certificate_tooltip)}/>
               </>}
             name={['radSecOptions', 'serverCertificateId']}
-            initialValue={
-              createdServerCertId ?? (saveState.radSecOptions?.serverCertificateId ?? null)
-            }
+            initialValue={saveState.radSecOptions?.serverCertificateId ?? null}
             rules={[
               { required: false },
               { validator: (_, certId) => {
@@ -424,7 +440,6 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
               </div>
             }>
             <Select
-              onChange={() => createdServerCertId && setCreatedServerCertId(null)}
               options={[
                 { label: $t({ defaultMessage: 'None' }), value: null },
                 ...serverCertOptions
