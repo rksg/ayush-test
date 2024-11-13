@@ -2606,3 +2606,70 @@ export const mockSoftGreTable = {
     }
   ] as SoftGreViewData[]
 }
+
+export const mockedDirectoryServerProfiles = {
+  fields: [
+    'wifiNetworkIds',
+    'port',
+    'domainName',
+    'name',
+    'host',
+    'id',
+    'type'
+  ],
+  totalCount: 5,
+  page: 1,
+  data: [
+    {
+      id: '532b91ca9330441bb90d50628911a10e',
+      name: 'ldap-profile1',
+      host: '0.tcp.jp.ngrok.io',
+      port: 13984,
+      type: 'LDAP',
+      domainName: 'dc=test,dc=tw',
+      wifiNetworkIds: [
+        '5c342542bb824a8b981a9bb041a8a2da'
+      ]
+    },
+    {
+      id: '58d667552aac4fc3bc235cf39bfbe889',
+      name: 'ldap-profile3',
+      host: '1.169.93.183',
+      port: 389,
+      type: 'LDAP',
+      domainName: 'dc=tdcad,dc=com',
+      wifiNetworkIds: []
+    },
+    {
+      id: '49d2173ae5d943daa454af8de40fd4d9',
+      name: 'ldap-profile4',
+      host: '1.169.93.183',
+      port: 389,
+      type: 'LDAP',
+      domainName: 'dc=tdcad,dc=com',
+      wifiNetworkIds: [
+        '5c342542bb824a8b981a9bb041a8a2da'
+      ]
+    },
+    {
+      id: 'a5ac9a7a3be54dba9c8741c67d1c41fa',
+      name: 'Online LDAP Test Server',
+      host: 'ldap.forumsys.com',
+      port: 389,
+      type: 'LDAP',
+      domainName: 'ou=mathematicians,dc=example,dc=com',
+      wifiNetworkIds: []
+    },
+    {
+      id: '3596facbfd884b6da9ab40670c8ee397',
+      name: 'Online LDAP Test Server2',
+      host: 'ldap.forumsys.com',
+      port: 389,
+      type: 'AD',
+      domainName: 'ou=mathematicians,dc=example,dc=com',
+      wifiNetworkIds: [
+        'adfdc7ef63e94c8da16e379e7e443fd1'
+      ]
+    }
+  ]
+}

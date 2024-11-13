@@ -5,12 +5,18 @@ import { CertificateStatusType, getPolicyRoutePath, PolicyOperation, PolicyType 
 import { TenantLink }                                                             from '@acx-ui/react-router-dom'
 
 export type CertificateWarningProps = {
-  status: CertificateStatusType[]
+  status: CertificateStatusType[] | undefined,
+  includeParentLocation?: boolean
 }
 
 export const CertificateWarning = (props: CertificateWarningProps) => {
   const { $t } = useIntl()
-  const getCertStatus = (status: CertificateStatusType[]) => {
+  const { status, includeParentLocation = false } = props
+  const getCertStatus = (status: CertificateStatusType[] | undefined) => {
+    if (!status) {
+      return ''
+    }
+
     const isExpired = status.find(s => s === CertificateStatusType.EXPIRED)
     const isRevoked = status.find(s => s === CertificateStatusType.REVOKED)
     if (isExpired && isRevoked) {
@@ -29,14 +35,18 @@ export const CertificateWarning = (props: CertificateWarningProps) => {
       {
         redirectLink: <TenantLink
           to={getPolicyRoutePath({
-            type: PolicyType.CERTIFICATE,
+            type: PolicyType.SERVER_CERTIFICATES,
             oper: PolicyOperation.LIST
           })}
-          children={$t({ defaultMessage: 'Server & Client Certificates' })}/>,
-        status: getCertStatus(props.status)
+          children={
+            includeParentLocation ?
+              $t({ defaultMessage: 'Certificate Management/ Server & Client Certificates' }) :
+              $t({ defaultMessage: 'Server & Client Certificates' })}/>,
+        status: getCertStatus(status)
       }
     )}
   </>
 
-  return <div>{warningMsg}</div>
+  // eslint-disable-next-line react/jsx-no-useless-fragment
+  return status ? warningMsg : <></>
 }
