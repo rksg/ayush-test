@@ -125,9 +125,10 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
 
   const radiusIpPortValidator = async (isPrimary: boolean) => {
     const primaryValue =
-      `${form.getFieldValue(['primary', 'ip'])}:${form.getFieldValue(['primary', 'port'])}`
+      `${type}:${form.getFieldValue(['primary', 'ip'])}:${form.getFieldValue(['primary', 'port'])}`
     const secondaryValue =
-      `${form.getFieldValue(['secondary', 'ip'])}:${form.getFieldValue(['secondary', 'port'])}`
+      // eslint-disable-next-line max-len
+      `${type}:${form.getFieldValue(['secondary', 'ip'])}:${form.getFieldValue(['secondary', 'port'])}`
     const value = isPrimary ? primaryValue : secondaryValue
     if (!isPrimary && value === primaryValue) {
       return Promise.reject($t({
@@ -138,11 +139,12 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
     let stateValue = ''
     if (saveState && edit) {
       stateValue = isPrimary
-        ? `${saveState.primary!.ip}:${saveState.primary!.port}`
-        : `${saveState.secondary?.ip}:${saveState.secondary?.port}`
+        ? `${type}:${saveState.primary!.ip}:${saveState.primary!.port}`
+        : `${type}:${saveState.secondary?.ip}:${saveState.secondary?.port}`
     }
 
-    const existingPrimaryIpList = (instanceListResult?.data ?? []).map(policy => policy.primary)
+    const existingPrimaryIpList = (instanceListResult?.data ?? [])
+      .map(policy => `${policy.type}:${policy.primary}`)
     // eslint-disable-next-line max-len
     if (existingPrimaryIpList.filter(primaryIp => edit ? primaryIp !== stateValue : true).includes(value) ) {
       return Promise.reject($t({
@@ -583,8 +585,8 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
           setVisible={setShowCertificateDrawer}
           handleSave={
             isGenerateClientCert ? handleSaveClientCertificate : handleSaveServerCertificate}
-          extendedKeyUsages={isGenerateClientCert ?
-            [ExtendedKeyUsages.CLIENT_AUTH] : [ExtendedKeyUsages.SERVER_AUTH]}
+          // extendedKeyUsages={isGenerateClientCert ?
+          //   [ExtendedKeyUsages.CLIENT_AUTH] : [ExtendedKeyUsages.SERVER_AUTH]}
         />
 
       </GridCol>
