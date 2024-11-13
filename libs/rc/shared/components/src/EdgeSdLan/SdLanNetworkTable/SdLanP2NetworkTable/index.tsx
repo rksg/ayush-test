@@ -233,6 +233,9 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
     }
   }]
 
+  const networkFormDefaultVals = useMemo(() => (venueId ? { defaultActiveVenues: [venueId] } : undefined),
+    [venueId])
+
   return (
     <>
       <Loader states={[
@@ -252,7 +255,7 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
       <AddNetworkModal
         visible={networkModalVisible}
         setVisible={setNetworkModalVisible}
-        defaultActiveVenues={[venueId]}
+        defaultValues={networkFormDefaultVals}
       />
       <MoreDetailsDrawer
         visible={detailDrawerVisible}
