@@ -565,6 +565,9 @@ export const renderGuestType = (value: string) => {
     case GuestTypesEnum.SELF_SIGN_IN:
       result = $t({ defaultMessage: 'Self Sign In' })
       break
+    case GuestTypesEnum.Directory:
+      result = $t({ defaultMessage: 'Directory' })
+      break
     default:
       result = transformDisplayText(value)
       break
