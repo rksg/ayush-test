@@ -49,6 +49,7 @@ function R1FeatureListDrawer (
         feature.enabled === false)).map((item) => item.id )
       const payload = { betaFeatureIds: payloadList }
       await updateBetaFeatures({ params, payload: payload }).unwrap()
+      window.location.reload()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

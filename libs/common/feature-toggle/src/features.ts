@@ -223,10 +223,10 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   WORKFLOW_ONBOARD = 'WORKFLOW-ONBOARD',
   LOCATION_BASED_SERVICES = 'LOCATION-BASED-SERVICES',
   RBAC_IMPLICIT_P1 = 'RBAC-IMPLICIT-P1',
+  // for testing only
   TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
   TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',
-  TEST_SELECTIVE_BETA_03 = 'TEST-SELECTIVE-BETA-03',
-  SAMPLE = 'SAMPLE'
+  TEST_SELECTIVE_BETA_03 = 'TEST-SELECTIVE-BETA-03'
 }
 
 interface BetaList {
@@ -249,8 +249,8 @@ export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.CONFIG_TEMPLATE, description: defineMessage({ defaultMessage: 'Config Template: It allows MSP users to create templates for networks, <venuePlural></venuePlural>, services, and policies. These templates can then be applied to multiple customers, providing a centralized and efficient solution for managing RUCKUS brand network equipment across properties.' }), status: true },
   { key: TierFeatures.LOCATION_BASED_SERVICES, description: defineMessage({ defaultMessage: 'LBS: RUCKUS One now lets you create a Location Based Service (LBS) Server linked to multiple <venuePlural></venuePlural> for efficient tracking and management of location-specific information. This feature gathers location data from connected access points (APs) and routes it to third-party application servers. You can add and manage LBS server profiles and enable Location Based Services for any <venueSingular></venueSingular> directly from the RUCKUS One web interface, enhancing your <venueSingular></venueSingular> management capabilities.' }), status: true },
   { key: TierFeatures.RBAC_IMPLICIT_P1, description: defineMessage({ defaultMessage: 'Role-based access control (RBAC) and attributes-based access control (ABAC) are functionalities that provide a structured and efficient approach to managing administrator permissions and access rules in RUCKUS One.' }), status: true },
-  { key: TierFeatures.TEST_SELECTIVE_BETA_01, description: defineMessage({ defaultMessage: 'Test 01: Test selective 01.' }), status: true },
-  { key: TierFeatures.TEST_SELECTIVE_BETA_02, description: defineMessage({ defaultMessage: 'Test 02: Test selective 02.' }), status: true },
-  { key: TierFeatures.TEST_SELECTIVE_BETA_03, description: defineMessage({ defaultMessage: 'Test 03: Test selective 03.' }), status: true },
-  { key: TierFeatures.SAMPLE, description: defineMessage({ defaultMessage: 'Sample: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum, nulla luctus pharetra vulputate, felis tellus mollis orci, sed rhoncus pronin sapien nunc.' }), status: true }
+  // for testing only
+  { key: TierFeatures.TEST_SELECTIVE_BETA_01, description: defineMessage({ defaultMessage: 'Test 01: Test selective 01. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },
+  { key: TierFeatures.TEST_SELECTIVE_BETA_02, description: defineMessage({ defaultMessage: 'Test 02: Test selective 02. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },
+  { key: TierFeatures.TEST_SELECTIVE_BETA_03, description: defineMessage({ defaultMessage: 'Test 03: Test selective 03. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true }
 ]

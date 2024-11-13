@@ -48,6 +48,7 @@ export const FeatureTitle = styled(Typography.Text)`
 `
 export const FeatureDescription = styled(Typography.Paragraph)`
   font-size: 13px;
+  width: 85%;
 `
 export const Checkbox = styled(AntCheckbox)`
   padding-right: 5px;
