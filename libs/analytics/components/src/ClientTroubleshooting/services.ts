@@ -18,7 +18,8 @@ export type ConnectionEvent = {
   ssid?: string | null,
   messageIds?: Array<string>,
   key?: string,
-  pcapFilename?: string
+  pcapFilename?: string,
+  roamingType?: string
 }
 
 export type ConnectionQuality = {
@@ -113,6 +114,7 @@ export const api = dataApi.injectEndpoints({
               radio
               ssid
               pcapFilename
+              roamingType
             }
             connectionDetailsByAp {
               start
