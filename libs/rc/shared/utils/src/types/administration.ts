@@ -348,7 +348,8 @@ export interface PrivilegeGroup {
   delegation?: boolean,
   policies?: PrivilegePolicy[],
   policyEntityDTOS?: PrivilegePolicyEntity[],
-  admins?: PgAdmin[]
+  admins?: PgAdmin[],
+  parentPrivilegeGroupId?: string
 }
 
 export enum PrivilegePolicyObjectType {

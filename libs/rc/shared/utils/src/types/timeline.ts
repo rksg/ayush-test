@@ -119,6 +119,7 @@ export interface EventBase {
   clientMldMac?: string
   turnOnTimestamp?: string
   turnOffTimestamp?: string
+  portList?: string
 }
 
 export interface EventMeta {

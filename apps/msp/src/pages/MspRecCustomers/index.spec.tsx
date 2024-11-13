@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent      from '@testing-library/user-event'
 import { Path, rest } from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed }               from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { MspAdministrator, MspRbacUrlsInfo, MspUrlsInfo }         from '@acx-ui/msp/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, within, waitFor } from '@acx-ui/test-utils'
@@ -738,7 +738,7 @@ describe('MspRecCustomers', () => {
   it('should open msp delegations drawer for abac and rbac ff enabled', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ABAC_POLICIES_TOGGLE
       || ff === Features.RBAC_PHASE2_TOGGLE)
-    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === Features.RBAC_IMPLICIT_P1)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.RBAC_IMPLICIT_P1)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -770,7 +770,7 @@ describe('MspRecCustomers', () => {
   })
   it('should open delegation admin drawer for abac enabled and rbac not enabled', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.RBAC_PHASE2_TOGGLE)
-    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === Features.RBAC_IMPLICIT_P1)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.RBAC_IMPLICIT_P1)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })

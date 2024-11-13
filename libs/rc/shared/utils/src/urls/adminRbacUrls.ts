@@ -309,6 +309,11 @@ export const AdminRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/tenants/settings',
     oldUrl: '/tenants/notificationAggregations',
     newApi: true
+  },
+  getMspEcDelegatePrivilegeGroups: {
+    method: 'get',
+    url: '/roleAuthentications/privilegeGroupDelegations?tenantId=:mspEcTenantId',
+    newApi: true
   }
   //   deleteMspAggregations: {
   //     method: 'delete',

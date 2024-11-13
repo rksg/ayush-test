@@ -5,11 +5,15 @@ import { Node } from '.'
 
 export const searchTree = (node: Node, searchText: string, path: Node[] = []): Node[] => {
   let results: Node[] = []
-  if (
-    node?.name?.toLowerCase().match(searchText) ||
-    node?.mac?.toLowerCase().match(searchText)
-  ) {
-    results.push({ ...node, path: [...path, node] })
+  try {
+    if (
+      node?.name?.toLowerCase().match(searchText) ||
+      node?.mac?.toLowerCase().match(searchText)
+    ) {
+      results.push({ ...node, path: [...path, node] })
+    }
+  } catch (e) {
+    // ignore invalid regex error
   }
   if (Array.isArray(node.children)) {
     for (const child of node.children) {
@@ -49,6 +53,10 @@ export const customCapitalize = (node: Node) => {
   if (type === 'network') {
     const { $t } = getIntl()
     return $t({ defaultMessage: 'Entire Organization' })
+  } else if (type ==='ap') {
+    return capitalizeFirstLetter(`${name} (${node.mac}) (${nodeTypes('ap')})`)
+  } else if (type === 'switch') {
+    return capitalizeFirstLetter(`${name} (${node.mac}) (${nodeTypes('switch')})`)
   } else {
     return capitalizeFirstLetter(`${name} (${nodeTypes(type as NodeType)})`)
   }
