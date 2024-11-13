@@ -83,7 +83,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     clientInfo: build.query<
     ClientConnectionInfo,
-    ClientFilter & IncidentsToggleFilter
+    ClientFilter & IncidentsToggleFilter & { fetchRoamingType: boolean }
     >({
       query: (payload) => ({
         document: gql`
@@ -114,7 +114,7 @@ export const api = dataApi.injectEndpoints({
               radio
               ssid
               pcapFilename
-              roamingType
+              ${payload.fetchRoamingType ? 'roamingType' : ''}
             }
             connectionDetailsByAp {
               start

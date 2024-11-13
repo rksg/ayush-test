@@ -25,8 +25,8 @@ export const getConnectionDetails = (event: DisplayEvent) => {
   const isMLISA = get('IS_MLISA_SA')
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const isRoamingTypeEnabled = useIsSplitOn(Features.ROAMING_TYPE_EVENTS_TOGGLE)
-  const { mac, apName, ssid, radio, code, ttc, state, type, roamingType } = event
   const showRoamingType = isMLISA || isRoamingTypeEnabled
+  const { mac, apName, ssid, radio, code, ttc, state, type, roamingType } = event
   const eventDetails = [
     { label: $t({ defaultMessage: 'AP MAC' }), value: mac },
     { label: $t({ defaultMessage: 'AP Name' }), value: apName },
