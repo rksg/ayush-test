@@ -107,6 +107,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     switchList: build.query<TableResult<SwitchRow>, RequestPayload<any>>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const hasGroupBy = !!arg.payload?.groupBy
+        const enableAggregateStackMember = arg?.enableAggregateStackMember ?? true
         const switchUrls = getSwitchUrls(arg.enableRbac)
         const headers = arg.enableRbac ? customHeaders.v1 : {}
         const req = hasGroupBy
@@ -140,10 +141,14 @@ export const switchApi = baseSwitchApi.injectEndpoints({
             })
           }
         })
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const allStacksMember:any = await Promise.all(stacks.map(stack =>
-          fetchWithBQ(genStackMemberPayload(arg, stack))
-        ))
+        const allStacksMember:any = enableAggregateStackMember
+          ? await Promise.all(stacks.map(stack =>
+            fetchWithBQ(genStackMemberPayload(arg, stack))
+          ))
+          : []
+
         stacks.forEach((stack:StackInfo, index:number) => {
           stackMembers[stack.serialNumber] = allStacksMember[index]?.data?.data
         })

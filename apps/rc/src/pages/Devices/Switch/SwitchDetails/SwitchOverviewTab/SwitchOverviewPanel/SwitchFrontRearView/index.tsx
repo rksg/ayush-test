@@ -72,6 +72,7 @@ export function SwitchFrontRearView (props:{
       pageSize: 10000,
       filters: { venueId: [switchDetail?.venueId] }
     },
+    enableAggregateStackMember: false,
     enableRbac: isSwitchRbacEnabled
   }, {
     skip: !isSwitchRbacEnabled || !switchDetail?.venueId || !isSwitchFlexAuthEnabled

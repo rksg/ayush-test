@@ -152,6 +152,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
         pageSize: 10000,
         filters: { venueId: [currentAP?.venueId], id: [currentAP?.switchId] }
       },
+      enableAggregateStackMember: false,
       enableRbac: isSwitchRbacEnabled,
       options: {
         skip: !isSwitchFlexAuthEnabled || !currentAP?.venueId

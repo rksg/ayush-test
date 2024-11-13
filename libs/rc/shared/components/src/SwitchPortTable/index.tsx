@@ -72,6 +72,7 @@ export function SwitchPortTable (props: {
       pageSize: 10000,
       filters: { venueId: [vid] }
     },
+    enableAggregateStackMember: false,
     enableRbac: isSwitchRbacEnabled
   }, {
     skip: !isSwitchRbacEnabled || !vid || !isSwitchFlexAuthEnabled
