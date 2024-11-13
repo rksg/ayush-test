@@ -26,7 +26,7 @@ interface WiFISoftGreRadioOptionProps {
   currentTunnelType: NetworkTunnelTypeEnum
   venueId: string
   networkId?: string
-  cachedSoftGre: SoftGreNetworkTunnel[]
+  cachedSoftGre: SoftGreNetworkTunnel[] | undefined
   disabledInfo?: { // can't change for edge
     noChangePermission: boolean,
     isDisabled: boolean,
@@ -60,8 +60,8 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
       setIsLocked(isLockedOptions)
       setGatewayIpMapIds(gatewayIpMaps)
       const profileId = optionsDataQuery.data.id
-      if (currentTunnelType === NetworkTunnelTypeEnum.SoftGre && cachedSoftGre.length > 0) {
-        const softGreInfo = cachedSoftGre.find(
+      if (currentTunnelType === NetworkTunnelTypeEnum.SoftGre && (cachedSoftGre?.length ?? 0) > 0) {
+        const softGreInfo = cachedSoftGre?.find(
           sg => sg.venueId === venueId && sg.networkIds.includes(networkId!))
         if (softGreInfo) {
           form.setFieldValue(['softGre', 'newProfileId'], softGreInfo.profileId)
