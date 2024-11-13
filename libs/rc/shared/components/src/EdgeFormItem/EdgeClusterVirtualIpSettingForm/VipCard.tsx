@@ -17,7 +17,7 @@ import { getIntl } from '@acx-ui/utils'
 
 import { InterfaceTable } from './InterfaceTable'
 
-import { VipConfigType } from '.'
+import { VipConfigType, VipInterface } from '.'
 
 interface VipCardProps {
   field: FormListFieldData
@@ -29,7 +29,7 @@ interface VipCardProps {
   rootNamePath?: string[],
   nodeList?: EdgeStatus[]
   lanInterfaces?: {
-    [key: string]: EdgePortInfo[]
+    [key: string]: VipInterface[]
   }
 }
 
@@ -144,7 +144,7 @@ export const VipCard = (props: VipCardProps) => {
 
 const getInterfacesInfoByVipConfig = (
   lanInterfaces?: {
-    [key: string]: EdgePortInfo[]
+    [key: string]: VipInterface[]
   },
   vipSetting?: VirtualIpSetting['ports']
 ) => {
@@ -153,18 +153,18 @@ const getInterfacesInfoByVipConfig = (
   for(let settingInfo of vipSetting) {
     const targetLanInterfaces = lanInterfaces[settingInfo.serialNumber]
     const targetSetting = targetLanInterfaces.find(item =>
-      item.portName.toLocaleLowerCase() === settingInfo.portName.toLowerCase())
+      item.interfaceName.toLocaleLowerCase() === settingInfo.portName.toLowerCase())
     if(targetSetting) result.push(targetSetting)
   }
   return result
 }
 
 const validateInterfaces = async (
-  interfaces?: EdgePortInfo[],
+  interfaces?: VipInterface[],
   nodeList?: EdgeStatus[]
 ) => {
   const { $t } = getIntl()
-  const validInterfaces = interfaces?.filter(item => item.portName) ?? []
+  const validInterfaces = interfaces?.filter(item => item.interfaceName) ?? []
   const nodeLength = nodeList?.length ?? 0
 
   if(nodeLength > 1 && validInterfaces.length !== nodeLength) {
@@ -201,7 +201,7 @@ const validateInterfaces = async (
 
 const validateIpInSubnetPool = (
   value: string,
-  interfaces?: EdgePortInfo[]
+  interfaces?: VipInterface[]
 ) => {
   const nonDhcpInterfaces = interfaces?.filter(item => item.ipMode !== EdgeIpModeEnum.DHCP)
   if(
@@ -219,7 +219,7 @@ const validateIpInSubnetPool = (
 
 const validateVip = (
   value: string,
-  interfaces?: EdgePortInfo[]
+  interfaces?: VipInterface[]
 ) => {
   if(!interfaces) return Promise.resolve()
   const validInterfaces = interfaces?.filter(item =>
@@ -235,7 +235,7 @@ const validateVip = (
   return Promise.resolve()
 }
 
-const SuggestedRange = ({ portInfo }: { portInfo: EdgePortInfo[] }) => {
+const SuggestedRange = ({ portInfo }: { portInfo: VipInterface[] }) => {
   const { $t } = useIntl()
 
   const hasDhcpPort = portInfo.some(item => item.ipMode === EdgeIpModeEnum.DHCP)
