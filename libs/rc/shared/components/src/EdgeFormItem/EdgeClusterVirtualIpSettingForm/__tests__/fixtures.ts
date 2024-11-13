@@ -1,9 +1,9 @@
-
-import { VipInterface } from '@acx-ui/rc/components'
 import {
   EdgeGeneralFixtures,
   EdgePortConfigFixtures
 } from '@acx-ui/rc/utils'
+
+import { VipInterface } from '..'
 
 const { mockedHaNetworkSettings } = EdgeGeneralFixtures
 const { mockLanInterfaces } = EdgePortConfigFixtures

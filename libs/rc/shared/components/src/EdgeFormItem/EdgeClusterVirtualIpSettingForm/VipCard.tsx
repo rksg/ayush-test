@@ -5,7 +5,6 @@ import { Button, Fieldset, useStepFormContext } from '@acx-ui/components'
 import { DeleteOutlinedIcon }                   from '@acx-ui/icons'
 import {
   EdgeIpModeEnum,
-  EdgePortInfo,
   EdgeStatus,
   IpInSubnetPool,
   VirtualIpSetting,
