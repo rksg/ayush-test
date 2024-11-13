@@ -45,7 +45,7 @@ export function DriftInstance (props: DriftInstanceProps) {
     onCheckboxChange(selected)
   }, [selected])
 
-  const header = <div style={{ paddingTop: '8px', paddingBottom: '8px' }}>
+  const header = <div style={{ paddingTop: '12px', paddingBottom: '12px' }}>
     <DriftInstanceRow
       head={<Checkbox
         onChange={(e: CheckboxChangeEvent) => onCheckboxChange(e.target.checked)}

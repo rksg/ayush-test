@@ -17,7 +17,6 @@ import { MAX_SYNC_EC_TENANTS } from '../../constants'
 import { useEcFilters }        from '../templateUtils'
 
 import { DriftInstance }    from './DriftInstance'
-import * as UI              from './styledComponents'
 import { DriftInstanceRow } from './utils'
 
 export interface ShowDriftsDrawerProps {
@@ -89,7 +88,11 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
       onClick={onSync}
       type='primary'
     >
-      {$t({ defaultMessage: 'Sync' })}
+      <span>{$t({ defaultMessage: 'Sync' })}</span>
+      {selectedInstances.length > 0 &&
+      <span>
+        {$t({ defaultMessage: '({count} selected)' }, { count: selectedInstances.length })}
+      </span>}
     </Button>
     <Button onClick={() => onClose()}>
       {$t({ defaultMessage: 'Cancel' })}
@@ -166,22 +169,11 @@ function Toolbar (props: ToolbarProps) {
   </Row>
 }
 
-export function SelectedCustomersIndicator (props: { selectedCount: number }) {
-  const { selectedCount } = props
-  const { $t } = useIntl()
-
-  if (selectedCount === 0) return null
-
-  return <UI.SelectedCustomersIndicator>
-    { $t({ defaultMessage: '{num} selected' }, { num: selectedCount }) }
-  </UI.SelectedCustomersIndicator>
-}
-
 function DriftInstanceListHeader (props: {
   onSyncAllChange: (e: CheckboxChangeEvent) => void,
   selectedCount: number
 }) {
-  const { onSyncAllChange, selectedCount } = props
+  const { onSyncAllChange } = props
   const { $t } = useIntl()
 
   return <Space direction='vertical' style={{ width: '100%' }}>
@@ -189,16 +181,15 @@ function DriftInstanceListHeader (props: {
       head={<Tooltip title={$t({ defaultMessage: 'Select All' })}>
         <Checkbox onChange={onSyncAllChange} />
       </Tooltip>}
-      body={<Row style={{ fontWeight: '600' }}>
-        <Col span={12}>
-          {$t({ defaultMessage: 'Configurations in Template' })}
-        </Col>
-        <Col span={12}>
-          {$t({ defaultMessage: 'Configurations in Customer' })}
-        </Col>
-      </Row>}
+      body={<Space direction={'horizontal'} size={6}>
+        <span style={{ fontWeight: '600' }}>
+          {$t({ defaultMessage: 'Customer Drifts Report' })}
+        </span>
+        <span style={{ fontStyle: 'italic' }}>
+          {$t({ defaultMessage: '(Template -> Customer)' })}
+        </span>
+      </Space>}
     />
-    <SelectedCustomersIndicator selectedCount={selectedCount} />
   </Space>
 }
 
