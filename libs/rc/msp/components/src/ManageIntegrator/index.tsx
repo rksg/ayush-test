@@ -204,14 +204,16 @@ export function ManageIntegrator () {
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
   const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
   const { data } =
-      useGetMspEcQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+      useGetMspEcQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
+        { skip: action !== 'edit' })
   const { data: Administrators } =
       useMspAdminListQuery({ params: useParams() }, { skip: action !== 'edit' })
   const { data: delegatedAdmins } =
       useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
         { skip: action !== 'edit' })
   const { data: ecAdministrators } =
-      useMspEcAdminListQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+      useMspEcAdminListQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
+        { skip: action !== 'edit' })
   const ecList = useTableQuery({
     useQuery: useMspCustomerListQuery,
     defaultPayload: {
