@@ -8,20 +8,25 @@ import {
   mapDisconnectCode,
   mapDisconnectCodeToReason
 }                    from '@acx-ui/analytics/utils'
-import { formatter } from '@acx-ui/formatter'
-import { getIntl }   from '@acx-ui/utils'
+import { get }                    from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { formatter }              from '@acx-ui/formatter'
+import { getIntl }                from '@acx-ui/utils'
 
-import { FAILURE, DisplayEvent, SLOW, DISCONNECT } from './config'
-import { ConnectionSequenceDiagram }               from './ConnectionSequenceDiagram'
-import { DownloadPcap }                            from './DownloadPcap'
-import { Details }                                 from './EventDetails'
-import * as UI                                     from './styledComponents'
+import { FAILURE, DisplayEvent, SLOW, DISCONNECT, ROAMING } from './config'
+import { ConnectionSequenceDiagram }                        from './ConnectionSequenceDiagram'
+import { DownloadPcap }                                     from './DownloadPcap'
+import { Details }                                          from './EventDetails'
+import * as UI                                              from './styledComponents'
 
 export const getConnectionDetails = (event: DisplayEvent) => {
   const intl = getIntl()
   const { $t } = intl
-  const { mac, apName, ssid, radio, code, ttc, state } = event
-
+  const isMLISA = get('IS_MLISA_SA')
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const isRoamingTypeEnabled = useIsSplitOn(Features.ROAMING_TYPE_EVENTS_TOGGLE)
+  const showRoamingType = isMLISA || isRoamingTypeEnabled
+  const { mac, apName, ssid, radio, code, ttc, state, type, roamingType } = event
   const eventDetails = [
     { label: $t({ defaultMessage: 'AP MAC' }), value: mac },
     { label: $t({ defaultMessage: 'AP Name' }), value: apName },
@@ -31,7 +36,6 @@ export const getConnectionDetails = (event: DisplayEvent) => {
       : $t({ defaultMessage: 'Unknown' })
     }
   ]
-
   switch (event.category) {
     case FAILURE: {
       const failureType = (code)
@@ -75,7 +79,13 @@ export const getConnectionDetails = (event: DisplayEvent) => {
       break
     }
   }
-
+  if (type === ROAMING && showRoamingType) {
+    const label = $t({ defaultMessage: 'Roaming Type' })
+    const roamType = roamingType
+      ? { label, value: roamingType }
+      : { label, value: $t({ defaultMessage: 'Unknown' }) }
+    eventDetails.push(roamType)
+  }
   return eventDetails
 }
 
