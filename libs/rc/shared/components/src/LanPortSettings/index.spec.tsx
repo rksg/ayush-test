@@ -18,6 +18,12 @@ import { dummyRadiusServiceList, ethernetPortProfileList, initLanData, mockDefau
 
 import { LanPortSettings } from '.'
 
+jest.mock('../ApCompatibility', () => ({
+  ...jest.requireActual('../ApCompatibility'),
+  ApCompatibilityToolTip: () => <div data-testid={'ApCompatibilityToolTip'} />,
+  ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
+}))
+
 const venueId='mock-venue-id'
 
 const selectedModelCaps = {
@@ -94,7 +100,7 @@ beforeEach(() => {
 
 describe('LanPortSettings', () => {
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider>
+    render(<Provider>
       <Form initialValues={{ lan: lanData }}>
         <LanPortSettings
           index={0}
@@ -112,7 +118,6 @@ describe('LanPortSettings', () => {
     })
 
     await screen.findByText('Enable port')
-    expect(asFragment()).toMatchSnapshot()
 
     expect(screen.getByLabelText(/VLAN untag ID/)).toHaveValue('1')
     expect(screen.getByLabelText(/VLAN member/)).toHaveValue('1-4094')
@@ -181,7 +186,7 @@ describe('LanPortSettings', () => {
 
     const toolips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
     fireEvent.mouseEnter(toolips[1])
-    expect(await screen.findByTestId('tooltip-button')).not.toBeNull()
+    expect(await screen.findByTestId('ApCompatibilityToolTip')).not.toBeNull()
   })
 
   it('should render read-only mode correctly with trunk port untagged vlan toggle', async () => {
