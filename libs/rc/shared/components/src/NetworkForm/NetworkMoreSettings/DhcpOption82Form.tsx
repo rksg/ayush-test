@@ -12,45 +12,17 @@ import {
 import { useIntl } from 'react-intl'
 
 import { Fieldset, Tooltip } from '@acx-ui/components'
+import {
+  DhcpOption82SubOption1Enum,
+  DhcpOption82SubOption2Enum,
+  DhcpOption82SubOption151Enum,
+  DhcpOption82MacEnum
+} from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
 const { useWatch } = Form
 const { Option } = Select
-
-enum DhcpOption82SubOption1Enum {
-  SUBOPT1_AP_INFO_LOCATION = 'SUBOPT1_AP_INFO_LOCATION',
-  SUBOPT1_AP_INFO = 'SUBOPT1_AP_INFO',
-  SUBOPT1_AP_MAC_ESSID_PRIVACYTYPE = 'SUBOPT1_AP_MAC_ESSID_PRIVACYTYPE',
-  SUBOPT1_AP_MAC_HEX = 'SUBOPT1_AP_MAC_hex',
-  SUBOPT1_AP_MAC_HEX_ESSID = 'SUBOPT1_AP_MAC_hex_ESSID',
-  SUBOPT1_ESSID = 'SUBOPT1_ESSID',
-  SUBOPT1_AP_MAC = 'SUBOPT1_AP_MAC',
-  SUBOPT1_AP_MAC_ESSID = 'SUBOPT1_AP_MAC_ESSID',
-  SUBOPT1_AP_NAME_ESSID = 'SUBOPT1_AP_Name_ESSID',
-}
-
-enum DhcpOption82SubOption2Enum {
-  SUBOPT2_CLIENT_MAC = 'SUBOPT2_CLIENT_MAC',
-  SUBOPT2_CLIENT_MAC_HEX = 'SUBOPT2_CLIENT_MAC_hex',
-  SUBOPT2_CLIENT_MAC_HEX_ESSID = 'SUBOPT2_CLIENT_MAC_hex_ESSID',
-  SUBOPT2_AP_MAC = 'SUBOPT2_AP_MAC',
-  SUBOPT2_AP_MAC_HEX = 'SUBOPT2_AP_MAC_hex',
-  SUBOPT2_AP_MAC_HEX_ESSID = 'SUBOPT2_AP_MAC_hex_ESSID',
-  SUBOPT2_AP_MAC_ESSID = 'SUBOPT2_AP_MAC_ESSID',
-  SUBOPT2_AP_NAME = 'SUBOPT2_AP_Name',
-}
-
-enum DhcpOption82SubOption151Enum {
-  SUBOPT151_AREA_NAME = 'SUBOPT151_AREA_NAME',
-  SUBOPT151_ESSID = 'SUBOPT151_ESSID',
-}
-
-enum DhcpOption82MacEnum {
-  COLON = 'COLON',
-  HYPHEN = 'HYPHEN',
-  NODELIMITER = 'NODELIMITER',
-}
 
 export function DhcpOption82Form (props: { labelWidth?: string }) {
   const { $t } = useIntl()
