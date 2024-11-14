@@ -40,6 +40,7 @@ export const SwitchDDoSAttackChart = (props: TimeSeriesChartProps) => {
           data={chartResults}
           dataFormatter={formatter('countFormat')}
           yAxisProps={{ min: 0 }}
+          echartOptions={{ yAxis: { minInterval: 1 } }}
         />
       )}
     </AutoSizer>
