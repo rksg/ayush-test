@@ -78,7 +78,7 @@ export function CertificateTemplateForm (props: CerficateTemplateStepFromProps) 
         caType: CertificateAuthorityType.ONBOARD,
         notBefore,
         notAfter,
-        keyLength: 2048,
+        keyLength: 4096,
         algorithm: AlgorithmType.SHA_256,
         chromebook: {
           enabled: false,

@@ -1,7 +1,8 @@
-import { fakeIncidentDDoS, overlapsRollup }                    from '@acx-ui/analytics/utils'
-import { get }                                                 from '@acx-ui/config'
-import { dataApi, dataApiURL, Provider, store }                from '@acx-ui/store'
-import { findTBody, mockGraphqlQuery, render, within, screen } from '@acx-ui/test-utils'
+import { fakeIncidentDDoS, overlapsRollup }     from '@acx-ui/analytics/utils'
+import { get }                                  from '@acx-ui/config'
+import { dataApi, dataApiURL, Provider, store } from '@acx-ui/store'
+import { findTBody, mockGraphqlQuery, render,
+  within, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { ImpactedSwitch } from './services'
 
@@ -16,6 +17,11 @@ jest.mock('@acx-ui/config', () => ({
 }))
 const mockOverlapsRollup = overlapsRollup as jest.Mock
 
+Object.assign(navigator, {
+  clipboard: {
+    writeText: () => {}
+  }
+})
 
 describe('ImpactedSwitchDDoS',()=>{
   const sample1:ImpactedSwitch[] = [{
@@ -24,8 +30,7 @@ describe('ImpactedSwitchDDoS',()=>{
     serial: 'FEK3215S0H7',
     ports: [
       {
-        portNumber: '1/1/1',
-        portMac: '58:FB:96:0B:12:CA'
+        portNumber: '1/1/1'
       }
     ]
   },
@@ -35,16 +40,13 @@ describe('ImpactedSwitchDDoS',()=>{
     serial: 'EZC3307P01H',
     ports: [
       {
-        portNumber: '1/1/1',
-        portMac: 'D4:C1:9E:14:C3:99'
+        portNumber: '1/1/1'
       },
       {
-        portNumber: '1/1/23',
-        portMac: 'D4:C1:9E:14:C3:AF'
+        portNumber: '1/1/23'
       },
       {
-        portNumber: '1/1/1',
-        portMac: 'D4:C1:9E:14:C3:99'
+        portNumber: '1/1/1'
       }
     ]
   }
@@ -78,6 +80,23 @@ describe('ImpactedSwitchDDoS',()=>{
       expect(rows).toHaveLength(2)
       expect(within(rows[0]).getAllByRole('cell')[1].textContent).toMatch('58:FB:96:0B:12:CA')
       expect(within(rows[1]).getAllByRole('cell')[3].textContent).toMatch('1/1/1, 1/1/23')
+    })
+    it('should copy the port numbers to clipboard', async () => {
+      jest.spyOn(navigator.clipboard, 'writeText')
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitchDDoS', { data: response() })
+      render(<Provider><ImpactedSwitchDDoSTable incident={fakeIncidentDDoS} /></Provider>, {
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
+
+      const body = within(await findTBody())
+      const rows = await body.findAllByRole('row')
+      fireEvent.click(within(rows[0]).getByTestId('CopyOutlined'))
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith('1/1/1')
+      fireEvent.click(within(rows[1]).getByTestId('CopyOutlined'))
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith('1/1/1, 1/1/23')
     })
     it('should render for RA', async () => {
       jest.mocked(get).mockReturnValue('true')
