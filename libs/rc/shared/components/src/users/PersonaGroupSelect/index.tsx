@@ -28,6 +28,7 @@ export function PersonaGroupSelect (props: {
             filterProperty
               ? whiteList?.find(id => id === group.id) || !group.propertyId
               : true)
+          .filter(group => filterProperty ? !!group.dpskPoolId : true)  // Avoid the user select group without DPSK pool associated
           .map(group => ({ value: group.id, label: group.name }))
       }
     />
