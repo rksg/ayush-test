@@ -1,10 +1,13 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { EdgeGeneralFixtures, EdgePortConfigFixtures, EdgePortInfo, EdgeStatus } from '@acx-ui/rc/utils'
-import { render, renderHook, screen }                                            from '@acx-ui/test-utils'
+import { EdgeGeneralFixtures, EdgeStatus } from '@acx-ui/rc/utils'
+import { render, renderHook, screen }      from '@acx-ui/test-utils'
 
-import { VipCard } from './VipCard'
+import { mockVipInterfaces } from './__tests__/fixtures'
+import { VipCard }           from './VipCard'
+
+import { VipInterface } from '.'
 
 jest.mock('./InterfaceTable', () => ({
   ...jest.requireActual('./InterfaceTable'),
@@ -12,7 +15,6 @@ jest.mock('./InterfaceTable', () => ({
 }))
 
 const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
-const { mockLanInterfaces } = EdgePortConfigFixtures
 
 describe('VipCard', () => {
   it('should render VipCard successfully', async () => {
@@ -83,7 +85,7 @@ describe('VipCard', () => {
   })
 
   it('should be blocked when the config has invalid ip', async () => {
-    const lanInterfaceKeys = Object.keys(mockLanInterfaces)
+    const lanInterfaceKeys = Object.keys(mockVipInterfaces)
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       form.setFieldValue(
@@ -111,13 +113,13 @@ describe('VipCard', () => {
                 nodeList={mockEdgeClusterList.data[0].edgeList as EdgeStatus[]}
                 lanInterfaces={{
                   [lanInterfaceKeys[0]]: [{
-                    ...mockLanInterfaces[lanInterfaceKeys[0]].find(item =>
+                    ...mockVipInterfaces[lanInterfaceKeys[0]].find(item =>
                       // eslint-disable-next-line max-len
-                      item.portName === mockedHaNetworkSettings.virtualIpSettings[0].ports[0].portName),
+                      item.interfaceName === mockedHaNetworkSettings.virtualIpSettings[0].ports[0].portName),
                     ip: '0.0.0.0'
                   }],
-                  [lanInterfaceKeys[1]]: mockLanInterfaces[lanInterfaceKeys[1]]
-                } as { [key: string]: EdgePortInfo[] }}
+                  [lanInterfaceKeys[1]]: mockVipInterfaces[lanInterfaceKeys[1]]
+                } as { [key: string]: VipInterface[] }}
               />)
           }
         </Form.List>
@@ -160,7 +162,7 @@ describe('VipCard', () => {
                 remove={remove}
                 vipConfig={{}}
                 nodeList={mockEdgeClusterList.data[0].edgeList as EdgeStatus[]}
-                lanInterfaces={mockLanInterfaces}
+                lanInterfaces={mockVipInterfaces}
               />)
           }
         </Form.List>
@@ -203,7 +205,7 @@ describe('VipCard', () => {
                   }
                 }}
                 nodeList={mockEdgeClusterList.data[0].edgeList as EdgeStatus[]}
-                lanInterfaces={mockLanInterfaces}
+                lanInterfaces={mockVipInterfaces}
               />)
           }
         </Form.List>
@@ -251,7 +253,7 @@ describe('VipCard', () => {
                   }
                 }}
                 nodeList={mockEdgeClusterList.data[0].edgeList as EdgeStatus[]}
-                lanInterfaces={mockLanInterfaces}
+                lanInterfaces={mockVipInterfaces}
               />)
           }
         </Form.List>
@@ -312,7 +314,7 @@ describe('VipCard', () => {
                   }
                 }}
                 nodeList={mockEdgeClusterList.data[0].edgeList as EdgeStatus[]}
-                lanInterfaces={mockLanInterfaces}
+                lanInterfaces={mockVipInterfaces}
               />)
           }
         </Form.List>
@@ -359,7 +361,7 @@ describe('VipCard', () => {
                   }
                 }}
                 nodeList={mockEdgeClusterList.data[0].edgeList as EdgeStatus[]}
-                lanInterfaces={mockLanInterfaces}
+                lanInterfaces={mockVipInterfaces}
               />)
           }
         </Form.List>
