@@ -183,7 +183,8 @@ export interface CertificateAuthority {
   keyUsages?: KeyUsageType[]
   chain?: string
   details?: string
-  description?: string
+  description?: string,
+  status: CertificateStatusType[]
 }
 
 export interface CertificateAuthorityFormData extends CertificateAuthority {
@@ -318,4 +319,9 @@ export enum ServerClientCertAlgorithmType {
   SHA_256 = 'SHA_256',
   SHA_384 = 'SHA_384',
   SHA_512 = 'SHA_512'
+}
+
+export type ServerClientCertificateResult = {
+  requestId: string
+  id?: string
 }
