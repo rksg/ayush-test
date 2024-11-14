@@ -9,7 +9,6 @@ import { useIntl }           from 'react-intl'
 import { Drawer, Select }      from '@acx-ui/components'
 import {
   EdgeIpModeEnum,
-  EdgePortInfo,
   EdgeStatus,
   VirtualIpSetting,
   getIpWithBitMask,
@@ -19,7 +18,7 @@ import {
 
 import * as UI from './styledComponents'
 
-import { VirtualIpFormType } from '.'
+import { VipInterface, VirtualIpFormType } from '.'
 
 interface SelectInterfaceDrawerProps {
   visible: boolean
@@ -28,7 +27,7 @@ interface SelectInterfaceDrawerProps {
   currentVipIndex?: number
   nodeList?: EdgeStatus[]
   lanInterfaces?: {
-    [key: string]: EdgePortInfo[]
+    [key: string]: VipInterface[]
   }
   selectedInterfaces?: VirtualIpFormType['vipConfig']
   editData?: VirtualIpSetting['ports']
@@ -56,8 +55,8 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
       const interfacesOptions = {} as { [key: string]: DefaultOptionType[] }
       for(let[k, v] of Object.entries(lanInterfaces)) {
         interfacesOptions[k] = v.map(item => ({
-          label: _.capitalize(item.portName),
-          value: item.portName.toLowerCase()
+          label: _.capitalize(item.interfaceName),
+          value: item.interfaceName.toLowerCase()
         })).sort(optionSorter)
       }
       setLanInterfacesOptions(interfacesOptions)
@@ -115,7 +114,7 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
     const formData = form.getFieldsValue() as SelectInterfaceDrawerFormType
     return Object.entries(formData).map(([k, v]) => {
       const target = lanInterfaces?.[k].find(item =>
-        item.portName === v.port && item.ipMode !== EdgeIpModeEnum.DHCP)
+        item.interfaceName === v.port && item.ipMode !== EdgeIpModeEnum.DHCP)
       return {
         ip: target?.ip,
         subnet: target?.subnet
@@ -159,7 +158,7 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
                     {({ getFieldValue }) => {
                       const currentPort = getFieldValue([item.serialNumber, 'port'])
                       const currentInterface = lanInterfaces?.[item.serialNumber]?.find(item =>
-                        item.portName.toLowerCase() === currentPort?.toLowerCase())
+                        item.interfaceName.toLowerCase() === currentPort?.toLowerCase())
                       return currentPort && $t({ defaultMessage: 'IP subnet: {ip}' },
                         {
                           ip: currentInterface?.ipMode === EdgeIpModeEnum.DHCP ?
@@ -178,7 +177,8 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
                         item.serialNumber
                       )?.map(option => {
                         const targetInterface = lanInterfaces?.[item.serialNumber]?.find(item =>
-                          item.portName.toLowerCase() === option.value?.toString().toLowerCase())
+                          item.interfaceName.toLowerCase() ===
+                          option.value?.toString().toLowerCase())
                         return <Select.Option
                           key={option.value}
                           value={option.value}
