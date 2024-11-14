@@ -43,12 +43,14 @@ beforeEach(() => mockGet.mockReturnValue(''))
 describe('getConfigChangeEntityTypeMapping', () => {
   it('should build map for ACX', ()=>{
     const { result } = renderHook(() => getConfigChangeEntityTypeMapping())
-    expect(result.current.map(row=>row.key)).toEqual(['ap', 'apGroup', 'wlan', 'zone'])
+    expect(result.current.map(row=>row.key)).toEqual([ 'intentAI', 'ap', 'apGroup', 'wlan', 'zone'])
   })
   it('should build map for RA', ()=>{
     mockGet.mockReturnValue('true')
     const { result } = renderHook(() => getConfigChangeEntityTypeMapping())
-    expect(result.current.map(row=>row.key)).toEqual(['ap', 'apGroup', 'wlan', 'wlanGroup', 'zone'])
+    expect(result.current.map(row=>row.key)).toEqual([
+      'intentAI', 'ap', 'apGroup', 'wlan', 'wlanGroup', 'zone'
+    ])
   })
 })
 

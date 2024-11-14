@@ -49,14 +49,16 @@ export function getConfigChangeEntityTypeMapping () : ChartRowMappingType[] {
     { key: 'zone', label: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }) },
     { key: 'wlan', label: $t({ defaultMessage: 'WLAN' }) },
     { key: 'apGroup', label: $t({ defaultMessage: 'AP Group' }) },
-    { key: 'ap', label: $t({ defaultMessage: 'AP' }) }
+    { key: 'ap', label: $t({ defaultMessage: 'AP' }) },
+    { key: 'intentAI', label: $t({ defaultMessage: 'IntentAI' }) }
   ]
   const raMap = [
     { key: 'zone', label: $t({ defaultMessage: 'Zone' }) },
     { key: 'wlanGroup', label: $t({ defaultMessage: 'WLAN Group' }) },
     { key: 'wlan', label: $t({ defaultMessage: 'WLAN' }) },
     { key: 'apGroup', label: $t({ defaultMessage: 'AP Group' }) },
-    { key: 'ap', label: $t({ defaultMessage: 'AP' }) }
+    { key: 'ap', label: $t({ defaultMessage: 'AP' }) },
+    { key: 'intentAI', label: $t({ defaultMessage: 'IntentAI' }) }
   ]
   return (get('IS_MLISA_SA') ? raMap : rcMap)
     .slice(0).map((rec, index) => ({ ...rec, color: colors[index] })).reverse()

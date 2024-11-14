@@ -16,7 +16,7 @@ import { zoneKeyMap }                from './mapping/zoneKeyMap'
 
 const filteredConfigText = ['TBD', 'NA']
 
-export type EntityType = 'zone' | 'wlan' | 'apGroup' | 'ap'
+export type EntityType = 'zone' | 'wlan' | 'apGroup' | 'ap' | 'intentAI'
 
 type MappingFields = 'text' | 'textAlto' | 'enumType'
 
