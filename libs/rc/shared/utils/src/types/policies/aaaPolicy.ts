@@ -4,7 +4,8 @@ export interface AAAPolicyType{
   name: string,
   primary?: RadiusServer,
   secondary?: RadiusServer,
-  type?: 'ACCOUNTING' | 'AUTHENTICATION'
+  type?: 'ACCOUNTING' | 'AUTHENTICATION',
+  radSecOptions?: RadSecOptionsType
 }
 
 export interface AAATacacsServer{
@@ -20,7 +21,30 @@ export interface AAAViewModalType {
   secondary?: string, // Secondary server IP:Port
   type: 'ACCOUNTING' | 'AUTHENTICATION',
   networkIds?: string[],
-  hotspot20IdentityProviderIds?: string[]
+  hotspot20IdentityProviderIds?: string[],
+  radSecOptions?: RadSecOptionsType
+}
+export interface RadSecOptionsType {
+  tlsEnabled?: boolean,
+  cnSanIdentity?: string,
+  ocspUrl?: string,
+  certificateAuthorityId?: string,
+  clientCertificateId?: string,
+  serverCertificateId?: string,
+  // certificates only allow to activate once
+  originalCertificateAuthorityId?: string,
+  originalClientCertificateId?: string
+  originalServerCertificateId?: string
+}
+export interface RadSecOptionsViewModalType {
+  tlsEnabled?: boolean,
+  certificateAuthorityId?: string,
+  clientCertificateId?: string,
+  serverCertificateId?: string,
+  // certificates only allow to activate once
+  originalCertificateAuthorityId?: string,
+  originalClientCertificateId?: string,
+  originalServerCertificateId?: string
 }
 export enum AAAPurposeEnum{
   ALL = 'All (Default)',

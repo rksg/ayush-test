@@ -38,6 +38,7 @@ COPY .storybook ./.storybook
 COPY apps ./apps
 COPY libs ./libs
 
+ENV NODE_OPTIONS=--max-old-space-size=4096
 ENV NX_CACHE_DIRECTORY=/app/node_modules/.cache/nx
 
 COPY --from=nx-cache /app/node_modules/.cache/nx /app/node_modules/.cache/nx
@@ -80,11 +81,10 @@ RUN tools/docker/locales/generate.sh
 
 FROM build-base as build
 COPY --from=build-locales /app/apps/main/src/locales ./apps/main/src/locales
-RUN node ./node_modules/.bin/nx run-many --target=build --projects=main
+RUN node ./node_modules/.bin/nx run main:build
 
 ###############################################################
 FROM build-base as acx-ui-base-test
-ENV NODE_OPTIONS=--max-old-space-size=2048
 
 # Force dependency with lint & build stages
 COPY --from=acx-ui-lint   /app/lint-done   ./lint-done

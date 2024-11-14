@@ -306,6 +306,7 @@ export class SwitchViewModel extends Switch {
   syncedAdminPassword?: boolean
   adminPassword?: string
   extIp?: string
+  veCount?: number
 }
 
 export interface SwitchRow {
@@ -926,10 +927,4 @@ export interface CliProfileFamily {
 export enum VlanModalType {
   UNTAGGED = 'untaggedVlan',
   TAGGED = 'taggedVlans'
-}
-
-export interface SwitchFeatureSet {
-  featureName: string,
-  requiredFw?: string,
-  supportedModelFamilies?: string[]
 }

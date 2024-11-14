@@ -78,7 +78,7 @@ const defaultPayload = {
 }
 
 const defaultApPayload = {
-  fields: ['serialNumber', 'name', 'venueId', 'apStatusData'],
+  fields: ['serialNumber', 'name', 'venueId', 'apStatusData', 'firmwareVersion'],
   pageSize: 10000
 }
 
@@ -153,6 +153,9 @@ export function ApForm () {
   const location = useLocation()
   const venueFromNavigate = location.state as { venueId?: string }
 
+  const currentApFirmware = isUseWifiRbacApi
+    ? apList?.data?.find(item => item.serialNumber === serialNumber)?.fwVersion
+    : apDetails?.firmware
 
   // the payload would different based on the feature flag
   const retrieveDhcpAp = (dhcpApResponse: DhcpAp) => {
@@ -619,11 +622,12 @@ export function ApForm () {
                   onChange={async (value) => await handleVenueChange(value)}
                 />}
               />
-              <VenueFirmwareInformation
+              {apDetails?.model && currentApFirmware && <VenueFirmwareInformation
                 isEditMode={isEditMode}
                 venue={selectedVenue}
-                apDetails={apDetails}
-              />
+                apModel={apDetails.model}
+                currentApFirmware={currentApFirmware}
+              />}
               { displayAFCGeolocation() && isVenueSameCountry &&
                   <Alert message={
                     $t({ defaultMessage:
@@ -757,13 +761,15 @@ export function ApForm () {
             {!sameAsVenue && <Button
               type='link'
               size='small'
-              onClick={() => onSaveCoordinates(
-                selectedVenue?.latitude ? {
+              onClick={() => {
+                const deviceGpsObject = selectedVenue?.latitude ? {
                   latitude: selectedVenue.latitude,
                   longitude: selectedVenue.longitude
                 } as unknown as DeviceGps
                   : null
-              )}
+                formRef?.current?.setFieldValue('deviceGps', deviceGpsObject)
+                onSaveCoordinates(deviceGpsObject)
+              }}
             >
               {$t({ defaultMessage: 'Same as <VenueSingular></VenueSingular>' })}
             </Button>}
@@ -903,7 +909,9 @@ function CoordinatesModal (props: {
           message: $t(validationMessages.gpsCoordinates)
         }, {
           validator: (_, value) => {
-            const latLng = value.split(',').map((v: string) => v.trim())
+            const latLng = typeof value === 'string'
+              ? value.split(',').map((v: string) => v.trim())
+              : [value.latitude, value.longitude]
             const sameAsVenue = isEqual([selectedVenue?.latitude, selectedVenue?.longitude], latLng)
             return sameAsVenue
               ? Promise.resolve()

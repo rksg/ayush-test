@@ -4,6 +4,7 @@ import { Path }  from 'react-router-dom'
 
 import {
   AaaUrls,
+  CertificateUrls,
   CommonUrlsInfo,
   getPolicyDetailsLink,
   getPolicyRoutePath,
@@ -43,6 +44,18 @@ const mockTableResult = {
     type: 'AUTHENTICATION',
     primary: '34.72.60.108:1811',
     hotspot20IdentityProviderIds: ['789', '012']
+  },
+  {
+    id: '485617d8-816c-493e-9854-fc6126f7e83d',
+    name: 'Test RadSec AAA Server',
+    type: 'AUTHENTICATION',
+    primary: '34.72.60.108:1811',
+    radSecOptions: {
+      tlsEnabled: true,
+      certificateAuthorityId: '2ce780df-fd3f-4b22-b9d0-deefed397410',
+      clientCertificateId: ''
+    },
+    networkIds: ['761474080cd64bfcb5f7-5550d68e802f', 'c1972b49-3d38-432b-a43f-6fa2aacfd5d6']
   }]
 }
 
@@ -52,6 +65,9 @@ const mockedTenantPath: Path = {
   pathname: 't/__tenantId__',
   search: '',
   hash: ''
+}
+const state= {
+  networkIds: ['761474080cd64bfcb5f7-5550d68e802f', 'c1972b49-3d38-432b-a43f-6fa2aacfd5d6']
 }
 
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -82,6 +98,14 @@ describe('AAATable', () => {
       ),
       rest.post(
         IdentityProviderUrls.getIdentityProviderList.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        CertificateUrls.getCAs.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        CertificateUrls.getCertificateList.url,
         (req, res, ctx) => res(ctx.json({}))
       )
     )
@@ -200,7 +224,7 @@ describe('AAATable', () => {
       }
     )
 
-    const target = mockTableResult.data[0]
+    const target = mockTableResult.data[3]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('checkbox'))
 
@@ -215,6 +239,8 @@ describe('AAATable', () => {
     expect(mockedUseNavigate).toHaveBeenCalledWith({
       ...mockedTenantPath,
       pathname: `${mockedTenantPath.pathname}/${editPath}`
+    }, {
+      state
     })
   })
 })

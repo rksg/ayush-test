@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import { EnvironmentOutlined }     from '@ant-design/icons'
 import { Col, Divider, Form, Row } from 'antd'
@@ -9,7 +9,9 @@ import { Features, useIsTierAllowed }              from '@acx-ui/feature-toggle'
 import { useMacRegListsQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import {
   Demo,
+  GuestNetworkTypeEnum,
   NetworkSaveData,
+  NetworkSummaryExtracData,
   NetworkTypeEnum,
   networkTypes,
   transformDisplayText,
@@ -19,7 +21,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { captiveTypes } from '../contentsMap'
+import { captiveTypes }   from '../contentsMap'
+import NetworkFormContext from '../NetworkFormContext'
 
 import { AaaSummaryForm }       from './AaaSummaryForm'
 import { DpskSummaryForm }      from './DpskSummaryForm'
@@ -38,11 +41,13 @@ const defaultPayload = {
 
 export function SummaryForm (props: {
   summaryData: NetworkSaveData,
-  portalData?: Demo
+  portalData?: Demo,
+  extraData?: NetworkSummaryExtracData
 }) {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
-  const { summaryData, portalData } = props
+  const { isRuckusAiMode } = useContext(NetworkFormContext)
+  const { summaryData, portalData, extraData } = props
   const params = useParams()
   const { data } = useVenuesListQuery({
     params: { tenantId: params.tenantId, networkId: 'UNKNOWN-NETWORK-ID' },
@@ -90,14 +95,19 @@ export function SummaryForm (props: {
           <Subtitle level={4}>
             { $t({ defaultMessage: 'Network Info' }) }
           </Subtitle>
-          <Form.Item label={$t({ defaultMessage: 'Network Name:' })} children={summaryData.name} />
-          {summaryData.name !== summaryData?.wlan?.ssid &&
-            <Form.Item label={$t({ defaultMessage: 'SSID:' })} children={summaryData?.wlan?.ssid} />
+          {!isRuckusAiMode && <>
+            <Form.Item label={$t({ defaultMessage: 'Network Name:' })}
+              children={summaryData.name} />
+            {summaryData.name !== summaryData?.wlan?.ssid &&
+              <Form.Item label={$t({ defaultMessage: 'SSID:' })}
+                children={summaryData?.wlan?.ssid} />
+            }
+            <Form.Item
+              label={$t({ defaultMessage: 'Description:' })}
+              children={transformDisplayText(summaryData.description)}
+            />
+          </>
           }
-          <Form.Item
-            label={$t({ defaultMessage: 'Description:' })}
-            children={transformDisplayText(summaryData.description)}
-          />
           {summaryData.type !== NetworkTypeEnum.CAPTIVEPORTAL && <Form.Item
             label={$t({ defaultMessage: 'Type:' })}
             children={summaryData.type && $t(networkTypes[summaryData.type])}
@@ -108,6 +118,13 @@ export function SummaryForm (props: {
               (summaryData.guestPortal?.guestNetworkType &&
                  $t(captiveTypes[summaryData.guestPortal?.guestNetworkType]))}
           />}
+          {summaryData.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+            summaryData.guestPortal &&
+            summaryData.guestPortal.guestNetworkType === GuestNetworkTypeEnum.Directory &&
+            <Form.Item
+              label={$t({ defaultMessage: 'Directory Server:' })}
+              children={extraData?.directoryServer?.name ?? ''}
+            />}
           {summaryData.type !== NetworkTypeEnum.PSK && summaryData.type !== NetworkTypeEnum.AAA &&
             summaryData.type!==NetworkTypeEnum.CAPTIVEPORTAL &&
             summaryData.type !== NetworkTypeEnum.HOTSPOT20

@@ -4,7 +4,7 @@ import { MaybePromise }                                       from '@reduxjs/too
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { omit, reduce }                                       from 'lodash'
 
-import { Filter }         from '@acx-ui/components'
+import { Filter }               from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -85,7 +85,8 @@ import {
   SwitchClient,
   SwitchInformation,
   FeatureSetResponse,
-  CompatibilityResponse
+  CompatibilityResponse,
+  EthernetPortProfileViewData
 } from '@acx-ui/rc/utils'
 import { baseApApi }      from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
@@ -907,6 +908,64 @@ export const apApi = baseApApi.injectEndpoints({
       },
       providesTags: [{ type: 'Ap', id: 'LanPorts' }]
     }),
+
+    getApLanPortsWithEthernetProfiles: build.query<WifiApSetting | null, RequestPayload>({
+      async queryFn ({ params, enableRbac, enableEthernetProfile },
+        _queryApi, _extraOptions, fetchWithBQ) {
+        if (!params?.serialNumber) {
+          return Promise.resolve({ data: null } as QueryReturnValue<
+            null,
+            FetchBaseQueryError,
+            FetchBaseQueryMeta
+          >)
+        }
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const apLanPortSettings = await fetchWithBQ(
+          createHttpRequest(urlsInfo.getApLanPorts, params, apiCustomHeader)
+        )
+        let apLanPorts = apLanPortSettings.data as WifiApSetting
+
+        if (!enableEthernetProfile) {
+          return apLanPortSettings.data
+            ? { data: apLanPorts }
+            : { error: apLanPortSettings.error } as QueryReturnValue<WifiApSetting,
+            FetchBaseQueryError,
+            FetchBaseQueryMeta>
+        }
+
+        const ethReq = {
+          ...createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList),
+          body: JSON.stringify({
+            filters: {
+              apSerialNumbers: [params.serialNumber]
+            },
+            page: 1,
+            pageSize: 10
+          })
+        }
+
+        const ethListQuery = await fetchWithBQ(ethReq)
+        const ethList = ethListQuery.data as TableResult<EthernetPortProfileViewData>
+        if (ethList.data && apLanPorts.lanPorts) {
+          for (let eth of ethList.data) {
+            const port = eth.apActivations?.find(ap => ap.apSerialNumber === params.serialNumber)
+            let targetPort = port && apLanPorts.lanPorts
+              ?.find(l => l.portId?.toString() === port.portId?.toString())
+            if (targetPort) {
+              targetPort.ethernetPortProfileId = eth.id
+            }
+          }
+        }
+
+        return apLanPorts
+          ? { data: apLanPorts }
+          : { error: apLanPortSettings.error } as QueryReturnValue<WifiApSetting,
+        FetchBaseQueryError,
+        FetchBaseQueryMeta>
+      },
+      providesTags: [{ type: 'Ap', id: 'LanPorts' }]
+    }),
     updateApLanPorts: build.mutation<WifiApSetting, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
@@ -947,7 +1006,7 @@ export const apApi = baseApApi.injectEndpoints({
             }))
           await batchApi(EthernetPortProfileUrls.activateEthernetPortProfileOnApPortId,
             activateRequests!, fetchWithBQ, customHeaders)
-          await batchApi(EthernetPortProfileUrls.updateEthernetPortSettingsByApPortId,
+          await batchApi(EthernetPortProfileUrls.updateEthernetPortOverwritesByApPortId,
             overwriteRequests!, fetchWithBQ, customHeaders)
           const res = await batchApi(WifiRbacUrlsInfo.updateApLanPorts, [{
             params,
@@ -1558,6 +1617,7 @@ export const {
   useStartPacketCaptureMutation,
   useGetDefaultApLanPortsQuery,
   useGetApLanPortsQuery,
+  useGetApLanPortsWithEthernetProfilesQuery,
   useUpdateApLanPortsMutation,
   useUpdateApEthernetPortsMutation,
   useResetApLanPortsMutation,

@@ -1,6 +1,7 @@
 import { MessageDescriptor }              from '@formatjs/intl'
 import { defineMessage, useIntl }         from 'react-intl'
 import { ConnectionLineType, Edge, Node } from 'reactflow'
+import { validate }                       from 'uuid'
 
 import {
   AupActionTypeIcon,
@@ -22,7 +23,9 @@ import {
   WorkflowPanelMode
 } from '../../types'
 
-export const WorkflowStepsEmptyCount = 2
+export const InitialEmptyStepsCount = 2
+export const MaxAllowedSteps = 20
+export const MaxTotalSteps = InitialEmptyStepsCount + MaxAllowedSteps
 
 export const useGetActionDefaultValueByType = (actionType: ActionType) => {
   const { $t } = useIntl()
@@ -241,4 +244,10 @@ export function getLogoImageSize (size: LogoSize):number {
   if (size === 'SMALL') return 105
   else if (size ==='LARGE') return 105 * 2.25
   return 105 * 1.5
+}
+
+export function validateWifi4EuNetworkId (id?: string): boolean{
+  if (!id || !validate(id))
+    return false
+  return true
 }

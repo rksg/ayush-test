@@ -49,6 +49,7 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   const [form] = Form.useForm()
   const techPartnerAssignEcsEnabled = useIsSplitOn(Features.TECH_PARTNER_ASSIGN_ECS)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const isSkip = tenantId === undefined
 
@@ -80,7 +81,8 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
 
     if (tenantId) {
       techPartnerAssignEcsEnabled
-        ? assignMspCustomers_v1({ payload, params: { mspIntegratorId: tenantId } })
+        ? assignMspCustomers_v1({ payload, params: { mspIntegratorId: tenantId },
+          enableRbac: isRbacEnabled })
           .then(() => {
             setVisible(false)
             resetFields()
@@ -165,8 +167,8 @@ export const AssignEcDrawer = (props: IntegratorDrawerProps) => {
   const CustomerTable = () => {
     const assignedEcs =
       useGetAssignedMspEcToIntegratorQuery(
-        { params: { mspIntegratorId: tenantId, mspIntegratorType: tenantType } },
-        { skip: isSkip })
+        { params: { mspIntegratorId: tenantId, mspIntegratorType: tenantType },
+          enableRbac: isRbacEnabled }, { skip: isSkip })
     const queryResults = useTableQuery({
       useQuery: useMspCustomerListQuery,
       pagination: {

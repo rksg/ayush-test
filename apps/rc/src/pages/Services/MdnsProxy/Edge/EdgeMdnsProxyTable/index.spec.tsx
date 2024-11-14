@@ -2,7 +2,7 @@ import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { edgeApi } from '@acx-ui/rc/services'
+import { edgeApi }            from '@acx-ui/rc/services'
 import {
   ServiceOperation,
   ServiceType,
@@ -11,7 +11,9 @@ import {
   CountAndNames,
   EdgeMdnsFixtures,
   EdgeMdnsProxyUrls,
-  VenueFixtures
+  VenueFixtures,
+  EdgeUrlsInfo,
+  EdgeCompatibilityFixtures
 } from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
@@ -20,6 +22,8 @@ import { EdgeMdnsProxyTable } from '.'
 
 const { mockEdgeMdnsViewDataList } = EdgeMdnsFixtures
 const { mockVenueOptions } = VenueFixtures
+const { mockEdgeMdnsCompatibilities } = EdgeCompatibilityFixtures
+
 const mockPath = '/:tenantId/services/edgeMdnsProxy/list'
 
 const mockMdns1 = mockEdgeMdnsViewDataList[0]
@@ -70,8 +74,10 @@ describe('Edge mDNS Proxy Table', () => {
         (_, res, ctx) => {
           mockedDeleteReq()
           return res(ctx.status(202))
-        }
-      )
+        }),
+      rest.post(
+        EdgeUrlsInfo.getMdnsEdgeCompatibilities.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeMdnsCompatibilities)))
     )
   })
 
@@ -223,6 +229,33 @@ describe('Edge mDNS Proxy Table', () => {
     const row = screen.getByRole('row', { name: new RegExp(`${mockList[1].name}`) })
     // eslint-disable-next-line max-len
     expect(row).toHaveTextContent(new RegExp(`${mockList[1].name}\\s*0\\s*0`))
+  })
+
+  it('should have compatible warning', async () => {
+    const mockList = cloneDeep(mockEdgeMdnsViewDataList)
+    mockList[1].id = mockEdgeMdnsCompatibilities.compatibilities[0].serviceId
+    mockList[1].name = 'compatible test'
+
+    mockServer.use(
+      rest.post(
+        EdgeMdnsProxyUrls.getEdgeMdnsProxyViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: mockList })))
+    )
+
+    render(
+      <Provider>
+        <EdgeMdnsProxyTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/edgeMvSdLan/list' }
+      }
+    )
+
+    await basicCheck()
+    const row1 = await screen.findByRole('row', { name: new RegExp('compatible test') })
+    const fwWarningIcon = await within(row1).findByTestId('WarningCircleSolid')
+    await userEvent.hover(fwWarningIcon)
+    expect(await screen.findByRole('tooltip', { hidden: true }))
+      .toHaveTextContent('RUCKUS Edges')
   })
 })
 

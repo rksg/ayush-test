@@ -100,7 +100,7 @@ export interface MspEcData {
   licenses?: {};
   delegations?: MspIntegratorDelegated[];
   admin_delegations?: MspEcDelegatedAdmins[];
-  privilegeGroups?: string[];
+  privilege_group_ids?: string[];
   number_of_days?: string;
   isManageAllEcs?: boolean;
   tier?: MspEcTierEnum;

@@ -193,9 +193,11 @@ function PersonaDetails () {
     },
     { label: $t({ defaultMessage: 'DPSK Passphrase' }),
       value:
-        <PassphraseViewer
+      personaDetailsQuery.data?.dpskPassphrase
+        ? <PassphraseViewer
           passphrase={personaDetailsQuery.data?.dpskPassphrase ?? ''}
         />
+        : noDataDisplay
     },
     { label: $t({ defaultMessage: 'MAC Registration List' }),
       value:

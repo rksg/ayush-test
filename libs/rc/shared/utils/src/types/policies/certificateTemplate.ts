@@ -29,12 +29,12 @@ export enum CertificateExpirationType {
 
 export enum CertificateStatusType {
   VALID = 'VALID',
+  INVALID = 'INVALID',
   REVOKED = 'REVOKED',
   EXPIRED = 'EXPIRED'
 }
 
 export enum AlgorithmType {
-  SHA_1 = 'SHA_1',
   SHA_256 = 'SHA_256',
   SHA_384 = 'SHA_384',
   SHA_512 = 'SHA_512'
@@ -183,7 +183,8 @@ export interface CertificateAuthority {
   keyUsages?: KeyUsageType[]
   chain?: string
   details?: string
-  description?: string
+  description?: string,
+  status: CertificateStatusType[]
 }
 
 export interface CertificateAuthorityFormData extends CertificateAuthority {
@@ -224,6 +225,7 @@ export interface Certificate {
   identityId?: string
   identityName?: string
   identityGroupId?: string
+  status?: CertificateStatusType[]
 }
 
 export interface CertificateFormData {
@@ -277,13 +279,14 @@ export interface ServerCertificate extends Certificate{
   name: string
   status: CertificateStatusType[]
   title?: string
-  algorithm?: AlgorithmType
+  algorithm?: ServerClientCertAlgorithmType
   csrString?: string
   extendedKeyUsages?: [ExtendedKeyUsages]
 }
 
 export const serverCertStatusColors = {
   [CertificateStatusType.VALID]: '--acx-semantics-green-50',
+  [CertificateStatusType.INVALID]: '--acx-neutrals-60',
   [CertificateStatusType.REVOKED]: '--acx-neutrals-20',
   [CertificateStatusType.EXPIRED]: '--acx-semantics-red-50'
 }
@@ -309,4 +312,16 @@ export enum KeyUsages {
 export enum ExtendedKeyUsages {
   SERVER_AUTH = 'SERVER_AUTH',
   CLIENT_AUTH = 'CLIENT_AUTH'
+}
+
+export enum ServerClientCertAlgorithmType {
+  SHA_1 = 'SHA_1',
+  SHA_256 = 'SHA_256',
+  SHA_384 = 'SHA_384',
+  SHA_512 = 'SHA_512'
+}
+
+export type ServerClientCertificateResult = {
+  requestId: string
+  id?: string
 }

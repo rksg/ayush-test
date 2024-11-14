@@ -15,6 +15,7 @@ describe('EthernetPortProfileOverwriteItem', () => {
       <Form>
         <EthernetPortProfileOverwriteItem
           title={'VLAN Untag ID'}
+          initialData={'2'}
           defaultValue={'1'}
           isEditable={true}
           fieldName={['lan', 1, 'untagId']} />
@@ -23,7 +24,7 @@ describe('EthernetPortProfileOverwriteItem', () => {
 
     expect(screen.getByText('VLAN Untag ID')).toBeInTheDocument()
     const untagIdReloadBtn = screen.getByRole('button',
-      { name: 'VLAN Untag ID (Custom) reload' })
+      { name: 'VLAN Untag ID 2 (Custom) reload' })
     expect(untagIdReloadBtn).toBeVisible()
     userEvent.hover(untagIdReloadBtn)
     expect(await screen.findByText('Override the VLAN Untag ID')).toBeInTheDocument()
@@ -39,6 +40,7 @@ describe('EthernetPortProfileOverwriteItem', () => {
       <Form>
         <EthernetPortProfileOverwriteItem
           title={'VLAN Members'}
+          initialData={'9'}
           defaultValue={'1-4094'}
           isEditable={true}
           fieldName={['lan', 1, 'vlanMembers']} />
@@ -47,7 +49,7 @@ describe('EthernetPortProfileOverwriteItem', () => {
 
     expect(screen.getByText('VLAN Members')).toBeInTheDocument()
     const untagIdReloadBtn = screen.getByRole('button',
-      { name: 'VLAN Members (Custom) reload' })
+      { name: 'VLAN Members 9 (Custom) reload' })
     expect(untagIdReloadBtn).toBeVisible()
     userEvent.hover(untagIdReloadBtn)
     expect(await screen.findByText('Override the VLAN Members')).toBeInTheDocument()
