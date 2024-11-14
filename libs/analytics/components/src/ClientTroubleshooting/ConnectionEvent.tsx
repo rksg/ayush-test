@@ -80,7 +80,7 @@ export const getConnectionDetails = (event: DisplayEvent) => {
     }
   }
   if (type === ROAMING && showRoamingType) {
-    const label = $t({ defaultMessage: 'Roam Type' })
+    const label = $t({ defaultMessage: 'Roaming Type' })
     const roamType = roamingType
       ? { label, value: roamingType }
       : { label, value: $t({ defaultMessage: 'Unknown' }) }
