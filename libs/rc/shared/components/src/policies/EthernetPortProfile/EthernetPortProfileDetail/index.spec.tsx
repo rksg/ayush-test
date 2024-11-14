@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { ethernetPortProfileApi } from '@acx-ui/rc/services'
+import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { ethernetPortProfileApi, venueApi } from '@acx-ui/rc/services'
 import {
   AaaUrls,
   CommonRbacUrlsInfo,
@@ -43,6 +43,11 @@ jest.mock('@acx-ui/utils', () => ({
 
 jest.mocked(useIsSplitOn).mockReturnValue(true)
 
+jest.mock('./EthernetPortProfileInstanceTable', () => ({
+  ...jest.requireActual('./EthernetPortProfileInstanceTable'),
+  EthernetPortProfileInstanceTable: () => <div data-testid='EthernetPortProfileInstanceTable' />
+}))
+
 let params: { tenantId: string, policyId: string }
 const detailPath = '/:tenantId/' + getPolicyRoutePath({
   type: PolicyType.ETHERNET_PORT_PROFILE,
@@ -56,6 +61,7 @@ describe('EthernetPortProfileDetail', () => {
     }
 
     store.dispatch(ethernetPortProfileApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
 
       rest.get(
@@ -104,11 +110,14 @@ describe('EthernetPortProfileDetail', () => {
       </Provider>, {
         route: { params, path: detailPath }
       })
+
     await screen.findByText(mockEthernetPortProfileId3)
-    await screen.findByText('On (Port-based Authenticator)')
+    screen.getByText('On (Port-based Authenticator)')
+
     await screen.findByText(mockAuthRadiusName)
     await screen.findAllByText(mockAccuntingRadiusName)
     expect(screen.queryByText('Dynamic VLAN')).not.toBeInTheDocument()
+
   })
 
   it('Should render EthernetPortProfileDetail with Dynamic VLAN when MAC-based auth', async () => {
@@ -128,10 +137,6 @@ describe('EthernetPortProfileDetail', () => {
       rest.post(
         EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
         (_, res, ctx) => res(ctx.json(dummyQueryResult))
-      ),
-      rest.post(
-        CommonUrlsInfo.getVenues.url,
-        (_, res, ctx) => res(ctx.json(mockedVenuesResult))
       )
     )
 
@@ -142,7 +147,8 @@ describe('EthernetPortProfileDetail', () => {
         route: { params, path: detailPath }
       })
     expect(await screen.findByText(mockEthernetPortProfileId7)).toBeVisible()
-    expect(await screen.findByText('On (MAC-based Authenticator)')).toBeVisible()
-    expect(await screen.findByText('Dynamic VLAN')).toBeVisible()
+    expect(screen.getByText('On (MAC-based Authenticator)')).toBeVisible()
+    expect(screen.getByText('Dynamic VLAN')).toBeVisible()
+
   })
 })

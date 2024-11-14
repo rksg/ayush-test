@@ -15,7 +15,9 @@ import {
   WifiCallingUrls,
   WifiOperatorUrls,
   WifiRbacUrlsInfo,
-  WifiUrlsInfo
+  WifiUrlsInfo,
+  NetworkTypeEnum,
+  NewDpskBaseUrl
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -244,6 +246,39 @@ describe('NetworkForm', () => {
     userEvent.click(screen.getByRole('radio', { name: /Open Network/ }))
     await userEvent.click(screen.getByRole('button', { name: 'Next' }))
     expect(await screen.findByRole('heading', { name: /settings/i })).toBeVisible()
+  })
+
+  it('should default select specific DPSK server', async () => {
+    mockServer.use(
+      rest.get(
+        NewDpskBaseUrl,
+        (_req, res, ctx) => res(ctx.json({ content: [] }))
+      ))
+
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    const defaultValues = { dpskServiceProfileId: 'mocked-dpsk-seviceId' }
+    render(<Provider><NetworkForm
+      createType={NetworkTypeEnum.DPSK}
+      defaultValues={defaultValues}
+      modalMode
+    /></Provider>, {
+      route: { params }
+    })
+
+    const insertInput = screen.getByRole('textbox', { name: /Network Name/ })
+    fireEvent.change(insertInput, { target: { value: 'testing DPSK with default' } })
+    fireEvent.blur(insertInput)
+    screen.getByRole('heading', { level: 4, name: 'Dynamic Pre-Shared Key (DPSK)' })
+
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating, { timeout: 7000 })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    await screen.findByRole('heading', { level: 3, name: 'DPSK Settings' })
+
+    await screen.findByRole('combobox', { name: /DPSK Service/i })
+    await screen.findByText(defaultValues.dpskServiceProfileId)
   })
 
   it.skip('should create open network with cloud path option successfully', async () => {
