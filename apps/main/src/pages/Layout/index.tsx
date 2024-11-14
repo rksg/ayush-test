@@ -86,6 +86,7 @@ function Layout () {
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const isReportsAdmin = hasRoles([RolesEnum.REPORTS_ADMIN])
+  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const isSupportDelegation = userProfile?.support && isSupportToMspDashboardAllowed
   const isHospitality = getJwtTokenPayload().acx_account_vertical === AccountVertical.HOSPITALITY
@@ -197,7 +198,7 @@ function Layout () {
         {isDelegationMode()
           ? <MspEcDropdownList/>
           : <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>}
-        {isOnboardingAssistantEnabled && <RuckusAiButton />}
+        {isOnboardingAssistantEnabled && isAdmin && <RuckusAiButton />}
         {!(isGuestManager || isDPSKAdmin || isReportsAdmin) &&
           <>
             <AlarmsButton/>

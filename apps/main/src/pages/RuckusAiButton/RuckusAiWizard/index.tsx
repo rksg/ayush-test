@@ -4,6 +4,7 @@ import { ProFormInstance, StepsForm } from '@ant-design/pro-form'
 import { Button }                     from 'antd'
 import { useIntl }                    from 'react-intl'
 
+import { showActionModal }                                               from '@acx-ui/components'
 import { useApplyConversationsMutation, useUpdateConversationsMutation } from '@acx-ui/rc/services'
 import { RuckusAiConfigurationStepsEnum, RuckusAiConversation }          from '@acx-ui/rc/utils'
 
@@ -57,12 +58,12 @@ export default function RuckusAiWizard (props: {
       }, {} as Record<RuckusAiConfigurationStepsEnum, RuckusAiConversation>)
     )
 
-  const handleOnFinish = async (
-    stepType: RuckusAiConfigurationStepsEnum) => {
+  const handleOnFinish = async (stepType: RuckusAiConfigurationStepsEnum) => {
     setIsLoading(true)
+    let regenerated = false
+
     try {
       const stepIndex = steps.findIndex(s => s.name === stepType)
-
       if (stepIndex === -1) {
         return false
       }
@@ -85,16 +86,45 @@ export default function RuckusAiWizard (props: {
       }).unwrap()
 
       if (response.hasChanged) {
+        await new Promise((resolve) => {
+          showActionModal({
+            type: 'confirm',
+            width: 460,
+            title: $t({ defaultMessage: 'Regenerate Configurations?' }),
+            content: $t({
+              // eslint-disable-next-line max-len
+              defaultMessage: 'The modifications here will affect the settings in the subsequent steps. Would you like to regenerate the configuration suggestions for the following steps?'
+            }),
+            okText: $t({ defaultMessage: 'Regenerate' }),
+            cancelText: $t({ defaultMessage: 'Remain Unchanged' }),
+            onOk: async () => {
+              try {
+                const newGenResponse = await updateConversations({
+                  params: { sessionId: props.sessionId, type: stepType + '?regenerate=true' },
+                  payload: JSON.stringify(updatedValues)
+                }).unwrap()
+                setPayloads((prevPayloads) => ({
+                  ...prevPayloads,
+                  [response.nextStep]: newGenResponse
+                }))
 
-
+                regenerated = true
+              } catch (error) {
+                console.log(error) // eslint-disable-line no-console
+              }
+              resolve(true)
+            },
+            onCancel: () => resolve(false)
+          })
+        })
       }
 
-
-      setPayloads((prevPayloads) => ({
-        ...prevPayloads,
-        [response.nextStep]: response
-      }))
-      // formMapRef.current[stepIndex + 1].current?.resetFields()
+      if (!regenerated) {
+        setPayloads((prevPayloads) => ({
+          ...prevPayloads,
+          [response.nextStep]: response
+        }))
+      }
 
       setIsLoading(false)
     } catch (error) {
@@ -213,3 +243,4 @@ export default function RuckusAiWizard (props: {
     </StepsForm>
   )
 }
+

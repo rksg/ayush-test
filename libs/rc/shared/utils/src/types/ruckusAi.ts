@@ -2,7 +2,8 @@ export interface RuckusAiConversation {
   sessionId: string,
   nextStep: RuckusAiConfigurationStepsEnum,
   payload: string,
-  description: string
+  description: string,
+  hasChanged?: boolean
 }
 
 export interface RuckusAiConfiguration {
