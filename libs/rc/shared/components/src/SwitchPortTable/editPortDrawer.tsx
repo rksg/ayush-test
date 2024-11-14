@@ -509,8 +509,9 @@ export function EditPortDrawer ({
       : portSettingArray
 
     const { tagged, untagged, voice } = getPortVenueVlans(vlansByVenue, selectedPorts?.[0])
-    const aggregatedData = isSwitchFlexAuthEnabled && portSetting
-      ? aggregatePortSettings([portSetting], switchesDefaultVlan) : {}
+    const aggregatedData = portSetting
+      ? aggregatePortSettings([portSetting], switchesDefaultVlan)
+      : {}
 
     setVenueTaggedVlans(tagged)
     setVenueUntaggedVlan(untagged)
@@ -577,8 +578,9 @@ export function EditPortDrawer ({
       ...((!vlansValue.isUntagEqual && ['untaggedVlan']) || []),
       ...((!vlansValue.isVoiceVlanEqual && ['voiceVlan']) || [])
     ])
-    const aggregatedData = isSwitchFlexAuthEnabled && portsSetting
-      ? aggregatePortSettings(portsSetting, switchesDefaultVlan, hasMultipleValue) : {}
+    const aggregatedData = portsSetting
+      ? aggregatePortSettings(portsSetting, switchesDefaultVlan, hasMultipleValue)
+      : {}
 
     setDisablePoeCapability(poeCapabilityDisabled)
     setDisableCyclePoeCapability(cyclePoeMultiPortsDisabled)
@@ -637,7 +639,7 @@ export function EditPortDrawer ({
       authenticationType, dot1xPortControl, authDefaultVlan,
       authFailAction, authTimeoutAction
     ]
-    const checkboxEnabled = form.getFieldValue(`${field}Checkbox`)
+    const checkboxEnabled = form?.getFieldValue(`${field}Checkbox`)
     switch (field) {
       case 'portEnable': return isCloudPort || (isMultipleEdit && !portEnableCheckbox)
       case 'poeEnable': return (isMultipleEdit && !poeEnableCheckbox) || disablePoeCapability
