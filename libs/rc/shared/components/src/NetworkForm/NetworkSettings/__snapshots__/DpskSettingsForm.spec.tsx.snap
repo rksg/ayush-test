@@ -340,11 +340,8 @@ exports[`DpskSettingsForm should render DPSK form successfully 1`] = `
                               />
                             </span>
                             <span
-                              class="ant-select-selection-item"
-                              title="Select service..."
-                            >
-                              Select service...
-                            </span>
+                              class="ant-select-selection-placeholder"
+                            />
                           </div>
                           <span
                             aria-hidden="true"

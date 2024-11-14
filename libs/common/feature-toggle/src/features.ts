@@ -109,7 +109,8 @@ export enum Features {
   PTENANT_RBAC_API = 'abac-policies-toggle',
   RADIO6G_RATE_CONTROL = 'radio6g-rate-control-toggle',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
-  RBAC_PHASE2_TOGGLE = 'acx-ui-rbac-phase2-toggle',
+  RBAC_PHASE2_SSO_TOGGLE = 'acx-ui-rbac-phase2-toggle',
+  RBAC_PHASE2_TOGGLE = 'acx-ui-rbac-phase21-toggle',
   REC_TO_MSP_CONVERSION_TOGGLE = 'acx-rec-to-msp-conversion-toggle',
   RECOMMENDATION_DELETE = 'acx-ui-recommendation-delete-toggle',
   RECOMMENDATION_REVERT = 'acx-ui-recommendation-revert-toggle',
@@ -192,7 +193,6 @@ export enum Features {
   INTENT_AI_TOGGLE = 'acx-ui-intent-ai-toggle',
   SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle',
   RBAC_CONFIG_TEMPLATE_TOGGLE = 'acx-ui-rbac-config-template-toggle',
-  RBAC_IMPLICIT_P1 = 'RBAC-IMPLICIT-P1',
   WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE='wifi-eda-wifi7-mlo-3link-toggle',
   WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY = 'wifi-mesh-configuration-for-5g-6g-only-toggle',
   SWITCH_AP_PORT_HYPERLINK ='switch-ap-port-hyperlink-toggle',
@@ -221,7 +221,7 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   CONFIG_TEMPLATE = 'CONFIG-TEMPLATE',
   WORKFLOW_ONBOARD = 'WORKFLOW-ONBOARD',
   LOCATION_BASED_SERVICES = 'LOCATION-BASED-SERVICES',
-  RBAC_IMPLICIT_P1 = Features.RBAC_IMPLICIT_P1
+  RBAC_IMPLICIT_P1 = 'RBAC-IMPLICIT-P1'
 }
 
 interface BetaList {
