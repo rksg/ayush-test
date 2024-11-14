@@ -673,8 +673,8 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getSwitchFeatureSets: {
-    method: 'get',
-    url: '/switchFeatureSets/:featureName',
+    method: 'post',
+    url: '/switchFeatureSets/query',
     newApi: true
   }
 }

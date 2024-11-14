@@ -47,6 +47,7 @@ describe('switch.firmware.utils', () => {
     expect(isVerGEVer('SPR09010f_b28.bin', '09010f_b401', true)).toBe(false)
     expect(isVerGEVer('TNR09010f.bin', '09010f_b19', true)).toBe(true)
     expect(isVerGEVer('09010e_b392.bin', '09010f_b19', true)).toBe(false)
+    expect(isVerGEVer('10.0.10f', '9.0.10h', true)).toBe(true)
     expect(isVerGEVer('RDR10010.bin', '10010_rc2', true)).toBe(true)
     expect(isVerGEVer('RDR10010a.bin', '10010b_b36', true)).toBe(false)
     expect(isVerGEVer('RDR10010a.bin', '10010a_cd1_b3', true)).toBe(false)

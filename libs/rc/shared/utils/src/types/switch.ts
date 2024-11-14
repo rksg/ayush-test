@@ -972,9 +972,3 @@ export interface FlexibleAuthenticationAppliedTargets {
   ports: string[]
   switchModel: string
 }
-
-export interface SwitchFeatureSet {
-  featureName: string,
-  requiredFw?: string,
-  supportedModelFamilies?: string[]
-}
