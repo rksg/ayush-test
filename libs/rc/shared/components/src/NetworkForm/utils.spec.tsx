@@ -1,4 +1,5 @@
 import { FormInstance } from 'antd'
+import _                from 'lodash'
 import { rest }         from 'msw'
 
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
@@ -25,7 +26,7 @@ import {
 import { Provider, store }                 from '@acx-ui/store'
 import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
 
-import { hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile, useClientIsolationActivations, useNetworkVxLanTunnelProfileInfo, useRadiusServer, useServicePolicyEnabledWithConfigTemplate, useWifiCalling, getDefaultMloOptions, useUpdateSoftGreActivations, shouldSaveRadiusServerSettings, shouldSaveRadiusServerProfile, getRadiusIdFromFormData } from './utils'
+import { hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile, useClientIsolationActivations, useNetworkVxLanTunnelProfileInfo, useRadiusServer, useServicePolicyEnabledWithConfigTemplate, useWifiCalling, getDefaultMloOptions, useUpdateSoftGreActivations, shouldSaveRadiusServerSettings, shouldSaveRadiusServerProfile, getRadiusIdFromFormData, isRadiusKeyExistsInFormData } from './utils'
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -785,6 +786,47 @@ describe('Network utils test', () => {
         }
         // eslint-disable-next-line max-len
         expect(getRadiusIdFromFormData('accountingRadiusId', formDataWithoutEnabledAccounting)).toBeUndefined()
+      })
+    })
+
+    describe('isRadiusKeyExistsInFormData', () => {
+      const baseWISPrNetwork: NetworkSaveData = {
+        type: NetworkTypeEnum.CAPTIVEPORTAL,
+        guestPortal: {
+          guestNetworkType: GuestNetworkTypeEnum.WISPr,
+          wisprPage: {
+            captivePortalUrl: '',
+            customExternalProvider: true
+          }
+        }
+      }
+      it('should return proper value for WISPr network with authRadiusId key', () => {
+        const formDataWithAuth = _.merge({}, baseWISPrNetwork, {
+          guestPortal: { wisprPage: { authRadius: { id: 'some-value' } } }
+        })
+        expect(isRadiusKeyExistsInFormData('authRadiusId', formDataWithAuth)).toBe(true)
+
+        const formDataWithAcct = _.merge({}, baseWISPrNetwork, {
+          guestPortal: { wisprPage: { accountingRadius: { id: 'some-value' } } }
+        })
+        expect(isRadiusKeyExistsInFormData('accountingRadiusId', formDataWithAcct)).toBe(true)
+
+        expect(isRadiusKeyExistsInFormData('authRadiusId', baseWISPrNetwork)).toBe(false)
+        expect(isRadiusKeyExistsInFormData('accountingRadiusId', baseWISPrNetwork)).toBe(false)
+      })
+
+      it('should return proper value for non-WISPr network with authRadiusId key', () => {
+        const formDataWithAuth: NetworkSaveData = {
+          type: NetworkTypeEnum.AAA,
+          authRadiusId: 'some-value'
+        }
+        expect(isRadiusKeyExistsInFormData('authRadiusId', formDataWithAuth)).toBe(true)
+
+        const formDataWithAcct: NetworkSaveData = {
+          type: NetworkTypeEnum.AAA,
+          accountingRadiusId: 'some-value'
+        }
+        expect(isRadiusKeyExistsInFormData('accountingRadiusId', formDataWithAcct)).toBe(true)
       })
     })
   })
