@@ -836,7 +836,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'AddRadius', 'UpdateRadius', 'DeleteRadius', 'DeleteRadiuses',
-            'ActivateRadiusServerProfileOnWifiNetwork', 'DeactivateRadiusServerProfileOnWifiNetwork'
+            'ActivateRadiusServerProfileOnWifiNetwork', 'DeactivateRadiusServerProfileOnWifiNetwork',
+            'UpdateWifiNetwork'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
           })
