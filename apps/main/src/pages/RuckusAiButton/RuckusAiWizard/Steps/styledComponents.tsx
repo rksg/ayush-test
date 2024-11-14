@@ -59,7 +59,7 @@ export const VlanDetails = styled.div`
   flex-direction: column;
 `
 
-export const PurposeContainer = styled.div`
+export const PurposeContainer = styled.div<{ disabled?: boolean }>`
   display: flex;
   background-color: var(--acx-accents-blue-10);
   padding: 10px 20px;
@@ -68,9 +68,17 @@ export const PurposeContainer = styled.div`
   border-radius: 8px;
   margin-top: -8px;
   margin-bottom: 15px;
+
+  ${(props) =>
+    props.disabled &&
+    `
+     pointer-events: none;
+      opacity: 0.6;
+      cursor: not-allowed;
+      ` }
 `
 
-export const ConfigurationContainer = styled.div`
+export const ConfigurationContainer = styled.div<{ disabled?: boolean }>`
   display: flex;
   background-color: var(--acx-neutrals-15);
   padding: 10px 20px;
@@ -81,7 +89,14 @@ export const ConfigurationContainer = styled.div`
   margin-bottom: 15px;
   cursor: pointer;
   font-size: 12px;
-  /* align-items: center; */
+
+  ${(props) =>
+    props.disabled &&
+    `
+     pointer-events: none;
+      opacity: 0.6;
+      cursor: not-allowed;
+      ` }
 
   & > span {
     margin-left: 5px;

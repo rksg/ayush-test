@@ -5,10 +5,10 @@ import { Button, Form, Steps } from 'antd'
 import { useIntl }             from 'react-intl'
 
 
-import { cssStr }                                               from '@acx-ui/components'
-import { RuckusAiDog }                                          from '@acx-ui/icons'
-import { useStartConversationsMutation }                        from '@acx-ui/rc/services'
-import { RuckusAiConfigurationStepsEnum, RuckusAiConversation } from '@acx-ui/rc/utils'
+import { cssStr, showActionModal }                                       from '@acx-ui/components'
+import { RuckusAiDog }                                                   from '@acx-ui/icons'
+import { useStartConversationsMutation, useUpdateConversationsMutation } from '@acx-ui/rc/services'
+import { RuckusAiConfigurationStepsEnum, RuckusAiConversation }          from '@acx-ui/rc/utils'
 
 import BasicInformationPage from './BasicInformationPage'
 import Congratulations      from './Congratulations'
@@ -38,6 +38,7 @@ export default function RuckusAiButtonRuckusAiWizard () {
   const [venueType, setVenueType] = useState('' as string)
 
   const [startConversations] = useStartConversationsMutation()
+  const [updateConversations] = useUpdateConversationsMutation()
 
   const getWizardTitle = function () {
     switch(step){
@@ -152,18 +153,67 @@ export default function RuckusAiButtonRuckusAiWizard () {
                   try {
                     setIsLoading(true)
                     const result = basicFormRef.getFieldsValue()
-                    const response = await startConversations({
-                      payload: {
-                        venueName: result.venueName,
-                        venueType,
-                        description: result.description,
-                        ...(result.numberOfSwitch && { numberOfSwitch: result.numberOfSwitch }),
-                        ...(result.numberOfAp && { numberOfAp: result.numberOfAp })
-                      }
-                    }).unwrap()
+                    const response = nextStep.sessionId
+                      ? await updateConversations({
+                        params: { sessionId: nextStep.sessionId, type: 'start' },
+                        payload: {
+                          venueName: result.venueName,
+                          venueType,
+                          description: result.description,
+                          ...(result.numberOfSwitch && { numberOfSwitch: result.numberOfSwitch }),
+                          ...(result.numberOfAp && { numberOfAp: result.numberOfAp })
+                        }
+                      }).unwrap()
+                      : await startConversations({
+                        payload: {
+                          venueName: result.venueName,
+                          venueType,
+                          description: result.description,
+                          ...(result.numberOfSwitch && { numberOfSwitch: result.numberOfSwitch }),
+                          ...(result.numberOfAp && { numberOfAp: result.numberOfAp })
+                        }
+                      }).unwrap()
+
+                    if (response.hasChanged) {
+                      await new Promise((resolve) => {
+                        showActionModal({
+                          type: 'confirm',
+                          width: 460,
+                          title: $t({ defaultMessage: 'Regenerate Configurations?' }),
+                          content: $t({
+                            // eslint-disable-next-line max-len
+                            defaultMessage: 'The modifications here will affect the settings in the subsequent steps. Would you like to regenerate the configuration suggestions for the following steps?'
+                          }),
+                          okText: $t({ defaultMessage: 'Regenerate' }),
+                          cancelText: $t({ defaultMessage: 'Remain Unchanged' }),
+                          onOk: async () => {
+                            try {
+                              const newGenResponse = await updateConversations({
+                                // eslint-disable-next-line max-len
+                                params: { sessionId: nextStep.sessionId, type: 'start?regenerate=true' },
+                                payload: {
+                                  venueName: result.venueName,
+                                  venueType,
+                                  description: result.description,
+                                  // eslint-disable-next-line max-len
+                                  ...(result.numberOfSwitch && { numberOfSwitch: result.numberOfSwitch }),
+                                  ...(result.numberOfAp && { numberOfAp: result.numberOfAp })
+                                }
+                              }).unwrap()
+                              setNextStep(newGenResponse)
+                            } catch (error) {
+                              console.log(error) // eslint-disable-line no-console
+                            }
+                            resolve(true)
+                          },
+                          onCancel: () => resolve(false)
+                        })
+                      })
+                    } else {
+                      setNextStep(response)
+                    }
                     setIsLoading(false)
                     setStep(RuckusAiStepsEnum.CONFIGURATION)
-                    setNextStep(response)
                   } catch (error) {
                     setIsLoading(false)
                   }
@@ -194,6 +244,7 @@ export default function RuckusAiButtonRuckusAiWizard () {
     setStep(RuckusAiStepsEnum.WELCOME)
     setVisible(false)
     setCurrentStep(0)
+    setNextStep({} as RuckusAiConversation)
   }
   return <>
     <UI.ButtonSolid

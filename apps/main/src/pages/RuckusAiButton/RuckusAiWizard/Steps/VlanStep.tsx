@@ -33,6 +33,8 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
   const { $t } = useIntl()
   const initialData = JSON.parse(props.payload || '[]') as NetworkConfig[]
   const [data, setData] = useState<NetworkConfig[]>(initialData)
+  const [checkboxStates, setCheckboxStates] =
+  useState<boolean[]>(Array(initialData.length).fill(true))
 
   // eslint-disable-next-line max-len
   const [configVlanNames, setConfigVlanNames] = useState<string[]>(data.map(vlan => vlan['VLAN Name']))
@@ -47,14 +49,21 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
 
   useEffect(() => {
     if (initialData !== data) {
+      formInstance?.setFieldsValue({ data: initialData })
       setData(initialData)
       setIsSetupComplete(Array(data.length).fill(false))
-      setConfigVlanIds(data.map(vlan => vlan['VLAN ID']))
-      setConfigVlanNames(data.map(vlan => vlan['VLAN Name']))
+      setConfigVlanIds(initialData.map(vlan => vlan['VLAN ID']))
+      setConfigVlanNames(initialData.map(vlan => vlan['VLAN Name']))
+      setCheckboxStates(Array(initialData.length).fill(true))
     }
 
   }, [props.payload])
 
+  const handleCheckboxChange = (index: number, checked: boolean) => {
+    const newCheckboxStates = [...checkboxStates]
+    newCheckboxStates[index] = checked
+    setCheckboxStates(newCheckboxStates)
+  }
 
   const handleAddVlan = () => {
     const newVlan: NetworkConfig = {
@@ -189,6 +198,9 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
               <ProFormCheckbox
                 name={['data', index, 'Checked']}
                 initialValue={true}
+                fieldProps={{
+                  onChange: (e) => handleCheckboxChange(index, e.target.checked)
+                }}
               />
               <UI.CheckboxIndexLabel>{index + 1}</UI.CheckboxIndexLabel>
             </UI.CheckboxContainer>
@@ -210,6 +222,7 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
                 name={['data', index, 'VLAN Name']}
                 initialValue={item['VLAN Name']}
                 rules={[{ required: true }]}
+                disabled={!checkboxStates[index]}
                 fieldProps={{
                   onChange: (value) => {
                     const newVlanName = value.target.value
@@ -220,18 +233,20 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
                   }
                 }}
               />
-              {item['Purpose'] && <UI.PurposeContainer>
-                <UI.PurposeHeader>
-                  <RuckusAiDog style={{
-                    width: '20px',
-                    height: '20px',
-                    verticalAlign: 'text-bottom',
-                    color: cssStr('--acx-semantics-yellow-50')
-                  }} />
-                  <span>{$t({ defaultMessage: 'Purpose' })}</span>
-                </UI.PurposeHeader>
-                <UI.PurposeText>{item['Purpose']}</UI.PurposeText>
-              </UI.PurposeContainer>
+              {item['Purpose'] &&
+                <UI.PurposeContainer
+                  disabled={!checkboxStates[index]}>
+                  <UI.PurposeHeader>
+                    <RuckusAiDog style={{
+                      width: '20px',
+                      height: '20px',
+                      verticalAlign: 'text-bottom',
+                      color: cssStr('--acx-semantics-yellow-50')
+                    }} />
+                    <span>{$t({ defaultMessage: 'Purpose' })}</span>
+                  </UI.PurposeHeader>
+                  <UI.PurposeText>{item['Purpose']}</UI.PurposeText>
+                </UI.PurposeContainer>
               }
               <ProFormText
                 width={200}
@@ -239,6 +254,7 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
                 label={$t({ defaultMessage: 'VLAN ID' })}
                 name={['data', index, 'VLAN ID']}
                 initialValue={item['VLAN ID']}
+                disabled={!checkboxStates[index]}
                 rules={[
                   { required: true },
                   { validator: (_, value) => validateVlanName(value) }]}
@@ -264,6 +280,7 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
               { configVlanIds[index] &&
                 <UI.ConfigurationContainer
                   data-testid={`vlan-configuration-${index}`}
+                  disabled={!checkboxStates[index]}
                   onClick={() => {
                     const currentId = formInstance?.getFieldValue(['data', index, 'id'])
                     setConfigId(currentId)

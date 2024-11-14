@@ -68,8 +68,6 @@ export function WlanStep (props: { payload: string; description: string,
     setCheckboxStates(newCheckboxStates)
   }
 
-
-
   const tooltipItems = [
     {
       label: $t({ defaultMessage: 'Internal' }),
