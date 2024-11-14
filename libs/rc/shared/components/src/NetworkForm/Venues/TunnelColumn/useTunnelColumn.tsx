@@ -51,6 +51,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const networkId = network?.id ?? TMP_NETWORK_ID
 
   const pinScopedNetworkVenues = useEdgePinScopedNetworkVenueMap(networkId)
+  const isPinNetwork = Object.keys(pinScopedNetworkVenues).length > 0
 
   const softGreAssociationUpdate = Form.useWatch('softGreAssociationUpdate')
   // eslint-disable-next-line max-len
@@ -111,6 +112,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         venueId,
         venueName: currentVenue.name
       },
+      isPinNetwork,
       cachedActs,
       cachedSoftGre
     } as NetworkTunnelActionModalProps)
@@ -147,6 +149,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         dataIndex: 'tunneledInfo.activated',
         align: 'center',
         width: 80,
+        minWidth: 80,
         render: function (_: ReactNode, row: Venue) {
           if (!network) return
 
@@ -179,6 +182,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         'Network traffic can be tunneled using SoftGRE or VxLAN. For VxLAN, in a <venueSingular></venueSingular>, you can choose either SD-LAN or Personal Identity Network (PIN) for DPSK network services, but not both.' }),
         dataIndex: 'tunneledInfo.networkTopology',
         width: 150,
+        minWidth: 150,
         render: function (_: ReactNode, row: Venue) {
           if (!network) return
 
