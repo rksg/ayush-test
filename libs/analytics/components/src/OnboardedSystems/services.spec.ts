@@ -9,25 +9,26 @@ import { mockSmartZoneList, mockFormattedSmartZoneList, tenants } from './__test
 import { smartZoneApi, useDeleteSmartZone }                       from './services'
 
 describe('smartzone services', () => {
-  describe('useFetchSmartZoneListQuery', () => {
+  describe('useGetSmartZoneListQuery', () => {
     beforeEach(() => {
       store.dispatch(smartZoneApi.util.resetApiState())
     })
     it('should return smartzone list', async () => {
       mockServer.use(
-        rest.get(`${smartZoneURL}/smartzones`, (_req, res, ctx) => res(ctx.json(mockSmartZoneList)))
+        rest.post(`${smartZoneURL}/smartzones/query`, (_req, res, ctx) =>
+          res(ctx.json(mockSmartZoneList)))
       )
       const { status, data, error } = await store.dispatch(
-        smartZoneApi.endpoints.fetchSmartZoneList.initiate({ tenants, tenantId: tenants[0].id })
+        smartZoneApi.endpoints.getSmartZoneList.initiate({ tenants, tenantId: tenants[0].id })
       )
       expect(status).toBe('fulfilled')
       expect(data).toStrictEqual(mockFormattedSmartZoneList)
       expect(error).toBe(undefined)
     })
     it('should return error', async () => {
-      mockRestApiQuery(`${smartZoneURL}/smartzones`, 'get', { status: 500 })
+      mockRestApiQuery(`${smartZoneURL}/smartzones/query`, 'post', { status: 500 })
       const { status, data, error } = await store.dispatch(
-        smartZoneApi.endpoints.fetchSmartZoneList.initiate({ tenants, tenantId: tenants[0].id })
+        smartZoneApi.endpoints.getSmartZoneList.initiate({ tenants, tenantId: tenants[0].id })
       )
       expect(status).toBe('rejected')
       expect(data).toBeUndefined()

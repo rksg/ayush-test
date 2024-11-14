@@ -1,17 +1,16 @@
-import { forwardRef, useEffect, useState, useCallback } from 'react'
+import { forwardRef, useState } from 'react'
 
 import { Badge }                  from 'antd'
 import { get, isEmpty }           from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { defaultSort, getUserProfile, sortProp }                          from '@acx-ui/analytics/utils'
+import { getUserProfile }                                                 from '@acx-ui/analytics/utils'
 import { Loader, Table, TableProps, showActionModal, showToast, Tooltip } from '@acx-ui/components'
-import { TableResult, useTableQuery }                                     from '@acx-ui/rc/utils'
-import { UseQuery }                                                       from '@acx-ui/types'
+import { useTableQuery }                                                  from '@acx-ui/rc/utils'
 import { getIntl }                                                        from '@acx-ui/utils'
 
-import { useFetchSmartZoneListQuery, useDeleteSmartZone, useGetSmartZoneListQuery } from './services'
-import { Errors }                                                                   from './styledComponents'
+import { useDeleteSmartZone, useGetSmartZoneListQuery, useGetDistinctSmartZoneStatusQuery } from './services'
+import { Errors }                                                                           from './styledComponents'
 
 import type { FormattedOnboardedSystem } from './services'
 
@@ -39,7 +38,7 @@ const errorMsgMap = {
   SZ_NOT_FOUND: defineMessage({ defaultMessage: 'System does not exist' })
 }
 
-const formatDeleteError = ({ name }: FormattedOnboardedSystem, response: Object) => {
+const formatDeleteError = ({ device_name: name }: FormattedOnboardedSystem, response: Object) => {
   const { $t } = getIntl()
   const error = errorMsgMap[get(response, 'data.error', null) as keyof typeof errorMsgMap]
   const message = error ? $t(error) : get(response, 'message')
@@ -74,53 +73,48 @@ export const useOnboardedSystems = () => {
   const { deleteSmartZone } = useDeleteSmartZone()
   const [ selected, setSelected ] = useState<FormattedOnboardedSystem>()
 
-  // const queryResults = useFetchSmartZoneListQuery({
-  //   tenantId,
-  //   tenants: tenant.tenants.filter(t => Boolean(t.permissions['READ_ONBOARDED_SYSTEMS']))
-  // })
-
-  // TODO: enhance content
   const defaultPayload = {
-    fields: [
-      'id',
-      'name',
-      'description',
-      'primaryGatewayAddress',
-      'secondaryGatewayAddress',
-      'mtuType',
-      'mtuSize',
-      'keepAliveInterval',
-      'keepAliveRetryTimes',
-      'disassociateClientEnabled',
-      'activations'
-    ],
-    searchString: '',
+    fields: [],  // select all
     filters: {
       tenantId: tenant.tenants
         .filter(t => Boolean(t.permissions['READ_ONBOARDED_SYSTEMS']))
         .map(t => t.id)
-    },
-    searchTargetFields: ['account_name']
+    }
   }
   const settingsId = 'onboarded-system-table'
   const tableQuery = useTableQuery<FormattedOnboardedSystem>({
+    // Use the default sortField by the component
     useQuery: useGetSmartZoneListQuery,
     pagination: { settingsId },
     defaultPayload: defaultPayload,
-    sorter: {
-      sortField: 'account_name',
-      sortOrder: 'ASC'
+    search: {
+      searchTargetFields: ['account_name', 'device_name']
+    },
+    customHeaders: {
+      'x-mlisa-current-tenant-id': tenantId
     }
-    // TODO: how to pass tenantId? Use filters?
-    // tenantId: tenantId,
-    // tenants: tenant.tenants.filter(t => Boolean(t.permissions['READ_ONBOARDED_SYSTEMS']))
   })
 
-  // TODO: remove
-  // const [count, setCount] = useState(queryResults.data?.length || 0)
-  // useEffect(() => { setCount(queryResults.data?.length || 0) }, [queryResults.data?.length])
-  // const [count, setCount] = useState(tableQuery.data?.totalCount ?? 0)
-  // useEffect(() => { setCount(tableQuery.data?.totalCount ?? 0) }, [tableQuery.data?.totalCount])
+  const emptyValues: { key: string, value: string }[] = []
+  const statusDisplayConfig = {
+    onboarded: $t({ defaultMessage: 'Onboarded' }),
+    ongoing: $t({ defaultMessage: 'Ongoing' }),
+    error: $t({ defaultMessage: 'Error' }),
+    offboarded: $t({ defaultMessage: 'Offboarded' })
+  }
+
+  const { statusDisplayMap } = useGetDistinctSmartZoneStatusQuery({
+    payload: {
+      filters: defaultPayload.filters
+    }
+  }, {
+    selectFromResult: ({ data }) => {
+      return {
+        statusDisplayMap: data?.data?.map(status =>
+          ({ key: status, value: statusDisplayConfig[status] })) ?? emptyValues
+      }
+    }
+  })
 
   const title = defineMessage({
     defaultMessage: 'Onboarded Systems {count, select, null {} other {({count})}}',
@@ -129,10 +123,10 @@ export const useOnboardedSystems = () => {
 
   const ColumnHeaders: TableProps<FormattedOnboardedSystem>['columns'] = [
     {
-      key: 'statusType',
+      key: 'status_type',
       title: $t({ defaultMessage: 'Status' }),
-      sorter: { compare: sortProp('status', defaultSort) },
-      dataIndex: 'statusType',
+      sorter: true,
+      dataIndex: 'status_type',
       render: (_, value, index) =>
         <span>
           <Tooltip
@@ -142,37 +136,32 @@ export const useOnboardedSystems = () => {
             title={TooltipContent(value)}
             children={<SmartZoneBadge
               status={value.status}
-              statusType={value.statusType as keyof typeof statusTypeColorMap}
+              statusType={value.status_type as keyof typeof statusTypeColorMap}
             />} />
         </span>,
       width: 50,
       fixed: 'left',
-      filterable: [
-        { key: 'onboarded', value: $t({ defaultMessage: 'Onboarded' }) },
-        { key: 'ongoing', value: $t({ defaultMessage: 'Ongoing' }) },
-        { key: 'error', value: $t({ defaultMessage: 'Error' }) },
-        { key: 'offboarded', value: $t({ defaultMessage: 'Offboarded' }) }
-      ]
+      filterable: statusDisplayMap
     },
     {
-      key: 'accountName',
+      key: 'account_name',
       title: $t({ defaultMessage: 'Account' }),
-      dataIndex: 'accountName',
-      sorter: { compare: sortProp('accountName', defaultSort) },
+      dataIndex: 'account_name',
+      sorter: true,
       searchable: true
     },
     {
-      key: 'name',
+      key: 'device_name',
       title: $t({ defaultMessage: 'Name' }),
-      dataIndex: 'name',
-      sorter: { compare: sortProp('name', defaultSort) },
+      dataIndex: 'device_name',
+      sorter: true,
       searchable: true
     },
     {
-      key: 'formattedAddedTime',
+      key: 'created_at',
       title: $t({ defaultMessage: 'Added Time' }),
-      dataIndex: 'formattedAddedTime',
-      sorter: { compare: sortProp('addedTime', defaultSort) }
+      dataIndex: 'created_at',
+      sorter: true
     }
   ]
 
@@ -183,10 +172,8 @@ export const useOnboardedSystems = () => {
       columns={ColumnHeaders}
       dataSource={tableQuery.data?.data}
       pagination={tableQuery.pagination}
-      // TODO: how to pass sorter fields?
       onChange={tableQuery.handleTableChange}
-      // TODO
-      // onFilterChange={tableQuery.handleFilterChange}
+      onFilterChange={tableQuery.handleFilterChange}
       rowSelection={{
         type: 'radio',
         selectedRowKeys: selected ? [ selected.id ] : [],
@@ -199,7 +186,7 @@ export const useOnboardedSystems = () => {
         onClick: () => {
           showActionModal({
             type: 'confirm',
-            title: $t({ defaultMessage: 'Delete "{name}"?' }, { name: selected?.name }),
+            title: $t({ defaultMessage: 'Delete "{name}"?' }, { name: selected?.device_name }),
             content: $t({ defaultMessage:
                 'Historical data for this system will not be viewable anymore if you confirm.' }),
             onOk: async () => {
@@ -209,7 +196,7 @@ export const useOnboardedSystems = () => {
                   showToast({
                     type: 'success',
                     content: $t({
-                      defaultMessage: '{name} was deleted' }, { name: selected!.name }) })
+                      defaultMessage: '{name} was deleted' }, { name: selected!.device_name }) })
                   setSelected(undefined)
                 })
                 .catch(response => {
@@ -222,10 +209,6 @@ export const useOnboardedSystems = () => {
         tooltip: !(selected?.canDelete)
           ? $t(errorMsgMap.CANNOT_DELETE) : $t({ defaultMessage: 'Delete' })
       }]}
-      // TODO: remove?
-      // onDisplayRowChange={
-      //   useCallback((dataSource: FormattedOnboardedSystem[]) => setCount(dataSource.length), [])
-      // }
     />
   </Loader>
 
