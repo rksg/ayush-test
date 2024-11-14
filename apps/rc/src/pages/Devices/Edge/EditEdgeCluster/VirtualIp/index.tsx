@@ -145,7 +145,17 @@ export const VirtualIp = (props: VirtualIpProps) => {
               <CommUI.Mt15>
                 <EdgeClusterVirtualIpSettingForm
                   currentClusterStatus={currentClusterStatus}
-                  lanInterfaces={lanInterfaces}
+                  lanInterfaces={lanInterfaces
+                    ? Object.fromEntries(Object.entries(lanInterfaces)
+                      .map(([serial, portInfoList]) => [
+                        serial,
+                        portInfoList.map(portInfo => ({
+                          ...portInfo,
+                          interfaceName: portInfo.portName
+                        }))
+                      ]))
+                    : undefined
+                  }
                 />
               </CommUI.Mt15>
             </StepsForm.StepForm>

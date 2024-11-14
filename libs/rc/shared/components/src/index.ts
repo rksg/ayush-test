@@ -262,7 +262,8 @@ export * from './EdgeCluster/CompatibilityErrorDetails/types'
 export { EdgeClusterVirtualIpSettingForm } from './EdgeFormItem/EdgeClusterVirtualIpSettingForm'
 export type {
   VirtualIpFormType,
-  VipConfigType
+  VipConfigType,
+  VipInterface
 } from './EdgeFormItem/EdgeClusterVirtualIpSettingForm'
 export { useClusterInterfaceActions } from './useClusterInterfaceActions'
 export type { ClusterInterfaceInfo } from './useClusterInterfaceActions'
