@@ -32,8 +32,8 @@ export const InstancesTable = (props: InstancesTableProps) => {
   const { mdnsStatsMap, isMdnsStatsDataLoading } = useGetEdgeMdnsProxyStatsListQuery({
     payload: {
       fields: [
-        'clusterId', 'rxPackets', 'txPackets', 'rxBytes', 'txBytes', 'rxRequest', 'rxResponse',
-        'numTypesMdnsServices'
+        'clusterId', 'rxPackets', 'txPackets', 'rxBytes', 'txBytes', 'numRequest', 'numResponse',
+        'discoveredMdnsServices'
       ],
       filters: {
         profileId: [serviceId],
@@ -98,19 +98,19 @@ export const InstancesTable = (props: InstancesTableProps) => {
       title: $t({ defaultMessage: 'Client Queries' }),
       dataIndex: 'clientQueries',
       key: 'clientQueries',
-      render: (_, row) => (mdnsStatsMap?.[row.edgeClusterId]?.rxRequest ?? 0)
+      render: (_, row) => (mdnsStatsMap?.[row.edgeClusterId]?.numRequest ?? 0)
     },
     {
       title: $t({ defaultMessage: 'Server Responses' }),
       dataIndex: 'serverResponses',
       key: 'serverResponses',
-      render: (_, row) => (mdnsStatsMap?.[row.edgeClusterId]?.rxResponse ?? 0)
+      render: (_, row) => (mdnsStatsMap?.[row.edgeClusterId]?.numResponse ?? 0)
     },
     {
       title: $t({ defaultMessage: 'Types of mDNS Services' }),
       dataIndex: 'types',
       key: 'types',
-      render: (_, row) => (mdnsStatsMap?.[row.edgeClusterId]?.numTypesMdnsServices ?? 0)
+      render: (_, row) => (mdnsStatsMap?.[row.edgeClusterId]?.typesMdnsServices.size ?? 0)
     }
   ]
 
@@ -140,25 +140,26 @@ const calculateStatsData = (data?: EdgeMdnsProxyStatsData[]) => {
       txPackets: 0,
       rxBytes: 0,
       txBytes: 0,
-      rxRequest: 0,
-      rxResponse: 0,
-      numTypesMdnsServices: 0
+      numRequest: 0,
+      numResponse: 0,
+      typesMdnsServices: new Set()
     }
     acc[currentClusterId].rxPackets += cur.rxPackets ?? 0
     acc[currentClusterId].txPackets += cur.txPackets ?? 0
     acc[currentClusterId].rxBytes += cur.rxBytes ?? 0
     acc[currentClusterId].txBytes += cur.txBytes ?? 0
-    acc[currentClusterId].rxRequest += cur.rxRequest ?? 0
-    acc[currentClusterId].rxResponse += cur.rxResponse ?? 0
-    acc[currentClusterId].numTypesMdnsServices += cur.numTypesMdnsServices ?? 0
+    acc[currentClusterId].numRequest += cur.numRequest ?? 0
+    acc[currentClusterId].numResponse += cur.numResponse ?? 0
+    cur.discoveredMdnsServices?.forEach(item =>
+      acc[currentClusterId].typesMdnsServices.add(item.mdnsStr))
     return acc
   }, {} as { [clusterId: string]: {
     rxPackets: number,
     txPackets: number,
     rxBytes: number,
     txBytes: number,
-    rxRequest: number,
-    rxResponse: number,
-    numTypesMdnsServices: number
+    numRequest: number,
+    numResponse: number,
+    typesMdnsServices: Set<string>
   } })
 }
