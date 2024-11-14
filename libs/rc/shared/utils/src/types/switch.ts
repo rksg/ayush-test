@@ -928,9 +928,3 @@ export enum VlanModalType {
   UNTAGGED = 'untaggedVlan',
   TAGGED = 'taggedVlans'
 }
-
-export interface SwitchFeatureSet {
-  featureName: string,
-  requiredFw?: string,
-  supportedModelFamilies?: string[]
-}
