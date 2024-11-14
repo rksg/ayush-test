@@ -139,12 +139,12 @@ describe('constants', () => {
       expect(getWiredWirelessIncidentCodes(toggles)).toEqual([
         [
           'p-switch-memory-high',
-          'p-switch-port-congestion',
-          'p-switch-uplink-port-congestion',
           'i-switch-vlan-mismatch',
           'i-switch-poe-pd',
+          's-switch-tcp-syn-ddos',
           'i-switch-loop-detection',
-          's-switch-tcp-syn-ddos'
+          'p-switch-port-congestion',
+          'p-switch-uplink-port-congestion'
         ],
         [
           'ttc',
