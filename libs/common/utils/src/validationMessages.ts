@@ -176,6 +176,10 @@ export const validationMessages = {
     defaultMessage: 'Please enter a valid URL',
     description: 'Validation - Please enter a valid URL'
   }),
+  validateOcspURL: defineMessage({
+    defaultMessage: 'Please enter a valid OCSP URL',
+    description: 'Validation - Please enter a valid OCSP URL'
+  }),
   validateEqualOne: defineMessage({
     defaultMessage: 'This value should be higher than or equal to 1',
     description: 'Validation - This value should be higher than or equal to 1'
@@ -477,6 +481,10 @@ export const validationMessages = {
   guestPasswordInvalid: defineMessage({
     defaultMessage: 'Guest password is invalid.',
     description: 'Validation - Guest password check'
+  }),
+  DirectoryServerNotSelected: defineMessage({
+    defaultMessage: 'Must select one directory server.',
+    description: 'Validation - Directory server'
   })
 }
 

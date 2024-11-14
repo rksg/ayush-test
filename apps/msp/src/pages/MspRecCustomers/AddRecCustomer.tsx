@@ -84,7 +84,8 @@ export function AddRecCustomer () {
 
   const { data: userProfileData } = useUserProfileContext()
   const { data: recCustomer } =
-      useGetMspEcQuery({ params: { mspEcTenantId } }, { skip: !isEditMode })
+      useGetMspEcQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
+        { skip: !isEditMode })
 
   const { data: Administrators } =
       useMspAdminListQuery({ params: useParams() }, { skip: !isEditMode })
@@ -166,7 +167,7 @@ export function AddRecCustomer () {
           lastName: userProfileData.lastName,
           name: userProfileData.firstName,
           email: userProfileData.email,
-          role: userProfileData.role as RolesEnum,
+          role: RolesEnum.PRIME_ADMIN,
           detailLevel: userProfileData.detailLevel
         })
         setAdministrator(administrator)

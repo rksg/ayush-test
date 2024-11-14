@@ -328,6 +328,28 @@ describe('AupSettings', () => {
     expect(await screen.findByText('File size should be upto 2MB')).toBeVisible()
   })
 
+  it('Validate file type', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [form] = Form.useForm<AupActionContext>()
+      form.setFieldsValue({
+        useAupFile: true,
+        aupFileLocation: '7c1a1cb9-548c-446e-b4dc-07d498759d9b-text.pdf',
+        aupFileName: 'hello.jpeg'
+      })
+      return form
+    })
+
+    render(<Provider>
+      <Form form={formRef.current}>
+        <AupSettings/>
+      </Form>
+    </Provider>)
+    const file = new File(['hello'], 'hello.jpeg', { type: 'jpeg' })
+    Object.defineProperty(file, 'size', { value: 1024 * 1024 * 10 })
+    const testfile = screen.getByTestId('aupPolicy')
+    await userEvent.upload(testfile, file)
+  })
+
   it('Should be able to upload file', async () => {
     const { result: formRef } = renderHook(() => {
       const [form] = Form.useForm<AupActionContext>()

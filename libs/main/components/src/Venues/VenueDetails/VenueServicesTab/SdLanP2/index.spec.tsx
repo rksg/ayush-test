@@ -56,7 +56,7 @@ jest.mock('@acx-ui/rc/services', () => ({
       return { unwrap: () => new Promise((resolve) => {
         resolve(true)
         setTimeout(() => {
-          (req.callback as Function)({
+          (req.callback as Function)?.({
             response: { id: 'mocked_service_id' }
           })
         }, 300)
@@ -70,7 +70,7 @@ jest.mock('@acx-ui/rc/services', () => ({
       return { unwrap: () => new Promise((resolve) => {
         resolve(true)
         setTimeout(() => {
-          (req.callback as Function)()
+          (req.callback as Function)?.()
         }, 300)
       }) }
     }, { isLoading: false }]
