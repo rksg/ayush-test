@@ -361,7 +361,7 @@ function resolveMacAuthFormat (newSettings: NetworkSaveData): string | undefined
     : newSettings.wlan?.macAuthMacFormat
 }
 
-export function isRadiusKeyExistsInFormData (key: RadiusIdKey, formData: NetworkSaveData): boolean {
+export function hasRadiusProfileInFormData (key: RadiusIdKey, formData: NetworkSaveData): boolean {
   return _.has(formData, isWISPrNetwork(formData)
     ? key === 'authRadiusId' ? 'guestPortal.wisprPage.authRadius' : 'guestPortal.wisprPage.accountingRadius'
     : key
@@ -369,7 +369,7 @@ export function isRadiusKeyExistsInFormData (key: RadiusIdKey, formData: Network
 }
 
 function isRadiusKeyChanged (key: RadiusIdKey, formData: NetworkSaveData, serverData?: NetworkSaveData): boolean {
-  if (!isRadiusKeyExistsInFormData(key, formData)) return false
+  if (!hasRadiusProfileInFormData(key, formData)) return false
 
   const keyFromForm = getRadiusIdFromFormData(key, formData)
   const keyFromServer = serverData?.[key]
