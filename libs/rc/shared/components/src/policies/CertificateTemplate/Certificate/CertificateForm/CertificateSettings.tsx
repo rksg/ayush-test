@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { Col, Divider, Form, Input, Row, Select } from 'antd'
-import { useIntl }                                from 'react-intl'
+import { Button, Col, Divider, Form, Input, Row, Select } from 'antd'
+import { useIntl }                                        from 'react-intl'
 
 import {
   useGetCertificateAuthoritiesQuery,
@@ -10,10 +10,14 @@ import {
   useLazyGetPersonaGroupByIdQuery
 } from '@acx-ui/rc/services'
 import { CertificateTemplate, Persona } from '@acx-ui/rc/utils'
+import { RolesEnum }                    from '@acx-ui/types'
+import { hasRoles }                     from '@acx-ui/user'
 
+import { PersonaDrawer }                                      from '../../../../users'
 import { MAX_CERTIFICATE_PER_TENANT }                         from '../../constants'
 import { certificateDescription, onboardSettingsDescription } from '../../contentsMap'
 import { Description }                                        from '../../styledComponents'
+
 
 export default function CertificateSettings (
   // eslint-disable-next-line max-len
@@ -24,6 +28,13 @@ export default function CertificateSettings (
   const certificateTemplateId = Form.useWatch('certificateTemplateId', form)
 
   const [identityList, setIdentityList] = useState([] as Persona [])
+
+  const [identityDrawerState, setIdentityDrawerState] = useState({
+    visible: false,
+    data: {} as Persona | undefined
+  })
+
+  const [identityGroupId, setIdentityGroupId] = useState(undefined as string | undefined)
 
   const { caList } = useGetCertificateAuthoritiesQuery(
     { payload: { page: '1', pageSize: MAX_CERTIFICATE_PER_TENANT } },
@@ -87,6 +98,7 @@ export default function CertificateSettings (
           if (!result.data) return
           setIdentityList(result.data.identities ?? [])
           form.setFieldValue('identityId', undefined)
+          setIdentityGroupId(result.data.id)
         })
     }
   }, [certificateTemplateId])
@@ -94,6 +106,7 @@ export default function CertificateSettings (
   useEffect(() =>{
     if(personaGroupData) {
       setIdentityList(personaGroupData?.identities ?? [])
+      setIdentityGroupId(personaGroupData.id)
     }
   }, [personaGroupData])
 
@@ -116,24 +129,53 @@ export default function CertificateSettings (
           </Form.Item>
         </Col>
       </Row>}
-      {!specificIdentity && <Row>
-        <Col span={10}>
-          <Form.Item
-            name='identityId'
-            label={$t({ defaultMessage: 'Identity' })}
-            rules={[{
-              required: true
-            }]}
-          >
-            <Select
-              placeholder={$t({ defaultMessage: 'Choose ...' })}
-              options={
+      {!specificIdentity &&
+        <Row align={'middle'} gutter={8}>
+          <Col span={10}>
+            <Form.Item
+              name='identityId'
+              label={$t({ defaultMessage: 'Identity' })}
+              rules={[{
+                required: true
+              }]}
+            >
+              <Select
+                placeholder={$t({ defaultMessage: 'Choose ...' })}
+                options={
                 // eslint-disable-next-line max-len
-                identityList.filter(identity => !identity.revoked).map(identity => ({ value: identity.id, label: identity.name }))}
-            />
-          </Form.Item>
-        </Col>
-      </Row>}
+                  identityList.filter(identity => !identity.revoked).map(identity => ({ value: identity.id, label: identity.name }))}
+              />
+            </Form.Item>
+          </Col>
+          {
+            (hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) &&
+            <>
+              <Col span={2}>
+                <Button
+                  type='link'
+                  onClick={async () => {
+                    setIdentityDrawerState({ visible: true,
+                      data: { groupId: identityGroupId } as Persona })
+                  }}
+                  disabled={!identityGroupId}
+                >
+                  {$t({ defaultMessage: 'Add' })}
+                </Button>
+              </Col>
+              <PersonaDrawer
+                data={identityDrawerState.data}
+                isEdit={false}
+                visible={identityDrawerState.visible}
+                onClose={(result) => {
+                  if (result) {
+                    form.setFieldValue('identityId', result?.id)
+                  }
+                  setIdentityDrawerState({ visible: false, data: undefined })
+                }} />
+            </>
+          }
+        </Row>
+      }
       <Row>
         <Col span={10}>
           <Form.Item
