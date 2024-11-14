@@ -1064,8 +1064,8 @@ export function EditPortDrawer ({
 
         } else if (handleOverrideFields.includes(changedField)) {
           handleAuthOverrideFieldChange({
-            changedField, form, isOverridden: !!changedValue, isMultipleEdit,
-            selectedPorts, aggregateData: aggregatePortsData, hasMultipleValue
+            ...commonRequiredProps,
+            changedField, isOverridden: !!changedValue, selectedPorts
           })
         }
       }
@@ -1259,7 +1259,8 @@ export function EditPortDrawer ({
                           selectedPorts,
                           authenticationCustomize,
                           authenticationProfileId,
-                          authProfiles
+                          authProfiles,
+                          isProfileValid: !getFieldDisabled('renderAuthProfile')
                         })}
                       >{
                           authenticationCustomize
@@ -1404,8 +1405,7 @@ export function EditPortDrawer ({
                     }))}
                     disabled={getFieldDisabled('dot1xPortControl')}
                     onChange={(value) => handleAuthFieldChange({
-                      field: 'dot1xPortControl', value, form, isMultipleEdit, hasMultipleValue,
-                      aggregateData: aggregatePortsData
+                      ...commonRequiredProps, field: 'dot1xPortControl', value
                     })}
                   />}
               />
@@ -1475,7 +1475,7 @@ export function EditPortDrawer ({
                     }))}
                     disabled={getFieldDisabled('authFailAction')}
                     onChange={(value) => handleAuthFieldChange({
-                      field: 'authFailAction', value, form, isMultipleEdit, hasMultipleValue
+                      ...commonRequiredProps, field: 'authFailAction', value
                     })}
                   />}
               />
@@ -1492,12 +1492,10 @@ export function EditPortDrawer ({
                   // eslint-disable-next-line max-len
                   ...(isOverrideFieldNotChecked({ field: 'restrictedVlan', ...commonRequiredProps }) ? [{
                     validator: async () => checkMultipleVlansDifferences({
+                      ...commonRequiredProps,
                       field: 'restrictedVlan',
                       vlanType: $t({ defaultMessage: 'Restricted VLAN' }),
-                      selectedPorts,
-                      aggregateData: aggregatePortsData,
-                      isMultipleEdit,
-                      form
+                      selectedPorts
                     })
                   }] : [
                     ...((isMultipleEdit
@@ -1552,7 +1550,7 @@ export function EditPortDrawer ({
                     }))}
                     disabled={getFieldDisabled('authTimeoutAction')}
                     onChange={(value) => handleAuthFieldChange({
-                      field: 'authTimeoutAction', value, form, isMultipleEdit, hasMultipleValue
+                      ...commonRequiredProps, field: 'authTimeoutAction', value
                     })}
                   />}
               />
@@ -1569,12 +1567,10 @@ export function EditPortDrawer ({
                   // eslint-disable-next-line max-len
                   ...(isOverrideFieldNotChecked({ field: 'criticalVlan', ...commonRequiredProps }) ? [{
                     validator: async () => checkMultipleVlansDifferences({
+                      ...commonRequiredProps,
                       field: 'criticalVlan',
                       vlanType: $t({ defaultMessage: 'Critical VLAN' }),
-                      selectedPorts,
-                      aggregateData: aggregatePortsData,
-                      isMultipleEdit,
-                      form
+                      selectedPorts
                     })
                   }] : [
                     ...((isMultipleEdit
@@ -1623,12 +1619,10 @@ export function EditPortDrawer ({
                 rules={[
                   ...(isOverrideFieldNotChecked({ field: 'guestVlan', ...commonRequiredProps }) ? [{
                     validator: async () => checkMultipleVlansDifferences({
+                      ...commonRequiredProps,
                       field: 'guestVlan',
                       vlanType: $t({ defaultMessage: 'Guest VLAN' }),
-                      selectedPorts,
-                      aggregateData: aggregatePortsData,
-                      isMultipleEdit,
-                      form
+                      selectedPorts
                     })
                   }] : [{
                     validator: (_:unknown, value: string) => {

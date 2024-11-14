@@ -201,7 +201,7 @@ export const getFlexAuthDefaultValue = (
     authDefaultVlanCheckbox: false
   }
 
-  const checkValueEqual = (key: string, portSetting: Partial<PortSettingModel>) => {
+  const checkFieldDefinedAndUnique = (key: string, portSetting: Partial<PortSettingModel>) => {
     const fieldKey = key as keyof typeof portSetting
     return !hasMultipleValueFields?.includes(key) && (portSetting[fieldKey] !== undefined)
   }
@@ -211,15 +211,17 @@ export const getFlexAuthDefaultValue = (
 
   const handleField = (key: string) => {
     const fieldKey = key as keyof typeof portSetting
-    const isValueEqual = checkValueEqual(key, portSetting)
+    const isFieldDefinedAndUnique = checkFieldDefinedAndUnique(key, portSetting)
 
-    if (key === 'authenticationProfileId' && isValueEqual) {
+    if (key === 'authenticationProfileId' && isFieldDefinedAndUnique) {
       const authenticationCustomize = portSetting?.authenticationCustomize
-      const isCustomized = checkValueEqual('authenticationCustomize', portSetting) && authenticationCustomize
-      return isCustomized ? '' : portSetting[fieldKey]
+      // when profile is applied first and then customized, database retains the original profile ID
+      // need to clear the profile ID to avoid display issues
+      const isCustomized = checkFieldDefinedAndUnique('authenticationCustomize', portSetting) && authenticationCustomize
+      return isCustomized ? undefined : portSetting[fieldKey]
     }
 
-    return isValueEqual
+    return isFieldDefinedAndUnique
       ? portSetting[fieldKey]
       : defaultValue[key as keyof typeof defaultValue]
   }
@@ -374,9 +376,8 @@ export const getCurrentVlansByKey = (props: {
     }
     return overrideValue
   }
-  const currentVlans:string[] = getCurrentVlans()
 
-  return currentVlans?.filter(v => v)?.map(v => Number(v))
+  return getCurrentVlans()?.filter(Boolean).map(Number)
 }
 
 export const validateApplyProfile = (
@@ -405,7 +406,7 @@ export const validateApplyProfile = (
   const isForceTypeProfile = profile?.dot1xPortControl === PortControl.FORCE_AUTHORIZED
   || profile?.dot1xPortControl === PortControl.FORCE_UNAUTHORIZED
 
-  const isAuthDefaultVlanMismatch = isForceTypeProfile
+  const isAuthDefaultVlanMismatch = isForceTypeProfile && !!switchAuthDefaultVlans?.length
   && (switchAuthDefaultVlans?.length > 1 || !switchAuthDefaultVlans?.includes(profile?.authDefaultVlan))
 
   if (!allSelectedPortsMatch) {
@@ -705,6 +706,7 @@ export const handleClickCustomize = (props: {
   selectedPorts: SwitchPortViewModel[],
   authenticationCustomize: boolean,
   isMultipleEdit: boolean,
+  isProfileValid: boolean,
   authenticationProfileId?: string,
   authProfiles: FlexibleAuthentication[],
   aggregateData: AggregatePortSettings,
@@ -712,21 +714,27 @@ export const handleClickCustomize = (props: {
 }) => {
   const {
     authenticationCustomize, isMultipleEdit, aggregateData,
-    authenticationProfileId, authProfiles, selectedPorts, form
+    authenticationProfileId, authProfiles, isProfileValid, selectedPorts, form
   } = props
 
   const toggleCustomized = !authenticationCustomize
   const authDefaultVlan = Object.values(aggregateData.authDefaultVlan).flat()
+
+  const isSetProfileToInitial
+    = !isMultipleEdit && !authDefaultVlan?.length && authenticationProfileId && isProfileValid
+
   const preselectFields = getNeedPreselectFields({
     isMultipleEdit, isCustomized: toggleCustomized,
     selectedPorts, aggregateData
   })
 
-  if (toggleCustomized) { // customized
+  if (toggleCustomized) { // customize
     form.setFieldsValue({
       ...form.getFieldsValue(),
       authenticationCustomize: toggleCustomized,
-      ...(!isMultipleEdit && !authDefaultVlan?.length && authenticationProfileId
+      // when configuring port auth for first time, selecting a valid profile and clicking 'Customize' button
+      // will set the profile data to form's initial values.
+      ...(isSetProfileToInitial
         ? getAppliedProfile(authProfiles, authenticationProfileId) : {}
       ),
       ...preselectFields
