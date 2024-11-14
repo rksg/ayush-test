@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   PersonaUrls,
   MacRegListUrlsInfo,
@@ -136,6 +136,7 @@ describe('Persona Group Details', () => {
 
   it('should render persona group details', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.EDGE_ADV)
 
     render(
       <Provider>
@@ -168,6 +169,7 @@ describe('Persona Group Details', () => {
     expect(await screen.findByText(/cert-template-name/i)).toBeInTheDocument()
 
     jest.mocked(useIsSplitOn).mockReset()
+    jest.mocked(useIsTierAllowed).mockReset()
   })
 
   it('should render breadcrumb correctly', async () => {
