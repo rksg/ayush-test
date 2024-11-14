@@ -12,11 +12,9 @@ interface CertificateAuthorityDrawerProps {
 
 const CertificateAuthorityDrawer = (props: CertificateAuthorityDrawerProps) => {
   const { $t } = useIntl()
-  // TODO: handleSave implementation
-  //const { visible, setVisible, handleSave } = props
-  const { visible, setVisible } = props
+  const { visible, setVisible, handleSave } = props
 
-  const content = <CertificateAuthorityForm />
+  const content = <CertificateAuthorityForm modalMode={true} modalCallBack={handleSave}/>
 
   const handleClose = () => {
     setVisible(false)
@@ -24,9 +22,9 @@ const CertificateAuthorityDrawer = (props: CertificateAuthorityDrawerProps) => {
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Add' })}
+      title={$t({ defaultMessage: 'Generate Certificate' })}
       visible={visible}
-      width={450}
+      width={500}
       children={content}
       onClose={handleClose}
       destroyOnClose={true}
