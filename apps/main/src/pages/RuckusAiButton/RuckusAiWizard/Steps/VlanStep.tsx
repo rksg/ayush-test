@@ -46,6 +46,7 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
 
   const [selectedVlanProfile, setSelectedVlanProfile] = useState<Vlan>()
   const [vlanTable, setVlanTable] = useState<Vlan[]>([])
+  const [disabledVlanIds, setDisabledVlanIds] = useState([] as string[])
 
   useEffect(() => {
     if (initialData !== data) {
@@ -55,14 +56,24 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
       setConfigVlanIds(initialData.map(vlan => vlan['VLAN ID']))
       setConfigVlanNames(initialData.map(vlan => vlan['VLAN Name']))
       setCheckboxStates(Array(initialData.length).fill(true))
+      setDisabledVlanIds([])
     }
 
   }, [props.payload])
 
   const handleCheckboxChange = (index: number, checked: boolean) => {
     const newCheckboxStates = [...checkboxStates]
+    const vid = formInstance?.getFieldValue(['data', index, 'VLAN ID'])
     newCheckboxStates[index] = checked
     setCheckboxStates(newCheckboxStates)
+    if (checked) {
+      setDisabledVlanIds(disabledVlanIds.filter(id => id !== String(vid)))
+      //TODO: Check vlan ID, select port is duplicated or not
+
+    } else {
+      setDisabledVlanIds([...disabledVlanIds, String(vid)])
+    }
+   
   }
 
   const handleAddVlan = () => {
@@ -336,7 +347,11 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
             vlanId: formInstance?.getFieldValue(['data', configIndex, 'VLAN ID']) || '',
             vlanName: formInstance?.getFieldValue(['data', configIndex, 'VLAN Name']) || ''
           }}
-          vlansList={vlanTable.filter(item=>item.vlanId !== selectedVlanProfile?.vlanId)}
+          vlansList={vlanTable.filter(
+            item =>
+              String(item.vlanId) !== String(selectedVlanProfile?.vlanId) &&
+              !disabledVlanIds.includes(String(item.vlanId))
+          )}
         />
       }
     </UI.Container>
