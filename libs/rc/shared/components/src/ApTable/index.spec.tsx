@@ -34,8 +34,13 @@ jest.mock('react-router-dom', () => ({
 }))
 
 const utils = require('@acx-ui/rc/utils')
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils')
+
+jest.mock('../ApCompatibility', () => ({
+  ...jest.requireActual('../ApCompatibility'),
+  ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
+}))
+jest.mock('../Compatibility', () => ({
+  ApGeneralCompatibilityDrawer: () => <div data-testid={'ApGeneralCompatibilityDrawer'} />
 }))
 
 type MockDrawerProps = React.PropsWithChildren<{
