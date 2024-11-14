@@ -63,7 +63,7 @@ export const transformFromApiToFormData =
    } as InterfaceSettingsFormType
  }
 
-export const getLanInterfaces = (
+export const getAvailableVipInterfaces = (
   lagdata?: InterfaceSettingsFormType['lagSettings'],
   portData?: InterfaceSettingsFormType['portSettings'],
   subInterfaces?: SubInterfaceSettingsFormType,
