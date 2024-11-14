@@ -1317,7 +1317,7 @@ export function EditPortDrawer ({
                 }) ? <MultipleText />
                   : <Select
                     data-testid='auth-profile-select'
-                    placeholder={$t({ defaultMessage: 'Select...' })}
+                    placeholder={$t({ defaultMessage: 'Select Profile...' })}
                     options={authProfiles.map(p => ({
                       label: p.profileName,
                       value: p.id

@@ -18,8 +18,10 @@ export const TagsSolidIcon = styled(TagsSolid)`
 `
 
 export const Form = styled(AntdForm)`
-  &.ant-form.ant-form-horizontal > .ant-form-item {
-    margin-bottom: 20px !important;
+  &.ant-form.ant-form-horizontal {
+    > .ant-form-item {
+      margin-bottom: 20px !important;
+    }
     label {
       color: var(--acx-primary-black);
       &::after {
