@@ -12,6 +12,7 @@ import {
 } from '@acx-ui/user'
 
 import { OTPMethodProps } from '../OneTimePassword'
+import { isNumber } from 'lodash'
 
 interface VerifyCodeModalProps {
   visible: boolean
@@ -110,6 +111,11 @@ export const VerifyCodeModal = (props: VerifyCodeModalProps) =>{
             {
               required: true,
               message: $t({ defaultMessage: 'Please enter verification code' })
+            },
+            {
+              validator: (_, value) => !isNumber(value)
+                ? Promise.reject($t({ defaultMessage: 'Please enter valid verification code' }))
+                : Promise.resolve()
             }
           ]}
           {...(isValid && failedMessage !== '' ? {
