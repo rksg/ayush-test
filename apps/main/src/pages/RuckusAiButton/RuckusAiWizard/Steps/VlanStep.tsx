@@ -285,7 +285,7 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
                     const currentId = formInstance?.getFieldValue(['data', index, 'id'])
                     setConfigId(currentId)
                     setConfigIndex(index)
-                    if (isSetupComplete[configIndex]) {
+                    if (isSetupComplete[index]) {
                       onEditMode(currentId, index)
                     } else {
                       onAddMode()

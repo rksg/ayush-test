@@ -227,7 +227,8 @@ export function WlanStep (props: { payload: string; description: string,
                 disabled={!checkboxStates[index]}
                 options={objectiveOptions}
               />
-              {item['Purpose'] && <UI.PurposeContainer>
+              {item['Purpose'] && <UI.PurposeContainer
+                disabled={!checkboxStates[index]}>
                 <UI.PurposeHeader>
                   <RuckusAiDog
                     style={{
