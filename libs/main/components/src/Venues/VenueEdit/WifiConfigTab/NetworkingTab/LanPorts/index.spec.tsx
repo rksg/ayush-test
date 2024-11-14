@@ -11,14 +11,15 @@ import { AaaUrls, CommonRbacUrlsInfo, CommonUrlsInfo, EthernetPortProfileUrls, W
 import { Provider, store }                                                                               from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, within, waitFor, waitForElementToBeRemoved, renderHook } from '@acx-ui/test-utils'
 
-import { NetworkingSettingContext } from '..'
-import { VenueUtilityContext }      from '../..'
-import { VenueEditContext }         from '../../..'
+import { NetworkingSettingContext }     from '..'
+import { VenueUtilityContext }          from '../..'
+import { VenueEditContext }             from '../../..'
 import {
   venueData,
   venueCaps,
   venueLanPorts,
-  mockEthProfiles
+  mockEthProfiles,
+  mockDefaultTunkEthertnetPortProfile
 } from '../../../../__tests__/fixtures'
 
 import { LanPorts } from './index'
@@ -77,6 +78,10 @@ describe('LanPortsForm', () => {
       rest.get(
         CommonUrlsInfo.getVenueSettings.url,
         (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        EthernetPortProfileUrls.getEthernetPortProfile.url,
+        (_, res, ctx) => res(ctx.json({ mockDefaultTunkEthertnetPortProfile }))
       ),
       rest.put(
         CommonUrlsInfo.updateVenueLanPorts.url,

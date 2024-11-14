@@ -477,6 +477,10 @@ export const validationMessages = {
   guestPasswordInvalid: defineMessage({
     defaultMessage: 'Guest password is invalid.',
     description: 'Validation - Guest password check'
+  }),
+  DirectoryServerNotSelected: defineMessage({
+    defaultMessage: 'Must select one directory server.',
+    description: 'Validation - Directory server'
   })
 }
 
