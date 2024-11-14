@@ -59,7 +59,7 @@ import {
   SORTER,
   SwitchPortViewModelQueryFields,
   TroubleshootingResponse,
-  SwitchFeatureSet
+  FeatureSetResponse
 } from '@acx-ui/rc/utils'
 import { baseSwitchApi }  from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
@@ -424,13 +424,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchProfiles', id: 'DETAIL' }]
     }),
-    getSwitchFeatureSets: build.query<SwitchFeatureSet, RequestPayload>({
-      query: ({ params }) => {
+    getSwitchFeatureSets: build.query<FeatureSetResponse, RequestPayload>({
+      query: ({ params, payload }) => {
         const req = createHttpRequest(
           SwitchUrlsInfo.getSwitchFeatureSets, params, { ...ignoreErrorModal }
         )
         return {
-          ...req
+          ...req, body: JSON.stringify(payload)
         }
       }
     }),
