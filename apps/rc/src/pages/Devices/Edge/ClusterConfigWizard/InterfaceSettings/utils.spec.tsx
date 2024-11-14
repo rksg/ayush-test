@@ -533,12 +533,19 @@ describe('interfaceNameComparator', () => {
     const ifNames = [
       'port1', 'port2',
       'port1.1', 'port1.2', 'port1.10',
-      'port2.1'
+      'port2.1',
+      'lag1', 'lag2',
+      'lag1.1', 'lag1.2', 'lag1.10',
+      'lag2.1'
     ].map(name => ({ portName: name } as EdgePortInfo))
 
-    ifNames.sort(interfaceNameComparator)
+    ifNames.sort((port1, port2) => {
+      return interfaceNameComparator(port1.portName, port2.portName)
+    })
 
     expect(ifNames.map(item => item.portName)).toEqual([
+      'lag1', 'lag1.1', 'lag1.2', 'lag1.10',
+      'lag2', 'lag2.1',
       'port1', 'port1.1', 'port1.2', 'port1.10',
       'port2', 'port2.1'
     ])

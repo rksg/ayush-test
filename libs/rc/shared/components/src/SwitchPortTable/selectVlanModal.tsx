@@ -50,7 +50,9 @@ export function SelectVlanModal (props: {
   venueId?: string,
   updateSwitchVlans?: (vlan: Vlan) => void,
   vlanDisabledTooltip: string,
-  defaultTabKey?: VlanModalType
+  defaultTabKey?: VlanModalType,
+  authDefaultVlan?: string[],
+  flexAuthEnabled?: boolean,
 }) {
   const { $t } = getIntl()
   const params = useParams()
@@ -58,7 +60,8 @@ export function SelectVlanModal (props: {
     setUseVenueSettings, onValuesChange, hasSwitchProfile, cliApplied,
     vlanDisabledTooltip, defaultVlan, switchVlans, switchIds, venueId, switchFamilyModel,
     vlanUsedByVe = [], taggedVlans = '', untaggedVlan,
-    showVoiceVlan, voiceVlan, isVoiceVlanInvalid, defaultTabKey = VlanModalType.UNTAGGED
+    showVoiceVlan, voiceVlan, isVoiceVlanInvalid, defaultTabKey = VlanModalType.UNTAGGED,
+    authDefaultVlan, flexAuthEnabled
   } = props
 
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
@@ -97,14 +100,18 @@ export function SelectVlanModal (props: {
   const getTaggedVlanOptions = (selectedUntaggedVlan: number) => {
     const vlanOptions = switchVlans.map((v: SwitchVlan) => {
       const isSelectedUntagged = v.vlanId?.toString() === selectedUntaggedVlan?.toString()
+      const isSelectedAuthDefault = authDefaultVlan?.includes(v.vlanId?.toString())
       const extra = isSelectedUntagged
         ? $t({ defaultMessage: '(Set as untagged VLAN)' })
-        : (v?.vlanConfigName ? `(${v?.vlanConfigName})` : '')
+        : (isSelectedAuthDefault
+          ? $t({ defaultMessage: '(Set as auth default vlan)' })
+          : (v?.vlanConfigName ? `(${v?.vlanConfigName})` : '')
+        )
 
       return {
         label: $t({ defaultMessage: 'VLAN-ID-{vlan} {extra}' }, { vlan: v.vlanId, extra }),
         value: v.vlanId?.toString(),
-        disabled: isSelectedUntagged
+        disabled: isSelectedUntagged || isSelectedAuthDefault
       }
     })
 
@@ -337,6 +344,7 @@ export function SelectVlanModal (props: {
         <Tabs.TabPane
           tab={$t({ defaultMessage: 'Untagged VLAN' })}
           key={VlanModalType.UNTAGGED}
+          disabled={flexAuthEnabled}
         >
           <Typography.Text style={{
             display: 'inline-block', fontSize: '12px', marginBottom: '6px'
