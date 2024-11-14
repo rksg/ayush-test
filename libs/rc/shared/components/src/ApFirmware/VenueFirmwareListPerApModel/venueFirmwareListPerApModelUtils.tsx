@@ -197,7 +197,7 @@ function generateDefaultLabelWrapper (apModelsForDisplay: string): JSX.Element {
 
 export type ApModelIndividualDisplayDataType = {
   apModel: string
-  versionOptions: { key: string, label: string }[]
+  versionOptions: { key: string, label: string, releaseDate: string }[]
   defaultVersion: string
   extremeFirmware: string
 }
@@ -258,7 +258,8 @@ function createFirmwareOption (apModelFirmware: ApModelFirmware): ApModelIndivid
 
   return {
     key: apModelFirmware.id,
-    label: getVersionLabel(intl, apModelFirmware as VersionLabelType)
+    label: getVersionLabel(intl, apModelFirmware as VersionLabelType),
+    releaseDate: apModelFirmware.releaseDate
   }
 }
 

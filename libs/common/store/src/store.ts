@@ -18,6 +18,7 @@ import {
   baseEdgeHqosProfilesApi as edgeHqosProfilesApi,
   baseEdgeSdLanApi,
   baseEdgeMdnsProxyApi,
+  baseEdgeTnmServiceApi,
   baseEventAlarmApi as eventAlarmApi,
   baseFirmwareApi as firmwareApi,
   intentAIApi,
@@ -47,7 +48,9 @@ import {
   baseEthernetPortProfileApi as ethernetPortProfileApi,
   baseVenueApi as venueApi,
   baseWorkflowApi,
-  videoCallQoeApi
+  videoCallQoeApi,
+  baseRuckusAssistantApi as ruckusAssistantApi,
+  baseDirectoryServerApi as directoryServerApi
 } from './baseApi'
 
 const isDev = process.env['NODE_ENV'] === 'development'
@@ -94,11 +97,14 @@ export const store = configureStore({
     [notificationApi.reducerPath]: notificationApi.reducer,
     [baseEdgeSdLanApi.reducerPath]: baseEdgeSdLanApi.reducer,
     [baseEdgeMdnsProxyApi.reducerPath]: baseEdgeMdnsProxyApi.reducer,
+    [baseEdgeTnmServiceApi.reducerPath]: baseEdgeTnmServiceApi.reducer,
     [baseConfigTemplateApi.reducerPath]: baseConfigTemplateApi.reducer,
     [baseWorkflowApi.reducerPath]: baseWorkflowApi.reducer,
     [smartZoneApi.reducerPath]: smartZoneApi.reducer,
     [ethernetPortProfileApi.reducerPath]: ethernetPortProfileApi.reducer,
-    [edgeHqosProfilesApi.reducerPath]: edgeHqosProfilesApi.reducer
+    [edgeHqosProfilesApi.reducerPath]: edgeHqosProfilesApi.reducer,
+    [ruckusAssistantApi.reducerPath]: ruckusAssistantApi.reducer,
+    [directoryServerApi.reducerPath]: directoryServerApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -147,11 +153,14 @@ export const store = configureStore({
       notificationApi.middleware,
       baseEdgeSdLanApi.middleware,
       baseEdgeMdnsProxyApi.middleware,
+      baseEdgeTnmServiceApi.middleware,
       baseConfigTemplateApi.middleware,
       baseWorkflowApi.middleware,
       smartZoneApi.middleware,
       ethernetPortProfileApi.middleware,
-      edgeHqosProfilesApi.middleware
+      edgeHqosProfilesApi.middleware,
+      ruckusAssistantApi.middleware,
+      directoryServerApi.middleware
     ])
   },
 

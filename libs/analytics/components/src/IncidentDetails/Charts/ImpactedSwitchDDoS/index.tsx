@@ -3,17 +3,21 @@ import { useMemo } from 'react'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { defaultSort, overlapsRollup, sortProp }                                   from '@acx-ui/analytics/utils'
-import {  Card, Loader, Table, TableProps, NoGranularityText, cssStr, DonutChart } from '@acx-ui/components'
-import { intlFormats }                                                             from '@acx-ui/formatter'
-import { TenantLink }                                                              from '@acx-ui/react-router-dom'
+import { defaultSort, overlapsRollup, sortProp } from '@acx-ui/analytics/utils'
+import {  Card, Loader, Table,
+  TableProps, NoGranularityText, cssStr,
+  DonutChart, showToast,
+  Tooltip } from '@acx-ui/components'
+import { get }          from '@acx-ui/config'
+import { intlFormats }  from '@acx-ui/formatter'
+import { CopyOutlined } from '@acx-ui/icons-new'
+import { TenantLink }   from '@acx-ui/react-router-dom'
 
 import {
   ImpactedSwitchPortRow,
   useImpactedSwitchDDoSAndTotalSwitchCountQuery,
   useImpactedSwitchDDoSQuery
 } from './services'
-
 
 import type { ChartProps } from '../types'
 
@@ -99,16 +103,21 @@ function ImpactedSwitchTable (props: {
 }) {
   const { $t } = useIntl()
   const rows = props.data
+  const isMLISA = get('IS_MLISA_SA')
 
   const columns: TableProps<ImpactedSwitchPortRow>['columns'] = useMemo(()=>[{
     key: 'name',
     dataIndex: 'name',
     title: $t({ defaultMessage: 'Switch Name' }),
     render: (_, { mac, name },__,highlightFn) =>
-      <TenantLink to={`devices/switch/${mac}/serial/details/reports`}>
+      <TenantLink
+        to={`devices/switch/${isMLISA ? mac : mac?.toLowerCase()}/serial/details/${isMLISA
+          ? 'reports': 'overview'}`
+        }>
         {highlightFn(name)}
       </TenantLink>,
     fixed: 'left',
+    width: 100,
     sorter: { compare: sortProp('name', defaultSort) },
     defaultSortOrder: 'ascend',
     searchable: true
@@ -117,6 +126,7 @@ function ImpactedSwitchTable (props: {
     dataIndex: 'mac',
     title: $t({ defaultMessage: 'Switch MAC' }),
     fixed: 'left',
+    width: 100,
     sorter: { compare: sortProp('mac', defaultSort) },
     searchable: true
   }, {
@@ -124,6 +134,7 @@ function ImpactedSwitchTable (props: {
     dataIndex: 'serial',
     title: $t({ defaultMessage: 'Switch Serial' }),
     fixed: 'left',
+    width: 80,
     sorter: { compare: sortProp('serial', defaultSort) },
     searchable: true
   }, {
@@ -131,10 +142,38 @@ function ImpactedSwitchTable (props: {
     dataIndex: 'portNumbers',
     title: $t({ defaultMessage: 'Port Numbers' }),
     fixed: 'left',
+    width: 250,
     sorter: { compare: sortProp('portNumbers', defaultSort) },
     searchable: true
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }],[])
+  }, {
+    key: 'action',
+    dataIndex: 'action',
+    title: $t({ defaultMessage: 'Action' }),
+    width: 50,
+    render: (_, { portNumbers, portCount }) => {
+      return (
+        <Tooltip
+          title={$t({ defaultMessage: 'Copy Port number{plural} to clipboard.' }
+            ,{ plural: portCount > 1 ? 's' : '' })}
+          placement='top'>
+          <CopyOutlined
+            onClick={() => {
+              navigator.clipboard.writeText(portNumbers)
+              showToast({
+                type: 'success',
+                content: $t({ defaultMessage: 'Port number{plural} copied to clipboard.' },
+                  { plural: portCount > 1 ? 's' : '' }
+                )
+              })
+            }}
+            size='sm'
+            style={{ cursor: 'pointer' }}/>
+        </Tooltip>
+      )
+    }
+  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  ],[])
 
   return <Table
     columns={columns}

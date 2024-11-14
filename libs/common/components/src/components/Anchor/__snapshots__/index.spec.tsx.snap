@@ -118,6 +118,13 @@ exports[`Anchor should render AnchorLayout correctly 1`] = `
   min-height: 100vh;
 }
 
+@media screen and (max-height:560px) {
+  .c0 > div > [aria-hidden] + .ant-affix {
+    top: 0px !important;
+    z-index: 4;
+  }
+}
+
 <div
     class="ant-row"
     style="margin-left: -10px; margin-right: -10px;"

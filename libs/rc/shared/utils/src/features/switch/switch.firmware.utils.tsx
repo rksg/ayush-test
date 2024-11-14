@@ -35,6 +35,9 @@ export const checkVersionAtLeast09010h = (version: string): boolean => {
 }
 
 export const invalidVersionFor82Av = (version: string): boolean => {
+  if (_.isEmpty(version)) {
+    return false
+  }
   if (_.isString(version) && version.startsWith('10010')) {
     return !isVerGEVer(version, '10010f', false)
   } else if (_.isString(version) && version.startsWith('10020')) {
@@ -162,8 +165,7 @@ const firmwarePatternForRelease = /(?:[A-Z]{3,})?(?<major>\d{4,})(?<minor>[a-z]*
 
 function parseFirmwareVersion (fwString: string): VersionMap {
   // sanitize
-  fwString = fwString.replace('.bin', '')
-  fwString = fwString.replace('ufi', '')
+  fwString = fwString.replace(/\.bin|ufi|\./g, '')
 
   const matcher = fwString.match(firmwarePattern)?.groups
   const matcherForRelease = fwString.match(firmwarePatternForRelease)?.groups

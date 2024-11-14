@@ -489,7 +489,22 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             }
           }
         } else {
-          const result = (res.data ?? []) as MdnsProxyAp[]
+          const result = ((res.data ?? []) as MdnsProxyAp[])
+            .map(data => {
+              const rules = (data.rules ?? []).map((rule) => {
+                return {
+                  ...rule,
+                  id: uuidv4(),
+                  ruleIndex: uuidv4()
+                }
+              })
+
+              return {
+                ...data,
+                rules
+              }
+            })
+
           return {
             data: {
               data: result,

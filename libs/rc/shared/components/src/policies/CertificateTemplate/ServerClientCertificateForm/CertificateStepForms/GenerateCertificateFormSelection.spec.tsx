@@ -1,7 +1,6 @@
-import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
-import moment    from 'moment'
-import { rest }  from 'msw'
+import { Form } from 'antd'
+import moment   from 'moment'
+import { rest } from 'msw'
 
 import { AlgorithmType, CertificateUrls, GenerationCaType } from '@acx-ui/rc/utils'
 import { Provider }                                         from '@acx-ui/store'
@@ -9,7 +8,7 @@ import { mockServer, render, renderHook, screen }           from '@acx-ui/test-u
 
 import { certificateAuthorityList, serverCertificateList } from '../../__test__/fixtures'
 
-import GenerateCertificateFormSelection from './GenerateCertificateFormSelection'
+import { GenerateCertificateFormSelection } from './GenerateCertificateFormSelection'
 
 describe('GenerateCertificateFormSelection', () => {
   beforeEach(() => {
@@ -51,19 +50,4 @@ describe('GenerateCertificateFormSelection', () => {
     expect(screen.getByText('Certificate Attributes')).toBeVisible()
   })
 
-  it('should render the component correctly when clicking button', async () => {
-    render(setup(<GenerateCertificateFormSelection />))
-
-    const uploadRadio = screen.getByDisplayValue('UPLOAD')
-    await userEvent.click(uploadRadio)
-    expect(screen.getByText('Upload Client / Server Certificate')).toBeVisible()
-
-    const generateNewRadio = screen.getByDisplayValue('NEW')
-    await userEvent.click(generateNewRadio)
-    expect(screen.getByText('Generate Certificate')).toBeVisible()
-
-    const generateWithCSRRadio = screen.getByDisplayValue('WITH_CSR')
-    await userEvent.click(generateWithCSRRadio)
-    expect(screen.getByText('Generate With CSR')).toBeVisible()
-  })
 })

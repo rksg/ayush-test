@@ -173,9 +173,49 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
     newApi: true,
     url: '/certificates/:certId'
   },
+  getCertificateList: {
+    method: 'post',
+    newApi: true,
+    url: '/certificates/query'
+  },
+  activateCertificateAuthorityOnRadius: {
+    method: 'put',
+    url: '/radiusServerProfiles/:radiusId/certificateAuthorities/:certificateAuthorityId',
+    newApi: true
+  },
+  deactivateCertificateAuthorityOnRadius: {
+    method: 'delete',
+    url: '/radiusServerProfiles/:radiusId/certificateAuthorities/:certificateAuthorityId',
+    newApi: true
+  },
+  activateClientCertificateOnRadius: {
+    method: 'put',
+    url: '/radiusServerProfiles/:radiusId/certificates/:clientCertificateId?certType=CLIENT',
+    newApi: true
+  },
+  deactivateClientCertificateOnRadius: {
+    method: 'delete',
+    url: '/radiusServerProfiles/:radiusId/certificates/:clientCertificateId?certType=CLIENT',
+    newApi: true
+  },
+  activateServerCertificateOnRadius: {
+    method: 'put',
+    url: '/radiusServerProfiles/:radiusId/certificates/:serverCertificateId?certType=SERVER',
+    newApi: true
+  },
+  deactivateServerCertificateOnRadius: {
+    method: 'delete',
+    url: '/radiusServerProfiles/:radiusId/certificates/:serverCertificateId?certType=SERVER',
+    newApi: true
+  },
   generateClientServerCertificate: {
     method: 'post',
     newApi: true,
     url: '/certificateAuthorities/:caId/certificates'
+  },
+  uploadCertificate: {
+    method: 'post',
+    newApi: true,
+    url: '/certificates'
   }
 }

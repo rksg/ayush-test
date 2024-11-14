@@ -1,14 +1,12 @@
-import { Dispatch, SetStateAction, createContext, useEffect, useMemo, useState } from 'react'
-
+import { Dispatch, SetStateAction, createContext, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { BaseQueryFn, QueryActionCreatorResult, QueryDefinition } from '@reduxjs/toolkit/query'
 import { DefaultOptionType }                                      from 'antd/lib/select'
-import { find, isNil }                                            from 'lodash'
+import { find, isNil, union, uniq }                               from 'lodash'
 import { useParams }                                              from 'react-router-dom'
 
 import {
   useGetAvailableSwitchesQuery,
-  useGetDpskQuery,
   useGetEdgeClusterListQuery,
   useGetEdgePinViewDataListQuery,
   useGetPersonaGroupByIdQuery,
@@ -17,7 +15,8 @@ import {
   useVenueNetworkActivationsViewModelListQuery,
   useVenuesListQuery,
   useGetDhcpStatsQuery,
-  useGetEdgeMvSdLanViewDataListQuery
+  useGetEdgeMvSdLanViewDataListQuery,
+  useLazyGetDpskQuery
 } from '@acx-ui/rc/services'
 import {
   DhcpStats,
@@ -57,7 +56,8 @@ export interface PersonalIdentityNetworkFormContextType {
   getClusterName: (edgeClusterId: string) => string
   getDhcpName: (dhcpId: string) => string
   getTunnelProfileName: (tunnelId: string) => string
-  getNetworksName: (networkIds: string[]) => (string | undefined)[]
+  getNetworksName: (networkIds: string[]) => (string | undefined)[],
+  addNetworkCallback: (dpskPoolId: string) => void
 }
 
 // eslint-disable-next-line max-len
@@ -88,8 +88,8 @@ const tunnelProfileDefaultPayload = {
   sortOrder: 'ASC'
 }
 
-const clusterOptionsDefaultPayload = {
-  fields: ['name', 'clusterId'],
+const clusterDataDefaultPayload = {
+  fields: ['name', 'clusterId', 'venueId'],
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
@@ -105,10 +105,13 @@ const activtatedVenueNetworksPayload = {
 export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) => {
   const params = useParams()
   const [venueId, setVenueId] = useState('')
+  const [dpskData, setDpskData] = useState<DpskSaveData | undefined>(undefined)
+
+  const [getDpsk] = useLazyGetDpskQuery()
 
   const {
     usedSdlanClusterIds,
-    usedSdlanVenueIds,
+    usedSdlanTunneledVenueIds,
     usedSdlanNetworkIds,
     isSdlanLoading
   } = useGetEdgeMvSdLanViewDataListQuery({
@@ -123,7 +126,11 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         usedSdlanClusterIds: Array.from(new Set(
           allSdLans.flatMap(sdLan => [sdLan.edgeClusterId, sdLan.guestEdgeClusterId])
             .filter(id => !!id))),
-        usedSdlanVenueIds: allSdLans.map(item => item.venueId),
+        usedSdlanTunneledVenueIds: Array.from(new Set([
+          ...allSdLans.flatMap(sdlan => sdlan.tunneledWlans ?? [])
+            .map(wlan => wlan.venueId)
+            .filter(id => !!id)
+        ])),
         usedSdlanNetworkIds: Array.from(new Set(
           allSdLans.flatMap(sdlan => sdlan.tunneledWlans ?? [])
             .map(wlan => wlan.networkId)
@@ -176,35 +183,6 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       }
     })
 
-  const {
-    dpskData,
-    isDpskLoading
-  } = useGetDpskQuery(
-    { params: { serviceId: personaGroupData?.dpskPoolId } },
-    {
-      skip: !!!personaGroupData?.dpskPoolId,
-      selectFromResult: ({ data, isLoading, isFetching }) => {
-        return {
-          dpskData: data,
-          isDpskLoading: isLoading || isFetching
-        }
-      }
-    })
-
-  const { clusterOptions, isLoading: isClusterOptionsLoading } = useGetEdgeClusterListQuery(
-    { params, payload: { ...clusterOptionsDefaultPayload, filters: { venueId: [venueId] } } },
-    {
-      skip: !Boolean(venueId),
-      selectFromResult: ({ data, isLoading }) => {
-        return {
-          clusterOptions: data?.data
-            .filter(item => !usedSdlanClusterIds.includes(item.clusterId))
-            .map(item => ({ label: item.name, value: item.clusterId })),
-          isLoading
-        }
-      }
-    })
-
   const { tunnelProfileOptions, isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
     payload: tunnelProfileDefaultPayload
   }, {
@@ -247,6 +225,26 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
     }
   })
 
+  const { switchList, refetch: refetchSwitchesQuery } = useGetAvailableSwitchesQuery({
+    params: { ...params, venueId }
+  }, {
+    skip: !venueId,
+    selectFromResult: ({ data }) => ({
+      switchList: data?.switchViewList
+    })
+  })
+
+  const networkOptions = useMemo(() => {
+    // eslint-disable-next-line max-len
+    if (isNil(dpskData?.networkIds) || (isNil(usedNetworkIds) && usedSdlanNetworkIds.length === 0)) return []
+
+    return dpskNetworkList?.filter(item => !usedNetworkIds?.includes(item.id ?? ''))
+      .filter(item => dpskData?.networkIds?.includes(item.id))
+      .filter(item => !usedSdlanNetworkIds.includes(item.id))
+      .map(item => ({ label: item.name, value: item.id }))
+  }, [dpskData?.networkIds, dpskNetworkList, usedNetworkIds, usedSdlanNetworkIds])
+
+
   const {
     venues, isVenueOptionsLoading
   } = useVenuesListQuery(
@@ -260,34 +258,47 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       }
     })
 
-  const { switchList, refetch: refetchSwitchesQuery } = useGetAvailableSwitchesQuery({
-    params: { ...params, venueId }
-  }, {
-    skip: !venueId,
-    selectFromResult: ({ data }) => ({
-      switchList: data?.switchViewList
+  const { clusterData, isLoading: isClusterDataLoading } = useGetEdgeClusterListQuery(
+    { params, payload: { ...clusterDataDefaultPayload } },
+    {
+      selectFromResult: ({ data, isLoading }) => {
+        return {
+          clusterData: data?.data
+            .map(item => ({ label: item.name, value: item.clusterId, venueId: item.venueId })),
+          isLoading
+        }
+      }
     })
-  })
 
-  const networkOptions = useMemo(() => {
-    if (isNil(usedNetworkIds) && usedSdlanNetworkIds.length === 0) return []
-
-    return dpskNetworkList?.filter(item => !usedNetworkIds?.includes(item.id ?? ''))
-      .filter(item => dpskData?.networkIds?.includes(item.id))
-      .filter(item => !usedSdlanNetworkIds.includes(item.id))
-      .map(item => ({ label: item.name, value: item.id }))
-  }, [dpskData?.networkIds, dpskNetworkList, usedNetworkIds, usedSdlanNetworkIds])
+  const usedSdlanVenueIds = useMemo(() => {
+    const sdlanClusterVenueIds = clusterData?.filter(item =>
+      usedSdlanClusterIds.includes(item.value))
+      .map(item => item.venueId)
+    return uniq(union(usedSdlanTunneledVenueIds, sdlanClusterVenueIds))
+  }, [usedSdlanTunneledVenueIds, usedSdlanClusterIds])
 
   const venueOptions = useMemo(() => {
-    if (isNil(usedVenueIds)) return []
-
-    return venues?.filter((item) => !usedVenueIds.includes(item.value))
-      .filter(item => !usedSdlanVenueIds.includes(item.value))
+    return venues?.filter(item =>
+      !(usedSdlanVenueIds.includes(item.value) || usedVenueIds?.includes(item.value))
+    )
   }, [venues, usedVenueIds, usedSdlanVenueIds])
+
+  const clusterOptions = useMemo(() => {
+    return clusterData?.filter(item =>
+      !usedSdlanClusterIds.includes(item.value) && venueId === item.venueId) ?? []
+  }, [venueId, usedSdlanClusterIds])
 
   useEffect(() => {
     if(props.venueId) setVenueId(props.venueId)
   }, [props.venueId])
+
+  useEffect(() => {
+    if (!personaGroupData?.dpskPoolId) return
+    getDpsk({ params: { serviceId: personaGroupData?.dpskPoolId } }).unwrap()
+      .then(data => {
+        setDpskData(data)
+      })
+  }, [personaGroupData?.dpskPoolId])
 
   const getVenueName = (value: string) => {
     return venueOptions?.find(item => item.value === value)?.label ?? ''
@@ -310,6 +321,15 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       .map(item => item.label) ?? []
   }
 
+  const addNetworkCallback = useCallback((dpskPoolId?: string) => {
+    getDpsk({ params: { serviceId: dpskPoolId } }).unwrap()
+      .then(data => {
+        setDpskData(data)
+      })
+  }, [getDpsk])
+
+  const isDpskLoading = isNil(dpskData)
+
   return (
     <PersonalIdentityNetworkFormContext.Provider
       value={{
@@ -324,7 +344,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         dpskData,
         isDpskLoading,
         clusterOptions,
-        isClusterOptionsLoading: isClusterOptionsLoading || isSdlanLoading,
+        isClusterOptionsLoading: isClusterDataLoading || isSdlanLoading,
         dhcpList,
         dhcpOptions: dhcpList?.map(item => ({ label: item.serviceName, value: item.id })),
         isDhcpOptionsLoading,
@@ -339,7 +359,8 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         getClusterName,
         getDhcpName,
         getTunnelProfileName,
-        getNetworksName
+        getNetworksName,
+        addNetworkCallback
       }}
     >
       {props.children}

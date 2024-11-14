@@ -110,7 +110,7 @@ export function SwitchOverviewTab () {
     <GridRow>
       <GridCol col={{ span: 24 }} style={{ height: '148px' }}>
         <Loader states={[{ isLoading: !switchDetail }]}>
-          { switchDetail &&
+          { switchDetail?.switchMac &&
           <SwitchInfoWidget
             switchDetail={switchDetail as SwitchViewModel}
             filters={switchFilter} /> }
@@ -124,11 +124,12 @@ export function SwitchOverviewTab () {
       style={{ marginTop: '25px' }}
     >
       <Tabs.TabPane tab={$t({ defaultMessage: 'Panel' })} key='panel'>
-        <SwitchOverviewPanel
+        {switchDetail?.switchMac && <SwitchOverviewPanel
           filters={switchFilter}
           stackMember={syncedStackMember as StackMember[]}
           switchDetail={switchDetail}
           currentSwitchDevice={currentSwitchDevice} />
+        }
       </Tabs.TabPane>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Ports' })} key='ports'>
         <SwitchOverviewPorts

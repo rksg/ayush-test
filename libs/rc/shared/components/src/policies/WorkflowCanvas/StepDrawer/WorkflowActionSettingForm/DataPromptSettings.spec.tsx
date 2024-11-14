@@ -1,4 +1,3 @@
-
 import { within } from '@testing-library/react'
 import userEvent  from '@testing-library/user-event'
 import { Form }   from 'antd'
@@ -40,6 +39,7 @@ describe('DataPromptSettings', () => {
   it('should show/hide title when toggling title switch', () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
+      form.setFieldValue('displayTitle', true)
       return form
     })
     render(
@@ -59,6 +59,7 @@ describe('DataPromptSettings', () => {
   it('should show/hide messageHtml when toggling messageHtml switch', () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
+      form.setFieldValue('displayMessageHtml', true)
       return form
     })
     render(
@@ -108,6 +109,8 @@ describe('DataPromptSettings', () => {
       form.setFieldValue('variables', [{ type: 'USER_NAME', label: 'Username' },
         { type: 'USER_NAME', label: 'Username1' }
       ])
+      form.setFieldValue('displayTitle', true)
+      form.setFieldValue('displayMessageHtml', true)
       return form
     })
     render(
@@ -131,6 +134,8 @@ describe('DataPromptSettings', () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       form.setFieldValue('variables', [{ type: 'USER_NAME', label: '' }])
+      form.setFieldValue('displayTitle', true)
+      form.setFieldValue('displayMessageHtml', true)
       return form
     })
 
@@ -156,6 +161,8 @@ describe('DataPromptSettings', () => {
   it('should validate no leading or trailing spaces allowed', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
+      form.setFieldValue('displayTitle', true)
+      form.setFieldValue('displayMessageHtml', true)
       return form
     })
 
@@ -190,6 +197,8 @@ describe('DataPromptSettings', () => {
   it('should validate values that are too long', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
+      form.setFieldValue('displayTitle', true)
+      form.setFieldValue('displayMessageHtml', true)
       return form
     })
 
