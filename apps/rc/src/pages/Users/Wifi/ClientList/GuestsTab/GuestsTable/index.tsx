@@ -161,8 +161,17 @@ export const GuestsTable = () => {
   useEffect(() => {
     if (networkListQuery.data?.data) {
       const networks = networkListQuery.data?.data ?? []
-      const networksWithGuestPass = networks.filter(network =>
-        network.captiveType === GuestNetworkTypeEnum.GuestPass)
+      const networksWithGuestPass = networks.filter(network => {
+        if (network.captiveType) {
+          return [
+            GuestNetworkTypeEnum.GuestPass,
+            GuestNetworkTypeEnum.HostApproval,
+            GuestNetworkTypeEnum.SelfSignIn,
+            GuestNetworkTypeEnum.Directory
+          ].includes(network.captiveType)
+        }
+        return false
+      })
       setGuestNetworkList(networks)
       setAllowedNetworkList(networksWithGuestPass)
     }
@@ -264,7 +273,7 @@ export const GuestsTable = () => {
       }
     }, {
       key: 'ssid',
-      title: $t({ defaultMessage: 'Allowed Network' }),
+      title: $t({ defaultMessage: 'Network' }),
       dataIndex: 'wifiNetworkId',
       filterKey: 'wifiNetworkId',
       filterable: networkFilterOptions,
