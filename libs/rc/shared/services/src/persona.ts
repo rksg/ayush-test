@@ -131,7 +131,21 @@ export const personaApi = basePersonaApi.injectEndpoints({
       providesTags: [
         { type: 'PersonaGroup', id: 'LIST' },
         { type: 'Persona', id: 'ID' }
-      ]
+      ],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          console.log(msg)
+          const activities = [
+            'CreatePersona'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(personaApi.util.invalidateTags([
+              { type: 'PersonaGroup', id: 'LIST' },
+              { type: 'Persona', id: 'ID' }
+            ]))
+          })
+        })
+      }
     }),
     updatePersonaGroup: build.mutation<CommonAsyncResponse, RequestPayload>({
       query: ({ params, payload, customHeaders }) => {
@@ -190,20 +204,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
       invalidatesTags: [
         { type: 'PersonaGroup', id: 'LIST' },
         { type: 'Persona', id: 'ID' }
-      ],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, async (msg) => {
-          try {
-            const response = await api.cacheDataLoaded
-
-            if (response.data.requestId === msg.requestId
-                && msg.status === 'SUCCESS'
-                && msg.useCase === 'CreatePersona') {
-              requestArgs.callback?.(response.data)
-            }
-          } catch { }
-        })
-      }
+      ]
     }),
     importPersonas: build.mutation<{}, RequestPayload>({
       query: ({ params, payload, customHeaders }) => {
