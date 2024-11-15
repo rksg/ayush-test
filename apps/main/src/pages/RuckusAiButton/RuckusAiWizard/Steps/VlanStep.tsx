@@ -73,7 +73,7 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
     } else {
       setDisabledVlanIds([...disabledVlanIds, String(vid)])
     }
-   
+
   }
 
   const handleAddVlan = () => {

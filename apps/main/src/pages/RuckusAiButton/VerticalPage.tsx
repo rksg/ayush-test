@@ -117,12 +117,18 @@ function VerticalPage () {
         <Radio value={'OTHER'} style={{ marginLeft: '90px', marginTop: '30px' }}>
           {$t({ defaultMessage: 'Others' })}
           {selected === 'OTHER' &&
-          <Form.Item
-            name={'othersValue'}
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
+            <Form.Item
+              name={'othersValue'}
+              rules={[{
+                required: true,
+                message: $t({
+                  defaultMessage:
+                    'Please enter a value for Others'
+                })
+              }]}
+            >
+              <Input />
+            </Form.Item>
           }
         </Radio>
       </Radio.Group>
