@@ -24,20 +24,20 @@ type NetworkConfig = {
 
 export function WlanDetailStep (props: {
   payload: string, sessionId: string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formInstance: ProFormInstance<any> | undefined
 }) {
   const { $t } = useIntl()
   const { formInstance } = props
   const initialData = JSON.parse(props.payload || '[]') as NetworkConfig[]
-  const [data, setData] = useState<NetworkConfig[]>(initialData)
+  const [data, setData] = useState<NetworkConfig[]>([])
 
   const [modalType, setModalType] = useState<NetworkTypeEnum>(NetworkTypeEnum.OPEN)
   const [modalId, setModalId] = useState('')
   const [modalName, setModalName] = useState('')
 
-  const [configuredFlags, setConfiguredFlags] = useState<boolean[]>(Array(data.length).fill(false))
-  const [ssidTypes, setSsidTypes] = useState<NetworkTypeEnum[]>(data.map(item => item['SSID Type']))
+  const [configuredFlags, setConfiguredFlags] = useState<Map<string, boolean>>(new Map())
+  const [ssidTypes, setSsidTypes] = useState<Map<string, NetworkTypeEnum>>(new Map())  // 修改为Map
   const [networkModalVisible, setNetworkModalVisible] = useState(false)
   const [configuredIndex, setConfiguredIndex] = useState<number>(0)
 
@@ -45,28 +45,24 @@ export function WlanDetailStep (props: {
     if (initialData !== data) {
       formInstance?.setFieldsValue({ data: initialData })
       setData(initialData)
-      setSsidTypes(initialData.map(item => item['SSID Type']))
+      setSsidTypes(new Map(initialData.map(item => [item.id, item['SSID Type']])))  // 初始化时使用id作为key
       setConfigFlags()
     }
   }, [props.payload])
 
   const setConfigFlags = function () {
-    const newSsidTypes = initialData.map(item => item['SSID Type'])
-    const diffIndices = ssidTypes
-      .map((type, index) => (type !== newSsidTypes[index] ? index : -1))
+    const newSsidTypes = new Map(initialData.map(item => [item.id, item['SSID Type']])) // 更新为Map
+    const diffIndices = data
+      .map((item, index) => (ssidTypes.get(item.id) !== newSsidTypes.get(item.id) ? index : -1))
       .filter(index => index !== -1)
 
-    setConfiguredFlags(prevConfiguredFlags => {
-      const updatedFlags = [...prevConfiguredFlags]
-      diffIndices.forEach(index => {
-        updatedFlags[index] = false
-      })
-      return updatedFlags
+    // 更新配置状态时，用id作为映射
+    const updatedFlags = new Map(configuredFlags)
+    diffIndices.forEach(index => {
+      updatedFlags.set(data[index].id, false)
     })
 
-    if (data.length === 0) {
-      setConfiguredFlags(Array(initialData.length).fill(false))
-    }
+    setConfiguredFlags(updatedFlags)
   }
 
   const networkOptions = [
@@ -78,14 +74,13 @@ export function WlanDetailStep (props: {
   ]
 
   const handleSsidTypeChange = (index: number, value: NetworkTypeEnum) => {
-    setSsidTypes((prevSsidTypes) => {
-      const updatedSsidTypes = [...prevSsidTypes]
-      updatedSsidTypes[index] = value
-      return updatedSsidTypes
-    })
+    const updatedSsidTypes = new Map(ssidTypes)
+    updatedSsidTypes.set(data[index].id, value)  // 使用id来更新ssidTypes
+    setSsidTypes(updatedSsidTypes)
+
     setConfiguredFlags((prevConfiguredFlags) => {
-      const updatedConfiguredFlags = [...prevConfiguredFlags]
-      updatedConfiguredFlags[index] = false
+      const updatedConfiguredFlags = new Map(prevConfiguredFlags)
+      updatedConfiguredFlags.set(data[index].id, false)  // 用id来更新配置状态
       return updatedConfiguredFlags
     })
 
@@ -122,18 +117,17 @@ export function WlanDetailStep (props: {
     }
 
     setConfiguredFlags((prevConfiguredFlags) => {
-      const updatedConfiguredFlags = [...prevConfiguredFlags]
-      updatedConfiguredFlags[configuredIndex] = true
+      const updatedConfiguredFlags = new Map(prevConfiguredFlags)
+      updatedConfiguredFlags.set(modalId, true)  // 用id来更新配置状态
       return updatedConfiguredFlags
     })
-
-
   }, [modalId, modalName, modalType, configuredIndex, props.sessionId])
 
   useEffect(()=>{
-    configuredFlags.forEach((flag, index) => {
+    // 用id来检查配置状态
+    configuredFlags.forEach((flag, id) => {
       if (flag) {
-        formInstance?.validateFields([`configuredFlag-${index}`])
+        formInstance?.validateFields([`configuredFlag-${id}`])
       }
     })
   },[configuredFlags])
@@ -141,7 +135,7 @@ export function WlanDetailStep (props: {
   const getNetworkForm = <NetworkForm
     isRuckusAiMode={true}
     modalMode={true}
-    gptEditId={configuredFlags[configuredIndex] ? `${modalId}?type=${modalType}` : ''}
+    gptEditId={configuredFlags.get(modalId) ? `${modalId}?type=${modalType}` : ''}
     modalCallBack={handleModalCallback}
     createType={modalType}
   />
@@ -157,7 +151,7 @@ export function WlanDetailStep (props: {
       </UI.Header>
 
       {data.map((item, index) => (
-        <React.Fragment key={index}>
+        <React.Fragment key={item.id}>
           <UI.VlanContainer>
             <UI.CheckboxContainer>
               <UI.CheckboxIndexLabel>{index + 1}</UI.CheckboxIndexLabel>
@@ -204,7 +198,7 @@ export function WlanDetailStep (props: {
                 onClick={() => {
                   setModalId(item['id'])
                   setModalName(item['SSID Name'])
-                  setModalType(ssidTypes[index])
+                  setModalType(ssidTypes.get(item.id) || NetworkTypeEnum.OPEN)
                   setNetworkModalVisible(true)
                   setConfiguredIndex(index)
                 }}>
@@ -212,15 +206,15 @@ export function WlanDetailStep (props: {
                 <UI.ConfigurationHeader>
                   <div>
                     {networkOptions.find(
-                      option => option.value === ssidTypes[index])?.label || ''}
+                      option => option.value === ssidTypes.get(item.id))?.label || ''}
                         &nbsp;
                     {$t({ defaultMessage: 'Configurations' })}
-                    {ssidTypes[index] !== NetworkTypeEnum.OPEN &&
+                    {ssidTypes.get(item.id) !== NetworkTypeEnum.OPEN &&
                           <UI.RequiredIcon />}
                   </div>
 
                   <div style={{ display: 'flex' }}>
-                    {configuredFlags[index] ?
+                    {configuredFlags.get(item.id) ?
                       <UI.ConfiguredButton>
                         <UI.CollapseCircleSolidIcons />
                         <div>{$t({ defaultMessage: 'Configured' })}</div>
@@ -239,11 +233,11 @@ export function WlanDetailStep (props: {
                   marginTop: '-45px',
                   pointerEvents: 'none'
                 }}
-                name={`configuredFlag-${index}`}
+                name={`configuredFlag-${item.id}`} // 使用 id 作为字段名
                 rules={[{
                   validator: () => {
-                    if (!configuredFlags[index]
-                       && ssidTypes[index] !== NetworkTypeEnum.OPEN) {
+                    if (!configuredFlags.get(item.id) &&
+                      ssidTypes.get(item.id) !== NetworkTypeEnum.OPEN) {
                       return Promise.reject(new Error($t({
                         // eslint-disable-next-line max-len
                         defaultMessage: 'This configuration is not yet set. Please complete it to ensure proper functionality.'
@@ -251,16 +245,15 @@ export function WlanDetailStep (props: {
                     }
                     return Promise.resolve()
                   }
-                }]}
-              >
+                }]}>
                 <ProFormText hidden />
               </ProForm.Item>
-
             </UI.VlanDetails>
           </UI.VlanContainer>
-          <Divider dashed />
+          {index < data.length - 1 && <Divider />}
         </React.Fragment>
       ))}
+
       {networkModalVisible &&
         <Modal
           // eslint-disable-next-line max-len
@@ -273,5 +266,4 @@ export function WlanDetailStep (props: {
       }
     </UI.Container>
   )
-
 }
