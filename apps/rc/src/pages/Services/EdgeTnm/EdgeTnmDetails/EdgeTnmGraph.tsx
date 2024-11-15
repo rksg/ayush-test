@@ -52,7 +52,7 @@ export const EdgeTnmGraph = (props: EdgeTnmGraphProps) => {
   }, [isFetching])
 
   return <Loader states={[{ isLoading: isLoading || isParentLoading, isFetching }]}
-    style={{ backgroundColor: 'transparent', minHeight: 300 }}
+    style={{ backgroundColor: 'transparent', minHeight: 400 }}
   >
     <Card title={graphName ?? ''} type='no-border'>
       <AutoSizer>
@@ -62,6 +62,7 @@ export const EdgeTnmGraph = (props: EdgeTnmGraphProps) => {
               style={{ height, width }}
               data={chartData}
               dataFormatter={formatter('countFormat')}
+              grid={{ top: '20%' }}
             />
             : <NoData />
         )}
