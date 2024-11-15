@@ -2162,7 +2162,19 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
         return { data: venueLanPortSettings }
       }
-    })
+    }),
+
+    updateVenueLanPortSpecificSettings:
+      build.mutation<CommonResult, RequestPayload>({
+        query: ({ params, payload }) => {
+          const req = createHttpRequest(
+            CommonRbacUrlsInfo.updateVenueLanPortSpecificSettings, params)
+          return {
+            ...req,
+            body: JSON.stringify(payload)
+          }
+        }
+      })
 
 
   })
@@ -2313,7 +2325,8 @@ export const {
   useUpdateVenueApSmartMonitorMutation,
 
   useGetVenueLanPortWithEthernetSettingsQuery,
-  useLazyGetVenueLanPortWithEthernetSettingsQuery
+  useLazyGetVenueLanPortWithEthernetSettingsQuery,
+  useUpdateVenueLanPortSpecificSettingsMutation
 } = venueApi
 
 
