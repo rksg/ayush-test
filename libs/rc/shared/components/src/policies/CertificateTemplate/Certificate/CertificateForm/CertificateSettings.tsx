@@ -31,8 +31,6 @@ export default function CertificateSettings (
     data: {} as Persona | undefined
   })
 
-  const [identityGroupId, setIdentityGroupId] = useState(undefined as string | undefined)
-
   const { caList } = useGetCertificateAuthoritiesQuery(
     { payload: { page: '1', pageSize: MAX_CERTIFICATE_PER_TENANT } },
     {
