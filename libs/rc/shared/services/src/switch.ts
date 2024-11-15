@@ -386,7 +386,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           const activities = [
             'AddSwitchConfigProfile',
             'UpdateSwitchConfigProfile',
-            'DeleteSwitchConfigProfile'
+            'DeleteSwitchConfigProfile',
+            'UpdateSwitchCliProfile'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(switchApi.util.invalidateTags([

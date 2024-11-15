@@ -1206,7 +1206,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg,
-            ['AddAaaServer', 'UpdateAaaServer', 'DeleteAaaServer'], () => {
+            [
+              'AddAaaServer',
+              'UpdateAaaServer',
+              'DeleteAaaServer',
+              'UpdateVenueAaaSetting',
+              'UpdateVenueTemplateAaaSetting',
+              'UpdateVenueAaaServer',
+              'UpdateVenueTemplateAaaServer'
+            ], () => {
               api.dispatch(venueApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
             })
         })
