@@ -200,7 +200,8 @@ export const failureCodes = {
   'invalid-aggregation-interval': defineMessage({ defaultMessage: 'SmartZone data interval is too long; recommended interval is 3 minutes or less.' }),
   'no-ap-peer-data': defineMessage({ defaultMessage: 'Insufficient data on neighbour APs.' }),
   'no-channel-range-for-aps': defineMessage({ defaultMessage: 'Insufficient channel range data for one or more APs.' }),
-  'deleted-zone': defineMessage({ defaultMessage: 'Unable to read <venueSingular></venueSingular> configuration.' })
+  'deleted-zone': defineMessage({ defaultMessage: 'Unable to read <venueSingular></venueSingular> configuration.' }),
+  'no-neighbourhood-data': defineMessage({ defaultMessage: 'AP neighbor information is currently unavailable for this network.' })
 }
 
 //For original codes, please refer to libs/analytics/components/src/Recommendations/config.ts
