@@ -105,15 +105,6 @@ export function URLProtocolRegExp (value: string) {
   }
   return Promise.resolve()
 }
-export function OcspURLRegExp (value: string) {
-  const { $t } = getIntl()
-  // eslint-disable-next-line max-len
-  const re = new RegExp('^(http:\\/\\/www\\.|http:\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}(:[0-9]{1,5})?(\\/.*)?$')
-  if (value!=='' && !re.test(value)) {
-    return Promise.reject($t(validationMessages.validateOcspURL))
-  }
-  return Promise.resolve()
-}
 export function domainNameRegExp (value: string) {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
