@@ -12,7 +12,7 @@ import {
   useLazyGetVlanOnboardConfigsQuery,
   useUpdateOnboardConfigsMutation
 } from '@acx-ui/rc/services'
-import { validateVlanName, Vlan } from '@acx-ui/rc/utils'
+import { validateVlanExcludingReserved, Vlan } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -268,7 +268,7 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
                 disabled={!checkboxStates[index]}
                 rules={[
                   { required: true },
-                  { validator: (_, value) => validateVlanName(value) }]}
+                  { validator: (_, value) => validateVlanExcludingReserved(value) }]}
                 fieldProps={{
                   'data-testid': `vlan-id-input-${index}`,
                   'type': 'number',

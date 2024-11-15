@@ -1,13 +1,12 @@
 import userEvent from '@testing-library/user-event'
 
-import { EdgeGeneralFixtures, EdgePortConfigFixtures, EdgeStatus } from '@acx-ui/rc/utils'
-import { render, screen }                                          from '@acx-ui/test-utils'
+import { EdgeGeneralFixtures, EdgeStatus } from '@acx-ui/rc/utils'
+import { render, screen }                  from '@acx-ui/test-utils'
 
-import { mockVipConfig }  from './__tests__/fixtures'
-import { InterfaceTable } from './InterfaceTable'
+import { mockVipConfig, mockVipInterfaces } from './__tests__/fixtures'
+import { InterfaceTable }                   from './InterfaceTable'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
-const { mockLanInterfaces } = EdgePortConfigFixtures
 
 jest.mock('./SelectInterfaceDrawer', () => ({
   ...jest.requireActual('./SelectInterfaceDrawer'),
@@ -28,7 +27,7 @@ describe('InterfaceTable', () => {
       <InterfaceTable
         value={mockVipConfig[0].interfaces}
         nodeList={mockEdgeClusterList.data[0].edgeList as EdgeStatus[]}
-        lanInterfaces={mockLanInterfaces}
+        lanInterfaces={mockVipInterfaces}
       />
     )
 
@@ -50,7 +49,7 @@ describe('InterfaceTable', () => {
           }
         ]}
         nodeList={mockEdgeClusterList.data[0].edgeList as EdgeStatus[]}
-        lanInterfaces={mockLanInterfaces}
+        lanInterfaces={mockVipInterfaces}
       />
     )
 
