@@ -1,15 +1,21 @@
-import { Divider, Typography } from 'antd'
-import { useIntl }             from 'react-intl'
+import { useState } from 'react'
 
+import { Col, Divider, Row, Space, Typography } from 'antd'
+import { useIntl }                              from 'react-intl'
+
+import { Button }                                                             from '@acx-ui/components'
 import { enrollmentTypeLabel, existingCertLabel, onboardSettingsDescription } from '@acx-ui/rc/components'
 import { CertificateTemplate }                                                from '@acx-ui/rc/utils'
 import { noDataDisplay }                                                      from '@acx-ui/utils'
 
 import { Description, DescriptionRow, Section } from '../styledComponents'
 
+import ChromebookInstuctionDrawer from './ChromebookInstuctionDrawer'
+
 export default function ChromebookTab ({ data }: { data: CertificateTemplate | undefined }) {
   const { $t } = useIntl()
   const { Text } = Typography
+  const [ isInstuctionOpen, setIsInstuctionOpen ] = useState(false)
 
   const chromebookInfo = [
     {
@@ -51,20 +57,40 @@ export default function ChromebookTab ({ data }: { data: CertificateTemplate | u
     }
   ]
 
+  const openInstructions = () => {
+    setIsInstuctionOpen(true)
+  }
+
+  const closeInstructions = () => {
+    setIsInstuctionOpen(false)
+  }
+
   return (
     <>
       <Section>
-        <DescriptionRow>
-          <Description>{$t({ defaultMessage: 'Status' })}</Description>
-          {data?.chromebook?.enabled ?
-            $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })}
-        </DescriptionRow>
-        {data?.chromebook?.enabled && chromebookInfo.map((item, index) => (
-          <DescriptionRow key={index}>
-            <Description>{item.title}</Description>
-            {item.content || noDataDisplay}
-          </DescriptionRow>
-        ))}
+        <Row justify='space-between'>
+          <Col>
+            <DescriptionRow>
+              <Description>{$t({ defaultMessage: 'Status' })}</Description>
+              {data?.chromebook?.enabled ?
+                $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })}
+            </DescriptionRow>
+            {data?.chromebook?.enabled && chromebookInfo.map((item, index) => (
+              <DescriptionRow key={index}>
+                <Description>{item.title}</Description>
+                {item.content || noDataDisplay}
+              </DescriptionRow>
+            ))}
+          </Col>
+          <Col>
+            <Button
+              type={'link'}
+              onClick={openInstructions}
+            >
+              {$t({ defaultMessage: 'Show setup instructions' })}
+            </Button>
+          </Col>
+        </Row>
       </Section>
       {data?.chromebook?.enabled &&
         <Section>
@@ -79,6 +105,8 @@ export default function ChromebookTab ({ data }: { data: CertificateTemplate | u
           ))}
         </Section>
       }
+
+      {isInstuctionOpen && <ChromebookInstuctionDrawer onClose={closeInstructions}/>}
     </>
   )
 }
