@@ -31,17 +31,21 @@ const selectedModelCaps = {
   canSupportPoeOut: false,
   model: 'R650',
   lanPorts: [{
+    defaultType: 'TRUNK',
     type: 'TRUNK',
     untagId: 1,
     vlanMembers: '1-4094',
     portId: '1',
-    enabled: true
+    enabled: true,
+    id: '1'
   }, {
+    defaultType: 'TRUNK',
     type: 'TRUNK',
     untagId: 1,
     vlanMembers: '1-4094',
     portId: '2',
-    enabled: true
+    enabled: true,
+    id: '2'
   }]
 }
 
@@ -229,7 +233,9 @@ describe('LanPortSettings - Ethernet Port Profile', () => {
         EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId.url,
         (_, res, ctx) => res(ctx.json({
           data: {
-            enabled: true
+            enabled: true,
+            overwriteUntagId: 1,
+            overwriteVlanMembers: '1-4094'
           }
         }))
       ),
