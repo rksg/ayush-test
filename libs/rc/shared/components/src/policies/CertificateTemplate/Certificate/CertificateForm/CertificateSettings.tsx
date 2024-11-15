@@ -64,6 +64,7 @@ export default function CertificateSettings (
   }
 
   const { data: personaGroupData } = useGetPersonaGroupByIdQuery(
+    // eslint-disable-next-line max-len
     { params: { groupId: templateData?.identityGroupId ?? getIdentityGroupIdFromSelectTemplate() } },
     { skip: (!templateData?.identityGroupId && !certificateTemplateId) || !!specificIdentity }
   )
@@ -125,6 +126,7 @@ export default function CertificateSettings (
               <Select
                 placeholder={$t({ defaultMessage: 'Choose ...' })}
                 options={
+                  // eslint-disable-next-line max-len
                   personaGroupData?.identities?.filter(identity => !identity.revoked).map(identity => ({ value: identity.id, label: identity.name }))}
               />
             </Form.Item>
@@ -137,6 +139,7 @@ export default function CertificateSettings (
                   type='link'
                   onClick={async () => {
                     setIdentityDrawerState({ visible: true,
+                      // eslint-disable-next-line max-len
                       data: { groupId: templateData?.identityGroupId ?? getIdentityGroupIdFromSelectTemplate() } as Persona })
                   }}
                   disabled={!templateData?.identityGroupId && !certificateTemplateId}

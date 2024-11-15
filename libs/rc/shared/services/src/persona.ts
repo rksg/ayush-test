@@ -134,7 +134,6 @@ export const personaApi = basePersonaApi.injectEndpoints({
       ],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          console.log(msg)
           const activities = [
             'CreatePersona'
           ]
