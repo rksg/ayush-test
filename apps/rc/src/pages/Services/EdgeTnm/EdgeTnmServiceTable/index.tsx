@@ -8,7 +8,8 @@ import {
   Table,
   TableProps,
   Loader,
-  showActionModal
+  showActionModal,
+  Button
 } from '@acx-ui/components'
 import { useDeleteEdgeTnmServiceMutation, useGetEdgeTnmServiceListQuery } from '@acx-ui/rc/services'
 import {
@@ -69,15 +70,15 @@ export function EdgeTnmServiceTable () {
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        // extra={filterByAccessForServicePolicyMutation([
-        //   <Button type='primary'
-        //     scopeKey={getScopeKeyByService(ServiceType.EDGE_TNM_SERVICE, ServiceOperation.CREATE)}
-        //     onClick={() => {
-        //       setVisible(true)
-        //     }}>
-        //     {$t({ defaultMessage: 'Add TNM Service' })}
-        //   </Button>
-        // ])}
+        extra={filterByAccessForServicePolicyMutation([
+          <Button type='primary'
+            scopeKey={getScopeKeyByService(ServiceType.EDGE_TNM_SERVICE, ServiceOperation.CREATE)}
+            onClick={() => {
+              setVisible(true)
+            }}>
+            {$t({ defaultMessage: 'Add TNM Service' })}
+          </Button>
+        ])}
       />
       <Loader states={[{ isLoading, isFetching: isFetching || isDeleting }]}>
         <Table
@@ -92,6 +93,8 @@ export function EdgeTnmServiceTable () {
       <EdgeTnmCreateFormModal
         visible={visible}
         setVisible={setVisible}
+        onCancel={() => setVisible(false)}
+        onClose={() => setVisible(false)}
       />
     </>
   )

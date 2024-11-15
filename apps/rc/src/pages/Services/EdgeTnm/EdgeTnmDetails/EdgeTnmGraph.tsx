@@ -8,7 +8,6 @@ import {
   NoData } from '@acx-ui/components'
 import { formatter }                      from '@acx-ui/formatter'
 import { useGetEdgeTnmGraphHistoryQuery } from '@acx-ui/rc/services'
-import { TimeStamp }                      from '@acx-ui/types'
 
 interface EdgeTnmGraphProps {
   serviceId: string | undefined,
@@ -25,11 +24,12 @@ export const EdgeTnmGraph = (props: EdgeTnmGraphProps) => {
     skip: !serviceId || !itemIds,
     selectFromResult: ({ data, ...others }) => {
       const itemDataMap = groupBy(data, 'itemid')
+      console.log('itemDataMap:', JSON.stringify(itemDataMap))
       const series = Object.keys(itemDataMap).map(itmeId => ({
-        key: `series-${itmeId}`,
+        key: itemNameMap[itmeId],
         name: itemNameMap[itmeId],
         // eslint-disable-next-line max-len
-        data: itemDataMap[itmeId].map(v => [v.clock, isNaN(v.value) ? 0 : Number(v.value)]) as [TimeStamp, number][]
+        data: itemDataMap[itmeId]?.map(v => [Number(v.clock), isNaN(v.value) ? 0 : Number(v.value)]) ?? []
       }))
 
       return {
@@ -45,11 +45,14 @@ export const EdgeTnmGraph = (props: EdgeTnmGraphProps) => {
     <Card title={''} type='no-border'>
       <AutoSizer>
         {({ height, width }) => (
+          console.log('chartData:', JSON.stringify(chartData)),
           chartData.length
             ? <MultiLineTimeSeriesChart
-              style={{ height, width }}
+              style={{ height: Math.max(height, 300), width }}
               data={chartData}
-              dataFormatter={formatter('percentFormatRound')}
+              dataFormatter={formatter('percentFormat')}
+              // disableLegend={false}
+              // legendProp='name'
             />
             : <NoData />
         )}
