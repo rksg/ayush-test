@@ -186,23 +186,17 @@ export default function DownloadSection (props: DownloadDrawerProps) {
   }
 
   function getDownloadPrivateKeyAction (certType: CertificateCategoryType) {
-    switch (certType) {
-      case CertificateCategoryType.CERTIFICATE:
-        return downloadPrivateKeyCertificate
-
-      default:
-        return downloadCA
+    if(certType === CertificateCategoryType.CERTIFICATE) {
+      return downloadPrivateKeyCertificate
     }
+    return downloadCA
   }
 
   function getDownloadP12Action (certType: CertificateCategoryType) {
-    switch (certType) {
-      case CertificateCategoryType.CERTIFICATE:
-        return downloadCertificateInP12
-
-      default:
-        return downloadCA
+    if(certType === CertificateCategoryType.CERTIFICATE) {
+      return downloadCertificateInP12
     }
+    return downloadCA
   }
 
   const doDownload = (format: CertDownloadType, downloadType: SectionType, password = '') => {
