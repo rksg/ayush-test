@@ -42,7 +42,7 @@ export function EdgeTnmServiceTable () {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Edge TNM Service' }),
+            entityName: $t({ defaultMessage: 'Edge Thirdparty Network Management Service' }),
             entityValue: rows.length === 1 ? rows[0].name : undefined,
             numOfEntities: rows.length
           },
@@ -76,7 +76,7 @@ export function EdgeTnmServiceTable () {
             onClick={() => {
               setVisible(true)
             }}>
-            {$t({ defaultMessage: 'Add TNM Service' })}
+            {$t({ defaultMessage: 'Add Thirdparty Network Management Service' })}
           </Button>
         ])}
       />
@@ -93,8 +93,6 @@ export function EdgeTnmServiceTable () {
       <EdgeTnmCreateFormModal
         visible={visible}
         setVisible={setVisible}
-        onCancel={() => setVisible(false)}
-        onClose={() => setVisible(false)}
       />
     </>
   )

@@ -78,8 +78,8 @@ export const TnmHostModal = (props: TnmHostModalProps) => {
   }, [visible, editData])
 
   return <Modal
-    title={editData ? $t({ defaultMessage: 'Edit TNM Host' }) :
-      $t({ defaultMessage: 'Create TNM Host' })}
+    title={editData ? $t({ defaultMessage: 'Edit Host' }) :
+      $t({ defaultMessage: 'Create Host' })}
     width={500}
     visible={visible}
     mask
