@@ -9,9 +9,9 @@ import {
 import { Row, Col, Form, Typography, Checkbox, Input } from 'antd'
 import _                                               from 'lodash'
 
-import { Tooltip }                                                           from '@acx-ui/components'
-import { SwitchSlot2 as SwitchSlot, getSwitchPortLabel, PortStatusMessages } from '@acx-ui/rc/utils'
-import { getIntl }                                                           from '@acx-ui/utils'
+import { Tooltip }                                                                                from '@acx-ui/components'
+import { SwitchSlot2 as SwitchSlot, getSwitchPortLabel, PortStatusMessages, SwitchPortViewModel } from '@acx-ui/rc/utils'
+import { getIntl }                                                                                from '@acx-ui/utils'
 
 import { getTooltipTemplate } from '../'
 
@@ -19,9 +19,10 @@ import * as UI                                                                  
 import VlanPortsContext                                                                       from './VlanPortsContext'
 import { getPortsModule, getUnit, getUnitTitle, getModule, PortsType, selectedGroupByPrefix } from './VlanPortsModal.utils'
 
-export function UntaggedPortsStep () {
+export function UntaggedPortsStep (props:{ portsData?: SwitchPortViewModel[] }) {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
+  const { portsData } = props
   const {
     vlanSettingValues, setVlanSettingValues, vlanList, isSwitchLevel, portsUsedBy
   } = useContext(VlanPortsContext)
@@ -150,7 +151,16 @@ export function UntaggedPortsStep () {
     })
   }
 
+  const checkAuthPort = (timeslot: string) => {
+    let isAuthPort = false
+    if(portsData) {
+      isAuthPort = !!portsData.find(i => i.portIdentifier === timeslot)?.authDefaultVlan
+    }
+    return isAuthPort
+  }
+
   const getDisabledPorts = (timeslot: string) => {
+    const isAuthPort = checkAuthPort(timeslot)
     const vlanSelectedPorts = vlanList ? vlanList.map(item => item.switchFamilyModels
       ?.filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model)) : []
 
@@ -166,11 +176,13 @@ export function UntaggedPortsStep () {
       || Object.keys(portsUsedBy?.lag ?? {})?.includes(timeslot)
       || Object.keys(portsUsedBy?.untagged ?? {})?.includes(timeslot)
       || portExists || false
+      || isAuthPort
 
     return disabledPorts
   }
 
   const getTooltip = (timeslot: string) => {
+    const isAuthPort = checkAuthPort(timeslot)
     const taggedPorts =
     vlanSettingValues.switchFamilyModels?.taggedPorts?.toString().split(',') || []
 
@@ -184,7 +196,9 @@ export function UntaggedPortsStep () {
         switchModel => switchModel.model === vlanSettingValues.switchFamilyModels?.model &&
         switchModel.taggedPorts?.split(',')?.includes(timeslot))) : []
 
-    if(taggedPorts.includes(timeslot)){
+    if (isAuthPort) {
+      return <div>{$t(PortStatusMessages.USED_BY_AUTH)}</div>
+    } else if(taggedPorts.includes(timeslot)){
       return <div>{$t(PortStatusMessages.SET_AS_TAGGED)}</div>
     } else if (Object.keys(portsUsedBy?.lag ?? {})?.includes(timeslot)) {
       return <div>{

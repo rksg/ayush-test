@@ -3,10 +3,13 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { switchApi }                          from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }                     from '@acx-ui/rc/utils'
+import { SwitchRbacUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                    from '@acx-ui/store'
 import { mockServer, render, screen, within } from '@acx-ui/test-utils'
+
+import { switchDetailHeader } from './__tests__/fixtures'
 
 import { SwitchPortTable } from '.'
 
@@ -351,6 +354,7 @@ jest.mock('./editPortDrawer', () => ({
 describe('SwitchPortTable', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
   })
   afterEach(() => {
     Modal.destroyAll()
@@ -450,4 +454,77 @@ describe('SwitchPortTable', () => {
     expect(within(row[2]).queryByRole('checkbox')).toBeDisabled()
   })
 
+  describe('Flexible Authentication (base on Switch RBAC FF enabled)', () => {
+    const mockedGetSwitchList = jest.fn()
+    const mockedGetFlexAuthProfileList = jest.fn()
+    beforeEach(() => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_RBAC_API)
+      mockedGetSwitchList.mockClear()
+      mockedGetFlexAuthProfileList.mockClear()
+      mockServer.use(
+        rest.post(
+          SwitchRbacUrlsInfo.getSwitchPortlist.url,
+          (req, res, ctx) => res(ctx.json(portlistData_7650))
+        ),
+        rest.get(
+          SwitchRbacUrlsInfo.getSwitchVlanUnion.url,
+          (req, res, ctx) => res(ctx.json({}))
+        ),
+        rest.post(
+          SwitchUrlsInfo.getFlexAuthenticationProfiles.url,
+          (req, res, ctx) => {
+            mockedGetFlexAuthProfileList()
+            return res(ctx.json({ data: [] }))
+          }
+        ),
+        rest.post(SwitchRbacUrlsInfo.getSwitchList.url,
+          (_, res, ctx) => {
+            mockedGetSwitchList()
+            return res(ctx.json({ data: [] }))
+          }
+        )
+      )
+    })
+
+    it('should render EditPortDrawer correctly when FF is not enabled', async () => {
+      render(<Provider>
+        <SwitchPortTable isVenueLevel={false} switchDetail={switchDetailHeader} />
+      </Provider>, {
+        // eslint-disable-next-line max-len
+        route: { params, path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/details/overview/ports' }
+      })
+
+      await screen.findAllByText('1/1/1')
+      await screen.findByRole('button', { name: 'Manage LAG' })
+
+      const row = await screen.findAllByRole('row')
+      await userEvent.click(await within(row[1]).findByRole('checkbox'))
+      await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+      expect(await screen.findByTestId('editPortDrawer')).toBeVisible()
+      expect(mockedGetSwitchList).not.toBeCalled()
+      expect(mockedGetFlexAuthProfileList).not.toBeCalled()
+    })
+
+    it('should render EditPortDrawer correctly when FF is enabled', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(
+        ff => ff === Features.SWITCH_RBAC_API || ff === Features.SWITCH_FLEXIBLE_AUTHENTICATION
+      )
+      render(<Provider>
+        <SwitchPortTable isVenueLevel={false} switchDetail={switchDetailHeader} />
+      </Provider>, {
+        // eslint-disable-next-line max-len
+        route: { params, path: '/:tenantId/t/devices/switch/:switchId/:serialNumber/details/overview/ports' }
+      })
+
+      await screen.findAllByText('1/1/1')
+      await screen.findByRole('button', { name: 'Manage LAG' })
+
+      const row = await screen.findAllByRole('row')
+      await userEvent.click(await within(row[1]).findByRole('checkbox'))
+      await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+      expect(await screen.findByTestId('editPortDrawer')).toBeVisible()
+      expect(mockedGetSwitchList).toBeCalled()
+      expect(mockedGetFlexAuthProfileList).toBeCalled()
+    })
+  })
 })
