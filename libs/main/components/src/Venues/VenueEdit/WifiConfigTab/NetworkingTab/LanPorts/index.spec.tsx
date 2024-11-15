@@ -51,12 +51,14 @@ describe('LanPortsForm', () => {
   const mockedActivateEthernetPortProfileApiFn = jest.fn()
   const mockedUpdateEthernetPortSettingApiFn = jest.fn()
   const mockedUpdateVenueLanPortsFn = jest.fn()
+  const mockedUpdateVenueLanPortSpecificSettingsApiFn = jest.fn()
 
 
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     mockedActivateEthernetPortProfileApiFn.mockClear()
     mockedUpdateEthernetPortSettingApiFn.mockClear()
+    mockedUpdateVenueLanPortSpecificSettingsApiFn.mockClear()
 
     mockServer.use(
       rest.get(
@@ -87,6 +89,14 @@ describe('LanPortsForm', () => {
         CommonUrlsInfo.updateVenueLanPorts.url,
         (_, res, ctx) => {
           mockedUpdateVenueLanPortsFn()
+          return res(ctx.json({}))
+        }
+      ),
+
+      rest.put(
+        CommonRbacUrlsInfo.updateVenueLanPortSpecificSettings.url,
+        (_, res, ctx) => {
+          mockedUpdateVenueLanPortSpecificSettingsApiFn()
           return res(ctx.json({}))
         }
       ),
@@ -432,10 +442,18 @@ describe('LanPortsForm', () => {
     expect(enablePort).toHaveAttribute('aria-checked', 'true')
     await userEvent.click(enablePort)
 
+    const poeModeSelector = await screen.findByRole('combobox', { name: 'PoE Operating Mode' })
+    expect(poeModeSelector).toBeInTheDocument()
+    await userEvent.click(poeModeSelector)
+    await userEvent.click(
+      (await screen.findAllByText('802.3at'))[1]
+    )
+
     // The renderHook will call editNetworkingContextData.updateLanPorts?.() by useEffect()
 
     await waitFor(() => expect(mockedActivateEthernetPortProfileApiFn).toBeCalled())
     await waitFor(() => expect(mockedUpdateEthernetPortSettingApiFn).toBeCalled())
+    await waitFor(() => expect(mockedUpdateVenueLanPortSpecificSettingsApiFn).toBeCalled())
   })
 
 })

@@ -53,7 +53,7 @@ export default function useCertificateForm () {
         notBeforeDate: startDateMoment.startOf('day').toDate()
       }
       const res = await generateClientServerCertificate({ payload, params: { caId } }).unwrap()
-      return res?.response?.id
+      return res?.id
     } else if(generation === CertificateGenerationType.WITH_CSR) {
       payload = {
         name,
@@ -62,7 +62,7 @@ export default function useCertificateForm () {
         notBeforeDate: startDateMoment.startOf('day').toDate()
       }
       const res = await generateClientServerCertificate({ payload, params: { caId } }).unwrap()
-      return res?.response?.id
+      return res?.id
     } else {
       const uploadCertData = new FormData()
       if (formData.publicKey) {
@@ -84,7 +84,7 @@ export default function useCertificateForm () {
         payload: uploadCertData,
         customHeaders: { 'Content-Type': undefined }
       }).unwrap()
-      return res?.response?.id
+      return res?.id
     }
   }
 

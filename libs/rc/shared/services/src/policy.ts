@@ -74,7 +74,8 @@ import {
   Network,
   TxStatus,
   ScepKeyData,
-  ServerCertificate
+  ServerCertificate,
+  ServerClientCertificateResult
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }                                 from '@acx-ui/store'
 import { RequestPayload }                                from '@acx-ui/types'
@@ -134,6 +135,7 @@ const LbsServerProfileMutationUseCases = [
 ]
 
 const CertificateMutationUseCases = [
+  'GENERATE_SERVER_CERT',
   'UpdateRadius',
   'ActivateCertificateOnRadiusServerProfile',
   'DeactivateCertificateOnRadiusServerProfile',
@@ -845,7 +847,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'AddRadius', 'UpdateRadius', 'DeleteRadius', 'DeleteRadiuses',
             'ActivateRadiusServerProfileOnWifiNetwork', 'DeactivateRadiusServerProfileOnWifiNetwork',
-            'ActivateCertificateOnRadiusServerProfile'
+            'UpdateWifiNetwork','ActivateCertificateOnRadiusServerProfile'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
           })
@@ -3499,18 +3501,19 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       }
     }),
-    generateClientServerCertificates: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
+    generateClientServerCertificates:
+      build.mutation<ServerClientCertificateResult, RequestPayload>({
+        query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
-        const req = createHttpRequest(CertificateUrls.generateClientServerCertificate, params, defaultCertTempVersioningHeaders)
-        return{
-          ...req,
-          body: JSON.stringify(payload)
-        }
-      },
-      invalidatesTags: [{ type: 'ServerCertificate', id: 'LIST' }]
-    }),
-    uploadCertificate: build.mutation<CommonResult, RequestPayload>({
+          const req = createHttpRequest(CertificateUrls.generateClientServerCertificate, params, defaultCertTempVersioningHeaders)
+          return{
+            ...req,
+            body: JSON.stringify(payload)
+          }
+        },
+        invalidatesTags: [{ type: 'ServerCertificate', id: 'LIST' }]
+      }),
+    uploadCertificate: build.mutation<ServerClientCertificateResult, RequestPayload>({
       query: ({ params, payload, customHeaders }) => {
         // eslint-disable-next-line max-len
         const req = createHttpRequest(CertificateUrls.uploadCertificate, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })

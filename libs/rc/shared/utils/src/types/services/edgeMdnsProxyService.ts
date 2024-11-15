@@ -32,7 +32,14 @@ export interface EdgeMdnsProxyStatsData {
   rxBytes?: number
   txPackets?: number
   txBytes?: number
-  rxRequest?: number
-  rxResponse?: number
-  numTypesMdnsServices?: number
+  numRequest?: number
+  numResponse?: number
+  numMdnsServices?: number
+  discoveredMdnsServices?: DiscoveredMdnsService[]
+}
+
+export interface DiscoveredMdnsService {
+  mdnsStr: string
+  vlanId: number
+  macAddr: string
 }

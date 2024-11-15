@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { Form }                      from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Drawer, Button, Loader }                 from '@acx-ui/components'
+import { Drawer,  Loader }                        from '@acx-ui/components'
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import {
   useGetApModelFamiliesQuery,
@@ -20,7 +20,7 @@ import {
   IncompatibleFeature,
   useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { ApModelFamiliesItem } from '../../Compatibility/ApModelFamiliesItem'
 import {
@@ -29,6 +29,7 @@ import {
   StyledRequirementWrapper,
   StyledWrapper
 } from '../../Compatibility/CompatibilityDrawer/styledComponents'
+import { getApFirmwareLink }                            from '../../Compatibility/CompatibilityDrawer/utils'
 import { ApCompatibilityType, InCompatibilityFeatures } from '../constants'
 
 export type ApModelCompatibilityDrawerProps = {
@@ -109,7 +110,7 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
     defaultMessage={
       'The following features are not enabled on this access point due to <b>firmware</b> or <b>device ' +
       'incompatibility</b>. Please see the minimum firmware versions required below. Also note that ' +
-      'not all features are available on all access points. You may upgrade your firmware from'
+      'not all features are available on all access points. You may upgrade your firmware from '
     }
     values={{
       b: (text: string) => <strong>{text}</strong>
@@ -125,7 +126,7 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
   const singleFromNetwork= <FormattedMessage
     defaultMessage={
       'To use the <b>{featureName}</b> feature, ensure that the access points meet the minimum '+
-      'required version and AP model support list below. You may upgrade your firmware from'
+      'required version and AP model support list below. You may upgrade your firmware from '
     }
     values={{
       b: (text: string) => <strong>{text}</strong>,
@@ -284,10 +285,7 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
     >
       <Form layout='vertical' form={form} data-testid='apCompatibility-form'>
         <Form.Item>
-          {contentTxt}
-          <TenantLink to='/administration/fwVersionMgmt'>
-            <Button type='link'>{ $t({ defaultMessage: 'Administration > Version Management > AP Firmware' }) }</Button>
-          </TenantLink>
+          {contentTxt} {getApFirmwareLink()}
         </Form.Item>
         {getItems(items)}
       </Form>
