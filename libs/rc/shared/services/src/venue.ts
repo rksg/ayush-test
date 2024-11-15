@@ -2183,8 +2183,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
           }
         }
       })
-
-
   })
 })
 
