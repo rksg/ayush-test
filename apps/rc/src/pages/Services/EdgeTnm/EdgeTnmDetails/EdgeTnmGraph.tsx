@@ -8,6 +8,7 @@ import {
   NoData } from '@acx-ui/components'
 import { formatter }                      from '@acx-ui/formatter'
 import { useGetEdgeTnmGraphHistoryQuery } from '@acx-ui/rc/services'
+import { TimeStamp }                      from '@acx-ui/types'
 
 interface EdgeTnmGraphProps {
   serviceId: string | undefined,
@@ -28,7 +29,7 @@ export const EdgeTnmGraph = (props: EdgeTnmGraphProps) => {
         key: itemNameMap[itmeId],
         name: itemNameMap[itmeId],
         // eslint-disable-next-line max-len
-        data: itemDataMap[itmeId]?.map(v => [Number(v.clock), isNaN(v.value) ? 0 : Number(v.value)]) ?? []
+        data: itemDataMap[itmeId]?.map(v => [Number(v.clock), isNaN(v.value) ? 0 : Number(v.value)]) as [TimeStamp, number][] ?? []
       }))
 
       return {
