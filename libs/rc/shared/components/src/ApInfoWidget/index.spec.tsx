@@ -72,18 +72,6 @@ const params = {
   activeTab: 'overview'
 }
 
-const data = {
-  summary: {
-    alarms: {
-      summary: {
-        critical: 1,
-        major: 1
-      },
-      totalCount: 2
-    }
-  }
-}
-
 const filters:AnalyticsFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
   endDate: '2022-01-02T00:00:00+08:00',
@@ -98,10 +86,6 @@ describe('AP Information Widget', () => {
 
   it('should render alarms chart correctly', async () => {
     mockServer.use(
-      rest.get(
-        CommonUrlsInfo.getDashboardOverview.url,
-        (req, res, ctx) => res(ctx.json(data))
-      ),
       rest.post(
         CommonUrlsInfo.getAlarmsList.url,
         (_, res, ctx) => res(ctx.json(alarmList))
@@ -132,10 +116,6 @@ describe('AP Information Widget', () => {
 
   it('should render "No active alarms" when no alarms exist', async () => {
     mockServer.use(
-      rest.get(
-        CommonUrlsInfo.getDashboardOverview.url,
-        (req, res, ctx) => res(ctx.json(data))
-      ),
       rest.post(
         CommonUrlsInfo.getAlarmsList.url,
         (req, res, ctx) => res(ctx.json({ data: [] }))
