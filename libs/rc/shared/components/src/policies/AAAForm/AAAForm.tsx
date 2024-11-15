@@ -131,7 +131,7 @@ export const AAAForm = (props: AAAFormProps) => {
         })
       }
 
-      networkView ? backToNetwork?.(cloneData) : navigate(linkToInstanceList, { replace: true })
+      networkView ? backToNetwork?.(data) : navigate(linkToInstanceList, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
