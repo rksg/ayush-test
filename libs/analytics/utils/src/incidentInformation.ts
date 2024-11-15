@@ -214,10 +214,10 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
     category: defineMessage({ defaultMessage: 'Infrastructure' }),
     subCategory: defineMessage({ defaultMessage: 'Loop detection' }),
     shortDescription: defineMessage({
-      defaultMessage: 'Loop detection found in {scope}'
+      defaultMessage: 'Loop detected in {scope}'
     }),
     longDescription: defineMessage({
-      defaultMessage: 'Loop detection found in {scope}.'
+      defaultMessage: 'Loop detected in {scope}.'
     }),
     incidentType: 'switch'
   },
