@@ -2,10 +2,17 @@
 import { Col, Form, Row, Slider } from 'antd'
 import { useIntl }                from 'react-intl'
 
-import { Button, StepsForm, Tooltip, useStepFormContext }    from '@acx-ui/components'
-import { EdgeClusterStatus, EdgePortInfo, VirtualIpSetting } from '@acx-ui/rc/utils'
+import { Button, StepsForm, Tooltip, useStepFormContext }      from '@acx-ui/components'
+import { EdgeClusterStatus, EdgeIpModeEnum, VirtualIpSetting } from '@acx-ui/rc/utils'
 
 import { VipCard } from './VipCard'
+
+export interface VipInterface {
+  interfaceName: string
+  ip: string
+  subnet: string
+  ipMode: EdgeIpModeEnum
+}
 
 export interface VirtualIpFormType {
   timeout: number
@@ -20,7 +27,7 @@ export interface VipConfigType {
 interface EdgeClusterVirtualIpSettingFormProps {
   currentClusterStatus?: EdgeClusterStatus
   lanInterfaces?: {
-    [key: string]: EdgePortInfo[]
+    [key: string]: VipInterface[]
   }
 }
 
