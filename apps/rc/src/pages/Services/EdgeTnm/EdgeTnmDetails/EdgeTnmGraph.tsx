@@ -29,7 +29,7 @@ export const EdgeTnmGraph = (props: EdgeTnmGraphProps) => {
         key: itemNameMap[itmeId],
         name: itemNameMap[itmeId],
         // eslint-disable-next-line max-len
-        data: itemDataMap[itmeId]?.map(v => [Number(v.clock), isNaN(v.value) ? 0 : Number(v.value)]) as [TimeStamp, number][] ?? []
+        data: itemDataMap[itmeId]?.map(v => [Number(v.clock)*1000, isNaN(v.value) ? 0 : Number(v.value)]) as [TimeStamp, number][] ?? []
       }))
 
       return {
