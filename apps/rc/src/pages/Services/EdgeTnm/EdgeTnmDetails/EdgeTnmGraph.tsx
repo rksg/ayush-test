@@ -24,7 +24,6 @@ export const EdgeTnmGraph = (props: EdgeTnmGraphProps) => {
     skip: !serviceId || !itemIds,
     selectFromResult: ({ data, ...others }) => {
       const itemDataMap = groupBy(data, 'itemid')
-      console.log('itemDataMap:', JSON.stringify(itemDataMap))
       const series = Object.keys(itemDataMap).map(itmeId => ({
         key: itemNameMap[itmeId],
         name: itemNameMap[itmeId],
@@ -45,14 +44,11 @@ export const EdgeTnmGraph = (props: EdgeTnmGraphProps) => {
     <Card title={''} type='no-border'>
       <AutoSizer>
         {({ height, width }) => (
-          console.log('chartData:', JSON.stringify(chartData)),
           chartData.length
             ? <MultiLineTimeSeriesChart
               style={{ height: Math.max(height, 300), width }}
               data={chartData}
-              dataFormatter={formatter('percentFormat')}
-              // disableLegend={false}
-              // legendProp='name'
+              dataFormatter={formatter('countFormat')}
             />
             : <NoData />
         )}

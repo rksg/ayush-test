@@ -29,17 +29,15 @@ export const EdgeTnmGraphWrapper = (props: EdgeTnmGraphWrapperProps) => {
       ...others
     })
   })
-
   return data
-    ? <>{data.map((item) => {
-      return <Row key={item.graphid}>
-        <Col span={24}>
-          <EdgeTnmGraph
-            serviceId={serviceId}
-            itemIds={itemIds}
-            itemNameMap={itemNameMap}
-          />
-        </Col>
-      </Row>
-    })}</> : null
+    ? (<Row key={data[0].graphid}>
+      <Col span={24}>
+        <EdgeTnmGraph
+          serviceId={serviceId}
+          itemIds={itemIds}
+          itemNameMap={itemNameMap}
+        />
+      </Col>
+    </Row>
+    ) : null
 }

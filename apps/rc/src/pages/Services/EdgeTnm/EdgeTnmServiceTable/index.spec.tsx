@@ -87,7 +87,8 @@ describe('Edge TNM Service Table', () => {
     await click(within(row).getByRole('checkbox'))
     await click(screen.getByRole('button', { name: 'Delete' }))
     const dialogTitle = await screen.findByText(`Delete "${mockTnm1.name}"?`)
-    await click(screen.getByRole('button', { name: 'Delete Edge Thirdparty Network Management Service' }))
+    await click(
+      screen.getByRole('button', { name: 'Delete Edge Thirdparty Network Management Service' }))
     await waitForElementToBeRemoved(dialogTitle)
     expect(screen.queryByRole('dialog')).toBeNull()
     expect(mockedDeleteReq).toBeCalledTimes(1)
