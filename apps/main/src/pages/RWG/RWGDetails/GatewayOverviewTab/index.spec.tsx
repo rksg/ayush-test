@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { venueApi }                            from '@acx-ui/rc/services'
+import { rwgApi }                              from '@acx-ui/rc/services'
 import { CommonRbacUrlsInfo }                  from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
@@ -33,7 +33,7 @@ const params = {
 
 describe('RWGDetails GatewayOverview', () => {
   beforeEach(() => {
-    store.dispatch(venueApi.util.resetApiState())
+    store.dispatch(rwgApi.util.resetApiState())
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
