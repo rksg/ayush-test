@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { Form, Input, InputNumber, Select, Space, Switch } from 'antd'
 import { DefaultOptionType }                               from 'antd/lib/select'
 import { FormattedMessage, useIntl }                       from 'react-intl'
+import { useParams }                                       from 'react-router-dom'
 
 import { cssStr, Tooltip }                          from '@acx-ui/components'
 import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
@@ -88,6 +89,7 @@ export function LanPortSettings (props: {
   const [ drawerVisible, setDrawerVisible ] = useState(false)
   const form = Form.useFormInstance()
   const lan = form?.getFieldValue('lan')?.[index]
+  const params = useParams()
 
   // Ethernet Port Profile
   const { isTemplate } = useConfigTemplate()
@@ -145,9 +147,8 @@ export function LanPortSettings (props: {
         sortOrder: 'ASC',
         pageSize: 1000
       },
-      params: {
-        serialNumber
-      }
+      params: { ...params, venueId },
+      selectedModelCaps
     }, {
       skip: isTemplate || !isEthernetPortProfileEnabled,
       selectFromResult: ({ data: queryResult, ...rest }) => ({
@@ -227,10 +228,7 @@ export function LanPortSettings (props: {
               || isDhcpEnabled
               || !lan?.enabled
               || lan?.vni > 0}
-            options={[
-              { label: $t({ defaultMessage: 'No ethernet port profile selected' }), value: null },
-              ...ethernetPortDropdownItems
-            ]}
+            options={ethernetPortDropdownItems}
             onChange={() => onChangedByCustom('ethernetPortProfileId')}
           />} />
         <EthernetPortProfileDrawer

@@ -197,7 +197,7 @@ describe('Venues Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /My-Venue/i })
-    const icon = await within(row).findByTestId('InformationSolid')
+    const icon = await within(row).findByTestId('WarningTriangleSolid')
     expect(icon).toBeVisible()
   })
 
@@ -205,7 +205,7 @@ describe('Venues Table', () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
       [Features.EDGES_TOGGLE, Features.EDGE_COMPATIBILITY_CHECK_TOGGLE].includes(ff as Features))
     const mockVenuelist = cloneDeep(venuelist)
-    mockVenuelist.data[0].id = mockEdgeCompatibilitiesVenue.compatibilities[0].id
+    mockVenuelist.data[0].id = mockEdgeCompatibilitiesVenue.compatibilities![0].id
     mockVenuelist.data[0].name = 'Test-Edge-Compatibility'
 
     mockServer.use(
@@ -229,7 +229,7 @@ describe('Venues Table', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /Test-Edge-Compatibility/i })
-    const icon = await within(row).findByTestId('InformationSolid')
+    const icon = await within(row).findByTestId('WarningTriangleSolid')
     expect(icon).toBeVisible()
   })
 })

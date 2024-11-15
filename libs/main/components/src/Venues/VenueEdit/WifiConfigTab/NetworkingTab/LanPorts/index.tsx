@@ -20,7 +20,7 @@ import {
   useGetDhcpTemplateListQuery,
   useActivateEthernetPortProfileOnVenueApModelPortIdMutation,
   useUpdateEthernetPortSettingsByVenueApModelMutation,
-  useGetVenueLanPortWithEthernetPortSettingsQuery
+  useGetVenueLanPortWithEthernetSettingsQuery
 } from '@acx-ui/rc/services'
 import {
   ApLanPortTypeEnum,
@@ -115,7 +115,7 @@ export function LanPorts () {
   const venueLanPorts = useVenueConfigTemplateQueryFnSwitcher<VenueLanPorts[]>({
     useQueryFn: (
       (isEthernetPortProfileEnabled)?
-        useGetVenueLanPortWithEthernetPortSettingsQuery : useGetVenueLanPortsQuery
+        useGetVenueLanPortWithEthernetSettingsQuery : useGetVenueLanPortsQuery
     ),
     useTemplateQueryFn: useGetVenueTemplateLanPortsQuery,
     enableRbac: isWifiRbacEnabled

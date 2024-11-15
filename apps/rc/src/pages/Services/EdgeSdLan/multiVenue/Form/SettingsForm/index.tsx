@@ -19,7 +19,7 @@ import {
   useHelpPageLink,
   EdgeMvSdLanFormModel,
   ClusterHighAvailabilityModeEnum,
-  EdgeFeatureEnum } from '@acx-ui/rc/utils'
+  IncompatibilityFeatures } from '@acx-ui/rc/utils'
 import { TenantLink }      from '@acx-ui/react-router-dom'
 import { compareVersions } from '@acx-ui/utils'
 
@@ -299,7 +299,7 @@ const ClusterFirmwareInfo = (props: {
     selectFromResult: ({ data, isLoading }) => {
       return {
         requiredFw: data?.featureSets
-          ?.find(item => item.featureName === EdgeFeatureEnum.SD_LAN)?.requiredFw,
+          ?.find(item => item.featureName === IncompatibilityFeatures.SD_LAN)?.requiredFw,
         isLoading
       }
     }

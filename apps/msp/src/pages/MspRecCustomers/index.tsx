@@ -10,7 +10,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
 import {
   ManageAdminsDrawer,
   ManageDelegateAdminDrawer,
@@ -61,7 +61,7 @@ export function MspRecCustomers () {
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
   const [techParnersData, setTechPartnerData] = useState([] as MspEc[])
-  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isvViewModelTpLoginEnabled = useIsSplitOn(Features.VIEWMODEL_TP_LOGIN_ADMIN_COUNT)
@@ -133,6 +133,8 @@ export function MspRecCustomers () {
       'alarmCount',
       'mspAdminCount',
       'mspEcAdminCount',
+      'integratorCount',
+      'installerCount',
       'creationDate',
       'expirationDate',
       'wifiLicense',

@@ -254,6 +254,13 @@ describe('ApProperties', () => {
       ),
       rest.get(SwitchRbacUrlsInfo.getLagList.url,
         (req, res, ctx) => res(ctx.json(lagList))
+      ),
+      rest.post(SwitchRbacUrlsInfo.getSwitchList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        SwitchUrlsInfo.getFlexAuthenticationProfiles.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })

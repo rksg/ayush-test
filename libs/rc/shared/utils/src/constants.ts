@@ -19,7 +19,8 @@ export enum GuestNetworkTypeEnum {
   HostApproval = 'HostApproval',
   GuestPass = 'GuestPass',
   WISPr = 'WISPr',
-  Cloudpath = 'Cloudpath'
+  Cloudpath = 'Cloudpath',
+  Directory = 'Directory'
 }
 
 export enum WlanSecurityEnum {
@@ -239,7 +240,10 @@ export enum ConfigTypeEnum {
   STATIC_ROUTE = 'STATIC_ROUTE',
   TRIGGER_SYNC = 'TRIGGER_SYNC',
   DEFAULT_VLAN = 'DEFAULT_VLAN',
-  ADMIN_PASSWORD = 'ADMIN_PASSWORD'
+  ADMIN_PASSWORD = 'ADMIN_PASSWORD',
+  ACL = 'ACL',
+  VLAN = 'VLAN',
+  AUTHENTICATION = 'AUTHENTICATION'
 }
 
 export enum ConfigStatusEnum {
