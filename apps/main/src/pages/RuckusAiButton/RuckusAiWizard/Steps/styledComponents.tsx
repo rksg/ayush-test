@@ -1,6 +1,7 @@
-import styled from 'styled-components/macro'
+import ProForm from '@ant-design/pro-form'
+import styled  from 'styled-components/macro'
 
-import { ArrowChevronRight, CollapseCircleSolid } from '@acx-ui/icons'
+import { ArrowChevronRight, CollapseCircleSolid, WarningTriangleSolid } from '@acx-ui/icons'
 
 export const CheckboxIndexLabel = styled.div`
   display: inline-block;
@@ -219,4 +220,27 @@ export const SummaryHeader = styled.span`
   font-size: var(--acx-subtitle-1-font-size);
   font-weight: var(--acx-subtitle-1-font-weight);
   font-family: var(--acx-accent-brand-font);
+`
+
+export const FooterValidationItem = styled(ProForm.Item)`
+  height: 40px;
+  margin-top: -45px;
+  pointer-events: none;
+  position: absolute;
+  bottom: 5px;
+  left: 85px;
+  .ant-form-item-explain-error {
+    color: var(--acx-primary-black);
+
+  }
+`
+export const WarningTriangleSolidIcon = styled(WarningTriangleSolid)`
+  height: 16px;
+  margin-right: 3px;
+  path:nth-child(1) {
+    fill: var(--acx-semantics-yellow-50)
+  }
+  path:nth-child(3) {
+    stroke: var(--acx-accents-orange-30);
+  }
 `

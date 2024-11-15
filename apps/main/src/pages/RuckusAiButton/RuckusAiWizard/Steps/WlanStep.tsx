@@ -152,6 +152,7 @@ export function WlanStep (props: { payload: string; description: string,
               <ProFormCheckbox
                 name={['data', index, 'Checked']}
                 initialValue={true}
+                validateTrigger={'onChange'}
                 fieldProps={{
                   onChange: (e) => handleCheckboxChange(index, e.target.checked)
                 }}
@@ -247,6 +248,25 @@ export function WlanStep (props: { payload: string; description: string,
           <Divider dashed />
         </React.Fragment>
       ))}
+      <UI.FooterValidationItem
+        name={'wlanStep'}
+        rules={[{
+          validator: () => {
+            const allUnchecked = checkboxStates.every(state => !state)
+            if (allUnchecked) {
+              return Promise.reject(
+                <span style={{ display: 'flex', alignItems: 'center' }}>
+                  <UI.WarningTriangleSolidIcon />
+                  {$t({ defaultMessage: 'Select at least one network profile' })}
+                </span>
+              )
+            }
+            return Promise.resolve()
+          }
+        }]}
+      >
+        <ProFormText hidden />
+      </UI.FooterValidationItem>
     </UI.Container>
   )
 }

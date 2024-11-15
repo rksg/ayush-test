@@ -29,6 +29,7 @@ export default function RuckusAiWizard (props: {
 }) {
   const { $t } = useIntl()
   const [isLoading, setIsLoading] = useState(false)
+  const [isSkip, setIsSkip] = useState(false)
 
   const [applyConversations] = useApplyConversationsMutation()
   const [updateConversations] = useUpdateConversationsMutation()
@@ -82,7 +83,7 @@ export default function RuckusAiWizard (props: {
 
       const response = await updateConversations({
         params: { sessionId: props.sessionId, type: stepType },
-        payload: JSON.stringify(updatedValues)
+        payload: JSON.stringify(isSkip ? [] : updatedValues)
       }).unwrap()
 
       if (response.hasChanged) {
@@ -126,8 +127,11 @@ export default function RuckusAiWizard (props: {
         }))
       }
 
+      setIsSkip(false)
       setIsLoading(false)
+
     } catch (error) {
+      setIsSkip(false)
       setIsLoading(false)
       return false
     }
@@ -166,6 +170,7 @@ export default function RuckusAiWizard (props: {
     {
       name: RuckusAiConfigurationStepsEnum.VLAN,
       title: '',
+      supportSkip: true,
       component: payloads[RuckusAiConfigurationStepsEnum.VLAN].payload ? (
         <VlanStep
           formInstance={formMapRef.current[2].current}
@@ -221,6 +226,21 @@ export default function RuckusAiWizard (props: {
             >
               {props.currentStep === lastPageIndex ?
                 $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Next' })}
+            </Button>,
+            <Button key='skip'
+              type='link'
+              style={{
+                position: 'absolute',
+                right: '30px',
+                bottom: '5px',
+                display: steps[props.currentStep].supportSkip ? 'block' : 'none'
+              }}
+              disabled={isLoading}
+              onClick={()=>{
+                setIsSkip(true)
+                renderProps.form?.submit?.()
+              }}>
+              {$t({ defaultMessage: 'Skip this step' })}
             </Button>
           ]
         }
