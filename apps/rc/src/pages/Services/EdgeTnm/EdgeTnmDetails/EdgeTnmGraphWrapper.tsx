@@ -9,17 +9,22 @@ import { EdgeTnmGraph } from './EdgeTnmGraph'
 interface EdgeTnmGraphWrapperProps {
   serviceId: string | undefined
   graphId: string | undefined
+  graphName: string | undefined
 }
 export const EdgeTnmGraphWrapper = (props: EdgeTnmGraphWrapperProps) => {
-  const { serviceId, graphId } = props
+  const { serviceId, graphId, graphName } = props
 
-  const { data } = useGetEdgeTnmGraphItemsQuery({
+  const { data, isLoading, isFetching } = useGetEdgeTnmGraphItemsQuery({
     params: { serviceId, graphId }
   }, { skip: !serviceId || !graphId })
 
   const itemIds = useMemo(() => data?.map(i => i.itemid), [data])
 
-  const { itemNameMap } = useGetEdgeTnmGraphItemsInfoQuery({
+  const {
+    itemNameMap,
+    isLoading: isItemInfoLoading,
+    isFetching: isItemInfoFetching
+  } = useGetEdgeTnmGraphItemsInfoQuery({
     params: { serviceId },
     payload: { ids: itemIds }
   }, {
@@ -29,13 +34,16 @@ export const EdgeTnmGraphWrapper = (props: EdgeTnmGraphWrapperProps) => {
       ...others
     })
   })
+
   return data
     ? (<Row key={data[0].graphid}>
       <Col span={24}>
         <EdgeTnmGraph
           serviceId={serviceId}
+          graphName={graphName}
           itemIds={itemIds}
           itemNameMap={itemNameMap}
+          isLoading={isLoading || isFetching || isItemInfoLoading || isItemInfoFetching}
         />
       </Col>
     </Row>

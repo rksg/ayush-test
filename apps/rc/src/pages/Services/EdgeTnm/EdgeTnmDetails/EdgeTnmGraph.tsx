@@ -1,22 +1,27 @@
+import { useEffect } from 'react'
+
 import { groupBy, isNaN } from 'lodash'
 import AutoSizer          from 'react-virtualized-auto-sizer'
 
 import {
-  Card,
-  Loader,
   MultiLineTimeSeriesChart,
-  NoData } from '@acx-ui/components'
+  NoData,
+  Loader,
+  Card
+} from '@acx-ui/components'
 import { formatter }                      from '@acx-ui/formatter'
 import { useGetEdgeTnmGraphHistoryQuery } from '@acx-ui/rc/services'
 import { TimeStamp }                      from '@acx-ui/types'
 
 interface EdgeTnmGraphProps {
   serviceId: string | undefined,
+  graphName: string | undefined,
   itemIds: string[] | undefined,
-  itemNameMap: Record<string, string>
+  itemNameMap: Record<string, string>,
+  isLoading?: boolean
 }
 export const EdgeTnmGraph = (props: EdgeTnmGraphProps) => {
-  const { serviceId, itemIds, itemNameMap } = props
+  const { serviceId, graphName, itemIds, itemNameMap, isLoading: isParentLoading = false } = props
 
   const { chartData, isLoading, isFetching } = useGetEdgeTnmGraphHistoryQuery({
     params: { serviceId },
@@ -39,15 +44,22 @@ export const EdgeTnmGraph = (props: EdgeTnmGraphProps) => {
     }
   })
 
-  return <Loader states={[{ isLoading, isFetching }]}
-    style={{ backgroundColor: 'transparent', minHeight: 100 }}
+  useEffect(() => {
+    if (isFetching) {
+      // scroll to page bottom
+      window.scrollTo(0, document.body.scrollHeight)
+    }
+  }, [isFetching])
+
+  return <Loader states={[{ isLoading: isLoading || isParentLoading, isFetching }]}
+    style={{ backgroundColor: 'transparent', minHeight: 300 }}
   >
-    <Card title={''} type='no-border'>
+    <Card title={graphName ?? ''} type='no-border'>
       <AutoSizer>
         {({ height, width }) => (
           chartData.length
             ? <MultiLineTimeSeriesChart
-              style={{ height: Math.max(height, 300), width }}
+              style={{ height, width }}
               data={chartData}
               dataFormatter={formatter('countFormat')}
             />

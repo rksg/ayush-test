@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Row }     from 'antd'
+import { find }    from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -46,6 +47,7 @@ export const EdgeTnmHostGraphTable = (props: EdgeTnmHostGraphTableProps) => {
       <EdgeTnmGraphWrapper
         serviceId={serviceId}
         graphId={currentGraph}
+        graphName={find(data, { graphid: currentGraph })?.name}
       />
     )}
   </Loader>
