@@ -1,21 +1,28 @@
 import { Form, Radio, Space } from 'antd'
 import { useIntl }            from 'react-intl'
 
-import { CertificateGenerationType, GenerateCertificateFormData } from '@acx-ui/rc/utils'
+import { CertificateGenerationType, ExtendedKeyUsages, GenerateCertificateFormData } from '@acx-ui/rc/utils'
 
 import { generateCertificateTitle } from '../../contentsMap'
 
-import GenerateCertificate        from './GenerateCertificate'
-import GenerateCertificateWithCSR from './GenerateCertificateWIthCSR'
-import { UploadCertificate }      from './UploadCertificate'
+import { GenerateCertificate }        from './GenerateCertificate'
+import { GenerateCertificateWithCSR } from './GenerateCertificateWIthCSR'
+import { UploadCertificate }          from './UploadCertificate'
 
-export default function GenerateCertificateFormSelection () {
+type GenerateCertificateFormSelectionFormProps = {
+  extendedKeyUsages?: ExtendedKeyUsages[]
+}
+
+export const GenerateCertificateFormSelection =
+(props: GenerateCertificateFormSelectionFormProps) => {
   const { $t } = useIntl()
   const generateCertificateForm = Form.useFormInstance<GenerateCertificateFormData>()
   const generation = Form.useWatch('generation', generateCertificateForm)
   const generationFormMapping = {
-    [CertificateGenerationType.NEW]: <GenerateCertificate />,
-    [CertificateGenerationType.WITH_CSR]: <GenerateCertificateWithCSR />,
+    [CertificateGenerationType.NEW]: <GenerateCertificate
+      extendedKeyUsages={props?.extendedKeyUsages}/>,
+    [CertificateGenerationType.WITH_CSR]: <GenerateCertificateWithCSR
+      extendedKeyUsages={props?.extendedKeyUsages}/>,
     [CertificateGenerationType.UPLOAD]: <UploadCertificate />
   }
 

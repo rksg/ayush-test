@@ -25,6 +25,7 @@ import {
   targetHostRegExp,
   validateRecoveryPassphrasePart,
   validateVlanId,
+  validateVlanExcludingReserved,
   ipv6RegExp,
   validateTags,
   multicastIpAddressRegExp,
@@ -170,6 +171,23 @@ describe('validator', () => {
     it('Should take care of Vlan ID with alphabet', async () => {
       const result1 = validateVlanId('abc')
       await expect(result1).rejects.toEqual('VLAN ID must be between 1 and 4094')
+    })
+  })
+
+  describe('validateVlanExcludingReserved', () => {
+    it('Should take care of Vlan ID with valid value', async () => {
+      const result = validateVlanExcludingReserved('100')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should take care of Vlan ID with invalid number', async () => {
+      const result = validateVlanExcludingReserved('4099')
+      // eslint-disable-next-line max-len
+      await expect(result).rejects.toEqual('Enter a valid number between 1 and 4095, except 4087, 4090, 4091, 4092, 4094')
+    })
+    it('Should take care of Vlan ID with reserved vlan', async () => {
+      const result1 = validateVlanExcludingReserved('4092')
+      // eslint-disable-next-line max-len
+      await expect(result1).rejects.toEqual('Enter a valid number between 1 and 4095, except 4087, 4090, 4091, 4092, 4094')
     })
   })
 
