@@ -268,7 +268,18 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
                 disabled={!checkboxStates[index]}
                 rules={[
                   { required: true },
-                  { validator: (_, value) => validateVlanExcludingReserved(value) }]}
+                  { validator: (_, value) => validateVlanExcludingReserved(value) },
+                  {
+                    validator: (_, value) => {
+                      const isDuplicate = configVlanIds.some((id, i) => id === value && i !== index)
+                      if (isDuplicate) {
+                        return Promise.reject($t({ defaultMessage: 'This VLAN ID is duplicated.' })
+                        )
+                      }
+                      return Promise.resolve()
+                    }
+                  }
+                ]}
                 fieldProps={{
                   'data-testid': `vlan-id-input-${index}`,
                   'type': 'number',
