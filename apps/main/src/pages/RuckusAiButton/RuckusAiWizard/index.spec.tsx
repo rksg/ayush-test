@@ -62,7 +62,8 @@ describe('RuckusAiWizard', () => {
     currentStep: 0,
     step: RuckusAiStepsEnum.BASIC,
     setCurrentStep: jest.fn(),
-    setStep: jest.fn()
+    setStep: jest.fn(),
+    setConfigResponse: jest.fn()
   }
 
   afterEach(() => {

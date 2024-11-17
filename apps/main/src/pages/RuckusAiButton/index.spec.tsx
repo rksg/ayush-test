@@ -5,7 +5,8 @@ import { IntlProvider }              from 'react-intl'
 
 import { Provider } from '@acx-ui/store'
 
-import { RuckusAiButton } from './index'
+import RuckusAiButton from '.'
+
 
 jest.mock('./BasicInformationPage', () => () => <div>BasicInformationPage Component</div>)
 jest.mock('./Congratulations', () => () => <div>Congratulations Component</div>)
@@ -118,7 +119,9 @@ describe('RuckusAiButton', () => {
   })
 
   it('closes modal on Finish button click', async () => {
-    renderWithIntl(<RuckusAiButton />)
+    renderWithIntl(<Provider>
+      <RuckusAiButton />
+    </Provider>)
 
     const button = screen.getByRole('button')
     fireEvent.click(button)
@@ -138,8 +141,6 @@ describe('RuckusAiButton', () => {
     fireEvent.click(screen.getByText('Finish Configuration'))
 
     await screen.findByText('Congratulations Component')
-
-
     fireEvent.click(screen.getByRole('button', { name: 'Finish' }))
   })
 })

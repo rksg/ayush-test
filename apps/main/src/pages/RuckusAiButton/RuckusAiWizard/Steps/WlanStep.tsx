@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 
 import {
   ProFormCheckbox,
-  ProFormInstance,
   ProFormSelect,
   ProFormText
 } from '@ant-design/pro-form'
@@ -29,10 +28,10 @@ type NetworkConfig = {
   'id': string;
 }
 
-export function WlanStep (props: { payload: string; description: string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  formInstance: ProFormInstance<any> | undefined
- }) {
+export function WlanStep (props: {
+  payload: string,
+  description: string
+}) {
   const { $t } = useIntl()
   const initialData = JSON.parse(props.payload || '[]') as NetworkConfig[]
   const [data, setData] = useState<NetworkConfig[]>(initialData)

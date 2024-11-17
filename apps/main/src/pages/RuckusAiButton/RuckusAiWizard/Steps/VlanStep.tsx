@@ -86,6 +86,7 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
     setData([...data, newVlan])
     setConfigVlanIds([...configVlanIds, ''])
     setConfigVlanNames([...configVlanNames, ''])
+    setCheckboxStates([...checkboxStates, true])
   }
 
   const handleSetVlan = async (data: Vlan) => {
@@ -235,7 +236,8 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
                 rules={[{ required: true }]}
                 disabled={!checkboxStates[index]}
                 fieldProps={{
-                  onChange: (value) => {
+                  'data-testid': `vlan-name-input-${index}`,
+                  'onChange': (value) => {
                     const newVlanName = value.target.value
                     const updateVlanNames = [...configVlanNames]
                     updateVlanNames[index] = newVlanName

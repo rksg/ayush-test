@@ -68,6 +68,7 @@ describe('VlanStep', () => {
           <VlanStep
             payload={mock_payload}
             sessionId='session-id'
+            description='description'
             formInstance={formRef.current}
           />
         </Form>
@@ -98,6 +99,7 @@ describe('VlanStep', () => {
           <VlanStep
             payload={mock_payload}
             sessionId='session-id'
+            description='description'
             formInstance={formRef.current}
           />
         </Form>
@@ -111,8 +113,8 @@ describe('VlanStep', () => {
 
     // change id
     await userEvent.clear(screen.getByTestId('vlan-id-input-0'))
-    await userEvent.type(screen.getByTestId('vlan-id-input-0'), '99')
-    expect(screen.getByTestId('vlan-id-input-0')).toHaveValue(99)
+    await userEvent.type(screen.getByTestId('vlan-id-input-0'), '93')
+    expect(screen.getByTestId('vlan-id-input-0')).toHaveValue(93)
 
     // edit
     await userEvent.click(screen.getByTestId('vlan-configuration-0'))

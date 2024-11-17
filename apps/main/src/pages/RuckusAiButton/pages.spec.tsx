@@ -65,6 +65,7 @@ describe('Congratulations', () => {
       <Provider>
         <Form>
           <Congratulations
+            configResponse={{ vlan: [{ vlanId: 1 }] }}
             closeModal={() => {mockCloseModal()}} />
         </Form>
       </Provider>, {
