@@ -245,7 +245,7 @@ export function WlanStep (props: { payload: string; description: string,
               </UI.PurposeContainer>}
             </div>
           </UI.VlanContainer>
-          <Divider dashed />
+          {index < data.length - 1 && <Divider />}
         </React.Fragment>
       ))}
       <UI.FooterValidationItem

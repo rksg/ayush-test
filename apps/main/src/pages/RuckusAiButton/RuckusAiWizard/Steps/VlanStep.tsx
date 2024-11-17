@@ -46,7 +46,7 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
 
   const [selectedVlanProfile, setSelectedVlanProfile] = useState<Vlan>()
   const [vlanTable, setVlanTable] = useState<Vlan[]>([])
-  const [disabledKeys, setDisabledKeys] = useState([] as number[])
+  const [disabledKeys, setDisabledKeys] = useState([] as string[])
 
   useEffect(() => {
     if (initialData !== data) {
@@ -66,11 +66,11 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
     newCheckboxStates[index] = checked
     setCheckboxStates(newCheckboxStates)
     if (checked) {
-      setDisabledKeys(disabledKeys.filter(id => id !== index))
+      setDisabledKeys(disabledKeys.filter(id => String(id) !== String(index)))
       //TODO: Check vlan ID, select port is duplicated or not
 
     } else {
-      setDisabledKeys([...disabledKeys, index])
+      setDisabledKeys([...disabledKeys, String(index)])
     }
 
   }
@@ -332,7 +332,7 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
 
             </UI.VlanDetails>
           </UI.VlanContainer>
-          <Divider dashed />
+          {index < data.length - 1 && <Divider />}
         </React.Fragment>
       ))}
       {configVisible &&
@@ -350,7 +350,7 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
           vlansList={vlanTable.filter(
             item =>
               String(item.key) !== String(configIndex) &&
-              !disabledKeys.includes(item.key)
+              !disabledKeys.includes(String(item.key))
           )}
         />
       }
