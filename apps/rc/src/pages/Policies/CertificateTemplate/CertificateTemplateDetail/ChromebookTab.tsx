@@ -106,7 +106,11 @@ export default function ChromebookTab ({ data }: { data: CertificateTemplate | u
         </Section>
       }
 
-      {isInstructionOpen && <ChromebookInstructionDrawer data={data} onClose={closeInstructions}/>}
+      {(isInstructionOpen && data)
+      && <ChromebookInstructionDrawer
+        data={data}
+        onClose={closeInstructions}
+      />}
     </>
   )
 }
