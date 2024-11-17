@@ -7,7 +7,8 @@ import { Provider  }      from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen
+  screen,
+  within
 } from '@acx-ui/test-utils'
 
 import BasicInformationPage from './BasicInformationPage'
@@ -32,6 +33,10 @@ describe('VerticalPage', () => {
         </Form>
       </Provider>)
     expect(await screen.findByText('School')).toBeVisible()
+    await userEvent.click(await screen.findByText('School'))
+    const othersButton = screen.getByText(/others/i)
+    await userEvent.click(othersButton)
+    within(othersButton).getByRole('textbox')
   })
 })
 
@@ -48,6 +53,7 @@ describe('Congratulations', () => {
       <Provider>
         <Form>
           <Congratulations
+            configResponse={{ vlan: [] }}
             closeModal={() => {mockCloseModal()}} />
         </Form>
       </Provider>, {
@@ -115,11 +121,15 @@ describe('BasicInfomrationPage', () => {
     const apNumber = screen.getByRole('textbox', {
       name: /approx\. number of aps/i
     })
+    await userEvent.type(apNumber, 'abc')
+    expect(await screen.findByText('Please enter a valid number.')).toBeVisible()
     await userEvent.type(apNumber, '1')
 
     const switchNumber = screen.getByRole('textbox', {
       name: /approx\. number of switches/i
     })
+    await userEvent.type(switchNumber, 'abc')
+    expect(await screen.findByText('Please enter a valid number.')).toBeVisible()
     await userEvent.type(switchNumber, '1')
 
     const description = screen.getByRole('textbox', {

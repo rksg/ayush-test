@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { render, fireEvent, screen } from '@testing-library/react'
+import userEvent                     from '@testing-library/user-event'
 import { IntlProvider }              from 'react-intl'
 
 import { RuckusAiStepsEnum } from '..'
@@ -51,7 +52,6 @@ jest.mock('@acx-ui/rc/services', () => {
   }
 })
 
-
 describe('RuckusAiWizard', () => {
   const defaultProps = {
     sessionId: 'test-session-id',
@@ -79,6 +79,40 @@ describe('RuckusAiWizard', () => {
     expect(screen.getByText('WlanStep Component')).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: /Next/i }))
+
+    expect(screen.getByText('WlanStep Component')).toBeInTheDocument() //TODO
+
+    fireEvent.click(screen.getByRole('button', { name: /Back/i }))
+
+    expect(screen.getByText('WlanStep Component')).toBeInTheDocument()
+  })
+
+  it('configuration hasChanged', async () => {
+    jest.mock('@acx-ui/rc/services', () => {
+      const actualModule = jest.requireActual('@acx-ui/rc/services')
+      return {
+        ...actualModule,
+        useUpdateConversationsMutation: () => [
+          jest.fn(() => ({
+            unwrap: jest.fn().mockResolvedValue({
+              sessionId: 'testSessionId',
+              nextStep: 'testNextStep',
+              description: 'testDescription',
+              payload: { hasChanged: true }
+            })
+          }))
+        ]
+      }
+    })
+    render(
+      <IntlProvider locale='en'>
+        <RuckusAiWizard {...defaultProps} />
+      </IntlProvider>)
+
+
+    expect(screen.getByText('WlanStep Component')).toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', { name: /Next/i }))
 
     expect(screen.getByText('WlanStep Component')).toBeInTheDocument() //TODO
 

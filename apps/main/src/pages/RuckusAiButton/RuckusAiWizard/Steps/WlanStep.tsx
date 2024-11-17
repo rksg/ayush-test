@@ -184,6 +184,9 @@ export function WlanStep (props: {
                 validateFirst
                 disabled={!checkboxStates[index]}
                 validateTrigger={'onBlur'}
+                fieldProps={{
+                  'data-testid': `wlan-name-input-${index}`
+                }}
               />
               <ProFormSelect
                 allowClear={false}
