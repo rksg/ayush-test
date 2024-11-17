@@ -82,6 +82,7 @@ export default function ChromebookTab ({ data }: { data: CertificateTemplate | u
               </DescriptionRow>
             ))}
           </Col>
+          {data?.chromebook?.enabled &&
           <Col>
             <Button
               type={'link'}
@@ -89,7 +90,7 @@ export default function ChromebookTab ({ data }: { data: CertificateTemplate | u
             >
               {$t({ defaultMessage: 'Show setup instructions' })}
             </Button>
-          </Col>
+          </Col>}
         </Row>
       </Section>
       {data?.chromebook?.enabled &&
