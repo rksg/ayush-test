@@ -1,13 +1,13 @@
 import { Provider } from '@acx-ui/store'
 import { render }   from '@acx-ui/test-utils'
 
-import ChromebookInstuctionDrawer from './ChromebookInstuctionDrawer'
+import ChromebookInstructionDrawer from './ChromebookInstructionDrawer'
 
-describe('ChromebookInstuctionDrawer', () => {
+describe('ChromebookInstructionDrawer', () => {
   it('should render form successfully', async () => {
     render(
       <Provider>
-        <ChromebookInstuctionDrawer
+        <ChromebookInstructionDrawer
           // visible={true}
           // setVisible={jest.fn()}
           // isEdit={false}

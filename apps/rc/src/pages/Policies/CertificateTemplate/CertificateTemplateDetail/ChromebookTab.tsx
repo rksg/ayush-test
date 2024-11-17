@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { Col, Divider, Row, Space, Typography } from 'antd'
-import { useIntl }                              from 'react-intl'
+import { Col, Divider, Row, Typography } from 'antd'
+import { useIntl }                       from 'react-intl'
 
 import { Button }                                                             from '@acx-ui/components'
 import { enrollmentTypeLabel, existingCertLabel, onboardSettingsDescription } from '@acx-ui/rc/components'
@@ -10,12 +10,12 @@ import { noDataDisplay }                                                      fr
 
 import { Description, DescriptionRow, Section } from '../styledComponents'
 
-import ChromebookInstuctionDrawer from './ChromebookInstuctionDrawer'
+import ChromebookInstructionDrawer from './ChromebookInstructionDrawer'
 
 export default function ChromebookTab ({ data }: { data: CertificateTemplate | undefined }) {
   const { $t } = useIntl()
   const { Text } = Typography
-  const [ isInstuctionOpen, setIsInstuctionOpen ] = useState(false)
+  const [ isInstructionOpen, setIsInstructionOpen ] = useState(false)
 
   const chromebookInfo = [
     {
@@ -58,11 +58,11 @@ export default function ChromebookTab ({ data }: { data: CertificateTemplate | u
   ]
 
   const openInstructions = () => {
-    setIsInstuctionOpen(true)
+    setIsInstructionOpen(true)
   }
 
   const closeInstructions = () => {
-    setIsInstuctionOpen(false)
+    setIsInstructionOpen(false)
   }
 
   return (
@@ -106,7 +106,7 @@ export default function ChromebookTab ({ data }: { data: CertificateTemplate | u
         </Section>
       }
 
-      {isInstuctionOpen && <ChromebookInstuctionDrawer onClose={closeInstructions}/>}
+      {isInstructionOpen && <ChromebookInstructionDrawer data={data} onClose={closeInstructions}/>}
     </>
   )
 }
