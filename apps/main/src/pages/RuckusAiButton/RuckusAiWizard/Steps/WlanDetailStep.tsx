@@ -37,7 +37,7 @@ export function WlanDetailStep (props: {
   const [modalName, setModalName] = useState('')
 
   const [configuredFlags, setConfiguredFlags] = useState<Map<string, boolean>>(new Map())
-  const [ssidTypes, setSsidTypes] = useState<Map<string, NetworkTypeEnum>>(new Map())  // 修改为Map
+  const [ssidTypes, setSsidTypes] = useState<Map<string, NetworkTypeEnum>>(new Map())
   const [networkModalVisible, setNetworkModalVisible] = useState(false)
   const [configuredIndex, setConfiguredIndex] = useState<number>(0)
 
@@ -45,18 +45,17 @@ export function WlanDetailStep (props: {
     if (initialData !== data) {
       formInstance?.setFieldsValue({ data: initialData })
       setData(initialData)
-      setSsidTypes(new Map(initialData.map(item => [item.id, item['SSID Type']])))  // 初始化时使用id作为key
+      setSsidTypes(new Map(initialData.map(item => [item.id, item['SSID Type']])))
       setConfigFlags()
     }
   }, [props.payload])
 
   const setConfigFlags = function () {
-    const newSsidTypes = new Map(initialData.map(item => [item.id, item['SSID Type']])) // 更新为Map
+    const newSsidTypes = new Map(initialData.map(item => [item.id, item['SSID Type']]))
     const diffIndices = data
       .map((item, index) => (ssidTypes.get(item.id) !== newSsidTypes.get(item.id) ? index : -1))
       .filter(index => index !== -1)
 
-    // 更新配置状态时，用id作为映射
     const updatedFlags = new Map(configuredFlags)
     diffIndices.forEach(index => {
       updatedFlags.set(data[index].id, false)
@@ -73,18 +72,20 @@ export function WlanDetailStep (props: {
     { value: NetworkTypeEnum.CAPTIVEPORTAL, label: $t(networkTypes[NetworkTypeEnum.CAPTIVEPORTAL]) }
   ]
 
-  const handleSsidTypeChange = (index: number, value: NetworkTypeEnum) => {
-    const updatedSsidTypes = new Map(ssidTypes)
-    updatedSsidTypes.set(data[index].id, value)  // 使用id来更新ssidTypes
-    setSsidTypes(updatedSsidTypes)
+  const handleSsidTypeChange = (id: string, value: NetworkTypeEnum) => {
+    setSsidTypes((prevSsidTypes) => {
+      const updatedSsidTypes = new Map(prevSsidTypes)
+      updatedSsidTypes.set(id, value)
+      return updatedSsidTypes
+    })
 
     setConfiguredFlags((prevConfiguredFlags) => {
       const updatedConfiguredFlags = new Map(prevConfiguredFlags)
-      updatedConfiguredFlags.set(data[index].id, false)  // 用id来更新配置状态
+      updatedConfiguredFlags.set(id, false)
       return updatedConfiguredFlags
     })
 
-    formInstance?.setFields([{ name: `configuredFlag-${index}`, errors: [] }])
+    formInstance?.setFields([{ name: `configuredFlag-${id}`, errors: [] }])
   }
 
   const [createOnboardConfigs] = useCreateOnboardConfigsMutation()
@@ -118,13 +119,12 @@ export function WlanDetailStep (props: {
 
     setConfiguredFlags((prevConfiguredFlags) => {
       const updatedConfiguredFlags = new Map(prevConfiguredFlags)
-      updatedConfiguredFlags.set(modalId, true)  // 用id来更新配置状态
+      updatedConfiguredFlags.set(modalId, true)
       return updatedConfiguredFlags
     })
   }, [modalId, modalName, modalType, configuredIndex, props.sessionId])
 
   useEffect(()=>{
-    // 用id来检查配置状态
     configuredFlags.forEach((flag, id) => {
       if (flag) {
         formInstance?.validateFields([`configuredFlag-${id}`])
@@ -189,7 +189,7 @@ export function WlanDetailStep (props: {
                   options={networkOptions}
                   allowClear={false}
                   fieldProps={{
-                    onChange: (value) => handleSsidTypeChange(index, value)
+                    onChange: (value) => handleSsidTypeChange(item.id, value)
                   }}
                 />
               </div>
@@ -233,7 +233,7 @@ export function WlanDetailStep (props: {
                   marginTop: '-45px',
                   pointerEvents: 'none'
                 }}
-                name={`configuredFlag-${item.id}`} // 使用 id 作为字段名
+                name={`configuredFlag-${item.id}`}
                 rules={[{
                   validator: () => {
                     if (!configuredFlags.get(item.id) &&

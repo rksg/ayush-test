@@ -36,6 +36,8 @@ export default function RuckusAiButtonRuckusAiWizard () {
   const [nextStep, setNextStep] = useState({} as RuckusAiConversation)
   const [currentStep, setCurrentStep] = useState(0 as number)
   const [venueType, setVenueType] = useState('' as string)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [configResponse, setConfigResponse] = useState({} as any)
 
   const [startConversations] = useStartConversationsMutation()
   const [updateConversations] = useUpdateConversationsMutation()
@@ -245,6 +247,7 @@ export default function RuckusAiButtonRuckusAiWizard () {
     setVisible(false)
     setCurrentStep(0)
     setNextStep({} as RuckusAiConversation)
+    setConfigResponse({})
   }
   return <>
     <UI.ButtonSolid
@@ -282,8 +285,11 @@ export default function RuckusAiButtonRuckusAiWizard () {
             setStep={setStep}
             step={step}
             setCurrentStep={setCurrentStep}
+            setConfigResponse={setConfigResponse}
           />}
-          {step === RuckusAiStepsEnum.FINISHED && <Congratulations closeModal={closeModal} />}
+          {step === RuckusAiStepsEnum.FINISHED && <Congratulations
+            configResponse={configResponse}
+            closeModal={closeModal} />}
         </>
       }
     />

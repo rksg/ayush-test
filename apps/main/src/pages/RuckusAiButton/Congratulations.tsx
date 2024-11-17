@@ -7,7 +7,11 @@ import { useUserProfileContext }      from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
-function Congratulations (props: { closeModal: () => void }) {
+function Congratulations (props: {
+  closeModal: () => void,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  configResponse: any
+}) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const linkToNetework = useTenantLink('/networks/wireless')
@@ -48,19 +52,22 @@ function Congratulations (props: { closeModal: () => void }) {
                   {$t({ defaultMessage: 'Click Here' })}
                 </Button>})
             </li>
-            <li>
-              {$t({ defaultMessage: 'View/Edit' })}
-              <b> {$t({ defaultMessage: 'Wired Configurations' })}</b> ({
-                <Button type='link'
-                  style={{ fontSize: '14px' }}
-                  data-testid='wired-link'
-                  onClick={() => {
-                    navigate(linkToWiredProfiles)
-                    props.closeModal()
-                  }}>
-                  {$t({ defaultMessage: ' Click Here' })}
-                </Button>})
-            </li>
+            {Array.isArray(props.configResponse?.['vlan']) &&
+              props.configResponse['vlan'].length > 0 &&
+              <li>
+                {$t({ defaultMessage: 'View/Edit' })}
+                <b> {$t({ defaultMessage: 'Wired Configurations' })}</b> ({
+                  <Button type='link'
+                    style={{ fontSize: '14px' }}
+                    data-testid='wired-link'
+                    onClick={() => {
+                      navigate(linkToWiredProfiles)
+                      props.closeModal()
+                    }}>
+                    {$t({ defaultMessage: ' Click Here' })}
+                  </Button>})
+              </li>
+            }
           </UI.StyledList>
         </UI.CongratCard>
       </UI.CongratBox>

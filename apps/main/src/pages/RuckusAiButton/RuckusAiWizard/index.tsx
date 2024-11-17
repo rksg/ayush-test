@@ -26,6 +26,8 @@ export default function RuckusAiWizard (props: {
   step: string;
   setCurrentStep: (currentStep: number) => void;
   setStep: (step: RuckusAiStepsEnum) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setConfigResponse: (response: any) => void;
 }) {
   const { $t } = useIntl()
   const [isLoading, setIsLoading] = useState(false)
@@ -190,12 +192,12 @@ export default function RuckusAiWizard (props: {
       onFinish: async () => {
         setIsLoading(true)
         try {
-          await applyConversations({
+          const applyResponse = await applyConversations({
             params: { sessionId: props.sessionId }
           }).unwrap()
           props.setStep(RuckusAiStepsEnum.FINISHED)
+          props.setConfigResponse(applyResponse)
         } catch (error) {
-          //TODO: Waiting for UX design and backend integration.
           alert('Please try again.')
         }
         setIsLoading(false)

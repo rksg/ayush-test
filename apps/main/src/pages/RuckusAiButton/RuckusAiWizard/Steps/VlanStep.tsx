@@ -46,7 +46,7 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
 
   const [selectedVlanProfile, setSelectedVlanProfile] = useState<Vlan>()
   const [vlanTable, setVlanTable] = useState<Vlan[]>([])
-  const [disabledVlanIds, setDisabledVlanIds] = useState([] as string[])
+  const [disabledKeys, setDisabledKeys] = useState([] as number[])
 
   useEffect(() => {
     if (initialData !== data) {
@@ -56,22 +56,21 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
       setConfigVlanIds(initialData.map(vlan => vlan['VLAN ID']))
       setConfigVlanNames(initialData.map(vlan => vlan['VLAN Name']))
       setCheckboxStates(Array(initialData.length).fill(true))
-      setDisabledVlanIds([])
+      setDisabledKeys([])
     }
 
   }, [props.payload])
 
   const handleCheckboxChange = (index: number, checked: boolean) => {
     const newCheckboxStates = [...checkboxStates]
-    const vid = formInstance?.getFieldValue(['data', index, 'VLAN ID'])
     newCheckboxStates[index] = checked
     setCheckboxStates(newCheckboxStates)
     if (checked) {
-      setDisabledVlanIds(disabledVlanIds.filter(id => id !== String(vid)))
+      setDisabledKeys(disabledKeys.filter(id => id !== index))
       //TODO: Check vlan ID, select port is duplicated or not
 
     } else {
-      setDisabledVlanIds([...disabledVlanIds, String(vid)])
+      setDisabledKeys([...disabledKeys, index])
     }
 
   }
@@ -107,6 +106,7 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
     })
 
     data.switchFamilyModels = sfm
+    data.key = configIndex
     setVlanTable([...filterData, data])
     if(configId) {
       await updateOnboardConfigs({
@@ -278,7 +278,7 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
                     updateVlanIds[index] = newVlan
 
                     const updatedVlanTable = vlanTable.map(v => {
-                      if (newVlan && String(v.vlanId) === configVlanIds[index]) {
+                      if (newVlan && v.key === index) {
                         return { ...v, vlanId: Number(newVlan) }
                       }
                       return v
@@ -349,8 +349,8 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
           }}
           vlansList={vlanTable.filter(
             item =>
-              String(item.vlanId) !== String(selectedVlanProfile?.vlanId) &&
-              !disabledVlanIds.includes(String(item.vlanId))
+              String(item.key) !== String(configIndex) &&
+              !disabledKeys.includes(item.key)
           )}
         />
       }

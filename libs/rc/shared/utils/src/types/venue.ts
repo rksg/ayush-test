@@ -427,7 +427,7 @@ export interface Vlan {
 	title?: string,
 	key?: number
 	inactiveRow?: boolean //ignore
-  inactiveTooltip?: string //ignore
+    inactiveTooltip?: string //ignore
 	isDeletable?: boolean //ignore
 	isAuthDefaultVlan?: boolean
 	isAuthVlan?: boolean
