@@ -12,6 +12,8 @@ export const SLOW = 'slow'
 export const DISCONNECT = 'disconnect'
 export const INFO_UPDATED = 'info-updated'
 export const JOIN = 'join'
+export const BTM_REQUEST = 'btm-request'
+export const BTM_RESPONSE = 'btm-response'
 export const ROAMED = 'roamed'
 export const DISCONNECTED = 'disconnected'
 export const FAILURE = 'failure'
@@ -23,11 +25,13 @@ export const EAPOLMessageIds = ['21', '22', '23', '24']
 export const filterEventMap = {
   [JOIN]: [ClientEventEnum.JOIN],
   [INFO_UPDATED]: [ClientEventEnum.INFO_UPDATED],
+  [BTM_REQUEST]: [ClientEventEnum.BTM_REQUEST],
+  [BTM_RESPONSE]: [ClientEventEnum.BTM_RESPONSE],
   [ROAMED]: [ClientEventEnum.ROAM],
   [DISCONNECTED]: Object.keys(disconnectClientEventsMap),
   [FAILURE]: ['FAILURE'],
   [RADIO2DOT4G]: ['2.4'],
-  [RADIO5G]: ['5'] ,
+  [RADIO5G]: ['5'],
   [RADIO65G]: ['6(5)']
 }
 export const EVENT_STATES = {
@@ -97,11 +101,33 @@ export type TimelineItem = {
   subtitle?: Subtitle[];
 }
 
-export const eventColorByCategory = {
-  [DISCONNECT]: '--acx-neutrals-50',
-  [SUCCESS]: '--acx-semantics-green-50',
-  [FAILURE]: '--acx-semantics-red-50',
-  [SLOW]: '--acx-semantics-yellow-50'
+export const btmInfoToDisplayTextMap: Record<string, string> = {
+  'BTM_EVENT_RECEIVE_REJECT': 'REJECTED',
+  'BTM_EVENT_RECEIVE_ACCEPT': 'ACCEPTED',
+  'sticky client': 'sticky',
+  'load balancing': 'load balancing'
+}
+
+const RED_COLOR = '--acx-semantics-red-50'
+const YELLOW_COLOR = '--acx-semantics-yellow-50'
+const GREEN_COLOR = '--acx-semantics-green-50'
+const GREY_COLOR = '--acx-neutrals-50'
+
+const eventColorByCategory = {
+  [DISCONNECT]: GREY_COLOR,
+  [SUCCESS]: GREEN_COLOR,
+  [FAILURE]: RED_COLOR,
+  [SLOW]: YELLOW_COLOR,
+  [BTM_REQUEST]: GREEN_COLOR,
+  [BTM_RESPONSE]: GREEN_COLOR
+}
+
+export const getEventColor = (category: string, btmInfo?: string) => {
+  if (category === BTM_RESPONSE && btmInfo === 'BTM_EVENT_RECEIVE_REJECT') {
+    return YELLOW_COLOR
+  }
+
+  return eventColorByCategory[category as keyof typeof eventColorByCategory]
 }
 
 export const rssGroups = {
@@ -155,6 +181,16 @@ export const ClientTroubleShootingConfig = {
           value: INCIDENT,
           label: defineMessage({ defaultMessage: 'Incident' }),
           isVisible: () => hasRaiPermission('READ_INCIDENTS')
+        },
+        {
+          value: BTM_REQUEST,
+          label: defineMessage({ defaultMessage: 'BTM request' }),
+          isVisible: () => true
+        },
+        {
+          value: BTM_RESPONSE,
+          label: defineMessage({ defaultMessage: 'BTM response' }),
+          isVisible: () => true
         }
       ],
       isVisible: () => true
@@ -194,7 +230,9 @@ export const ClientTroubleShootingConfig = {
         { key: 'success', label: 'success', chartType: 'scatter', series: 'events' },
         { key: 'failure', label: 'failure', chartType: 'scatter', series: 'events' },
         { key: 'slow', label: 'slow', chartType: 'scatter', series: 'events' },
-        { key: 'disconnect', label: 'disconnect', chartType: 'scatter', series: 'events' }
+        { key: 'disconnect', label: 'disconnect', chartType: 'scatter', series: 'events' },
+        { key: 'btm-request', label: 'btm request', chartType: 'scatter', series: 'events' },
+        { key: 'btm-response', label: 'btm response', chartType: 'scatter', series: 'events' }
       ] as ChartMapping[],
       showResetZoom: true,
       subtitle: [
@@ -212,7 +250,15 @@ export const ClientTroubleShootingConfig = {
         },
         {
           title: defineMessage({ defaultMessage: 'Disconnect' }),
-          value: DISCONNECT,
+          value: DISCONNECT
+        },
+        {
+          title: defineMessage({ defaultMessage: 'BTM Request' }),
+          value: BTM_REQUEST
+        },
+        {
+          title: defineMessage({ defaultMessage: 'BTM Response' }),
+          value: BTM_RESPONSE,
           isLast: true
         }
       ],
@@ -338,39 +384,66 @@ export type RoamingByAP = {
   bssid: string
 }
 export interface Event {
-  timestamp: string;
-  event: string;
-  ttc: string;
-  mac: string;
-  apName: string;
-  path: [];
-  code: string;
-  state: string;
-  failedMsgId: string;
-  messageIds: string;
-  radio: string;
-  ssid: string;
-  type: string;
-  key: string;
-  start: number;
-  end: number;
-  category: string;
-  seriesKey: string;
+  timestamp: string
+  event: string
+  ttc: string
+  mac: string
+  apName: string
+  path: []
+  code: string
+  state: string
+  failedMsgId: string
+  messageIds: string
+  radio: string
+  ssid: string
+  type: string
+  key: string
+  start: number
+  end: number
+  category: string
+  seriesKey: string
+  /**
+   * Contains `Trigger` field for BTM request event type or
+   * `Status` field for BTM response event type
+   */
+  btmInfo?: string
 }
 export type TimelineData = {
-  connectionEvents: EventsCategoryMap;
-  roaming: EventsCategoryMap;
-  connectionQuality: EventsCategoryMap;
-  networkIncidents: NetworkIncidentCategoryMap;
+  connectionEvents: ConnectionEventsCategoryMap
+  roaming: EventsCategoryMap
+  connectionQuality: EventsCategoryMap
+  networkIncidents: NetworkIncidentCategoryMap
 }
-export type EventsCategoryMap = {
-  [SUCCESS]: Event[] | [];
-  [FAILURE]: Event[] | [];
-  [DISCONNECT]: Event[] | [];
-  [SLOW]: Event[] | [];
-  all: Event[] | [];
+
+export type TimelineDataCategoryMap =
+  | ConnectionEventsCategoryMap
+  | EventsCategoryMap
+  | NetworkIncidentCategoryMap
+
+type EventsCategoryMap = {
+  [SUCCESS]: Event[] | []
+  [FAILURE]: Event[] | []
+  [DISCONNECT]: Event[] | []
+  [SLOW]: Event[] | []
+  all: Event[] | []
 }
-export type NetworkIncidentCategoryMap = {
+
+export const eventCategories: Array<keyof ConnectionEventsCategoryMap> = [
+  SUCCESS,
+  FAILURE,
+  DISCONNECT,
+  SLOW,
+  ALL,
+  BTM_REQUEST,
+  BTM_RESPONSE
+]
+
+type ConnectionEventsCategoryMap = EventsCategoryMap & {
+  [BTM_REQUEST]: Event[] | []
+  [BTM_RESPONSE]: Event[] | []
+}
+
+type NetworkIncidentCategoryMap = {
   connection:IncidentDetails[] |[],
   performance:IncidentDetails[] |[],
   infrastructure:IncidentDetails[] |[],

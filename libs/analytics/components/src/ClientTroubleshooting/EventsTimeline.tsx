@@ -18,13 +18,12 @@ import {
   TYPES,
   Event,
   TimelineData,
-  EventsCategoryMap,
-  NetworkIncidentCategoryMap,
   RoamingByAP,
   RoamingConfigParam,
   RoamingTimeSeriesData,
   DisplayEvent,
-  ALL
+  ALL,
+  TimelineDataCategoryMap
 } from './config'
 import { ClientInfoData, ConnectionEvent } from './services'
 import * as UI                             from './styledComponents'
@@ -126,7 +125,7 @@ export function TimeLine (props: TimeLineProps) {
     />
   }
 
-  const TimelineData = getTimelineData(events, incidents, toggles)
+  const timelineData = getTimelineData(events, incidents, toggles)
   const roamingEventsAps = connectionDetailsByAP(data?.connectionDetailsByAp as RoamingByAP[])
   const roamingEventsTimeSeries = connectionDetailsByApChartData(
     data?.connectionDetailsByAp as RoamingByAP[]
@@ -150,10 +149,10 @@ export function TimeLine (props: TimeLineProps) {
                 <Col span={3}>
                   {toggleIcon(
                     expandObj[config?.value as keyof TimelineData],
-                  config?.value as keyof TimelineData,
-                  (config?.value === TYPES.ROAMING)
+                      config?.value as keyof TimelineData,
+                      (config?.value === TYPES.ROAMING)
                     && getRoamingSubtitleConfig(roamingEventsAps as RoamingConfigParam)[0].noData,
-                  checkRollup(config?.value, startDate)
+                      checkRollup(config?.value, startDate)
                   )}
                 </Col>
                 <Col
@@ -167,53 +166,54 @@ export function TimeLine (props: TimeLineProps) {
                 <Col style={{ lineHeight: '25px' }} span={4}>
                   {config.showCount ? (
                     <UI.TimelineCount>
-                      {TimelineData[config.value as keyof TimelineData]?.['all'].length ?? 0}
+                      {timelineData[config.value as keyof TimelineData]?.['all'].length ?? 0}
                     </UI.TimelineCount>
                   ) : null}
                 </Col>
                 {expandObj[config?.value as keyof TimelineData] &&
-                (config.value === TYPES.ROAMING
-                  ? getRoamingSubtitleConfig(roamingEventsAps as RoamingConfigParam)
-                  : config?.subtitle
-                )?.map((subtitle, index) => (
-                  <React.Fragment key={subtitle.value + index}>
-                    <Col span={17} offset={3} style={subtitle.isLast ? { marginBottom: 40 } : {}}>
-                      {config.value === TYPES.ROAMING
-                        ? <UI.RoamingTimelineSubContent>
-                          {
-                            ((subtitle as { noData: boolean }).noData)
-                              ? null
-                              : <Tooltip
-                                placement='top'
-                                title={roamingTooltipCallback(
-                                  (subtitle as { apMac: string }).apMac,
-                                  (subtitle as { apModel: string }).apModel,
-                                  (subtitle as { apFirmware: string }).apFirmware)}
-                              >
-                                {subtitle.title as string}
-                              </Tooltip>
-                          }
-                        </UI.RoamingTimelineSubContent>
-                        : <UI.TimelineSubContent>
-                          {($t(subtitle.title as MessageDescriptor))}
-                        </UI.TimelineSubContent>}
-                    </Col>
-                    <Col span={4}>
-                      {config.showCount ? (
-                        <UI.TimelineCount>
-                          {
-                            TimelineData?.[config.value as keyof TimelineData]?.[
-                              subtitle.value as keyof (
-                                | EventsCategoryMap
-                                | NetworkIncidentCategoryMap
-                              )
-                            ]?.length
-                          }
-                        </UI.TimelineCount>
-                      ) : null}
-                    </Col>
-                  </React.Fragment>
-                ))}
+                    (config.value === TYPES.ROAMING
+                      ? getRoamingSubtitleConfig(roamingEventsAps as RoamingConfigParam)
+                      : config?.subtitle
+                    )?.map((subtitle, index) => (
+                      <React.Fragment key={subtitle.value + index}>
+                        <Col
+                          span={17}
+                          offset={3}
+                          style={subtitle.isLast ? { marginBottom: 40 } : {}}
+                        >
+                          {config.value === TYPES.ROAMING
+                            ? <UI.RoamingTimelineSubContent>
+                              {
+                                ((subtitle as { noData: boolean }).noData)
+                                  ? null
+                                  : <Tooltip
+                                    placement='top'
+                                    title={roamingTooltipCallback(
+                                      (subtitle as { apMac: string }).apMac,
+                                      (subtitle as { apModel: string }).apModel,
+                                      (subtitle as { apFirmware: string }).apFirmware)}
+                                  >
+                                    {subtitle.title as string}
+                                  </Tooltip>
+                              }
+                            </UI.RoamingTimelineSubContent>
+                            : <UI.TimelineSubContent>
+                              {($t(subtitle.title as MessageDescriptor))}
+                            </UI.TimelineSubContent>}
+                        </Col>
+                        <Col span={4}>
+                          {config.showCount ? (
+                            <UI.TimelineCount>
+                              {
+                                timelineData?.[config.value as keyof TimelineData]?.[
+                                  subtitle.value as keyof TimelineDataCategoryMap
+                                ]?.length
+                              }
+                            </UI.TimelineCount>
+                          ) : null}
+                        </Col>
+                      </React.Fragment>
+                    ))}
               </React.Fragment>
             })}
         </Row>
@@ -230,13 +230,13 @@ export function TimeLine (props: TimeLineProps) {
                   style={{ width: 'auto', marginBottom: 8 }}
                   data={getChartData(
                   config?.value as keyof TimelineData,
-                  TimelineData.connectionEvents.all,
+                  timelineData.connectionEvents.all,
                   expandObj[config?.value as keyof TimelineData],
                   !Array.isArray(qualities) ? qualities.all : [],
                   Array.isArray(incidents) ? incidents : [],
                   {
                     ...roamingEventsTimeSeries,
-                    [ALL]: TimelineData.roaming.all
+                    [ALL]: timelineData.roaming.all
                   } as RoamingTimeSeriesData[] )}
                   showResetZoom={config?.showResetZoom}
                   chartBoundary={chartBoundary}

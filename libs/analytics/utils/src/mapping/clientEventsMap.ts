@@ -17,6 +17,16 @@ export const clientEvents = [
     text: defineMessage({ defaultMessage: 'Client join' })
   },
   {
+    id: 238,
+    code: ClientEventEnum.BTM_REQUEST,
+    text: defineMessage({ defaultMessage: 'BTM request' })
+  },
+  {
+    id: 239,
+    code: ClientEventEnum.BTM_RESPONSE,
+    text: defineMessage({ defaultMessage: 'BTM response' })
+  },
+  {
     id: 209,
     code: ClientEventEnum.ROAM,
     text: defineMessage({ defaultMessage: 'Client roamed' })

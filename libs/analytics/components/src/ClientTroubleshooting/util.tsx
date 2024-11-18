@@ -55,7 +55,10 @@ import {
   QUALITY,
   ROAMING,
   INCIDENTS,
-  ALL
+  ALL,
+  eventCategories,
+  BTM_REQUEST,
+  BTM_RESPONSE
 } from './config'
 import { ConnectionEvent, ConnectionQuality } from './services'
 import * as UI                                from './styledComponents'
@@ -137,6 +140,9 @@ export const formatEventDesc = (evtObj: DisplayEvent, intl: IntlShape): string =
 }
 
 export const categorizeEvent = (name: string, ttc: number | null) => {
+  if (name === ClientEventEnum.BTM_REQUEST) return BTM_REQUEST
+  if (name === ClientEventEnum.BTM_RESPONSE) return BTM_RESPONSE
+
   const successEvents = [INFO_UPDATED, JOIN, ROAMED].map(
     (key) => filterEventMap[key as keyof typeof filterEventMap]
   ).flat()
@@ -496,7 +502,6 @@ export const transformIncidents = (
 // Utils for Network Incidents ends
 
 // General Util for the chart's data, tooltip formatter
-
 export const getTimelineData = (
   events: Event[],
   incidents: IncidentDetails[],
@@ -509,26 +514,15 @@ export const getTimelineData = (
           ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][ALL],
           event
         ]
-        if (event.category === SUCCESS)
-          acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][SUCCESS] = [
-            ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][SUCCESS],
-            event
-          ]
-        if (event.category === FAILURE)
-          acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][FAILURE] = [
-            ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][FAILURE],
-            event
-          ]
-        if (event.category === DISCONNECT)
-          acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][DISCONNECT] = [
-            ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][DISCONNECT],
-            event
-          ]
-        if (event.category === SLOW)
-          acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][SLOW] = [
-            ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][SLOW],
-            event
-          ]
+
+        eventCategories.forEach((category) => {
+          if (event.category === category) {
+            acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][category] = [
+              ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][category],
+              event
+            ]
+          }
+        })
       }
       if (event?.type === TYPES.ROAMING) {
         acc[TYPES.ROAMING as RoamingEventsKey][ALL] = [
@@ -539,13 +533,10 @@ export const getTimelineData = (
       return acc
     },
     {
-      [TYPES.CONNECTION_EVENTS]: {
-        [SUCCESS]: [],
-        [FAILURE]: [],
-        [DISCONNECT]: [],
-        [SLOW]: [],
-        [ALL]: []
-      },
+      [TYPES.CONNECTION_EVENTS]: eventCategories.reduce(
+        (acc, category) => ({ ...acc, [category]: [] }),
+        {}
+      ),
       [TYPES.ROAMING]: {
         [ALL]: []
       }

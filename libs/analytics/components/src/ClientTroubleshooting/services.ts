@@ -19,7 +19,12 @@ export type ConnectionEvent = {
   messageIds?: Array<string>,
   key?: string,
   pcapFilename?: string,
-  roamingType?: string
+  roamingType?: string,
+  /**
+   * Contains `Trigger` field for BTM request event type or
+   * `Status` field for BTM response event type
+   */
+  btmInfo?: string
 }
 
 export type ConnectionQuality = {
@@ -114,6 +119,7 @@ export const api = dataApi.injectEndpoints({
               radio
               ssid
               pcapFilename
+              btmInfo
               ${payload.fetchRoamingType ? 'roamingType' : ''}
             }
             connectionDetailsByAp {

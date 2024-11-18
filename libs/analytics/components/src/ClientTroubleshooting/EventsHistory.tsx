@@ -13,7 +13,7 @@ import { hasAccess, hasRaiPermission } from '@acx-ui/user'
 
 import {
   DisplayEvent,
-  eventColorByCategory,
+  getEventColor,
   IncidentDetails
 } from './config'
 import { ConnectionEventPopover }                              from './ConnectionEvent'
@@ -60,7 +60,7 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
     intl
   )
   return [ ...events.map((event: DisplayEvent) => {
-    const color = eventColorByCategory[event.category as keyof typeof eventColorByCategory]
+    const color = getEventColor(event.category, event.btmInfo)
     return {
       start: event.start,
       date: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(event.start),
