@@ -53,23 +53,10 @@ export const impactedApi = dataApi.injectEndpoints({
             }
           })
       }
-    }),
-    impactedSwitchDDoSAndTotalSwitchCount: build.query<{ impactedCount:number,totalCount:number },
-     { id: Incident['id'] }>({
-       query: (variables) => ({ document, variables }),
-       transformResponse: (response: Response<{ impactedSwitchDDoS: ImpactedSwitch[],
-         switchCount: number }>) => {
-         const incident = response.incident
-         return {
-           impactedCount: incident.impactedSwitchDDoS.length,
-           totalCount: incident.switchCount
-         }
-       }
-     })
+    })
   })
 })
 
 export const {
-  useImpactedSwitchDDoSQuery,
-  useImpactedSwitchDDoSAndTotalSwitchCountQuery
+  useImpactedSwitchDDoSQuery
 } = impactedApi
