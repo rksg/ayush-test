@@ -856,5 +856,14 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  updateApLanPortSpecificSettings: {
+    method: 'PUT',
+    newApi: true,
+    url: '/venues/:venueId/aps/:serialNumber/lanPortSpecificSettings',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }
