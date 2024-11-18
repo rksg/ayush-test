@@ -59,6 +59,9 @@ describe('CertificateSettings', () => {
     await userEvent.click(option1)
     expect(await screen.findByText('var1')).toBeInTheDocument()
     expect(await screen.findByText('var2')).toBeInTheDocument()
+
+    const addButtons = screen.getAllByRole('button', { name: 'Add' })
+    expect(addButtons).toHaveLength(1)
   })
 
   it('should render Certificate Template select when specificTemplate is false', () => {
