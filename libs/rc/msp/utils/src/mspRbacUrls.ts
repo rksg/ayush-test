@@ -59,13 +59,12 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   //   oldUrl: '/api/entitlement-assign/tenant/:tenantId/mspEntitlementBanner',
   //   newApi: true
   // },
-  // refreshMspEntitlement: {
-  //   method: 'get',
-  //   oldMethod: 'post',
-  //   url: '/mspEntitlements/summaries?refresh=true',
-  //   oldUrl: '/api/entitlement-assign/tenant/:tenantId/mspEntitlement/refresh',
-  //   newApi: true
-  // },
+  refreshMspEntitlement: {
+    method: 'PATCH',
+    url: '/entitlements',
+    oldUrl: '/mspEntitlements/summaries?refresh=true',
+    newApi: true
+  },
   // getMspEntitlement: {
   //   method: 'get',
   //   url: '/mspEntitlements',
