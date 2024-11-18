@@ -205,7 +205,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
         </Col>
       </Row>
       <Row gutter={20}>
-        <Col span={8}>
+        <Col span={12}>
           <Form.Item
             name='segments'
             label={$t({ defaultMessage: 'Number of Segments' })}
@@ -220,7 +220,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
         </Col>
       </Row>
       <Row gutter={20}>
-        <Col span={8}>
+        <Col span={12}>
           <Form.Item
             name='devices'
             label={$t({ defaultMessage: 'Number of devices per Segment' })}
