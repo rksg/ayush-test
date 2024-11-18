@@ -131,7 +131,20 @@ export const personaApi = basePersonaApi.injectEndpoints({
       providesTags: [
         { type: 'PersonaGroup', id: 'LIST' },
         { type: 'Persona', id: 'ID' }
-      ]
+      ],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'CreatePersona'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(personaApi.util.invalidateTags([
+              { type: 'PersonaGroup', id: 'LIST' },
+              { type: 'Persona', id: 'ID' }
+            ]))
+          })
+        })
+      }
     }),
     updatePersonaGroup: build.mutation<CommonAsyncResponse, RequestPayload>({
       query: ({ params, payload, customHeaders }) => {
@@ -177,7 +190,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
     }),
 
     // Persona
-    addPersona: build.mutation<Persona, RequestPayload>({
+    addPersona: build.mutation<CommonAsyncResponse, RequestPayload>({
       query: ( { params, payload, customHeaders }) => {
         const req = createPersonaHttpRequest(PersonaUrls.addPersona, params, customHeaders)
 
@@ -186,7 +199,10 @@ export const personaApi = basePersonaApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'Persona' }]
+      invalidatesTags: [
+        { type: 'PersonaGroup', id: 'LIST' },
+        { type: 'Persona', id: 'ID' }
+      ]
     }),
     importPersonas: build.mutation<{}, RequestPayload>({
       query: ({ params, payload, customHeaders }) => {
@@ -263,7 +279,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
       providesTags: [{ type: 'Persona', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
-    updatePersona: build.mutation<Persona, RequestPayload>({
+    updatePersona: build.mutation<CommonAsyncResponse, RequestPayload>({
       query: ({ params, payload, customHeaders }) => {
         const req = createPersonaHttpRequest(PersonaUrls.updatePersona, params, customHeaders)
         return {
