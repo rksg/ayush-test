@@ -23,7 +23,8 @@ export default function MoreSettingsForm ({ editMode = false }) {
   const selectedCaId = Form.useWatch(['onboard', 'certificateAuthorityId'], form)
 
   const { isCaOptionsLoading, caOptions } = useGetCertificateAuthoritiesQuery({
-    payload: { page: '1', pageSize: MAX_CERTIFICATE_PER_TENANT }
+    payload: { page: '1', pageSize: MAX_CERTIFICATE_PER_TENANT,
+      sortField: 'name', sortOrder: 'ASC' }
   }, {
     selectFromResult: ({ data, isLoading }) => {
       return {

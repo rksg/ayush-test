@@ -51,7 +51,8 @@ export default function CertificateTemplateTable () {
 
   const { caFilterOptions } = useGetCertificateAuthoritiesQuery(
     {
-      payload: { pageSize: MAX_CERTIFICATE_PER_TENANT, page: 1 }
+      payload: { pageSize: MAX_CERTIFICATE_PER_TENANT, page: 1,
+        sortField: 'name', sortOrder: 'ASC' }
     },
     {
       selectFromResult: ({ data }) => ({
