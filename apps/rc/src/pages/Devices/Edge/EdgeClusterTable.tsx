@@ -22,7 +22,8 @@ import {
   genUrl,
   CommonCategory,
   EdgeStatusEnum,
-  isOtpEnrollmentRequired
+  isOtpEnrollmentRequired,
+  ClusterHighAvailabilityModeEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeScopes }                             from '@acx-ui/types'
@@ -40,7 +41,8 @@ const defaultPayload = {
     'venueName',
     'clusterStatus',
     'haStatus',
-    'edgeList'
+    'edgeList',
+    'highAvailabilityMode'
   ]
 }
 
@@ -83,6 +85,17 @@ export const EdgeClusterTable = () => {
       }
     })
 
+  const getHaModeDisplayString = (highAvailabilityMode?: ClusterHighAvailabilityModeEnum) => {
+    switch(highAvailabilityMode) {
+      case ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE:
+        return $t({ defaultMessage: 'Active-Active' })
+      case ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY:
+        return $t({ defaultMessage: 'Active-Standby' })
+      default:
+        return $t({ defaultMessage: 'N/A' })
+    }
+  }
+
   const columns: TableProps<EdgeClusterTableDataType>['columns'] = [
     {
       title: $t({ defaultMessage: 'RUCKUS Edge' }),
@@ -113,6 +126,14 @@ export const EdgeClusterTable = () => {
           clusterStatus={row.clusterStatus}
           edgeList={row.edgeList}
         />
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'HA Mode' }),
+      key: 'highAvailabilityMode',
+      dataIndex: 'highAvailabilityMode',
+      render: (_, row) => {
+        return row.isFirstLevel && getHaModeDisplayString(row.highAvailabilityMode)
       }
     },
     {
