@@ -152,3 +152,27 @@ export interface EdgeTnmHostFormData {
     port: string
   }
 }
+
+export interface EdgeTnmGraphItem {
+  gitemid: string
+  graphid: string
+  itemid: string
+  drawtype: string
+  sortorder: string
+  color: string
+  yaxisside: string
+  calc_fnc: string
+  type: string
+}
+
+export interface EdgeTnmGraphItemInfo {
+  itemid: string
+  name: string
+}
+
+export interface EdgeTnmGraphHistory {
+  itemid: string
+  clock: string
+  value: string
+  ns: string
+}
