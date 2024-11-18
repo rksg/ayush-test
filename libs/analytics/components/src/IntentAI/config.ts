@@ -196,7 +196,7 @@ export const failureCodes = {
   'auto-cell-sizing-24g-disabled': defineMessage({ defaultMessage: 'Auto Cell Sizing needs to be disabled for 2.4Ghz radio.' }),
   'auto-cell-sizing-5g-disabled': defineMessage({ defaultMessage: 'Auto Cell Sizing needs to be disabled for 5Ghz radio.' }),
   'no-aps': defineMessage({ defaultMessage: 'No APs are detected in the network.' }),
-  'not-enough-license': defineMessage({ defaultMessage: 'The network contains unlicensed APs.' }),
+  'not-fully-licensed': defineMessage({ defaultMessage: 'The network contains unlicensed APs.' }),
   'invalid-aggregation-interval': defineMessage({ defaultMessage: 'SmartZone data interval is too long; recommended interval is 3 minutes or less.' }),
   'no-ap-peer-data': defineMessage({ defaultMessage: 'Insufficient data on neighbour APs.' }),
   'no-channel-range-for-aps': defineMessage({ defaultMessage: 'Insufficient channel range data for one or more APs.' }),
