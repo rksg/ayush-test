@@ -1003,7 +1003,11 @@ describe('util', () => {
       { category: FAILURE, btmInfo: undefined, expectedColor: '--acx-semantics-red-50' },
       { category: SLOW, btmInfo: undefined, expectedColor: '--acx-semantics-yellow-50' },
       { category: BTM_REQUEST, btmInfo: undefined, expectedColor: '--acx-semantics-green-50' },
-      { category: BTM_RESPONSE, btmInfo: undefined, expectedColor: '--acx-semantics-green-50' },
+      {
+        category: BTM_RESPONSE,
+        btmInfo: 'BTM_EVENT_RECEIVE_ACCEPT',
+        expectedColor: '--acx-semantics-green-50'
+      },
       {
         category: BTM_RESPONSE,
         btmInfo: 'BTM_EVENT_RECEIVE_REJECT',
