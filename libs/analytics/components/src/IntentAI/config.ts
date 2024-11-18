@@ -193,6 +193,7 @@ export const failureCodes = {
   'bg-scan-24g-enabled': defineMessage({ defaultMessage: 'Background Scanning needs to be enabled for 2.4Ghz radio.' }),
   'bg-scan-5g-enabled': defineMessage({ defaultMessage: 'Background Scanning needs to be enabled for 5Ghz radio.' }),
   'bg-scan-6g-enabled': defineMessage({ defaultMessage: 'Background Scanning needs to be enabled for 6Ghz radio.' }),
+  'bg-scan-enabled-on-any-radio': defineMessage({ defaultMessage: 'Background Scanning needs to be enabled on one or more radios.' }),
   'auto-cell-sizing-24g-disabled': defineMessage({ defaultMessage: 'Auto Cell Sizing needs to be disabled for 2.4Ghz radio.' }),
   'auto-cell-sizing-5g-disabled': defineMessage({ defaultMessage: 'Auto Cell Sizing needs to be disabled for 5Ghz radio.' }),
   'no-aps': defineMessage({ defaultMessage: 'No APs are detected in the network.' }),
@@ -201,7 +202,8 @@ export const failureCodes = {
   'no-ap-peer-data': defineMessage({ defaultMessage: 'Insufficient data on neighbour APs.' }),
   'no-channel-range-for-aps': defineMessage({ defaultMessage: 'Insufficient channel range data for one or more APs.' }),
   'deleted-zone': defineMessage({ defaultMessage: 'Unable to read <venueSingular></venueSingular> configuration.' }),
-  'no-neighbourhood-data': defineMessage({ defaultMessage: 'AP neighbor information is currently unavailable for this network.' })
+  'no-neighbourhood-data': defineMessage({ defaultMessage: 'AP neighbor information is currently unavailable for this network.' }),
+  'no-rssi-data': defineMessage({ defaultMessage: 'Not enough Wi-Fi clients detected in the network.' })
 }
 
 //For original codes, please refer to libs/analytics/components/src/Recommendations/config.ts
