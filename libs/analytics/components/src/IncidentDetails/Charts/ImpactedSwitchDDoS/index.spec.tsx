@@ -88,7 +88,6 @@ describe('ImpactedSwitchDDoS',()=>{
           writeText
         }
       })
-      //jest.spyOn(navigator.clipboard, 'writeText')
       mockGraphqlQuery(dataApiURL, 'ImpactedSwitchDDoS', { data: response() })
       render(<Provider><ImpactedSwitchDDoSTable incident={fakeIncidentDDoS} /></Provider>, {
         route: {

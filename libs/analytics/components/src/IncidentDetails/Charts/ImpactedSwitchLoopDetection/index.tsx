@@ -82,8 +82,6 @@ function ImpactedVLANsTable (props: {
       width: 430,
       title: $t({ defaultMessage: 'Switches' }),
       searchable: true
-      //sorter: { compare: sortProp('switches', defaultSort) },
-      //render: (_, { switches }) => map(switches, 'name').join(', ')
     },
     {
       key: 'action',

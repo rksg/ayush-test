@@ -99,7 +99,6 @@ describe('ImpactedVlanTable',()=>{
     })
 
     it('should copy the port numbers to clipboard', async () => {
-      //jest.spyOn(navigator.clipboard, 'writeText')
       const writeText = jest.fn()
       Object.assign(navigator, {
         clipboard: {
