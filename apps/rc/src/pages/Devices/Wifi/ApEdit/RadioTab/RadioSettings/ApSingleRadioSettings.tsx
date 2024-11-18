@@ -136,6 +136,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
             LPIButtonText={setLPIToggleText()}
             afcProps={afcProps}
             firmwareProps={{ firmware: apViewContextData?.fwVersion }}
+            apCapabilities={apCapabilities}
           />
         )
         }

@@ -213,7 +213,8 @@ export enum Features {
   SERVER_CERTIFICATE_MANAGEMENT_UI_TOGGLE = 'server-certificate-management-ui-toggle',
   WIFI_NETWORK_APPLICATION_CONTROL = 'wifi-network-application-control',
   UX_OPTIMIZATION_FEATURE_TOGGLE = 'acx-ui-ux-optimization-feature-toggle',
-  ROAMING_TYPE_EVENTS_TOGGLE = 'acx-ui-roaming-type-events-toggle'
+  ROAMING_TYPE_EVENTS_TOGGLE = 'acx-ui-roaming-type-events-toggle',
+  WIFI_R370_TOGGLE = 'wifi-r370-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
