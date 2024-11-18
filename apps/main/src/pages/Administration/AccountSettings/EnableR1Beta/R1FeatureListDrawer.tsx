@@ -136,14 +136,14 @@ function R1FeatureListDrawer (
           )}
       </UI.FooterMsg>
       <UI.ButtonFooterWrapper editMode={editMode}>
+        <Button type='default' onClick={() => onClose()}>
+          {$t({ defaultMessage: 'Cancel' })}
+        </Button>
         <Button
           type='primary'
           onClick={() => onSave()}>
           {editMode ? $t({ defaultMessage: 'Save' })
             : $t({ defaultMessage: 'Enable Early Access' })}
-        </Button>
-        <Button type='default' onClick={() => onClose()}>
-          {$t({ defaultMessage: 'Cancel' })}
         </Button>
       </UI.ButtonFooterWrapper>
     </UI.FooterWrapper>}
