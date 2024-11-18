@@ -288,6 +288,10 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         ),
         rest.get(CommonUrlsInfo.getVenueBssColoring.url,
           (_, res, ctx) => res(ctx.json({}))
+        ),
+        rest.get(
+          WifiUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+          (_, res, ctx) => res(ctx.json({}))
         )
       )
     })

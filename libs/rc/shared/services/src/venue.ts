@@ -1206,7 +1206,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg,
-            ['AddAaaServer', 'UpdateAaaServer', 'DeleteAaaServer'], () => {
+            [
+              'AddAaaServer',
+              'UpdateAaaServer',
+              'DeleteAaaServer',
+              'UpdateVenueAaaSetting',
+              'UpdateVenueTemplateAaaSetting',
+              'UpdateVenueAaaServer',
+              'UpdateVenueTemplateAaaServer'
+            ], () => {
               api.dispatch(venueApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
             })
         })
@@ -2162,9 +2170,19 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
         return { data: venueLanPortSettings }
       }
-    })
+    }),
 
-
+    updateVenueLanPortSpecificSettings:
+      build.mutation<CommonResult, RequestPayload>({
+        query: ({ params, payload }) => {
+          const req = createHttpRequest(
+            CommonRbacUrlsInfo.updateVenueLanPortSpecificSettings, params)
+          return {
+            ...req,
+            body: JSON.stringify(payload)
+          }
+        }
+      })
   })
 })
 
@@ -2313,7 +2331,8 @@ export const {
   useUpdateVenueApSmartMonitorMutation,
 
   useGetVenueLanPortWithEthernetSettingsQuery,
-  useLazyGetVenueLanPortWithEthernetSettingsQuery
+  useLazyGetVenueLanPortWithEthernetSettingsQuery,
+  useUpdateVenueLanPortSpecificSettingsMutation
 } = venueApi
 
 
