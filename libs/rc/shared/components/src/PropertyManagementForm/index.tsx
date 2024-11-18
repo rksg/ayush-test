@@ -534,6 +534,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
         </StepsForm.StepForm>
       </StepsForm>
       <PersonaGroupDrawer
+        requiredDpsk
         isEdit={false}
         visible={personaGroupVisible}
         onClose={(result) => {
