@@ -266,7 +266,8 @@ export enum CertificateAcceptType {
   DER = 'application/x-x509-ca-cert',
   PKCS7 = 'application/x-pkcs7-certificates',
   PKCS8 = 'application/pkcs8',
-  PKCS12 = 'application/x-pkcs12'
+  PKCS12 = 'application/x-pkcs12',
+  PKCS1 = 'application/pkcs1'
 }
 
 export enum EnrollmentType {
