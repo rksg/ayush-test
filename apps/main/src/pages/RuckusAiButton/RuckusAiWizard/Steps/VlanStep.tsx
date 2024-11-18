@@ -50,15 +50,23 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
 
   useEffect(() => {
     if (initialData !== data) {
-      formInstance?.setFieldsValue({ data: initialData })
-      setData(initialData)
-      setIsSetupComplete(Array(data.length).fill(false))
-      setConfigVlanIds(initialData.map(vlan => vlan['VLAN ID']))
-      setConfigVlanNames(initialData.map(vlan => vlan['VLAN Name']))
-      setCheckboxStates(Array(initialData.length).fill(true))
-      setDisabledKeys([])
-    }
+      const isInitialEmpty = initialData.length === 0
+      const sourceData = isInitialEmpty
+        ? data.map(item => ({ ...item, Checked: false }))
+        : initialData
 
+      formInstance?.setFieldsValue({ data: sourceData })
+
+      setData(sourceData)
+      setCheckboxStates(Array(sourceData.length).fill(isInitialEmpty ? false : true))
+      setConfigVlanIds(sourceData.map(vlan => vlan['VLAN ID']))
+      setConfigVlanNames(sourceData.map(vlan => vlan['VLAN Name']))
+      setDisabledKeys(isInitialEmpty ? sourceData.map((_, index) => index.toString()) : [])
+
+      if (!isInitialEmpty) {
+        setIsSetupComplete(Array(data.length).fill(false))
+      }
+    }
   }, [props.payload])
 
   const handleCheckboxChange = (index: number, checked: boolean) => {
