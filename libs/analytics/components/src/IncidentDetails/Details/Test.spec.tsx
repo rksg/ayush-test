@@ -88,8 +88,7 @@ jest.mock('../Charts/ImpactedSwitchVLANDetails', () => ({
   ImpactedSwitchVLANsDetails: () => <div data-testid='impactedSwitchVLANsDetails' />
 }))
 jest.mock('../Charts/ImpactedSwitchDDoS', () => ({
-  ImpactedSwitchDDoSTable: () => <div data-testid='impactedSwitchDDoSTable' />,
-  ImpactedSwitchDDoSDonut: () => <div data-testid='impactedSwitchDDoSDonut' />
+  ImpactedSwitchDDoSTable: () => <div data-testid='impactedSwitchDDoSTable' />
 }))
 jest.mock('../Charts/WanthroughputTable', () => ({
   WanthroughputTable: () => <div data-testid='wanthroughputTable' />
@@ -207,7 +206,7 @@ describe('Test', () => {
         fakeIncident: fakeIncidentDDoS,
         hasNetworkImpact: false,
         hasTimeSeries: true,
-        charts: ['impactedSwitchDDoSTable','impactedSwitchDDoSDonut']
+        charts: ['impactedSwitchDDoSTable']
       },
       {
         component: SwitchLoopDetection,
