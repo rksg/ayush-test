@@ -34,7 +34,9 @@ jest.mock('@acx-ui/rc/services', () => ({
   useLazyDownloadCertificateAuthorityChainsQuery: () => ([mockDownloadCAChain]),
   useLazyDownloadCertificateAuthorityQuery: () => ([mockDownloadCA]),
   useLazyDownloadCertificateChainsQuery: () => ([mockDownloadCertificateChain]),
-  useLazyDownloadCertificateQuery: () => ([mockDownloadCertificate])
+  useLazyDownloadCertificateQuery: () => ([mockDownloadCertificate]),
+  useLazyDownloadPrivateKeyCertificateQuery: () => ([mockDownloadCertificate]),
+  useLazyDownloadCertificateInP12Query: () => ([mockDownloadCertificate])
 }))
 
 describe('DownloadDrawer', () => {
@@ -54,6 +56,10 @@ describe('DownloadDrawer', () => {
       ),
       rest.get(
         CertificateUrls.downloadCAChains.url,
+        (req, res, ctx) => res(ctx.json({ data: 'certificate' }))
+      ),
+      rest.post(
+        CertificateUrls.downloadCertificate.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ data: 'certificate' }))
       )
     )
