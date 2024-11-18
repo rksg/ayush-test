@@ -1213,7 +1213,7 @@ export const rootCauseRecommendationMap = {
         defaultMessage: '<p>Wired switch links intended for backup can by incorrect configuration permit more than one path between switch ports on a VLAN. This causes a L2 loop which can cause performance issues that will potentially bring down or degrade the network (high CPU usage, Broadcast storms, Unstable CAM(Content Addressable memory) tables, high consumption of network bandwidth, loss of responses)</p>'
       }),
       recommendations: defineMessage({
-        defaultMessage: '<p>Use/configure a spanning tree or any other loop avoidance protocol for this VLAN %XXX%. This will help disable redundant paths until they are needed, effectively preventing the formation of loops and restore the functioning of the network.</p>'
+        defaultMessage: '<p>Use/configure a spanning tree or any other loop avoidance protocol for the affected VLAN. This will help disable redundant paths until they are needed, effectively preventing the formation of loops and restore the functioning of the network.</p>'
       })
     }
   },

@@ -19139,7 +19139,7 @@ exports[`Test Details should render SwitchLoopDetection correctly 1`] = `
                             <span
                               class=""
                             >
-                              Loop detection
+                              Loop Detection
                             </span>
                           </span>
                         </div>
@@ -24024,4 +24024,10 @@ exports[`Test Details should render Ttc correctly 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Test Feature Flag Off it should not render anything for SwitchTcpSynDDoS 1`] = `<DocumentFragment />`;
+exports[`Test Feature Flag Off should not render anything for SwitchLoopDetection 1`] = `<DocumentFragment />`;
+
+exports[`Test Feature Flag Off should not render anything for SwitchPortCongestion 1`] = `<DocumentFragment />`;
+
+exports[`Test Feature Flag Off should not render anything for SwitchTcpSynDDoS 1`] = `<DocumentFragment />`;
+
+exports[`Test Feature Flag Off should not render anything for SwitchUplinkPortCongestion 1`] = `<DocumentFragment />`;
