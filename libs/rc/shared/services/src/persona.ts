@@ -191,7 +191,7 @@ export const personaApi = basePersonaApi.injectEndpoints({
 
     // Persona
     // eslint-disable-next-line max-len
-    addPersona: build.mutation<CommonAsyncResponse, RequestPayload & { callback?: (response: CommonAsyncResponse) => void }>({
+    addPersona: build.mutation<CommonAsyncResponse, RequestPayload>({
       query: ( { params, payload, customHeaders }) => {
         const req = createPersonaHttpRequest(PersonaUrls.addPersona, params, customHeaders)
 
