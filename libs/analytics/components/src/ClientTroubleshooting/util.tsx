@@ -726,3 +726,25 @@ export const labelFormatter = (input: unknown, timewindow: TimeStampRange) => {
 
   return ''
 }
+
+const RED_COLOR = '--acx-semantics-red-50'
+const YELLOW_COLOR = '--acx-semantics-yellow-50'
+const GREEN_COLOR = '--acx-semantics-green-50'
+const GREY_COLOR = '--acx-neutrals-50'
+
+const eventColorByCategory = {
+  [DISCONNECT]: GREY_COLOR,
+  [SUCCESS]: GREEN_COLOR,
+  [FAILURE]: RED_COLOR,
+  [SLOW]: YELLOW_COLOR,
+  [BTM_REQUEST]: GREEN_COLOR,
+  [BTM_RESPONSE]: GREEN_COLOR
+}
+
+export const getEventColor = (category: string, btmInfo?: string) => {
+  if (category === BTM_RESPONSE && btmInfo === 'BTM_EVENT_RECEIVE_REJECT') {
+    return YELLOW_COLOR
+  }
+
+  return eventColorByCategory[category as keyof typeof eventColorByCategory]
+}

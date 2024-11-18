@@ -53,12 +53,11 @@ import {
   QUALITY,
   ROAMING,
   INCIDENTS,
-  ALL,
-  getEventColor
+  ALL
 } from './config'
-import { checkRollup }                     from './EventsTimeline'
-import * as UI                             from './styledComponents'
-import { getQualityColor, labelFormatter } from './util'
+import { checkRollup }                                    from './EventsTimeline'
+import * as UI                                            from './styledComponents'
+import { getEventColor, getQualityColor, labelFormatter } from './util'
 
 import type { EChartsReactProps } from 'echarts-for-react'
 

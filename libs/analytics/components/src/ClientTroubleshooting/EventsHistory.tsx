@@ -13,13 +13,12 @@ import { hasAccess, hasRaiPermission } from '@acx-ui/user'
 
 import {
   DisplayEvent,
-  getEventColor,
   IncidentDetails
 } from './config'
-import { ConnectionEventPopover }                              from './ConnectionEvent'
-import { ClientInfoData }                                      from './services'
-import * as UI                                                 from './styledComponents'
-import { transformEvents,formatEventDesc, transformIncidents } from './util'
+import { ConnectionEventPopover }                                             from './ConnectionEvent'
+import { ClientInfoData }                                                     from './services'
+import * as UI                                                                from './styledComponents'
+import { transformEvents,formatEventDesc, transformIncidents, getEventColor } from './util'
 
 import { Filters } from '.'
 

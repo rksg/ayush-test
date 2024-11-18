@@ -26,7 +26,9 @@ import {
   TimelineData,
   TYPES,
   Event,
-  Quality
+  Quality,
+  BTM_REQUEST,
+  BTM_RESPONSE
 } from './config'
 import {
   getConnectionQualityFor,
@@ -47,7 +49,8 @@ import {
   getRoamingSubtitleConfig,
   getChartData,
   labelFormatter,
-  calculateInterval
+  calculateInterval,
+  getEventColor
 } from './util'
 
 
@@ -991,5 +994,26 @@ describe('util', () => {
       const secs5 = 1000 * 5
       expect(calculateInterval([start, end])).toEqual(secs5)
     })
+  })
+
+  describe('getEventColor', () => {
+    it.each([
+      { category: DISCONNECT, btmInfo: undefined, expectedColor: '--acx-neutrals-50' },
+      { category: SUCCESS, btmInfo: undefined, expectedColor: '--acx-semantics-green-50' },
+      { category: FAILURE, btmInfo: undefined, expectedColor: '--acx-semantics-red-50' },
+      { category: SLOW, btmInfo: undefined, expectedColor: '--acx-semantics-yellow-50' },
+      { category: BTM_REQUEST, btmInfo: undefined, expectedColor: '--acx-semantics-green-50' },
+      { category: BTM_RESPONSE, btmInfo: undefined, expectedColor: '--acx-semantics-green-50' },
+      {
+        category: BTM_RESPONSE,
+        btmInfo: 'BTM_EVENT_RECEIVE_REJECT',
+        expectedColor: '--acx-semantics-yellow-50'
+      }
+    ])(
+      'should return "$expectedColor" color for "$category" with btmInfo "$btmInfo"',
+      ({ category, btmInfo, expectedColor }) => {
+        expect(getEventColor(category, btmInfo)).toEqual(expectedColor)
+      }
+    )
   })
 })
