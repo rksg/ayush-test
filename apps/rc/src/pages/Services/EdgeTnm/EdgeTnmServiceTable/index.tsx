@@ -8,7 +8,8 @@ import {
   Table,
   TableProps,
   Loader,
-  showActionModal
+  showActionModal,
+  Button
 } from '@acx-ui/components'
 import { useDeleteEdgeTnmServiceMutation, useGetEdgeTnmServiceListQuery } from '@acx-ui/rc/services'
 import {
@@ -41,7 +42,7 @@ export function EdgeTnmServiceTable () {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Edge TNM Service' }),
+            entityName: $t({ defaultMessage: 'Edge Thirdparty Network Management Service' }),
             entityValue: rows.length === 1 ? rows[0].name : undefined,
             numOfEntities: rows.length
           },
@@ -69,15 +70,15 @@ export function EdgeTnmServiceTable () {
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        // extra={filterByAccessForServicePolicyMutation([
-        //   <Button type='primary'
-        //     scopeKey={getScopeKeyByService(ServiceType.EDGE_TNM_SERVICE, ServiceOperation.CREATE)}
-        //     onClick={() => {
-        //       setVisible(true)
-        //     }}>
-        //     {$t({ defaultMessage: 'Add TNM Service' })}
-        //   </Button>
-        // ])}
+        extra={filterByAccessForServicePolicyMutation([
+          <Button type='primary'
+            scopeKey={getScopeKeyByService(ServiceType.EDGE_TNM_SERVICE, ServiceOperation.CREATE)}
+            onClick={() => {
+              setVisible(true)
+            }}>
+            {$t({ defaultMessage: 'Add Thirdparty Network Management Service' })}
+          </Button>
+        ])}
       />
       <Loader states={[{ isLoading, isFetching: isFetching || isDeleting }]}>
         <Table

@@ -6,6 +6,8 @@ import ReactECharts                          from 'echarts-for-react'
 import { useIntl, defineMessage, IntlShape } from 'react-intl'
 
 import { Cascader, Button, Loader }           from '@acx-ui/components'
+import { get }                                from '@acx-ui/config'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { formatter, DateFormatEnum }          from '@acx-ui/formatter'
 import { useEncodedParameter, useDateFilter } from '@acx-ui/utils'
 
@@ -75,7 +77,10 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const { read, write } = useEncodedParameter<Filters>('clientTroubleShootingSelections')
   const { startDate, endDate, range } = useDateFilter()
   const toggles = useIncidentToggles()
-  const payload = { startDate, endDate, range, clientMac }
+  const isMLISA = get('IS_MLISA_SA')
+  const isRoamingTypeEnabled = useIsSplitOn(Features.ROAMING_TYPE_EVENTS_TOGGLE)
+  const fetchRoamingType = Boolean(isMLISA || isRoamingTypeEnabled)
+  const payload = { startDate, endDate, range, clientMac, fetchRoamingType }
   const clientQuery = useClientInfoQuery(payload)
   const incidentsQuery = useClientIncidentsInfoQuery({ ...payload, toggles })
   const data = clientQuery.data && incidentsQuery.data

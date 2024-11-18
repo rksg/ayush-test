@@ -114,8 +114,7 @@ export const AAAForm = (props: AAAFormProps) => {
   }
 
   const saveAAAPolicy = async (data: AAAPolicyType) => {
-    const cloneData = handledRadSecData(data)
-    const requestPayload = { params, payload: cloneData, enableRbac }
+    const requestPayload = { params, payload: handledRadSecData(data), enableRbac }
     try {
       if (isEdit) {
         await updateInstance(requestPayload).unwrap()

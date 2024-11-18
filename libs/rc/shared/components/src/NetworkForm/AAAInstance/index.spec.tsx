@@ -180,7 +180,7 @@ describe('AAA Instance Page', () => {
 
     expect((await screen.findByText(
       mockRadSecAAAPolicyNewCreateResponse.primary.ip + ':'
-          + mockRadSecAAAPolicyNewCreateResponse.primary.port
+        + mockRadSecAAAPolicyNewCreateResponse.primary.port
     ))).toBeVisible()
   })
 
