@@ -425,24 +425,27 @@ export function RadioSettings () {
   }, [isLoadingVenueData, venueSavedChannelsData, formRef?.current, supportRadioChannels])
 
   useEffect(() => {
-    if (!isWifiSwitchableRfEnabled || !venueBandModeSavedData) {
+    if (!isWifiSwitchableRfEnabled || !venueBandModeSavedData || !venueSavedChannelsData) {
       return
     }
-
-    if (tripleBandRadioSettingsData?.enabled && venueSavedChannelsData) {
+    // special case
+    if (dual5gApModels.length > 0) {
       const dual5GData = venueSavedChannelsData.radioParamsDual5G
-      if (dual5GData && dual5gApModels.length > 0) {
-        const initVenueBandModeData = [ ...venueBandModeSavedData,
-          ...dual5gApModels.map(model => ({ model, bandMode: dual5GData.enabled ? BandModeEnum.DUAL : BandModeEnum.TRIPLE })) ]
+      const bendModelWithDual5gAps = venueBandModeSavedData.filter(vbm => dual5gApModels.includes(vbm.model))
+      const bendModelWithoutDual5gAps = venueBandModeSavedData.filter(vbm => !dual5gApModels.includes(vbm.model))
+      if (dual5GData && bendModelWithDual5gAps) {
+        const initVenueBandModeData = [ ...bendModelWithoutDual5gAps,
+          ...bendModelWithDual5gAps.map(bandModel => ({ model: bandModel.model, bandMode: dual5GData.enabled ? BandModeEnum.DUAL : BandModeEnum.TRIPLE })) ]
         setInitVenueBandModeData(initVenueBandModeData)
         setCurrentVenueBandModeData([ ...initVenueBandModeData ])
+
         return
       }
     }
 
     setInitVenueBandModeData([ ...venueBandModeSavedData ])
     setCurrentVenueBandModeData([ ...venueBandModeSavedData ])
-  }, [isWifiSwitchableRfEnabled, venueBandModeSavedData, dual5gApModels, venueSavedChannelsData, tripleBandRadioSettingsData])
+  }, [isWifiSwitchableRfEnabled, venueBandModeSavedData, dual5gApModels, venueSavedChannelsData, venueTriBandApModels])
 
   useEffect(() => {
     if (!isWifiSwitchableRfEnabled) {
@@ -746,16 +749,9 @@ export function RadioSettings () {
       if (isWifiSwitchableRfEnabled && !isEqual(currentVenueBandModeData, initVenueBandModeData)) {
         await updateVenueBandMode({
           params: { venueId },
-          payload: currentVenueBandModeData.filter(data => !dual5gApModels.includes(data.model))
+          payload: currentVenueBandModeData
         }).unwrap()
 
-        /*
-        await updateVenueTripleBandRadioSettings({
-          params: { tenantId, venueId },
-          payload: { enabled: currentVenueBandModeData.map(data => data.model)
-            .some(model => dual5gApModels.includes(model)) }
-        }).unwrap()
-        */
       }
 
       if (!isWifiSwitchableRfEnabled) {

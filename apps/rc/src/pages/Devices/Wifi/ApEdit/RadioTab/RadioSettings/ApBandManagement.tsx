@@ -30,6 +30,11 @@ export interface ApBandManagementPorps {
   setCurrentApBandModeData: (data: ApBandModeSettings) => void
 }
 
+const bandCombinationLabelMapping: Record<BandModeEnum, MessageDescriptor> = {
+  [BandModeEnum.DUAL]: defineMessage({ defaultMessage: 'Dual-band' }),
+  [BandModeEnum.TRIPLE]: defineMessage({ defaultMessage: 'Tri-band' })
+}
+
 export const ApBandManagement = ({ venue, venueBandMode, isSupportDual5GAp, isSupportTriBandRadioAp,
   currentApBandModeData, setCurrentApBandModeData }: ApBandManagementPorps) => {
 
@@ -42,11 +47,6 @@ export const ApBandManagement = ({ venue, venueBandMode, isSupportDual5GAp, isSu
   const getCurrentBandMode = useCallback(() => {
     return (currentApBandModeData?.useVenueSettings ? venueBandMode : currentApBandModeData?.bandMode)
   }, [currentApBandModeData, venueBandMode])
-
-  const bandCombinationLabelMapping: Record<BandModeEnum, MessageDescriptor> = {
-    [BandModeEnum.DUAL]: defineMessage({ defaultMessage: 'Dual-band' }),
-    [BandModeEnum.TRIPLE]: defineMessage({ defaultMessage: 'Tri-band' })
-  }
 
   const onClickUseVenueSettings = () => {
     setCurrentApBandModeData({ ...currentApBandModeData,
