@@ -100,7 +100,7 @@ RUN if [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; t
         set -e; \
         while IFS= read -r command; do \
             echo "Running: $command"; \
-            $NODE_COMMAND $command; \
+            $command; \
         done < ./test_cases.table; \
     else mkdir -p /app/coverage; fi
 
