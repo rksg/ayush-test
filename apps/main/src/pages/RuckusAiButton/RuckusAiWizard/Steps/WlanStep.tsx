@@ -162,7 +162,7 @@ export function WlanStep ( props: {
 
       {data?.map((item, index) => (
         <React.Fragment key={index}>
-          <UI.VlanContainer>
+          <UI.StepItemCheckContainer>
             <UI.CheckboxContainer>
               <ProFormCheckbox
                 name={['data', index, 'Checked']}
@@ -262,7 +262,7 @@ export function WlanStep ( props: {
                 <UI.PurposeText>{item['Purpose']}</UI.PurposeText>
               </UI.PurposeContainer>}
             </div>
-          </UI.VlanContainer>
+          </UI.StepItemCheckContainer>
           {index < data.length - 1 && <Divider />}
         </React.Fragment>
       ))}

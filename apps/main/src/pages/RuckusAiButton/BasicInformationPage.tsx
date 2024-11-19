@@ -94,7 +94,7 @@ function BasicInformationPage () {
           <Input.TextArea
             rows={8}
             placeholder={$t({ // eslint-disable-next-line max-len
-              defaultMessage: 'For example, the network is to be deployed in an elementary school with about 2,000 students. We will probably need a network for staff, one for students, and perhaps one for visitors. This description can be as long or as short as you like. But the more you tell me, the better would be my recommendations.'
+              defaultMessage: 'For instance, the network deployment is planned to support around 2,000 people and will likely include separate networks for staff, registered clients, and visitors.'
             })}
           />
         </Form.Item>

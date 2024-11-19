@@ -22,7 +22,7 @@ const Button = styled(AntButton).attrs({ type: 'primary' })`
       background-color: var(--acx-accents-orange-55);
     }
     > svg {
-      width: 16px;
+      width: 20px;
       height: 100%;
     }
   }

@@ -186,7 +186,7 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
     <UI.Container>
       <UI.Header>
         <UI.HeaderWithAddButton>
-          <UI.Title>{$t({ defaultMessage: 'Recommended VLANs' })}</UI.Title>
+          <UI.Title>{$t({ defaultMessage: 'Recommended Switch Configuration' })}</UI.Title>
           <Button type='link'
             size='small'
             disabled={data.length >= 5}
@@ -206,14 +206,14 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
               color: cssStr('--acx-semantics-yellow-50')
             }}
           />
-          <span>{$t({ defaultMessage: 'Recommended VLANs' })}</span>
+          <span>{$t({ defaultMessage: 'Recommended Switch Configuration' })}</span>
         </UI.HighlightedTitle>
         <UI.HighlightedDescription>{props.description}</UI.HighlightedDescription>
       </UI.HighlightedBox>
 
       {data.map((item, index) => (
         <React.Fragment key={item.id}>
-          <UI.VlanContainer>
+          <UI.StepItemCheckContainer>
             <UI.CheckboxContainer>
               <ProFormCheckbox
                 name={['data', index, 'Checked']}
@@ -352,7 +352,7 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
               }
 
             </UI.VlanDetails>
-          </UI.VlanContainer>
+          </UI.StepItemCheckContainer>
           {index < data.length - 1 && <Divider />}
         </React.Fragment>
       ))}

@@ -414,7 +414,6 @@ export { ReactComponent as Shop } from './icons/Shop.svg'
 export { ReactComponent as Stadium } from './icons/Stadium.svg'
 export { ReactComponent as TransportHub } from './icons/TransportHub.svg'
 export { ReactComponent as Warehhouse } from './icons/Warehhouse.svg'
-export { ReactComponent as RuckusAiLogo } from './icons/RuckusAiLogo.svg'
 export { ReactComponent as WelcomeLogo } from './icons/WelcomeLogo.svg'
 
 

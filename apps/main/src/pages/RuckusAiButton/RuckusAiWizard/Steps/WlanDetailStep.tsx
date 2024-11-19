@@ -171,7 +171,7 @@ export function WlanDetailStep (props: {
 
       {data.map((item, index) => (
         <React.Fragment key={item.id}>
-          <UI.VlanContainer>
+          <UI.StepItemContainer>
             <UI.CheckboxContainer>
               <UI.CheckboxIndexLabel>{index + 1}</UI.CheckboxIndexLabel>
             </UI.CheckboxContainer>
@@ -202,7 +202,7 @@ export function WlanDetailStep (props: {
                 </UI.NetworkName>
 
                 <ProFormSelect
-                  label={$t({ defaultMessage: 'Network Type' })}
+                  label={$t({ defaultMessage: 'Type' })}
                   name={['data', index, 'SSID Type']}
                   initialValue={item['SSID Type']}
                   options={networkOptions}
@@ -268,7 +268,7 @@ export function WlanDetailStep (props: {
                 <ProFormText hidden />
               </ProForm.Item>
             </UI.VlanDetails>
-          </UI.VlanContainer>
+          </UI.StepItemContainer>
           {index < data.length - 1 && <Divider />}
         </React.Fragment>
       ))}
