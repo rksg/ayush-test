@@ -5,6 +5,7 @@ import { useIntl }      from 'react-intl'
 
 import { Button, GridCol, GridRow, Tabs }    from '@acx-ui/components'
 import { useGetCertificateAuthoritiesQuery } from '@acx-ui/rc/services'
+import { CertificateCategoryType }           from '@acx-ui/rc/utils'
 
 import { MAX_CERTIFICATE_PER_TENANT }                              from '../constants'
 import { Section, SettingsSectionTitle, TabItem, TabLabel, Title } from '../styledComponents'
@@ -48,7 +49,8 @@ export default function MoreSettingsForm ({ editMode = false }) {
     {
       key: 'certificateStrength',
       display: $t({ defaultMessage: 'Certificate Strength' }),
-      content: <CertificateStrengthSettings />
+      // eslint-disable-next-line max-len
+      content: <CertificateStrengthSettings certType={CertificateCategoryType.CERTIFICATE_TEMPLATE}/>
     },
     {
       key: 'organizationInfo',

@@ -74,7 +74,8 @@ import {
   Network,
   TxStatus,
   ScepKeyData,
-  ServerCertificate
+  ServerCertificate,
+  ServerClientCertificateResult
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }                                 from '@acx-ui/store'
 import { RequestPayload }                                from '@acx-ui/types'
@@ -134,10 +135,12 @@ const LbsServerProfileMutationUseCases = [
 ]
 
 const CertificateMutationUseCases = [
+  'GENERATE_SERVER_CERT',
   'UpdateRadius',
   'ActivateCertificateOnRadiusServerProfile',
   'DeactivateCertificateOnRadiusServerProfile',
-  'ActivateCertificateAuthorityOnRadiusServerProfile'
+  'ActivateCertificateAuthorityOnRadiusServerProfile',
+  'DeactivateCertificateAuthorityOnRadiusServerProfile'
 ]
 
 const L2AclUseCases = [
@@ -845,7 +848,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'AddRadius', 'UpdateRadius', 'DeleteRadius', 'DeleteRadiuses',
             'ActivateRadiusServerProfileOnWifiNetwork', 'DeactivateRadiusServerProfileOnWifiNetwork',
-            'ActivateCertificateOnRadiusServerProfile'
+            'UpdateWifiNetwork','ActivateCertificateOnRadiusServerProfile',
+            'DeactivateCertificateOnRadiusServerProfile',
+            'ActivateCertificateAuthorityOnRadiusServerProfile',
+            'DeactivateCertificateAuthorityOnRadiusServerProfile'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
           })
@@ -3378,6 +3384,40 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       }
     }),
+    downloadPrivateKeyCertificate: build.query<Blob, RequestPayload>({
+      query: ({ params, payload, customHeaders }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.downloadCertificateWithPost, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        return {
+          ...req,
+          body: JSON.stringify(payload),
+          responseHandler: async (response) => {
+            let extension = downloadCertExtension[customHeaders?.Accept as CertificateAcceptType]
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1] : `Certificate.${extension}`
+            downloadFile(response, fileName)
+          }
+        }
+      }
+    }),
+    downloadCertificateInP12: build.query<Blob, RequestPayload>({
+      query: ({ params, payload, customHeaders }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.downloadCertificateInP12, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        return {
+          ...req,
+          body: JSON.stringify(payload),
+          responseHandler: async (response) => {
+            let extension = downloadCertExtension[customHeaders?.Accept as CertificateAcceptType]
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1] : `Certificate.${extension}`
+            downloadFile(response, fileName)
+          }
+        }
+      }
+    }),
     downloadCertificateChains: build.query<Blob, RequestPayload>({
       query: ({ params, customHeaders }) => {
         // eslint-disable-next-line max-len
@@ -3499,18 +3539,19 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       }
     }),
-    generateClientServerCertificates: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
+    generateClientServerCertificates:
+      build.mutation<ServerClientCertificateResult, RequestPayload>({
+        query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
-        const req = createHttpRequest(CertificateUrls.generateClientServerCertificate, params, defaultCertTempVersioningHeaders)
-        return{
-          ...req,
-          body: JSON.stringify(payload)
-        }
-      },
-      invalidatesTags: [{ type: 'ServerCertificate', id: 'LIST' }]
-    }),
-    uploadCertificate: build.mutation<CommonResult, RequestPayload>({
+          const req = createHttpRequest(CertificateUrls.generateClientServerCertificate, params, defaultCertTempVersioningHeaders)
+          return{
+            ...req,
+            body: JSON.stringify(payload)
+          }
+        },
+        invalidatesTags: [{ type: 'ServerCertificate', id: 'LIST' }]
+      }),
+    uploadCertificate: build.mutation<ServerClientCertificateResult, RequestPayload>({
       query: ({ params, payload, customHeaders }) => {
         // eslint-disable-next-line max-len
         const req = createHttpRequest(CertificateUrls.uploadCertificate, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
@@ -3759,6 +3800,8 @@ export const {
   useLazyDownloadCertificateAuthorityChainsQuery,
   useLazyDownloadCertificateQuery,
   useLazyDownloadCertificateChainsQuery,
+  useLazyDownloadPrivateKeyCertificateQuery,
+  useLazyDownloadCertificateInP12Query,
   useDeleteCertificateAuthorityMutation,
   useGetCertificatesByIdentityIdQuery,
   useLazyGetCertificatesByIdentityIdQuery,
