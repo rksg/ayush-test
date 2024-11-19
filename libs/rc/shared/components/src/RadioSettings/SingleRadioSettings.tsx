@@ -323,6 +323,10 @@ export function SingleRadioSettings (props:{
     const getTxPowerAdjustmentOptions = () => {
       let res = (radioType === ApRadioTypeEnum.Radio6G)? txPowerAdjustment6GOptions
         : txPowerAdjustmentOptions
+      if (supportR370 && context === 'ap' && (radioType !== ApRadioTypeEnum.Radio6G)
+        && !apCapabilities?.supportAutoCellSizing) {
+        res = res.filter(tx => tx.label !== 'Auto')
+      }
       if (isApTxPowerToggleEnabled) {
         if (context === 'venue'
           || (context === 'ap' && isApFwVersionLargerThan711(firmwareProps?.firmware)
