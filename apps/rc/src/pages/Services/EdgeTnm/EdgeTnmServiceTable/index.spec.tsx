@@ -70,7 +70,7 @@ describe('Edge TNM Service Table', () => {
     expect(rows.length).toBe(2)
     screen.getByRole('row', { name: /Mocked_TNMService_1/i })
     // eslint-disable-next-line max-len
-    expect(rows[0]).toHaveTextContent(new RegExp(`${mockTnm1.name}\\s*\\d+\\.\\d+\\.\\d+\\s*UP`))
+    expect(rows[0]).toHaveTextContent(new RegExp(`${mockTnm1.name}\\s*\\d+\\.\\d+\\.\\d+\\s*Up`))
   })
 
   it('should delete selected row', async () => {

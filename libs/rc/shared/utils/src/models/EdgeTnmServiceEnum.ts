@@ -4,3 +4,9 @@ export enum EdgeTnmGraphTypeEnum {
   PIE = '2',
   EXPLODED = '3',
 }
+
+export enum EdgeTnmServiceStatusEnum {
+  UP = 'UP',
+  INSTALLING = 'INSTALLING',
+  DOWN = 'DOWN'
+}
