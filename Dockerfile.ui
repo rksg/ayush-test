@@ -97,7 +97,7 @@ RUN chmod a+x ./cicd_tools/run_test_cases_tool.sh
 FROM acx-ui-base-test as acx-ui-group-test
 ARG PRECOMMIT=true
 ARG GIT_COMMIT_BRANCH=master
-RUN eval ./cicd_tools/run_test_cases_tool.sh Group1 "${PRECOMMIT}" "${GIT_COMMIT_BRANCH}"
+RUN ./cicd_tools/run_test_cases_tool.sh Group1 "${PRECOMMIT}" "${GIT_COMMIT_BRANCH}"
 
 FROM build-base as acx-ui-sonar-run
 COPY --from=acx-ui-group-test /app/coverage /app/coverage

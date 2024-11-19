@@ -12,20 +12,16 @@ FILE="./test_cases.table"
 source $FILE
 
 # Check PRECOMMIT and GIT_COMMIT_BRANCH conditions
-if [[ "$PRECOMMIT" == "true" || "$GIT_COMMIT_BRANCH" == "master" ]]; then
-    echo "Conditions met: PRECOMMIT=$PRECOMMIT or GIT_COMMIT_BRANCH=$GIT_COMMIT_BRANCH"
     
-    # Dynamically reference the group array
-    declare -n nx_params=$GROUP
+# Dynamically reference the group array
+declare -n nx_params=$GROUP
 
-    # Loop through and execute each command
-    for nx_param in "${nx_params[@]}"; do
-        cmd="${RUN_COMMAND} ${nx_param}"
-        echo "Executing: $cmd"
-        eval "$cmd"
-    done
-else
-    echo "Conditions not met: Creating /app/coverage instead"
-    eval "mkdir -p /app/coverage"
-fi
+# Loop through and execute each command
+for nx_param in "${nx_params[@]}"; do
+    cmd="${RUN_COMMAND} ${nx_param}"
+    echo "Executing: $cmd"
+    eval "node ./node_modules/.bin/nx run common-formatter:test --coverage --maxWorkers=50%"
+    eval "node ./node_modules/.bin/nx run common-icons:test --coverage --maxWorkers=50%"
+done
+eval "mkdir -p /app/coverage"
 
