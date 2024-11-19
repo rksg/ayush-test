@@ -36,6 +36,8 @@ import { NetworkApGroupDialog } from './index'
 
 const venueName = 'My-Venue'
 
+const mockApGroupsList = jest.fn()
+
 describe('NetworkApGroupDialog', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
@@ -53,7 +55,10 @@ describe('NetworkApGroupDialog', () => {
       ),
       rest.post(
         WifiUrlsInfo.getApGroupsList.url,
-        (req, res, ctx) => res(ctx.json({ data: [{ id: 'fake_apg_id', name: 'fake_apg_name' }] }))
+        (req, res, ctx) => {
+          mockApGroupsList()
+          return res(ctx.json({ data: [{ id: 'fake_apg_id', name: 'fake_apg_name' }] }))
+        }
       ),
       rest.post(
         WifiRbacUrlsInfo.getApGroupsList.url,
@@ -101,6 +106,8 @@ describe('NetworkApGroupDialog', () => {
         visible={true}
         onOk={onOk}
       /></Provider>, { route: { params } })
+
+    await waitFor(() => expect(mockApGroupsList).toBeCalled())
 
     const dialog = await screen.findByRole('dialog')
 
