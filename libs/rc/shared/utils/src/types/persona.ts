@@ -12,7 +12,8 @@ export interface PersonaGroup {
   updatedAt?: string,
   identities?: Persona[],
   identityCount?: number,
-  certificateTemplateId?: string
+  certificateTemplateId?: string,
+  policySetId?: string
 }
 
 export interface Persona {

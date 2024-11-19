@@ -12,7 +12,7 @@ type PersonaUrlType =
   'searchPersonaList' | 'updatePersona' | 'deletePersona' |
   'addPersonaDevices' | 'deletePersonaDevices' | 'importPersonas' | 'exportPersona' |
   'exportPersonaGroup' | 'deletePersonas' | 'allocateVni' | 'associateMacRegistration' |
-  'associateDpskPool' | 'associateCertTemplate'
+  'associateDpskPool' | 'associateCertTemplate' | 'associatePolicySet'
 
 export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   /** Persona Group API endpoints */
@@ -35,6 +35,15 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   associateCertTemplate: {
     method: 'put',
     url: `${NewPersonaBaseUrl}/:groupId/certificateTemplates/:templateId`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  associatePolicySet: {
+    method: 'put',
+    url: `${NewPersonaBaseUrl}/:groupId/policySets/:policySetId`,
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -65,7 +74,11 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     method: 'PATCH',
     url: `${NewPersonaBaseUrl}/:groupId`,
     oldUrl: `${PersonaBaseUrl}/:groupId`,
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1_1+json'
+    }
   },
   deletePersonaGroup: {
     method: 'delete',

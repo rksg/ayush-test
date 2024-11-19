@@ -12,6 +12,7 @@ const spyUpdatePersonaGroup = jest.fn()
 const spyCreatePersonaGroup = jest.fn()
 const spyAssociateDpsk = jest.fn()
 const spyAssociateMacRegistration = jest.fn()
+const spyAssociatePolicySet = jest.fn()
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
@@ -62,6 +63,13 @@ describe('usePersonaGroupActions', () => {
         PersonaUrls.associateMacRegistration.url,
         (req, res, ctx) => {
           spyAssociateMacRegistration()
+          return res(ctx.json({}))
+        }
+      ),
+      rest.put(
+        PersonaUrls.associatePolicySet.url,
+        (req, res, ctx) => {
+          spyAssociatePolicySet()
           return res(ctx.json({}))
         }
       )
@@ -141,6 +149,42 @@ describe('usePersonaGroupActions', () => {
 
     await waitFor(() => expect(spyAssociateDpsk).not.toBeCalled())
     await waitFor(() => expect(spyAssociateMacRegistration).not.toBeCalled())
+
+    jest.mocked(useIsSplitOn).mockReset()
+  })
+
+  it('Should create persona group with policySet via multiple steps', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(() => true)
+    const { result } = renderHook(() => usePersonaGroupAction(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+    const { createPersonaGroupMutation } = result.current
+
+    await createPersonaGroupMutation({
+      id: groupId,
+      name: 'PersonaGroup',
+      policySetId: 'bc85fdf3f4cd4869ba81f3c2e09bb8c3'
+    })
+
+    await waitFor(() => expect(spyAssociatePolicySet).toBeCalled())
+
+    jest.mocked(useIsSplitOn).mockReset()
+  })
+
+  it('Should update persona group with policySet via multiple steps', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(() => true)
+    const { result } = renderHook(() => usePersonaGroupAction(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+    const { updatePersonaGroupMutation } = result.current
+
+    await updatePersonaGroupMutation(groupId, {
+      description: 'changeValue',
+      policySetId: 'bc85fdf3f4cd4869ba81f3c2e09bb8c3'
+    })
+
+    expect(spyUpdatePersonaGroup).toBeCalled()
+    expect(spyAssociatePolicySet).toBeCalled()
 
     jest.mocked(useIsSplitOn).mockReset()
   })

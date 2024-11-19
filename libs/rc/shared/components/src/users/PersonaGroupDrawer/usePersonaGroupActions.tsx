@@ -4,6 +4,7 @@ import {
   useAssociateIdentityGroupWithCertificateTemplateMutation,
   useAssociateIdentityGroupWithDpskMutation,
   useAssociateIdentityGroupWithMacRegistrationMutation,
+  useAssociateIdentityGroupWithPolicySetMutation,
   useUpdatePersonaGroupMutation
 } from '@acx-ui/rc/services'
 import { PersonaGroup } from '@acx-ui/rc/utils'
@@ -20,9 +21,11 @@ export function usePersonaGroupAction () {
   const [associateDpsk] = useAssociateIdentityGroupWithDpskMutation()
   const [associateMacReg] = useAssociateIdentityGroupWithMacRegistrationMutation()
   const [associateCertTemplate] = useAssociateIdentityGroupWithCertificateTemplateMutation()
+  const [associatePolicySet] = useAssociateIdentityGroupWithPolicySetMutation()
 
   const createPersonaGroupMutation = async (submittedData: PersonaGroup, callback?: Function) => {
-    const { dpskPoolId, macRegistrationPoolId, certificateTemplateId, ...groupData } = submittedData
+    // eslint-disable-next-line max-len
+    const { dpskPoolId, macRegistrationPoolId, certificateTemplateId, policySetId, ...groupData } = submittedData
 
     const associateDpskCallback = (groupId: string) => {
       if (dpskPoolId) {
@@ -45,6 +48,13 @@ export function usePersonaGroupAction () {
         })
       }
     }
+    const associatePolicySetCallback = (groupId: string) => {
+      if (policySetId) {
+        associatePolicySet({
+          params: { groupId, policySetId }
+        })
+      }
+    }
 
     return await addPersonaGroup({
       payload: { ...(isAsync ? groupData : submittedData) },
@@ -55,6 +65,7 @@ export function usePersonaGroupAction () {
           associateDpskCallback(response.id)
           associateMacRegistrationCallback(response.id)
           associateCertificateTemplateCallback(response.id)
+          associatePolicySetCallback(response.id)
         }
       }
     }).unwrap()
@@ -66,8 +77,8 @@ export function usePersonaGroupAction () {
   const updatePersonaGroupMutation
   = async (groupId: string, patchData?: Partial<PersonaGroup>) => {
     if (!patchData || Object.keys(patchData).length === 0) return
-
-    const { dpskPoolId, macRegistrationPoolId, certificateTemplateId, ...groupData } = patchData
+    // eslint-disable-next-line max-len
+    const { dpskPoolId, macRegistrationPoolId, certificateTemplateId, policySetId, ...groupData } = patchData
     const associationPromises = []
 
     if (isAsync) {
@@ -94,6 +105,15 @@ export function usePersonaGroupAction () {
           params: {
             groupId,
             templateId: certificateTemplateId
+          }
+        }))
+      }
+
+      if (policySetId) {
+        associationPromises.push(associatePolicySet({
+          params: {
+            groupId,
+            policySetId
           }
         }))
       }
