@@ -16,7 +16,7 @@ for nx_param in ${nx_params[@]}
 do
     cmd="${RUN_COMMAND} ${nx_param}"
     echo $cmd
-    bash -c $cmd
+    eval "$cmd"
 done
 
 bash -c "mkdir -p /app/coverage"
