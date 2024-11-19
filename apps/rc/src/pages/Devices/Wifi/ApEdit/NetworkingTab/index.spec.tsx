@@ -7,6 +7,7 @@ import { ApDataContext, ApEditContext } from '..'
 import { ApCap_T750SE, ApData_T750SE }  from '../../../__tests__/fixtures'
 
 import { NetworkingTab } from '.'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 
 const params = { tenantId: 'tenant-id', serialNumber: 'serial-number', venueId: 'venue-id' }
@@ -33,6 +34,10 @@ jest.mock('./DirectedMulticast', () => ({
   DirectedMulticast: () => <div data-testid={'directedMulticast'}></div>
 }))
 
+jest.mock('./SmartMonitor', () => ({
+  SmartMonitor: () => <div data-testid={'smartMonitor'}></div>
+}))
+
 describe('AP Networking Tab', () => {
   const defaultT750SeApCtxData = {
     apData: ApData_T750SE,
@@ -54,6 +59,7 @@ describe('AP Networking Tab', () => {
     const lanPortsLink = await screen.findByRole('link', { name: 'LAN Ports' })
     const meshLink = await screen.findByRole('link', { name: 'Mesh' })
     const dMulicastLink = await screen.findByRole('link', { name: 'Directed Multicast' })
+    const smartMonitorLink = screen.queryByRole('link', { name: 'Smart Monitor' })
 
     expect(ipSettingsLink).toBeVisible()
     expect(await screen.findByTestId('ipSettings')).toBeVisible()
@@ -66,6 +72,28 @@ describe('AP Networking Tab', () => {
 
     expect(dMulicastLink).toBeVisible()
     expect(await screen.findByTestId('directedMulticast')).toBeVisible()
+
+    expect(smartMonitorLink).not.toBeInTheDocument()
+  })
+
+  it('should render smart monitor with ap capabilities correctly',async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(
+      ff => ff === Features.WIFI_R370_TOGGLE
+      || ff === Features.WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE)
+    render(
+      <Provider>
+        <ApDataContext.Provider value={defaultT750SeApCtxData}>
+          <NetworkingTab />
+        </ApDataContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/networking' }
+      }
+    )
+
+    const smartMonitorLink = await screen.findByRole('link', { name: 'Smart Monitor' })
+
+    expect(smartMonitorLink).toBeVisible()
+    expect(await screen.findByTestId('smartMonitor')).toBeVisible()
   })
 
   it ('save data after config changed', async () => {
