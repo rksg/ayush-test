@@ -49,6 +49,7 @@ export function WlanDetailStep (props: {
         data.map(({ 'SSID Name': _, ...rest }) => rest)
       )
     ) {
+      formInstance?.resetFields()
       formInstance?.setFieldsValue({ data: initialData })
       setData(initialData)
       setSsidTypes(new Map(initialData.map(item => [item.id, item['SSID Type']])))
