@@ -139,7 +139,8 @@ const CertificateMutationUseCases = [
   'UpdateRadius',
   'ActivateCertificateOnRadiusServerProfile',
   'DeactivateCertificateOnRadiusServerProfile',
-  'ActivateCertificateAuthorityOnRadiusServerProfile'
+  'ActivateCertificateAuthorityOnRadiusServerProfile',
+  'DeactivateCertificateAuthorityOnRadiusServerProfile'
 ]
 
 const L2AclUseCases = [
@@ -847,7 +848,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'AddRadius', 'UpdateRadius', 'DeleteRadius', 'DeleteRadiuses',
             'ActivateRadiusServerProfileOnWifiNetwork', 'DeactivateRadiusServerProfileOnWifiNetwork',
-            'UpdateWifiNetwork','ActivateCertificateOnRadiusServerProfile'
+            'UpdateWifiNetwork','ActivateCertificateOnRadiusServerProfile',
+            'DeactivateCertificateOnRadiusServerProfile',
+            'ActivateCertificateAuthorityOnRadiusServerProfile',
+            'DeactivateCertificateAuthorityOnRadiusServerProfile'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
           })
