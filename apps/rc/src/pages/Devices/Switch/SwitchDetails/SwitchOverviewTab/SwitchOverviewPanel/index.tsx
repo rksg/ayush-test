@@ -39,7 +39,7 @@ export function SwitchOverviewPanel (props:{
   const [blinkDrawerVisible, setBlinkDrawerVisible] = useState(false)
   const [blinkData, setBlinkData] = useState([] as SwitchInfo[])
   const enableSwitchBlinkLed = useIsSplitOn(Features.SWITCH_BLINK_LED)
-
+  console.log('##### filters', filters)
   return <>
     {enableSwitchBlinkLed && (hasPermission() || hasRoles([RolesEnum.READ_ONLY])) &&
       <div style={{ textAlign: 'right' }}>
@@ -80,7 +80,8 @@ export function SwitchOverviewPanel (props:{
       </GridCol>
     </GridRow>
     <GridRow>
-      { filters && <SwitchWidgets filters={{ ...filters }} switchDetailHeader={switchDetail} /> }
+      { switchDetail?.serialNumber &&
+      <SwitchWidgets filters={{ ...filters }} switchDetailHeader={switchDetail} /> }
     </GridRow>
 
     {enableSwitchBlinkLed &&
