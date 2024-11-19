@@ -114,14 +114,16 @@ function useColumns () {
       searchable: true,
       fixed: 'left',
       render: (_, row) =>
-        <TenantLink
-          to={getServiceDetailsLink({
-            type: ServiceType.EDGE_TNM_SERVICE,
-            oper: ServiceOperation.DETAIL,
-            serviceId: row.id!
-          })}>
-          {row.name}
-        </TenantLink>
+        row.status === EdgeTnmServiceStatusEnum.UP
+          ? <TenantLink
+            to={getServiceDetailsLink({
+              type: ServiceType.EDGE_TNM_SERVICE,
+              oper: ServiceOperation.DETAIL,
+              serviceId: row.id!
+            })}>
+            {row.name}
+          </TenantLink>
+          : row.name
     },
     {
       key: 'version',
@@ -155,9 +157,7 @@ const TnmServiceStatus = (props:{ status: EdgeTnmServiceStatusEnum | undefined }
 
   switch(props.status) {
     case EdgeTnmServiceStatusEnum.UP:
-      return <Space>
-        <UI.CheckMarkCircleSolidIcon/>{$t({ defaultMessage: 'Up' })}
-      </Space>
+      return <Space><UI.CheckMarkCircleSolidIcon/>{$t({ defaultMessage: 'Up' })}</Space>
     case EdgeTnmServiceStatusEnum.INSTALLING:
       return <Space><UI.CheckingIcon/>{$t({ defaultMessage: 'Installing' })}</Space>
     case EdgeTnmServiceStatusEnum.DOWN:
