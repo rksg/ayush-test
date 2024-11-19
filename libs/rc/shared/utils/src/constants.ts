@@ -517,6 +517,7 @@ export enum PortalViewEnum{
   SelfSignIn = 'SelfSignIn',
   SelfSignInRegister = 'SelfSignInRegister',
   HostApproval = 'HostApproval',
+  Directory = 'Directory',
   ConnectionConfirmed = 'ConnectionConfirmed',
   TermCondition = 'TermCondition'
 }

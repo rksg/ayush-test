@@ -240,6 +240,7 @@ export const FieldInput = styled.input`
   ${fieldInputStyle}
   border-radius:5px;
 `
+
 export const FieldInputSmall = styled.input`
   ${fieldInputStyle}
   width:232px;
@@ -309,6 +310,13 @@ export const ViewSectionText = styled.div`
   color:var(--acx-neutrals-60);
   text-align:left;
   margin-left:45px;
+`
+export const ViewSectionLabel = styled.div`
+  padding-top: 5px;
+  font-size: 12px;
+  color:var(--acx-primary-black);
+  text-align:left;
+  margin-left:70px;
 `
 export const ViewSectionTitle = styled.div`
   font-size:18px;
