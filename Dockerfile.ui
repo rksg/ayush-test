@@ -94,15 +94,18 @@ COPY cicd_tools ./cicd_tools
 COPY test_cases.table ./test_cases.table
 RUN chmod a+x ./cicd_tools/run_test_cases_tool.sh
 
-FROM acx-ui-base-test as acx-ui-group1-test
+FROM acx-ui-base-test as acx-ui-group-test
 ARG PRECOMMIT=true
 ARG GIT_COMMIT_BRANCH=master
-RUN if [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ];then \
-	    ./cicd_tools/run_test_cases_tool.sh Group1; \
-	else mkdir -p /app/coverage; fi
+ARG NODE_COMMAND="node ./node_modules/.bin/nx"
+RUN if [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+        while IFS= read -r command; do \
+            ${NODE_COMMAND} ${command}; \
+        done < /app/test_cases.txt; \
+    else mkdir -p /app/coverage; fi
 
 FROM build-base as acx-ui-sonar-run
-COPY --from=acx-ui-group1-test /app/coverage /app/coverage
+COPY --from=acx-ui-group-test /app/coverage /app/coverage
 WORKDIR /app
 RUN touch tests-done
 
