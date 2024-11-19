@@ -393,7 +393,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
             label={$t({ defaultMessage: 'OCSP URL' })}
             rules={[
               { required: true },
-              { max: 1024 },
+              { max: 1017 }, // 1024 - 7 ('http://')
               { validator: (_, value) => URLRegExp(value) }
             ]}
             initialValue={''}
