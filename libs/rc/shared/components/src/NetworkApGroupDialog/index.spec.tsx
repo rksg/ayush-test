@@ -111,7 +111,6 @@ describe('NetworkApGroupDialog', () => {
 
     const dialog = await screen.findByRole('dialog')
 
-
     // Show venue's name in the sub-title
     expect(within(dialog).getByText(venueName, { exact: false })).toBeVisible()
 
@@ -124,7 +123,10 @@ describe('NetworkApGroupDialog', () => {
     // fireEvent.click(within(dialog).getByLabelText('Select APs by tag', { exact: false }))
     // expect(within(dialog).getByLabelText('Tags')).toBeVisible()
 
-    await userEvent.click(within(dialog).getByRole('button', { name: 'Apply' }))
+    const applyBtn = within(dialog).getByRole('button', { name: 'Apply' })
+    await waitFor(() => expect(applyBtn).not.toBeDisabled())
+    await userEvent.click(applyBtn)
+
     await waitFor(() => expect(onOk).toBeCalled())
 
     // update the props "visible"
