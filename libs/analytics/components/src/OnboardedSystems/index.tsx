@@ -79,7 +79,8 @@ export const useOnboardedSystems = () => {
       tenantId: tenant.tenants
         .filter(t => Boolean(t.permissions['READ_ONBOARDED_SYSTEMS']))
         .map(t => t.id)
-    }
+    },
+    currentTenantId: tenantId
   }
   const settingsId = 'onboarded-system-table'
   const tableQuery = useTableQuery<FormattedOnboardedSystem>({
@@ -89,9 +90,6 @@ export const useOnboardedSystems = () => {
     defaultPayload: defaultPayload,
     search: {
       searchTargetFields: ['account_name', 'device_name']
-    },
-    customHeaders: {
-      'x-mlisa-current-tenant-id': tenantId
     }
   })
 

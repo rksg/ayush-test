@@ -153,10 +153,9 @@ export const smartZoneApi = basedSmartZoneApi.injectEndpoints({
       TableResult<FormattedOnboardedSystem>,
       RequestPayload
     >({
-      query: ({ payload, customHeaders }) => {
+      query: ({ payload }) => {
         const extraCustomHeaders: Record<string, unknown> = {
-          'x-mlisa-tenant-ids': '[*]',
-          ...(customHeaders || {})
+          'x-mlisa-tenant-ids': '[*]'
         }
         const req = createHttpRequest(
           {
