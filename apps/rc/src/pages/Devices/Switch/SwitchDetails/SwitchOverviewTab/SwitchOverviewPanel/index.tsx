@@ -39,6 +39,7 @@ export function SwitchOverviewPanel (props:{
   const [blinkDrawerVisible, setBlinkDrawerVisible] = useState(false)
   const [blinkData, setBlinkData] = useState([] as SwitchInfo[])
   const enableSwitchBlinkLed = useIsSplitOn(Features.SWITCH_BLINK_LED)
+
   return <>
     {enableSwitchBlinkLed && (hasPermission() || hasRoles([RolesEnum.READ_ONLY])) &&
       <div style={{ textAlign: 'right' }}>
