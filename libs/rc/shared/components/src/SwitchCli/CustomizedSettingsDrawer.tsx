@@ -3,8 +3,11 @@ import { useIntl } from 'react-intl'
 import {
   Drawer,
   Table,
-  Tooltip
+  Tooltip,
+  TableProps
 } from '@acx-ui/components'
+import { defaultSort, sortProp } from '@acx-ui/rc/utils'
+
 
 import { formatContentWithLimit, MAX_LINES, MAX_CONTENT_LENGTH, VariableType } from './CliVariableUtils'
 import * as UI                                                                 from './styledComponents'
@@ -20,10 +23,12 @@ export const CustomizedSettingsDrawer = (props: {
   const { $t } = useIntl()
   const { type, switchSettings, switchSettingDrawerVisible, setSwitchSettingDrawerVisible } = props
 
-  const columns = [{
+  const columns: TableProps<SwitchSettings>['columns'] = [{
     title: $t({ defaultMessage: 'Switch' }),
     dataIndex: 'name',
-    key: 'name'
+    key: 'name',
+    sorter: { compare: sortProp('name', defaultSort) },
+    defaultSortOrder: 'ascend'
   },
   {
     title: type === VariableType.ADDRESS
@@ -33,6 +38,7 @@ export const CustomizedSettingsDrawer = (props: {
       ),
     dataIndex: 'value',
     key: 'value',
+    sorter: { compare: sortProp('value', defaultSort) },
     render: (data: React.ReactNode) => {
       return type !== VariableType.STRING
         ? data
@@ -47,11 +53,12 @@ export const CustomizedSettingsDrawer = (props: {
   {
     title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
     dataIndex: 'venueName',
-    key: 'venueName'
+    key: 'venueName',
+    sorter: { compare: sortProp('venueName', defaultSort) }
   }]
 
   return <Drawer
-    title={$t({ defaultMessage: 'Switches with their own settings' })}
+    title={$t({ defaultMessage: 'Switches with custom settings' })}
     visible={switchSettingDrawerVisible}
     onClose={() => setSwitchSettingDrawerVisible(false)}
     width='440px'
