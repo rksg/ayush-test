@@ -1,4 +1,4 @@
-import { useContext, useRef, useState, useEffect } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Image, Row, Space, Switch } from 'antd'
 import { cloneDeep, isObject }                  from 'lodash'
@@ -6,39 +6,39 @@ import { FormChangeInfo }                       from 'rc-field-form/lib/FormCont
 import { FormattedMessage, useIntl }            from 'react-intl'
 
 import {
+  AnchorContext,
   Button,
   Loader,
-  Tabs,
   StepsFormLegacy,
   StepsFormLegacyInstance,
-  AnchorContext,
+  Tabs,
   showActionModal
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings } from '@acx-ui/rc/components'
 import {
-  useLazyGetVenueSettingsQuery,
   useGetApLanPortsWithEthernetProfilesQuery,
-  useUpdateApLanPortsMutation,
-  useResetApLanPortsMutation,
-  useLazyGetDHCPProfileListViewModelQuery,
   useGetDefaultApLanPortsQuery,
-  useUpdateApEthernetPortsMutation,
+  useLazyGetDHCPProfileListViewModelQuery,
   useLazyGetVenueLanPortWithEthernetSettingsQuery,
-  useLazyGetVenueLanPortsQuery
+  useLazyGetVenueLanPortsQuery,
+  useLazyGetVenueSettingsQuery,
+  useResetApLanPortsMutation,
+  useUpdateApEthernetPortsMutation,
+  useUpdateApLanPortsMutation
 } from '@acx-ui/rc/services'
 import {
-  LanPort,
-  WifiApSetting,
+  ApLanPortTypeEnum,
   CapabilitiesApModel,
-  VenueLanPorts,
   EditPortMessages,
-  isEqualLanPort,
-  ApLanPortTypeEnum
+  LanPort,
+  VenueLanPorts,
+  WifiApSetting,
+  isEqualLanPort
 } from '@acx-ui/rc/utils'
 import {
-  useParams,
-  useNavigate
+  useNavigate,
+  useParams
 } from '@acx-ui/react-router-dom'
 
 import { ApDataContext, ApEditContext } from '../..'
@@ -474,7 +474,9 @@ export function LanPorts () {
   </Loader>
 
   function SettingMessage ({ showButton }: { showButton: boolean }) {
-    return <Space
+    const hasVni = lanData.filter(lan => lan?.vni > 0 ).length > 0
+    // eslint-disable-next-line react/jsx-no-useless-fragment
+    return hasVni ? <></> : <Space
       style={isResetLanPortEnabled ? { display: 'flex', fontSize: '12px' } :
         { display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
       {useVenueSettings
