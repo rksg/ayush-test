@@ -86,7 +86,8 @@ describe('AAA Instance Page', () => {
 
   it('should render instance page', async () => {
     render(<Provider><NetworkFormContext.Provider value={{
-      editMode: false, cloneMode: false, data: { guestPortal:
+      editMode: false, cloneMode: false, isRuckusAiMode: false,
+      data: { guestPortal:
         { enableSmsLogin: true, socialIdentities: {} } }
     }}><Form><AAAInstance serverLabel='' type='authRadius'/>
       </Form></NetworkFormContext.Provider></Provider>,
@@ -136,7 +137,8 @@ describe('AAA Instance Page', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     render(<Provider><NetworkFormContext.Provider value={{
-      editMode: false, cloneMode: false, data: { guestPortal:
+      editMode: false, cloneMode: false, isRuckusAiMode: false,
+      data: { guestPortal:
         { enableSmsLogin: true, socialIdentities: {} } }
     }}><Form><AAAInstance serverLabel='' type='authRadius'/>
       </Form></NetworkFormContext.Provider></Provider>,
@@ -189,6 +191,7 @@ describe('AAA Instance Page', () => {
       <NetworkFormContext.Provider value={{
         editMode: false,
         cloneMode: false,
+        isRuckusAiMode: false,
         data: { guestPortal: { enableSmsLogin: true, socialIdentities: {} } }
       }}>
         <Form><AAAInstance serverLabel='Authentication Server' type='authRadius'/></Form>
