@@ -1,9 +1,11 @@
 import { useRef, useEffect, useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import _, { cloneDeep, omit } from 'lodash'
+import { useIntl }            from 'react-intl'
 
 import {
   PageHeader,
+  showActionModal,
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
@@ -33,7 +35,7 @@ import {
   usePolicyPreviousPath,
   useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import { AAASettingForm } from './AAASettingForm'
 
@@ -42,13 +44,18 @@ type AAAFormProps = {
   type?: string,
   edit: boolean,
   networkView?: boolean,
-  backToNetwork?: (value?: AAAPolicyType) => void
+  backToNetwork?: (value?: AAAPolicyType) => void,
+}
+
+type State = {
+  networkIds?: string[]
 }
 export const AAAForm = (props: AAAFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const linkToInstanceList = usePolicyPreviousPath(PolicyType.AAA, PolicyOperation.LIST)
   const params = useParams()
+  const state = useLocation().state as State
   const { type, edit, networkView, backToNetwork } = props
   const isEdit = edit && !networkView
   const formRef = useRef<StepsFormLegacyInstance<AAAPolicyType>>()
@@ -89,7 +96,25 @@ export const AAAForm = (props: AAAFormProps) => {
   }, [data])
 
   const handleAAAPolicy = async (data: AAAPolicyType) => {
-    const requestPayload = { params, payload: data, enableRbac }
+    if (!_.isEmpty(state?.networkIds)) {
+      showActionModal({
+        type: 'confirm',
+        title: $t({ defaultMessage: 'Configuration Changes' }),
+        content: $t({
+          // eslint-disable-next-line max-len
+          defaultMessage: 'Modifying RADIUS settings on an active network assignment may impact the networks associated with this profile. Please review the configuration carefully to ensure they are correctly set. Are you sure you would like to continue?'
+        }),
+        onOk: async () => {
+          await saveAAAPolicy(data)
+        }
+      })
+    } else {
+      await saveAAAPolicy(data)
+    }
+  }
+
+  const saveAAAPolicy = async (data: AAAPolicyType) => {
+    const requestPayload = { params, payload: handledRadSecData(data), enableRbac }
     try {
       if (isEdit) {
         await updateInstance(requestPayload).unwrap()
@@ -109,6 +134,19 @@ export const AAAForm = (props: AAAFormProps) => {
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
+  }
+
+  const handledRadSecData = (data: AAAPolicyType) => {
+    let cloneData = cloneDeep(omit(data,
+      'radSecOptions.ocspValidationEnabled',
+      'radSecOptions.originalCertificateAuthorityId',
+      'radSecOptions.originalClientCertificateId',
+      'radSecOptions.originalServerCertificateId'
+    ))
+    if (cloneData.radSecOptions?.ocspUrl) {
+      cloneData.radSecOptions.ocspUrl = `http://${cloneData.radSecOptions.ocspUrl}`
+    }
+    return cloneData
   }
 
   const onCancel = () => {

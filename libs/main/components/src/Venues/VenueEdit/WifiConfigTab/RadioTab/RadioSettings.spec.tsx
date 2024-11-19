@@ -63,9 +63,6 @@ describe('Venue Radio Settings', () => {
         WifiUrlsInfo.getVenueApCapabilities.url,
         (_, res, ctx) => res(ctx.json(triBandApCap))),
       rest.get(
-        CommonUrlsInfo.getDashboardOverview.url,
-        (_, res, ctx) => res(ctx.json({}))),
-      rest.get(
         CommonUrlsInfo.getVenueSettings.url,
         (_, res, ctx) => res(ctx.json(venueSetting))),
       rest.get(
