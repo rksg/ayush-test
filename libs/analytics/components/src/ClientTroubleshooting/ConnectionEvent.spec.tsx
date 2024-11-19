@@ -1,10 +1,17 @@
 import { useState } from 'react'
 
+import { get }                                from '@acx-ui/config'
 import { Provider }                           from '@acx-ui/store'
 import { cleanup, render, fireEvent, screen } from '@acx-ui/test-utils'
 
 import { DisplayEvent }           from './config'
 import { ConnectionEventPopover } from './ConnectionEvent'
+
+const mockGet = get as jest.Mock
+jest.mock('@acx-ui/config', () => ({
+  ...jest.requireActual('@acx-ui/config'),
+  get: jest.fn()
+}))
 
 const successEvent: DisplayEvent = {
   timestamp: '2022-11-14T06:33:31.646Z',
@@ -34,7 +41,9 @@ const successEvent: DisplayEvent = {
   end: 1668407611646,
   category: 'success',
   ssid: 'cliexp4',
-  key: 'sucessKey'
+  key: 'sucessKey',
+  roamingType: 'PMK',
+  type: 'roaming'
 }
 
 const slowEvent = {
@@ -143,9 +152,11 @@ const pcapFailure = {
 
 describe('ConnectionEvent', () => {
 
+  beforeEach(() => jest.clearAllMocks())
   afterEach(() => cleanup())
 
   it('renders correctly for success event', () => {
+    mockGet.mockReturnValue('true')
     render(<ConnectionEventPopover event={successEvent}>test</ConnectionEventPopover>)
     fireEvent.click(screen.getByText(/test/i))
     expect(screen.getByText(successEvent.mac)).toHaveTextContent(successEvent.mac)
@@ -153,6 +164,7 @@ describe('ConnectionEvent', () => {
     const stringSsid = successEvent.ssid as string
     expect(screen.getByText(stringSsid)).toHaveTextContent(stringSsid)
     expect(screen.getByText(/5 GHz/i)).toHaveTextContent(/5 GHz/i)
+    expect(screen.getByText(/PMK/i)).toHaveTextContent(/PMK/i)
   })
 
   it('renders correctly for failureEvent event', () => {

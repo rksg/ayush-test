@@ -24,8 +24,6 @@ import {
   useTableQuery
 }                                                                  from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 
 const EthernetPortProfileTable = () => {
@@ -203,7 +201,7 @@ const EthernetPortProfileTable = () => {
 
   const rowActions: TableProps<EthernetPortProfileViewData>['rowActions'] = [
     {
-      scopeKey: [WifiScopes.UPDATE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.EDIT),
       // Default Ethernet Port Profile cannot Edit
       visible: (selectedRows) => selectedRows.length === 1
             && !selectedRows[0].isDefault,
@@ -220,7 +218,7 @@ const EthernetPortProfileTable = () => {
       }
     },
     {
-      scopeKey: [WifiScopes.DELETE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.DELETE),
       // Default Ethernet Port Profile cannot Delete
       visible: (selectedRows) => {
         return !selectedRows.some(row => row.isDefault)
@@ -244,9 +242,7 @@ const EthernetPortProfileTable = () => {
     }
   ]
 
-  const isSelectionVisible = hasPermission({
-    scopes: [WifiScopes.UPDATE, WifiScopes.DELETE]
-  })
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
     <>
@@ -281,8 +277,8 @@ const EthernetPortProfileTable = () => {
         <Table
           rowKey={(row: EthernetPortProfileViewData) => `${row.id}-${row.name}`}
           columns={columns}
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={isSelectionVisible && { type: 'checkbox' }}
+          rowActions={allowedRowActions}
+          rowSelection={(allowedRowActions.length > 0) && { type: 'checkbox' }}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}

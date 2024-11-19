@@ -139,7 +139,8 @@ export interface Chromebook {
   type?: string
   projectId?: string
   clientEmail?: string
-  privateKeyId?: string
+  privateKeyId?: string,
+  enrollmentUrl?: string
 }
 
 export interface CertificateTemplateFormData extends CertificateTemplate {
@@ -183,7 +184,8 @@ export interface CertificateAuthority {
   keyUsages?: KeyUsageType[]
   chain?: string
   details?: string
-  description?: string
+  description?: string,
+  status: CertificateStatusType[]
 }
 
 export interface CertificateAuthorityFormData extends CertificateAuthority {
@@ -265,7 +267,8 @@ export enum CertificateAcceptType {
   DER = 'application/x-x509-ca-cert',
   PKCS7 = 'application/x-pkcs7-certificates',
   PKCS8 = 'application/pkcs8',
-  PKCS12 = 'application/x-pkcs12'
+  PKCS12 = 'application/x-pkcs12',
+  PKCS1 = 'application/pkcs1'
 }
 
 export enum EnrollmentType {
@@ -318,4 +321,9 @@ export enum ServerClientCertAlgorithmType {
   SHA_256 = 'SHA_256',
   SHA_384 = 'SHA_384',
   SHA_512 = 'SHA_512'
+}
+
+export type ServerClientCertificateResult = {
+  requestId: string
+  id?: string
 }

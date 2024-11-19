@@ -632,9 +632,49 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/switches/query/csvFiles',
     newApi: true
   },
-  getSwitchFeatureSets: {
+  addFlexAuthenticationProfile: {
+    method: 'post',
+    url: '/switchAuthProfiles',
+    newApi: true
+  },
+  getFlexAuthenticationProfiles: {
+    method: 'post',
+    url: '/switchAuthProfiles/query',
+    newApi: true
+  },
+  getFlexAuthenticationProfileAppliedTargets: {
+    method: 'post',
+    url: '/switchAuthProfiles/:profileId/appliedTargets/query',
+    newApi: true
+  },
+  updateFlexAuthenticationProfile: {
+    method: 'put',
+    url: '/switchAuthProfiles/:profileId',
+    newApi: true
+  },
+  deleteFlexAuthenticationProfile: {
+    method: 'delete',
+    url: '/switchAuthProfiles/:profileId',
+    newApi: true
+  },
+  getSwitchAuthentication: {
     method: 'get',
-    url: '/switchFeatureSets/:featureName',
+    url: '/venues/:venueId/switches/:switchId/authentications',
+    newApi: true
+  },
+  getSwitchesAuthentication: {
+    method: 'post',
+    url: '/venues/:venueId/switches/:switchId/authentication',
+    newApi: true
+  },
+  updateSwitchAuthentication: {
+    method: 'put',
+    url: '/venues/:venueId/switches/:switchId/authentications',
+    newApi: true
+  },
+  getSwitchFeatureSets: {
+    method: 'post',
+    url: '/switchFeatureSets/query',
     newApi: true
   }
 }
