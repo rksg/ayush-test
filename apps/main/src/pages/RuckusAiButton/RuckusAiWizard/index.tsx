@@ -149,7 +149,7 @@ export default function RuckusAiWizard (props: {
       title: '',
       component: (props.payload ? (<WlanStep
         payload={props.payload}
-        formInstance={formMapRef?.current?.[0].current}
+        formInstance={formMapRef?.current?.[0]?.current}
         description={props.description} />) : null
       ),
 

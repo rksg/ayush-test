@@ -4,6 +4,7 @@ import { Form }  from 'antd'
 import { Provider  } from '@acx-ui/store'
 import {
   render,
+  renderHook,
   screen
 } from '@acx-ui/test-utils'
 
@@ -25,11 +26,17 @@ jest.mock('@acx-ui/rc/services', () => {
 
 describe('WlanStep', () => {
   it('should display WlanStep page and add correctly', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
     render(
       <Provider>
-        <Form>
+        <Form form={formRef.current}>
           <WlanStep
             payload={mock_payload}
+            formInstance={formRef.current}
             description={mock_description}
           />
         </Form>
