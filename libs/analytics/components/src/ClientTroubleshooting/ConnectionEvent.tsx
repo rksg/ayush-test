@@ -13,11 +13,11 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { formatter }              from '@acx-ui/formatter'
 import { getIntl }                from '@acx-ui/utils'
 
-import { FAILURE, DisplayEvent, SLOW, DISCONNECT, ROAMING, BTM_REQUEST, btmInfoToDisplayTextMap } from './config'
-import { ConnectionSequenceDiagram }                                                              from './ConnectionSequenceDiagram'
-import { DownloadPcap }                                                                           from './DownloadPcap'
-import { Details }                                                                                from './EventDetails'
-import * as UI                                                                                    from './styledComponents'
+import { FAILURE, DisplayEvent, SLOW, DISCONNECT, ROAMING, BTM_REQUEST, btmInfoToDisplayTextMap, BTM_RESPONSE } from './config'
+import { ConnectionSequenceDiagram }                                                                            from './ConnectionSequenceDiagram'
+import { DownloadPcap }                                                                                         from './DownloadPcap'
+import { Details }                                                                                              from './EventDetails'
+import * as UI                                                                                                  from './styledComponents'
 
 export const getConnectionDetails = (event: DisplayEvent) => {
   const intl = getIntl()
@@ -36,18 +36,6 @@ export const getConnectionDetails = (event: DisplayEvent) => {
       : $t({ defaultMessage: 'Unknown' })
     }
   ]
-
-  if (btmInfo) {
-    const label =
-      category === BTM_REQUEST
-        ? $t({ defaultMessage: 'Trigger' })
-        : $t({ defaultMessage: 'Status' })
-
-    eventDetails.push({
-      label,
-      value: btmInfoToDisplayTextMap[btmInfo] ?? btmInfo
-    })
-  }
 
   switch (event.category) {
     case FAILURE: {
@@ -89,6 +77,22 @@ export const getConnectionDetails = (event: DisplayEvent) => {
           id: event.failedMsgId
         })
       })
+      break
+    }
+
+    case BTM_REQUEST: // fallthrough
+    case BTM_RESPONSE: {
+      if (btmInfo) {
+        const label =
+          category === BTM_REQUEST
+            ? $t({ defaultMessage: 'Trigger' })
+            : $t({ defaultMessage: 'Status' })
+
+        eventDetails.push({
+          label,
+          value: btmInfoToDisplayTextMap[btmInfo] ?? btmInfo
+        })
+      }
       break
     }
   }
