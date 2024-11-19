@@ -368,14 +368,16 @@ export function ManageCustomer () {
     if (!isEditMode) { // Add mode
       const initialAddress = isMapEnabled ? '' : defaultAddress.addressLine
       formRef.current?.setFieldValue(['address', 'addressLine'], initialAddress)
-      if (userProfile) {
+      const adminRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
+      const isAdmin = userProfile?.roles?.some(role => adminRoles.includes(role as RolesEnum))
+      if (userProfile && isAdmin) {
         const administrator = [] as MspAdministrator[]
         administrator.push ({
           id: userProfile.adminId,
           lastName: userProfile.lastName,
           name: userProfile.firstName,
           email: userProfile.email,
-          role: RolesEnum.PRIME_ADMIN,
+          role: userProfile.role as RolesEnum,
           detailLevel: userProfile.detailLevel
         })
         setAdministrator(administrator)
