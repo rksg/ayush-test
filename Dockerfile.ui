@@ -3,8 +3,7 @@ ARG GAR_CONTAINER_URL
 ARG GAR_DOCKER_ROOT_URL
 
 FROM ${GAR_DOCKER_ROOT_URL}/acx-service/acx-ui-cache/nx-cache:latest as nx-cache
-#FROM ${CI_SERVICE_BASE}node:master--latest as build-base
-FROM node:16.20.2-alpine3.18 as build-base
+FROM ${CI_SERVICE_BASE}node:master--latest as build-base
 
 WORKDIR /app
 
@@ -98,7 +97,7 @@ RUN chmod a+x ./cicd_tools/run_test_cases_tool.sh
 FROM acx-ui-base-test as acx-ui-group-test
 ARG PRECOMMIT=true
 ARG GIT_COMMIT_BRANCH=master
-RUN ./cicd_tools/run_test_cases_tool.sh Group1 "${PRECOMMIT}" "${GIT_COMMIT_BRANCH}"
+RUN eval ./cicd_tools/run_test_cases_tool.sh Group1 "${PRECOMMIT}" "${GIT_COMMIT_BRANCH}"
 
 FROM build-base as acx-ui-sonar-run
 COPY --from=acx-ui-group-test /app/coverage /app/coverage
