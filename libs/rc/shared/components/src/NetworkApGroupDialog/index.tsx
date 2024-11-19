@@ -153,10 +153,10 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
     vlanMembers: networkVenue?.vlanMembers ?? []
   } : null, wlan?.vlanId)
 
-  const { data: networkApGroupsQuery, isLoading: isNetworkLoading } = useNetworkApGroupsInstance()
+  const { data: networkApGroupsData, isLoading: isNetworkLoading } = useNetworkApGroupsInstance()
 
   function useNetworkApGroupsInstance () {
-    const { data: networkApGroupsV2Query, isLoading: isLoadingV2 } = useGetNetworkApGroupsV2Query({ params: { tenantId },
+    const networkApGroupsV2Query = useGetNetworkApGroupsV2Query({ params: { tenantId },
       payload: [{
         networkId: networkVenue?.networkId,
         venueId: networkVenue?.venueId,
@@ -164,7 +164,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       }]
     }, { skip: isWifiRbacEnabled || !networkVenue || !wlan })
 
-    const { data: networkApGroupsRbacQuery, isLoading: isLoadingRbac } = useGetRbacNetworkApGroupsQuery({ params: { tenantId },
+    const networkApGroupsRbacQuery = useGetRbacNetworkApGroupsQuery({ params: { tenantId },
       payload: [{
         networkId: networkVenue?.networkId,
         venueId: networkVenue?.venueId,
@@ -172,10 +172,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       }]
     }, { skip: !isWifiRbacEnabled || !networkVenue || !wlan })
 
-    return {
-      data: isWifiRbacEnabled ? networkApGroupsRbacQuery : networkApGroupsV2Query,
-      isLoading: isLoadingV2 || isLoadingRbac
-    }
+    return isWifiRbacEnabled ? networkApGroupsRbacQuery : networkApGroupsV2Query
   }
 
   const formInitData = useMemo(() => {
@@ -183,9 +180,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
     // then the "select specific AP group" option should be selected
     const isAllAps = networkVenue?.isAllApGroups !== false && !isDisableAllAPs(networkVenue?.apGroups)
 
-    const networkApGroupsData = networkApGroupsQuery || []
-
-    let allApGroups: NetworkApGroupWithSelected[] = networkApGroupsData
+    let allApGroups: NetworkApGroupWithSelected[] = (networkApGroupsData || [])
       .map(nv => nv.apGroups || []).flat()
       .map(allAg => {
         const apGroup = _.find(networkVenue?.apGroups, ['apGroupId', allAg.apGroupId])
@@ -199,7 +194,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       apgroups: allApGroups,
       apTags: []
     }
-  }, [networkVenue, networkApGroupsQuery])
+  }, [networkVenue, networkApGroupsData])
 
   const [loading, setLoading] = useState(false)
 
