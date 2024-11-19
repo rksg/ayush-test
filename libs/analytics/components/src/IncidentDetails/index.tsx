@@ -3,29 +3,32 @@ import { get } from 'lodash'
 import { Loader }    from '@acx-ui/components'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { AirtimeB }                from './Details/AirtimeB'
-import { AirtimeRx }               from './Details/AirtimeRx'
-import { AirtimeTx }               from './Details/AirtimeTx'
-import { ApinfraPoeLow }           from './Details/ApinfraPoeLow'
-import { ApinfraWanthroughputLow } from './Details/ApinfraWanthroughputLow'
-import { ApservContinuousReboots } from './Details/ApservContinuousReboots'
-import { ApservDowntimeHigh }      from './Details/ApservDowntimeHigh'
-import { ApservHighNumReboots }    from './Details/ApservHighNumReboots'
-import { AssocFailure }            from './Details/AssocFailure'
-import { AuthFailure }             from './Details/AuthFailure'
-import { ChannelDist }             from './Details/ChannelDist'
-import { CovClientrssiLow }        from './Details/CovClientrssiLow'
-import { DhcpFailure }             from './Details/DhcpFailure'
-import { EapFailure }              from './Details/EapFailure'
-import { LoadSzCpuLoad }           from './Details/LoadSzCpuLoad'
-import { NetSzNetLatency }         from './Details/NetSzNetLatency'
-import { NetTime }                 from './Details/NetTime'
-import { RadiusFailure }           from './Details/RadiusFailure'
-import { SwitchMemoryHigh }        from './Details/SwitchMemoryHigh'
-import { SwitchPoePd }             from './Details/SwitchPoePd'
-import { SwitchTcpSynDDoS }        from './Details/SwitchTcpSynDDoS'
-import { SwitchVlanMismatch }      from './Details/SwitchVlanMismatch'
-import { Ttc }                     from './Details/Ttc'
+import { AirtimeB }                   from './Details/AirtimeB'
+import { AirtimeRx }                  from './Details/AirtimeRx'
+import { AirtimeTx }                  from './Details/AirtimeTx'
+import { ApinfraPoeLow }              from './Details/ApinfraPoeLow'
+import { ApinfraWanthroughputLow }    from './Details/ApinfraWanthroughputLow'
+import { ApservContinuousReboots }    from './Details/ApservContinuousReboots'
+import { ApservDowntimeHigh }         from './Details/ApservDowntimeHigh'
+import { ApservHighNumReboots }       from './Details/ApservHighNumReboots'
+import { AssocFailure }               from './Details/AssocFailure'
+import { AuthFailure }                from './Details/AuthFailure'
+import { ChannelDist }                from './Details/ChannelDist'
+import { CovClientrssiLow }           from './Details/CovClientrssiLow'
+import { DhcpFailure }                from './Details/DhcpFailure'
+import { EapFailure }                 from './Details/EapFailure'
+import { LoadSzCpuLoad }              from './Details/LoadSzCpuLoad'
+import { NetSzNetLatency }            from './Details/NetSzNetLatency'
+import { NetTime }                    from './Details/NetTime'
+import { RadiusFailure }              from './Details/RadiusFailure'
+import { SwitchLoopDetection }        from './Details/SwitchLoopDetection'
+import { SwitchMemoryHigh }           from './Details/SwitchMemoryHigh'
+import { SwitchPoePd }                from './Details/SwitchPoePd'
+import { SwitchPortCongestion }       from './Details/SwitchPortCongestion'
+import { SwitchTcpSynDDoS }           from './Details/SwitchTcpSynDDoS'
+import { SwitchUplinkPortCongestion } from './Details/SwitchUplinkPortCongestion'
+import { SwitchVlanMismatch }         from './Details/SwitchVlanMismatch'
+import { Ttc }                        from './Details/Ttc'
 import {
   useIncidentCodeQuery,
   useIncidentDetailsQuery
@@ -47,6 +50,7 @@ export const incidentDetailsMap = {
   'i-apserv-high-num-reboots': ApservHighNumReboots,
   'i-switch-poe-pd': SwitchPoePd,
   'i-switch-vlan-mismatch': SwitchVlanMismatch,
+  'i-switch-loop-detection': SwitchLoopDetection,
   'p-channeldist-suboptimal-plan-24g': ChannelDist,
   'p-channeldist-suboptimal-plan-50g-outdoor': ChannelDist,
   'p-channeldist-suboptimal-plan-50g-indoor': ChannelDist,
@@ -63,6 +67,8 @@ export const incidentDetailsMap = {
   'p-airtime-tx-24g-high': AirtimeTx,
   'p-airtime-tx-5g-high': AirtimeTx,
   'p-airtime-tx-6(5)g-high': AirtimeTx,
+  'p-switch-port-congestion': SwitchPortCongestion,
+  'p-switch-uplink-port-congestion': SwitchUplinkPortCongestion,
   's-switch-tcp-syn-ddos': SwitchTcpSynDDoS
 }
 
