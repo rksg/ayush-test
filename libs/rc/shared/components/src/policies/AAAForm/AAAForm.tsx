@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from 'react'
 
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import _, { cloneDeep, omit } from 'lodash'
+import { useIntl }            from 'react-intl'
 
 import {
   PageHeader,
@@ -114,7 +114,7 @@ export const AAAForm = (props: AAAFormProps) => {
   }
 
   const saveAAAPolicy = async (data: AAAPolicyType) => {
-    const requestPayload = { params, payload: data, enableRbac }
+    const requestPayload = { params, payload: handledRadSecData(data), enableRbac }
     try {
       if (isEdit) {
         await updateInstance(requestPayload).unwrap()
@@ -134,6 +134,19 @@ export const AAAForm = (props: AAAFormProps) => {
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
+  }
+
+  const handledRadSecData = (data: AAAPolicyType) => {
+    let cloneData = cloneDeep(omit(data,
+      'radSecOptions.ocspValidationEnabled',
+      'radSecOptions.originalCertificateAuthorityId',
+      'radSecOptions.originalClientCertificateId',
+      'radSecOptions.originalServerCertificateId'
+    ))
+    if (cloneData.radSecOptions?.ocspUrl) {
+      cloneData.radSecOptions.ocspUrl = `http://${cloneData.radSecOptions.ocspUrl}`
+    }
+    return cloneData
   }
 
   const onCancel = () => {

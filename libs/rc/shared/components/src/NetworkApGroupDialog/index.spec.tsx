@@ -36,6 +36,8 @@ import { NetworkApGroupDialog } from './index'
 
 const venueName = 'My-Venue'
 
+const mockApGroupsList = jest.fn()
+
 describe('NetworkApGroupDialog', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
@@ -53,7 +55,10 @@ describe('NetworkApGroupDialog', () => {
       ),
       rest.post(
         WifiUrlsInfo.getApGroupsList.url,
-        (req, res, ctx) => res(ctx.json({ data: [{ id: 'fake_apg_id', name: 'fake_apg_name' }] }))
+        (req, res, ctx) => {
+          mockApGroupsList()
+          return res(ctx.json({ data: [{ id: 'fake_apg_id', name: 'fake_apg_name' }] }))
+        }
       ),
       rest.post(
         WifiRbacUrlsInfo.getApGroupsList.url,
@@ -102,8 +107,9 @@ describe('NetworkApGroupDialog', () => {
         onOk={onOk}
       /></Provider>, { route: { params } })
 
-    const dialog = await screen.findByRole('dialog')
+    await waitFor(() => expect(mockApGroupsList).toBeCalled())
 
+    const dialog = await screen.findByRole('dialog')
 
     // Show venue's name in the sub-title
     expect(within(dialog).getByText(venueName, { exact: false })).toBeVisible()
@@ -117,7 +123,10 @@ describe('NetworkApGroupDialog', () => {
     // fireEvent.click(within(dialog).getByLabelText('Select APs by tag', { exact: false }))
     // expect(within(dialog).getByLabelText('Tags')).toBeVisible()
 
-    await userEvent.click(within(dialog).getByRole('button', { name: 'Apply' }))
+    const applyBtn = within(dialog).getByRole('button', { name: 'Apply' })
+    await waitFor(() => expect(applyBtn).not.toBeDisabled())
+    await userEvent.click(applyBtn)
+
     await waitFor(() => expect(onOk).toBeCalled())
 
     // update the props "visible"
