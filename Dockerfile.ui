@@ -4,7 +4,7 @@ ARG GAR_DOCKER_ROOT_URL
 
 FROM ${GAR_DOCKER_ROOT_URL}/acx-service/acx-ui-cache/nx-cache:latest as nx-cache
 #FROM ${CI_SERVICE_BASE}node:master--latest as build-base
-FROM node:23-alpine3.19 as build-base
+FROM node:16.20.2-alpine3.18 as build-base
 
 WORKDIR /app
 
