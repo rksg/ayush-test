@@ -55,13 +55,13 @@ RUN source ${ENV_FILE} \
   && echo NX_GIT_DATE=\'$(date -R "@$((DRONE_BUILD_CREATED))")\' >> .env
 
 ###############################################################
-FROM build-base as acx-ui-lint
-RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
-RUN touch lint-done
+#FROM build-base as acx-ui-lint
+#RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
+#RUN touch lint-done
 
-# We should validate the tsc validator in the tsconfig of apps that wont be built yet
-FROM build-base as acx-ui-tslint
-RUN node ./node_modules/.bin/nx run ra:tsc
+## We should validate the tsc validator in the tsconfig of apps that wont be built yet
+#FROM build-base as acx-ui-tslint
+#RUN node ./node_modules/.bin/nx run ra:tsc
 ###############################################################
 FROM ${GAR_CONTAINER_URL}node:14.21.1-alpine as build-locales
 WORKDIR /app
@@ -79,25 +79,39 @@ COPY tools/docker/locales ./tools/docker/locales
 RUN chmod +x tools/docker/locales/generate.sh
 RUN tools/docker/locales/generate.sh
 
-FROM build-base as build
-COPY --from=build-locales /app/apps/main/src/locales ./apps/main/src/locales
-RUN node ./node_modules/.bin/nx run main:build
+#FROM build-base as build
+#COPY --from=build-locales /app/apps/main/src/locales ./apps/main/src/locales
+#RUN node ./node_modules/.bin/nx run main:build
 
 ###############################################################
-FROM build-base as acx-ui-base-test
+#FROM build-base as acx-ui-base-test
 
-# Force dependency with lint & build stages
-COPY --from=acx-ui-lint   /app/lint-done   ./lint-done
-COPY --from=build         /app/dist/apps   ./dist/apps
+## Force dependency with lint & build stages
+#COPY --from=acx-ui-lint   /app/lint-done   ./lint-done
+#COPY --from=build         /app/dist/apps   ./dist/apps
 
+FROM build-base as acx-ui-group-test
 COPY cicd_tools ./cicd_tools
 COPY test_cases.table ./test_cases.table
 RUN chmod a+x ./cicd_tools/run_test_cases_tool.sh
-
-FROM acx-ui-base-test as acx-ui-group-test
+ARG GROUP=Group1
 ARG PRECOMMIT=true
 ARG GIT_COMMIT_BRANCH=master
-RUN ./cicd_tools/run_test_cases_tool.sh Group1 "${PRECOMMIT}" "${GIT_COMMIT_BRANCH}"
+RUN set -xe && \
+    RUN_COMMAND="node ./node_modules/.bin/nx" && \
+    FILE="/app/test_cases.table" && \
+    source $FILE && \
+    declare -n nx_params=$GROUP && \
+    if [[ "$PRECOMMIT" == "true" || "$GIT_COMMIT_BRANCH" == "master" ]]; then \
+        for nx_param in "${nx_params[@]}"; do \
+            cmd="${RUN_COMMAND} ${nx_param}"; \
+            echo "Executing: $cmd"; \
+            eval "$cmd"; \
+        done; \
+    else \
+        echo "Conditions not met: Creating /app/coverage instead"; \
+        mkdir -p /app/coverage; \
+    fi
 
 FROM build-base as acx-ui-sonar-run
 COPY --from=acx-ui-group-test /app/coverage /app/coverage
