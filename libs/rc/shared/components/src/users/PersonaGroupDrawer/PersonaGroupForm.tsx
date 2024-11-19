@@ -4,21 +4,22 @@ import { Col, Form, FormInstance, Input, Row, Select, Space } from 'antd'
 import TextArea                                               from 'antd/lib/input/TextArea'
 import { useIntl }                                            from 'react-intl'
 
-import { Button, Modal, ModalType, Subtitle }                                                         from '@acx-ui/components'
+import { Button, Modal, ModalType, Subtitle } from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
   useAdaptivePolicySetListQuery,
   useGetEnhancedDpskListQuery,
   useLazySearchPersonaGroupListQuery,
   useSearchMacRegListsQuery
 } from '@acx-ui/rc/services'
-import { DpskSaveData, PersonaGroup, checkObjectNotExists, hasDpskAccess, trailingNorLeadingSpaces }  from '@acx-ui/rc/utils'
+import { DpskSaveData, PersonaGroup, checkObjectNotExists, hasDpskAccess, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
+import { RolesEnum }                                                                                 from '@acx-ui/types'
+import { hasRoles }                                                                                  from '@acx-ui/user'
 
+import { AdaptivePolicySetForm }   from '../../AdaptivePolicySetForm'
 import { MacRegistrationListForm } from '../../policies/MacRegistrationListForm'
 import { DpskForm }                from '../../services/DpskForm/DpskForm'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { AdaptivePolicySetForm } from '@acx-ui/rc/components'
-import { hasRoles } from '@acx-ui/user'
-import { RolesEnum } from '@acx-ui/types'
+
 
 const macRegSearchDefaultPayload = {
   dataOption: 'all',
@@ -60,7 +61,9 @@ export function PersonaGroupForm (props: {
 
   const [searchPersonaGroupList] = useLazySearchPersonaGroupListQuery()
 
-  const { data: policySetsData } = useAdaptivePolicySetListQuery({ payload: { page: 1, pageSize: '2147483647' } })
+  const { data: policySetsData } = useAdaptivePolicySetListQuery({
+    payload: { page: 1, pageSize: '2147483647' }
+  })
 
   const nameValidator = async (name: string) => {
     try {
@@ -197,18 +200,18 @@ export function PersonaGroupForm (props: {
             isPolicySetSupported && <>
               <Col span={21}>
                 <Form.Item name='policySetId'
-                           label={$t({ defaultMessage: 'Adaptive Policy Set' })}
-                           rules={[
-                             { message: $t({ defaultMessage: 'Please select Adaptive Policy Set' }) }
-                           ]}
-                           children={
-                             <Select
-                               allowClear
-                               placeholder={$t({ defaultMessage: 'Select ...' })}
-                               options={
-                                 policySetsData?.data.map(set => ({ value: set.id, label: set.name }))}
-                             />
-                           }
+                  label={$t({ defaultMessage: 'Adaptive Policy Set' })}
+                  rules={[
+                    { message: $t({ defaultMessage: 'Please select Adaptive Policy Set' }) }
+                  ]}
+                  children={
+                    <Select
+                      allowClear
+                      placeholder={$t({ defaultMessage: 'Select ...' })}
+                      options={
+                        policySetsData?.data.map(set => ({ value: set.id, label: set.name }))}
+                    />
+                  }
                 />
               </Col>
               {
