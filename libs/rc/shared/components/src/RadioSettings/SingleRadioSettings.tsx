@@ -321,16 +321,14 @@ export function SingleRadioSettings (props:{
 
   useEffect(() => {
     const getTxPowerAdjustmentOptions = () => {
-      let res = (radioType === ApRadioTypeEnum.Radio6G)? txPowerAdjustment6GOptions
+      let res = (radioType === ApRadioTypeEnum.Radio6G
+        || (supportR370 && context === 'ap' && !apCapabilities?.supportAutoCellSizing))
+        ? txPowerAdjustment6GOptions
         : txPowerAdjustmentOptions
-      if (supportR370 && context === 'ap' && (radioType !== ApRadioTypeEnum.Radio6G)
-        && !apCapabilities?.supportAutoCellSizing) {
-        res = res.filter(tx => tx.label !== 'Auto')
-      }
       if (isApTxPowerToggleEnabled) {
         if (context === 'venue'
           || (context === 'ap' && isApFwVersionLargerThan711(firmwareProps?.firmware)
-          && (!supportR370 || (supportR370 && apCapabilities?.supportAggressiveTxPower)))) {
+          && (!supportR370 || apCapabilities?.supportAggressiveTxPower))) {
           return [...res, ...txPowerAdjustmentExtendedOptions].sort((a, b) => {
             if (a.value === 'MIN') return 1
             if (b.value === 'MIN') return -1
