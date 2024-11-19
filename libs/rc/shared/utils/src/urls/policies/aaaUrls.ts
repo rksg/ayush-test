@@ -89,28 +89,11 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
   getClientCertificateOnRadius: {
     method: 'get',
     url: '/radiusProfiles/:policyId/certificates?certType=CLIENT',
-    newApi: true,
-    defaultHeaders: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    }
+    newApi: true
   },
   getServerCertificateOnRadius: {
     method: 'get',
     url: '/radiusProfiles/:policyId/certificates?certType=SERVER',
-    newApi: true,
-    defaultHeaders: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    }
-  },
-  getCertificateOnRadius: {
-    method: 'get',
-    url: '/radiusProfiles/:policyId/certificates',
-    newApi: true,
-    defaultHeaders: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    }
+    newApi: true
   }
 }

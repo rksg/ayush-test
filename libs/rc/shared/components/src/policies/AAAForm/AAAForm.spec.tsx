@@ -66,15 +66,13 @@ describe('AAAForm', () => {
         (_, res, ctx) => res(ctx.json(radiusCaRef))
       ),
       rest.get(
-        AaaUrls.getCertificateOnRadius.url,
-        (req, res, ctx) => {
-          req.url.searchParams.set('certType', 'CLIENT')
+        AaaUrls.getClientCertificateOnRadius.url.replace('?certType=CLIENT', ''),
+        (_, res, ctx) => {
           return res(ctx.json(radiusClientCertRef))
         }),
       rest.get(
-        AaaUrls.getCertificateOnRadius.url,
-        (req, res, ctx) => {
-          req.url.searchParams.set('certType', 'SERVER')
+        AaaUrls.getServerCertificateOnRadius.url.replace('?certType=SERVER', ''),
+        (_, res, ctx) => {
           return res(ctx.json(radiusServerCertRef))
         })
     )
