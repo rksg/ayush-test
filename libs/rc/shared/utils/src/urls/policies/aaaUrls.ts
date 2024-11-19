@@ -76,5 +76,41 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1.1+json',
       'Content-Type': 'application/vnd.ruckus.v1.1+json'
     }
+  },
+  getCertificateAuthorityOnRadius: {
+    method: 'get',
+    url: '/radiusProfiles/:policyId/certificateAuthorities',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  },
+  getClientCertificateOnRadius: {
+    method: 'get',
+    url: '/radiusProfiles/:policyId/certificates?certType=CLIENT',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  },
+  getServerCertificateOnRadius: {
+    method: 'get',
+    url: '/radiusProfiles/:policyId/certificates?certType=SERVER',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  },
+  getCertificateOnRadius: {
+    method: 'get',
+    url: '/radiusProfiles/:policyId/certificates',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
   }
 }

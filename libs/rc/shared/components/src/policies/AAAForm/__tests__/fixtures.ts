@@ -112,6 +112,46 @@ export const certList = {
   ]
 }
 
+export const radiusCaRef = {
+  page: 1,
+  totalCount: 1,
+  data: [
+    {
+      id: '1',
+      name: 'CA-1',
+      status: ['VALID']
+    }
+  ]
+}
+
+export const radiusClientCertRef = {
+  page: 1,
+  totalCount: 1,
+  data: [
+    {
+      id: '2',
+      name: 'Client-Cert-1',
+      commonName: 'Client-Cert-1',
+      extendedKeyUsages: [ExtendedKeyUsages.CLIENT_AUTH],
+      status: ['VALID']
+    }
+  ]
+}
+
+export const radiusServerCertRef = {
+  page: 1,
+  totalCount: 1,
+  data: [
+    {
+      id: '1',
+      name: 'Server-Cert-1',
+      commonName: 'Server-Cert-1',
+      extendedKeyUsages: [ExtendedKeyUsages.SERVER_AUTH],
+      status: ['VALID']
+    }
+  ]
+}
+
 export const validateErrorResponse = [{
   code: '',
   message: 'Occured Some Error',
