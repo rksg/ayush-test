@@ -68,14 +68,15 @@ export const ImpactedSwitchesTable = ({
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       key: 'name',
-      render: (_, row: SwitchDetails) => (
-        <TenantLink
-          to={`/devices/switch/${isMLISA ? row.mac : row.mac?.toLowerCase()}/serial/details/${
-            isMLISA ? 'reports': 'overview'}`
-          }>
-          {row.name}
-        </TenantLink>
-      ),
+      render: (_, row: SwitchDetails) => {
+        const macAddress = isMLISA ? row.mac : row.mac?.toLowerCase()
+        const detailsPath = isMLISA ? 'reports' : 'overview'
+        return (
+          <TenantLink to={`/devices/switch/${macAddress}/serial/details/${detailsPath}`}>
+            {row.name}
+          </TenantLink>
+        )
+      },
       sorter: { compare: sortProp('name', defaultSort) }
     },
     {

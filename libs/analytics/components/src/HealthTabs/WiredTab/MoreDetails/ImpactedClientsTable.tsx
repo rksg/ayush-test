@@ -76,19 +76,23 @@ export const ImpactedClientsTable = ({
     }
   })
 
+  const isMLISA = get('IS_MLISA_SA')
   const columns: TableProps<ImpactedClients>['columns'] = [
     {
       title: $t({ defaultMessage: 'Switch Name' }),
       dataIndex: 'switchName',
       key: 'switchName',
-      render: (_, row: ImpactedClients) => (
-        <TenantLink
-          to={`/devices/switch/${row.switchId?.toLowerCase()}/serial/details/${get('IS_MLISA_SA')
-            ? 'reports': 'overview'}`
-          }>
-          {row.switchName}
-        </TenantLink>
-      ),
+      render: (_, row: ImpactedClients) => {
+        const switchId = isMLISA ? row.switchId : row.switchId?.toLowerCase()
+        const detailsPath = isMLISA ? 'reports' : 'overview'
+        return (
+          <TenantLink
+            to={`/devices/switch/${switchId}/serial/details/${detailsPath}`}
+          >
+            {row.switchName}
+          </TenantLink>
+        )
+      },
       sorter: { compare: sortProp('switchName', defaultSort) }
     },
     {
