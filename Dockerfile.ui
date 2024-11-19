@@ -96,19 +96,13 @@ COPY test_cases.table ./test_cases.table
 RUN chmod a+x ./cicd_tools/run_test_cases_tool.sh
 ARG PRECOMMIT=true
 ARG GIT_COMMIT_BRANCH=master
+ARG RUN_COMMAND="node ./node_modules/.bin/nx"
 RUN set -xe && \
-    FILE="/app/test_cases.table" && \
-    RUN_COMMAND="node ./node_modules/.bin/nx" && \
     if [[ "$PRECOMMIT" == "true" || "$GIT_COMMIT_BRANCH" == "master" ]]; then \
         while IFS= read -r nx_param; do \
-            cmd="${RUN_COMMAND} ${nx_param}"; \
-            echo "Executing: $cmd"; \
-            eval "$cmd"; \
-        done < "$FILE"; \
-    else \
-        echo "Conditions not met: Creating /app/coverage instead"; \
-        mkdir -p /app/coverage; \
-    fi
+            ${RUN_COMMAND} ${nx_param}; \
+        done < ./test_cases.table; \
+    else mkdir -p /app/coverage; fi
 
 FROM build-base as acx-ui-sonar-run
 COPY --from=acx-ui-group-test /app/coverage /app/coverage
