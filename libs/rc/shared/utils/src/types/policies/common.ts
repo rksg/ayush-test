@@ -88,5 +88,6 @@ export const downloadCertExtension: Record<CertificateAcceptType, String> = {
   [CertificateAcceptType.DER]: 'der',
   [CertificateAcceptType.PKCS7]: 'p7b',
   [CertificateAcceptType.PKCS8]: 'key',
-  [CertificateAcceptType.PKCS12]: 'p12'
+  [CertificateAcceptType.PKCS12]: 'p12',
+  [CertificateAcceptType.PKCS1]: 'key'
 }

@@ -148,6 +148,18 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
     newApi: true,
     url: '/certificateTemplates/:templateId/certificates/:certificateId/chains'
   },
+  downloadCertificateWithPost: {
+    method: 'post',
+    newApi: true,
+    // eslint-disable-next-line max-len
+    url: '/certificateTemplates/:templateId/certificates/:certificateId'
+  },
+  downloadCertificateInP12: {
+    method: 'post',
+    newApi: true,
+    // eslint-disable-next-line max-len
+    url: '/certificateTemplates/:templateId/certificates/:certificateId'
+  },
   getCertificatesByIdentity: {
     method: 'post',
     newApi: true,
