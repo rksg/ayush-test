@@ -547,7 +547,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         const req = createHttpRequest(adminUrls.refreshLicensesData, params)
         return {
           ...req,
-          body: payload
+          body: enableRbac ? payload : undefined
         }
       },
       invalidatesTags: [{ type: 'License', id: 'LIST' }]

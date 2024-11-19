@@ -34,6 +34,8 @@ import { noDataDisplay }  from '@acx-ui/utils'
 
 import * as UI from './styledComponent'
 
+import { entitlementRefreshPayload } from '.'
+
 const subscriptionTypeFilterOpts = ($t: IntlShape['$t']) => [
   { key: '', value: $t({ defaultMessage: 'All Subscriptions' }) },
   {
@@ -244,7 +246,10 @@ export const RbacSubscriptionTable = () => {
   const refreshFunc = async () => {
     setBannerRefreshLoading(true)
     try {
-      await (refreshEntitlement)({ params }).unwrap()
+      isEntitlementRbacApiEnabled
+        ? refreshEntitlement({ params, payload: entitlementRefreshPayload,
+          enableRbac: isEntitlementRbacApiEnabled }).then()
+        : await (refreshEntitlement)({ params }).unwrap()
       setBannerRefreshLoading(false)
     } catch (error) {
       setBannerRefreshLoading(false)

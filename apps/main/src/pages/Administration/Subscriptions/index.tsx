@@ -80,7 +80,7 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   }
 ]
 
-const entitlementRefreshPayload = {
+export const entitlementRefreshPayload = {
   status: 'synchronize',
   usageType: 'SELF'
 }
