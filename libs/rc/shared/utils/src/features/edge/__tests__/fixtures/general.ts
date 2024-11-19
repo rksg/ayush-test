@@ -127,7 +127,7 @@ export const mockEdgeServiceList = {
       edgeId: '96B341ADD6C16C11ED8B8B000C296600F5',
       serviceName: 'Mock mDNS',
       serviceId: 'edge-mdns-1',
-      serviceType: EdgeServiceTypeEnum.MDNS,
+      serviceType: EdgeServiceTypeEnum.MDNS_PROXY,
       status: 'Up',
       currentVersion: '1.1.1',
       targetVersion: ''

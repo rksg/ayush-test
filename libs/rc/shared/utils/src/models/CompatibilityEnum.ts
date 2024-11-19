@@ -25,7 +25,7 @@ export enum IncompatibilityFeatures {
   PIN = 'PIN',
   PIN_DS = 'PIN_DS',
   PIN_AS = 'PIN_AS',
-  EDGE_MDNS_PROXY = 'MDNS' // edge mDNS
+  EDGE_MDNS_PROXY = 'MDNS_PROXY' // edge mDNS
 }
 
 export enum EdgeCompatibilityFeatureEnum {
@@ -34,5 +34,5 @@ export enum EdgeCompatibilityFeatureEnum {
   HA_AA = 'HA-AA',
   HQOS = 'HQoS',
   DHCP = 'DHCP',
-  MDNS = 'MDNS'
+  MDNS_PROXY = 'MDNS_PROXY'
 }

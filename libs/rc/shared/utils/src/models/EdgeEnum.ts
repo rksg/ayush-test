@@ -52,7 +52,7 @@ export enum EdgeServiceTypeEnum {
   SD_LAN = 'SDLAN',
   SD_LAN_P2 = 'SDLAN_P2',
   MV_SD_LAN = 'MV_SDLAN',
-  MDNS = 'MDNS'
+  MDNS_PROXY = 'MDNS_PROXY'
 }
 
 export enum EdgeServiceStatusEnum {
