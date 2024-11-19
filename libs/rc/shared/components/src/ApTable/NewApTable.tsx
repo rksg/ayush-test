@@ -138,7 +138,8 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       filters
     },
     search: {
-      searchTargetFields: newDefaultApPayload.searchTargetFields
+      searchTargetFields: newDefaultApPayload.searchTargetFields,
+      searchString: ''
     },
     option: { skip: Boolean(props.tableQuery) || isNetworkLoading },
     // enableSelectAllPagesData: ['id', 'name', 'serialNumber', 'apGroupId',
