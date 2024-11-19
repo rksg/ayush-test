@@ -1206,7 +1206,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg,
-            ['AddAaaServer', 'UpdateAaaServer', 'DeleteAaaServer'], () => {
+            [
+              'AddAaaServer',
+              'UpdateAaaServer',
+              'DeleteAaaServer',
+              'UpdateVenueAaaSetting',
+              'UpdateVenueTemplateAaaSetting',
+              'UpdateVenueAaaServer',
+              'UpdateVenueTemplateAaaServer'
+            ], () => {
               api.dispatch(venueApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
             })
         })
@@ -1859,6 +1867,27 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       providesTags: [{ type: 'PropertyUnit', id: 'ID' }]
     }),
+    batchGetPropertyUnitsByIds: build.query<PropertyUnit[], RequestPayload<{ venueId: string, ids: string[] }>>({
+      async queryFn ({ payload }, _queryApi, _extraOptions, fetchWithBQ) {
+        if (!payload?.venueId || !payload?.ids) {
+          return { data: [] }
+        }
+
+        const venueId = payload.venueId
+        const requests = payload.ids.map(unitId => {
+          return fetchWithBQ({ ...createHttpRequest(PropertyUrlsInfo.getUnitById, { venueId, unitId }, customHeaders.v1) })
+        })
+        const result = await Promise.all(requests)
+        const error = result.find(r => r.error)
+
+        if (error) {
+          return { error: error as FetchBaseQueryError }
+        }
+
+        return { data: result.map(r => r.data as PropertyUnit) }
+      },
+      providesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
+    }),
     getPropertyUnitList: build.query<TableResult<PropertyUnit>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
@@ -2104,7 +2133,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]
     }),
 
-    getVenueLanPortWithEthernetPortSettings: build.query<VenueLanPorts[], RequestPayload>({
+    getVenueLanPortWithEthernetSettings: build.query<VenueLanPorts[], RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
 
         const urlsInfo = arg.enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
@@ -2112,16 +2141,18 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
         const venueLanPortsQuery = await fetchWithBQ(createHttpRequest(urlsInfo.getVenueLanPorts, arg.params, apiCustomHeader))
         const venueLanPortSettings = venueLanPortsQuery.data as VenueLanPorts[]
-
         const venueId = arg.params?.venueId
+
         if(venueId) {
           const ethernetPortProfileReq = createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList)
           const ethernetPortProfileQuery = await fetchWithBQ(
-            { ...ethernetPortProfileReq, body: JSON.stringify({
-              filters: {
-                venueIds: [venueId]
-              }
-            }) }
+            { ...ethernetPortProfileReq,
+              body: JSON.stringify({
+                filters: {
+                  venueIds: [venueId]
+                }
+              })
+            }
           )
           const ethernetPortProfiles = (ethernetPortProfileQuery.data as TableResult<EthernetPortProfileViewData>).data
 
@@ -2139,9 +2170,19 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
         return { data: venueLanPortSettings }
       }
-    })
+    }),
 
-
+    updateVenueLanPortSpecificSettings:
+      build.mutation<CommonResult, RequestPayload>({
+        query: ({ params, payload }) => {
+          const req = createHttpRequest(
+            CommonRbacUrlsInfo.updateVenueLanPortSpecificSettings, params)
+          return {
+            ...req,
+            body: JSON.stringify(payload)
+          }
+        }
+      })
   })
 })
 
@@ -2260,6 +2301,7 @@ export const {
   useAddPropertyUnitMutation,
   useGetPropertyUnitByIdQuery,
   useLazyGetPropertyUnitByIdQuery,
+  useLazyBatchGetPropertyUnitsByIdsQuery,
   useGetPropertyUnitListQuery,
   useLazyGetPropertyUnitListQuery,
   useUpdatePropertyUnitMutation,
@@ -2288,7 +2330,9 @@ export const {
   useLazyGetVenueApSmartMonitorQuery,
   useUpdateVenueApSmartMonitorMutation,
 
-  useGetVenueLanPortWithEthernetPortSettingsQuery
+  useGetVenueLanPortWithEthernetSettingsQuery,
+  useLazyGetVenueLanPortWithEthernetSettingsQuery,
+  useUpdateVenueLanPortSpecificSettingsMutation
 } = venueApi
 
 

@@ -1,4 +1,4 @@
-import { DirectoryServerProfileEnum } from '../../models'
+import { DirectoryServerProfileEnum, DirectoryServerDiagnosisCommandEnum } from '../../models'
 
 export interface DirectoryServer {
   id: string
@@ -22,4 +22,14 @@ export interface DirectoryServerViewData {
   port: number
   type: DirectoryServerProfileEnum
   wifiNetworkIds: string[]
+}
+
+export interface DirectoryServerDiagnosisCommand {
+  action: DirectoryServerDiagnosisCommandEnum
+  tlsEnabled: boolean
+  adminDomainName: string
+  adminPassword: string
+  host: string
+  port: number
+  type: DirectoryServerProfileEnum
 }

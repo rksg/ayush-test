@@ -165,8 +165,7 @@ const firmwarePatternForRelease = /(?:[A-Z]{3,})?(?<major>\d{4,})(?<minor>[a-z]*
 
 function parseFirmwareVersion (fwString: string): VersionMap {
   // sanitize
-  fwString = fwString.replace('.bin', '')
-  fwString = fwString.replace('ufi', '')
+  fwString = fwString.replace(/\.bin|ufi|\./g, '')
 
   const matcher = fwString.match(firmwarePattern)?.groups
   const matcherForRelease = fwString.match(firmwarePatternForRelease)?.groups

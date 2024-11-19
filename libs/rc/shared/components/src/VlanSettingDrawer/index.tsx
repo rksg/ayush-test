@@ -21,7 +21,7 @@ import {
   SwitchSlot,
   StackMember,
   PortStatusMessages,
-  validateVlanName,
+  validateVlanExcludingReserved,
   validateDuplicateVlanId,
   validateVlanNameWithoutDVlans,
   Vlan
@@ -39,6 +39,11 @@ export interface PortsUsedByProps {
   untagged?: Record<string, number>
 }
 
+export interface GptObjectProps {
+  vlanId: string,
+  vlanName: string
+}
+
 export interface VlanSettingDrawerProps {
   vlan?: Vlan
   setVlan: (r: Vlan) => void
@@ -51,14 +56,16 @@ export interface VlanSettingDrawerProps {
   switchFamilyModel?: string
   portSlotsData?: SwitchSlot[][]
   portsUsedBy?: PortsUsedByProps
-  stackMember?: StackMember[]
+  stackMember?: StackMember[],
+  gptObject?: GptObjectProps
 }
 
 export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
   const { $t } = useIntl()
   const { vlan, setVlan, visible, setVisible, editMode,
     vlansList, isProfileLevel, switchFamilyModel,
-    enablePortModelConfigure = true, portSlotsData, portsUsedBy, stackMember } = props
+    enablePortModelConfigure = true, portSlotsData, portsUsedBy,
+    stackMember, gptObject } = props
   const [form] = Form.useForm<Vlan>()
 
   const onClose = () => {
@@ -88,6 +95,7 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
           portSlotsData={portSlotsData}
           portsUsedBy={portsUsedBy}
           stackMember={stackMember}
+          gptObject={gptObject}
         />
       }
       footer={
@@ -125,13 +133,15 @@ interface VlanSettingFormProps {
   enablePortModelConfigure?: boolean
   portSlotsData?: SwitchSlot[][]
   portsUsedBy?: PortsUsedByProps
-  stackMember?: StackMember[]
+  stackMember?: StackMember[],
+  gptObject?: GptObjectProps
 }
 
 function VlanSettingForm (props: VlanSettingFormProps) {
   const { $t } = useIntl()
   const { Option } = Select
   const [openModal, setOpenModal] = useState(false)
+  const [vlanId, setVlanId] = useState(undefined)
   const [ipv4DhcpSnooping, setIpv4DhcpSnooping] = useState(false)
   const [arpInspection, setArpInspection] = useState(false)
   const [multicastVersionDisabled, setMulticastVersionDisabled] = useState(true)
@@ -141,10 +151,11 @@ function VlanSettingForm (props: VlanSettingFormProps) {
 
   const { form, vlan, setVlan, vlansList, isProfileLevel, editMode,
     switchFamilyModel, portSlotsData, enablePortModelConfigure = true,
-    portsUsedBy, stackMember } = props
+    portsUsedBy, stackMember, gptObject } = props
 
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
   const isSwitchLevel = !!switchFamilyModel
+  const isRuckusAiMode = !_.isEmpty(gptObject)
 
   const multicastVersionEnabled = () : boolean => {
     const igmpSnooping = form.getFieldValue('igmpSnooping')
@@ -223,6 +234,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         setSelected({
           ...selectedRows[0]
         })
+        setVlanId(form.getFieldValue('vlanId'))
         setOpenModal(true)
       }
     },
@@ -305,23 +317,29 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           label={$t({ defaultMessage: 'VLAN ID' })}
           name='vlanId'
           validateFirst
+          initialValue={isRuckusAiMode ? gptObject?.vlanId : ''}
           rules={[
             { required: true },
-            { validator: (_, value) => validateVlanName(value) },
-            { validator: (_, value) => validateDuplicateVlanId(
-              value, vlansList.filter(v => editMode ? v.vlanId !== vlan?.vlanId : v)
-            ) }
+            { validator: (_, value) => validateVlanExcludingReserved(value) },
+            {
+              validator: (_, value) => {
+                if (isRuckusAiMode) {return Promise.resolve()}
+                return validateDuplicateVlanId(
+                  value, vlansList.filter(v => editMode ? v.vlanId !== vlan?.vlanId : v)
+                )
+              }
+            }
           ]}
-          children={<Input style={{ width: '400px' }} />}
+          children={<Input style={{ width: '400px' }} disabled={isRuckusAiMode} />}
         />
         <Form.Item
           name='vlanName'
           label={$t({ defaultMessage: 'VLAN Name' })}
-          initialValue={''}
+          initialValue={isRuckusAiMode ? gptObject?.vlanName : ''}
           rules={[
             { validator: (_, value) => validateVlanNameWithoutDVlans(value) }
           ]}
-          children={<Input style={{ width: '400px' }} maxLength={32} />}
+          children={<Input style={{ width: '400px' }} maxLength={32} disabled={isRuckusAiMode} />}
         />
         <UI.FieldLabel width='130px'>
           { $t({ defaultMessage: 'IPv4 DHCP Snooping' }) }
@@ -420,6 +438,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
               disabled={isSwitchLevel && ruleList?.length > 0}
               onClick={() => {
                 setSelected(undefined)
+                setVlanId(form.getFieldValue('vlanId'))
                 setOpenModal(true)
               }}
             >
@@ -446,6 +465,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           dataSource={ruleList || undefined}
         />
         <VlanPortsModal
+          vlanId={vlanId}
           open={openModal}
           editRecord={selected}
           currrentRecords={ruleList}

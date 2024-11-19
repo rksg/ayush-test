@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { PageHeader, GridRow, GridCol, Descriptions, Loader, Subtitle, Button }        from '@acx-ui/components'
@@ -7,9 +8,11 @@ import { Features, useIsSplitOn }                                               
 import { useGetSwitchClientDetailsQuery, useLazyApListQuery }                          from '@acx-ui/rc/services'
 import { exportCSV, getOsTypeIcon, getClientIpAddr, SwitchClient, SWITCH_CLIENT_TYPE } from '@acx-ui/rc/utils'
 import { useParams, TenantLink }                                                       from '@acx-ui/react-router-dom'
-import { getCurrentDate }                                                              from '@acx-ui/utils'
+import { getCurrentDate, noDataDisplay }                                               from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
+
+import { getClientAuthType } from './'
 
 interface Client {
     title: string | JSX.Element,
@@ -23,6 +26,7 @@ export function SwitchClientDetails () {
   const [clientDetails, setClientDetails] = useState({} as SwitchClient)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
 
   const { data, isLoading } = useGetSwitchClientDetailsQuery({
     params,
@@ -55,7 +59,8 @@ export function SwitchClientDetails () {
         transformedPort: ` ${data?.switchPort} `,
         ...data,
         clientName: data?.dhcpClientHostName || data?.clientName,
-        clientType: data?.dhcpClientDeviceTypeName || data?.clientType
+        clientType: data?.dhcpClientDeviceTypeName || data?.clientType,
+        clientAuthType: getClientAuthType(data?.clientAuthType)
       } as SwitchClient)
     }
   }, [data])
@@ -70,6 +75,7 @@ export function SwitchClientDetails () {
       ['clientMac', $t({ defaultMessage: 'Mac Address' })],
       ['dhcpClientOsVendorName', $t({ defaultMessage: 'OS' })],
       ['clientType', $t({ defaultMessage: 'Device Type' })],
+      ['clientAuthType', $t({ defaultMessage: 'Authentication Type' })],
       ['dhcpClientModelName', $t({ defaultMessage: 'Model Name' })],
       ['clientName', $t({ defaultMessage: 'Hostname' })],
       ['switchName', $t({ defaultMessage: 'Switch Name' })],
@@ -93,7 +99,12 @@ export function SwitchClientDetails () {
     const exportClient: any = Object()
     const statusLabel = $t({ defaultMessage: 'Status' })
     Object.assign(exportClient, {
-      [statusLabel]: $t({ defaultMessage: 'Connected' }), ...clientDetails
+      [statusLabel]: $t({ defaultMessage: 'Connected' }), ...({
+        ..._.omit(clientDetails, 'clientAuthType'),
+        ...( clientDetails?.clientAuthType !== noDataDisplay ? {
+          clientAuthType: clientDetails?.clientAuthType
+        } : {})
+      })
     })
     for (const key of ClientCSVIgnoreProperty) {
       delete exportClient[key]
@@ -137,6 +148,10 @@ export function SwitchClientDetails () {
       title: $t({ defaultMessage: 'Device Type' }),
       value: getDeviceType(clientDetails)
     },
+    ...(isSwitchFlexAuthEnabled ? [{
+      title: $t({ defaultMessage: 'Authentication Type' }),
+      value: clientDetails.clientAuthType || ''
+    }] : []),
     {
       title: <span>
         {$t({ defaultMessage: 'Description' })}

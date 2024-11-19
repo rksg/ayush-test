@@ -1031,11 +1031,11 @@ export function validateVlanId (vlanId: string){
   return Promise.resolve()
 }
 
-export function validateVlanName (vlanName: string){
+export function validateVlanExcludingReserved (vlanName: string){
   const { $t } = getIntl()
-  const vlanRegexp = new RegExp('^([1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-7][0-9]|408[0-6]|4088|4089|4095)$')
+  const vlanRegexp = new RegExp('^([1-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-3][0-9]{3}|40[0-7][0-9]|408[0-6]|4088|4089|4093|4095)$')
   if (!vlanRegexp.test(vlanName)) {
-    return Promise.reject($t(validationMessages.vlanNameInvalid))
+    return Promise.reject($t(validationMessages.vlanInvalidExclReserved))
   }
   return Promise.resolve()
 }
@@ -1160,10 +1160,11 @@ export function ipv6RegExp (value: string) {
   return Promise.resolve()
 }
 
-export function servicePolicyNameRegExp (value: string) {
+export function servicePolicyNameRegExp (value: string, maxLength: number=32) {
   const { $t } = getIntl()
+
   // regex from service and policy backend
-  const re = new RegExp('(?=^((?!(`|\\$\\()).){2,32}$)^(\\S.*\\S)$')
+  const re = new RegExp(`(?=^((?!(\`|\\$\\()).){2,${maxLength}}$)^(\\S.*\\S)$`)
 
   // make sure there is no special character in value
   if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {
@@ -1210,4 +1211,3 @@ export function guestPasswordValidator (value: string) {
   return Promise.resolve()
 
 }
-

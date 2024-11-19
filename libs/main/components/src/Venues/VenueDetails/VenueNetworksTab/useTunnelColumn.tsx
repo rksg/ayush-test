@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { find }    from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Table }                  from '@acx-ui/components'
@@ -14,7 +15,7 @@ import {
   getNetworkTunnelType,
   tansformSdLanScopedVenueMap,
   useDeactivateNetworkTunnelByType,
-  useEdgePinByVenue,
+  useEdgeAllPinData,
   useGetSoftGreScopeVenueMap,
   useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
@@ -23,7 +24,7 @@ import { EdgeMvSdLanViewData, Network, NetworkTypeEnum, useConfigTemplate, Venue
 
 import { NetworkTunnelButton } from './NetworkTunnelButton'
 
-interface useTunnelColumnProps {
+export interface useTunnelColumnProps {
   venueId: string
   sdLanScopedNetworks: SdLanScopedVenueNetworksData
   setTunnelModalState: (state: NetworkTunnelActionModalProps) => void
@@ -40,7 +41,9 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const softGreVenueMap = useGetSoftGreScopeVenueMap()
   // eslint-disable-next-line max-len
   const sdLanVenueMap = tansformSdLanScopedVenueMap(sdLanScopedNetworks.sdLans as EdgeMvSdLanViewData[])
-  const venuePinInfo = useEdgePinByVenue(venueId)
+  const allPins = useEdgeAllPinData()
+  const venuePinInfo = find(allPins, p => p.venueId === venueId)
+  const pinNetworkIds = allPins?.flatMap(p => p.tunneledWlans?.map(t => t.networkId))
 
   const { venueInfo } = useVenuesListQuery({ payload: {
     fields: ['name', 'id'],
@@ -52,7 +55,10 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
     })
   })
 
-  const handleClickNetworkTunnel = (currentVenue: Venue, currentNetwork: Network) => {
+  const handleClickNetworkTunnel = (
+    currentVenue: Venue, currentNetwork: Network,
+    isPinNetwork?: boolean
+  ) => {
     // eslint-disable-next-line max-len
     const cachedSoftGre = softGreVenueMap[currentVenue.id]?.filter(sg => sg.networkIds.includes(currentNetwork.id))
     setTunnelModalState({
@@ -63,6 +69,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
         venueId: currentVenue.id,
         venueName: currentVenue.name
       },
+      isPinNetwork,
       cachedSoftGre: cachedSoftGre ?? []
     } as NetworkTunnelActionModalProps)
   }
@@ -110,6 +117,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
 
             // eslint-disable-next-line max-len
             const tunnelType = getNetworkTunnelType(networkInfo, venueSoftGre, venueSdLanInfo, venuePinInfo)
+            const isPinNetwork = !!pinNetworkIds?.includes(row.id)
 
             return row.activated?.isActivated
               ? <NetworkTunnelSwitchBtn
@@ -122,7 +130,8 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
                       name: venueInfo?.name,
                       activated: { isActivated: row.activated?.isActivated }
                     } as Venue,
-                    row)
+                    row,
+                    isPinNetwork)
                   } else {
                     const formValues = {
                       tunnelType: NetworkTunnelTypeEnum.None,

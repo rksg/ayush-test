@@ -26,7 +26,8 @@ import {
   convertInputToUppercase,
   isL3FunctionSupported,
   isFirmwareVersionAbove10,
-  isFirmwareSupportAdminPassword
+  isFirmwareSupportAdminPassword,
+  isFirmwareVersionAbove10010f
 } from '.'
 
 const switchRow ={
@@ -433,5 +434,18 @@ describe('switch.utils', () => {
       const result = isL3FunctionSupported(SWITCH_TYPE.SWITCH)
       expect(result).toBe(false)
     })
+  })
+})
+
+describe('Test isFirmwareVersionAbove10010f function', () => {
+  it('should render correctly', async () => {
+    expect(isFirmwareVersionAbove10010f('SPR09010f')).toBe(false)
+    expect(isFirmwareVersionAbove10010f('SPR10010c_cd1')).toBe(false)
+    expect(isFirmwareVersionAbove10010f('SPR10020_rc35')).toBe(false)
+    expect(isFirmwareVersionAbove10010f('SPR10020a_rc35')).toBe(false)
+
+    expect(isFirmwareVersionAbove10010f('10010f_b467')).toBe(true)
+    expect(isFirmwareVersionAbove10010f('SPR10010f_b467')).toBe(true)
+    expect(isFirmwareVersionAbove10010f('SPR10020b_rc35')).toBe(true)
   })
 })

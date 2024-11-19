@@ -47,6 +47,7 @@ export default function SelectPolicyForm () {
   const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
+  const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   // eslint-disable-next-line
   const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
@@ -73,6 +74,8 @@ export default function SelectPolicyForm () {
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
 
   const navigateToCreatePolicy = async function (data: { policyType: PolicyType }) {
     const policyCreatePath = getPolicyRoutePath({
@@ -152,6 +155,16 @@ export default function SelectPolicyForm () {
       type: PolicyType.HQOS_BANDWIDTH,
       categories: [RadioCardCategory.EDGE],
       disabled: !isEdgeQosEnabled
+    },
+    {
+      type: PolicyType.FLEX_AUTH,
+      categories: [RadioCardCategory.SWITCH],
+      disabled: !isSwitchFlexAuthEnabled
+    },
+    {
+      type: PolicyType.DIRECTORY_SERVER,
+      categories: [RadioCardCategory.WIFI],
+      disabled: !(isDirectoryServerEnabled && hasPermission({ scopes: [WifiScopes.CREATE] }))
     }
   ]
 

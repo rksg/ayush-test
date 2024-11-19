@@ -13,6 +13,7 @@ export const mockEthernetPortProfileId3 = mockEthernetPortProfilePrefix + '3'
 export const mockEthernetPortProfileId4 = mockEthernetPortProfilePrefix + '4'
 export const mockEthernetPortProfileId5 = mockEthernetPortProfilePrefix + '5'
 export const mockEthernetPortProfileId6 = mockEthernetPortProfilePrefix + '6'
+export const mockEthernetPortProfileId7 = mockEthernetPortProfilePrefix + '7'
 export const mockDefaultTrunkProfileId = 'default_trunk'
 export const mockAccountingRadiusId = '__Accounting_Radius_ID_1__'
 export const mockAccountingRadiusId2 = '__Accounting_Radius_ID_2__'
@@ -147,7 +148,6 @@ export const dummyEthernetPortProfileTrunk = {
   // authType: 'DISABLED',
   authType: EthernetPortAuthType.DISABLED,
   description: 'dummy',
-  // type: 'TRUNK',
   type: EthernetPortType.TRUNK,
   untagId: 1,
   vlanMembers: '1-4094',
@@ -166,7 +166,6 @@ export const dummyEthernetPortProfileTrunkSupplicant = {
   vlanMembers: '1-4094',
   isDefault: false,
   supplicantAuthenticationOptions: {
-    // type: 'MAC_AUTH'
     type: EthernetPortSupplicantType.MAC_AUTH
   }
 }
@@ -186,6 +185,21 @@ export const dummyEthernetPortProfileAccessPortBased = {
   vlanMembers: '1',
   apSerialNumbers: [mockApSerialNumber],
   venueIds: [mockVenueId]
+}
+
+export const dummyEthernetPortProfileDVlan = {
+  id: mockEthernetPortProfileId7,
+  name: mockEthernetPortProfileId7,
+  type: EthernetPortType.ACCESS,
+  authType: EthernetPortAuthType.MAC_BASED,
+  untagId: 1,
+  vlanMembers: '1',
+  isDefault: false,
+  enableAuthProxy: false,
+  enableAccountingProxy: true,
+  bypassMacAddressAuthentication: true,
+  dynamicVlanEnabled: true,
+  unauthenticatedGuestVlan: 99
 }
 
 export const dummyDefaultEthernetPortProfileTrunk = {

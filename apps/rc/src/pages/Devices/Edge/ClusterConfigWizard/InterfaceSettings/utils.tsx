@@ -3,19 +3,20 @@ import _, { cloneDeep }      from 'lodash'
 import moment                from 'moment-timezone'
 import { defineMessage }     from 'react-intl'
 
-import type { CompatibilityNodeError, SingleNodeDetailsField, VipConfigType } from '@acx-ui/rc/components'
+import type { CompatibilityNodeError, SingleNodeDetailsField, VipConfigType, VipInterface } from '@acx-ui/rc/components'
 import {
   ClusterHaFallbackScheduleTypeEnum,
   ClusterHaLoadDistributionEnum,
+  ClusterHighAvailabilityModeEnum,
   ClusterNetworkSettings,
   EdgeClusterStatus,
-  EdgePortInfo,
   EdgePortTypeEnum,
   EdgeSerialNumber,
   VirtualIpSetting
 } from '@acx-ui/rc/utils'
 
-import { defaultHaTimeoutValue } from '../../EditEdgeCluster/VirtualIp'
+import { defaultHaTimeoutValue }        from '../../EditEdgeCluster/VirtualIp'
+import { SubInterfaceSettingsFormType } from '../SubInterfaceSettings/types'
 
 import { CompatibilityCheckResult, InterfacePortFormCompatibility, InterfaceSettingsFormType } from './types'
 
@@ -62,54 +63,65 @@ export const transformFromApiToFormData =
    } as InterfaceSettingsFormType
  }
 
-export const getLanInterfaces = (
+export const getAvailableVipInterfaces = (
   lagdata?: InterfaceSettingsFormType['lagSettings'],
   portData?: InterfaceSettingsFormType['portSettings'],
+  subInterfaces?: SubInterfaceSettingsFormType,
   clusterInfo?: EdgeClusterStatus
 ) => {
-  const result = {} as { [key: string]: EdgePortInfo[] }
+  const result = {} as { [key: string]: VipInterface[] }
   const edgeNodeList = clusterInfo?.edgeList ?? []
 
   for(let edgeNode of edgeNodeList) {
-    const lanLags = lagdata?.find(item => item.serialNumber === edgeNode.serialNumber)
+    const allLags = lagdata?.find(item => item.serialNumber === edgeNode.serialNumber)
+    const lanLags = allLags
       ?.lags.filter(item => item.portType === EdgePortTypeEnum.LAN)
       .map(item => ({
-        id: `${item.id}`,
-        serialNumber: edgeNode.serialNumber,
-        portName: `lag${item.id}`,
+        interfaceName: `lag${item.id}`,
         ipMode: item.ipMode,
         ip: item.ip ?? '',
-        subnet: item.subnet ?? '',
-        mac: '',
-        portType: item.portType,
-        isCorePort: item.corePortEnabled,
-        isLagMember: false,
-        isLag: true,
-        portEnabled: item.lagEnabled
+        subnet: item.subnet ?? ''
       })) ?? []
+
+    const lagSubInterfaces = subInterfaces?.lagSubInterfaces?.[edgeNode.serialNumber]
+      ? Object.entries(subInterfaces.lagSubInterfaces[edgeNode.serialNumber])
+        .filter(([lagId]) => allLags?.lags.some(lag => lag.id.toString() === lagId))
+        .map(([, subInterfaces]) => subInterfaces)
+        .flat()
+        .map(subInterface => subInterface as VipInterface) : []
 
     const lanPorts = portData?.[edgeNode.serialNumber] ?
       Object.values(portData[edgeNode.serialNumber])
         .flat().filter(item => item.portType === EdgePortTypeEnum.LAN)
         .map(item => ({
-          id: item.id,
-          serialNumber: edgeNode.serialNumber,
-          portName: item.interfaceName ?? '',
+          interfaceName: item.interfaceName ?? '',
           ipMode: item.ipMode,
           ip: item.ip,
-          subnet: item.subnet,
-          mac: item.mac,
-          portType: item.portType,
-          isCorePort: item.corePortEnabled,
-          isLagMember: false,
-          isLag: false,
-          portEnabled: item.enabled
+          subnet: item.subnet
         })) : []
+
+    const lagMembers = allLags?.lags
+      .flatMap(lag => lag.lagMembers.map(member => member.portId))
+    const nonLagPorts = portData?.[edgeNode.serialNumber]
+      ? Object.values(portData[edgeNode.serialNumber])
+        .flat()
+        .filter(item => !lagMembers?.includes(item.id))
+      : []
+    const nonLagPortSubInterfaces = subInterfaces?.portSubInterfaces?.[edgeNode.serialNumber]
+      ? Object.entries(subInterfaces.portSubInterfaces[edgeNode.serialNumber])
+        .filter(([portId]) => nonLagPorts.some(port => port.id === portId))
+        .map(([, subInterfaces]) => subInterfaces)
+        .flat()
+        .map(subInterface => subInterface as VipInterface) : []
 
     result[edgeNode.serialNumber] = [
       ...lanLags,
-      ...lanPorts
-    ]
+      ...lanPorts,
+      ...lagSubInterfaces,
+      ...nonLagPortSubInterfaces
+    ].sort((vif1, vif2) => {
+      return interfaceNameComparator(vif1.interfaceName, vif2.interfaceName)
+    })
   }
 
   return result
@@ -328,8 +340,10 @@ export const lagSettingsCompatibleCheck = (
   return getCompatibleCheckResult(checkResult)
 }
 
-export const transformFromFormToApiData =
-(data: InterfaceSettingsFormType): ClusterNetworkSettings => {
+export const transformFromFormToApiData = (
+  data: InterfaceSettingsFormType,
+  highAvailabilityMode?: ClusterHighAvailabilityModeEnum
+): ClusterNetworkSettings => {
   const portSettings = []
   for(let [k, v] of Object.entries(data.portSettings)) {
     portSettings.push({
@@ -374,13 +388,18 @@ export const transformFromFormToApiData =
         break
     }
   }
+
+  const shouldPatchVip = highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
+  const shouldPatchHaSetting = fallbackSettings &&
+    highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
+
   return {
     lagSettings: data.lagSettings,
     portSettings,
-    ...(virtualIpSettings.length > 0 ? {
+    ...(shouldPatchVip ? {
       virtualIpSettings
     } : {}),
-    ...(fallbackSettings ? {
+    ...(shouldPatchHaSetting ? {
       highAvailabilitySettings: {
         fallbackSettings,
         loadDistribution: data.loadDistribution
@@ -403,4 +422,31 @@ export const loadDistributions = {
   [ClusterHaLoadDistributionEnum.RANDOM]: defineMessage({ defaultMessage: 'Random distribution' }),
   // eslint-disable-next-line max-len
   [ClusterHaLoadDistributionEnum.AP_GROUP]: defineMessage({ defaultMessage: 'Per AP group distribution' })
+}
+
+const splitInterfaceName = (ifName: string) => {
+  return {
+    isLag: ifName.startsWith('lag'),
+    ifNameSegments: ifName.replace('port', '').replace('lag', '').split('.').map(Number)
+  }
+}
+
+export const interfaceNameComparator =
+(ifName1: string, ifName2: string): number => {
+  const splitPort1 = splitInterfaceName(ifName1)
+  const splitPort2 = splitInterfaceName(ifName2)
+
+  if (splitPort1.isLag !== splitPort2.isLag) {
+    return splitPort1.isLag ? -1 : 1
+  }
+
+  for (let i = 0; i < 2; i++) {
+    const segmentA = splitPort1.ifNameSegments[i] || 0
+    const segmentB = splitPort2.ifNameSegments[i] || 0
+
+    if (segmentA !== segmentB) {
+      return segmentA - segmentB
+    }
+  }
+  return 0
 }

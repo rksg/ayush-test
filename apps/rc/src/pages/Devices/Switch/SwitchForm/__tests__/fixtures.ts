@@ -35,23 +35,27 @@ export const swtichListResponse = {
       serialNumber: 'FEK0000S0A0',
       name: '7150stack',
       configReady: true,
-      syncDataEndTime: ''
+      syncDataEndTime: '',
+      venueId: 'venue-id'
     },
     {
       serialNumber: 'FEK0010S0A0',
       name: '7150stack',
       configReady: true,
-      syncDataEndTime: ''
+      syncDataEndTime: '',
+      venueId: 'venue-id'
     },
     {
       serialNumber: 'FEK0040S0A0',
       configReady: true,
-      syncDataEndTime: ''
+      syncDataEndTime: '',
+      venueId: 'venue-id'
     },
     {
       id: 'FEK0030S0A0',
       configReady: true,
-      syncDataEndTime: ''
+      syncDataEndTime: '',
+      venueId: 'venue-id'
     }
   ]
 }

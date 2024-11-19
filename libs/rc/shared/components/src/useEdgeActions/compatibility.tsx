@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { UseLazyQuery }    from '@reduxjs/toolkit/dist/query/react/buildHooks'
 import { QueryDefinition } from '@reduxjs/toolkit/query'
@@ -9,10 +9,12 @@ import { useIsSplitOn, Features }           from '@acx-ui/feature-toggle'
 import {
   useLazyGetApFeatureSetsQuery,
   useLazyGetEdgeFeatureSetsQuery,
+  useLazyGetMdnsEdgeCompatibilitiesQuery,
   useLazyGetPinApCompatibilitiesQuery,
   useLazyGetPinEdgeCompatibilitiesQuery,
   useLazyGetSdLanApCompatibilitiesQuery,
   useLazyGetSdLanEdgeCompatibilitiesQuery,
+  useLazyGetSwitchFeatureSetsQuery,
   useLazyGetVenueEdgeCompatibilitiesQuery
 } from '@acx-ui/rc/services'
 import {
@@ -29,7 +31,8 @@ import {
   EntityCompatibility,
   getFeaturesIncompatibleDetailData,
   IncompatibilityFeatures,
-  isApRelatedEdgeFeature
+  isApRelatedEdgeFeature,
+  isSwitchRelatedEdgeFeature
 } from '@acx-ui/rc/utils'
 
 import { EdgeCompatibilityDrawerProps, EdgeCompatibilityType } from '../Compatibility/EdgeCompatibilityDrawer'
@@ -54,10 +57,22 @@ export const useEdgePinsCompatibilityData = (serviceIds: string[], skip: boolean
     serviceIds: serviceIds,
     skip: skip,
     useEdgeSvcPcyCompatibleQuery: useLazyGetPinEdgeCompatibilitiesQuery,
-    useEdgeSvcPcyApCompatibleQuery: isApCompatibilitiesByModel ? useLazyGetSdLanApCompatibilitiesQuery : undefined
+    useEdgeSvcPcyApCompatibleQuery: isApCompatibilitiesByModel ? useLazyGetPinApCompatibilitiesQuery : undefined
   })
   return results as {
     compatibilities: Record<string, EdgeServiceCompatibility[] | EdgeServiceApCompatibility[]> | undefined
+    isLoading: boolean
+  }
+}
+
+export const useEdgeMdnssCompatibilityData = (serviceIds: string[], skip: boolean = false) => {
+  const results = useEdgeSvcsPcysCompatibilitiesData({
+    serviceIds: serviceIds,
+    skip: skip,
+    useEdgeSvcPcyCompatibleQuery: useLazyGetMdnsEdgeCompatibilitiesQuery
+  })
+  return results as {
+    compatibilities: Record<string, EdgeServiceCompatibility[]> | undefined
     isLoading: boolean
   }
 }
@@ -118,6 +133,23 @@ export const useEdgePinDetailsCompatibilitiesData = (props: {
   return { compatibilities: transformed, isLoading: results.isLoading }
 }
 
+export const useEdgeMdnsDetailsCompatibilitiesData = (props: {
+  serviceId: string,
+  skip?: boolean,
+}) => {
+  const results = useEdgeSvcsPcysCompatibilitiesData({
+    serviceIds: props.serviceId,
+    skip: props.skip,
+    useEdgeSvcPcyCompatibleQuery: useLazyGetMdnsEdgeCompatibilitiesQuery
+  })
+
+  let transformed: Record<string, ApCompatibility> = {}
+  if (isNil(results.compatibilities)) return { compatibilities: transformed, isLoading: results.isLoading }
+  transformed = getFeaturesIncompatibleDetailData((results.compatibilities[CompatibilityDeviceEnum.EDGE] as EdgeServiceCompatibility[])[0])
+
+  return { compatibilities: transformed, isLoading: results.isLoading }
+}
+
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DefaultQueryDefinition<ResultType> = QueryDefinition<any, any, any, ResultType>
@@ -150,9 +182,9 @@ export const useEdgeSvcsPcysCompatibilitiesData = (props: {
       results.forEach((resultItem, index) => {
         if (resultItem.status === 'fulfilled') {
           if(index === 0) {
-            deviceTypeResultMap[CompatibilityDeviceEnum.EDGE] = (resultItem.value as EdgeServiceCompatibilitiesResponse).compatibilities
+            deviceTypeResultMap[CompatibilityDeviceEnum.EDGE] = (resultItem.value as EdgeServiceCompatibilitiesResponse)?.compatibilities ?? []
           } else {
-            deviceTypeResultMap[CompatibilityDeviceEnum.AP] = (resultItem.value as EdgeSdLanApCompatibilitiesResponse).compatibilities
+            deviceTypeResultMap[CompatibilityDeviceEnum.AP] = (resultItem.value as EdgeSdLanApCompatibilitiesResponse)?.compatibilities ?? []
           }
         }
       })
@@ -193,9 +225,10 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
   const [ data, setData ] = useState<Record<string, ApCompatibility>>({})
 
   const [ getEdgeFeatureSets ] = useLazyGetEdgeFeatureSetsQuery()
+  const [ getSwitchFeatureSets ] = useLazyGetSwitchFeatureSetsQuery()
   const [ getApFeatureSets ] = useLazyGetApFeatureSetsQuery()
 
-  const fetchEdgeCompatibilities = async () => {
+  const fetchEdgeCompatibilities = useCallback(async () => {
     try {
       setIsInitializing(true)
 
@@ -211,6 +244,18 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
         incompatible: 0,
         total: 0
       } as ApCompatibility
+
+      if (isSwitchRelatedEdgeFeature(featureName)) {
+        const switchFeature = await getSwitchFeatureSets({
+          payload: { filter: { featureNames: { field: 'GROUP', values: ['PIN'] } } }
+        }).unwrap()
+        deviceTypeResultMap[CompatibilityDeviceEnum.SWITCH] = {
+          id: 'switch_feature_requirements',
+          incompatibleFeatures: switchFeature.featureSets,
+          incompatible: 0,
+          total: 0
+        } as ApCompatibility
+      }
 
       if (isApRelatedEdgeFeature(featureName)) {
         const wifiFeature = await getApFeatureSets({
@@ -231,12 +276,12 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
       console.error('EdgeCompatibilityDrawer api error:', e)
       setIsInitializing(false)
     }
-  }
+  }, [featureName, getApFeatureSets, getEdgeFeatureSets, getSwitchFeatureSets])
 
   useEffect(() => {
     if (!skip)
       fetchEdgeCompatibilities()
-  }, [skip])
+  }, [fetchEdgeCompatibilities, skip])
 
   return useMemo(() => ({ featureInfos: data, isLoading: isInitializing }),
     [data, isInitializing])
@@ -263,7 +308,7 @@ export const useVenueEdgeCompatibilitiesData = (props: Omit<EdgeCompatibilityDra
           } }
         }).unwrap()
 
-        edgeCompatibilitiesResponse = sdLanToApCompatibilityData(venueEdgeCompatibilities.compatibilities)
+        edgeCompatibilitiesResponse = sdLanToApCompatibilityData(venueEdgeCompatibilities.compatibilities ?? [])
       } else if (type === EdgeCompatibilityType.ALONE) {
         const edgeFeatureSets = await getEdgeFeatureSets({
           payload: { filters: { featureNames } }

@@ -11,7 +11,7 @@ import {
   useGetPersonaGroupByIdQuery,
   useImportPersonasMutation,
   useLazyDownloadPersonasQuery,
-  useLazyGetPropertyUnitByIdQuery,
+  useLazyBatchGetPropertyUnitsByIdsQuery,
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
 import { FILTER, Persona, PersonaErrorResponse, PersonaGroup, SEARCH } from '@acx-ui/rc/utils'
@@ -203,7 +203,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
     { params: { groupId: personaGroupId } },
     { skip: !personaGroupId }
   )
-  const [getUnitById] = useLazyGetPropertyUnitByIdQuery()
+  const [getUnitsByIds] = useLazyBatchGetPropertyUnitsByIdsQuery()
   const { setIdentitiesCount } = useContext(IdentitiesContext)
   const { customHeaders } = usePersonaAsyncHeaders()
   const columns = useColumns(personaGroupQuery?.data, colProps, unitPool, venueId)
@@ -211,27 +211,33 @@ export function BasePersonaTable (props: PersonaTableProps) {
   const personaListQuery = usePersonaListQuery({ personaGroupId, settingsId })
 
   useEffect(() => {
-    if (!propertyEnabled || personaListQuery.isLoading || personaGroupQuery.isLoading) return
+    if (!propertyEnabled || personaGroupQuery.isLoading) return
     const venueId = personaGroupQuery.data?.propertyId
     if (!venueId) return
 
-    const pool = new Map()
+    setVenueId(venueId)
+  }, [personaGroupQuery.data])
+
+  useEffect(() => {
+    if (!venueId || !personaListQuery.data?.data) return
+    const unitIds: string[] = []
 
     personaListQuery.data?.data.forEach(persona => {
-      if (persona.identityId) {
-        const unitId = persona.identityId
-        getUnitById({ params: { venueId, unitId } })
-          .then(result => {
-            if (result.data) {
-              pool.set(unitId, result.data.name)
-            }
-          })
+      const unitId = persona.identityId
+      if (unitId && !unitPool.has(unitId)) {
+        unitIds.push(unitId)
       }
     })
-
-    setVenueId(venueId)
-    setUnitPool(pool)
-  }, [personaListQuery.isLoading, personaGroupQuery.data])
+    getUnitsByIds({ payload: { venueId, ids: unitIds } })
+      .then(units => {
+        if (units.data) {
+          units.data.forEach(unit => {
+            unitPool.set(unit.id, unit.name)
+          })
+          setUnitPool(unitPool)
+        }
+      })
+  }, [venueId, personaListQuery.data?.data])
 
   const toastDetailErrorMessage = (error: PersonaErrorResponse) => {
     const hasSubMessages = error.data?.subErrors

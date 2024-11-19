@@ -42,7 +42,8 @@ import {
   WifiCallingConfigureForm,
   WifiCallingDetailView,
   WifiCallingForm,
-  WifiOperatorForm
+  WifiOperatorForm,
+  DirectoryServerForm
 } from '@acx-ui/rc/components'
 import {
   CertificateCategoryType,
@@ -99,8 +100,13 @@ import ClientIsolationTable                         from './pages/Policies/Clien
 import ConnectionMeteringDetail                     from './pages/Policies/ConnectionMetering/ConnectionMeteringDetail'
 import ConnectionMeteringPageForm                   from './pages/Policies/ConnectionMetering/ConnectionMeteringPageForm'
 import ConnectionMeteringTable                      from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
+import DirectoryServerDetail                        from './pages/Policies/DirectoryServer/DirectoryServerDetail/DirectoryServerDetail'
 import DirectoryServerTable                         from './pages/Policies/DirectoryServer/DirectoryServerTable/DirectoryServerTable'
 import EthernetPortProfileTable                     from './pages/Policies/EthernetPortProfile/EthernetPortProfileTable'
+import AddFlexibleAuthentication                    from './pages/Policies/FlexibleAuthentication/AddFlexibleAuthentication'
+import EditFlexibleAuthentication                   from './pages/Policies/FlexibleAuthentication/EditFlexibleAuthentication'
+import FlexibleAuthenticationDetail                 from './pages/Policies/FlexibleAuthentication/FlexibleAuthenticationDetail'
+import FlexibleAuthenticationTable                  from './pages/Policies/FlexibleAuthentication/FlexibleAuthenticationTable'
 import AddEdgeHqosBandwidth                         from './pages/Policies/HqosBandwidth/Edge/AddHqosBandwidth'
 import EditEdgeHqosBandwidth                        from './pages/Policies/HqosBandwidth/Edge/EditHqosBandwidth'
 import EdgeHqosBandwidthDetail                      from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthDetail'
@@ -142,7 +148,8 @@ import EditFirewall                                                     from './
 import FirewallDetail                                                   from './pages/Services/EdgeFirewall/FirewallDetail'
 import FirewallTable                                                    from './pages/Services/EdgeFirewall/FirewallTable'
 import { AddEdgeSdLan, EdgeSdLanDetail, EdgeSdLanTable, EditEdgeSdLan } from './pages/Services/EdgeSdLan/index'
-import { EdgeTnmServiceTable }                                          from './pages/Services/EdgeTnm/Edge/EdgeTnmServiceTable'
+import { EdgeTnmDetails }                                               from './pages/Services/EdgeTnm/EdgeTnmDetails'
+import { EdgeTnmServiceTable }                                          from './pages/Services/EdgeTnm/EdgeTnmServiceTable'
 import AddEdgeMdnsProxy                                                 from './pages/Services/MdnsProxy/Edge/AddEdgeMdnsProxy'
 import EdgeMdnsProxyDetails                                             from './pages/Services/MdnsProxy/Edge/EdgeMdnsProxyDetails'
 import { EdgeMdnsProxyTable }                                           from './pages/Services/MdnsProxy/Edge/EdgeMdnsProxyTable'
@@ -580,11 +587,17 @@ const edgeMdnsRoutes = () => {
 }
 
 const edgeTnmRoutes = () => {
-  return <Route
+  return <><Route
     path={getServiceRoutePath({ type: ServiceType.EDGE_TNM_SERVICE,
       oper: ServiceOperation.LIST })}
     element={<EdgeTnmServiceTable />}
   />
+  <Route
+    path={getServiceRoutePath({ type: ServiceType.EDGE_TNM_SERVICE,
+      oper: ServiceOperation.DETAIL })}
+    element={<EdgeTnmDetails />}
+  />
+  </>
 }
 
 function ServiceRoutes () {
@@ -848,6 +861,7 @@ function PolicyRoutes () {
   const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
   const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   // eslint-disable-next-line max-len
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
 
@@ -1402,11 +1416,31 @@ function PolicyRoutes () {
         />
       </>
       }
-      {isDirectoryServerEnabled && <>
+      {isSwitchFlexAuthEnabled && <>
         <Route
           // eslint-disable-next-line max-len
-          path={getPolicyRoutePath({ type: PolicyType.DIRECTORY_SERVER, oper: PolicyOperation.LIST })}
-          element={<DirectoryServerTable />}
+          path={getPolicyRoutePath({ type: PolicyType.FLEX_AUTH, oper: PolicyOperation.LIST })}
+          element={<FlexibleAuthenticationTable />}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.FLEX_AUTH ,
+            oper: PolicyOperation.CREATE
+          })}
+          element={<AddFlexibleAuthentication/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.FLEX_AUTH ,
+            oper: PolicyOperation.EDIT
+          })}
+          element={<EditFlexibleAuthentication/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.FLEX_AUTH, oper: PolicyOperation.DETAIL
+          })}
+          element={<FlexibleAuthenticationDetail />}
         />
       </>
       }
@@ -1463,6 +1497,40 @@ function PolicyRoutes () {
           })}
           element={<EthernetPortProfileDetail/>}
         />
+      </>
+      }
+      {isDirectoryServerEnabled && <>
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.DIRECTORY_SERVER,
+            oper: PolicyOperation.LIST })}
+          element={<DirectoryServerTable />}
+        />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({
+            type: PolicyType.DIRECTORY_SERVER,
+            oper: PolicyOperation.DETAIL })}
+          element={<DirectoryServerDetail />}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.DIRECTORY_SERVER,
+            oper: PolicyOperation.CREATE })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.DIRECTORY_SERVER} oper={PolicyOperation.CREATE}>
+              <DirectoryServerForm editMode={false} />
+            </PolicyAuthRoute>
+          } />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.DIRECTORY_SERVER,
+            oper: PolicyOperation.EDIT })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.DIRECTORY_SERVER} oper={PolicyOperation.CREATE}>
+              <DirectoryServerForm editMode={true} />
+            </PolicyAuthRoute>
+          } />
       </>
       }
     </Route>

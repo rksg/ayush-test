@@ -19,7 +19,8 @@
           "apps/ra/src/globalValues.json",
           "apps/ra/src/assets",
           "apps/ra/src/locales",
-          "apps/ra/src/robots.txt"
+          "apps/ra/src/robots.txt",
+          { "glob": "**/*", "input": "libs/assets/", "output": "./assets/" }
         ],
         "styles": [],
         "scripts": [],

@@ -22,9 +22,9 @@ import {
   StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
-import { useIsSplitOn, Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { formatter, DateFormatEnum }                from '@acx-ui/formatter'
-import { SearchOutlined }                           from '@acx-ui/icons'
+import { useIsSplitOn, Features, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
+import { formatter, DateFormatEnum }                              from '@acx-ui/formatter'
+import { SearchOutlined }                                         from '@acx-ui/icons'
 import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
@@ -162,7 +162,7 @@ export function ManageIntegrator () {
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
-  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
@@ -204,14 +204,16 @@ export function ManageIntegrator () {
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
   const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
   const { data } =
-      useGetMspEcQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+      useGetMspEcQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
+        { skip: action !== 'edit' })
   const { data: Administrators } =
       useMspAdminListQuery({ params: useParams() }, { skip: action !== 'edit' })
   const { data: delegatedAdmins } =
       useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
         { skip: action !== 'edit' })
   const { data: ecAdministrators } =
-      useMspEcAdminListQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+      useMspEcAdminListQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
+        { skip: action !== 'edit' })
   const ecList = useTableQuery({
     useQuery: useMspCustomerListQuery,
     defaultPayload: {
@@ -223,8 +225,8 @@ export function ManageIntegrator () {
   })
   const assignedEcs =
   useGetAssignedMspEcToIntegratorQuery(
-    { params: { mspIntegratorId: mspEcTenantId, mspIntegratorType: tenantType } },
-    { skip: action !== 'edit' })
+    { params: { mspIntegratorId: mspEcTenantId, mspIntegratorType: tenantType },
+      enable: isRbacEnabled }, { skip: action !== 'edit' })
 
   useEffect(() => {
     if (licenseSummary) {
@@ -272,7 +274,7 @@ export function ManageIntegrator () {
           lastName: userProfile.lastName,
           name: userProfile.firstName,
           email: userProfile.email,
-          role: userProfile.role as RolesEnum,
+          role: RolesEnum.PRIME_ADMIN,
           detailLevel: userProfile.detailLevel
         })
         setAdministrator(administrator)
@@ -429,7 +431,7 @@ export function ManageIntegrator () {
 
       if (isRbacPhase2Enabled && privilegeGroups.length > 0) {
         const pgIds = privilegeGroups?.map((pg: PrivilegeGroup)=> pg.id)
-        customer.privilegeGroups = pgIds
+        customer.privilege_group_ids = pgIds
       }
 
       const result =

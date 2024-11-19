@@ -5,4 +5,5 @@ export enum GuestNetworkTypeEnum {
   GuestPass = 'GuestPass',
   WISPr = 'WISPr',
   Cloudpath = 'Cloudpath',
+  Directory = 'Directory',
 }

@@ -6,7 +6,8 @@ export enum CompatibilityType {
 
 export enum CompatibilityDeviceEnum {
   AP = 'Ap',
-  EDGE = 'Edge'
+  EDGE = 'Edge',
+  SWITCH = 'Switch'
 }
 
 export enum IncompatibilityFeatures {
@@ -22,5 +23,16 @@ export enum IncompatibilityFeatures {
   HQOS = 'HQoS',
   DHCP = 'DHCP',  // edge DHCP
   PIN = 'PIN',
-  EDGE_MDNS_PROXY = 'Edge mDNS Proxy'
+  PIN_DS = 'PIN_DS',
+  PIN_AS = 'PIN_AS',
+  EDGE_MDNS_PROXY = 'MDNS' // edge mDNS
+}
+
+export enum EdgeCompatibilityFeatureEnum {
+  SD_LAN = 'SD-LAN',
+  TUNNEL_PROFILE = 'Tunnel Profile',
+  HA_AA = 'HA-AA',
+  HQOS = 'HQoS',
+  DHCP = 'DHCP',
+  MDNS = 'MDNS'
 }

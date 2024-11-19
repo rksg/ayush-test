@@ -109,7 +109,8 @@ export enum Features {
   PTENANT_RBAC_API = 'abac-policies-toggle',
   RADIO6G_RATE_CONTROL = 'radio6g-rate-control-toggle',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
-  RBAC_PHASE2_TOGGLE = 'acx-ui-rbac-phase2-toggle',
+  RBAC_PHASE2_SSO_TOGGLE = 'acx-ui-rbac-phase2-toggle',
+  RBAC_PHASE2_TOGGLE = 'acx-ui-rbac-phase21-toggle',
   REC_TO_MSP_CONVERSION_TOGGLE = 'acx-rec-to-msp-conversion-toggle',
   RECOMMENDATION_DELETE = 'acx-ui-recommendation-delete-toggle',
   RECOMMENDATION_REVERT = 'acx-ui-recommendation-revert-toggle',
@@ -121,6 +122,7 @@ export enum Features {
   HEALTH_WIRED_TOPN_WITH_OTHERS = 'acx-ui-health-wired-topn-with-others-toggle',
   RUCKUS_AI_SWITCH_HEALTH_10010E_TOGGLE = 'ruckus-ai-switch-health-10010e-toggle',
   RUCKUS_WAN_GATEWAY_UI_SHOW = 'ruckus-wan-gateway-ui-show',
+  RUCKUS_ONBOARDING_ASSISTANT_TOGGLE = 'ruckus-gen-ai-onboarding-assistant',
   SSO = 'ADMN-SSO',
   SSO_SAML_ENCRYPTION = 'acx-ui-sso-saml-encryption',
   SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE = 'acx-ui-support-to-msp-dashboard-toggle',
@@ -144,6 +146,7 @@ export enum Features {
   SWITCH_NTP_SERVER = 'switch-consumer-apply-ntp-server-toggle',
   SWITCH_LEVEL_CLI_PROFILE = 'switch-consumer-switch-level-cli-profile-toggle',
   SWITCH_CABLE_TEST = 'switch-cable-testing-toggle',
+  SWITCH_FLEXIBLE_AUTHENTICATION = 'switch-consumer-flexible-authentication-toggle',
   SWITCH_SUPPORT_ICX8200AV= 'switch-support-icx8200av-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
@@ -167,6 +170,7 @@ export enum Features {
   WIFI_RBAC_API = 'acx-ui-rbac-api-wifi-toggle',
   WIFI_POWER_SAVING_MODE_TOGGLE = 'wifi-power-saving-mode-indicator-toggle',
   WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE = 'wifi-softgre-over-wireless-toggle',
+  WIFI_RADSEC_TOGGLE = 'wifi-radsec-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
   EDGE_HA_TOGGLE = 'edge-ha-toggle',
   EDGE_HA_AA_TOGGLE = 'edge-ha-aa-toggle',
@@ -190,7 +194,6 @@ export enum Features {
   INTENT_AI_TOGGLE = 'acx-ui-intent-ai-toggle',
   SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle',
   RBAC_CONFIG_TEMPLATE_TOGGLE = 'acx-ui-rbac-config-template-toggle',
-  RBAC_IMPLICIT_P1 = 'RBAC-IMPLICIT-P1',
   WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE='wifi-eda-wifi7-mlo-3link-toggle',
   WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY = 'wifi-mesh-configuration-for-5g-6g-only-toggle',
   SWITCH_AP_PORT_HYPERLINK ='switch-ap-port-hyperlink-toggle',
@@ -209,7 +212,8 @@ export enum Features {
   BRAND360_MDU_TOGGLE = 'acx-ui-brand360-mdu-toggle',
   SERVER_CERTIFICATE_MANAGEMENT_UI_TOGGLE = 'server-certificate-management-ui-toggle',
   WIFI_NETWORK_APPLICATION_CONTROL = 'wifi-network-application-control',
-  UX_OPTIMIZATION_FEATURE_TOGGLE = 'acx-ui-ux-optimization-feature-toggle'
+  UX_OPTIMIZATION_FEATURE_TOGGLE = 'acx-ui-ux-optimization-feature-toggle',
+  ROAMING_TYPE_EVENTS_TOGGLE = 'acx-ui-roaming-type-events-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
@@ -218,7 +222,8 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   SMART_EDGES = 'PLCY-EDGE',
   CONFIG_TEMPLATE = 'CONFIG-TEMPLATE',
   WORKFLOW_ONBOARD = 'WORKFLOW-ONBOARD',
-  LOCATION_BASED_SERVICES = 'LOCATION-BASED-SERVICES'
+  LOCATION_BASED_SERVICES = 'LOCATION-BASED-SERVICES',
+  RBAC_IMPLICIT_P1 = 'RBAC-IMPLICIT-P1'
 }
 
 interface BetaList {
@@ -239,5 +244,6 @@ export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.AP_70, description: defineMessage({ defaultMessage: 'AP-70: Wi-Fi 7 - Wi-Fi 7 UI configuration available for early adopters and customers provided with advance units of the R770. Contact your reseller for more information on availability of the new R770!' }), status: true },
   { key: TierFeatures.SMART_EDGES, description: defineMessage({ defaultMessage: 'RUCKUS Edge: RUCKUS Edge is a platfrom to run RUCKUS services on. Network administrators can utilize SD-LAN service or Personal Identity Networking service on a RUCKUS Edge. SD-LAN provides WLAN tunnelling using VXLAN. This will provide end users a seamless roaming experience across a network. The Personal Identity Networking service provides individual networks for users which is typically used in a multi-dwelling facility.' }), status: true },
   { key: TierFeatures.CONFIG_TEMPLATE, description: defineMessage({ defaultMessage: 'Config Template: It allows MSP users to create templates for networks, <venuePlural></venuePlural>, services, and policies. These templates can then be applied to multiple customers, providing a centralized and efficient solution for managing RUCKUS brand network equipment across properties.' }), status: true },
-  { key: TierFeatures.LOCATION_BASED_SERVICES, description: defineMessage({ defaultMessage: 'LBS: RUCKUS One now lets you create a Location Based Service (LBS) Server linked to multiple <venuePlural></venuePlural> for efficient tracking and management of location-specific information. This feature gathers location data from connected access points (APs) and routes it to third-party application servers. You can add and manage LBS server profiles and enable Location Based Services for any <venueSingular></venueSingular> directly from the RUCKUS One web interface, enhancing your <venueSingular></venueSingular> management capabilities.' }), status: true }
+  { key: TierFeatures.LOCATION_BASED_SERVICES, description: defineMessage({ defaultMessage: 'LBS: RUCKUS One now lets you create a Location Based Service (LBS) Server linked to multiple <venuePlural></venuePlural> for efficient tracking and management of location-specific information. This feature gathers location data from connected access points (APs) and routes it to third-party application servers. You can add and manage LBS server profiles and enable Location Based Services for any <venueSingular></venueSingular> directly from the RUCKUS One web interface, enhancing your <venueSingular></venueSingular> management capabilities.' }), status: true },
+  { key: TierFeatures.RBAC_IMPLICIT_P1, description: defineMessage({ defaultMessage: 'Role-based access control (RBAC) and attributes-based access control (ABAC) are functionalities that provide a structured and efficient approach to managing administrator permissions and access rules in RUCKUS One.' }), status: true }
 ]

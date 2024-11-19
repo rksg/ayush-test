@@ -42,6 +42,7 @@ export * from './applicationPolicy'
 export * from './configTemplate'
 export * from './topology'
 export * from './mDnsFencingServie'
+export * from './ruckusAi'
 
 export interface CommonResult {
   requestId: string
@@ -569,12 +570,14 @@ export interface SwitchClient {
   clientName: string
   clientDesc: string
   clientType: SWITCH_CLIENT_TYPE
+  switchFirmware?: string
   switchId: string
   switchName: string
   switchPort: string
   switchPortId?: string
   switchSerialNumber: string
   clientVlan: string
+  clientAuthType?: string
   vlanName: string
   venueId: string
   venueName: string

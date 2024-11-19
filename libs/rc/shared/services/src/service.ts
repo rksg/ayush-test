@@ -975,6 +975,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'Add Portal Service Profile',
             'Update Portal Service Profile',
+            'Update Portal Service Profile V1_1',
             'Delete Portal Service Profile',
             'Delete Portal Service Profiles'
           ], () => {

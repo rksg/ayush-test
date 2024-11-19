@@ -184,7 +184,9 @@ export {
   useEdgeSdLanDetailsCompatibilitiesData,
   transformEdgeCompatibilitiesWithFeatureName,
   useEdgePinDetailsCompatibilitiesData,
-  useEdgePinsCompatibilityData
+  useEdgePinsCompatibilityData,
+  useEdgeMdnsDetailsCompatibilitiesData,
+  useEdgeMdnssCompatibilityData
 } from './useEdgeActions/compatibility'
 export * from './EdgeMdns/useEdgeMdnsActions'
 export * from './EdgeMdns/EdgeMdnsProxyForm'
@@ -237,6 +239,7 @@ export { showSdLanGuestFwdConflictModal } from './EdgeSdLan/SdLanGuestFwdConflic
 export {
   ApCompatibilityType,
   InCompatibilityFeatures,
+  retrievedApCompatibilitiesOptions,
   retrievedCompatibilitiesOptions,
   ApCompatibilityFeature,
   ApCompatibilityToolTip,
@@ -259,7 +262,8 @@ export * from './EdgeCluster/CompatibilityErrorDetails/types'
 export { EdgeClusterVirtualIpSettingForm } from './EdgeFormItem/EdgeClusterVirtualIpSettingForm'
 export type {
   VirtualIpFormType,
-  VipConfigType
+  VipConfigType,
+  VipInterface
 } from './EdgeFormItem/EdgeClusterVirtualIpSettingForm'
 export { useClusterInterfaceActions } from './useClusterInterfaceActions'
 export type { ClusterInterfaceInfo } from './useClusterInterfaceActions'
@@ -304,6 +308,7 @@ export * from './SwitchBlinkLEDsDrawer'
 export { ConfigurationProfileForm } from './SwitchRegularProfileForm'
 export * from './SwitchCliProfileForm'
 export * from './SwitchCliTemplateForm'
+export * from './FlexibleAuthentication'
 export {
   useRwgActions
 } from './useRwgActions'

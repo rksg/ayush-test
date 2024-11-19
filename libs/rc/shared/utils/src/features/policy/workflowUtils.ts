@@ -23,7 +23,9 @@ import {
   WorkflowPanelMode
 } from '../../types'
 
-export const WorkflowStepsEmptyCount = 2
+export const InitialEmptyStepsCount = 2
+export const MaxAllowedSteps = 20
+export const MaxTotalSteps = InitialEmptyStepsCount + MaxAllowedSteps
 
 export const useGetActionDefaultValueByType = (actionType: ActionType) => {
   const { $t } = useIntl()

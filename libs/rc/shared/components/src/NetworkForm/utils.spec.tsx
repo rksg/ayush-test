@@ -1,4 +1,5 @@
 import { FormInstance } from 'antd'
+import _                from 'lodash'
 import { rest }         from 'msw'
 
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
@@ -25,7 +26,12 @@ import {
 import { Provider, store }                 from '@acx-ui/store'
 import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
 
-import { hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile, useClientIsolationActivations, useNetworkVxLanTunnelProfileInfo, useRadiusServer, useServicePolicyEnabledWithConfigTemplate, useWifiCalling, getDefaultMloOptions, useUpdateSoftGreActivations } from './utils'
+import {
+  hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile, useClientIsolationActivations,
+  useNetworkVxLanTunnelProfileInfo, useRadiusServer, useServicePolicyEnabledWithConfigTemplate,
+  useWifiCalling, getDefaultMloOptions, useUpdateSoftGreActivations, shouldSaveRadiusServerSettings,
+  shouldSaveRadiusServerProfile, getRadiusIdFromFormData, hasRadiusProfileInFormData
+} from './utils'
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -639,6 +645,194 @@ describe('Network utils test', () => {
 
       await waitFor(() => expect(spyActivateRadiusFn).not.toHaveBeenCalled())
       await waitFor(() => expect(spyDeactivateRadiusFn).not.toHaveBeenCalled())
+    })
+
+    describe('shouldSaveRadiusServerSettings', () => {
+      it('check for PSK network type', () => {
+        const saveDataWithMacAuthFormat: NetworkSaveData = {
+          type: NetworkTypeEnum.PSK,
+          wlan: {
+            macAuthMacFormat: 'some-format'
+          }
+        }
+        expect(shouldSaveRadiusServerSettings(saveDataWithMacAuthFormat)).toBe(true)
+
+        const saveData: NetworkSaveData = {
+          type: NetworkTypeEnum.PSK
+        }
+        expect(shouldSaveRadiusServerSettings(saveData)).toBe(false)
+      })
+
+      it('check for OPEN network type', () => {
+        const saveDataWithMacAuthFormat: NetworkSaveData = {
+          type: NetworkTypeEnum.OPEN,
+          wlan: {
+            macAuthMacFormat: 'some-format'
+          }
+        }
+        expect(shouldSaveRadiusServerSettings(saveDataWithMacAuthFormat)).toBe(true)
+
+        const saveData: NetworkSaveData = {
+          type: NetworkTypeEnum.OPEN
+        }
+        expect(shouldSaveRadiusServerSettings(saveData)).toBe(false)
+      })
+
+      it('check for DPSK network type', () => {
+        const saveDataWithCloudpathEnabled: NetworkSaveData = {
+          type: NetworkTypeEnum.DPSK,
+          isCloudpathEnabled: true
+        }
+        expect(shouldSaveRadiusServerSettings(saveDataWithCloudpathEnabled)).toBe(true)
+
+        const saveData: NetworkSaveData = {
+          type: NetworkTypeEnum.DPSK
+        }
+        expect(shouldSaveRadiusServerSettings(saveData)).toBe(false)
+      })
+
+      it('check for AAA network type', () => {
+        const saveData: NetworkSaveData = {
+          type: NetworkTypeEnum.AAA
+        }
+        expect(shouldSaveRadiusServerSettings(saveData)).toBe(true)
+
+        const saveDataWithUseCertificateTemplate: NetworkSaveData = {
+          type: NetworkTypeEnum.AAA,
+          useCertificateTemplate: true
+        }
+        expect(shouldSaveRadiusServerSettings(saveDataWithUseCertificateTemplate)).toBe(false)
+      })
+      it('CAPTIVEPORTAL network type', () => {
+        const saveDataWithCloudpathEnabled: NetworkSaveData = {
+          type: NetworkTypeEnum.CAPTIVEPORTAL,
+          guestPortal: {
+            guestNetworkType: GuestNetworkTypeEnum.Cloudpath
+          }
+        }
+        expect(shouldSaveRadiusServerSettings(saveDataWithCloudpathEnabled)).toBe(true)
+
+        const saveData: NetworkSaveData = {
+          type: NetworkTypeEnum.CAPTIVEPORTAL
+        }
+        expect(shouldSaveRadiusServerSettings(saveData)).toBe(false)
+      })
+    })
+    describe('shouldSaveRadiusServerProfile', () => {
+      it('check for CAPTIVEPORTAL with WISPr guest network type', () => {
+        const saveDataForWispr: NetworkSaveData = {
+          type: NetworkTypeEnum.CAPTIVEPORTAL,
+          guestPortal: {
+            guestNetworkType: GuestNetworkTypeEnum.WISPr,
+            wisprPage: {
+              captivePortalUrl: '',
+              customExternalProvider: true
+            }
+          }
+        }
+        expect(shouldSaveRadiusServerProfile(saveDataForWispr)).toBe(true)
+
+        const saveDataForOtherGuestType = {
+          type: NetworkTypeEnum.CAPTIVEPORTAL,
+          guestPortal: {
+            guestNetworkType: GuestNetworkTypeEnum.GuestPass
+          }
+        }
+        expect(shouldSaveRadiusServerProfile(saveDataForOtherGuestType)).toBe(false)
+      })
+    })
+
+    describe('getRadiusIdFromFormData', () => {
+      it('check for WISPr network', () => {
+        const dataForCustomProvider: NetworkSaveData = {
+          type: NetworkTypeEnum.CAPTIVEPORTAL,
+          guestPortal: {
+            guestNetworkType: GuestNetworkTypeEnum.WISPr,
+            wisprPage: {
+              captivePortalUrl: '',
+              customExternalProvider: true,
+              authRadius: { id: 'auth-id' }
+            }
+          }
+        }
+        expect(getRadiusIdFromFormData('authRadiusId', dataForCustomProvider)).toBe('auth-id')
+
+        const dataForNonCustomProvider: NetworkSaveData = {
+          type: NetworkTypeEnum.CAPTIVEPORTAL,
+          guestPortal: {
+            guestNetworkType: GuestNetworkTypeEnum.WISPr,
+            wisprPage: {
+              captivePortalUrl: '',
+              customExternalProvider: false,
+              authRadius: { id: 'auth-radius-id' }
+            }
+          }
+        }
+        expect(getRadiusIdFromFormData('authRadiusId', dataForNonCustomProvider)).toBeUndefined()
+      })
+
+      it('check for non-WISPr network', () => {
+        const formDataWithEnabledAccounting: NetworkSaveData = {
+          type: NetworkTypeEnum.AAA,
+          enableAccountingService: true,
+          authRadiusId: 'auth-id',
+          accountingRadiusId: 'acct-id'
+        }
+        // eslint-disable-next-line max-len
+        expect(getRadiusIdFromFormData('authRadiusId', formDataWithEnabledAccounting)).toBe('auth-id')
+        // eslint-disable-next-line max-len
+        expect(getRadiusIdFromFormData('accountingRadiusId', formDataWithEnabledAccounting)).toBe('acct-id')
+
+        const formDataWithoutEnabledAccounting: NetworkSaveData = {
+          type: NetworkTypeEnum.AAA,
+          enableAccountingService: false,
+          authRadiusId: 'auth-radius-id',
+          accountingRadiusId: 'acct-id'
+        }
+        // eslint-disable-next-line max-len
+        expect(getRadiusIdFromFormData('accountingRadiusId', formDataWithoutEnabledAccounting)).toBeUndefined()
+      })
+    })
+
+    describe('hasRadiusProfileInFormData', () => {
+      const baseWISPrNetwork: NetworkSaveData = {
+        type: NetworkTypeEnum.CAPTIVEPORTAL,
+        guestPortal: {
+          guestNetworkType: GuestNetworkTypeEnum.WISPr,
+          wisprPage: {
+            captivePortalUrl: '',
+            customExternalProvider: true
+          }
+        }
+      }
+      it('should return proper value for WISPr network with authRadiusId key', () => {
+        const formDataWithAuth = _.merge({}, baseWISPrNetwork, {
+          guestPortal: { wisprPage: { authRadius: { id: 'some-value' } } }
+        })
+        expect(hasRadiusProfileInFormData('authRadiusId', formDataWithAuth)).toBe(true)
+
+        const formDataWithAcct = _.merge({}, baseWISPrNetwork, {
+          guestPortal: { wisprPage: { accountingRadius: { id: 'some-value' } } }
+        })
+        expect(hasRadiusProfileInFormData('accountingRadiusId', formDataWithAcct)).toBe(true)
+
+        expect(hasRadiusProfileInFormData('authRadiusId', baseWISPrNetwork)).toBe(false)
+        expect(hasRadiusProfileInFormData('accountingRadiusId', baseWISPrNetwork)).toBe(false)
+      })
+
+      it('should return proper value for non-WISPr network with authRadiusId key', () => {
+        const formDataWithAuth: NetworkSaveData = {
+          type: NetworkTypeEnum.AAA,
+          authRadiusId: 'some-value'
+        }
+        expect(hasRadiusProfileInFormData('authRadiusId', formDataWithAuth)).toBe(true)
+
+        const formDataWithAcct: NetworkSaveData = {
+          type: NetworkTypeEnum.AAA,
+          accountingRadiusId: 'some-value'
+        }
+        expect(hasRadiusProfileInFormData('accountingRadiusId', formDataWithAcct)).toBe(true)
+      })
     })
   })
 

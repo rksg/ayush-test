@@ -44,9 +44,6 @@ describe('RadioTab', () => {
         WifiUrlsInfo.getVenueApCapabilities.url,
         (_, res, ctx) => res(ctx.json(venueExternalAntennaCap))),
       rest.get(
-        CommonUrlsInfo.getDashboardOverview.url,
-        (_, res, ctx) => res(ctx.json({}))),
-      rest.get(
         CommonUrlsInfo.getVenueSettings.url,
         (_, res, ctx) => res(ctx.json(venueSetting))),
       rest.get(

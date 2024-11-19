@@ -391,26 +391,26 @@ export interface EntityCompatibility {
   incompatible: number
 }
 export interface VenueEdgeCompatibilitiesResponse {
-  compatibilities: EntityCompatibility[]
+  compatibilities?: EntityCompatibility[]
 }
 
 export interface EdgeServiceCompatibility {
-  serviceId: string
-  clusterEdgeCompatibilities: EntityCompatibility[]
+  serviceId?: string
+  clusterEdgeCompatibilities?: EntityCompatibility[]
 }
 export interface EdgeServiceCompatibilitiesResponse {
-  compatibilities: EdgeServiceCompatibility[]
+  compatibilities?: EdgeServiceCompatibility[]
 }
 
 export type VenueSdLanApCompatibility = Omit<ApCompatibility, 'id'> & {
   venueId: string
 }
 export interface EdgeSdLanApCompatibility {
-  serviceId: string
-  venueSdLanApCompatibilities: VenueSdLanApCompatibility[]
+  serviceId?: string
+  venueSdLanApCompatibilities?: VenueSdLanApCompatibility[]
 }
 export interface EdgeSdLanApCompatibilitiesResponse {
-  compatibilities: EdgeSdLanApCompatibility[]
+  compatibilities?: EdgeSdLanApCompatibility[]
 }
 
 // ap incompatibility by model
@@ -418,11 +418,11 @@ export type VenueEdgeServiceApCompatibility = Omit<Compatibility, 'id'> & {
   venueId: string
 }
 export interface EdgeServiceApCompatibility {
-  serviceId: string
-  venueEdgeServiceApCompatibilities: VenueEdgeServiceApCompatibility[]
+  serviceId?: string
+  venueEdgeServiceApCompatibilities?: VenueEdgeServiceApCompatibility[]
 }
 export interface EdgeServicesApCompatibilitiesResponse {
-  compatibilities: EdgeServiceApCompatibility[]
+  compatibilities?: EdgeServiceApCompatibility[]
 }
 // ap incompatibility by model
 
@@ -527,4 +527,5 @@ export interface SubInterface {
   ipMode: EdgeIpModeEnum
   ip?: string
   subnet?: string
+  interfaceName?: string
 }
