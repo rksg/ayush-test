@@ -83,7 +83,7 @@ describe('NetworkApGroupDialog', () => {
     )
   })
 
-  it.skip('should render correctly', async () => {
+  it('should render correctly', async () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.networkActivations.url,
