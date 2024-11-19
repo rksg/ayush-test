@@ -45,7 +45,8 @@ export default function CertificateSettings (
   const {
     isCertificateTemplateOptionsLoading, certificateTemplateOptions
   } = useGetCertificateTemplatesQuery({
-    payload: { page: '1', pageSize: MAX_CERTIFICATE_PER_TENANT }
+    payload: { page: '1', pageSize: MAX_CERTIFICATE_PER_TENANT,
+      sortField: 'name', sortOrder: 'ASC' }
   }, {
     skip: !!templateData || !caList,
     selectFromResult: ({ data, isLoading }) =>
