@@ -90,9 +90,7 @@ FROM build-base as acx-ui-base-test
 COPY --from=acx-ui-lint   /app/lint-done   ./lint-done
 COPY --from=build         /app/dist/apps   ./dist/apps
 
-COPY cicd_tools ./cicd_tools
 COPY test_cases.table ./test_cases.table
-RUN chmod a+x ./cicd_tools/run_test_cases_tool.sh
 
 FROM acx-ui-base-test as acx-ui-group-test
 ARG PRECOMMIT=true
@@ -101,7 +99,7 @@ ARG NODE_COMMAND="node ./node_modules/.bin/nx"
 RUN if [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
         while IFS= read -r command; do \
             ${NODE_COMMAND} ${command}; \
-        done < /app/test_cases.txt; \
+        done < ./test_cases.table; \
     else mkdir -p /app/coverage; fi
 
 FROM build-base as acx-ui-sonar-run
