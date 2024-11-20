@@ -95,6 +95,10 @@ jest.mock('../Charts/ImpactedSwitchesDonut', () => ({
   ImpactedSwitchesDonut: () => <div data-testid='impactedSwitchesDonut' />
 }))
 
+jest.mock('../Charts/ImpactedSwitchLoopDetection', () => ({
+  ImpactedVlanTable: () => <div data-testid='impactedVlanTable' />
+}))
+
 jest.mock('../Charts/WanthroughputTable', () => ({
   WanthroughputTable: () => <div data-testid='wanthroughputTable' />
 }))
