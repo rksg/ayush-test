@@ -231,7 +231,7 @@ describe('LicenseCompliance', () => {
     const btn = screen.getByRole('button', { name: 'Click Here' })
     expect(await screen.findByText('License Distance Calculator')).toBeVisible()
     await userEvent.click(btn)
-    expect(screen.getByText('MSP Paid Licenses Timeline')).toBeInTheDocument()
+    expect(screen.getByText('Device Networking Paid Licenses')).toBeInTheDocument()
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     // eslint-disable-next-line testing-library/no-node-access
     expect(document.querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
