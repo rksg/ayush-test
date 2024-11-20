@@ -31,7 +31,7 @@ import {
   TransitionIntentItem
 } from './utils'
 
-type Metadata = {
+export type Metadata = {
   failures?: (keyof typeof failureCodes)[]
   scheduledAt?: string
   updatedAt?: string

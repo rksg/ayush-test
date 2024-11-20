@@ -12,6 +12,7 @@ import { getIntl, NetworkPath, noDataDisplay, NodeType } from '@acx-ui/utils'
 
 import { NetworkNode } from '../NetworkFilter/services'
 
+import { Metadata }                                      from './services'
 import { DisplayStates, Statuses, StatusReasons }        from './states'
 import { dataRetentionText, IntentWlan, isDataRetained } from './utils'
 
@@ -72,6 +73,7 @@ export type Intent = {
     statusReason: StatusReasons
     displayStatus: DisplayStates
     createdAt?: string
+    metadata?: Metadata
   }>
   updatedAt: string
   currentValue: IntentConfigurationValue
@@ -197,7 +199,7 @@ export const api = intentAIApi.injectEndpoints({
               status statusReason displayStatus
               sliceType sliceValue updatedAt
               path { type name }
-              statusTrail { status statusReason displayStatus createdAt }
+              statusTrail { status statusReason displayStatus createdAt metadata }
               ${kpiHelper(kpis)}
               ${!code.includes('ecoflex') ? 'currentValue recommendedValue' : ''}
             }
