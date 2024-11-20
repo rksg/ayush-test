@@ -2,7 +2,7 @@ ARG CI_SERVICE_BASE
 ARG GAR_CONTAINER_URL
 ARG GAR_DOCKER_ROOT_URL
 
-#FROM ${GAR_DOCKER_ROOT_URL}/acx-service/acx-ui-cache/nx-cache:latest as nx-cache
+FROM ${GAR_DOCKER_ROOT_URL}/acx-service/acx-ui-cache/nx-cache:latest as nx-cache
 FROM ${CI_SERVICE_BASE}node:master--latest as build-base
 
 WORKDIR /app
@@ -34,14 +34,15 @@ COPY .eslintignore \
   workspace.json \
   ./
 
-COPY .storybook ./.storybook
-COPY apps ./apps
-COPY libs ./libs
+#COPY .storybook ./.storybook
+#COPY apps ./apps
+#COPY libs ./libs
+COPY . .
 
 #ENV NODE_OPTIONS=--max-old-space-size=4096
 #ENV NX_CACHE_DIRECTORY=/app/node_modules/.cache/nx
 
-#COPY --from=nx-cache /app/node_modules/.cache/nx /app/node_modules/.cache/nx
+COPY --from=nx-cache /app/node_modules/.cache/nx /app/node_modules/.cache/nx
 
 # Remove files and folders older than 24 hours from the nx cache
 #RUN find /app/node_modules/.cache/nx -type f -mtime +1 -delete && \
