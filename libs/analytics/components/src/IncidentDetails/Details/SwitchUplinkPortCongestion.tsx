@@ -20,7 +20,7 @@ export const SwitchUplinkPortCongestion = (incident: Incident) => {
   ]
 
   const isEnabled = [
-    !useIsSplitOn(Features.INCIDENTS_SWITCH_UPLINK_PORT_CONGESTION_TOGGLE),
+    useIsSplitOn(Features.INCIDENTS_SWITCH_UPLINK_PORT_CONGESTION_TOGGLE),
     useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_SWITCH_UPLINK_PORT_CONGESTION_TOGGLE)
   ].some(Boolean)
 

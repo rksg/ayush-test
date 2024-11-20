@@ -20,7 +20,7 @@ export const SwitchLoopDetection = (incident: Incident) => {
   ]
 
   const isEnabled = [
-    !useIsSplitOn(Features.INCIDENTS_SWITCH_LOOP_DETECTION_TOGGLE),
+    useIsSplitOn(Features.INCIDENTS_SWITCH_LOOP_DETECTION_TOGGLE),
     useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_SWITCH_LOOP_DETECTION_TOGGLE)
   ].some(Boolean)
 

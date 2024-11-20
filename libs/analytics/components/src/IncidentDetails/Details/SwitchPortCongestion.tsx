@@ -24,7 +24,7 @@ export const SwitchPortCongestion = (incident: Incident) => {
   ]
 
   const isEnabled = [
-    !useIsSplitOn(Features.INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE),
+    useIsSplitOn(Features.INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE),
     useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE)
   ].some(Boolean)
 
