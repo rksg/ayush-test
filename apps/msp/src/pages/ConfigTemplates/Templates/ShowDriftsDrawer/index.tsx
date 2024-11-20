@@ -1,14 +1,13 @@
 import { useState } from 'react'
 
-import { Checkbox, Col, List, Row, Select, Space } from 'antd'
-import { CheckboxChangeEvent }                     from 'antd/lib/checkbox'
-import { useIntl }                                 from 'react-intl'
+import { Checkbox, Col, Divider, List, Row, Select, Space } from 'antd'
+import { CheckboxChangeEvent }                              from 'antd/lib/checkbox'
+import { useIntl }                                          from 'react-intl'
 
 import {
   Button,
   Drawer,
-  Loader,
-  Tooltip
+  Loader
 } from '@acx-ui/components'
 import { useGetDriftInstancesQuery, usePatchDriftReportMutation } from '@acx-ui/rc/services'
 import { ConfigTemplate }                                         from '@acx-ui/rc/utils'
@@ -16,9 +15,8 @@ import { ConfigTemplate }                                         from '@acx-ui/
 import { MAX_SYNC_EC_TENANTS } from '../../constants'
 import { useEcFilters }        from '../templateUtils'
 
-import { DriftInstance }    from './DriftInstance'
-import * as UI              from './styledComponents'
-import { DriftInstanceRow } from './utils'
+import { DriftInstance } from './DriftInstance'
+import * as UI           from './styledComponents'
 
 export interface ShowDriftsDrawerProps {
   setVisible: (visible: boolean) => void
@@ -98,27 +96,26 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Show Drifts' })}
+      title={$t({ defaultMessage: 'Customer Drifts Report' })}
       visible={true}
       onClose={onClose}
       footer={footer}
       destroyOnClose={true}
       width={650}
     >
-      <Space direction='vertical' size='small' style={{ marginBottom: '6px' }}>
+      <Space direction='vertical' size='small'>
         {/* eslint-disable-next-line max-len */}
         <p>{ $t({ defaultMessage: 'During sync all configurations in the selected template overwrite the corresponding configuration in the associated customers.' }) }</p>
         <Toolbar
           customerOptions={driftInstances}
+          onSyncAllChange={onSyncAllChange}
           onInstanceFilterSelect={onInstanceFilterSelect}
         />
+        <SelectedCustomersIndicator selectedCount={selectedInstances.length} />
+        <Divider style={{ margin: '8px 0 0 0' }} />
       </Space>
       <Loader states={[{ isLoading: isDriftInstancesLoading }]}>
         <List
-          header={<DriftInstanceListHeader
-            onSyncAllChange={onSyncAllChange}
-            selectedCount={selectedInstances.length}
-          />}
           pagination={{ position: 'bottom' }}
           // eslint-disable-next-line max-len
           dataSource={driftInstances.filter(ins => selectedFilterValue ? ins.id === selectedFilterValue : true)}
@@ -142,14 +139,20 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
 
 interface ToolbarProps {
   customerOptions: Array<{ name: string, id: string }>
+  onSyncAllChange: (e: CheckboxChangeEvent) => void
   onInstanceFilterSelect: (value: string | undefined) => void
 }
 
 function Toolbar (props: ToolbarProps) {
-  const { customerOptions, onInstanceFilterSelect } = props
+  const { customerOptions, onSyncAllChange, onInstanceFilterSelect } = props
   const { $t } = useIntl()
 
-  return <Row justify='end' align='middle' style={{ paddingLeft: '16px' }}>
+  return <Row justify='space-between' align='middle'>
+    <Col span={12}>
+      <Checkbox onChange={onSyncAllChange}>
+        {$t({ defaultMessage: 'Sync all drifts for all customers' })}
+      </Checkbox>
+    </Col>
     <Col span={12} style={{ textAlign: 'right' }}>
       <Select
         style={{ minWidth: 200, textAlign: 'left' }}
@@ -176,30 +179,3 @@ export function SelectedCustomersIndicator (props: { selectedCount: number }) {
     { $t({ defaultMessage: '{num} selected' }, { num: selectedCount }) }
   </UI.SelectedCustomersIndicator>
 }
-
-function DriftInstanceListHeader (props: {
-  onSyncAllChange: (e: CheckboxChangeEvent) => void,
-  selectedCount: number
-}) {
-  const { onSyncAllChange, selectedCount } = props
-  const { $t } = useIntl()
-
-  return <Space direction='vertical' style={{ width: '100%' }}>
-    <DriftInstanceRow
-      head={<Tooltip title={$t({ defaultMessage: 'Select All' })}>
-        <Checkbox onChange={onSyncAllChange} />
-      </Tooltip>}
-      body={<Space direction={'horizontal'} size={6}>
-        <span style={{ fontWeight: '600' }}>
-          {$t({ defaultMessage: 'Customer Drifts Report' })}
-        </span>
-        <span style={{ fontStyle: 'italic' }}>
-          {$t({ defaultMessage: '(Template -> Customer)' })}
-        </span>
-      </Space>}
-    />
-    <SelectedCustomersIndicator selectedCount={selectedCount} />
-  </Space>
-}
-
-

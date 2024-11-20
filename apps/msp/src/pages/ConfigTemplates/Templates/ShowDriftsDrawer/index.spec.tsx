@@ -33,10 +33,11 @@ describe('ShowDriftsDrawer', () => {
     </Provider>)
 
     const targetInstance = mockedMSPCustomers.data[0]
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('checkbox', { name: /Sync all drifts for all customers/i })).toBeInTheDocument()
 
     expect(await screen.findByRole('combobox')).toBeInTheDocument()
     expect(await screen.findByText(`${targetInstance.name}`)).toBeInTheDocument()
-    expect(screen.queryAllByRole('checkbox').length).toBe(mockedMSPCustomers.data.length + 1) // 1 for the Sync all checkbox
   })
 
   it('enables/disable the Sync button when instances are selected/unselected', async () => {
@@ -78,9 +79,7 @@ describe('ShowDriftsDrawer', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     // Check all instances
-    const selectAllElement = screen.queryAllByRole('checkbox')[0]
-    await userEvent.click(selectAllElement)
-
+    await userEvent.click(screen.getByRole('checkbox', { name: /Sync all drifts/i }))
     await waitFor(() => {
       for (const instanceElement of screen.queryAllByRole('checkbox')) {
         expect(instanceElement).toBeChecked()
@@ -90,7 +89,7 @@ describe('ShowDriftsDrawer', () => {
     expect(screen.getByText(`${mockedMSPCustomers.data.length} selected`)).toBeInTheDocument()
 
     // Uncheck all instances
-    await userEvent.click(selectAllElement)
+    await userEvent.click(screen.getByRole('checkbox', { name: /Sync all drifts/i }))
     await waitFor(() => {
       for (const instanceElement of screen.queryAllByRole('checkbox')) {
         expect(instanceElement).not.toBeChecked()
@@ -147,8 +146,7 @@ describe('ShowDriftsDrawer', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     // Check all instances
-    const selectAllElement = screen.queryAllByRole('checkbox')[0]
-    await userEvent.click(selectAllElement)
+    await userEvent.click(screen.getByRole('checkbox', { name: /Sync all drifts/i }))
 
     await waitFor(() => {
       for (const instanceElement of screen.queryAllByRole('checkbox')) {

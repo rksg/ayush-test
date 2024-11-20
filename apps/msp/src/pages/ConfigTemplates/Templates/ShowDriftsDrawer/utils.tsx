@@ -19,11 +19,3 @@ export function filterDriftRecordIdByName (input: ConfigTemplateDriftRecord[]): 
     return true
   })
 }
-
-export function DriftInstanceRow (props: { head: React.ReactNode, body: React.ReactNode }) {
-  const { head, body } = props
-  return <div style={{ display: 'inline-flex', alignItems: 'center', width: '100%' }}>
-    <div style={{ flex: '0 0 26px' }}>{head}</div>
-    <div style={{ flex: '1 1 auto' }}>{body}</div>
-  </div>
-}

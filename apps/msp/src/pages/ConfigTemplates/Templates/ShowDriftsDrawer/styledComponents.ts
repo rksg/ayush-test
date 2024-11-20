@@ -36,7 +36,7 @@ export const DriftInstanceCollapse = styled(Collapse)`
       svg {
         width: 12px;
         margin-right: 12px;
-        top: 57%;
+        top: 50%;
       }
     }
   }

@@ -45,8 +45,7 @@ export function DriftComparisonSet (props: ConfigTemplateDriftSet) {
 function UnknownTooltip (props: React.PropsWithChildren<unknown>) {
   const { children } = props
   const { $t } = useIntl()
-  // eslint-disable-next-line max-len
-  return <Tooltip title={$t({ defaultMessage: 'Data comparison is unavailable due to the use of a non-RBAC API' })}>
+  return <Tooltip title={$t({ defaultMessage: 'Drifts are not available' })}>
     {children}
   </Tooltip>
 }

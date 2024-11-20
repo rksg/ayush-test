@@ -10,7 +10,6 @@ import { ConfigTemplateDriftSet }           from '@acx-ui/rc/utils'
 
 import { DriftComparisonSet } from './DriftComparisonSet'
 import * as UI                from './styledComponents'
-import { DriftInstanceRow }   from './utils'
 
 export interface DriftInstanceProps {
   templateId: string
@@ -45,16 +44,20 @@ export function DriftInstance (props: DriftInstanceProps) {
     onCheckboxChange(selected)
   }, [selected])
 
-  const header = <div style={{ paddingTop: '12px', paddingBottom: '12px' }}>
-    <DriftInstanceRow
-      head={<Checkbox
+  const header = <div style={{
+    display: 'inline-flex', alignItems: 'center', width: '100%', padding: '8px 0'
+  }}>
+    <div style={{ flex: '0 0 26px' }}>
+      <Checkbox
         onChange={(e: CheckboxChangeEvent) => onCheckboxChange(e.target.checked)}
         onClick={(e) => e.stopPropagation()}
         checked={checked}
         disabled={!checked && disalbed}
-      />}
-      body={<span style={{ fontWeight: 'normal' }}>{instanceName}</span>}
-    />
+      />
+    </div>
+    <div style={{ flex: '1 1 auto' }}>
+      <span style={{ fontWeight: 'normal' }}>{instanceName}</span>
+    </div>
   </div>
 
   return <UI.DriftInstanceCollapse
