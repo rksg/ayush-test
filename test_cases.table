@@ -1,7 +1,7 @@
 run rc:test --coverage --maxWorkers=30% --noStackTrace --bail
-# Note: The above are examples, please don’t move
+# Note: The above are examples, please don’t move. It will not be executed.
 #
-# Please edit your unit test below
+# Please edit your unit test below,
 run rc:test --coverage --maxWorkers=30% --noStackTrace --bail
 run rc-components:test --coverage --maxWorkers=30% --noStackTrace --bail
 run-many --target=test --projects=main,main-components --coverage --maxWorkers=30% --noStackTrace --bail
