@@ -122,7 +122,7 @@ COPY tools/docker/nginx/nginx.conf \
   tools/docker/nginx/globalValues.json.template \
   /etc/nginx/
 
-COPY --from=build /app/dist/apps ./
+#COPY --from=build /app/dist/apps ./
 # Multistage: trigger run
 COPY --from=acx-ui-sonar-run /app/tests-done /tmp/
 
