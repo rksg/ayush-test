@@ -219,12 +219,14 @@ export function AddRecCustomer () {
       }
       const recCustomers=[] as MspRecData[]
       if (mspRecCustomer.length > 0) {
+        const pgIds = privilegeGroups?.map((pg: PrivilegeGroup)=> pg.id)
         mspRecCustomer.forEach((cus: MspRecCustomer) => {
           recCustomers.push({
             account_id: cus.account_id,
             name: cus.account_name,
             admin_delegations: delegations,
-            delegations: ecDelegations.length > 0 ? ecDelegations : undefined
+            delegations: ecDelegations.length > 0 ? ecDelegations : undefined,
+            privilege_group_ids: isRbacPhase2Enabled ? pgIds : undefined
           })
         })
       }

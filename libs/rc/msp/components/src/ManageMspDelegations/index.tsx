@@ -115,6 +115,8 @@ export const ManageMspDelegationDrawer = (props: ManageMspDelegationDrawerProps)
   const [ saveMspAdmins ] = useUpdateMspEcDelegationsMutation()
   const [ saveMspMultipleEcAdmins ] = useUpdateMspMultipleEcDelegationsMutation()
 
+  const hasAdminSelected = selectedUsers.length > 0 || (selectedPrivilegeGroups.length > 0 &&
+    selectedPrivilegeGroups.some(pg => (pg.admins?.length ?? 0) > 0))
   const handleSave = () => {
     if (!selectedUsers?.length && !selectedPrivilegeGroups?.length)
       return
@@ -228,7 +230,7 @@ export const ManageMspDelegationDrawer = (props: ManageMspDelegationDrawerProps)
   const footer =<div>
     <Button
       type='primary'
-      disabled={selectedUsers.length === 0 && selectedPrivilegeGroups.length === 0}
+      disabled={!hasAdminSelected}
       onClick={() => handleSave()}>
       {$t({ defaultMessage: 'Save' })}
     </Button>
