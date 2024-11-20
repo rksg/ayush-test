@@ -73,7 +73,7 @@ export type Intent = {
     statusReason: StatusReasons
     displayStatus: DisplayStates
     createdAt?: string
-    metadata?: Metadata
+    metadata: Metadata
   }>
   updatedAt: string
   currentValue: IntentConfigurationValue
