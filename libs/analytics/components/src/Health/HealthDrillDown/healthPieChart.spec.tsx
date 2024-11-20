@@ -246,7 +246,7 @@ describe('HealthPieChart', () => {
     expect(await screen.findByText('Detailed breakup of all items beyond Top 5 can be explored using Data Studio custom charts.')).toBeInTheDocument()
   })
 
-  it.only('should handle chart switching', async () => {
+  it('should handle chart switching', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', { data: mockConnectionFailureResponse })
     render(
       <Provider>
