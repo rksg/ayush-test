@@ -144,7 +144,7 @@ export const LicenseCompliance = (props: ComplianceProps) => {
         /> }
         {
           openLicenseTimelineDrawer && <Drawer
-            title={<>{$t({ defaultMessage: 'MSP Paid Licenses Timeline' })}</>}
+            title={<>{$t({ defaultMessage: 'Device Networking Paid Licenses' })}</>}
             visible={openLicenseTimelineDrawer}
             onClose={closeTimelineDrawer}
             footer={<Button

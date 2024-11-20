@@ -26,12 +26,11 @@ export default function LicenseTimelineGraph () {
 
   const { $t } = useIntl()
   const [chartOption, setChartOption] = useState<EChartsOption>({})
-  const [containerWidth, setContainerWidth] = useState<number | string>('inherit')
   const [chartTitle, setChartTitle] = useState<string>()
 
   const payload: MileageReportsRequestPayload = {
     page: 1,
-    pageSize: 36,
+    pageSize: 24, // this will return 24 months records
     filters: {
       usageType: 'ASSIGNED',
       licenseType: EntitlementDeviceType.APSW
@@ -47,8 +46,6 @@ export default function LicenseTimelineGraph () {
   useEffect(() => {
     if (queryResults?.data) {
       const dataList = queryResults?.data
-
-      dataList.length > 24 ? setContainerWidth(1380) : setContainerWidth('inherit')
 
       const months: string[] = []
       const years: number[] = []
@@ -121,7 +118,7 @@ export default function LicenseTimelineGraph () {
       <Subtitle level={4}
         style={{
           textAlign: 'center'
-        }}>{$t({ defaultMessage: 'Active Licenses Details' })}</Subtitle>
+        }}>{$t({ defaultMessage: 'Active Licenses' })}</Subtitle>
       <div style={{
         width: '200px',
         height: '100px',
@@ -181,7 +178,7 @@ export default function LicenseTimelineGraph () {
         type: 'value',
         name: $t({ defaultMessage: 'Active Licenses' }),
         nameLocation: 'middle',
-        nameGap: 35
+        nameGap: 45
       },
       series: [
         {
@@ -206,7 +203,7 @@ export default function LicenseTimelineGraph () {
           symbol: 'line',
           smooth: true
         },
-        // Dummy series for legend
+        // Dummy series to show extra legends
         ...dummySeries
       ],
       grid: {
@@ -243,8 +240,7 @@ export default function LicenseTimelineGraph () {
           overflowX: 'auto'
         }}><MixedChart
             style={{
-              width: containerWidth === 'inherit'
-                ? width : Math.max(width, containerWidth as number),
+              width,
               height }}
             option={chartOption} />
         </div>}</AutoSizer>
