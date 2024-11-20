@@ -2,23 +2,14 @@
 
 set -xe
 
-GROUP=$1
 RUN_COMMAND="node ./node_modules/.bin/nx"
-FILE="./test_cases.table"
 
-# Source the test cases file
-source $FILE
-
-    
-# Dynamically reference the group array
-declare -n nx_params=$GROUP
-
-# Loop through and execute each command
-for nx_param in "${nx_params[@]}"; do
-    cmd="${RUN_COMMAND} ${nx_param}"
-    echo "Executing: $cmd"
-    eval "$cmd"
-done
+${RUN_COMMAND} run rc:test --coverage --maxWorkers=30% --noStackTrace --bail
+${RUN_COMMAND} run rc-components:test --coverage --maxWorkers=30% --noStackTrace --bail
+${RUN_COMMAND} run-many --target=test --projects=main,main-components --coverage --maxWorkers=30% --noStackTrace --bail
+${RUN_COMMAND} run analytics-components:test --coverage --maxWorkers=30% --noStackTrace --bail
+${RUN_COMMAND} run-many --target=test --projects=msp,msp-components --coverage --maxWorkers=30% --noStackTrace --bail
+${RUN_COMMAND} run-many --target=test --all --exclude=rc,rc-components,main,analytics-components,msp,msp-components,main-components --coverage --maxWorkers=30% --noStackTrace --bail
 
 eval "mkdir -p /app/coverage"
 
