@@ -8,7 +8,7 @@ build:
       - image: acx-ui
         docker_image_name: acx-ui
         docker_image_tag: SNAPSHOT
-        dockerfile: Dockerfile.ui
+        dockerfile: Dockerfile.123
           #sonar:
           #    sonar_property: sonar-project.properties
           #    code_report_dir: /app/coverage

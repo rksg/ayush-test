@@ -1,0 +1,16 @@
+ARG GAR_DOCKER_ROOT_URL
+FROM ${GAR_DOCKER_ROOT_URL}/acx-service/acx-ui-cache/nx-cache:latest as nx-cache
+FROM ${GAR_DOCKER_ROOT_URL}/acx-service/baseimage/node:master--latest as build-base
+
+WORKDIR /app
+
+#COPY cicd_tools ./cicd_tools
+#COPY test_cases.table ./test_cases.table
+COPY . /app/
+RUN chmod a+x ./cicd_tools/run_test_cases_tool.sh
+
+ARG PRECOMMIT=true
+ARG GIT_COMMIT_BRANCH=master
+RUN if [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+       ./cicd_tools/run_test_cases_tool.sh; \
+    else mkdir -p /app/coverage; fi
