@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 
-import { Col, Row }       from 'antd'
-import { EChartsOption }  from 'echarts-for-react'
-import { renderToString } from 'react-dom/server'
-import { useIntl }        from 'react-intl'
-import AutoSizer          from 'react-virtualized-auto-sizer'
+import { Col, Row }                    from 'antd'
+import ReactECharts, { EChartsOption } from 'echarts-for-react'
+import { renderToString }              from 'react-dom/server'
+import { useIntl }                     from 'react-intl'
+import AutoSizer                       from 'react-virtualized-auto-sizer'
 
-import { Loader, MixedChart, Subtitle }                    from '@acx-ui/components'
+import { Loader, Subtitle }                                from '@acx-ui/components'
 import { DateFormatEnum, formatter }                       from '@acx-ui/formatter'
 import { useGetLicenseMileageReportsQuery }                from '@acx-ui/msp/services'
 import { MileageReportsRequestPayload, MileageSeriesData } from '@acx-ui/msp/utils'
@@ -238,11 +238,14 @@ export default function LicenseTimelineGraph () {
           width,
           height: 'auto',
           overflowX: 'auto'
-        }}><MixedChart
+        }}>
+          <ReactECharts
             style={{
               width,
               height }}
-            option={chartOption} />
+            option={chartOption}
+            opts={{ renderer: 'svg' }}
+          />
         </div>}</AutoSizer>
     </>
   </Loader>
