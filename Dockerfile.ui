@@ -21,18 +21,18 @@ COPY patches ./patches
 COPY tools/dev/eslint-custom-rule ./tools/dev/eslint-custom-rule
 RUN npm install
 
-#COPY .eslintignore \
-#  .eslintrc.json \
-#  babel.config.json \
-#  jest.config.ts \
-#  jest.preset.ts \
-#  jest.setup.js \
-#  jest.build.setup.js \
-#  nx.json \
-#  webpack.config.base.js \
-#  tsconfig.base.json \
-#  workspace.json \
-#  ./
+COPY .eslintignore \
+  .eslintrc.json \
+  babel.config.json \
+  jest.config.ts \
+  jest.preset.ts \
+  jest.setup.js \
+  jest.build.setup.js \
+  nx.json \
+  webpack.config.base.js \
+  tsconfig.base.json \
+  workspace.json \
+  ./
 
 #COPY .storybook ./.storybook
 #COPY apps ./apps
