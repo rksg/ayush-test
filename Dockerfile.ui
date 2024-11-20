@@ -99,7 +99,7 @@ ARG GIT_COMMIT_BRANCH=master
 ARG RUN_COMMAND="node ./node_modules/.bin/nx"
 RUN if [[ "$PRECOMMIT" == "true" || "$GIT_COMMIT_BRANCH" == "master" ]]; then \
         while IFS= read -r nx_param; do \
-            ${RUN_COMMAND} ${nx_param}; \
+            exec ${RUN_COMMAND} ${nx_param}; \
         done < ./test_cases.table; \
     else mkdir -p /app/coverage; fi
 
