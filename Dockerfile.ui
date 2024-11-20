@@ -34,9 +34,9 @@ COPY .eslintignore \
   workspace.json \
   ./
 
-#COPY .storybook ./.storybook
-#COPY apps ./apps
-#COPY libs ./libs
+COPY .storybook ./.storybook
+COPY apps ./apps
+COPY libs ./libs
 
 #ENV NODE_OPTIONS=--max-old-space-size=4096
 #ENV NX_CACHE_DIRECTORY=/app/node_modules/.cache/nx
