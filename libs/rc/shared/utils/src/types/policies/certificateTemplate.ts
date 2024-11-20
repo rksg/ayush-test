@@ -139,7 +139,8 @@ export interface Chromebook {
   type?: string
   projectId?: string
   clientEmail?: string
-  privateKeyId?: string
+  privateKeyId?: string,
+  enrollmentUrl?: string
 }
 
 export interface CertificateTemplateFormData extends CertificateTemplate {

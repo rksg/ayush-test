@@ -28,10 +28,11 @@ const macRegSearchDefaultPayload = {
 
 export function PersonaGroupForm (props: {
   form: FormInstance,
-  defaultValue?: PersonaGroup
+  defaultValue?: PersonaGroup,
+  requiredDpsk?: boolean
 }) {
   const { $t } = useIntl()
-  const { form, defaultValue } = props
+  const { form, defaultValue, requiredDpsk } = props
   const [macModalVisible, setMacModalVisible] = useState(false)
   const [dpskModalVisible, setDpskModalVisible] = useState(false)
   const onMacModalClose = () => setMacModalVisible(false)
@@ -107,7 +108,7 @@ export function PersonaGroupForm (props: {
             <Subtitle level={4}>{$t({ defaultMessage: 'Services' })}</Subtitle>
           </Col>
           <Col span={21}>
-            <Form.Item label={'DPSK Service'}>
+            <Form.Item label={'DPSK Service'} required={!!requiredDpsk}>
               <Form.Item
                 name='dpskPoolId'
                 children={
@@ -124,6 +125,12 @@ export function PersonaGroupForm (props: {
                         .map(pool => ({ value: pool.id, label: pool.name }))
                     }
                   />
+                }
+                rules={
+                  [{
+                    required: !!requiredDpsk,
+                    message: $t({ defaultMessage: 'Please select a DPSK Service' })
+                  }]
                 }
               />
             </Form.Item>

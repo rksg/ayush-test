@@ -225,6 +225,46 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
     await screen.findByText('Please enter DHCP Service')
   })
 
+  it('Step2 - Smart edge will be blocked by segment validation', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <PersonalIdentityNetworkFormContext.Provider
+          value={mockContextData}
+        >
+          <StepsForm onFinish={mockedFinishFn}>
+            <StepsForm.StepForm>
+              <SmartEdgeForm />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </PersonalIdentityNetworkFormContext.Provider>
+      </Provider>,
+      { route: { params, path: createPinPath } })
+
+    await user.selectOptions(
+      screen.getByRole('combobox', { name: 'Cluster' }),
+      await screen.findByRole('option', { name: 'Edge Cluster 1' })
+    )
+    const segmentsInput = screen.getByRole('spinbutton', { name: 'Number of Segments' })
+    await user.type(segmentsInput, '10001')
+    const devicesInput = screen.getByRole('spinbutton', { name: 'Number of devices per Segment' })
+    await user.type(devicesInput, '12')
+    const dhcpSelect = screen.getByRole('combobox', { name: 'DHCP Service' })
+    await waitFor(() => expect(dhcpSelect).not.toBeDisabled())
+    await user.selectOptions(
+      dhcpSelect,
+      await screen.findByRole('option', { name: 'TestDhcp-1' })
+    )
+    await user.click(await screen.findByRole('button', { name: 'Select Pool' }))
+    await user.click(screen.getByText('PoolTest1'))
+    await user.click(screen.getByRole('button', { name: 'Select' }))
+
+    await user.click((await screen.findAllByRole('button', { name: 'Add' }))[1])
+    const alerts = await screen.findAllByRole('alert')
+    expect(alerts[0]).toHaveTextContent('Number of Segments must be between 1 and 10000')
+    expect(alerts[1]).toHaveTextContent('Number of devices per Segment must be between 1 and 10')
+  })
+
   it('Step2 - Should navigate to detail page when in edit mode and click "service details page"', async () => {
     const user = userEvent.setup()
     render(

@@ -20,7 +20,10 @@ import {
   fakeIncidentAirtimeTxWithSameTime,
   fakeIncidentAirtimeTx,
   IncidentCode,
-  fakeIncidentDDoS
+  fakeIncidentDDoS,
+  fakeIncidentPortCongestion,
+  fakeIncidentUplinkPortCongestion,
+  fakeIncidentLoopDetection
 }                         from '@acx-ui/analytics/utils'
 import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { Provider }                            from '@acx-ui/store'
@@ -28,30 +31,33 @@ import { render, screen }                      from '@acx-ui/test-utils'
 import { RolesEnum, SwitchScopes, WifiScopes } from '@acx-ui/types'
 import { getUserProfile, setUserProfile }      from '@acx-ui/user'
 
-import * as fixtures               from './__tests__/fixtures'
-import { AirtimeB }                from './AirtimeB'
-import { AirtimeRx }               from './AirtimeRx'
-import { AirtimeTx }               from './AirtimeTx'
-import { ApinfraPoeLow }           from './ApinfraPoeLow'
-import { ApinfraWanthroughputLow } from './ApinfraWanthroughputLow'
-import { ApservContinuousReboots } from './ApservContinuousReboots'
-import { ApservDowntimeHigh }      from './ApservDowntimeHigh'
-import { ApservHighNumReboots }    from './ApservHighNumReboots'
-import { AssocFailure }            from './AssocFailure'
-import { AuthFailure }             from './AuthFailure'
-import { ChannelDist }             from './ChannelDist'
-import { CovClientrssiLow }        from './CovClientrssiLow'
-import { DhcpFailure }             from './DhcpFailure'
-import { EapFailure }              from './EapFailure'
-import { LoadSzCpuLoad }           from './LoadSzCpuLoad'
-import { NetSzNetLatency }         from './NetSzNetLatency'
-import { NetTime }                 from './NetTime'
-import { RadiusFailure }           from './RadiusFailure'
-import { SwitchMemoryHigh }        from './SwitchMemoryHigh'
-import { SwitchPoePd }             from './SwitchPoePd'
-import { SwitchTcpSynDDoS }        from './SwitchTcpSynDDoS'
-import { SwitchVlanMismatch }      from './SwitchVlanMismatch'
-import { Ttc }                     from './Ttc'
+import * as fixtures                  from './__tests__/fixtures'
+import { AirtimeB }                   from './AirtimeB'
+import { AirtimeRx }                  from './AirtimeRx'
+import { AirtimeTx }                  from './AirtimeTx'
+import { ApinfraPoeLow }              from './ApinfraPoeLow'
+import { ApinfraWanthroughputLow }    from './ApinfraWanthroughputLow'
+import { ApservContinuousReboots }    from './ApservContinuousReboots'
+import { ApservDowntimeHigh }         from './ApservDowntimeHigh'
+import { ApservHighNumReboots }       from './ApservHighNumReboots'
+import { AssocFailure }               from './AssocFailure'
+import { AuthFailure }                from './AuthFailure'
+import { ChannelDist }                from './ChannelDist'
+import { CovClientrssiLow }           from './CovClientrssiLow'
+import { DhcpFailure }                from './DhcpFailure'
+import { EapFailure }                 from './EapFailure'
+import { LoadSzCpuLoad }              from './LoadSzCpuLoad'
+import { NetSzNetLatency }            from './NetSzNetLatency'
+import { NetTime }                    from './NetTime'
+import { RadiusFailure }              from './RadiusFailure'
+import { SwitchLoopDetection }        from './SwitchLoopDetection'
+import { SwitchMemoryHigh }           from './SwitchMemoryHigh'
+import { SwitchPoePd }                from './SwitchPoePd'
+import { SwitchPortCongestion }       from './SwitchPortCongestion'
+import { SwitchTcpSynDDoS }           from './SwitchTcpSynDDoS'
+import { SwitchUplinkPortCongestion } from './SwitchUplinkPortCongestion'
+import { SwitchVlanMismatch }         from './SwitchVlanMismatch'
+import { Ttc }                        from './Ttc'
 
 
 jest.mock('./MuteIncident', () => ({ MuteIncident: () => <div data-testid='muteIncident' /> }))
@@ -202,6 +208,27 @@ describe('Test', () => {
         hasNetworkImpact: false,
         hasTimeSeries: true,
         charts: ['impactedSwitchDDoSTable','impactedSwitchDDoSDonut']
+      },
+      {
+        component: SwitchLoopDetection,
+        fakeIncident: fakeIncidentLoopDetection,
+        hasNetworkImpact: false,
+        hasTimeSeries: false,
+        charts: []
+      },
+      {
+        component: SwitchPortCongestion,
+        fakeIncident: fakeIncidentPortCongestion,
+        hasNetworkImpact: false,
+        hasTimeSeries: false,
+        charts: []
+      },
+      {
+        component: SwitchUplinkPortCongestion,
+        fakeIncident: fakeIncidentUplinkPortCongestion,
+        hasNetworkImpact: false,
+        hasTimeSeries: false,
+        charts: []
       },
       {
         component: Ttc,
@@ -375,20 +402,40 @@ describe('Test', () => {
     })
   })
   describe('Feature Flag Off', () => {
-    test('it should not render anything for SwitchTcpSynDDoS', () => {
-      const test = {
-        component: SwitchTcpSynDDoS,
-        fakeIncident: fakeIncidentDDoS,
-        hasNetworkImpact: false,
-        hasTimeSeries: true,
-        charts: ['impactedSwitchDDoSTable','impactedSwitchDDoSDonut']
-      }
+    [{
+      component: SwitchTcpSynDDoS,
+      fakeIncident: fakeIncidentDDoS,
+      hasNetworkImpact: false,
+      hasTimeSeries: true,
+      charts: ['impactedSwitchDDoSTable','impactedSwitchDDoSDonut']
+    },
+    {
+      component: SwitchLoopDetection,
+      fakeIncident: fakeIncidentLoopDetection,
+      hasNetworkImpact: false,
+      hasTimeSeries: false,
+      charts: []
+    },
+    {
+      component: SwitchPortCongestion,
+      fakeIncident: fakeIncidentPortCongestion,
+      hasNetworkImpact: false,
+      hasTimeSeries: false,
+      charts: []
+    },
+    {
+      component: SwitchUplinkPortCongestion,
+      fakeIncident: fakeIncidentUplinkPortCongestion,
+      hasNetworkImpact: false,
+      hasTimeSeries: false,
+      charts: []
+    }].forEach((test) => it(`should not render anything for ${test.component.name}`, () => {
       jest.mocked(useIsSplitOn).mockReturnValue(false)
       const params = { incidentId: test.fakeIncident.id }
       const { asFragment } = render(<Provider>
         <test.component {...test.fakeIncident} />
       </Provider>, { route: { params } })
       expect(asFragment()).toMatchSnapshot()
-    })
+    }))
   })
 })
