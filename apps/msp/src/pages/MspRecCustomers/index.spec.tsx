@@ -4,6 +4,7 @@ import { Path, rest } from 'msw'
 
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { MspAdministrator, MspRbacUrlsInfo, MspUrlsInfo }         from '@acx-ui/msp/utils'
+import { PrivilegeGroup }                                         from '@acx-ui/rc/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, within, waitFor } from '@acx-ui/test-utils'
 import { RolesEnum }                                              from '@acx-ui/types'
@@ -279,6 +280,10 @@ describe('MspRecCustomers', () => {
     })
     rcServices.useGetPrivilegeGroupsWithAdminsQuery = jest.fn().mockImplementation(() => {
       return { data: fakedPrivilegeGroupList }
+    })
+    const emptyPGList: PrivilegeGroup[] = []
+    rcServices.useGetMspEcDelegatePrivilegeGroupsQuery = jest.fn().mockImplementation(() => {
+      return { data: emptyPGList }
     })
     jest.spyOn(services, 'useMspCustomerListQuery')
     jest.spyOn(services, 'useSupportMspCustomerListQuery')
