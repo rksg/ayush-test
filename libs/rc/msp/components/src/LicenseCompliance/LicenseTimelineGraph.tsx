@@ -6,7 +6,7 @@ import { renderToString }              from 'react-dom/server'
 import { useIntl }                     from 'react-intl'
 import AutoSizer                       from 'react-virtualized-auto-sizer'
 
-import { Loader, Subtitle }                                from '@acx-ui/components'
+import { cssStr, Loader, Subtitle }                        from '@acx-ui/components'
 import { DateFormatEnum, formatter }                       from '@acx-ui/formatter'
 import { useGetLicenseMileageReportsQuery }                from '@acx-ui/msp/services'
 import { MileageReportsRequestPayload, MileageSeriesData } from '@acx-ui/msp/utils'
@@ -40,7 +40,9 @@ export default function LicenseTimelineGraph () {
   const { data: queryResults, isLoading } = useGetLicenseMileageReportsQuery(
     { payload })
 
-  const colors = ['#8edafb', '#01a7f0', '#0082cf']
+  const colors = [cssStr('--acx-accents-blue-20'),
+    cssStr('--acx-viz-qualitative-1'),
+    cssStr('--acx-accents-blue-55')]
 
 
   useEffect(() => {
@@ -151,7 +153,7 @@ export default function LicenseTimelineGraph () {
         trigger: 'item',
         triggerOn: 'click',
         position: 'top',
-        borderColor: '#ccc',
+        borderColor: cssStr('--acx-neutrals-40'),
         formatter: tooltipFormatter,
         enterable: true
       },
@@ -198,7 +200,7 @@ export default function LicenseTimelineGraph () {
           type: 'line',
           data: lineData,
           itemStyle: {
-            color: '#FF4500'
+            color: cssStr('--acx-viz-qualitative-2')
           },
           symbol: 'line',
           smooth: true
@@ -228,7 +230,7 @@ export default function LicenseTimelineGraph () {
           textAlign: 'center',
           fontSize: 14,
           fontWeight: 650,
-          color: '#555555',
+          color: cssStr('--acx-neutrals-70'),
           margin: '0px'
         }}>
         {chartTitle}
