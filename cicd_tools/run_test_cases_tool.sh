@@ -4,7 +4,7 @@ RUN_COMMAND="node ./node_modules/.bin/nx"
 
 set -xe
 
-${RUN_COMMAND} run rc:test --coverage --maxWorkers=30% --noStackTrace --bail
+node ./node_modules/.bin/nx run rc:test --coverage --maxWorkers=30% --noStackTrace --bail
 #${RUN_COMMAND} run rc-components:test --coverage --maxWorkers=30% --noStackTrace --bail
 #${RUN_COMMAND} run-many --target=test --projects=main,main-components --coverage --maxWorkers=30% --noStackTrace --bail
 #${RUN_COMMAND} run analytics-components:test --coverage --maxWorkers=30% --noStackTrace --bail
