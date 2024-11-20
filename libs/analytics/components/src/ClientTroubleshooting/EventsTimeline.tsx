@@ -7,15 +7,13 @@ import { flatten }                    from 'lodash'
 import moment                         from 'moment-timezone'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
-import { Incident, overlapsRollup }       from '@acx-ui/analytics/utils'
-import { Tooltip }                        from '@acx-ui/components'
-import { getIsBtmEventsOn, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { useDateFilter }                  from '@acx-ui/utils'
+import { Incident, overlapsRollup } from '@acx-ui/analytics/utils'
+import { Tooltip }                  from '@acx-ui/components'
+import { useDateFilter }            from '@acx-ui/utils'
 
 import { useIncidentToggles } from '../useIncidentToggles'
 
 import {
-  ClientTroubleShootingConfig,
   TYPES,
   Event,
   TimelineData,
@@ -29,6 +27,7 @@ import {
 import { ClientInfoData, ConnectionEvent } from './services'
 import * as UI                             from './styledComponents'
 import { TimelineChart, granularityText }  from './TimelineChart'
+import useClientTroubleshootingConfig      from './useClientTroubleshootingConfig'
 import {
   transformEvents,
   transformConnectionQualities,
@@ -43,7 +42,7 @@ import {
 
 import { Filters } from '.'
 
-type TimeLineProps = {
+type TimelineProps = {
   data?: ClientInfoData;
   filters: Filters;
   setEventState: (event: DisplayEvent) => void,
@@ -64,11 +63,15 @@ export const checkRollup = (value: string, startDate: string) => {
   && (value === 'roaming' || value === 'connectionQuality')
 }
 
-export function TimeLine (props: TimeLineProps) {
+export function Timeline (props: TimelineProps) {
   const { $t } = useIntl()
   const intl = useIntl()
   const toggles = useIncidentToggles()
-  const isBtmEventsEnabled = getIsBtmEventsOn(useIsSplitOn)
+  const {
+    clientTroubleshootingConfigType: { timeline },
+    isBtmEventsOn
+  } = useClientTroubleshootingConfig()
+
   const {
     data, filters, connectChart, sharedChartName, onChartReady,
     popoverRef, setEventState, setVisible
@@ -127,7 +130,7 @@ export function TimeLine (props: TimeLineProps) {
     />
   }
 
-  const timelineData = getTimelineData(events, incidents, toggles, isBtmEventsEnabled)
+  const timelineData = getTimelineData(events, incidents, toggles, isBtmEventsOn)
   const roamingEventsAps = connectionDetailsByAP(
     data?.connectionDetailsByAp as RoamingByAP[]
   ) as RoamingConfigParam
@@ -146,13 +149,14 @@ export function TimeLine (props: TimeLineProps) {
     <Row gutter={[16, 16]} wrap={false}>
       <Col flex='200px'>
         <Row gutter={[16, 16]} style={{ rowGap: '4px' }}>
-          {ClientTroubleShootingConfig.timeLine
+          {timeline
             .filter(({ isVisible }) => isVisible())
             .map((config, index) => {
-              const subtitles =
-                (config.value === TYPES.ROAMING
+              const subtitles = (
+                config.value === TYPES.ROAMING
                   ? getRoamingSubtitleConfig(roamingEventsAps)
-                  : config?.subtitle)?.filter(({ isVisible }) => isVisible(useIsSplitOn))
+                  : config?.subtitle
+              )?.filter(({ isVisible }) => isVisible())
 
               return (
                 <React.Fragment key={index}>
@@ -228,11 +232,11 @@ export function TimeLine (props: TimeLineProps) {
       </Col>
       <Col flex='auto'>
         <Row gutter={[16, 16]} style={{ rowGap: 0 }}>
-          {ClientTroubleShootingConfig.timeLine
+          {timeline
             .filter(({ isVisible }) => isVisible())
             .map((config, index) => {
               const chartMapping = config.chartMapping.filter(({ isVisible }) =>
-                isVisible(useIsSplitOn)
+                isVisible()
               )
               return (
                 <Col span={24} key={config.value}>

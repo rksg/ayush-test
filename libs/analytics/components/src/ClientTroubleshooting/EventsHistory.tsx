@@ -5,12 +5,11 @@ import { flatten }            from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
-import { get }                            from '@acx-ui/config'
-import { getIsBtmEventsOn, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }      from '@acx-ui/formatter'
-import { ArrowCollapse }                  from '@acx-ui/icons'
-import { TenantLink }                     from '@acx-ui/react-router-dom'
-import { hasAccess, hasRaiPermission }    from '@acx-ui/user'
+import { get }                         from '@acx-ui/config'
+import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
+import { ArrowCollapse }               from '@acx-ui/icons'
+import { TenantLink }                  from '@acx-ui/react-router-dom'
+import { hasAccess, hasRaiPermission } from '@acx-ui/user'
 
 import {
   btmEventCategories,
@@ -21,6 +20,7 @@ import {
 import { ConnectionEventPopover }                                             from './ConnectionEvent'
 import { ClientInfoData }                                                     from './services'
 import * as UI                                                                from './styledComponents'
+import useClientTroubleshootingConfig                                         from './useClientTroubleshootingConfig'
 import { transformEvents,formatEventDesc, transformIncidents, getEventColor } from './util'
 
 import { Filters } from '.'
@@ -139,9 +139,9 @@ export function History (props : HistoryContentProps) {
   const intl = useIntl()
   const { $t } = intl
   const { setHistoryContentToggle, historyContentToggle, data, filters, onPanelCallback } = props
-  const isBtmEventsEnabled = getIsBtmEventsOn(useIsSplitOn)
+  const { isBtmEventsOn } = useClientTroubleshootingConfig()
 
-  const histData = transformData(data!, filters!, intl, isBtmEventsEnabled)
+  const histData = transformData(data!, filters!, intl, isBtmEventsOn)
   return (
     <UI.History>
       <UI.HistoryHeader>
