@@ -109,31 +109,31 @@ WORKDIR /app
 RUN touch tests-done
 
 ###############################################################
-FROM ${GAR_CONTAINER_URL}nginx:1.21.6-alpine
+#FROM ${GAR_CONTAINER_URL}nginx:1.21.6-alpine
 
-WORKDIR /usr/share/nginx/html
+#WORKDIR /usr/share/nginx/html
 
 # Remove default nginx static assets
-RUN rm -rf ./*
+#RUN rm -rf ./*
 
-COPY tools/docker/nginx/conf.d/* /etc/nginx/conf.d/
-COPY tools/docker/nginx/nginx.conf \
-  tools/docker/nginx/start-nginx.sh \
-  tools/docker/nginx/globalValues.json.template \
-  /etc/nginx/
+#COPY tools/docker/nginx/conf.d/* /etc/nginx/conf.d/
+#COPY tools/docker/nginx/nginx.conf \
+#  tools/docker/nginx/start-nginx.sh \
+#  tools/docker/nginx/globalValues.json.template \
+#  /etc/nginx/
 
 #COPY --from=build /app/dist/apps ./
 # Multistage: trigger run
-COPY --from=acx-ui-sonar-run /app/tests-done /tmp/
+#COPY --from=acx-ui-sonar-run /app/tests-done /tmp/
 
-RUN \
+#RUN \
   # Create structure to match deployment need
-  mkdir -p tenant/t && \
-  # Move all files into it
-  mv -v main/* tenant/t/. && \
-  # Remove the main folder
-  rm -rf main
+#  mkdir -p tenant/t && \
+#  # Move all files into it
+#  mv -v main/* tenant/t/. && \
+#  # Remove the main folder
+#  rm -rf main
 
-EXPOSE 8080
+#EXPOSE 8080
 
-CMD ["/bin/sh", "/etc/nginx/start-nginx.sh"]
+#CMD ["/bin/sh", "/etc/nginx/start-nginx.sh"]
