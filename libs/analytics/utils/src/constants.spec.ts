@@ -94,7 +94,10 @@ describe('constants', () => {
     it('should return wired and wireless codes when no active toggles', () => {
       const toggles = {
         [IncidentToggle.AirtimeIncidents]: false,
-        [IncidentToggle.SwitchDDoSIncidents]: false
+        [IncidentToggle.SwitchDDoSIncidents]: false,
+        [IncidentToggle.SwitchLoopDetectionIncidents]: false,
+        [IncidentToggle.SwitchPortCongestionIncidents]: false,
+        [IncidentToggle.SwitchUplinkPortCongestionIncidents]: false
       }
       expect(getWiredWirelessIncidentCodes(toggles)).toEqual([
         [
@@ -125,17 +128,23 @@ describe('constants', () => {
         ]
       ])
     })
-    it('should return wired and wireless codes when active switch DDoS toggle', () => {
+    it('should return wired and wireless codes when active all switch related toggle', () => {
       const toggles = {
         [IncidentToggle.AirtimeIncidents]: false,
-        [IncidentToggle.SwitchDDoSIncidents]: true
+        [IncidentToggle.SwitchDDoSIncidents]: true,
+        [IncidentToggle.SwitchLoopDetectionIncidents]: true,
+        [IncidentToggle.SwitchPortCongestionIncidents]: true,
+        [IncidentToggle.SwitchUplinkPortCongestionIncidents]: true
       }
       expect(getWiredWirelessIncidentCodes(toggles)).toEqual([
         [
           'p-switch-memory-high',
           'i-switch-vlan-mismatch',
           'i-switch-poe-pd',
-          's-switch-tcp-syn-ddos'
+          's-switch-tcp-syn-ddos',
+          'i-switch-loop-detection',
+          'p-switch-port-congestion',
+          'p-switch-uplink-port-congestion'
         ],
         [
           'ttc',
