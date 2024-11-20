@@ -2,7 +2,6 @@ import { Demo } from '@acx-ui/rc/utils'
 
 import PortalButtonContent from './PortalContent/PortalButtonContent'
 import * as UI             from './styledComponents'
-import { Label, ViewSectionTitle } from './styledComponents';
 
 export default function PortalViewDirectoryLogin (props:{
   demoValue: Demo,
