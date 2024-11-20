@@ -211,7 +211,7 @@ export function SwitchConfigHistoryTable (props: {
     <Loader states={[tableQuery]}>
       <Table
         settingsId={settingsId}
-        rowKey={(record) => record.transactionId + record.configType}
+        rowKey={(record) => record.transactionId + '_' + record.configType + '_' + record.rawStartTime}
         columns={getCols()}
         dataSource={tableQuery.data?.data ?? []}
         pagination={tableQuery.pagination}
