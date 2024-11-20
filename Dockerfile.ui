@@ -101,7 +101,7 @@ ARG GIT_COMMIT_BRANCH=master
 #        ./cicd_tools/run_test_cases_tool.sh; \
 #    else mkdir -p /app/coverage; fi
 
-RUN ./cicd_tools/run_test_cases_tool.sh
+RUN eval ./cicd_tools/run_test_cases_tool.sh
 
 FROM build-base as acx-ui-sonar-run
 COPY --from=acx-ui-group-test /app/coverage /app/coverage
