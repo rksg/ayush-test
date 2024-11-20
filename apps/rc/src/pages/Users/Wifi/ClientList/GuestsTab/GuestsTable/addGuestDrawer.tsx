@@ -391,7 +391,7 @@ export function GuestFields ({ withBasicFields = true, from }: { withBasicFields
     <Divider style={{ margin: '4px 0px 20px', background: cssStr('--acx-neutrals-30') }}/>
     <Form.Item
       name={'wifiNetworkId'}
-      label={$t({ defaultMessage: 'Network' })}
+      label={$t({ defaultMessage: 'Allowed Network' })}
       rules={[
         { required: true }
       ]}
