@@ -3,7 +3,8 @@ import { useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Select } from '@acx-ui/components'
+import { Select }          from '@acx-ui/components'
+import { compareVersions } from '@acx-ui/utils'
 
 import { ApModelIndividualDisplayDataType } from '../venueFirmwareListPerApModelUtils'
 
@@ -30,9 +31,9 @@ export function UpdateFirmwarePerApModelIndividual (props: UpdateFirmwarePerApMo
 
   const resolvedVersionOptions = isUpgrade
     ? versionOptions
-    : versionOptions // When donwgrade, only show the last 4 versions and sort by release date
-      .sort((a, b) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime())
-      .slice(0, 4)
+    : versionOptions
+      .sort((a, b) => -compareVersions(a.key, b.key))
+      .slice(0, 4) // When donwgrade, only show the last 4 versions and sort by firmware version
 
   const [ filteredOptions, setFilteredOptions ] = useState(resolvedVersionOptions)
 
