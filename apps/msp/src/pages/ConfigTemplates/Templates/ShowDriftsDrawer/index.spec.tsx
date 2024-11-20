@@ -9,7 +9,7 @@ import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within 
 
 import { mockedConfigTemplate, mockedDriftTenants, mockedMSPCustomers } from './__tests__/fixtures'
 
-import { ShowDriftsDrawer } from '.'
+import { SelectedCustomersIndicator, ShowDriftsDrawer } from '.'
 
 describe('ShowDriftsDrawer', () => {
   beforeEach(() => {
@@ -87,10 +87,7 @@ describe('ShowDriftsDrawer', () => {
       }
     })
 
-    expect(
-      // eslint-disable-next-line max-len
-      screen.getByRole('button', { name: new RegExp(`(${mockedMSPCustomers.data.length} selected)`) })
-    ).toBeInTheDocument()
+    expect(screen.getByText(`${mockedMSPCustomers.data.length} selected`)).toBeInTheDocument()
 
     // Uncheck all instances
     await userEvent.click(selectAllElement)
@@ -163,6 +160,19 @@ describe('ShowDriftsDrawer', () => {
 
     await waitFor(() => {
       expect(mockPatchDriftReportFn).toHaveBeenCalledTimes(mockedDriftTenants.data.length)
+    })
+  })
+
+  describe('SelectedCustomersIndicator', () => {
+    it('should render the selected customer indicator when the instance is selected', async () => {
+      render(<SelectedCustomersIndicator selectedCount={1} />)
+      expect(await screen.findByText('1 selected')).toBeInTheDocument()
+    })
+
+    it('should render nothing when selectedCount is 0', () => {
+      const { container } = render(<SelectedCustomersIndicator selectedCount={0} />)
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(container.firstChild).toBeNull()
     })
   })
 })

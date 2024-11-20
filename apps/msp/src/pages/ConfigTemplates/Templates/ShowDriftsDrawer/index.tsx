@@ -17,6 +17,7 @@ import { MAX_SYNC_EC_TENANTS } from '../../constants'
 import { useEcFilters }        from '../templateUtils'
 
 import { DriftInstance }    from './DriftInstance'
+import * as UI              from './styledComponents'
 import { DriftInstanceRow } from './utils'
 
 export interface ShowDriftsDrawerProps {
@@ -89,10 +90,6 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
       type='primary'
     >
       <span>{$t({ defaultMessage: 'Sync' })}</span>
-      {selectedInstances.length > 0 &&
-      <span>
-        {$t({ defaultMessage: '({count} selected)' }, { count: selectedInstances.length })}
-      </span>}
     </Button>
     <Button onClick={() => onClose()}>
       {$t({ defaultMessage: 'Cancel' })}
@@ -169,11 +166,22 @@ function Toolbar (props: ToolbarProps) {
   </Row>
 }
 
+export function SelectedCustomersIndicator (props: { selectedCount: number }) {
+  const { selectedCount } = props
+  const { $t } = useIntl()
+
+  if (selectedCount === 0) return null
+
+  return <UI.SelectedCustomersIndicator>
+    { $t({ defaultMessage: '{num} selected' }, { num: selectedCount }) }
+  </UI.SelectedCustomersIndicator>
+}
+
 function DriftInstanceListHeader (props: {
   onSyncAllChange: (e: CheckboxChangeEvent) => void,
   selectedCount: number
 }) {
-  const { onSyncAllChange } = props
+  const { onSyncAllChange, selectedCount } = props
   const { $t } = useIntl()
 
   return <Space direction='vertical' style={{ width: '100%' }}>
@@ -190,6 +198,7 @@ function DriftInstanceListHeader (props: {
         </span>
       </Space>}
     />
+    <SelectedCustomersIndicator selectedCount={selectedCount} />
   </Space>
 }
 
