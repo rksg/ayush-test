@@ -1,4 +1,4 @@
-import { EdgeTnmGraphTypeEnum } from '../../models/EdgeTnmServiceEnum'
+import { EdgeTnmGraphTypeEnum, EdgeTnmServiceStatusEnum } from '../../models/EdgeTnmServiceEnum'
 
 export interface EdgeTnmServiceSetting {
   tenantId?: string
@@ -11,7 +11,7 @@ export interface EdgeTnmServiceData {
   venueId?: string
   name?: string
   version?: string
-  status?: string
+  status?: EdgeTnmServiceStatusEnum
 }
 export interface EdgeTnmCreateFormData {
   venueId: string
