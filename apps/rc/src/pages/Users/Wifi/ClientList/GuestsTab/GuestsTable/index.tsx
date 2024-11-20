@@ -162,15 +162,12 @@ export const GuestsTable = () => {
     if (networkListQuery.data?.data) {
       const networks = networkListQuery.data?.data ?? []
       const networksWithGuestPass = networks.filter(network => {
-        if (network.captiveType) {
-          return [
-            GuestNetworkTypeEnum.GuestPass,
-            GuestNetworkTypeEnum.HostApproval,
-            GuestNetworkTypeEnum.SelfSignIn,
-            GuestNetworkTypeEnum.Directory
-          ].includes(network.captiveType)
-        }
-        return false
+        return [
+          GuestNetworkTypeEnum.GuestPass,
+          GuestNetworkTypeEnum.HostApproval,
+          GuestNetworkTypeEnum.SelfSignIn,
+          GuestNetworkTypeEnum.Directory
+        ].includes(network.captiveType ?? GuestNetworkTypeEnum.GuestPass)
       })
       setGuestNetworkList(networks)
       setAllowedNetworkList(networksWithGuestPass)
@@ -574,7 +571,7 @@ export const renderGuestType = (value: string) => {
     case GuestTypesEnum.SELF_SIGN_IN:
       result = $t({ defaultMessage: 'Self Sign In' })
       break
-    case GuestTypesEnum.Directory:
+    case GuestTypesEnum.DIRECTORY:
       result = $t({ defaultMessage: 'Directory' })
       break
     default:
