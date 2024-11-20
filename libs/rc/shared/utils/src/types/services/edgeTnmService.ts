@@ -1,4 +1,4 @@
-import { EdgeTnmGraphTypeEnum } from '../../models/EdgeTnmServiceEnum'
+import { EdgeTnmGraphTypeEnum, EdgeTnmServiceStatusEnum } from '../../models/EdgeTnmServiceEnum'
 
 export interface EdgeTnmServiceSetting {
   tenantId?: string
@@ -11,7 +11,7 @@ export interface EdgeTnmServiceData {
   venueId?: string
   name?: string
   version?: string
-  status?: string
+  status?: EdgeTnmServiceStatusEnum
 }
 export interface EdgeTnmCreateFormData {
   venueId: string
@@ -151,4 +151,28 @@ export interface EdgeTnmHostFormData {
     ip: string,
     port: string
   }
+}
+
+export interface EdgeTnmGraphItem {
+  gitemid: string
+  graphid: string
+  itemid: string
+  drawtype: string
+  sortorder: string
+  color: string
+  yaxisside: string
+  calc_fnc: string
+  type: string
+}
+
+export interface EdgeTnmGraphItemInfo {
+  itemid: string
+  name: string
+}
+
+export interface EdgeTnmGraphHistory {
+  itemid: string
+  clock: string
+  value: string
+  ns: string
 }

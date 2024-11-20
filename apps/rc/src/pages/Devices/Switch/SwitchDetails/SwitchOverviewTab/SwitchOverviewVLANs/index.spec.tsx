@@ -124,7 +124,7 @@ describe('Switch Overview VLAN', () => {
       expect(await screen.findByText(/Add VLAN/i)).toBeVisible()
       expect(await screen.findByText(/Default VLAN settings/i)).toBeVisible()
       expect(await screen.findByText(/111/i)).toBeVisible()
-      expect(await screen.findAllByRole('radio')).toHaveLength(6)
+      expect(await screen.findAllByRole('radio')).toHaveLength(vlanList.data.length)
 
       const vlan555 = await screen.findByRole('row', { name: /555/i }) // LAG
       await userEvent.click(await within(vlan555).findByRole('radio'))
@@ -294,6 +294,24 @@ describe('Switch Overview VLAN', () => {
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       expect(await screen.findByText(/111/i)).toBeVisible()
       expect(screen.queryAllByRole('radio')).toHaveLength(0)
+    })
+
+    it('should not allowed to delete auth default vlan', async () => {
+      render(<Provider><SwitchOverviewVLANs switchDetail={switchDetails}/>
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/overview/vlans'
+        }
+      })
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(await screen.findByText(/111/i)).toBeVisible()
+      expect(await screen.findAllByRole('radio')).toHaveLength(vlanList.data.length)
+
+      const vlan777 = await screen.findByRole('row', { name: /777/i }) // Auth default vlan
+      await userEvent.click(await within(vlan777).findByRole('radio'))
+      expect(screen.queryByRole('button', { name: 'Delete' })).toBeNull()
     })
   })
 

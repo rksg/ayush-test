@@ -18971,7 +18971,7 @@ exports[`Test Details should render SwitchLoopDetection correctly 1`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Loop detection found in Venue: GRP2
+          Loop detected in Venue: GRP2
         </span>
       </div>
     </div>
@@ -19139,7 +19139,7 @@ exports[`Test Details should render SwitchLoopDetection correctly 1`] = `
                             <span
                               class=""
                             >
-                              Loop detection
+                              Loop Detection
                             </span>
                           </span>
                         </div>

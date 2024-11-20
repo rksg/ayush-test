@@ -210,6 +210,13 @@ describe('Test', () => {
         charts: ['impactedSwitchDDoSTable','impactedSwitchDDoSDonut']
       },
       {
+        component: SwitchLoopDetection,
+        fakeIncident: fakeIncidentLoopDetection,
+        hasNetworkImpact: false,
+        hasTimeSeries: false,
+        charts: []
+      },
+      {
         component: SwitchPortCongestion,
         fakeIncident: fakeIncidentPortCongestion,
         hasNetworkImpact: false,
@@ -219,13 +226,6 @@ describe('Test', () => {
       {
         component: SwitchUplinkPortCongestion,
         fakeIncident: fakeIncidentUplinkPortCongestion,
-        hasNetworkImpact: false,
-        hasTimeSeries: false,
-        charts: []
-      },
-      {
-        component: SwitchLoopDetection,
-        fakeIncident: fakeIncidentLoopDetection,
         hasNetworkImpact: false,
         hasTimeSeries: false,
         charts: []
@@ -402,65 +402,40 @@ describe('Test', () => {
     })
   })
   describe('Feature Flag Off', () => {
-    test('should not render anything for SwitchTcpSynDDoS', () => {
-      const test = {
-        component: SwitchTcpSynDDoS,
-        fakeIncident: fakeIncidentDDoS,
-        hasNetworkImpact: false,
-        hasTimeSeries: true,
-        charts: ['impactedSwitchDDoSTable','impactedSwitchDDoSDonut']
-      }
+    [{
+      component: SwitchTcpSynDDoS,
+      fakeIncident: fakeIncidentDDoS,
+      hasNetworkImpact: false,
+      hasTimeSeries: true,
+      charts: ['impactedSwitchDDoSTable','impactedSwitchDDoSDonut']
+    },
+    {
+      component: SwitchLoopDetection,
+      fakeIncident: fakeIncidentLoopDetection,
+      hasNetworkImpact: false,
+      hasTimeSeries: false,
+      charts: []
+    },
+    {
+      component: SwitchPortCongestion,
+      fakeIncident: fakeIncidentPortCongestion,
+      hasNetworkImpact: false,
+      hasTimeSeries: true,
+      charts: []
+    },
+    {
+      component: SwitchUplinkPortCongestion,
+      fakeIncident: fakeIncidentUplinkPortCongestion,
+      hasNetworkImpact: false,
+      hasTimeSeries: false,
+      charts: []
+    }].forEach((test) => it(`should not render anything for ${test.component.name}`, () => {
       jest.mocked(useIsSplitOn).mockReturnValue(false)
       const params = { incidentId: test.fakeIncident.id }
       const { asFragment } = render(<Provider>
         <test.component {...test.fakeIncident} />
       </Provider>, { route: { params } })
       expect(asFragment()).toMatchSnapshot()
-    })
-    test('should not render anything for SwitchPortCongestion', () => {
-      const test = {
-        component: SwitchPortCongestion,
-        fakeIncident: fakeIncidentPortCongestion,
-        hasNetworkImpact: false,
-        hasTimeSeries: true,
-        charts: []
-      }
-      jest.mocked(useIsSplitOn).mockReturnValue(false)
-      const params = { incidentId: test.fakeIncident.id }
-      const { asFragment } = render(<Provider>
-        <test.component {...test.fakeIncident} />
-      </Provider>, { route: { params } })
-      expect(asFragment()).toMatchSnapshot()
-    })
-    test('should not render anything for SwitchUplinkPortCongestion', () => {
-      const test = {
-        component: SwitchUplinkPortCongestion,
-        fakeIncident: fakeIncidentUplinkPortCongestion,
-        hasNetworkImpact: false,
-        hasTimeSeries: false,
-        charts: []
-      }
-      jest.mocked(useIsSplitOn).mockReturnValue(false)
-      const params = { incidentId: test.fakeIncident.id }
-      const { asFragment } = render(<Provider>
-        <test.component {...test.fakeIncident} />
-      </Provider>, { route: { params } })
-      expect(asFragment()).toMatchSnapshot()
-    })
-    test('should not render anything for SwitchLoopDetection', () => {
-      const test = {
-        component: SwitchLoopDetection,
-        fakeIncident: fakeIncidentLoopDetection,
-        hasNetworkImpact: false,
-        hasTimeSeries: false,
-        charts: []
-      }
-      jest.mocked(useIsSplitOn).mockReturnValue(false)
-      const params = { incidentId: test.fakeIncident.id }
-      const { asFragment } = render(<Provider>
-        <test.component {...test.fakeIncident} />
-      </Provider>, { route: { params } })
-      expect(asFragment()).toMatchSnapshot()
-    })
+    }))
   })
 })

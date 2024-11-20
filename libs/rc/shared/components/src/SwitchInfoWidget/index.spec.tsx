@@ -82,9 +82,6 @@ describe('Switch Information Widget', () => {
   const requestMetasSpy = jest.fn()
   beforeEach(() => {
     mockServer.use(
-      rest.get(
-        CommonUrlsInfo.getDashboardOverview.url,
-        (_, res, ctx) => res(ctx.json({}))),
       rest.post(
         CommonUrlsInfo.getAlarmsList.url,
         (_, res, ctx) => res(ctx.json(alarmList))

@@ -9,6 +9,7 @@ import { Drawer, Descriptions, PasswordInput } from '@acx-ui/components'
 import { get }                                 from '@acx-ui/config'
 import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import {
+  defaultSwitchPayload,
   EditPortDrawer,
   getInactiveTooltip,
   isLAGMemberPort,
@@ -21,9 +22,11 @@ import {
   useGetVenueQuery,
   useGetVenueSettingsQuery,
   useGetApValidChannelQuery,
+  useSwitchListQuery,
   useLazySwitchPortlistQuery,
   useLazyGetLagListQuery,
-  useGetApOperationalQuery
+  useGetApOperationalQuery,
+  useGetFlexAuthenticationProfilesQuery
 } from '@acx-ui/rc/services'
 import {
   ApDetails,
@@ -33,6 +36,7 @@ import {
   gpsToFixed,
   APPropertiesAFCPowerStateRender,
   Lag,
+  SwitchRow,
   SwitchPortViewModelQueryFields,
   SwitchPortViewModel,
   SwitchPortStatus } from '@acx-ui/rc/utils'
@@ -74,13 +78,14 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const portLinkEnabled = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchAPPortLinkEnabled = useIsSplitOn(Features.SWITCH_AP_PORT_HYPERLINK)
+  const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
 
   const { $t } = useIntl()
   const routeParams = useParams()
 
   const { data: userProfile } = useUserProfileContext()
-  const [switchPortlist] = useLazySwitchPortlistQuery()
+  const [ switchPortlist ] = useLazySwitchPortlistQuery()
   const [ getLagList ] = useLazyGetLagListQuery()
 
   const { visible, setVisible, currentAP, apDetails } = props
@@ -90,6 +95,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const [editPortDrawerVisible, setEditPortDrawerVisible] = useState(false)
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortStatus[])
   const [lagDrawerParams, setLagDrawerParams] = useState({} as SwitchLagParams)
+
   const { APSystem, cellularInfo: currentCellularInfo } = currentAP?.apStatusData || {}
   const ipTypeDisplay = (APSystem?.ipType) ? ` [${capitalize(APSystem?.ipType)}]` : ''
 
@@ -107,6 +113,28 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     enableRbac: isUseRbacApi })
 
   const { data: venueData } = useGetVenueQuery({ params, enableRbac: isUseRbacApi }, { skip: !params.venueId })
+
+  const { authenticationProfiles } = useGetFlexAuthenticationProfilesQuery({
+    payload: {}
+  }, {
+    skip: !isSwitchFlexAuthEnabled,
+    selectFromResult: ( { data } ) => ({
+      authenticationProfiles: data?.data
+    })
+  })
+
+  const { data: switchList } = useSwitchListQuery({
+    params: { tenantId: routeParams.tenantId },
+    payload: {
+      ...defaultSwitchPayload,
+      pageSize: 10000,
+      filters: { venueId: [currentAP?.venueId], id: [currentAP?.switchId] }
+    },
+    enableAggregateStackMember: false,
+    enableRbac: isSwitchRbacEnabled
+  }, {
+    skip: !isSwitchFlexAuthEnabled || !currentAP?.venueId
+  })
 
   const apPassword = useGetApPassword(currentAP)
 
@@ -127,6 +155,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
       },
       enableRbac: isSwitchRbacEnabled
     })
+
     const portData = switchPortsData?.data.filter((item: SwitchPortViewModel) => item.portIdentifier === currentAP?.switchPort)[0]
     const disablePortEdit = portData && (!isOperationalSwitchPort(portData) || isStackPort(portData))
 
@@ -447,6 +476,8 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
       isMultipleEdit={selectedPorts?.length > 1}
       isVenueLevel={false}
       selectedPorts={selectedPorts}
+      switchList={switchList?.data as SwitchRow[]}
+      authProfiles={authenticationProfiles}
     />
     }
     </>

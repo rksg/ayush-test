@@ -212,12 +212,12 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
   },
   'i-switch-loop-detection': {
     category: defineMessage({ defaultMessage: 'Infrastructure' }),
-    subCategory: defineMessage({ defaultMessage: 'Loop detection' }),
+    subCategory: defineMessage({ defaultMessage: 'Loop Detection' }),
     shortDescription: defineMessage({
-      defaultMessage: 'Loop detection found in {scope}'
+      defaultMessage: 'Loop detected in {scope}'
     }),
     longDescription: defineMessage({
-      defaultMessage: 'Loop detection found in {scope}.'
+      defaultMessage: 'Loop detected in {scope}.'
     }),
     incidentType: 'switch'
   },

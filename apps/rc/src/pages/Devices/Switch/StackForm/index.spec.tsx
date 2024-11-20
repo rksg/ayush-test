@@ -8,6 +8,7 @@ import { apApi, firmwareApi, switchApi, venueApi } from '@acx-ui/rc/services'
 import { CommonUrlsInfo,
   FirmwareUrlsInfo,
   SwitchUrlsInfo,
+  SwitchRbacUrlsInfo,
   SwitchFirmwareFixtures,
   FirmwareRbacUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }    from '@acx-ui/store'
@@ -445,5 +446,182 @@ describe('Switch Stack Form - Edit', () => {
     expect(await screen.findByText(
       /Please check the invalid field values under the settings tab and modify it via CLI/i
     )).toBeVisible()
+  })
+
+  describe('Flexible Authentication (base on Switch RBAC FF enabled)', () => {
+    const mockedGetSwitchFlexAuth = jest.fn()
+    const mockedUpdateSwitchFlexAuth = jest.fn()
+    beforeEach(() => {
+      mockedGetSwitchFlexAuth.mockClear()
+      mockedUpdateSwitchFlexAuth.mockClear()
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_RBAC_API)
+      mockServer.use(
+        rest.get(SwitchRbacUrlsInfo.getSwitch.url,
+          (_, res, ctx) => res(ctx.json(editStackData))
+        ),
+        rest.post(SwitchRbacUrlsInfo.getSwitchList.url,
+          (_, res, ctx) => res(ctx.json({
+            data: [{
+              serialNumber: 'FEK3224R07X',
+              name: 'FEK3224R07X_name',
+              venueId: 'c671412ec89943adb3328ef744124906'
+            }]
+          }))
+        ),
+        rest.get(SwitchUrlsInfo.getSwitchAuthentication.url,
+          (_, res, ctx) => {
+            mockedGetSwitchFlexAuth()
+            return res(ctx.json({
+              authEnable: false,
+              authDefaultVlan: '',
+              guestVlan: ''
+            }))
+          }
+        ),
+        rest.put(SwitchUrlsInfo.updateSwitchAuthentication.url,
+          (_, res, ctx) => {
+            mockedUpdateSwitchFlexAuth()
+            return res(ctx.json({}))
+          }
+        )
+      )
+    })
+
+    it('should render correctly when the FF is disabled', async () => {
+      mockServer.use(
+        rest.get(SwitchRbacUrlsInfo.getSwitchDetailHeader.url,
+          (_, res, ctx) => res(ctx.json({
+            ...editStackDetail,
+            name: 'stack-name',
+            firmware: 'SPR10010f_b467',
+            firmwareVersion: 'SPR10010f_b467'
+          }))
+        )
+      )
+      render(<Provider><StackForm /></Provider>, {
+        route: { params, path: '/:tenantId/t/devices/switch/stack/:switchId/:action' }
+      })
+
+      await waitFor(async () =>
+        expect(await screen.findByLabelText(/Stack Name/)).toHaveValue('stack-name')
+      )
+      await userEvent.click(await screen.findByRole('tab', { name: 'Settings' }))
+      expect(await screen.findByLabelText(/DHCP Client/)).toBeVisible()
+
+      expect(mockedGetSwitchFlexAuth).not.toBeCalled()
+      expect(screen.queryByText(/Authentication/)).toBeNull()
+    })
+
+    // eslint-disable-next-line max-len
+    it('should render correctly when the FF is enabled and the switch firmware version is below 10.0.10f', async () => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.SWITCH_FLEXIBLE_AUTHENTICATION || ff === Features.SWITCH_RBAC_API
+      )
+      mockServer.use(
+        rest.get(SwitchRbacUrlsInfo.getSwitchDetailHeader.url,
+          (_, res, ctx) => res(ctx.json({
+            ...editStackDetail,
+            name: 'stack-name',
+            firmware: 'SPS09010j_cd3',
+            firmwareVersion: 'SPS09010j_cd3'
+          }))
+        )
+      )
+      render(<Provider><StackForm /></Provider>, {
+        route: { params, path: '/:tenantId/t/devices/switch/stack/:switchId/:action' }
+      })
+
+      await waitFor(async () =>
+        expect(await screen.findByLabelText(/Stack Name/)).toHaveValue('stack-name')
+      )
+      await userEvent.click(await screen.findByRole('tab', { name: 'Settings' }))
+      expect(await screen.findByLabelText(/DHCP Client/)).toBeVisible()
+
+      expect(mockedGetSwitchFlexAuth).not.toBeCalled()
+      expect(screen.queryByText(/Authentication/)).toBeNull()
+    })
+
+    // eslint-disable-next-line max-len
+    it('should render correctly when the FF is enabled and the firmware version is 10.0.10f or higher', async () => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.SWITCH_FLEXIBLE_AUTHENTICATION || ff === Features.SWITCH_RBAC_API
+      )
+      mockServer.use(
+        rest.get(SwitchRbacUrlsInfo.getSwitchDetailHeader.url,
+          (_, res, ctx) => res(ctx.json({
+            ...editStackDetail,
+            name: 'stack-name',
+            firmware: 'SPR10010f_b467',
+            firmwareVersion: 'SPR10010f_b467'
+          }))
+        )
+      )
+      render(<Provider><StackForm /></Provider>, {
+        route: { params, path: '/:tenantId/t/devices/switch/stack/:switchId/:action' }
+      })
+
+      await waitFor(async () =>
+        expect(await screen.findByLabelText(/Stack Name/)).toHaveValue('stack-name')
+      )
+      await waitFor(async () =>
+        expect(mockedGetSwitchFlexAuth).toBeCalled()
+      )
+      await userEvent.click(await screen.findByRole('tab', { name: 'Settings' }))
+      expect(await screen.findByLabelText(/DHCP Client/)).toBeVisible()
+
+      expect(await screen.findByText(/Authentication/)).toBeVisible()
+    })
+
+    it('should update switch flex auth correctly', async () => {
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.SWITCH_FLEXIBLE_AUTHENTICATION || ff === Features.SWITCH_RBAC_API
+      )
+      mockServer.use(
+        rest.get(SwitchRbacUrlsInfo.getSwitchDetailHeader.url,
+          (_, res, ctx) => res(ctx.json({
+            ...editStackDetail,
+            name: 'stack-name',
+            firmware: 'SPR10010f_b467',
+            firmwareVersion: 'SPR10010f_b467'
+          }))
+        ),
+        rest.get(SwitchUrlsInfo.getSwitchAuthentication.url,
+          (_, res, ctx) => {
+            mockedGetSwitchFlexAuth()
+            return res(ctx.json({
+              authEnable: true,
+              authDefaultVlan: 2,
+              guestVlan: ''
+            })
+            )}
+        )
+      )
+      render(<Provider><StackForm /></Provider>, {
+        route: { params, path: '/:tenantId/t/devices/switch/stack/:switchId/:action' }
+      })
+
+      await waitFor(async () =>
+        expect(await screen.findByLabelText(/Stack Name/)).toHaveValue('stack-name')
+      )
+      await userEvent.click(await screen.findByRole('tab', { name: 'Settings' }))
+      expect(await screen.findByLabelText(/DHCP Client/)).toBeVisible()
+
+      expect(mockedGetSwitchFlexAuth).toBeCalled()
+      expect(await screen.findByText(/Authentication/)).toBeVisible()
+      await userEvent.type(await screen.findByLabelText(/Guest VLAN/), '2')
+      await waitFor(async () => {
+        expect(
+          await screen.findByText('VLAN ID can not be the same as Auth Default VLAN')
+        ).toBeVisible()
+      })
+      await userEvent.type(await screen.findByLabelText(/Guest VLAN/), '9')
+
+      const applyButton = await screen.findByRole('button', { name: /apply/i })
+      await userEvent.click(applyButton)
+      expect(mockedUpdateSwitchFlexAuth).toBeCalled()
+    })
   })
 })

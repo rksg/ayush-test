@@ -107,7 +107,7 @@ describe('Edge TNM Service Details', () => {
     await userEvent.click(within(row).getByRole('checkbox'))
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
     const dialogTitle = await screen.findByText('Delete "example-host8"?')
-    await userEvent.click(screen.getByRole('button', { name: 'Delete Edge Third Party App' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Delete Host' }))
     await waitForElementToBeRemoved(dialogTitle)
     expect(screen.queryByRole('dialog')).toBeNull()
     expect(mockedDeleteReq).toBeCalledTimes(1)
@@ -121,7 +121,7 @@ describe('Edge TNM Service Details', () => {
     })
 
     await basicCheck()
-    await userEvent.click(screen.getByRole('button', { name: 'Add TNM Host' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Add Host' }))
     await screen.findByTestId('rc-TnmHostModal')
   })
 })

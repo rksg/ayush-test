@@ -1213,49 +1213,54 @@ export const rootCauseRecommendationMap = {
         defaultMessage: '<p>Wired switch links intended for backup can by incorrect configuration permit more than one path between switch ports on a VLAN. This causes a L2 loop which can cause performance issues that will potentially bring down or degrade the network (high CPU usage, Broadcast storms, Unstable CAM(Content Addressable memory) tables, high consumption of network bandwidth, loss of responses)</p>'
       }),
       recommendations: defineMessage({
-        defaultMessage: '<p>Use/configure a spanning tree or any other loop avoidance protocol for this VLAN %XXX%. This will help disable redundant paths until they are needed, effectively preventing the formation of loops and restore the functioning of the network.</p>'
+        defaultMessage: '<p>Use/configure a spanning tree or any other loop avoidance protocol for the affected VLAN. This will help disable redundant paths until they are needed, effectively preventing the formation of loops and restore the functioning of the network.</p>'
       })
     }
   },
   'port-congestion': {
     DEFAULT: {
       rootCauses: defineMessage({
-        defaultMessage: `<p>This "Congestion" incident could be potentially triggered due to multiple reasons:
-
-1. Excessive bandwidth consumption: Certain users or devices on the network may occasionally utilize more bandwidth than the average user or device, causing network congestion.
-2. Broadcast Storms: A broadcast storm occurs when there is a sudden upsurge in the number of requests to a network.
-3. Multicasting: A collision can occur when two packets are sent at the same time in multicasting.
-4. Too many devices: If the network has too many devices linked to it, the network may become burdened with data requests. </p>`
+        defaultMessage: `<p>This "Congestion" incident could be potentially triggered due to multiple reasons:</p>
+  <ol>
+    <li>Excessive bandwidth consumption: Certain users or devices on the network may occasionally utilize more bandwidth than the average user or device, causing network congestion.</li>
+    <li>Broadcast Storms: A broadcast storm occurs when there is a sudden upsurge in the number of requests to a network.</li>
+    <li>Multicasting: A collision can occur when two packets are sent at the same time in multicasting.</li>
+    <li>Too many devices: If the network has too many devices linked to it, the network may become burdened with data requests.</li>
+  </ol>`
       }),
       recommendations: defineMessage({
-        defaultMessage: `<p>There are several options to assess for to remediate network congestion and should be planned based on exact circumstance of the network.
-
-1. Use link aggregation: Multiple connections are combined in parallel.
-2. Increase Bandwidth or move to a higher bandwidth port: The most common cause of network congestion is insufficient bandwidth. If the network's traffic exceeds its bandwidth capacity, increasing the bandwidth can help alleviate the congestion.
-3. Implement Traffic Shaping: Traffic shaping, also known as packet shaping, is a network traffic management technique that delays some or all datagrams to bring them into compliance with a desired traffic profile.
-4. Use Quality of Service (QoS): QoS mechanisms can prioritize certain types of traffic, ensuring that important data gets through even during times of congestion.
-5. Implement Load Balancing: Load balancing distributes network traffic across multiple servers to ensure no single server becomes overwhelmed with too much traffic.
-6. Monitor Network Traffic: Regular monitoring of network traffic can help identify patterns and trends, enabling proactive management of network congestion.</p>`
+        defaultMessage: `<p>There are several options to assess for to remediate network congestion and should be planned based on exact circumstance of the network.</p>
+  <ol>
+    <li>Use link aggregation: Multiple connections are combined in parallel.</li>
+    <li>Increase Bandwidth or move to a higher bandwidth port: The most common cause of network congestion is insufficient bandwidth. If the network's traffic exceeds its bandwidth capacity, increasing the bandwidth can help alleviate the congestion.</li>
+    <li>Implement Traffic Shaping: Traffic shaping, also known as packet shaping, is a network traffic management technique that delays some or all datagrams to bring them into compliance with a desired traffic profile.</li>
+    <li>Use Quality of Service (QoS): QoS mechanisms can prioritize certain types of traffic, ensuring that important data gets through even during times of congestion.</li>
+    <li>Implement Load Balancing: Load balancing distributes network traffic across multiple servers to ensure no single server becomes overwhelmed with too much traffic.</li>
+    <li>Monitor Network Traffic: Regular monitoring of network traffic can help identify patterns and trends, enabling proactive management of network congestion.</li>
+  </ol>
+`
       })
     }
   },
   'uplink-port-congestion': {
     DEFAULT: {
       rootCauses: defineMessage({
-        defaultMessage: `<p>This incident could be potentially triggered due to multiple reasons:
+        defaultMessage: `<p>This incident could be potentially triggered due to multiple reasons:</p>
 
-1. Increased Data Traffic: As the number of connected devices and users on the network grows, the demand for data transfer increases, leading to congestion.
-2. Limited Uplink Speed: Many popular apps receive more data in downlink than they send in uplink. However, once uplink speed drops below a certain threshold, it becomes the bottleneck, limiting the speed at which content can be transferred in downlink.
-3. Network Performance: The performance of the network often determines time-to-content, as many popular content providers optimize the design and size of the content for smart devices.
-4. Unexpected Usage Patterns: Changes in app configuration or unexpected usage patterns, like network bandwidth spikes, can lead to uplink congestion.</p>`
+  <ol>
+    <li>Increased Data Traffic: As the number of connected devices and users on the network grows, the demand for data transfer increases, leading to congestion.</li>
+    <li>Limited Uplink Speed: Many popular apps receive more data in downlink than they send in uplink. However, once uplink speed drops below a certain threshold, it becomes the bottleneck, limiting the speed at which content can be transferred in downlink.</li>
+    <li>Network Performance: The performance of the network often determines time-to-content, as many popular content providers optimize the design and size of the content for smart devices.</li>
+    <li>Unexpected Usage Patterns: Changes in app configuration or unexpected usage patterns, like network bandwidth spikes, can lead to uplink congestion.</li>
+  </ol>`
       }),
       recommendations: defineMessage({
-        defaultMessage: `<p>Resolving uplink congestion involves a combination of options depending on the circumstance of the incident:
-
-1. Traffic Management: Implementing Quality of Service (QoS) policies can help prioritize traffic and manage bandwidth usage.
-2. Bandwidth Expansion: Increasing the available bandwidth can alleviate congestion by providing more capacity for data transmission.
-3. Implementing Link Aggregation: This technique combines multiple network connections in parallel to increase throughput and provide redundancy.
-</p>`
+        defaultMessage: `<p>Resolving uplink congestion involves a combination of options depending on the circumstance of the incident:</p>
+  <ol>
+    <li>Traffic Management: Implementing Quality of Service (QoS) policies can help prioritize traffic and manage bandwidth usage.</li>
+    <li>Bandwidth Expansion: Increasing the available bandwidth can alleviate congestion by providing more capacity for data transmission.</li>
+    <li>Implementing Link Aggregation: This technique combines multiple network connections in parallel to increase throughput and provide redundancy.</li>
+  </ol>`
       })
     }
   },

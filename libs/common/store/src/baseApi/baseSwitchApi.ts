@@ -10,8 +10,11 @@ export const baseSwitchApi = createApi({
     'SwitchClient',
     'SwitchPort',
     'SwitchProfiles',
+    'SwitchFlexAuth',
     'SwitchOnDemandCli',
-    'SwitchVlan'],
+    'SwitchVlan',
+    'FlexAuthProfile'
+  ],
   keepUnusedDataFor: 0,
   endpoints: () => ({})
 })

@@ -422,13 +422,15 @@ export interface Vlan {
 	vlanId: number,
 	vlanName?: string,
 	vlanConfigName?: string
-  untaggedPorts?: string,
-  taggedPorts?: string,
-  title?: string,
-  key?: number
+	untaggedPorts?: string,
+	taggedPorts?: string,
+	title?: string,
+	key?: number
 	inactiveRow?: boolean //ignore
   inactiveTooltip?: string //ignore
 	isDeletable?: boolean //ignore
+	isAuthDefaultVlan?: boolean
+	isAuthVlan?: boolean
 }
 
 export interface ConfigurationProfile {

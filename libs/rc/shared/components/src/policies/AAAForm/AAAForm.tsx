@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from 'react'
 
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import _, { cloneDeep, omit } from 'lodash'
+import { useIntl }            from 'react-intl'
 
 import {
   PageHeader,
@@ -114,32 +114,39 @@ export const AAAForm = (props: AAAFormProps) => {
   }
 
   const saveAAAPolicy = async (data: AAAPolicyType) => {
-    const cloneData = _.clone(_.omit(data,
+    const requestPayload = { params, payload: handledRadSecData(data), enableRbac }
+    try {
+      if (isEdit) {
+        await updateInstance(requestPayload).unwrap()
+        if (supportRadsec) {
+          updateRadSecActivations(data, requestPayload?.params?.policyId)
+        }
+      } else {
+        await createInstance(requestPayload).unwrap().then(res => {
+          data.id = res?.response?.id
+          if (supportRadsec) {
+            addRadSecActivations(data, res?.response?.id)
+          }
+        })
+      }
+
+      networkView ? backToNetwork?.(data) : navigate(linkToInstanceList, { replace: true })
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+
+  const handledRadSecData = (data: AAAPolicyType) => {
+    let cloneData = cloneDeep(omit(data,
       'radSecOptions.ocspValidationEnabled',
       'radSecOptions.originalCertificateAuthorityId',
       'radSecOptions.originalClientCertificateId',
       'radSecOptions.originalServerCertificateId'
     ))
-    const requestPayload = { params, payload: cloneData, enableRbac }
-    try {
-      if (isEdit) {
-        await updateInstance(requestPayload).unwrap()
-        if (supportRadsec) {
-          updateRadSecActivations(cloneData, requestPayload?.params?.policyId)
-        }
-      } else {
-        await createInstance(requestPayload).unwrap().then(res => {
-          cloneData.id = res?.response?.id
-          if (supportRadsec) {
-            addRadSecActivations(cloneData, res?.response?.id)
-          }
-        })
-      }
-
-      networkView ? backToNetwork?.(cloneData) : navigate(linkToInstanceList, { replace: true })
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
+    if (cloneData.radSecOptions?.ocspUrl) {
+      cloneData.radSecOptions.ocspUrl = `http://${cloneData.radSecOptions.ocspUrl}`
     }
+    return cloneData
   }
 
   const onCancel = () => {

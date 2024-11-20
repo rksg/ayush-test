@@ -1,11 +1,9 @@
-import { FormInstance, Space } from 'antd'
-import { DefaultOptionType }   from 'antd/lib/select'
-import _                       from 'lodash'
-import { defineMessage }       from 'react-intl'
+import { FormInstance, Space }              from 'antd'
+import { DefaultOptionType }                from 'antd/lib/select'
+import _                                    from 'lodash'
+import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import {
-  cssStr
-} from '@acx-ui/components'
+import { cssStr }    from '@acx-ui/components'
 import { switchApi } from '@acx-ui/rc/services'
 import {
   AclUnion,
@@ -29,6 +27,39 @@ export interface PortVlan {
   isDefaultVlan: boolean
 }
 
+export const FIELD_LABEL: Record<string, MessageDescriptor> = {
+  flexibleAuthenticationEnabled: defineMessage({ defaultMessage: 'Authentication' }),
+  authenticationProfileId: defineMessage({ defaultMessage: 'Profile' }),
+  authenticationType: defineMessage({ defaultMessage: 'Type' }),
+  changeAuthOrder: defineMessage({ defaultMessage: 'Change Authentication Order' }),
+  dot1xPortControl: defineMessage({ defaultMessage: '802.1x Port Control' }),
+  authDefaultVlan: defineMessage({ defaultMessage: 'Auth Default VLAN' }),
+  authFailAction: defineMessage({ defaultMessage: 'Fail Action' }),
+  restrictedVlan: defineMessage({ defaultMessage: 'Restricted VLAN' }),
+  authTimeoutAction: defineMessage({ defaultMessage: 'Timeout Action' }),
+  criticalVlan: defineMessage({ defaultMessage: 'Critical VLAN' }),
+  guestVlan: defineMessage({ defaultMessage: 'Guest VLAN' }),
+  untaggedVlan: defineMessage({ defaultMessage: 'Untagged VLAN' }),
+  taggedVlans: defineMessage({ defaultMessage: 'Tagged VLAN' }),
+  portEnable: defineMessage({ defaultMessage: 'Port Enabled' }),
+  poeEnable: defineMessage({ defaultMessage: 'PoE Enabled' }),
+  poeClass: defineMessage({ defaultMessage: 'PoE Class' }),
+  poePriority: defineMessage({ defaultMessage: 'PoE Priority' }),
+  poeBudget: defineMessage({ defaultMessage: 'PoE Budget' }),
+  portProtected: defineMessage({ defaultMessage: 'Protected Port' }),
+  lldpEnable: defineMessage({ defaultMessage: 'LLDP Enabled' }),
+  portSpeed: defineMessage({ defaultMessage: 'Port Speed' }),
+  rstpAdminEdgePort: defineMessage({ defaultMessage: 'RSTP Admin Edge Port' }),
+  stpBpduGuard: defineMessage({ defaultMessage: 'STP BPDU Guard' }),
+  stpRootGuard: defineMessage({ defaultMessage: 'STP Root Guard' }),
+  dhcpSnoopingTrust: defineMessage({ defaultMessage: 'DHCP Snooping Trust' }),
+  ipsg: defineMessage({ defaultMessage: 'IPSG' }),
+  lldpQos: defineMessage({ defaultMessage: 'LLDP QoS' }),
+  ingressAcl: defineMessage({ defaultMessage: 'Ingress ACL (IPv4)' }),
+  egressAcl: defineMessage({ defaultMessage: 'Egress ACL (IPv4)' }),
+  tags: defineMessage({ defaultMessage: 'Tags' })
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const MultipleText = (props: any) => {
   const { $t } = getIntl()
@@ -40,6 +71,33 @@ export const MultipleText = (props: any) => {
     }}>
     {$t({ defaultMessage: 'Multiple values' })}
   </Space>
+}
+
+export const shouldRenderMultipleText = (props: {
+  field: string,
+  isMultipleEdit: boolean,
+  hasMultipleValue: string[],
+  form: FormInstance,
+  ignoreCheckbox?: boolean
+}) => {
+  const { field, isMultipleEdit, hasMultipleValue, form, ignoreCheckbox = false } = props
+  const checkboxEnabled = form.getFieldValue(`${field}Checkbox`)
+  return isMultipleEdit
+    && (!checkboxEnabled || ignoreCheckbox)
+    && hasMultipleValue.includes(field)
+}
+
+export const getDefaultVlanMapping = (
+  key: string,
+  switchId: string,
+  defaultVlanMap: Record<string, number>,
+  vlanValue?: string | Number
+) => {
+  const { $t } = getIntl()
+  const defaultVlanText = $t({ defaultMessage: 'Default VLAN (Multiple values)' })
+  return vlanValue === defaultVlanText
+    ? { [key]: defaultVlanMap?.[switchId as keyof typeof defaultVlanMap] ?? '' }
+    : {}
 }
 
 export const getFormItemLayout = (isMultipleEdit: boolean) => {
@@ -240,34 +298,12 @@ export const checkPortEditStatus = (
   }
 }
 
-export const checkPortEditStatusLegacy = (
-  form: FormInstance,
-  portSetting: PortSettingModel,
-  revert: boolean,
-  taggedByVenue: string,
-  untaggedByVenue: string,
-  forceStatus?: string
-) => {
-  const taggedVlans = form?.getFieldValue('taggedVlans') || portSetting?.taggedVlans
-  const untaggedVlan = form?.getFieldValue('untaggedVlan') || portSetting?.untaggedVlan
-
-  if (forceStatus) {
-    return forceStatus.toString()
-  } else if (!revert && (taggedVlans || untaggedVlan)) {
-    return 'port'
-  } else if (revert && (taggedByVenue || untaggedByVenue)) {
-    return 'venue'
-  } else {
-    return 'default'
-  }
-}
-
 export const getPoeCapabilityDisabled = (portSettings: PortSettingModel[]) => {
   return portSettings?.filter(s => !s?.poeCapability)?.length > 0
 }
 
 export const getMultiPoeCapabilityDisabled = (portSettings: PortSettingModel[]) => {
-  return portSettings?.filter(s => !s?.poeCapability)?.length == portSettings.length
+  return portSettings?.filter(s => !s?.poeCapability)?.length === portSettings?.length
 }
 
 export const getOverrideFields = (fieldsValue: PortSettingModel) => {
@@ -336,8 +372,6 @@ export const getPoeClass = (selectedPorts: SwitchPortViewModel[]) => {
     ? poeClassOptions.slice(1,2)
     : (support5to8PoeClass ? poeClassOptions : poeClassOptions.splice(0,6))
 }
-
-
 
 export const isPortOverride = (portSetting: PortSettingModel) => {
   if (portSetting.revert === false) {

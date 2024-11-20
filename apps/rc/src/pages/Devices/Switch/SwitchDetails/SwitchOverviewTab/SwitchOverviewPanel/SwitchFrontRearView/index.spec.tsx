@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import { switchApi }                           from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }                      from '@acx-ui/rc/utils'
+import { SwitchUrlsInfo, SwitchRbacUrlsInfo }  from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
@@ -13,9 +13,11 @@ import { stackMembersData, standaloneFront, standaloneRear, switchDetailSatckOnl
 
 import { SwitchFrontRearView, SwitchPanelContext } from '.'
 
+const setEditPortDrawerVisible = jest.fn()
+
 export const panelContext = {
   editPortDrawerVisible: false,
-  setEditPortDrawerVisible: () => {},
+  setEditPortDrawerVisible: () => setEditPortDrawerVisible,
   breakoutPortDrawerVisible: false,
   setBreakoutPortDrawerVisible: () => {},
   editBreakoutPortDrawerVisible: false,
@@ -44,7 +46,9 @@ jest.mock('@acx-ui/rc/services', () => ({
 describe('SwitchFrontRearView', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff !== Features.SWITCH_RBAC_API && ff !== Features.SWITCH_FLEXIBLE_AUTHENTICATION
+    )
     mockServer.use(
       rest.post(SwitchUrlsInfo.getSwitchPortlist.url,
         (_, res, ctx) => res(ctx.json(standaloneFront))),
@@ -136,5 +140,53 @@ describe('SwitchFrontRearView', () => {
     })
     const rearViewButton = screen.getByRole('button', { name: /rear view/i })
     expect(rearViewButton).toBeDisabled()
+  })
+
+  it('enable Flexible Authentication (base on Switch RBAC FF enabled)', async () => {
+    const mockedGetFlexAuthProfiles = jest.fn()
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.SWITCH_RBAC_API || ff === Features.SWITCH_FLEXIBLE_AUTHENTICATION
+    )
+    mockServer.use(
+      rest.get(SwitchRbacUrlsInfo.getSwitchRearView.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json(standaloneRear))
+      ),
+      rest.post(SwitchUrlsInfo.getFlexAuthenticationProfiles.url,
+        (req, res, ctx) => {
+          mockedGetFlexAuthProfiles()
+          return res(ctx.json({ data: [] }))
+        }
+      )
+    )
+
+    const params = {
+      tenantId: 'tenantId',
+      switchId: 'switchId',
+      serialNumber: 'serialNumber',
+      activeTab: 'overview'
+    }
+    render(<Provider>
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData: {
+          currentSwitchOperational: true,
+          switchName: 'FEK3230S0DA',
+          switchDetailHeader: switchDetailSatckOnline
+        },
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchPanelContext.Provider value={panelContext}>
+          <SwitchFrontRearView stackMember={stackMembersData} />
+        </SwitchPanelContext.Provider>
+      </SwitchDetailsContext.Provider>
+    </Provider>, {
+      route: {
+        params,
+        path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab'
+      }
+    })
+
+    const regularPorts = await screen.findAllByTestId('RegularPort')
+    expect(regularPorts).toHaveLength(12)
+    expect(mockedGetFlexAuthProfiles).toBeCalled()
   })
 })

@@ -13,7 +13,7 @@ export const mockTnmServiceDataList = [{
   tenantId: '0f18d1cf714b4bcf94bef4654f1ab29c',
   venueId: 'a307d7077410456f8f1a4fc41d861567',
   version: '7.0.6',
-  status: 'UP'
+  status: 'INSTALLING'
 }] as EdgeTnmServiceData[]
 
 export const mockTnmHostList = [{
@@ -171,3 +171,51 @@ export const mockTnmHostGroups = [
     internal: null
   }
 ]
+
+export const mockTnmGraphItems = [
+  {
+    gitemid: '271940',
+    graphid: '2826',
+    itemid: '47604',
+    drawtype: '5',
+    sortorder: '0',
+    color: '199C0D',
+    yaxisside: '0',
+    calc_fnc: '2',
+    type: '0'
+  },
+  {
+    gitemid: '271941',
+    graphid: '2826',
+    itemid: '47907',
+    drawtype: '2',
+    sortorder: '1',
+    color: 'F63100',
+    yaxisside: '0',
+    calc_fnc: '2',
+    type: '0'
+  }]
+
+export const mockTnmItemInfo = [
+  {
+    itemid: '47604',
+    name: 'Interface ethernet 1/1/2(): Inbound packets discarded'
+  },
+  {
+    itemid: '47907',
+    name: 'Interface ethernet 1/1/2(): Inbound packets with errors'
+  }]
+
+export const mockTnmHistory = [
+  {
+    itemid: '47907',
+    clock: '1731405994',
+    value: '512',
+    ns: '520692550'
+  },
+  {
+    itemid: '47604',
+    clock: '1731405994',
+    value: '0',
+    ns: '170684595'
+  }]

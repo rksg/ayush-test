@@ -271,6 +271,9 @@ export const EditPortMessages = {
   USE_VENUE_SETTINGS_DISABLE: defineMessage({
     defaultMessage: '<VenueSingular></VenueSingular> settings default VLAN ID is the same as one of switch VLANs'
   }),
+  USE_VENUE_SETTINGS_DISABLED_WHEN_FLEX_AUTH_ENABLED: defineMessage({
+    defaultMessage: 'When authentication is enabled, <venueSingular></venueSingular> settings cannot be applied.'
+  }),
   POE_CAPABILITY_DISABLE: defineMessage({
     defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since this port doesn\'t have PoE capability.'
   }),
@@ -289,6 +292,27 @@ export const EditPortMessages = {
   RESET_PORT_WARNING: defineMessage({
     defaultMessage: `Changing the port settings may result in loss of connectivity and
       communication issues to your APs. Do you want to continue with these changes?`
+  }),
+  MODIFYING_UPLINK_PORT: defineMessage({
+    defaultMessage: 'Modifying the uplink port may result in connectivity issues. Are you sure you want to apply these changes?'
+  }),
+  NEED_CONFIGURE_AAA_RADIUS_SETTINGS: defineMessage({
+    defaultMessage: 'Authentication needs RADIUS server and AAA policy to support. If you have set them on R1, will apply the configuration for Authentication automatically. If no, please set them to make Authentication work.'
+  }),
+  ONLY_SUPPORT_FW_ABOVE_10010F: defineMessage({
+    defaultMessage: 'The firmware version on the selected switches is at least 10.0.10f or higher.'
+  }),
+  UNTAGGED_PORT_CANNOT_ENABLE_FLEX_AUTH: defineMessage({
+    defaultMessage: 'This port is Untagged port. So can not enable Authentication.'
+  }),
+  CLOUD_PORT_CANNOT_ENABLE_FLEX_AUTH: defineMessage({
+    defaultMessage: 'Authentication cannot be enabled on the uplink port because it will result in switch losing connection to RUCKUS One.'
+  }),
+  SWITCH_LEVEL_AUTH_NOT_ENABLED: defineMessage({
+    defaultMessage: 'Before enable Authentication on port, please go to Edit Switch page to apply global level\'s Auth Default VLAN.'
+  }),
+  GUIDE_TO_AUTHENTICATION: defineMessage({
+    defaultMessage: 'Go to "Network Control --> Policies and profiles --> Authentication"'
   })
 }
 
@@ -298,6 +322,44 @@ export const MultipleEditPortMessages = {
   }),
   POE_CAPABILITY_DISABLE: defineMessage({
     defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since one or more ports don\'t have PoE capability.'
+  })
+}
+
+export const FlexAuthVlanLabel = {
+  AUTH_DEFAULT_VLAN: defineMessage({ defaultMessage: 'Auth Default VLAN' }),
+  CRITICAL_VLAN: defineMessage({ defaultMessage: 'Critical VLAN' }),
+  DEFAULT_VLAN: defineMessage({ defaultMessage: 'Default VLAN' }),
+  GUEST_VLAN: defineMessage({ defaultMessage: 'Guest VLAN' }),
+  RESTRICTED_VLAN: defineMessage({ defaultMessage: 'Restricted VLAN' }),
+  SWITCH_AUTH_DEFAULT_VLAN: defineMessage({ defaultMessage: 'Switch Level Auth Default VLAN' }),
+  TAGGED_VLANS: defineMessage({ defaultMessage: 'Tagged VLANs' }),
+  VLAN_ID: defineMessage({ defaultMessage: 'VLAN ID' })
+}
+
+export const FlexAuthMessages = {
+  CANNOT_SET_DIFF_PROFILE_AUTH_DEFAULT_VLAN: defineMessage({
+    defaultMessage: 'Another Auth-Default VLAN is already defined on this switch. Either select a different profile that has a matching Auth-Default VLAN or use the customize option to set the Auth-Default VLAN to {applyProfileAuthDefaultVlan}.'
+  }),
+  CANNOT_SET_DIFF_GUEST_VLAN_FOR_PROFILE: defineMessage({
+    defaultMessage: 'Guest VLAN is already defined on the switch(es). Select a different profile that has a matching Guest VLAN.'
+  }),
+  CANNOT_SET_DIFF_GUEST_VLAN: defineMessage({
+    defaultMessage: 'Guest VLAN is already defined previously and needs to be consistent across all the ports that have authentication enabled.'
+  }),
+  CANNOT_SET_FORCE_CONTROL_TYPE: defineMessage({
+    defaultMessage: 'The Auth Default VLAN is a required setting. When the 802.1x Port Control value is set to Force Authorized or Force Unauthorized, the Auth Default VLAN cannot be configured. Please change the 802.1x Port Control value to reconfigure it.'
+  }),
+  CANNOT_SET_FORCE_CONTROL_TYPE_FOR_PROFILE: defineMessage({
+    defaultMessage: 'When the 802.1x Port Control value in the selected profile(s) is/are set to Force Authorized or Force Unauthorized, the Auth Default VLAN value must match the switch-level Auth Default VLAN.'
+  }),
+  VLAN_CANNOT_SAME_AS_TARGET_VLAN: defineMessage({
+    defaultMessage: '{sourceVlan} can not be the same as {targetVlan}'
+  }),
+  CANNOT_APPLIED_DIFF_PROFILES: defineMessage({
+    defaultMessage: 'The selected profiles may either be unset or assigned to different profiles. Please assign the same value.'
+  }),
+  CANNOT_APPLIED_DIFF_AUTH_DEFAULT_VLAN: defineMessage({
+    defaultMessage: 'The selected ports may either be unset or assigned to different Auth Default VLAN. Please assign the same value.'
   })
 }
 
@@ -316,6 +378,9 @@ export const PortStatusMessages = {
   }),
   USED_BY_OTHERS: defineMessage({
     defaultMessage: 'Port used by other VLAN setting'
+  }),
+  USED_BY_AUTH: defineMessage({
+    defaultMessage: 'This port has already enabled authentication'
   }),
   CURRENT: defineMessage({
     defaultMessage: 'VLANs'

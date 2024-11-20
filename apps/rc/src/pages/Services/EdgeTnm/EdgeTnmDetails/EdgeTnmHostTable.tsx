@@ -57,7 +57,7 @@ export const EdgeTnmHostTable = (props: { serviceId: string | undefined }) => {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Edge Third Party App' }),
+            entityName: $t({ defaultMessage: 'Host' }),
             entityValue: rows.length === 1 ? rows[0].name : undefined,
             numOfEntities: rows.length
           },
@@ -74,7 +74,7 @@ export const EdgeTnmHostTable = (props: { serviceId: string | undefined }) => {
   ]
 
   const tableActions = [{
-    label: $t({ defaultMessage: 'Add TNM Host' }),
+    label: $t({ defaultMessage: 'Add Host' }),
     scopeKey: getScopeKeyByService(ServiceType.EDGE_TNM_SERVICE, ServiceOperation.CREATE),
     onClick: () => {
       setHostModalMode(hostModalModeEnum.CREATE)
@@ -127,7 +127,8 @@ function useColumns (setCurrentHost: (id: string) => void) {
       fixed: 'left',
       render: (_, row) => {
         return <Button type='link'
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation()
             setCurrentHost(row.hostid)
           }}
         >

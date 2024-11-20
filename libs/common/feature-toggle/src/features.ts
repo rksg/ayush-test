@@ -152,6 +152,7 @@ export enum Features {
   SWITCH_NTP_SERVER = 'switch-consumer-apply-ntp-server-toggle',
   SWITCH_LEVEL_CLI_PROFILE = 'switch-consumer-switch-level-cli-profile-toggle',
   SWITCH_CABLE_TEST = 'switch-cable-testing-toggle',
+  SWITCH_FLEXIBLE_AUTHENTICATION = 'switch-consumer-flexible-authentication-toggle',
   SWITCH_SUPPORT_ICX8200AV= 'switch-support-icx8200av-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
@@ -217,7 +218,9 @@ export enum Features {
   BRAND360_MDU_TOGGLE = 'acx-ui-brand360-mdu-toggle',
   SERVER_CERTIFICATE_MANAGEMENT_UI_TOGGLE = 'server-certificate-management-ui-toggle',
   WIFI_NETWORK_APPLICATION_CONTROL = 'wifi-network-application-control',
-  UX_OPTIMIZATION_FEATURE_TOGGLE = 'acx-ui-ux-optimization-feature-toggle'
+  UX_OPTIMIZATION_FEATURE_TOGGLE = 'acx-ui-ux-optimization-feature-toggle',
+  ROAMING_TYPE_EVENTS_TOGGLE = 'acx-ui-roaming-type-events-toggle',
+  POLICY_IDENTITY_TOGGLE = 'policy-identity-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
