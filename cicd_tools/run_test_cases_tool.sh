@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-set -xe
+trap 'echo "Received SIGTERM, exiting"; exit 143' SIGTERM
 
+set -xe
 
 node ./node_modules/.bin/nx run rc:test --coverage --maxWorkers=30% --noStackTrace --bail
 node ./node_modules/.bin/nx run rc-components:test --coverage --maxWorkers=30% --noStackTrace --bail
