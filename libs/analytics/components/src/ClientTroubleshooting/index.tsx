@@ -5,11 +5,11 @@ import { connect, EChartsType }              from 'echarts'
 import ReactECharts                          from 'echarts-for-react'
 import { useIntl, defineMessage, IntlShape } from 'react-intl'
 
-import { Cascader, Button, Loader }           from '@acx-ui/components'
-import { get }                                from '@acx-ui/config'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
-import { formatter, DateFormatEnum }          from '@acx-ui/formatter'
-import { useEncodedParameter, useDateFilter } from '@acx-ui/utils'
+import { Cascader, Button, Loader }                 from '@acx-ui/components'
+import { get }                                      from '@acx-ui/config'
+import { Features, getIsBtmEventsOn, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { formatter, DateFormatEnum }                from '@acx-ui/formatter'
+import { useEncodedParameter, useDateFilter }       from '@acx-ui/utils'
 
 import { useIncidentToggles } from '../useIncidentToggles'
 
@@ -20,13 +20,6 @@ import { TimeLine }                                                   from './Ev
 import { useClientInfoQuery, useClientIncidentsInfoQuery }            from './services'
 import * as UI                                                        from './styledComponents'
 
-type CTIncidentCategoryOption = {
-  value: string
-  label: {
-    defaultMessage: string;
-  }
- isVisible: CallableFunction
-}
 export type Filters = {
   category?: [];
   type?: [];
@@ -80,7 +73,8 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const isMLISA = get('IS_MLISA_SA')
   const isRoamingTypeEnabled = useIsSplitOn(Features.ROAMING_TYPE_EVENTS_TOGGLE)
   const fetchRoamingType = Boolean(isMLISA || isRoamingTypeEnabled)
-  const payload = { startDate, endDate, range, clientMac, fetchRoamingType }
+  const fetchBtmInfo = getIsBtmEventsOn(useIsSplitOn)
+  const payload = { startDate, endDate, range, clientMac, fetchRoamingType, fetchBtmInfo }
   const clientQuery = useClientInfoQuery(payload)
   const incidentsQuery = useClientIncidentsInfoQuery({ ...payload, toggles })
   const data = clientQuery.data && incidentsQuery.data
@@ -146,13 +140,9 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
                       }
                       placeholder={$t(config.placeHolder)}
                       options={config.options
-                        .filter((option) => {
-                          const { isVisible } = (option as CTIncidentCategoryOption)
-                          return typeof isVisible === 'function' ? isVisible() : true
-                        })
-                        .map((option) => {
-                          return { ...option, label: $t(option.label) }
-                        })}
+                        .filter(({ isVisible }) => isVisible(useIsSplitOn))
+                        .map((option) => ({ ...option, label: $t(option.label) })
+                        )}
                       style={{ minWidth: 150 }}
                       onApply={(value: selectionType) =>
                         write({ ...filters, [config.selectionType]: value })

@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 import { MessageDescriptor, defineMessage } from 'react-intl'
 
 import { ClientEventEnum, categoryOptions, disconnectClientEventsMap } from '@acx-ui/analytics/utils'
+import { getIsBtmEventsOn, UseSplitOnType }                            from '@acx-ui/feature-toggle'
 import { hasRaiPermission }                                            from '@acx-ui/user'
 
 import { ConnectionEvent } from './services'
@@ -83,22 +84,41 @@ export type DisplayEvent = ConnectionEvent & {
   type?: string;
 }
 
-export type ChartMapping = { key: string; label: string; chartType: string; series: string }
+type IsVisibleWithArgsType = (isSplitOnFn: UseSplitOnType) => boolean
+type IsVisibleType = () => boolean
 
-interface Subtitle {
-  title: MessageDescriptor;
-  value: string;
-  isLast?: boolean;
+export type ChartMapping = {
+  key: string
+  label: string
+  chartType: string
+  series: string
+  isVisible: IsVisibleWithArgsType
 }
 
+interface BaseSubtitle {
+  title: MessageDescriptor | string
+  value: string
+  isVisible: IsVisibleWithArgsType
+}
+
+export interface RoamingSubtitle extends BaseSubtitle {
+  noData: boolean
+  apMac: string
+  apModel: string
+  apFirmware: string
+}
+
+type Subtitle = BaseSubtitle | RoamingSubtitle
+
 export type TimelineItem = {
-  title: MessageDescriptor;
-  value: string;
-  showCount: boolean;
-  hasXaxisLabel?: boolean;
-  chartMapping: ChartMapping[];
-  showResetZoom?: boolean;
-  subtitle?: Subtitle[];
+  title: MessageDescriptor
+  value: string
+  showCount: boolean
+  hasXaxisLabel?: boolean
+  chartMapping: ChartMapping[]
+  showResetZoom?: boolean
+  subtitle?: Subtitle[]
+  isVisible: IsVisibleType
 }
 
 export const btmInfoToDisplayTextMap: Record<string, string> = {
@@ -113,7 +133,27 @@ export const rssGroups = {
   average: { lower: -85, upper: -75 },
   bad: { upper: -86 }
 }
-export const ClientTroubleShootingConfig = {
+
+interface ClientTroubleShootingConfigType {
+  selection: Array<{
+    entityName: {
+      singular: MessageDescriptor
+      plural: MessageDescriptor
+    }
+    selectionType: 'category' | 'type' | 'radio'
+    defaultValue: []
+    placeHolder: MessageDescriptor
+    options: Array<{
+      value: string
+      label: MessageDescriptor
+      isVisible: IsVisibleWithArgsType
+    }>
+    isVisible: IsVisibleType
+  }>
+  timeLine: TimelineItem[]
+}
+
+export const ClientTroubleShootingConfig: ClientTroubleShootingConfigType = {
   selection: [
     {
       entityName: {
@@ -163,12 +203,14 @@ export const ClientTroubleShootingConfig = {
         {
           value: BTM_REQUEST,
           label: defineMessage({ defaultMessage: 'BTM request' }),
-          isVisible: () => true
+          isVisible: (isSplitOnFn?: UseSplitOnType) =>
+            isSplitOnFn ? getIsBtmEventsOn(isSplitOnFn) : true
         },
         {
           value: BTM_RESPONSE,
           label: defineMessage({ defaultMessage: 'BTM response' }),
-          isVisible: () => true
+          isVisible: (isSplitOnFn?: UseSplitOnType) =>
+            isSplitOnFn ? getIsBtmEventsOn(isSplitOnFn) : true
         }
       ],
       isVisible: () => true
@@ -184,15 +226,18 @@ export const ClientTroubleShootingConfig = {
       options: [
         {
           value: RADIO2DOT4G,
-          label: defineMessage({ defaultMessage: '2.4 GHz' })
+          label: defineMessage({ defaultMessage: '2.4 GHz' }),
+          isVisible: () => true
         },
         {
           value: RADIO5G,
-          label: defineMessage({ defaultMessage: '5 GHz' })
+          label: defineMessage({ defaultMessage: '5 GHz' }),
+          isVisible: () => true
         },
         {
           value: RADIO65G,
-          label: defineMessage({ defaultMessage: '6 GHz' })
+          label: defineMessage({ defaultMessage: '6 GHz' }),
+          isVisible: () => true
         }
       ],
       isVisible: () => true
@@ -204,40 +249,85 @@ export const ClientTroubleShootingConfig = {
       value: TYPES.CONNECTION_EVENTS,
       showCount: true,
       chartMapping: [
-        { key: 'all', label: 'all', chartType: 'scatter', series: 'events' },
-        { key: 'success', label: 'success', chartType: 'scatter', series: 'events' },
-        { key: 'failure', label: 'failure', chartType: 'scatter', series: 'events' },
-        { key: 'slow', label: 'slow', chartType: 'scatter', series: 'events' },
-        { key: 'disconnect', label: 'disconnect', chartType: 'scatter', series: 'events' },
-        { key: 'btm-request', label: 'btm request', chartType: 'scatter', series: 'events' },
-        { key: 'btm-response', label: 'btm response', chartType: 'scatter', series: 'events' }
-      ] as ChartMapping[],
+        { key: 'all', label: 'all', chartType: 'scatter', series: 'events', isVisible: () => true },
+        {
+          key: 'success',
+          label: 'success',
+          chartType: 'scatter',
+          series: 'events',
+          isVisible: () => true
+        },
+        {
+          key: 'failure',
+          label: 'failure',
+          chartType: 'scatter',
+          series: 'events',
+          isVisible: () => true
+        },
+        {
+          key: 'slow',
+          label: 'slow',
+          chartType: 'scatter',
+          series: 'events',
+          isVisible: () => true
+        },
+        {
+          key: 'disconnect',
+          label: 'disconnect',
+          chartType: 'scatter',
+          series: 'events',
+          isVisible: () => true
+        },
+        {
+          key: 'btm-request',
+          label: 'btm request',
+          chartType: 'scatter',
+          series: 'events',
+          isVisible: (isSplitOnFn?: UseSplitOnType) =>
+            isSplitOnFn ? getIsBtmEventsOn(isSplitOnFn) : true
+        },
+        {
+          key: 'btm-response',
+          label: 'btm response',
+          chartType: 'scatter',
+          series: 'events',
+          isVisible: (isSplitOnFn?: UseSplitOnType) =>
+            isSplitOnFn ? getIsBtmEventsOn(isSplitOnFn) : true
+        }
+      ],
       showResetZoom: true,
       subtitle: [
         {
           title: defineMessage({ defaultMessage: 'Success' }),
-          value: SUCCESS
+          value: SUCCESS,
+          isVisible: () => true
         },
         {
           title: defineMessage({ defaultMessage: 'Failure' }),
-          value: FAILURE
+          value: FAILURE,
+          isVisible: () => true
         },
         {
           title: defineMessage({ defaultMessage: 'Slow' }),
-          value: SLOW
+          value: SLOW,
+          isVisible: () => true
         },
         {
           title: defineMessage({ defaultMessage: 'Disconnect' }),
-          value: DISCONNECT
+          value: DISCONNECT,
+          isVisible: () => true
         },
         {
           title: defineMessage({ defaultMessage: 'BTM Request' }),
-          value: BTM_REQUEST
+          value: BTM_REQUEST,
+          isVisible: (isSplitOnFn?: UseSplitOnType) =>
+            isSplitOnFn ? getIsBtmEventsOn(isSplitOnFn) : true
         },
         {
           title: defineMessage({ defaultMessage: 'BTM Response' }),
           value: BTM_RESPONSE,
-          isLast: true
+          isVisible: (isSplitOnFn?: UseSplitOnType) =>
+            isSplitOnFn ? getIsBtmEventsOn(isSplitOnFn) : true
         }
       ],
       isVisible: () => true
@@ -247,8 +337,8 @@ export const ClientTroubleShootingConfig = {
       value: TYPES.ROAMING,
       showCount: true,
       chartMapping: [
-        { key: 'all', label: 'all', chartType: 'scatter', series: 'roaming' }
-      ] as ChartMapping[],
+        { key: 'all', label: 'all', chartType: 'scatter', series: 'roaming', isVisible: () => true }
+      ],
       isVisible: () => true
     },
     {
@@ -256,29 +346,44 @@ export const ClientTroubleShootingConfig = {
       value: TYPES.CONNECTION_QUALITY,
       showCount: false,
       chartMapping: [
-        { key: 'all', label: 'all', chartType: 'bar', series: 'quality' },
-        { key: 'rss', label: 'rss', chartType: 'bar', series: 'quality' },
-        { key: 'snr', label: 'snr', chartType: 'bar', series: 'quality' },
-        { key: 'throughput', label: 'throughput', chartType: 'bar', series: 'quality' },
-        { key: 'avgTxMCS', label: 'avgTxMCS', chartType: 'bar', series: 'quality' }
-      ] as ChartMapping[],
+        { key: 'all', label: 'all', chartType: 'bar', series: 'quality', isVisible: () => true },
+        { key: 'rss', label: 'rss', chartType: 'bar', series: 'quality', isVisible: () => true },
+        { key: 'snr', label: 'snr', chartType: 'bar', series: 'quality', isVisible: () => true },
+        {
+          key: 'throughput',
+          label: 'throughput',
+          chartType: 'bar',
+          series: 'quality',
+          isVisible: () => true
+        },
+        {
+          key: 'avgTxMCS',
+          label: 'avgTxMCS',
+          chartType: 'bar',
+          series: 'quality',
+          isVisible: () => true
+        }
+      ],
       subtitle: [
         {
           title: defineMessage({ defaultMessage: 'RSS' }),
-          value: 'RSS'
+          value: 'RSS',
+          isVisible: () => true
         },
         {
           title: defineMessage({ defaultMessage: 'SNR' }),
-          value: 'SNR'
+          value: 'SNR',
+          isVisible: () => true
         },
         {
           title: defineMessage({ defaultMessage: 'Client Throughput' }),
-          value: 'clientThroughput'
+          value: 'clientThroughput',
+          isVisible: () => true
         },
         {
           title: defineMessage({ defaultMessage: 'Avg. MCS(Downlink)' }),
           value: 'AvgMCS',
-          isLast: true
+          isVisible: () => true
         }
       ],
       isVisible: () => true
@@ -289,24 +394,44 @@ export const ClientTroubleShootingConfig = {
       showCount: true,
       hasXaxisLabel: true,
       chartMapping: [
-        { key: 'all', label: 'all', chartType: 'bar', series: 'incidents' },
-        { key: 'connection', label: 'connection', chartType: 'bar', series: 'incidents' },
-        { key: 'performance', label: 'performance', chartType: 'bar', series: 'incidents' },
-        { key: 'infrastructure', label: 'infrastructure', chartType: 'bar', series: 'incidents' }
-      ] as ChartMapping[],
+        { key: 'all', label: 'all', chartType: 'bar', series: 'incidents', isVisible: () => true },
+        {
+          key: 'connection',
+          label: 'connection',
+          chartType: 'bar',
+          series: 'incidents',
+          isVisible: () => true
+        },
+        {
+          key: 'performance',
+          label: 'performance',
+          chartType: 'bar',
+          series: 'incidents',
+          isVisible: () => true
+        },
+        {
+          key: 'infrastructure',
+          label: 'infrastructure',
+          chartType: 'bar',
+          series: 'incidents',
+          isVisible: () => true
+        }
+      ],
       subtitle: [
         {
           title: defineMessage({ defaultMessage: 'Client Connection' }),
-          value: 'connection'
+          value: 'connection',
+          isVisible: () => true
         },
         {
           title: defineMessage({ defaultMessage: 'Performance' }),
-          value: 'performance'
+          value: 'performance',
+          isVisible: () => true
         },
         {
           title: defineMessage({ defaultMessage: 'Infrastructure' }),
           value: 'infrastructure',
-          isLast: true
+          isVisible: () => true
         }
       ],
       isVisible: () => hasRaiPermission('READ_INCIDENTS')
@@ -406,17 +531,20 @@ type EventsCategoryMap = {
   all: Event[] | []
 }
 
+export const btmEventCategories: Array<keyof ConnectionEventsCategoryMap> = [
+  BTM_REQUEST,
+  BTM_RESPONSE
+]
+
 export const eventCategories: Array<keyof ConnectionEventsCategoryMap> = [
   SUCCESS,
   FAILURE,
   DISCONNECT,
   SLOW,
-  ALL,
-  BTM_REQUEST,
-  BTM_RESPONSE
+  ALL
 ]
 
-type ConnectionEventsCategoryMap = EventsCategoryMap & {
+export type ConnectionEventsCategoryMap = EventsCategoryMap & {
   [BTM_REQUEST]: Event[] | []
   [BTM_RESPONSE]: Event[] | []
 }

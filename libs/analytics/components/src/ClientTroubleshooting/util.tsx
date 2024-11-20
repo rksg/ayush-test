@@ -58,7 +58,10 @@ import {
   ALL,
   eventCategories,
   BTM_REQUEST,
-  BTM_RESPONSE
+  BTM_RESPONSE,
+  btmEventCategories,
+  ChartMapping,
+  RoamingSubtitle
 } from './config'
 import { ConnectionEvent, ConnectionQuality } from './services'
 import * as UI                                from './styledComponents'
@@ -308,17 +311,18 @@ export const roamingEventFormatter = (details: RoamingByAP) => {
     }
   ]
 }
-export const getRoamingChartConfig = (data: RoamingConfigParam) => {
+export const getRoamingChartConfig = (data: RoamingConfigParam): ChartMapping[] => {
   return Object.keys(data).map((key) => {
     return {
       key: key,
       label: data[key].apName,
       chartType: 'bar',
-      series: ROAMING
+      series: ROAMING,
+      isVisible: () => true
     }
   })
 }
-export const getRoamingSubtitleConfig = (data: RoamingConfigParam) => {
+export const getRoamingSubtitleConfig = (data: RoamingConfigParam): RoamingSubtitle[] => {
   if (Object.keys(data).length === 0) {
     return [{
       title: 'No Data',
@@ -326,12 +330,12 @@ export const getRoamingSubtitleConfig = (data: RoamingConfigParam) => {
       apModel: '',
       apFirmware: '',
       value: '',
-      isLast: true,
-      noData: true
+      noData: true,
+      isVisible: () => true
     }]
   }
 
-  return Object.keys(data).map((key, index) => {
+  return Object.keys(data).map((key) => {
     return {
       title: `${data[key].apName} on ${data[key].radio}GHz`,
       apMac: data[key].apMac,
@@ -339,7 +343,7 @@ export const getRoamingSubtitleConfig = (data: RoamingConfigParam) => {
       apFirmware: data[key].apFirmware,
       value: data[key].apName,
       noData: false,
-      isLast: Object.keys(data).length === index + 1 ? true : false
+      isVisible: () => true
     }
   })
 }
@@ -505,8 +509,10 @@ export const transformIncidents = (
 export const getTimelineData = (
   events: Event[],
   incidents: IncidentDetails[],
-  toggles?: IncidentsToggleFilter['toggles']
+  toggles?: IncidentsToggleFilter['toggles'],
+  isBtmEventsEnabled?: boolean
 ) => {
+  const _eventCategories = [...eventCategories, ...(isBtmEventsEnabled ? btmEventCategories : [])]
   const categorisedEvents = events.reduce(
     (acc, event) => {
       if (event?.type === TYPES.CONNECTION_EVENTS) {
@@ -515,7 +521,7 @@ export const getTimelineData = (
           event
         ]
 
-        eventCategories.forEach((category) => {
+        _eventCategories.forEach((category) => {
           if (event.category === category) {
             acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][category] = [
               ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][category],
@@ -533,7 +539,7 @@ export const getTimelineData = (
       return acc
     },
     {
-      [TYPES.CONNECTION_EVENTS]: eventCategories.reduce(
+      [TYPES.CONNECTION_EVENTS]: _eventCategories.reduce(
         (acc, category) => ({ ...acc, [category]: [] }),
         {}
       ),

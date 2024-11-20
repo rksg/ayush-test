@@ -5,13 +5,16 @@ import { flatten }            from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
-import { get }                         from '@acx-ui/config'
-import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
-import { ArrowCollapse }               from '@acx-ui/icons'
-import { TenantLink }                  from '@acx-ui/react-router-dom'
-import { hasAccess, hasRaiPermission } from '@acx-ui/user'
+import { get }                            from '@acx-ui/config'
+import { getIsBtmEventsOn, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }      from '@acx-ui/formatter'
+import { ArrowCollapse }                  from '@acx-ui/icons'
+import { TenantLink }                     from '@acx-ui/react-router-dom'
+import { hasAccess, hasRaiPermission }    from '@acx-ui/user'
 
 import {
+  btmEventCategories,
+  ConnectionEventsCategoryMap,
   DisplayEvent,
   IncidentDetails
 } from './config'
@@ -43,11 +46,13 @@ export type FormattedEvent = {
   event: DisplayEvent
 }
 
-const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlShape) => {
+const transformData = (
+  clientInfo: ClientInfoData, filters: Filters, intl: IntlShape, isBtmEventsEnabled: boolean
+) => {
   const types: string[] = flatten(filters ? filters.type ?? [[]] : [[]])
   const radios: string[] = flatten(filters ? filters.radio ?? [[]] : [[]])
   const selectedCategories: string[] = flatten(filters ? filters.category ?? [[]] : [[]])
-  const events = transformEvents(
+  let events = transformEvents(
     clientInfo.connectionEvents,
     types,
     radios
@@ -58,6 +63,13 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
     types,
     intl
   )
+
+  if (!isBtmEventsEnabled) {
+    events = events.filter(({ category }) =>
+      !btmEventCategories.includes(category as keyof ConnectionEventsCategoryMap)
+    )
+  }
+
   return [ ...events.map((event: DisplayEvent) => {
     const color = getEventColor(event.category, event.btmInfo)
     return {
@@ -127,7 +139,9 @@ export function History (props : HistoryContentProps) {
   const intl = useIntl()
   const { $t } = intl
   const { setHistoryContentToggle, historyContentToggle, data, filters, onPanelCallback } = props
-  const histData = transformData(data!, filters!, intl)
+  const isBtmEventsEnabled = getIsBtmEventsOn(useIsSplitOn)
+
+  const histData = transformData(data!, filters!, intl, isBtmEventsEnabled)
   return (
     <UI.History>
       <UI.HistoryHeader>
