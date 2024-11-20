@@ -67,8 +67,7 @@ export function DpskSettingsForm (props: { defaultSelectedDpsk?: string }) {
 
   // only create mode
   useEffect(()=>{
-    if(!editMode && !cloneMode) {
-
+    if(!editMode && !cloneMode && defaultSelectedDpsk) {
       form.setFieldValue('dpskServiceProfileId', defaultSelectedDpsk)
     }
   }, [editMode, cloneMode, defaultSelectedDpsk])

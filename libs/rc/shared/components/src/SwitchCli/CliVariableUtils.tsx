@@ -114,7 +114,7 @@ export function formatContentWithLimit (content: string, maxLines: number, maxLe
 export const formatSwitchSerialWithName = (switchData: SwitchViewModel) => {
   const { name, serialNumber } = switchData
   return name && name !== serialNumber
-    ? `${serialNumber} (${name})`
+    ? `${name} (${serialNumber})`
     : (name ?? '')
 }
 
@@ -789,7 +789,7 @@ export function renderVariableValue (
 
   const customizedSwitches = !!switchCount && <>
     <UI.VariableTitle>{
-      $t({ defaultMessage: 'Switches with their own settings' })
+      $t({ defaultMessage: 'Switches with custom settings' })
     }</UI.VariableTitle>
     <UI.VariableContent>
       <Button type='link'
