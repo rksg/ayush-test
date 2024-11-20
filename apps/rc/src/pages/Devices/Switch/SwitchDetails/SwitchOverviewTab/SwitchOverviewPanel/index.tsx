@@ -80,7 +80,7 @@ export function SwitchOverviewPanel (props:{
       </GridCol>
     </GridRow>
     <GridRow>
-      { switchDetail?.serialNumber &&
+      { switchDetail?.serialNumber && filters &&
       <SwitchWidgets filters={{ ...filters }} switchDetailHeader={switchDetail} /> }
     </GridRow>
 
