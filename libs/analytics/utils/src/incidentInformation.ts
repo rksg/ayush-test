@@ -210,6 +210,39 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
     }),
     incidentType: 'switch'
   },
+  'i-switch-loop-detection': {
+    category: defineMessage({ defaultMessage: 'Infrastructure' }),
+    subCategory: defineMessage({ defaultMessage: 'Loop Detection' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'Loop detected in {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'Loop detected in {scope}.'
+    }),
+    incidentType: 'switch'
+  },
+  'p-switch-port-congestion': {
+    category: defineMessage({ defaultMessage: 'Performance' }),
+    subCategory: defineMessage({ defaultMessage: 'Congestion' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'Port congestion detected in {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'Port congestion detected in {scope}.'
+    }),
+    incidentType: 'switch'
+  },
+  'p-switch-uplink-port-congestion': {
+    category: defineMessage({ defaultMessage: 'Performance' }),
+    subCategory: defineMessage({ defaultMessage: 'Uplink Congestion' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'Uplink Port congestion detected in {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'Uplink Port congestion detected in {scope}.'
+    }),
+    incidentType: 'switch'
+  },
   'p-switch-memory-high': {
     category: defineMessage({ defaultMessage: 'Performance' }),
     subCategory: defineMessage({ defaultMessage: 'Memory' }),
