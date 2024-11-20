@@ -100,7 +100,7 @@ ARG PRECOMMIT=true
 ARG GIT_COMMIT_BRANCH=master
 
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
-        ./cicd_tools/run_test_cases_tool.sh 
+        ./cicd_tools/run_test_cases_tool.sh; \
     else mkdir -p /app/coverage; fi
 
 FROM build-base as acx-ui-sonar-run
