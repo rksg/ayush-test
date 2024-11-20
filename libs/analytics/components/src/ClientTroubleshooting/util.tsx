@@ -61,7 +61,8 @@ import {
   BTM_RESPONSE,
   btmEventCategories,
   ChartMapping,
-  RoamingSubtitle
+  RoamingSubtitle,
+  ConnectionEventsCategoryMap
 } from './config'
 import { ConnectionEvent, ConnectionQuality } from './services'
 import * as UI                                from './styledComponents'
@@ -513,41 +514,45 @@ export const getTimelineData = (
   isBtmEventsEnabled?: boolean
 ) => {
   const _eventCategories = [...eventCategories, ...(isBtmEventsEnabled ? btmEventCategories : [])]
-  const categorisedEvents = events.reduce(
-    (acc, event) => {
-      if (event?.type === TYPES.CONNECTION_EVENTS) {
-        acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][ALL] = [
-          ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][ALL],
-          event
-        ]
+  const categorisedEvents = events
+    .filter(({ category }) =>
+      _eventCategories.includes(category as keyof ConnectionEventsCategoryMap)
+    )
+    .reduce(
+      (acc, event) => {
+        if (event?.type === TYPES.CONNECTION_EVENTS) {
+          acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][ALL] = [
+            ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][ALL],
+            event
+          ]
 
-        _eventCategories.forEach((category) => {
-          if (event.category === category) {
-            acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][category] = [
-              ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][category],
-              event
-            ]
-          }
-        })
-      }
-      if (event?.type === TYPES.ROAMING) {
-        acc[TYPES.ROAMING as RoamingEventsKey][ALL] = [
-          ...acc[TYPES.ROAMING as RoamingEventsKey][ALL],
-          event
-        ]
-      }
-      return acc
-    },
-    {
-      [TYPES.CONNECTION_EVENTS]: _eventCategories.reduce(
-        (acc, category) => ({ ...acc, [category]: [] }),
-        {}
-      ),
-      [TYPES.ROAMING]: {
-        [ALL]: []
-      }
-    } as unknown as TimelineData
-  )
+          _eventCategories.forEach((category) => {
+            if (event.category === category) {
+              acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][category] = [
+                ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][category],
+                event
+              ]
+            }
+          })
+        }
+        if (event?.type === TYPES.ROAMING) {
+          acc[TYPES.ROAMING as RoamingEventsKey][ALL] = [
+            ...acc[TYPES.ROAMING as RoamingEventsKey][ALL],
+            event
+          ]
+        }
+        return acc
+      },
+      {
+        [TYPES.CONNECTION_EVENTS]: _eventCategories.reduce(
+          (acc, category) => ({ ...acc, [category]: [] }),
+          {}
+        ),
+        [TYPES.ROAMING]: {
+          [ALL]: []
+        }
+      } as unknown as TimelineData
+    )
   const categorisedIncidents = incidents.reduce(
     (acc, incident) => {
       const [map, code, key] = [
