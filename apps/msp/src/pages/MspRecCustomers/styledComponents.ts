@@ -13,6 +13,7 @@ export const FieldTextLink = styled.div`
   ${linkStyle}
 `
 export const AdminList = styled.div`
+  font-size: var(--acx-body-4-font-size);
   padding-right: 5px;
   white-space: nowrap;
   text-overflow: ellipsis;
