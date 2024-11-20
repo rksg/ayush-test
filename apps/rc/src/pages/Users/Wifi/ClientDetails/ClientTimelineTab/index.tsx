@@ -10,7 +10,8 @@ import { SessionTable } from './SessionTable'
 const Events = () => {
   const { clientId } = useParams()
   const tableQuery = useEventsTableQuery(
-    { entity_type: ['CLIENT'], clientMac: [clientId] }
+    { entity_type: ['CLIENT'] },
+    { searchTargetFields: ['clientMac'], searchString: clientId }
   )
   return <EventTable
     tableQuery={tableQuery}
