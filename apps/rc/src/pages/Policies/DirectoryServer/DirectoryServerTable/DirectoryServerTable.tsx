@@ -172,6 +172,7 @@ function useColumns () {
       key: 'type',
       title: $t({ defaultMessage: 'Server Type' }),
       dataIndex: 'type',
+      sorter: true,
       render: (_, row) => {
         switch (row?.type) {
           case DirectoryServerProfileEnum.LDAP:
@@ -186,7 +187,8 @@ function useColumns () {
     {
       key: 'serverAddress',
       title: $t({ defaultMessage: 'Server Address' }),
-      dataIndex: 'serverAddress',
+      dataIndex: 'host',
+      sorter: true,
       render: (_, row) => {
         const host = row?.host
         const port = row?.port
@@ -204,6 +206,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Networks' }),
       dataIndex: 'wifiNetworkIds',
       align: 'center',
+      sorter: true,
       filterable: networkNameMap,
       render: (_,row) =>{
         const networkIds = row.wifiNetworkIds
