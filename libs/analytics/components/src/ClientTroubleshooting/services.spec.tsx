@@ -14,7 +14,7 @@ describe('ClientInfo Api', () => {
   afterEach(() =>
     store.dispatch(api.util.resetApiState())
   )
-  it('should return correct data', async () => {
+  it('should return correct data when fetchRoamType is false', async () => {
     const expectedResult = {
       client: {
         connectionDetailsByAp: [],
@@ -27,7 +27,26 @@ describe('ClientInfo Api', () => {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.clientInfo.initiate(props)
+      api.endpoints.clientInfo.initiate({ ...props, fetchRoamingType: false })
+    )
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(expectedResult.client)
+    expect(error).toBe(undefined)
+  })
+  it('should return correct data when fetchRoamType is true', async () => {
+    const expectedResult = {
+      client: {
+        connectionDetailsByAp: [],
+        connectionEvents: [],
+        connectionQualities: [],
+        incidents: []
+      }
+    }
+    mockGraphqlQuery(dataApiURL, 'ClientInfo', {
+      data: expectedResult
+    })
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.clientInfo.initiate({ ...props, fetchRoamingType: true })
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.client)

@@ -638,5 +638,15 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/rwgs/:gatewayId/floorPositions',
     newApi: true
+  },
+
+  updateVenueLanPortSpecificSettings: {
+    method: 'put',
+    url: '/venues/:venueId/apModels/:apModel/lanPortSpecificSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

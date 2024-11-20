@@ -32,6 +32,8 @@ export function SwitchConfigHistoryTable (props: {
   const { tenantId, venueId } = useParams()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchNtpServerEnabled = useIsSplitOn(Features.SWITCH_NTP_SERVER)
+  const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
+
   const [visible, setVisible] = useState(false)
   const [showError, setShowError] = useState(true)
   const [showClis, setShowClis] = useState(true)
@@ -103,6 +105,9 @@ export function SwitchConfigHistoryTable (props: {
     let configTypeOptions = Object.values(ConfigTypeEnum)
     if (!isSwitchNtpServerEnabled) {
       configTypeOptions = configTypeOptions.filter(ctype => ctype !== ConfigTypeEnum.NTP_SERVER)
+    }
+    if (!isSwitchFlexAuthEnabled) {
+      configTypeOptions = configTypeOptions.filter(ctype => ctype !== ConfigTypeEnum.AUTHENTICATION)
     }
     return configTypeOptions.map(ctype=>({
       key: ctype, value: transformConfigType(ctype)

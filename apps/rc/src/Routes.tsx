@@ -103,6 +103,10 @@ import ConnectionMeteringTable                      from './pages/Policies/Conne
 import DirectoryServerDetail                        from './pages/Policies/DirectoryServer/DirectoryServerDetail/DirectoryServerDetail'
 import DirectoryServerTable                         from './pages/Policies/DirectoryServer/DirectoryServerTable/DirectoryServerTable'
 import EthernetPortProfileTable                     from './pages/Policies/EthernetPortProfile/EthernetPortProfileTable'
+import AddFlexibleAuthentication                    from './pages/Policies/FlexibleAuthentication/AddFlexibleAuthentication'
+import EditFlexibleAuthentication                   from './pages/Policies/FlexibleAuthentication/EditFlexibleAuthentication'
+import FlexibleAuthenticationDetail                 from './pages/Policies/FlexibleAuthentication/FlexibleAuthenticationDetail'
+import FlexibleAuthenticationTable                  from './pages/Policies/FlexibleAuthentication/FlexibleAuthenticationTable'
 import AddEdgeHqosBandwidth                         from './pages/Policies/HqosBandwidth/Edge/AddHqosBandwidth'
 import EditEdgeHqosBandwidth                        from './pages/Policies/HqosBandwidth/Edge/EditHqosBandwidth'
 import EdgeHqosBandwidthDetail                      from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthDetail'
@@ -857,6 +861,7 @@ function PolicyRoutes () {
   const isWorkflowTierEnabled = useIsTierAllowed(Features.WORKFLOW_ONBOARD)
   const isWorkflowFFEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   // eslint-disable-next-line max-len
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
 
@@ -1408,6 +1413,34 @@ function PolicyRoutes () {
               <ServerClientCertificateForm/>
             </PolicyAuthRoute>
           }
+        />
+      </>
+      }
+      {isSwitchFlexAuthEnabled && <>
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.FLEX_AUTH, oper: PolicyOperation.LIST })}
+          element={<FlexibleAuthenticationTable />}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.FLEX_AUTH ,
+            oper: PolicyOperation.CREATE
+          })}
+          element={<AddFlexibleAuthentication/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.FLEX_AUTH ,
+            oper: PolicyOperation.EDIT
+          })}
+          element={<EditFlexibleAuthentication/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.FLEX_AUTH, oper: PolicyOperation.DETAIL
+          })}
+          element={<FlexibleAuthenticationDetail />}
         />
       </>
       }

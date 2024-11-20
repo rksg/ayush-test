@@ -228,10 +228,7 @@ export function LanPortSettings (props: {
               || isDhcpEnabled
               || !lan?.enabled
               || lan?.vni > 0}
-            options={[
-              { label: $t({ defaultMessage: 'No ethernet port profile selected' }), value: null },
-              ...ethernetPortDropdownItems
-            ]}
+            options={ethernetPortDropdownItems}
             onChange={() => onChangedByCustom('ethernetPortProfileId')}
           />} />
         <EthernetPortProfileDrawer

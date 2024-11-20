@@ -76,6 +76,7 @@ export type DisplayEvent = ConnectionEvent & {
   state: string;
   event: string;
   category: string;
+  type?: string;
 }
 
 export type ChartMapping = { key: string; label: string; chartType: string; series: string }
