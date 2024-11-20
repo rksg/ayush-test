@@ -605,10 +605,12 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     refreshMspEntitlement: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(MspUrlsInfo.refreshMspEntitlement, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.refreshMspEntitlement, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
