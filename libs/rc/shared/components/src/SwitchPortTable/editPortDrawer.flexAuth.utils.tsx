@@ -422,12 +422,8 @@ export const validateApplyProfile = (
         })
       )
     } else if (isGuestVlanMismatch) {
-      return Promise.reject(
-        $t(FlexAuthMessages.CANNOT_SET_DIFF_GUEST_VLAN_FOR_PROFILE)
-        // TODO: checking with UX
-        // $t(FlexAuthMessages.CANNOT_SET_DIFF_GUEST_VLAN_FOR_PROFILE, {
-        //   guestVlan: guestVlans.sort().join(', ')
-        // })
+      return Promise.reject($t(
+        FlexAuthMessages.CANNOT_SET_DIFF_GUEST_VLAN_FOR_PROFILE)
       )
     } else if (isAuthDefaultVlanMismatch) {
       return Promise.reject(
@@ -551,8 +547,6 @@ export const checkGuestVlanConsistency = (
 
   if (!allSelectedPortsMatch && hasAssignedGuestVlan && isGuestVlanNotConsistent) {
     return Promise.reject(
-      // TODO: checking with UX
-      // $t(FlexAuthMessages.CANNOT_SET_DIFF_GUEST_VLAN, { guestVlan: guestVlans.sort().join(', ') })
       $t(FlexAuthMessages.CANNOT_SET_DIFF_GUEST_VLAN)
     )
   }
@@ -597,10 +591,10 @@ export const checkMultipleVlansDifferences = async (props: {
                 targetVlan: $t(FlexAuthVlanLabel.AUTH_DEFAULT_VLAN)
               })
             ).catch(error => {
-              throw { validateType: 'AUTH_DEFAULT_VLAN', vlan, error }
+              throw { validateType: $t({ defaultMessage: 'Auth Default' }), vlan, error }
             })
             : checkVlanDiffFromAuthDefaultVlan(vlan, aggregateData).catch(error => {
-              throw { validateType: 'AUTH_DEFAULT_VLAN', vlan, error }
+              throw { validateType: $t({ defaultMessage: 'Auth Default' }), vlan, error }
             })
           )
         ])
@@ -610,9 +604,8 @@ export const checkMultipleVlansDifferences = async (props: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return Promise.reject(
-      //TODO: checking wording with UX
-      new Error($t({ defaultMessage: 'Among the selected ports, the {vlanType} value conflicts with the {validateType}. Please enter a different value' }, {
-        validateType: $t(FlexAuthVlanLabel[error?.validateType as keyof typeof FlexAuthVlanLabel]),
+      new Error($t({ defaultMessage: 'Among the selected ports, {vlanType} ID is same as {validateType} which is not allowed. Please use a different {vlanType} ID' }, {
+        validateType: error?.validateType,
         vlanType: vlanType
       }))
     )
