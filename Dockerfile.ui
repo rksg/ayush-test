@@ -95,13 +95,15 @@ FROM build-base as acx-ui-group-test
 COPY cicd_tools ./cicd_tools
 RUN chmod a+x ./cicd_tools/run_test_cases_tool.sh
 
+RUN apk add --no-cache tini
+
 ARG PRECOMMIT=true
 ARG GIT_COMMIT_BRANCH=master
 #RUN if [[ "$PRECOMMIT" == "true" || "$GIT_COMMIT_BRANCH" == "master" ]]; then \
 #        ./cicd_tools/run_test_cases_tool.sh; \
 #    else mkdir -p /app/coverage; fi
 
-RUN eval ./cicd_tools/run_test_cases_tool.sh
+CMD ['./cicd_tools/run_test_cases_tool.sh']
 
 FROM build-base as acx-ui-sonar-run
 COPY --from=acx-ui-group-test /app/coverage /app/coverage
