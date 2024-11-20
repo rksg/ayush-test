@@ -37,6 +37,7 @@ export type PieChartData = {
   name: string
   color: string
   rawKey: string
+  selected: boolean
 }
 
 export type TabKeyType = 'wlans' | 'nodes' | 'events' | 'osManufacturers'
@@ -84,7 +85,6 @@ export const transformData = (
   }
   return { nodes: [], wlans: [], events: [], osManufacturers: [] }
 }
-
 
 export function pieNodeMap (filter: NodesFilter): MessageDescriptor {
   const isMLISA = get('IS_MLISA_SA')
@@ -160,16 +160,14 @@ export function onClickLegend (
   onLegendClick: (data: PieChartData) => void
 ) {
   const clickedIndex = data.findIndex((item) => item.name === params.name)
-  if (clickedIndex !== -1) toggleSelection(clickedIndex, selectedSlice, setSelectedSlice)
-  const clickedData = data.find((pie) => pie.name === params.name)
-  onLegendClick && onLegendClick(clickedData as PieChartData)
+  if (clickedIndex !== -1) {
+    toggleSelection(clickedIndex, selectedSlice, setSelectedSlice)
+    onLegendClick && onLegendClick(data[clickedIndex] as PieChartData)
+  }
 }
 
 export function getHealthPieChart (
-  data: {
-    key: string; value: number; name: string;
-    color: string, code?: string, selected?: boolean
-  }[],
+  data: PieChartData[],
   dataFormatter: (value: unknown, tz?: string | undefined) => string,
   size: { width: number; height: number },
   onPieClick: (e: EventParams) => void,
@@ -188,7 +186,7 @@ export function getHealthPieChart (
     tops.push({
       ...data.slice(topCount)[0],
       key: getIntl().$t({ defaultMessage: 'Others' }),
-      selected: pieFilter?.name === 'Others' ? true : false
+      selected: pieFilter?.name === 'Others'
     })
   }
 

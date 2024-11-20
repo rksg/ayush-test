@@ -30,18 +30,10 @@ const HealthDrillDown = (props: {
 
   const onPieClick = (e: EventParams) => {
     const selectedData = e.data as PieChartData
-    if (selectedData?.name === pieFilter?.name) {
-      setPieFilter(null)
-      return
-    }
-    setPieFilter(e.data as PieChartData)
+    setPieFilter((selectedData?.name === pieFilter?.name) ? null: (e.data as PieChartData))
   }
   const onLegendClick = (data: PieChartData) => {
-    if (data.name === pieFilter?.name) {
-      setPieFilter(null)
-      return
-    }
-    setPieFilter(data)
+    setPieFilter((data.name === pieFilter?.name) ? null: data)
   }
 
   const { drilldownSelection, filters } = props

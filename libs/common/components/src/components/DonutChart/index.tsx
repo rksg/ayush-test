@@ -138,7 +138,6 @@ export function DonutChart ({
   ...props
 }: DonutChartProps) {
   const dataFormatter = _dataFormatter ?? ((value: unknown) => String(value))
-  // const [selectedSlice, setSelectedSlice] = useState<number | null>(null)
 
   const sum = data.reduce((acc, cur) => acc + cur.value, 0)
   const colors = data.map(series => series.color)
@@ -284,7 +283,7 @@ export function DonutChart ({
       left: props.size === 'x-large' ? '55%' : '60%',
       orient: 'vertical',
       icon: 'circle',
-      selectedMode: props.onLegendClick ? true : false,
+      selectedMode: !!props.onLegendClick,
       itemGap: props.size === 'x-large'? 16 : 4,
       itemWidth: 8,
       itemHeight: 8,
