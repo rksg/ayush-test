@@ -98,6 +98,7 @@ RUN chmod a+x ./cicd_tools/run_test_cases_tool.sh
 
 ARG PRECOMMIT=true
 ARG GIT_COMMIT_BRANCH=master
+ARG RUN_COMMAND="node ./node_modules/.bin/nx"
 #RUN if [ "$PRECOMMIT" = "true" ] || [ "$GIT_COMMIT_BRANCH" = "master" ]; then \
 #        ./cicd_tools/run_test_cases_tool.sh; \
 #    else mkdir -p /app/coverage; fi
@@ -106,7 +107,7 @@ RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_
         while read -r line; do \
             case "$line" in \
                 \#*|"") continue ;;  \
-                *) echo "Executing: $line"; sh -c "$line" ;; \
+                *) echo "Executing: $line"; sh -c "$RUN_COMMAND $line" ;; \
             esac \
         done < ./test_cases.table ;\
     else mkdir -p /app/coverage; fi
