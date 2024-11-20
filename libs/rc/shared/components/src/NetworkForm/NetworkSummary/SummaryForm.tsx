@@ -138,36 +138,26 @@ export function SummaryForm (props: {
             }
           />
           }
-          {summaryData.type === NetworkTypeEnum.DPSK
-          && summaryData.isCloudpathEnabled
-            && <>
-              <Form.Item
-                label={$t({ defaultMessage: 'Proxy Service' })}
-                children={summaryData?.enableAuthProxy
-                  ? $t({ defaultMessage: 'Enabled' })
-                  : $t({ defaultMessage: 'Disabled' })
-                }
-              />
-              {summaryData.accountingRadius &&
-                <Form.Item
-                  label={$t({ defaultMessage: 'Accounting Service' })}
-                  children={`${summaryData.accountingRadius?.name}`}
-                />
-              }
-            </>
-          }
-          {summaryData.isCloudpathEnabled && !summaryData.wlan?.macRegistrationListId &&
+          {summaryData.isCloudpathEnabled &&
             <>
-              <Form.Item
-                label={$t({ defaultMessage: 'Authentication Server' })}
-                children={`${summaryData.authRadius?.name}`}
-              />
-              {summaryData.accountingRadius &&
+              {summaryData.type === NetworkTypeEnum.DPSK &&
+                <Form.Item
+                  label={$t({ defaultMessage: 'Proxy Service' })}
+                  children={summaryData?.enableAuthProxy
+                    ? $t({ defaultMessage: 'Enabled' })
+                    : $t({ defaultMessage: 'Disabled' })
+                  }
+                />}
+              {!summaryData.wlan?.macRegistrationListId &&
+                <Form.Item
+                  label={$t({ defaultMessage: 'Authentication Server' })}
+                  children={`${summaryData.authRadius?.name}`}
+                />}
+              {!summaryData.wlan?.macRegistrationListId && summaryData.accountingRadius &&
                 <Form.Item
                   label={$t({ defaultMessage: 'Accounting Service' })}
                   children={`${summaryData.accountingRadius?.name}`}
-                />
-              }
+                />}
             </>
           }
           {summaryData.type === NetworkTypeEnum.AAA
