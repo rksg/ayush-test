@@ -116,6 +116,11 @@ describe('VlanStep', () => {
     await userEvent.type(screen.getByTestId('vlan-id-input-0'), '93')
     expect(screen.getByTestId('vlan-id-input-0')).toHaveValue(93)
 
+    // change vlan name
+    await userEvent.clear(screen.getByTestId('vlan-name-input-0'))
+    await userEvent.type(screen.getByTestId('vlan-name-input-0'), 'vlan-93')
+    expect(screen.getByTestId('vlan-name-input-0')).toHaveValue('vlan-93')
+
     // edit
     await userEvent.click(screen.getByTestId('vlan-configuration-0'))
     expect(await screen.findByText('Vlan Setting Drawer')).toBeVisible()
