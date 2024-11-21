@@ -32,6 +32,7 @@ import { VenueDetails, VenuesForm, VenueEdit, VenuesTable } from './pages/Venues
 import CustomizedDashboard from './pages/CustomizedDashboard'
 import DashboardFF         from './pages/DashboardFF'
 import Grid                from './pages/Grid'
+import AICanvas from './pages/Layout/AICanvas'
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 const MspRoutes = React.lazy(() => import('@msp/Routes'))
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
@@ -63,6 +64,7 @@ function AllRoutes () {
           <Route path='not-found' element={<PageNotFound />} />
           <Route path='no-permissions' element={<PageNoPermissions />} />
           <Route path='grid' element={<Grid />} />
+          <Route path='canvas' element={<AICanvas />} />
           <Route path='dashboard' element={<DashboardFF />} />
           <Route path='dashboard1' element={<Dashboard />} />
           <Route path='dashboard2' element={<CustomizedDashboard />} />

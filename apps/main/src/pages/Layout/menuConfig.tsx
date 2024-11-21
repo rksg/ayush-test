@@ -37,6 +37,7 @@ import {
 import { RolesEnum }                                      from '@acx-ui/types'
 import { hasRoles, useUserProfileContext, RaiPermission } from '@acx-ui/user'
 import { useTenantId }                                    from '@acx-ui/utils'
+import { useState } from 'react'
 
 export function useMenuConfig () {
   const { $t } = useIntl()
@@ -60,6 +61,7 @@ export function useMenuConfig () {
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
   ].some(Boolean)
   const isIntentAIEnabled = useIsSplitOn(Features.INTENT_AI_TOGGLE)
+  const [visible, setVisible] = useState(false)
 
   type Item = ItemType & {
     permission?: RaiPermission
@@ -316,6 +318,12 @@ export function useMenuConfig () {
         { uri: '/dataStudio', label: $t({ defaultMessage: 'Data Studio' }) },
         { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) }
       ]
+    },
+    {
+      label: $t({ defaultMessage: 'AI Canvas' }),
+      uri: '/canvas',
+      inactiveIcon: BulbOutlined,
+      activeIcon: BulbSolid,
     },
     {
       label: $t({ defaultMessage: 'Administration' }),
