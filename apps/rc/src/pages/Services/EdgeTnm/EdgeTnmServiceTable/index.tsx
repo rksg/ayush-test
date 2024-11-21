@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { Row }     from 'antd'
-import { useIntl } from 'react-intl'
+import { Row, Space } from 'antd'
+import { useIntl }    from 'react-intl'
 
 import {
   PageHeader,
@@ -20,11 +20,16 @@ import {
   filterByAccessForServicePolicyMutation,
   EdgeTnmServiceData,
   transformDisplayNumber,
-  getServiceDetailsLink
+  getServiceDetailsLink,
+  EdgeTnmServiceStatusEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
+import {
+  noDataDisplay
+} from '@acx-ui/utils'
 
 import { EdgeTnmCreateFormModal } from './EdgeTnmCreateFormModal'
+import * as UI                    from './styledComponents'
 
 const settingsId = 'services-edge-tnm-service-table'
 export function EdgeTnmServiceTable () {
@@ -109,14 +114,16 @@ function useColumns () {
       searchable: true,
       fixed: 'left',
       render: (_, row) =>
-        <TenantLink
-          to={getServiceDetailsLink({
-            type: ServiceType.EDGE_TNM_SERVICE,
-            oper: ServiceOperation.DETAIL,
-            serviceId: row.id!
-          })}>
-          {row.name}
-        </TenantLink>
+        row.status === EdgeTnmServiceStatusEnum.UP
+          ? <TenantLink
+            to={getServiceDetailsLink({
+              type: ServiceType.EDGE_TNM_SERVICE,
+              oper: ServiceOperation.DETAIL,
+              serviceId: row.id!
+            })}>
+            {row.name}
+          </TenantLink>
+          : row.name
     },
     {
       key: 'version',
@@ -126,7 +133,7 @@ function useColumns () {
       sorter: true,
       render: (_, row) =>
         <Row justify='center'>
-          {row.version}
+          {row.status === EdgeTnmServiceStatusEnum.INSTALLING ? noDataDisplay : row.version}
         </Row>
     },
     {
@@ -137,10 +144,25 @@ function useColumns () {
       align: 'center',
       render: (_, row) =>
         <Row justify='center'>
-          {row.status}
+          <TnmServiceStatus status={row.status} />
         </Row>
     }
   ]
 
   return columns
+}
+
+const TnmServiceStatus = (props:{ status: EdgeTnmServiceStatusEnum | undefined }) => {
+  const { $t } = useIntl()
+
+  switch(props.status) {
+    case EdgeTnmServiceStatusEnum.UP:
+      return <Space><UI.CheckMarkCircleSolidIcon/>{$t({ defaultMessage: 'Up' })}</Space>
+    case EdgeTnmServiceStatusEnum.INSTALLING:
+      return <Space><UI.CheckingIcon/>{$t({ defaultMessage: 'Installing' })}</Space>
+    case EdgeTnmServiceStatusEnum.DOWN:
+      return <Space><UI.UnavailableIcon/>{$t({ defaultMessage: 'Down' })}</Space>
+    default:
+      return <Space><UI.UnknownIcon/>{$t({ defaultMessage: 'Unkown' })}</Space>
+  }
 }
