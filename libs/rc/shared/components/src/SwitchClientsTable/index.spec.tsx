@@ -584,7 +584,7 @@ describe('SwitchClientsTable', () => {
       data: [{
         ...clientList.data?.[0],
         clientIpv4Addr: '1.1.1.1',
-        clientAuthType: 'MACAUTH'
+        clientAuthType: 'MAC_AUTH'
       }]
     }
 
@@ -634,7 +634,7 @@ describe('SwitchClientsTable', () => {
         res(ctx.json({
           ...clientDetail,
           dhcpClientOsVendorName: 'windows',
-          clientAuthType: 'MACAUTH'
+          clientAuthType: 'MAC_AUTH'
         }))
       )
     )

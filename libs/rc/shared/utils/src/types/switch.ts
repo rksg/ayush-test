@@ -394,6 +394,7 @@ export interface StackMemberList {
 export interface ConfigurationHistory {
   switchName: string
   startTime: string
+  rawStartTime: string
   endTime: string
   serialNumber: string
   configType: string

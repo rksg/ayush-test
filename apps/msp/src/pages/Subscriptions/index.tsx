@@ -78,6 +78,11 @@ const entitlementSummaryPayload = {
   }
 }
 
+const entitlementRefreshPayload = {
+  status: 'synchronize',
+  usageType: 'ASSIGNED'
+}
+
 const entitlementListPayload = {
   fields: [
     'externalId',
@@ -265,7 +270,8 @@ export function Subscriptions () {
     {
       label: $t({ defaultMessage: 'Refresh' }),
       onClick: () => {
-        refreshEntitlement({ params: { tenantId } })
+        refreshEntitlement({ params: { tenantId }, payload: entitlementRefreshPayload,
+          enableRbac: isEntitlementRbacApiEnabled })
           .then()
       }
     }
