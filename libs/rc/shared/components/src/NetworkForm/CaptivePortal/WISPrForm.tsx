@@ -66,10 +66,13 @@ export function WISPrForm () {
   const [isMspEc, setIsMspEc]=useState(false)
   const isDataPopulatedRef = useRef(false)
 
-  // eslint-disable-next-line max-len
-  const [state, dispatch] = useReducer((curr: WISPrAuthAccServerState, incoming: WISPrAuthAccServerState) => {
-    return incoming
-  }, statesCollection.useBypassCNAAndAuth)
+  const [state, dispatch] = useReducer(
+    (curr: WISPrAuthAccServerState, incoming: WISPrAuthAccServerState) => incoming,
+    computeWISPrServerState(
+      data?.guestPortal?.wisprPage?.authType,
+      data?.wlan?.bypassCPUsingMacAddressAuthentication
+    )
+  )
 
   useEffect(() => {
     let mutableData = _.cloneDeep(data) ?? {}
@@ -105,22 +108,25 @@ export function WISPrForm () {
       : ''
     const resolvedRedirectUrl = hasOnlyOneRegion && regions[0].redirectUrl
       ? regions[0].redirectUrl
-      : ''
+      : null
 
     // eslint-disable-next-line max-len
     form.setFieldValue(['guestPortal','wisprPage','externalProviderRegion'], resolvedExternalProviderRegion)
     // eslint-disable-next-line max-len
     form.setFieldValue(['guestPortal','wisprPage','customExternalProvider'], resolvedCustomExternalProvider)
     form.setFieldValue(['guestPortal','wisprPage','captivePortalUrl'], resolvedCaptivePortalUrl)
-    form.setFieldValue(['guestPortal','redirectUrl'], resolvedRedirectUrl)
+    if (resolvedRedirectUrl) {
+      form.setFieldValue(['guestPortal','redirectUrl'], resolvedRedirectUrl)
+    }
     form.setFieldValue('redirectCheckbox', !!resolvedRedirectUrl)
     setIsOtherProvider(resolvedCustomExternalProvider)
     setRegionOption(regions)
 
     setData && setData(_.merge({}, data, {
       guestPortal: {
-        redirectUrl: resolvedRedirectUrl,
+        ...(resolvedRedirectUrl ? { redirectUrl: resolvedRedirectUrl } : {}),
         wisprPage: {
+          externalProviderName: value,
           externalProviderRegion: resolvedExternalProviderRegion,
           customExternalProvider: resolvedCustomExternalProvider,
           captivePortalUrl: resolvedCaptivePortalUrl
@@ -154,11 +160,15 @@ export function WISPrForm () {
   }
 
   const configureProviderDetails = (providerList: Providers[], wisprPage?: WisprPage) => {
-    let pName = wisprPage?.externalProviderName
-    if (wisprPage?.customExternalProvider) {
-      form.setFieldValue(['guestPortal','wisprPage','providerName'], pName)
-      pName = 'Custom Provider'
-    }
+    // let pName = wisprPage?.externalProviderName
+    // if (wisprPage?.customExternalProvider) {
+    //   form.setFieldValue(['guestPortal','wisprPage','providerName'], pName)
+    //   pName = 'Custom Provider'
+    // }
+
+    // eslint-disable-next-line max-len
+    const pName = wisprPage?.customExternalProvider ? 'Custom Provider' : wisprPage?.externalProviderName
+
     if (pName) {
       const regions = _.find(providerList, { name: pName })?.regions
       setRegionOption(regions)
@@ -230,18 +240,27 @@ export function WISPrForm () {
     }
   }, [providerData.data, isMspEc])
 
-  useEffect(() => {
-    if (isEditDataNotReady() || !isDataPopulatedRef.current) return
+  // useEffect(() => {
+  //   if (isEditDataNotReady() || !isDataPopulatedRef.current) return
 
-    configureProviderDetails(externalProviders!, data!.guestPortal?.wisprPage)
-  }, [data, externalProviders, isDataPopulatedRef])
+  //   const currentData = data!
+
+  //   configureProviderDetails(externalProviders!, currentData.guestPortal?.wisprPage)
+  //   configureAuthRadiusDetails(currentData.guestPortal?.wisprPage)
+  //   configureAccountingRadiusDetails(currentData)
+  // }, [data, externalProviders, isDataPopulatedRef])
 
   useEffect(() => {
-    if (isEditDataNotReady() || isDataPopulatedRef.current) return
+    // if (isEditDataNotReady() || isDataPopulatedRef.current) return
+    if (isEditDataNotReady()) return
 
     const existingData = data!
 
-    form.setFieldsValue({ ...existingData })
+    if (!isDataPopulatedRef.current) {
+      form.setFieldsValue({ ...existingData })
+    }
+
+    // form.setFieldsValue({ ...existingData })
 
     configureAuthRadiusDetails(existingData.guestPortal?.wisprPage)
     configureAccountingRadiusDetails(existingData)
@@ -251,23 +270,6 @@ export function WISPrForm () {
 
     isDataPopulatedRef.current = true
   },[data, externalProviders, isDataPopulatedRef])
-
-  useEffect(() => {
-    if(!data?.guestPortal?.wisprPage?.integrationKey){
-      form.setFieldValue(['guestPortal','wisprPage','integrationKey'], generateRandomString())
-    }
-
-    const authType = data?.guestPortal?.wisprPage?.authType
-    // eslint-disable-next-line max-len
-    if (authType === AuthRadiusEnum.ALWAYS_ACCEPT && !data?.wlan?.bypassCPUsingMacAddressAuthentication) {
-      dispatch(statesCollection.useAllAccept)
-    } else if (authType === AuthRadiusEnum.RADIUS) {
-      dispatch(data?.wlan?.bypassCPUsingMacAddressAuthentication
-        ? statesCollection.useBypassCNAAndAuth
-        : statesCollection.useOnlyAuth
-      )
-    }
-  },[])
 
   const generateRandomString = () => {
     const charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -315,7 +317,10 @@ export function WISPrForm () {
         />
         {isOtherProvider&&<Form.Item
           name={['guestPortal','wisprPage','providerName']}
-          initialValue=''
+          initialValue={data?.guestPortal?.wisprPage?.customExternalProvider
+            ? data?.guestPortal?.wisprPage?.externalProviderName
+            : ''
+          }
           label={$t({ defaultMessage: 'Provider Name' })}
           children={<Input placeholder={$t({ defaultMessage: 'Provider Name' })}
           />}
@@ -372,6 +377,7 @@ export function WISPrForm () {
         />
         <Form.Item
           name={['guestPortal','wisprPage','integrationKey']}
+          initialValue={generateRandomString()}
           label={<>{$t({ defaultMessage: 'Integration Key' })}
             <Tooltip.Question
               title={$t({ defaultMessage: 'Copy this password to your vendor\'s'
@@ -467,4 +473,18 @@ export function WISPrForm () {
     </GridRow>}
   </>
   )
+}
+
+function computeWISPrServerState (
+  authType?: AuthRadiusEnum,
+  bypassCPUsingMacAddressAuthentication?: boolean
+): WISPrAuthAccServerState {
+  if (authType === AuthRadiusEnum.ALWAYS_ACCEPT && !bypassCPUsingMacAddressAuthentication) {
+    return statesCollection.useAllAccept
+  } else if (authType === AuthRadiusEnum.RADIUS) {
+    return bypassCPUsingMacAddressAuthentication
+      ? statesCollection.useBypassCNAAndAuth
+      : statesCollection.useOnlyAuth
+  }
+  return statesCollection.useBypassCNAAndAuth
 }
