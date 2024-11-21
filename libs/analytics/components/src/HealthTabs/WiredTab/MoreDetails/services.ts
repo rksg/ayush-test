@@ -133,6 +133,7 @@ export const moreDetailsApi = dataApi.injectEndpoints({
                 ${queryName}(metric: $metric, switchIds: $switchIds) {
                   switchName
                   switchId
+                  switchSerial
                   deviceName
                   deviceMac
                   devicePort
