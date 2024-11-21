@@ -22,7 +22,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { noDataDisplay }                                           from '@acx-ui/utils'
+import { getIntl, noDataDisplay }                                  from '@acx-ui/utils'
 
 export default function DirectoryServerTable () {
   const { $t } = useIntl()
@@ -41,7 +41,11 @@ export default function DirectoryServerTable () {
   const tableQuery = useTableQuery<DirectoryServerViewData>({
     useQuery: useGetDirectoryServerViewDataListQuery,
     defaultPayload,
-    pagination: { settingsId }
+    pagination: { settingsId },
+    search: {
+      searchString: '',
+      searchTargetFields: ['name']
+    }
   })
 
   const doDelete = (selectedRows: DirectoryServerViewData[], callback: () => void) => {
@@ -155,7 +159,7 @@ function useColumns () {
       sorter: true,
       searchable: true,
       fixed: 'left',
-      render: function (_, row) {
+      render: function (_, row,__,highlightFn) {
         return (
           <TenantLink
             to={getPolicyDetailsLink({
@@ -163,7 +167,7 @@ function useColumns () {
               oper: PolicyOperation.DETAIL,
               policyId: row.id!
             })}>
-            {row.name}
+            {highlightFn(row.name)}
           </TenantLink>
         )
       }
