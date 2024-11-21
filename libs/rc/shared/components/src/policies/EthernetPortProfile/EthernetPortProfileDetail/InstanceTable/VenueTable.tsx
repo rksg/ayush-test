@@ -1,0 +1,96 @@
+import { useMemo } from 'react'
+
+import { useIntl } from 'react-intl'
+
+import { Table, TableProps }                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { useGetVenuesQuery }                      from '@acx-ui/rc/services'
+import { VenueActivation, defaultSort, sortProp } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                  from '@acx-ui/react-router-dom'
+
+interface VenueTableProps {
+  venueActivations: VenueActivation[]
+}
+
+export const VenueTable = (props: VenueTableProps) => {
+  const { $t } = useIntl()
+  const { venueActivations } = props
+  const { tenantId } = useParams()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
+  const venueGrouping = useMemo(()=>{
+    if(venueActivations.length > 0) {
+
+      const groupedByVenue = venueActivations.reduce((acc, activation) => {
+        const { venueId, apModel } = activation
+        if (venueId !== undefined && apModel !== undefined) {
+          if (!acc[venueId]) {
+            acc[venueId] = []
+          }
+          acc[venueId].push(apModel)
+        }
+
+        return acc
+      }, {} as Record<string, string[]>)
+
+      return new Map(Object.entries(groupedByVenue))
+    }
+  }, [venueActivations])
+
+  const venueNameMap1 = useGetVenuesQuery({
+    params: { tenantId: tenantId },
+    enableRbac: isWifiRbacEnabled,
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 2048,
+      filters: { id: venueGrouping?.keys() }
+    }
+  }, {
+    skip: venueGrouping?.size === 0
+  })
+
+  const tableResult = useMemo(() => {
+    if (venueNameMap1.data && venueGrouping) {
+      return Array.from(venueGrouping.entries()).map(([id, apModels]) => ({
+        id,
+        name: venueNameMap1.data?.data.find(v => v.id === id)?.name || '',
+        apModels
+      }))
+    }
+    return []
+  }, [venueNameMap1])
+
+  const columns: TableProps<{ id: string; name: string; apModels: string[] }>['columns'] = [
+    {
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
+      dataIndex: 'name',
+      key: 'name',
+      searchable: true,
+      sorter: { compare: sortProp('name', defaultSort) },
+      render: (_, row) => {
+        return <TenantLink to={`/venues/${row.id}/venue-details/overview`}>
+          {row.name}
+        </TenantLink>
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Model' }),
+      key: 'apModel',
+      dataIndex: 'apModel',
+      render: (_, row) => {
+        return row.apModels.join(', ')
+      }
+    }
+  ]
+
+  return (
+    <Table
+      rowKey='name'
+      columns={columns}
+      dataSource={tableResult}
+    />
+  )
+}

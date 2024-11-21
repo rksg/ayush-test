@@ -5,9 +5,10 @@ import { CommonUrlsInfo, PolicyOperation, PolicyType, getPolicyRoutePath } from 
 import { Provider, store }                                                 from '@acx-ui/store'
 import { mockServer, render, screen }                                      from '@acx-ui/test-utils'
 
-import { mockApSerialNumber, mockVenueName, mockedVenueApsList, mockedVenuesResult } from '../__tests__/fixtures'
+import { mockApSerialNumber, mockVenueName, mockedVenueApsList, mockedVenuesResult } from '../../__tests__/fixtures'
 
-import { EthernetPortProfileInstanceTable  } from './EthernetPortProfileInstanceTable'
+import { ApTable } from './ApTable'
+
 const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 let params: { tenantId: string, policyId: string }
 
@@ -38,10 +39,10 @@ describe('EthernetPortProfileInstanceTable', () => {
     )
   })
 
-  it('Should render EthernetPortProfileInstanceTable successfully', async () => {
+  it('Should render ApTable successfully', async () => {
     render(
       <Provider>
-        <EthernetPortProfileInstanceTable
+        <ApTable
           apSerialNumbers={[mockApSerialNumber]}
         />
       </Provider>, {
@@ -53,10 +54,10 @@ describe('EthernetPortProfileInstanceTable', () => {
     await screen.findByText('AP1')
   })
 
-  it('Should render EthernetPortProfileInstanceTable with empty content successfully', async () => {
+  it('Should render ApTable with empty content successfully', async () => {
     render(
       <Provider>
-        <EthernetPortProfileInstanceTable
+        <ApTable
           apSerialNumbers={[]}
         />
       </Provider>, {
