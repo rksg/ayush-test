@@ -3,7 +3,7 @@ ci_version: v1
 build:
   - directory: .
     build_type: dockerfile
-    docker_buildkit: false
+    docker_buildkit: true
     images:
       - image: acx-ui
         docker_image_name: acx-ui
