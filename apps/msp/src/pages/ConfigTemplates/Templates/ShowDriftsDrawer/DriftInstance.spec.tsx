@@ -61,7 +61,7 @@ describe('DriftInstance Component', () => {
   it('triggers data loading when collapse is expanded', async () => {
     render(<Provider><DriftInstance {...defaultProps} /></Provider>)
 
-    await userEvent.click(await screen.findByText(/Configurations in Template/i))
+    await userEvent.click(await screen.findByText(new RegExp(defaultProps.instanceName)))
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
