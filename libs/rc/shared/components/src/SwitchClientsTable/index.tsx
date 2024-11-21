@@ -59,7 +59,7 @@ export const getClientAuthType = (type?: string) => {
   switch(type){
     case 'DOT1X':
       return $t(authenticationTypeLabel[AuthenticationType._802_1X])
-    case 'MACAUTH':
+    case 'MAC_AUTH':
       return $t(authenticationTypeLabel[AuthenticationType.MACAUTH])
     case 'WEB_AUTH':
       return $t({ defaultMessage: 'WEB-AUTH' })
