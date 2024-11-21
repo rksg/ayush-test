@@ -3,15 +3,15 @@ ci_version: v1
 build:
   - directory: .
     build_type: dockerfile
-    docker_buildkit: true
+    docker_buildkit: false
     images:
       - image: acx-ui
         docker_image_name: acx-ui
         docker_image_tag: SNAPSHOT
-        dockerfile: Dockerfile.123
-          #sonar:
-          #    sonar_property: sonar-project.properties
-          #    code_report_dir: /app/coverage
-          #    sonar_scan_based_tag: acx-ui-sonar-run
+        dockerfile: Dockerfile.ui
+          sonar:
+              sonar_property: sonar-project.properties
+              code_report_dir: /app/coverage
+              sonar_scan_based_tag: acx-ui-sonar-run
   - directory: configs
     build_type: ci
