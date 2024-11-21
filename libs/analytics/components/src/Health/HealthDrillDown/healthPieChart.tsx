@@ -47,6 +47,9 @@ type NodeData = {
   value: number
   name?: string | null
 }
+
+type ClickParamsType = (data: PieChartData[] | EventParams) => (params: EventParams) => void
+
 function getTopPieChartData (nodeData: NodeData[])
   : PieChartData[] {
   const colors = qualitativeColorSet()
@@ -199,8 +202,6 @@ export function getHealthPieChart (
     /> : <NoData />
   )
 }
-
-type ClickParamsType = (data: PieChartData[] | EventParams) => (params: EventParams) => void
 
 export const HealthPieChart = ({
   size,

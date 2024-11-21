@@ -17,15 +17,11 @@ import {
   noDataResponse,
   mockConnectionFailureResponseWithOthers
 } from './__tests__/fixtures'
-import { HealthPieChart, onChartClick, onClickLegend, pieNodeMap, toggleSelection, tooltipFormatter, transformData } from './healthPieChart'
-import { api, ImpactedEntities }                                                                                     from './services'
+import { HealthPieChart, pieNodeMap, tooltipFormatter, transformData, usePieActionHandler } from './healthPieChart'
+import { api, ImpactedEntities }                                                            from './services'
 
 const mockGet = get as jest.Mock
 
-jest.mock('react-intl', () => ({
-  ...jest.requireActual('react-intl'),
-  defineMessage: jest.fn(message => message)
-}))
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
@@ -346,85 +342,35 @@ describe('transformData', () => {
   })
 })
 
-describe('toggleSelection', () => {
-  it('selects a slice if no slice is currently selected', () => {
-    const setSelectedSlice = jest.fn()
-    toggleSelection(1, null, setSelectedSlice)
-    expect(setSelectedSlice).toHaveBeenCalledWith(1)
-  })
-
-  it('deselects a slice if it is currently selected', () => {
-    const setSelectedSlice = jest.fn()
-    toggleSelection(1, 1, setSelectedSlice)
-    expect(setSelectedSlice).toHaveBeenCalledWith(null)
-  })
-
-  it('selects a new slice if a different slice is currently selected', () => {
-    const setSelectedSlice = jest.fn()
-    toggleSelection(2, 1, setSelectedSlice)
-    expect(setSelectedSlice).toHaveBeenCalledWith(2)
-  })
-})
-
-describe('onChartClick', () => {
-  it('toggles the selection of the clicked slice and calls onPieClick', () => {
-    const setSelectedSlice = jest.fn()
-    const onPieClick = jest.fn()
-    const params = { dataIndex: 1 } as EventParams
-
-    onChartClick(params, null, setSelectedSlice, onPieClick)
-
-    expect(setSelectedSlice).toHaveBeenCalledWith(1)
-    expect(onPieClick).toHaveBeenCalledWith(params)
-  })
-
-  it('deselects the clicked slice if it is already selected', () => {
-    const setSelectedSlice = jest.fn()
-    const onPieClick = jest.fn()
-    const params = { dataIndex: 1 } as EventParams
-
-    onChartClick(params, 1, setSelectedSlice, onPieClick)
-
-    expect(setSelectedSlice).toHaveBeenCalledWith(null)
-    expect(onPieClick).toHaveBeenCalledWith(params)
-  })
-})
-
-describe('onClickLegend', () => {
+describe('usePieActionHandler', () => {
+  const mockOnPieClick = jest.fn()
+  const mockOnLegendClick = jest.fn()
+  const mockSetSelectedSlice = jest.fn()
   const mockData = [
-    { name: 'Slice 1' },
-    { name: 'Slice 2' },
-    { name: 'Slice 3' }
-  ]
+    { name: 'Slice 1', dataIndex: 0 },
+    { name: 'Slice 2', dataIndex: 1 },
+    { name: 'Slice 3', dataIndex: 2 }
+  ] as EventParams & { name: string, dataIndex: number }[]
 
-  it('toggles the selection of the legend slice and calls onLegendClick', () => {
-    const setSelectedSlice = jest.fn()
-    const onLegendClick = jest.fn()
-    const params = { name: 'Slice 2' } as EventParams
-
-    onClickLegend(params, mockData, null, setSelectedSlice, onLegendClick)
-
-    expect(setSelectedSlice).toHaveBeenCalledWith(1)
-    expect(onLegendClick).toHaveBeenCalledWith(mockData[1])
+  it('should handle chart switching', async () => {
+    const [onChartClick] = usePieActionHandler(
+      mockOnPieClick, mockOnLegendClick, null, mockSetSelectedSlice)
+    onChartClick(mockData[0] as EventParams & { name: string, dataIndex: number }[])
+    expect(mockOnPieClick).toHaveBeenCalledWith(mockData[0])
   })
-  it('deselects the legend slice if it is already selected', () => {
-    const setSelectedSlice = jest.fn()
-    const onLegendClick = jest.fn()
-    const params = { name: 'Slice 2' } as EventParams
-
-    onClickLegend(params, mockData, 1, setSelectedSlice, onLegendClick)
-
-    expect(setSelectedSlice).toHaveBeenCalledWith(null)
-    expect(onLegendClick).toHaveBeenCalledWith(mockData[1])
+  it('should handle legend switching', async () => {
+    const [, createOnClickLegend] = usePieActionHandler(
+      mockOnPieClick, mockOnLegendClick, null, mockSetSelectedSlice)
+    const onLegendClick = createOnClickLegend(mockData)
+    onLegendClick?.(mockData[0] as EventParams & { name: string, dataIndex: number })
+    expect(mockOnLegendClick).toHaveBeenCalledWith(mockData[0])
+    expect(mockSetSelectedSlice).toHaveBeenCalledWith(0)
   })
-
-  it('does nothing if the clicked slice is not found in data', () => {
-    const setSelectedSlice = jest.fn()
-    const onLegendClick = jest.fn()
-    const params = { name: 'Unknown Slice' } as EventParams
-
-    onClickLegend(params, mockData, null, setSelectedSlice, onLegendClick)
-
-    expect(setSelectedSlice).not.toHaveBeenCalled()
+  it('should handle legend click on already selected slice', () => {
+    const [, createOnClickLegend] = usePieActionHandler(
+      mockOnPieClick, mockOnLegendClick, 0, mockSetSelectedSlice)
+    const onLegendClick = createOnClickLegend(mockData)
+    onLegendClick?.(mockData[0] as EventParams & { name: string, dataIndex: number })
+    expect(mockSetSelectedSlice).toHaveBeenCalledWith(null)
   })
 })
