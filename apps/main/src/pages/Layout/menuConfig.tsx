@@ -309,7 +309,7 @@ export function useMenuConfig () {
         }
       ]
     },
-    ...(showGatewaysMenu && isEdgeEnabled && showRwgUI ? [{
+    ...(showGatewaysMenu && (isEdgeEnabled || showRwgUI) ? [{
       label: $t({ defaultMessage: 'Gateways' }),
       inactiveIcon: DevicesOutlined,
       activeIcon: DevicesSolid,
