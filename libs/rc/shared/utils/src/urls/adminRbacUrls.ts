@@ -179,13 +179,12 @@ export const AdminRbacUrlsInfo: { [key: string]: ApiInfo } = {
   //     url: '/entitlements/orders/:orderId',
   //     newApi: true
   //   },
-  //   refreshLicensesData: {
-  //     method: 'get',
-  //     url: '/entitlements/summaries?refresh=true',
-  //     oldMethod: 'post',
-  //     oldUrl: '/api/tenant/:tenantId/entitlement/internal-refresh',
-  //     newApi: true
-  //   },
+  refreshLicensesData: {
+    method: 'PATCH',
+    url: '/entitlements',
+    oldUrl: '/entitlements/summaries?refresh=true',
+    newApi: true
+  },
   //   internalRefreshLicensesData: {
   //     method: 'get',
   //     url: '/entitlements/summaries?refresh=true',
