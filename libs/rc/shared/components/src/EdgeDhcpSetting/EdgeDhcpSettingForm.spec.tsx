@@ -16,6 +16,8 @@ jest.mock('./DhcpOption/OptionDrawer', () => ({
 jest.mock('./DhcpHost/HostDrawer', () => ({
   HostDrawer: () => <div data-testid='mocked-HostDrawer'></div>
 }))
+const services = require('@acx-ui/rc/services')
+services.useGetEdgePinViewDataListQuery = jest.fn().mockReturnValue({ pinUsedIds: [] })
 
 describe('EdgeDhcpSettingForm', () => {
   it('should show external dhcp server setting', async () => {

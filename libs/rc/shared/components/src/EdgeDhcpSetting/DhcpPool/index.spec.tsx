@@ -13,7 +13,8 @@ import {
   renderHook,
   screen,
   waitFor,
-  within
+  within,
+  mockServer
 } from '@acx-ui/test-utils'
 
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
@@ -37,14 +38,16 @@ const WrapperComponent = ({ children, values }:
     }
   }
 
-  return <StepsForm form={form}>
-    <StepsForm.StepForm>
-      <Form.Item
-        name='dhcpPools'
-        children={children}
-      />
-    </StepsForm.StepForm>
-  </StepsForm>
+  return <Provider>
+    <StepsForm form={form}>
+      <StepsForm.StepForm>
+        <Form.Item
+          name='dhcpPools'
+          children={children}
+        />
+      </StepsForm.StepForm>
+    </StepsForm>
+  </Provider>
 }
 describe('DHCP Pool table(Edge)', () => {
   it('should render data successfully', async () => {
@@ -320,12 +323,13 @@ describe('DHCP Pool table(Edge)', () => {
         return form
       })
 
-      render(<Form form={formRef.current}>
-        <Form.Item
-          name='dhcpPools'
-          children={<DhcpPoolTable />}
-        />
-      </Form>)
+      render(<Provider>
+        <Form form={formRef.current}>
+          <Form.Item
+            name='dhcpPools'
+            children={<DhcpPoolTable />}
+          />
+        </Form></Provider>)
 
       const btn = screen.queryByRole('button', { name: 'Import from file' })
       expect(btn).toBeNull()
@@ -340,26 +344,21 @@ describe('DHCP Pool table(Edge)', () => {
     it('should grey out edit & delete button', async () => {
       // eslint-disable-next-line max-len
       jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE)
-      const mockReq = jest.fn()
-      rest.post(
-        EdgePinUrls.getEdgePinStatsList.url,
-        (_req, res, ctx) => {
-          mockReq()
-          return res(ctx.json(mockPinList))
-        })
 
-      render(<Provider>
-        <WrapperComponent values={{ dhcpPools: mockedPoolData }}>
-          <DhcpPoolTable />
-        </WrapperComponent>
-      </Provider>, { route: { params: {} } })
+      mockServer.use(
+        rest.post(
+          EdgePinUrls.getEdgePinStatsList.url,
+          (_req, res, ctx) => res(ctx.json(mockPinList)))
+      )
+
+      render(<WrapperComponent values={{ dhcpPools: mockedPoolData }}>
+        <DhcpPoolTable />
+      </WrapperComponent>)
 
       const row = await screen.findByRole('row', { name: /TestPool-1/i })
       await userEvent.click(within(row).getByRole('checkbox'))
-      const editBtn = await screen.findByRole('button', { name: 'Edit' })
       // eslint-disable-next-line max-len
-      await waitFor(() => expect(mockReq).toBeCalled())
-      expect(editBtn).toBeDisabled()
+      await waitFor(async () => expect(await screen.findByRole('button', { name: 'Edit' })).toBeDisabled())
       expect(screen.getByRole('button', { name: 'Delete' })).toBeDisabled()
 
       jest.mocked(useIsEdgeFeatureReady).mockReset()

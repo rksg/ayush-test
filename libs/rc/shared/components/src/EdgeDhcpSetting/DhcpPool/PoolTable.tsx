@@ -38,9 +38,7 @@ export function PoolTable (props:{
     }
   })
 
-  const isPinUsedPool = (rows: EdgeDhcpPool[]) => {
-    return rows.some(item => pinUsedIds.includes(item.id))
-  }
+  const isPinUsedPool = (rows: EdgeDhcpPool[]) => rows.some(item => pinUsedIds.includes(item.id))
 
   const rowActions: TableProps<EdgeDhcpPool>['rowActions'] = [
     {
