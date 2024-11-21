@@ -71,6 +71,7 @@ describe('SwitchOverviewTab', () => {
     const params = {
       tenantId: 'tenantId',
       switchId: 'switchId',
+      serialNumber: 'serialNumber',
       activeTab: 'overview'
     }
     render(<Provider>
@@ -83,7 +84,7 @@ describe('SwitchOverviewTab', () => {
     </Provider>, {
       route: {
         params,
-        path: '/:tenantId/devices/switch/:switchId/serial/details/:activeTab'
+        path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab'
       }
     })
     expect(await screen.findByTestId('rc-SwitchInfoWidget')).toBeVisible()
@@ -92,7 +93,7 @@ describe('SwitchOverviewTab', () => {
     fireEvent.click(await screen.findByRole('tab', { name: 'Ports' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/${params.tenantId}/t/devices/switch/${params.switchId}/${switchDetailsContextData.switchDetailHeader.serialNumber}/details/overview/ports`,
+      pathname: `/${params.tenantId}/t/devices/switch/${params.switchId}/${params.serialNumber}/details/overview/ports`,
       hash: '',
       search: ''
     })

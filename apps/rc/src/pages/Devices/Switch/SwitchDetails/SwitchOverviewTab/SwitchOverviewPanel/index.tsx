@@ -14,25 +14,19 @@ import {
   SwitchInfo
 }
   from '@acx-ui/rc/components'
-import { useSwitchPortlistQuery }  from '@acx-ui/rc/services'
-import { NetworkDevice,
-  NetworkDevicePosition,
-  ShowTopologyFloorplanOn,
-  StackMember,
-  SwitchPortViewModel,
-  SwitchViewModel,
-  sortPortFunction,
-  SwitchStatusEnum,
-  SwitchPortViewModelQueryFields } from '@acx-ui/rc/utils'
-import { useParams }                         from '@acx-ui/react-router-dom'
-import { RolesEnum }                         from '@acx-ui/types'
-import { hasPermission, hasRoles }           from '@acx-ui/user'
-import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
-import type { AnalyticsFilter }              from '@acx-ui/utils'
+import { useSwitchPortlistQuery }                                                                                                                                                               from '@acx-ui/rc/services'
+import { NetworkDevice, NetworkDevicePosition, ShowTopologyFloorplanOn, StackMember, SwitchPortViewModel, SwitchViewModel, sortPortFunction, SwitchStatusEnum, SwitchPortViewModelQueryFields } from '@acx-ui/rc/utils'
+import { useParams }                                                                                                                                                                            from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                                                                                                                            from '@acx-ui/types'
+import { hasPermission, hasRoles }                                                                                                                                                              from '@acx-ui/user'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL }                                                                                                                                                    from '@acx-ui/utils'
+import type { AnalyticsFilter }                                                                                                                                                                 from '@acx-ui/utils'
+
 
 import { ResourceUtilization } from './ResourceUtilization'
 import { SwitchFrontRearView } from './SwitchFrontRearView'
 import { TopPorts }            from './TopPorts'
+
 
 export function SwitchOverviewPanel (props:{
   filters: AnalyticsFilter,
@@ -102,11 +96,11 @@ export function SwitchOverviewPanel (props:{
 function SwitchWidgets (props: { filters: AnalyticsFilter, switchDetailHeader: SwitchViewModel }) {
   const { filters, switchDetailHeader } = props
   const { $t } = useIntl()
-  const { tenantId } = useParams()
+  const { tenantId, serialNumber } = useParams()
   const portPayload = {
     page: 1,
     pageSize: 10000,
-    filters: { switchId: [switchDetailHeader?.serialNumber] },
+    filters: { switchId: [serialNumber] },
     sortField: 'portIdentifierFormatted',
     sortOrder: 'ASC',
     fields: SwitchPortViewModelQueryFields
@@ -132,6 +126,7 @@ function SwitchWidgets (props: { filters: AnalyticsFilter, switchDetailHeader: S
     }
 
     const suffixString = suffix.length ? ' (' + suffix.join(', ') + ')' : ''
+
     return id + suffixString
   }
 
@@ -150,7 +145,6 @@ function SwitchWidgets (props: { filters: AnalyticsFilter, switchDetailHeader: S
       ?? [])
       ])
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [portList, switchDetailHeader])
 
   const onPortChange = (value: string) =>{

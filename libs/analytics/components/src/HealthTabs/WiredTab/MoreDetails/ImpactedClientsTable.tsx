@@ -85,9 +85,11 @@ export const ImpactedClientsTable = ({
       render: (_, row: ImpactedClients) => {
         const switchId = isMLISA ? row.switchId : row.switchId?.toLowerCase()
         const detailsPath = isMLISA ? 'reports' : 'overview'
+        const serial = isMLISA ? 'serial' : row.switchSerial
+
         return (
           <TenantLink
-            to={`/devices/switch/${switchId}/serial/details/${detailsPath}`}
+            to={`/devices/switch/${switchId}/${serial}/details/${detailsPath}`}
           >
             {row.switchName}
           </TenantLink>

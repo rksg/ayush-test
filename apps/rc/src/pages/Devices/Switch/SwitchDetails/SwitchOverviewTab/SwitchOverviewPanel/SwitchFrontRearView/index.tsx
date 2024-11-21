@@ -4,6 +4,7 @@ import { Features, useIsSplitOn }                                          from 
 import { EditPortDrawer, SwitchLagModal }                                  from '@acx-ui/rc/components'
 import { useGetFlexAuthenticationProfilesQuery }                           from '@acx-ui/rc/services'
 import { Lag, StackMember, SwitchPortStatus, SwitchRow, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { useParams }                                                       from '@acx-ui/react-router-dom'
 
 import { SwitchDetailsContext } from '../../..'
 
@@ -39,6 +40,7 @@ export function SwitchFrontRearView (props:{
   stackMember: StackMember[]
 }) {
   const { stackMember } = props
+  const params = useParams()
   const [editPortDrawerVisible, setEditPortDrawerVisible] = useState(false)
   const [breakoutPortDrawerVisible, setBreakoutPortDrawerVisible] = useState(false)
   const [editBreakoutPortDrawerVisible, setEditBreakoutPortDrawerVisible] = useState(false)
@@ -46,6 +48,7 @@ export function SwitchFrontRearView (props:{
   const [editLag, setEditLag] = useState([] as Lag[])
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortStatus[])
   const [breakoutPorts, setBreakoutPorts] = useState([] as SwitchPortStatus[])
+  const { serialNumber } = params
   const { switchDetailsContextData } = useContext(SwitchDetailsContext)
   const { switchDetailHeader: switchDetail } = switchDetailsContextData
   const [ slotMember, setSlotMember ] = useState(null as unknown as SlotMember)
@@ -59,7 +62,6 @@ export function SwitchFrontRearView (props:{
       }] as SwitchRow[])
       genSlotViewData()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stackMember, switchDetail])
 
   const { authenticationProfiles } = useGetFlexAuthenticationProfilesQuery({
@@ -82,7 +84,7 @@ export function SwitchFrontRearView (props:{
         isStack: false,
         data: [{
           deviceStatus: switchDetail.deviceStatus,
-          id: switchDetail.id,
+          id: serialNumber,
           model: switchDetail.model,
           serialNumber: switchDetail.serialNumber,
           switchMac: switchDetail.switchMac,

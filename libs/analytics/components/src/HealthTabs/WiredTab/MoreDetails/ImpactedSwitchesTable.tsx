@@ -71,8 +71,9 @@ export const ImpactedSwitchesTable = ({
       render: (_, row: SwitchDetails) => {
         const macAddress = isMLISA ? row.mac : row.mac?.toLowerCase()
         const detailsPath = isMLISA ? 'reports' : 'overview'
+        const serial = isMLISA ? 'serial' : row.serial
         return (
-          <TenantLink to={`/devices/switch/${macAddress}/serial/details/${detailsPath}`}>
+          <TenantLink to={`/devices/switch/${macAddress}/${serial}/details/${detailsPath}`}>
             {row.name}
           </TenantLink>
         )

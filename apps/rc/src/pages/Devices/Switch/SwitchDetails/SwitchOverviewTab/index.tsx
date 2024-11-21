@@ -56,12 +56,12 @@ export function SwitchOverviewTab () {
     payload: {
       fields: ['activeUnitId', 'unitId', 'unitStatus', 'name', 'deviceStatus', 'model',
         'serialNumber', 'activeSerial', 'switchMac', 'ip', 'venueName', 'uptime'],
-      filters: { activeUnitId: [switchDetailHeader?.serialNumber] } } },
+      filters: { activeUnitId: [params.serialNumber] } } },
   { skip: !switchDetailHeader, pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL })
 
   const navigate = useNavigate()
   const basePath = useTenantLink(
-    `/devices/switch/${params.switchId}/${switchDetailHeader?.serialNumber}/details/overview/`
+    `/devices/switch/${params.switchId}/${params.serialNumber}/details/overview/`
   )
 
   useEffect(() => {
