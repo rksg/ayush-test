@@ -121,6 +121,11 @@ describe('VlanStep', () => {
     await userEvent.type(screen.getByTestId('vlan-name-input-0'), 'vlan-93')
     expect(screen.getByTestId('vlan-name-input-0')).toHaveValue('vlan-93')
 
+    // change checkbox
+    const checkboxes = await screen.findAllByRole('checkbox')
+    await userEvent.click(checkboxes[2])
+    expect(checkboxes[2]).not.toBeChecked()
+
     // edit
     await userEvent.click(screen.getByTestId('vlan-configuration-0'))
     expect(await screen.findByText('Vlan Setting Drawer')).toBeVisible()
