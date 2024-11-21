@@ -73,7 +73,7 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   value?: string
   dataFormatter?: (value: unknown) => string | null
   onClick?: (params: EventParams) => void
-  onLegendClick?: (e: EventParams) => void,
+  onLegendClick?: (params: EventParams) => void
   style: EChartsReactProps['style'] & { width: number, height: number }
   labelTextStyle?: { overflow?: 'break' | 'breakAll' | 'truncate' | 'none' , width?: number }
   singleSelect?: boolean

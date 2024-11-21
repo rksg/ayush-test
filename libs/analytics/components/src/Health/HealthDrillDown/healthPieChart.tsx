@@ -134,47 +134,38 @@ export const tooltipFormatter = (
 ) => (value: unknown) =>
   `${formatter('percentFormat')(value as number / total)}(${dataFormatter(value)})`
 
-export function toggleSelection (
-  index: number,
+export const usePieActionHandler = (
+  onPieClick: (e: EventParams) => void,
+  onLegendClick: (data: PieChartData) => void,
   selectedSlice: number | null,
   setSelectedSlice: (slice: number | null) => void
-) {
-  setSelectedSlice(index === selectedSlice ? null : index)
-}
+) => {
 
-export function onChartClick (
-  params: EventParams,
-  selectedSlice: number | null,
-  setSelectedSlice: (slice: number | null) => void,
-  onPieClick: (e: EventParams) => void
-) {
-  toggleSelection(params.dataIndex, selectedSlice, setSelectedSlice)
-  onPieClick(params)
-}
-
-export function onClickLegend (
-  params: EventParams,
-  data: { name: string }[],
-  selectedSlice: number | null,
-  setSelectedSlice: (slice: number | null) => void,
-  onLegendClick: (data: PieChartData) => void
-) {
-  const clickedIndex = data.findIndex((item) => item.name === params.name)
-  if (clickedIndex !== -1) {
-    toggleSelection(clickedIndex, selectedSlice, setSelectedSlice)
-    onLegendClick && onLegendClick(data[clickedIndex] as PieChartData)
+  const onChartClick = (params: EventParams) => {
+    setSelectedSlice(params.dataIndex === selectedSlice ? null : params.dataIndex)
+    onPieClick(params)
   }
+
+  const createOnClickLegend = (data: { name: string }[]) => (params: EventParams) => {
+    const clickedIndex = data.findIndex((item) => item.name === params.name)
+    if (clickedIndex !== -1) {
+      setSelectedSlice(clickedIndex === selectedSlice ? null : clickedIndex)
+    }
+    const clickedData = data.find((pie) => pie.name === params.name)
+    onLegendClick && onLegendClick(clickedData as PieChartData)
+  }
+
+  return [onChartClick, createOnClickLegend]
 }
 
 export function getHealthPieChart (
   data: PieChartData[],
   dataFormatter: (value: unknown, tz?: string | undefined) => string,
   size: { width: number; height: number },
-  onPieClick: (e: EventParams) => void,
-  onLegendClick: (data: PieChartData) => void,
+  onChartClick: (e: EventParams) => void,
+  createOnClickLegend: (data: PieChartData[]) => (params: EventParams) => void,
   pieFilter: PieChartData | null,
-  selectedSlice: number | null,
-  setSelectedSlice: (slice: number | null) => void
+  selectedSlice: number | null
 ) {
 
   let tops = data.slice(0, topCount).map((item, index) => {
@@ -202,14 +193,14 @@ export function getHealthPieChart (
       showTotal={false}
       labelTextStyle={{ overflow: 'truncate', width: size.width * 0.5 }} // 50% of width
       dataFormatter={tooltipFormatter(total, dataFormatter)}
-      onClick={(params) => onChartClick(params, selectedSlice, setSelectedSlice, onPieClick)}
-      onLegendClick={(params) =>
-        onClickLegend(params, data, selectedSlice, setSelectedSlice, onLegendClick)
-      }
+      onClick={onChartClick}
+      onLegendClick={createOnClickLegend(data)}
       singleSelect={true}
     /> : <NoData />
   )
 }
+
+type ClickParamsType = (data: PieChartData[] | EventParams) => (params: EventParams) => void
 
 export const HealthPieChart = ({
   size,
@@ -240,6 +231,8 @@ export const HealthPieChart = ({
 }) => {
   const { $t } = useIntl()
   const [selectedSlice, setSelectedSlice] = useState<number | null>(null)
+  const [onChartClick, createOnClickLegend] = usePieActionHandler(
+    onPieClick, onLegendClick, selectedSlice, setSelectedSlice)
   const { startDate: start, endDate: end, filter } = filters
   const queryResults = usePieChartQuery(
     {
@@ -271,8 +264,9 @@ export const HealthPieChart = ({
       label: titleMap[key as TabKeyType],
       value: key,
       children: getHealthPieChart(
-        data, valueFormatter, size, onPieClick, onLegendClick,
-        pieFilter, selectedSlice, setSelectedSlice)
+        data, valueFormatter, size, onChartClick as ClickParamsType,
+        createOnClickLegend as ClickParamsType, pieFilter, selectedSlice
+      )
     }))
   const count = showTopNPieChartResult(
     $t,
