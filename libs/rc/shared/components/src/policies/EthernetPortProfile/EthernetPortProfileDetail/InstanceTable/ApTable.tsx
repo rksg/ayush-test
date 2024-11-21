@@ -92,8 +92,8 @@ export const ApTable = (props: ApTableProps) => {
       dataIndex: 'model'
     }, {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
-      dataIndex: 'venueName',
-      key: 'venueName',
+      dataIndex: 'venueId',
+      key: 'venueId',
       sorter: true,
       filterable: venueNameMap,
       render: (_, row) => {
@@ -111,8 +111,8 @@ export const ApTable = (props: ApTableProps) => {
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
-        // onChange={tableQuery.handleTableChange}
-        // onFilterChange={tableQuery.handleFilterChange}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
       />
     </Loader>
   )

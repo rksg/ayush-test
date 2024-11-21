@@ -21,7 +21,7 @@ export const VenueTable = (props: VenueTableProps) => {
   const venueGrouping = useMemo(()=>{
     if(venueActivations.length > 0) {
 
-      const groupedByVenue = venueActivations.reduce((acc, activation) => {
+      return venueActivations.reduce((acc, activation) => {
         const { venueId, apModel } = activation
         if (venueId !== undefined && apModel !== undefined) {
           if (!acc[venueId]) {
@@ -32,12 +32,13 @@ export const VenueTable = (props: VenueTableProps) => {
 
         return acc
       }, {} as Record<string, string[]>)
-
-      return new Map(Object.entries(groupedByVenue))
     }
+
+
+    return {}
   }, [venueActivations])
 
-  const venueNameMap1 = useGetVenuesQuery({
+  const venueNameMap = useGetVenuesQuery({
     params: { tenantId: tenantId },
     enableRbac: isWifiRbacEnabled,
     payload: {
@@ -46,22 +47,22 @@ export const VenueTable = (props: VenueTableProps) => {
       sortOrder: 'ASC',
       page: 1,
       pageSize: 2048,
-      filters: { id: venueGrouping?.keys() }
+      filters: { id: Object.keys(venueGrouping) }
     }
   }, {
-    skip: venueGrouping?.size === 0
+    skip: !venueGrouping
   })
 
   const tableResult = useMemo(() => {
-    if (venueNameMap1.data && venueGrouping) {
-      return Array.from(venueGrouping.entries()).map(([id, apModels]) => ({
+    if (venueNameMap.data && venueGrouping) {
+      return Array.from(Object.entries(venueGrouping)).map(([id, apModels]) => ({
         id,
-        name: venueNameMap1.data?.data.find(v => v.id === id)?.name || '',
+        name: venueNameMap.data?.data.find(v => v.id === id)?.name || '',
         apModels
       }))
     }
     return []
-  }, [venueNameMap1])
+  }, [venueNameMap])
 
   const columns: TableProps<{ id: string; name: string; apModels: string[] }>['columns'] = [
     {
