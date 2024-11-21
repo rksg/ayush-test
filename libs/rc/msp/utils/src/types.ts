@@ -608,3 +608,38 @@ export interface AssignedMultiEcMspAdmins {
   mspAdminRoles: SelectedMspMspAdmins[]
   privilege_group_ids?: string[]
 }
+
+export interface MileageReportsResponse {
+  data: MileageData[],
+  pageSize: number,
+  page: number,
+  totalCount: number
+}
+
+export interface MileageData {
+  licenseType: EntitlementDeviceType,
+  lastDate: string,
+  device: number,
+  usedQuantity: number,
+  quantity: number,
+  availableBreakUp: MileageBreakUp[]
+}
+
+export interface MileageBreakUp {
+  quantity: number,
+  expirationDate: string
+}
+
+export interface MileageReportsRequestPayload {
+  page: number,
+  pageSize: number,
+  filters: {
+      usageType: string,
+      licenseType: EntitlementDeviceType
+  }
+}
+
+export interface MileageSeriesData {
+  value: number;
+  extraData: MileageBreakUp[];
+}
