@@ -13,6 +13,7 @@ import { emptyCompliance }      from './__tests__/fixtures'
 import { ComplianceBanner }     from './ComplianceBanner'
 import { DeviceNetworkingCard } from './DeviceNetworkingCard'
 import LicenseCalculatorCard    from './LicenseCalculator'
+import LicenseTimelineGraph     from './LicenseTimelineGraph'
 import MspCustomersLicences     from './MspCustomersLicences'
 import * as UI                  from './styledComponents'
 
@@ -28,6 +29,7 @@ export const LicenseCompliance = (props: ComplianceProps) => {
   const [selfData, setSelfData] = useState(emptyCompliance as ComplianceData)
   const [ecSummaryData, setEcSummaryData] = useState(emptyCompliance as ComplianceData)
   const [openMspCustLicencesDrawer, setOpenMspCustLicencesDrawer] = useState(false)
+  const [openLicenseTimelineDrawer, setOpenLicenseTimelineDrawer] = useState(false)
   const { isMsp, isExtendedTrial } = props
   const showCompliancePhase2UI = useIsSplitOn(Features.ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE)
   const isComplianceNotesEnabled = useIsSplitOn(Features.ENTITLEMENT_COMPLIANCE_NOTES_TOGGLE)
@@ -56,6 +58,16 @@ export const LicenseCompliance = (props: ComplianceProps) => {
   function closeMspCustomersDrawer () {
     if(openMspCustLicencesDrawer)
       setOpenMspCustLicencesDrawer(false)
+  }
+
+  function openTimelineDrawer () {
+    if(!openLicenseTimelineDrawer)
+      setOpenLicenseTimelineDrawer(true)
+  }
+
+  function closeTimelineDrawer () {
+    if(openLicenseTimelineDrawer)
+      setOpenLicenseTimelineDrawer(false)
   }
 
   useEffect(() => {
@@ -124,11 +136,32 @@ export const LicenseCompliance = (props: ComplianceProps) => {
             <span>{$t({ defaultMessage: 'To view currently available licenses timeline, ' })}</span>
             <Button
               size='small'
-              type={'link'}>
+              type={'link'}
+              onClick={openTimelineDrawer}>
               {$t({ defaultMessage: 'Click Here' })}
             </Button>
           </div>}
         /> }
+        {
+          openLicenseTimelineDrawer && <Drawer
+            title={<>{$t({ defaultMessage: 'Device Networking Paid Licenses' })}</>}
+            visible={openLicenseTimelineDrawer}
+            onClose={closeTimelineDrawer}
+            footer={<Button
+              size='middle'
+              style={{
+                width: '80px'
+              }}
+              type={'default'}
+              onClick={closeTimelineDrawer}>
+              {$t({ defaultMessage: 'Close' })}
+            </Button>}
+            destroyOnClose={true}
+            width={1080}
+          >
+            <LicenseTimelineGraph />
+          </Drawer>
+        }
       </UI.ComplianceContainer>
       : <DeviceNetworkingCard
         title={$t({ defaultMessage: 'Device Networking Subscriptions' })}
