@@ -3,7 +3,7 @@ import moment         from 'moment'
 import { Path, rest } from 'msw'
 
 import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                                                       from '@acx-ui/msp/utils'
+import { MspRbacUrlsInfo, MspUrlsInfo }                                      from '@acx-ui/msp/utils'
 import { AdministrationUrlsInfo, LicenseUrlsInfo }                           from '@acx-ui/rc/utils'
 import { Provider }                                                          from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
@@ -173,6 +173,10 @@ describe('Subscriptions', () => {
       rest.get(
         AdministrationUrlsInfo.getTenantDetails.url,
         (req, res, ctx) => res(ctx.json(fakeTenantDetails))
+      ),
+      rest.patch(
+        MspRbacUrlsInfo.refreshMspEntitlement.url,
+        (req, res, ctx) => res(ctx.json(entitlement))
       )
     )
     params = {
