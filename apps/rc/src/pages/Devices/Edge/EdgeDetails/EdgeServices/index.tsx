@@ -70,7 +70,7 @@ export const EdgeServices = () => {
       case EdgeServiceTypeEnum.PIN:
         if (!isEdgePinReady) return
         break
-      case EdgeServiceTypeEnum.MDNS:
+      case EdgeServiceTypeEnum.MDNS_PROXY:
         if (!isEdgeMdnsReady) return
         break
       default:

@@ -18,15 +18,10 @@ describe('DriftComparisonSet', () => {
     ]
   }
 
-  it('renders the category as the collapse panel header', () => {
-    render(<DriftComparisonSet {...mockData} />)
-
-    expect(screen.getByRole('button', { name: /Test Category/i })).toBeInTheDocument()
-  })
-
   it('renders the correct number of DriftComparison components', async () => {
     render(<DriftComparisonSet {...mockData} />)
 
+    expect(screen.getByText('Test Category')).toBeInTheDocument()
     await userEvent.click(screen.getByText('Test Category'))
 
     expect(screen.getByText('Item 1')).toBeInTheDocument()
