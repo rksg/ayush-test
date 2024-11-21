@@ -935,10 +935,6 @@ export function RadioSettings () {
     return true
   }
 
-  const handleApBandModeDataChange = (bandModeSettings: ApBandModeSettings) => {
-    setCurrentApBandModeData(bandModeSettings)
-  }
-
   const handleUpdateRadioSettings = async (form: StepsFormLegacyInstance) => {
 
     const updateRadioParams = (radioParams: any, supportCh: any) => {
