@@ -384,14 +384,11 @@ export function ManageCustomer () {
             detailLevel: userProfile.detailLevel
           })
           setAdministrator(administrator)
-        } else if (privilegeGroupList) {
-          const pg = privilegeGroupList.find(pg => pg.name === userProfile?.role)
+        } else {
+          const pg = privilegeGroupList?.find(pg => pg.name === userProfile?.role)
           if (pg) {
             const pgList = [] as PrivilegeGroup[]
-            pgList.push({
-              id: pg.id,
-              name: userProfile?.role as RolesEnum
-            })
+            pgList.push({ id: pg.id, name: userProfile.role as RolesEnum })
             setPrivilegeGroups(pgList)
           }
         }
