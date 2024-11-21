@@ -731,7 +731,7 @@ export function RadioSettings () {
       return
     }
 
-    console.info('[RadioSettings] currentApBandModeData = ', currentApBandModeData) // eslint-disable-line no-console
+    //console.info('[RadioSettings] currentApBandModeData = ', currentApBandModeData) // eslint-disable-line no-console
     const currentBendMode = getCurrentBandMode()
 
     if (currentBendMode !== prevoiusBendModeRef.current) {
@@ -981,7 +981,6 @@ export function RadioSettings () {
         updateRadioParams(payload.apRadioParams50G, supportRadioChannels[ApRadioTypeEnum.Radio5G])
       } else {
         delete payload.apRadioParams50G
-        //payload.enable50G = false
       }
 
       if (hasRadio6G) {
@@ -997,7 +996,6 @@ export function RadioSettings () {
         }
       } else {
         delete payload.apRadioParams6G
-        //payload.enable6G = false
       }
 
       if (hasRadioDual5G) {
