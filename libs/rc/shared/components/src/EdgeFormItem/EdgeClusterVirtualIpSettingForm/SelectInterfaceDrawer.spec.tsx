@@ -1,13 +1,13 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { EdgeGeneralFixtures, EdgePortConfigFixtures, EdgeStatus } from '@acx-ui/rc/utils'
-import { render, renderHook, screen }                              from '@acx-ui/test-utils'
+import { EdgeGeneralFixtures, EdgeStatus } from '@acx-ui/rc/utils'
+import { render, renderHook, screen }      from '@acx-ui/test-utils'
 
+import { mockVipInterfaces }     from './__tests__/fixtures'
 import { SelectInterfaceDrawer } from './SelectInterfaceDrawer'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
-const { mockLanInterfaces } = EdgePortConfigFixtures
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -61,7 +61,7 @@ describe('InterfaceTable', () => {
         handleFinish={() => {}}
         currentVipIndex={0}
         nodeList={mockEdgeClusterList.data[0].edgeList as EdgeStatus[]}
-        lanInterfaces={mockLanInterfaces}
+        lanInterfaces={mockVipInterfaces}
       />
     )
 
@@ -84,7 +84,7 @@ describe('InterfaceTable', () => {
         handleFinish={() => {}}
         currentVipIndex={0}
         nodeList={mockEdgeClusterList.data[0].edgeList as EdgeStatus[]}
-        lanInterfaces={mockLanInterfaces}
+        lanInterfaces={mockVipInterfaces}
       />
     )
 
@@ -107,7 +107,7 @@ describe('InterfaceTable', () => {
         handleFinish={() => {}}
         currentVipIndex={0}
         nodeList={mockEdgeClusterList.data[0].edgeList as EdgeStatus[]}
-        lanInterfaces={mockLanInterfaces}
+        lanInterfaces={mockVipInterfaces}
       />
     )
 
@@ -138,7 +138,7 @@ describe('InterfaceTable', () => {
         handleFinish={handleFinishSpy}
         currentVipIndex={0}
         nodeList={mockEdgeClusterList.data[0].edgeList as EdgeStatus[]}
-        lanInterfaces={mockLanInterfaces}
+        lanInterfaces={mockVipInterfaces}
       />
     )
 
@@ -181,7 +181,7 @@ describe('InterfaceTable', () => {
     const handleFinishSpy = jest.fn()
     const { result } = renderHook(() => Form.useForm())
     jest.spyOn(Form, 'useForm').mockImplementation(() => result.current)
-    const lanInterfaceKeys = Object.keys(mockLanInterfaces)
+    const lanInterfaceKeys = Object.keys(mockVipInterfaces)
     const editData = mockEdgeClusterList.data[0].edgeList.map(item => ({
       serialNumber: item.serialNumber,
       portName: 'port3'
@@ -193,7 +193,7 @@ describe('InterfaceTable', () => {
         handleFinish={handleFinishSpy}
         currentVipIndex={0}
         nodeList={mockEdgeClusterList.data[0].edgeList as EdgeStatus[]}
-        lanInterfaces={mockLanInterfaces}
+        lanInterfaces={mockVipInterfaces}
         editData={editData}
       />
     )

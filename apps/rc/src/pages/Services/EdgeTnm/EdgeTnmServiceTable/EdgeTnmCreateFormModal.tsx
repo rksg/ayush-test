@@ -86,6 +86,7 @@ export const EdgeTnmCreateFormModal = (props: EdgeTnmCreateFormModalProps) => {
     maskClosable={false}
     onOk={() => {form.submit()}}
     okText={$t({ defaultMessage: 'Add' })}
+    onCancel={() => setVisible(false)}
   >
     <Form form={form} onFinish={handleFinish} disabled={isCreating}>
       <Form.Item

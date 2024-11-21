@@ -28,6 +28,7 @@ export const useCasesToRefreshDpskTemplateList = [
 export const useCasesToRefreshPortalTemplateList = [
   'Add Portal Service Profile by Template',
   'Update Portal Service Profile by Template',
+  'Update Portal Service Profile by Template V1_1',
   'Delete Portal Service Profile by Template',
   'Add Portal Service Profile by Template in CfgTemplate',
   'Update Portal Service Profile by Template in CfgTemplate',

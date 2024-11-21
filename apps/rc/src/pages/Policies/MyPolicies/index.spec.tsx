@@ -15,7 +15,12 @@ import {
   EdgeHqosProfilesUrls,
   WorkflowUrls,
   getSelectPolicyRoutePath,
-  RogueApUrls, SoftGreUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo
+  RogueApUrls,
+  SoftGreUrls,
+  SyslogUrls,
+  SwitchUrlsInfo,
+  VlanPoolRbacUrls,
+  WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -244,5 +249,42 @@ describe('MyPolicies', () => {
 
     const edgeQosBandwidthTitle = 'HQoS Bandwidth (1)'
     expect(await screen.findByText(edgeQosBandwidthTitle)).toBeVisible()
+  })
+
+  it('should render Authentication correctly', async () => {
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.SWITCH_FLEXIBLE_AUTHENTICATION
+    )
+
+    mockServer.use(
+      rest.post(
+        SwitchUrlsInfo.getFlexAuthenticationProfiles.url,
+        (req, res, ctx) => res(ctx.json({
+          data: [{
+            id: '7de28fc02c0245648dfd58590884bad2',
+            profileName: 'Profile01--auth10-guest5',
+            authenticationType: '802.1x',
+            dot1xPortControl: 'auto',
+            authDefaultVlan: 10,
+            restrictedVlan: 3,
+            criticalVlan: 4,
+            guestVlan: 5,
+            authFailAction: 'restricted_vlan',
+            authTimeoutAction: 'critical_vlan'
+          }],
+          totalCount: 1
+        }))
+      )
+    )
+    render(
+      <Provider>
+        <MyPolicies />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    expect(await screen.findByText('Authentication (1)')).toBeVisible()
   })
 })

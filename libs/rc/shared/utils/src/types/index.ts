@@ -570,12 +570,14 @@ export interface SwitchClient {
   clientName: string
   clientDesc: string
   clientType: SWITCH_CLIENT_TYPE
+  switchFirmware?: string
   switchId: string
   switchName: string
   switchPort: string
   switchPortId?: string
   switchSerialNumber: string
   clientVlan: string
+  clientAuthType?: string
   vlanName: string
   venueId: string
   venueName: string

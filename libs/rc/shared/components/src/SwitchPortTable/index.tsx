@@ -7,6 +7,8 @@ import { useIntl } from 'react-intl'
 import { Table, TableProps, Tooltip, Loader } from '@acx-ui/components'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
+  useGetFlexAuthenticationProfilesQuery,
+  useSwitchListQuery,
   useLazyGetSwitchVlanQuery,
   useLazyGetSwitchVlanUnionByVenueQuery,
   useSwitchPortlistQuery
@@ -21,12 +23,14 @@ import {
   SwitchViewModel,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
-import { SwitchScopes }                  from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { getIntl }                       from '@acx-ui/utils'
+import { useParams }                         from '@acx-ui/react-router-dom'
+import { SwitchScopes }                      from '@acx-ui/types'
+import { filterByAccess, hasPermission }     from '@acx-ui/user'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
+import { getIntl }                           from '@acx-ui/utils'
 
-import { SwitchLagDrawer } from '../SwitchLagDrawer'
+import { SwitchLagDrawer }      from '../SwitchLagDrawer'
+import { defaultSwitchPayload } from '../SwitchTable'
 
 import { EditPortDrawer } from './editPortDrawer'
 import * as UI            from './styledComponents'
@@ -42,6 +46,7 @@ export function SwitchPortTable (props: {
   const { serialNumber, venueId, tenantId, switchId } = useParams()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchV6AclEnabled = useIsSplitOn(Features.SUPPORT_SWITCH_V6_ACL)
+  const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
 
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -50,6 +55,29 @@ export function SwitchPortTable (props: {
 
   const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
   const [getSwitchesVlan] = useLazyGetSwitchVlanUnionByVenueQuery()
+
+  const { authenticationProfiles } = useGetFlexAuthenticationProfilesQuery({
+    payload: {}
+  }, {
+    skip: !isSwitchFlexAuthEnabled,
+    selectFromResult: ( { data } ) => ({
+      authenticationProfiles: data?.data
+    })
+  })
+
+  const vid = venueId || switchDetail?.venueId
+  const { data: switchList } = useSwitchListQuery({
+    params: { tenantId },
+    payload: {
+      ...defaultSwitchPayload,
+      pageSize: 10000,
+      filters: { venueId: [vid] }
+    },
+    enableAggregateStackMember: false,
+    enableRbac: isSwitchRbacEnabled
+  }, {
+    skip: !isSwitchRbacEnabled || !vid || !isSwitchFlexAuthEnabled
+  })
 
   const vlanFilterOptions = Array.isArray(vlanList) ? vlanList.map(v => ({
     key: v.vlanId.toString(), value: v.vlanId.toString()
@@ -103,7 +131,8 @@ export function SwitchPortTable (props: {
     },
     enableSelectAllPagesData: queryFields,
     enableRbac: isSwitchRbacEnabled,
-    pagination: { settingsId }
+    pagination: { settingsId },
+    option: { pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL }
   })
 
   const columns: TableProps<SwitchPortViewModel>['columns'] = [{
@@ -359,6 +388,8 @@ export function SwitchPortTable (props: {
       isMultipleEdit={selectedPorts?.length > 1}
       isVenueLevel={isVenueLevel}
       selectedPorts={selectedPorts}
+      switchList={switchList?.data}
+      authProfiles={authenticationProfiles}
     />}
 
   </Loader>

@@ -527,4 +527,5 @@ export interface SubInterface {
   ipMode: EdgeIpModeEnum
   ip?: string
   subnet?: string
+  interfaceName?: string
 }

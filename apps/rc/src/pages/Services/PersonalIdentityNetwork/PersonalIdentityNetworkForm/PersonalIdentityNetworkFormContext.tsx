@@ -300,6 +300,8 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       })
   }, [personaGroupData?.dpskPoolId])
 
+  const isDpskLoading = !!personaGroupData?.dpskPoolId && isNil(dpskData)
+
   const getVenueName = (value: string) => {
     return venueOptions?.find(item => item.value === value)?.label ?? ''
   }
@@ -327,8 +329,6 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         setDpskData(data)
       })
   }, [getDpsk])
-
-  const isDpskLoading = isNil(dpskData)
 
   return (
     <PersonalIdentityNetworkFormContext.Provider

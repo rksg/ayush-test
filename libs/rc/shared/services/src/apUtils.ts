@@ -418,7 +418,7 @@ export const aggregateApDeviceModelTypeInfo = (
 ) => {
   const apListData = apList?.data
   apListData?.forEach(apItem => {
-    apItem.deviceModelType = getApDeviceModelType(wifiCapabilities?.apModels.find(cap =>
+    apItem.deviceModelType = getApDeviceModelType(wifiCapabilities?.apModels?.find(cap =>
       cap.model === apItem.model))
   })
 }
