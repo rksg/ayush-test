@@ -116,6 +116,17 @@ describe('VlanStep', () => {
     await userEvent.type(screen.getByTestId('vlan-id-input-0'), '93')
     expect(screen.getByTestId('vlan-id-input-0')).toHaveValue(93)
 
+    await userEvent.clear(screen.getByTestId('vlan-id-input-1'))
+    await userEvent.type(screen.getByTestId('vlan-id-input-1'), '93')
+    expect(screen.getByTestId('vlan-id-input-1')).toHaveValue(93)
+    screen.getByTestId('vlan-id-input-1').blur()
+
+    //duplicate id
+    expect(await screen.findByText('This VLAN ID is duplicated.')).toBeInTheDocument()
+    await userEvent.clear(screen.getByTestId('vlan-id-input-1'))
+    await userEvent.type(screen.getByTestId('vlan-id-input-1'), '100')
+    expect(screen.getByTestId('vlan-id-input-1')).toHaveValue(100)
+
     // change vlan name
     await userEvent.clear(screen.getByTestId('vlan-name-input-0'))
     await userEvent.type(screen.getByTestId('vlan-name-input-0'), 'vlan-93')
