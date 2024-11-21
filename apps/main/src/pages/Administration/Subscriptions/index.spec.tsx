@@ -29,7 +29,7 @@ jest.mock('./SubscriptionHeader', () => ({
 }))
 
 const excludedFlags = [Features.DEVICE_AGNOSTIC, Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE,
-  Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE
+  Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE, Features.ENTITLEMENT_RBAC_API
 ]
 
 describe('Subscriptions', () => {

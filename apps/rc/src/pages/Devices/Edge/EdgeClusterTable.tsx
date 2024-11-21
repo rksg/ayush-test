@@ -1,4 +1,4 @@
-import { useIntl } from 'react-intl'
+import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps } from '@acx-ui/components'
 import { Features }                  from '@acx-ui/feature-toggle'
@@ -22,7 +22,8 @@ import {
   genUrl,
   CommonCategory,
   EdgeStatusEnum,
-  isOtpEnrollmentRequired
+  isOtpEnrollmentRequired,
+  ClusterHighAvailabilityModeEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeScopes }                             from '@acx-ui/types'
@@ -40,7 +41,8 @@ const defaultPayload = {
     'venueName',
     'clusterStatus',
     'haStatus',
-    'edgeList'
+    'edgeList',
+    'highAvailabilityMode'
   ]
 }
 
@@ -113,6 +115,14 @@ export const EdgeClusterTable = () => {
           clusterStatus={row.clusterStatus}
           edgeList={row.edgeList}
         />
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'HA Mode' }),
+      key: 'highAvailabilityMode',
+      dataIndex: 'highAvailabilityMode',
+      render: (_, row) => {
+        return row.isFirstLevel && $t(getHaModeDisplayString(row.highAvailabilityMode))
       }
     },
     {
@@ -331,4 +341,15 @@ export const EdgeClusterTable = () => {
       />
     </Loader>
   )
+}
+
+const getHaModeDisplayString = (highAvailabilityMode?: ClusterHighAvailabilityModeEnum) => {
+  switch(highAvailabilityMode) {
+    case ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE:
+      return defineMessage({ defaultMessage: 'Active-Active' })
+    case ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY:
+      return defineMessage({ defaultMessage: 'Active-Standby' })
+    default:
+      return defineMessage({ defaultMessage: 'N/A' })
+  }
 }
