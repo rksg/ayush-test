@@ -36,7 +36,8 @@ import {
   MspCompliances,
   LicenseAttentionNotes,
   RecommendFirmwareUpgradeByApModel,
-  LicenseCalculatorDataResponse
+  LicenseCalculatorDataResponse,
+  MileageReportsResponse
 } from '@acx-ui/msp/utils'
 import {
   TableResult,
@@ -1045,6 +1046,15 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getLicenseMileageReports: build.query<MileageReportsResponse, RequestPayload>({
+      query: ({ payload }) => {
+        const request = createHttpRequest(MspRbacUrlsInfo.getLicenseMileageReports)
+        return {
+          ...request,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -1164,7 +1174,8 @@ export const {
   useGetEntitlementsAttentionNotesQuery,
   useGetCalculatedLicencesMutation,
   useUpdateMspEcDelegationsMutation,
-  useUpdateMspMultipleEcDelegationsMutation
+  useUpdateMspMultipleEcDelegationsMutation,
+  useGetLicenseMileageReportsQuery
 } = mspApi
 
 export * from './hospitalityVerticalFFCheck'
