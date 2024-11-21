@@ -1297,7 +1297,6 @@ export function EditPortDrawer ({
                     && hasMultipleValue.includes('authenticationProfileId')
                     && !authenticationProfileIdCheckbox ? [{
                         validator: () => {
-                          // TODO: checking with UX
                           return Promise.reject($t(FlexAuthMessages.CANNOT_APPLIED_DIFF_PROFILES))
                         }
                       }] : []),
@@ -1427,7 +1426,6 @@ export function EditPortDrawer ({
                       && hasMultipleValue.includes('authDefaultVlan')
                       && !authDefaultVlanCheckbox ? [{
                         validator: () => {
-                          // TODO: checking with UX
                           // eslint-disable-next-line max-len
                           return Promise.reject($t(FlexAuthMessages.CANNOT_APPLIED_DIFF_AUTH_DEFAULT_VLAN))
                         }
@@ -1438,8 +1436,6 @@ export function EditPortDrawer ({
                           = getUnionValuesByKey('switchLevelAuthDefaultVlan', aggregatePortsData)
                       const isAnyForceControl = isForceControlType([dot1xPortControl])
                       if (isDisabled && isAnyForceControl && switchAuthDefaultVlans?.length > 1) {
-                        //TODO: checking wording with UX
-                        // const type = dot1xPortControl as PortControl
                         return Promise.reject($t(FlexAuthMessages.CANNOT_SET_FORCE_CONTROL_TYPE))
                       }
                       return Promise.resolve()
