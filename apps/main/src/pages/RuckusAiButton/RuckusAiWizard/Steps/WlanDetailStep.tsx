@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 
 import ProForm, { ProFormInstance, ProFormSelect, ProFormText } from '@ant-design/pro-form'
 import { Divider }                                              from 'antd'
+import _                                                        from 'lodash'
 import { useIntl }                                              from 'react-intl'
 
 import { Modal, ModalType }         from '@acx-ui/components'
@@ -42,12 +43,30 @@ export function WlanDetailStep (props: {
   const [configuredIndex, setConfiguredIndex] = useState<number>(0)
 
   useEffect(() => {
-    if (initialData !== data) {
+    if (
+      !_.isEqual(
+        initialData.map(({ 'SSID Name': _, ...rest }) => rest),
+        data.map(({ 'SSID Name': _, ...rest }) => rest)
+      )
+    ) {
+      formInstance?.resetFields()
       formInstance?.setFieldsValue({ data: initialData })
       setData(initialData)
       setSsidTypes(new Map(initialData.map(item => [item.id, item['SSID Type']])))
       setConfigFlags()
+    } else {
+      initialData.forEach((item, index) => {
+        formInstance?.setFieldValue(['data', index, 'SSID Name'], item['SSID Name'])
+      })
+
+      setData(prevData =>
+        prevData.map((item, index) => ({
+          ...item,
+          'SSID Name': initialData[index]?.['SSID Name'] || item['SSID Name']
+        }))
+      )
     }
+
   }, [props.payload])
 
   const setConfigFlags = function () {

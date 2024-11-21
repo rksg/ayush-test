@@ -275,18 +275,20 @@ export default function RuckusAiButton () {
             {step === RuckusAiStepsEnum.VERTICAL && <VerticalPage />}
             {step === RuckusAiStepsEnum.BASIC && <BasicInformationPage />}
           </Form>
-          {step === RuckusAiStepsEnum.CONFIGURATION && <RuckusAiWizard
-            sessionId={nextStep.sessionId}
-            requestId={nextStep.sessionId}
-            actionType={nextStep.nextStep}
-            description={nextStep.description}
-            payload={nextStep.payload}
-            currentStep={currentStep}
-            setStep={setStep}
-            step={step}
-            setCurrentStep={setCurrentStep}
-            setConfigResponse={setConfigResponse}
-          />}
+          <div style={{ display: step === RuckusAiStepsEnum.CONFIGURATION ? 'block' : 'none' }}>
+            <RuckusAiWizard
+              sessionId={nextStep.sessionId}
+              requestId={nextStep.sessionId}
+              actionType={nextStep.nextStep}
+              description={nextStep.description}
+              payload={nextStep.payload}
+              currentStep={currentStep}
+              setStep={setStep}
+              step={step}
+              setCurrentStep={setCurrentStep}
+              setConfigResponse={setConfigResponse}
+            />
+          </div>
           {step === RuckusAiStepsEnum.FINISHED && <Congratulations
             configResponse={configResponse}
             closeModal={closeModal} />}

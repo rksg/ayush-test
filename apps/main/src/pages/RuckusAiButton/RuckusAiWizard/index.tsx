@@ -125,7 +125,10 @@ export default function RuckusAiWizard (props: {
       if (!regenerated) {
         setPayloads((prevPayloads) => ({
           ...prevPayloads,
-          [response.nextStep]: response
+          [response.nextStep]: response,
+          ...(isSkip && {
+            [stepType]: { ...prevPayloads[stepType], payload: '[]' }
+          })
         }))
       }
 
@@ -144,13 +147,12 @@ export default function RuckusAiWizard (props: {
     {
       name: RuckusAiConfigurationStepsEnum.WLANS,
       title: '',
-      component: (
-        props.payload ?
-          <WlanStep
-            payload={props.payload}
-            description={props.description} />
-          : (null)
+      component: (props.payload ? (<WlanStep
+        payload={props.payload}
+        formInstance={formMapRef?.current?.[0]?.current}
+        description={props.description} />) : null
       ),
+
       onFinish: async () =>
         handleOnFinish(RuckusAiConfigurationStepsEnum.WLANS)
     },
@@ -234,6 +236,7 @@ export default function RuckusAiWizard (props: {
                 position: 'absolute',
                 right: '30px',
                 bottom: '5px',
+                fontSize: '12px',
                 display: steps[props.currentStep].supportSkip ? 'block' : 'none'
               }}
               disabled={isLoading}

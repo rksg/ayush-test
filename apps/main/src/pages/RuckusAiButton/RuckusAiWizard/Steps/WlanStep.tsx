@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import {
   ProFormCheckbox,
+  ProFormInstance,
   ProFormSelect,
   ProFormText
 } from '@ant-design/pro-form'
@@ -28,17 +29,32 @@ type NetworkConfig = {
   'id': string;
 }
 
-export function WlanStep (props: {
+export function WlanStep ( props: {
   payload: string,
-  description: string
+  description: string,
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   formInstance: ProFormInstance<any> | undefined
 }) {
   const { $t } = useIntl()
+  const { formInstance } = props
   const initialData = JSON.parse(props.payload || '[]') as NetworkConfig[]
-  const [data, setData] = useState<NetworkConfig[]>(initialData)
-
+  const [data, setData] = useState<NetworkConfig[]>([])
 
   const [checkboxStates, setCheckboxStates] =
     useState<boolean[]>(Array(initialData.length).fill(true))
+
+  useEffect(() => {
+    if (initialData !== data && formInstance) {
+      const updatedData = initialData.map(item => ({
+        ...item,
+        Checked: true
+      }))
+      formInstance?.setFieldsValue({ data: updatedData })
+      setData(initialData)
+      setCheckboxStates(Array(initialData.length).fill(true))
+    }
+
+  }, [props.payload])
 
   const objectiveOptions = [
     { value: 'Internal', label: $t({ defaultMessage: 'Internal' }) },
@@ -147,7 +163,7 @@ export function WlanStep (props: {
       {data?.map((item, index) => (
         <React.Fragment key={index}>
           <UI.VlanContainer>
-            <UI.CheckboxContainer>
+            <UI.CheckboxContainer data-testid={`wlan-checkbox-${index}`}>
               <ProFormCheckbox
                 name={['data', index, 'Checked']}
                 initialValue={true}
