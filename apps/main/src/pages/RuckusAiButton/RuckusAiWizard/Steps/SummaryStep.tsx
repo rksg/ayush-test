@@ -56,7 +56,7 @@ export function SummaryStep (props: {
         />
       </UI.SummaryContainer>
 
-      <UI.SummaryContainer>
+      {data.vlan && data.vlan.length > 0 && <UI.SummaryContainer>
         <Form.Item
           label={
             <UI.SummaryContainerHeader>
@@ -72,6 +72,7 @@ export function SummaryStep (props: {
           </ul>}
         />
       </UI.SummaryContainer>
+      }
 
     </div>
   </div>
