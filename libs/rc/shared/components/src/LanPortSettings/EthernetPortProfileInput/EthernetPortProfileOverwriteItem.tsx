@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { EditOutlined, ReloadOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons'
+import { CheckOutlined, CloseOutlined, EditOutlined, ReloadOutlined } from '@ant-design/icons'
 import { Form, Input, Space, Tooltip }                                from 'antd'
 import { Rule }                                                       from 'antd/lib/form'
 import { useWatch }                                                   from 'antd/lib/form/Form'
@@ -18,6 +18,7 @@ interface EthernetPortProfileOverwriteProps {
     fieldName: (string | number)[]
     width?: string
     rules?: Rule[]
+    currentIndex: number,
     onGUIChanged?: (fieldName: string) => void
 }
 
@@ -30,14 +31,17 @@ const EthernetPortProfileOverwriteItem = (props:EthernetPortProfileOverwriteProp
     isEditable=true,
     fieldName,
     width='200px',
+    currentIndex,
     onGUIChanged,
     rules=[] } = props
+
   const form = Form.useFormInstance()
   const [isEditMode, setEditMode] = useState(false)
   const currentFieldValue = useWatch(fieldName, form)
   const inputFieldName = fieldName.join('_')
   const isDirty = (currentFieldValue?.toString() !== defaultValue)
-
+  const lan = form?.getFieldValue('lan')?.[currentIndex]
+  const hasVni = lan?.vni > 0
 
   useEffect(() => {
     if (currentFieldValue !== initialData ){
@@ -117,13 +121,14 @@ const EthernetPortProfileOverwriteItem = (props:EthernetPortProfileOverwriteProp
       }
       { !isEditMode &&
         <Space>
-          {currentFieldValue}{(isEditable) ? (isDirty? '(Custom)': '(Default)') : ''}
+          {currentFieldValue}{(isEditable && !hasVni) ? (isDirty? '(Custom)': '(Default)') : ''}
           { isEditable &&
             <>
               <Tooltip
                 title={$t({ defaultMessage: 'Override the {title}' }, { title })}
                 placement='top'>
                 <Button
+                  hidden={hasVni}
                   type='link'
                   icon={<EditOutlined />}
                   onClick={(e)=>{
