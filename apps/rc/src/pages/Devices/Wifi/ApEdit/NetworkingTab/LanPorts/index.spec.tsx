@@ -14,26 +14,28 @@ import {
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
+  fireEvent,
   mockServer,
   render,
-  waitForElementToBeRemoved,
   screen,
-  fireEvent,
+  waitForElementToBeRemoved,
   within
-}   from '@acx-ui/test-utils'
+} from '@acx-ui/test-utils'
 
 import { ApNetworkingContext }          from '..'
 import { ApDataContext, ApEditContext } from '../..'
 import {
   ApCap_T750SE,
   ApData_T750SE,
+  ApLanPorts_has_vni,
   ApLanPorts_T750SE,
   lanPortSettingPort1,
   mockDefaultTunkEthertnetPortProfile,
   mockEthProfiles,
   venueData,
   venueLanPorts,
-  venueSetting } from '../../../../__tests__/fixtures'
+  venueSetting
+} from '../../../../__tests__/fixtures'
 
 import { LanPorts } from '.'
 
@@ -296,6 +298,55 @@ describe('Lan Port', () => {
       expect(await screen.findByLabelText('802.1X Authentication')).toBeInTheDocument()
 
       await userEvent.click(actions.getByRole('button', { name: 'Add' }))
+    })
+
+    it ('Should render ethernet profile correctly with AP model has Vni', async () => {
+      mockServer.use(
+        rest.get(WifiUrlsInfo.getApLanPorts.url,
+          (_, res, ctx) => res(ctx.json(ApLanPorts_has_vni)))
+      )
+
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.ETHERNET_PORT_PROFILE_TOGGLE)
+      render(
+        <Provider>
+          <ApEditContext.Provider value={{
+            editContextData: {
+              tabTitle: '',
+              isDirty: false,
+              hasError: false,
+              updateChanges: jest.fn(),
+              discardChanges: jest.fn()
+            },
+            setEditContextData: jest.fn(),
+            editNetworkingContextData: {} as ApNetworkingContext,
+            setEditNetworkingContextData: jest.fn()
+          }}>
+            <ApDataContext.Provider value={defaultT750SeApCtxData}>
+              <LanPorts />
+            </ApDataContext.Provider>
+          </ApEditContext.Provider>
+        </Provider>,{
+          route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/networking' }
+        }
+      )
+
+      await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+      expect(screen.queryByRole('button', { name: 'Reset to default' })).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: 'Use Venue Settings' })).not.toBeInTheDocument()
+      expect(await screen.findByRole('switch', { name: 'Enable port' })).toBeDisabled()
+      expect(screen.queryByRole('combobox', { name: 'Ethernet Port Profile' }))
+        .not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: 'Profile Details' }))
+        .not.toBeInTheDocument()
+
+      const tabs = await screen.findAllByRole('tab')
+      await userEvent.click(tabs[2])
+      expect(await screen.findByRole('switch', { name: 'Enable port' })).toBeDisabled()
+      expect(screen.queryByRole('button', { name: 'Reset to default' })).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: 'Use Venue Settings' })).not.toBeInTheDocument()
+      expect(screen.getByRole('combobox', { name: 'Ethernet Port Profile' })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Profile Details' })).toBeInTheDocument()
     })
   })
 })
