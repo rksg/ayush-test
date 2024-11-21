@@ -10,9 +10,10 @@ import {
   useGetBetaStatusQuery,
   useGetUserProfileQuery,
   useFeatureFlagStatesQuery,
-  useGetVenuesListQuery
+  useGetVenuesListQuery,
+  useGetBetaFeatureListQuery
 } from './services'
-import { UserProfile }                         from './types'
+import { FeatureAPIResults, UserProfile }      from './types'
 import { setUserProfile, hasRoles, hasAccess } from './userProfile'
 
 export interface UserProfileContextProps {
@@ -28,6 +29,7 @@ export interface UserProfileContextProps {
   isCustomRole?: boolean
   hasAllVenues?: boolean
   venuesList?: string[]
+  betaFeaturesList?: FeatureAPIResults[]
 }
 
 const isPrimeAdmin = () => hasRoles(Role.PRIME_ADMIN)
@@ -46,13 +48,15 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
 
   let abacEnabled = false, isCustomRole = false
   const abacFF = 'abac-policies-toggle'
+  const betaListFF = 'acx-ui-selective-early-access-toggle'
 
   const { data: featureFlagStates, isLoading: isFeatureFlagStatesLoading }
     = useFeatureFlagStatesQuery(
-      { params: { tenantId }, payload: [abacFF] },
+      { params: { tenantId }, payload: [abacFF, betaListFF] },
       { skip: !Boolean(profile) }
     )
   abacEnabled = featureFlagStates?.[abacFF] ?? false
+  const betaListEnabled = featureFlagStates?.[betaListFF] ?? false
 
   const { data: beta } = useGetBetaStatusQuery(
     { params: { tenantId }, enableRbac: abacEnabled },
@@ -87,6 +91,12 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const venuesList: string[] = (venues?.data.map(item => item.id)
     .filter((id): id is string => id !== undefined)) || []
 
+  const { data: features } = useGetBetaFeatureListQuery({ params },
+    { skip: !(beta?.enabled === 'true') || !betaListEnabled })
+
+  const betaFeaturesList: FeatureAPIResults[] = (features?.betaFeatures.filter((feature):
+    feature is FeatureAPIResults => feature !== undefined)) || []
+
   if (allowedOperations && accountTier && !isFeatureFlagStatesLoading) {
     isCustomRole = profile?.customRoleType?.toLocaleLowerCase()?.includes('custom') ?? false
     const userProfile = { ...profile } as UserProfile
@@ -106,7 +116,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       isCustomRole,
       scopes: profile?.scopes,
       hasAllVenues,
-      venuesList
+      venuesList,
+      betaFeaturesList
     })
   }
 
@@ -123,7 +134,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       abacEnabled,
       isCustomRole,
       hasAllVenues,
-      venuesList
+      venuesList,
+      betaFeaturesList
     }}
     children={props.children}
   />
