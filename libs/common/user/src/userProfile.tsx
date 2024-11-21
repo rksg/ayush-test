@@ -13,7 +13,8 @@ import {
   type UserProfile,
   type RaiPermission,
   type RaiPermissions,
-  CustomRoleType
+  CustomRoleType,
+  FeatureAPIResults
 } from './types'
 
 type Permission = {
@@ -29,7 +30,8 @@ type Profile = {
   scopes?: ScopeKeys
   isCustomRole?: boolean,
   hasAllVenues?: boolean,
-  venuesList?: string[]
+  venuesList?: string[],
+  betaFeaturesList?: FeatureAPIResults[]
 }
 const userProfile: Profile = {
   profile: {} as UserProfile,
@@ -62,6 +64,7 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.scopes = profile?.scopes
   userProfile.hasAllVenues = profile?.hasAllVenues
   userProfile.venuesList = profile?.venuesList
+  userProfile.betaFeaturesList = profile?.betaFeaturesList
 }
 
 export const getShowWithoutRbacCheckKey = (id:string) => {
