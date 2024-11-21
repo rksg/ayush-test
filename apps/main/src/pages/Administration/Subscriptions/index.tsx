@@ -80,12 +80,18 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   }
 ]
 
+export const entitlementRefreshPayload = {
+  status: 'synchronize',
+  usageType: 'SELF'
+}
+
 export const SubscriptionTable = () => {
   const { $t } = useIntl()
   const params = useParams()
   const isEdgeEnabled = useIsEdgeReady()
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isMspRbacMspEnabled = useIsSplitOn(Features.MSP_RBAC_API)
+  const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
 
   const queryResults = useGetEntitlementsListQuery({ params })
   const isNewApi = AdministrationUrlsInfo.refreshLicensesData.newApi
@@ -227,7 +233,10 @@ export const SubscriptionTable = () => {
   const refreshFunc = async () => {
     setBannerRefreshLoading(true)
     try {
-      await (isNewApi ? refreshEntitlement : internalRefreshEntitlement)({ params }).unwrap()
+      isEntitlementRbacApiEnabled
+        ? refreshEntitlement({ params, payload: entitlementRefreshPayload,
+          enableRbac: isEntitlementRbacApiEnabled }).then()
+        : await (isNewApi ? refreshEntitlement : internalRefreshEntitlement)({ params }).unwrap()
       if (isNewApi === false) {
         showToast({
           type: 'success',

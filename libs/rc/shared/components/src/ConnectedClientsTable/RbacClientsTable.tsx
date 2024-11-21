@@ -363,7 +363,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
         filterable: networkId ? false : GetNetworkFilterOptions(tenantId),
         render: (_: React.ReactNode, row: ClientInfo) => {
           return AsyncLoadingInColumn(row, () => {
-            if (!row.signalStatus?.health) {
+            if (!row.networkInformation?.id) {
               return row.networkInformation.ssid
             } else {
               const { networkInformation } = row
