@@ -36,7 +36,8 @@ import {
   MspCompliances,
   LicenseAttentionNotes,
   RecommendFirmwareUpgradeByApModel,
-  LicenseCalculatorDataResponse
+  LicenseCalculatorDataResponse,
+  MileageReportsResponse
 } from '@acx-ui/msp/utils'
 import {
   TableResult,
@@ -605,10 +606,12 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     refreshMspEntitlement: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(MspUrlsInfo.refreshMspEntitlement, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.refreshMspEntitlement, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
@@ -1043,6 +1046,15 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getLicenseMileageReports: build.query<MileageReportsResponse, RequestPayload>({
+      query: ({ payload }) => {
+        const request = createHttpRequest(MspRbacUrlsInfo.getLicenseMileageReports)
+        return {
+          ...request,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -1162,7 +1174,8 @@ export const {
   useGetEntitlementsAttentionNotesQuery,
   useGetCalculatedLicencesMutation,
   useUpdateMspEcDelegationsMutation,
-  useUpdateMspMultipleEcDelegationsMutation
+  useUpdateMspMultipleEcDelegationsMutation,
+  useGetLicenseMileageReportsQuery
 } = mspApi
 
 export * from './hospitalityVerticalFFCheck'
