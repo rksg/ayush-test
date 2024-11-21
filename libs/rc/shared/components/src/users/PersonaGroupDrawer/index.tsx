@@ -16,13 +16,14 @@ interface PersonaGroupDrawerProps {
   isEdit: boolean,
   visible: boolean,
   onClose: (result?: CommonAsyncResponse) => void,
-  data?: PersonaGroup
+  data?: PersonaGroup,
+  requiredDpsk?: boolean
 }
 
 export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
-  const { isEdit, data, visible, onClose } = props
+  const { isEdit, data, visible, onClose, requiredDpsk } = props
   const { createPersonaGroupMutation, updatePersonaGroupMutation } = usePersonaGroupAction()
   const { isAsync } = usePersonaAsyncHeaders()
 
@@ -112,6 +113,7 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
         <PersonaGroupForm
           form={form}
           defaultValue={data}
+          requiredDpsk={requiredDpsk}
         />
       }
       footer={footer}

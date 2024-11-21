@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn, Features }       from '@acx-ui/feature-toggle'
-import { MspRbacUrlsInfo, MspUrlsInfo } from '@acx-ui/msp/utils'
-import { Provider }                     from '@acx-ui/store'
-import { render, screen, mockServer }   from '@acx-ui/test-utils'
+import { useIsSplitOn, Features }                                from '@acx-ui/feature-toggle'
+import { MspRbacUrlsInfo, MspUrlsInfo }                          from '@acx-ui/msp/utils'
+import { Provider }                                              from '@acx-ui/store'
+import { render, screen, mockServer, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { LicenseCompliance } from '.'
 
@@ -63,6 +63,44 @@ const compliancesWithSummary = {
   }]
 }
 
+const mileageReportData = {
+  totalCount: 2,
+  page: 1,
+  pageSize: 10,
+  data: [
+    {
+      licenseType: 'APSW',
+      lastDate: '2024-09-30',
+      device: 350,
+      usedQuantity: 350,
+      quantity: 400,
+      availableBreakUp: [
+        {
+          quantity: 20,
+          expirationDate: '2024-09-16'
+        },
+        {
+          quantity: 30,
+          expirationDate: '2024-09-01'
+        }
+      ]
+    },
+    {
+      licenseType: 'APSW',
+      lastDate: '2024-10-31',
+      device: 350,
+      usedQuantity: 350,
+      quantity: 390,
+      availableBreakUp: [
+        {
+          quantity: 10,
+          expirationDate: '2024-10-16'
+        }
+      ]
+    }
+  ]
+}
+
 const services = require('@acx-ui/msp/services')
 describe('LicenseCompliance', () => {
   let params: { tenantId: string }
@@ -81,6 +119,10 @@ describe('LicenseCompliance', () => {
       rest.post(
         MspUrlsInfo.getMspCustomersList.url,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        MspRbacUrlsInfo.getLicenseMileageReports.url,
+        (req, res, ctx) => res(ctx.json(mileageReportData))
       )
     )
     params = {
@@ -174,5 +216,24 @@ describe('LicenseCompliance', () => {
     expect(screen.getAllByText('Device Networking Subscriptions')).toHaveLength(4)
     await userEvent.click(screen.getByRole('button', { name: 'Close' }))
     expect(screen.getAllByText('Device Networking Subscriptions')).toHaveLength(3)
+  })
+
+  it('should render timelinegraph', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE)
+    render(
+      <Provider>
+        <LicenseCompliance isMsp={true} isExtendedTrial={true}/>
+      </Provider>, {
+        route: { params,
+          path: '/:tenantId/t/administration/subscriptions/compliance' }
+      })
+    const btn = screen.getByRole('button', { name: 'Click Here' })
+    expect(await screen.findByText('License Distance Calculator')).toBeVisible()
+    await userEvent.click(btn)
+    expect(screen.getByText('Device Networking Paid Licenses')).toBeInTheDocument()
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(document.querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
 })
