@@ -37,8 +37,7 @@ export const VenueTable = (props: VenueTableProps) => {
 
     return {}
   }, [venueActivations])
-
-  const venueNameMap = useGetVenuesQuery({
+  const { venueNameMap } = useGetVenuesQuery({
     params: { tenantId: tenantId },
     enableRbac: isWifiRbacEnabled,
     payload: {
@@ -50,14 +49,20 @@ export const VenueTable = (props: VenueTableProps) => {
       filters: { id: Object.keys(venueGrouping) }
     }
   }, {
-    skip: !venueGrouping
-  })
+    skip: !Object.keys(venueGrouping).length,
+    selectFromResult: ({ data }) => ({
+      venueNameMap: data?.data.reduce((venues, venue) => {
+        venues[venue.id] = venue.name
+        return venues
+      }, {} as Record<string, string>)
+    })
+  } )
 
   const tableResult = useMemo(() => {
-    if (venueNameMap.data && venueGrouping) {
+    if (venueNameMap && venueGrouping) {
       return Array.from(Object.entries(venueGrouping)).map(([id, apModels]) => ({
         id,
-        name: venueNameMap.data?.data.find(v => v.id === id)?.name || '',
+        name: venueNameMap[id],
         apModels
       }))
     }
