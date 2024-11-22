@@ -17,7 +17,7 @@ export default function MspCustomersLicences () {
 
   const mspEcTenantsPayload = {
     filters: {
-      tenantType: ['MSP_EC']
+      tenantType: ['MSP_EC', 'MSP_INTEGRATOR', 'MSP_INSTALLER']
     },
     fields: [
       'check-all',
