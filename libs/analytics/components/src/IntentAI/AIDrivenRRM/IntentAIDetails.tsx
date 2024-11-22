@@ -125,7 +125,7 @@ export function createIntentAIDetails () {
           <DetailsSection data-testid='Key Performance Indications'>
             <DetailsSection.Title
               children={$t({ defaultMessage: 'Key Performance Indications' })} />
-            <DetailsSection.Details children={
+            <DetailsSection.Details style={{ minHeight: 385 }}>
               <Loader states={[queryResult]}>
                 <IntentAIRRMGraph
                   crrmData={crrmData}
@@ -133,7 +133,7 @@ export function createIntentAIDetails () {
                   summaryUrlAfter={summaryUrlAfter}
                 />
               </Loader>
-            }/>
+            </DetailsSection.Details>
           </DetailsSection>
 
           <GridRow>
