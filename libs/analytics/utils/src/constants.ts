@@ -148,9 +148,21 @@ export const getWiredWirelessIncidentCodes = (
 )
 export type CategoryOption = 'connection' | 'performance' | 'infrastructure' | 'security'
 export const categoryOptions = [
-  { value: 'connection', label: defineMessage({ defaultMessage: 'Connection' }) },
-  { value: 'performance', label: defineMessage({ defaultMessage: 'Performance' }) },
-  { value: 'infrastructure', label: defineMessage({ defaultMessage: 'Infrastructure' }) }
+  {
+    value: 'connection',
+    label: defineMessage({ defaultMessage: 'Connection' }),
+    isVisible: () => true
+  },
+  {
+    value: 'performance',
+    label: defineMessage({ defaultMessage: 'Performance' }),
+    isVisible: () => true
+  },
+  {
+    value: 'infrastructure',
+    label: defineMessage({ defaultMessage: 'Infrastructure' }),
+    isVisible: () => true
+  }
 ]
 export type CategoryTab = 'overview' | Omit<CategoryOption,'security'>
 export const categoryTabs = [
