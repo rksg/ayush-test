@@ -355,6 +355,8 @@ describe('util', () => {
     ]
     it('should return correct data for categorizeEvent', () => {
       const expectedResult = [
+        { event: 'EVENT_CLIENT_BTM_REQ_SENT', ttc: null, category: BTM_REQUEST },
+        { event: 'EVENT_CLIENT_BTM_RESP_RECEIVED', ttc: null, category: BTM_RESPONSE },
         { event: 'EVENT_CLIENT_DISCONNECT', ttc: null, category: DISCONNECT },
         { event: 'EVENT_CLIENT_BLOCKED', ttc: null, category: DISCONNECT },
         { event: 'EVENT_CLIENT_ROAMING', ttc: 5000, category: SLOW },
