@@ -31,15 +31,23 @@ export const api = dataApi.injectEndpoints({
             let variables: (Partial<PathFilter> | Partial<DashboardFilter>) & {
           requestedList: string[]
         }
+            const startDate = moment()
+              .startOf('day')
+              .subtract(7, 'days')
+              .format('YYYY-MM-DDTHH:mm:ss+08:00')
+            const endDate = moment()
+              .startOf('day')
+              .format('YYYY-MM-DDTHH:mm:ss+08:00')
             if (useFilter) {
               variables = {
-                startDate: payload.startDate,
-                endDate: payload.endDate,
+                startDate: startDate,
+                endDate: endDate,
                 ...getFilterPayload(payload),
                 requestedList: payload.requestedList
               }
             } else {
-              variables = _.pick(payload, ['path', 'startDate', 'endDate', 'requestedList'])
+              variables = Object.assign(_.pick(payload, ['path', 'requestedList']),
+                startDate, endDate)
             }
             return {
               document: gql`
