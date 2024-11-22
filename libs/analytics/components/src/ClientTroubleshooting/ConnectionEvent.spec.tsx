@@ -4,8 +4,8 @@ import { get }                                from '@acx-ui/config'
 import { Provider }                           from '@acx-ui/store'
 import { cleanup, render, fireEvent, screen } from '@acx-ui/test-utils'
 
-import { DisplayEvent }           from './config'
-import { ConnectionEventPopover } from './ConnectionEvent'
+import { DisplayEvent }                                      from './config'
+import { ConnectionEventPopover, getRomaingTypeDisplayText } from './ConnectionEvent'
 
 const mockGet = get as jest.Mock
 jest.mock('@acx-ui/config', () => ({
@@ -267,5 +267,19 @@ describe('ConnectionEvent', () => {
     expect(mockVisibleChange).toHaveBeenLastCalledWith(false)
     const closed = asFragment()
     expect(original).toMatchObject(closed)
+  })
+
+  it('should return roaming type dislplay text corectly', () => {
+    [
+      { type: 'OKC', text: 'OKC Roaming' },
+      { type: 'PMK', text: 'PMKID Roaming' },
+      { type: 'full-802.11', text: 'Full Authentication' },
+      { type: '11r', text: '11r Over-the-Air' },
+      { type: 'FT Over-the-Air', text: '11r Over-the-Air' },
+      { type: 'FT Over-the-DS', text: '11r Over-the-DS' },
+      { type: 'Full Authentication', text: 'Full Authentication' } // unmapped
+    ].forEach(({ type, text }) => {
+      expect(getRomaingTypeDisplayText(type)).toBe(text)
+    })
   })
 })

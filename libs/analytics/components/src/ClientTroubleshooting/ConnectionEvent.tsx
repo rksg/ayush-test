@@ -19,6 +19,20 @@ import { DownloadPcap }                                     from './DownloadPcap
 import { Details }                                          from './EventDetails'
 import * as UI                                              from './styledComponents'
 
+
+export const getRomaingTypeDisplayText = (roamingType: string) => {
+  const { $t } = getIntl()
+  switch (roamingType) {
+    case 'OKC': return $t({ defaultMessage: 'OKC Roaming' })
+    case 'PMK': return $t({ defaultMessage: 'PMKID Roaming' })
+    case 'full-802.11': return $t({ defaultMessage: 'Full Authentication' })
+    case '11r':
+    case 'FT Over-the-Air':
+      return $t({ defaultMessage: '11r Over-the-Air' })
+    case 'FT Over-the-DS': return $t({ defaultMessage: '11r Over-the-DS' })
+    default: return $t({ defaultMessage: '{roamingType}' },{ roamingType })
+  }
+}
 export const getConnectionDetails = (event: DisplayEvent) => {
   const intl = getIntl()
   const { $t } = intl
@@ -82,7 +96,7 @@ export const getConnectionDetails = (event: DisplayEvent) => {
   if (type === ROAMING && showRoamingType) {
     const label = $t({ defaultMessage: 'Roaming Type' })
     const roamType = roamingType
-      ? { label, value: roamingType }
+      ? { label, value: getRomaingTypeDisplayText(roamingType) }
       : { label, value: $t({ defaultMessage: 'Unknown' }) }
     eventDetails.push(roamType)
   }
