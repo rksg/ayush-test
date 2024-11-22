@@ -769,9 +769,10 @@ describe('util', () => {
         }
       }
       it('should return correct chart config', () => {
+        const isVisible = expect.any(Function)
         expect(getRoamingChartConfig(roamingData)).toEqual([
-          { chartType: 'bar', key: 'test1', label: 'apName1', series: 'roaming' },
-          { chartType: 'bar', key: 'test2', label: 'apName2', series: 'roaming' }
+          { chartType: 'bar', key: 'test1', label: 'apName1', series: 'roaming', isVisible },
+          { chartType: 'bar', key: 'test2', label: 'apName2', series: 'roaming', isVisible }
         ])
       })
     })
@@ -795,7 +796,7 @@ describe('util', () => {
       it('should return correct chart config for normal list', () => {
         expect(getRoamingSubtitleConfig(roamingData)).toEqual([
           {
-            isLast: false,
+            isVisible: expect.any(Function),
             noData: false,
             title: 'apName1 on radio1GHz',
             value: 'apName1',
@@ -804,7 +805,7 @@ describe('util', () => {
             apFirmware: 'apFirmware1'
           },
           {
-            isLast: true,
+            isVisible: expect.any(Function),
             noData: false,
             title: 'apName2 on radio2GHz',
             value: 'apName2',
@@ -823,7 +824,7 @@ describe('util', () => {
           apFirmware: '',
           value: '',
           noData: true,
-          isLast: true
+          isVisible: expect.any(Function)
         }])
       })
     })
