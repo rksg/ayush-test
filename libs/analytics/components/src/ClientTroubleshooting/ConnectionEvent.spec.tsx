@@ -4,8 +4,8 @@ import { get }                                from '@acx-ui/config'
 import { Provider }                           from '@acx-ui/store'
 import { cleanup, render, fireEvent, screen } from '@acx-ui/test-utils'
 
+import { BTM_REQUEST, BTM_RESPONSE, DisplayEvent }           from './config'
 import { ConnectionEventPopover, getRomaingTypeDisplayText } from './ConnectionEvent'
-import { BTM_REQUEST, BTM_RESPONSE, DisplayEvent } from './config'
 
 const mockGet = get as jest.Mock
 jest.mock('@acx-ui/config', () => ({
