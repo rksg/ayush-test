@@ -86,6 +86,7 @@ export function createIntentAIDetails () {
     const queryResult = useIntentAICRRMQuery()
     const crrmData = queryResult.data!
     const fields = useCommonFields(intent)
+    const noData = state === 'no-data' || !hasData
 
     return <>
       <div hidden>
@@ -125,7 +126,7 @@ export function createIntentAIDetails () {
           <DetailsSection data-testid='Key Performance Indications'>
             <DetailsSection.Title
               children={$t({ defaultMessage: 'Key Performance Indications' })} />
-            <DetailsSection.Details style={{ minHeight: 385 }}>
+            <DetailsSection.Details style={{ ...(!noData && { minHeight: 385 }) }}>
               <Loader states={[queryResult]}>
                 <IntentAIRRMGraph
                   crrmData={crrmData}
