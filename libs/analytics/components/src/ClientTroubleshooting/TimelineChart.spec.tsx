@@ -8,8 +8,9 @@ import { cleanup, render, fireEvent, renderHook, act, waitFor, screen } from '@a
 import { RolesEnum, TimeStampRange }                                    from '@acx-ui/types'
 import { getUserProfile, setUserProfile }                               from '@acx-ui/user'
 
-import { qualityDataObj, incidentDataObj, roamingDataObj, connectionEvents }                           from './__tests__/fixtures'
-import { Event, LabelledQuality, IncidentDetails, RoamingTimeSeriesData, ClientTroubleShootingConfig } from './config'
+import { qualityDataObj, incidentDataObj, roamingDataObj, connectionEvents } from './__tests__/fixtures'
+import { Event, LabelledQuality, IncidentDetails, RoamingTimeSeriesData  }   from './config'
+import useClientTroubleshootingConfig                                        from './useClientTroubleshootingConfig'
 import {
   useDotClick,
   useDataZoom,
@@ -102,7 +103,8 @@ describe('TimelineChartComponent', () => {
     it('should handle mouse over correctly with empty data', async () => {
       const events = transformEvents(connectionEvents, [], [])
         .map(event => ({ ...event, seriesKey: 'all' })) as Event[]
-      const { chartMapping } = ClientTroubleShootingConfig.timeLine[0]
+      const { clientTroubleshootingConfigType } = useClientTroubleshootingConfig()
+      const { chartMapping } = clientTroubleshootingConfigType.timeline[0]
       const chartRef: MutableRefObject<EChartsType[] | null> = createRef<EChartsType[]>()
       chartRef.current = []
       const TestWrapper = () => {
@@ -132,7 +134,8 @@ describe('TimelineChartComponent', () => {
       const events = transformEvents(connectionEvents, [], [])
         .map(event => ({ ...event, seriesKey: 'all' })) as Event[]
       const ref = createRef<HTMLDivElement>()
-      const { chartMapping } = ClientTroubleShootingConfig.timeLine[0]
+      const { clientTroubleshootingConfigType } = useClientTroubleshootingConfig()
+      const { chartMapping } = clientTroubleshootingConfigType.timeline[0]
       const chartRef: MutableRefObject<EChartsType[] | null> = createRef<EChartsType[]>()
       chartRef.current = []
       const TestWrapper = () => {
@@ -172,7 +175,8 @@ describe('TimelineChartComponent', () => {
       const events = transformEvents(connectionEvents, [], [])
         .map(event => ({ ...event, seriesKey: 'all' })) as Event[]
       const ref = createRef<HTMLDivElement>()
-      const { chartMapping } = ClientTroubleShootingConfig.timeLine[0]
+      const { clientTroubleshootingConfigType } = useClientTroubleshootingConfig()
+      const { chartMapping } = clientTroubleshootingConfigType.timeline[0]
       const chartRef: MutableRefObject<EChartsType[] | null> = createRef<EChartsType[]>()
       chartRef.current = []
       const TestWrapper = () => {
