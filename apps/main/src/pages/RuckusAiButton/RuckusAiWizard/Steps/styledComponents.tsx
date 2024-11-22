@@ -1,6 +1,7 @@
-import styled from 'styled-components/macro'
+import ProForm from '@ant-design/pro-form'
+import styled  from 'styled-components/macro'
 
-import { ArrowChevronRight, CollapseCircleSolid } from '@acx-ui/icons'
+import { ArrowChevronRight, CollapseCircleSolid, WarningTriangleSolid } from '@acx-ui/icons'
 
 export const CheckboxIndexLabel = styled.div`
   display: inline-block;
@@ -59,7 +60,7 @@ export const VlanDetails = styled.div`
   flex-direction: column;
 `
 
-export const PurposeContainer = styled.div`
+export const PurposeContainer = styled.div<{ disabled?: boolean }>`
   display: flex;
   background-color: var(--acx-accents-blue-10);
   padding: 10px 20px;
@@ -68,9 +69,17 @@ export const PurposeContainer = styled.div`
   border-radius: 8px;
   margin-top: -8px;
   margin-bottom: 15px;
+
+  ${(props) =>
+    props.disabled &&
+    `
+     pointer-events: none;
+      opacity: 0.6;
+      cursor: not-allowed;
+      ` }
 `
 
-export const ConfigurationContainer = styled.div`
+export const ConfigurationContainer = styled.div<{ disabled?: boolean }>`
   display: flex;
   background-color: var(--acx-neutrals-15);
   padding: 10px 20px;
@@ -81,7 +90,14 @@ export const ConfigurationContainer = styled.div`
   margin-bottom: 15px;
   cursor: pointer;
   font-size: 12px;
-  /* align-items: center; */
+
+  ${(props) =>
+    props.disabled &&
+    `
+     pointer-events: none;
+      opacity: 0.6;
+      cursor: not-allowed;
+      ` }
 
   & > span {
     margin-left: 5px;
@@ -204,4 +220,27 @@ export const SummaryHeader = styled.span`
   font-size: var(--acx-subtitle-1-font-size);
   font-weight: var(--acx-subtitle-1-font-weight);
   font-family: var(--acx-accent-brand-font);
+`
+
+export const FooterValidationItem = styled(ProForm.Item)`
+  height: 40px;
+  margin-top: -45px;
+  pointer-events: none;
+  position: absolute;
+  bottom: 5px;
+  left: 85px;
+  .ant-form-item-explain-error {
+    color: var(--acx-primary-black);
+
+  }
+`
+export const WarningTriangleSolidIcon = styled(WarningTriangleSolid)`
+  height: 16px;
+  margin-right: 3px;
+  path:nth-child(1) {
+    fill: var(--acx-semantics-yellow-50)
+  }
+  path:nth-child(3) {
+    stroke: var(--acx-accents-orange-30);
+  }
 `
