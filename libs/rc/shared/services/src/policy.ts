@@ -139,7 +139,8 @@ const CertificateMutationUseCases = [
   'UpdateRadius',
   'ActivateCertificateOnRadiusServerProfile',
   'DeactivateCertificateOnRadiusServerProfile',
-  'ActivateCertificateAuthorityOnRadiusServerProfile'
+  'ActivateCertificateAuthorityOnRadiusServerProfile',
+  'DeactivateCertificateAuthorityOnRadiusServerProfile'
 ]
 
 const L2AclUseCases = [
@@ -847,7 +848,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'AddRadius', 'UpdateRadius', 'DeleteRadius', 'DeleteRadiuses',
             'ActivateRadiusServerProfileOnWifiNetwork', 'DeactivateRadiusServerProfileOnWifiNetwork',
-            'ActivateCertificateOnRadiusServerProfile'
+            'UpdateWifiNetwork','ActivateCertificateOnRadiusServerProfile',
+            'DeactivateCertificateOnRadiusServerProfile',
+            'ActivateCertificateAuthorityOnRadiusServerProfile',
+            'DeactivateCertificateAuthorityOnRadiusServerProfile'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
           })
@@ -3380,6 +3384,40 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       }
     }),
+    downloadPrivateKeyCertificate: build.query<Blob, RequestPayload>({
+      query: ({ params, payload, customHeaders }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.downloadCertificateWithPost, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        return {
+          ...req,
+          body: JSON.stringify(payload),
+          responseHandler: async (response) => {
+            let extension = downloadCertExtension[customHeaders?.Accept as CertificateAcceptType]
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1] : `Certificate.${extension}`
+            downloadFile(response, fileName)
+          }
+        }
+      }
+    }),
+    downloadCertificateInP12: build.query<Blob, RequestPayload>({
+      query: ({ params, payload, customHeaders }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.downloadCertificateInP12, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        return {
+          ...req,
+          body: JSON.stringify(payload),
+          responseHandler: async (response) => {
+            let extension = downloadCertExtension[customHeaders?.Accept as CertificateAcceptType]
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1] : `Certificate.${extension}`
+            downloadFile(response, fileName)
+          }
+        }
+      }
+    }),
     downloadCertificateChains: build.query<Blob, RequestPayload>({
       query: ({ params, customHeaders }) => {
         // eslint-disable-next-line max-len
@@ -3762,6 +3800,8 @@ export const {
   useLazyDownloadCertificateAuthorityChainsQuery,
   useLazyDownloadCertificateQuery,
   useLazyDownloadCertificateChainsQuery,
+  useLazyDownloadPrivateKeyCertificateQuery,
+  useLazyDownloadCertificateInP12Query,
   useDeleteCertificateAuthorityMutation,
   useGetCertificatesByIdentityIdQuery,
   useLazyGetCertificatesByIdentityIdQuery,

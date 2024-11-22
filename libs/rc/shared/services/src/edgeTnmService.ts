@@ -4,7 +4,10 @@ import {
   EdgeTnmServiceData,
   EdgeTnmHostSetting,
   EdgeTnmHostGraphConfig,
-  EdgeTnmHostGroup
+  EdgeTnmHostGroup,
+  EdgeTnmGraphItem,
+  EdgeTnmGraphItemInfo,
+  EdgeTnmGraphHistory
 } from '@acx-ui/rc/utils'
 import { baseEdgeTnmServiceApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
@@ -20,8 +23,7 @@ export const edgeTnmServiceApi = baseEdgeTnmServiceApi.injectEndpoints({
             ...req
           }
         },
-        providesTags: [{ type: 'EdgeTnmService', id: 'LIST' }],
-        extraOptions: { maxRetries: 5 }
+        providesTags: [{ type: 'EdgeTnmService', id: 'LIST' }]
       }),
     addEdgeTnmService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -43,21 +45,18 @@ export const edgeTnmServiceApi = baseEdgeTnmServiceApi.injectEndpoints({
     getEdgeTnmHostGraphsConfig: build.query<EdgeTnmHostGraphConfig[], RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(EdgeTnmServiceUrls.edgeTnmHostGraphsConfig, params)
-      },
-      extraOptions: { maxRetries: 5 }
+      }
     }),
     getEdgeTnmHostGroupList: build.query<EdgeTnmHostGroup[], RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(EdgeTnmServiceUrls.getEdgeTnmHostGroupList, params)
-      },
-      extraOptions: { maxRetries: 5 }
+      }
     }),
     getEdgeTnmHostList: build.query<EdgeTnmHostSetting[], RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(EdgeTnmServiceUrls.getEdgeTnmHostList, params)
       },
-      providesTags: [{ type: 'EdgeTnmService', id: 'HOST_LIST' }],
-      extraOptions: { maxRetries: 5 }
+      providesTags: [{ type: 'EdgeTnmService', id: 'HOST_LIST' }]
     }),
     createEdgeTnmHost: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -84,6 +83,33 @@ export const edgeTnmServiceApi = baseEdgeTnmServiceApi.injectEndpoints({
         return createHttpRequest(EdgeTnmServiceUrls.deleteEdgeTnmHost, params)
       },
       invalidatesTags: [{ type: 'EdgeTnmService', id: 'HOST_LIST' }]
+    }),
+    getEdgeTnmGraphItems: build.query<EdgeTnmGraphItem[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeTnmServiceUrls.getEdgeTnmGraphItems, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'EdgeTnmService', id: 'GRAPH_ITEM_LIST' }]
+    }),
+    getEdgeTnmGraphItemsInfo: build.query<EdgeTnmGraphItemInfo[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeTnmServiceUrls.getEdgeTnmGraphItemsInfo, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    getEdgeTnmGraphHistory: build.query<EdgeTnmGraphHistory[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeTnmServiceUrls.getEdgeTnmGraphHistory, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
     })
   })
 })
@@ -97,5 +123,8 @@ export const {
   useUpdateEdgeTnmHostMutation,
   useDeleteEdgeTnmHostMutation,
   useGetEdgeTnmHostGraphsConfigQuery,
-  useGetEdgeTnmHostGroupListQuery
+  useGetEdgeTnmHostGroupListQuery,
+  useGetEdgeTnmGraphItemsQuery,
+  useGetEdgeTnmGraphItemsInfoQuery,
+  useGetEdgeTnmGraphHistoryQuery
 } = edgeTnmServiceApi

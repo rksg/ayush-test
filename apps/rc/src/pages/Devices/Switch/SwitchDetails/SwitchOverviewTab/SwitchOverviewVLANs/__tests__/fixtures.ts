@@ -1,6 +1,16 @@
 export const vlanList = {
   data: [
     {
+      arpInspection: false,
+      id: '5839a723f2314e3d935d78d3ee2dd3ed',
+      igmpSnooping: 'none',
+      ipv4DhcpSnooping: false,
+      spanningTreeProtocol: 'none',
+      isAuthDefaultVlan: true,
+    	isAuthVlan: true,
+      vlanId: 777
+    },
+    {
       arpInspection: true,
       id: '832157f54e534a6f8f46c228760804b3',
       igmpSnooping: 'passive',

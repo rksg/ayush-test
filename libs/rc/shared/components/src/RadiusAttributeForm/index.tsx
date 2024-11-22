@@ -94,9 +94,16 @@ export function RadiusAttributeForm (props: RadiusAttributeFormProps) {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const is32BitUnsignedInt = (number:any) => {
+    return !isNaN(number) && number >= 0 && number <= 4294967295 && Number.isInteger(Number(number))
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const attributeValueValidator = async (value: any) => {
     let result = true
-    if(dataType === DataType.INTEGER || dataType === DataType.BYTE || dataType === DataType.SHORT) {
+    if(dataType === DataType.INTEGER) {
+      result = is32BitUnsignedInt(value)
+    } else if(dataType === DataType.BYTE || dataType === DataType.SHORT) {
       result = !isNaN(value)
     } else if(dataType === DataType.IPADDR || dataType === DataType.COMBO_IP){
       return cliIpAddressRegExp(value)

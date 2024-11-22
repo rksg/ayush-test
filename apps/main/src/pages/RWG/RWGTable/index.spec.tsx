@@ -1,7 +1,8 @@
 import { rest } from 'msw'
 
+import { rwgApi, venueApi }                                          from '@acx-ui/rc/services'
 import { CommonRbacUrlsInfo, CommonUrlsInfo, RWGRow, RWGStatusEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                  from '@acx-ui/store'
+import { Provider, store }                                           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -67,6 +68,8 @@ jest.mock('react-router-dom', () => ({
 describe('RWG Table', () => {
   let params: { tenantId: string, venueId: string }
   beforeEach(async () => {
+    store.dispatch(rwgApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.post(
         CommonRbacUrlsInfo.getRwgList.url,

@@ -4,9 +4,9 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 
-import { Drawer }                                          from '@acx-ui/components'
-import { useAddPersonaMutation, useUpdatePersonaMutation } from '@acx-ui/rc/services'
-import { Persona }                                         from '@acx-ui/rc/utils'
+import { Drawer }                                                               from '@acx-ui/components'
+import { CommonAsyncResponse, useAddPersonaMutation, useUpdatePersonaMutation } from '@acx-ui/rc/services'
+import { Persona }                                                              from '@acx-ui/rc/utils'
 
 import { PersonaForm }            from '../PersonaForm'
 import { usePersonaAsyncHeaders } from '../usePersonaAsyncHeaders'
@@ -15,7 +15,7 @@ import { usePersonaAsyncHeaders } from '../usePersonaAsyncHeaders'
 interface PersonaDrawerProps {
   isEdit: boolean,
   visible: boolean,
-  onClose: () => void,
+  onClose: (result?: CommonAsyncResponse) => void,
   data?: Partial<Persona>
 }
 
@@ -38,11 +38,11 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
 
   const onFinish = async (contextData: Persona) => {
     try {
-      isEdit
+      const result = isEdit
         ? await handleEditPersona(contextData)
         : await handleAddPersona(contextData)
 
-      onClose()
+      onClose(result)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -108,7 +108,7 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
       }
       width={'400px'}
       visible={visible}
-      onClose={onClose}
+      onClose={() => onClose()}
       children={
         <PersonaForm
           form={form}

@@ -82,9 +82,6 @@ describe('RadioSettingsTab', ()=> {
       jest.mocked(useIsSplitOn).mockReturnValue(true)
       mockServer.use(
         rest.get(
-          CommonUrlsInfo.getDashboardOverview.url,
-          (_, res, ctx) => res(ctx.json({}))),
-        rest.get(
           CommonUrlsInfo.getVenuesList.url,
           (_, res, ctx) => res(ctx.json(venuelist))),
         rest.get(
@@ -394,9 +391,6 @@ describe('RadioSettingsTab', ()=> {
       jest.mocked(useIsSplitOn).mockReturnValue(true)
       mockServer.use(
         rest.get(
-          CommonUrlsInfo.getDashboardOverview.url,
-          (_, res, ctx) => res(ctx.json({}))),
-        rest.get(
           CommonUrlsInfo.getVenuesList.url,
           (_, res, ctx) => res(ctx.json(venuelist))),
         rest.get(CommonUrlsInfo.getVenue.url,
@@ -557,9 +551,6 @@ describe('RadioSettingsTab', ()=> {
       store.dispatch(venueApi.util.resetApiState())
       jest.mocked(useIsSplitOn).mockReturnValue(true)
       mockServer.use(
-        rest.get(
-          CommonUrlsInfo.getDashboardOverview.url,
-          (_, res, ctx) => res(ctx.json({}))),
         rest.get(
           CommonUrlsInfo.getVenuesList.url,
           (_, res, ctx) => res(ctx.json(venuelist))),
