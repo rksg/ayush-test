@@ -310,7 +310,7 @@ export function useMenuConfig () {
       ]
     },
     ...(showGatewaysMenu && (isEdgeEnabled || showRwgUI) ? [{
-      label: $t({ defaultMessage: 'Gateways' }),
+      label: $t({ defaultMessage: 'Gateway' }),
       inactiveIcon: DevicesOutlined,
       activeIcon: DevicesSolid,
       children: [
