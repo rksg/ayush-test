@@ -4,9 +4,9 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { getRoles }                                 from '@acx-ui/rc/utils'
-import { RolesEnum }                                from '@acx-ui/types'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
+import { getRoles }                                               from '@acx-ui/rc/utils'
+import { RolesEnum }                                              from '@acx-ui/types'
 
 export interface RoleSelectorProps {
   disabled?: boolean;
@@ -14,7 +14,7 @@ export interface RoleSelectorProps {
 
 const RoleSelector = (props: RoleSelectorProps) => {
   const dpskRbac=useIsSplitOn(Features.PTENANT_RBAC_DPSK_ROLE_INTRODUCTION)
-  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
 
   const { $t } = useIntl()

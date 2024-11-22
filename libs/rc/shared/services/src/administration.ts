@@ -542,10 +542,12 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       }
     }),
     refreshEntitlements: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(AdministrationUrlsInfo.refreshLicensesData, params)
+      query: ({ params, payload, enableRbac }) => {
+        const adminUrls = getAdminUrls(enableRbac)
+        const req = createHttpRequest(adminUrls.refreshLicensesData, params)
         return {
-          ...req
+          ...req,
+          body: enableRbac ? payload : undefined
         }
       },
       invalidatesTags: [{ type: 'License', id: 'LIST' }]
@@ -836,6 +838,21 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       }
     }),
+    getMspEcDelegatePrivilegeGroups: build.query<PrivilegeGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          AdminRbacUrlsInfo.getMspEcDelegatePrivilegeGroups, params)
+        return{
+          ...req
+        }
+      },
+      transformResponse: (result: PrivilegeGroup[]) => {
+        return result.map(item => {
+          item.id = item.parentPrivilegeGroupId as string
+          return item
+        })
+      }
+    }),
     getNotificationSms: build.query<NotificationSmsUsage, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.getNotificationSms, params)
@@ -978,6 +995,7 @@ export const {
   useAddPrivilegeGroupMutation,
   useUpdatePrivilegeGroupMutation,
   useDeletePrivilegeGroupMutation,
+  useGetMspEcDelegatePrivilegeGroupsQuery,
   useGetNotificationSmsQuery,
   useUpdateNotificationSmsMutation,
   useGetNotificationSmsProviderQuery,

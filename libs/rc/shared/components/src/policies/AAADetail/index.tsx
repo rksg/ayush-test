@@ -1,11 +1,14 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, Button, GridRow, Loader, GridCol }    from '@acx-ui/components'
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { useAaaPolicyQuery, useGetAAAPolicyTemplateQuery } from '@acx-ui/rc/services'
+import { PageHeader, Button, GridRow, Loader, GridCol } from '@acx-ui/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import {
-  AAAPolicyType,
+  useAaaPolicyQuery,
+  useAaaPolicyCertificateQuery,
+  useGetAAAPolicyTemplateQuery
+} from '@acx-ui/rc/services'
+import {
   filterByAccessForServicePolicyMutation,
   getScopeKeyByPolicy,
   PolicyOperation,
@@ -26,9 +29,10 @@ export function AAAPolicyDetail () {
   const { isTemplate } = useConfigTemplate()
   const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const supportRadSec = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
-  const queryResults = useConfigTemplateQueryFnSwitcher<AAAPolicyType>({
-    useQueryFn: useAaaPolicyQuery,
+  const queryResults = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: supportRadSec ? useAaaPolicyCertificateQuery : useAaaPolicyQuery,
     useTemplateQueryFn: useGetAAAPolicyTemplateQuery,
     enableRbac
   })

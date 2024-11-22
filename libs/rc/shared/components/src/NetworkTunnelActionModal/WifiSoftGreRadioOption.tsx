@@ -4,9 +4,9 @@ import {  Form, Radio, Row, Space, Select } from 'antd'
 import { DefaultOptionType }                from 'antd/lib/select'
 import { useIntl }                          from 'react-intl'
 
-import { Tooltip }                                          from '@acx-ui/components'
-import { useGetSoftGreOptionsQuery }                        from '@acx-ui/rc/services'
-import { hasPolicyPermission, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
+import { Tooltip }                                                  from '@acx-ui/components'
+import { useGetSoftGreOptionsQuery, useLazyGetSoftGreOptionsQuery } from '@acx-ui/rc/services'
+import { hasPolicyPermission, PolicyOperation, PolicyType }         from '@acx-ui/rc/utils'
 
 import SoftGreDrawer from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
 
@@ -26,7 +26,7 @@ interface WiFISoftGreRadioOptionProps {
   currentTunnelType: NetworkTunnelTypeEnum
   venueId: string
   networkId?: string
-  cachedSoftGre: SoftGreNetworkTunnel[]
+  cachedSoftGre: SoftGreNetworkTunnel[] | undefined
   disabledInfo?: { // can't change for edge
     noChangePermission: boolean,
     isDisabled: boolean,
@@ -43,6 +43,7 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
   const [ isLocked, setIsLocked ] = useState<boolean>(false)
   const [ softGreOption, setSoftGreOption ] = useState<DefaultOptionType[]>([])
   const [ gatewayIpMapIds, setGatewayIpMapIds ] = useState<Record<string, string[]>>({})
+  const [ getSoftGreOptions ] = useLazyGetSoftGreOptionsQuery()
 
   const softGreProfileId = Form.useWatch(['softGre', 'newProfileId'], form)
 
@@ -54,14 +55,14 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
   )
 
   useEffect(() => {
-    if (optionsDataQuery.data) {
+    if (optionsDataQuery.data && !form.getFieldValue(['softGre', 'newProfileId'])) {
       const { options, isLockedOptions, gatewayIpMaps } = optionsDataQuery.data
       setSoftGreOption(options)
       setIsLocked(isLockedOptions)
       setGatewayIpMapIds(gatewayIpMaps)
       const profileId = optionsDataQuery.data.id
-      if (currentTunnelType === NetworkTunnelTypeEnum.SoftGre && cachedSoftGre.length > 0) {
-        const softGreInfo = cachedSoftGre.find(
+      if (currentTunnelType === NetworkTunnelTypeEnum.SoftGre && (cachedSoftGre?.length ?? 0) > 0) {
+        const softGreInfo = cachedSoftGre?.find(
           sg => sg.venueId === venueId && sg.networkIds.includes(networkId!))
         if (softGreInfo) {
           form.setFieldValue(['softGre', 'newProfileId'], softGreInfo.profileId)
@@ -99,17 +100,23 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
 
   const onChange = (value:string) => {
     form.setFieldValue(['softGre', 'newProfileName'],
-      softGreOption?.find(item => item.value === value)?.label)
+      softGreOption?.find(item => item.value === value)?.label ?? '')
+
   }
 
   const gatewayIpValidator = async (value: string) => {
     let isValid = true
-    if (value && optionsDataQuery.data) {
-      const { id, gatewayIps, activationProfiles } = optionsDataQuery.data
-      if (value !== id && !activationProfiles.includes(value)) {
-        const [ gatewayIp1, gatewayIp2 ] = gatewayIpMapIds[value]
-        if (gatewayIp1 && gatewayIps.includes(gatewayIp1)) isValid = false
-        if (gatewayIp2 && gatewayIps.includes(gatewayIp2)) isValid = false
+    if (value) {
+      const queryData = await getSoftGreOptions(
+        { params: { venueId, networkId }, payload: { ...defaultPayload } }
+      ).unwrap()
+      if (queryData) {
+        const { id, gatewayIps, activationProfiles } = queryData
+        if (value !== id && !activationProfiles.includes(value)) {
+          const [ gatewayIp1, gatewayIp2 ] = gatewayIpMapIds[value] ?? []
+          if (gatewayIp1 && gatewayIps.includes(gatewayIp1)) isValid = false
+          if (gatewayIp2 && gatewayIps.includes(gatewayIp2)) isValid = false
+        }
       }
     }
 
@@ -188,14 +195,11 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
       setVisible={setDetailDrawerVisible}
       policyId={softGreProfileId}
       policyName={softGreOption.find(item => item.value === softGreProfileId)?.label as string}
-      readMode={true}
-      editMode={false}
+      readMode
     />
     <SoftGreDrawer
       visible={addDrawerVisible}
       setVisible={setAddDrawerVisible}
-      readMode={false}
-      editMode={false}
       callbackFn={addOption}
     />
   </Row>

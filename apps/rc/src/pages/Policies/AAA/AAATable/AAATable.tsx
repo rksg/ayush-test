@@ -87,7 +87,7 @@ export default function AAATable () {
       scopeKey: getScopeKeyByPolicy(PolicyType.AAA, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows: AAAViewModalType[]) => selectedRows?.length === 1,
-      onClick: ([{ id }]) => {
+      onClick: ([{ id, networkIds }]) => {
         navigate({
           ...tenantBasePath,
           pathname: `${tenantBasePath.pathname}/` + getPolicyDetailsLink({
@@ -95,7 +95,9 @@ export default function AAATable () {
             oper: PolicyOperation.EDIT,
             policyId: id!
           })
-        })
+        }, { state: {
+          networkIds: networkIds
+        } })
       }
     }
   ]
@@ -210,7 +212,7 @@ function useColumns () {
     })
   })
 
-  const { clientCertificateMap } = useGetCertificateListQuery({
+  const { certificateMap } = useGetCertificateListQuery({
     params: { tenantId: params.tenantId },
     payload: {
       fields: ['name', 'id'],
@@ -221,8 +223,8 @@ function useColumns () {
     }
   }, {
     selectFromResult: ({ data }) => ({
-      clientCertificateMap: data?.data
-        ? data.data.map(cc => ({ key: cc.id, value: cc.commonName, status: cc.status }))
+      certificateMap: data?.data
+        ? data.data.map(cc => ({ key: cc.id, value: cc.name, status: cc.status }))
         : emptyCertificateResult
     })
   })
@@ -256,7 +258,9 @@ function useColumns () {
       sorter: true,
       width: 160,
       render: (_, { type }) =>{
-        return type ? AAAPurposeEnum[type] : ''
+        return type ?
+          (supportRadsec ?
+            AAAPurposeEnum[type].replace(' RADIUS Server', '') : AAAPurposeEnum[type]) : ''
       }
     },
     {
@@ -284,17 +288,18 @@ function useColumns () {
     },
     {
       key: 'radSecOptions.certificateAuthorityId',
-      title: $t({ defaultMessage: 'Certificate Authority' }),
+      title: $t({ defaultMessage: 'CA' }),
       dataIndex: 'radSecOptions.certificateAuthorityId',
       filterable: certificateAuthorityNameMap,
-      render: (data: ReactNode, row : AAAViewModalType) => {
+      render: (data: ReactNode, row: AAAViewModalType) => {
         return (!row.radSecOptions?.certificateAuthorityId)
           ? ''
           : (<TenantLink to={getPolicyRoutePath({
             type: PolicyType.CERTIFICATE_AUTHORITY,
-            oper: PolicyOperation.LIST })}>
+            oper: PolicyOperation.LIST
+          })}>
             {certificateAuthorityNameMap.find(
-              c => c.key === row.radSecOptions?.certificateAuthorityId)?.value || ''}
+              c => c.key === row?.radSecOptions?.certificateAuthorityId)?.value || ''}
           </TenantLink>)
       }
     },
@@ -302,28 +307,54 @@ function useColumns () {
       key: 'radSecOptions.clientCertificateId',
       title: $t({ defaultMessage: 'Client Certificate' }),
       dataIndex: 'radSecOptions.clientCertificateId',
-      filterable: clientCertificateMap,
-      width: 160,
-      render: (data: ReactNode, row : AAAViewModalType) => {
+      filterable: certificateMap,
+      render: (data: ReactNode, row: AAAViewModalType) => {
         return (!row.radSecOptions?.clientCertificateId)
           ? ''
           : (<>
             <TenantLink to={getPolicyRoutePath({
-              type: PolicyType.CERTIFICATE,
+              type: PolicyType.SERVER_CERTIFICATES,
               oper: PolicyOperation.LIST })}>
-              {clientCertificateMap.find(
+              {certificateMap.find(
                 c => c.key === row.radSecOptions?.clientCertificateId)?.value || ''}
             </TenantLink>
-            {clientCertificateMap.find(
+            {certificateMap.find(
               c => c.key === row.radSecOptions?.clientCertificateId)?.status?.find(
               (s) => s === CertificateStatusType.EXPIRED || s === CertificateStatusType.REVOKED) ?
               <CertificateToolTip
-                visible={true}
                 placement='bottom'
-                status={clientCertificateMap.find(
+                status={certificateMap.find(
                   c => c.key === row.radSecOptions?.clientCertificateId)?.status}
               /> : []}
           </> )
+      }
+    },
+    {
+      key: 'radSecOptions.serverCertificateId',
+      title: $t({ defaultMessage: 'Server Certificate' }),
+      dataIndex: 'radSecOptions.serverCertificateId',
+      filterable: certificateMap,
+      sorter: false,
+      render: (_: ReactNode, row: AAAViewModalType) => {
+        const serverCert = certificateMap.find(
+          cert => cert.key === row.radSecOptions?.serverCertificateId)
+        return (!row.radSecOptions?.serverCertificateId)
+          ? ''
+          : (<>
+            <TenantLink
+              to={getPolicyRoutePath({
+                type: PolicyType.SERVER_CERTIFICATES,
+                oper: PolicyOperation.LIST
+              })}>
+              {serverCert?.value || ''}
+            </TenantLink>
+            {serverCert?.status && !serverCert?.status.includes(CertificateStatusType.VALID) ?
+              <CertificateToolTip
+                placement='bottom'
+                policyType={PolicyType.SERVER_CERTIFICATES}
+                status={serverCert.status} /> : []}
+          </>
+          )
       }
     }] : []),
     {

@@ -69,6 +69,34 @@ const privilegeGroups = [{
     detailLevel: 'debug'
   }]
 }]
+
+const ecPrivilegeGroups = [{
+  id: '1ce666232f874d6388f399ef97871c3e',
+  name: 'For-All-Customers',
+  roleId: 'e5e3c5cec88841d7b7fde2982334e35d',
+  roleName: 'custom role 1 for wi-fi',
+  type: 'Custom',
+  delegation: false,
+  memberCount: 2,
+  allCustomers: false,
+  allVenues: true,
+  parentPrivilegeGroupId: 'b508d86ed2c5474cb309cde10951d7f5',
+  admins: [
+    {
+      id: 'd96fa9c594b14aab853935f3eaf4000c',
+      email: '2@a.com',
+      delegateToAllECs: true,
+      detailLevel: 'debug'
+    },
+    {
+      id: 'e35571bd1a64441b8c6f3ed55b4dc3ec',
+      email: 'testdelegation@email.com',
+      delegateToAllECs: true,
+      detailLevel: 'debug'
+    }
+  ]
+}]
+
 const services = require('@acx-ui/msp/services')
 jest.mock('@acx-ui/msp/services', () => ({
   ...jest.requireActual('@acx-ui/msp/services')
@@ -103,6 +131,9 @@ describe('ManageMspDelegations', () => {
     })
     rcServices.useGetPrivilegeGroupsWithAdminsQuery = jest.fn().mockImplementation(() => {
       return { data: privilegeGroups, isLoading: false, isFetching: false }
+    })
+    rcServices.useGetMspEcDelegatePrivilegeGroupsQuery = jest.fn().mockImplementation(() => {
+      return { data: ecPrivilegeGroups, isLoading: false, isFetching: false }
     })
 
     params = {
@@ -147,8 +178,9 @@ describe('ManageMspDelegations', () => {
     // eslint-disable-next-line max-len
     const disabledRow = screen.getByRole('row', { name: 'For-All-Customers mspReadOnly@mail.com' })
     expect(within(disabledRow).getByRole('checkbox')).toBeDisabled()
+    expect(within(disabledRow).getByRole('checkbox')).toBeChecked()
+    expect(screen.queryByText('1 selected')).toBeVisible()
     expect(screen.queryByText('johnsmith@mail.com')).toBeNull()
-    expect(screen.queryByText('1 selected')).toBeNull()
   })
   it('should render correctly for add for tech partner', async () => {
     render(
@@ -224,16 +256,16 @@ describe('ManageMspDelegations', () => {
     expect(screen.getByText('1 selected')).toBeVisible()
     await userEvent.click(screen.getAllByRole('checkbox')[0])
     expect(screen.queryByText('1 selected')).toBeNull()
-    expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled()
 
     await userEvent.click(screen.getByRole('tab', { name: 'Privilege Groups' }))
     await userEvent.click(await screen.getAllByRole('checkbox')[0])
-    expect(await screen.findByText('1 selected')).toBeVisible()
+    expect(screen.queryByText('1 selected')).toBeNull()
     expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
 
     await userEvent.click(screen.getByRole('button', { name: 'Save' }))
     expect(mockedsetSelectedUsers).toHaveBeenCalledWith([])
-    expect(mockedsetSelectedPrivilegeGroups).toHaveBeenCalledWith([privilegeGroups[0]])
+    const pgArray = expect.arrayContaining(privilegeGroups)
+    expect(mockedsetSelectedPrivilegeGroups).toHaveBeenCalledWith(pgArray)
     expect(mockedsetDrawerVisible).toHaveBeenCalledWith(false)
   })
   it('should save correctly for edit', async () => {
@@ -259,7 +291,6 @@ describe('ManageMspDelegations', () => {
     await userEvent.click(screen.getByRole('tab', { name: 'Privilege Groups' }))
     expect(await screen.findByText('1 selected')).toBeVisible()
     await userEvent.click(await screen.getAllByRole('checkbox')[0])
-    expect(screen.queryByText('1 selected')).toBeNull()
     expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
 
     await userEvent.click(screen.getByRole('button', { name: 'Save' }))
@@ -272,7 +303,8 @@ describe('ManageMspDelegations', () => {
     await waitFor(() =>
       expect(services.useUpdateMspEcDelegationsMutation).toHaveReturnedWith(value))
     await waitFor(() => expect(mockedsetSelectedUsers).toHaveBeenCalledWith([administrators[0]]))
-    await waitFor(() => expect(mockedsetSelectedPrivilegeGroups).toHaveBeenCalledWith([]))
+    await waitFor(() => expect(mockedsetSelectedPrivilegeGroups)
+      .toHaveBeenCalledWith(ecPrivilegeGroups))
     expect(mockedsetDrawerVisible).toHaveBeenCalledTimes(3)
     expect(mockedsetDrawerVisible).toHaveBeenCalledWith(false)
   })
@@ -299,9 +331,7 @@ describe('ManageMspDelegations', () => {
     await userEvent.click(await screen.findByText('Read Only'))
 
     await userEvent.click(screen.getByRole('tab', { name: 'Privilege Groups' }))
-    expect(screen.queryByText('1 selected')).toBeNull()
     await userEvent.click(await screen.getAllByRole('checkbox')[0])
-    expect(screen.queryByText('1 selected')).toBeVisible()
     expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
 
     await userEvent.click(screen.getByRole('button', { name: 'Save' }))
@@ -316,7 +346,7 @@ describe('ManageMspDelegations', () => {
       expect(services.useUpdateMspEcDelegationsMutation).toHaveReturnedWith(value))
     await waitFor(() => expect(mockedsetSelectedUsers).toHaveBeenCalledWith(updatedAdministrators))
     await waitFor(() =>
-      expect(mockedsetSelectedPrivilegeGroups).toHaveBeenCalledWith([privilegeGroups[0]]))
+      expect(mockedsetSelectedPrivilegeGroups).toHaveBeenCalledWith(ecPrivilegeGroups))
     expect(mockedsetDrawerVisible).toHaveBeenCalledTimes(3)
     expect(mockedsetDrawerVisible).toHaveBeenCalledWith(false)
   })
@@ -342,9 +372,8 @@ describe('ManageMspDelegations', () => {
     expect(screen.queryByText('1 selected')).toBeNull()
 
     await userEvent.click(screen.getByRole('tab', { name: 'Privilege Groups' }))
-    expect(screen.queryByText('1 selected')).toBeNull()
     await userEvent.click(screen.getByText('admin-test'))
-    expect(screen.queryByText('1 selected')).toBeVisible()
+    expect(screen.queryByText('2 selected')).toBeVisible()
     expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
 
     await userEvent.click(screen.getByRole('button', { name: 'Save' }))
@@ -357,8 +386,9 @@ describe('ManageMspDelegations', () => {
     await waitFor(() =>
       expect(services.useUpdateMspMultipleEcDelegationsMutation).toHaveReturnedWith(value))
     await waitFor(() => expect(mockedsetSelectedUsers).toHaveBeenCalledWith([]))
+    const pgArray = expect.arrayContaining(privilegeGroups)
     await waitFor(() =>
-      expect(mockedsetSelectedPrivilegeGroups).toHaveBeenCalledWith([privilegeGroups[0]]))
+      expect(mockedsetSelectedPrivilegeGroups).toHaveBeenCalledWith(pgArray))
     expect(mockedsetDrawerVisible).toHaveBeenCalledTimes(3)
     expect(mockedsetDrawerVisible).toHaveBeenCalledWith(false)
   })

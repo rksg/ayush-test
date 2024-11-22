@@ -84,7 +84,8 @@ export function AddRecCustomer () {
 
   const { data: userProfileData } = useUserProfileContext()
   const { data: recCustomer } =
-      useGetMspEcQuery({ params: { mspEcTenantId } }, { skip: !isEditMode })
+      useGetMspEcQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
+        { skip: !isEditMode })
 
   const { data: Administrators } =
       useMspAdminListQuery({ params: useParams() }, { skip: !isEditMode })
@@ -159,7 +160,9 @@ export function AddRecCustomer () {
     if (isEditMode) {
       setEcSupport((ecSupport && ecSupport?.length > 0) || false)
     } else {
-      if (userProfileData) {
+      const adminRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
+      const isAdmin = userProfileData?.roles?.some(role => adminRoles.includes(role as RolesEnum))
+      if (userProfileData && isAdmin) {
         const administrator = [] as MspAdministrator[]
         administrator.push ({
           id: userProfileData.adminId,
@@ -291,8 +294,8 @@ export function AddRecCustomer () {
     return <>
       {mspAdmins.map(admin =>
         <UI.AdminList key={admin.id}>
-          {admin.email} {roleDisplayText[admin.role]
-            ? intl.$t(roleDisplayText[admin.role]) : admin.role}
+          {admin.email} ({roleDisplayText[admin.role]
+            ? intl.$t(roleDisplayText[admin.role]) : admin.role})
         </UI.AdminList>
       )}
     </>

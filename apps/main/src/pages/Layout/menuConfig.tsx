@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { LayoutProps, ItemType }                    from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { LayoutProps, ItemType }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
 import {
   AIOutlined,
   AISolid,
@@ -53,7 +53,7 @@ export function useMenuConfig () {
   const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantID)
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
   const showApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
-  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isSwitchHealthEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),

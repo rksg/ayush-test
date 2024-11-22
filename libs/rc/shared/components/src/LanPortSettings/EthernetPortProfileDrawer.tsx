@@ -3,10 +3,8 @@ import { useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Drawer }              from '@acx-ui/components'
-import { EthernetPortProfileViewData } from '@acx-ui/rc/utils'
-import { WifiScopes }                  from '@acx-ui/types'
-import { hasPermission }               from '@acx-ui/user'
+import { Button, Drawer }                                                                from '@acx-ui/components'
+import { EthernetPortProfileViewData, hasPolicyPermission, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 
 import { AddEthernetPortProfile } from '../policies/EthernetPortProfile/AddEthernetPortProfile'
 
@@ -32,8 +30,6 @@ export default function EthernetPortProfileDrawer (props:{
     updateInstance={updateInstance}
   />
 
-  if (!hasPermission({ scopes: [WifiScopes.CREATE] })) return null
-
   return (
     <>
       <Space size={'large'}>
@@ -42,11 +38,13 @@ export default function EthernetPortProfileDrawer (props:{
           disabled={disabled}>
           {$t({ defaultMessage: 'Profile Details' })}
         </Button>
+        {hasPolicyPermission(
+          { type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.CREATE }) &&
         <Button type='link'
           onClick={()=>setFormVisible(true)}
           disabled={disabled}>
           {$t({ defaultMessage: 'Add Profile' })}
-        </Button>
+        </Button>}
       </Space>
       <EthernetPortProfileDetailsDrawer
         title={$t(

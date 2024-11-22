@@ -126,13 +126,16 @@ describe('AAAForm', () => {
     await userEvent.type(cnSanIdentity, 'CA SAN')
 
     const comboboxes = await screen.findAllByRole('combobox')
-    expect(comboboxes.length).toBe(2)
+    expect(comboboxes.length).toBe(3)
 
     await userEvent.click(comboboxes[0])
     await userEvent.click(await screen.findByText('CA-1'))
 
     await userEvent.click(comboboxes[1])
     await userEvent.click(await screen.findByText('Client-Cert-1'))
+
+    await userEvent.click(comboboxes[2])
+    await userEvent.click(await screen.findByText('Server-Cert-1'))
 
     await screen.findByText('Add')
   })

@@ -15,7 +15,7 @@ export interface ImpactedSwitch {
   ports: ImpactedSwitchPort[]
 }
 
-export type ImpactedSwitchPortRow = { portNumbers:string }
+export type ImpactedSwitchPortRow = { portNumbers:string, portCount:number }
   & Pick<ImpactedSwitch, 'name' | 'mac' | 'serial'>
   & { key?: string, index?: number }
 
@@ -26,7 +26,7 @@ interface Response <T> {
 const document = gql`
   query ImpactedSwitchDDoS($id: String) {
     incident(id: $id) {
-      impactedSwitchDDoS: getImpactedSwitches(n: 100, search: "") {
+      impactedSwitchDDoS: getImpactedSwitches(n: 999999999, search: "") {
         name
         mac
         serial
@@ -47,7 +47,10 @@ export const impactedApi = dataApi.injectEndpoints({
         return response.incident.impactedSwitchDDoS
           .map(({ name, mac, serial, ports }) => {
             return { name,mac, serial ,
-              portNumbers: _.uniq(ports.map(port=>port.portNumber)).join(', ') }
+              portNumbers: _.uniq(ports.map(port=>port.portNumber))
+                .sort((a,b)=>a.localeCompare(b)).join(', '),
+              portCount: ports.length
+            }
           })
       }
     }),

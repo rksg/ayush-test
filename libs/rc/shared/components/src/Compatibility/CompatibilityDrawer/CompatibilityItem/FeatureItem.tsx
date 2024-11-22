@@ -1,7 +1,9 @@
+import React from 'react'
+
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { ApIncompatibleFeature, CompatibilityDeviceEnum, IncompatibilityFeatures, getCompatibilityFeatureDisplayName } from '@acx-ui/rc/utils'
+import { ApIncompatibleFeature, CompatibilityDeviceEnum, IncompatibilityFeatures, getCompatibilityFeatureDisplayName, FeatureSet, ApRequirement } from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'
 
@@ -16,8 +18,9 @@ export interface FeatureItemProps {
 export const FeatureItem = (props: FeatureItemProps) => {
   const { $t } = useIntl()
   const { isMultiple = false, deviceType, data, incompatible, total } = props
+  const Wrapper = 'requirements' in data ? UI.StyledRequirementWrapper : React.Fragment
 
-  return <UI.StyledWrapper>
+  return <Wrapper>
     {isMultiple &&
       <Form.Item noStyle>
         <UI.StyledFeatureName>
@@ -25,6 +28,27 @@ export const FeatureItem = (props: FeatureItemProps) => {
         </UI.StyledFeatureName>
       </Form.Item>
     }
+    {'requirements' in data &&
+    (data as FeatureSet).requirements?.map((requirement: ApRequirement, reqIndex) => (
+      <React.Fragment key={`requirements_${reqIndex}`}>
+        <Form.Item
+          label={$t({ defaultMessage: 'Minimum required version' })}
+          style={UI.detailStyle}
+          className='ApCompatibilityDrawerFormItem'
+        >
+          {requirement?.firmware}
+        </Form.Item>
+        { requirement.models && deviceType === CompatibilityDeviceEnum.SWITCH &&
+          <Form.Item
+            label={$t({ defaultMessage: 'Supported ICX Models' })}
+            style={UI.detailStyle}
+            className='ApCompatibilityDrawerFormItem'
+          >
+            {requirement.models.join(', ')}
+          </Form.Item>
+        }
+      </React.Fragment>
+    ))}
     {data.requiredFw &&
       <Form.Item
         label={$t({ defaultMessage: 'Minimum required version' })}
@@ -58,5 +82,5 @@ export const FeatureItem = (props: FeatureItemProps) => {
         {`${incompatible} / ${total}`}
       </Form.Item>
     }
-  </UI.StyledWrapper>
+  </Wrapper>
 }

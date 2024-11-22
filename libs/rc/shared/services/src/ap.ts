@@ -2,7 +2,7 @@
 import { QueryReturnValue }                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { MaybePromise }                                       from '@reduxjs/toolkit/dist/query/tsHelpers'
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
-import { omit, reduce }                                       from 'lodash'
+import { reduce }                                             from 'lodash'
 
 import { Filter }               from '@acx-ui/components'
 import {
@@ -908,6 +908,7 @@ export const apApi = baseApApi.injectEndpoints({
       },
       providesTags: [{ type: 'Ap', id: 'LanPorts' }]
     }),
+
     getApLanPortsWithEthernetProfiles: build.query<WifiApSetting | null, RequestPayload>({
       async queryFn ({ params, enableRbac, enableEthernetProfile },
         _queryApi, _extraOptions, fetchWithBQ) {
@@ -977,11 +978,12 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
     }),
-    updateApEthernetPorts: build.mutation<WifiApSetting, RequestPayload>({
+    updateApEthernetPorts: build.mutation<CommonResult, RequestPayload>({
       queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
         try {
           const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
-          const activateRequests = (payload as WifiApSetting)?.lanPorts
+          const apSettings = payload as WifiApSetting
+          const activateRequests = apSettings?.lanPorts
             ?.filter(l => l.ethernetPortProfileId ).map(l => ({
               params: {
                 venueId: params!.venueId,
@@ -990,7 +992,7 @@ export const apApi = baseApApi.injectEndpoints({
                 id: l.ethernetPortProfileId
               }
             }))
-          const overwriteRequests = (payload as WifiApSetting)?.lanPorts
+          const overwriteRequests = apSettings?.lanPorts
             ?.filter(l => l.ethernetPortProfileId ).map(l => ({
               params: {
                 venueId: params!.venueId,
@@ -1003,16 +1005,33 @@ export const apApi = baseApApi.injectEndpoints({
                 overwriteVlanMembers: l.vlanMembers
               }
             }))
+
+          const lanPortSpecificSettings = {
+            params: {
+              venueId: params!.venueId,
+              serialNumber: params!.serialNumber
+            },
+            payload: {
+              poeMode: apSettings.poeMode,
+              poeOut: apSettings.poeOut,
+              useVenueSettings: apSettings.useVenueSettings
+            }
+          }
+
           await batchApi(EthernetPortProfileUrls.activateEthernetPortProfileOnApPortId,
             activateRequests!, fetchWithBQ, customHeaders)
+
           await batchApi(EthernetPortProfileUrls.updateEthernetPortOverwritesByApPortId,
             overwriteRequests!, fetchWithBQ, customHeaders)
-          const res = await batchApi(WifiRbacUrlsInfo.updateApLanPorts, [{
-            params,
-            payload: omit(payload as WifiApSetting, 'lanPorts')
-          }], fetchWithBQ, customHeaders)
 
-          return { data: res.data as WifiApSetting }
+          const res = await fetchWithBQ({
+            ...(createHttpRequest(WifiRbacUrlsInfo.updateApLanPortSpecificSettings,
+              lanPortSpecificSettings.params,
+              customHeaders)
+            ),
+            body: JSON.stringify(lanPortSpecificSettings.payload)
+          })
+          return { data: res.data as CommonResult }
         } catch (err) {
           return { error: err as FetchBaseQueryError }
         }

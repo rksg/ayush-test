@@ -38,7 +38,7 @@ export default function AAAOverview (props: { aaaProfile?: AAAPolicyType }) {
     })
   })
 
-  const { clientCertificateNameMap } = useGetCertificateListQuery({
+  const { certificateNameMap } = useGetCertificateListQuery({
     params: { tenantId: params.tenantId },
     payload: {
       fields: ['name', 'id'],
@@ -49,8 +49,8 @@ export default function AAAOverview (props: { aaaProfile?: AAAPolicyType }) {
     }
   }, {
     selectFromResult: ({ data }) => ({
-      clientCertificateNameMap: data?.data
-        ? data.data.map(cc => ({ key: cc.id, value: cc.commonName }))
+      certificateNameMap: data?.data
+        ? data.data.map(cc => ({ key: cc.id, value: cc.name }))
         : emptyResult
     })
   })
@@ -109,7 +109,7 @@ export default function AAAOverview (props: { aaaProfile?: AAAPolicyType }) {
         visible: Boolean(aaaProfile?.radSecOptions?.tlsEnabled)
       },
       {
-        title: $t({ defaultMessage: 'Certificate with Client Auth' }),
+        title: $t({ defaultMessage: 'Client Certificate' }),
         content: (
           (!aaaProfile?.radSecOptions?.clientCertificateId)
             ? '-'
@@ -118,8 +118,25 @@ export default function AAAOverview (props: { aaaProfile?: AAAPolicyType }) {
                 type: PolicyType.CERTIFICATE,
                 oper: PolicyOperation.LIST
               })}>
-                {clientCertificateNameMap.find(
+                {certificateNameMap.find(
                   c => c.key === aaaProfile?.radSecOptions?.clientCertificateId)?.value || '-'}
+              </TenantLink>
+            )
+        ),
+        visible: Boolean(aaaProfile?.radSecOptions?.tlsEnabled)
+      },
+      {
+        title: $t({ defaultMessage: 'Server Certificate' }),
+        content: (
+          (!aaaProfile?.radSecOptions?.serverCertificateId)
+            ? '-'
+            : (
+              <TenantLink to={getPolicyRoutePath({
+                type: PolicyType.SERVER_CERTIFICATES,
+                oper: PolicyOperation.LIST
+              })}>
+                {certificateNameMap.find(
+                  c => c.key === aaaProfile?.radSecOptions?.serverCertificateId)?.value || '-'}
               </TenantLink>
             )
         ),

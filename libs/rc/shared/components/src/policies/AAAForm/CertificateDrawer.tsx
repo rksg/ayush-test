@@ -1,21 +1,25 @@
 import { useIntl } from 'react-intl'
 
-import { Drawer } from '@acx-ui/components'
+import { Drawer }            from '@acx-ui/components'
+import { ExtendedKeyUsages } from '@acx-ui/rc/utils'
 
-import { WifiOperatorForm } from '../WifiOperator'
+import { ServerClientCertificateForm } from '../CertificateTemplate'
 
 interface CertificateDrawerProps {
     visible: boolean,
     setVisible: (v: boolean) => void,
     handleSave: (id?: string) => void
+    extendedKeyUsages?: ExtendedKeyUsages[]
 }
 
 const CertificateDrawer = (props: CertificateDrawerProps) => {
   const { $t } = useIntl()
   const { visible, setVisible, handleSave } = props
 
-  // TODO waiting CertificateForm dev done to replacing
-  const content = <WifiOperatorForm modalMode={true} editMode={false} modalCallBack={handleSave} />
+  const content = <ServerClientCertificateForm
+    modalMode={true}
+    modalCallBack={handleSave}
+    extendedKeyUsages={props?.extendedKeyUsages}/>
 
   const handleClose = () => {
     setVisible(false)
@@ -25,7 +29,7 @@ const CertificateDrawer = (props: CertificateDrawerProps) => {
     <Drawer
       title={$t({ defaultMessage: 'Generate Certificate' })}
       visible={visible}
-      width={450}
+      width={500}
       children={content}
       onClose={handleClose}
       destroyOnClose={true}

@@ -5,7 +5,7 @@ export const mockAuthRadiusName2 = '__Auth_Radius_Name_2__'
 export const mockAccountingRadiusId = '__Accounting_Radius_ID_1__'
 export const mockAccountingRadiusId2 = '__Accounting_Radius_ID_2__'
 export const mockAccuntingRadiusName = '__Accounting_Radius_Name_1__'
-export const mockDefaultTrunkEthertnetPortProfileId = 'mockDefaultTrunkEthertnetPortProfile'
+export const mockDefaultTrunkEthertnetPortProfileId = 'tenant-id_TRUNK'
 export const mockTrunkEthertnetPortProfileId1 = 'mockTrunkEthertnetPortProfileId1'
 export const mockAccessEthertnetPortProfileId1 = 'mockAccessEthertnetPortProfileId1'
 export const trunkWithPortBasedName = 'Trunk with Port Based'
@@ -19,22 +19,7 @@ export const ethernetPortProfileList = [
     untagId: 1,
     vlanMembers: '1-4094',
     authType: 'DISABLED',
-    isDefault: true,
-    apSerialNumbers: [
-      '123456789042'
-    ],
-    apActivations: [
-      {
-        venueId: '4b6dc218411d4b8cade17d16a034bcbb',
-        apSerialNumber: '123456789042',
-        portId: 1
-      },
-      {
-        venueId: '4b6dc218411d4b8cade17d16a034bcbb',
-        apSerialNumber: '123456789042',
-        portId: 2
-      }
-    ]
+    isDefault: true
   },
   {
     id: mockTrunkEthertnetPortProfileId1,
@@ -147,7 +132,7 @@ export const selectedSinglePortModelCaps = {
   canSupportPoeOut: false,
   model: 'R310',
   lanPorts: [{
-    type: 'TRUNK',
+    defaultType: 'TRUNK',
     untagId: 1,
     vlanMembers: '1-4094',
     portId: '1',

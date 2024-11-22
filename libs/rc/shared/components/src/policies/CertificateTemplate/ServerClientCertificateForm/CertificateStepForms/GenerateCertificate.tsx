@@ -12,7 +12,11 @@ import { caFormDescription, ExtendedKeyUsagesLabels, KeyUsagesLabels } from '../
 import { SettingsSectionTitle, Description, Section }                  from '../../styledComponents'
 
 
-export default function GenerateCertificate () {
+type GenerateCertificateFormProps = {
+  extendedKeyUsages?: ExtendedKeyUsages[]
+}
+
+export const GenerateCertificate = (props: GenerateCertificateFormProps) => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const { isCaNameListLoading, caNameList } = useGetCertificateAuthoritiesQuery({
@@ -211,17 +215,22 @@ export default function GenerateCertificate () {
             <Form.Item
               name={'extendedKeyUsages'}
               label={$t({ defaultMessage: 'Extended Key Usage' })}
+              initialValue={props?.extendedKeyUsages}
               children={
                 <Checkbox.Group>
                   <Space direction={'vertical'}>
                     <Checkbox
                       value={ExtendedKeyUsages.CLIENT_AUTH}
                       key={ExtendedKeyUsages.CLIENT_AUTH}
-                      children={$t(ExtendedKeyUsagesLabels[ExtendedKeyUsages.CLIENT_AUTH])} />
+                      children={$t(ExtendedKeyUsagesLabels[ExtendedKeyUsages.CLIENT_AUTH])}
+                      disabled={props?.extendedKeyUsages?.includes(ExtendedKeyUsages.CLIENT_AUTH)}
+                    />
                     <Checkbox
                       value={ExtendedKeyUsages.SERVER_AUTH}
                       key={ExtendedKeyUsages.SERVER_AUTH}
-                      children={$t(ExtendedKeyUsagesLabels[ExtendedKeyUsages.SERVER_AUTH])} />
+                      children={$t(ExtendedKeyUsagesLabels[ExtendedKeyUsages.SERVER_AUTH])}
+                      disabled={props?.extendedKeyUsages?.includes(ExtendedKeyUsages.SERVER_AUTH)}
+                    />
                   </Space>
                 </Checkbox.Group>
               }

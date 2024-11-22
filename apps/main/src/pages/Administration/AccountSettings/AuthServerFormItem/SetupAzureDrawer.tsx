@@ -18,10 +18,10 @@ import TextArea      from 'antd/lib/input/TextArea'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, DrawerProps, PasswordInput }       from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { formatter }                                from '@acx-ui/formatter'
-import { useGetMspUploadURLMutation }               from '@acx-ui/msp/services'
+import { Button, DrawerProps, PasswordInput }                     from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
+import { formatter }                                              from '@acx-ui/formatter'
+import { useGetMspUploadURLMutation }                             from '@acx-ui/msp/services'
 import {
   useAddTenantAuthenticationsMutation,
   useGetServerCertificatesQuery,
@@ -101,7 +101,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const [ssoSignature, setSsoSignature] = useState(false)
   const [certificateId, setCertificateId] = useState('')
   const loginSsoSignatureEnabled = useIsSplitOn(Features.LOGIN_SSO_SIGNATURE_TOGGLE)
-  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isSsoEncryptionEnabled = useIsSplitOn(Features.SSO_SAML_ENCRYPTION)
 

@@ -4,12 +4,22 @@ import { Col, Form, FormInstance, Input, Row, Select, Space } from 'antd'
 import TextArea                                               from 'antd/lib/input/TextArea'
 import { useIntl }                                            from 'react-intl'
 
-import { Button, Modal, ModalType, Subtitle }                                                         from '@acx-ui/components'
-import { useGetEnhancedDpskListQuery, useLazySearchPersonaGroupListQuery, useSearchMacRegListsQuery } from '@acx-ui/rc/services'
-import { DpskSaveData, PersonaGroup, checkObjectNotExists, hasDpskAccess, trailingNorLeadingSpaces }  from '@acx-ui/rc/utils'
+import { Button, Modal, ModalType, Subtitle } from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import {
+  useAdaptivePolicySetListQuery,
+  useGetEnhancedDpskListQuery,
+  useLazySearchPersonaGroupListQuery,
+  useSearchMacRegListsQuery
+} from '@acx-ui/rc/services'
+import { DpskSaveData, PersonaGroup, checkObjectNotExists, hasDpskAccess, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
+import { RolesEnum }                                                                                 from '@acx-ui/types'
+import { hasRoles }                                                                                  from '@acx-ui/user'
 
+import { AdaptivePolicySetForm }   from '../../AdaptivePolicySetForm'
 import { MacRegistrationListForm } from '../../policies/MacRegistrationListForm'
 import { DpskForm }                from '../../services/DpskForm/DpskForm'
+
 
 const macRegSearchDefaultPayload = {
   dataOption: 'all',
@@ -28,14 +38,18 @@ const macRegSearchDefaultPayload = {
 
 export function PersonaGroupForm (props: {
   form: FormInstance,
-  defaultValue?: PersonaGroup
+  defaultValue?: PersonaGroup,
+  requiredDpsk?: boolean
 }) {
   const { $t } = useIntl()
-  const { form, defaultValue } = props
+  const { form, defaultValue, requiredDpsk } = props
   const [macModalVisible, setMacModalVisible] = useState(false)
   const [dpskModalVisible, setDpskModalVisible] = useState(false)
+  const [policyModalVisible, setPolicyModalVisible] = useState(false)
+
   const onMacModalClose = () => setMacModalVisible(false)
   const onDpskModalClose = () => setDpskModalVisible(false)
+  const isPolicySetSupported = useIsSplitOn(Features.POLICY_IDENTITY_TOGGLE)
 
   const dpskPoolList = useGetEnhancedDpskListQuery({
     payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
@@ -46,6 +60,10 @@ export function PersonaGroupForm (props: {
   })
 
   const [searchPersonaGroupList] = useLazySearchPersonaGroupListQuery()
+
+  const { data: policySetsData } = useAdaptivePolicySetListQuery({
+    payload: { page: 1, pageSize: '2147483647' }
+  })
 
   const nameValidator = async (name: string) => {
     try {
@@ -107,7 +125,7 @@ export function PersonaGroupForm (props: {
             <Subtitle level={4}>{$t({ defaultMessage: 'Services' })}</Subtitle>
           </Col>
           <Col span={21}>
-            <Form.Item label={'DPSK Service'} required>
+            <Form.Item label={'DPSK Service'} required={!!requiredDpsk}>
               <Form.Item
                 name='dpskPoolId'
                 children={
@@ -127,7 +145,7 @@ export function PersonaGroupForm (props: {
                 }
                 rules={
                   [{
-                    required: true,
+                    required: !!requiredDpsk,
                     message: $t({ defaultMessage: 'Please select a DPSK Service' })
                   }]
                 }
@@ -178,6 +196,37 @@ export function PersonaGroupForm (props: {
               </Button>
             }
           </Col>
+          {
+            isPolicySetSupported && <>
+              <Col span={21}>
+                <Form.Item name='policySetId'
+                  label={$t({ defaultMessage: 'Adaptive Policy Set' })}
+                  rules={[
+                    { message: $t({ defaultMessage: 'Please select Adaptive Policy Set' }) }
+                  ]}
+                  children={
+                    <Select
+                      allowClear
+                      placeholder={$t({ defaultMessage: 'Select ...' })}
+                      options={
+                        policySetsData?.data.map(set => ({ value: set.id, label: set.name }))}
+                    />
+                  }
+                />
+              </Col>
+              {
+                hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+                <Col span={2}>
+                  <Button
+                    type={'link'}
+                    onClick={() => setPolicyModalVisible(true)}
+                  >
+                    {$t({ defaultMessage: 'Add' })}
+                  </Button>
+                </Col>
+              }
+            </>
+          }
         </Row>
       </Space>
 
@@ -211,6 +260,24 @@ export function PersonaGroupForm (props: {
           }}
         />}
         onCancel={onMacModalClose}
+        width={1200}
+        destroyOnClose={true}
+      />
+
+      <Modal
+        title={$t({ defaultMessage: 'Add Adaptive Policy Set' })}
+        visible={policyModalVisible}
+        type={ModalType.ModalStepsForm}
+        children={<AdaptivePolicySetForm
+          modalMode
+          modalCallBack={(addedPolicySetId?: string) => {
+            if (addedPolicySetId) {
+              form.setFieldValue('policySetId', addedPolicySetId)
+            }
+            setPolicyModalVisible(false)
+          }}
+        />}
+        onCancel={() => setPolicyModalVisible(false)}
         width={1200}
         destroyOnClose={true}
       />

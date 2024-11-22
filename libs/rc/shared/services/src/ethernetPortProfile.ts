@@ -11,7 +11,9 @@ import {
   EthernetPortProfile,
   EthernetPortOverwrites,
   ApiVersionEnum,
-  GetApiVersionHeader
+  GetApiVersionHeader,
+  CapabilitiesApModel,
+  ApLanPortTypeEnum
 } from '@acx-ui/rc/utils'
 import { baseEthernetPortProfileApi } from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
@@ -60,34 +62,70 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
     }),
     queryEthernetPortProfilesWithOverwrites:
     build.query<TableResult<EthernetPortProfileViewData>, RequestPayload>({
-      async queryFn ({ payload, params }, _queryApi, _extraOptions, fetchWithBQ) {
+      async queryFn (
+        { payload, params, selectedModelCaps }, _queryApi, _extraOptions, fetchWithBQ) {
         const viewDataReq = createHttpRequest(
           EthernetPortProfileUrls.getEthernetPortProfileViewDataList, params)
         const ethListQuery = await fetchWithBQ({ ...viewDataReq, body: JSON.stringify(payload) })
         let ethList = ethListQuery.data as TableResult<EthernetPortProfileViewData>
 
         if (ethList.data && params?.serialNumber) {
+          let bindingPortIds = []
           let apEthPortProfiles = ethList.data?.filter(
             m => m.apSerialNumbers && m.apSerialNumbers.includes(params.serialNumber!)
           ) ?? [] as EthernetPortProfileViewData[]
+          const getApPortOverwrite = async (
+            venueId:string, serialNumber:string, portId:number) => {
+            const apPortOverwriteReq = createHttpRequest(
+              EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId,
+              { venueId: venueId,
+                serialNumber: serialNumber,
+                portId: portId.toString()
+              })
+            const apEthPortOverwrites = await fetchWithBQ(apPortOverwriteReq)
+            return { ...(apEthPortOverwrites.data as EthernetPortOverwrites),
+              portId: portId }
+          }
           for (let eth of apEthPortProfiles) {
             eth.apPortOverwrites = []
             for (let apActivation of (eth.apActivations ?? [])) {
-              const apPortOverwriteReq = createHttpRequest(
-                EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId,
-                { venueId: apActivation.venueId,
-                  serialNumber: apActivation.apSerialNumber,
-                  portId: apActivation.portId?.toString()
-                })
-              const apEthPortOverwrites = await fetchWithBQ(apPortOverwriteReq)
-              const portOverwrite = { ...(apEthPortOverwrites.data as EthernetPortOverwrites),
-                portId: apActivation.portId }
+              bindingPortIds.push(apActivation.portId?.toString())
+              const portOverwrite = await getApPortOverwrite(
+                apActivation.venueId!,
+                apActivation.apSerialNumber!,
+                apActivation.portId!)
               eth.apPortOverwrites?.push(portOverwrite)
+            }
+          }
+          for (let lanPort of (selectedModelCaps as CapabilitiesApModel)?.lanPorts ) {
+            if (!bindingPortIds.includes(lanPort.id)) {
+              const portOverwrite = await getApPortOverwrite(
+                params?.venueId!,
+                params?.serialNumber,
+                parseInt(lanPort.id, 10)
+              )
+              const defaultType = lanPort?.defaultType
+              let ethProfileId = ''
+              switch (defaultType){
+                case ApLanPortTypeEnum.ACCESS:
+                  ethProfileId = params?.tenantId + '_' + ApLanPortTypeEnum.ACCESS.toString()
+                  break
+                case ApLanPortTypeEnum.TRUNK:
+                  ethProfileId = params?.tenantId + '_' + ApLanPortTypeEnum.TRUNK.toString()
+                  break
+              }
+              let ethProfile = ethList.data?.filter(e => e.id === ethProfileId)?.[0]
+              if (ethProfile) {
+                if (!ethProfile?.apPortOverwrites) {
+                  ethProfile.apPortOverwrites = []
+                }
+                ethProfile.apPortOverwrites.push(portOverwrite)
+              }
             }
           }
           const ethOverwriteList = {
             data: ethList.data?.filter(
-              m => m.apSerialNumbers && !m.apSerialNumbers.includes(params.serialNumber!)
+              m => !(m.apSerialNumbers && m.apSerialNumbers.includes(params.serialNumber!))
             ).concat(apEthPortProfiles) } as TableResult<EthernetPortProfileViewData>
 
           return ethOverwriteList
@@ -104,7 +142,8 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'AddEthernetPortProfile',
-            'DeleteEthernetPortProfile'
+            'DeleteEthernetPortProfile',
+            'UpdateApLanPortOverwriteSettings'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(

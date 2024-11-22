@@ -3,9 +3,11 @@ import { useEffect, useState } from 'react'
 import { Form, Input, InputNumber, Select, Space, Switch } from 'antd'
 import { DefaultOptionType }                               from 'antd/lib/select'
 import { FormattedMessage, useIntl }                       from 'react-intl'
+import { useParams }                                       from 'react-router-dom'
 
 import { cssStr, Tooltip }                          from '@acx-ui/components'
 import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { WarningCircleSolid }                       from '@acx-ui/icons'
 import {
   useQueryEthernetPortProfilesWithOverwritesQuery
 } from '@acx-ui/rc/services'
@@ -88,7 +90,8 @@ export function LanPortSettings (props: {
   const [ drawerVisible, setDrawerVisible ] = useState(false)
   const form = Form.useFormInstance()
   const lan = form?.getFieldValue('lan')?.[index]
-
+  const params = useParams()
+  const hasVni = lan?.vni > 0
   // Ethernet Port Profile
   const { isTemplate } = useConfigTemplate()
   const ethernetPortProfileId = Form.useWatch( ['lan', index, 'ethernetPortProfileId'] ,form)
@@ -145,9 +148,8 @@ export function LanPortSettings (props: {
         sortOrder: 'ASC',
         pageSize: 1000
       },
-      params: {
-        serialNumber
-      }
+      params: { ...params, venueId },
+      selectedModelCaps
     }, {
       skip: isTemplate || !isEthernetPortProfileEnabled,
       selectFromResult: ({ data: queryResult, ...rest }) => ({
@@ -207,7 +209,7 @@ export function LanPortSettings (props: {
         disabled={readOnly
           || isDhcpEnabled
           || !selectedPortCaps?.supportDisable
-          || lan?.vni > 0
+          || hasVni
         }
         onChange={() => onChangedByCustom('enabled')}
       />}
@@ -218,7 +220,7 @@ export function LanPortSettings (props: {
       children={<Input />}
     />
     {!isTemplate && isEthernetPortProfileEnabled ?
-      (<><Space>
+      (<>{(hasVni ? <Form.Item name={['lan', index, 'ethernetPortProfileId']} hidden/>:<Space>
         <Form.Item
           name={['lan', index, 'ethernetPortProfileId']}
           label={$t({ defaultMessage: 'Ethernet Port Profile' })}
@@ -226,11 +228,8 @@ export function LanPortSettings (props: {
             disabled={readOnly
               || isDhcpEnabled
               || !lan?.enabled
-              || lan?.vni > 0}
-            options={[
-              { label: $t({ defaultMessage: 'No ethernet port profile selected' }), value: null },
-              ...ethernetPortDropdownItems
-            ]}
+              || hasVni}
+            options={ethernetPortDropdownItems}
             onChange={() => onChangedByCustom('ethernetPortProfileId')}
           />} />
         <EthernetPortProfileDrawer
@@ -238,12 +237,13 @@ export function LanPortSettings (props: {
             setEthernetProfileCreateId(createId)
           }}
           currentEthernetPortData={currentEthernetPortData} />
-      </Space>
+      </Space>)}
       <EthernetPortProfileInput
         currentEthernetPortData={currentEthernetPortData}
         currentIndex={index}
         onGUIChanged={onGUIChanged}
-        isEditable={!!serialNumber} /></>) :
+        isEditable={!!serialNumber}
+      /></>) :
       (<>
         <Form.Item
           name={['lan', index, 'type']}
@@ -258,7 +258,7 @@ export function LanPortSettings (props: {
             || isDhcpEnabled
             || !lan?.enabled
             || selectedPortCaps?.trunkPortOnly
-            || lan?.vni > 0}
+            || hasVni}
             options={Object.keys(ApLanPortTypeEnum).map(type => ({ label: type, value: type }))}
             onChange={(value) => handlePortTypeChange(value, index)} />} />
         <Form.Item
@@ -293,7 +293,7 @@ export function LanPortSettings (props: {
               || isDhcpEnabled
               || !lan?.enabled
               || (lan?.type === ApLanPortTypeEnum.TRUNK && !isTrunkPortUntaggedVlanEnabled)
-              || lan?.vni > 0}
+              || hasVni}
             onChange={(value) => {
               const isTrunkPort = lan?.type === ApLanPortTypeEnum.TRUNK
               if (!isTrunkPort || isTrunkPortUntaggedVlanEnabled) {
@@ -325,9 +325,13 @@ export function LanPortSettings (props: {
               || isDhcpEnabled
               || !lan?.enabled
               || lan?.type !== ApLanPortTypeEnum.GENERAL
-              || lan?.vni > 0}
+              || hasVni}
             onChange={() => onChangedByCustom('vlanMembers')} />} />
       </>)}
+    {(hasVni && <Space size='small'>
+      <WarningCircleSolid />
+      {$t({ defaultMessage: 'This LAN port is associated with the PIN service currently.' })}
+    </Space>)}
     <Form.Item
       hidden={true}
       name={['lan', index, 'vni']}

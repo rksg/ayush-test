@@ -107,9 +107,11 @@ export const mockEdgeMdnsStatsList = [{
   rxBytes: 159,
   txPackets: 233,
   txBytes: 234,
-  rxRequest: 124,
-  rxResponse: 544,
-  numTypesMdnsServices: 1
+  numRequest: 124,
+  numResponse: 544,
+  discoveredMdnsServices: [
+    { mdnsStr: 'AppleTV' }
+  ]
 },
 {
   clusterId: 'clusterId_1',
@@ -117,7 +119,10 @@ export const mockEdgeMdnsStatsList = [{
   rxBytes: 211,
   txPackets: 111,
   txBytes: 234,
-  rxRequest: 66,
-  rxResponse: 234,
-  numTypesMdnsServices: 1
+  numRequest: 66,
+  numResponse: 234,
+  discoveredMdnsServices: [
+    { mdnsStr: 'AppleTV' },
+    { mdnsStr: 'AirDrop' }
+  ]
 }]

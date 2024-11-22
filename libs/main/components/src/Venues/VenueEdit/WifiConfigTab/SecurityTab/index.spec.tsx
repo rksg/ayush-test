@@ -4,14 +4,15 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { venueApi }                          from '@acx-ui/rc/services'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { venueApi }               from '@acx-ui/rc/services'
 import {
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
   ConfigTemplateContext,
   PoliciesConfigTemplateUrlsInfo,
-  RogueApUrls, VenueConfigTemplateUrlsInfo
+  RogueApUrls,
+  VenueConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
@@ -61,9 +62,6 @@ describe('SecurityTab', () => {
     store.dispatch(venueApi.util.resetApiState())
 
     mockServer.use(
-      rest.get(
-        CommonUrlsInfo.getDashboardOverview.url,
-        (_, res, ctx) => res(ctx.json({}))),
       rest.get(
         CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(venueData))),
@@ -301,7 +299,12 @@ describe('SecurityTab', () => {
         }),
       rest.get(
         VenueConfigTemplateUrlsInfo.getDenialOfServiceProtection.url,
-        (_, res, ctx) => res(ctx.json(venueDosProtection)))
+        (_, res, ctx) => res(ctx.json(venueDosProtection))
+      ),
+      rest.get(
+        VenueConfigTemplateUrlsInfo.getDenialOfServiceProtectionRbac.url,
+        (_, res, ctx) => res(ctx.json(venueDosProtection))
+      )
     )
     render(
       <ConfigTemplateContext.Provider value={{ isTemplate: true }}>

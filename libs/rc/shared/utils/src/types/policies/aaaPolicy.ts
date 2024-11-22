@@ -22,7 +22,7 @@ export interface AAAViewModalType {
   type: 'ACCOUNTING' | 'AUTHENTICATION',
   networkIds?: string[],
   hotspot20IdentityProviderIds?: string[],
-  radSecOptions?: RadSecOptionsViewModalType
+  radSecOptions?: RadSecOptionsType
 }
 export interface RadSecOptionsType {
   tlsEnabled?: boolean,

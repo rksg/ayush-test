@@ -15,8 +15,9 @@ export const useEdgePinByVenue = (venueId: string | undefined) => {
   return allPins?.[0]
 }
 
+// props == undefined: get all pins
 // eslint-disable-next-line max-len
-const useEdgeAllPinData = (props: { networkId?: string, venueId?: string }): (PersonalIdentityNetworksViewData[] | undefined) => {
+export const useEdgeAllPinData = (props?: { networkId?: string, venueId?: string }): (PersonalIdentityNetworksViewData[] | undefined) => {
   const networkId = props?.networkId
   const networkVenueId = props?.venueId
   const isEdgePinEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
@@ -36,7 +37,7 @@ const useEdgeAllPinData = (props: { networkId?: string, venueId?: string }): (Pe
       pageSize: 10000
     }
   }, {
-    skip: !isEdgePinEnabled || (!networkVenueId && !networkId),
+    skip: !isEdgePinEnabled || (props && !networkVenueId && !networkId),
     selectFromResult: ({ data }) => ({
       venuePins: data?.data
     })

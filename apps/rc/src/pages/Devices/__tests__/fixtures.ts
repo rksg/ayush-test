@@ -1,7 +1,13 @@
-import { ApRadioBands, ApVenueStatusEnum, AFCPowerMode, AFCStatus, ApViewModel } from '@acx-ui/rc/utils'
+import { AFCPowerMode, AFCStatus, ApRadioBands, ApVenueStatusEnum, ApViewModel, EthernetPortType } from '@acx-ui/rc/utils'
+
+export const mockDefaultTrunkEthertnetPortProfileId = 'mockdefaultTrunkEthertnetPortProfileId'
 
 export const successResponse = {
   requestId: 'request-id'
+}
+
+export const mockVenue = {
+  id: 'venue-id'
 }
 
 export const venuelist = {
@@ -1237,7 +1243,9 @@ export const mockEthProfiles = {
       apSerialNumbers: ['serial-number'],
       apActivations: [
         {
-          portId: 1
+          venueId: mockVenue.id,
+          portId: 1,
+          apSerialNumber: 'serial-number'
         }
       ]
     },
@@ -1251,7 +1259,9 @@ export const mockEthProfiles = {
       apSerialNumbers: ['serial-number'],
       apActivations: [
         {
-          portId: 2
+          venueId: mockVenue.id,
+          portId: 2,
+          apSerialNumber: 'serial-number'
         }
       ]
     }
@@ -1540,9 +1550,9 @@ export const venueLanPorts = [
         enabled: true
       },
       {
-        type: 'TRUNK',
+        type: EthernetPortType.ACCESS,
         untagId: 1,
-        vlanMembers: '1-4094',
+        vlanMembers: '1',
         portId: '3',
         enabled: true
       }
@@ -1589,9 +1599,9 @@ export const ApLanPorts_T750SE = {
       enabled: true
     },
     {
-      type: 'TRUNK',
+      type: EthernetPortType.ACCESS,
       untagId: 1,
-      vlanMembers: '1-4094',
+      vlanMembers: '1',
       portId: '3',
       enabled: true
     }
@@ -1599,9 +1609,39 @@ export const ApLanPorts_T750SE = {
   useVenueSettings: true
 }
 
+export const ApLanPorts_has_vni = {
+  poeMode: 'Auto',
+  poeOut: false,
+  lanPorts: [
+    {
+      type: EthernetPortType.ACCESS,
+      untagId: 1,
+      vlanMembers: '1',
+      vni: 8193,
+      portId: '1',
+      enabled: true
+    },
+    {
+      type: 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      portId: '2',
+      enabled: true
+    },
+    {
+      type: 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      portId: '3',
+      enabled: true
+    }
+  ],
+  useVenueSettings: false
+}
+
 export const ApData_T750SE = {
   apGroupId: '75f7751cd7d34bf19cc9446f92d82ee5',
-  venueId: 'venue-id',
+  venueId: mockVenue.id,
   radio: {
     apRadioParams24G: {
       manualChannel: 0,
@@ -1692,9 +1732,9 @@ export const ApCap_T750SE = {
     },
     {
       id: '3',
-      defaultType: 'TRUNK',
+      defaultType: EthernetPortType.ACCESS,
       untagId: 1,
-      vlanMembers: '1-4094',
+      vlanMembers: '1',
       trunkPortOnly: false,
       supportDisable: false,
       isPoePort: true,
@@ -4461,3 +4501,20 @@ export const venueVersionList = [
     ]
   }
 ]
+
+export const mockDefaultTunkEthertnetPortProfile = {
+  id: mockDefaultTrunkEthertnetPortProfileId,
+  tenantId: 'tenant-id',
+  name: 'Default Trunk',
+  type: 'TRUNK',
+  untagId: 1,
+  vlanMembers: '1-4094',
+  authType: 'DISABLED',
+  isDefault: true
+}
+
+export const lanPortSettingPort1 = {
+  enabled: true,
+  overwriteUntagId: 1,
+  overwriteVlanMembers: '1-4094'
+}

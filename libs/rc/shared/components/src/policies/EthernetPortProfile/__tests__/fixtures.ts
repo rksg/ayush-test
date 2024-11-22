@@ -148,7 +148,6 @@ export const dummyEthernetPortProfileTrunk = {
   // authType: 'DISABLED',
   authType: EthernetPortAuthType.DISABLED,
   description: 'dummy',
-  // type: 'TRUNK',
   type: EthernetPortType.TRUNK,
   untagId: 1,
   vlanMembers: '1-4094',
@@ -167,7 +166,6 @@ export const dummyEthernetPortProfileTrunkSupplicant = {
   vlanMembers: '1-4094',
   isDefault: false,
   supplicantAuthenticationOptions: {
-    // type: 'MAC_AUTH'
     type: EthernetPortSupplicantType.MAC_AUTH
   }
 }

@@ -100,7 +100,7 @@ export interface MspEcData {
   licenses?: {};
   delegations?: MspIntegratorDelegated[];
   admin_delegations?: MspEcDelegatedAdmins[];
-  privilegeGroups?: string[];
+  privilege_group_ids?: string[];
   number_of_days?: string;
   isManageAllEcs?: boolean;
   tier?: MspEcTierEnum;
@@ -606,4 +606,39 @@ export interface AssignedMultiEcMspAdmins {
   mspEcId: string
   mspAdminRoles: SelectedMspMspAdmins[]
   privilege_group_ids?: string[]
+}
+
+export interface MileageReportsResponse {
+  data: MileageData[],
+  pageSize: number,
+  page: number,
+  totalCount: number
+}
+
+export interface MileageData {
+  licenseType: EntitlementDeviceType,
+  lastDate: string,
+  device: number,
+  usedQuantity: number,
+  quantity: number,
+  availableBreakUp: MileageBreakUp[]
+}
+
+export interface MileageBreakUp {
+  quantity: number,
+  expirationDate: string
+}
+
+export interface MileageReportsRequestPayload {
+  page: number,
+  pageSize: number,
+  filters: {
+      usageType: string,
+      licenseType: EntitlementDeviceType
+  }
+}
+
+export interface MileageSeriesData {
+  value: number;
+  extraData: MileageBreakUp[];
 }

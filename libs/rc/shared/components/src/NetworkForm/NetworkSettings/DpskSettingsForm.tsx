@@ -39,7 +39,8 @@ const { Option } = Select
 
 const { useWatch } = Form
 
-export function DpskSettingsForm () {
+export function DpskSettingsForm (props: { defaultSelectedDpsk?: string }) {
+  const { defaultSelectedDpsk } = props
   const { editMode, cloneMode, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
   const form = Form.useFormInstance()
@@ -63,6 +64,13 @@ export function DpskSettingsForm () {
       setFieldsValue()
     }
   }, [data?.id])
+
+  // only create mode
+  useEffect(()=>{
+    if(!editMode && !cloneMode && defaultSelectedDpsk) {
+      form.setFieldValue('dpskServiceProfileId', defaultSelectedDpsk)
+    }
+  }, [editMode, cloneMode, defaultSelectedDpsk])
 
   const setFieldsValue = () => {
     data && form.setFieldsValue({

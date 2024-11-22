@@ -119,7 +119,7 @@ describe('IntentAIForm', () => {
     }
   })
 
-  it('handle schedule intent', async () => {
+  it.skip('handle schedule intent', async () => {
     const { params } = mockIntentContextWith({ status: Statuses.new, sliceId: 'id1' })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))

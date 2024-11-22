@@ -18,6 +18,7 @@ const StaticRoutes = (props: { readOnly: boolean, switchDetail?: SwitchViewModel
   const params = useParams()
   const { readOnly, switchDetail } = props
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
 
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [currentEditData, setCurrentEditData] = useState<StaticRoute>()
@@ -86,9 +87,11 @@ const StaticRoutes = (props: { readOnly: boolean, switchDetail?: SwitchViewModel
   }
 
   const toolBarRender = () => [
-    <Button type='link' onClick={() => openDrawer()} data-testid='addRouteButton'>
-      {$t({ defaultMessage: 'Add Route' })}
-    </Button>
+    isSupport8100 && switchDetail?.model?.startsWith('ICX8100')
+      ? []
+      : <Button type='link' onClick={() => openDrawer()} data-testid='addRouteButton'>
+        {$t({ defaultMessage: 'Add Route' })}
+      </Button>
   ]
 
   return (

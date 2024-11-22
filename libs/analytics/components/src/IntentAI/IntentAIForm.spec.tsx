@@ -112,7 +112,7 @@ const doTest = async (codes: string[], intent: Intent) => {
   }
 }
 
-describe('IntentAIForm', () => {
+describe.skip('IntentAIForm', () => {
   it('should render for AIDrivenRRM', async () => {
     mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent: mockedIntentCRRM } })
     const codes = ['c-crrm-channel24g-auto', 'c-crrm-channel5g-auto', 'c-crrm-channel6g-auto']

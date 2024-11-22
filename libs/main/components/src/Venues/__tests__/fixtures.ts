@@ -370,6 +370,17 @@ export const mockEthProfiles = {
     }
   ]
 }
+export const mockDefaultTrunkEthertnetPortProfileId = 'mockdefaultTrunkEthertnetPortProfileId'
+export const mockDefaultTunkEthertnetPortProfile = {
+  id: mockDefaultTrunkEthertnetPortProfileId,
+  tenantId: 'tenant-id',
+  name: 'Default Trunk',
+  type: 'TRUNK',
+  untagId: 1,
+  vlanMembers: '1-4094',
+  authType: 'DISABLED',
+  isDefault: true
+}
 
 export const venueSetting = {
   tenantId: '15a04f095a8f4a96acaf17e921e8a6df',

@@ -67,6 +67,7 @@ export const policyTypePathMapping: Record<PolicyType, string> = {
   [PolicyType.HQOS_BANDWIDTH]: 'hqosBandwidth',
   [PolicyType.SOFTGRE]: 'softGre',
   [PolicyType.ETHERNET_PORT_PROFILE]: 'ethernetPortProfile',
+  [PolicyType.FLEX_AUTH]: 'authentication',
   [PolicyType.SERVER_CERTIFICATES]: 'serverCertificates',
   [PolicyType.DIRECTORY_SERVER]: 'directoryServer'
 }

@@ -10,7 +10,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
 import {
   useMspAdminListQuery,
   useAssignMultiMspEcDelegatedAdminsMutation
@@ -37,7 +37,7 @@ interface AssignEcMspAdminsDrawerProps {
 
 export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => {
   const { $t } = useIntl()
-  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 

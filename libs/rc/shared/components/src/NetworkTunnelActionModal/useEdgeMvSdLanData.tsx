@@ -13,14 +13,15 @@ interface useEdgeMvSdLanDataProps {
 }
 export const useEdgeMvSdLanData = (networkInfo: useEdgeMvSdLanDataProps | undefined): {
     venueSdLan?: EdgeMvSdLanViewData
-    networkVlanPool?: VLANPoolViewModelType
+    networkVlanPool?: VLANPoolViewModelType,
+    isLoading: boolean
   } => {
   const networkId = networkInfo?.id
   const networkVenueId = networkInfo?.venueId
   const isEdgeSdLanP2Enabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
 
-  const { venueSdLan } = useGetEdgeMvSdLanViewDataListQuery({
+  const { venueSdLan, isLoading } = useGetEdgeMvSdLanViewDataListQuery({
     payload: {
       fields: [
         'id', 'name',
@@ -33,12 +34,13 @@ export const useEdgeMvSdLanData = (networkInfo: useEdgeMvSdLanDataProps | undefi
     }
   }, {
     skip: !(isEdgeSdLanP2Enabled || isEdgeSdLanMvEnabled) || !networkVenueId,
-    selectFromResult: ({ data }) => ({
-      venueSdLan: data?.data[0]
+    selectFromResult: ({ data, isLoading }) => ({
+      venueSdLan: data?.data[0],
+      isLoading
     })
   })
 
-  const { networkVlanPool } = useGetVLANPoolPolicyViewModelListQuery({
+  const { networkVlanPool, isVlanPoolLoading } = useGetVLANPoolPolicyViewModelListQuery({
     payload: {
       fields: ['id', 'name', 'wifiNetworkIds'],
       filters: { wifiNetworkIds: [networkId] }
@@ -46,12 +48,17 @@ export const useEdgeMvSdLanData = (networkInfo: useEdgeMvSdLanDataProps | undefi
     enableRbac: true
   }, {
     skip: !isEdgeSdLanMvEnabled || !networkId || !venueSdLan,
-    selectFromResult: ({ data }) => ({
+    selectFromResult: ({ data, isLoading }) => ({
       networkVlanPool: find(data?.data as VLANPoolViewModelType[], (item) => {
         return item.networkIds?.includes(networkId!)
-      }) as VLANPoolViewModelType
+      }) as VLANPoolViewModelType,
+      isVlanPoolLoading: isLoading
     })
   })
 
-  return { venueSdLan, networkVlanPool }
+  return {
+    venueSdLan,
+    networkVlanPool,
+    isLoading: isLoading || isVlanPoolLoading
+  }
 }
