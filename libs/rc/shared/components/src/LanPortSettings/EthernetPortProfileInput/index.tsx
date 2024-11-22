@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-import { Form  }   from 'antd'
+import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
@@ -26,6 +26,7 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
   const { $t } = useIntl()
   const { currentIndex, currentEthernetPortData, isEditable=true,
     onGUIChanged } = props
+
   const form = Form.useFormInstance()
   const currentUntagId = Form.useWatch( ['lan', currentIndex, 'untagId'] ,form)
 
@@ -52,6 +53,7 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
         (currentEthernetPortData?.untagId.toString() ?? '')}
       isEditable={isEditable}
       fieldName={['lan', currentIndex, 'untagId']}
+      currentIndex={currentIndex}
       onGUIChanged={onGUIChanged}
       rules={[
         { validator: (_, value) => validateVlanId(value) }
@@ -67,6 +69,7 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
       isEditable={isEditable &&
         (currentEthernetPortData?.type === EthernetPortType.SELECTIVE_TRUNK)}
       fieldName={['lan', currentIndex, 'vlanMembers']}
+      currentIndex={currentIndex}
       onGUIChanged={onGUIChanged}
       rules={[
         { validator: (_, value) => checkVlanMember(value) }

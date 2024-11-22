@@ -790,6 +790,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return {
           data: result ? result.map(item => ({
             ...item,
+            rawStartTime: item.startTime,
             startTime: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.startTime),
             configType: transformConfigType(item.configType),
             dispatchStatus: transformConfigStatus(item.dispatchStatus)

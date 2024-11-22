@@ -36,9 +36,7 @@ const defaultPayload = {
     'disassociateClientEnabled',
     'activations'
   ],
-  searchString: '',
-  filters: {},
-  searchTargetFields: ['name']
+  filters: {}
 }
 
 export default function SoftGreTable () {
@@ -52,6 +50,10 @@ export default function SoftGreTable () {
   const tableQuery = useTableQuery<SoftGreViewData>({
     useQuery: useGetSoftGreViewDataListQuery,
     defaultPayload,
+    search: {
+      searchString: '',
+      searchTargetFields: ['name']
+    },
     pagination: { settingsId }
   })
 

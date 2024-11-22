@@ -14,15 +14,14 @@ import { SoftGreSettingForm } from './SoftGreSettingForm'
 interface SoftGreDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  editMode: boolean
-  readMode: boolean
+  readMode?: boolean
   policyId?:string
   policyName?: string
   callbackFn?: (option: DefaultOptionType, gatewayIps:string[]) => void
 }
 
 export default function SoftGreDrawer (props: SoftGreDrawerProps) {
-  const { visible, setVisible, readMode, editMode, policyId, policyName, callbackFn } = props // handleSave
+  const { visible, setVisible, readMode=false, policyId, policyName, callbackFn } = props
   const { $t } = useIntl()
   const params = useParams()
   const [form] = Form.useForm()
@@ -30,7 +29,7 @@ export default function SoftGreDrawer (props: SoftGreDrawerProps) {
 
   const handleAdd = async () => {
     try {
-      if (!editMode && !readMode) {
+      if (!readMode) {
         await form.validateFields()
         const values = form.getFieldsValue()
         const resData = await createSoftGre({ params, payload: values }).unwrap()
@@ -65,7 +64,7 @@ export default function SoftGreDrawer (props: SoftGreDrawerProps) {
         <Row gutter={20}>
           <Col span={24}>
             <SoftGreSettingForm
-              editMode={editMode}
+              editMode={false}
               readMode={readMode}
               policyId={policyId}
             />
