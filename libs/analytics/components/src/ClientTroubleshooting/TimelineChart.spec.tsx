@@ -10,7 +10,6 @@ import { getUserProfile, setUserProfile }                               from '@a
 
 import { qualityDataObj, incidentDataObj, roamingDataObj, connectionEvents } from './__tests__/fixtures'
 import { Event, LabelledQuality, IncidentDetails, RoamingTimeSeriesData  }   from './config'
-import useClientTroubleshootingConfig                                        from './useClientTroubleshootingConfig'
 import {
   useDotClick,
   useDataZoom,
@@ -21,7 +20,8 @@ import {
   TimelineChart,
   updateBoundary
 } from './TimelineChart'
-import { transformEvents } from './util'
+import useClientTroubleshootingConfig from './useClientTroubleshootingConfig'
+import { transformEvents }            from './util'
 
 import type { CustomSeriesRenderItemAPI, CustomSeriesRenderItemParams } from 'echarts'
 const testEvent = {
