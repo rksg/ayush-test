@@ -128,7 +128,7 @@ export function NetworkingTab () {
         </>
       )
     },
-    ...(((isSmartMonitorFFEnabled && (!supportR370 || isSupportSmartMonitor))? [{
+    ...((isSmartMonitorFFEnabled && (!supportR370 || isSupportSmartMonitor)) ? [{
       title: smartMonitorTitle,
       content: (
         <>

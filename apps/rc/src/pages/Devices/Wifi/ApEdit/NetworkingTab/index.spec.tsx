@@ -1,13 +1,13 @@
 import userEvent from '@testing-library/user-event'
 
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Provider }               from '@acx-ui/store'
+import { render, screen }         from '@acx-ui/test-utils'
 
 import { ApDataContext, ApEditContext } from '..'
 import { ApCap_T750SE, ApData_T750SE }  from '../../../__tests__/fixtures'
 
 import { NetworkingTab } from '.'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 
 const params = { tenantId: 'tenant-id', serialNumber: 'serial-number', venueId: 'venue-id' }
