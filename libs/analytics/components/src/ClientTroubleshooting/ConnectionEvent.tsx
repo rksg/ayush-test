@@ -13,11 +13,11 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { formatter }              from '@acx-ui/formatter'
 import { getIntl }                from '@acx-ui/utils'
 
-import { FAILURE, DisplayEvent, SLOW, DISCONNECT, ROAMING } from './config'
-import { ConnectionSequenceDiagram }                        from './ConnectionSequenceDiagram'
-import { DownloadPcap }                                     from './DownloadPcap'
-import { Details }                                          from './EventDetails'
-import * as UI                                              from './styledComponents'
+import { FAILURE, DisplayEvent, SLOW, DISCONNECT, ROAMING, BTM_REQUEST, btmInfoToDisplayTextMap, BTM_RESPONSE } from './config'
+import { ConnectionSequenceDiagram }                                                                            from './ConnectionSequenceDiagram'
+import { DownloadPcap }                                                                                         from './DownloadPcap'
+import { Details }                                                                                              from './EventDetails'
+import * as UI                                                                                                  from './styledComponents'
 
 
 export const getRomaingTypeDisplayText = (roamingType: string) => {
@@ -40,7 +40,7 @@ export const getConnectionDetails = (event: DisplayEvent) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const isRoamingTypeEnabled = useIsSplitOn(Features.ROAMING_TYPE_EVENTS_TOGGLE)
   const showRoamingType = isMLISA || isRoamingTypeEnabled
-  const { mac, apName, ssid, radio, code, ttc, state, type, roamingType } = event
+  const { mac, apName, ssid, radio, code, ttc, state, type, roamingType, category, btmInfo } = event
   const eventDetails = [
     { label: $t({ defaultMessage: 'AP MAC' }), value: mac },
     { label: $t({ defaultMessage: 'AP Name' }), value: apName },
@@ -50,6 +50,7 @@ export const getConnectionDetails = (event: DisplayEvent) => {
       : $t({ defaultMessage: 'Unknown' })
     }
   ]
+
   switch (event.category) {
     case FAILURE: {
       const failureType = (code)
@@ -90,6 +91,22 @@ export const getConnectionDetails = (event: DisplayEvent) => {
           id: event.failedMsgId
         })
       })
+      break
+    }
+
+    case BTM_REQUEST: // fallthrough
+    case BTM_RESPONSE: {
+      if (btmInfo) {
+        const label =
+          category === BTM_REQUEST
+            ? $t({ defaultMessage: 'Trigger' })
+            : $t({ defaultMessage: 'Status' })
+
+        eventDetails.push({
+          label,
+          value: btmInfoToDisplayTextMap[btmInfo] ?? btmInfo
+        })
+      }
       break
     }
   }

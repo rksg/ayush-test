@@ -55,7 +55,14 @@ import {
   QUALITY,
   ROAMING,
   INCIDENTS,
-  ALL
+  ALL,
+  eventCategories,
+  BTM_REQUEST,
+  BTM_RESPONSE,
+  btmEventCategories,
+  ChartMapping,
+  RoamingSubtitle,
+  ConnectionEventsCategoryMap
 } from './config'
 import { ConnectionEvent, ConnectionQuality } from './services'
 import * as UI                                from './styledComponents'
@@ -137,6 +144,9 @@ export const formatEventDesc = (evtObj: DisplayEvent, intl: IntlShape): string =
 }
 
 export const categorizeEvent = (name: string, ttc: number | null) => {
+  if (name === ClientEventEnum.BTM_REQUEST) return BTM_REQUEST
+  if (name === ClientEventEnum.BTM_RESPONSE) return BTM_RESPONSE
+
   const successEvents = [INFO_UPDATED, JOIN, ROAMED].map(
     (key) => filterEventMap[key as keyof typeof filterEventMap]
   ).flat()
@@ -302,17 +312,18 @@ export const roamingEventFormatter = (details: RoamingByAP) => {
     }
   ]
 }
-export const getRoamingChartConfig = (data: RoamingConfigParam) => {
+export const getRoamingChartConfig = (data: RoamingConfigParam): ChartMapping[] => {
   return Object.keys(data).map((key) => {
     return {
       key: key,
       label: data[key].apName,
       chartType: 'bar',
-      series: ROAMING
+      series: ROAMING,
+      isVisible: () => true
     }
   })
 }
-export const getRoamingSubtitleConfig = (data: RoamingConfigParam) => {
+export const getRoamingSubtitleConfig = (data: RoamingConfigParam): RoamingSubtitle[] => {
   if (Object.keys(data).length === 0) {
     return [{
       title: 'No Data',
@@ -320,12 +331,12 @@ export const getRoamingSubtitleConfig = (data: RoamingConfigParam) => {
       apModel: '',
       apFirmware: '',
       value: '',
-      isLast: true,
-      noData: true
+      noData: true,
+      isVisible: () => true
     }]
   }
 
-  return Object.keys(data).map((key, index) => {
+  return Object.keys(data).map((key) => {
     return {
       title: `${data[key].apName} on ${data[key].radio}GHz`,
       apMac: data[key].apMac,
@@ -333,7 +344,7 @@ export const getRoamingSubtitleConfig = (data: RoamingConfigParam) => {
       apFirmware: data[key].apFirmware,
       value: data[key].apName,
       noData: false,
-      isLast: Object.keys(data).length === index + 1 ? true : false
+      isVisible: () => true
     }
   })
 }
@@ -496,61 +507,52 @@ export const transformIncidents = (
 // Utils for Network Incidents ends
 
 // General Util for the chart's data, tooltip formatter
-
 export const getTimelineData = (
   events: Event[],
   incidents: IncidentDetails[],
-  toggles?: IncidentsToggleFilter['toggles']
+  toggles?: IncidentsToggleFilter['toggles'],
+  isBtmEventsEnabled?: boolean
 ) => {
-  const categorisedEvents = events.reduce(
-    (acc, event) => {
-      if (event?.type === TYPES.CONNECTION_EVENTS) {
-        acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][ALL] = [
-          ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][ALL],
-          event
-        ]
-        if (event.category === SUCCESS)
-          acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][SUCCESS] = [
-            ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][SUCCESS],
+  const _eventCategories = [...eventCategories, ...(isBtmEventsEnabled ? btmEventCategories : [])]
+  const categorisedEvents = events
+    .filter(({ category }) =>
+      _eventCategories.includes(category as keyof ConnectionEventsCategoryMap)
+    )
+    .reduce(
+      (acc, event) => {
+        if (event?.type === TYPES.CONNECTION_EVENTS) {
+          acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][ALL] = [
+            ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][ALL],
             event
           ]
-        if (event.category === FAILURE)
-          acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][FAILURE] = [
-            ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][FAILURE],
+
+          _eventCategories.forEach((category) => {
+            if (event.category === category) {
+              acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][category] = [
+                ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][category],
+                event
+              ]
+            }
+          })
+        }
+        if (event?.type === TYPES.ROAMING) {
+          acc[TYPES.ROAMING as RoamingEventsKey][ALL] = [
+            ...acc[TYPES.ROAMING as RoamingEventsKey][ALL],
             event
           ]
-        if (event.category === DISCONNECT)
-          acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][DISCONNECT] = [
-            ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][DISCONNECT],
-            event
-          ]
-        if (event.category === SLOW)
-          acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][SLOW] = [
-            ...acc[TYPES.CONNECTION_EVENTS as ConnectionEventsKey][SLOW],
-            event
-          ]
-      }
-      if (event?.type === TYPES.ROAMING) {
-        acc[TYPES.ROAMING as RoamingEventsKey][ALL] = [
-          ...acc[TYPES.ROAMING as RoamingEventsKey][ALL],
-          event
-        ]
-      }
-      return acc
-    },
-    {
-      [TYPES.CONNECTION_EVENTS]: {
-        [SUCCESS]: [],
-        [FAILURE]: [],
-        [DISCONNECT]: [],
-        [SLOW]: [],
-        [ALL]: []
+        }
+        return acc
       },
-      [TYPES.ROAMING]: {
-        [ALL]: []
-      }
-    } as unknown as TimelineData
-  )
+      {
+        [TYPES.CONNECTION_EVENTS]: _eventCategories.reduce(
+          (acc, category) => ({ ...acc, [category]: [] }),
+          {}
+        ),
+        [TYPES.ROAMING]: {
+          [ALL]: []
+        }
+      } as unknown as TimelineData
+    )
   const categorisedIncidents = incidents.reduce(
     (acc, incident) => {
       const [map, code, key] = [
@@ -734,4 +736,26 @@ export const labelFormatter = (input: unknown, timewindow: TimeStampRange) => {
   }
 
   return ''
+}
+
+const RED_COLOR = '--acx-semantics-red-50'
+const YELLOW_COLOR = '--acx-semantics-yellow-50'
+const GREEN_COLOR = '--acx-semantics-green-50'
+const GREY_COLOR = '--acx-neutrals-50'
+
+const eventColorByCategory = {
+  [DISCONNECT]: GREY_COLOR,
+  [SUCCESS]: GREEN_COLOR,
+  [FAILURE]: RED_COLOR,
+  [SLOW]: YELLOW_COLOR,
+  [BTM_REQUEST]: GREEN_COLOR,
+  [BTM_RESPONSE]: GREEN_COLOR
+}
+
+export const getEventColor = (category: string, btmInfo?: string) => {
+  if (category === BTM_RESPONSE && btmInfo === 'BTM_EVENT_RECEIVE_REJECT') {
+    return YELLOW_COLOR
+  }
+
+  return eventColorByCategory[category as keyof typeof eventColorByCategory]
 }

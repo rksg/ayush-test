@@ -4,8 +4,8 @@ import { get }                                from '@acx-ui/config'
 import { Provider }                           from '@acx-ui/store'
 import { cleanup, render, fireEvent, screen } from '@acx-ui/test-utils'
 
-import { DisplayEvent }                                      from './config'
 import { ConnectionEventPopover, getRomaingTypeDisplayText } from './ConnectionEvent'
+import { BTM_REQUEST, BTM_RESPONSE, DisplayEvent } from './config'
 
 const mockGet = get as jest.Mock
 jest.mock('@acx-ui/config', () => ({
@@ -81,6 +81,22 @@ const disconnectEvent: DisplayEvent = {
   ttc: null,
   timestamp: '2022-11-14T06:33:31.646Z',
   key: 'disconnectKey'
+}
+
+const btmRequestEvent: DisplayEvent = {
+  ...successEvent,
+  category: BTM_REQUEST,
+  event: 'EVENT_CLIENT_BTM_REQ_SENT',
+  key: 'btmRequestKey',
+  btmInfo: 'sticky client'
+}
+
+const btmResponseEvent: DisplayEvent = {
+  ...successEvent,
+  category: BTM_RESPONSE,
+  event: 'EVENT_CLIENT_BTM_RESP_RECEIVED',
+  key: 'btmResponseKey',
+  btmInfo: 'BTM_EVENT_RECEIVE_REJECT'
 }
 
 const failureEvent: DisplayEvent = {
@@ -281,5 +297,18 @@ describe('ConnectionEvent', () => {
     ].forEach(({ type, text }) => {
       expect(getRomaingTypeDisplayText(type)).toBe(text)
     })
+  })
+  it('renders correctly for btm request event', async () => {
+    render(<ConnectionEventPopover event={btmRequestEvent}>test</ConnectionEventPopover>)
+    fireEvent.click(await screen.findByText(/test/i))
+    expect(screen.getByText('Trigger')).toBeValid()
+    expect(screen.getByText('sticky')).toBeValid()
+  })
+
+  it('renders correctly for btm response event', async () => {
+    render(<ConnectionEventPopover event={btmResponseEvent}>test</ConnectionEventPopover>)
+    fireEvent.click(await screen.findByText(/test/i))
+    expect(screen.getByText('Status')).toBeValid()
+    expect(screen.getByText('REJECTED')).toBeValid()
   })
 })

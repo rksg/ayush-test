@@ -9,12 +9,20 @@ describe('ClientInfo Api', () => {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
     range: DateRange.last24Hours,
-    clientMac: 'mac'
+    clientMac: 'mac',
+    fetchRoamingType: false,
+    fetchBtmInfo: false
   }
   afterEach(() =>
     store.dispatch(api.util.resetApiState())
   )
-  it('should return correct data when fetchRoamType is false', async () => {
+
+  it.each([
+    { fetchRoamingType: false },
+    { fetchRoamingType: true },
+    { fetchBtmInfo: false },
+    { fetchBtmInfo: true }
+  ])('should return correct data when %s', async (payload) => {
     const expectedResult = {
       client: {
         connectionDetailsByAp: [],
@@ -27,26 +35,7 @@ describe('ClientInfo Api', () => {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.clientInfo.initiate({ ...props, fetchRoamingType: false })
-    )
-    expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual(expectedResult.client)
-    expect(error).toBe(undefined)
-  })
-  it('should return correct data when fetchRoamType is true', async () => {
-    const expectedResult = {
-      client: {
-        connectionDetailsByAp: [],
-        connectionEvents: [],
-        connectionQualities: [],
-        incidents: []
-      }
-    }
-    mockGraphqlQuery(dataApiURL, 'ClientInfo', {
-      data: expectedResult
-    })
-    const { status, data, error } = await store.dispatch(
-      api.endpoints.clientInfo.initiate({ ...props, fetchRoamingType: true })
+      api.endpoints.clientInfo.initiate({ ...props, ...payload })
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.client)
