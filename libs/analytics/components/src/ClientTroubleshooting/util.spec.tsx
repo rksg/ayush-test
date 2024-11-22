@@ -773,10 +773,12 @@ describe('util', () => {
       }
       it('should return correct chart config', () => {
         const isVisible = expect.any(Function)
-        expect(getRoamingChartConfig(roamingData)).toEqual([
+        const data = getRoamingChartConfig(roamingData)
+        expect(data).toEqual([
           { chartType: 'bar', key: 'test1', label: 'apName1', series: 'roaming', isVisible },
           { chartType: 'bar', key: 'test2', label: 'apName2', series: 'roaming', isVisible }
         ])
+        expect(data[0].isVisible()).toEqual(true)
       })
     })
     describe('getRoamingSubtitleConfig', () => {
