@@ -1,18 +1,16 @@
 import { Map }               from 'immutable'
 import { MessageDescriptor } from 'react-intl'
 
-import { ConfigChange } from '@acx-ui/components'
-import { get }          from '@acx-ui/config'
+import { get } from '@acx-ui/config'
 
-import { apGroupKeyMap }             from './mapping/apGroupKeyMap'
-import { apKeyMap }                  from './mapping/apKeyMap'
-import { apSpecificKeyMap }          from './mapping/apSpecificKeyMap'
-import { enumMap }                   from './mapping/enumMap'
-import { ethernetPortProfileKeyMap } from './mapping/ethernetPortProfileKeyMap'
-import { intentAi }                  from './mapping/intentAi'
-import { wlanGroupKeyMap }           from './mapping/wlanGroupKeyMap'
-import { wlanKeyMap }                from './mapping/wlanKeyMap'
-import { zoneKeyMap }                from './mapping/zoneKeyMap'
+import { apGroupKeyMap }    from './mapping/apGroupKeyMap'
+import { apKeyMap }         from './mapping/apKeyMap'
+import { apSpecificKeyMap } from './mapping/apSpecificKeyMap'
+import { enumMap }          from './mapping/enumMap'
+import { intentAi }         from './mapping/intentAi'
+import { wlanGroupKeyMap }  from './mapping/wlanGroupKeyMap'
+import { wlanKeyMap }       from './mapping/wlanKeyMap'
+import { zoneKeyMap }       from './mapping/zoneKeyMap'
 
 const filteredConfigText = ['TBD', 'NA']
 
@@ -72,24 +70,4 @@ export const jsonMapping = {
     configMap: configMapGenerator(intentAi),
     enumMap: enumMapGenerator(intentAi)
   }
-}
-
-const configChangekpiMap = [
-  ...apKeyMap,
-  ...apSpecificKeyMap,
-  ...apGroupKeyMap,
-  ...ethernetPortProfileKeyMap,
-  ...wlanGroupKeyMap,
-  ...wlanKeyMap,
-  ...zoneKeyMap
-].reduce((configMap, config) => {
-  configMap[config.value] = Object.keys(config.kpis)
-  return configMap
-}, {} as Record<string, string[]>)
-
-export const filterData = (data: ConfigChange[], kpiKeys: string[], legendFilter: string[]) => {
-  return data.filter(row => legendFilter.includes(row.type))
-    .map((value, filterId)=>({ ...value, filterId })).filter(row => kpiKeys.length
-      ? kpiKeys.some(k => configChangekpiMap[row.key]?.includes(k))
-      : true)
 }

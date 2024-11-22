@@ -42,6 +42,7 @@ export function ConfigChangeChart ({
   setInitialZoom,
   setLegend,
   setSelectedData,
+  pagination,
   setPagination,
   ...props
 }: ConfigChangeChartProps) {
@@ -71,7 +72,7 @@ export function ConfigChangeChart ({
   useDotClick(eChartsRef, setSelected, onDotClick)
   useLegendSelectChanged(eChartsRef, setSelectedLegend)
   useLegendTableFilter(
-    selectedLegend, data, selectedData, setLegend, setSelectedData, setPagination)
+    selectedLegend, data, selectedData, setLegend, setSelectedData, pagination,setPagination)
   const { setBoundary } = useBoundaryChange(
     eChartsRef, chartLayoutConfig, chartBoundary, brushWidth, onBrushPositionsChange)
   const { canResetZoom, resetZoomCallback } =

@@ -1,5 +1,6 @@
 import { useContext } from 'react'
 
+import _                              from 'lodash'
 import moment                         from 'moment'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
@@ -10,41 +11,49 @@ import {
   Table as CommonTable,
   ConfigChange,
   getConfigChangeEntityTypeMapping,
-  Cascader
-}                                                    from '@acx-ui/components'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { noDataDisplay }             from '@acx-ui/utils'
+  Cascader,
+  Filter,
+  CONFIG_CHANGE_DEFAULT_PAGINATION
+}                                    from '@acx-ui/components'
+import { ConfigChangePaginationParams } from '@acx-ui/components'
+import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
+import { noDataDisplay }                from '@acx-ui/utils'
 
-import { ConfigChangeContext }  from '../context'
-import { hasConfigChange }      from '../KPI'
-import { useConfigChangeQuery } from '../services'
+import { ConfigChangeContext }                          from '../context'
+import { hasConfigChange }                              from '../KPI'
+import { usePagedConfigChangeQuery, PagedConfigChange } from '../services'
 
-import { Badge, CascaderFilterWrapper }                     from './styledComponents'
-import { EntityType, enumTextMap, filterData, jsonMapping } from './util'
+import { Badge, CascaderFilterWrapper }         from './styledComponents'
+import { EntityType, enumTextMap, jsonMapping } from './util'
 
-export function Table () {
+export function PaginatedTable () {
   const { $t } = useIntl()
+  const { pathFilters } = useAnalyticsFilter()
   const {
     timeRanges: [startDate, endDate],
     kpiFilter, applyKpiFilter,
-    legendFilter,
+    legendFilter, entityNameSearch, setEntityNameSearch, entityTypeFilter, setEntityTypeFilter,
     pagination, applyPagination,
-    selected, onRowClick, dotSelect
+    selected, dotSelect, onRowClick
   } = useContext(ConfigChangeContext)
-  const { pathFilters } = useAnalyticsFilter()
 
   const entityTypeMapping = getConfigChangeEntityTypeMapping()
 
-  const queryResults = useConfigChangeQuery({
+  const queryResults = usePagedConfigChangeQuery({
     ...pathFilters,
     startDate: startDate.toISOString(),
-    endDate: endDate.toISOString()
-  }, { selectFromResult: queryResults => ({
-    ...queryResults,
-    data: filterData(queryResults.data ?? [], kpiFilter, legendFilter)
-  }) })
+    endDate: endDate.toISOString(),
+    page: pagination.current,
+    pageSize: pagination.pageSize,
+    filterBy: {
+      kpiFilter,
+      entityName: entityNameSearch,
+      entityType: legendFilter.filter(t => (
+        _.isEmpty(entityTypeFilter) || entityTypeFilter.includes(t)))
+    }
+  })
 
-  const ColumnHeaders: TableProps<ConfigChange>['columns'] = [
+  const ColumnHeaders: TableProps<PagedConfigChange['data'][0]>['columns'] = [
     {
       key: 'timestamp',
       title: $t({ defaultMessage: 'Timestamp' }),
@@ -124,8 +133,21 @@ export function Table () {
     },
     ...(selected === null ? { selectedRowKeys: [] } : { selectedRowKeys: [selected.id!] })
   }
-  const handlePaginationChange = (current: number, pageSize: number) =>
+
+  const handlePaginationChange = (
+    current: ConfigChangePaginationParams['current'],
+    pageSize: ConfigChangePaginationParams['pageSize']
+  ) => {
     applyPagination({ current, pageSize })
+  }
+
+  const handleFilterChange = (
+    filters: Filter, search: { searchString?: string }
+  ) => {
+    applyPagination(CONFIG_CHANGE_DEFAULT_PAGINATION)
+    setEntityNameSearch(search.searchString || '')
+    setEntityTypeFilter((filters?.type as string[]) || [])
+  }
 
   const options = Object.keys(kpiConfig).reduce((agg, key)=> {
     const config = kpiConfig[key as keyof typeof kpiConfig]
@@ -151,7 +173,7 @@ export function Table () {
       <CommonTable
         settingsId='config-change-table'
         columns={ColumnHeaders}
-        dataSource={queryResults.data}
+        dataSource={queryResults.data?.data}
         rowSelection={{ type: 'radio', ...rowSelection }}
         tableAlertRender={false}
         rowKey='id'
@@ -159,10 +181,12 @@ export function Table () {
         columnEmptyText={noDataDisplay}
         pagination={{
           ...pagination,
-          total: queryResults.data?.length || 0,
+          total: queryResults.data?.total || 0,
           onChange: handlePaginationChange
         }}
         key={dotSelect}
+        enableApiFilter={true}
+        onFilterChange={handleFilterChange}
       />
     </Loader>
   </>
