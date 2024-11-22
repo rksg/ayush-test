@@ -50,7 +50,8 @@ import {
   getChartData,
   labelFormatter,
   calculateInterval,
-  getEventColor
+  getEventColor,
+  getTimelineData
 } from './util'
 
 
@@ -1023,4 +1024,21 @@ describe('util', () => {
       }
     )
   })
+
+  it('getTimelineData should return empty array for no match', () => {
+    expect(getTimelineData([], [], {}, true)).toEqual({
+      connectionEvents: {
+        'all': [],
+        'btm-request': [],
+        'btm-response': [],
+        'disconnect': [],
+        'failure': [],
+        'slow': [],
+        'success': []
+      },
+      networkIncidents: { all: [], connection: [], infrastructure: [], performance: [] },
+      roaming: { all: [] }
+    })
+  })
+
 })
