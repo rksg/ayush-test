@@ -31,6 +31,7 @@ import {
   ApCompatibilityType,
   InCompatibilityFeatures
 } from '../ApCompatibility'
+import { DhcpOption82Settings } from '../DhcpOption82Settings'
 
 import EthernetPortProfileDrawer from './EthernetPortProfileDrawer'
 import EthernetPortProfileInput  from './EthernetPortProfileInput'
@@ -244,7 +245,9 @@ export function LanPortSettings (props: {
         currentEthernetPortData={currentEthernetPortData}
         currentIndex={index}
         onGUIChanged={onGUIChanged}
-        isEditable={!!serialNumber} /></>) :
+        isEditable={!!serialNumber} />
+      <DhcpOption82Settings />
+      </>) :
       (<>
         <Form.Item
           name={['lan', index, 'type']}
