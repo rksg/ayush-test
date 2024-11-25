@@ -25,12 +25,13 @@ export const getRomaingTypeDisplayText = (roamingType: string) => {
   switch (roamingType) {
     case 'OKC': return $t({ defaultMessage: 'OKC Roaming' })
     case 'PMK': return $t({ defaultMessage: 'PMKID Roaming' })
+    case 'Full Authentication':
     case 'full-802.11': return $t({ defaultMessage: 'Full Authentication' })
     case '11r':
-    case 'FT Over-the-Air':
+    case 'FT - Over-the-Air':
       return $t({ defaultMessage: '11r Over-the-Air' })
-    case 'FT Over-the-DS': return $t({ defaultMessage: '11r Over-the-DS' })
-    default: return $t({ defaultMessage: '{roamingType}' },{ roamingType })
+    case 'FT - Over-the-DS': return $t({ defaultMessage: '11r Over-the-DS' })
+    default: return roamingType
   }
 }
 export const getConnectionDetails = (event: DisplayEvent) => {

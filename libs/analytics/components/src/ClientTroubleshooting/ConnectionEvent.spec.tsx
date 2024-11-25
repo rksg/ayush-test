@@ -291,9 +291,10 @@ describe('ConnectionEvent', () => {
       { type: 'PMK', text: 'PMKID Roaming' },
       { type: 'full-802.11', text: 'Full Authentication' },
       { type: '11r', text: '11r Over-the-Air' },
-      { type: 'FT Over-the-Air', text: '11r Over-the-Air' },
-      { type: 'FT Over-the-DS', text: '11r Over-the-DS' },
-      { type: 'Full Authentication', text: 'Full Authentication' } // unmapped
+      { type: 'FT - Over-the-Air', text: '11r Over-the-Air' },
+      { type: 'FT - Over-the-DS', text: '11r Over-the-DS' },
+      { type: 'Full Authentication', text: 'Full Authentication' },
+      { type: 'random', text: 'random' } // unmapped
     ].forEach(({ type, text }) => {
       expect(getRomaingTypeDisplayText(type)).toBe(text)
     })
