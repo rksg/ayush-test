@@ -115,29 +115,21 @@ export default function RuckusAiButton () {
           {$t({ defaultMessage: 'Start' })}
         </Button>
       case RuckusAiStepsEnum.VERTICAL:
-        return <>
-          <Button key='back'
-            onClick={() => {
-              setStep(RuckusAiStepsEnum.WELCOME)
-            }}>
-            {$t({ defaultMessage: 'Back' })}
-          </Button>
-          <Button key='next'
-            type='primary'
-            loading={isLoading}
-            onClick={async () => {
-              basicFormRef.validateFields().then(() => {
-                const result = basicFormRef.getFieldsValue()
-                const type = result.venueType === 'OTHER' ? result.othersValue : result.venueType
-                setVenueType(type)
-                setStep(RuckusAiStepsEnum.BASIC)
-              }).catch(() => {
-                return
-              })
-            }}>
-            {$t({ defaultMessage: 'Next' })}
-          </Button>
-        </>
+        return <Button key='next'
+          type='primary'
+          loading={isLoading}
+          onClick={async () => {
+            basicFormRef.validateFields().then(() => {
+              const result = basicFormRef.getFieldsValue()
+              const type = result.venueType === 'OTHER' ? result.othersValue : result.venueType
+              setVenueType(type)
+              setStep(RuckusAiStepsEnum.BASIC)
+            }).catch(() => {
+              return
+            })
+          }}>
+          {$t({ defaultMessage: 'Next' })}
+        </Button>
       case RuckusAiStepsEnum.BASIC:
         return <>
           <Button key='back'
