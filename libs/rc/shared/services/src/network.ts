@@ -657,7 +657,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const NetworkListReq = {
           ...createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, undefined, customHeaders),
           body: JSON.stringify({
-            ...arg.payload!,
+            ...(arg.payload as Record<string, unknown>),
             filters: {
               'venueApGroups.apGroupIds': [apGroupId]
             }

@@ -4,6 +4,8 @@ import { useTreatments } from '@splitsoftware/splitio-react'
 
 import { useTenantId } from '@acx-ui/utils'
 
+import { Features } from './features'
+
 enum FeatureFlag {
   ON = 'on',
   OFF = 'off'
@@ -19,5 +21,5 @@ export const useIsSplitOn: UseSplitOnType = (splitName) => {
   if(splitName === 'removable-ff') {
     return true
   }
-  return treatment === FeatureFlag.ON
+  return splitName === Features.EDGE_PIN_HA_TOGGLE || treatment === FeatureFlag.ON
 }

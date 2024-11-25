@@ -1,5 +1,5 @@
-import { Typography } from 'antd'
-import styled         from 'styled-components/macro'
+import { Form, Typography } from 'antd'
+import styled, { css }      from 'styled-components/macro'
 
 export const StyledFeatureName = styled(Typography.Text)`
   font-size: var(--acx-subtitle-4-font-size);
@@ -16,19 +16,15 @@ export const StyledDeviceTypeTitle = styled(Typography.Text)`
   margin-bottom: 8px;
 `
 
-export const detailStyle = {
-  fontSize: '13px',
-  lineHeight: '13px',
-  minHeight: '13px'
-}
-
-export const StyledWrapper = styled.div`
-  .ApCompatibilityDrawerFormItem .ant-form-item-control-input {
+export const StyledFormItem = styled(Form.Item)`
+  &, & .ant-form-item-control-input {
+    font-size: 13px;  
+    line-height: 13px;
     min-height: 13px;
-  }
+}
 `
 
-export const StyledRequirementWrapper = styled.div`
+const StyledRequirementWrapperCss = css`
   background-color: var(--acx-neutrals-10);
   border-radius: 4px;
   padding: 15px 10px 5px 10px;
@@ -36,6 +32,22 @@ export const StyledRequirementWrapper = styled.div`
     margin-bottom: 10px;
   }
 `
+export const StyledRequirementWrapper = styled.div`
+ ${StyledRequirementWrapperCss}
+`
+
+export const StyleDiv = styled.div<{ $hasBackgeound: boolean }>`
+  display: flex;
+  flex-direction: column;
+
+  ${props => (props.$hasBackgeound)
+    ? `& div.hasBackgeound {
+        ${StyledRequirementWrapperCss}
+      }
+      `
+    :undefined};
+`
+
 export const StyledApModelFamilyWrapper = styled.div<{ tagWidth: string }>`
   display: grid;
   grid-template-columns: ${props => props.tagWidth} auto;

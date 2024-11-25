@@ -1,4 +1,4 @@
-import { ApCompatibility, ApIncompatibleFeature, Compatibility, CompatibilityDeviceEnum, IncompatibleFeature, isEdgeCompatibilityFeature } from '@acx-ui/rc/utils'
+import { ApCompatibility, ApCompatibilityResponse, ApIncompatibleFeature, Compatibility, CompatibilityDeviceEnum, IncompatibilityFeatures, IncompatibleFeature, isEdgeCompatibilityFeature } from '@acx-ui/rc/utils'
 
 export const apCompatibilityDataGroupByFeatureDeviceType = (data: ApCompatibility):
  Record<string, ApIncompatibleFeature[]> => {
@@ -26,4 +26,30 @@ export const compatibilityDataGroupByFeatureDeviceType = (data: Compatibility):
   })
 
   return deviceMap
+}
+
+
+// for old API
+// eslint-disable-next-line max-len
+export const mergeFilterApCompatibilitiesResultByRequiredFeatures = (results: ApCompatibilityResponse[], requiredFeatures: IncompatibilityFeatures[]): ApCompatibility => {
+  const merged = { incompatible: 0 } as ApCompatibility
+
+  const incompatibleFeatures: ApIncompatibleFeature[] = []
+  results.forEach(result => {
+    const apCompatibility = result.apCompatibilities[0]
+
+    if (merged.incompatible < apCompatibility.incompatible) {
+      merged.id = apCompatibility.id
+      merged.incompatible = apCompatibility.incompatible
+      merged.total = apCompatibility.total
+    }
+
+    incompatibleFeatures.push(...((apCompatibility.incompatibleFeatures
+      ?.filter(feature =>
+        requiredFeatures.includes(feature.featureName as IncompatibilityFeatures)
+      )) ?? []))
+  })
+
+  merged.incompatibleFeatures = incompatibleFeatures
+  return merged
 }
