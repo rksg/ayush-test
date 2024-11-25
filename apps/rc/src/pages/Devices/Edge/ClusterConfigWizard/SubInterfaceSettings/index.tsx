@@ -102,17 +102,29 @@ export const SubInterfaceSettings = () => {
   }
 
   const applyAndFinish = async (value: SubInterfaceSettingsFormType) => {
+    const checkResult = getCompatibleCheckResult()
+    if (checkResult.isError) {
+      return false
+    }
+
     await invokeUpdateApi(
       value,
       () => navigate(clusterListPage)
     )
+    return true
   }
 
   const applyAndContinue = async (value: SubInterfaceSettingsFormType) => {
+    const checkResult = getCompatibleCheckResult()
+    if (checkResult.isError) {
+      return false
+    }
+
     await invokeUpdateApi(
       value,
       () => navigate(selectTypePage)
     )
+    return true
   }
 
   const handleCancel = () => {
