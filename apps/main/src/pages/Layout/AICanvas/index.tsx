@@ -1,10 +1,10 @@
 import { useState } from 'react'
 
-import { Space, Divider } from 'antd'
+import { Space, Divider, message } from 'antd'
 import { useIntl }        from 'react-intl'
 
 import { Button, cssStr }    from '@acx-ui/components'
-import { HistoricalOutlined, Plus, RuckusAiDog } from '@acx-ui/icons'
+import { HistoricalOutlined, Plus, RuckusAiDog, SendMessageOutlined } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 import Grid from '../Grid'
@@ -20,16 +20,35 @@ export default function AICanvas (
   // const { visible, setVisible } = props
   const [ sectionsSubVisible, setSectionsSubVisible ] = useState(false)
   const [ restoreSubVisible, setRestoreSubVisible ] = useState(false)
+  const [messages, setMessages] = useState([{
+    id:'1',
+    type: 'me',
+    text: 'Generate Network Health Overview Widget'
+  }]);
   const [ dirty, setDirty ] = useState(false)
+  const [ searchText, setSearchText ] = useState('')
   const siderWidth = localStorage.getItem('acx-sider-width') || cssStr('--acx-sider-width')
   const linkToDashboard = useTenantLink('/dashboard')
-
+  const placeholder = 'Enter a description to generate widgets based on your needs. The more you describe, the better widgets I can recommend.'
+  const onKeyDown = (event: React.KeyboardEvent) => event.key === 'Enter' && handleSearch()
+  const handleSearch = () => {
+    if (searchText.length <= 1) return
+  }
   const onClose = () => {
     setDirty(false)
     setSectionsSubVisible(false)
     // setVisible(false)
     navigate(linkToDashboard)
   }
+
+  // const Message = ({ message: {
+  //   type: string,
+  //   text: string
+  // } }) => {
+  //   return   <div className={`chat-bubble ${message.type === 'me' ? "right" : ""}`}>
+  //   {message.text}
+  //   </div>
+  // }
 
   return (
     <UI.Preview $siderWidth={siderWidth} $subToolbar={sectionsSubVisible || restoreSubVisible}>
@@ -40,12 +59,38 @@ export default function AICanvas (
             <span>RUCKUS AI</span>
           </div>
           <div className='actions'>
-            <Button icon={<Plus />} onClick={()=>{onClose()}} />
-            <Button icon={<HistoricalOutlined />} onClick={()=>{onClose()}} />
+            <Button icon={<Plus />} onClick={()=>{}} />
+            <Button icon={<HistoricalOutlined />} onClick={()=>{}} />
           </div>
         </div>
         <div className='content'>
-          Hi
+          <div className='chatroom'>
+            <div className='placeholder'>
+              <div>“Generate Network Health Overview Widget”</div>
+              <div>“Device Inventory & Status Tracker Widget”</div>
+              <div>“Real-Time Traffic Analysis Widget”</div>
+              <div>“Bandwidth Utilization by Device Widget”</div>
+            </div>
+            <div className="messages-wrapper">
+              {/* {messages?.map((message) => (
+                <Message key={message.id} message={message} />
+              ))} */}
+            </div>
+            <div className="input">
+              <UI.Input
+                autoFocus
+                value={searchText}
+                onChange={({ target: { value } }) => setSearchText(value)}
+                onKeyDown={onKeyDown}
+                data-testid='search-input'
+                rows={10}
+                placeholder={placeholder}
+              />
+              <Button icon={<SendMessageOutlined />} onClick={()=>{}} />
+            </div>
+          </div>
+          <div className='widgets'>
+          </div>
         </div>
       </div>
       <div className='canvas'>
@@ -64,12 +109,10 @@ export default function AICanvas (
               {$t({ defaultMessage: 'Preview' })}
             </Button>
           </div>
-            
+        </div>
+        <div className='grid'>
         </div>
       </div>
-      {/* <div className='modal-content'>
-        Hi
-      </div> */}
     </UI.Preview>
   )
 }

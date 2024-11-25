@@ -1,6 +1,10 @@
 import styled from 'styled-components/macro'
+import { Input as AntInput } from 'antd'
 
 import { ArrowChevronRight } from '@acx-ui/icons'
+
+import RuckusAiBackground from './assets/RuckusAiBackground.svg'
+import CanvasBackground from './assets/CanvasBackground.svg'
 
 export const ArrowChevronRightIcons = styled(ArrowChevronRight)`
   width: 16px;
@@ -20,6 +24,16 @@ export const MenuExpandArrow = styled(ArrowChevronRight)`
   width: 16px;
   height: 16px;
   margin: 0.3em;
+`
+
+export const Input = styled(AntInput.TextArea)`
+  height: 28px;
+  font-size: 12px;
+  background: transparent;
+  border: none;
+  .ant-input::placeholder {
+    color: var(--acx-neutrals-50);
+  }
 `
 
 export const Preview = styled.div.attrs((props: {
@@ -67,12 +81,49 @@ border-top: 75px solid rgba(255,255,255, 0.4);
   }
   .content {
     background-color: #fefefe;
+    background-image: url(${RuckusAiBackground});
+    background-repeat: no-repeat;
     height: calc(100vh - 120px);
     width: 45%;
     position: fixed;
     top: 120px;
-    padding: 40px;
     overflow: auto;
+    display: flex;
+    .widgets {
+      width: 300px;
+      border-left: 1px solid #E5E5E5;
+      height: calc(100vh - 120px);
+    }
+    .chatroom {
+      width: calc(100% - 300px);
+      .placeholder {
+        display: flex;
+        flex-direction: column;
+        margin-top: 20px;
+        div{
+          background-color: var(--acx-primary-white);
+          color: var(--acx-neutrals-80);
+          border-radius: 15px;
+          height: 30px;
+          width: fit-content;
+          padding: 7px 10px;
+          margin: 7px auto;
+          opacity: 0.6;
+        }
+      }
+      .input {
+        background-color: var(--acx-primary-white);
+        height: 150px;
+        position: fixed;
+        bottom: 0;
+        width: calc(45% - 300px);
+        button {
+          position: fixed;
+          left: calc(45% - 350px);
+          bottom: 10px;
+        }
+      }
+    }
   }
 }
 
@@ -104,6 +155,12 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         }
       }
     }
+  }
+  .grid {
+    background-color: var(--acx-neutrals-30);
+    background-image: url(${CanvasBackground});
+    height: calc(100vh - 120px);
+    border-left: 1px solid #E5E5E5;
   }
 }
 
