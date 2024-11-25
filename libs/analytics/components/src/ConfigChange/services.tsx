@@ -5,6 +5,11 @@ import { CONFIG_CHANGE_DEFAULT_PAGINATION, type ConfigChange } from '@acx-ui/com
 import { dataApi }                                             from '@acx-ui/store'
 import { NetworkPath, PathFilter }                             from '@acx-ui/utils'
 
+export enum SORTER_ABBR {
+  DESC = 'descending',
+  ASC = 'ascending'
+}
+
 interface Response<T> { network: { hierarchyNode: T } }
 
 interface KpiChangesParams {
@@ -58,11 +63,14 @@ export const api = dataApi.injectEndpoints({
       }),
       transformResponse: (
         response: Response<{ configChanges: ConfigChange[] }>) =>
-        response.network.hierarchyNode.configChanges.map((value, id)=>({ ...value, id }))
+        response.network.hierarchyNode.configChanges
+          .sort((a, b) => Number(b.timestamp) - Number(a.timestamp))
+          .map((value, id)=>({ ...value, id }))
     }),
     pagedConfigChange: build.query<
       PagedConfigChange,
-      PathFilter & ConfigChangePaginationParams & { filterBy?: ConfigChangeFilterParams }
+      PathFilter & ConfigChangePaginationParams & {
+        filterBy?: ConfigChangeFilterParams, sortBy?: string }
     >({
       query: (payload) => ({
         document: gql`
@@ -72,7 +80,8 @@ export const api = dataApi.injectEndpoints({
           $endDate: DateTime,
           $page: Int
           $pageSize: Int
-          $filterBy: JSON
+          $filterBy: JSON,
+          $sortBy: String
         ) {
           network(start: $startDate, end: $endDate) {
             hierarchyNode(path: $path) {
@@ -80,6 +89,7 @@ export const api = dataApi.injectEndpoints({
                 page: $page
                 pageSize: $pageSize
                 filterBy: $filterBy
+                sortBy: $sortBy
               ) {
                 total
                 data {
@@ -96,27 +106,32 @@ export const api = dataApi.injectEndpoints({
         }
       `,
         variables: pick(payload, [
-          'path', 'startDate', 'endDate', 'page', 'pageSize', 'filterBy'])
+          'path', 'startDate', 'endDate', 'page', 'pageSize', 'filterBy', 'sortBy'])
       }),
       transformResponse: (
         response: Response<{ pagedConfigChanges: PagedConfigChange }>,
         _,
-        payload: ConfigChangePaginationParams
+        payload: ConfigChangePaginationParams & { sortBy?: string }
       ) => {
+        const page = payload.page || CONFIG_CHANGE_DEFAULT_PAGINATION.current
+        const pageSize = payload.pageSize || CONFIG_CHANGE_DEFAULT_PAGINATION.pageSize
+        const total = response.network.hierarchyNode.pagedConfigChanges.total
         return {
           ...response.network.hierarchyNode.pagedConfigChanges,
           data: response.network.hierarchyNode.pagedConfigChanges.data
-            .map((value, id)=>({
-              ...value,
-              id: ((payload.page || CONFIG_CHANGE_DEFAULT_PAGINATION.current) - 1) *
-                    (payload.pageSize || CONFIG_CHANGE_DEFAULT_PAGINATION.pageSize) + id
-            }))
+            // TODO: remove filterId while removeing CONFIG_CHANGE_PAGINATION
+            .map((value, index)=>{
+              const id = (payload.sortBy === SORTER_ABBR.DESC)
+                ? (page - 1) * pageSize + index
+                : total - ((page - 1)* pageSize + index) - 1
+              return { ...value, id, filterId: id }
+            })
         }
       }
     }),
     configChangeSeries: build.query<
       ConfigChange[],
-      PathFilter & { filterBy?: ConfigChangeFilterParams }
+      PathFilter & { filterBy?: ConfigChangeFilterParams, sortBy?: string }
     >({
       query: (payload) => ({
         document: gql`
@@ -124,20 +139,26 @@ export const api = dataApi.injectEndpoints({
           $path: [HierarchyNodeInput],
           $startDate: DateTime,
           $endDate: DateTime,
-          $filterBy: JSON
+          $filterBy: JSON,
+          $sortBy: String
         ) {
           network(start: $startDate, end: $endDate) {
             hierarchyNode(path: $path) { 
-              configChangeSeries(filterBy: $filterBy) { timestamp type } 
+              configChangeSeries(filterBy: $filterBy, sortBy: $sortBy) { timestamp type } 
             }
           }
         }
       `,
-        variables: pick(payload, ['path', 'startDate', 'endDate', 'filterBy'])
+        variables: {
+          ...pick(payload, ['path', 'startDate', 'endDate', 'filterBy']),
+          sortBy: 'descending'
+        }
       }),
       transformResponse: (
         response: Response<{ configChangeSeries: ConfigChange[] }>) =>
-        response.network.hierarchyNode.configChangeSeries.map((value, id)=>({ ...value, id }))
+        response.network.hierarchyNode.configChangeSeries
+          // TODO: remove filterId while removeing CONFIG_CHANGE_PAGINATION
+          .map((value, id)=>({ ...value, id, filterId: id }))
     }),
     configChangeKPIChanges: build.query<
       { before: Record<string, number>, after: Record<string, number> },

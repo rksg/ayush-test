@@ -5,7 +5,7 @@ import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import { Chart }                from './Chart'
 import { ConfigChangeProvider } from './context'
 import { KPIs }                 from './KPI'
-import { PaginatedTable }       from './PaginatedTable'
+import { PagedTable }           from './PagedTable'
 import { SyncedChart }          from './SyncedChart'
 import { Table }                from './Table'
 
@@ -23,7 +23,7 @@ export function ConfigChange () {
       </GridCol>
       <GridCol col={{ span: 8 }}><KPIs/></GridCol>
       <GridCol col={{ span: 16 }} style={{ minHeight: '180px' }}>
-        { isPaged ? <PaginatedTable /> : <Table/> }
+        { isPaged ? <PagedTable /> : <Table/> }
       </GridCol>
     </GridRow>
   </ConfigChangeProvider>

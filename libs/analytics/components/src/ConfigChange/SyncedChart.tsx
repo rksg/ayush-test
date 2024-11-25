@@ -5,7 +5,6 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 
 import { useAnalyticsFilter }              from '@acx-ui/analytics/utils'
 import { Card, ConfigChangeChart, Loader } from '@acx-ui/components'
-import type { ConfigChange }               from '@acx-ui/components'
 
 import { ConfigChangeContext }        from './context'
 import { useConfigChangeSeriesQuery } from './services'
@@ -17,7 +16,7 @@ function BasicChart (){
     kpiFilter, legendFilter, applyLegendFilter,
     entityNameSearch, entityTypeFilter,
     pagination, applyPagination,
-    selected, setSelected, onDotClick: onClick,
+    selected, setSelected, onDotClick,
     chartZoom, setChartZoom, setInitialZoom
   } = useContext(ConfigChangeContext)
 
@@ -36,11 +35,6 @@ function BasicChart (){
   useEffect(() => {
     setChartZoom?.({ start: startDate.valueOf(), end: endDate.valueOf() })
   }, [dateRange])
-
-  const onDotClick = (params: ConfigChange) => {
-    // applyKpiFilter([])
-    onClick(params)
-  }
 
   return <Loader states={[queryResults]}>
     <Card type='no-border'>

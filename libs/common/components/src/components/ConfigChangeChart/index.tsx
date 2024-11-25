@@ -34,14 +34,14 @@ import type { EChartsOption, SeriesOption } from 'echarts'
 export function ConfigChangeChart ({
   data,
   chartBoundary,
-  selectedData,
-  onDotClick,
   onBrushPositionsChange,
   chartZoom,
   setChartZoom,
   setInitialZoom,
-  setLegend,
+  selectedData,
   setSelectedData,
+  setLegend,
+  onDotClick,
   pagination,
   setPagination,
   ...props
@@ -60,7 +60,8 @@ export function ConfigChangeChart ({
   const [selected, setSelected] = useState<number|undefined>(selectedData?.id)
 
   useEffect(() => {
-    setSelected(selectedData?.filterId)
+    // TODO: remove filterId while removeing CONFIG_CHANGE_PAGINATION
+    setSelected(selectedData?.filterId || selectedData?.id)
   }, [selectedData])
 
   const [selectedLegend, setSelectedLegend] = useState(
@@ -72,7 +73,7 @@ export function ConfigChangeChart ({
   useDotClick(eChartsRef, setSelected, onDotClick)
   useLegendSelectChanged(eChartsRef, setSelectedLegend)
   useLegendTableFilter(
-    selectedLegend, data, selectedData, setLegend, setSelectedData, pagination,setPagination)
+    selectedLegend, data, selectedData, setSelectedData, setLegend, pagination,setPagination)
   const { setBoundary } = useBoundaryChange(
     eChartsRef, chartLayoutConfig, chartBoundary, brushWidth, onBrushPositionsChange)
   const { canResetZoom, resetZoomCallback } =

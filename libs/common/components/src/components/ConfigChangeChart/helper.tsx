@@ -5,6 +5,7 @@ import { debounce }                        from 'lodash'
 import { renderToString }                  from 'react-dom/server'
 
 import { get }                              from '@acx-ui/config'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }        from '@acx-ui/formatter'
 import { getIntl, TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
@@ -45,14 +46,14 @@ type OnDatazoomEvent = { batch: { startValue: number, endValue: number }[] }
 export interface ConfigChangeChartProps extends Omit<EChartsReactProps, 'option' | 'opts'> {
   data: ConfigChange[]
   chartBoundary: [ number, number],
-  selectedData?: ConfigChange,
-  onDotClick?: (params: ConfigChange) => void,
   onBrushPositionsChange?: (params: number[][]) => void,
   chartZoom?: { start: number, end: number },
   setChartZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
   setInitialZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
-  setLegend?: (legend: Record<string, boolean>) => void,
+  selectedData?: ConfigChange,
   setSelectedData?: React.Dispatch<React.SetStateAction<ConfigChange | null>>,
+  onDotClick?: (params: ConfigChange) => void,
+  setLegend?: (legend: Record<string, boolean>) => void,
   pagination?: ConfigChangePaginationParams,
   setPagination?: (params: { current: number, pageSize: number }) => void
 }
@@ -425,11 +426,15 @@ export function useLegendTableFilter (
   selectedLegend: Record<string, boolean>,
   data: ConfigChange[],
   selectedData?: ConfigChange,
-  setLegend?: (legend: Record<string, boolean>) => void,
   setSelectedData?: React.Dispatch<React.SetStateAction<ConfigChange | null>>,
+  setLegend?: (legend: Record<string, boolean>) => void,
   pagination?: ConfigChangePaginationParams,
   setPagination?: (params: { current: number, pageSize: number }) => void
 ){
+  const isMLISA = get('IS_MLISA_SA')
+  const isPagedConfigChange = useIsSplitOn(Features.CONFIG_CHANGE_PAGINATION)
+  const isPaged = Boolean(isMLISA || isPagedConfigChange)
+
   useEffect(() => {
     const chartRowMapping = getConfigChangeEntityTypeMapping()
     setLegend?.(selectedLegend)
@@ -438,10 +443,17 @@ export function useLegendTableFilter (
       ({ key }) => key === selectedConfig[0]?.type)[0]?.label
 
     selectedLegend[selectedType] === false && setSelectedData?.(null)
-    // const pageSize = pagination?.pageSize || CONFIG_CHANGE_DEFAULT_PAGINATION.pageSize
-    // const current = Math.ceil((selectedConfig[0]?.filterId! + 1) / pageSize) ||
-    //   CONFIG_CHANGE_DEFAULT_PAGINATION.current
-    // setPagination?.({ current, pageSize })
+    const pageSize = pagination?.pageSize || CONFIG_CHANGE_DEFAULT_PAGINATION.pageSize
+
+    if(isPaged){
+      setPagination?.(CONFIG_CHANGE_DEFAULT_PAGINATION)
+    }
+    else {
+      setPagination?.({
+        current: Math.ceil((selectedConfig[0]?.filterId! + 1) / pageSize),
+        pageSize: pageSize
+      })
+    }
   }, [selectedLegend, data.length])
 }
 

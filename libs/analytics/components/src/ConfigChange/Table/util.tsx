@@ -87,6 +87,7 @@ const configChangekpiMap = [
   return configMap
 }, {} as Record<string, string[]>)
 
+// TODO: remove filterData while removeing CONFIG_CHANGE_PAGINATION
 export const filterData = (data: ConfigChange[], kpiKeys: string[], legendFilter: string[]) => {
   return data.filter(row => legendFilter.includes(row.type))
     .map((value, filterId)=>({ ...value, filterId })).filter(row => kpiKeys.length

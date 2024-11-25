@@ -46,8 +46,11 @@ const KPI = ({ apiMetric, kpiKey, label, format, deltaSign, values }: KPIProps) 
   const { $t } = useIntl()
   const { trend, value } =
     kpiDelta(values?.before[apiMetric], values?.after[apiMetric], deltaSign, format)
-  const { kpiFilter, setKpiFilter } = useContext(ConfigChangeContext)
-  return <div onClick={() => setKpiFilter?.(kpiKey)}>
+  const { kpiFilter, setKpiFilter, reset } = useContext(ConfigChangeContext)
+  return <div onClick={() => {
+    reset()
+    setKpiFilter?.(kpiKey)
+  }}>
     <Statistic
       className={kpiFilter.includes(kpiKey) ? 'statistic-selected' : undefined}
       title={$t(label, productNames)}

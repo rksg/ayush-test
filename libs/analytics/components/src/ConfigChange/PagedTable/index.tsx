@@ -1,10 +1,11 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 
+import { SorterResult }               from 'antd/lib/table/interface'
 import _                              from 'lodash'
 import moment                         from 'moment'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
-import { defaultSort, sortProp, useAnalyticsFilter, kpiConfig, productNames } from '@acx-ui/analytics/utils'
+import { useAnalyticsFilter, kpiConfig, productNames } from '@acx-ui/analytics/utils'
 import {
   Loader,
   TableProps,
@@ -12,21 +13,29 @@ import {
   ConfigChange,
   getConfigChangeEntityTypeMapping,
   Cascader,
-  Filter,
-  CONFIG_CHANGE_DEFAULT_PAGINATION
+  Filter
 }                                    from '@acx-ui/components'
 import { ConfigChangePaginationParams } from '@acx-ui/components'
 import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
 import { noDataDisplay }                from '@acx-ui/utils'
 
-import { ConfigChangeContext }                          from '../context'
-import { hasConfigChange }                              from '../KPI'
-import { usePagedConfigChangeQuery, PagedConfigChange } from '../services'
+import { ConfigChangeContext }                                       from '../context'
+import { hasConfigChange }                                           from '../KPI'
+import { usePagedConfigChangeQuery, PagedConfigChange, SORTER_ABBR } from '../services'
 
 import { Badge, CascaderFilterWrapper }         from './styledComponents'
 import { EntityType, enumTextMap, jsonMapping } from './util'
 
-export function PaginatedTable () {
+const DEFAULT_SORTER = {
+  sortField: 'timestamp',
+  sortOrder: SORTER_ABBR.DESC
+}
+
+const transferSorter = (order:string) => {
+  return order === 'ascend' ? SORTER_ABBR.ASC : SORTER_ABBR.DESC
+}
+
+export function PagedTable () {
   const { $t } = useIntl()
   const { pathFilters } = useAnalyticsFilter()
   const {
@@ -34,10 +43,10 @@ export function PaginatedTable () {
     kpiFilter, applyKpiFilter,
     legendFilter, entityNameSearch, setEntityNameSearch, entityTypeFilter, setEntityTypeFilter,
     pagination, applyPagination,
-    selected, dotSelect, onRowClick
+    selected, onRowClick,
+    sorter, setSorter, reset
   } = useContext(ConfigChangeContext)
 
-  const entityTypeMapping = getConfigChangeEntityTypeMapping()
 
   const queryResults = usePagedConfigChangeQuery({
     ...pathFilters,
@@ -50,8 +59,16 @@ export function PaginatedTable () {
       entityName: entityNameSearch,
       entityType: legendFilter.filter(t => (
         _.isEmpty(entityTypeFilter) || entityTypeFilter.includes(t)))
-    }
+    },
+    sortBy: sorter
   })
+
+  useEffect(
+    ()=> applyPagination({ total: queryResults.data?.total || 0 }),
+    [queryResults]
+  )
+
+  const entityTypeMapping = getConfigChangeEntityTypeMapping()
 
   const ColumnHeaders: TableProps<PagedConfigChange['data'][0]>['columns'] = [
     {
@@ -60,7 +77,8 @@ export function PaginatedTable () {
       dataIndex: 'timestamp',
       render: (_, { timestamp }) =>
         formatter(DateFormatEnum.DateTimeFormat)(moment(Number(timestamp))),
-      sorter: { compare: sortProp('timestamp', defaultSort) },
+      defaultSortOrder: 'descend',
+      sorter: true,
       width: 130
     },
     {
@@ -72,7 +90,6 @@ export function PaginatedTable () {
         return config ? <Badge key={row.id} color={config.color} text={config.label}/> : row.type
       },
       filterable: entityTypeMapping.map(({ label, ...rest }) => ({ ...rest, value: label })),
-      sorter: { compare: sortProp('type', defaultSort) },
       width: 100
     },
     {
@@ -80,8 +97,7 @@ export function PaginatedTable () {
       title: $t({ defaultMessage: 'Entity Name' }),
       dataIndex: 'name',
       render: (_, { name }, __, highlightFn) => highlightFn(String(name)),
-      searchable: true,
-      sorter: { compare: sortProp('name', defaultSort) }
+      searchable: true
     },
     {
       key: 'key',
@@ -90,8 +106,7 @@ export function PaginatedTable () {
       render: (_, { type, key }) => {
         const value = jsonMapping[type as EntityType].configMap.get(key, key)
         return (typeof value === 'string') ? value : $t(value as MessageDescriptor)
-      },
-      sorter: { compare: sortProp('key', defaultSort) }
+      }
     },
     {
       key: 'oldValues',
@@ -106,8 +121,7 @@ export function PaginatedTable () {
             ? mapped : $t(mapped as MessageDescriptor)
         })
         return generateValues.join(', ')
-      },
-      sorter: { compare: sortProp('oldValues', defaultSort) }
+      }
     },
     {
       key: 'newValues',
@@ -122,8 +136,7 @@ export function PaginatedTable () {
             ? mapped : $t(mapped as MessageDescriptor)
         })
         return generateValues.join(', ')
-      },
-      sorter: { compare: sortProp('newValues', defaultSort) }
+      }
     }
   ]
 
@@ -144,9 +157,18 @@ export function PaginatedTable () {
   const handleFilterChange = (
     filters: Filter, search: { searchString?: string }
   ) => {
-    applyPagination(CONFIG_CHANGE_DEFAULT_PAGINATION)
+    reset()
     setEntityNameSearch(search.searchString || '')
     setEntityTypeFilter((filters?.type as string[]) || [])
+  }
+
+  const handleTableChange: TableProps<ConfigChange>['onChange'] = (
+    _, __, customSorter, customAction
+  ) => {
+    const order = (customSorter as SorterResult<ConfigChange>).order
+    if(customAction.action === 'sort') {
+      setSorter(order ? transferSorter(order) : DEFAULT_SORTER.sortOrder)
+    }
   }
 
   const options = Object.keys(kpiConfig).reduce((agg, key)=> {
@@ -164,8 +186,10 @@ export function PaginatedTable () {
         defaultValue={kpiFilter.map(kpi=>[kpi])}
         placeholder={$t({ defaultMessage: 'Add KPI filter' })}
         options={options}
-        onApply={selectedOptions =>
-          applyKpiFilter(selectedOptions?.length ? selectedOptions?.flat() as string[] : [])}
+        onApply={selectedOptions => {
+          reset()
+          applyKpiFilter(selectedOptions?.length ? selectedOptions?.flat() as string[] : [])
+        }}
         allowClear
       />
     </CascaderFilterWrapper>
@@ -184,9 +208,9 @@ export function PaginatedTable () {
           total: queryResults.data?.total || 0,
           onChange: handlePaginationChange
         }}
-        key={dotSelect}
         enableApiFilter={true}
         onFilterChange={handleFilterChange}
+        onChange={handleTableChange}
       />
     </Loader>
   </>
