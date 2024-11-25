@@ -3,20 +3,12 @@ import { useState } from 'react'
 import { Space, Divider } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Button, cssStr }                                                                                                                                                                from '@acx-ui/components'
-import { RuckusAiDog } from '@acx-ui/icons'
+import { Button, cssStr }    from '@acx-ui/components'
+import { HistoricalOutlined, Plus, RuckusAiDog } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 import Grid from '../Grid'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-
-const enum ToolbarItems {
-  AddWidgets,
-  Sections,
-  Timeline,
-  Restore,
-  Clear
-}
 
 export default function AICanvas (
 //   props: {
@@ -31,27 +23,7 @@ export default function AICanvas (
   const [ dirty, setDirty ] = useState(false)
   const siderWidth = localStorage.getItem('acx-sider-width') || cssStr('--acx-sider-width')
   const linkToDashboard = useTenantLink('/dashboard')
-  const onClickToolbar = (item?: ToolbarItems) => {
-    if(!dirty){
-      setDirty(true)
-    }
-    if(item !== ToolbarItems.Sections){
-      setSectionsSubVisible(false)
-    }
-    if(item !== ToolbarItems.Restore){
-      setRestoreSubVisible(false)
-    }
-    switch(item) {
-      case ToolbarItems.Sections:
-        setSectionsSubVisible(true)
-        break
-      case ToolbarItems.Restore:
-        setRestoreSubVisible(true)
-        break
-      default:
-        // setVisible(false)
-    }
-  }
+
   const onClose = () => {
     setDirty(false)
     setSectionsSubVisible(false)
@@ -61,30 +33,43 @@ export default function AICanvas (
 
   return (
     <UI.Preview $siderWidth={siderWidth} $subToolbar={sectionsSubVisible || restoreSubVisible}>
-      <div className='toolbar'>
-        <RuckusAiDog />
+      <div className='chat'>
+        <div className='header'>
+          <div className='title'>
+            <RuckusAiDog />
+            <span>RUCKUS AI</span>
+          </div>
+          <div className='actions'>
+            <Button icon={<Plus />} onClick={()=>{onClose()}} />
+            <Button icon={<HistoricalOutlined />} onClick={()=>{onClose()}} />
+          </div>
+        </div>
+        <div className='content'>
+          Hi
+        </div>
       </div>
-      <div className='modal-content'>
-        <Grid />
-      </div>
-      <div className='actions'>
-        <Space
-          style={{ marginLeft: '36px' }}
-          split={<Divider type='vertical' style={{ height: '28px' }} />}
-        >
-          <div>
+      <div className='canvas'>
+        <div className='header'>
+          <div className='title'>
+            <span>Custom-1</span>
+          </div>
+          <div className='actions'>
             <Button type='primary' onClick={()=>{onClose()}}>
               {$t({ defaultMessage: 'Publish' })}
             </Button>
-            <Button style={{ marginLeft: '20px' }} onClick={()=>{onClose()}}>
-              {$t({ defaultMessage: 'Cancel' })}
+            <Button type='primary' onClick={()=>{onClose()}}>
+              {$t({ defaultMessage: 'Save' })}
+            </Button>
+            <Button className='black' onClick={()=>{onClose()}}>
+              {$t({ defaultMessage: 'Preview' })}
             </Button>
           </div>
-          <Button onClick={()=>{onClose()}}>
-            {$t({ defaultMessage: 'Preview' })}
-          </Button>
-        </Space>
+            
+        </div>
       </div>
+      {/* <div className='modal-content'>
+        Hi
+      </div> */}
     </UI.Preview>
   )
 }
