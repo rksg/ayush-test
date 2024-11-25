@@ -18,8 +18,8 @@ const Button = styled(AntButton).attrs({ type: 'primary' })`
     background-color: var(--acx-neutrals-10);
     border: none;
     &:hover, &:focus {
-      border-color: var(--acx-accents-orange-55);
-      background-color: var(--acx-accents-orange-55);
+      border-color: var(--acx-accents-orange-10);
+      background-color: var(--acx-accents-orange-10);
     }
     > svg {
       width: 20px;
