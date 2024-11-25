@@ -219,6 +219,7 @@ export enum Features {
   BRAND360_MDU_TOGGLE = 'acx-ui-brand360-mdu-toggle',
   SERVER_CERTIFICATE_MANAGEMENT_UI_TOGGLE = 'server-certificate-management-ui-toggle',
   WIFI_NETWORK_APPLICATION_CONTROL = 'wifi-network-application-control',
+  WIFI_NETWORK_VENUE_QUERY = 'wifi-eda-network-venue-query-toggle',
   UX_OPTIMIZATION_FEATURE_TOGGLE = 'acx-ui-ux-optimization-feature-toggle',
   ROAMING_TYPE_EVENTS_TOGGLE = 'acx-ui-roaming-type-events-toggle',
   POLICY_IDENTITY_TOGGLE = 'policy-identity-toggle',
