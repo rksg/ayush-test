@@ -31,7 +31,8 @@ import {
   ApCompatibilityType,
   InCompatibilityFeatures
 } from '../ApCompatibility'
-import { DhcpOption82Settings } from '../DhcpOption82Settings'
+import { DhcpOption82Settings }  from '../DhcpOption82Settings'
+import { SoftGRETunnelSettings } from '../SoftGRETunnelSettings'
 
 import EthernetPortProfileDrawer from './EthernetPortProfileDrawer'
 import EthernetPortProfileInput  from './EthernetPortProfileInput'
@@ -98,6 +99,7 @@ export function LanPortSettings (props: {
   const [currentEthernetPortData, setCurrentEthernetPortData] =
     useState<EthernetPortProfileViewData>()
   const [ethernetProfileCreateId, setEthernetProfileCreateId] = useState<String>()
+  const [enableSoftGRETunnel, setEnableSoftGRETunnel] = useState<boolean>(false)
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
 
   // Non ethernet port profile
@@ -246,7 +248,11 @@ export function LanPortSettings (props: {
         currentIndex={index}
         onGUIChanged={onGUIChanged}
         isEditable={!!serialNumber} />
-      <DhcpOption82Settings />
+      <SoftGRETunnelSettings
+        enableSoftGRETunnel={enableSoftGRETunnel}
+        setEnableSoftGRETunnel={setEnableSoftGRETunnel}
+      />
+      { enableSoftGRETunnel && <DhcpOption82Settings />}
       </>) :
       (<>
         <Form.Item
