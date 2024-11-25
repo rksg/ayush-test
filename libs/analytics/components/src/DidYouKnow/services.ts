@@ -3,10 +3,13 @@ import _       from 'lodash'
 import moment  from 'moment'
 
 import { getFilterPayload }                 from '@acx-ui/analytics/utils'
+import { get }                              from '@acx-ui/config'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { dataApi }                          from '@acx-ui/store'
 import type { DashboardFilter, PathFilter } from '@acx-ui/utils'
 
-import { DidYouKnowData } from './facts'
+import { DidYouKnowData, getFactsData } from './facts'
+
 
 interface Response <FactsData> {
   network: {
@@ -19,25 +22,31 @@ interface Response <FactsData> {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    facts: build.query<
+    customFacts: build.query<
       {
         facts: DidYouKnowData[]
         availableFacts: string[]
       },
-      (PathFilter | DashboardFilter) & { requestedList: string[] }
+      (PathFilter | DashboardFilter) & { requestedList: string[], weekRange: boolean }
         >({
           query: (payload) => {
             const useFilter = 'filter' in payload
             let variables: (Partial<PathFilter> | Partial<DashboardFilter>) & {
           requestedList: string[]
         }
-            const startDate = moment()
-              .startOf('day')
-              .subtract(7, 'days')
-              .format('YYYY-MM-DDTHH:mm:ss+08:00')
-            const endDate = moment()
-              .startOf('day')
-              .format('YYYY-MM-DDTHH:mm:ss+08:00')
+            let startDate, endDate
+            if (payload.weekRange) {
+              startDate = moment()
+                .startOf('day')
+                .subtract(7, 'days')
+                .format('YYYY-MM-DDTHH:mm:ss+08:00')
+              endDate = moment()
+                .startOf('day')
+                .format('YYYY-MM-DDTHH:mm:ss+08:00')
+            } else {
+              startDate = payload.startDate
+              endDate = payload.endDate
+            }
             if (useFilter) {
               variables = {
                 startDate: startDate,
@@ -79,4 +88,29 @@ export const api = dataApi.injectEndpoints({
   })
 })
 
-export const { useFactsQuery } = api
+export const { useCustomFactsQuery } = api
+
+export function useFactsQuery (
+  maxFactPerSlide: number | undefined,
+  maxSlideChar: number | undefined,
+  carouselFactsMap: Record<number, { facts: string[] }>,
+  content: string[][],
+  offset: number,
+  filters: PathFilter | DashboardFilter) {
+
+  const isSplitOn = useIsSplitOn(Features.ANALYTIC_SNAPSHOT_TOGGLE)
+  const weekRange = Boolean(get('IS_MLISA_SA')) || isSplitOn
+
+  return useCustomFactsQuery(
+    { ...filters, requestedList: carouselFactsMap?.[offset]?.facts, weekRange },
+    {
+      selectFromResult: ({ data, ...rest }) => ({
+        data: getFactsData(data?.facts!, { maxFactPerSlide, maxSlideChar }),
+        availableFacts: data?.availableFacts,
+        initialLoadedFacts: data?.facts.map((fact) => fact.key),
+        ...rest
+      }),
+      skip: !Boolean(content[offset]?.length === 0 )
+    }
+  )
+}

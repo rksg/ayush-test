@@ -28,7 +28,7 @@ describe('factsApi', () => {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.facts.initiate(pathFilter)
+      api.endpoints.customFacts.initiate(pathFilter)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
@@ -39,7 +39,7 @@ describe('factsApi', () => {
       data: expectedResult
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.facts.initiate(dashboardFilter)
+      api.endpoints.customFacts.initiate(dashboardFilter)
     )
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
@@ -50,7 +50,7 @@ describe('factsApi', () => {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.facts.initiate(pathFilter)
+      api.endpoints.customFacts.initiate(pathFilter)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)

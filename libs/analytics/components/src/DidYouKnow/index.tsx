@@ -7,7 +7,7 @@ import AutoSizer            from 'react-virtualized-auto-sizer'
 import { Loader, Carousel }                 from '@acx-ui/components'
 import type { DashboardFilter, PathFilter } from '@acx-ui/utils'
 
-import { factsConfig, getFactsData } from './facts'
+import { factsConfig } from './facts'
 import {
   useFactsQuery
 } from './services'
@@ -39,16 +39,7 @@ function DidYouKnowWidget ({
   const [carouselFactsMap, setCarouselFactsMap] = useState<Record<number, { facts: string[] }>>({})
   const { data, isFetching, refetch, isSuccess, isLoading, initialLoadedFacts, availableFacts } =
     useFactsQuery(
-      { ...filters, requestedList: carouselFactsMap?.[offset]?.facts },
-      {
-        selectFromResult: ({ data, ...rest }) => ({
-          data: getFactsData(data?.facts!, { maxFactPerSlide, maxSlideChar }),
-          availableFacts: data?.availableFacts,
-          initialLoadedFacts: data?.facts.map((fact) => fact.key),
-          ...rest
-        }),
-        skip: !Boolean(content[offset]?.length === 0 )
-      }
+      maxFactPerSlide, maxSlideChar, carouselFactsMap, content, offset, filters
     )
   useEffect(() => {
     if (data && isSuccess && !isFetching) {
