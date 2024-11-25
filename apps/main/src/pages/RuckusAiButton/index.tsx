@@ -6,7 +6,7 @@ import { useIntl }             from 'react-intl'
 
 
 import { cssStr, showActionModal }                                       from '@acx-ui/components'
-import { RuckusAiDog }                                                   from '@acx-ui/icons'
+import { OnboardingAssistantDog }                                        from '@acx-ui/icons'
 import { useStartConversationsMutation, useUpdateConversationsMutation } from '@acx-ui/rc/services'
 import { RuckusAiConfigurationStepsEnum, RuckusAiConversation }          from '@acx-ui/rc/utils'
 
@@ -53,7 +53,7 @@ export default function RuckusAiButton () {
             justifyContent: 'center',
             marginRight: '20px'
           }}>
-            <RuckusAiDog style={{ width: '43px', height: '36px' }} />
+            <OnboardingAssistantDog style={{ width: '43px', height: '36px' }} />
           </div>
           <div style={{
             flexGrow: 1, display: 'flex',
@@ -115,29 +115,21 @@ export default function RuckusAiButton () {
           {$t({ defaultMessage: 'Start' })}
         </Button>
       case RuckusAiStepsEnum.VERTICAL:
-        return <>
-          <Button key='back'
-            onClick={() => {
-              setStep(RuckusAiStepsEnum.WELCOME)
-            }}>
-            {$t({ defaultMessage: 'Back' })}
-          </Button>
-          <Button key='next'
-            type='primary'
-            loading={isLoading}
-            onClick={async () => {
-              basicFormRef.validateFields().then(() => {
-                const result = basicFormRef.getFieldsValue()
-                const type = result.venueType === 'OTHER' ? result.othersValue : result.venueType
-                setVenueType(type)
-                setStep(RuckusAiStepsEnum.BASIC)
-              }).catch(() => {
-                return
-              })
-            }}>
-            {$t({ defaultMessage: 'Next' })}
-          </Button>
-        </>
+        return <Button key='next'
+          type='primary'
+          loading={isLoading}
+          onClick={async () => {
+            basicFormRef.validateFields().then(() => {
+              const result = basicFormRef.getFieldsValue()
+              const type = result.venueType === 'OTHER' ? result.othersValue : result.venueType
+              setVenueType(type)
+              setStep(RuckusAiStepsEnum.BASIC)
+            }).catch(() => {
+              return
+            })
+          }}>
+          {$t({ defaultMessage: 'Next' })}
+        </Button>
       case RuckusAiStepsEnum.BASIC:
         return <>
           <Button key='back'
@@ -251,7 +243,7 @@ export default function RuckusAiButton () {
   }
   return <>
     <UI.ButtonSolid
-      icon={<RuckusAiDog />}
+      icon={<OnboardingAssistantDog />}
       onClick={() => {
         setVisible(!visible)
       }}
