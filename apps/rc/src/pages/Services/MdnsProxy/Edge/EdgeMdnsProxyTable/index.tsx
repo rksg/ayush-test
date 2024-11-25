@@ -59,6 +59,7 @@ export function EdgeMdnsProxyTable () {
   const rowActions: TableProps<EdgeMdnsProxyViewData>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedRows) => selectedRows.length === 1,
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,
