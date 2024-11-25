@@ -4,6 +4,7 @@ import { createContext, useEffect, useState } from 'react'
 import _             from 'lodash'
 import { useParams } from 'react-router-dom'
 
+import { showActionModal }                                                      from '@acx-ui/components'
 import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
 import { useSwitchDetailHeaderQuery, useGetSwitchQuery, useGetSwitchListQuery } from '@acx-ui/rc/services'
 import { isStrictOperationalSwitch, Switch, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
@@ -78,7 +79,16 @@ export default function SwitchDetails () {
 
   useEffect(() => {
     if(getSwitchList.data) {
-      setVenueId(getSwitchList.data.data[0].venueId)
+      if(getSwitchList.data.data.length === 0){
+        showActionModal({
+          type: 'info',
+          title: 'Switch is no longer existing',
+          content: 'Please select others Switch',
+          okText: 'Ok, I understand'
+        })
+      } else {
+        setVenueId(getSwitchList.data.data[0]?.venueId)
+      }
     }
   }, [getSwitchList])
 
