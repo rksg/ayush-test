@@ -101,6 +101,7 @@ ARG GIT_COMMIT_BRANCH=master
 
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
         node ./node_modules/.bin/nx run rc:test --dry-run --verbose; \
+        echo "Start executing unit tests script file - ./cicd_tools/run_test_cases_tool.sh"; \
         ./cicd_tools/run_test_cases_tool.sh; \
     else mkdir -p /app/coverage; fi
 
