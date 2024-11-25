@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { Form, Input, Button } from 'antd'
+import { isNumber }            from 'lodash'
 import { FieldData }           from 'rc-field-form/lib/interface'
 import { useIntl }             from 'react-intl'
 
@@ -12,7 +13,6 @@ import {
 } from '@acx-ui/user'
 
 import { OTPMethodProps } from '../OneTimePassword'
-import { isNumber } from 'lodash'
 
 interface VerifyCodeModalProps {
   visible: boolean
