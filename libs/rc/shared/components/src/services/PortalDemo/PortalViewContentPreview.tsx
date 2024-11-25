@@ -4,6 +4,7 @@ import { Demo, GuestNetworkTypeEnum, PortalViewEnum } from '@acx-ui/rc/utils'
 
 import { PortalDemoDefaultSize }  from './commonUtils'
 import PortalViewConfirm          from './PortalViewConfirm'
+import PortalViewDirectoryLogin   from './PortalViewDirectoryLogin'
 import PortalViewGoThrough        from './PortalViewGoThrough'
 import PortalViewGuestConnect     from './PortalViewGuestConnect'
 import PortalViewGuestForget      from './PortalViewGuestForget'
@@ -13,6 +14,7 @@ import PortalViewSelfSignRegister from './PortalViewSelfSignRegister'
 import PortalViewTerms            from './PortalViewTerms'
 import PortalViewText             from './PortalViewText'
 import * as UI                    from './styledComponents'
+
 export default function PortalViewContentPreview (props:{
   networkSocial?: { [key:string]:boolean },
   networkViewType?: GuestNetworkTypeEnum,
@@ -122,6 +124,13 @@ export default function PortalViewContentPreview (props:{
       {((view === PortalViewEnum.HostApproval && !networkViewType) ||
         networkViewType === GuestNetworkTypeEnum.HostApproval) &&
       <PortalViewHostApproval
+        demoValue={demoValue}
+        isPreview={true}
+        portalLang={portalLang}
+      />}
+      {((view === PortalViewEnum.Directory && !networkViewType) ||
+          networkViewType === GuestNetworkTypeEnum.Directory) &&
+      <PortalViewDirectoryLogin
         demoValue={demoValue}
         isPreview={true}
         portalLang={portalLang}

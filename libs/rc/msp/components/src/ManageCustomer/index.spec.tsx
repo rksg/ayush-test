@@ -13,8 +13,6 @@ import { UserUrlsInfo }                                                         
 
 import { ManageCustomer, addressParser } from '.'
 
-
-
 const autocompleteResult: google.maps.places.PlaceResult = {
   address_components: [
     {
@@ -223,7 +221,30 @@ const fakeTenantDetails = {
   tenantType: 'REC'
 }
 
+const fakedPrivilegeGroupList =
+  [
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8911',
+      name: 'ADMIN',
+      description: 'Admin Role',
+      roleName: 'ADMIN',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    },
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8914',
+      name: 'OFFICE_ADMIN',
+      description: 'Guest Manager',
+      roleName: 'OFFICE_ADMIN',
+      type: 'System',
+      delegation: false,
+      allCustomers: false
+    }
+  ]
+
 const services = require('@acx-ui/msp/services')
+const rcServices = require('@acx-ui/rc/services')
 const utils = require('@acx-ui/rc/utils')
 const mockedShowToast = jest.fn()
 jest.mock('@acx-ui/components', () => ({
@@ -302,6 +323,9 @@ describe('ManageCustomer', () => {
     })
     services.useGetMspEcSupportQuery = jest.fn().mockImplementation(() => {
       return { data: ecSupport }
+    })
+    rcServices.useGetPrivilegeGroupsQuery = jest.fn().mockImplementation(() => {
+      return { data: fakedPrivilegeGroupList }
     })
     utils.useTableQuery = jest.fn().mockImplementation(() => {
       return { data: list }

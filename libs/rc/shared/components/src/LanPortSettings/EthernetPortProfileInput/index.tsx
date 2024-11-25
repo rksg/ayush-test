@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
-import { Form  }   from 'antd'
-import { useIntl } from 'react-intl'
+import { Form, Space  } from 'antd'
+import { useIntl }      from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
 import {
@@ -26,6 +26,7 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
   const { $t } = useIntl()
   const { currentIndex, currentEthernetPortData, isEditable=true,
     onGUIChanged } = props
+
   const form = Form.useFormInstance()
   const currentUntagId = Form.useWatch( ['lan', currentIndex, 'untagId'] ,form)
 
@@ -35,53 +36,56 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
     }
   }, [currentUntagId])
 
-  return (<>
-    <StepsForm.FieldLabel width={'200px'}>
-      {$t({ defaultMessage: 'Port Type' })}
-      <label>
-        {getEthernetPortTypeString(currentEthernetPortData?.type)}
-      </label>
-    </StepsForm.FieldLabel>
+  return (
+    <Space direction='vertical'>
+      <StepsForm.FieldLabel width={'200px'}>
+        {$t({ defaultMessage: 'Port Type' })}
+        <label>
+          {getEthernetPortTypeString(currentEthernetPortData?.type)}
+        </label>
+      </StepsForm.FieldLabel>
 
-    <EthernetPortProfileOverwriteItem
-      title='VLAN Untag ID'
-      defaultValue={currentEthernetPortData?.untagId.toString() ?? ''}
-      initialData={
-        (currentEthernetPortData?.apPortOverwrites
-          ?.find(p => p.portId === currentIndex+1)?.overwriteUntagId?.toString()) ??
+      <EthernetPortProfileOverwriteItem
+        title='VLAN Untag ID'
+        defaultValue={currentEthernetPortData?.untagId.toString() ?? ''}
+        initialData={
+          (currentEthernetPortData?.apPortOverwrites
+            ?.find(p => p.portId === currentIndex+1)?.overwriteUntagId?.toString()) ??
         (currentEthernetPortData?.untagId.toString() ?? '')}
-      isEditable={isEditable}
-      fieldName={['lan', currentIndex, 'untagId']}
-      onGUIChanged={onGUIChanged}
-      rules={[
-        { validator: (_, value) => validateVlanId(value) }
-      ]}
-    />
-    <EthernetPortProfileOverwriteItem
-      title='VLAN Members'
-      defaultValue={currentEthernetPortData?.vlanMembers.toString() ?? ''}
-      initialData={
-        (currentEthernetPortData?.apPortOverwrites
-          ?.find(p => p.portId === currentIndex+1)?.overwriteVlanMembers) ??
-        (currentEthernetPortData?.vlanMembers.toString() ?? '')}
-      isEditable={isEditable &&
-        (currentEthernetPortData?.type === EthernetPortType.SELECTIVE_TRUNK)}
-      fieldName={['lan', currentIndex, 'vlanMembers']}
-      onGUIChanged={onGUIChanged}
-      rules={[
-        { validator: (_, value) => checkVlanMember(value) }
-      ]}
-    />
-    <StepsForm.FieldLabel width={'200px'}>
-      {$t({ defaultMessage: '802.1X' })}
-      <Form.Item
-        children={
-          (currentEthernetPortData?.authType === EthernetPortAuthType.DISABLED)?
-            'Off': 'On'
-        }
+        isEditable={isEditable}
+        fieldName={['lan', currentIndex, 'untagId']}
+        currentIndex={currentIndex}
+        onGUIChanged={onGUIChanged}
+        rules={[
+          { validator: (_, value) => validateVlanId(value) }
+        ]}
       />
-    </StepsForm.FieldLabel>
-  </>
+      <EthernetPortProfileOverwriteItem
+        title='VLAN Members'
+        defaultValue={currentEthernetPortData?.vlanMembers.toString() ?? ''}
+        initialData={
+          (currentEthernetPortData?.apPortOverwrites
+            ?.find(p => p.portId === currentIndex+1)?.overwriteVlanMembers) ??
+        (currentEthernetPortData?.vlanMembers.toString() ?? '')}
+        isEditable={isEditable &&
+        (currentEthernetPortData?.type === EthernetPortType.SELECTIVE_TRUNK)}
+        fieldName={['lan', currentIndex, 'vlanMembers']}
+        currentIndex={currentIndex}
+        onGUIChanged={onGUIChanged}
+        rules={[
+          { validator: (_, value) => checkVlanMember(value) }
+        ]}
+      />
+      <StepsForm.FieldLabel width={'200px'}>
+        {$t({ defaultMessage: '802.1X' })}
+        <Form.Item
+          children={
+            (currentEthernetPortData?.authType === EthernetPortAuthType.DISABLED)?
+              'Off': 'On'
+          }
+        />
+      </StepsForm.FieldLabel>
+    </Space>
   )
 }
 
