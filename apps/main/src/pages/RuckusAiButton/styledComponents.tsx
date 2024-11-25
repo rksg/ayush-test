@@ -75,6 +75,7 @@ export const GptModal = styled(Modal)<{ titleType: string, needBackground: boole
       .ant-pro-steps-form-step.ant-pro-steps-form-step-active {
         overflow-y: auto;
         max-height: calc(100vh - 400px);
+        height: calc(100vh - 400px);
         padding-right: 30px;
         margin-right: -35px;
         margin-bottom: 10px;

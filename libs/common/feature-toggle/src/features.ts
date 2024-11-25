@@ -221,7 +221,10 @@ export enum Features {
   WIFI_NETWORK_APPLICATION_CONTROL = 'wifi-network-application-control',
   UX_OPTIMIZATION_FEATURE_TOGGLE = 'acx-ui-ux-optimization-feature-toggle',
   ROAMING_TYPE_EVENTS_TOGGLE = 'acx-ui-roaming-type-events-toggle',
-  POLICY_IDENTITY_TOGGLE = 'policy-identity-toggle'
+  POLICY_IDENTITY_TOGGLE = 'policy-identity-toggle',
+  ACX_UI_GATEWAYS_MENU_OPTION_TOGGLE = 'acx-ui-gateways-menu-option-toggle',
+  BTM_EVENTS_TOGGLE = 'acx-ui-btm-events-toggle',
+  RUCKUS_AI_BTM_EVENTS_TOGGLE = 'ruckus-ai-btm-events-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
