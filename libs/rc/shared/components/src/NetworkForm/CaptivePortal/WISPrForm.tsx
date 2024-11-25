@@ -133,40 +133,9 @@ export function WISPrForm () {
         }
       }
     }))
-
-    // form.setFieldValue(['guestPortal','wisprPage','customExternalProvider'], false)
-    // form.setFieldValue(['guestPortal','wisprPage','captivePortalUrl'], '')
-    // if (regions?.length === 1) {
-    //   form.setFieldValue(['guestPortal','wisprPage','externalProviderRegion'], regions[0].name)
-    //   if (regions[0].captivePortalUrl) {
-    //     // eslint-disable-next-line max-len
-    //     form.setFieldValue(['guestPortal','wisprPage','captivePortalUrl'], regions[0].captivePortalUrl)
-    //   }
-    //   if (regions[0].redirectUrl) {
-    //     form.setFieldValue('redirectCheckbox', true)
-    //     form.setFieldValue(['guestPortal','redirectUrl'], regions[0].redirectUrl)
-    //   }
-    // } else {
-    //   form.setFieldValue(['guestPortal','wisprPage','externalProviderRegion'], '')
-    // }
-
-    // if (value === 'Custom Provider') {
-    //   setIsOtherProvider(true)
-    //   // form.setFieldValue(['guestPortal','wisprPage','customExternalProvider'], true)
-    // } else {
-    //   setIsOtherProvider(false)
-    // }
-    // setRegionOption(regions)
   }
 
   const configureProviderDetails = (providerList: Providers[], wisprPage?: WisprPage) => {
-    // let pName = wisprPage?.externalProviderName
-    // if (wisprPage?.customExternalProvider) {
-    //   form.setFieldValue(['guestPortal','wisprPage','providerName'], pName)
-    //   pName = 'Custom Provider'
-    // }
-
-    // eslint-disable-next-line max-len
     const pName = wisprPage?.customExternalProvider ? 'Custom Provider' : wisprPage?.externalProviderName
 
     if (pName) {
@@ -240,18 +209,8 @@ export function WISPrForm () {
     }
   }, [providerData.data, isMspEc])
 
-  // useEffect(() => {
-  //   if (isEditDataNotReady() || !isDataPopulatedRef.current) return
-
-  //   const currentData = data!
-
-  //   configureProviderDetails(externalProviders!, currentData.guestPortal?.wisprPage)
-  //   configureAuthRadiusDetails(currentData.guestPortal?.wisprPage)
-  //   configureAccountingRadiusDetails(currentData)
-  // }, [data, externalProviders, isDataPopulatedRef])
 
   useEffect(() => {
-    // if (isEditDataNotReady() || isDataPopulatedRef.current) return
     if (isEditDataNotReady()) return
 
     const existingData = data!
@@ -259,8 +218,6 @@ export function WISPrForm () {
     if (!isDataPopulatedRef.current) {
       form.setFieldsValue({ ...existingData })
     }
-
-    // form.setFieldsValue({ ...existingData })
 
     configureAuthRadiusDetails(existingData.guestPortal?.wisprPage)
     configureAccountingRadiusDetails(existingData)

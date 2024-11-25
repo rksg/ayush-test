@@ -110,7 +110,8 @@ import {
   useAccessControlActivation,
   getDefaultMloOptions,
   useUpdateEdgeSdLanActivations,
-  useUpdateSoftGreActivations
+  useUpdateSoftGreActivations,
+  deriveWISPrFieldsFromServerData
 } from './utils'
 import { Venues } from './Venues/Venues'
 
@@ -337,6 +338,7 @@ export function NetworkForm (props:{
     if (!data) return
 
     let resolvedData = isUseWifiRbacApi ? data : deriveRadiusFieldsFromServerData(data)
+    resolvedData = deriveWISPrFieldsFromServerData(resolvedData)
 
     if (cloneMode) {
       formRef.current?.resetFields()

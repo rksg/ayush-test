@@ -82,7 +82,9 @@ import {
   EdgeMvSdLanViewData,
   NetworkTunnelSdLanAction,
   VLANPoolViewModelType,
-  NetworkTunnelSoftGreAction
+  NetworkTunnelSoftGreAction,
+  guestPasswordValidator,
+  GuestPortal
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -225,6 +227,18 @@ export function deriveRadiusFieldsFromServerData (data: NetworkSaveData): Networ
       ? true
       : false
   }
+}
+
+export function deriveWISPrFieldsFromServerData (data: NetworkSaveData): NetworkSaveData {
+  if (!isWISPrNetwork(data)) return data
+
+  if (data.guestPortal?.wisprPage?.customExternalProvider) {
+    return _.merge({}, data, {
+      guestPortal: { wisprPage: { providerName: data.guestPortal.wisprPage.externalProviderName } }
+    })
+  }
+
+  return data
 }
 
 type RadiusIdKey = Extract<keyof NetworkSaveData, 'authRadiusId' | 'accountingRadiusId'>
