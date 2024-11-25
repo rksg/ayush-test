@@ -13,8 +13,7 @@ import {
 } from '@acx-ui/rc/components'
 import {
   AFCStatus,
-  AFCPowerMode,
-  ApModel
+  AFCPowerMode
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import { render }   from '@acx-ui/test-utils'
@@ -28,7 +27,7 @@ import {
 
 import { ApSingleRadioSettings } from './ApSingleRadioSettings'
 
-const r760Cap = triBandApCap.apModels.find(cap => cap.model === 'R760') as ApModel
+const r760Cap = triBandApCap.apModels.find(cap => cap.model === 'R760')
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
