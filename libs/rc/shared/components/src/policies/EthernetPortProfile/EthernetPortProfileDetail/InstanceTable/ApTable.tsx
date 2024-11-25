@@ -8,11 +8,11 @@ import { useApListQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
 import { AP, useTableQuery }                 from '@acx-ui/rc/utils'
 import { TenantLink, useParams }             from '@acx-ui/react-router-dom'
 
-interface EthernetPortTableProps {
+interface ApTableProps {
   apSerialNumbers: string[]
 }
 
-export const EthernetPortProfileInstanceTable = (props: EthernetPortTableProps) => {
+export const ApTable = (props: ApTableProps) => {
   const { $t } = useIntl()
   const { apSerialNumbers } = props
   const { tenantId } = useParams()
@@ -36,8 +36,7 @@ export const EthernetPortProfileInstanceTable = (props: EthernetPortTableProps) 
       sortField: 'name',
       sortOrder: 'ASC'
     },
-    search: {
-    },
+    search: {},
     enableRbac: isWifiRbacEnabled,
     option: {
       skip: isApNumersLoading
@@ -93,8 +92,8 @@ export const EthernetPortProfileInstanceTable = (props: EthernetPortTableProps) 
       dataIndex: 'model'
     }, {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
-      dataIndex: 'venueName',
-      key: 'venueName',
+      dataIndex: 'venueId',
+      key: 'venueId',
       sorter: true,
       filterable: venueNameMap,
       render: (_, row) => {
@@ -108,10 +107,12 @@ export const EthernetPortProfileInstanceTable = (props: EthernetPortTableProps) 
   return (
     <Loader states={[tableQuery]}>
       <Table<AP>
-        rowKey='serialNumber'
+        rowKey='name'
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
       />
     </Loader>
   )
