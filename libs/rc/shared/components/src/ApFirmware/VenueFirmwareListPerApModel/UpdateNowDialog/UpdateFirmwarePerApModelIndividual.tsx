@@ -3,7 +3,8 @@ import { useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Select } from '@acx-ui/components'
+import { Select }          from '@acx-ui/components'
+import { compareVersions } from '@acx-ui/utils'
 
 import { ApModelIndividualDisplayDataType } from '../venueFirmwareListPerApModelUtils'
 
@@ -30,9 +31,9 @@ export function UpdateFirmwarePerApModelIndividual (props: UpdateFirmwarePerApMo
 
   const resolvedVersionOptions = isUpgrade
     ? versionOptions
-    : versionOptions // When donwgrade, only show the last 4 versions and sort by release date
-      .sort((a, b) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime())
-      .slice(0, 4)
+    : versionOptions
+      .sort((a, b) => -compareVersions(a.key, b.key))
+      .slice(0, 4) // When donwgrade, only show the last 4 versions and sort by firmware version
 
   const [ filteredOptions, setFilteredOptions ] = useState(resolvedVersionOptions)
 
@@ -63,24 +64,23 @@ export function UpdateFirmwarePerApModelIndividual (props: UpdateFirmwarePerApMo
     }
   }
 
-  if (versionOptions.length === 0) {
-    return <div>{noOptionsMessage} (<strong>{extremeFirmware}</strong>)</div>
-  }
-
   return (
     <Space>
       <div style={{ width: labelSize === 'small' ? 50 : 90 }}>{apModel}</div>
-      <Select
-        value={selectedVersion}
-        onChange={onSelectedVersionChange}
-        style={{ width: 400 }}
-        showSearch
-        filterOption={false}
-        onSearch={handleSearch}
-      >
-        {filteredOptions.map(option => <Option key={option.key}>{option.label}</Option>)}
-        <Option key={''}>{emptyOptionLabel}</Option>
-      </Select>
+      {versionOptions.length === 0
+        ? <div><span>{noOptionsMessage} &nbsp;<strong>({extremeFirmware})</strong></span></div>
+        : <Select
+          value={selectedVersion}
+          onChange={onSelectedVersionChange}
+          style={{ width: 400 }}
+          showSearch
+          filterOption={false}
+          onSearch={handleSearch}
+        >
+          {filteredOptions.map(option => <Option key={option.key}>{option.label}</Option>)}
+          <Option key={''}>{emptyOptionLabel}</Option>
+        </Select>
+      }
     </Space>
   )
 }

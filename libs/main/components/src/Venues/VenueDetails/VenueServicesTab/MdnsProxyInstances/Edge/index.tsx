@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
-import { Switch }  from 'antd'
-import { useIntl } from 'react-intl'
+import { ActionType as AntdTableActionType } from '@ant-design/pro-table/lib/typing'
+import { Switch }                            from 'antd'
+import { useIntl }                           from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps, Tooltip }                  from '@acx-ui/components'
 import { MdnsProxyForwardingRulesTable, useEdgeMdnsActions, ToolTipTableStyle } from '@acx-ui/rc/components'
@@ -29,6 +30,7 @@ export const EdgeMdnsTab = () => {
   const { $t } = useIntl()
   const { venueId } = useParams()
 
+  const tableRef = useRef<AntdTableActionType>()
   const [ addInstanceDrawerVisible, setAddInstanceDrawerVisible ] = useState(false)
   const [selectedRow, setSelectedRow] = useState<EdgeMdnsProxyInstance|undefined>(undefined)
   const [isProcessing, setIsProcessing] = useState<boolean>(false)
@@ -181,7 +183,7 @@ export const EdgeMdnsTab = () => {
           }}
           onChange={(checked) => {
             if (checked) return
-            doDeactivate(row)
+            doDeactivate(row, tableRef.current?.clearSelected)
           }}
         />
       }
@@ -199,6 +201,7 @@ export const EdgeMdnsTab = () => {
       }]}>
         <ToolTipTableStyle.ToolTipStyle/>
         <Table
+          actionRef={tableRef}
           columns={columns}
           dataSource={tableData}
           actions={filterByAccessForServicePolicyMutation([{
