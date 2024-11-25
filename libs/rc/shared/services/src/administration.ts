@@ -542,10 +542,12 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       }
     }),
     refreshEntitlements: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(AdministrationUrlsInfo.refreshLicensesData, params)
+      query: ({ params, payload, enableRbac }) => {
+        const adminUrls = getAdminUrls(enableRbac)
+        const req = createHttpRequest(adminUrls.refreshLicensesData, params)
         return {
-          ...req
+          ...req,
+          body: enableRbac ? payload : undefined
         }
       },
       invalidatesTags: [{ type: 'License', id: 'LIST' }]

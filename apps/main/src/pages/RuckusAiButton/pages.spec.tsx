@@ -101,7 +101,7 @@ describe('BasicInfomrationPage', () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenues.url,
-        (_, res, ctx) => res(ctx.json({}))
+        (_, res, ctx) => res(ctx.json({ data: [{ name: 'venue1' }] }))
       )
     )
 
@@ -116,6 +116,9 @@ describe('BasicInfomrationPage', () => {
     const venueName = screen.getByRole('textbox', {
       name: /venue name/i
     })
+    await userEvent.type(venueName, 'venue1')
+    venueName.blur()
+    expect(await screen.findByText('Venue with that name already exists')).toBeInTheDocument()
     await userEvent.type(venueName, 'ruckus-1')
 
     const apNumber = screen.getByRole('textbox', {

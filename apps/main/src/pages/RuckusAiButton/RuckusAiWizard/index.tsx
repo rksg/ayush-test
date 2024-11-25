@@ -72,7 +72,7 @@ export default function RuckusAiWizard (props: {
       }
 
       const values = formMapRef.current[stepIndex].current?.getFieldsValue()
-      let updatedValues
+      let updatedValues: { [key: string]: unknown }
 
       if (values.data && values.data.some((item: { Checked?: boolean }) =>
         item['Checked'] !== undefined)) {

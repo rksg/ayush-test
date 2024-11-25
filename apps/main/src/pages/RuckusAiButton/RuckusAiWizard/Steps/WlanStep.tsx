@@ -163,7 +163,7 @@ export function WlanStep ( props: {
       {data?.map((item, index) => (
         <React.Fragment key={index}>
           <UI.StepItemCheckContainer>
-            <UI.CheckboxContainer>
+            <UI.CheckboxContainer data-testid={`wlan-checkbox-${index}`}>
               <ProFormCheckbox
                 name={['data', index, 'Checked']}
                 initialValue={true}

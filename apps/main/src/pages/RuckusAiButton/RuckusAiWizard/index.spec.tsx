@@ -161,18 +161,56 @@ describe('RuckusAiWizard', () => {
     })
   })
 
-  it('displays the correct button label on the last step', () => {
+  it('displays the correct button label on the last step', async () => {
     render(<IntlProvider locale='en'>
       <RuckusAiWizard {...defaultProps} currentStep={3} />
     </IntlProvider>)
     expect(screen.getByText(/Apply/i)).toBeInTheDocument()
+
+    const applyButton = screen.getByText(/Apply/i)
+    fireEvent.click(applyButton)
+
+    await waitFor(() => {
+      expect(defaultProps.setStep).toHaveBeenCalledTimes(1)
+    })
+
   })
 
-  it('shows "Skip this step" when the step supports skipping', () => {
+  it('shows "Skip this step" when the step supports skipping', async () => {
     render(<IntlProvider locale='en'>
       <RuckusAiWizard {...defaultProps} currentStep={2} />
     </IntlProvider>)
     expect(screen.getByText(/Skip this step/i)).toBeInTheDocument()
+    const nextButton = screen.getByText(/Next/i)
+    fireEvent.click(nextButton)
+
+    const unchangedButton = await screen.findByText(/Remain Unchanged/i)
+    expect(unchangedButton).toBeInTheDocument()
+    fireEvent.click(unchangedButton)
+
+    await waitFor(() => {
+      expect(defaultProps.setCurrentStep).toHaveBeenCalledTimes(1)
+    })
+
+  })
+
+  it('clicks "Skip this step" when the step supports skipping', async () => {
+    render(<IntlProvider locale='en'>
+      <RuckusAiWizard {...defaultProps} currentStep={2} />
+    </IntlProvider>)
+
+    expect(screen.getByText(/Skip this step/i)).toBeInTheDocument()
+    const skipButton = screen.getByText(/Skip this step/i)
+    fireEvent.click(skipButton)
+
+    const unchangedButton = await screen.findByText(/Remain Unchanged/i)
+    expect(unchangedButton).toBeInTheDocument()
+    fireEvent.click(unchangedButton)
+
+    await waitFor(() => {
+      expect(defaultProps.setCurrentStep).toHaveBeenCalledTimes(1)
+    })
+
   })
 
 })
