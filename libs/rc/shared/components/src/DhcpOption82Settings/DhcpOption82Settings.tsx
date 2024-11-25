@@ -1,8 +1,10 @@
 import { useState } from 'react'
 
 
-import { Form,  Switch } from 'antd'
-import { useIntl }       from 'react-intl'
+import { Form,  Switch, Space } from 'antd'
+import { useIntl }              from 'react-intl'
+
+import { Tooltip } from '@acx-ui/components'
 
 import { DhcpOption82SettingsDrawer } from './DhcpOption82SettingsDrawer'
 import { FieldLabel, ConfigIcon }     from './styledComponents'
@@ -24,7 +26,20 @@ export const DhcpOption82Settings = () => {
   return (
     <>
       <FieldLabel width='180px'>
-        {$t({ defaultMessage: 'DHCP Option 82' })}
+
+        <Space style={{ marginBottom: '10px' }}>
+          {$t({ defaultMessage: 'DHCP Option 82' })}
+          <Tooltip.Question
+            title={
+              $t({ defaultMessage: 'When enabled, the AP includes the DHCP ' +
+                'request ID in packets forwarded to the DHCP server. ' +
+                'The DHCP server then allocates an IP address to the ' +
+                'client based on this information.' })
+            }
+            placement='right'
+            iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+          />
+        </Space>
         <Form.Item
           valuePropName='checked'
           style={{ marginTop: '-5px' }}
