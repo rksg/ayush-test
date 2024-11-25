@@ -5,7 +5,7 @@ import { rest }  from 'msw'
 import { ToastProps }                                                                                         from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                                                           from '@acx-ui/feature-toggle'
 import { MspAdministrator, MspEcData, MspEcDelegatedAdmins, MspRbacUrlsInfo, MspUrlsInfo, SupportDelegation } from '@acx-ui/msp/utils'
-import { AdministrationUrlsInfo }                                                                             from '@acx-ui/rc/utils'
+import { AdministrationUrlsInfo, PrivilegeGroup }                                                             from '@acx-ui/rc/utils'
 import { Provider }                                                                                           from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor }                                                     from '@acx-ui/test-utils'
 import { RolesEnum }                                                                                          from '@acx-ui/types'
@@ -23,6 +23,7 @@ const userProfile =
       firstName: 'msp',
       lastName: 'eleu1658',
       role: 'PRIME_ADMIN',
+      roles: ['DEVOPS', 'PRIME_ADMIN', 'VAR_ADMIN'],
       support: false,
       tenantId: '3061bd56e37445a8993ac834c01e2710',
       username: 'msp.eleu1658@rwbigdog.com',
@@ -202,6 +203,10 @@ describe('AddRecCustomer', () => {
   })
   let params: { tenantId: string, mspEcTenantId: string, action: string, status?: string }
   beforeEach(async () => {
+    const emptyPGList: PrivilegeGroup[] = []
+    rcServices.useGetMspEcDelegatePrivilegeGroupsQuery = jest.fn().mockImplementation(() => {
+      return { data: emptyPGList }
+    })
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getPreferences.url,

@@ -143,6 +143,20 @@ export interface BetaStatus {
   startDate?: string
 }
 
+export interface BetaFeatures {
+  betaFeatures: FeatureAPIResults[]
+}
+
+export interface FeatureAPIResults {
+  id: string,
+  enabled: boolean
+}
+
+export interface Feature extends FeatureAPIResults {
+  name: string,
+  desc: string
+}
+
 export interface TenantAccountTierValue {
   acx_account_tier: AccountTier
 }

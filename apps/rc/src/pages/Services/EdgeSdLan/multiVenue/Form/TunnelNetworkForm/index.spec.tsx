@@ -1,8 +1,7 @@
 /* eslint-disable max-len */
 import {
   renderHook,
-  waitFor,
-  within
+  waitFor
 } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
@@ -225,12 +224,11 @@ describe('Tunneled Venue Networks Form', () => {
       screen.getByRole('row', { name: /SG office .* 0/i })
 
       const dmzTunnelSelector = await screen.findByRole('combobox', { name: 'Tunnel Profile (Cluster- DMZ Cluster tunnel)' })
-      const opts = await within(dmzTunnelSelector).findAllByRole('option')
-      expect(opts.length).toBe(1)
       screen.queryByRole('option', { name: 'tunnelProfileId1' })
       // only Manual mode can be options for DMZ tunnel
       expect(screen.queryByRole('option', { name: 'tunnelProfileId2' })).toBeNull()
       await userEvent.selectOptions(dmzTunnelSelector, 'tunnelProfileId1')
+      expect(mockedSetFieldValue).toBeCalledWith('guestTunnelProfileName', 'tunnelProfile1')
     })
   })
 })

@@ -346,6 +346,7 @@ export function RadioSettings () {
   const venueRef = useRef<ApRadioCustomization>()
   const cachedDataRef = useRef<ApRadioCustomization>()
   const operationCache = useRef<boolean>()
+  const prevoiusBendModeRef = useRef<BandModeEnum>()
 
   const [stateOfIsUseVenueSettings, setStateOfIsUseVenueSettings] = useState(defaultStateOfIsUseVenueSettings)
 
@@ -731,12 +732,35 @@ export function RadioSettings () {
     }
 
     //console.info('[RadioSettings] currentApBandModeData = ', currentApBandModeData) // eslint-disable-line no-console
+    const currentBendMode = getCurrentBandMode()
 
-    if (isSupportDual5GAp) {
-      const isDual5gEnabled = (getCurrentBandMode() === BandModeEnum.DUAL)
-      setIsDual5gMode(isDual5gEnabled)
-      formRef.current?.setFieldValue(['apRadioParamsDual5G', 'enabled'], isDual5gEnabled)
-      formRef.current?.setFieldValue(['apRadioParamsDual5G', 'useVenueEnabled'], currentApBandModeData?.useVenueSettings)
+    if (currentBendMode !== prevoiusBendModeRef.current) {
+      const isDual5gEnabled = (currentBendMode === BandModeEnum.DUAL)
+
+      if (isSupportDual5GAp) { // ex: R760
+        setIsDual5gMode(isDual5gEnabled)
+        formRef.current?.setFieldValue(['apRadioParamsDual5G', 'enabled'], isDual5gEnabled)
+        formRef.current?.setFieldValue(['apRadioParamsDual5G', 'useVenueEnabled'], currentApBandModeData?.useVenueSettings)
+
+        if (prevoiusBendModeRef.current) {
+          formRef.current?.setFieldValue(['apRadioParamsDual5G', 'lower5gEnabled'], isDual5gEnabled)
+          formRef.current?.setFieldValue(['apRadioParamsDual5G', 'upper5gEnabled'], isDual5gEnabled)
+          formRef.current?.setFieldValue(['enable50G'], !isDual5gEnabled)
+          formRef.current?.setFieldValue(['enable6G'], !isDual5gEnabled)
+
+          handleEnableChanged(isDual5gEnabled, ApRadioTypeEnum.RadioLower5G)
+          handleEnableChanged(isDual5gEnabled, ApRadioTypeEnum.RadioUpper5G)
+          handleEnableChanged(!isDual5gEnabled, ApRadioTypeEnum.Radio5G)
+          handleEnableChanged(!isDual5gEnabled, ApRadioTypeEnum.Radio6G)
+        }
+      } else { // ex: R670 ...etc
+        if (prevoiusBendModeRef.current) {
+          formRef.current?.setFieldValue(['enable6G'], !isDual5gEnabled)
+          handleEnableChanged(!isDual5gEnabled, ApRadioTypeEnum.Radio6G)
+        }
+      }
+
+      prevoiusBendModeRef.current = currentBendMode
     }
 
     onTabChange('Normal24GHz')
@@ -997,6 +1021,7 @@ export function RadioSettings () {
         delete payload.apRadioParams6G.enableAfc
       }
 
+
       if (isSupportBandManagementAp && !isSupportDual5GAp) {
         await updateApBandMode({
           params,
@@ -1015,6 +1040,7 @@ export function RadioSettings () {
     }
   }
 
+  // remove the function after the WifiSwitchableRfEnabled always ON
   const handleTriBandTypeRadioChange = (e: RadioChangeEvent) => {
     const isDual5gEnabled = e.target.value
     setIsDual5gMode(isDual5gEnabled)
