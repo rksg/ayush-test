@@ -4,9 +4,9 @@ import { ProFormCheckbox, ProFormInstance, ProFormText } from '@ant-design/pro-f
 import { Button, Divider }                               from 'antd'
 import { useIntl }                                       from 'react-intl'
 
-import { cssStr }                   from '@acx-ui/components'
-import { CrownSolid, RuckusAiDog }  from '@acx-ui/icons'
-import { VlanSettingDrawer }        from '@acx-ui/rc/components'
+import { cssStr }                             from '@acx-ui/components'
+import { CrownSolid, OnboardingAssistantDog } from '@acx-ui/icons'
+import { VlanSettingDrawer }                  from '@acx-ui/rc/components'
 import {
   useCreateOnboardConfigsMutation,
   useLazyGetVlanOnboardConfigsQuery,
@@ -258,7 +258,7 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
                 <UI.PurposeContainer
                   disabled={!checkboxStates[index]}>
                   <UI.PurposeHeader>
-                    <RuckusAiDog style={{
+                    <OnboardingAssistantDog style={{
                       width: '20px',
                       height: '20px',
                       verticalAlign: 'text-bottom',

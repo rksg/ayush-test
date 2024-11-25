@@ -9,9 +9,9 @@ import {
 import { Button, Divider } from 'antd'
 import { useIntl }         from 'react-intl'
 
-import { cssStr }                  from '@acx-ui/components'
-import { CrownSolid, RuckusAiDog } from '@acx-ui/icons'
-import { useNetworkListQuery }     from '@acx-ui/rc/services'
+import { cssStr }                             from '@acx-ui/components'
+import { CrownSolid, OnboardingAssistantDog } from '@acx-ui/icons'
+import { useNetworkListQuery }                from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
   ssidBackendNameRegExp,
@@ -249,7 +249,7 @@ export function WlanStep ( props: {
               {item['Purpose'] && <UI.PurposeContainer
                 disabled={!checkboxStates[index]}>
                 <UI.PurposeHeader>
-                  <RuckusAiDog
+                  <OnboardingAssistantDog
                     style={{
                       width: '20px',
                       height: '20px',
