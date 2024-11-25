@@ -4,9 +4,9 @@ import { EnvironmentOutlined }     from '@ant-design/icons'
 import { Col, Divider, Form, Row } from 'antd'
 import { useIntl }                 from 'react-intl'
 
-import { StepsFormLegacy, Subtitle }               from '@acx-ui/components'
-import { Features, useIsTierAllowed }              from '@acx-ui/feature-toggle'
-import { useMacRegListsQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { StepsFormLegacy, Subtitle }                from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useMacRegListsQuery, useVenuesListQuery }  from '@acx-ui/rc/services'
 import {
   Demo,
   GuestNetworkTypeEnum,
@@ -27,6 +27,7 @@ import NetworkFormContext from '../NetworkFormContext'
 import { AaaSummaryForm }       from './AaaSummaryForm'
 import { DpskSummaryForm }      from './DpskSummaryForm'
 import { Hotspot20SummaryForm } from './Hotspot20SummaryForm'
+import { OpenSummaryForm }      from './OpenSummaryForm'
 import { PortalSummaryForm }    from './PortalSummaryForm'
 import { PskSummaryForm }       from './PskSummaryForm'
 
@@ -47,6 +48,8 @@ export function SummaryForm (props: {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
   const { isRuckusAiMode } = useContext(NetworkFormContext)
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
   const { summaryData, portalData, extraData } = props
   const params = useParams()
   const { data } = useVenuesListQuery({
@@ -126,7 +129,8 @@ export function SummaryForm (props: {
               children={extraData?.directoryServer?.name ?? ''}
             />}
           {summaryData.type !== NetworkTypeEnum.PSK && summaryData.type !== NetworkTypeEnum.AAA &&
-            summaryData.type!==NetworkTypeEnum.CAPTIVEPORTAL &&
+            summaryData.type !== NetworkTypeEnum.CAPTIVEPORTAL &&
+            summaryData.type !== NetworkTypeEnum.DPSK &&
             summaryData.type !== NetworkTypeEnum.HOTSPOT20
             && summaryData?.dpskWlanSecurity !== WlanSecurityEnum.WPA23Mixed
           && <Form.Item
@@ -138,7 +142,7 @@ export function SummaryForm (props: {
             }
           />
           }
-          {summaryData.isCloudpathEnabled &&
+          {!supportRadsec && summaryData.isCloudpathEnabled &&
             <>
               {summaryData.type === NetworkTypeEnum.DPSK &&
                 <Form.Item
@@ -184,6 +188,11 @@ export function SummaryForm (props: {
           }
           {summaryData.type === NetworkTypeEnum.CAPTIVEPORTAL &&
             <PortalSummaryForm summaryData={summaryData} portalData={portalData}/>
+          }
+          {supportRadsec && summaryData.type === NetworkTypeEnum.OPEN &&
+            (summaryData.authRadius && summaryData.wlan?.macAddressAuthentication &&
+              !summaryData.wlan?.macRegistrationListId) &&
+            <OpenSummaryForm summaryData={summaryData} />
           }
         </Col>
         <Divider type='vertical' style={{ height: '300px' }}/>
