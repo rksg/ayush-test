@@ -714,7 +714,7 @@ export function NetworkForm (props:{
 
     if (newNetworkVenues?.length) {
       newNetworkVenues?.forEach(networkVenue => {
-        if (!networkVenue.networkId) {
+        if (!networkVenue.networkId || networkVenue.networkId !== networkId) {
           networkVenue.networkId = networkId
         }
 
@@ -1054,6 +1054,7 @@ export function NetworkForm (props:{
         breadcrumb={breadcrumb}
       />}
       {(!editMode || cloneMode) &&
+      <Loader states={[{ isLoading: isLoading }]}>
         <NetworkFormContext.Provider value={{
           modalMode,
           createType,
@@ -1145,6 +1146,7 @@ export function NetworkForm (props:{
             </StepsFormLegacy>
           </MLOContext.Provider>
         </NetworkFormContext.Provider>
+      </Loader>
       }
       {editMode &&
       <Loader states={[{ isLoading: isLoading }]}>

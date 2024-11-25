@@ -1,8 +1,11 @@
 /* eslint-disable max-len */
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
+import { get } from '@acx-ui/config'
+
 import { IncidentCode } from './constants'
 
+const isMLISA = get('IS_MLISA_SA')
 export interface IncidentInformation {
   category: MessageDescriptor
   subCategory: MessageDescriptor
@@ -210,6 +213,39 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
     }),
     incidentType: 'switch'
   },
+  'i-switch-loop-detection': {
+    category: defineMessage({ defaultMessage: 'Infrastructure' }),
+    subCategory: defineMessage({ defaultMessage: 'Loop Detection' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'Loop detected in {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'Loop detected in {scope}.'
+    }),
+    incidentType: 'switch'
+  },
+  'p-switch-port-congestion': {
+    category: defineMessage({ defaultMessage: 'Performance' }),
+    subCategory: defineMessage({ defaultMessage: 'Congestion' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'Port congestion detected in {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'Port congestion detected in {scope}.'
+    }),
+    incidentType: 'switch'
+  },
+  'p-switch-uplink-port-congestion': {
+    category: defineMessage({ defaultMessage: 'Performance' }),
+    subCategory: defineMessage({ defaultMessage: 'Uplink Congestion' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'Uplink Port congestion detected in {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'Uplink Port congestion detected in {scope}.'
+    }),
+    incidentType: 'switch'
+  },
   'p-switch-memory-high': {
     category: defineMessage({ defaultMessage: 'Performance' }),
     subCategory: defineMessage({ defaultMessage: 'Memory' }),
@@ -245,13 +281,21 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
   },
   'i-apinfra-wanthroughput-low': {
     category: defineMessage({ defaultMessage: 'Infrastructure' }),
-    subCategory: defineMessage({ defaultMessage: 'WAN' }),
-    shortDescription: defineMessage({
-      defaultMessage: 'Sub-optimal WAN throughput - speed mismatch between AP and peer device: {scope}'
-    }),
-    longDescription: defineMessage({
-      defaultMessage: 'Sub-optimal WAN throughput - speed mismatch between AP and peer device: {scope}.'
-    }),
+    subCategory: defineMessage({ defaultMessage: 'Ethernet' }),
+    shortDescription: isMLISA
+      ? defineMessage({
+        defaultMessage: 'Physical link speed/duplex mismatch between AP and upstream device: {scope}'
+      })
+      : defineMessage({
+        defaultMessage: 'Physical link speed/duplex mismatch between AP and upstream/connected device'
+      }),
+    longDescription: isMLISA
+      ? defineMessage({
+        defaultMessage: 'Physical link speed/duplex mismatch between AP and upstream device: {scope}'
+      })
+      : defineMessage({
+        defaultMessage: 'Physical link speed/duplex mismatch between AP and upstream/connected device'
+      }),
     incidentType: 'network'
   },
   'p-airtime-b-24g-high': {
