@@ -23,6 +23,7 @@ const userProfile =
       firstName: 'msp',
       lastName: 'eleu1658',
       role: 'PRIME_ADMIN',
+      roles: ['DEVOPS', 'PRIME_ADMIN', 'VAR_ADMIN'],
       support: false,
       tenantId: '3061bd56e37445a8993ac834c01e2710',
       username: 'msp.eleu1658@rwbigdog.com',

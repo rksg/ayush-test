@@ -68,6 +68,7 @@ describe('VlanStep', () => {
           <VlanStep
             payload={mock_payload}
             sessionId='session-id'
+            description='description'
             formInstance={formRef.current}
           />
         </Form>
@@ -98,6 +99,7 @@ describe('VlanStep', () => {
           <VlanStep
             payload={mock_payload}
             sessionId='session-id'
+            description='description'
             formInstance={formRef.current}
           />
         </Form>
@@ -111,8 +113,29 @@ describe('VlanStep', () => {
 
     // change id
     await userEvent.clear(screen.getByTestId('vlan-id-input-0'))
-    await userEvent.type(screen.getByTestId('vlan-id-input-0'), '99')
-    expect(screen.getByTestId('vlan-id-input-0')).toHaveValue(99)
+    await userEvent.type(screen.getByTestId('vlan-id-input-0'), '93')
+    expect(screen.getByTestId('vlan-id-input-0')).toHaveValue(93)
+
+    await userEvent.clear(screen.getByTestId('vlan-id-input-1'))
+    await userEvent.type(screen.getByTestId('vlan-id-input-1'), '93')
+    expect(screen.getByTestId('vlan-id-input-1')).toHaveValue(93)
+    screen.getByTestId('vlan-id-input-1').blur()
+
+    //duplicate id
+    expect(await screen.findByText('This VLAN ID is duplicated.')).toBeInTheDocument()
+    await userEvent.clear(screen.getByTestId('vlan-id-input-1'))
+    await userEvent.type(screen.getByTestId('vlan-id-input-1'), '100')
+    expect(screen.getByTestId('vlan-id-input-1')).toHaveValue(100)
+
+    // change vlan name
+    await userEvent.clear(screen.getByTestId('vlan-name-input-0'))
+    await userEvent.type(screen.getByTestId('vlan-name-input-0'), 'vlan-93')
+    expect(screen.getByTestId('vlan-name-input-0')).toHaveValue('vlan-93')
+
+    // change checkbox
+    const checkboxes = await screen.findAllByRole('checkbox')
+    await userEvent.click(checkboxes[2])
+    expect(checkboxes[2]).not.toBeChecked()
 
     // edit
     await userEvent.click(screen.getByTestId('vlan-configuration-0'))

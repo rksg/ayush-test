@@ -1,6 +1,15 @@
-import { getWiredWirelessIncidentCodes, IncidentToggle } from './constants'
+import { getWiredWirelessIncidentCodes, IncidentToggle, categoryOptions } from './constants'
 
 describe('constants', () => {
+  describe('categoryOptions', () => {
+    it('returns true for isVisible', () => {
+      expect(categoryOptions.map(({ isVisible }) => isVisible())).toEqual([
+        true,
+        true,
+        true
+      ])
+    })
+  })
   describe('productNames', () => {
     const mockGet = jest.fn()
     beforeEach(() => {
