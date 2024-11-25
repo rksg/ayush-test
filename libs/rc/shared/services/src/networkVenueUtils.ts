@@ -1085,8 +1085,8 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
               const apGroupSettingReq = {
                 ...createHttpRequest(
                   activateVenueApGroupUrlInfo, {
-                    venueId: apGroup.venueId || newPayload.venueId,
-                    networkId: apGroup.networkId || newPayload.networkId,
+                    venueId: newPayload.venueId,
+                    networkId: newPayload.networkId,
                     apGroupId: apGroup.apGroupId
                   })
               }
@@ -1100,8 +1100,8 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
               const apGroupSettingReq = {
                 ...createHttpRequest(
                   updateVenueApGroupsUrlInfo, {
-                    venueId: apGroup.venueId || newPayload.venueId,
-                    networkId: apGroup.networkId || newPayload.networkId,
+                    venueId: newPayload.venueId,
+                    networkId: newPayload.networkId,
                     apGroupId: apGroup.apGroupId
                   }),
                 body: JSON.stringify(apGroup)
@@ -1116,8 +1116,8 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
               const apGroupSettingReq = {
                 ...createHttpRequest(
                   deactivateVenueApGroupUrlInfo, {
-                    venueId: apGroup.venueId || oldPayload.venueId,
-                    networkId: apGroup.networkId || oldPayload.networkId,
+                    venueId: oldPayload.venueId,
+                    networkId: oldPayload.networkId,
                     apGroupId: apGroup.apGroupId
                   })
               }
