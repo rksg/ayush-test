@@ -151,7 +151,7 @@ describe('NetworkForm', () => {
     render(<Provider><NetworkForm /></Provider>, {
       route: { params }
     })
-
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const insertInput = screen.getByLabelText(/Network Name/)
     fireEvent.change(insertInput, { target: { value: 'open network test' } })
     fireEvent.blur(insertInput)
@@ -180,6 +180,7 @@ describe('NetworkForm', () => {
       route: { params }
     })
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const insertInput = screen.getByLabelText(/Network Name/)
     fireEvent.change(insertInput, { target: { value: 'hotspot20 network test' } })
     fireEvent.blur(insertInput)
@@ -230,6 +231,7 @@ describe('NetworkForm', () => {
       route: { params }
     })
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const insertInput = screen.getByLabelText(/Network Name/)
     fireEvent.change(insertInput, { target: { value: 'open network test' } })
     fireEvent.blur(insertInput)
@@ -265,6 +267,7 @@ describe('NetworkForm', () => {
       route: { params }
     })
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const insertInput = screen.getByRole('textbox', { name: /Network Name/ })
     fireEvent.change(insertInput, { target: { value: 'testing DPSK with default' } })
     fireEvent.blur(insertInput)
