@@ -82,9 +82,7 @@ import {
   EdgeMvSdLanViewData,
   NetworkTunnelSdLanAction,
   VLANPoolViewModelType,
-  NetworkTunnelSoftGreAction,
-  guestPasswordValidator,
-  GuestPortal
+  NetworkTunnelSoftGreAction
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
