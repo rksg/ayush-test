@@ -60,8 +60,7 @@ export function ConfigChangeChart ({
   const [selected, setSelected] = useState<number|undefined>(selectedData?.id)
 
   useEffect(() => {
-    // TODO: remove filterId while removeing CONFIG_CHANGE_PAGINATION
-    setSelected(selectedData?.filterId || selectedData?.id)
+    setSelected(selectedData?.id)
   }, [selectedData])
 
   const [selectedLegend, setSelectedLegend] = useState(

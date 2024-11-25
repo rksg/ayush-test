@@ -47,7 +47,6 @@ export function PagedTable () {
     sorter, setSorter, reset
   } = useContext(ConfigChangeContext)
 
-
   const queryResults = usePagedConfigChangeQuery({
     ...pathFilters,
     startDate: startDate.toISOString(),

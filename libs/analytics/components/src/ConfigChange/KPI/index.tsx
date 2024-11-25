@@ -18,6 +18,7 @@ import {
 import { kpiDelta }                                     from '@acx-ui/analytics/utils'
 import { Button, CaretDownSolidIcon, Dropdown, Loader } from '@acx-ui/components'
 import { get }                                          from '@acx-ui/config'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { formatter }                                    from '@acx-ui/formatter'
 import { noDataDisplay }                                from '@acx-ui/utils'
 
@@ -43,12 +44,17 @@ type KPIProps = ConfigChangeKPIConfig & {
 }
 
 const KPI = ({ apiMetric, kpiKey, label, format, deltaSign, values }: KPIProps) => {
+  const isMLISA = get('IS_MLISA_SA')
+  const isPagedConfigChange = useIsSplitOn(Features.CONFIG_CHANGE_PAGINATION)
+  const isPaged = Boolean(isMLISA || isPagedConfigChange)
+
   const { $t } = useIntl()
+
   const { trend, value } =
     kpiDelta(values?.before[apiMetric], values?.after[apiMetric], deltaSign, format)
   const { kpiFilter, setKpiFilter, reset } = useContext(ConfigChangeContext)
   return <div onClick={() => {
-    reset()
+    isPaged && reset()
     setKpiFilter?.(kpiKey)
   }}>
     <Statistic

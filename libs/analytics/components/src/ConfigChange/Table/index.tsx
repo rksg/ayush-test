@@ -24,6 +24,7 @@ import { EntityType, enumTextMap, filterData, jsonMapping } from './util'
 
 export function Table () {
   const { $t } = useIntl()
+  const { pathFilters } = useAnalyticsFilter()
   const {
     timeRanges: [startDate, endDate],
     kpiFilter, applyKpiFilter,
@@ -31,9 +32,6 @@ export function Table () {
     pagination, applyPagination,
     selected, onRowClick, dotSelect
   } = useContext(ConfigChangeContext)
-  const { pathFilters } = useAnalyticsFilter()
-
-  const entityTypeMapping = getConfigChangeEntityTypeMapping()
 
   const queryResults = useConfigChangeQuery({
     ...pathFilters,
@@ -43,6 +41,8 @@ export function Table () {
     ...queryResults,
     data: filterData(queryResults.data ?? [], kpiFilter, legendFilter)
   }) })
+
+  const entityTypeMapping = getConfigChangeEntityTypeMapping()
 
   const ColumnHeaders: TableProps<ConfigChange>['columns'] = [
     {
@@ -159,7 +159,6 @@ export function Table () {
         columnEmptyText={noDataDisplay}
         pagination={{
           ...pagination,
-          total: queryResults.data?.length || 0,
           onChange: handlePaginationChange
         }}
         key={dotSelect}
