@@ -14,22 +14,19 @@ export function useExportCsv<T> (
   const tenantId = useTenantId()
   const [ downloadCsv ] = useDownloadApsCSVMutation()
 
-  const payload = isUseWifiRbacApi ?
-    {
-      fields: tableQuery.payload?.fields,
-      sortField: tableQuery.sorter?.sortField,
-      sortOrder: tableQuery.sorter?.sortOrder,
+  const payload = {
+    fields: tableQuery.payload?.fields,
+    filters: _.omit(tableQuery?.payload?.filters as Filter, ['fromTime', 'toTime']),
+    searchString: tableQuery.payload?.searchString as string,
+    searchTargetFields: tableQuery.payload?.searchTargetFields as string[],
+    sortField: tableQuery.sorter?.sortField,
+    sortOrder: tableQuery.sorter?.sortOrder,
+    ...(isUseWifiRbacApi ? {
       page: 1,
       pageSize: 10000 // The export API of RBAC version changes to query all
-    } :
-    {
-      fields: tableQuery.payload?.fields,
-      filters: _.omit(tableQuery?.payload?.filters as Filter, ['fromTime', 'toTime']),
-      searchString: tableQuery.payload?.searchString as string,
-      searchTargetFields: tableQuery.payload?.searchTargetFields as string[],
-      sortField: tableQuery.sorter?.sortField,
-      sortOrder: tableQuery.sorter?.sortOrder
-    }
+    } : {})
+
+  }
 
   return {
     exportCsv: () => downloadCsv({
