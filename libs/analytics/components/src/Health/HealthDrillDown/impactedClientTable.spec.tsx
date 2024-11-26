@@ -1,5 +1,6 @@
 import { range, uniqueId } from 'lodash'
 
+import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import { DateRange }                        from '@acx-ui/utils'
@@ -117,6 +118,8 @@ describe('ImpactedClientsTable', () => {
     expect(await screen.findAllByText('osType')).toHaveLength(10)
   })
   it('should show only top 10 impacted clients with filtered text', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     const samplePieList = [
       { rawKey: 'Others', name: 'Others' },
       { rawKey: 'secondpie', name: 'secondpie' }
