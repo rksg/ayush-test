@@ -4,8 +4,8 @@ import { get }                                from '@acx-ui/config'
 import { Provider }                           from '@acx-ui/store'
 import { cleanup, render, fireEvent, screen } from '@acx-ui/test-utils'
 
-import { BTM_REQUEST, BTM_RESPONSE, DisplayEvent } from './config'
-import { ConnectionEventPopover }                  from './ConnectionEvent'
+import { BTM_REQUEST, BTM_RESPONSE, DisplayEvent }           from './config'
+import { ConnectionEventPopover, getRoamingTypeDisplayText } from './ConnectionEvent'
 
 const mockGet = get as jest.Mock
 jest.mock('@acx-ui/config', () => ({
@@ -285,6 +285,20 @@ describe('ConnectionEvent', () => {
     expect(original).toMatchObject(closed)
   })
 
+  it('should return roaming type dislplay text corectly', () => {
+    [
+      { type: 'OKC', text: 'OKC Roaming' },
+      { type: 'PMK', text: 'PMKID Roaming' },
+      { type: 'full-802.11', text: 'Full Authentication' },
+      { type: '11r', text: '11r Over-the-Air' },
+      { type: 'FT - Over-the-Air', text: '11r Over-the-Air' },
+      { type: 'FT - Over-the-DS', text: '11r Over-the-DS' },
+      { type: 'Full Authentication', text: 'Full Authentication' },
+      { type: 'random', text: 'random' } // unmapped
+    ].forEach(({ type, text }) => {
+      expect(getRoamingTypeDisplayText(type)).toBe(text)
+    })
+  })
   it('renders correctly for btm request event', async () => {
     render(<ConnectionEventPopover event={btmRequestEvent}>test</ConnectionEventPopover>)
     fireEvent.click(await screen.findByText(/test/i))

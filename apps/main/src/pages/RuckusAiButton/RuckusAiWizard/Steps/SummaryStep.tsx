@@ -60,7 +60,7 @@ export function SummaryStep (props: {
         <Form.Item
           label={
             <UI.SummaryContainerHeader>
-              {$t({ defaultMessage: 'VLAN Configuration' })}
+              {$t({ defaultMessage: 'Switch Configuration' })}
             </UI.SummaryContainerHeader>
           }
           style={{ marginBottom: '0px' }}

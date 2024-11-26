@@ -10,6 +10,7 @@ import { useIntl }                                                   from 'react
 
 import { cssStr, Tooltip, Button, Alert }                  from '@acx-ui/components'
 import { get }                                             from '@acx-ui/config'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { InformationOutlined, QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import { useNavigate, useLocation }                        from '@acx-ui/react-router-dom'
 import { validationMessages }                              from '@acx-ui/utils'
@@ -77,6 +78,8 @@ export function RadioSettingsForm (props:{
   const enableAfcFieldName = [...radioDataKey, 'enableAfc']
   const minFloorFieldName = [...radioDataKey, 'venueHeight', 'minFloor']
   const maxFloorFieldName = [...radioDataKey, 'venueHeight', 'maxFloor']
+
+  const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
 
   const channelSelectionOpts = (context === 'venue') ?
     channelSelectionMethodsOptions :
@@ -406,7 +409,15 @@ export function RadioSettingsForm (props:{
         </div>
         : '' }
       <Form.Item
-        label={$t({ defaultMessage: 'Transmit Power adjustment:' })}
+        label={<>
+          {$t({ defaultMessage: 'Transmit Power adjustment:' })}
+          {isApTxPowerToggleEnabled && <Tooltip.Question
+            title={$t({ defaultMessage: 'Adjust the value based on the calibration TX power on this device' })}
+            placement='right'
+            iconStyle={{ height: '16px', width: '16px' }}
+          />
+          }
+        </>}
         name={txPowerFieldName}>
         <RadioFormSelect
           disabled={disabled}
