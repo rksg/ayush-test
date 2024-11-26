@@ -227,7 +227,7 @@ describe('Test', () => {
         component: SwitchUplinkPortCongestion,
         fakeIncident: fakeIncidentUplinkPortCongestion,
         hasNetworkImpact: false,
-        hasTimeSeries: false,
+        hasTimeSeries: true,
         charts: []
       },
       {
@@ -427,7 +427,7 @@ describe('Test', () => {
       component: SwitchUplinkPortCongestion,
       fakeIncident: fakeIncidentUplinkPortCongestion,
       hasNetworkImpact: false,
-      hasTimeSeries: false,
+      hasTimeSeries: true,
       charts: []
     }].forEach((test) => it(`should not render anything for ${test.component.name}`, () => {
       jest.mocked(useIsSplitOn).mockReturnValue(false)
