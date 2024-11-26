@@ -1,8 +1,10 @@
 import { Map }               from 'immutable'
+import moment                from 'moment'
 import { MessageDescriptor } from 'react-intl'
 
 import { ConfigChange, getConfigChangeEntityTypeMapping } from '@acx-ui/components'
 import { get }                                            from '@acx-ui/config'
+import { DateFormatEnum, formatter }                      from '@acx-ui/formatter'
 
 import { apGroupKeyMap }             from './mapping/apGroupKeyMap'
 import { apKeyMap }                  from './mapping/apKeyMap'
@@ -93,4 +95,21 @@ export const filterData = (data: ConfigChange[], kpiKeys: string[], legend: stri
     .map((value, filterId)=>({ ...value, filterId })).filter(row => kpiKeys.length
       ? kpiKeys.some(k => configChangekpiMap[row.key]?.includes(k))
       : true)
+}
+
+export const formatTimestamp = (timestamp: string) => {
+  return formatter(DateFormatEnum.DateTimeFormat)(moment(Number(timestamp)))
+}
+
+export const getEntityType = (type: string) => {
+  return getConfigChangeEntityTypeMapping().find(entityType => entityType.key === type)
+}
+
+export const getEntityValue = (type: string, key: string, value: string) => {
+  return enumTextMap.get(
+    `${(jsonMapping[type as EntityType].enumMap).get(key, '')}-${value}`, value)
+}
+
+export const getConfiguration = (type: string, key: string) => {
+  return jsonMapping[type as EntityType].configMap.get(key, key)
 }
