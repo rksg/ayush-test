@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 import { showExpiredSessionModal }            from '@acx-ui/analytics/components'
 import { getUserProfile }                     from '@acx-ui/analytics/utils'
