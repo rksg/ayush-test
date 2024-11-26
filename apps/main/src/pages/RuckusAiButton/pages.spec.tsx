@@ -92,7 +92,9 @@ describe('WelcomePage', () => {
           <WelcomePage />
         </Form>
       </Provider>)
-    expect(await screen.findByText('Your personal onboarding assistant')).toBeVisible()
+    expect(screen.getByText('About')).toBeInTheDocument()
+    // eslint-disable-next-line max-len
+    expect(screen.getByText('Onboarding Assistant automates and optimizes complex network onboarding processes, leading to increased efficiency and productivity.')).toBeInTheDocument()
   })
 })
 

@@ -46,9 +46,14 @@ export const Description = styled.span`
   margin: 5px 0 30px 0;
 `
 
-export const VlanContainer = styled.div`
+export const StepItemCheckContainer = styled.div`
   display: grid;
   grid-template-columns: 45px 1fr;
+`
+
+export const StepItemContainer = styled.div`
+  display: grid;
+  grid-template-columns: 35px 1fr;
 `
 
 export const CheckboxContainer = styled.div`
@@ -107,12 +112,12 @@ export const ConfigurationContainer = styled.div<{ disabled?: boolean }>`
 export const NetworkName = styled.div`
   margin: 10px 0px;
   font-size: var(--acx-subtitle-5-font-size);
-  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+  font-weight: var(--acx-subtitle-5-font-weight);
 `
 
 export const PurposeHeader = styled.div`
   font-size: var(--acx-subtitle-5-font-size);
-  font-weight:  var(--acx-subtitle-5-font-weight-semi-bold);
+  font-weight: var(--acx-subtitle-5-font-weight);
   display: flex;
   align-items: center;
 
@@ -124,7 +129,7 @@ export const PurposeHeader = styled.div`
 
 export const ConfigurationHeader = styled.div`
     display: flex;
-    font-weight: 600;
+    font-weight: 700;
     justify-content: space-between;
     width: -webkit-fill-available;
     align-items: center;
@@ -192,6 +197,7 @@ export const ConfiguredButton = styled.div`
 
 export const SetupButton = styled.div`
   color: var(--acx-accents-blue-50);
+  font-weight: var(--acx-headline-5-font-weight);
 `
 
 export const SummaryContainer = styled.div`
