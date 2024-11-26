@@ -65,7 +65,8 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
       'description',
       'macRegistrationPoolId',
       'dpskPoolId',
-      'certificateTemplateId'
+      'certificateTemplateId',
+      'policySetId'
     ] as const
     const patchData = {}
 

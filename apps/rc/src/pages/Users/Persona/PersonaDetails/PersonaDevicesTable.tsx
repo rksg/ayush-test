@@ -73,7 +73,7 @@ export function PersonaDevicesTable (props: {
 
   // ClientMac format should be: 11:22:33:44:55:66
   const toClientMacFormat = (macAddress: string) => {
-    return macAddress.replaceAll('-', ':')
+    return macAddress.replaceAll('-', ':').toUpperCase()
   }
 
   useEffect(() => {
@@ -92,6 +92,8 @@ export function PersonaDevicesTable (props: {
   useEffect(() => {
     if (clientMac.size === 0) return
 
+    setDeviceCount(dpskDevices.length + macDevices.length)
+
     getClientList({
       params: { tenantId },
       payload: {
@@ -103,7 +105,6 @@ export function PersonaDevicesTable (props: {
         if (!result.data?.data) return
         setMacDevices(aggregateMacAuthDevices(macDevices, result.data.data))
         setDpskDevices(aggregateDpskDevices(dpskDevices, result.data.data))
-        setDeviceCount(dpskDevices.length + macDevices.length)
       })
   }, [clientMac])
 
