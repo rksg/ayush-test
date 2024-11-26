@@ -7,8 +7,10 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { TenantLink }           from '@acx-ui/react-router-dom'
-import type { AnalyticsFilter } from '@acx-ui/utils'
+import { get }                    from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { TenantLink }             from '@acx-ui/react-router-dom'
+import type { AnalyticsFilter }   from '@acx-ui/utils'
 
 import {
   Stages,
@@ -38,6 +40,10 @@ export const ImpactedClientsTable = ({
   pieList: PieChartData[];
 }) => {
   const { $t } = useIntl()
+  const allowedPieFilter = [
+    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
+    get('IS_MLISA_SA')
+  ].some(Boolean)
   const filteredData = pieList?.map((data: PieChartData) => data.rawKey)
     .filter((rawKey: string) => rawKey !== 'Others')
   const fieldMap = {
@@ -61,7 +67,8 @@ export const ImpactedClientsTable = ({
       field: field,
       stage: (selectedStage && stageNameToCodeMap[selectedStage]) as string,
       topImpactedClientLimit: topImpactedClientLimit,
-      pieData: pieFilter ? pieData : null
+      pieData: pieFilter ? pieData : null,
+      allowedPieFilter
     },
     {
       selectFromResult: (result) => {
@@ -165,8 +172,8 @@ export const ImpactedClientsTable = ({
   return (
     <Loader states={[queryResults]}>
       <TableHeading>
-        <b>{selectedStage && $t(stageLabels[selectedStage])} </b>
-        {pieFilter ? filteredText : unfilteredText}
+        <b>{selectedStage && allowedPieFilter && $t(stageLabels[selectedStage])} </b>
+        {allowedPieFilter && pieFilter ? filteredText : unfilteredText}
       </TableHeading>
       <Table
         columns={columns}

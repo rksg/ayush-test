@@ -184,14 +184,16 @@ export const api = dataApi.injectEndpoints({
           chartKey: TabKeyType;
           list: string[];
         } | null;
+        allowedPieFilter: boolean;
       }
     >({
       query: (payload) => {
         const impactedClientQuery = (type: string, stage: string) => {
-          return `impactedClients: ${type}(n: ${
-            payload.topImpactedClientLimit + 1
-          }, stage: "${stage}",
-          pieData: $pieData) {
+          return `impactedClients: ${type}(
+            n: ${payload.topImpactedClientLimit + 1}
+            stage: "${stage}"
+            ${payload.allowedPieFilter ? 'pieData: $pieData' : ''}
+          ) {
             mac
             manufacturer
             ssid
@@ -207,7 +209,7 @@ export const api = dataApi.injectEndpoints({
               $start: DateTime
               $end: DateTime
               $filter: FilterInput
-              $pieData: PieDataInput
+              ${payload.allowedPieFilter ? '$pieData: PieDataInput' : ''}
             ) {
               network(start: $start, end: $end, filter: $filter) {
                 hierarchyNode(path: $path) {
