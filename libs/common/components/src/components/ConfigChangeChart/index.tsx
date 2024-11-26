@@ -50,7 +50,7 @@ export function ConfigChangeChart ({
 }: ConfigChangeChartProps) {
 
   const isMLISA = get('IS_MLISA_SA')
-  const isIntentAIConfigChangeEnable = useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE)
+  const isIntentAIConfigChangeEnable = useIsSplitOn(Features.MLISA_4_11_0_TOGGLE)
   const showIntentAI = Boolean(isMLISA || isIntentAIConfigChangeEnable)
 
   const { $t } = useIntl()
