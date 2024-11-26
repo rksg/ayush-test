@@ -121,7 +121,8 @@ export type DelieverType = 'PRINT' | 'SMS' | 'MAIL'
 export enum GuestTypesEnum {
     MANAGED = 'GuestPass',
     SELF_SIGN_IN = 'SelfSign',
-    HOST_GUEST = 'HostGuest'
+    HOST_GUEST = 'HostGuest',
+    DIRECTORY = 'Directory'
 }
 
 export enum GuestStatusEnum {
