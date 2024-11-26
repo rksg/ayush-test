@@ -44,7 +44,6 @@ import { hasAccess }                        from '@acx-ui/user'
 import { useIncidentToggles } from '../useIncidentToggles'
 
 import {
-  eventColorByCategory,
   LabelledQuality,
   connectionQualityLabels,
   IncidentDetails,
@@ -56,9 +55,9 @@ import {
   INCIDENTS,
   ALL
 } from './config'
-import { checkRollup }                     from './EventsTimeline'
-import * as UI                             from './styledComponents'
-import { getQualityColor, labelFormatter } from './util'
+import { checkRollup }                                    from './EventsTimeline'
+import * as UI                                            from './styledComponents'
+import { getEventColor, getQualityColor, labelFormatter } from './util'
 
 import type { EChartsReactProps } from 'echarts-for-react'
 
@@ -139,9 +138,9 @@ export const getSeriesData = (
 
 export function getSeriesItemColor (params: { data: (Event | LabelledQuality)[] }) {
   const obj = Array.isArray(params.data) ? params.data[2] : ''
-  const { category } = obj as Event
+  const { category, btmInfo } = obj as Event
   return obj
-    ? cssStr(eventColorByCategory[category as keyof typeof eventColorByCategory])
+    ? cssStr(getEventColor(category, btmInfo))
     : cssStr('--acx-neutrals-50')
 }
 export function getBarColor (params: {
