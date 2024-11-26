@@ -3,9 +3,11 @@
 RUN_COMMAND="node ./node_modules/.bin/nx"
 NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail"
 
-export NX_DAEMON=false
+${RUN_COMMAND} run --help > /dev/null 2>&1
 
 set -xe
+
+echo "Start executing unit tests script file - ./cicd_tools/run_test_cases_tool.sh"
 
 ${RUN_COMMAND} run rc:test ${NX_RUN_OPTIONS}
 ${RUN_COMMAND} run rc-components:test ${NX_RUN_OPTIONS}
