@@ -3,7 +3,7 @@
 RUN_COMMAND="node ./node_modules/.bin/nx"
 NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail"
 
-${RUN_COMMAND} run --help > /dev/null 2>&1
+${RUN_COMMAND} run --help &
 
 set -xe
 
