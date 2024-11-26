@@ -136,6 +136,7 @@ export function WISPrForm () {
   }
 
   const configureProviderDetails = (providerList: Providers[], wisprPage?: WisprPage) => {
+    // eslint-disable-next-line max-len
     const pName = wisprPage?.customExternalProvider ? 'Custom Provider' : wisprPage?.externalProviderName
 
     if (pName) {
