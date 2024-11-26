@@ -10,6 +10,12 @@ import * as UI from './styledComponents'
 import Grid from '../Grid'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
+type ChatMessage = {
+  id: string,
+  type: string,
+  text: string
+}
+
 export default function AICanvas (
 //   props: {
 //   visible: boolean, setVisible:(visible: boolean) => void
@@ -20,11 +26,21 @@ export default function AICanvas (
   // const { visible, setVisible } = props
   const [ sectionsSubVisible, setSectionsSubVisible ] = useState(false)
   const [ restoreSubVisible, setRestoreSubVisible ] = useState(false)
-  const [messages, setMessages] = useState([{
+  const [chats, setChats] = useState([{
     id:'1',
     type: 'me',
     text: 'Generate Network Health Overview Widget'
-  }]);
+  },{
+    id: '2',
+    type: 'ai',
+    text: '2 widgets found- Alert and incidents widgets. Drag and drop the selected widgets to the canvas on the right.',
+    widgets: [{
+      chartType: 'pie',
+      payload: '',
+
+    }]
+  }
+  ]);
   const [ dirty, setDirty ] = useState(false)
   const [ searchText, setSearchText ] = useState('')
   const siderWidth = localStorage.getItem('acx-sider-width') || cssStr('--acx-sider-width')
@@ -33,6 +49,7 @@ export default function AICanvas (
   const onKeyDown = (event: React.KeyboardEvent) => event.key === 'Enter' && handleSearch()
   const handleSearch = () => {
     if (searchText.length <= 1) return
+    console.log('searchText: ', searchText)
   }
   const onClose = () => {
     setDirty(false)
@@ -41,14 +58,15 @@ export default function AICanvas (
     navigate(linkToDashboard)
   }
 
-  // const Message = ({ message: {
-  //   type: string,
-  //   text: string
-  // } }) => {
-  //   return   <div className={`chat-bubble ${message.type === 'me' ? "right" : ""}`}>
-  //   {message.text}
-  //   </div>
-  // }
+  const Message = (props:{chat: ChatMessage}) => {
+    const { chat } = props
+    return <div className={`chat-container ${chat.type === 'me' ? "right" : ""}`}>
+      <div className='chat-bubble'>
+        {chat.text}
+      </div>
+      {/* {chat.type === 'me' && <div className="show-widgets">Show widgets</div>} */}
+    </div>
+  }
 
   return (
     <UI.Preview $siderWidth={siderWidth} $subToolbar={sectionsSubVisible || restoreSubVisible}>
@@ -72,9 +90,9 @@ export default function AICanvas (
               <div>“Bandwidth Utilization by Device Widget”</div>
             </div>
             <div className="messages-wrapper">
-              {/* {messages?.map((message) => (
-                <Message key={message.id} message={message} />
-              ))} */}
+              {chats?.map((i) => (
+                <Message key={i.id} chat={i} />
+              ))}
             </div>
             <div className="input">
               <UI.Input
@@ -86,7 +104,7 @@ export default function AICanvas (
                 rows={10}
                 placeholder={placeholder}
               />
-              <Button icon={<SendMessageOutlined />} onClick={()=>{}} />
+              <Button icon={<SendMessageOutlined />} onClick={handleSearch} />
             </div>
           </div>
           <div className='widgets'>

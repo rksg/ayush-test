@@ -96,6 +96,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
     }
     .chatroom {
       width: calc(100% - 300px);
+      position: relative;
       .placeholder {
         display: flex;
         flex-direction: column;
@@ -111,12 +112,37 @@ border-top: 75px solid rgba(255,255,255, 0.4);
           opacity: 0.6;
         }
       }
+      .messages-wrapper {
+        margin: 30px 10px;
+      }
+      .chat-container {
+        display: flex;
+      }
+      .right.chat-container {
+        justify-content: end;
+      }
+      .right .chat-bubble {
+        border-radius: 16px 16px 0px 16px;
+        background: #F8F8FA;
+        border: 1px solid #D4D4D4;
+        color: #000;
+      }
+      .chat-bubble {
+        background: linear-gradient(275deg, #F7B605 -53.69%, #F79B06 -13.58%, #F65650 26.53%, #EC4C9A 66.65%, #A560FF 106.76%);
+        color: #fff;
+        width: fit-content;
+        max-width: 80%;
+        padding: 16px;
+        border-radius: 16px 16px 16px 0px;
+        margin: 7px;
+      }
       .input {
         background-color: var(--acx-primary-white);
         height: 150px;
         position: fixed;
         bottom: 0;
         width: calc(45% - 300px);
+        padding: 10px;
         button {
           position: fixed;
           left: calc(45% - 350px);
