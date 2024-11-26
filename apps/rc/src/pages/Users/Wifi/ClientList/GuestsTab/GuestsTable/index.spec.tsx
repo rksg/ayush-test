@@ -437,7 +437,7 @@ describe('Guest Table', () => {
     // eslint-disable-next-line testing-library/no-node-access
     await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
     const allowedNetworkCombo =
-      await within(dialog).findByLabelText('Allowed Network', { exact: false })
+      await within(dialog).findByLabelText('Network', { exact: false })
     fireEvent.mouseDown(allowedNetworkCombo)
     const option = await screen.findByText('guest pass wlan2')
     await userEvent.click(option)
