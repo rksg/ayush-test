@@ -56,6 +56,14 @@ export const mockedVenueApsList = {
   }]
 }
 
+export const mockVenueActivations = [
+  {
+    venueId: mockVenueId,
+    portId: 1,
+    apModel: 'R550'
+  }
+]
+
 export const dummyAuthRadius: AAAPolicyType = {
   id: mockAuthRadiusId,
   name: mockAuthRadiusName,
@@ -212,7 +220,8 @@ export const dummyDefaultEthernetPortProfileTrunk = {
   vlanMembers: '1-4094',
   isDefault: true,
   apSerialNumbers: [mockApSerialNumber],
-  venueIds: [mockVenueId2]
+  venueIds: [mockVenueId2],
+  venueActivations: mockVenueActivations
 }
 
 export const dummyEthernetPortProfileAccess = {

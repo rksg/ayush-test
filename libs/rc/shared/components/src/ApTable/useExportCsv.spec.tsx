@@ -66,6 +66,9 @@ describe('ApTable - useExportCsv', () => {
       params: { tenantId: undefined },
       payload: {
         fields: mockedTableQuery.payload.fields,
+        filters: mockedTableQuery.payload.filters,
+        searchString: mockedTableQuery.payload.searchString,
+        searchTargetFields: mockedTableQuery.payload.searchTargetFields,
         sortField: mockedTableQuery.sorter.sortField,
         sortOrder: mockedTableQuery.sorter.sortOrder,
         page: 1,
