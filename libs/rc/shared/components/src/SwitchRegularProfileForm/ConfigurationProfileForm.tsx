@@ -36,6 +36,7 @@ import { usePathBasedOnConfigTemplate } from '../configTemplates'
 import { AclSetting }                               from './AclSetting'
 import { ConfigurationProfileFormContext }          from './ConfigurationProfileFormContext'
 import { GeneralSetting }                           from './GeneralSetting'
+import { PortProfileSetting }                       from './PortProfileSetting'
 import { Summary }                                  from './Summary'
 import { generateTrustedPortsModels, TrustedPorts } from './TrustedPorts'
 import { VenueSetting }                             from './VenueSetting'
@@ -430,6 +431,13 @@ export function ConfigurationProfileForm () {
             onFinish={updateCurrentData}
           >
             <AclSetting />
+          </StepsForm.StepForm>
+
+          <StepsForm.StepForm
+            title={$t({ defaultMessage: 'Port Profile' })}
+            onFinish={updateCurrentData}
+          >
+            <PortProfileSetting />
           </StepsForm.StepForm>
 
           {(trustedPorts || arpInspection || ipv4DhcpSnooping) &&
