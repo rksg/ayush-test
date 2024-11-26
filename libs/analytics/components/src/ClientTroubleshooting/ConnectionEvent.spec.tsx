@@ -5,7 +5,7 @@ import { Provider }                           from '@acx-ui/store'
 import { cleanup, render, fireEvent, screen } from '@acx-ui/test-utils'
 
 import { BTM_REQUEST, BTM_RESPONSE, DisplayEvent }           from './config'
-import { ConnectionEventPopover, getRomaingTypeDisplayText } from './ConnectionEvent'
+import { ConnectionEventPopover, getRoamingTypeDisplayText } from './ConnectionEvent'
 
 const mockGet = get as jest.Mock
 jest.mock('@acx-ui/config', () => ({
@@ -296,7 +296,7 @@ describe('ConnectionEvent', () => {
       { type: 'Full Authentication', text: 'Full Authentication' },
       { type: 'random', text: 'random' } // unmapped
     ].forEach(({ type, text }) => {
-      expect(getRomaingTypeDisplayText(type)).toBe(text)
+      expect(getRoamingTypeDisplayText(type)).toBe(text)
     })
   })
   it('renders correctly for btm request event', async () => {

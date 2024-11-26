@@ -20,7 +20,7 @@ import { Details }                                                              
 import * as UI                                                                                                  from './styledComponents'
 
 
-export const getRomaingTypeDisplayText = (roamingType: string) => {
+export const getRoamingTypeDisplayText = (roamingType: string) => {
   const { $t } = getIntl()
   switch (roamingType) {
     case 'OKC': return $t({ defaultMessage: 'OKC Roaming' })
@@ -114,7 +114,7 @@ export const getConnectionDetails = (event: DisplayEvent) => {
   if (type === ROAMING && showRoamingType) {
     const label = $t({ defaultMessage: 'Roaming Type' })
     const roamType = roamingType
-      ? { label, value: getRomaingTypeDisplayText(roamingType) }
+      ? { label, value: getRoamingTypeDisplayText(roamingType) }
       : { label, value: $t({ defaultMessage: 'Unknown' }) }
     eventDetails.push(roamType)
   }
