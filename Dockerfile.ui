@@ -81,7 +81,7 @@ RUN tools/docker/locales/generate.sh
 
 FROM build-base as build
 COPY --from=build-locales /app/apps/main/src/locales ./apps/main/src/locales
-RUN node ./node_modules/.bin/nx run main:build --memoryLimit=8192
+RUN node ./node_modules/.bin/nx run main:build --memoryLimit=4096
 
 ###############################################################
 FROM build-base as acx-ui-base-test
