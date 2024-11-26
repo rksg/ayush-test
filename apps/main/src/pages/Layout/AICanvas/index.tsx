@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Space, Divider, message } from 'antd'
+import { v4 as uuidv4 }              from 'uuid'
 import { useIntl }        from 'react-intl'
 
 import { Button, cssStr }    from '@acx-ui/components'
@@ -9,6 +9,7 @@ import { HistoricalOutlined, Plus, RuckusAiDog, SendMessageOutlined } from '@acx
 import * as UI from './styledComponents'
 import Grid from '../Grid'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { Spin } from 'antd'
 
 type ChatMessage = {
   id: string,
@@ -25,22 +26,26 @@ export default function AICanvas (
   const navigate = useNavigate()
   // const { visible, setVisible } = props
   const [ sectionsSubVisible, setSectionsSubVisible ] = useState(false)
-  const [ restoreSubVisible, setRestoreSubVisible ] = useState(false)
-  const [chats, setChats] = useState([{
-    id:'1',
-    type: 'me',
-    text: 'Generate Network Health Overview Widget'
-  },{
-    id: '2',
-    type: 'ai',
-    text: '2 widgets found- Alert and incidents widgets. Drag and drop the selected widgets to the canvas on the right.',
-    widgets: [{
-      chartType: 'pie',
-      payload: '',
+  const [loading, setLoading] = useState(false)
+  const [chats, setChats] = useState([]
+  // [
+  //   {
+  //   id:'1',
+  //   type: 'me',
+  //   text: 'Generate Network Health Overview Widget'
+  //   },
+  //   {
+  //     id: '2',
+  //     type: 'ai',
+  //     text: '2 widgets found- Alert and incidents widgets. Drag and drop the selected widgets to the canvas on the right.',
+  //     widgets: [{
+  //       chartType: 'pie',
+  //       payload: '',
 
-    }]
-  }
-  ]);
+  //     }]
+  //   }
+  // ]
+  );
   const [ dirty, setDirty ] = useState(false)
   const [ searchText, setSearchText ] = useState('')
   const siderWidth = localStorage.getItem('acx-sider-width') || cssStr('--acx-sider-width')
@@ -50,7 +55,33 @@ export default function AICanvas (
   const handleSearch = () => {
     if (searchText.length <= 1) return
     console.log('searchText: ', searchText)
+    const newMessage = {
+      id: uuidv4(),
+      type: 'me',
+      text: searchText
+    }
+    setChats([...chats, newMessage])
+    setLoading(true)
+    setSearchText('')
+    setTimeout(() => {
+      setLoading(false)
+      setChats([
+        ...chats,
+        newMessage,
+        {
+          id: '2',
+          type: 'ai',
+          text: '2 widgets found- Alert and incidents widgets. Drag and drop the selected widgets to the canvas on the right.',
+          widgets: [{
+            chartType: 'pie',
+            payload: '',
+    
+          }]
+        }
+      ])
+    }, 2000)
   }
+
   const onClose = () => {
     setDirty(false)
     setSectionsSubVisible(false)
@@ -60,16 +91,19 @@ export default function AICanvas (
 
   const Message = (props:{chat: ChatMessage}) => {
     const { chat } = props
-    return <div className={`chat-container ${chat.type === 'me' ? "right" : ""}`}>
-      <div className='chat-bubble'>
-        {chat.text}
+    return <div className='message'>
+      <div className={`chat-container ${chat.type === 'me' ? "right" : ""}`}>
+        <div className='chat-bubble'>
+          {chat.text}
+        </div>
       </div>
-      {/* {chat.type === 'me' && <div className="show-widgets">Show widgets</div>} */}
+      {chat.type === 'ai' && <div className='show-widgets'>Show widgets</div>}
     </div>
+
   }
 
   return (
-    <UI.Preview $siderWidth={siderWidth} $subToolbar={sectionsSubVisible || restoreSubVisible}>
+    <UI.Preview $siderWidth={siderWidth} $subToolbar={sectionsSubVisible}>
       <div className='chat'>
         <div className='header'>
           <div className='title'>
@@ -93,6 +127,7 @@ export default function AICanvas (
               {chats?.map((i) => (
                 <Message key={i.id} chat={i} />
               ))}
+              {loading && <div className='loading'><Spin /></div>}
             </div>
             <div className="input">
               <UI.Input
