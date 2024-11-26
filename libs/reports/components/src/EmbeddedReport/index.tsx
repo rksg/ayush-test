@@ -214,6 +214,7 @@ export function EmbeddedReport (props: ReportProps) {
   const { filters: { paths, bands } } = useReportsFilter()
 
   const [dashboardEmbeddedId, setDashboardEmbeddedId] = useState<string|null>(null)
+  const [guestTokenPayload, setGuestTokenPayload] = useState<string|null>(null)
 
   const {
     firstName, lastName, email,                                           // Common
@@ -347,6 +348,19 @@ export function EmbeddedReport (props: ReportProps) {
       embedDashboardName
     )
     return await guestToken({ payload: guestTokenPayload }).unwrap()
+      .then((guestToken) => {
+        setGuestTokenPayload(guestToken)
+        return guestToken
+      }).catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error(
+          '%c[%s][EmbeddedReport] -> Failed to refresh guest token for [%s]',
+          'color: red',
+          new Date().toLocaleString(),
+          embedDashboardName
+        )
+        return Promise.reject(error)
+      })
   }
 
   const isRoleReadOnly = () => {
@@ -423,9 +437,11 @@ export function EmbeddedReport (props: ReportProps) {
   }, [startDate, endDate, paths, bands, path, dashboardEmbeddedId, systems.status, locale])
 
   return (
-    <Loader states={[{ isLoading: systems.status === 'pending' },
-      { isLoading: !Boolean(dashboardEmbeddedId) }]}>
+    <>
+      <Loader states={[{ isLoading: systems.status === 'pending' },
+        { isLoading: !Boolean(dashboardEmbeddedId) },
+        { isLoading: !Boolean(guestTokenPayload) }]} />
       <div id={`acx-report-${dashboardEmbeddedId}`} className='acx-report' />
-    </Loader>
+    </>
   )
 }
