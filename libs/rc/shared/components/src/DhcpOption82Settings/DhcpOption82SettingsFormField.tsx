@@ -1,6 +1,3 @@
-import { CSSProperties } from 'react'
-
-
 import {
   Input,
   Form,
@@ -10,7 +7,6 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Tooltip }      from '@acx-ui/components'
 import {
   DhcpOption82SubOption1Enum,
   DhcpOption82SubOption2Enum,
@@ -24,13 +20,11 @@ const { useWatch } = Form
 const { Option } = Select
 
 
-export const DhcpOption82SettingsFormField = () => {
+export const DhcpOption82SettingsFormField = (props: { labelWidth?: string }) => {
 
   const { $t } = useIntl()
 
-  const labelWidth = '250px'
-
-  const iconStyle: CSSProperties = { height: '16px', width: '16px', marginBottom: '-3px' }
+  const { labelWidth='250px' } = props
 
   const dhcp82SubOption1Options = [{
     value: DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO_LOCATION,
@@ -87,13 +81,6 @@ export const DhcpOption82SettingsFormField = () => {
     label: $t({ defaultMessage: 'AP Name' })
   }]
 
-  const dhcpOption82SubOption1TooltipContent = $t({ defaultMessage: 'Agent Circuit ID' })
-  const dhcpOption82SubOption2TooltipContent = $t({ defaultMessage: 'Agent Remote ID' })
-  const dhcpOption82SubOption150TooltipContent =
-      $t({ defaultMessage: 'DHCPv4 Virtual Subnet Selection' })
-  const dhcpOption82SubOption151TooltipContent =
-      $t({ defaultMessage: 'DHCPv4 Virtual Subnet Selection Control' })
-
   const apAndClientMacFormatDelimiter =
       $t({ defaultMessage: 'AP MAC address will always be in uppercase, ' +
         'while client MAC address will always be in lowercase.' })
@@ -131,12 +118,7 @@ export const DhcpOption82SettingsFormField = () => {
     <>
       <UI.FieldLabel width={labelWidth}>
         <Space align='start'>
-          {$t({ defaultMessage: 'Sub-option 1' })}
-          <Tooltip.Question
-            title={dhcpOption82SubOption1TooltipContent}
-            placement='bottom'
-            iconStyle={iconStyle}
-          />
+          {$t({ defaultMessage: 'Agent Circuit ID (#1)' })}
         </Space>
         <div style={{ display: 'grid', gridTemplateColumns: '50px 480px' }}>
           <Form.Item
@@ -159,12 +141,7 @@ export const DhcpOption82SettingsFormField = () => {
       </UI.FieldLabel>
       <UI.FieldLabel width={labelWidth}>
         <Space align='start'>
-          {$t({ defaultMessage: 'Sub-option 2' })}
-          <Tooltip.Question
-            title={dhcpOption82SubOption2TooltipContent}
-            placement='bottom'
-            iconStyle={iconStyle}
-          />
+          {$t({ defaultMessage: 'Agent Remote ID (#2)' })}
         </Space>
         <div style={{ display: 'grid', gridTemplateColumns: '50px 480px auto' }}>
           <Form.Item
@@ -187,12 +164,7 @@ export const DhcpOption82SettingsFormField = () => {
       </UI.FieldLabel>
       <UI.FieldLabel width={labelWidth}>
         <Space align='start'>
-          {$t({ defaultMessage: 'Sub-option 150 with VLAN ID' })}
-          <Tooltip.Question
-            title={dhcpOption82SubOption150TooltipContent}
-            placement='bottom'
-            iconStyle={iconStyle}
-          />
+          {$t({ defaultMessage: 'DHCPv4 Virtual Subnet Selection (#150)' })}
         </Space>
         <Form.Item
           name={dhcpOption82SubOption150EnabledFieldName}
@@ -204,12 +176,7 @@ export const DhcpOption82SettingsFormField = () => {
       </UI.FieldLabel>
       <UI.FieldLabel width={labelWidth}>
         <Space align='start'>
-          {$t({ defaultMessage: 'Sub-option 151' })}
-          <Tooltip.Question
-            title={dhcpOption82SubOption151TooltipContent}
-            placement='bottom'
-            iconStyle={iconStyle}
-          />
+          {$t({ defaultMessage: 'DHCPv4 Virtual Subnet Selection Control (#151)' })}
         </Space>
         <div style={{ display: 'grid', gridTemplateColumns: '50px 150px auto' }}>
 
