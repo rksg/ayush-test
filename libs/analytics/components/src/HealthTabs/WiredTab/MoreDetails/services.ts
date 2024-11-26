@@ -110,8 +110,9 @@ export const moreDetailsApi = dataApi.injectEndpoints({
     }),
     impactedClientsData: build.query<ImpactedClientsResult, RequestPayload>({
       query: payload => {
-        const { type } = payload
+        const { type, isMlisaVersion4110 } = payload
         const queryName = wiredDevicesQueryMapping[type]
+
         return ({
           document: gql`
           query SwitchClients(
@@ -133,7 +134,7 @@ export const moreDetailsApi = dataApi.injectEndpoints({
                 ${queryName}(metric: $metric, switchIds: $switchIds) {
                   switchName
                   switchId
-                  switchSerial
+                  ${isMlisaVersion4110 ? 'switchSerial' : ''}
                   deviceName
                   deviceMac
                   devicePort
