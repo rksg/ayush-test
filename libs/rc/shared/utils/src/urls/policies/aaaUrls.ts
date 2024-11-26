@@ -1,5 +1,10 @@
 import { ApiInfo } from '@acx-ui/utils'
 
+enum CertificateType {
+  CLIENT = 'CLIENT',
+  SERVER = 'SERVER'
+}
+
 export const AaaUrls: { [key: string]: ApiInfo } = {
   deleteAAAPolicyList: {
     method: 'delete',
@@ -82,18 +87,26 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
     url: '/radiusProfiles/:policyId/certificateAuthorities',
     newApi: true,
     defaultHeaders: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
   getClientCertificateOnRadius: {
     method: 'get',
-    url: '/radiusProfiles/:policyId/certificates?certType=CLIENT',
-    newApi: true
+    url: `/radiusProfiles/:policyId/certificates?certType=${CertificateType.CLIENT}`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getServerCertificateOnRadius: {
     method: 'get',
-    url: '/radiusProfiles/:policyId/certificates?certType=SERVER',
-    newApi: true
+    url: `/radiusProfiles/:policyId/certificates?certType=${CertificateType.SERVER}`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

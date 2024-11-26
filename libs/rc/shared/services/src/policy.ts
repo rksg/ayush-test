@@ -1766,8 +1766,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getCertificateAuthorityOnRadius: build.query<TableResult<CertificateAuthority>, RequestPayload>({
       query: ({ params, payload }) => {
-        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
-        const req = createHttpRequest(AaaUrls.getCertificateAuthorityOnRadius, params, customHeaders)
+        const req = createHttpRequest(AaaUrls.getCertificateAuthorityOnRadius, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1788,8 +1787,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getClientCertificateOnRadius: build.query<TableResult<Certificate>, RequestPayload>({
       query: ({ params, payload }) => {
-        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
-        const req = createHttpRequest(AaaUrls.getClientCertificateOnRadius, params, customHeaders)
+        const req = createHttpRequest(AaaUrls.getClientCertificateOnRadius, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1810,8 +1808,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getServerCertificateOnRadius: build.query<TableResult<Certificate>, RequestPayload>({
       query: ({ params, payload }) => {
-        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
-        const req = createHttpRequest(AaaUrls.getServerCertificateOnRadius, params, customHeaders)
+        const req = createHttpRequest(AaaUrls.getServerCertificateOnRadius, params)
         return {
           ...req,
           body: JSON.stringify(payload)
