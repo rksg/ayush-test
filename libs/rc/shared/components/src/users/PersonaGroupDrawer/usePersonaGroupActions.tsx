@@ -22,6 +22,7 @@ export function usePersonaGroupAction () {
   const [associateMacReg] = useAssociateIdentityGroupWithMacRegistrationMutation()
   const [associateCertTemplate] = useAssociateIdentityGroupWithCertificateTemplateMutation()
   const [associatePolicySet] = useAssociateIdentityGroupWithPolicySetMutation()
+  const [dissociatePolicySet] = useAssociateIdentityGroupWithPolicySetMutation()
 
   const createPersonaGroupMutation = async (submittedData: PersonaGroup, callback?: Function) => {
     // eslint-disable-next-line max-len
@@ -80,6 +81,7 @@ export function usePersonaGroupAction () {
     // eslint-disable-next-line max-len
     const { dpskPoolId, macRegistrationPoolId, certificateTemplateId, policySetId, ...groupData } = patchData
     const associationPromises = []
+    console.log('patch data = ', patchData)
 
     if (isAsync) {
       if (macRegistrationPoolId) {
@@ -116,6 +118,8 @@ export function usePersonaGroupAction () {
             policySetId
           }
         }))
+      } else if (patchData.hasOwnProperty('policySetId')) {
+        associationPromises.push(dissociatePolicySet({ params: { groupId, policySetId } }))
       }
     }
 

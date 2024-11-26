@@ -12,7 +12,7 @@ type PersonaUrlType =
   'searchPersonaList' | 'updatePersona' | 'deletePersona' |
   'addPersonaDevices' | 'deletePersonaDevices' | 'importPersonas' | 'exportPersona' |
   'exportPersonaGroup' | 'deletePersonas' | 'allocateVni' | 'associateMacRegistration' |
-  'associateDpskPool' | 'associateCertTemplate' | 'associatePolicySet'
+  'associateDpskPool' | 'associateCertTemplate' | 'associatePolicySet' | 'dissociatePolicySet'
 
 export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   /** Persona Group API endpoints */
@@ -43,6 +43,15 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   },
   associatePolicySet: {
     method: 'put',
+    url: `${NewPersonaBaseUrl}/:groupId/policySets/:policySetId`,
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  dissociatePolicySet: {
+    method: 'delete',
     url: `${NewPersonaBaseUrl}/:groupId/policySets/:policySetId`,
     newApi: true,
     defaultHeaders: {
