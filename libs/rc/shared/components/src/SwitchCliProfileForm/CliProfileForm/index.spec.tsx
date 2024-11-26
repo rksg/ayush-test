@@ -690,7 +690,7 @@ describe('Cli Profile Form', () => {
 
         await userEvent.click(await screen.findByRole('button', { name: 'CLI Configuration' }))
         await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
-        expect(await screen.findAllByText('Switches with their own settings')).toHaveLength(3)
+        expect(await screen.findAllByText('Switches with custom settings')).toHaveLength(3)
 
         // range variable
         await userEvent.click(await screen.findByRole('button', { name: '2 Switch(es)' }))
@@ -720,18 +720,18 @@ describe('Cli Profile Form', () => {
 
         await userEvent.click(await screen.findByRole('button', { name: 'CLI Configuration' }))
         await userEvent.click(await screen.findByRole('tab', { name: 'Variables' }))
-        expect(await screen.findAllByText('Switches with their own settings')).toHaveLength(3)
+        expect(await screen.findAllByText('Switches with custom settings')).toHaveLength(3)
 
         // range variable
         await userEvent.click(await screen.findByRole('button', { name: '1 Switch(es)' }))
         let dialog = await screen.findByRole('dialog')
-        expect(await within(dialog).findByText('Switches with their own settings')).toBeVisible()
-        expect(await within(dialog).findByText('FMF3250Q06R (FMF3250Q06R - REAL)')).toBeVisible()
+        expect(await within(dialog).findByText('Switches with custom settings')).toBeVisible()
+        expect(await within(dialog).findByText('FMF3250Q06R - REAL (FMF3250Q06R)')).toBeVisible()
         expect(await within(dialog).findByText('My-Venue')).toBeVisible()
         const closeButton = screen.queryByRole('button', { name: 'Close' })
         await userEvent.click(closeButton!)
         await waitFor(async () => {
-          expect(screen.queryByText('FMF3250Q06R (FMF3250Q06R - REAL)')).toBeNull()
+          expect(screen.queryByText('FMF3250Q06R - REAL (FMF3250Q06R)')).toBeNull()
         })
       })
 

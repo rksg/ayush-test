@@ -55,6 +55,7 @@ export function useMenuConfig () {
   const showApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
   const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
+  const showGatewaysMenu = useIsSplitOn(Features.ACX_UI_GATEWAYS_MENU_OPTION_TOGGLE)
   const isSwitchHealthEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
@@ -75,8 +76,7 @@ export function useMenuConfig () {
     aiAnalyticsMenu.push({
       permission: 'READ_INTENT_AI',
       uri: '/analytics/intentAI',
-      label: $t({ defaultMessage: 'IntentAI' }),
-      superscript: $t({ defaultMessage: 'beta' })
+      label: $t({ defaultMessage: 'IntentAI' })
     })
   } else {
     aiAnalyticsMenu
@@ -240,7 +240,7 @@ export function useMenuConfig () {
         }
       ]
     },
-    ...(showRwgUI ? [{
+    ...(!showGatewaysMenu && showRwgUI ? [{
       uri: '/ruckus-wan-gateway',
       label: $t({ defaultMessage: 'RWG' }),
       inactiveIcon: DevicesOutlined,
@@ -282,7 +282,7 @@ export function useMenuConfig () {
         }
       ]
     },
-    ...(isEdgeEnabled ? [{
+    ...(!showGatewaysMenu && isEdgeEnabled ? [{
       uri: '/devices/edge',
       isActiveCheck: new RegExp('^/devices/edge'),
       label: $t({ defaultMessage: 'RUCKUS Edge' }),
@@ -308,6 +308,23 @@ export function useMenuConfig () {
         }
       ]
     },
+    ...(showGatewaysMenu && (isEdgeEnabled || showRwgUI) ? [{
+      label: $t({ defaultMessage: 'Gateway' }),
+      inactiveIcon: DevicesOutlined,
+      activeIcon: DevicesSolid,
+      children: [
+        ...(isEdgeEnabled ? [{
+          uri: '/devices/edge',
+          isActiveCheck: new RegExp('^/devices/edge'),
+          label: $t({ defaultMessage: 'RUCKUS Edge' })
+        }] : []),
+        ...(showRwgUI ? [{
+          uri: '/ruckus-wan-gateway',
+          label: $t({ defaultMessage: 'RUCKUS WAN Gateway' })
+        }] : [])
+      ]
+    }] : []
+    ),
     {
       label: $t({ defaultMessage: 'Business Insights' }),
       inactiveIcon: BulbOutlined,

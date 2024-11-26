@@ -195,6 +195,7 @@ describe('Edge mDNS Proxy Table', () => {
     // eslint-disable-next-line max-len
     expect(within(rows[1]).getByRole('cell', { name: new RegExp(`${mockMdns2.name}`) })).toBeVisible()
     await click(within(rows[1]).getByRole('checkbox'))
+    expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
     await click(screen.getByRole('button', { name: 'Delete' }))
     const dialogTitle = await screen.findByText('Delete "2 Edge mDNS Proxy"?')
     await click(screen.getByRole('button', { name: 'Delete Edge mDNS Proxy' }))
