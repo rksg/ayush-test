@@ -75,73 +75,17 @@ export const configChanges = [
     timestamp: '1685427082100',
     type: 'intentAI',
     name: 'Config_change_WLAN2',
-    key: 'initialState.ccmZone.management_identifiers.map_entries.venueName',
-    oldValues: ['Config_change_WLAN'],
-    newValues: ['Config_change_WLAN2']
+    key: 'intentAi.c-bgscan24g-enable',
+    oldValues: [ 'Disabled' ],
+    newValues: [ 'Enabled' ]
   },
   {
     timestamp: '1685427082200',
     type: 'intentAI',
     name: '94:B3:4F:3D:21:80',
-    key: 'initialState.ccmAp.radio24g.radio.channel_select_mode',
-    oldValues: [],
-    newValues: [ 'BACKGROUND_SCANNING' ]
-  },
-  {
-    timestamp: '1685427082300',
-    type: 'intentAI',
-    name: '94:B3:4F:3D:21:80',
-    key: 'initialState.ccmAp.radio24g.radio.channel_width',
-    oldValues: [],
-    newValues: [ '_AUTO']
-  },
-  {
-    timestamp: '1685427082400',
-    type: 'intentAI',
-    name: '!!R770_url_sanity',
-    key: 'initialState.CcmWlan.firewall.firewall_url_filtering_policy.enabled',
-    oldValues: [ 'false' ],
-    newValues: [ 'true' ]
-  },
-  {
-    timestamp: '1685427082500',
-    type: 'intentAI',
-    name: 'ER-12560_1',
-    key: 'initialState.CcmWlan.bss_min_rate',
-    oldValues: [ '__12_MBPS' ],
-    newValues: [ '__DEFAULT' ]
-  },
-  {
-    timestamp: '1685427082600',
-    type: 'intentAI',
-    name: '23A-IND-BNG-D23-Home',
-    key: 'initialState.ccmZone.radio24g.radio.bg_scan',
+    key: 'intentAi.c-bgscan5g-enable',
     oldValues: [ 'Disabled' ],
     newValues: [ 'Enabled' ]
-  },
-  {
-    timestamp: '1685427082700',
-    type: 'intentAI',
-    name: '23A-IND-BNG-D23-Home',
-    key: 'initialState.ccmZone.radio5g.indoor_channel_range',
-    oldValues: [ '149', '153', '157', '161', '36', '40', '44', '48' ],
-    newValues: [ '100', '104', '108', '112', '116', '120', '124', '128', '132' ]
-  },
-  {
-    timestamp: '1685427082800',
-    type: 'intentAI',
-    name: 'someTest',
-    key: 'unknown',
-    oldValues: [],
-    newValues: []
-  },
-  {
-    timestamp: '1685427082900',
-    type: 'intentAI',
-    name: '94:B3:4F:3D:21:80',
-    key: 'initialState.ccmAp.radio24g.radio.channel_fly_mtbc',
-    oldValues: [],
-    newValues: ['480']
   }
 ]
 

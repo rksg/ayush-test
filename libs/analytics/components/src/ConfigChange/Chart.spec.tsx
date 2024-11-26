@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 
 import type { ConfigChange }                from '@acx-ui/components'
+import { get }                              from '@acx-ui/config'
 import { Provider, dataApiURL }             from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 import { DateRange, defaultRanges }         from '@acx-ui/utils'
@@ -26,13 +27,19 @@ jest.mock('@acx-ui/components', () => {
   }
 })
 
+const mockGet = jest.mocked(get)
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
+
 describe('Chart', () => {
   const handleClick = jest.fn()
   const legend = { 'AP': true, 'AP Group': true, 'Venue': true, 'WLAN': true, 'WLAN Group': true }
+  beforeEach(() => mockGet.mockReturnValue('true'))
   it('should render page correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-    render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
       <Chart
         selected={null}
         onClick={handleClick}
@@ -45,7 +52,7 @@ describe('Chart', () => {
   it('should show empty chart', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
-    render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
       <Chart
         selected={null}
         onClick={handleClick}
@@ -67,7 +74,7 @@ describe('Chart', () => {
     }
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-    render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
       <Chart
         selected={selected}
         onClick={handleClick}

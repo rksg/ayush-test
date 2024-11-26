@@ -1,7 +1,7 @@
 import { defineMessage } from 'react-intl'
 
 /* eslint-disable max-len */
-export const intentAi = [
+export const intentAIKeyMap = [
   { id: 1, value: 'intentAi.c-bgscan24g-enable', text: defineMessage({ defaultMessage: 'AI Operations: Dynamic vs Static Channel capability on 2.4 GHz radio' }), textAlto: defineMessage({ defaultMessage: 'AI Operations: Dynamic vs Static Channel capability on 2.4 GHz radio' }), enumType: '', incidents: {}, kpis: {} },
   { id: 2, value: 'intentAi.c-bgscan5g-enable', text: defineMessage({ defaultMessage: 'AI Operations: Dynamic vs Static Channel capability on 5 GHz radio' }), textAlto: defineMessage({ defaultMessage: 'AI Operations: Dynamic vs Static Channel capability on 5 GHz radio' }), enumType: '', incidents: {}, kpis: {} },
   { id: 3, value: 'intentAi.c-bgscan24g-timer', text: defineMessage({ defaultMessage: 'AI Operations: Network Efficiency vs Stability on 2.4 GHz radio' }), textAlto: defineMessage({ defaultMessage: 'AI Operations: Network Efficiency vs Stability on 2.4 GHz radio' }), enumType: '', incidents: {}, kpis: {} },
