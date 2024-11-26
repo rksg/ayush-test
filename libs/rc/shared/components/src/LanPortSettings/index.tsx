@@ -101,6 +101,8 @@ export function LanPortSettings (props: {
   const [ethernetProfileCreateId, setEthernetProfileCreateId] = useState<String>()
   const [enableSoftGRETunnel, setEnableSoftGRETunnel] = useState<boolean>(false)
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
+  const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
+
 
   // Non ethernet port profile
   const handlePortTypeChange = (value: string, index:number) => {
@@ -248,11 +250,13 @@ export function LanPortSettings (props: {
         currentIndex={index}
         onGUIChanged={onGUIChanged}
         isEditable={!!serialNumber} />
-      <SoftGRETunnelSettings
-        enableSoftGRETunnel={enableSoftGRETunnel}
-        setEnableSoftGRETunnel={setEnableSoftGRETunnel}
-      />
-      { enableSoftGRETunnel && <DhcpOption82Settings />}
+      { isEthernetPortProfileEnabled && isEthernetSoftgreEnabled && (<>
+        <SoftGRETunnelSettings
+          enableSoftGRETunnel={enableSoftGRETunnel}
+          setEnableSoftGRETunnel={setEnableSoftGRETunnel}
+        />
+        {enableSoftGRETunnel && <DhcpOption82Settings />}
+      </>)}
       </>) :
       (<>
         <Form.Item
