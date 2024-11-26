@@ -37,7 +37,6 @@ COPY .eslintignore \
 COPY .storybook ./.storybook
 COPY apps ./apps
 COPY libs ./libs
-COPY tools/docker/locales ./tools/docker/locales
 
 ENV NODE_OPTIONS=--max-old-space-size=4096
 ENV NX_CACHE_DIRECTORY=/app/node_modules/.cache/nx
@@ -49,10 +48,6 @@ RUN find /app/node_modules/.cache/nx -type f -mtime +1 -delete && \
     find /app/node_modules/.cache/nx -type d -empty -delete
 
 COPY tools/tests ./tools/tests
-
-# Build locales
-RUN chmod +x tools/docker/locales/generate.sh
-RUN tools/docker/locales/generate.sh
 
 # dump git information
 RUN source ${ENV_FILE} \
