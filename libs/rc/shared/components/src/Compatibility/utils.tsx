@@ -1,5 +1,6 @@
-import { ApCompatibility, ApCompatibilityResponse, ApIncompatibleFeature, Compatibility, CompatibilityDeviceEnum, IncompatibilityFeatures, IncompatibleFeature, isEdgeCompatibilityFeature } from '@acx-ui/rc/utils'
+import { ApCompatibility, ApCompatibilityResponse, ApIncompatibleFeature, Compatibility, CompatibilityDeviceEnum, IncompatibilityFeatures, IncompatibleFeature, IncompatibleFeatureTypeEnum, isEdgeCompatibilityFeature } from '@acx-ui/rc/utils'
 
+// for old API
 export const apCompatibilityDataGroupByFeatureDeviceType = (data: ApCompatibility):
  Record<string, ApIncompatibleFeature[]> => {
   const deviceMap: Record<string, ApIncompatibleFeature[]> = {}
@@ -19,7 +20,7 @@ export const compatibilityDataGroupByFeatureDeviceType = (data: Compatibility):
   const deviceMap: Record<string, IncompatibleFeature[]> = {}
 
   data.incompatibleFeatures?.forEach(incompatibleFeature => {
-    const isEdgeFeature = isEdgeCompatibilityFeature(incompatibleFeature.featureName)
+    const isEdgeFeature = incompatibleFeature.featureType === IncompatibleFeatureTypeEnum.EDGE
     const deviceType = isEdgeFeature ? CompatibilityDeviceEnum.EDGE : CompatibilityDeviceEnum.AP
     if (!deviceMap[deviceType]) deviceMap[deviceType] = []
     deviceMap[deviceType].push(incompatibleFeature)

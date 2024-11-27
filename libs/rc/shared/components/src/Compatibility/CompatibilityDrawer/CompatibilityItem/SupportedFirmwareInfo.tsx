@@ -20,7 +20,8 @@ export const SupportedFirmwareInfo = (props: SupportedFirmwareInfoProps) => {
   const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
 
   const { data: apModelFamilies } = useGetApModelFamiliesQuery({}, {
-    skip: !isApCompatibilitiesByModel,
+    skip: !isApCompatibilitiesByModel || deviceType !== CompatibilityDeviceEnum.AP,
+    // this is a defined data, no need to refetch everytime mounted.
     refetchOnMountOrArgChange: false
   })
 
