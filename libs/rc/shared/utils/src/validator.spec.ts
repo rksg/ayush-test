@@ -23,6 +23,9 @@ import {
   specialCharactersWithNewLineRegExp,
   serialNumberRegExp,
   targetHostRegExp,
+  validateSwitchIpAddress,
+  validateSwitchSubnetIpAddress,
+  validateSwitchGatewayIpAddress,
   validateRecoveryPassphrasePart,
   validateVlanId,
   validateVlanExcludingReserved,
@@ -406,16 +409,66 @@ describe('validator', () => {
     })
   })
 
+  /* eslint-disable max-len */
   describe('cliIpAddressRegExp', () => {
     it('Should take care of IP value correctly', async () => {
-      const result = cliIpAddressRegExp('1.1.1.1')
-      await expect(result).resolves.toEqual(undefined)
+      await expect(cliIpAddressRegExp('1.0.0.1')).resolves.toEqual(undefined)
+      await expect(cliIpAddressRegExp('1.1.1.255')).resolves.toEqual(undefined)
+      await expect(cliIpAddressRegExp('10.0.16.255')).resolves.toEqual(undefined)
+      await expect(cliIpAddressRegExp('223.255.255.255')).resolves.toEqual(undefined)
     })
     it('Should display error message if IP value incorrectly', async () => {
-      const result1 = cliIpAddressRegExp('1.1.1.255')
-      await expect(result1).rejects.toEqual('Please enter a valid IP address')
+      await expect(cliIpAddressRegExp('0.0.0.0')).rejects.toEqual('Please enter a valid IP address')
+      await expect(cliIpAddressRegExp('1.0.0.0')).rejects.toEqual('Please enter a valid IP address')
+      await expect(cliIpAddressRegExp('192.168.0.256')).rejects.toEqual('Please enter a valid IP address')
+      await expect(cliIpAddressRegExp('224.1.1.255')).rejects.toEqual('Please enter a valid IP address')
+      await expect(cliIpAddressRegExp('256.255.255.255')).rejects.toEqual('Please enter a valid IP address')
+      await expect(cliIpAddressRegExp('example.com')).rejects.toEqual('Please enter a valid IP address')
     })
   })
+
+  describe('validateSwitchIpAddress', () => {
+    it('Should take care of IP value correctly', async () => {
+      await expect(validateSwitchIpAddress('1.1.1.1')).resolves.toEqual(undefined)
+      await expect(validateSwitchIpAddress('1.1.1.255')).resolves.toEqual(undefined)
+      await expect(validateSwitchIpAddress('example.com')).resolves.toEqual(undefined)
+      await expect(validateSwitchIpAddress('sub.example.com')).resolves.toEqual(undefined)
+    })
+    it('Should display error message if IP value incorrectly', async () => {
+      await expect(validateSwitchIpAddress('0.0.0.0')).rejects.toEqual('Enter a valid IPv4 address and not broadcast address')
+      await expect(validateSwitchIpAddress('192.168.0.256')).rejects.toEqual('Enter a valid IPv4 address and not broadcast address')
+      await expect(validateSwitchIpAddress('256.255.255.255')).rejects.toEqual('Enter a valid IPv4 address and not broadcast address')
+    })
+  })
+
+  describe('validateSwitchSubnetIpAddress', () => {
+    it('Should take care of IP value correctly', async () => {
+      await expect(validateSwitchSubnetIpAddress('192.168.1.10', '255.255.255.252')).resolves.toEqual(undefined)
+      await expect(validateSwitchSubnetIpAddress('192.168.1.10', '255.255.240.0')).resolves.toEqual(undefined)
+      await expect(validateSwitchSubnetIpAddress('192.168.1.10', '255.254.0.0')).resolves.toEqual(undefined)
+      await expect(validateSwitchSubnetIpAddress('192.168.1.10', '224.0.0.0')).resolves.toEqual(undefined)
+    })
+    it('Should display error message if IP value incorrectly', async () => {
+      await expect(validateSwitchSubnetIpAddress('192.168.1.10', '255.255.255.254')).rejects.toEqual('Enter a valid IPv4 address and not broadcast address')
+      await expect(validateSwitchSubnetIpAddress('192.168.1.10', '255.255.0.1')).rejects.toEqual('Enter a valid IPv4 address and not broadcast address')
+      await expect(validateSwitchSubnetIpAddress('192.168.1.10', '255.0.1.0')).rejects.toEqual('Enter a valid IPv4 address and not broadcast address')
+      await expect(validateSwitchSubnetIpAddress('192.168.1.10', '192.0.1.0')).rejects.toEqual('Enter a valid IPv4 address and not broadcast address')
+      await expect(validateSwitchSubnetIpAddress('223.255.255.255', '255.255.0.0')).rejects.toEqual('Can not be a broadcast address')
+    })
+  })
+
+  describe('validateSwitchGatewayIpAddress', () => {
+    it('Should take care of IP value correctly', async () => {
+      await expect(validateSwitchGatewayIpAddress('192.168.1.10', '255.255.0.0', '192.168.1.20')).resolves.toEqual(undefined)
+      await expect(validateSwitchGatewayIpAddress('192.168.1.10', '255.255.0.0', '192.168.2.20')).resolves.toEqual(undefined)
+    })
+    it('Should display error message if IP value incorrectly', async () => {
+      await expect(validateSwitchGatewayIpAddress('192.168.1.10', '255.255.255.252', '0.0.0.0')).rejects.toEqual('Gateway is invalid')
+      await expect(validateSwitchGatewayIpAddress('192.168.1.10', '255.255.0.0', '256.1.1.1')).rejects.toEqual('Gateway is invalid')
+      await expect(validateSwitchGatewayIpAddress('192.168.1.10', '255.255.255.252', '192.168.1.20')).rejects.toEqual('IP and gateway are not in the same subnet')
+    })
+  })
+  /* eslint-enable max-len */
 
   describe('subnetMaskPrefixRegExp', () => {
     it('Should take care of subnet mask value correctly', async () => {
