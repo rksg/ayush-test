@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { v4 as uuidv4 }              from 'uuid'
 import { useIntl }        from 'react-intl'
 
-import { Button, cssStr }    from '@acx-ui/components'
+import { Button, Card, cssStr, DonutChart } from '@acx-ui/components'
 import { HistoricalOutlined, Plus, RuckusAiDog, SendMessageOutlined } from '@acx-ui/icons'
 import { useChatAiMutation }                        from '@acx-ui/rc/services'
 
@@ -12,6 +12,7 @@ import Grid from '../Grid'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { Spin } from 'antd'
 import { ChatMessage, ChatWidget, RuckusAiChat } from '@acx-ui/rc/utils'
+import WidgetList from "./widgetList"
 
 
 export default function AICanvas (
@@ -23,6 +24,7 @@ export default function AICanvas (
   const navigate = useNavigate()
   const [chatAi] = useChatAiMutation()
   // const { visible, setVisible } = props
+  // const [chats] = useChatsMutation() //chat API call
   const [ sectionsSubVisible, setSectionsSubVisible ] = useState(false)
   const [loading, setLoading] = useState(false)
   const [sessionId, setSessionId] = useState('')
@@ -46,6 +48,14 @@ export default function AICanvas (
   // ]
   );
   const [widgets, setWidgets] = useState([] as ChatWidget[])
+  
+  const [ widgetData, setWidgetData ] = useState([{
+    id: 1,
+    chartOption: [{ color: '#ACAEB0', name: 'In Setup Phase', value: 8 }]
+  }, {
+    id: 2,
+    chartOption: [{ color: '#ACAEB0', name: 'In Setup Phase', value: 3 }]
+  }])
   const [ dirty, setDirty ] = useState(false)
   const [ searchText, setSearchText ] = useState('')
   const siderWidth = localStorage.getItem('acx-sider-width') || cssStr('--acx-sider-width')
@@ -87,9 +97,9 @@ export default function AICanvas (
           role: 'ai',
           text: '2 widgets found- Alert and incidents widgets. Drag and drop the selected widgets to the canvas on the right.',
           widgets: [{
-            chartrole: 'pie',
+            chartType: 'pie',
             payload: '',
-    
+
           }]
         }
       ]
@@ -167,7 +177,7 @@ export default function AICanvas (
               ))}
               {loading && <div className='loading'><Spin /></div>}
             </div>
-            <div className="input">
+            <div className='input'>
               <UI.Input
                 autoFocus
                 value={searchText}
@@ -180,7 +190,8 @@ export default function AICanvas (
               <Button icon={<SendMessageOutlined />} onClick={handleSearch} />
             </div>
           </div>
-          <div className='widgets'>
+          <div className='widgets' style={{ padding: '15px' }}>
+            <WidgetList data={widgetData} />
           </div>
         </div>
       </div>

@@ -18,6 +18,7 @@ export * from './propertyUrl'
 export * from './sigPackUrls'
 export * from './configTemplates'
 export * from './ruckusAssistantUrl'
+export * from './ruckusAiChatUrl'
 
 export * from './commonRbacUrls'
 export * from './firmwareRbacUrls'
