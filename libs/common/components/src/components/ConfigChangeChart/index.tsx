@@ -3,6 +3,9 @@ import { useEffect, useRef, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
 import { useIntl }  from 'react-intl'
 
+import { get }                    from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+
 import { cssStr }          from '../../theme/helper'
 import {
   legendTextStyleOptions,
@@ -46,10 +49,14 @@ export function ConfigChangeChart ({
   ...props
 }: ConfigChangeChartProps) {
 
+  const isMLISA = get('IS_MLISA_SA')
+  const isIntentAIConfigChangeEnable = useIsSplitOn(Features.MLISA_4_11_0_TOGGLE)
+  const showIntentAI = Boolean(isMLISA || isIntentAIConfigChangeEnable)
+
   const { $t } = useIntl()
   const eChartsRef = useRef<ReactECharts>(null)
 
-  const chartRowMapping = getConfigChangeEntityTypeMapping()
+  const chartRowMapping = getConfigChangeEntityTypeMapping(showIntentAI)
   const chartLayoutConfig = getChartLayoutConfig(props.style?.width as number, chartRowMapping)
   const {
     chartPadding, legendHeight, brushTextHeight, rowHeight, rowGap,
@@ -162,7 +169,7 @@ export function ConfigChangeChart ({
         ({
           type: 'scatter',
           name: label,
-          symbol: getSymbol(selected as number),
+          symbol: getSymbol(selected as number, showIntentAI),
           symbolSize,
           colorBy: 'series',
           animation: false,
