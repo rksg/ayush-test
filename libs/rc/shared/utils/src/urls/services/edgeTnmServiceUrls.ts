@@ -59,5 +59,23 @@ export const EdgeTnmServiceUrls: { [key: string]: ApiInfo } = {
     url: '/edgeTnmZabbixServices/:serviceId/host/:hostId/graph',
     newApi: true,
     defaultHeaders: versionHeaders
+  },
+  getEdgeTnmGraphItems: {
+    method: 'get',
+    url: '/edgeTnmZabbixServices/:serviceId/graph/:graphId/graphItem',
+    newApi: true,
+    defaultHeaders: versionHeaders
+  },
+  getEdgeTnmGraphItemsInfo: {
+    method: 'post',
+    url: '/edgeTnmZabbixServices/:serviceId/item',
+    newApi: true,
+    defaultHeaders: versionHeaders
+  },
+  getEdgeTnmGraphHistory: {
+    method: 'post',
+    url: '/edgeTnmZabbixServices/:serviceId/history',
+    newApi: true,
+    defaultHeaders: versionHeaders
   }
 }

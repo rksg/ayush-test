@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-import { Checkbox, Col, List, Row, Select, Space } from 'antd'
-import { CheckboxChangeEvent }                     from 'antd/lib/checkbox'
-import { useIntl }                                 from 'react-intl'
+import { Checkbox, Col, Divider, List, Row, Select, Space } from 'antd'
+import { CheckboxChangeEvent }                              from 'antd/lib/checkbox'
+import { useIntl }                                          from 'react-intl'
 
 import {
   Button,
@@ -16,6 +16,7 @@ import { MAX_SYNC_EC_TENANTS } from '../../constants'
 import { useEcFilters }        from '../templateUtils'
 
 import { DriftInstance } from './DriftInstance'
+import * as UI           from './styledComponents'
 
 export interface ShowDriftsDrawerProps {
   setVisible: (visible: boolean) => void
@@ -86,7 +87,7 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
       onClick={onSync}
       type='primary'
     >
-      {$t({ defaultMessage: 'Sync' })}
+      <span>{$t({ defaultMessage: 'Sync' })}</span>
     </Button>
     <Button onClick={() => onClose()}>
       {$t({ defaultMessage: 'Cancel' })}
@@ -95,7 +96,7 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Show Drifts' })}
+      title={$t({ defaultMessage: 'Customer Drifts Report' })}
       visible={true}
       onClose={onClose}
       footer={footer}
@@ -111,10 +112,10 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
           onInstanceFilterSelect={onInstanceFilterSelect}
         />
         <SelectedCustomersIndicator selectedCount={selectedInstances.length} />
+        <Divider style={{ margin: '8px 0 0 0' }} />
       </Space>
       <Loader states={[{ isLoading: isDriftInstancesLoading }]}>
         <List
-          split={false}
           pagination={{ position: 'bottom' }}
           // eslint-disable-next-line max-len
           dataSource={driftInstances.filter(ins => selectedFilterValue ? ins.id === selectedFilterValue : true)}
@@ -146,7 +147,7 @@ function Toolbar (props: ToolbarProps) {
   const { customerOptions, onSyncAllChange, onInstanceFilterSelect } = props
   const { $t } = useIntl()
 
-  return <Row justify='space-between' align='middle' style={{ paddingLeft: '16px' }}>
+  return <Row justify='space-between' align='middle'>
     <Col span={12}>
       <Checkbox onChange={onSyncAllChange}>
         {$t({ defaultMessage: 'Sync all drifts for all customers' })}
@@ -174,11 +175,7 @@ export function SelectedCustomersIndicator (props: { selectedCount: number }) {
 
   if (selectedCount === 0) return null
 
-  return <div style={{
-    padding: '6px 20px',
-    backgroundColor: 'var(--acx-accents-blue-10)',
-    borderRadius: '4px'
-  }}>
+  return <UI.SelectedCustomersIndicator>
     { $t({ defaultMessage: '{num} selected' }, { num: selectedCount }) }
-  </div>
+  </UI.SelectedCustomersIndicator>
 }

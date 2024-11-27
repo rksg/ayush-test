@@ -79,7 +79,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const serialNumber = urlParams.serialNumber || props.params?.serialNumber
 
   const portPayload = {
-    fields: ['id', 'portIdentifier', 'opticsType', 'usedInFormingStack'],
+    fields: ['id', 'portIdentifier', 'opticsType', 'usedInFormingStack', 'authDefaultVlan'],
     page: 1,
     pageSize: 10000,
     filters: { switchId: [switchId] },
@@ -88,6 +88,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   }
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
 
   const { data: switchDetailHeader } =
   useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
@@ -95,7 +96,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const portList = useSwitchPortlistQuery({
     params: { tenantId },
     payload: portPayload,
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: true
   })
   const lagList = useGetLagListQuery({
     params: { tenantId, switchId, venueId: switchDetailHeader?.venueId },
@@ -161,6 +162,9 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
 
     if (portList.data && lagList.data && switchDetailHeader) {
       let allPorts: SwitchPortViewModel[] = portList.data.data
+      if(isSwitchFlexAuthEnabled){
+        allPorts = allPorts.filter(p => !p.authDefaultVlan)
+      }
       setCliApplied(switchDetailHeader.cliApplied ?? false)
       if (switchDetailHeader.isStack) {
         // setIsStackMode(switchDetailHeader.isStack ?? false)
@@ -170,7 +174,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
         //     key: id + 1,
         //     value: id + 1
         //   })) ?? [])
-        allPorts = portList.data.data.filter(a => a.usedInFormingStack !== true)
+        allPorts = allPorts.filter(a => a.usedInFormingStack !== true)
       }
       const usedPortsId = _.flatMap(lagList.data.map(a => a.ports))
       const editDataPorts = isEditMode ? (editData[0].ports|| []) : []

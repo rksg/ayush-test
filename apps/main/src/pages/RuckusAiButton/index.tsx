@@ -5,10 +5,10 @@ import { Button, Form, Steps } from 'antd'
 import { useIntl }             from 'react-intl'
 
 
-import { cssStr }                                               from '@acx-ui/components'
-import { RuckusAiDog }                                          from '@acx-ui/icons'
-import { useStartConversationsMutation }                        from '@acx-ui/rc/services'
-import { RuckusAiConfigurationStepsEnum, RuckusAiConversation } from '@acx-ui/rc/utils'
+import { cssStr, showActionModal }                                       from '@acx-ui/components'
+import { OnboardingAssistantDog }                                        from '@acx-ui/icons'
+import { useStartConversationsMutation, useUpdateConversationsMutation } from '@acx-ui/rc/services'
+import { RuckusAiConfigurationStepsEnum, RuckusAiConversation }          from '@acx-ui/rc/utils'
 
 import BasicInformationPage from './BasicInformationPage'
 import Congratulations      from './Congratulations'
@@ -36,8 +36,11 @@ export default function RuckusAiButton () {
   const [nextStep, setNextStep] = useState({} as RuckusAiConversation)
   const [currentStep, setCurrentStep] = useState(0 as number)
   const [venueType, setVenueType] = useState('' as string)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [configResponse, setConfigResponse] = useState({} as any)
 
   const [startConversations] = useStartConversationsMutation()
+  const [updateConversations] = useUpdateConversationsMutation()
 
   const getWizardTitle = function () {
     switch(step){
@@ -50,7 +53,7 @@ export default function RuckusAiButton () {
             justifyContent: 'center',
             marginRight: '20px'
           }}>
-            <RuckusAiDog style={{ width: '43px', height: '36px' }} />
+            <OnboardingAssistantDog style={{ width: '43px', height: '36px' }} />
           </div>
           <div style={{
             flexGrow: 1, display: 'flex',
@@ -112,29 +115,21 @@ export default function RuckusAiButton () {
           {$t({ defaultMessage: 'Start' })}
         </Button>
       case RuckusAiStepsEnum.VERTICAL:
-        return <>
-          <Button key='back'
-            onClick={() => {
-              setStep(RuckusAiStepsEnum.WELCOME)
-            }}>
-            {$t({ defaultMessage: 'Back' })}
-          </Button>
-          <Button key='next'
-            type='primary'
-            loading={isLoading}
-            onClick={async () => {
-              basicFormRef.validateFields().then(() => {
-                const result = basicFormRef.getFieldsValue()
-                const type = result.venueType === 'OTHER' ? result.othersValue : result.venueType
-                setVenueType(type)
-                setStep(RuckusAiStepsEnum.BASIC)
-              }).catch(() => {
-                return
-              })
-            }}>
-            {$t({ defaultMessage: 'Next' })}
-          </Button>
-        </>
+        return <Button key='next'
+          type='primary'
+          loading={isLoading}
+          onClick={async () => {
+            basicFormRef.validateFields().then(() => {
+              const result = basicFormRef.getFieldsValue()
+              const type = result.venueType === 'OTHER' ? result.othersValue : result.venueType
+              setVenueType(type)
+              setStep(RuckusAiStepsEnum.BASIC)
+            }).catch(() => {
+              return
+            })
+          }}>
+          {$t({ defaultMessage: 'Next' })}
+        </Button>
       case RuckusAiStepsEnum.BASIC:
         return <>
           <Button key='back'
@@ -152,18 +147,67 @@ export default function RuckusAiButton () {
                   try {
                     setIsLoading(true)
                     const result = basicFormRef.getFieldsValue()
-                    const response = await startConversations({
-                      payload: {
-                        venueName: result.venueName,
-                        venueType,
-                        description: result.description,
-                        ...(result.numberOfSwitch && { numberOfSwitch: result.numberOfSwitch }),
-                        ...(result.numberOfAp && { numberOfAp: result.numberOfAp })
-                      }
-                    }).unwrap()
+                    const response = nextStep.sessionId
+                      ? await updateConversations({
+                        params: { sessionId: nextStep.sessionId, type: 'start' },
+                        payload: {
+                          venueName: result.venueName,
+                          venueType,
+                          description: result.description,
+                          ...(result.numberOfSwitch && { numberOfSwitch: result.numberOfSwitch }),
+                          ...(result.numberOfAp && { numberOfAp: result.numberOfAp })
+                        }
+                      }).unwrap()
+                      : await startConversations({
+                        payload: {
+                          venueName: result.venueName,
+                          venueType,
+                          description: result.description,
+                          ...(result.numberOfSwitch && { numberOfSwitch: result.numberOfSwitch }),
+                          ...(result.numberOfAp && { numberOfAp: result.numberOfAp })
+                        }
+                      }).unwrap()
+
+                    if (response.hasChanged) {
+                      await new Promise((resolve) => {
+                        showActionModal({
+                          type: 'confirm',
+                          width: 460,
+                          title: $t({ defaultMessage: 'Regenerate Configurations?' }),
+                          content: $t({
+                            // eslint-disable-next-line max-len
+                            defaultMessage: 'The modifications here will affect the settings in the subsequent steps. Would you like to regenerate the configuration suggestions for the following steps?'
+                          }),
+                          okText: $t({ defaultMessage: 'Regenerate' }),
+                          cancelText: $t({ defaultMessage: 'Remain Unchanged' }),
+                          onOk: async () => {
+                            try {
+                              const newGenResponse = await updateConversations({
+                                // eslint-disable-next-line max-len
+                                params: { sessionId: nextStep.sessionId, type: 'start?regenerate=true' },
+                                payload: {
+                                  venueName: result.venueName,
+                                  venueType,
+                                  description: result.description,
+                                  // eslint-disable-next-line max-len
+                                  ...(result.numberOfSwitch && { numberOfSwitch: result.numberOfSwitch }),
+                                  ...(result.numberOfAp && { numberOfAp: result.numberOfAp })
+                                }
+                              }).unwrap()
+                              setNextStep(newGenResponse)
+                            } catch (error) {
+                              console.log(error) // eslint-disable-line no-console
+                            }
+                            resolve(true)
+                          },
+                          onCancel: () => resolve(false)
+                        })
+                      })
+                    } else {
+                      setNextStep(response)
+                    }
                     setIsLoading(false)
                     setStep(RuckusAiStepsEnum.CONFIGURATION)
-                    setNextStep(response)
                   } catch (error) {
                     setIsLoading(false)
                   }
@@ -194,10 +238,12 @@ export default function RuckusAiButton () {
     setStep(RuckusAiStepsEnum.WELCOME)
     setVisible(false)
     setCurrentStep(0)
+    setNextStep({} as RuckusAiConversation)
+    setConfigResponse({})
   }
   return <>
     <UI.ButtonSolid
-      icon={<RuckusAiDog />}
+      icon={<OnboardingAssistantDog />}
       onClick={() => {
         setVisible(!visible)
       }}
@@ -221,18 +267,23 @@ export default function RuckusAiButton () {
             {step === RuckusAiStepsEnum.VERTICAL && <VerticalPage />}
             {step === RuckusAiStepsEnum.BASIC && <BasicInformationPage />}
           </Form>
-          {step === RuckusAiStepsEnum.CONFIGURATION && <RuckusAiWizard
-            sessionId={nextStep.sessionId}
-            requestId={nextStep.sessionId}
-            actionType={nextStep.nextStep}
-            description={nextStep.description}
-            payload={nextStep.payload}
-            currentStep={currentStep}
-            setStep={setStep}
-            step={step}
-            setCurrentStep={setCurrentStep}
-          />}
-          {step === RuckusAiStepsEnum.FINISHED && <Congratulations closeModal={closeModal} />}
+          <div style={{ display: step === RuckusAiStepsEnum.CONFIGURATION ? 'block' : 'none' }}>
+            <RuckusAiWizard
+              sessionId={nextStep.sessionId}
+              requestId={nextStep.sessionId}
+              actionType={nextStep.nextStep}
+              description={nextStep.description}
+              payload={nextStep.payload}
+              currentStep={currentStep}
+              setStep={setStep}
+              step={step}
+              setCurrentStep={setCurrentStep}
+              setConfigResponse={setConfigResponse}
+            />
+          </div>
+          {step === RuckusAiStepsEnum.FINISHED && <Congratulations
+            configResponse={configResponse}
+            closeModal={closeModal} />}
         </>
       }
     />

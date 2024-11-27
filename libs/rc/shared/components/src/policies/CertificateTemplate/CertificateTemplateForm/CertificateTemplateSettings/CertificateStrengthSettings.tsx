@@ -25,6 +25,13 @@ export default function CertificateStrengthSettings (props: {
     return Promise.resolve()
   }
 
+  const validateKeyLengthForTemplate = (value: number) => {
+    if (![2048, 3072, 4096].includes(value)) {
+      return Promise.reject($t({ defaultMessage: 'Key length must be 2048, 3072 or 4096' }))
+    }
+    return Promise.resolve()
+  }
+
   return (
     <>
       <Form.Item
@@ -33,7 +40,9 @@ export default function CertificateStrengthSettings (props: {
         extra={$t(onboardSettingsDescription.KEY_LENGTH)}
         rules={[
           { required: true },
-          { validator: (_, value) => validateMultipleOfEight(value) }
+          { validator: (_, value) =>
+          // eslint-disable-next-line max-len
+            props?.certType === CertificateCategoryType.CERTIFICATE_TEMPLATE ? validateKeyLengthForTemplate(value) : validateMultipleOfEight(value) }
         ]}
       >
         <Slider
@@ -41,7 +50,7 @@ export default function CertificateStrengthSettings (props: {
           style={{ width: '240px' }}
           min={2048}
           max={4096}
-          step={8}
+          step={props?.certType === CertificateCategoryType.CERTIFICATE_TEMPLATE ? 1024 : 8}
           marks={{ 2048: '2048', 4096: '4096' }}
         />
       </Form.Item>

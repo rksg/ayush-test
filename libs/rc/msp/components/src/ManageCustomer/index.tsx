@@ -24,9 +24,9 @@ import {
   StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
-import { useIsSplitOn, Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
-import { SearchOutlined }                           from '@acx-ui/icons'
+import { useIsSplitOn, Features, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
+import { SearchOutlined }                                         from '@acx-ui/icons'
 import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
@@ -58,7 +58,7 @@ import {
   MspEcTierPayload
 } from '@acx-ui/msp/utils'
 import { GoogleMapWithPreference, useIsEdgeReady, usePlacesAutocomplete } from '@acx-ui/rc/components'
-import { useGetTenantDetailsQuery }                                       from '@acx-ui/rc/services'
+import { useGetPrivilegeGroupsQuery, useGetTenantDetailsQuery }           from '@acx-ui/rc/services'
 import {
   Address,
   emailRegExp,
@@ -183,7 +183,7 @@ export function ManageCustomer () {
   const isEdgeEnabled = useIsEdgeReady()
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
-  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isPatchTierEnabled = useIsSplitOn(Features.MSP_PATCH_TIER)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
@@ -256,14 +256,16 @@ export function ManageCustomer () {
   })
   const licenseAssignment = isEntitlementRbacApiEnabled ? rbacAssignment?.data : assignment
   const { data } =
-      useGetMspEcQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+      useGetMspEcQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
+        { skip: action !== 'edit' })
   const { data: Administrators } =
       useMspAdminListQuery({ params: useParams() }, { skip: action !== 'edit' })
   const { data: delegatedAdmins } =
       useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
         { skip: action !== 'edit' })
   const { data: ecAdministrators } =
-      useMspEcAdminListQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+      useMspEcAdminListQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
+        { skip: action !== 'edit' })
   const { data: ecSupport } =
       useGetMspEcSupportQuery({
         params: { mspEcTenantId }, enableRbac: isRbacEnabled }, { skip: action !== 'edit' })
@@ -284,6 +286,10 @@ export function ManageCustomer () {
     },
     option: { skip: action !== 'edit' }
   })
+  const adminRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
+  const isSystemAdmin = userProfile?.roles?.some(role => adminRoles.includes(role as RolesEnum))
+  const { data: privilegeGroupList } = useGetPrivilegeGroupsQuery({ params },
+    { skip: !isRbacPhase2Enabled || isEditMode || isSystemAdmin })
 
   const showExtendedTrial = tenantDetailsData?.extendedTrial && isExtendedTrialToggleEnabled
   const [
@@ -367,16 +373,25 @@ export function ManageCustomer () {
       const initialAddress = isMapEnabled ? '' : defaultAddress.addressLine
       formRef.current?.setFieldValue(['address', 'addressLine'], initialAddress)
       if (userProfile) {
-        const administrator = [] as MspAdministrator[]
-        administrator.push ({
-          id: userProfile.adminId,
-          lastName: userProfile.lastName,
-          name: userProfile.firstName,
-          email: userProfile.email,
-          role: RolesEnum.PRIME_ADMIN,
-          detailLevel: userProfile.detailLevel
-        })
-        setAdministrator(administrator)
+        if (isSystemAdmin) {
+          const administrator = [] as MspAdministrator[]
+          administrator.push ({
+            id: userProfile.adminId,
+            lastName: userProfile.lastName,
+            name: userProfile.firstName,
+            email: userProfile.email,
+            role: userProfile.role as RolesEnum,
+            detailLevel: userProfile.detailLevel
+          })
+          setAdministrator(administrator)
+        } else {
+          const pg = privilegeGroupList?.find(pg => pg.name === userProfile?.role)
+          if (pg) {
+            const pgList = [] as PrivilegeGroup[]
+            pgList.push({ id: pg.id, name: userProfile.role as RolesEnum })
+            setPrivilegeGroups(pgList)
+          }
+        }
       }
       setSubscriptionStartDate(moment())
       setSubscriptionEndDate(moment().add(30,'days'))

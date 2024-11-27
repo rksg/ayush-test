@@ -8,7 +8,7 @@ import { mockServer, render, renderHook, screen }           from '@acx-ui/test-u
 
 import { certificateAuthorityList, serverCertificateList } from '../../__test__/fixtures'
 
-import GenerateCertificateFormSelection from './GenerateCertificateFormSelection'
+import { GenerateCertificateFormSelection } from './GenerateCertificateFormSelection'
 
 describe('GenerateCertificateFormSelection', () => {
   beforeEach(() => {

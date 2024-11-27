@@ -42,6 +42,7 @@ jest.mock('@acx-ui/rc/components', () => ({
   ApTable: () => <div data-testid={'ApTable'} />,
   EdgesTable: () => <div data-testid={'EdgesTable'} />,
   ApCompatibilityDrawer: () => <div data-testid={'ap-compatibility-drawer'} />,
+  ApGeneralCompatibilityDrawer: () => <div data-testid={'ap-compatibility-drawer'} />,
   retrievedCompatibilitiesOptions: () => {
     mockedretrievedOptions()
     return {

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, createContext, useEffect, useMemo, useState } from 'react'
+import { Dispatch, SetStateAction, createContext, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { BaseQueryFn, QueryActionCreatorResult, QueryDefinition } from '@reduxjs/toolkit/query'
 import { DefaultOptionType }                                      from 'antd/lib/select'
@@ -7,7 +7,6 @@ import { useParams }                                              from 'react-ro
 
 import {
   useGetAvailableSwitchesQuery,
-  useGetDpskQuery,
   useGetEdgeClusterListQuery,
   useGetEdgePinViewDataListQuery,
   useGetPersonaGroupByIdQuery,
@@ -16,7 +15,8 @@ import {
   useVenueNetworkActivationsViewModelListQuery,
   useVenuesListQuery,
   useGetDhcpStatsQuery,
-  useGetEdgeMvSdLanViewDataListQuery
+  useGetEdgeMvSdLanViewDataListQuery,
+  useLazyGetDpskQuery
 } from '@acx-ui/rc/services'
 import {
   DhcpStats,
@@ -56,7 +56,8 @@ export interface PersonalIdentityNetworkFormContextType {
   getClusterName: (edgeClusterId: string) => string
   getDhcpName: (dhcpId: string) => string
   getTunnelProfileName: (tunnelId: string) => string
-  getNetworksName: (networkIds: string[]) => (string | undefined)[]
+  getNetworksName: (networkIds: string[]) => (string | undefined)[],
+  addNetworkCallback: (dpskPoolId: string) => void
 }
 
 // eslint-disable-next-line max-len
@@ -104,6 +105,9 @@ const activtatedVenueNetworksPayload = {
 export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) => {
   const params = useParams()
   const [venueId, setVenueId] = useState('')
+  const [dpskData, setDpskData] = useState<DpskSaveData | undefined>(undefined)
+
+  const [getDpsk] = useLazyGetDpskQuery()
 
   const {
     usedSdlanClusterIds,
@@ -179,21 +183,6 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       }
     })
 
-  const {
-    dpskData,
-    isDpskLoading
-  } = useGetDpskQuery(
-    { params: { serviceId: personaGroupData?.dpskPoolId } },
-    {
-      skip: !!!personaGroupData?.dpskPoolId,
-      selectFromResult: ({ data, isLoading, isFetching }) => {
-        return {
-          dpskData: data,
-          isDpskLoading: isLoading || isFetching
-        }
-      }
-    })
-
   const { tunnelProfileOptions, isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
     payload: tunnelProfileDefaultPayload
   }, {
@@ -246,7 +235,8 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
   })
 
   const networkOptions = useMemo(() => {
-    if (isNil(usedNetworkIds) && usedSdlanNetworkIds.length === 0) return []
+    // eslint-disable-next-line max-len
+    if (isNil(dpskData?.networkIds) || (isNil(usedNetworkIds) && usedSdlanNetworkIds.length === 0)) return []
 
     return dpskNetworkList?.filter(item => !usedNetworkIds?.includes(item.id ?? ''))
       .filter(item => dpskData?.networkIds?.includes(item.id))
@@ -302,6 +292,16 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
     if(props.venueId) setVenueId(props.venueId)
   }, [props.venueId])
 
+  useEffect(() => {
+    if (!personaGroupData?.dpskPoolId) return
+    getDpsk({ params: { serviceId: personaGroupData?.dpskPoolId } }).unwrap()
+      .then(data => {
+        setDpskData(data)
+      })
+  }, [personaGroupData?.dpskPoolId])
+
+  const isDpskLoading = !!personaGroupData?.dpskPoolId && isNil(dpskData)
+
   const getVenueName = (value: string) => {
     return venueOptions?.find(item => item.value === value)?.label ?? ''
   }
@@ -322,6 +322,13 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
     return networkOptions?.filter(item => value.includes(item.value ?? ''))
       .map(item => item.label) ?? []
   }
+
+  const addNetworkCallback = useCallback((dpskPoolId?: string) => {
+    getDpsk({ params: { serviceId: dpskPoolId } }).unwrap()
+      .then(data => {
+        setDpskData(data)
+      })
+  }, [getDpsk])
 
   return (
     <PersonalIdentityNetworkFormContext.Provider
@@ -352,7 +359,8 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         getClusterName,
         getDhcpName,
         getTunnelProfileName,
-        getNetworksName
+        getNetworksName,
+        addNetworkCallback
       }}
     >
       {props.children}

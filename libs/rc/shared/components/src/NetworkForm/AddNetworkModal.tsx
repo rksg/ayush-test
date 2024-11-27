@@ -10,7 +10,7 @@ interface AddNetworkModalProps {
   setVisible: (val: boolean) => void
   title?: string
   createType?: NetworkTypeEnum
-  defaultActiveVenues?: string[]
+  defaultValues?: Record<string, unknown>,
 }
 
 export const AddNetworkModal = (props: AddNetworkModalProps) => {

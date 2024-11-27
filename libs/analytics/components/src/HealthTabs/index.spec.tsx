@@ -27,7 +27,7 @@ jest.mock('./OverviewTab', () => ({
 }))
 
 jest.mock('./WiredTab', () => ({
-  OverviewTab: () => <div>Mocked WiredTab</div>
+  WiredTab: () => <div>Mocked WiredTab</div>
 }))
 
 

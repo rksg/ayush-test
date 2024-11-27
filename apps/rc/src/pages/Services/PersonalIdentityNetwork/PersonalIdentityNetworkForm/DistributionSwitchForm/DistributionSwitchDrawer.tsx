@@ -7,6 +7,7 @@ import styled                                                from 'styled-compon
 
 import { Button, Drawer, Modal, Subtitle, Table, Tooltip, Transfer, useStepFormContext } from '@acx-ui/components'
 import {
+  useGetSwitchFeatureSetsQuery,
   useValidateDistributionSwitchInfoMutation
 } from '@acx-ui/rc/services'
 import {
@@ -53,6 +54,19 @@ export function DistributionSwitchDrawer (props: {
   const [availableSwitchList, setAvailableSwitchList] = useState<SwitchLite[]>([])
 
   const [validateDistributionSwitchInfo] = useValidateDistributionSwitchInfoMutation()
+  const { requiredFw_DS, requiredFw_AS, requiredModels } = useGetSwitchFeatureSetsQuery({
+    params: { tenantId }, payload: { filter: { field: 'GROUP', values: ['PIN'] } }
+  }, {
+    selectFromResult: ({ data }) => {
+      const reqs = data?.featureSets?.find(item => item.featureName === 'PIN_DS')?.requirements
+      const reqs_as = data?.featureSets?.find(item => item.featureName === 'PIN_AS')?.requirements
+      return {
+        requiredFw_DS: reqs?.find(item => item.firmware)?.firmware || requiredFw,
+        requiredFw_AS: reqs_as?.find(item => item.firmware)?.firmware || requiredFw,
+        requiredModels: reqs?.find(item => item.models)?.models || []
+      }
+    }
+  })
 
   const dsId = Form.useWatch('id', form)
   const accessSwitches = Form.useWatch('accessSwitches', form)
@@ -73,9 +87,7 @@ export function DistributionSwitchDrawer (props: {
     const inUseSwitchIds = (accessSwitches || []).map(sw=>sw.id).concat(dsId)
     const availableSwitchList =
       availableSwitches.concat(removedSwitchList).filter(sw=>!inUseSwitchIds.includes(sw.id))
-        .filter(item =>
-          item.firmwareVersion && !isVerGEVer(requiredFw, item.firmwareVersion, true)
-        )
+
     setAvailableSwitchList(availableSwitchList)
   }, [pinForm, availableSwitches, dsId, accessSwitches])
 
@@ -100,6 +112,7 @@ export function DistributionSwitchDrawer (props: {
         onSave={async () => {
           const values: DistributionSwitchSaveData = form.getFieldsValue()
           try {
+            await form.validateFields()
             await validateDistributionSwitchInfo({
               params: { tenantId, venueId },
               payload: { ...values, siteName: edgeClusterId }
@@ -127,8 +140,8 @@ export function DistributionSwitchDrawer (props: {
                 firmwareLink: <TenantLink to='/administration/fwVersionMgmt/switchFirmware'>
                   {$t({ defaultMessage: 'Administration > Version Management > Switch Firmware' })}
                 </TenantLink>,
-                requiredFw,
-                supportedModels: ['ICX-7550', 'ICX-7650', 'ICX-7850'].join(', ')
+                requiredFw: requiredFw_DS,
+                supportedModels: requiredModels.join(', ')
               })}
             />
           </>}
@@ -136,7 +149,9 @@ export function DistributionSwitchDrawer (props: {
           hidden={!!editRecord}
         >
           <Select placeholder={$t({ defaultMessage: 'Select ...' })}
-            options={availableSwitchList.map(item => ({
+            options={availableSwitchList.filter(item =>
+              item.firmwareVersion && isVerGEVer(item.firmwareVersion, requiredFw_DS, false)
+            ).map(item => ({
               value: item.id,
               label: item.name
             }))}
@@ -195,7 +210,7 @@ export function DistributionSwitchDrawer (props: {
                   firmwareLink: <TenantLink to='/administration/fwVersionMgmt/switchFirmware'>{
                     $t({ defaultMessage: 'Administration > Version Management > Switch Firmware' })
                   }</TenantLink>,
-                  requiredFw
+                  requiredFw: requiredFw_AS
                 })}
               />
             </Subtitle>
@@ -236,7 +251,9 @@ export function DistributionSwitchDrawer (props: {
         }}
         onCancel={() => setOpenModal(false)}
         selected={accessSwitches}
-        availableAs={availableSwitchList.concat(accessSwitches || [])}
+        availableAs={availableSwitchList.filter(item =>
+          item.firmwareVersion && isVerGEVer(item.firmwareVersion, requiredFw_AS, false)
+        ).concat(accessSwitches || [])}
         switchId={dsId} />
     </Drawer>
   )

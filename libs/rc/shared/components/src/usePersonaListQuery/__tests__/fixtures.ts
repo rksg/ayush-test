@@ -188,6 +188,7 @@ export const mockedIdentityGroupList = {
   name: 'Jerry PG NSG',
   description: null,
   dpskPoolId: '96a673bc8149434d933d420df9c71ba5',
+  certificateTemplateId: 'ddc7b2001a594a5484e56ffcae450601',
   macRegistrationPoolId: '367c2f65-7354-4add-9ba8-8f4cb24b6c29',
   propertyId: '272e58e245cd43a9b361a7e5b4c2ebc9',
   createdAt: '2023-08-17T10:17:39.259182Z',
@@ -340,3 +341,99 @@ export const mockedDpskDeviceList = [
     online: null
   }
 ]
+
+export const mockedCertificateList = {
+  fields: null,
+  totalCount: 3,  // only need this field for testing the number of certificates
+  totalPages: 1,
+  page: 1,
+  data: [
+    {
+      id: 'c8e7248e660941859c61fc3d936390ef',
+      commonName: 'Test',
+      createDate: '2024-11-17T15:21:06Z',
+      notBeforeDate: '2024-10-17T15:21:06Z',
+      notAfterDate: '2025-11-17T15:21:06Z',
+      email: null,
+      revocationDate: null,
+      revocationReason: null,
+      serialNumber: 'b7216676c26d8919efdcdcda8fba647b9685da0b',
+      shaThumbprint: '900EE1845C7D2264D67AF6EFA3328B6E55705E1D',
+      organization: '',
+      keyLength: 4096,
+      certificateTemplateId: 'ff2065617c8442f6bc47bba573a1867a',
+      certificateTemplateName: 'CertTemplate_withoutDPSK',
+      certificateAuthoritiesId: '415e8a2b39a74b6294d1f7b4cf728616',
+      certificateAuthoritiesName: 'JerryDemoCA',
+      locality: '',
+      state: '',
+      country: '',
+      organizationUnit: '',
+      keyUsages: [
+        'DIGITAL_SIGNATURE',
+        'KEY_ENCIPHERMENT'
+      ],
+      description: null,
+      enrollmentType: 'NONE',
+      identityId: '3fc815a5-4a1b-4c49-bfdc-0e7a6ddc562f'
+    },
+    {
+      id: '6d8b4289ef06496a9dbf4e587ca5fb23',
+      commonName: 'Cool',
+      createDate: '2024-11-17T15:21:27Z',
+      notBeforeDate: '2024-10-17T15:21:27Z',
+      notAfterDate: '2025-11-17T15:21:27Z',
+      email: null,
+      revocationDate: null,
+      revocationReason: null,
+      serialNumber: '33c0e169473c1b9a79292d0a520556508797f1c0',
+      shaThumbprint: 'AFF1387A8EAE4CA11ECA1E187FB25E0D0B6D2AB1',
+      organization: '',
+      keyLength: 4096,
+      certificateTemplateId: 'ff2065617c8442f6bc47bba573a1867a',
+      certificateTemplateName: 'CertTemplate_withoutDPSK',
+      certificateAuthoritiesId: '415e8a2b39a74b6294d1f7b4cf728616',
+      certificateAuthoritiesName: 'JerryDemoCA',
+      locality: '',
+      state: '',
+      country: '',
+      organizationUnit: '',
+      keyUsages: [
+        'DIGITAL_SIGNATURE',
+        'KEY_ENCIPHERMENT'
+      ],
+      description: null,
+      enrollmentType: 'NONE',
+      identityId: '3fc815a5-4a1b-4c49-bfdc-0e7a6ddc562f'
+    },
+    {
+      id: '22eb512653f04015bb3bb0a8f12ebd24',
+      commonName: 'lll',
+      createDate: '2024-11-17T15:22:49Z',
+      notBeforeDate: '2024-10-17T15:22:49Z',
+      notAfterDate: '2025-11-17T15:22:49Z',
+      email: null,
+      revocationDate: null,
+      revocationReason: null,
+      serialNumber: '51618ef94a9c3f88b870cf04f64c07965799be09',
+      shaThumbprint: '2DC1C13F49D63BDA27541CA4F18AC92C1C3E0C8E',
+      organization: '',
+      keyLength: 4096,
+      certificateTemplateId: 'ff2065617c8442f6bc47bba573a1867a',
+      certificateTemplateName: 'CertTemplate_withoutDPSK',
+      certificateAuthoritiesId: '415e8a2b39a74b6294d1f7b4cf728616',
+      certificateAuthoritiesName: 'JerryDemoCA',
+      locality: '',
+      state: '',
+      country: '',
+      organizationUnit: '',
+      keyUsages: [
+        'DIGITAL_SIGNATURE',
+        'KEY_ENCIPHERMENT'
+      ],
+      description: null,
+      enrollmentType: 'NONE',
+      identityId: '3fc815a5-4a1b-4c49-bfdc-0e7a6ddc562f'
+    }
+  ]
+}

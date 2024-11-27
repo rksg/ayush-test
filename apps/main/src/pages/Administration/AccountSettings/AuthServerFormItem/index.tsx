@@ -4,9 +4,9 @@ import { Form, Col, Row, Space } from 'antd'
 import { useIntl }               from 'react-intl'
 
 
-import { Button, Card, showActionModal, Tooltip }   from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { CsvSize }                                  from '@acx-ui/rc/components'
+import { Button, Card, showActionModal, Tooltip }                 from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
+import { CsvSize }                                                from '@acx-ui/rc/components'
 import {
   useGetAdminListQuery,
   useDeleteTenantAuthenticationsMutation,
@@ -43,7 +43,7 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
   const isGoogleWorkspaceEnabled = useIsSplitOn(Features.GOOGLE_WORKSPACE_SSO_TOGGLE)
   const loginSsoSignatureEnabled = useIsSplitOn(Features.LOGIN_SSO_SIGNATURE_TOGGLE)
-  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isSsoEncryptionEnabled = useIsSplitOn(Features.SSO_SAML_ENCRYPTION)
 

@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
+import _         from 'lodash'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
@@ -18,6 +19,12 @@ import { dummyRadiusServiceList, ethernetPortProfileList, initLanData, mockDefau
 
 import { LanPortSettings } from '.'
 
+jest.mock('../ApCompatibility', () => ({
+  ...jest.requireActual('../ApCompatibility'),
+  ApCompatibilityToolTip: () => <div data-testid={'ApCompatibilityToolTip'} />,
+  ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
+}))
+
 const venueId='mock-venue-id'
 
 const selectedModelCaps = {
@@ -25,17 +32,21 @@ const selectedModelCaps = {
   canSupportPoeOut: false,
   model: 'R650',
   lanPorts: [{
+    defaultType: 'TRUNK',
     type: 'TRUNK',
     untagId: 1,
     vlanMembers: '1-4094',
     portId: '1',
-    enabled: true
+    enabled: true,
+    id: '1'
   }, {
+    defaultType: 'TRUNK',
     type: 'TRUNK',
     untagId: 1,
     vlanMembers: '1-4094',
     portId: '2',
-    enabled: true
+    enabled: true,
+    id: '2'
   }]
 }
 
@@ -94,7 +105,7 @@ beforeEach(() => {
 
 describe('LanPortSettings', () => {
   it('should render correctly', async () => {
-    const { asFragment } = render(<Provider>
+    render(<Provider>
       <Form initialValues={{ lan: lanData }}>
         <LanPortSettings
           index={0}
@@ -112,7 +123,6 @@ describe('LanPortSettings', () => {
     })
 
     await screen.findByText('Enable port')
-    expect(asFragment()).toMatchSnapshot()
 
     expect(screen.getByLabelText(/VLAN untag ID/)).toHaveValue('1')
     expect(screen.getByLabelText(/VLAN member/)).toHaveValue('1-4094')
@@ -181,7 +191,7 @@ describe('LanPortSettings', () => {
 
     const toolips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
     fireEvent.mouseEnter(toolips[1])
-    expect(await screen.findByTestId('tooltip-button')).not.toBeNull()
+    expect(await screen.findByTestId('ApCompatibilityToolTip')).not.toBeNull()
   })
 
   it('should render read-only mode correctly with trunk port untagged vlan toggle', async () => {
@@ -224,7 +234,9 @@ describe('LanPortSettings - Ethernet Port Profile', () => {
         EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId.url,
         (_, res, ctx) => res(ctx.json({
           data: {
-            enabled: true
+            enabled: true,
+            overwriteUntagId: 1,
+            overwriteVlanMembers: '1-4094'
           }
         }))
       ),
@@ -329,5 +341,47 @@ describe('LanPortSettings - Ethernet Port Profile', () => {
     expect((await screen.findAllByText('Default Trunk'))[0]).toBeInTheDocument()
     expect(screen.queryByText(trunkWithPortBasedName)).not.toBeInTheDocument()
 
+  })
+
+  it('AP Level - Single port has vni cannot modify', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return ff === Features.ETHERNET_PORT_PROFILE_TOGGLE
+    })
+
+    const apParams = {
+      tenantId: 'tenant-id',
+      serialNumber: '123456789042'
+    }
+
+    const lanDataHasVni = _.cloneDeep(lanData)
+    lanDataHasVni[0].vni = 8196
+
+    render(<Provider>
+      <Form initialValues={{ lan: lanDataHasVni }}>
+        <LanPortSettings
+          index={0}
+          readOnly={false}
+          selectedPortCaps={selectedTrunkPortCaps}
+          selectedModel={selectedSinglePortModel}
+          setSelectedPortCaps={jest.fn()}
+          selectedModelCaps={selectedSinglePortModelCaps}
+          isDhcpEnabled={false}
+          isTrunkPortUntaggedVlanEnabled={true}
+          useVenueSettings={false}
+          serialNumber={apParams.serialNumber}
+          venueId={venueId}
+        />
+      </Form>
+    </Provider>, {
+      route: { params: apParams, path: '/:tenantId/t/devices/wifi/:serialNumber/edit/networking' }
+    })
+
+    expect(screen.queryByLabelText(/Ethernet Port Profile/)).not.toBeInTheDocument()
+    expect(screen.queryByRole('combobox', { name: 'Ethernet Port Profile' }))
+      .not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Profile Details' }))
+      .not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'add Profile' }))
+      .not.toBeInTheDocument()
   })
 })

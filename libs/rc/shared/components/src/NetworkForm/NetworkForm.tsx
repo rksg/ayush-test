@@ -162,7 +162,7 @@ export function NetworkForm (props:{
   modalMode?: boolean,
   createType?: NetworkTypeEnum,
   modalCallBack?: (payload?: NetworkSaveData)=>void,
-  defaultActiveVenues?: string[],
+  defaultValues?: Record<string, unknown>,
   isRuckusAiMode?: boolean,
   gptEditId?: string
 }) {
@@ -179,7 +179,7 @@ export function NetworkForm (props:{
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
-  const { modalMode, createType, modalCallBack, defaultActiveVenues } = props
+  const { modalMode, createType, modalCallBack, defaultValues } = props
   const intl = useIntl()
   const navigate = useNavigate()
   const location = useLocation()
@@ -714,7 +714,7 @@ export function NetworkForm (props:{
 
     if (newNetworkVenues?.length) {
       newNetworkVenues?.forEach(networkVenue => {
-        if (!networkVenue.networkId) {
+        if (!networkVenue.networkId || networkVenue.networkId !== networkId) {
           networkVenue.networkId = networkId
         }
 
@@ -1054,6 +1054,7 @@ export function NetworkForm (props:{
         breadcrumb={breadcrumb}
       />}
       {(!editMode || cloneMode) &&
+      <Loader states={[{ isLoading: isLoading }]}>
         <NetworkFormContext.Provider value={{
           modalMode,
           createType,
@@ -1095,7 +1096,7 @@ export function NetworkForm (props:{
                 {saveState.type === NetworkTypeEnum.HOTSPOT20 && <Hotspot20SettingsForm />}
                 {saveState.type === NetworkTypeEnum.OPEN && <OpenSettingsForm/>}
                 {(saveState.type || createType) === NetworkTypeEnum.DPSK &&
-              <DpskSettingsForm />}
+              <DpskSettingsForm defaultSelectedDpsk={defaultValues?.dpskServiceProfileId as string} />}
                 {
                   (saveState.type || createType) === NetworkTypeEnum.CAPTIVEPORTAL &&
                   <PortalTypeForm/>
@@ -1129,7 +1130,7 @@ export function NetworkForm (props:{
                   title={intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
                   onFinish={handleVenues}
                 >
-                  <Venues defaultActiveVenues={defaultActiveVenues} />
+                  <Venues defaultActiveVenues={defaultValues?.defaultActiveVenues as string[]} />
                 </StepsFormLegacy.StepForm>}
 
               <StepsFormLegacy.StepForm
@@ -1145,6 +1146,7 @@ export function NetworkForm (props:{
             </StepsFormLegacy>
           </MLOContext.Provider>
         </NetworkFormContext.Provider>
+      </Loader>
       }
       {editMode &&
       <Loader states={[{ isLoading: isLoading }]}>

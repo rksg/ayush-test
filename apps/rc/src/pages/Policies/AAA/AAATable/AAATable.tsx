@@ -87,7 +87,7 @@ export default function AAATable () {
       scopeKey: getScopeKeyByPolicy(PolicyType.AAA, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows: AAAViewModalType[]) => selectedRows?.length === 1,
-      onClick: ([{ id }]) => {
+      onClick: ([{ id, networkIds }]) => {
         navigate({
           ...tenantBasePath,
           pathname: `${tenantBasePath.pathname}/` + getPolicyDetailsLink({
@@ -95,7 +95,9 @@ export default function AAATable () {
             oper: PolicyOperation.EDIT,
             policyId: id!
           })
-        })
+        }, { state: {
+          networkIds: networkIds
+        } })
       }
     }
   ]

@@ -1,8 +1,8 @@
 import { unitOfTime } from 'moment-timezone'
 
-import type { Incident }          from '@acx-ui/analytics/utils'
-import { GridRow, GridCol }       from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { calculateGranularity, type Incident } from '@acx-ui/analytics/utils'
+import { GridRow, GridCol }                    from '@acx-ui/components'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 
 import { FixedAutoSizer }                                   from '../../DescriptionSection/styledComponents'
 import { ImpactedSwitchDDoSDonut, ImpactedSwitchDDoSTable } from '../Charts/ImpactedSwitchDDoS'
@@ -29,8 +29,8 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
   ]
 
   const buffer = {
-    front: { value: 10, unit: 'days' as unitOfTime.Base },
-    back: { value: 1, unit: 'second' as unitOfTime.Base }
+    front: { value: 0, unit: 'seconds' as unitOfTime.Base },
+    back: { value: 0, unit: 'seconds' as unitOfTime.Base }
   }
 
   const isEnabled = [
@@ -58,7 +58,7 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
         <TimeSeries
           incident={incident}
           charts={timeSeriesCharts}
-          minGranularity='PT1H'
+          minGranularity={calculateGranularity(incident.startTime, incident.endTime, 'PT1H')}
           buffer={buffer}
         />
       </GridCol>

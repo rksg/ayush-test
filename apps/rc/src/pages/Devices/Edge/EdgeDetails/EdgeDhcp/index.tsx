@@ -72,7 +72,10 @@ export const EdgeDhcp = () => {
   })
 
   const getDhcpHostStatsPayload = {
-    filters: { edgeId: [serialNumber], hostStatus: [EdgeDhcpHostStatus.ONLINE] },
+    filters: {
+      edgeClusterId: [currentEdgeStatus?.clusterId],
+      hostStatus: [EdgeDhcpHostStatus.ONLINE]
+    },
     sortField: 'name',
     sortOrder: 'ASC'
   }

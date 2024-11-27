@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { UseLazyQuery }    from '@reduxjs/toolkit/dist/query/react/buildHooks'
 import { QueryDefinition } from '@reduxjs/toolkit/query'
@@ -14,6 +14,7 @@ import {
   useLazyGetPinEdgeCompatibilitiesQuery,
   useLazyGetSdLanApCompatibilitiesQuery,
   useLazyGetSdLanEdgeCompatibilitiesQuery,
+  useLazyGetSwitchFeatureSetsQuery,
   useLazyGetVenueEdgeCompatibilitiesQuery
 } from '@acx-ui/rc/services'
 import {
@@ -30,7 +31,8 @@ import {
   EntityCompatibility,
   getFeaturesIncompatibleDetailData,
   IncompatibilityFeatures,
-  isApRelatedEdgeFeature
+  isApRelatedEdgeFeature,
+  isSwitchRelatedEdgeFeature
 } from '@acx-ui/rc/utils'
 
 import { EdgeCompatibilityDrawerProps, EdgeCompatibilityType } from '../Compatibility/EdgeCompatibilityDrawer'
@@ -223,9 +225,10 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
   const [ data, setData ] = useState<Record<string, ApCompatibility>>({})
 
   const [ getEdgeFeatureSets ] = useLazyGetEdgeFeatureSetsQuery()
+  const [ getSwitchFeatureSets ] = useLazyGetSwitchFeatureSetsQuery()
   const [ getApFeatureSets ] = useLazyGetApFeatureSetsQuery()
 
-  const fetchEdgeCompatibilities = async () => {
+  const fetchEdgeCompatibilities = useCallback(async () => {
     try {
       setIsInitializing(true)
 
@@ -241,6 +244,18 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
         incompatible: 0,
         total: 0
       } as ApCompatibility
+
+      if (isSwitchRelatedEdgeFeature(featureName)) {
+        const switchFeature = await getSwitchFeatureSets({
+          payload: { filter: { featureNames: { field: 'GROUP', values: ['PIN'] } } }
+        }).unwrap()
+        deviceTypeResultMap[CompatibilityDeviceEnum.SWITCH] = {
+          id: 'switch_feature_requirements',
+          incompatibleFeatures: switchFeature.featureSets,
+          incompatible: 0,
+          total: 0
+        } as ApCompatibility
+      }
 
       if (isApRelatedEdgeFeature(featureName)) {
         const wifiFeature = await getApFeatureSets({
@@ -261,12 +276,12 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
       console.error('EdgeCompatibilityDrawer api error:', e)
       setIsInitializing(false)
     }
-  }
+  }, [featureName, getApFeatureSets, getEdgeFeatureSets, getSwitchFeatureSets])
 
   useEffect(() => {
     if (!skip)
       fetchEdgeCompatibilities()
-  }, [skip, featureName])
+  }, [fetchEdgeCompatibilities, skip])
 
   return useMemo(() => ({ featureInfos: data, isLoading: isInitializing }),
     [data, isInitializing])

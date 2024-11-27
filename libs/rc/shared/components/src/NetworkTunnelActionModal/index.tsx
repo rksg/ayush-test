@@ -7,7 +7,8 @@ export { NetworkTunnelInfoLabel }                         from './TunnelInfo/Net
 export { NetworkTunnelSwitchBtn }                         from './TunnelInfo/NetworkTunnelSwitchBtn'
 export {
   useEdgePinByVenue,
-  useEdgePinScopedNetworkVenueMap
+  useEdgePinScopedNetworkVenueMap,
+  useEdgeAllPinData
 } from './useEdgePinData'
 export {
   useGetSoftGreScopeVenueMap,

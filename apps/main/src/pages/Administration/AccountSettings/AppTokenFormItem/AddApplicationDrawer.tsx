@@ -2,8 +2,8 @@ import { Divider, Form, Input, Select } from 'antd'
 import { useIntl }                      from 'react-intl'
 import { useParams }                    from 'react-router-dom'
 
-import { Button, Drawer, PasswordInput }            from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Button, Drawer, PasswordInput }                          from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
 import {
   useAddTenantAuthenticationsMutation,
   useGetPrivilegeGroupsQuery,
@@ -46,7 +46,7 @@ export const AddApplicationDrawer = (props: AddApplicationDrawerProps) => {
   const { visible, setVisible, isEditMode, editData } = props
   const params = useParams()
   const [form] = Form.useForm()
-  const isRbacEarlyAccessEnable = useIsTierAllowed(Features.RBAC_IMPLICIT_P1)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
 
   const [addApiToken] = useAddTenantAuthenticationsMutation()

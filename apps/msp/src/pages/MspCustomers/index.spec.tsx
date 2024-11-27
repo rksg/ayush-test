@@ -3,8 +3,9 @@ import userEvent      from '@testing-library/user-event'
 import moment         from 'moment'
 import { Path, rest } from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
 import { MspAdministrator, MspEcTierEnum, MspRbacUrlsInfo, MspUrlsInfo } from '@acx-ui/msp/utils'
+import { PrivilegeGroup }                                                from '@acx-ui/rc/utils'
 import { Provider }                                                      from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, within, waitFor }        from '@acx-ui/test-utils'
 import { AccountType }                                                   from '@acx-ui/utils'
@@ -302,6 +303,10 @@ describe('MspCustomers', () => {
     })
     rcServices.useGetPrivilegeGroupsWithAdminsQuery = jest.fn().mockImplementation(() => {
       return { data: fakedPrivilegeGroupList }
+    })
+    const emptyPGList: PrivilegeGroup[] = []
+    rcServices.useGetMspEcDelegatePrivilegeGroupsQuery = jest.fn().mockImplementation(() => {
+      return { data: emptyPGList }
     })
     jest.spyOn(services, 'useMspCustomerListQuery')
     jest.spyOn(services, 'useSupportMspCustomerListQuery')
@@ -851,7 +856,7 @@ describe('MspCustomers', () => {
   it('should open msp delegations dialog for abac and rbac enabled', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ABAC_POLICIES_TOGGLE
       || ff === Features.RBAC_PHASE2_TOGGLE)
-    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === Features.RBAC_IMPLICIT_P1)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.RBAC_IMPLICIT_P1)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -874,7 +879,7 @@ describe('MspCustomers', () => {
   })
   it('should open delegation admin dialog for abac enabled and rbac not enabled', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ABAC_POLICIES_TOGGLE)
-    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === Features.RBAC_IMPLICIT_P1)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.RBAC_IMPLICIT_P1)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -899,7 +904,7 @@ describe('MspCustomers', () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ABAC_POLICIES_TOGGLE
       || ff === Features.RBAC_PHASE2_TOGGLE
       || ff === Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS)
-    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === Features.RBAC_IMPLICIT_P1)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.RBAC_IMPLICIT_P1)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -929,7 +934,7 @@ describe('MspCustomers', () => {
   it('should open delegation admin dialog for abac enabled for support access', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ABAC_POLICIES_TOGGLE
       || ff === Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS)
-    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === Features.RBAC_IMPLICIT_P1)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.RBAC_IMPLICIT_P1)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -960,7 +965,7 @@ describe('MspCustomers', () => {
   it('should open admin dialog for abac enabled & multiselected for support access', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ABAC_POLICIES_TOGGLE
       || ff === Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS)
-    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === Features.RBAC_IMPLICIT_P1)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.RBAC_IMPLICIT_P1)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })

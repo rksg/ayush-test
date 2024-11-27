@@ -8,7 +8,7 @@ import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { certificateAuthorityList, serverCertificateList } from '../../__test__/fixtures'
 
-import GenerateCertificateWithCSR from './GenerateCertificateWIthCSR'
+import { GenerateCertificateWithCSR } from './GenerateCertificateWIthCSR'
 
 describe('GenerateCertificateWithCSR', () => {
   beforeEach(() => {

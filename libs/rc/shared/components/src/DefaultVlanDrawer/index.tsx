@@ -10,9 +10,9 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Alert, Tooltip }                          from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                      from '@acx-ui/icons'
-import { validateDuplicateVlanId, validateVlanName, Vlan } from '@acx-ui/rc/utils'
+import { Drawer, Alert, Tooltip }                                       from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                                   from '@acx-ui/icons'
+import { validateDuplicateVlanId, validateVlanExcludingReserved, Vlan } from '@acx-ui/rc/utils'
 
 export interface DefaultVlanDrawerProps {
   defaultVlan?: Vlan
@@ -129,7 +129,7 @@ function DefaultVlanForm (props: DefaultVlanFormProps) {
         name='vlanId'
         rules={[
           { required: true },
-          { validator: (_, value) => validateVlanName(value) },
+          { validator: (_, value) => validateVlanExcludingReserved(value) },
           { validator: (_, value) => validateDuplicateVlanId(
             value, vlansList.filter(v => v.vlanId !== defaultVlan?.vlanId)
           ) }

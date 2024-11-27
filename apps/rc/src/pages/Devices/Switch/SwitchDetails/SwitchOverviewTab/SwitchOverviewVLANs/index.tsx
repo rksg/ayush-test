@@ -412,6 +412,7 @@ export function SwitchOverviewVLANs (props: {
           isDeletable: !hasVlansUsedByVe
             && !hasPortsUsedByLag
             && (vlan.vlanName !== SWITCH_DEFAULT_VLAN_NAME)
+            && !vlan.isAuthDefaultVlan
         }
       })
       const defaultVlan = vlanList?.filter(
