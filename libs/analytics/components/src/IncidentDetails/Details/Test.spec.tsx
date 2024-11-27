@@ -91,6 +91,11 @@ jest.mock('../Charts/ImpactedSwitchDDoS', () => ({
   ImpactedSwitchDDoSTable: () => <div data-testid='impactedSwitchDDoSTable' />,
   ImpactedSwitchDDoSDonut: () => <div data-testid='impactedSwitchDDoSDonut' />
 }))
+
+jest.mock('../Charts/ImpactedUplinkPortDetails', () => ({
+  ImpactedUplinkPortDetails: () => <div data-testid='impactedUplinkPortDetails' />
+}))
+
 jest.mock('../Charts/WanthroughputTable', () => ({
   WanthroughputTable: () => <div data-testid='wanthroughputTable' />
 }))
@@ -428,7 +433,7 @@ describe('Test', () => {
       fakeIncident: fakeIncidentUplinkPortCongestion,
       hasNetworkImpact: false,
       hasTimeSeries: false,
-      charts: []
+      charts: ['ImpactedUplinkPortDetails']
     }].forEach((test) => it(`should not render anything for ${test.component.name}`, () => {
       jest.mocked(useIsSplitOn).mockReturnValue(false)
       const params = { incidentId: test.fakeIncident.id }
