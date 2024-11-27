@@ -43,9 +43,15 @@ jest.mock('@acx-ui/utils', () => ({
 
 jest.mocked(useIsSplitOn).mockReturnValue(true)
 
-jest.mock('./EthernetPortProfileInstanceTable', () => ({
-  ...jest.requireActual('./EthernetPortProfileInstanceTable'),
-  EthernetPortProfileInstanceTable: () => <div data-testid='EthernetPortProfileInstanceTable' />
+jest.mock('./InstanceTable/ApTable', () => ({
+  ...jest.requireActual('./InstanceTable/ApTable'),
+  ApTable: () => <div data-testid='ApTable' />
+}))
+
+
+jest.mock('./InstanceTable/VenueTable', () => ({
+  ...jest.requireActual('./InstanceTable/VenueTable'),
+  VenueTable: () => <div data-testid='VenueTable' />
 }))
 
 let params: { tenantId: string, policyId: string }

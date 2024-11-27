@@ -538,7 +538,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
           }
         })
         await waitFor(() => {
-          expect(mockGetClientList).toBeCalledTimes(1)
+          expect(mockGetClientList).toBeCalledTimes(2)
         })
         expect(await screen.findByText('Client Details')).toBeVisible()
         expect(await screen.findByText('Last Session')).toBeVisible()
@@ -593,7 +593,9 @@ describe('ClientOverviewTab - ClientProperties', () => {
       })
 
       it('should render correctly when search parameters is disappeared', async () => {
-        jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
+        jest.spyOn(URLSearchParams.prototype, 'get').mockImplementation(key =>
+          key === 'clientStatus' ? 'historical' : null
+        )
         jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API)
         store.dispatch(dataApi.util.resetApiState())
         mockServer.use(

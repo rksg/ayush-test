@@ -44,7 +44,8 @@ import {
   NewTableResult,
   transferToTableResult,
   MacRegistrationPool,
-  TxStatus
+  TxStatus,
+  NewAPModel
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -227,14 +228,38 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const networkListReq = createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, params, apiCustomHeader)
         const networkListQuery = await fetchWithBQ({ ...networkListReq, body: JSON.stringify(payload) })
         const networkList = networkListQuery.data as TableResult<WifiNetwork>
-        const networkIds = networkList?.data?.filter(n => n.apCount).map(n => n.id) || []
+        // vlan pooling
+        const networkIds = networkList?.data?.map(n => n.id) ?? []
+        if (networkIds.length > 0) {
+          const vlanPoolListQuery = await fetchWithBQ({
+            ...createHttpRequest(VlanPoolRbacUrls.getVLANPoolPolicyList),
+            body: JSON.stringify({
+              fields: [ 'id' , 'name', 'wifiNetworkIds'],
+              filters: { wifiNetworkIds: networkIds }
+            })
+          })
+          const vlanPoolList = vlanPoolListQuery.data as TableResult<VLANPoolViewModelRbacType>
+
+          networkList.data.forEach(network => {
+            const networkId = network.id
+            const networkVlanPool = vlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))
+            if (networkVlanPool) {
+              network.vlanPool = {
+                name: networkVlanPool.name
+              }
+            }
+          })
+        }
+
+        // apCompatibily
+        const apNetworkIds = networkList?.data?.filter(n => n.apCount).map(n => n.id) ?? []
         const networkIdsToIncompatible:{ [key:string]: number } = {}
         try {
           const apCompatibilitiesReq = {
             ...createHttpRequest(WifiRbacUrlsInfo.getNetworkApCompatibilities, undefined, GetApiVersionHeader(ApiVersionEnum.v1)),
             body: JSON.stringify({
               filters: {
-                wifiNetworkIds: networkIds,
+                wifiNetworkIds: apNetworkIds,
                 featureLevels: [IncompatibleFeatureLevelEnum.WIFI_NETWORK]
               },
               page: 1,
@@ -246,7 +271,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           const apCompatibilitiesResponse = (apCompatibilitiesQuery.data) as CompatibilityResponse
           const apCompatibilities = apCompatibilitiesResponse?.compatibilities
 
-          networkIds.forEach((id:string, index:number) => {
+          apNetworkIds.forEach((id:string, index:number) => {
             networkIdsToIncompatible[id] = apCompatibilities?.[index]?.incompatible ?? 0
           })
         } catch (e) {
@@ -609,7 +634,73 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
+    getRbacApNetworkList: build.query<TableResult<Network | WifiNetwork>, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const { serialNumber } = arg.params || {}
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
 
+        // get current AP (AP List filter by serial)
+        const apListReq = {
+          ...createHttpRequest(CommonRbacUrlsInfo.getApsList, undefined, customHeaders),
+          body: JSON.stringify({
+            entityType: 'aps',
+            fields: ['name', 'serialNumber', 'apGroupId', 'venueId'],
+            filters: { serialNumber: [serialNumber] }
+          })
+        }
+        const apListQuery = await fetchWithBQ(apListReq)
+        const apList = apListQuery.data as TableResult<NewAPModel>
+        const apGroupId = apList?.data?.[0].apGroupId
+
+
+        // get AP's network (filter by apGroup ID)
+        const payload = (arg.payload ?? {}) as {
+          searchString?: string,
+          fields?: string[],
+          page?: number,
+          pageSize?: number }
+
+        const NetworkListReq = {
+          ...createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, undefined, customHeaders),
+          body: JSON.stringify({
+            ...payload,
+            filters: {
+              'venueApGroups.apGroupIds': [apGroupId]
+            }
+          })
+        }
+
+        const networkListQuery = await fetchWithBQ(NetworkListReq)
+        const networkList = networkListQuery.data as TableResult<WifiNetwork>
+        const networkIds = networkList.data.map(network => network.id)
+
+        // vlan pooling
+        if (networkIds.length > 0) {
+          const vlanPoolListQuery = await fetchWithBQ({
+            ...createHttpRequest(VlanPoolRbacUrls.getVLANPoolPolicyList),
+            body: JSON.stringify({
+              fields: [ 'id' , 'name', 'wifiNetworkIds'],
+              filters: { wifiNetworkIds: networkIds }
+            })
+          })
+          const vlanPoolList = vlanPoolListQuery.data as TableResult<VLANPoolViewModelRbacType>
+
+          networkList.data.forEach(network => {
+            const networkId = network.id
+            const networkVlanPool = vlanPoolList?.data?.find(vlanPool => vlanPool.wifiNetworkIds?.includes(networkId))
+            if (networkVlanPool) {
+              network.vlanPool = {
+                name: networkVlanPool.name
+              }
+            }
+          })
+        }
+
+        return { data: networkList }
+      },
+      providesTags: [{ type: 'Network', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
     networkVenueListV2: build.query<TableResult<Venue>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const {
@@ -1690,6 +1781,7 @@ export const {
   useDeleteNetworkVenueMutation,
   useDeleteNetworkVenuesMutation,
   useApNetworkListQuery,
+  useGetRbacApNetworkListQuery,
   useVenueNetworkListV2Query,
   useNewVenueNetworkTableQuery,
   useEnhanceVenueNetworkTableQuery,
