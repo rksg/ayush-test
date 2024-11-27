@@ -130,3 +130,63 @@ describe('createUseIntentTransition', () => {
   })
 })
 
+describe('useInitialValues', () => {
+  it('when intent status is "new", should return current date and undefined time', async () => {
+    mockIntentContext({ intent: mockedIntentCRRMnew })
+    let currentTime: moment.Moment
+    const { result: { current: initialValues } } = renderHook(() => {
+      currentTime = moment()
+      return useInitialValues()
+    })
+    expect(initialValues).toStrictEqual({
+      id: mockedIntentCRRMnew.id,
+      status: Statuses.new,
+      statusReason: mockedIntentCRRMnew.statusReason,
+      displayStatus: mockedIntentCRRMnew.displayStatus,
+      settings: { date: currentTime!, time: undefined }
+    })
+  })
+
+  it.each(Object.values(Statuses).filter((status) => status !== Statuses.new))(
+    'when status is "%s" (not "new") and has scheduledAt, should return scheduled date and time',
+    async (status) => {
+      const mockScheduledAt = '2023-07-15T14:15:00.000Z'
+      mockIntentContext({
+        intent: {
+          ...mockedIntentCRRM,
+          metadata: {
+            ...mockedIntentCRRM.metadata,
+            scheduledAt: mockScheduledAt
+          },
+          status
+        }
+      })
+      const { result: { current: initialValues } } = renderHook(() => useInitialValues())
+      expect(initialValues).toStrictEqual({
+        id: mockedIntentCRRM.id,
+        status,
+        statusReason: mockedIntentCRRM.statusReason,
+        displayStatus: mockedIntentCRRM.displayStatus,
+        settings: {
+          date: moment(mockScheduledAt),
+          time: moment.duration(moment(mockScheduledAt).format('HH:mm:ss')).asHours()
+        }
+      })
+    }
+  )
+
+  it.each(Object.values(Statuses).filter((status) => status !== Statuses.new))(
+    'when status is "%s" (not "new") and has no scheduledAt, should return undefined date and time',
+    async (status) => {
+      mockIntentContext({ intent: { ...mockedIntentCRRMnew, status } })
+      const { result: { current: initialValues } } = renderHook(() => useInitialValues())
+      expect(initialValues).toStrictEqual({
+        id: mockedIntentCRRMnew.id,
+        status,
+        statusReason: mockedIntentCRRMnew.statusReason,
+        displayStatus: mockedIntentCRRMnew.displayStatus,
+        settings: { date: undefined, time: undefined }
+      })
+    }
+  )
+})

@@ -49,6 +49,25 @@ const renderForm = (children: JSX.Element) => {
 describe('ScheduleTiming', () => {
   beforeEach(() => jest.spyOn(Date, 'now').mockReturnValue(+new Date('2024-08-12T10:38:00')))
   afterEach(() => jest.restoreAllMocks())
+
+  it.each(
+    Object.values(Statuses).filter(
+      (status) => status !== Statuses.new && status !== Statuses.scheduled
+    )
+  )('intent status = "%s" disabled = true, should have no date field and undefined time field',
+    async (status) => {
+      mockIntentContext({ intent: { ...mockedIntentCRRM, status }, kpis: [] })
+      const { form, onFinish } = renderForm(<ScheduleTiming disabled/>)
+
+      expect(screen.queryByPlaceholderText('Select date')).not.toBeInTheDocument()
+      expect(await screen.findByPlaceholderText('Select time')).toBeDisabled()
+
+      await click(await screen.findByRole('button', { name: 'Submit' }))
+      expect(onFinish).toBeCalled()
+      const values = form.getFieldsValue()
+      expect(values.settings).toEqual({ date: undefined, time: undefined })
+    })
+
   describe('intent status = new/scheduled', () => {
     beforeEach(() =>
       mockIntentContext({ intent: mockedIntentCRRMnew, kpis: [] }))
@@ -75,10 +94,14 @@ describe('ScheduleTiming', () => {
     })
     it('handle selected date & time, then waited past selected time validation', async () => {
       mockIntentContext({
-        intent: { ...mockedIntentCRRMnew, metadata: {
-          ...mockedIntentCRRMnew.metadata,
-          scheduledAt: '2024-08-12T10:00:00'
-        } },
+        intent: {
+          ...mockedIntentCRRMnew,
+          metadata: {
+            ...mockedIntentCRRMnew.metadata,
+            scheduledAt: '2024-08-12T10:00:00'
+          },
+          status: Statuses.scheduled
+        },
         kpis: []
       })
       const { onFinish } = renderForm(<ScheduleTiming/>)
@@ -86,8 +109,9 @@ describe('ScheduleTiming', () => {
       await click(await screen.findByRole('button', { name: 'Submit' }))
       expect(onFinish).not.toBeCalled()
 
-      // eslint-disable-next-line max-len
-      expect(await screen.findByText('Scheduled time cannot be before 08/12/2024 11:00')).toBeVisible()
+      expect(
+        await screen.findByText('Scheduled time cannot be before 08/12/2024 11:00')
+      ).toBeVisible()
     })
 
     it('handle selected today and some time are disable', async () => {
@@ -119,6 +143,55 @@ describe('ScheduleTiming', () => {
       await click(date)
       await click(await screen.findByRole('cell', { name: '2024-08-12' }))
       expect(await screen.findByPlaceholderText('Select time')).toHaveValue('')
+    })
+
+    it.each([Statuses.new, Statuses.scheduled])(
+      'intent status = "%s" disabled = true, should have undefiend date and time fields',
+      async (status) => {
+        mockIntentContext({
+          intent: {
+            ...mockedIntentCRRMnew,
+            metadata: {
+              ...mockedIntentCRRMnew.metadata,
+              scheduledAt: '2024-08-12T10:00:00'
+            },
+            status
+          },
+          kpis: []
+        })
+        const { form, onFinish } = renderForm(<ScheduleTiming disabled />)
+
+        expect(await screen.findByPlaceholderText('Select date')).toBeVisible()
+        expect(await screen.findByPlaceholderText('Select time')).toBeVisible()
+
+        expect(await screen.findByPlaceholderText('Select date')).toBeDisabled()
+        expect(await screen.findByPlaceholderText('Select time')).toBeDisabled()
+
+        await click(await screen.findByRole('button', { name: 'Submit' }))
+        expect(onFinish).toBeCalled()
+        const values = form.getFieldsValue()
+        expect(values.settings).toEqual({ date: undefined, time: undefined })
+      }
+    )
+
+    it('intent status = new, should have date = current date and time = undefined', async () => {
+      const currentDateTime = moment()
+      const mockScheduledAt = currentDateTime.toISOString()
+      mockIntentContext({
+        intent: {
+          ...mockedIntentCRRMnew,
+          metadata: { ...mockedIntentCRRMnew.metadata, scheduledAt: mockScheduledAt },
+          status: Statuses.new
+        },
+        kpis: []
+      })
+
+      renderForm(<ScheduleTiming />)
+
+      const date = await screen.findByPlaceholderText('Select date')
+      const time = await screen.findByPlaceholderText('Select time')
+      expect(date).toHaveValue(currentDateTime.format('MM/DD/YYYY'))
+      expect(time).toHaveValue('')
     })
   })
 
