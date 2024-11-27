@@ -8,7 +8,7 @@ import {
   Select,
   Switch
 } from 'antd'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import {
   Button,
@@ -35,7 +35,8 @@ import {
   WlanSecurityEnum,
   hasPolicyPermission,
   macAuthMacFormatOptions,
-  useConfigTemplate
+  useConfigTemplate,
+  SecurityOptionsDescription
 } from '@acx-ui/rc/utils'
 
 import { CertificateTemplateForm, MAX_CERTIFICATE_PER_TENANT } from '../../policies'
@@ -118,28 +119,15 @@ function SettingsForm () {
   const useCertificateTemplate = useWatch('useCertificateTemplate')
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const { isTemplate } = useConfigTemplate()
-  const wpa2Description = <FormattedMessage
-    /* eslint-disable max-len */
-    defaultMessage={`
-      WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006.
-      WPA2 should be selected unless you have a specific reason to choose otherwise.
-      <highlight>
-        6GHz radios are only supported with WPA3.
-      </highlight>
-    `}
-    /* eslint-enable */
-    values={{
-      highlight: (chunks) => <Space align='start'>
-        <InformationSolid />
-        {chunks}
-      </Space>
-    }}
-  />
+  const wpa2Description = <>
+    {$t(WifiNetworkMessages.WPA2_DESCRIPTION)}
+    <Space align='start'>
+      <InformationSolid />
+      {$t(SecurityOptionsDescription.WPA2_DESCRIPTION_WARNING)}
+    </Space>
+  </>
 
-  const wpa3Description = $t({
-    // eslint-disable-next-line max-len
-    defaultMessage: 'WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.'
-  })
+  const wpa3Description = $t(SecurityOptionsDescription.WPA3)
 
   useEffect(() => {
     if (!editMode && !cloneMode) {
@@ -317,10 +305,7 @@ function AaaService () {
 
   const proxyServiceTooltip = <Tooltip.Question
     placement='bottom'
-    title={$t({
-      // eslint-disable-next-line max-len
-      defaultMessage: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.'
-    })}
+    title={$t(WifiNetworkMessages.ENABLE_PROXY_TOOLTIP)}
     iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
   />
 
