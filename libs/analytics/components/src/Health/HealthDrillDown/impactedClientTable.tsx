@@ -41,7 +41,7 @@ export const ImpactedClientsTable = ({
 }) => {
   const { $t } = useIntl()
   const allowedPieFilter = [
-    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
+    useIsSplitOn(Features.MLISA_4_11_0_TOGGLE),
     get('IS_MLISA_SA')
   ].some(Boolean)
   const filteredData = pieList?.map((data: PieChartData) => data.rawKey)
