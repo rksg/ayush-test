@@ -3,12 +3,14 @@ import { useState } from 'react'
 import { Space, Divider, message } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Button, cssStr }    from '@acx-ui/components'
+import {Button, Card, cssStr, DonutChart} from '@acx-ui/components'
+// import { useChatsMutation }  from '@acx-ui/rc/services'
 import { HistoricalOutlined, Plus, RuckusAiDog, SendMessageOutlined } from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 import Grid from '../Grid'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import WidgetList from "./widgetList";
 
 type ChatMessage = {
   id: string,
@@ -24,6 +26,7 @@ export default function AICanvas (
   const { $t } = useIntl()
   const navigate = useNavigate()
   // const { visible, setVisible } = props
+  // const [chats] = useChatsMutation() //chat API call
   const [ sectionsSubVisible, setSectionsSubVisible ] = useState(false)
   const [ restoreSubVisible, setRestoreSubVisible ] = useState(false)
   const [chats, setChats] = useState([{
@@ -40,7 +43,14 @@ export default function AICanvas (
 
     }]
   }
-  ]);
+  ])
+  const [ widgetData, setWidgetData ] = useState([{
+    id: 1,
+    chartOption: [{ color: '#ACAEB0', name: 'In Setup Phase', value: 8 }]
+  }, {
+    id: 2,
+    chartOption: [{ color: '#ACAEB0', name: 'In Setup Phase', value: 3 }]
+  }])
   const [ dirty, setDirty ] = useState(false)
   const [ searchText, setSearchText ] = useState('')
   const siderWidth = localStorage.getItem('acx-sider-width') || cssStr('--acx-sider-width')
@@ -94,7 +104,7 @@ export default function AICanvas (
                 <Message key={i.id} chat={i} />
               ))}
             </div>
-            <div className="input">
+            <div className='input'>
               <UI.Input
                 autoFocus
                 value={searchText}
@@ -107,7 +117,8 @@ export default function AICanvas (
               <Button icon={<SendMessageOutlined />} onClick={handleSearch} />
             </div>
           </div>
-          <div className='widgets'>
+          <div className='widgets' style={{ padding: '15px' }}>
+            <WidgetList data={widgetData} />
           </div>
         </div>
       </div>
