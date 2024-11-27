@@ -117,6 +117,7 @@ export const codeToFailureTypeMap: Record<IncidentCode, string> = {
   'i-apserv-continuous-reboots': 'ap-reboot',
   'i-apserv-downtime-high': 'ap-sz-conn-failure',
   'i-switch-vlan-mismatch': 'vlan-mismatch',
+  'i-switch-loop-detection': 'loop-detection',
   'i-switch-poe-pd': 'poe-pd',
   'i-apinfra-poe-low': 'ap-poe-low',
   'i-apinfra-wanthroughput-low': 'ap-wanthroughput-low',
@@ -129,6 +130,8 @@ export const codeToFailureTypeMap: Record<IncidentCode, string> = {
   'p-airtime-b-24g-high': 'airtime-b',
   'p-airtime-b-5g-high': 'airtime-b',
   'p-airtime-b-6(5)g-high': 'airtime-b',
+  'p-switch-port-congestion': 'port-congestion',
+  'p-switch-uplink-port-congestion': 'uplink-port-congestion',
   's-switch-tcp-syn-ddos': 'tcp-syn-ddos'
 }
 
@@ -1204,6 +1207,63 @@ export const rootCauseRecommendationMap = {
       })
     }
   },
+  'loop-detection': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: '<p>Wired switch links intended for backup can by incorrect configuration permit more than one path between switch ports on a VLAN. This causes a L2 loop which can cause performance issues that will potentially bring down or degrade the network (high CPU usage, Broadcast storms, Unstable CAM(Content Addressable memory) tables, high consumption of network bandwidth, loss of responses)</p>'
+      }),
+      recommendations: defineMessage({
+        defaultMessage: '<p>Use/configure a spanning tree or any other loop avoidance protocol for the affected VLAN. This will help disable redundant paths until they are needed, effectively preventing the formation of loops and restore the functioning of the network.</p>'
+      })
+    }
+  },
+  'port-congestion': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: `<p>This "Congestion" incident could be potentially triggered due to multiple reasons:</p>
+  <ol>
+    <li>Excessive bandwidth consumption: Certain users or devices on the network may occasionally utilize more bandwidth than the average user or device, causing network congestion.</li>
+    <li>Broadcast Storms: A broadcast storm occurs when there is a sudden upsurge in the number of requests to a network.</li>
+    <li>Multicasting: A collision can occur when two packets are sent at the same time in multicasting.</li>
+    <li>Too many devices: If the network has too many devices linked to it, the network may become burdened with data requests.</li>
+  </ol>`
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `<p>There are several options to assess for to remediate network congestion and should be planned based on exact circumstance of the network.</p>
+  <ol>
+    <li>Use link aggregation: Multiple connections are combined in parallel.</li>
+    <li>Increase Bandwidth or move to a higher bandwidth port: The most common cause of network congestion is insufficient bandwidth. If the network's traffic exceeds its bandwidth capacity, increasing the bandwidth can help alleviate the congestion.</li>
+    <li>Implement Traffic Shaping: Traffic shaping, also known as packet shaping, is a network traffic management technique that delays some or all datagrams to bring them into compliance with a desired traffic profile.</li>
+    <li>Use Quality of Service (QoS): QoS mechanisms can prioritize certain types of traffic, ensuring that important data gets through even during times of congestion.</li>
+    <li>Implement Load Balancing: Load balancing distributes network traffic across multiple servers to ensure no single server becomes overwhelmed with too much traffic.</li>
+    <li>Monitor Network Traffic: Regular monitoring of network traffic can help identify patterns and trends, enabling proactive management of network congestion.</li>
+  </ol>
+`
+      })
+    }
+  },
+  'uplink-port-congestion': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: `<p>This incident could be potentially triggered due to multiple reasons:</p>
+
+  <ol>
+    <li>Increased Data Traffic: As the number of connected devices and users on the network grows, the demand for data transfer increases, leading to congestion.</li>
+    <li>Limited Uplink Speed: Many popular apps receive more data in downlink than they send in uplink. However, once uplink speed drops below a certain threshold, it becomes the bottleneck, limiting the speed at which content can be transferred in downlink.</li>
+    <li>Network Performance: The performance of the network often determines time-to-content, as many popular content providers optimize the design and size of the content for smart devices.</li>
+    <li>Unexpected Usage Patterns: Changes in app configuration or unexpected usage patterns, like network bandwidth spikes, can lead to uplink congestion.</li>
+  </ol>`
+      }),
+      recommendations: defineMessage({
+        defaultMessage: `<p>Resolving uplink congestion involves a combination of options depending on the circumstance of the incident:</p>
+  <ol>
+    <li>Traffic Management: Implementing Quality of Service (QoS) policies can help prioritize traffic and manage bandwidth usage.</li>
+    <li>Bandwidth Expansion: Increasing the available bandwidth can alleviate congestion by providing more capacity for data transmission.</li>
+    <li>Implementing Link Aggregation: This technique combines multiple network connections in parallel to increase throughput and provide redundancy.</li>
+  </ol>`
+      })
+    }
+  },
   'switch-memory-high': {
     DEFAULT: {
       rootCauses: defineMessage({
@@ -1264,22 +1324,23 @@ export const rootCauseRecommendationMap = {
     DEFAULT: {
       rootCauses: defineMessage({
         defaultMessage: `
-          <p>System has detected the AP(s) are underperforming due to low WAN bandwidth availability. This can occur due to following reasons:</p>
+          <p>The system has detected that the Access Point(s) (APs) may be underperforming due to a physical link speed or duplex mismatch between the AP and the upstream device. This issue can arise due to following reasons:</p>
           <ol>
-            <li>Upstream peer device configuration is wrong and not matching as per AP Ethernet WAN port capacity.</li>
-            <li>Upstream peer device cannnot support multi gig throughput needed by APs.</li>
-            <li>Faulty cables and incorrect cable types can lead to Ethernet link not negotiated properly.</li>
+            <li>The upstream peer device configuration does not match the AP's Ethernet uplink port capacity.</li>
+            <li>The upstream peer device cannot support the multi-gigabit throughput required by the AP(s).</li>
+            <li>Faulty cables or incorrect cable types can prevent proper Ethernet link negotiation.</li>
           </ol>
         `
       }),
       recommendations: defineMessage({
         defaultMessage: `
-          <p>To remediate the problems identified above, follow the corresponding recommended actions:</p>
+          <p>To resolve the identified issues, consider following these steps:</p>
           <ol>
-            <li>Check the peer device configuration. It should match with AP WAN Port capacity.</li>
-            <li>Check the peer device capacity for supporting multi gig throughput.</li>
-            <li>Check the cable for good Ethernet link negotiation.</li>
+            <li>Verify that the configuration of the upstream peer device aligns with the AP uplink port's capacity (e.g., speed and duplex settings).</li>
+            <li>Ensure that the upstream device supports the multi-gigabit throughput needed by the AP(s).</li>
+            <li>Verify cable type and quality, replace faulty cables or upgrade to appropriate types.</li>
           </ol>
+          <p>Confirm that the Ethernet port profiles configured in the network controller match the AP and upstream device requirements.</p>
         `
       })
     }

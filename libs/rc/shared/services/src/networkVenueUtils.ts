@@ -201,10 +201,8 @@ export function isFulfilled <T,> (p: PromiseSettledResult<T>): p is PromiseFulfi
 export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any) => {
   const networkListResult = await fetchRbacNetworkList(arg, fetchWithBQ)
   const networkList = networkListResult.data
-  const venueId = arg.params.venueId
-  const apGroupId = arg.params.apGroupId
-  const apGroupIdsList = arg.payload.apGroupIds
-  const isTemplate = arg.payload.isTemplate
+  const { venueId, apGroupId } = arg.params
+  const { apGroupIds: apGroupIdsList, isTemplate } = arg.payload
   const apGroupCheckList = apGroupId ? [apGroupId] : [...apGroupIdsList]
 
   let networkDeepListList = {} as { response: NetworkDetail[] }
@@ -234,11 +232,12 @@ export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any)
 
   if (networkIds.length > 0) {
     // eslint-disable-next-line max-len
-    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate, true)
+    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, isTemplate, true)
 
     const networkDeepListRes = networkDeepListList.response
     if (networkDeepListRes.length > 0) {
       // get "select All APs" settings
+      const networkVenueUrlInfo = isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getNetworkVenue
       const venueNetworkReqs = activatedNetworkIds.map(activatedNetworkId => {
         const params = {
           venueId: venueId,
@@ -246,7 +245,7 @@ export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any)
         }
 
         return fetchWithBQ(createHttpRequest(
-          arg.payload.isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getNetworkVenue,
+          networkVenueUrlInfo,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1)
         ))
@@ -255,9 +254,10 @@ export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any)
       const networkVenueList = networkVenueResults.filter(isFulfilled).map(p => p.value.data)
 
       // Get "select specific AP Groups" settings
+      const venueApGroupUrlInfo = isTemplate ? ConfigTemplateUrlsInfo.getVenueApGroupsRbac : WifiRbacUrlsInfo.getVenueApGroups
       const networkApGroupReqs = networkApGroupParamsList.map(params => {
         return fetchWithBQ(createHttpRequest(
-          arg.payload.isTemplate ? ConfigTemplateUrlsInfo.getVenueApGroupsRbac : WifiRbacUrlsInfo.getVenueApGroups,
+          venueApGroupUrlInfo,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1)
         ))
@@ -271,7 +271,7 @@ export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any)
       if (apGroupIds.length) {
         const apGroupsListQuery = await fetchWithBQ({
           ...createHttpRequest(
-            arg.payload.isTemplate ? ApGroupConfigTemplateUrlsInfo.getApGroupsListRbac : WifiRbacUrlsInfo.getApGroupsList
+            isTemplate ? ApGroupConfigTemplateUrlsInfo.getApGroupsListRbac : WifiRbacUrlsInfo.getApGroupsList
           ),
           body: JSON.stringify({
             fields: ['name', 'id'],
@@ -375,9 +375,8 @@ export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any)
 export const fetchRbacAllApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any) => {
   const networkListResult = await fetchRbacNetworkList(arg, fetchWithBQ)
   const networkList = networkListResult.data
-  const venueId = arg.params.venueId
-  const apGroupId = arg.params.apGroupId
-  const apGroupIdsList = arg.payload.apGroupIds
+  const { venueId, apGroupId } = arg.params
+  const { apGroupIds: apGroupIdsList, isTemplate } = arg.payload
   const apGroupCheckList = apGroupId ? [apGroupId] : [...apGroupIdsList]
 
   let networkDeepListList = {} as { response: NetworkDetail[] }
@@ -407,11 +406,12 @@ export const fetchRbacAllApGroupNetworkVenueList = async (arg:any, fetchWithBQ:a
 
   if (networkIds.length > 0) {
     // eslint-disable-next-line max-len
-    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate, true)
+    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, isTemplate, true)
 
     const networkDeepListRes = networkDeepListList.response
     if (networkDeepListRes.length > 0) {
       // get "select All APs" settings
+      const networkVenueUrlInfo = isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getNetworkVenue
       const venueNetworkReqs = activatedNetworkIds.map(activatedNetworkId => {
         const params = {
           venueId: venueId,
@@ -419,7 +419,7 @@ export const fetchRbacAllApGroupNetworkVenueList = async (arg:any, fetchWithBQ:a
         }
 
         return fetchWithBQ(createHttpRequest(
-          arg.payload.isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getNetworkVenue,
+          networkVenueUrlInfo,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1)
         ))
@@ -428,9 +428,10 @@ export const fetchRbacAllApGroupNetworkVenueList = async (arg:any, fetchWithBQ:a
       const networkVenueList = networkVenueResults.filter(isFulfilled).map(p => p.value.data)
 
       // Get "select specific AP Groups" settings
+      const venueApGroupUrlInfo = isTemplate ? ConfigTemplateUrlsInfo.getVenueApGroupsRbac : WifiRbacUrlsInfo.getVenueApGroups
       const networkApGroupReqs = networkApGroupParamsList.map(params => {
         return fetchWithBQ(createHttpRequest(
-          arg.payload.isTemplate ? ConfigTemplateUrlsInfo.getVenueApGroupsRbac : WifiRbacUrlsInfo.getVenueApGroups,
+          venueApGroupUrlInfo,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1)
         ))
@@ -444,7 +445,7 @@ export const fetchRbacAllApGroupNetworkVenueList = async (arg:any, fetchWithBQ:a
       if (apGroupIds.length) {
         const apGroupsListQuery = await fetchWithBQ({
           ...createHttpRequest(
-            arg.payload.isTemplate ? ApGroupConfigTemplateUrlsInfo.getApGroupsListRbac : WifiRbacUrlsInfo.getApGroupsList
+            isTemplate ? ApGroupConfigTemplateUrlsInfo.getApGroupsListRbac : WifiRbacUrlsInfo.getApGroupsList
           ),
           body: JSON.stringify({
             fields: ['name', 'id'],
@@ -548,6 +549,7 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
     const networkDeepListRes = networkDeepListList.response
     if (networkDeepListRes.length > 0) {
       // get "select All APs" settings
+      const networkVenueUrlInfo = isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getNetworkVenue
       const venueNetworkReqs = activatedNetworkIds.map(activatedNetworkId => {
         const params = {
           venueId: venueId,
@@ -555,7 +557,7 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
         }
 
         return fetchWithBQ(createHttpRequest(
-          isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getNetworkVenue,
+          networkVenueUrlInfo,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1)
         ))
@@ -564,9 +566,10 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
       const networkVenueList = networkVenueResults.filter(isFulfilled).map(p => p.value.data)
 
       // Get "select specific AP Groups" settings
+      const venueApGroupUrlInfo = isTemplate ? ConfigTemplateUrlsInfo.getVenueApGroupsRbac : WifiRbacUrlsInfo.getVenueApGroups
       const networkApGroupReqs = networkApGroupParamsList.map(params => {
         return fetchWithBQ(createHttpRequest(
-          isTemplate ? ConfigTemplateUrlsInfo.getVenueApGroupsRbac : WifiRbacUrlsInfo.getVenueApGroups,
+          venueApGroupUrlInfo,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1)
         ))
@@ -790,7 +793,7 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ page
   let networkViewmodel = {} as WifiNetwork
 
   // eslint-disable-next-line max-len
-  const networkDeepList = await getNetworkDeepList(targetNetworkIdList, fetchWithBQ, payload?.isTemplate, true)
+  const networkDeepList = await getNetworkDeepList(targetNetworkIdList, fetchWithBQ, isTemplate, true)
   const networkDeep = Array.isArray(networkDeepList?.response)
     ? networkDeepList?.response[0]
     : undefined
@@ -810,7 +813,8 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ page
     }).map(v => v.id) || []
 
     if (activatedVenueIds.length > 0) {
-    // get "select All APs" settings
+      // get "select All APs" settings
+      const networkVenueUrlInfo = isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getNetworkVenue
       const venueNetworkReqs = activatedVenueIds.map(venueId => {
         const params = {
           venueId: venueId,
@@ -818,7 +822,7 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ page
         }
 
         return fetchWithBQ(createHttpRequest(
-          isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getNetworkVenue,
+          networkVenueUrlInfo,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1)
         ))
@@ -835,9 +839,10 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ page
           })
         }
       })
+      const venueApGroupUrlInfo = isTemplate ? ConfigTemplateUrlsInfo.getVenueApGroupsRbac : WifiRbacUrlsInfo.getVenueApGroups
       const networkApGroupReqs = networkApGroupParamsList.map(params => {
         return fetchWithBQ(createHttpRequest(
-          isTemplate ? ConfigTemplateUrlsInfo.getVenueApGroupsRbac : WifiRbacUrlsInfo.getVenueApGroups,
+          venueApGroupUrlInfo,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1)
         ))
@@ -1070,6 +1075,7 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
           )
 
           if (addApGroups.length > 0) {
+            const activateVenueApGroupUrlInfo = isTemplate ? ConfigTemplateUrlsInfo.activateVenueApGroupRbac : WifiRbacUrlsInfo.activateVenueApGroup
             await Promise.all(addApGroups.map(apGroup => {
               // add ap group to update list when there is not the default setting
               if (!isEqual(apGroup.radioTypes?.sort(), ['2.4-Ghz', '5-Ghz']) || apGroup.vlanId) {
@@ -1078,9 +1084,9 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
 
               const apGroupSettingReq = {
                 ...createHttpRequest(
-                  isTemplate ? ConfigTemplateUrlsInfo.activateVenueApGroupRbac : WifiRbacUrlsInfo.activateVenueApGroup, {
-                    venueId: apGroup.venueId || newPayload.venueId,
-                    networkId: apGroup.networkId || newPayload.networkId,
+                  activateVenueApGroupUrlInfo, {
+                    venueId: newPayload.venueId,
+                    networkId: newPayload.networkId,
                     apGroupId: apGroup.apGroupId
                   })
               }
@@ -1089,12 +1095,13 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
           }
 
           if (updateApGroups.length > 0) {
+            const updateVenueApGroupsUrlInfo = isTemplate ? ConfigTemplateUrlsInfo.updateVenueApGroupsRbac : WifiRbacUrlsInfo.updateVenueApGroups
             await Promise.all(updateApGroups.map(apGroup => {
               const apGroupSettingReq = {
                 ...createHttpRequest(
-                  isTemplate ? ConfigTemplateUrlsInfo.updateVenueApGroupsRbac : WifiRbacUrlsInfo.updateVenueApGroups, {
-                    venueId: apGroup.venueId || newPayload.venueId,
-                    networkId: apGroup.networkId || newPayload.networkId,
+                  updateVenueApGroupsUrlInfo, {
+                    venueId: newPayload.venueId,
+                    networkId: newPayload.networkId,
                     apGroupId: apGroup.apGroupId
                   }),
                 body: JSON.stringify(apGroup)
@@ -1104,12 +1111,13 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
           }
 
           if (deleteApGroups.length > 0) {
+            const deactivateVenueApGroupUrlInfo = isTemplate ? ConfigTemplateUrlsInfo.deactivateVenueApGroupRbac : WifiRbacUrlsInfo.deactivateVenueApGroup
             await Promise.all(deleteApGroups.map(apGroup => {
               const apGroupSettingReq = {
                 ...createHttpRequest(
-                  isTemplate ? ConfigTemplateUrlsInfo.deactivateVenueApGroupRbac : WifiRbacUrlsInfo.deactivateVenueApGroup, {
-                    venueId: apGroup.venueId || oldPayload.venueId,
-                    networkId: apGroup.networkId || oldPayload.networkId,
+                  deactivateVenueApGroupUrlInfo, {
+                    venueId: oldPayload.venueId,
+                    networkId: oldPayload.networkId,
                     apGroupId: apGroup.apGroupId
                   })
               }
@@ -1118,19 +1126,17 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
           }
 
           if (activatedVlanPoolParamsList.length > 0) {
+            const activateApGroupVlanPoolUrlInfo = isTemplate ? PoliciesConfigTemplateUrlsInfo.activateApGroupVlanPool :WifiRbacUrlsInfo.activateApGroupVlanPool
             await Promise.all(activatedVlanPoolParamsList.map(params => {
-              //const { venueId, networkId, apGroupId, profileId } = params
-              const urlInfos = isTemplate ? PoliciesConfigTemplateUrlsInfo.activateApGroupVlanPool :WifiRbacUrlsInfo.activateApGroupVlanPool
-              const activatedVlanPoolReq = createHttpRequest( urlInfos, params )
+              const activatedVlanPoolReq = createHttpRequest( activateApGroupVlanPoolUrlInfo, params )
               return fetchWithBQ(activatedVlanPoolReq)
             }))
           }
 
           if (deactivatedVlanPoolParamsList.length > 0) {
+            const deactivateApGroupVlanPoolUrlInfo = isTemplate ? PoliciesConfigTemplateUrlsInfo.deactivateApGroupVlanPool :WifiRbacUrlsInfo.deactivateApGroupVlanPool
             await Promise.all(deactivatedVlanPoolParamsList.map(params => {
-              //const { venueId, networkId, apGroupId, profileId } = params
-              const urlInfos = isTemplate ? PoliciesConfigTemplateUrlsInfo.deactivateApGroupVlanPool :WifiRbacUrlsInfo.deactivateApGroupVlanPool
-              const activatedVlanPoolReq = createHttpRequest( urlInfos, params )
+              const activatedVlanPoolReq = createHttpRequest( deactivateApGroupVlanPoolUrlInfo, params )
               return fetchWithBQ(activatedVlanPoolReq)
             }))
           }

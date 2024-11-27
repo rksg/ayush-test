@@ -56,11 +56,11 @@ export function SummaryStep (props: {
         />
       </UI.SummaryContainer>
 
-      <UI.SummaryContainer>
+      {data.vlan && data.vlan.length > 0 && <UI.SummaryContainer>
         <Form.Item
           label={
             <UI.SummaryContainerHeader>
-              {$t({ defaultMessage: 'VLAN Configuration' })}
+              {$t({ defaultMessage: 'Switch Configuration' })}
             </UI.SummaryContainerHeader>
           }
           style={{ marginBottom: '0px' }}
@@ -72,6 +72,7 @@ export function SummaryStep (props: {
           </ul>}
         />
       </UI.SummaryContainer>
+      }
 
     </div>
   </div>

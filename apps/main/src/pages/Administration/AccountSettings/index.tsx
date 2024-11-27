@@ -17,6 +17,7 @@ import { AppTokenFormItem }              from './AppTokenFormItem'
 import { AuthServerFormItem }            from './AuthServerFormItem'
 import { DefaultSystemLanguageFormItem } from './DefaultSystemLanguageFormItem'
 import { EnableR1Beta }                  from './EnableR1Beta'
+import { EnableR1BetaFeatures }          from './EnableR1Beta/EnableR1BetaFeatures'
 import { MapRegionFormItem }             from './MapRegionFormItem'
 import { MFAFormItem }                   from './MFAFormItem'
 import { RecoveryPassphraseFormItem }    from './RecoveryPassphraseFormItem'
@@ -52,6 +53,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const isIdmDecoupling = useIsSplitOn(Features.IDM_DECOUPLING) && isSsoAllowed
   const isApiKeyEnabled = useIsSplitOn(Features.IDM_APPLICATION_KEY_TOGGLE)
   const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
+  const isBetaFeatureListEnabled = useIsSplitOn(Features.EARLY_ACCESS_FEATURE_LIST_TOGGLE)
 
   const showRksSupport = isMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading
@@ -110,10 +112,15 @@ const AccountSettings = (props : AccountSettingsProps) => {
           { showBetaButton && (
             <>
               <Divider />
-              <EnableR1Beta
-                betaStatus={betaEnabled}
-                isPrimeAdminUser={isPrimeAdminUser}
-              />
+              {isBetaFeatureListEnabled
+                ? <EnableR1BetaFeatures
+                  betaStatus={betaEnabled}
+                  isPrimeAdminUser={isPrimeAdminUser}
+                /> :
+                <EnableR1Beta
+                  betaStatus={betaEnabled}
+                  isPrimeAdminUser={isPrimeAdminUser}
+                />}
             </>
           )}
 
