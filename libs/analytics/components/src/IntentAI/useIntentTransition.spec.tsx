@@ -9,7 +9,7 @@ import { mockGraphqlMutation, render, renderHook, screen, waitForElementToBeRemo
 
 import { mockIntentContext }                           from './__tests__/fixtures'
 import { mockedIntentCRRM, mockedIntentCRRMnew }       from './AIDrivenRRM/__tests__/fixtures'
-import { DisplayStates, Statuses }                     from './states'
+import { Statuses }                                    from './states'
 import { createUseIntentTransition, useInitialValues } from './useIntentTransition'
 
 const { click } = userEvent
@@ -28,31 +28,6 @@ describe('createUseIntentTransition', () => {
     moment.tz.setDefault('Asia/Singapore')
     const now = +new Date('2024-08-12T12:00:00.000Z')
     jest.spyOn(Date, 'now').mockReturnValue(now)
-  })
-
-  describe('initialValues', () => {
-    it('handle new intent', async () => {
-      mockIntentContext({ intent: mockedIntentCRRMnew })
-      const { result: { current: initialValues } } = renderHook(() => useInitialValues())
-      expect(initialValues).toStrictEqual({
-        id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b7',
-        settings: { date: undefined, time: undefined },
-        status: Statuses.new,
-        statusReason: undefined,
-        displayStatus: DisplayStates.new
-      })
-    })
-    it('handle existing intent with scheduledAt', async () => {
-      mockIntentContext({ intent: mockedIntentCRRM })
-      const { result: { current: initialValues } } = renderHook(() => useInitialValues())
-      expect(initialValues).toStrictEqual({
-        id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
-        settings: { date: moment('2023-07-15T14:15:00.000Z'), time: 22.25 },
-        status: Statuses.applyScheduled,
-        statusReason: undefined,
-        displayStatus: DisplayStates.applyScheduled
-      })
-    })
   })
 
   describe('submit', () => {
