@@ -1,6 +1,7 @@
 import { rest } from 'msw'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { MspRbacUrlsInfo }        from '@acx-ui/msp/utils'
 import { LicenseUrlsInfo }        from '@acx-ui/rc/utils'
 import { Provider }               from '@acx-ui/store'
 import {
@@ -14,7 +15,6 @@ import {
 } from '../HeaderContext'
 
 import { LicenseBanner } from './index'
-import { MspRbacUrlsInfo } from '@acx-ui/msp/utils'
 
 const list = [
   {
