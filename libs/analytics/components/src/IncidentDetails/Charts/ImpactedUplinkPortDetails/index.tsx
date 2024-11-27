@@ -14,7 +14,7 @@ export function ImpactedUplinkPortDetails ({ incident }: ChartProps) {
   const { id, switchCount } = incident
   const druidRolledup = overlapsRollup(incident.endTime)
 
-  const response = useImpactedSwitchesQuery({ id: 'fd4c8899-55ba-4a04-98e4-c5b73ce1bc81' },
+  const response = useImpactedSwitchesQuery({ id },
     { skip: druidRolledup,
       selectFromResult: (response) => {
         const impactedPorts: ImpactedSwitchPort[] = []
