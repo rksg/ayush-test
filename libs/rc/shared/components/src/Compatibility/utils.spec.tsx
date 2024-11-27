@@ -1,6 +1,9 @@
-import { Compatibility, CompatibilityDeviceEnum, EdgeCompatibilityFeatureEnum, IncompatibleFeatureTypeEnum } from '@acx-ui/rc/utils'
+import { ApCompatibility, ApCompatibilityResponse, Compatibility, CompatibilityDeviceEnum, EdgeCompatibilityFeatureEnum, IncompatibilityFeatures, IncompatibleFeatureTypeEnum } from '@acx-ui/rc/utils'
 
-import { compatibilityDataGroupByFeatureDeviceType } from './utils'
+import {
+  compatibilityDataGroupByFeatureDeviceType,
+  mergeFilterApCompatibilitiesResultByRequiredFeatures
+} from './utils'
 
 describe('compatibilityDataGroupByFeatureDeviceType', () => {
   it('should group incompatible features by device type', () => {
@@ -53,5 +56,50 @@ describe('compatibilityDataGroupByFeatureDeviceType', () => {
     const result = compatibilityDataGroupByFeatureDeviceType(data)
 
     expect(result).toEqual({})
+  })
+})
+
+
+describe('mergeFilterApCompatibilitiesResultByRequiredFeatures', () => {
+  it('should return an object with incompatibleFeatures filtered by requiredFeatures', () => {
+    const results: ApCompatibilityResponse[] = [{
+      apCompatibilities: [
+        {
+          id: 'id1',
+          incompatibleFeatures: [
+            { featureName: 'feature1', requiredFw: '1.0.0' },
+            { featureName: 'feature2', requiredFw: '1.0.0' }
+          ],
+          incompatible: 2,
+          total: 3
+        }
+      ]
+    }, {
+      apCompatibilities: [
+        {
+          id: 'id1',
+          incompatibleFeatures: [
+            { featureName: 'feature3', requiredFw: '1.0.0' },
+            { featureName: 'feature5', requiredFw: '1.0.0' }
+          ],
+          incompatible: 3,
+          total: 3
+        }
+      ]
+    }]
+    const requiredFeatures = ['feature1', 'feature3'] as IncompatibilityFeatures[]
+    const expected: ApCompatibility = {
+      id: 'id1',
+      incompatible: 3,
+      total: 3,
+      incompatibleFeatures: [
+        { featureName: 'feature1', requiredFw: '1.0.0' },
+        { featureName: 'feature3', requiredFw: '1.0.0' }
+      ]
+    }
+
+    const result = mergeFilterApCompatibilitiesResultByRequiredFeatures(results, requiredFeatures)
+
+    expect(result).toEqual(expected)
   })
 })

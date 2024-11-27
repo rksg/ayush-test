@@ -36,10 +36,11 @@ export const mergeFilterApCompatibilitiesResultByRequiredFeatures = (results: Ap
   const merged = { incompatible: 0 } as ApCompatibility
 
   const incompatibleFeatures: ApIncompatibleFeature[] = []
+
   results.forEach(result => {
     const apCompatibility = result.apCompatibilities[0]
-
     if (merged.incompatible < apCompatibility.incompatible) {
+
       merged.id = apCompatibility.id
       merged.incompatible = apCompatibility.incompatible
       merged.total = apCompatibility.total

@@ -113,26 +113,6 @@ export const CompatibilityCheck = ({ venueId, venueName } : { venueId: string, v
         data={resolvedData}
         onClose={() => setOpen(false)}
       />}
-      {/*isApCompatibilitiesByModel
-        ? <ApCompatibilityDrawer
-          visible={open}
-          type={ApCompatibilityType.VENUE}
-          venueId={venueId}
-          featureName={IncompatibilityFeatures.SD_LAN as unknown as ApInCompatibilityFeatures}
-          data={data?.compatibilities}
-          isMultiple
-          onClose={() => setOpen(false)}
-        />
-        : <ApGeneralCompatibilityDrawer
-          visible={open}
-          type={ApCompatibilityType.VENUE}
-          venueId={venueId}
-          venueName={venueName}
-          featureName={IncompatibilityFeatures.SD_LAN}
-          requiredFeatures={SdLanRequiredFeatures}
-          isFeatureEnabledRegardless
-          onClose={() => setOpen(false)}
-        />*/}
     </>
     : null
 }
