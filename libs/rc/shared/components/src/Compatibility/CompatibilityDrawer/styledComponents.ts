@@ -32,20 +32,13 @@ const StyledRequirementWrapperCss = css`
     margin-bottom: 10px;
   }
 `
-export const StyledRequirementWrapper = styled.div`
- ${StyledRequirementWrapperCss}
+export const StyledRequirementWrapper = styled.div<{ $hasBackground?: boolean }>`
+ ${props => props.$hasBackground !== false ? StyledRequirementWrapperCss : ''}
 `
 
-export const StyleDiv = styled.div<{ $hasBackgeound: boolean }>`
+export const VerticalFlexDiv = styled.div`
   display: flex;
   flex-direction: column;
-
-  ${props => (props.$hasBackgeound)
-    ? `& div.hasBackgeound {
-        ${StyledRequirementWrapperCss}
-      }
-      `
-    :undefined};
 `
 
 export const StyledApModelFamilyWrapper = styled.div<{ tagWidth: string }>`

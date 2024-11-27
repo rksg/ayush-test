@@ -5,7 +5,7 @@ import { sumBy }                   from 'lodash'
 
 import { ApIncompatibleFeature, CompatibilityDeviceEnum, IncompatibilityFeatures } from '@acx-ui/rc/utils'
 
-import { StyleDiv } from '../styledComponents'
+import { VerticalFlexDiv } from '../styledComponents'
 
 import { FeatureItem } from './FeatureItem'
 
@@ -33,7 +33,8 @@ export const CompatibilityItem = (props: CompatibilityItemProps) => {
     return items?.map((itemDetail, index) => {
       const incompatible = sumBy(itemDetail.incompatibleDevices, (d) => d.count)
       return <React.Fragment key={itemDetail.featureName}>
-        {index !== 0 && <Divider style={{ margin: '0' }} />}
+        {/* `multiple device type` will have space control inside FeatureItem*/}
+        {index !== 0 && <Divider style={{ margin: isCrossDeviceType ? 0 : '10px 0' }} />}
         <FeatureItem
           isMultiple={!featureName || isMultipleFeatures}
           deviceType={deviceType}
@@ -52,9 +53,9 @@ export const CompatibilityItem = (props: CompatibilityItemProps) => {
         {description && <Form.Item>
           {description}
         </Form.Item>}
-        <StyleDiv $hasBackgeound={isCrossDeviceType}>
+        <VerticalFlexDiv>
           {getFeatures(data)}
-        </StyleDiv>
+        </VerticalFlexDiv>
       </Col>
     </Row>
   )

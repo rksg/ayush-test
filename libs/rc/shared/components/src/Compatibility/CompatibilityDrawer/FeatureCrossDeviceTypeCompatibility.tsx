@@ -59,7 +59,7 @@ export const FeatureCrossDeviceTypeCompatibility = (props: FeatureCrossDeviceTyp
             data={typeData.incompatibleFeatures ?? []}
             deviceType={typeName as CompatibilityDeviceEnum}
             totalDevices={typeData.total}
-            isCrossDeviceType
+            isCrossDeviceType={isCrossDeviceType}
             {...others}
           />
           <FormattedMessage

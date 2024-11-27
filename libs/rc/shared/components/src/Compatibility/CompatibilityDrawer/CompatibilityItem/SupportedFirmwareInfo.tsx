@@ -12,11 +12,12 @@ import * as UI                 from '../styledComponents'
 export interface SupportedFirmwareInfoProps {
   deviceType: CompatibilityDeviceEnum
   data: ApIncompatibleFeature | IncompatibleFeature
+  isCrossDeviceType?: boolean
 }
 
 export const SupportedFirmwareInfo = (props: SupportedFirmwareInfoProps) => {
   const { $t } = useIntl()
-  const { deviceType } = props
+  const { deviceType, isCrossDeviceType } = props
   const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
 
   const { data: apModelFamilies } = useGetApModelFamiliesQuery({}, {
@@ -30,7 +31,10 @@ export const SupportedFirmwareInfo = (props: SupportedFirmwareInfoProps) => {
 
     return data.requirements
       ? <>{data.requirements.map((requirement: ApRequirement, reqIndex) => (
-        <React.Fragment key={`requirements_${reqIndex}`}>
+        <UI.StyledRequirementWrapper
+          $hasBackground={!isCrossDeviceType}
+          key={`requirements_${reqIndex}`}
+        >
           <UI.StyledFormItem
             label={$t({ defaultMessage: 'Minimum required version' })}
           >
@@ -53,7 +57,7 @@ export const SupportedFirmwareInfo = (props: SupportedFirmwareInfoProps) => {
                 models={requirement.models}
               />
             </UI.StyledFormItem>}
-        </React.Fragment>
+        </UI.StyledRequirementWrapper>
       ))}</>
       : null
   } else {

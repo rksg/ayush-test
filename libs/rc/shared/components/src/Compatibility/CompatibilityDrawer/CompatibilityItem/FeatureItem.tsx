@@ -42,7 +42,7 @@ export const FeatureItem = (props: FeatureItemProps) => {
     </UI.StyledFormItem>
 
   // eslint-disable-next-line max-len
-  return <div className={isApCompatibilitiesByModel && isCrossDeviceType ? 'hasBackgeound' : ''}>
+  return <UI.StyledRequirementWrapper $hasBackground={isApCompatibilitiesByModel && isCrossDeviceType}>
     {isMultiple &&
       <Form.Item noStyle>
         <UI.StyledFeatureName>
@@ -52,7 +52,11 @@ export const FeatureItem = (props: FeatureItemProps) => {
     }
 
     { isApCompatibilitiesByModel && incompatibleInfo}
-    <SupportedFirmwareInfo deviceType={deviceType} data={data} />
+    <SupportedFirmwareInfo
+      deviceType={deviceType}
+      data={data}
+      isCrossDeviceType={isCrossDeviceType}
+    />
     { !isApCompatibilitiesByModel && incompatibleInfo}
-  </div>
+  </UI.StyledRequirementWrapper>
 }
