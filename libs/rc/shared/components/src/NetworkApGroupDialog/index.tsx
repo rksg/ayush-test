@@ -282,8 +282,14 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
         </Col></Tooltip>
         <Col span={8}>
           <UI.FormItemRounded>
-            { selected &&
-            (<VlanInput apgroup={apgroup} wlan={wlan} vlanPoolSelectOptions={vlanPoolSelectOptions} onChange={handleVlanInputChange}/>) }
+            <VlanInput
+              key={name}
+              apgroup={apgroup}
+              wlan={wlan}
+              vlanPoolSelectOptions={vlanPoolSelectOptions}
+              onChange={handleVlanInputChange}
+              selected={selected}
+            />
           </UI.FormItemRounded>
         </Col>
         <Col span={8}>
@@ -411,7 +417,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                       </Col>
                       { fields.map((field, index) => (
                         <Form.Item key={field.key} noStyle>
-                          <ApGroupItem name={field.name} apgroup={formInitData.apgroups[index]} />
+                          <ApGroupItem key={field.key} name={field.name} apgroup={formInitData.apgroups[index]} />
                         </Form.Item>
                       ))}
                     </Row>}
