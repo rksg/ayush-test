@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                   from '@acx-ui/feature-toggle'
 import { AaaUrls, CommonUrlsInfo, ExpirationType,
   MacRegListUrlsInfo, RulesManagementUrlsInfo, SoftGreUrls,
   VlanPoolRbacUrls, WifiCallingUrls, WifiRbacUrlsInfo, WifiUrlsInfo
