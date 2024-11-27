@@ -3,6 +3,7 @@ import { GridRow, GridCol }       from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 import { FixedAutoSizer }                 from '../../DescriptionSection/styledComponents'
+import { ImpactedUplinkPortDetails }      from '../Charts/ImpactedUplinkPortDetails'
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
 
@@ -36,6 +37,9 @@ export const SwitchUplinkPortCongestion = (incident: Incident) => {
       </GridCol>
       <GridCol col={{ span: 20 }}>
         <Insights incident={incident} />
+      </GridCol>
+      <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '129px' }}>
+        <ImpactedUplinkPortDetails incident={incident} />
       </GridCol>
     </GridRow>
   </> : null
