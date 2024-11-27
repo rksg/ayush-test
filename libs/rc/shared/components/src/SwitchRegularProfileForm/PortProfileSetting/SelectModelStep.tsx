@@ -113,7 +113,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
             continue
           }
         }
-        modelArray.push({ label: `${family}-${model}`, value: `${family}-${model}` })
+        modelArray.push({ label: `${model}`, value: `${family}-${model}` })
       }
     }
 
