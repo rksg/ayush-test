@@ -1,25 +1,31 @@
+import { useState } from 'react'
+
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { cssStr }                        from '@acx-ui/components'
 import { NetworkTypeEnum, networkTypes } from '@acx-ui/rc/utils'
 
-import * as UI from './styledComponents'
+import * as UI                            from './styledComponents'
+import { NetworkSummaryPage }             from './SummaryPages/NetworkSummaryPage'
+import { SwitchConfigurationSummaryPage } from './SummaryPages/SwitchConfigurationSummaryPage'
 
-// Need to confirm the new UX with the PLM
 export function SummaryStep (props: {
   payload: string
 }) {
   const { $t } = useIntl()
   const data = props.payload ? JSON.parse(props.payload) : {}
+  const [summaryId, setSummaryId] = useState('' as string)
+  const [summaryType, setSummaryType] = useState('' as string)
+  const [summaryTitle, setSummaryTitle] = useState('' as string)
 
   const getNetworkTypeDescription = (type: NetworkTypeEnum) => {
     return $t(networkTypes[type]) || 'Unknown Type'
   }
 
-  return <div style={{ display: 'flex', flexDirection: 'column' }}>
+  return <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
     <div style={{
-      flex: '0 1 auto',
+      flex: '1 1 auto',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center'
@@ -36,43 +42,83 @@ export function SummaryStep (props: {
         </b>?
       </UI.SummaryDescription>
 
-      <UI.SummaryContainer>
-        <Form.Item
-          label={
-            <UI.SummaryContainerHeader>
-              {$t({ defaultMessage: 'Wireless Networks' })}
-            </UI.SummaryContainerHeader>
-          }
-          style={{ marginBottom: '0px' }}
-          children={<ul style={{ marginBottom: '0px' }}>
-            {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              data?.wlan?.map((item: any, index: number) => (
-                <li key={index}>
-                  {`${item['SSID Name']} with ${getNetworkTypeDescription(item['SSID Type'])}`}</li>
-              ))}
-          </ul>
-          }
-        />
-      </UI.SummaryContainer>
+      <UI.SummarySplitContainer>
+        {/* Left Box */}
+        <UI.SummaryBox>
+          {/* Wireless Networks */}
+          <UI.SummaryContainer>
+            <Form.Item
+              label={
+                <UI.SummaryContainerHeader>
+                  {$t({ defaultMessage: 'Wireless Networks' })}
+                </UI.SummaryContainerHeader>
+              }
+              style={{ marginBottom: '0px' }}
+              children={<UI.SummaryUl>
+                { // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  data?.wlan?.map((item: any, index: number) => {
+                    const { id, 'SSID Name': ssidName, 'SSID Type': ssidType } = item
+                    const title = `${ssidName} with ${getNetworkTypeDescription(ssidType)}`
+                    return (
+                      <UI.SummaryLi
+                        key={index}
+                        onClick={() => {
+                          const sid = `${id}?type=${ssidType}`
+                          setSummaryId(sid)
+                          setSummaryType('Network')
+                          setSummaryTitle(title)
+                        }}
+                      > {title}
+                      </UI.SummaryLi>
+                    )
+                  })}
+              </UI.SummaryUl>
+              }
+            />
+          </UI.SummaryContainer>
 
-      {data.vlan && data.vlan.length > 0 && <UI.SummaryContainer>
-        <Form.Item
-          label={
-            <UI.SummaryContainerHeader>
-              {$t({ defaultMessage: 'Switch Configuration' })}
-            </UI.SummaryContainerHeader>
+          {/* Switch Configuration VLAN */}
+          {data.vlan && data.vlan.length > 0 && <UI.SummaryContainer>
+            <Form.Item
+              label={
+                <UI.SummaryContainerHeader>
+                  {$t({ defaultMessage: 'Switch Configuration' })}
+                </UI.SummaryContainerHeader>
+              }
+              style={{ marginBottom: '0px' }}
+              children={<UI.SummaryUl>
+                {// eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  data?.vlan?.map((item: any, index: number) => {
+                    const { id, 'VLAN Name': vlanName, 'VLAN ID': vlanId } = item
+                    const title = `${vlanName} @ VLAN  ${vlanId}`
+                    return <UI.SummaryLi key={index}
+                      onClick={() => {
+                        setSummaryId(id)
+                        setSummaryType('SwitchConfiguration')
+                        setSummaryTitle(title)
+                      }}>
+                      {title}
+                    </UI.SummaryLi>
+                  })}
+              </UI.SummaryUl>}
+            />
+          </UI.SummaryContainer>
           }
-          style={{ marginBottom: '0px' }}
-          children={<ul style={{ marginBottom: '0px' }}>
-            {// eslint-disable-next-line @typescript-eslint/no-explicit-any
-              data?.vlan?.map((item: any, index: number) => (
-                <li key={index}>{`${item['VLAN Name']} @ VLAN  ${item['VLAN ID']}`}</li>
-              ))}
-          </ul>}
-        />
-      </UI.SummaryContainer>
-      }
+        </UI.SummaryBox>
+        <UI.SummaryDivider />
+
+        {/* Right Box */}
+        <UI.SummaryBox>
+          {summaryType === 'Network' && <UI.SummaryContainer>
+            <NetworkSummaryPage summaryId={summaryId} summaryTitle={summaryTitle} />
+          </UI.SummaryContainer>}
+
+          {summaryType === 'SwitchConfiguration' && <UI.SummaryContainer>
+            <SwitchConfigurationSummaryPage summaryId={summaryId} summaryTitle={summaryTitle}/>
+          </UI.SummaryContainer>}
+
+        </UI.SummaryBox>
+      </UI.SummarySplitContainer>
 
     </div>
   </div>
