@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { v4 as uuidv4 }              from 'uuid'
 import { useIntl }        from 'react-intl'
 
-import { Button, Card, cssStr, DonutChart } from '@acx-ui/components'
+import { Button, cssStr } from '@acx-ui/components'
 import { HistoricalOutlined, Plus, RuckusAiDog, SendMessageOutlined } from '@acx-ui/icons'
 import { useChatAiMutation }                        from '@acx-ui/rc/services'
 
@@ -11,8 +11,8 @@ import * as UI from './styledComponents'
 import Grid from '../Grid'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { Spin } from 'antd'
-import { ChatMessage, ChatWidget, RuckusAiChat } from '@acx-ui/rc/utils'
-import WidgetList from "./widgetList"
+import { ChatMessage, ChatWidget, RuckusAiChat, WidgetData, WidgetListData } from '@acx-ui/rc/utils'
+import WidgetChart from "./WidgetChart"
 
 
 export default function AICanvas (
@@ -28,33 +28,16 @@ export default function AICanvas (
   const [ sectionsSubVisible, setSectionsSubVisible ] = useState(false)
   const [loading, setLoading] = useState(false)
   const [sessionId, setSessionId] = useState('')
-  const [chats, setChats] = useState([] as ChatMessage[]
-  // [
-  //   {
-  //   id:'1',
-  //   role: 'me',
-  //   text: 'Generate Network Health Overview Widget'
-  //   },
-  //   {
-  //     id: '2',
-  //     role: 'ai',
-  //     text: '2 widgets found- Alert and incidents widgets. Drag and drop the selected widgets to the canvas on the right.',
-  //     widgets: [{
-  //       chartrole: 'pie',
-  //       payload: '',
-
-  //     }]
-  //   }
-  // ]
-  );
-  const [widgets, setWidgets] = useState([] as ChatWidget[])
+  const [chats, setChats] = useState([] as ChatMessage[]);
+  const [widgets, setWidgets] = useState([] as WidgetListData[])
   
   const [ widgetData, setWidgetData ] = useState([{
     id: 1,
-    chartOption: [{ color: '#ACAEB0', name: 'In Setup Phase', value: 8 }]
-  }, {
-    id: 2,
-    chartOption: [{ color: '#ACAEB0', name: 'In Setup Phase', value: 3 }]
+    chartOption: [
+      {"name":"Requires Attention","value":1,"color":"#ED1C24"},
+      {"name":"In Setup Phase","value":64,"color":"#ACAEB0"},
+      {"name":"Operational","value":1,"color":"#23AB36"}
+    ]
   }])
   const [ dirty, setDirty ] = useState(false)
   const [ searchText, setSearchText ] = useState('')
@@ -97,9 +80,8 @@ export default function AICanvas (
           role: 'ai',
           text: '2 widgets found- Alert and incidents widgets. Drag and drop the selected widgets to the canvas on the right.',
           widgets: [{
-            chartType: 'pie',
-            payload: '',
-
+            // title: 'Chart 1', TODO:
+            chartType: 'pie'
           }]
         }
       ]
@@ -110,24 +92,14 @@ export default function AICanvas (
     setTimeout(() => {
       setLoading(false)
       setChats(response.messages)
-      if(response.messages[response.messages.length - 1].widgets) {
-        setWidgets(response.messages[response.messages.length - 1].widgets)
+      const latest = response.messages[response.messages.length - 1]
+      if(latest.widgets) {
+        setWidgets([...widgets, {
+          chartType: latest.widgets[0].chartType,
+          sessionId: response.sessionId,
+          id: latest.id
+        }])
       }
-      console.log('widgets: ', widgets)
-      // setChats([
-      //   ...chats,
-      //   newMessage,
-      //   {
-      //     id: '2',
-      //     role: 'ai',
-      //     text: '2 widgets found- Alert and incidents widgets. Drag and drop the selected widgets to the canvas on the right.',
-      //     widgets: [{
-      //       chartrole: 'pie',
-      //       payload: '',
-    
-      //     }]
-      //   }
-      // ])
     }, 2000)
   }
 
@@ -191,7 +163,11 @@ export default function AICanvas (
             </div>
           </div>
           <div className='widgets' style={{ padding: '15px' }}>
-            <WidgetList data={widgetData} />
+            {
+              widgets.map(item => (
+                <WidgetChart data={item} />
+              ))
+            }
           </div>
         </div>
       </div>

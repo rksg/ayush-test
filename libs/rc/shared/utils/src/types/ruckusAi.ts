@@ -11,8 +11,14 @@ export interface ChatMessage {
 }
 
 export interface ChatWidget {
+  // title: string,
   chartType: string,
-  payload: string
+}
+
+export interface WidgetListData {
+  id: string,
+  chartType: string,
+  sessionId: string,
 }
 
 import {DonutChartData} from "@acx-ui/components";
@@ -41,10 +47,4 @@ export enum RuckusAiConfigurationStepsEnum {
 export interface WidgetData {
   id: number;
   chartOption: DonutChartData[]; // TODO enhance to more type of chart data
-}
-
-export interface RuckusAiChatResponse {
-  sql: string,
-  data: string,
-  answer: string
 }

@@ -6,9 +6,9 @@ export const RuckusAiChatUrlInfo: { [key: string]: ApiInfo } = {
     url: '/ruckusAi/chats',
     newApi: true
   },
-  histories: {
+  chart: {
     method: 'post',
-    url: '/ruckusAi/chats/histories',
+    url: '/ruckusAi/chats/:sessionId/charts/:chatId',
     newApi: true
   }
 }
