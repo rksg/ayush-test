@@ -93,7 +93,6 @@ COPY --from=build         /app/dist/apps   ./dist/apps
 FROM build-base as acx-ui-group-test
 
 COPY cicd_tools ./cicd_tools
-RUN chmod a+x ./cicd_tools/run_test_cases_tool.sh
 
 ARG PRECOMMIT=true
 ARG GIT_COMMIT_BRANCH=master
