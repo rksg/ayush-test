@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from 'react'
 
-import _, { cloneDeep, omit } from 'lodash'
-import { useIntl }            from 'react-intl'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
 
 import {
   PageHeader,
@@ -137,7 +137,7 @@ export const AAAForm = (props: AAAFormProps) => {
   }
 
   const handledRadSecData = (data: AAAPolicyType) => {
-    let cloneData = cloneDeep(omit(data,
+    let cloneData = _.cloneDeep(_.omit(data,
       'radSecOptions.ocspValidationEnabled',
       'radSecOptions.originalCertificateAuthorityId',
       'radSecOptions.originalClientCertificateId',

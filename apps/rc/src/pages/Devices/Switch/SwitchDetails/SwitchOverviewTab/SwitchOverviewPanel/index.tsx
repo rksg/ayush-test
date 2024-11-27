@@ -80,7 +80,8 @@ export function SwitchOverviewPanel (props:{
       </GridCol>
     </GridRow>
     <GridRow>
-      { filters && <SwitchWidgets filters={{ ...filters }} switchDetailHeader={switchDetail} /> }
+      { switchDetail && filters &&
+      <SwitchWidgets filters={{ ...filters }} switchDetailHeader={switchDetail} /> }
     </GridRow>
 
     {enableSwitchBlinkLed &&
