@@ -5,17 +5,14 @@ import { useIntl }        from 'react-intl'
 
 import { Button, cssStr }    from '@acx-ui/components'
 import { HistoricalOutlined, Plus, RuckusAiDog, SendMessageOutlined } from '@acx-ui/icons'
+import { useChatAiMutation }                        from '@acx-ui/rc/services'
 
 import * as UI from './styledComponents'
 import Grid from '../Grid'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { Spin } from 'antd'
+import { ChatMessage, ChatWidget, RuckusAiChat } from '@acx-ui/rc/utils'
 
-type ChatMessage = {
-  id: string,
-  type: string,
-  text: string
-}
 
 export default function AICanvas (
 //   props: {
@@ -24,61 +21,103 @@ export default function AICanvas (
 ) {
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const [chatAi] = useChatAiMutation()
   // const { visible, setVisible } = props
   const [ sectionsSubVisible, setSectionsSubVisible ] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [chats, setChats] = useState([]
+  const [sessionId, setSessionId] = useState('')
+  const [chats, setChats] = useState([] as ChatMessage[]
   // [
   //   {
   //   id:'1',
-  //   type: 'me',
+  //   role: 'me',
   //   text: 'Generate Network Health Overview Widget'
   //   },
   //   {
   //     id: '2',
-  //     type: 'ai',
+  //     role: 'ai',
   //     text: '2 widgets found- Alert and incidents widgets. Drag and drop the selected widgets to the canvas on the right.',
   //     widgets: [{
-  //       chartType: 'pie',
+  //       chartrole: 'pie',
   //       payload: '',
 
   //     }]
   //   }
   // ]
   );
+  const [widgets, setWidgets] = useState([] as ChatWidget[])
   const [ dirty, setDirty ] = useState(false)
   const [ searchText, setSearchText ] = useState('')
   const siderWidth = localStorage.getItem('acx-sider-width') || cssStr('--acx-sider-width')
   const linkToDashboard = useTenantLink('/dashboard')
   const placeholder = 'Enter a description to generate widgets based on your needs. The more you describe, the better widgets I can recommend.'
-  const onKeyDown = (event: React.KeyboardEvent) => event.key === 'Enter' && handleSearch()
-  const handleSearch = () => {
+  const onKeyDown = (event: React.KeyboardEvent) => {
+    if(event.key === 'Enter'){
+      event.preventDefault()
+      handleSearch()
+    } 
+  }
+  const handleSearch = async() => {
     if (searchText.length <= 1) return
     console.log('searchText: ', searchText)
     const newMessage = {
       id: uuidv4(),
-      type: 'me',
+      role: 'me',
       text: searchText
     }
     setChats([...chats, newMessage])
     setLoading(true)
     setSearchText('')
-    setTimeout(() => {
-      setLoading(false)
-      setChats([
-        ...chats,
-        newMessage,
+    // const response = await chatAi({
+    //   payload: {
+    //     question: searchText,
+    //     ...(sessionId && { session_id: sessionId })
+    //   }
+    // }).unwrap()
+    const response: RuckusAiChat = {
+      sessionId: '001',
+      messages:  [
+        {
+        id:'1',
+        role: 'me',
+        text: 'Generate Network Health Overview Widget'
+        },
         {
           id: '2',
-          type: 'ai',
+          role: 'ai',
           text: '2 widgets found- Alert and incidents widgets. Drag and drop the selected widgets to the canvas on the right.',
           widgets: [{
-            chartType: 'pie',
+            chartrole: 'pie',
             payload: '',
     
           }]
         }
-      ])
+      ]
+    }
+    if(response.sessionId && !sessionId) {
+      setSessionId(response.sessionId)
+    }
+    setTimeout(() => {
+      setLoading(false)
+      setChats(response.messages)
+      if(response.messages[response.messages.length - 1].widgets) {
+        setWidgets(response.messages[response.messages.length - 1].widgets)
+      }
+      console.log('widgets: ', widgets)
+      // setChats([
+      //   ...chats,
+      //   newMessage,
+      //   {
+      //     id: '2',
+      //     role: 'ai',
+      //     text: '2 widgets found- Alert and incidents widgets. Drag and drop the selected widgets to the canvas on the right.',
+      //     widgets: [{
+      //       chartrole: 'pie',
+      //       payload: '',
+    
+      //     }]
+      //   }
+      // ])
     }, 2000)
   }
 
@@ -92,14 +131,13 @@ export default function AICanvas (
   const Message = (props:{chat: ChatMessage}) => {
     const { chat } = props
     return <div className='message'>
-      <div className={`chat-container ${chat.type === 'me' ? "right" : ""}`}>
+      <div className={`chat-container ${chat.role === 'me' ? "right" : ""}`}>
         <div className='chat-bubble'>
           {chat.text}
         </div>
       </div>
-      {chat.type === 'ai' && <div className='show-widgets'>Show widgets</div>}
+      {chat.role === 'ai' && <div className='show-widgets'>Show widgets</div>}
     </div>
-
   }
 
   return (
@@ -152,10 +190,10 @@ export default function AICanvas (
             <span>Custom-1</span>
           </div>
           <div className='actions'>
-            <Button type='primary' onClick={()=>{onClose()}}>
+            <Button role='primary' onClick={()=>{onClose()}}>
               {$t({ defaultMessage: 'Publish' })}
             </Button>
-            <Button type='primary' onClick={()=>{onClose()}}>
+            <Button role='primary' onClick={()=>{onClose()}}>
               {$t({ defaultMessage: 'Save' })}
             </Button>
             <Button className='black' onClick={()=>{onClose()}}>

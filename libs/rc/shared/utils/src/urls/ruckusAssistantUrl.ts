@@ -1,6 +1,11 @@
 import { ApiInfo } from '@acx-ui/utils'
 
 export const RuckusAssistantUrlInfo: { [key: string]: ApiInfo } = {
+  chatAi: {
+    method: 'post',
+    url: '/ruckusAssistant/conversations/start',
+    newApi: true
+  },
   startConversations: {
     method: 'post',
     url: '/ruckusAssistant/conversations/start',

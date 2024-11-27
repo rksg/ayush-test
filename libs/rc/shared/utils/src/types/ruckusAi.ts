@@ -1,3 +1,21 @@
+export interface RuckusAiChat {
+  sessionId: string,
+  messages: ChatMessage[]
+}
+
+export interface ChatMessage {
+  id: string,
+  type: string,
+  text: string,
+  widgets?: ChatWidget[]
+}
+
+export interface ChatWidget {
+  chartType: string,
+  payload: string
+}
+
+
 export interface RuckusAiConversation {
   sessionId: string,
   nextStep: RuckusAiConfigurationStepsEnum,

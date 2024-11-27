@@ -3,7 +3,8 @@ import {
   RuckusAiConversation,
   NetworkSaveData,
   RuckusAssistantUrlInfo,
-  Vlan
+  Vlan,
+  RuckusAiChat
 } from '@acx-ui/rc/utils'
 import { baseRuckusAssistantApi } from '@acx-ui/store'
 import { RequestPayload }         from '@acx-ui/types'
@@ -11,6 +12,15 @@ import { createHttpRequest }      from '@acx-ui/utils'
 
 export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
   endpoints: (build) => ({
+    chatAi: build.mutation<RuckusAiChat, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(RuckusAssistantUrlInfo.chatAi)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     startConversations: build.mutation<RuckusAiConversation, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(RuckusAssistantUrlInfo.startConversations)
@@ -83,6 +93,7 @@ export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
 })
 
 export const {
+  useChatAiMutation,
   useStartConversationsMutation,
   useApplyConversationsMutation,
   useUpdateConversationsMutation,
