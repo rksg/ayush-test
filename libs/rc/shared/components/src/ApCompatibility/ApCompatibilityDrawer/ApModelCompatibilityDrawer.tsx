@@ -22,13 +22,11 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { ApModelFamiliesItem }        from '../../Compatibility/ApModelFamiliesItem'
+import { ApModelFamiliesItem } from '../../Compatibility/ApModelFamiliesItem'
 import {
-  // detailStyle,
   StyledFeatureName,
   StyledRequirementWrapper,
   StyledFormItem
-  // StyledWrapper
 } from '../../Compatibility/CompatibilityDrawer/styledComponents'
 import { getApFirmwareLink }                            from '../../Compatibility/CompatibilityDrawer/utils'
 import { ApCompatibilityType, InCompatibilityFeatures } from '../constants'
