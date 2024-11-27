@@ -227,6 +227,18 @@ export function deriveRadiusFieldsFromServerData (data: NetworkSaveData): Networ
   }
 }
 
+export function deriveWISPrFieldsFromServerData (data: NetworkSaveData): NetworkSaveData {
+  if (!isWISPrNetwork(data)) return data
+
+  if (data.guestPortal?.wisprPage?.customExternalProvider) {
+    return _.merge({}, data, {
+      guestPortal: { wisprPage: { providerName: data.guestPortal.wisprPage.externalProviderName } }
+    })
+  }
+
+  return data
+}
+
 type RadiusIdKey = Extract<keyof NetworkSaveData, 'authRadiusId' | 'accountingRadiusId'>
 export function useRadiusServer () {
   const { isTemplate } = useConfigTemplate()
