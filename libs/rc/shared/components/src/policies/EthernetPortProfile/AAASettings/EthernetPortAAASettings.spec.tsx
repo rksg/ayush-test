@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import { policyApi }                           from '@acx-ui/rc/services'
 import { AaaUrls }                             from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
@@ -41,7 +42,8 @@ describe('EthernetPortProfile AAASetting', () => {
   })
 
   it('Render component successfully', async () => {
-
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.ETHERNET_PORT_SUPPORT_PROXY_RADIUS_TOGGLE)
     render(
       <Provider>
         <Form>

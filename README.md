@@ -115,8 +115,10 @@ start the [MLISA dev environment](https://github.com/rksg/rsa-mlisa-helm/tree/de
 before executing the command.
 
 ```sh
-npx nx run main:serve
+npx nx run main:serve --memoryLimit=4096
 ```
+If you need smoother performance, you can increase the memory limit to `--memoryLimit=8192`.
+
 
 or for Ruckus Analytics:
 
