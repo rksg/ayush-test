@@ -96,6 +96,8 @@ border-top: 75px solid rgba(255,255,255, 0.4);
     }
     .chatroom {
       width: calc(100% - 300px);
+      height: calc(100vh - 270px);
+      overflow: auto;
       position: relative;
       .placeholder {
         display: flex;
@@ -117,6 +119,19 @@ border-top: 75px solid rgba(255,255,255, 0.4);
       }
       .chat-container {
         display: flex;
+      }
+      .loading {
+        display: flex;
+        justify-content: center;
+      }
+      .show-widgets{
+        border-radius: 20px;
+        border: 1px solid #5496EA;
+        color: #5496EA;
+        padding: 4px 8px;
+        width: fit-content;
+        margin-left: 7px;
+        cursor: pointer;
       }
       .right.chat-container {
         justify-content: end;
