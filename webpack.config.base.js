@@ -29,23 +29,6 @@ const modifyVars = require('./libs/common/components/src/theme/modify-vars')
       }
     }
 
-    if (process.env.NODE_ENV === 'production') {
-      // Root cause: https://github.com/TypeStrong/fork-ts-checker-webpack-plugin/issues/271
-      // Disable fork-ts-checker-webpack-plugin
-      config.resolve = {
-        alias: {
-          'fork-ts-checker-webpack-plugin': false // Prevent the plugin from being resolved
-        },
-        ...config.resolve // Retain the existing resolve configuration
-      }
-
-      // Remove ForkTsCheckerWebpackPlugin from the plugins list
-      config.plugins = config.plugins.filter(plugin => {
-        return plugin.constructor.name !== 'ForkTsCheckerWebpackPlugin'; // Filter out the ForkTsCheckerWebpackPlugin
-      })
-
-    }
-
     config.module.rules = config.module.rules.map(rule => {
       // remove handling of less from existing rules
       if (!rule.test.toString().includes('.less')) return rule
