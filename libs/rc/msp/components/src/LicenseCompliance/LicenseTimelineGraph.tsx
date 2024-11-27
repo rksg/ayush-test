@@ -198,13 +198,10 @@ export default function LicenseTimelineGraph () {
           data: seriesData,
           itemStyle: {
             color: function (params: { dataIndex: number,
-              isZeroQuantity: boolean }) {
-              return params.isZeroQuantity
-                ? cssStr('--acx-neutrals-15')
+              data: { isZeroQuantity: boolean } }) {
+              return params.data?.isZeroQuantity
+                ? 'rgba(227,228,229, 0.5)'
                 : colorMap[params.dataIndex]
-            },
-            opacity: function (params: { isZeroQuantity: boolean }) {
-              return params.isZeroQuantity ? 0.5 : 1
             },
             borderRadius: 4
           },
