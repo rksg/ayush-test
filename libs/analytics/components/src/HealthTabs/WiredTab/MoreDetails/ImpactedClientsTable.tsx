@@ -32,7 +32,7 @@ export const ImpactedClientsTable = ({
   queryType: WidgetType;
 }) => {
   const { $t } = useIntl()
-  const isMlisaVersion4110 = useIsSplitOn(Features.ACX_UI_MLISA_4_11_0_TOGGLE)
+  const isMlisaVersion4110 = useIsSplitOn(Features.MLISA_4_11_0_TOGGLE)
 
   const payload = {
     filter: filters.filter,
