@@ -78,7 +78,16 @@ export default function LicenseTimelineGraph () {
         if(!years.includes(year))
           years.push(year)
 
-        seriesData.push({ value: data.quantity, extraData: data.availableBreakUp })
+        // if current quantity is 0 then consider first quanitity value of month from breakup
+        // to render shadow bar, so it will show tooltip with entire
+        // months license used quantity breakup
+
+        const value = data.quantity === 0
+          ? data.availableBreakUp[0]?.quantity || 0
+          : data.quantity
+
+        seriesData.push({ value, extraData: data.availableBreakUp,
+          isZeroQuantity: data.quantity === 0 })
 
         lineData.push(data.usedQuantity)
       })
@@ -188,8 +197,14 @@ export default function LicenseTimelineGraph () {
           type: 'bar',
           data: seriesData,
           itemStyle: {
-            color: function (params: { dataIndex: number }) {
-              return colorMap[params.dataIndex]
+            color: function (params: { dataIndex: number,
+              isZeroQuantity: boolean }) {
+              return params.isZeroQuantity
+                ? cssStr('--acx-neutrals-15')
+                : colorMap[params.dataIndex]
+            },
+            opacity: function (params: { isZeroQuantity: boolean }) {
+              return params.isZeroQuantity ? 0.5 : 1
             },
             borderRadius: 4
           },
