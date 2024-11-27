@@ -76,7 +76,7 @@ export const useOnboardedSystems = () => {
   const defaultPayload = {
     fields: [],  // select all
     filters: {
-      tenantId: tenant.tenants
+      tenantIds: tenant.tenants
         .filter(t => Boolean(t.permissions['READ_ONBOARDED_SYSTEMS']))
         .map(t => t.id)
     },
@@ -87,7 +87,7 @@ export const useOnboardedSystems = () => {
     // Use the default sortField by the component
     useQuery: useGetSmartZoneListQuery,
     pagination: { settingsId },
-    defaultPayload: defaultPayload,
+    defaultPayload,
     search: {
       searchTargetFields: ['account_name', 'device_name']
     }

@@ -147,6 +147,10 @@ const getStatusErrors = (data: OnboardedSystem, errors: string[]) => {
     })
 }
 
+const tenantIdsHeaderWithWildcard = {
+  'x-mlisa-tenant-ids': '[*]'
+}
+
 export const smartZoneApi = basedSmartZoneApi.injectEndpoints({
   endpoints: (build) => ({
     getSmartZoneList: build.query<
@@ -155,7 +159,7 @@ export const smartZoneApi = basedSmartZoneApi.injectEndpoints({
     >({
       query: ({ payload }) => {
         const extraCustomHeaders: Record<string, unknown> = {
-          'x-mlisa-tenant-ids': '[*]'
+          ...tenantIdsHeaderWithWildcard
         }
         const req = createHttpRequest(
           {
@@ -201,7 +205,7 @@ export const smartZoneApi = basedSmartZoneApi.injectEndpoints({
     >({
       query: ({ payload }) => {
         const extraCustomHeaders: Record<string, unknown> = {
-          'x-mlisa-tenant-ids': '[*]'
+          ...tenantIdsHeaderWithWildcard
         }
         const req = createHttpRequest(
           {
@@ -222,7 +226,7 @@ export const smartZoneApi = basedSmartZoneApi.injectEndpoints({
         url: `/smartzones/${id}/delete`,
         method: 'delete',
         credentials: 'include',
-        headers: { 'x-mlisa-tenant-ids': '[*]' }
+        headers: { ...tenantIdsHeaderWithWildcard }
       }),
       invalidatesTags: [{ type: 'SmartZone', id: 'list' }]
     })
