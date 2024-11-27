@@ -32,7 +32,7 @@ export default function ChromebookInstructionDrawer (props: ChromebookInstructio
   const downloadJsonConfig = () => {
     handleBlobDownloadFile(
       new Blob([copyableJson], { type: 'application/json' }),
-      'chromebook-policy-config.json')
+      'chromebook-policy-config.txt')
   }
 
   return (

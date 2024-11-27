@@ -98,7 +98,7 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance           from './PortalInstance'
+import PortalInstance               from './PortalInstance'
 import {
   useNetworkVxLanTunnelProfileInfo,
   deriveRadiusFieldsFromServerData,
@@ -109,7 +109,8 @@ import {
   useAccessControlActivation,
   getDefaultMloOptions,
   useUpdateEdgeSdLanActivations,
-  useUpdateSoftGreActivations
+  useUpdateSoftGreActivations,
+  deriveWISPrFieldsFromServerData
 } from './utils'
 import { Venues } from './Venues/Venues'
 
@@ -336,6 +337,7 @@ export function NetworkForm (props:{
     if (!data) return
 
     let resolvedData = isUseWifiRbacApi ? data : deriveRadiusFieldsFromServerData(data)
+    resolvedData = deriveWISPrFieldsFromServerData(resolvedData)
 
     if (cloneMode) {
       formRef.current?.resetFields()

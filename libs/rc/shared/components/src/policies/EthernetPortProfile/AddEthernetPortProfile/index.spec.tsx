@@ -44,6 +44,10 @@ const mockedUpdateRadiusId = jest.fn()
 
 describe('AddEthernetPortProfile', () => {
   beforeEach(() => {
+
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.ETHERNET_PORT_SUPPORT_PROXY_RADIUS_TOGGLE)
+
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -304,7 +308,6 @@ describe('AddEthernetPortProfile', () => {
       untagId: 1,
       vlanMembers: 1,
       authRadiusId: '__Auth_Radius_ID__',
-      enableAuthProxy: false,
       accountingEnabled: false,
       authType: 'MAC_BASED_AUTHENTICATOR',
       dynamicVlanEnabled: true,
