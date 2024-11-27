@@ -55,8 +55,7 @@ export const api = dataApi.injectEndpoints({
                 requestedList: payload.requestedList
               }
             } else {
-              variables = Object.assign(_.pick(payload, ['path', 'requestedList']),
-                startDate, endDate)
+              variables = { ..._.pick(payload, ['path', 'requestedList']), startDate, endDate }
             }
             return {
               document: gql`
