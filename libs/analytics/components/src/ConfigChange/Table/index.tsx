@@ -1,9 +1,15 @@
 import { useContext } from 'react'
 
-import { CSVLink }                    from 'react-csv'
+import { stringify }                  from 'csv-stringify/browser/esm/sync'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
-import { defaultSort, sortProp, useAnalyticsFilter, kpiConfig, productNames } from '@acx-ui/analytics/utils'
+import {
+  defaultSort,
+  sortProp,
+  useAnalyticsFilter,
+  kpiConfig,
+  productNames
+}                                             from '@acx-ui/analytics/utils'
 import {
   Loader,
   TableProps,
@@ -11,9 +17,9 @@ import {
   ConfigChange,
   getConfigChangeEntityTypeMapping,
   Cascader
-}                                                    from '@acx-ui/components'
-import { LinkDocumentIcon } from '@acx-ui/icons'
-import { noDataDisplay }    from '@acx-ui/utils'
+}                                             from '@acx-ui/components'
+import { DownloadOutlined }                                            from '@acx-ui/icons'
+import { exportMessageMapping, noDataDisplay, handleBlobDownloadFile } from '@acx-ui/utils'
 
 import { ConfigChangeContext, KPIFilterContext } from '../context'
 import { hasConfigChange }                       from '../KPI'
@@ -21,6 +27,34 @@ import { useConfigChangeQuery }                  from '../services'
 
 import { Badge, CascaderFilterWrapper }                                                 from './styledComponents'
 import { filterData, formatTimestamp, getConfiguration, getEntityType, getEntityValue } from './util'
+
+export function downloadConfigChangeList (
+  configChanges: ConfigChange[],
+  columns: TableProps<ConfigChange>['columns']
+) {
+  const data = stringify(
+    configChanges.map(configChange => ({
+      ...configChange,
+      oldValues: configChange.oldValues.join(', '),
+      newValues: configChange.newValues.join(', ')
+    })),
+    {
+      header: true,
+      quoted: true,
+      cast: {
+        string: s => s === '--' ? '-' : s
+      },
+      columns: columns.map(({ key, title }) => ({
+        key: key,
+        header: title as string
+      }))
+    }
+  )
+  handleBlobDownloadFile(
+    new Blob([data], { type: 'text/csv;charset=utf-8;' }),
+    'Config-Changes.csv'
+  )
+}
 
 export function Table (props: {
   selected: ConfigChange | null,
@@ -118,6 +152,32 @@ export function Table (props: {
     }
   ]
 
+  const configChanges = queryResults.data?.map(item => {
+    const configValue = getConfiguration(item.type, item.key)
+
+    const oldValues = item.oldValues?.map(value => {
+      const mapped = getEntityValue(item.type, item.key, value)
+      return (typeof mapped === 'string')
+        ? mapped : $t(mapped as MessageDescriptor)
+    })
+
+    const newValues = item.newValues?.map(value => {
+      const mapped = getEntityValue(item.type, item.key, value)
+      return (typeof mapped === 'string')
+        ? mapped : $t(mapped as MessageDescriptor)
+    })
+
+    return ({
+      timestamp: formatTimestamp(item.timestamp),
+      type: getEntityType(item.type)?.label || item.type,
+      name: item.name,
+      key: (typeof configValue === 'string')
+        ? configValue
+        : $t(configValue as MessageDescriptor),
+      oldValues: oldValues,
+      newValues: newValues
+    })})
+
   const rowSelection = {
     onChange: (_: React.Key[], selectedRows: ConfigChange[]) => {
       onRowClick?.(selectedRows[0])
@@ -136,32 +196,6 @@ export function Table (props: {
     }
     return agg
   }, [] as { value: string, label: string }[])
-
-  const csvData = queryResults.data?.map(item => {
-    const configValue = getConfiguration(item.type, item.key)
-
-    const generateOldValues = item.oldValues?.map(value => {
-      const mapped = getEntityValue(item.type, item.key, value)
-      return (typeof mapped === 'string')
-        ? mapped : $t(mapped as MessageDescriptor)
-    })
-
-    const generateNewValues = item.newValues?.map(value => {
-      const mapped = getEntityValue(item.type, item.key, value)
-      return (typeof mapped === 'string')
-        ? mapped : $t(mapped as MessageDescriptor)
-    })
-
-    return ({
-      timestamp: formatTimestamp(item.timestamp),
-      type: getEntityType(item.type)?.label,
-      name: String(item.name),
-      key: (typeof configValue === 'string')
-        ? configValue
-        : $t(configValue as MessageDescriptor),
-      oldValues: generateOldValues.join(', '),
-      newValues: generateNewValues.join(', ')
-    })})
 
   return <>
     <CascaderFilterWrapper>
@@ -190,24 +224,14 @@ export function Table (props: {
           onChange: handlePaginationChange
         }}
         key={dotSelect}
+        iconButton={{
+          icon: <DownloadOutlined />,
+          disabled: !Boolean(queryResults.data?.length),
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
+          onClick: () => {
+            downloadConfigChangeList(configChanges, ColumnHeaders)
+          } }}
       />
-      <div>
-        <LinkDocumentIcon />
-        <CSVLink
-          data={csvData}
-          headers={[
-            { label: 'Timestamp', key: 'timestamp' },
-            { label: 'Entity Type', key: 'type' },
-            { label: 'Entity Name', key: 'name' },
-            { label: 'Configuration', key: 'key' },
-            { label: 'Change From', key: 'oldValues' },
-            { label: 'Change To', key: 'newValues' }
-          ]}
-          filename='config-change-data.csv'
-        >
-          Download config change
-        </CSVLink>
-      </div>
     </Loader>
   </>
 }
