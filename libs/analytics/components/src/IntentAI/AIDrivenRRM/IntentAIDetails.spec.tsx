@@ -244,6 +244,20 @@ describe('IntentAIDetails', () => {
         .toHaveTextContent('In the quest for minimizing interference between access points (APs), AI algorithms may opt to narrow channel widths. While this can enhance spectral efficiency and alleviate congestion, it also heightens vulnerability to noise, potentially reducing throughput. Narrow channels limit data capacity, which could lower overall throughput.')
       /* eslint-enable max-len */
     })
+
+    it('should render graph loader seperately', async () => {
+      const { params } = mockIntentContextWith({ code: 'c-crrm-channel24g-auto' })
+      render(
+        <CCrrmChannelAuto.IntentAIDetails />,
+        { route: { params }, wrapper: Provider }
+      )
+      expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
+      expect(screen.queryByTestId('IntentAIRRMGraph')).not.toBeInTheDocument()
+      expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+      const details = await screen.findByTestId('Details')
+      expect(await within(details).findAllByTestId('KPI')).toHaveLength(1)
+
+      expect(await screen.findByTestId('IntentAIRRMGraph')).toBeVisible()
+    })
   })
 })
-
