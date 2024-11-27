@@ -1,3 +1,4 @@
+/* eslint-disable align-import/align-import */
 import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
@@ -6,7 +7,9 @@ import { rest }  from 'msw'
 
 import { Features, useIsSplitOn, useIsTierAllowed }                        from '@acx-ui/feature-toggle'
 import { AaaUrls, CommonUrlsInfo, ExpirationType,
-  MacRegListUrlsInfo, RulesManagementUrlsInfo, SoftGreUrls, VlanPoolRbacUrls, WifiCallingUrls, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+  MacRegListUrlsInfo, RulesManagementUrlsInfo, SoftGreUrls,
+  VlanPoolRbacUrls, WifiCallingUrls, WifiRbacUrlsInfo, WifiUrlsInfo
+} from '@acx-ui/rc/utils'
 import { Provider }                                                                  from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                                              from '@acx-ui/user'
