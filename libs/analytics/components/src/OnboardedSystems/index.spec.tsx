@@ -174,7 +174,7 @@ describe('OnboardedSystems', () => {
       expect.objectContaining({
         payload: expect.objectContaining({
           filters: expect.objectContaining({
-            tenantId: ['id1', 'id2']
+            tenantIds: ['id1', 'id2']
           })
         })
       }), undefined
@@ -186,7 +186,7 @@ describe('OnboardedSystems', () => {
       expect.objectContaining({
         payload: expect.objectContaining({
           filters: expect.objectContaining({
-            tenantId: ['id1', 'id2', 'id3']
+            tenantIds: ['id1', 'id2', 'id3']
           })
         })
       }), undefined
