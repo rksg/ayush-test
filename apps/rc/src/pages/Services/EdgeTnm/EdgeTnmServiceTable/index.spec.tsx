@@ -17,13 +17,7 @@ const mockPath = '/:tenantId/services/edgeTnmServices'
 const mockTnm1 = mockTnmServiceDataList[0]
 const mockTnm2 = mockTnmServiceDataList[1]
 
-const mockedUsedNavigate = jest.fn()
 const mockedDeleteReq = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUsedNavigate
-}))
-
 jest.mock('./EdgeTnmCreateFormModal', () => ({
   ...jest.requireActual('./EdgeTnmCreateFormModal'),
   EdgeTnmCreateFormModal: () => <div data-testid='rc-EdgeTnmCreateFormModal'></div>
@@ -40,7 +34,6 @@ describe('Edge TNM Service Table', () => {
 
     store.dispatch(edgeApi.util.resetApiState())
 
-    mockedUsedNavigate.mockReset()
     mockedDeleteReq.mockReset()
 
     mockServer.use(
@@ -70,7 +63,13 @@ describe('Edge TNM Service Table', () => {
     expect(rows.length).toBe(2)
     screen.getByRole('row', { name: /Mocked_TNMService_1/i })
     // eslint-disable-next-line max-len
-    expect(rows[0]).toHaveTextContent(new RegExp(`${mockTnm1.name}\\s*\\d+\\.\\d+\\.\\d+\\s*UP`))
+    expect(rows[0]).toHaveTextContent(new RegExp(`${mockTnm1.name}\\s*\\d+\\.\\d+\\.\\d+\\s*Up`))
+    const servic1Link = screen.getByRole('link', { name: 'Mocked_TNMService_1' })
+    // eslint-disable-next-line max-len
+    expect(servic1Link).toHaveAttribute('href', `/${params.tenantId}/t/services/edgeTnmService/mocked-tnm-service-1/detail`)
+    const servic2Link = screen.queryByRole('link', { name: 'Mocked_TNMService_2' })
+    expect(servic2Link).toBeNull()
+    expect(screen.queryByRole('cell', { name: 'Mocked_TNMService_2' })).toBeValid()
   })
 
   it('should delete selected row', async () => {
@@ -87,7 +86,8 @@ describe('Edge TNM Service Table', () => {
     await click(within(row).getByRole('checkbox'))
     await click(screen.getByRole('button', { name: 'Delete' }))
     const dialogTitle = await screen.findByText(`Delete "${mockTnm1.name}"?`)
-    await click(screen.getByRole('button', { name: 'Delete Edge TNM Service' }))
+    await click(
+      screen.getByRole('button', { name: 'Delete Edge Thirdparty Network Management Service' }))
     await waitForElementToBeRemoved(dialogTitle)
     expect(screen.queryByRole('dialog')).toBeNull()
     expect(mockedDeleteReq).toBeCalledTimes(1)
@@ -110,8 +110,10 @@ describe('Edge TNM Service Table', () => {
     expect(within(rows[1]).getByRole('cell', { name: new RegExp(`${mockTnm2.name}`) })).toBeVisible()
     await click(within(rows[1]).getByRole('checkbox'))
     await click(screen.getByRole('button', { name: 'Delete' }))
-    const dialogTitle = await screen.findByText('Delete "2 Edge TNM Service"?')
-    await click(screen.getByRole('button', { name: 'Delete Edge TNM Service' }))
+    const dialogTitle = await
+    screen.findByText('Delete "2 Edge Thirdparty Network Management Service"?')
+    await click(
+      screen.getByRole('button', { name: 'Delete Edge Thirdparty Network Management Service' }))
     await waitForElementToBeRemoved(dialogTitle)
     expect(screen.queryByRole('dialog')).toBeNull()
     expect(mockedDeleteReq).toBeCalledTimes(2)

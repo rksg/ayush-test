@@ -1,10 +1,17 @@
 import { useState } from 'react'
 
+import { get }                                from '@acx-ui/config'
 import { Provider }                           from '@acx-ui/store'
 import { cleanup, render, fireEvent, screen } from '@acx-ui/test-utils'
 
-import { DisplayEvent }           from './config'
-import { ConnectionEventPopover } from './ConnectionEvent'
+import { BTM_REQUEST, BTM_RESPONSE, DisplayEvent }           from './config'
+import { ConnectionEventPopover, getRoamingTypeDisplayText } from './ConnectionEvent'
+
+const mockGet = get as jest.Mock
+jest.mock('@acx-ui/config', () => ({
+  ...jest.requireActual('@acx-ui/config'),
+  get: jest.fn()
+}))
 
 const successEvent: DisplayEvent = {
   timestamp: '2022-11-14T06:33:31.646Z',
@@ -34,7 +41,9 @@ const successEvent: DisplayEvent = {
   end: 1668407611646,
   category: 'success',
   ssid: 'cliexp4',
-  key: 'sucessKey'
+  key: 'sucessKey',
+  roamingType: 'PMK',
+  type: 'roaming'
 }
 
 const slowEvent = {
@@ -72,6 +81,22 @@ const disconnectEvent: DisplayEvent = {
   ttc: null,
   timestamp: '2022-11-14T06:33:31.646Z',
   key: 'disconnectKey'
+}
+
+const btmRequestEvent: DisplayEvent = {
+  ...successEvent,
+  category: BTM_REQUEST,
+  event: 'EVENT_CLIENT_BTM_REQ_SENT',
+  key: 'btmRequestKey',
+  btmInfo: 'sticky client'
+}
+
+const btmResponseEvent: DisplayEvent = {
+  ...successEvent,
+  category: BTM_RESPONSE,
+  event: 'EVENT_CLIENT_BTM_RESP_RECEIVED',
+  key: 'btmResponseKey',
+  btmInfo: 'BTM_EVENT_RECEIVE_REJECT'
 }
 
 const failureEvent: DisplayEvent = {
@@ -143,9 +168,11 @@ const pcapFailure = {
 
 describe('ConnectionEvent', () => {
 
+  beforeEach(() => jest.clearAllMocks())
   afterEach(() => cleanup())
 
   it('renders correctly for success event', () => {
+    mockGet.mockReturnValue('true')
     render(<ConnectionEventPopover event={successEvent}>test</ConnectionEventPopover>)
     fireEvent.click(screen.getByText(/test/i))
     expect(screen.getByText(successEvent.mac)).toHaveTextContent(successEvent.mac)
@@ -153,6 +180,7 @@ describe('ConnectionEvent', () => {
     const stringSsid = successEvent.ssid as string
     expect(screen.getByText(stringSsid)).toHaveTextContent(stringSsid)
     expect(screen.getByText(/5 GHz/i)).toHaveTextContent(/5 GHz/i)
+    expect(screen.getByText(/PMK/i)).toHaveTextContent(/PMK/i)
   })
 
   it('renders correctly for failureEvent event', () => {
@@ -255,5 +283,33 @@ describe('ConnectionEvent', () => {
     expect(mockVisibleChange).toHaveBeenLastCalledWith(false)
     const closed = asFragment()
     expect(original).toMatchObject(closed)
+  })
+
+  it('should return roaming type dislplay text corectly', () => {
+    [
+      { type: 'OKC', text: 'OKC Roaming' },
+      { type: 'PMK', text: 'PMKID Roaming' },
+      { type: 'full-802.11', text: 'Full Authentication' },
+      { type: '11r', text: '11r Over-the-Air' },
+      { type: 'FT - Over-the-Air', text: '11r Over-the-Air' },
+      { type: 'FT - Over-the-DS', text: '11r Over-the-DS' },
+      { type: 'Full Authentication', text: 'Full Authentication' },
+      { type: 'random', text: 'random' } // unmapped
+    ].forEach(({ type, text }) => {
+      expect(getRoamingTypeDisplayText(type)).toBe(text)
+    })
+  })
+  it('renders correctly for btm request event', async () => {
+    render(<ConnectionEventPopover event={btmRequestEvent}>test</ConnectionEventPopover>)
+    fireEvent.click(await screen.findByText(/test/i))
+    expect(screen.getByText('Trigger')).toBeValid()
+    expect(screen.getByText('sticky')).toBeValid()
+  })
+
+  it('renders correctly for btm response event', async () => {
+    render(<ConnectionEventPopover event={btmResponseEvent}>test</ConnectionEventPopover>)
+    fireEvent.click(await screen.findByText(/test/i))
+    expect(screen.getByText('Status')).toBeValid()
+    expect(screen.getByText('REJECTED')).toBeValid()
   })
 })

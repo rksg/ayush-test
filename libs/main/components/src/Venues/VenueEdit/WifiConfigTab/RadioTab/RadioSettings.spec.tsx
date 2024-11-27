@@ -63,9 +63,6 @@ describe('Venue Radio Settings', () => {
         WifiUrlsInfo.getVenueApCapabilities.url,
         (_, res, ctx) => res(ctx.json(triBandApCap))),
       rest.get(
-        CommonUrlsInfo.getDashboardOverview.url,
-        (_, res, ctx) => res(ctx.json({}))),
-      rest.get(
         CommonUrlsInfo.getVenueSettings.url,
         (_, res, ctx) => res(ctx.json(venueSetting))),
       rest.get(
@@ -200,7 +197,10 @@ describe('Venue Radio Settings', () => {
       mockServer.use(
         rest.get(
           CommonUrlsInfo.getVenueApModelBandModeSettings.url,
-          (_, res, ctx) => res(ctx.json([])))
+          (_, res, ctx) => res(ctx.json([{
+            model: 'R760',
+            bandMode: 'TRIPLE'
+          }])))
       )
     })
     it('should render VenueBandManagement correctly', async () => {

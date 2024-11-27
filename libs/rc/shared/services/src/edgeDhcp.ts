@@ -23,7 +23,7 @@ const versionHeader = {
 }
 
 enum EdgeDhcpActivityEnum {
-  ADD = 'Add Dhcp',
+  CREATE = 'Create Dhcp',
   UPDATE = 'Update Dhcp',
   DELETE = 'Delete Dhcp',
   ACTIVATE = 'Activate Dhcp',
@@ -129,7 +129,7 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            EdgeDhcpActivityEnum.ADD,
+            EdgeDhcpActivityEnum.CREATE,
             EdgeDhcpActivityEnum.UPDATE,
             EdgeDhcpActivityEnum.DELETE,
             EdgeDhcpActivityEnum.ACTIVATE,

@@ -288,6 +288,7 @@ export const {
   useUpdateSoftGreMutation,
   useGetVenuesSoftGrePolicyQuery,
   useGetSoftGreOptionsQuery,
+  useLazyGetSoftGreOptionsQuery,
   useActivateSoftGreMutation,
   useDectivateSoftGreMutation
 } = softGreApi

@@ -73,6 +73,11 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/wifiNetworks/:networkId/settings',
     newApi: true
   },
+  getNetworkVenues: {
+    method: 'post',
+    url: '/venues/wifiNetworks/query',
+    newApi: true
+  },
   addNetworkVenue: {
     //method: 'post',
     //url: '/networkActivations',
@@ -852,6 +857,15 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'DELETE',
     newApi: true,
     url: '/venues/:venueId/aps/:serialNumber/stickyClientSteeringSettings',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  updateApLanPortSpecificSettings: {
+    method: 'PUT',
+    newApi: true,
+    url: '/venues/:venueId/aps/:serialNumber/lanPortSpecificSettings',
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'

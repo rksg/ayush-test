@@ -227,6 +227,18 @@ export function deriveRadiusFieldsFromServerData (data: NetworkSaveData): Networ
   }
 }
 
+export function deriveWISPrFieldsFromServerData (data: NetworkSaveData): NetworkSaveData {
+  if (!isWISPrNetwork(data)) return data
+
+  if (data.guestPortal?.wisprPage?.customExternalProvider) {
+    return _.merge({}, data, {
+      guestPortal: { wisprPage: { providerName: data.guestPortal.wisprPage.externalProviderName } }
+    })
+  }
+
+  return data
+}
+
 type RadiusIdKey = Extract<keyof NetworkSaveData, 'authRadiusId' | 'accountingRadiusId'>
 export function useRadiusServer () {
   const { isTemplate } = useConfigTemplate()
@@ -300,18 +312,6 @@ export function useRadiusServer () {
     fetchRadiusDetails()
   }, [radiusServerProfiles, radiusServerSettings])
 
-  const isRadiusKeyChanged = (key: RadiusIdKey, formData: NetworkSaveData, serverData?: NetworkSaveData): boolean => {
-    const keyFromForm = getRadiusIdFromFormData(key, formData)
-    const keyFromServer = serverData?.[key]
-
-    if (isWISPrNetwork(formData)) {
-      return keyFromForm !== keyFromServer
-    }
-
-    if (!formData.hasOwnProperty(key)) return false // key doesn't exist in formData means it's not changed on the form
-    return keyFromForm !== keyFromServer
-  }
-
   const updateProfile = async (saveData: NetworkSaveData, networkId?: string) => {
     if (!shouldSaveRadiusServerProfile(saveData)) return Promise.resolve()
 
@@ -371,6 +371,22 @@ function resolveMacAuthFormat (newSettings: NetworkSaveData): string | undefined
   return newSettings.type === NetworkTypeEnum.AAA
     ? newSettings.wlan?.macAddressAuthenticationConfiguration?.macAuthMacFormat
     : newSettings.wlan?.macAuthMacFormat
+}
+
+export function hasRadiusProfileInFormData (key: RadiusIdKey, formData: NetworkSaveData): boolean {
+  return _.has(formData, isWISPrNetwork(formData)
+    ? key === 'authRadiusId' ? 'guestPortal.wisprPage.authRadius' : 'guestPortal.wisprPage.accountingRadius'
+    : key
+  )
+}
+
+function isRadiusKeyChanged (key: RadiusIdKey, formData: NetworkSaveData, serverData?: NetworkSaveData): boolean {
+  if (!hasRadiusProfileInFormData(key, formData)) return false
+
+  const keyFromForm = getRadiusIdFromFormData(key, formData)
+  const keyFromServer = serverData?.[key]
+
+  return keyFromForm !== keyFromServer
 }
 
 function isWISPrNetwork (formData: NetworkSaveData) {

@@ -2,6 +2,7 @@ import { useContext, useState, useEffect, useRef } from 'react'
 
 import { Col, Form, Image, Row, Select, Space, Tooltip } from 'antd'
 import { isEqual, clone, cloneDeep }                     from 'lodash'
+import _                                                 from 'lodash'
 import { useIntl }                                       from 'react-intl'
 
 import { AnchorContext, Button, Loader, Tabs, showActionModal }         from '@acx-ui/components'
@@ -20,7 +21,8 @@ import {
   useGetDhcpTemplateListQuery,
   useActivateEthernetPortProfileOnVenueApModelPortIdMutation,
   useUpdateEthernetPortSettingsByVenueApModelMutation,
-  useGetVenueLanPortWithEthernetSettingsQuery
+  useGetVenueLanPortWithEthernetSettingsQuery,
+  useUpdateVenueLanPortSpecificSettingsMutation
 } from '@acx-ui/rc/services'
 import {
   ApLanPortTypeEnum,
@@ -131,6 +133,9 @@ export function LanPorts () {
 
   const [updateEthernetPortSetting] =
     useUpdateEthernetPortSettingsByVenueApModelMutation()
+
+  const [updateLanPortSpecificSetting] =
+    useUpdateVenueLanPortSpecificSettingsMutation()
 
   const apModelsOptions = venueLanPorts?.data?.map(m => ({ label: m.model, value: m.model })) ?? []
   const [activeTabIndex, setActiveTabIndex] = useState(0)
@@ -267,16 +272,6 @@ export function LanPorts () {
     }
   }
 
-  const getTargetOriginLanPort = (model:string, portId?:string) => {
-    return lanPortOrinData?.find(
-      (originVenueLanPort) => {
-        return originVenueLanPort.model === model
-      }
-    )?.lanPorts.find((originLanPort)=> {
-      return originLanPort.portId === portId
-    })
-  }
-
   const handleUpdateEthernetPortProfile = async (
     model:string,
     lanPort:LanPort,
@@ -316,6 +311,29 @@ export function LanPorts () {
         },
         payload: {
           enabled: lanPort.enabled
+        }
+      }).unwrap()
+    }
+  }
+
+  const handleUpdateLanPortSpecificSettings = async (
+    model:string,
+    venueLanPorts:VenueLanPorts,
+    originVenueLanPorts:VenueLanPorts
+  ) => {
+
+    const { lanPorts, ...rest } = venueLanPorts
+    const { lanPorts: originLanPorts, ...originRest } = originVenueLanPorts
+
+    if(!_.isEqual(rest, originRest)) {
+      await updateLanPortSpecificSetting({
+        params: {
+          venueId: venueId,
+          apModel: model
+        },
+        payload: {
+          poeMode: venueLanPorts.poeMode,
+          poeOut: venueLanPorts.poeOut
         }
       }).unwrap()
     }
@@ -370,12 +388,22 @@ export function LanPorts () {
   const processUpdateVenueLanPorts = async (payload: VenueLanPorts[]) => {
     if (isEthernetPortProfileEnabled) {
       payload.forEach((venueLanPort) => {
-        venueLanPort.lanPorts.forEach((lanPort) => {
-          const originLanPort = getTargetOriginLanPort(venueLanPort.model, lanPort.portId)
+        const originVenueLanPort = lanPortOrinData?.find((oldVenueLanPort) => {
+          return oldVenueLanPort.model === venueLanPort.model
+        })
 
+        if (originVenueLanPort) {
+          // Uppdate Lan port specific settings
+          handleUpdateLanPortSpecificSettings(venueLanPort.model, venueLanPort, originVenueLanPort)
+        }
+
+        venueLanPort.lanPorts.forEach((lanPort) => {
+          const originLanPort = originVenueLanPort?.lanPorts.find((oldLanPort)=> {
+            return oldLanPort.portId === lanPort.portId
+          })
           // Update ethernet port profile
           handleUpdateEthernetPortProfile(venueLanPort.model, lanPort, originLanPort)
-          // Update settings
+          // Update Lan settings
           handleUpdateLanPortSettings(venueLanPort.model, lanPort, originLanPort)
         })
       })
@@ -383,11 +411,15 @@ export function LanPorts () {
 
     setLanPortData(payload)
     setLanPortOrinData(payload)
-    await updateVenueLanPorts({
-      params: { tenantId, venueId },
-      payload,
-      enableRbac: resolvedRbacEnabled
-    }).unwrap()
+
+    if (!isEthernetPortProfileEnabled) {
+      await updateVenueLanPorts({
+        params: { tenantId, venueId },
+        payload,
+        enableRbac: resolvedRbacEnabled
+      }).unwrap()
+    }
+
     setResetModels([])
   }
 

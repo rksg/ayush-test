@@ -240,7 +240,10 @@ export enum ConfigTypeEnum {
   STATIC_ROUTE = 'STATIC_ROUTE',
   TRIGGER_SYNC = 'TRIGGER_SYNC',
   DEFAULT_VLAN = 'DEFAULT_VLAN',
-  ADMIN_PASSWORD = 'ADMIN_PASSWORD'
+  ADMIN_PASSWORD = 'ADMIN_PASSWORD',
+  ACL = 'ACL',
+  VLAN = 'VLAN',
+  AUTHENTICATION = 'AUTHENTICATION'
 }
 
 export enum ConfigStatusEnum {
@@ -514,6 +517,7 @@ export enum PortalViewEnum{
   SelfSignIn = 'SelfSignIn',
   SelfSignInRegister = 'SelfSignInRegister',
   HostApproval = 'HostApproval',
+  Directory = 'Directory',
   ConnectionConfirmed = 'ConnectionConfirmed',
   TermCondition = 'TermCondition'
 }

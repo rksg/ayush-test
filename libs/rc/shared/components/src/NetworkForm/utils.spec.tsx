@@ -1,4 +1,5 @@
 import { FormInstance } from 'antd'
+import _                from 'lodash'
 import { rest }         from 'msw'
 
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
@@ -25,7 +26,13 @@ import {
 import { Provider, store }                 from '@acx-ui/store'
 import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
 
-import { hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile, useClientIsolationActivations, useNetworkVxLanTunnelProfileInfo, useRadiusServer, useServicePolicyEnabledWithConfigTemplate, useWifiCalling, getDefaultMloOptions, useUpdateSoftGreActivations, shouldSaveRadiusServerSettings, shouldSaveRadiusServerProfile, getRadiusIdFromFormData } from './utils'
+import {
+  hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile, useClientIsolationActivations,
+  useNetworkVxLanTunnelProfileInfo, useRadiusServer, useServicePolicyEnabledWithConfigTemplate,
+  useWifiCalling, getDefaultMloOptions, useUpdateSoftGreActivations, shouldSaveRadiusServerSettings,
+  shouldSaveRadiusServerProfile, getRadiusIdFromFormData, hasRadiusProfileInFormData,
+  deriveWISPrFieldsFromServerData
+} from './utils'
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -787,6 +794,47 @@ describe('Network utils test', () => {
         expect(getRadiusIdFromFormData('accountingRadiusId', formDataWithoutEnabledAccounting)).toBeUndefined()
       })
     })
+
+    describe('hasRadiusProfileInFormData', () => {
+      const baseWISPrNetwork: NetworkSaveData = {
+        type: NetworkTypeEnum.CAPTIVEPORTAL,
+        guestPortal: {
+          guestNetworkType: GuestNetworkTypeEnum.WISPr,
+          wisprPage: {
+            captivePortalUrl: '',
+            customExternalProvider: true
+          }
+        }
+      }
+      it('should return proper value for WISPr network with authRadiusId key', () => {
+        const formDataWithAuth = _.merge({}, baseWISPrNetwork, {
+          guestPortal: { wisprPage: { authRadius: { id: 'some-value' } } }
+        })
+        expect(hasRadiusProfileInFormData('authRadiusId', formDataWithAuth)).toBe(true)
+
+        const formDataWithAcct = _.merge({}, baseWISPrNetwork, {
+          guestPortal: { wisprPage: { accountingRadius: { id: 'some-value' } } }
+        })
+        expect(hasRadiusProfileInFormData('accountingRadiusId', formDataWithAcct)).toBe(true)
+
+        expect(hasRadiusProfileInFormData('authRadiusId', baseWISPrNetwork)).toBe(false)
+        expect(hasRadiusProfileInFormData('accountingRadiusId', baseWISPrNetwork)).toBe(false)
+      })
+
+      it('should return proper value for non-WISPr network with authRadiusId key', () => {
+        const formDataWithAuth: NetworkSaveData = {
+          type: NetworkTypeEnum.AAA,
+          authRadiusId: 'some-value'
+        }
+        expect(hasRadiusProfileInFormData('authRadiusId', formDataWithAuth)).toBe(true)
+
+        const formDataWithAcct: NetworkSaveData = {
+          type: NetworkTypeEnum.AAA,
+          accountingRadiusId: 'some-value'
+        }
+        expect(hasRadiusProfileInFormData('accountingRadiusId', formDataWithAcct)).toBe(true)
+      })
+    })
   })
 
   describe('useWifiCalling hook', () => {
@@ -1061,6 +1109,58 @@ describe('Network utils test', () => {
 
       expect(mockedActivateSoftGre).toBeCalledTimes(1)
       expect(mockedDeactivateSoftGre).not.toBeCalled()
+    })
+  })
+
+  describe('deriveWISPrFieldsFromServerData', () => {
+    it('returns original data if not a WISPr network', () => {
+      const data: NetworkSaveData = {
+        type: NetworkTypeEnum.AAA,
+        guestPortal: {}
+      }
+      expect(deriveWISPrFieldsFromServerData(data)).toBe(data)
+    })
+
+    it('updates providerName if customExternalProvider is true', () => {
+      const data: NetworkSaveData = {
+        type: NetworkTypeEnum.CAPTIVEPORTAL,
+        guestPortal: {
+          guestNetworkType: GuestNetworkTypeEnum.WISPr,
+          wisprPage: {
+            captivePortalUrl: '',
+            customExternalProvider: true,
+            externalProviderName: 'Test Provider'
+          }
+        }
+      }
+      const expectedData: NetworkSaveData = {
+        type: NetworkTypeEnum.CAPTIVEPORTAL,
+        guestPortal: {
+          guestNetworkType: GuestNetworkTypeEnum.WISPr,
+          wisprPage: {
+            captivePortalUrl: '',
+            customExternalProvider: true,
+            externalProviderName: 'Test Provider',
+            providerName: 'Test Provider'
+          }
+        }
+      }
+      expect(deriveWISPrFieldsFromServerData(data)).toEqual(expectedData)
+    })
+
+    it('does not update providerName if customExternalProvider is false', () => {
+      const data: NetworkSaveData = {
+        type: NetworkTypeEnum.CAPTIVEPORTAL,
+        guestPortal: {
+          guestNetworkType: GuestNetworkTypeEnum.WISPr,
+          wisprPage: {
+            captivePortalUrl: '',
+            customExternalProvider: false,
+            externalProviderName: 'Test Provider'
+          }
+        }
+      }
+      expect(deriveWISPrFieldsFromServerData(data)).toBe(data)
     })
   })
 })

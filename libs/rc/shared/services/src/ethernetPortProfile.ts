@@ -115,10 +115,12 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
                   break
               }
               let ethProfile = ethList.data?.filter(e => e.id === ethProfileId)?.[0]
-              if (!ethProfile.apPortOverwrites) {
-                ethProfile.apPortOverwrites = []
+              if (ethProfile) {
+                if (!ethProfile?.apPortOverwrites) {
+                  ethProfile.apPortOverwrites = []
+                }
+                ethProfile.apPortOverwrites.push(portOverwrite)
               }
-              ethProfile.apPortOverwrites.push(portOverwrite)
             }
           }
           const ethOverwriteList = {
@@ -195,6 +197,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
           ethernetPortProfileData.authRadiusId = ethList.data?.[0]?.authRadiusId
           ethernetPortProfileData.accountingRadiusId = ethList.data?.[0]?.accountingRadiusId
           ethernetPortProfileData.apSerialNumbers = ethList.data?.[0]?.apSerialNumbers
+          ethernetPortProfileData.venueActivations = ethList.data?.[0]?.venueActivations
         }
 
         return ethernetPortProfileData

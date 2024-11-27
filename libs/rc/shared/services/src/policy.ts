@@ -139,7 +139,8 @@ const CertificateMutationUseCases = [
   'UpdateRadius',
   'ActivateCertificateOnRadiusServerProfile',
   'DeactivateCertificateOnRadiusServerProfile',
-  'ActivateCertificateAuthorityOnRadiusServerProfile'
+  'ActivateCertificateAuthorityOnRadiusServerProfile',
+  'DeactivateCertificateAuthorityOnRadiusServerProfile'
 ]
 
 const L2AclUseCases = [
@@ -847,7 +848,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'AddRadius', 'UpdateRadius', 'DeleteRadius', 'DeleteRadiuses',
             'ActivateRadiusServerProfileOnWifiNetwork', 'DeactivateRadiusServerProfileOnWifiNetwork',
-            'ActivateCertificateOnRadiusServerProfile'
+            'UpdateWifiNetwork','ActivateCertificateOnRadiusServerProfile',
+            'DeactivateCertificateOnRadiusServerProfile',
+            'ActivateCertificateAuthorityOnRadiusServerProfile',
+            'DeactivateCertificateAuthorityOnRadiusServerProfile'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
           })
@@ -1759,6 +1763,69 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    getCertificateAuthorityOnRadius: build.query<TableResult<CertificateAuthority>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AaaUrls.getCertificateAuthorityOnRadius, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'CertificateAuthority', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' },
+              { type: 'CertificateAuthority', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    getClientCertificateOnRadius: build.query<TableResult<Certificate>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AaaUrls.getClientCertificateOnRadius, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'Certificate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' },
+              { type: 'Certificate', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    getServerCertificateOnRadius: build.query<TableResult<Certificate>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AaaUrls.getServerCertificateOnRadius, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'Certificate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' },
+              { type: 'Certificate', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     // eslint-disable-next-line max-len
     getVLANPoolPolicyViewModelList: build.query<TableResult<VLANPoolViewModelType>, RequestPayload>({
@@ -3380,6 +3447,40 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       }
     }),
+    downloadPrivateKeyCertificate: build.query<Blob, RequestPayload>({
+      query: ({ params, payload, customHeaders }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.downloadCertificateWithPost, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        return {
+          ...req,
+          body: JSON.stringify(payload),
+          responseHandler: async (response) => {
+            let extension = downloadCertExtension[customHeaders?.Accept as CertificateAcceptType]
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1] : `Certificate.${extension}`
+            downloadFile(response, fileName)
+          }
+        }
+      }
+    }),
+    downloadCertificateInP12: build.query<Blob, RequestPayload>({
+      query: ({ params, payload, customHeaders }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.downloadCertificateInP12, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        return {
+          ...req,
+          body: JSON.stringify(payload),
+          responseHandler: async (response) => {
+            let extension = downloadCertExtension[customHeaders?.Accept as CertificateAcceptType]
+            const headerContent = response.headers.get('content-disposition')
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1] : `Certificate.${extension}`
+            downloadFile(response, fileName)
+          }
+        }
+      }
+    }),
     downloadCertificateChains: build.query<Blob, RequestPayload>({
       query: ({ params, customHeaders }) => {
         // eslint-disable-next-line max-len
@@ -3659,6 +3760,9 @@ export const {
   useDeactivateClientCertificateOnRadiusMutation,
   useActivateServerCertificateOnRadiusMutation,
   useDeactivateServerCertificateOnRadiusMutation,
+  useGetCertificateAuthorityOnRadiusQuery,
+  useGetClientCertificateOnRadiusQuery,
+  useGetServerCertificateOnRadiusQuery,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,
   useAddSyslogPolicyMutation,
@@ -3762,6 +3866,8 @@ export const {
   useLazyDownloadCertificateAuthorityChainsQuery,
   useLazyDownloadCertificateQuery,
   useLazyDownloadCertificateChainsQuery,
+  useLazyDownloadPrivateKeyCertificateQuery,
+  useLazyDownloadCertificateInP12Query,
   useDeleteCertificateAuthorityMutation,
   useGetCertificatesByIdentityIdQuery,
   useLazyGetCertificatesByIdentityIdQuery,

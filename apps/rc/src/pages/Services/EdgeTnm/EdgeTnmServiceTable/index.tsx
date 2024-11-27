@@ -1,14 +1,15 @@
 import { useState } from 'react'
 
-import { Row }     from 'antd'
-import { useIntl } from 'react-intl'
+import { Row, Space } from 'antd'
+import { useIntl }    from 'react-intl'
 
 import {
   PageHeader,
   Table,
   TableProps,
   Loader,
-  showActionModal
+  showActionModal,
+  Button
 } from '@acx-ui/components'
 import { useDeleteEdgeTnmServiceMutation, useGetEdgeTnmServiceListQuery } from '@acx-ui/rc/services'
 import {
@@ -19,11 +20,16 @@ import {
   filterByAccessForServicePolicyMutation,
   EdgeTnmServiceData,
   transformDisplayNumber,
-  getServiceDetailsLink
+  getServiceDetailsLink,
+  EdgeTnmServiceStatusEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
+import {
+  noDataDisplay
+} from '@acx-ui/utils'
 
 import { EdgeTnmCreateFormModal } from './EdgeTnmCreateFormModal'
+import * as UI                    from './styledComponents'
 
 const settingsId = 'services-edge-tnm-service-table'
 export function EdgeTnmServiceTable () {
@@ -41,7 +47,7 @@ export function EdgeTnmServiceTable () {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Edge TNM Service' }),
+            entityName: $t({ defaultMessage: 'Edge Thirdparty Network Management Service' }),
             entityValue: rows.length === 1 ? rows[0].name : undefined,
             numOfEntities: rows.length
           },
@@ -69,15 +75,15 @@ export function EdgeTnmServiceTable () {
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        // extra={filterByAccessForServicePolicyMutation([
-        //   <Button type='primary'
-        //     scopeKey={getScopeKeyByService(ServiceType.EDGE_TNM_SERVICE, ServiceOperation.CREATE)}
-        //     onClick={() => {
-        //       setVisible(true)
-        //     }}>
-        //     {$t({ defaultMessage: 'Add TNM Service' })}
-        //   </Button>
-        // ])}
+        extra={filterByAccessForServicePolicyMutation([
+          <Button type='primary'
+            scopeKey={getScopeKeyByService(ServiceType.EDGE_TNM_SERVICE, ServiceOperation.CREATE)}
+            onClick={() => {
+              setVisible(true)
+            }}>
+            {$t({ defaultMessage: 'Add Thirdparty Network Management Service' })}
+          </Button>
+        ])}
       />
       <Loader states={[{ isLoading, isFetching: isFetching || isDeleting }]}>
         <Table
@@ -108,14 +114,16 @@ function useColumns () {
       searchable: true,
       fixed: 'left',
       render: (_, row) =>
-        <TenantLink
-          to={getServiceDetailsLink({
-            type: ServiceType.EDGE_TNM_SERVICE,
-            oper: ServiceOperation.DETAIL,
-            serviceId: row.id!
-          })}>
-          {row.name}
-        </TenantLink>
+        row.status === EdgeTnmServiceStatusEnum.UP
+          ? <TenantLink
+            to={getServiceDetailsLink({
+              type: ServiceType.EDGE_TNM_SERVICE,
+              oper: ServiceOperation.DETAIL,
+              serviceId: row.id!
+            })}>
+            {row.name}
+          </TenantLink>
+          : row.name
     },
     {
       key: 'version',
@@ -125,7 +133,7 @@ function useColumns () {
       sorter: true,
       render: (_, row) =>
         <Row justify='center'>
-          {row.version}
+          {row.status === EdgeTnmServiceStatusEnum.INSTALLING ? noDataDisplay : row.version}
         </Row>
     },
     {
@@ -136,10 +144,25 @@ function useColumns () {
       align: 'center',
       render: (_, row) =>
         <Row justify='center'>
-          {row.status}
+          <TnmServiceStatus status={row.status} />
         </Row>
     }
   ]
 
   return columns
+}
+
+const TnmServiceStatus = (props:{ status: EdgeTnmServiceStatusEnum | undefined }) => {
+  const { $t } = useIntl()
+
+  switch(props.status) {
+    case EdgeTnmServiceStatusEnum.UP:
+      return <Space><UI.CheckMarkCircleSolidIcon/>{$t({ defaultMessage: 'Up' })}</Space>
+    case EdgeTnmServiceStatusEnum.INSTALLING:
+      return <Space><UI.CheckingIcon/>{$t({ defaultMessage: 'Installing' })}</Space>
+    case EdgeTnmServiceStatusEnum.DOWN:
+      return <Space><UI.UnavailableIcon/>{$t({ defaultMessage: 'Down' })}</Space>
+    default:
+      return <Space><UI.UnknownIcon/>{$t({ defaultMessage: 'Unkown' })}</Space>
+  }
 }

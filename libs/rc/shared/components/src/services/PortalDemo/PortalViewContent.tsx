@@ -15,6 +15,7 @@ import PortalWelcomeContent                    from './PortalContent/PortalWelco
 import PortalImageTools                        from './PortalImageTools'
 import PortalPopover                           from './PortalPopover'
 import PortalViewConfirm                       from './PortalViewConfirm'
+import PortalViewDirectoryLogin                from './PortalViewDirectoryLogin'
 import PortalViewGoThrough                     from './PortalViewGoThrough'
 import PortalViewGuestConnect                  from './PortalViewGuestConnect'
 import PortalViewGuestForget                   from './PortalViewGuestForget'
@@ -165,6 +166,13 @@ export default function PortalViewContent (props:{
       />}
       {view === PortalViewEnum.HostApproval &&
       <PortalViewHostApproval
+        portalLang={portalLang}
+        demoValue={demoValue}
+        updateBtn={(data)=>{
+          updateViewContent({ ...demoValue, buttonColor: data.color })}}
+      />}
+      {view === PortalViewEnum.Directory &&
+      <PortalViewDirectoryLogin
         portalLang={portalLang}
         demoValue={demoValue}
         updateBtn={(data)=>{

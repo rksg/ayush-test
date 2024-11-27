@@ -518,7 +518,7 @@ export const serverCertificate: ServerCertificate = {
   state: 'test',
   country: 'test',
   organizationUnit: 'test',
-  keyUsage: [
+  keyUsages: [
     KeyUsageType.DIGITAL_SIGNATURE,
     KeyUsageType.KEY_ENCIPHERMENT
   ],
@@ -586,8 +586,10 @@ export const certificateAuthority =
     KeyUsageType.DIGITAL_SIGNATURE,
     KeyUsageType.KEY_ENCIPHERMENT,
     KeyUsageType.CRL_SIGN
+  ],
+  status: [
+    CertificateStatusType.VALID
   ]
-
 }
 
 export const mockPersonaGroupWithIdentity: PersonaGroup = {

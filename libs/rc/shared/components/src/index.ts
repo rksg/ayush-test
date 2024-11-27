@@ -313,6 +313,7 @@ export * from './SwitchBlinkLEDsDrawer'
 export { ConfigurationProfileForm } from './SwitchRegularProfileForm'
 export * from './SwitchCliProfileForm'
 export * from './SwitchCliTemplateForm'
+export * from './FlexibleAuthentication'
 export {
   useRwgActions
 } from './useRwgActions'

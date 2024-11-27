@@ -689,6 +689,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
         let venueApgroupMap = new Map<string, NetworkApGroup[]>()
         let networkVenuesApGroupList = [] as NetworkVenue[]
 
+        const isTemplate = payloadData[0].isTemplate
+        const apGroupUrlInfo = isTemplate
+          ? ApGroupConfigTemplateUrlsInfo.getApGroupsListRbac
+          : WifiRbacUrlsInfo.getApGroupsList
+
         for (let venueId of venueIds) {
           // get apGroup list filter by venueId
           const apGroupPayload = {
@@ -700,9 +705,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           }
 
           const apGroupListInfo = {
-            ...createHttpRequest(payloadData[0].isTemplate
-              ? ApGroupConfigTemplateUrlsInfo.getApGroupsListRbac
-              : WifiRbacUrlsInfo.getApGroupsList, params),
+            ...createHttpRequest(apGroupUrlInfo, params),
             body: JSON.stringify(apGroupPayload)
           }
 
@@ -733,7 +736,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
 
         const paramsVenueId = payloadData[0].venueId
         const paramsNetworkId = payloadData[0].networkId
-        const paramsIsTemplate = payloadData[0].isTemplate
 
         const {
           error: apGroupNetworkListQueryError,
@@ -745,7 +747,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
             venueId: paramsVenueId
           },
           payload: {
-            isTemplate: paramsIsTemplate,
+            isTemplate: isTemplate,
             apGroupIds: venueApgroupMap.get(paramsVenueId)?.map(item => item.apGroupId),
             filters: { 'venueApGroups.apGroupIds': venueApgroupMap.get(paramsVenueId)?.map(item => item.apGroupId) }
           }
@@ -1030,8 +1032,12 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getVenueApModels: build.query<VenueApModels, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueApModels, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac? CommonRbacUrlsInfo : CommonUrlsInfo
+        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
+        const req = createHttpRequest(urlsInfo.getVenueApModels, params, apiCustomHeader)
         return{
           ...req
         }
@@ -1206,7 +1212,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg,
-            ['AddAaaServer', 'UpdateAaaServer', 'DeleteAaaServer'], () => {
+            [
+              'AddAaaServer',
+              'UpdateAaaServer',
+              'DeleteAaaServer',
+              'UpdateVenueAaaSetting',
+              'UpdateVenueTemplateAaaSetting',
+              'UpdateVenueAaaServer',
+              'UpdateVenueTemplateAaaServer'
+            ], () => {
               api.dispatch(venueApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
             })
         })
@@ -2162,9 +2176,19 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
         return { data: venueLanPortSettings }
       }
-    })
+    }),
 
-
+    updateVenueLanPortSpecificSettings:
+      build.mutation<CommonResult, RequestPayload>({
+        query: ({ params, payload }) => {
+          const req = createHttpRequest(
+            CommonRbacUrlsInfo.updateVenueLanPortSpecificSettings, params)
+          return {
+            ...req,
+            body: JSON.stringify(payload)
+          }
+        }
+      })
   })
 })
 
@@ -2313,7 +2337,8 @@ export const {
   useUpdateVenueApSmartMonitorMutation,
 
   useGetVenueLanPortWithEthernetSettingsQuery,
-  useLazyGetVenueLanPortWithEthernetSettingsQuery
+  useLazyGetVenueLanPortWithEthernetSettingsQuery,
+  useUpdateVenueLanPortSpecificSettingsMutation
 } = venueApi
 
 

@@ -99,7 +99,7 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance           from './PortalInstance'
+import PortalInstance               from './PortalInstance'
 import {
   useNetworkVxLanTunnelProfileInfo,
   deriveRadiusFieldsFromServerData,
@@ -110,7 +110,8 @@ import {
   useAccessControlActivation,
   getDefaultMloOptions,
   useUpdateEdgeSdLanActivations,
-  useUpdateSoftGreActivations
+  useUpdateSoftGreActivations,
+  deriveWISPrFieldsFromServerData
 } from './utils'
 import { Venues } from './Venues/Venues'
 
@@ -337,6 +338,7 @@ export function NetworkForm (props:{
     if (!data) return
 
     let resolvedData = isUseWifiRbacApi ? data : deriveRadiusFieldsFromServerData(data)
+    resolvedData = deriveWISPrFieldsFromServerData(resolvedData)
 
     if (cloneMode) {
       formRef.current?.resetFields()
@@ -714,7 +716,7 @@ export function NetworkForm (props:{
 
     if (newNetworkVenues?.length) {
       newNetworkVenues?.forEach(networkVenue => {
-        if (!networkVenue.networkId) {
+        if (!networkVenue.networkId || networkVenue.networkId !== networkId) {
           networkVenue.networkId = networkId
         }
 
@@ -1054,6 +1056,7 @@ export function NetworkForm (props:{
         breadcrumb={breadcrumb}
       />}
       {(!editMode || cloneMode) &&
+      <Loader states={[{ isLoading: isLoading }]}>
         <NetworkFormContext.Provider value={{
           modalMode,
           createType,
@@ -1145,6 +1148,7 @@ export function NetworkForm (props:{
             </StepsFormLegacy>
           </MLOContext.Provider>
         </NetworkFormContext.Provider>
+      </Loader>
       }
       {editMode &&
       <Loader states={[{ isLoading: isLoading }]}>

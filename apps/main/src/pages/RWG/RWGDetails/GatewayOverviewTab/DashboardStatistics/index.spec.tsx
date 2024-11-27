@@ -1,11 +1,11 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
-import { venueApi }                                       from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo }                             from '@acx-ui/rc/utils'
-import { Provider, store }                                from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
+import { rwgApi }                                                           from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo }                                               from '@acx-ui/rc/utils'
+import { Provider, store }                                                  from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { DashboardStatistics } from '.'
 
@@ -60,6 +60,7 @@ const params = {
 describe('RWG Dashboard statistics', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    store.dispatch(rwgApi.util.resetApiState())
     mockServer.use(
       rest.get(
         CommonRbacUrlsInfo.getGateway.url,
@@ -80,8 +81,6 @@ describe('RWG Dashboard statistics', () => {
         (req, res, ctx) => res(ctx.json({}))
       )
     )
-
-    store.dispatch(venueApi.util.resetApiState())
   })
 
   it('should correctly render statistics', async () => {
@@ -90,9 +89,7 @@ describe('RWG Dashboard statistics', () => {
       route: { params }
     })
 
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
-    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     expect(await screen.findByText('Alarms')).toBeInTheDocument()
     expect(await screen.findByText('CPU')).toBeInTheDocument()
@@ -108,9 +105,7 @@ describe('RWG Dashboard statistics', () => {
       route: { params }
     })
 
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
-    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     await fireEvent.click(await screen.findByRole('button', { name: 'More Details' }))
 

@@ -8,20 +8,40 @@ import {
   mapDisconnectCode,
   mapDisconnectCodeToReason
 }                    from '@acx-ui/analytics/utils'
-import { formatter } from '@acx-ui/formatter'
-import { getIntl }   from '@acx-ui/utils'
+import { get }                    from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { formatter }              from '@acx-ui/formatter'
+import { getIntl }                from '@acx-ui/utils'
 
-import { FAILURE, DisplayEvent, SLOW, DISCONNECT } from './config'
-import { ConnectionSequenceDiagram }               from './ConnectionSequenceDiagram'
-import { DownloadPcap }                            from './DownloadPcap'
-import { Details }                                 from './EventDetails'
-import * as UI                                     from './styledComponents'
+import { FAILURE, DisplayEvent, SLOW, DISCONNECT, ROAMING, BTM_REQUEST, btmInfoToDisplayTextMap, BTM_RESPONSE } from './config'
+import { ConnectionSequenceDiagram }                                                                            from './ConnectionSequenceDiagram'
+import { DownloadPcap }                                                                                         from './DownloadPcap'
+import { Details }                                                                                              from './EventDetails'
+import * as UI                                                                                                  from './styledComponents'
 
+
+export const getRoamingTypeDisplayText = (roamingType: string) => {
+  const { $t } = getIntl()
+  switch (roamingType) {
+    case 'OKC': return $t({ defaultMessage: 'OKC Roaming' })
+    case 'PMK': return $t({ defaultMessage: 'PMKID Roaming' })
+    case 'Full Authentication':
+    case 'full-802.11': return $t({ defaultMessage: 'Full Authentication' })
+    case '11r':
+    case 'FT - Over-the-Air':
+      return $t({ defaultMessage: '11r Over-the-Air' })
+    case 'FT - Over-the-DS': return $t({ defaultMessage: '11r Over-the-DS' })
+    default: return roamingType
+  }
+}
 export const getConnectionDetails = (event: DisplayEvent) => {
   const intl = getIntl()
   const { $t } = intl
-  const { mac, apName, ssid, radio, code, ttc, state } = event
-
+  const isMLISA = get('IS_MLISA_SA')
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const isRoamingTypeEnabled = useIsSplitOn(Features.ROAMING_TYPE_EVENTS_TOGGLE)
+  const showRoamingType = isMLISA || isRoamingTypeEnabled
+  const { mac, apName, ssid, radio, code, ttc, state, type, roamingType, category, btmInfo } = event
   const eventDetails = [
     { label: $t({ defaultMessage: 'AP MAC' }), value: mac },
     { label: $t({ defaultMessage: 'AP Name' }), value: apName },
@@ -74,8 +94,30 @@ export const getConnectionDetails = (event: DisplayEvent) => {
       })
       break
     }
-  }
 
+    case BTM_REQUEST: // fallthrough
+    case BTM_RESPONSE: {
+      if (btmInfo) {
+        const label =
+          category === BTM_REQUEST
+            ? $t({ defaultMessage: 'Trigger' })
+            : $t({ defaultMessage: 'Status' })
+
+        eventDetails.push({
+          label,
+          value: btmInfoToDisplayTextMap[btmInfo] ?? btmInfo
+        })
+      }
+      break
+    }
+  }
+  if (type === ROAMING && showRoamingType) {
+    const label = $t({ defaultMessage: 'Roaming Type' })
+    const roamType = roamingType
+      ? { label, value: getRoamingTypeDisplayText(roamingType) }
+      : { label, value: $t({ defaultMessage: 'Unknown' }) }
+    eventDetails.push(roamType)
+  }
   return eventDetails
 }
 
