@@ -446,7 +446,7 @@ describe('usePieActionHandler', () => {
       usePieActionHandler(mockOnPieClick, mockOnLegendClick, 2, mockSetSelectedSlice)
     )
 
-    const [, createOnClickLegend] = result.current
+    const createOnClickLegend = result.current[1]
 
     const mockData: Partial<EventParams> & { name: string }[]= [
       { name: 'Slice A' },
@@ -460,7 +460,7 @@ describe('usePieActionHandler', () => {
       onClickLegend?.(mockEventParams as unknown as EventParams & { name: string })
     })
     expect(mockSetSelectedSlice).toHaveBeenCalledWith(null)
-    expect(mockOnLegendClick).toHaveBeenCalledWith({ name: 'Slice C' })
+    expect(mockOnLegendClick).toHaveBeenCalledWith(mockEventParams)
 
     mockSetSelectedSlice.mockClear()
     mockOnLegendClick.mockClear()
@@ -470,7 +470,7 @@ describe('usePieActionHandler', () => {
       onClickLegend?.(newMockEventParams as unknown as EventParams & { name: string })
     })
     expect(mockSetSelectedSlice).toHaveBeenCalledWith(0)
-    expect(mockOnLegendClick).toHaveBeenCalledWith({ name: 'Slice A' })
+    expect(mockOnLegendClick).toHaveBeenCalledWith(newMockEventParams)
 
     mockSetSelectedSlice.mockClear()
     mockOnLegendClick.mockClear()
