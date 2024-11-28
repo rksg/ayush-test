@@ -257,14 +257,27 @@ export const SummaryUl = styled.ul`
 
   li::marker {
     font-size: 8px;
-    color: black;
+    color: var( --acx-primary-black);
   }
 `
 
-export const SummaryLi = styled.li`
+export const SummaryLi = styled.li<{ selected?: boolean }>`
   text-decoration-skip-ink: none;
   text-decoration-line: underline;
   margin-bottom: 5px;
+  font-weight: var(--acx-headline-5-font-weight);
+  cursor: pointer;
+
+  ${(props) =>
+    props.selected &&
+    `
+    color:  var(--acx-accents-orange-50);
+    font-weight: var(--acx-headline-5-font-weight-bold);
+      ` }
+
+  &:hover {
+    color:  var(--acx-accents-orange-50);
+  }
 `
 
 export const VlanSummaryLi = styled.li`
@@ -278,7 +291,7 @@ export const SummarySplitContainer = styled.div`
 export const SummaryDivider = styled.div`
   width: 1px;
   margin: 0 20px 0 20px;
-  background-color: #C4C4C4;
+  background-color: var(--acx-neutrals-40);
 `
 
 export const SummaryBox = styled.div`

@@ -1,23 +1,35 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { Form }    from 'antd'
-import { useIntl } from 'react-intl'
+import { Button, Form } from 'antd'
+import { useIntl }      from 'react-intl'
 
-import { cssStr }                        from '@acx-ui/components'
-import { NetworkTypeEnum, networkTypes } from '@acx-ui/rc/utils'
+import { cssStr }                  from '@acx-ui/components'
+import {
+  NetworkTypeEnum,
+  networkTypes,
+  RuckusAiConfigurationStepsEnum
+} from '@acx-ui/rc/utils'
 
 import * as UI                            from './styledComponents'
 import { NetworkSummaryPage }             from './SummaryPages/NetworkSummaryPage'
 import { SwitchConfigurationSummaryPage } from './SummaryPages/SwitchConfigurationSummaryPage'
 
 export function SummaryStep (props: {
-  payload: string
+  payload: string,
+  setCurrentStep: (currentStep: number) => void,
+  currentStep: number
 }) {
   const { $t } = useIntl()
   const data = props.payload ? JSON.parse(props.payload) : {}
   const [summaryId, setSummaryId] = useState('' as string)
-  const [summaryType, setSummaryType] = useState('' as string)
+  const [summaryType, setSummaryType] = useState<RuckusAiConfigurationStepsEnum | ''>('')
   const [summaryTitle, setSummaryTitle] = useState('' as string)
+
+  useEffect(() => {
+    setSummaryId('')
+    setSummaryType('')
+    setSummaryTitle('')
+  }, [props.currentStep])
 
   const getNetworkTypeDescription = (type: NetworkTypeEnum) => {
     return $t(networkTypes[type]) || 'Unknown Type'
@@ -47,6 +59,14 @@ export function SummaryStep (props: {
         <UI.SummaryBox>
           {/* Wireless Networks */}
           <UI.SummaryContainer>
+            <Button key='editNetworksBtn'
+              type='link'
+              style={{ float: 'right' }}
+              onClick={() => {
+                props.setCurrentStep(1)
+              }}>
+              {$t({ defaultMessage: 'Edit' })}
+            </Button>
             <Form.Item
               label={
                 <UI.SummaryContainerHeader>
@@ -59,13 +79,15 @@ export function SummaryStep (props: {
                   data?.wlan?.map((item: any, index: number) => {
                     const { id, 'SSID Name': ssidName, 'SSID Type': ssidType } = item
                     const title = `${ssidName} with ${getNetworkTypeDescription(ssidType)}`
+                    const sid = `${id}?type=${ssidType}`
                     return (
                       <UI.SummaryLi
                         key={index}
+                        selected={summaryId === sid &&
+                          summaryType === RuckusAiConfigurationStepsEnum.WLANDETAIL}
                         onClick={() => {
-                          const sid = `${id}?type=${ssidType}`
                           setSummaryId(sid)
-                          setSummaryType('Network')
+                          setSummaryType(RuckusAiConfigurationStepsEnum.WLANDETAIL)
                           setSummaryTitle(title)
                         }}
                       > {title}
@@ -79,6 +101,14 @@ export function SummaryStep (props: {
 
           {/* Switch Configuration VLAN */}
           {data.vlan && data.vlan.length > 0 && <UI.SummaryContainer>
+            <Button key='editSwitchConfigurationBtn'
+              type='link'
+              style={{ float: 'right' }}
+              onClick={() => {
+                props.setCurrentStep(2)
+              }}>
+              {$t({ defaultMessage: 'Edit' })}
+            </Button>
             <Form.Item
               label={
                 <UI.SummaryContainerHeader>
@@ -92,9 +122,11 @@ export function SummaryStep (props: {
                     const { id, 'VLAN Name': vlanName, 'VLAN ID': vlanId } = item
                     const title = `${vlanName} @ VLAN  ${vlanId}`
                     return <UI.SummaryLi key={index}
+                      selected={summaryId === id &&
+                        summaryType === RuckusAiConfigurationStepsEnum.VLAN}
                       onClick={() => {
                         setSummaryId(id)
-                        setSummaryType('SwitchConfiguration')
+                        setSummaryType(RuckusAiConfigurationStepsEnum.VLAN)
                         setSummaryTitle(title)
                       }}>
                       {title}
@@ -109,11 +141,11 @@ export function SummaryStep (props: {
 
         {/* Right Box */}
         <UI.SummaryBox>
-          {summaryType === 'Network' && <UI.SummaryContainer>
+          {summaryType === RuckusAiConfigurationStepsEnum.WLANDETAIL && <UI.SummaryContainer>
             <NetworkSummaryPage summaryId={summaryId} summaryTitle={summaryTitle} />
           </UI.SummaryContainer>}
 
-          {summaryType === 'SwitchConfiguration' && <UI.SummaryContainer>
+          {summaryType === RuckusAiConfigurationStepsEnum.VLAN && <UI.SummaryContainer>
             <SwitchConfigurationSummaryPage summaryId={summaryId} summaryTitle={summaryTitle}/>
           </UI.SummaryContainer>}
 
@@ -123,3 +155,4 @@ export function SummaryStep (props: {
     </div>
   </div>
 }
+

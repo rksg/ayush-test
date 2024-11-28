@@ -25,6 +25,8 @@ describe('SummaryStep', () => {
       <Provider>
         <Form>
           <SummaryStep
+            setCurrentStep={jest.fn()}
+            currentStep={3}
             payload={mock_payload}
           />
         </Form>
@@ -37,6 +39,8 @@ describe('SummaryStep', () => {
       <Provider>
         <Form>
           <SummaryStep
+            setCurrentStep={jest.fn()}
+            currentStep={3}
             payload={mock_payload}
           />
         </Form>
@@ -53,6 +57,8 @@ describe('SummaryStep', () => {
       <Provider>
         <Form>
           <SummaryStep
+            setCurrentStep={jest.fn()}
+            currentStep={3}
             payload={mock_payload}
           />
         </Form>
