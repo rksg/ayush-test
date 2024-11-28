@@ -63,6 +63,7 @@ export enum Features {
   EOL_AP_2022_12_PHASE_2_TOGGLE = 'eol-ap-2022-12-phase-2-toggle',
   ETHERNET_PORT_PROFILE_TOGGLE = 'acx-ui-ethernet-toggle',
   ETHERNET_PORT_PROFILE_DVLAN_TOGGLE = 'acx-ui-ethernet-dvlan-toggle',
+  ETHERNET_PORT_SUPPORT_PROXY_RADIUS_TOGGLE='acx-ethernet-port-support-proxy-radius-toggle',
   EXPORT_DEVICE = 'viewmodel-export-device-inventory',
   EXPORT_EVENTS_TOGGLE = 'acx-ui-scheduled-events-export-toggle',
   G_MAP = 'acx-ui-maps-api-toggle',
@@ -225,7 +226,8 @@ export enum Features {
   POLICY_IDENTITY_TOGGLE = 'policy-identity-toggle',
   ACX_UI_GATEWAYS_MENU_OPTION_TOGGLE = 'acx-ui-gateways-menu-option-toggle',
   BTM_EVENTS_TOGGLE = 'acx-ui-btm-events-toggle',
-  RUCKUS_AI_BTM_EVENTS_TOGGLE = 'ruckus-ai-btm-events-toggle'
+  RUCKUS_AI_BTM_EVENTS_TOGGLE = 'ruckus-ai-btm-events-toggle',
+  MLISA_4_11_0_TOGGLE = 'acx-ui-mlisa-4-11-0-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
