@@ -267,7 +267,9 @@ export const SummaryLi = styled.li`
   margin-bottom: 5px;
 `
 
-
+export const VlanSummaryLi = styled.li`
+  margin-bottom: 5px;
+`
 
 export const SummarySplitContainer = styled.div`
   display: flex;
