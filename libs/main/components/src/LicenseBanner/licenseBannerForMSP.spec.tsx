@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }            from '@acx-ui/msp/utils'
-import { LicenseUrlsInfo }        from '@acx-ui/rc/utils'
-import { Provider }               from '@acx-ui/store'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { MspRbacUrlsInfo, MspUrlsInfo } from '@acx-ui/msp/utils'
+import { LicenseUrlsInfo }              from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -135,6 +135,12 @@ describe('License Banner Component', () => {
       rest.get(
         MspUrlsInfo.getMspEntitlementBanner.url,
         (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.post(
+        MspRbacUrlsInfo.getEntitlementsAttentionNotes.url,
+        (req, res, ctx) => res(ctx.json({
+          data: [{ summary: 'Test Summary', details: 'Test Details' }]
+        }))
       )
     )
   })
