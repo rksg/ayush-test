@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { ConfigChange, TableProps }                                                       from '@acx-ui/components'
+import { ConfigChange, getConfigChangeEntityTypeMapping, TableProps }                     from '@acx-ui/components'
 import { get }                                                                            from '@acx-ui/config'
 import { Provider, dataApiURL, store }                                                    from '@acx-ui/store'
 import { findTBody, mockGraphqlQuery, render, within, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -350,10 +350,10 @@ describe('CSV Functions', () => {
     const anchorMock = document.createElement('a')
     jest.spyOn(document, 'createElement').mockReturnValue(anchorMock)
     anchorMock.click = downloadSpy
-    downloadConfigChangeList(data, columns)
+    downloadConfigChangeList(data, columns, getConfigChangeEntityTypeMapping(true))
     expect(global.Blob).toHaveBeenCalledWith(
       // eslint-disable-next-line max-len
-      ['"Timestamp","Entity Type","Entity Name","Configuration","Change From","Change To"\n"1732683083229","ap","00:33:58:2B:97:30","initialState.ccmAp.radio_configs.radio6g.radio.wlan_service_enabled","false","true"\n"1732101890307","wlan","##ML_AP-28651","initialState.CcmWlan.multi_link_operation.radio_6g_enabled","false","true"\n"1732095124567","zone","SERVICE_VALIDATION_TEST_7.1.1","initialState.ccmZone.version","7.1.1.0.116","7.1.1.0.126"\n'],
+      ['"Timestamp","Entity Type","Entity Name","Configuration","Change From","Change To"\n"11/27/2024 04:51","AP","00:33:58:2B:97:30","Enable 6 GHz band","false","true"\n"11/20/2024 11:24","WLAN","##ML_AP-28651","Multi Link Operation (6 GHz)","false","true"\n"11/20/2024 09:32","Zone","SERVICE_VALIDATION_TEST_7.1.1","Firmware Update","7.1.1.0.116","7.1.1.0.126"\n'],
       { type: 'text/csv;charset=utf-8;' }
     )
   })

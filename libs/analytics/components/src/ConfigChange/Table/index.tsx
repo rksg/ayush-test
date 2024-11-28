@@ -18,11 +18,12 @@ import {
   getConfigChangeEntityTypeMapping,
   Cascader
 }                                             from '@acx-ui/components'
-import { get }                                                         from '@acx-ui/config'
-import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
-import { DownloadOutlined }                                            from '@acx-ui/icons'
-import { exportMessageMapping, noDataDisplay, handleBlobDownloadFile } from '@acx-ui/utils'
+import { get }                                                                  from '@acx-ui/config'
+import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                                                     from '@acx-ui/icons'
+import { exportMessageMapping, noDataDisplay, getIntl, handleBlobDownloadFile } from '@acx-ui/utils'
 
+import { ChartRowMappingType }                   from '../../../../../common/components/src/components/ConfigChangeChart/helper'
 import { ConfigChangeContext, KPIFilterContext } from '../context'
 import { hasConfigChange }                       from '../KPI'
 import { useConfigChangeQuery }                  from '../services'
@@ -32,14 +33,37 @@ import { filterData, formatTimestamp, getConfiguration, getEntityValue } from '.
 
 export function downloadConfigChangeList (
   configChanges: ConfigChange[],
-  columns: TableProps<ConfigChange>['columns']
+  columns: TableProps<ConfigChange>['columns'],
+  entityTypeMapping: ChartRowMappingType[]
 ) {
+  const { $t } = getIntl()
   const data = stringify(
-    configChanges.map(configChange => ({
-      ...configChange,
-      oldValues: configChange.oldValues.join(', '),
-      newValues: configChange.newValues.join(', ')
-    })),
+    configChanges.map(item => {
+      const configValue = getConfiguration(item.type, item.key)
+
+      const oldValues = item.oldValues?.map(value => {
+        const mapped = getEntityValue(item.type, item.key, value)
+        return (typeof mapped === 'string')
+          ? mapped : $t(mapped as MessageDescriptor)
+      })
+
+      const newValues = item.newValues?.map(value => {
+        const mapped = getEntityValue(item.type, item.key, value)
+        return (typeof mapped === 'string')
+          ? mapped : $t(mapped as MessageDescriptor)
+      })
+
+      return ({
+        timestamp: formatTimestamp(item.timestamp),
+        type: entityTypeMapping.find(type => type.key === item.type)?.label || item.type,
+        name: item.name,
+        key: (typeof configValue === 'string')
+          ? configValue
+          : $t(configValue as MessageDescriptor),
+        oldValues: oldValues.join(', '),
+        newValues: newValues.join(', ')
+      })
+    }),
     {
       header: true,
       quoted: true,
@@ -159,32 +183,6 @@ export function Table (props: {
     }
   ]
 
-  const configChanges = queryResults.data?.map(item => {
-    const configValue = getConfiguration(item.type, item.key)
-
-    const oldValues = item.oldValues?.map(value => {
-      const mapped = getEntityValue(item.type, item.key, value)
-      return (typeof mapped === 'string')
-        ? mapped : $t(mapped as MessageDescriptor)
-    })
-
-    const newValues = item.newValues?.map(value => {
-      const mapped = getEntityValue(item.type, item.key, value)
-      return (typeof mapped === 'string')
-        ? mapped : $t(mapped as MessageDescriptor)
-    })
-
-    return ({
-      timestamp: formatTimestamp(item.timestamp),
-      type: entityTypeMapping.find(type => type.key === item.type)?.label || item.type,
-      name: item.name,
-      key: (typeof configValue === 'string')
-        ? configValue
-        : $t(configValue as MessageDescriptor),
-      oldValues: oldValues,
-      newValues: newValues
-    })})
-
   const rowSelection = {
     onChange: (_: React.Key[], selectedRows: ConfigChange[]) => {
       onRowClick?.(selectedRows[0])
@@ -236,7 +234,7 @@ export function Table (props: {
           disabled: !Boolean(queryResults.data?.length),
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: () => {
-            downloadConfigChangeList(configChanges, ColumnHeaders)
+            downloadConfigChangeList(queryResults.data, ColumnHeaders, entityTypeMapping)
           } }}
       />
     </Loader>
