@@ -227,6 +227,7 @@ export enum Features {
   ACX_UI_GATEWAYS_MENU_OPTION_TOGGLE = 'acx-ui-gateways-menu-option-toggle',
   BTM_EVENTS_TOGGLE = 'acx-ui-btm-events-toggle',
   RUCKUS_AI_BTM_EVENTS_TOGGLE = 'ruckus-ai-btm-events-toggle',
+  MLISA_4_11_0_TOGGLE = 'acx-ui-mlisa-4-11-0-toggle',
   ANALYTIC_SNAPSHOT_TOGGLE = 'acx-ui-analytic-snapshot-toggle'
 }
 

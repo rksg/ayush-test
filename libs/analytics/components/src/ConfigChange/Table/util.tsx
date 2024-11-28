@@ -9,14 +9,14 @@ import { apKeyMap }                  from './mapping/apKeyMap'
 import { apSpecificKeyMap }          from './mapping/apSpecificKeyMap'
 import { enumMap }                   from './mapping/enumMap'
 import { ethernetPortProfileKeyMap } from './mapping/ethernetPortProfileKeyMap'
-import { intentAi }                  from './mapping/intentAi'
+import { intentAIKeyMap }            from './mapping/intentAIKeyMap'
 import { wlanGroupKeyMap }           from './mapping/wlanGroupKeyMap'
 import { wlanKeyMap }                from './mapping/wlanKeyMap'
 import { zoneKeyMap }                from './mapping/zoneKeyMap'
 
 const filteredConfigText = ['TBD', 'NA']
 
-export type EntityType = 'zone' | 'wlan' | 'apGroup' | 'ap'
+export type EntityType = 'zone' | 'wlan' | 'apGroup' | 'ap' | 'intentAI'
 
 type MappingFields = 'text' | 'textAlto' | 'enumType'
 
@@ -69,8 +69,8 @@ export const jsonMapping = {
     enumMap: enumMapGenerator(apKeyMap, apSpecificKeyMap)
   },
   intentAI: {
-    configMap: configMapGenerator(intentAi),
-    enumMap: enumMapGenerator(intentAi)
+    configMap: configMapGenerator(intentAIKeyMap),
+    enumMap: enumMapGenerator(intentAIKeyMap)
   }
 }
 
@@ -81,14 +81,17 @@ const configChangekpiMap = [
   ...ethernetPortProfileKeyMap,
   ...wlanGroupKeyMap,
   ...wlanKeyMap,
-  ...zoneKeyMap
+  ...zoneKeyMap,
+  ...intentAIKeyMap
 ].reduce((configMap, config) => {
   configMap[config.value] = Object.keys(config.kpis)
   return configMap
 }, {} as Record<string, string[]>)
 
-export const filterData = (data: ConfigChange[], kpiKeys: string[], legend: string[]) => {
-  const mapping = getConfigChangeEntityTypeMapping()
+export const filterData = (
+  data: ConfigChange[], kpiKeys: string[], legend: string[], showIntentAI: boolean
+) => {
+  const mapping = getConfigChangeEntityTypeMapping(showIntentAI)
   return data.filter(row => legend.includes(mapping.find(i => i.key === row.type)!.label))
     .map((value, filterId)=>({ ...value, filterId })).filter(row => kpiKeys.length
       ? kpiKeys.some(k => configChangekpiMap[row.key]?.includes(k))
