@@ -5,6 +5,7 @@ import { debounce }                        from 'lodash'
 import { renderToString }                  from 'react-dom/server'
 
 import { get }                              from '@acx-ui/config'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }        from '@acx-ui/formatter'
 import { getIntl, TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
@@ -42,24 +43,28 @@ export interface ConfigChangeChartProps extends Omit<EChartsReactProps, 'option'
 }
 
 type ChartRowMappingType = { key: string, label: string, color: string }
-export function getConfigChangeEntityTypeMapping () : ChartRowMappingType[] {
+export function getConfigChangeEntityTypeMapping (showIntentAI: boolean) : ChartRowMappingType[] {
   const { $t } = getIntl()
   const colors = qualitativeColorSet()
   const rcMap = [
     { key: 'zone', label: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }) },
     { key: 'wlan', label: $t({ defaultMessage: 'WLAN' }) },
     { key: 'apGroup', label: $t({ defaultMessage: 'AP Group' }) },
-    { key: 'ap', label: $t({ defaultMessage: 'AP' }) }
+    { key: 'ap', label: $t({ defaultMessage: 'AP' }) },
+    { key: 'intentAI', label: $t({ defaultMessage: 'IntentAI' }) }
   ]
   const raMap = [
     { key: 'zone', label: $t({ defaultMessage: 'Zone' }) },
     { key: 'wlanGroup', label: $t({ defaultMessage: 'WLAN Group' }) },
     { key: 'wlan', label: $t({ defaultMessage: 'WLAN' }) },
     { key: 'apGroup', label: $t({ defaultMessage: 'AP Group' }) },
-    { key: 'ap', label: $t({ defaultMessage: 'AP' }) }
+    { key: 'ap', label: $t({ defaultMessage: 'AP' }) },
+    { key: 'intentAI', label: $t({ defaultMessage: 'IntentAI' }) }
   ]
   return (get('IS_MLISA_SA') ? raMap : rcMap)
-    .slice(0).map((rec, index) => ({ ...rec, color: colors[index] })).reverse()
+    .slice(0).map((rec, index) => ({ ...rec, color: colors[index] }))
+    .reverse()
+    .filter(entity => showIntentAI ? true : (entity.key !== 'intentAI') )
 }
 
 const rowHeight = 16, rowGap = 4
@@ -413,8 +418,12 @@ export function useLegendTableFilter (
   setSelectedData?: React.Dispatch<React.SetStateAction<ConfigChange | null>>,
   setPagination?: (params: { current: number, pageSize: number }) => void
 ){
+  const isMLISA = get('IS_MLISA_SA')
+  const isIntentAIConfigChangeEnable = useIsSplitOn(Features.MLISA_4_11_0_TOGGLE)
+  const showIntentAI = Boolean(isMLISA || isIntentAIConfigChangeEnable)
+
   useEffect(() => {
-    const chartRowMapping = getConfigChangeEntityTypeMapping()
+    const chartRowMapping = getConfigChangeEntityTypeMapping(showIntentAI)
     setLegend?.(selectedLegend)
     const selectedConfig = data.filter(i => i.id === selectedData?.id)
     const selectedType = chartRowMapping.filter(
@@ -492,8 +501,8 @@ export const hexToRGB = (hex: string) =>
 export const getSelectedDot = (color: string) =>
   // eslint-disable-next-line max-len
   `image://data:image/svg+xml;utf8,<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M10 5.5C10 7.98528 7.98528 10 5.5 10C3.01472 10 1 7.98528 1 5.5C1 3.01472 3.01472 1 5.5 1C7.98528 1 10 3.01472 10 5.5ZM11 5.5C11 8.53757 8.53757 11 5.5 11C2.46243 11 0 8.53757 0 5.5C0 2.46243 2.46243 0 5.5 0C8.53757 0 11 2.46243 11 5.5ZM5.5 9C7.433 9 9 7.433 9 5.5C9 3.567 7.433 2 5.5 2C3.567 2 2 3.567 2 5.5C2 7.433 3.567 9 5.5 9Z" fill="${color}"/></svg>`
-export const getSymbol = (selected: number) =>
+export const getSymbol = (selected: number, showIntentAI: boolean) =>
   (value: [number, string, ConfigChange]) => (value[2].id !== selected)
     ? 'circle'
-    : getSelectedDot(hexToRGB(getConfigChangeEntityTypeMapping()
+    : getSelectedDot(hexToRGB(getConfigChangeEntityTypeMapping(showIntentAI)
       .filter(({ key }) => key === value[2].type)[0].color))
