@@ -16,6 +16,8 @@ import {
   Filter
 }                                    from '@acx-ui/components'
 import { ConfigChangePaginationParams } from '@acx-ui/components'
+import { get }                          from '@acx-ui/config'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
 import { noDataDisplay }                from '@acx-ui/utils'
 
@@ -36,6 +38,11 @@ const transferSorter = (order:string) => {
 }
 
 export function PagedTable () {
+
+  const isMLISA = get('IS_MLISA_SA')
+  const isIntentAIConfigChangeEnable = useIsSplitOn(Features.MLISA_4_11_0_TOGGLE)
+  const showIntentAI = Boolean(isMLISA || isIntentAIConfigChangeEnable)
+
   const { $t } = useIntl()
   const { pathFilters } = useAnalyticsFilter()
   const {
@@ -67,7 +74,7 @@ export function PagedTable () {
     [queryResults]
   )
 
-  const entityTypeMapping = getConfigChangeEntityTypeMapping()
+  const entityTypeMapping = getConfigChangeEntityTypeMapping(showIntentAI)
 
   const ColumnHeaders: TableProps<PagedConfigChange['data'][0]>['columns'] = [
     {

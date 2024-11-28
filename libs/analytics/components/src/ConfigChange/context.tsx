@@ -70,6 +70,8 @@ export function ConfigChangeProvider (props: {
   const isMLISA = get('IS_MLISA_SA')
   const isPagedConfigChange = useIsSplitOn(Features.CONFIG_CHANGE_PAGINATION)
   const isPaged = Boolean(isMLISA || isPagedConfigChange)
+  const isIntentAIConfigChangeEnable = useIsSplitOn(Features.MLISA_4_11_0_TOGGLE)
+  const showIntentAI = Boolean(isMLISA || isIntentAIConfigChangeEnable)
 
   const [pagination, setPagination] = useState<
     ConfigChangePaginationParams
@@ -145,7 +147,7 @@ export function ConfigChangeProvider (props: {
     applyKpiFilter: (keys: string[]) => setKpiFilter(keys)
   }
 
-  const legendList = getConfigChangeEntityTypeMapping()
+  const legendList = getConfigChangeEntityTypeMapping(showIntentAI)
   const [entityNameSearch, setEntityNameSearch] = useState<string>('')
   const [entityTypeFilter, setEntityTypeFilter] = useState<string[]>([])
   const [legendFilter, setLegendFilter] = useState<string[]>(legendList.map(item => item.key))
@@ -170,8 +172,6 @@ export function ConfigChangeProvider (props: {
     ...actionContext,
     reset
   }
-
-  console.log(context)
 
   return <ConfigChangeContext.Provider
     value={context}

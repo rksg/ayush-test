@@ -138,7 +138,8 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       filters
     },
     search: {
-      searchTargetFields: newDefaultApPayload.searchTargetFields
+      searchTargetFields: newDefaultApPayload.searchTargetFields,
+      searchString: ''
     },
     option: { skip: Boolean(props.tableQuery) || isNetworkLoading },
     // enableSelectAllPagesData: ['id', 'name', 'serialNumber', 'apGroupId',
@@ -602,6 +603,8 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       key: 'actualTxPower',
       dataIndex: 'actualTxPower',
       title: $t({ defaultMessage: 'Tx Power' }),
+      show: false,
+      sorter: false,
       children: Object.entries(extraParams).reduce((acc, [channel, visible]) => {
         if (!visible) return acc
         const channelKey = channel as keyof ApExtraParams

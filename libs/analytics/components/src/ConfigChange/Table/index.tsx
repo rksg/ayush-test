@@ -12,6 +12,8 @@ import {
   getConfigChangeEntityTypeMapping,
   Cascader
 }                                                    from '@acx-ui/components'
+import { get }                       from '@acx-ui/config'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { noDataDisplay }             from '@acx-ui/utils'
 
@@ -23,6 +25,11 @@ import { Badge, CascaderFilterWrapper }                     from './styledCompon
 import { EntityType, enumTextMap, filterData, jsonMapping } from './util'
 
 export function Table () {
+
+  const isMLISA = get('IS_MLISA_SA')
+  const isIntentAIConfigChangeEnable = useIsSplitOn(Features.MLISA_4_11_0_TOGGLE)
+  const showIntentAI = Boolean(isMLISA || isIntentAIConfigChangeEnable)
+
   const { $t } = useIntl()
   const { pathFilters } = useAnalyticsFilter()
   const {
@@ -42,7 +49,7 @@ export function Table () {
     data: filterData(queryResults.data ?? [], kpiFilter, legendFilter)
   }) })
 
-  const entityTypeMapping = getConfigChangeEntityTypeMapping()
+  const entityTypeMapping = getConfigChangeEntityTypeMapping(showIntentAI)
 
   const ColumnHeaders: TableProps<ConfigChange>['columns'] = [
     {
