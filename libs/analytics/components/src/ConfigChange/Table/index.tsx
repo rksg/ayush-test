@@ -22,7 +22,7 @@ import { get }                                                                  
 import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { DownloadOutlined }                                                     from '@acx-ui/icons'
-import { exportMessageMapping, noDataDisplay, getIntl, handleBlobDownloadFile } from '@acx-ui/utils'
+import { exportMessageMapping, noDataDisplay, getIntl, handleBlobDownloadFile, PathFilter } from '@acx-ui/utils'
 
 import { ChartRowMappingType }                   from '../../../../../common/components/src/components/ConfigChangeChart/helper'
 import { ConfigChangeContext, KPIFilterContext } from '../context'
@@ -35,7 +35,8 @@ import { filterData, getConfiguration, getEntityValue } from './util'
 export function downloadConfigChangeList (
   configChanges: ConfigChange[],
   columns: TableProps<ConfigChange>['columns'],
-  entityTypeMapping: ChartRowMappingType[]
+  entityTypeMapping: ChartRowMappingType[],
+  { startDate, endDate }: PathFilter
 ) {
   const { $t } = getIntl()
   const data = stringify(
@@ -79,7 +80,7 @@ export function downloadConfigChangeList (
   )
   handleBlobDownloadFile(
     new Blob([data], { type: 'text/csv;charset=utf-8;' }),
-    'Config-Changes.csv'
+    `Config-Changes-${startDate}-${endDate}.csv`
   )
 }
 
@@ -235,7 +236,7 @@ export function Table (props: {
           disabled: !Boolean(queryResults.data?.length),
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: () => {
-            downloadConfigChangeList(queryResults.data, ColumnHeaders, entityTypeMapping)
+            downloadConfigChangeList(queryResults.data, ColumnHeaders, entityTypeMapping, pathFilters)
           } }}
       />
     </Loader>

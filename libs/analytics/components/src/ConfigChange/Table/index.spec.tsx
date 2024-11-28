@@ -6,7 +6,7 @@ import { ConfigChange, getConfigChangeEntityTypeMapping, TableProps }           
 import { get }                                                                            from '@acx-ui/config'
 import { Provider, dataApiURL, store }                                                    from '@acx-ui/store'
 import { findTBody, mockGraphqlQuery, render, within, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
-import { DateRange }                                                                      from '@acx-ui/utils'
+import { DateRange, PathFilter }                                                          from '@acx-ui/utils'
 
 import { configChanges }        from '../__tests__/fixtures'
 import { ConfigChangeProvider } from '../context'
@@ -350,7 +350,10 @@ describe('CSV Functions', () => {
     const anchorMock = document.createElement('a')
     jest.spyOn(document, 'createElement').mockReturnValue(anchorMock)
     anchorMock.click = downloadSpy
-    downloadConfigChangeList(data, columns, getConfigChangeEntityTypeMapping(true))
+    downloadConfigChangeList(data, columns, getConfigChangeEntityTypeMapping(true), {
+      startDate: '2023-08-22T10:19:00+08:00',
+      endDate: '2023-08-23T10:19:00+08:00'
+    } as PathFilter)
     expect(global.Blob).toHaveBeenCalledWith(
       // eslint-disable-next-line max-len
       ['"Timestamp","Entity Type","Entity Name","Configuration","Change From","Change To"\n"2024-11-27T04:51:23+00:00","AP","00:33:58:2B:97:30","Enable 6 GHz band","false","true"\n"2024-11-20T11:24:50+00:00","WLAN","##ML_AP-28651","Multi Link Operation (6 GHz)","false","true"\n"2024-11-20T09:32:04+00:00","Zone","SERVICE_VALIDATION_TEST_7.1.1","Firmware Update","7.1.1.0.116","7.1.1.0.126"\n'],
