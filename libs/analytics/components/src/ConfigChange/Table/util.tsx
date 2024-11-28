@@ -104,10 +104,6 @@ export const formatTimestamp = (timestamp: string) => {
   return formatter(DateFormatEnum.DateTimeFormat)(moment(Number(timestamp)))
 }
 
-export const getEntityType = (type: string) => {
-  return getConfigChangeEntityTypeMapping().find(entityType => entityType.key === type)
-}
-
 export const getEntityValue = (type: string, key: string, value: string) => {
   return enumTextMap.get(
     `${(jsonMapping[type as EntityType].enumMap).get(key, '')}-${value}`, value)
