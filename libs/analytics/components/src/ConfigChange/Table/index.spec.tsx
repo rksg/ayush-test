@@ -3,6 +3,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
 import { ConfigChange, TableProps }                                                       from '@acx-ui/components'
+import { get }                                                                            from '@acx-ui/config'
 import { Provider, dataApiURL, store }                                                    from '@acx-ui/store'
 import { findTBody, mockGraphqlQuery, render, within, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { DateRange }                                                                      from '@acx-ui/utils'
@@ -13,18 +14,24 @@ import { api }                  from '../services'
 
 import { downloadConfigChangeList, Table } from '.'
 
+const mockGet = jest.mocked(get)
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
+
 describe('Table', () => {
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
+    mockGet.mockReturnValue('true')
   })
   const handleClick = jest.fn()
   const setPagination = jest.fn()
 
-  const legend = { 'AP': true, 'AP Group': true, 'Venue': true, 'WLAN': true, 'WLAN Group': true }
+  const legend = { 'AP': true, 'AP Group': true, 'Zone': true, 'WLAN': true, 'WLAN Group': true }
   it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
-    render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
       <Table
         selected={null}
         onRowClick={handleClick}
@@ -40,7 +47,7 @@ describe('Table', () => {
   it('should render table with no data', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
-    render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
       <Table
         selected={null}
         onRowClick={handleClick}
@@ -62,7 +69,7 @@ describe('Table', () => {
   it('should render table with valid input', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-    render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
       <Table
         selected={null}
         onRowClick={handleClick}
@@ -93,13 +100,14 @@ describe('Table', () => {
     const filteredLegend = {
       'AP': false,
       'AP Group': true,
-      'Venue': true,
+      'Zone': true,
       'WLAN': false,
-      'WLAN Group': true
+      'WLAN Group': true,
+      'IntentAI': false
     }
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-    render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
       <Table
         selected={null}
         onRowClick={handleClick}
@@ -123,7 +131,7 @@ describe('Table', () => {
   it('should handle click correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-    render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
       <Table
         selected={null}
         onRowClick={handleClick}
@@ -156,7 +164,7 @@ describe('Table', () => {
   it('should handle kpi filter', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-    render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
       <Table
         selected={null}
         onRowClick={handleClick}
@@ -186,7 +194,7 @@ describe('Table', () => {
       { data: { network: { hierarchyNode: {
         configChanges: configChanges.slice(0, 7).concat(new Array(10).fill(configChanges[7]))
       } } } })
-    render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
       <Table
         selected={null}
         onRowClick={handleClick}
@@ -213,7 +221,7 @@ describe('Table', () => {
     }
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-    render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
       <Table
         selected={selected}
         onRowClick={handleClick}

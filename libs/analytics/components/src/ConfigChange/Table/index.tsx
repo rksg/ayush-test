@@ -18,6 +18,8 @@ import {
   getConfigChangeEntityTypeMapping,
   Cascader
 }                                             from '@acx-ui/components'
+import { get }                                                         from '@acx-ui/config'
+import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                                            from '@acx-ui/icons'
 import { exportMessageMapping, noDataDisplay, handleBlobDownloadFile } from '@acx-ui/utils'
 
@@ -25,8 +27,8 @@ import { ConfigChangeContext, KPIFilterContext } from '../context'
 import { hasConfigChange }                       from '../KPI'
 import { useConfigChangeQuery }                  from '../services'
 
-import { Badge, CascaderFilterWrapper }                                                 from './styledComponents'
-import { filterData, formatTimestamp, getConfiguration, getEntityType, getEntityValue } from './util'
+import { Badge, CascaderFilterWrapper }                                  from './styledComponents'
+import { filterData, formatTimestamp, getConfiguration, getEntityValue } from './util'
 
 export function downloadConfigChangeList (
   configChanges: ConfigChange[],
@@ -64,6 +66,10 @@ export function Table (props: {
   dotSelect: number | null,
   legend: Record<string, boolean>
 }) {
+  const isMLISA = get('IS_MLISA_SA')
+  const isIntentAIConfigChangeEnable = useIsSplitOn(Features.MLISA_4_11_0_TOGGLE)
+  const showIntentAI = Boolean(isMLISA || isIntentAIConfigChangeEnable)
+
   const { $t } = useIntl()
   const { kpiFilter, applyKpiFilter } = useContext(KPIFilterContext)
   const { timeRanges: [startDate, endDate] } = useContext(ConfigChangeContext)
@@ -77,8 +83,10 @@ export function Table (props: {
     endDate: endDate.toISOString()
   }, { selectFromResult: queryResults => ({
     ...queryResults,
-    data: filterData(queryResults.data ?? [], kpiFilter, legendList)
+    data: filterData(queryResults.data ?? [], kpiFilter, legendList, showIntentAI)
   }) })
+
+  const entityTypeMapping = getConfigChangeEntityTypeMapping(showIntentAI)
 
   const ColumnHeaders: TableProps<ConfigChange>['columns'] = [
     {
@@ -94,11 +102,10 @@ export function Table (props: {
       title: $t({ defaultMessage: 'Entity Type' }),
       dataIndex: 'type',
       render: (_, row) => {
-        const config = getEntityType(row.type)
+        const config = entityTypeMapping.find(type => type.key === row.type)
         return config ? <Badge key={row.id} color={config.color} text={config.label}/> : row.type
       },
-      filterable: getConfigChangeEntityTypeMapping()
-        .map(({ label, ...rest }) => ({ ...rest, value: label })),
+      filterable: entityTypeMapping.map(({ label, ...rest }) => ({ ...rest, value: label })),
       sorter: { compare: sortProp('type', defaultSort) },
       width: 100
     },
@@ -169,7 +176,7 @@ export function Table (props: {
 
     return ({
       timestamp: formatTimestamp(item.timestamp),
-      type: getEntityType(item.type)?.label || item.type,
+      type: entityTypeMapping.find(type => type.key === item.type)?.label || item.type,
       name: item.name,
       key: (typeof configValue === 'string')
         ? configValue

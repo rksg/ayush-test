@@ -21,6 +21,7 @@ export function EthernetPortAAASettings () {
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const isSupportProxyRadius = useIsSplitOn(Features.ETHERNET_PORT_SUPPORT_PROXY_RADIUS_TOGGLE)
 
   useEffect(() => {
     if (supportRadsec && authRadius?.radSecOptions?.tlsEnabled) {
@@ -40,16 +41,19 @@ export function EthernetPortAAASettings () {
         <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
         <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}
           type='authRadius'/>
-        <StepsForm.FieldLabel width={labelWidth}>
-          {$t({ defaultMessage: 'Use Proxy Service' })}
-          <Form.Item
-            name='enableAuthProxy'
-            valuePropName='checked'
-            initialValue={false}
-            children={<Switch
-              disabled={supportRadsec && authRadius?.radSecOptions?.tlsEnabled}/>}
-          />
-        </StepsForm.FieldLabel>
+        {isSupportProxyRadius &&
+          <StepsForm.FieldLabel width={labelWidth}>
+            {$t({ defaultMessage: 'Use Proxy Service' })}
+            <Form.Item
+              name='enableAuthProxy'
+              valuePropName='checked'
+              initialValue={false}
+              children={<Switch
+                disabled={(supportRadsec && authRadius?.radSecOptions?.tlsEnabled)}
+              />}
+            />
+          </StepsForm.FieldLabel>
+        }
       </div>
       <div>
         <StepsForm.FieldLabel width={labelWidth}>
@@ -64,16 +68,18 @@ export function EthernetPortAAASettings () {
         {accountingEnabled && <>
           <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
             type='accountingRadius'/>
-          <StepsForm.FieldLabel width={labelWidth}>
-            {$t({ defaultMessage: 'Use Proxy Service' })}
-            <Form.Item
-              name='enableAccountingProxy'
-              valuePropName='checked'
-              initialValue={false}
-              children={<Switch
-                disabled={supportRadsec && acctRadius?.radSecOptions?.tlsEnabled}/>}
-            />
-          </StepsForm.FieldLabel>
+          {isSupportProxyRadius &&
+            <StepsForm.FieldLabel width={labelWidth}>
+              {$t({ defaultMessage: 'Use Proxy Service' })}
+              <Form.Item
+                name='enableAccountingProxy'
+                valuePropName='checked'
+                initialValue={false}
+                children={<Switch
+                  disabled={(supportRadsec && acctRadius?.radSecOptions?.tlsEnabled)}/>}
+              />
+            </StepsForm.FieldLabel>
+          }
         </>}
       </div>
     </Space>

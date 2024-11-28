@@ -1,7 +1,8 @@
 import { rest } from 'msw'
 
+import { policyApi, personaApi }                                 from '@acx-ui/rc/services'
 import { CertificateUrls, PersonaUrls }                          from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
+import { store, Provider }                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { RolesEnum, WifiScopes }                                 from '@acx-ui/types'
 import { getUserProfile, setUserProfile }                        from '@acx-ui/user'
@@ -13,6 +14,8 @@ import CertificateTemplateDetail from './CertificateTemplateDetail'
 
 describe('CertificateTemplateDetail', () => {
   beforeEach(() => {
+    store.dispatch(policyApi.util.resetApiState())
+    store.dispatch(personaApi.util.resetApiState())
     mockServer.use(
       rest.get(
         CertificateUrls.getCertificateTemplate.url,
