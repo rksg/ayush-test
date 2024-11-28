@@ -58,6 +58,7 @@ export function ConfigurationProfileForm () {
   const [form] = Form.useForm()
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSwitchPortProfileToggle = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const rbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
@@ -433,12 +434,14 @@ export function ConfigurationProfileForm () {
             <AclSetting />
           </StepsForm.StepForm>
 
+          {isSwitchPortProfileToggle &&
           <StepsForm.StepForm
             title={$t({ defaultMessage: 'Port Profile' })}
             onFinish={updateCurrentData}
           >
             <PortProfileSetting />
           </StepsForm.StepForm>
+          }
 
           {(trustedPorts || arpInspection || ipv4DhcpSnooping) &&
             <StepsForm.StepForm

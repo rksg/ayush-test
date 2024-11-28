@@ -221,7 +221,8 @@ export enum Features {
   WIFI_NETWORK_APPLICATION_CONTROL = 'wifi-network-application-control',
   UX_OPTIMIZATION_FEATURE_TOGGLE = 'acx-ui-ux-optimization-feature-toggle',
   ROAMING_TYPE_EVENTS_TOGGLE = 'acx-ui-roaming-type-events-toggle',
-  POLICY_IDENTITY_TOGGLE = 'policy-identity-toggle'
+  POLICY_IDENTITY_TOGGLE = 'policy-identity-toggle',
+  SWITCH_CONSUMER_PORT_PROFILE_TOGGLE = 'switch-consumer-port-profile-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
