@@ -40,7 +40,8 @@ export function EthernetPortAAASettings () {
       <div>
         <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
         <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}
-          type='authRadius'/>
+          type='authRadius'
+          excludeRadSec={!isSupportProxyRadius} />
         {isSupportProxyRadius &&
           <StepsForm.FieldLabel width={labelWidth}>
             {$t({ defaultMessage: 'Use Proxy Service' })}
@@ -67,7 +68,8 @@ export function EthernetPortAAASettings () {
         </StepsForm.FieldLabel>
         {accountingEnabled && <>
           <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
-            type='accountingRadius'/>
+            type='accountingRadius'
+            excludeRadSec={!isSupportProxyRadius} />
           {isSupportProxyRadius &&
             <StepsForm.FieldLabel width={labelWidth}>
               {$t({ defaultMessage: 'Use Proxy Service' })}
