@@ -7,7 +7,7 @@ export const RuckusAiChatUrlInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   chart: {
-    method: 'post',
+    method: 'get',
     url: '/ruckusAi/chats/:sessionId/charts/:chatId',
     newApi: true
   }

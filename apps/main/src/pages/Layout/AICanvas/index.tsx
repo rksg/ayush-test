@@ -24,21 +24,12 @@ export default function AICanvas (
   const navigate = useNavigate()
   const [chatAi] = useChatAiMutation()
   // const { visible, setVisible } = props
-  // const [chats] = useChatsMutation() //chat API call
   const [ sectionsSubVisible, setSectionsSubVisible ] = useState(false)
   const [loading, setLoading] = useState(false)
   const [sessionId, setSessionId] = useState('')
   const [chats, setChats] = useState([] as ChatMessage[]);
   const [widgets, setWidgets] = useState([] as WidgetListData[])
   
-  const [ widgetData, setWidgetData ] = useState([{
-    id: 1,
-    chartOption: [
-      {"name":"Requires Attention","value":1,"color":"#ED1C24"},
-      {"name":"In Setup Phase","value":64,"color":"#ACAEB0"},
-      {"name":"Operational","value":1,"color":"#23AB36"}
-    ]
-  }])
   const [ dirty, setDirty ] = useState(false)
   const [ searchText, setSearchText ] = useState('')
   const siderWidth = localStorage.getItem('acx-sider-width') || cssStr('--acx-sider-width')
@@ -163,7 +154,7 @@ export default function AICanvas (
                 rows={10}
                 placeholder={placeholder}
               />
-              <Button icon={<SendMessageOutlined />} onClick={handleSearch} />
+              <Button icon={<SendMessageOutlined />} onClick={()=> { handleSearch() }} />
             </div>
           </div>
           <div className='widgets' style={{ padding: '15px' }}>
