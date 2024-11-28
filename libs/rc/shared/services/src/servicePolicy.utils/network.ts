@@ -25,7 +25,7 @@ export const addNetworkVenueFn = () : QueryFn<CommonResult, RequestPayload> => {
 
       const res = await fetchWithBQ({
         ...req,
-        ...(enableRbac ? {} : { body: payload })
+        body: JSON.stringify(payload)
       })
 
       if (res.error) {

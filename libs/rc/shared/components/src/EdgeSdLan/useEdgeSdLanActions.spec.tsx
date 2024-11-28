@@ -1172,6 +1172,7 @@ describe('useGetEdgeSdLanByEdgeOrClusterId', () => {
     })
 
     await waitFor(() => expect(mockedReq).toBeCalled())
+    await waitFor(() => expect(result.current.isLoading).toBeFalsy())
     expect(result.current).toStrictEqual({
       edgeSdLanData: mockedSdLanDataListP2[0],
       isLoading: false,
