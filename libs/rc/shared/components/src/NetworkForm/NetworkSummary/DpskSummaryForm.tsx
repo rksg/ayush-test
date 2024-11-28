@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
 import { useGetDpskListQuery, useGetEnhancedDpskTemplateListQuery } from '@acx-ui/rc/services'
 import {
   NetworkSaveData,
@@ -12,8 +13,12 @@ import {
   DpskSaveData,
   transformAdvancedDpskExpirationText,
   TableResult,
-  useConfigTemplateQueryFnSwitcher
+  useConfigTemplateQueryFnSwitcher,
+  useConfigTemplate,
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
+
+import { AaaSummary } from './AaaSummary'
 
 export function DpskSummaryForm (props: {
   summaryData: NetworkSaveData;
@@ -21,6 +26,11 @@ export function DpskSummaryForm (props: {
   const { summaryData } = props
   const intl = useIntl()
   const $t = intl.$t
+
+  const { isTemplate } = useConfigTemplate()
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+
   const { data: dpskList } = useConfigTemplateQueryFnSwitcher<TableResult<DpskSaveData>>({
     useQueryFn: useGetDpskListQuery,
     useTemplateQueryFn: useGetEnhancedDpskTemplateListQuery
@@ -70,6 +80,19 @@ export function DpskSummaryForm (props: {
             }
           />
         </>
+      }
+      {summaryData?.dpskWlanSecurity !== WlanSecurityEnum.WPA23Mixed && <Form.Item
+        label={$t({ defaultMessage: 'Use RADIUS Server:' })}
+        children={
+          (summaryData.isCloudpathEnabled || summaryData.wlan?.macAddressAuthentication) &&
+          summaryData.authRadius
+            ? $t({ defaultMessage: 'Yes' })
+            : $t({ defaultMessage: 'No' })
+        }
+      />}
+      {supportRadsec && summaryData.isCloudpathEnabled &&
+         (summaryData.authRadius && !summaryData.wlan?.macRegistrationListId) &&
+       <AaaSummary summaryData={summaryData} />
       }
     </>
   )

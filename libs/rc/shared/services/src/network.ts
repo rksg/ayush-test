@@ -654,10 +654,16 @@ export const networkApi = baseNetworkApi.injectEndpoints({
 
 
         // get AP's network (filter by apGroup ID)
+        const payload = (arg.payload ?? {}) as {
+          searchString?: string,
+          fields?: string[],
+          page?: number,
+          pageSize?: number }
+
         const NetworkListReq = {
           ...createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, undefined, customHeaders),
           body: JSON.stringify({
-            ...(arg.payload as Record<string, unknown>),
+            ...payload,
             filters: {
               'venueApGroups.apGroupIds': [apGroupId]
             }
