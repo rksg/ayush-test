@@ -226,7 +226,8 @@ export enum Features {
   POLICY_IDENTITY_TOGGLE = 'policy-identity-toggle',
   ACX_UI_GATEWAYS_MENU_OPTION_TOGGLE = 'acx-ui-gateways-menu-option-toggle',
   BTM_EVENTS_TOGGLE = 'acx-ui-btm-events-toggle',
-  RUCKUS_AI_BTM_EVENTS_TOGGLE = 'ruckus-ai-btm-events-toggle'
+  RUCKUS_AI_BTM_EVENTS_TOGGLE = 'ruckus-ai-btm-events-toggle',
+  MLISA_4_11_0_TOGGLE = 'acx-ui-mlisa-4-11-0-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

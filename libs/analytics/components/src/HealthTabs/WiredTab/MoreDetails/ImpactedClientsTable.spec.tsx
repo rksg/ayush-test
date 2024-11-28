@@ -1,4 +1,5 @@
 import { get }                         from '@acx-ui/config'
+import { useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { BrowserRouter as Router }     from '@acx-ui/react-router-dom'
 import { dataApiURL, Provider, store } from '@acx-ui/store'
 import {
@@ -27,6 +28,8 @@ describe('ImpactedClientsTable', () => {
   it('should show data', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', { data: moreDetailsDataFixture })
     mockGraphqlQuery(dataApiURL, 'SwitchClients', { data: impactedClientsData })
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     const { rerender } = render(
       <Router>
         <Provider>
