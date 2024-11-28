@@ -50,42 +50,42 @@ export default function AICanvas (
       handleSearch()
     } 
   }
-  const handleSearch = async() => {
-    if (searchText.length <= 1) return
-    console.log('searchText: ', searchText)
+  const handleSearch = async(suggestion?: string) => {
+    if (!suggestion && searchText.length <= 1) return
+    const question = suggestion || searchText
     const newMessage = {
       id: uuidv4(),
-      role: 'me',
-      text: searchText
+      role: 'USER',
+      text: question
     }
     setChats([...chats, newMessage])
     setLoading(true)
     setSearchText('')
-    // const response = await chatAi({
-    //   payload: {
-    //     question: searchText,
-    //     ...(sessionId && { session_id: sessionId })
-    //   }
-    // }).unwrap()
-    const response: RuckusAiChat = {
-      sessionId: '001',
-      messages:  [
-        {
-        id:'1',
-        role: 'me',
-        text: 'Generate Network Health Overview Widget'
-        },
-        {
-          id: '2',
-          role: 'ai',
-          text: '2 widgets found- Alert and incidents widgets. Drag and drop the selected widgets to the canvas on the right.',
-          widgets: [{
-            // title: 'Chart 1', TODO:
-            chartType: 'pie'
-          }]
-        }
-      ]
-    }
+    const response = await chatAi({
+      payload: {
+        question,
+        ...(sessionId && { sessionId })
+      }
+    }).unwrap()
+    // const response: RuckusAiChat = {
+    //   sessionId: '001',
+    //   messages:  [
+    //     {
+    //     id:'1',
+    //     role: 'USER',
+    //     text: 'Generate Network Health Overview Widget'
+    //     },
+    //     {
+    //       id: '2',
+    //       role: 'AI',
+    //       text: '2 widgets found- Alert and incidents widgets. Drag and drop the selected widgets to the canvas on the right.',
+    //       widgets: [{
+    //         // title: 'Chart 1', TODO:
+    //         chartType: 'pie'
+    //       }]
+    //     }
+    //   ]
+    // }
     if(response.sessionId && !sessionId) {
       setSessionId(response.sessionId)
     }
@@ -113,12 +113,12 @@ export default function AICanvas (
   const Message = (props:{chat: ChatMessage}) => {
     const { chat } = props
     return <div className='message'>
-      <div className={`chat-container ${chat.role === 'me' ? "right" : ""}`}>
+      <div className={`chat-container ${chat.role === 'USER' ? "right" : ""}`}>
         <div className='chat-bubble'>
           {chat.text}
         </div>
       </div>
-      {chat.role === 'ai' && <div className='show-widgets'>Show widgets</div>}
+      { chat.role === 'AI' && chat.widgets?.length && <div className='show-widgets'>Show widgets</div> }
     </div>
   }
 
@@ -138,7 +138,11 @@ export default function AICanvas (
         <div className='content'>
           <div className='chatroom'>
             <div className='placeholder'>
-              <div>“Generate Network Health Overview Widget”</div>
+              <div onClick={()=> {
+                handleSearch('Generate Top Wi-Fi Networks Pie Chart')
+              }}>
+                “Generate Top Wi-Fi Networks Pie Chart”
+              </div>
               <div>“Device Inventory & Status Tracker Widget”</div>
               <div>“Real-Time Traffic Analysis Widget”</div>
               <div>“Bandwidth Utilization by Device Widget”</div>
@@ -189,6 +193,7 @@ export default function AICanvas (
           </div>
         </div>
         <div className='grid'>
+          
         </div>
       </div>
     </UI.Preview>

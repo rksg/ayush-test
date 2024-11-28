@@ -162,7 +162,8 @@ export const store = configureStore({
       ethernetPortProfileApi.middleware,
       edgeHqosProfilesApi.middleware,
       ruckusAssistantApi.middleware,
-      directoryServerApi.middleware
+      directoryServerApi.middleware,
+      ruckusAiChatApi.middleware,
     ])
   },
 

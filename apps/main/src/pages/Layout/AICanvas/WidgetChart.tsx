@@ -1,7 +1,7 @@
 import React from 'react'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { Card, DonutChart } from '@acx-ui/components'
+import { Card, DonutChart, Loader } from '@acx-ui/components'
 import { WidgetData, WidgetListData }       from '@acx-ui/rc/utils'
 import { useChatChartQuery } from '@acx-ui/rc/services';
 
@@ -27,8 +27,8 @@ const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
   }
   return (
     <div>
- 
         <div style={{ marginTop: '15px', height: '170px' }}>
+        {/* <Loader states={[queryResults]}> */}
           <Card key={data.id} title="Title">
           <AutoSizer>
           {({ height, width }) => (
@@ -42,6 +42,7 @@ const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
               )}
               </AutoSizer>
           </Card>
+        {/* </Loader> */}
         </div>
     </div>
   )

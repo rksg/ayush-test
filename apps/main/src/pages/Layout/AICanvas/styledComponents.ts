@@ -112,6 +112,10 @@ border-top: 75px solid rgba(255,255,255, 0.4);
           padding: 7px 10px;
           margin: 7px auto;
           opacity: 0.6;
+          cursor: pointer;
+          &:hover{
+            background-color: var(--acx-neutrals-10);
+          }
         }
       }
       .messages-wrapper {
@@ -123,6 +127,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
       .loading {
         display: flex;
         justify-content: center;
+        margin-top: 10px;
       }
       .show-widgets{
         border-radius: 20px;
