@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
 import { showExpiredSessionModal }            from '@acx-ui/analytics/components'
 import { getUserProfile }                     from '@acx-ui/analytics/utils'
-import { IFrame }                             from '@acx-ui/components'
+import { IFrame, Loader }                     from '@acx-ui/components'
 import { get }                                from '@acx-ui/config'
 import { useIsSplitOn, Features }             from '@acx-ui/feature-toggle'
 import { useAuthenticateMutation }            from '@acx-ui/reports/services'
@@ -33,21 +33,20 @@ export function DataStudio () {
     ? localeContext.messages?.locale ?? defaultLocale
     : defaultLocale
 
-  /**
-   * Show expired session modal if session is expired, triggered from sueprset
-   */
-  useEffect(() => {
-    const eventHandler = (event: MessageEvent) => {
-      if (event.data && event.data.type === 'unauthorized') {
+  const eventHandler = useCallback((event: MessageEvent) => {
+    if (event.data) {
+      if (event.data.type === 'unauthorized') {
         showExpiredSessionModal()
-      }
-      if(event.data && event.data.type === 'refreshToken') {
+      } else if (event.data.type === 'refreshToken') {
         refreshJWT(event.data)
       }
     }
+  }, [])
+
+  useEffect(() => {
     window.addEventListener('message', eventHandler)
     return () => window.removeEventListener('message', eventHandler)
-  }, [])
+  }, [eventHandler])
 
   useEffect(() => {
     const { firstName, lastName, email } = get('IS_MLISA_SA')
@@ -55,54 +54,34 @@ export function DataStudio () {
       : getUserProfileR1().profile
 
     authenticate({
-      payload: {
-        user: {
-          firstName,
-          lastName,
-          email
-        }
-      },
-      params: {
-        locale
-      }
+      payload: { user: { firstName, lastName, email } },
+      params: { locale }
     })
       .unwrap()
-      .then((resp: DataStudioResponse) => {
-        const { redirect_url, user_info } = resp
-        if (!user_info) { // TODO - Added for backward compatibility. Need to remove it
-          setUrl(redirect_url)
+      .then(({ redirect_url, user_info }: DataStudioResponse) => {
+        sessionStorage.setItem('user_info', JSON.stringify(user_info))
+        const searchParams = new URLSearchParams()
+        const { cache_key } = user_info ?? {}
+        if (cache_key) {
+          searchParams.append('cache_key', cache_key)
+          setUrl(`${redirect_url}?${searchParams.toString()}`)
         } else {
-          // store user info
-          sessionStorage.setItem('user_info', JSON.stringify(user_info))
-
-          const searchParams = new URLSearchParams()
-          const { cache_key } = user_info
-          /* istanbul ignore else */
-          if (cache_key) {
-            searchParams.append('cache_key', cache_key)
-          } else { // TODO - Added for backward compatibility. Need to remove it
-            const { tenant_id, is_franchisor, tenant_ids } = user_info
-            searchParams.append('mlisa_own_tenant_id', tenant_id)
-            searchParams.append('mlisa_tenant_ids', tenant_ids.join(','))
-            searchParams.append('is_franchisor', is_franchisor)
-          }
-          setUrl(`${resp.redirect_url}?${searchParams.toString()}`)
+          setUrl(redirect_url)
         }
       })
   }, [authenticate, locale])
 
   return (
-    <div data-testid='data-studio'
-      style={{
-        height: 'calc(100vh - 100px)'
-      }}>
-      {url && (
-        <IFrame
-          title='data-studio'
-          src={`${getHostName(window.location.origin)}${url}`}
-          style={{ width: '100%', height: '100%', border: 'none', overflow: 'hidden' }}
-        />
-      )}
+    <div data-testid='data-studio' style={{ height: 'calc(100vh - 100px)' }}>
+      <Loader states={[{ isLoading: !url }]}>
+        {url && (
+          <IFrame
+            title='data-studio'
+            src={`${getHostName(window.location.origin)}${url}`}
+            style={{ width: '100%', height: '100%', border: 'none', overflow: 'hidden' }}
+          />
+        )}
+      </Loader>
     </div>
   )
 }
