@@ -92,7 +92,6 @@ export const SoftGREProfileSettings = () => {
         policyId={softGREProfile.value as string}
         policyName={softGREProfile.label as string}
         readMode={detailDrawerReadMode}
-        editMode={true}
       />
     </>
   )
