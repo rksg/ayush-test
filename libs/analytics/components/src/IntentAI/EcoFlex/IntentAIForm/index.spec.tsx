@@ -119,7 +119,7 @@ describe('IntentAIForm', () => {
     }
   })
 
-  it.skip('handle schedule intent', async () => {
+  it('handle schedule intent', async () => {
     const { params } = mockIntentContextWith({ status: Statuses.new, sliceId: 'id1' })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
@@ -284,6 +284,5 @@ describe('IntentAIForm', () => {
     expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
     await click(actions.getByRole('button', { name: 'Cancel' }))
     expect(mockNavigate).toBeCalled()
-
   })
 })
