@@ -39,10 +39,10 @@ export const api = dataApi.injectEndpoints({
               startDate = moment()
                 .startOf('day')
                 .subtract(7, 'days')
-                .format('YYYY-MM-DDTHH:mm:ss+08:00')
+                .format('YYYY-MM-DDTHH:mm:ssZ')
               endDate = moment()
                 .startOf('day')
-                .format('YYYY-MM-DDTHH:mm:ss+08:00')
+                .format('YYYY-MM-DDTHH:mm:ssZ')
             } else {
               startDate = payload.startDate
               endDate = payload.endDate
