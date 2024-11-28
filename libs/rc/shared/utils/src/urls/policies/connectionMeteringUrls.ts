@@ -24,7 +24,7 @@ export const ConnectionMeteringUrls: { [key in ConnectionMeteringUrlType]: ApiIn
     newApi: true,
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
-      'Accept': 'application/vnd.ruckus.v2+json'
+      'Accept': 'application/vnd.ruckus.v1.1+json'
     }
   },
   updateConnectionMetering: {
@@ -33,7 +33,7 @@ export const ConnectionMeteringUrls: { [key in ConnectionMeteringUrlType]: ApiIn
     newApi: true,
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
-      'Accept': 'application/vnd.ruckus.v2+json'
+      'Accept': 'application/vnd.ruckus.v1.1+json'
     }
   },
   deleteConnectionMetering: {
@@ -42,7 +42,7 @@ export const ConnectionMeteringUrls: { [key in ConnectionMeteringUrlType]: ApiIn
     newApi: true,
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
-      'Accept': 'application/vnd.ruckus.v2+json'
+      'Accept': 'application/vnd.ruckus.v1.1+json'
     }
   },
   getConnectionMeteringList: {

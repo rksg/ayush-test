@@ -22,7 +22,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     newApi: true,
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
-      'Accept': 'application/vnd.ruckus.v2+json'
+      'Accept': 'application/vnd.ruckus.v1.1+json'
     }
   },
   associateDpskPool: {
@@ -88,7 +88,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     newApi: true,
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
-      'Accept': 'application/vnd.ruckus.v2+json'
+      'Accept': 'application/vnd.ruckus.v1.1+json'
     }
   },
   deletePersonaGroup: {
@@ -97,7 +97,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     newApi: true,
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
-      'Accept': 'application/vnd.ruckus.v2+json'
+      'Accept': 'application/vnd.ruckus.v1.1+json'
     }
   },
   /** Persona API endpoints */
@@ -107,7 +107,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     newApi: true,
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
-      'Accept': 'application/vnd.ruckus.v2+json'
+      'Accept': 'application/vnd.ruckus.v1.1+json'
     }
   },
   getPersonaById: {
@@ -142,7 +142,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     newApi: true,
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
-      'Accept': 'application/vnd.ruckus.v2+json'
+      'Accept': 'application/vnd.ruckus.v1.1+json'
     }
   },
   deletePersona: {
@@ -157,7 +157,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     newApi: true,
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
-      'Accept': 'application/vnd.ruckus.v2+json'
+      'Accept': 'application/vnd.ruckus.v1.1+json'
     }
   },
   addPersonaDevices: {
@@ -166,7 +166,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     newApi: true,
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
-      'Accept': 'application/vnd.ruckus.v2+json'
+      'Accept': 'application/vnd.ruckus.v1.1+json'
     }
   },
   deletePersonaDevices: {
@@ -175,7 +175,7 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     newApi: true,
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
-      'Accept': 'application/vnd.ruckus.v2+json'
+      'Accept': 'application/vnd.ruckus.v1.1+json'
     }
   },
   allocateVni: {
