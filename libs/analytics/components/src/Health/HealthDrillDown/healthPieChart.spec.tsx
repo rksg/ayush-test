@@ -1,13 +1,13 @@
 import _ from 'lodash'
 
-import { pathToFilter }                                                                    from '@acx-ui/analytics/utils'
-import { EventParams }                                                                     from '@acx-ui/components'
-import { get }                                                                             from '@acx-ui/config'
-import { formatter }                                                                       from '@acx-ui/formatter'
-import { dataApiURL, Provider, store }                                                     from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved, fireEvent, cleanup } from '@acx-ui/test-utils'
-import { DateRange }                                                                       from '@acx-ui/utils'
-import type { AnalyticsFilter }                                                            from '@acx-ui/utils'
+import { pathToFilter }                                                                                     from '@acx-ui/analytics/utils'
+import { EventParams }                                                                                      from '@acx-ui/components'
+import { get }                                                                                              from '@acx-ui/config'
+import { formatter }                                                                                        from '@acx-ui/formatter'
+import { dataApiURL, Provider, store }                                                                      from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved, fireEvent, cleanup, renderHook, act } from '@acx-ui/test-utils'
+import { DateRange }                                                                                        from '@acx-ui/utils'
+import type { AnalyticsFilter }                                                                             from '@acx-ui/utils'
 
 import {
   mockConnectionFailureResponse,
@@ -17,8 +17,8 @@ import {
   noDataResponse,
   mockConnectionFailureResponseWithOthers
 } from './__tests__/fixtures'
-import { HealthPieChart, pieNodeMap, tooltipFormatter, transformData, usePieActionHandler } from './healthPieChart'
-import { api, ImpactedEntities }                                                            from './services'
+import { HealthPieChart, PieChartData, pieNodeMap, tooltipFormatter, transformData, usePieActionHandler } from './healthPieChart'
+import { api, ImpactedEntities }                                                                          from './services'
 
 const mockGet = get as jest.Mock
 
@@ -254,7 +254,7 @@ describe('HealthPieChart', () => {
             selectedStage='Authentication'
             valueFormatter={formatter('countFormat')}
             setPieFilter={mockSetPieFilter}
-            chartKey='nodes'
+            chartKey='events'
             pieFilter={null}
             setChartKey={mockSetChartKey}
             onPieClick={mockOnPieClick}
@@ -270,13 +270,50 @@ describe('HealthPieChart', () => {
       })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Authentication')).toBeVisible()
-    expect(await screen.findByText('5 Impacted Venues')).toBeVisible()
+    expect(await screen.findByText('Top 5 Events')).toBeVisible()
     fireEvent.click(await screen.findByText('WLANs'))
     expect(mockSetChartKey).toHaveBeenCalledWith('wlans')
     fireEvent.click(await screen.findByText('Manufacturers'))
     expect(mockSetChartKey).toHaveBeenCalledWith('osManufacturers')
-    fireEvent.click(await screen.findByText('Events'))
-    expect(mockSetChartKey).toHaveBeenCalledWith('events')
+    fireEvent.click(await screen.findByText('Venues'))
+    expect(mockSetChartKey).toHaveBeenCalledWith('nodes')
+  })
+
+  it('should handle chart with pieFilter', async () => {
+    mockGraphqlQuery(dataApiURL, 'Network', { data: mockConnectionFailureResponse })
+    const mockPieFilter = {
+      key: 'CCD_REASON_PREV_AUTH_NOT_VALID',
+      value: 100,
+      name: 'Previous Auth Invalid'
+    } as PieChartData
+    render(
+      <Provider>
+        <div style={{ height: 300, width: 300 }}>
+          <HealthPieChart
+            size={size}
+            filters={filters}
+            queryType='connectionFailure'
+            selectedStage='Authentication'
+            valueFormatter={formatter('countFormat')}
+            setPieFilter={mockSetPieFilter}
+            chartKey='events'
+            pieFilter={mockPieFilter}
+            setChartKey={mockSetChartKey}
+            onPieClick={mockOnPieClick}
+            onLegendClick={mockOnLegendClick}
+            setPieList={mockSetPieList}
+          />,
+        </div>
+      </Provider>,
+      {
+        route: {
+          params: { tenantId: 'test' }
+        }
+      })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('Authentication')).toBeVisible()
+    expect(await screen.findByText('Top 5 Events')).toBeVisible()
+    expect(await screen.findByText(mockPieFilter.name)).toBeVisible()
   })
 
   describe('tooltipFormatter', () => {
@@ -372,5 +409,77 @@ describe('usePieActionHandler', () => {
     const onLegendClick = createOnClickLegend(mockData)
     onLegendClick?.(mockData[0] as EventParams & { name: string, dataIndex: number })
     expect(mockSetSelectedSlice).toHaveBeenCalledWith(null)
+  })
+
+  it('should toggle selectedSlice correctly based on params.dataIndex', () => {
+    const { result } = renderHook(() =>
+      usePieActionHandler(mockOnPieClick, mockOnLegendClick, 2, mockSetSelectedSlice)
+    )
+
+    const onChartClick = result.current[0]
+
+    const mockEventParams: Partial<EventParams> & { name: string } = {
+      dataIndex: 2,
+      name: 'Slice 3'
+    }
+    act(() => {
+      onChartClick(mockEventParams as unknown as EventParams & { name: string }[])
+    })
+
+    expect(mockSetSelectedSlice).toHaveBeenCalledWith(null)
+    expect(mockOnPieClick).toHaveBeenCalledWith(mockEventParams)
+
+    mockSetSelectedSlice.mockClear()
+    mockOnPieClick.mockClear()
+
+    const newMockEventParams = { dataIndex: 1 }
+    act(() => {
+      onChartClick(newMockEventParams as unknown as EventParams & { name: string }[])
+    })
+
+    expect(mockSetSelectedSlice).toHaveBeenCalledWith(1)
+    expect(mockOnPieClick).toHaveBeenCalledWith(newMockEventParams)
+  })
+
+  it('should handle legend clicks and toggle selectedSlice correctly', () => {
+    const { result } = renderHook(() =>
+      usePieActionHandler(mockOnPieClick, mockOnLegendClick, 2, mockSetSelectedSlice)
+    )
+
+    const [, createOnClickLegend] = result.current
+
+    const mockData: Partial<EventParams> & { name: string }[]= [
+      { name: 'Slice A' },
+      { name: 'Slice B' },
+      { name: 'Slice C' }
+    ]
+
+    const onClickLegend = createOnClickLegend(mockData as EventParams & { name: string }[])
+    const mockEventParams = { name: 'Slice C' }
+    act(() => {
+      onClickLegend?.(mockEventParams as unknown as EventParams & { name: string })
+    })
+    expect(mockSetSelectedSlice).toHaveBeenCalledWith(null)
+    expect(mockOnLegendClick).toHaveBeenCalledWith({ name: 'Slice C' })
+
+    mockSetSelectedSlice.mockClear()
+    mockOnLegendClick.mockClear()
+
+    const newMockEventParams = { name: 'Slice A' }
+    act(() => {
+      onClickLegend?.(newMockEventParams as unknown as EventParams & { name: string })
+    })
+    expect(mockSetSelectedSlice).toHaveBeenCalledWith(0)
+    expect(mockOnLegendClick).toHaveBeenCalledWith({ name: 'Slice A' })
+
+    mockSetSelectedSlice.mockClear()
+    mockOnLegendClick.mockClear()
+
+    const invalidMockEventParams = { name: 'Invalid Slice' }
+    act(() => {
+      onClickLegend?.(invalidMockEventParams as unknown as EventParams & { name: string })
+    })
+    expect(mockSetSelectedSlice).not.toHaveBeenCalled()
+    expect(mockOnLegendClick).toHaveBeenCalledWith(undefined)
   })
 })
