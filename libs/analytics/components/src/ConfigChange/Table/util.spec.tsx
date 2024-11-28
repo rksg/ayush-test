@@ -6,7 +6,6 @@ import {
   MappingType,
   json2keymap,
   filterData,
-  formatTimestamp,
   getEntityValue,
   getConfiguration
 }                        from './util'
@@ -65,14 +64,6 @@ describe('filterData', () => {
     expect(filterData(configChanges, [], noAPLegend, true).length).toEqual(8)
     expect(filterData(configChanges, [], noVenueLegend, true).length).toEqual(7)
     expect(filterData(configChanges, [], noIntentAILegend, true).length).toEqual(9)
-  })
-})
-
-describe('formatTimestamp', () => {
-  it('should format valid timestamp correctly', () => {
-    const timestamp = '1732774184735'
-    const expectedOutput = '11/28/2024 06:09'
-    expect(formatTimestamp(timestamp)).toEqual(expectedOutput)
   })
 })
 

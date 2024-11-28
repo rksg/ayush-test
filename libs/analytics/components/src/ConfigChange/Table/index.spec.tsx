@@ -353,7 +353,7 @@ describe('CSV Functions', () => {
     downloadConfigChangeList(data, columns, getConfigChangeEntityTypeMapping(true))
     expect(global.Blob).toHaveBeenCalledWith(
       // eslint-disable-next-line max-len
-      ['"Timestamp","Entity Type","Entity Name","Configuration","Change From","Change To"\n"11/27/2024 04:51","AP","00:33:58:2B:97:30","Enable 6 GHz band","false","true"\n"11/20/2024 11:24","WLAN","##ML_AP-28651","Multi Link Operation (6 GHz)","false","true"\n"11/20/2024 09:32","Zone","SERVICE_VALIDATION_TEST_7.1.1","Firmware Update","7.1.1.0.116","7.1.1.0.126"\n'],
+      ['"Timestamp","Entity Type","Entity Name","Configuration","Change From","Change To"\n"2024-11-27T04:51:23+00:00","AP","00:33:58:2B:97:30","Enable 6 GHz band","false","true"\n"2024-11-20T11:24:50+00:00","WLAN","##ML_AP-28651","Multi Link Operation (6 GHz)","false","true"\n"2024-11-20T09:32:04+00:00","Zone","SERVICE_VALIDATION_TEST_7.1.1","Firmware Update","7.1.1.0.116","7.1.1.0.126"\n'],
       { type: 'text/csv;charset=utf-8;' }
     )
   })

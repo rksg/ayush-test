@@ -1,5 +1,5 @@
-import { useContext } from 'react'
-
+import { useContext }                 from 'react'
+import moment                         from 'moment'
 import { stringify }                  from 'csv-stringify/browser/esm/sync'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
@@ -9,7 +9,7 @@ import {
   useAnalyticsFilter,
   kpiConfig,
   productNames
-}                                             from '@acx-ui/analytics/utils'
+}                                                                               from '@acx-ui/analytics/utils'
 import {
   Loader,
   TableProps,
@@ -17,9 +17,10 @@ import {
   ConfigChange,
   getConfigChangeEntityTypeMapping,
   Cascader
-}                                             from '@acx-ui/components'
+}                                                                               from '@acx-ui/components'
 import { get }                                                                  from '@acx-ui/config'
 import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { DownloadOutlined }                                                     from '@acx-ui/icons'
 import { exportMessageMapping, noDataDisplay, getIntl, handleBlobDownloadFile } from '@acx-ui/utils'
 
@@ -28,8 +29,8 @@ import { ConfigChangeContext, KPIFilterContext } from '../context'
 import { hasConfigChange }                       from '../KPI'
 import { useConfigChangeQuery }                  from '../services'
 
-import { Badge, CascaderFilterWrapper }                                  from './styledComponents'
-import { filterData, formatTimestamp, getConfiguration, getEntityValue } from './util'
+import { Badge, CascaderFilterWrapper }                 from './styledComponents'
+import { filterData, getConfiguration, getEntityValue } from './util'
 
 export function downloadConfigChangeList (
   configChanges: ConfigChange[],
@@ -54,7 +55,7 @@ export function downloadConfigChangeList (
       })
 
       return ({
-        timestamp: formatTimestamp(item.timestamp),
+        timestamp: moment(Number(item.timestamp)).format(),
         type: entityTypeMapping.find(type => type.key === item.type)?.label || item.type,
         name: item.name,
         key: (typeof configValue === 'string')
@@ -117,7 +118,7 @@ export function Table (props: {
       key: 'timestamp',
       title: $t({ defaultMessage: 'Timestamp' }),
       dataIndex: 'timestamp',
-      render: (_, { timestamp }) => formatTimestamp(timestamp),
+      render: (_, { timestamp }) => formatter(DateFormatEnum.DateTimeFormat)(moment(Number(timestamp))),
       sorter: { compare: sortProp('timestamp', defaultSort) },
       width: 130
     },
