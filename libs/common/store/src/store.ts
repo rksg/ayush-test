@@ -53,7 +53,39 @@ import {
   baseDirectoryServerApi as directoryServerApi
 } from './baseApi'
 
+import type { Middleware } from '@reduxjs/toolkit'
+
 const isDev = process.env['NODE_ENV'] === 'development'
+
+export const pendingQueries = new Map()
+
+// @ts-ignore
+const cancelMiddleware: Middleware = ({ getState, dispatch }) => next => action => {
+  // @ts-ignore
+  const { type, payload, meta } = action
+  // console.log('a', action, pendingQueries.size)
+  if (type.endsWith('/unsubscribeQueryResult')) {
+    const { queryCacheKey } = payload
+    const abort = pendingQueries.get(queryCacheKey)
+    if (abort) {
+      const [api] = type.match(/^[^/]+/)
+      const state = getState()[api]
+      const query = state.queries[queryCacheKey]
+      if (query?.status === 'pending') {
+        // console.log('abort', queryCacheKey, state)
+        abort()
+        dispatch({ type: api + '/queries/removeQueryResult', payload: { queryCacheKey } })
+        pendingQueries.delete(queryCacheKey)
+      }
+    }
+  } else if (type.includes('/executeQuery/')) {
+    const { requestStatus, arg: { queryCacheKey } } = meta
+    if (requestStatus !== 'pending') {
+      pendingQueries.delete(queryCacheKey)
+    }
+  }
+  return next(action)
+}
 
 export const store = configureStore({
   reducer: {
@@ -113,6 +145,7 @@ export const store = configureStore({
       serializableCheck: isDev ? undefined : false,
       immutableCheck: isDev ? undefined : false
     }).concat([
+      cancelMiddleware,
       dynamicMiddlewares,
       commonApi.middleware,
       networkApi.middleware,
