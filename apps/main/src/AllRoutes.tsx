@@ -65,8 +65,8 @@ function AllRoutes () {
           <Route path='no-permissions' element={<PageNoPermissions />} />
           <Route path='grid' element={<Grid />} />
           <Route path='canvas' element={<AICanvas />} />
-          <Route path='dashboard' element={<DashboardFF />} />
-          <Route path='dashboard1' element={<Dashboard />} />
+          <Route path='dashboard' element={<Dashboard />} />
+          <Route path='dashboard1' element={<DashboardFF />} />
           <Route path='dashboard2' element={<CustomizedDashboard />} />
           <Route path='userprofile/*' element={<UserProfileRoutes />} />
           <Route path='analytics/*' element={<AnalyticsBase />}>
