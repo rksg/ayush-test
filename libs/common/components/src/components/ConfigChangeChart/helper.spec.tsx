@@ -42,13 +42,19 @@ beforeEach(() => mockGet.mockReturnValue(''))
 
 describe('getConfigChangeEntityTypeMapping', () => {
   it('should build map for ACX', ()=>{
-    const { result } = renderHook(() => getConfigChangeEntityTypeMapping())
-    expect(result.current.map(row=>row.key)).toEqual(['ap', 'apGroup', 'wlan', 'zone'])
+    const { result } = renderHook(() => getConfigChangeEntityTypeMapping(true))
+    expect(result.current.map(row=>row.key)).toEqual([ 'intentAI', 'ap', 'apGroup', 'wlan', 'zone'])
   })
   it('should build map for RA', ()=>{
     mockGet.mockReturnValue('true')
-    const { result } = renderHook(() => getConfigChangeEntityTypeMapping())
-    expect(result.current.map(row=>row.key)).toEqual(['ap', 'apGroup', 'wlan', 'wlanGroup', 'zone'])
+    const { result } = renderHook(() => getConfigChangeEntityTypeMapping(true))
+    expect(result.current.map(row=>row.key)).toEqual([
+      'intentAI', 'ap', 'apGroup', 'wlan', 'wlanGroup', 'zone'
+    ])
+  })
+  it('should hide intentAI', ()=>{
+    const { result } = renderHook(() => getConfigChangeEntityTypeMapping(false))
+    expect(result.current.map(row=>row.key)).toEqual([ 'ap', 'apGroup', 'wlan', 'zone'])
   })
 })
 
@@ -137,7 +143,7 @@ describe('getDrawDragPosition',() => {
 })
 
 describe('draw', () => {
-  const chartLayoutConfig = getChartLayoutConfig(100, getConfigChangeEntityTypeMapping())
+  const chartLayoutConfig = getChartLayoutConfig(100, getConfigChangeEntityTypeMapping(false))
   const areas = { actual: [[0, 50], [950, 1000]], show: [[0, 50], [950, 1000]] }
   const boundary = { min: 0, max: 1000 }
   it('should handle echart ref unavailable', () => {
@@ -553,9 +559,9 @@ describe('getSelectedDot', () => {
 
 describe('getSymbol', () => {
   it('should return correct symbol which matchs snapshot', () => {
-    expect(getSymbol(0)([1605628800000, 'ap', { id: 0, type: 'ap' } as ConfigChange]))
+    expect(getSymbol(0, false)([1605628800000, 'ap', { id: 0, type: 'ap' } as ConfigChange]))
       .toMatchSnapshot()
-    expect(getSymbol(1)([1605628800000, 'ap', { id: 0, type: 'ap' } as ConfigChange]))
+    expect(getSymbol(1, false)([1605628800000, 'ap', { id: 0, type: 'ap' } as ConfigChange]))
       .toMatchSnapshot()
   })
 })

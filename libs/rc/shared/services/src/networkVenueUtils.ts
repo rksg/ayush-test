@@ -379,7 +379,7 @@ export const fetchRbacAllApGroupNetworkVenueList = async (arg:any, fetchWithBQ:a
   const { apGroupIds: apGroupIdsList, isTemplate } = arg.payload
   const apGroupCheckList = apGroupId ? [apGroupId] : [...apGroupIdsList]
 
-  let networkDeepListList = {} as { response: NetworkDetail[] }
+  let networkDeepListList = { response: [] } as { response: NetworkDetail[] }
 
   const networkIds: string[] = []
   const activatedNetworkIds: string[] = []

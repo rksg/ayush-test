@@ -22,7 +22,7 @@ const CertificateAuthorityDrawer = (props: CertificateAuthorityDrawerProps) => {
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Generate Certificate' })}
+      title={$t({ defaultMessage: 'Add Certificate Authority' })}
       visible={visible}
       width={500}
       children={content}
