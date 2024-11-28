@@ -26,7 +26,7 @@ export interface FeatureItemProps {
 export const FeatureItem = (props: FeatureItemProps) => {
   const { $t } = useIntl()
   const { isMultiple = false, deviceType, data, incompatible, total, isCrossDeviceType } = props
-  const isApCompatibilitiesByModel = 'requirements' in props.data
+  const isApCompatibilitiesByModel = 'requirements' in data
 
   const incompatibleInfo = (Boolean(incompatible) && Boolean(total)) &&
     <UI.StyledFormItem
@@ -38,7 +38,7 @@ export const FeatureItem = (props: FeatureItemProps) => {
           defaultMessage: 'Incompatible RUCKUS Edges (Currently)'
         })}
     >
-      {`${incompatible} / ${total}`}
+      { isApCompatibilitiesByModel ? incompatible : `${incompatible} / ${total}`}
     </UI.StyledFormItem>
 
   // eslint-disable-next-line max-len
