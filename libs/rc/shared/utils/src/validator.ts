@@ -778,7 +778,7 @@ export function cliVariableNameRegExp (value: string) {
 export function cliIpAddressRegExp (value: string) {
   /* {1-223}.{0-255}.{0-255}.{1–255} */
   const { $t } = getIntl()
-  const re = new RegExp(/^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9])\.)((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|1[0-9]|[0-9])\.){2}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]?|[1-9])$/)
+  const re = new RegExp(/^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9])\.)((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){2}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]?|[1-9])$/)
 
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.ipAddress))

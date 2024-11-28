@@ -417,6 +417,8 @@ describe('validator', () => {
       await expect(cliIpAddressRegExp('10.0.16.255')).resolves.toEqual(undefined)
       await expect(cliIpAddressRegExp('192.0.0.1')).resolves.toEqual(undefined)
       await expect(cliIpAddressRegExp('192.8.0.1')).resolves.toEqual(undefined)
+      await expect(cliIpAddressRegExp('192.28.0.1')).resolves.toEqual(undefined)
+      await expect(cliIpAddressRegExp('192.38.48.1')).resolves.toEqual(undefined)
       await expect(cliIpAddressRegExp('192.0.10.1')).resolves.toEqual(undefined)
       await expect(cliIpAddressRegExp('223.255.255.255')).resolves.toEqual(undefined)
     })
