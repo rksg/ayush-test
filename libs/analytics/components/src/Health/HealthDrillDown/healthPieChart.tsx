@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import { Space }                                     from 'antd'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
@@ -215,7 +215,9 @@ export const HealthPieChart = ({
   setChartKey,
   onPieClick,
   onLegendClick,
-  setPieList
+  setPieList,
+  selectedSlice,
+  setSelectedSlice
 }: {
   size: { width: number; height: number }
   filters: AnalyticsFilter
@@ -229,9 +231,10 @@ export const HealthPieChart = ({
   onPieClick: (e: EventParams) => void
   onLegendClick: (data: PieChartData) => void
   setPieList: (data: PieChartData[]) => void
+  selectedSlice: number | null
+  setSelectedSlice: (slice: number | null) => void
 }) => {
   const { $t } = useIntl()
-  const [selectedSlice, setSelectedSlice] = useState<number | null>(null)
   const [onChartClick, createOnClickLegend] = usePieActionHandler(
     onPieClick, onLegendClick, selectedSlice, setSelectedSlice)
   const { startDate: start, endDate: end, filter } = filters

@@ -27,6 +27,7 @@ const HealthDrillDown = (props: {
   const [pieFilter, setPieFilter] = useState<PieChartData | null>(null)
   const [chartKey, setChartKey] = useState<TabKeyType>('wlans')
   const [pieList, setPieList] = useState<PieChartData[]>([])
+  const [selectedSlice, setSelectedSlice] = useState<number | null>(null)
 
   const onPieClick = (e: EventParams) => {
     const selectedData = e.data as PieChartData
@@ -54,6 +55,8 @@ const HealthDrillDown = (props: {
   const setStage = (width: number, stage: Stages) => {
     setSelectedStage(stage)
     setXpos(width - 10)
+    setPieFilter(null)
+    setSelectedSlice(null)
   }
   const connectionFailureResults = useConnectionDrilldownQuery(payload, {
     selectFromResult: (result) => {
@@ -149,6 +152,8 @@ const HealthDrillDown = (props: {
                 onPieClick={onPieClick}
                 onLegendClick={onLegendClick}
                 setPieList={setPieList}
+                selectedSlice={selectedSlice}
+                setSelectedSlice={setSelectedSlice}
               />
             }</AutoSizer>
           </GridCol>

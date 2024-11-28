@@ -45,6 +45,7 @@ describe('HealthPieChart', () => {
   const mockOnPieClick = jest.fn()
   const mockOnLegendClick = jest.fn()
   const mockSetPieList = jest.fn()
+  const mockSetSelectedSlice = jest.fn()
 
   it('should render correctly for many connectionFailures', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', { data: mockConnectionFailureResponse })
@@ -64,6 +65,8 @@ describe('HealthPieChart', () => {
             onPieClick={mockOnPieClick}
             onLegendClick={mockOnLegendClick}
             setPieList={mockSetPieList}
+            selectedSlice={null}
+            setSelectedSlice={mockSetSelectedSlice}
           />,
         </div>
       </Provider>,
@@ -105,6 +108,8 @@ describe('HealthPieChart', () => {
             onPieClick={mockOnPieClick}
             onLegendClick={mockOnLegendClick}
             setPieList={mockSetPieList}
+            selectedSlice={null}
+            setSelectedSlice={mockSetSelectedSlice}
           />,
         </div>
       </Provider>,
@@ -145,6 +150,8 @@ describe('HealthPieChart', () => {
             onPieClick={mockOnPieClick}
             onLegendClick={mockOnLegendClick}
             setPieList={mockSetPieList}
+            selectedSlice={null}
+            setSelectedSlice={mockSetSelectedSlice}
           />,
         </div>
       </Provider>,
@@ -182,6 +189,8 @@ describe('HealthPieChart', () => {
             onPieClick={mockOnPieClick}
             onLegendClick={mockOnLegendClick}
             setPieList={mockSetPieList}
+            selectedSlice={null}
+            setSelectedSlice={mockSetSelectedSlice}
           />,
         </div>
       </Provider>,
@@ -218,6 +227,8 @@ describe('HealthPieChart', () => {
             onPieClick={mockOnPieClick}
             onLegendClick={mockOnLegendClick}
             setPieList={mockSetPieList}
+            selectedSlice={null}
+            setSelectedSlice={mockSetSelectedSlice}
           />,
         </div>
       </Provider>,
@@ -260,6 +271,8 @@ describe('HealthPieChart', () => {
             onPieClick={mockOnPieClick}
             onLegendClick={mockOnLegendClick}
             setPieList={mockSetPieList}
+            selectedSlice={null}
+            setSelectedSlice={mockSetSelectedSlice}
           />,
         </div>
       </Provider>,
@@ -302,6 +315,8 @@ describe('HealthPieChart', () => {
             onPieClick={mockOnPieClick}
             onLegendClick={mockOnLegendClick}
             setPieList={mockSetPieList}
+            selectedSlice={null}
+            setSelectedSlice={mockSetSelectedSlice}
           />,
         </div>
       </Provider>,
