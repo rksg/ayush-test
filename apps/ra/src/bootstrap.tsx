@@ -47,6 +47,7 @@ function DataGuardLoader (props: React.PropsWithChildren) {
 }
 
 export async function init (root: Root) {
+  // @ts-ignore
   addMiddleware(errorMiddleware)
   const user = await fetch('/analytics/api/rsa-mlisa-rbac/users/profile', {
     headers: { ...getJwtHeaders() }

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 
-import { TypedUseMutationResult } from '@reduxjs/toolkit/dist/query/react'
 import { fetchBaseQuery }         from '@reduxjs/toolkit/query'
+import { TypedUseMutationResult } from '@reduxjs/toolkit/query/react'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {

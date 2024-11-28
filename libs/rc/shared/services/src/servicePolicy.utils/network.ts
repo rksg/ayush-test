@@ -1,6 +1,4 @@
-import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/query/react'
-import { MaybePromise }                            from '@reduxjs/toolkit/dist/query/tsHelpers'
+import { FetchBaseQueryError, FetchBaseQueryMeta, QueryReturnValue } from '@reduxjs/toolkit/query'
 
 import {
   CommonResult,
@@ -9,8 +7,8 @@ import {
   PoliciesConfigTemplateUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
-import { RequestPayload }             from '@acx-ui/types'
-import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
+import { RequestPayload, MaybePromise } from '@acx-ui/types'
+import { ApiInfo, createHttpRequest }   from '@acx-ui/utils'
 
 import { QueryFn } from './common'
 

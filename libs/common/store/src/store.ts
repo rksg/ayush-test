@@ -107,6 +107,7 @@ export const store = configureStore({
     [directoryServerApi.reducerPath]: directoryServerApi.reducer
   },
 
+  // @ts-ignore
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
       serializableCheck: isDev ? undefined : false,

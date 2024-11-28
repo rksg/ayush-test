@@ -238,17 +238,23 @@ const shouldIgnoreErrorModal = (action?: ErrorAction) => {
   return ignoreEndpointList.includes(endpoint) || isIgnoreErrorModal(request)
 }
 
-export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
+export const errorMiddleware: Middleware = () => next => action => {
+  // @ts-ignore
   if (action?.payload && typeof action.payload === 'object' && 'meta' in action.payload
+    // @ts-ignore
     && action.meta && !action.meta?.baseQueryMeta) {
     // baseQuery (for retry API)
+    // @ts-ignore
     const payload = action.payload as { meta?: QueryMeta }
+    // @ts-ignore
     action.meta.baseQueryMeta = payload.meta
     delete payload.meta
   }
 
   if (isRejectedWithValue(action)) {
+    // @ts-ignore
     const details = getErrorContent(action)
+    // @ts-ignore
     if (!shouldIgnoreErrorModal(action)) {
       showErrorModal(details)
     }

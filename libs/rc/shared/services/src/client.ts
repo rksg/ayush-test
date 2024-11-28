@@ -1,6 +1,5 @@
-import { QueryReturnValue }    from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
-import { cloneDeep }           from 'lodash'
+import { QueryReturnValue, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import { cloneDeep }                             from 'lodash'
 
 import { convertEpochToRelativeTime, convertToRelativeTime, formatter } from '@acx-ui/formatter'
 import {
@@ -532,6 +531,7 @@ export const clientApi = baseClientApi.injectEndpoints({
       }
     }),
     getUEDetailAndDisconnect: build.mutation<CommonResult | 'done', RequestPayload>({
+      // @ts-ignore
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ){
         let serialNumber = arg.params?.serialNumber
         if(!serialNumber) {

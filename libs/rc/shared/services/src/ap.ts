@@ -1,8 +1,6 @@
 /* eslint-disable max-len */
-import { QueryReturnValue }                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { MaybePromise }                                       from '@reduxjs/toolkit/dist/query/tsHelpers'
-import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
-import { reduce }                                             from 'lodash'
+import { QueryReturnValue, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import { reduce }                                                               from 'lodash'
 
 import { Filter }               from '@acx-ui/components'
 import {
@@ -88,8 +86,8 @@ import {
   CompatibilityResponse,
   EthernetPortProfileViewData
 } from '@acx-ui/rc/utils'
-import { baseApApi }      from '@acx-ui/store'
-import { RequestPayload } from '@acx-ui/types'
+import { baseApApi }                    from '@acx-ui/store'
+import { MaybePromise, RequestPayload } from '@acx-ui/types'
 import {
   ApiInfo,
   batchApi,

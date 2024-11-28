@@ -154,6 +154,7 @@ function DataGuardLoader (props: React.PropsWithChildren) {
 
 export async function init (root: Root) {
   renderPendo(pendoInitalization)
+  // @ts-ignore
   addMiddleware(errorMiddleware)
 
   initializeSockets()

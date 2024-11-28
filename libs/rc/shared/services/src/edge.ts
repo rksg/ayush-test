@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query/fetchBaseQuery'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { findIndex }           from 'lodash'
 
 import {

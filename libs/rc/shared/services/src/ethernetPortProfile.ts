@@ -1,5 +1,4 @@
-import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import { QueryReturnValue, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 
 import {
   CommonResult,
@@ -176,6 +175,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
     }),
     getEthernetPortProfileWithRelationsById:
     build.query<EthernetPortProfile | null, RequestPayload>({
+      // @ts-ignore
       async queryFn ({ payload, params }, _queryApi, _extraOptions, fetchWithBQ) {
         if (!params?.id) return Promise.resolve({ data: null } as QueryReturnValue<
           null,

@@ -1,10 +1,7 @@
-import { QueryReturnValue }                                                 from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { RetryOptions }                                                     from '@reduxjs/toolkit/dist/query/retry'
-import { MaybePromise }                                                     from '@reduxjs/toolkit/dist/query/tsHelpers'
-import { BaseQueryApi, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import { QueryReturnValue, RetryOptions, BaseQueryApi, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 
-import { RequestPayload }             from '@acx-ui/types'
-import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
+import { MaybePromise, RequestPayload } from '@acx-ui/types'
+import { ApiInfo, createHttpRequest }   from '@acx-ui/utils'
 
 export type QueryFn<ResultType, QueryArg = never, BaseQueryResultType = ResultType> = (
   { params, payload, enableRbac }: RequestPayload<QueryArg>,

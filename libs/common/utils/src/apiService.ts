@@ -1,11 +1,9 @@
-import { QueryReturnValue }                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { MaybePromise }                                       from '@reduxjs/toolkit/dist/query/tsHelpers'
-import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
-import _                                                      from 'lodash'
-import { generatePath, Params }                               from 'react-router-dom'
+import { QueryReturnValue, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import _                                                                        from 'lodash'
+import { generatePath, Params }                                                 from 'react-router-dom'
 
-import { get }            from '@acx-ui/config'
-import { RequestPayload } from '@acx-ui/types'
+import { get }                          from '@acx-ui/config'
+import { MaybePromise, RequestPayload } from '@acx-ui/types'
 
 import { getTenantId }                       from './getTenantId'
 import { getJwtTokenPayload, getJwtHeaders } from './jwtToken'

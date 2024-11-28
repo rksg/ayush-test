@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { FetchBaseQueryError }                                                    from '@reduxjs/toolkit/dist/query'
+import { FetchBaseQueryError }                                                    from '@reduxjs/toolkit/query'
 import { Col, Form, FormInstance, Input, Row, Select, Space, Switch, Typography } from 'antd'
 import { useIntl }                                                                from 'react-intl'
 import { useParams }                                                              from 'react-router-dom'
