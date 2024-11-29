@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 
-import { clone } from 'lodash'
-import { rest }  from 'msw'
+import { clone, cloneDeep } from 'lodash'
+import { rest }             from 'msw'
 
 import { commonApi, edgeApi, edgeSdLanApi, pinApi, serviceApi } from '@acx-ui/rc/services'
 import {
@@ -47,13 +47,17 @@ const {
   mockDPSKNetworkList
 } = EdgePinFixtures
 const { mockSdLanDataForPinMutuallyExclusive } = EdgeSdLanFixtures
-const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockedTunnelProfileViewData } = EdgeTunnelProfileFixtures
 const { mockDhcpStatsData } = EdgeDHCPFixtures
 const pinTunnelData = {
   ...mockedTunnelProfileViewData,
   data: mockedTunnelProfileViewData.data.filter(item => item.type === TunnelTypeEnum.VXLAN)
 }
+
+// make cluster[0] and cluster[1] have the same venue
+const mockEdgeClusterList = cloneDeep(EdgeGeneralFixtures.mockEdgeClusterList)
+mockEdgeClusterList.data[1].venueId = mockEdgeClusterList.data[0].venueId
+
 
 const services = require('@acx-ui/rc/services')
 
@@ -145,8 +149,8 @@ describe('PersonalIdentityNetworkFormContext', () => {
         expect(result.current.dpskData?.id).toBe(mockDpsk.id))
       await waitFor(() =>
         expect(result.current.clusterOptions?.length).toBe(1))
-      expect(result.current.clusterOptions?.[0].label).toBe(mockEdgeClusterList.data[0].name)
-      expect(result.current.clusterOptions?.[0].value).toBe(mockEdgeClusterList.data[0].clusterId)
+      expect(result.current.clusterOptions?.[0].label).toBe(mockEdgeClusterList.data[1].name)
+      expect(result.current.clusterOptions?.[0].value).toBe(mockEdgeClusterList.data[1].clusterId)
       await waitFor(() =>
         expect(result.current.tunnelProfileOptions?.length)
           .toBe(pinTunnelData.data.length))
@@ -179,7 +183,9 @@ describe('PersonalIdentityNetworkFormContext', () => {
       await waitFor(() =>
         expect(result.current.getVenueName('mock_venue_3')).toBe('Mock Venue 3'))
       await waitFor(() =>
-        expect(result.current.getClusterName('clusterId_1')).toBe('Edge Cluster 1'))
+        expect(result.current.getClusterName('clusterId_2')).toBe('Edge Cluster 2'))
+      // HA AA mode should not be an option
+      expect(result.current.getClusterName('clusterId_1')).toBe('')
       await waitFor(() =>
         expect(result.current.getDhcpName('1')).toBe('TestDhcp-1'))
       await waitFor(() =>
@@ -210,7 +216,7 @@ describe('PersonalIdentityNetworkFormContext', () => {
 
   it('should filter venue already bound with SD-LAN', async () => {
     const edgeList = clone(mockEdgeClusterList)
-    edgeList.data[0].venueId = mockVenueOptionsForMutuallyExclusive.data[1].id
+    edgeList.data[1].venueId = mockVenueOptionsForMutuallyExclusive.data[1].id
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
