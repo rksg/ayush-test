@@ -21,5 +21,3 @@ if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRAN
     ${RUN_COMMAND} run-many --target=test --all --exclude=rc,rc-components,main,analytics-components,msp,msp-components,main-components ${NX_RUN_OPTIONS}
     ## All unit tests. ##
 fi
-
-mkdir -p /app/coverage
