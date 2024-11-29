@@ -187,12 +187,12 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
 
   const handleTlsEnabledOnChange = (checked: boolean) => {
     if (checked) {
-      form.setFieldValue(['primary', 'port'], 2083)
+      form.setFieldValue(['primary', 'port'], DEFAULT_RADSEC_PORT)
     } else {
       if (type === 'ACCOUNTING') {
-        form.setFieldValue(['primary', 'port'], 1812)
+        form.setFieldValue(['primary', 'port'], AUTH_FORBIDDEN_PORT)
       } else {
-        form.setFieldValue(['primary', 'port'], 1813)
+        form.setFieldValue(['primary', 'port'], ACCT_FORBIDDEN_PORT)
       }
     }
   }
@@ -300,6 +300,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
 
   const ACCT_FORBIDDEN_PORT = 1812
   const AUTH_FORBIDDEN_PORT = 1813
+  const DEFAULT_RADSEC_PORT = 2083
   const validateRadiusPort = async (value: number)=>{
     if((value === ACCT_FORBIDDEN_PORT && type === 'ACCOUNTING')||
     (value === AUTH_FORBIDDEN_PORT && type === 'AUTHENTICATION')){
@@ -358,7 +359,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
             name={['radSecOptions', 'tlsEnabled']}
             initialValue={props.saveState.radSecOptions?.tlsEnabled}
             valuePropName='checked'
-            children={<Switch
+            children={<Switch disabled={showCertificateAuthorityDrawer || showCertificateDrawer}
               onChange={handleTlsEnabledOnChange} />}
           />
         </UI.StyledSpace>}
@@ -389,7 +390,8 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
               name={['radSecOptions', 'ocspValidationEnabled']}
               valuePropName='checked'
               children={
-                <Switch checked={ocspValidationEnabled}/>
+                <Switch checked={ocspValidationEnabled}
+                  disabled={showCertificateAuthorityDrawer || showCertificateDrawer}/>
               }
             />
           </UI.StyledSpace>
