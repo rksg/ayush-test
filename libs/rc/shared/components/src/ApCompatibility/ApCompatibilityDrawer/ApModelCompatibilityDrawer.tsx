@@ -24,10 +24,9 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 import { ApModelFamiliesItem } from '../../Compatibility/ApModelFamiliesItem'
 import {
-  detailStyle,
   StyledFeatureName,
   StyledRequirementWrapper,
-  StyledWrapper
+  StyledFormItem
 } from '../../Compatibility/CompatibilityDrawer/styledComponents'
 import { getApFirmwareLink }                            from '../../Compatibility/CompatibilityDrawer/utils'
 import { ApCompatibilityType, InCompatibilityFeatures } from '../constants'
@@ -231,7 +230,7 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
   const getItems = (items: Compatibility[]) => items?.map((item: Compatibility, index) => {
     const { incompatibleFeatures } = item
     return incompatibleFeatures?.map((itemDetail) => (
-      <StyledWrapper key={`incompatibleFeatures_${item.id}`}>
+      <div key={`incompatibleFeatures_${item.id}`}>
         {isMultiple &&
           <Form.Item>
             <StyledFeatureName>
@@ -240,30 +239,24 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
           </Form.Item>
         }
         {!apName && currentType !== ApCompatibilityType.ALONE &&
-          <Form.Item
+          <StyledFormItem
             label={$t({
               defaultMessage: 'Incompatible Access Points (Currently)'
             })}
-            style={detailStyle}
-            className='ApCompatibilityDrawerFormItem'
           >
             {`${item?.incompatible}`}
-          </Form.Item>
+          </StyledFormItem>
         }
 
         {itemDetail?.requirements?.map((requirement: ApRequirement, reqIndex) => (
           <StyledRequirementWrapper key={`requirements_${item.id}_${index}_${reqIndex}`}>
-            <Form.Item
+            <StyledFormItem
               label={$t({ defaultMessage: 'Minimum required version' })}
-              style={detailStyle}
-              className='ApCompatibilityDrawerFormItem'
             >
               {requirement?.firmware}
-            </Form.Item>
-            <Form.Item
+            </StyledFormItem>
+            <StyledFormItem
               label={$t({ defaultMessage: 'Supported AP Models' })}
-              style={detailStyle}
-              className='ApCompatibilityDrawerFormItem'
             >
               {apModelFamilies && requirement?.models &&
                 <ApModelFamiliesItem
@@ -271,11 +264,11 @@ export const ApModelCompatibilityDrawer = (props: ApModelCompatibilityDrawerProp
                   models={requirement.models}
                 />
               }
-            </Form.Item>
+            </StyledFormItem>
           </StyledRequirementWrapper>
         ))}
 
-      </StyledWrapper>
+      </div>
     ))
   })
 

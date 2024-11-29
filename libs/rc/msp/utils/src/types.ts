@@ -642,4 +642,5 @@ export interface MileageReportsRequestPayload {
 export interface MileageSeriesData {
   value: number;
   extraData: MileageBreakUp[];
+  isZeroQuantity?: boolean;
 }
