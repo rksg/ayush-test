@@ -24,3 +24,9 @@ export const WrapperRow = styled(GridRow)`
   margin-right: 0px !important;
   padding: 0px 0px;
 `
+export const NoDataWrapper = styled.div`
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`

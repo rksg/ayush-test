@@ -7,8 +7,10 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { TenantLink }           from '@acx-ui/react-router-dom'
-import type { AnalyticsFilter } from '@acx-ui/utils'
+import { get }                    from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { TenantLink }             from '@acx-ui/react-router-dom'
+import type { AnalyticsFilter }   from '@acx-ui/utils'
 
 import {
   Stages,
@@ -18,19 +20,32 @@ import {
   topImpactedClientLimit,
   stageNameToCodeMap
 } from './config'
+import { PieChartData, TabKeyType }                      from './healthPieChart'
 import { useHealthImpactedClientsQuery, ImpactedClient } from './services'
 import { TableHeading }                                  from './styledComponents'
 
 export const ImpactedClientsTable = ({
   filters,
   selectedStage,
-  drillDownSelection
+  drillDownSelection,
+  pieFilter,
+  chartKey,
+  pieList
 }: {
   filters: AnalyticsFilter;
   selectedStage: Stages;
   drillDownSelection: DrilldownSelection;
+  pieFilter: PieChartData | null;
+  chartKey: TabKeyType;
+  pieList: PieChartData[];
 }) => {
   const { $t } = useIntl()
+  const allowedPieFilter = [
+    useIsSplitOn(Features.MLISA_4_11_0_TOGGLE),
+    get('IS_MLISA_SA')
+  ].some(Boolean)
+  const filteredData = pieList?.map((data: PieChartData) => data.rawKey)
+    .filter((rawKey: string) => rawKey !== 'Others')
   const fieldMap = {
     connectionFailure: 'topNImpactedClientbyConnFailure',
     ttc: 'topNImpactedClientbyAvgTTC'
@@ -41,12 +56,19 @@ export const ImpactedClientsTable = ({
     end: filters.endDate
   }
   const field = fieldMap?.[drillDownSelection as keyof typeof fieldMap]
+  const pieData = {
+    key: pieFilter?.rawKey ?? '',
+    chartKey: chartKey,
+    list: filteredData
+  }
   const queryResults = useHealthImpactedClientsQuery(
     {
       ...payload,
       field: field,
       stage: (selectedStage && stageNameToCodeMap[selectedStage]) as string,
-      topImpactedClientLimit: topImpactedClientLimit
+      topImpactedClientLimit: topImpactedClientLimit,
+      pieData: pieFilter ? pieData : null,
+      allowedPieFilter
     },
     {
       selectFromResult: (result) => {
@@ -131,16 +153,27 @@ export const ImpactedClientsTable = ({
     }
   ]
   const totalCount = queryResults?.data?.length ?? 0
+
+  const filteredText = $t({ defaultMessage: `{count} Impacted {totalCount, plural,
+    one {Client}
+    other {Clients}
+  } filtered by: {pieFilter}` }, {
+    count: showTopNPieChartResult($t, totalCount, topImpactedClientLimit),
+    totalCount, pieFilter: pieFilter?.name
+  })
+
+  const unfilteredText = $t({ defaultMessage: `{count} Impacted {totalCount, plural,
+    one {Client}
+    other {Clients}
+  }` }, {
+    count: showTopNPieChartResult($t, totalCount, topImpactedClientLimit), totalCount
+  })
+
   return (
     <Loader states={[queryResults]}>
       <TableHeading>
-        <b>{selectedStage && $t(stageLabels[selectedStage])} </b>
-        {$t({ defaultMessage: `{count} Impacted {totalCount, plural,
-          one {Client}
-          other {Clients}
-        }` }, {
-          count: showTopNPieChartResult($t, totalCount, topImpactedClientLimit), totalCount
-        })}
+        <b>{selectedStage && allowedPieFilter && $t(stageLabels[selectedStage])} </b>
+        {allowedPieFilter && pieFilter ? filteredText : unfilteredText}
       </TableHeading>
       <Table
         columns={columns}
