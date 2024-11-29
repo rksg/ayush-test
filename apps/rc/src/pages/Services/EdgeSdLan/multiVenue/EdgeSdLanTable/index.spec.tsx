@@ -126,7 +126,7 @@ describe('Multi-venue SD-LAN Table', () => {
     expect(rows[0]).toHaveTextContent(new RegExp(`${mockedSdLan1.name}\\s*${mockedSdLan1.edgeClusterName}\\s*${mockedSdLan1.guestEdgeClusterName}\\s*count:2.*\\s*Mocked_tunnel-1\\s*Mocked_tunnel-3\\s*Poor`))
     // eslint-disable-next-line max-len
     expect(rows[1]).toHaveTextContent(new RegExp(`${mockedSdLan2.name}\\s*${mockedSdLan2.edgeClusterName}\\s*count:1.*\\s*Mocked_tunnel-2\\s*Good`))
-    const fwWarningIcon = screen.queryAllByTestId('WarningCircleSolid')
+    const fwWarningIcon = screen.queryAllByTestId('WarningTriangleSolid')
     expect(fwWarningIcon.length).toBe(0)
   })
 
@@ -305,7 +305,7 @@ describe('Multi-venue SD-LAN Table', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     screen.getByRole('columnheader', { name: 'Cluster' })
     const row1 = await screen.findByRole('row', { name: new RegExp('compatible test') })
-    const fwWarningIcon = await within(row1).findByTestId('WarningCircleSolid')
+    const fwWarningIcon = await within(row1).findByTestId('WarningTriangleSolid')
     await userEvent.hover(fwWarningIcon)
     expect(await screen.findByRole('tooltip', { hidden: true }))
       .toHaveTextContent('RUCKUS Edges and access points')

@@ -621,7 +621,9 @@ export function EditPortDrawer ({
             : $t(EditPortMessages.POE_CAPABILITY_DISABLE)
           ) : ''
       case 'useVenuesettings':
-        return flexibleAuthenticationEnabled
+        const flexAuthEnabled = getFlexAuthEnabled(aggregatePortsData, isMultipleEdit,
+          flexibleAuthenticationEnabled, flexibleAuthenticationEnabledCheckbox)
+        return flexAuthEnabled
           ? $t(EditPortMessages.USE_VENUE_SETTINGS_DISABLED_WHEN_FLEX_AUTH_ENABLED)
           : (disabledUseVenueSetting ? $t(EditPortMessages.USE_VENUE_SETTINGS_DISABLE) : '')
       case 'ingressAcl': return !hasSwitchProfile ? $t(EditPortMessages.ADD_ACL_DISABLE) : ''
