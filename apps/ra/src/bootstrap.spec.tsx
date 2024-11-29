@@ -12,6 +12,7 @@ import { init } from './bootstrap'
 jest.mock('./AllRoutes', () => () => <div data-testid='all-routes' />)
 jest.mock('@acx-ui/theme', () => {}, { virtual: true })
 jest.mock('@acx-ui/store', () => ({
+  ...jest.requireActual('@acx-ui/store'),
   dynamicMiddleware: { addMiddleware: jest.fn() }
 }))
 const middleware = jest.mocked(dynamicMiddleware.addMiddleware)
