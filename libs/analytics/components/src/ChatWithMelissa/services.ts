@@ -1,5 +1,7 @@
 import moment from 'moment'
 
+import { getJwtHeaders } from '@acx-ui/utils'
+
 const GPT_URL_ORIGIN=window.location.origin
 const GPT_URL_BASE_PATH='/analytics'
 const GPT_ROUTE_PATH='/api/mlisa-gpt'
@@ -23,7 +25,8 @@ export const getSummary = async ()=>{
   const response= await fetch(summaryApiUrl,{
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      ...getJwtHeaders()
     },
     body: JSON.stringify(body)
   })

@@ -18,11 +18,11 @@ const Button = styled(AntButton).attrs({ type: 'primary' })`
     background-color: var(--acx-neutrals-10);
     border: none;
     &:hover, &:focus {
-      border-color: var(--acx-accents-orange-55);
-      background-color: var(--acx-accents-orange-55);
+      border-color: var(--acx-accents-orange-10);
+      background-color: var(--acx-accents-orange-10);
     }
     > svg {
-      width: 16px;
+      width: 20px;
       height: 100%;
     }
   }
@@ -75,6 +75,7 @@ export const GptModal = styled(Modal)<{ titleType: string, needBackground: boole
       .ant-pro-steps-form-step.ant-pro-steps-form-step-active {
         overflow-y: auto;
         max-height: calc(100vh - 400px);
+        height: calc(100vh - 400px);
         padding-right: 30px;
         margin-right: -35px;
         margin-bottom: 10px;

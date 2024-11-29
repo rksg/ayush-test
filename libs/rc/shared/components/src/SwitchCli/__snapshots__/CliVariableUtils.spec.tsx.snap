@@ -162,7 +162,7 @@ exports[`Test renderVariableValue function should render correctly with the new 
 <div
     class="c0"
   >
-    Switches with their own settings
+    Switches with custom settings
   </div>
   .c1 {
   display: -webkit-inline-box;
@@ -346,7 +346,7 @@ exports[`Test renderVariableValue function should render correctly with the new 
 <div
     class="c0"
   >
-    Switches with their own settings
+    Switches with custom settings
   </div>
   .c1 {
   display: -webkit-inline-box;

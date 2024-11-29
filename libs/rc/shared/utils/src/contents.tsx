@@ -300,7 +300,7 @@ export const EditPortMessages = {
     defaultMessage: 'Authentication needs RADIUS server and AAA policy to support. If you have set them on R1, will apply the configuration for Authentication automatically. If no, please set them to make Authentication work.'
   }),
   ONLY_SUPPORT_FW_ABOVE_10010F: defineMessage({
-    defaultMessage: 'The firmware version on the selected switches is at least 10.0.10f or higher.'
+    defaultMessage: 'The firmware version on the selected switches must be FI 10.0.10f or higher.'
   }),
   UNTAGGED_PORT_CANNOT_ENABLE_FLEX_AUTH: defineMessage({
     defaultMessage: 'This port is Untagged port. So can not enable Authentication.'
@@ -347,19 +347,19 @@ export const FlexAuthMessages = {
     defaultMessage: 'Guest VLAN is already defined previously and needs to be consistent across all the ports that have authentication enabled.'
   }),
   CANNOT_SET_FORCE_CONTROL_TYPE: defineMessage({
-    defaultMessage: 'The Auth Default VLAN is a required setting. When the 802.1x Port Control value is set to Force Authorized or Force Unauthorized, the Auth Default VLAN cannot be configured. Please change the 802.1x Port Control value to reconfigure it.'
+    defaultMessage: 'The Auth Default VLAN is a required setting. When the 802.1x Port Control value is set to Force Authorized or Force Unauthorized, the Auth Default VLAN cannot be configured. If the Auth Default VLAN is needed, please change the 802.1x Port Control to ‘Auto’.'
   }),
   CANNOT_SET_FORCE_CONTROL_TYPE_FOR_PROFILE: defineMessage({
-    defaultMessage: 'When the 802.1x Port Control value in the selected profile(s) is/are set to Force Authorized or Force Unauthorized, the Auth Default VLAN value must match the switch-level Auth Default VLAN.'
+    defaultMessage: 'When the 802.1x Port Control value in the selected profile(s) is set to Force Authorized or Force Unauthorized, the Auth Default VLAN value must match the switch-level Auth Default VLAN.'
   }),
   VLAN_CANNOT_SAME_AS_TARGET_VLAN: defineMessage({
     defaultMessage: '{sourceVlan} can not be the same as {targetVlan}'
   }),
   CANNOT_APPLIED_DIFF_PROFILES: defineMessage({
-    defaultMessage: 'The selected profiles may either be unset or assigned to different profiles. Please assign the same value.'
+    defaultMessage: 'The selected ports have different profiles or some of them have no profile selected previously. Apply a common profile to all the selected ports.'
   }),
   CANNOT_APPLIED_DIFF_AUTH_DEFAULT_VLAN: defineMessage({
-    defaultMessage: 'The selected ports may either be unset or assigned to different Auth Default VLAN. Please assign the same value.'
+    defaultMessage: 'The selected ports have different or no Auth Default VLAN set previously. Define a common Auth Default VLAN for the selected ports.'
   })
 }
 
@@ -380,7 +380,7 @@ export const PortStatusMessages = {
     defaultMessage: 'Port used by other VLAN setting'
   }),
   USED_BY_AUTH: defineMessage({
-    defaultMessage: 'This port has already enabled authentication'
+    defaultMessage: 'This port has authentication (802.1x and MAC-AUTH) enabled and cannot be manually added to a VLAN'
   }),
   CURRENT: defineMessage({
     defaultMessage: 'VLANs'
