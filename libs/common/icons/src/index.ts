@@ -411,6 +411,7 @@ export { ReactComponent as DpskActionTypeIcon } from './icons/DpskActionTypeIcon
 export { ReactComponent as MacRegActionTypeIcon } from './icons/MacRegActionTypeIcon.svg'
 export { ReactComponent as QrCodeSmallIcon } from './icons/QrCodeSmall.svg'
 export { ReactComponent as OnboardingAssistantDog } from './icons/OnboardingAssistantDog.svg'
+export { ReactComponent as RuckusAiDog } from './icons/RuckusAiDog.svg'
 export { ReactComponent as DogAndPerson } from './icons/DogAndPerson.svg'
 export { ReactComponent as Hospitality } from './icons/Hospitality.svg'
 export { ReactComponent as MultiDwellingUnit } from './icons/MultiDwellingUnit.svg'
