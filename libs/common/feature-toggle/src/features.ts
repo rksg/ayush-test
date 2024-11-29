@@ -227,7 +227,8 @@ export enum Features {
   ACX_UI_GATEWAYS_MENU_OPTION_TOGGLE = 'acx-ui-gateways-menu-option-toggle',
   BTM_EVENTS_TOGGLE = 'acx-ui-btm-events-toggle',
   RUCKUS_AI_BTM_EVENTS_TOGGLE = 'ruckus-ai-btm-events-toggle',
-  MLISA_4_11_0_TOGGLE = 'acx-ui-mlisa-4-11-0-toggle'
+  MLISA_4_11_0_TOGGLE = 'acx-ui-mlisa-4-11-0-toggle',
+  VIEWMODEL_UI_EC_INVENTORIES_QUERY_PERFORMANCE_CHANGES_TOGGLE = 'viewmodel-ui-ec-inventories-query-performance-changes-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
