@@ -85,7 +85,6 @@ describe('EdgeDhcpDetail', () => {
         route: { params, path: detailPath }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const rows = await screen.findAllByRole('row', { name: /Edge Cluster/i })
     expect(rows.length).toBe(2)
   })
@@ -97,7 +96,6 @@ describe('EdgeDhcpDetail', () => {
       </Provider>, {
         route: { params, path: detailPath }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const rows = await screen.findAllByRole('row', { name: /Mock Venue/i })
     expect(rows.length).toBe(2)
   })
