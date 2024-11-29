@@ -73,6 +73,11 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/wifiNetworks/:networkId/settings',
     newApi: true
   },
+  getNetworkVenues: {
+    method: 'post',
+    url: '/venues/wifiNetworks/query',
+    newApi: true
+  },
   addNetworkVenue: {
     //method: 'post',
     //url: '/networkActivations',

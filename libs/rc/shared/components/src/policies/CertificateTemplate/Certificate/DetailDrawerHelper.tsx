@@ -111,7 +111,7 @@ export const getCertificateDetails =
           {
             type: RenderType.CONTENT,
             title: $t({ defaultMessage: 'Key Usage' }),
-            content: getDisplayedItems(certificateData?.keyUsage || [], 'keyUsages')
+            content: getDisplayedItems(certificateData?.keyUsages || [], 'keyUsages')
           },
           {
             type: RenderType.CONTENT,

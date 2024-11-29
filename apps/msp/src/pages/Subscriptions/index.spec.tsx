@@ -3,9 +3,11 @@ import moment         from 'moment'
 import { Path, rest } from 'msw'
 
 import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                                                       from '@acx-ui/msp/utils'
+import { mspApi }                                                            from '@acx-ui/msp/services'
+import { MspRbacUrlsInfo, MspUrlsInfo }                                      from '@acx-ui/msp/utils'
+import { administrationApi }                                                 from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo, LicenseUrlsInfo }                           from '@acx-ui/rc/utils'
-import { Provider }                                                          from '@acx-ui/store'
+import { store, Provider }                                                   from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
 
 import { Subscriptions } from '.'
@@ -137,6 +139,8 @@ const fakeTenantDetails = {
 describe('Subscriptions', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    store.dispatch(mspApi.util.resetApiState())
+    store.dispatch(administrationApi.util.resetApiState())
     mockServer.use(
       rest.get(
         MspUrlsInfo.getMspEntitlement.url,
@@ -155,10 +159,6 @@ describe('Subscriptions', () => {
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.post(
-        MspUrlsInfo.getMspCustomersListDropdown.url,
-        (req, res, ctx) => res(ctx.json({}))
-      ),
-      rest.post(
         MspUrlsInfo.getMspCustomersList.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
@@ -173,6 +173,10 @@ describe('Subscriptions', () => {
       rest.get(
         AdministrationUrlsInfo.getTenantDetails.url,
         (req, res, ctx) => res(ctx.json(fakeTenantDetails))
+      ),
+      rest.patch(
+        MspRbacUrlsInfo.refreshMspEntitlement.url,
+        (req, res, ctx) => res(ctx.json(entitlement))
       )
     )
     params = {

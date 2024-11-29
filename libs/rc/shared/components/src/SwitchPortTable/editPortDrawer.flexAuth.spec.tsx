@@ -785,7 +785,7 @@ describe('EditPortDrawer', () => {
 
           await userEvent.hover(await screen.findByTestId('flex-enable-switch'))
           expect(await screen.findByRole('tooltip', { hidden: false }))
-            .toHaveTextContent(/The firmware version on the selected switches is at least 10.0.10f or higher/)
+            .toHaveTextContent(/The firmware version on the selected switches must be FI 10.0.10f or higher/)
         })
 
         it('should render correctly when either of the selected ports is an untagged port', async () => {
@@ -1081,20 +1081,25 @@ describe('EditPortDrawer', () => {
           await userEvent.click(portControlCombobox)
           await userEvent.click(await screen.findByText('Force Authorized'))
 
-          expect(await screen.findByTestId('authDefaultVlan-override-checkbox')).toBeChecked()
-          expect(await screen.findByTestId('authDefaultVlan-override-checkbox')).toBeDisabled()
+          const authDefaultVlanOverride = await screen.findByTestId('authDefaultVlan-override-checkbox')
+          const authFailActionOverride = await screen.findByTestId('authFailAction-override-checkbox')
+          const restrictedVlanOverride = await screen.findByTestId('restrictedVlan-override-checkbox')
+          const dot1xPortControlOverride = await screen.findByTestId('dot1xPortControl-override-checkbox')
+
+          expect(authDefaultVlanOverride).toBeChecked()
+          expect(authDefaultVlanOverride).toBeDisabled()
           expect(await screen.findByLabelText(/Auth Default VLAN/)).toHaveValue('') // has different switch auth default vlan
-          expect(await screen.findByTestId('authFailAction-override-checkbox')).toBeChecked()
-          expect(await screen.findByTestId('authFailAction-override-checkbox')).toBeDisabled()
-          expect(await screen.findByTestId('restrictedVlan-override-checkbox')).toBeChecked()
-          expect(await screen.findByTestId('restrictedVlan-override-checkbox')).toBeDisabled()
+          expect(authFailActionOverride).toBeChecked()
+          expect(authFailActionOverride).toBeDisabled()
+          expect(restrictedVlanOverride).toBeChecked()
+          expect(restrictedVlanOverride).toBeDisabled()
 
           await userEvent.click(typeCombobox)
           await userEvent.click(await screen.findByText(/802.1x and MAC-AUTH/))
 
           expect(await screen.findByTestId('changeAuthOrder-override-checkbox')).not.toBeDisabled()
-          expect(await screen.findByTestId('dot1xPortControl-override-checkbox')).toBeChecked()
-          expect(await screen.findByTestId('dot1xPortControl-override-checkbox')).toBeDisabled()
+          expect(dot1xPortControlOverride).toBeChecked()
+          expect(dot1xPortControlOverride).toBeDisabled()
         })
 
         it('should handle untagged vlan changes correctly', async () => {
@@ -2056,7 +2061,7 @@ describe('EditPortDrawer', () => {
             await screen.findByTestId('flexibleAuthenticationEnabled-override-checkbox')
           )
           await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-          expect(await screen.findByText(/The selected ports may either be unset or assigned to different Auth Default VLAN/)).toBeVisible()
+          expect(await screen.findByText(/The selected ports have different or no Auth Default VLAN set previously/)).toBeVisible()
         })
 
         it('should validate with auth default vlan correctly when VLANs have multiple values', async () => {
@@ -2139,9 +2144,9 @@ describe('EditPortDrawer', () => {
 
           expect(mockedSavePortsSetting).not.toBeCalled()
           // auth default vlan cannot be the same as either of the other VLANs
-          expect(await screen.findByText(/Among the selected ports, the Restricted VLAN value conflicts with the Auth Default VLAN. Please enter a different value/)).toBeVisible()
-          expect(await screen.findByText(/Among the selected ports, the Critical VLAN value conflicts with the Auth Default VLAN. Please enter a different value/)).toBeVisible()
-          expect(await screen.findByText(/Among the selected ports, the Guest VLAN value conflicts with the Auth Default VLAN. Please enter a different value/)).toBeVisible()
+          expect(await screen.findByText(/Among the selected ports, Restricted VLAN ID is same as Auth Default which is not allowed. Please use a different Restricted VLAN ID/)).toBeVisible()
+          expect(await screen.findByText(/Among the selected ports, Critical VLAN ID is same as Auth Default which is not allowed. Please use a different Critical VLAN ID/)).toBeVisible()
+          expect(await screen.findByText(/Among the selected ports, Guest VLAN ID is same as Auth Default which is not allowed. Please use a different Guest VLAN ID/)).toBeVisible()
         })
 
         it('should pre-select the fields correctly when either port has a different enable status.', async () => {

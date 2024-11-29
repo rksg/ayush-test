@@ -28,6 +28,7 @@ export enum Features {
   DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
   DEVICE_AGNOSTIC = 'entitlement-device-agnostic-sku-toggle',
   DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT = 'dpsk-per-bound-passphrase-allowed-device-increased-limit',
+  EARLY_ACCESS_FEATURE_LIST_TOGGLE = 'acx-ui-selective-early-access-toggle',
   EDGE_LAG = 'acx-ui-edges-lag-toggle',
   EDGES_DHCP_CSV_TOGGLE = 'acx-ui-edges-dhcp-csv-toggle',
   EDGES_PING_TRACEROUTE_TOGGLE = 'acx-ui-edges-ping-traceroute-toggle',
@@ -62,6 +63,7 @@ export enum Features {
   EOL_AP_2022_12_PHASE_2_TOGGLE = 'eol-ap-2022-12-phase-2-toggle',
   ETHERNET_PORT_PROFILE_TOGGLE = 'acx-ui-ethernet-toggle',
   ETHERNET_PORT_PROFILE_DVLAN_TOGGLE = 'acx-ui-ethernet-dvlan-toggle',
+  ETHERNET_PORT_SUPPORT_PROXY_RADIUS_TOGGLE='acx-ethernet-port-support-proxy-radius-toggle',
   EXPORT_DEVICE = 'viewmodel-export-device-inventory',
   EXPORT_EVENTS_TOGGLE = 'acx-ui-scheduled-events-export-toggle',
   G_MAP = 'acx-ui-maps-api-toggle',
@@ -74,6 +76,9 @@ export enum Features {
   IDM_DECOUPLING = 'ptenant-admin-authentication-enabled',
   INCIDENTS_AIRTIME_TOGGLE = 'acx-ui-incidents-airtime-toggle',
   INCIDENTS_SWITCH_DDOS_TOGGLE = 'acx-ui-tcp-syn-ddos-toggle',
+  INCIDENTS_SWITCH_LOOP_DETECTION_TOGGLE = 'acx-ui-loop-detection-toggle',
+  INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE = 'acx-ui-port-congestion-toggle',
+  INCIDENTS_SWITCH_UPLINK_PORT_CONGESTION_TOGGLE = 'acx-ui-uplink-port-congestion-toggle',
   LICENSE_BANNER = 'acx-ui-license-banner',
   LINKEDIN_OIDC_TOGGLE = 'guest-linkedin-openid-connect-toggle',
   LOGIN_SSO_SIGNATURE_TOGGLE = 'login-sso-saml-signature',
@@ -119,6 +124,9 @@ export enum Features {
   RUCKUS_AI_INCIDENTS_AIRTIME_TOGGLE = 'ruckus-ai-incidents-airtime-toggle',
   RUCKUS_AI_SWITCH_HEALTH_TOGGLE = 'ruckus-ai-switch-health-toggle',
   RUCKUS_AI_INCIDENTS_SWITCH_DDOS_TOGGLE = 'ruckus-ai-tcp-syn-ddos-toggle',
+  RUCKUS_AI_INCIDENTS_SWITCH_LOOP_DETECTION_TOGGLE = 'ruckus-ai-loop-detection-toggle',
+  RUCKUS_AI_INCIDENTS_SWITCH_PORT_CONGESTION_TOGGLE = 'ruckus-ai-port-congestion-toggle',
+  RUCKUS_AI_INCIDENTS_SWITCH_UPLINK_PORT_CONGESTION_TOGGLE = 'ruckus-ai-uplink-port-congestion-toggle',
   HEALTH_WIRED_TOPN_WITH_OTHERS = 'acx-ui-health-wired-topn-with-others-toggle',
   RUCKUS_AI_SWITCH_HEALTH_10010E_TOGGLE = 'ruckus-ai-switch-health-10010e-toggle',
   RUCKUS_WAN_GATEWAY_UI_SHOW = 'ruckus-wan-gateway-ui-show',
@@ -212,8 +220,14 @@ export enum Features {
   BRAND360_MDU_TOGGLE = 'acx-ui-brand360-mdu-toggle',
   SERVER_CERTIFICATE_MANAGEMENT_UI_TOGGLE = 'server-certificate-management-ui-toggle',
   WIFI_NETWORK_APPLICATION_CONTROL = 'wifi-network-application-control',
+  WIFI_NETWORK_VENUE_QUERY = 'wifi-eda-network-venue-query-toggle',
   UX_OPTIMIZATION_FEATURE_TOGGLE = 'acx-ui-ux-optimization-feature-toggle',
-  ROAMING_TYPE_EVENTS_TOGGLE = 'acx-ui-roaming-type-events-toggle'
+  ROAMING_TYPE_EVENTS_TOGGLE = 'acx-ui-roaming-type-events-toggle',
+  POLICY_IDENTITY_TOGGLE = 'policy-identity-toggle',
+  ACX_UI_GATEWAYS_MENU_OPTION_TOGGLE = 'acx-ui-gateways-menu-option-toggle',
+  BTM_EVENTS_TOGGLE = 'acx-ui-btm-events-toggle',
+  RUCKUS_AI_BTM_EVENTS_TOGGLE = 'ruckus-ai-btm-events-toggle',
+  MLISA_4_11_0_TOGGLE = 'acx-ui-mlisa-4-11-0-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
@@ -223,7 +237,11 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   CONFIG_TEMPLATE = 'CONFIG-TEMPLATE',
   WORKFLOW_ONBOARD = 'WORKFLOW-ONBOARD',
   LOCATION_BASED_SERVICES = 'LOCATION-BASED-SERVICES',
-  RBAC_IMPLICIT_P1 = 'RBAC-IMPLICIT-P1'
+  RBAC_IMPLICIT_P1 = 'RBAC-IMPLICIT-P1',
+  // for testing only
+  TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
+  TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',
+  TEST_SELECTIVE_BETA_03 = 'TEST-SELECTIVE-BETA-03'
 }
 
 interface BetaList {
@@ -245,5 +263,9 @@ export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.SMART_EDGES, description: defineMessage({ defaultMessage: 'RUCKUS Edge: RUCKUS Edge is a platfrom to run RUCKUS services on. Network administrators can utilize SD-LAN service or Personal Identity Networking service on a RUCKUS Edge. SD-LAN provides WLAN tunnelling using VXLAN. This will provide end users a seamless roaming experience across a network. The Personal Identity Networking service provides individual networks for users which is typically used in a multi-dwelling facility.' }), status: true },
   { key: TierFeatures.CONFIG_TEMPLATE, description: defineMessage({ defaultMessage: 'Config Template: It allows MSP users to create templates for networks, <venuePlural></venuePlural>, services, and policies. These templates can then be applied to multiple customers, providing a centralized and efficient solution for managing RUCKUS brand network equipment across properties.' }), status: true },
   { key: TierFeatures.LOCATION_BASED_SERVICES, description: defineMessage({ defaultMessage: 'LBS: RUCKUS One now lets you create a Location Based Service (LBS) Server linked to multiple <venuePlural></venuePlural> for efficient tracking and management of location-specific information. This feature gathers location data from connected access points (APs) and routes it to third-party application servers. You can add and manage LBS server profiles and enable Location Based Services for any <venueSingular></venueSingular> directly from the RUCKUS One web interface, enhancing your <venueSingular></venueSingular> management capabilities.' }), status: true },
-  { key: TierFeatures.RBAC_IMPLICIT_P1, description: defineMessage({ defaultMessage: 'Role-based access control (RBAC) and attributes-based access control (ABAC) are functionalities that provide a structured and efficient approach to managing administrator permissions and access rules in RUCKUS One.' }), status: true }
+  { key: TierFeatures.RBAC_IMPLICIT_P1, description: defineMessage({ defaultMessage: 'Role-based access control: Role-based access control (RBAC) and attributes-based access control (ABAC) are functionalities that provide a structured and efficient approach to managing administrator permissions and access rules in RUCKUS One.' }), status: true },
+  // for testing only
+  { key: TierFeatures.TEST_SELECTIVE_BETA_01, description: defineMessage({ defaultMessage: 'Test 01: Test selective 01. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },
+  { key: TierFeatures.TEST_SELECTIVE_BETA_02, description: defineMessage({ defaultMessage: 'Test 02: Test selective 02. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },
+  { key: TierFeatures.TEST_SELECTIVE_BETA_03, description: defineMessage({ defaultMessage: 'Test 03: Test selective 03. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true }
 ]

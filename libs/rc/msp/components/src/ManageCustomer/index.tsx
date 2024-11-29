@@ -58,7 +58,7 @@ import {
   MspEcTierPayload
 } from '@acx-ui/msp/utils'
 import { GoogleMapWithPreference, useIsEdgeReady, usePlacesAutocomplete } from '@acx-ui/rc/components'
-import { useGetTenantDetailsQuery }                                       from '@acx-ui/rc/services'
+import { useGetPrivilegeGroupsQuery, useGetTenantDetailsQuery }           from '@acx-ui/rc/services'
 import {
   Address,
   emailRegExp,
@@ -286,6 +286,10 @@ export function ManageCustomer () {
     },
     option: { skip: action !== 'edit' }
   })
+  const adminRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
+  const isSystemAdmin = userProfile?.roles?.some(role => adminRoles.includes(role as RolesEnum))
+  const { data: privilegeGroupList } = useGetPrivilegeGroupsQuery({ params },
+    { skip: !isRbacPhase2Enabled || isEditMode || isSystemAdmin })
 
   const showExtendedTrial = tenantDetailsData?.extendedTrial && isExtendedTrialToggleEnabled
   const [
@@ -369,16 +373,25 @@ export function ManageCustomer () {
       const initialAddress = isMapEnabled ? '' : defaultAddress.addressLine
       formRef.current?.setFieldValue(['address', 'addressLine'], initialAddress)
       if (userProfile) {
-        const administrator = [] as MspAdministrator[]
-        administrator.push ({
-          id: userProfile.adminId,
-          lastName: userProfile.lastName,
-          name: userProfile.firstName,
-          email: userProfile.email,
-          role: RolesEnum.PRIME_ADMIN,
-          detailLevel: userProfile.detailLevel
-        })
-        setAdministrator(administrator)
+        if (isSystemAdmin) {
+          const administrator = [] as MspAdministrator[]
+          administrator.push ({
+            id: userProfile.adminId,
+            lastName: userProfile.lastName,
+            name: userProfile.firstName,
+            email: userProfile.email,
+            role: userProfile.role as RolesEnum,
+            detailLevel: userProfile.detailLevel
+          })
+          setAdministrator(administrator)
+        } else {
+          const pg = privilegeGroupList?.find(pg => pg.name === userProfile?.role)
+          if (pg) {
+            const pgList = [] as PrivilegeGroup[]
+            pgList.push({ id: pg.id, name: userProfile.role as RolesEnum })
+            setPrivilegeGroups(pgList)
+          }
+        }
       }
       setSubscriptionStartDate(moment())
       setSubscriptionEndDate(moment().add(30,'days'))

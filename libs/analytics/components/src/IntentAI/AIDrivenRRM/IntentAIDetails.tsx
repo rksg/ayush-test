@@ -86,8 +86,9 @@ export function createIntentAIDetails () {
     const queryResult = useIntentAICRRMQuery()
     const crrmData = queryResult.data!
     const fields = useCommonFields(intent)
+    const noData = state === 'no-data' || !hasData
 
-    return <Loader states={[queryResult]}>
+    return <>
       <div hidden>
         <SummaryGraphBefore detailsPage crrmData={crrmData} setUrl={setSummaryUrlBefore} />
         <SummaryGraphAfter detailsPage crrmData={crrmData} setUrl={setSummaryUrlAfter} />
@@ -125,13 +126,15 @@ export function createIntentAIDetails () {
           <DetailsSection data-testid='Key Performance Indications'>
             <DetailsSection.Title
               children={$t({ defaultMessage: 'Key Performance Indications' })} />
-            <DetailsSection.Details children={
-              <IntentAIRRMGraph
-                crrmData={crrmData}
-                summaryUrlBefore={summaryUrlBefore}
-                summaryUrlAfter={summaryUrlAfter}
-              />
-            }/>
+            <DetailsSection.Details style={{ ...(!noData && { minHeight: 385 }) }}>
+              <Loader states={[queryResult]}>
+                <IntentAIRRMGraph
+                  crrmData={crrmData}
+                  summaryUrlBefore={summaryUrlBefore}
+                  summaryUrlAfter={summaryUrlAfter}
+                />
+              </Loader>
+            </DetailsSection.Details>
           </DetailsSection>
 
           <GridRow>
@@ -155,6 +158,6 @@ export function createIntentAIDetails () {
           </DetailsSection>
         </GridCol>
       </GridRow>
-    </Loader>
+    </>
   }
 }

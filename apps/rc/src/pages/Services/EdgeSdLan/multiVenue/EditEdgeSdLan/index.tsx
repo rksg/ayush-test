@@ -33,11 +33,11 @@ const EditEdgeMvSdLan = () => {
 
   const steps = [
     {
-      title: $t({ defaultMessage: 'General' }),
+      title: $t({ defaultMessage: 'Settings' }),
       content: SettingsForm
     },
     {
-      title: $t({ defaultMessage: 'Scope' }),
+      title: $t({ defaultMessage: 'Tunnel & Network' }),
       content: TunnelNetworkForm
     }
   ]

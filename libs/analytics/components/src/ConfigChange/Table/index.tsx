@@ -12,6 +12,8 @@ import {
   getConfigChangeEntityTypeMapping,
   Cascader
 }                                                    from '@acx-ui/components'
+import { get }                       from '@acx-ui/config'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { noDataDisplay }             from '@acx-ui/utils'
 
@@ -30,6 +32,10 @@ export function Table (props: {
   dotSelect: number | null,
   legend: Record<string, boolean>
 }) {
+  const isMLISA = get('IS_MLISA_SA')
+  const isIntentAIConfigChangeEnable = useIsSplitOn(Features.MLISA_4_11_0_TOGGLE)
+  const showIntentAI = Boolean(isMLISA || isIntentAIConfigChangeEnable)
+
   const { $t } = useIntl()
   const { kpiFilter, applyKpiFilter } = useContext(KPIFilterContext)
   const { timeRanges: [startDate, endDate] } = useContext(ConfigChangeContext)
@@ -43,8 +49,10 @@ export function Table (props: {
     endDate: endDate.toISOString()
   }, { selectFromResult: queryResults => ({
     ...queryResults,
-    data: filterData(queryResults.data ?? [], kpiFilter, legendList)
+    data: filterData(queryResults.data ?? [], kpiFilter, legendList, showIntentAI)
   }) })
+
+  const entityTypeMapping = getConfigChangeEntityTypeMapping(showIntentAI)
 
   const ColumnHeaders: TableProps<ConfigChange>['columns'] = [
     {
@@ -61,11 +69,10 @@ export function Table (props: {
       title: $t({ defaultMessage: 'Entity Type' }),
       dataIndex: 'type',
       render: (_, row) => {
-        const config = getConfigChangeEntityTypeMapping().find(type => type.key === row.type)
+        const config = entityTypeMapping.find(type => type.key === row.type)
         return config ? <Badge key={row.id} color={config.color} text={config.label}/> : row.type
       },
-      filterable: getConfigChangeEntityTypeMapping()
-        .map(({ label, ...rest }) => ({ ...rest, value: label })),
+      filterable: entityTypeMapping.map(({ label, ...rest }) => ({ ...rest, value: label })),
       sorter: { compare: sortProp('type', defaultSort) },
       width: 100
     },

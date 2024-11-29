@@ -63,7 +63,19 @@ export const certDetailTitle: Record<CertificateCategoryType, MessageDescriptor>
 
 export const usagesLabel: Record<UsageType, MessageDescriptor> = {
   [UsageType.CLIENT_AUTH]: defineMessage({ defaultMessage: 'Client Authentication' }),
-  [UsageType.SERVER_AUTH]: defineMessage({ defaultMessage: 'Server Authentication' })
+  [UsageType.SERVER_AUTH]: defineMessage({ defaultMessage: 'Server Authentication' }),
+  [UsageType.CODE_SIGNING]: defineMessage({ defaultMessage: 'Code Signing' }),
+  [UsageType.DOCUMENT_SIGNING]: defineMessage({ defaultMessage: 'Document Signing' }),
+  [UsageType.EMAIL_PROTECTION]: defineMessage({ defaultMessage: 'Email Protection' }),
+  [UsageType.HOTSPOT_AUTH]: defineMessage({ defaultMessage: 'Hotspot Authentication' }),
+  [UsageType.IPSEC_END_SYSTEM]: defineMessage({ defaultMessage: 'IPSec End System' }),
+  [UsageType.IPSEC_TUNNEL]: defineMessage({ defaultMessage: 'IPSec Tunnel' }),
+  [UsageType.IPSEC_USER]: defineMessage({ defaultMessage: 'IPSec User' }),
+  [UsageType.MICROSOFT_SGC]: defineMessage({ defaultMessage: 'Microsoft Server Gated Cryptography' }),
+  [UsageType.NETSCAPE_SGC]: defineMessage({ defaultMessage: 'Netscape Server Gated Cryptography' }),
+  [UsageType.OCSP_SIGNING]: defineMessage({ defaultMessage: 'OCSP Signing' }),
+  [UsageType.SMART_CARD_LOGON]: defineMessage({ defaultMessage: 'Smart Card Logon' }),
+  [UsageType.TIME_STAMPING]: defineMessage({ defaultMessage: 'Time Stamping' })
 }
 
 export const keyUsagesLabel: Record<KeyUsageType, MessageDescriptor> = {

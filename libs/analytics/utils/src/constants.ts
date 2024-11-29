@@ -11,6 +11,9 @@ export const productNames = get('IS_MLISA_SA')
 export enum IncidentToggle {
   AirtimeIncidents = 'airtime-incidents',
   SwitchDDoSIncidents = 'switch-ddos-incidents',
+  SwitchLoopDetectionIncidents = 'switch-loop-detection-incidents',
+  SwitchPortCongestionIncidents = 'switch-port-congestion-incidents',
+  SwitchUplinkPortCongestionIncidents = 'switch-uplink-port-congestion-incidents',
 }
 
 export type IncidentsToggleFilter = {
@@ -37,6 +40,7 @@ const allIncidentCodes = [
   'i-apserv-continuous-reboots',
   'i-apserv-downtime-high',
   'i-switch-vlan-mismatch',
+  'i-switch-loop-detection',
   'i-switch-poe-pd',
   'i-apinfra-poe-low',
   'i-apinfra-wanthroughput-low',
@@ -49,6 +53,8 @@ const allIncidentCodes = [
   'p-airtime-tx-24g-high',
   'p-airtime-tx-5g-high',
   'p-airtime-tx-6(5)g-high',
+  'p-switch-port-congestion',
+  'p-switch-uplink-port-congestion',
   's-switch-tcp-syn-ddos'
 ] as const
 
@@ -73,6 +79,18 @@ const incidentsToggleMap: Record<
   [IncidentToggle.SwitchDDoSIncidents]: {
     categories: ['all', 'security'],
     code: ['s-switch-tcp-syn-ddos']
+  },
+  [IncidentToggle.SwitchLoopDetectionIncidents]: {
+    categories: ['all', 'security'],
+    code: ['i-switch-loop-detection']
+  },
+  [IncidentToggle.SwitchPortCongestionIncidents]: {
+    categories: ['all', 'performance'],
+    code: ['p-switch-port-congestion']
+  },
+  [IncidentToggle.SwitchUplinkPortCongestionIncidents]: {
+    categories: ['all', 'performance'],
+    code: ['p-switch-uplink-port-congestion']
   }
 }
 
@@ -130,9 +148,21 @@ export const getWiredWirelessIncidentCodes = (
 )
 export type CategoryOption = 'connection' | 'performance' | 'infrastructure' | 'security'
 export const categoryOptions = [
-  { value: 'connection', label: defineMessage({ defaultMessage: 'Connection' }) },
-  { value: 'performance', label: defineMessage({ defaultMessage: 'Performance' }) },
-  { value: 'infrastructure', label: defineMessage({ defaultMessage: 'Infrastructure' }) }
+  {
+    value: 'connection',
+    label: defineMessage({ defaultMessage: 'Connection' }),
+    isVisible: () => true
+  },
+  {
+    value: 'performance',
+    label: defineMessage({ defaultMessage: 'Performance' }),
+    isVisible: () => true
+  },
+  {
+    value: 'infrastructure',
+    label: defineMessage({ defaultMessage: 'Infrastructure' }),
+    isVisible: () => true
+  }
 ]
 export type CategoryTab = 'overview' | Omit<CategoryOption,'security'>
 export const categoryTabs = [
@@ -155,7 +185,9 @@ export const categoryCodeMap = {
     codes: [
       'p-cov-clientrssi-low',
       'p-load-sz-cpu-load',
-      'p-switch-memory-high'
+      'p-switch-memory-high',
+      'p-switch-port-congestion',
+      'p-switch-uplink-port-congestion'
     ] as IncidentCode[]
   },
   infrastructure: {
@@ -168,6 +200,7 @@ export const categoryCodeMap = {
       'i-apserv-downtime-high',
       'i-switch-vlan-mismatch',
       'i-switch-poe-pd',
+      'i-switch-loop-detection',
       'i-apinfra-poe-low',
       'i-apinfra-wanthroughput-low'
     ] as IncidentCode[]

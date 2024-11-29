@@ -52,6 +52,8 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
   const { data, isLoading } = useGetDirectoryServerByIdQuery(
     { params: { ...params, policyId } }, { skip: !policyId }
   )
+  const TLS_DISABLED_PORT = 389
+  const TLS_ENABLED_PORT = 636
   const currentType = readMode && data ? data.type : type
   const [testConnectionStatus, setTestConnectionStatus] = useState<TestConnectionStatusEnum>()
   let currentTestConnectionFun: ReturnType<typeof testConnectionDirectoryServer> | undefined
@@ -122,6 +124,14 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
     }
   }
 
+  const handleTlsEnabledOnChange = (checked: boolean) => {
+    if (checked) {
+      form.setFieldValue(['port'], TLS_ENABLED_PORT)
+    } else {
+      form.setFieldValue(['port'], TLS_DISABLED_PORT)
+    }
+  }
+
   useEffect(() => {
     return () => {
       currentTestConnectionFun && currentTestConnectionFun.abort()
@@ -184,7 +194,7 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
                 name='tlsEnabled'
                 initialValue={true}
                 valuePropName='checked'
-                children={<Switch />}
+                children={<Switch onChange={handleTlsEnabledOnChange} />}
               />
             </UI.StyledSpace>
           </Col>
@@ -211,7 +221,7 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
                 { type: 'number', min: 1 },
                 { type: 'number', max: 65535 }
               ]}
-              initialValue={636}
+              initialValue={TLS_ENABLED_PORT}
               children={<InputNumber min={1} max={65535} />}
             />
           </Col>
@@ -236,7 +246,9 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
               ? $t({ defaultMessage: 'Windows Domain Name' })
               :$t({ defaultMessage: 'Base Domain Name' })}
             rules={readMode? undefined : [
-              { required: true }
+              { required: true },
+              { min: 1 },
+              { max: 255 }
             ]}
             initialValue={''}
             validateTrigger={'onBlur'}
@@ -253,7 +265,9 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
             {...(readMode? undefined : { name: 'adminDomainName' })}
             label={$t({ defaultMessage: 'Admin Domain Name' })}
             rules={[
-              { required: true }
+              { required: true },
+              { min: 1 },
+              { max: 255 }
             ]}
             initialValue={''}
             validateTrigger={'onBlur'}
@@ -282,6 +296,9 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
               {...(readMode? undefined : { name: 'keyAttribute' })}
               label={$t({ defaultMessage: 'Key Attribute' })}
               initialValue={''}
+              rules={[
+                { max: 255 }
+              ]}
               children={readMode? (data?.keyAttribute || noDataDisplay)
                 :<Input/>}
             />
@@ -289,6 +306,9 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
               {...(readMode? undefined : { name: 'searchFilter' })}
               label={$t({ defaultMessage: 'Search Filter' })}
               initialValue={''}
+              rules={[
+                { max: 255 }
+              ]}
               children={readMode? (data?.searchFilter || noDataDisplay)
                 :<Input/>}
             />
