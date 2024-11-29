@@ -2,6 +2,7 @@ import { dataApiURL, store } from '@acx-ui/store'
 import { mockGraphqlQuery }  from '@acx-ui/test-utils'
 
 import { mockConnectionDrillDown, mockTtcDrillDown, mockImpactedClient, mockConnectionFailureResponse, mockPathWithAp, mockTtcResponse } from './__tests__/fixtures'
+import { TabKeyType }                                                                                                                    from './healthPieChart'
 import { api, RequestPayload, pieChartQuery, PieChartPayload  }                                                                          from './services'
 
 describe('Connection drill down api', () => {
@@ -59,6 +60,43 @@ describe('Connection drill down api', () => {
     const { status, data, error } = await store.dispatch(
       api.endpoints.ttcDrilldown.initiate(payload)
     )
+    expect(status).toBe('rejected')
+    expect(data).toBe(undefined)
+    expect(error).not.toBe(undefined)
+  })
+
+  it('should return correct data for impacted client with pieFilter and chartKey', async () => {
+    const impactedClientPayloadWithFilter = {
+      ...impactedClientPayload,
+      pieFilter: 'somePieFilter',
+      chartKey: 'wlans' as TabKeyType
+    }
+
+    mockGraphqlQuery(dataApiURL, 'Network', { data: mockImpactedClient })
+
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.healthImpactedClients.initiate(impactedClientPayloadWithFilter)
+    )
+
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(mockImpactedClient)
+    expect(error).toBe(undefined)
+  })
+  it('should return error for impacted client with pieFilter and chartKey', async () => {
+    const impactedClientPayloadWithFilter = {
+      ...impactedClientPayload,
+      pieFilter: 'somePieFilter',
+      chartKey: 'wlans' as TabKeyType
+    }
+
+    mockGraphqlQuery(dataApiURL, 'Network', {
+      error: new Error('something went wrong!')
+    })
+
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.healthImpactedClients.initiate(impactedClientPayloadWithFilter)
+    )
+
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)
     expect(error).not.toBe(undefined)
