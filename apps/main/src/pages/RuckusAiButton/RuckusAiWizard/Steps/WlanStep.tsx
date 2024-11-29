@@ -9,7 +9,7 @@ import {
 import { Button, Divider } from 'antd'
 import { useIntl }         from 'react-intl'
 
-import { cssStr }                             from '@acx-ui/components'
+import { Alert, cssStr }                             from '@acx-ui/components'
 import { CrownSolid, OnboardingAssistantDog } from '@acx-ui/icons'
 import { useNetworkListQuery }                from '@acx-ui/rc/services'
 import {
@@ -145,7 +145,8 @@ export function WlanStep ( props: {
           {$t({ defaultMessage: 'Add Network Profile' })}
         </Button>
       </UI.HeaderWithAddButton>
-
+      {/* //TODO: Karen */}
+      <Alert message='Informational Notes' type='info' showIcon closable /> 
       <UI.HighlightedBox>
         <UI.HighlightedTitle>
           <CrownSolid
