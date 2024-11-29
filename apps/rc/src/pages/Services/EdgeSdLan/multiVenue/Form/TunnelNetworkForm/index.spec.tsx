@@ -184,10 +184,10 @@ describe('Tunneled Venue Networks Form', () => {
       }}
     />, { route: { params: { tenantId: 't-id' } } })
 
-    await basicCheck()
+    const mockedVenueRows = await basicCheck()
+    expect(mockedVenueRows[0]).toHaveTextContent(/MockedVenue 1.*2/)
+    expect(mockedVenueRows[1]).toHaveTextContent(/MockedVenue 2.*0/)
     screen.getByRole('row', { name: /airport.* 0/i })
-    screen.getByRole('row', { name: /MockedVenue 1 .* 2/i })
-    screen.getByRole('row', { name: /MockedVenue 2 .* 0/i })
     screen.getByRole('row', { name: /SG office .* 0/i })
     await waitFor(() =>
       expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual({ venue_00003: [
@@ -217,10 +217,10 @@ describe('Tunneled Venue Networks Form', () => {
         form={stepFormRef.current}
       />, { route: { params: { tenantId: 't-id' } } })
 
-      await basicCheck()
+      const mockedVenueRows = await basicCheck()
+      expect(mockedVenueRows[0]).toHaveTextContent(/MockedVenue 1.*0/i)
+      expect(mockedVenueRows[1]).toHaveTextContent(/MockedVenue 2.*0/i)
       screen.getByRole('row', { name: /airport.* 2/i })
-      screen.getByRole('row', { name: /MockedVenue 1 .* 0/i })
-      screen.getByRole('row', { name: /MockedVenue 2 .* 0/i })
       screen.getByRole('row', { name: /SG office .* 0/i })
 
       const dmzTunnelSelector = await screen.findByRole('combobox', { name: 'Tunnel Profile (Cluster- DMZ Cluster tunnel)' })
@@ -238,4 +238,5 @@ const basicCheck = async () => {
   screen.getByText(/Select the venues and networks where the SD-LAN Service will be applied/i)
   const rows = await screen.findAllByRole('row', { name: /MockedVenue/i })
   expect(rows.length).toBe(2)
+  return rows
 }
