@@ -14,7 +14,8 @@ import {
 } from '@acx-ui/rc/services'
 import { validateVlanExcludingReserved, Vlan } from '@acx-ui/rc/utils'
 
-import * as UI from './styledComponents'
+import { checkHasRegenerated } from './steps.utils'
+import * as UI                 from './styledComponents'
 
 
 type NetworkConfig = {
@@ -49,7 +50,7 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
   const [disabledKeys, setDisabledKeys] = useState([] as string[])
 
   useEffect(() => {
-    if (initialData !== data) {
+    if (checkHasRegenerated(data, initialData)) {
       const isInitialEmpty = initialData.length === 0
       const sourceData = isInitialEmpty
         ? data.map(item => ({ ...item, Checked: false }))

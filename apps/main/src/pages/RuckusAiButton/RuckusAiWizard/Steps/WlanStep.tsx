@@ -19,7 +19,8 @@ import {
   from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import * as UI from './styledComponents'
+import { checkHasRegenerated } from './steps.utils'
+import * as UI                 from './styledComponents'
 
 type NetworkConfig = {
   'Purpose': string;
@@ -44,7 +45,7 @@ export function WlanStep ( props: {
     useState<boolean[]>(Array(initialData.length).fill(true))
 
   useEffect(() => {
-    if (initialData !== data && formInstance) {
+    if (checkHasRegenerated(data, initialData) && formInstance) {
       const updatedData = initialData.map(item => ({
         ...item,
         Checked: true
