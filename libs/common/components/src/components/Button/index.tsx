@@ -9,7 +9,7 @@ import { Tooltip } from '../Tooltip'
 import * as UI from './styledComponents'
 
 export interface ButtonProps extends Omit<AntButtonProps, 'type'> {
-  type?: 'default' | 'primary' | 'link'
+  type?: 'default' | 'primary' | 'link' | 'text'
   scopeKey?: ScopeKeys
 }
 
