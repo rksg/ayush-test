@@ -190,7 +190,8 @@ export function WlanStep ( props: {
                 name={['data', index, 'SSID Name']}
                 initialValue={item['SSID Name']}
                 rules={checkboxStates[index] ? [
-                  { required: true },
+                  { required: true,
+                    message: $t({ defaultMessage: 'Please enter a Network Name.' }) },
                   { min: 2 },
                   { max: 32 },
                   { validator: (_, value) => ssidBackendNameRegExp(value) },

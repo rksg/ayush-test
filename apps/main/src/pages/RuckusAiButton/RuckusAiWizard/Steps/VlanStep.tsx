@@ -241,7 +241,10 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
                 label={$t({ defaultMessage: 'VLAN Name' })}
                 name={['data', index, 'VLAN Name']}
                 initialValue={item['VLAN Name']}
-                rules={[{ required: true }]}
+                rules={[{
+                  required: true,
+                  message: $t({ defaultMessage: 'Please enter a VLAN Name.' })
+                }]}
                 disabled={!checkboxStates[index]}
                 fieldProps={{
                   'data-testid': `vlan-name-input-${index}`,
@@ -277,7 +280,7 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
                 initialValue={item['VLAN ID']}
                 disabled={!checkboxStates[index]}
                 rules={[
-                  { required: true },
+                  { required: true, message: $t({ defaultMessage: 'Please enter a VLAN ID.' }) },
                   { validator: (_, value) => validateVlanExcludingReserved(value) },
                   {
                     validator: (_, value) => {
