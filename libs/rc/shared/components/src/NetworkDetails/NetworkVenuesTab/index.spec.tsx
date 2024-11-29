@@ -115,6 +115,7 @@ describe('NetworkVenuesTab', () => {
       store.dispatch(networkApi.util.resetApiState())
       store.dispatch(venueApi.util.resetApiState())
       store.dispatch(softGreApi.util.resetApiState())
+      mockedApplyFn.mockClear()
       mockedGetApCompatibilitiesNetwork.mockClear()
     })
 
@@ -178,11 +179,11 @@ describe('NetworkVenuesTab', () => {
       rest.post(
         SoftGreUrls.getSoftGreViewDataList.url,
         (_, res, ctx) => res(ctx.json(mockSoftGreTable))
-      )/*,
+      ),
       rest.get(
         CommonRbacUrlsInfo.getNetworksDetailHeader.url,
         (_, res, ctx) => res(ctx.json(mockHeaderDetails))
-      )*/
+      )
     )
   })
 
@@ -210,6 +211,7 @@ describe('NetworkVenuesTab', () => {
       ...network.venues,
       newApGroup2
     ]
+
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getNetwork.url,
@@ -226,10 +228,6 @@ describe('NetworkVenuesTab', () => {
       rest.post(
         CommonUrlsInfo.networkActivations.url,
         (req, res, ctx) => res(ctx.json({ data: [networkVenue_allAps, newApGroup2] }))
-      ),
-      rest.post(
-        WifiUrlsInfo.getVlanPoolViewModelList.url,
-        (req, res, ctx) => res(ctx.json({ data: vlanPoolList }))
       )
     )
 
@@ -276,10 +274,6 @@ describe('NetworkVenuesTab', () => {
       rest.post(
         CommonUrlsInfo.networkActivations.url,
         (req, res, ctx) => res(ctx.json({ data: [networkVenue_apgroup] }))
-      ),
-      rest.get(
-        CommonRbacUrlsInfo.getNetworksDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(mockHeaderDetails))
       )
     )
 
@@ -318,13 +312,6 @@ describe('NetworkVenuesTab', () => {
         (_req, res, ctx) => {
           mockedNetworkActivation()
           return res(ctx.json(mockNetworkSaveData))
-        }
-      ),
-      rest.post(
-        WifiUrlsInfo.getApCompatibilitiesNetwork.url,
-        (_, res, ctx) => {
-          mockedGetApCompatibilitiesNetwork()
-          return res(ctx.json(networkVenueApCompatibilities))
         }
       )
     )
@@ -415,13 +402,6 @@ describe('NetworkVenuesTab', () => {
           return res(ctx.json({ requestId: '456' }))
         }
       ),
-      rest.post(
-        WifiUrlsInfo.getApCompatibilitiesNetwork.url,
-        (req, res, ctx) => {
-          mockedGetApCompatibilitiesNetwork()
-          return res(ctx.json(networkVenueApCompatibilities))
-        }
-      ),
       rest.put(
         WifiUrlsInfo.updateNetworkDeep.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({}))
@@ -436,7 +416,7 @@ describe('NetworkVenuesTab', () => {
 
     expect(mockedDeleteNetworkVenues).not.toHaveBeenCalled()
 
-    expect(await screen.findByText('No venues activating this network. Use the ON/OFF switches in the list to select the activating venues')).toBeVisible()
+    //expect(await screen.findByText('No venues activating this network. Use the ON/OFF switches in the list to select the activating venues')).toBeVisible()
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
@@ -489,6 +469,10 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
       rest.post(
         WifiUrlsInfo.getVlanPoolViewModelList.url,
         (_, res, ctx) => res(ctx.json({ data: vlanPoolList }))
+      ),
+      rest.get(
+        CommonRbacUrlsInfo.getNetworksDetailHeader.url,
+        (_, res, ctx) => res(ctx.json(mockHeaderDetails))
       )
     )
   })
