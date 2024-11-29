@@ -168,6 +168,20 @@ export const getVariableFields = (
                 }
                 return Promise.resolve()
               }
+            },
+            {
+              validator: (_, value) => {
+                const ipAddressStart = form.getFieldValue('ipAddressStart')
+                const subMask = form.getFieldValue('subMask')
+                const isInSameSubnet
+                  = IpUtilsService.validateInTheSameSubnet(ipAddressStart, subMask, value)
+                const isBroadcastAddress = IpUtilsService.validateBroadcastAddress(value, subMask)
+
+                if (!isInSameSubnet || isBroadcastAddress) {
+                  return Promise.reject($t(validationMessages.ipAddress))
+                }
+                return Promise.resolve()
+              }
             }
           ]}
           validateFirst
