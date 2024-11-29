@@ -189,7 +189,10 @@ export default function RuckusAiWizard (props: {
     {
       name: RuckusAiConfigurationStepsEnum.SUMMARY,
       title: '',
-      component: <SummaryStep payload={payloads[RuckusAiConfigurationStepsEnum.SUMMARY].payload} />,
+      component: <SummaryStep
+        currentStep={props.currentStep}
+        payload={payloads[RuckusAiConfigurationStepsEnum.SUMMARY].payload}
+        setCurrentStep={props.setCurrentStep} />,
       onFinish: async () => {
         setIsLoading(true)
         try {
