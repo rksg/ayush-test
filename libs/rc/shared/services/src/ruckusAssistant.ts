@@ -90,5 +90,6 @@ export const {
   useUpdateOnboardConfigsMutation,
   useGetOnboardConfigsQuery,
   useLazyGetOnboardConfigsQuery,
+  useGetVlanOnboardConfigsQuery,
   useLazyGetVlanOnboardConfigsQuery
 } = ruckusAssistantApi
