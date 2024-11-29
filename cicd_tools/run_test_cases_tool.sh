@@ -1,7 +1,7 @@
 #!/bin/bash
 
 RUN_COMMAND="node ./node_modules/.bin/nx"
-NX_RUN_OPTIONS="--coverage --maxWorkers=50% --noStackTrace --bail"
+NX_RUN_OPTIONS="--coverage --maxWorkers=40% --noStackTrace --bail"
 
 if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then
 
