@@ -106,7 +106,11 @@ export function ClientsTable (props: {
   }, [tableQuery.data])
 
   const { authenticationProfiles } = useGetFlexAuthenticationProfilesQuery({
-    payload: {}
+    payload: {
+      pageSize: 10000,
+      sortField: 'profileName',
+      sortOrder: 'ASC'
+    }
   }, {
     skip: !isSwitchFlexAuthEnabled,
     selectFromResult: ( { data } ) => ({
