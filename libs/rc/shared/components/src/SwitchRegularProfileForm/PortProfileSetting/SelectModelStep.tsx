@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 
 import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox } from 'antd'
 import { CheckboxChangeEvent }                                           from 'antd/lib/checkbox'
@@ -9,7 +9,8 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { ICX_MODELS_MODULES }     from '@acx-ui/rc/utils'
 import { getIntl }                from '@acx-ui/utils'
 
-import * as UI from './styledComponents'
+import PortProfileContext from './PortProfileContext'
+import * as UI            from './styledComponents'
 // import VlanPortsContext from './VlanPortsContext'
 
 
@@ -28,17 +29,15 @@ type ModelBoolMap = {
   [key: string]: boolean;
 }
 
-export function SelectModelStep (props: { editMode: boolean }) {
+export function SelectModelStep () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
-  // const { vlanSettingValues } = useContext(VlanPortsContext)
-  const { editMode } = props
-
-  const [families, setFamilies] = useState<ModelsType[]>([])
-  const [models, setModels] = useState<ModelsType[]>([])
-  const [modelFilterMap, setModelFilterMap] = useState<ModelBoolMap>({})
-  const [familyCheckboxes, setFamilyCheckboxes] = useState<ModelBoolMap>({})
-  const [indeterminateMap, setIndeterminateMap] = useState<ModelBoolMap>({})
+  const { portProfileSettingValues } = useContext(PortProfileContext)
+  const [ families, setFamilies ] = useState<ModelsType[]>([])
+  const [ models, setModels ] = useState<ModelsType[]>([])
+  const [ modelFilterMap, setModelFilterMap ] = useState<ModelBoolMap>({})
+  const [ familyCheckboxes, setFamilyCheckboxes ] = useState<ModelBoolMap>({})
+  const [ indeterminateMap, setIndeterminateMap ] = useState<ModelBoolMap>({})
 
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
@@ -100,7 +99,12 @@ export function SelectModelStep (props: { editMode: boolean }) {
       setFamilies(familiesData)
       setModels(generateModelList())
     }
-  }, [ICX_MODELS_MODULES])
+
+    if(ICX_MODELS_MODULES && portProfileSettingValues && families){
+      form.setFieldValue('models', portProfileSettingValues.models)
+      onModelCheckboxGroupChange(portProfileSettingValues.models)
+    }
+  }, [ICX_MODELS_MODULES, portProfileSettingValues])
 
   const generateModelList = () => {
     const modelArray = []
@@ -127,7 +131,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
 
   const onFamilyCheckboxChange = (e: CheckboxChangeEvent) => {
     const selectedFamily = e.target.value
-    const currentModels = form.getFieldValue('model')
+    const currentModels = form.getFieldValue('models')
     if(e.target.checked){
       const modelsVal = [
         ...(currentModels || []),
@@ -135,7 +139,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
           const family = model.value.split('-')[0]
           return family === selectedFamily
         }).map((model) => model.value)]
-      form.setFieldValue('model', modelsVal)
+      form.setFieldValue('models', modelsVal)
       toggleFamilyCheckbox(selectedFamily, true)
     }else{
       const modelsVal = Array.isArray(currentModels)
@@ -143,10 +147,10 @@ export function SelectModelStep (props: { editMode: boolean }) {
           (model: string) => model.split('-')[0] !== selectedFamily
         )
         : []
-      form.setFieldValue('model', modelsVal)
+      form.setFieldValue('models', modelsVal)
       toggleFamilyCheckbox(selectedFamily, false)
     }
-    form.setFieldValue('family', selectedFamily)
+    form.setFieldValue('families', selectedFamily)
     toggleIndeterminateMap(selectedFamily, false)
     setAllModelFiltersHidden()
     toggleModelFilter(selectedFamily)
@@ -185,12 +189,12 @@ export function SelectModelStep (props: { editMode: boolean }) {
         <UI.MainGroupListLayout>
           <Card>
             <Form.Item
-              name={'family'}
+              name={'families'}
               required={true}
               children={<Radio.Group onChange={onFamilyChange}
               >
                 {families.map(({ label, value }) => (
-                  <Radio key={value} value={value} disabled={editMode}>
+                  <Radio key={value} value={value}>
                     <Row gutter={20}>
                       <Col span={5}>
                         <Checkbox
@@ -219,8 +223,9 @@ export function SelectModelStep (props: { editMode: boolean }) {
         <UI.SubGroupListLayout>
           <Card>
             <Form.Item
-              name={'model'}
+              name={'models'}
               required={true}
+              initialValue={null}
               children={<Checkbox.Group
                 onChange={(checkedValues) => {
                   onModelCheckboxGroupChange(checkedValues as string[])}}>
@@ -228,7 +233,6 @@ export function SelectModelStep (props: { editMode: boolean }) {
                   <Checkbox
                     key={value}
                     value={value}
-                    disabled={editMode}
                     style={{ display: modelFilterMap[value.split('-')[0]] ? 'flex' : 'none' }}
                   >
                     {label}

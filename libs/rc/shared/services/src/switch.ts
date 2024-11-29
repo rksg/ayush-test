@@ -1475,7 +1475,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     getSwitchConfigProfile: build.query<ConfigurationProfile, RequestPayload>({
       query: ({ params, payload, enableRbac, enableSwitchLevelCliProfile }) => {
-        const headers = enableSwitchLevelCliProfile
+        const headers = true
           ? customHeaders.v1002 : (enableRbac ? customHeaders.v1001 : {})
 
         const switchUrls = getSwitchUrls(enableRbac)

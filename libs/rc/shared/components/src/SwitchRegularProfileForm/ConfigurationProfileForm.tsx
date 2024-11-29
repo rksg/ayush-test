@@ -118,8 +118,9 @@ export function ConfigurationProfileForm () {
 
   useEffect(() => {
     if(data){
-      setCurrentData(data as SwitchConfigurationProfile)
-      updateVlanCurrentData(data, 'init')
+      const newData = { ...data }
+      setCurrentData(newData as SwitchConfigurationProfile)
+      updateVlanCurrentData(newData, 'init')
     }
   }, [data])
 
@@ -434,7 +435,7 @@ export function ConfigurationProfileForm () {
             <AclSetting />
           </StepsForm.StepForm>
 
-          {isSwitchPortProfileToggle &&
+          {true &&
           <StepsForm.StepForm
             title={$t({ defaultMessage: 'Port Profile' })}
             onFinish={updateCurrentData}

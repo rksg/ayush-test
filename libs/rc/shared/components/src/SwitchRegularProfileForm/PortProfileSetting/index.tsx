@@ -1,92 +1,80 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Row, Col, Form, Input } from 'antd'
+import { Row, Col, Form } from 'antd'
 
 import { showActionModal, StepsFormLegacy, Table, TableProps } from '@acx-ui/components'
 import {
-  Acl,
+  PortProfileUI,
   defaultSort,
-  sortProp,
-  transformTitleCase
+  sortProp
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
-import { getIntl }        from '@acx-ui/utils'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { getIntl }                       from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
-import { PortProfileModal } from './PortProfileModal'
-
-export const defaultStandardRuleList = {
-  id: '',
-  sequence: 65000,
-  action: 'permit',
-  source: 'any',
-  specificSrcNetwork: ''
-}
-
-export const defaultExtendedRuleList = {
-  id: '',
-  sequence: 65000,
-  action: 'permit',
-  source: 'any',
-  specificSrcNetwork: '',
-  protocol: 'ip',
-  sourcePort: '',
-  destination: 'any',
-  destinationPort: '',
-  specificDestNetwork: ''
-}
+import PortProfileContext       from './PortProfileContext'
+import { PortProfileModal }     from './PortProfileModal'
+import { portProfilesUIParser } from './PortProfileModal.utils'
 
 export function PortProfileSetting () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
   const { currentData } = useContext(ConfigurationProfileFormContext)
-  const [ aclsTable, setAclsTable ] = useState<Acl[]>([])
+  const [ editMode, setEditMode ] = useState(false)
   const [ portModalVisible, setPortModalVisible ] = useState(false)
+  const [ portProfilesTable, setPortProfilesTable ] = useState<PortProfileUI[]>([])
+  const [ portProfileSettingValues, setPortProfileSettingValues ] = useState<PortProfileUI>()
 
   useEffect(() => {
-    if(currentData.acls){
-      form.setFieldValue('acls', currentData.acls)
-      setAclsTable(currentData.acls)
+    if(currentData.portProfiles){
+      form.setFieldValue('portProfiles', currentData.portProfiles)
+      setPortProfilesTable(portProfilesUIParser(currentData.portProfiles))
     }
   }, [currentData])
 
-  const aclsColumns: TableProps<Acl>['columns']= [{
+  const portProfileColumns: TableProps<PortProfileUI>['columns']= [{
     title: $t({ defaultMessage: 'Model' }),
-    dataIndex: 'name',
-    key: 'name',
+    dataIndex: 'models',
+    key: 'models',
     defaultSortOrder: 'ascend',
-    sorter: { compare: sortProp('name', defaultSort) }
+    sorter: { compare: sortProp('model', defaultSort) },
+    render: (_, { models }) => {
+      return models.join(', ')
+    }
   }, {
     title: $t({ defaultMessage: 'Profile Name' }),
-    dataIndex: 'aclType',
-    key: 'aclType',
-    sorter: { compare: sortProp('aclType', defaultSort) },
-    render: (_, { aclType }) => transformTitleCase(aclType)
+    dataIndex: 'portProfileId',
+    key: 'portProfileId',
+    sorter: { compare: sortProp('portProfileId', defaultSort) }
   }]
 
-  const rowActions: TableProps<Acl>['rowActions'] = [
+  const rowActions: TableProps<PortProfileUI>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
-      onClick: () => {
+      onClick: (selectedRows) => {
+        setEditMode(true)
+        console.log(selectedRows[0])
+        setPortProfileSettingValues(selectedRows[0])
+        setPortModalVisible(true)
       }
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ name }], clearSelection) => {
+      onClick: ([{ id }], clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'ACL' }),
-            entityValue: name
+            entityName: $t({ defaultMessage: 'Port Profile' }),
+            entityValue: id
           },
           onOk: async () => {
-            const acls = aclsTable?.filter(row => {
-              return row.name !== name
+            const portProfiles = portProfilesTable?.filter(row => {
+              return row.id !== id
             })
-            setAclsTable(acls)
-            form.setFieldValue('acls', acls)
+            setPortProfilesTable(portProfiles)
+            form.setFieldValue('portProfiles', portProfiles)
             clearSelection()
           }
         })
@@ -109,28 +97,34 @@ export function PortProfileSetting () {
           <Table
             rowKey='name'
             rowActions={filterByAccess(rowActions)}
-            columns={aclsColumns}
-            dataSource={aclsTable}
+            columns={portProfileColumns}
+            dataSource={portProfilesTable}
             actions={filterByAccess([{
               label: $t({ defaultMessage: 'Add Port Profile' }),
               onClick: () => {
+                setEditMode(false)
                 setPortModalVisible(true)
               }
             }])}
+            rowSelection={hasPermission() && {
+              type: 'radio'
+            }}
           />
         </Col>
       </Row>
-      <PortProfileModal
-        visible={portModalVisible}
-        onCancel={onCancel}
-        onSave={onSave}
-      />
-      <Form.Item
-        name='acls'
-        initialValue={aclsTable}
-        hidden={true}
-        children={<Input />}
-      />
+
+      <PortProfileContext.Provider value={{
+        portProfileSettingValues: portProfileSettingValues ?? {} as PortProfileUI,
+        setPortProfileSettingValues,
+        editMode
+      }}>
+        <PortProfileModal
+          visible={portModalVisible}
+          editMode={editMode}
+          onCancel={onCancel}
+          onSave={onSave}
+        />
+      </PortProfileContext.Provider>
     </>
   )
 }

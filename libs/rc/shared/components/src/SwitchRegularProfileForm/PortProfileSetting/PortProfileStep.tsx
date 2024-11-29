@@ -1,75 +1,25 @@
 
-import { useState, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 
-import { Row, Col, Form, Input } from 'antd'
+import { Row, Col, Form } from 'antd'
 
-import { Card, Select }        from '@acx-ui/components'
-import { SwitchModelPortData } from '@acx-ui/rc/utils'
-import { getIntl }             from '@acx-ui/utils'
+import { Card, Select } from '@acx-ui/components'
+import { getIntl }      from '@acx-ui/utils'
 
-import { VlanSettingInterface } from './PortProfileModal'
+import PortProfileContext from './PortProfileContext'
+
 export interface PortsType {
   label: string,
   value: string
 }
 
-export function PortProfileStep (props: {
-  vlanSettingValues: VlanSettingInterface,
-  editRecord?: SwitchModelPortData
-}) {
+export function PortProfileStep () {
   const { $t } = getIntl()
-  const form = Form.useFormInstance()
-  const { vlanSettingValues, editRecord } = props
-  const [portsModule1, setPortsModule1] = useState<PortsType[]>([])
-  const [portsModule2, setPortsModule2] = useState<PortsType[]>([])
-  const [portsModule3, setPortsModule3] = useState<PortsType[]>([])
+  const { portProfileSettingValues } = useContext(PortProfileContext)
   // const [selected, setSelected] = useState<string[]>([])
 
   useEffect(() => {
-    if(vlanSettingValues){
-      if(vlanSettingValues.switchFamilyModels?.slots[0] &&
-        vlanSettingValues.switchFamilyModels?.slots[0].portStatus!== undefined){
-        const portModule1List1 = vlanSettingValues.switchFamilyModels?.slots[0].portStatus?.map(
-          ( item: { portNumber: number }) => ({
-            label: `1/1/${item.portNumber.toString()}`,
-            value: `1/1/${item.portNumber.toString()}`
-          }))
-        setPortsModule1(portModule1List1)
-      }
-      if(vlanSettingValues.switchFamilyModels?.slots[1] &&
-        vlanSettingValues.switchFamilyModels?.slots[1].portStatus!== undefined){
-        const portModule1List2 = vlanSettingValues.switchFamilyModels?.slots[1].portStatus?.map(
-          ( item: { portNumber: number }) => ({
-            label: `1/2/${item.portNumber.toString()}`,
-            value: `1/2/${item.portNumber.toString()}`
-          }))
-        setPortsModule2(portModule1List2)
-      }
-      if(vlanSettingValues.switchFamilyModels?.slots[2] &&
-        vlanSettingValues.switchFamilyModels?.slots[2].portStatus!== undefined){
-        const portModule1List3 = vlanSettingValues.switchFamilyModels?.slots[2].portStatus?.map(
-          ( item: { portNumber: number }) => ({
-            label: `1/3/${item.portNumber.toString()}`,
-            value: `1/3/${item.portNumber.toString()}`
-          }))
-        setPortsModule3(portModule1List3)
-      }
-      form.setFieldValue(['trustedPorts', 'model'], vlanSettingValues.switchFamilyModels?.model)
-      form.setFieldValue(['trustedPorts', 'slots'], vlanSettingValues.switchFamilyModels?.slots)
-    }
-    if(editRecord){
-      form.setFieldsValue({
-        trustedPorts: {
-          trustPorts: editRecord,
-          model: editRecord.model,
-          vlanDemand: editRecord.vlanDemand,
-          slots: editRecord.slots
-        },
-        switchFamilyModels: editRecord
-      })
-      // setSelected(editRecord)
-    }
-  }, [vlanSettingValues, editRecord])
+  }, [portProfileSettingValues])
 
   return (
     <div style={{ minHeight: '380px' }}>
@@ -83,62 +33,33 @@ export function PortProfileStep (props: {
             <Row gutter={20}>
               <Col>
                 <label style={{ color: 'var(--acx-neutrals-60)' }}>
-                  {$t({ defaultMessage: 'Trusted Ports:' })}
+                  {$t({ defaultMessage: 'Select the port profile(s) to assign to the model(s):' })}
                 </label>
                 <Form.Item
-                  name={['trustedPorts', 'trustPorts']}
-                  label={<label>{$t({ defaultMessage: 'You may select up to 4 ports' })}</label>}
+                  name={'portProfilesIds'}
+                  label={<label>{$t({ defaultMessage: 'Port Profile' })}</label>}
                   rules={[{
                     required: true,
-                    message: $t({ defaultMessage: 'Please enter Trusted Ports' })
+                    message: $t({ defaultMessage: 'Please enter Port Profile' })
                   }]}
-                  data-testid='trustPortsList'
+                  data-testid='portProfileList'
                   children={
                     <Select
                       mode='multiple'
                       showArrow
                       options={[
-                        ...portsModule1,
-                        ...portsModule2,
-                        ...portsModule3
+                        { label: 'Port-profile-1', value: 'Port-profile-1' },
+                        { label: 'Port-profile-2', value: 'Port-profile-2' },
+                        { label: 'Port-profile-3', value: 'Port-profile-3' }
                       ]}
-                      onChange={() => {
-                        form.setFieldValue(['trustedPorts', 'trustPorts'],
-                          form.getFieldValue(['trustedPorts', 'trustPorts']).slice(0, 4)
-                        )
-                        // setSelected(form.getFieldValue(['trustedPorts', 'trustPorts']).slice(0, 4))
-                      }}
                       style={{ width: '400px' }}
                     />}
                 />
-                {
-                  // $t({ defaultMessage: 'Selected Ports:' }) + ' ' + selected
-                }
               </Col>
             </Row>
           </Card>
         </Col>
       </Row>
-      <Form.Item
-        name={['trustedPorts', 'trustedPortType']}
-        initialValue={'all'}
-        hidden={true}
-        children={<Input />}
-      />
-      <Form.Item
-        name={['trustedPorts', 'model']}
-        hidden={true}
-        children={<Input />} />
-      <Form.Item
-        name={['trustedPorts', 'vlanDemand']}
-        initialValue={false}
-        hidden={true}
-        children={<Input />} />
-      <Form.Item
-        name={['trustedPorts', 'slots']}
-        hidden={true}
-        children={<Input />} />
-      {editRecord && <Form.Item name={'switchFamilyModels'} hidden={true} children={<Input />}/>}
     </div>
   )
 }

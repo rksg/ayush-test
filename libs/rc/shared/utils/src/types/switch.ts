@@ -759,6 +759,18 @@ export interface SwitchSlot2 { //TODO
   portStatus?: PortStatus[]
 }
 
+export interface PortProfileAPI {
+  id?: string
+  models: string[]
+  portProfileId: string
+}
+
+export interface PortProfileUI {
+  id?: string
+  models: string[]
+  portProfileId: string[]
+}
+
 export interface TrustedPort {
   id?: string
   vlanDemand?: boolean
@@ -800,6 +812,7 @@ export interface SwitchConfigurationProfile {
   trustedPorts: TrustedPort[]
   voiceVlanOptions?: VoiceVlanOption[]
   voiceVlanConfigs?: VoiceVlanConfig[]
+  portProfiles?: PortProfileAPI[]
   applyOnboardOnly: boolean
 }
 
