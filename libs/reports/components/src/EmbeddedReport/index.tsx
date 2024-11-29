@@ -443,11 +443,7 @@ export function EmbeddedReport (props: ReportProps) {
     <>
       {isLoading && (
         <Loader
-          states={[
-            { isLoading: systems.status === 'pending' },
-            { isLoading: !Boolean(dashboardEmbeddedId) },
-            { isLoading: !Boolean(guestTokenPayload) }
-          ]}
+          states={[{ isLoading }]}
           style={{ height: '100vh' }}
         />
       )}
