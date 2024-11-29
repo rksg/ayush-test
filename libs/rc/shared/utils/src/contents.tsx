@@ -380,7 +380,7 @@ export const PortStatusMessages = {
     defaultMessage: 'Port used by other VLAN setting'
   }),
   USED_BY_AUTH: defineMessage({
-    defaultMessage: 'This port has authentication (80.21x or MACAUTH) enabled and cannot be manually added to a VLAN'
+    defaultMessage: 'This port has authentication (802.1x and MAC-AUTH) enabled and cannot be manually added to a VLAN'
   }),
   CURRENT: defineMessage({
     defaultMessage: 'VLANs'
