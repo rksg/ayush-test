@@ -1,4 +1,4 @@
-import { Middleware, isAction, isRejectedWithValue }  from '@reduxjs/toolkit'
+import { Middleware, isRejectedWithValue }            from '@reduxjs/toolkit'
 import { FetchBaseQueryMeta }                         from '@reduxjs/toolkit/query'
 import { FormattedMessage, defineMessage, IntlShape } from 'react-intl'
 
@@ -238,23 +238,21 @@ const shouldIgnoreErrorModal = (action?: ErrorAction) => {
 }
 
 export const errorMiddleware: Middleware = () => next => action => {
-  if (isAction(action)) {
-    const typedAction = action as unknown as {
-      type: string,
-      meta?: { baseQueryMeta?: FetchBaseQueryMeta },
-      payload: { meta?: QueryMeta, data?: ErrorDetailsProps },
-    }
-    const { meta, payload } = typedAction
-    if (payload && typeof payload === 'object' && meta && !meta.baseQueryMeta) {
-      // baseQuery (for retry API)
-      meta.baseQueryMeta = payload.meta
-      delete payload.meta
-    }
-    if (isRejectedWithValue(action)) {
-      const details = getErrorContent(typedAction)
-      if (!shouldIgnoreErrorModal(typedAction)) {
-        showErrorModal(details)
-      }
+  const typedAction = action as unknown as {
+    type: string,
+    meta?: { baseQueryMeta?: FetchBaseQueryMeta },
+    payload: { meta?: QueryMeta, data?: ErrorDetailsProps },
+  }
+  const { meta, payload } = typedAction
+  if (payload && typeof payload === 'object' && meta && !meta.baseQueryMeta) {
+    // baseQuery (for retry API)
+    meta.baseQueryMeta = payload.meta
+    delete payload.meta
+  }
+  if (isRejectedWithValue(action)) {
+    const details = getErrorContent(typedAction)
+    if (!shouldIgnoreErrorModal(typedAction)) {
+      showErrorModal(details)
     }
   }
   return next(action)
