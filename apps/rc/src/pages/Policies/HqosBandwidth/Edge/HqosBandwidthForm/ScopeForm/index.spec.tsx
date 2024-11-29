@@ -173,7 +173,7 @@ describe('HQoS Scope Form', () => {
     const rows = await screen.findAllByRole('row', { name: /Edge Cluster/i })
     expect(rows.length).toBe(mockEdgeClusterListForHqos.data.length)
 
-    const warningTooltip = await within(rows[0]).findByTestId('WarningCircleSolid')
+    const warningTooltip = await within(rows[0]).findByTestId('WarningTriangleSolid')
     await userEvent.hover(warningTooltip)
     expect(await screen.findByText(/HQoS feature requires your RUCKUS Edge cluster/i)).toBeInTheDocument()
   })

@@ -1,8 +1,8 @@
 import { find, sumBy } from 'lodash'
 import { useIntl }     from 'react-intl'
 
-import { ApCompatibilityToolTip, CompatibilityWarningCircleIcon } from '@acx-ui/rc/components'
-import { CompatibilityDeviceEnum, EdgeServiceCompatibility }      from '@acx-ui/rc/utils'
+import { ApCompatibilityToolTip, CompatibilityWarningTriangleIcon } from '@acx-ui/rc/components'
+import { CompatibilityDeviceEnum, EdgeServiceCompatibility }        from '@acx-ui/rc/utils'
 
 interface CompatibilityCheckProps {
   serviceId: string,
@@ -32,7 +32,7 @@ export const CompatibilityCheck = (props: CompatibilityCheckProps) => {
           : '')
       })}
       visible={false}
-      icon={<CompatibilityWarningCircleIcon />}
+      icon={<CompatibilityWarningTriangleIcon />}
       onClick={() => {}}
     />
     : null

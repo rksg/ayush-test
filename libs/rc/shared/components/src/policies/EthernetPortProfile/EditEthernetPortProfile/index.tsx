@@ -7,8 +7,7 @@ import { useIntl }   from 'react-intl'
 import { Loader }                                from '@acx-ui/components'
 import {
   useDeleteEthernetPortProfileRadiusIdMutation,
-  useGetAAAPolicyListQuery,
-  useGetEthernetPortProfileByIdQuery,
+  useGetEthernetPortProfileWithRelationsByIdQuery,
   useUpdateEthernetPortProfileMutation,
   useUpdateEthernetPortProfileRadiusIdMutation
 } from '@acx-ui/rc/services'
@@ -30,20 +29,18 @@ export const EditEthernetPortProfile = () => {
   const [form] = Form.useForm()
 
   const { data: ethernetPortProfileData, isLoading } =
-    useGetEthernetPortProfileByIdQuery(
-      { params: { id: policyId } }
-    )
-
-  const { data: aaaRadiusList } = useGetAAAPolicyListQuery(
-    { payload: {
-      filters: {
-        ethernetPortProfileIds: [ethernetPortProfileData?.id]
+    useGetEthernetPortProfileWithRelationsByIdQuery({
+      payload: {
+        sortField: 'name',
+        sortOrder: 'ASC',
+        filters: {
+          id: [policyId]
+        }
+      },
+      params: {
+        id: policyId
       }
-    } },
-    {
-      skip: !!!ethernetPortProfileData?.id
-    }
-  )
+    })
 
   const handleEditEthernetPortProfile = async (data: EthernetPortProfileFormType) => {
     try {
@@ -79,44 +76,39 @@ export const EditEthernetPortProfile = () => {
       return
     }
 
-    if (Boolean(oldId)) {
-      deleteEthernetPortProfileRadiusId({ params: {
-        id: ethernetPortId,
-        radiusId: newId
-      } })
-    }
-
     if (Boolean(newId)) {
       updateEthernetPortProfileRadiusId({ params: {
         id: ethernetPortId,
         radiusId: newId
       } })
+
+      // If there have newId, then don't need to call delete API avoid race condition
+      return
+    }
+
+    if (Boolean(oldId)) {
+      deleteEthernetPortProfileRadiusId({ params: {
+        id: ethernetPortId,
+        radiusId: oldId
+      } })
     }
   }
   useEffect(() => {
-    if(!ethernetPortProfileData || !aaaRadiusList) {
+    if(!ethernetPortProfileData) {
       return
     }
 
     const sourceData = cloneDeep(ethernetPortProfileData) as EthernetPortProfileFormType
     if (sourceData.authType !== EthernetPortAuthType.DISABLED) {
       sourceData.authEnabled = true
-      sourceData.accountingEnabled=false
+      sourceData.accountingEnabled = false
       sourceData.authTypeRole = sourceData.authType
 
-      aaaRadiusList.data.forEach((radius) =>{
-        if (radius.type === 'AUTHENTICATION') {
-          sourceData.authRadiusId = radius.id
-        }
-
-        if (radius.type === 'ACCOUNTING') {
-          sourceData.accountingEnabled=true
-          sourceData.accountingRadiusId = radius.id
-        }
-      })
+      sourceData.accountingEnabled = Boolean(sourceData.accountingRadiusId)
     }
     form.setFieldsValue(sourceData)
-  }, [ethernetPortProfileData, aaaRadiusList])
+
+  }, [ethernetPortProfileData])
 
   return (
     <Loader states={[{ isLoading }]}>
