@@ -4,13 +4,14 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { isNil }   from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   useLazyGetApCompatibilitiesVenueQuery,
   useLazyGetApCompatibilitiesNetworkQuery,
   useLazyGetApFeatureSetsQuery,
   useLazyGetApCompatibilitiesQuery,
-  useLazyGetEnhanceApFeatureSetsQuery
+  useLazyGetEnhanceApFeatureSetsQuery,
+  useLazyGetVenueApCompatibilitiesQuery
 }   from '@acx-ui/rc/services'
 import {
   ApCompatibility,
@@ -25,7 +26,8 @@ import {
   CompatibilitySelectedApInfo
 } from '@acx-ui/rc/utils'
 
-import { CompatibilityDrawer } from '../CompatibilityDrawer'
+import { CompatibilityDrawer }                                  from '../CompatibilityDrawer'
+import { mergeFilterApCompatibilitiesResultByRequiredFeatures } from '../utils'
 
 export enum ApCompatibilityType {
   NETWORK = 'Network',
@@ -48,7 +50,7 @@ export type ApGeneralCompatibilityDrawerProps = {
   featureName?: IncompatibilityFeatures,
   requiredFeatures?: IncompatibilityFeatures[],
   apInfo?: CompatibilitySelectedApInfo,
-  data?: ApCompatibility[],
+  data?: ApCompatibility[] | Compatibility[],
   onClose: () => void
 }
 
@@ -158,7 +160,7 @@ const useApCompatibilityData = (props: (Omit<ApGeneralCompatibilityDrawerProps, 
 
       return reqs.length > 1
         // eslint-disable-next-line max-len
-        ? { apCompatibilities: [mergeAndfilterResultByRequiredFeatures(results, queryfeatures as IncompatibilityFeatures[])] } as ApCompatibilityResponse
+        ? { apCompatibilities: [mergeFilterApCompatibilitiesResultByRequiredFeatures(results, queryfeatures as IncompatibilityFeatures[])] } as ApCompatibilityResponse
         : results[0]
     }
 
@@ -223,7 +225,8 @@ const useCompatibilityData = (props: (Omit<ApGeneralCompatibilityDrawerProps, 'i
     apInfo,
     data,
     isFeatureEnabledRegardless = false,
-    isSkip = false
+    isSkip = false,
+    requiredFeatures
   } = props
 
   const { serialNumber: apId } = apInfo || {}
@@ -233,6 +236,7 @@ const useCompatibilityData = (props: (Omit<ApGeneralCompatibilityDrawerProps, 'i
   const [ apCompatibilities, setApCompatibilities ] = useState<Compatibility[] | undefined>(undefined)
 
   const [ getApCompatibilities ] = useLazyGetApCompatibilitiesQuery()
+  const [ getVenueApCompatibilities ] = useLazyGetVenueApCompatibilitiesQuery()
   const [ getApFeatureSets ] = useLazyGetEnhanceApFeatureSetsQuery()
 
   const getCompatibilities = useCallback(async () => {
@@ -252,20 +256,33 @@ const useCompatibilityData = (props: (Omit<ApGeneralCompatibilityDrawerProps, 'i
         }
       }).unwrap()
     } else if (ApCompatibilityType.VENUE === type) {
-      return getApCompatibilities({
-        params: { },
-        payload: {
-          filters: {
-            ...(apId ? { apIds: [apId] } : undefined),
-            ...(networkId ? { wifiNetworkIds: [networkId] } : undefined),
-            ...((isFeatureEnabledRegardless && featureName) ? { featureNames: [featureName] } : undefined),
-            venueIds: [venueId],
-            featureLevels: [IncompatibleFeatureLevelEnum.VENUE]
-          },
-          page: 1,
-          pageSize: 10
-        }
-      }).unwrap()
+      const queryfeatureNames = (featureName ? [featureName].concat(requiredFeatures ?? []) : undefined)
+
+      return apId
+        ? getApCompatibilities({
+          params: { },
+          payload: {
+            filters: {
+              ...(apId ? { apIds: [apId] } : undefined),
+              ...(networkId ? { wifiNetworkIds: [networkId] } : undefined),
+              ...((isFeatureEnabledRegardless && featureName) ? { featureNames: queryfeatureNames } : undefined),
+              venueIds: [venueId],
+              featureLevels: [IncompatibleFeatureLevelEnum.VENUE]
+            },
+            page: 1,
+            pageSize: 10
+          }
+        }).unwrap()
+        : getVenueApCompatibilities({
+          params: { venueId },
+          payload: {
+            filters: {
+              venueIds: [ venueId ],
+              featureLevels: [IncompatibleFeatureLevelEnum.VENUE]
+            },
+            page: 1,
+            pageSize: 10
+          } }).unwrap()
     }
 
     // feature min requirement info
@@ -327,28 +344,4 @@ const useCompatibilityData = (props: (Omit<ApGeneralCompatibilityDrawerProps, 'i
 
   return useMemo(() => ({ apCompatibilities, isLoading: isInitializing }),
     [apCompatibilities, isInitializing])
-}
-
-// eslint-disable-next-line max-len
-const mergeAndfilterResultByRequiredFeatures = (results: ApCompatibilityResponse[], requiredFeatures: IncompatibilityFeatures[]): ApCompatibility => {
-  const merged = { incompatible: 0 } as ApCompatibility
-
-  const incompatibleFeatures: ApIncompatibleFeature[] = []
-  results.forEach(result => {
-    const apCompatibility = result.apCompatibilities[0]
-
-    if (merged.incompatible < apCompatibility.incompatible) {
-      merged.id = apCompatibility.id
-      merged.incompatible = apCompatibility.incompatible
-      merged.total = apCompatibility.total
-    }
-
-    incompatibleFeatures.push(...((apCompatibility.incompatibleFeatures
-      ?.filter(feature =>
-        requiredFeatures.includes(feature.featureName as IncompatibilityFeatures)
-      )) ?? []))
-  })
-
-  merged.incompatibleFeatures = incompatibleFeatures
-  return merged
 }
