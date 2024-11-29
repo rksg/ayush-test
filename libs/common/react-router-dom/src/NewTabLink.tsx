@@ -7,7 +7,7 @@ interface NewLinkProps extends LinkProps {
 }
 
 export function NewTabLink ({ to, rel, ...props }: NewLinkProps) {
-  const blankProps = { target: '_blank', rel: rel || 'noopener noreferrer' }
+  const blankProps = { target: '_blank', rel: rel || 'noreferrer noopener' }
   return (typeof to === 'string' && to.startsWith('http'))
     ? <a href={to} {...blankProps}>{props.children}</a>
     : <Link to={to} {...blankProps} {...props} />
