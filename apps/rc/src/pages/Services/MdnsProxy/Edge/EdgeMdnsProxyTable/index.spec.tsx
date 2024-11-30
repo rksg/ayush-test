@@ -253,7 +253,7 @@ describe('Edge mDNS Proxy Table', () => {
 
     await basicCheck()
     const row1 = await screen.findByRole('row', { name: new RegExp('compatible test') })
-    const fwWarningIcon = await within(row1).findByTestId('WarningCircleSolid')
+    const fwWarningIcon = await within(row1).findByTestId('WarningTriangleSolid')
     await userEvent.hover(fwWarningIcon)
     expect(await screen.findByRole('tooltip', { hidden: true }))
       .toHaveTextContent('RUCKUS Edges')
