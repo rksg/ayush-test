@@ -249,8 +249,10 @@ export {
   EdgeCompatibilityDrawer,
   EdgeCompatibilityType,
   CompatibilityWarningCircleIcon,
+  CompatibilityWarningTriangleIcon,
   EdgeDetailCompatibilityDrawer,
-  CompatibleAlertBanner
+  CompatibleAlertBanner,
+  mergeFilterApCompatibilitiesResultByRequiredFeatures
 } from './Compatibility'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
 export { useEdgeClusterActions } from './useEdgeClusterActions'
