@@ -34,9 +34,9 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
   }
 
   const granularities: typeof granularityToHours = [
-    { granularity: 'PT1800S', hours: 24 * 3 }, // 30 mins for 3 days and above
-    { granularity: 'PT900S', hours: 24 * 1 }, // 15 mins for 1 day and above
-    { granularity: 'PT180S', hours: 0 } // 3 mins for less than 1 day
+    { granularity: 'PT30M', hours: 24 * 3 }, // 30 mins for 3 days and above
+    { granularity: 'PT15M', hours: 24 * 1 }, // 15 mins for 1 day and above
+    { granularity: 'PT3M', hours: 0 } // 3 mins for less than 1 day
   ]
 
   const isEnabled = [
