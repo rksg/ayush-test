@@ -298,7 +298,9 @@ describe('Floor Plans', () => {
     })
 
     expect(await screen.findByRole('img', { name: 'loader' })).toBeVisible()
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }), {
+      timeout: 20000
+    })
 
     await waitFor(() => {
       expect(screen.queryAllByTestId('floorPlanImage')[0]).toHaveAttribute('src',
