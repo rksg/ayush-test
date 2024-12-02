@@ -5,18 +5,22 @@ import { useIntl }          from 'react-intl'
 import { formattedPath }             from '@acx-ui/analytics/utils'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { codes }            from '../config'
-import { getStatusTooltip } from '../services'
-import { Statuses }         from '../states'
+import { codes, formatValues } from '../config'
+import { getStatusTooltip }    from '../services'
+import { Statuses }            from '../states'
 
 import { getIntentStatus } from './getIntentStatus'
 
 import type { Intent } from '../useIntentDetailsQuery'
 
-
 export const useCommonFields = (intent: Intent) => {
   const { $t } = useIntl()
   const { code, path, sliceValue, metadata, updatedAt, displayStatus } = intent
+  const tooltipData = getStatusTooltip(
+    displayStatus, sliceValue, { ...metadata, updatedAt })
+  const { tooltip, errorMessage, scheduledAt, zoneName } = tooltipData
+  const values = { ...formatValues, errorMessage, scheduledAt, zoneName }
+
   return [
     {
       label: $t({ defaultMessage: 'Intent' }),
@@ -35,8 +39,9 @@ export const useCommonFields = (intent: Intent) => {
     {
       label: $t({ defaultMessage: 'Status' }),
       children: getIntentStatus(displayStatus),
-      tooltip: getStatusTooltip(displayStatus, sliceValue, { ...metadata, updatedAt }),
-      tooltipPlacement: 'right' as TooltipPlacement
+      formattedTooltip: tooltip,
+      tooltipPlacement: 'right' as TooltipPlacement,
+      tooltipValues: values
     },
     {
       label: $t({ defaultMessage: 'Date' }),

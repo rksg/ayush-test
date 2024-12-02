@@ -1,5 +1,7 @@
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
+import React from 'react'
+
+import { Typography }                from 'antd'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Card, GridCol, GridRow } from '@acx-ui/components'
 
@@ -12,7 +14,9 @@ import { IntentDetailsSidebar } from '../common/IntentDetailsSidebar'
 import { IntentIcon }           from '../common/IntentIcon'
 import { KpiCard }              from '../common/KpiCard'
 import { StatusTrail }          from '../common/StatusTrail'
+import { formatValues }         from '../config'
 import { useIntentContext }     from '../IntentContext'
+import { getStatusTooltip }     from '../services'
 import { getGraphKPIs }         from '../useIntentDetailsQuery'
 
 import { ConfigurationCard }   from './ConfigurationCard'
@@ -26,6 +30,7 @@ export function createIntentAIDetails (
   return function IntentAIDetails () {
     const { $t } = useIntl()
     const { intent, kpis } = useIntentContext()
+    const { displayStatus, sliceValue, metadata, updatedAt } = intent
     const valuesText = useValuesText()
     const fields = [
       ...useCommonFields(intent),
@@ -33,6 +38,11 @@ export function createIntentAIDetails (
         ? [ { label: $t({ defaultMessage: 'AP Impact Count' }), children: <ImpactedAPCount /> } ]
         : []
     ]
+    const isPausedOrNa = intent.status === 'paused' || intent.status === 'na'
+
+    const tooltipData = getStatusTooltip(displayStatus, sliceValue, { ...metadata, updatedAt })
+    const { tooltip, errorMessage, scheduledAt, zoneName } = tooltipData
+    const values = { ...formatValues, errorMessage, scheduledAt, zoneName }
 
     return <>
       <IntentDetailsHeader />
@@ -54,7 +64,7 @@ export function createIntentAIDetails (
                 <GridCol data-testid='Configuration' col={{ span: 12 }}>
                   <ConfigurationCard />
                 </GridCol>
-                {getGraphKPIs(intent, kpis).map(kpi => (
+                {!isPausedOrNa && getGraphKPIs(intent, kpis).map(kpi => (
                   <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
                     <KpiCard kpi={kpi} />
                   </GridCol>
@@ -63,11 +73,11 @@ export function createIntentAIDetails (
             </DetailsSection.Details>
           </DetailsSection>
 
-          <GridRow>
+          {!isPausedOrNa ? <GridRow>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection data-testid='Why is the recommendation?'>
+              <DetailsSection data-testid='Benefits'>
                 <DetailsSection.Title
-                  children={$t({ defaultMessage: 'Why is the recommendation?' })} />
+                  children={$t({ defaultMessage: 'Benefits' })} />
                 <DetailsSection.Details children={<Card>{valuesText.reasonText}</Card>} />
               </DetailsSection>
             </GridCol>
@@ -78,6 +88,22 @@ export function createIntentAIDetails (
               </DetailsSection>
             </GridCol>
           </GridRow>
+            : <GridRow>
+              <GridCol col={{ span: 12 }}>
+                <DetailsSection data-testid='Current Status'>
+                  <DetailsSection.Title children={$t({ defaultMessage: 'Current Status' })} />
+                  <DetailsSection.Details
+                    children={<Card>
+                      {<FormattedMessage
+                        {...tooltip}
+                        values={values}
+                      />}
+                    </Card>}
+                  />
+                </DetailsSection>
+              </GridCol>
+            </GridRow>
+          }
 
           <DetailsSection data-testid='Status Trail'>
             <DetailsSection.Title children={$t({ defaultMessage: 'Status Trail' })} />

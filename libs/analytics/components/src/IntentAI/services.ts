@@ -1,7 +1,8 @@
 import { useState } from 'react'
 
-import { gql } from 'graphql-request'
-import _       from 'lodash'
+import { gql }               from 'graphql-request'
+import _                     from 'lodash'
+import { MessageDescriptor } from 'react-intl'
 
 import { formattedPath }             from '@acx-ui/analytics/utils'
 import { TableProps }                from '@acx-ui/components'
@@ -64,22 +65,29 @@ export type IntentAP = {
   version: string
 }
 
+export type StatusTooltip = {
+  tooltip: MessageDescriptor
+  errorMessage: string
+  scheduledAt: string
+  zoneName: string
+}
+
 export const getStatusTooltip = (state: DisplayStates, sliceValue: string, metadata: Metadata) => {
   const { $t } = getIntl()
-
   const stateConfig = states[state]
 
   const errMsg: string = metadata.failures?.map(failure => {
     return failureCodes[failure] ? $t(failureCodes[failure]) : failure
   }).join('\n - ') || ''
 
-  return $t(stateConfig.tooltip, {
+  const statusTooltip: StatusTooltip = {
+    tooltip: stateConfig.tooltip,
     errorMessage: `\n - ${errMsg}\n\n`,
     scheduledAt: formatter(DateFormatEnum.DateTimeFormat)(metadata.scheduledAt),
     zoneName: sliceValue
-    // userName: metadata.scheduledBy //TODO: scheduledBy is ID, how to get userName for R1 case?
-    // newConfig: metadata.newConfig //TODO: how to display newConfig?
-  })
+  }
+
+  return statusTooltip
 }
 
 type MutationResponse = { success: boolean, errorMsg: string, errorCode: string }

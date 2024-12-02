@@ -13,20 +13,26 @@ export const ConfigurationCard = () => {
   const { configuration, intent, state } = useIntentContext()
   const valueFormatter = _.get(configuration, 'valueFormatter', String)
   const config = configuration!
+  const isPausedOrNa = intent.status === 'paused' || intent.status === 'na'
 
-  const values = [
+  const values = isPausedOrNa ? [
     {
       key: 'currentValue',
       label: $t({ defaultMessage: 'Current' }),
+      value: intent.currentValue === null
+        ? $t({ defaultMessage: 'Not available' })
+        : valueFormatter(intent.currentValue)
+    }]
+    : [{
+      key: 'currentValue',
+      label: $t({ defaultMessage: 'Current' }),
       value: state === 'no-data' ? noDataDisplay : valueFormatter(intent.currentValue)
-    },
-    {
+    }, {
       key: 'recommendedValue',
       label: $t({ defaultMessage: 'Recommended' }),
       value: state === 'no-data' ? noDataDisplay : valueFormatter(intent.recommendedValue),
       tooltip: config.tooltip
-    }
-  ]
+    }]
 
   return <Card>
     <UI.Title>{$t(config.label)}</UI.Title>

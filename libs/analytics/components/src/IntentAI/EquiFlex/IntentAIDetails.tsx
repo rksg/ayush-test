@@ -18,7 +18,9 @@ import { IntentIcon }           from '../common/IntentIcon'
 import { KpiCard }              from '../common/KpiCard'
 import { richTextFormatValues } from '../common/richTextFormatValues'
 import { StatusTrail }          from '../common/StatusTrail'
+import { formatValues }         from '../config'
 import { useIntentContext }     from '../IntentContext'
+import { getStatusTooltip }     from '../services'
 import { getGraphKPIs }         from '../useIntentDetailsQuery'
 import { IntentWlan }           from '../utils'
 
@@ -69,6 +71,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
   return function IntentAIDetails () {
     const { $t } = useIntl()
     const { intent, kpis } = useIntentContext()
+    const { displayStatus, sliceValue, metadata, updatedAt } = intent
     const valuesText = useValuesText()
     const isMlisa = get('IS_MLISA_SA') === 'true'
     const { wlans } = intent.metadata
@@ -91,6 +94,9 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
         : []
       )
     ]
+    const isPausedOrNa = intent.status === 'paused' || intent.status === 'na'
+    const tooltipData = getStatusTooltip(displayStatus, sliceValue, { ...metadata, updatedAt })
+    const { tooltip, errorMessage, scheduledAt, zoneName } = tooltipData
 
     return <>
       <IntentDetailsHeader />
@@ -110,35 +116,51 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
           </FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 18, xxl: 20 }}>
-          <DetailsSection data-testid='Details'>
-            <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
-            <GridRow>
-              <GridCol data-testid='Configuration' col={{ span: 12 }}>
-                <ConfigurationCard />
-              </GridCol>
-              {getGraphKPIs(intent, kpis).map(kpi => (
-                <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
-                  <KpiCard kpi={kpi} />
+          {!isPausedOrNa ? <>
+            <DetailsSection data-testid='Details'>
+              <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
+              <GridRow>
+                <GridCol data-testid='Configuration' col={{ span: 12 }}>
+                  <ConfigurationCard />
                 </GridCol>
-              ))}
-            </GridRow>
-          </DetailsSection>
+                {getGraphKPIs(intent, kpis).map(kpi => (
+                  <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
+                    <KpiCard kpi={kpi} />
+                  </GridCol>
+                ))}
+              </GridRow>
+            </DetailsSection>
 
-          <GridRow>
+            <GridRow>
+              <GridCol col={{ span: 12 }}>
+                <DetailsSection data-testid='Benefits'>
+                  <DetailsSection.Title
+                    children={$t(SideNotes.title)} />
+                  <Card>{$t(SideNotes.benefits)}</Card>
+                </DetailsSection>
+              </GridCol>
+              <GridCol col={{ span: 12 }}>
+                <DetailsSection data-testid='Potential trade-off'>
+                  <DetailsSection.Title children={$t({ defaultMessage: 'Potential trade-off' })} />
+                  <Card>{$t(SideNotes.tradeoff)}</Card>
+                </DetailsSection>
+              </GridCol>
+            </GridRow>
+          </> : <GridRow>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection data-testid='Benefits'>
-                <DetailsSection.Title
-                  children={$t(SideNotes.title)} />
-                <Card>{$t(SideNotes.benefits)}</Card>
-              </DetailsSection>
-            </GridCol>
-            <GridCol col={{ span: 12 }}>
-              <DetailsSection data-testid='Potential trade-off'>
-                <DetailsSection.Title children={$t({ defaultMessage: 'Potential trade-off' })} />
-                <Card>{$t(SideNotes.tradeoff)}</Card>
+              <DetailsSection data-testid='Current Status'>
+                <DetailsSection.Title children={$t({ defaultMessage: 'Current Status' })} />
+                <DetailsSection.Details children={
+                  <Card>
+                    {<FormattedMessage
+                      {...tooltip}
+                      values={{ ...formatValues, errorMessage, scheduledAt, zoneName }}
+                    />}
+                  </Card>} />
               </DetailsSection>
             </GridCol>
           </GridRow>
+          }
 
           <DetailsSection data-testid='Status Trail'>
             <DetailsSection.Title children={$t({ defaultMessage: 'Status Trail' })} />

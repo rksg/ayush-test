@@ -1,12 +1,23 @@
 /* eslint-disable max-len */
+import React from 'react'
+
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { NetworkPath } from '@acx-ui/utils'
 
+import { StatusTooltip }                          from './services'
 import { DisplayStates, Statuses, StatusReasons } from './states'
+
+import type { Props as FormattedMessageProps } from 'react-intl/lib/src/components/message'
 
 export type StatusTrailItem = { status: Statuses, statusReason?: StatusReasons, createdAt?: string }
 export type StatusTrail = Array<StatusTrailItem>
+
+export const formatValues: FormattedMessageProps['values'] = {
+  ul: (chunks) => React.createElement('ul', { children: chunks }),
+  li: (chunks) => React.createElement('li', { children: chunks }),
+  p: (chunks) => React.createElement('p', { children: chunks })
+}
 
 export type Intent = {
   id: string
@@ -37,7 +48,8 @@ export type IntentListItem = Intent & {
   type?: string
   category: string
   statusLabel: string
-  statusTooltip: string,
+  statusTooltip: StatusTooltip
+  tooltipText: string
   preferences?: {
     crrmFullOptimization: boolean
   }
@@ -79,83 +91,140 @@ const categories = {
 export const states = {
   [DisplayStates.new]: {
     text: defineMessage({ defaultMessage: 'New' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI has analyzed the data and generated a change recommendations, awaiting your approval. To review the details, specify Intent priority, and apply the recommendations, click "Optimize." Alternatively, use "1-Click Optimize" to instantly apply the changes with default priority.' })
+    tooltip: defineMessage({ defaultMessage: `
+      <p>IntentAI has analyzed the data and generated a change recommendations, awaiting your approval. To review the details, specify Intent priority, and apply the recommendations, click "Optimize." Alternatively, use "1-Click Optimize" to instantly apply the changes with default priority.</p>
+    ` })
   },
   [DisplayStates.scheduled]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
-    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled for {scheduledAt}, via the user action "Optimize".' }) //TODO: initiated by the user {userName}
+    tooltip: defineMessage({ defaultMessage: `
+      <p>The change recommendation has been scheduled for {scheduledAt}, via the user action "Optimize".</p>
+    ` }) //TODO: initiated by the user {userName}
   },
   [DisplayStates.scheduledOneClick]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
-    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled for {scheduledAt}, via the user action "1-Click Optimize".' }) //TODO: initiated by the user {userName}
+    tooltip: defineMessage({ defaultMessage: `
+      <p>The change recommendation has been scheduled for {scheduledAt}, via the user action "1-Click Optimize".</p>
+    ` }) //TODO: initiated by the user {userName}
   },
   [DisplayStates.applyScheduled]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
-    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been automatically scheduled for {scheduledAt}, by IntentAI.' })
+    tooltip: defineMessage({ defaultMessage: `
+      <p>The change recommendation has been automatically scheduled for {scheduledAt}, by IntentAI.</p>
+    ` })
   },
   [DisplayStates.applyScheduleInProgress]: {
     text: defineMessage({ defaultMessage: 'Apply In Progress' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting applied to <VenueSingular></VenueSingular> {zoneName}.' })
+    tooltip: defineMessage({ defaultMessage: `
+      <p>IntentAI recommended changes are getting applied to <VenueSingular></VenueSingular> {zoneName}.</p>
+    ` })
   },
   [DisplayStates.active]: {
     text: defineMessage({ defaultMessage: 'Active' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI is active on <VenueSingular></VenueSingular> {zoneName}.' }) //TODO: The new configuration is: {newConfig}.
+    tooltip: defineMessage({ defaultMessage: `
+      <p>IntentAI is active on <VenueSingular></VenueSingular> {zoneName}.</p>
+    ` }) //TODO: The new configuration is: {newConfig}.
   },
   [DisplayStates.pausedApplyFailed]: {
     text: defineMessage({ defaultMessage: 'Paused, Applied Failed' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes failed to apply to <VenueSingular></VenueSingular> {zoneName} due to:{errorMessage} The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
+    tooltip: defineMessage({ defaultMessage: `
+      <p>IntentAI recommended changes failed to apply to <VenueSingular></VenueSingular> {zoneName} due to:</p>
+      <ul>
+        <li>{errorMessage}</li>
+      </ul>
+      <p>The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.</p>
+    ` })
   },
   [DisplayStates.revertScheduled]: {
     text: defineMessage({ defaultMessage: 'Revert Scheduled' }),
-    tooltip: defineMessage({ defaultMessage: 'The Revert of the IntentAI recommended changes are scheduled for {scheduledAt}, via user action "Revert".' }) //TODO: initiated by the user {userName}
+    tooltip: defineMessage({ defaultMessage: `
+      <p>The Revert of the IntentAI recommended changes are scheduled for {scheduledAt}, via user action "Revert".</p>
+    ` }) //TODO: initiated by the user {userName}
   },
   [DisplayStates.revertScheduleInProgress]: {
     text: defineMessage({ defaultMessage: 'Revert In Progress' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on <VenueSingular></VenueSingular> {zoneName}.' })
+    tooltip: defineMessage({ defaultMessage: `
+      <p>IntentAI recommended changes are getting reverted, to the earlier configuration, on <VenueSingular></VenueSingular> {zoneName}.</p>
+    ` })
   },
   [DisplayStates.pausedRevertFailed]: {
     text: defineMessage({ defaultMessage: 'Paused, Revert Failed' }),
-    tooltip: defineMessage({ defaultMessage: 'The Revert action on the IntentAI recommended change, failed due to the following reason:{errorMessage} The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
+    tooltip: defineMessage({ defaultMessage: `
+      <p>The Revert action on the IntentAI recommended change, failed due to the following reason:</p>
+      <ul>
+        <li>{errorMessage}</li>
+      </ul>
+      <p>The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.</p>
+    ` })
   },
   [DisplayStates.pausedReverted]: {
     text: defineMessage({ defaultMessage: 'Paused, Revert Success' }),
-    tooltip: defineMessage({ defaultMessage: 'The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
+    tooltip: defineMessage({ defaultMessage: `
+      <p>The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.</p>
+    ` })
   },
   [DisplayStates.pausedFromInactive]: {
     text: defineMessage({ defaultMessage: 'Paused' }),
-    tooltip: defineMessage({ defaultMessage: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.' }) //TODO: initiated by the user {userName}
+    tooltip: defineMessage({ defaultMessage: `
+      <p>The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.</p>
+    ` }) //TODO: initiated by the user {userName}
   },
   [DisplayStates.pausedFromActive]: {
     text: defineMessage({ defaultMessage: 'Paused' }),
-    tooltip: defineMessage({ defaultMessage: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.' }) //TODO: initiated by the user {userName}
+    tooltip: defineMessage({ defaultMessage: `
+      <p>The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.</p>
+    ` }) //TODO: initiated by the user {userName}
   },
   [DisplayStates.pausedByDefault]: {
     text: defineMessage({ defaultMessage: 'Paused' }),
-    tooltip: defineMessage({ defaultMessage: 'The Intent is in default state of "Paused". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.' })
+    tooltip: defineMessage({ defaultMessage: `
+      <p>The Intent is in default state of "Paused". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.</p>
+    ` })
   },
   [DisplayStates.naConflictingConfiguration]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, Conflicting Configuration' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated. Reason:{errorMessage}' })
+    tooltip: defineMessage({ defaultMessage: `
+      <p>No recommendation was generated. Reason:</p>
+      <ul>
+        <li>{errorMessage}</li>
+      </ul>
+    ` })
   },
   [DisplayStates.naNoAps]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, No APs' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated. Reason: No APs are detected in the network.' })
+    tooltip: defineMessage({ defaultMessage: `
+      <p>No recommendation was generated. Reason:</p>
+      <ul>
+        <li> No APs are detected in the network.</li>
+      </ul>
+    ` })
   },
   [DisplayStates.naNotEnoughLicense]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, Not Enough License' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI did not find sufficient licenses for <VenueSingular></VenueSingular> {zoneName}.' })
+    tooltip: defineMessage({ defaultMessage: `
+      <p>No recommendation was generated because IntentAI did not find sufficient licenses for <VenueSingular></VenueSingular> {zoneName}.</p>
+    ` })
   },
   [DisplayStates.naNotEnoughData]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, Not Enough Data' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated. Reason:{errorMessage}' })
+    tooltip: defineMessage({ defaultMessage: `
+      <p>No recommendation was generated. Reason:</p>
+      <ul>
+        <li>{errorMessage}</li>
+      </ul>
+    ` })
   },
   [DisplayStates.naVerified]: {
     text: defineMessage({ defaultMessage: 'Verified' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI has validated <VenueSingular></VenueSingular> {zoneName} configurations. No new changes have been recommended.' })
+    tooltip: defineMessage({ defaultMessage: `
+      <p>IntentAI has validated <VenueSingular></VenueSingular> {zoneName} configurations. No new changes have been recommended.</p>
+    ` })
   },
   [DisplayStates.naWaitingForEtl]: {
     text: defineMessage({ defaultMessage: 'No Recommendation' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated. Reason: Awaiting data processing and recommendation generation by ML algorithms.' })
+    tooltip: defineMessage({ defaultMessage: `
+      <p>No recommendation was generated. Reason: Awaiting data processing and recommendation generation by ML algorithms.</p>
+    ` })
   }
 } as Record<DisplayStates, StateInfo>
 
