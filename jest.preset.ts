@@ -37,7 +37,7 @@ module.exports = {
     '!<rootDir>/src/theme/modify-vars.js'
   ],
   setupFilesAfterEnv: [
-    process.env.NODE_ENV === 'production' ? `${__dirname}/jest.build.setup.js` : `${__dirname}/jest.setup.js`,
+    process.env.CICD_BUILD ? `${__dirname}/jest.build.setup.js` : `${__dirname}/jest.setup.js`,
     'jest-canvas-mock'
   ]
 }
