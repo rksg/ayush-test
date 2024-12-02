@@ -29,6 +29,19 @@ export function useUpdateNowPerApModel () {
   }
 }
 
+export function useUpdateEarlyAccessNowPerApModel () {
+  const [ updateEarlyAccessNowVisible, setUpdateEarlyAccessNowVisible ] = useState(false)
+  const handleUpdateEarlyAccessNowCancel = () => {
+    setUpdateEarlyAccessNowVisible(false)
+  }
+
+  return {
+    updateEarlyAccessNowVisible,
+    setUpdateEarlyAccessNowVisible,
+    handleUpdateEarlyAccessNowCancel
+  }
+}
+
 export function useChangeScheduleVisiblePerApModel () {
   const [ changeScheduleVisible, setChangeScheduleVisible ] = useState(false)
   const handleChangeScheduleCancel = () => {

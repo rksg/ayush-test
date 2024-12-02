@@ -1,0 +1,87 @@
+import { useState } from 'react'
+
+import { Space }   from 'antd'
+import { useIntl } from 'react-intl'
+
+import { Select }          from '@acx-ui/components'
+import { compareVersions } from '@acx-ui/utils'
+
+import { ApModelIndividualDisplayDataType } from '../venueFirmwareListPerApModelUtils'
+
+const { Option } = Select
+
+
+interface UpdateEarlyAccessPerApModelIndividualProps extends ApModelIndividualDisplayDataType {
+  update: (apModel: string, version: string) => void
+  labelSize?: 'small' | 'large'
+  emptyOptionLabel?: string
+  noOptionsMessage?: string
+  isUpgrade?: boolean
+}
+
+// eslint-disable-next-line max-len
+export function UpdateEarlyAccessPerApModelIndividual (props: UpdateEarlyAccessPerApModelIndividualProps) {
+  const { $t } = useIntl()
+  const { apModel, versionOptions, update, defaultVersion, extremeFirmware,
+    labelSize = 'small',
+    emptyOptionLabel = $t({ defaultMessage: 'Do not update firmware' }),
+    noOptionsMessage = $t({ defaultMessage: 'The AP is up-to-date' }),
+    isUpgrade = true
+  } = props
+  const [ selectedVersion, setSelectedVersion ] = useState(defaultVersion)
+
+  const resolvedVersionOptions = isUpgrade
+    ? versionOptions
+    : versionOptions
+      .sort((a, b) => -compareVersions(a.key, b.key))
+      .slice(0, 4) // When donwgrade, only show the last 4 versions and sort by firmware version
+
+  const [ filteredOptions, setFilteredOptions ] = useState(resolvedVersionOptions)
+
+  const refreshVersionOptions = (version: string) => {
+    if (resolvedVersionOptions.find(option => option.key === version)) {
+      setFilteredOptions(resolvedVersionOptions)
+    } else {
+      const target = versionOptions.find(option => option.key === version)
+      if (target) {
+        setFilteredOptions([target, ...resolvedVersionOptions])
+      }
+    }
+  }
+
+  const onSelectedVersionChange = (value: string) => {
+    refreshVersionOptions(value)
+    setSelectedVersion(value)
+    update(apModel, value)
+  }
+
+  const handleSearch = (value: string) => {
+    if (value) {
+      setFilteredOptions(versionOptions.filter(option =>
+        option.label.toLowerCase().includes(value.toLowerCase())
+      ))
+    } else {
+      setFilteredOptions(resolvedVersionOptions)
+    }
+  }
+
+  return (
+    <Space>
+      <div style={{ width: labelSize === 'small' ? 50 : 90 }}>{apModel}</div>
+      {versionOptions.length === 0
+        ? <div><span>{noOptionsMessage} &nbsp;<strong>({extremeFirmware})</strong></span></div>
+        : <Select
+          value={selectedVersion}
+          onChange={onSelectedVersionChange}
+          style={{ width: 400 }}
+          showSearch
+          filterOption={false}
+          onSearch={handleSearch}
+        >
+          {filteredOptions.map(option => <Option key={option.key}>{option.label}</Option>)}
+          <Option key={''}>{emptyOptionLabel}</Option>
+        </Select>
+      }
+    </Space>
+  )
+}

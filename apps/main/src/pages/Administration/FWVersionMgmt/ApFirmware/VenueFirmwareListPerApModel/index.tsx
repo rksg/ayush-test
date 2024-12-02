@@ -11,7 +11,9 @@ import {
   useUpgradePerferences,
   useDowngradePerApModel,
   UpdateNowPerApModelDialog,
-  ChangeSchedulePerApModelDialog
+  ChangeSchedulePerApModelDialog,
+  useUpdateEarlyAccessNowPerApModel,
+  UpdateEarlyAccessNowDialog
 } from '@acx-ui/rc/components'
 import {
   compareVersions,
@@ -55,6 +57,8 @@ export function VenueFirmwareListPerApModel () {
   const [ selectedRows, setSelectedRows ] = useState<FirmwareVenuePerApModel[]>([])
   const { updateNowVisible, setUpdateNowVisible, handleUpdateNowCancel } = useUpdateNowPerApModel()
   // eslint-disable-next-line max-len
+  const { updateEarlyAccessNowVisible, setUpdateEarlyAccessNowVisible, handleUpdateEarlyAccessNowCancel } = useUpdateEarlyAccessNowPerApModel()
+  // eslint-disable-next-line max-len
   const { downgradeVisible, setDowngradeVisible, handleDowngradeCancel, canDowngrade } = useDowngradePerApModel()
   // eslint-disable-next-line max-len
   const { changeScheduleVisible, setChangeScheduleVisible, handleChangeScheduleCancel } = useChangeScheduleVisiblePerApModel()
@@ -97,6 +101,15 @@ export function VenueFirmwareListPerApModel () {
       onClick: (rows) => {
         setSelectedRows(rows)
         setUpdateNowVisible(true)
+      }
+    },
+    {
+      scopeKey: [WifiScopes.UPDATE],
+      visible: (rows) => rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)),
+      label: $t({ defaultMessage: 'Update with Early Access Now' }),
+      onClick: (rows) => {
+        setSelectedRows(rows)
+        setUpdateEarlyAccessNowVisible(true)
       }
     },
     {
@@ -160,6 +173,11 @@ export function VenueFirmwareListPerApModel () {
     />}
     {downgradeVisible && selectedRows && <DowngradePerApModelDialog
       onCancel={handleDowngradeCancel}
+      afterSubmit={afterAction}
+      selectedVenuesFirmwares={selectedRows}
+    />}
+    {updateEarlyAccessNowVisible && selectedRows && <UpdateEarlyAccessNowDialog
+      onCancel={handleUpdateEarlyAccessNowCancel}
       afterSubmit={afterAction}
       selectedVenuesFirmwares={selectedRows}
     />}
