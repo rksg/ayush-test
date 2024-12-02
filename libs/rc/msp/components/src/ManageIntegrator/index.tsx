@@ -1013,11 +1013,26 @@ export function ManageIntegrator () {
           <Paragraph>{address.addressLine}</Paragraph>
         </Form.Item>
 
-        <Form.Item
+        {!isRbacPhase2Enabled && <Form.Item
           label={intl.$t({ defaultMessage: 'MSP Administrators' })}
         >
           <Paragraph>{displayMspAdmins()}</Paragraph>
-        </Form.Item>
+        </Form.Item>}
+
+        {isRbacPhase2Enabled && <div>
+          <Form.Item style={{ height: '20px', margin: '0' }}
+            label={intl.$t({ defaultMessage: 'MSP Delegations' })}
+          />
+          <Form.Item style={{ margin: '0' }}
+            label={intl.$t({ defaultMessage: 'Users' })}
+          >
+            <Paragraph>{displayMspAdmins()}</Paragraph>
+          </Form.Item>
+          <Form.Item
+            label={intl.$t({ defaultMessage: 'Privilege Groups' })}
+          >
+            <Paragraph>{displayPrivilegeGroups()}</Paragraph>
+          </Form.Item></div>}
 
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Assigned Customers' })}
