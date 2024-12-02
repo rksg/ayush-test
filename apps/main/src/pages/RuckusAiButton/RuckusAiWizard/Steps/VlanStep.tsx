@@ -14,9 +14,10 @@ import {
 } from '@acx-ui/rc/services'
 import { validateVlanExcludingReserved, Vlan } from '@acx-ui/rc/utils'
 
+import { willRegenerateAlert } from '../../ruckusAi.utils'
+
 import { checkHasRegenerated } from './steps.utils'
 import * as UI                 from './styledComponents'
-import { stubFalse } from 'lodash'
 
 
 type NetworkConfig = {
@@ -27,7 +28,11 @@ type NetworkConfig = {
   'id': string;
 }
 
-export function VlanStep (props: { payload: string, sessionId: string, description: string,
+export function VlanStep (props: {
+  payload: string,
+  sessionId: string,
+  description: string,
+  showAlert: boolean,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formInstance: ProFormInstance<any> | undefined
 }) {
@@ -42,6 +47,8 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
   const [configVlanNames, setConfigVlanNames] = useState<string[]>(data.map(vlan => vlan['VLAN Name']))
   const [configVlanIds, setConfigVlanIds] = useState<string[]>(data.map(vlan => vlan['VLAN ID']))
   const [isSetupComplete, setIsSetupComplete] = useState<boolean[]>(Array(data.length).fill(false))
+  // eslint-disable-next-line max-len
+  const [isDulicateUntaggedPorts, setIsDulicateUntaggedPorts] = useState<boolean[]>(Array(data.length).fill(false))
   const [configId, setConfigId] = useState('')
   const [configVisible, setConfigVisible] = useState(false)
   const [configIndex, setConfigIndex] = useState<number>(0)
@@ -67,6 +74,7 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
 
       if (!isInitialEmpty) {
         setIsSetupComplete(Array(data.length).fill(false))
+        setIsDulicateUntaggedPorts(Array(data.length).fill(false))
       }
     }
   }, [props.payload])
@@ -74,43 +82,51 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
 
   const checkDuplicateUntaggedPorts = (vlanTable: Vlan[], index: number) => {
     const currentSwitchFamilyModels = vlanTable.find(i => i.key === index)?.switchFamilyModels
-    if (!currentSwitchFamilyModels) return stubFalse
+    if (!currentSwitchFamilyModels) return false
 
-  const otherVlanEntries = vlanTable.filter(i => i.key !== index)
+    const otherVlanEntries = vlanTable.filter(i => i.key !== index)
 
-  let duplicateFound = false
-  otherVlanEntries.forEach(vlan => {
-    vlan.switchFamilyModels?.forEach(otherModel => {
-      currentSwitchFamilyModels.forEach(currentModel => {
-        const currentPorts = currentModel.untaggedPorts?.split(',').map(port => port.trim()) || []
-        const otherPorts = otherModel.untaggedPorts?.split(',').map(port => port.trim()) || []
-  
-        if (currentPorts.some(port => otherPorts.includes(port))) {
-          duplicateFound = true
-          return
-        }
+    let duplicateFound = false
+    otherVlanEntries.forEach(vlan => {
+      vlan.switchFamilyModels?.forEach(otherModel => {
+        currentSwitchFamilyModels.forEach(currentModel => {
+          const currentPorts = currentModel.untaggedPorts?.split(',').map(port => port.trim()) || []
+          const otherPorts = otherModel.untaggedPorts?.split(',').map(port => port.trim()) || []
+
+          if (currentPorts.some(port => otherPorts.includes(port))) {
+            duplicateFound = true
+            return
+          }
+        })
       })
     })
-  })
 
-  return duplicateFound
-}
+    return duplicateFound
+  }
 
   const handleDuplicateUntaggedPorts = (vlanTable: Vlan[], index: number) => {
     if (checkDuplicateUntaggedPorts(vlanTable, index)) {
       setVlanTable(vlanTable.filter(i => i.key !== index))
+      setIsSetupComplete((prevIsSetupComplete) => {
+        const updatedPrevIsSetupComplete = [...prevIsSetupComplete]
+        updatedPrevIsSetupComplete[index] = false
+        return updatedPrevIsSetupComplete
+      })
+      setIsDulicateUntaggedPorts((prevStatus) => {
+        const status = [...prevStatus]
+        status[index] = true
+        return status
+      })
     }
-    // setConfilctMessage()
-
   }
-  
+
 
   const handleCheckboxChange = (index: number, checked: boolean) => {
     const newCheckboxStates = [...checkboxStates]
     newCheckboxStates[index] = checked
     setCheckboxStates(newCheckboxStates)
+    formInstance?.validateFields()
     if (checked) {
-      formInstance?.validateFields()
       setDisabledKeys(disabledKeys.filter(id => String(id) !== String(index)))
       handleDuplicateUntaggedPorts(vlanTable, index)
 
@@ -196,6 +212,11 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
       updatedPrevIsSetupComplete[configIndex] = true
       return updatedPrevIsSetupComplete
     })
+    setIsDulicateUntaggedPorts((prevStatus) => {
+      const status = [...prevStatus]
+      status[configIndex] = false
+      return status
+    })
 
 
     return true
@@ -239,6 +260,8 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
           </Button>
         </UI.HeaderWithAddButton>
       </UI.Header>
+
+      {props.showAlert && willRegenerateAlert($t)}
 
       <UI.HighlightedBox>
         <UI.HighlightedTitle>
@@ -327,9 +350,10 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
                   { required: true, message: $t({ defaultMessage: 'Please enter a VLAN ID.' }) },
                   { validator: (_, value) => validateVlanExcludingReserved(value) },
                   {
-                    validator: (_, value) => {
-                      const filteredVlanIds = configVlanIds.filter((_, i) => !disabledKeys.includes(i.toString()));
-                      const isDuplicate = filteredVlanIds.length !== new Set(filteredVlanIds).size;
+                    validator: () => {
+                      // eslint-disable-next-line max-len
+                      const filteredVlanIds = configVlanIds.filter((_, i) => !disabledKeys.includes(i.toString()))
+                      const isDuplicate = filteredVlanIds.length !== new Set(filteredVlanIds).size
                       if (isDuplicate) {
                         return Promise.reject($t({ defaultMessage: 'This VLAN ID is duplicated.' })
                         )
@@ -378,11 +402,18 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
                       <div>
                         {$t({ defaultMessage: 'Port Configurations' })}
                       </div>
-                      {!isSetupComplete[index] &&
+                      {!isSetupComplete[index] && !isDulicateUntaggedPorts[index] &&
                         <div style={{ fontWeight: 400, color: cssStr('--acx-neutrals-60') }}>
                           {$t({ defaultMessage: 'Ports have not been set yet. ' })}
                         </div>
                       }
+                      {isDulicateUntaggedPorts[index] &&
+                        <div style={{ fontWeight: 400, color: cssStr('--acx-neutrals-60') }}>
+                          {    // eslint-disable-next-line max-len
+                            $t({ defaultMessage: 'The untagged port(s) you previously configured have already been assigned to another VLAN. Please reconfigure the port(s).' })}
+                        </div>
+                      }
+
                     </div>
 
                     <div style={{ display: 'flex' }}>

@@ -1,5 +1,3 @@
-import _ from 'lodash'
-
 import { checkHasRegenerated } from './steps.utils'
 
 

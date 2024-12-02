@@ -9,7 +9,7 @@ import {
 import { Button, Divider } from 'antd'
 import { useIntl }         from 'react-intl'
 
-import { Alert, cssStr }                             from '@acx-ui/components'
+import { cssStr }                             from '@acx-ui/components'
 import { CrownSolid, OnboardingAssistantDog } from '@acx-ui/icons'
 import { useNetworkListQuery }                from '@acx-ui/rc/services'
 import {
@@ -18,6 +18,8 @@ import {
   validateByteLength }
   from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
+
+import { willRegenerateAlert } from '../../ruckusAi.utils'
 
 import { checkHasRegenerated } from './steps.utils'
 import * as UI                 from './styledComponents'
@@ -29,10 +31,10 @@ type NetworkConfig = {
   'Checked': boolean;
   'id': string;
 }
-
 export function WlanStep ( props: {
   payload: string,
   description: string,
+  showAlert: boolean,
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    formInstance: ProFormInstance<any> | undefined
 }) {
@@ -145,8 +147,7 @@ export function WlanStep ( props: {
           {$t({ defaultMessage: 'Add Network Profile' })}
         </Button>
       </UI.HeaderWithAddButton>
-      {/* //TODO: Karen */}
-      <Alert message='Informational Notes' type='info' showIcon closable /> 
+      {props.showAlert && willRegenerateAlert($t)}
       <UI.HighlightedBox>
         <UI.HighlightedTitle>
           <CrownSolid

@@ -1,9 +1,9 @@
-import _ from 'lodash'
-
+import { isEmpty } from 'lodash'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const checkHasRegenerated = (originalData: any[], newData: any[]): boolean => {
-  if (_.isEmpty(originalData[0])) {
+
+  if (isEmpty(originalData[0])) {
     return true
   }
 
