@@ -177,6 +177,7 @@ export function VenueWifi () {
       defaultActiveKey='list'
       onChange={onCategoryTabChange}
       tabBarExtraContent={showCompatibilityNote? alertNote(): []}
+      destroyInactiveTabPane
     >
       <Tabs.TabPane key='list'
         tab={<Tooltip title={$t({ defaultMessage: 'Device List' })}>
