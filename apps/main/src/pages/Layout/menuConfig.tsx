@@ -132,6 +132,12 @@ export function useMenuConfig () {
         }
       ]
     },
+    ...(!showGatewaysMenu ? [{
+      uri: '/venues',
+      label: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
+      inactiveIcon: LocationOutlined,
+      activeIcon: LocationSolid
+    }] : []),
     {
       label: $t({ defaultMessage: 'Clients' }),
       inactiveIcon: AccountCircleOutlined,
@@ -182,12 +188,12 @@ export function useMenuConfig () {
         }] : [])
       ]
     },
-    {
+    ...(showGatewaysMenu ? [{
       uri: '/venues',
       label: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       inactiveIcon: LocationOutlined,
       activeIcon: LocationSolid
-    },
+    }] : []),
     {
       label: $t({ defaultMessage: 'Wi-Fi' }),
       inactiveIcon: WiFi,
