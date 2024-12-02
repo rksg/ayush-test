@@ -110,10 +110,12 @@ export function PortProfileSetting () {
       onClick: ([{ id }], clearSelection) => {
         showActionModal({
           type: 'confirm',
+          title: $t({ defaultMessage: 'Delete Profile(s)?' }),
+          content: $t({ defaultMessage: 'Are you sure you want to delete?' }),
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Port Profile' }),
-            entityValue: id
+            entityName: '',
+            entityValue: undefined
           },
           onOk: async () => {
             const portProfiles = portProfilesTable?.filter(row => {
