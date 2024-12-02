@@ -295,7 +295,7 @@ export function ManageIntegrator () {
       }
       setSubscriptionStartDate(moment())
     }
-  }, [data, licenseSummary, licenseAssignment, userProfile, ecAdministrators])
+  }, [data, licenseSummary, licenseAssignment, userProfile, ecAdministrators, privilegeGroupList])
 
   useEffect(() => {
     if (delegatedAdmins && Administrators) {
