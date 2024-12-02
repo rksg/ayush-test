@@ -96,6 +96,10 @@ jest.mock('../Charts/ImpactedUplinkPortDetails', () => ({
   ImpactedUplinkPortDetails: () => <div data-testid='impactedUplinkPortDetails' />
 }))
 
+jest.mock('../Charts/ImpactedSwitchUplinkTable', () => ({
+  ImpactedSwitchUplinkTable: () => <div data-testid='impactedSwitchUplinkTable' />
+}))
+
 jest.mock('../Charts/WanthroughputTable', () => ({
   WanthroughputTable: () => <div data-testid='wanthroughputTable' />
 }))
