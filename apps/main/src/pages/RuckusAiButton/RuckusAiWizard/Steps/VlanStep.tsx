@@ -9,6 +9,7 @@ import { CrownSolid, OnboardingAssistantDog } from '@acx-ui/icons'
 import { VlanSettingDrawer }                  from '@acx-ui/rc/components'
 import {
   useCreateOnboardConfigsMutation,
+  useDeleteOnboardConfigsMutation,
   useLazyGetVlanOnboardConfigsQuery,
   useUpdateOnboardConfigsMutation
 } from '@acx-ui/rc/services'
@@ -104,7 +105,7 @@ export function VlanStep (props: {
     return duplicateFound
   }
 
-  const handleDuplicateUntaggedPorts = (vlanTable: Vlan[], index: number) => {
+  const handleDuplicateUntaggedPorts = async (vlanTable: Vlan[], index: number) => {
     if (checkDuplicateUntaggedPorts(vlanTable, index)) {
       setVlanTable(vlanTable.filter(i => i.key !== index))
       setIsSetupComplete((prevIsSetupComplete) => {
@@ -117,6 +118,12 @@ export function VlanStep (props: {
         status[index] = true
         return status
       })
+
+      await deleteOnboardConfigs({
+        params: {
+          id: data[index].id
+        }
+      }).unwrap()
     }
   }
 
@@ -225,6 +232,7 @@ export function VlanStep (props: {
   const [getVlanConfigs] = useLazyGetVlanOnboardConfigsQuery()
   const [updateOnboardConfigs] = useUpdateOnboardConfigsMutation()
   const [createOnboardConfigs] = useCreateOnboardConfigsMutation()
+  const [deleteOnboardConfigs] = useDeleteOnboardConfigsMutation()
 
   const onEditMode = async (id: string, index: number) =>{
     const vlanConfig = (await getVlanConfigs({
