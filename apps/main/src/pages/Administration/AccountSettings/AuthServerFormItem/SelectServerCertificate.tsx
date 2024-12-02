@@ -35,6 +35,7 @@ const SelectServerCertificate = (props: CertificateSelectorProps) => {
         <Form.Item
           name='serverCertificate'
           label={$t({ defaultMessage: 'Configure a Server Certificate' })}
+          initialValue={selected}
         >
           <Select style={{ width: '400px' }}
             //   value={currentMapRegion}
@@ -43,7 +44,7 @@ const SelectServerCertificate = (props: CertificateSelectorProps) => {
             showSearch
             optionFilterProp='children'
             disabled={!hasCrossVenuesPermission()}
-            defaultValue={selected}
+            // defaultValue={selected}
           >
             {certificateData?.map(({ label, value }) =>
               (<Select.Option value={value} key={value} children={label}/>)
