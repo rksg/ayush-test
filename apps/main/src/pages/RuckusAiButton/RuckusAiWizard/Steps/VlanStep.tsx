@@ -410,7 +410,7 @@ export function VlanStep (props: {
                       {isDulicateUntaggedPorts[index] &&
                         <div style={{ fontWeight: 400, color: cssStr('--acx-neutrals-60') }}>
                           {    // eslint-disable-next-line max-len
-                            $t({ defaultMessage: 'The untagged port(s) you previously configured have already been assigned to another VLAN. Please reconfigure the port(s).' })}
+                            $t({ defaultMessage: 'The untagged port(s) you previously configured have already been assigned to another VLAN. The port(s) have been reset to their initial state.' })}
                         </div>
                       }
 
