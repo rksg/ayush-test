@@ -91,6 +91,7 @@ export function SelectModelStep () {
 
   useEffect(() => {
     if(ICX_MODELS_MODULES){
+      form.resetFields(['families'])
       const modules = Object.keys(ICX_MODELS_MODULES)
         .filter(key => isSupport8100 || key !== 'ICX8100')
       const familiesData = modules.map(key => {

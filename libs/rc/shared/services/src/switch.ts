@@ -1475,8 +1475,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     getSwitchConfigProfile: build.query<ConfigurationProfile, RequestPayload>({
-      query: ({ params, payload, enableRbac, enableSwitchLevelCliProfile }) => {
-        const headers = enableSwitchLevelCliProfile || true
+      query: ({ params, payload, enableRbac,
+        enableSwitchLevelCliProfile, enableSwitchPortProfile }) => {
+        const headers = enableSwitchLevelCliProfile || enableSwitchPortProfile || true
           ? customHeaders.v1002 : (enableRbac ? customHeaders.v1001 : {})
 
         const switchUrls = getSwitchUrls(enableRbac)
@@ -1496,8 +1497,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       providesTags: [{ type: 'SwitchProfiles', id: 'DETAIL' }]
     }),
     addSwitchConfigProfile: build.mutation<CliConfiguration, RequestPayload>({
-      query: ({ params, payload, enableRbac, enableSwitchLevelCliProfile }) => {
-        const headers = enableSwitchLevelCliProfile
+      query: ({ params, payload, enableRbac,
+        enableSwitchLevelCliProfile, enableSwitchPortProfile}) => {
+        const headers = enableSwitchLevelCliProfile || enableSwitchPortProfile || true
           ? customHeaders.v1002 : (enableRbac ? customHeaders.v1001 : {})
         const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(switchUrls.addSwitchConfigProfile, params, headers)
@@ -1509,8 +1511,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
     }),
     updateSwitchConfigProfile: build.mutation<CliConfiguration, RequestPayload>({
-      query: ({ params, payload, enableRbac, enableSwitchLevelCliProfile }) => {
-        const headers = enableSwitchLevelCliProfile
+      query: ({ params, payload, enableRbac,
+        enableSwitchLevelCliProfile, enableSwitchPortProfile }) => {
+        const headers = enableSwitchLevelCliProfile || enableSwitchPortProfile || true
           ? customHeaders.v1002 : (enableRbac ? customHeaders.v1001 : {})
         const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(switchUrls.updateSwitchConfigProfile, params, headers)

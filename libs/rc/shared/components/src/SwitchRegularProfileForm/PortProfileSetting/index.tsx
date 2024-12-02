@@ -16,9 +16,9 @@ import { getIntl }                       from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
-import PortProfileContext       from './PortProfileContext'
-import { PortProfileModal }     from './PortProfileModal'
-import { portProfilesUIParser } from './PortProfileModal.utils'
+import PortProfileContext                              from './PortProfileContext'
+import { PortProfileModal }                            from './PortProfileModal'
+import { portProfilesAPIParser, portProfilesUIParser } from './PortProfileModal.utils'
 
 const payload = {
   fields: [
@@ -144,7 +144,11 @@ export function PortProfileSetting () {
       return JSON.stringify(item.models) !== JSON.stringify(proceedData.models)
     })
 
+    const portProfileAPIData = [
+      ...result.map(item=>portProfilesAPIParser(item)),
+      portProfilesAPIParser(proceedData)].flat()
     setPortProfilesTable([...result, proceedData])
+    form.setFieldValue('portProfiles', portProfileAPIData)
     setSelectedRowKeys([])
     setPortModalVisible(false)
   }

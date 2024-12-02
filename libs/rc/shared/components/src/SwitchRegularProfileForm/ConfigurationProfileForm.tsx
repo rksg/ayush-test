@@ -73,7 +73,10 @@ export function ConfigurationProfileForm () {
     useQueryFn: useGetSwitchConfigProfileQuery,
     useTemplateQueryFn: useGetSwitchConfigProfileTemplateQuery,
     skip: !params.profileId,
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: isSwitchRbacEnabled,
+    extraQueryArgs: {
+      enableSwitchPortProfile: isSwitchPortProfileToggle
+    }
   })
 
   // eslint-disable-next-line max-len
@@ -340,7 +343,10 @@ export function ConfigurationProfileForm () {
       await addSwitchConfigProfile({
         params,
         payload: proceedData(currentData),
-        enableRbac: rbacEnabled
+        enableRbac: rbacEnabled,
+        extraQueryArgs: {
+          enableSwitchPortProfile: isSwitchPortProfileToggle
+        }
       }).unwrap()
 
       if (rbacEnabled && hasAssociatedVenues) {
@@ -374,7 +380,10 @@ export function ConfigurationProfileForm () {
       await updateSwitchConfigProfile({
         params,
         payload: proceedData(formData),
-        enableRbac: rbacEnabled
+        enableRbac: rbacEnabled,
+        extraQueryArgs: {
+          enableSwitchPortProfile: isSwitchPortProfileToggle
+        }
       }).unwrap()
       await associateWithCliProfile(diffAssociatedSwitch)
       setCurrentData({} as SwitchConfigurationProfile)
