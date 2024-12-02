@@ -78,7 +78,7 @@ export const getSupersetRlsClause = (
   if (isNetworkFilterDisabled) return clause
 
   if (radioBands?.length && isApReport && !isRadioBandDisabled) {
-    clause.radioBandClause = ` "band" in (${radioBands
+    clause.radioBandClause = `"band" in (${radioBands
       .map((radioBand) => `'${radioBand}'`)
       .join(', ')})`
   }
@@ -123,7 +123,7 @@ export const getSupersetRlsClause = (
         clause.networkClause += `"switchId" in (${switchMacs.join(', ')}) OR `
       }
     }
-    clause.networkClause = ` (${clause.networkClause.slice(0, -4)})`
+    clause.networkClause = clause.networkClause.slice(0, -4)
   }
   return clause
 }
