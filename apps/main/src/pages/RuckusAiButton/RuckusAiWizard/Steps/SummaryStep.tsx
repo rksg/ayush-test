@@ -100,7 +100,7 @@ export function SummaryStep (props: {
           </UI.SummaryContainer>
 
           {/* Switch Configuration VLAN */}
-          {data.vlan && data.vlan.length > 0 && <UI.SummaryContainer>
+          {<UI.SummaryContainer>
             <Button key='editSwitchConfigurationBtn'
               type='link'
               style={{ float: 'right' }}
@@ -109,14 +109,14 @@ export function SummaryStep (props: {
               }}>
               {$t({ defaultMessage: 'Edit' })}
             </Button>
-            <Form.Item
+           <Form.Item
               label={
                 <UI.SummaryContainerHeader>
                   {$t({ defaultMessage: 'Switch Configuration' })}
                 </UI.SummaryContainerHeader>
               }
               style={{ marginBottom: '0px' }}
-              children={<UI.SummaryUl>
+              children={(data.vlan && data.vlan.length > 0) ? <UI.SummaryUl>
                 {// eslint-disable-next-line @typescript-eslint/no-explicit-any
                   data?.vlan?.map((item: any, index: number) => {
                     const { id, 'VLAN Name': vlanName, 'VLAN ID': vlanId } = item
@@ -132,8 +132,10 @@ export function SummaryStep (props: {
                       {title}
                     </UI.SummaryLi>
                   })}
-              </UI.SummaryUl>}
-            />
+              </UI.SummaryUl>
+              : $t({ defaultMessage: 'Skip the settings' })}
+            /> 
+           
           </UI.SummaryContainer>
           }
         </UI.SummaryBox>
