@@ -207,7 +207,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
             </Col>
           </Row>
           {edgeClusterId &&
-            <Row>
+            <Row style={{ marginBottom: 20 }}>
               <Col span={24}>
                 <EdgeClusterFirmwareInfo
                   featureName={IncompatibilityFeatures.PIN}

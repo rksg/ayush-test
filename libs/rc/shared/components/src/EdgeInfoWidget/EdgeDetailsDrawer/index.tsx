@@ -34,7 +34,7 @@ const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
         serialNumber: currentEdge?.serialNumber
       }
     }, {
-      skip: !isShowEdgePassword || !currentEdge
+      skip: !visible || !isShowEdgePassword || !currentEdge
     }
   )
 
