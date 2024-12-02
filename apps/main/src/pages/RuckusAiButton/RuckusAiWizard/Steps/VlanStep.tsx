@@ -430,7 +430,7 @@ export function VlanStep (props: {
                           <UI.CollapseCircleSolidIcons />
                           <div>{$t({ defaultMessage: 'Configured' })}</div>
                         </UI.ConfiguredButton> :
-                        <UI.SetupButton>
+                        <UI.SetupButton style={{ width: '65px' }}>
                           {$t({ defaultMessage: 'Setup Ports' })}
                         </UI.SetupButton>}
                       <UI.ArrowChevronRightIcons />
