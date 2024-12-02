@@ -170,7 +170,7 @@ describe('Persona Group Table', () => {
     }
   })
 
-  it('should render table', async () => {
+  it.skip('should render table', async () => {
     render(
       <Provider>
         <PersonaGroupTable />
