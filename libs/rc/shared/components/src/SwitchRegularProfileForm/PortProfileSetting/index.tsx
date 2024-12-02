@@ -54,7 +54,6 @@ export function PortProfileSetting () {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         setEditMode(true)
-        console.log(selectedRows[0])
         setPortProfileSettingValues(selectedRows[0])
         setPortModalVisible(true)
       }
