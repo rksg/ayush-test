@@ -46,10 +46,12 @@ export function getMetaDetailsList<T extends EventBase> (
   const httpRequest = metaListInfo.urlInfo
   const body = {
     fields: metaListInfo.fields,
-    filters: list.data.map((item) => ({
-      index: item.indexName,
-      id: item.id
-    }))
+    filters: {
+      idIndex: list.data.map((item) => ({
+        index: item.indexName,
+        id: item.id
+      }))
+    }
   }
   return {
     ...httpRequest, body
