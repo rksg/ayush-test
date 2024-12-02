@@ -42,7 +42,7 @@ export interface ConfigChangeChartProps extends Omit<EChartsReactProps, 'option'
   setPagination?: (params: { current: number, pageSize: number }) => void
 }
 
-type ChartRowMappingType = { key: string, label: string, color: string }
+export type ChartRowMappingType = { key: string, label: string, color: string }
 export function getConfigChangeEntityTypeMapping (showIntentAI: boolean) : ChartRowMappingType[] {
   const { $t } = getIntl()
   const colors = qualitativeColorSet()
