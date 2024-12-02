@@ -273,11 +273,12 @@ export function LanPorts () {
 
   const processUpdateLanPorts = async (values: WifiApSetting) => {
     const { lan, poeOut, useVenueSettings } = values
+    const lanPortsNoVni = lan?.filter(lanPort => !lanPort.vni)
 
     if (isUseWifiRbacApi || isEthernetPortProfileEnabled) {
       const payload: WifiApSetting = {
         ...apLanPorts,
-        lanPorts: lan,
+        lanPorts: lanPortsNoVni,
         ...(poeOut && isObject(poeOut) &&
             { poeOut: Object.values(poeOut).some(item => item === true) }),
         useVenueSettings
