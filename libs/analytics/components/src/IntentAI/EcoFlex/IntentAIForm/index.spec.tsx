@@ -125,75 +125,54 @@ describe('IntentAIForm', () => {
     }
   })
 
-  describe('handle schedule intent', () => {
-    it('renders form step 1 (Introduction) correctly', () => {
-      const { params } = mockIntentContextWith({ status: Statuses.new, sliceId: 'id1' })
-      const { container } = render(<IntentAIForm />, { route: { params }, wrapper: Provider })
-      expect(container).toMatchSnapshot()
+  it('handle schedule intent', async () => {
+    jest
+      .spyOn(require('@acx-ui/components'), 'DatePicker')
+      .mockImplementation(() => <input defaultValue='08/09/2024' placeholder='Select date' />)
+    const { params } = mockIntentContextWith({
+      status: Statuses.new,
+      sliceId: 'id1',
+      metadata: {
+        preferences: {
+          enabled: true,
+          excludedAPs: [[{ name: 'name', type: 'zone' }]],
+          excludedHours: []
+        },
+        scheduledAt: '2024-08-09T04:30:00.000Z'
+      } as Intent['metadata']
     })
-    it('renders form step 2 (Intent Priority) correctly', async () => {
-      const { params } = mockIntentContextWith({ status: Statuses.new, sliceId: 'id1' })
-      const { container } = render(<IntentAIForm />, { route: { params }, wrapper: Provider })
-      const form = within(await screen.findByTestId('steps-form'))
-      const actions = within(form.getByTestId('steps-form-actions'))
-      await click(actions.getByRole('button', { name: 'Next' }))
-      expect(container).toMatchSnapshot()
-    })
-    it('renders form step 3 (Settings) correctly', async () => {
-      const { params } = mockIntentContextWith({ status: Statuses.new, sliceId: 'id1' })
-      const { container } = render(<IntentAIForm />, { route: { params }, wrapper: Provider })
-      const form = within(await screen.findByTestId('steps-form'))
-      const actions = within(form.getByTestId('steps-form-actions'))
-      await click(actions.getByRole('button', { name: 'Next' }))
-      await click(actions.getByRole('button', { name: 'Next' }))
-      expect(container).toMatchSnapshot()
-    })
+    const { container } = render(<IntentAIForm />, { route: { params }, wrapper: Provider })
+    const form = within(await screen.findByTestId('steps-form'))
+    const actions = within(form.getByTestId('steps-form-actions'))
 
-    it('renders form step 4 (Summary) correctly', async () => {
-      jest
-        .spyOn(require('@acx-ui/components'), 'DatePicker')
-        .mockImplementation(() => <input defaultValue='08/09/2024' placeholder='Select date' />)
+    expect(container).toMatchSnapshot('step 1')
 
-      const { params } = mockIntentContextWith({
-        status: Statuses.new,
-        sliceId: 'id1',
-        metadata: {
-          preferences: {
-            enabled: true,
-            excludedAPs: [[{ name: 'name', type: 'zone' }]],
-            excludedHours: []
-          },
-          scheduledAt: '2024-08-09T04:30:00.000Z'
-        } as Intent['metadata']
-      })
-      const { container } = render(<IntentAIForm />, { route: { params }, wrapper: Provider })
-      const form = within(await screen.findByTestId('steps-form'))
-      const actions = within(form.getByTestId('steps-form-actions'))
+    await click(actions.getByRole('button', { name: 'Next' }))
+    expect(container).toMatchSnapshot('step 2')
 
-      await click(actions.getByRole('button', { name: 'Next' }))
-      await click(actions.getByRole('button', { name: 'Next' }))
-      await click(actions.getByRole('button', { name: 'Next' }))
+    await click(actions.getByRole('button', { name: 'Next' }))
+    expect(container).toMatchSnapshot('step 3')
 
-      expect(await screen.findByText('Hours not applied for EcoFlex')).toBeVisible()
-      expect(
-        await screen.findByText(
-          /PowerSave will not be triggered during specific hours set in the Settings/
-        )
-      ).toBeVisible()
-      expect(
-        await screen.findByText(
-          /PowerSave will not be triggered for the specific APs set in the Settings./
-        )
-      ).toBeVisible()
+    await click(actions.getByRole('button', { name: 'Next' }))
 
-      expect(await screen.findByText('Projected energy reduction')).toBeVisible()
+    expect(await screen.findByText('Hours not applied for EcoFlex')).toBeVisible()
+    expect(
+      await screen.findByText(
+        /PowerSave will not be triggered during specific hours set in the Settings/
+      )
+    ).toBeVisible()
+    expect(
+      await screen.findByText(
+        /PowerSave will not be triggered for the specific APs set in the Settings./
+      )
+    ).toBeVisible()
+    expect(await screen.findByText('Projected energy reduction')).toBeVisible()
 
-      await click(actions.getByRole('button', { name: 'Apply' }))
+    await click(actions.getByRole('button', { name: 'Apply' }))
 
-      await click(await screen.findByText(/View/))
-      expect(mockNavigate).toBeCalled()
-      expect(container).toMatchSnapshot('completed')
-    })
+    await click(await screen.findByText(/View/))
+    expect(mockNavigate).toBeCalled()
+    expect(container).toMatchSnapshot('completed')
   })
 
   it('handle pause intent', async () => {

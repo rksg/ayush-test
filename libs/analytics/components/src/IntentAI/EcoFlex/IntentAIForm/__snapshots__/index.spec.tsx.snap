@@ -1,6 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`IntentAIForm handle schedule intent renders form step 1 (Introduction) correctly 1`] = `
+exports[`IntentAIForm handle schedule intent: completed 1`] = `
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div />
+`;
+
+exports[`IntentAIForm handle schedule intent: step 1 1`] = `
 .c12 {
   display: -webkit-inline-box;
   display: -webkit-inline-flex;
@@ -969,7 +977,7 @@ h5.c7.ant-typography {
 </div>
 `;
 
-exports[`IntentAIForm handle schedule intent renders form step 2 (Intent Priority) correctly 1`] = `
+exports[`IntentAIForm handle schedule intent: step 2 1`] = `
 .c15 {
   display: -webkit-inline-box;
   display: -webkit-inline-flex;
@@ -1988,8 +1996,8 @@ h5.c5.ant-typography {
 </div>
 `;
 
-exports[`IntentAIForm handle schedule intent renders form step 3 (Settings) correctly 1`] = `
-.c10 {
+exports[`IntentAIForm handle schedule intent: step 3 1`] = `
+.c9 {
   display: -webkit-inline-box;
   display: -webkit-inline-flex;
   display: -ms-inline-flexbox;
@@ -2006,193 +2014,78 @@ exports[`IntentAIForm handle schedule intent renders form step 3 (Settings) corr
   gap: 8px;
 }
 
-.c10 svg {
+.c9 svg {
   width: 16px;
   height: 16px;
 }
 
-.c10 svg:before {
+.c9 svg:before {
   content: 'a';
 }
 
-.c10 svg path {
+.c9 svg path {
   color: var(--acx-primary-black);
 }
 
-.c10.ant-btn-link svg path {
+.c9.ant-btn-link svg path {
   color: var(--acx-accents-blue-50);
 }
 
-.c10.ant-btn-link:hover {
+.c9.ant-btn-link:hover {
   color: var(--acx-accents-blue-60);
 }
 
-.c10.ant-btn-link:hover svg path {
+.c9.ant-btn-link:hover svg path {
   color: var(--acx-accents-blue-60);
 }
 
-.c10.ant-btn-primary svg path {
+.c9.ant-btn-primary svg path {
   color: var(--acx-primary-white) !important;
 }
 
-.c10[disabled] svg path,
-.c10.ant-btn-disabled svg path {
+.c9[disabled] svg path,
+.c9.ant-btn-disabled svg path {
   color: var(--acx-primary-white);
 }
 
-.c10[disabled].ant-btn-link svg path,
-.c10.ant-btn-disabled.ant-btn-link svg path,
-.c10[disabled].ant-btn-default svg path,
-.c10.ant-btn-disabled.ant-btn-default svg path,
-.c10[disabled].ant-btn-primary svg path,
-.c10.ant-btn-disabled.ant-btn-primary svg path {
+.c9[disabled].ant-btn-link svg path,
+.c9.ant-btn-disabled.ant-btn-link svg path,
+.c9[disabled].ant-btn-default svg path,
+.c9.ant-btn-disabled.ant-btn-default svg path,
+.c9[disabled].ant-btn-primary svg path,
+.c9.ant-btn-disabled.ant-btn-primary svg path {
   color: var(--acx-neutrals-40);
 }
 
-.c5 .ant-picker-input .ant-picker-clear span[role=img] svg {
-  display: none;
-}
-
-.c5 .ant-picker-input .ant-picker-clear span[role=img]::after {
-  content: '';
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  background-size: 12px 12px;
-  background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20class%3D%22NestedListSingle__CloseIcon-sc-1yefg1u-0%20lilJnS%22%3E%3Cpath%20d%3D%22M14.0625%203.9375L3.9375%2014.0625%22%20stroke%3D%22%23333333%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3Cpath%20d%3D%22M14.0625%2014.0625L3.9375%203.9375%22%20stroke%3D%22%23333333%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
-  background-repeat: no-repeat;
-  background-position: 50% 50%;
-  background-color: white;
-  margin-right: -4px;
-}
-
-.c5 .ant-picker-dropdown {
-  font-size: var(--acx-body-4-font-size);
-  padding: 10px 0;
-}
-
-.c5 .ant-picker-dropdown .ant-picker-panel {
-  border: none;
-}
-
-.c5 .ant-picker-dropdown .ant-picker-panel-container {
-  border-radius: 4px;
-  background: var(--acx-primary-white);
-  box-shadow: 0px 6px 16px rgba(51,51,51,0.2);
-  padding-left: var(--acx-date-picker-ranges-width);
-}
-
-.c5 .ant-picker-dropdown .ant-picker-panel .ant-picker-header {
-  -webkit-align-items: baseline;
-  -webkit-box-align: baseline;
-  -ms-flex-align: baseline;
-  align-items: baseline;
-  border-bottom: none;
-}
-
-.c5 .ant-picker-dropdown .ant-picker-panel .ant-picker-header .ant-picker-header-view {
-  font-family: var(--acx-accent-brand-font);
-  font-size: var(--acx-headline-5-font-size);
-  font-weight: var(--acx-headline-5-font-weight-semi-bold);
-  color: var(--acx-neutrals-70);
-}
-
-.c5 .ant-picker-dropdown .ant-picker-panel .ant-picker-header .ant-picker-header-view button:hover {
-  color: inherit;
-  cursor: default;
-}
-
-.c5 .ant-picker-dropdown .ant-picker-panel .ant-picker-body th {
-  font-size: var(--acx-subtitle-6-font-size);
-  font-weight: var(--acx-subtitle-6-font-weight-bold);
-  color: var(--acx-neutrals-60);
-}
-
-.c5 .ant-picker-dropdown .ant-picker-panel .ant-picker-body td {
-  font-size: var(--acx-subtitle-5-font-size);
-  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
-}
-
-.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner,
-.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start .ant-picker-cell-inner,
-.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end .ant-picker-cell-inner {
-  color: var(--acx-primary-white);
-  background: var(--acx-accents-blue-50);
-  border-radius: 20px;
-}
-
-.c5 .ant-picker-dropdown .ant-picker-cell-in-view. ant-picker-cell-range-hover .ant-picker-cell-inner::before,
-.c5 .ant-picker-dropdown .ant-picker-cell-in-view. ant-picker-cell-range-hover-start .ant-picker-cell-inner::before,
-.c5 .ant-picker-dropdown .ant-picker-cell-in-view. ant-picker-cell-range-hover-end .ant-picker-cell-inner::before {
-  background: var(--acx-accents-blue-10);
-}
-
-.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover::before,
-.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start.ant-picker-cell-range-hover::before,
-.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end.ant-picker-cell-range-hover::before,
-.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single).ant-picker-cell-range-hover-start::before,.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single).ant-picker-cell-range-hover-end::before,
-.c5 .ant-picker-dropdown .ant-picker-panel > :not(.ant-picker-date-panel) .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start::before,.c5 .ant-picker-dropdown .ant-picker-panel > :not(.ant-picker-date-panel) .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end::before,
-.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-in-range::before,
-.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single)::before,.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single)::before {
-  background: var(--acx-accents-blue-10);
-}
-
-.c5 .ant-picker-dropdown .ant-picker-date-panel .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start .ant-picker-cell-inner::after,
-.c5 .ant-picker-dropdown .ant-picker-date-panel .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end .ant-picker-cell-inner::after {
-  background: var(--acx-accents-blue-10);
-}
-
-.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
-  border-color: var(--acx-accents-blue-50);
-}
-
-.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-hover:not(.ant-picker-cell-in-range)::after,.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-hover-start:not(.ant-picker-cell-in-range)::after,
-.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-hover-end:not(.ant-picker-cell-in-range)::after {
-  border-color: var(--acx-accents-blue-50);
-}
-
-.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single):not(.ant-picker-cell-range-end) .ant-picker-cell-inner,.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single):not(.ant-picker-cell-range-start) .ant-picker-cell-inner {
-  border-radius: 20px;
-}
-
-.c5 .ant-picker-dropdown .ant-picker-cell:hover .ant-picker-cell-inner,
-.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
-  border-radius: 20px;
-}
-
-.c5 .ant-picker-dropdown .ant-picker-footer {
-  display: none;
-}
-
-h1.c6.ant-typography {
+h1.c5.ant-typography {
   line-height: var(--acx-subtitle-1-line-height);
   font-size: var(--acx-subtitle-1-font-size);
   font-family: var(--acx-neutral-brand-font);
   font-weight: var(--acx-subtitle-1-font-weight);
 }
 
-h2.c6.ant-typography {
+h2.c5.ant-typography {
   line-height: var(--acx-subtitle-2-line-height);
   font-size: var(--acx-subtitle-2-font-size);
   font-family: var(--acx-neutral-brand-font);
   font-weight: var(--acx-subtitle-2-font-weight);
 }
 
-h3.c6.ant-typography {
+h3.c5.ant-typography {
   line-height: var(--acx-subtitle-3-line-height);
   font-size: var(--acx-subtitle-3-font-size);
   font-family: var(--acx-neutral-brand-font);
   font-weight: var(--acx-subtitle-3-font-weight);
 }
 
-h4.c6.ant-typography {
+h4.c5.ant-typography {
   line-height: var(--acx-subtitle-4-line-height);
   font-size: var(--acx-subtitle-4-font-size);
   font-family: var(--acx-neutral-brand-font);
   font-weight: var(--acx-subtitle-4-font-weight);
 }
 
-h5.c6.ant-typography {
+h5.c5.ant-typography {
   line-height: var(--acx-subtitle-5-line-height);
   font-size: var(--acx-subtitle-5-font-size);
   font-family: var(--acx-neutral-brand-font);
@@ -2303,7 +2196,7 @@ h5.c6.ant-typography {
   background-color: var(--acx-steps-form-steps-step-color);
 }
 
-.c9 {
+.c8 {
   position: fixed;
   width: calc( 100% - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
   min-width: calc( 1280px - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
@@ -2313,14 +2206,14 @@ h5.c6.ant-typography {
   z-index: 5;
 }
 
-.c9::before {
+.c8::before {
   content: '';
   position: absolute;
   inset: 0 -100% 0 -100%;
   background-color: var(--acx-neutrals-10);
 }
 
-.c9 .ant-space-item .ant-space {
+.c8 .ant-space-item .ant-space {
   position: absolute;
   left: 50%;
   bottom: var(--acx-steps-form-actions-vertical-space);
@@ -2350,12 +2243,12 @@ h5.c6.ant-typography {
   height: 16px;
 }
 
-.c8.ant-typography {
+.c7.ant-typography {
   margin-top: 20px;
   margin-bottom: 12px;
 }
 
-.c3 + .c7.ant-typography {
+.c3 + .c6.ant-typography {
   margin-top: 4px;
 }
 
@@ -2771,75 +2664,10 @@ h5.c6.ant-typography {
                       <div
                         class="ant-form-item-control-input-content"
                       >
-                        <div
-                          class="c5"
-                        >
-                          <div
-                            class="ant-picker"
-                            style="width: 100%;"
-                          >
-                            <div
-                              class="ant-picker-input"
-                            >
-                              <input
-                                autocomplete="off"
-                                id="settings_date"
-                                placeholder="Select date"
-                                readonly=""
-                                size="12"
-                                title=""
-                                value=""
-                              />
-                              <span
-                                class="ant-picker-suffix"
-                              >
-                                <span
-                                  aria-label="calendar"
-                                  class="anticon anticon-calendar"
-                                  role="img"
-                                >
-                                  <svg
-                                    aria-hidden="true"
-                                    data-icon="calendar"
-                                    fill="currentColor"
-                                    focusable="false"
-                                    height="1em"
-                                    viewBox="64 64 896 896"
-                                    width="1em"
-                                  >
-                                    <path
-                                      d="M880 184H712v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H384v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H144c-17.7 0-32 14.3-32 32v664c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V216c0-17.7-14.3-32-32-32zm-40 656H184V460h656v380zM184 392V256h128v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h256v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h128v136H184z"
-                                    />
-                                  </svg>
-                                </span>
-                              </span>
-                              <span
-                                class="ant-picker-clear"
-                                role="button"
-                              >
-                                <span
-                                  aria-label="close-circle"
-                                  class="anticon anticon-close-circle"
-                                  role="img"
-                                >
-                                  <svg
-                                    aria-hidden="true"
-                                    data-icon="close-circle"
-                                    fill="currentColor"
-                                    focusable="false"
-                                    height="1em"
-                                    viewBox="64 64 896 896"
-                                    width="1em"
-                                  >
-                                    <path
-                                      d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm165.4 618.2l-66-.3L512 563.4l-99.3 118.4-66.1.3c-4.4 0-8-3.5-8-8 0-1.9.7-3.7 1.9-5.2l130.1-155L340.5 359a8.32 8.32 0 01-1.9-5.2c0-4.4 3.6-8 8-8l66.1.3L512 464.6l99.3-118.4 66-.3c4.4 0 8 3.5 8 8 0 1.9-.7 3.7-1.9 5.2L553.5 514l130 155c1.2 1.5 1.9 3.3 1.9 5.2 0 4.4-3.6 8-8 8z"
-                                    />
-                                  </svg>
-                                </span>
-                              </span>
-                            </div>
-                          </div>
-                        </div>
+                        <input
+                          placeholder="Select date"
+                          value="08/09/2024"
+                        />
                       </div>
                     </div>
                   </div>
@@ -2877,487 +2705,406 @@ h5.c6.ant-typography {
                         >
                           <option />
                           <option
-                            disabled=""
                             value="0"
                           >
                             00:00 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="0.25"
                           >
                             00:15 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="0.5"
                           >
                             00:30 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="0.75"
                           >
                             00:45 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="1"
                           >
                             01:00 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="1.25"
                           >
                             01:15 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="1.5"
                           >
                             01:30 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="1.75"
                           >
                             01:45 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="2"
                           >
                             02:00 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="2.25"
                           >
                             02:15 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="2.5"
                           >
                             02:30 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="2.75"
                           >
                             02:45 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="3"
                           >
                             03:00 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="3.25"
                           >
                             03:15 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="3.5"
                           >
                             03:30 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="3.75"
                           >
                             03:45 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="4"
                           >
                             04:00 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="4.25"
                           >
                             04:15 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="4.5"
                           >
                             04:30 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="4.75"
                           >
                             04:45 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="5"
                           >
                             05:00 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="5.25"
                           >
                             05:15 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="5.5"
                           >
                             05:30 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="5.75"
                           >
                             05:45 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="6"
                           >
                             06:00 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="6.25"
                           >
                             06:15 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="6.5"
                           >
                             06:30 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="6.75"
                           >
                             06:45 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="7"
                           >
                             07:00 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="7.25"
                           >
                             07:15 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="7.5"
                           >
                             07:30 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="7.75"
                           >
                             07:45 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="8"
                           >
                             08:00 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="8.25"
                           >
                             08:15 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="8.5"
                           >
                             08:30 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="8.75"
                           >
                             08:45 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="9"
                           >
                             09:00 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="9.25"
                           >
                             09:15 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="9.5"
                           >
                             09:30 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="9.75"
                           >
                             09:45 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="10"
                           >
                             10:00 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="10.25"
                           >
                             10:15 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="10.5"
                           >
                             10:30 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="10.75"
                           >
                             10:45 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="11"
                           >
                             11:00 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="11.25"
                           >
                             11:15 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="11.5"
                           >
                             11:30 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="11.75"
                           >
                             11:45 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="12"
                           >
                             12:00 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="12.25"
                           >
                             12:15 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="12.5"
                           >
                             12:30 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="12.75"
                           >
                             12:45 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="13"
                           >
                             13:00 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="13.25"
                           >
                             13:15 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="13.5"
                           >
                             13:30 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="13.75"
                           >
                             13:45 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="14"
                           >
                             14:00 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="14.25"
                           >
                             14:15 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="14.5"
                           >
                             14:30 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="14.75"
                           >
                             14:45 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="15"
                           >
                             15:00 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="15.25"
                           >
                             15:15 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="15.5"
                           >
                             15:30 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="15.75"
                           >
                             15:45 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="16"
                           >
                             16:00 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="16.25"
                           >
                             16:15 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="16.5"
                           >
                             16:30 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="16.75"
                           >
                             16:45 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="17"
                           >
                             17:00 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="17.25"
                           >
                             17:15 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="17.5"
                           >
                             17:30 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="17.75"
                           >
                             17:45 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="18"
                           >
                             18:00 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="18.25"
                           >
                             18:15 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="18.5"
                           >
                             18:30 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="18.75"
                           >
                             18:45 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="19"
                           >
                             19:00 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="19.25"
                           >
                             19:15 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="19.5"
                           >
                             19:30 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="19.75"
                           >
                             19:45 (UTC+08)
                           </option>
                           <option
-                            disabled=""
                             value="20"
                           >
                             20:00 (UTC+08)
@@ -3444,7 +3191,7 @@ h5.c6.ant-typography {
                 </div>
               </div>
               <h4
-                class="ant-typography c6 c7 c8"
+                class="ant-typography c5 c6 c7"
               >
                 Optional
               </h4>
@@ -3471,12 +3218,13 @@ h5.c6.ant-typography {
                         class="ant-form-item-control-input-content"
                       >
                         <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
+                          class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item"
                         >
                           <span
-                            class="ant-checkbox"
+                            class="ant-checkbox ant-checkbox-checked"
                           >
                             <input
+                              checked=""
                               class="ant-checkbox-input"
                               id="preferences_enableExcludedHours"
                               type="checkbox"
@@ -3511,12 +3259,13 @@ h5.c6.ant-typography {
                         class="ant-form-item-control-input-content"
                       >
                         <label
-                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
+                          class="ant-checkbox-wrapper ant-checkbox-wrapper-checked ant-checkbox-wrapper-in-form-item"
                         >
                           <span
-                            class="ant-checkbox"
+                            class="ant-checkbox ant-checkbox-checked"
                           >
                             <input
+                              checked=""
                               class="ant-checkbox-input"
                               id="preferences_enableExcludedAPs"
                               type="checkbox"
@@ -3540,7 +3289,7 @@ h5.c6.ant-typography {
         </div>
       </div>
       <div
-        class="c9"
+        class="c8"
         data-testid="steps-form-actions"
       >
         <div
@@ -3551,7 +3300,7 @@ h5.c6.ant-typography {
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-default c10"
+              class="ant-btn ant-btn-default c9"
               type="button"
             >
               <span>
@@ -3570,7 +3319,7 @@ h5.c6.ant-typography {
                 style="margin-right: 12px;"
               >
                 <button
-                  class="ant-btn ant-btn-default c10"
+                  class="ant-btn ant-btn-default c9"
                   type="button"
                   value="pre"
                 >
@@ -3584,7 +3333,7 @@ h5.c6.ant-typography {
               >
                 <button
                   ant-click-animating-without-extra-node="true"
-                  class="ant-btn ant-btn-primary c10"
+                  class="ant-btn ant-btn-primary c9"
                   type="button"
                   value="next"
                 >
@@ -3600,12 +3349,4 @@ h5.c6.ant-typography {
     </form>
   </section>
 </div>
-`;
-
-exports[`IntentAIForm handle schedule intent renders form step 4 (Summary) correctly: completed 1`] = `
-@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
-
-}
-
-<div />
 `;
