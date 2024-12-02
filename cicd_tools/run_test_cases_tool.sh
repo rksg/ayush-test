@@ -1,6 +1,6 @@
 #!/bin/bash
 
-RUN_COMMAND="node ./node_modules/.bin/nx"
+RUN_COMMAND="CICD_BUILD=true node ./node_modules/.bin/nx"
 NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail --memoryLimit=4096"
 
 if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then
