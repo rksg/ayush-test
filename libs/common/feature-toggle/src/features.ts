@@ -227,7 +227,9 @@ export enum Features {
   ACX_UI_GATEWAYS_MENU_OPTION_TOGGLE = 'acx-ui-gateways-menu-option-toggle',
   BTM_EVENTS_TOGGLE = 'acx-ui-btm-events-toggle',
   RUCKUS_AI_BTM_EVENTS_TOGGLE = 'ruckus-ai-btm-events-toggle',
-  MLISA_4_11_0_TOGGLE = 'acx-ui-mlisa-4-11-0-toggle'
+  MLISA_4_11_0_TOGGLE = 'acx-ui-mlisa-4-11-0-toggle',
+  RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE = 'ruckus-ai-intent-ai-config-change-toggle',
+  INTENT_AI_CONFIG_CHANGE_TOGGLE = 'acx-ui-intent-ai-config-change-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
