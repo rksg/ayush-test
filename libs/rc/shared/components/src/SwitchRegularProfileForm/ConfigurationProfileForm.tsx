@@ -435,7 +435,7 @@ export function ConfigurationProfileForm () {
             <AclSetting />
           </StepsForm.StepForm>
 
-          {true &&
+          {(isSwitchPortProfileToggle || true) &&
           <StepsForm.StepForm
             title={$t({ defaultMessage: 'Port Profile' })}
             onFinish={updateCurrentData}

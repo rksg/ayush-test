@@ -1,8 +1,11 @@
 import { useContext, useEffect, useState } from 'react'
 
 import { Row, Col, Form } from 'antd'
+import { useParams }      from 'react-router-dom'
 
 import { showActionModal, StepsFormLegacy, Table, TableProps } from '@acx-ui/components'
+import { useIsSplitOn, Features }                              from '@acx-ui/feature-toggle'
+import { useSwitchPortProfilesListQuery }                      from '@acx-ui/rc/services'
 import {
   PortProfileUI,
   defaultSort,
@@ -17,23 +20,63 @@ import PortProfileContext       from './PortProfileContext'
 import { PortProfileModal }     from './PortProfileModal'
 import { portProfilesUIParser } from './PortProfileModal.utils'
 
+const payload = {
+  fields: [
+    'id'
+  ],
+  page: 1,
+  pageSize: 10000,
+  sortField: 'id',
+  sortOrder: 'ASC'
+}
+
+type PortProfileMap = {
+  [key: string]: string
+}
+
 export function PortProfileSetting () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
+  const { tenantId } = useParams()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const { currentData } = useContext(ConfigurationProfileFormContext)
   const [ editMode, setEditMode ] = useState(false)
   const [ portModalVisible, setPortModalVisible ] = useState(false)
   const [ portProfilesTable, setPortProfilesTable ] = useState<PortProfileUI[]>([])
   const [ portProfileSettingValues, setPortProfileSettingValues ] = useState<PortProfileUI>()
+  const [ portProfileMap, setPortProfileMap ] = useState<PortProfileMap>({})
+  const [ selectedRowKeys, setSelectedRowKeys ] = useState([])
+
+  const { data: portProfilesList } = useSwitchPortProfilesListQuery({
+    params: { tenantId },
+    payload,
+    enableRbac: isSwitchRbacEnabled
+  })
 
   useEffect(() => {
     if(currentData.portProfiles){
       form.setFieldValue('portProfiles', currentData.portProfiles)
       setPortProfilesTable(portProfilesUIParser(currentData.portProfiles))
     }
-  }, [currentData])
+
+    if(portProfilesList){
+      const portProfileMap: PortProfileMap = {}
+
+      portProfilesList.data.forEach(profile => {
+        if(profile.id){
+          portProfileMap[profile.id] = profile.name
+        }
+      })
+
+      setPortProfileMap(portProfileMap)
+    }
+  }, [currentData, portProfilesList])
 
   const portProfileColumns: TableProps<PortProfileUI>['columns']= [{
+    dataIndex: 'id',
+    key: 'id',
+    show: false
+  },{
     title: $t({ defaultMessage: 'Model' }),
     dataIndex: 'models',
     key: 'models',
@@ -46,16 +89,20 @@ export function PortProfileSetting () {
     title: $t({ defaultMessage: 'Profile Name' }),
     dataIndex: 'portProfileId',
     key: 'portProfileId',
-    sorter: { compare: sortProp('portProfileId', defaultSort) }
+    sorter: { compare: sortProp('portProfileId', defaultSort) },
+    render: (_, { portProfileId }) => {
+      return portProfileId.map(id => portProfileMap[id]).join(', ')
+    }
   }]
 
   const rowActions: TableProps<PortProfileUI>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
-      onClick: (selectedRows) => {
+      onClick: (selectedRows, clearSelection) => {
         setEditMode(true)
         setPortProfileSettingValues(selectedRows[0])
         setPortModalVisible(true)
+        clearSelection()
       }
     },
     {
@@ -85,7 +132,21 @@ export function PortProfileSetting () {
     setPortModalVisible(false)
   }
 
-  const onSave = () => {
+  const onSave = (data: PortProfileUI) => {
+    const proceedData = data
+    if(data.portProfileId === undefined){
+      proceedData.portProfileId = portProfileSettingValues?.portProfileId ?? []
+    }
+
+    const result = portProfileSettingValues?.id ? portProfilesTable.filter(item => {
+      return item.id !== portProfileSettingValues?.id
+    }) : portProfilesTable.filter(item => {
+      return JSON.stringify(item.models) !== JSON.stringify(proceedData.models)
+    })
+
+    setPortProfilesTable([...result, proceedData])
+    setSelectedRowKeys([])
+    setPortModalVisible(false)
   }
 
   return (
@@ -94,19 +155,21 @@ export function PortProfileSetting () {
         <Col span={20}>
           <StepsFormLegacy.Title children={$t({ defaultMessage: 'Port Profile' })} />
           <Table
-            rowKey='name'
+            rowKey='models'
             rowActions={filterByAccess(rowActions)}
             columns={portProfileColumns}
             dataSource={portProfilesTable}
             actions={filterByAccess([{
               label: $t({ defaultMessage: 'Add Port Profile' }),
               onClick: () => {
+                setSelectedRowKeys([])
                 setEditMode(false)
+                setPortProfileSettingValues({} as PortProfileUI)
                 setPortModalVisible(true)
               }
             }])}
             rowSelection={hasPermission() && {
-              type: 'radio'
+              type: 'radio', selectedRowKeys
             }}
           />
         </Col>

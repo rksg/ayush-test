@@ -1,12 +1,27 @@
 
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Row, Col, Form } from 'antd'
 
-import { Card, Select } from '@acx-ui/components'
-import { getIntl }      from '@acx-ui/utils'
+import { Card, Select }                   from '@acx-ui/components'
+import { useIsSplitOn, Features }         from '@acx-ui/feature-toggle'
+import { useSwitchPortProfilesListQuery } from '@acx-ui/rc/services'
+import { useParams }                      from '@acx-ui/react-router-dom'
+import { getIntl }                        from '@acx-ui/utils'
 
 import PortProfileContext from './PortProfileContext'
+import { ModelsType }     from './SelectModelStep'
+
+
+const payload = {
+  fields: [
+    'id'
+  ],
+  page: 1,
+  pageSize: 10000,
+  sortField: 'id',
+  sortOrder: 'ASC'
+}
 
 export interface PortsType {
   label: string,
@@ -15,11 +30,35 @@ export interface PortsType {
 
 export function PortProfileStep () {
   const { $t } = getIntl()
+  const { tenantId } = useParams()
+  const form = Form.useFormInstance()
   const { portProfileSettingValues } = useContext(PortProfileContext)
-  // const [selected, setSelected] = useState<string[]>([])
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const [portProfiles, setPortProfiles] = useState<ModelsType[]>([])
+
+  const { data } = useSwitchPortProfilesListQuery({
+    params: { tenantId },
+    payload,
+    enableRbac: isSwitchRbacEnabled
+  })
+
 
   useEffect(() => {
-  }, [portProfileSettingValues])
+    if(data){
+      if (data?.data) {
+        setPortProfiles(
+          data.data
+            .map((item) => ({
+              label: item.name,
+              value: item.id
+            })) as ModelsType[]
+        )
+        if (portProfileSettingValues) {
+          form.setFieldValue('portProfileId', portProfileSettingValues.portProfileId)
+        }
+      }
+    }
+  }, [data, portProfileSettingValues])
 
   return (
     <div style={{ minHeight: '380px' }}>
@@ -36,7 +75,7 @@ export function PortProfileStep () {
                   {$t({ defaultMessage: 'Select the port profile(s) to assign to the model(s):' })}
                 </label>
                 <Form.Item
-                  name={'portProfilesIds'}
+                  name={'portProfileId'}
                   label={<label>{$t({ defaultMessage: 'Port Profile' })}</label>}
                   rules={[{
                     required: true,
@@ -47,11 +86,7 @@ export function PortProfileStep () {
                     <Select
                       mode='multiple'
                       showArrow
-                      options={[
-                        { label: 'Port-profile-1', value: 'Port-profile-1' },
-                        { label: 'Port-profile-2', value: 'Port-profile-2' },
-                        { label: 'Port-profile-3', value: 'Port-profile-3' }
-                      ]}
+                      options={portProfiles}
                       style={{ width: '400px' }}
                     />}
                 />

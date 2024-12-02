@@ -61,7 +61,8 @@ import {
   TroubleshootingResponse,
   FlexibleAuthentication,
   FlexibleAuthenticationAppliedTargets,
-  FeatureSetResponse
+  FeatureSetResponse,
+  SwitchPortProfiles
 } from '@acx-ui/rc/utils'
 import { baseSwitchApi }  from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
@@ -1475,7 +1476,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     getSwitchConfigProfile: build.query<ConfigurationProfile, RequestPayload>({
       query: ({ params, payload, enableRbac, enableSwitchLevelCliProfile }) => {
-        const headers = true
+        const headers = enableSwitchLevelCliProfile || true
           ? customHeaders.v1002 : (enableRbac ? customHeaders.v1001 : {})
 
         const switchUrls = getSwitchUrls(enableRbac)
@@ -1745,6 +1746,17 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'DETAIL' }]
+    }),
+    switchPortProfilesList: build.query<TableResult<SwitchPortProfiles>, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getSwitchPortProfilesList, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
     })
   })
 })
@@ -2011,5 +2023,6 @@ export const {
   useUpdateFlexAuthenticationProfileMutation,
   useDeleteFlexAuthenticationProfileMutation,
   useGetSwitchAuthenticationQuery,
-  useUpdateSwitchAuthenticationMutation
+  useUpdateSwitchAuthenticationMutation,
+  useSwitchPortProfilesListQuery
 } = switchApi

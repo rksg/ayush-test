@@ -4,7 +4,8 @@ import { Form, Typography } from 'antd'
 import { useIntl }          from 'react-intl'
 
 import { Modal, ModalType, StepsForm } from '@acx-ui/components'
-import { SwitchModelPortData }         from '@acx-ui/rc/utils'
+import { PortProfileUI }               from '@acx-ui/rc/utils'
+
 
 import { PortProfileStep } from './PortProfileStep'
 import { SelectModelStep } from './SelectModelStep'
@@ -12,7 +13,7 @@ import { SelectModelStep } from './SelectModelStep'
 export function PortProfileModal (props: {
   visible: boolean,
   editMode: boolean,
-  onSave:(values: SwitchModelPortData)=>void,
+  onSave:(values: PortProfileUI)=>void,
   onCancel?: ()=>void
 }) {
   const { $t } = useIntl()
@@ -26,7 +27,7 @@ export function PortProfileModal (props: {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSaveModel = async (data: any) => {
-    if(data.model && data.model.length > 0){
+    if(data.models && data.models.length > 0){
       setNoModelMsg(false)
       return true
     }
@@ -35,14 +36,8 @@ export function PortProfileModal (props: {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onFinish = async (data: any) => {
-    const switchFamilyModelsData = {
-      ...data.switchFamilyModels,
-      title: '',
-      vlanConfigName: ''
-    }
-    switchFamilyModelsData.model = data.family + '-' + data.model
-    onSave(switchFamilyModelsData)
+  const onFinish = async (data: PortProfileUI) => {
+    onSave(data)
   }
 
   return (

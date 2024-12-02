@@ -839,6 +839,7 @@ export interface SwitchModelPortData {
   slots: SwitchSlot2[]
   taggedPorts: string[]
   untaggedPorts: string[]
+  portProfiles?: PortProfileAPI[]
 }
 
 export interface CliTemplateExample {
@@ -985,4 +986,45 @@ export interface FlexibleAuthenticationAppliedTargets {
   switchName?: string
   ports: string[]
   switchModel: string
+}
+
+export interface LldpTlvs {
+  id?: string
+  systemName: string
+  systemDescription?: string
+  nameMatchingType: string
+  descMatchingType?: string
+  portProfiles?: string[]
+}
+
+export interface MacOuis {
+  id?: string
+  oui: string
+  note?: string
+  portProfiles?: string[]
+}
+
+export interface SwitchPortProfiles {
+  id?: string
+  name: string
+  type: string
+  taggedVlans?: string[]
+  untaggedVlan?: number
+  poeEnable: boolean
+  poeClass: string
+  poePriority: number
+  portSpeed: string
+  ingressAcl?: string
+  egressAcl?: string
+  portProtected: boolean
+  rstpAdminEdgePort: boolean
+  stpBpduGuard: boolean
+  stpRootGuard: boolean
+  dhcpSnoopingTrust: boolean
+  ipsg: boolean
+  dot1x: boolean
+  macAuth: boolean
+  lldpTlvs?: LldpTlvs[]
+  macOuis?: MacOuis[]
+  regularProfiles: string[]
 }

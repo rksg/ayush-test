@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext, useRef } from 'react'
 
 import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox } from 'antd'
 import { CheckboxChangeEvent }                                           from 'antd/lib/checkbox'
@@ -33,8 +33,8 @@ export function SelectModelStep () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
   const { portProfileSettingValues } = useContext(PortProfileContext)
-  const [ families, setFamilies ] = useState<ModelsType[]>([])
-  const [ models, setModels ] = useState<ModelsType[]>([])
+  const familiesRef = useRef<ModelsType[]>([])
+  const modelsRef = useRef<ModelsType[]>([])
   const [ modelFilterMap, setModelFilterMap ] = useState<ModelBoolMap>({})
   const [ familyCheckboxes, setFamilyCheckboxes ] = useState<ModelBoolMap>({})
   const [ indeterminateMap, setIndeterminateMap ] = useState<ModelBoolMap>({})
@@ -96,13 +96,14 @@ export function SelectModelStep () {
       const familiesData = modules.map(key => {
         return { label: `ICX-${key.split('ICX')[1]}`, value: key }
       })
-      setFamilies(familiesData)
-      setModels(generateModelList())
-    }
+      const modelsList = generateModelList()
+      familiesRef.current = familiesData
+      modelsRef.current = modelsList
 
-    if(ICX_MODELS_MODULES && portProfileSettingValues && families){
-      form.setFieldValue('models', portProfileSettingValues.models)
-      onModelCheckboxGroupChange(portProfileSettingValues.models)
+      if(portProfileSettingValues){
+        form.setFieldValue('models', portProfileSettingValues.models)
+        onModelCheckboxGroupChange(portProfileSettingValues.models)
+      }
     }
   }, [ICX_MODELS_MODULES, portProfileSettingValues])
 
@@ -135,7 +136,7 @@ export function SelectModelStep () {
     if(e.target.checked){
       const modelsVal = [
         ...(currentModels || []),
-        ...models.filter((model) => {
+        ...modelsRef.current.filter((model) => {
           const family = model.value.split('-')[0]
           return family === selectedFamily
         }).map((model) => model.value)]
@@ -157,7 +158,7 @@ export function SelectModelStep () {
   }
 
   const onModelCheckboxGroupChange = (modelsGroupValues: string[]) => {
-    const familiesModelsMap = families.map((familyVal) => {
+    const familiesModelsMap = familiesRef.current.map((familyVal) => {
       const modelsList = modelsGroupValues?.filter((value) => {
         const family = (value as string).split('-')?.[0]
         return family === familyVal.value
@@ -166,7 +167,7 @@ export function SelectModelStep () {
     })
     familiesModelsMap.map((family) => {
       if(family.models?.length > 0){
-        const modelListLength = models.filter(
+        const modelListLength = modelsRef.current.filter(
           (model) => model.value.includes(family.family.value)).length
         if(family.models?.length < modelListLength){
           toggleIndeterminateMap(family.family.value, true)
@@ -193,7 +194,7 @@ export function SelectModelStep () {
               required={true}
               children={<Radio.Group onChange={onFamilyChange}
               >
-                {families.map(({ label, value }) => (
+                {familiesRef.current.map(({ label, value }) => (
                   <Radio key={value} value={value}>
                     <Row gutter={20}>
                       <Col span={5}>
@@ -229,7 +230,7 @@ export function SelectModelStep () {
               children={<Checkbox.Group
                 onChange={(checkedValues) => {
                   onModelCheckboxGroupChange(checkedValues as string[])}}>
-                {models.map(({ label, value }) => (
+                {modelsRef.current.map(({ label, value }) => (
                   <Checkbox
                     key={value}
                     value={value}

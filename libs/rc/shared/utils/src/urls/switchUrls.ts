@@ -676,5 +676,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/switchFeatureSets/query',
     newApi: true
+  },
+  getSwitchPortProfilesList: {
+    method: 'post',
+    url: '/switchPortProfiles/portProfiles/query',
+    newApi: true
   }
 }

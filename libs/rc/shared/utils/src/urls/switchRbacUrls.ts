@@ -464,5 +464,10 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/venues/:venueId/switches/:switchId/rearDetails?unitid=:unitId',
     newApi: true
+  },
+  getSwitchPortProfilesList: {
+    method: 'post',
+    url: '/switchPortProfiles/portProfiles/query',
+    newApi: true
   }
 }
