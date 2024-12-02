@@ -53,7 +53,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
 
 .chat {
   position: fixed;
-  width: 45%;
+  width: 350px;
   top: 60px;
   z-index: 2;
   .header {
@@ -84,18 +84,16 @@ border-top: 75px solid rgba(255,255,255, 0.4);
     background-image: url(${RuckusAiBackground});
     background-repeat: no-repeat;
     height: calc(100vh - 120px);
-    width: 45%;
+    width: 350px;
     position: fixed;
     top: 120px;
     overflow: auto;
-    display: flex;
     .widgets {
       width: 300px;
       border-left: 1px solid #E5E5E5;
       height: calc(100vh - 120px);
     }
     .chatroom {
-      width: calc(100% - 300px);
       height: calc(100vh - 270px);
       overflow: auto;
       position: relative;
@@ -160,12 +158,12 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         background-color: var(--acx-primary-white);
         height: 150px;
         position: fixed;
-        bottom: 0;
-        width: calc(45% - 300px);
+        bottom: 0;    
+        width: 350px;
         padding: 10px;
         button {
           position: fixed;
-          left: calc(45% - 350px);
+          left: 300px;
           bottom: 10px;
         }
       }
@@ -175,10 +173,10 @@ border-top: 75px solid rgba(255,255,255, 0.4);
 
 .canvas {
   position: fixed;
-  width: 55%;
+  width: calc(100vw - 350px);
   top: 60px;
   z-index: 2;
-  left: 45%;
+  left: 350px;
   .header {
     border: 1px solid #E5E5E5;
     background-color: var(--acx-primary-white);

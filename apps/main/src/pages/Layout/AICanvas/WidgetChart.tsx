@@ -65,8 +65,8 @@ const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
   // }
   return (
     <div>
-        <div style={{ marginTop: '15px', height: '170px' }}>
-        <Loader states={[queryResults]}>
+        <div style={{ margin: '7px', height: '165px', width: '200px' }}>
+        <Loader states={[{isLoading: queryResults.isLoading}]}>
           <Card key={data.id} title="Title">
           <AutoSizer>
           {({ height, width }) => (

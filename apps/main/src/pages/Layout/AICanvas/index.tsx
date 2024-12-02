@@ -109,7 +109,12 @@ export default function AICanvas (
           {chat.text}
         </div>
       </div>
-      { chat.role === 'AI' && chat.widgets?.length && <div className='show-widgets'>Show widgets</div> }
+      { chat.role === 'AI' && chat.widgets?.length && <WidgetChart data={{
+          chartType: chat.widgets[0].chartType,
+          sessionId,
+          id: chat.id
+        }} /> }
+
     </div>
   }
 
@@ -156,13 +161,6 @@ export default function AICanvas (
               />
               <Button icon={<SendMessageOutlined />} onClick={()=> { handleSearch() }} />
             </div>
-          </div>
-          <div className='widgets' style={{ padding: '15px' }}>
-            {
-              widgets.map(item => (
-                <WidgetChart data={item} />
-              ))
-            }
           </div>
         </div>
       </div>
