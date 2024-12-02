@@ -22,8 +22,6 @@ describe('AupSettings', () => {
   })
 
   afterEach(() => mockServer.resetHandlers())
-
-
   afterAll(() => mockServer.close())
 
   it('should render the form with default values', async () => {
@@ -101,7 +99,7 @@ describe('AupSettings', () => {
 
   })
 
-  it('should render the from the aupAction config in edit mode with policy text', async () => {
+  it('should render the aupAction config in edit mode with policy text', async () => {
     const { result: formRef } = renderHook(() => {
       const [form] = Form.useForm<AupActionContext>()
       form.setFieldsValue({
@@ -148,8 +146,7 @@ describe('AupSettings', () => {
 
   })
 
-
-  it.skip('should validate user input length', async () => {
+  it('should validate user input length', async () => {
     const { result: formRef } = renderHook(() => {
       const [form] = Form.useForm()
       return form
@@ -186,8 +183,6 @@ describe('AupSettings', () => {
       '##########Longer Than 1000 Characters ###################################################' +
       '###########################')
 
-    formRef.current.submit()
-
     expect(await screen.findByText('Title must be up to 100 characters')).toBeVisible()
     expect(await screen.findByText('Message must be up to 1000 characters')).toBeVisible()
 
@@ -222,7 +217,35 @@ describe('AupSettings', () => {
     expect(await screen.findByText('Message')).toBeVisible()
   })
 
-  it.skip('should validate no leading or trailing whitespace allowed', async () => {
+  it('should validate bodyInput, no leading or trailing whitespace allowed', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(
+      <Provider>
+        <Form form={formRef.current}>
+          <AupSettings />
+        </Form>
+      </Provider>
+    )
+
+    const pageTitleInput = await screen.findByRole('textbox', { name: /Title/ })
+    expect(pageTitleInput).toHaveValue('')
+
+    const pageBodyInput = await screen.findByRole('textbox', { name: /Message/ })
+    expect(pageBodyInput).toHaveValue('')
+
+    const generatedName = formRef.current.getFieldValue('name')
+    expect(generatedName.split('-')[0]).toBe(ActionType.AUP)
+
+    await userEvent.type(pageBodyInput, '  ')
+
+    expect(await screen.findByText('No leading or trailing spaces allowed')).toBeVisible()
+  })
+
+  it('should validate pageTitle, no leading or trailing whitespace allowed', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       return form
@@ -246,15 +269,6 @@ describe('AupSettings', () => {
     expect(generatedName.split('-')[0]).toBe(ActionType.AUP)
 
     await userEvent.type(pageTitleInput, '  ')
-
-    formRef.current.submit()
-
-    expect(await screen.findByText('No leading or trailing spaces allowed')).toBeVisible()
-
-    await userEvent.type(pageTitleInput, 'a real value')
-    await userEvent.type(pageBodyInput, '  ')
-
-    formRef.current.submit()
 
     expect(await screen.findByText('No leading or trailing spaces allowed')).toBeVisible()
   })

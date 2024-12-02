@@ -194,7 +194,7 @@ describe('DataPromptSettings', () => {
     expect(await screen.findByText('No leading or trailing spaces allowed')).toBeVisible()
   })
 
-  it.skip('should validate values that are too long', async () => {
+  it('should validate values that are too long', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       form.setFieldValue('displayTitle', true)
@@ -232,11 +232,8 @@ describe('DataPromptSettings', () => {
       + '##########Longer Than 1000 Characters ###################################################'
       + '###########################')
 
-    formRef.current.submit()
-
     expect(await screen.findByText('title must be up to 100 characters')).toBeVisible()
     expect(await screen.findByText('messageHtml must be up to 1000 characters')).toBeVisible()
-
   })
 
 })
