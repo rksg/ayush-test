@@ -1,0 +1,115 @@
+import { useMemo } from 'react'
+
+import { get }             from 'lodash'
+import { MessageDescriptor,
+  defineMessage, useIntl }          from 'react-intl'
+
+import { defaultSort, sortProp } from '@acx-ui/analytics/utils'
+import {  Card, Loader, Table,
+  TableProps, Tooltip }         from '@acx-ui/components'
+import { noDataDisplay } from '@acx-ui/utils'
+
+import switchImg     from '../../../../../assets/switch.png'
+import { DetailsContainer,
+  Image, Statistic }                from '../SwitchDetail/styledComponents'
+import { ChartProps } from '../types'
+
+import { useImpactedSwitchQuery,
+  ImpactedSwitchPort }          from './services'
+
+
+/**
+ * Displays details of the switch where the incident occurred.
+ * @param {{ incident: Incident }} props
+ * @returns {JSX.Element}
+ */
+export function SwitchDetail ({ incident }: ChartProps) {
+  const { $t } = useIntl()
+
+  const impactedSwitch = useImpactedSwitchQuery({ id: incident.id,
+    n: 100, search: '' })
+  const fields: {
+    key: string
+    title: MessageDescriptor
+    Component?: ({ value }: { value: number }) => JSX.Element
+    valueFormatter?: (value: number) => string
+    infoFormatter?: (value: string) => string
+  }[] = [
+    { key: 'name', title: defineMessage({ defaultMessage: 'Switch Name' }) },
+    { key: 'model', title: defineMessage({ defaultMessage: 'Switch Model' }) },
+    { key: 'mac', title: defineMessage({ defaultMessage: 'Switch Mac' }) },
+    { key: 'firmware', title: defineMessage({ defaultMessage: 'Switch Firmware Version' }) }
+  ]
+
+  const data = {
+    ...impactedSwitch.data
+  }
+
+  return <Loader states={[impactedSwitch]}>
+    <Card title={$t({ defaultMessage: 'Details' })} type='no-border'>
+      <DetailsContainer>
+        <Image src={switchImg} alt={$t({ defaultMessage: 'switch image' })} />
+        {fields.map(({ key, title, Component, valueFormatter, infoFormatter })=>{
+          const { value, info = undefined } = get(data, `${key}.value`)
+            ? get(data, key) : { value: get(data, key) }
+          return <Statistic
+            key={key}
+            title={<>{$t(title)}{info && <Tooltip.Info title={infoFormatter?.(info)}/>}</>}
+            prefix={Component && <Component value={value} />}
+            value={Component
+              ? undefined
+              : impactedSwitch.data
+                ? valueFormatter ? valueFormatter(value) : value
+                : noDataDisplay
+            }
+          />
+        })}
+      </DetailsContainer>
+    </Card>
+  </Loader>
+}
+
+export function ImpactedSwitchPortConjestionTable ({ incident }: ChartProps) {
+  const { $t } = useIntl()
+
+  const impactedSwitch = useImpactedSwitchQuery({ id: incident.id, n: 100, search: '' })
+
+  return <Loader states={[impactedSwitch]}>
+    <Card title={$t({ defaultMessage: 'Port details with congestion' })} type='no-border'>
+      <ImpactedSwitchTable data={impactedSwitch.data?.ports!} />
+    </Card>
+  </Loader>
+}
+
+function ImpactedSwitchTable (props: {
+    data: ImpactedSwitchPort[]
+  }) {
+  const { $t } = useIntl()
+  const rows = props.data
+
+  const columns: TableProps<ImpactedSwitchPort>['columns'] = useMemo(()=>[ {
+    key: 'portNumber',
+    dataIndex: 'portNumber',
+    title: $t({ defaultMessage: 'Port with congestion' }),
+    fixed: 'left',
+    width: 100,
+    sorter: { compare: sortProp('portNumber', defaultSort) },
+    searchable: true
+  }, {
+    key: 'connectedDevice.name',
+    dataIndex: 'connectedDevice.name',
+    title: $t({ defaultMessage: 'Peer Device' }),
+    fixed: 'left',
+    width: 80,
+    sorter: { compare: sortProp('connectedDevice.name', defaultSort) },
+    searchable: true
+  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  ],[])
+
+  return <Table
+    columns={columns}
+    dataSource={rows}
+    pagination={{ defaultPageSize: 5, pageSize: 5 }}
+  />
+}
