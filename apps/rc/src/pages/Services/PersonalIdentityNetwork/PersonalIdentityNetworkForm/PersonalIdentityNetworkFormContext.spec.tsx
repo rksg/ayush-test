@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 
-import { clone, cloneDeep } from 'lodash'
-import { rest }             from 'msw'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
 import { commonApi, edgeApi, edgeSdLanApi, pinApi, serviceApi } from '@acx-ui/rc/services'
 import {
@@ -57,7 +57,6 @@ const pinTunnelData = {
 // make cluster[0] and cluster[1] have the same venue
 const mockEdgeClusterList = cloneDeep(EdgeGeneralFixtures.mockEdgeClusterList)
 mockEdgeClusterList.data[1].venueId = mockEdgeClusterList.data[0].venueId
-
 
 const services = require('@acx-ui/rc/services')
 
@@ -215,7 +214,7 @@ describe('PersonalIdentityNetworkFormContext', () => {
   })
 
   it('should filter venue already bound with SD-LAN', async () => {
-    const edgeList = clone(mockEdgeClusterList)
+    const edgeList = cloneDeep(mockEdgeClusterList)
     edgeList.data[1].venueId = mockVenueOptionsForMutuallyExclusive.data[1].id
     mockServer.use(
       rest.post(
