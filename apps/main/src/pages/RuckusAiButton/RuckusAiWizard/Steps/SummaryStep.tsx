@@ -109,7 +109,7 @@ export function SummaryStep (props: {
               }}>
               {$t({ defaultMessage: 'Edit' })}
             </Button>
-           <Form.Item
+            <Form.Item
               label={
                 <UI.SummaryContainerHeader>
                   {$t({ defaultMessage: 'Switch Configuration' })}
@@ -133,9 +133,9 @@ export function SummaryStep (props: {
                     </UI.SummaryLi>
                   })}
               </UI.SummaryUl>
-              : $t({ defaultMessage: 'Skip the settings' })}
-            /> 
-           
+                : $t({ defaultMessage: 'Skip the settings' })}
+            />
+
           </UI.SummaryContainer>
           }
         </UI.SummaryBox>

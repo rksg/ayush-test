@@ -84,6 +84,13 @@ export function WlanStep ( props: {
     const newCheckboxStates = [...checkboxStates]
     newCheckboxStates[index] = checked
     setCheckboxStates(newCheckboxStates)
+    formInstance?.validateFields()
+    if (!checked) {
+      formInstance?.setFields([{
+        name: ['data', index, 'SSID Name'],
+        errors: []
+      }])
+    }
   }
 
   const tooltipItems = [
