@@ -16,6 +16,7 @@ import { validateVlanExcludingReserved, Vlan } from '@acx-ui/rc/utils'
 
 import { checkHasRegenerated } from './steps.utils'
 import * as UI                 from './styledComponents'
+import { stubFalse } from 'lodash'
 
 
 type NetworkConfig = {
@@ -70,16 +71,58 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
     }
   }, [props.payload])
 
+
+  const checkDuplicateUntaggedPorts = (vlanTable: Vlan[], index: number) => {
+    const currentSwitchFamilyModels = vlanTable.find(i => i.key === index)?.switchFamilyModels
+    if (!currentSwitchFamilyModels) return stubFalse
+
+  const otherVlanEntries = vlanTable.filter(i => i.key !== index)
+
+  let duplicateFound = false
+  otherVlanEntries.forEach(vlan => {
+    vlan.switchFamilyModels?.forEach(otherModel => {
+      currentSwitchFamilyModels.forEach(currentModel => {
+        const currentPorts = currentModel.untaggedPorts?.split(',').map(port => port.trim()) || []
+        const otherPorts = otherModel.untaggedPorts?.split(',').map(port => port.trim()) || []
+  
+        if (currentPorts.some(port => otherPorts.includes(port))) {
+          duplicateFound = true
+          return
+        }
+      })
+    })
+  })
+
+  return duplicateFound
+}
+
+  const handleDuplicateUntaggedPorts = (vlanTable: Vlan[], index: number) => {
+    if (checkDuplicateUntaggedPorts(vlanTable, index)) {
+      setVlanTable(vlanTable.filter(i => i.key !== index))
+    }
+    // setConfilctMessage()
+
+  }
+  
+
   const handleCheckboxChange = (index: number, checked: boolean) => {
     const newCheckboxStates = [...checkboxStates]
     newCheckboxStates[index] = checked
     setCheckboxStates(newCheckboxStates)
     if (checked) {
+      formInstance?.validateFields()
       setDisabledKeys(disabledKeys.filter(id => String(id) !== String(index)))
-      //TODO: Check vlan ID, select port is duplicated or not
+      handleDuplicateUntaggedPorts(vlanTable, index)
 
     } else {
       setDisabledKeys([...disabledKeys, String(index)])
+      formInstance?.setFields([{
+        name: ['data', index, 'VLAN ID'],
+        errors: []
+      }, {
+        name: ['data', index, 'VLAN Name'],
+        errors: []
+      }])
     }
 
   }
@@ -285,7 +328,8 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
                   { validator: (_, value) => validateVlanExcludingReserved(value) },
                   {
                     validator: (_, value) => {
-                      const isDuplicate = configVlanIds.some((id, i) => id === value && i !== index)
+                      const filteredVlanIds = configVlanIds.filter((_, i) => !disabledKeys.includes(i.toString()));
+                      const isDuplicate = filteredVlanIds.length !== new Set(filteredVlanIds).size;
                       if (isDuplicate) {
                         return Promise.reject($t({ defaultMessage: 'This VLAN ID is duplicated.' })
                         )
@@ -310,6 +354,7 @@ export function VlanStep (props: { payload: string, sessionId: string, descripti
                     })
                     setVlanTable(updatedVlanTable)
                     setConfigVlanIds(updateVlanIds)
+                    formInstance?.validateFields()
                   }
                 }}
               />
