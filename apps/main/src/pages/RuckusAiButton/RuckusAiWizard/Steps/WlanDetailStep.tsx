@@ -162,6 +162,12 @@ export function WlanDetailStep (props: {
     createType={modalType}
   />
 
+  const getModalActionText = () => {
+    const isEdit = configuredFlags.get(modalId)
+    return isEdit ? $t({ defaultMessage: 'Edit' }) :
+      $t({ defaultMessage: 'Add' })
+  }
+
   return (
     <UI.Container>
       <UI.Header>
@@ -282,7 +288,7 @@ export function WlanDetailStep (props: {
       {networkModalVisible &&
         <Modal
           // eslint-disable-next-line max-len
-          title={`${$t({ defaultMessage: 'Add' })} ${networkOptions.find(option => option.value === modalType)?.label}`}
+          title={`${getModalActionText()} ${networkOptions.find(option => option.value === modalType)?.label}`}
           type={ModalType.ModalStepsForm}
           visible={networkModalVisible}
           mask={true}
