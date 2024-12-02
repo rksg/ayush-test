@@ -133,12 +133,6 @@ export function useMenuConfig () {
       ]
     },
     {
-      uri: '/venues',
-      label: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
-      inactiveIcon: LocationOutlined,
-      activeIcon: LocationSolid
-    },
-    {
       label: $t({ defaultMessage: 'Clients' }),
       inactiveIcon: AccountCircleOutlined,
       activeIcon: AccountCircleSolid,
@@ -187,6 +181,12 @@ export function useMenuConfig () {
           ]
         }] : [])
       ]
+    },
+    {
+      uri: '/venues',
+      label: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
+      inactiveIcon: LocationOutlined,
+      activeIcon: LocationSolid
     },
     {
       label: $t({ defaultMessage: 'Wi-Fi' }),
