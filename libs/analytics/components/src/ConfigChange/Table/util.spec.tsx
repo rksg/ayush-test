@@ -80,7 +80,7 @@ describe('getEntityValue', () => {
 
   it('should return the input value if no mapping is found', () => {
     const type = 'wlan'
-    const key = 'initialState.CcmWlan.multi_link_operation.mlo_enabled'
+    const key = 'test-key'
     const value = 'test-value'
     expect(getEntityValue(type, key, value)).toEqual(value)
   })

@@ -238,7 +238,7 @@ describe('Table', () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
 
-    render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
       <Table
         selected={null}
         onRowClick={handleClick}
@@ -282,6 +282,16 @@ describe('CSV Functions', () => {
     newValues: ['7.1.1.0.126'],
     id: 114,
     filterId: 114
+  },
+  {
+    timestamp: '1732091234567',
+    type: 'apGroup',
+    name: 'test-name',
+    key: 'test-key',
+    oldValues: ['old'],
+    newValues: ['new'],
+    id: 100,
+    filterId: 100
   }]
   const columns: TableProps<ConfigChange>['columns'] = [
     {
@@ -356,7 +366,7 @@ describe('CSV Functions', () => {
     } as PathFilter)
     expect(global.Blob).toHaveBeenCalledWith(
       // eslint-disable-next-line max-len
-      ['"Timestamp","Entity Type","Entity Name","Configuration","Change From","Change To"\n"2024-11-27T04:51:23+00:00","AP","00:33:58:2B:97:30","Enable 6 GHz band","false","true"\n"2024-11-20T11:24:50+00:00","WLAN","##ML_AP-28651","Multi Link Operation (6 GHz)","false","true"\n"2024-11-20T09:32:04+00:00","Zone","SERVICE_VALIDATION_TEST_7.1.1","Firmware Update","7.1.1.0.116","7.1.1.0.126"\n'],
+      ['"Timestamp","Entity Type","Entity Name","Configuration","Change From","Change To"\n"2024-11-27T04:51:23+00:00","AP","00:33:58:2B:97:30","Enable 6 GHz band","false","true"\n"2024-11-20T11:24:50+00:00","WLAN","##ML_AP-28651","Multi Link Operation (6 GHz)","false","true"\n"2024-11-20T09:32:04+00:00","Zone","SERVICE_VALIDATION_TEST_7.1.1","Firmware Update","7.1.1.0.116","7.1.1.0.126"\n"2024-11-20T08:27:14+00:00","AP Group","test-name","test-key","old","new"\n'],
       { type: 'text/csv;charset=utf-8;' }
     )
   })
