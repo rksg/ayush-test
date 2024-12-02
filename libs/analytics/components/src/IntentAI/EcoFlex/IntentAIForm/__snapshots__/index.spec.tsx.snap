@@ -1,0 +1,3611 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`IntentAIForm handle schedule intent renders form step 1 (Introduction) correctly 1`] = `
+.c12 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c12 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c12 svg:before {
+  content: 'a';
+}
+
+.c12 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c12.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c12.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c12.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c12.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c12[disabled] svg path,
+.c12.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c12[disabled].ant-btn-link svg path,
+.c12.ant-btn-disabled.ant-btn-link svg path,
+.c12[disabled].ant-btn-default svg path,
+.c12.ant-btn-disabled.ant-btn-default svg path,
+.c12[disabled].ant-btn-primary svg path,
+.c12.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+.c5 {
+  padding: calc(var(--acx-descriptions-space) / 2) 0;
+}
+
+.c5 .ant-descriptions-row:last-child .ant-descriptions-item {
+  padding-bottom: 0;
+}
+
+.c5 .ant-descriptions-item {
+  padding: 0;
+  padding-bottom: calc(var(--acx-body-4-line-height) - var(--acx-body-4-font-size));
+}
+
+.c5 .ant-descriptions-item .ant-descriptions-item-label,
+.c5 .ant-descriptions-item .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c5 .ant-descriptions-item .ant-descriptions-item-label {
+  color: var(--acx-neutrals-60);
+}
+
+.c5 .ant-descriptions-item .ant-descriptions-item-label::after {
+  top: unset;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
+}
+
+.c5 .ant-descriptions-item .ant-descriptions-item-content {
+  color: var(--acx-primary-black);
+}
+
+.c5 .ant-descriptions-item .ant-descriptions-item-container {
+  -webkit-align-items: baseline;
+  -webkit-box-align: baseline;
+  -ms-flex-align: baseline;
+  align-items: baseline;
+}
+
+.c5 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label {
+  width: unset;
+}
+
+.c5 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-content {
+  display: unset;
+}
+
+h1.c7.ant-typography {
+  line-height: var(--acx-subtitle-1-line-height);
+  font-size: var(--acx-subtitle-1-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-1-font-weight);
+}
+
+h2.c7.ant-typography {
+  line-height: var(--acx-subtitle-2-line-height);
+  font-size: var(--acx-subtitle-2-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-2-font-weight);
+}
+
+h3.c7.ant-typography {
+  line-height: var(--acx-subtitle-3-line-height);
+  font-size: var(--acx-subtitle-3-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-3-font-weight);
+}
+
+h4.c7.ant-typography {
+  line-height: var(--acx-subtitle-4-line-height);
+  font-size: var(--acx-subtitle-4-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-4-font-weight);
+}
+
+h5.c7.ant-typography {
+  line-height: var(--acx-subtitle-5-line-height);
+  font-size: var(--acx-subtitle-5-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-5-font-weight);
+}
+
+.c1 {
+  --acx-steps-form-steps-title-color: var(--acx-primary-black);
+  --acx-steps-form-steps-title-font-size: var(--acx-body-4-font-size);
+  --acx-steps-form-steps-title-line-height: var(--acx-body-4-line-height);
+  --acx-steps-form-steps-active-title-font-weight: var(--acx-body-font-weight-bold);
+  --acx-steps-form-steps-step-size: 12px;
+  --acx-steps-form-steps-step-color: var(--acx-accents-orange-50);
+  --acx-steps-form-form-title-font-size: var(--acx-headline-3-font-size);
+  --acx-steps-form-form-title-font-weight: var(--acx-headline-3-font-weight);
+  --acx-steps-form-form-title-line-height: var(--acx-headline-3-line-height);
+  --acx-steps-form-form-title-margin-bottom: 16px;
+  padding-block-end: calc(var(--acx-steps-form-actions-vertical-space) * 2 + 32px);
+}
+
+.c1 .ant-pro-table .ant-pagination {
+  position: relative;
+  bottom: unset;
+  background-color: var(--acx-primary-white);
+}
+
+.c2 {
+  position: fixed;
+  width: calc(( (100% + 20px) - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 ) * 4 / 24 - 20px);
+  min-width: calc(( (1280px + 20px) - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 ) * 4 / 24 - 20px);
+  padding-top: calc( var(--acx-steps-form-form-title-line-height) + var(--acx-steps-form-form-title-margin-bottom) + 3px );
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-title {
+  padding: 0 0 var(--acx-steps-form-steps-title-line-height) 12px;
+  line-height: var(--acx-steps-form-steps-title-line-height);
+  font-size: var(--acx-steps-form-steps-title-font-size);
+}
+
+.c2.ant-steps-vertical .ant-steps-item.ant-steps-item-active .ant-steps-item-title {
+  font-weight: var(--acx-steps-form-steps-active-title-font-weight);
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-title,
+.c2.ant-steps-vertical .ant-steps-item.ant-steps-item-wait .ant-steps-item-title {
+  color: var(--acx-steps-form-steps-title-color);
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-container .ant-steps-item-tail {
+  top: 3px;
+  left: unset;
+  width: var(--acx-steps-form-steps-step-size);
+  padding: 11px 0 0;
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-container .ant-steps-item-tail::after {
+  margin: 0 auto;
+  display: block;
+  background-color: var(--acx-steps-form-steps-step-color);
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-container .ant-steps-item-content {
+  min-height: calc(var(--acx-body-4-line-height) * 2);
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-icon {
+  width: var(--acx-steps-form-steps-step-size);
+  height: var(--acx-steps-form-steps-step-size);
+  top: unset;
+  margin-top: 3px;
+  margin-right: 0px;
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-icon .ant-steps-icon-dot {
+  width: var(--acx-steps-form-steps-step-size);
+  height: var(--acx-steps-form-steps-step-size);
+  border: 1px solid var(--acx-steps-form-steps-step-color);
+  background-color: transparent;
+  top: unset;
+  left: unset;
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-icon .ant-steps-icon-dot::after {
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: transparent;
+  -webkit-transition-property: top,left,background-color;
+  transition-property: top,left,background-color;
+}
+
+.c2.ant-steps-vertical .ant-steps-item.ant-steps-item-active .ant-steps-item-icon .ant-steps-icon-dot {
+  top: unset;
+  left: unset;
+}
+
+.c2.ant-steps-vertical .ant-steps-item.ant-steps-item-active .ant-steps-item-icon .ant-steps-icon-dot::after {
+  width: 10px;
+  height: 10px;
+  background-color: var(--acx-steps-form-steps-step-color);
+}
+
+.c2.ant-steps-vertical .ant-steps-item.ant-steps-item-finish .ant-steps-item-container .ant-steps-item-icon .ant-steps-icon-dot::after {
+  top: 1px;
+  left: 1px;
+  background-color: var(--acx-steps-form-steps-step-color);
+}
+
+.c11 {
+  position: fixed;
+  width: calc( 100% - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
+  min-width: calc( 1280px - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
+  bottom: 0;
+  padding: var(--acx-steps-form-actions-vertical-space) 0;
+  background-color: var(--acx-neutrals-10);
+  z-index: 5;
+}
+
+.c11::before {
+  content: '';
+  position: absolute;
+  inset: 0 -100% 0 -100%;
+  background-color: var(--acx-neutrals-10);
+}
+
+.c11 .ant-space-item .ant-space {
+  position: absolute;
+  left: 50%;
+  bottom: var(--acx-steps-form-actions-vertical-space);
+  -webkit-transform: translate(-50%,0);
+  -ms-transform: translate(-50%,0);
+  transform: translate(-50%,0);
+}
+
+.c4 {
+  font-size: var(--acx-steps-form-form-title-font-size);
+  line-height: var(--acx-steps-form-form-title-line-height);
+  font-weight: var(--acx-steps-form-form-title-font-weight);
+  margin-bottom: var(--acx-steps-form-form-title-margin-bottom) !important;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.c4 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c9.ant-typography {
+  margin-top: 20px;
+  margin-bottom: 12px;
+}
+
+.c3 + .c8.ant-typography {
+  margin-top: 4px;
+}
+
+.c6,
+.c6 .ant-list {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c6 .ant-checkbox-wrapper-in-form-item {
+  color: var(--acx-neutrals-60);
+}
+
+.c6 .indent {
+  margin-left: 24px;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-align-content: flex-start;
+  -ms-flex-line-pack: start;
+  align-content: flex-start;
+}
+
+.c6 .greyText {
+  color: var(--acx-neutrals-50);
+}
+
+.c0 {
+  position: -webkit-sticky;
+  position: sticky;
+  top: calc( var(--acx-header-height) + var(--acx-content-vertical-space) + (var(--acx-cloudmessagebanner-height) * var(--acx-has-cloudmessagebanner)) );
+  z-index: 7;
+  background-color: var(--acx-primary-white);
+  padding: 0 var(--acx-content-horizontal-space);
+  margin: 0 calc(var(--acx-content-horizontal-space) * -1);
+}
+
+.c0 .ant-page-header {
+  padding: 0;
+  margin: 4px 0 var(--acx-content-vertical-space);
+}
+
+.c0 .ant-page-header-heading {
+  gap: 12px;
+}
+
+.c0 .ant-page-header-heading h1 {
+  margin-bottom: 0;
+}
+
+.c0 .ant-page-header-heading-left {
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  margin: 0;
+}
+
+.c0 .ant-page-header-heading-extra {
+  margin: 0;
+}
+
+.c0 .ant-page-header-heading-extra > .ant-space {
+  gap: 12px !important;
+}
+
+.c0 .ant-page-header-heading-title {
+  width: 100%;
+  -webkit-align-self: flex-start;
+  -ms-flex-item-align: start;
+  align-self: flex-start;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c0 .ant-page-header-content {
+  padding: 6px 0 0;
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c0 .ant-page-header-content .ant-divider-vertical {
+  background-color: var(--acx-primary-black);
+  margin: 0 0.5em;
+  height: 0.9em;
+}
+
+.c0 .ant-page-header .ant-breadcrumb {
+  line-height: 16px;
+}
+
+.c0 .ant-page-header .ant-breadcrumb a:hover {
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+.c0 .ant-page-header .ant-breadcrumb + .ant-page-header-heading {
+  margin-top: 3px;
+}
+
+.c0 .ant-page-header.has-footer {
+  margin-bottom: 0;
+}
+
+.c0 .ant-page-header.has-footer .ant-page-header-content {
+  padding-bottom: 2px;
+}
+
+.c0 .ant-page-header.has-footer .ant-page-header-footer {
+  margin-top: 8px;
+}
+
+.c10 {
+  position: relative;
+  min-height: calc( 100vh - 0px - var(--acx-steps-form-actions-vertical-space) * 2 - 32px - var(--acx-content-horizontal-space) );
+  border: 1px solid var(--acx-neutrals-25);
+  border-radius: 4px;
+  padding: 20px;
+}
+
+<div>
+  <div
+    class="c0"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/undefined/t/analytics/intentAI"
+              >
+                IntentAI
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <svg
+              data-testid="EcoFlexAI"
+              style="width: 32px; height: 32px;"
+            />
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              EcoFlex
+            </h1>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          <span>
+            Intent: Energy Footprint vs Mission Criticality
+            <div
+              class="ant-divider ant-divider-vertical"
+              role="separator"
+            />
+          </span>
+          <span>
+            Venue: My-Venue
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
+  <section
+    class="c1"
+    data-testid="steps-form"
+  >
+    <form
+      class="ant-form ant-form-vertical"
+      step="0"
+    >
+      <div
+        class="ant-row"
+        style="margin-left: -10px; margin-right: -10px;"
+      >
+        <div
+          class="ant-col ant-col-4"
+          data-testid="steps-form-steps"
+          style="padding-left: 10px; padding-right: 10px;"
+        >
+          <div
+            class="ant-steps ant-steps-vertical c2 ant-steps-dot"
+          >
+            <div
+              class="ant-steps-item ant-steps-item-process ant-steps-item-active"
+            >
+              <div
+                class="ant-steps-item-container"
+                role="button"
+                tabindex="0"
+              >
+                <div
+                  class="ant-steps-item-tail"
+                />
+                <div
+                  class="ant-steps-item-icon"
+                >
+                  <span
+                    class="ant-steps-icon"
+                  >
+                    <span
+                      class="ant-steps-icon-dot"
+                    />
+                  </span>
+                </div>
+                <div
+                  class="ant-steps-item-content"
+                >
+                  <div
+                    class="ant-steps-item-title"
+                  >
+                    Introduction
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-steps-item ant-steps-item-wait ant-steps-item-disabled"
+            >
+              <div
+                class="ant-steps-item-container"
+              >
+                <div
+                  class="ant-steps-item-tail"
+                />
+                <div
+                  class="ant-steps-item-icon"
+                >
+                  <span
+                    class="ant-steps-icon"
+                  >
+                    <span
+                      class="ant-steps-icon-dot"
+                    />
+                  </span>
+                </div>
+                <div
+                  class="ant-steps-item-content"
+                >
+                  <div
+                    class="ant-steps-item-title"
+                  >
+                    Intent Priority
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-steps-item ant-steps-item-wait ant-steps-item-disabled"
+            >
+              <div
+                class="ant-steps-item-container"
+              >
+                <div
+                  class="ant-steps-item-tail"
+                />
+                <div
+                  class="ant-steps-item-icon"
+                >
+                  <span
+                    class="ant-steps-icon"
+                  >
+                    <span
+                      class="ant-steps-icon-dot"
+                    />
+                  </span>
+                </div>
+                <div
+                  class="ant-steps-item-content"
+                >
+                  <div
+                    class="ant-steps-item-title"
+                  >
+                    Settings
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-steps-item ant-steps-item-wait ant-steps-item-disabled"
+            >
+              <div
+                class="ant-steps-item-container"
+              >
+                <div
+                  class="ant-steps-item-tail"
+                />
+                <div
+                  class="ant-steps-item-icon"
+                >
+                  <span
+                    class="ant-steps-icon"
+                  >
+                    <span
+                      class="ant-steps-icon-dot"
+                    />
+                  </span>
+                </div>
+                <div
+                  class="ant-steps-item-content"
+                >
+                  <div
+                    class="ant-steps-item-title"
+                  >
+                    Summary
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-20"
+          data-testid="steps-form-body"
+          style="padding-left: 10px; padding-right: 10px;"
+        >
+          <div
+            class="ant-row"
+            style="margin-left: -10px; margin-right: -10px;"
+          >
+            <div
+              class="ant-col ant-col-15"
+              style="padding-left: 10px; padding-right: 10px;"
+            >
+              <h3
+                class="ant-typography c3 c4"
+              >
+                Introduction
+              </h3>
+              <div
+                class="ant-descriptions c5"
+              >
+                <div
+                  class="ant-descriptions-view"
+                >
+                  <table>
+                    <tbody>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Intent
+                            </span>
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              Energy Footprint vs Mission Criticality
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Category
+                            </span>
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              Sustainability
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Venue
+                            </span>
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              My-Venue
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Status
+                            </span>
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              Unknown
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Last update
+                            </span>
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              06/14/2024 16:30
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div
+                class="c6"
+              >
+                <h4
+                  class="ant-typography c7 c8 c9"
+                >
+                  Network Intent plays a crucial role in wireless network design
+                </h4>
+                <div
+                  class="ant-typography"
+                >
+                  <b>
+                    Reduction in energy footprint
+                    :
+                  </b>
+                   
+                  <span>
+                    Enable PowerSave mode for few access points during off-peak hours to conserve energy. This approach may involve some compromises, but overall service quality remains unaffected during these periods.
+                  </span>
+                </div>
+                <div
+                  class="ant-typography"
+                >
+                  <b>
+                    Operation of the mission critical network
+                    :
+                  </b>
+                   
+                  <span>
+                    Maintain all access points at normal power continuously to ensure maximum reliability and performance for critical applications, guaranteeing uninterrupted, high-quality connectivity essential for mission-critical operations.
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-col ant-col-7 ant-col-offset-2"
+              style="padding-left: 10px; padding-right: 10px;"
+            >
+              <div
+                class="c10"
+              >
+                <h4
+                  class="ant-typography"
+                >
+                  Side Notes
+                </h4>
+                <div
+                  class="c6"
+                >
+                  <h4
+                    class="ant-typography c7 c8 c9"
+                  >
+                    Why is the recommendation?
+                  </h4>
+                  <div
+                    class="ant-typography"
+                  >
+                    <div
+                      class="ant-typography"
+                    >
+                      Implementing intelligent PowerSave modes for access points during off-peak hours conserves energy, reduces operational costs, extends the lifespan of hardware, and contributes to a greener environment. This approach achieves significant energy savings with minimum compromise on service quality.
+                    </div>
+                  </div>
+                  <h4
+                    class="ant-typography c7 c8 c9"
+                  >
+                    Resources
+                  </h4>
+                  <div
+                    class="ant-typography"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="c11"
+        data-testid="steps-form-actions"
+      >
+        <div
+          class="ant-space ant-space-horizontal ant-space-align-center "
+        >
+          <div
+            class="ant-space-item"
+            style="margin-right: 12px;"
+          >
+            <button
+              class="ant-btn ant-btn-default c12"
+              type="button"
+            >
+              <span>
+                Cancel
+              </span>
+            </button>
+          </div>
+          <div
+            class="ant-space-item"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            >
+              <div
+                class="ant-space-item"
+                style="margin-right: 12px;"
+              >
+                <button
+                  class="ant-btn ant-btn-default c12"
+                  hidden=""
+                  type="button"
+                  value="pre"
+                >
+                  <span>
+                    Back
+                  </span>
+                </button>
+              </div>
+              <div
+                class="ant-space-item"
+              >
+                <button
+                  class="ant-btn ant-btn-primary c12"
+                  type="button"
+                  value="next"
+                >
+                  <span>
+                    Next
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+</div>
+`;
+
+exports[`IntentAIForm handle schedule intent renders form step 2 (Intent Priority) correctly 1`] = `
+.c15 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c15 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c15 svg:before {
+  content: 'a';
+}
+
+.c15 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c15.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c15.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c15.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c15.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c15[disabled] svg path,
+.c15.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c15[disabled].ant-btn-link svg path,
+.c15.ant-btn-disabled.ant-btn-link svg path,
+.c15[disabled].ant-btn-default svg path,
+.c15.ant-btn-disabled.ant-btn-default svg path,
+.c15[disabled].ant-btn-primary svg path,
+.c15.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+h1.c5.ant-typography {
+  line-height: var(--acx-subtitle-1-line-height);
+  font-size: var(--acx-subtitle-1-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-1-font-weight);
+}
+
+h2.c5.ant-typography {
+  line-height: var(--acx-subtitle-2-line-height);
+  font-size: var(--acx-subtitle-2-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-2-font-weight);
+}
+
+h3.c5.ant-typography {
+  line-height: var(--acx-subtitle-3-line-height);
+  font-size: var(--acx-subtitle-3-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-3-font-weight);
+}
+
+h4.c5.ant-typography {
+  line-height: var(--acx-subtitle-4-line-height);
+  font-size: var(--acx-subtitle-4-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-4-font-weight);
+}
+
+h5.c5.ant-typography {
+  line-height: var(--acx-subtitle-5-line-height);
+  font-size: var(--acx-subtitle-5-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-5-font-weight);
+}
+
+.c1 {
+  --acx-steps-form-steps-title-color: var(--acx-primary-black);
+  --acx-steps-form-steps-title-font-size: var(--acx-body-4-font-size);
+  --acx-steps-form-steps-title-line-height: var(--acx-body-4-line-height);
+  --acx-steps-form-steps-active-title-font-weight: var(--acx-body-font-weight-bold);
+  --acx-steps-form-steps-step-size: 12px;
+  --acx-steps-form-steps-step-color: var(--acx-accents-orange-50);
+  --acx-steps-form-form-title-font-size: var(--acx-headline-3-font-size);
+  --acx-steps-form-form-title-font-weight: var(--acx-headline-3-font-weight);
+  --acx-steps-form-form-title-line-height: var(--acx-headline-3-line-height);
+  --acx-steps-form-form-title-margin-bottom: 16px;
+  padding-block-end: calc(var(--acx-steps-form-actions-vertical-space) * 2 + 32px);
+}
+
+.c1 .ant-pro-table .ant-pagination {
+  position: relative;
+  bottom: unset;
+  background-color: var(--acx-primary-white);
+}
+
+.c2 {
+  position: fixed;
+  width: calc(( (100% + 20px) - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 ) * 4 / 24 - 20px);
+  min-width: calc(( (1280px + 20px) - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 ) * 4 / 24 - 20px);
+  padding-top: calc( var(--acx-steps-form-form-title-line-height) + var(--acx-steps-form-form-title-margin-bottom) + 3px );
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-title {
+  padding: 0 0 var(--acx-steps-form-steps-title-line-height) 12px;
+  line-height: var(--acx-steps-form-steps-title-line-height);
+  font-size: var(--acx-steps-form-steps-title-font-size);
+}
+
+.c2.ant-steps-vertical .ant-steps-item.ant-steps-item-active .ant-steps-item-title {
+  font-weight: var(--acx-steps-form-steps-active-title-font-weight);
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-title,
+.c2.ant-steps-vertical .ant-steps-item.ant-steps-item-wait .ant-steps-item-title {
+  color: var(--acx-steps-form-steps-title-color);
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-container .ant-steps-item-tail {
+  top: 3px;
+  left: unset;
+  width: var(--acx-steps-form-steps-step-size);
+  padding: 11px 0 0;
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-container .ant-steps-item-tail::after {
+  margin: 0 auto;
+  display: block;
+  background-color: var(--acx-steps-form-steps-step-color);
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-container .ant-steps-item-content {
+  min-height: calc(var(--acx-body-4-line-height) * 2);
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-icon {
+  width: var(--acx-steps-form-steps-step-size);
+  height: var(--acx-steps-form-steps-step-size);
+  top: unset;
+  margin-top: 3px;
+  margin-right: 0px;
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-icon .ant-steps-icon-dot {
+  width: var(--acx-steps-form-steps-step-size);
+  height: var(--acx-steps-form-steps-step-size);
+  border: 1px solid var(--acx-steps-form-steps-step-color);
+  background-color: transparent;
+  top: unset;
+  left: unset;
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-icon .ant-steps-icon-dot::after {
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: transparent;
+  -webkit-transition-property: top,left,background-color;
+  transition-property: top,left,background-color;
+}
+
+.c2.ant-steps-vertical .ant-steps-item.ant-steps-item-active .ant-steps-item-icon .ant-steps-icon-dot {
+  top: unset;
+  left: unset;
+}
+
+.c2.ant-steps-vertical .ant-steps-item.ant-steps-item-active .ant-steps-item-icon .ant-steps-icon-dot::after {
+  width: 10px;
+  height: 10px;
+  background-color: var(--acx-steps-form-steps-step-color);
+}
+
+.c2.ant-steps-vertical .ant-steps-item.ant-steps-item-finish .ant-steps-item-container .ant-steps-item-icon .ant-steps-icon-dot::after {
+  top: 1px;
+  left: 1px;
+  background-color: var(--acx-steps-form-steps-step-color);
+}
+
+.c14 {
+  position: fixed;
+  width: calc( 100% - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
+  min-width: calc( 1280px - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
+  bottom: 0;
+  padding: var(--acx-steps-form-actions-vertical-space) 0;
+  background-color: var(--acx-neutrals-10);
+  z-index: 5;
+}
+
+.c14::before {
+  content: '';
+  position: absolute;
+  inset: 0 -100% 0 -100%;
+  background-color: var(--acx-neutrals-10);
+}
+
+.c14 .ant-space-item .ant-space {
+  position: absolute;
+  left: 50%;
+  bottom: var(--acx-steps-form-actions-vertical-space);
+  -webkit-transform: translate(-50%,0);
+  -ms-transform: translate(-50%,0);
+  transform: translate(-50%,0);
+}
+
+.c4 {
+  font-size: var(--acx-steps-form-form-title-font-size);
+  line-height: var(--acx-steps-form-form-title-line-height);
+  font-weight: var(--acx-steps-form-form-title-font-weight);
+  margin-bottom: var(--acx-steps-form-form-title-margin-bottom) !important;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.c4 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c7.ant-typography {
+  margin-top: 20px;
+  margin-bottom: 12px;
+}
+
+.c3 + .c6.ant-typography {
+  margin-top: 4px;
+}
+
+.c13,
+.c13 .ant-list {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c13 .ant-checkbox-wrapper-in-form-item {
+  color: var(--acx-neutrals-60);
+}
+
+.c13 .indent {
+  margin-left: 24px;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-align-content: flex-start;
+  -ms-flex-line-pack: start;
+  align-content: flex-start;
+}
+
+.c13 .greyText {
+  color: var(--acx-neutrals-50);
+}
+
+.c0 {
+  position: -webkit-sticky;
+  position: sticky;
+  top: calc( var(--acx-header-height) + var(--acx-content-vertical-space) + (var(--acx-cloudmessagebanner-height) * var(--acx-has-cloudmessagebanner)) );
+  z-index: 7;
+  background-color: var(--acx-primary-white);
+  padding: 0 var(--acx-content-horizontal-space);
+  margin: 0 calc(var(--acx-content-horizontal-space) * -1);
+}
+
+.c0 .ant-page-header {
+  padding: 0;
+  margin: 4px 0 var(--acx-content-vertical-space);
+}
+
+.c0 .ant-page-header-heading {
+  gap: 12px;
+}
+
+.c0 .ant-page-header-heading h1 {
+  margin-bottom: 0;
+}
+
+.c0 .ant-page-header-heading-left {
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  margin: 0;
+}
+
+.c0 .ant-page-header-heading-extra {
+  margin: 0;
+}
+
+.c0 .ant-page-header-heading-extra > .ant-space {
+  gap: 12px !important;
+}
+
+.c0 .ant-page-header-heading-title {
+  width: 100%;
+  -webkit-align-self: flex-start;
+  -ms-flex-item-align: start;
+  align-self: flex-start;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c0 .ant-page-header-content {
+  padding: 6px 0 0;
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c0 .ant-page-header-content .ant-divider-vertical {
+  background-color: var(--acx-primary-black);
+  margin: 0 0.5em;
+  height: 0.9em;
+}
+
+.c0 .ant-page-header .ant-breadcrumb {
+  line-height: 16px;
+}
+
+.c0 .ant-page-header .ant-breadcrumb a:hover {
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+.c0 .ant-page-header .ant-breadcrumb + .ant-page-header-heading {
+  margin-top: 3px;
+}
+
+.c0 .ant-page-header.has-footer {
+  margin-bottom: 0;
+}
+
+.c0 .ant-page-header.has-footer .ant-page-header-content {
+  padding-bottom: 2px;
+}
+
+.c0 .ant-page-header.has-footer .ant-page-header-footer {
+  margin-top: 8px;
+}
+
+.c12 {
+  position: relative;
+  min-height: calc( 100vh - 0px - var(--acx-steps-form-actions-vertical-space) * 2 - 32px - var(--acx-content-horizontal-space) );
+  border: 1px solid var(--acx-neutrals-25);
+  border-radius: 4px;
+  padding: 20px;
+}
+
+.c8 h2 {
+  font-size: var(--acx-body-1-font-size);
+  line-height: var(--acx-body-1-line-height);
+  font-weight: var(--acx-headline-3-font-weight);
+  color: var(--acx-primary-black);
+  margin-bottom: 20px;
+}
+
+.c8 .ant-form-item-label {
+  padding: 0px 0px 11px;
+}
+
+.c8 .ant-form-item-label > label {
+  color: var(--acx-primary-black);
+  line-height: var(--acx-body-3-line-height);
+  font-size: var(--acx-body-3-font-size);
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+.c9 {
+  margin: 50px 8px 9px;
+  font-size: var(--acx-subtitle-5-font-size);
+  line-height: var(--acx-subtitle-5-line-height);
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+.c10 {
+  padding: 0px 0px;
+  margin-top: 9px !important;
+  margin-bottom: 0px !important;
+  border-top: 1px solid var(--acx-neutrals-30);
+}
+
+.c11 {
+  padding: 11px;
+  -webkit-transition: background-color .2s linear;
+  transition: background-color .2s linear;
+  -webkit-transition: background-color .2s linear;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-2-line-height);
+  border: 1px solid transparent;
+}
+
+.c11.highlight {
+  background-color: var(--acx-accents-blue-10);
+  border-radius: 4px;
+  border: 1px solid var(--acx-accents-blue-50);
+}
+
+<div>
+  <div
+    class="c0"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/undefined/t/analytics/intentAI"
+              >
+                IntentAI
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <svg
+              data-testid="EcoFlexAI"
+              style="width: 32px; height: 32px;"
+            />
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              EcoFlex
+            </h1>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          <span>
+            Intent: Energy Footprint vs Mission Criticality
+            <div
+              class="ant-divider ant-divider-vertical"
+              role="separator"
+            />
+          </span>
+          <span>
+            Venue: My-Venue
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
+  <section
+    class="c1"
+    data-testid="steps-form"
+  >
+    <form
+      class="ant-form ant-form-vertical"
+      step="1"
+    >
+      <div
+        class="ant-row"
+        style="margin-left: -10px; margin-right: -10px;"
+      >
+        <div
+          class="ant-col ant-col-4"
+          data-testid="steps-form-steps"
+          style="padding-left: 10px; padding-right: 10px;"
+        >
+          <div
+            class="ant-steps ant-steps-vertical c2 ant-steps-dot"
+          >
+            <div
+              class="ant-steps-item ant-steps-item-finish"
+            >
+              <div
+                class="ant-steps-item-container"
+                role="button"
+                tabindex="0"
+              >
+                <div
+                  class="ant-steps-item-tail"
+                />
+                <div
+                  class="ant-steps-item-icon"
+                >
+                  <span
+                    class="ant-steps-icon"
+                  >
+                    <span
+                      class="ant-steps-icon-dot"
+                    />
+                  </span>
+                </div>
+                <div
+                  class="ant-steps-item-content"
+                >
+                  <div
+                    class="ant-steps-item-title"
+                  >
+                    Introduction
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-steps-item ant-steps-item-process ant-steps-item-active"
+            >
+              <div
+                class="ant-steps-item-container"
+                role="button"
+                tabindex="0"
+              >
+                <div
+                  class="ant-steps-item-tail"
+                />
+                <div
+                  class="ant-steps-item-icon"
+                >
+                  <span
+                    class="ant-steps-icon"
+                  >
+                    <span
+                      class="ant-steps-icon-dot"
+                    />
+                  </span>
+                </div>
+                <div
+                  class="ant-steps-item-content"
+                >
+                  <div
+                    class="ant-steps-item-title"
+                  >
+                    Intent Priority
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-steps-item ant-steps-item-wait ant-steps-item-disabled"
+            >
+              <div
+                class="ant-steps-item-container"
+              >
+                <div
+                  class="ant-steps-item-tail"
+                />
+                <div
+                  class="ant-steps-item-icon"
+                >
+                  <span
+                    class="ant-steps-icon"
+                  >
+                    <span
+                      class="ant-steps-icon-dot"
+                    />
+                  </span>
+                </div>
+                <div
+                  class="ant-steps-item-content"
+                >
+                  <div
+                    class="ant-steps-item-title"
+                  >
+                    Settings
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-steps-item ant-steps-item-wait ant-steps-item-disabled"
+            >
+              <div
+                class="ant-steps-item-container"
+              >
+                <div
+                  class="ant-steps-item-tail"
+                />
+                <div
+                  class="ant-steps-item-icon"
+                >
+                  <span
+                    class="ant-steps-icon"
+                  >
+                    <span
+                      class="ant-steps-icon-dot"
+                    />
+                  </span>
+                </div>
+                <div
+                  class="ant-steps-item-content"
+                >
+                  <div
+                    class="ant-steps-item-title"
+                  >
+                    Summary
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-20"
+          data-testid="steps-form-body"
+          style="padding-left: 10px; padding-right: 10px;"
+        >
+          <div
+            class="ant-row"
+            style="margin-left: -10px; margin-right: -10px;"
+          >
+            <div
+              class="ant-col ant-col-15"
+              style="padding-left: 10px; padding-right: 10px;"
+            >
+              <h3
+                class="ant-typography c3 c4"
+              >
+                Intent Priority
+              </h3>
+              <h4
+                class="ant-typography c5 c6 c7"
+              >
+                What is your primary network intent for Venue: My-Venue
+              </h4>
+              <div
+                class="ant-form-item"
+              >
+                <div
+                  class="ant-row ant-form-item-row"
+                >
+                  <div
+                    class="ant-col ant-form-item-control"
+                  >
+                    <div
+                      class="ant-form-item-control-input"
+                    >
+                      <div
+                        class="ant-form-item-control-input-content"
+                      >
+                        <div
+                          class="c8"
+                        >
+                          <div
+                            class="ant-radio-group ant-radio-group-outline"
+                          >
+                            <div
+                              class="ant-space ant-space-vertical"
+                            >
+                              <div
+                                class="ant-space-item"
+                                style="margin-bottom: 8px;"
+                              >
+                                <div>
+                                  <label
+                                    class="ant-radio-wrapper ant-radio-wrapper-checked ant-radio-wrapper-in-form-item"
+                                  >
+                                    <span
+                                      class="ant-radio ant-radio-checked"
+                                    >
+                                      <input
+                                        checked=""
+                                        class="ant-radio-input"
+                                        type="radio"
+                                        value="true"
+                                      />
+                                      <span
+                                        class="ant-radio-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      Reduction in energy footprint
+                                    </span>
+                                  </label>
+                                </div>
+                              </div>
+                              <div
+                                class="ant-space-item"
+                              >
+                                <div>
+                                  <label
+                                    class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
+                                  >
+                                    <span
+                                      class="ant-radio"
+                                    >
+                                      <input
+                                        class="ant-radio-input"
+                                        type="radio"
+                                        value="false"
+                                      />
+                                      <span
+                                        class="ant-radio-inner"
+                                      />
+                                    </span>
+                                    <span>
+                                      Operation of the mission critical network
+                                    </span>
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="ant-row c9"
+                          >
+                            <div
+                              class="ant-col ant-col-12"
+                            >
+                              <span>
+                                Intent Priority
+                              </span>
+                            </div>
+                            <div
+                              class="ant-col ant-col-12"
+                            >
+                              <span>
+                                IntentAI Scope
+                              </span>
+                            </div>
+                          </div>
+                          <div
+                            class="ant-divider ant-divider-horizontal c10"
+                            role="separator"
+                            style="border-color: transparent;"
+                          />
+                          <div
+                            class="ant-row c11 highlight"
+                          >
+                            <div
+                              class="ant-col ant-col-12"
+                            >
+                              Reduction in energy footprint
+                            </div>
+                            <div
+                              class="ant-col ant-col-12"
+                            >
+                              Leverage 
+                              <b>
+                                <i>
+                                  EcoFlexAI
+                                </i>
+                              </b>
+                              , available only through IntentAI for AI/ML based Energy Saving Model for the network. In this mode, based on the usage pattern PowerSave supported APs are switched to PowerSaving mode and resumed to normal power based on the increased network activity.
+                            </div>
+                          </div>
+                          <div
+                            class="ant-row c11"
+                          >
+                            <div
+                              class="ant-col ant-col-12"
+                            >
+                              Operation of the mission critical network
+                            </div>
+                            <div
+                              class="ant-col ant-col-12"
+                            >
+                              This option will let all the APs work in normal power mode
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-col ant-col-7 ant-col-offset-2"
+              style="padding-left: 10px; padding-right: 10px;"
+            >
+              <div
+                class="c12"
+              >
+                <h4
+                  class="ant-typography"
+                >
+                  Side Notes
+                </h4>
+                <div
+                  class="c13"
+                >
+                  <h4
+                    class="ant-typography c5 c6 c7"
+                  >
+                    Industry average power price per kWh
+                  </h4>
+                  <div
+                    class="ant-typography"
+                  >
+                    <div
+                      style="display: flex;"
+                    >
+                      <div
+                        class="ant-form-item"
+                        style="width: 60px;"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <input
+                                  class="ant-input ant-input-disabled"
+                                  disabled=""
+                                  id="averagePowerPrice_currency"
+                                  type="text"
+                                  value="USD"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="ant-form-item"
+                        style="margin-left: 5px;"
+                      >
+                        <div
+                          class="ant-row ant-form-item-row"
+                        >
+                          <div
+                            class="ant-col ant-form-item-control"
+                          >
+                            <div
+                              class="ant-form-item-control-input"
+                            >
+                              <div
+                                class="ant-form-item-control-input-content"
+                              >
+                                <input
+                                  class="ant-input ant-input-disabled"
+                                  disabled=""
+                                  id="averagePowerPrice_value"
+                                  type="text"
+                                  value="0.131"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <h4
+                    class="ant-typography c5 c6 c7"
+                  >
+                    Potential trade-off
+                  </h4>
+                  <div
+                    class="ant-typography"
+                  >
+                    <div
+                      class="ant-typography"
+                    >
+                      EcoFlex enabled network will operate in reduced capacity during off peak hours. During this time, Client may experience slower connectivity and less throughput.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="c14"
+        data-testid="steps-form-actions"
+      >
+        <div
+          class="ant-space ant-space-horizontal ant-space-align-center "
+        >
+          <div
+            class="ant-space-item"
+            style="margin-right: 12px;"
+          >
+            <button
+              class="ant-btn ant-btn-default c15"
+              type="button"
+            >
+              <span>
+                Cancel
+              </span>
+            </button>
+          </div>
+          <div
+            class="ant-space-item"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            >
+              <div
+                class="ant-space-item"
+                style="margin-right: 12px;"
+              >
+                <button
+                  class="ant-btn ant-btn-default c15"
+                  type="button"
+                  value="pre"
+                >
+                  <span>
+                    Back
+                  </span>
+                </button>
+              </div>
+              <div
+                class="ant-space-item"
+              >
+                <button
+                  ant-click-animating-without-extra-node="true"
+                  class="ant-btn ant-btn-primary c15"
+                  type="button"
+                  value="next"
+                >
+                  <span>
+                    Next
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+</div>
+`;
+
+exports[`IntentAIForm handle schedule intent renders form step 3 (Settings) correctly 1`] = `
+.c10 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c10 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c10 svg:before {
+  content: 'a';
+}
+
+.c10 svg path {
+  color: var(--acx-primary-black);
+}
+
+.c10.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c10.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c10.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
+}
+
+.c10.ant-btn-primary svg path {
+  color: var(--acx-primary-white) !important;
+}
+
+.c10[disabled] svg path,
+.c10.ant-btn-disabled svg path {
+  color: var(--acx-primary-white);
+}
+
+.c10[disabled].ant-btn-link svg path,
+.c10.ant-btn-disabled.ant-btn-link svg path,
+.c10[disabled].ant-btn-default svg path,
+.c10.ant-btn-disabled.ant-btn-default svg path,
+.c10[disabled].ant-btn-primary svg path,
+.c10.ant-btn-disabled.ant-btn-primary svg path {
+  color: var(--acx-neutrals-40);
+}
+
+.c5 .ant-picker-input .ant-picker-clear span[role=img] svg {
+  display: none;
+}
+
+.c5 .ant-picker-input .ant-picker-clear span[role=img]::after {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-size: 12px 12px;
+  background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20class%3D%22NestedListSingle__CloseIcon-sc-1yefg1u-0%20lilJnS%22%3E%3Cpath%20d%3D%22M14.0625%203.9375L3.9375%2014.0625%22%20stroke%3D%22%23333333%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3Cpath%20d%3D%22M14.0625%2014.0625L3.9375%203.9375%22%20stroke%3D%22%23333333%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-color: white;
+  margin-right: -4px;
+}
+
+.c5 .ant-picker-dropdown {
+  font-size: var(--acx-body-4-font-size);
+  padding: 10px 0;
+}
+
+.c5 .ant-picker-dropdown .ant-picker-panel {
+  border: none;
+}
+
+.c5 .ant-picker-dropdown .ant-picker-panel-container {
+  border-radius: 4px;
+  background: var(--acx-primary-white);
+  box-shadow: 0px 6px 16px rgba(51,51,51,0.2);
+  padding-left: var(--acx-date-picker-ranges-width);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-panel .ant-picker-header {
+  -webkit-align-items: baseline;
+  -webkit-box-align: baseline;
+  -ms-flex-align: baseline;
+  align-items: baseline;
+  border-bottom: none;
+}
+
+.c5 .ant-picker-dropdown .ant-picker-panel .ant-picker-header .ant-picker-header-view {
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-5-font-size);
+  font-weight: var(--acx-headline-5-font-weight-semi-bold);
+  color: var(--acx-neutrals-70);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-panel .ant-picker-header .ant-picker-header-view button:hover {
+  color: inherit;
+  cursor: default;
+}
+
+.c5 .ant-picker-dropdown .ant-picker-panel .ant-picker-body th {
+  font-size: var(--acx-subtitle-6-font-size);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+  color: var(--acx-neutrals-60);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-panel .ant-picker-body td {
+  font-size: var(--acx-subtitle-5-font-size);
+  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start .ant-picker-cell-inner,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end .ant-picker-cell-inner {
+  color: var(--acx-primary-white);
+  background: var(--acx-accents-blue-50);
+  border-radius: 20px;
+}
+
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view. ant-picker-cell-range-hover .ant-picker-cell-inner::before,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view. ant-picker-cell-range-hover-start .ant-picker-cell-inner::before,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view. ant-picker-cell-range-hover-end .ant-picker-cell-inner::before {
+  background: var(--acx-accents-blue-10);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover::before,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start.ant-picker-cell-range-hover::before,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end.ant-picker-cell-range-hover::before,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single).ant-picker-cell-range-hover-start::before,.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single).ant-picker-cell-range-hover-end::before,
+.c5 .ant-picker-dropdown .ant-picker-panel > :not(.ant-picker-date-panel) .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start::before,.c5 .ant-picker-dropdown .ant-picker-panel > :not(.ant-picker-date-panel) .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end::before,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-in-range::before,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single)::before,.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single)::before {
+  background: var(--acx-accents-blue-10);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-date-panel .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start .ant-picker-cell-inner::after,
+.c5 .ant-picker-dropdown .ant-picker-date-panel .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end .ant-picker-cell-inner::after {
+  background: var(--acx-accents-blue-10);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
+  border-color: var(--acx-accents-blue-50);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-hover:not(.ant-picker-cell-in-range)::after,.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-hover-start:not(.ant-picker-cell-in-range)::after,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-hover-end:not(.ant-picker-cell-in-range)::after {
+  border-color: var(--acx-accents-blue-50);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single):not(.ant-picker-cell-range-end) .ant-picker-cell-inner,.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single):not(.ant-picker-cell-range-start) .ant-picker-cell-inner {
+  border-radius: 20px;
+}
+
+.c5 .ant-picker-dropdown .ant-picker-cell:hover .ant-picker-cell-inner,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
+  border-radius: 20px;
+}
+
+.c5 .ant-picker-dropdown .ant-picker-footer {
+  display: none;
+}
+
+h1.c6.ant-typography {
+  line-height: var(--acx-subtitle-1-line-height);
+  font-size: var(--acx-subtitle-1-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-1-font-weight);
+}
+
+h2.c6.ant-typography {
+  line-height: var(--acx-subtitle-2-line-height);
+  font-size: var(--acx-subtitle-2-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-2-font-weight);
+}
+
+h3.c6.ant-typography {
+  line-height: var(--acx-subtitle-3-line-height);
+  font-size: var(--acx-subtitle-3-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-3-font-weight);
+}
+
+h4.c6.ant-typography {
+  line-height: var(--acx-subtitle-4-line-height);
+  font-size: var(--acx-subtitle-4-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-4-font-weight);
+}
+
+h5.c6.ant-typography {
+  line-height: var(--acx-subtitle-5-line-height);
+  font-size: var(--acx-subtitle-5-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-5-font-weight);
+}
+
+.c1 {
+  --acx-steps-form-steps-title-color: var(--acx-primary-black);
+  --acx-steps-form-steps-title-font-size: var(--acx-body-4-font-size);
+  --acx-steps-form-steps-title-line-height: var(--acx-body-4-line-height);
+  --acx-steps-form-steps-active-title-font-weight: var(--acx-body-font-weight-bold);
+  --acx-steps-form-steps-step-size: 12px;
+  --acx-steps-form-steps-step-color: var(--acx-accents-orange-50);
+  --acx-steps-form-form-title-font-size: var(--acx-headline-3-font-size);
+  --acx-steps-form-form-title-font-weight: var(--acx-headline-3-font-weight);
+  --acx-steps-form-form-title-line-height: var(--acx-headline-3-line-height);
+  --acx-steps-form-form-title-margin-bottom: 16px;
+  padding-block-end: calc(var(--acx-steps-form-actions-vertical-space) * 2 + 32px);
+}
+
+.c1 .ant-pro-table .ant-pagination {
+  position: relative;
+  bottom: unset;
+  background-color: var(--acx-primary-white);
+}
+
+.c2 {
+  position: fixed;
+  width: calc(( (100% + 20px) - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 ) * 4 / 24 - 20px);
+  min-width: calc(( (1280px + 20px) - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 ) * 4 / 24 - 20px);
+  padding-top: calc( var(--acx-steps-form-form-title-line-height) + var(--acx-steps-form-form-title-margin-bottom) + 3px );
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-title {
+  padding: 0 0 var(--acx-steps-form-steps-title-line-height) 12px;
+  line-height: var(--acx-steps-form-steps-title-line-height);
+  font-size: var(--acx-steps-form-steps-title-font-size);
+}
+
+.c2.ant-steps-vertical .ant-steps-item.ant-steps-item-active .ant-steps-item-title {
+  font-weight: var(--acx-steps-form-steps-active-title-font-weight);
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-title,
+.c2.ant-steps-vertical .ant-steps-item.ant-steps-item-wait .ant-steps-item-title {
+  color: var(--acx-steps-form-steps-title-color);
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-container .ant-steps-item-tail {
+  top: 3px;
+  left: unset;
+  width: var(--acx-steps-form-steps-step-size);
+  padding: 11px 0 0;
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-container .ant-steps-item-tail::after {
+  margin: 0 auto;
+  display: block;
+  background-color: var(--acx-steps-form-steps-step-color);
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-container .ant-steps-item-content {
+  min-height: calc(var(--acx-body-4-line-height) * 2);
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-icon {
+  width: var(--acx-steps-form-steps-step-size);
+  height: var(--acx-steps-form-steps-step-size);
+  top: unset;
+  margin-top: 3px;
+  margin-right: 0px;
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-icon .ant-steps-icon-dot {
+  width: var(--acx-steps-form-steps-step-size);
+  height: var(--acx-steps-form-steps-step-size);
+  border: 1px solid var(--acx-steps-form-steps-step-color);
+  background-color: transparent;
+  top: unset;
+  left: unset;
+}
+
+.c2.ant-steps-vertical .ant-steps-item .ant-steps-item-icon .ant-steps-icon-dot::after {
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: transparent;
+  -webkit-transition-property: top,left,background-color;
+  transition-property: top,left,background-color;
+}
+
+.c2.ant-steps-vertical .ant-steps-item.ant-steps-item-active .ant-steps-item-icon .ant-steps-icon-dot {
+  top: unset;
+  left: unset;
+}
+
+.c2.ant-steps-vertical .ant-steps-item.ant-steps-item-active .ant-steps-item-icon .ant-steps-icon-dot::after {
+  width: 10px;
+  height: 10px;
+  background-color: var(--acx-steps-form-steps-step-color);
+}
+
+.c2.ant-steps-vertical .ant-steps-item.ant-steps-item-finish .ant-steps-item-container .ant-steps-item-icon .ant-steps-icon-dot::after {
+  top: 1px;
+  left: 1px;
+  background-color: var(--acx-steps-form-steps-step-color);
+}
+
+.c9 {
+  position: fixed;
+  width: calc( 100% - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
+  min-width: calc( 1280px - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
+  bottom: 0;
+  padding: var(--acx-steps-form-actions-vertical-space) 0;
+  background-color: var(--acx-neutrals-10);
+  z-index: 5;
+}
+
+.c9::before {
+  content: '';
+  position: absolute;
+  inset: 0 -100% 0 -100%;
+  background-color: var(--acx-neutrals-10);
+}
+
+.c9 .ant-space-item .ant-space {
+  position: absolute;
+  left: 50%;
+  bottom: var(--acx-steps-form-actions-vertical-space);
+  -webkit-transform: translate(-50%,0);
+  -ms-transform: translate(-50%,0);
+  transform: translate(-50%,0);
+}
+
+.c4 {
+  font-size: var(--acx-steps-form-form-title-font-size);
+  line-height: var(--acx-steps-form-form-title-line-height);
+  font-weight: var(--acx-steps-form-form-title-font-weight);
+  margin-bottom: var(--acx-steps-form-form-title-margin-bottom) !important;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.c4 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c8.ant-typography {
+  margin-top: 20px;
+  margin-bottom: 12px;
+}
+
+.c3 + .c7.ant-typography {
+  margin-top: 4px;
+}
+
+.c0 {
+  position: -webkit-sticky;
+  position: sticky;
+  top: calc( var(--acx-header-height) + var(--acx-content-vertical-space) + (var(--acx-cloudmessagebanner-height) * var(--acx-has-cloudmessagebanner)) );
+  z-index: 7;
+  background-color: var(--acx-primary-white);
+  padding: 0 var(--acx-content-horizontal-space);
+  margin: 0 calc(var(--acx-content-horizontal-space) * -1);
+}
+
+.c0 .ant-page-header {
+  padding: 0;
+  margin: 4px 0 var(--acx-content-vertical-space);
+}
+
+.c0 .ant-page-header-heading {
+  gap: 12px;
+}
+
+.c0 .ant-page-header-heading h1 {
+  margin-bottom: 0;
+}
+
+.c0 .ant-page-header-heading-left {
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  margin: 0;
+}
+
+.c0 .ant-page-header-heading-extra {
+  margin: 0;
+}
+
+.c0 .ant-page-header-heading-extra > .ant-space {
+  gap: 12px !important;
+}
+
+.c0 .ant-page-header-heading-title {
+  width: 100%;
+  -webkit-align-self: flex-start;
+  -ms-flex-item-align: start;
+  align-self: flex-start;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c0 .ant-page-header-content {
+  padding: 6px 0 0;
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight);
+}
+
+.c0 .ant-page-header-content .ant-divider-vertical {
+  background-color: var(--acx-primary-black);
+  margin: 0 0.5em;
+  height: 0.9em;
+}
+
+.c0 .ant-page-header .ant-breadcrumb {
+  line-height: 16px;
+}
+
+.c0 .ant-page-header .ant-breadcrumb a:hover {
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}
+
+.c0 .ant-page-header .ant-breadcrumb + .ant-page-header-heading {
+  margin-top: 3px;
+}
+
+.c0 .ant-page-header.has-footer {
+  margin-bottom: 0;
+}
+
+.c0 .ant-page-header.has-footer .ant-page-header-content {
+  padding-bottom: 2px;
+}
+
+.c0 .ant-page-header.has-footer .ant-page-header-footer {
+  margin-top: 8px;
+}
+
+<div>
+  <div
+    class="c0"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/undefined/t/analytics/intentAI"
+              >
+                IntentAI
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <svg
+              data-testid="EcoFlexAI"
+              style="width: 32px; height: 32px;"
+            />
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              EcoFlex
+            </h1>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          <span>
+            Intent: Energy Footprint vs Mission Criticality
+            <div
+              class="ant-divider ant-divider-vertical"
+              role="separator"
+            />
+          </span>
+          <span>
+            Venue: My-Venue
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
+  <section
+    class="c1"
+    data-testid="steps-form"
+  >
+    <form
+      class="ant-form ant-form-vertical"
+      step="2"
+    >
+      <div
+        class="ant-row"
+        style="margin-left: -10px; margin-right: -10px;"
+      >
+        <div
+          class="ant-col ant-col-4"
+          data-testid="steps-form-steps"
+          style="padding-left: 10px; padding-right: 10px;"
+        >
+          <div
+            class="ant-steps ant-steps-vertical c2 ant-steps-dot"
+          >
+            <div
+              class="ant-steps-item ant-steps-item-finish"
+            >
+              <div
+                class="ant-steps-item-container"
+                role="button"
+                tabindex="0"
+              >
+                <div
+                  class="ant-steps-item-tail"
+                />
+                <div
+                  class="ant-steps-item-icon"
+                >
+                  <span
+                    class="ant-steps-icon"
+                  >
+                    <span
+                      class="ant-steps-icon-dot"
+                    />
+                  </span>
+                </div>
+                <div
+                  class="ant-steps-item-content"
+                >
+                  <div
+                    class="ant-steps-item-title"
+                  >
+                    Introduction
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-steps-item ant-steps-item-finish"
+            >
+              <div
+                class="ant-steps-item-container"
+                role="button"
+                tabindex="0"
+              >
+                <div
+                  class="ant-steps-item-tail"
+                />
+                <div
+                  class="ant-steps-item-icon"
+                >
+                  <span
+                    class="ant-steps-icon"
+                  >
+                    <span
+                      class="ant-steps-icon-dot"
+                    />
+                  </span>
+                </div>
+                <div
+                  class="ant-steps-item-content"
+                >
+                  <div
+                    class="ant-steps-item-title"
+                  >
+                    Intent Priority
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-steps-item ant-steps-item-process ant-steps-item-active"
+            >
+              <div
+                class="ant-steps-item-container"
+                role="button"
+                tabindex="0"
+              >
+                <div
+                  class="ant-steps-item-tail"
+                />
+                <div
+                  class="ant-steps-item-icon"
+                >
+                  <span
+                    class="ant-steps-icon"
+                  >
+                    <span
+                      class="ant-steps-icon-dot"
+                    />
+                  </span>
+                </div>
+                <div
+                  class="ant-steps-item-content"
+                >
+                  <div
+                    class="ant-steps-item-title"
+                  >
+                    Settings
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-steps-item ant-steps-item-wait ant-steps-item-disabled"
+            >
+              <div
+                class="ant-steps-item-container"
+              >
+                <div
+                  class="ant-steps-item-tail"
+                />
+                <div
+                  class="ant-steps-item-icon"
+                >
+                  <span
+                    class="ant-steps-icon"
+                  >
+                    <span
+                      class="ant-steps-icon-dot"
+                    />
+                  </span>
+                </div>
+                <div
+                  class="ant-steps-item-content"
+                >
+                  <div
+                    class="ant-steps-item-title"
+                  >
+                    Summary
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-col ant-col-20"
+          data-testid="steps-form-body"
+          style="padding-left: 10px; padding-right: 10px;"
+        >
+          <div
+            class="ant-row"
+            style="margin-left: -10px; margin-right: -10px;"
+          >
+            <div
+              class="ant-col ant-col-15"
+              style="padding-left: 10px; padding-right: 10px;"
+            >
+              <h3
+                class="ant-typography c3 c4"
+              >
+                Settings
+              </h3>
+              <div
+                class="ant-typography"
+              >
+                 Choose a start date for IntentAI to begin autonomously managing your network settings and configurations. 
+              </div>
+               
+              <div
+                class="ant-typography"
+              >
+                 Additionally, select the time of day when these changes should occur. This time will be used daily by IntentAI to implement any necessary adjustments. 
+              </div>
+               
+              <div
+                class="ant-typography"
+              >
+                 It is advisable to select a time during low network usage to minimize disruptions. 
+              </div>
+              <div
+                class="ant-form-item"
+              >
+                <div
+                  class="ant-row ant-form-item-row"
+                >
+                  <div
+                    class="ant-col ant-form-item-label"
+                  >
+                    <label
+                      class="ant-form-item-required"
+                      for="settings_date"
+                      title=""
+                    >
+                      Date
+                    </label>
+                  </div>
+                  <div
+                    class="ant-col ant-form-item-control"
+                  >
+                    <div
+                      class="ant-form-item-control-input"
+                    >
+                      <div
+                        class="ant-form-item-control-input-content"
+                      >
+                        <div
+                          class="c5"
+                        >
+                          <div
+                            class="ant-picker"
+                            style="width: 100%;"
+                          >
+                            <div
+                              class="ant-picker-input"
+                            >
+                              <input
+                                autocomplete="off"
+                                id="settings_date"
+                                placeholder="Select date"
+                                readonly=""
+                                size="12"
+                                title=""
+                                value=""
+                              />
+                              <span
+                                class="ant-picker-suffix"
+                              >
+                                <span
+                                  aria-label="calendar"
+                                  class="anticon anticon-calendar"
+                                  role="img"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    data-icon="calendar"
+                                    fill="currentColor"
+                                    focusable="false"
+                                    height="1em"
+                                    viewBox="64 64 896 896"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M880 184H712v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H384v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H144c-17.7 0-32 14.3-32 32v664c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V216c0-17.7-14.3-32-32-32zm-40 656H184V460h656v380zM184 392V256h128v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h256v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h128v136H184z"
+                                    />
+                                  </svg>
+                                </span>
+                              </span>
+                              <span
+                                class="ant-picker-clear"
+                                role="button"
+                              >
+                                <span
+                                  aria-label="close-circle"
+                                  class="anticon anticon-close-circle"
+                                  role="img"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    data-icon="close-circle"
+                                    fill="currentColor"
+                                    focusable="false"
+                                    height="1em"
+                                    viewBox="64 64 896 896"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm165.4 618.2l-66-.3L512 563.4l-99.3 118.4-66.1.3c-4.4 0-8-3.5-8-8 0-1.9.7-3.7 1.9-5.2l130.1-155L340.5 359a8.32 8.32 0 01-1.9-5.2c0-4.4 3.6-8 8-8l66.1.3L512 464.6l99.3-118.4 66-.3c4.4 0 8 3.5 8 8 0 1.9-.7 3.7-1.9 5.2L553.5 514l130 155c1.2 1.5 1.9 3.3 1.9 5.2 0 4.4-3.6 8-8 8z"
+                                    />
+                                  </svg>
+                                </span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-form-item"
+              >
+                <div
+                  class="ant-row ant-form-item-row"
+                >
+                  <div
+                    class="ant-col ant-form-item-label"
+                  >
+                    <label
+                      class="ant-form-item-required"
+                      for="settings_time"
+                      title=""
+                    >
+                      Time
+                    </label>
+                  </div>
+                  <div
+                    class="ant-col ant-form-item-control"
+                  >
+                    <div
+                      class="ant-form-item-control-input"
+                    >
+                      <div
+                        class="ant-form-item-control-input-content"
+                      >
+                        <select
+                          id="settings_time"
+                          placeholder="Select time"
+                        >
+                          <option />
+                          <option
+                            disabled=""
+                            value="0"
+                          >
+                            00:00 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="0.25"
+                          >
+                            00:15 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="0.5"
+                          >
+                            00:30 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="0.75"
+                          >
+                            00:45 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="1"
+                          >
+                            01:00 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="1.25"
+                          >
+                            01:15 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="1.5"
+                          >
+                            01:30 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="1.75"
+                          >
+                            01:45 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="2"
+                          >
+                            02:00 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="2.25"
+                          >
+                            02:15 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="2.5"
+                          >
+                            02:30 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="2.75"
+                          >
+                            02:45 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="3"
+                          >
+                            03:00 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="3.25"
+                          >
+                            03:15 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="3.5"
+                          >
+                            03:30 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="3.75"
+                          >
+                            03:45 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="4"
+                          >
+                            04:00 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="4.25"
+                          >
+                            04:15 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="4.5"
+                          >
+                            04:30 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="4.75"
+                          >
+                            04:45 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="5"
+                          >
+                            05:00 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="5.25"
+                          >
+                            05:15 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="5.5"
+                          >
+                            05:30 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="5.75"
+                          >
+                            05:45 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="6"
+                          >
+                            06:00 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="6.25"
+                          >
+                            06:15 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="6.5"
+                          >
+                            06:30 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="6.75"
+                          >
+                            06:45 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="7"
+                          >
+                            07:00 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="7.25"
+                          >
+                            07:15 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="7.5"
+                          >
+                            07:30 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="7.75"
+                          >
+                            07:45 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="8"
+                          >
+                            08:00 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="8.25"
+                          >
+                            08:15 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="8.5"
+                          >
+                            08:30 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="8.75"
+                          >
+                            08:45 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="9"
+                          >
+                            09:00 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="9.25"
+                          >
+                            09:15 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="9.5"
+                          >
+                            09:30 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="9.75"
+                          >
+                            09:45 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="10"
+                          >
+                            10:00 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="10.25"
+                          >
+                            10:15 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="10.5"
+                          >
+                            10:30 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="10.75"
+                          >
+                            10:45 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="11"
+                          >
+                            11:00 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="11.25"
+                          >
+                            11:15 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="11.5"
+                          >
+                            11:30 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="11.75"
+                          >
+                            11:45 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="12"
+                          >
+                            12:00 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="12.25"
+                          >
+                            12:15 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="12.5"
+                          >
+                            12:30 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="12.75"
+                          >
+                            12:45 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="13"
+                          >
+                            13:00 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="13.25"
+                          >
+                            13:15 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="13.5"
+                          >
+                            13:30 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="13.75"
+                          >
+                            13:45 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="14"
+                          >
+                            14:00 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="14.25"
+                          >
+                            14:15 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="14.5"
+                          >
+                            14:30 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="14.75"
+                          >
+                            14:45 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="15"
+                          >
+                            15:00 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="15.25"
+                          >
+                            15:15 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="15.5"
+                          >
+                            15:30 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="15.75"
+                          >
+                            15:45 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="16"
+                          >
+                            16:00 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="16.25"
+                          >
+                            16:15 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="16.5"
+                          >
+                            16:30 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="16.75"
+                          >
+                            16:45 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="17"
+                          >
+                            17:00 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="17.25"
+                          >
+                            17:15 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="17.5"
+                          >
+                            17:30 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="17.75"
+                          >
+                            17:45 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="18"
+                          >
+                            18:00 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="18.25"
+                          >
+                            18:15 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="18.5"
+                          >
+                            18:30 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="18.75"
+                          >
+                            18:45 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="19"
+                          >
+                            19:00 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="19.25"
+                          >
+                            19:15 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="19.5"
+                          >
+                            19:30 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="19.75"
+                          >
+                            19:45 (UTC+08)
+                          </option>
+                          <option
+                            disabled=""
+                            value="20"
+                          >
+                            20:00 (UTC+08)
+                          </option>
+                          <option
+                            value="20.25"
+                          >
+                            20:15 (UTC+08)
+                          </option>
+                          <option
+                            value="20.5"
+                          >
+                            20:30 (UTC+08)
+                          </option>
+                          <option
+                            value="20.75"
+                          >
+                            20:45 (UTC+08)
+                          </option>
+                          <option
+                            value="21"
+                          >
+                            21:00 (UTC+08)
+                          </option>
+                          <option
+                            value="21.25"
+                          >
+                            21:15 (UTC+08)
+                          </option>
+                          <option
+                            value="21.5"
+                          >
+                            21:30 (UTC+08)
+                          </option>
+                          <option
+                            value="21.75"
+                          >
+                            21:45 (UTC+08)
+                          </option>
+                          <option
+                            value="22"
+                          >
+                            22:00 (UTC+08)
+                          </option>
+                          <option
+                            value="22.25"
+                          >
+                            22:15 (UTC+08)
+                          </option>
+                          <option
+                            value="22.5"
+                          >
+                            22:30 (UTC+08)
+                          </option>
+                          <option
+                            value="22.75"
+                          >
+                            22:45 (UTC+08)
+                          </option>
+                          <option
+                            value="23"
+                          >
+                            23:00 (UTC+08)
+                          </option>
+                          <option
+                            value="23.25"
+                          >
+                            23:15 (UTC+08)
+                          </option>
+                          <option
+                            value="23.5"
+                          >
+                            23:30 (UTC+08)
+                          </option>
+                          <option
+                            value="23.75"
+                          >
+                            23:45 (UTC+08)
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h4
+                class="ant-typography c6 c7 c8"
+              >
+                Optional
+              </h4>
+              <div
+                class="ant-typography"
+              >
+                <span>
+                  You may direct RUCKUS AI to exclude certain time slots and/or specific APs from being moved to reduced power mode.
+                </span>
+              </div>
+              <div
+                class="ant-form-item"
+              >
+                <div
+                  class="ant-row ant-form-item-row"
+                >
+                  <div
+                    class="ant-col ant-form-item-control"
+                  >
+                    <div
+                      class="ant-form-item-control-input"
+                    >
+                      <div
+                        class="ant-form-item-control-input-content"
+                      >
+                        <label
+                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
+                        >
+                          <span
+                            class="ant-checkbox"
+                          >
+                            <input
+                              class="ant-checkbox-input"
+                              id="preferences_enableExcludedHours"
+                              type="checkbox"
+                              value=""
+                            />
+                            <span
+                              class="ant-checkbox-inner"
+                            />
+                          </span>
+                          <span>
+                            Do not apply EcoFlex during the following time slots of the week
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-form-item"
+              >
+                <div
+                  class="ant-row ant-form-item-row"
+                >
+                  <div
+                    class="ant-col ant-form-item-control"
+                  >
+                    <div
+                      class="ant-form-item-control-input"
+                    >
+                      <div
+                        class="ant-form-item-control-input-content"
+                      >
+                        <label
+                          class="ant-checkbox-wrapper ant-checkbox-wrapper-in-form-item"
+                        >
+                          <span
+                            class="ant-checkbox"
+                          >
+                            <input
+                              class="ant-checkbox-input"
+                              id="preferences_enableExcludedAPs"
+                              type="checkbox"
+                              value=""
+                            />
+                            <span
+                              class="ant-checkbox-inner"
+                            />
+                          </span>
+                          <span>
+                            Do not apply EcoFlex to the following APs
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="c9"
+        data-testid="steps-form-actions"
+      >
+        <div
+          class="ant-space ant-space-horizontal ant-space-align-center "
+        >
+          <div
+            class="ant-space-item"
+            style="margin-right: 12px;"
+          >
+            <button
+              class="ant-btn ant-btn-default c10"
+              type="button"
+            >
+              <span>
+                Cancel
+              </span>
+            </button>
+          </div>
+          <div
+            class="ant-space-item"
+          >
+            <div
+              class="ant-space ant-space-horizontal ant-space-align-center"
+            >
+              <div
+                class="ant-space-item"
+                style="margin-right: 12px;"
+              >
+                <button
+                  class="ant-btn ant-btn-default c10"
+                  type="button"
+                  value="pre"
+                >
+                  <span>
+                    Back
+                  </span>
+                </button>
+              </div>
+              <div
+                class="ant-space-item"
+              >
+                <button
+                  ant-click-animating-without-extra-node="true"
+                  class="ant-btn ant-btn-primary c10"
+                  type="button"
+                  value="next"
+                >
+                  <span>
+                    Next
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+</div>
+`;
+
+exports[`IntentAIForm handle schedule intent renders form step 4 (Summary) correctly: completed 1`] = `
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div />
+`;
