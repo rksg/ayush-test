@@ -33,6 +33,8 @@ import { ResetButton, ChartWrapper } from './styledComponents'
 
 import type { EChartsOption, SeriesOption } from 'echarts'
 
+export type { ChartRowMappingType as ConfigChangeChartRowMappingType } from './helper'
+
 export function ConfigChangeChart ({
   data,
   chartBoundary,
