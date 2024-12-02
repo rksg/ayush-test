@@ -7,7 +7,8 @@ import {
   TxStatus,
   onSocketActivityChanged,
   NetworkVenue,
-  NetworkApGroup
+  NetworkApGroup,
+  EventBase
 } from '@acx-ui/rc/utils'
 import { RequestPayload }                               from '@acx-ui/types'
 import { ApiInfo, DateRangeFilter, computeRangeFilter } from '@acx-ui/utils'
@@ -32,6 +33,23 @@ export function getMetaList<T extends MetaBase> (
       {
         id: list.data.map((item: { id: string }) => item.id)
       }
+  }
+  return {
+    ...httpRequest, body
+  }
+}
+
+export function getMetaDetailsList<T extends EventBase> (
+  list: TableResult<T>,
+  metaListInfo: { urlInfo: ApiInfo, fields: string[], filters?: { [key: string]: unknown; } }
+) {
+  const httpRequest = metaListInfo.urlInfo
+  const body = {
+    fields: metaListInfo.fields,
+    filters: list.data.map((item) => ({
+      index: item.indexName,
+      id: item.id
+    }))
   }
   return {
     ...httpRequest, body
