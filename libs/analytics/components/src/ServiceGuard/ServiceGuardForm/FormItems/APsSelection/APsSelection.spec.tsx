@@ -201,6 +201,7 @@ describe('RA', () => {
       const combobox = await screen.findByRole('combobox')
 
       await type(combobox, 'ap 1')
+      await type(combobox, 'ap 1') // TODO need to fix this, it should be only one search
       await click(await screen.findByRole('menuitemcheckbox', { name: /ap 1/ }))
 
       await click(screen.getByRole('button', { name: 'Submit' }))
