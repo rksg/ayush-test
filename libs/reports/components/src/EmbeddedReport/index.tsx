@@ -436,11 +436,17 @@ export function EmbeddedReport (props: ReportProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDate, endDate, paths, bands, path, dashboardEmbeddedId, systems.status, locale])
 
+  const isLoading = systems.status === 'pending' ||
+    !Boolean(dashboardEmbeddedId) || !Boolean(guestTokenPayload)
+
   return (
     <>
-      <Loader states={[{ isLoading: systems.status === 'pending' },
-        { isLoading: !Boolean(dashboardEmbeddedId) },
-        { isLoading: !Boolean(guestTokenPayload) }]} />
+      {isLoading && (
+        <Loader
+          states={[{ isLoading }]}
+          style={{ height: '100vh' }}
+        />
+      )}
       <div id={`acx-report-${dashboardEmbeddedId}`} className='acx-report' />
     </>
   )
