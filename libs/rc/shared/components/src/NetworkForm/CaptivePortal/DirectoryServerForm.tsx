@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext, useRef } from 'react'
+import { useEffect, useState, useContext } from 'react'
 
 import {
   Divider,
@@ -7,7 +7,6 @@ import {
   Button
 } from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
-import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
 import { GridCol, GridRow, StepsFormLegacy } from '@acx-ui/components'
@@ -46,7 +45,6 @@ const defaultPayload = {
 
 export function DirectoryServerForm ({ directoryServerDataRef } :
   { directoryServerDataRef: React.MutableRefObject<{ id:string, name:string }> }) {
-  const isFirstRender = useRef(true)
 
   const {
     data,
@@ -55,7 +53,6 @@ export function DirectoryServerForm ({ directoryServerDataRef } :
   } = useContext(NetworkFormContext)
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { useWatch } = Form
   const [ visible, setVisible ] = useState<boolean>(false)
   const [ detailDrawerVisible, setDetailDrawerVisible ] = useState<boolean>(false)
   const [ directoryServerData, setDirectoryServerData] =
@@ -120,23 +117,14 @@ export function DirectoryServerForm ({ directoryServerDataRef } :
         }
       }
     }
-    if((editMode || cloneMode) && data && !isFirstRender.current){
-      const IsRedirectEnable = form.getFieldsValue(['redirectCheckbox'])
-      form.setFieldsValue({
-        ...(IsRedirectEnable ? data :_.omit(data, ['guestPortal.redirectUrl', 'redirectCheckbox']))
-      })
-    }
-  }, [directoryServerListFromServer, data])
-
-  useEffect(() => {
-    isFirstRender.current = false
     if((editMode || cloneMode) && data){
       form.setFieldsValue({ ...data })
       if(data.guestPortal?.redirectUrl){
         form.setFieldValue('redirectCheckbox',true)
       }
     }
-  }, [])
+
+  }, [directoryServerListFromServer, data])
 
   return (<>
     <GridRow>
