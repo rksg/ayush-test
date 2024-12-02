@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
 import { useIntl }  from 'react-intl'
 
-import { get }                    from '@acx-ui/config'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 import { cssStr }          from '../../theme/helper'
@@ -49,9 +48,10 @@ export function ConfigChangeChart ({
   ...props
 }: ConfigChangeChartProps) {
 
-  const isMLISA = get('IS_MLISA_SA')
-  const isIntentAIConfigChangeEnable = useIsSplitOn(Features.MLISA_4_11_0_TOGGLE)
-  const showIntentAI = Boolean(isMLISA || isIntentAIConfigChangeEnable)
+  const showIntentAI = [
+    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
+    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
+  ].some(Boolean)
 
   const { $t } = useIntl()
   const eChartsRef = useRef<ReactECharts>(null)
