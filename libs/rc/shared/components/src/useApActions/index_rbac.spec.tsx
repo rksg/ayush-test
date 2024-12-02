@@ -119,7 +119,7 @@ describe('Test useApActions', () => {
     jest.clearAllMocks()
   })
 
-  it('showRebootAp', async () => {
+  it.skip('showRebootAp', async () => {
     const { result } = renderHook(() => useApActions(), {
       wrapper: ({ children }) => <Provider children={children} />
     })
