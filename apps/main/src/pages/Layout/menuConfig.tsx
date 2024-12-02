@@ -289,6 +289,23 @@ export function useMenuConfig () {
       inactiveIcon: SmartEdgeOutlined,
       activeIcon: SmartEdgeSolid
     }] : []),
+    ...(showGatewaysMenu && (isEdgeEnabled || showRwgUI) ? [{
+      label: $t({ defaultMessage: 'Gateway' }),
+      inactiveIcon: DevicesOutlined,
+      activeIcon: DevicesSolid,
+      children: [
+        ...(isEdgeEnabled ? [{
+          uri: '/devices/edge',
+          isActiveCheck: new RegExp('^/devices/edge'),
+          label: $t({ defaultMessage: 'RUCKUS Edge' })
+        }] : []),
+        ...(showRwgUI ? [{
+          uri: '/ruckus-wan-gateway',
+          label: $t({ defaultMessage: 'RUCKUS WAN Gateway' })
+        }] : [])
+      ]
+    }] : []
+    ),
     {
       label: $t({ defaultMessage: 'Network Control' }),
       inactiveIcon: ServicesOutlined,
@@ -308,23 +325,6 @@ export function useMenuConfig () {
         }
       ]
     },
-    ...(showGatewaysMenu && (isEdgeEnabled || showRwgUI) ? [{
-      label: $t({ defaultMessage: 'Gateway' }),
-      inactiveIcon: DevicesOutlined,
-      activeIcon: DevicesSolid,
-      children: [
-        ...(isEdgeEnabled ? [{
-          uri: '/devices/edge',
-          isActiveCheck: new RegExp('^/devices/edge'),
-          label: $t({ defaultMessage: 'RUCKUS Edge' })
-        }] : []),
-        ...(showRwgUI ? [{
-          uri: '/ruckus-wan-gateway',
-          label: $t({ defaultMessage: 'RUCKUS WAN Gateway' })
-        }] : [])
-      ]
-    }] : []
-    ),
     {
       label: $t({ defaultMessage: 'Business Insights' }),
       inactiveIcon: BulbOutlined,
