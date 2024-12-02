@@ -4,7 +4,7 @@ import { useIntl }                 from 'react-intl'
 
 import { StepsForm, Table, TableProps, Tooltip, useStepFormContext }                   from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
-import { CompatibilityWarningCircleIcon }                                              from '@acx-ui/rc/components'
+import { CompatibilityWarningTriangleIcon }                                            from '@acx-ui/rc/components'
 import { useGetEdgeClusterListQuery, useGetEdgeFeatureSetsQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
 import {
   EdgeClusterStatus,
@@ -119,7 +119,7 @@ export const ScopeForm = () => {
                 })}
               </>
             }>
-            <CompatibilityWarningCircleIcon />
+            <CompatibilityWarningTriangleIcon />
           </Tooltip>
           }
         </Space>
