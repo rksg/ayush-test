@@ -88,10 +88,15 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByText('When activated, this AIOps Intent takes over the automatic configuration Background Scan Timer on 5 GHz radio in the network.')).toBeVisible()
     expect(await screen.findByTestId('Details')).toBeVisible()
     expect(await screen.findByTestId('Configuration')).toBeVisible()
-    expect(await screen.findAllByTestId('KPI')).toHaveLength(3)
-    expect(await screen.findByTestId('Why is the recommendation?')).toBeVisible()
-    expect(await screen.findByTestId('Potential trade-off')).toBeVisible()
+
+    expect(screen.queryByTestId('KPI')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('Benefits')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('Potential trade-off')).not.toBeInTheDocument()
+
     expect(await screen.findByTestId('Status Trail')).toBeVisible()
+    expect(await screen.findByTestId('Current Status')).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('IntentAI has analyzed the data and generated a change recommendations, awaiting your approval. To review the details, specify Intent priority, and apply the recommendations, click "Optimize." Alternatively, use "1-Click Optimize" to instantly apply the changes with default priority.')).toBeVisible()
   })
   it('should render', async () => {
     const { params } = mockIntentContextWith()
@@ -103,7 +108,7 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByTestId('Details')).toBeVisible()
     expect(await screen.findByTestId('Configuration')).toBeVisible()
     expect(await screen.findAllByTestId('KPI')).toHaveLength(3)
-    expect(await screen.findByTestId('Why is the recommendation?')).toBeVisible()
+    expect(await screen.findByTestId('Benefits')).toBeVisible()
     expect(await screen.findByTestId('Potential trade-off')).toBeVisible()
     expect(await screen.findByTestId('Status Trail')).toBeVisible()
   })
@@ -117,7 +122,7 @@ describe('IntentAIForm', () => {
     const actions = within(form.getByTestId('steps-form-actions'))
 
     expect(await screen.findByRole('heading', { name: 'Introduction' })).toBeVisible()
-    expect(await screen.findByText('Why is the recommendation?')).toBeVisible()
+    expect(await screen.findByText('Benefits')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
@@ -152,7 +157,7 @@ describe('IntentAIForm', () => {
     const actions = within(form.getByTestId('steps-form-actions'))
 
     expect(await screen.findByRole('heading', { name: 'Introduction' })).toBeVisible()
-    expect(await screen.findByText('Why is the recommendation?')).toBeVisible()
+    expect(await screen.findByText('Benefits')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()

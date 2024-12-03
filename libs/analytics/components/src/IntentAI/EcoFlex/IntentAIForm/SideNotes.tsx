@@ -9,7 +9,7 @@ import { useStepFormContext } from '@acx-ui/components'
 import { SideNotes } from '../../common/SideNotes'
 import { Intent }    from '../../useIntentDetailsQuery'
 
-export const title = defineMessage({ defaultMessage: 'Why is the recommendation?' })
+export const title = defineMessage({ defaultMessage: 'Benefits' })
 export const benefits = defineMessage({ defaultMessage: 'Implementing intelligent PowerSave modes for access points during off-peak hours conserves energy, reduces operational costs, extends the lifespan of hardware, and contributes to a greener environment. This approach achieves significant energy savings with minimum compromise on service quality.' })
 export const Introduction: React.FC = () => {
   const { $t } = useIntl()

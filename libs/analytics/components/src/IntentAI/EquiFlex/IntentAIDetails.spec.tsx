@@ -163,7 +163,13 @@ describe('IntentAIDetails', () => {
         { route: { params }, wrapper: Provider }
       )
 
-      await assertRenderCorrectly()
+      expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
+      expect(screen.queryByTestId('Benefits')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('Potential trade-off')).not.toBeInTheDocument()
+      expect(await screen.findByTestId('Status Trail')).toBeVisible()
+      expect(await screen.findByTestId('Current Status')).toBeVisible()
+      // eslint-disable-next-line max-len
+      expect(await screen.findByText('The change recommendation has been automatically scheduled for 07/15/2023 14:15, by IntentAI.')).toBeVisible()
 
       expect(await screen.findByTestId('Overview text'))
         // eslint-disable-next-line max-len

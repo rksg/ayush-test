@@ -154,8 +154,7 @@ export function createIntentAIDetails () {
               <GridCol col={{ span: 12 }}>
                 <DetailsSection data-testid='Potential trade-off'>
                   <DetailsSection.Title children={$t({ defaultMessage: 'Potential trade-off' })} />
-                  <DetailsSection.Details children={
-                    <Card>{(fields.find(f => f.label === 'Status') as { tooltip: string }).tooltip}</Card>} />
+                  <DetailsSection.Details children={<Card>{valuesText.tradeoffText}</Card>} />
                 </DetailsSection>
               </GridCol>
             </GridRow>

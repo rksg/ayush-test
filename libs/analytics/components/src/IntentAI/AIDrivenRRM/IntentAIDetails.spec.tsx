@@ -233,16 +233,15 @@ describe('IntentAIDetails', () => {
         { route: { params }, wrapper: Provider }
       )
 
-      await assertRenderCorrectly()
+      expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
+      expect(screen.queryByTestId('IntentAIRRMGraph')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('Details')).not.toBeInTheDocument()
       expect(screen.queryByTestId('DownloadRRMComparison')).not.toBeInTheDocument()
 
       /* eslint-disable max-len */
       expect(await screen.findByText('When activated, this Intent takes over the automatic channel planning in the network.')).toBeVisible()
-      expect(await screen.findByTestId('Benefits'))
-        .toHaveTextContent('Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.')
-      expect(await screen.findByTestId('Potential trade-off'))
-        .toHaveTextContent('In the quest for minimizing interference between access points (APs), AI algorithms may opt to narrow channel widths. While this can enhance spectral efficiency and alleviate congestion, it also heightens vulnerability to noise, potentially reducing throughput. Narrow channels limit data capacity, which could lower overall throughput.')
-      /* eslint-enable max-len */
+      expect(screen.queryByTestId('Benefits')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('Potential trade-off')).not.toBeInTheDocument()
     })
 
     it('should render graph loader seperately', async () => {
