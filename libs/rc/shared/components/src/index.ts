@@ -148,6 +148,7 @@ export {
   transformEdgeHaSettingsToFormType,
   transformEdgeHaSettingsFormToApiPayload
 } from './EdgeFormItem/EdgeHaSettingsForm/utils'
+export { EdgeClusterFirmwareInfo }  from './EdgeFormItem/EdgeClusterFirmwareInfo'
 
 export { TunnelProfileForm } from './TunnelProfile/TunnelProfileForm'
 export { useTunnelProfileActions } from './TunnelProfile/TunnelProfileForm/useTunnelProfileActions'

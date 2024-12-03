@@ -9,8 +9,7 @@ import { FormattedMessage, useIntl }                                 from 'react
 import { Drawer, Loader, StepsForm, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
-  PhoneInput,
-  usePersonaAsyncHeaders
+  PhoneInput
 } from '@acx-ui/rc/components'
 import {
   useAddPropertyUnitMutation,
@@ -208,7 +207,6 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   const [addUnitMutation] = useAddPropertyUnitMutation()
   const [updateUnitMutation] = useUpdatePropertyUnitMutation()
   const [updatePersonaMutation] = useUpdatePersonaMutation()
-  const { customHeaders } = usePersonaAsyncHeaders()
 
   useEffect(()=>{
     if (!connectionMeteringListQuery.isLoading && connectionMeteringListQuery?.data) {
@@ -400,8 +398,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
     return (id && payload)
       ? await updatePersonaMutation({
         params: { groupId: personaGroupId, id },
-        payload,
-        customHeaders
+        payload
       }).unwrap()
       : Promise.resolve()
   }
