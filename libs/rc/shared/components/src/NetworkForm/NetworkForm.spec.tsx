@@ -17,7 +17,9 @@ import {
   WifiRbacUrlsInfo,
   WifiUrlsInfo,
   NetworkTypeEnum,
-  NewDpskBaseUrl
+  NewDpskBaseUrl,
+  AaaUrls,
+  FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -45,7 +47,8 @@ import {
   accessControlListResponse,
   layer2PolicyListResponse,
   layer3PolicyListResponse,
-  mockSoftGreTable
+  mockSoftGreTable,
+  mockAAAPolicyListResponse
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
 
@@ -96,52 +99,41 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json({ response: {
           requestId: 'request-id', id: 'test', serviceName: 'test' } }))),
       rest.get(PortalUrlsInfo.getPortalLang.url,
-        (_, res, ctx) => {
-          return res(ctx.json({ acceptTermsLink: 'terms & conditions',
-            acceptTermsMsg: 'I accept the' }))
-        }),
-      rest.get(
-        MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
-        (req, res, ctx) => res(ctx.json(macRegistrationList))
-      ),
+        // eslint-disable-next-line max-len
+        (_, res, ctx) => res(ctx.json({ acceptTermsLink: 'terms & conditions', acceptTermsMsg: 'I accept the' }))),
+      rest.get(MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(macRegistrationList))),
       rest.post(WifiOperatorUrls.getWifiOperatorList.url,
-        (_, res, ctx) => res(ctx.json(mockHotspot20OperatorList))
-      ),
+        (_, res, ctx) => res(ctx.json(mockHotspot20OperatorList))),
       rest.post(IdentityProviderUrls.getIdentityProviderList.url,
-        (_, res, ctx) => res(ctx.json(mockHotpost20IdentityProviderList))
-      ),
+        (_, res, ctx) => res(ctx.json(mockHotpost20IdentityProviderList))),
       rest.post(WifiUrlsInfo.getVlanPoolViewModelList.url,
-        (_, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))
-      ),
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))),
       rest.put(WifiRbacUrlsInfo.updateRadiusServerSettings.url,
-        (_, res, ctx) => res(ctx.json(successResponse))
-      ),
+        (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(AccessControlUrls.getAccessControlProfileList.url,
-        (_, res, ctx) => res(ctx.json([]))
-      ),
+        (_, res, ctx) => res(ctx.json([]))),
       rest.post(AccessControlUrls.getEnhancedDevicePolicies.url,
         (req, res, ctx) => res(ctx.json(devicePolicyListResponse))),
       rest.post(AccessControlUrls.getEnhancedApplicationPolicies.url,
         (_, res, ctx) => res(ctx.json(applicationPolicyListResponse))),
       rest.post(AccessControlUrls.getEnhancedAccessControlProfiles.url,
-        (_, res, ctx) => {
-          return res(ctx.json(accessControlListResponse))
-        }),
+        (_, res, ctx) => res(ctx.json(accessControlListResponse))),
       rest.post(AccessControlUrls.getEnhancedL2AclPolicies.url,
-        (_, res, ctx) => {
-          return res(ctx.json(layer2PolicyListResponse))
-        }),
+        (_, res, ctx) => res(ctx.json(layer2PolicyListResponse))),
       rest.post(AccessControlUrls.getEnhancedL3AclPolicies.url,
-        (_, res, ctx) => {
-          return res(ctx.json(layer3PolicyListResponse))
-        }),
+        (_, res, ctx) => res(ctx.json(layer3PolicyListResponse))),
       // RBAC API
       rest.get(WifiRbacUrlsInfo.getNetwork.url,
-        (_, res, ctx) => res(ctx.json(networkDeepResponse))
-      ),
-      rest.post(
-        SoftGreUrls.getSoftGreViewDataList.url,
-        (_, res, ctx) => res(ctx.json(mockSoftGreTable)))
+        (_, res, ctx) => res(ctx.json(networkDeepResponse))),
+      rest.post(SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockSoftGreTable))),
+      rest.post(AaaUrls.queryAAAPolicyList.url,
+        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
+      rest.post(WifiUrlsInfo.getVlanPoolViewModelList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))),
+      rest.post(FirmwareUrlsInfo.getApModelFamilies.url,
+        (req, res, ctx) => res(ctx.json([])))
     )
   })
 
