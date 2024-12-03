@@ -62,6 +62,7 @@ RUN touch lint-done
 # We should validate the tsc validator in the tsconfig of apps that wont be built yet
 FROM build-base as acx-ui-tslint
 RUN node ./node_modules/.bin/nx run ra:tsc
+RUN touch tslint-done
 ###############################################################
 
 FROM build-base as build
@@ -104,6 +105,8 @@ COPY tools/docker/nginx/nginx.conf \
 
 COPY --from=build /app/dist/apps ./
 # Multistage: trigger run
+COPY --from=acx-ui-lint /app/lint-done /tmp/
+COPY --from=acx-ui-tslint /app/tslint-done /tmp/
 COPY --from=acx-ui-sonar-run /app/tests-done /tmp/
 
 RUN \
