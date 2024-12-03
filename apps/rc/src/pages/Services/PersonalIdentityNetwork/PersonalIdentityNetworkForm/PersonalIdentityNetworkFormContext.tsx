@@ -393,9 +393,5 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
 
 const isPinSupportCluster = (cluster: EdgeClusterStatus, requiredFw: string) => {
   // eslint-disable-next-line max-len
-  const fwVerSorted = cloneDeep(cluster.edgeList)?.sort((n1, n2) => compareVersions(n1.firmwareVersion, n2.firmwareVersion))
-  const minNodeVersion = fwVerSorted?.[0]?.firmwareVersion
-  const isValidVersion = !!minNodeVersion && compareVersions(minNodeVersion, requiredFw) >= 0
-
-  return isValidVersion
+  return cluster.edgeList?.every(node => compareVersions(node.firmwareVersion, requiredFw) >= 0) ?? false
 }
