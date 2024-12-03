@@ -60,22 +60,17 @@ RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
 RUN touch lint-done
 
 # We should validate the tsc validator in the tsconfig of apps that wont be built yet
-FROM build-base as acx-ui-tslint
+FROM acx-ui-lint as acx-ui-tslint
 RUN node ./node_modules/.bin/nx run ra:tsc
 RUN touch tslint-done
 ###############################################################
 
-FROM build-base as build
+FROM acx-ui-tslint as build
 RUN node ./node_modules/.bin/nx run main:build --memoryLimit=4096
 
 ###############################################################
-FROM build-base as acx-ui-base-test
 
-# Force dependency with lint & build stages
-COPY --from=acx-ui-lint   /app/lint-done   ./lint-done
-COPY --from=build         /app/dist/apps   ./dist/apps
-
-FROM build-base as acx-ui-group-test
+FROM build as acx-ui-group-test
 
 # Multistage: trigger run
 COPY --from=acx-ui-lint /app/lint-done /tmp/
@@ -87,7 +82,7 @@ ARG GIT_COMMIT_BRANCH=master
 RUN bash ./cicd_tools/run_test_cases_tool.sh
 RUN mkdir -p /app/coverage
 
-FROM build-base as acx-ui-sonar-run
+FROM acx-ui-group-test as acx-ui-sonar-run
 COPY --from=acx-ui-group-test /app/coverage /app/coverage
 WORKDIR /app
 RUN touch tests-done
