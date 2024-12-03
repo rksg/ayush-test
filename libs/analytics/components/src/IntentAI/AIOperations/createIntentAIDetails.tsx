@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Typography }                from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
@@ -42,7 +40,12 @@ export function createIntentAIDetails (
 
     const tooltipData = getStatusTooltip(displayStatus, sliceValue, { ...metadata, updatedAt })
     const { tooltip, errorMessage, scheduledAt, zoneName } = tooltipData
-    const values = { ...formatValues, errorMessage, scheduledAt, zoneName }
+    const values = {
+      ...formatValues,
+      errorMessage,
+      scheduledAt,
+      zoneName
+    }
 
     return <>
       <IntentDetailsHeader />
@@ -93,12 +96,7 @@ export function createIntentAIDetails (
                 <DetailsSection data-testid='Current Status'>
                   <DetailsSection.Title children={$t({ defaultMessage: 'Current Status' })} />
                   <DetailsSection.Details
-                    children={<Card>
-                      {<FormattedMessage
-                        {...tooltip}
-                        values={values}
-                      />}
-                    </Card>}
+                    children={<Card>{<FormattedMessage {...tooltip} values={values} />}</Card>}
                   />
                 </DetailsSection>
               </GridCol>

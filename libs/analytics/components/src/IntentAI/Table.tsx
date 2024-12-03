@@ -314,12 +314,15 @@ export function IntentAITable (
         const { statusLabel, displayStatus, sliceValue, metadata, updatedAt } = row
         const tooltipData = getStatusTooltip(displayStatus, sliceValue, { ...metadata, updatedAt })
         const { tooltip, errorMessage, scheduledAt, zoneName } = tooltipData
+        const values = {
+          ...formatValues,
+          errorMessage,
+          scheduledAt,
+          zoneName
+        }
         return <Tooltip
           placement='top'
-          title={<FormattedMessage
-            {...tooltip}
-            values={{ ...formatValues, errorMessage, scheduledAt, zoneName }}
-          />}
+          title={<FormattedMessage {...tooltip} values={values} />}
           dottedUnderline={true}
         >
           {statusLabel}

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import React        from 'react'
 
 import { gql }               from 'graphql-request'
 import _                     from 'lodash'
@@ -67,7 +68,7 @@ export type IntentAP = {
 
 export type StatusTooltip = {
   tooltip: MessageDescriptor
-  errorMessage: string
+  errorMessage: React.ReactNode
   scheduledAt: string
   zoneName: string
 }
@@ -76,15 +77,19 @@ export const getStatusTooltip = (state: DisplayStates, sliceValue: string, metad
   const { $t } = getIntl()
   const stateConfig = states[state]
 
-  const errMsg: string = metadata.failures?.map(failure => {
-    return failureCodes[failure] ? $t(failureCodes[failure]) : failure
-  }).join('\n - ') || ''
-
+  const errMsg = React.createElement('ul', {},
+    (metadata as Metadata).failures?.map(failure =>
+      React.createElement('li', {}, failureCodes[failure]
+        ? $t(failureCodes[failure]) : failure)
+    )
+  )
   const statusTooltip: StatusTooltip = {
     tooltip: stateConfig.tooltip,
-    errorMessage: `\n - ${errMsg}\n\n`,
+    errorMessage: errMsg,
     scheduledAt: formatter(DateFormatEnum.DateTimeFormat)(metadata.scheduledAt),
     zoneName: sliceValue
+    // userName: metadata.scheduledBy //TODO: scheduledBy is ID, how to get userName for R1 case?
+    // newConfig: metadata.newConfig //TODO: how to display newConfig?
   }
 
   return statusTooltip

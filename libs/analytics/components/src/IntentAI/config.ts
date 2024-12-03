@@ -49,7 +49,6 @@ export type IntentListItem = Intent & {
   category: string
   statusLabel: string
   statusTooltip: StatusTooltip
-  tooltipText: string
   preferences?: {
     crrmFullOptimization: boolean
   }
@@ -129,9 +128,7 @@ export const states = {
     text: defineMessage({ defaultMessage: 'Paused, Applied Failed' }),
     tooltip: defineMessage({ defaultMessage: `
       <p>IntentAI recommended changes failed to apply to <VenueSingular></VenueSingular> {zoneName} due to:</p>
-      <ul>
-        <li>{errorMessage}</li>
-      </ul>
+      {errorMessage}
       <p>The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.</p>
     ` })
   },
@@ -151,9 +148,7 @@ export const states = {
     text: defineMessage({ defaultMessage: 'Paused, Revert Failed' }),
     tooltip: defineMessage({ defaultMessage: `
       <p>The Revert action on the IntentAI recommended change, failed due to the following reason:</p>
-      <ul>
-        <li>{errorMessage}</li>
-      </ul>
+      {errorMessage}
       <p>The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.</p>
     ` })
   },
@@ -185,9 +180,7 @@ export const states = {
     text: defineMessage({ defaultMessage: 'No Recommendation, Conflicting Configuration' }),
     tooltip: defineMessage({ defaultMessage: `
       <p>No recommendation was generated. Reason:</p>
-      <ul>
-        <li>{errorMessage}</li>
-      </ul>
+      {errorMessage}
     ` })
   },
   [DisplayStates.naNoAps]: {
@@ -209,9 +202,7 @@ export const states = {
     text: defineMessage({ defaultMessage: 'No Recommendation, Not Enough Data' }),
     tooltip: defineMessage({ defaultMessage: `
       <p>No recommendation was generated. Reason:</p>
-      <ul>
-        <li>{errorMessage}</li>
-      </ul>
+      {errorMessage}
     ` })
   },
   [DisplayStates.naVerified]: {

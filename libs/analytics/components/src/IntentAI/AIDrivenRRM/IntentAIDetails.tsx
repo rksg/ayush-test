@@ -93,6 +93,12 @@ export function createIntentAIDetails () {
     const isPausedOrNa = intent.status === 'paused' || intent.status === 'na'
     const tooltipData = getStatusTooltip(displayStatus, sliceValue, { ...metadata, updatedAt })
     const { tooltip, errorMessage, scheduledAt, zoneName } = tooltipData
+    const values = {
+      ...formatValues,
+      errorMessage,
+      scheduledAt,
+      zoneName
+    }
 
     return <>
       <div hidden>
@@ -164,10 +170,7 @@ export function createIntentAIDetails () {
                 <DetailsSection.Title children={$t({ defaultMessage: 'Current Status' })} />
                 <DetailsSection.Details children={
                   <Card>
-                    {<FormattedMessage
-                      {...tooltip}
-                      values={{ ...formatValues, errorMessage, scheduledAt, zoneName }}
-                    />}
+                    <FormattedMessage {...tooltip} values={values} />
                   </Card>} />
               </DetailsSection>
             </GridCol>
