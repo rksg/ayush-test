@@ -18,11 +18,11 @@ describe('ErrorBoundary', () => {
     const target = screen.getByTestId('target')
     expect(target).toHaveTextContent('OK')
   })
-  it('no JSON error thrown', async () => {
+  it('contain JSON error thrown', async () => {
     const { baseElement } = render(<ErrorBoundary>
       <ErrorThrowingComponent />
     </ErrorBoundary>)
-    expect(baseElement).toHaveTextContent('Something went wrong.')
+    expect(baseElement).toHaveTextContent('{"message":"Error"}')
   })
   it('contain Error instance thrown', async () => {
     const { baseElement } = render(<ErrorBoundary>

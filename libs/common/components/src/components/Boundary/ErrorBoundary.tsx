@@ -19,8 +19,13 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps & {
 
     let error
     if (this.state.error instanceof Error) {
-      const { name, message } = this.state.error
-      error = <>{name}: {message}</>
+      const { name, message, stack } = this.state.error
+      error = <>
+        {name}: {message}<br />
+        {stack?.split('\n').map(line => <>{line}<br /></>)}
+      </>
+    } else {
+      error = JSON.stringify(this.state.error)
     }
     return <>
       <p>Something went wrong.</p>
