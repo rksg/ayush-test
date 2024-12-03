@@ -34,7 +34,7 @@ export const graphqlRequestBaseQuery = <E = ErrorResponse>(
 
   return async (
     { document, variables },
-    { getState, endpoint, forced, type, signal, extra, queryCacheKey, abort },
+    { getState, endpoint, forced, type, signal, extra, queryCacheKey, abort }
   ) => {
     pendingQueries.set(queryCacheKey, abort)
     try {
