@@ -24,9 +24,29 @@ import { Legend } from './Legend'
 import * as UI    from './styledComponents'
 
 const ImageGraph = ({ beforeSrc, afterSrc }: { beforeSrc?: string, afterSrc?: string }) => <>
-  {beforeSrc && <img src={beforeSrc} alt='rrm-graph-before' width='100%' height='100%' />}
+  {beforeSrc && <img
+    src={beforeSrc}
+    alt='rrm-graph-before'
+    style={{
+      margin: 'auto',
+      width: 'auto',
+      height: 'auto',
+      maxWidth: '100%',
+      maxHeight: '100%'
+    }}
+  />}
   <UI.CrrmArrow children={<UI.RightArrow/>} />
-  {afterSrc && <img src={afterSrc} alt='rrm-graph-after' width='100%' height='100%' />}
+  {afterSrc && <img
+    src={afterSrc}
+    alt='rrm-graph-after'
+    style={{
+      margin: 'auto',
+      width: 'auto',
+      height: 'auto',
+      maxWidth: '100%',
+      maxHeight: '100%'
+    }}
+  />}
   <Legend />
 </>
 
