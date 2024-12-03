@@ -91,7 +91,7 @@ const tunnelProfileDefaultPayload = {
 }
 
 const clusterDataDefaultPayload = {
-  fields: ['name', 'clusterId', 'venueId', 'highAvailabilityMode', 'edgeList'],
+  fields: ['name', 'clusterId', 'venueId', 'highAvailabilityMode'],
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
