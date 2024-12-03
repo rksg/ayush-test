@@ -227,6 +227,7 @@ describe('Network More settings - Network Control Tab', () => {
       </Provider>,
       { route: { params } })
 
+    await waitFor(() => expect(mockedGetDevicePolicy).toBeCalled())
     const view = screen.getByText(/anti\-spoofing/i)
     await userEvent.click(within(view).getByRole('switch'))
 
@@ -297,6 +298,8 @@ describe('Network More settings - Network Control Tab', () => {
         </Form>
       </Provider>,
       { route: { params } })
+
+    await waitFor(() => expect(mockedGetDevicePolicy).toBeCalled())
 
     expect(screen.getByText(/Application Recognition & Control/i)).toBeInTheDocument()
   })
