@@ -22,7 +22,7 @@ import { get }                                                                  
 import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { DownloadOutlined }                                                     from '@acx-ui/icons'
-import { exportMessageMapping, noDataDisplay, getIntl, handleBlobDownloadFile, PathFilter } from '@acx-ui/utils'
+import { exportMessageMapping, noDataDisplay, getIntl, handleBlobDownloadFile } from '@acx-ui/utils'
 
 import { ChartRowMappingType }                   from '../../../../../common/components/src/components/ConfigChangeChart/helper'
 import { ConfigChangeContext, KPIFilterContext } from '../context'
@@ -36,7 +36,8 @@ export function downloadConfigChangeList (
   configChanges: ConfigChange[],
   columns: TableProps<ConfigChange>['columns'],
   entityTypeMapping: ChartRowMappingType[],
-  { startDate, endDate }: PathFilter
+  startDate: string, 
+  endDate: string
 ) {
   const { $t } = getIntl()
   const data = stringify(
@@ -236,8 +237,14 @@ export function Table (props: {
           disabled: !Boolean(queryResults.data?.length),
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: () => {
-            downloadConfigChangeList(queryResults.data, ColumnHeaders, entityTypeMapping, pathFilters)
-          } }}
+            downloadConfigChangeList(
+              queryResults.data, 
+              ColumnHeaders, 
+              entityTypeMapping, 
+              startDate.toISOString(), 
+              endDate.toISOString()
+            )} 
+          }}
       />
     </Loader>
   </>
