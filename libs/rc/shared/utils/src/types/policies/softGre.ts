@@ -28,8 +28,8 @@ export interface SoftGreViewData {
   keepAliveRetryTimes: number
   disassociateClientEnabled: boolean
   activations: SoftGreActivation[]
-  venueActivations: SoftGreVenueActivation[]
-  apActivations: SoftGreApActivation[]
+  venueActivations: SoftGreWiredActivation[]
+  apActivations: SoftGreWiredActivation[]
 }
 
 export interface VenueTableUsageBySoftGre extends SoftGreActivation {
