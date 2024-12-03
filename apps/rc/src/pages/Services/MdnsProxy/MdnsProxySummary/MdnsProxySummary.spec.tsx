@@ -7,7 +7,7 @@ import { MdnsProxySummary } from './MdnsProxySummary'
 
 
 jest.mock('@acx-ui/rc/components', () => ({
-  MdnsProxySummaryForm: () => <div>MdnsProxySummaryForm</div>,
+  MdnsProxySummaryForm: () => <div>MdnsProxySummaryForm</div>
 }))
 
 
