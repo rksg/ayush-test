@@ -40,7 +40,43 @@ describe('Intent services', () => {
 > zone-1 (Venue)`,
         status: Statuses.active,
         statusLabel: 'Active',
-        statusTooltip: 'IntentAI is active on Venue zone-1.'
+        statusTooltip: {
+          errorMessage: '\n - \n\n',
+          scheduledAt: '07/01/2023 06:00',
+          tooltip: {
+            defaultMessage: [
+              {
+                children: [
+                  {
+                    type: 0,
+                    value: 'IntentAI is active on '
+                  },
+                  {
+                    children: [],
+                    type: 8,
+                    value: 'VenueSingular'
+                  },
+                  {
+                    type: 0,
+                    value: ' '
+                  },
+                  {
+                    type: 1,
+                    value: 'zoneName'
+                  },
+                  {
+                    type: 0,
+                    value: '.'
+                  }
+                ],
+                type: 8,
+                value: 'p'
+              }
+            ],
+            id: 'SlP7FE'
+          },
+          zoneName: 'zone-1'
+        }
       },
       {
         ...intentListResult.intents.data[1],
@@ -52,7 +88,43 @@ describe('Intent services', () => {
 > 01-Alethea-WiCheck Test (Venue)`,
         status: Statuses.na,
         statusLabel: 'No Recommendation, Not Enough License',
-        statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for Venue 01-Alethea-WiCheck Test.'
+        statusTooltip: {
+          errorMessage: '\n - \n\n',
+          scheduledAt: '07/01/2023 06:00',
+          tooltip: {
+            defaultMessage: [
+              {
+                children: [
+                  {
+                    type: 0,
+                    value: 'No recommendation was generated because IntentAI did not find sufficient licenses for '
+                  },
+                  {
+                    children: [],
+                    type: 8,
+                    value: 'VenueSingular'
+                  },
+                  {
+                    type: 0,
+                    value: ' '
+                  },
+                  {
+                    type: 1,
+                    value: 'zoneName'
+                  },
+                  {
+                    type: 0,
+                    value: '.'
+                  }
+                ],
+                type: 8,
+                value: 'p'
+              }
+            ],
+            id: '5e9ju4'
+          },
+          zoneName: '01-Alethea-WiCheck Test'
+        }
       },
       {
         ...intentListResult.intents.data[2],
@@ -64,7 +136,54 @@ describe('Intent services', () => {
 > 25-US-CA-D25-SandeepKour-home (Venue)`,
         status: Statuses.na,
         statusLabel: 'No Recommendation, No APs',
-        statusTooltip: 'No recommendation was generated. Reason: No APs are detected in the network.'
+        statusTooltip: {
+          errorMessage: '\n - \n\n',
+          scheduledAt: '07/01/2023 06:00',
+          tooltip: {
+            defaultMessage: [
+              {
+                children: [
+                  {
+                    type: 0,
+                    value: 'No recommendation was generated. Reason:'
+                  }
+                ],
+                type: 8,
+                value: 'p'
+              },
+              {
+                type: 0,
+                value: ' '
+              },
+              {
+                children: [
+                  {
+                    type: 0,
+                    value: ' '
+                  },
+                  {
+                    children: [
+                      {
+                        type: 0,
+                        value: ' No APs are detected in the network.'
+                      }
+                    ],
+                    type: 8,
+                    value: 'li'
+                  },
+                  {
+                    type: 0,
+                    value: ' '
+                  }
+                ],
+                type: 8,
+                value: 'ul'
+              }
+            ],
+            id: 'bjeb5f'
+          },
+          zoneName: '25-US-CA-D25-SandeepKour-home'
+        }
       }
     ]
     const filterOptionsResult = {
@@ -551,152 +670,822 @@ describe('Intent services', () => {
           ...expectedCommonResult,
           status: Statuses.new,
           statusLabel: 'New',
-          statusTooltip: 'IntentAI has analyzed the data and generated a change recommendations, awaiting your approval. To review the details, specify Intent priority, and apply the recommendations, click "Optimize." Alternatively, use "1-Click Optimize" to instantly apply the changes with default priority.'
+          statusTooltip: {
+            errorMessage: '\n - \n\n',
+            scheduledAt: '06/17/2023 00:00',
+            tooltip: {
+              defaultMessage: [
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: 'IntentAI has analyzed the data and generated a change recommendations, awaiting your approval. To review the details, specify Intent priority, and apply the recommendations, click "Optimize." Alternatively, use "1-Click Optimize" to instantly apply the changes with default priority.'
+                    }
+                  ],
+                  type: 8,
+                  value: 'p'
+                }
+              ],
+              id: 'ZHmZR7'
+            },
+            zoneName: 'zone-1'
+          }
         },
         {
           ...intentListWithAllStatus.intents.data[1],
           ...expectedCommonResult,
           status: Statuses.scheduled,
           statusLabel: 'Scheduled',
-          statusTooltip: 'The change recommendation has been scheduled for 06/17/2023 00:00, via the user action "Optimize".'
+          statusTooltip: {
+            errorMessage: '\n - \n\n',
+            scheduledAt: '06/17/2023 00:00',
+            tooltip: {
+              defaultMessage: [
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: 'The change recommendation has been scheduled for '
+                    },
+                    {
+                      type: 1,
+                      value: 'scheduledAt'
+                    },
+                    {
+                      type: 0,
+                      value: ', via the user action "Optimize".'
+                    }
+                  ],
+                  type: 8,
+                  value: 'p'
+                }
+              ],
+              id: 'd2Esk3'
+            },
+            zoneName: 'zone-1'
+          }
         },
         {
           ...intentListWithAllStatus.intents.data[2],
           ...expectedCommonResult,
           status: Statuses.scheduled,
           statusLabel: 'Scheduled',
-          statusTooltip: 'The change recommendation has been scheduled for 06/17/2023 00:00, via the user action "1-Click Optimize".'
+          statusTooltip: {
+            errorMessage: '\n - \n\n',
+            scheduledAt: '06/17/2023 00:00',
+            tooltip: {
+              defaultMessage: [
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: 'The change recommendation has been scheduled for '
+                    },
+                    {
+                      type: 1,
+                      value: 'scheduledAt'
+                    },
+                    {
+                      type: 0,
+                      value: ', via the user action "1-Click Optimize".'
+                    }
+                  ],
+                  type: 8,
+                  value: 'p'
+                }
+              ],
+              id: '27YRCc'
+            },
+            zoneName: 'zone-1'
+          }
         },
         {
           ...intentListWithAllStatus.intents.data[3],
           ...expectedCommonResult,
           status: Statuses.applyScheduled,
           statusLabel: 'Scheduled',
-          statusTooltip: 'The change recommendation has been automatically scheduled for 06/17/2023 00:00, by IntentAI.'
+          statusTooltip: {
+            errorMessage: '\n - \n\n',
+            scheduledAt: '06/17/2023 00:00',
+            tooltip: {
+              defaultMessage: [
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: 'The change recommendation has been automatically scheduled for '
+                    },
+                    {
+                      type: 1,
+                      value: 'scheduledAt'
+                    },
+                    {
+                      type: 0,
+                      value: ', by IntentAI.'
+                    }
+                  ],
+                  type: 8,
+                  value: 'p'
+                }
+              ],
+              id: '0wcZFJ'
+            },
+            zoneName: 'zone-1'
+          }
         },
         {
           ...intentListWithAllStatus.intents.data[4],
           ...expectedCommonResult,
           status: Statuses.applyScheduleInProgress,
           statusLabel: 'Apply In Progress',
-          statusTooltip: 'IntentAI recommended changes are getting applied to Venue zone-1.'
+          statusTooltip: {
+            errorMessage: '\n - \n\n',
+            scheduledAt: '06/17/2023 00:00',
+            tooltip: {
+              defaultMessage: [
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: 'IntentAI recommended changes are getting applied to '
+                    },
+                    {
+                      children: [],
+                      type: 8,
+                      value: 'VenueSingular'
+                    },
+                    {
+                      type: 0,
+                      value: ' '
+                    },
+                    {
+                      type: 1,
+                      value: 'zoneName'
+                    },
+                    {
+                      type: 0,
+                      value: '.'
+                    }
+                  ],
+                  type: 8,
+                  value: 'p'
+                }
+              ],
+              id: '+tFR/k'
+            },
+            zoneName: 'zone-1'
+          }
         },
         {
           ...intentListWithAllStatus.intents.data[5],
           ...expectedCommonResult,
           status: Statuses.active,
           statusLabel: 'Active',
-          statusTooltip: 'IntentAI is active on Venue zone-1.'
+          statusTooltip: {
+            errorMessage: '\n - \n\n',
+            scheduledAt: '06/17/2023 00:00',
+            tooltip: {
+              defaultMessage: [
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: 'IntentAI is active on '
+                    },
+                    {
+                      children: [],
+                      type: 8,
+                      value: 'VenueSingular'
+                    },
+                    {
+                      type: 0,
+                      value: ' '
+                    },
+                    {
+                      type: 1,
+                      value: 'zoneName'
+                    },
+                    {
+                      type: 0,
+                      value: '.'
+                    }
+                  ],
+                  type: 8,
+                  value: 'p'
+                }
+              ],
+              id: 'SlP7FE'
+            },
+            zoneName: 'zone-1'
+          }
         },
         {
           ...intentListWithAllStatus.intents.data[6],
           ...expectedCommonResult,
           status: Statuses.paused,
           statusLabel: 'Paused, Applied Failed',
-          statusTooltip: `IntentAI recommended changes failed to apply to Venue zone-1 due to:
- - errMsg from the notification service
-
- The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.`
+          statusTooltip: {
+            errorMessage: '\n - errMsg from the notification service\n\n',
+            scheduledAt: '06/17/2023 00:00',
+            tooltip: {
+              defaultMessage: [
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: 'IntentAI recommended changes failed to apply to '
+                    },
+                    {
+                      children: [],
+                      type: 8,
+                      value: 'VenueSingular'
+                    },
+                    {
+                      type: 0,
+                      value: ' '
+                    },
+                    {
+                      type: 1,
+                      value: 'zoneName'
+                    },
+                    {
+                      type: 0,
+                      value: ' due to:'
+                    }
+                  ],
+                  type: 8,
+                  value: 'p'
+                },
+                {
+                  type: 0,
+                  value: ' '
+                },
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: ' '
+                    },
+                    {
+                      children: [
+                        {
+                          type: 1,
+                          value: 'errorMessage'
+                        }
+                      ],
+                      type: 8,
+                      value: 'li'
+                    },
+                    {
+                      type: 0,
+                      value: ' '
+                    }
+                  ],
+                  type: 8,
+                  value: 'ul'
+                },
+                {
+                  type: 0,
+                  value: ' '
+                },
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: 'The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
+                    }
+                  ],
+                  type: 8,
+                  value: 'p'
+                }
+              ],
+              id: '0NHxLi'
+            },
+            zoneName: 'zone-1'
+          }
         },
         {
           ...intentListWithAllStatus.intents.data[7],
           ...expectedCommonResult,
           status: Statuses.revertScheduled,
           statusLabel: 'Revert Scheduled',
-          statusTooltip: 'The Revert of the IntentAI recommended changes are scheduled for 06/17/2023 00:00, via user action "Revert".'
+          statusTooltip: {
+            errorMessage: '\n - \n\n',
+            scheduledAt: '06/17/2023 00:00',
+            tooltip: {
+              defaultMessage: [
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: 'The Revert of the IntentAI recommended changes are scheduled for '
+                    },
+                    {
+                      type: 1,
+                      value: 'scheduledAt'
+                    },
+                    {
+                      type: 0,
+                      value: ', via user action "Revert".'
+                    }
+                  ],
+                  type: 8,
+                  value: 'p'
+                }
+              ],
+              id: 'efN70d'
+            },
+            zoneName: 'zone-1'
+          }
         },
         {
           ...intentListWithAllStatus.intents.data[8],
           ...expectedCommonResult,
           status: Statuses.revertScheduleInProgress,
           statusLabel: 'Revert In Progress',
-          statusTooltip: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on Venue zone-1.'
+          statusTooltip: {
+            errorMessage: '\n - \n\n',
+            scheduledAt: '06/17/2023 00:00',
+            tooltip: {
+              defaultMessage: [
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on '
+                    },
+                    {
+                      children: [],
+                      type: 8,
+                      value: 'VenueSingular'
+                    },
+                    {
+                      type: 0,
+                      value: ' '
+                    },
+                    {
+                      type: 1,
+                      value: 'zoneName'
+                    },
+                    {
+                      type: 0,
+                      value: '.'
+                    }
+                  ],
+                  type: 8,
+                  value: 'p'
+                }
+              ],
+              id: 'y0oMfH'
+            },
+            zoneName: 'zone-1'
+          }
         },
         {
           ...intentListWithAllStatus.intents.data[9],
           ...expectedCommonResult,
           status: Statuses.paused,
           statusLabel: 'Paused, Revert Failed',
-          statusTooltip: `The Revert action on the IntentAI recommended change, failed due to the following reason:
- - errMsg from the notification service
-
- The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.`
+          statusTooltip: {
+            errorMessage: '\n - errMsg from the notification service\n\n',
+            scheduledAt: '06/17/2023 00:00',
+            tooltip: {
+              defaultMessage: [
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: 'The Revert action on the IntentAI recommended change, failed due to the following reason:'
+                    }
+                  ],
+                  type: 8,
+                  value: 'p'
+                },
+                {
+                  type: 0,
+                  value: ' '
+                },
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: ' '
+                    },
+                    {
+                      children: [
+                        {
+                          type: 1,
+                          value: 'errorMessage'
+                        }
+                      ],
+                      type: 8,
+                      value: 'li'
+                    },
+                    {
+                      type: 0,
+                      value: ' '
+                    }
+                  ],
+                  type: 8,
+                  value: 'ul'
+                },
+                {
+                  type: 0,
+                  value: ' '
+                },
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: 'The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
+                    }
+                  ],
+                  type: 8,
+                  value: 'p'
+                }
+              ],
+              id: 'PNQ+bs'
+            },
+            zoneName: 'zone-1'
+          }
         },
         {
           ...intentListWithAllStatus.intents.data[10],
           ...expectedCommonResult,
           status: Statuses.paused,
           statusLabel: 'Paused, Revert Success',
-          statusTooltip: 'The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
+          statusTooltip: {
+            errorMessage: '\n - \n\n',
+            scheduledAt: '06/17/2023 00:00',
+            tooltip: {
+              defaultMessage: [
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: 'The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
+                    }
+                  ],
+                  type: 8,
+                  value: 'p'
+                }
+              ],
+              id: 'NKLU6M'
+            },
+            zoneName: 'zone-1'
+          }
         },
         {
           ...intentListWithAllStatus.intents.data[11],
           ...expectedCommonResult,
           status: Statuses.paused,
           statusLabel: 'Paused',
-          statusTooltip: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
+          statusTooltip: {
+            errorMessage: '\n - \n\n',
+            scheduledAt: '06/17/2023 00:00',
+            tooltip: {
+              defaultMessage: [
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
+                    }
+                  ],
+                  type: 8,
+                  value: 'p'
+                }
+              ],
+              id: 't0U6si'
+            },
+            zoneName: 'zone-1'
+          }
         },
         {
           ...intentListWithAllStatus.intents.data[12],
           ...expectedCommonResult,
           status: Statuses.paused,
           statusLabel: 'Paused',
-          statusTooltip: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
+          statusTooltip: {
+            errorMessage: '\n - \n\n',
+            scheduledAt: '06/17/2023 00:00',
+            tooltip: {
+              defaultMessage: [
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
+                    }
+                  ],
+                  type: 8,
+                  value: 'p'
+                }
+              ],
+              id: 't0U6si'
+            },
+            zoneName: 'zone-1'
+          }
         },
         {
           ...intentListWithAllStatus.intents.data[13],
           ...expectedCommonResult,
           status: Statuses.paused,
           statusLabel: 'Paused',
-          statusTooltip: 'The Intent is in default state of "Paused". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
+          statusTooltip: {
+            errorMessage: '\n - \n\n',
+            scheduledAt: '06/17/2023 00:00',
+            tooltip: {
+              defaultMessage: [
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: 'The Intent is in default state of "Paused". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
+                    }
+                  ],
+                  type: 8,
+                  value: 'p'
+                }
+              ],
+              id: 'Mse6u6'
+            },
+            zoneName: 'zone-1'
+          }
         },
         {
           ...intentListWithAllStatus.intents.data[14],
           ...expectedCommonResult,
           status: Statuses.na,
           statusLabel: 'No Recommendation, Conflicting Configuration',
-          statusTooltip: `No recommendation was generated. Reason:
- - The network has active Mesh APs, which are currently not supported.
-
-`
+          statusTooltip: {
+            errorMessage: '\n - The network has active Mesh APs, which are currently not supported.\n\n',
+            scheduledAt: '06/17/2023 00:00',
+            tooltip: {
+              defaultMessage: [
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: 'No recommendation was generated. Reason:'
+                    }
+                  ],
+                  type: 8,
+                  value: 'p'
+                },
+                {
+                  type: 0,
+                  value: ' '
+                },
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: ' '
+                    },
+                    {
+                      children: [
+                        {
+                          type: 1,
+                          value: 'errorMessage'
+                        }
+                      ],
+                      type: 8,
+                      value: 'li'
+                    },
+                    {
+                      type: 0,
+                      value: ' '
+                    }
+                  ],
+                  type: 8,
+                  value: 'ul'
+                }
+              ],
+              id: 'jd4/BZ'
+            },
+            zoneName: 'zone-1'
+          }
         },
         {
           ...intentListWithAllStatus.intents.data[15],
           ...expectedCommonResult,
           status: Statuses.na,
           statusLabel: 'No Recommendation, No APs',
-          statusTooltip: 'No recommendation was generated. Reason: No APs are detected in the network.'
+          statusTooltip: {
+            errorMessage: '\n - \n\n',
+            scheduledAt: '06/17/2023 00:00',
+            tooltip: {
+              defaultMessage: [
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: 'No recommendation was generated. Reason:'
+                    }
+                  ],
+                  type: 8,
+                  value: 'p'
+                },
+                {
+                  type: 0,
+                  value: ' '
+                },
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: ' '
+                    },
+                    {
+                      children: [
+                        {
+                          type: 0,
+                          value: ' No APs are detected in the network.'
+                        }
+                      ],
+                      type: 8,
+                      value: 'li'
+                    },
+                    {
+                      type: 0,
+                      value: ' '
+                    }
+                  ],
+                  type: 8,
+                  value: 'ul'
+                }
+              ],
+              id: 'bjeb5f'
+            },
+            zoneName: 'zone-1'
+          }
         },
         {
           ...intentListWithAllStatus.intents.data[16],
           ...expectedCommonResult,
           status: Statuses.na,
           statusLabel: 'No Recommendation, Not Enough License',
-          statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for Venue zone-1.'
+          statusTooltip: {
+            errorMessage: '\n - \n\n',
+            scheduledAt: '06/17/2023 00:00',
+            tooltip: {
+              defaultMessage: [
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: 'No recommendation was generated because IntentAI did not find sufficient licenses for '
+                    },
+                    {
+                      children: [],
+                      type: 8,
+                      value: 'VenueSingular'
+                    },
+                    {
+                      type: 0,
+                      value: ' '
+                    },
+                    {
+                      type: 1,
+                      value: 'zoneName'
+                    },
+                    {
+                      type: 0,
+                      value: '.'
+                    }
+                  ],
+                  type: 8,
+                  value: 'p'
+                }
+              ],
+              id: '5e9ju4'
+            },
+            zoneName: 'zone-1'
+          }
         },
         {
           ...intentListWithAllStatus.intents.data[17],
           ...expectedCommonResult,
           status: Statuses.na,
           statusLabel: 'No Recommendation, Not Enough Data',
-          statusTooltip: `No recommendation was generated. Reason:
- - Insufficient data on neighbour APs.
-
-`
+          statusTooltip: {
+            errorMessage: '\n - Insufficient data on neighbour APs.\n\n',
+            scheduledAt: '06/17/2023 00:00',
+            tooltip: {
+              defaultMessage: [
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: 'No recommendation was generated. Reason:'
+                    }
+                  ],
+                  type: 8,
+                  value: 'p'
+                },
+                {
+                  type: 0,
+                  value: ' '
+                },
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: ' '
+                    },
+                    {
+                      children: [
+                        {
+                          type: 1,
+                          value: 'errorMessage'
+                        }
+                      ],
+                      type: 8,
+                      value: 'li'
+                    },
+                    {
+                      type: 0,
+                      value: ' '
+                    }
+                  ],
+                  type: 8,
+                  value: 'ul'
+                }
+              ],
+              id: 'jd4/BZ'
+            },
+            zoneName: 'zone-1'
+          }
         },
         {
           ...intentListWithAllStatus.intents.data[18],
           ...expectedCommonResult,
           status: Statuses.na,
           statusLabel: 'Verified',
-          statusTooltip: 'IntentAI has validated Venue zone-1 configurations. No new changes have been recommended.'
+          statusTooltip: {
+            errorMessage: '\n - \n\n',
+            scheduledAt: '06/17/2023 00:00',
+            tooltip: {
+              defaultMessage: [
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: 'IntentAI has validated '
+                    },
+                    {
+                      children: [],
+                      type: 8,
+                      value: 'VenueSingular'
+                    },
+                    {
+                      type: 0,
+                      value: ' '
+                    },
+                    {
+                      type: 1,
+                      value: 'zoneName'
+                    },
+                    {
+                      type: 0,
+                      value: ' configurations. No new changes have been recommended.'
+                    }
+                  ],
+                  type: 8,
+                  value: 'p'
+                }
+              ],
+              id: 'AmaHdr'
+            },
+            zoneName: 'zone-1'
+          }
         },
         {
           ...intentListWithAllStatus.intents.data[19],
           ...expectedCommonResult,
           status: Statuses.na,
           statusLabel: 'No Recommendation',
-          statusTooltip: 'No recommendation was generated. Reason: Awaiting data processing and recommendation generation by ML algorithms.'
+          statusTooltip: {
+            errorMessage: '\n - \n\n',
+            scheduledAt: '06/17/2023 00:00',
+            tooltip: {
+              defaultMessage: [
+                {
+                  children: [
+                    {
+                      type: 0,
+                      value: 'No recommendation was generated. Reason: Awaiting data processing and recommendation generation by ML algorithms.'
+                    }
+                  ],
+                  type: 8,
+                  value: 'p'
+                }
+              ],
+              id: 'T/xRoX'
+            },
+            zoneName: 'zone-1'
+          }
         }
       ]
       expect(error).toBe(undefined)

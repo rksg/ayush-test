@@ -24,6 +24,20 @@ describe('DescriptionRow', () => {
       asFragment: asNoTitleFragment
     } = render(<DescriptionRow label='label' children={<div data-testid='children'/>}/>)
     expect(asNoTitleFragment()).toMatchSnapshot()
+
+    const formattedTooltip = {
+      id: 'tooltip.test',
+      defaultMessage: 'This is a test tooltip for {value}'
+    }
+    const tooltipValues = { value: 'DescriptionRow' }
+    const {
+      asFragment: asFormattedTooltipFragment
+    } = render(<DescriptionRow
+      {...props}
+      formattedTooltip={formattedTooltip}
+      tooltipValues={tooltipValues}/>
+    )
+    expect(asFormattedTooltipFragment()).toMatchSnapshot()
   })
   it('should handle onClick', async () => {
     const onClick = jest.fn()
