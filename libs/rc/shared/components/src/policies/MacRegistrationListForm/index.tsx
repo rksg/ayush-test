@@ -76,7 +76,7 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
 
   const handleAddList = async (data: MacRegistrationPoolFormFields) => {
     try {
-      let saveData = {
+      const saveData = {
         name: data.name,
         autoCleanup: data.autoCleanup,
         ...transferExpirationFormFieldsToData(data.expiration),
