@@ -5,6 +5,7 @@ import moment      from 'moment-timezone'
 import { get }                                                            from '@acx-ui/config'
 import { dataApi, dataApiURL, intentAIApi, intentAIUrl, Provider, store } from '@acx-ui/store'
 import {
+  fireEvent,
   mockGraphqlMutation,
   mockGraphqlQuery,
   render,
@@ -95,7 +96,12 @@ const mockIntentContextWith = (data: Partial<Intent> = {}) => {
   const intent = { ...mocked, ...data }
   mockIntentContext({ intent, kpis })
   return {
-    params: { code: mocked.code, root: mocked.root, sliceId: mocked.sliceId }
+    params: {
+      code: mocked.code,
+      root: mocked.root,
+      sliceId: mocked.sliceId,
+      tenantId: 'tenant-id'
+    }
   }
 }
 
@@ -128,7 +134,9 @@ describe('IntentAIForm', () => {
   it('handle schedule intent', async () => {
     jest
       .spyOn(require('@acx-ui/components'), 'DatePicker')
-      .mockImplementation(() => <input defaultValue='08/09/2024' placeholder='Select date' />)
+      .mockImplementation(() => (
+        <input value='08/09/2024' placeholder='Select date' onChange={jest.fn} />
+      ))
     const { params } = mockIntentContextWith({
       status: Statuses.new,
       sliceId: 'id1',
@@ -146,15 +154,22 @@ describe('IntentAIForm', () => {
     const actions = within(form.getByTestId('steps-form-actions'))
 
     expect(container).toMatchSnapshot('step 1')
-
     await click(actions.getByRole('button', { name: 'Next' }))
+
+    const radioEnabled = screen.getByRole('radio', { name: 'Reduction in energy footprint' })
+    await click(radioEnabled)
+    expect(radioEnabled).toBeChecked()
+    const currInput = await screen.findByDisplayValue('USD')
+    fireEvent.change(currInput, { target: { value: 'SGD' } })
+    expect(screen.getByDisplayValue('SGD')).toBeVisible()
     expect(container).toMatchSnapshot('step 2')
-
     await click(actions.getByRole('button', { name: 'Next' }))
+
+    expect(await screen.findByText(/Local time/)).toBeVisible()
     expect(container).toMatchSnapshot('step 3')
-
     await click(actions.getByRole('button', { name: 'Next' }))
 
+    expect((await screen.findAllByText('Summary')).length).toEqual(2)
     expect(await screen.findByText('Hours not applied for EcoFlex')).toBeVisible()
     expect(
       await screen.findByText(
@@ -169,10 +184,9 @@ describe('IntentAIForm', () => {
     expect(await screen.findByText('Projected energy reduction')).toBeVisible()
 
     await click(actions.getByRole('button', { name: 'Apply' }))
-
+    expect(await screen.findByText(/has been updated/)).toBeVisible()
     await click(await screen.findByText(/View/))
     expect(mockNavigate).toBeCalled()
-    expect(container).toMatchSnapshot('completed')
   })
 
   it('handle pause intent', async () => {
