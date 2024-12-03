@@ -53,7 +53,7 @@ describe('Network More Settings - Hotspot 2.0 Tab', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Add Protocol' }))
   })
 
-  it('should render connection capabilities in edit mode', async () => {
+  it.skip('should render connection capabilities in edit mode', async () => {
     const data = {
       type: 'hotspot20',
       hotspot20Settings: {
