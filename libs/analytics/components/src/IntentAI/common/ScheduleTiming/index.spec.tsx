@@ -1,6 +1,6 @@
-import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
-import moment    from 'moment-timezone'
+import userEvent              from '@testing-library/user-event'
+import { Form, FormInstance } from 'antd'
+import moment                 from 'moment-timezone'
 
 import { screen, render, renderHook } from '@acx-ui/test-utils'
 
@@ -32,17 +32,19 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
-const renderForm = (children: JSX.Element) => {
+const renderForm = (children: JSX.Element, form?: FormInstance) => {
+  let _form = form || renderHook(() => Form.useForm()[0]).result.current
   const { result: { current: initialValues } } = renderHook(() => useInitialValues())
-  const { result: { current: form } } = renderHook(() => Form.useForm()[0])
   const onFinish = jest.fn()
   return {
-    form,
+    form: _form,
     onFinish,
-    formRender: render(<Form {...{ form, onFinish, initialValues }}>
-      {children}
-      <button type='submit'>Submit</button>
-    </Form>)
+    formRender: render(
+      <Form {...{ form: _form, onFinish, initialValues }}>
+        {children}
+        <button type='submit'>Submit</button>
+      </Form>
+    )
   }
 }
 
@@ -192,6 +194,33 @@ describe('ScheduleTiming', () => {
       const time = await screen.findByPlaceholderText('Select time')
       expect(date).toHaveValue(currentDateTime.format('MM/DD/YYYY'))
       expect(time).toHaveValue('')
+    })
+
+    it('should reset date and time fields when date field is set to null', async () => {
+      const mockScheduledAt = '2024-08-12T10:30:00'
+      mockIntentContext({
+        intent: {
+          ...mockedIntentCRRM,
+          metadata: {
+            ...mockedIntentCRRM.metadata,
+            scheduledAt: mockScheduledAt
+          },
+          status: Statuses.scheduled
+        },
+        kpis: []
+      })
+
+      const dateName = ['settings', 'date']
+      const timeName = ['settings', 'time']
+      const { form } = renderForm(<ScheduleTiming />)
+      const resetFieldsSpy = jest.spyOn(form, 'resetFields')
+
+      form.setFieldValue(dateName, null)
+      renderForm(<ScheduleTiming />, form)
+
+      expect(resetFieldsSpy).toBeCalledWith([dateName, timeName])
+      expect(form.getFieldValue(dateName)).toEqual(moment(mockScheduledAt))
+      expect(form.getFieldValue(timeName)).toEqual(10.5)
     })
   })
 
