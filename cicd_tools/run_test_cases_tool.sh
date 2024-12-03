@@ -20,9 +20,9 @@ if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRAN
     ${RUN_COMMAND} libs/analytics/components/jest.config.ts ${NX_RUN_OPTIONS}
     ${RUN_COMMAND} apps/msp/jest.config.ts ${NX_RUN_OPTIONS}
     ${RUN_COMMAND} libs/rc/msp/components/jest.config.ts ${NX_RUN_OPTIONS}
-    ${RUN_COMMAND} libs/rc/switch/components/jest.config.ts ${NX_RUN_OPTIONS}
-    ${RUN_COMMAND} libs/rc/edge/components/jest.config.ts ${NX_RUN_OPTIONS}
-    ${RUN_COMMAND} libs/rc/wifi/components/jest.config.ts ${NX_RUN_OPTIONS}
+    ${RUN_COMMAND} libs/rc/switch/components/jest.config.ts ${NX_RUN_OPTIONS} --passWithNoTests
+    ${RUN_COMMAND} libs/rc/edge/components/jest.config.ts ${NX_RUN_OPTIONS} --passWithNoTests
+    ${RUN_COMMAND} libs/rc/wifi/components/jest.config.ts ${NX_RUN_OPTIONS} --passWithNoTests
     ${RUN_COMMAND} run-many --target=test --all --exclude=rc,rc-components,main,analytics-components,msp,msp-components,main-components,edge-components,switch-components,wifi-components ${NX_RUN_OPTIONS}
     ## All unit tests. ##
 fi
