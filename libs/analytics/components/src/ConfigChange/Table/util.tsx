@@ -95,3 +95,12 @@ export const filterData = (data: ConfigChange[], kpiKeys: string[], legendFilter
       ? kpiKeys.some(k => configChangekpiMap[row.key]?.includes(k))
       : true)
 }
+
+export const getEntityValue = (type: string, key: string, value: string) => {
+  return enumTextMap.get(
+    `${(jsonMapping[type as EntityType].enumMap).get(key, '')}-${value}`, value)
+}
+
+export const getConfiguration = (type: string, key: string) => {
+  return jsonMapping[type as EntityType].configMap.get(key, key)
+}

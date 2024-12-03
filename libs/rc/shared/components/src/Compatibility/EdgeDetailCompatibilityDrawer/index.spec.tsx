@@ -60,7 +60,7 @@ describe('EdgeDetailCompatibilityDrawer', () => {
     render(<Provider>
       <EdgeDetailCompatibilityDrawer
         title='Incompatibility Details'
-        visible={true}
+        visible
         featureName={IncompatibilityFeatures.SD_LAN}
         data={sdlanData}
         onClose={mockedCloseDrawer}
@@ -96,8 +96,7 @@ describe('EdgeDetailCompatibilityDrawer', () => {
 
     render(<Provider>
       <EdgeDetailCompatibilityDrawer
-        title='Incompatibility Details'
-        visible={true}
+        visible
         featureName={IncompatibilityFeatures.TUNNEL_PROFILE}
         data={sdlanData}
         onClose={mockedCloseDrawer}

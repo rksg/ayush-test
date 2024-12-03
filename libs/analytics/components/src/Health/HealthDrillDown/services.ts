@@ -6,6 +6,8 @@ import { getFilterPayload, getSelectedNodePath } from '@acx-ui/analytics/utils'
 import { dataApi }                               from '@acx-ui/store'
 import { NodesFilter }                           from '@acx-ui/utils'
 
+import { TabKeyType } from './healthPieChart'
+
 export interface ConnectionDrilldown {
   network: {
     connectionDrilldown: {
@@ -173,20 +175,32 @@ export const api = dataApi.injectEndpoints({
     }),
     healthImpactedClients: build.query<
       ImpactedClients,
-      RequestPayload & { field: string; topImpactedClientLimit: number; stage: string }
+      RequestPayload & {
+        field: string;
+        topImpactedClientLimit: number;
+        stage: string;
+        pieData: {
+          key: string;
+          chartKey: TabKeyType;
+          list: string[];
+        } | null;
+        allowedPieFilter: boolean;
+      }
     >({
       query: (payload) => {
-        const impactedClientQuery = (type : string, stage : string) => {
-          return `impactedClients: ${type}(n: ${
-            payload.topImpactedClientLimit + 1
-          }, stage: "${stage}") {
-                mac
-                manufacturer
-                ssid
-                hostname
-                username
-                osType
-              }`
+        const impactedClientQuery = (type: string, stage: string) => {
+          return `impactedClients: ${type}(
+            n: ${payload.topImpactedClientLimit + 1}
+            stage: "${stage}"
+            ${payload.allowedPieFilter ? 'pieData: $pieData' : ''}
+          ) {
+            mac
+            manufacturer
+            ssid
+            hostname
+            username
+            osType
+          }`
         }
         return {
           document: gql`
@@ -195,6 +209,7 @@ export const api = dataApi.injectEndpoints({
               $start: DateTime
               $end: DateTime
               $filter: FilterInput
+              ${payload.allowedPieFilter ? '$pieData: PieDataInput' : ''}
             ) {
               network(start: $start, end: $end, filter: $filter) {
                 hierarchyNode(path: $path) {

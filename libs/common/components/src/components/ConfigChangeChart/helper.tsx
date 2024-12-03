@@ -58,7 +58,7 @@ export interface ConfigChangeChartProps extends Omit<EChartsReactProps, 'option'
   setPagination?: (params: { current: number, pageSize: number }) => void
 }
 
-type ChartRowMappingType = { key: string, label: string, color: string }
+export type ChartRowMappingType = { key: string, label: string, color: string }
 export function getConfigChangeEntityTypeMapping (showIntentAI: boolean) : ChartRowMappingType[] {
   const { $t } = getIntl()
   const colors = qualitativeColorSet()
@@ -438,8 +438,10 @@ export function useLegendTableFilter (
   const isMLISA = get('IS_MLISA_SA')
   const isPagedConfigChange = useIsSplitOn(Features.CONFIG_CHANGE_PAGINATION)
   const isPaged = Boolean(isMLISA || isPagedConfigChange)
-  const isIntentAIConfigChangeEnable = useIsSplitOn(Features.MLISA_4_11_0_TOGGLE)
-  const showIntentAI = Boolean(isMLISA || isIntentAIConfigChangeEnable)
+  const showIntentAI = [
+    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
+    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
+  ].some(Boolean)
 
   useEffect(() => {
     const chartRowMapping = getConfigChangeEntityTypeMapping(showIntentAI)

@@ -203,9 +203,8 @@ export const SetupButton = styled.div`
 export const SummaryContainer = styled.div`
   background-color: var(--acx-neutrals-15);
   border-radius: 8px;
-  width: 450px;
   padding: 20px;
-  margin: 10px 0px;
+  margin: 0px 0px 20px 0px;
 `
 
 export const SummaryDescription = styled.span`
@@ -218,7 +217,7 @@ export const SummaryDescription = styled.span`
 export const SummaryContainerHeader = styled.span`
   font-size: var(--acx-subtitle-4-font-size);
   font-weight: var(--acx-subtitle-4-font-weight);
-  color: var(--acx-accents-blue-50);
+  color: var(--acx-primary-black);
   margin-bottom: 5px;
 `
 
@@ -249,4 +248,55 @@ export const WarningTriangleSolidIcon = styled(WarningTriangleSolid)`
   path:nth-child(3) {
     stroke: var(--acx-accents-orange-30);
   }
+`
+
+export const SummaryUl = styled.ul`
+  list-style-type: disc;
+  padding-left: 20px;
+  margin-bottom: 0px;
+
+  li::marker {
+    font-size: 8px;
+    color: var( --acx-primary-black);
+  }
+`
+
+export const SummaryLi = styled.li<{ selected?: boolean }>`
+  text-decoration-skip-ink: none;
+  text-decoration-line: underline;
+  margin-bottom: 5px;
+  font-weight: var(--acx-headline-5-font-weight);
+  cursor: pointer;
+
+  ${(props) =>
+    props.selected &&
+    `
+    color:  var(--acx-accents-orange-50);
+    font-weight: var(--acx-headline-5-font-weight-bold);
+      ` }
+
+  &:hover {
+    color:  var(--acx-accents-orange-50);
+  }
+`
+
+export const VlanSummaryLi = styled.li`
+  margin-bottom: 5px;
+`
+
+export const SummarySplitContainer = styled.div`
+  display: flex;
+  height: 100%;
+`
+export const SummaryDivider = styled.div`
+  width: 1px;
+  margin: 0 20px 0 20px;
+  background-color: var(--acx-neutrals-40);
+`
+
+export const SummaryBox = styled.div`
+  flex: 1;
+  box-sizing: border-box;
+  max-height: 440px;
+  overflow-y: auto;
 `
