@@ -324,33 +324,4 @@ describe('PersonalIdentityNetworkFormContext', () => {
     await waitFor(() =>
       expect(result.current.getClusterName('clusterId_5')).toBe('Edge Cluster 5'))
   })
-
-  it('should single node cluster able to be PIN cluster', async () => {
-    const singleNodeAa = cloneDeep(mockEdgeClusterList)
-    singleNodeAa.data[0].edgeList.splice(1, 1)
-    singleNodeAa.data[0].name = 'Mock Single Node'
-    singleNodeAa.data[0].clusterId = 'mock_single_node_id'
-
-    mockServer.use(
-      rest.post(
-        EdgeUrlsInfo.getEdgeClusterStatusList.url,
-        (_req, res, ctx) => res(ctx.json(singleNodeAa))
-      )
-    )
-    const { result } = renderHook(() => useContext(PersonalIdentityNetworkFormContext), {
-      wrapper: ({ children }) => <Provider>
-        <PersonalIdentityNetworkFormDataProvider venueId='mock_venue_1'>
-          {children}
-        </PersonalIdentityNetworkFormDataProvider>
-      </Provider>,
-      route: { params, path: createPinPath }
-    })
-
-    await waitFor(() =>
-      expect(result.current.getClusterName('mock_single_node_id')).toBe('Mock Single Node'))
-    expect(result.current.getClusterName('clusterId_2')).toBe('Edge Cluster 2')
-    expect(result.current.getClusterName('clusterId_3')).toBe('')
-    expect(result.current.getClusterName('clusterId_4')).toBe('')
-    expect(result.current.getClusterName('clusterId_5')).toBe('')
-  })
 })

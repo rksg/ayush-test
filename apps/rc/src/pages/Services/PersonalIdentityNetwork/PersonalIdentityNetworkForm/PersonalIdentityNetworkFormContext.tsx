@@ -372,6 +372,5 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
 }
 
 const isPinSupportCluster = (cluster: EdgeClusterStatus) => {
-  // eslint-disable-next-line max-len
-  return cluster.edgeList?.length === 1 || cluster.highAvailabilityMode !== ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
+  return cluster.highAvailabilityMode !== ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
 }
