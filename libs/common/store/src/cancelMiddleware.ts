@@ -8,7 +8,6 @@ export const cancelMiddleware: Middleware = ({ getState, dispatch }) => next => 
     meta: { requestStatus: string, arg: { queryCacheKey: string } },
     payload: { queryCacheKey: string }
   }
-  // console.log('a', action, pendingQueries.size)
   if (type?.endsWith('/unsubscribeQueryResult')) {
     const { queryCacheKey } = payload
     const abort = pendingQueries.get(queryCacheKey)
@@ -17,7 +16,6 @@ export const cancelMiddleware: Middleware = ({ getState, dispatch }) => next => 
       const state = getState()[api]
       const query = state.queries[queryCacheKey]
       if (query?.status === 'pending') {
-        // console.log('abort', queryCacheKey, state)
         abort()
         dispatch({ type: api + '/queries/removeQueryResult', payload: { queryCacheKey } })
         pendingQueries.delete(queryCacheKey)
