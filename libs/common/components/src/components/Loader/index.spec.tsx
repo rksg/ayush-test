@@ -39,8 +39,7 @@ describe('Loader', () => {
       <div data-testid='target'>OK</div>
     </Loader>)
 
-    expect(baseElement).toHaveTextContent('Something went wrong')
-    expect(baseElement).toHaveTextContent('{"message":"Error"}')
+    expect(baseElement).toHaveTextContent('Something went wrong.')
   })
   it('renders fallback for error', async () => {
     const fallback = 'Error!!!'

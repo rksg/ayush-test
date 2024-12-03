@@ -140,7 +140,7 @@ export const getErrorContent = (action: ErrorAction) => {
     | string
     | undefined
 
-  if (action.type.includes('data-api') && (response as GraphQLResponse)?.errors) {
+  if (action.type?.includes('data-api') && (response as GraphQLResponse)?.errors) {
     errors = (response as GraphQLResponse).errors
   } else if (typeof action.payload === 'string') {
     errors = action.payload
