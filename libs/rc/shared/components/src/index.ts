@@ -153,6 +153,7 @@ export {
   transformEdgeHaSettingsToFormType,
   transformEdgeHaSettingsFormToApiPayload
 } from './EdgeFormItem/EdgeHaSettingsForm/utils'
+export { EdgeClusterFirmwareInfo }  from './EdgeFormItem/EdgeClusterFirmwareInfo'
 
 export { TunnelProfileForm } from './TunnelProfile/TunnelProfileForm'
 export { useTunnelProfileActions } from './TunnelProfile/TunnelProfileForm/useTunnelProfileActions'
@@ -254,8 +255,10 @@ export {
   EdgeCompatibilityDrawer,
   EdgeCompatibilityType,
   CompatibilityWarningCircleIcon,
+  CompatibilityWarningTriangleIcon,
   EdgeDetailCompatibilityDrawer,
-  CompatibleAlertBanner
+  CompatibleAlertBanner,
+  mergeFilterApCompatibilitiesResultByRequiredFeatures
 } from './Compatibility'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
 export { useEdgeClusterActions } from './useEdgeClusterActions'

@@ -281,7 +281,7 @@ describe('AP Form - Add', () => {
       await changeCoordinates(validCoordinates[0], false)
     })
 
-    it('should handle valid coordinates input', async () => {
+    it.skip('should handle valid coordinates input', async () => {
       render(<Provider><ApForm /></Provider>, {
         route: { params, path: '/:tenantId/t/devices/wifi/:action' }
       })

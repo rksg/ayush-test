@@ -73,8 +73,10 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   value?: string
   dataFormatter?: (value: unknown) => string | null
   onClick?: (params: EventParams) => void
+  onLegendClick?: (params: EventParams) => void
   style: EChartsReactProps['style'] & { width: number, height: number }
-  labelTextStyle?: { overflow?: 'break' | 'breakAll' | 'truncate' | 'none', width?: number }
+  labelTextStyle?: { overflow?: 'break' | 'breakAll' | 'truncate' | 'none' , width?: number }
+  singleSelect?: boolean
   titleTextStyle?: TitleTextStyle
   secondaryTitleTextStyle?: TitleTextStyle
   isShowTooltip?: boolean
@@ -281,7 +283,7 @@ export function DonutChart ({
       left: props.size === 'x-large' ? '55%' : '60%',
       orient: 'vertical',
       icon: 'circle',
-      selectedMode: false,
+      selectedMode: !!props.onLegendClick,
       itemGap: props.size === 'x-large'? 16 : 4,
       itemWidth: 8,
       itemHeight: 8,
@@ -326,7 +328,9 @@ export function DonutChart ({
             props.tooltipFormat
           )
         },
+        selectedMode: props.singleSelect ? 'single' : false,
         emphasis: {
+          scale: true,
           disabled: !isShowTooltip || isEmpty,
           scaleSize: 5
         },
@@ -356,7 +360,11 @@ export function DonutChart ({
         }}
         opts={{ renderer: 'svg' }}
         option={option}
-        onEvents={{ click: onChartClick(props.onClick) }} />
+        onEvents={{
+          click: props.onClick || (() => {}),
+          legendselectchanged: props.onLegendClick || (() => {})
+        }}
+      />
       { props.subTitle && <SubTitle width={props.style.width}>{props.subTitle}</SubTitle> }
     </Space>
   )
