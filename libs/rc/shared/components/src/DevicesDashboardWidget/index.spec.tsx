@@ -2,8 +2,8 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo }         from '@acx-ui/rc/utils'
 import { Provider  }              from '@acx-ui/store'
 import { render,
-  screen, mockRestApiQuery,
-  waitForElementToBeRemoved
+  screen,
+  mockRestApiQuery
 } from '@acx-ui/test-utils'
 
 import { DevicesDashboardWidgetV2 } from '.'
@@ -13,7 +13,7 @@ const params = {
 }
 
 jest.mock('../DevicesWidget/index', () => ({
-  DevicesWidgetv2: () => <div>Mock DevicesWidget</div>,
+  DevicesWidgetv2: () => <div>Mock DevicesWidget</div>
 }))
 
 jest.mock('@acx-ui/utils', () => ({
@@ -45,8 +45,8 @@ describe('Dashboard Devices Widget V2', () => {
   })
 
   it('should render loader and then chart', async () => {
-    const { asFragment } = render(<Provider><DevicesDashboardWidgetV2 /></Provider>,
+    render(<Provider><DevicesDashboardWidgetV2 /></Provider>,
       { route: { params } })
-    expect(await within(dialog).findByTestId('Mock DevicesWidget')).toBeInTheDocument()
+    expect(await screen.findByText('Mock DevicesWidget')).toBeInTheDocument()
   })
 })
