@@ -4,7 +4,7 @@
 /* eslint-disable */
 import  { print } from 'graphql' // delta from source
 import { isPlainObject } from '@reduxjs/toolkit'
-import { pendingQueries }  from '@acx-ui/store'
+import { pendingQueries } from '../cancelMiddleware'
 import type { BaseQueryFn } from '@reduxjs/toolkit/query'
 import type { DocumentNode } from 'graphql'
 import { GraphQLClient, ClientError, RequestOptions } from 'graphql-request'
