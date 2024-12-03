@@ -43,8 +43,7 @@ describe('CertTemplateActionPreview', () => {
     ])
     render(<CertTemplateActionPreview data={{ certTemplateId: '123' } as CertTempActionContext} />)
     expect(screen.getByText('Connect to the network')).toBeInTheDocument()
-    expect(screen.getByText('SingleNetwork')).toBeInTheDocument()
-    expect(screen.getByText('Wi-Fi Network name:')).toBeInTheDocument()
+    expect(screen.getByText('Wi-Fi Network name: SingleNetwork')).toBeInTheDocument()
     expect(screen
     // eslint-disable-next-line max-len
       .getByText('Scan or click this QR code to download the certificate that is required in order to connect to the network:'))

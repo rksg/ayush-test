@@ -103,9 +103,8 @@ export function CertTemplateActionPreview (props: GenericActionPreviewProps<Cert
         <GridCol col={{ span: 20 }}>
           <Space>
             <Text strong>
-              { $t({ defaultMessage: 'Wi-Fi Network name: ' }) }
+              <span>{ $t({ defaultMessage: 'Wi-Fi Network name: ' })} { selectedSsid }</span>
             </Text>
-            <Text>{ selectedSsid }</Text>
           </Space>
         </GridCol>
         <GridCol col={{ span: 24 }}>
