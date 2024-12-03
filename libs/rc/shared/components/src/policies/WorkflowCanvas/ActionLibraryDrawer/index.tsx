@@ -29,7 +29,8 @@ const starterActions: ActionType[] = [
 ]
 const deviceOnboardingActions: ActionType[] = [
   ActionType.DPSK,
-  ActionType.MAC_REG
+  ActionType.MAC_REG,
+  ActionType.CERT_TEMPLATE
 ]
 const resultActions: ActionType[] = [
   ActionType.DATA_PROMPT
