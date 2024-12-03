@@ -5,6 +5,7 @@ import moment    from 'moment'
 
 import { ConfigChange, getConfigChangeEntityTypeMapping, TableProps }                     from '@acx-ui/components'
 import { get }                                                                            from '@acx-ui/config'
+import { useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
 import { Provider, dataApiURL, store }                                                    from '@acx-ui/store'
 import { findTBody, mockGraphqlQuery, render, within, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { DateRange }                                                                      from '@acx-ui/utils'
@@ -24,6 +25,7 @@ describe('Table', () => {
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
     mockGet.mockReturnValue('true')
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
   const handleClick = jest.fn()
   const setPagination = jest.fn()
