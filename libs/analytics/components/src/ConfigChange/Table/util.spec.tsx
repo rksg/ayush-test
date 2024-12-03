@@ -2,7 +2,13 @@ import { defineMessage } from 'react-intl'
 
 import { configChanges } from '../__tests__/fixtures'
 
-import { MappingType, json2keymap, filterData } from './util'
+import {
+  MappingType,
+  json2keymap,
+  filterData,
+  getEntityValue,
+  getConfiguration
+}                        from './util'
 
 
 describe('json2keymap', () => {
@@ -60,3 +66,41 @@ describe('filterData', () => {
     expect(filterData(configChanges, [], noIntentAILegend, true).length).toEqual(9)
   })
 })
+
+describe('getEntityValue', () => {
+  it('should return a mapped value if present in enumTextMap', () => {
+    const type = 'ap'
+    const key = 'initialState.ccmAp.ipv4_settings.method'
+    const value = 'KEEP_AP_SETTINGS'
+    expect(getEntityValue(type, key, value)).toEqual({
+      defaultMessage: [{ type: 0, value: 'AP settings' }],
+      id: 'JKWlzi'
+    })
+  })
+
+  it('should return the input value if no mapping is found', () => {
+    const type = 'wlan'
+    const key = 'test-key'
+    const value = 'test-value'
+    expect(getEntityValue(type, key, value)).toEqual(value)
+  })
+})
+
+describe('getConfiguration', () => {
+  it('should return a mapped configuration if present in jsonMapping', () => {
+    const type = 'wlan'
+    const key = 'initialState.CcmWlan.multi_link_operation.mlo_enabled'
+    expect(getConfiguration(type, key)).toEqual({
+      id: 'i/1Vf/',
+      defaultMessage: [{ type: 0, value: 'Multi Link Operation' }]
+    })
+  })
+
+  it('should return the key itself if no mapping is found', () => {
+    const type = 'wlan'
+    const key = 'test-key'
+    expect(getConfiguration(type, key)).toEqual(key)
+  })
+})
+
+
