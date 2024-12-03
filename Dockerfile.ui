@@ -60,16 +60,26 @@ RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
 RUN touch lint-done
 
 # We should validate the tsc validator in the tsconfig of apps that wont be built yet
-FROM acx-ui-lint as acx-ui-tslint
+FROM build-base as acx-ui-tslint
 RUN node ./node_modules/.bin/nx run ra:tsc
 RUN touch tslint-done
 ###############################################################
 
-FROM acx-ui-tslint as build
+FROM build-base as build
 RUN node ./node_modules/.bin/nx run main:build --memoryLimit=4096
 
 ###############################################################
-FROM acx-ui-tslint as acx-ui-group-test
+FROM build-base as acx-ui-base-test
+
+# Force dependency with lint & build stages
+COPY --from=acx-ui-lint   /app/lint-done   ./lint-done
+COPY --from=build         /app/dist/apps   ./dist/apps
+
+FROM build-base as acx-ui-group-test
+
+# Multistage: trigger run
+COPY --from=acx-ui-lint /app/lint-done /tmp/
+COPY --from=acx-ui-tslint /app/tslint-done /tmp/
 COPY cicd_tools ./cicd_tools
 
 ARG PRECOMMIT=true
@@ -77,7 +87,7 @@ ARG GIT_COMMIT_BRANCH=master
 RUN bash ./cicd_tools/run_test_cases_tool.sh
 RUN mkdir -p /app/coverage
 
-FROM acx-ui-group-test as acx-ui-sonar-run
+FROM build-base as acx-ui-sonar-run
 COPY --from=acx-ui-group-test /app/coverage /app/coverage
 WORKDIR /app
 RUN touch tests-done
@@ -98,8 +108,6 @@ COPY tools/docker/nginx/nginx.conf \
 
 COPY --from=build /app/dist/apps ./
 # Multistage: trigger run
-COPY --from=acx-ui-lint /app/lint-done /tmp/
-COPY --from=acx-ui-tslint /app/tslint-done /tmp/
 COPY --from=acx-ui-sonar-run /app/tests-done /tmp/
 
 RUN \
