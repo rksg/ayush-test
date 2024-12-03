@@ -33,7 +33,10 @@ export const SoftGREProfileSettings = () => {
   })
 
   const onChange = (value: string) => {
-    setSoftGREProfile(softGREProfileOptionList.find((profile) => profile.value === value)!)
+    setSoftGREProfile(
+      softGREProfileOptionList.find((profile) => profile.value === value) ??
+       { label: $t({ defaultMessage: 'Select...' }), value: '' }
+    )
   }
 
   useEffect(() => {
@@ -57,7 +60,7 @@ export const SoftGREProfileSettings = () => {
             <Select
               style={{ width: '100%' }}
               data-testid={'directory-server-select'}
-              value={softGREProfile.id}
+              value={softGREProfile.value as string}
               onChange={onChange}
               options={[
                 {
