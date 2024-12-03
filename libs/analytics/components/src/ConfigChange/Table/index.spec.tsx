@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
+import moment    from 'moment'
 
 import { ConfigChange, getConfigChangeEntityTypeMapping, TableProps }                     from '@acx-ui/components'
 import { get }                                                                            from '@acx-ui/config'
@@ -364,8 +365,8 @@ describe('CSV Functions', () => {
       data,
       columns,
       getConfigChangeEntityTypeMapping(true),
-      '2024-12-03T10:19:00+08:00',
-      '2024-11-26T10:19:00+08:00'
+      moment('2024-11-26T10:19:00+08:00'),
+      moment('2024-12-03T10:19:00+08:00')
     )
     expect(global.Blob).toHaveBeenCalledWith(
       // eslint-disable-next-line max-len

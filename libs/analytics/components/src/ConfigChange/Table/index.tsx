@@ -1,5 +1,5 @@
 import { useContext }                 from 'react'
-import moment                         from 'moment'
+import moment, { Moment }             from 'moment'
 import { stringify }                  from 'csv-stringify/browser/esm/sync'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
@@ -36,8 +36,8 @@ export function downloadConfigChangeList (
   configChanges: ConfigChange[],
   columns: TableProps<ConfigChange>['columns'],
   entityTypeMapping: ChartRowMappingType[],
-  startDate: string, 
-  endDate: string
+  startDate: Moment, 
+  endDate: Moment
 ) {
   const { $t } = getIntl()
   const data = stringify(
@@ -81,7 +81,7 @@ export function downloadConfigChangeList (
   )
   handleBlobDownloadFile(
     new Blob([data], { type: 'text/csv;charset=utf-8;' }),
-    `Config-Changes-${startDate}-${endDate}.csv`
+    `Config-Changes-${startDate.format()}-${endDate.format()}.csv`
   )
 }
 
@@ -204,7 +204,7 @@ export function Table (props: {
     }
     return agg
   }, [] as { value: string, label: string }[])
-
+  
   return <>
     <CascaderFilterWrapper>
       <Cascader
@@ -241,8 +241,8 @@ export function Table (props: {
               queryResults.data, 
               ColumnHeaders, 
               entityTypeMapping, 
-              startDate.toISOString(), 
-              endDate.toISOString()
+              startDate, 
+              endDate
             )} 
           }}
       />
