@@ -2,11 +2,12 @@
 import { Divider, Form } from 'antd'
 import { useIntl }       from 'react-intl'
 
-import { Drawer, PasswordInput }                                                                                                                                         from '@acx-ui/components'
-import { formatter }                                                                                                                                                     from '@acx-ui/formatter'
-import { EdgeClusterStatus, EdgeDnsServers, EdgePasswordDetail, EdgeStatus, EdgeStatusEnum, isVirtualEdgeSerial, transformDisplayEnabledDisabled, transformDisplayText } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                                                                    from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                                                                                                                                         from '@acx-ui/user'
+import { Drawer, PasswordInput }                                                                                                                     from '@acx-ui/components'
+import { formatter }                                                                                                                                 from '@acx-ui/formatter'
+import { useGetEdgePasswordDetailQuery }                                                                                                             from '@acx-ui/rc/services'
+import { EdgeClusterStatus, EdgeDnsServers, EdgeStatus, EdgeStatusEnum, isVirtualEdgeSerial, transformDisplayEnabledDisabled, transformDisplayText } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                                                from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                                                                                                                     from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -16,15 +17,26 @@ interface EdgeDetailsDrawerProps {
   currentEdge: EdgeStatus | undefined,
   currentCluster: EdgeClusterStatus | undefined
   dnsServers: EdgeDnsServers | undefined
-  passwordDetail: EdgePasswordDetail | undefined
 }
 
 
 const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
   const { $t } = useIntl()
-  const { visible, setVisible, currentEdge, currentCluster, dnsServers, passwordDetail } = props
+  const { visible, setVisible, currentEdge, currentCluster, dnsServers } = props
   const { data: userProfile } = useUserProfileContext()
+
   const isShowEdgePassword = userProfile?.support || userProfile?.var || userProfile?.dogfood
+  const { data: passwordDetail } = useGetEdgePasswordDetailQuery(
+    {
+      params: {
+        venueId: currentEdge?.venueId,
+        edgeClusterId: currentEdge?.clusterId,
+        serialNumber: currentEdge?.serialNumber
+      }
+    }, {
+      skip: !visible || !isShowEdgePassword || !currentEdge
+    }
+  )
 
   const onClose = () => {
     setVisible(false)
