@@ -28,7 +28,6 @@ const ImageGraph = ({ beforeSrc, afterSrc }: { beforeSrc?: string, afterSrc?: st
     src={beforeSrc}
     alt='rrm-graph-before'
     style={{
-      margin: 'auto',
       width: 'auto',
       height: 'auto',
       maxWidth: '100%',
@@ -40,7 +39,6 @@ const ImageGraph = ({ beforeSrc, afterSrc }: { beforeSrc?: string, afterSrc?: st
     src={afterSrc}
     alt='rrm-graph-after'
     style={{
-      margin: 'auto',
       width: 'auto',
       height: 'auto',
       maxWidth: '100%',
@@ -100,7 +98,6 @@ const GraphTitle = ({ details }: { details: Intent }) => {
   return <UI.GraphTitleWrapper>
     <div>
       <UI.GraphTitle>{$t({ defaultMessage: 'Before' })}</UI.GraphTitle>
-      <br/>
       <UI.GraphSubTitle>
         {$t({ defaultMessage: 'As at {dateTime}' }, {
           dateTime: formatter(DateFormatEnum.DateTimeFormat)(details.metadata.dataEndTime)
