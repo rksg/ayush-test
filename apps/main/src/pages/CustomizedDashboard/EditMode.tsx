@@ -3,11 +3,12 @@ import { useState } from 'react'
 import { Space, Divider } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Button, cssStr }                                                                                                                                                                from '@acx-ui/components'
+import { Button, cssStr }                                                                                                                                                        from '@acx-ui/components'
 import { ArrowDown, ArrowUp, ClockOutlined, DashboardOutlined, DataStudioOutlined, DeleteOutlined, EraserOutlined, EyeOpenOutlined, EyeSlashOutlined, Link, Plus, Reload, Text } from '@acx-ui/icons'
 
-import * as UI from './styledComponents'
 import Grid from '../Grid'
+
+import * as UI from './styledComponents'
 
 const enum ToolbarItems {
   AddWidgets,

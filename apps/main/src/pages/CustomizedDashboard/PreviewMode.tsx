@@ -1,8 +1,8 @@
 import { Space, Divider } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Button, cssStr }       from '@acx-ui/components'
-import { EditOutlined } from '@acx-ui/icons'
+import { Button, cssStr } from '@acx-ui/components'
+import { EditOutlined }   from '@acx-ui/icons'
 
 import * as UI from './styledComponents'
 

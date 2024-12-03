@@ -1,3 +1,5 @@
+import { DonutChartData } from '@acx-ui/components'
+
 export interface RuckusAiChat {
   sessionId: string,
   messages: ChatMessage[]
@@ -20,8 +22,6 @@ export interface WidgetListData {
   chartType: string,
   sessionId: string,
 }
-
-import {DonutChartData} from "@acx-ui/components";
 
 export interface RuckusAiConversation {
   sessionId: string,

@@ -181,7 +181,7 @@ function DashboardPageHeader () {
     expandIcon={<UI.MenuExpandArrow />}
     items={[{
       key: 'add-venue',
-      label: <TenantLink to='venues/add'>{$t({ defaultMessage: 'Venue' })}</TenantLink>
+      label: <TenantLink to='venues/add'>{$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}</TenantLink>
     }, {
       key: 'add-wifi-network',
       label: <TenantLink to='networks/wireless/add'>{

@@ -106,7 +106,7 @@ export const store = configureStore({
     [edgeHqosProfilesApi.reducerPath]: edgeHqosProfilesApi.reducer,
     [ruckusAssistantApi.reducerPath]: ruckusAssistantApi.reducer,
     [directoryServerApi.reducerPath]: directoryServerApi.reducer,
-    [ruckusAiChatApi.reducerPath]: ruckusAiChatApi.reducer,
+    [ruckusAiChatApi.reducerPath]: ruckusAiChatApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -163,7 +163,7 @@ export const store = configureStore({
       edgeHqosProfilesApi.middleware,
       ruckusAssistantApi.middleware,
       directoryServerApi.middleware,
-      ruckusAiChatApi.middleware,
+      ruckusAiChatApi.middleware
     ])
   },
 

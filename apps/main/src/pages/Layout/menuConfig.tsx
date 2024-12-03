@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { LayoutProps, ItemType }                                  from '@acx-ui/components'
@@ -37,7 +39,6 @@ import {
 import { RolesEnum }                                      from '@acx-ui/types'
 import { hasRoles, useUserProfileContext, RaiPermission } from '@acx-ui/user'
 import { useTenantId }                                    from '@acx-ui/utils'
-import { useState } from 'react'
 
 export function useMenuConfig () {
   const { $t } = useIntl()
@@ -340,7 +341,7 @@ export function useMenuConfig () {
       label: $t({ defaultMessage: 'AI Canvas' }),
       uri: '/canvas',
       inactiveIcon: BulbOutlined,
-      activeIcon: BulbSolid,
+      activeIcon: BulbSolid
     },
     {
       label: $t({ defaultMessage: 'Administration' }),

@@ -1,89 +1,75 @@
-import React from 'react'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import React, { useEffect } from 'react'
 
-import { Card, DonutChart, Loader } from '@acx-ui/components'
-import { WidgetData, WidgetListData }       from '@acx-ui/rc/utils'
-import { useChatChartQuery } from '@acx-ui/rc/services';
-import { useDrag } from 'react-dnd';
+import { useDrag, useDrop } from 'react-dnd'
+import { getEmptyImage }    from 'react-dnd-html5-backend'
+import AutoSizer            from 'react-virtualized-auto-sizer'
+
+import { Card, DonutChart, Loader }   from '@acx-ui/components'
+import { useChatChartQuery }          from '@acx-ui/rc/services'
+import { WidgetData, WidgetListData } from '@acx-ui/rc/utils'
 
 interface WidgetListProps {
   data: WidgetListData;
 }
 
-const DraggableChart = () =>{
-
-}
-
-// const DraggableCard = (props) => {
-//   const [{ isDragging }, drag, preview] = useDrag({
-//     type: ItemTypes.CARD,
-//     item: () => {
-//       let dragCard = props.card
-//       dragCard.isShadow = true
-//       props.updateShadowCard(dragCard)
-//       return { id: props.id, type: props.type }
-//     },
-//     end: (item, monitor) => {
-//       if (!monitor.didDrop()) {
-//         props.dropCard(item, props.group)
-//       }
-//     }
-//   })
-//   const [, drop] = useDrop(() => ({ accept: ItemTypes.CARD }))
-
-//   useEffect(() => {
-//     preview(getEmptyImage(), { captureDraggingState: true })
-//   }, [preview])
-
-//   return (
-//     <div>
-//       <Card
-//         {...props}
-//         isDragging={isDragging}
-//         drop={drop}
-//         drag={drag}
-//       />
-//     </div>
-//   )
-// }
-
-const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
-  const queryResults = useChatChartQuery({
-    params: {
-      sessionId: data.sessionId,
-      chatId: data.id
-    },
+const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
+  const [{ isDragging }, drag] = useDrag({
+    type: 'Widget',
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging()
+    })
   })
-  // const queryResults = {
-  //  data: {
-  //   chartOption: [
-  //     {"name":"Requires Attention","value":1,"color":"#ED1C24"},
-  //     {"name":"In Setup Phase","value":64,"color":"#ACAEB0"},
-  //     {"name":"Operational","value":1,"color":"#23AB36"}
-  //   ]
-  //  }
-  // }
+
   return (
-    <div>
-        <div style={{ margin: '7px', height: '165px', width: '200px' }}>
-        <Loader states={[{isLoading: queryResults.isLoading}]}>
-          <Card key={data.id} title="Title">
-          <AutoSizer>
-          {({ height, width }) => (
-            <DonutChart
-              style={{ width, height }}
-              size={'medium'}
-              data={queryResults.data?.chartOption || []}
-              animation={true}
-              legend={'name-value'}
-              showTotal/>
-              )}
-              </AutoSizer>
-          </Card>
-        </Loader>
-        </div>
+    <div
+      ref={drag}
+      style={{
+        opacity: isDragging ? 0.5 : 1,
+        cursor: 'move'
+      }}
+    >
+      <WidgetChart data={data} />
     </div>
   )
 }
 
-export default WidgetChart;
+const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
+  // const queryResults = useChatChartQuery({
+  //   params: {
+  //     sessionId: data.sessionId,
+  //     chatId: data.id
+  //   },
+  // })
+  const queryResults = {
+    data: {
+      chartOption: [
+        { name: 'Requires Attention',value: 1,color: '#ED1C24' },
+        { name: 'In Setup Phase',value: 64,color: '#ACAEB0' },
+        { name: 'Operational',value: 1,color: '#23AB36' }
+      ]
+    }
+  }
+  return (
+    <div>
+      <div style={{ margin: '7px', height: '165px', width: '200px' }}>
+        {/* <Loader states={[{isLoading: queryResults.isLoading}]}> */}
+        <Card key={data.id} title='Title'>
+          <AutoSizer>
+            {({ height, width }) => (
+              <DonutChart
+                style={{ width, height }}
+                size={'medium'}
+                data={queryResults.data?.chartOption || []}
+                animation={true}
+                legend={'name-value'}
+                showTotal/>
+            )}
+          </AutoSizer>
+        </Card>
+        {/* </Loader> */}
+      </div>
+    </div>
+  )
+}
+
+export default WidgetChart

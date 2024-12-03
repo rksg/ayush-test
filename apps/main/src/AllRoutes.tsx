@@ -13,9 +13,13 @@ import { AddCustomRole }                                    from './pages/Admini
 import { AddPrivilegeGroup }                                from './pages/Administration/UserPrivileges/PrivilegeGroups/AddPrivilegeGroup'
 import { EditPrivilegeGroup }                               from './pages/Administration/UserPrivileges/PrivilegeGroups/EditPrivilegeGroup'
 import AnalyticsBase                                        from './pages/Analytics'
+import CustomizedDashboard                                  from './pages/CustomizedDashboard'
 import Dashboard                                            from './pages/Dashboard'
+import DashboardFF                                          from './pages/DashboardFF'
 import DevicesBase                                          from './pages/Devices'
+import Grid                                                 from './pages/Grid'
 import Layout                                               from './pages/Layout'
+import AICanvas                                             from './pages/Layout/AICanvas'
 import { MFACheck }                                         from './pages/Layout/MFACheck'
 import NetworksBase                                         from './pages/Networks'
 import PoliciesBase                                         from './pages/Policies'
@@ -29,10 +33,6 @@ import TimelineBase                                         from './pages/Timeli
 import { UserProfile }                                      from './pages/UserProfile'
 import UsersBase                                            from './pages/Users'
 import { VenueDetails, VenuesForm, VenueEdit, VenuesTable } from './pages/Venues'
-import CustomizedDashboard from './pages/CustomizedDashboard'
-import DashboardFF         from './pages/DashboardFF'
-import Grid                from './pages/Grid'
-import AICanvas from './pages/Layout/AICanvas'
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 const MspRoutes = React.lazy(() => import('@msp/Routes'))
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries

@@ -1,10 +1,10 @@
-import styled from 'styled-components/macro'
 import { Input as AntInput } from 'antd'
+import styled                from 'styled-components/macro'
 
 import { ArrowChevronRight } from '@acx-ui/icons'
 
+import CanvasBackground   from './assets/CanvasBackground.svg'
 import RuckusAiBackground from './assets/RuckusAiBackground.svg'
-import CanvasBackground from './assets/CanvasBackground.svg'
 
 export const ArrowChevronRightIcons = styled(ArrowChevronRight)`
   width: 16px;
