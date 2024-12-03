@@ -26,15 +26,6 @@ const { mockEdgeClusterList } = EdgeGeneralFixtures
 const mockCluster = mockEdgeClusterList.data[0] as unknown as EdgeClusterStatus
 
 describe('Edge Detail Drawer', () => {
-  // beforeEach(() => {
-  //   mockServer.use(
-  //     rest.get(
-  //       EdgeUrlsInfo.getEdgePasswordDetail.url,
-  //       (_req, res, ctx) => res(ctx.status(202))
-  //     )
-  //   )
-  // })
-
   it('should render correctly', async () => {
     render(<Provider>
       <EdgeDetailsDrawer

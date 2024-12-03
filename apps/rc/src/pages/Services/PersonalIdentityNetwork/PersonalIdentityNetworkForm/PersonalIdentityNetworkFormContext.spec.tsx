@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 
-import { clone } from 'lodash'
-import { rest }  from 'msw'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
 import { commonApi, edgeApi, edgeSdLanApi, pinApi, serviceApi } from '@acx-ui/rc/services'
 import {
@@ -20,7 +20,9 @@ import {
   TunnelTypeEnum,
   VenueFixtures,
   EdgeSdLanUrls,
-  EdgeSdLanFixtures } from '@acx-ui/rc/utils'
+  EdgeSdLanFixtures,
+  EdgeCompatibilityFixtures,
+  EdgeStatus } from '@acx-ui/rc/utils'
 import { Provider, store }                 from '@acx-ui/store'
 import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
 
@@ -47,9 +49,10 @@ const {
   mockDPSKNetworkList
 } = EdgePinFixtures
 const { mockSdLanDataForPinMutuallyExclusive } = EdgeSdLanFixtures
-const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockedTunnelProfileViewData } = EdgeTunnelProfileFixtures
 const { mockDhcpStatsData } = EdgeDHCPFixtures
+const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
+const mockEdgeClusterList = cloneDeep(EdgeGeneralFixtures.mockEdgeClusterList)
 const pinTunnelData = {
   ...mockedTunnelProfileViewData,
   data: mockedTunnelProfileViewData.data.filter(item => item.type === TunnelTypeEnum.VXLAN)
@@ -76,6 +79,10 @@ describe('PersonalIdentityNetworkFormContext', () => {
     })
 
     mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))
+      ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
         (_req, res, ctx) => res(ctx.json(mockVenueOptions))
@@ -209,7 +216,7 @@ describe('PersonalIdentityNetworkFormContext', () => {
   })
 
   it('should filter venue already bound with SD-LAN', async () => {
-    const edgeList = clone(mockEdgeClusterList)
+    const edgeList = cloneDeep(mockEdgeClusterList)
     edgeList.data[0].venueId = mockVenueOptionsForMutuallyExclusive.data[1].id
     mockServer.use(
       rest.post(
@@ -292,7 +299,15 @@ describe('PersonalIdentityNetworkFormContext', () => {
   })
 
   it('should filter cluster already bound with SD-LAN', async () => {
+    const mockClusterList = cloneDeep(mockEdgeClusterList)
+    // eslint-disable-next-line max-len
+    mockClusterList.data[4].edgeList.forEach(node => (node as EdgeStatus).firmwareVersion = '2.2.0.123')
+
     mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockClusterList))
+      ),
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
         (_req, res, ctx) => res(ctx.json(mockSdLanDataForPinMutuallyExclusive))

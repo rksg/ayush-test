@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, createContext, useCallback, useEffect, useMem
 
 import { BaseQueryFn, QueryActionCreatorResult, QueryDefinition } from '@reduxjs/toolkit/query'
 import { DefaultOptionType }                                      from 'antd/lib/select'
-import { find, isNil, union, uniq }                               from 'lodash'
+import { cloneDeep, find, isNil, union, uniq }                    from 'lodash'
 import { useParams }                                              from 'react-router-dom'
 
 import {
@@ -16,7 +16,8 @@ import {
   useVenuesListQuery,
   useGetDhcpStatsQuery,
   useGetEdgeMvSdLanViewDataListQuery,
-  useLazyGetDpskQuery
+  useLazyGetDpskQuery,
+  useGetEdgeFeatureSetsQuery
 } from '@acx-ui/rc/services'
 import {
   DhcpStats,
@@ -26,8 +27,11 @@ import {
   TunnelTypeEnum,
   getTunnelProfileOptsWithDefault,
   isDsaeOnboardingNetwork,
-  NetworkTypeEnum
+  NetworkTypeEnum,
+  IncompatibilityFeatures,
+  EdgeClusterStatus
 } from '@acx-ui/rc/utils'
+import { compareVersions } from '@acx-ui/utils'
 
 export interface PersonalIdentityNetworkFormContextType {
   setVenueId: Dispatch<SetStateAction<string>>
@@ -42,6 +46,7 @@ export interface PersonalIdentityNetworkFormContextType {
   isDpskLoading: boolean
   clusterOptions?: DefaultOptionType[]
   isClusterOptionsLoading: boolean
+  isFeatureSetsLoading: boolean
   dhcpList?: DhcpStats[]
   dhcpOptions?: DefaultOptionType[]
   isDhcpOptionsLoading: boolean
@@ -89,7 +94,7 @@ const tunnelProfileDefaultPayload = {
 }
 
 const clusterDataDefaultPayload = {
-  fields: ['name', 'clusterId', 'venueId'],
+  fields: ['name', 'clusterId', 'venueId', 'edgeList'],
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
@@ -108,6 +113,21 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
   const [dpskData, setDpskData] = useState<DpskSaveData | undefined>(undefined)
 
   const [getDpsk] = useLazyGetDpskQuery()
+
+  const { requiredFw, isFeatureSetsLoading } = useGetEdgeFeatureSetsQuery({
+    payload: {
+      filters: {
+        featureNames: [IncompatibilityFeatures.PIN]
+      } }
+  }, {
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        requiredFw: data?.featureSets
+          ?.find(item => item.featureName === IncompatibilityFeatures.PIN)?.requiredFw,
+        isFeatureSetsLoading: isLoading
+      }
+    }
+  })
 
   const {
     usedSdlanClusterIds,
@@ -261,9 +281,11 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
   const { clusterData, isLoading: isClusterDataLoading } = useGetEdgeClusterListQuery(
     { params, payload: { ...clusterDataDefaultPayload } },
     {
+      skip: !requiredFw,
       selectFromResult: ({ data, isLoading }) => {
         return {
           clusterData: data?.data
+            .filter(item => isPinSupportCluster(item, requiredFw!))
             .map(item => ({ label: item.name, value: item.clusterId, venueId: item.venueId })),
           isLoading
         }
@@ -345,6 +367,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         isDpskLoading,
         clusterOptions,
         isClusterOptionsLoading: isClusterDataLoading || isSdlanLoading,
+        isFeatureSetsLoading,
         dhcpList,
         dhcpOptions: dhcpList?.map(item => ({ label: item.serviceName, value: item.id })),
         isDhcpOptionsLoading,
@@ -366,4 +389,13 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       {props.children}
     </PersonalIdentityNetworkFormContext.Provider>
   )
+}
+
+const isPinSupportCluster = (cluster: EdgeClusterStatus, requiredFw: string) => {
+  // eslint-disable-next-line max-len
+  const fwVerSorted = cloneDeep(cluster.edgeList)?.sort((n1, n2) => compareVersions(n1.firmwareVersion, n2.firmwareVersion))
+  const minNodeVersion = fwVerSorted?.[0]?.firmwareVersion
+  const isValidVersion = !!minNodeVersion && compareVersions(minNodeVersion, requiredFw) >= 0
+
+  return isValidVersion
 }
