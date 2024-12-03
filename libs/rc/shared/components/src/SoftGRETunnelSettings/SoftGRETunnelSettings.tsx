@@ -7,6 +7,7 @@ import { SoftGREProfileSettings } from './SoftGREProfileSettings'
 import { FieldLabel }             from './styledComponents'
 
 interface SoftGRETunnelSettingsProps {
+  isSoftGRETunnelToggleDisable: boolean
   enableSoftGRETunnel: boolean
   setEnableSoftGRETunnel: (visible: boolean) => void
 }
@@ -15,7 +16,7 @@ interface SoftGRETunnelSettingsProps {
 export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   const { $t } = useIntl()
 
-  const { enableSoftGRETunnel, setEnableSoftGRETunnel } = props
+  const { enableSoftGRETunnel, setEnableSoftGRETunnel, isSoftGRETunnelToggleDisable } = props
 
   return (
     <>
@@ -38,6 +39,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
           children={
             <Switch
               checked={enableSoftGRETunnel}
+              disabled={isSoftGRETunnelToggleDisable}
               onClick={(checked) => setEnableSoftGRETunnel(checked)}
             />
           }

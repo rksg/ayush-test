@@ -97,6 +97,7 @@ export function LanPortSettings (props: {
   // Ethernet Port Profile
   const { isTemplate } = useConfigTemplate()
   const ethernetPortProfileId = Form.useWatch( ['lan', index, 'ethernetPortProfileId'] ,form)
+  const isEthernetPortEnable = Form.useWatch( ['lan', index, 'enabled'] ,form)
   const [currentEthernetPortData, setCurrentEthernetPortData] =
     useState<EthernetPortProfileViewData>()
   const [ethernetProfileCreateId, setEthernetProfileCreateId] = useState<String>()
@@ -225,36 +226,44 @@ export function LanPortSettings (props: {
       children={<Input />}
     />
     {!isTemplate && isEthernetPortProfileEnabled ?
-      (<>{(hasVni ? <Form.Item name={['lan', index, 'ethernetPortProfileId']} hidden/>:<Space>
-        <Form.Item
-          name={['lan', index, 'ethernetPortProfileId']}
-          label={$t({ defaultMessage: 'Ethernet Port Profile' })}
-          children={<Select
-            disabled={readOnly
-              || isDhcpEnabled
-              || !lan?.enabled
-              || hasVni}
-            options={ethernetPortDropdownItems}
-            onChange={() => onChangedByCustom('ethernetPortProfileId')}
-          />} />
-        <EthernetPortProfileDrawer
-          updateInstance={(createId) => {
-            setEthernetProfileCreateId(createId)
-          }}
-          currentEthernetPortData={currentEthernetPortData} />
-      </Space>)}
-      <EthernetPortProfileInput
-        currentEthernetPortData={currentEthernetPortData}
-        currentIndex={index}
-        onGUIChanged={onGUIChanged}
-        isEditable={!!serialNumber} />
-      { isEthernetPortProfileEnabled && isEthernetSoftgreEnabled && (<>
-        <SoftGRETunnelSettings
-          enableSoftGRETunnel={enableSoftGRETunnel}
-          setEnableSoftGRETunnel={setEnableSoftGRETunnel}
-        />
-        {enableSoftGRETunnel && <DhcpOption82Settings />}
-      </>)}
+      (isEthernetPortEnable && <>
+        {(
+          hasVni ? <Form.Item name={['lan', index, 'ethernetPortProfileId']} hidden/> :
+            <Space>
+              <Form.Item
+                name={['lan', index, 'ethernetPortProfileId']}
+                label={$t({ defaultMessage: 'Ethernet Port Profile' })}
+                children={<Select
+                  disabled={readOnly
+                         || isDhcpEnabled
+                         || !lan?.enabled
+                         || hasVni}
+                  options={ethernetPortDropdownItems}
+                  onChange={() => onChangedByCustom('ethernetPortProfileId')}
+                />} />
+              <EthernetPortProfileDrawer
+                updateInstance={(createId) => {
+                  setEthernetProfileCreateId(createId)
+                }}
+                currentEthernetPortData={currentEthernetPortData} />
+            </Space>
+        )}
+        <EthernetPortProfileInput
+          currentEthernetPortData={currentEthernetPortData}
+          currentIndex={index}
+          onGUIChanged={onGUIChanged}
+          isEditable={!!serialNumber} />
+        {
+          isEthernetPortProfileEnabled && isEthernetSoftgreEnabled &&
+            (<>
+              <SoftGRETunnelSettings
+                enableSoftGRETunnel={enableSoftGRETunnel}
+                setEnableSoftGRETunnel={setEnableSoftGRETunnel}
+                isSoftGRETunnelToggleDisable={isEthernetPortEnable}
+              />
+              {enableSoftGRETunnel && <DhcpOption82Settings />}
+            </>)
+        }
       </>) :
       (<>
         <Form.Item
