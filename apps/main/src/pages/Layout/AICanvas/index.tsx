@@ -12,7 +12,7 @@ import { useChatAiMutation }                                                 fro
 import { ChatMessage, ChatWidget, RuckusAiChat, WidgetData, WidgetListData } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                        from '@acx-ui/react-router-dom'
 
-import Grid from '../Grid'
+import Canvas from './Canvas'
 
 import * as UI     from './styledComponents'
 import WidgetChart from './WidgetChart'
@@ -132,7 +132,7 @@ export default function AICanvas (
             </div>
             <div className='actions'>
               <Button icon={<Plus />} onClick={()=>{}} />
-              <Button icon={<HistoricalOutlined />} onClick={()=>{}} />
+              <Button icon={<HistoricalOutlined />} onClick={()=>{onClose()}} />
             </div>
           </div>
           <div className='content'>
@@ -168,27 +168,7 @@ export default function AICanvas (
             </div>
           </div>
         </div>
-        <div className='canvas'>
-          <div className='header'>
-            <div className='title'>
-              <span>Canvas</span>
-            </div>
-            {/* <div className='actions'>
-              <Button role='primary' onClick={()=>{onClose()}}>
-                {$t({ defaultMessage: 'Publish' })}
-              </Button>
-              <Button role='primary' onClick={()=>{onClose()}}>
-                {$t({ defaultMessage: 'Save' })}
-              </Button>
-              <Button className='black' onClick={()=>{onClose()}}>
-                {$t({ defaultMessage: 'Preview' })}
-              </Button>
-            </div> */}
-          </div>
-          <div className='grid'>
-
-          </div>
-        </div>
+        <Canvas />
       </UI.Preview>
     </DndProvider>
 

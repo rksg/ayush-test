@@ -72,4 +72,4 @@ const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
   )
 }
 
-export default WidgetChart
+export default DraggableChart
