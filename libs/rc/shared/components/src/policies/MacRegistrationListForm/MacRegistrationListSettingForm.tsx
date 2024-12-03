@@ -4,6 +4,7 @@ import { Form, Input, Select, Switch, Space, Button } from 'antd'
 import { useIntl }                                    from 'react-intl'
 
 import { GridRow, GridCol, Modal, ModalType, SelectionControl }   from '@acx-ui/components'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import {
   useAdaptivePolicySetListByQueryQuery, useGetPersonaGroupByIdQuery,
   useLazySearchMacRegListsQuery, useSearchPersonaGroupListQuery
@@ -26,6 +27,8 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
   const isUseSingleIdentity = Form.useWatch('isUseSingleIdentity')
   const [policyModalVisible, setPolicyModalVisible] = useState(false)
   const form = Form.useFormInstance()
+
+  const isGroupRequired = useIsSplitOn(Features.MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE)
 
   const { data: policySetsData } = useAdaptivePolicySetListByQueryQuery(
     { payload: { page: 1, pageSize: '2000' } })
@@ -106,28 +109,30 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
           </Form.Item>
         </GridCol>
       </GridRow>
-      <GridRow>
-        <GridCol col={{ span: 10 }}>
-          <Form.Item name='identityGroupId'
-            label={$t({ defaultMessage: 'Identity Group' })}
-            rules={[
-              { required: true },
-              { message: $t({ defaultMessage: 'Please select Identity Group' }) }
-            ]}
-            children={
-              <Select
-                disabled={editMode}
-                placeholder={$t({ defaultMessage: 'Select ...' })}
-                options={
-                  identityGroupList?.data
-                    .filter(group => editMode ? group : !group.macRegistrationPoolId)
-                    .map(group => ({ value: group.id, label: group.name }))}
+      { isGroupRequired &&
+        <>
+          <GridRow>
+            <GridCol col={{ span: 10 }}>
+              <Form.Item name='identityGroupId'
+                label={$t({ defaultMessage: 'Identity Group' })}
+                rules={[
+                  { required: true },
+                  { message: $t({ defaultMessage: 'Please select Identity Group' }) }
+                ]}
+                children={
+                  <Select
+                    disabled={editMode}
+                    placeholder={$t({ defaultMessage: 'Select ...' })}
+                    options={
+                      identityGroupList?.data
+                        .filter(group => editMode ? group : !group.macRegistrationPoolId)
+                        .map(group => ({ value: group.id, label: group.name }))}
+                  />
+                }
               />
-            }
-          />
-        </GridCol>
-        {
-          (!editMode && hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) &&
+            </GridCol>
+            {
+              (!editMode && hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) &&
           <>
             <Space align='center'>
               <Button
@@ -150,19 +155,19 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
                 setIdentityGroupDrawerState({ visible: false, data: undefined })
               }} />
           </>
-        }
-      </GridRow>
-      <GridRow>
-        <GridCol col={{ span: 10 }}>
-          <Form.Item name='isUseSingleIdentity'
-            valuePropName='checked'
-            initialValue={false}
-            label={$t({ defaultMessage: 'Use Single Identity for all connections' })}>
-            <Switch disabled={!identityGroupId}/>
-          </Form.Item>
-        </GridCol>
-      </GridRow>
-      {isUseSingleIdentity &&
+            }
+          </GridRow>
+          <GridRow>
+            <GridCol col={{ span: 10 }}>
+              <Form.Item name='isUseSingleIdentity'
+                valuePropName='checked'
+                initialValue={false}
+                label={$t({ defaultMessage: 'Use Single Identity for all connections' })}>
+                <Switch disabled={!identityGroupId}/>
+              </Form.Item>
+            </GridCol>
+          </GridRow>
+          {isUseSingleIdentity &&
       <GridRow>
         <GridCol col={{ span: 10 }}>
           <Form.Item
@@ -178,7 +183,7 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
           </Form.Item>
         </GridCol>
         {
-          (!editMode && hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) &&
+          (hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) &&
           <Space align='center'>
             <Button
               type='link'
@@ -203,6 +208,8 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
           </Space>
         }
       </GridRow>
+          }
+        </>
       }
       <GridRow>
         <GridCol col={{ span: 10 }}>

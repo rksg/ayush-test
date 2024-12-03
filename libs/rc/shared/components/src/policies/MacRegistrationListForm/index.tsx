@@ -52,16 +52,23 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
   const [bindPolicySet] = useUpdateAdaptivePolicySetToMacListMutation()
   const [unbindPolicySet] = useDeleteAdaptivePolicySetFromMacListMutation()
 
+  const isGroupRequired = useIsSplitOn(Features.MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE)
+
   useEffect(() => {
     if (data && editMode) {
       formRef.current?.setFieldsValue({
         name: data.name,
         autoCleanup: data.autoCleanup,
-        identityGroupId: data.identityGroupId,
-        identityId: data.identityId,
-        isUseSingleIdentity: !!data.identityId,
         ...transferDataToExpirationFormFields(data)
       })
+
+      if(isGroupRequired) {
+        formRef.current?.setFieldsValue({
+          identityGroupId: data.identityGroupId,
+          identityId: data.identityId,
+          isUseSingleIdentity: !!data.identityId
+        })
+      }
 
       formRef.current?.setFieldsValue({
         defaultAccess: data.defaultAccess,
@@ -72,14 +79,15 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
 
   const handleAddList = async (data: MacRegistrationPoolFormFields) => {
     try {
-      const saveData = {
+      let saveData = {
         name: data.name,
         autoCleanup: data.autoCleanup,
         ...transferExpirationFormFieldsToData(data.expiration),
         defaultAccess: data.defaultAccess ?? 'ACCEPT',
-        identityGroupId: data.identityGroupId,
-        identityId: data.isUseSingleIdentity ? data.identityId : undefined
+        identityGroupId: isGroupRequired ? data.identityGroupId : undefined,
+        identityId: isGroupRequired && data.isUseSingleIdentity ? data.identityId : undefined
       }
+
       // eslint-disable-next-line max-len
       const result = await addMacRegList({ payload: saveData, customHeaders }).unwrap() as MacRegistrationPool
 
@@ -110,8 +118,10 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
         ...transferExpirationFormFieldsToData(formData.expiration),
         autoCleanup: formData.autoCleanup,
         defaultAccess: formData.defaultAccess ?? 'ACCEPT',
-        identityId: formData.isUseSingleIdentity ? formData.identityId : null
+        identityId: isGroupRequired ?
+          (formData.isUseSingleIdentity ? formData.identityId : null) : undefined
       }
+
       await updateMacRegList({
         params: { policyId },
         payload: saveData,
