@@ -4,7 +4,7 @@ import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
 import { Loader, PageHeader, showToast, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
 import {
   useAddMacRegListMutation,
   useDeleteAdaptivePolicySetFromMacListMutation,
@@ -46,7 +46,6 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
   const [addMacRegList] = useAddMacRegListMutation()
   const [updateMacRegList, { isLoading: isUpdating }] = useUpdateMacRegListMutation()
 
-  const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
   const customHeaders = (isAsync) ? { Accept: 'application/vnd.ruckus.v2+json' } : undefined
 
@@ -58,15 +57,16 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
       formRef.current?.setFieldsValue({
         name: data.name,
         autoCleanup: data.autoCleanup,
+        identityGroupId: data.identityGroupId,
+        identityId: data.identityId,
+        isUseSingleIdentity: !!data.identityId,
         ...transferDataToExpirationFormFields(data)
       })
 
-      if(policyEnabled) {
-        formRef.current?.setFieldsValue({
-          defaultAccess: data.defaultAccess,
-          policySetId: data.policySetId
-        })
-      }
+      formRef.current?.setFieldsValue({
+        defaultAccess: data.defaultAccess,
+        policySetId: data.policySetId
+      })
     }
   }, [data, editMode])
 
@@ -76,7 +76,9 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
         name: data.name,
         autoCleanup: data.autoCleanup,
         ...transferExpirationFormFieldsToData(data.expiration),
-        defaultAccess: data.defaultAccess ?? 'ACCEPT'
+        defaultAccess: data.defaultAccess ?? 'ACCEPT',
+        identityGroupId: data.identityGroupId,
+        identityId: data.isUseSingleIdentity ? data.identityId : undefined
       }
       // eslint-disable-next-line max-len
       const result = await addMacRegList({ payload: saveData, customHeaders }).unwrap() as MacRegistrationPool
@@ -107,7 +109,8 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
         name: formData.name,
         ...transferExpirationFormFieldsToData(formData.expiration),
         autoCleanup: formData.autoCleanup,
-        defaultAccess: formData.defaultAccess ?? 'ACCEPT'
+        defaultAccess: formData.defaultAccess ?? 'ACCEPT',
+        identityId: formData.isUseSingleIdentity ? formData.identityId : null
       }
       await updateMacRegList({
         params: { policyId },
@@ -166,7 +169,7 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
           }]}>
             <Row>
               <Col span={14}>
-                <MacRegistrationListSettingForm/>
+                <MacRegistrationListSettingForm editMode={editMode}/>
               </Col>
             </Row>
           </Loader>
