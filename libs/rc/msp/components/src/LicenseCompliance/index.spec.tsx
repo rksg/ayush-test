@@ -4,6 +4,7 @@ import { rest }  from 'msw'
 
 import { useIsSplitOn, Features }                                from '@acx-ui/feature-toggle'
 import { MspRbacUrlsInfo, MspUrlsInfo }                          from '@acx-ui/msp/utils'
+import { AdministrationUrlsInfo }                                from '@acx-ui/rc/utils'
 import { Provider }                                              from '@acx-ui/store'
 import { render, screen, mockServer, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -123,6 +124,10 @@ describe('LicenseCompliance', () => {
       rest.post(
         MspRbacUrlsInfo.getLicenseMileageReports.url,
         (req, res, ctx) => res(ctx.json(mileageReportData))
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getTenantDetails.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
     params = {
