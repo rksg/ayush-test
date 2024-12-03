@@ -38,17 +38,21 @@ export const GraphTitleWrapper = styled.div`
 `
 
 export const GraphTitle = styled.div`
+  display: inline-block;
   color: var(--acx-primary-black);
   font-size: var(--acx-subtitle-4-font-size);
   line-height: var(--acx-subtitle-4-line-height);
   font-weight: var(--acx-subtitle-4-font-weight);
+  background-color: var(--acx-primary-white);
 `
 
 export const GraphSubTitle = styled.div`
+  display: inline-block;
   color: var(--acx-primary-black);
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
   font-weight: var(--acx-body-font-weight);
+  background-color: var(--acx-primary-white);
 `
 
 export const CrrmArrow = styled.div`
