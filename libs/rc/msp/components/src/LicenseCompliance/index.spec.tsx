@@ -147,6 +147,10 @@ describe('LicenseCompliance', () => {
       rest.post(
         MspRbacUrlsInfo.getLicenseMileageReports.url,
         (req, res, ctx) => res(ctx.json(mileageReportData))
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getTenantDetails.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
     params = {
