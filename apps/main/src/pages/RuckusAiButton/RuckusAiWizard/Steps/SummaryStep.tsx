@@ -1,25 +1,43 @@
-import { Form }    from 'antd'
-import { useIntl } from 'react-intl'
+import { useEffect, useState } from 'react'
 
-import { cssStr }                        from '@acx-ui/components'
-import { NetworkTypeEnum, networkTypes } from '@acx-ui/rc/utils'
+import { Button, Form } from 'antd'
+import { useIntl }      from 'react-intl'
 
-import * as UI from './styledComponents'
+import { cssStr }                  from '@acx-ui/components'
+import {
+  NetworkTypeEnum,
+  networkTypes,
+  RuckusAiConfigurationStepsEnum
+} from '@acx-ui/rc/utils'
 
-// Need to confirm the new UX with the PLM
+import * as UI                            from './styledComponents'
+import { NetworkSummaryPage }             from './SummaryPages/NetworkSummaryPage'
+import { SwitchConfigurationSummaryPage } from './SummaryPages/SwitchConfigurationSummaryPage'
+
 export function SummaryStep (props: {
-  payload: string
+  payload: string,
+  setCurrentStep: (currentStep: number) => void,
+  currentStep: number
 }) {
   const { $t } = useIntl()
   const data = props.payload ? JSON.parse(props.payload) : {}
+  const [summaryId, setSummaryId] = useState('' as string)
+  const [summaryType, setSummaryType] = useState<RuckusAiConfigurationStepsEnum | ''>('')
+  const [summaryTitle, setSummaryTitle] = useState('' as string)
+
+  useEffect(() => {
+    setSummaryId('')
+    setSummaryType('')
+    setSummaryTitle('')
+  }, [props.currentStep])
 
   const getNetworkTypeDescription = (type: NetworkTypeEnum) => {
     return $t(networkTypes[type]) || 'Unknown Type'
   }
 
-  return <div style={{ display: 'flex', flexDirection: 'column' }}>
+  return <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
     <div style={{
-      flex: '0 1 auto',
+      flex: '1 1 auto',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center'
@@ -36,44 +54,105 @@ export function SummaryStep (props: {
         </b>?
       </UI.SummaryDescription>
 
-      <UI.SummaryContainer>
-        <Form.Item
-          label={
-            <UI.SummaryContainerHeader>
-              {$t({ defaultMessage: 'Wireless Networks' })}
-            </UI.SummaryContainerHeader>
-          }
-          style={{ marginBottom: '0px' }}
-          children={<ul style={{ marginBottom: '0px' }}>
-            {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              data?.wlan?.map((item: any, index: number) => (
-                <li key={index}>
-                  {`${item['SSID Name']} with ${getNetworkTypeDescription(item['SSID Type'])}`}</li>
-              ))}
-          </ul>
-          }
-        />
-      </UI.SummaryContainer>
+      <UI.SummarySplitContainer>
+        {/* Left Box */}
+        <UI.SummaryBox>
+          {/* Wireless Networks */}
+          <UI.SummaryContainer>
+            <Button key='editNetworksBtn'
+              type='link'
+              style={{ float: 'right' }}
+              onClick={() => {
+                props.setCurrentStep(1)
+              }}>
+              {$t({ defaultMessage: 'Edit' })}
+            </Button>
+            <Form.Item
+              label={
+                <UI.SummaryContainerHeader>
+                  {$t({ defaultMessage: 'Wireless Networks' })}
+                </UI.SummaryContainerHeader>
+              }
+              style={{ marginBottom: '0px' }}
+              children={<UI.SummaryUl>
+                { // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  data?.wlan?.map((item: any, index: number) => {
+                    const { id, 'SSID Name': ssidName, 'SSID Type': ssidType } = item
+                    const title = `${ssidName} with ${getNetworkTypeDescription(ssidType)}`
+                    const sid = `${id}?type=${ssidType}`
+                    return (
+                      <UI.SummaryLi
+                        key={index}
+                        selected={summaryId === sid &&
+                          summaryType === RuckusAiConfigurationStepsEnum.WLANDETAIL}
+                        onClick={() => {
+                          setSummaryId(sid)
+                          setSummaryType(RuckusAiConfigurationStepsEnum.WLANDETAIL)
+                          setSummaryTitle(title)
+                        }}
+                      > {title}
+                      </UI.SummaryLi>
+                    )
+                  })}
+              </UI.SummaryUl>
+              }
+            />
+          </UI.SummaryContainer>
 
-      {data.vlan && data.vlan.length > 0 && <UI.SummaryContainer>
-        <Form.Item
-          label={
-            <UI.SummaryContainerHeader>
-              {$t({ defaultMessage: 'VLAN Configuration' })}
-            </UI.SummaryContainerHeader>
+          {/* Switch Configuration VLAN */}
+          {data.vlan && data.vlan.length > 0 && <UI.SummaryContainer>
+            <Button key='editSwitchConfigurationBtn'
+              type='link'
+              style={{ float: 'right' }}
+              onClick={() => {
+                props.setCurrentStep(2)
+              }}>
+              {$t({ defaultMessage: 'Edit' })}
+            </Button>
+            <Form.Item
+              label={
+                <UI.SummaryContainerHeader>
+                  {$t({ defaultMessage: 'Switch Configuration' })}
+                </UI.SummaryContainerHeader>
+              }
+              style={{ marginBottom: '0px' }}
+              children={<UI.SummaryUl>
+                {// eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  data?.vlan?.map((item: any, index: number) => {
+                    const { id, 'VLAN Name': vlanName, 'VLAN ID': vlanId } = item
+                    const title = `${vlanName} @ VLAN  ${vlanId}`
+                    return <UI.SummaryLi key={index}
+                      selected={summaryId === id &&
+                        summaryType === RuckusAiConfigurationStepsEnum.VLAN}
+                      onClick={() => {
+                        setSummaryId(id)
+                        setSummaryType(RuckusAiConfigurationStepsEnum.VLAN)
+                        setSummaryTitle(title)
+                      }}>
+                      {title}
+                    </UI.SummaryLi>
+                  })}
+              </UI.SummaryUl>}
+            />
+          </UI.SummaryContainer>
           }
-          style={{ marginBottom: '0px' }}
-          children={<ul style={{ marginBottom: '0px' }}>
-            {// eslint-disable-next-line @typescript-eslint/no-explicit-any
-              data?.vlan?.map((item: any, index: number) => (
-                <li key={index}>{`${item['VLAN Name']} @ VLAN  ${item['VLAN ID']}`}</li>
-              ))}
-          </ul>}
-        />
-      </UI.SummaryContainer>
-      }
+        </UI.SummaryBox>
+        <UI.SummaryDivider />
+
+        {/* Right Box */}
+        <UI.SummaryBox>
+          {summaryType === RuckusAiConfigurationStepsEnum.WLANDETAIL && <UI.SummaryContainer>
+            <NetworkSummaryPage summaryId={summaryId} summaryTitle={summaryTitle} />
+          </UI.SummaryContainer>}
+
+          {summaryType === RuckusAiConfigurationStepsEnum.VLAN && <UI.SummaryContainer>
+            <SwitchConfigurationSummaryPage summaryId={summaryId} summaryTitle={summaryTitle}/>
+          </UI.SummaryContainer>}
+
+        </UI.SummaryBox>
+      </UI.SummarySplitContainer>
 
     </div>
   </div>
 }
+

@@ -1,11 +1,12 @@
-import { Space, Typography } from 'antd'
-import { useIntl }           from 'react-intl'
+import { Space,  Typography } from 'antd'
+import { useIntl }            from 'react-intl'
 
 import {
   Button,
   PageHeader,
   SummaryCard,
-  Card
+  Card,
+  Tabs
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import {
@@ -21,12 +22,13 @@ import {
   getEthernetPortTypeString,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
-  getScopeKeyByPolicy,
-  transformDisplayNumber
+  getPolicyRoutePath,
+  getScopeKeyByPolicy
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
-import { EthernetPortProfileInstanceTable } from './EthernetPortProfileInstanceTable'
+import { ApTable }    from './InstanceTable/ApTable'
+import { VenueTable } from './InstanceTable/VenueTable'
 
 export const EthernetPortProfileDetail = () => {
 
@@ -142,6 +144,11 @@ export const EthernetPortProfileDetail = () => {
         {
           text: $t({ defaultMessage: 'Policies & Profiles' }),
           link: getPolicyListRoutePath(true)
+        },{
+          text: $t({ defaultMessage: 'Ethernet Port Profiles' }),
+          link: getPolicyRoutePath(
+            { type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.LIST }
+          )
         }
       ]}
       extra={
@@ -164,14 +171,34 @@ export const EthernetPortProfileDetail = () => {
       <SummaryCard data={ethernetPortProfileInfo} colPerRow={6} />
       <Card>
         <Typography.Title level={2}>
-          {$t(
-            { defaultMessage: 'Instances ({count})' },
-            { count: transformDisplayNumber(ethernetPortProfileData?.apSerialNumbers?.length) }
-          )}
+          {$t({ defaultMessage: 'Instances' })}
         </Typography.Title>
-        <EthernetPortProfileInstanceTable
-          apSerialNumbers={ethernetPortProfileData?.apSerialNumbers || []}
-        />
+        <Tabs
+          type='third'
+          // onChange={onTabChange}
+          animated={true}
+        >
+          <Tabs.TabPane
+            tab={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
+            key={'venue'}
+            forceRender={true}
+          >
+            <VenueTable
+              venueActivations={ethernetPortProfileData?.venueActivations || []}
+            />
+
+          </Tabs.TabPane>
+          <Tabs.TabPane
+            tab={$t({ defaultMessage: 'AP' })}
+            key={'ap'}
+            forceRender={true}
+          >
+            <ApTable
+              apSerialNumbers={ethernetPortProfileData?.apSerialNumbers || []}
+            />
+          </Tabs.TabPane>
+        </Tabs>
+
       </Card>
     </Space>
   </>)

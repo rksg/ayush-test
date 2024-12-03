@@ -16,8 +16,7 @@ import {
   PassphraseViewer,
   PersonaDrawer,
   PropertyUnitLink,
-  useIsEdgeFeatureReady,
-  usePersonaAsyncHeaders
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
 import {
   useAllocatePersonaVniMutation,
@@ -90,7 +89,6 @@ function PersonaDetails () {
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const [vniRetryable, setVniRetryable] = useState<boolean>(false)
-  const { customHeaders } = usePersonaAsyncHeaders()
 
   useEffect(() => {
     if (personaDetailsQuery.isLoading) return
@@ -161,8 +159,7 @@ function PersonaDetails () {
   const revokePersona = async () => {
     return await updatePersona({
       params: { groupId: personaGroupId, id: personaId },
-      payload: { revoked: !personaDetailsQuery.data?.revoked },
-      customHeaders
+      payload: { revoked: !personaDetailsQuery.data?.revoked }
     })
   }
 

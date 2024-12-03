@@ -405,7 +405,7 @@ export { ReactComponent as DpskActionTypeIcon } from './icons/DpskActionTypeIcon
 export { ReactComponent as MacRegActionTypeIcon } from './icons/MacRegActionTypeIcon.svg'
 export { ReactComponent as CertTemplateActionTypeIcon } from './icons/CertTemplateActionTypeIcon.svg'
 export { ReactComponent as QrCodeSmallIcon } from './icons/QrCodeSmall.svg'
-export { ReactComponent as RuckusAiDog } from './icons/RuckusAiDog.svg'
+export { ReactComponent as OnboardingAssistantDog } from './icons/OnboardingAssistantDog.svg'
 export { ReactComponent as DogAndPerson } from './icons/DogAndPerson.svg'
 export { ReactComponent as Hospitality } from './icons/Hospitality.svg'
 export { ReactComponent as MultiDwellingUnit } from './icons/MultiDwellingUnit.svg'
@@ -415,7 +415,6 @@ export { ReactComponent as Shop } from './icons/Shop.svg'
 export { ReactComponent as Stadium } from './icons/Stadium.svg'
 export { ReactComponent as TransportHub } from './icons/TransportHub.svg'
 export { ReactComponent as Warehhouse } from './icons/Warehhouse.svg'
-export { ReactComponent as RuckusAiLogo } from './icons/RuckusAiLogo.svg'
 export { ReactComponent as WelcomeLogo } from './icons/WelcomeLogo.svg'
 
 

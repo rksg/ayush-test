@@ -443,6 +443,7 @@ export interface MspRecData {
   name?: string;
   delegations?: MspIntegratorDelegated[];
   admin_delegations?: MspEcDelegatedAdmins[];
+  privilege_group_ids?: string[];
 }
 
 export interface MspMultiRecData {
@@ -641,4 +642,5 @@ export interface MileageReportsRequestPayload {
 export interface MileageSeriesData {
   value: number;
   extraData: MileageBreakUp[];
+  isZeroQuantity?: boolean;
 }

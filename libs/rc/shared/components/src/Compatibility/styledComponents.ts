@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-import { WarningCircleSolid } from '@acx-ui/icons'
+import { WarningCircleSolid, WarningTriangleSolid } from '@acx-ui/icons'
 
 export const CompatibilityWarningCircleIcon = styled(WarningCircleSolid)`
   display: flex;
@@ -14,6 +14,23 @@ export const CompatibilityWarningCircleIcon = styled(WarningCircleSolid)`
   fill: var(--acx-semantics-yellow-50);
   path:nth-child(2) {
     stroke: var(--acx-semantics-yellow-30);
+  }
+`
+
+export const CompatibilityWarningTriangleIcon = styled(WarningTriangleSolid)`
+  display: flex;
+  display: -webkit-flex;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  height: 16px;
+  width: 16px;
+  path:nth-child(1) {
+    fill: var(--acx-semantics-yellow-50);
+  }
+  path:nth-child(3) {
+    stroke: var(--acx-semantics-orange-30);
   }
 `
 

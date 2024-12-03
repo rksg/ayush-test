@@ -1,7 +1,6 @@
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { PersonaUrls }                     from '@acx-ui/rc/utils'
+import { PersonaGroup, PersonaUrls }       from '@acx-ui/rc/utils'
 import { Provider }                        from '@acx-ui/store'
 import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
 import { RequestPayload }                  from '@acx-ui/types'
@@ -13,6 +12,7 @@ const spyCreatePersonaGroup = jest.fn()
 const spyAssociateDpsk = jest.fn()
 const spyAssociateMacRegistration = jest.fn()
 const spyAssociatePolicySet = jest.fn()
+const spyDissociatePolicySet = jest.fn()
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
@@ -22,8 +22,8 @@ jest.mock('@acx-ui/rc/services', () => ({
         resolve(true)
 
         setTimeout(() => {
-          (req.callback as Function)({ id: 'mocked_id' })
-        }, 100)})
+          (req.onSuccess as Function)({ id: 'mocked_id' })
+        }, 10)})
       }
     }]
   }
@@ -37,6 +37,8 @@ describe('usePersonaGroupActions', () => {
     spyCreatePersonaGroup.mockClear()
     spyAssociateDpsk.mockClear()
     spyAssociateMacRegistration.mockClear()
+    spyAssociatePolicySet.mockClear()
+    spyDissociatePolicySet.mockClear()
 
     mockServer.use(
       rest.patch(
@@ -54,12 +56,6 @@ describe('usePersonaGroupActions', () => {
         }
       ),
       rest.put(
-        PersonaUrls.associateCertTemplate.url,
-        (req, res, ctx) => {
-          return res(ctx.json({}))
-        }
-      ),
-      rest.put(
         PersonaUrls.associateMacRegistration.url,
         (req, res, ctx) => {
           spyAssociateMacRegistration()
@@ -72,12 +68,18 @@ describe('usePersonaGroupActions', () => {
           spyAssociatePolicySet()
           return res(ctx.json({}))
         }
+      ),
+      rest.delete(
+        PersonaUrls.dissociatePolicySet.url,
+        (_, res, ctx) => {
+          spyDissociatePolicySet()
+          return res(ctx.json({}))
+        }
       )
     )
   })
 
   it('Should create persona group with dpsk and macRegistration via multiple steps', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation((ff) => ff === Features.CLOUDPATH_ASYNC_API_TOGGLE)
     const { result } = renderHook(() => usePersonaGroupAction(), {
       wrapper: ({ children }) => <Provider children={children} />
     })
@@ -87,36 +89,38 @@ describe('usePersonaGroupActions', () => {
       id: groupId,
       name: 'PersonaGroup',
       dpskPoolId: 'bc85fdf3f4cd4869ba81f3c2e09bb8c3',
-      macRegistrationPoolId: '9a385473-0c2d-4cb1-9e44-80058d65856a',
-      certificateTemplateId: '54f53935-fc5f-4b7e-bfba-14008d2b3b7d'
+      macRegistrationPoolId: '9a385473-0c2d-4cb1-9e44-80058d65856a'
     })
 
     await waitFor(() => expect(spyAssociateDpsk).toBeCalled())
     await waitFor(() => expect(spyAssociateMacRegistration).toBeCalled())
-
-    jest.mocked(useIsSplitOn).mockReset()
   })
 
   it('Should update persona group, dpsk, macRegistration via multiple steps', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation((ff) => ff === Features.CLOUDPATH_ASYNC_API_TOGGLE)
-
     const { result } = renderHook(() => usePersonaGroupAction(), {
       wrapper: ({ children }) => <Provider children={children} />
     })
     const { updatePersonaGroupMutation } = result.current
 
-    await updatePersonaGroupMutation(groupId, {
-      description: 'changeValue',
+    const groupData: PersonaGroup = {
+      id: '86a51b7d-1e15-4ad0-8d4a-504e08b845a2',
+      name: 'groupName',
+      description: 'value',
       dpskPoolId: 'bc85fdf3f4cd4869ba81f3c2e09bb8c3',
-      macRegistrationPoolId: '9a385473-0c2d-4cb1-9e44-80058d65856a',
-      certificateTemplateId: '54f53935-fc5f-4b7e-bfba-14008d2b3b7d'
-    })
+      macRegistrationPoolId: '9a385473-0c2d-4cb1-9e44-80058d65856a'
+    }
+    const changedData: PersonaGroup = {
+      ...groupData,
+      description: 'newValue',
+      dpskPoolId: '97b86a354dba43f4892d449b8be62ea0',
+      macRegistrationPoolId: '8cd4f603-0248-45cd-a930-d77683eccdf4'
+    }
+
+    await updatePersonaGroupMutation(groupId, groupData, changedData)
 
     expect(spyUpdatePersonaGroup).toBeCalled()
     expect(spyAssociateDpsk).toBeCalled()
     expect(spyAssociateMacRegistration).toBeCalled()
-
-    jest.mocked(useIsSplitOn).mockReset()
   })
 
   it('Should not trigger update api with empty changes', async () => {
@@ -125,36 +129,20 @@ describe('usePersonaGroupActions', () => {
     })
     const { updatePersonaGroupMutation } = result.current
 
-    await updatePersonaGroupMutation(groupId, {})
+    const groupData: PersonaGroup = {
+      id: '86a51b7d-1e15-4ad0-8d4a-504e08b845a2',
+      name: 'groupName',
+      description: 'value'
+    }
+
+    await updatePersonaGroupMutation(groupId, groupData, groupData)
 
     expect(spyUpdatePersonaGroup).not.toHaveBeenCalled()
     expect(spyAssociateDpsk).not.toHaveBeenCalled()
     expect(spyAssociateMacRegistration).not.toHaveBeenCalled()
   })
 
-  it('Should create persona group with dpsk and macRegistration via single step', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation((ff) => ff !== Features.CLOUDPATH_ASYNC_API_TOGGLE)
-    const { result } = renderHook(() => usePersonaGroupAction(), {
-      wrapper: ({ children }) => <Provider children={children} />
-    })
-    const { createPersonaGroupMutation } = result.current
-
-    await createPersonaGroupMutation({
-      id: groupId,
-      name: 'PersonaGroup',
-      dpskPoolId: 'bc85fdf3f4cd4869ba81f3c2e09bb8c3',
-      macRegistrationPoolId: '9a385473-0c2d-4cb1-9e44-80058d65856a',
-      certificateTemplateId: '60654b55-a8ad-448b-80a1-d9c131dfef65'
-    })
-
-    await waitFor(() => expect(spyAssociateDpsk).not.toBeCalled())
-    await waitFor(() => expect(spyAssociateMacRegistration).not.toBeCalled())
-
-    jest.mocked(useIsSplitOn).mockReset()
-  })
-
   it('Should create persona group with policySet via multiple steps', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(() => true)
     const { result } = renderHook(() => usePersonaGroupAction(), {
       wrapper: ({ children }) => <Provider children={children} />
     })
@@ -167,25 +155,52 @@ describe('usePersonaGroupActions', () => {
     })
 
     await waitFor(() => expect(spyAssociatePolicySet).toBeCalled())
-
-    jest.mocked(useIsSplitOn).mockReset()
   })
 
   it('Should update persona group with policySet via multiple steps', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(() => true)
     const { result } = renderHook(() => usePersonaGroupAction(), {
       wrapper: ({ children }) => <Provider children={children} />
     })
     const { updatePersonaGroupMutation } = result.current
 
-    await updatePersonaGroupMutation(groupId, {
-      description: 'changeValue',
-      policySetId: 'bc85fdf3f4cd4869ba81f3c2e09bb8c3'
-    })
+    const groupData: PersonaGroup = {
+      id: '86a51b7d-1e15-4ad0-8d4a-504e08b845a2',
+      name: 'groupName',
+      description: 'value',
+      dpskPoolId: 'bc85fdf3f4cd4869ba81f3c2e09bb8c3',
+      macRegistrationPoolId: '9a385473-0c2d-4cb1-9e44-80058d65856a'
+    }
+    const changedData: PersonaGroup = {
+      ...groupData,
+      description: 'newValue',
+      policySetId: 'abb1a52d-fd77-434c-8895-36ee9a432ad1'
+    }
+
+    await updatePersonaGroupMutation(groupId, groupData, changedData)
 
     expect(spyUpdatePersonaGroup).toBeCalled()
     expect(spyAssociatePolicySet).toBeCalled()
+  })
 
-    jest.mocked(useIsSplitOn).mockReset()
+  it('Should dissociate policy set via multiple steps', async () => {
+    const { result } = renderHook(() => usePersonaGroupAction(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+    const { updatePersonaGroupMutation } = result.current
+
+    const groupData: PersonaGroup = {
+      id: '86a51b7d-1e15-4ad0-8d4a-504e08b845a2',
+      name: 'groupName',
+      description: 'value',
+      policySetId: 'abb1a52d-fd77-434c-8895-36ee9a432ad1'
+    }
+    const changedData: PersonaGroup = {
+      ...groupData,
+      policySetId: undefined
+    }
+
+    await updatePersonaGroupMutation(groupId, groupData, changedData)
+
+    expect(spyDissociatePolicySet).toBeCalled()
   })
 })
