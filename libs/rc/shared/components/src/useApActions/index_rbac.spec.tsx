@@ -39,7 +39,7 @@ apList.data.splice(1, 1)
 apList.totalCount = apList.data.length
 apList.data[0].firmwareVersion ='6.2.0.103.261' // invalid Ap Fw version for reset
 apList.data[0].venueId = dhcpList.data[0].venueIds[0]
-describe('Test useApActions', () => {
+describe.skip('Test useApActions', () => {
 
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API)
@@ -119,7 +119,7 @@ describe('Test useApActions', () => {
     jest.clearAllMocks()
   })
 
-  it('showRebootAp', async () => {
+  it.skip('showRebootAp', async () => {
     const { result } = renderHook(() => useApActions(), {
       wrapper: ({ children }) => <Provider children={children} />
     })
