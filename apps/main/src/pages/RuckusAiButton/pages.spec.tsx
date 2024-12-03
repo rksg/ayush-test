@@ -28,7 +28,7 @@ jest.mock('react-router-dom', () => ({
 
 describe('VerticalPage', () => {
   const VerticalPageWrapper = () => {
-    const [selectedType, setSelectedType] = useState('' as string);
+    const [selectedType, setSelectedType] = useState('' as string)
     return (
       <Provider>
         <Form>
