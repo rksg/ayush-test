@@ -241,7 +241,7 @@ export const errorMiddleware: Middleware = () => next => action => {
   const typedAction = action as unknown as {
     type: string,
     meta?: { baseQueryMeta?: FetchBaseQueryMeta },
-    payload: { meta?: QueryMeta, data?: ErrorDetailsProps },
+    payload: { meta?: QueryMeta, data?: ErrorDetailsProps }
   }
   const { meta, payload } = typedAction
   if (payload && typeof payload === 'object' && meta && !meta.baseQueryMeta) {
