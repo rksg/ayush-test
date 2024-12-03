@@ -41,6 +41,7 @@ export default function RuckusAiButton () {
   const [configResponse, setConfigResponse] = useState({} as any)
 
   const [showAlert, setShowAlert] = useState(false as boolean)
+  const [selectedType, setSelectedType] = useState('' as string)
 
   const [startConversations] = useStartConversationsMutation()
   const [updateConversations] = useUpdateConversationsMutation()
@@ -250,6 +251,7 @@ export default function RuckusAiButton () {
     setCurrentStep(0)
     setNextStep({} as RuckusAiConversation)
     setConfigResponse({})
+    setSelectedType('')
   }
   return <>
     <UI.ButtonSolid
@@ -274,7 +276,9 @@ export default function RuckusAiButton () {
             layout={'vertical'}
             labelAlign='left'>
             {step === RuckusAiStepsEnum.WELCOME && <WelcomePage />}
-            {step === RuckusAiStepsEnum.VERTICAL && <VerticalPage />}
+            {step === RuckusAiStepsEnum.VERTICAL && <VerticalPage
+              selectedType={selectedType}
+              setSelectedType={setSelectedType} />}
             {step === RuckusAiStepsEnum.BASIC && <BasicInformationPage/>}
           </Form>
           <div style={{ display: step === RuckusAiStepsEnum.CONFIGURATION ? 'block' : 'none' }}>
