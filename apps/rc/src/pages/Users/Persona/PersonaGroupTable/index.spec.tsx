@@ -177,7 +177,7 @@ describe('Persona Group Table', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/t/users/identity-management/identity-group' }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(searchPersonaGroupApi).toHaveBeenCalledTimes(1))
 
     const targetPersonaGroup = mockPersonaGroupTableResult.content[0]
     const macLinkName = mockMacRegistrationList.content
