@@ -23,7 +23,7 @@ describe('ClientIsolationInstancesTable', () => {
   // eslint-disable-next-line max-len
   const detailPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL })
 
-  it.skip('should render the table view', async () => {
+  it('should render the table view', async () => {
     mockServer.use(
       rest.post(
         ClientIsolationUrls.getVenueUsageByClientIsolation.url,
