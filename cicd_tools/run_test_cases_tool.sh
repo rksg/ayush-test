@@ -13,13 +13,13 @@ if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRAN
     echo "Start executing unit tests script file - ./cicd_tools/run_test_cases_tool.sh"
 
     ## All unit tests. ##
-    ${RUN_COMMAND} run rc:test ${NX_RUN_OPTIONS}
-    ${RUN_COMMAND} run rc-components:test ${NX_RUN_OPTIONS}
-    ${RUN_COMMAND} run main-components:test ${NX_RUN_OPTIONS}
-    ${RUN_COMMAND} run main:test ${NX_RUN_OPTIONS}
-    ${RUN_COMMAND} run analytics-components:test ${NX_RUN_OPTIONS}
-    ${RUN_COMMAND} run msp:test ${NX_RUN_OPTIONS}
-    ${RUN_COMMAND} run msp-components:test ${NX_RUN_OPTIONS}
-    ${RUN_COMMAND} run-many --target=test --all --exclude=rc,rc-components,main,analytics-components,msp,msp-components,main-components ${NX_RUN_OPTIONS}
+    CICD_BUILD=true ${RUN_COMMAND} run rc:test ${NX_RUN_OPTIONS}
+    CICD_BUILD=true ${RUN_COMMAND} run rc-components:test ${NX_RUN_OPTIONS}
+    CICD_BUILD=true ${RUN_COMMAND} run main-components:test ${NX_RUN_OPTIONS}
+    CICD_BUILD=true ${RUN_COMMAND} run main:test ${NX_RUN_OPTIONS}
+    CICD_BUILD=true ${RUN_COMMAND} run analytics-components:test ${NX_RUN_OPTIONS}
+    CICD_BUILD=true ${RUN_COMMAND} run msp:test ${NX_RUN_OPTIONS}
+    CICD_BUILD=true ${RUN_COMMAND} run msp-components:test ${NX_RUN_OPTIONS}
+    CICD_BUILD=true ${RUN_COMMAND} run-many --target=test --all --exclude=rc,rc-components,main,analytics-components,msp,msp-components,main-components ${NX_RUN_OPTIONS}
     ## All unit tests. ##
 fi
