@@ -8,8 +8,7 @@ import { Drawer }                                                               
 import { CommonAsyncResponse, useAddPersonaMutation, useUpdatePersonaMutation } from '@acx-ui/rc/services'
 import { Persona }                                                              from '@acx-ui/rc/utils'
 
-import { PersonaForm }            from '../PersonaForm'
-import { usePersonaAsyncHeaders } from '../usePersonaAsyncHeaders'
+import { PersonaForm } from '../PersonaForm'
 
 
 interface PersonaDrawerProps {
@@ -27,7 +26,6 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
   // FIXME: Add loading status on creating and updating
   const [addPersona] = useAddPersonaMutation()
   const [updatePersona] = useUpdatePersonaMutation()
-  const { customHeaders } = usePersonaAsyncHeaders()
 
   useEffect(()=> {
     // make sure that reset the form fields while close the Drawer
@@ -51,8 +49,7 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
   const handleAddPersona = async (submittedData: Persona) => {
     return addPersona({
       params: { groupId: submittedData.groupId },
-      payload: { ...submittedData },
-      customHeaders
+      payload: { ...submittedData }
     }).unwrap()
   }
 
@@ -72,8 +69,7 @@ export function PersonaDrawer (props: PersonaDrawerProps) {
 
     return updatePersona({
       params: { groupId: submittedData.groupId, id: data?.id },
-      payload: patchData,
-      customHeaders
+      payload: patchData
     }).unwrap()
   }
 
