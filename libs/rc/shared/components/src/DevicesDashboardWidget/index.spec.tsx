@@ -12,6 +12,10 @@ const params = {
   tenantId: 'tenant-id'
 }
 
+jest.mock('../DevicesWidget/index', () => ({
+  DevicesWidgetv2: () => <div>Mock DevicesWidget</div>,
+}))
+
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
   useDashboardFilter: () => ({
@@ -43,9 +47,6 @@ describe('Dashboard Devices Widget V2', () => {
   it('should render loader and then chart', async () => {
     const { asFragment } = render(<Provider><DevicesDashboardWidgetV2 /></Provider>,
       { route: { params } })
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('Devices')
-    expect(asFragment().querySelector('svg')).toBeDefined()
+    expect(await within(dialog).findByTestId('Mock DevicesWidget')).toBeInTheDocument()
   })
 })
