@@ -262,7 +262,7 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
         const req = createHttpRequest(SoftGreUrls.activateSoftGreProfileOnVenue, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
@@ -271,7 +271,7 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
         const req = createHttpRequest(SoftGreUrls.deactivateSoftGreProfileOnVenue, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     })
@@ -290,5 +290,7 @@ export const {
   useGetSoftGreOptionsQuery,
   useLazyGetSoftGreOptionsQuery,
   useActivateSoftGreMutation,
-  useDectivateSoftGreMutation
+  useDectivateSoftGreMutation,
+  useActivateSoftGreProfileOnVenueMutation,
+  useDeactivateSoftGreProfileOnVenueMutation
 } = softGreApi
