@@ -192,7 +192,7 @@ describe('AIDrivenRRM dashboard', () => {
       data: { recommendation: { ...crrmListResult.recommendations[0], dataEndTime: 'dataEndTime' } }
     })
     render(<AIDrivenRRM pathFilters={pathFilters} />, { route: true, wrapper: Provider })
-    expect(await screen.findAllByText('Beyond data retention period')).toHaveLength(3)
+    expect(await screen.findByText('Beyond data retention period')).toBeInTheDocument()
     expect(spy).toBeCalledWith('dataEndTime')
   })
 })
