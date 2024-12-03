@@ -176,6 +176,7 @@ function ImpactedSwitchTable (props: {
   ],[])
 
   return <Table
+    rowKey='mac'
     columns={columns}
     dataSource={rows}
     pagination={{ defaultPageSize: 5, pageSize: 5 }}
