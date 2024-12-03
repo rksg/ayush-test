@@ -127,7 +127,7 @@ export const getFeatureTypeTag = (featureType: IncompatibleFeatureTypeEnum | und
     case IncompatibleFeatureTypeEnum.WIFI:
       return <StyledFeatureTypeWifi children={'Wi-Fi'} />
     case IncompatibleFeatureTypeEnum.EDGE:
-      return <StyledFeatureTypeEdge children={'SmartEdge'} />
+      return <StyledFeatureTypeEdge children={'RUCKUS Edge'} />
     case IncompatibleFeatureTypeEnum.SWITCH:
       return <StyledFeatureTypeSwitch children={'Switch'} />
   }

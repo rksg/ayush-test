@@ -2,8 +2,9 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
+import { edgeSdLanApi }                                                                                                                              from '@acx-ui/rc/services'
 import { EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink, CommonUrlsInfo, EdgeSdLanUrls, EdgeGeneralFixtures, EdgeSdLanFixtures } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                                  from '@acx-ui/store'
+import { Provider, store }                                                                                                                           from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }                                                                    from '@acx-ui/test-utils'
 
 import EdgeSdLanTable from '.'
@@ -31,6 +32,7 @@ describe('SD-LAN Table P2', () => {
     mockedUsedNavigate.mockReset()
     mockedGetClusterList.mockReset()
     mockedDeleteReq.mockReset()
+    store.dispatch(edgeSdLanApi.util.resetApiState())
 
     mockServer.use(
       rest.post(
@@ -79,7 +81,7 @@ describe('SD-LAN Table P2', () => {
     expect(rows[1]).toHaveTextContent(/Mocked_SDLAN_2\s*Mocked-Venue-2\s*SE_Cluster 1\s*1\s*Mocked_tunnel-2\s*Good/)
   })
 
-  it.skip('should display network names when hover', async () => {
+  it('should display network names when hover', async () => {
     render(
       <Provider>
         <EdgeSdLanTable />

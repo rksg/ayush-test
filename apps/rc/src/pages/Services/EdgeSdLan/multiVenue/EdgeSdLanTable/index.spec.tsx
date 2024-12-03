@@ -3,7 +3,7 @@ import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { edgeApi }                from '@acx-ui/rc/services'
+import { edgeApi, edgeSdLanApi }  from '@acx-ui/rc/services'
 import {
   EdgeUrlsInfo,
   ServiceOperation,
@@ -78,6 +78,7 @@ describe('Multi-venue SD-LAN Table', () => {
     }
 
     store.dispatch(edgeApi.util.resetApiState())
+    store.dispatch(edgeSdLanApi.util.resetApiState())
 
     mockedUsedNavigate.mockReset()
     mockedGetClusterList.mockReset()
