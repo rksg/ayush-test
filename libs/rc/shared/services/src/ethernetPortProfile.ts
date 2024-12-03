@@ -175,7 +175,6 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
     }),
     getEthernetPortProfileWithRelationsById:
     build.query<EthernetPortProfile | null, RequestPayload>({
-      // @ts-ignore
       async queryFn ({ payload, params }, _queryApi, _extraOptions, fetchWithBQ) {
         if (!params?.id) return Promise.resolve({ data: null } as QueryReturnValue<
           null,
@@ -203,7 +202,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
         return ethernetPortProfileData
           ? { data: ethernetPortProfileData }
           : { error: ethernetPortProfile.error } as QueryReturnValue<
-          EthernetPortProfile, FetchBaseQueryError>
+          EthernetPortProfile, FetchBaseQueryError, FetchBaseQueryMeta | undefined>
       },
       providesTags: [{ type: 'EthernetPortProfile', id: 'DETAIL' }]
     }),

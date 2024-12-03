@@ -1,6 +1,5 @@
-import { configureStore }                                 from '@reduxjs/toolkit'
+import { configureStore, createDynamicMiddleware }        from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import dynamicMiddlewares                                 from 'redux-dynamic-middlewares'
 
 import {
   baseAdministrationApi as administrationApi,
@@ -87,6 +86,8 @@ const cancelMiddleware: Middleware = ({ getState, dispatch }) => next => action 
   return next(action)
 }
 
+export const dynamicMiddleware = createDynamicMiddleware()
+
 export const store = configureStore({
   reducer: {
     [commonApi.reducerPath]: commonApi.reducer,
@@ -139,14 +140,13 @@ export const store = configureStore({
     [directoryServerApi.reducerPath]: directoryServerApi.reducer
   },
 
-  // @ts-ignore
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
       serializableCheck: isDev ? undefined : false,
       immutableCheck: isDev ? undefined : false
     }).concat([
       cancelMiddleware,
-      dynamicMiddlewares,
+      dynamicMiddleware.middleware,
       commonApi.middleware,
       networkApi.middleware,
       venueApi.middleware,

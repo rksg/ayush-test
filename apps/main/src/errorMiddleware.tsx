@@ -1,6 +1,5 @@
-import React from 'react'
-
 import { Middleware, isRejectedWithValue }            from '@reduxjs/toolkit'
+import { FetchBaseQueryMeta }                         from '@reduxjs/toolkit/query'
 import { FormattedMessage, defineMessage, IntlShape } from 'react-intl'
 
 import { ActionModalType, ErrorDetailsProps, showActionModal }                                from '@acx-ui/components'
@@ -239,23 +238,20 @@ const shouldIgnoreErrorModal = (action?: ErrorAction) => {
 }
 
 export const errorMiddleware: Middleware = () => next => action => {
-  // @ts-ignore
-  if (action?.payload && typeof action.payload === 'object' && 'meta' in action.payload
-    // @ts-ignore
-    && action.meta && !action.meta?.baseQueryMeta) {
+  const typedAction = action as unknown as {
+    type: string,
+    meta?: { baseQueryMeta?: FetchBaseQueryMeta },
+    payload: { meta?: QueryMeta, data?: ErrorDetailsProps },
+  }
+  const { meta, payload } = typedAction
+  if (payload && typeof payload === 'object' && meta && !meta.baseQueryMeta) {
     // baseQuery (for retry API)
-    // @ts-ignore
-    const payload = action.payload as { meta?: QueryMeta }
-    // @ts-ignore
-    action.meta.baseQueryMeta = payload.meta
+    meta.baseQueryMeta = payload.meta
     delete payload.meta
   }
-
   if (isRejectedWithValue(action)) {
-    // @ts-ignore
-    const details = getErrorContent(action)
-    // @ts-ignore
-    if (!shouldIgnoreErrorModal(action)) {
+    const details = getErrorContent(typedAction)
+    if (!shouldIgnoreErrorModal(typedAction)) {
       showErrorModal(details)
     }
   }
