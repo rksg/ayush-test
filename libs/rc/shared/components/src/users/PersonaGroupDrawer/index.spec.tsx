@@ -5,7 +5,8 @@ import {
   MacRegListUrlsInfo,
   NewPersonaBaseUrl,
   PersonaUrls,
-  DpskUrls
+  DpskUrls,
+  RulesManagementUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
@@ -16,6 +17,7 @@ import {
   mockMacRegistrationList,
   mockPersonaGroup,
   mockPersonaGroupTableResult,
+  mockAdaptivePolicySetTableResult,
   replacePagination
 } from './__tests__/fixtures'
 
@@ -57,6 +59,12 @@ describe('Persona Group Drawer', () => {
       rest.post(
         DpskUrls.getEnhancedDpskList.url,
         (req, res, ctx) => res(ctx.json(mockDpskList))
+      ),
+      rest.get(
+        replacePagination(RulesManagementUrlsInfo.getPolicySets.url),
+        (_, res, ctx) => {
+          return res(ctx.json(mockAdaptivePolicySetTableResult))
+        }
       )
     )
     params = {
