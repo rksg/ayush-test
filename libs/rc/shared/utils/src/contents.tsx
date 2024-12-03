@@ -533,6 +533,9 @@ export const EthernetPortProfileMessages = {
   }),
   GUEST_VLAN: defineMessage({
     defaultMessage: 'A guest VLAN is used if you want to allow a device that fails authentication to access the Internet but restrict it from accessing internal network resources'
+  }),
+  USE_RADIUS_PROXY: defineMessage({
+    defaultMessage: 'This option requires your access points to run firmware version 7.0.0.104 or higher.'
   })
   /* eslint-enable */
 }
