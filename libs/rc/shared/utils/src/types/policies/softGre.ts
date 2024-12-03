@@ -54,15 +54,9 @@ export interface SoftGreOptionsData {
   activationProfiles: string[]
 }
 
-export interface SoftGreVenueActivation {
+export interface SoftGreWiredActivation {
   venueId: string
-  apModel: string
+  apModel?: string
   apSerialNumbers: string[],
-  portId: number
-}
-
-export interface SoftGreApActivation {
-  venueId: string
-  apSerialNumber: string
   portId: number
 }
