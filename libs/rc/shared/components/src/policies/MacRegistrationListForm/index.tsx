@@ -59,7 +59,9 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
       formRef.current?.setFieldsValue({
         name: data.name,
         autoCleanup: data.autoCleanup,
-        ...transferDataToExpirationFormFields(data)
+        ...transferDataToExpirationFormFields(data),
+        defaultAccess: data.defaultAccess,
+        policySetId: data.policySetId
       })
 
       if(isGroupRequired) {
@@ -69,11 +71,6 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
           isUseSingleIdentity: !!data.identityId
         })
       }
-
-      formRef.current?.setFieldsValue({
-        defaultAccess: data.defaultAccess,
-        policySetId: data.policySetId
-      })
     }
   }, [data, editMode])
 
