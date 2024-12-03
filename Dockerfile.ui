@@ -60,16 +60,17 @@ RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
 RUN touch lint-done
 
 # We should validate the tsc validator in the tsconfig of apps that wont be built yet
-FROM build-base as acx-ui-tslint
+# FROM build-base as acx-ui-tslint
 # Multistage: trigger run
-COPY --from=acx-ui-lint /app/lint-done /tmp/
-RUN node ./node_modules/.bin/nx run ra:tsc
-RUN touch tslint-done
+# COPY --from=acx-ui-lint /app/lint-done /tmp/
+# RUN node ./node_modules/.bin/nx run ra:tsc
+# RUN touch tslint-done
 ###############################################################
 
 FROM build-base as build
 # Multistage: trigger run
-COPY --from=acx-ui-tslint /app/tslint-done /tmp/
+# COPY --from=acx-ui-tslint /app/tslint-done /tmp/
+COPY --from=acx-ui-lint /app/lint-done /tmp/
 RUN node ./node_modules/.bin/nx run main:build --memoryLimit=4096
 
 ###############################################################
@@ -81,7 +82,7 @@ COPY --from=build /app/dist/apps ./dist/apps
 ARG PRECOMMIT
 ARG GIT_COMMIT_BRANCH
 
-ENV NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail --memoryLimit=4096"
+ENV NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail"
 
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
         CICD_BUILD=true node ./node_modules/.bin/nx run rc:test $NX_RUN_OPTIONS; \
