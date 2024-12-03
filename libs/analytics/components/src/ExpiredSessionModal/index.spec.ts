@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 
-import { screen }  from '@acx-ui/test-utils'
+import { showActionModal } from '@acx-ui/components'
+import { screen }          from '@acx-ui/test-utils'
 import {
   getIntl,
   setUpIntl,
@@ -15,6 +16,9 @@ jest.mock('@acx-ui/utils', () => ({
   getIntl: jest.fn().mockImplementation(() => jest.requireActual('@acx-ui/utils').getIntl()),
   setUpIntl: jest.fn(),
   userLogout: jest.fn()
+}))
+jest.mock('@acx-ui/components', () => ({
+  showActionModal: jest.fn()
 }))
 
 describe('ExpiredSessionModal', () => {
@@ -32,6 +36,14 @@ describe('ExpiredSessionModal', () => {
     expect(await screen.findByText('Session Expired')).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'OK' }))
     expect(mockedSetUpIntl).toHaveBeenCalledWith({ locale: 'en-US' })
+  })
+
+  it('should only show action modal once', async () => {
+    const mockModal = jest.mocked(showActionModal)
+    showExpiredSessionModal()
+    showExpiredSessionModal()
+    showExpiredSessionModal()
+    expect(mockModal).toHaveBeenCalledTimes(1)
   })
 
   it('user logout', async () => {
