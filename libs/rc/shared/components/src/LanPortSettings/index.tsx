@@ -259,7 +259,7 @@ export function LanPortSettings (props: {
               <SoftGRETunnelSettings
                 enableSoftGRETunnel={enableSoftGRETunnel}
                 setEnableSoftGRETunnel={setEnableSoftGRETunnel}
-                isSoftGRETunnelToggleDisable={isEthernetPortEnable}
+                isSoftGRETunnelToggleDisable={!isEthernetPortEnable}
               />
               {enableSoftGRETunnel && <DhcpOption82Settings />}
             </>)
