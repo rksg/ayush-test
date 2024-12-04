@@ -9,7 +9,7 @@ import {
   Subtitle,
   Descriptions
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ApDetails,
   ApVenueStatusEnum,
@@ -17,8 +17,8 @@ import {
   RadioProperties,
   useApContext
 } from '@acx-ui/rc/utils'
-import { TenantLink }                                                 from '@acx-ui/react-router-dom'
-import { noDataDisplay, isApFwVersionLargerThan711 }                  from '@acx-ui/utils'
+import { TenantLink }                                from '@acx-ui/react-router-dom'
+import { noDataDisplay, isApFwVersionLargerThan711 } from '@acx-ui/utils'
 
 import { ApDetailsDrawer } from './ApDetailsDrawer'
 import * as UI             from './styledComponents'
@@ -39,8 +39,8 @@ export function ApProperties (props:{
 
   const getTxPowerDisplayInfo = (currentAP: ApViewModel, channel: RadioProperties) => {
     if (isApTxPowerToggleEnabled) {
-      return ((isApFwVersionLargerThan711(currentAP?.fwVersion) ||
-      (supportR370 && supportAggressiveTxPower))?
+      return ((isApFwVersionLargerThan711(currentAP?.fwVersion) &&
+      (!supportR370 || supportAggressiveTxPower))?
         channel?.actualTxPower : channel?.txPower) || noDataDisplay
     }
     return channel?.txPower || noDataDisplay
