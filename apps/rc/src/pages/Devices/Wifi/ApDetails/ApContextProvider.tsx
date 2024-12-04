@@ -8,7 +8,8 @@ import { Loader }                                    from '@acx-ui/components'
 import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
 import { useApListQuery, useGetApValidChannelQuery } from '@acx-ui/rc/services'
 import { ApContext }                                 from '@acx-ui/rc/utils'
-import { useGetApCapabilities }                      from '../hooks'
+
+import { useGetApCapabilities } from '../hooks'
 
 export function ApContextProvider (props: { children: ReactNode }) {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
