@@ -106,7 +106,7 @@ describe('PersonalIdentityNetworkTable', () => {
 
     expect(rows[0]).toHaveTextContent(/nsg1\s*Edge1\s*1\s*0\s*Poor\s*No/)
     expect(rows[1]).toHaveTextContent(/nsg2\s*Edge2\s*1\s*0\s*Unknown\s*No/)
-    const fwWarningIcon = screen.queryAllByTestId('WarningCircleSolid')
+    const fwWarningIcon = screen.queryAllByTestId('WarningTriangleSolid')
     expect(fwWarningIcon.length).toBe(0)
   })
 
@@ -250,7 +250,7 @@ describe('PersonalIdentityNetworkTable', () => {
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     const row1 = await screen.findByRole('row', { name: new RegExp('compatible test') })
-    const fwWarningIcon = await within(row1).findByTestId('WarningCircleSolid')
+    const fwWarningIcon = await within(row1).findByTestId('WarningTriangleSolid')
     await userEvent.hover(fwWarningIcon)
     expect(await screen.findByRole('tooltip', { hidden: true }))
       .toHaveTextContent('RUCKUS Edges')
