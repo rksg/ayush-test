@@ -29,6 +29,14 @@ export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
         }
       }
     }),
+    deleteOnboardConfigs: build.mutation<RuckusAiConversation, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RuckusAssistantUrlInfo.deleteOnboardConfigs, params)
+        return {
+          ...req
+        }
+      }
+    }),
     applyConversations: build.mutation<RuckusAiConversation, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(RuckusAssistantUrlInfo.applyConversations, params)
@@ -88,6 +96,7 @@ export const {
   useUpdateConversationsMutation,
   useCreateOnboardConfigsMutation,
   useUpdateOnboardConfigsMutation,
+  useDeleteOnboardConfigsMutation,
   useGetOnboardConfigsQuery,
   useLazyGetOnboardConfigsQuery,
   useGetVlanOnboardConfigsQuery,
