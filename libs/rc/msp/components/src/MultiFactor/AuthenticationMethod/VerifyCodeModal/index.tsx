@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
 import { Form, Input, Button } from 'antd'
-import { isNumber }            from 'lodash'
 import { FieldData }           from 'rc-field-form/lib/interface'
 import { useIntl }             from 'react-intl'
 
@@ -113,7 +112,7 @@ export const VerifyCodeModal = (props: VerifyCodeModalProps) =>{
               message: $t({ defaultMessage: 'Please enter verification code' })
             },
             {
-              validator: (_, value) => !isNumber(value)
+              validator: (_, value) => (!/^\d+$/.test(value))
                 ? Promise.reject($t({ defaultMessage: 'Please enter valid verification code' }))
                 : Promise.resolve()
             }
