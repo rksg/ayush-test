@@ -18,7 +18,6 @@ RUN source ${ENV_FILE} \
 # Install dependencies
 COPY package.json package-lock.json ./
 
-ARG GIT_PR_SOURCE_BRANCH
 COPY patches ./patches
 COPY tools/dev/eslint-custom-rule ./tools/dev/eslint-custom-rule
 RUN npm install
@@ -51,7 +50,7 @@ RUN find /app/node_modules/.cache/nx -type f -mtime +1 -delete && \
 
 COPY tools/tests ./tools/tests
 
-ADD nxcache/${GIT_PR_SOURCE_BRANCH}/nxcache.tar.xz* ./node_modules/.cache/nx
+ADD nxcache/nxcache.tar.xz* ./node_modules/.cache/nx
 
 # dump git information
 RUN source ${ENV_FILE} \

@@ -8,7 +8,7 @@ fi
 
 # First parameter as directory
 FEATURE_BRANCH="feature/$1"
-CACHE_PATH="nxcache/feature/$1"
+CACHE_PATH="nxcache"
 
 # Check if directory does NOT exist
 if [ ! -d "$CACHE_PATH" ]; then
