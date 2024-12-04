@@ -97,6 +97,7 @@ function AaaServerData ({ order, data, serverType }: {
   order: AaaServerOrderEnum
 }) {
   const { $t } = useIntl()
+  const tlsEnabled = get(data, `${serverType}.radSecOptions.tlsEnabled`)
   const sharedSecret = get(data, `${serverType}.${order}.sharedSecret`)
   return (<>
     <Form.Item
@@ -105,7 +106,7 @@ function AaaServerData ({ order, data, serverType }: {
         ipAddress: get(data, `${serverType}.${order}.ip`),
         port: get(data, `${serverType}.${order}.port`)
       })} />
-    {sharedSecret && <Form.Item
+    {!tlsEnabled && sharedSecret && <Form.Item
       label={$t({ defaultMessage: 'Shared Secret:' })}
       children={<PasswordInput
         readOnly

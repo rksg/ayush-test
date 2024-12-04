@@ -1,8 +1,8 @@
 import { find, sumBy } from 'lodash'
 import { useIntl }     from 'react-intl'
 
-import { ApCompatibilityToolTip, CompatibilityWarningCircleIcon } from '@acx-ui/rc/components'
-import { EdgeServiceCompatibility }                               from '@acx-ui/rc/utils'
+import { ApCompatibilityToolTip, CompatibilityWarningTriangleIcon } from '@acx-ui/rc/components'
+import { EdgeServiceCompatibility }                                 from '@acx-ui/rc/utils'
 
 interface CompatibilityCheckProps {
   serviceId: string,
@@ -28,7 +28,7 @@ export const CompatibilityCheck = (props: CompatibilityCheckProps) => {
         edgeInfo: $t({ defaultMessage: '{edgeCount, plural, one {RUCKUS Edge} other {RUCKUS Edges}}' }, { edgeCount: edgeIncompatibleCount })
       })}
       visible={false}
-      icon={<CompatibilityWarningCircleIcon />}
+      icon={<CompatibilityWarningTriangleIcon />}
       onClick={() => {}}
     />
     : null

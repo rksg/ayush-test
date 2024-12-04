@@ -14,6 +14,11 @@ describe('NewTabLink', () => {
     const { asFragment } = render(<NewTabLink to='/some/url'>link text</NewTabLink>)
     expect(asFragment()).toMatchSnapshot()
   })
+  it('should render a Link with correct props with custom rel', () => {
+    const { asFragment } = render(<NewTabLink to='/some/url'
+      rel='opener'>link text</NewTabLink>)
+    expect(asFragment()).toMatchSnapshot()
+  })
   it('should render an anchor with correct attributes', () => {
     const { asFragment } = render(<NewTabLink to='https://test.com'>link text</NewTabLink>)
     expect(asFragment()).toMatchSnapshot()

@@ -41,7 +41,7 @@ describe('Chart', () => {
   const legend = { 'AP': true, 'AP Group': true, 'Zone': true, 'WLAN': true, 'WLAN Group': true }
   beforeEach(() => {
     mockGet.mockReturnValue('true')
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
   it('should render page correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',

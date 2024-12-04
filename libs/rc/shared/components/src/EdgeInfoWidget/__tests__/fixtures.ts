@@ -88,6 +88,6 @@ export const alarmListMeta = {
   ]
 }
 export const passwordDetail:EdgePasswordDetail = {
-  loginPassword: 'admin!234',
-  enablePassword: 'admin!234'
+  loginPassword: 'mock_login_password',
+  enablePassword: 'mock_enable_password'
 }

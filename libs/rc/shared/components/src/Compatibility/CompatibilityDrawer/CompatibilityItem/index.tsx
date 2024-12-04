@@ -1,11 +1,11 @@
 import React from 'react'
 
-import { Col, Divider, Form, Row, Space } from 'antd'
-import { sumBy }                          from 'lodash'
+import { Col, Divider, Form, Row } from 'antd'
+import { sumBy }                   from 'lodash'
 
 import { ApIncompatibleFeature, CompatibilityDeviceEnum, IncompatibilityFeatures } from '@acx-ui/rc/utils'
 
-import * as UI from '../styledComponents'
+import { VerticalFlexDiv } from '../styledComponents'
 
 import { FeatureItem } from './FeatureItem'
 
@@ -15,30 +15,33 @@ export type CompatibilityItemProps = {
   description?: string | React.ReactNode,
   totalDevices?: number,
   featureName?: IncompatibilityFeatures,
+  isCrossDeviceType?: boolean
 }
 
 export const CompatibilityItem = (props: CompatibilityItemProps) => {
   const {
     deviceType,
-    data = [],
+    data,
     description,
     totalDevices = 0,
-    featureName
+    featureName,
+    isCrossDeviceType = false
   } = props
 
   const getFeatures = (items: ApIncompatibleFeature[]) => {
     const isMultipleFeatures = items.length > 1
     return items?.map((itemDetail, index) => {
       const incompatible = sumBy(itemDetail.incompatibleDevices, (d) => d.count)
-
       return <React.Fragment key={itemDetail.featureName}>
-        {index !== 0 && <Divider style={{ margin: '0' }} />}
+        {/* `multiple device type` will have space control inside FeatureItem*/}
+        {index !== 0 && <Divider style={{ margin: isCrossDeviceType ? 0 : '10px 0' }} />}
         <FeatureItem
           isMultiple={!featureName || isMultipleFeatures}
           deviceType={deviceType}
           data={itemDetail}
           incompatible={incompatible}
           total={totalDevices}
+          isCrossDeviceType={isCrossDeviceType}
         />
       </React.Fragment>
     })
@@ -50,11 +53,9 @@ export const CompatibilityItem = (props: CompatibilityItemProps) => {
         {description && <Form.Item>
           {description}
         </Form.Item>}
-        <Space size={0} direction='vertical' style={{ display: 'flex' }}>
-          <UI.StyledWrapper>
-            {getFeatures(data)}
-          </UI.StyledWrapper>
-        </Space>
+        <VerticalFlexDiv>
+          {getFeatures(data)}
+        </VerticalFlexDiv>
       </Col>
     </Row>
   )

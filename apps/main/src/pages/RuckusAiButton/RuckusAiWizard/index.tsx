@@ -44,6 +44,17 @@ export default function RuckusAiWizard (props: {
     React.MutableRefObject<ProFormInstance<any> | undefined>[]
   >([])
 
+  const [showAlert, setShowAlert] = useState<Record<RuckusAiConfigurationStepsEnum, boolean>>(
+    Object.values(RuckusAiConfigurationStepsEnum).reduce((acc, step) => {
+      acc[step] = false
+      return acc
+    }, {} as Record<RuckusAiConfigurationStepsEnum, boolean>)
+  )
+
+  const updateShowAlert = (step: RuckusAiConfigurationStepsEnum, value: boolean) => {
+    setShowAlert((prev) => ({ ...prev, [step]: value }))
+  }
+
 
   const onPrevious = function () {
     if (props.currentStep === firstPageIndex) {
@@ -134,6 +145,7 @@ export default function RuckusAiWizard (props: {
 
       setIsSkip(false)
       setIsLoading(false)
+      updateShowAlert(stepType, true)
 
     } catch (error) {
       setIsSkip(false)
@@ -150,6 +162,7 @@ export default function RuckusAiWizard (props: {
       component: (props.payload ? (<WlanStep
         payload={props.payload}
         formInstance={formMapRef?.current?.[0]?.current}
+        showAlert={showAlert[RuckusAiConfigurationStepsEnum.WLANS]}
         description={props.description} />) : null
       ),
 
@@ -163,6 +176,7 @@ export default function RuckusAiWizard (props: {
         <WlanDetailStep
           formInstance={formMapRef.current[1].current}
           sessionId={props.sessionId}
+          showAlert={showAlert[RuckusAiConfigurationStepsEnum.WLANDETAIL]}
           payload={payloads[RuckusAiConfigurationStepsEnum.WLANDETAIL].payload} />)
         : (
           null
@@ -178,6 +192,7 @@ export default function RuckusAiWizard (props: {
         <VlanStep
           formInstance={formMapRef.current[2].current}
           sessionId={props.sessionId}
+          showAlert={showAlert[RuckusAiConfigurationStepsEnum.VLAN]}
           description={payloads[RuckusAiConfigurationStepsEnum.VLAN].description}
           payload={payloads[RuckusAiConfigurationStepsEnum.VLAN].payload} />
       ) : (
@@ -189,7 +204,10 @@ export default function RuckusAiWizard (props: {
     {
       name: RuckusAiConfigurationStepsEnum.SUMMARY,
       title: '',
-      component: <SummaryStep payload={payloads[RuckusAiConfigurationStepsEnum.SUMMARY].payload} />,
+      component: <SummaryStep
+        currentStep={props.currentStep}
+        payload={payloads[RuckusAiConfigurationStepsEnum.SUMMARY].payload}
+        setCurrentStep={props.setCurrentStep} />,
       onFinish: async () => {
         setIsLoading(true)
         try {

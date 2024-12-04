@@ -25,7 +25,6 @@ import { usePersonaListQuery }                                      from '../../
 import { PersonaDrawer }                                            from '../PersonaDrawer'
 import { PersonaGroupSelect }                                       from '../PersonaGroupSelect'
 import { PersonaBlockedIcon }                                       from '../styledComponents'
-import { usePersonaAsyncHeaders }                                   from '../usePersonaAsyncHeaders'
 
 const IdentitiesContext = createContext({} as {
   setIdentitiesCount: (data: number) => void
@@ -205,7 +204,6 @@ export function BasePersonaTable (props: PersonaTableProps) {
   )
   const [getUnitsByIds] = useLazyBatchGetPropertyUnitsByIdsQuery()
   const { setIdentitiesCount } = useContext(IdentitiesContext)
-  const { customHeaders } = usePersonaAsyncHeaders()
   const columns = useColumns(personaGroupQuery?.data, colProps, unitPool, venueId)
 
   const personaListQuery = usePersonaListQuery({ personaGroupId, settingsId })
@@ -266,8 +264,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
     try {
       await uploadCsv({
         params: { groupId: personaGroupId ?? groupId },
-        payload: formData,
-        customHeaders
+        payload: formData
       }).unwrap()
       setUploadCsvDrawerVisible(false)
     } catch (error) {
@@ -343,8 +340,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
 
                 deletePersonas({
                   params: { groupId: personaGroupId ?? selectedItems[0].groupId },
-                  payload: ids,
-                  customHeaders
+                  payload: ids
                 }).unwrap()
                   .then(() => {
                     clearSelection()

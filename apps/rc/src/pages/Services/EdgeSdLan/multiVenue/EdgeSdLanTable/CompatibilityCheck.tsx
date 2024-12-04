@@ -1,12 +1,18 @@
 import { find, sumBy } from 'lodash'
 import { useIntl }     from 'react-intl'
 
-import { ApCompatibilityToolTip, CompatibilityWarningCircleIcon }                      from '@acx-ui/rc/components'
-import { CompatibilityDeviceEnum, EdgeSdLanApCompatibility, EdgeServiceCompatibility } from '@acx-ui/rc/utils'
+import { ApCompatibilityToolTip, CompatibilityWarningTriangleIcon } from '@acx-ui/rc/components'
+import {
+  CompatibilityDeviceEnum,
+  EdgeSdLanApCompatibility,
+  EdgeServiceApCompatibility,
+  EdgeServiceCompatibility
+} from '@acx-ui/rc/utils'
 
 interface CompatibilityCheckProps {
   serviceId: string,
-  sdLanCompatibilityData?: Record<string, EdgeServiceCompatibility[] | EdgeSdLanApCompatibility[]>
+  // eslint-disable-next-line max-len
+  sdLanCompatibilityData?: Record<string, EdgeServiceCompatibility[] | EdgeSdLanApCompatibility[] | EdgeServiceApCompatibility[]>
 }
 export const CompatibilityCheck = (props: CompatibilityCheckProps) => {
   const { $t } = useIntl()
@@ -16,9 +22,15 @@ export const CompatibilityCheck = (props: CompatibilityCheckProps) => {
   const edgeIncompatibleData = (find(sdLanCompatibilityData?.[CompatibilityDeviceEnum.EDGE], { serviceId }) as EdgeServiceCompatibility)?.clusterEdgeCompatibilities
   const edgeIncompatibleCount = sumBy(edgeIncompatibleData, (data) => data.incompatible)
   const edgeIncompatible = edgeIncompatibleCount > 0
+
   // eslint-disable-next-line max-len
-  const apIncompatibleData = (find(sdLanCompatibilityData?.[CompatibilityDeviceEnum.AP], { serviceId }) as EdgeSdLanApCompatibility)?.venueSdLanApCompatibilities
-  const apIncompatibleCount = sumBy(apIncompatibleData, (data) => data.incompatible)
+  const apIncompatibleData = (find(sdLanCompatibilityData?.[CompatibilityDeviceEnum.AP], { serviceId }) as EdgeSdLanApCompatibility)
+  const isNewDataModel = apIncompatibleData?.hasOwnProperty('venueEdgeServiceApCompatibilities')
+  const apData = (isNewDataModel
+    ? (apIncompatibleData as EdgeServiceApCompatibility)?.venueEdgeServiceApCompatibilities
+    : (apIncompatibleData as EdgeSdLanApCompatibility)?.venueSdLanApCompatibilities) ?? []
+
+  const apIncompatibleCount = sumBy(apData, (data) => data.incompatible)
   const apIncompatible = apIncompatibleCount > 0
 
   const isIncompatible = Boolean(edgeIncompatible || apIncompatible)
@@ -41,7 +53,7 @@ export const CompatibilityCheck = (props: CompatibilityCheckProps) => {
           : '')
       })}
       visible={false}
-      icon={<CompatibilityWarningCircleIcon />}
+      icon={<CompatibilityWarningTriangleIcon />}
       onClick={() => {}}
     />
     : null
