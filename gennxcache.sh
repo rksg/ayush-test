@@ -6,6 +6,16 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
+# First parameter as directory
+FEATURE_BRANCH="feature/$1"
+CACHE_PATH="nxcache/feature/$1"
+
+# Check if directory does NOT exist
+if [ ! -d "$CACHE_PATH" ]; then
+    # Directory does not exist, so create it
+    mkdir -p "$CACHE_PATH"
+fi
+
 #Build the Docker Image
 sudo docker build -f Dockerfile.nxcache -t acx-ui-nx-cache .
 
@@ -23,16 +33,6 @@ tar -cvJf "$CACHE_PATH/nxcache.tar.xz" -C nxcachetmp .
 
 #Delete cache directory
 sudo rm -rf nxcachetmp
-
-# First parameter as directory
-FEATURE_BRANCH="feature/$1"
-CACHE_PATH="nxcache/feature/$1"
-
-# Check if directory does NOT exist
-if [ ! -d "$CACHE_PATH" ]; then
-    # Directory does not exist, so create it
-    mkdir -p "$CACHE_PATH"
-fi
 
 #create nx cache feature branch through slack "/alto-ci createfb ACX-73320 acx-ui-cache" before execute commands below
 #commit cache

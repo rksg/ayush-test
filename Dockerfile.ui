@@ -19,6 +19,7 @@ RUN source ${ENV_FILE} \
 COPY package.json package-lock.json ./
 
 ARG GIT_COMMIT_BRANCH
+RUN git submodule update --init --recursive
 COPY nxcache/${GIT_COMMIT_BRANCH}/nxcache.tar.xz* ./
 COPY patches ./patches
 COPY tools/dev/eslint-custom-rule ./tools/dev/eslint-custom-rule
