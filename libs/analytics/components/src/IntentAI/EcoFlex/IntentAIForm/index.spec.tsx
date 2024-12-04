@@ -132,11 +132,6 @@ describe('IntentAIForm', () => {
   })
 
   it('handle schedule intent', async () => {
-    jest
-      .spyOn(require('@acx-ui/components'), 'DatePicker')
-      .mockImplementation(() => (
-        <input value='08/09/2024' placeholder='Select date' onChange={jest.fn} />
-      ))
     const { params } = mockIntentContextWith({
       status: Statuses.new,
       sliceId: 'id1',
@@ -145,8 +140,7 @@ describe('IntentAIForm', () => {
           enabled: true,
           excludedAPs: [[{ name: 'name', type: 'zone' }]],
           excludedHours: []
-        },
-        scheduledAt: '2024-08-09T04:30:00.000Z'
+        }
       } as Intent['metadata']
     })
     const { container } = render(<IntentAIForm />, { route: { params }, wrapper: Provider })
@@ -165,6 +159,13 @@ describe('IntentAIForm', () => {
     expect(container).toMatchSnapshot('step 2')
     await click(actions.getByRole('button', { name: 'Next' }))
 
+    const date = await screen.findByPlaceholderText('Select date')
+    await click(date)
+    await click(await screen.findByRole('cell', { name: '2024-08-09' }))
+    expect(date).toHaveValue('08/09/2024')
+    const time = await screen.findByPlaceholderText('Select time')
+    await selectOptions(time, '12:30 (UTC+08)')
+    expect(time).toHaveValue('12.5')
     expect(await screen.findByText(/Local time/)).toBeVisible()
     expect(container).toMatchSnapshot('step 3')
     await click(actions.getByRole('button', { name: 'Next' }))

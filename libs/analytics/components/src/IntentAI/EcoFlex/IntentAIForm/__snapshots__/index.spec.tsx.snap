@@ -1987,7 +1987,7 @@ h5.c5.ant-typography {
 `;
 
 exports[`IntentAIForm handle schedule intent: step 3 1`] = `
-.c15 {
+.c21 {
   display: -webkit-inline-box;
   display: -webkit-inline-flex;
   display: -ms-inline-flexbox;
@@ -2004,85 +2004,265 @@ exports[`IntentAIForm handle schedule intent: step 3 1`] = `
   gap: 8px;
 }
 
-.c15 svg {
+.c21 svg {
   width: 16px;
   height: 16px;
 }
 
-.c15 svg:before {
+.c21 svg:before {
   content: 'a';
 }
 
-.c15 svg path {
+.c21 svg path {
   color: var(--acx-primary-black);
 }
 
-.c15.ant-btn-link svg path {
+.c21.ant-btn-link svg path {
   color: var(--acx-accents-blue-50);
 }
 
-.c15.ant-btn-link:hover {
+.c21.ant-btn-link:hover {
   color: var(--acx-accents-blue-60);
 }
 
-.c15.ant-btn-link:hover svg path {
+.c21.ant-btn-link:hover svg path {
   color: var(--acx-accents-blue-60);
 }
 
-.c15.ant-btn-primary svg path {
+.c21.ant-btn-primary svg path {
   color: var(--acx-primary-white) !important;
 }
 
-.c15[disabled] svg path,
-.c15.ant-btn-disabled svg path {
+.c21[disabled] svg path,
+.c21.ant-btn-disabled svg path {
   color: var(--acx-primary-white);
 }
 
-.c15[disabled].ant-btn-link svg path,
-.c15.ant-btn-disabled.ant-btn-link svg path,
-.c15[disabled].ant-btn-default svg path,
-.c15.ant-btn-disabled.ant-btn-default svg path,
-.c15[disabled].ant-btn-primary svg path,
-.c15.ant-btn-disabled.ant-btn-primary svg path {
+.c21[disabled].ant-btn-link svg path,
+.c21.ant-btn-disabled.ant-btn-link svg path,
+.c21[disabled].ant-btn-default svg path,
+.c21.ant-btn-disabled.ant-btn-default svg path,
+.c21[disabled].ant-btn-primary svg path,
+.c21.ant-btn-disabled.ant-btn-primary svg path {
   color: var(--acx-neutrals-40);
 }
 
-h1.c5.ant-typography {
+.c17 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.c18 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.c14 .ant-select-focused .ant-select-selection-placeholder {
+  color: var(--acx-neutrals-50);
+}
+
+.c14 .ant-select-selection-overflow-item-rest > .ant-select-selection-item {
+  border: none;
+  background: var(--acx-primary-white);
+  min-width: 110px;
+  padding-right: 0px;
+  margin-right: 0px;
+  margin-bottom: 0px;
+}
+
+.c5 .ant-picker-input .ant-picker-clear span[role=img] svg {
+  display: none;
+}
+
+.c5 .ant-picker-input .ant-picker-clear span[role=img]::after {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-size: 12px 12px;
+  background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20class%3D%22NestedListSingle__CloseIcon-sc-1yefg1u-0%20lilJnS%22%3E%3Cpath%20d%3D%22M14.0625%203.9375L3.9375%2014.0625%22%20stroke%3D%22%23333333%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3Cpath%20d%3D%22M14.0625%2014.0625L3.9375%203.9375%22%20stroke%3D%22%23333333%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-color: white;
+  margin-right: -4px;
+}
+
+.c5 .ant-picker-dropdown {
+  font-size: var(--acx-body-4-font-size);
+  padding: 10px 0;
+}
+
+.c5 .ant-picker-dropdown .ant-picker-panel {
+  border: none;
+}
+
+.c5 .ant-picker-dropdown .ant-picker-panel-container {
+  border-radius: 4px;
+  background: var(--acx-primary-white);
+  box-shadow: 0px 6px 16px rgba(51,51,51,0.2);
+  padding-left: var(--acx-date-picker-ranges-width);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-panel .ant-picker-header {
+  -webkit-align-items: baseline;
+  -webkit-box-align: baseline;
+  -ms-flex-align: baseline;
+  align-items: baseline;
+  border-bottom: none;
+}
+
+.c5 .ant-picker-dropdown .ant-picker-panel .ant-picker-header .ant-picker-header-view {
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-5-font-size);
+  font-weight: var(--acx-headline-5-font-weight-semi-bold);
+  color: var(--acx-neutrals-70);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-panel .ant-picker-header .ant-picker-header-view button:hover {
+  color: inherit;
+  cursor: default;
+}
+
+.c5 .ant-picker-dropdown .ant-picker-panel .ant-picker-body th {
+  font-size: var(--acx-subtitle-6-font-size);
+  font-weight: var(--acx-subtitle-6-font-weight-bold);
+  color: var(--acx-neutrals-60);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-panel .ant-picker-body td {
+  font-size: var(--acx-subtitle-5-font-size);
+  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start .ant-picker-cell-inner,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end .ant-picker-cell-inner {
+  color: var(--acx-primary-white);
+  background: var(--acx-accents-blue-50);
+  border-radius: 20px;
+}
+
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view. ant-picker-cell-range-hover .ant-picker-cell-inner::before,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view. ant-picker-cell-range-hover-start .ant-picker-cell-inner::before,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view. ant-picker-cell-range-hover-end .ant-picker-cell-inner::before {
+  background: var(--acx-accents-blue-10);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover::before,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start.ant-picker-cell-range-hover::before,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end.ant-picker-cell-range-hover::before,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single).ant-picker-cell-range-hover-start::before,.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single).ant-picker-cell-range-hover-end::before,
+.c5 .ant-picker-dropdown .ant-picker-panel > :not(.ant-picker-date-panel) .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start::before,.c5 .ant-picker-dropdown .ant-picker-panel > :not(.ant-picker-date-panel) .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end::before,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-in-range::before,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single)::before,.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single)::before {
+  background: var(--acx-accents-blue-10);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-date-panel .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-start .ant-picker-cell-inner::after,
+.c5 .ant-picker-dropdown .ant-picker-date-panel .ant-picker-cell-in-view.ant-picker-cell-in-range.ant-picker-cell-range-hover-end .ant-picker-cell-inner::after {
+  background: var(--acx-accents-blue-10);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
+  border-color: var(--acx-accents-blue-50);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-hover:not(.ant-picker-cell-in-range)::after,.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-hover-start:not(.ant-picker-cell-in-range)::after,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-hover-end:not(.ant-picker-cell-in-range)::after {
+  border-color: var(--acx-accents-blue-50);
+}
+
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-start:not(.ant-picker-cell-range-start-single):not(.ant-picker-cell-range-end) .ant-picker-cell-inner,.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-range-end:not(.ant-picker-cell-range-end-single):not(.ant-picker-cell-range-start) .ant-picker-cell-inner {
+  border-radius: 20px;
+}
+
+.c5 .ant-picker-dropdown .ant-picker-cell:hover .ant-picker-cell-inner,
+.c5 .ant-picker-dropdown .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
+  border-radius: 20px;
+}
+
+.c5 .ant-picker-dropdown .ant-picker-footer {
+  display: none;
+}
+
+h1.c6.ant-typography {
   line-height: var(--acx-subtitle-1-line-height);
   font-size: var(--acx-subtitle-1-font-size);
   font-family: var(--acx-neutral-brand-font);
   font-weight: var(--acx-subtitle-1-font-weight);
 }
 
-h2.c5.ant-typography {
+h2.c6.ant-typography {
   line-height: var(--acx-subtitle-2-line-height);
   font-size: var(--acx-subtitle-2-font-size);
   font-family: var(--acx-neutral-brand-font);
   font-weight: var(--acx-subtitle-2-font-weight);
 }
 
-h3.c5.ant-typography {
+h3.c6.ant-typography {
   line-height: var(--acx-subtitle-3-line-height);
   font-size: var(--acx-subtitle-3-font-size);
   font-family: var(--acx-neutral-brand-font);
   font-weight: var(--acx-subtitle-3-font-weight);
 }
 
-h4.c5.ant-typography {
+h4.c6.ant-typography {
   line-height: var(--acx-subtitle-4-line-height);
   font-size: var(--acx-subtitle-4-font-size);
   font-family: var(--acx-neutral-brand-font);
   font-weight: var(--acx-subtitle-4-font-weight);
 }
 
-h5.c5.ant-typography {
+h5.c6.ant-typography {
   line-height: var(--acx-subtitle-5-line-height);
   font-size: var(--acx-subtitle-5-font-size);
   font-family: var(--acx-neutral-brand-font);
   font-weight: var(--acx-subtitle-5-font-weight);
 }
 
-.c12 {
+.c16 {
+  border: 1px solid var(--acx-neutrals-30);
+  border-radius: 4px;
+  margin-block-start: 4px;
+}
+
+.c16 > div {
+  position: static !important;
+  width: auto !important;
+}
+
+.c15.ant-select-dropdown {
+  box-shadow: none;
+  min-width: unset !important;
+  position: static !important;
+}
+
+.c15:not(.ant-select-customize-input) .ant-select-selector {
+  border-color: var(--acx-neutrals-30);
+}
+
+.c15 .ant-cascader-menu {
+  height: calc(32px * 9.5 + 4px);
+}
+
+.c15 .ant-cascader-menu:last-child {
+  border-right: none;
+}
+
+.c13 {
   position: relative;
   -webkit-flex: 1;
   -ms-flex: 1;
@@ -2095,34 +2275,6 @@ h5.c5.ant-typography {
   -ms-flex-direction: column;
   flex-direction: column;
   height: 100%;
-  background-color: var(--acx-neutrals-10);
-}
-
-.c13 {
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  z-index: 5;
-  background-color: var(--acx-primary-white);
-  opacity: 0.8;
 }
 
 .c1 {
@@ -2229,7 +2381,7 @@ h5.c5.ant-typography {
   background-color: var(--acx-steps-form-steps-step-color);
 }
 
-.c14 {
+.c20 {
   position: fixed;
   width: calc( 100% - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
   min-width: calc( 1280px - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
@@ -2239,14 +2391,14 @@ h5.c5.ant-typography {
   z-index: 5;
 }
 
-.c14::before {
+.c20::before {
   content: '';
   position: absolute;
   inset: 0 -100% 0 -100%;
   background-color: var(--acx-neutrals-10);
 }
 
-.c14 .ant-space-item .ant-space {
+.c20 .ant-space-item .ant-space {
   position: absolute;
   left: 50%;
   bottom: var(--acx-steps-form-actions-vertical-space);
@@ -2276,12 +2428,12 @@ h5.c5.ant-typography {
   height: 16px;
 }
 
-.c7.ant-typography {
+.c8.ant-typography {
   margin-top: 20px;
   margin-bottom: 12px;
 }
 
-.c3 + .c6.ant-typography {
+.c3 + .c7.ant-typography {
   margin-top: 4px;
 }
 
@@ -2378,31 +2530,31 @@ h5.c5.ant-typography {
   margin-top: 8px;
 }
 
-.c9 .ant-checkbox-group-item {
+.c10 .ant-checkbox-group-item {
   margin-right: 0;
 }
 
-.c9 .ant-checkbox-wrapper:first-child {
+.c10 .ant-checkbox-wrapper:first-child {
   border-left: 1px solid var(--acx-neutrals-60);
 }
 
-.c9 .ant-checkbox-wrapper {
+.c10 .ant-checkbox-wrapper {
   border-right: 1px solid var(--acx-neutrals-60);
 }
 
-.c9 .ant-checkbox-wrapper-checked {
+.c10 .ant-checkbox-wrapper-checked {
   border-right: 1px solid var(--acx-neutrals-60);
 }
 
-.c9 .ant-checkbox-wrapper:nth-child(4n) {
+.c10 .ant-checkbox-wrapper:nth-child(4n) {
   border-right: 1px solid var(--acx-neutrals-60);
 }
 
-.c9 .ant-checkbox-wrapper + .ant-checkbox-wrapper {
+.c10 .ant-checkbox-wrapper + .ant-checkbox-wrapper {
   margin-left: 0;
 }
 
-.c9 .ant-checkbox-wrapper {
+.c10 .ant-checkbox-wrapper {
   position: relative;
   font-size: 10px;
   width: 20px;
@@ -2410,20 +2562,20 @@ h5.c5.ant-typography {
   background: var(--acx-neutrals-30);
 }
 
-.c9 .ant-checkbox-wrapper .channels > span + span {
+.c10 .ant-checkbox-wrapper .channels > span + span {
   padding-left: 6px;
 }
 
-.c9 .ant-checkbox-wrapper > span {
+.c10 .ant-checkbox-wrapper > span {
   width: 100%;
   padding: 0;
 }
 
-.c9 .ant-checkbox-wrapper > span:first-child {
+.c10 .ant-checkbox-wrapper > span:first-child {
   display: none;
 }
 
-.c9 .ant-checkbox-wrapper > span:last-child {
+.c10 .ant-checkbox-wrapper > span:last-child {
   position: relative;
   text-align: center;
   font-size: var(--acx-body-5-font-size);
@@ -2435,31 +2587,31 @@ h5.c5.ant-typography {
   user-select: none;
 }
 
-.c9 .ant-checkbox-wrapper.ant-checkbox-wrapper-disabled:hover {
+.c10 .ant-checkbox-wrapper.ant-checkbox-wrapper-disabled:hover {
   background: var(--acx-neutrals-40);
 }
 
-.c9 .ant-checkbox-wrapper:hover {
+.c10 .ant-checkbox-wrapper:hover {
   background: var(--acx-accents-blue-60);
 }
 
-.c9 .ant-checkbox-wrapper.ant-checkbox-wrapper-disabled {
+.c10 .ant-checkbox-wrapper.ant-checkbox-wrapper-disabled {
   background: var(--acx-neutrals-20);
 }
 
-.c9 .ant-checkbox-wrapper.ant-checkbox-wrapper-disabled:before {
+.c10 .ant-checkbox-wrapper.ant-checkbox-wrapper-disabled:before {
   background: var(--acx-neutrals-20);
 }
 
-.c9 .ant-checkbox-wrapper.ant-checkbox-wrapper-checked {
+.c10 .ant-checkbox-wrapper.ant-checkbox-wrapper-checked {
   background: var(--acx-accents-blue-50);
 }
 
-.c9 .ant-checkbox-wrapper.ant-checkbox-wrapper-checked:hover {
+.c10 .ant-checkbox-wrapper.ant-checkbox-wrapper-checked:hover {
   background: var(--acx-accents-blue-60);
 }
 
-.c10 {
+.c11 {
   width: 60px;
   height: 15px;
   color: var(--acx-neutrals-60);
@@ -2467,15 +2619,15 @@ h5.c5.ant-typography {
   font-size: 12px;
 }
 
-.c10:nth-child(2) {
+.c11:nth-child(2) {
   margin-left: 16px;
 }
 
-.c10:last-child {
+.c11:last-child {
   width: 20px;
 }
 
-.c11 {
+.c12 {
   width: 100%;
   height: 15px;
   color: var(--acx-neutrals-60);
@@ -2483,17 +2635,27 @@ h5.c5.ant-typography {
   font-size: 12px;
 }
 
-.c8 {
+.c9 {
   text-transform: capitalize;
 }
 
+.c19 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  line-height: 8px;
+  -webkit-box-pack: right;
+  -webkit-justify-content: right;
+  -ms-flex-pack: right;
+  justify-content: right;
+}
+
 @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
-  .c13 {
-    -webkit-backdrop-filter: blur(2px);
-    backdrop-filter: blur(2px);
-    background: none;
-    opacity: 1;
-  }
+
 }
 
 <div>
@@ -2790,7 +2952,7 @@ h5.c5.ant-typography {
                  It is advisable to select a time during low network usage to minimize disruptions. 
               </div>
               <div
-                class="ant-form-item"
+                class="ant-form-item ant-form-item-has-success"
               >
                 <div
                   class="ant-row ant-form-item-row"
@@ -2815,17 +2977,630 @@ h5.c5.ant-typography {
                       <div
                         class="ant-form-item-control-input-content"
                       >
-                        <input
-                          placeholder="Select date"
-                          value="08/09/2024"
-                        />
+                        <div
+                          class="c5"
+                        >
+                          <div
+                            class="ant-picker ant-picker-status-success"
+                            style="width: 100%;"
+                          >
+                            <div
+                              class="ant-picker-input"
+                            >
+                              <input
+                                autocomplete="off"
+                                id="settings_date"
+                                placeholder="Select date"
+                                size="12"
+                                title="08/09/2024"
+                                value="08/09/2024"
+                              />
+                              <span
+                                class="ant-picker-suffix"
+                              >
+                                <span
+                                  aria-label="calendar"
+                                  class="anticon anticon-calendar"
+                                  role="img"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    data-icon="calendar"
+                                    fill="currentColor"
+                                    focusable="false"
+                                    height="1em"
+                                    viewBox="64 64 896 896"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M880 184H712v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H384v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H144c-17.7 0-32 14.3-32 32v664c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V216c0-17.7-14.3-32-32-32zm-40 656H184V460h656v380zM184 392V256h128v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h256v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h128v136H184z"
+                                    />
+                                  </svg>
+                                </span>
+                              </span>
+                              <span
+                                class="ant-picker-clear"
+                                role="button"
+                              >
+                                <span
+                                  aria-label="close-circle"
+                                  class="anticon anticon-close-circle"
+                                  role="img"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    data-icon="close-circle"
+                                    fill="currentColor"
+                                    focusable="false"
+                                    height="1em"
+                                    viewBox="64 64 896 896"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm165.4 618.2l-66-.3L512 563.4l-99.3 118.4-66.1.3c-4.4 0-8-3.5-8-8 0-1.9.7-3.7 1.9-5.2l130.1-155L340.5 359a8.32 8.32 0 01-1.9-5.2c0-4.4 3.6-8 8-8l66.1.3L512 464.6l99.3-118.4 66-.3c4.4 0 8 3.5 8 8 0 1.9-.7 3.7-1.9 5.2L553.5 514l130 155c1.2 1.5 1.9 3.3 1.9 5.2 0 4.4-3.6 8-8 8z"
+                                    />
+                                  </svg>
+                                </span>
+                              </span>
+                            </div>
+                            <div
+                              style="position: absolute; top: 0px; left: 0px; width: 100%;"
+                            >
+                              <div>
+                                <div
+                                  class="ant-picker-dropdown ant-picker-dropdown-hidden"
+                                  style="pointer-events: none;"
+                                >
+                                  <div
+                                    class="ant-picker-panel-container"
+                                  >
+                                    <div
+                                      class="ant-picker-panel"
+                                      tabindex="-1"
+                                    >
+                                      <div
+                                        class="ant-picker-date-panel"
+                                      >
+                                        <div
+                                          class="ant-picker-header"
+                                        >
+                                          <button
+                                            class="ant-picker-header-super-prev-btn"
+                                            tabindex="-1"
+                                            type="button"
+                                          >
+                                            <span
+                                              class="ant-picker-super-prev-icon"
+                                            />
+                                          </button>
+                                          <button
+                                            class="ant-picker-header-prev-btn"
+                                            tabindex="-1"
+                                            type="button"
+                                          >
+                                            <span
+                                              class="ant-picker-prev-icon"
+                                            />
+                                          </button>
+                                          <div
+                                            class="ant-picker-header-view"
+                                          >
+                                            <button
+                                              class="ant-picker-month-btn"
+                                              tabindex="-1"
+                                              type="button"
+                                            >
+                                              Aug
+                                            </button>
+                                            <button
+                                              class="ant-picker-year-btn"
+                                              tabindex="-1"
+                                              type="button"
+                                            >
+                                              2024
+                                            </button>
+                                          </div>
+                                          <button
+                                            class="ant-picker-header-next-btn"
+                                            tabindex="-1"
+                                            type="button"
+                                          >
+                                            <span
+                                              class="ant-picker-next-icon"
+                                            />
+                                          </button>
+                                          <button
+                                            class="ant-picker-header-super-next-btn"
+                                            tabindex="-1"
+                                            type="button"
+                                          >
+                                            <span
+                                              class="ant-picker-super-next-icon"
+                                            />
+                                          </button>
+                                        </div>
+                                        <div
+                                          class="ant-picker-body"
+                                        >
+                                          <table
+                                            class="ant-picker-content"
+                                          >
+                                            <thead>
+                                              <tr>
+                                                <th>
+                                                  Su
+                                                </th>
+                                                <th>
+                                                  Mo
+                                                </th>
+                                                <th>
+                                                  Tu
+                                                </th>
+                                                <th>
+                                                  We
+                                                </th>
+                                                <th>
+                                                  Th
+                                                </th>
+                                                <th>
+                                                  Fr
+                                                </th>
+                                                <th>
+                                                  Sa
+                                                </th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                              <tr>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-disabled"
+                                                  title="2024-07-28"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    28
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-disabled"
+                                                  title="2024-07-29"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    29
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-disabled"
+                                                  title="2024-07-30"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    30
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-disabled ant-picker-cell-end"
+                                                  title="2024-07-31"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    31
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-disabled ant-picker-cell-start ant-picker-cell-in-view"
+                                                  title="2024-08-01"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    1
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-disabled ant-picker-cell-in-view"
+                                                  title="2024-08-02"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    2
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-disabled ant-picker-cell-in-view"
+                                                  title="2024-08-03"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    3
+                                                  </div>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-disabled ant-picker-cell-in-view"
+                                                  title="2024-08-04"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    4
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-disabled ant-picker-cell-in-view"
+                                                  title="2024-08-05"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    5
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-disabled ant-picker-cell-in-view"
+                                                  title="2024-08-06"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    6
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-disabled ant-picker-cell-in-view"
+                                                  title="2024-08-07"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    7
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view ant-picker-cell-today"
+                                                  title="2024-08-08"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    8
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view ant-picker-cell-selected"
+                                                  title="2024-08-09"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    9
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view"
+                                                  title="2024-08-10"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    10
+                                                  </div>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view"
+                                                  title="2024-08-11"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    11
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view"
+                                                  title="2024-08-12"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    12
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view"
+                                                  title="2024-08-13"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    13
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view"
+                                                  title="2024-08-14"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    14
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view"
+                                                  title="2024-08-15"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    15
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view"
+                                                  title="2024-08-16"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    16
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view"
+                                                  title="2024-08-17"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    17
+                                                  </div>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view"
+                                                  title="2024-08-18"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    18
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view"
+                                                  title="2024-08-19"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    19
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view"
+                                                  title="2024-08-20"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    20
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view"
+                                                  title="2024-08-21"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    21
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view"
+                                                  title="2024-08-22"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    22
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view"
+                                                  title="2024-08-23"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    23
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view"
+                                                  title="2024-08-24"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    24
+                                                  </div>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view"
+                                                  title="2024-08-25"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    25
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view"
+                                                  title="2024-08-26"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    26
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view"
+                                                  title="2024-08-27"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    27
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view"
+                                                  title="2024-08-28"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    28
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view"
+                                                  title="2024-08-29"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    29
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-in-view"
+                                                  title="2024-08-30"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    30
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-end ant-picker-cell-in-view"
+                                                  title="2024-08-31"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    31
+                                                  </div>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td
+                                                  class="ant-picker-cell ant-picker-cell-start"
+                                                  title="2024-09-01"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    1
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell"
+                                                  title="2024-09-02"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    2
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell"
+                                                  title="2024-09-03"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    3
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell"
+                                                  title="2024-09-04"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    4
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell"
+                                                  title="2024-09-05"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    5
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell"
+                                                  title="2024-09-06"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    6
+                                                  </div>
+                                                </td>
+                                                <td
+                                                  class="ant-picker-cell"
+                                                  title="2024-09-07"
+                                                >
+                                                  <div
+                                                    class="ant-picker-cell-inner"
+                                                  >
+                                                    7
+                                                  </div>
+                                                </td>
+                                              </tr>
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div
-                class="ant-form-item"
+                class="ant-form-item ant-form-item-has-success"
               >
                 <div
                   class="ant-row ant-form-item-row"
@@ -3342,7 +4117,7 @@ h5.c5.ant-typography {
                 </div>
               </div>
               <h4
-                class="ant-typography c5 c6 c7"
+                class="ant-typography c6 c7 c8"
               >
                 Optional
               </h4>
@@ -3436,7 +4211,7 @@ h5.c5.ant-typography {
                               </span>
                             </label>
                             <span
-                              class="c8"
+                              class="c9"
                             >
                               mon
                             </span>
@@ -3461,7 +4236,7 @@ h5.c5.ant-typography {
                                       class="ant-form-item-control-input-content"
                                     >
                                       <div
-                                        class="ant-checkbox-group c9"
+                                        class="ant-checkbox-group c10"
                                         id="preferences_excludedHours_mon"
                                         intervalunit="60"
                                       >
@@ -4047,7 +4822,9 @@ h5.c5.ant-typography {
                                 </div>
                               </div>
                             </div>
-                            <div />
+                            <div>
+                              <div />
+                            </div>
                           </div>
                         </div>
                         <div
@@ -4076,7 +4853,7 @@ h5.c5.ant-typography {
                               </span>
                             </label>
                             <span
-                              class="c8"
+                              class="c9"
                             >
                               tue
                             </span>
@@ -4101,7 +4878,7 @@ h5.c5.ant-typography {
                                       class="ant-form-item-control-input-content"
                                     >
                                       <div
-                                        class="ant-checkbox-group c9"
+                                        class="ant-checkbox-group c10"
                                         id="preferences_excludedHours_tue"
                                         intervalunit="60"
                                       >
@@ -4687,7 +5464,9 @@ h5.c5.ant-typography {
                                 </div>
                               </div>
                             </div>
-                            <div />
+                            <div>
+                              <div />
+                            </div>
                           </div>
                         </div>
                         <div
@@ -4716,7 +5495,7 @@ h5.c5.ant-typography {
                               </span>
                             </label>
                             <span
-                              class="c8"
+                              class="c9"
                             >
                               wed
                             </span>
@@ -4741,7 +5520,7 @@ h5.c5.ant-typography {
                                       class="ant-form-item-control-input-content"
                                     >
                                       <div
-                                        class="ant-checkbox-group c9"
+                                        class="ant-checkbox-group c10"
                                         id="preferences_excludedHours_wed"
                                         intervalunit="60"
                                       >
@@ -5327,7 +6106,9 @@ h5.c5.ant-typography {
                                 </div>
                               </div>
                             </div>
-                            <div />
+                            <div>
+                              <div />
+                            </div>
                           </div>
                         </div>
                         <div
@@ -5356,7 +6137,7 @@ h5.c5.ant-typography {
                               </span>
                             </label>
                             <span
-                              class="c8"
+                              class="c9"
                             >
                               thu
                             </span>
@@ -5381,7 +6162,7 @@ h5.c5.ant-typography {
                                       class="ant-form-item-control-input-content"
                                     >
                                       <div
-                                        class="ant-checkbox-group c9"
+                                        class="ant-checkbox-group c10"
                                         id="preferences_excludedHours_thu"
                                         intervalunit="60"
                                       >
@@ -5967,7 +6748,9 @@ h5.c5.ant-typography {
                                 </div>
                               </div>
                             </div>
-                            <div />
+                            <div>
+                              <div />
+                            </div>
                           </div>
                         </div>
                         <div
@@ -5996,7 +6779,7 @@ h5.c5.ant-typography {
                               </span>
                             </label>
                             <span
-                              class="c8"
+                              class="c9"
                             >
                               fri
                             </span>
@@ -6021,7 +6804,7 @@ h5.c5.ant-typography {
                                       class="ant-form-item-control-input-content"
                                     >
                                       <div
-                                        class="ant-checkbox-group c9"
+                                        class="ant-checkbox-group c10"
                                         id="preferences_excludedHours_fri"
                                         intervalunit="60"
                                       >
@@ -6607,7 +7390,9 @@ h5.c5.ant-typography {
                                 </div>
                               </div>
                             </div>
-                            <div />
+                            <div>
+                              <div />
+                            </div>
                           </div>
                         </div>
                         <div
@@ -6636,7 +7421,7 @@ h5.c5.ant-typography {
                               </span>
                             </label>
                             <span
-                              class="c8"
+                              class="c9"
                             >
                               sat
                             </span>
@@ -6661,7 +7446,7 @@ h5.c5.ant-typography {
                                       class="ant-form-item-control-input-content"
                                     >
                                       <div
-                                        class="ant-checkbox-group c9"
+                                        class="ant-checkbox-group c10"
                                         id="preferences_excludedHours_sat"
                                         intervalunit="60"
                                       >
@@ -7247,7 +8032,9 @@ h5.c5.ant-typography {
                                 </div>
                               </div>
                             </div>
-                            <div />
+                            <div>
+                              <div />
+                            </div>
                           </div>
                         </div>
                         <div
@@ -7276,7 +8063,7 @@ h5.c5.ant-typography {
                               </span>
                             </label>
                             <span
-                              class="c8"
+                              class="c9"
                             >
                               sun
                             </span>
@@ -7301,7 +8088,7 @@ h5.c5.ant-typography {
                                       class="ant-form-item-control-input-content"
                                     >
                                       <div
-                                        class="ant-checkbox-group c9"
+                                        class="ant-checkbox-group c10"
                                         id="preferences_excludedHours_sun"
                                         intervalunit="60"
                                       >
@@ -7887,52 +8674,56 @@ h5.c5.ant-typography {
                                 </div>
                               </div>
                             </div>
-                            <div />
+                            <div>
+                              <div
+                                style="top: 0px; left: 0px; width: 0px; height: 0px;"
+                              />
+                            </div>
                             <div
                               style="width: 100%; height: 25px; margin-left: -30px;"
                             >
                               <div
-                                class="c10"
+                                class="c11"
                               >
                                 Midnight
                               </div>
                               <div
-                                class="c10"
+                                class="c11"
                               >
                                 3 AM
                               </div>
                               <div
-                                class="c10"
+                                class="c11"
                               >
                                 6 AM
                               </div>
                               <div
-                                class="c10"
+                                class="c11"
                               >
                                 9 AM
                               </div>
                               <div
-                                class="c10"
+                                class="c11"
                               >
                                 Noon
                               </div>
                               <div
-                                class="c10"
+                                class="c11"
                               >
                                 3 PM
                               </div>
                               <div
-                                class="c10"
+                                class="c11"
                               >
                                 6 PM
                               </div>
                               <div
-                                class="c10"
+                                class="c11"
                               >
                                 9 PM
                               </div>
                               <div
-                                class="c10"
+                                class="c11"
                               >
                                 Midnight
                               </div>
@@ -7941,7 +8732,7 @@ h5.c5.ant-typography {
                               style="width: 100%; height: 25px;"
                             >
                               <div
-                                class="c11"
+                                class="c12"
                               >
                                 Local time (UTC +08:00)
                               </div>
@@ -7995,40 +8786,155 @@ h5.c5.ant-typography {
                 </div>
               </div>
               <div
-                class="c12"
+                class="c13"
                 style="height: auto; min-height: 200px;"
               >
                 <div
-                  class="c13"
+                  class="ant-form-item"
                 >
-                  <span
-                    aria-label="loader"
-                    class=""
-                    role="img"
+                  <div
+                    class="ant-row ant-form-item-row"
                   >
                     <div
-                      aria-busy="true"
-                      aria-live="polite"
-                      class="ant-spin ant-spin-lg ant-spin-spinning"
+                      class="ant-col ant-form-item-control"
                     >
-                      <span
-                        class="ant-spin-dot ant-spin-dot-spin"
+                      <div
+                        class="ant-form-item-control-input"
                       >
-                        <i
-                          class="ant-spin-dot-item"
-                        />
-                        <i
-                          class="ant-spin-dot-item"
-                        />
-                        <i
-                          class="ant-spin-dot-item"
-                        />
-                        <i
-                          class="ant-spin-dot-item"
-                        />
-                      </span>
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <div
+                            class="ant-select ant-cascader ant-select-in-form-item c14 c15 ant-select-multiple ant-select-allow-clear ant-select-open ant-select-show-search"
+                          >
+                            <div
+                              class="ant-select-selector"
+                            >
+                              <div
+                                class="ant-select-selection-overflow"
+                              >
+                                <div
+                                  class="ant-select-selection-overflow-item ant-select-selection-overflow-item-suffix"
+                                  style="opacity: 1;"
+                                >
+                                  <div
+                                    class="ant-select-selection-search"
+                                    style="width: 0px;"
+                                  >
+                                    <input
+                                      aria-autocomplete="list"
+                                      aria-controls="preferences_excludedAPs_list"
+                                      aria-expanded="true"
+                                      aria-haspopup="listbox"
+                                      aria-owns="preferences_excludedAPs_list"
+                                      autocomplete="off"
+                                      class="ant-select-selection-search-input"
+                                      id="preferences_excludedAPs"
+                                      role="combobox"
+                                      style=""
+                                      type="search"
+                                      value=""
+                                    />
+                                    <span
+                                      aria-hidden="true"
+                                      class="ant-select-selection-search-mirror"
+                                    >
+                                       
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                              <span
+                                class="ant-select-selection-placeholder"
+                              >
+                                Select Venue / APs to exclude
+                              </span>
+                            </div>
+                          </div>
+                          <div
+                            class="c16"
+                          >
+                            <div
+                              style="position: absolute; top: 0px; left: 0px; width: 100%;"
+                            >
+                              <div>
+                                <div
+                                  class="ant-select-dropdown c15 ant-cascader-dropdown"
+                                  style="opacity: 0; min-width: auto;"
+                                >
+                                  <div>
+                                    <div
+                                      class="ant-cascader-menus"
+                                    >
+                                      <ul
+                                        class="ant-cascader-menu"
+                                        role="menu"
+                                      >
+                                        <li
+                                          aria-checked="false"
+                                          class="ant-cascader-menu-item ant-cascader-menu-item-expand"
+                                          data-path-key="[{\\"type\\":\\"network\\",\\"name\\":\\"Network\\"},{\\"type\\":\\"zone\\",\\"name\\":\\"Venue 1\\"}]"
+                                          role="menuitemcheckbox"
+                                        >
+                                          <span
+                                            class="ant-cascader-checkbox"
+                                          >
+                                            <span
+                                              class="ant-cascader-checkbox-inner"
+                                            />
+                                          </span>
+                                          <div
+                                            class="ant-cascader-menu-item-content"
+                                          >
+                                            <div
+                                              class="c17"
+                                              title="Venue 1"
+                                            >
+                                              <div
+                                                class="c18"
+                                              >
+                                                Venue 1
+                                              </div>
+                                              <div
+                                                class="c19"
+                                              />
+                                            </div>
+                                          </div>
+                                          <div
+                                            class="ant-cascader-menu-item-expand-icon"
+                                          >
+                                            <span
+                                              aria-label="right"
+                                              class="anticon anticon-right"
+                                              role="img"
+                                            >
+                                              <svg
+                                                aria-hidden="true"
+                                                data-icon="right"
+                                                fill="currentColor"
+                                                focusable="false"
+                                                height="1em"
+                                                viewBox="64 64 896 896"
+                                                width="1em"
+                                              >
+                                                <path
+                                                  d="M765.7 486.8L314.9 134.7A7.97 7.97 0 00302 141v77.3c0 4.9 2.3 9.6 6.1 12.6l360 281.1-360 281.1c-3.9 3-6.1 7.7-6.1 12.6V883c0 6.7 7.7 10.4 12.9 6.3l450.8-352.1a31.96 31.96 0 000-50.4z"
+                                                />
+                                              </svg>
+                                            </span>
+                                          </div>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -8036,7 +8942,7 @@ h5.c5.ant-typography {
         </div>
       </div>
       <div
-        class="c14"
+        class="c20"
         data-testid="steps-form-actions"
       >
         <div
@@ -8047,7 +8953,7 @@ h5.c5.ant-typography {
             style="margin-right: 12px;"
           >
             <button
-              class="ant-btn ant-btn-default c15"
+              class="ant-btn ant-btn-default c21"
               type="button"
             >
               <span>
@@ -8066,7 +8972,7 @@ h5.c5.ant-typography {
                 style="margin-right: 12px;"
               >
                 <button
-                  class="ant-btn ant-btn-default c15"
+                  class="ant-btn ant-btn-default c21"
                   type="button"
                   value="pre"
                 >
@@ -8080,7 +8986,7 @@ h5.c5.ant-typography {
               >
                 <button
                   ant-click-animating-without-extra-node="true"
-                  class="ant-btn ant-btn-primary c15"
+                  class="ant-btn ant-btn-primary c21"
                   type="button"
                   value="next"
                 >
