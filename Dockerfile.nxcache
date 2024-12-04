@@ -36,6 +36,7 @@ FROM acx-ui-base-test AS acx-ui-group1-test
 ARG PRECOMMIT
 ARG GIT_COMMIT_BRANCH
 
+RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
 ENV NX_RUN_OPTIONS="--coverage --maxWorkers=40% --noStackTrace --bail"
 
 RUN CICD_BUILD=true node ./node_modules/.bin/nx run rc-components:test $NX_RUN_OPTIONS
