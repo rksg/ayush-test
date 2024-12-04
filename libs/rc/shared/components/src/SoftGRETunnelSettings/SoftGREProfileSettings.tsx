@@ -59,7 +59,7 @@ export const SoftGREProfileSettings = () => {
           children={
             <Select
               style={{ width: '100%' }}
-              data-testid={'directory-server-select'}
+              data-testid={'softgre-profile-select'}
               value={softGREProfile.value as string}
               onChange={onChange}
               options={[
