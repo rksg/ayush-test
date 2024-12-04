@@ -20,7 +20,7 @@ export const SoftGREProfileSettings = () => {
 
 
   const [ detailDrawerVisible, setDetailDrawerVisible ] = useState<boolean>(false)
-  const [ detailDrawerReadMode, setDetailDrawerReadMode ] = useState<boolean>(true)
+  const [ addDrawerVisible, setAddDrawerVisible ] = useState<boolean>(false)
   const [ softGREProfileOptionList, setsoftGREProfileOptionList] = useState<DefaultOptionType[]>([])
   const [ softGREProfile, setSoftGREProfile ] = useState<DefaultOptionType>({
     label: '',
@@ -76,14 +76,12 @@ export const SoftGREProfileSettings = () => {
             disabled={false}
             onClick={() => {
               setDetailDrawerVisible(true)
-              setDetailDrawerReadMode(true)
             }}>
             {$t({ defaultMessage: 'Profile Details' })}
           </Button>
           <Button type='link'
             onClick={() => {
-              setDetailDrawerVisible(true)
-              setDetailDrawerReadMode(false)
+              setAddDrawerVisible(true)
             }}>
             {$t({ defaultMessage: 'Add Profile' })}
           </Button>
@@ -94,7 +92,11 @@ export const SoftGREProfileSettings = () => {
         setVisible={setDetailDrawerVisible}
         policyId={softGREProfile.value as string}
         policyName={softGREProfile.label as string}
-        readMode={detailDrawerReadMode}
+        readMode
+      />
+      <SoftGreDrawer
+        visible={addDrawerVisible}
+        setVisible={setAddDrawerVisible}
       />
     </>
   )
