@@ -1,6 +1,7 @@
-import { useContext }                 from 'react'
-import moment                         from 'moment'
+import { useContext } from 'react'
+
 import { stringify }                  from 'csv-stringify/browser/esm/sync'
+import moment                         from 'moment'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
 import {
@@ -9,22 +10,21 @@ import {
   useAnalyticsFilter,
   kpiConfig,
   productNames
-}                                                                               from '@acx-ui/analytics/utils'
+} from '@acx-ui/analytics/utils'
 import {
   Loader,
   TableProps,
   Table as CommonTable,
   ConfigChange,
+  type ConfigChangeChartRowMappingType,
   getConfigChangeEntityTypeMapping,
   Cascader
-}                                                                               from '@acx-ui/components'
-import { get }                                                                  from '@acx-ui/config'
-import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { DownloadOutlined }                                                     from '@acx-ui/icons'
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                                        from '@acx-ui/formatter'
+import { DownloadOutlined }                                                                 from '@acx-ui/icons'
 import { exportMessageMapping, noDataDisplay, getIntl, handleBlobDownloadFile, PathFilter } from '@acx-ui/utils'
 
-import { ChartRowMappingType }                   from '../../../../../common/components/src/components/ConfigChangeChart/helper'
 import { ConfigChangeContext, KPIFilterContext } from '../context'
 import { hasConfigChange }                       from '../KPI'
 import { useConfigChangeQuery }                  from '../services'
@@ -35,7 +35,7 @@ import { filterData, getConfiguration, getEntityValue } from './util'
 export function downloadConfigChangeList (
   configChanges: ConfigChange[],
   columns: TableProps<ConfigChange>['columns'],
-  entityTypeMapping: ChartRowMappingType[],
+  entityTypeMapping: ConfigChangeChartRowMappingType[],
   { startDate, endDate }: PathFilter
 ) {
   const { $t } = getIntl()
@@ -92,9 +92,10 @@ export function Table (props: {
   dotSelect: number | null,
   legend: Record<string, boolean>
 }) {
-  const isMLISA = get('IS_MLISA_SA')
-  const isIntentAIConfigChangeEnable = useIsSplitOn(Features.MLISA_4_11_0_TOGGLE)
-  const showIntentAI = Boolean(isMLISA || isIntentAIConfigChangeEnable)
+  const showIntentAI = [
+    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
+    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
+  ].some(Boolean)
 
   const { $t } = useIntl()
   const { kpiFilter, applyKpiFilter } = useContext(KPIFilterContext)
@@ -119,7 +120,8 @@ export function Table (props: {
       key: 'timestamp',
       title: $t({ defaultMessage: 'Timestamp' }),
       dataIndex: 'timestamp',
-      render: (_, { timestamp }) => formatter(DateFormatEnum.DateTimeFormat)(moment(Number(timestamp))),
+      render: (_, { timestamp }) =>
+        formatter(DateFormatEnum.DateTimeFormat)(moment(Number(timestamp))),
       sorter: { compare: sortProp('timestamp', defaultSort) },
       width: 130
     },
@@ -236,7 +238,8 @@ export function Table (props: {
           disabled: !Boolean(queryResults.data?.length),
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: () => {
-            downloadConfigChangeList(queryResults.data, ColumnHeaders, entityTypeMapping, pathFilters)
+            downloadConfigChangeList(
+              queryResults.data, ColumnHeaders, entityTypeMapping, pathFilters)
           } }}
       />
     </Loader>
