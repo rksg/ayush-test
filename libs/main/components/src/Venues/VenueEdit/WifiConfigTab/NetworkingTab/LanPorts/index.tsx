@@ -103,6 +103,7 @@ export function LanPorts () {
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
+  const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
 
   const { defaultLanPortsByModelMap, isDefaultPortsLoading } =
     useGetDefaultVenueLanPortsQuery({ params: { venueId } },
@@ -120,7 +121,11 @@ export function LanPorts () {
         useGetVenueLanPortWithEthernetSettingsQuery : useGetVenueLanPortsQuery
     ),
     useTemplateQueryFn: useGetVenueTemplateLanPortsQuery,
-    enableRbac: isWifiRbacEnabled
+    enableRbac: isWifiRbacEnabled,
+    payload: {
+      isEthernetPortProfileEnabled,
+      isEthernetSoftgreEnabled
+    }
   })
   // eslint-disable-next-line max-len
   const [updateVenueLanPorts, { isLoading: isUpdatingVenueLanPorts }] = useVenueConfigTemplateMutationFnSwitcher(
