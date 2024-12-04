@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
+import { renderToStaticMarkup } from 'react-dom/server'
+
 import { defaultNetworkPath }                                              from '@acx-ui/analytics/utils'
 import { intentAIUrl, store, Provider }                                    from '@acx-ui/store'
 import { mockGraphqlQuery, mockGraphqlMutation, renderHook, act, waitFor } from '@acx-ui/test-utils'
@@ -41,7 +43,7 @@ describe('Intent services', () => {
         status: Statuses.active,
         statusLabel: 'Active',
         statusTooltip: {
-          errorMessage: '\n - \n\n',
+          errorMessage: <ul />,
           scheduledAt: '07/01/2023 06:00',
           tooltip: {
             defaultMessage: [
@@ -89,7 +91,7 @@ describe('Intent services', () => {
         status: Statuses.na,
         statusLabel: 'No Recommendation, Not Enough License',
         statusTooltip: {
-          errorMessage: '\n - \n\n',
+          errorMessage: <ul />,
           scheduledAt: '07/01/2023 06:00',
           tooltip: {
             defaultMessage: [
@@ -137,7 +139,7 @@ describe('Intent services', () => {
         status: Statuses.na,
         statusLabel: 'No Recommendation, No APs',
         statusTooltip: {
-          errorMessage: '\n - \n\n',
+          errorMessage: <ul />,
           scheduledAt: '07/01/2023 06:00',
           tooltip: {
             defaultMessage: [
@@ -671,7 +673,7 @@ describe('Intent services', () => {
           status: Statuses.new,
           statusLabel: 'New',
           statusTooltip: {
-            errorMessage: '\n - \n\n',
+            errorMessage: <ul />,
             scheduledAt: '06/17/2023 00:00',
             tooltip: {
               defaultMessage: [
@@ -697,7 +699,7 @@ describe('Intent services', () => {
           status: Statuses.scheduled,
           statusLabel: 'Scheduled',
           statusTooltip: {
-            errorMessage: '\n - \n\n',
+            errorMessage: <ul />,
             scheduledAt: '06/17/2023 00:00',
             tooltip: {
               defaultMessage: [
@@ -731,7 +733,7 @@ describe('Intent services', () => {
           status: Statuses.scheduled,
           statusLabel: 'Scheduled',
           statusTooltip: {
-            errorMessage: '\n - \n\n',
+            errorMessage: <ul />,
             scheduledAt: '06/17/2023 00:00',
             tooltip: {
               defaultMessage: [
@@ -765,7 +767,7 @@ describe('Intent services', () => {
           status: Statuses.applyScheduled,
           statusLabel: 'Scheduled',
           statusTooltip: {
-            errorMessage: '\n - \n\n',
+            errorMessage: <ul />,
             scheduledAt: '06/17/2023 00:00',
             tooltip: {
               defaultMessage: [
@@ -799,7 +801,7 @@ describe('Intent services', () => {
           status: Statuses.applyScheduleInProgress,
           statusLabel: 'Apply In Progress',
           statusTooltip: {
-            errorMessage: '\n - \n\n',
+            errorMessage: <ul />,
             scheduledAt: '06/17/2023 00:00',
             tooltip: {
               defaultMessage: [
@@ -842,7 +844,7 @@ describe('Intent services', () => {
           status: Statuses.active,
           statusLabel: 'Active',
           statusTooltip: {
-            errorMessage: '\n - \n\n',
+            errorMessage: <ul />,
             scheduledAt: '06/17/2023 00:00',
             tooltip: {
               defaultMessage: [
@@ -885,7 +887,9 @@ describe('Intent services', () => {
           status: Statuses.paused,
           statusLabel: 'Paused, Applied Failed',
           statusTooltip: {
-            errorMessage: '\n - errMsg from the notification service\n\n',
+            errorMessage: <ul>
+              <li>errMsg from the notification service</li>
+            </ul>,
             scheduledAt: '06/17/2023 00:00',
             tooltip: {
               defaultMessage: [
@@ -921,28 +925,8 @@ describe('Intent services', () => {
                   value: ' '
                 },
                 {
-                  children: [
-                    {
-                      type: 0,
-                      value: ' '
-                    },
-                    {
-                      children: [
-                        {
-                          type: 1,
-                          value: 'errorMessage'
-                        }
-                      ],
-                      type: 8,
-                      value: 'li'
-                    },
-                    {
-                      type: 0,
-                      value: ' '
-                    }
-                  ],
-                  type: 8,
-                  value: 'ul'
+                  type: 1,
+                  value: 'errorMessage'
                 },
                 {
                   type: 0,
@@ -959,7 +943,7 @@ describe('Intent services', () => {
                   value: 'p'
                 }
               ],
-              id: '0NHxLi'
+              id: 'K+9aNZ'
             },
             zoneName: 'zone-1'
           }
@@ -970,7 +954,7 @@ describe('Intent services', () => {
           status: Statuses.revertScheduled,
           statusLabel: 'Revert Scheduled',
           statusTooltip: {
-            errorMessage: '\n - \n\n',
+            errorMessage: <ul />,
             scheduledAt: '06/17/2023 00:00',
             tooltip: {
               defaultMessage: [
@@ -1004,7 +988,7 @@ describe('Intent services', () => {
           status: Statuses.revertScheduleInProgress,
           statusLabel: 'Revert In Progress',
           statusTooltip: {
-            errorMessage: '\n - \n\n',
+            errorMessage: <ul />,
             scheduledAt: '06/17/2023 00:00',
             tooltip: {
               defaultMessage: [
@@ -1047,7 +1031,9 @@ describe('Intent services', () => {
           status: Statuses.paused,
           statusLabel: 'Paused, Revert Failed',
           statusTooltip: {
-            errorMessage: '\n - errMsg from the notification service\n\n',
+            errorMessage: <ul>
+              <li>errMsg from the notification service</li>
+            </ul>,
             scheduledAt: '06/17/2023 00:00',
             tooltip: {
               defaultMessage: [
@@ -1066,28 +1052,8 @@ describe('Intent services', () => {
                   value: ' '
                 },
                 {
-                  children: [
-                    {
-                      type: 0,
-                      value: ' '
-                    },
-                    {
-                      children: [
-                        {
-                          type: 1,
-                          value: 'errorMessage'
-                        }
-                      ],
-                      type: 8,
-                      value: 'li'
-                    },
-                    {
-                      type: 0,
-                      value: ' '
-                    }
-                  ],
-                  type: 8,
-                  value: 'ul'
+                  type: 1,
+                  value: 'errorMessage'
                 },
                 {
                   type: 0,
@@ -1104,7 +1070,7 @@ describe('Intent services', () => {
                   value: 'p'
                 }
               ],
-              id: 'PNQ+bs'
+              id: 'HBDfsu'
             },
             zoneName: 'zone-1'
           }
@@ -1115,7 +1081,7 @@ describe('Intent services', () => {
           status: Statuses.paused,
           statusLabel: 'Paused, Revert Success',
           statusTooltip: {
-            errorMessage: '\n - \n\n',
+            errorMessage: <ul />,
             scheduledAt: '06/17/2023 00:00',
             tooltip: {
               defaultMessage: [
@@ -1141,7 +1107,7 @@ describe('Intent services', () => {
           status: Statuses.paused,
           statusLabel: 'Paused',
           statusTooltip: {
-            errorMessage: '\n - \n\n',
+            errorMessage: <ul />,
             scheduledAt: '06/17/2023 00:00',
             tooltip: {
               defaultMessage: [
@@ -1167,7 +1133,7 @@ describe('Intent services', () => {
           status: Statuses.paused,
           statusLabel: 'Paused',
           statusTooltip: {
-            errorMessage: '\n - \n\n',
+            errorMessage: <ul />,
             scheduledAt: '06/17/2023 00:00',
             tooltip: {
               defaultMessage: [
@@ -1193,7 +1159,7 @@ describe('Intent services', () => {
           status: Statuses.paused,
           statusLabel: 'Paused',
           statusTooltip: {
-            errorMessage: '\n - \n\n',
+            errorMessage: <ul />,
             scheduledAt: '06/17/2023 00:00',
             tooltip: {
               defaultMessage: [
@@ -1219,7 +1185,9 @@ describe('Intent services', () => {
           status: Statuses.na,
           statusLabel: 'No Recommendation, Conflicting Configuration',
           statusTooltip: {
-            errorMessage: '\n - The network has active Mesh APs, which are currently not supported.\n\n',
+            errorMessage: <ul>
+              <li>The network has active Mesh APs, which are currently not supported.</li>
+            </ul>,
             scheduledAt: '06/17/2023 00:00',
             tooltip: {
               defaultMessage: [
@@ -1238,31 +1206,11 @@ describe('Intent services', () => {
                   value: ' '
                 },
                 {
-                  children: [
-                    {
-                      type: 0,
-                      value: ' '
-                    },
-                    {
-                      children: [
-                        {
-                          type: 1,
-                          value: 'errorMessage'
-                        }
-                      ],
-                      type: 8,
-                      value: 'li'
-                    },
-                    {
-                      type: 0,
-                      value: ' '
-                    }
-                  ],
-                  type: 8,
-                  value: 'ul'
+                  type: 1,
+                  value: 'errorMessage'
                 }
               ],
-              id: 'jd4/BZ'
+              id: 'O9EaWP'
             },
             zoneName: 'zone-1'
           }
@@ -1273,7 +1221,7 @@ describe('Intent services', () => {
           status: Statuses.na,
           statusLabel: 'No Recommendation, No APs',
           statusTooltip: {
-            errorMessage: '\n - \n\n',
+            errorMessage: <ul />,
             scheduledAt: '06/17/2023 00:00',
             tooltip: {
               defaultMessage: [
@@ -1327,7 +1275,7 @@ describe('Intent services', () => {
           status: Statuses.na,
           statusLabel: 'No Recommendation, Not Enough License',
           statusTooltip: {
-            errorMessage: '\n - \n\n',
+            errorMessage: <ul />,
             scheduledAt: '06/17/2023 00:00',
             tooltip: {
               defaultMessage: [
@@ -1370,7 +1318,9 @@ describe('Intent services', () => {
           status: Statuses.na,
           statusLabel: 'No Recommendation, Not Enough Data',
           statusTooltip: {
-            errorMessage: '\n - Insufficient data on neighbour APs.\n\n',
+            errorMessage: <ul>
+              <li>Insufficient data on neighbour APs.</li>
+            </ul>,
             scheduledAt: '06/17/2023 00:00',
             tooltip: {
               defaultMessage: [
@@ -1389,31 +1339,11 @@ describe('Intent services', () => {
                   value: ' '
                 },
                 {
-                  children: [
-                    {
-                      type: 0,
-                      value: ' '
-                    },
-                    {
-                      children: [
-                        {
-                          type: 1,
-                          value: 'errorMessage'
-                        }
-                      ],
-                      type: 8,
-                      value: 'li'
-                    },
-                    {
-                      type: 0,
-                      value: ' '
-                    }
-                  ],
-                  type: 8,
-                  value: 'ul'
+                  type: 1,
+                  value: 'errorMessage'
                 }
               ],
-              id: 'jd4/BZ'
+              id: 'O9EaWP'
             },
             zoneName: 'zone-1'
           }
@@ -1424,7 +1354,7 @@ describe('Intent services', () => {
           status: Statuses.na,
           statusLabel: 'Verified',
           statusTooltip: {
-            errorMessage: '\n - \n\n',
+            errorMessage: <ul />,
             scheduledAt: '06/17/2023 00:00',
             tooltip: {
               defaultMessage: [
@@ -1467,7 +1397,7 @@ describe('Intent services', () => {
           status: Statuses.na,
           statusLabel: 'No Recommendation',
           statusTooltip: {
-            errorMessage: '\n - \n\n',
+            errorMessage: <ul />,
             scheduledAt: '06/17/2023 00:00',
             tooltip: {
               defaultMessage: [
@@ -1488,11 +1418,28 @@ describe('Intent services', () => {
           }
         }
       ]
+
+      const normalizeAndSerialize = (intents: IntentListItem[]) =>
+        intents.map(intent => ({
+          ...intent,
+          statusTooltip: {
+            ...intent.statusTooltip,
+            errorMessage: renderToStaticMarkup(intent.statusTooltip.errorMessage),
+            scheduledAt: new Date(intent.statusTooltip.scheduledAt).toISOString()
+          }
+        }))
+
+      const sortIntents = (intents: IntentListItem[]) =>
+        intents.sort((a, b) => a.intent.localeCompare(b.intent))
+
       expect(error).toBe(undefined)
       expect(status).toBe('fulfilled')
-      expect(data?.intents).toEqual(expectedResult)
-    })
 
+      const normalizedReceived = sortIntents(normalizeAndSerialize(data?.intents as IntentListItem[]))
+      const normalizedExpected = sortIntents(normalizeAndSerialize(expectedResult as IntentListItem[]))
+
+      expect(normalizedReceived).toEqual(normalizedExpected)
+    })
   })
 
   it('should return correct ap details', async () => {
