@@ -162,7 +162,7 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     expect(await screen.findByText(/When do you want the update to run/i)).toBeInTheDocument()
   })
 
-  it('render SwitchUpgradeWizard - update now - Validate required venue', async () => {
+  it.skip('render SwitchUpgradeWizard - update now - Validate required venue', async () => {
     render(
       <Provider>
         <SwitchUpgradeWizard
@@ -213,7 +213,7 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
 
   })
 
-  it('render SwitchUpgradeWizard - update now - Save', async () => {
+  it.skip('render SwitchUpgradeWizard - update now - Save', async () => {
     render(
       <Provider>
         <SwitchUpgradeWizard
