@@ -205,9 +205,10 @@ export function VlanPortsModal (props: {
     if (_.isEmpty(taggedPorts) && _.isEmpty(untaggedPorts)) {
       showActionModal({
         type: 'error',
-        title: 'Tagged or Untagged Ports Required',
-        // eslint-disable-next-line max-len
-        content: 'At least one of the fields, tagged ports or untagged ports, must be specified. Both fields cannot be empty.'
+        title: $t({ defaultMessage: 'Tagged or Untagged Port is not Configured' }),
+        content: $t({  // eslint-disable-next-line max-len
+          defaultMessage: 'Please ensure that at least one Tagged or Untagged Port is configured.'
+        })
       })
       return
     }
