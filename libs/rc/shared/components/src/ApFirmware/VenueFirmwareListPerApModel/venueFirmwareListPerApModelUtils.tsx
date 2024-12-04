@@ -5,12 +5,16 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Tooltip }                                                                                               from '@acx-ui/components'
-import { useGetAllApModelFirmwareListQuery, useGetUpgradePreferencesQuery, useUpdateUpgradePreferencesMutation } from '@acx-ui/rc/services'
-import { ApModelFirmware, FirmwareVenuePerApModel, UpgradePreferences }                                          from '@acx-ui/rc/utils'
-import { getIntl }                                                                                               from '@acx-ui/utils'
+import { Tooltip }                      from '@acx-ui/components'
+import {
+  useGetAllApModelFirmwareListQuery,
+  useGetUpgradePreferencesQuery,
+  useUpdateUpgradePreferencesMutation
+} from '@acx-ui/rc/services'
+import { ApModelFirmware, FirmwareLabel, FirmwareVenuePerApModel, UpgradePreferences } from '@acx-ui/rc/utils'
+import { getIntl }                                                                     from '@acx-ui/utils'
 
-import { VersionLabelType, compareVersions, getVersionLabel } from '../FirmwareUtils'
+import { compareVersions, getVersionLabel, VersionLabelType } from '../FirmwareUtils'
 
 import * as UI                              from './styledComponents'
 import { UpdateFirmwarePerApModelFirmware } from './UpdateNowDialog'
@@ -120,7 +124,12 @@ export function renderCurrentFirmwaresColumn (data: FirmwareVenuePerApModel['cur
   const firmwareGroupsTooltipContent = Object
     .entries(firmwareGroupsMap)
     .sort((a, b) => -compareVersions(a[0], b[0]))
-    .map(([ firmware, apModels ]) => `${firmware}: ${apModels.join(', ')}`)
+    .map(([ firmware, firmwareInfo ]) => {
+      // eslint-disable-next-line max-len
+      const isEarlyAccess = firmwareInfo.labels?.includes(FirmwareLabel.ALPHA) || firmwareInfo.labels?.includes(FirmwareLabel.BETA)
+      // eslint-disable-next-line max-len
+      return `${firmware}${isEarlyAccess ? '(Early Access)' : ''}: ${firmwareInfo.apModel.join(', ')}`
+    })
     .join('\n')
 
   return (
@@ -131,17 +140,32 @@ export function renderCurrentFirmwaresColumn (data: FirmwareVenuePerApModel['cur
 }
 
 // eslint-disable-next-line max-len
-function groupByFirmware (data: FirmwareVenuePerApModel['currentApFirmwares']): { [firmware in string]: string[] } {
+function groupByFirmware (data: FirmwareVenuePerApModel['currentApFirmwares']): { [firmware in string]: { apModel: string[], labels: string[] } } {
   if (!data) return {}
 
   return data.reduce((acc, curr) => {
-    const { firmware, apModel } = curr
+    const { firmware, apModel, labels } = curr
     if (!acc[firmware]) {
-      acc[firmware] = []
+      acc[firmware] = {
+        apModel: [],
+        labels: []
+      }
     }
-    acc[firmware].push(apModel)
+    acc[firmware] = {
+      apModel: [...acc[firmware].apModel, apModel],
+      labels
+    }
     return acc
-  }, {} as { [firmware in string]: string[] })
+  }, {} as { [firmware in string]: { apModel: string[], labels: string[] } })
+}
+
+// eslint-disable-next-line max-len
+export function filterVersionBehindGA (data: ApFirmwareUpdateGroupType[]): ApFirmwareUpdateGroupType[] {
+  // eslint-disable-next-line max-len
+  const gaIndex = data.findIndex((group: ApFirmwareUpdateGroupType) => group.firmwares[0]?.labels?.includes(FirmwareLabel.GA))
+  if (gaIndex === -1) return data
+
+  return data.slice(0, gaIndex + 1)
 }
 
 export type ApFirmwareUpdateGroupType = { apModels: string[], firmwares: VersionLabelType[] }
@@ -159,7 +183,8 @@ export function convertApModelFirmwaresToUpdateGroups (data: ApModelFirmware[]):
           name: curr.name,
           category: curr.category,
           releaseDate: curr.releaseDate,
-          onboardDate: curr.onboardDate
+          onboardDate: curr.onboardDate,
+          labels: curr.labels
         }]
       })
       hasHandledApModels.push(...diff)

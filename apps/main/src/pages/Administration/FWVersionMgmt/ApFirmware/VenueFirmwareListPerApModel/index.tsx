@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 
 import { useIntl } from 'react-intl'
@@ -38,11 +38,13 @@ import { getIntl, noDataDisplay } from '@acx-ui/utils'
 import { isApFirmwareUpToDate } from '../..'
 import { PreferencesDialog }    from '../../PreferencesDialog'
 import * as UI                  from '../../styledComponents'
+import { ApFirmwareContext }    from '../index'
 
 import { DowngradePerApModelDialog } from './DowngradeDialog'
 
 export function VenueFirmwareListPerApModel () {
   const { $t } = useIntl()
+  const apFirmwareContext = useContext(ApFirmwareContext)
   const tableQuery = useTableQuery<FirmwareVenuePerApModel>({
     useQuery: useGetVenueApModelFirmwareListQuery,
     defaultPayload: {
@@ -53,6 +55,7 @@ export function VenueFirmwareListPerApModel () {
       searchTargetFields: ['name']
     }
   })
+  const isEarlyAccess = (apFirmwareContext.isAlphaFlag || apFirmwareContext.isBetaFlag) as boolean
   const [ selectedRowKeys, setSelectedRowKeys ] = useState([])
   const [ selectedRows, setSelectedRows ] = useState<FirmwareVenuePerApModel[]>([])
   const { updateNowVisible, setUpdateNowVisible, handleUpdateNowCancel } = useUpdateNowPerApModel()
@@ -105,7 +108,8 @@ export function VenueFirmwareListPerApModel () {
     },
     {
       scopeKey: [WifiScopes.UPDATE],
-      visible: (rows) => rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)),
+      // eslint-disable-next-line max-len
+      visible: (rows) => isEarlyAccess && rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)),
       label: $t({ defaultMessage: 'Update with Early Access Now' }),
       onClick: (rows) => {
         setSelectedRows(rows)
@@ -180,6 +184,8 @@ export function VenueFirmwareListPerApModel () {
       onCancel={handleUpdateEarlyAccessNowCancel}
       afterSubmit={afterAction}
       selectedVenuesFirmwares={selectedRows}
+      isAlpha={apFirmwareContext.isAlphaFlag as boolean}
+      isBeta={apFirmwareContext.isBetaFlag as boolean}
     />}
     <PreferencesDialog
       visible={preferencesModalVisible}

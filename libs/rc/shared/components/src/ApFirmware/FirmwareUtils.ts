@@ -2,7 +2,7 @@ import _             from 'lodash'
 import moment        from 'moment-timezone'
 import { IntlShape } from 'react-intl'
 
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { DateFormatEnum, formatter }        from '@acx-ui/formatter'
 import {
   firmwareTypeTrans,
   FirmwareCategory,
@@ -14,7 +14,8 @@ import {
   Schedule,
   LatestEdgeFirmwareVersion,
   EolApFirmware,
-  FirmwareSwitchVenueV1002
+  FirmwareSwitchVenueV1002,
+  FirmwareLabel
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -113,13 +114,18 @@ export type VersionLabelType = {
   name: string,
   category: FirmwareCategory,
   onboardDate?: string,
-  releaseDate?: string
+  releaseDate?: string,
+  labels?: FirmwareLabel[]
 }
 // eslint-disable-next-line max-len
 export const getVersionLabel = (intl: IntlShape, version: VersionLabelType, showType = true): string => {
   const transform = firmwareTypeTrans(intl.$t)
   const versionName = version?.name
-  const versionType = transform(version?.category)
+  const versionType = transform(
+    version?.labels?.includes(FirmwareLabel.ALPHA) || version?.labels?.includes(FirmwareLabel.BETA)
+      ? FirmwareCategory.EARLY_ACCESS
+      : version?.category
+  )
   const displayDate = version.releaseDate ?? version.onboardDate
   const versionDate = displayDate
     ? formatter(DateFormatEnum.DateFormat)(displayDate)

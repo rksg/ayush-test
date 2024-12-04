@@ -8,13 +8,13 @@ import { VenueFirmwareListPerApModel } from './VenueFirmwareListPerApModel'
 import VersionBanner                   from './VersionBanner'
 import { VersionBannerPerApModel }     from './VersionBannerPerApModel'
 
-export const ApFirmwareContext = createContext({})
+export const ApFirmwareContext = createContext({} as Record<string, unknown>)
 
 // @ts-ignore
 const ApFirmwareProvider = ({ children }) => {
   const jwtPayload = getJwtTokenPayload()
   return (
-    <ApFirmwareContext.Provider value={{ jwtPayload }}>
+    <ApFirmwareContext.Provider value={jwtPayload as unknown as Record<string, unknown>}>
       {children}
     </ApFirmwareContext.Provider>
   )

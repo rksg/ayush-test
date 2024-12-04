@@ -16,12 +16,14 @@ export type UpdateFirmwarePerApModelFirmware = UpdateFirmwarePerApModelPayload['
 export interface UpdateEarlyAccessNowDialogProps {
   onCancel: () => void
   afterSubmit: () => void
-  selectedVenuesFirmwares: FirmwareVenuePerApModel[]
+  selectedVenuesFirmwares: FirmwareVenuePerApModel[],
+  isAlpha: boolean
+  isBeta: boolean
 }
 
 export function UpdateEarlyAccessNowDialog (props: UpdateEarlyAccessNowDialogProps) {
   const { $t } = useIntl()
-  const { onCancel, afterSubmit, selectedVenuesFirmwares } = props
+  const { onCancel, afterSubmit, selectedVenuesFirmwares, isAlpha, isBeta } = props
   const [ disableSave, setDisableSave ] = useState(false)
   const [ payload, setPayload ] = useState<UpdateFirmwarePerApModelFirmware>([])
   // eslint-disable-next-line max-len
@@ -69,6 +71,8 @@ export function UpdateEarlyAccessNowDialog (props: UpdateEarlyAccessNowDialogPro
       <UpdateEarlyAccessPerApModelIndividualPanel
         selectedVenuesFirmwares={selectedVenuesFirmwares}
         updatePayload={updatePayload}
+        isAlpha={isAlpha}
+        isBeta={isBeta}
       />
       <UI.Section>
         <UI.Ul>

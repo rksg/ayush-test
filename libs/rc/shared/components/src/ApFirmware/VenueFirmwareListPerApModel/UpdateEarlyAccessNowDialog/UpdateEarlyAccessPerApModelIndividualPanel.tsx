@@ -4,9 +4,10 @@ import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Loader }                            from '@acx-ui/components'
-import { useGetAllApModelFirmwareListQuery } from '@acx-ui/rc/services'
-import { FirmwareVenuePerApModel }           from '@acx-ui/rc/utils'
+import { Loader }                                                  from '@acx-ui/components'
+import { useGetAllApModelFirmwareListQuery }                       from '@acx-ui/rc/services'
+import { ApModelFirmware, FirmwareLabel, FirmwareVenuePerApModel } from '@acx-ui/rc/utils'
+import { compareVersions }                                         from '@acx-ui/utils'
 
 import * as UI                            from '../styledComponents'
 import {
@@ -24,24 +25,51 @@ export interface UpdateEarlyAccessPerApModelIndividualPanelProps {
   selectedVenuesFirmwares: FirmwareVenuePerApModel[]
   updatePayload: (targetFirmwares: UpdateFirmwarePerApModelFirmware) => void
   initialPayload?: UpdateFirmwarePerApModelFirmware
-  isUpgrade?: boolean
+  isUpgrade?: boolean,
+  isAlpha: boolean,
+  isBeta: boolean
 }
 
 // eslint-disable-next-line max-len
 export function UpdateEarlyAccessPerApModelIndividualPanel (props: UpdateEarlyAccessPerApModelIndividualPanelProps) {
   const { $t } = useIntl()
-  const { selectedVenuesFirmwares, updatePayload, initialPayload, isUpgrade = true } = props
+  // eslint-disable-next-line max-len
+  const { selectedVenuesFirmwares, updatePayload, initialPayload, isUpgrade = true, isAlpha, isBeta } = props
   const { data: apModelFirmwares, isLoading } = useGetAllApModelFirmwareListQuery({}, {
     refetchOnMountOrArgChange: 300
   })
   const updatePayloadRef = useRef<UpdateFirmwarePerApModelFirmware>()
+  // eslint-disable-next-line max-len
+  const [apModelEarlyAccessFirmwares, setApModelEarlyAccessFirmwares] = useState<ApModelFirmware[]>()
   const [ displayData, setDisplayData ] = useState<ApModelIndividualDisplayDataType[]>()
   const [ labelSize, setLabelSize ] = useState<'small' | 'large'>()
 
   useEffect(() => {
     if (!apModelFirmwares) return
+
+    let updateGroups = [] as ApModelFirmware[]
     // eslint-disable-next-line max-len
-    const updatedDisplayData = convertToApModelIndividualDisplayData(apModelFirmwares, selectedVenuesFirmwares, initialPayload, isUpgrade)
+    let updateAlphaGroups = apModelFirmwares.filter(data => data.labels?.includes(FirmwareLabel.ALPHA))
+    // eslint-disable-next-line max-len
+    let updateBetaGroups = apModelFirmwares.filter(data => data.labels?.includes(FirmwareLabel.BETA))
+
+
+    if (isAlpha || isBeta) {
+      updateGroups = [
+        ...updateGroups,
+        ...(isAlpha ? updateAlphaGroups : []),
+        ...((isBeta || isAlpha) ? updateBetaGroups : [])
+      ]
+    }
+
+    updateGroups.sort((a, b) => compareVersions(b.id, a.id))
+    setApModelEarlyAccessFirmwares(updateGroups)
+  }, [apModelFirmwares])
+
+  useEffect(() => {
+    if (!apModelEarlyAccessFirmwares) return
+    // eslint-disable-next-line max-len
+    const updatedDisplayData = convertToApModelIndividualDisplayData(apModelEarlyAccessFirmwares, selectedVenuesFirmwares, initialPayload, isUpgrade)
 
     if (!updatePayloadRef.current) { // Ensure that 'updatePayload' only call once when the componnent intializes
       updatePayloadRef.current = convertToPayload(updatedDisplayData)
@@ -50,7 +78,7 @@ export function UpdateEarlyAccessPerApModelIndividualPanel (props: UpdateEarlyAc
 
     setDisplayData(updatedDisplayData)
     setLabelSize(updatedDisplayData.some(item => item.apModel.length > 6) ? 'large' : 'small')
-  }, [apModelFirmwares])
+  }, [apModelEarlyAccessFirmwares])
 
   const update = (apModel: string, version: string) => {
     updatePayloadRef.current = patchPayload(updatePayloadRef.current!, apModel, version)
