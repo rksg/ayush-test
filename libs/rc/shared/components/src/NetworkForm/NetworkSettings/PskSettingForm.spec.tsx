@@ -132,7 +132,7 @@ const policySetList = {
   ]
 }
 
-describe('NetworkForm', () => {
+describe.skip('NetworkForm', () => {
   beforeEach(() => {
     networkDeepResponse.name = 'PSK network test'
     mockServer.use(

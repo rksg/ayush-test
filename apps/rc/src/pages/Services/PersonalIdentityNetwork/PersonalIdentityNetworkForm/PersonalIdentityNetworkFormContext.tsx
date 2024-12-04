@@ -28,8 +28,9 @@ import {
   getTunnelProfileOptsWithDefault,
   isDsaeOnboardingNetwork,
   NetworkTypeEnum,
-  IncompatibilityFeatures,
-  EdgeClusterStatus
+  ClusterHighAvailabilityModeEnum,
+  EdgeClusterStatus,
+  IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 import { compareVersions } from '@acx-ui/utils'
 
@@ -94,7 +95,7 @@ const tunnelProfileDefaultPayload = {
 }
 
 const clusterDataDefaultPayload = {
-  fields: ['name', 'clusterId', 'venueId', 'edgeList'],
+  fields: ['name', 'clusterId', 'venueId', 'highAvailabilityMode', 'edgeList'],
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
@@ -392,6 +393,10 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
 }
 
 const isPinSupportCluster = (cluster: EdgeClusterStatus, requiredFw: string) => {
+  // eslint-disable-next-line max-len
+  if (!cluster.highAvailabilityMode || cluster.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE)
+    return false
+
   // eslint-disable-next-line max-len
   return cluster.edgeList?.every(node => compareVersions(node.firmwareVersion, requiredFw) >= 0) ?? false
 }

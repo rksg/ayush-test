@@ -377,6 +377,7 @@ export const mockEdgeClusterList = {
       venueId: '0000000005',
       venueName: 'venue_5',
       clusterStatus: ClusterStatusEnum.CLUSTER_UNHEALTHY,
+      highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY,
       hasCorePort: true,
       edgeList: [
         {
