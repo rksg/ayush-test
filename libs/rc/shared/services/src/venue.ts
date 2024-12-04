@@ -100,7 +100,10 @@ import {
   EthernetPortProfileUrls,
   EthernetPortProfileViewData,
   CompatibilityResponse,
-  IncompatibleFeatureLevelEnum
+  IncompatibleFeatureLevelEnum,
+  SoftGreUrls,
+  SoftGreViewData,
+  LanPort
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                                                          from '@acx-ui/store'
 import { ITimeZone, RequestPayload }                                                             from '@acx-ui/types'
@@ -2169,6 +2172,29 @@ export const venueApi = baseVenueApi.injectEndpoints({
                   ?.lanPorts.find(lanPort => lanPort.portId?.toString() === activity.portId?.toString())
                 if(targetLanPort) {
                   targetLanPort.ethernetPortProfileId = profile.id
+                }
+              })
+            }
+          })
+
+          const softgreProfileReq = createHttpRequest(SoftGreUrls.getSoftGreViewDataList)
+          const softgreProfileQuery = await fetchWithBQ(
+            { ...softgreProfileReq,
+              body: JSON.stringify({
+                filters: {
+                  venueIds: [venueId]
+                }
+              })
+            }
+          )
+          const softgreProfiles = (softgreProfileQuery.data as TableResult<SoftGreViewData>).data
+          softgreProfiles.forEach((profile) => {
+            if (profile.venueActivations) {
+              profile.venueActivations.forEach((activity)=>{
+                const targetLanPort = venueLanPortSettings.find(setting => setting.model === activity.apModel && venueId === activity.venueId)
+                  ?.lanPorts.find(lanPort => lanPort.portId?.toString() === activity.portId?.toString())
+                if(targetLanPort) {
+                  targetLanPort.softGreProfileId = profile.id
                 }
               })
             }

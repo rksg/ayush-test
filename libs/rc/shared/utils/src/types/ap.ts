@@ -483,7 +483,8 @@ export interface LanPort {
   portId?: string,
   type?: 'ACCESS' | 'GENERAL' | 'TRUNK',
   vni: number,
-  ethernetPortProfileId: string
+  ethernetPortProfileId?: string,
+  softGreProfileId?: string
 }
 
 export enum ApModelTypeEnum {
@@ -958,4 +959,21 @@ export enum DhcpOption82MacEnum {
   COLON = 'COLON',
   HYPHEN = 'HYPHEN',
   NODELIMITER = 'NODELIMITER',
+}
+
+export interface DhcpOption82Settings {
+  subOption151Input:	string
+  subOption151Format:	DhcpOption82SubOption151Enum
+  subOption2Format:	DhcpOption82SubOption2Enum
+  subOption1Format:	DhcpOption82SubOption1Enum
+  macFormat:	DhcpOption82MacEnum
+  subOption1Enabled:	boolean
+  subOption2Enabled:	boolean
+  subOption150Enabled:	boolean
+  subOption151Enabled:	boolean
+}
+
+export interface LanPortSoftGreProfileSettings {
+  dhcpOption82Enabled?: boolean
+  dhcpOption82Settings?: DhcpOption82Settings
 }
