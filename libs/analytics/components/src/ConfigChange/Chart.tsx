@@ -5,6 +5,7 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 import { useAnalyticsFilter }              from '@acx-ui/analytics/utils'
 import { Card, ConfigChangeChart, Loader } from '@acx-ui/components'
 import type { ConfigChange }               from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 
 import { ConfigChangeContext, KPIFilterContext } from './context'
 import { useConfigChangeQuery }                  from './services'
@@ -21,6 +22,12 @@ function BasicChart (props: {
   setSelectedData?: React.Dispatch<React.SetStateAction<ConfigChange | null>>,
   setPagination?: (params: { current: number, pageSize: number }) => void
 }){
+
+  const showIntentAI = [
+    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
+    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
+  ].some(Boolean)
+
   const { kpiFilter, applyKpiFilter } = useContext(KPIFilterContext)
   const {
     timeRanges: [startDate, endDate],
@@ -39,7 +46,7 @@ function BasicChart (props: {
     endDate: endDate.toISOString()
   }, { selectFromResult: queryResults => ({
     ...queryResults,
-    data: filterData(queryResults.data ?? [], kpiFilter, legendList)
+    data: filterData(queryResults.data ?? [], kpiFilter, legendList, showIntentAI)
   }) })
 
   useEffect(() => {

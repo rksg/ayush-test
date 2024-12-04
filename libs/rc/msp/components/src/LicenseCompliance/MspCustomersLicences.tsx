@@ -5,6 +5,7 @@ import { Loader, Table, TableProps }                                            
 import { DateFormatEnum, formatter }                                             from '@acx-ui/formatter'
 import { useMspCustomerListQuery }                                               from '@acx-ui/msp/services'
 import { ComplianceMspCustomersDevicesTypes, MspEc, MspEcAccountType, MSPUtils } from '@acx-ui/msp/utils'
+import { useGetTenantDetailsQuery }                                              from '@acx-ui/rc/services'
 import { EntitlementUtil, useTableQuery }                                        from '@acx-ui/rc/utils'
 import { noDataDisplay }                                                         from '@acx-ui/utils'
 
@@ -17,7 +18,7 @@ export default function MspCustomersLicences () {
 
   const mspEcTenantsPayload = {
     filters: {
-      tenantType: ['MSP_EC']
+      tenantType: ['MSP_EC', 'MSP_INTEGRATOR', 'MSP_INSTALLER']
     },
     fields: [
       'check-all',
@@ -40,12 +41,16 @@ export default function MspCustomersLicences () {
     pagination: { settingsId }
   })
 
-  const statusFilterOptions = [{ key: MspEcAccountType.TRIAL,
-    value: 'TRIAL' },
-  { key: MspEcAccountType.EXTENDED_TRIAL,
-    value: 'MSP ECs in Extended Trial Mode' },
+  const { data: tenantDetailsData } = useGetTenantDetailsQuery({ })
+
+  const _statusFilterOptions = [{ key: MspEcAccountType.TRIAL,
+    value: 'MSP ECs in Trial Mode' },
   { key: MspEcAccountType.PAID,
     value: 'MSP ECs in Paid Mode' }]
+
+  const statusFilterOptions = tenantDetailsData?.extendedTrial
+    ? [..._statusFilterOptions, { key: MspEcAccountType.EXTENDED_TRIAL,
+      value: 'MSP ECs in Extended Trial Mode' }] : _statusFilterOptions
 
   const columns: TableProps<MspEc>['columns'] = [
     {

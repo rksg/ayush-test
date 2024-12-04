@@ -4,6 +4,7 @@ import { ProFormInstance, StepsForm } from '@ant-design/pro-form'
 import { Button }                     from 'antd'
 import { useIntl }                    from 'react-intl'
 
+import { showActionModal }                                               from '@acx-ui/components'
 import { useApplyConversationsMutation, useUpdateConversationsMutation } from '@acx-ui/rc/services'
 import { RuckusAiConfigurationStepsEnum, RuckusAiConversation }          from '@acx-ui/rc/utils'
 
@@ -25,9 +26,12 @@ export default function RuckusAiWizard (props: {
   step: string;
   setCurrentStep: (currentStep: number) => void;
   setStep: (step: RuckusAiStepsEnum) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setConfigResponse: (response: any) => void;
 }) {
   const { $t } = useIntl()
   const [isLoading, setIsLoading] = useState(false)
+  const [isSkip, setIsSkip] = useState(false)
 
   const [applyConversations] = useApplyConversationsMutation()
   const [updateConversations] = useUpdateConversationsMutation()
@@ -39,6 +43,17 @@ export default function RuckusAiWizard (props: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     React.MutableRefObject<ProFormInstance<any> | undefined>[]
   >([])
+
+  const [showAlert, setShowAlert] = useState<Record<RuckusAiConfigurationStepsEnum, boolean>>(
+    Object.values(RuckusAiConfigurationStepsEnum).reduce((acc, step) => {
+      acc[step] = false
+      return acc
+    }, {} as Record<RuckusAiConfigurationStepsEnum, boolean>)
+  )
+
+  const updateShowAlert = (step: RuckusAiConfigurationStepsEnum, value: boolean) => {
+    setShowAlert((prev) => ({ ...prev, [step]: value }))
+  }
 
 
   const onPrevious = function () {
@@ -57,18 +72,18 @@ export default function RuckusAiWizard (props: {
       }, {} as Record<RuckusAiConfigurationStepsEnum, RuckusAiConversation>)
     )
 
-  const handleOnFinish = async (
-    stepType: RuckusAiConfigurationStepsEnum) => {
+  const handleOnFinish = async (stepType: RuckusAiConfigurationStepsEnum) => {
     setIsLoading(true)
+    let regenerated = false
+
     try {
       const stepIndex = steps.findIndex(s => s.name === stepType)
-
       if (stepIndex === -1) {
         return false
       }
 
       const values = formMapRef.current[stepIndex].current?.getFieldsValue()
-      let updatedValues
+      let updatedValues: { [key: string]: unknown }
 
       if (values.data && values.data.some((item: { Checked?: boolean }) =>
         item['Checked'] !== undefined)) {
@@ -81,16 +96,59 @@ export default function RuckusAiWizard (props: {
 
       const response = await updateConversations({
         params: { sessionId: props.sessionId, type: stepType },
-        payload: JSON.stringify(updatedValues)
+        payload: JSON.stringify(isSkip ? [] : updatedValues)
       }).unwrap()
 
-      setPayloads((prevPayloads) => ({
-        ...prevPayloads,
-        [response.nextStep]: response
-      }))
+      if (response.hasChanged) {
+        await new Promise((resolve) => {
+          showActionModal({
+            type: 'confirm',
+            width: 460,
+            title: $t({ defaultMessage: 'Regenerate Configurations?' }),
+            content: $t({
+              // eslint-disable-next-line max-len
+              defaultMessage: 'The modifications here will affect the settings in the subsequent steps. Would you like to regenerate the configuration suggestions for the following steps?'
+            }),
+            okText: $t({ defaultMessage: 'Regenerate' }),
+            cancelText: $t({ defaultMessage: 'Remain Unchanged' }),
+            onOk: async () => {
+              try {
+                const newGenResponse = await updateConversations({
+                  params: { sessionId: props.sessionId, type: stepType + '?regenerate=true' },
+                  payload: JSON.stringify(updatedValues)
+                }).unwrap()
+                setPayloads((prevPayloads) => ({
+                  ...prevPayloads,
+                  [response.nextStep]: newGenResponse
+                }))
 
+                regenerated = true
+              } catch (error) {
+                console.log(error) // eslint-disable-line no-console
+              }
+              resolve(true)
+            },
+            onCancel: () => resolve(false)
+          })
+        })
+      }
+
+      if (!regenerated) {
+        setPayloads((prevPayloads) => ({
+          ...prevPayloads,
+          [response.nextStep]: response,
+          ...(isSkip && {
+            [stepType]: { ...prevPayloads[stepType], payload: '[]' }
+          })
+        }))
+      }
+
+      setIsSkip(false)
       setIsLoading(false)
+      updateShowAlert(stepType, true)
+
     } catch (error) {
+      setIsSkip(false)
       setIsLoading(false)
       return false
     }
@@ -101,9 +159,13 @@ export default function RuckusAiWizard (props: {
     {
       name: RuckusAiConfigurationStepsEnum.WLANS,
       title: '',
-      component: (
-        <WlanStep payload={props.payload} description={props.description} />
+      component: (props.payload ? (<WlanStep
+        payload={props.payload}
+        formInstance={formMapRef?.current?.[0]?.current}
+        showAlert={showAlert[RuckusAiConfigurationStepsEnum.WLANS]}
+        description={props.description} />) : null
       ),
+
       onFinish: async () =>
         handleOnFinish(RuckusAiConfigurationStepsEnum.WLANS)
     },
@@ -114,6 +176,7 @@ export default function RuckusAiWizard (props: {
         <WlanDetailStep
           formInstance={formMapRef.current[1].current}
           sessionId={props.sessionId}
+          showAlert={showAlert[RuckusAiConfigurationStepsEnum.WLANDETAIL]}
           payload={payloads[RuckusAiConfigurationStepsEnum.WLANDETAIL].payload} />)
         : (
           null
@@ -124,10 +187,13 @@ export default function RuckusAiWizard (props: {
     {
       name: RuckusAiConfigurationStepsEnum.VLAN,
       title: '',
+      supportSkip: true,
       component: payloads[RuckusAiConfigurationStepsEnum.VLAN].payload ? (
         <VlanStep
           formInstance={formMapRef.current[2].current}
           sessionId={props.sessionId}
+          showAlert={showAlert[RuckusAiConfigurationStepsEnum.VLAN]}
+          description={payloads[RuckusAiConfigurationStepsEnum.VLAN].description}
           payload={payloads[RuckusAiConfigurationStepsEnum.VLAN].payload} />
       ) : (
         null
@@ -138,16 +204,19 @@ export default function RuckusAiWizard (props: {
     {
       name: RuckusAiConfigurationStepsEnum.SUMMARY,
       title: '',
-      component: <SummaryStep payload={payloads[RuckusAiConfigurationStepsEnum.SUMMARY].payload} />,
+      component: <SummaryStep
+        currentStep={props.currentStep}
+        payload={payloads[RuckusAiConfigurationStepsEnum.SUMMARY].payload}
+        setCurrentStep={props.setCurrentStep} />,
       onFinish: async () => {
         setIsLoading(true)
         try {
-          await applyConversations({
+          const applyResponse = await applyConversations({
             params: { sessionId: props.sessionId }
           }).unwrap()
           props.setStep(RuckusAiStepsEnum.FINISHED)
+          props.setConfigResponse(applyResponse)
         } catch (error) {
-          //TODO: Waiting for UX design and backend integration.
           alert('Please try again.')
         }
         setIsLoading(false)
@@ -178,6 +247,22 @@ export default function RuckusAiWizard (props: {
             >
               {props.currentStep === lastPageIndex ?
                 $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Next' })}
+            </Button>,
+            <Button key='skip'
+              type='link'
+              style={{
+                position: 'absolute',
+                right: '30px',
+                bottom: '5px',
+                fontSize: '12px',
+                display: steps[props.currentStep].supportSkip ? 'block' : 'none'
+              }}
+              disabled={isLoading}
+              onClick={()=>{
+                setIsSkip(true)
+                renderProps.form?.submit?.()
+              }}>
+              {$t({ defaultMessage: 'Skip this step' })}
             </Button>
           ]
         }
@@ -200,3 +285,4 @@ export default function RuckusAiWizard (props: {
     </StepsForm>
   )
 }
+

@@ -15,6 +15,8 @@ export const portalViewTypes: Record<PortalViewEnum, MessageDescriptor> = {
     defineMessage({ defaultMessage: 'Self Sign In - Register/Confirm' }),
   [PortalViewEnum.HostApproval]:
     defineMessage({ defaultMessage: 'Host Approval - Register/Confirm' }),
+  [PortalViewEnum.Directory]:
+    defineMessage({ defaultMessage: 'Active Directory/ LDAP Server' }),
   [PortalViewEnum.ConnectionConfirmed]: defineMessage({ defaultMessage: 'Connection confirmed' }),
   [PortalViewEnum.TermCondition]: defineMessage({ defaultMessage: 'Terms & Conditions' })
 }

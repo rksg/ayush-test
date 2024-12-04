@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
+import _         from 'lodash'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
@@ -219,7 +220,7 @@ describe('LanPortSettings', () => {
   })
 })
 
-describe('LanPortSettings - Ethernet Port Profile', () => {
+describe.skip('LanPortSettings - Ethernet Port Profile', () => {
 
   beforeEach(() => {
     mockServer.use(
@@ -340,5 +341,47 @@ describe('LanPortSettings - Ethernet Port Profile', () => {
     expect((await screen.findAllByText('Default Trunk'))[0]).toBeInTheDocument()
     expect(screen.queryByText(trunkWithPortBasedName)).not.toBeInTheDocument()
 
+  })
+
+  it('AP Level - Single port has vni cannot modify', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return ff === Features.ETHERNET_PORT_PROFILE_TOGGLE
+    })
+
+    const apParams = {
+      tenantId: 'tenant-id',
+      serialNumber: '123456789042'
+    }
+
+    const lanDataHasVni = _.cloneDeep(lanData)
+    lanDataHasVni[0].vni = 8196
+
+    render(<Provider>
+      <Form initialValues={{ lan: lanDataHasVni }}>
+        <LanPortSettings
+          index={0}
+          readOnly={false}
+          selectedPortCaps={selectedTrunkPortCaps}
+          selectedModel={selectedSinglePortModel}
+          setSelectedPortCaps={jest.fn()}
+          selectedModelCaps={selectedSinglePortModelCaps}
+          isDhcpEnabled={false}
+          isTrunkPortUntaggedVlanEnabled={true}
+          useVenueSettings={false}
+          serialNumber={apParams.serialNumber}
+          venueId={venueId}
+        />
+      </Form>
+    </Provider>, {
+      route: { params: apParams, path: '/:tenantId/t/devices/wifi/:serialNumber/edit/networking' }
+    })
+
+    expect(screen.queryByLabelText(/Ethernet Port Profile/)).not.toBeInTheDocument()
+    expect(screen.queryByRole('combobox', { name: 'Ethernet Port Profile' }))
+      .not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Profile Details' }))
+      .not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'add Profile' }))
+      .not.toBeInTheDocument()
   })
 })

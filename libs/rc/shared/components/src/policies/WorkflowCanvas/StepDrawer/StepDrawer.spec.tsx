@@ -99,7 +99,7 @@ describe('StepDrawer', () => {
     </Provider>)
 
     await waitFor(() => expect(spyGetActionFn).toHaveBeenCalled())
-    expect(screen.getByTestId('DisplayMessageSetting')).toBeVisible()
+    expect(await screen.findByTestId('DisplayMessageSetting')).toBeVisible()
 
     await userEvent.click(screen.getByRole('button', { name: /Preview/i }))
     expect(await screen.findByTestId('WorkflowActionPreviewModalTestId')).toBeInTheDocument()
