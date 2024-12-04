@@ -47,7 +47,6 @@ export interface PersonalIdentityNetworkFormContextType {
   isDpskLoading: boolean
   clusterOptions?: DefaultOptionType[]
   isClusterOptionsLoading: boolean
-  isFeatureSetsLoading: boolean
   dhcpList?: DhcpStats[]
   dhcpOptions?: DefaultOptionType[]
   isDhcpOptionsLoading: boolean
@@ -115,17 +114,16 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
 
   const [getDpsk] = useLazyGetDpskQuery()
 
-  const { requiredFw, isFeatureSetsLoading } = useGetEdgeFeatureSetsQuery({
+  const { requiredFw } = useGetEdgeFeatureSetsQuery({
     payload: {
       filters: {
         featureNames: [IncompatibilityFeatures.PIN]
       } }
   }, {
-    selectFromResult: ({ data, isLoading }) => {
+    selectFromResult: ({ data }) => {
       return {
         requiredFw: data?.featureSets
-          ?.find(item => item.featureName === IncompatibilityFeatures.PIN)?.requiredFw,
-        isFeatureSetsLoading: isLoading
+          ?.find(item => item.featureName === IncompatibilityFeatures.PIN)?.requiredFw
       }
     }
   })
@@ -368,7 +366,6 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         isDpskLoading,
         clusterOptions,
         isClusterOptionsLoading: isClusterDataLoading || isSdlanLoading,
-        isFeatureSetsLoading,
         dhcpList,
         dhcpOptions: dhcpList?.map(item => ({ label: item.serviceName, value: item.id })),
         isDhcpOptionsLoading,
