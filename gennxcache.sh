@@ -37,7 +37,7 @@ sudo rm -rf nxcachetmp
 #create nx cache feature branch through slack "/alto-ci createfb ACX-73320 acx-ui-cache" before execute commands below
 #commit cache
 cd nxcache
-git checkout $FEATURE_BRANCH
+git checkout -b $FEATURE_BRANCH
 git add .
 git commit -m $FEATURE_BRANCH
-git push --set-upstream origin $FEATURE_BRANCH
+git push --set-upstream -u origin $FEATURE_BRANCH
