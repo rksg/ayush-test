@@ -28,7 +28,7 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
   const [policyModalVisible, setPolicyModalVisible] = useState(false)
   const form = Form.useFormInstance()
 
-  const isGroupRequired = useIsSplitOn(Features.MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE)
+  const isIdentityRequired = useIsSplitOn(Features.MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE)
 
   const { data: policySetsData } = useAdaptivePolicySetListByQueryQuery(
     { payload: { page: 1, pageSize: '2000' } })
@@ -109,7 +109,7 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
           </Form.Item>
         </GridCol>
       </GridRow>
-      { isGroupRequired &&
+      { isIdentityRequired &&
         <>
           <GridRow>
             <GridCol col={{ span: 10 }}>

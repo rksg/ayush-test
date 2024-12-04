@@ -6,7 +6,7 @@ import { useIntl }  from 'react-intl'
 import { Loader, PageHeader, showToast, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
 import {
-  useAddMacRegListMutation,
+  useAddMacRegListMutation, useAddMacRegListWithIdentityMutation,
   useDeleteAdaptivePolicySetFromMacListMutation,
   useGetMacRegListQuery,
   useUpdateAdaptivePolicySetToMacListMutation,
@@ -44,6 +44,7 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
 
   const { data, isLoading } = useGetMacRegListQuery({ params: { policyId } }, { skip: !editMode })
   const [addMacRegList] = useAddMacRegListMutation()
+  const [addMacRegListWithIdentity] = useAddMacRegListWithIdentityMutation()
   const [updateMacRegList, { isLoading: isUpdating }] = useUpdateMacRegListMutation()
 
   const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
@@ -52,7 +53,7 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
   const [bindPolicySet] = useUpdateAdaptivePolicySetToMacListMutation()
   const [unbindPolicySet] = useDeleteAdaptivePolicySetFromMacListMutation()
 
-  const isGroupRequired = useIsSplitOn(Features.MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE)
+  const isIdentityRequired = useIsSplitOn(Features.MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE)
 
   useEffect(() => {
     if (data && editMode) {
@@ -64,7 +65,7 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
         policySetId: data.policySetId
       })
 
-      if(isGroupRequired) {
+      if(isIdentityRequired) {
         formRef.current?.setFieldsValue({
           identityGroupId: data.identityGroupId,
           identityId: data.identityId,
@@ -76,17 +77,28 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
 
   const handleAddList = async (data: MacRegistrationPoolFormFields) => {
     try {
-      const saveData = {
-        name: data.name,
-        autoCleanup: data.autoCleanup,
-        ...transferExpirationFormFieldsToData(data.expiration),
-        defaultAccess: data.defaultAccess ?? 'ACCEPT',
-        identityGroupId: isGroupRequired ? data.identityGroupId : undefined,
-        identityId: isGroupRequired && data.isUseSingleIdentity ? data.identityId : undefined
+      let result = null
+      if(isIdentityRequired) {
+        const saveData = {
+          name: data.name,
+          autoCleanup: data.autoCleanup,
+          ...transferExpirationFormFieldsToData(data.expiration),
+          defaultAccess: data.defaultAccess ?? 'ACCEPT',
+          identityId: data.isUseSingleIdentity ? data.identityId : undefined
+        }
+        // eslint-disable-next-line max-len
+        result = await addMacRegListWithIdentity({ params: { identityGroupId: data.identityGroupId },
+          payload: saveData, customHeaders }).unwrap() as MacRegistrationPool
+      } else {
+        const saveData = {
+          name: data.name,
+          autoCleanup: data.autoCleanup,
+          ...transferExpirationFormFieldsToData(data.expiration),
+          defaultAccess: data.defaultAccess ?? 'ACCEPT'
+        }
+        // eslint-disable-next-line max-len
+        result = await addMacRegList({ payload: saveData, customHeaders }).unwrap() as MacRegistrationPool
       }
-
-      // eslint-disable-next-line max-len
-      const result = await addMacRegList({ payload: saveData, customHeaders }).unwrap() as MacRegistrationPool
 
       if (result.id && data.policySetId) {
         await bindPolicySet({ params: { policyId: result.id, policySetId: data.policySetId } })
@@ -97,7 +109,7 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
           type: 'success',
           content: intl.$t(
             { defaultMessage: 'List {name} was added' },
-            { name: saveData.name }
+            { name: data.name }
           )
         })
       }
@@ -115,7 +127,7 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
         ...transferExpirationFormFieldsToData(formData.expiration),
         autoCleanup: formData.autoCleanup,
         defaultAccess: formData.defaultAccess ?? 'ACCEPT',
-        identityId: isGroupRequired ?
+        identityId: isIdentityRequired ?
           (formData.isUseSingleIdentity ? formData.identityId : null) : undefined
       }
 

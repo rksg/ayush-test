@@ -1147,6 +1147,18 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
     }),
+    addMacRegListWithIdentity: build.mutation<MacRegistrationPool, RequestPayload>({
+      query: ({ params, payload, customHeaders }) => {
+        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(MacRegListUrlsInfo.createMacRegistrationPoolWithIdentity, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
+    }),
     updateMacRegList: build.mutation<MacRegistrationPool, RequestPayload>({
       query: ({ params, payload, customHeaders }) => {
         const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
@@ -3642,6 +3654,7 @@ export const {
   useAddMacRegistrationMutation,
   useUpdateMacRegistrationMutation,
   useAddMacRegListMutation,
+  useAddMacRegListWithIdentityMutation,
   useUpdateMacRegListMutation,
   useUpdateAdaptivePolicySetToMacListMutation,
   useDeleteAdaptivePolicySetFromMacListMutation,

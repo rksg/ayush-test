@@ -226,6 +226,10 @@ describe('MacRegistrationListForm', () => {
         (req, res, ctx) => res(ctx.json(macRegList))
       ),
       rest.post(
+        MacRegListUrlsInfo.createMacRegistrationPoolWithIdentity.url,
+        (req, res, ctx) => res(ctx.json(macRegList))
+      ),
+      rest.post(
         PersonaUrls.searchPersonaGroupList.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupList))
       ),

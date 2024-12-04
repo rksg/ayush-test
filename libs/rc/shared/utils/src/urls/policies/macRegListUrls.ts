@@ -106,5 +106,10 @@ export const MacRegListUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: newMacRegApiBaseUrl + '/:policyId/policySets/:policySetId',
     newApi: true
+  },
+  createMacRegistrationPoolWithIdentity: {
+    method: 'post',
+    url: '/identityGroups/:identityGroupId/macRegistrationPools',
+    newApi: true
   }
 }
