@@ -231,7 +231,8 @@ export enum Features {
   VIEWMODEL_UI_EC_INVENTORIES_QUERY_PERFORMANCE_CHANGES_TOGGLE = 'viewmodel-ui-ec-inventories-query-performance-changes-toggle',
   RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE = 'ruckus-ai-intent-ai-config-change-toggle',
   INTENT_AI_CONFIG_CHANGE_TOGGLE = 'acx-ui-intent-ai-config-change-toggle',
-  MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE = 'mac-registration-require-identity-group'
+  MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE = 'mac-registration-require-identity-group',
+  DPSK_REQUIRE_IDENTITY_GROUP_TOGGLE = 'dpsk-require-identity-group'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
