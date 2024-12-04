@@ -13,6 +13,8 @@ import {
 } from '@acx-ui/rc/services'
 import { NetworkSaveData, NetworkTypeEnum, networkTypes } from '@acx-ui/rc/utils'
 
+import { willRegenerateAlert } from '../../ruckusAi.utils'
+
 import * as UI from './styledComponents'
 
 type NetworkConfig = {
@@ -25,6 +27,7 @@ type NetworkConfig = {
 
 export function WlanDetailStep (props: {
   payload: string, sessionId: string,
+  showAlert: boolean,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formInstance: ProFormInstance<any> | undefined
 }) {
@@ -159,6 +162,12 @@ export function WlanDetailStep (props: {
     createType={modalType}
   />
 
+  const getModalActionText = () => {
+    const isEdit = configuredFlags.get(modalId)
+    return isEdit ? $t({ defaultMessage: 'Edit' }) :
+      $t({ defaultMessage: 'Add' })
+  }
+
   return (
     <UI.Container>
       <UI.Header>
@@ -168,6 +177,9 @@ export function WlanDetailStep (props: {
             $t({ defaultMessage: 'Based on your selection, below is the list of SSIDs and their recommended respective configurations.' })}
         </UI.Description>
       </UI.Header>
+      {props.showAlert && <div style={{ margin: '-25px 0px 10px 0px' }}>
+        {willRegenerateAlert($t)}
+      </div>}
 
       {data.map((item, index) => (
         <React.Fragment key={item.id}>
@@ -276,7 +288,7 @@ export function WlanDetailStep (props: {
       {networkModalVisible &&
         <Modal
           // eslint-disable-next-line max-len
-          title={`${$t({ defaultMessage: 'Add' })} ${networkOptions.find(option => option.value === modalType)?.label}`}
+          title={`${getModalActionText()} ${networkOptions.find(option => option.value === modalType)?.label}`}
           type={ModalType.ModalStepsForm}
           visible={networkModalVisible}
           mask={true}
