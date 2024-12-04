@@ -52,7 +52,7 @@ RUN find /app/node_modules/.cache/nx -type f -mtime +1 -delete && \
 
 COPY tools/tests ./tools/tests
 
-RUN if [ -f nxcache.tar.xz ]; then \
+RUN if [ -f ./nxcache.tar.xz ]; then \
     mkdir -p ./node_modules/.cache/nx && \
     tar -xJf ./nxcache.tar.xz -C ./node_modules/.cache/nx; \
 fi
