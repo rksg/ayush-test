@@ -10,12 +10,13 @@ import { OnboardingAssistantDog }                                        from '@
 import { useStartConversationsMutation, useUpdateConversationsMutation } from '@acx-ui/rc/services'
 import { RuckusAiConfigurationStepsEnum, RuckusAiConversation }          from '@acx-ui/rc/utils'
 
-import BasicInformationPage from './BasicInformationPage'
-import Congratulations      from './Congratulations'
-import RuckusAiWizard       from './RuckusAiWizard'
-import * as UI              from './styledComponents'
-import VerticalPage         from './VerticalPage'
-import WelcomePage          from './WelcomePage'
+import BasicInformationPage    from './BasicInformationPage'
+import Congratulations         from './Congratulations'
+import { willRegenerateAlert } from './ruckusAi.utils'
+import RuckusAiWizard          from './RuckusAiWizard'
+import * as UI                 from './styledComponents'
+import VerticalPage            from './VerticalPage'
+import WelcomePage             from './WelcomePage'
 
 export enum RuckusAiStepsEnum {
   WELCOME = 'WELCOME',
@@ -39,6 +40,9 @@ export default function RuckusAiButton () {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [configResponse, setConfigResponse] = useState({} as any)
 
+  const [showAlert, setShowAlert] = useState(false as boolean)
+  const [selectedType, setSelectedType] = useState('' as string)
+
   const [startConversations] = useStartConversationsMutation()
   const [updateConversations] = useUpdateConversationsMutation()
 
@@ -46,7 +50,7 @@ export default function RuckusAiButton () {
     switch(step){
       case RuckusAiStepsEnum.BASIC:
       case RuckusAiStepsEnum.VERTICAL:
-        return <div style={{ display: 'flex', padding: '20px 20px 0px 20px' }}>
+        return <><div style={{ display: 'flex', padding: '20px 20px 0px 20px' }}>
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -77,7 +81,12 @@ export default function RuckusAiButton () {
                 $t({ defaultMessage: 'Please answer the following questions for optimal network recommendations.' })}
             </div>
           </div>
+
         </div>
+        <div style={{ margin: '10px 30px 0px 80px' }}>
+          {showAlert && willRegenerateAlert($t)}
+        </div>
+        </>
       case RuckusAiStepsEnum.CONFIGURATION:
         return <div
           style={{ width: '250px' }}>
@@ -208,6 +217,7 @@ export default function RuckusAiButton () {
                     }
                     setIsLoading(false)
                     setStep(RuckusAiStepsEnum.CONFIGURATION)
+                    setShowAlert(true)
                   } catch (error) {
                     setIsLoading(false)
                   }
@@ -235,11 +245,13 @@ export default function RuckusAiButton () {
 
   const closeModal = () => {
     basicFormRef.resetFields()
+    setShowAlert(false)
     setStep(RuckusAiStepsEnum.WELCOME)
     setVisible(false)
     setCurrentStep(0)
     setNextStep({} as RuckusAiConversation)
     setConfigResponse({})
+    setSelectedType('')
   }
   return <>
     <UI.ButtonSolid
@@ -264,8 +276,10 @@ export default function RuckusAiButton () {
             layout={'vertical'}
             labelAlign='left'>
             {step === RuckusAiStepsEnum.WELCOME && <WelcomePage />}
-            {step === RuckusAiStepsEnum.VERTICAL && <VerticalPage />}
-            {step === RuckusAiStepsEnum.BASIC && <BasicInformationPage />}
+            {step === RuckusAiStepsEnum.VERTICAL && <VerticalPage
+              selectedType={selectedType}
+              setSelectedType={setSelectedType} />}
+            {step === RuckusAiStepsEnum.BASIC && <BasicInformationPage/>}
           </Form>
           <div style={{ display: step === RuckusAiStepsEnum.CONFIGURATION ? 'block' : 'none' }}>
             <RuckusAiWizard

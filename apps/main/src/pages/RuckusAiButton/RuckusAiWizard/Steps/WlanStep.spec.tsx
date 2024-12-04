@@ -36,6 +36,7 @@ describe('WlanStep', () => {
       <Provider>
         <Form form={formRef.current}>
           <WlanStep
+            showAlert={false}
             payload={mock_payload}
             formInstance={formRef.current}
             description={mock_description}
@@ -64,6 +65,7 @@ describe('WlanStep', () => {
       <Provider>
         <Form form={formRef.current}>
           <WlanStep
+            showAlert={true}
             payload={mock_payload}
             formInstance={formRef.current}
             description={mock_description}
