@@ -63,5 +63,23 @@ export const SoftGreUrls: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  activateSoftGreProfileOnVenue: {
+    method: 'put',
+    url: '/venues/:venueId/apModels/:apModel/lanPorts/:portId/softGreProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateSoftGreProfileOnVenue: {
+    method: 'delete',
+    url: '/venues/:venueId/apModels/:apModel/lanPorts/:portId/softGreProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }
