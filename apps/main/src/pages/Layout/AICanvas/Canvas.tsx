@@ -1,21 +1,21 @@
 // @ts-nocheck
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { useDrop } from 'react-dnd'
 
 import { cssStr } from '@acx-ui/components'
 
-import utils from './utils'
-
 import * as UI     from './styledComponents'
+import utils       from './utils'
+import WidgetChart from './WidgetChart'
 
 export const ItemTypes = {
   WIDGET: 'widget'
 }
 
 export default function Canvas (props) {
-
-  const [{ isOver }, dropRef] = useDrop(()=>({
+  const [widgets, setWidgets] = useState([])
+  const [{ isOver }, dropRef] = useDrop({
     accept: ItemTypes.WIDGET,
     drop: (item) => {
       const dragItem = item
@@ -23,6 +23,7 @@ export default function Canvas (props) {
       console.log('dragItem: ', dragItem)
       console.log('dropItem: ', dropItem)
       // dropCard(dragItem, dropItem)
+      setWidgets([...widgets, dragItem])
     },
     collect: monitor => ({
       isOver: monitor.isOver()
@@ -46,7 +47,7 @@ export default function Canvas (props) {
         // )
       }
     }
-  }))
+  })
 
   return (
     <UI.Canvas>
@@ -66,8 +67,10 @@ export default function Canvas (props) {
           </Button>
         </div> */}
       </div>
-      <div className='grid' ref={dropRef}>
-
+      <div className='grid' id='grid' ref={dropRef}>
+        {
+          widgets.map((widget, index) => <WidgetChart key={index} data={widget} />)
+        }
       </div>
     </UI.Canvas>
   )

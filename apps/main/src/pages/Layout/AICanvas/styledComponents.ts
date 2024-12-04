@@ -239,7 +239,8 @@ export const Canvas = styled.div`
   .grid {
     background-color: var(--acx-neutrals-30);
     background-image: url(${CanvasBackground});
-    height: calc(100vh - 120px);
     border-left: 1px solid #E5E5E5;
+    height: calc(100vh - 120px);
+    overflow: auto;
   }
 `

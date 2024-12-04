@@ -12,8 +12,7 @@ import { useChatAiMutation }                                                 fro
 import { ChatMessage, ChatWidget, RuckusAiChat, WidgetData, WidgetListData } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                        from '@acx-ui/react-router-dom'
 
-import Canvas from './Canvas'
-
+import Canvas      from './Canvas'
 import * as UI     from './styledComponents'
 import WidgetChart from './WidgetChart'
 
@@ -94,7 +93,7 @@ export default function AICanvas (
           id: latest.id
         }])
       }
-    }, 2000)
+    }, 1000)
   }
 
   const onClose = () => {

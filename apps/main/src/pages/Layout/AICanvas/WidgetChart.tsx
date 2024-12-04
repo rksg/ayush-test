@@ -7,6 +7,7 @@ import AutoSizer            from 'react-virtualized-auto-sizer'
 import { Card, DonutChart, Loader }   from '@acx-ui/components'
 import { useChatChartQuery }          from '@acx-ui/rc/services'
 import { WidgetData, WidgetListData } from '@acx-ui/rc/utils'
+
 import { ItemTypes } from './Canvas'
 
 interface WidgetListProps {
@@ -14,16 +15,25 @@ interface WidgetListProps {
 }
 
 const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
-  const [{isDragging}, drag, preview] = useDrag(() => ({
+  const [{ isDragging }, drag, preview] = useDrag({
     type: ItemTypes.WIDGET,
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging()
-    })
-  }))
+    }),
+    item: () => {
+      // let dragCard = props.card
+      // dragCard.isShadow = true
+      // props.updateShadowCard(dragCard)
+      return {
+        ...data,
+        type: ItemTypes.WIDGET
+      }
+    }
+  })
   const [, drop] = useDrop(() => ({ accept: ItemTypes.WIDGET }))
-  useEffect(() => {
-    preview(getEmptyImage(), { captureDraggingState: true })
-  }, [preview])
+  // useEffect(() => {
+  //   preview(getEmptyImage(), { captureDraggingState: true })
+  // }, [preview])
 
   return (
     <div
@@ -55,24 +65,22 @@ const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
     }
   }
   return (
-    <div>
-      <div style={{ margin: '7px', height: '165px', width: '200px' }}>
-        {/* <Loader states={[{isLoading: queryResults.isLoading}]}> */}
-        <Card key={data.id} title='Title'>
-          <AutoSizer>
-            {({ height, width }) => (
-              <DonutChart
-                style={{ width, height }}
-                size={'medium'}
-                data={queryResults.data?.chartOption || []}
-                animation={true}
-                legend={'name-value'}
-                showTotal/>
-            )}
-          </AutoSizer>
-        </Card>
-        {/* </Loader> */}
-      </div>
+    <div style={{ margin: '7px', height: '165px', width: '200px' }}>
+      {/* <Loader states={[{isLoading: queryResults.isLoading}]}> */}
+      <Card key={data.id} title='Title'>
+        <AutoSizer>
+          {({ height, width }) => (
+            <DonutChart
+              style={{ width, height }}
+              size={'medium'}
+              data={queryResults.data?.chartOption || []}
+              animation={true}
+              legend={'name-value'}
+              showTotal/>
+          )}
+        </AutoSizer>
+      </Card>
+      {/* </Loader> */}
     </div>
   )
 }
