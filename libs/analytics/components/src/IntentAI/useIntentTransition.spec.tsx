@@ -9,7 +9,7 @@ import { mockGraphqlMutation, render, renderHook, screen, waitForElementToBeRemo
 
 import { mockIntentContext }                           from './__tests__/fixtures'
 import { mockedIntentCRRM, mockedIntentCRRMnew }       from './AIDrivenRRM/__tests__/fixtures'
-import { DisplayStates, Statuses }                     from './states'
+import { Statuses }                                    from './states'
 import { createUseIntentTransition, useInitialValues } from './useIntentTransition'
 
 const { click } = userEvent
@@ -28,31 +28,6 @@ describe('createUseIntentTransition', () => {
     moment.tz.setDefault('Asia/Singapore')
     const now = +new Date('2024-08-12T12:00:00.000Z')
     jest.spyOn(Date, 'now').mockReturnValue(now)
-  })
-
-  describe('initialValues', () => {
-    it('handle new intent', async () => {
-      mockIntentContext({ intent: mockedIntentCRRMnew })
-      const { result: { current: initialValues } } = renderHook(() => useInitialValues())
-      expect(initialValues).toStrictEqual({
-        id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b7',
-        settings: { date: undefined, time: undefined },
-        status: Statuses.new,
-        statusReason: undefined,
-        displayStatus: DisplayStates.new
-      })
-    })
-    it('handle existing intent with scheduledAt', async () => {
-      mockIntentContext({ intent: mockedIntentCRRM })
-      const { result: { current: initialValues } } = renderHook(() => useInitialValues())
-      expect(initialValues).toStrictEqual({
-        id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
-        settings: { date: moment('2023-07-15T14:15:00.000Z'), time: 22.25 },
-        status: Statuses.applyScheduled,
-        statusReason: undefined,
-        displayStatus: DisplayStates.applyScheduled
-      })
-    })
   })
 
   describe('submit', () => {
@@ -130,3 +105,63 @@ describe('createUseIntentTransition', () => {
   })
 })
 
+describe('useInitialValues', () => {
+  it('when intent status is "new", should return current date and undefined time', async () => {
+    mockIntentContext({ intent: mockedIntentCRRMnew })
+    let currentTime: moment.Moment
+    const { result: { current: initialValues } } = renderHook(() => {
+      currentTime = moment()
+      return useInitialValues()
+    })
+    expect(initialValues).toStrictEqual({
+      id: mockedIntentCRRMnew.id,
+      status: Statuses.new,
+      statusReason: mockedIntentCRRMnew.statusReason,
+      displayStatus: mockedIntentCRRMnew.displayStatus,
+      settings: { date: currentTime!, time: undefined }
+    })
+  })
+
+  it.each(Object.values(Statuses).filter((status) => status !== Statuses.new))(
+    'when status is "%s" (not "new") and has scheduledAt, should return scheduled date and time',
+    async (status) => {
+      const mockScheduledAt = '2023-07-15T14:15:00.000Z'
+      mockIntentContext({
+        intent: {
+          ...mockedIntentCRRM,
+          metadata: {
+            ...mockedIntentCRRM.metadata,
+            scheduledAt: mockScheduledAt
+          },
+          status
+        }
+      })
+      const { result: { current: initialValues } } = renderHook(() => useInitialValues())
+      expect(initialValues).toStrictEqual({
+        id: mockedIntentCRRM.id,
+        status,
+        statusReason: mockedIntentCRRM.statusReason,
+        displayStatus: mockedIntentCRRM.displayStatus,
+        settings: {
+          date: moment(mockScheduledAt),
+          time: moment.duration(moment(mockScheduledAt).format('HH:mm:ss')).asHours()
+        }
+      })
+    }
+  )
+
+  it.each(Object.values(Statuses).filter((status) => status !== Statuses.new))(
+    'when status is "%s" (not "new") and has no scheduledAt, should return undefined date and time',
+    async (status) => {
+      mockIntentContext({ intent: { ...mockedIntentCRRMnew, status } })
+      const { result: { current: initialValues } } = renderHook(() => useInitialValues())
+      expect(initialValues).toStrictEqual({
+        id: mockedIntentCRRMnew.id,
+        status,
+        statusReason: mockedIntentCRRMnew.statusReason,
+        displayStatus: mockedIntentCRRMnew.displayStatus,
+        settings: { date: undefined, time: undefined }
+      })
+    }
+  )
+})
