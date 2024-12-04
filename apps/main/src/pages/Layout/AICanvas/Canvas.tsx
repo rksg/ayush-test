@@ -5,70 +5,48 @@ import { useDrop } from 'react-dnd'
 
 import { cssStr } from '@acx-ui/components'
 
-import utils from '../utils'
+import utils from './utils'
 
 import * as UI     from './styledComponents'
 
 export const ItemTypes = {
-  CARD: 'card'
+  WIDGET: 'widget'
 }
 
-export default function Canvas () {
-  // const defaultLayout = props.layout
-  // const { cards, index, groups, layout, handleLoad, moveCardInGroupItem } = props
+export default function Canvas (props) {
 
-  // useEffect(() => {
-  //   let clientWidth
-  //   const containerDom = document.querySelector('#card-container')
-  //   if (containerDom) {
-  //     clientWidth = containerDom.clientWidth
-  //   }
-  //   if (layout.containerWidth !== clientWidth) {
-  //     handleLoad()
-  //   }
-  // }, [layout])
-
-  // const containerHeight = utils.getContainerMaxHeight(
-  //   cards,
-  //   layout.rowHeight,
-  //   layout.margin
-  // )
-
-  // const dropCard = (dragItem, dropItem) => {
-  //   if (dragItem.type === 'card') {
-  //     props.onCardDropInGroupItem(dragItem, dropItem)
-  //     return dropItem
-  //   }
-  // }
-
-  // const [{ isOver }, dropRef] = useDrop({
-  //   accept: ItemTypes.CARD,
-  //   drop: (item) => {
-  //     const dragItem = item
-  //     const dropItem = props
-  //     dropCard(dragItem, dropItem)
-  //   },
-  //   collect: monitor => ({
-  //     isOver: monitor.isOver()
-  //   }),
-  //   hover: (item, monitor) => {
-  //     const dragItem = item
-  //     if (dragItem.type === 'card') {
-  //       //卡片到组
-  //       const hoverItem = props
-  //       const { x, y } = monitor.getClientOffset()
-  //       const containerDom = document.getElementById('group' + hoverItem.id)
-  //       const groupItemBoundingRect = containerDom.getBoundingClientRect()
-  //       const groupItemX = groupItemBoundingRect.left
-  //       const groupItemY = groupItemBoundingRect.top
-  //       moveCardInGroupItem(
-  //         hoverItem,
-  //         x - groupItemX,
-  //         y - groupItemY
-  //       )
-  //     }
-  //   }
-  // })
+  const [{ isOver }, dropRef] = useDrop(()=>({
+    accept: ItemTypes.WIDGET,
+    drop: (item) => {
+      const dragItem = item
+      const dropItem = props
+      console.log('dragItem: ', dragItem)
+      console.log('dropItem: ', dropItem)
+      // dropCard(dragItem, dropItem)
+    },
+    collect: monitor => ({
+      isOver: monitor.isOver()
+    }),
+    hover: (item, monitor) => {
+      const dragItem = item
+      console.log(item)
+      if (dragItem.type === ItemTypes.WIDGET) {
+        //卡片到组
+        const hoverItem = props
+        const { x, y } = monitor.getClientOffset()
+        const containerDom = document.getElementById('grid')
+        const groupItemBoundingRect = containerDom.getBoundingClientRect()
+        const groupItemX = groupItemBoundingRect.left
+        const groupItemY = groupItemBoundingRect.top
+        console.log(hoverItem, ' x,y: ', groupItemX, ' ', groupItemY)
+        // moveCardInGroupItem(
+        //   hoverItem,
+        //   x - groupItemX,
+        //   y - groupItemY
+        // )
+      }
+    }
+  }))
 
   return (
     <UI.Canvas>
@@ -88,7 +66,7 @@ export default function Canvas () {
           </Button>
         </div> */}
       </div>
-      <div className='grid'>
+      <div className='grid' ref={dropRef}>
 
       </div>
     </UI.Canvas>

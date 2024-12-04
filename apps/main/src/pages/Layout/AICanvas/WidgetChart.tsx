@@ -7,18 +7,23 @@ import AutoSizer            from 'react-virtualized-auto-sizer'
 import { Card, DonutChart, Loader }   from '@acx-ui/components'
 import { useChatChartQuery }          from '@acx-ui/rc/services'
 import { WidgetData, WidgetListData } from '@acx-ui/rc/utils'
+import { ItemTypes } from './Canvas'
 
 interface WidgetListProps {
   data: WidgetListData;
 }
 
 const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
-  const [{ isDragging }, drag] = useDrag({
-    type: 'Widget',
+  const [{isDragging}, drag, preview] = useDrag(() => ({
+    type: ItemTypes.WIDGET,
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging()
     })
-  })
+  }))
+  const [, drop] = useDrop(() => ({ accept: ItemTypes.WIDGET }))
+  useEffect(() => {
+    preview(getEmptyImage(), { captureDraggingState: true })
+  }, [preview])
 
   return (
     <div
