@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { ActionType, AupActionContext, WorkflowUrls }      from '@acx-ui/rc/utils'
-import { Provider }                                        from '@acx-ui/store'
-import { mockServer, render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
+import { ActionType, AupActionContext, WorkflowUrls }                 from '@acx-ui/rc/utils'
+import { Provider }                                                   from '@acx-ui/store'
+import { fireEvent, mockServer, render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
 
 import { AupSettings } from './AupSettings'
 
@@ -167,9 +167,9 @@ describe('AupSettings', () => {
     const generatedName = formRef.current.getFieldValue('name')
     expect(generatedName.split('-')[0]).toBe(ActionType.AUP)
 
-    await userEvent.type(pageTitleInput, 'Longer Than 100 Characters ###########################' +
-      '###################################################')
-    await userEvent.type(pageBodyInput, 'Longer Than 1000 Characters ############################' +
+    fireEvent.change(pageTitleInput, { target: { value: 'Longer Than 100 Characters #############' +
+      '#################################################################' } })
+    fireEvent.change(pageBodyInput, { target: { value: 'Longer Than 1000 Characters ############' +
       '##################################################Longer Than 1000 Characters ##########' +
       '####################################################################Longer Than 1000 ' +
       'Characters ##############################################################################' +
@@ -181,7 +181,7 @@ describe('AupSettings', () => {
       'ers ##############################################################################Longer ' +
       'Than 1000 Characters ####################################################################' +
       '##########Longer Than 1000 Characters ###################################################' +
-      '###########################')
+      '###########################################' } })
 
     expect(await screen.findByText('Title must be up to 100 characters')).toBeVisible()
     expect(await screen.findByText('Message must be up to 1000 characters')).toBeVisible()
@@ -240,7 +240,7 @@ describe('AupSettings', () => {
     const generatedName = formRef.current.getFieldValue('name')
     expect(generatedName.split('-')[0]).toBe(ActionType.AUP)
 
-    await userEvent.type(pageBodyInput, '  ')
+    fireEvent.change(pageBodyInput, { target: { value: '  ' } })
 
     expect(await screen.findByText('No leading or trailing spaces allowed')).toBeVisible()
   })
@@ -268,7 +268,7 @@ describe('AupSettings', () => {
     const generatedName = formRef.current.getFieldValue('name')
     expect(generatedName.split('-')[0]).toBe(ActionType.AUP)
 
-    await userEvent.type(pageTitleInput, '  ')
+    fireEvent.change(pageTitleInput, { target: { value: '  ' } })
 
     expect(await screen.findByText('No leading or trailing spaces allowed')).toBeVisible()
   })
@@ -287,7 +287,8 @@ describe('AupSettings', () => {
     </Provider>)
 
     const uploadFileMessage = screen.getByText('Upload file instead')
-    await userEvent.click(uploadFileMessage)
+    fireEvent.click(uploadFileMessage)
+    // await userEvent.click(uploadFileMessage)
     expect(await screen.findByText('Paste text instead')).toBeVisible()
 
     const fileContent = screen.getByText('Paste text instead')
@@ -313,7 +314,7 @@ describe('AupSettings', () => {
     const uploadFileMessage = screen.getByText('Upload file instead')
     expect(uploadFileMessage).toBeInTheDocument()
     const policyContent = await screen.findByTestId('policy-text')
-    await userEvent.type(policyContent, 'all is well')
+    fireEvent.change(policyContent, { target: { value: 'all is well' } })
     const message = screen.getByText('all is well')
     expect (message).toBeInTheDocument()
   })
