@@ -48,6 +48,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
       {
         enableSoftGRETunnel && <>
           <Alert
+            data-testId={'enable-softgre-tunnel-banner'}
             showIcon={true}
             style={{ verticalAlign: 'middle' }}
             message={$t({ defaultMessage: 'Enabling on the uplink will disconnect AP(s)' })}
