@@ -40,4 +40,4 @@ cd nxcache
 git checkout $FEATURE_BRANCH
 git add .
 git commit -m $FEATURE_BRANCH
-git push -u origin $FEATURE_BRANCH
+git push --set-upstream origin $FEATURE_BRANCH

@@ -7,7 +7,7 @@ FROM ${CI_SERVICE_BASE}node:master--latest as build-base
 
 WORKDIR /app
 
-RUN apk add curl
+RUN apk add curl git
 
 ARG ENV_FILE
 COPY ${ENV_FILE} .
@@ -20,7 +20,6 @@ COPY package.json package-lock.json ./
 
 ARG GIT_COMMIT_BRANCH
 RUN git submodule update --init --recursive
-COPY nxcache/${GIT_COMMIT_BRANCH}/nxcache.tar.xz* ./
 COPY patches ./patches
 COPY tools/dev/eslint-custom-rule ./tools/dev/eslint-custom-rule
 RUN npm install
@@ -53,10 +52,7 @@ RUN find /app/node_modules/.cache/nx -type f -mtime +1 -delete && \
 
 COPY tools/tests ./tools/tests
 
-RUN if [ -f ./nxcache.tar.xz ]; then \
-    mkdir -p ./node_modules/.cache/nx && \
-    tar -xJf ./nxcache.tar.xz -C ./node_modules/.cache/nx; \
-fi
+ADD nxcache/${GIT_COMMIT_BRANCH}/nxcache.tar.xz* ./node_modules/.cache/nx
 
 # dump git information
 RUN source ${ENV_FILE} \
