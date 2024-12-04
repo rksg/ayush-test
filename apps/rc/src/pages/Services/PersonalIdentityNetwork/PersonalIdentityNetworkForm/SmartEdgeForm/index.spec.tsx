@@ -75,7 +75,9 @@ jest.mock('@acx-ui/rc/components', () => ({
         props.setVisible(false)
       }}>Add</button>
     </div>
-  }
+  },
+  EdgeClusterFirmwareInfo: (props: { clusterId: string }) =>
+    <div data-testid='rc-EdgeClusterFirmwareInfo'>{props.clusterId}</div>
 }))
 
 const mockedFinishFn = jest.fn()
@@ -186,6 +188,7 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
       await screen.findByRole('combobox', { name: 'Cluster' }),
       await screen.findByRole('option', { name: 'Edge Cluster 1' })
     )
+
     const segmentsInput = screen.getByRole('spinbutton', { name: 'Number of Segments' })
     await user.type(segmentsInput, '10')
     const devicesInput = screen.getByRole('spinbutton', { name: 'Number of devices per Segment' })
@@ -303,5 +306,29 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
       })}`,
       search: ''
     }))
+  })
+
+  it('Step2 - Smart edge should display cluster fw version', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <PersonalIdentityNetworkFormContext.Provider
+          value={mockContextData}
+        >
+          <StepsForm onFinish={mockedFinishFn}>
+            <StepsForm.StepForm>
+              <SmartEdgeForm />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </PersonalIdentityNetworkFormContext.Provider>
+      </Provider>,
+      { route: { params, path: createPinPath } })
+
+    await user.selectOptions(
+      await screen.findByRole('combobox', { name: 'Cluster' }),
+      await screen.findByRole('option', { name: 'Edge Cluster 1' })
+    )
+
+    expect(await screen.findByTestId('rc-EdgeClusterFirmwareInfo')).toHaveTextContent('clusterId_1')
   })
 })
