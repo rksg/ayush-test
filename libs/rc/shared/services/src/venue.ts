@@ -102,8 +102,7 @@ import {
   CompatibilityResponse,
   IncompatibleFeatureLevelEnum,
   SoftGreUrls,
-  SoftGreViewData,
-  LanPort
+  SoftGreViewData
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                                                          from '@acx-ui/store'
 import { ITimeZone, RequestPayload }                                                             from '@acx-ui/types'

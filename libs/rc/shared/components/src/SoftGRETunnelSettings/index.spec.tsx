@@ -13,7 +13,7 @@ describe('SoftGRETunnelSettings', () => {
   beforeEach(() => {
     store.dispatch(softGreApi.util.resetApiState())
     mockServer.use(
-      rest.get(SoftGreUrls.getSoftGreViewDataList.url, (req, res, ctx) => {
+      rest.post(SoftGreUrls.getSoftGreViewDataList.url, (req, res, ctx) => {
         return res(ctx.json(mockSoftgreViewModel))
       })
     )
