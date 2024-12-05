@@ -3,7 +3,7 @@ import { useContext, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Tooltip, showActionModal } from '@acx-ui/components'
+import { Loader, Table, TableProps, Tooltip, showActionModal, Filter } from '@acx-ui/components'
 import {
   renderCurrentFirmwaresColumn,
   useChangeScheduleVisiblePerApModel,
@@ -23,11 +23,11 @@ import {
   toUserDate
 } from '@acx-ui/rc/components'
 import {
-  useGetVenueApModelFirmwareListQuery,
+  useGetVenueApModelFirmwareListQuery, useGetVenueApModelFirmwareSchedulesListQuery,
   useSkipVenueSchedulesPerApModelMutation
 } from '@acx-ui/rc/services'
-import { FirmwareType, FirmwareVenuePerApModel, useTableQuery } from '@acx-ui/rc/utils'
-import { RolesEnum, WifiScopes }                                from '@acx-ui/types'
+import { FirmwareType, FirmwareVenuePerApModel } from '@acx-ui/rc/utils'
+import { RolesEnum, WifiScopes }                 from '@acx-ui/types'
 import {
   filterByAccess,
   hasPermission,
@@ -45,14 +45,13 @@ import { DowngradePerApModelDialog } from './DowngradeDialog'
 export function VenueFirmwareListPerApModel () {
   const { $t } = useIntl()
   const apFirmwareContext = useContext(ApFirmwareContext)
-  const tableQuery = useTableQuery<FirmwareVenuePerApModel>({
-    useQuery: useGetVenueApModelFirmwareListQuery,
-    defaultPayload: {
-      // eslint-disable-next-line max-len
-      fields: ['name', 'id', 'isApFirmwareUpToDate', 'currentApFirmwares', 'lastApFirmwareUpdate', 'nextApFirmwareSchedules']
-    },
-    search: {
-      searchTargetFields: ['name']
+  const pagination = { pageSize: 10, defaultPageSize: 10 }
+  const [searchString, setSearchString] = useState('')
+  const [filterString, setFilterString] = useState('')
+  const { data, isLoading } = useGetVenueApModelFirmwareSchedulesListQuery({
+    payload: {
+      firmwareVersion: filterString,
+      search: searchString
     }
   })
   const isEarlyAccess = (apFirmwareContext.isAlphaFlag || apFirmwareContext.isBetaFlag) as boolean
@@ -70,6 +69,17 @@ export function VenueFirmwareListPerApModel () {
     handlePreferencesModalCancel, handlePreferencesModalSubmit
   } = useUpgradePerferences()
   const [ skipVenueSchedulesUpgrade ] = useSkipVenueSchedulesPerApModelMutation()
+
+  const onFilterChange = (filter: Filter, search: { searchString?: string }) => {
+    if (search.searchString !== searchString) {
+      setSearchString(search.searchString || '')
+    }
+    if ((filter['currentApFirmwares.firmware']?.length ?? 0) > 0) {
+      setFilterString((filter['currentApFirmwares.firmware'] || [''])[0] as string)
+    } else {
+      setFilterString('')
+    }
+  }
 
   const clearSelection = () => {
     setSelectedRowKeys([])
@@ -146,13 +156,12 @@ export function VenueFirmwareListPerApModel () {
   ]
 
   return (<>
-    <Loader states={[tableQuery]}>
+    <Loader states={[{ isLoading }]}>
       <Table
         columns={useColumns()}
-        dataSource={tableQuery.data?.data}
-        onChange={tableQuery.handleTableChange}
-        onFilterChange={tableQuery.handleFilterChange}
-        pagination={tableQuery.pagination}
+        dataSource={data}
+        pagination={pagination}
+        onFilterChange={onFilterChange}
         enableApiFilter={true}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}

@@ -125,10 +125,18 @@ export function renderCurrentFirmwaresColumn (data: FirmwareVenuePerApModel['cur
     .entries(firmwareGroupsMap)
     .sort((a, b) => -compareVersions(a[0], b[0]))
     .map(([ firmware, firmwareInfo ]) => {
+      let label = ''
       // eslint-disable-next-line max-len
       const isEarlyAccess = firmwareInfo.labels?.includes(FirmwareLabel.ALPHA) || firmwareInfo.labels?.includes(FirmwareLabel.BETA)
-      // eslint-disable-next-line max-len
-      return `${firmware}${isEarlyAccess ? '(Early Access)' : ''}: ${firmwareInfo.apModel.join(', ')}`
+      if (isEarlyAccess) {
+        label = ' (Early Access)'
+      } else {
+        // eslint-disable-next-line max-len
+        if (!firmwareInfo.labels?.includes(FirmwareLabel.GA) && (firmwareInfo.labels?.includes(FirmwareLabel.LEGACYALPHA) || firmwareInfo.labels?.includes(FirmwareLabel.LEGACYBETA))) {
+          label = ' (Legacy Early Access)'
+        }
+      }
+      return `${firmware}${label}: ${firmwareInfo.apModel.join(', ')}`
     })
     .join('\n')
 
