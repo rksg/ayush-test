@@ -34,6 +34,7 @@ export const VerifyCodeModal = (props: VerifyCodeModalProps) =>{
     const value = changedFields[0].value
     const hasErrors = form.getFieldsError().some(item => item.errors.length > 0)
     setIsValid(value && !hasErrors)
+    setFailedMessage('')
   }
 
   const handleSubmit = async () => {
@@ -117,6 +118,7 @@ export const VerifyCodeModal = (props: VerifyCodeModalProps) =>{
                 : Promise.resolve()
             }
           ]}
+          validateFirst
           {...(isValid && failedMessage !== '' ? {
             validateStatus: 'error',
             help: failedMessage
