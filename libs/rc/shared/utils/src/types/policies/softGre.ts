@@ -66,3 +66,10 @@ export interface SoftGreOptionsData {
   gatewayIps: string[]
   activationProfiles: string[]
 }
+
+export interface SoftGreWiredActivation {
+  venueId: string
+  apModel?: string
+  apSerialNumbers: string[],
+  portId: number
+}

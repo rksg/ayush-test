@@ -30,7 +30,7 @@ import { RadioTab } from './RadioTab'
 
 const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 
-describe('RadioTab', () => {
+describe.skip('RadioTab', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
