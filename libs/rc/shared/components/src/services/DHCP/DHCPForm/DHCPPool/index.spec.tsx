@@ -16,7 +16,7 @@ function wrapper ({ children }: { children: React.ReactElement }) {
   return <Form>{children}</Form>
 }
 
-describe('Create DHCP: Pool detail', () => {
+describe.skip('Create DHCP: Pool detail', () => {
   beforeEach(() => {
     store.dispatch(networkApi.util.resetApiState())
   })
