@@ -46,7 +46,8 @@ function TypesForm () {
   } = useContext(NetworkFormContext)
   const { isTemplate } = useConfigTemplate()
   // eslint-disable-next-line max-len
-  const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
+  const isDirectoryServerEnabledFF = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
+  const isDirectoryServerEnabled = !isRuckusAiMode && isDirectoryServerEnabledFF
   const onChange = (e: RadioChangeEvent) => {
     setData && setData({ ...data, guestPortal:
        { ...data?.guestPortal, guestNetworkType: e.target.value as GuestNetworkTypeEnum } })
