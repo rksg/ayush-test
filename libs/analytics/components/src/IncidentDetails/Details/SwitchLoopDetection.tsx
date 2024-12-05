@@ -11,9 +11,6 @@ import { Insights }                       from '../Insights'
 import { IncidentHeader } from './IncidentHeader'
 
 export const SwitchLoopDetection = (incident: Incident) => {
-  // TODO: remove the hardcoded id when Data is available
-  const incidentCopy = { ...incident, id: 'dc82d0ce-129a-4e3c-8323-1a405ec28152' }
-
 
   const attributeList = [
     Attributes.IncidentCategory,
@@ -44,10 +41,10 @@ export const SwitchLoopDetection = (incident: Incident) => {
         <Insights incident={incident} />
       </GridCol>
       <GridCol col={{ offset: 4, span: 5 }} style={{ minHeight: '249px' }}>
-        <ImpactedSwitchesDonut incident={incidentCopy}/>
+        <ImpactedSwitchesDonut incident={incident}/>
       </GridCol>
       <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '249px' }}>
-        <ImpactedVlanTable incident={incidentCopy} />
+        <ImpactedVlanTable incident={incident} />
       </GridCol>
     </GridRow>
   </> : null
