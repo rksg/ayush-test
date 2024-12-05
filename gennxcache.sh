@@ -7,7 +7,7 @@ if [ $# -eq 0 ]; then
 fi
 
 # First parameter as directory
-FEATURE_BRANCH="feature/$1"
+FEATURE_BRANCH="$1"
 CACHE_PATH="nxcache"
 
 # Check if directory does NOT exist
@@ -29,7 +29,7 @@ sudo docker cp temp-container:/app/node_modules/.cache/nx ./nxcachetmp
 sudo docker rm temp-container
 
 #Compress the Cache
-tar -cvJf "$CACHE_PATH/nxcache.tar.xz" -C nxcachetmp .
+tar -cJf "$CACHE_PATH/nxcache.tar.xz" -C nxcachetmp .
 
 #Delete cache directory
 sudo rm -rf nxcachetmp
