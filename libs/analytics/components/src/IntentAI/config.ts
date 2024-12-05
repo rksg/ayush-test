@@ -7,16 +7,8 @@ import { NetworkPath } from '@acx-ui/utils'
 
 import { DisplayStates, Statuses, StatusReasons } from './states'
 
-import type { Props as FormattedMessageProps } from 'react-intl/lib/src/components/message'
-
 export type StatusTrailItem = { status: Statuses, statusReason?: StatusReasons, createdAt?: string }
 export type StatusTrail = Array<StatusTrailItem>
-
-export const formatValues: FormattedMessageProps['values'] = {
-  ul: (chunks) => React.createElement('ul', { children: chunks }),
-  li: (chunks) => React.createElement('li', { children: chunks }),
-  p: (chunks) => React.createElement('p', { children: chunks })
-}
 
 export type Intent = {
   id: string

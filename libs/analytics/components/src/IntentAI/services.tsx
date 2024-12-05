@@ -16,7 +16,6 @@ import {
 }                                                   from '@acx-ui/utils'
 import type { PathFilter } from '@acx-ui/utils'
 
-
 import {
   states,
   codes,
@@ -82,8 +81,9 @@ export const getStatusTooltip = (
 
   const errMsg = React.createElement('ul', {},
     (metadata as Metadata).failures?.map(failure =>
-      React.createElement('li', {}, failureCodes[failure]
-        ? $t(failureCodes[failure]) : failure)
+      React.createElement('li', { key: failure }, failureCodes[failure]
+        ? $t(failureCodes[failure]) : failure
+      )
     )
   )
 
@@ -97,7 +97,6 @@ export const getStatusTooltip = (
   }
 
   return <FormattedMessage {...stateConfig.tooltip} values={values} />
-  // return statusTooltip
 }
 
 type MutationResponse = { success: boolean, errorMsg: string, errorCode: string }
@@ -189,7 +188,7 @@ export const api = intentAIApi.injectEndpoints({
         const { $t } = getIntl()
         const items = response.intents.data.reduce((intents, intent) => {
           const {
-            id, path, sliceValue, code, displayStatus, metadata, updatedAt
+            id, path, sliceValue, code, displayStatus
           } = intent
           const detail = codes[code]
           detail && states[displayStatus] && intents.push({
@@ -199,8 +198,7 @@ export const api = intentAIApi.injectEndpoints({
             intent: $t(detail.intent),
             scope: formattedPath(path, sliceValue),
             category: $t(detail.category),
-            statusLabel: states[displayStatus] ? $t(states[displayStatus].text) : displayStatus,
-            statusTooltip: getStatusTooltip(displayStatus, sliceValue, { ...metadata, updatedAt })
+            statusLabel: states[displayStatus] ? $t(states[displayStatus].text) : displayStatus
           } as unknown as (IntentListItem))
           return intents
         }, [] as Array<IntentListItem>)
