@@ -103,6 +103,25 @@ export function CertTemplateLink (props: {
   )
 }
 
+export function PolicySetLink (props: {
+  id?: string,
+  name?: string,
+  showNoData?: boolean
+}) {
+  const { id, name, showNoData } = props
+  return (
+    id
+      ? <TenantLink to={getPolicyDetailsLink({
+        policyId: id,
+        oper: PolicyOperation.DETAIL,
+        type: PolicyType.ADAPTIVE_POLICY_SET
+      })}>
+        {name ?? id}
+      </TenantLink>
+      : <>{showNoData && noDataDisplay}</>
+  )
+}
+
 export function NetworkSegmentationLink (props: {
   id?: string,
   name?: string,

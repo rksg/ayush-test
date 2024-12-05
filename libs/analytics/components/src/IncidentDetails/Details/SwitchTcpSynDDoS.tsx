@@ -1,8 +1,8 @@
 import { unitOfTime } from 'moment-timezone'
 
-import { calculateGranularity, type Incident } from '@acx-ui/analytics/utils'
-import { GridRow, GridCol }                    from '@acx-ui/components'
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { granularityToHours, type Incident } from '@acx-ui/analytics/utils'
+import { GridRow, GridCol }                  from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 
 import { FixedAutoSizer }                                   from '../../DescriptionSection/styledComponents'
 import { ImpactedSwitchDDoSDonut, ImpactedSwitchDDoSTable } from '../Charts/ImpactedSwitchDDoS'
@@ -33,6 +33,12 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
     back: { value: 0, unit: 'seconds' as unitOfTime.Base }
   }
 
+  const granularities: typeof granularityToHours = [
+    { granularity: 'PT30M', hours: 24 * 3 }, // 30 mins for 3 days and above
+    { granularity: 'PT15M', hours: 24 * 1 }, // 15 mins for 1 day and above
+    { granularity: 'PT3M', hours: 0 } // 3 mins for less than 1 day
+  ]
+
   const isEnabled = [
     useIsSplitOn(Features.INCIDENTS_SWITCH_DDOS_TOGGLE),
     useIsSplitOn(Features.RUCKUS_AI_INCIDENTS_SWITCH_DDOS_TOGGLE)
@@ -58,7 +64,8 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
         <TimeSeries
           incident={incident}
           charts={timeSeriesCharts}
-          minGranularity={calculateGranularity(incident.startTime, incident.endTime, 'PT1H')}
+          minGranularity={'PT180S'}
+          granularities={granularities}
           buffer={buffer}
         />
       </GridCol>

@@ -58,6 +58,7 @@ export const GptModal = styled(Modal)<{ titleType: string, needBackground: boole
       text-align: center;
     }
     .ant-modal-body {
+      margin-top: -20px;
       max-height: calc(80vh - 100px);
       overflow-y: auto;
       ${(props) => props.needBackground &&

@@ -52,7 +52,6 @@ export const CompatibilityDrawer = (props: CompatibilityDrawerProps) => {
     ...others
   } = props
 
-
   return (
     <Drawer
       title={title}
@@ -92,10 +91,12 @@ const DrawerContentUnit = (props: DrawerContentUnitProps ) => {
     : apCompatibilityDataGroupByFeatureDeviceType(data as ApCompatibility)
   const deviceTypes = Object.keys(compatibilityData)
   const isCrossDevices = deviceTypes.length > 1
+  const isSpecificFeature = props.featureName
 
-  if (((isApCompatibilitiesByModel || isCrossDevices) && deviceType === CompatibilityDeviceEnum.AP)
+  if (!isSpecificFeature &&
+    (((isApCompatibilitiesByModel || isCrossDevices) && deviceType === CompatibilityDeviceEnum.AP)
   // eslint-disable-next-line max-len
-  || (deviceType === CompatibilityDeviceEnum.EDGE && (props.compatibilityType === CompatibilityType.VENUE || props.compatibilityType === CompatibilityType.DEVICE))) {
+  || (deviceType === CompatibilityDeviceEnum.EDGE && (props.compatibilityType === CompatibilityType.VENUE || props.compatibilityType === CompatibilityType.DEVICE)))) {
     return <SameDeviceTypeCompatibility
       key={data.id}
       types={deviceTypes}

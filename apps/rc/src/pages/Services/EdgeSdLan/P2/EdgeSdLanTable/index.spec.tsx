@@ -34,6 +34,7 @@ describe('SD-LAN Table P2', () => {
     mockedUsedNavigate.mockReset()
     mockedGetClusterList.mockReset()
     mockedDeleteReq.mockReset()
+    store.dispatch(edgeSdLanApi.util.resetApiState())
 
     mockServer.use(
       rest.post(

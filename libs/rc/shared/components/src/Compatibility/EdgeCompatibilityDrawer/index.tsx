@@ -129,7 +129,7 @@ const useVenueEdgeCompatibilitiesData = (props: EdgeCompatibilityDrawerProps, sk
     try {
       setIsInitializing(true)
 
-      const featureNames = [featureName] ?? []
+      const featureNames = featureName ? [featureName] : []
       let edgeCompatibilitiesResponse: ApCompatibility[] = []
 
       // eslint-disable-next-line max-len

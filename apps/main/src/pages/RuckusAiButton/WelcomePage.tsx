@@ -40,7 +40,7 @@ function WelcomePage () {
       fontWeight: 700,
       fontFamily: 'Montserrat'
     }}>
-      {$t({ defaultMessage: "I'm your porsonal" })}
+      {$t({ defaultMessage: "I'm your personal" })}
       {/* <RuckusAiLogo
         style={{
           height: '20px',

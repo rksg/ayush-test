@@ -26,7 +26,9 @@ import {
   TunnelTypeEnum,
   getTunnelProfileOptsWithDefault,
   isDsaeOnboardingNetwork,
-  NetworkTypeEnum
+  NetworkTypeEnum,
+  ClusterHighAvailabilityModeEnum,
+  EdgeClusterStatus
 } from '@acx-ui/rc/utils'
 
 export interface PersonalIdentityNetworkFormContextType {
@@ -89,7 +91,7 @@ const tunnelProfileDefaultPayload = {
 }
 
 const clusterDataDefaultPayload = {
-  fields: ['name', 'clusterId', 'venueId'],
+  fields: ['name', 'clusterId', 'venueId', 'highAvailabilityMode'],
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
@@ -264,6 +266,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       selectFromResult: ({ data, isLoading }) => {
         return {
           clusterData: data?.data
+            .filter(item => isPinSupportCluster(item))
             .map(item => ({ label: item.name, value: item.clusterId, venueId: item.venueId })),
           isLoading
         }
@@ -366,4 +369,8 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       {props.children}
     </PersonalIdentityNetworkFormContext.Provider>
   )
+}
+
+const isPinSupportCluster = (cluster: EdgeClusterStatus) => {
+  return cluster.highAvailabilityMode !== ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
 }
