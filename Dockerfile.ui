@@ -92,7 +92,7 @@ COPY --from=build /app/dist/apps ./dist/apps
 ARG PRECOMMIT
 ARG GIT_COMMIT_BRANCH
 
-ENV NX_RUN_OPTIONS="--coverage --maxWorkers=40% --noStackTrace --bail"
+ENV NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail"
 
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
         CICD_BUILD=true node ./node_modules/.bin/nx run rc:test $NX_RUN_OPTIONS; \
@@ -127,7 +127,7 @@ WORKDIR /app
 RUN touch tests-done
 
 RUN ./node_modules/.bin/nx reset
-RUN rm -rf /app/node_modules
+RUN rm -rf ./node_modules
 
 ###############################################################
 FROM ${GAR_CONTAINER_URL}nginx:1.21.6-alpine
