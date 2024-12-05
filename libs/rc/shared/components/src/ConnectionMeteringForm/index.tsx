@@ -26,7 +26,6 @@ import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
 
-import { usePersonaAsyncHeaders } from '../users/usePersonaAsyncHeaders'
 
 import { ConnectionMeteringSettingForm } from './ConnectionMeteringSetting/ConnectionMeteringSettingForm'
 
@@ -102,7 +101,6 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
     })
   const navigate = useNavigate()
   const linkToPolicies = useTenantLink(tablePath)
-  const { customHeaders } = usePersonaAsyncHeaders()
 
   const [addConnectionMetering] = useAddConnectionMeteringMutation()
   const [
@@ -110,7 +108,7 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
     { isLoading: isUpdating }
   ] = useUpdateConnectionMeteringMutation()
   const handleAddConnectionMetering = async (submittedData: Partial<ConnectionMetering>) => {
-    return addConnectionMetering({ payload: { ...submittedData }, customHeaders }).unwrap()
+    return addConnectionMetering({ payload: { ...submittedData } }).unwrap()
   }
 
   const handleEditConnectionMetering = async (originData:ConnectionMetering|undefined,
@@ -130,7 +128,7 @@ export function ConnectionMeteringForm (props: ConnectionMeteringFormProps) {
 
     if (Object.keys(patchData).length === 0) return
     return updateConnectionMetering(
-      { params: { id: policyId }, payload: patchData, customHeaders }
+      { params: { id: policyId }, payload: patchData }
     ).unwrap()
   }
 

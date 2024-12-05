@@ -12,6 +12,7 @@ import {
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
   PersonaGroupDrawer,
+  PolicySetLink,
   VenueLink,
   useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
@@ -21,7 +22,8 @@ import {
   useLazyGetDpskQuery,
   useLazyGetMacRegListQuery,
   useLazyGetEdgePinByIdQuery,
-  useLazyGetVenueQuery
+  useLazyGetVenueQuery,
+  useLazyGetAdaptivePolicySetQuery
 } from '@acx-ui/rc/services'
 import { PersonaGroup }             from '@acx-ui/rc/utils'
 import { hasCrossVenuesPermission } from '@acx-ui/user'
@@ -75,12 +77,14 @@ function PersonaGroupDetails () {
   const [dpskPoolDisplay, setDpskPoolDisplay] = useState<{ id?: string, name?: string }>()
   const [pinDisplay, setPinDisplay] = useState<{ id?: string, name?: string }>()
   const [certTemplateDisplay, setCertTemplateDisplay] = useState<{ id?: string, name?: string }>()
+  const [policySetDisplay, setPolicySetDisplay] = useState<{ id?: string, name?: string }>()
 
   const [getVenue] = useLazyGetVenueQuery()
   const [getDpskPoolById] = useLazyGetDpskQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [getPinById] = useLazyGetEdgePinByIdQuery()
   const [getCertTemplateById] = useLazyGetCertificateTemplateQuery()
+  const [ getPolicySetById ] = useLazyGetAdaptivePolicySetQuery()
   const detailsQuery = useGetPersonaGroupByIdQuery({
     params: { groupId: personaGroupId }
   })
@@ -93,7 +97,8 @@ function PersonaGroupDetails () {
       dpskPoolId,
       personalIdentityNetworkId,
       propertyId,
-      certificateTemplateId
+      certificateTemplateId,
+      policySetId
     } = detailsQuery.data as PersonaGroup
 
     if (macRegistrationPoolId) {
@@ -135,6 +140,16 @@ function PersonaGroupDetails () {
         .then(result => {
           setCertTemplateDisplay({
             id: certificateTemplateId,
+            name: result?.data?.name
+          })
+        })
+    }
+
+    if (policySetId) {
+      getPolicySetById({ params: { policySetId } })
+        .then(result => {
+          setPolicySetDisplay({
+            id: policySetId,
             name: result?.data?.name
           })
         })
@@ -189,6 +204,15 @@ function PersonaGroupDetails () {
           showNoData={true}
           name={certTemplateDisplay?.name}
           id={detailsQuery.data?.certificateTemplateId}
+        />
+    }] : []),
+    ...(isCertTemplateEnable ? [{
+      title: $t({ defaultMessage: 'Adaptive Policy' }),
+      content:
+        <PolicySetLink
+          showNoData={true}
+          name={policySetDisplay?.name}
+          id={detailsQuery.data?.policySetId}
         />
     }] : [])
   ]

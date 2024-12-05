@@ -186,6 +186,7 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
       await screen.findByRole('combobox', { name: 'Cluster' }),
       await screen.findByRole('option', { name: 'Edge Cluster 1' })
     )
+
     const segmentsInput = screen.getByRole('spinbutton', { name: 'Number of Segments' })
     await user.type(segmentsInput, '10')
     const devicesInput = screen.getByRole('spinbutton', { name: 'Number of devices per Segment' })
