@@ -133,9 +133,6 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           const networkReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList)
           // eslint-disable-next-line max-len
           const networkRes = await fetchWithBQ({ ...networkReq, body: JSON.stringify(networkQueryPayload) })
-          // TODO: error handling
-          // if (networkRes.error) return emptyResponse
-
           const { data: networkData } = networkRes.data as TableResult<Network>
 
           networkData?.forEach((network: Network) => {
