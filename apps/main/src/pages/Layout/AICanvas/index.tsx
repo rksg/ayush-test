@@ -142,9 +142,6 @@ export default function AICanvas (
                 }}>
                 “Generate Top Wi-Fi Networks Pie Chart”
                 </div>
-                <div>“Device Inventory & Status Tracker Widget”</div>
-                <div>“Real-Time Traffic Analysis Widget”</div>
-                <div>“Bandwidth Utilization by Device Widget”</div>
               </div>
               <div className='messages-wrapper'>
                 {chats?.map((i) => (

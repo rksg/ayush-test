@@ -33,7 +33,7 @@ export default function Grid () {
   useEffect(() => {
     const data = getFromLS()
     setSections(data)
-    const group = data.reduce((acc, cur) => acc.groups.concat(cur.groups))
+    const group = data.reduce((acc, cur) => [...acc, ...cur.groups], [])
     setGroups(group)
   }, [])
 
@@ -44,7 +44,7 @@ export default function Grid () {
   const getFromLS = () => {
     let ls = localStorage.getItem('acx-ui-dashboard') ?
       JSON.parse(localStorage.getItem('acx-ui-dashboard')) : mockData
-    return ls //mockData
+    return mockData
   }
 
   const saveToLS = () => {

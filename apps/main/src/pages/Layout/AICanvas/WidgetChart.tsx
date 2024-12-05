@@ -16,7 +16,7 @@ interface WidgetListProps {
 
 const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
   const [{ isDragging }, drag, preview] = useDrag({
-    type: ItemTypes.WIDGET,
+    type: 'card',
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging()
     }),

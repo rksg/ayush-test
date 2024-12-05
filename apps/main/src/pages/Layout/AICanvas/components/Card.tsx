@@ -180,10 +180,10 @@ function Card (props) {
                 </button>
               }
             </div>
-            {
+            {/* {
               card.widgetType &&
               <Widget id={card.widgetType} onRemoveItem={()=>{}} />
-            }
+            } */}
           </div>
       }
     </div>
