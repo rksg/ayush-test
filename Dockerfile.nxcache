@@ -39,11 +39,11 @@ ARG GIT_COMMIT_BRANCH
 RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
 ENV NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail"
 
-RUN CICD_BUILD=true node ./node_modules/.bin/nx run rc-components:test $NX_RUN_OPTIONS
 RUN CICD_BUILD=true node ./node_modules/.bin/nx run rc:test $NX_RUN_OPTIONS
+RUN CICD_BUILD=true node ./node_modules/.bin/nx run rc-components:test $NX_RUN_OPTIONS
 RUN CICD_BUILD=true node ./node_modules/.bin/nx run main:test $NX_RUN_OPTIONS
 RUN CICD_BUILD=true node ./node_modules/.bin/nx run main-components:test $NX_RUN_OPTIONS
 RUN CICD_BUILD=true node ./node_modules/.bin/nx run analytics-components:test $NX_RUN_OPTIONS
-RUN CICD_BUILD=true node ./node_modules/.bin/nx run msp-components:test $NX_RUN_OPTIONS
 RUN CICD_BUILD=true node ./node_modules/.bin/nx run msp:test $NX_RUN_OPTIONS
+RUN CICD_BUILD=true node ./node_modules/.bin/nx run msp-components:test $NX_RUN_OPTIONS
 RUN CICD_BUILD=true node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,rc-components,main,analytics-components,msp,msp-components,main-components $NX_RUN_OPTIONS

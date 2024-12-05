@@ -25,7 +25,7 @@ jest.mock('@acx-ui/components', () => ({
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const mockCluster = mockEdgeClusterList.data[0] as unknown as EdgeClusterStatus
 
-describe.skip('Edge Detail Drawer', () => {
+describe('Edge Detail Drawer', () => {
   it('should render correctly', async () => {
     render(<Provider>
       <EdgeDetailsDrawer
