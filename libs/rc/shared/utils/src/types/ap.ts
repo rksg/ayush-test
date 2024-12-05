@@ -530,7 +530,11 @@ export interface CapabilitiesApModel {
   supportBandCombination?: boolean,
   bandCombinationCapabilities?: BandModeEnum[],
   defaultBandCombination?: BandModeEnum,
-  supportApStickyClientSteering?: boolean
+  supportApStickyClientSteering?: boolean,
+  supportAggressiveTxPower?: boolean,
+  supportAutoCellSizing?: boolean,
+  supportSmartMonitor?: boolean,
+  supportMesh5GOnly6GOnly?: boolean
 }
 
 export interface PingAp {
