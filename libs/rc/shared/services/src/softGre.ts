@@ -13,7 +13,8 @@ import { CommonResult,
   VenueDetail,
   onSocketActivityChanged,
   onActivityMessageReceived,
-  SoftGreOptionsData
+  SoftGreOptionsData,
+  LanPortSoftGreProfileSettings
 } from '@acx-ui/rc/utils'
 import { baseSoftGreApi }    from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -274,6 +275,12 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       }
+    }),
+    // eslint-disable-next-line max-len
+    getSoftGreProfileConfigurationOnVenue: build.query<LanPortSoftGreProfileSettings ,RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(SoftGreUrls.getSoftGreProfileConfigurationOnVenue, params)
+      }
     })
   })
 })
@@ -292,5 +299,7 @@ export const {
   useActivateSoftGreMutation,
   useDectivateSoftGreMutation,
   useActivateSoftGreProfileOnVenueMutation,
-  useDeactivateSoftGreProfileOnVenueMutation
+  useDeactivateSoftGreProfileOnVenueMutation,
+  useGetSoftGreProfileConfigurationOnVenueQuery,
+  useLazyGetSoftGreProfileConfigurationOnVenueQuery
 } = softGreApi
