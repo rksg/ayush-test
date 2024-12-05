@@ -220,16 +220,16 @@ export const MSPUtils = () => {
     switch(deviceType) {
       case ComplianceMspCustomersDevicesTypes.AP:
         return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
-          sum + (en.wifiDeviceCount || 0), 0)
+          sum + (+(en.wifiDeviceCount || 0)), 0)
       case ComplianceMspCustomersDevicesTypes.SWITCH:
         return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
-          sum + (en.switchDeviceCount || 0), 0)
+          sum + (+(en.switchDeviceCount || 0)), 0)
       case ComplianceMspCustomersDevicesTypes.EDGE:
         return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
-          sum + (en.edgeDeviceCount || 0), 0)
+          sum + (+(en.edgeDeviceCount || 0)), 0)
       case ComplianceMspCustomersDevicesTypes.RWG:
         return entitlements.reduce((sum, en:DelegationEntitlementRecord) =>
-          sum + (en.rwgDeviceCount || 0), 0)
+          sum + (+(en.rwgDeviceCount || 0)), 0)
       default: return 0
     }
   }

@@ -411,11 +411,14 @@ describe('getSupersetRlsClause',() => {
       paths as NetworkPath[], radioBands as RadioBand[])
     const rlsClauseOverviewReport = getSupersetRlsClause(ReportType.OVERVIEW,
         paths as NetworkPath[], radioBands as RadioBand[])
+    const emptyRlsClauseOverviewReport = getSupersetRlsClause(ReportType.OVERVIEW,
+          [] as NetworkPath[], [] as RadioBand[])
 
     expect(rlsClauseWirelessReport).toMatchSnapshot('rlsClauseWirelessReport')
     expect(rlsClauseWiredReport).toMatchSnapshot('rlsClauseWiredReport')
     expect(rlsClauseApplicationReport).toMatchSnapshot('rlsClauseApplicationReport')
     expect(rlsClauseOverviewReport).toMatchSnapshot('rlsClauseOverviewReport')
+    expect(emptyRlsClauseOverviewReport).toMatchSnapshot('emptyRlsClauseOverviewReport')
   })
 })
 
