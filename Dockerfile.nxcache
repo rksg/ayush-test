@@ -1,4 +1,5 @@
-FROM gcr.io/kumo-scratch/baseimg/node:master--latest AS build-base
+# FROM gcr.io/kumo-scratch/baseimg/node:master--latest AS build-base
+FROM us-docker.pkg.dev/alto-cicd/acx-service/baseimage/node:master--latest AS build-base
 
 WORKDIR /app
 
