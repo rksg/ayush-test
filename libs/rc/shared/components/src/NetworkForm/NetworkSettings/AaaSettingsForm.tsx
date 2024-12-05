@@ -111,12 +111,13 @@ export function AaaSettingsForm () {
 
 function SettingsForm () {
   const { $t } = useIntl()
-  const { editMode, cloneMode } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, isRuckusAiMode } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
   const form = Form.useFormInstance()
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
   const useCertificateTemplate = useWatch('useCertificateTemplate')
-  const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const isCertificateTemplateEnabledFF = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const isCertificateTemplateEnabled = !isRuckusAiMode && isCertificateTemplateEnabledFF
   const { isTemplate } = useConfigTemplate()
   const wpa2Description = <FormattedMessage
     /* eslint-disable max-len */
