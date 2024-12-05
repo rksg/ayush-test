@@ -51,13 +51,6 @@ export interface SoftGreActivation {
   wifiNetworkIds: string[]
 }
 
-export interface SoftGreWiredActivation {
-  venueId: string
-  apModel?: string
-  portId: number
-  apSerialNumbers: string[]
-}
-
 export interface SoftGreOptionsData {
   options: DefaultOptionType[],
   id?: string,
