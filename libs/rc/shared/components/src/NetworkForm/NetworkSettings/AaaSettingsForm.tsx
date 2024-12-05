@@ -54,8 +54,10 @@ const { useWatch } = Form
 export function AaaSettingsForm () {
   const { editMode, cloneMode, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const isWifiRbacEnabledFF = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isWifiRbacEnabled = !isRuckusAiMode && isWifiRbacEnabledFF
+  const isRadsecFeatureEnabledFF = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const isRadsecFeatureEnabled = !isRuckusAiMode && isRadsecFeatureEnabledFF
   const { isTemplate } = useConfigTemplate()
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
 
@@ -269,7 +271,7 @@ function CertAuth () {
 
 function AaaService () {
   const { $t } = useIntl()
-  const { editMode, setData, data } = useContext(NetworkFormContext)
+  const { editMode, setData, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   const enableAccountingService = useWatch('enableAccountingService', form)
   const enableMacAuthentication = useWatch<boolean>(
@@ -277,8 +279,12 @@ function AaaService () {
   const [selectedAuthRadius, selectedAcctRadius] =
     [useWatch<Radius>('authRadius'), useWatch<Radius>('accountingRadius')]
   const support8021xMacAuth = useIsSplitOn(Features.WIFI_8021X_MAC_AUTH_TOGGLE)
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const isWifiRbacEnabledFF = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isWifiRbacEnabled = !isRuckusAiMode && isWifiRbacEnabledFF
+
+  const isRadsecFeatureEnabledFF = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const isRadsecFeatureEnabled = !isRuckusAiMode && isRadsecFeatureEnabledFF
+  
   const { isTemplate } = useConfigTemplate()
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
   const labelWidth = '250px'
