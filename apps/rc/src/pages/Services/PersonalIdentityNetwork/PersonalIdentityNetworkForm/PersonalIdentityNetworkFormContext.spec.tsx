@@ -20,7 +20,9 @@ import {
   TunnelTypeEnum,
   VenueFixtures,
   EdgeSdLanUrls,
-  EdgeSdLanFixtures } from '@acx-ui/rc/utils'
+  EdgeSdLanFixtures,
+  EdgeCompatibilityFixtures,
+  EdgeStatus } from '@acx-ui/rc/utils'
 import { Provider, store }                 from '@acx-ui/store'
 import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
 
@@ -49,6 +51,7 @@ const {
 const { mockSdLanDataForPinMutuallyExclusive } = EdgeSdLanFixtures
 const { mockedTunnelProfileViewData } = EdgeTunnelProfileFixtures
 const { mockDhcpStatsData } = EdgeDHCPFixtures
+const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
 const pinTunnelData = {
   ...mockedTunnelProfileViewData,
   data: mockedTunnelProfileViewData.data.filter(item => item.type === TunnelTypeEnum.VXLAN)
@@ -79,6 +82,10 @@ describe('PersonalIdentityNetworkFormContext', () => {
     })
 
     mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))
+      ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
         (_req, res, ctx) => res(ctx.json(mockVenueOptions))
@@ -297,7 +304,15 @@ describe('PersonalIdentityNetworkFormContext', () => {
   })
 
   it('should filter cluster already bound with SD-LAN', async () => {
+    const mockClusterList = cloneDeep(mockEdgeClusterList)
+    // eslint-disable-next-line max-len
+    mockClusterList.data[4].edgeList.forEach(node => (node as EdgeStatus).firmwareVersion = '2.2.0.123')
+
     mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockClusterList))
+      ),
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
         (_req, res, ctx) => res(ctx.json(mockSdLanDataForPinMutuallyExclusive))
@@ -323,5 +338,36 @@ describe('PersonalIdentityNetworkFormContext', () => {
       expect(result.current.getClusterName('clusterId_4')).toBe(''))
     await waitFor(() =>
       expect(result.current.getClusterName('clusterId_5')).toBe('Edge Cluster 5'))
+  })
+
+  it('should filter cluster which firmware version is less than 2.2.0.1', async () => {
+    const mockClusterList = cloneDeep(mockEdgeClusterList)
+
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockClusterList))
+      )
+    )
+
+    const { result } = renderHook(() => useContext(PersonalIdentityNetworkFormContext), {
+      wrapper: ({ children }) => <Provider>
+        <PersonalIdentityNetworkFormDataProvider venueId='0000000005'>
+          {children}
+        </PersonalIdentityNetworkFormDataProvider>
+      </Provider>,
+      route: { params, path: createPinPath }
+    })
+
+    await waitFor(() =>
+      expect(result.current.getClusterName('clusterId_1')).toBe(''))
+    await waitFor(() =>
+      expect(result.current.getClusterName('clusterId_2')).toBe(''))
+    await waitFor(() =>
+      expect(result.current.getClusterName('clusterId_3')).toBe(''))
+    await waitFor(() =>
+      expect(result.current.getClusterName('clusterId_4')).toBe(''))
+    await waitFor(() =>
+      expect(result.current.getClusterName('clusterId_5')).toBe(''))
   })
 })

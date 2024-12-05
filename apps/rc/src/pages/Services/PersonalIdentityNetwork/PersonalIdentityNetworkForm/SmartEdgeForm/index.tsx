@@ -4,11 +4,11 @@ import { Col, Form, InputNumber, Row, Select, Space } from 'antd'
 import { FormattedMessage, useIntl }                  from 'react-intl'
 import { useNavigate, useParams }                     from 'react-router-dom'
 
-import { Alert, Button, StepsForm, useStepFormContext }                                                                                                                  from '@acx-ui/components'
-import { AddEdgeDhcpServiceModal, EdgeClusterFirmwareInfo }                                                                                                              from '@acx-ui/rc/components'
-import { useGetDhcpStatsQuery, useGetEdgeDhcpServiceQuery }                                                                                                              from '@acx-ui/rc/services'
-import { MAX_DEVICE_PER_SEGMENT, MAX_SEGMENT_PER_VENUE, PersonalIdentityNetworkFormData, ServiceOperation, ServiceType, getServiceDetailsLink, IncompatibilityFeatures } from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                                                                                                 from '@acx-ui/react-router-dom'
+import { Alert, Button, StepsForm, useStepFormContext }                                                                                         from '@acx-ui/components'
+import { AddEdgeDhcpServiceModal }                                                                                                              from '@acx-ui/rc/components'
+import { useGetDhcpStatsQuery, useGetEdgeDhcpServiceQuery }                                                                                     from '@acx-ui/rc/services'
+import { MAX_DEVICE_PER_SEGMENT, MAX_SEGMENT_PER_VENUE, PersonalIdentityNetworkFormData, ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                                                                        from '@acx-ui/react-router-dom'
 
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 
@@ -206,16 +206,6 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
               />
             </Col>
           </Row>
-          {edgeClusterId &&
-            <Row style={{ marginBottom: 20 }}>
-              <Col span={24}>
-                <EdgeClusterFirmwareInfo
-                  featureName={IncompatibilityFeatures.PIN}
-                  clusterId={edgeClusterId}
-                />
-              </Col>
-            </Row>
-          }
         </Col>
       </Row>
       <Row gutter={20}>
