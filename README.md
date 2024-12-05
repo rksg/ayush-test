@@ -198,4 +198,4 @@ After successfully running the script the files should be generated in the respe
 Refer to  [Locale.md](Locale.md)
 
 ### ACX-UI Unit Test Submodule NX Cache Setup Workflow
-https://jira-wiki.ruckuswireless.com/display/Team/ACX-UI+Unit+Test+NX+Cache+Setup+Workflow
+https://jira-wiki.ruckuswireless.com/display/Team/ACX-UI+Unit+Test+Submodule+NX+Cache+Setup+Workflow
