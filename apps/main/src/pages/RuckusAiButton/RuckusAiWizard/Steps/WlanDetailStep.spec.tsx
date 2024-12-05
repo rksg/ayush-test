@@ -41,6 +41,7 @@ describe('WlanDetailStep', () => {
       <Provider>
         <Form form={formRef.current}>
           <WlanDetailStep
+            showAlert={false}
             payload={mock_payload}
             sessionId='session-id'
             formInstance={formRef.current}
@@ -59,6 +60,7 @@ describe('WlanDetailStep', () => {
       <Provider>
         <Form form={formRef.current}>
           <WlanDetailStep
+            showAlert={true}
             payload={mock_payload}
             sessionId='session-id'
             formInstance={formRef.current}
@@ -83,6 +85,7 @@ describe('WlanDetailStep', () => {
       <Provider>
         <Form form={formRef.current}>
           <WlanDetailStep
+            showAlert={false}
             payload={mock_payload}
             sessionId='session-id'
             formInstance={formRef.current}
@@ -103,6 +106,7 @@ describe('WlanDetailStep', () => {
       <Provider>
         <Form form={formRef.current}>
           <WlanDetailStep
+            showAlert={false}
             payload={mock_payload}
             sessionId='session-id'
             formInstance={formRef.current}

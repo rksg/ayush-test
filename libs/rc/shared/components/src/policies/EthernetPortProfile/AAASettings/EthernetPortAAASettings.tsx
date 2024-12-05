@@ -4,9 +4,9 @@ import { Form, Space, Switch } from 'antd'
 import { useWatch }            from 'antd/lib/form/Form'
 import { useIntl }             from 'react-intl'
 
-import { Subtitle , StepsForm }      from '@acx-ui/components'
-import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
-import { Radius, useConfigTemplate } from '@acx-ui/rc/utils'
+import { Subtitle , StepsForm, Tooltip }                          from '@acx-ui/components'
+import { useIsSplitOn, Features }                                 from '@acx-ui/feature-toggle'
+import { EthernetPortProfileMessages, Radius, useConfigTemplate } from '@acx-ui/rc/utils'
 
 import { AAAInstance } from '../../../NetworkForm/AAAInstance'
 
@@ -40,10 +40,17 @@ export function EthernetPortAAASettings () {
       <div>
         <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
         <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}
-          type='authRadius'/>
+          type='authRadius'
+          excludeRadSec={!isSupportProxyRadius} />
         {isSupportProxyRadius &&
           <StepsForm.FieldLabel width={labelWidth}>
-            {$t({ defaultMessage: 'Use Proxy Service' })}
+            <Space>
+              {$t({ defaultMessage: 'Use Proxy Service' })}
+              <Tooltip.Question
+                title={$t(EthernetPortProfileMessages.USE_RADIUS_PROXY)}
+                placement='bottom'
+              />
+            </Space>
             <Form.Item
               name='enableAuthProxy'
               valuePropName='checked'
@@ -67,10 +74,17 @@ export function EthernetPortAAASettings () {
         </StepsForm.FieldLabel>
         {accountingEnabled && <>
           <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
-            type='accountingRadius'/>
+            type='accountingRadius'
+            excludeRadSec={!isSupportProxyRadius} />
           {isSupportProxyRadius &&
             <StepsForm.FieldLabel width={labelWidth}>
-              {$t({ defaultMessage: 'Use Proxy Service' })}
+              <Space>
+                {$t({ defaultMessage: 'Use Proxy Service' })}
+                <Tooltip.Question
+                  title={$t(EthernetPortProfileMessages.USE_RADIUS_PROXY)}
+                  placement='bottom'
+                />
+              </Space>
               <Form.Item
                 name='enableAccountingProxy'
                 valuePropName='checked'

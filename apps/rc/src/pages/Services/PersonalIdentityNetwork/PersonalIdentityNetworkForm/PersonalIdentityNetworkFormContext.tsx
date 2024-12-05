@@ -16,7 +16,8 @@ import {
   useVenuesListQuery,
   useGetDhcpStatsQuery,
   useGetEdgeMvSdLanViewDataListQuery,
-  useLazyGetDpskQuery
+  useLazyGetDpskQuery,
+  useGetEdgeFeatureSetsQuery
 } from '@acx-ui/rc/services'
 import {
   DhcpStats,
@@ -26,8 +27,12 @@ import {
   TunnelTypeEnum,
   getTunnelProfileOptsWithDefault,
   isDsaeOnboardingNetwork,
-  NetworkTypeEnum
+  NetworkTypeEnum,
+  ClusterHighAvailabilityModeEnum,
+  EdgeClusterStatus,
+  IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
+import { compareVersions } from '@acx-ui/utils'
 
 export interface PersonalIdentityNetworkFormContextType {
   setVenueId: Dispatch<SetStateAction<string>>
@@ -89,7 +94,7 @@ const tunnelProfileDefaultPayload = {
 }
 
 const clusterDataDefaultPayload = {
-  fields: ['name', 'clusterId', 'venueId'],
+  fields: ['name', 'clusterId', 'venueId', 'highAvailabilityMode', 'edgeList'],
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
@@ -108,6 +113,20 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
   const [dpskData, setDpskData] = useState<DpskSaveData | undefined>(undefined)
 
   const [getDpsk] = useLazyGetDpskQuery()
+
+  const { requiredFw } = useGetEdgeFeatureSetsQuery({
+    payload: {
+      filters: {
+        featureNames: [IncompatibilityFeatures.PIN]
+      } }
+  }, {
+    selectFromResult: ({ data }) => {
+      return {
+        requiredFw: data?.featureSets
+          ?.find(item => item.featureName === IncompatibilityFeatures.PIN)?.requiredFw
+      }
+    }
+  })
 
   const {
     usedSdlanClusterIds,
@@ -261,9 +280,11 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
   const { clusterData, isLoading: isClusterDataLoading } = useGetEdgeClusterListQuery(
     { params, payload: { ...clusterDataDefaultPayload } },
     {
+      skip: !requiredFw,
       selectFromResult: ({ data, isLoading }) => {
         return {
           clusterData: data?.data
+            .filter(item => isPinSupportCluster(item, requiredFw!))
             .map(item => ({ label: item.name, value: item.clusterId, venueId: item.venueId })),
           isLoading
         }
@@ -366,4 +387,13 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
       {props.children}
     </PersonalIdentityNetworkFormContext.Provider>
   )
+}
+
+const isPinSupportCluster = (cluster: EdgeClusterStatus, requiredFw: string) => {
+  // eslint-disable-next-line max-len
+  if (!cluster.highAvailabilityMode || cluster.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE)
+    return false
+
+  // eslint-disable-next-line max-len
+  return cluster.edgeList?.every(node => compareVersions(node.firmwareVersion, requiredFw) >= 0) ?? false
 }
