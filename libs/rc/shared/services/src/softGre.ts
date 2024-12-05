@@ -256,6 +256,24 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
         return createHttpRequest(SoftGreUrls.dectivateSoftGre, params)
       },
       invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }, { type: 'SoftGre', id: 'Options' }]
+    }),
+    activateSoftGreProfileOnVenue: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SoftGreUrls.activateSoftGreProfileOnVenue, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    deactivateSoftGreProfileOnVenue: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SoftGreUrls.deactivateSoftGreProfileOnVenue, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
     })
   })
 })
@@ -272,5 +290,7 @@ export const {
   useGetSoftGreOptionsQuery,
   useLazyGetSoftGreOptionsQuery,
   useActivateSoftGreMutation,
-  useDectivateSoftGreMutation
+  useDectivateSoftGreMutation,
+  useActivateSoftGreProfileOnVenueMutation,
+  useDeactivateSoftGreProfileOnVenueMutation
 } = softGreApi
