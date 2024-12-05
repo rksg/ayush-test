@@ -9,9 +9,9 @@ import {
 import { Button, Divider } from 'antd'
 import { useIntl }         from 'react-intl'
 
-import { cssStr }                  from '@acx-ui/components'
-import { CrownSolid, RuckusAiDog } from '@acx-ui/icons'
-import { useNetworkListQuery }     from '@acx-ui/rc/services'
+import { cssStr }                             from '@acx-ui/components'
+import { CrownSolid, OnboardingAssistantDog } from '@acx-ui/icons'
+import { useNetworkListQuery }                from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
   ssidBackendNameRegExp,
@@ -19,7 +19,10 @@ import {
   from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import * as UI from './styledComponents'
+import { willRegenerateAlert } from '../../ruckusAi.utils'
+
+import { checkHasRegenerated } from './steps.utils'
+import * as UI                 from './styledComponents'
 
 type NetworkConfig = {
   'Purpose': string;
@@ -28,10 +31,10 @@ type NetworkConfig = {
   'Checked': boolean;
   'id': string;
 }
-
 export function WlanStep ( props: {
   payload: string,
   description: string,
+  showAlert: boolean,
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    formInstance: ProFormInstance<any> | undefined
 }) {
@@ -44,7 +47,7 @@ export function WlanStep ( props: {
     useState<boolean[]>(Array(initialData.length).fill(true))
 
   useEffect(() => {
-    if (initialData !== data && formInstance) {
+    if (checkHasRegenerated(data, initialData) && formInstance) {
       const updatedData = initialData.map(item => ({
         ...item,
         Checked: true
@@ -81,6 +84,13 @@ export function WlanStep ( props: {
     const newCheckboxStates = [...checkboxStates]
     newCheckboxStates[index] = checked
     setCheckboxStates(newCheckboxStates)
+    formInstance?.validateFields()
+    if (!checked) {
+      formInstance?.setFields([{
+        name: ['data', index, 'SSID Name'],
+        errors: []
+      }])
+    }
   }
 
   const tooltipItems = [
@@ -144,7 +154,7 @@ export function WlanStep ( props: {
           {$t({ defaultMessage: 'Add Network Profile' })}
         </Button>
       </UI.HeaderWithAddButton>
-
+      {props.showAlert && willRegenerateAlert($t)}
       <UI.HighlightedBox>
         <UI.HighlightedTitle>
           <CrownSolid
@@ -162,7 +172,7 @@ export function WlanStep ( props: {
 
       {data?.map((item, index) => (
         <React.Fragment key={index}>
-          <UI.VlanContainer>
+          <UI.StepItemCheckContainer>
             <UI.CheckboxContainer data-testid={`wlan-checkbox-${index}`}>
               <ProFormCheckbox
                 name={['data', index, 'Checked']}
@@ -190,7 +200,8 @@ export function WlanStep ( props: {
                 name={['data', index, 'SSID Name']}
                 initialValue={item['SSID Name']}
                 rules={checkboxStates[index] ? [
-                  { required: true },
+                  { required: true,
+                    message: $t({ defaultMessage: 'Please enter a Network Name.' }) },
                   { min: 2 },
                   { max: 32 },
                   { validator: (_, value) => ssidBackendNameRegExp(value) },
@@ -249,7 +260,7 @@ export function WlanStep ( props: {
               {item['Purpose'] && <UI.PurposeContainer
                 disabled={!checkboxStates[index]}>
                 <UI.PurposeHeader>
-                  <RuckusAiDog
+                  <OnboardingAssistantDog
                     style={{
                       width: '20px',
                       height: '20px',
@@ -262,7 +273,7 @@ export function WlanStep ( props: {
                 <UI.PurposeText>{item['Purpose']}</UI.PurposeText>
               </UI.PurposeContainer>}
             </div>
-          </UI.VlanContainer>
+          </UI.StepItemCheckContainer>
           {index < data.length - 1 && <Divider />}
         </React.Fragment>
       ))}

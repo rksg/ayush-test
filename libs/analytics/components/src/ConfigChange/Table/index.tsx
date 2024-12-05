@@ -1,26 +1,88 @@
 import { useContext } from 'react'
 
+import { stringify }                  from 'csv-stringify/browser/esm/sync'
 import moment                         from 'moment'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
-import { defaultSort, sortProp, useAnalyticsFilter, kpiConfig, productNames } from '@acx-ui/analytics/utils'
+import {
+  defaultSort,
+  sortProp,
+  useAnalyticsFilter,
+  kpiConfig,
+  productNames
+} from '@acx-ui/analytics/utils'
 import {
   Loader,
   TableProps,
   Table as CommonTable,
   ConfigChange,
+  type ConfigChangeChartRowMappingType,
   getConfigChangeEntityTypeMapping,
   Cascader
-}                                                    from '@acx-ui/components'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { noDataDisplay }             from '@acx-ui/utils'
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                                        from '@acx-ui/formatter'
+import { DownloadOutlined }                                                                 from '@acx-ui/icons'
+import { exportMessageMapping, noDataDisplay, getIntl, handleBlobDownloadFile, PathFilter } from '@acx-ui/utils'
 
 import { ConfigChangeContext, KPIFilterContext } from '../context'
 import { hasConfigChange }                       from '../KPI'
 import { useConfigChangeQuery }                  from '../services'
 
-import { Badge, CascaderFilterWrapper }                     from './styledComponents'
-import { EntityType, enumTextMap, filterData, jsonMapping } from './util'
+import { Badge, CascaderFilterWrapper }                 from './styledComponents'
+import { filterData, getConfiguration, getEntityValue } from './util'
+
+export function downloadConfigChangeList (
+  configChanges: ConfigChange[],
+  columns: TableProps<ConfigChange>['columns'],
+  entityTypeMapping: ConfigChangeChartRowMappingType[],
+  { startDate, endDate }: PathFilter
+) {
+  const { $t } = getIntl()
+  const data = stringify(
+    configChanges.map(item => {
+      const configValue = getConfiguration(item.type, item.key)
+
+      const oldValues = item.oldValues?.map(value => {
+        const mapped = getEntityValue(item.type, item.key, value)
+        return (typeof mapped === 'string')
+          ? mapped : $t(mapped as MessageDescriptor)
+      })
+
+      const newValues = item.newValues?.map(value => {
+        const mapped = getEntityValue(item.type, item.key, value)
+        return (typeof mapped === 'string')
+          ? mapped : $t(mapped as MessageDescriptor)
+      })
+
+      return ({
+        timestamp: moment(Number(item.timestamp)).format(),
+        type: entityTypeMapping.find(type => type.key === item.type)?.label || item.type,
+        name: item.name,
+        key: (typeof configValue === 'string')
+          ? configValue
+          : $t(configValue as MessageDescriptor),
+        oldValues: oldValues.join(', '),
+        newValues: newValues.join(', ')
+      })
+    }),
+    {
+      header: true,
+      quoted: true,
+      cast: {
+        string: s => s === '--' ? '-' : s
+      },
+      columns: columns.map(({ key, title }) => ({
+        key: key,
+        header: title as string
+      }))
+    }
+  )
+  handleBlobDownloadFile(
+    new Blob([data], { type: 'text/csv;charset=utf-8;' }),
+    `Config-Changes-${startDate}-${endDate}.csv`
+  )
+}
 
 export function Table (props: {
   selected: ConfigChange | null,
@@ -30,6 +92,11 @@ export function Table (props: {
   dotSelect: number | null,
   legend: Record<string, boolean>
 }) {
+  const showIntentAI = [
+    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
+    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
+  ].some(Boolean)
+
   const { $t } = useIntl()
   const { kpiFilter, applyKpiFilter } = useContext(KPIFilterContext)
   const { timeRanges: [startDate, endDate] } = useContext(ConfigChangeContext)
@@ -43,8 +110,10 @@ export function Table (props: {
     endDate: endDate.toISOString()
   }, { selectFromResult: queryResults => ({
     ...queryResults,
-    data: filterData(queryResults.data ?? [], kpiFilter, legendList)
+    data: filterData(queryResults.data ?? [], kpiFilter, legendList, showIntentAI)
   }) })
+
+  const entityTypeMapping = getConfigChangeEntityTypeMapping(showIntentAI)
 
   const ColumnHeaders: TableProps<ConfigChange>['columns'] = [
     {
@@ -61,11 +130,10 @@ export function Table (props: {
       title: $t({ defaultMessage: 'Entity Type' }),
       dataIndex: 'type',
       render: (_, row) => {
-        const config = getConfigChangeEntityTypeMapping().find(type => type.key === row.type)
+        const config = entityTypeMapping.find(type => type.key === row.type)
         return config ? <Badge key={row.id} color={config.color} text={config.label}/> : row.type
       },
-      filterable: getConfigChangeEntityTypeMapping()
-        .map(({ label, ...rest }) => ({ ...rest, value: label })),
+      filterable: entityTypeMapping.map(({ label, ...rest }) => ({ ...rest, value: label })),
       sorter: { compare: sortProp('type', defaultSort) },
       width: 100
     },
@@ -82,7 +150,7 @@ export function Table (props: {
       title: $t({ defaultMessage: 'Configuration' }),
       dataIndex: 'key',
       render: (_, { type, key }) => {
-        const value = jsonMapping[type as EntityType].configMap.get(key, key)
+        const value = getConfiguration(type, key)
         return (typeof value === 'string') ? value : $t(value as MessageDescriptor)
       },
       sorter: { compare: sortProp('key', defaultSort) }
@@ -94,8 +162,7 @@ export function Table (props: {
       align: 'center',
       render: (_, { oldValues, type, key }) => {
         const generateValues = oldValues?.map(value => {
-          const mapped = enumTextMap.get(
-            `${(jsonMapping[type as EntityType].enumMap).get(key, '')}-${value}`, value)
+          const mapped = getEntityValue(type, key, value)
           return (typeof mapped === 'string')
             ? mapped : $t(mapped as MessageDescriptor)
         })
@@ -110,8 +177,7 @@ export function Table (props: {
       align: 'center',
       render: (_, { newValues, type, key }) => {
         const generateValues = newValues?.map(value => {
-          const mapped = enumTextMap.get(
-            `${(jsonMapping[type as EntityType].enumMap).get(key, '')}-${value}`, value)
+          const mapped = getEntityValue(type, key, value)
           return (typeof mapped === 'string')
             ? mapped : $t(mapped as MessageDescriptor)
         })
@@ -167,6 +233,14 @@ export function Table (props: {
           onChange: handlePaginationChange
         }}
         key={dotSelect}
+        iconButton={{
+          icon: <DownloadOutlined />,
+          disabled: !Boolean(queryResults.data?.length),
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
+          onClick: () => {
+            downloadConfigChangeList(
+              queryResults.data, ColumnHeaders, entityTypeMapping, pathFilters)
+          } }}
       />
     </Loader>
   </>

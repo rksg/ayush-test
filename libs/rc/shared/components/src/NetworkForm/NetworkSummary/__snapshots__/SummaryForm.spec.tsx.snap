@@ -212,6 +212,35 @@ h5.c1.ant-typography {
             >
               <label
                 class=""
+                title="Security Protocol:"
+              >
+                Security Protocol
+              </label>
+            </div>
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-form-item"
+        >
+          <div
+            class="ant-row ant-form-item-row"
+          >
+            <div
+              class="ant-col ant-form-item-label"
+            >
+              <label
+                class=""
                 title="Use RADIUS Server:"
               >
                 Use RADIUS Server
@@ -228,35 +257,6 @@ h5.c1.ant-typography {
                 >
                   No
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="ant-form-item"
-        >
-          <div
-            class="ant-row ant-form-item-row"
-          >
-            <div
-              class="ant-col ant-form-item-label"
-            >
-              <label
-                class=""
-                title="Security Protocol:"
-              >
-                Security Protocol
-              </label>
-            </div>
-            <div
-              class="ant-col ant-form-item-control"
-            >
-              <div
-                class="ant-form-item-control-input"
-              >
-                <div
-                  class="ant-form-item-control-input-content"
-                />
               </div>
             </div>
           </div>
@@ -538,37 +538,6 @@ h5.c1.ant-typography {
             >
               <label
                 class=""
-                title="Use RADIUS Server:"
-              >
-                Use RADIUS Server
-              </label>
-            </div>
-            <div
-              class="ant-col ant-form-item-control"
-            >
-              <div
-                class="ant-form-item-control-input"
-              >
-                <div
-                  class="ant-form-item-control-input-content"
-                >
-                  Yes
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="ant-form-item"
-        >
-          <div
-            class="ant-row ant-form-item-row"
-          >
-            <div
-              class="ant-col ant-form-item-label"
-            >
-              <label
-                class=""
                 title="Proxy Service"
               >
                 Proxy Service
@@ -645,6 +614,37 @@ h5.c1.ant-typography {
                 <div
                   class="ant-form-item-control-input-content"
                 />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-form-item"
+        >
+          <div
+            class="ant-row ant-form-item-row"
+          >
+            <div
+              class="ant-col ant-form-item-label"
+            >
+              <label
+                class=""
+                title="Use RADIUS Server:"
+              >
+                Use RADIUS Server
+              </label>
+            </div>
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                >
+                  No
+                </div>
               </div>
             </div>
           </div>
@@ -926,37 +926,6 @@ h5.c1.ant-typography {
             >
               <label
                 class=""
-                title="Use RADIUS Server:"
-              >
-                Use RADIUS Server
-              </label>
-            </div>
-            <div
-              class="ant-col ant-form-item-control"
-            >
-              <div
-                class="ant-form-item-control-input"
-              >
-                <div
-                  class="ant-form-item-control-input-content"
-                >
-                  Yes
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="ant-form-item"
-        >
-          <div
-            class="ant-row ant-form-item-row"
-          >
-            <div
-              class="ant-col ant-form-item-label"
-            >
-              <label
-                class=""
                 title="Proxy Service"
               >
                 Proxy Service
@@ -1033,6 +1002,37 @@ h5.c1.ant-typography {
                 <div
                   class="ant-form-item-control-input-content"
                 />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="ant-form-item"
+        >
+          <div
+            class="ant-row ant-form-item-row"
+          >
+            <div
+              class="ant-col ant-form-item-label"
+            >
+              <label
+                class=""
+                title="Use RADIUS Server:"
+              >
+                Use RADIUS Server
+              </label>
+            </div>
+            <div
+              class="ant-col ant-form-item-control"
+            >
+              <div
+                class="ant-form-item-control-input"
+              >
+                <div
+                  class="ant-form-item-control-input-content"
+                >
+                  No
+                </div>
               </div>
             </div>
           </div>

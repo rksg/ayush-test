@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
@@ -25,13 +27,20 @@ jest.mock('react-router-dom', () => ({
 
 
 describe('VerticalPage', () => {
-  it('should display vertical page correctly', async () => {
-    render(
+  const VerticalPageWrapper = () => {
+    const [selectedType, setSelectedType] = useState('' as string)
+    return (
       <Provider>
         <Form>
-          <VerticalPage />
+          <VerticalPage selectedType={selectedType} setSelectedType={setSelectedType} />
         </Form>
-      </Provider>)
+      </Provider>
+    )
+  }
+
+  it('should display vertical page correctly', async () => {
+    render(
+      <VerticalPageWrapper />)
     expect(await screen.findByText('School')).toBeVisible()
     await userEvent.click(await screen.findByText('School'))
     const othersButton = screen.getByText(/others/i)
@@ -92,7 +101,9 @@ describe('WelcomePage', () => {
           <WelcomePage />
         </Form>
       </Provider>)
-    expect(await screen.findByText('Your personal onboarding assistant')).toBeVisible()
+    expect(screen.getByText('About')).toBeInTheDocument()
+    // eslint-disable-next-line max-len
+    expect(screen.getByText('Onboarding Assistant automates and optimizes complex network onboarding processes, leading to increased efficiency and productivity.')).toBeInTheDocument()
   })
 })
 

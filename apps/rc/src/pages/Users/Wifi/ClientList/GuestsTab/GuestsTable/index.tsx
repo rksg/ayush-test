@@ -161,8 +161,14 @@ export const GuestsTable = () => {
   useEffect(() => {
     if (networkListQuery.data?.data) {
       const networks = networkListQuery.data?.data ?? []
-      const networksWithGuestPass = networks.filter(network =>
-        network.captiveType === GuestNetworkTypeEnum.GuestPass)
+      const networksWithGuestPass = networks.filter(network => {
+        return [
+          GuestNetworkTypeEnum.GuestPass,
+          GuestNetworkTypeEnum.HostApproval,
+          GuestNetworkTypeEnum.SelfSignIn,
+          GuestNetworkTypeEnum.Directory
+        ].includes(network.captiveType ?? GuestNetworkTypeEnum.GuestPass)
+      })
       setGuestNetworkList(networks)
       setAllowedNetworkList(networksWithGuestPass)
     }
@@ -264,7 +270,7 @@ export const GuestsTable = () => {
       }
     }, {
       key: 'ssid',
-      title: $t({ defaultMessage: 'Allowed Network' }),
+      title: $t({ defaultMessage: 'Network' }),
       dataIndex: 'wifiNetworkId',
       filterKey: 'wifiNetworkId',
       filterable: networkFilterOptions,
@@ -564,6 +570,9 @@ export const renderGuestType = (value: string) => {
       break
     case GuestTypesEnum.SELF_SIGN_IN:
       result = $t({ defaultMessage: 'Self Sign In' })
+      break
+    case GuestTypesEnum.DIRECTORY:
+      result = $t({ defaultMessage: 'Directory' })
       break
     default:
       result = transformDisplayText(value)

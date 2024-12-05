@@ -41,10 +41,10 @@ export interface DelegationEntitlementRecord {
   outOfComplianceDevices?: number;
   futureOutOfComplianceDevices?: number;
   futureOfComplianceDate?: number;
-  wifiDeviceCount?: number;
-  switchDeviceCount?: number;
-  rwgDeviceCount?: number;
-  edgeDeviceCount?: number
+  wifiDeviceCount?: string;
+  switchDeviceCount?: string;
+  rwgDeviceCount?: string;
+  edgeDeviceCount?: string;
 }
 
 export interface MspEc {
@@ -654,4 +654,5 @@ export interface MileageReportsRequestPayload {
 export interface MileageSeriesData {
   value: number;
   extraData: MileageBreakUp[];
+  isZeroQuantity?: boolean;
 }

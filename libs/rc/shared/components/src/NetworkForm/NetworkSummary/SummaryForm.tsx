@@ -2,11 +2,12 @@ import React, { useContext } from 'react'
 
 import { EnvironmentOutlined }     from '@ant-design/icons'
 import { Col, Divider, Form, Row } from 'antd'
+import _                           from 'lodash'
 import { useIntl }                 from 'react-intl'
 
-import { StepsFormLegacy, Subtitle }               from '@acx-ui/components'
-import { Features, useIsTierAllowed }              from '@acx-ui/feature-toggle'
-import { useMacRegListsQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { StepsFormLegacy, Subtitle }                from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useMacRegListsQuery, useVenuesListQuery }  from '@acx-ui/rc/services'
 import {
   Demo,
   GuestNetworkTypeEnum,
@@ -27,6 +28,7 @@ import NetworkFormContext from '../NetworkFormContext'
 import { AaaSummaryForm }       from './AaaSummaryForm'
 import { DpskSummaryForm }      from './DpskSummaryForm'
 import { Hotspot20SummaryForm } from './Hotspot20SummaryForm'
+import { OpenSummaryForm }      from './OpenSummaryForm'
 import { PortalSummaryForm }    from './PortalSummaryForm'
 import { PskSummaryForm }       from './PskSummaryForm'
 
@@ -42,12 +44,17 @@ const defaultPayload = {
 export function SummaryForm (props: {
   summaryData: NetworkSaveData,
   portalData?: Demo,
-  extraData?: NetworkSummaryExtracData
+  extraData?: NetworkSummaryExtracData,
+  isRuckusAiMode?: boolean,
+  ruckusAiSummaryTitle?: string
 }) {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
-  const { isRuckusAiMode } = useContext(NetworkFormContext)
-  const { summaryData, portalData, extraData } = props
+  // eslint-disable-next-line max-len
+  const isRuckusAiMode = (useContext(NetworkFormContext)?.isRuckusAiMode || props.isRuckusAiMode === true)
+  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const { summaryData, portalData, extraData, ruckusAiSummaryTitle } = props
   const params = useParams()
   const { data } = useVenuesListQuery({
     params: { tenantId: params.tenantId, networkId: 'UNKNOWN-NETWORK-ID' },
@@ -89,11 +96,13 @@ export function SummaryForm (props: {
   // @ts-ignore
   return (
     <>
-      <StepsFormLegacy.Title>{ $t({ defaultMessage: 'Summary' }) }</StepsFormLegacy.Title>
+      {_.isEmpty(ruckusAiSummaryTitle) &&
+        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Summary' })}</StepsFormLegacy.Title>}
+
       <Row gutter={20}>
         <Col flex={1}>
           <Subtitle level={4}>
-            { $t({ defaultMessage: 'Network Info' }) }
+            {ruckusAiSummaryTitle || $t({ defaultMessage: 'Network Info' })}
           </Subtitle>
           {!isRuckusAiMode && <>
             <Form.Item label={$t({ defaultMessage: 'Network Name:' })}
@@ -126,7 +135,8 @@ export function SummaryForm (props: {
               children={extraData?.directoryServer?.name ?? ''}
             />}
           {summaryData.type !== NetworkTypeEnum.PSK && summaryData.type !== NetworkTypeEnum.AAA &&
-            summaryData.type!==NetworkTypeEnum.CAPTIVEPORTAL &&
+            summaryData.type !== NetworkTypeEnum.CAPTIVEPORTAL &&
+            summaryData.type !== NetworkTypeEnum.DPSK &&
             summaryData.type !== NetworkTypeEnum.HOTSPOT20
             && summaryData?.dpskWlanSecurity !== WlanSecurityEnum.WPA23Mixed
           && <Form.Item
@@ -138,7 +148,7 @@ export function SummaryForm (props: {
             }
           />
           }
-          {summaryData.isCloudpathEnabled &&
+          {!supportRadsec && summaryData.isCloudpathEnabled &&
             <>
               {summaryData.type === NetworkTypeEnum.DPSK &&
                 <Form.Item
@@ -185,14 +195,22 @@ export function SummaryForm (props: {
           {summaryData.type === NetworkTypeEnum.CAPTIVEPORTAL &&
             <PortalSummaryForm summaryData={summaryData} portalData={portalData}/>
           }
+          {supportRadsec && summaryData.type === NetworkTypeEnum.OPEN &&
+            (summaryData.authRadius && summaryData.wlan?.macAddressAuthentication &&
+              !summaryData.wlan?.macRegistrationListId) &&
+            <OpenSummaryForm summaryData={summaryData} />
+          }
         </Col>
-        <Divider type='vertical' style={{ height: '300px' }}/>
-        <Col flex={1}>
-          <Subtitle level={4}>
-            { $t({ defaultMessage: 'Activated in <venuePlural></venuePlural>' }) }
-          </Subtitle>
-          <Form.Item children={getVenues()} />
-        </Col>
+        {!isRuckusAiMode && <>
+          <Divider type='vertical' style={{ height: '300px' }} />
+          <Col flex={1}>
+            <Subtitle level={4}>
+              {$t({ defaultMessage: 'Activated in <venuePlural></venuePlural>' })}
+            </Subtitle>
+            <Form.Item children={getVenues()} />
+          </Col>
+        </>}
+
       </Row>
     </>
   )

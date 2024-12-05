@@ -380,7 +380,7 @@ export const PortStatusMessages = {
     defaultMessage: 'Port used by other VLAN setting'
   }),
   USED_BY_AUTH: defineMessage({
-    defaultMessage: 'This port has authentication (80.21x or MACAUTH) enabled and cannot be manually added to a VLAN'
+    defaultMessage: 'This port has authentication (802.1x and MAC-AUTH) enabled and cannot be manually added to a VLAN'
   }),
   CURRENT: defineMessage({
     defaultMessage: 'VLANs'
@@ -533,6 +533,9 @@ export const EthernetPortProfileMessages = {
   }),
   GUEST_VLAN: defineMessage({
     defaultMessage: 'A guest VLAN is used if you want to allow a device that fails authentication to access the Internet but restrict it from accessing internal network resources'
+  }),
+  USE_RADIUS_PROXY: defineMessage({
+    defaultMessage: 'This option requires your access points to run firmware version 7.0.0.400 or higher.'
   })
   /* eslint-enable */
 }

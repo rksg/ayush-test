@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
 import { useIntl }  from 'react-intl'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+
 import { cssStr }          from '../../theme/helper'
 import {
   legendTextStyleOptions,
@@ -31,6 +33,8 @@ import { ResetButton, ChartWrapper } from './styledComponents'
 
 import type { EChartsOption, SeriesOption } from 'echarts'
 
+export type { ChartRowMappingType as ConfigChangeChartRowMappingType } from './helper'
+
 export function ConfigChangeChart ({
   data,
   chartBoundary,
@@ -46,10 +50,15 @@ export function ConfigChangeChart ({
   ...props
 }: ConfigChangeChartProps) {
 
+  const showIntentAI = [
+    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
+    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
+  ].some(Boolean)
+
   const { $t } = useIntl()
   const eChartsRef = useRef<ReactECharts>(null)
 
-  const chartRowMapping = getConfigChangeEntityTypeMapping()
+  const chartRowMapping = getConfigChangeEntityTypeMapping(showIntentAI)
   const chartLayoutConfig = getChartLayoutConfig(props.style?.width as number, chartRowMapping)
   const {
     chartPadding, legendHeight, brushTextHeight, rowHeight, rowGap,
@@ -162,7 +171,7 @@ export function ConfigChangeChart ({
         ({
           type: 'scatter',
           name: label,
-          symbol: getSymbol(selected as number),
+          symbol: getSymbol(selected as number, showIntentAI),
           symbolSize,
           colorBy: 'series',
           animation: false,

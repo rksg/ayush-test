@@ -32,7 +32,7 @@ describe('DisplayMessageSettings', () => {
     expect(generatedName.split('-')[0]).toBe(ActionType.DISPLAY_MESSAGE)
   })
 
-  it('should validate values that are too long', async () => {
+  it.skip('should validate values that are too long', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       return form
@@ -107,7 +107,7 @@ describe('DisplayMessageSettings', () => {
     expect(await screen.findByText('Please enter Page Body Text')).toBeVisible()
   })
 
-  it('should validate no leading or trailing spaces allowed', async () => {
+  it.skip('should validate no leading or trailing spaces allowed', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       return form

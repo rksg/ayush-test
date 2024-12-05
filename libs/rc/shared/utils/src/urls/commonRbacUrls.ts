@@ -283,14 +283,12 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/floorplans/:floorplanId/aps/:serialNumber/floorPositions',
     newApi: true
   },
-  /*
   getVenueApModels: {
     method: 'get',
-    url: '/venues/:venueId/apModels',
+    url: '/venues/:venueId/aps/models',
     oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/ap-models',
     newApi: true
   },
-  */
   getVenueLedOn: {
     method: 'get',
     // url: '/venues/:venueId/ledSettings',
