@@ -18,7 +18,6 @@ import { IntentIcon }           from '../common/IntentIcon'
 import { KpiCard }              from '../common/KpiCard'
 import { richTextFormatValues } from '../common/richTextFormatValues'
 import { StatusTrail }          from '../common/StatusTrail'
-import { formatValues }         from '../config'
 import { useIntentContext }     from '../IntentContext'
 import { getStatusTooltip }     from '../services'
 import { getGraphKPIs }         from '../useIntentDetailsQuery'
@@ -95,14 +94,6 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
       )
     ]
     const isPausedOrNa = intent.status === 'paused' || intent.status === 'na'
-    const tooltipData = getStatusTooltip(displayStatus, sliceValue, { ...metadata, updatedAt })
-    const { tooltip, errorMessage, scheduledAt, zoneName } = tooltipData
-    const values = {
-      ...formatValues,
-      errorMessage,
-      scheduledAt,
-      zoneName
-    }
 
     return <>
       <IntentDetailsHeader />
@@ -157,7 +148,8 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
               <DetailsSection data-testid='Current Status'>
                 <DetailsSection.Title children={$t({ defaultMessage: 'Current Status' })} />
                 <DetailsSection.Details children={
-                  <Card>{<FormattedMessage {...tooltip} values={values} />}</Card>} />
+                  <Card>{getStatusTooltip(
+                    displayStatus, sliceValue, { ...metadata, updatedAt })}</Card>} />
               </DetailsSection>
             </GridCol>
           </GridRow>

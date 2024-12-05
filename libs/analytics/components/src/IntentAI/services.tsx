@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import React        from 'react'
 
-import { gql }               from 'graphql-request'
-import _                     from 'lodash'
-import { MessageDescriptor } from 'react-intl'
+import { gql }              from 'graphql-request'
+import _                    from 'lodash'
+import { FormattedMessage } from 'react-intl'
 
 import { formattedPath }             from '@acx-ui/analytics/utils'
 import { TableProps }                from '@acx-ui/components'
@@ -16,22 +16,25 @@ import {
 }                                                   from '@acx-ui/utils'
 import type { PathFilter } from '@acx-ui/utils'
 
+
 import {
   states,
   codes,
   aiFeaturesLabel,
   stateToGroupedStates,
   IntentListItem,
-  Intent,
   failureCodes
 } from './config'
 import { DisplayStates } from './states'
+import { Intent }        from './useIntentDetailsQuery'
 import {
   Actions,
   IntentWlan,
   parseTransitionGQLByAction,
   TransitionIntentItem
 } from './utils'
+
+import type { Props as FormattedMessageProps } from 'react-intl/lib/src/components/message'
 
 type Metadata = {
   failures?: (keyof typeof failureCodes)[]
@@ -66,14 +69,14 @@ export type IntentAP = {
   version: string
 }
 
-export type StatusTooltip = {
-  tooltip: MessageDescriptor
-  errorMessage: React.ReactNode
-  scheduledAt: string
-  zoneName: string
+export const formatValues: FormattedMessageProps['values'] = {
+  ul: (chunks) => React.createElement('ul', { children: chunks }),
+  li: (chunks) => React.createElement('li', { children: chunks }),
+  p: (chunks) => React.createElement('p', { children: chunks })
 }
 
-export const getStatusTooltip = (state: DisplayStates, sliceValue: string, metadata: Metadata) => {
+export const getStatusTooltip = (
+  state: DisplayStates, sliceValue: string, metadata: Metadata) => {
   const { $t } = getIntl()
   const stateConfig = states[state]
 
@@ -83,16 +86,18 @@ export const getStatusTooltip = (state: DisplayStates, sliceValue: string, metad
         ? $t(failureCodes[failure]) : failure)
     )
   )
-  const statusTooltip: StatusTooltip = {
-    tooltip: stateConfig.tooltip,
-    errorMessage: errMsg,
+
+  const values = {
+    ...formatValues,
+    zoneName: sliceValue,
     scheduledAt: formatter(DateFormatEnum.DateTimeFormat)(metadata.scheduledAt),
-    zoneName: sliceValue
+    errorMessage: errMsg
     // userName: metadata.scheduledBy //TODO: scheduledBy is ID, how to get userName for R1 case?
     // newConfig: metadata.newConfig //TODO: how to display newConfig?
   }
 
-  return statusTooltip
+  return <FormattedMessage {...stateConfig.tooltip} values={values} />
+  // return statusTooltip
 }
 
 type MutationResponse = { success: boolean, errorMsg: string, errorCode: string }
@@ -196,7 +201,7 @@ export const api = intentAIApi.injectEndpoints({
             category: $t(detail.category),
             statusLabel: states[displayStatus] ? $t(states[displayStatus].text) : displayStatus,
             statusTooltip: getStatusTooltip(displayStatus, sliceValue, { ...metadata, updatedAt })
-          } as (IntentListItem))
+          } as unknown as (IntentListItem))
           return intents
         }, [] as Array<IntentListItem>)
         return { intents: items, total: response.intents.total }

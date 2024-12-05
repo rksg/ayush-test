@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useRef, useState } from 'react'
 
-import { defineMessage, FormattedMessage, MessageDescriptor, useIntl } from 'react-intl'
+import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { Loader, TableProps, Table, Tooltip, Button }                                          from '@acx-ui/components'
 import { get }                                                                                 from '@acx-ui/config'
@@ -13,13 +13,13 @@ import { noDataDisplay, PathFilter, useEncodedParameter }                       
 
 import bannerImg from '../../../assets/banner_bkg.png'
 
-import { Icon }                                            from './common/IntentIcon'
-import { AiFeatures, codes, formatValues, IntentListItem } from './config'
-import { getStatusTooltip, useIntentAITableQuery }         from './services'
-import { DisplayStates, Statuses }                         from './states'
-import * as UI                                             from './styledComponents'
-import { IntentAIDateTimePicker, useIntentAIActions }      from './useIntentAIActions'
-import { Actions, getDefaultTime, isVisibledByAction }     from './utils'
+import { Icon }                                        from './common/IntentIcon'
+import { AiFeatures, codes, IntentListItem }           from './config'
+import { getStatusTooltip, useIntentAITableQuery }     from './services'
+import { DisplayStates, Statuses }                     from './states'
+import * as UI                                         from './styledComponents'
+import { IntentAIDateTimePicker, useIntentAIActions }  from './useIntentAIActions'
+import { Actions, getDefaultTime, isVisibledByAction } from './utils'
 
 import type { Filters } from './services'
 
@@ -312,17 +312,10 @@ export function IntentAITable (
       filterPlaceholder: $t({ defaultMessage: 'All Status' }),
       render: (_, row: IntentListItem ) => {
         const { statusLabel, displayStatus, sliceValue, metadata, updatedAt } = row
-        const tooltipData = getStatusTooltip(displayStatus, sliceValue, { ...metadata, updatedAt })
-        const { tooltip, errorMessage, scheduledAt, zoneName } = tooltipData
-        const values = {
-          ...formatValues,
-          errorMessage,
-          scheduledAt,
-          zoneName
-        }
         return <Tooltip
           placement='top'
-          title={<FormattedMessage {...tooltip} values={values} />}
+          title={getStatusTooltip(
+            displayStatus, sliceValue, { ...metadata, updatedAt })}
           dottedUnderline={true}
         >
           {statusLabel}

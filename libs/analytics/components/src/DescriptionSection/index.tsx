@@ -1,14 +1,12 @@
 import React from 'react'
 
-import { Popover }                             from 'antd'
-import { TooltipPlacement }                    from 'antd/es/tooltip'
-import { FormattedMessage, MessageDescriptor } from 'react-intl'
+import { Popover }          from 'antd'
+import { TooltipPlacement } from 'antd/es/tooltip'
 
 import { Tooltip } from '@acx-ui/components'
 
 import { Descriptions, TextContent, PopoverWrapper, PopoverGlobalStyle } from './styledComponents'
 
-import type { Props as FormattedMessageProps } from 'react-intl/lib/src/components/message'
 
 export interface DescriptionRowProps {
   label: string
@@ -17,8 +15,7 @@ export interface DescriptionRowProps {
   children: React.ReactNode
   onClick?: () => void
   tooltipPlacement?: TooltipPlacement
-  formattedTooltip?: MessageDescriptor
-  tooltipValues?: FormattedMessageProps['values']
+  formattedTooltip?: React.ReactNode
 }
 
 export const DescriptionRow: React.FC<Omit<DescriptionRowProps, 'label'>> = (props) => {
@@ -26,11 +23,8 @@ export const DescriptionRow: React.FC<Omit<DescriptionRowProps, 'label'>> = (pro
   if (props.tooltip || props.formattedTooltip) {
     textContent = <Tooltip
       title={props.formattedTooltip
-        ? <FormattedMessage
-          {...props.formattedTooltip}
-          values={props.tooltipValues}
-        />
-        : props.tooltip as React.ReactNode}
+        ? props.formattedTooltip
+        : props.tooltip}
       dottedUnderline={true}
       placement={props.tooltipPlacement ?? 'top'}
     >

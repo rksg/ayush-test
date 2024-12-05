@@ -5,7 +5,6 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { NetworkPath } from '@acx-ui/utils'
 
-import { StatusTooltip }                          from './services'
 import { DisplayStates, Statuses, StatusReasons } from './states'
 
 import type { Props as FormattedMessageProps } from 'react-intl/lib/src/components/message'
@@ -48,7 +47,7 @@ export type IntentListItem = Intent & {
   type?: string
   category: string
   statusLabel: string
-  statusTooltip: StatusTooltip
+  statusTooltip: React.ReactNode
   preferences?: {
     crrmFullOptimization: boolean
   }

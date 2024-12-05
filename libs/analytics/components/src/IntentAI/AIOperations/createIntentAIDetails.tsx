@@ -1,5 +1,5 @@
-import { Typography }                from 'antd'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { Typography } from 'antd'
+import { useIntl }    from 'react-intl'
 
 import { Card, GridCol, GridRow } from '@acx-ui/components'
 
@@ -12,7 +12,6 @@ import { IntentDetailsSidebar } from '../common/IntentDetailsSidebar'
 import { IntentIcon }           from '../common/IntentIcon'
 import { KpiCard }              from '../common/KpiCard'
 import { StatusTrail }          from '../common/StatusTrail'
-import { formatValues }         from '../config'
 import { useIntentContext }     from '../IntentContext'
 import { getStatusTooltip }     from '../services'
 import { getGraphKPIs }         from '../useIntentDetailsQuery'
@@ -37,15 +36,6 @@ export function createIntentAIDetails (
         : []
     ]
     const isPausedOrNa = intent.status === 'paused' || intent.status === 'na'
-
-    const tooltipData = getStatusTooltip(displayStatus, sliceValue, { ...metadata, updatedAt })
-    const { tooltip, errorMessage, scheduledAt, zoneName } = tooltipData
-    const values = {
-      ...formatValues,
-      errorMessage,
-      scheduledAt,
-      zoneName
-    }
 
     return <>
       <IntentDetailsHeader />
@@ -96,7 +86,8 @@ export function createIntentAIDetails (
                 <DetailsSection data-testid='Current Status'>
                   <DetailsSection.Title children={$t({ defaultMessage: 'Current Status' })} />
                   <DetailsSection.Details
-                    children={<Card>{<FormattedMessage {...tooltip} values={values} />}</Card>}
+                    children={<Card>{getStatusTooltip(
+                      displayStatus, sliceValue, { ...metadata, updatedAt })}</Card>}
                   />
                 </DetailsSection>
               </GridCol>
