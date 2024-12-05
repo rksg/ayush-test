@@ -36,9 +36,9 @@ export default function SoftGreVenueDetail (props: SoftGreVenueDetailProps) {
     },
     option: {
       skip: (
-        (!data.activations || data.activations.length === 0 ) &&
-        (!data.venueActivations || data.venueActivations.length === 0 ) &&
-        (!data.apActivations || data.apActivations.length === 0 )
+        !data.activations?.length &&
+        !data.venueActivations?.length &&
+        !data.apActivations?.length
       )
     }
   })
