@@ -60,6 +60,7 @@ export enum Features {
   ENTITLEMENT_RBAC_API = 'abac-policies-toggle',
   ENTITLEMENT_SEPARATE_SERVICEDATE_TOGGLE = 'entitlement-separate-trial-date-toggle',
   ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE = 'entitlement-virtual-smart-edge-toggle',
+  EVENT_ALARM_META_TIME_RANGE_TOGGLE = 'event-alarm-meta-time-range-toggle',
   EOL_AP_2022_12_PHASE_2_TOGGLE = 'eol-ap-2022-12-phase-2-toggle',
   ETHERNET_PORT_PROFILE_TOGGLE = 'acx-ui-ethernet-toggle',
   ETHERNET_PORT_PROFILE_DVLAN_TOGGLE = 'acx-ui-ethernet-dvlan-toggle',
@@ -231,7 +232,8 @@ export enum Features {
   MLISA_4_11_0_TOGGLE = 'acx-ui-mlisa-4-11-0-toggle',
   VIEWMODEL_UI_EC_INVENTORIES_QUERY_PERFORMANCE_CHANGES_TOGGLE = 'viewmodel-ui-ec-inventories-query-performance-changes-toggle',
   RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE = 'ruckus-ai-intent-ai-config-change-toggle',
-  INTENT_AI_CONFIG_CHANGE_TOGGLE = 'acx-ui-intent-ai-config-change-toggle'
+  INTENT_AI_CONFIG_CHANGE_TOGGLE = 'acx-ui-intent-ai-config-change-toggle',
+  WIFI_R370_TOGGLE = 'wifi-r370-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

@@ -227,7 +227,8 @@ export function EditPrivilegeGroup () {
       if (isOnboardedMsp) {
         const policyEntities = [] as PrivilegePolicyEntity[]
         selectedCustomers.forEach((ec: MspEcWithVenue) => {
-          const venueIds = ec.children.filter(v => v.selected).map(venue => venue.id)
+          const venueIds = ec.allVenues ? []
+            : ec.children.filter(v => v.selected).map(venue => venue.id)
           let venueList = {} as VenueObjectList
           venueList['com.ruckus.cloud.venue.model.venue'] = venueIds
           policyEntities.push({

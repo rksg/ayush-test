@@ -1776,7 +1776,8 @@ export const ApCap_T750SE = {
   support11BE: false,
   maxChannelization24G: 40,
   maxChannelization5G: 160,
-  supportMesh: true
+  supportMesh: true,
+  supportSmartMonitor: true
 }
 
 export const apDeviceRadio = {
