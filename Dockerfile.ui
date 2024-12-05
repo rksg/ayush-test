@@ -126,7 +126,7 @@ COPY --from=acx-ui-group-test /app/coverage /app/coverage
 WORKDIR /app
 RUN touch tests-done
 
-RUN ./node_modules/.bin/nx daemon --stop
+RUN ./node_modules/.bin/nx reset
 RUN rm -rf /app/node_modules
 
 ###############################################################
