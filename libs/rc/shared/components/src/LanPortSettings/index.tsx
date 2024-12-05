@@ -239,6 +239,7 @@ export function LanPortSettings (props: {
                          || !lan?.enabled
                          || hasVni}
                   options={ethernetPortDropdownItems}
+                  style={{ width: '250px' }}
                   onChange={() => onChangedByCustom('ethernetPortProfileId')}
                 />} />
               <EthernetPortProfileDrawer
