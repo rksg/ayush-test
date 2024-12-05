@@ -16,7 +16,8 @@ import {
   transformApStatus,
   getPowerSavingStatusEnabledApStatus,
   transformTitleCase,
-  RadioProperties
+  RadioProperties,
+  useApContext
 } from '@acx-ui/rc/utils'
 import { useLocation }                                              from '@acx-ui/react-router-dom'
 import { isApFwVersionLargerThan711, noDataDisplay, useDateFilter } from '@acx-ui/utils'
@@ -63,10 +64,13 @@ export function APDetailsCard (props: {
 
   const isSupportPowerSavingMode = useIsSplitOn(Features.WIFI_POWER_SAVING_MODE_TOGGLE)
   const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
+  const supportR370 = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+  const { supportAggressiveTxPower } = useApContext()
 
   const getTxPowerDisplayInfo = (currentAP: ApViewModel, channel: RadioProperties) => {
     if (isApTxPowerToggleEnabled) {
-      return ((isApFwVersionLargerThan711(currentAP?.fwVersion))?
+      return ((isApFwVersionLargerThan711(currentAP?.fwVersion) &&
+      (!supportR370 || supportAggressiveTxPower))?
         channel?.actualTxPower : channel?.txPower) || noDataDisplay
     }
     return channel?.txPower || noDataDisplay
