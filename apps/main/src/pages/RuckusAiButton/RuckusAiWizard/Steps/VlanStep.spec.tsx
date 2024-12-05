@@ -66,6 +66,7 @@ describe('VlanStep', () => {
       <Provider>
         <Form form={formRef.current}>
           <VlanStep
+            showAlert={true}
             payload={mock_payload}
             sessionId='session-id'
             description='description'
@@ -97,6 +98,7 @@ describe('VlanStep', () => {
       <Provider>
         <Form form={formRef.current}>
           <VlanStep
+            showAlert={false}
             payload={mock_payload}
             sessionId='session-id'
             description='description'
@@ -122,7 +124,8 @@ describe('VlanStep', () => {
     screen.getByTestId('vlan-id-input-1').blur()
 
     //duplicate id
-    expect(await screen.findByText('This VLAN ID is duplicated.')).toBeInTheDocument()
+    const duplicateAlerts = await screen.findAllByText('This VLAN ID is duplicated.')
+    expect(duplicateAlerts.length).toBeGreaterThan(0)
     await userEvent.clear(screen.getByTestId('vlan-id-input-1'))
     await userEvent.type(screen.getByTestId('vlan-id-input-1'), '100')
     expect(screen.getByTestId('vlan-id-input-1')).toHaveValue(100)
