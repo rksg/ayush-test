@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
-import { useAdminLogsQuery, useEventsQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { useAdminLogsNoMetaQuery, useAdminLogsQuery, useEventsNoMetaQuery, useEventsQuery } from '@acx-ui/rc/services'
 import {
   Event,
   CommonUrlsInfo,
@@ -97,9 +98,10 @@ export function useEventsTableQuery (
 ) {
   const { detailLevel, skip, dateFilter } = useQueryFilter()
   const filters = { ...baseFilters, dateFilter }
+  const isReplaceMetaToggleEnabled = useIsSplitOn(Features.EVENT_ALARM_META_TIME_RANGE_TOGGLE)
 
   const tableQuery = usePollingTableQuery<Event>({
-    useQuery: useEventsQuery,
+    useQuery: isReplaceMetaToggleEnabled ? useEventsNoMetaQuery : useEventsQuery,
     defaultPayload: {
       ...defaultPayload,
       detailLevel,
@@ -125,9 +127,10 @@ export function useEventsTableQuery (
 export function useAdminLogsTableQuery () {
   const { detailLevel, skip, dateFilter } = useQueryFilter()
   const pollingInterval = TABLE_QUERY_LONG_POLLING_INTERVAL
+  const isReplaceMetaToggleEnabled = useIsSplitOn(Features.EVENT_ALARM_META_TIME_RANGE_TOGGLE)
 
   const tableQuery = usePollingTableQuery<AdminLog>({
-    useQuery: useAdminLogsQuery,
+    useQuery: isReplaceMetaToggleEnabled ? useAdminLogsNoMetaQuery : useAdminLogsQuery,
     defaultPayload: {
       ...defaultPayload,
       detailLevel,
