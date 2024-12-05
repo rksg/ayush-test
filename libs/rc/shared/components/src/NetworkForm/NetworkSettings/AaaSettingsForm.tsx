@@ -284,7 +284,7 @@ function AaaService () {
 
   const isRadsecFeatureEnabledFF = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const isRadsecFeatureEnabled = !isRuckusAiMode && isRadsecFeatureEnabledFF
-  
+
   const { isTemplate } = useConfigTemplate()
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
   const labelWidth = '250px'
