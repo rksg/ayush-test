@@ -45,12 +45,19 @@ ENV NX_CACHE_DIRECTORY=/app/node_modules/.cache/nx
 COPY --from=nx-cache /app/node_modules/.cache/nx /app/node_modules/.cache/nx
 
 # Remove files and folders older than 24 hours from the nx cache
-RUN find /app/node_modules/.cache/nx -type f -mtime +1 -delete && \
-    find /app/node_modules/.cache/nx -type d -empty -delete
+RUN (find /app/node_modules/.cache/nx -type f -mtime +1 -delete 2>/dev/null || true) && \
+    (find /app/node_modules/.cache/nx -type d -empty -delete 2>/dev/null || true)
 
 COPY tools/tests ./tools/tests
 
-ADD nxcache/nxcache.tar.xz* ./node_modules/.cache/nx
+# Copy the tar.xz file if it exists
+COPY nxcache/nxcache.tar.xz* ./
+
+# Extract it only if the file exists
+RUN if [ -f ./nxcache.tar.xz ]; then \
+      mkdir -p ./node_modules/.cache/nx && \
+      tar -xJf ./nxcache.tar.xz -C ./node_modules/.cache/nx; \
+    fi
 
 # dump git information
 RUN source ${ENV_FILE} \
