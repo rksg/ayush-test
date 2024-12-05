@@ -5,9 +5,13 @@ import { isEqual, clone, cloneDeep }                     from 'lodash'
 import _                                                 from 'lodash'
 import { useIntl }                                       from 'react-intl'
 
-import { AnchorContext, Button, Loader, Tabs, showActionModal }         from '@acx-ui/components'
-import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
-import { LanPortPoeSettings, LanPortSettings, ConvertPoeOutToFormData }
+import { AnchorContext, Button, Loader, Tabs, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
+import {
+  LanPortPoeSettings,
+  LanPortSettings,
+  ConvertPoeOutToFormData,
+  SoftgreProfileProvider }
   from '@acx-ui/rc/components'
 import {
   useGetVenueSettingsQuery,
@@ -478,17 +482,28 @@ export function LanPorts () {
             >
               <Row>
                 <Col span={8}>
-                  <LanPortSettings
-                    selectedPortCaps={selectedPortCaps}
-                    selectedModel={selectedModel}
-                    setSelectedPortCaps={setSelectedPortCaps}
-                    selectedModelCaps={selectedModelCaps}
-                    isDhcpEnabled={isDhcpEnabled}
-                    isTrunkPortUntaggedVlanEnabled={supportTrunkPortUntaggedVlan}
-                    onGUIChanged={handleGUIChanged}
-                    index={index}
-                    venueId={venueId}
-                  />
+                  <SoftgreProfileProvider value={{
+                    index,
+                    isSoftgreTunnelEnable: (lan.softGreProfileId ? true : false),
+                    softgreProfileId: (lan.softGreProfileId ? lan.softGreProfileId : ''),
+                    queryPayload: {
+                      venueId: venueId ? venueId : '',
+                      apModel: selectedModel.model,
+                      portId: lan.portId ? lan.portId : ''
+                    }
+                  }}>
+                    <LanPortSettings
+                      selectedPortCaps={selectedPortCaps}
+                      selectedModel={selectedModel}
+                      setSelectedPortCaps={setSelectedPortCaps}
+                      selectedModelCaps={selectedModelCaps}
+                      isDhcpEnabled={isDhcpEnabled}
+                      isTrunkPortUntaggedVlanEnabled={supportTrunkPortUntaggedVlan}
+                      onGUIChanged={handleGUIChanged}
+                      index={index}
+                      venueId={venueId}
+                    />
+                  </SoftgreProfileProvider>
                 </Col>
               </Row>
             </Tabs.TabPane>

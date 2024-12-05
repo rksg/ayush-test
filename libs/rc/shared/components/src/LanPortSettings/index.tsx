@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 
 import { Form, Input, InputNumber, Select, Space, Switch } from 'antd'
 import { DefaultOptionType }                               from 'antd/lib/select'
@@ -32,8 +32,9 @@ import {
   ApCompatibilityType,
   InCompatibilityFeatures
 } from '../ApCompatibility'
-import { DhcpOption82Settings }  from '../DhcpOption82Settings'
-import { SoftGRETunnelSettings } from '../SoftGRETunnelSettings'
+import { DhcpOption82Settings }           from '../DhcpOption82Settings'
+import { SoftGRETunnelSettings }          from '../SoftGRETunnelSettings'
+import { SoftgreProfileAndDHCP82Context } from '../SoftGRETunnelSettings'
 
 import EthernetPortProfileDrawer from './EthernetPortProfileDrawer'
 import EthernetPortProfileInput  from './EthernetPortProfileInput'
@@ -101,7 +102,7 @@ export function LanPortSettings (props: {
   const [currentEthernetPortData, setCurrentEthernetPortData] =
     useState<EthernetPortProfileViewData>()
   const [ethernetProfileCreateId, setEthernetProfileCreateId] = useState<String>()
-  const [enableSoftGRETunnel, setEnableSoftGRETunnel] = useState<boolean>(false)
+  const { softgreProfile } = useContext(SoftgreProfileAndDHCP82Context)
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
 
@@ -258,11 +259,9 @@ export function LanPortSettings (props: {
           isEthernetPortProfileEnabled && isEthernetSoftgreEnabled &&
             (<>
               <SoftGRETunnelSettings
-                enableSoftGRETunnel={enableSoftGRETunnel}
-                setEnableSoftGRETunnel={setEnableSoftGRETunnel}
                 isSoftGRETunnelToggleDisable={!isEthernetPortEnable}
               />
-              {enableSoftGRETunnel && <DhcpOption82Settings />}
+              {softgreProfile.isSoftgreTunnelEnable && <DhcpOption82Settings />}
             </>)
         }
       </>) :
