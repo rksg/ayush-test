@@ -158,6 +158,9 @@ export function AddPrivilegeGroup () {
       if (isOnboardedMsp) {
         const policyEntities = [] as PrivilegePolicyEntity[]
         selectedCustomers.forEach((ec: MspEcWithVenue) => {
+          if (privilegeGroupData.roleName === RolesEnum.PRIME_ADMIN) {
+            ec.allVenues = true
+          }
           const venueIds = ec.allVenues ? []
             : ec.children.filter(v => v.selected).map(venue => venue.id)
           let venueList = {} as VenueObjectList

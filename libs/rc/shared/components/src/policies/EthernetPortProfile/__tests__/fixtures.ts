@@ -18,6 +18,11 @@ export const mockDefaultTrunkProfileId = 'default_trunk'
 export const mockAccountingRadiusId = '__Accounting_Radius_ID_1__'
 export const mockAccountingRadiusId2 = '__Accounting_Radius_ID_2__'
 export const mockAccuntingRadiusName = '__Accounting_Radius_Name_1__'
+export const mockAuthRadSecRadiusId = '__Auth_RadSec_Radius_ID__'
+export const mockAuthRadSecRadiusName = '__AuthRadSec__Radius_Name__'
+export const mockAccountingRadSecRadiusId = '__Accounting_RadSec_Radius_ID__'
+export const mockAccountingRadSecRadiusName = '__Accounting_RadSec_Radius_Name__'
+
 
 export const mockVenueId = '__Venue_ID_1__'
 export const mockVenueId2 = '__Venue_ID_2__'
@@ -91,8 +96,36 @@ export const dummyAccounting: AAAPolicyType = {
   type: 'ACCOUNTING'
 }
 
+export const dummyAuthRadSecRadius: AAAPolicyType = {
+  id: mockAuthRadSecRadiusId,
+  name: mockAuthRadSecRadiusName,
+  primary: {
+    ip: '192.168.1.100',
+    port: 2083
+  },
+  type: 'AUTHENTICATION',
+  radSecOptions: {
+    tlsEnabled: true,
+    certificateAuthorityId: '2ce780df-fd3f-4b22-b9d0-deefed397410'
+  }
+}
+
+export const dummyAccountingRadSecRadius: AAAPolicyType = {
+  id: mockAccountingRadSecRadiusId,
+  name: mockAccountingRadSecRadiusName,
+  primary: {
+    ip: '192.168.1.101',
+    port: 2083
+  },
+  type: 'ACCOUNTING',
+  radSecOptions: {
+    tlsEnabled: true,
+    certificateAuthorityId: '2ce780df-fd3f-4b22-b9d0-deefed397410'
+  }
+}
+
 export const dummyRadiusServiceList = {
-  totalCount: 3,
+  totalCount: 5,
   page: 1,
   data: [{
     id: mockAuthRadiusId,
@@ -121,6 +154,30 @@ export const dummyRadiusServiceList = {
     networkCount: 0,
     networkIds: [],
     tenantId: '83a98239787940188137242bdf6795e9'
+  }, {
+    id: mockAuthRadSecRadiusId,
+    name: mockAuthRadSecRadiusName,
+    type: 'AUTHENTICATION',
+    primary: '192.168.1.100:2083',
+    networkCount: 0,
+    networkIds: [],
+    tenantId: '83a98239787940188137242bdf6795e9',
+    radSecOptions: {
+      tlsEnabled: true,
+      certificateAuthorityId: '2ce780df-fd3f-4b22-b9d0-deefed397410'
+    }
+  }, {
+    id: mockAccountingRadSecRadiusId,
+    name: mockAccountingRadSecRadiusName,
+    type: 'ACCOUNTING',
+    primary: '192.168.1.101:2083',
+    networkCount: 0,
+    networkIds: [],
+    tenantId: '83a98239787940188137242bdf6795e9',
+    radSecOptions: {
+      tlsEnabled: true,
+      certificateAuthorityId: '2ce780df-fd3f-4b22-b9d0-deefed397410'
+    }
   }]
 }
 
