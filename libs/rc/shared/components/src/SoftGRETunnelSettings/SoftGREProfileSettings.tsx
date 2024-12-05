@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 
 import { Form, Select, Button, Divider, Space } from 'antd'
 import { DefaultOptionType }                    from 'antd/lib/select'
@@ -7,13 +7,15 @@ import { useIntl }                              from 'react-intl'
 import { useGetSoftGreViewDataListQuery } from '@acx-ui/rc/services'
 import { useParams }                      from '@acx-ui/react-router-dom'
 
-
 import SoftGreDrawer from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
 
-import * as UI from './styledComponents'
+import { SoftgreProfileAndDHCP82Context } from './SoftGREProfileAndDHCP82Context'
+import * as UI                            from './styledComponents'
 
+const defaultSoftgreOption = { label: '', value: '' }
 
 export const SoftGREProfileSettings = () => {
+  const { softgreProfile } = useContext(SoftgreProfileAndDHCP82Context)
 
   const { $t } = useIntl()
   const params = useParams()
@@ -22,10 +24,7 @@ export const SoftGREProfileSettings = () => {
   const [ detailDrawerVisible, setDetailDrawerVisible ] = useState<boolean>(false)
   const [ addDrawerVisible, setAddDrawerVisible ] = useState<boolean>(false)
   const [ softGREProfileOptionList, setsoftGREProfileOptionList] = useState<DefaultOptionType[]>([])
-  const [ softGREProfile, setSoftGREProfile ] = useState<DefaultOptionType>({
-    label: '',
-    value: ''
-  })
+  const [ softGREProfile, setSoftGREProfile ] = useState<DefaultOptionType>(defaultSoftgreOption)
 
   const softGreViewDataList = useGetSoftGreViewDataListQuery({
     params,
@@ -46,6 +45,11 @@ export const SoftGREProfileSettings = () => {
       setsoftGREProfileOptionList(softGreProfileList.map((softGreProfile) => {
         return { label: softGreProfile.name, value: softGreProfile.id }
       }))
+      if (softgreProfile.softgreProfileId) {
+        setSoftGREProfile(softGREProfileOptionList.find(
+          (profile) => profile.value === softgreProfile.softgreProfileId) ?? defaultSoftgreOption
+        )
+      }
     }
 
   }, [softGreViewDataList])
@@ -56,6 +60,7 @@ export const SoftGREProfileSettings = () => {
         <Form.Item
           label={$t({ defaultMessage: 'SoftGRE Profile' })}
           initialValue=''
+          name={['lan', softgreProfile.index, 'softGreProfileId']}
           children={
             <Select
               style={{ width: '100%' }}

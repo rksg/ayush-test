@@ -1,22 +1,26 @@
+import { useContext } from 'react'
+
 import { Form, Switch, Space } from 'antd'
 import { useIntl }             from 'react-intl'
 
 import { Tooltip, Alert } from '@acx-ui/components'
 
-import { SoftGREProfileSettings } from './SoftGREProfileSettings'
-import { FieldLabel }             from './styledComponents'
+import { SoftgreProfileAndDHCP82Context } from './SoftGREProfileAndDHCP82Context'
+import { SoftGREProfileSettings }         from './SoftGREProfileSettings'
+import { FieldLabel }                     from './styledComponents'
 
 interface SoftGRETunnelSettingsProps {
   isSoftGRETunnelToggleDisable: boolean
-  enableSoftGRETunnel: boolean
-  setEnableSoftGRETunnel: (visible: boolean) => void
 }
 
 
 export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   const { $t } = useIntl()
+  const { softgreProfile, toggleSoftgreTunnel } = useContext(SoftgreProfileAndDHCP82Context)
 
-  const { enableSoftGRETunnel, setEnableSoftGRETunnel, isSoftGRETunnelToggleDisable } = props
+  const {
+    isSoftGRETunnelToggleDisable
+  } = props
 
   return (
     <>
@@ -38,15 +42,15 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
           style={{ marginTop: '-5px' }}
           children={
             <Switch
-              checked={enableSoftGRETunnel}
+              checked={softgreProfile.isSoftgreTunnelEnable}
               disabled={isSoftGRETunnelToggleDisable}
-              onClick={(checked) => setEnableSoftGRETunnel(checked)}
+              onClick={(checked) => toggleSoftgreTunnel(checked)}
             />
           }
         />
       </FieldLabel>
       {
-        enableSoftGRETunnel && <>
+        softgreProfile.isSoftgreTunnelEnable && <>
           <Alert
             data-testId={'enable-softgre-tunnel-banner'}
             showIcon={true}
