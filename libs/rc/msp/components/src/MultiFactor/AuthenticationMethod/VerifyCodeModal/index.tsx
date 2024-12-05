@@ -113,7 +113,7 @@ export const VerifyCodeModal = (props: VerifyCodeModalProps) =>{
               message: $t({ defaultMessage: 'Please enter verification code' })
             },
             {
-              validator: (_, value) => (!/^\d+$/.test(value))
+              validator: (_, value) => (!/^\d{6}$/.test(value))
                 ? Promise.reject($t({ defaultMessage: 'Please enter valid verification code' }))
                 : Promise.resolve()
             }
