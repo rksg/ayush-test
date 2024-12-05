@@ -7,7 +7,7 @@ if [ $# -eq 0 ]; then
 fi
 
 # First parameter as directory
-FEATURE_BRANCH="feature/$1"
+FEATURE_BRANCH="$1"
 CACHE_PATH="nxcache"
 
 # Check if directory does NOT exist
