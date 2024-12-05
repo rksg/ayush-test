@@ -60,6 +60,7 @@ export enum Features {
   ENTITLEMENT_RBAC_API = 'abac-policies-toggle',
   ENTITLEMENT_SEPARATE_SERVICEDATE_TOGGLE = 'entitlement-separate-trial-date-toggle',
   ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE = 'entitlement-virtual-smart-edge-toggle',
+  EVENT_ALARM_META_TIME_RANGE_TOGGLE = 'event-alarm-meta-time-range-toggle',
   EOL_AP_2022_12_PHASE_2_TOGGLE = 'eol-ap-2022-12-phase-2-toggle',
   ETHERNET_PORT_PROFILE_TOGGLE = 'acx-ui-ethernet-toggle',
   ETHERNET_PORT_PROFILE_DVLAN_TOGGLE = 'acx-ui-ethernet-dvlan-toggle',
@@ -216,6 +217,7 @@ export enum Features {
   WIFI_WLAN_DEPRECATE_WEP = 'wifi-wlan-deprecate-wpa',
   WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE = 'wifi-over-the-ds-ft-support-toggle',
   WIFI_COMPATIBILITY_BY_MODEL = 'wifi-compatibility-check-by-model-toggle',
+  WIFI_ETHERNET_SOFTGRE_TOGGLE = 'wifi-ethernet-softgre-toggle',
   ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE = 'entitlement-license-compliance-phase2-toggle',
   BRAND360_MDU_TOGGLE = 'acx-ui-brand360-mdu-toggle',
   SERVER_CERTIFICATE_MANAGEMENT_UI_TOGGLE = 'server-certificate-management-ui-toggle',
@@ -230,7 +232,8 @@ export enum Features {
   MLISA_4_11_0_TOGGLE = 'acx-ui-mlisa-4-11-0-toggle',
   VIEWMODEL_UI_EC_INVENTORIES_QUERY_PERFORMANCE_CHANGES_TOGGLE = 'viewmodel-ui-ec-inventories-query-performance-changes-toggle',
   RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE = 'ruckus-ai-intent-ai-config-change-toggle',
-  INTENT_AI_CONFIG_CHANGE_TOGGLE = 'acx-ui-intent-ai-config-change-toggle'
+  INTENT_AI_CONFIG_CHANGE_TOGGLE = 'acx-ui-intent-ai-config-change-toggle',
+  WIFI_R370_TOGGLE = 'wifi-r370-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

@@ -270,6 +270,7 @@ export default function RuckusAiButton () {
       mask={true}
       maskClosable={false}
       width={1000}
+      destroyOnClose={true}
       children={
         <>
           <Form form={basicFormRef}
