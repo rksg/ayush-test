@@ -529,3 +529,9 @@ export interface SubInterface {
   subnet?: string
   interfaceName?: string
 }
+
+export interface ClusterArpTerminationSettings {
+  enabled: boolean
+  agingTimerEnabled: boolean
+  agingTimeSec: number
+}

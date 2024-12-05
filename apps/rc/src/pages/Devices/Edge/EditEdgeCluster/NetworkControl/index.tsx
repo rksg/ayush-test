@@ -27,7 +27,8 @@ import { hasCrossVenuesPermission, hasPermission }    from '@acx-ui/user'
 
 import EdgeQosProfileSelectionForm from '../../../../Policies/HqosBandwidth/Edge/HqosBandwidthSelectionForm'
 
-import { MdnsProxyFormItem } from './mDNS'
+import { ArpTerminationFormItem } from './ArpTermination'
+import { MdnsProxyFormItem }      from './mDNS'
 
 
 interface EdgeNetworkControlProps {
@@ -40,6 +41,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
+  const isEdgeArptReady = useIsEdgeFeatureReady(Features.EDGE_ARPT_TOGGLE)
 
   const { currentClusterStatus } = props
   const navigate = useNavigate()
@@ -96,6 +98,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
     await handleApplyDhcp()
     await handleApplyQos()
     await handleApplyMdns()
+    await handleApplyArpTermination()
   }
 
   const handleApplyDhcp = async () => {
@@ -159,6 +162,16 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
         clusterId
       )
     }
+  }
+
+  const handleApplyArpTermination = async () => {
+    const isArpTerminationEnabled = form.getFieldValue('arpTerminationSwitch')
+    const isArpAgingTimerEnabled = form.getFieldValue('arpAgingTimerSwitch')
+    const agingTimeSec = form.getFieldValue('agingTimeSec')
+
+    console.log('testARP-ArpTermination:', isArpTerminationEnabled)
+    console.log('testARP-ArpAgingTimer:', isArpAgingTimerEnabled)
+    console.log('testARP-agingTimeSec:', agingTimeSec)
   }
 
   const applyDhcpService = async (dhcpId: string) => {
@@ -306,6 +319,12 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
             clusterId={clusterId}
             setEdgeFeatureName={setEdgeFeatureName}
           />}
+
+          {isEdgeArptReady && currentClusterStatus && <ArpTerminationFormItem
+            currentClusterStatus={currentClusterStatus}
+            setEdgeFeatureName={setEdgeFeatureName}
+          />}
+
         </StepsForm.StepForm>
 
       </StepsForm>
