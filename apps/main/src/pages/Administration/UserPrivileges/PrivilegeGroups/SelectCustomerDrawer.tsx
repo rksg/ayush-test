@@ -55,6 +55,7 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
     const allSelectedVenueIds = customerList?.data
       .filter(ec => custIdsWithAllSelVenues.includes(ec.id))
       .flatMap(ec => ec.children)
+      .filter(venue => venue)
       .map(venue => venue.id) ?? []
     return venueIds.concat(allSelectedVenueIds)
   }

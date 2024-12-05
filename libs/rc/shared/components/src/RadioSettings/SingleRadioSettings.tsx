@@ -4,10 +4,10 @@ import { Col, Row, Form, Switch } from 'antd'
 import { isEmpty }                from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { Button, cssStr }             from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { AFCProps }                   from '@acx-ui/rc/utils'
-import { isApFwVersionLargerThan711 } from '@acx-ui/utils'
+import { Button, cssStr }                from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { AFCProps, CapabilitiesApModel } from '@acx-ui/rc/utils'
+import { isApFwVersionLargerThan711 }    from '@acx-ui/utils'
 
 import { RadioSettingsChannels }       from '../RadioSettingsChannels'
 import { findIsolatedGroupByChannel }  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
@@ -67,7 +67,8 @@ export function SingleRadioSettings (props:{
   isUseVenueSettings?: boolean,
   LPIButtonText?: LPIButtonText,
   afcProps?: AFCProps,
-  firmwareProps?: FirmwareProps
+  firmwareProps?: FirmwareProps,
+  apCapabilities?: CapabilitiesApModel
 }) {
 
   const { $t } = useIntl()
@@ -80,7 +81,8 @@ export function SingleRadioSettings (props:{
     testId,
     LPIButtonText,
     afcProps,
-    firmwareProps
+    firmwareProps,
+    apCapabilities
   } = props
 
   const { radioType, handleChanged } = props
@@ -90,6 +92,8 @@ export function SingleRadioSettings (props:{
     supportRadioChannels,
     supportRadioDfsChannels
   } = useContext(SupportRadioChannelsContext)
+
+  const supportR370 = useIsSplitOn(Features.WIFI_R370_TOGGLE)
 
   const bandwidthOptions = bandwidthRadioOptions[radioType]
   const supportChannels = supportRadioChannels[radioType]
@@ -317,11 +321,14 @@ export function SingleRadioSettings (props:{
 
   useEffect(() => {
     const getTxPowerAdjustmentOptions = () => {
-      let res = (radioType === ApRadioTypeEnum.Radio6G)? txPowerAdjustment6GOptions
+      let res = (radioType === ApRadioTypeEnum.Radio6G
+        || (supportR370 && context === 'ap' && !apCapabilities?.supportAutoCellSizing))
+        ? txPowerAdjustment6GOptions
         : txPowerAdjustmentOptions
       if (isApTxPowerToggleEnabled) {
         if (context === 'venue'
-          || (context === 'ap' && isApFwVersionLargerThan711(firmwareProps?.firmware))) {
+          || (context === 'ap' && isApFwVersionLargerThan711(firmwareProps?.firmware)
+          && (!supportR370 || apCapabilities?.supportAggressiveTxPower))) {
           return [...res, ...txPowerAdjustmentExtendedOptions].sort((a, b) => {
             if (a.value === 'MIN') return 1
             if (b.value === 'MIN') return -1
