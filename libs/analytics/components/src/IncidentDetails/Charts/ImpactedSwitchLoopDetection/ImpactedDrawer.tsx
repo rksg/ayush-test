@@ -26,9 +26,9 @@ export const ImpactedSwitchesDrawer: React.FC<ImpactedDrawerProps> = (props) => 
       dataIndex: 'name',
       width: 150,
       title: $t({ defaultMessage: 'Switch Name' }),
-      render: (_, { mac, name },__,highlightFn) =>
+      render: (_, { mac, name, serial },__,highlightFn) =>
         <TenantLink
-          to={`devices/switch/${isMLISA ? mac : mac?.toLowerCase()}/serial/details/${isMLISA
+          to={`devices/switch/${isMLISA ? mac : mac?.toLowerCase()}/${serial}/details/${isMLISA
             ? 'reports': 'overview'}`
           }>
           {highlightFn(name)}
