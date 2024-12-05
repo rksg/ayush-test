@@ -31,51 +31,34 @@ export const api = dataApi.injectEndpoints({
         >({
           query: (payload) => {
             const useFilter = 'filter' in payload
-            let variables: (Partial<PathFilter> | Partial<DashboardFilter>) & {
-          requestedList: string[]
-        }
-            let startDate, endDate
-            if (payload.weekRange) {
-              startDate = moment()
-                .startOf('day')
-                .subtract(7, 'days')
-                .format('YYYY-MM-DDTHH:mm:ssZ')
-              endDate = moment()
-                .startOf('day')
-                .format('YYYY-MM-DDTHH:mm:ssZ')
-            } else {
-              startDate = payload.startDate
-              endDate = payload.endDate
-            }
-            if (useFilter) {
-              variables = {
-                startDate: startDate,
-                endDate: endDate,
-                ...getFilterPayload(payload),
-                requestedList: payload.requestedList
-              }
-            } else {
-              variables = { ..._.pick(payload, ['path', 'requestedList']), startDate, endDate }
-            }
+            let variables: (Partial<PathFilter> | Partial<DashboardFilter>)
+              & { requestedList: string[] }
+            const { startDate, endDate } = payload.weekRange ?
+              getWeekRange() :
+              getRangeByFilter(payload)
+            const baseVariables = { startDate, endDate, requestedList: payload.requestedList }
+            variables = useFilter ?
+              { ...baseVariables, ...getFilterPayload(payload) } :
+              { ...baseVariables, ..._.pick(payload, ['path']) }
             return {
               document: gql`
-          query Facts(
-            ${useFilter ? '$filter: FilterInput' : ''},
-            $path: [HierarchyNodeInput]
-            $startDate: DateTime,
-            $endDate: DateTime
-            $requestedList: [String]
-          ) {
-            network(start: $startDate, end: $endDate${useFilter ? ', filter: $filter' : ''}) {
-              hierarchyNode(path: $path) {
-                facts(n: 2, timeZone: "${moment.tz.guess()}", requestedList: $requestedList) {
-                  key values labels
+                query Facts(
+                  ${useFilter ? '$filter: FilterInput' : ''},
+                  $path: [HierarchyNodeInput]
+                  $startDate: DateTime,
+                  $endDate: DateTime
+                  $requestedList: [String]
+                ) {
+                  network(start: $startDate, end: $endDate${useFilter ? ', filter: $filter' : ''}) {
+                    hierarchyNode(path: $path) {
+                      facts(n: 2, timeZone: "${moment.tz.guess()}", requestedList: $requestedList) {
+                        key values labels
+                      }
+                      availableFacts(timeZone: "${moment.tz.guess()}")
+                    }
+                  }
                 }
-                availableFacts(timeZone: "${moment.tz.guess()}")
-              }
-            }
-          }
-          `,
+              `,
               variables
             }
           },
@@ -83,11 +66,44 @@ export const api = dataApi.injectEndpoints({
             facts: response.network.hierarchyNode.facts,
             availableFacts: response.network.hierarchyNode.availableFacts
           })
-        })
+        }),
+    availableFacts: build.query<string[], (PathFilter | DashboardFilter) & { weekRange: boolean }>({
+      query: (payload) => {
+        const useFilter = 'filter' in payload
+        let variables: (Partial<PathFilter> | Partial<DashboardFilter>)
+        const { startDate, endDate } = payload.weekRange ?
+          getWeekRange() :
+          getRangeByFilter(payload)
+        const baseVariables = { startDate, endDate }
+        variables = useFilter ?
+          { ...baseVariables, ...getFilterPayload(payload) } :
+          { ...baseVariables, ..._.pick(payload, ['path']) }
+        return {
+          document: gql`
+            query Facts(
+              ${useFilter ? '$filter: FilterInput' : ''},
+              $path: [HierarchyNodeInput]
+              $startDate: DateTime,
+              $endDate: DateTime
+            ) {
+              network(start: $startDate, end: $endDate${useFilter ? ', filter: $filter' : ''}) {
+                hierarchyNode(path: $path) {
+                  availableFacts(timeZone: "${moment.tz.guess()}")
+                }
+              }
+            }
+          `,
+          variables
+        }
+      },
+      transformResponse: (response: Response<string[]>) => {
+        return response.network.hierarchyNode.availableFacts
+      }
+    })
   })
 })
 
-export const { useCustomFactsQuery } = api
+export const { useCustomFactsQuery, useAvailableFactsQuery } = api
 
 export function useFactsQuery (
   maxFactPerSlide: number | undefined,
@@ -112,4 +128,18 @@ export function useFactsQuery (
       skip: !Boolean(content[offset]?.length === 0 )
     }
   )
+}
+
+const getWeekRange = () => {
+  const today = moment().startOf('day')
+  return {
+    startDate: today.clone().subtract(7, 'days').format('YYYY-MM-DDTHH:mm:ssZ'),
+    endDate: today.format('YYYY-MM-DDTHH:mm:ssZ')
+  }
+}
+
+const getRangeByFilter = (filters: PathFilter | DashboardFilter) => {
+  let startDate = filters.startDate
+  let endDate = filters.endDate
+  return { startDate, endDate }
 }

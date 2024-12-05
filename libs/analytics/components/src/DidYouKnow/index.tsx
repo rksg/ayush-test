@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { shuffle } from 'lodash'
-import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import { isEqual, isEmpty } from 'lodash'
+import { useIntl }          from 'react-intl'
+import AutoSizer            from 'react-virtualized-auto-sizer'
 
 import { Loader, Carousel }                 from '@acx-ui/components'
 import type { DashboardFilter, PathFilter } from '@acx-ui/utils'
 
+import { factsConfig, getFactsData } from './facts'
 import {
   useFactsQuery
 } from './services'
@@ -19,12 +20,12 @@ type DidYouKnowWidgetProps = {
   maxFactPerSlide?: number
   maxSlideChar?: number
 }
-const factsMap: Record<number, { facts: string[] }> = {
-  0: { facts: ['topIncidentsZones', 'l3AuthFailure'] },
-  1: { facts: ['topApplicationsByClients', 'topApplicationsByTraffic'] },
-  2: { facts: ['busiestSsidByClients', 'busiestSsidByTraffic'] },
-  3: { facts: ['airtimeUtilization', 'userTrafficThroughAPs'] },
-  4: { facts: ['avgSessionDuration'] }
+export const getCarouselFactsMap = (facts: string[]) => {
+  let map: Record<number, { facts: string[] }> = {}
+  for (let i = 0; i < facts.length; i += 2) {
+    map[i / 2 + 1] = { facts: facts.slice(i, i + 2) }
+  }
+  return map
 }
 
 function DidYouKnowWidget ({
@@ -36,7 +37,7 @@ function DidYouKnowWidget ({
   const [offset, setOffset] = useState(0)
   const [content, setContent] = useState<string[][]>(Array.from({ length: 5 }, () => []))
   const [carouselFactsMap, setCarouselFactsMap] = useState<Record<number, { facts: string[] }>>({})
-  const { data, isFetching, refetch, isSuccess, isLoading } =
+  const { data, isFetching, refetch, isSuccess, isLoading, initialLoadedFacts, availableFacts } =
     useFactsQuery(
       maxFactPerSlide, maxSlideChar, carouselFactsMap, content, offset, filters
     )
@@ -61,14 +62,16 @@ function DidYouKnowWidget ({
     }
   }, [filters])
   useEffect(() => {
-    const shuffledFactsMap: Record<number, { facts: string[] }> = {}
-    const entries = Object.entries(factsMap)
-    const shuffledEntries = shuffle(entries)
-    shuffledEntries.forEach((entry, index) => {
-      shuffledFactsMap[index] = entry[1]
-    })
-    setCarouselFactsMap(shuffledFactsMap)
-  }, [])
+    if (initialLoadedFacts && availableFacts && isEmpty(carouselFactsMap)) {
+      const newMap = getCarouselFactsMap(availableFacts.filter((item) =>
+        !initialLoadedFacts.includes(item as keyof typeof factsConfig)))
+      newMap[0] = { facts: initialLoadedFacts }
+      if (!isEqual(carouselFactsMap, newMap)) {
+        setCarouselFactsMap(newMap)
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialLoadedFacts])
   const { $t } = intl
   const title = $t({ defaultMessage: 'Did you know?' })
   const subTitle = $t({ defaultMessage: 'No data to report' })
