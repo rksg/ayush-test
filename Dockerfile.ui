@@ -149,9 +149,9 @@ COPY --from=acx-ui-sonar-run /app/tests-done /tmp/
 
 RUN \
   # Create structure to match deployment need
-  mkdir -p tenant/t && \
+  mkdir -p tenant && \
   # Move all files into it
-  ln -s main/* tenant/t/
+  ln -s /usr/share/nginx/html/main tenant/t
 
 EXPOSE 8080
 
