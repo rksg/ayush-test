@@ -157,6 +157,7 @@ describe('getErrorContent', () => {
   })
   it('should handle GraphQL errors from data-api', () => {
     const graphqlResponse = {
+      data: { shouldBe: 'ignored' },
       errors: [
         {
           message: 'The provided data did not pass validation. Check your input.',
