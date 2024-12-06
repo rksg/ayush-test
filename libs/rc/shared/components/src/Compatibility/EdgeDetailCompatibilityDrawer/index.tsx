@@ -1,15 +1,15 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Loader, cssStr }                    from '@acx-ui/components'
-import {  ApCompatibility, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { Drawer, Loader, cssStr }                                   from '@acx-ui/components'
+import {  ApCompatibility, Compatibility, IncompatibilityFeatures } from '@acx-ui/rc/utils'
 
 import { FeatureCrossDeviceTypeCompatibility } from '../CompatibilityDrawer/FeatureCrossDeviceTypeCompatibility'
 
 export type EdgeDetailCompatibilityDrawerProps = {
   visible: boolean,
   featureName: IncompatibilityFeatures,
-  data: Record<string, ApCompatibility>,
+  data: Record<string, ApCompatibility | Compatibility>,
   onClose: () => void,
   title?: string,
   isLoading?: boolean,

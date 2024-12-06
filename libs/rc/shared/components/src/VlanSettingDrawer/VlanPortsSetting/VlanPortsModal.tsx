@@ -4,9 +4,9 @@ import { Form, Typography } from 'antd'
 import _                    from 'lodash'
 import { useIntl }          from 'react-intl'
 
-import { Modal, ModalType, StepsForm } from '@acx-ui/components'
-import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
-import { useSwitchPortlistQuery }      from '@acx-ui/rc/services'
+import { Modal, ModalType, showActionModal, StepsForm } from '@acx-ui/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { useSwitchPortlistQuery }                       from '@acx-ui/rc/services'
 import {
   SwitchModelPortData,
   TrustedPort,
@@ -175,6 +175,7 @@ export function VlanPortsModal (props: {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onFinish = async (data: any) => {
+
     const switchFamilyModelsData = {
       ...data.switchFamilyModels,
       title: '',
@@ -201,6 +202,17 @@ export function VlanPortsModal (props: {
           (enableSlot2 && value.startsWith('1/2/')) ||
           (enableSlot3 && value.startsWith('1/3/')))
 
+    if (_.isEmpty(taggedPorts) && _.isEmpty(untaggedPorts)) {
+      showActionModal({
+        type: 'error',
+        title: $t({ defaultMessage: 'Tagged or Untagged Port is not Configured' }),
+        content: $t({  // eslint-disable-next-line max-len
+          defaultMessage: 'Please ensure that at least one Tagged or Untagged Port is configured.'
+        })
+      })
+      return
+    }
+
     switchFamilyModelsData.model
       = isSwitchLevel ? switchFamilyModel : data.family + '-' + data.model
 
@@ -213,6 +225,7 @@ export function VlanPortsModal (props: {
     switchFamilyModelsData.untaggedPorts = untaggedPorts
     switchFamilyModelsData.taggedPorts = taggedPorts
     onSave(switchFamilyModelsData)
+
   }
 
   return (

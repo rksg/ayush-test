@@ -511,6 +511,8 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
     ...(apTxPowerFlag ? [{
       key: 'actualTxPower',
       dataIndex: 'actualTxPower',
+      show: false,
+      sorter: false,
       title: $t({ defaultMessage: 'Tx Power' }),
       children: Object.entries(extraParams).reduce((acc, [channel, visible]) => {
         if (!visible) return acc

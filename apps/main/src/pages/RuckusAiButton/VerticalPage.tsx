@@ -1,7 +1,5 @@
 
 
-import { useState } from 'react'
-
 import { Form, Input, Radio, RadioChangeEvent } from 'antd'
 import { useIntl }                              from 'react-intl'
 
@@ -13,11 +11,14 @@ import { EdgeClusterTypeCard }                                                  
 import * as UI from './styledComponents'
 
 
-function VerticalPage () {
+function VerticalPage (props: {
+  selectedType: string,
+  setSelectedType: (selectedType: string) => void
+}) {
   const { $t } = useIntl()
-  const [selected, setSelected] = useState(undefined)
+  const { selectedType, setSelectedType } = props
   const onChange = (e: RadioChangeEvent) => {
-    setSelected(e.target.value)
+    setSelectedType(e.target.value)
   }
 
   return <div>
@@ -40,7 +41,7 @@ function VerticalPage () {
       <Radio.Group
         style={{ width: '100%' }}
         onChange={onChange}
-        value={selected}
+        value={selectedType}
       >
         <UI.VirticalContainer>
           <UI.VirticalBox>
@@ -116,13 +117,19 @@ function VerticalPage () {
         </UI.VirticalContainer>
         <Radio value={'OTHER'} style={{ marginLeft: '90px', marginTop: '30px' }}>
           {$t({ defaultMessage: 'Others' })}
-          {selected === 'OTHER' &&
-          <Form.Item
-            name={'othersValue'}
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
+          {(selectedType === 'OTHER') &&
+            <Form.Item
+              name={'othersValue'}
+              rules={[{
+                required: true,
+                message: $t({
+                  defaultMessage:
+                    'Please enter a value for Others'
+                })
+              }]}
+            >
+              <Input />
+            </Form.Item>
           }
         </Radio>
       </Radio.Group>

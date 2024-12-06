@@ -41,7 +41,11 @@ export default function DirectoryServerTable () {
   const tableQuery = useTableQuery<DirectoryServerViewData>({
     useQuery: useGetDirectoryServerViewDataListQuery,
     defaultPayload,
-    pagination: { settingsId }
+    pagination: { settingsId },
+    search: {
+      searchString: '',
+      searchTargetFields: ['name']
+    }
   })
 
   const doDelete = (selectedRows: DirectoryServerViewData[], callback: () => void) => {
@@ -155,7 +159,7 @@ function useColumns () {
       sorter: true,
       searchable: true,
       fixed: 'left',
-      render: function (_, row) {
+      render: function (_, row,__,highlightFn) {
         return (
           <TenantLink
             to={getPolicyDetailsLink({
@@ -163,7 +167,7 @@ function useColumns () {
               oper: PolicyOperation.DETAIL,
               policyId: row.id!
             })}>
-            {row.name}
+            {highlightFn(row.name)}
           </TenantLink>
         )
       }
@@ -172,6 +176,7 @@ function useColumns () {
       key: 'type',
       title: $t({ defaultMessage: 'Server Type' }),
       dataIndex: 'type',
+      sorter: true,
       render: (_, row) => {
         switch (row?.type) {
           case DirectoryServerProfileEnum.LDAP:
@@ -186,7 +191,8 @@ function useColumns () {
     {
       key: 'serverAddress',
       title: $t({ defaultMessage: 'Server Address' }),
-      dataIndex: 'serverAddress',
+      dataIndex: 'host',
+      sorter: true,
       render: (_, row) => {
         const host = row?.host
         const port = row?.port
@@ -204,6 +210,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Networks' }),
       dataIndex: 'wifiNetworkIds',
       align: 'center',
+      sorter: true,
       filterable: networkNameMap,
       render: (_,row) =>{
         const networkIds = row.wifiNetworkIds
