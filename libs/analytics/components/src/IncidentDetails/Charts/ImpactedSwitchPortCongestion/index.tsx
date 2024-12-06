@@ -14,7 +14,7 @@ import { DetailsContainer,
   Image, Statistic }                from '../SwitchDetail/styledComponents'
 import { ChartProps } from '../types'
 
-import { useImpactedSwitchQuery,
+import { usePortImpactedSwitchQuery,
   ImpactedSwitchPort }          from './services'
 
 
@@ -26,7 +26,7 @@ import { useImpactedSwitchQuery,
 export function SwitchDetail ({ incident }: ChartProps) {
   const { $t } = useIntl()
 
-  const impactedSwitch = useImpactedSwitchQuery({ id: incident.id,
+  const impactedSwitch = usePortImpactedSwitchQuery({ id: incident.id,
     n: 100, search: '' })
   const fields: {
     key: string
@@ -72,7 +72,7 @@ export function SwitchDetail ({ incident }: ChartProps) {
 export function ImpactedSwitchPortConjestionTable ({ incident }: ChartProps) {
   const { $t } = useIntl()
 
-  const impactedSwitch = useImpactedSwitchQuery({ id: incident.id, n: 100, search: '' })
+  const impactedSwitch = usePortImpactedSwitchQuery({ id: incident.id, n: 100, search: '' })
 
   return <Loader states={[impactedSwitch]}>
     <Card title={$t({ defaultMessage: 'Port details with congestion' })} type='no-border'>

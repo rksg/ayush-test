@@ -22,7 +22,7 @@ export interface ImpactedSwitch {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    impactedSwitch: build.query<
+    portImpactedSwitch: build.query<
       ImpactedSwitch, { id: Incident['id'], n: number,search: String }
     >({
       query: (variables) => ({
@@ -51,5 +51,5 @@ export const api = dataApi.injectEndpoints({
 })
 
 export const {
-  useImpactedSwitchQuery
+  usePortImpactedSwitchQuery
 } = api
