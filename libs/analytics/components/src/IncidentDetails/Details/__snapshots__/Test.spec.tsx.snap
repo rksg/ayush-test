@@ -21427,6 +21427,23 @@ exports[`Test Details should render SwitchPortCongestion correctly 1`] = `
     >
       <div
         class="c1"
+        style="min-height: 129px;"
+      >
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-SwitchImpactedPortsCount"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
         style="min-height: 326px;"
       >
         <div
@@ -22123,7 +22140,7 @@ exports[`Test Details should render SwitchTcpSynDDoS correctly 1`] = `
           data-testid="timeseries"
         >
           <div
-            data-testid="timeseries-SwitchDDoSAttackChart"
+            data-testid="timeseries-SwitchImpactedPortsCount"
           />
         </div>
       </div>
