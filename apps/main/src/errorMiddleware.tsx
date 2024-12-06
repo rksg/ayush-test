@@ -9,6 +9,17 @@ import { CatchErrorResponse }                                                   
 import { getIntl, setUpIntl, IntlSetUpError, isShowApiError, isIgnoreErrorModal, userLogout } from '@acx-ui/utils'
 
 type GraphQLResponse = ClientError['response']
+function formatGraphQLErrors (
+  response: Required<Pick<GraphQLResponse, 'errors'>> & GraphQLResponse
+): CatchErrorResponse['data'] {
+  return {
+    requestId: response.extensions?.requestId,
+    errors: response.errors.map(error => ({
+      code: error.extensions?.code,
+      message: error.message
+    }))
+  }
+}
 
 type QueryMeta = {
   response?: Response
@@ -136,12 +147,11 @@ export const getErrorContent = (action: ErrorAction) => {
   let type: ActionModalType = 'error'
   let errors: ErrorDetailsProps
     | CatchErrorResponse['data']
-    | Exclude<GraphQLResponse['errors'], undefined>
     | string
     | undefined
 
   if (action.type?.includes('data-api') && (response as GraphQLResponse)?.errors) {
-    errors = (response as GraphQLResponse).errors
+    errors = formatGraphQLErrors(response as GraphQLResponse)
   } else if (typeof action.payload === 'string') {
     errors = action.payload
   } else if (typeof action.payload === 'object') {
