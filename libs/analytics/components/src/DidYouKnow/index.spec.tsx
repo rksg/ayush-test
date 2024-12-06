@@ -10,7 +10,7 @@ import { DateRange }                                         from '@acx-ui/utils
 
 import { api } from './services'
 
-import { DidYouKnow } from './index'
+import { DidYouKnow, getCarouselFactsMap } from './index'
 
 const filters: PathFilter = {
   startDate: '2022-01-01T00:00:00+08:00',
@@ -147,5 +147,25 @@ describe('DidYouKnowWidget', () => {
     })
     render( <Provider> <DidYouKnow filters={filters}/> </Provider>)
     expect((await screen.findAllByText('No data to report'))?.[0]).toBeVisible()
+  })
+})
+describe('getCarouselFactsMap', () => {
+  it('should return an empty object when passed an empty array', () => {
+    expect(getCarouselFactsMap([])).toEqual({})
+  })
+
+  it('should correctly map a single fact', () => {
+    const facts = ['fact1']
+    const expectedMap = { 1: { facts: ['fact1'] } }
+    expect(getCarouselFactsMap(facts)).toEqual(expectedMap)
+  })
+
+  it('should correctly map multiple facts', () => {
+    const facts = ['fact1', 'fact2', 'fact3']
+    const expectedMap = {
+      1: { facts: ['fact1', 'fact2'] },
+      2: { facts: ['fact3'] }
+    }
+    expect(getCarouselFactsMap(facts)).toEqual(expectedMap)
   })
 })
