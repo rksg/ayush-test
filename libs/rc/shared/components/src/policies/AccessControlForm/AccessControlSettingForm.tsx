@@ -44,7 +44,7 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
 
   const data = useGetAclPolicyInstance(editMode)
 
-  const aclProfileList : AccessControlInfoType[] = useGetAclPolicyListInstance(editMode)
+  const aclProfileList : AccessControlInfoType[] = useGetAclPolicyListInstance()
 
   useEffect(() => {
     if (data) {
@@ -124,8 +124,8 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
             { validator: async (rule, value) => {
               if (value && aclProfileList &&
                 aclProfileList
-                  .filter((aclProfile) => editMode ? (aclProfile.name !== value) : true)
-                  .findIndex((aclProfile) => aclProfile.name === value) !== -1) {
+                  .filter((aclProfile) => (editMode ? (aclProfile.name !== data.name) : true))
+                  .some((aclProfile) => aclProfile.name === value)) {
                 return Promise.reject(
                   $t({ defaultMessage: 'The access control profile with that name already exists' })
                 )
@@ -159,7 +159,7 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
   )
 }
 
-const useGetAclPolicyListInstance = (editMode: boolean) => {
+const useGetAclPolicyListInstance = () => {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
 
@@ -180,7 +180,7 @@ const useGetAclPolicyListInstance = (editMode: boolean) => {
     defaultPayload: QUERY_DEFAULT_PAYLOAD,
     enableRbac,
     option: {
-      skip: !editMode || isTemplate
+      skip: isTemplate
     }
   })
 
@@ -216,7 +216,8 @@ const useGetAclPolicyInstance = (editMode: boolean) => {
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetAccessControlProfileQuery,
     useTemplateQueryFn: useGetAccessControlProfileTemplateQuery,
-    enableRbac: enableRbac
+    enableRbac: enableRbac,
+    skip: !editMode
   })
 
   const aclPolicyData = tableQuery?.data?.data[0]
