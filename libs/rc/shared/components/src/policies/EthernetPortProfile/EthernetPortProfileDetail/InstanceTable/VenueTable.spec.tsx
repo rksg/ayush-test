@@ -1,13 +1,14 @@
 import { rest } from 'msw'
 
-import { ethernetPortProfileApi }                                          from '@acx-ui/rc/services'
-import { CommonUrlsInfo, PolicyOperation, PolicyType, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { Provider, store }                                                 from '@acx-ui/store'
-import { mockServer, render, screen }                                      from '@acx-ui/test-utils'
+import { ethernetPortProfileApi }                                                           from '@acx-ui/rc/services'
+import { CommonUrlsInfo, PolicyOperation, PolicyType, VenueActivation, getPolicyRoutePath } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                  from '@acx-ui/store'
+import { mockServer, render, screen }                                                       from '@acx-ui/test-utils'
 
-import { mockApSerialNumber, mockVenueName, mockedVenueApsList, mockedVenuesResult } from '../__tests__/fixtures'
+import { mockVenueActivations, mockVenueName, mockedVenueApsList, mockedVenuesResult } from '../../__tests__/fixtures'
 
-import { EthernetPortProfileInstanceTable  } from './EthernetPortProfileInstanceTable'
+import { VenueTable } from './VenueTable'
+
 const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 let params: { tenantId: string, policyId: string }
 
@@ -15,7 +16,7 @@ const detailPath = '/:tenantId/' + getPolicyRoutePath({
   type: PolicyType.ETHERNET_PORT_PROFILE,
   oper: PolicyOperation.DETAIL
 })
-describe('EthernetPortProfileInstanceTable', () => {
+describe('EthernetPortProfile Venue Instance Table', () => {
   beforeEach(() => {
     params = {
       tenantId: tenantId,
@@ -33,16 +34,14 @@ describe('EthernetPortProfileInstanceTable', () => {
         CommonUrlsInfo.getApsList.url,
         (req, res, ctx) => res(ctx.json(mockedVenueApsList))
       )
-
-
     )
   })
 
-  it('Should render EthernetPortProfileInstanceTable successfully', async () => {
+  it('Should render VenueTable successfully', async () => {
     render(
       <Provider>
-        <EthernetPortProfileInstanceTable
-          apSerialNumbers={[mockApSerialNumber]}
+        <VenueTable
+          venueActivations={mockVenueActivations}
         />
       </Provider>, {
         route: { params, path: detailPath }
@@ -50,14 +49,13 @@ describe('EthernetPortProfileInstanceTable', () => {
     )
     await screen.findByText(mockVenueName)
     await screen.findByText('R550')
-    await screen.findByText('AP1')
   })
 
-  it('Should render EthernetPortProfileInstanceTable with empty content successfully', async () => {
+  it('Should render VenueTable with empty content successfully', async () => {
     render(
       <Provider>
-        <EthernetPortProfileInstanceTable
-          apSerialNumbers={[]}
+        <VenueTable
+          venueActivations={[] as VenueActivation[]}
         />
       </Provider>, {
         route: { params, path: detailPath }

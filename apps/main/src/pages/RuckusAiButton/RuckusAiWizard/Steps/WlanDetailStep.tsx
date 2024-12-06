@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 
 import ProForm, { ProFormInstance, ProFormSelect, ProFormText } from '@ant-design/pro-form'
 import { Divider }                                              from 'antd'
+import _                                                        from 'lodash'
 import { useIntl }                                              from 'react-intl'
 
 import { Modal, ModalType }         from '@acx-ui/components'
@@ -11,6 +12,8 @@ import {
   useUpdateOnboardConfigsMutation
 } from '@acx-ui/rc/services'
 import { NetworkSaveData, NetworkTypeEnum, networkTypes } from '@acx-ui/rc/utils'
+
+import { willRegenerateAlert } from '../../ruckusAi.utils'
 
 import * as UI from './styledComponents'
 
@@ -24,28 +27,64 @@ type NetworkConfig = {
 
 export function WlanDetailStep (props: {
   payload: string, sessionId: string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  showAlert: boolean,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formInstance: ProFormInstance<any> | undefined
 }) {
   const { $t } = useIntl()
   const { formInstance } = props
-  const data = props.payload ? JSON.parse(props.payload) as NetworkConfig[] : []
+  const initialData = JSON.parse(props.payload || '[]') as NetworkConfig[]
+  const [data, setData] = useState<NetworkConfig[]>([])
 
   const [modalType, setModalType] = useState<NetworkTypeEnum>(NetworkTypeEnum.OPEN)
   const [modalId, setModalId] = useState('')
   const [modalName, setModalName] = useState('')
 
-  const [configuredFlags, setConfiguredFlags] = useState<boolean[]>(Array(data.length).fill(false))
-  const [ssidTypes, setSsidTypes] = useState<NetworkTypeEnum[]>(data.map(item => item['SSID Type']))
+  const [configuredFlags, setConfiguredFlags] = useState<Map<string, boolean>>(new Map())
+  const [ssidTypes, setSsidTypes] = useState<Map<string, NetworkTypeEnum>>(new Map())
   const [networkModalVisible, setNetworkModalVisible] = useState(false)
   const [configuredIndex, setConfiguredIndex] = useState<number>(0)
 
   useEffect(() => {
-    if (data.length > 0) {
-      setSsidTypes(data.map(item => item['SSID Type']))
-      setConfiguredFlags(Array(data.length).fill(false))
+    if (
+      !_.isEqual(
+        initialData.map(({ 'SSID Name': _, ...rest }) => rest),
+        data.map(({ 'SSID Name': _, ...rest }) => rest)
+      )
+    ) {
+      formInstance?.resetFields()
+      formInstance?.setFieldsValue({ data: initialData })
+      setData(initialData)
+      setSsidTypes(new Map(initialData.map(item => [item.id, item['SSID Type']])))
+      setConfigFlags()
+    } else {
+      initialData.forEach((item, index) => {
+        formInstance?.setFieldValue(['data', index, 'SSID Name'], item['SSID Name'])
+      })
+
+      setData(prevData =>
+        prevData.map((item, index) => ({
+          ...item,
+          'SSID Name': initialData[index]?.['SSID Name'] || item['SSID Name']
+        }))
+      )
     }
+
   }, [props.payload])
+
+  const setConfigFlags = function () {
+    const newSsidTypes = new Map(initialData.map(item => [item.id, item['SSID Type']]))
+    const diffIndices = data
+      .map((item, index) => (ssidTypes.get(item.id) !== newSsidTypes.get(item.id) ? index : -1))
+      .filter(index => index !== -1)
+
+    const updatedFlags = new Map(configuredFlags)
+    diffIndices.forEach(index => {
+      updatedFlags.set(data[index].id, false)
+    })
+
+    setConfiguredFlags(updatedFlags)
+  }
 
   const networkOptions = [
     { value: NetworkTypeEnum.OPEN, label: $t(networkTypes[NetworkTypeEnum.OPEN]) },
@@ -55,19 +94,20 @@ export function WlanDetailStep (props: {
     { value: NetworkTypeEnum.CAPTIVEPORTAL, label: $t(networkTypes[NetworkTypeEnum.CAPTIVEPORTAL]) }
   ]
 
-  const handleSsidTypeChange = (index: number, value: NetworkTypeEnum) => {
+  const handleSsidTypeChange = (id: string, value: NetworkTypeEnum) => {
     setSsidTypes((prevSsidTypes) => {
-      const updatedSsidTypes = [...prevSsidTypes]
-      updatedSsidTypes[index] = value
+      const updatedSsidTypes = new Map(prevSsidTypes)
+      updatedSsidTypes.set(id, value)
       return updatedSsidTypes
     })
+
     setConfiguredFlags((prevConfiguredFlags) => {
-      const updatedConfiguredFlags = [...prevConfiguredFlags]
-      updatedConfiguredFlags[index] = false
+      const updatedConfiguredFlags = new Map(prevConfiguredFlags)
+      updatedConfiguredFlags.set(id, false)
       return updatedConfiguredFlags
     })
 
-    formInstance?.setFields([{ name: `configuredFlag-${index}`, errors: [] }])
+    formInstance?.setFields([{ name: `configuredFlag-${id}`, errors: [] }])
   }
 
   const [createOnboardConfigs] = useCreateOnboardConfigsMutation()
@@ -100,18 +140,16 @@ export function WlanDetailStep (props: {
     }
 
     setConfiguredFlags((prevConfiguredFlags) => {
-      const updatedConfiguredFlags = [...prevConfiguredFlags]
-      updatedConfiguredFlags[configuredIndex] = true
+      const updatedConfiguredFlags = new Map(prevConfiguredFlags)
+      updatedConfiguredFlags.set(modalId, true)
       return updatedConfiguredFlags
     })
-
-
   }, [modalId, modalName, modalType, configuredIndex, props.sessionId])
 
   useEffect(()=>{
-    configuredFlags.forEach((flag, index) => {
+    configuredFlags.forEach((flag, id) => {
       if (flag) {
-        formInstance?.validateFields([`configuredFlag-${index}`])
+        formInstance?.validateFields([`configuredFlag-${id}`])
       }
     })
   },[configuredFlags])
@@ -119,10 +157,16 @@ export function WlanDetailStep (props: {
   const getNetworkForm = <NetworkForm
     isRuckusAiMode={true}
     modalMode={true}
-    gptEditId={configuredFlags[configuredIndex] ? `${modalId}?type=${modalType}` : ''}
+    gptEditId={configuredFlags.get(modalId) ? `${modalId}?type=${modalType}` : ''}
     modalCallBack={handleModalCallback}
     createType={modalType}
   />
+
+  const getModalActionText = () => {
+    const isEdit = configuredFlags.get(modalId)
+    return isEdit ? $t({ defaultMessage: 'Edit' }) :
+      $t({ defaultMessage: 'Add' })
+  }
 
   return (
     <UI.Container>
@@ -133,10 +177,13 @@ export function WlanDetailStep (props: {
             $t({ defaultMessage: 'Based on your selection, below is the list of SSIDs and their recommended respective configurations.' })}
         </UI.Description>
       </UI.Header>
+      {props.showAlert && <div style={{ margin: '-25px 0px 10px 0px' }}>
+        {willRegenerateAlert($t)}
+      </div>}
 
       {data.map((item, index) => (
-        <React.Fragment key={index}>
-          <UI.VlanContainer>
+        <React.Fragment key={item.id}>
+          <UI.StepItemContainer>
             <UI.CheckboxContainer>
               <UI.CheckboxIndexLabel>{index + 1}</UI.CheckboxIndexLabel>
             </UI.CheckboxContainer>
@@ -167,13 +214,13 @@ export function WlanDetailStep (props: {
                 </UI.NetworkName>
 
                 <ProFormSelect
-                  label={$t({ defaultMessage: 'Network Type' })}
+                  label={$t({ defaultMessage: 'Type' })}
                   name={['data', index, 'SSID Type']}
                   initialValue={item['SSID Type']}
                   options={networkOptions}
                   allowClear={false}
                   fieldProps={{
-                    onChange: (value) => handleSsidTypeChange(index, value)
+                    onChange: (value) => handleSsidTypeChange(item.id, value)
                   }}
                 />
               </div>
@@ -182,7 +229,7 @@ export function WlanDetailStep (props: {
                 onClick={() => {
                   setModalId(item['id'])
                   setModalName(item['SSID Name'])
-                  setModalType(ssidTypes[index])
+                  setModalType(ssidTypes.get(item.id) || NetworkTypeEnum.OPEN)
                   setNetworkModalVisible(true)
                   setConfiguredIndex(index)
                 }}>
@@ -190,15 +237,15 @@ export function WlanDetailStep (props: {
                 <UI.ConfigurationHeader>
                   <div>
                     {networkOptions.find(
-                      option => option.value === ssidTypes[index])?.label || ''}
+                      option => option.value === ssidTypes.get(item.id))?.label || ''}
                         &nbsp;
                     {$t({ defaultMessage: 'Configurations' })}
-                    {ssidTypes[index] !== NetworkTypeEnum.OPEN &&
+                    {ssidTypes.get(item.id) !== NetworkTypeEnum.OPEN &&
                           <UI.RequiredIcon />}
                   </div>
 
                   <div style={{ display: 'flex' }}>
-                    {configuredFlags[index] ?
+                    {configuredFlags.get(item.id) ?
                       <UI.ConfiguredButton>
                         <UI.CollapseCircleSolidIcons />
                         <div>{$t({ defaultMessage: 'Configured' })}</div>
@@ -217,11 +264,11 @@ export function WlanDetailStep (props: {
                   marginTop: '-45px',
                   pointerEvents: 'none'
                 }}
-                name={`configuredFlag-${index}`}
+                name={`configuredFlag-${item.id}`}
                 rules={[{
                   validator: () => {
-                    if (!configuredFlags[index]
-                       && ssidTypes[index] !== NetworkTypeEnum.OPEN) {
+                    if (!configuredFlags.get(item.id) &&
+                      ssidTypes.get(item.id) !== NetworkTypeEnum.OPEN) {
                       return Promise.reject(new Error($t({
                         // eslint-disable-next-line max-len
                         defaultMessage: 'This configuration is not yet set. Please complete it to ensure proper functionality.'
@@ -229,20 +276,19 @@ export function WlanDetailStep (props: {
                     }
                     return Promise.resolve()
                   }
-                }]}
-              >
+                }]}>
                 <ProFormText hidden />
               </ProForm.Item>
-
             </UI.VlanDetails>
-          </UI.VlanContainer>
-          <Divider dashed />
+          </UI.StepItemContainer>
+          {index < data.length - 1 && <Divider />}
         </React.Fragment>
       ))}
+
       {networkModalVisible &&
         <Modal
           // eslint-disable-next-line max-len
-          title={`${$t({ defaultMessage: 'Add' })} ${networkOptions.find(option => option.value === modalType)?.label}`}
+          title={`${getModalActionText()} ${networkOptions.find(option => option.value === modalType)?.label}`}
           type={ModalType.ModalStepsForm}
           visible={networkModalVisible}
           mask={true}
@@ -251,5 +297,4 @@ export function WlanDetailStep (props: {
       }
     </UI.Container>
   )
-
 }

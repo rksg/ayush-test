@@ -1157,12 +1157,11 @@ describe('useGetEdgeSdLanByEdgeOrClusterId', () => {
       wrapper: ({ children }) => <Provider children={children} />
     })
 
-    await waitFor(() => expect(mockedReq).toBeCalled())
-    expect(result.current).toStrictEqual({
+    await waitFor(() => expect(result.current).toStrictEqual({
       edgeSdLanData: mockedSdLanDataListP2[0],
       isLoading: false,
       isFetching: false
-    })
+    }))
   })
 
   it('should successfully get data by guestEdgeClusterId', async () => {
@@ -1171,12 +1170,11 @@ describe('useGetEdgeSdLanByEdgeOrClusterId', () => {
       wrapper: ({ children }) => <Provider children={children} />
     })
 
-    await waitFor(() => expect(mockedReq).toBeCalled())
-    expect(result.current).toStrictEqual({
+    await waitFor(() =>expect(result.current).toStrictEqual({
       edgeSdLanData: mockedSdLanDataListP2[0],
       isLoading: false,
       isFetching: false
-    })
+    }))
   })
 
   it('should not return data when target id is not exist', async () => {
@@ -1184,12 +1182,11 @@ describe('useGetEdgeSdLanByEdgeOrClusterId', () => {
       wrapper: ({ children }) => <Provider children={children} />
     })
 
-    await waitFor(() => expect(mockedReq).toBeCalled())
-    expect(result.current).toStrictEqual({
+    await waitFor(() => expect(result.current).toStrictEqual({
       edgeSdLanData: undefined,
       isLoading: false,
       isFetching: false
-    })
+    }))
   })
 
   it('should return the first get data by edgeId when only P1 FF on', async () => {
@@ -1200,12 +1197,11 @@ describe('useGetEdgeSdLanByEdgeOrClusterId', () => {
       wrapper: ({ children }) => <Provider children={children} />
     })
 
-    await waitFor(() => expect(mockedReq).toBeCalled())
-    expect(result.current).toStrictEqual({
+    await waitFor(() => expect(result.current).toStrictEqual({
       edgeSdLanData: mockedSdLanDataListP2[0],
       isLoading: false,
       isFetching: false
-    })
+    }))
   })
 
   it('should handle get requests failed', async () => {

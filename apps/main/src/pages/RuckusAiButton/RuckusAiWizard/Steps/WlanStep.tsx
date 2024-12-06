@@ -1,14 +1,28 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { ProFormCheckbox, ProFormSelect, ProFormText } from '@ant-design/pro-form'
-import { Button, Divider }                             from 'antd'
-import { useIntl }                                     from 'react-intl'
+import {
+  ProFormCheckbox,
+  ProFormInstance,
+  ProFormSelect,
+  ProFormText
+} from '@ant-design/pro-form'
+import { Button, Divider } from 'antd'
+import { useIntl }         from 'react-intl'
 
-import { cssStr }                  from '@acx-ui/components'
-import { CrownSolid, RuckusAiDog } from '@acx-ui/icons'
+import { cssStr }                             from '@acx-ui/components'
+import { CrownSolid, OnboardingAssistantDog } from '@acx-ui/icons'
+import { useNetworkListQuery }                from '@acx-ui/rc/services'
+import {
+  checkObjectNotExists,
+  ssidBackendNameRegExp,
+  validateByteLength }
+  from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
+import { willRegenerateAlert } from '../../ruckusAi.utils'
 
-import * as UI from './styledComponents'
+import { checkHasRegenerated } from './steps.utils'
+import * as UI                 from './styledComponents'
 
 type NetworkConfig = {
   'Purpose': string;
@@ -17,11 +31,33 @@ type NetworkConfig = {
   'Checked': boolean;
   'id': string;
 }
-
-export function WlanStep (props: { payload: string; description: string }) {
+export function WlanStep ( props: {
+  payload: string,
+  description: string,
+  showAlert: boolean,
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   formInstance: ProFormInstance<any> | undefined
+}) {
   const { $t } = useIntl()
+  const { formInstance } = props
   const initialData = JSON.parse(props.payload || '[]') as NetworkConfig[]
-  const [data, setData] = useState<NetworkConfig[]>(initialData)
+  const [data, setData] = useState<NetworkConfig[]>([])
+
+  const [checkboxStates, setCheckboxStates] =
+    useState<boolean[]>(Array(initialData.length).fill(true))
+
+  useEffect(() => {
+    if (checkHasRegenerated(data, initialData) && formInstance) {
+      const updatedData = initialData.map(item => ({
+        ...item,
+        Checked: true
+      }))
+      formInstance?.setFieldsValue({ data: updatedData })
+      setData(initialData)
+      setCheckboxStates(Array(initialData.length).fill(true))
+    }
+
+  }, [props.payload])
 
   const objectiveOptions = [
     { value: 'Internal', label: $t({ defaultMessage: 'Internal' }) },
@@ -37,12 +73,25 @@ export function WlanStep (props: { payload: string; description: string }) {
       'Purpose': '',
       'SSID Name': '',
       'SSID Objective': 'Internal',
-      'Checked': false,
+      'Checked': true,
       'id': ''
     }
     setData([...data, newProfile])
+    setCheckboxStates([...checkboxStates, true])
   }
 
+  const handleCheckboxChange = (index: number, checked: boolean) => {
+    const newCheckboxStates = [...checkboxStates]
+    newCheckboxStates[index] = checked
+    setCheckboxStates(newCheckboxStates)
+    formInstance?.validateFields()
+    if (!checked) {
+      formInstance?.setFields([{
+        name: ['data', index, 'SSID Name'],
+        errors: []
+      }])
+    }
+  }
 
   const tooltipItems = [
     {
@@ -73,6 +122,26 @@ export function WlanStep (props: { payload: string; description: string }) {
     }
   ]
 
+
+  const params = useParams()
+
+  const { data: networkList } = useNetworkListQuery({
+    params, payload: {
+      fields: ['name', 'ssid'],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  })
+
+  const wlanNameValidator = async (value: string) => {
+    const list = networkList?.data.map((n: { name: string }) => n.name) || []
+
+    return checkObjectNotExists(list,
+      value, $t({ defaultMessage: 'Network' }))
+  }
+
+
   return (
     <UI.Container>
       <UI.HeaderWithAddButton>
@@ -85,7 +154,7 @@ export function WlanStep (props: { payload: string; description: string }) {
           {$t({ defaultMessage: 'Add Network Profile' })}
         </Button>
       </UI.HeaderWithAddButton>
-
+      {props.showAlert && willRegenerateAlert($t)}
       <UI.HighlightedBox>
         <UI.HighlightedTitle>
           <CrownSolid
@@ -103,9 +172,16 @@ export function WlanStep (props: { payload: string; description: string }) {
 
       {data?.map((item, index) => (
         <React.Fragment key={index}>
-          <UI.VlanContainer>
-            <UI.CheckboxContainer>
-              <ProFormCheckbox name={['data', index, 'Checked']} initialValue={true} />
+          <UI.StepItemCheckContainer>
+            <UI.CheckboxContainer data-testid={`wlan-checkbox-${index}`}>
+              <ProFormCheckbox
+                name={['data', index, 'Checked']}
+                initialValue={true}
+                validateTrigger={'onChange'}
+                fieldProps={{
+                  onChange: (e) => handleCheckboxChange(index, e.target.checked)
+                }}
+              />
               <UI.CheckboxIndexLabel>{index + 1}</UI.CheckboxIndexLabel>
             </UI.CheckboxContainer>
             <div style={{ marginTop: '5px' }}>
@@ -119,10 +195,25 @@ export function WlanStep (props: { payload: string; description: string }) {
                 hidden />
               <ProFormText
                 width={200}
-                rules={[{ required: true }]}
+                allowClear={false}
                 label={$t({ defaultMessage: 'Network Name' })}
                 name={['data', index, 'SSID Name']}
                 initialValue={item['SSID Name']}
+                rules={checkboxStates[index] ? [
+                  { required: true,
+                    message: $t({ defaultMessage: 'Please enter a Network Name.' }) },
+                  { min: 2 },
+                  { max: 32 },
+                  { validator: (_, value) => ssidBackendNameRegExp(value) },
+                  { validator: (_, value) => validateByteLength(value, 32) },
+                  { validator: (_, value) => wlanNameValidator(value) }
+                ] : []}
+                validateFirst
+                disabled={!checkboxStates[index]}
+                validateTrigger={'onBlur'}
+                fieldProps={{
+                  'data-testid': `wlan-name-input-${index}`
+                }}
               />
               <ProFormSelect
                 allowClear={false}
@@ -163,11 +254,13 @@ export function WlanStep (props: { payload: string; description: string }) {
                 label={$t({ defaultMessage: 'Network Objective' })}
                 name={['data', index, 'SSID Objective']}
                 initialValue={item['SSID Objective']}
+                disabled={!checkboxStates[index]}
                 options={objectiveOptions}
               />
-              {item['Purpose'] && <UI.PurposeContainer>
+              {item['Purpose'] && <UI.PurposeContainer
+                disabled={!checkboxStates[index]}>
                 <UI.PurposeHeader>
-                  <RuckusAiDog
+                  <OnboardingAssistantDog
                     style={{
                       width: '20px',
                       height: '20px',
@@ -180,10 +273,29 @@ export function WlanStep (props: { payload: string; description: string }) {
                 <UI.PurposeText>{item['Purpose']}</UI.PurposeText>
               </UI.PurposeContainer>}
             </div>
-          </UI.VlanContainer>
-          <Divider dashed />
+          </UI.StepItemCheckContainer>
+          {index < data.length - 1 && <Divider />}
         </React.Fragment>
       ))}
+      <UI.FooterValidationItem
+        name={'wlanStep'}
+        rules={[{
+          validator: () => {
+            const allUnchecked = checkboxStates.every(state => !state)
+            if (allUnchecked) {
+              return Promise.reject(
+                <span style={{ display: 'flex', alignItems: 'center' }}>
+                  <UI.WarningTriangleSolidIcon />
+                  {$t({ defaultMessage: 'Select at least one network profile' })}
+                </span>
+              )
+            }
+            return Promise.resolve()
+          }
+        }]}
+      >
+        <ProFormText hidden />
+      </UI.FooterValidationItem>
     </UI.Container>
   )
 }

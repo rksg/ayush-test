@@ -16,10 +16,10 @@ export interface EthernetPortProfileViewData {
     dynamicVlanEnabled?: boolean
     unauthenticatedGuestVlan?: number
     enableAuthProxy?: boolean
-    enableAccountingProxy?: boolean,
-    apSerialNumbers: string[],
-    venueIds: string[],
-    venueActivations?: VenueActivation[],
+    enableAccountingProxy?: boolean
+    apSerialNumbers: string[]
+    venueIds: string[]
+    venueActivations?: VenueActivation[]
     apActivations?: ApActivation[]
     apPortOverwrites?: EthernetPortOverwrites[]
   }
@@ -41,6 +41,7 @@ export interface EthernetPortProfile {
     enableAuthProxy?: boolean
     enableAccountingProxy?: boolean
     apSerialNumbers?: string[]
+    venueActivations?: VenueActivation[]
   }
 
 export interface EthernetPortProfileFormType extends EthernetPortProfile {

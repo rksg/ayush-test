@@ -32,6 +32,7 @@ export function AaaServer ( props: {
       )}
       {
         summaryData?.[serverType]?.secondary &&
+          !summaryData?.[serverType]?.radSecOptions?.tlsEnabled &&
           getAaaServerData(
             secondaryTitle,
             `${get(summaryData, `${serverType}.${AaaServerOrderEnum.SECONDARY}.ip`)}`+

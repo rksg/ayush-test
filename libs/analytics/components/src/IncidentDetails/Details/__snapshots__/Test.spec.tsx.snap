@@ -8063,7 +8063,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Sub-optimal WAN throughput - speed mismatch between AP and peer device: Venue: AlphaNet_5_1
+          Physical link speed/duplex mismatch between AP and upstream/connected device
         </span>
       </div>
     </div>
@@ -8287,7 +8287,7 @@ exports[`Test Details should render ApinfraWanthroughputLow correctly 1`] = `
                             <span
                               class=""
                             >
-                              WAN
+                              Ethernet
                             </span>
                           </span>
                         </div>

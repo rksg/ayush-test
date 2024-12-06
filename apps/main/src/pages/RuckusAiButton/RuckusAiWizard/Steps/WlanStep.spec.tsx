@@ -1,8 +1,13 @@
-import { Form } from 'antd'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
-import { Provider  } from '@acx-ui/store'
+import { CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider  }      from '@acx-ui/store'
 import {
+  mockServer,
   render,
+  renderHook,
   screen
 } from '@acx-ui/test-utils'
 
@@ -10,17 +15,69 @@ import { mock_payload, mock_description } from './__test__/WlanStepFixtures'
 import { WlanStep }                       from './WlanStep'
 
 describe('WlanStep', () => {
-  it('should display WlanStep page correctly', async () => {
+
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (_, res, ctx) => res(ctx.json({ data: [{ name: 'wlan1' }] }))
+      )
+    )
+  })
+  afterEach(() => jest.restoreAllMocks())
+
+  it('should display WlanStep page and add correctly', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
 
     render(
       <Provider>
-        <Form>
+        <Form form={formRef.current}>
           <WlanStep
+            showAlert={false}
             payload={mock_payload}
+            formInstance={formRef.current}
             description={mock_description}
           />
         </Form>
       </Provider>)
     expect(await screen.findByText('Add Network Profile')).toBeVisible()
+    userEvent.click(screen.getByRole('button', { name: /Add Network Profile/i }))
+    expect(await screen.findByText('3')).toBeVisible()
+    await userEvent.click(screen.getByTestId('wlan-checkbox-0'))
+    await userEvent.type(screen.getByTestId('wlan-name-input-2'), 'wlan1')
+    expect(screen.getByTestId('wlan-name-input-2')).toHaveValue('wlan1')
+    screen.getByTestId('wlan-name-input-2').blur()
+    expect(await screen.findByText('Network with that name already exists')).toBeInTheDocument()
+    await userEvent.type(screen.getByTestId('wlan-name-input-2'), 'wlan3')
+    expect(screen.getByTestId('wlan-name-input-2')).toHaveValue('wlan1wlan3')
+  })
+
+  it('should validate when user unselect all', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(
+      <Provider>
+        <Form form={formRef.current}>
+          <WlanStep
+            showAlert={true}
+            payload={mock_payload}
+            formInstance={formRef.current}
+            description={mock_description}
+          />
+        </Form>
+      </Provider>)
+    const checkboxes = await screen.findAllByRole('checkbox')
+    await userEvent.click(checkboxes[0])
+    expect(checkboxes[0]).not.toBeChecked()
+    await userEvent.click(checkboxes[1])
+    expect(checkboxes[1]).not.toBeChecked()
+    formRef.current.validateFields()
+    expect(await screen.findByText('Select at least one network profile')).toBeInTheDocument()
   })
 })

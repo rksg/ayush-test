@@ -19,7 +19,12 @@ export type ConnectionEvent = {
   messageIds?: Array<string>,
   key?: string,
   pcapFilename?: string,
-  roamingType?: string
+  roamingType?: string,
+  /**
+   * Contains `Trigger` field for BTM request event type or
+   * `Status` field for BTM response event type
+   */
+  btmInfo?: string
 }
 
 export type ConnectionQuality = {
@@ -83,7 +88,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     clientInfo: build.query<
     ClientConnectionInfo,
-    ClientFilter & IncidentsToggleFilter & { fetchRoamingType: boolean }
+    ClientFilter & IncidentsToggleFilter & { fetchRoamingType: boolean, fetchBtmInfo: boolean }
     >({
       query: (payload) => ({
         document: gql`
@@ -115,6 +120,7 @@ export const api = dataApi.injectEndpoints({
               ssid
               pcapFilename
               ${payload.fetchRoamingType ? 'roamingType' : ''}
+              ${payload.fetchBtmInfo ? 'btmInfo' : ''}
             }
             connectionDetailsByAp {
               start

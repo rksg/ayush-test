@@ -518,7 +518,7 @@ export const serverCertificate: ServerCertificate = {
   state: 'test',
   country: 'test',
   organizationUnit: 'test',
-  keyUsage: [
+  keyUsages: [
     KeyUsageType.DIGITAL_SIGNATURE,
     KeyUsageType.KEY_ENCIPHERMENT
   ],

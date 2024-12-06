@@ -9,7 +9,9 @@ enum FeatureFlag {
   OFF = 'off'
 }
 
-export function useIsSplitOn (splitName: string): boolean {
+export type UseSplitOnType = (splitName: string) => boolean
+
+export const useIsSplitOn: UseSplitOnType = (splitName) => {
   const tenantKey = useTenantId()
   const treatments = useTreatments([splitName], { tenantKey })
   const treatment = treatments[splitName].treatment

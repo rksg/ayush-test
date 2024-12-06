@@ -1,8 +1,8 @@
 import { gql }                from 'graphql-request'
 import moment, { unitOfTime } from 'moment-timezone'
 
-import { Incident, calculateGranularity } from '@acx-ui/analytics/utils'
-import { dataApi }                        from '@acx-ui/store'
+import { Incident, calculateGranularity, granularityToHours } from '@acx-ui/analytics/utils'
+import { dataApi }                                            from '@acx-ui/store'
 
 import { timeSeriesCharts, TimeSeriesChartTypes } from './config'
 
@@ -13,6 +13,7 @@ export interface ChartDataProps {
   incident: Incident
   buffer: BufferType
   minGranularity: string
+  granularities?: typeof granularityToHours
 }
 
 interface Response <TimeSeriesChartResponse> {
@@ -66,7 +67,8 @@ export const Api = dataApi.injectEndpoints({
             granularity: calculateGranularity(
               payload.incident.startTime,
               payload.incident.endTime,
-              payload.minGranularity
+              payload.minGranularity,
+              payload.granularities
             )
           }
         }

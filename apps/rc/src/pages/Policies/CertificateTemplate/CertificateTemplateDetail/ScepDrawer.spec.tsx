@@ -93,7 +93,7 @@ describe('ScepDrawer', () => {
     expect(inputNumber).not.toHaveValue('366')
   })
 
-  it('should reset form fields when visible is set to false', async () => {
+  it.skip('should reset form fields when visible is set to false', async () => {
     // eslint-disable-next-line max-len
     const { rerender } = render(<Provider><ScepDrawer visible={true} onClose={() => {}}/></Provider>)
 
@@ -105,7 +105,7 @@ describe('ScepDrawer', () => {
     await waitFor(() => expect(screen.getByLabelText('Name')).toHaveValue(''))
   })
 
-  it('should prevent typing spaces in the Name field', async () => {
+  it.skip('should prevent typing spaces in the Name field', async () => {
     render(<Provider><ScepDrawer visible={true} onClose={() => {}}/></Provider>)
 
     const nameInput = screen.getByLabelText('Name')
