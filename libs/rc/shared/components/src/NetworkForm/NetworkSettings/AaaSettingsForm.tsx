@@ -64,14 +64,16 @@ export function AaaSettingsForm () {
 
   // TODO: Remove deprecated codes below when RadSec feature is delivery
   useEffect(()=>{
-    if (!supportRadsec && data && (editMode || cloneMode)) {
-      if (isRuckusAiMode && !isEmpty(data?.wlan)) {
-        setFieldsValue()
-      } else {
-        setFieldsValue()
-      }
+    if(!supportRadsec && !isRuckusAiMode && data && (editMode || cloneMode)) {
+      setFieldsValue()
     }
   }, [data])
+
+  useEffect(() => {
+    if (isRuckusAiMode && !isEmpty(data?.wlan)) {
+      setFieldsValue()
+    }
+  }, [data?.wlan])
 
   useEffect(()=>{
     if(supportRadsec && data && (editMode || cloneMode)) {
