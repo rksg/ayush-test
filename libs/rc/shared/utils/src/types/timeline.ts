@@ -120,6 +120,7 @@ export interface EventBase {
   turnOnTimestamp?: string
   turnOffTimestamp?: string
   portList?: string
+  indexName?: string
 }
 
 export interface EventMeta {

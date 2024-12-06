@@ -359,5 +359,20 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/files/uploadurls',
     oldUrl: '/api/file/tenant/:tenantId/upload-url',
     newApi: true
+  },
+  getCustomerNamesFilter: {
+    method: 'post',
+    url: '/msps/:tenantId/ecInventories/customers/filters/query',
+    newApi: true
+  },
+  getVenuesFilter: {
+    method: 'post',
+    url: '/msps/:tenantId/ecInventories/venues/filters/query',
+    newApi: true
+  },
+  getdeviceModelsFilter: {
+    method: 'post',
+    url: '/msps/:tenantId/ecInventories/deviceModels/filters/query',
+    newApi: true
   }
 }

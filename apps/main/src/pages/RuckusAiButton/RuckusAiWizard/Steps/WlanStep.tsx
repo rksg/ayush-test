@@ -9,17 +9,21 @@ import {
 import { Button, Divider } from 'antd'
 import { useIntl }         from 'react-intl'
 
-import { cssStr }                             from '@acx-ui/components'
-import { CrownSolid, OnboardingAssistantDog } from '@acx-ui/icons'
-import { useNetworkListQuery }                from '@acx-ui/rc/services'
+import { cssStr }                                               from '@acx-ui/components'
+import { CrownSolid, OnboardingAssistantDog }                   from '@acx-ui/icons'
+import { useCreateOnboardConfigsMutation, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
+  NetworkTypeEnum,
   ssidBackendNameRegExp,
   validateByteLength }
   from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import * as UI from './styledComponents'
+import { willRegenerateAlert } from '../../ruckusAi.utils'
+
+import { checkHasRegenerated } from './steps.utils'
+import * as UI                 from './styledComponents'
 
 type NetworkConfig = {
   'Purpose': string;
@@ -28,12 +32,13 @@ type NetworkConfig = {
   'Checked': boolean;
   'id': string;
 }
-
 export function WlanStep ( props: {
   payload: string,
   description: string,
+  showAlert: boolean,
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-   formInstance: ProFormInstance<any> | undefined
+   formInstance: ProFormInstance<any> | undefined,
+   sessionId: string,
 }) {
   const { $t } = useIntl()
   const { formInstance } = props
@@ -44,7 +49,7 @@ export function WlanStep ( props: {
     useState<boolean[]>(Array(initialData.length).fill(true))
 
   useEffect(() => {
-    if (initialData !== data && formInstance) {
+    if (checkHasRegenerated(data, initialData) && formInstance) {
       const updatedData = initialData.map(item => ({
         ...item,
         Checked: true
@@ -65,13 +70,23 @@ export function WlanStep ( props: {
     { value: 'Public', label: $t({ defaultMessage: 'Public' }) }
   ]
 
-  const addNetworkProfile = () => {
+  const [createOnboardConfigs] = useCreateOnboardConfigsMutation()
+  const configPayload = {
+    type: NetworkTypeEnum.AAA.toUpperCase(),
+    content: '{}',
+    sessionId: props.sessionId,
+    name: ''
+  }
+
+  const addNetworkProfile = async () => {
+    const newWlan = await createOnboardConfigs({ payload: configPayload }).unwrap()
+
     const newProfile: NetworkConfig = {
       'Purpose': '',
       'SSID Name': '',
       'SSID Objective': 'Internal',
       'Checked': true,
-      'id': ''
+      'id': newWlan.id
     }
     setData([...data, newProfile])
     setCheckboxStates([...checkboxStates, true])
@@ -81,6 +96,13 @@ export function WlanStep ( props: {
     const newCheckboxStates = [...checkboxStates]
     newCheckboxStates[index] = checked
     setCheckboxStates(newCheckboxStates)
+    formInstance?.validateFields()
+    if (!checked) {
+      formInstance?.setFields([{
+        name: ['data', index, 'SSID Name'],
+        errors: []
+      }])
+    }
   }
 
   const tooltipItems = [
@@ -144,7 +166,7 @@ export function WlanStep ( props: {
           {$t({ defaultMessage: 'Add Network Profile' })}
         </Button>
       </UI.HeaderWithAddButton>
-
+      {props.showAlert && willRegenerateAlert($t)}
       <UI.HighlightedBox>
         <UI.HighlightedTitle>
           <CrownSolid
@@ -190,7 +212,8 @@ export function WlanStep ( props: {
                 name={['data', index, 'SSID Name']}
                 initialValue={item['SSID Name']}
                 rules={checkboxStates[index] ? [
-                  { required: true },
+                  { required: true,
+                    message: $t({ defaultMessage: 'Please enter a Network Name.' }) },
                   { min: 2 },
                   { max: 32 },
                   { validator: (_, value) => ssidBackendNameRegExp(value) },
