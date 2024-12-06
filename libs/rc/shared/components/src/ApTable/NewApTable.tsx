@@ -832,7 +832,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
             label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
             rules={[{ required: true }]}
             initialValue={params.venueId}
-            children={<VenueSelector defaultValue={params.venueId} />}
+            children={<VenueSelector />}
           />
         </div>
       </ImportFileDrawer>

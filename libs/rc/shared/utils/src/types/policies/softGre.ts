@@ -37,8 +37,14 @@ export interface VenueTableUsageBySoftGre extends SoftGreActivation {
     id: string
     addressLine: string
     wifiNetworkNames: string[]
+    apSerialNumbers: string[]
+    apNames: string[]
 }
 
+export interface VenueTableSoftGreActivation {
+  wifiNetworkIds: Set<string>
+  apSerialNumbers: Set<string>
+}
 
 export interface SoftGreActivation {
   venueId: string
