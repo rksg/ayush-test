@@ -171,7 +171,7 @@ describe('getErrorContent', () => {
       extensions: { requestId: '184abe34b822549ef598fca3c19fcfe2' }
     }
     const errorAction = {
-      type: 'data-api/error',
+      type: 'analytics-data-api/executeQuery/rejected',
       meta: { baseQueryMeta: { response: graphqlResponse } },
       payload: {}
     } as unknown as ErrorAction
