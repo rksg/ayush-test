@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { isEqual, isEmpty } from 'lodash'
-import { useIntl }          from 'react-intl'
-import AutoSizer            from 'react-virtualized-auto-sizer'
+import { isEmpty } from 'lodash'
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { Loader, Carousel }                 from '@acx-ui/components'
 import type { DashboardFilter, PathFilter } from '@acx-ui/utils'
 
-import { factsConfig, getFactsData } from './facts'
 import {
+  useAvailableFactsQuery,
   useFactsQuery
 } from './services'
 
@@ -37,7 +37,8 @@ function DidYouKnowWidget ({
   const [offset, setOffset] = useState(0)
   const [content, setContent] = useState<string[][]>(Array.from({ length: 5 }, () => []))
   const [carouselFactsMap, setCarouselFactsMap] = useState<Record<number, { facts: string[] }>>({})
-  const { data, isFetching, refetch, isSuccess, isLoading, initialLoadedFacts, availableFacts } =
+  const { availableFacts } = useAvailableFactsQuery(filters)
+  const { data, isFetching, refetch, isSuccess, isLoading } =
     useFactsQuery(
       maxFactPerSlide, maxSlideChar, carouselFactsMap, content, offset, filters
     )
@@ -62,16 +63,13 @@ function DidYouKnowWidget ({
     }
   }, [filters])
   useEffect(() => {
-    if (initialLoadedFacts && availableFacts && isEmpty(carouselFactsMap)) {
-      const newMap = getCarouselFactsMap(availableFacts.filter((item) =>
-        !initialLoadedFacts.includes(item as keyof typeof factsConfig)))
-      newMap[0] = { facts: initialLoadedFacts }
-      if (!isEqual(carouselFactsMap, newMap)) {
-        setCarouselFactsMap(newMap)
-      }
+    if (availableFacts && isEmpty(carouselFactsMap)) {
+      const factsMap = getCarouselFactsMap(availableFacts)
+      const shuffledEntries = Object.entries(factsMap).sort(() => Math.random() - 0.5)
+      const shuffledMap = Object.fromEntries(shuffledEntries)
+      setCarouselFactsMap(shuffledMap)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialLoadedFacts])
+  }, [availableFacts, carouselFactsMap])
   const { $t } = intl
   const title = $t({ defaultMessage: 'Did you know?' })
   const subTitle = $t({ defaultMessage: 'No data to report' })

@@ -4,45 +4,51 @@ import { mockGraphqlQuery }                 from '@acx-ui/test-utils'
 import type { PathFilter, DashboardFilter } from '@acx-ui/utils'
 import { DateRange }                        from '@acx-ui/utils'
 
-import { expectedResult } from './__tests__/fixtures'
-import { api }            from './services'
+import { expectedFactsResult }          from './__tests__/fixtures'
+import { expectedAvailableFactsResult } from './__tests__/fixtures'
+import { api }                          from './services'
 
-describe('factsApi', () => {
-  const pathFilter: PathFilter = {
-    startDate: '2022-01-01T00:00:00+08:00',
-    endDate: '2022-01-02T00:00:00+08:00',
-    range: DateRange.last24Hours,
-    path: defaultNetworkPath
-  }
-  const dashboardFilter: DashboardFilter = {
-    startDate: '2022-01-01T00:00:00+08:00',
-    endDate: '2022-01-02T00:00:00+08:00',
-    range: DateRange.last24Hours,
-    filter: {}
-  }
+const pathFilter: PathFilter & { requestedList: string[]; weekRange: boolean } = {
+  startDate: '2022-01-01T00:00:00+08:00',
+  endDate: '2022-01-02T00:00:00+08:00',
+  range: DateRange.last24Hours,
+  path: defaultNetworkPath,
+  requestedList: [],
+  weekRange: false
+}
+const dashboardFilter: DashboardFilter & { requestedList: string[]; weekRange: boolean } = {
+  startDate: '2022-01-01T00:00:00+08:00',
+  endDate: '2022-01-02T00:00:00+08:00',
+  range: DateRange.last24Hours,
+  filter: {},
+  requestedList: [],
+  weekRange: false
+}
+
+describe('customFacts', () => {
   afterEach(() =>
     store.dispatch(api.util.resetApiState())
   )
   it('should return correct data with PathFilter', async () => {
     mockGraphqlQuery(dataApiURL, 'Facts', {
-      data: expectedResult
+      data: expectedFactsResult
     })
     const { status, data, error } = await store.dispatch(
       api.endpoints.customFacts.initiate(pathFilter)
     )
     expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
+    expect(data).toStrictEqual(expectedFactsResult.network.hierarchyNode)
     expect(error).toBe(undefined)
   })
   it('should return correct data with DashboardFilter', async () => {
     mockGraphqlQuery(dataApiURL, 'Facts', {
-      data: expectedResult
+      data: expectedFactsResult
     })
     const { status, data, error } = await store.dispatch(
       api.endpoints.customFacts.initiate(dashboardFilter)
     )
     expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual(expectedResult.network.hierarchyNode)
+    expect(data).toStrictEqual(expectedFactsResult.network.hierarchyNode)
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
@@ -51,6 +57,45 @@ describe('factsApi', () => {
     })
     const { status, data, error } = await store.dispatch(
       api.endpoints.customFacts.initiate(pathFilter)
+    )
+    expect(status).toBe('rejected')
+    expect(data).toBe(undefined)
+    expect(error).not.toBe(undefined)
+  })
+})
+
+describe('availableFacts', () => {
+  afterEach(() =>
+    store.dispatch(api.util.resetApiState())
+  )
+  it('should return correct data with PathFilter', async () => {
+    mockGraphqlQuery(dataApiURL, 'Facts', {
+      data: expectedAvailableFactsResult
+    })
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.customAvailableFacts.initiate(pathFilter)
+    )
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(expectedAvailableFactsResult.network.hierarchyNode.availableFacts)
+    expect(error).toBe(undefined)
+  })
+  it('should return correct data with DashboardFilter', async () => {
+    mockGraphqlQuery(dataApiURL, 'Facts', {
+      data: expectedAvailableFactsResult
+    })
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.customAvailableFacts.initiate(dashboardFilter)
+    )
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(expectedAvailableFactsResult.network.hierarchyNode.availableFacts)
+    expect(error).toBe(undefined)
+  })
+  it('should return error', async () => {
+    mockGraphqlQuery(dataApiURL, 'Facts', {
+      error: new Error('something went wrong!')
+    })
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.customAvailableFacts.initiate(pathFilter)
     )
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)
