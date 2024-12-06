@@ -22,7 +22,8 @@ export interface SoftgreProfile {
   softgreProfileId: string
   queryPayload: {
     venueId: string
-    apModel: string
+    apModel?: string
+    serialNumber?: string
     portId: string
   }
 }
