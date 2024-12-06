@@ -76,16 +76,16 @@ export const configChanges = [
     type: 'intentAI',
     name: 'Config_change_WLAN2',
     key: 'intentAi.c-bgscan24g-enable',
-    oldValues: [ 'Disabled' ],
-    newValues: [ 'Enabled' ]
+    oldValues: [ ],
+    newValues: [ 'Apply' ]
   },
   {
     timestamp: '1685427082200',
     type: 'intentAI',
     name: '94:B3:4F:3D:21:80',
     key: 'intentAi.c-bgscan5g-enable',
-    oldValues: [ 'Disabled' ],
-    newValues: [ 'Enabled' ]
+    oldValues: [ ],
+    newValues: [ 'Apply' ]
   }
 ]
 
@@ -130,3 +130,10 @@ export const kpiForConnection = {
     roamingSuccess: 0.9637681159420289
   }
 }
+
+export const configChangeSeries = configChanges.map(({ timestamp, type }) => ({ timestamp, type }))
+
+export const pagedConfigChange = [
+  ...configChanges.slice()
+    .sort((a, b) => Number(b.timestamp) - Number(a.timestamp)).slice(0, 10)
+]

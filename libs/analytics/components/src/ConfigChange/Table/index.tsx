@@ -1,6 +1,5 @@
 import { useContext } from 'react'
 
-import { stringify }                  from 'csv-stringify/browser/esm/sync'
 import moment                         from 'moment'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
@@ -16,73 +15,21 @@ import {
   TableProps,
   Table as CommonTable,
   ConfigChange,
-  type ConfigChangeChartRowMappingType,
   getConfigChangeEntityTypeMapping,
   Cascader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                                                        from '@acx-ui/formatter'
-import { DownloadOutlined }                                                                 from '@acx-ui/icons'
-import { exportMessageMapping, noDataDisplay, getIntl, handleBlobDownloadFile, PathFilter } from '@acx-ui/utils'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }           from '@acx-ui/formatter'
+import { DownloadOutlined }                    from '@acx-ui/icons'
+import { exportMessageMapping, noDataDisplay } from '@acx-ui/utils'
 
 import { ConfigChangeContext }  from '../context'
 import { hasConfigChange }      from '../KPI'
 import { useConfigChangeQuery } from '../services'
 
+import { downloadConfigChangeList }                     from './download'
 import { Badge, CascaderFilterWrapper }                 from './styledComponents'
 import { filterData, getConfiguration, getEntityValue } from './util'
-
-export function downloadConfigChangeList (
-  configChanges: ConfigChange[],
-  columns: TableProps<ConfigChange>['columns'],
-  entityTypeMapping: ConfigChangeChartRowMappingType[],
-  { startDate, endDate }: PathFilter
-) {
-  const { $t } = getIntl()
-  const data = stringify(
-    configChanges.map(item => {
-      const configValue = getConfiguration(item.type, item.key)
-
-      const oldValues = item.oldValues?.map(value => {
-        const mapped = getEntityValue(item.type, item.key, value)
-        return (typeof mapped === 'string')
-          ? mapped : $t(mapped as MessageDescriptor)
-      })
-
-      const newValues = item.newValues?.map(value => {
-        const mapped = getEntityValue(item.type, item.key, value)
-        return (typeof mapped === 'string')
-          ? mapped : $t(mapped as MessageDescriptor)
-      })
-
-      return ({
-        timestamp: moment(Number(item.timestamp)).format(),
-        type: entityTypeMapping.find(type => type.key === item.type)?.label || item.type,
-        name: item.name,
-        key: (typeof configValue === 'string')
-          ? configValue
-          : $t(configValue as MessageDescriptor),
-        oldValues: oldValues.join(', '),
-        newValues: newValues.join(', ')
-      })
-    }),
-    {
-      header: true,
-      quoted: true,
-      cast: {
-        string: s => s === '--' ? '-' : s
-      },
-      columns: columns.map(({ key, title }) => ({
-        key: key,
-        header: title as string
-      }))
-    }
-  )
-  handleBlobDownloadFile(
-    new Blob([data], { type: 'text/csv;charset=utf-8;' }),
-    `Config-Changes-${startDate}-${endDate}.csv`
-  )
-}
 
 export function Table () {
 
@@ -127,8 +74,8 @@ export function Table () {
       title: $t({ defaultMessage: 'Entity Type' }),
       dataIndex: 'type',
       render: (_, row) => {
-        const config = entityTypeMapping.find(type => type.key === row.type)
-        return config ? <Badge key={row.id} color={config.color} text={config.label}/> : row.type
+        const config = entityTypeMapping.find(type => type.key === row.type)!
+        return <Badge key={row.id} color={config.color} text={config.label}/>
       },
       filterable: entityTypeMapping.map(({ label, ...rest }) => ({ ...rest, value: label })),
       sorter: { compare: sortProp('type', defaultSort) },

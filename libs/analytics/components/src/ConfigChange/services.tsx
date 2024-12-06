@@ -119,12 +119,11 @@ export const api = dataApi.injectEndpoints({
         return {
           ...response.network.hierarchyNode.pagedConfigChanges,
           data: response.network.hierarchyNode.pagedConfigChanges.data
-            // TODO: remove filterId while removeing CONFIG_CHANGE_PAGINATION
             .map((value, index)=>{
               const id = (payload.sortBy === SORTER_ABBR.DESC)
                 ? (page - 1) * pageSize + index
                 : total - ((page - 1)* pageSize + index) - 1
-              return { ...value, id, filterId: id }
+              return { ...value, id }
             })
         }
       }
@@ -157,8 +156,7 @@ export const api = dataApi.injectEndpoints({
       transformResponse: (
         response: Response<{ configChangeSeries: ConfigChange[] }>) =>
         response.network.hierarchyNode.configChangeSeries
-          // TODO: remove filterId while removeing CONFIG_CHANGE_PAGINATION
-          .map((value, id)=>({ ...value, id, filterId: id }))
+          .map((value, id)=>({ ...value, id }))
     }),
     configChangeKPIChanges: build.query<
       { before: Record<string, number>, after: Record<string, number> },

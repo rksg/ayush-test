@@ -1,47 +1,47 @@
 import '@testing-library/jest-dom'
 
+import { useContext } from 'react'
+
 import userEvent from '@testing-library/user-event'
 
-import { ConfigChange, getConfigChangeEntityTypeMapping, TableProps }                     from '@acx-ui/components'
 import { get }                                                                            from '@acx-ui/config'
 import { useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
 import { Provider, dataApiURL, store }                                                    from '@acx-ui/store'
 import { findTBody, mockGraphqlQuery, render, within, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
-import { DateRange, PathFilter }                                                          from '@acx-ui/utils'
+import { DateRange }                                                                      from '@acx-ui/utils'
 
-import { configChanges }        from '../__tests__/fixtures'
-import { ConfigChangeProvider } from '../context'
-import { api }                  from '../services'
+import { configChanges }                             from '../__tests__/fixtures'
+import { ConfigChangeContext, ConfigChangeProvider } from '../context'
+import { api }                                       from '../services'
 
-import { downloadConfigChangeList, Table } from '.'
+import { downloadConfigChangeList } from './download'
+
+import { Table } from '.'
 
 const mockGet = jest.mocked(get)
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
 
+const mockDownload = jest.mocked(downloadConfigChangeList)
+jest.mock('./download', () => ({
+  downloadConfigChangeList: jest.fn()
+}))
+
 describe('Table', () => {
+  const data = configChanges
+    .sort((a, b) => Number(b.timestamp) - Number(a.timestamp))
+    .map((value, id)=>({ ...value, id }))
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
     mockGet.mockReturnValue('true')
     jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
-  const handleClick = jest.fn()
-  const setPagination = jest.fn()
-
-  const legend = { 'AP': true, 'AP Group': true, 'Zone': true, 'WLAN': true, 'WLAN Group': true }
   it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
     render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
-      <Table
-        selected={null}
-        onRowClick={handleClick}
-        pagination={{ current: 1, pageSize: 10 }}
-        setPagination={setPagination}
-        dotSelect={null}
-        legend={legend}
-      />
+      <Table/>
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     expect(screen.getAllByRole('img', { name: 'loader' })).toBeTruthy()
   })
@@ -50,14 +50,7 @@ describe('Table', () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
     render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
-      <Table
-        selected={null}
-        onRowClick={handleClick}
-        pagination={{ current: 1, pageSize: 10 }}
-        setPagination={setPagination}
-        dotSelect={null}
-        legend={legend}
-      />
+      <Table/>
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
@@ -70,16 +63,9 @@ describe('Table', () => {
 
   it('should render table with valid input', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
-      { data: { network: { hierarchyNode: { configChanges } } } })
+      { data: { network: { hierarchyNode: { configChanges: data } } } })
     render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
-      <Table
-        selected={null}
-        onRowClick={handleClick}
-        pagination={{ current: 1, pageSize: 10 }}
-        setPagination={setPagination}
-        dotSelect={null}
-        legend={legend}
-      />
+      <Table/>
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
@@ -87,7 +73,7 @@ describe('Table', () => {
     expect(tbody).toBeVisible()
     const body = within(tbody)
     expect(await screen.findByRole('table')).toBeVisible()
-    expect(await body.findAllByRole('row')).toHaveLength(9)
+    expect(await body.findAllByRole('row')).toHaveLength(10)
     expect(await screen.findByText('480')).toBeVisible()
     expect(await screen.findByText('Background scanning')).toBeVisible()
     expect(await screen.findByText('Auto')).toBeVisible()
@@ -98,84 +84,29 @@ describe('Table', () => {
     expect(await screen.findByText('Add KPI filter')).toBeVisible()
   })
 
-  it('should render table with legend filtered', async () => {
-    const filteredLegend = {
-      'AP': false,
-      'AP Group': true,
-      'Zone': true,
-      'WLAN': false,
-      'WLAN Group': true,
-      'IntentAI': false
-    }
-    mockGraphqlQuery(dataApiURL, 'ConfigChange',
-      { data: { network: { hierarchyNode: { configChanges } } } })
-    render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
-      <Table
-        selected={null}
-        onRowClick={handleClick}
-        pagination={{ current: 1, pageSize: 10 }}
-        setPagination={setPagination}
-        dotSelect={null}
-        legend={filteredLegend}
-      />
-    </ConfigChangeProvider>, { wrapper: Provider, route: {} })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
-
-    const tbody = await findTBody()
-    expect(tbody).toBeVisible()
-    const body = within(tbody)
-    expect(await screen.findByRole('table')).toBeVisible()
-    expect(await body.findAllByRole('row')).toHaveLength(4)
-    expect(screen.queryByText('AP')).toBeNull()
-    expect(screen.queryByText('WLAN')).toBeNull()
-  })
-
   it('should handle click correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
-      { data: { network: { hierarchyNode: { configChanges } } } })
+      { data: { network: { hierarchyNode: { configChanges: data } } } })
     render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
-      <Table
-        selected={null}
-        onRowClick={handleClick}
-        pagination={{ current: 1, pageSize: 10 }}
-        setPagination={setPagination}
-        dotSelect={null}
-        legend={legend}
-      />
+      <Table/>
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
-    const radio = await screen.findAllByRole('radio')
+    const radio = screen.queryAllByRole('radio')
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(radio[0]?.parentNode).not.toHaveClass('ant-radio-checked')
 
     await userEvent.click(radio[0])
 
-    expect(handleClick).toHaveBeenCalledTimes(1)
-    expect(handleClick).toHaveBeenCalledWith({
-      children: undefined,
-      id: 0,
-      filterId: 0,
-      key: 'initialState.ccmAp.radio24g.radio.channel_fly_mtbc',
-      name: '94:B3:4F:3D:21:80',
-      newValues: ['480'],
-      oldValues: [],
-      timestamp: '1685427082900',
-      type: 'ap'
-    })
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(radio[0]?.parentNode).toHaveClass('ant-radio-checked')
   })
 
   it('should handle kpi filter', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
-      { data: { network: { hierarchyNode: { configChanges } } } })
-    render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
-      <Table
-        selected={null}
-        onRowClick={handleClick}
-        pagination={{ current: 1, pageSize: 10 }}
-        setPagination={setPagination}
-        dotSelect={null}
-        legend={legend}
-      />
-    </ConfigChangeProvider>, { wrapper: Provider, route: {} })
+      { data: { network: { hierarchyNode: { configChanges: data } } } })
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days}><Table/></ConfigChangeProvider>,
+      { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
     await userEvent.click(await screen.findByText('Add KPI filter'))
@@ -192,184 +123,79 @@ describe('Table', () => {
   })
 
   it('should handle pagination correctly', async () => {
+    const TestComponent = () => {
+      const { pagination } = useContext(ConfigChangeContext)
+      return <div>{JSON.stringify(pagination)}</div>
+    }
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
-      { data: { network: { hierarchyNode: {
-        configChanges: configChanges.slice(0, 7).concat(new Array(10).fill(configChanges[7]))
-      } } } })
+      { data: { network: { hierarchyNode: { configChanges: data } } } })
     render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
-      <Table
-        selected={null}
-        onRowClick={handleClick}
-        pagination={{ current: 1, pageSize: 10 }}
-        setPagination={setPagination}
-        dotSelect={null}
-        legend={legend}
-      />
+      <div><Table/><TestComponent/></div>
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
+    expect(await screen.findByText(/"current":1/)).toBeVisible()
     await userEvent.click(await screen.findByText(2))
-    expect(setPagination).toHaveBeenCalledTimes(1)
+    expect(await screen.findByText(/"current":2/)).toBeVisible()
+  })
+
+  it('should render table with legend filtered', async () => {
+    const TestComponent = () => {
+      const { applyLegendFilter } = useContext(ConfigChangeContext)
+      return <div onClick={() => { applyLegendFilter({
+        'AP': false, 'AP Group': true, 'Zone': true, 'WLAN': false, 'WLAN Group': true,
+        'IntentAI': true
+      })
+      }}>Test</div>
+    }
+    mockGraphqlQuery(dataApiURL, 'ConfigChange',
+      { data: { network: { hierarchyNode: { configChanges: data } } } })
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
+      <div><Table/><TestComponent/></div>
+    </ConfigChangeProvider>, { wrapper: Provider, route: {} })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
+
+    await userEvent.click(await screen.findByText('Test'))
+
+    const tbody = await findTBody()
+    expect(tbody).toBeVisible()
+    const body = within(tbody)
+    expect(await screen.findByRole('table')).toBeVisible()
+    expect(await body.findAllByRole('row')).toHaveLength(6)
+    expect(screen.queryByText('AP')).toBeNull()
+    expect(screen.queryByText('WLAN')).toBeNull()
   })
 
   it('should select row when selected value is passed in', async () => {
-    const selected = {
-      id: 0,
-      timestamp: '1685427082100',
-      type: 'ap',
-      name: '94:B3:4F:3D:21:80',
-      key: 'initialState.ccmAp.radio24g.radio.channel_fly_mtbc',
-      oldValues: [],
-      newValues: ['480']
+    const TestComponent = () => {
+      const { setSelected } = useContext(ConfigChangeContext)
+      return <div onClick={() => { setSelected(data[1])
+      }}>Test</div>
     }
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
-      { data: { network: { hierarchyNode: { configChanges } } } })
+      { data: { network: { hierarchyNode: { configChanges: data } } } })
     render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
-      <Table
-        selected={selected}
-        onRowClick={handleClick}
-        pagination={{ current: 1, pageSize: 10 }}
-        setPagination={setPagination}
-        dotSelect={null}
-        legend={legend}
-      />
+      <div><Table/><TestComponent/></div>
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
+
+    const radio = screen.queryAllByRole('radio')
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(radio[1]?.parentNode).not.toHaveClass('ant-radio-checked')
+
+    await userEvent.click(await screen.findByText('Test'))
+
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(radio[1]?.parentNode).toHaveClass('ant-radio-checked')
   })
 
   it('should render download button', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
-      { data: { network: { hierarchyNode: { configChanges } } } })
-
+      { data: { network: { hierarchyNode: { configChanges: data } } } })
     render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
-      <Table
-        selected={null}
-        onRowClick={handleClick}
-        pagination={{ current: 1, pageSize: 10 }}
-        setPagination={setPagination}
-        dotSelect={null}
-        legend={legend}
-      />
+      <Table/>
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
-
-    userEvent.click(await screen.findByTestId('DownloadOutlined'))
     expect(await screen.findByTestId('DownloadOutlined')).toBeInTheDocument()
-  })
-})
-
-describe('CSV Functions', () => {
-  const data = [{
-    timestamp: '1732683083229',
-    type: 'ap',
-    name: '00:33:58:2B:97:30',
-    key: 'initialState.ccmAp.radio_configs.radio6g.radio.wlan_service_enabled',
-    oldValues: ['false'],
-    newValues: ['true'],
-    id: 3,
-    filterId: 3
-  }, {
-    timestamp: '1732101890307',
-    type: 'wlan',
-    name: '##ML_AP-28651',
-    key: 'initialState.CcmWlan.multi_link_operation.radio_6g_enabled',
-    oldValues: ['false'],
-    newValues: ['true'],
-    id: 111,
-    filterId: 111
-  }, {
-    timestamp: '1732095124567',
-    type: 'zone',
-    name: 'SERVICE_VALIDATION_TEST_7.1.1',
-    key: 'initialState.ccmZone.version',
-    oldValues: ['7.1.1.0.116'],
-    newValues: ['7.1.1.0.126'],
-    id: 114,
-    filterId: 114
-  },
-  {
-    timestamp: '1732091234567',
-    type: 'apGroup',
-    name: 'test-name',
-    key: 'test-key',
-    oldValues: ['old'],
-    newValues: ['new'],
-    id: 100,
-    filterId: 100
-  }]
-  const columns: TableProps<ConfigChange>['columns'] = [
-    {
-      title: 'Timestamp',
-      width: 130,
-      dataIndex: 'timestamp',
-      key: 'timestamp',
-      sorter: {},
-      defaultSortOrder: 'descend'
-    },
-    {
-      title: 'Entity Type',
-      width: 100,
-      dataIndex: 'type',
-      key: 'type',
-      sorter: {},
-      defaultSortOrder: 'descend',
-      filterable: true
-    },
-    {
-      title: 'Entity Name',
-      key: 'name',
-      dataIndex: 'name',
-      sorter: {},
-      defaultSortOrder: 'descend',
-      searchable: true
-    },
-    {
-      title: 'Configuration',
-      key: 'key',
-      dataIndex: 'key',
-      sorter: {},
-      defaultSortOrder: 'descend'
-    },
-    {
-      title: 'Change From',
-      key: 'oldValues',
-      dataIndex: ['oldValues'],
-      align: 'center',
-      sorter: {},
-      defaultSortOrder: 'descend'
-    },
-    {
-      title: 'Change To',
-      key: 'newValues',
-      dataIndex: ['newValues'],
-      align: 'center',
-      sorter: {},
-      defaultSortOrder: 'descend'
-    }
-  ]
-  const originalBlob = global.Blob
-  beforeEach(() => {
-    global.Blob = jest.fn(() => ({
-      type: 'text/csv;charset=utf-8;',
-      arrayBuffer: jest.fn()
-    } as unknown as Blob))
-
-    global.URL.createObjectURL = jest.fn(() => 'mock-url')
-  })
-  afterEach(() => {
-    global.Blob = originalBlob
-  })
-  it('downloadConfigChangeList triggers download correctly', () => {
-    const downloadSpy = jest.fn()
-    const anchorMock = document.createElement('a')
-    jest.spyOn(document, 'createElement').mockReturnValue(anchorMock)
-    anchorMock.click = downloadSpy
-    downloadConfigChangeList(data, columns, getConfigChangeEntityTypeMapping(true), {
-      startDate: '2023-08-22T10:19:00+08:00',
-      endDate: '2023-08-23T10:19:00+08:00'
-    } as PathFilter)
-    expect(global.Blob).toHaveBeenCalledWith(
-      // eslint-disable-next-line max-len
-      ['"Timestamp","Entity Type","Entity Name","Configuration","Change From","Change To"\n"2024-11-27T04:51:23+00:00","AP","00:33:58:2B:97:30","Enable 6 GHz band","false","true"\n"2024-11-20T11:24:50+00:00","WLAN","##ML_AP-28651","Multi Link Operation (6 GHz)","false","true"\n"2024-11-20T09:32:04+00:00","Zone","SERVICE_VALIDATION_TEST_7.1.1","Firmware Update","7.1.1.0.116","7.1.1.0.126"\n"2024-11-20T08:27:14+00:00","AP Group","test-name","test-key","old","new"\n'],
-      { type: 'text/csv;charset=utf-8;' }
-    )
+    await userEvent.click(await screen.findByTestId('DownloadOutlined'))
+    expect(mockDownload).toBeCalledTimes(1)
   })
 })
