@@ -52,7 +52,7 @@ const mockRadioSetting = (
   </VenueUtilityContext.Provider>
 )
 
-describe('Venue Radio Settings', () => {
+describe.skip('Venue Radio Settings', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(

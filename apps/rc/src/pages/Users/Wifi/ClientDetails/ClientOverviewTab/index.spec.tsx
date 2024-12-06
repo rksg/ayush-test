@@ -56,6 +56,11 @@ jest.mock('@acx-ui/utils', () => ({
   getJwtTokenPayload: () => ({ tenantId: 'tenantId' })
 }))
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchClientListQuery: () => ({ data: {} })
+}))
+
 jest.mock('./TopApplications', () => ({
   TopApplications: () => <div data-testid={'rc-TopApplications'} title='TopApplications' />
 }))

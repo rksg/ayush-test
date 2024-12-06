@@ -17,7 +17,7 @@ export const mockedDpskEnrollmentAction:DpskAction = {
   version: 0,
   dpskPoolId: 'dpsk-pool-id-for-testing',
   identityGroupId: 'identity-group-id-for-testing',
-  valid: false
+  valid: true
 }
 
 export const mockedDpskActionInvalid:DpskAction = {
@@ -41,6 +41,17 @@ export const mockedDpskData:DpskSaveData = {
 export const mockedIdentityGroupData:PersonaGroup = {
   id: 'fake-persona-group-id',
   name: 'My Identity Group for Testing'
+}
+
+export const mockedMacRegEnrollmentAction:MacRegAction = {
+  name: 'mac-reg-enrollment-action',
+  description: 'fake data for testing',
+  actionType: ActionType.MAC_REG,
+  id: 'bacc6a41-0c27-4b4e-a2a4-d7ad506974af',
+  version: 0,
+  macRegListId: 'dpsk-pool-id-for-testing',
+  identityGroupId: 'identity-group-id-for-testing',
+  valid: true
 }
 
 export const mockedMacRegData:MacRegistrationPool = {

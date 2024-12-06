@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react'
+import React, { useState, useRef, useCallback } from 'react'
 
 import _             from 'lodash'
 import { Resizable } from 'react-resizable'
@@ -12,22 +12,12 @@ interface ResizableColumnProps extends React.PropsWithChildren {
   definedWidth?: number
 }
 
-
 export const ResizableColumn: React.FC<ResizableColumnProps> = (props) => {
   const { onResize, width: columnWidth, definedWidth, ...rest } = props
   const [width, setWidth] = useState(columnWidth)
-  const [currentHeaderCell, setCurrentHeaderCell] = useState<HTMLTableHeaderCellElement>()
   const headerCellRef = useRef<HTMLTableHeaderCellElement>(null)
 
-  const handleResizeStop = useCallback(() => setCurrentHeaderCell(undefined), [])
   const handleStopPropagation = useCallback((e: Event) => e.stopPropagation(), [])
-
-  useEffect(() => {
-    if (headerCellRef && headerCellRef.current !== currentHeaderCell) {
-      if (onResize) onResize(headerCellRef.current?.offsetWidth as number)
-      setWidth(headerCellRef.current?.offsetWidth as number)
-    }
-  }, [headerCellRef, headerCellRef?.current?.offsetWidth, currentHeaderCell])
 
   if (_.isNil(width)) return <th ref={headerCellRef} {...rest} />
 
@@ -38,8 +28,6 @@ export const ResizableColumn: React.FC<ResizableColumnProps> = (props) => {
     minConstraints={[Math.min(definedWidth || defaultColumnWidth, minColumnWidth), 0]}
     handle={<ResizableHandle />}
     onResizeStart={() => {
-      setCurrentHeaderCell(headerCellRef.current!)
-      document.addEventListener('mouseup', handleResizeStop, { once: true })
       headerCellRef.current!.addEventListener('click', handleStopPropagation, { once: true })
     }}
     onResize={(_: React.SyntheticEvent<Element>, { size }) => {
