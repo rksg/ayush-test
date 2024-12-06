@@ -2673,3 +2673,58 @@ export const mockedDirectoryServerProfiles = {
     }
   ]
 }
+
+export const mockedMacRegistrationPools = {
+  content: [
+    {
+      id: '47f3d966-4204-455a-aa23-749cec8e0484',
+      name: '0823-MAC pool',
+      autoCleanup: true,
+      expirationType: 'WEEKS_AFTER_TIME',
+      expirationOffset: 5,
+      expirationEnabled: true,
+      registrationCount: 1,
+      defaultAccess: 'ACCEPT',
+      createdDate: '2023-08-23T04:19:26Z',
+      policySetId: 'b3fb4ed7-b793-42d3-9669-9f7a90735eac',
+      networkIds: [
+        'eef68a729f2a455cb03b575fcbe80ca7',
+        '02db26b004f34df0bc08217a754018d2'
+      ],
+      isReferenced: false,
+      networkCount: 2,
+      links: [
+        {
+          rel: 'self',
+          // eslint-disable-next-line max-len
+          href: 'https://api.dev.ruckus.cloud/macRegistrationPools/47f3d966-4204-455a-aa23-749cec8e0484'
+        }
+      ]
+    }
+  ],
+  pageable: {
+    sort: {
+      empty: true,
+      unsorted: true,
+      sorted: false
+    },
+    offset: 0,
+    pageNumber: 0,
+    pageSize: 20,
+    paged: true,
+    unpaged: false
+  },
+  totalPages: 1,
+  totalElements: 1,
+  last: true,
+  size: 20,
+  number: 0,
+  sort: {
+    empty: true,
+    unsorted: true,
+    sorted: false
+  },
+  first: true,
+  numberOfElements: 1,
+  empty: false
+}
