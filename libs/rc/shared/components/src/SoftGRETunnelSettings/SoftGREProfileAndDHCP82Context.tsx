@@ -74,11 +74,16 @@ export const SoftgreProfileProvider = (
         softgreProfile.isSoftgreTunnelEnable &&
         softgreProfile.softgreProfileId
       ) {
+        if (value.queryPayload.apModel) {
         const { data } = await getSoftGreProfileConfiguration({
           params: { ...value?.queryPayload }
         })
         if (data?.softGreSettings) {
           setDhcpOption82SavedData(data.softGreSettings)
+          }
+        }
+        if (value.queryPayload.serialNumber) {
+          // TODO
         }
       }
     }
