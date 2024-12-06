@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 
 import { stringify }                  from 'csv-stringify/browser/esm/sync'
-import moment                         from 'moment'
+import moment, { Moment }             from 'moment'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
 import {
@@ -10,7 +10,7 @@ import {
   useAnalyticsFilter,
   kpiConfig,
   productNames
-} from '@acx-ui/analytics/utils'
+}                                    from '@acx-ui/analytics/utils'
 import {
   Loader,
   TableProps,
@@ -19,11 +19,16 @@ import {
   type ConfigChangeChartRowMappingType,
   getConfigChangeEntityTypeMapping,
   Cascader
-} from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                                                        from '@acx-ui/formatter'
-import { DownloadOutlined }                                                                 from '@acx-ui/icons'
-import { exportMessageMapping, noDataDisplay, getIntl, handleBlobDownloadFile, PathFilter } from '@acx-ui/utils'
+}                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { DownloadOutlined }          from '@acx-ui/icons'
+import {
+  exportMessageMapping,
+  noDataDisplay,
+  getIntl,
+  handleBlobDownloadFile
+}                                    from '@acx-ui/utils'
 
 import { ConfigChangeContext, KPIFilterContext } from '../context'
 import { hasConfigChange }                       from '../KPI'
@@ -36,7 +41,8 @@ export function downloadConfigChangeList (
   configChanges: ConfigChange[],
   columns: TableProps<ConfigChange>['columns'],
   entityTypeMapping: ConfigChangeChartRowMappingType[],
-  { startDate, endDate }: PathFilter
+  startDate: Moment,
+  endDate: Moment
 ) {
   const { $t } = getIntl()
   const data = stringify(
@@ -80,7 +86,7 @@ export function downloadConfigChangeList (
   )
   handleBlobDownloadFile(
     new Blob([data], { type: 'text/csv;charset=utf-8;' }),
-    `Config-Changes-${startDate}-${endDate}.csv`
+    `Config-Changes-${startDate.format()}-${endDate.format()}.csv`
   )
 }
 
@@ -239,8 +245,13 @@ export function Table (props: {
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: () => {
             downloadConfigChangeList(
-              queryResults.data, ColumnHeaders, entityTypeMapping, pathFilters)
-          } }}
+              queryResults.data,
+              ColumnHeaders,
+              entityTypeMapping,
+              startDate,
+              endDate
+            )}
+        }}
       />
     </Loader>
   </>
