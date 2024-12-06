@@ -288,8 +288,7 @@ describe('Floor Plans', () => {
 
   })
 
-  // TODO split this test, timeouts in CI after 20s
-  it.skip('Floor Plans should render gallery correctly', async () => {
+  it('Floor Plans should render gallery correctly', async () => {
     const { asFragment } = render(<Provider>
       <Form>
         <DndProvider backend={HTML5Backend}><FloorPlan /></DndProvider>
@@ -349,7 +348,7 @@ describe('Floor Plans', () => {
     fireEvent.click(await fpImage[0])
     expect(fpImage[0]).not.toBeVisible()
     fireEvent.click(await fpImage[1])
-  })
+  }, 40000)
   it('test sortByFloorNumber function', async () => {
     expect(sortByFloorNumber(list[1], list[0])).toEqual(1)
     expect(sortByFloorNumber(list[0], list[1])).toEqual(-1)
