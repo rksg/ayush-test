@@ -3,7 +3,7 @@ import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/q
 /* eslint-disable max-len */
 import { cloneDeep } from 'lodash'
 
-import { MspEc, MspUrlsInfo }    from '@acx-ui/msp/utils'
+import { MspEc, MspUrlsInfo } from '@acx-ui/msp/utils'
 import {
   AAAPolicyType,
   AAAViewModalType,
