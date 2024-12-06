@@ -42,6 +42,7 @@ export function NetworkingTab () {
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
   const isSmartMonitorFFEnabled = useIsSplitOn(Features.WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE)
+  const supportR370 = useIsSplitOn(Features.WIFI_R370_TOGGLE)
 
   const {
     previousPath,
@@ -54,10 +55,12 @@ export function NetworkingTab () {
   const { apCapabilities } = useContext(ApDataContext)
 
   const [isSupportMesh, setIsSupportMesh] = useState(false)
+  const [isSupportSmartMonitor, setIsSupportSmartMonitor] = useState(false)
 
   useEffect(() => {
     if (apCapabilities) {
       setIsSupportMesh(!!(apCapabilities?.supportMesh))
+      setIsSupportSmartMonitor(!!(apCapabilities?.supportSmartMonitor))
     }
   }, [apCapabilities])
 
@@ -125,7 +128,7 @@ export function NetworkingTab () {
         </>
       )
     },
-    ...(isSmartMonitorFFEnabled? [{
+    ...((isSmartMonitorFFEnabled && (!supportR370 || isSupportSmartMonitor)) ? [{
       title: smartMonitorTitle,
       content: (
         <>
