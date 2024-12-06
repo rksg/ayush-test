@@ -13,7 +13,7 @@ import { CommonResult,
   onSocketActivityChanged,
   onActivityMessageReceived,
   SoftGreOptionsData,
-  LanPortSoftGreProfileSettings,
+  VenueApModelLanPortSettingsV1,
   VenueTableSoftGreActivation,
   CommonRbacUrlsInfo,
   NewAPModel
@@ -313,7 +313,7 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
       }
     }),
     // eslint-disable-next-line max-len
-    getSoftGreProfileConfigurationOnVenue: build.query<LanPortSoftGreProfileSettings ,RequestPayload>({
+    getSoftGreProfileConfigurationOnVenue: build.query<VenueApModelLanPortSettingsV1 ,RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(SoftGreUrls.getSoftGreProfileConfigurationOnVenue, params)
       }
