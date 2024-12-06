@@ -7,7 +7,7 @@ import { Path }                                                                 
 import { Provider, store }                                                                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within }                                                        from '@acx-ui/test-utils'
 
-import { mockSoftGreTable, mockedVenueQueryData } from '../__tests__/fixtures'
+import { mockSoftGreTable, mockedVenueName1, mockedVenueQueryData } from '../__tests__/fixtures'
 
 import SoftGreTable from '.'
 
@@ -191,7 +191,7 @@ describe('SoftGreTable', () => {
     const row1 = await screen.findByRole('row', { name: /softGreProfileName1/i })
     await userEvent.hover(within(row1).getByText('1'))
     const tooltip = await screen.findByRole('tooltip')
-    expect(tooltip).toHaveTextContent('My-Venue')
+    expect(tooltip).toHaveTextContent(mockedVenueName1)
     const row2 = await screen.findByRole('row', { name: /softGreProfileName2/i })
     await userEvent.hover(within(row2).getByText('0'))
   })
