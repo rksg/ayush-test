@@ -28,6 +28,8 @@ export interface SoftGreViewData {
   keepAliveRetryTimes: number
   disassociateClientEnabled: boolean
   activations: SoftGreActivation[]
+  venueActivations: SoftGreWiredActivation[]
+  apActivations: SoftGreWiredActivation[]
 }
 
 export interface VenueTableUsageBySoftGre extends SoftGreActivation {
@@ -35,8 +37,14 @@ export interface VenueTableUsageBySoftGre extends SoftGreActivation {
     id: string
     addressLine: string
     wifiNetworkNames: string[]
+    apSerialNumbers: string[]
+    apNames: string[]
 }
 
+export interface VenueTableSoftGreActivation {
+  wifiNetworkIds: Set<string>
+  apSerialNumbers: Set<string>
+}
 
 export interface SoftGreActivation {
   venueId: string
@@ -50,4 +58,11 @@ export interface SoftGreOptionsData {
   gatewayIpMaps: Record<string, string[]>,
   gatewayIps: string[]
   activationProfiles: string[]
+}
+
+export interface SoftGreWiredActivation {
+  venueId: string
+  apModel?: string
+  apSerialNumbers: string[],
+  portId: number
 }
