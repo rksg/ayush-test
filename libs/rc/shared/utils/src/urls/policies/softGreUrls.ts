@@ -84,7 +84,7 @@ export const SoftGreUrls: { [key: string]: ApiInfo } = {
   },
   getSoftGreProfileConfigurationOnVenue: {
     method: 'get',
-    url: '/venues/:venueId/apModels/:apModel/lanPorts/:portId/softGreProfiles/:policyId',
+    url: '/venues/:venueId/apModels/:apModel/lanPorts/:portId/settings',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
