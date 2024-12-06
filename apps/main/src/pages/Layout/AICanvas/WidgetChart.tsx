@@ -21,7 +21,7 @@ const PIE = {
   height: 4
 }
 
-const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
+export const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
   const [{ isDragging }, drag, preview] = useDrag({
     type: 'card',
     collect: (monitor) => ({
@@ -57,12 +57,14 @@ const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
         cursor: 'move'
       }}
     >
-      <WidgetChart data={data} />
+      <div style={{ margin: '7px', height: '165px', width: '200px' }}>
+        <WidgetChart data={data} />
+      </div>
     </div>
   )
 }
 
-const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
+export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
   // const queryResults = useChatChartQuery({
   //   params: {
   //     sessionId: data.sessionId,
@@ -79,7 +81,7 @@ const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
     }
   }
   return (
-    <div style={{ margin: '7px', height: '165px', width: '200px' }}>
+    <>
       {/* <Loader states={[{isLoading: queryResults.isLoading}]}> */}
       <Card key={data.id} title='Title'>
         <AutoSizer>
@@ -95,8 +97,8 @@ const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
         </AutoSizer>
       </Card>
       {/* </Loader> */}
-    </div>
+    </>
+
   )
 }
 
-export default DraggableChart

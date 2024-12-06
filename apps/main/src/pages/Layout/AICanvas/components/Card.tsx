@@ -7,9 +7,9 @@ import { getEmptyImage }    from 'react-dnd-html5-backend'
 
 import utils                       from '../utils'
 import { compactLayoutHorizontal } from '../utils/compact'
+import { WidgetChart }             from '../WidgetChart'
 
 import { ItemTypes } from './GroupItem'
-import { Widget }    from './Widget'
 
 const DraggableCard = (props) => {
   const [{ isDragging }, drag, preview] = useDrag({
@@ -183,10 +183,10 @@ function Card (props) {
                 </button>
               }
             </div>
-            {/* {
-              card.widgetType &&
-              <Widget id={card.widgetType} onRemoveItem={()=>{}} />
-            } */}
+            {
+              card.chartType &&
+              <WidgetChart data={card} />
+            }
           </div>
       }
     </div>

@@ -55,52 +55,52 @@ export default [
         }
       ]
     }]
-  },
-  {
-    id: 'a2',
-    type: 'section',
-    hasTab: true,
-    groups: [
-      {
-        id: 1,
-        sectionId: 'a2',
-        type: 'group',
-        tabLabel: 'Wi-Fi',
-        tabValue: 'ap',
-        defaultTab: true,
-        cards: [
-          {
-            id: 101,
-            gridx: 0,
-            gridy: 0,
-            width: 2,
-            height: 5,
-            type: 'card',
-            isShadow: false,
-            widgetType: '4-MapWidget'
-          }
-        ]
-      },
-      {
-        id: 2,
-        sectionId: 'a2',
-        type: 'group',
-        tabLabel: 'Switch',
-        tabValue: 'switch',
-        defaultTab: false,
-        cards: [
-          {
-            id: 104,
-            gridx: 0,
-            gridy: 0,
-            width: 1,
-            height: 5,
-            type: 'card',
-            isShadow: false,
-            widgetType: '4-MapWidget'
-          }
-        ]
-      }
-    ]
   }
+  // {
+  //   id: 'a2',
+  //   type: 'section',
+  //   hasTab: true,
+  //   groups: [
+  //     {
+  //       id: 1,
+  //       sectionId: 'a2',
+  //       type: 'group',
+  //       tabLabel: 'Wi-Fi',
+  //       tabValue: 'ap',
+  //       defaultTab: true,
+  //       cards: [
+  //         {
+  //           id: 101,
+  //           gridx: 0,
+  //           gridy: 0,
+  //           width: 2,
+  //           height: 5,
+  //           type: 'card',
+  //           isShadow: false,
+  //           widgetType: '4-MapWidget'
+  //         }
+  //       ]
+  //     },
+  //     {
+  //       id: 2,
+  //       sectionId: 'a2',
+  //       type: 'group',
+  //       tabLabel: 'Switch',
+  //       tabValue: 'switch',
+  //       defaultTab: false,
+  //       cards: [
+  //         {
+  //           id: 104,
+  //           gridx: 0,
+  //           gridy: 0,
+  //           width: 1,
+  //           height: 5,
+  //           type: 'card',
+  //           isShadow: false,
+  //           widgetType: '4-MapWidget'
+  //         }
+  //       ]
+  //     }
+  //   ]
+  // }
 ]

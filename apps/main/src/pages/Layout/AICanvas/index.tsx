@@ -12,9 +12,9 @@ import { useChatAiMutation }                                                 fro
 import { ChatMessage, ChatWidget, RuckusAiChat, WidgetData, WidgetListData } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                        from '@acx-ui/react-router-dom'
 
-import Canvas      from './Canvas'
-import * as UI     from './styledComponents'
-import WidgetChart from './WidgetChart'
+import Canvas             from './Canvas'
+import * as UI            from './styledComponents'
+import { DraggableChart } from './WidgetChart'
 
 
 export default function AICanvas (
@@ -112,7 +112,7 @@ export default function AICanvas (
           {chat.text}
         </div>
       </div>
-      { chat.role === 'AI' && chat.widgets?.length && <WidgetChart data={{
+      { chat.role === 'AI' && chat.widgets?.length && <DraggableChart data={{
         chartType: chat.widgets[0].chartType,
         sessionId,
         id: chat.id
