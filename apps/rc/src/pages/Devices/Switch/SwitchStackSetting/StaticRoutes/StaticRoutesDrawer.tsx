@@ -127,7 +127,6 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
       name='adminDistance'
       label={$t({ defaultMessage: 'Admin Distance' })}
       rules={[
-        { required: true },
         { validator: (_, value) => validateSwitchStaticRouteAdminDistance(value) }
       ]}
       children={<Input />}
