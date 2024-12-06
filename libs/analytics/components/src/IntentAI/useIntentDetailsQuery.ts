@@ -185,13 +185,15 @@ type IntentDetailsQueryPayload = {
   sliceId: string
   code: string
   kpis: Pick<IntentKPIConfig, 'key' | 'deltaSign'>[]
+  isStatusTrailTooltipEnabled: boolean
 }
 
 export const api = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
     intentDetails: build.query<Intent | undefined, IntentDetailsQueryPayload>({
-      query: ({ root, sliceId, code, kpis }: IntentDetailsQueryPayload) => ({
-        document: gql`
+      query: ({ root, sliceId, code, kpis, isStatusTrailTooltipEnabled }
+        : IntentDetailsQueryPayload) => {
+        return { document: gql`
           query IntentDetails($root: String!, $sliceId: String!, $code: String!) {
             intent(root: $root, sliceId: $sliceId, code: $code) {
               root sliceId code
@@ -201,10 +203,7 @@ export const api = intentAIApi.injectEndpoints({
               path { type name }
               statusTrail {
                 status statusReason displayStatus createdAt
-                metadata {
-                  scheduledAt
-                  failures
-                }
+                ${isStatusTrailTooltipEnabled ? 'metadata { scheduledAt failures }' : ''}
               }
               ${kpiHelper(kpis)}
               ${!code.includes('ecoflex') ? 'currentValue recommendedValue' : ''}
@@ -212,7 +211,7 @@ export const api = intentAIApi.injectEndpoints({
           }
         `,
         variables: { root, sliceId, code }
-      }),
+        }},
 
       transformResponse: (response: { intent?: Intent }) => response.intent,
       transformErrorResponse: (error, meta) =>

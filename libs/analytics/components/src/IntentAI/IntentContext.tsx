@@ -3,8 +3,9 @@ import React, { createContext, useContext } from 'react'
 import _                     from 'lodash'
 import { MessageDescriptor } from 'react-intl'
 
-import { Loader }    from '@acx-ui/components'
-import { formatter } from '@acx-ui/formatter'
+import { Loader }                 from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { formatter }              from '@acx-ui/formatter'
 
 import {
   Intent,
@@ -43,6 +44,7 @@ export function createIntentContextProvider (
 ) {
   const Component: React.FC = function () {
     const params = useIntentParams()
+    const isStatusTrailTooltipEnabled = useIsSplitOn(Features.STATUS_TRAIL_TOOLTIP_TOGGLE)
 
     const spec = specs[params.code]
     const kpis = spec?.kpis
@@ -50,7 +52,8 @@ export function createIntentContextProvider (
       // which its value is primitive value type
       // to prevent RTK Query unable to use param as cache key
       .map(kpi => _.pick(kpi, ['key', 'deltaSign']))
-    const query = useIntentDetailsQuery({ ...params, kpis }, { skip: !spec })
+    const query = useIntentDetailsQuery(
+      { ...params, kpis, isStatusTrailTooltipEnabled }, { skip: !spec })
 
     if (!spec) return null // no matching spec
     if (query.isSuccess && !query.data) return null // 404
