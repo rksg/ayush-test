@@ -8,6 +8,7 @@ import {
   Select,
   Switch
 } from 'antd'
+import { isEmpty }                   from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import {
@@ -63,8 +64,12 @@ export function AaaSettingsForm () {
 
   // TODO: Remove deprecated codes below when RadSec feature is delivery
   useEffect(()=>{
-    if(!supportRadsec && data && (editMode || cloneMode)) {
-      setFieldsValue()
+    if (!supportRadsec && data && (editMode || cloneMode)) {
+      if (isRuckusAiMode && !isEmpty(data?.wlan)) {
+        setFieldsValue()
+      } else {
+        setFieldsValue()
+      }
     }
   }, [data])
 
