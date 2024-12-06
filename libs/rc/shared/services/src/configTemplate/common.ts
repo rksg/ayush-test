@@ -19,7 +19,8 @@ import {
   onSocketActivityChanged,
   transformNetwork,
   NetworkRadiusSettings,
-  ConfigTemplateDriftsResponse
+  ConfigTemplateDriftsResponse,
+  transformWifiNetwork
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi }       from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
@@ -160,8 +161,10 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         return query(queryArgs)
       },
       providesTags: [{ type: 'NetworkTemplate', id: 'LIST' }],
-      transformResponse (result: TableResult<Network | WifiNetwork>) {
-        result.data = result.data.map(item => transformNetwork(item)) as Network[]
+      transformResponse (result: TableResult<Network | WifiNetwork>, _, args) {
+        result.data = result.data.map(item => {
+          return args?.enableRbac ? transformWifiNetwork(item as WifiNetwork) : transformNetwork(item)
+        }) as Network[]
         return result
       },
       keepUnusedDataFor: 0,
