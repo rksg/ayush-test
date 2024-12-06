@@ -19,19 +19,12 @@ import { CommonActionSettings } from './CommonActionSettings'
 export function CertTemplateSettings () {
   const { $t } = useIntl()
   const form = useFormInstance()
-
-  const [ identityGroupName, setIdentityGroupName ] = useState<string | undefined>(undefined)
-  const [ identityGroupId, setIdentityGroupId ] = useState<string | undefined>(undefined)
-  const [ certTemplateId, setCertTemplateId ] = useState<string | undefined>(undefined)
+  const identityGroupId = Form.useWatch('identityGroupId')
+  const certTemplateId = Form.useWatch('certTemplateId')
   const [ networks, setNetworks ] = useState<string[]>([])
-  const [ fetchIdentities, identitiesResponse ] = useLazySearchPersonaListQuery()
-  const [ getIdentityGroupById ] = useLazyGetPersonaGroupByIdQuery()
+  const [getIdentityGroupById] = useLazyGetPersonaGroupByIdQuery()
+  const [fetchIdentities, identitiesResponse] = useLazySearchPersonaListQuery()
 
-  const [ getNetworkList, networkListResponse ] = useLazyNetworkListQuery({
-    selectFromResult: ({ data }) => {
-      return data?.data.map(network => network.ssid) ?? []
-    }
-  })
 
   const { data: certTemplateList } = useGetCertificateTemplatesQuery({
     payload: {
@@ -39,53 +32,59 @@ export function CertTemplateSettings () {
     }
   })
 
-  const loadIdentities = useCallback((identityGroupId: string) => {
+  const [ getNetworkList, networkListResponse ] = useLazyNetworkListQuery({
+    selectFromResult: ({ data }) => {
+      return data?.data.map(network => network.ssid) ?? []
+    }
+  })
+
+  const loadIdentities = useCallback((identityGroupId: string | undefined) => {
     fetchIdentities({
       payload: { pageSize: '2147483647', groupId: identityGroupId }
     })
   }, [fetchIdentities])
 
-
   useEffect(() => {
-    if (form.getFieldValue('certTemplateId')) {
-      setCertTemplateId(form.getFieldValue('certTemplateId'))
+    if (certTemplateId) {
+      onCertTemplateChange(certTemplateId)
     }
-  })
-
-  useEffect(() => {
-    if (!identityGroupId) return
-    form.setFieldValue('identityGroupId', identityGroupId)
-    getIdentityGroupById({ params: { groupId: identityGroupId } })
-      .then(result => {
-        setIdentityGroupName(result.data?.name)
-      })
-    loadIdentities(identityGroupId)
-    getNetworkList({
-      payload: {
-        fields: ['name', 'ssid'],
-        filters: { id: networks }
-      }
-    })
-  }, [identityGroupId])
-
-  useEffect(() => {
-    onCertTemplateChange(certTemplateId)
   }, [certTemplateId])
 
-  const onCertTemplateChange = (certTemplateId: string | undefined) => {
+
+  const onCertTemplateChange = (certTemplateId: String) => {
     if (certTemplateId && certTemplateList) {
       const selectedCertTemplate =
         certTemplateList?.data.find((certTemplate) => certTemplate.id === certTemplateId)
       if (selectedCertTemplate) {
-        setIdentityGroupId(selectedCertTemplate.identityGroupId)
-        setCertTemplateId(selectedCertTemplate.id)
+        form.setFieldValue('identityGroupId', selectedCertTemplate.identityGroupId)
         setNetworks(selectedCertTemplate.networkIds ? selectedCertTemplate.networkIds : [])
       } else {
-        form.setFieldValue('certTemplateId', undefined)
         form.setFieldValue('identityGroupId', undefined)
+        setNetworks([])
       }
     }
   }
+
+  useEffect(() => {
+    if (!identityGroupId) return
+    getIdentityGroupById({ params: { groupId: identityGroupId } })
+      .then(result => {
+        form.setFieldValue('identityGroupName', result.data?.name)
+      })
+    loadIdentities(identityGroupId)
+  }, [identityGroupId])
+
+
+  useEffect(() => {
+    if (networks && networks.length > 0) {
+      getNetworkList({
+        payload: {
+          fields: ['name', 'ssid'],
+          filters: { id: networks }
+        }
+      })
+    }
+  }, [networks])
 
   useEffect(() => {
     const identityIdValue = form.getFieldValue('identityId')
@@ -118,14 +117,14 @@ export function CertTemplateSettings () {
           onChange={onCertTemplateChange}
         />
       </Form.Item>
-      {certTemplateId ? (
+      {form.getFieldValue('certTemplateId') ? (
         <>
           <Form.Item
             name={'identityGroupName'}
             label={$t({ defaultMessage: 'Identity Group' })}
             rules={[{ required: false }]}
           >
-            <span>{identityGroupName}</span>
+            <input disabled={true}/>
           </Form.Item>
           {identityGroupId ? (
             <>
