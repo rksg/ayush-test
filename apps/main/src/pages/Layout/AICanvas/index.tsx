@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { createContext, useState } from 'react'
 
 import { Spin }         from 'antd'
 import { DndProvider }  from 'react-dnd'
@@ -37,6 +37,7 @@ export default function AICanvas (
   const siderWidth = localStorage.getItem('acx-sider-width') || cssStr('--acx-sider-width')
   const linkToDashboard = useTenantLink('/dashboard')
   const placeholder = 'Enter a description to generate widgets based on your needs. The more you describe, the better widgets I can recommend.'
+
   const onKeyDown = (event: React.KeyboardEvent) => {
     if(event.key === 'Enter'){
       event.preventDefault()
@@ -69,7 +70,7 @@ export default function AICanvas (
           text: 'Generate Network Health Overview Widget'
         },
         {
-          id: '2',
+          id: '555',
           role: 'AI',
           text: '2 widgets found- Alert and incidents widgets. Drag and drop the selected widgets to the canvas on the right.',
           widgets: [{
@@ -115,7 +116,8 @@ export default function AICanvas (
         chartType: chat.widgets[0].chartType,
         sessionId,
         id: chat.id
-      }} /> }
+      }}
+      /> }
 
     </div>
   }

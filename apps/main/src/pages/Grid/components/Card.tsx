@@ -18,7 +18,7 @@ const DraggableCard = (props) => {
       let dragCard = props.card
       dragCard.isShadow = true
       props.updateShadowCard(dragCard)
-      return { id: props.id, type: props.type }
+      return { id: props.id, type: ItemTypes.CARD }
     },
     end: (item, monitor) => {
       if (!monitor.didDrop()) {

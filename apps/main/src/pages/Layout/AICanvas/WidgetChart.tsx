@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useContext } from 'react'
 
 import { useDrag, useDrop } from 'react-dnd'
 import { getEmptyImage }    from 'react-dnd-html5-backend'
 import AutoSizer            from 'react-virtualized-auto-sizer'
+import { v4 as uuidv4 }     from 'uuid'
 
 import { Card, DonutChart, Loader }   from '@acx-ui/components'
 import { useChatChartQuery }          from '@acx-ui/rc/services'
@@ -10,8 +11,14 @@ import { WidgetData, WidgetListData } from '@acx-ui/rc/utils'
 
 import { ItemTypes } from './Canvas'
 
+
 interface WidgetListProps {
   data: WidgetListData;
+}
+
+const PIE = {
+  width: 1,
+  height: 4
 }
 
 const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
@@ -23,17 +30,24 @@ const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
     item: () => {
       // let dragCard = props.card
       // dragCard.isShadow = true
-      // props.updateShadowCard(dragCard)
-      return {
+      const dragCard = {
         ...data,
-        type: ItemTypes.WIDGET
+        id: 555 + uuidv4(),
+        type: 'card',
+        width: PIE.width,
+        height: PIE.height,
+        gridx: 0,
+        gridy: 0,
+        isShadow: true
       }
+      console.log(dragCard)
+      return dragCard
     }
   })
-  const [, drop] = useDrop(() => ({ accept: ItemTypes.WIDGET }))
-  // useEffect(() => {
-  //   preview(getEmptyImage(), { captureDraggingState: true })
-  // }, [preview])
+
+  useEffect(() => {
+    preview(getEmptyImage(), { captureDraggingState: true })
+  }, [preview])
 
   return (
     <div

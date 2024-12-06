@@ -2,15 +2,14 @@
 import React, { useEffect, useState } from 'react'
 
 import { useDrop } from 'react-dnd'
-import { useIntl }      from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { cssStr, Button } from '@acx-ui/components'
 
-import * as UI     from './styledComponents'
-import Layout                      from './components/Layout'
-import mockData                    from './mock'
-import utils       from './utils'
-import WidgetChart from './WidgetChart'
+import Layout   from './components/Layout'
+import mockData from './mock'
+import * as UI  from './styledComponents'
+import utils    from './utils'
 
 export const ItemTypes = {
   WIDGET: 'widget'
@@ -33,7 +32,7 @@ export default function Canvas (props) {
   // const [widgets, setWidgets] = useState([])
   const [groups, setGroups] = useState([])
   const [sections, setSections] = useState([])
-  
+
   useEffect(() => {
     const data = getFromLS()
     setSections(data)
@@ -107,11 +106,6 @@ export default function Canvas (props) {
           </Button>
         </div>
       </div>
-      {/* <div className='grid' id='grid' ref={dropRef}>
-        {
-          widgets.map((widget, index) => <WidgetChart key={index} data={widget} />)
-        }
-      </div> */}
       <div className='grid' id='grid'>
         <UI.Grid>
           <Layout
@@ -121,6 +115,8 @@ export default function Canvas (props) {
             setGroups={setGroups}
             compactType={compactType}
             layout={layout}
+            setShadowCard={props.setShadowCard}
+            shadowCard={props.shadowCard}
           />
         </UI.Grid>
       </div>

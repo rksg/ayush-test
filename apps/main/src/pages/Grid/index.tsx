@@ -65,8 +65,7 @@ export default function Grid () {
         gridx: lastCard ? lastCard.gridx : 0,
         gridy: lastCard ? lastCard.gridy : 0,
         width: 1,
-        height: 6,
-        type: 'card',
+        height: 4,
         isShadow: false
       }
     ]

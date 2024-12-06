@@ -17,8 +17,9 @@ const DraggableCard = (props) => {
     item: () => {
       let dragCard = props.card
       dragCard.isShadow = true
+      console.log(dragCard)
       props.updateShadowCard(dragCard)
-      return { id: props.id, type: props.type }
+      return { id: dragCard.id, type: ItemTypes.CARD }
     },
     end: (item, monitor) => {
       if (!monitor.didDrop()) {
@@ -48,18 +49,20 @@ export default DraggableCard
 
 function Card (props) {
   const {
-    gridx,
-    gridy,
-    width,
-    height,
-    isShadow,
     groupIndex,
-    id,
     deleteCard,
     drop,
     drag,
     card
   } = props
+  const {
+    id,
+    gridx,
+    gridy,
+    width,
+    height,
+    isShadow
+  } = props.card
   const { margin, rowHeight, calWidth } = props.layout
   const { x, y } = utils.calGridItemPosition(
     gridx,

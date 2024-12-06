@@ -54,6 +54,10 @@ export default function GroupItem (props) {
     hover: (item, monitor) => {
       const dragItem = item
       if (dragItem.type === 'card') {
+        if(props.shadowCard.id !== dragItem.id){
+          props.updateShadowCard(dragItem)
+          return
+        }
         //卡片到组
         const hoverItem = props
         const { x, y } = monitor.getClientOffset()
@@ -89,21 +93,13 @@ export default function GroupItem (props) {
         >
           {
             cards.map((c, i) => <Card
-              type={'card'}
-              group={props}
-              dropCard={dropCard}
-              groups={groups}
+              key={`${index}_${c.id}`}
               groupIndex={index}
               card={c}
-              id={c.id}
-              index={i}
-              gridx={c.gridx}
-              gridy={c.gridy}
-              width={c.width}
-              height={c.height}
-              isShadow={c.isShadow}
-              key={`${index}_${c.id}`}
+              group={props}
+              groups={groups}
               layout={props.layout}
+              dropCard={dropCard}
               updateShadowCard={props.updateShadowCard}
               updateGroupList={props.updateGroupList}
               deleteCard={props.deleteCard}

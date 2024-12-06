@@ -89,7 +89,6 @@ export default function GroupItem (props) {
         >
           {
             cards.map((c, i) => <Card
-              type={'card'}
               group={props}
               dropCard={dropCard}
               groups={groups}

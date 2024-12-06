@@ -159,61 +159,63 @@ export default function Layout (props) {
   }
 
   return (
-      <div>
-        {
-          sections.map((s) => <div className='section'>
-            {/* <h2>Section {s.id}</h2> */}
-            {
-              s.hasTab ?
-                <Tabs type='card' stickyTop={false} defaultActiveKey={groups.find(g => g.sectionId == s.id && g.defaultTab)}>
-                  {
-                    groups.map((g, i) => g.sectionId == s.id ?
-                      <Tabs.TabPane tab={g.tabLabel} key={g.tabValue}>
-                        <GroupItem
-                          key={g.id}
-                          id={g.id}
-                          type={g.type}
-                          index={i}
-                          cards={g.cards}
-                          length={groups.length}
-                          groups={groups}
-                          moveCardInGroupItem={moveCardInGroupItem}
-                          onCardDropInGroupItem={onCardDropInGroupItem}
-                          layout={layout}
-                          defaultLayout={defaultLayout}
-                          updateShadowCard={setShadowCard}
-                          updateGroupList={setGroups}
-                          handleLoad={handleLoad}
-                          deleteCard={deleteCard}
-                        />
-                      </Tabs.TabPane> : <></>)
-                  }
-                </Tabs>
-                :
-                <>
-                  {
-                    groups.map((g, i) => g.sectionId == s.id ? <GroupItem
-                      key={g.id}
-                      id={g.id}
-                      type={g.type}
-                      index={i}
-                      cards={g.cards}
-                      length={groups.length}
-                      groups={groups}
-                      moveCardInGroupItem={moveCardInGroupItem}
-                      onCardDropInGroupItem={onCardDropInGroupItem}
-                      layout={layout}
-                      defaultLayout={defaultLayout}
-                      updateShadowCard={setShadowCard}
-                      updateGroupList={setGroups}
-                      handleLoad={handleLoad}
-                      deleteCard={deleteCard}
-                    /> : <></>)
-                  }
-                </>
-            }
-          </div>)
-        }
-      </div>
+    <div>
+      {
+        sections.map((s) => <div className='section'>
+          {/* <h2>Section {s.id}</h2> */}
+          {
+            s.hasTab ?
+              <Tabs type='card' stickyTop={false} defaultActiveKey={groups.find(g => g.sectionId == s.id && g.defaultTab)}>
+                {
+                  groups.map((g, i) => g.sectionId == s.id ?
+                    <Tabs.TabPane tab={g.tabLabel} key={g.tabValue}>
+                      <GroupItem
+                        key={g.id}
+                        id={g.id}
+                        type={g.type}
+                        index={i}
+                        cards={g.cards}
+                        length={groups.length}
+                        groups={groups}
+                        moveCardInGroupItem={moveCardInGroupItem}
+                        onCardDropInGroupItem={onCardDropInGroupItem}
+                        layout={layout}
+                        defaultLayout={defaultLayout}
+                        shadowCard={shadowCard}
+                        updateShadowCard={setShadowCard}
+                        updateGroupList={setGroups}
+                        handleLoad={handleLoad}
+                        deleteCard={deleteCard}
+                      />
+                    </Tabs.TabPane> : <></>)
+                }
+              </Tabs>
+              :
+              <>
+                {
+                  groups.map((g, i) => g.sectionId == s.id ? <GroupItem
+                    key={g.id}
+                    id={g.id}
+                    type={g.type}
+                    index={i}
+                    cards={g.cards}
+                    length={groups.length}
+                    groups={groups}
+                    moveCardInGroupItem={moveCardInGroupItem}
+                    onCardDropInGroupItem={onCardDropInGroupItem}
+                    layout={layout}
+                    defaultLayout={defaultLayout}
+                    shadowCard={shadowCard}
+                    updateShadowCard={setShadowCard}
+                    updateGroupList={setGroups}
+                    handleLoad={handleLoad}
+                    deleteCard={deleteCard}
+                  /> : <></>)
+                }
+              </>
+          }
+        </div>)
+      }
+    </div>
   )
 }
