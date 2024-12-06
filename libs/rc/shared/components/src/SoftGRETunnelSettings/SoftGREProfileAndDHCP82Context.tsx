@@ -9,10 +9,11 @@ import {
 import {
   useConfigTemplate
 } from '@acx-ui/rc/utils'
-
+import { LanPortSoftGreProfileSettings } from '@acx-ui/rc/utils'
 
 interface SoftgreProfileContextProps {
   softgreProfile: SoftgreProfile
+  dhcpOption82SavedData?: LanPortSoftGreProfileSettings
   toggleSoftgreTunnel: (toggle: boolean) => void
 }
 
@@ -47,7 +48,8 @@ export const SoftgreProfileProvider = (
   const { isTemplate } = useConfigTemplate()
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
-
+  const [dhcpOption82SavedData, setDhcpOption82SavedData] =
+    useState<LanPortSoftGreProfileSettings>({ dhcpOption82Enabled: false })
   const [softgreProfile, setSoftgreProfile] =
     useState<SoftgreProfile>(defaultSoftgreProfileContext)
 
@@ -73,8 +75,11 @@ export const SoftgreProfileProvider = (
         softgreProfile.softgreProfileId
       ) {
         const { data } = await getSoftGreProfileConfiguration({
-          params: { ...value?.queryPayload, policyId: value.softgreProfileId }
+          params: { ...value?.queryPayload }
         })
+        if (data?.softGreSettings) {
+          setDhcpOption82SavedData(data.softGreSettings)
+        }
       }
     }
 
