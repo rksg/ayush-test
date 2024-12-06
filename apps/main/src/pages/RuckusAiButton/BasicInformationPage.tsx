@@ -38,7 +38,13 @@ function BasicInformationPage () {
           label={$t({ defaultMessage: '<VenueSingular></VenueSingular> Name' })}
           validateTrigger={'onBlur'}
           rules={[
-            { type: 'string', required: true },
+            {
+              type: 'string', required: true,
+              message: $t({
+                defaultMessage:
+                  'Please enter a <VenueSingular></VenueSingular> Name.'
+              })
+            },
             { min: 2, transform: (value) => value.trim() },
             { max: 32, transform: (value) => value.trim() },
             { validator: (_, value) => whitespaceOnlyRegExp(value) },

@@ -6687,16 +6687,9 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                                 style="position: sticky; right: 0px;"
-                              >
-                                <div
-                                  class=""
-                                />
-                                <div
-                                  class=""
-                                />
-                              </th>
+                              />
                             </tr>
                           </thead>
                           <tbody
@@ -12153,16 +12146,9 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                                 />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                                 style="position: sticky; right: 0px;"
-                              >
-                                <div
-                                  class=""
-                                />
-                                <div
-                                  class=""
-                                />
-                              </th>
+                              />
                             </tr>
                           </thead>
                           <tbody
@@ -17928,16 +17914,9 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                                 />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                                 style="position: sticky; right: 0px;"
-                              >
-                                <div
-                                  class=""
-                                />
-                                <div
-                                  class=""
-                                />
-                              </th>
+                              />
                             </tr>
                           </thead>
                           <tbody
@@ -20210,16 +20189,9 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                                 />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                                 style="position: sticky; right: 0px;"
-                              >
-                                <div
-                                  class=""
-                                />
-                                <div
-                                  class=""
-                                />
-                              </th>
+                              />
                             </tr>
                           </thead>
                           <tbody

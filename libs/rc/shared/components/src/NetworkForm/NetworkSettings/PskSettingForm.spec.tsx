@@ -5,7 +5,8 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn, useIsTierAllowed }                   from '@acx-ui/feature-toggle'
-import { AaaUrls, CommonUrlsInfo, ExpirationType,
+import {
+  AaaUrls, AccessControlUrls, CommonUrlsInfo, ExpirationType,
   MacRegListUrlsInfo, RulesManagementUrlsInfo, SoftGreUrls,
   VlanPoolRbacUrls, WifiCallingUrls, WifiRbacUrlsInfo, WifiUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -22,7 +23,7 @@ import {
   mockMacRegistrationPoolList,
   mockUpdatedMacRegistrationPoolList,
   mockAAAPolicyListResponse,
-  mockSoftGreTable
+  mockSoftGreTable, mockedMacRegistrationPools
 } from '../__tests__/fixtures'
 import { NetworkForm } from '../NetworkForm'
 
@@ -132,6 +133,14 @@ const policySetList = {
   ]
 }
 
+const mockedAclPolicyResponse = {
+  data: [],
+  fields: ['name', 'id'],
+  totalCount: 0,
+  totalPages: 0,
+  page: 1
+}
+
 describe('NetworkForm', () => {
   beforeEach(() => {
     networkDeepResponse.name = 'PSK network test'
@@ -175,6 +184,28 @@ describe('NetworkForm', () => {
           id: '1c061cf2649344adaf1e79a9d624a451'
         }]))
       ),
+      rest.post(AccessControlUrls.getL2AclPolicyListQuery.url,
+        (_, res, ctx) => res(ctx.json(mockedAclPolicyResponse))),
+      rest.post(AccessControlUrls.getL3AclPolicyListQuery.url,
+        (_, res, ctx) => res(ctx.json(mockedAclPolicyResponse))),
+      rest.post(AccessControlUrls.getApplicationPolicyListQuery.url,
+        (_, res, ctx) => res(ctx.json(mockedAclPolicyResponse))),
+      rest.post(AccessControlUrls.getAccessControlProfileQueryList.url,
+        (_, res, ctx) => res(ctx.json(mockedAclPolicyResponse))),
+      rest.post(AccessControlUrls.getDevicePolicyListQuery.url,
+        (req, res, ctx) => res(ctx.json(mockedAclPolicyResponse))),
+      rest.get(
+        AaaUrls.getAAAPolicyRbac.url,
+        (_, res, ctx) => {
+          return res(ctx.json({
+            primary: {
+              ip: '1.1.1.1',
+              port: '1812',
+              sharedSecret: '124124124214'
+            }
+          }))
+        }
+      ),
       rest.post(WifiUrlsInfo.getVlanPoolViewModelList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))),
       rest.post(VlanPoolRbacUrls.getVLANPoolPolicyList.url,
@@ -184,7 +215,9 @@ describe('NetworkForm', () => {
       rest.post(WifiCallingUrls.queryWifiCalling.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))),
       rest.get(WifiRbacUrlsInfo.getRadiusServerSettings.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(WifiUrlsInfo.queryMacRegistrationPool.url,
+        (_, res, ctx) => res(ctx.json(mockedMacRegistrationPools)))
     )
   })
 

@@ -10,15 +10,15 @@ export const mockEdgeFeatureCompatibilities: EdgeFeatureSets = {
     {
       featureName: 'SD-LAN',
       requiredFw: '2.1.0.600'
-    },
-    {
+    }, {
       featureName: 'Tunnel Profile',
       requiredFw: '2.1.0.700'
-    }
-    ,
-    {
+    }, {
       featureName: 'HQoS',
       requiredFw: '2.1.0.700'
+    }, {
+      featureName: 'PIN',
+      requiredFw: '2.2.0.1'
     }
   ]
 }
