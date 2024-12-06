@@ -95,7 +95,7 @@ export function useInitialValues <Preferences> () {
   return { id, status, statusReason, displayStatus, settings } as FormValues<Preferences>
 }
 
-const INTENTAI_PATH = '/analytics/intentAI'
+const intentAIPath = '/analytics/intentAI'
 
 export function createUseIntentTransition <Preferences> (
   getFormDTO: (values: FormValues<Preferences>) => IntentTransitionPayload<Preferences>
@@ -104,9 +104,9 @@ export function createUseIntentTransition <Preferences> (
     const { $t } = useIntl()
     const { intent } = useIntentContext()
     const intentRef = useRef(intent)
-    const basePath = useTenantLink(INTENTAI_PATH)
+    const basePath = useTenantLink(intentAIPath)
     const navigate = useNavigate()
-    const navigateToTable = useNavigateToPath(INTENTAI_PATH)
+    const navigateToTable = useNavigateToPath(intentAIPath)
     const [doSubmit, response] = useIntentTransitionMutation()
 
     const submit = useCallback(async (values: FormValues<Preferences>) => {
