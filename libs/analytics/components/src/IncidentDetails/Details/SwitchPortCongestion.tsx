@@ -4,7 +4,9 @@ import { calculateGranularity, type Incident } from '@acx-ui/analytics/utils'
 import { GridRow, GridCol }                    from '@acx-ui/components'
 import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 
-import { FixedAutoSizer }                 from '../../DescriptionSection/styledComponents'
+import { FixedAutoSizer }             from '../../DescriptionSection/styledComponents'
+import { SwitchDetail,
+  ImpactedSwitchPortConjestionTable }     from '../Charts/ImpactedSwitchPortCongestion/index'
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
 import { TimeSeries }                     from '../TimeSeries'
@@ -50,6 +52,9 @@ export const SwitchPortCongestion = (incident: Incident) => {
       <GridCol col={{ span: 20 }}>
         <Insights incident={incident} />
       </GridCol>
+      <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '203px' }}>
+        <SwitchDetail incident={incident} />
+      </GridCol>
       <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '129px' }}>
         <TimeSeries
           incident={incident}
@@ -57,6 +62,9 @@ export const SwitchPortCongestion = (incident: Incident) => {
           minGranularity={calculateGranularity(incident.startTime, incident.endTime, 'PT1H')}
           buffer={buffer}
         />
+      </GridCol>
+      <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '326px' }}>
+        <ImpactedSwitchPortConjestionTable incident={incident} />
       </GridCol>
     </GridRow>
   </> : null
