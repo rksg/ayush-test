@@ -69,21 +69,10 @@ export function CertTemplateSettings () {
   }, [identityGroupId])
 
   useEffect(() => {
-    if (certTemplateId && certTemplateList) {
-      const selectedCertTemplate =
-        certTemplateList?.data.find((certTemplate) => certTemplate.id === certTemplateId)
-      if (selectedCertTemplate) {
-        setIdentityGroupId(selectedCertTemplate.identityGroupId)
-        setCertTemplateId(selectedCertTemplate.id)
-        setNetworks(selectedCertTemplate.networkIds ? selectedCertTemplate.networkIds : [])
-      } else {
-        form.setFieldValue('certTemplateId', undefined)
-        form.setFieldValue('identityGroupId', undefined)
-      }
-    }
+    onCertTemplateChange(certTemplateId)
   }, [certTemplateId])
 
-  const onCertTemplateChange = (certTemplateId: string) => {
+  const onCertTemplateChange = (certTemplateId: string | undefined) => {
     if (certTemplateId && certTemplateList) {
       const selectedCertTemplate =
         certTemplateList?.data.find((certTemplate) => certTemplate.id === certTemplateId)
@@ -157,7 +146,8 @@ export function CertTemplateSettings () {
                 ]}/>
               </Form.Item>
               <Form.Item
-                label={$t({ defaultMessage: 'Linked Networks' }) + ' (' + networks.length + ')'}
+                label={$t({ defaultMessage: 'Linked Networks ({length})' },
+                  { length: networks.length })}
               >
 
                 {networks.length > 0 ?
