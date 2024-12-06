@@ -86,9 +86,9 @@ export const ManageMspDelegationDrawer = (props: ManageMspDelegationDrawerProps)
       setPrivilegeGroupData(pgs ?? [])
     }
     const allCustomersPGs = privilegeGroupList?.filter(pg => pg.allCustomers === true) ?? []
-    setSelectedPrivilegeGroups(isSkip
-      ? (selectedPrivilegeGroups.length > 0 ? selectedPrivilegeGroups : allCustomersPGs)
-      : (delegatedPGs ?? []))
+    const selectedPGS = allCustomersPGs
+      .concat(selectedPrivilegeGroups.filter(pg => !allCustomersPGs.map(c => c.id).includes(pg.id)))
+    setSelectedPrivilegeGroups(isSkip ? selectedPGS : (delegatedPGs ?? []))
   }, [privilegeGroupList, delegatedPGs])
 
   const delegatedAdmins =
@@ -98,11 +98,7 @@ export const ManageMspDelegationDrawer = (props: ManageMspDelegationDrawerProps)
   const queryResults = useMspAdminListQuery({ params: useParams() })
 
   useEffect(() => {
-    const userData = queryResults.data?.filter(admin => SystemRoles.includes(admin.role)) ?? []
-    setUsersData(userData)
-    const userEmails = userData.map(user => user.email)
-    const selUsers = selectedUsers.filter(user => userEmails.includes(user.email))
-    setSelectedUsers(selUsers)
+    setUsersData(queryResults.data?.filter(admin => SystemRoles.includes(admin.role)) ?? [])
     setDelegatedAdminsData(delegatedAdmins?.data ?? [])
   }, [queryResults?.data, delegatedAdmins?.data])
 
