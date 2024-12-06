@@ -1,14 +1,14 @@
 import React from 'react'
 
 import { Middleware, isRejectedWithValue }            from '@reduxjs/toolkit'
-import { type ClientError }                           from 'graphql-request'
 import { FormattedMessage, defineMessage, IntlShape } from 'react-intl'
 
 import { ActionModalType, ErrorDetailsProps, showActionModal }                                from '@acx-ui/components'
 import { CatchErrorResponse }                                                                 from '@acx-ui/rc/utils'
 import { getIntl, setUpIntl, IntlSetUpError, isShowApiError, isIgnoreErrorModal, userLogout } from '@acx-ui/utils'
 
-type GraphQLResponse = ClientError['response']
+import type { GraphQLResponse } from 'graphql-request/dist/types'
+
 function formatGraphQLErrors (
   response: Required<Pick<GraphQLResponse, 'errors'>> & GraphQLResponse
 ): CatchErrorResponse['data'] {
@@ -22,7 +22,7 @@ function formatGraphQLErrors (
 }
 
 type QueryMeta = {
-  response?: Response
+  response?: Response | GraphQLResponse
   request: Request
 }
 export type ErrorAction = {
@@ -150,8 +150,8 @@ export const getErrorContent = (action: ErrorAction) => {
     | string
     | undefined
 
-  if (action.type?.includes('data-api') && (response as GraphQLResponse)?.errors) {
-    errors = formatGraphQLErrors(response as GraphQLResponse)
+  if (action.type?.includes('data-api') && response && 'errors' in response) {
+    errors = formatGraphQLErrors({ ...response, errors: response.errors! })
   } else if (typeof action.payload === 'string') {
     errors = action.payload
   } else if (typeof action.payload === 'object') {
