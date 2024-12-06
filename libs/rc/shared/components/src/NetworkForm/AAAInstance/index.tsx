@@ -25,6 +25,7 @@ interface AAAInstanceProps {
   serverLabel: string
   type: 'authRadius' | 'accountingRadius',
   networkType?: NetworkTypeEnum
+  excludeRadSec?: boolean
 }
 
 export const AAAInstance = (props: AAAInstanceProps) => {
@@ -56,7 +57,8 @@ export const AAAInstance = (props: AAAInstanceProps) => {
     let cloneList = _.cloneDeep(aaaList)
     if (supportRadsec && (
       props.networkType === NetworkTypeEnum.PSK ||
-      (props.networkType === NetworkTypeEnum.DPSK && radiusType === 'ACCOUNTING')
+      (props.networkType === NetworkTypeEnum.DPSK && radiusType === 'ACCOUNTING') ||
+      props.excludeRadSec
     )) {
       cloneList = cloneList?.filter(m => m.radSecOptions?.tlsEnabled !== true)
       if (form.getFieldValue('authRadiusId') &&
