@@ -18,11 +18,10 @@ import { createHttpRequest }         from '@acx-ui/utils'
 export const connectionMeteringApi = baseConnectionMeteringApi.injectEndpoints({
   endpoints: build => ({
     addConnectionMetering: build.mutation<ConnectionMetering, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(
           ConnectionMeteringUrls.createConnectionMetering,
-          params,
-          customHeaders
+          params
         )
         return {
           ...req,
@@ -63,11 +62,10 @@ export const connectionMeteringApi = baseConnectionMeteringApi.injectEndpoints({
       providesTags: [{ type: 'ConnectionMetering', id: 'LIST' }]
     }),
     deleteConnectionMetering: build.mutation({
-      query: ({ params, customHeaders }) => {
+      query: ({ params }) => {
         const req = createHttpRequest(
           ConnectionMeteringUrls.deleteConnectionMetering,
-          params,
-          customHeaders
+          params
         )
         return {
           ...req
@@ -87,11 +85,10 @@ export const connectionMeteringApi = baseConnectionMeteringApi.injectEndpoints({
       ]
     }),
     updateConnectionMetering: build.mutation<ConnectionMetering, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
+      query: ({ params, payload }) => {
         const req = createHttpRequest(
           ConnectionMeteringUrls.updateConnectionMetering,
-          params,
-          customHeaders
+          params
         )
         return {
           ...req,

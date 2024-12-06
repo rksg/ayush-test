@@ -6,6 +6,7 @@ import {
   Filter
 } from '@acx-ui/components'
 import {
+  ApiVersionEnum,
   ClusterNetworkSettings,
   ClusterSubInterfaceSettings,
   CommonResult,
@@ -41,6 +42,7 @@ import {
   EdgeUrlsInfo,
   EdgesTopResources,
   EdgesTopTraffic,
+  GetApiVersionHeader,
   PaginationQueryResult,
   PingEdge,
   SEARCH,
@@ -939,12 +941,23 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       providesTags: [{ type: 'Edge', id: 'SDLAN_EDGE_COMPATIBILITY' }]
     }),
-    getSdLanApCompatibilities: build.query<EdgeSdLanApCompatibilitiesResponse, RequestPayload>({
+    getSdLanApCompatibilitiesDeprecated: build.query<EdgeSdLanApCompatibilitiesResponse, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getSdLanApCompatibilities, params)
         return {
           ...req,
           body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'SDLAN_AP_COMPATIBILITY' }]
+    }),
+    getSdLanApCompatibilities: build.query<EdgeServicesApCompatibilitiesResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(EdgeUrlsInfo.getSdLanApCompatibilities, params, apiCustomHeader)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'Edge', id: 'SDLAN_AP_COMPATIBILITY' }]
@@ -1249,6 +1262,7 @@ export const {
   useLazyGetSdLanEdgeCompatibilitiesQuery,
   useGetSdLanApCompatibilitiesQuery,
   useLazyGetSdLanApCompatibilitiesQuery,
+  useLazyGetSdLanApCompatibilitiesDeprecatedQuery,
   useGetHqosEdgeCompatibilitiesQuery,
   useGetPinEdgeCompatibilitiesQuery,
   useLazyGetPinEdgeCompatibilitiesQuery,
