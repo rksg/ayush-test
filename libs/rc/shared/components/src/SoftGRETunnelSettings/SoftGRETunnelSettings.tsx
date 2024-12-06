@@ -16,7 +16,7 @@ interface SoftGRETunnelSettingsProps {
 
 export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   const { $t } = useIntl()
-  const { softgreProfile, toggleSoftgreTunnel } = useContext(SoftgreProfileAndDHCP82Context)
+  const { softgreProfile, onChangeSoftgreTunnel } = useContext(SoftgreProfileAndDHCP82Context)
 
   const {
     isSoftGRETunnelToggleDisable
@@ -44,7 +44,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             <Switch
               checked={softgreProfile.isSoftgreTunnelEnable}
               disabled={isSoftGRETunnelToggleDisable}
-              onClick={(checked) => toggleSoftgreTunnel(checked)}
+              onClick={(checked) => onChangeSoftgreTunnel(checked)}
             />
           }
         />

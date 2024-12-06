@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useState, useContext, useEffect } from 'react'
 
 
 import { Form,  Switch, Space } from 'antd'
 import { useIntl }              from 'react-intl'
 
 import { Tooltip } from '@acx-ui/components'
+
+import { SoftgreProfileAndDHCP82Context } from '../SoftGRETunnelSettings'
 
 import { DhcpOption82SettingsDrawer } from './DhcpOption82SettingsDrawer'
 import { FieldLabel, ConfigIcon }     from './styledComponents'
@@ -16,6 +18,17 @@ export const DhcpOption82Settings = () => {
   const [ iconVisible, setIconVisible ] = useState<boolean>(false)
   const [ drawerVisible, setDrawerVisible ] = useState<boolean>(false)
   const [ enableDhcpOption82, setEnableDhcpOption82] = useState<boolean>(false)
+
+  const { venueApModelLanPortSettingsV1 } = useContext(SoftgreProfileAndDHCP82Context)
+
+  useEffect(() => {
+    const dhcpOption82Enabled = venueApModelLanPortSettingsV1?.softGreSettings?.dhcpOption82Enabled
+    if (dhcpOption82Enabled) {
+      setEnableDhcpOption82(dhcpOption82Enabled)
+      setIconVisible(true)
+    }
+  }, [venueApModelLanPortSettingsV1])
+
 
   const callbackFn = () => {
     setEnableDhcpOption82(true)

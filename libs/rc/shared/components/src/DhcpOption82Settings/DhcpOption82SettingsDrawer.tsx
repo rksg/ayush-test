@@ -1,8 +1,12 @@
+import { useContext } from 'react'
 
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer } from '@acx-ui/components'
+import { Drawer }               from '@acx-ui/components'
+import { DhcpOption82Settings } from '@acx-ui/rc/utils'
+
+import { SoftgreProfileAndDHCP82Context } from '../SoftGRETunnelSettings'
 
 import { DhcpOption82SettingsFormField } from './DhcpOption82SettingsFormField'
 interface DhcpOption82SettingsDrawerProps {
@@ -16,13 +20,18 @@ export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProp
 
   const { visible, setVisible, callbackFn = () => {} } = props
   const { $t } = useIntl()
-  const [form] = Form.useForm()
-
+  const form = Form.useFormInstance()
+  const {
+    softgreProfile,
+    onChangeDHCPOption82Settings
+  } = useContext(SoftgreProfileAndDHCP82Context)
+  const index = softgreProfile.index
 
   const handleAdd = async () => {
     try {
-      form.resetFields()
       setVisible(false)
+      const settings = form?.getFieldValue(['lan', index, 'dhcpOption82']) as DhcpOption82Settings
+      onChangeDHCPOption82Settings(settings)
       callbackFn()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -40,7 +49,7 @@ export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProp
       visible={visible}
       width={850}
       children={
-        <DhcpOption82SettingsFormField />
+        <DhcpOption82SettingsFormField context={'venue'} />
       }
       onClose={handleClose}
       destroyOnClose={true}

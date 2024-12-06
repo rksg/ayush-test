@@ -1,3 +1,5 @@
+import { useEffect, useContext } from 'react'
+
 import {
   Input,
   Form,
@@ -14,17 +16,102 @@ import {
   DhcpOption82MacEnum
 } from '@acx-ui/rc/utils'
 
+import { SoftgreProfileAndDHCP82Context } from '../SoftGRETunnelSettings'
+
 import * as UI from './styledComponents'
 
 const { useWatch } = Form
 const { Option } = Select
 
+interface DhcpOption82FormField {
+  dhcpOption82SubOption1EnabledFieldName: (string|number)[]
+  dhcpOption82SubOption1FormatFieldName: (string|number)[]
+  dhcpOption82SubOption2EnabledFieldName: (string|number)[]
+  dhcpOption82SubOption2FormatFieldName: (string|number)[]
+  dhcpOption82SubOption150EnabledFieldName: (string|number)[]
+  dhcpOption82SubOption151EnabledFieldName: (string|number)[]
+  dhcpOption82SubOption151FormatFieldName: (string|number)[]
+  dhcpOption82SubOption151InputFieldName: (string|number)[]
+  dhcpOption82MacFormat: (string|number)[]
+}
 
-export const DhcpOption82SettingsFormField = (props: { labelWidth?: string }) => {
+/* eslint-disable max-len */
+const defaultDhcpOption82FormField = {
+  dhcpOption82SubOption1EnabledFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption1Enabled'],
+  dhcpOption82SubOption1FormatFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption1Format'],
+  dhcpOption82SubOption2EnabledFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption2Enabled'],
+  dhcpOption82SubOption2FormatFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption2Format'],
+  dhcpOption82SubOption150EnabledFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption150Enabled'],
+  dhcpOption82SubOption151EnabledFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption151Enabled'],
+  dhcpOption82SubOption151FormatFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption151Format'],
+  dhcpOption82SubOption151InputFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption151Input'],
+  dhcpOption82MacFormat: ['wlan','advancedCustomization','dhcpOption82MacFormat']
+} as DhcpOption82FormField
+
+
+const selectDhcpOption82FormField = (context?: string, index?: number) : DhcpOption82FormField => {
+  if (context && context === 'venue') {
+    return {
+      dhcpOption82SubOption1EnabledFieldName: ['lan', index, 'dhcpOption82', 'subOption1Enabled'],
+      dhcpOption82SubOption1FormatFieldName: ['lan', index, 'dhcpOption82', 'subOption1Format'],
+      dhcpOption82SubOption2EnabledFieldName: ['lan', index, 'dhcpOption82', 'subOption2Enabled'],
+      dhcpOption82SubOption2FormatFieldName: ['lan', index, 'dhcpOption82', 'subOption2Format'],
+      dhcpOption82SubOption150EnabledFieldName: ['lan', index, 'dhcpOption82', 'subOption150Enabled'],
+      dhcpOption82SubOption151EnabledFieldName: ['lan', index, 'dhcpOption82', 'subOption151Enabled'],
+      dhcpOption82SubOption151FormatFieldName: ['lan', index, 'dhcpOption82', 'subOption151Format'],
+      dhcpOption82SubOption151InputFieldName: ['lan', index, 'dhcpOption82', 'subOption151Input'],
+      dhcpOption82MacFormat: ['lan', index, 'dhcpOption82','macFormat']
+    } as DhcpOption82FormField
+  }
+  else {
+    return defaultDhcpOption82FormField
+  }
+}
+/* eslint-enable max-len */
+
+export const DhcpOption82SettingsFormField = (props: {
+  labelWidth?: string
+  context?: string
+ }) => {
 
   const { $t } = useIntl()
+  const form = Form.useFormInstance()
+  const { labelWidth = '250px', context } = props
 
-  const { labelWidth='250px' } = props
+  const {
+    softgreProfile,
+    venueApModelLanPortSettingsV1
+  } = useContext(SoftgreProfileAndDHCP82Context)
+
+  const index = softgreProfile.index
+
+  useEffect(() => {
+    const settings = venueApModelLanPortSettingsV1?.softGreSettings?.dhcpOption82Settings
+    if (context && settings) {
+      /* eslint-disable max-len */
+      form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption1Enabled'], settings.subOption1Enabled)
+      form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption1Format'], settings.subOption1Format)
+      form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption2Enabled'], settings.subOption2Enabled)
+      form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption2Format'], settings.subOption2Format)
+      form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption150Enabled'], settings.subOption150Enabled)
+      form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption151Enabled'], settings.subOption151Enabled)
+      form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption151Format'], settings.subOption151Format)
+      form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption151Input'], settings.subOption151Input)
+      form?.setFieldValue(['lan', index, 'dhcpOption82', 'macFormat'], settings.macFormat)
+      /* eslint-enable max-len */
+    }
+  }, [venueApModelLanPortSettingsV1])
+
+  const {
+    dhcpOption82SubOption1EnabledFieldName,
+    dhcpOption82SubOption1FormatFieldName,
+    dhcpOption82SubOption2EnabledFieldName,
+    dhcpOption82SubOption2FormatFieldName,
+    dhcpOption82SubOption150EnabledFieldName,
+    dhcpOption82SubOption151EnabledFieldName,
+    dhcpOption82SubOption151FormatFieldName,
+    dhcpOption82MacFormat
+  } = selectDhcpOption82FormField(context, index)
 
   const dhcp82SubOption1Options = [{
     value: DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO_LOCATION,
@@ -84,21 +171,6 @@ export const DhcpOption82SettingsFormField = (props: { labelWidth?: string }) =>
   const apAndClientMacFormatDelimiter =
       $t({ defaultMessage: 'AP MAC address will always be in uppercase, ' +
         'while client MAC address will always be in lowercase.' })
-
-  const dhcpOption82SubOption1EnabledFieldName =
-    ['wlan','advancedCustomization','dhcpOption82SubOption1Enabled']
-  const dhcpOption82SubOption1FormatFieldName =
-    ['wlan','advancedCustomization','dhcpOption82SubOption1Format']
-  const dhcpOption82SubOption2EnabledFieldName =
-    ['wlan','advancedCustomization','dhcpOption82SubOption2Enabled']
-  const dhcpOption82SubOption2FormatFieldName =
-    ['wlan','advancedCustomization','dhcpOption82SubOption2Format']
-  const dhcpOption82SubOption150EnabledFieldName =
-    ['wlan','advancedCustomization','dhcpOption82SubOption150Enabled']
-  const dhcpOption82SubOption151EnabledFieldName =
-    ['wlan','advancedCustomization','dhcpOption82SubOption151Enabled']
-  const dhcpOption82SubOption151FormatFieldName =
-    ['wlan','advancedCustomization','dhcpOption82SubOption151Format']
 
   const [
     dhcpOption82SubOption1Enabled,
@@ -205,7 +277,7 @@ export const DhcpOption82SettingsFormField = (props: { labelWidth?: string }) =>
           }
           { DhcpOption82SubOption151Enum.SUBOPT151_AREA_NAME === dhcpOption82SubOption151Format &&
             <Form.Item
-              name={['wlan','advancedCustomization','dhcpOption82SubOption151Input']}
+              name={dhcpOption82SubOption151InputFieldName}
               style={{ marginLeft: '10px' }}
               rules={[
                 { required: true, message: $t({ defaultMessage: 'Please enter Area Name' }) }
@@ -226,7 +298,7 @@ export const DhcpOption82SettingsFormField = (props: { labelWidth?: string }) =>
         <UI.FieldLabel width={labelWidth}>
           <div style={{ display: 'grid', gridTemplateColumns: '240px' }}>
             <Form.Item
-              name={['wlan','advancedCustomization','dhcpOption82MacFormat']}
+              name={dhcpOption82MacFormat}
               label={$t({ defaultMessage: 'AP & Client MAC format delimiter' })}
               tooltip={apAndClientMacFormatDelimiter}
               initialValue={DhcpOption82MacEnum.COLON}
