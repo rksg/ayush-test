@@ -226,7 +226,6 @@ export enum Features {
   UX_OPTIMIZATION_FEATURE_TOGGLE = 'acx-ui-ux-optimization-feature-toggle',
   ROAMING_TYPE_EVENTS_TOGGLE = 'acx-ui-roaming-type-events-toggle',
   POLICY_IDENTITY_TOGGLE = 'policy-identity-toggle',
-  STATUS_TRAIL_TOOLTIP_TOGGLE = 'acx-ui-intent-ai-status-trail-tooltip-toggle'
   ACX_UI_GATEWAYS_MENU_OPTION_TOGGLE = 'acx-ui-gateways-menu-option-toggle',
   BTM_EVENTS_TOGGLE = 'acx-ui-btm-events-toggle',
   RUCKUS_AI_BTM_EVENTS_TOGGLE = 'ruckus-ai-btm-events-toggle',
