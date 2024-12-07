@@ -13,6 +13,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useCreateDpskMutation,
   useCreateDpskTemplateMutation,
+  useCreateDpskWithIdentityGroupMutation,
   useGetDpskListQuery,
   useGetDpskQuery,
   useGetDpskTemplateQuery,
@@ -59,6 +60,7 @@ export function DpskForm (props: DpskFormProps) {
   const { editMode = false, modalMode = false, modalCallBack } = props
 
   const idAfterCreatedRef = useRef<string>()
+  const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
 
   const { data: dpskList } = useConfigTemplateQueryFnSwitcher<TableResult<DpskSaveData>>({
     useQueryFn: useGetDpskListQuery,
@@ -74,6 +76,7 @@ export function DpskForm (props: DpskFormProps) {
     useMutationFn: useUpdateDpskMutation,
     useTemplateMutationFn: useUpdateDpskTemplateMutation
   })
+  const [ createDpskWithIdentityGroup ] = useCreateDpskWithIdentityGroupMutation()
 
   // eslint-disable-next-line max-len
   const { data: dataFromServer, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<DpskSaveData>({
@@ -126,10 +129,18 @@ export function DpskForm (props: DpskFormProps) {
           enableRbac
         }).unwrap()
       } else {
-        result = await createDpsk({
-          payload: dpskSaveData,
-          enableRbac
-        }).unwrap()
+        if (isIdentityGroupRequired) {
+          result = await createDpskWithIdentityGroup({
+            params: { identityGroupId: dpskSaveData.identityGroupId },
+            payload: dpskSaveData,
+            enableRbac
+          }).unwrap()
+        } else {
+          result = await createDpsk({
+            payload: dpskSaveData,
+            enableRbac
+          }).unwrap()
+        }
       }
 
       if (modalMode) {
@@ -161,7 +172,7 @@ export function DpskForm (props: DpskFormProps) {
             initialValues={initialValues}
             preserve={modalMode ? false : true}
           >
-            <DpskSettingsForm modalMode={modalMode} />
+            <DpskSettingsForm modalMode={modalMode} editMode={editMode} />
           </StepsFormLegacy.StepForm>
         </StepsFormLegacy>
       </Loader>

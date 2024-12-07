@@ -50,6 +50,7 @@ export function PersonaGroupForm (props: {
   const onMacModalClose = () => setMacModalVisible(false)
   const onDpskModalClose = () => setDpskModalVisible(false)
   const isPolicySetSupported = useIsSplitOn(Features.POLICY_IDENTITY_TOGGLE)
+  const isDpskServiceRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
 
   const dpskPoolList = useGetEnhancedDpskListQuery({
     payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
@@ -124,45 +125,50 @@ export function PersonaGroupForm (props: {
           <Col span={24}>
             <Subtitle level={4}>{$t({ defaultMessage: 'Services' })}</Subtitle>
           </Col>
-          <Col span={21}>
-            <Form.Item label={'DPSK Service'} required={!!requiredDpsk}>
-              <Form.Item
-                name='dpskPoolId'
-                children={
-                  <Select
-                    disabled={!!defaultValue?.dpskPoolId}
-                    placeholder={$t({ defaultMessage: 'Select...' })}
-                    showSearch
-                    filterOption={(input, option) =>
-                      (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+          {
+            !isDpskServiceRequired && <>
+              <Col span={21}>
+                <Form.Item label={'DPSK Service'} required={!!requiredDpsk}>
+                  <Form.Item
+                    name='dpskPoolId'
+                    children={
+                      <Select
+                        disabled={!!defaultValue?.dpskPoolId}
+                        placeholder={$t({ defaultMessage: 'Select...' })}
+                        showSearch
+                        filterOption={(input, option) =>
+                          (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                        }
+                        options={
+                          dpskPoolList?.data?.data
+                            // eslint-disable-next-line max-len
+                            .filter(pool => !pool.identityGroupId || pool.id === defaultValue?.dpskPoolId)
+                            .map(pool => ({ value: pool.id, label: pool.name }))
+                        }
+                      />
                     }
-                    options={
-                      dpskPoolList?.data?.data
-                        .filter(pool => !pool.identityId || pool.id === defaultValue?.dpskPoolId)
-                        .map(pool => ({ value: pool.id, label: pool.name }))
+                    rules={
+                      [{
+                        required: !!requiredDpsk,
+                        message: $t({ defaultMessage: 'Please select a DPSK Service' })
+                      }]
                     }
                   />
+                </Form.Item>
+              </Col>
+              <Col span={2}>
+                {!defaultValue?.dpskPoolId && hasDpskAccess() &&
+                  <Button
+                    data-testid='addDpskButton'
+                    type={'link'}
+                    onClick={() => setDpskModalVisible(true)}
+                  >
+                    {$t({ defaultMessage: 'Add' })}
+                  </Button>
                 }
-                rules={
-                  [{
-                    required: !!requiredDpsk,
-                    message: $t({ defaultMessage: 'Please select a DPSK Service' })
-                  }]
-                }
-              />
-            </Form.Item>
-          </Col>
-          <Col span={2}>
-            {!defaultValue?.dpskPoolId && hasDpskAccess() &&
-              <Button
-                data-testid='addDpskButton'
-                type={'link'}
-                onClick={() => setDpskModalVisible(true)}
-              >
-                {$t({ defaultMessage: 'Add' })}
-              </Button>
-            }
-          </Col>
+              </Col>
+            </>
+          }
           <Col span={21}>
             <Form.Item
               name='macRegistrationPoolId'

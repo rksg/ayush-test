@@ -69,7 +69,7 @@ export default function DpskTable () {
       intl.$t({ defaultMessage: 'DPSK Service' }),
       selectedRow.name,
       [
-        { fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Identity' }) },
+        { fieldName: 'identityGroupId', fieldText: intl.$t({ defaultMessage: 'Identity Group' }) },
         { fieldName: 'networkIds', fieldText: intl.$t({ defaultMessage: 'Network' }) }
       ],
       async () => deleteDpsk({

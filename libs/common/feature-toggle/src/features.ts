@@ -229,7 +229,8 @@ export enum Features {
   RUCKUS_AI_BTM_EVENTS_TOGGLE = 'ruckus-ai-btm-events-toggle',
   MLISA_4_11_0_TOGGLE = 'acx-ui-mlisa-4-11-0-toggle',
   RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE = 'ruckus-ai-intent-ai-config-change-toggle',
-  INTENT_AI_CONFIG_CHANGE_TOGGLE = 'acx-ui-intent-ai-config-change-toggle'
+  INTENT_AI_CONFIG_CHANGE_TOGGLE = 'acx-ui-intent-ai-config-change-toggle',
+  DPSK_REQUIRE_IDENTITY_GROUP = 'dpsk-require-identity-group',
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
