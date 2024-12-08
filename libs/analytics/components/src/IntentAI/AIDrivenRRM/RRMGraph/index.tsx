@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { ScalePower } from 'd3'
-import { scalePow }   from 'd3-scale'
-import { connect }    from 'echarts'
-import ReactECharts   from 'echarts-for-react'
-import { useIntl }    from 'react-intl'
-import AutoSizer      from 'react-virtualized-auto-sizer'
+import { ScalePower }  from 'd3'
+import { scalePow }    from 'd3-scale'
+import { EChartsType } from 'echarts'
+import ReactECharts    from 'echarts-for-react'
+import { useIntl }     from 'react-intl'
+import AutoSizer       from 'react-virtualized-auto-sizer'
 
 import {
   Card,
@@ -54,13 +54,32 @@ function DataGraph (props: {
   graphs: ProcessedCloudRRMGraph[],
   zoomScale: ScalePower<number, number, never>
 }) {
+  const graphGroupRef = React.useRef<EChartsType[]>([])
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
-      instance.group = 'graphGroup'
+      if (!graphGroupRef.current.includes(instance)) {
+        graphGroupRef.current.push(instance)
+      }
     }
   }
-  useEffect(() => { connect('graphGroup') }, [])
+
+  const onEvents = {
+    mouseover: (params: { seriesIndex: string, name: string }) => {
+      graphGroupRef.current.forEach((graph) => {
+        graph.dispatchAction({
+          type: 'showTip',
+          seriesIndex: params.seriesIndex,
+          name: params.name
+        })
+      })
+    },
+    mouseout: () => {
+      graphGroupRef.current.forEach((graph) => {
+        graph.dispatchAction({ type: 'hideTip' })
+      })
+    }
+  }
 
   if (!props.graphs?.length) return null
 
@@ -68,6 +87,7 @@ function DataGraph (props: {
     <div><AutoSizer>{({ height, width }) => <BasicGraph
       style={{ width, height }}
       chartRef={connectChart}
+      onEvents={onEvents}
       title=''
       data={props.graphs[0]}
       zoomScale={props.zoomScale}
@@ -77,6 +97,7 @@ function DataGraph (props: {
     <div><AutoSizer>{({ height, width }) => <BasicGraph
       style={{ width, height }}
       chartRef={connectChart}
+      onEvents={onEvents}
       title=''
       data={props.graphs[1]}
       zoomScale={props.zoomScale}
