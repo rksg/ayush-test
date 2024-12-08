@@ -16,7 +16,14 @@ import { IntentAIRRMGraph } from '.'
 
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
-  Graph: ({ data, chartRef, zoomScale, ...props }: GraphProps) => {
+  Graph: ({
+    data,
+    chartRef,
+    zoomScale,
+    onEvents,
+    backgroundColor,
+    ...props
+  }: GraphProps) => {
     // to get connectChart covered
     const getEchartsInstance = jest.fn(() => ({ group: '' }))
     chartRef({ getEchartsInstance } as unknown as EChartsReact)
