@@ -8,6 +8,7 @@ import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import { useSdLanScopedVenueNetworks } from '@acx-ui/rc/components'
 import {
   aggregatedVenueNetworksDataV2,
+  edgeSdLanApi,
   networkApi,
   softGreApi,
   venueApi
@@ -138,6 +139,7 @@ describe('VenueNetworksTab', () => {
       store.dispatch(networkApi.util.resetApiState())
       store.dispatch(venueApi.util.resetApiState())
       store.dispatch(softGreApi.util.resetApiState())
+      store.dispatch(edgeSdLanApi.util.resetApiState())
     })
 
     mockServer.use(
