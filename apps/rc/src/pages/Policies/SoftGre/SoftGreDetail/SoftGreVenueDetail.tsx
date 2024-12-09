@@ -1,12 +1,12 @@
 import { AlignType } from 'rc-table/lib/interface'
 import { useIntl }   from 'react-intl'
 
-import { Card,  Loader,  Table, TableProps }                                                                                                from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                           from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                                                                                                                from '@acx-ui/rc/components'
-import { useGetVenuesSoftGrePolicyQuery }                                                                                                   from '@acx-ui/rc/services'
-import { SoftGreActivation, SoftGreViewData, SoftGreWiredActivation, VenueTableSoftGreActivation, VenueTableUsageBySoftGre, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                                       from '@acx-ui/react-router-dom'
+import { Card,  Loader,  Table, TableProps }                                                                                                                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                                                     from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                                                                                                                                          from '@acx-ui/rc/components'
+import { useGetVenuesSoftGrePolicyQuery }                                                                                                                             from '@acx-ui/rc/services'
+import { SoftGreActivation, SoftGreViewData, SoftGreWiredActivation, SoftGreWiredApActivation, VenueTableSoftGreActivation, VenueTableUsageBySoftGre, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                                                                 from '@acx-ui/react-router-dom'
 
 
 const defaultVenuePayload = {
@@ -124,9 +124,9 @@ function useColumns () {
 }
 
 function getAggregatedActivations (
-  activations:SoftGreActivation[],
-  venueActivations:SoftGreWiredActivation[],
-  apActivations:SoftGreWiredActivation[]){
+  activations: SoftGreActivation[],
+  venueActivations: SoftGreWiredActivation[],
+  apActivations: SoftGreWiredApActivation[] ){
 
   const aggregated: Record<string, VenueTableSoftGreActivation> = {}
   const createVenueTableSoftGreActivation = (): VenueTableSoftGreActivation => ({
@@ -161,9 +161,8 @@ function getAggregatedActivations (
       if (!aggregated[activation.venueId]) {
         aggregated[activation.venueId] = createVenueTableSoftGreActivation()
       }
-      activation.apSerialNumbers.forEach(serial =>
-        aggregated[activation.venueId].apSerialNumbers.add(serial)
-      )
+
+      aggregated[activation.venueId].apSerialNumbers.add(activation.apSerialNumber)
     })
   }
   return aggregated
