@@ -12,7 +12,7 @@ import { formatter }                                               from '@acx-ui
 import { useGetServerCertificatesQuery }                           from '@acx-ui/rc/services'
 import { checkObjectNotExists, KeyType, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
 
-import { caFormDescription }                          from '../../contentsMap'
+import { serverClientCertSupportdFiles }              from '../../contentsMap'
 import { Description, Section, SettingsSectionTitle } from '../../styledComponents'
 
 
@@ -129,38 +129,45 @@ export function UploadCertificate () {
             </Form.Item>
           </GridCol>
         </GridRow>
+        <GridRow>
+          <GridCol col={{ span: 16 }}>
+            <Description>{$t(serverClientCertSupportdFiles.publicKey)}</Description>
+          </GridCol>
+        </GridRow>
       </Section>
-      <GridRow style={{ marginBottom: '30px' }}>
-        <GridCol col={{ span: 16 }}>
-          <Form.Item
-            name={'privateKey'}
-            label={$t({ defaultMessage: 'Private Key' })}
-            valuePropName='file'>
-            <Upload.Dragger
-              data-testid='private-key-upload'
-              accept={acceptablePrivateKeyFileExts.map(type => `.${String(type)}`).join(', ')}
-              maxCount={1}
-              showUploadList={false}
-              beforeUpload={(file) => beforeUpload(file, KeyType.PRIVATE)} >
-              <Space style={{ height: '90px' }}>
-                {fileDescription[KeyType.PRIVATE] ? fileDescription[KeyType.PRIVATE] :
-                  <Typography.Text>
-                    {$t({ defaultMessage: 'Drag & drop file here or' })}
-                  </Typography.Text>}
-                <Button type='primary'>{fileDescription[KeyType.PRIVATE] ?
-                  $t({ defaultMessage: 'Change File' }) :
-                  $t({ defaultMessage: 'Browse' })}
-                </Button>
-              </Space>
-            </Upload.Dragger>
-          </Form.Item>
-        </GridCol>
-      </GridRow>
-      <GridRow>
-        <GridCol col={{ span: 16 }}>
-          <Description>{$t(caFormDescription.PRIVATE_KEY)}</Description>
-        </GridCol>
-      </GridRow>
+      <Section>
+        <GridRow style={{ marginBottom: '0px' }}>
+          <GridCol col={{ span: 16 }}>
+            <Form.Item
+              name={'privateKey'}
+              label={$t({ defaultMessage: 'Private Key' })}
+              valuePropName='file'>
+              <Upload.Dragger
+                data-testid='private-key-upload'
+                accept={acceptablePrivateKeyFileExts.map(type => `.${String(type)}`).join(', ')}
+                maxCount={1}
+                showUploadList={false}
+                beforeUpload={(file) => beforeUpload(file, KeyType.PRIVATE)} >
+                <Space style={{ height: '90px' }}>
+                  {fileDescription[KeyType.PRIVATE] ? fileDescription[KeyType.PRIVATE] :
+                    <Typography.Text>
+                      {$t({ defaultMessage: 'Drag & drop file here or' })}
+                    </Typography.Text>}
+                  <Button type='primary'>{fileDescription[KeyType.PRIVATE] ?
+                    $t({ defaultMessage: 'Change File' }) :
+                    $t({ defaultMessage: 'Browse' })}
+                  </Button>
+                </Space>
+              </Upload.Dragger>
+            </Form.Item>
+          </GridCol>
+        </GridRow>
+        <GridRow>
+          <GridCol col={{ span: 16 }}>
+            <Description>{$t(serverClientCertSupportdFiles.privateKey)}</Description>
+          </GridCol>
+        </GridRow>
+      </Section>
       <Section>
         <GridRow>
           <GridCol col={{ span: 16 }}>
