@@ -21,7 +21,12 @@ function VerticalPage (props: {
     setSelectedType(e.target.value)
   }
 
-  return <div>
+  return <div
+    style={{
+      height: '100%',
+      maxHeight: 'calc(100vh - 300px)',
+      minHeight: '200px'
+    }}>
     <div style={{
       fontFamily: cssStr('--acx-accent-brand-font'),
       fontSize: '16px',
