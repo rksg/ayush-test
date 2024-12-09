@@ -6,8 +6,22 @@ import { ActionModalType, ErrorDetailsProps, showActionModal }                  
 import { CatchErrorResponse }                                                                 from '@acx-ui/rc/utils'
 import { getIntl, setUpIntl, IntlSetUpError, isShowApiError, isIgnoreErrorModal, userLogout } from '@acx-ui/utils'
 
+import type { GraphQLResponse } from 'graphql-request/dist/types'
+
+function formatGraphQLErrors (
+  response: Required<Pick<GraphQLResponse, 'errors'>> & GraphQLResponse
+): CatchErrorResponse['data'] {
+  return {
+    requestId: response.extensions?.requestId,
+    errors: response.errors.map(error => ({
+      code: error.extensions?.code,
+      message: error.message
+    }))
+  }
+}
+
 type QueryMeta = {
-  response?: Response,
+  response?: Response
   request: Request
 }
 export type ErrorAction = {
@@ -126,11 +140,18 @@ export const getErrorContent = (action: ErrorAction) => {
       ('originalStatus' in action.payload) ? action.payload.originalStatus :
         ('status' in action.payload) ? action.payload.status : undefined
   const request = queryMeta?.request
+  const response = queryMeta?.response as GraphQLResponse
 
   let errorMsg = {} as ErrorMessageType
   let type: ActionModalType = 'error'
-  let errors: ErrorDetailsProps | CatchErrorResponse['data'] | string | undefined
-  if (typeof action.payload === 'string') {
+  let errors: ErrorDetailsProps
+    | CatchErrorResponse['data']
+    | string
+    | undefined
+
+  if (action.type?.includes('data-api') && response && 'errors' in response) {
+    errors = formatGraphQLErrors({ ...response, errors: response.errors! })
+  } else if (typeof action.payload === 'string') {
     errors = action.payload
   } else if (typeof action.payload === 'object') {
     if('data' in action.payload) {

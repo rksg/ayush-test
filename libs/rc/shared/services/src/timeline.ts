@@ -277,8 +277,7 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
         return {
           ...req,
           body: latestTimeFilter(payload),
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          responseHandler: async (response: any) => {
+          responseHandler: async (response: Response) => {
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent
               ? headerContent.split('filename=')[1]
