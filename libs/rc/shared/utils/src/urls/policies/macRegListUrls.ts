@@ -110,6 +110,10 @@ export const MacRegListUrlsInfo: { [key: string]: ApiInfo } = {
   createMacRegistrationPoolWithIdentity: {
     method: 'post',
     url: '/identityGroups/:identityGroupId/macRegistrationPools',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

@@ -1148,10 +1148,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
     }),
     addMacRegListWithIdentity: build.mutation<MacRegistrationPool, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
+      query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
-        const req = createHttpRequest(MacRegListUrlsInfo.createMacRegistrationPoolWithIdentity, params, headers)
+        const req = createHttpRequest(MacRegListUrlsInfo.createMacRegistrationPoolWithIdentity, params)
         return {
           ...req,
           body: JSON.stringify(payload)
