@@ -27,7 +27,8 @@ import {
   useGetWifiOperatorListQuery,
   useMacRegListsQuery,
   useSyslogPolicyListQuery,
-  useGetDirectoryServerViewDataListQuery
+  useGetDirectoryServerViewDataListQuery,
+  useSwitchPortProfilesListQuery
 } from '@acx-ui/rc/services'
 import {
   IncompatibilityFeatures,
@@ -159,7 +160,7 @@ function useCardData (): PolicyCardData[] {
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
+  const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE) || true
   const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
@@ -167,6 +168,8 @@ function useCardData (): PolicyCardData[] {
   const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
   // eslint-disable-next-line
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
+  const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  || true
 
   return [
     {
@@ -319,15 +322,6 @@ function useCardData (): PolicyCardData[] {
       disabled: !isCertificateTemplateEnabled
     },
     {
-      type: PolicyType.ETHERNET_PORT_PROFILE,
-      categories: [RadioCardCategory.WIFI],
-      // eslint-disable-next-line max-len
-      totalCount: useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !isEthernetPortProfileEnabled }).data?.totalCount,
-      // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.LIST })),
-      disabled: !isEthernetPortProfileEnabled
-    },
-    {
       type: PolicyType.HQOS_BANDWIDTH,
       categories: [RadioCardCategory.EDGE],
       // eslint-disable-next-line max-len
@@ -362,6 +356,15 @@ function useCardData (): PolicyCardData[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.DIRECTORY_SERVER, oper: PolicyOperation.LIST })),
       disabled: !isDirectoryServerEnabled
+    },
+    {
+      type: PolicyType.PORT_PROFILE,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
+      // eslint-disable-next-line max-len
+      totalCount: (useSwitchPortProfilesListQuery({ params, payload: {} }, { skip: !isSwitchPortProfileEnabled }).data?.totalCount ?? 0) + (useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !isEthernetPortProfileEnabled }).data?.totalCount ?? 0),
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink('/policies/portProfile/wifi'),
+      disabled: !isEthernetPortProfileEnabled && !isSwitchPortProfileEnabled
     }
   ]
 }

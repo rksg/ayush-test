@@ -33,7 +33,9 @@ export enum PolicyType {
   HQOS_BANDWIDTH = 'HQoS Bandwidth',
   FLEX_AUTH = 'Authentication',
   SOFTGRE = 'SoftGRE',
-  DIRECTORY_SERVER = 'Directory Server'
+  DIRECTORY_SERVER = 'Directory Server',
+  PORT_PROFILE = 'Port Profile',
+  SWITCH_PORT_PROFILE = 'Switch Port Profile',
 }
 
 export enum PolicyTechnology {
@@ -80,7 +82,9 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.ETHERNET_PORT_PROFILE]: defineMessage({ defaultMessage: 'An Ethernet port profile is a configuration that specifies how a network port functions and behaves.' }),
   [PolicyType.FLEX_AUTH]: defineMessage({ defaultMessage: 'Define 802.1x and MACAUTH settings for switch clients. These profiles can be applied at the switch port(s) level.' }),
   [PolicyType.SERVER_CERTIFICATES]: defineMessage({ defaultMessage: 'Server Certificates' }),
-  [PolicyType.DIRECTORY_SERVER]: defineMessage({ defaultMessage: 'Create an Active Directory or LDAP server for network access on a captive portal' })
+  [PolicyType.DIRECTORY_SERVER]: defineMessage({ defaultMessage: 'Create an Active Directory or LDAP server for network access on a captive portal' }),
+  [PolicyType.PORT_PROFILE]: defineMessage({ defaultMessage: 'A port profile is a configuration that specifies how a port functions and behaves.' }),
+  [PolicyType.SWITCH_PORT_PROFILE]: defineMessage({ defaultMessage: 'A port profile is a configuration that specifies how a port functions and behaves.' })
 }
 
 export const downloadCertExtension: Record<CertificateAcceptType, String> = {

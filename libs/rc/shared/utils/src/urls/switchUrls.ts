@@ -681,5 +681,15 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/switchPortProfiles/portProfiles/query',
     newApi: true
+  },
+  getSwitchPortProfileMacOuisList: {
+    method: 'post',
+    url: '/switchPortProfiles/macOuis/query',
+    newApi: true
+  },
+  getSwitchPortProfileLldpTlvsList: {
+    method: 'post',
+    url: '/switchPortProfiles/lldpTlvs/query',
+    newApi: true
   }
 }

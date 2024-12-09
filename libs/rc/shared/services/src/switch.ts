@@ -62,7 +62,9 @@ import {
   FlexibleAuthentication,
   FlexibleAuthenticationAppliedTargets,
   FeatureSetResponse,
-  SwitchPortProfiles
+  SwitchPortProfiles,
+  LldpTlvs,
+  MacOuis
 } from '@acx-ui/rc/utils'
 import { baseSwitchApi }  from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
@@ -1498,7 +1500,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     addSwitchConfigProfile: build.mutation<CliConfiguration, RequestPayload>({
       query: ({ params, payload, enableRbac,
-        enableSwitchLevelCliProfile, enableSwitchPortProfile}) => {
+        enableSwitchLevelCliProfile, enableSwitchPortProfile }) => {
         const headers = enableSwitchLevelCliProfile || enableSwitchPortProfile || true
           ? customHeaders.v1002 : (enableRbac ? customHeaders.v1001 : {})
         const switchUrls = getSwitchUrls(enableRbac)
@@ -1755,6 +1757,28 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const headers = enableRbac ? customHeaders.v1 : {}
         const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(switchUrls.getSwitchPortProfilesList, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    switchPortProfileMacOuisList: build.query<TableResult<MacOuis>, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getSwitchPortProfileMacOuisList, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    switchPortProfileLldpTlvsList: build.query<TableResult<LldpTlvs>, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getSwitchPortProfileLldpTlvsList, params, headers)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -2027,5 +2051,7 @@ export const {
   useDeleteFlexAuthenticationProfileMutation,
   useGetSwitchAuthenticationQuery,
   useUpdateSwitchAuthenticationMutation,
-  useSwitchPortProfilesListQuery
+  useSwitchPortProfilesListQuery,
+  useSwitchPortProfileMacOuisListQuery,
+  useSwitchPortProfileLldpTlvsListQuery
 } = switchApi

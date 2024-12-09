@@ -119,6 +119,7 @@ import MacRegistrationListDetails
   from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable                                        from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
 import MyPolicies                                                       from './pages/Policies/MyPolicies'
+import PortProfile, { PortProfileTabsEnum }                                                      from './pages/Policies/PortProfile'
 import SelectPolicyForm                                                 from './pages/Policies/SelectPolicyForm'
 import SnmpAgentDetail                                                  from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
 import SnmpAgentForm                                                    from './pages/Policies/SnmpAgent/SnmpAgentForm/SnmpAgentForm'
@@ -864,6 +865,8 @@ function PolicyRoutes () {
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   // eslint-disable-next-line max-len
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
+  const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  || true
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -1496,6 +1499,17 @@ function PolicyRoutes () {
             oper: PolicyOperation.DETAIL
           })}
           element={<EthernetPortProfileDetail/>}
+        />
+      </>
+      }
+      {isSwitchPortProfileEnabled && <>
+        <Route
+          path='policies/portProfile/:activeTab/'
+          element={<PortProfile />}
+        />
+        <Route
+          path='policies/portProfile/:activeTab/:activeSubTab'
+          element={<PortProfile />}
         />
       </>
       }
