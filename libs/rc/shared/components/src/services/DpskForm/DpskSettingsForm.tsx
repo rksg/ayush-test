@@ -203,6 +203,7 @@ function CloudpathFormItems ({ editMode }: { editMode?: boolean }) {
     selectFromResult ({ data }) {
       return {
         // return empty list if data?.data is undefined
+        // eslint-disable-next-line max-len
         identityGroupList: data?.data.filter(group => editMode || !group.dpskPoolId).map(group => ({ value: group.id, label: group.name }))
       }
     }
