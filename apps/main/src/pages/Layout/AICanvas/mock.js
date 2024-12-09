@@ -1,11 +1,11 @@
 export default [
   {
-    id: 'a1',
+    id: 'default_section',
     type: 'section',
     hasTab: false,
     groups: [{
-      id: 0,
-      sectionId: 'a1',
+      id: 'default_group',
+      sectionId: 'default_section',
       type: 'group',
       cards: [
         {

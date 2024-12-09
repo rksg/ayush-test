@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react'
+import { useState } from 'react'
 
 import { Spin }         from 'antd'
 import { DndProvider }  from 'react-dnd'
@@ -6,35 +6,27 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
-import { Button, cssStr }                                                    from '@acx-ui/components'
+import { Button }                                                    from '@acx-ui/components'
 import { HistoricalOutlined, Plus, RuckusAiDog, SendMessageOutlined }        from '@acx-ui/icons'
 import { useChatAiMutation }                                                 from '@acx-ui/rc/services'
-import { ChatMessage, ChatWidget, RuckusAiChat, WidgetData, WidgetListData } from '@acx-ui/rc/utils'
+import { ChatMessage, RuckusAiChat, WidgetListData } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                        from '@acx-ui/react-router-dom'
 
 import Canvas             from './Canvas'
 import * as UI            from './styledComponents'
-import { DraggableChart } from './WidgetChart'
+import { DraggableChart } from './components/WidgetChart'
 
 
-export default function AICanvas (
-//   props: {
-//   visible: boolean, setVisible:(visible: boolean) => void
-// }
-) {
+export default function AICanvas () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const [chatAi] = useChatAiMutation()
-  // const { visible, setVisible } = props
-  const [ sectionsSubVisible, setSectionsSubVisible ] = useState(false)
   const [loading, setLoading] = useState(false)
   const [sessionId, setSessionId] = useState('')
   const [chats, setChats] = useState([] as ChatMessage[])
   const [widgets, setWidgets] = useState([] as WidgetListData[])
 
-  const [ dirty, setDirty ] = useState(false)
   const [ searchText, setSearchText ] = useState('')
-  const siderWidth = localStorage.getItem('acx-sider-width') || cssStr('--acx-sider-width')
   const linkToDashboard = useTenantLink('/dashboard')
   const placeholder = 'Enter a description to generate widgets based on your needs. The more you describe, the better widgets I can recommend.'
 
@@ -98,9 +90,6 @@ export default function AICanvas (
   }
 
   const onClose = () => {
-    setDirty(false)
-    setSectionsSubVisible(false)
-    // setVisible(false)
     navigate(linkToDashboard)
   }
 
@@ -124,12 +113,12 @@ export default function AICanvas (
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <UI.Preview $siderWidth={siderWidth} $subToolbar={sectionsSubVisible}>
+      <UI.Wrapper>
         <div className='chat'>
           <div className='header'>
             <div className='title'>
               <RuckusAiDog />
-              <span>RUCKUS AI</span>
+              <span>{$t({ defaultMessage: 'RUCKUS AI' })}</span>
             </div>
             <div className='actions'>
               <Button icon={<Plus />} onClick={()=>{}} />
@@ -167,7 +156,7 @@ export default function AICanvas (
           </div>
         </div>
         <Canvas />
-      </UI.Preview>
+      </UI.Wrapper>
     </DndProvider>
 
   )

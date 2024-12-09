@@ -1,19 +1,28 @@
 // @ts-nocheck
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { useDrop } from 'react-dnd'
 import { useIntl } from 'react-intl'
 
-import { cssStr, Button } from '@acx-ui/components'
+import { Button } from '@acx-ui/components'
 
 import Layout   from './components/Layout'
-import mockData from './mock'
 import * as UI  from './styledComponents'
-import utils    from './utils'
 
-export const ItemTypes = {
-  WIDGET: 'widget'
-}
+// import mockData from './mock'
+
+const DEFAULT_CANVAS = [
+  {
+    id: 'default_section',
+    type: 'section',
+    hasTab: false,
+    groups: [{
+      id: 'default_group',
+      sectionId: 'default_section',
+      type: 'group',
+      cards: []
+    }]
+  }
+]
 
 const compactType = 'horizontal'
 
@@ -41,49 +50,23 @@ export default function Canvas (props) {
   }, [])
 
   const getFromLS = () => {
-    let ls = localStorage.getItem('acx-ui-dashboard') ?
-      JSON.parse(localStorage.getItem('acx-ui-dashboard')) : mockData
-    return mockData
+    let ls = localStorage.getItem('acx-ui-canvas') ?
+      JSON.parse(localStorage.getItem('acx-ui-canvas')) : DEFAULT_CANVAS // mockData
+    return ls
+  }
+  
+  const saveToLS = () => {
+    const tmp = _.cloneDeep(sections)
+    tmp.forEach(s => {
+      s.groups = groups.filter(g => g.sectionId === s.id)
+    })
+    localStorage.setItem('acx-ui-canvas', JSON.stringify(tmp))
   }
 
   const onClear = () => {
-    setGroups([])
-    setSections([])
+    setSections(DEFAULT_CANVAS)
+    setGroups(DEFAULT_CANVAS.reduce((acc, cur) => [...acc, ...cur.groups], []))
   }
-
-  // const [{ isOver }, dropRef] = useDrop({
-  //   accept: ItemTypes.WIDGET,
-  //   drop: (item) => {
-  //     const dragItem = item
-  //     const dropItem = props
-  //     console.log('dragItem: ', dragItem)
-  //     console.log('dropItem: ', dropItem)
-  //     // dropCard(dragItem, dropItem)
-  //     setWidgets([...widgets, dragItem])
-  //   },
-  //   collect: monitor => ({
-  //     isOver: monitor.isOver()
-  //   }),
-  //   hover: (item, monitor) => {
-  //     const dragItem = item
-  //     console.log(item)
-  //     if (dragItem.type === ItemTypes.WIDGET) {
-  //       //卡片到组
-  //       const hoverItem = props
-  //       const { x, y } = monitor.getClientOffset()
-  //       const containerDom = document.getElementById('grid')
-  //       const groupItemBoundingRect = containerDom.getBoundingClientRect()
-  //       const groupItemX = groupItemBoundingRect.left
-  //       const groupItemY = groupItemBoundingRect.top
-  //       console.log(hoverItem, ' x,y: ', groupItemX, ' ', groupItemY)
-  //       // moveCardInGroupItem(
-  //       //   hoverItem,
-  //       //   x - groupItemX,
-  //       //   y - groupItemY
-  //       // )
-  //     }
-  //   }
-  // })
 
   return (
     <UI.Canvas>
@@ -94,11 +77,11 @@ export default function Canvas (props) {
         <div className='actions'>
           {/* <Button role='primary' onClick={()=>{onClose()}}>
             {$t({ defaultMessage: 'Publish' })}
-          </Button>
-          <Button role='primary' onClick={()=>{onClose()}}>
+          </Button> */}
+          <Button role='primary' onClick={()=>{saveToLS()}}>
             {$t({ defaultMessage: 'Save' })}
           </Button>
-          <Button className='black' onClick={()=>{onClose()}}>
+          {/* <Button className='black' onClick={()=>{onClose()}}>
             {$t({ defaultMessage: 'Preview' })}
           </Button> */}
           <Button className='black' onClick={() => {onClear()}}>

@@ -1,13 +1,13 @@
 // @ts-nocheck
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 
 import _                    from 'lodash'
-import { useDrag, useDrop } from 'react-dnd'
+import { useDrag } from 'react-dnd'
 import { getEmptyImage }    from 'react-dnd-html5-backend'
 
 import utils                       from '../utils'
 import { compactLayoutHorizontal } from '../utils/compact'
-import { WidgetChart }             from '../WidgetChart'
+import { WidgetChart }             from './WidgetChart'
 
 import { ItemTypes } from './GroupItem'
 
@@ -17,7 +17,6 @@ const DraggableCard = (props) => {
     item: () => {
       let dragCard = props.card
       dragCard.isShadow = true
-      console.log(dragCard)
       props.updateShadowCard(dragCard)
       return { id: dragCard.id, type: ItemTypes.CARD }
     },
@@ -27,8 +26,7 @@ const DraggableCard = (props) => {
       }
     }
   })
-  const [, drop] = useDrop(() => ({ accept: ItemTypes.CARD }))
-
+  
   useEffect(() => {
     preview(getEmptyImage(), { captureDraggingState: true })
   }, [preview])
@@ -38,7 +36,6 @@ const DraggableCard = (props) => {
       <Card
         {...props}
         isDragging={isDragging}
-        drop={drop}
         drag={drag}
       />
     </div>
@@ -51,7 +48,6 @@ function Card (props) {
   const {
     groupIndex,
     deleteCard,
-    drop,
     drag,
     card
   } = props
@@ -132,7 +128,6 @@ function Card (props) {
           ></div>
           :
           <div
-            // ref={(node) => drag(drop(node))}
             ref={drag}
             className='card'
             style={{
@@ -146,14 +141,13 @@ function Card (props) {
               className='card-actions'
               style={{
                 position: 'absolute',
-                top: 0,
-                right: '25px',
+                left: '70px',
                 zIndex: 1
               }}
             >
               <b>{id}</b>
               <button
-                style={{ height: '30px', margin: '10px' }}
+                style={{ height: '30px', marginLeft: '10px' }}
                 onClick={() => {
                   deleteCard(id, groupIndex)
                 }}
@@ -162,7 +156,7 @@ function Card (props) {
               </button>
               {
                 card.sizes && <button
-                  style={{ height: '30px', width: '30px', margin: '10px' }}
+                  style={{ height: '30px', width: '30px', marginLeft: '10px' }}
                   disabled={card.currentSizeIndex+1 >= card.sizes?.length}
                   onClick={() => {
                     increaseCard()
@@ -173,7 +167,7 @@ function Card (props) {
               }
               {
                 card.sizes && <button
-                  style={{ height: '30px', width: '30px', margin: '10px' }}
+                  style={{ height: '30px', width: '30px', marginLeft: '10px' }}
                   disabled={card.currentSizeIndex <= 0}
                   onClick={() => {
                     decreaseCard(props)

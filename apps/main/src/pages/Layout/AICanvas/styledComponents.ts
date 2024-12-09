@@ -1,30 +1,8 @@
 import { Input as AntInput } from 'antd'
 import styled                from 'styled-components/macro'
 
-import { ArrowChevronRight } from '@acx-ui/icons'
-
 import CanvasBackground   from './assets/CanvasBackground.svg'
 import RuckusAiBackground from './assets/RuckusAiBackground.svg'
-
-export const ArrowChevronRightIcons = styled(ArrowChevronRight)`
-  width: 16px;
-  height: 16px;
-  path {
-    stroke: var(--acx-accents-blue-50);
-  }
-`
-export const Wrapper = styled.div`
-  &:hover {
-    path {
-      stroke: var(--acx-accents-blue-60);
-    }
-  }
-`
-export const MenuExpandArrow = styled(ArrowChevronRight)`
-  width: 16px;
-  height: 16px;
-  margin: 0.3em;
-`
 
 export const Input = styled(AntInput.TextArea)`
   height: 28px;
@@ -36,9 +14,7 @@ export const Input = styled(AntInput.TextArea)`
   }
 `
 
-export const Preview = styled.div.attrs((props: {
-  $siderWidth: string, $subToolbar:boolean
-}) => props)`
+export const Wrapper = styled.div`
 animation: fadeIn 0.1s linear 0s both;
 position: fixed; /* Stay in place */
 z-index: 101; /* Sit on top */
@@ -166,40 +142,6 @@ border-top: 75px solid rgba(255,255,255, 0.4);
           left: 300px;
           bottom: 10px;
         }
-      }
-    }
-  }
-}
-
-
-.modal-content {
-  background-color: #fefefe;
-  width: 100%;
-  height: calc(100vh - 120px);
-  position: fixed;
-  top: 120px;
-  padding: 40px;
-  padding-top: 40px;
-  overflow: auto;
-}
-
-.ant-btn-text {
-  &:not([disabled]):hover {
-    background-color: var(--acx-neutrals-20);
-  }
-  &:not([disabled]):active {
-    color: var(--acx-primary-white);
-    background-color: var(--acx-neutrals-70);
-    svg {
-      path {
-        stroke: var(--acx-primary-white);
-      }
-    }
-  }
-  &[disabled] {
-    svg {
-      path {
-        stroke: var(--acx-neutrals-50);
       }
     }
   }

@@ -1,9 +1,7 @@
 // @ts-nocheck
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { useDrop } from 'react-dnd'
-
-import { cssStr } from '@acx-ui/components'
 
 import utils from '../utils'
 
@@ -15,7 +13,7 @@ export const ItemTypes = {
 
 export default function GroupItem (props) {
   const defaultLayout = props.layout
-  const { cards, index, groups, layout, handleLoad, moveCardInGroupItem } = props
+  const { id, cards, index, groups, layout, handleLoad, moveCardInGroupItem } = props
 
   useEffect(() => {
     let clientWidth
@@ -35,7 +33,7 @@ export default function GroupItem (props) {
   )
 
   const dropCard = (dragItem, dropItem) => {
-    if (dragItem.type === 'card') {
+    if (dragItem.type === ItemTypes.CARD) {
       props.onCardDropInGroupItem(dragItem, dropItem)
       return dropItem
     }
@@ -53,7 +51,7 @@ export default function GroupItem (props) {
     }),
     hover: (item, monitor) => {
       const dragItem = item
-      if (dragItem.type === 'card') {
+      if (dragItem.type === ItemTypes.CARD) {
         if(props.shadowCard.id !== dragItem.id){
           props.updateShadowCard(dragItem)
           return
@@ -75,7 +73,7 @@ export default function GroupItem (props) {
   })
 
   return (
-    <div className='rglb_group-item' ref={dropRef} id={'group' + index}>
+    <div className='rglb_group-item' ref={dropRef} id={'group' + id}>
       <div
         className='group-item-container'
         // style={{

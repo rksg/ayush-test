@@ -1,10 +1,7 @@
 // @ts-nocheck
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 import _                from 'lodash'
-import { DndProvider }  from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
-
 import { Tabs } from '@acx-ui/components'
 
 import utils                                      from '../utils'
