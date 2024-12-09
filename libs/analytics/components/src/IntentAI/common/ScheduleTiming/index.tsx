@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import { Form }                      from 'antd'
 import _                             from 'lodash'
@@ -24,6 +24,20 @@ interface FormValues { status: Statuses, settings: SettingsType, preferences?: u
 export function ScheduleTiming ({ disabled = false }: { disabled?: boolean }) {
   const { intent } = useIntentContext()
   const showDate = isDateVisible(intent.status)
+  const form = Form.useFormInstance<FormValues>()
+
+  useEffect(() => {
+    if (disabled) {
+      form.setFieldValue(dateName, undefined)
+      form.setFieldValue(timeName, undefined)
+      return
+    }
+
+    // Handles cleared field when fields were previously disabled
+    if (form.getFieldValue(dateName) == null) {
+      form.resetFields([dateName, timeName])
+    }
+  }, [disabled, form])
 
   const summary = showDate ? <FormattedMessage
     values={richTextFormatValues}

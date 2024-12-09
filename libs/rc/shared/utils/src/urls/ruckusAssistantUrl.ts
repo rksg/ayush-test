@@ -26,6 +26,11 @@ export const RuckusAssistantUrlInfo: { [key: string]: ApiInfo } = {
     url: '/ruckusAssistant/onboardConfigs/:id',
     newApi: true
   },
+  deleteOnboardConfigs: {
+    method: 'delete',
+    url: '/ruckusAssistant/onboardConfigs/:id',
+    newApi: true
+  },
   getOnboardConfigs: {
     method: 'get',
     url: '/ruckusAssistant/onboardConfigs/:id',
