@@ -7,18 +7,18 @@ import { defineMessage, FormattedMessage } from 'react-intl'
 import { Card, GridCol, GridRow, Loader } from '@acx-ui/components'
 import { getIntl }                        from '@acx-ui/utils'
 
-import { DescriptionSection }       from '../../DescriptionSection'
-import { FixedAutoSizer }           from '../../DescriptionSection/styledComponents'
-import { useCommonFields }          from '../common/commonFields'
-import { DetailsSection }           from '../common/DetailsSection'
-import { IntentDetailsHeader }      from '../common/IntentDetailsHeader'
-import { IntentDetailsSidebar }     from '../common/IntentDetailsSidebar'
-import { IntentIcon }               from '../common/IntentIcon'
-import { KpiCard }                  from '../common/KpiCard'
-import { richTextFormatValues }     from '../common/richTextFormatValues'
-import { StatusTrail }              from '../common/StatusTrail'
-import { useIntentContext }         from '../IntentContext'
-import { getGraphKPIs, getKPIData } from '../useIntentDetailsQuery'
+import { DescriptionSection }                        from '../../DescriptionSection'
+import { FixedAutoSizer }                            from '../../DescriptionSection/styledComponents'
+import { useCommonFields }                           from '../common/commonFields'
+import { DetailsSection }                            from '../common/DetailsSection'
+import { IntentDetailsHeader }                       from '../common/IntentDetailsHeader'
+import { IntentDetailsSidebar }                      from '../common/IntentDetailsSidebar'
+import { IntentIcon }                                from '../common/IntentIcon'
+import { KpiCard }                                   from '../common/KpiCard'
+import { richTextFormatValues }                      from '../common/richTextFormatValues'
+import { StatusTrail }                               from '../common/StatusTrail'
+import { useIntentContext }                          from '../IntentContext'
+import { getGraphKPIs, getKPIData, useIntentParams } from '../useIntentDetailsQuery'
 
 import { IntentAIRRMGraph, SummaryGraphAfter, SummaryGraphBefore } from './RRMGraph'
 import { DownloadRRMComparison }                                   from './RRMGraph/DownloadRRMComparison'
@@ -77,7 +77,8 @@ export function createIntentAIDetails () {
 
   return function IntentAIDetails () {
     const { $t } = getIntl()
-    const { intent, kpis, isDataRetained: hasData, state, params } = useIntentContext()
+    const { intent, kpis, isDataRetained: hasData, state } = useIntentContext()
+    const params = useIntentParams()
     const queryResult = useIntentAICRRMQuery(params)
 
     const valuesText = useValuesText()
