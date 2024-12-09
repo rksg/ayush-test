@@ -3549,8 +3549,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'AddServerCertificate',
-            'UpdateServerCertificate'
+            'GENERATE_SERVER_CERT',
+            'UPDATE_SERVER_CERT',
+            'UPLOAD_SERVER_CERT'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([
               { type: 'ServerCertificate', id: 'LIST' }
@@ -3589,7 +3590,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     downloadServerCertificateChains: build.query<Blob, RequestPayload>({
       query: ({ params, customHeaders }) => {
         // eslint-disable-next-line max-len
-        const req = createHttpRequest(CertificateUrls.downloadServerCertificate, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        const req = createHttpRequest(CertificateUrls.downloadServerCertificateChains, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
         return {
           ...req,
           responseHandler: async (response) => {

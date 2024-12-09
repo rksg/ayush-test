@@ -72,6 +72,7 @@ export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
           ...req
         }
       },
+      keepUnusedDataFor: 0,
       transformResponse: (response: RuckusAiConfiguration) => {
         return JSON.parse(response.content) as NetworkSaveData
       }

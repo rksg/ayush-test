@@ -23,6 +23,7 @@ import {
 } from '@acx-ui/test-utils'
 
 import { useEdgePinScopedNetworkVenueMap } from '../../NetworkTunnelActionModal'
+import { useIsEdgeFeatureReady }           from '../../useEdgeActions'
 
 import { list }            from './__tests__/fixtures'
 import { useTunnelColumn } from './useTunnelColumn'
@@ -46,7 +47,10 @@ jest.mock('../../NetworkTunnelActionModal', () => ({
   ...jest.requireActual('../../NetworkTunnelActionModal'),
   useEdgePinScopedNetworkVenueMap: jest.fn().mockReturnValue({})
 }))
-
+jest.mock('../../useEdgeActions', () => ({
+  ...jest.requireActual('../../useEdgeActions'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   useConfigTemplate: () => ({ isTemplate: false })
@@ -76,10 +80,14 @@ describe('VenueNetworksTab - PIN enabled', () => {
     act(() => {
       store.dispatch(pinApi.util.resetApiState())
     })
+
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE)
   })
 
   describe('Edge and multi-venue SD-LAN FF is on', () => {
     beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_SD_LAN_MV_TOGGLE
+        || ff === Features.EDGE_PIN_HA_TOGGLE)
       jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
         && ff !== Features.WIFI_RBAC_API
         && ff !== Features.WIFI_COMPATIBILITY_BY_MODEL
@@ -315,6 +323,7 @@ describe('VenueNetworksTab - PIN enabled', () => {
 
   describe('when FFs are off', () => {
     it('should return empty array', async () => {
+      jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
       jest.mocked(useIsSplitOn).mockReturnValue(false)
 
       const { result } = renderHook(() => useTunnelColumn({

@@ -155,6 +155,43 @@ describe('getErrorContent', () => {
 
     expect(screen.getByText('[Validation Error]')).toBeInTheDocument()
   })
+  it('should handle GraphQL errors from data-api', () => {
+    const graphqlResponse = {
+      data: { shouldBe: 'ignored' },
+      errors: [
+        {
+          message: 'The provided data did not pass validation. Check your input.',
+          extensions: { code: 'RDA-422' }
+        },
+        {
+          message: 'You must be logged in to perform this action.',
+          extensions: { code: 'RDA-401' }
+        }
+      ],
+      extensions: { requestId: '184abe34b822549ef598fca3c19fcfe2' }
+    }
+    const errorAction = {
+      type: 'analytics-data-api/executeQuery/rejected',
+      meta: { baseQueryMeta: { response: graphqlResponse } },
+      payload: {}
+    } as unknown as ErrorAction
+
+    const result = getErrorContent(errorAction)
+    expect(result.errors).toEqual({
+      requestId: '184abe34b822549ef598fca3c19fcfe2',
+      errors: [
+        {
+          code: 'RDA-422',
+          message: 'The provided data did not pass validation. Check your input.'
+        },
+        {
+          code: 'RDA-401',
+          message: 'You must be logged in to perform this action.'
+        }
+      ]
+    })
+    expect(result.title).toBe('Server Error')
+  })
 })
 
 describe('showErrorModal', () => {
