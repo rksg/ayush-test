@@ -61,9 +61,7 @@ function DidYouKnowWidget ({
       setContent(Array.from({ length: 5 }, () => []))
       setOffset(0)
     }
-  }, [filters])
-  useEffect(() => {
-    if (availableFacts && isEmpty(carouselFactsMap)) {
+    if (availableFacts) {
       const factsMap = getCarouselFactsMap(availableFacts)
       const randomArray = _.shuffle([1, 2, 3, 4, 5])
       const reorderedFactsMap: Record<number, { facts: string[] }> = {}
@@ -73,7 +71,7 @@ function DidYouKnowWidget ({
       })
       setCarouselFactsMap(reorderedFactsMap)
     }
-  }, [availableFacts, carouselFactsMap])
+  }, [filters, availableFacts])
   const { $t } = intl
   const title = $t({ defaultMessage: 'Did you know?' })
   const subTitle = $t({ defaultMessage: 'No data to report' })
