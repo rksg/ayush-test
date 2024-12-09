@@ -1580,8 +1580,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return {
           ...req,
           body: JSON.stringify(payload),
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          responseHandler: async (response: any) => {
+          responseHandler: async (response: Response) => {
             const date = new Date()
             // eslint-disable-next-line max-len
             const nowTime = date.getUTCFullYear() + ('0' + (date.getUTCMonth() + 1)).slice(-2) + ('0' + date.getUTCDate()).slice(-2) + ('0' + date.getUTCHours()).slice(-2) + ('0' + date.getUTCMinutes()).slice(-2) + ('0' + date.getUTCSeconds()).slice(-2)
