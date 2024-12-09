@@ -958,6 +958,9 @@ export function validateSwitchStaticRouteNextHop (ipAddress: string) {
 }
 
 export function validateSwitchStaticRouteAdminDistance (ipAddress: string) {
+  if(!ipAddress){
+    return Promise.resolve()
+  }
   const { $t } = getIntl()
   const adRegexp = new RegExp('^([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])$')
   if (!adRegexp.test(ipAddress)) {
