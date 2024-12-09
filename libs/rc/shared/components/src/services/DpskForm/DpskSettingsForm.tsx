@@ -291,6 +291,7 @@ function CloudpathFormItems ({ editMode }: { editMode?: boolean }) {
               <>
                 <Space align='center'>
                   <Button
+                    id={'AddIdentityGroupButton'}
                     type='link'
                     style={{ marginLeft: '8px', top: '0.25rem' }}
                     onClick={async () => {
@@ -340,6 +341,7 @@ function CloudpathFormItems ({ editMode }: { editMode?: boolean }) {
               {
                 (hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) && <>
                   <Button
+                    id={'AddPolicySetButton'}
                     type='link'
                     style={{ marginLeft: '8px', top: '0.25rem' }}
                     onClick={async () => {
