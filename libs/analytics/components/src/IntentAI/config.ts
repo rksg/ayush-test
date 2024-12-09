@@ -8,7 +8,7 @@ import { DisplayStates, Statuses, StatusReasons } from './states'
 export type StatusTrailItem = { status: Statuses, statusReason?: StatusReasons, createdAt?: string }
 export type StatusTrail = Array<StatusTrailItem>
 
-export type Intent = {
+export type IntentConfig = {
   id: string
   code: string
   root: string
@@ -30,7 +30,7 @@ export type Intent = {
   trigger: string
 }
 
-export type IntentListItem = Intent & {
+export type IntentListItem = IntentConfig & {
   aiFeature: string
   intent: string
   scope: string

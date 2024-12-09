@@ -142,7 +142,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
 
           <DetailsSection data-testid='Status Trail'>
             <DetailsSection.Title children={$t({ defaultMessage: 'Status Trail' })} />
-            <StatusTrail />
+            <StatusTrail intent={intent}/>
           </DetailsSection>
         </GridCol>
       </GridRow>

@@ -14,8 +14,6 @@ import { BandEnum }    from '@acx-ui/components'
 import { intentAIApi } from '@acx-ui/store'
 import { getIntl }     from '@acx-ui/utils'
 
-import { useIntentParams } from '../../useIntentDetailsQuery'
-
 export const intentBandMapping = {
   'c-crrm-channel24g-auto': BandEnum._2_4_GHz,
   'c-crrm-channel5g-auto': BandEnum._5_GHz,
@@ -93,8 +91,7 @@ const { useIntentAIRRMGraphQuery } = intentAIApi.injectEndpoints({
   })
 })
 
-export function useIntentAICRRMQuery () {
-  const params = useIntentParams()
+export function useIntentAICRRMQuery (params: { code: string, root: string, sliceId: string }) {
   const band = intentBandMapping[params.code as keyof typeof intentBandMapping]
   const queryResult = useIntentAIRRMGraphQuery({ ...params, band }, {
     selectFromResult: result => {

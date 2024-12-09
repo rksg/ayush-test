@@ -2,14 +2,17 @@ import { Card, Tooltip }             from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { useIntentContext } from '../../IntentContext'
 import { getStatusTooltip } from '../../services'
+import { Intent }           from '../../useIntentDetailsQuery'
 import { getIntentStatus }  from '../getIntentStatus'
 
 import * as UI from './styledComponents'
 
-export const StatusTrail = () => {
-  const { intent } = useIntentContext()
+type StatusTrailProps = {
+  intent: Intent
+}
+
+export const StatusTrail = ({ intent }: StatusTrailProps) => {
   const isStatusTrailTooltipEnabled = useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE)
 
   const { sliceValue } = intent

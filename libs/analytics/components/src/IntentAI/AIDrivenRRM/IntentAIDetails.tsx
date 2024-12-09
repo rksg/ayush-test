@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 import { useState } from 'react'
 
-import { Typography }                               from 'antd'
-import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
+import { Typography }                      from 'antd'
+import { defineMessage, FormattedMessage } from 'react-intl'
 
 import { Card, GridCol, GridRow, Loader } from '@acx-ui/components'
 import { getIntl }                        from '@acx-ui/utils'
@@ -76,17 +76,25 @@ export function createIntentAIDetails () {
   const useValuesText = createUseValuesText()
 
   return function IntentAIDetails () {
-    const { $t } = useIntl()
-    const { intent, kpis, isDataRetained: hasData, state } = useIntentContext()
+    const { $t } = getIntl()
+    const { intent, kpis, isDataRetained: hasData, state, params } = useIntentContext()
+    const queryResult = useIntentAICRRMQuery(params)
+
     const valuesText = useValuesText()
 
     const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
     const [summaryUrlAfter, setSummaryUrlAfter] = useState<string>('')
 
-    const queryResult = useIntentAICRRMQuery()
     const crrmData = queryResult.data!
     const fields = useCommonFields(intent)
     const noData = state === 'no-data' || !hasData
+
+    // Wait for both queries to complete
+    if (queryResult.isLoading) {
+      return <Loader />
+    }
+
+    // console.log('intentAIDetails intent', intent)
 
     return <>
       <div hidden>
@@ -103,9 +111,7 @@ export function createIntentAIDetails () {
                 children={<FormattedMessage {...valuesText.summaryText} values={richTextFormatValues} />}/>
               <DescriptionSection fields={fields}/>
               <br />
-              {hasData && state !== 'no-data'
-                ? <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })} />
-                : null}
+              {!noData ? <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })} /> : null}
             </IntentDetailsSidebar>)}
           </FixedAutoSizer>
         </GridCol>
@@ -154,7 +160,7 @@ export function createIntentAIDetails () {
 
           <DetailsSection data-testid='Status Trail'>
             <DetailsSection.Title children={$t({ defaultMessage: 'Status Trail' })} />
-            <DetailsSection.Details children={<StatusTrail />} />
+            <DetailsSection.Details children={<StatusTrail intent={intent} />} />
           </DetailsSection>
         </GridCol>
       </GridRow>

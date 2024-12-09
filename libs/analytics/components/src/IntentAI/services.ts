@@ -20,7 +20,7 @@ import {
   aiFeaturesLabel,
   stateToGroupedStates,
   IntentListItem,
-  Intent,
+  IntentConfig,
   failureCodes
 } from './config'
 import { DisplayStates } from './states'
@@ -167,7 +167,7 @@ export const api = intentAIApi.injectEndpoints({
           filterBy: payload.filterBy
         }
       }),
-      transformResponse: (response: Response<Intent>) => {
+      transformResponse: (response: Response<IntentConfig>) => {
         const { $t } = getIntl()
         const items = response.intents.data.reduce((intents, intent) => {
           const {

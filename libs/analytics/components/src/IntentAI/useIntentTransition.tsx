@@ -14,7 +14,7 @@ import {
   aiFeaturesLabel,
   codes,
   stateToGroupedStates,
-  Intent
+  IntentConfig
 } from './config'
 import { Wlan }                                   from './EquiFlex/IntentAIForm/WlanSelection'
 import { useIntentContext }                       from './IntentContext'
@@ -39,9 +39,9 @@ export type FormValues <Preferences> = {
 }
 
 export type IntentTransitionPayload <Preferences = unknown> = {
-  id: Intent['id']
-  status: Intent['status']
-  statusReason?: Intent['statusReason']
+  id: IntentConfig['id']
+  status: IntentConfig['status']
+  statusReason?: IntentConfig['statusReason']
   metadata?: {
     scheduledAt?: string
     preferences?: Preferences
