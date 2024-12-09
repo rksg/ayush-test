@@ -135,7 +135,6 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
           ]}
           validateFirst
           hasFeedback
-          initialValue={''}
           children={<Input />}
         />
         <Form.Item
