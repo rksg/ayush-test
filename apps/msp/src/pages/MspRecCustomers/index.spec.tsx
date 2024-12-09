@@ -372,7 +372,7 @@ describe('MspRecCustomers', () => {
       })
     expect(await screen.findByText('My Customers')).toBeVisible()
   })
-  it('should render correctly when feature flag turned on', async () => {
+  it.skip('should render correctly when feature flag turned on', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })

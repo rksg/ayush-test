@@ -57,7 +57,11 @@ export function SwitchPortTable (props: {
   const [getSwitchesVlan] = useLazyGetSwitchVlanUnionByVenueQuery()
 
   const { authenticationProfiles } = useGetFlexAuthenticationProfilesQuery({
-    payload: {}
+    payload: {
+      pageSize: 10000,
+      sortField: 'profileName',
+      sortOrder: 'ASC'
+    }
   }, {
     skip: !isSwitchFlexAuthEnabled,
     selectFromResult: ( { data } ) => ({

@@ -183,25 +183,29 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
       <Row gutter={20}>
         <Col span={8}>
           <StepsForm.Title>{$t({ defaultMessage: 'RUCKUS Edge Settings' })}</StepsForm.Title>
-          <Form.Item
-            name='edgeClusterId'
-            label={$t({ defaultMessage: 'Cluster' })}
-            rules={[{
-              required: true,
-              message: $t({ defaultMessage: 'Please select Cluster' })
-            }]}
-            children={
-              <Select
-                loading={isClusterOptionsLoading}
-                disabled={props.editMode}
-                placeholder={$t({ defaultMessage: 'Select...' })}
-                onChange={onEdgeChange}
-                options={[
-                  ...(clusterOptions || [])
-                ]}
+          <Row>
+            <Col span={24}>
+              <Form.Item
+                name='edgeClusterId'
+                label={$t({ defaultMessage: 'Cluster' })}
+                rules={[{
+                  required: true,
+                  message: $t({ defaultMessage: 'Please select Cluster' })
+                }]}
+                children={
+                  <Select
+                    loading={isClusterOptionsLoading}
+                    disabled={props.editMode}
+                    placeholder={$t({ defaultMessage: 'Select...' })}
+                    onChange={onEdgeChange}
+                    options={[
+                      ...(clusterOptions || [])
+                    ]}
+                  />
+                }
               />
-            }
-          />
+            </Col>
+          </Row>
         </Col>
       </Row>
       <Row gutter={20}>

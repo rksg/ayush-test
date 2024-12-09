@@ -25,7 +25,8 @@ import {
   dummyEthernetPortProfileTrunk,
   mockEthernetPortProfileId6,
   dummyEthernetPortProfileAccess,
-  dummyRadiusServiceByEthernetList } from '../__tests__/fixtures'
+  dummyRadiusServiceByEthernetList,
+  dummyTableResultWithSingle } from '../__tests__/fixtures'
 
 import { EditEthernetPortProfile } from '.'
 
@@ -128,6 +129,11 @@ describe('EditEthernetPortProfile', () => {
           // console.log(req.body)
           return res(ctx.json(dummyRadiusServiceByEthernetList))
         }
+      ),
+
+      rest.post(
+        EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
+        (req, res, ctx) => res(ctx.json(dummyTableResultWithSingle))
       )
 
     )
@@ -177,7 +183,6 @@ describe('EditEthernetPortProfile', () => {
       , { route: { path: editViewPath, params } }
     )
 
-    // await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await user.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/policies/ethernetPortProfile/list`,
@@ -205,9 +210,10 @@ describe('EditEthernetPortProfile', () => {
     await user.click(authServerCombo)
     await user.click(await screen.findByText(mockAuthRadiusName2))
 
+    await user.click(screen.getByRole('switch', { name: 'Accounting Service' }))
     await user.click(screen.getByRole('button', { name: 'Apply' }))
 
-    await waitFor(() => expect(mockedDeleteRadiusId).toBeCalled())
     await waitFor(() => expect(mockedUpdateRadiusId).toBeCalled())
+    await waitFor(() => expect(mockedDeleteRadiusId).toBeCalled())
   })
 })

@@ -65,8 +65,7 @@ import {
   useConfigTemplatePageHeaderTitle,
   useConfigTemplateQueryFnSwitcher,
   NetworkTunnelSdLanAction,
-  NetworkTunnelSoftGreAction,
-  MacRegistrationPool
+  NetworkTunnelSoftGreAction
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -99,7 +98,7 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance           from './PortalInstance'
+import PortalInstance               from './PortalInstance'
 import {
   useNetworkVxLanTunnelProfileInfo,
   deriveRadiusFieldsFromServerData,
@@ -110,7 +109,8 @@ import {
   useAccessControlActivation,
   getDefaultMloOptions,
   useUpdateEdgeSdLanActivations,
-  useUpdateSoftGreActivations
+  useUpdateSoftGreActivations,
+  deriveWISPrFieldsFromServerData
 } from './utils'
 import { Venues } from './Venues/Venues'
 
@@ -337,6 +337,7 @@ export function NetworkForm (props:{
     if (!data) return
 
     let resolvedData = isUseWifiRbacApi ? data : deriveRadiusFieldsFromServerData(data)
+    resolvedData = deriveWISPrFieldsFromServerData(resolvedData)
 
     if (cloneMode) {
       formRef.current?.resetFields()
@@ -391,22 +392,22 @@ export function NetworkForm (props:{
   useEffect(() => {
     if (!macRegistrationPool?.data?.length) return
 
-    const fullNetworkSaveData = merge({}, saveState, {
+    const targetMacRegistrationListId = macRegistrationPool.data[0].id
+    const resolvedNetworkSaveData = {
       wlan: {
-        macRegistrationListId: (macRegistrationPool?.data as MacRegistrationPool[])[0].id || ''
+        macRegistrationListId: targetMacRegistrationListId
       }
-    })
+    }
 
-    form.setFieldValue('wlan.macRegistrationListId', (macRegistrationPool?.data as MacRegistrationPool[])[0].id || '')
+    form.setFieldValue('wlan.macRegistrationListId', targetMacRegistrationListId)
 
-    updateSaveData(fullNetworkSaveData)
+    updateSaveData(resolvedNetworkSaveData)
   }, [macRegistrationPool])
 
   useEffect(() => {
     if (!radiusServerConfigurations) return
 
-    const fullNetworkSaveData = merge({}, saveState, radiusServerConfigurations)
-    const resolvedNetworkSaveData = deriveRadiusFieldsFromServerData(fullNetworkSaveData)
+    const resolvedNetworkSaveData = deriveRadiusFieldsFromServerData(radiusServerConfigurations)
 
     form.setFieldsValue({
       ...resolvedNetworkSaveData

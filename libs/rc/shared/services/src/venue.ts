@@ -100,7 +100,9 @@ import {
   EthernetPortProfileUrls,
   EthernetPortProfileViewData,
   CompatibilityResponse,
-  IncompatibleFeatureLevelEnum
+  IncompatibleFeatureLevelEnum,
+  SoftGreUrls,
+  SoftGreViewData
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                                                          from '@acx-ui/store'
 import { ITimeZone, RequestPayload }                                                             from '@acx-ui/types'
@@ -689,6 +691,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
         let venueApgroupMap = new Map<string, NetworkApGroup[]>()
         let networkVenuesApGroupList = [] as NetworkVenue[]
 
+        const isTemplate = payloadData[0].isTemplate
+        const apGroupUrlInfo = isTemplate
+          ? ApGroupConfigTemplateUrlsInfo.getApGroupsListRbac
+          : WifiRbacUrlsInfo.getApGroupsList
+
         for (let venueId of venueIds) {
           // get apGroup list filter by venueId
           const apGroupPayload = {
@@ -700,9 +707,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           }
 
           const apGroupListInfo = {
-            ...createHttpRequest(payloadData[0].isTemplate
-              ? ApGroupConfigTemplateUrlsInfo.getApGroupsListRbac
-              : WifiRbacUrlsInfo.getApGroupsList, params),
+            ...createHttpRequest(apGroupUrlInfo, params),
             body: JSON.stringify(apGroupPayload)
           }
 
@@ -733,7 +738,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
 
         const paramsVenueId = payloadData[0].venueId
         const paramsNetworkId = payloadData[0].networkId
-        const paramsIsTemplate = payloadData[0].isTemplate
 
         const {
           error: apGroupNetworkListQueryError,
@@ -745,7 +749,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
             venueId: paramsVenueId
           },
           payload: {
-            isTemplate: paramsIsTemplate,
+            isTemplate: isTemplate,
             apGroupIds: venueApgroupMap.get(paramsVenueId)?.map(item => item.apGroupId),
             filters: { 'venueApGroups.apGroupIds': venueApgroupMap.get(paramsVenueId)?.map(item => item.apGroupId) }
           }
@@ -2147,6 +2151,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const venueLanPortSettings = venueLanPortsQuery.data as VenueLanPorts[]
         const venueId = arg.params?.venueId
 
+        // eslint-disable-next-line
+        const isEthernetPortProfileEnabled = (arg.payload as any)?.isEthernetPortProfileEnabled
+        // eslint-disable-next-line
+        const isEthernetSoftgreEnabled = (arg.payload as any)?.isEthernetSoftgreEnabled
+
         if(venueId) {
           const ethernetPortProfileReq = createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList)
           const ethernetPortProfileQuery = await fetchWithBQ(
@@ -2171,6 +2180,30 @@ export const venueApi = baseVenueApi.injectEndpoints({
               })
             }
           })
+          if(isEthernetPortProfileEnabled && isEthernetSoftgreEnabled) {
+            const softgreProfileReq = createHttpRequest(SoftGreUrls.getSoftGreViewDataList)
+            const softgreProfileQuery = await fetchWithBQ(
+              { ...softgreProfileReq,
+                body: JSON.stringify({
+                  filters: {
+                    venueIds: [venueId]
+                  }
+                })
+              }
+            )
+            const softgreProfiles = (softgreProfileQuery.data as TableResult<SoftGreViewData>).data
+            softgreProfiles.forEach((profile) => {
+              if (profile.venueActivations) {
+                profile.venueActivations.forEach((activity)=>{
+                  const targetLanPort = venueLanPortSettings.find(setting => setting.model === activity.apModel && venueId === activity.venueId)
+                    ?.lanPorts.find(lanPort => lanPort.portId?.toString() === activity.portId?.toString())
+                  if(targetLanPort) {
+                    targetLanPort.softGreProfileId = profile.id
+                  }
+                })
+              }
+            })
+          }
         }
         return { data: venueLanPortSettings }
       }

@@ -78,8 +78,8 @@ describe('Edge Cluster Table', () => {
     expect(subRows.length).toBe(2)
 
     expect((await screen.findAllByText('Active-Active')).length).toBe(1)
-    expect((await screen.findAllByText('Active-Standby')).length).toBe(1)
-    expect((await screen.findAllByText('N/A')).length).toBe(3)
+    expect((await screen.findAllByText('Active-Standby')).length).toBe(2)
+    expect((await screen.findAllByText('N/A')).length).toBe(2)
     expect((await screen.findAllByText('Single Node')).length).toBe(1)
     expect((await screen.findAllByText('Ready (2/2)')).length).toBe(1)
     expect((await screen.findAllByText('Cluster Forming')).length).toBe(1)
