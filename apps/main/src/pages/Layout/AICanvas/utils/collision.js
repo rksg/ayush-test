@@ -1,8 +1,8 @@
 /**
- * 碰撞检测
+ * Collision detection
  * @param {Object} a
  * @param {Object} b
- * @returns {Boolean} 是否碰撞
+ * @returns {Boolean} Whether to collide
  */
 export const collision = (a, b) => {
   if (
@@ -13,17 +13,17 @@ export const collision = (a, b) => {
   ) {
     return true
   }
-  if (a.gridx + a.width <= b.gridx) return false // a处于b的左方
-  if (a.gridx >= b.gridx + b.width) return false // a处于b的右方
-  if (a.gridy + a.height <= b.gridy) return false // a处于b的上方
-  if (a.gridy >= b.gridy + b.height) return false // a处于b的下方
+  if (a.gridx + a.width <= b.gridx) return false // a is to the left of b
+  if (a.gridx >= b.gridx + b.width) return false // a is to the right of b
+  if (a.gridy + a.height <= b.gridy) return false // a is above b
+  if (a.gridy >= b.gridy + b.height) return false // a is below b
   return true
 }
 /**
- * 获取layout中，item第一个碰撞到的物体
+ * Get the first object that item collides with in layout
  * @param {Array} layout
  * @param {Object} item
- * @returns {Object||null} 被碰撞的item或者null
+ * @returns {Object||null} The collided item or null
  */
 export const getFirstCollison = (layout, item) => {
   for (let i = 0, length = layout.length; i < length; i++) {
@@ -34,13 +34,13 @@ export const getFirstCollison = (layout, item) => {
   return null
 }
 /**
- * 布局检测，递归检测移动过的item和其他item有没有碰撞，如果有Y坐标下移/X坐标右移
+ * Layout detection, recursively detect whether the moved item collides with other items, and if the Y coordinate moves down/X coordinate moves right
  * @param {Array} layout
  * @param {Object} layoutItem
  * @param {String} cardID
  * @param {String} fristItemID
- * @param {String} compactType ('vertical' | 'horizontal') = 'vertical';
- * @returns {Object||null} 被碰撞的item或者null
+ * @param {String} compactType ('vertical' | 'horizontal') = 'horizontal'
+ * @returns {Object||null} The collided item or null
  */
 export const layoutCheck = (function () {
   const _layoutCheck = function (
@@ -57,14 +57,16 @@ export const layoutCheck = (function () {
     let newlayout = layout.map((item) => {
       if (item.id !== cardID) {
         if (collision(item, layoutItem)) {
-          // 碰撞检测，是否有方块和当前卡片有位置碰撞
+          // Collision detection, whether there is a position collision between a block and the current card
           keyArr.push(item.id)
           let offsetXY = item[axis] + 1
-          // 移动模块位于循环检测方块中
+          // Move crad inside loop detection block
           const widthOrHeight = axis === 'gridx' ? item.width : item.height
-          // 判断当前卡片的坐标和目标卡片加上宽度/高度是否有重叠，防止重叠产生
-          // 在vertical情况下，是判断类似拖拽(0,1)宽1高1的方块与(0,0)宽1高2的纵向长方形，此时的交叠，纵向长方形保持不动，
-          // 在horizontal情况下，是判断类似拖拽(1,0)宽1高1的方块与(0,0)宽2高1的横向长方形，此时的交叠，横向长方形保持不动，
+          // Determine whether the coordinates of the current card and the target card plus width/height overlap to prevent overlap.
+          // In the vertical case, the judgment is similar to dragging a square with width 1 and height 1 at (0,1) and a vertical rectangle with width 1 and height 2 at (0,0). 
+          //   At this time, the overlap will keep the vertical rectangle unchanged.
+          // In the horizontal case, the judgment is similar to dragging a square with a width of 1 and a height of 1 and a horizontal rectangle of (0,0) with a width of 2 and a height of 1.
+          //   At this time, the overlap will keep the horizontal rectangle unchanged.
           if (
             layoutItem[axis] > item[axis] &&
             layoutItem[axis] < item[axis] + widthOrHeight
@@ -81,7 +83,7 @@ export const layoutCheck = (function () {
       }
       return item
     })
-    // 循环所有移动过的卡片，通过碰撞检测影响的相关卡片，全部进行横坐标/纵坐标偏移
+    // Loop through all moved cards, and all related cards affected by collision detection are offset in abscissa/ordinate
     for (let c = 0, length = movedItem.length; c < length; c++) {
       newlayout = _layoutCheck(
         newlayout,

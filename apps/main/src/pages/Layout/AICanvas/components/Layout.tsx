@@ -60,18 +60,18 @@ export default function Layout (props) {
   }, [handleLoad])
 
   /*
-   * 关于卡片在组内的操作
+   * About the operations of cards within a group.
    */
   /**
-   * 拖拽中卡片在组上移动
-   * @param {Object} hoverItem 拖拽中鼠标悬浮的对象
-   * @param {Number} x 当前元素所在的网页的x轴位置，单位为px
-   * @param {Number} y 当前元素所在的网页的y轴位置，单位为px
+   * A card moves within a group during a drag operation.
+   * @param {Object} hoverItem The object that the mouse is hovering over during the drag operation.
+   * @param {Number} x The x-coordinate of the current element on the canvas, in pixels.
+   * @param {Number} y The y-coordinate of the current element on the canvas, in pixels.
    **/
   const moveCardInGroupItem = (hoverItem, x, y) => {
     let groupsTmp = _.cloneDeep(groups)
     const { margin, containerWidth, col, rowHeight } = layout
-    //计算当前所在的网格坐标
+    // Calculate the current grid coordinates
     const { gridX, gridY } = utils.calGridXY(
       x,
       y,
@@ -86,7 +86,7 @@ export default function Layout (props) {
     }
     let groupIndex = hoverItem.index
 
-    //删除阴影的卡片
+    // Delete the shadowed card
     _.forEach(groupsTmp, (g) => {
       _.remove(g.cards, (a) => {
         return a.isShadow === true
@@ -94,9 +94,9 @@ export default function Layout (props) {
     })
 
     const shadowCardTmp = { ...shadowCard, gridx: gridX, gridy: gridY }
-    //添加阴影的卡片
+    // Add the shadowed card
     groupsTmp[groupIndex].cards.push(shadowCard)
-    //获得当前分组内最新的layout布局
+    // Get the latest layout within the current group
     const newlayout = layoutCheck(
       groupsTmp[groupIndex].cards,
       shadowCardTmp,
@@ -104,7 +104,7 @@ export default function Layout (props) {
       shadowCardTmp.id,
       props.compactType
     )
-    //压缩当前分组内的layout布局
+    // Compress the layout within the current group.
     let compactedLayout
     if (props.compactType === 'horizontal') {
       compactedLayout = compactLayoutHorizontal(
@@ -115,23 +115,22 @@ export default function Layout (props) {
     } else if (props.compactType === 'vertical') {
       compactedLayout = compactLayout(newlayout, shadowCardTmp)
     }
-    //更新group对象
+    // Update the group object
     groupsTmp[groupIndex].cards = compactedLayout
     setShadowCard(shadowCardTmp)
     setGroups(groupsTmp)
   }
 
   /**
-   * 释放卡片到分组
-   * @param {Object} dragItem 拖拽的卡片对象
-   * @param {Object} dropItem 释放的目标组对象
+   * Release the card into the group.
    **/
   const onCardDropInGroupItem = () => {
     const groupsTmp = _.cloneDeep(groups)
     const { compactType } = props
-    //将所有分组内的阴影卡片设为非阴影
+    // Remove shadows from all cards within all groups.
     utils.setPropertyValueForCards(groupsTmp, 'isShadow', false)
-    //目标组内重新横向压缩布局，由于跨组，故须全部压缩
+    // Recompress the layout horizontally within the target group, and due to cross-group dependencies, 
+    // all groups must be compressed.
     _.forEach(groupsTmp, (g, i) => {
       if (compactType === 'horizontal') {
         let compactedLayout = compactLayoutHorizontal(

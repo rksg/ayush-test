@@ -1,9 +1,9 @@
 import { getFirstCollison } from './collision'
 import { layoutBottom }     from './utils'
 /**
- * 布局的item排序，按照gridx由小到大，gridy由小到大
- * @param {Array} layout 布局的数组
- * @returns {Array} 新的排序后的layout
+ * The layout items are sorted according to gridx from small to large and gridy from small to large.
+ * @param {Array} layout array of layouts
+ * @returns {Array} New sorted layout
  */
 const sortLayout = (layout) => {
   return [].concat(layout).sort((a, b) => {
@@ -16,10 +16,10 @@ const sortLayout = (layout) => {
   })
 }
 /**
- * 压缩单个元素，使得每一个元素都会紧挨着边界或者相邻的元素
- * @param {Array} finishedLayout 压缩完的元素会放进这里来，用来对比之后的每一个元素是否需要压缩
+ * Compress individual elements so that each element is next to a border or adjacent element
+ * @param {Array} finishedLayout The compressed elements will be put here to compare whether each subsequent element needs to be compressed.
  * @param {Object} item
- * @returns {Object} item 返回新的坐标位置的item
+ * @returns {Object} item returns the new coordinate position of the item
  */
 const compactItem = (finishedLayout, item) => {
   const newItem = { ...item }
@@ -34,14 +34,14 @@ const compactItem = (finishedLayout, item) => {
       return newItem
     }
     newItem.gridy--
-    if (newItem.gridy < 0) return { ...newItem, gridy: 0 } // 碰到边界，gridy设为0
+    if (newItem.gridy < 0) return { ...newItem, gridy: 0 } // When the boundary is reached, gridy is set to 0
   }
 }
 /**
- * 纵向压缩vertical，使得每一个元素都会紧挨着边界或者相邻的元素
+ * Compress vertically so that each element is next to the border or adjacent element
  * @param {Array} layout
  * @param {Object} movingItem
- * @returns {Array} layout 最新layout布局
+ * @returns {Array} layout latest layout layout
  */
 export const compactLayout = function (layout) {
   const sorted = sortLayout(layout)
@@ -56,11 +56,11 @@ export const compactLayout = function (layout) {
   return needCompact
 }
 /**
- * 获取空闲卡片放置区域
+ * Get free card placement area
  * @param {Array} finishedLayout
  * @param {Object} item
  * @param {Int} cols
- * @returns {Object} 卡片放置位置
+ * @returns {Object} card placement
  */
 const getSpaceArea = (finishedLayout, item, cols) => {
   const newItem = { ...item }
@@ -82,15 +82,14 @@ const getSpaceArea = (finishedLayout, item, cols) => {
 }
 
 /**
- * horizontal compact Layout Version2.1
- * 横向压缩 2.1版本
- * 先将卡片按照x和y排序，
- * 放置一个卡片，从0，0开始检测是否碰撞或超过边界，如果碰撞，则grix=0，y+1，再次检测是否碰撞
- * 需优化的地方：如果移动中的卡片坐标应该一直在一个区域范围内，而不应该任意位置拖拽
+ * horizontal compact layout
+ * First sort the cards according to x and y,
+ * Place a card and start from 0, 0 to detect whether it collides or exceeds the boundary. If it collides, then grid=0, y+1, and detects whether it collides again.
+ * Optimization: If the coordinates of the moving card should always be within an area, it should not be dragged anywhere.
  * @param {Array} layout
  * @param {Int} cols
- * @param {Object} movingCardID 移动中的元素id
- * @returns {Array} 最新layout布局
+ * @param {Object} movingCardID 
+ * @returns {Array} latest layout
  */
 export const compactLayoutHorizontal = function (layout, cols, movingCardID) {
   const sorted = sortLayout(layout)
@@ -98,7 +97,7 @@ export const compactLayoutHorizontal = function (layout, cols, movingCardID) {
   const needCompact = Array(layout.length)
   const arr = []
   let moveCard
-  // 进行坐标重置，移动中的卡片除外
+  // Perform coordinate reset, except for moving cards
   for (let i = 0; i < sorted.length; i++) {
     if (movingCardID === sorted[i].id) {
       moveCard = sorted[i]
@@ -106,18 +105,18 @@ export const compactLayoutHorizontal = function (layout, cols, movingCardID) {
     }
     arr.push(sorted[i])
   }
-  // 获得当前组内的最大的y值，并赋值给移动卡片，防止分组Y值无限变大
+  // Obtain the maximum y value in the current group and assign it to the mobile card to prevent the group Y value from becoming infinitely large
   if (moveCard) {
     moveCard.gridy = Math.min(layoutBottom(arr), moveCard.gridy)
   }
-  // 将非移动的卡片进行坐标重置
+  // Reset the coordinates of non-moving cards
   for (let i = 0; i < sorted.length; i++) {
     if (movingCardID !== sorted[i].id) {
       sorted[i].gridy = 0
       sorted[i].gridx = 0
     }
   }
-  // 进行重新放置，移动中卡片除外
+  // Replace, except moving cards
   for (let i = 0, length = sorted.length; i < length; i++) {
     const finished = getSpaceArea(compareList, sorted[i], cols)
     compareList.push(finished)
@@ -126,29 +125,3 @@ export const compactLayoutHorizontal = function (layout, cols, movingCardID) {
   return needCompact
 }
 
-/**
- * horizontal compact Layout Version2.0
- * 横向压缩 2.0版本
- * 先将卡片按照x和y排序，
- * 放置一个卡片，从0，0开始检测是否碰撞或超过边界，如果碰撞，则grix=0，y+1，再次检测是否碰撞
- * @param {Array} layout
- * @param {Int} cols
- * @returns {layout} 最新layout布局
- */
-// export const compactLayoutHorizontal = function(layout, cols) {
-// 	let sorted = sortLayout(layout);
-// 	const compareList = [];
-// 	const needCompact = Array(layout.length);
-
-// 	for (let i = 0; i < sorted.length; i++) {
-// 		sorted[i].gridy = 0;
-// 		sorted[i].gridx = 0;
-// 	}
-// 	let rowCount = 0;
-// 	for (let i = 0, length = sorted.length; i < length; i++) {
-// 		let finished = getSpaceArea(compareList, sorted[i], cols);
-// 		compareList.push(finished);
-// 		needCompact[i] = finished;
-// 	}
-// 	return needCompact;
-// };

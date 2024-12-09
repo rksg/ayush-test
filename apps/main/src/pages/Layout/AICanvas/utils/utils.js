@@ -1,6 +1,6 @@
 import _ from 'lodash'
 /**
- * 以组为单位，设置卡片属性值
+ * Sets a specified property for all cards within a given set of groups.
  * @param {Array} groups
  * @param {String} property
  * @param {*} value
@@ -14,12 +14,12 @@ export const setPropertyValueForCards = (groups, property, value) => {
 }
 
 /**
- * 已知放置格子数量, 计算容器的每一个格子多大
+ * Calculate the width of each column.
  * @param {Number} containerWidth
  * @param {Number} col
  * @param {Number} containerPadding
  * @param {Number} margin
- * @returns {Number} 单元格大小
+ * @returns {Number} column width
  */
 export const calColWidth = (containerWidth, col, containerPadding, margin) => {
   // return 380;
@@ -32,12 +32,12 @@ export const calColWidth = (containerWidth, col, containerPadding, margin) => {
 }
 
 /**
- * 已知格子大小，计算容器一行放置格子数量
+ * Calculate the number of columns that can fit in a container.
  * @param {Number} defaultCalWidth
  * @param {Number} containerWidth
  * @param {Number} containerPadding
  * @param {Number} margin
- * @returns {Number} 每行单元格数量
+ * @returns {Number} column number
  */
 export const calColCount = (
   defaultCalWidth,
@@ -46,7 +46,7 @@ export const calColCount = (
   margin
 ) => {
   if (margin) {
-    return 4
+    return 4 // Fixed by design
     const colByWindowsWidth = Math.floor(
       (containerWidth - containerPadding[0] * 2 - margin[0]) /
         (defaultCalWidth + margin[0])
@@ -56,9 +56,9 @@ export const calColCount = (
 }
 
 /**
- * 获得当前layout中最底单元格的Y坐标
+ * Calculate the bottom-most y-coordinate
  * @param {Array} layout
- * @returns {Number} 最底单元格Y坐标
+ * @returns {Number} the bottom-most y-coordinate
  */
 export const layoutBottom = (layout) => {
   let max = 0
@@ -71,9 +71,9 @@ export const layoutBottom = (layout) => {
 }
 
 /**
- * 计算横向的长度
+ * Calculate the bottom-most x-coordinate
  * @param {Array} layout
- * @returns {Number} 最大长度
+ * @returns {Number} the maximum x-coordinate
  */
 export const layoutHorizontalRowLength = (layout) => {
   let max = 0
@@ -85,11 +85,11 @@ export const layoutHorizontalRowLength = (layout) => {
   return max
 }
 /**
- * 计算卡片容器的最大高度
+ * Calculates the maximum height of a container based on the layout of its cards.
  * @param {Array} cards
  * @param {Number} rowHeight
  * @param {Number} margin
- * @returns {Number} 容器高度
+ * @returns {Number} the maximum height of a container
  */
 export const getContainerMaxHeight = (cards, rowHeight, margin) => {
   const resultRow = layoutBottom(cards)
@@ -97,13 +97,13 @@ export const getContainerMaxHeight = (cards, rowHeight, margin) => {
 }
 
 /**
- * 给予一个grid的位置，算出元素具体的在容器中位置在哪里，单位是px
+ * Calculates the pixel position of a grid item based on its grid coordinates, in pixels.
  * @param {Number} gridx
  * @param {Number} gridy
  * @param {Number} margin
  * @param {Number} rowHeight
  * @param {Number} calWidth
- * @returns {Object} 包含x，y坐标的对象
+ * @returns {Object} containing x,y coordinates
  */
 export const calGridItemPosition = (
   gridx,
@@ -120,21 +120,21 @@ export const calGridItemPosition = (
   }
 }
 /**
- * 防止元素溢出容器
+ * Prevent elements from overflowing the container
  * @param {Int} gridX
  * @param {Int} gridY
  * @param {Int} col
- * @param {Int} w 卡片宽度
- * @returns {Object} gridX，gridY的单元格坐标对象
+ * @param {Int} w card width
+ * @returns {Object} card gridX, gridY coordinate object
  */
 export const checkInContainer = (gridX, gridY, col, w) => {
-  if (gridX + w > col - 1) gridX = col - w // 右边界
-  if (gridX < 0) gridX = 0 // 左边界
-  if (gridY < 0) gridY = 0 // 上边界
+  if (gridX + w > col - 1) gridX = col - w // right boundary
+  if (gridX < 0) gridX = 0 // left boundary
+  if (gridY < 0) gridY = 0 // upper boundary
   return { gridX, gridY }
 }
 /**
- * 通过坐标x，y像素值计算所在的单元格坐标
+ * Calculate the card coordinates based on the coordinates x and y pixel values
  * @param {Number} x
  * @param {Number} y
  * @param {Number} cardWidth
@@ -142,7 +142,7 @@ export const checkInContainer = (gridX, gridY, col, w) => {
  * @param {Number} containerWidth
  * @param {Number} col
  * @param {Number} rowHeight
- * @returns {Object} 包含gridx和gridy的单元格坐标的对象
+ * @returns {Object} card gridX, gridY coordinate object
  */
 export const calGridXY = (
   x,
@@ -153,21 +153,21 @@ export const calGridXY = (
   col,
   rowHeight
 ) => {
-  // 坐标转换成格子的时候，向下取整，无须计算margin
+  // When the coordinates are converted into a grid, they are rounded down and there is no need to calculate margin.
   const gridX = Math.floor((x / containerWidth) * col)
   const gridY = Math.floor(y / (rowHeight + (margin ? margin[1] : 0)))
-  // 防止卡片溢出容器
+  // Prevent card from overflowing the container
   return checkInContainer(gridX, gridY, col, cardWidth)
 }
 
 /**
- * 宽和高计算成为px
+ * Width and height are calculated as px
  * @param {Number} w
  * @param {Number} h
  * @param {Number} margin
  * @param {Number} rowHeight
  * @param {Number} cardWidth
- * @returns {Object} 包含wPx, hPx的对象
+ * @returns {Object} containing wPx, hPx
  */
 export const calWHtoPx = (w, h, margin, rowHeight, calWidth) => {
   const wPx = Math.round(w * calWidth + (w - 1) * margin[0])
@@ -175,4 +175,3 @@ export const calWHtoPx = (w, h, margin, rowHeight, calWidth) => {
   return { wPx, hPx }
 }
 
-export const noop = () => {}

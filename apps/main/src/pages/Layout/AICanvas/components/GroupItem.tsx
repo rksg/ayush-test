@@ -56,7 +56,7 @@ export default function GroupItem (props) {
           props.updateShadowCard(dragItem)
           return
         }
-        //卡片到组
+        // Dragging card to group
         const hoverItem = props
         const { x, y } = monitor.getClientOffset()
         const containerDom = document.getElementById('group' + hoverItem.id)

@@ -238,7 +238,6 @@ export function Layout ({
     }
   }, [window.innerWidth])
 
-
   const Content = location.pathname.includes('dataStudio') ? UI.IframeContent : UI.Content
 
   return <UI.Wrapper showScreen={display || subOptimalDisplay}
