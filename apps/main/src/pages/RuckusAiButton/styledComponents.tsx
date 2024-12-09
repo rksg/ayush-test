@@ -222,7 +222,7 @@ export const CongrateTitle = styled.div`
   font-weight: var(--acx-headline-2-font-weight-bold);
 `
 
-export const CongratSubtitle = styled.span`
+export const CongratSubtitle = styled.div`
   margin-top: 15px;
   color: var(--acx-primary-black);
   font-family: var(--acx-neutral-brand-font);

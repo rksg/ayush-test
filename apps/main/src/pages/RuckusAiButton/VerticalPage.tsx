@@ -24,7 +24,7 @@ function VerticalPage (props: {
   return <div
     style={{
       height: '100%',
-      maxHeight: 'calc(100vh - 300px)',
+      maxHeight: 'calc(100vh - 320px)',
       minHeight: '200px'
     }}>
     <div style={{

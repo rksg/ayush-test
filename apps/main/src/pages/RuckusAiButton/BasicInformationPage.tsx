@@ -31,7 +31,7 @@ function BasicInformationPage () {
     <div style={{
       marginLeft: '85px',
       height: '100%',
-      maxHeight: 'calc(100vh - 300px)',
+      maxHeight: 'calc(100vh - 320px)',
       minHeight: '200px'
     }}>
       <UI.PageTitle>
