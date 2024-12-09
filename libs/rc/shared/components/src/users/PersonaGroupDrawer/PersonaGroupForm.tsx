@@ -50,21 +50,25 @@ export function PersonaGroupForm (props: {
   const onMacModalClose = () => setMacModalVisible(false)
   const onDpskModalClose = () => setDpskModalVisible(false)
   const isPolicySetSupported = useIsSplitOn(Features.POLICY_IDENTITY_TOGGLE)
-  const isDpskServiceRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
+  const isDpskRequiredGroupEnabled = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
+  const isMacRequiredGroupEnabled
+    = useIsSplitOn(Features.MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE)
+  let hasServices = isPolicySetSupported
+    || !(isMacRequiredGroupEnabled && isDpskRequiredGroupEnabled)
 
   const dpskPoolList = useGetEnhancedDpskListQuery({
     payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
-  })
+  }, { skip: isDpskRequiredGroupEnabled })
 
   const { data: macRegistrationPoolList } = useSearchMacRegListsQuery({
     payload: macRegSearchDefaultPayload
-  })
+  }, { skip: isMacRequiredGroupEnabled })
 
   const [searchPersonaGroupList] = useLazySearchPersonaGroupListQuery()
 
   const { data: policySetsData } = useAdaptivePolicySetListQuery({
     payload: { page: 1, pageSize: '2147483647' }
-  })
+  }, { skip: !isPolicySetSupported })
 
   const nameValidator = async (name: string) => {
     try {
@@ -121,12 +125,13 @@ export function PersonaGroupForm (props: {
             />
           </Col>
         </Row>
-        <Row align={'middle'} gutter={8}>
-          <Col span={24}>
-            <Subtitle level={4}>{$t({ defaultMessage: 'Services' })}</Subtitle>
-          </Col>
-          {
-            !isDpskServiceRequired && <>
+
+        {hasServices &&
+          <Row align={'middle'} gutter={8}>
+            <Col span={24}>
+              <Subtitle level={4}>{$t({ defaultMessage: 'Services' })}</Subtitle>
+            </Col>
+            {!isDpskRequiredGroupEnabled && <>
               <Col span={21}>
                 <Form.Item label={'DPSK Service'} required={!!requiredDpsk}>
                   <Form.Item
@@ -141,8 +146,7 @@ export function PersonaGroupForm (props: {
                         }
                         options={
                           dpskPoolList?.data?.data
-                            // eslint-disable-next-line max-len
-                            .filter(pool => !pool.identityId || pool.id === defaultValue?.dpskPoolId)
+                            .filter(p => !p.identityId || p.id === defaultValue?.dpskPoolId)
                             .map(pool => ({ value: pool.id, label: pool.name }))
                         }
                       />
@@ -158,41 +162,43 @@ export function PersonaGroupForm (props: {
               </Col>
               <Col span={2}>
                 {!defaultValue?.dpskPoolId && hasDpskAccess() &&
-                  <Button
-                    data-testid='addDpskButton'
-                    type={'link'}
-                    onClick={() => setDpskModalVisible(true)}
-                  >
-                    {$t({ defaultMessage: 'Add' })}
-                  </Button>
+              <Button
+                data-testid='addDpskButton'
+                type={'link'}
+                onClick={() => setDpskModalVisible(true)}
+              >
+                {$t({ defaultMessage: 'Add' })}
+              </Button>
                 }
               </Col>
             </>
-          }
-          <Col span={21}>
-            <Form.Item
-              name='macRegistrationPoolId'
-              valuePropName='value'
-              label={$t({ defaultMessage: 'MAC Registration List' })}
-              children={
-                <Select
-                  allowClear
-                  disabled={!!defaultValue?.macRegistrationPoolId}
-                  placeholder={$t({ defaultMessage: 'Select...' })}
-                  showSearch
-                  filterOption={(input, option) =>
-                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                  }
-                  options={
-                    macRegistrationPoolList?.data
-                      ?.map(pool => ({ value: pool.id, label: pool.name }))
+            }
+
+            {!isMacRequiredGroupEnabled && <>
+              <Col span={21}>
+                <Form.Item
+                  name='macRegistrationPoolId'
+                  valuePropName='value'
+                  label={$t({ defaultMessage: 'MAC Registration List' })}
+                  children={
+                    <Select
+                      allowClear
+                      disabled={!!defaultValue?.macRegistrationPoolId}
+                      placeholder={$t({ defaultMessage: 'Select...' })}
+                      showSearch
+                      filterOption={(input, option) =>
+                        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                      }
+                      options={
+                        macRegistrationPoolList?.data
+                          ?.map(pool => ({ value: pool.id, label: pool.name }))
+                      }
+                    />
                   }
                 />
-              }
-            />
-          </Col>
-          <Col span={2}>
-            {!defaultValue?.macRegistrationPoolId &&
+              </Col>
+              <Col span={2}>
+                {!defaultValue?.macRegistrationPoolId &&
               <Button
                 data-testid='addMacPoolButton'
                 type={'link'}
@@ -200,40 +206,45 @@ export function PersonaGroupForm (props: {
               >
                 {$t({ defaultMessage: 'Add' })}
               </Button>
-            }
-          </Col>
-          {
-            isPolicySetSupported && <>
-              <Col span={21}>
-                <Form.Item name='policySetId'
-                  label={$t({ defaultMessage: 'Adaptive Policy Set' })}
-                  rules={[
-                    { message: $t({ defaultMessage: 'Please select Adaptive Policy Set' }) }
-                  ]}
-                  children={
-                    <Select
-                      allowClear
-                      placeholder={$t({ defaultMessage: 'Select ...' })}
-                      options={
-                        policySetsData?.data.map(set => ({ value: set.id, label: set.name }))}
-                    />
-                  }
-                />
+                }
               </Col>
-              {
-                hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
-                <Col span={2}>
-                  <Button
-                    type={'link'}
-                    onClick={() => setPolicyModalVisible(true)}
-                  >
-                    {$t({ defaultMessage: 'Add' })}
-                  </Button>
-                </Col>
-              }
             </>
-          }
-        </Row>
+            }
+
+            {
+              isPolicySetSupported && <>
+                <Col span={21}>
+                  <Form.Item name='policySetId'
+                    label={$t({ defaultMessage: 'Adaptive Policy Set' })}
+                    rules={[
+                      { message: $t({ defaultMessage: 'Please select Adaptive Policy Set' }) }
+                    ]}
+                    children={
+                      <Select
+                        allowClear
+                        placeholder={$t({ defaultMessage: 'Select ...' })}
+                        options={
+                          policySetsData?.data.map(set => ({ value: set.id, label: set.name }))}
+                      />
+                    }
+                  />
+                </Col>
+                {
+                  hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+                  <Col span={2}>
+                    <Button
+                      type={'link'}
+                      onClick={() => setPolicyModalVisible(true)}
+                    >
+                      {$t({ defaultMessage: 'Add' })}
+                    </Button>
+                  </Col>
+                }
+              </>
+            }
+          </Row>
+        }
+
       </Space>
 
       <Modal
