@@ -417,7 +417,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                       </Col>
                       { fields.map((field, index) => (
                         <Form.Item key={field.key} noStyle>
-                          <ApGroupItem key={field.key} name={field.name} apgroup={formInitData.apgroups[index]} />
+                          <ApGroupItem key={field.key} name={field.name} apgroup={form.getFieldValue('apgroups')[index]} />
                         </Form.Item>
                       ))}
                     </Row>}
