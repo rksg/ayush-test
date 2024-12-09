@@ -27,7 +27,7 @@ function WelcomePage () {
     }}
   >
     <div style={{
-      height: '110%'
+      height: '110px'
     }} >
       <WelcomeLogo style={{
         width: '110px', height: '110px'
