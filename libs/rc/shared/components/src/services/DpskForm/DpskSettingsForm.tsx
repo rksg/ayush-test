@@ -1,3 +1,5 @@
+import React, { useState } from 'react'
+
 import {
   Form,
   Input,
@@ -25,7 +27,7 @@ import {
   useLazyGetDpskListQuery,
   useLazyGetEnhancedDpskTemplateListQuery,
   useSearchPersonaGroupListQuery
-} from '@acx-ui/rc/services';
+} from '@acx-ui/rc/services'
 import {
   PassphraseFormatEnum,
   transformDpskNetwork,
@@ -44,15 +46,14 @@ import {
   useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { RolesEnum } from '@acx-ui/types'
-import { hasRoles } from '@acx-ui/user'
-import { getIntl } from '@acx-ui/utils'
+import { hasRoles }  from '@acx-ui/user'
+import { getIntl }   from '@acx-ui/utils'
 
+import { AdaptivePolicySetForm }  from '../../AdaptivePolicySetForm'
 import { ExpirationDateSelector } from '../../ExpirationDateSelector'
+import { IdentityGroupForm }      from '../../users/IdentityGroupForm'
 
 import { FieldSpace } from './styledComponents'
-import { AdaptivePolicySetForm } from '@acx-ui/rc/components'
-import React, { useState } from 'react'
-import { IdentityGroupForm } from '../../users/IdentityGroupForm'
 
 interface DpskSettingsFormProps {
   modalMode?: boolean,
@@ -168,7 +169,7 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
   </>)
 }
 
-function CloudpathFormItems({ editMode }: { editMode?: boolean }) {
+function CloudpathFormItems ({ editMode }: { editMode?: boolean }) {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
   const deviceNumberType = Form.useWatch('deviceNumberType', form)
@@ -199,7 +200,7 @@ function CloudpathFormItems({ editMode }: { editMode?: boolean }) {
     }
   }, {
     skip: !isIdentityGroupRequired,
-    selectFromResult({ data }) {
+    selectFromResult ({ data }) {
       return {
         // return empty list if data?.data is undefined
         identityGroupList: data?.data.filter(group => editMode || !group.dpskPoolId).map(group => ({ value: group.id, label: group.name }))

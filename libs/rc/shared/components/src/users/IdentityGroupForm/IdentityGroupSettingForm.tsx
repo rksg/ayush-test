@@ -14,7 +14,7 @@ import { checkObjectNotExists, trailingNorLeadingSpaces } from '@acx-ui/rc/utils
 import { RolesEnum }                                      from '@acx-ui/types'
 import { hasRoles }                                       from '@acx-ui/user'
 
-import { AdaptivePolicySetForm } from '@acx-ui/rc/components'
+import { AdaptivePolicySetForm } from '../../AdaptivePolicySetForm'
 
 export function IdentityGroupSettingForm () {
   const { $t } = useIntl()
