@@ -15,8 +15,6 @@ import {
 } from '@acx-ui/rc/services'
 import { validateVlanExcludingReserved, Vlan } from '@acx-ui/rc/utils'
 
-import { willRegenerateAlert } from '../../ruckusAi.utils'
-
 import { checkHasRegenerated } from './steps.utils'
 import * as UI                 from './styledComponents'
 
@@ -268,8 +266,6 @@ export function VlanStep (props: {
           </Button>
         </UI.HeaderWithAddButton>
       </UI.Header>
-
-      {props.showAlert && willRegenerateAlert($t)}
 
       <UI.HighlightedBox>
         <UI.HighlightedTitle>
