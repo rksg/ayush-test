@@ -9,14 +9,15 @@ import {
   useAdaptivePolicySetListByQueryQuery, useGetPersonaGroupByIdQuery,
   useLazySearchMacRegListsQuery, useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { checkObjectNotExists, Persona, PersonaGroup, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
-import { useParams }                                                             from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                             from '@acx-ui/types'
-import { hasRoles }                                                              from '@acx-ui/user'
+import { checkObjectNotExists, Persona, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
+import { useParams }                                               from '@acx-ui/react-router-dom'
+import { RolesEnum }                                               from '@acx-ui/types'
+import { hasRoles }                                                from '@acx-ui/user'
 
-import { AdaptivePolicySetForm }             from '../../AdaptivePolicySetForm'
-import { ExpirationDateSelector }            from '../../ExpirationDateSelector'
-import { PersonaDrawer, PersonaGroupDrawer } from '../../users'
+import { AdaptivePolicySetForm }  from '../../AdaptivePolicySetForm'
+import { ExpirationDateSelector } from '../../ExpirationDateSelector'
+import { PersonaDrawer }          from '../../users'
+import { IdentityGroupForm }      from '../../users/IdentityGroupForm'
 
 export function MacRegistrationListSettingForm ({ editMode = false }) {
   const { $t } = useIntl()
@@ -36,15 +37,12 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
   const { data: identityGroupList } = useSearchPersonaGroupListQuery({
     payload: { page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC' } })
 
-  const [identityGroupDrawerState, setIdentityGroupDrawerState] = useState({
-    visible: false,
-    data: {} as PersonaGroup | undefined
-  })
-
   const [identityDrawerState, setIdentityDrawerState] = useState({
     visible: false,
     data: {} as Persona | undefined
   })
+
+  const [identityGroupModelVisible, setIdentityGroupModelVisible] = useState(false)
 
   const { data: personaGroupData } = useGetPersonaGroupByIdQuery(
     // eslint-disable-next-line max-len
@@ -138,22 +136,29 @@ export function MacRegistrationListSettingForm ({ editMode = false }) {
               <Button
                 type='link'
                 onClick={async () => {
-                  setIdentityGroupDrawerState({ visible: true, data: undefined })
+                  setIdentityGroupModelVisible(true)
+                  // setIdentityGroupDrawerState({ visible: true, data: undefined })
                 }}
               >
                 {$t({ defaultMessage: 'Add' })}
               </Button>
             </Space >
-            <PersonaGroupDrawer
-              data={identityGroupDrawerState.data}
-              isEdit={false}
-              visible={identityGroupDrawerState.visible}
-              onClose={(result) => {
-                if (result) {
-                  form.setFieldValue('identityGroupId', result?.id)
-                }
-                setIdentityGroupDrawerState({ visible: false, data: undefined })
-              }} />
+            <Modal
+              title={$t({ defaultMessage: 'Add Identity Group' })}
+              visible={identityGroupModelVisible}
+              type={ModalType.ModalStepsForm}
+              children={<IdentityGroupForm
+                callback={(identityGroupId?: string) => {
+                  if (identityGroupId) {
+                    form.setFieldValue('identityGroupId', identityGroupId)
+                  }
+                  setIdentityGroupModelVisible(false)
+                }}
+              />}
+              onCancel={() => setIdentityGroupModelVisible(false)}
+              width={1200}
+              destroyOnClose={true}
+            />
           </>
             }
           </GridRow>
