@@ -164,12 +164,12 @@ export const mockedNetworkList = {
   ]
 }
 
-export const mockCertificateTemplates:NewTableResult<CertificateTemplate> = {
-  pageable: defaultPageable,
-  sort: defaultPageable.sort,
+export const mockCertificateTemplates = {
+  fields: null,
+  totalCount: 2,
   totalPages: 1,
-  totalElements: 2,
-  content: [
+  page: 1,
+  data: [
     {
       id: 'cert-template-id-for-testing',
       description: 'cert-template-id-for-testing',

@@ -48,7 +48,7 @@ export function CertTemplateSettings () {
     if (certTemplateId) {
       onCertTemplateChange(certTemplateId)
     }
-  }, [certTemplateId])
+  }, [certTemplateId, certTemplateList])
 
 
   const onCertTemplateChange = (certTemplateId: String) => {
@@ -124,7 +124,12 @@ export function CertTemplateSettings () {
             label={$t({ defaultMessage: 'Identity Group' })}
             rules={[{ required: false }]}
           >
-            <input disabled={true}/>
+            <Select disabled={true}
+              options={[
+                {
+                  label: form.getFieldValue('identityGroupName'),
+                  value: identityGroupId
+                }]} />
           </Form.Item>
           {identityGroupId ? (
             <>
