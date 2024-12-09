@@ -1,6 +1,6 @@
-import { userApi }           from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { userApi }                             from '@acx-ui/store'
+import { RequestPayload }                      from '@acx-ui/types'
+import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import {
   CloudVersion,
@@ -351,10 +351,15 @@ export const {
       query: ({ params }) => createHttpRequest(UserUrlsInfo.mfaRegisterPhone, params)
     }),
     setupMFAAccount: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => ({
-        ...createHttpRequest(UserUrlsInfo.setupMFAAccount, params),
-        body: payload
-      }),
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(UserUrlsInfo.setupMFAAccount, params, {
+          ...ignoreErrorModal
+        })
+        return {
+          ...req,
+          body: payload
+        }
+      },
       invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
     }),
     mfaResendOTP: build.mutation<CommonResult, RequestPayload>({

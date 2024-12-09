@@ -61,7 +61,7 @@ describe('MFA Verify Code Modal', () => {
       await screen.findByText('Please enter verification code')
     })
 
-    await userEvent.type(await screen.findByRole('textbox'), '12345678')
+    await userEvent.type(await screen.findByRole('textbox'), '123456')
     await userEvent.click(await screen.findByRole('button', { name: 'Verify' }))
   })
 
@@ -93,7 +93,7 @@ describe('MFA Verify Code Modal', () => {
 
     await screen.findByText('Verify your Mobile Number')
     await screen.findByText('Enter the verification code that was sent to '+fakeOTPData.data)
-    await userEvent.type(await screen.findByRole('textbox'), '12345678')
+    await userEvent.type(await screen.findByRole('textbox'), '123456')
     await userEvent.click(await screen.findByRole('button', { name: 'Verify' }))
     await waitFor(async () => {
       await screen.findByText('Looks like you entered an incorrect code. Please try again.')
@@ -127,7 +127,7 @@ describe('MFA Verify Code Modal', () => {
       })
 
     await screen.findByText('Verify your Mobile Number')
-    await userEvent.type(await screen.findByRole('textbox'), '12345678')
+    await userEvent.type(await screen.findByRole('textbox'), '123456')
     await userEvent.click(await screen.findByRole('button', { name: 'Resend' }))
     await waitFor(async () => {
       await screen.findByText('Resend verification error. Please try again.')
