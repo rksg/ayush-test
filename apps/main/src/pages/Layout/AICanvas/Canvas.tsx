@@ -1,6 +1,6 @@
-// @ts-nocheck
 import { useEffect, useState } from 'react'
 
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button } from '@acx-ui/components'
@@ -9,6 +9,61 @@ import Layout  from './components/Layout'
 import * as UI from './styledComponents'
 
 // import mockData from './mock'
+
+const compactType = 'horizontal'
+
+export interface LayoutConfig {
+  containerWidth: number
+  containerHeight: number
+  calWidth: number
+  rowHeight: number
+  col: number
+  margin: number[]
+  containerPadding: number[]
+}
+
+export interface Size {
+  width: number
+  height: number
+}
+
+export interface CardInfo {
+  id: string,
+  gridx: number
+  gridy: number
+  width: number
+  height: number
+  type: string
+  isShadow: boolean
+  currentSizeIndex: number
+  sizes: Size[]
+}
+export interface Group {
+  id: string
+  sectionId: string
+  type: string
+  cards: CardInfo[]
+  index?: number
+  defaultTab?: string
+  tabValue?: string
+  tabLabel?: string
+}
+export interface Section {
+  id: string
+  type: string
+  hasTab: boolean
+  groups: Group[]
+}
+
+const layout:LayoutConfig = {
+  containerWidth: 1200,
+  containerHeight: 300, // min height
+  calWidth: 380,
+  rowHeight: 50,
+  col: 4, // fixed (for R1)
+  margin: [20, 10],
+  containerPadding: [0, 0] // deprecated
+}
 
 const DEFAULT_CANVAS = [
   {
@@ -22,36 +77,24 @@ const DEFAULT_CANVAS = [
       cards: []
     }]
   }
-]
+] as unknown as Section[]
 
-const compactType = 'horizontal'
-
-const layout = {
-  containerWidth: 1200,
-  containerHeight: 300, // min height
-  calWidth: 380,
-  rowHeight: 50,
-  col: 4, // fixed (for R1)
-  margin: [20, 10],
-  containerPadding: [0, 0] // deprecated
-}
-
-export default function Canvas (props) {
+export default function Canvas () {
   const { $t } = useIntl()
   // const [widgets, setWidgets] = useState([])
-  const [groups, setGroups] = useState([])
-  const [sections, setSections] = useState([])
+  const [groups, setGroups] = useState([] as Group[])
+  const [sections, setSections] = useState([] as Section[])
 
   useEffect(() => {
     const data = getFromLS()
     setSections(data)
-    const group = data.reduce((acc, cur) => [...acc, ...cur.groups], [])
+    const group = data.reduce((acc:Section[], cur:Section) => [...acc, ...cur.groups], [])
     setGroups(group)
   }, [])
 
   const getFromLS = () => {
     let ls = localStorage.getItem('acx-ui-canvas') ?
-      JSON.parse(localStorage.getItem('acx-ui-canvas')) : DEFAULT_CANVAS // mockData
+      JSON.parse(localStorage.getItem('acx-ui-canvas') || '') : DEFAULT_CANVAS // mockData
     return ls
   }
 
@@ -65,7 +108,7 @@ export default function Canvas (props) {
 
   const onClear = () => {
     setSections(DEFAULT_CANVAS)
-    setGroups(DEFAULT_CANVAS.reduce((acc, cur) => [...acc, ...cur.groups], []))
+    setGroups(DEFAULT_CANVAS.reduce((acc:Group[], cur:Section) => [...acc, ...cur.groups], []))
   }
 
   return (
@@ -93,13 +136,10 @@ export default function Canvas (props) {
         <UI.Grid>
           <Layout
             sections={sections}
-            setSections={setSections}
             groups={groups}
             setGroups={setGroups}
             compactType={compactType}
             layout={layout}
-            setShadowCard={props.setShadowCard}
-            shadowCard={props.shadowCard}
           />
         </UI.Grid>
       </div>

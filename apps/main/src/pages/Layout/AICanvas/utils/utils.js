@@ -17,8 +17,8 @@ export const setPropertyValueForCards = (groups, property, value) => {
  * Calculate the width of each column.
  * @param {Number} containerWidth
  * @param {Number} col
- * @param {Number} containerPadding
- * @param {Number} margin
+ * @param {NumberArray} containerPadding
+ * @param {NumberArray} margin
  * @returns {Number} column width
  */
 export const calColWidth = (containerWidth, col, containerPadding, margin) => {
@@ -88,7 +88,7 @@ export const layoutHorizontalRowLength = (layout) => {
  * Calculates the maximum height of a container based on the layout of its cards.
  * @param {Array} cards
  * @param {Number} rowHeight
- * @param {Number} margin
+ * @param {NumberArray} margin
  * @returns {Number} the maximum height of a container
  */
 export const getContainerMaxHeight = (cards, rowHeight, margin) => {
@@ -100,7 +100,7 @@ export const getContainerMaxHeight = (cards, rowHeight, margin) => {
  * Calculates the pixel position of a grid item based on its grid coordinates, in pixels.
  * @param {Number} gridx
  * @param {Number} gridy
- * @param {Number} margin
+ * @param {NumberArray} margin
  * @param {Number} rowHeight
  * @param {Number} calWidth
  * @returns {Object} containing x,y coordinates
@@ -138,11 +138,11 @@ export const checkInContainer = (gridX, gridY, col, w) => {
  * @param {Number} x
  * @param {Number} y
  * @param {Number} cardWidth
- * @param {Number} margin
+ * @param {NumberArray} margin
  * @param {Number} containerWidth
  * @param {Number} col
  * @param {Number} rowHeight
- * @returns {Object} card gridX, gridY coordinate object
+ * @returns {{gridX, gridY}} card gridX, gridY coordinate object
  */
 export const calGridXY = (
   x,

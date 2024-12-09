@@ -16,7 +16,6 @@ export default [
           height: 4,
           type: 'card',
           isShadow: false,
-          widgetType: '2-AlarmWidget',
           currentSizeIndex: 0,
           sizes: [
             {
@@ -40,8 +39,7 @@ export default [
           width: 1,
           height: 6,
           type: 'card',
-          isShadow: false,
-          widgetType: '3-VenuesDashboardWidgetV2'
+          isShadow: false
         },
         {
           id: 100,
@@ -50,8 +48,7 @@ export default [
           width: 1,
           height: 4,
           type: 'card',
-          isShadow: false,
-          widgetType: '3-SwitchesTrafficByVolume'
+          isShadow: false
         }
       ]
     }]
@@ -77,7 +74,6 @@ export default [
   //           height: 5,
   //           type: 'card',
   //           isShadow: false,
-  //           widgetType: '4-MapWidget'
   //         }
   //       ]
   //     },
@@ -97,7 +93,6 @@ export default [
   //           height: 5,
   //           type: 'card',
   //           isShadow: false,
-  //           widgetType: '4-MapWidget'
   //         }
   //       ]
   //     }

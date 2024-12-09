@@ -1,21 +1,29 @@
-// @ts-nocheck
 import { useState, useEffect } from 'react'
 
 import _ from 'lodash'
 
 import { Tabs } from '@acx-ui/components'
 
+import { Section, Group, LayoutConfig, CardInfo } from '../Canvas'
 import utils                                      from '../utils'
 import { layoutCheck }                            from '../utils/collision'
 import { compactLayout, compactLayoutHorizontal } from '../utils/compact'
 
-import GroupItem from './GroupItem'
+import GroupItem, { GroupProps } from './GroupItem'
 
-export default function Layout (props) {
+interface LayoutProps {
+  layout: LayoutConfig
+  sections: Section[]
+  groups: Group[]
+  setGroups: React.Dispatch<React.SetStateAction<Group[]>>
+  compactType: string
+}
+
+export default function Layout (props: LayoutProps) {
   const defaultLayout = props.layout
   const { groups, setGroups, sections } = props
   const [layout, setLayout] = useState(props.layout)
-  const [shadowCard, setShadowCard] = useState({})
+  const [shadowCard, setShadowCard] = useState({} as CardInfo)
   const [resizeWaiter, setResizeWaiter] = useState(false)
 
   const handleLoad = () => {
@@ -41,7 +49,7 @@ export default function Layout (props) {
 
         const tmpGroups = _.cloneDeep(groups)
         _.forEach(tmpGroups, (g) => {
-          let compactedLayout = compactLayoutHorizontal(g.cards, col)
+          let compactedLayout = compactLayoutHorizontal(g.cards, col, null)
           g.cards = compactedLayout
         })
 
@@ -68,7 +76,7 @@ export default function Layout (props) {
    * @param {Number} x The x-coordinate of the current element on the canvas, in pixels.
    * @param {Number} y The y-coordinate of the current element on the canvas, in pixels.
    **/
-  const moveCardInGroupItem = (hoverItem, x, y) => {
+  const moveCardInGroupItem = (hoverItem:GroupProps, x:number, y:number) => {
     let groupsTmp = _.cloneDeep(groups)
     const { margin, containerWidth, col, rowHeight } = layout
     // Calculate the current grid coordinates
@@ -84,7 +92,6 @@ export default function Layout (props) {
     if (gridX === shadowCard.gridx && gridY === shadowCard.gridy) {
       return
     }
-    let groupIndex = hoverItem.index
 
     // Delete the shadowed card
     _.forEach(groupsTmp, (g) => {
@@ -94,31 +101,35 @@ export default function Layout (props) {
     })
 
     const shadowCardTmp = { ...shadowCard, gridx: gridX, gridy: gridY }
-    // Add the shadowed card
-    groupsTmp[groupIndex].cards.push(shadowCard)
-    // Get the latest layout within the current group
-    const newlayout = layoutCheck(
-      groupsTmp[groupIndex].cards,
-      shadowCardTmp,
-      shadowCardTmp.id,
-      shadowCardTmp.id,
-      props.compactType
-    )
-    // Compress the layout within the current group.
-    let compactedLayout
-    if (props.compactType === 'horizontal') {
-      compactedLayout = compactLayoutHorizontal(
-        newlayout,
-        col,
-        shadowCardTmp.id
+
+    let groupIndex = hoverItem.index
+    if(typeof groupIndex == 'number') {
+      // Add the shadowed card
+      groupsTmp[groupIndex].cards.push(shadowCard)
+      // Get the latest layout within the current group
+      const newlayout = layoutCheck(
+        groupsTmp[groupIndex].cards,
+        shadowCardTmp,
+        shadowCardTmp.id,
+        shadowCardTmp.id,
+        props.compactType
       )
-    } else if (props.compactType === 'vertical') {
-      compactedLayout = compactLayout(newlayout, shadowCardTmp)
+      // Compress the layout within the current group.
+      let compactedLayout
+      if (props.compactType === 'horizontal') {
+        compactedLayout = compactLayoutHorizontal(
+          newlayout,
+          col,
+          shadowCardTmp.id
+        )
+      } else if (props.compactType === 'vertical') {
+        compactedLayout = compactLayout(newlayout)
+      }
+      // Update the group object
+      groupsTmp[groupIndex].cards = compactedLayout as CardInfo[]
+      setShadowCard(shadowCardTmp)
+      setGroups(groupsTmp)
     }
-    // Update the group object
-    groupsTmp[groupIndex].cards = compactedLayout
-    setShadowCard(shadowCardTmp)
-    setGroups(groupsTmp)
   }
 
   /**
@@ -129,13 +140,13 @@ export default function Layout (props) {
     const { compactType } = props
     // Remove shadows from all cards within all groups.
     utils.setPropertyValueForCards(groupsTmp, 'isShadow', false)
-    // Recompress the layout horizontally within the target group, and due to cross-group dependencies, 
+    // Recompress the layout horizontally within the target group, and due to cross-group dependencies,
     // all groups must be compressed.
     _.forEach(groupsTmp, (g, i) => {
       if (compactType === 'horizontal') {
         let compactedLayout = compactLayoutHorizontal(
           groupsTmp[i].cards,
-          layout.col
+          layout.col, null
         )
         g.cards = compactedLayout
       } else if (compactType === 'vertical') {
@@ -144,12 +155,12 @@ export default function Layout (props) {
       }
     })
     setGroups(groupsTmp)
-    setShadowCard({})
+    setShadowCard({} as CardInfo)
   }
 
-  const deleteCard = (id, groupIndex) => {
+  const deleteCard = (id: string, groupIndex:number) => {
     let cards = groups[groupIndex].cards.filter((item) => item.id !== id)
-    let compactedLayout = compactLayoutHorizontal(cards, 4)
+    let compactedLayout = compactLayoutHorizontal(cards, 4, null)
     groups[groupIndex].cards = compactedLayout
     const tmp = [...groups]
     setGroups(tmp)
@@ -164,7 +175,7 @@ export default function Layout (props) {
             s.hasTab ?
               <Tabs type='card'
                 stickyTop={false}
-                defaultActiveKey={groups.find(g => g.sectionId == s.id && g.defaultTab)}>
+                defaultActiveKey={groups.find(g => g.sectionId == s.id && g.defaultTab)?.tabValue}>
                 {
                   groups.map((g, i) => g.sectionId == s.id ?
                     <Tabs.TabPane tab={g.tabLabel} key={g.tabValue}>

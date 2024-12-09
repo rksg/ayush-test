@@ -1,9 +1,9 @@
-// @ts-nocheck
-import { useEffect } from 'react'
+import { Dispatch, SetStateAction, useEffect } from 'react'
 
-import { useDrop } from 'react-dnd'
+import { useDrop, XYCoord } from 'react-dnd'
 
-import utils from '../utils'
+import { CardInfo, Group, LayoutConfig } from '../Canvas'
+import utils                             from '../utils'
 
 import Card from './Card'
 
@@ -11,7 +11,26 @@ export const ItemTypes = {
   CARD: 'card'
 }
 
-export default function GroupItem (props) {
+export interface GroupProps {
+  key: string
+  id: string
+  type: string
+  index: number
+  cards: CardInfo[]
+  length: number
+  groups: Group[]
+  layout: LayoutConfig
+  defaultLayout: LayoutConfig
+  shadowCard:CardInfo
+  moveCardInGroupItem:(hoverItem: GroupProps, x: number, y: number) => void
+  onCardDropInGroupItem:() => void
+  updateShadowCard:Dispatch<SetStateAction<CardInfo>>
+  updateGroupList:Dispatch<SetStateAction<Group[]>>
+  handleLoad:() => void
+  deleteCard:(id: string, groupIndex: number) => void
+}
+
+export default function GroupItem (props: GroupProps) {
   const defaultLayout = props.layout
   const { id, cards, index, groups, layout, handleLoad, moveCardInGroupItem } = props
 
@@ -32,16 +51,17 @@ export default function GroupItem (props) {
     layout.margin
   )
 
-  const dropCard = (dragItem, dropItem) => {
+  const dropCard = (dragItem: CardInfo, dropItem: GroupProps) => {
     if (dragItem.type === ItemTypes.CARD) {
-      props.onCardDropInGroupItem(dragItem, dropItem)
+      props.onCardDropInGroupItem()
       return dropItem
     }
+    return
   }
 
   const [{ isOver }, dropRef] = useDrop({
     accept: ItemTypes.CARD,
-    drop: (item) => {
+    drop: (item: CardInfo) => {
       const dragItem = item
       const dropItem = props
       dropCard(dragItem, dropItem)
@@ -49,7 +69,7 @@ export default function GroupItem (props) {
     collect: monitor => ({
       isOver: monitor.isOver()
     }),
-    hover: (item, monitor) => {
+    hover: (item: CardInfo, monitor) => {
       const dragItem = item
       if (dragItem.type === ItemTypes.CARD) {
         if(props.shadowCard.id !== dragItem.id){
@@ -58,15 +78,15 @@ export default function GroupItem (props) {
         }
         // Dragging card to group
         const hoverItem = props
-        const { x, y } = monitor.getClientOffset()
+        const cor = monitor.getClientOffset() as XYCoord
         const containerDom = document.getElementById('group' + hoverItem.id)
-        const groupItemBoundingRect = containerDom.getBoundingClientRect()
-        const groupItemX = groupItemBoundingRect.left
-        const groupItemY = groupItemBoundingRect.top
+        const groupItemBoundingRect = containerDom?.getBoundingClientRect()
+        const groupItemX = groupItemBoundingRect?.left
+        const groupItemY = groupItemBoundingRect?.top
         moveCardInGroupItem(
           hoverItem,
-          x - groupItemX,
-          y - groupItemY
+          cor.x - (groupItemX || 0),
+          cor.y - (groupItemY || 0)
         )
       }
     }

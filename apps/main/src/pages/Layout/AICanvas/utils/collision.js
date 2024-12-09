@@ -63,7 +63,7 @@ export const layoutCheck = (function () {
           // Move crad inside loop detection block
           const widthOrHeight = axis === 'gridx' ? item.width : item.height
           // Determine whether the coordinates of the current card and the target card plus width/height overlap to prevent overlap.
-          // In the vertical case, the judgment is similar to dragging a square with width 1 and height 1 at (0,1) and a vertical rectangle with width 1 and height 2 at (0,0). 
+          // In the vertical case, the judgment is similar to dragging a square with width 1 and height 1 at (0,1) and a vertical rectangle with width 1 and height 2 at (0,0).
           //   At this time, the overlap will keep the vertical rectangle unchanged.
           // In the horizontal case, the judgment is similar to dragging a square with a width of 1 and a height of 1 and a horizontal rectangle of (0,0) with a width of 2 and a height of 1.
           //   At this time, the overlap will keep the horizontal rectangle unchanged.

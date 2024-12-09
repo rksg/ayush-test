@@ -88,7 +88,7 @@ const getSpaceArea = (finishedLayout, item, cols) => {
  * Optimization: If the coordinates of the moving card should always be within an area, it should not be dragged anywhere.
  * @param {Array} layout
  * @param {Int} cols
- * @param {Object} movingCardID 
+ * @param {Object?} movingCardID
  * @returns {Array} latest layout
  */
 export const compactLayoutHorizontal = function (layout, cols, movingCardID) {
