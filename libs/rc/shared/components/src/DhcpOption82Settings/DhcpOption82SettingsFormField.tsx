@@ -110,6 +110,7 @@ export const DhcpOption82SettingsFormField = (props: {
     dhcpOption82SubOption150EnabledFieldName,
     dhcpOption82SubOption151EnabledFieldName,
     dhcpOption82SubOption151FormatFieldName,
+    dhcpOption82SubOption151InputFieldName,
     dhcpOption82MacFormat
   } = selectDhcpOption82FormField(context, index)
 
