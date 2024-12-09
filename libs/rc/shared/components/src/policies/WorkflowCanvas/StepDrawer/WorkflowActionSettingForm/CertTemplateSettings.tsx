@@ -189,7 +189,7 @@ export function CertTemplateSettings () {
         </Card>
 
       )}
-      <Form.Item name={'identityGroupId'} hidden={true}>
+      <Form.Item name={'identityGroupId'} hidden={true} initialValue={''}>
         <input />
       </Form.Item>
     </>
