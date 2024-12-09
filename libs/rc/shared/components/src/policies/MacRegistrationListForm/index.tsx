@@ -87,8 +87,7 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
           identityId: data.isUseSingleIdentity ? data.identityId : undefined
         }
         // eslint-disable-next-line max-len
-        result = await addMacRegListWithIdentity({ params: { identityGroupId: data.identityGroupId },
-          payload: saveData, customHeaders }).unwrap() as MacRegistrationPool
+        result = await addMacRegListWithIdentity({ params: { identityGroupId: data.identityGroupId }, payload: saveData }).unwrap() as MacRegistrationPool
       } else {
         const saveData = {
           name: data.name,
