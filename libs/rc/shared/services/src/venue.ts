@@ -100,7 +100,9 @@ import {
   EthernetPortProfileUrls,
   EthernetPortProfileViewData,
   CompatibilityResponse,
-  IncompatibleFeatureLevelEnum
+  IncompatibleFeatureLevelEnum,
+  SoftGreUrls,
+  SoftGreViewData
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                                                          from '@acx-ui/store'
 import { ITimeZone, RequestPayload }                                                             from '@acx-ui/types'
@@ -2149,6 +2151,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const venueLanPortSettings = venueLanPortsQuery.data as VenueLanPorts[]
         const venueId = arg.params?.venueId
 
+        // eslint-disable-next-line
+        const isEthernetPortProfileEnabled = (arg.payload as any)?.isEthernetPortProfileEnabled
+        // eslint-disable-next-line
+        const isEthernetSoftgreEnabled = (arg.payload as any)?.isEthernetSoftgreEnabled
+
         if(venueId) {
           const ethernetPortProfileReq = createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList)
           const ethernetPortProfileQuery = await fetchWithBQ(
@@ -2173,6 +2180,30 @@ export const venueApi = baseVenueApi.injectEndpoints({
               })
             }
           })
+          if(isEthernetPortProfileEnabled && isEthernetSoftgreEnabled) {
+            const softgreProfileReq = createHttpRequest(SoftGreUrls.getSoftGreViewDataList)
+            const softgreProfileQuery = await fetchWithBQ(
+              { ...softgreProfileReq,
+                body: JSON.stringify({
+                  filters: {
+                    venueIds: [venueId]
+                  }
+                })
+              }
+            )
+            const softgreProfiles = (softgreProfileQuery.data as TableResult<SoftGreViewData>).data
+            softgreProfiles.forEach((profile) => {
+              if (profile.venueActivations) {
+                profile.venueActivations.forEach((activity)=>{
+                  const targetLanPort = venueLanPortSettings.find(setting => setting.model === activity.apModel && venueId === activity.venueId)
+                    ?.lanPorts.find(lanPort => lanPort.portId?.toString() === activity.portId?.toString())
+                  if(targetLanPort) {
+                    targetLanPort.softGreProfileId = profile.id
+                  }
+                })
+              }
+            })
+          }
         }
         return { data: venueLanPortSettings }
       }

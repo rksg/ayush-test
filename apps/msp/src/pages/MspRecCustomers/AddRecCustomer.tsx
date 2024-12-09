@@ -187,7 +187,7 @@ export function AddRecCustomer () {
         }
       }
     }
-  }, [delegatedAdmins, Administrators])
+  }, [delegatedAdmins, Administrators, privilegeGroupList])
 
   useEffect(() => {
     if (techPartners?.data && mspEcTenantId) {

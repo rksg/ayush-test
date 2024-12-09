@@ -32,6 +32,7 @@ export default function RuckusAiWizard (props: {
   const { $t } = useIntl()
   const [isLoading, setIsLoading] = useState(false)
   const [isSkip, setIsSkip] = useState(false)
+  const [isRegenWlan, setIsRegenWlan] = useState(false)
 
   const [applyConversations] = useApplyConversationsMutation()
   const [updateConversations] = useUpdateConversationsMutation()
@@ -43,6 +44,17 @@ export default function RuckusAiWizard (props: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     React.MutableRefObject<ProFormInstance<any> | undefined>[]
   >([])
+
+  const [showAlert, setShowAlert] = useState<Record<RuckusAiConfigurationStepsEnum, boolean>>(
+    Object.values(RuckusAiConfigurationStepsEnum).reduce((acc, step) => {
+      acc[step] = false
+      return acc
+    }, {} as Record<RuckusAiConfigurationStepsEnum, boolean>)
+  )
+
+  const updateShowAlert = (step: RuckusAiConfigurationStepsEnum, value: boolean) => {
+    setShowAlert((prev) => ({ ...prev, [step]: value }))
+  }
 
 
   const onPrevious = function () {
@@ -90,14 +102,21 @@ export default function RuckusAiWizard (props: {
 
       if (response.hasChanged) {
         await new Promise((resolve) => {
+          const regenerateContent =
+            stepType === RuckusAiConfigurationStepsEnum.WLANS
+              ? $t({
+                // eslint-disable-next-line max-len
+                defaultMessage: 'Changing the value of the “Network Objective” will affect the settings in the subsequent steps. Would you like to regenerate the configuration suggestions for the following steps?'
+              })
+              : $t({
+                // eslint-disable-next-line max-len
+                defaultMessage: 'The modifications here will affect the settings in the subsequent steps. Would you like to regenerate the configuration suggestions for the following steps?'
+              })
           showActionModal({
             type: 'confirm',
             width: 460,
             title: $t({ defaultMessage: 'Regenerate Configurations?' }),
-            content: $t({
-              // eslint-disable-next-line max-len
-              defaultMessage: 'The modifications here will affect the settings in the subsequent steps. Would you like to regenerate the configuration suggestions for the following steps?'
-            }),
+            content: regenerateContent,
             okText: $t({ defaultMessage: 'Regenerate' }),
             cancelText: $t({ defaultMessage: 'Remain Unchanged' }),
             onOk: async () => {
@@ -132,8 +151,13 @@ export default function RuckusAiWizard (props: {
         }))
       }
 
+      if (stepType === RuckusAiConfigurationStepsEnum.WLANS) {
+        setIsRegenWlan(regenerated)
+      }
+
       setIsSkip(false)
       setIsLoading(false)
+      updateShowAlert(stepType, true)
 
     } catch (error) {
       setIsSkip(false)
@@ -149,7 +173,9 @@ export default function RuckusAiWizard (props: {
       title: '',
       component: (props.payload ? (<WlanStep
         payload={props.payload}
+        sessionId={props.sessionId}
         formInstance={formMapRef?.current?.[0]?.current}
+        showAlert={showAlert[RuckusAiConfigurationStepsEnum.WLANS]}
         description={props.description} />) : null
       ),
 
@@ -163,7 +189,10 @@ export default function RuckusAiWizard (props: {
         <WlanDetailStep
           formInstance={formMapRef.current[1].current}
           sessionId={props.sessionId}
-          payload={payloads[RuckusAiConfigurationStepsEnum.WLANDETAIL].payload} />)
+          showAlert={showAlert[RuckusAiConfigurationStepsEnum.WLANDETAIL]}
+          payload={payloads[RuckusAiConfigurationStepsEnum.WLANDETAIL].payload}
+          setIsRegenWlan={setIsRegenWlan}
+          isRegenWlan={isRegenWlan} />)
         : (
           null
         ),
@@ -178,6 +207,7 @@ export default function RuckusAiWizard (props: {
         <VlanStep
           formInstance={formMapRef.current[2].current}
           sessionId={props.sessionId}
+          showAlert={showAlert[RuckusAiConfigurationStepsEnum.VLAN]}
           description={payloads[RuckusAiConfigurationStepsEnum.VLAN].description}
           payload={payloads[RuckusAiConfigurationStepsEnum.VLAN].payload} />
       ) : (
