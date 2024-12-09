@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { isEmpty } from 'lodash'
-import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
+import _, { isEmpty } from 'lodash'
+import { useIntl }    from 'react-intl'
+import AutoSizer      from 'react-virtualized-auto-sizer'
 
 import { Loader, Carousel }                 from '@acx-ui/components'
 import type { DashboardFilter, PathFilter } from '@acx-ui/utils'
@@ -65,9 +65,13 @@ function DidYouKnowWidget ({
   useEffect(() => {
     if (availableFacts && isEmpty(carouselFactsMap)) {
       const factsMap = getCarouselFactsMap(availableFacts)
-      const shuffledEntries = Object.entries(factsMap).sort(() => Math.random() - 0.5)
-      const shuffledMap = Object.fromEntries(shuffledEntries)
-      setCarouselFactsMap(shuffledMap)
+      const randomArray = _.shuffle([1, 2, 3, 4, 5])
+      const reorderedFactsMap: Record<number, { facts: string[] }> = {}
+      let initIndex = 0
+      randomArray.forEach((index) => {
+        reorderedFactsMap[initIndex++] = factsMap[index]
+      })
+      setCarouselFactsMap(reorderedFactsMap)
     }
   }, [availableFacts, carouselFactsMap])
   const { $t } = intl
