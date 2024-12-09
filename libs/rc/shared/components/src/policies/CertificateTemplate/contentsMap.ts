@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { MessageDescriptor, defineMessage } from 'react-intl'
 
-import { AlgorithmType, CertificateAuthorityType, CertificateCategoryType, CertificateGenerationType, CertificateStatusType, ChromebookCertRemovalType, ChromebookEnrollmentType, EnrollmentType, ExpirationType, ExtendedKeyUsages, GenerationCaType, KeyUsages, KeyUsageType, ServerClientCertAlgorithmType, UsageType } from '@acx-ui/rc/utils'
+import { AlgorithmType, CertificateAuthorityType, CertificateCategoryType, CertificateGenerationType, CertificateStatusType, ChromebookCertRemovalType, ChromebookEnrollmentType, EnrollmentType, ExpirationType, ExtendedKeyUsages, GenerationCaType, KeyType, KeyUsages, KeyUsageType, ServerClientCertAlgorithmType, ServerClientCertType, UsageType } from '@acx-ui/rc/utils'
 
 
 export const caTypeShortLabel: Record<CertificateAuthorityType, MessageDescriptor> = {
@@ -200,6 +200,27 @@ export const generateCertificateTitle: Record<CertificateGenerationType, Message
   }),
   [CertificateGenerationType.UPLOAD]: defineMessage({
     defaultMessage: 'Upload Certificate'
+  })
+}
+
+export const generateCertificateDescription: Record<CertificateGenerationType, MessageDescriptor> = {
+  [CertificateGenerationType.NEW]: defineMessage({
+    defaultMessage: 'Creates a new server, client certificate signed by CA'
+  }),
+  [CertificateGenerationType.WITH_CSR]: defineMessage({
+    defaultMessage: 'Creates a new server certificate signed by CA'
+  }),
+  [CertificateGenerationType.UPLOAD]: defineMessage({
+    defaultMessage: 'Upload server, client sertificate'
+  })
+}
+
+export const serverClientCertSupportdFiles: Record<ServerClientCertType, MessageDescriptor> = {
+  [KeyType.PUBLIC]: defineMessage({
+    defaultMessage: 'Public Key certificate with PKCS #12 (.p12) format is collection of Public and Private keys. If Private key (in Public key) is password then please provide password below. Supported Public key file types: .p12, .der, .cert and .pem'
+  }),
+  [KeyType.PRIVATE]: defineMessage({
+    defaultMessage: 'Supported Private key file types: .pem, .key and .cert'
   })
 }
 

@@ -29,6 +29,14 @@ export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
         }
       }
     }),
+    deleteOnboardConfigs: build.mutation<RuckusAiConversation, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RuckusAssistantUrlInfo.deleteOnboardConfigs, params)
+        return {
+          ...req
+        }
+      }
+    }),
     applyConversations: build.mutation<RuckusAiConversation, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(RuckusAssistantUrlInfo.applyConversations, params)
@@ -64,6 +72,7 @@ export const ruckusAssistantApi = baseRuckusAssistantApi.injectEndpoints({
           ...req
         }
       },
+      keepUnusedDataFor: 0,
       transformResponse: (response: RuckusAiConfiguration) => {
         return JSON.parse(response.content) as NetworkSaveData
       }
@@ -88,7 +97,9 @@ export const {
   useUpdateConversationsMutation,
   useCreateOnboardConfigsMutation,
   useUpdateOnboardConfigsMutation,
+  useDeleteOnboardConfigsMutation,
   useGetOnboardConfigsQuery,
   useLazyGetOnboardConfigsQuery,
+  useGetVlanOnboardConfigsQuery,
   useLazyGetVlanOnboardConfigsQuery
 } = ruckusAssistantApi

@@ -12,7 +12,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mockedDpskEnrollmentAction,
+import { mockedMacRegEnrollmentAction,
   mockedMacRegData,
   mockedIdentityGroupData,
   mockedMacRegActionInvalid } from './__tests__/fixtures'
@@ -21,7 +21,6 @@ import { MacRegistrationNode } from './MacRegistrationNode'
 describe('MacRegistrationNode', () => {
 
   const enrollmentActionIdWithoutData = 'no-data-test-id'
-  const enrollmentActionIdWithData = 'has-data-test-id'
 
   beforeEach(() => {
     store.dispatch(serviceApi.util.resetApiState())
@@ -29,8 +28,8 @@ describe('MacRegistrationNode', () => {
       rest.get(
         WorkflowUrls.getActionById.url,
         (req, res, ctx) => {
-          if(req.params.actionId === enrollmentActionIdWithData) {
-            return res(ctx.json(mockedDpskEnrollmentAction))
+          if(req.params.actionId === mockedMacRegEnrollmentAction.id) {
+            return res(ctx.json(mockedMacRegEnrollmentAction))
           } else if(req.params.actionId === mockedMacRegActionInvalid.id) {
             return res(ctx.json(mockedMacRegActionInvalid))
           } else {
@@ -133,7 +132,7 @@ describe('MacRegistrationNode', () => {
           <MacRegistrationNode id='test-id'
             data={{
               id: 'test-id',
-              enrollmentActionId: enrollmentActionIdWithData,
+              enrollmentActionId: mockedMacRegEnrollmentAction.id,
               mode: WorkflowPanelMode.Design
             }}
             selected={false}
@@ -155,7 +154,7 @@ describe('MacRegistrationNode', () => {
 
     const popover = await screen.findByRole('tooltip')
     expect(popover)
-      .toHaveTextContent('Identity GroupMy Identity Group for TestingMac Registration ListNone')
+      .toHaveTextContent('Identity GroupMy Identity Group for TestingMac Registration')
   })
 
   it('should not render Details in Default panel mode', () => {
@@ -165,7 +164,7 @@ describe('MacRegistrationNode', () => {
           <MacRegistrationNode id='test-id'
             data={{
               id: 'test-id',
-              enrollmentActionId: enrollmentActionIdWithData,
+              enrollmentActionId: mockedMacRegEnrollmentAction.id,
               mode: WorkflowPanelMode.Default
             }}
             selected={false}

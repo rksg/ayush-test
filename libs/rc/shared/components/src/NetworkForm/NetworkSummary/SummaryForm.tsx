@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 
 import { EnvironmentOutlined }     from '@ant-design/icons'
 import { Col, Divider, Form, Row } from 'antd'
+import _                           from 'lodash'
 import { useIntl }                 from 'react-intl'
 
 import { StepsFormLegacy, Subtitle }                from '@acx-ui/components'
@@ -43,14 +44,17 @@ const defaultPayload = {
 export function SummaryForm (props: {
   summaryData: NetworkSaveData,
   portalData?: Demo,
-  extraData?: NetworkSummaryExtracData
+  extraData?: NetworkSummaryExtracData,
+  isRuckusAiMode?: boolean,
+  ruckusAiSummaryTitle?: string
 }) {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
-  const { isRuckusAiMode } = useContext(NetworkFormContext)
+  // eslint-disable-next-line max-len
+  const isRuckusAiMode = (useContext(NetworkFormContext)?.isRuckusAiMode || props.isRuckusAiMode === true)
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
-  const { summaryData, portalData, extraData } = props
+  const { summaryData, portalData, extraData, ruckusAiSummaryTitle } = props
   const params = useParams()
   const { data } = useVenuesListQuery({
     params: { tenantId: params.tenantId, networkId: 'UNKNOWN-NETWORK-ID' },
@@ -92,11 +96,13 @@ export function SummaryForm (props: {
   // @ts-ignore
   return (
     <>
-      <StepsFormLegacy.Title>{ $t({ defaultMessage: 'Summary' }) }</StepsFormLegacy.Title>
+      {_.isEmpty(ruckusAiSummaryTitle) &&
+        <StepsFormLegacy.Title>{$t({ defaultMessage: 'Summary' })}</StepsFormLegacy.Title>}
+
       <Row gutter={20}>
         <Col flex={1}>
           <Subtitle level={4}>
-            { $t({ defaultMessage: 'Network Info' }) }
+            {ruckusAiSummaryTitle || $t({ defaultMessage: 'Network Info' })}
           </Subtitle>
           {!isRuckusAiMode && <>
             <Form.Item label={$t({ defaultMessage: 'Network Name:' })}
@@ -195,13 +201,16 @@ export function SummaryForm (props: {
             <OpenSummaryForm summaryData={summaryData} />
           }
         </Col>
-        <Divider type='vertical' style={{ height: '300px' }}/>
-        <Col flex={1}>
-          <Subtitle level={4}>
-            { $t({ defaultMessage: 'Activated in <venuePlural></venuePlural>' }) }
-          </Subtitle>
-          <Form.Item children={getVenues()} />
-        </Col>
+        {!isRuckusAiMode && <>
+          <Divider type='vertical' style={{ height: '300px' }} />
+          <Col flex={1}>
+            <Subtitle level={4}>
+              {$t({ defaultMessage: 'Activated in <venuePlural></venuePlural>' })}
+            </Subtitle>
+            <Form.Item children={getVenues()} />
+          </Col>
+        </>}
+
       </Row>
     </>
   )

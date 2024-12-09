@@ -17,6 +17,7 @@ RUN source ${ENV_FILE} \
 
 # Install dependencies
 COPY package.json package-lock.json ./
+
 COPY patches ./patches
 COPY tools/dev/eslint-custom-rule ./tools/dev/eslint-custom-rule
 RUN npm install
@@ -44,10 +45,19 @@ ENV NX_CACHE_DIRECTORY=/app/node_modules/.cache/nx
 COPY --from=nx-cache /app/node_modules/.cache/nx /app/node_modules/.cache/nx
 
 # Remove files and folders older than 24 hours from the nx cache
-RUN find /app/node_modules/.cache/nx -type f -mtime +1 -delete && \
+RUN find /app/node_modules/.cache/nx -type f -mmin +1440 -delete && \
     find /app/node_modules/.cache/nx -type d -empty -delete
 
 COPY tools/tests ./tools/tests
+
+# Copy the tar.xz file if it exists
+COPY nxcache/nxcache.tar.xz* ./
+
+# Extract it only if the file exists
+RUN if [ -f ./nxcache.tar.xz ]; then \
+      mkdir -p ./node_modules/.cache/nx && \
+      tar -xJf ./nxcache.tar.xz -C ./node_modules/.cache/nx; \
+    fi
 
 # dump git information
 RUN source ${ENV_FILE} \
@@ -60,32 +70,73 @@ RUN node ./node_modules/.bin/nx run-many --target=lint --all --verbose
 RUN touch lint-done
 
 # We should validate the tsc validator in the tsconfig of apps that wont be built yet
-FROM build-base as acx-ui-tslint
-RUN node ./node_modules/.bin/nx run ra:tsc
+# FROM build-base as acx-ui-tslint
+# Multistage: trigger run
+# COPY --from=acx-ui-lint /app/lint-done /tmp/
+# RUN node ./node_modules/.bin/nx run ra:tsc
+# RUN touch tslint-done
 ###############################################################
 
 FROM build-base as build
+# Multistage: trigger run
+# COPY --from=acx-ui-tslint /app/tslint-done /tmp/
+COPY --from=acx-ui-lint /app/lint-done /tmp/
 RUN node ./node_modules/.bin/nx run main:build --memoryLimit=4096
 
 ###############################################################
-FROM build-base as acx-ui-base-test
-
-# Force dependency with lint & build stages
-COPY --from=acx-ui-lint   /app/lint-done   ./lint-done
-COPY --from=build         /app/dist/apps   ./dist/apps
-
 FROM build-base as acx-ui-group-test
 
-COPY cicd_tools ./cicd_tools
+# Multistage: trigger run
+COPY --from=build /app/dist/apps ./dist/apps
 
-ARG PRECOMMIT=true
-ARG GIT_COMMIT_BRANCH=master
-RUN bash ./cicd_tools/run_test_cases_tool.sh
+ARG PRECOMMIT
+ARG GIT_COMMIT_BRANCH
+
+ENV NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail"
+
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+        CICD_BUILD=true node ./node_modules/.bin/nx run rc:test $NX_RUN_OPTIONS; \
+    fi
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+        CICD_BUILD=true node ./node_modules/.bin/nx run rc-components:test $NX_RUN_OPTIONS; \
+    fi
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+        CICD_BUILD=true node ./node_modules/.bin/nx run edge-components:test $NX_RUN_OPTIONS; \
+    fi
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+        CICD_BUILD=true node ./node_modules/.bin/nx run switch-components:test $NX_RUN_OPTIONS; \
+    fi
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+        CICD_BUILD=true node ./node_modules/.bin/nx run wifi-components:test $NX_RUN_OPTIONS; \
+    fi
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+        CICD_BUILD=true node ./node_modules/.bin/nx run main:test $NX_RUN_OPTIONS; \
+    fi
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+      CICD_BUILD=true node ./node_modules/.bin/nx run main-components:test $NX_RUN_OPTIONS; \
+    fi
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+        CICD_BUILD=true node ./node_modules/.bin/nx run analytics-components:test $NX_RUN_OPTIONS; \
+    fi
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+      CICD_BUILD=true node ./node_modules/.bin/nx run msp-components:test $NX_RUN_OPTIONS; \
+    fi
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+      CICD_BUILD=true node ./node_modules/.bin/nx run msp:test $NX_RUN_OPTIONS; \
+    fi
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+        CICD_BUILD=true node ./node_modules/.bin/nx run-many --target=test --all --exclude=rc,rc-components,edge-components,switch-components,wifi-components,main,analytics-components,msp,msp-components,main-components $NX_RUN_OPTIONS; \
+    fi
+
+RUN mkdir -p /app/coverage
 
 FROM build-base as acx-ui-sonar-run
 COPY --from=acx-ui-group-test /app/coverage /app/coverage
 WORKDIR /app
 RUN touch tests-done
+
+RUN ./node_modules/.bin/nx reset
+RUN rm -rf ./node_modules
 
 ###############################################################
 FROM ${GAR_CONTAINER_URL}nginx:1.21.6-alpine
@@ -107,11 +158,9 @@ COPY --from=acx-ui-sonar-run /app/tests-done /tmp/
 
 RUN \
   # Create structure to match deployment need
-  mkdir -p tenant/t && \
+  mkdir -p tenant && \
   # Move all files into it
-  mv -v main/* tenant/t/. && \
-  # Remove the main folder
-  rm -rf main
+  ln -s /usr/share/nginx/html/main tenant/t
 
 EXPOSE 8080
 
