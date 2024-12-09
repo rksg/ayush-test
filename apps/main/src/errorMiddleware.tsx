@@ -21,7 +21,7 @@ function formatGraphQLErrors (
 }
 
 type QueryMeta = {
-  response?: Response | GraphQLResponse
+  response?: Response
   request: Request
 }
 export type ErrorAction = {
@@ -140,7 +140,7 @@ export const getErrorContent = (action: ErrorAction) => {
       ('originalStatus' in action.payload) ? action.payload.originalStatus :
         ('status' in action.payload) ? action.payload.status : undefined
   const request = queryMeta?.request
-  const response = queryMeta?.response
+  const response = queryMeta?.response as GraphQLResponse
 
   let errorMsg = {} as ErrorMessageType
   let type: ActionModalType = 'error'
