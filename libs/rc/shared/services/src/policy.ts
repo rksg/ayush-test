@@ -3600,7 +3600,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     downloadServerCertificateChains: build.query<Blob, RequestPayload>({
       query: ({ params, customHeaders }) => {
         // eslint-disable-next-line max-len
-        const req = createHttpRequest(CertificateUrls.downloadServerCertificate, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        const req = createHttpRequest(CertificateUrls.downloadServerCertificateChains, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
         return {
           ...req,
           responseHandler: async (response) => {
