@@ -11,8 +11,11 @@ import { SoftgreProfileAndDHCP82Context } from '../SoftGRETunnelSettings'
 import { DhcpOption82SettingsDrawer } from './DhcpOption82SettingsDrawer'
 import { FieldLabel, ConfigIcon }     from './styledComponents'
 
+interface DhcpOption82SettingsProps {
+  index: number
+}
 
-export const DhcpOption82Settings = () => {
+export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
   const { $t } = useIntl()
 
   const [ iconVisible, setIconVisible ] = useState<boolean>(false)
@@ -20,6 +23,7 @@ export const DhcpOption82Settings = () => {
   const [ enableDhcpOption82, setEnableDhcpOption82] = useState<boolean>(false)
 
   const { venueApModelLanPortSettingsV1 } = useContext(SoftgreProfileAndDHCP82Context)
+  const { index } = props
 
   useEffect(() => {
     const dhcpOption82Enabled = venueApModelLanPortSettingsV1?.softGreSettings?.dhcpOption82Enabled
@@ -83,7 +87,8 @@ export const DhcpOption82Settings = () => {
       <DhcpOption82SettingsDrawer
         visible={drawerVisible}
         setVisible={setDrawerVisible}
-        callbackFn={callbackFn}/>
+        callbackFn={callbackFn}
+        index={index}/>
     </>
   )
 }

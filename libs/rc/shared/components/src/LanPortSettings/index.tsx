@@ -99,10 +99,10 @@ export function LanPortSettings (props: {
   const { isTemplate } = useConfigTemplate()
   const ethernetPortProfileId = Form.useWatch( ['lan', index, 'ethernetPortProfileId'] ,form)
   const isEthernetPortEnable = Form.useWatch( ['lan', index, 'enabled'] ,form)
+  const [softgreTunnelEnable, setSoftgreTunnelEnable] = useState(false)
   const [currentEthernetPortData, setCurrentEthernetPortData] =
     useState<EthernetPortProfileViewData>()
   const [ethernetProfileCreateId, setEthernetProfileCreateId] = useState<String>()
-  const { softgreProfile } = useContext(SoftgreProfileAndDHCP82Context)
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
 
@@ -180,6 +180,10 @@ export function LanPortSettings (props: {
       }
     }
   }, [ethernetPortProfileId, ethernetPortListQuery?.data])
+
+  useEffect(() => {
+    setSoftgreTunnelEnable(lan.softGreProfileId? true: false)
+  }, [selectedPortCaps])
 
   return (<>
     {selectedPortCaps?.isPoeOutPort && <Form.Item
@@ -260,8 +264,12 @@ export function LanPortSettings (props: {
             (<>
               <SoftGRETunnelSettings
                 isSoftGRETunnelToggleDisable={!isEthernetPortEnable}
+                index={index}
+                softgreProfileId={selectedPortCaps.softGreProfileId ?? ''}
+                softgreTunnelEnable={softgreTunnelEnable}
+                setSoftgreTunnelEnable={setSoftgreTunnelEnable}
               />
-              {softgreProfile.isSoftgreTunnelEnable && <DhcpOption82Settings />}
+              {softgreTunnelEnable && <DhcpOption82Settings index={index}/>}
             </>)
         }
       </>) :

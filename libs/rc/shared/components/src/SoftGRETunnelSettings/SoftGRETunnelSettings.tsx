@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useState, useEffect, useContext } from 'react'
 
 import { Form, Switch, Space } from 'antd'
 import { useIntl }             from 'react-intl'
@@ -10,16 +10,23 @@ import { SoftGREProfileSettings }         from './SoftGREProfileSettings'
 import { FieldLabel }                     from './styledComponents'
 
 interface SoftGRETunnelSettingsProps {
-  isSoftGRETunnelToggleDisable: boolean
+  isSoftGRETunnelToggleDisable: boolean,
+  index: number
+  softgreProfileId: string
+  softgreTunnelEnable: boolean
+  setSoftgreTunnelEnable: Function
 }
 
 
 export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   const { $t } = useIntl()
-  const { softgreProfile, onChangeSoftgreTunnel } = useContext(SoftgreProfileAndDHCP82Context)
-
+  const { onChangeSoftgreTunnel } = useContext(SoftgreProfileAndDHCP82Context)
   const {
-    isSoftGRETunnelToggleDisable
+    isSoftGRETunnelToggleDisable,
+    index,
+    softgreProfileId,
+    softgreTunnelEnable,
+    setSoftgreTunnelEnable
   } = props
 
   return (
@@ -42,22 +49,30 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
           style={{ marginTop: '-5px' }}
           children={
             <Switch
-              checked={softgreProfile.isSoftgreTunnelEnable}
+              checked={softgreTunnelEnable}
               disabled={isSoftGRETunnelToggleDisable}
-              onClick={(checked) => onChangeSoftgreTunnel(checked)}
+              onClick={(checked) => {
+                setSoftgreTunnelEnable(checked)
+                if (onChangeSoftgreTunnel) {
+                  onChangeSoftgreTunnel(checked)
+                }
+              }}
             />
           }
         />
       </FieldLabel>
       {
-        softgreProfile.isSoftgreTunnelEnable && <>
+        softgreTunnelEnable && <>
           <Alert
             data-testId={'enable-softgre-tunnel-banner'}
             showIcon={true}
             style={{ verticalAlign: 'middle' }}
             message={$t({ defaultMessage: 'Enabling on the uplink will disconnect AP(s)' })}
           />
-          <SoftGREProfileSettings />
+          <SoftGREProfileSettings
+            index={index}
+            softgreProfileId={softgreProfileId}
+          />
         </>
       }
     </>

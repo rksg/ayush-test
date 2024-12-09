@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Form, Select, Button, Divider, Space } from 'antd'
 import { DefaultOptionType }                    from 'antd/lib/select'
@@ -9,14 +9,18 @@ import { useParams }                      from '@acx-ui/react-router-dom'
 
 import SoftGreDrawer from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
 
-import { SoftgreProfileAndDHCP82Context } from './SoftGREProfileAndDHCP82Context'
-import * as UI                            from './styledComponents'
+
+import * as UI from './styledComponents'
 
 const defaultSoftgreOption = { label: '', value: '' }
 
-export const SoftGREProfileSettings = () => {
-  const { softgreProfile } = useContext(SoftgreProfileAndDHCP82Context)
+interface SoftGREProfileSettingsProps {
+  index: number
+  softgreProfileId: string
+}
 
+export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
+  const { index, softgreProfileId } = props
   const { $t } = useIntl()
   const params = useParams()
 
@@ -45,9 +49,9 @@ export const SoftGREProfileSettings = () => {
       setsoftGREProfileOptionList(softGreProfileList.map((softGreProfile) => {
         return { label: softGreProfile.name, value: softGreProfile.id }
       }))
-      if (softgreProfile.softgreProfileId) {
+      if (softgreProfileId) {
         setSoftGREProfile(softGREProfileOptionList.find(
-          (profile) => profile.value === softgreProfile.softgreProfileId) ?? defaultSoftgreOption
+          (profile) => profile.value === softgreProfileId) ?? defaultSoftgreOption
         )
       }
     }
@@ -60,7 +64,7 @@ export const SoftGREProfileSettings = () => {
         <Form.Item
           label={$t({ defaultMessage: 'SoftGRE Profile' })}
           initialValue=''
-          name={['lan', softgreProfile.index, 'softGreProfileId']}
+          name={['lan', index, 'softGreProfileId']}
           children={
             <Select
               style={{ width: '100%' }}
