@@ -122,7 +122,8 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         color: #000;
       }
       .chat-bubble {
-        background: linear-gradient(275deg, #F7B605 -53.69%, #F79B06 -13.58%, #F65650 26.53%, #EC4C9A 66.65%, #A560FF 106.76%);
+        background: linear-gradient(275deg, #F7B605 -53.69%, #F79B06 -13.58%, 
+          #F65650 26.53%, #EC4C9A 66.65%, #A560FF 106.76%);
         color: #fff;
         width: fit-content;
         max-width: 80%;

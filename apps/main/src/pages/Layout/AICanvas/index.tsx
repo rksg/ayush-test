@@ -6,15 +6,15 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
-import { Button }                                                    from '@acx-ui/components'
-import { HistoricalOutlined, Plus, RuckusAiDog, SendMessageOutlined }        from '@acx-ui/icons'
-import { useChatAiMutation }                                                 from '@acx-ui/rc/services'
-import { ChatMessage, RuckusAiChat, WidgetListData } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                        from '@acx-ui/react-router-dom'
+import { Button }                                                     from '@acx-ui/components'
+import { HistoricalOutlined, Plus, RuckusAiDog, SendMessageOutlined } from '@acx-ui/icons'
+import { useChatAiMutation }                                          from '@acx-ui/rc/services'
+import { ChatMessage, RuckusAiChat, WidgetListData }                  from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                 from '@acx-ui/react-router-dom'
 
 import Canvas             from './Canvas'
-import * as UI            from './styledComponents'
 import { DraggableChart } from './components/WidgetChart'
+import * as UI            from './styledComponents'
 
 
 export default function AICanvas () {
@@ -28,7 +28,8 @@ export default function AICanvas () {
 
   const [ searchText, setSearchText ] = useState('')
   const linkToDashboard = useTenantLink('/dashboard')
-  const placeholder = 'Enter a description to generate widgets based on your needs. The more you describe, the better widgets I can recommend.'
+  // eslint-disable-next-line max-len
+  const placeholder = $t({ defaultMessage: 'Enter a description to generate widgets based on your needs. The more you describe, the better widgets I can recommend.' })
 
   const onKeyDown = (event: React.KeyboardEvent) => {
     if(event.key === 'Enter'){
@@ -66,7 +67,7 @@ export default function AICanvas () {
           role: 'AI',
           text: '2 widgets found- Alert and incidents widgets. Drag and drop the selected widgets to the canvas on the right.',
           widgets: [{
-            // title: 'Chart 1', TODO:
+            title: '',
             chartType: 'pie'
           }]
         }
@@ -81,7 +82,7 @@ export default function AICanvas () {
       const latest = response.messages[response.messages.length - 1]
       if(latest.widgets) {
         setWidgets([...widgets, {
-          chartType: latest.widgets[0].chartType,
+          ...latest.widgets[0],
           sessionId: response.sessionId,
           id: latest.id
         }])
@@ -102,7 +103,7 @@ export default function AICanvas () {
         </div>
       </div>
       { chat.role === 'AI' && chat.widgets?.length && <DraggableChart data={{
-        chartType: chat.widgets[0].chartType,
+        ...chat.widgets[0],
         sessionId,
         id: chat.id
       }}

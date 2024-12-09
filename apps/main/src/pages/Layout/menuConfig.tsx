@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import { useIntl } from 'react-intl'
 
 import { LayoutProps, ItemType }                                  from '@acx-ui/components'
@@ -63,7 +61,6 @@ export function useMenuConfig () {
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
   ].some(Boolean)
   const isIntentAIEnabled = useIsSplitOn(Features.INTENT_AI_TOGGLE)
-  const [visible, setVisible] = useState(false)
 
   type Item = ItemType & {
     permission?: RaiPermission

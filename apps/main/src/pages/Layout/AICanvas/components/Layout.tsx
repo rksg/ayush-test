@@ -1,7 +1,8 @@
 // @ts-nocheck
 import { useState, useEffect } from 'react'
 
-import _                from 'lodash'
+import _ from 'lodash'
+
 import { Tabs } from '@acx-ui/components'
 
 import utils                                      from '../utils'
@@ -12,7 +13,7 @@ import GroupItem from './GroupItem'
 
 export default function Layout (props) {
   const defaultLayout = props.layout
-  const { groups, setGroups, sections, setSections } = props
+  const { groups, setGroups, sections } = props
   const [layout, setLayout] = useState(props.layout)
   const [shadowCard, setShadowCard] = useState({})
   const [resizeWaiter, setResizeWaiter] = useState(false)
@@ -162,7 +163,9 @@ export default function Layout (props) {
           {/* <h2>Section {s.id}</h2> */}
           {
             s.hasTab ?
-              <Tabs type='card' stickyTop={false} defaultActiveKey={groups.find(g => g.sectionId == s.id && g.defaultTab)}>
+              <Tabs type='card'
+                stickyTop={false}
+                defaultActiveKey={groups.find(g => g.sectionId == s.id && g.defaultTab)}>
                 {
                   groups.map((g, i) => g.sectionId == s.id ?
                     <Tabs.TabPane tab={g.tabLabel} key={g.tabValue}>

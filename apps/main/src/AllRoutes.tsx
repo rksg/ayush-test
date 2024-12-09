@@ -13,11 +13,8 @@ import { AddCustomRole }                                    from './pages/Admini
 import { AddPrivilegeGroup }                                from './pages/Administration/UserPrivileges/PrivilegeGroups/AddPrivilegeGroup'
 import { EditPrivilegeGroup }                               from './pages/Administration/UserPrivileges/PrivilegeGroups/EditPrivilegeGroup'
 import AnalyticsBase                                        from './pages/Analytics'
-import CustomizedDashboard                                  from './pages/CustomizedDashboard'
 import Dashboard                                            from './pages/Dashboard'
-import DashboardFF                                          from './pages/DashboardFF'
 import DevicesBase                                          from './pages/Devices'
-import Grid                                                 from './pages/Grid'
 import Layout                                               from './pages/Layout'
 import AICanvas                                             from './pages/Layout/AICanvas'
 import { MFACheck }                                         from './pages/Layout/MFACheck'
@@ -63,11 +60,8 @@ function AllRoutes () {
           <Route path='*' element={<PageNotFound />} />
           <Route path='not-found' element={<PageNotFound />} />
           <Route path='no-permissions' element={<PageNoPermissions />} />
-          <Route path='grid' element={<Grid />} />
           <Route path='canvas' element={<AICanvas />} />
-          <Route path='dashboard1' element={<Dashboard />} />
-          <Route path='dashboard' element={<DashboardFF />} />
-          <Route path='dashboard2' element={<CustomizedDashboard />} />
+          <Route path='dashboard' element={<Dashboard />} />
           <Route path='userprofile/*' element={<UserProfileRoutes />} />
           <Route path='analytics/*' element={<AnalyticsBase />}>
             <Route path='*' element={<AnalyticsRoutes />} />

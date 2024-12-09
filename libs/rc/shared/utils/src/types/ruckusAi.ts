@@ -13,12 +13,13 @@ export interface ChatMessage {
 }
 
 export interface ChatWidget {
-  // title: string,
+  title: string,
   chartType: string,
 }
 
 export interface WidgetListData {
   id: string,
+  title: string,
   chartType: string,
   sessionId: string,
 }

@@ -5,8 +5,8 @@ import { useIntl } from 'react-intl'
 
 import { Button } from '@acx-ui/components'
 
-import Layout   from './components/Layout'
-import * as UI  from './styledComponents'
+import Layout  from './components/Layout'
+import * as UI from './styledComponents'
 
 // import mockData from './mock'
 
@@ -54,7 +54,7 @@ export default function Canvas (props) {
       JSON.parse(localStorage.getItem('acx-ui-canvas')) : DEFAULT_CANVAS // mockData
     return ls
   }
-  
+
   const saveToLS = () => {
     const tmp = _.cloneDeep(sections)
     tmp.forEach(s => {

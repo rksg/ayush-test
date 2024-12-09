@@ -1,13 +1,15 @@
 import React, { useEffect } from 'react'
 
-import { useDrag } from 'react-dnd'
-import { getEmptyImage }    from 'react-dnd-html5-backend'
-import AutoSizer            from 'react-virtualized-auto-sizer'
-import { v4 as uuidv4 }     from 'uuid'
+import { useDrag }       from 'react-dnd'
+import { getEmptyImage } from 'react-dnd-html5-backend'
+import { useIntl }       from 'react-intl'
+import AutoSizer         from 'react-virtualized-auto-sizer'
+import { v4 as uuidv4 }  from 'uuid'
 
-import { Card, DonutChart, Loader }   from '@acx-ui/components'
-import { useChatChartQuery }          from '@acx-ui/rc/services'
-import { WidgetListData } from '@acx-ui/rc/utils'
+import { Card, DonutChart, Loader } from '@acx-ui/components'
+import { useChatChartQuery }        from '@acx-ui/rc/services'
+import { WidgetListData }           from '@acx-ui/rc/utils'
+
 import { ItemTypes } from './GroupItem'
 
 interface WidgetListProps {
@@ -34,7 +36,7 @@ const PIE = {
   ]
 }
 
-const ChartConfig:{[key:string]: any} = {
+const ChartConfig:{ [key:string]: any } = {
   pie: PIE
 }
 
@@ -76,6 +78,7 @@ export const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
 }
 
 export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
+  const { $t } = useIntl()
   // const queryResults = useChatChartQuery({
   //   params: {
   //     sessionId: data.sessionId,
@@ -94,7 +97,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
   return (
     <>
       {/* <Loader states={[{isLoading: queryResults.isLoading}]}> */}
-      <Card key={data.id} title='Title'>
+      <Card key={data.id} title={data.title || $t({ defaultMessage: 'Title' })}>
         <AutoSizer>
           {({ height, width }) => (
             <DonutChart

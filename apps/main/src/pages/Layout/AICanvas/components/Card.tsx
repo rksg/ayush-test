@@ -1,15 +1,16 @@
 // @ts-nocheck
 import { useEffect } from 'react'
 
-import _                    from 'lodash'
-import { useDrag } from 'react-dnd'
-import { getEmptyImage }    from 'react-dnd-html5-backend'
+import _                 from 'lodash'
+import { useDrag }       from 'react-dnd'
+import { getEmptyImage } from 'react-dnd-html5-backend'
 
 import utils                       from '../utils'
 import { compactLayoutHorizontal } from '../utils/compact'
-import { WidgetChart }             from './WidgetChart'
 
-import { ItemTypes } from './GroupItem'
+import { ItemTypes }   from './GroupItem'
+import { WidgetChart } from './WidgetChart'
+
 
 const DraggableCard = (props) => {
   const [{ isDragging }, drag, preview] = useDrag({
@@ -26,7 +27,7 @@ const DraggableCard = (props) => {
       }
     }
   })
-  
+
   useEffect(() => {
     preview(getEmptyImage(), { captureDraggingState: true })
   }, [preview])

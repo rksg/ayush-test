@@ -90,7 +90,7 @@ export default function GroupItem (props) {
           }}
         >
           {
-            cards.map((c, i) => <Card
+            cards.map((c) => <Card
               key={`${index}_${c.id}`}
               groupIndex={index}
               card={c}
