@@ -45,6 +45,10 @@ export const SelectUsers = (props: SelectUsersProps) => {
     return mspAdmins.filter(rec => admins.includes(rec.id))
   }
 
+  function getSelectedRowsFromKeys (mspAdmins: MspAdministrator[], keys: string[]) {
+    return mspAdmins.filter(rec => keys.includes(rec.email))
+  }
+
   function rowNotSelected (email: string) {
     return selectedRows.find(rec => rec.email === email) ? false : true
   }
@@ -163,17 +167,11 @@ export const SelectUsers = (props: SelectUsersProps) => {
           }
           else {
             // On row click to deselect (i.e. clicking on row itself not checkbox) selRows is empty array
-            if (selRows.length === 0) {
-              setSelectedRows([...selectedRows.filter(row =>
-                selectedRowKeys.includes(row.email))])
-              setSelected([...selectedRows.filter(row =>
-                selectedRowKeys.includes(row.email))])
-            }
             // On row click to select (i.e. clicking on row itself not checkbox) selRows only has newly selected row
-            else {
-              setSelectedRows([...selectedRows, ...selRows])
-              setSelected([...selectedRows, ...selRows])
-            }
+            // So in these scenarios, get selected rows from selectedRowKeys instead
+            const rows = getSelectedRowsFromKeys(usersData ?? [], selectedRowKeys as string[])
+            setSelectedRows(rows)
+            setSelected(rows)
           }
           setSelectedKeys(selectedRowKeys)
         },

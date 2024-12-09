@@ -102,14 +102,21 @@ export default function RuckusAiWizard (props: {
 
       if (response.hasChanged) {
         await new Promise((resolve) => {
+          const regenerateContent =
+            stepType === RuckusAiConfigurationStepsEnum.WLANS
+              ? $t({
+                // eslint-disable-next-line max-len
+                defaultMessage: 'Changing the value of the “Network Objective” will affect the settings in the subsequent steps. Would you like to regenerate the configuration suggestions for the following steps?'
+              })
+              : $t({
+                // eslint-disable-next-line max-len
+                defaultMessage: 'The modifications here will affect the settings in the subsequent steps. Would you like to regenerate the configuration suggestions for the following steps?'
+              })
           showActionModal({
             type: 'confirm',
             width: 460,
             title: $t({ defaultMessage: 'Regenerate Configurations?' }),
-            content: $t({
-              // eslint-disable-next-line max-len
-              defaultMessage: 'The modifications here will affect the settings in the subsequent steps. Would you like to regenerate the configuration suggestions for the following steps?'
-            }),
+            content: regenerateContent,
             okText: $t({ defaultMessage: 'Regenerate' }),
             cancelText: $t({ defaultMessage: 'Remain Unchanged' }),
             onOk: async () => {

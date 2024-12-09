@@ -314,8 +314,6 @@ describe('Multi-venue SD-LAN Table', () => {
 })
 
 const basicCheck= async () => {
-  await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-  screen.getByRole('columnheader', { name: 'Cluster' })
   const rows = await screen.findAllByRole('row', { name: /Mocked_SDLAN_/i })
   // eslint-disable-next-line max-len
   expect(within(rows[0]).getByRole('cell', { name: new RegExp(`${mockedSdLan1.name}`) })).toBeVisible()

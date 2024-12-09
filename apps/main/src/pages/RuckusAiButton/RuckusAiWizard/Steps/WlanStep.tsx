@@ -44,6 +44,7 @@ export function WlanStep ( props: {
   const { formInstance } = props
   const initialData = JSON.parse(props.payload || '[]') as NetworkConfig[]
   const [data, setData] = useState<NetworkConfig[]>([])
+  const [description, setDescription] = useState(props.description)
 
   const [checkboxStates, setCheckboxStates] =
     useState<boolean[]>(Array(initialData.length).fill(true))
@@ -57,6 +58,7 @@ export function WlanStep ( props: {
       formInstance?.setFieldsValue({ data: updatedData })
       setData(initialData)
       setCheckboxStates(Array(initialData.length).fill(true))
+      setDescription(props.description)
     }
 
   }, [props.payload])
@@ -179,7 +181,7 @@ export function WlanStep ( props: {
           />
           <span>{$t({ defaultMessage: 'Recommended Network Profiles' })}</span>
         </UI.HighlightedTitle>
-        <UI.HighlightedDescription>{props.description}</UI.HighlightedDescription>
+        <UI.HighlightedDescription>{description}</UI.HighlightedDescription>
       </UI.HighlightedBox>
 
       {data?.map((item, index) => (
