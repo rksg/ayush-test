@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                      from '@acx-ui/feature-toggle'
 import { edgeSdLanApi, pinApi, tunnelProfileApi }                                                      from '@acx-ui/rc/services'
 import { EdgeSdLanFixtures, EdgeSdLanUrls, EdgeTunnelProfileFixtures, EdgePinUrls, TunnelProfileUrls } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                             from '@acx-ui/store'
@@ -120,10 +120,11 @@ describe('EditTunnelProfile', () => {
     })
     expect(screen.getByRole('textbox', { name: 'Profile Name' })).toBeDisabled()
     expect(screen.getByRole('switch')).toBeDisabled()
-    await (await screen.findAllByRole('radio')).forEach(item => {
+    const radioButtons = await screen.findAllByRole('radio')
+    radioButtons.forEach(item => {
       expect(item).toBeDisabled()
     })
-    const ageTimeMinutesInput = await (await screen.findAllByRole('spinbutton'))
+    const ageTimeMinutesInput = (await screen.findAllByRole('spinbutton'))
       .filter(ele => ele.id === 'ageTimeMinutes')[0]
     expect(ageTimeMinutesInput).toBeDisabled()
   })
@@ -173,6 +174,8 @@ describe('EditTunnelProfile', () => {
     })
 
     it('should lock type fields when it is used in PIN / SD-LAN P1', async () => {
+      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.EDGE_ADV)
+
       render(
         <Provider>
           <EditTunnelProfile />
@@ -185,6 +188,7 @@ describe('EditTunnelProfile', () => {
       expect(mockedReqPin).toBeCalled()
       const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
       expect(typeField).toBeDisabled()
+      jest.mocked(useIsTierAllowed).mockReset()
     })
 
     it('should lock type fields when it is used in SD-LAN HA case', async () => {
