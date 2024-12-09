@@ -1,9 +1,9 @@
-import { useRef } from 'react'
 
+import { Form }    from 'antd'
 import { omit }    from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { StepsForm }                               from '@acx-ui/components'
 import {
   useAddPersonaGroupMutation,
   useAssociateIdentityGroupWithPolicySetMutation
@@ -14,20 +14,20 @@ import { IdentityGroupSettingForm } from './IdentityGroupSettingForm'
 
 export function IdentityGroupForm ({ callback }: { callback: (identityGroupId?: string) => void }) {
   const { $t } = useIntl()
-  const formRef = useRef<StepsFormLegacyInstance<PersonaGroup>>()
+  const [ form ] = Form.useForm<PersonaGroup>()
   const [ addPersonaGroup ] = useAddPersonaGroupMutation()
   const [ associatePolicySet ] = useAssociateIdentityGroupWithPolicySetMutation()
 
   const handleSubmit = async () => {
     try {
-      await formRef.current?.validateFields()
+      await form.validateFields()
       const result = await addPersonaGroup({
-        payload: omit(formRef.current?.getFieldsValue(), ['policySetId'])
+        payload: omit(form.getFieldsValue(), ['policySetId'])
       }).unwrap()
 
-      if (formRef.current?.getFieldsValue().policySetId) {
+      if (form.getFieldsValue().policySetId) {
         await associatePolicySet({
-          params: { groupId: result.id, policySetId: formRef.current?.getFieldsValue().policySetId }
+          params: { groupId: result.id, policySetId: form.getFieldsValue().policySetId }
         })
       }
       callback(result.id)
@@ -37,15 +37,15 @@ export function IdentityGroupForm ({ callback }: { callback: (identityGroupId?: 
   }
 
   return (
-    <StepsFormLegacy
+    <StepsForm
       editMode={false}
-      formRef={formRef}
+      form={form}
       buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
       onCancel={() => callback()}
       onFinish={handleSubmit}>
-      <StepsFormLegacy.StepForm>
+      <StepsForm.StepForm>
         <IdentityGroupSettingForm/>
-      </StepsFormLegacy.StepForm>
-    </StepsFormLegacy>
+      </StepsForm.StepForm>
+    </StepsForm>
   )
 }
