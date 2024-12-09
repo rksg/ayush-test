@@ -32,6 +32,7 @@ export default function RuckusAiWizard (props: {
   const { $t } = useIntl()
   const [isLoading, setIsLoading] = useState(false)
   const [isSkip, setIsSkip] = useState(false)
+  const [isRegenWlan, setIsRegenWlan] = useState(false)
 
   const [applyConversations] = useApplyConversationsMutation()
   const [updateConversations] = useUpdateConversationsMutation()
@@ -143,6 +144,10 @@ export default function RuckusAiWizard (props: {
         }))
       }
 
+      if (stepType === RuckusAiConfigurationStepsEnum.WLANS) {
+        setIsRegenWlan(regenerated)
+      }
+
       setIsSkip(false)
       setIsLoading(false)
       updateShowAlert(stepType, true)
@@ -161,6 +166,7 @@ export default function RuckusAiWizard (props: {
       title: '',
       component: (props.payload ? (<WlanStep
         payload={props.payload}
+        sessionId={props.sessionId}
         formInstance={formMapRef?.current?.[0]?.current}
         showAlert={showAlert[RuckusAiConfigurationStepsEnum.WLANS]}
         description={props.description} />) : null
@@ -177,7 +183,9 @@ export default function RuckusAiWizard (props: {
           formInstance={formMapRef.current[1].current}
           sessionId={props.sessionId}
           showAlert={showAlert[RuckusAiConfigurationStepsEnum.WLANDETAIL]}
-          payload={payloads[RuckusAiConfigurationStepsEnum.WLANDETAIL].payload} />)
+          payload={payloads[RuckusAiConfigurationStepsEnum.WLANDETAIL].payload}
+          setIsRegenWlan={setIsRegenWlan}
+          isRegenWlan={isRegenWlan} />)
         : (
           null
         ),

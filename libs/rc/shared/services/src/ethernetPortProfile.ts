@@ -12,11 +12,32 @@ import {
   ApiVersionEnum,
   GetApiVersionHeader,
   CapabilitiesApModel,
-  ApLanPortTypeEnum
+  ApLanPortTypeEnum,
+  EthernetPortType,
+  EthernetPortAuthType
 } from '@acx-ui/rc/utils'
 import { baseEthernetPortProfileApi } from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
 import { createHttpRequest }          from '@acx-ui/utils'
+
+
+const createDefaultEthPort = (tenantId: string, type: EthernetPortType) => {
+  const name = (type === EthernetPortType.ACCESS)
+    ? 'Default Access Port'
+    : 'Default Trunk Port (WAN)'
+
+  return {
+    apSerialNumbers: [] as string[],
+    authType: EthernetPortAuthType.DISABLED,
+    id: `${tenantId}_${type}`,
+    isDefault: true,
+    name,
+    type,
+    untagId: 1,
+    vlanMembers: (type === EthernetPortType.ACCESS) ? '1' : '1-4094'
+  } as EthernetPortProfileViewData
+
+}
 
 export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints({
   endpoints: (build) => ({
@@ -63,10 +84,26 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
     build.query<TableResult<EthernetPortProfileViewData>, RequestPayload>({
       async queryFn (
         { payload, params, selectedModelCaps }, _queryApi, _extraOptions, fetchWithBQ) {
+        const tenantId = params?.tenantId ?? ''
         const viewDataReq = createHttpRequest(
           EthernetPortProfileUrls.getEthernetPortProfileViewDataList, params)
         const ethListQuery = await fetchWithBQ({ ...viewDataReq, body: JSON.stringify(payload) })
         let ethList = ethListQuery.data as TableResult<EthernetPortProfileViewData>
+
+        // Do a workaround to avoid the default ethPort data doesn't be added (data migrate not completed)
+        const ethListData = ethList.data
+        const predefinedEthPortData = [] as EthernetPortProfileViewData[]
+        if (!ethListData.find(d => d?.isDefault && d?.id.includes('_ACCESS'))) {
+          predefinedEthPortData.push(createDefaultEthPort(tenantId, EthernetPortType.ACCESS))
+        }
+        if (!ethListData.find(d => d?.isDefault && d?.id.includes('_TRUNK'))) {
+          predefinedEthPortData.push(createDefaultEthPort(tenantId, EthernetPortType.TRUNK))
+        }
+
+        ethList.data = [
+          ...predefinedEthPortData,
+          ...ethList.data
+        ]
 
         if (ethList.data && params?.serialNumber) {
           let bindingPortIds = []
@@ -85,6 +122,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
             return { ...(apEthPortOverwrites.data as EthernetPortOverwrites),
               portId: portId }
           }
+
           for (let eth of apEthPortProfiles) {
             eth.apPortOverwrites = []
             for (let apActivation of (eth.apActivations ?? [])) {
@@ -107,10 +145,10 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
               let ethProfileId = ''
               switch (defaultType){
                 case ApLanPortTypeEnum.ACCESS:
-                  ethProfileId = params?.tenantId + '_' + ApLanPortTypeEnum.ACCESS.toString()
+                  ethProfileId = tenantId + '_' + ApLanPortTypeEnum.ACCESS.toString()
                   break
                 case ApLanPortTypeEnum.TRUNK:
-                  ethProfileId = params?.tenantId + '_' + ApLanPortTypeEnum.TRUNK.toString()
+                  ethProfileId = tenantId + '_' + ApLanPortTypeEnum.TRUNK.toString()
                   break
               }
               let ethProfile = ethList.data?.filter(e => e.id === ethProfileId)?.[0]

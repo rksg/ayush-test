@@ -25,7 +25,7 @@ import { baseTimelineApi }   from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
 import { createHttpRequest } from '@acx-ui/utils'
 
-import { getMetaList, latestTimeFilter } from './utils'
+import { getMetaDetailsList, getMetaList, latestTimeFilter } from './utils'
 
 const metaFields = [
   'apName',
@@ -128,6 +128,47 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
         })
       }
     }),
+    eventsNoMeta: build.query<TableResult<Event>, RequestPayload>({
+      providesTags: [{ type: 'Event', id: 'LIST' }],
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const timeFilter = latestTimeFilter(arg.payload)
+        const eventListInfo = {
+          ...createHttpRequest(CommonUrlsInfo.getEventList, arg.params),
+          body: timeFilter
+        }
+        const baseListQuery = await fetchWithBQ(eventListInfo)
+        const baseList = baseListQuery.data as TableResult<EventBase>
+        if(!baseList) return { error: baseListQuery.error as FetchBaseQueryError }
+
+        const { data: baseListData } = baseList
+
+        const metaListInfo = getMetaDetailsList<EventBase>(baseList, {
+          urlInfo: createHttpRequest(CommonUrlsInfo.getEventListDetails, arg.params),
+          fields: metaFields,
+          filters: timeFilter.filters
+        })
+        const metaListQuery = await fetchWithBQ(metaListInfo)
+        const metaList = metaListQuery.data as TableResult<EventMeta>
+        const { data: metaListData } = metaList
+
+        return {
+          data: {
+            ...baseList,
+            data: baseListData.map((base) => ({
+              ...base,
+              ...{ entity_type: base.entity_type.toUpperCase() },
+              ...(metaListData.find(meta=>meta.id === base.id)),
+              ...{ tableKey: base.event_datetime + base.id }
+            })) as Event[]
+          }
+        }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, () => {
+          api.dispatch(timelineApi.util.invalidateTags([{ type: 'Event', id: 'LIST' }]))
+        })
+      }
+    }),
     adminLogs: build.query<TableResult<AdminLog>, RequestPayload>({
       providesTags: [{ type: 'AdminLog', id: 'LIST' }],
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
@@ -144,6 +185,43 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
 
         const metaListInfo = getMetaList<AdminLogBase>(baseList, {
           urlInfo: createHttpRequest(CommonUrlsInfo.getEventListMeta, arg.params),
+          fields: metaFields,
+          filters: timeFilter.filters
+        })
+        const metaListQuery = await fetchWithBQ(metaListInfo)
+        const metaList = metaListQuery.data as TableResult<AdminLogMeta>
+        const { data: metaListData } = metaList
+
+        return {
+          data: {
+            ...baseList,
+            data: baseListData.map((base) => ({
+              ...base,
+              ...{ entity_type: base.entity_type.toUpperCase() },
+              ...(metaListData.find(meta=>meta.id === base.id)),
+              ...{ tableKey: base.event_datetime + base.id }
+            })) as AdminLog[]
+          }
+        }
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    adminLogsNoMeta: build.query<TableResult<AdminLog>, RequestPayload>({
+      providesTags: [{ type: 'AdminLog', id: 'LIST' }],
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const timeFilter = latestTimeFilter(arg.payload)
+        const adminlogListInfo = {
+          ...createHttpRequest(CommonUrlsInfo.getEventList, arg.params),
+          body: timeFilter
+        }
+        const baseListQuery = await fetchWithBQ(adminlogListInfo)
+        const baseList = baseListQuery.data as TableResult<AdminLogBase>
+        if(!baseList) return { error: baseListQuery.error as FetchBaseQueryError }
+
+        const { data: baseListData } = baseList
+
+        const metaListInfo = getMetaDetailsList<AdminLogBase>(baseList, {
+          urlInfo: createHttpRequest(CommonUrlsInfo.getEventListDetails, arg.params),
           fields: metaFields,
           filters: timeFilter.filters
         })
@@ -255,7 +333,9 @@ export const {
   useActivitiesQuery,
   useActivityApCompatibilitiesQuery,
   useEventsQuery,
+  useEventsNoMetaQuery,
   useAdminLogsQuery,
+  useAdminLogsNoMetaQuery,
   useAdminLogsOnlyQuery,
   useDownloadEventsCSVMutation,
   useAddExportSchedulesMutation,
