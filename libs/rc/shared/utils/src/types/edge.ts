@@ -66,6 +66,7 @@ export interface EdgeStatus extends EdgeResourceUtilization {
   hasCorePort?: boolean
   incompatible?: number // UI only
   isHqosEnabled?: boolean
+  isArpTerminationEnabled?: boolean
 }
 export interface EdgeDetails {
   serialNumber: string
