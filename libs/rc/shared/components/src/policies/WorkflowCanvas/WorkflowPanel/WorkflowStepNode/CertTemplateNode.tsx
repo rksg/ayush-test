@@ -21,7 +21,10 @@ export function CertTemplateNode (props: NodeProps<WorkflowStep>) {
     { skip: !isDesignMode })
 
   const { data: certData } = useGetCertificateTemplateQuery({
-    params: { policyId: data?.certTemplateId } })
+    params: { policyId: data?.certTemplateId }
+  },
+  { skip: !isDesignMode || !data?.certTemplateId || data.valid === false })
+
   const { data: identityGroupData } =
     useGetPersonaGroupByIdQuery(
       { params: { groupId: data?.identityGroupId } },
