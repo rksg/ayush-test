@@ -202,7 +202,7 @@ export const GptStepsForm = styled(StepsForm)`
 export const CongratContainer = styled.div`
 
   position: relative;
-  margin-top: 100px;
+  margin-top: 80px;
   z-index: 1;
   display: grid;
   justify-items: center;
@@ -223,7 +223,8 @@ export const CongrateTitle = styled.div`
 `
 
 export const CongratSubtitle = styled.div`
-  margin-top: 15px;
+  margin-top: 10px;
+  margin-bottom: 20px;
   color: var(--acx-primary-black);
   font-family: var(--acx-neutral-brand-font);
   font-size: var(--acx-headline-4-line-height);
