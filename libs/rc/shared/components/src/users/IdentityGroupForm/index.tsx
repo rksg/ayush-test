@@ -1,40 +1,36 @@
-import { Form }    from 'antd'
+import { useRef } from 'react'
+
+import { omit }    from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { StepsFormLegacy } from '@acx-ui/components'
+import { StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import {
-  CommonAsyncResponse
+  useAddPersonaGroupMutation,
+  useAssociateIdentityGroupWithPolicySetMutation
 } from '@acx-ui/rc/services'
 import { PersonaGroup } from '@acx-ui/rc/utils'
-
-import { usePersonaGroupAction } from '../PersonaGroupDrawer/usePersonaGroupActions'
 
 import { IdentityGroupSettingForm } from './IdentityGroupSettingForm'
 
 export function IdentityGroupForm ({ callback }: { callback: (identityGroupId?: string) => void }) {
   const { $t } = useIntl()
-  const [ form ] = Form.useForm()
-  const { createPersonaGroupMutation } = usePersonaGroupAction()
+  const formRef = useRef<StepsFormLegacyInstance<PersonaGroup>>()
+  const [ addPersonaGroup ] = useAddPersonaGroupMutation()
+  const [ associatePolicySet ] = useAssociateIdentityGroupWithPolicySetMutation()
 
-  const onFinish = async (contextData: PersonaGroup) => {
+  const handleSubmit = async () => {
     try {
-      const result = await handleAddPersonaGroup(contextData)
+      await formRef.current?.validateFields()
+      const result = await addPersonaGroup({
+        payload: omit(formRef.current?.getFieldsValue(), ['policySetId'])
+      }).unwrap()
+
+      if (formRef.current?.getFieldsValue().policySetId) {
+        await associatePolicySet({
+          params: { groupId: result.id, policySetId: formRef.current?.getFieldsValue().policySetId }
+        })
+      }
       callback(result.id)
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
-  }
-
-  const handleAddPersonaGroup = async (submittedData: PersonaGroup) => {
-    return new Promise<CommonAsyncResponse>(async (resolve) => {
-      await createPersonaGroupMutation(submittedData, resolve)
-    })
-  }
-
-  const onSave = async () => {
-    try {
-      await form.validateFields()
-      await onFinish(form.getFieldsValue())
     } catch (e) {
       return Promise.resolve()
     }
@@ -43,13 +39,12 @@ export function IdentityGroupForm ({ callback }: { callback: (identityGroupId?: 
   return (
     <StepsFormLegacy
       editMode={false}
+      formRef={formRef}
       buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
       onCancel={() => callback()}
-      onFinish={onSave}>
+      onFinish={handleSubmit}>
       <StepsFormLegacy.StepForm>
-        <IdentityGroupSettingForm
-          form={form}
-        />
+        <IdentityGroupSettingForm/>
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
   )

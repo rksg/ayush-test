@@ -28,7 +28,7 @@ import {
   mockedTenantId,
   mockedServiceId,
   mockedDpskList,
-  policySetList, identityGroupList
+  policySetList, identityGroupList, mockedPolicySet
 } from './__tests__/fixtures'
 import { DpskForm } from './DpskForm'
 
@@ -318,7 +318,6 @@ describe('DpskForm', () => {
 
   // eslint-disable-next-line max-len
   it('should create a DPSK service profile with identity group id with DPSK_REQUIRE_IDENTITY_GROUP enabled', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
     jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === Features.CLOUDPATH_BETA)
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
       ff === Features.RBAC_SERVICE_POLICY_TOGGLE ||
@@ -334,6 +333,10 @@ describe('DpskForm', () => {
           updateFn(),
           ctx.json({ requestId: '12345' })
         )
+      ),
+      rest.post(
+        RulesManagementUrlsInfo.getPolicyTemplateListByQuery.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(mockedPolicySet))
       ),
       rest.post(
         DpskUrls.createDpskWithIdentityGroup.url,
@@ -371,7 +374,7 @@ describe('DpskForm', () => {
     // wait for the policy set list to be loaded
     await userEvent.click(await screen.findByText(policySetList.content[0].name))
 
-    await userEvent.click(screen.getAllByRole('button', { name: 'Add' })[1])
+    await userEvent.click(screen.getAllByRole('button', { name: 'Add' })[2])
 
     await waitFor(() => expect(createDpskWithIdentityGroupFn).toBeCalled())
     await waitFor(() => expect(updateFn).toBeCalled())

@@ -6,10 +6,10 @@ import { showActionModal } from '@acx-ui/components'
 import { getIntl }         from '@acx-ui/utils'
 
 const profileInUsedMessage = defineMessage({
-  defaultMessage: `You cannot {action} {count, plural,
+  defaultMessage: `You are unable to {action} {count, plural,
   one {this record}
   other {these records}
-  } because of its usage in {serviceName}`
+  } due to its usage in {serviceName}`
 })
 
 export function doProfileDelete<T> (

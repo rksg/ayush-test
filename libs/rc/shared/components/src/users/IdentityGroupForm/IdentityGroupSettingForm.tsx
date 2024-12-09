@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
-import { Col, Form, FormInstance, Input, Row, Select, Space } from 'antd'
-import TextArea                                               from 'antd/lib/input/TextArea'
-import { useIntl }                                            from 'react-intl'
+import { Col, Form, Input, Row, Select, Space } from 'antd'
+import TextArea                                 from 'antd/lib/input/TextArea'
+import { useIntl }                              from 'react-intl'
 
 import { Button, Modal, ModalType, Subtitle } from '@acx-ui/components'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
@@ -10,18 +10,15 @@ import {
   useAdaptivePolicySetListQuery,
   useLazySearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { PersonaGroup, checkObjectNotExists, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
-import { RolesEnum }                                                    from '@acx-ui/types'
-import { hasRoles }                                                     from '@acx-ui/user'
+import { checkObjectNotExists, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
+import { RolesEnum }                                      from '@acx-ui/types'
+import { hasRoles }                                       from '@acx-ui/user'
 
-import { AdaptivePolicySetForm } from '../../AdaptivePolicySetForm'
+import { AdaptivePolicySetForm } from '@acx-ui/rc/components'
 
-export function IdentityGroupSettingForm (props: {
-  form: FormInstance,
-  defaultValue?: PersonaGroup
-}) {
+export function IdentityGroupSettingForm () {
   const { $t } = useIntl()
-  const { form, defaultValue } = props
+  const form = Form.useFormInstance()
   const [policyModalVisible, setPolicyModalVisible] = useState(false)
   const isPolicySetSupported = useIsSplitOn(Features.POLICY_IDENTITY_TOGGLE)
   const [searchPersonaGroupList] = useLazySearchPersonaGroupListQuery()
@@ -35,27 +32,15 @@ export function IdentityGroupSettingForm (props: {
       const list = (await searchPersonaGroupList({
         params: { size: '2147483647', page: '0' },
         payload: { keyword: name }
-      }, true).unwrap()).data.filter(g => g.id !== defaultValue?.id).map(g => ({ name: g.name }))
+      }, true).unwrap()).data.map(g => ({ name: g.name }))
       return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Identity Group' }))
     } catch (e) {
       return Promise.resolve()
     }
   }
 
-  useEffect(() => {
-    if (defaultValue) {
-      form.setFieldsValue(defaultValue)
-    }
-  }, [defaultValue])
-
   return (
-    <Form
-      form={form}
-      preserve={false}
-      layout={'vertical'}
-      name={'personaGroupForm'}
-      initialValues={defaultValue}
-    >
+    <>
       <Space direction={'vertical'} size={16} style={{ display: 'flex' }}>
         <Row>
           <Col span={24}>
@@ -142,6 +127,6 @@ export function IdentityGroupSettingForm (props: {
         width={1200}
         destroyOnClose={true}
       />
-    </Form>
+    </>
   )
 }

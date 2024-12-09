@@ -53,6 +53,7 @@ export default function DpskTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteDpsk ] = useDeleteDpskMutation()
+  const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
 
   const settingsId = 'dpsk-table'
   const tableQuery = useTableQuery({
@@ -63,15 +64,19 @@ export default function DpskTable () {
     pagination: { settingsId }
   })
 
+  // eslint-disable-next-line max-len
+  let readOnlyRows = [{ fieldName: 'networkIds' as keyof DpskSaveData, fieldText: intl.$t({ defaultMessage: 'Network' }) }]
+  if (!isIdentityGroupRequired) {
+    // eslint-disable-next-line max-len
+    readOnlyRows.concat([{ fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Identity Group' }) }])
+  }
+
   const doDelete = (selectedRow: DpskSaveData, callback: () => void) => {
     doProfileDelete(
       [selectedRow],
       intl.$t({ defaultMessage: 'DPSK Service' }),
       selectedRow.name,
-      [
-        { fieldName: 'identityGroupId', fieldText: intl.$t({ defaultMessage: 'Identity Group' }) },
-        { fieldName: 'networkIds', fieldText: intl.$t({ defaultMessage: 'Network' }) }
-      ],
+      readOnlyRows,
       async () => deleteDpsk({
         params: { serviceId: selectedRow.id }
       }).then(callback)

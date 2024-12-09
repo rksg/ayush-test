@@ -131,8 +131,8 @@ export function DpskForm (props: DpskFormProps) {
       } else {
         if (isIdentityGroupRequired) {
           result = await createDpskWithIdentityGroup({
-            params: { identityGroupId: dpskSaveData.identityGroupId },
-            payload: dpskSaveData,
+            params: { identityGroupId: dpskSaveData.identityId },
+            payload: _.omit(dpskSaveData, 'identityId'),
             enableRbac
           }).unwrap()
         } else {

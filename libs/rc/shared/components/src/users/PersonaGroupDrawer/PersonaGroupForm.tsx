@@ -142,7 +142,7 @@ export function PersonaGroupForm (props: {
                         options={
                           dpskPoolList?.data?.data
                             // eslint-disable-next-line max-len
-                            .filter(pool => !pool.identityGroupId || pool.id === defaultValue?.dpskPoolId)
+                            .filter(pool => !pool.identityId || pool.id === defaultValue?.dpskPoolId)
                             .map(pool => ({ value: pool.id, label: pool.name }))
                         }
                       />

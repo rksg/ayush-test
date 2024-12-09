@@ -25,7 +25,7 @@ import {
   useLazyGetDpskListQuery,
   useLazyGetEnhancedDpskTemplateListQuery,
   useSearchPersonaGroupListQuery
-} from '@acx-ui/rc/services'
+} from '@acx-ui/rc/services';
 import {
   PassphraseFormatEnum,
   transformDpskNetwork,
@@ -201,10 +201,12 @@ function CloudpathFormItems({ editMode }: { editMode?: boolean }) {
     skip: !isIdentityGroupRequired,
     selectFromResult({ data }) {
       return {
+        // return empty list if data?.data is undefined
         identityGroupList: data?.data.filter(group => editMode || !group.dpskPoolId).map(group => ({ value: group.id, label: group.name }))
       }
     }
   })
+
   const [identityGroupModelVisible, setIdentityGroupModelVisible] = useState(false)
   const [policyModalVisible, setPolicyModalVisible] = useState(false)
 
@@ -270,7 +272,7 @@ function CloudpathFormItems({ editMode }: { editMode?: boolean }) {
             alignItems: 'center'
           }}>
             <Form.Item
-              name='identityGroupId'
+              name='identityId'
               label={$t({ defaultMessage: 'Identity Group' })}
               required
               rules={[{ required: true }]}
@@ -303,7 +305,7 @@ function CloudpathFormItems({ editMode }: { editMode?: boolean }) {
                   children={<IdentityGroupForm
                     callback={(identityGroupId?: string) => {
                       if (identityGroupId) {
-                        form.setFieldValue('identityGroupId', identityGroupId)
+                        form.setFieldValue('identityId', identityGroupId)
                       }
                       setIdentityGroupModelVisible(false)
                     }}

@@ -23,7 +23,7 @@ export interface CreateDpskFormFields {
   policyDefaultAccess?: PolicyDefaultAccess;
   deviceNumberType?: DeviceNumberType;
   policySetId?: string;
-  identityGroupId?: string;
+  identityId?: string;
 }
 export interface DpskSaveData {
   id?: string;
@@ -34,7 +34,7 @@ export interface DpskSaveData {
   expirationOffset?: number; // If 'expirationType' is not SPECIFIED_DATE then this field is the offset amount
   expirationDate?: string; // If 'expirationType' is SPECIFIED_DATE then this field is the related date in format YYYY-MM-DD.
   networkIds?: string[];
-  identityGroupId?: string; // Identity group id - This DPSK had bound with IdentityGroup
+  identityId?: string; // PersonaGroup id - This DPSK had bound with PersonaGroup
   deviceCountLimit?: number;
   policyDefaultAccess?: boolean;
   policySetId?: string;

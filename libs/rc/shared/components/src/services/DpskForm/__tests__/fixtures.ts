@@ -125,7 +125,7 @@ export const identityGroupList = {
       id: '86a51b7d-1e15-4ad0-8d4a-504e08b845a2',
       name: 'Amazing',
       description: null,
-      dpskPoolId: '97b86a354dba43f4892d449b8be62ea0',
+      dpskPoolId: null,
       macRegistrationPoolId: '8cd4f603-0248-45cd-a930-d77683eccdf4',
       propertyId: null,
       createdAt: '2024-11-27T07:23:44.522187Z',

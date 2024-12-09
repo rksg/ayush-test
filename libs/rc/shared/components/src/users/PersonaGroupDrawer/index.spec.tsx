@@ -1,15 +1,18 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import {
   MacRegListUrlsInfo,
   NewPersonaBaseUrl,
   PersonaUrls,
-  DpskUrls
+  DpskUrls, RulesManagementUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
+
+import { policySetList } from '../../services/DpskForm/__tests__/fixtures'
 
 import {
   mockDpskList,
@@ -57,6 +60,10 @@ describe('Persona Group Drawer', () => {
       rest.post(
         DpskUrls.getEnhancedDpskList.url,
         (req, res, ctx) => res(ctx.json(mockDpskList))
+      ),
+      rest.get(
+        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(policySetList))
       )
     )
     params = {
@@ -165,5 +172,21 @@ describe('Persona Group Drawer', () => {
     await userEvent.click(applyButton)
 
     await waitFor(() => expect(updatePersonaSpy).toHaveBeenCalled())
+  })
+
+  it('should render PersonaGroupDrawer without identityGroup', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DPSK_REQUIRE_IDENTITY_GROUP)
+    render(
+      <Provider>
+        <PersonaGroupDrawer
+          visible
+          isEdit={false}
+          onClose={closeFn}
+        />
+      </Provider>
+    )
+
+    await screen.findByRole('dialog')
+    expect(screen.queryByText('DPSK Service')).toBeNull()
   })
 })
