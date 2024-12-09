@@ -13,7 +13,8 @@ type StatusTrailProps = {
 }
 
 export const StatusTrail = ({ intent }: StatusTrailProps) => {
-  const isStatusTrailTooltipEnabled = useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE)
+  const isStatusTrailTooltipEnabled = true
+  // const isStatusTrailTooltipEnabled = useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE)
 
   const { sliceValue } = intent
   return <Card>
