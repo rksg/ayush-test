@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import _, { isEmpty } from 'lodash'
-import { useIntl }    from 'react-intl'
-import AutoSizer      from 'react-virtualized-auto-sizer'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { Loader, Carousel }                 from '@acx-ui/components'
 import type { DashboardFilter, PathFilter } from '@acx-ui/utils'
