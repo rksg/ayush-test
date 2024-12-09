@@ -1,6 +1,6 @@
-import { within } from '@testing-library/react'
-import userEvent  from '@testing-library/user-event'
-import { Form }   from 'antd'
+import { fireEvent, within } from '@testing-library/react'
+import userEvent             from '@testing-library/user-event'
+import { Form }              from 'antd'
 
 import { ActionType }                 from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
@@ -180,21 +180,21 @@ describe('DataPromptSettings', () => {
     const pageBodyInput =screen.getByTestId('messageHtml')
     expect(pageBodyInput).toHaveValue('')
 
-    await userEvent.type(pageTitleInput, '  ')
+    fireEvent.change(pageTitleInput, { target: { value: '  ' } })
 
     formRef.current.submit()
 
     expect(await screen.findByText('No leading or trailing spaces allowed')).toBeVisible()
 
-    await userEvent.type(pageTitleInput, 'a real value')
-    await userEvent.type(pageBodyInput, '  ')
+    fireEvent.change(pageTitleInput, { target: { value: 'a real value' } })
+    fireEvent.change(pageBodyInput, { target: { value: '  ' } })
 
     formRef.current.submit()
 
     expect(await screen.findByText('No leading or trailing spaces allowed')).toBeVisible()
   })
 
-  it.skip('should validate values that are too long', async () => {
+  it('should validate values that are too long', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       form.setFieldValue('displayTitle', true)
@@ -216,9 +216,9 @@ describe('DataPromptSettings', () => {
     const pageBodyInput =screen.getByTestId('messageHtml')
     expect(pageBodyInput).toHaveValue('')
 
-    await userEvent.type(pageTitleInput, 'Longer Than 100 Characters ###########################'
-      + '###################################################')
-    await userEvent.type(pageBodyInput, 'Longer Than 1000 Characters ############################'
+    fireEvent.change(pageTitleInput, { target: { value: 'Longer Than 100 Characters #############'
+      + '#################################################################' } })
+    fireEvent.change(pageBodyInput, { target: { value: 'Longer Than 1000 Characters #########'
       + '##################################################Longer Than 1000 Characters ##########'
       + '####################################################################Longer Than 1000 '
       + 'Characters ##############################################################################'
@@ -230,13 +230,10 @@ describe('DataPromptSettings', () => {
       + 'ers ##############################################################################Longer '
       + 'Than 1000 Characters ####################################################################'
       + '##########Longer Than 1000 Characters ###################################################'
-      + '###########################')
-
-    formRef.current.submit()
+      + '##############################################' } })
 
     expect(await screen.findByText('title must be up to 100 characters')).toBeVisible()
     expect(await screen.findByText('messageHtml must be up to 1000 characters')).toBeVisible()
-
   })
 
 })
