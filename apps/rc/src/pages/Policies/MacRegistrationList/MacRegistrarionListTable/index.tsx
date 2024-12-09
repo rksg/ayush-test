@@ -7,11 +7,10 @@ import {
   Loader,
   PageHeader,
   Table,
-  TableProps,
-  showToast
+  TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                        from '@acx-ui/rc/components'
+import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }          from '@acx-ui/rc/components'
 import {
   doProfileDelete, useAdaptivePolicySetListByQueryQuery,
   useDeleteMacRegListMutation,
@@ -43,8 +42,6 @@ export default function MacRegistrationListsTable () {
   const params = useParams()
 
   const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
-  const customHeaders = (isAsync) ? { Accept: 'application/vnd.ruckus.v2+json' } : undefined
 
   const filter = {
     filterKey: 'name',
@@ -216,16 +213,9 @@ export default function MacRegistrationListsTable () {
           { fieldName: 'associationIds', fieldText: $t({ defaultMessage: 'Identity' }) },
           { fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }
         ],
-        async () => deleteMacRegList({ params: { policyId: selectedRow.id }, customHeaders })
+        async () => deleteMacRegList({ params: { policyId: selectedRow.id } })
           .unwrap()
           .then(() => {
-            if (!isAsync) {
-              showToast({
-                type: 'success',
-                content: $t({ defaultMessage: 'List {name} was deleted' },
-                  { name: selectedRow.name })
-              })
-            }
             clearSelection()
           }).catch((error) => {
             console.log(error) // eslint-disable-line no-console

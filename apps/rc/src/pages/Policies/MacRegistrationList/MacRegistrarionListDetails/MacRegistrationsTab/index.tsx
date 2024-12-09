@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Loader, showToast, Table, TableProps }            from '@acx-ui/components'
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { Loader, Table, TableProps }                       from '@acx-ui/components'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
@@ -38,8 +37,6 @@ export function MacRegistrationsTab () {
   const [ uploadCsv, uploadCsvResult ] = useUploadMacRegistrationMutation()
 
   const macRegistrationListQuery = useGetMacRegListQuery({ params: { policyId } })
-  const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
-  const customHeaders = (isAsync) ? { Accept: 'application/vnd.ruckus.v2+json' } : undefined
 
   const sorter = {
     sortField: 'macAddress',
@@ -101,28 +98,8 @@ export function MacRegistrationsTab () {
           { fieldName: 'identityId', fieldText: $t({ defaultMessage: 'Identity' }) }
         ],
         // eslint-disable-next-line max-len
-        async () => deleteMacRegistrations({ params: { policyId, registrationId: selectedRows[0].id }, payload: selectedRows.map(p => p.id), customHeaders })
+        async () => deleteMacRegistrations({ params: { policyId, registrationId: selectedRows[0].id }, payload: selectedRows.map(p => p.id) })
           .then(() => {
-            const macAddress = selectedRows.map(row => row.macAddress).join(', ')
-            if (!isAsync) {
-              if(selectedRows.length > 1) {
-                showToast({
-                  type: 'success',
-                  content: $t(
-                    { defaultMessage: 'MAC Address {macAddress} were deleted' },
-                    { macAddress }
-                  )
-                })
-              } else {
-                showToast({
-                  type: 'success',
-                  content: $t(
-                    { defaultMessage: 'MAC Address {macAddress} was deleted' },
-                    { macAddress }
-                  )
-                })
-              }
-            }
             clearSelection()
           }).catch((error) => {
             console.log(error) // eslint-disable-line no-console
@@ -147,8 +124,7 @@ export function MacRegistrationsTab () {
       editMacRegistration(
         {
           params: { policyId, registrationId: rows[0].id },
-          payload: { revoked: true },
-          customHeaders
+          payload: { revoked: true }
         }).then(clearSelection)
     },
     scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.EDIT)
@@ -161,8 +137,7 @@ export function MacRegistrationsTab () {
       editMacRegistration(
         {
           params: { policyId, registrationId: rows[0].id },
-          payload: { revoked: false },
-          customHeaders
+          payload: { revoked: false }
         }).then(clearSelection)
     },
     scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.EDIT)
@@ -274,7 +249,7 @@ export function MacRegistrationsTab () {
         importRequest={async (formData) => {
           try {
             // eslint-disable-next-line max-len
-            await uploadCsv({ params: { policyId }, payload: formData, customHeaders: { ...customHeaders, 'Content-Type': undefined } }).unwrap()
+            await uploadCsv({ params: { policyId }, payload: formData }).unwrap()
             setUploadCsvDrawerVisible(false)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (error) {
