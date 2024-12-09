@@ -42,7 +42,7 @@ export const ButtonSolid = styled(Button)`
 export const GptModal = styled(Modal)<{ titleType: string, needBackground: boolean }>`
   .ant-modal-content {
     border-radius: 24px;
-    .ant-modal-header{
+    .ant-modal-header {
       border-radius: 24px;
 
       ${(props) =>
@@ -52,17 +52,19 @@ export const GptModal = styled(Modal)<{ titleType: string, needBackground: boole
         display: flex;
         justify-content: center;
       `}
-
     }
-    .ant-modal-footer{
+    .ant-modal-footer {
       background: none;
       text-align: center;
     }
     .ant-modal-body {
       margin-top: -20px;
+      margin-right: 20px;
       overflow-y: auto;
-      ${(props) => props.needBackground &&
-        `
+      ${(props) => props.titleType === 'wizard' && `
+        margin-right: 0px;`}
+      ${(props) => props.needBackground && `
+        margin-right: 0px;
         overflow-y: unset !important;
         background-image: url(${RuckusAiBackground});
         background-size: cover;
@@ -166,8 +168,6 @@ export const GptStep = styled(Steps)`
   }
 `
 
-
-
 export const VirticalContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 180px);
@@ -175,8 +175,8 @@ export const VirticalContainer = styled.div`
   gap: 20px;
   justify-content: center;
   align-content: center;
+  margin-left: 20px;
 `
-
 
 export const VirticalBox = styled.div`
   display: flex;
