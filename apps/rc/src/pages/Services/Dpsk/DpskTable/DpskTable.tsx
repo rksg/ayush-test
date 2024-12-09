@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { Divider, Space } from 'antd'
 import { useIntl }        from 'react-intl'
 
@@ -64,12 +66,16 @@ export default function DpskTable () {
     pagination: { settingsId }
   })
 
-  // eslint-disable-next-line max-len
-  let readOnlyRows = [{ fieldName: 'networkIds' as keyof DpskSaveData, fieldText: intl.$t({ defaultMessage: 'Network' }) }]
-  if (!isIdentityGroupRequired) {
-    // eslint-disable-next-line max-len
-    readOnlyRows.concat([{ fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Identity Group' }) }])
-  }
+  const readOnlyRows: { fieldName: keyof DpskSaveData, fieldText: string }[] = useMemo(() => {
+    if (isIdentityGroupRequired) {
+      return [{ fieldName: 'networkIds', fieldText: intl.$t({ defaultMessage: 'Network' }) }]
+    } else {
+      return [
+        { fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Identity Group' }) },
+        { fieldName: 'networkIds', fieldText: intl.$t({ defaultMessage: 'Network' }) }
+      ]
+    }
+  }, [isIdentityGroupRequired])
 
   const doDelete = (selectedRow: DpskSaveData, callback: () => void) => {
     doProfileDelete(
