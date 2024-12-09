@@ -263,7 +263,7 @@ export function NewDeviceInventory () {
           onChange={tableQuery.handleTableChange}
           actions={actions}
           onFilterChange={tableQuery.handleFilterChange}
-          rowKey='name'
+          rowKey='serialNumber'
         />
       </Loader>
     </>
