@@ -6,19 +6,23 @@ import { BrowserRouter } from 'react-router-dom'
 
 import { Provider, intentAIApi, intentAIUrl, store }                                  from '@acx-ui/store'
 import { mockGraphqlMutation, render, renderHook, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { encodeParameter }                                                            from '@acx-ui/utils'
 
 import { mockIntentContext }                           from './__tests__/fixtures'
 import { mockedIntentCRRM, mockedIntentCRRMnew }       from './AIDrivenRRM/__tests__/fixtures'
 import { Statuses }                                    from './states'
 import { createUseIntentTransition, useInitialValues } from './useIntentTransition'
 
+
 const { click } = userEvent
 
-const mockNavigate = jest.fn()
+const mockedUseNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
-  useNavigateToPath: () => mockNavigate
+  useNavigateToPath: () => jest.fn(),
+  useNavigate: () => mockedUseNavigate
 }))
+
 jest.mock('./IntentContext')
 
 describe('createUseIntentTransition', () => {
@@ -59,6 +63,7 @@ describe('createUseIntentTransition', () => {
     })
 
     it('handle submit success', async () => {
+      const params = { tenantId: 'tenant-id' }
       mockIntentContext({
         intent: { ...mockedIntentCRRM, metadata: {
           ...mockedIntentCRRM.metadata, scheduledAt: '2024-08-12T13:00:00' } }
@@ -66,19 +71,30 @@ describe('createUseIntentTransition', () => {
       mockGraphqlMutation(intentAIUrl, 'IntentTransition', {
         data: { transition: { success: true, errorMsg: '' , errorCode: '' } }
       })
-      render(<BrowserRouter><Provider><TestForm /></Provider></BrowserRouter>)
+      render(<Provider><TestForm /></Provider>, { route: { params } })
       await click(await screen.findByRole('button', { name: 'Submit' }))
       expect(await screen.findByTestId('toast-content'))
         // eslint-disable-next-line max-len
         .toHaveTextContent('AI-Driven RRM: Client Density vs Throughput for 2.4 GHz radio for 21_US_Beta_Samsung has been updated')
       const viewElement = await screen.findByText('View')
       await userEvent.click(viewElement)
-      expect(window.location.href)
-        // eslint-disable-next-line max-len
-        .toContain('?intentTableFilters=%257B%2522aiFeature%2522%253A%255B%2522AI-Driven%2520RRM%2522%255D%252C%2522intent%2522%253A%255B%2522Client%2520Density%2520vs%2520Throughput%2520for%25202.4%2520GHz%2520radio%2522%255D%252C%2522category%2522%253A%255B%2522Wi-Fi%2520Experience%2522%255D%252C%2522sliceValue%2522%253A%255B%25224e3f1fbc-63dd-417b-b69d-2b08ee0abc52%2522%255D%252C%2522statusLabel%2522%253A%255B%2522')
-      expect(window.location.href).toContain('scheduled')
-      expect(window.location.href).toContain('scheduled-one-click')
-      expect(window.location.href).toContain('applyscheduled')
+      const intentFilter = {
+        aiFeature: ['AI-Driven RRM'],
+        intent: ['Client Density vs Throughput for 2.4 GHz radio'],
+        category: ['Wi-Fi Experience'],
+        sliceValue: ['4e3f1fbc-63dd-417b-b69d-2b08ee0abc52'],
+        statusLabel: ['scheduled+scheduled-one-click+applyscheduled']
+      }
+      const encodedParameters = encodeParameter(intentFilter)
+      const newSearch = new URLSearchParams()
+      newSearch.set('intentTableFilters', encodedParameters)
+      const search = newSearch.toString()
+
+      expect(mockedUseNavigate).toBeCalledWith({
+        pathname: `/${params.tenantId}/t/analytics/intentAI`,
+        hash: '',
+        search
+      })
     })
     it('handle submit error', async () => {
       mockIntentContext({
