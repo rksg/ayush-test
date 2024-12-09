@@ -1,6 +1,5 @@
 import {
   AlgorithmType,
-  CertificateTemplate,
   DpskSaveData,
   MacRegistrationPool,
   NewTablePageable,
