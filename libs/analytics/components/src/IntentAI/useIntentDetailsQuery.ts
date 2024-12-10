@@ -12,8 +12,8 @@ import { getIntl, NetworkPath, noDataDisplay, NodeType } from '@acx-ui/utils'
 
 import { NetworkNode } from '../NetworkFilter/services'
 
-import { DisplayStates, Statuses, StatusReasons }        from './states'
-import { dataRetentionText, IntentWlan, isDataRetained } from './utils'
+import { DisplayStates, Statuses, StatusReasons }                                          from './states'
+import { coldTierDataText, dataRetentionText, IntentWlan, isColdTierData, isDataRetained } from './utils'
 
 export type IntentKPIConfig = {
   key: string;
@@ -154,8 +154,9 @@ export function getGraphKPIs (
       footer: string
       delta: { value: string; trend: TrendTypeEnum } | undefined
     }
-
-    if (!isDataRetained(intent.metadata.dataEndTime)) {
+    if (isColdTierData(intent.metadata.dataEndTime)) {
+      ret.footer = $t(coldTierDataText)
+    } else if (!isDataRetained(intent.metadata.dataEndTime)) {
       ret.footer = $t(dataRetentionText)
     } else if (state !== 'no-data') {
       const result = getKPIData(intent, kpi)

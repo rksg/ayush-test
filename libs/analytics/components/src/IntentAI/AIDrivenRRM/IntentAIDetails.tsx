@@ -77,7 +77,7 @@ export function createIntentAIDetails () {
 
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const { intent, kpis, isDataRetained: hasData, state } = useIntentContext()
+    const { intent, kpis, isDataRetained: hasData, state, isColdTierData } = useIntentContext()
     const valuesText = useValuesText()
 
     const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
@@ -86,7 +86,7 @@ export function createIntentAIDetails () {
     const queryResult = useIntentAICRRMQuery()
     const crrmData = queryResult.data!
     const fields = useCommonFields(intent)
-    const noData = state === 'no-data' || !hasData
+    const noData = state === 'no-data' || !hasData || isColdTierData
 
     return <>
       <div hidden>
@@ -103,7 +103,7 @@ export function createIntentAIDetails () {
                 children={<FormattedMessage {...valuesText.summaryText} values={richTextFormatValues} />}/>
               <DescriptionSection fields={fields}/>
               <br />
-              {hasData && state !== 'no-data'
+              {hasData && state !== 'no-data' && !isColdTierData
                 ? <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })} />
                 : null}
             </IntentDetailsSidebar>)}
