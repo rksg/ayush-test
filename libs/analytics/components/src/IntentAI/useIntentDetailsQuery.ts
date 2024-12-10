@@ -188,7 +188,7 @@ type IntentDetailsQueryPayload = {
 export const api = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
     intentDetails: build.query<Intent | undefined, IntentDetailsQueryPayload>({
-      query: ({ root, sliceId, code, kpis }: IntentDetailsQueryPayload) => ({
+      query: ({ root, sliceId, code }: IntentDetailsQueryPayload) => ({
         document: gql`
           query IntentDetails($root: String!, $sliceId: String!, $code: String!) {
             intent(root: $root, sliceId: $sliceId, code: $code) {
@@ -198,7 +198,6 @@ export const api = intentAIApi.injectEndpoints({
               sliceType sliceValue updatedAt
               path { type name }
               statusTrail { status statusReason displayStatus createdAt }
-              ${kpiHelper(kpis)}
               ${!code.includes('ecoflex') ? 'currentValue recommendedValue' : ''}
             }
           }
@@ -211,20 +210,20 @@ export const api = intentAIApi.injectEndpoints({
       providesTags: [{ type: 'Intent', id: 'INTENT_DETAILS' }]
     }),
     intentKpis: build.query<IntentKpi | undefined, IntentDetailsQueryPayload>({
-      query: ({ root, sliceId, code, kpis }) => {
-        console.log('HII', kpiHelper(kpis))
-        return ({
-          document: gql`
+      query: ({ root, sliceId, code, kpis }) => ({
+        document: gql`
         query IntentKpis($root: String!, $sliceId: String!, $code: String!) {
           intent(root: $root, sliceId: $sliceId, code: $code) {
             ${kpiHelper(kpis)}
           }
         }
       `,
-          variables: { root, sliceId, code }
-        })}
-      // transformResponse: (response: { intent?: Intent }) => response.intent
-    // You may add providesTags if you need caching/invalidations
+        variables: { root, sliceId, code }
+      }),
+      transformResponse: (response: { intent?: Intent }) => response.intent as IntentKpi,
+      transformErrorResponse: (error, meta) =>
+        ({ ...error, data: meta?.response?.data?.intent }),
+      providesTags: [{ type: 'Intent', id: 'INTENT_KPIS' }]
     })
   })
 })

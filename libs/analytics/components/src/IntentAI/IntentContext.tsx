@@ -52,7 +52,7 @@ export function createIntentContextProvider (
       // to prevent RTK Query unable to use param as cache key
       .map(kpi => _.pick(kpi, ['key', 'deltaSign']))
     const query = useIntentDetailsQuery({ ...params, kpis }, { skip: !spec }) // kpis not needed
-    const kpiss = useIntentKpisQuery({ ...params, kpis }, { skip: !spec })
+    const kpiQuery = useIntentKpisQuery({ ...params, kpis }, { skip: !spec })
     if (!spec) return null // no matching spec
     if (query.isSuccess && !query.data) return null // 404
 
@@ -60,8 +60,7 @@ export function createIntentContextProvider (
 
     const intent = isDetectError ?
       (_.pick(query.error, ['data']) as { data: Intent }).data
-      : query.data
-    console.log('DATA', kpiss)
+      : query.data && { ...query.data, ...kpiQuery.data }
     const context: IIntentContext = {
       intent: intent!,
       configuration: spec.configuration,
