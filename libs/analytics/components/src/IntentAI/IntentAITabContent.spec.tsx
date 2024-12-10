@@ -23,12 +23,12 @@ import { getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile } fro
 import { DateRange, setUpIntl }                                              from '@acx-ui/utils'
 
 import { intentListResult, mockAIDrivenRow, filterOptions } from './__tests__/fixtures'
+import IntentAITabContent                                   from './IntentAITabContent'
 import {
   api,
   TransitionMutationResponse
 } from './services'
 
-import { IntentAITabContent } from './index'
 
 const mockShowOneClickOptimize =
 jest.fn().mockImplementation((_rows, onOk) => onOk && onOk())
