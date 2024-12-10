@@ -5,7 +5,7 @@ import { mockGraphqlQuery, render, screen }          from '@acx-ui/test-utils'
 
 import { mockIntentContext } from '../__tests__/fixtures'
 import { Statuses }          from '../states'
-import { Intent }            from '../useIntentDetailsQuery'
+import { IntentDetail }      from '../useIntentDetailsQuery'
 
 import { mockedIntentEcoFlex } from './__tests__/fixtures'
 import { mockKpiData }         from './__tests__/mockedEcoFlex'
@@ -14,8 +14,8 @@ import * as EcoFlex            from './IEcoFlex'
 
 jest.mock('../IntentContext')
 
-const mockIntentContextWith = (data: Partial<Intent> = {}) => {
-  const intent = _.merge({}, mockedIntentEcoFlex, data) as Intent
+const mockIntentContextWith = (data: Partial<IntentDetail> = {}) => {
+  const intent = _.merge({}, mockedIntentEcoFlex, data) as IntentDetail
   const context = mockIntentContext({ intent, configuration, kpis })
   return {
     params: _.pick(context.intent, ['code', 'root', 'sliceId'])

@@ -8,7 +8,7 @@ import { mockGraphqlMutation, mockGraphqlQuery, render, screen, waitForElementTo
 
 import { mockIntentContext } from '../__tests__/fixtures'
 import { Statuses }          from '../states'
-import { Intent }            from '../useIntentDetailsQuery'
+import { IntentDetail }      from '../useIntentDetailsQuery'
 
 import { mocked, mockedIntentAps }                            from './__tests__/mockedIZoneFirmwareUpgrade'
 import { configuration, kpis, IntentAIDetails, IntentAIForm } from './IZoneFirmwareUpgrade'
@@ -68,8 +68,8 @@ afterEach((done) => {
   }
 })
 
-const mockIntentContextWith = (data: Partial<Intent> = {}) => {
-  const intent = _.merge({}, mocked, data) as Intent
+const mockIntentContextWith = (data: Partial<IntentDetail> = {}) => {
+  const intent = _.merge({}, mocked, data) as IntentDetail
   const context = mockIntentContext({ intent, configuration, kpis })
   return { params: _.pick(context.intent, ['code', 'root', 'sliceId']) }
 }
@@ -138,7 +138,10 @@ describe('IntentAIDetails', () => {
     const { params } = mockIntentContextWith({
       ...mocked,
       status: Statuses.scheduled,
-      metadata: { scheduledAt: '2022-01-01T00:00:00.000Z', dataEndTime: '2022-01-01T00:00:00.000Z' }
+      metadata: {
+        scheduledAt: '2022-01-01T00:00:00.000Z',
+        dataEndTime: '2022-01-01T00:00:00.000Z'
+      } as IntentDetail['metadata']
     })
     render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()

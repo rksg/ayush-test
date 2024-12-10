@@ -8,7 +8,7 @@ import { mockGraphqlMutation, render, screen, waitForElementToBeRemoved, within 
 
 import { mockIntentContext } from '../__tests__/fixtures'
 import { Statuses }          from '../states'
-import { Intent }            from '../useIntentDetailsQuery'
+import { IntentDetail }      from '../useIntentDetailsQuery'
 
 import { mocked }                                             from './__tests__/mockedCBgScanTimer'
 import { configuration, kpis, IntentAIDetails, IntentAIForm } from './CBgScan6gTimer'
@@ -68,7 +68,7 @@ afterEach((done) => {
   }
 })
 
-const mockIntentContextWith = (data: Partial<Intent> = {}) => {
+const mockIntentContextWith = (data: Partial<IntentDetail> = {}) => {
   let intent = { ...mocked, code: 'c-bgscan6g-timer' }
   intent = _.merge({}, intent, data) as typeof intent
   mockIntentContext({ intent, configuration, kpis })

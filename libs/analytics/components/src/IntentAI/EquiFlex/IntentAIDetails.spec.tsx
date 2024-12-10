@@ -10,7 +10,7 @@ import { mockServer, render, screen, within } from '@acx-ui/test-utils'
 
 import { mockIntentContext } from '../__tests__/fixtures'
 import { Statuses }          from '../states'
-import { Intent }            from '../useIntentDetailsQuery'
+import { IntentDetail }      from '../useIntentDetailsQuery'
 
 import { mockedIntentEquiFlex, mockWifiNetworkList } from './__tests__/fixtures'
 import { configuration, kpis }                       from './common'
@@ -24,8 +24,8 @@ jest.mock('@acx-ui/config', () => ({
 }))
 const mockGet = get as jest.Mock
 
-const mockIntentContextWith = (data: Partial<Intent> = {}) => {
-  const intent = _.merge({}, mockedIntentEquiFlex, data) as Intent
+const mockIntentContextWith = (data: Partial<IntentDetail> = {}) => {
+  const intent = _.merge({}, mockedIntentEquiFlex, data) as IntentDetail
   const context = mockIntentContext({ intent, configuration, kpis })
   return {
     params: _.pick(context.intent, ['code', 'root', 'sliceId']),
@@ -194,7 +194,7 @@ describe('IntentAIDetails', () => {
         code: 'c-probeflex-5g',
         metadata: {
           wlans: mockWifiNetworkList.data
-        } as Intent['metadata']
+        } as IntentDetail['metadata']
       })
       render(
         <CProbeFlex5g.IntentAIDetails />,
@@ -212,7 +212,7 @@ describe('IntentAIDetails', () => {
         code: 'c-probeflex-5g',
         metadata: {
           wlans: mockWifiNetworkList.data
-        } as Intent['metadata']
+        } as IntentDetail['metadata']
       })
       render(
         <CProbeFlex5g.IntentAIDetails />,

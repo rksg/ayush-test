@@ -5,7 +5,7 @@ import { mockGraphqlQuery, render, screen, within }  from '@acx-ui/test-utils'
 
 import { mockIntentContext } from '../__tests__/fixtures'
 import { Statuses }          from '../states'
-import { Intent }            from '../useIntentDetailsQuery'
+import { IntentDetail }      from '../useIntentDetailsQuery'
 
 import { mockedCRRMGraphs, mockedIntentCRRM } from './__tests__/fixtures'
 import * as CCrrmChannelAuto                  from './CCrrmChannelAuto'
@@ -21,8 +21,8 @@ jest.mock('./RRMGraph/DownloadRRMComparison', () => ({
   DownloadRRMComparison: () => <div data-testid='DownloadRRMComparison' />
 }))
 
-const mockIntentContextWith = (data: Partial<Intent>) => {
-  const intent = _.merge({}, mockedIntentCRRM, data) as Intent
+const mockIntentContextWith = (data: Partial<IntentDetail>) => {
+  const intent = _.merge({}, mockedIntentCRRM, data) as IntentDetail
   const context = mockIntentContext({ intent, kpis })
   return { params: _.pick(context.intent, ['code', 'root', 'sliceId']) }
 }
@@ -53,7 +53,7 @@ describe('IntentAIDetails', () => {
         preferences: {
           crrmFullOptimization: true
         }
-      } as unknown as Intent['metadata']
+      } as unknown as IntentDetail['metadata']
     })
     render(
       <CCrrmChannelAuto.IntentAIDetails />,
@@ -159,7 +159,7 @@ describe('IntentAIDetails', () => {
           preferences: {
             crrmFullOptimization: true
           }
-        } as unknown as Intent['metadata']
+        } as unknown as IntentDetail['metadata']
       })
       render(
         <CCrrmChannelAuto.IntentAIDetails />,
@@ -195,7 +195,7 @@ describe('IntentAIDetails', () => {
           preferences: {
             crrmFullOptimization: false
           }
-        } as unknown as Intent['metadata']
+        } as unknown as IntentDetail['metadata']
       })
       render(
         <CCrrmChannelAuto.IntentAIDetails />,
