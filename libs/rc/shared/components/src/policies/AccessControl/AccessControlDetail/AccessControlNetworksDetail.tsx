@@ -62,7 +62,7 @@ const AccessControlNetworksDetail = (props: { data: EnhancedAccessControlInfoTyp
       align: 'center',
       key: 'venues',
       sorter: true,
-      renderText: (row) => row.count
+      renderText: (row) => row?.count ?? 0
     }
   ]
 
