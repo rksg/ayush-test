@@ -10,8 +10,8 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                        from '@acx-ui/rc/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }      from '@acx-ui/rc/components'
 import {
   doProfileDelete, useAdaptivePolicySetListByQueryQuery,
   useDeleteMacRegListMutation,
@@ -42,9 +42,10 @@ export default function MacRegistrationListsTable () {
   const [networkVenuesMap, setNetworkVenuesMap] = useState(new Map())
   const params = useParams()
 
-  const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
   const customHeaders = (isAsync) ? { Accept: 'application/vnd.ruckus.v2+json' } : undefined
+
+  const isIdentityRequired = useIsSplitOn(Features.MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE)
 
   const filter = {
     filterKey: 'name',
@@ -80,7 +81,7 @@ export default function MacRegistrationListsTable () {
           policySetMap,
           getPolicySetsLoading: isLoading
         }
-      }, skip: !policyEnabled
+      }
     })
 
   useEffect(() => {
@@ -136,7 +137,6 @@ export default function MacRegistrationListsTable () {
         title: $t({ defaultMessage: 'Default Access' }),
         key: 'defaultAccess',
         dataIndex: 'defaultAccess',
-        show: policyEnabled,
         sorter: true,
         render: function (_:ReactNode, row:MacRegistrationPool) {
           return row.policySetId ? row.defaultAccess: ''
@@ -146,7 +146,6 @@ export default function MacRegistrationListsTable () {
         title: $t({ defaultMessage: 'Adaptive Policy Set' }),
         key: 'policySet',
         dataIndex: 'policySetId',
-        show: policyEnabled,
         sorter: true,
         render: function (_:ReactNode, row:MacRegistrationPool) {
           return row.policySetId ? policySetMap.get(row.policySetId) : ''
@@ -213,7 +212,10 @@ export default function MacRegistrationListsTable () {
         $t({ defaultMessage: 'List' }),
         selectedRow.name,
         [
-          { fieldName: 'associationIds', fieldText: $t({ defaultMessage: 'Identity' }) },
+          isIdentityRequired ?
+            // eslint-disable-next-line max-len
+            { fieldName: 'registrationCount', fieldText: $t({ defaultMessage: 'Mac Registration' }) } :
+            { fieldName: 'associationIds', fieldText: $t({ defaultMessage: 'Identity' }) },
           { fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }
         ],
         async () => deleteMacRegList({ params: { policyId: selectedRow.id }, customHeaders })
