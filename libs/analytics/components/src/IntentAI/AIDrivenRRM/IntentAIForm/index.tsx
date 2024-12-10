@@ -11,7 +11,6 @@ import { getScheduledAt }     from '../../common/ScheduleTiming'
 import { SettingsPage }       from '../../common/SettingsPage'
 import { useIntentContext }   from '../../IntentContext'
 import { Statuses }           from '../../states'
-import { useIntentParams }    from '../../useIntentDetailsQuery'
 import {
   createUseIntentTransition,
   FormValues,
@@ -46,9 +45,8 @@ export function IntentAIForm () {
   const { intent } = useIntentContext()
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const params = useIntentParams()
 
-  const queryResult = useIntentAICRRMQuery(params)
+  const queryResult = useIntentAICRRMQuery()
   const crrmData = queryResult.data!
   const [sliderUrlBefore, setSliderUrlBefore] = useState<string>('')
   const [sliderUrlAfter, setSliderUrlAfter] = useState<string>('')
