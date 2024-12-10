@@ -38,6 +38,8 @@ export function MacRegistrationsTab () {
 
   const macRegistrationListQuery = useGetMacRegListQuery({ params: { policyId } })
 
+  const isIdentityRequired = useIsSplitOn(Features.MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE)
+
   const sorter = {
     sortField: 'macAddress',
     sortOrder: 'ASC'
@@ -94,9 +96,8 @@ export function MacRegistrationsTab () {
         selectedRows,
         $t({ defaultMessage: 'MAC Address' }),
         selectedRows[0].macAddress,
-        [
-          { fieldName: 'identityId', fieldText: $t({ defaultMessage: 'Identity' }) }
-        ],
+        isIdentityRequired ? [] :
+          [{ fieldName: 'identityId', fieldText: $t({ defaultMessage: 'Identity' }) }],
         // eslint-disable-next-line max-len
         async () => deleteMacRegistrations({ params: { policyId, registrationId: selectedRows[0].id }, payload: selectedRows.map(p => p.id) })
           .then(() => {

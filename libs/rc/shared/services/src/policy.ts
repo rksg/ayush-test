@@ -1145,6 +1145,17 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
     }),
+    addMacRegListWithIdentity: build.mutation<MacRegistrationPool, RequestPayload>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(MacRegListUrlsInfo.createMacRegistrationPoolWithIdentity, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
+    }),
     updateMacRegList: build.mutation<MacRegistrationPool, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(MacRegListUrlsInfo.updateMacRegistrationPool, params)
@@ -3537,8 +3548,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'AddServerCertificate',
-            'UpdateServerCertificate'
+            'GENERATE_SERVER_CERT',
+            'UPDATE_SERVER_CERT',
+            'UPLOAD_SERVER_CERT'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([
               { type: 'ServerCertificate', id: 'LIST' }
@@ -3577,7 +3589,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     downloadServerCertificateChains: build.query<Blob, RequestPayload>({
       query: ({ params, customHeaders }) => {
         // eslint-disable-next-line max-len
-        const req = createHttpRequest(CertificateUrls.downloadServerCertificate, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
+        const req = createHttpRequest(CertificateUrls.downloadServerCertificateChains, params, { ...defaultCertTempVersioningHeaders, ...customHeaders })
         return {
           ...req,
           responseHandler: async (response) => {
@@ -3630,6 +3642,7 @@ export const {
   useAddMacRegistrationMutation,
   useUpdateMacRegistrationMutation,
   useAddMacRegListMutation,
+  useAddMacRegListWithIdentityMutation,
   useUpdateMacRegListMutation,
   useUpdateAdaptivePolicySetToMacListMutation,
   useDeleteAdaptivePolicySetFromMacListMutation,

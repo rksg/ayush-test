@@ -55,13 +55,12 @@ function BetaFeaturesDrawer (
           size='small'
           dataSource={betaList}
           renderItem={(item) =>
+            item.status &&
             <List.Item id={item.key}>
-              {item.status &&
-                <List.Item.Meta
-                  avatar={<CaretRightList/>}
-                  title={$t(item.description)}
-                />
-              }
+              <List.Item.Meta
+                avatar={<CaretRightList/>}
+                title={$t(item.description)}
+              />
             </List.Item>
           }
         />
