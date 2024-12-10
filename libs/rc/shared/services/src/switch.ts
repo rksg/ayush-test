@@ -1772,7 +1772,43 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: JSON.stringify(payload)
         }
-      }
+      },
+      providesTags: [{ type: 'SwitchPortProfile', id: 'MacOuis' }]
+    }),
+    addSwitchPortProfileMacOui: build.mutation<MacOuis, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(
+          SwitchUrlsInfo.addSwitchPortProfileMacOui, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'MacOuis' }]
+    }),
+    editSwitchPortProfileMacOui: build.mutation<MacOuis, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(
+          SwitchUrlsInfo.editSwitchPortProfileMacOui, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'MacOuis' }]
+    }),
+    deleteSwitchPortProfileMacOui: build.mutation<MacOuis, RequestPayload>({
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(
+          SwitchUrlsInfo.deleteSwitchPortProfileMacOui, params, headers)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'MacOuis' }]
     }),
     switchPortProfileLldpTlvsList: build.query<TableResult<LldpTlvs>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
@@ -1783,7 +1819,43 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: JSON.stringify(payload)
         }
-      }
+      },
+      providesTags: [{ type: 'SwitchPortProfile', id: 'LldpTlvs' }]
+    }),
+    addSwitchPortProfileLldpTlv: build.mutation<LldpTlvs, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(
+          SwitchUrlsInfo.addSwitchPortProfileLldpTlv, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'LldpTlvs' }]
+    }),
+    editSwitchPortProfileLldpTlv: build.mutation<LldpTlvs, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(
+          SwitchUrlsInfo.editSwitchPortProfileLldpTlv, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'LldpTlvs' }]
+    }),
+    deleteSwitchPortProfileLldpTlv: build.mutation<LldpTlvs, RequestPayload>({
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(
+          SwitchUrlsInfo.deleteSwitchPortProfileLldpTlv, params, headers)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'LldpTlvs' }]
     })
   })
 })
@@ -2053,5 +2125,12 @@ export const {
   useUpdateSwitchAuthenticationMutation,
   useSwitchPortProfilesListQuery,
   useSwitchPortProfileMacOuisListQuery,
-  useSwitchPortProfileLldpTlvsListQuery
+  useLazySwitchPortProfileMacOuisListQuery,
+  useAddSwitchPortProfileMacOuiMutation,
+  useEditSwitchPortProfileMacOuiMutation,
+  useDeleteSwitchPortProfileMacOuiMutation,
+  useSwitchPortProfileLldpTlvsListQuery,
+  useAddSwitchPortProfileLldpTlvMutation,
+  useEditSwitchPortProfileLldpTlvMutation,
+  useDeleteSwitchPortProfileLldpTlvMutation
 } = switchApi

@@ -21,20 +21,19 @@ const SwitchProfileTabs = () => {
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeSubTab} type='card'>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Profiles' })} key='profiles' />
-      <Tabs.TabPane tab={$t({ defaultMessage: 'MAC OUI' })} key='macs' />
-      <Tabs.TabPane tab={$t({ defaultMessage: 'LLDP TLV' })} key='lldps' />
+      <Tabs.TabPane tab={$t({ defaultMessage: 'MAC OUI' })} key='macoui' />
+      <Tabs.TabPane tab={$t({ defaultMessage: 'LLDP TLV' })} key='lldptlv' />
     </Tabs>
   )
 }
 
 const tabs = {
   profiles: SwitchPortProfileTable,
-  macs: MacOuiTable,
-  lldps: LldpTlvTable
+  macoui: MacOuiTable,
+  lldptlv: LldpTlvTable
 }
 
 const SwitchPortProfile = () => {
-  const { $t } = useIntl()
   const { activeSubTab } = useParams()
   const Tab = tabs[activeSubTab as keyof typeof tabs]
   return (

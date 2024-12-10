@@ -687,9 +687,39 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/switchPortProfiles/macOuis/query',
     newApi: true
   },
+  addSwitchPortProfileMacOui: {
+    method: 'post',
+    url: '/switchPortProfiles/macOuis',
+    newApi: true
+  },
+  editSwitchPortProfileMacOui: {
+    method: 'put',
+    url: '/switchPortProfiles/macOuis/:macOuiId',
+    newApi: true
+  },
+  deleteSwitchPortProfileMacOui: {
+    method: 'delete',
+    url: '/switchPortProfiles/macOuis/:macOuiId',
+    newApi: true
+  },
   getSwitchPortProfileLldpTlvsList: {
     method: 'post',
     url: '/switchPortProfiles/lldpTlvs/query',
+    newApi: true
+  },
+  addSwitchPortProfileLldpTlv: {
+    method: 'post',
+    url: '/switchPortProfiles/lldpTlvs',
+    newApi: true
+  },
+  editSwitchPortProfileLldpTlv: {
+    method: 'put',
+    url: '/switchPortProfiles/lldpTlvs/:lldpTlvId',
+    newApi: true
+  },
+  deleteSwitchPortProfileLldpTlv: {
+    method: 'delete',
+    url: '/switchPortProfiles/lldpTlvs/:lldpTlvId',
     newApi: true
   }
 }

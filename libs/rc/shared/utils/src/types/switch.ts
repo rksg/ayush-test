@@ -1004,6 +1004,12 @@ export interface MacOuis {
   portProfiles?: string[]
 }
 
+export enum LldpTlvMatchingType {
+  FULL_MAPPING = 'FULL_MAPPING',
+  BEGIN = 'BEGIN',
+  INCLUDE = 'INCLUDE'
+}
+
 export interface SwitchPortProfiles {
   id?: string
   name: string

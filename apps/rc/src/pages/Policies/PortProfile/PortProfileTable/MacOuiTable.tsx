@@ -1,26 +1,23 @@
-import { useIntl } from 'react-intl'
+import { useEffect, useState } from 'react'
+
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, showActionModal, Tooltip } from '@acx-ui/components'
 import {
-  useDeleteEthernetPortProfileMutation,
+  useDeleteSwitchPortProfileMacOuiMutation,
   useSwitchPortProfileMacOuisListQuery,
   useSwitchPortProfilesListQuery
 }                     from '@acx-ui/rc/services'
 import {
-  EthernetPortProfileViewData,
-  getEthernetPortTypeString,
-  getPolicyDetailsLink,
   MacOuis,
-  PolicyOperation,
-  PolicyType,
   SwitchPortProfiles,
   useTableQuery
 }                                                                  from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { SwitchScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasPermission }                           from '@acx-ui/user'
-import { Pagination } from 'antd'
-import { useEffect, useState } from 'react'
+import { useParams }                     from '@acx-ui/react-router-dom'
+import { SwitchScopes }                  from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+
+import { MacOuiDrawer } from '../PortProfileForm/MacOuiDrawer'
 
 type PortProfileMap = {
   [key: string]: string
@@ -29,15 +26,14 @@ type PortProfileMap = {
 export default function MacOuiTable () {
   const { $t } = useIntl()
   const params = useParams()
-  const basePath: Path = useTenantLink('')
-  const navigate = useNavigate()
   const settingsId = 'mac-ouis-table'
+  const [ visible, setVisible ] = useState(false)
+  const [ isEditMode, setIsEditMode ] = useState(false)
+  const [ editData, setEditData ] = useState<MacOuis>()
   const [ portProfileMap, setPortProfileMap ] = useState<PortProfileMap>({})
 
   const defaultPayload = {
-    fields: [
-      'id'
-    ],
+    fields: [ 'id' ],
     Pagination: { settingsId }
   }
 
@@ -70,7 +66,7 @@ export default function MacOuiTable () {
     }
   }, [switchPortProfilesList])
 
-  const [deleteEthernetPortProfile] = useDeleteEthernetPortProfileMutation()
+  const [deleteSwitchPortProfileMacOui] = useDeleteSwitchPortProfileMacOuiMutation()
 
   const columns: TableProps<MacOuis>['columns'] = [
     {
@@ -85,7 +81,8 @@ export default function MacOuiTable () {
       title: $t({ defaultMessage: 'Note' }),
       key: 'note',
       dataIndex: 'note',
-      sorter: true
+      sorter: true,
+      searchable: true
     },
     {
       title: $t({ defaultMessage: 'Profile Name' }),
@@ -106,42 +103,64 @@ export default function MacOuiTable () {
   const rowActions: TableProps<MacOuis>['rowActions'] = [
     {
       scopeKey: [SwitchScopes.UPDATE],
-      // Default Ethernet Port Profile cannot Edit
-      visible: (selectedRows) => selectedRows.length === 1
-            && !selectedRows[0].id,
       label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedRows) => selectedRows.length === 1,
       onClick: (selectedRows) => {
-        // navigate({
-        //   ...basePath,
-        //   pathname: `${basePath.pathname}/` + getPolicyDetailsLink({
-        //     type: PolicyType.ETHERNET_PORT_PROFILE,
-        //     oper: PolicyOperation.EDIT,
-        //     policyId: selectedRows[0].id
-        //   })
-        // })
+        setEditData(selectedRows[0])
+        setIsEditMode(true)
+        setVisible(true)
       }
     },
     {
       scopeKey: [SwitchScopes.DELETE],
-      // Default Ethernet Port Profile cannot Delete
-      visible: (selectedRows) => {
-        return !selectedRows.some(row => row.id)
-      },
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Profile' }),
-            entityValue: rows.length === 1 ? rows[0].oui : undefined,
-            numOfEntities: rows.length
-          },
-          onOk: () => {
-            Promise.all(rows.map(row => deleteEthernetPortProfile({ params: { id: row.id } })))
-              .then(clearSelection)
-          }
-        })
+        const portProfileCount = rows.filter(item => item.portProfiles).length
+        const portProfileNames = rows.filter(item => item.portProfiles).map(
+          item => item.portProfiles?.map(item => portProfileMap[item])).join(', ')
+
+        if(portProfileCount > 0){
+          showActionModal({
+            type: 'confirm',
+            title: $t({ defaultMessage: 'Delete {macoui}' },
+              { macoui: rows.length === 1 ?
+                rows[0].oui : $t({ defaultMessage: '{count} MAC OUIs' }, { count: rows.length }) }),
+            // eslint-disable-next-line max-len
+            content: $t({ defaultMessage: '{count, plural, one {This} other {These}} OUIs {count, plural, one {is} other {are}} used in the following profile(s). Delete {count, plural, one {this OUI} other {them}} will result in profiles getting updated: {profilesNames}' }, {
+              count: rows.length,
+              profilesNames:
+              <FormattedMessage
+                defaultMessage='{profileNames}'
+                values={{
+                  profileNames: <div><br/><ul style={{ listStyleType: 'disc' }}>
+                    <li>{portProfileNames}</li></ul></div>
+                }} />
+            }),
+            okText: $t({ defaultMessage: 'Delete' }),
+            cancelText: $t({ defaultMessage: 'Cancel' }),
+            onOk: () => {
+              Promise.all(rows.map(row =>
+                deleteSwitchPortProfileMacOui({ params: { macOuiId: row.id } })))
+                .then(clearSelection)
+            }
+          })
+        }else{
+          showActionModal({
+            type: 'confirm',
+            title: $t({ defaultMessage: 'Delete {macoui}' },
+              { macoui: rows.length === 1 ?
+                rows[0].oui : $t({ defaultMessage: '{count} MAC OUIs' }, { count: rows.length }) }),
+            // eslint-disable-next-line max-len
+            content: $t({ defaultMessage: 'Are you sure you want to delete {count, plural, one {} other {these}}?' }, { count: rows.length }),
+            okText: $t({ defaultMessage: 'Delete' }),
+            cancelText: $t({ defaultMessage: 'Cancel' }),
+            onOk: () => {
+              Promise.all(rows.map(row =>
+                deleteSwitchPortProfileMacOui({ params: { macOuiId: row.id } })))
+                .then(clearSelection)
+            }
+          })
+        }
       }
     }
   ]
@@ -162,6 +181,21 @@ export default function MacOuiTable () {
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
+        actions={hasPermission({ scopes: [SwitchScopes.CREATE] }) ? [{
+          label: $t({ defaultMessage: 'Add MAC OUI' }),
+          scopeKey: [SwitchScopes.CREATE],
+          onClick: () => {
+            setIsEditMode(false)
+            setVisible(true)
+          }
+        }] : []}
+      />
+
+      <MacOuiDrawer
+        visible={visible}
+        setVisible={setVisible}
+        isEdit={isEditMode}
+        editData={isEditMode ? editData : undefined}
       />
     </Loader>
   )
