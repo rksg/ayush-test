@@ -2,11 +2,10 @@ import { useEffect, useState } from 'react'
 
 import { Col, Form, FormInstance, Input, Row, Select, Space } from 'antd'
 import TextArea                                               from 'antd/lib/input/TextArea'
-import moment                                                 from 'moment-timezone'
 import { useIntl }                                            from 'react-intl'
 
-import { Button, DatePicker, Modal, ModalType, Subtitle } from '@acx-ui/components'
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
+import { Button, Modal, ModalType, Subtitle } from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
   useAdaptivePolicySetListQuery,
   useGetEnhancedDpskListQuery,
@@ -123,13 +122,6 @@ export function PersonaGroupForm (props: {
               rules={[
                 { max: 255 }
               ]}
-            />
-            <Form.Item
-              name='expirationDate'
-              label={$t({ defaultMessage: 'Expiration Date' })}
-              children={<DatePicker
-                disabledDate={(c: moment.Moment) => c && c < moment().endOf('day')}
-              />}
             />
           </Col>
         </Row>
