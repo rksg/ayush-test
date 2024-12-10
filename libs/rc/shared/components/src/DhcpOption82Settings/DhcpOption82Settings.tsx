@@ -21,7 +21,6 @@ interface DhcpOption82SettingsProps {
   venueId?: string
   portId?: string
 }
-const { useWatch } = Form
 
 export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
   const { $t } = useIntl()
