@@ -162,5 +162,14 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json',
       'Accept': 'application/vnd.ruckus.v1+json'
     }
+  },
+  createDpskWithIdentityGroup: {
+    method: 'post',
+    url: '/identityGroups/:identityGroupId/dpskServices',
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

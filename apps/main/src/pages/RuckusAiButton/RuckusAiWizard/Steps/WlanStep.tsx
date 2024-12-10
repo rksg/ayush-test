@@ -9,11 +9,12 @@ import {
 import { Button, Divider } from 'antd'
 import { useIntl }         from 'react-intl'
 
-import { cssStr }                             from '@acx-ui/components'
-import { CrownSolid, OnboardingAssistantDog } from '@acx-ui/icons'
-import { useNetworkListQuery }                from '@acx-ui/rc/services'
+import { cssStr }                                               from '@acx-ui/components'
+import { CrownSolid, OnboardingAssistantDog }                   from '@acx-ui/icons'
+import { useCreateOnboardConfigsMutation, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
+  NetworkTypeEnum,
   ssidBackendNameRegExp,
   validateByteLength }
   from '@acx-ui/rc/utils'
@@ -36,12 +37,14 @@ export function WlanStep ( props: {
   description: string,
   showAlert: boolean,
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-   formInstance: ProFormInstance<any> | undefined
+   formInstance: ProFormInstance<any> | undefined,
+   sessionId: string,
 }) {
   const { $t } = useIntl()
   const { formInstance } = props
   const initialData = JSON.parse(props.payload || '[]') as NetworkConfig[]
   const [data, setData] = useState<NetworkConfig[]>([])
+  const [description, setDescription] = useState(props.description)
 
   const [checkboxStates, setCheckboxStates] =
     useState<boolean[]>(Array(initialData.length).fill(true))
@@ -55,6 +58,7 @@ export function WlanStep ( props: {
       formInstance?.setFieldsValue({ data: updatedData })
       setData(initialData)
       setCheckboxStates(Array(initialData.length).fill(true))
+      setDescription(props.description)
     }
 
   }, [props.payload])
@@ -68,13 +72,23 @@ export function WlanStep ( props: {
     { value: 'Public', label: $t({ defaultMessage: 'Public' }) }
   ]
 
-  const addNetworkProfile = () => {
+  const [createOnboardConfigs] = useCreateOnboardConfigsMutation()
+  const configPayload = {
+    type: NetworkTypeEnum.AAA.toUpperCase(),
+    content: '{}',
+    sessionId: props.sessionId,
+    name: ''
+  }
+
+  const addNetworkProfile = async () => {
+    const newWlan = await createOnboardConfigs({ payload: configPayload }).unwrap()
+
     const newProfile: NetworkConfig = {
       'Purpose': '',
       'SSID Name': '',
       'SSID Objective': 'Internal',
       'Checked': true,
-      'id': ''
+      'id': newWlan.id
     }
     setData([...data, newProfile])
     setCheckboxStates([...checkboxStates, true])
@@ -167,7 +181,7 @@ export function WlanStep ( props: {
           />
           <span>{$t({ defaultMessage: 'Recommended Network Profiles' })}</span>
         </UI.HighlightedTitle>
-        <UI.HighlightedDescription>{props.description}</UI.HighlightedDescription>
+        <UI.HighlightedDescription>{description}</UI.HighlightedDescription>
       </UI.HighlightedBox>
 
       {data?.map((item, index) => (
