@@ -206,10 +206,7 @@ export const Grid = styled.div`
   transition: all 0.2s ease-out;
 }
 .rglb_group-item .group-item-container #card-container .card {
-  background: #fff;
   position: absolute;
-  border: 1px solid #f1f1f1;
-  border-radius: 3px;
   transition: all 0.2s ease-out;
   .card-actions{
     display: none;

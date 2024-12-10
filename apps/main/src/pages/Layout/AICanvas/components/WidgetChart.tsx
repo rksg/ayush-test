@@ -16,6 +16,13 @@ interface WidgetListProps {
   data: WidgetListData;
 }
 
+interface WidgetCategory {
+  width: number
+  height: number
+  currentSizeIndex: number
+  sizes: { width: number, height:number }[]
+}
+
 const PIE = {
   width: 1,
   height: 4,
@@ -36,7 +43,7 @@ const PIE = {
   ]
 }
 
-const ChartConfig:{ [key:string]: any } = {
+const ChartConfig:{ [key:string]: WidgetCategory } = {
   pie: PIE
 }
 
@@ -83,7 +90,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
   //   params: {
   //     sessionId: data.sessionId,
   //     chatId: data.id
-  //   },
+  //   }
   // })
   const queryResults = {
     data: {
@@ -95,24 +102,21 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
     }
   }
   return (
-    <>
-      {/* <Loader states={[{isLoading: queryResults.isLoading}]}> */}
-      <Card key={data.id} title={data.title || $t({ defaultMessage: 'Title' })}>
-        <AutoSizer>
-          {({ height, width }) => (
-            <DonutChart
-              style={{ width, height }}
-              size={'medium'}
-              data={queryResults.data?.chartOption || []}
-              animation={true}
-              legend={'name-value'}
-              showTotal/>
-          )}
-        </AutoSizer>
-      </Card>
-      {/* </Loader> */}
-    </>
-
+    // <Loader states={[{ isLoading: queryResults.isLoading }]}>
+    <Card key={data.id} title={data.title || $t({ defaultMessage: 'Title' })}>
+      <AutoSizer>
+        {({ height, width }) => (
+          <DonutChart
+            style={{ width, height }}
+            size={'medium'}
+            data={queryResults.data?.chartOption || []}
+            animation={true}
+            legend={'name-value'}
+            showTotal/>
+        )}
+      </AutoSizer>
+    </Card>
+    // </Loader>
   )
 }
 

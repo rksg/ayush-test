@@ -37,6 +37,7 @@ export interface CardInfo {
   isShadow: boolean
   currentSizeIndex: number
   sizes: Size[]
+  chartType?: string
 }
 export interface Group {
   id: string

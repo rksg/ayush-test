@@ -59,16 +59,13 @@ export default function GroupItem (props: GroupProps) {
     return
   }
 
-  const [{ isOver }, dropRef] = useDrop({
+  const [, dropRef] = useDrop({
     accept: ItemTypes.CARD,
     drop: (item: CardInfo) => {
       const dragItem = item
       const dropItem = props
       dropCard(dragItem, dropItem)
     },
-    collect: monitor => ({
-      isOver: monitor.isOver()
-    }),
     hover: (item: CardInfo, monitor) => {
       const dragItem = item
       if (dragItem.type === ItemTypes.CARD) {

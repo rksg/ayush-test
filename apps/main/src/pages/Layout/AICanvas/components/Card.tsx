@@ -1,25 +1,38 @@
-// @ts-nocheck
-import { useEffect } from 'react'
+import { Dispatch, SetStateAction, useEffect } from 'react'
 
-import _                 from 'lodash'
-import { useDrag }       from 'react-dnd'
-import { getEmptyImage } from 'react-dnd-html5-backend'
+import _                              from 'lodash'
+import { ConnectDragSource, useDrag } from 'react-dnd'
+import { getEmptyImage }              from 'react-dnd-html5-backend'
 
-import utils                       from '../utils'
-import { compactLayoutHorizontal } from '../utils/compact'
+import { WidgetListData } from '@acx-ui/rc/utils'
 
-import { ItemTypes }   from './GroupItem'
-import { WidgetChart } from './WidgetChart'
+import { CardInfo, Group, LayoutConfig } from '../Canvas'
+import utils                             from '../utils'
+import { compactLayoutHorizontal }       from '../utils/compact'
 
+import { GroupProps, ItemTypes } from './GroupItem'
+import { WidgetChart }           from './WidgetChart'
 
-const DraggableCard = (props) => {
-  const [{ isDragging }, drag, preview] = useDrag({
+interface CardProps {
+  groupIndex: number
+  card: CardInfo
+  group: GroupProps
+  groups: Group[]
+  layout: LayoutConfig
+  dropCard: (dragItem: CardInfo, dropItem: GroupProps) => void
+  updateShadowCard: Dispatch<SetStateAction<CardInfo>>
+  updateGroupList: Dispatch<SetStateAction<Group[]>>
+  deleteCard:(id: string, groupIndex: number) => void
+  drag?: ConnectDragSource
+}
+const DraggableCard = (props: CardProps) => {
+  const [, drag, preview] = useDrag({
     type: ItemTypes.CARD,
     item: () => {
       let dragCard = props.card
       dragCard.isShadow = true
       props.updateShadowCard(dragCard)
-      return { id: dragCard.id, type: ItemTypes.CARD }
+      return { id: dragCard.id, type: ItemTypes.CARD } as CardInfo
     },
     end: (item, monitor) => {
       if (!monitor.didDrop()) {
@@ -36,7 +49,6 @@ const DraggableCard = (props) => {
     <div>
       <Card
         {...props}
-        isDragging={isDragging}
         drag={drag}
       />
     </div>
@@ -45,7 +57,7 @@ const DraggableCard = (props) => {
 
 export default DraggableCard
 
-function Card (props) {
+function Card (props: CardProps) {
   const {
     groupIndex,
     deleteCard,
@@ -76,7 +88,7 @@ function Card (props) {
     calWidth
   )
 
-  const changeCardsLayout = (nextSizeIndex) => {
+  const changeCardsLayout = (nextSizeIndex: number) => {
     let groupsTmp = _.cloneDeep(props.groups)
     let cardTmp = _.cloneDeep(card)
     cardTmp = {
@@ -88,7 +100,8 @@ function Card (props) {
     groupsTmp[groupIndex].cards.some((item, index) => {
       if(item.id === cardTmp.id) {
         groupsTmp[groupIndex].cards[index] = cardTmp
-        let compactedLayout = compactLayoutHorizontal(groupsTmp[groupIndex].cards, props.layout.col)
+        // eslint-disable-next-line max-len
+        let compactedLayout = compactLayoutHorizontal(groupsTmp[groupIndex].cards, props.layout.col, cardTmp.id)
         groupsTmp[groupIndex].cards = compactedLayout
         return true
       }
@@ -171,7 +184,7 @@ function Card (props) {
                   style={{ height: '30px', width: '30px', marginLeft: '10px' }}
                   disabled={card.currentSizeIndex <= 0}
                   onClick={() => {
-                    decreaseCard(props)
+                    decreaseCard()
                   }}
                 >
                   -
@@ -180,7 +193,7 @@ function Card (props) {
             </div>
             {
               card.chartType &&
-              <WidgetChart data={card} />
+              <WidgetChart data={card as unknown as WidgetListData} />
             }
           </div>
       }

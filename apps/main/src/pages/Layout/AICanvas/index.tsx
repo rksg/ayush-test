@@ -28,8 +28,8 @@ export default function AICanvas () {
 
   const [ searchText, setSearchText ] = useState('')
   const linkToDashboard = useTenantLink('/dashboard')
-  // eslint-disable-next-line max-len
-  const placeholder = $t({ defaultMessage: 'Enter a description to generate widgets based on your needs. The more you describe, the better widgets I can recommend.' })
+  const placeholder = $t({ defaultMessage: `Enter a description to generate widgets 
+  based on your needs. The more you describe, the better widgets I can recommend.` })
 
   const onKeyDown = (event: React.KeyboardEvent) => {
     if(event.key === 'Enter'){
@@ -65,7 +65,8 @@ export default function AICanvas () {
         {
           id: '555',
           role: 'AI',
-          text: '2 widgets found- Alert and incidents widgets. Drag and drop the selected widgets to the canvas on the right.',
+          text: `2 widgets found- Alert and incidents widgets. Drag and drop the selected widgets to
+           the canvas on the right.`,
           widgets: [{
             title: '',
             chartType: 'pie'

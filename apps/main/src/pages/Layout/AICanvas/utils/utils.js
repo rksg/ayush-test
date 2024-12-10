@@ -103,7 +103,7 @@ export const getContainerMaxHeight = (cards, rowHeight, margin) => {
  * @param {NumberArray} margin
  * @param {Number} rowHeight
  * @param {Number} calWidth
- * @returns {Object} containing x,y coordinates
+ * @returns {{x: number, y: number}} containing x,y coordinates
  */
 export const calGridItemPosition = (
   gridx,
@@ -164,10 +164,10 @@ export const calGridXY = (
  * Width and height are calculated as px
  * @param {Number} w
  * @param {Number} h
- * @param {Number} margin
+ * @param {NumberArray} margin
  * @param {Number} rowHeight
  * @param {Number} cardWidth
- * @returns {Object} containing wPx, hPx
+ * @returns {{wPx: number, hPx: number}} containing wPx, hPx
  */
 export const calWHtoPx = (w, h, margin, rowHeight, calWidth) => {
   const wPx = Math.round(w * calWidth + (w - 1) * margin[0])
