@@ -8,7 +8,8 @@ import {
   DataPromptActionTypeIcon,
   DisplayMessageActionTypeIcon,
   DpskActionTypeIcon,
-  MacRegActionTypeIcon
+  MacRegActionTypeIcon,
+  CertTemplateActionTypeIcon
 } from '@acx-ui/icons'
 
 import {
@@ -66,7 +67,8 @@ export const ActionNodeDisplay: Record<ActionType, MessageDescriptor> = {
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a Form' }),
   [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom Message' }),
   [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' }),
-  [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'Mac Registration' })
+  [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'Mac Registration' }),
+  [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Install a Certificate' })
 }
 
 export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
@@ -74,7 +76,8 @@ export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
   [ActionType.DATA_PROMPT]: DataPromptActionTypeIcon,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionTypeIcon,
   [ActionType.DPSK]: DpskActionTypeIcon,
-  [ActionType.MAC_REG]: MacRegActionTypeIcon
+  [ActionType.MAC_REG]: MacRegActionTypeIcon,
+  [ActionType.CERT_TEMPLATE]: CertTemplateActionTypeIcon
 }
 
 export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
@@ -82,7 +85,8 @@ export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a Form' }),
   [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom Message' }),
   [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' }),
-  [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'MAC Address Registration' })
+  [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'MAC Address Registration' }),
+  [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Install a certificate' })
 }
 
 export const ActionTypeDescription: Record<ActionType, MessageDescriptor> = {
@@ -90,7 +94,8 @@ export const ActionTypeDescription: Record<ActionType, MessageDescriptor> = {
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Displays a prompt screen with customizable data entry fields' }),
   [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Displays a message to the user along with a single button to continue' }),
   [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generates a Ruckus DPSK and identity, for the requested Identity Group.' }),
-  [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'MAC Address registers and authenticated with RADIUS, assigned to an Identity Group' })
+  [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'MAC Address registers and authenticated with RADIUS, assigned to an Identity Group' }),
+  [ActionType.CERT_TEMPLATE]: defineMessage({ defaultMessage: 'Creates private key from Certificate Template for the requested Identity Group' })
 }
 
 export const AupActionDefaultValue: {
@@ -138,7 +143,8 @@ export const ActionDefaultValueMap: Record<ActionType, object> = {
   [ActionType.DATA_PROMPT]: DataPromptActionDefaultValue,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionDefaultValue,
   [ActionType.DPSK]: {},
-  [ActionType.MAC_REG]: {}
+  [ActionType.MAC_REG]: {},
+  [ActionType.CERT_TEMPLATE]: {}
 }
 /* eslint-enable max-len */
 
