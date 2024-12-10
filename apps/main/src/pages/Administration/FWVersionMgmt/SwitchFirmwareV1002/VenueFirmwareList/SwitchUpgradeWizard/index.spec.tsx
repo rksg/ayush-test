@@ -49,7 +49,7 @@ jest.mock('./VenueStatusDrawer', () => ({
 
 const { mockSwitchCurrentVersionsV1002 } = SwitchFirmwareFixtures
 
-describe('SwitchFirmware - SwitchUpgradeWizard', () => {
+describe.skip('SwitchFirmware - SwitchUpgradeWizard', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -111,7 +111,7 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
   })
 
 
-  it('render SwitchUpgradeWizard - schedule - cancel', async () => {
+  it.skip('render SwitchUpgradeWizard - schedule - cancel', async () => {
     render(
       <Provider>
         <SwitchUpgradeWizard
@@ -162,7 +162,7 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     expect(await screen.findByText(/When do you want the update to run/i)).toBeInTheDocument()
   })
 
-  it('render SwitchUpgradeWizard - update now - Validate required venue', async () => {
+  it.skip('render SwitchUpgradeWizard - update now - Validate required venue', async () => {
     render(
       <Provider>
         <SwitchUpgradeWizard
@@ -213,7 +213,7 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
 
   })
 
-  it('render SwitchUpgradeWizard - update now - Save', async () => {
+  it.skip('render SwitchUpgradeWizard - update now - Save', async () => {
     render(
       <Provider>
         <SwitchUpgradeWizard

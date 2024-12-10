@@ -5,11 +5,11 @@ import { Form }                              from 'antd'
 import { cloneDeep }                         from 'lodash'
 import { rest }                              from 'msw'
 
-import { StepsForm, StepsFormProps }                                                                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                    from '@acx-ui/feature-toggle'
-import { venueApi }                                                                                  from '@acx-ui/rc/services'
-import { CommonUrlsInfo, EdgeSdLanFixtures, WifiUrlsInfo, APCompatibilityFixtures, EdgePinFixtures } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                           from '@acx-ui/store'
+import { StepsForm, StepsFormProps }                                                                                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                             from '@acx-ui/feature-toggle'
+import { venueApi }                                                                                                           from '@acx-ui/rc/services'
+import { CommonUrlsInfo, EdgeSdLanFixtures, WifiUrlsInfo, APCompatibilityFixtures, EdgePinFixtures, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                                    from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -24,7 +24,6 @@ import { EdgeSdLanVenueNetworksTable, VenueNetworksTableProps } from '.'
 
 const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 const { mockPinListForMutullyExclusive } = EdgePinFixtures
-const { mockApCompatibilitiesVenue } = APCompatibilityFixtures
 
 const mockedOverlapSdLans = cloneDeep(mockedMvSdLanDataList)
 const targetVenue = mockedVenueList.data[1]
@@ -233,6 +232,15 @@ describe('Tunneled Venue Networks Table', () => {
 
   it('should have compatible warning', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+    const mockApCompatibilitiesVenue = cloneDeep(APCompatibilityFixtures.mockApCompatibilitiesVenue)
+    mockApCompatibilitiesVenue.apCompatibilities= [{
+      ...mockApCompatibilitiesVenue.apCompatibilities[0],
+      incompatibleFeatures: [{
+        ...mockApCompatibilitiesVenue.apCompatibilities[0]?.incompatibleFeatures![0],
+        featureName: IncompatibilityFeatures.SD_LAN
+      }]
+    }]
+
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
@@ -246,7 +254,7 @@ describe('Tunneled Venue Networks Table', () => {
     render(<MockedTargetComponent />, { route: { params: { tenantId: 't-id' } } })
 
     const row = await screen.findByRole('row', { name: /My-Venue .* 0/i })
-    const fwWarningIcon = await within(row).findByTestId('WarningCircleSolid')
+    const fwWarningIcon = await within(row).findByTestId('WarningTriangleSolid')
     await userEvent.hover(fwWarningIcon)
     expect(await screen.findByRole('tooltip', { hidden: true }))
       .toHaveTextContent('See the compatibility requirements.')

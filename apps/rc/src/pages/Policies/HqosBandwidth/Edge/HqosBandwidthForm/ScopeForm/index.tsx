@@ -4,7 +4,7 @@ import { useIntl }                 from 'react-intl'
 
 import { StepsForm, Table, TableProps, Tooltip, useStepFormContext }                   from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
-import { CompatibilityWarningCircleIcon }                                              from '@acx-ui/rc/components'
+import { CompatibilityWarningTriangleIcon }                                            from '@acx-ui/rc/components'
 import { useGetEdgeClusterListQuery, useGetEdgeFeatureSetsQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
 import {
   EdgeClusterStatus,
@@ -119,7 +119,7 @@ export const ScopeForm = () => {
                 })}
               </>
             }>
-            <CompatibilityWarningCircleIcon />
+            <CompatibilityWarningTriangleIcon />
           </Tooltip>
           }
         </Space>
@@ -149,16 +149,18 @@ export const ScopeForm = () => {
         const hqosReadOnly =
           row.edgeList?.find(e => e.cpuCores === undefined || e.cpuCores < 4) ? true : false
         return <Tooltip title={showHqosReadOnlyToolTipMessage(hqosReadOnly)}>
-          <UI.StyledFormItem
-            name={['activateChangedClusters', row.clusterId??'']}
-            valuePropName='checked'
-            children={
-              <Switch disabled={hqosReadOnly}
-                onChange={() =>
-                // eslint-disable-next-line max-len
-                  setActivateChangedClustersInfo(row.clusterId??'', row.name??'', row.venueId??'')}/>
-            }
-          />
+          <>
+            <UI.StyledFormItem
+              name={['activateChangedClusters', row.clusterId??'']}
+              valuePropName='checked'
+              children={
+                <Switch disabled={hqosReadOnly}
+                  onChange={() =>
+                  // eslint-disable-next-line max-len
+                    setActivateChangedClustersInfo(row.clusterId??'', row.name??'', row.venueId??'')}/>
+              }
+            />
+          </>
         </Tooltip>
       }
     }

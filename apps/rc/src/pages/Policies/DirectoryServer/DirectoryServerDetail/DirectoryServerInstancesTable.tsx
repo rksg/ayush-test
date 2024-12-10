@@ -23,9 +23,9 @@ export function DirectoryServerInstancesTable () {
       searchable: true,
       sorter: true,
       fixed: 'left',
-      render: function (_, row) {
+      render: function (_, row,__,highlightFn) {
         // eslint-disable-next-line max-len
-        return <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>{row.name}</TenantLink>
+        return <TenantLink to={`/networks/wireless/${row.id}/network-details/overview`}>{highlightFn(row.name)}</TenantLink>
       }
     },
     {
