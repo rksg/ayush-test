@@ -90,5 +90,14 @@ export const SoftGreUrls: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  getSoftGreProfileConfigurationOnAP: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/lanPorts/:portId/settings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

@@ -317,6 +317,11 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
       query: ({ params }) => {
         return createHttpRequest(SoftGreUrls.getSoftGreProfileConfigurationOnVenue, params)
       }
+    }),
+    getSoftGreProfileConfigurationOnAP: build.query<VenueApModelLanPortSettingsV1 ,RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(SoftGreUrls.getSoftGreProfileConfigurationOnAP, params)
+      }
     })
   })
 })
@@ -337,5 +342,7 @@ export const {
   useActivateSoftGreProfileOnVenueMutation,
   useDeactivateSoftGreProfileOnVenueMutation,
   useGetSoftGreProfileConfigurationOnVenueQuery,
-  useLazyGetSoftGreProfileConfigurationOnVenueQuery
+  useLazyGetSoftGreProfileConfigurationOnVenueQuery,
+  useGetSoftGreProfileConfigurationOnAPQuery,
+  useLazyGetSoftGreProfileConfigurationOnAPQuery
 } = softGreApi
