@@ -54,7 +54,6 @@ export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProp
 
   const handleClose = () => {
     setVisible(false)
-    form.resetFields()
   }
 
   return (
