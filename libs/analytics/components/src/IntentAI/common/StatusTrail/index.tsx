@@ -9,8 +9,8 @@ import { getIntentStatus }  from '../getIntentStatus'
 import * as UI from './styledComponents'
 
 export const StatusTrail = () => {
-  const isStatusTrailTooltipEnabled = useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE)
   const { intent } = useIntentContext()
+  const isStatusTrailTooltipEnabled = useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE)
   const { sliceValue } = intent
   return <Card>
     <UI.Wrapper>

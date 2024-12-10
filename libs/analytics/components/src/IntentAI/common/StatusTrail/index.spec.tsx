@@ -1,5 +1,6 @@
 import userEvent from '@testing-library/user-event'
 
+import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { render, screen } from '@acx-ui/test-utils'
 
 import { mockIntentContext } from '../../__tests__/fixtures'
@@ -21,6 +22,7 @@ describe('StatusTrail', () => {
   })
 
   it('should show hover content correctly for new status', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const intent = mockedIntentCRRM
     mockIntentContext({ intent, kpis: [] })
     render(<StatusTrail />)
@@ -32,6 +34,7 @@ describe('StatusTrail', () => {
   })
 
   it('should show hover content correctly for scheduled status', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const intent = mockedIntentCRRM
     mockIntentContext({ intent, kpis: [] })
     render(<StatusTrail />)
@@ -43,6 +46,7 @@ describe('StatusTrail', () => {
   })
 
   it('should show hover content correctly for active status', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const intent = mockedIntentCRRM
     mockIntentContext({ intent, kpis: [] })
     render(<StatusTrail />)
@@ -53,6 +57,7 @@ describe('StatusTrail', () => {
   })
 
   it('should show hover content correctly for apply in progress status', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const intent = mockedIntentCRRM
     mockIntentContext({ intent, kpis: [] })
     render(<StatusTrail />)
