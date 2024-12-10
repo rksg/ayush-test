@@ -86,37 +86,37 @@ export const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
 
 export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
   const { $t } = useIntl()
-  // const queryResults = useChatChartQuery({
-  //   params: {
-  //     sessionId: data.sessionId,
-  //     chatId: data.id
-  //   }
-  // })
-  const queryResults = {
-    data: {
-      chartOption: [
-        { name: 'Requires Attention',value: 1,color: '#ED1C24' },
-        { name: 'In Setup Phase',value: 64,color: '#ACAEB0' },
-        { name: 'Operational',value: 1,color: '#23AB36' }
-      ]
+  const queryResults = useChatChartQuery({
+    params: {
+      sessionId: data.sessionId,
+      chatId: data.chatId
     }
-  }
+  })
+  // const queryResults = {
+  //   data: {
+  //     chartOption: [
+  //       { name: 'Requires Attention',value: 1,color: '#ED1C24' },
+  //       { name: 'In Setup Phase',value: 64,color: '#ACAEB0' },
+  //       { name: 'Operational',value: 1,color: '#23AB36' }
+  //     ]
+  //   }
+  // }
   return (
-    // <Loader states={[{ isLoading: queryResults.isLoading }]}>
-    <Card key={data.id} title={data.title || $t({ defaultMessage: 'Title' })}>
-      <AutoSizer>
-        {({ height, width }) => (
-          <DonutChart
-            style={{ width, height }}
-            size={'medium'}
-            data={queryResults.data?.chartOption || []}
-            animation={true}
-            legend={'name-value'}
-            showTotal/>
-        )}
-      </AutoSizer>
-    </Card>
-    // </Loader>
+    <Loader states={[{ isLoading: queryResults.isLoading }]}>
+      <Card key={data.id} title={data.title || $t({ defaultMessage: 'Title' })}>
+        <AutoSizer>
+          {({ height, width }) => (
+            <DonutChart
+              style={{ width, height }}
+              size={'medium'}
+              data={queryResults.data?.chartOption || []}
+              animation={true}
+              legend={'name-value'}
+              showTotal/>
+          )}
+        </AutoSizer>
+      </Card>
+    </Loader>
   )
 }
 

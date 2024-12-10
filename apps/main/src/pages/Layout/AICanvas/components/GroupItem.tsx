@@ -91,12 +91,7 @@ export default function GroupItem (props: GroupProps) {
 
   return (
     <div className='rglb_group-item' ref={dropRef} id={'group' + id}>
-      <div
-        className='group-item-container'
-        // style={{
-        //   background: isOver ? cssStr('--acx-accents-blue-30') : cssStr('--acx-accents-blue-10')
-        // }}
-      >
+      <div className='group-item-container'>
         <section
           id='card-container'
           style={{

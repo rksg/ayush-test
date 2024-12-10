@@ -35,8 +35,8 @@ export const calColWidth = (containerWidth, col, containerPadding, margin) => {
  * Calculate the number of columns that can fit in a container.
  * @param {Number} defaultCalWidth
  * @param {Number} containerWidth
- * @param {Number} containerPadding
- * @param {Number} margin
+ * @param {NumberArray} containerPadding
+ * @param {NumberArray} margin
  * @returns {Number} column number
  */
 export const calColCount = (

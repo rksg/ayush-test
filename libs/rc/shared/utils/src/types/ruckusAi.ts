@@ -49,4 +49,5 @@ export interface WidgetListData {
   title: string,
   chartType: string,
   sessionId: string,
+  chatId: string
 }

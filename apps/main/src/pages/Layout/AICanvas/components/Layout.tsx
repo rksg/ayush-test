@@ -38,7 +38,9 @@ export default function Layout (props: LayoutProps) {
         } else {
           return
         }
-        const { containerPadding, margin, col } = layout
+        const { containerPadding, margin } = layout
+        const windowWidth = window.innerWidth - 60 * 2
+        const col = utils.calColCount(defaultLayout.calWidth, windowWidth, containerPadding, margin)
         let tmpLayout = _.cloneDeep(layout)
         const calWidth = utils.calColWidth(
           clientWidth,

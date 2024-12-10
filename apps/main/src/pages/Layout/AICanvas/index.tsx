@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { Button }                                                     from '@acx-ui/components'
 import { HistoricalOutlined, Plus, RuckusAiDog, SendMessageOutlined } from '@acx-ui/icons'
 import { useChatAiMutation }                                          from '@acx-ui/rc/services'
-import { ChatMessage, RuckusAiChat, WidgetListData }                  from '@acx-ui/rc/utils'
+import { ChatMessage }                                                from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                 from '@acx-ui/react-router-dom'
 
 import Canvas             from './Canvas'
@@ -24,7 +24,6 @@ export default function AICanvas () {
   const [loading, setLoading] = useState(false)
   const [sessionId, setSessionId] = useState('')
   const [chats, setChats] = useState([] as ChatMessage[])
-  const [widgets, setWidgets] = useState([] as WidgetListData[])
 
   const [ searchText, setSearchText ] = useState('')
   const linkToDashboard = useTenantLink('/dashboard')
@@ -48,47 +47,37 @@ export default function AICanvas () {
     setChats([...chats, newMessage])
     setLoading(true)
     setSearchText('')
-    // const response = await chatAi({
-    //   payload: {
-    //     question,
-    //     ...(sessionId && { sessionId })
-    //   }
-    // }).unwrap()
-    const response: RuckusAiChat = {
-      sessionId: '001',
-      messages: [
-        {
-          id: '1',
-          role: 'USER',
-          text: 'Generate Network Health Overview Widget'
-        },
-        {
-          id: '555',
-          role: 'AI',
-          text: `2 widgets found- Alert and incidents widgets. Drag and drop the selected widgets to
-           the canvas on the right.`,
-          widgets: [{
-            title: '',
-            chartType: 'pie'
-          }]
-        }
-      ]
-    }
+    const response = await chatAi({
+      payload: {
+        question,
+        ...(sessionId && { sessionId })
+      }
+    }).unwrap()
+    // const response: RuckusAiChat = {
+    //   sessionId: '001',
+    //   messages: [
+    //     {
+    //       id: '1',
+    //       role: 'USER',
+    //       text: 'Generate Network Health Overview Widget'
+    //     },
+    //     {
+    //       id: '555',
+    //       role: 'AI',
+    //       text: `2 widgets found- Alert and incidents widgets. Drag and drop the selected widgets to
+    //        the canvas on the right.`,
+    //       widgets: [{
+    //         title: '',
+    //         chartType: 'pie'
+    //       }]
+    //     }
+    //   ]
+    // }
     if(response.sessionId && !sessionId) {
       setSessionId(response.sessionId)
     }
-    setTimeout(() => {
-      setLoading(false)
-      setChats(response.messages)
-      const latest = response.messages[response.messages.length - 1]
-      if(latest.widgets) {
-        setWidgets([...widgets, {
-          ...latest.widgets[0],
-          sessionId: response.sessionId,
-          id: latest.id
-        }])
-      }
-    }, 1000)
+    setLoading(false)
+    setChats(response.messages)
   }
 
   const onClose = () => {
@@ -106,7 +95,8 @@ export default function AICanvas () {
       { chat.role === 'AI' && chat.widgets?.length && <DraggableChart data={{
         ...chat.widgets[0],
         sessionId,
-        id: chat.id
+        id: chat.id,
+        chatId: chat.id
       }}
       /> }
 
