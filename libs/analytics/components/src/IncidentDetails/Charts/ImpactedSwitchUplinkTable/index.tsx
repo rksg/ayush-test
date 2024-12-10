@@ -2,6 +2,8 @@ import { useIntl } from 'react-intl'
 
 import { overlapsRollup }                                     from '@acx-ui/analytics/utils'
 import { Card, Loader, Table, TableProps, NoGranularityText } from '@acx-ui/components'
+import { get }                                                from '@acx-ui/config'
+import { TenantLink }                                         from '@acx-ui/react-router-dom'
 
 import {
   ImpactedSwitchPortRow,
@@ -19,11 +21,13 @@ export function ImpactedSwitchUplinkTable ({ incident }: ChartProps) {
     { skip: druidRolledup, selectFromResult: (response) => {
       return {
         ...response,
-        data: response.data?.flatMap(({ connectedDevice, ...item }, index) => ({
-          ...item,
-          ...connectedDevice,
-          rowId: index
-        })) }} }
+        data: response.data?.impactedSwitches.flatMap(
+          ({ name, mac, serial , ports }) => ports.map(port => ({ name, mac, serial, ...port })))
+          .flatMap(({ connectedDevice, ...item }, index) => ({
+            ...item,
+            ...connectedDevice,
+            rowId: index
+          })) }} }
   )
 
   return <Loader states={[response]}>
@@ -42,10 +46,18 @@ function ImpactedSwitchesTable (props: {
   data: ImpactedSwitchPortRow[]
 }) {
   const { $t } = useIntl()
+  const isMLISA = get('IS_MLISA_SA')
   const columns: TableProps<ImpactedSwitchPortRow>['columns'] = [{
     key: 'name',
     dataIndex: 'name',
     title: $t({ defaultMessage: 'Switch Name' }),
+    render: (_, { mac, name, serial },__,highlightFn) =>
+      <TenantLink
+        to={`devices/switch/${isMLISA ? mac : mac?.toLowerCase()}/${serial}/details/${isMLISA
+          ? 'reports': 'overview'}`
+        }>
+        {highlightFn(name)}
+      </TenantLink>,
     searchable: true
   }, {
     key: 'mac',
@@ -57,12 +69,8 @@ function ImpactedSwitchesTable (props: {
     dataIndex: 'portNumber',
     title: $t({ defaultMessage: 'Switch Port' }),
     searchable: true
-  },{
-    key: 'ip',
-    dataIndex: 'ip',
-    title: $t({ defaultMessage: 'Switch IP' }),
-    searchable: true
-  }, {
+  },
+  {
     key: 'connectedDevicePort',
     dataIndex: 'devicePort',
     title: $t({ defaultMessage: 'Peer Port' }),
@@ -79,16 +87,10 @@ function ImpactedSwitchesTable (props: {
     title: $t({ defaultMessage: 'Peer Device MAC' }),
     width: 150,
     searchable: true
-  },
-  {
-    key: 'connectedDeviceIp',
-    dataIndex: 'deviceIp',
-    title: $t({ defaultMessage: 'Peer Device IP' }),
-    searchable: true
   }
   ]
 
-  return <Table
+  return <Table<ImpactedSwitchPortRow>
     columns={columns}
     rowKey='rowId'
     dataSource={props.data}

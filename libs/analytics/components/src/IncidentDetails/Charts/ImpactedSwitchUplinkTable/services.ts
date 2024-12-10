@@ -13,10 +13,9 @@ export interface SwitchPortConnectedDevice {
   deviceMac: string
   devicePortMac: string
   devicePort: string
-  deviceIp: string
 }
 
-interface ImpactedSwitchPort {
+export interface ImpactedSwitchPort {
   portNumber: string
   portMac: string
   connectedDevice?: SwitchPortConnectedDevice
@@ -25,34 +24,38 @@ interface ImpactedSwitchPort {
 export interface ImpactedSwitch {
   name: string
   mac: string
-  ip: string
+  serial: string
   ports: ImpactedSwitchPort[]
 }
 
 export type ImpactedSwitchPortRow = ImpactedSwitchPort
-  & Pick<ImpactedSwitch, 'name' | 'mac' | 'ip'>
+  & Pick<ImpactedSwitch, 'name' | 'mac' | 'serial' >
   & { key?: string, index?: number }
 
-interface Response <T> {
+interface CongestedUplinkPortsResponse {
+  uplinkPortCount: number
+  impactedSwitches: ImpactedSwitch[]
+}
+
+interface Response<T> {
   incident: T
 }
 
 const document = gql`
   query ImpactedSwitchesUplink($id: String) {
     incident(id: $id) {
+      uplinkPortCount
       impactedSwitches: getImpactedSwitches(n: 100, search: "") {
         name
         mac
-        ip
+        serial
         ports {
           portNumber
-          portMac
           connectedDevice {
             deviceMac: mac
             devicePortMac: portMac
             deviceName: name
             devicePort: port
-            deviceIp: ip
           }
         }
       }
@@ -62,11 +65,10 @@ const document = gql`
 
 export const impactedApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    impactedSwitchesUplink: build.query<ImpactedSwitchPortRow[], { id: Incident['id'] }>({
+    impactedSwitchesUplink: build.query<CongestedUplinkPortsResponse, { id: Incident['id'] }>({
       query: (variables) => ({ document, variables }),
-      transformResponse: (response: Response<{ impactedSwitches: ImpactedSwitch[] }>) => {
-        return response.incident.impactedSwitches
-          .flatMap(({ name, mac, ip, ports }) => ports.map(port => ({ name, mac, ip, ...port })))
+      transformResponse: (response: Response<CongestedUplinkPortsResponse>) => {
+        return response.incident
       }
     })
   })

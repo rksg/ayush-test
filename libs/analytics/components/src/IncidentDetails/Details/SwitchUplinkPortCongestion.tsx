@@ -40,7 +40,6 @@ export const SwitchUplinkPortCongestion = (incident: Incident) => {
         <Insights incident={incident} />
       </GridCol>
       <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '129px' }}>
-        {/* TODO: Disable this component to test the pr */}
         <ImpactedUplinkPortDetails incident={incident} />
       </GridCol>
       <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '129px' }}>

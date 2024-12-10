@@ -3,9 +3,8 @@ import { useIntl } from 'react-intl'
 import { overlapsRollup } from '@acx-ui/analytics/utils'
 import { Loader }         from '@acx-ui/components'
 
-import DetailsCard from '../ImpactedSwitchVLANDetails/DetailsCard'
-
-import { useImpactedSwitchesQuery, ImpactedSwitchPort } from './services'
+import { useImpactedSwitchesUplinkQuery, ImpactedSwitchPort } from '../ImpactedSwitchUplinkTable/services'
+import DetailsCard                                            from '../ImpactedSwitchVLANDetails/DetailsCard'
 
 import type { ChartProps } from '../types.d'
 
@@ -13,13 +12,12 @@ export function ImpactedUplinkPortDetails ({ incident }: ChartProps) {
   const { $t } = useIntl()
   const { id, switchCount } = incident
   const druidRolledup = overlapsRollup(incident.endTime)
-
-  const response = useImpactedSwitchesQuery({ id },
+  const response = useImpactedSwitchesUplinkQuery({ id },
     { skip: druidRolledup,
       selectFromResult: (response) => {
         const impactedPorts: ImpactedSwitchPort[] = []
 
-        const rows = response.data?.impactedSwitches.map(({ name, mac, ports }) => {
+        const rows = response.data?.impactedSwitches?.map(({ name, mac, ports }) => {
           impactedPorts.push(...ports)
           return { name, mac }
         })
