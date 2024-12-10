@@ -565,7 +565,7 @@ export function RadioSettings () {
 
   const validateRadioChannels = ( data: VenueRadioCustomization ) => {
     const { radioParams24G, radioParams50G, radioParams6G, radioParamsDual5G } = data
-    const validateChannels = (channels: unknown[] | undefined,
+    const validateChannels = (channels: unknown[] | undefined, method: string | undefined,
       title: string, dual5GName?: string) => {
 
       const content = dual5GName?
@@ -575,13 +575,26 @@ export function RadioSettings () {
           { dual5GName, br: <br /> }
         ):
         $t({ defaultMessage: 'Please select at least two channels' })
-      if (Array.isArray(channels) && channels.length <2) {
-        showActionModal({
-          type: 'error',
-          title: title,
-          content: content
-        })
-        return false
+      if (Array.isArray(channels)) {
+        const channelsLen = channels.length
+
+        let content = ''
+        if (method === 'MANUAL') {
+          if (channelsLen !== 1) {
+            content = $t({ defaultMessage: 'Please select one channel' })
+          }
+        } else if (channelsLen <2) {
+          content = content
+        }
+
+        if (content !== '') {
+          showActionModal({
+            type: 'error',
+            title: title,
+            content: content
+          })
+          return false
+        }
       }
       return true
     }
