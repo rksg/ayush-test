@@ -34,7 +34,6 @@ const useDownloadUrl = (data: unknown, type: string) => {
 export function DownloadRRMComparison (props: { title?: string }) {
   const { $t } = useIntl()
   const { intent } = useIntentContext()
-
   const queryResult = useIntentAICRRMQuery()
   const { url, filename } = useDownloadData(intent)
 
