@@ -288,10 +288,6 @@ describe('NetworkForm', () => {
       name: /cancel/i
     })
 
-    await userEvent.click(await screen.findByRole('button', {
-      name: /add/i
-    }))
-
     await screen.findByText(/add mac registration list/i)
 
     await userEvent.type(await screen.findByRole('textbox', {

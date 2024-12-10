@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event'
 
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { IncompatibilityFeatures }                  from '@acx-ui/rc/utils'
-import { Provider }                                 from '@acx-ui/store'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { IncompatibilityFeatures }                                from '@acx-ui/rc/utils'
+import { Provider }                                               from '@acx-ui/store'
 import {
   render,
   screen
@@ -162,6 +162,7 @@ describe('ServiceCatalog', () => {
 
   describe('Edge PIN', () => {
     beforeEach(() => {
+      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.EDGE_ADV)
       jest.mocked(useIsSplitOn).mockImplementation(ff => {
         return ff === Features.EDGE_PIN_HA_TOGGLE || ff === Features.EDGES_TOGGLE
         || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE

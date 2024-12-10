@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
 import { EdgeUrlsInfo }                                    from '@acx-ui/rc/utils'
 import { Provider }                                        from '@acx-ui/store'
 import { mockServer, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
@@ -20,12 +20,14 @@ describe('Edge enabled evaluation', () => {
   describe('useIsEdgeReady', () => {
     it('should return true', async () => {
       jest.mocked(useIsSplitOn).mockImplementationOnce(ff => ff === Features.EDGES_TOGGLE)
-      expect(useIsEdgeReady()).toBe(true)
+      const { result } = renderHook(() => useIsEdgeReady())
+      expect(result.current).toBe(true)
     })
 
     it('should return false when edge toggle not ON', async () => {
       jest.mocked(useIsSplitOn).mockImplementationOnce(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE)
-      expect(useIsEdgeReady()).toBe(false)
+      const { result } = renderHook(() => useIsEdgeReady())
+      expect(result.current).toBe(false)
     })
   })
 
@@ -33,17 +35,62 @@ describe('Edge enabled evaluation', () => {
     it('should return true', async () => {
       jest.mocked(useIsSplitOn)
         .mockImplementation(ff => ff === Features.EDGES_TOGGLE || ff === Features.EDGE_HA_TOGGLE)
-      expect(useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)).toBe(true)
+      const { result } = renderHook(() => useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE))
+      expect(result.current).toBe(true)
     })
 
     it('should return false when edge toggle not ON', async () => {
       jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE)
-      expect(useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)).toBe(false)
+      const { result } = renderHook(() => useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE))
+      expect(result.current).toBe(false)
     })
 
     it('should return false when target flag not ON', async () => {
       jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGES_SD_LAN_HA_TOGGLE)
-      expect(useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)).toBe(false)
+      const { result } = renderHook(() => useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE))
+      expect(result.current).toBe(false)
+    })
+
+    describe('edge PIN toggle', () => {
+      it('should return true when edge is enabled and feature flag is ready', () => {
+        jest.mocked(useIsSplitOn).mockReturnValue(true)
+        jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+        const { result } = renderHook(() => useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE))
+        expect(result.current).toBe(true)
+      })
+
+      it('should return false when edge is not enabled', () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGES_TOGGLE)
+        jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+        const { result } = renderHook(() => useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE))
+        expect(result.current).toBe(false)
+      })
+
+      it('should return false when boolean feature flag is not ready', () => {
+        jest.mocked(useIsSplitOn).mockReturnValue(false)
+        jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+        const { result } = renderHook(() => useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE))
+        expect(result.current).toBe(false)
+      })
+
+      it('should return false when query with PIN and EDGE-ADV feature is OFF', () => {
+        jest.mocked(useIsSplitOn).mockReturnValue(true)
+        jest.mocked(useIsTierAllowed).mockReturnValue(false)
+
+        const { result } = renderHook(() => useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE))
+        expect(result.current).toBe(false)
+      })
+
+      it('other feature flags should not considered PLM FF', () => {
+        jest.mocked(useIsSplitOn).mockReturnValue(true)
+        jest.mocked(useIsTierAllowed).mockReturnValue(false)
+
+        const { result } = renderHook(() => useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE))
+        expect(result.current).toBe(true)
+      })
     })
   })
 })
