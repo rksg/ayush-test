@@ -26,8 +26,7 @@ export interface SoftgreContextInfo {
   softgreProfileId: string
   queryPayload: {
     venueId: string
-    apModel?: string
-    serialNumber?: string
+    apModel: string
     portId: string
   }
 }
@@ -167,9 +166,6 @@ export const SoftgreProfileProvider = (
             setVenueApModelLanPortSettingsV1(data)
             setOriginVenueApModelLanPortSettingsV1(data)
           }
-        }
-        if (value.queryPayload.serialNumber) {
-          // TODO
         }
       }
     }
