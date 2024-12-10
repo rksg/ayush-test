@@ -12,7 +12,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                                     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                                       from '@acx-ui/feature-toggle'
 import { CsvSize, ImportFileDrawer, PassphraseViewer, ImportFileDrawerType, NetworkForm } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
@@ -85,6 +85,7 @@ export default function DpskPassphraseManagement () {
   const [ networkModalVisible, setNetworkModalVisible ] = useState(false)
   const params = useParams()
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
 
   const settingsId = 'dpsk-passphrase-table'
   const tableQuery = useTableQuery({
@@ -232,7 +233,8 @@ export default function DpskPassphraseManagement () {
       type === 'revoke' ? intl.$t({ defaultMessage: 'Revoke' }) : intl.$t({ defaultMessage: 'Unrevoke' })
     )
 
-    if (disabledActionMessage) {
+    // Allow to revoke/unrevoke after we make identity group required
+    if (disabledActionMessage && !isIdentityGroupRequired) {
       showAppliedInstanceMessage(disabledActionMessage)
     } else {
       callback()
@@ -240,7 +242,9 @@ export default function DpskPassphraseManagement () {
   }
 
   const canEdit = (selectedRows: NewDpskPassphrase[]): boolean => {
-    return isCloudpathEnabled && selectedRows.length === 1 && !selectedRows[0].identityId
+    // Allow to edit after we make identity group required
+    return isCloudpathEnabled && selectedRows.length === 1 &&
+      (!selectedRows[0].identityId || isIdentityGroupRequired)
   }
 
   const allowManageDevices = (selectedRows: NewDpskPassphrase[]) => {
