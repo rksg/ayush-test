@@ -82,7 +82,7 @@ export function RadioSettingsForm (props:{
   const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
 
   const channelSelectionOpts = (radioType === ApRadioTypeEnum.Radio6G) ?
-      apChannelSelectionMethods6GOptions : apChannelSelectionMethodsOptions
+    apChannelSelectionMethods6GOptions : apChannelSelectionMethodsOptions
   const navigate = useNavigate()
   const location = useLocation()
   const detailsPath = usePathBasedOnConfigTemplate(`/venues/${venue?.id}/edit/wifi/radio/Normal6GHz`)
