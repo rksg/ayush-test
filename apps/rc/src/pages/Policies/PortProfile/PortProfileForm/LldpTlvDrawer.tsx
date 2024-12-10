@@ -1,19 +1,17 @@
 import { useEffect, useState } from 'react'
 
 import { Form, Input, Radio, Space } from 'antd'
-import { useIntl }     from 'react-intl'
+import { useIntl }                   from 'react-intl'
 
-import { Drawer, showToast }                 from '@acx-ui/components'
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { Drawer, showToast }                  from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
-  useAddSwitchPortProfileMacOuiMutation, useEditSwitchPortProfileMacOuiMutation,
-  useLazySwitchPortProfileMacOuisListQuery
-} from '@acx-ui/rc/services'
+  useAddSwitchPortProfileLldpTlvMutation,
+  useEditSwitchPortProfileLldpTlvMutation,
+  useLazySwitchPortProfileLldpTlvsListQuery } from '@acx-ui/rc/services'
 import {
-  checkObjectNotExists,
   LldpTlvMatchingType,
-  LldpTlvs,
-  MacOuis } from '@acx-ui/rc/utils'
+  LldpTlvs } from '@acx-ui/rc/utils'
 
 interface LldpTlvDrawerProps {
   visible: boolean
@@ -27,9 +25,9 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
   const { visible, setVisible, isEdit, editData } = props
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm()
-  const [addSwitchPortProfileMacOui] = useAddSwitchPortProfileMacOuiMutation()
-  const [editSwitchPortProfileMacOui] = useEditSwitchPortProfileMacOuiMutation()
-  const [ switchPortProfileMacOuisList ] = useLazySwitchPortProfileMacOuisListQuery()
+  const [addSwitchPortProfileLldpTlv] = useAddSwitchPortProfileLldpTlvMutation()
+  const [editSwitchPortProfileLldpTlv] = useEditSwitchPortProfileLldpTlvMutation()
+  const [ switchPortProfileLldpTlvsList ] = useLazySwitchPortProfileLldpTlvsListQuery()
   const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
 
   useEffect(()=>{
@@ -53,17 +51,19 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
       await form.validateFields()
       const data = form.getFieldsValue()
       const payload = {
-        oui: data.oui,
-        note: data.note?.length === 0 ? null : data.note
+        systemName: data.systemName,
+        nameMatchingType: data.nameMatchingType,
+        systemDescription: data.systemDescription,
+        descMatchingType: data.descMatchingType
       }
       if (isEdit) {
-        await editSwitchPortProfileMacOui(
+        await editSwitchPortProfileLldpTlv(
           {
             params: { macOuiId: data.id },
             payload
           }).unwrap()
       } else {
-        await addSwitchPortProfileMacOui({
+        await addSwitchPortProfileLldpTlv({
           payload
         }).unwrap()
       }
@@ -85,7 +85,7 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
     }
   }
 
-  const addManuallyContent =
+  const content =
     <Form layout='vertical' form={form}>
       <Form.Item name='systemName'
         label={intl.$t({ defaultMessage: 'System Name' })}
@@ -165,7 +165,7 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
       title={isEdit ? intl.$t({ defaultMessage: 'Edit LLDP TLV' }) : intl.$t({ defaultMessage: 'Add LLDP TLV' })}
       visible={visible}
       onClose={onClose}
-      children={addManuallyContent}
+      children={content}
       footer={footer}
       destroyOnClose={resetField}
       width={440}

@@ -99,7 +99,7 @@ export function MacOuiDrawer (props: MacOuiDrawerProps) {
     }
   }
 
-  const addManuallyContent =
+  const content =
     <Form layout='vertical' form={form}>
       <Form.Item name='oui'
         label={intl.$t({ defaultMessage: 'MAC OUI' })}
@@ -139,7 +139,7 @@ export function MacOuiDrawer (props: MacOuiDrawerProps) {
       title={isEdit ? intl.$t({ defaultMessage: 'Edit MAC OUI' }) : intl.$t({ defaultMessage: 'Add MAC OUI' })}
       visible={visible}
       onClose={onClose}
-      children={addManuallyContent}
+      children={content}
       footer={footer}
       destroyOnClose={resetField}
       width={440}

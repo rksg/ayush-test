@@ -2130,6 +2130,7 @@ export const {
   useEditSwitchPortProfileMacOuiMutation,
   useDeleteSwitchPortProfileMacOuiMutation,
   useSwitchPortProfileLldpTlvsListQuery,
+  useLazySwitchPortProfileLldpTlvsListQuery,
   useAddSwitchPortProfileLldpTlvMutation,
   useEditSwitchPortProfileLldpTlvMutation,
   useDeleteSwitchPortProfileLldpTlvMutation
