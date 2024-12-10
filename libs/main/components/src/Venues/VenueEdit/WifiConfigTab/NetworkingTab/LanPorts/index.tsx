@@ -484,7 +484,7 @@ export function LanPorts () {
                 <Col span={8}>
                   <SoftgreProfileProvider value={{
                     index,
-                    isSoftgreTunnelEnable: (lan.softGreProfileId ? true : false),
+                    isSoftgreTunnelEnable: (!!lan.softGreProfileId),
                     softgreProfileId: (lan.softGreProfileId ? lan.softGreProfileId : ''),
                     queryPayload: {
                       venueId: venueId ? venueId : '',
