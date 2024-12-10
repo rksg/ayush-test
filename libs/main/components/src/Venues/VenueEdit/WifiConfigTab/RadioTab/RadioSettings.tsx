@@ -622,26 +622,30 @@ export function RadioSettings () {
     }
 
     const channel24 = radioParams24G?.allowedChannels
+    const method24 = radioParams24G?.method
     const title24 = $t({ defaultMessage: '2.4 GHz - Channel selection' })
-    if (!validateChannels(channel24, title24)) return false
+    if (!validateChannels(channel24, method24, title24)) return false
 
     const indoorChannel5 = radioParams50G?.allowedIndoorChannels
+    const method5 = radioParams50G?.method
     const indoorTitle5 = $t({ defaultMessage: '5 GHz - Indoor AP channel selection' })
-    if (!validateChannels(indoorChannel5, indoorTitle5)) return false
+    if (!validateChannels(indoorChannel5, method5, indoorTitle5)) return false
 
     const outdoorChannel5 = radioParams50G?.allowedOutdoorChannels
+    const method5 = radioParams50G?.method
     const outdoorTitle5 = $t({ defaultMessage: '5 GHz - Outdoor AP channel selection' })
-    if (!validateChannels(outdoorChannel5, outdoorTitle5)) return false
+    if (!validateChannels(outdoorChannel5, method5, outdoorTitle5)) return false
 
     const channelBandwidth6 = radioParams6G?.channelBandwidth
+    const method6 = radioParams6G?.method
     const indoorChannel6 = is6gChannelSeparation ? radioParams6G?.allowedIndoorChannels : radioParams6G?.allowedChannels
     const indoorTitle6 = is6gChannelSeparation ? $t({ defaultMessage: '6 GHz - Indoor AP channel selection' }) :
       $t({ defaultMessage: '6 GHz - Channel selection' })
-    if (!validateChannels(indoorChannel6, indoorTitle6)) return false
+    if (!validateChannels(indoorChannel6, method6, indoorTitle6)) return false
     const outdoorChannel6 = is6gChannelSeparation ? radioParams6G?.allowedOutdoorChannels : undefined
     const outdoorTitle6 = is6gChannelSeparation ? $t({ defaultMessage: '6 GHz - Outdoor AP channel selection' }) :
       ''
-    if (outdoorChannel6 && !validateChannels(outdoorChannel6, outdoorTitle6)) return false
+    if (outdoorChannel6 && !validateChannels(outdoorChannel6, method6, outdoorTitle6)) return false
     if (channelBandwidth6 === ChannelBandwidth6GEnum._320MHz){
       if (!validate320MHzIsolatedGroup(indoorChannel6, indoorTitle6)) return false
       if (outdoorChannel6 && !validate320MHzIsolatedGroup(outdoorChannel6, outdoorTitle6)) return false
@@ -680,7 +684,7 @@ export function RadioSettings () {
     const indoorLowerTitle5 = inheritParamsLower5G
       ? $t({ defaultMessage: '5 GHz - Indoor AP channel selection' })
       : $t({ defaultMessage: 'Lower 5 GHz - Indoor AP channel selection' })
-    if (!validateChannels(indoorLowerChannel5, indoorLowerTitle5, lower5GName)) return false
+    if (!validateChannels(indoorLowerChannel5, method5, indoorLowerTitle5, lower5GName)) return false
 
     const outdoorLowerChannel5 = inheritParamsLower5G
       ? outdoorLower5GChs
@@ -688,7 +692,7 @@ export function RadioSettings () {
     const outdoorLowerTitle5 = inheritParamsLower5G
       ? $t({ defaultMessage: '5 GHz - Outdoor AP channel selection' })
       : $t({ defaultMessage: 'Lower 5 GHz - Outdoor AP channel selection' })
-    if (!validateChannels(outdoorLowerChannel5, outdoorLowerTitle5, lower5GName)) return false
+    if (!validateChannels(outdoorLowerChannel5, method5, outdoorLowerTitle5, lower5GName)) return false
 
     const upper5GName = inheritParamsUpper5G ? 'Upper 5 GHz' : undefined
 
@@ -698,7 +702,7 @@ export function RadioSettings () {
     const indoorUpperTitle5 = inheritParamsUpper5G
       ? $t({ defaultMessage: '5 GHz - Indoor AP channel selection' })
       : $t({ defaultMessage: 'Upper 5 GHz - Indoor AP channel selection' })
-    if (!validateChannels(indoorUpperChannel5, indoorUpperTitle5, upper5GName)) return false
+    if (!validateChannels(indoorUpperChannel5, method5, indoorUpperTitle5, upper5GName)) return false
 
     const outdoorUpperChannel5 = inheritParamsUpper5G
       ? outdoorUpper5GChs
@@ -706,7 +710,7 @@ export function RadioSettings () {
     const outdoorUpperTitle5 = inheritParamsUpper5G
       ? $t({ defaultMessage: '5 GHz - Outdoor AP channel selection' })
       : $t({ defaultMessage: 'Upper 5 GHz - Outdoor AP channel selection' })
-    if (!validateChannels(outdoorUpperChannel5, outdoorUpperTitle5, upper5GName)) return false
+    if (!validateChannels(outdoorUpperChannel5, method5, outdoorUpperTitle5, upper5GName)) return false
 
     return true
   }
