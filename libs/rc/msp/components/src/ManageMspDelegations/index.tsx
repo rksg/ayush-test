@@ -86,7 +86,9 @@ export const ManageMspDelegationDrawer = (props: ManageMspDelegationDrawerProps)
       setPrivilegeGroupData(pgs ?? [])
     }
     const allCustomersPGs = privilegeGroupList?.filter(pg => pg.allCustomers === true) ?? []
-    setSelectedPrivilegeGroups(isSkip ? allCustomersPGs : (delegatedPGs ?? []))
+    const selectedPGS = allCustomersPGs
+      .concat(selectedPrivilegeGroups.filter(pg => !allCustomersPGs.map(c => c.id).includes(pg.id)))
+    setSelectedPrivilegeGroups(isSkip ? selectedPGS : (delegatedPGs ?? []))
   }, [privilegeGroupList, delegatedPGs])
 
   const delegatedAdmins =
