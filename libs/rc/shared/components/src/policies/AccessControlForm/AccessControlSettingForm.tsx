@@ -47,10 +47,11 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
   const aclProfileList : AccessControlInfoType[] = useGetAclPolicyListInstance()
 
   useEffect(() => {
-    if (data) {
+    if (data && editMode) {
       form.setFieldValue('oldPayload', data)
-      form.setFieldValue('policyName', data.name)
-      form.setFieldValue('description', get(data, 'description'))
+      form.setFieldValue('policyName', form.getFieldValue('policyName') || data.name)
+      // eslint-disable-next-line max-len
+      form.setFieldValue('description', form.getFieldValue('description') || get(data, 'description'))
       if (get(data, 'l2AclPolicyId')) {
         form.setFieldValue('enableLayer2', true)
         form.setFieldValue('l2AclPolicyId', data.l2AclPolicyId)
