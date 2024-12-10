@@ -50,6 +50,17 @@ jest.mock('antd', () => {
 
   return { ...components, Select }
 })
+jest.mock('@acx-ui/components', () => {
+  const actual = jest.requireActual('@acx-ui/components')
+  return {
+    ...actual,
+    Loader: ({ children }: React.PropsWithChildren) => {
+      return <div data-testid='mocked-loader'>
+        <div data-testid='loader-children'>{children}</div>
+      </div>
+    }
+  }
+})
 
 describe('ApplicationTokenForm', () => {
   const renderCreateAndFillIn = async () => {
