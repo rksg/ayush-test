@@ -568,13 +568,7 @@ export function RadioSettings () {
     const validateChannels = (channels: unknown[] | undefined, method: string | undefined,
       title: string, dual5GName?: string) => {
 
-      const content = dual5GName?
-        $t(
-          // eslint-disable-next-line max-len
-          { defaultMessage: 'The Radio {dual5GName} inherited the channel selection from the Radio 5 GHz.{br}Please select at least two channels under the {dual5GName} block' },
-          { dual5GName, br: <br /> }
-        ):
-        $t({ defaultMessage: 'Please select at least two channels' })
+      const content = ''
       if (Array.isArray(channels)) {
         const channelsLen = channels.length
 
@@ -584,7 +578,13 @@ export function RadioSettings () {
             content = $t({ defaultMessage: 'Please select one channel' })
           }
         } else if (channelsLen <2) {
-          content = content
+          content = dual5GName?
+            $t(
+              // eslint-disable-next-line max-len
+              { defaultMessage: 'The Radio {dual5GName} inherited the channel selection from the Radio 5 GHz.{br}Please select at least two channels under the {dual5GName} block' },
+              { dual5GName, br: <br /> }
+            ):
+            $t({ defaultMessage: 'Please select at least two channels' })
         }
 
         if (content !== '') {
