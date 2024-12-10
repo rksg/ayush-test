@@ -23,4 +23,3 @@ export const intentAIKeyMap = [
   { id: 19, value: 'intentAi.c-probeflex-6g', text: defineMessage({ defaultMessage: 'EquiFlex: Time to Connect vs Client Density for 6 GHz' }), textAlto: defineMessage({ defaultMessage: 'EquiFlex: Time to Connect vs Client Density for 6 GHz' }), enumType: '', incidents: {}, kpis: { connectionSuccess: 1, timeToConnect: 1, roamingSuccess: 1, rss: 1 } },
   { id: 20, value: 'intentAi.i-ecoflex', text: defineMessage({ defaultMessage: 'EcoFlex: Energy Footprint vs Mission Criticality' }), textAlto: defineMessage({ defaultMessage: 'EcoFlex: Energy Footprint vs Mission Criticality' }), enumType: '', incidents: {}, kpis: { connectionSuccess: 1, timeToConnect: 1, roamingSuccess: 1, clientThroughput: 1, apCapacity: 1, rss: 1, onlineAPs: 1 } }
 ]
-
