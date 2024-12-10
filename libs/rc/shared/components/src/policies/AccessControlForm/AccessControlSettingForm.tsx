@@ -52,7 +52,6 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
     if (data?.name && editMode && !fetchDone.current) {
       form.setFieldValue('oldPayload', data)
       form.setFieldValue('policyName', data.name)
-      // eslint-disable-next-line max-len
       form.setFieldValue('description', get(data, 'description'))
       if (get(data, 'l2AclPolicyId')) {
         form.setFieldValue('enableLayer2', true)
