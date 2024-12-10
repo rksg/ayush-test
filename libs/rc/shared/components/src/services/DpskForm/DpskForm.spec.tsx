@@ -7,7 +7,7 @@ import {
   getServiceRoutePath,
   ServiceType,
   ServiceOperation,
-  RulesManagementUrlsInfo
+  RulesManagementUrlsInfo, PersonaUrls
 } from '@acx-ui/rc/utils'
 import { Path, To, useTenantLink } from '@acx-ui/react-router-dom'
 import { Provider }                from '@acx-ui/store'
@@ -28,7 +28,7 @@ import {
   mockedTenantId,
   mockedServiceId,
   mockedDpskList,
-  policySetList
+  policySetList, identityGroupList, mockedPolicySet
 } from './__tests__/fixtures'
 import { DpskForm } from './DpskForm'
 
@@ -70,6 +70,10 @@ describe('DpskForm', () => {
       rest.get(
         RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
+      ),
+      rest.post(
+        DpskUrls.createDpskWithIdentityGroup.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedCreateFormData }))
       )
     )
   })
@@ -309,6 +313,70 @@ describe('DpskForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
 
     await waitFor(() => expect(getFn).toBeCalled())
+    await waitFor(() => expect(updateFn).toBeCalled())
+  })
+
+  // eslint-disable-next-line max-len
+  it('should create a DPSK service profile with identity group id with DPSK_REQUIRE_IDENTITY_GROUP enabled', async () => {
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === Features.CLOUDPATH_BETA)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.RBAC_SERVICE_POLICY_TOGGLE ||
+      ff === Features.DPSK_REQUIRE_IDENTITY_GROUP
+    )
+    const updateFn = jest.fn()
+    const createDpskWithIdentityGroupFn = jest.fn()
+
+    mockServer.use(
+      rest.put(
+        DpskUrls.updateDpskPolicySet.url,
+        (req, res, ctx) => res(
+          updateFn(),
+          ctx.json({ requestId: '12345' })
+        )
+      ),
+      rest.post(
+        RulesManagementUrlsInfo.getPolicyTemplateListByQuery.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(mockedPolicySet))
+      ),
+      rest.post(
+        DpskUrls.createDpskWithIdentityGroup.url,
+        (req, res, ctx) => res(
+          createDpskWithIdentityGroupFn(),
+          ctx.json({ id: '12345', requestId: '12345' }))
+      ),
+      rest.post(
+        PersonaUrls.searchPersonaGroupList.url.replace('?size=:pageSize&page=:page&sort=:sort', ''),
+        (req, res, ctx) => res(ctx.json(identityGroupList))
+      )
+    )
+
+    render(
+      <Provider>
+        <DpskForm />
+      </Provider>, {
+        route: { params: { tenantId: mockedTenantId }, path: createPath }
+      }
+    )
+
+    // Set Service Name
+    await userEvent.type(
+      await screen.findByRole('textbox', { name: /Service Name/i }),
+      'FakeDPSK'
+    )
+
+    await userEvent.click(screen.getByRole('combobox', { name: /Identity Group/i }))
+
+    // wait for the policy set list to be loaded
+    await userEvent.click(await screen.findByText(identityGroupList.content[0].name))
+
+    await userEvent.click(screen.getByRole('combobox', { name: /Adaptive Policy Set/i }))
+
+    // wait for the policy set list to be loaded
+    await userEvent.click(await screen.findByText(policySetList.content[0].name))
+
+    await userEvent.click(screen.getAllByRole('button', { name: 'Add' })[2])
+
+    await waitFor(() => expect(createDpskWithIdentityGroupFn).toBeCalled())
     await waitFor(() => expect(updateFn).toBeCalled())
   })
 })
