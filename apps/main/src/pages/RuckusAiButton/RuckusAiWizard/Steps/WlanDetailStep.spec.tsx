@@ -45,6 +45,8 @@ describe('WlanDetailStep', () => {
             payload={mock_payload}
             sessionId='session-id'
             formInstance={formRef.current}
+            isRegenWlan={false}
+            setIsRegenWlan={jest.fn()}
           />
         </Form>
       </Provider>)
@@ -64,6 +66,8 @@ describe('WlanDetailStep', () => {
             payload={mock_payload}
             sessionId='session-id'
             formInstance={formRef.current}
+            isRegenWlan={false}
+            setIsRegenWlan={jest.fn()}
           />
         </Form>
       </Provider>)
@@ -89,6 +93,8 @@ describe('WlanDetailStep', () => {
             payload={mock_payload}
             sessionId='session-id'
             formInstance={formRef.current}
+            isRegenWlan={false}
+            setIsRegenWlan={jest.fn()}
           />
         </Form>
       </Provider>)
@@ -110,6 +116,8 @@ describe('WlanDetailStep', () => {
             payload={mock_payload}
             sessionId='session-id'
             formInstance={formRef.current}
+            isRegenWlan={false}
+            setIsRegenWlan={jest.fn()}
           />
         </Form>
       </Provider>)
