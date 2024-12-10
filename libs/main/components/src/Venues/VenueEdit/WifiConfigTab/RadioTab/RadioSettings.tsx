@@ -577,13 +577,21 @@ export function RadioSettings () {
             content = $t({ defaultMessage: 'Please select one channel' })
           }
         } else if (channelsLen <2) {
-          content = dual5GName?
-            $t(
+          if (dual5GName) {
+            const dual5gContent = $t(
               // eslint-disable-next-line max-len
               { defaultMessage: 'The Radio {dual5GName} inherited the channel selection from the Radio 5 GHz.{br}Please select at least two channels under the {dual5GName} block' },
               { dual5GName, br: <br /> }
-            ):
-            $t({ defaultMessage: 'Please select at least two channels' })
+            )
+            showActionModal({
+              type: 'error',
+              title: title,
+              content: dual5gContent
+            })
+            return false
+          } else {
+            content = $t({ defaultMessage: 'Please select at least two channels' })
+          }
         }
 
         if (content !== '') {
