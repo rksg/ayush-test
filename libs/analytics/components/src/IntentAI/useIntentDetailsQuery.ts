@@ -205,15 +205,31 @@ export const api = intentAIApi.injectEndpoints({
         `,
         variables: { root, sliceId, code }
       }),
-
       transformResponse: (response: { intent?: Intent }) => response.intent,
       transformErrorResponse: (error, meta) =>
         ({ ...error, data: meta?.response?.data?.intent }),
       providesTags: [{ type: 'Intent', id: 'INTENT_DETAILS' }]
+    }),
+    intentKpis: build.query<IntentKpi | undefined, IntentDetailsQueryPayload>({
+      query: ({ root, sliceId, code, kpis }) => {
+        console.log('HII', kpiHelper(kpis))
+        return ({
+          document: gql`
+        query IntentKpis($root: String!, $sliceId: String!, $code: String!) {
+          intent(root: $root, sliceId: $sliceId, code: $code) {
+            ${kpiHelper(kpis)}
+          }
+        }
+      `,
+          variables: { root, sliceId, code }
+        })}
+      // transformResponse: (response: { intent?: Intent }) => response.intent
+    // You may add providesTags if you need caching/invalidations
     })
   })
 })
 
 export const {
-  useIntentDetailsQuery
+  useIntentDetailsQuery,
+  useIntentKpisQuery
 } = api
