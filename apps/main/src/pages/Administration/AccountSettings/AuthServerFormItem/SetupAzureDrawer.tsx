@@ -445,13 +445,12 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     </Form.Item>
     }
     {isSsoEncryptionEnabled &&
-    <Form layout='vertical' form={form}>
       <SelectServerCertificate
         serverSertificates={certificateList?.data}
         setSelected={setCertificateId}
         selected={certificateId}
       />
-    </Form>}
+    }
     </>
   }
 

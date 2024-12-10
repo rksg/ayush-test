@@ -51,13 +51,6 @@ describe('Enable RUCKUS One Beta Feature List Checkbox', () => {
         (_req, res, ctx) => res(ctx.json({ requestId: '123' }))
       )
     )
-    Object.defineProperty(window, 'location', {
-      writable: true,
-      value: {
-        ...window.location,
-        reload: jest.fn()
-      }
-    })
   })
 
   it('should display enable early access features drawer when checkbox changed', async () => {
