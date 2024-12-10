@@ -82,7 +82,7 @@ export function RadioSettingsForm (props:{
   const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
 
   const channelSelectionOpts = (context === 'venue') ?
-    channelSelectionMethodsOptions :
+    apChannelSelectionMethodsOptions :
     (radioType === ApRadioTypeEnum.Radio6G) ?
       apChannelSelectionMethods6GOptions : apChannelSelectionMethodsOptions
   const navigate = useNavigate()
