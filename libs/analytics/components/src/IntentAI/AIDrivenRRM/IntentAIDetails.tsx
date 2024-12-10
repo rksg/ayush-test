@@ -89,11 +89,6 @@ export function createIntentAIDetails () {
     const fields = useCommonFields(intent)
     const noData = state === 'no-data' || !hasData
 
-    // Wait for both queries to complete
-    if (queryResult.isLoading) {
-      return <Loader />
-    }
-
     return <>
       <div hidden>
         <SummaryGraphBefore detailsPage crrmData={crrmData} setUrl={setSummaryUrlBefore} />
