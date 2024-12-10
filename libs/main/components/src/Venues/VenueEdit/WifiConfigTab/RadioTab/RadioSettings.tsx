@@ -568,7 +568,6 @@ export function RadioSettings () {
     const validateChannels = (channels: unknown[] | undefined, method: string | undefined,
       title: string, dual5GName?: string) => {
 
-      const content = ''
       if (Array.isArray(channels)) {
         const channelsLen = channels.length
 
