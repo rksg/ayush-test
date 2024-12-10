@@ -10,6 +10,7 @@ import {
   useEditSwitchPortProfileLldpTlvMutation,
   useLazySwitchPortProfileLldpTlvsListQuery } from '@acx-ui/rc/services'
 import {
+  checkObjectNotExists,
   LldpTlvMatchingType,
   LldpTlvs } from '@acx-ui/rc/utils'
 
@@ -27,8 +28,23 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
   const [form] = Form.useForm()
   const [addSwitchPortProfileLldpTlv] = useAddSwitchPortProfileLldpTlvMutation()
   const [editSwitchPortProfileLldpTlv] = useEditSwitchPortProfileLldpTlvMutation()
-  const [ switchPortProfileLldpTlvsList ] = useLazySwitchPortProfileLldpTlvsListQuery()
+  const [switchPortProfileLldpTlvsList] = useLazySwitchPortProfileLldpTlvsListQuery()
   const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
+
+  const nameDuplicateValidator = async (systemName: string) => {
+    const list = (await switchPortProfileLldpTlvsList({
+      payload: {
+        page: '1',
+        pageSize: '10000'
+      }
+    }).unwrap()).data
+      .filter((n: LldpTlvs) => n.id !== editData?.id)
+      .map((n: LldpTlvs) =>
+        ({ name: n.systemName.replace(/[^a-z0-9]/gi, '').toLowerCase() }))
+    // eslint-disable-next-line max-len
+    return checkObjectNotExists(list, { name: systemName.replace(/[^a-z0-9]/gi, '').toLowerCase() } ,
+      intl.$t({ defaultMessage: 'LLDP TLV' }))
+  }
 
   useEffect(()=>{
     if (editData && visible) {
@@ -59,7 +75,7 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
       if (isEdit) {
         await editSwitchPortProfileLldpTlv(
           {
-            params: { macOuiId: data.id },
+            params: { lldpTlvId: data.id },
             payload
           }).unwrap()
       } else {
@@ -90,7 +106,8 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
       <Form.Item name='systemName'
         label={intl.$t({ defaultMessage: 'System Name' })}
         rules={[
-          { required: true }
+          { required: true },
+          { validator: (_, value) => nameDuplicateValidator(value) }
         ]}
         validateFirst
         hasFeedback

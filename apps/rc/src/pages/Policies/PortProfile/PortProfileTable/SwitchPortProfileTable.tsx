@@ -1,10 +1,9 @@
-import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Tooltip } from '@acx-ui/components'
 import {
-  useDeleteDirectoryServerMutation,
+  // useDeleteDirectoryServerMutation,
   useSwitchPortProfilesListQuery
 }from '@acx-ui/rc/services'
 import {
@@ -16,14 +15,14 @@ import {
   SwitchPortProfiles,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 export default function SwitchPortProfileTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const params = useParams()
+  // const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
-  const [ deleteFn ] = useDeleteDirectoryServerMutation()
+  // const [ deleteFn ] = useDeleteDirectoryServerMutation()
   const settingsId = 'switch-port-profile-table'
 
   const defaultPayload = {
@@ -36,16 +35,16 @@ export default function SwitchPortProfileTable () {
     defaultPayload
   })
 
-  const doDelete = (selectedRows: SwitchPortProfiles[], callback: () => void) => {
-    // doProfileDelete(
-    //   selectedRows,
-    //   $t({ defaultMessage: 'Port Profile(s)' }),
-    //   selectedRows[0].name,
-    //   [{ fieldName: 'id', fieldText: $t({ defaultMessage: 'Switch Port' }) }],
-    //   async () => deleteFn({
-    //     params, payload: selectedRows.map(row => row.id) }).then(callback)
-    // )
-  }
+  // const doDelete = (selectedRows: SwitchPortProfiles[], callback: () => void) => {
+  // doProfileDelete(
+  //   selectedRows,
+  //   $t({ defaultMessage: 'Port Profile(s)' }),
+  //   selectedRows[0].name,
+  //   [{ fieldName: 'id', fieldText: $t({ defaultMessage: 'Switch Port' }) }],
+  //   async () => deleteFn({
+  //     params, payload: selectedRows.map(row => row.id) }).then(callback)
+  // )
+  // }
 
   function useColumns () {
     const { $t } = useIntl()
@@ -140,8 +139,9 @@ export default function SwitchPortProfileTable () {
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: (selectedRows: SwitchPortProfiles[], clearSelection) => {
-        doDelete(selectedRows, clearSelection)
+      onClick: () => {
+      // onClick: (selectedRows: SwitchPortProfiles[], clearSelection) => {
+        // doDelete(selectedRows, clearSelection)
       }
     },
     {

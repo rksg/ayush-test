@@ -16,6 +16,7 @@ import {
 import { useParams }                     from '@acx-ui/react-router-dom'
 import { SwitchScopes }                  from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
+
 import { LldpTlvDrawer } from '../PortProfileForm/LldpTlvDrawer'
 
 type PortProfileMap = {
@@ -118,14 +119,9 @@ export default function LldpTlvTable () {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
-        // navigate({
-        //   ...basePath,
-        //   pathname: `${basePath.pathname}/` + getPolicyDetailsLink({
-        //     type: PolicyType.ETHERNET_PORT_PROFILE,
-        //     oper: PolicyOperation.EDIT,
-        //     policyId: selectedRows[0].id
-        //   })
-        // })
+        setEditData(selectedRows[0])
+        setIsEditMode(true)
+        setVisible(true)
       }
     },
     {
