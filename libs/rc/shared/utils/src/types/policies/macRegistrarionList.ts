@@ -15,7 +15,9 @@ export interface MacRegistrationPool {
   expirationDate?: string
   defaultAccess : string
   networkIds?: string []
-  associationIds?: string []
+  associationIds?: string [],
+  identityGroupId?: string,
+  identityId?: string
 }
 
 export interface MacRegistrationPoolFormFields {
@@ -27,7 +29,10 @@ export interface MacRegistrationPoolFormFields {
   expireAfter: number
   expireTimeUnit: string
   defaultAccess: string
-  expiration: ExpirationDateEntity
+  expiration: ExpirationDateEntity,
+  isUseSingleIdentity: boolean,
+  identityGroupId: string,
+  identityId: string
 }
 
 export interface MacRegistration {

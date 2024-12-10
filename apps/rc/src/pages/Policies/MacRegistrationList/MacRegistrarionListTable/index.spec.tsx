@@ -1,11 +1,17 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, ExpirationType, MacRegListUrlsInfo, RulesManagementUrlsInfo }       from '@acx-ui/rc/utils'
+import { useIsSplitOn }     from '@acx-ui/feature-toggle'
+import {
+  CommonUrlsInfo,
+  ExpirationType,
+  MacRegListUrlsInfo,
+  RulesManagementUrlsInfo
+} from '@acx-ui/rc/utils'
 import { Provider }                                                                          from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import MacRegistrationListsTable from './index'
+
 
 const networkList = {
   fields: ['venues', 'id', 'venues.id'],
@@ -83,6 +89,27 @@ const list = {
   empty: false
 }
 
+export const policySetList = {
+  paging: { totalCount: 3, page: 1, pageSize: 3, pageCount: 1 },
+  content: [
+    {
+      id: 'e4fc0210-a491-460c-bd74-549a9334325a',
+      name: 'ps12',
+      description: 'ps12'
+    },
+    {
+      id: 'a76cac94-3180-4f5f-9c3b-50319cb24ef8',
+      name: 'ps2',
+      description: 'ps2'
+    },
+    {
+      id: '2f617cdd-a8b7-47e7-ba1e-fd41caf3dac8',
+      name: 'ps4',
+      description: 'ps4'
+    }
+  ]
+}
+
 describe('MacRegistrationListsTable', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -102,6 +129,10 @@ describe('MacRegistrationListsTable', () => {
       rest.post(
         MacRegListUrlsInfo.searchMacRegistrationPools.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.post(
+        RulesManagementUrlsInfo.getPolicySetsByQuery.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json(policySetList))
       )
     )
   })
