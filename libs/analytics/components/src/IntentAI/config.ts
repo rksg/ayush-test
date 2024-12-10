@@ -1,35 +1,54 @@
 /* eslint-disable max-len */
-import React from 'react'
-
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { NetworkPath } from '@acx-ui/utils'
+import { type NetworkPath, type NodeType } from '@acx-ui/utils'
+
+import { type NetworkNode } from '../NetworkFilter/services'
 
 import { DisplayStates, Statuses, StatusReasons } from './states'
+import { type IntentWlan }                        from './utils'
 
-export type StatusTrailItem = { status: Statuses, statusReason?: StatusReasons, createdAt?: string }
-export type StatusTrail = Array<StatusTrailItem>
+export type StatusTrail = {
+  status: Statuses
+  statusReason?: StatusReasons
+  displayStatus: DisplayStates
+  createdAt: string
+}
+
+type IntentPreferences = {
+  crrmFullOptimization: boolean;
+  excludedHours?: Record<string, number[]>
+  averagePowerPrice?: {
+    currency: string
+    value: number
+  }
+  excludedAPs?: [NetworkNode[]]
+}
 
 export type Intent = {
   id: string
-  code: string
   root: string
+  code: string
+  sliceId: string
   status: Statuses
   statusReason: StatusReasons
   displayStatus: DisplayStates
-  createdAt: string
-  updatedAt: string
-  sliceType: string
-  sliceValue: string
-  sliceId: string
   metadata: object & {
     scheduledAt: string
     appliedAt: string
+    wlans?: IntentWlan[]
+    dataEndTime: string
+    preferences?: IntentPreferences
+    unsupportedAPs?: string[]
   }
+  preferences?: IntentPreferences
+  sliceType: NodeType
+  sliceValue: string
   path: NetworkPath
   idPath: NetworkPath
-  statusTrail: StatusTrail
-  trigger: string
+  statusTrail: StatusTrail[]
+  createdAt: string
+  updatedAt: string
 }
 
 export type IntentListItem = Intent & {
@@ -39,10 +58,6 @@ export type IntentListItem = Intent & {
   type?: string
   category: string
   statusLabel: string
-  statusTooltip: React.ReactNode
-  preferences?: {
-    crrmFullOptimization: boolean
-  }
 }
 
 export enum AiFeatures {

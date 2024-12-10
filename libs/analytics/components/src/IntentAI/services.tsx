@@ -22,10 +22,10 @@ import {
   aiFeaturesLabel,
   stateToGroupedStates,
   IntentListItem,
+  Intent,
   failureCodes
 } from './config'
 import { DisplayStates } from './states'
-import { Intent }        from './useIntentDetailsQuery'
 import {
   Actions,
   IntentWlan,
@@ -199,7 +199,7 @@ export const api = intentAIApi.injectEndpoints({
             scope: formattedPath(path, sliceValue),
             category: $t(detail.category),
             statusLabel: states[displayStatus] ? $t(states[displayStatus].text) : displayStatus
-          } as unknown as (IntentListItem))
+          } as IntentListItem)
           return intents
         }, [] as Array<IntentListItem>)
         return { intents: items, total: response.intents.total }

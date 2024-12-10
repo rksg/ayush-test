@@ -4,11 +4,11 @@ import { AiFeatures }                                  from '../config'
 import { IntentConfigurationConfig, useIntentContext } from '../IntentContext'
 import { Statuses }                                    from '../states'
 import { AIFeatureProps }                              from '../Table'
-import { Intent, IntentKPIConfig, intentState }        from '../useIntentDetailsQuery'
+import { IntentDetail, IntentKPIConfig, intentState }  from '../useIntentDetailsQuery'
 import { isDataRetained }                              from '../utils'
 
 export const mockIntentContext = (config: {
-  intent: Intent
+  intent: IntentDetail
   kpis?: IntentKPIConfig[],
   configuration?: IntentConfigurationConfig
 }) => {
