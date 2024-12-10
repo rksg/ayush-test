@@ -23,8 +23,8 @@ export function UploadCertificate () {
   const [fileDescription, setFileDescription] = useState<{ [key in KeyType]?: ReactNode }>({})
   const bytesFormatter = formatter('bytesFormat')
   const maxSize: number = 1024 * 10
-  const acceptablePublicKeyFileExts = ['pem', 'p12', 'der']
-  const acceptablePrivateKeyFileExts = ['pem', 'key']
+  const acceptablePublicKeyFileExts = ['pem', 'p12', 'der', 'crt']
+  const acceptablePrivateKeyFileExts = ['pem', 'key', 'crt']
 
   const beforeUpload = async (file: File, keyType: KeyType) => {
     try {

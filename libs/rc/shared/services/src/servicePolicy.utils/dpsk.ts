@@ -83,3 +83,33 @@ export function updateDpskFn (isTemplate: boolean = false) : QueryFn<DpskMutatio
     }
   }
 }
+
+export function addDpskWithIdentityGroupFn () : QueryFn<DpskMutationResult, DpskSaveData> {
+  const api = DpskUrls
+  return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+    try {
+      payload = _.omit(payload, 'identityGroupId')
+      const res = await fetchWithBQ({
+        ...createHttpRequest(api.createDpskWithIdentityGroup, params),
+        body: JSON.stringify((enableRbac) ? _.omit(payload, 'policySetId') : payload)
+      })
+      // Ensure the return type is QueryReturnValue
+      if (res.error) {
+        return { error: res.error as FetchBaseQueryError }
+      }
+      const { id } = res.data as DpskMutationResult
+
+      if (enableRbac && payload!.policySetId) {
+        await fetchWithBQ({
+          ...createHttpRequest(api.updateDpskPolicySet, {
+            serviceId: id,
+            policySetId: payload!.policySetId })
+        })
+      }
+
+      return { data: res.data as DpskMutationResult }
+    } catch (error) {
+      return { error: error as FetchBaseQueryError }
+    }
+  }
+}
