@@ -4,12 +4,18 @@ import { useEffect } from 'react'
 import { Col, Form, InputNumber, Row, Space, Switch } from 'antd'
 import { useIntl }                                    from 'react-intl'
 
-import { Loader, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { ApCompatibilityToolTip }                         from '@acx-ui/rc/components'
-import { useGetEdgeClusterArpTerminationSettingsQuery }   from '@acx-ui/rc/services'
-import { EdgeClusterStatus, IncompatibilityFeatures }     from '@acx-ui/rc/utils'
+import { Loader, StepsForm, Tooltip, useStepFormContext }                           from '@acx-ui/components'
+import { ApCompatibilityToolTip }                                                   from '@acx-ui/rc/components'
+import { useGetEdgeClusterArpTerminationSettingsQuery, useGetEdgeFeatureSetsQuery } from '@acx-ui/rc/services'
+import { EdgeClusterStatus, EdgeStatus, IncompatibilityFeatures }                   from '@acx-ui/rc/utils'
+import { compareVersions }                                                          from '@acx-ui/utils'
 
-import { StyledFormItem, tooltipIconStyle } from '../styledComponents'
+import { StyledFormItem, StyledFormItemTimer, tooltipIconStyle } from '../styledComponents'
+
+const checkArpByClusterFw = (requiredFw?: string, edgeNodeList?: EdgeStatus[]) => {
+  return !!requiredFw &&
+    edgeNodeList?.every(edge => compareVersions(edge.firmwareVersion, requiredFw) >= 0)
+}
 
 export const ArpTerminationFormItem = (props: {
   currentClusterStatus: EdgeClusterStatus,
@@ -19,20 +25,35 @@ export const ArpTerminationFormItem = (props: {
   const { currentClusterStatus, setEdgeFeatureName } = props
   const { form } = useStepFormContext()
 
+  const { arpRequiredFw } = useGetEdgeFeatureSetsQuery({
+    payload: {
+      filters: {
+        featureNames: [IncompatibilityFeatures.ARP_TERMINATION]
+      } }
+  }, {
+    selectFromResult: ({ data }) => {
+      return {
+        arpRequiredFw: data?.featureSets
+          ?.find(item => item.featureName === IncompatibilityFeatures.ARP_TERMINATION)?.requiredFw
+      }
+    }
+  })
+
+  const isArpControllable = checkArpByClusterFw(arpRequiredFw, currentClusterStatus.edgeList)
   const {
     data: arpTerminationSettings,
     isLoading: isArpTerminationSettingsLoading
   } = useGetEdgeClusterArpTerminationSettingsQuery({
     params: {
       venueId: currentClusterStatus.venueId,
-      clusterId: currentClusterStatus.clusterId
+      edgeClusterId: currentClusterStatus.clusterId
     }
   },{
-    // skip: !Boolean(clusterInfo)
+    skip: !isArpControllable
   })
 
   useEffect(() => {
-    form.setFieldValue('originArpEnabled', arpTerminationSettings?.enabled)
+    form.setFieldValue('originalArpSettings', arpTerminationSettings)
     form.setFieldsValue({
       arpTerminationSwitch: arpTerminationSettings?.enabled,
       arpAgingTimerSwitch: arpTerminationSettings?.agingTimerEnabled,
@@ -47,51 +68,47 @@ export const ArpTerminationFormItem = (props: {
           <Space>
             {$t({ defaultMessage: 'ARP Termination' })}
             <ApCompatibilityToolTip
-              title='ARP Termination terminates ARP requests on RUCKUS Edge and generates responses based on the IP/MAC bindings cached from snooping the original ARP responses from the target hosts. Enabling it reduces ARP broadcast traffic in wireless networks. ARP requests matching an existing IP/MAC binding will be dropped until the aging timer expires.'
+              title='Reply to ARP requests using local IP to MAC cache. Reduces broadcast traffic but cache can be stale if IPs are reassigned between hosts.'
               visible
               onClick={() => setEdgeFeatureName(IncompatibilityFeatures.ARP_TERMINATION)}
             />
           </Space>
-          <Space>
-            <Form.Item
-              name='arpTerminationSwitch'
-              valuePropName='checked'
-            >
-              <Switch />
-            </Form.Item>
-          </Space>
+          <Form.Item
+            name='arpTerminationSwitch'
+            valuePropName='checked'
+          >
+            <Switch disabled={!isArpControllable}/>
+          </Form.Item>
         </StepsForm.FieldLabel>
       </Col>
     </Row>
 
     <Row gutter={20}>
       <Col span={7}>
-        <Form.Item dependencies={['arpTerminationSwitch']} >
+        <Form.Item noStyle dependencies={['arpTerminationSwitch']} >
           {({ getFieldValue }) => {
             return getFieldValue('arpTerminationSwitch') &&
             <StepsForm.FieldLabel width='50%'>
               <Space>
                 {$t({ defaultMessage: 'ARP Termination Aging Timer' })}
                 <Tooltip.Question
-                  title={$t({ defaultMessage: 'Once the aging timer expires, the IP/MAC binding is removed and then reestablished through subsequent ARP snooping. The ARP aging timer should be greater than DHCP lease time.  If a DHCP lease expires prior to the associated IP/MAC binding this can cause ARP resolution failure for the new device the IP is assigned to until the binding is aged out. The minimum aging timer is 600 seconds.' })}
+                  title={$t({ defaultMessage: 'Time in seconds before cached IP to MAC mappings expire. Should be shorter than DHCP lease time to prevent stale entries.' })}
                   placement='right'
                   iconStyle={tooltipIconStyle}
                 />
               </Space>
-              <Space>
-                <Form.Item
-                  name='arpAgingTimerSwitch'
-                  valuePropName='checked'
-                >
-                  <Switch />
-                </Form.Item>
-              </Space>
+              <Form.Item
+                name='arpAgingTimerSwitch'
+                valuePropName='checked'
+              >
+                <Switch />
+              </Form.Item>
             </StepsForm.FieldLabel>
           }}
         </Form.Item>
-        <Form.Item dependencies={['arpAgingTimerSwitch']}>
+        <StyledFormItemTimer dependencies={['arpTerminationSwitch', 'arpAgingTimerSwitch']}>
           {({ getFieldValue }) => {
-            return getFieldValue('arpAgingTimerSwitch') &&
+            return getFieldValue('arpTerminationSwitch') && getFieldValue('arpAgingTimerSwitch') &&
               <Space align='center'>
                 <StyledFormItem
                   name='agingTimeSec'
@@ -102,13 +119,13 @@ export const ArpTerminationFormItem = (props: {
                   },
                   { type: 'number', min: 600, max: 2147483647 }]}
                   children={
-                    <InputNumber style={{ width: '100px' }} />
+                    <InputNumber style={{ width: '120px' }} />
                   }
                 />
                 {$t({ defaultMessage: 'seconds' })}
               </Space>
           }}
-        </Form.Item>
+        </StyledFormItemTimer>
       </Col>
     </Row>
   </Loader>

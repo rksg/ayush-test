@@ -18,12 +18,13 @@ import {
   useActivateHqosOnEdgeClusterMutation,
   useDeactivateHqosOnEdgeClusterMutation,
   useGetDhcpStatsQuery,
-  useGetEdgeHqosProfileViewDataListQuery
+  useGetEdgeHqosProfileViewDataListQuery,
+  useUpdateEdgeClusterArpTerminationSettingsMutation
 } from '@acx-ui/rc/services'
-import { EdgeClusterStatus, IncompatibilityFeatures } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }      from '@acx-ui/react-router-dom'
-import { EdgeScopes }                                 from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasPermission }    from '@acx-ui/user'
+import { ClusterArpTerminationSettings, EdgeClusterStatus, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                     from '@acx-ui/react-router-dom'
+import { EdgeScopes }                                                                from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasPermission }                                   from '@acx-ui/user'
 
 import EdgeQosProfileSelectionForm from '../../../../Policies/HqosBandwidth/Edge/HqosBandwidthSelectionForm'
 
@@ -55,6 +56,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   const [activateEdgeQos] = useActivateHqosOnEdgeClusterMutation()
   const [deactivateEdgeQos] = useDeactivateHqosOnEdgeClusterMutation()
   const { activateEdgeMdnsCluster, deactivateEdgeMdnsCluster } = useEdgeMdnsActions()
+  const [updateEdgeArpTermination] = useUpdateEdgeClusterArpTerminationSettingsMutation()
 
 
   const edgeCpuCores = currentClusterStatus?.edgeList?.map(e => e.cpuCores)[0]
@@ -165,13 +167,39 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   }
 
   const handleApplyArpTermination = async () => {
-    const isArpTerminationEnabled = form.getFieldValue('arpTerminationSwitch')
-    const isArpAgingTimerEnabled = form.getFieldValue('arpAgingTimerSwitch')
-    const agingTimeSec = form.getFieldValue('agingTimeSec')
+    const originalArpSettings = form.getFieldValue('originalArpSettings')
 
-    console.log('testARP-ArpTermination:', isArpTerminationEnabled)
-    console.log('testARP-ArpAgingTimer:', isArpAgingTimerEnabled)
-    console.log('testARP-agingTimeSec:', agingTimeSec)
+    const currentArpSettings: ClusterArpTerminationSettings = {
+      enabled: form.getFieldValue('arpTerminationSwitch'),
+      agingTimerEnabled: form.getFieldValue('arpAgingTimerSwitch'),
+      agingTimeSec: form.getFieldValue('agingTimeSec')
+    }
+
+    const needUpdate =
+      originalArpSettings.enabled !== currentArpSettings.enabled ||
+      originalArpSettings.agingTimerEnabled !== currentArpSettings.agingTimerEnabled ||
+      originalArpSettings.agingTimeSec !== currentArpSettings.agingTimeSec
+
+    if (needUpdate) {
+      if (!currentArpSettings.enabled) {
+        currentArpSettings.agingTimerEnabled = originalArpSettings.agingTimerEnabled
+        currentArpSettings.agingTimeSec = originalArpSettings.agingTimeSec
+      } else if (!currentArpSettings.agingTimerEnabled) {
+        currentArpSettings.agingTimeSec = originalArpSettings.agingTimeSec
+      }
+    }
+
+    if (needUpdate) {
+      if (!clusterId || !currentClusterStatus?.venueId) return
+      const requestPayload = {
+        params: {
+          venueId: currentClusterStatus?.venueId,
+          edgeClusterId: clusterId
+        },
+        payload: currentArpSettings
+      }
+      await updateEdgeArpTermination(requestPayload).unwrap()
+    }
   }
 
   const applyDhcpService = async (dhcpId: string) => {
