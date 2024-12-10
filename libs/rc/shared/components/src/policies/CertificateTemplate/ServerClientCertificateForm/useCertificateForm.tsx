@@ -31,6 +31,7 @@ export default function useCertificateForm () {
       case 'pem': return CertificateAcceptType.PEM
       case 'p12': return CertificateAcceptType.PKCS12
       case 'der': return CertificateAcceptType.DER
+      case 'crt': return CertificateAcceptType.DER
       case 'key': return CertificateAcceptType.PKCS8
       default: return ''
     }
