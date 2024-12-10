@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 import { Form, Input } from 'antd'
 import { get }         from 'lodash'
@@ -40,6 +40,8 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
     embeddedMode = false,
     embeddedObject = {} as AclEmbeddedObject
   } = props
+  const fetchDone = useRef(false)
+
   const form = Form.useFormInstance()
 
   const data = useGetAclPolicyInstance(editMode)
@@ -47,11 +49,11 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
   const aclProfileList : AccessControlInfoType[] = useGetAclPolicyListInstance()
 
   useEffect(() => {
-    if (data && editMode) {
+    if (data?.name && editMode && !fetchDone.current) {
       form.setFieldValue('oldPayload', data)
-      form.setFieldValue('policyName', form.getFieldValue('policyName') || data.name)
+      form.setFieldValue('policyName', data.name)
       // eslint-disable-next-line max-len
-      form.setFieldValue('description', form.getFieldValue('description') || get(data, 'description'))
+      form.setFieldValue('description', get(data, 'description'))
       if (get(data, 'l2AclPolicyId')) {
         form.setFieldValue('enableLayer2', true)
         form.setFieldValue('l2AclPolicyId', data.l2AclPolicyId)
@@ -81,6 +83,7 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
         )
       }
 
+      fetchDone.current = true
     }
   }, [form, data, editMode])
 
