@@ -61,8 +61,16 @@ import { baseServiceApi }                       from '@acx-ui/store'
 import { RequestPayload }                       from '@acx-ui/types'
 import { ApiInfo, batchApi, createHttpRequest } from '@acx-ui/utils'
 
-import { commonQueryFn, getDhcpProfileFn, createWifiCallingFn, getWifiCallingFn, queryWifiCallingFn, updateWifiCallingFn } from './servicePolicy.utils'
-import { addDpskFn, updateDpskFn }                                                                                         from './servicePolicy.utils'
+import {
+  commonQueryFn,
+  getDhcpProfileFn,
+  createWifiCallingFn,
+  getWifiCallingFn,
+  queryWifiCallingFn,
+  updateWifiCallingFn,
+  addDpskWithIdentityGroupFn
+} from './servicePolicy.utils'
+import { addDpskFn, updateDpskFn } from './servicePolicy.utils'
 
 const defaultNewTablePaginationParams: TableChangePayload = {
   sortField: 'name',
@@ -587,6 +595,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       queryFn: addDpskFn(),
       invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
     }),
+    createDpskWithIdentityGroup: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
+      queryFn: addDpskWithIdentityGroupFn(),
+      invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
+    }),
     updateDpsk: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
       queryFn: updateDpskFn(),
       invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
@@ -1084,6 +1096,7 @@ export const {
   useActivateWifiCallingServiceMutation,
   useDeactivateWifiCallingServiceMutation,
   useCreateDpskMutation,
+  useCreateDpskWithIdentityGroupMutation,
   useUpdateDpskMutation,
   useGetDpskQuery,
   useLazyGetDpskQuery,

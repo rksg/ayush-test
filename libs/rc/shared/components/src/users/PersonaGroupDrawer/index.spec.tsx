@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   MacRegListUrlsInfo,
   NewPersonaBaseUrl,
@@ -179,5 +180,21 @@ describe('Persona Group Drawer', () => {
     await userEvent.click(applyButton)
 
     await waitFor(() => expect(updatePersonaSpy).toHaveBeenCalled())
+  })
+
+  it('should render PersonaGroupDrawer without identityGroup', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DPSK_REQUIRE_IDENTITY_GROUP)
+    render(
+      <Provider>
+        <PersonaGroupDrawer
+          visible
+          isEdit={false}
+          onClose={closeFn}
+        />
+      </Provider>
+    )
+
+    await screen.findByRole('dialog')
+    expect(screen.queryByText('DPSK Service')).toBeNull()
   })
 })
