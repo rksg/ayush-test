@@ -43,10 +43,17 @@ const response = {
 
 describe('ImpactedUplinkPortDetails', () => {
   it('should render', async () => {
-    mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: response })
-    render( <ImpactedUplinkPortDetails
-      incident={fakeIncidentUplinkPortCongestion}
-    />, { wrapper: Provider })
+    mockGraphqlQuery(dataApiURL, 'ImpactedSwitchesUplink', { data: response })
+    render(
+      <Provider>
+        <ImpactedUplinkPortDetails
+          incident={fakeIncidentUplinkPortCongestion} />
+      </Provider>, {
+        route: {
+          path: '/tenantId/t/analytics/incidents',
+          wrapRoutes: false
+        }
+      })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(screen.getByText(/mm\-126/i)).toBeVisible()
@@ -58,7 +65,7 @@ describe('ImpactedUplinkPortDetails', () => {
 
   it('should hide details section when under druidRollup', async () => {
     jest.mocked(mockOverlapsRollup).mockReturnValue(true)
-    mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', { data: response })
+    mockGraphqlQuery(dataApiURL, 'ImpactedSwitchesUplink', { data: response })
     render(<ImpactedUplinkPortDetails
       incident={fakeIncidentUplinkPortCongestion}
     />, { wrapper: Provider })
