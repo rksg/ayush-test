@@ -17,14 +17,15 @@ const defaultSoftgreOption = { label: '', value: '' }
 interface SoftGREProfileSettingsProps {
   index: number
   softgreProfileId: string
+  onGUIChanged?: (fieldName: string) => void
 }
 
 export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
-  const { index, softgreProfileId } = props
+  const { index, softgreProfileId, onGUIChanged } = props
   const { $t } = useIntl()
   const params = useParams()
-
-
+  const softGreProfileIdFieldName = ['lan', index, 'softGreProfileId']
+  const form = Form.useFormInstance()
   const [ detailDrawerVisible, setDetailDrawerVisible ] = useState<boolean>(false)
   const [ addDrawerVisible, setAddDrawerVisible ] = useState<boolean>(false)
   const [ softGREProfileOptionList, setsoftGREProfileOptionList] = useState<DefaultOptionType[]>([])
@@ -36,6 +37,7 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
   })
 
   const onChange = (value: string) => {
+    onGUIChanged && onGUIChanged('softgreProfile')
     setSoftGREProfile(
       softGREProfileOptionList.find((profile) => profile.value === value) ??
        { label: $t({ defaultMessage: 'Select...' }), value: '' }
@@ -50,6 +52,7 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
         return { label: softGreProfile.name, value: softGreProfile.id }
       }))
       if (softgreProfileId) {
+        form.setFieldValue(softGreProfileIdFieldName,softgreProfileId)
         setSoftGREProfile(softGREProfileOptionList.find(
           (profile) => profile.value === softgreProfileId) ?? defaultSoftgreOption
         )
@@ -64,12 +67,11 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
         <Form.Item
           label={$t({ defaultMessage: 'SoftGRE Profile' })}
           initialValue=''
-          name={['lan', index, 'softGreProfileId']}
+          name={softGreProfileIdFieldName}
           children={
             <Select
               style={{ width: '100%' }}
               data-testid={'softgre-profile-select'}
-              value={softGREProfile.value as string}
               onChange={onChange}
               options={[
                 {

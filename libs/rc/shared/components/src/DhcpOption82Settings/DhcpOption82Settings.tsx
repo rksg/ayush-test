@@ -4,7 +4,9 @@ import { useState, useContext, useEffect } from 'react'
 import { Form,  Switch, Space } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { Tooltip } from '@acx-ui/components'
+import { Tooltip }                                               from '@acx-ui/components'
+import { useLazyGetSoftGreProfileConfigurationOnAPQuery }        from '@acx-ui/rc/services'
+import { DhcpOption82Settings as DhcpOption82SettingsInterface } from '@acx-ui/rc/utils'
 
 import { SoftgreProfileAndDHCP82Context } from '../SoftGRETunnelSettings'
 
@@ -12,30 +14,62 @@ import { DhcpOption82SettingsDrawer } from './DhcpOption82SettingsDrawer'
 import { FieldLabel, ConfigIcon }     from './styledComponents'
 
 interface DhcpOption82SettingsProps {
-  index: number
+  index: number,
+  onGUIChanged?: (fieldName: string) => void
+  isUnderAPNetworking: boolean
+  serialNumber?: string
+  venueId?: string
+  portId?: string
 }
+const { useWatch } = Form
 
 export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
   const { $t } = useIntl()
 
   const [ iconVisible, setIconVisible ] = useState<boolean>(false)
   const [ drawerVisible, setDrawerVisible ] = useState<boolean>(false)
-  const [ enableDhcpOption82, setEnableDhcpOption82] = useState<boolean>(false)
+  // eslint-disable-next-line max-len
+  const [existedDHCP82OptionSettings, setExistedDHCP82OptionSettings] = useState<DhcpOption82SettingsInterface>()
+  const form = Form.useFormInstance()
 
   const { venueApModelLanPortSettingsV1 } = useContext(SoftgreProfileAndDHCP82Context)
-  const { index } = props
+  const {
+    index,
+    onGUIChanged,
+    isUnderAPNetworking,
+    serialNumber,
+    venueId,
+    portId
+  } = props
+  const [ getSoftGreProfileConfiguration ] = useLazyGetSoftGreProfileConfigurationOnAPQuery()
+  const dhcpOption82FieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Enabled']
 
   useEffect(() => {
-    const dhcpOption82Enabled = venueApModelLanPortSettingsV1?.softGreSettings?.dhcpOption82Enabled
-    if (dhcpOption82Enabled) {
-      setEnableDhcpOption82(dhcpOption82Enabled)
-      setIconVisible(true)
+    const setData = async () => {
+      if (isUnderAPNetworking) {
+        const { data } = await getSoftGreProfileConfiguration({
+          params: { serialNumber, venueId, portId }
+        })
+        if(data?.softGreSettings?.dhcpOption82Enabled) {
+          form.setFieldValue(dhcpOption82FieldName, true)
+          setExistedDHCP82OptionSettings(data?.softGreSettings?.dhcpOption82Settings)
+          setIconVisible(true)
+        }
+      } else {
+        // eslint-disable-next-line max-len
+        const dhcpOption82Enabled = venueApModelLanPortSettingsV1?.softGreSettings?.dhcpOption82Enabled
+        if (dhcpOption82Enabled) {
+          form.setFieldValue(dhcpOption82FieldName, dhcpOption82Enabled)
+          setIconVisible(true)
+        }
+      }
     }
-  }, [venueApModelLanPortSettingsV1])
+    setData()
+  }, [venueApModelLanPortSettingsV1, serialNumber, venueId, portId])
 
 
   const callbackFn = () => {
-    setEnableDhcpOption82(true)
+    form.setFieldValue(dhcpOption82FieldName, true)
     setIconVisible(true)
   }
 
@@ -58,21 +92,27 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
           />
         </Space>
         <Form.Item
-          valuePropName='checked'
           style={{ marginTop: '-5px' }}
           children={
             <>
-              <Switch
-                checked={enableDhcpOption82}
-                onClick={(checked) => {
-                  if (checked) {
-                    setDrawerVisible(true)
-                  } else {
-                    setIconVisible(false)
-                    setEnableDhcpOption82(false)
+              <Form.Item
+                valuePropName='checked'
+                name={dhcpOption82FieldName}
+                noStyle>
+                <Switch
+                  onChange={() => {
+                    onGUIChanged && onGUIChanged('DHCPOption82Enabled')
+                  }}
+                  onClick={(checked) => {
+                    if (checked) {
+                      setDrawerVisible(true)
+                    } else {
+                      setIconVisible(false)
+                      form.setFieldValue(dhcpOption82FieldName, false)
+                    }
                   }
-                }
-                }/>
+                  }/>
+              </Form.Item>
               {
                 iconVisible && <ConfigIcon
                   onClick={() => {
@@ -85,10 +125,14 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
         />
       </FieldLabel>
       <DhcpOption82SettingsDrawer
+        isUnderAPNetworking={isUnderAPNetworking}
         visible={drawerVisible}
         setVisible={setDrawerVisible}
         callbackFn={callbackFn}
-        index={index}/>
+        index={index}
+        onGUIChanged={onGUIChanged}
+        existedDHCP82OptionSettings={existedDHCP82OptionSettings}
+      />
     </>
   )
 }

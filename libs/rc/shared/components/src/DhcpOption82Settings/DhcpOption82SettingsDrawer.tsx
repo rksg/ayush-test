@@ -14,23 +14,35 @@ interface DhcpOption82SettingsDrawerProps {
   setVisible: (visible: boolean) => void
   callbackFn?: () => void
   index: number
+  onGUIChanged?: (fieldName: string) => void
+  isUnderAPNetworking: boolean,
+  existedDHCP82OptionSettings?: DhcpOption82Settings
 }
 
 
 export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProps) => {
 
-  const { visible, setVisible, callbackFn = () => {} } = props
+  const {
+    visible,
+    setVisible,
+    callbackFn = () => {},
+    index,
+    onGUIChanged,
+    isUnderAPNetworking,
+    existedDHCP82OptionSettings
+  } = props
+
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const {
     onChangeDHCPOption82Settings
   } = useContext(SoftgreProfileAndDHCP82Context)
-  const { index } = props
 
   const handleAdd = async () => {
     try {
       setVisible(false)
-      if(onChangeDHCPOption82Settings) {
+      onGUIChanged && onGUIChanged('AddDHCPOption82')
+      if(!isUnderAPNetworking && onChangeDHCPOption82Settings) {
         const settings = form?.getFieldValue(['lan', index, 'dhcpOption82']) as DhcpOption82Settings
         onChangeDHCPOption82Settings(settings)
       }
@@ -51,7 +63,13 @@ export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProp
       visible={visible}
       width={850}
       children={
-        <DhcpOption82SettingsFormField context={'lanport'} />
+        <DhcpOption82SettingsFormField
+          context={'lanport'}
+          onGUIChanged={onGUIChanged}
+          index={index}
+          isUnderAPNetworking={isUnderAPNetworking}
+          existedDHCP82OptionSettings={existedDHCP82OptionSettings}
+        />
       }
       onClose={handleClose}
       destroyOnClose={true}

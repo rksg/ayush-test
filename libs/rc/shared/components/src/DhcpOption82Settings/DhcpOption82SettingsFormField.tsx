@@ -13,7 +13,8 @@ import {
   DhcpOption82SubOption1Enum,
   DhcpOption82SubOption2Enum,
   DhcpOption82SubOption151Enum,
-  DhcpOption82MacEnum
+  DhcpOption82MacEnum,
+  DhcpOption82Settings
 } from '@acx-ui/rc/utils'
 
 import { SoftgreProfileAndDHCP82Context } from '../SoftGRETunnelSettings'
@@ -50,7 +51,7 @@ const defaultDhcpOption82FormField = {
 
 
 const selectDhcpOption82FormField = (context?: string, index?: number) : DhcpOption82FormField => {
-  if (context && context === 'venue') {
+  if (context && context === 'lanport') {
     return {
       dhcpOption82SubOption1EnabledFieldName: ['lan', index, 'dhcpOption82', 'subOption1Enabled'],
       dhcpOption82SubOption1FormatFieldName: ['lan', index, 'dhcpOption82', 'subOption1Format'],
@@ -72,22 +73,36 @@ const selectDhcpOption82FormField = (context?: string, index?: number) : DhcpOpt
 export const DhcpOption82SettingsFormField = (props: {
   labelWidth?: string
   context?: string
+  index?: number
+  onGUIChanged?: (fieldName: string) => void
+  isUnderAPNetworking: boolean
+  existedDHCP82OptionSettings?: DhcpOption82Settings
  }) => {
 
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { labelWidth = '250px', context } = props
-
   const {
-    softgreProfile,
-    venueApModelLanPortSettingsV1
-  } = useContext(SoftgreProfileAndDHCP82Context)
+    labelWidth = '250px',
+    context,
+    index = 0,
+    onGUIChanged,
+    isUnderAPNetworking,
+    existedDHCP82OptionSettings
+  } = props
 
-  const index = softgreProfile.index
+  const { venueApModelLanPortSettingsV1 } = useContext(SoftgreProfileAndDHCP82Context)
 
   useEffect(() => {
-    const settings = venueApModelLanPortSettingsV1?.softGreSettings?.dhcpOption82Settings
-    if (context && settings) {
+    const existedDHCP82OptionSettingsInVenue =
+      venueApModelLanPortSettingsV1?.softGreSettings?.dhcpOption82Settings
+    if (context) {
+      let settings = {} as DhcpOption82Settings
+      if(!isUnderAPNetworking && existedDHCP82OptionSettingsInVenue) {
+        settings = existedDHCP82OptionSettingsInVenue
+      }
+      if (isUnderAPNetworking && existedDHCP82OptionSettings) {
+        settings = existedDHCP82OptionSettings
+      }
       /* eslint-disable max-len */
       form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption1Enabled'], settings.subOption1Enabled)
       form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption1Format'], settings.subOption1Format)
@@ -100,7 +115,7 @@ export const DhcpOption82SettingsFormField = (props: {
       form?.setFieldValue(['lan', index, 'dhcpOption82', 'macFormat'], settings.macFormat)
       /* eslint-enable max-len */
     }
-  }, [venueApModelLanPortSettingsV1])
+  }, [venueApModelLanPortSettingsV1, existedDHCP82OptionSettings])
 
   const {
     dhcpOption82SubOption1EnabledFieldName,
@@ -113,6 +128,10 @@ export const DhcpOption82SettingsFormField = (props: {
     dhcpOption82SubOption151InputFieldName,
     dhcpOption82MacFormat
   } = selectDhcpOption82FormField(context, index)
+
+  const onFormFieldChange = () => {
+    onGUIChanged && onGUIChanged('DHCPOption82Settings')
+  }
 
   const dhcp82SubOption1Options = [{
     value: DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO_LOCATION,
@@ -186,7 +205,6 @@ export const DhcpOption82SettingsFormField = (props: {
     useWatch<DhcpOption82SubOption2Enum>(dhcpOption82SubOption2FormatFieldName),
     useWatch<DhcpOption82SubOption151Enum>(dhcpOption82SubOption151FormatFieldName)
   ]
-
   return (
     <>
       <UI.FieldLabel width={labelWidth}>
@@ -199,14 +217,14 @@ export const DhcpOption82SettingsFormField = (props: {
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={true}
-            children={<Switch />}
+            children={<Switch onChange={onFormFieldChange}/>}
           />
           { dhcpOption82SubOption1Enabled &&
             <Form.Item
               name={dhcpOption82SubOption1FormatFieldName}
               initialValue={DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO_LOCATION}
               children={
-                <Select options={dhcp82SubOption1Options} />
+                <Select options={dhcp82SubOption1Options} onChange={onFormFieldChange} />
               }
             />
           }
@@ -222,14 +240,14 @@ export const DhcpOption82SettingsFormField = (props: {
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
-            children={<Switch />}
+            children={<Switch onChange={onFormFieldChange}/>}
           />
           { dhcpOption82SubOption2Enabled &&
             <Form.Item
               name={dhcpOption82SubOption2FormatFieldName}
               initialValue={DhcpOption82SubOption2Enum.SUBOPT2_CLIENT_MAC}
               children={
-                <Select options={dhcp82SubOption2Options} />
+                <Select options={dhcp82SubOption2Options} onChange={onFormFieldChange}/>
               }
             />
           }
@@ -244,7 +262,7 @@ export const DhcpOption82SettingsFormField = (props: {
           style={{ marginBottom: '10px' }}
           valuePropName='checked'
           initialValue={false}
-          children={<Switch />}
+          children={<Switch onChange={onFormFieldChange}/>}
         />
       </UI.FieldLabel>
       <UI.FieldLabel width={labelWidth}>
@@ -258,14 +276,14 @@ export const DhcpOption82SettingsFormField = (props: {
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
-            children={<Switch />}
+            children={<Switch onChange={onFormFieldChange}/>}
           />
           { dhcpOption82SubOption151Enabled &&
             <Form.Item
               name={dhcpOption82SubOption151FormatFieldName}
               initialValue={DhcpOption82SubOption151Enum.SUBOPT151_AREA_NAME}
               children={
-                <Select>
+                <Select onChange={onFormFieldChange}>
                   <Option value={DhcpOption82SubOption151Enum.SUBOPT151_AREA_NAME}>
                     {$t({ defaultMessage: 'Area Name' })}
                   </Option>
@@ -285,6 +303,7 @@ export const DhcpOption82SettingsFormField = (props: {
               ]}
               children={
                 <Input style={{ width: '320px' }}
+                  onChange={onFormFieldChange}
                 />
               }
             />
@@ -304,7 +323,7 @@ export const DhcpOption82SettingsFormField = (props: {
               tooltip={apAndClientMacFormatDelimiter}
               initialValue={DhcpOption82MacEnum.COLON}
               children={
-                <Select>
+                <Select onChange={onFormFieldChange}>
                   <Option value={DhcpOption82MacEnum.COLON}>
                     {$t({ defaultMessage: 'AA:BB:CC:DD:EE:FF' })}
                   </Option>

@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Form, Input, InputNumber, Select, Space, Switch } from 'antd'
 import { DefaultOptionType }                               from 'antd/lib/select'
@@ -32,9 +32,8 @@ import {
   ApCompatibilityType,
   InCompatibilityFeatures
 } from '../ApCompatibility'
-import { DhcpOption82Settings }           from '../DhcpOption82Settings'
-import { SoftGRETunnelSettings }          from '../SoftGRETunnelSettings'
-import { SoftgreProfileAndDHCP82Context } from '../SoftGRETunnelSettings'
+import { DhcpOption82Settings }  from '../DhcpOption82Settings'
+import { SoftGRETunnelSettings } from '../SoftGRETunnelSettings'
 
 import EthernetPortProfileDrawer from './EthernetPortProfileDrawer'
 import EthernetPortProfileInput  from './EthernetPortProfileInput'
@@ -182,7 +181,7 @@ export function LanPortSettings (props: {
   }, [ethernetPortProfileId, ethernetPortListQuery?.data])
 
   useEffect(() => {
-    setSoftgreTunnelEnable(lan.softGreProfileId? true: false)
+    setSoftgreTunnelEnable(!!lan.softGreProfileId)
   }, [selectedPortCaps])
 
   return (<>
@@ -268,8 +267,18 @@ export function LanPortSettings (props: {
                 softgreProfileId={selectedPortCaps.softGreProfileId ?? ''}
                 softgreTunnelEnable={softgreTunnelEnable}
                 setSoftgreTunnelEnable={setSoftgreTunnelEnable}
+                onGUIChanged={onGUIChanged}
               />
-              {softgreTunnelEnable && <DhcpOption82Settings index={index}/>}
+              {softgreTunnelEnable &&
+                <DhcpOption82Settings
+                  index={index}
+                  onGUIChanged={onGUIChanged}
+                  isUnderAPNetworking={!!serialNumber}
+                  serialNumber={serialNumber}
+                  venueId={venueId}
+                  portId={selectedModel.lanPorts![index].portId}
+                />
+              }
             </>)
         }
       </>) :

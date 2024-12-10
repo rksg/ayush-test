@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react'
+import { useContext, useEffect } from 'react'
 
 import { Form, Switch, Space } from 'antd'
 import { useIntl }             from 'react-intl'
@@ -15,6 +15,7 @@ interface SoftGRETunnelSettingsProps {
   softgreProfileId: string
   softgreTunnelEnable: boolean
   setSoftgreTunnelEnable: Function
+  onGUIChanged?: (fieldName: string) => void
 }
 
 
@@ -26,8 +27,15 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
     index,
     softgreProfileId,
     softgreTunnelEnable,
-    setSoftgreTunnelEnable
+    setSoftgreTunnelEnable,
+    onGUIChanged
   } = props
+  const form = Form.useFormInstance()
+  const softgreTunnelFieldName = ['lan', index, 'softgreTunnelEnable']
+
+  useEffect(() => {
+    form.setFieldValue(softgreTunnelFieldName, softgreTunnelEnable)
+  }, [softgreTunnelEnable])
 
   return (
     <>
@@ -47,15 +55,14 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
         <Form.Item
           valuePropName='checked'
           style={{ marginTop: '-5px' }}
+          name={softgreTunnelFieldName}
           children={
             <Switch
-              checked={softgreTunnelEnable}
               disabled={isSoftGRETunnelToggleDisable}
               onClick={(checked) => {
                 setSoftgreTunnelEnable(checked)
-                if (onChangeSoftgreTunnel) {
-                  onChangeSoftgreTunnel(checked)
-                }
+                onGUIChanged && onGUIChanged('softgreTunnelEnable')
+                onChangeSoftgreTunnel && onChangeSoftgreTunnel(checked)
               }}
             />
           }
@@ -72,6 +79,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
           <SoftGREProfileSettings
             index={index}
             softgreProfileId={softgreProfileId}
+            onGUIChanged={onGUIChanged}
           />
         </>
       }
