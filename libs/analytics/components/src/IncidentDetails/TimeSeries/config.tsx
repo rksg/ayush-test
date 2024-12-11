@@ -13,7 +13,7 @@ import downtimeEventTypeDistributionChart from './Charts/DowntimeEventTypeDistri
 import failureChart                       from './Charts/FailureChart'
 import rebootedAPsCountChart              from './Charts/RebootedAPsCountChart'
 import rssQualityByClientsChart           from './Charts/RssQualityByClientsChart'
-import switchDDoSAttackChart              from './Charts/SwitchDDoSAttackChart'
+import SwitchImpactedPortsCount           from './Charts/SwitchImpactedPortsCount'
 import switchMemoryUtilizationChart       from './Charts/SwitchMemoryUtilizationChart'
 import switchUplinkPortCongestionChart    from './Charts/SwitchUplinkPortCongestionChart'
 import ttcByFailureTypeChart              from './Charts/TtcByFailureTypeChart'
@@ -47,7 +47,7 @@ export enum TimeSeriesChartTypes {
   ChannelChangeCount,
   AirtimeUtilizationChart,
   SwitchMemoryUtilizationChart,
-  SwitchDDoSAttackChart,
+  SwitchImpactedPortsCount,
   SwitchUplinkPortCongestionChart
 }
 
@@ -68,6 +68,6 @@ export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesC
   [TimeSeriesChartTypes.ChannelChangeCount]: channelChangeCount,
   [TimeSeriesChartTypes.AirtimeUtilizationChart]: airtimeUtilizationChart,
   [TimeSeriesChartTypes.SwitchMemoryUtilizationChart]: switchMemoryUtilizationChart,
-  [TimeSeriesChartTypes.SwitchDDoSAttackChart]: switchDDoSAttackChart,
+  [TimeSeriesChartTypes.SwitchImpactedPortsCount]: SwitchImpactedPortsCount,
   [TimeSeriesChartTypes.SwitchUplinkPortCongestionChart]: switchUplinkPortCongestionChart
 }

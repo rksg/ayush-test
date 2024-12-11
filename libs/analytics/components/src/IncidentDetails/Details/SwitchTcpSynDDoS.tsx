@@ -26,7 +26,7 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
   ]
 
   const timeSeriesCharts: TimeSeriesChartTypes[] = [
-    TimeSeriesChartTypes.SwitchDDoSAttackChart
+    TimeSeriesChartTypes.SwitchImpactedPortsCount
   ]
 
   const buffer = {

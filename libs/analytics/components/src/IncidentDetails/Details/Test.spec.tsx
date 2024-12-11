@@ -236,7 +236,7 @@ describe('Test', () => {
         component: SwitchPortCongestion,
         fakeIncident: fakeIncidentPortCongestion,
         hasNetworkImpact: false,
-        hasTimeSeries: false,
+        hasTimeSeries: true,
         charts: []
       },
       {
@@ -436,7 +436,7 @@ describe('Test', () => {
       component: SwitchPortCongestion,
       fakeIncident: fakeIncidentPortCongestion,
       hasNetworkImpact: false,
-      hasTimeSeries: false,
+      hasTimeSeries: true,
       charts: []
     },
     {
