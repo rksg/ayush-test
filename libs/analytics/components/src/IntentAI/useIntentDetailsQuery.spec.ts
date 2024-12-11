@@ -100,6 +100,20 @@ describe('getGraphKPIs', () => {
     expect(result.delta).toBeUndefined()
     expect(result.footer).toEqual('')
   })
+  it('handle cold tier data', () => {
+    jest.mocked(Date.now).mockRestore()
+    const [ result ] = getGraphKPIs({
+      ...mockedIntentCRRM,
+      status: Statuses.active,
+      kpi_number_of_interfering_links: {
+        data: { timestamp: null, result: 2 },
+        compareData: { timestamp: null, result: 5 }
+      }
+    }, kpis)
+    expect(result.value).toEqual('--')
+    expect(result.delta).toEqual(undefined)
+    expect(result.footer).toEqual('Metrics / Charts unavailable for data beyond 30 days.')
+  })
   it('handle beyond data retention', () => {
     jest.mocked(Date.now).mockRestore()
     const [ result ] = getGraphKPIs({
@@ -112,7 +126,7 @@ describe('getGraphKPIs', () => {
     }, kpis)
     expect(result.value).toEqual('--')
     expect(result.delta).toEqual(undefined)
-    expect(result.footer).toEqual('Beyond data retention period')
+    expect(result.footer).toEqual('Metrics / Charts unavailable for data beyond 30 days.')
   })
 })
 

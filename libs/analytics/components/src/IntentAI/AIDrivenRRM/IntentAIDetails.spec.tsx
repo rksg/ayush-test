@@ -35,7 +35,7 @@ describe('IntentAIDetails', () => {
     })
   })
 
-  it('handle beyond data retention', async () => {
+  it('handle cold tier data retention', async () => {
     const { params } = mockIntentContextWith({
       code: 'c-crrm-channel5g-auto',
       status: Statuses.active,
@@ -62,7 +62,7 @@ describe('IntentAIDetails', () => {
 
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     expect(await screen.findByTestId('Details'))
-      .toHaveTextContent('Beyond data retention period')
+      .toHaveTextContent('Metrics / Charts unavailable for data beyond 30 days.')
   })
 
   describe('renders correctly', () => {

@@ -68,12 +68,21 @@ describe('CloudRRM', () => {
     await userEvent.click(await screen.findByTestId('CloseSymbol'))
   })
 
+  it('handle cold tier data', async () => {
+    jest.mocked(Date.now).mockRestore()
+    mockIntentContext({ intent: mockedIntentCRRM })
+    const { container } = render(<IntentAIRRMGraph crrmData={mockCrrmData} />, {
+      wrapper: Provider
+    })
+    expect(container).toHaveTextContent('Metrics / Charts unavailable for data beyond 30 days.')
+  })
+
   it('handle beyond data retention', async () => {
     jest.mocked(Date.now).mockRestore()
     mockIntentContext({ intent: mockedIntentCRRM })
     const { container } = render(<IntentAIRRMGraph crrmData={mockCrrmData} />, {
       wrapper: Provider
     })
-    expect(container).toHaveTextContent('Beyond data retention period')
+    expect(container).toHaveTextContent('Metrics / Charts unavailable for data beyond 30 days.')
   })
 })
