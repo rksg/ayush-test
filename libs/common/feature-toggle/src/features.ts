@@ -52,6 +52,7 @@ export enum Features {
   EDGE_FIRMWARE_NOTIFICATION_BATCH_OPERATION_TOGGLE= 'edge-firmware-notification-batch-operation-toggle',
   EDGE_MDNS_PROXY_TOGGLE = 'edge-mdns-proxy-toggle',
   EDGE_THIRDPARTY_MGMT_TOGGLE = 'edge-poc-thirdparty-mgmt-toggle',
+  EDGE_ARPT_TOGGLE = 'edge-arpt-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
@@ -189,6 +190,7 @@ export enum Features {
   SWITCH_EXTERNAL_IP_TOGGLE = 'removable-ff',
   WORKFLOW_ONBOARD = 'WORKFLOW-ONBOARD',
   WORKFLOW_TOGGLE = 'workflow-framework-enabled',
+  WORKFLOW_CERTIFICATE_TEMPLATE_ACTION = 'workflow-cert-template-enabled',
   AP_FW_MGMT_UPGRADE_BY_MODEL = 'ap-fw-mgmt-upgrade-by-model',
   WIFI_8021X_MAC_AUTH_TOGGLE = 'wifi-fr-8021x-mac-toggle',
   RUCKUS_AI_NEW_ROLES_TOGGLE = 'ruckus-ai-users-new-roles-toggle',
@@ -233,7 +235,9 @@ export enum Features {
   VIEWMODEL_UI_EC_INVENTORIES_QUERY_PERFORMANCE_CHANGES_TOGGLE = 'viewmodel-ui-ec-inventories-query-performance-changes-toggle',
   RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE = 'ruckus-ai-intent-ai-config-change-toggle',
   INTENT_AI_CONFIG_CHANGE_TOGGLE = 'acx-ui-intent-ai-config-change-toggle',
-  WIFI_R370_TOGGLE = 'wifi-r370-toggle'
+  WIFI_R370_TOGGLE = 'wifi-r370-toggle',
+  MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE = 'mac-registration-require-identity-group',
+  DPSK_REQUIRE_IDENTITY_GROUP = 'dpsk-require-identity-group'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
