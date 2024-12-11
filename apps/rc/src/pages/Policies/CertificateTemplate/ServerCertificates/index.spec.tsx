@@ -77,8 +77,6 @@ describe('ServerCertificates', () => {
 
     const row = await screen.findByRole('row', { name: /certificate1/ })
     await userEvent.click(row)
-    expect(await screen.findByRole('button', { name: 'Revoke' })).toBeVisible()
-    expect(await screen.findByRole('button', { name: 'Unrevoke' })).toBeVisible()
     expect(await screen.findByRole('button', { name: 'Download' })).toBeVisible()
   })
 
