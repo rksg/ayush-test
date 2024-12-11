@@ -48,8 +48,7 @@ export default function MacOuiTable () {
 
   const switchPortProfilesList = useSwitchPortProfilesListQuery({
     params: { tenantId: params.tenantId },
-    payload: { fields: ['id'] },
-    enableRbac: true
+    payload: { fields: ['id'] }
   })
 
   useEffect(() => {

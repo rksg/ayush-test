@@ -27,7 +27,7 @@ export function MacOuiDrawer (props: MacOuiDrawerProps) {
   const [form] = Form.useForm()
   const [addSwitchPortProfileMacOui] = useAddSwitchPortProfileMacOuiMutation()
   const [editSwitchPortProfileMacOui] = useEditSwitchPortProfileMacOuiMutation()
-  const [ switchPortProfileMacOuisList ] = useLazySwitchPortProfileMacOuisListQuery()
+  const [switchPortProfileMacOuisList] = useLazySwitchPortProfileMacOuisListQuery()
   const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
 
   const macOuiDuplicateValidator = async (macAddress: string) => {
@@ -104,17 +104,14 @@ export function MacOuiDrawer (props: MacOuiDrawerProps) {
         label={intl.$t({ defaultMessage: 'MAC OUI' })}
         rules={[
           { required: true },
-          // { validator: (_, value) => {
-          //   // eslint-disable-next-line max-len
-          //   const reMacColon = new RegExp(/^(([0-9a-f]{2}\:){5}[0-9a-f]{2})$/)
-          //   // eslint-disable-next-line max-len
-          //   const reMacDot = new RegExp(/^([0-9a-f]{4}\.[0-9a-f]{4}\.[0-9a-f]{0,4}||[0-9a-f]{4}\.[0-9a-f]{0,4}||[0-9a-f]{4})$/)
-          //   if (value && !(reMacColon.test(value) || reMacDot.test(value))) {
-          //     return Promise.reject(
-          //       intl.$t({ defaultMessage: 'Please enter valid MAC OUI' }))
-          //   }
-          //   return Promise.resolve()
-          // } },
+          { validator: (_, value) => {
+            const regexMac = new RegExp(/^[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){2}$/)
+            if (value && !regexMac.test(value)) {
+              return Promise.reject(
+                intl.$t({ defaultMessage: 'Please enter valid MAC OUI' }))
+            }
+            return Promise.resolve()
+          } },
           { validator: (_, value) => macOuiDuplicateValidator(value) }
         ]}
         validateFirst

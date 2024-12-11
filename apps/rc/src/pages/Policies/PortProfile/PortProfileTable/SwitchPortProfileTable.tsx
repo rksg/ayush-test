@@ -59,11 +59,7 @@ export default function SwitchPortProfileTable () {
         render: function (_, row) {
           return (
             <TenantLink
-              to={getPolicyDetailsLink({
-                type: PolicyType.SWITCH_PORT_PROFILE,
-                oper: PolicyOperation.DETAIL,
-                policyId: row.id!
-              })}>
+              to={`/policies/portProfile/switch/profiles/${row.id}/detail`}>
               {row.name}
             </TenantLink>
           )

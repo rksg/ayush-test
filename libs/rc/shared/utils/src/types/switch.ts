@@ -1034,3 +1034,13 @@ export interface SwitchPortProfiles {
   macOuis?: MacOuis[]
   regularProfiles: string[]
 }
+
+export interface SwitchPortProfilesAppliedTargets {
+  id?: string
+  switchId: string
+  switchName: string
+  serialNumber: string
+  model: string
+  venueId: string
+  venueName: string
+ }
