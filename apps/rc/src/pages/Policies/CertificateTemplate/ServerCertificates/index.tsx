@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react'
 
-import { Modal as AntModal, Badge } from 'antd'
-import { RawIntlProvider, useIntl } from 'react-intl'
+import { Badge }   from 'antd'
+import { useIntl } from 'react-intl'
 
 import { Loader, TableProps, Table }                                                                                                                                                                                                    from '@acx-ui/components'
 import { DateFormatEnum, formatter }                                                                                                                                                                                                    from '@acx-ui/formatter'
-import { certificateStatusTypeLabel, ExtendedKeyUsagesLabels, getCertificateStatus, issuedByLabel, RevokeForm, ServerCertificateDetailDrawer }                                                                                          from '@acx-ui/rc/components'
-import { useGetServerCertificatesQuery, useUpdateServerCertificateMutation }                                                                                                                                                            from '@acx-ui/rc/services'
+import { certificateStatusTypeLabel, ExtendedKeyUsagesLabels, issuedByLabel, ServerCertificateDetailDrawer }                                                                                                                            from '@acx-ui/rc/components'
+import { useGetServerCertificatesQuery }                                                                                                                                                                                                from '@acx-ui/rc/services'
 import { CertificateStatusType, EnrollmentType, ExtendedKeyUsages, FILTER, PolicyOperation, PolicyType, SEARCH, ServerCertificate, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, serverCertStatusColors, useTableQuery } from '@acx-ui/rc/utils'
-import { getIntl, noDataDisplay }                                                                                                                                                                                                       from '@acx-ui/utils'
+import { noDataDisplay }                                                                                                                                                                                                                from '@acx-ui/utils'
 
 
 export default function ServerCertificatesTable () {
@@ -29,9 +29,6 @@ export default function ServerCertificatesTable () {
     apiParams: {},
     pagination: { settingsId }
   })
-
-  const [editCertificate] = useUpdateServerCertificateMutation()
-
 
   useEffect(() => {
     tableQuery.data?.data?.filter((item) => item.id === detailId).map((item) => setDetailData(item))
@@ -115,24 +112,6 @@ export default function ServerCertificatesTable () {
     }
     tableQuery.handleFilterChange(_customFilters, customSearch)
   }
-
-  const showRevokeModal = (entityValue: string,
-    onFinish: (revocationReason: string) => Promise<void>) => {
-    const modal = AntModal.confirm({})
-
-    const content = <RevokeForm modal={modal} onFinish={onFinish} />
-
-    modal.update({
-      title: $t({ defaultMessage: 'Revoke "{entityValue}"?' }, { entityValue: entityValue }),
-      okText: $t({ defaultMessage: 'OK' }),
-      cancelText: $t({ defaultMessage: 'Cancel' }),
-      maskClosable: false,
-      keyboard: false,
-      content: <RawIntlProvider value={getIntl()} children={content} />,
-      icon: <> </>
-    })
-  }
-
 
   const rowActions: TableProps<ServerCertificate>['rowActions'] = [
     {
