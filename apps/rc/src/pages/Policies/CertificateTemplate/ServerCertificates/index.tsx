@@ -136,36 +136,6 @@ export default function ServerCertificatesTable () {
 
   const rowActions: TableProps<ServerCertificate>['rowActions'] = [
     {
-      scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.EDIT),
-      label: $t({ defaultMessage: 'Revoke' }),
-      disabled: ([selectedRow]) =>
-        getCertificateStatus(selectedRow) !== CertificateStatusType.VALID,
-      onClick: ([selectedRow], clearSelection) => {
-        showRevokeModal(selectedRow.commonName, async (revocationReason) => {
-          editCertificate({
-            params: {
-              certId: selectedRow.id
-            },
-            payload: { revocationReason }
-          }).then(clearSelection)
-        })
-      }
-    },
-    {
-      scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.EDIT),
-      label: $t({ defaultMessage: 'Unrevoke' }),
-      disabled: ([selectedRow]) =>
-        getCertificateStatus(selectedRow) !== CertificateStatusType.REVOKED,
-      onClick: ([selectedRow], clearSelection) => {
-        editCertificate({
-          params: {
-            certId: selectedRow.id
-          },
-          payload: { revocationReason: null }
-        }).then(clearSelection)
-      }
-    },
-    {
       scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.DETAIL),
       label: $t({ defaultMessage: 'Download' }),
       onClick: ([selectedRow]) => {
