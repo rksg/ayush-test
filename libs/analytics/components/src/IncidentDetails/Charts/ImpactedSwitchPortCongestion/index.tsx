@@ -73,9 +73,12 @@ export function ImpactedSwitchPortConjestionTable ({ incident }: ChartProps) {
   const { $t } = useIntl()
 
   const impactedSwitch = usePortImpactedSwitchQuery({ id: incident.id, n: 100, search: '' })
+  const portCount = impactedSwitch.data?.ports?.length 
 
   return <Loader states={[impactedSwitch]}>
-    <Card title={$t({ defaultMessage: 'Port details with congestion' })} type='no-border'>
+    <Card title=
+    {$t({ defaultMessage: 'Impacted {portCount, plural, one {Port} other {Ports}}' }, { portCount })} 
+    type='no-border'>
       <ImpactedSwitchTable data={impactedSwitch.data?.ports!} />
     </Card>
   </Loader>
@@ -87,16 +90,22 @@ function ImpactedSwitchTable (props: {
   type Port = { portNumber: string; connectedDeviceName: string; }
   const { $t } = useIntl()
   const ports = props.data
-  const rows: Port[] = ports.map(impactedSwitchPort => ({
-    portNumber: impactedSwitchPort.portNumber,
-    connectedDeviceName: impactedSwitchPort.connectedDevice.name === 'Unknown' ? '--' :
-      impactedSwitchPort.connectedDevice.name
-  }))
+  const rows: Port[] = ports.map(impactedSwitchPort => {
+    const portCheckRegEx = new RegExp('\\d+/\\d+/\\d+')
+    let portNumber = impactedSwitchPort.portNumber
+    const isPort = portCheckRegEx.test(portNumber)
+    if(!isPort) portNumber = portNumber + ' (LAG)'
+    return {
+      portNumber: portNumber,
+      connectedDeviceName: impactedSwitchPort.connectedDevice.name === 'Unknown' ? '--' :
+        impactedSwitchPort.connectedDevice.name
+    }
+  })
 
   const columns: TableProps<Port>['columns'] = useMemo(()=>[ {
     key: 'portNumber',
     dataIndex: 'portNumber',
-    title: $t({ defaultMessage: 'Port with congestion' }),
+    title: $t({ defaultMessage: 'Port Number/LAG Name' }),
     fixed: 'left',
     width: 100,
     sorter: { compare: sortProp('portNumber', defaultSort) },
