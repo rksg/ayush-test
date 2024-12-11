@@ -54,6 +54,7 @@ export function createIntentContextProvider (
     const intent = isDetectError ?
       (_.pick(query.error, ['data']) as { data: Intent }).data
       : query.data
+
     const context: IIntentContext = {
       intent: intent!,
       configuration: spec.configuration,
