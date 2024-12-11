@@ -10,22 +10,22 @@ import { SoftGREProfileSettings }         from './SoftGREProfileSettings'
 import { FieldLabel }                     from './styledComponents'
 
 interface SoftGRETunnelSettingsProps {
-  isSoftGRETunnelToggleDisable: boolean,
   index: number
   softgreProfileId: string
   softgreTunnelEnable: boolean
   onGUIChanged?: (fieldName: string) => void
+  readonly: boolean
 }
 
 export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   const { $t } = useIntl()
   const { onChangeSoftgreTunnel } = useContext(SoftgreProfileAndDHCP82Context)
   const {
-    isSoftGRETunnelToggleDisable,
     index,
     softgreProfileId,
     softgreTunnelEnable,
-    onGUIChanged
+    onGUIChanged,
+    readonly
   } = props
 
   const softgreTunnelFieldName = ['lan', index, 'softgreTunnelEnable']
@@ -51,7 +51,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
           name={softgreTunnelFieldName}
           children={
             <Switch
-              disabled={isSoftGRETunnelToggleDisable}
+              disabled={readonly}
               onClick={(checked) => {
                 onGUIChanged && onGUIChanged('softgreTunnelEnable')
                 onChangeSoftgreTunnel && onChangeSoftgreTunnel(checked)
@@ -72,6 +72,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             index={index}
             softgreProfileId={softgreProfileId}
             onGUIChanged={onGUIChanged}
+            readonly={readonly}
           />
         </>
       }

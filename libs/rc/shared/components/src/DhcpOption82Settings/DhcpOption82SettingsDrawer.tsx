@@ -17,6 +17,7 @@ interface DhcpOption82SettingsDrawerProps {
   onGUIChanged?: (fieldName: string) => void
   isUnderAPNetworking: boolean,
   existedDHCP82OptionSettings?: DhcpOption82Settings
+  readonly: boolean
 }
 
 
@@ -29,7 +30,8 @@ export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProp
     index,
     onGUIChanged,
     isUnderAPNetworking,
-    existedDHCP82OptionSettings
+    existedDHCP82OptionSettings,
+    readonly
   } = props
 
   const { $t } = useIntl()
@@ -63,6 +65,7 @@ export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProp
       width={850}
       children={
         <DhcpOption82SettingsFormField
+          readonly={readonly}
           labelWidth={'280px'}
           context={'lanport'}
           onGUIChanged={onGUIChanged}
@@ -75,6 +78,7 @@ export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProp
       destroyOnClose={true}
       footer={
         <Drawer.FormFooter
+          showSaveButton={!readonly}
           buttonLabel={{
             save: $t({ defaultMessage: 'Apply' })
           }}

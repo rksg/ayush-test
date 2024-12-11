@@ -20,6 +20,7 @@ interface DhcpOption82SettingsProps {
   serialNumber?: string
   venueId?: string
   portId?: string
+  readonly: boolean
 }
 
 export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
@@ -38,7 +39,8 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
     isUnderAPNetworking,
     serialNumber,
     venueId,
-    portId
+    portId,
+    readonly
   } = props
   const [ getSoftGreProfileConfiguration ] = useLazyGetSoftGreProfileConfigurationOnAPQuery()
   const dhcpOption82FieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Enabled']
@@ -99,6 +101,7 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
                 name={dhcpOption82FieldName}
                 noStyle>
                 <Switch
+                  disabled={readonly}
                   onChange={() => {
                     onGUIChanged && onGUIChanged('DHCPOption82Enabled')
                   }}
@@ -131,6 +134,7 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
         index={index}
         onGUIChanged={onGUIChanged}
         existedDHCP82OptionSettings={existedDHCP82OptionSettings}
+        readonly={readonly}
       />
     </>
   )
