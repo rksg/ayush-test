@@ -35,6 +35,13 @@ export type IntentKpi = Record<`kpi_${string}`, {
   } | null
 }>
 
+export type IntentStatusTrail = Array<{
+  status: Statuses
+  statusReason: StatusReasons
+  displayStatus: DisplayStates
+  createdAt?: string
+}>
+
 export type IntentConfigurationValue =
   string |
   Array<{ channelMode: string, channelWidth: string, radio: string }> |
@@ -67,12 +74,7 @@ export type Intent = {
   sliceType: NodeType
   sliceValue: string
   path: NetworkPath
-  statusTrail: Array<{
-    status: Statuses
-    statusReason: StatusReasons
-    displayStatus: DisplayStates
-    createdAt?: string
-  }>
+  statusTrail?: IntentStatusTrail
   updatedAt: string
   currentValue: IntentConfigurationValue
   recommendedValue: IntentConfigurationValue
@@ -107,7 +109,7 @@ export function intentState (intent: Intent) {
 }
 
 const kpiHelper = (kpis: IntentDetailsQueryPayload['kpis']) => {
-  return kpis.map(kpi => {
+  return kpis?.map(kpi => {
     const name = `kpi_${_.snakeCase(kpi.key)}`
     return `${name}: kpi(key: "${kpi.key}", timeZone: "${moment.tz.guess()}") {
            data {
@@ -182,13 +184,13 @@ type IntentDetailsQueryPayload = {
   root: string
   sliceId: string
   code: string
-  kpis: Pick<IntentKPIConfig, 'key' | 'deltaSign'>[]
+  kpis?: Pick<IntentKPIConfig, 'key' | 'deltaSign'>[]
 }
 
 export const api = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
     intentDetails: build.query<Intent | undefined, IntentDetailsQueryPayload>({
-      query: ({ root, sliceId, code }: IntentDetailsQueryPayload) => ({
+      query: ({ root, sliceId, code }) => ({
         document: gql`
           query IntentDetails($root: String!, $sliceId: String!, $code: String!) {
             intent(root: $root, sliceId: $sliceId, code: $code) {
@@ -197,7 +199,6 @@ export const api = intentAIApi.injectEndpoints({
               status statusReason displayStatus
               sliceType sliceValue updatedAt
               path { type name }
-              statusTrail { status statusReason displayStatus createdAt }
               ${!code.includes('ecoflex') ? 'currentValue recommendedValue' : ''}
             }
           }
@@ -224,11 +225,29 @@ export const api = intentAIApi.injectEndpoints({
       transformErrorResponse: (error, meta) =>
         ({ ...error, data: meta?.response?.data?.intent }),
       providesTags: [{ type: 'Intent', id: 'INTENT_KPIS' }]
+    }),
+    intentStatusTrail: build.query<IntentStatusTrail | undefined, IntentDetailsQueryPayload>({
+      query: ({ root, sliceId, code }) => ({
+        document: gql`
+        query IntentStatusTrail($root: String!, $sliceId: String!, $code: String!) {
+          intent(root: $root, sliceId: $sliceId, code: $code) {
+            statusTrail { status statusReason displayStatus createdAt }
+          }
+        }
+      `,
+        variables: { root, sliceId, code }
+      }),
+      transformResponse: (response: { intent?: Intent })=>
+        response.intent?.statusTrail as IntentStatusTrail,
+      transformErrorResponse: (error, meta) =>
+        ({ ...error, data: meta?.response?.data?.intent }),
+      providesTags: [{ type: 'Intent', id: 'INTENT_STATUS_TRAIL' }]
     })
   })
 })
 
 export const {
   useIntentDetailsQuery,
-  useIntentKpisQuery
+  useIntentKpisQuery,
+  useIntentStatusTrailQuery
 } = api

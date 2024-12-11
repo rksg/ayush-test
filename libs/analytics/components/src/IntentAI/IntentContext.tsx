@@ -12,7 +12,8 @@ import {
   intentState,
   useIntentDetailsQuery,
   useIntentKpisQuery,
-  useIntentParams
+  useIntentParams,
+  useIntentStatusTrailQuery
 } from './useIntentDetailsQuery'
 import { isDataRetained } from './utils'
 
@@ -51,8 +52,9 @@ export function createIntentContextProvider (
       // which its value is primitive value type
       // to prevent RTK Query unable to use param as cache key
       .map(kpi => _.pick(kpi, ['key', 'deltaSign']))
-    const query = useIntentDetailsQuery({ ...params, kpis }, { skip: !spec }) // kpis not needed
+    const query = useIntentDetailsQuery({ ...params }, { skip: !spec })
     const kpiQuery = useIntentKpisQuery({ ...params, kpis }, { skip: !spec })
+    const statusTrailQuery = useIntentStatusTrailQuery({ ...params }, { skip: !spec })
     if (!spec) return null // no matching spec
     if (query.isSuccess && !query.data) return null // 404
 
@@ -60,7 +62,7 @@ export function createIntentContextProvider (
 
     const intent = isDetectError ?
       (_.pick(query.error, ['data']) as { data: Intent }).data
-      : query.data && { ...query.data, ...kpiQuery.data }
+      : query.data && { ...query.data, ...kpiQuery.data, statusTrail: statusTrailQuery.data }
     const context: IIntentContext = {
       intent: intent!,
       configuration: spec.configuration,
