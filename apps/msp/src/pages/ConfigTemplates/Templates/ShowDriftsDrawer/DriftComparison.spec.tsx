@@ -1,7 +1,17 @@
 import { ConfigTemplateDriftRecord } from '@acx-ui/rc/utils'
-import { render, screen }            from '@acx-ui/test-utils'
+import { fireEvent, render, screen } from '@acx-ui/test-utils'
 
-import { convertDriftDisplayValue, DriftComparison } from './DriftComparison'
+import { DriftComparison, DriftViewer } from './DriftComparison'
+
+jest.mock('antd', () => ({
+  ...jest.requireActual('antd'),
+  Tooltip: ({ children, title }: { children: React.ReactNode; title: string }) => (
+    <div>
+      <div data-testid='tooltip-title'>{title}</div>
+      {children}
+    </div>
+  )
+}))
 
 describe('DriftComparison', () => {
   const mockData: ConfigTemplateDriftRecord = {
@@ -62,13 +72,39 @@ describe('DriftComparison', () => {
     expect(instanceCol).toHaveStyle('background-color: #FBD9AB')
   })
 
-  it('convertDriftDisplayValue', () => {
-    expect(convertDriftDisplayValue(null)).toBe('')
-    expect(convertDriftDisplayValue(undefined)).toBe('')
-    expect(convertDriftDisplayValue('')).toBe('')
-    expect(convertDriftDisplayValue(123)).toBe('123')
-    expect(convertDriftDisplayValue(true)).toBe('true')
-    expect(convertDriftDisplayValue(false)).toBe('false')
-    expect(convertDriftDisplayValue('test string')).toBe('test string')
+  describe('DriftViewer', () => {
+    it('renders an image link when value is an image URL', async () => {
+      const imageUrl = 'https://example.com/image.png'
+
+      render(<DriftViewer value={imageUrl} />)
+
+      const linkElement = await screen.findByRole('link', { name: /open image in new tab/i })
+      expect(linkElement).toHaveAttribute('href', imageUrl)
+
+      const tooltipTitle = screen.getByTestId('tooltip-title')
+      expect(tooltipTitle).toBeInTheDocument()
+      expect(tooltipTitle.querySelector('img')).toHaveAttribute('src', imageUrl)
+    })
+
+    it('renders text when value is not an image URL', () => {
+      render(<DriftViewer value={'Some Value'} />)
+
+      const textElement = screen.getByText('Some Value')
+      expect(textElement).toBeInTheDocument()
+    })
+
+    it('handles empty value gracefully', () => {
+      render(<DriftViewer value={null} />)
+
+      const emptyElement = screen.queryByText(/.+/)
+      expect(emptyElement).not.toBeInTheDocument()
+    })
+
+    it('renders error-free even when image fails to load', async () => {
+      render(<DriftViewer value='https://example.com/image.png' />)
+
+      fireEvent.error(await screen.findByAltText('Drift Value Preview'))
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
   })
 })
