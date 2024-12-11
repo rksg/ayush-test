@@ -3,8 +3,9 @@ import React from 'react'
 import { Col, Row, Typography }      from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Button, Drawer }      from '@acx-ui/components'
-import { CertificateTemplate } from '@acx-ui/rc/utils'
+import { Button, Drawer }                                from '@acx-ui/components'
+import { CertificateTemplate, ChromebookEnrollmentType } from '@acx-ui/rc/utils'
+import { handleBlobDownloadFile }                        from '@acx-ui/utils'
 
 
 interface ChromebookInstructionDrawerProps {
@@ -16,15 +17,23 @@ export default function ChromebookInstructionDrawer (props: ChromebookInstructio
   const { $t } = useIntl()
   const { data, onClose } = props
 
+  const renewalTokenType = data.chromebook?.enrollmentType === ChromebookEnrollmentType.DEVICE
+    ? 'system' : 'user'
   const copyableJson = `{
     "doAutoEnrollment": { "Value": true },
     "nonInteractiveEnrollment": { "Value": true },
     "renewalUrl": { "Value": "${data.chromebook?.enrollmentUrl}" },
     "forceInitialEnrollment": { "Value": true },
     "startupDelay": { "Value": 1000 },
-    "renewalTokenType": { "Value": "system" },
+    "renewalTokenType": { "Value": "${renewalTokenType}" },
     "renewalIssuerName": { "Value": "${data.onboard?.certificateAuthorityName}" }
-  }`
+}`
+
+  const downloadJsonConfig = () => {
+    handleBlobDownloadFile(
+      new Blob([copyableJson], { type: 'application/json' }),
+      'chromebook-policy-config.txt')
+  }
 
   return (
     <Drawer
@@ -101,7 +110,7 @@ export default function ChromebookInstructionDrawer (props: ChromebookInstructio
             {/* eslint-disable-next-line max-len */}
             {$t({ defaultMessage: 'Navigate to {to}.' }, { to: <Typography.Text strong>{$t({ defaultMessage: 'Devices -> Chrome Devices -> Apps & Extensions' })}</Typography.Text> })} <br/>
             {/* eslint-disable-next-line max-len */}
-            {$t({ defaultMessage: 'Add the \'Cloudpath Certificate Generator\' extension from the Chrome Web Store.' })}
+            {$t({ defaultMessage: 'Add the \'RUCKUS One Certificate Generator\' extension from the Chrome Web Store.' })}
           </Typography.Paragraph>
         </Col>
       </Row>
@@ -113,15 +122,28 @@ export default function ChromebookInstructionDrawer (props: ChromebookInstructio
         <Col span={20}>
           <Typography.Paragraph>
             {/* eslint-disable-next-line max-len */}
-            {$t({ defaultMessage: 'Select the Cloudpath extension installed in the previous step. In the configuration pane, allow Verified Access by enabling {i}.' }, { i: <Typography.Text strong>Allow enterprise challenge</Typography.Text> })}
+            {$t({ defaultMessage: 'Select the RUCKUS One extension installed in the previous step. In the configuration pane, allow Verified Access by enabling {i}.' }, { i: <Typography.Text strong>Allow enterprise challenge</Typography.Text> })}
           </Typography.Paragraph>
           <Typography.Paragraph>
-            {$t({ defaultMessage: 'Enter the JSON below into the Policy for extensions section.' })}
+            {/* eslint-disable-next-line max-len */}
+            {$t({ defaultMessage: 'Enter the JSON below into the {section} section.' }, { section: <Typography.Text strong>{$t({ defaultMessage: 'Policy for extensions' })}</Typography.Text> })}
           </Typography.Paragraph>
-          <Typography.Paragraph copyable={{ text: copyableJson }}>
+          <Typography.Paragraph>
             <pre>
               {copyableJson}
             </pre>
+          </Typography.Paragraph>
+          <Typography.Paragraph>
+            <Typography.Link
+              onClick={downloadJsonConfig}
+              copyable={{ text: copyableJson }}
+            >
+              {$t({ defaultMessage: 'Download JSON as File' })}
+            </Typography.Link>
+          </Typography.Paragraph>
+          <Typography.Paragraph>
+            {/* eslint-disable-next-line max-len */}
+            {$t({ defaultMessage: 'Set the extensions {policy} to \'Force Install\'. Save the configuration changes to the extension.' }, { policy: <Typography.Text strong>Installation policy</Typography.Text> })}
           </Typography.Paragraph>
         </Col>
       </Row>
@@ -133,7 +155,7 @@ export default function ChromebookInstructionDrawer (props: ChromebookInstructio
         <Col span={20}>
           <Typography.Paragraph>
             {/* eslint-disable-next-line max-len */}
-            {$t({ defaultMessage: 'At this point, the extension will be deployed to the managed Chromebooks alona with the wireless network. Once authorized. the extension will install the certificate and the SSID will then be joinable When the iser clicks on the wireless network the operating system will look for a certificate with the issuer characteristics above.' })}
+            {$t({ defaultMessage: 'At this point, the extension will be deployed to the managed Chromebooks along with the wireless network. Once authorized. the extension will install the certificate and the SSID will then be joinable. When the user clicks on the wireless network, the operating system will look for a certificate with the issuer characteristics above.' })}
           </Typography.Paragraph>
         </Col>
       </Row>

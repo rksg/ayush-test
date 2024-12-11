@@ -12,13 +12,14 @@ import {
   TableChangePayload,
   downloadFile,
   onSocketActivityChanged,
-  onActivityMessageReceived
+  onActivityMessageReceived,
+  TxStatus
 } from '@acx-ui/rc/utils'
 import { basePersonaApi }                               from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
 import { ApiInfo, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
-import { CommonAsyncResponse } from './common'
+import { CommonAsyncCallback, CommonAsyncResponse } from './common'
 
 const defaultPersonaVersioningHeaders = {
   'Content-Type': 'application/vnd.ruckus.v1+json',
@@ -39,9 +40,9 @@ export const personaApi = basePersonaApi.injectEndpoints({
   endpoints: build => ({
     // PersonaGroup
     // eslint-disable-next-line max-len
-    addPersonaGroup: build.mutation<CommonAsyncResponse, RequestPayload<PersonaGroup> & { callback?: (response: CommonAsyncResponse) => void }>({
-      query: ({ params, payload, customHeaders }) => {
-        const req = createPersonaHttpRequest(PersonaUrls.addPersonaGroup, params, customHeaders)
+    addPersonaGroup: build.mutation<CommonAsyncResponse, RequestPayload<PersonaGroup> & CommonAsyncCallback>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PersonaUrls.addPersonaGroup, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -53,19 +54,23 @@ export const personaApi = basePersonaApi.injectEndpoints({
           try {
             const response = await api.cacheDataLoaded
 
-            if (response.data.requestId === msg.requestId
-              && msg.status === 'SUCCESS'
-              && msg.useCase === 'CreateGroup') {
-              requestArgs.callback?.(response.data)
+            if (response.data.requestId === msg.requestId && msg.useCase === 'CreateGroup') {
+              if (msg.status === TxStatus.SUCCESS) {
+                requestArgs.onSuccess?.(response.data)
+              } else if (msg.status === TxStatus.FAIL) {
+                requestArgs.onError?.(response.data)
+              }
             }
-          } catch { }
+          } catch {
+            requestArgs.onError?.()
+          }
         })
       }
     }),
     associateIdentityGroupWithDpsk: build.mutation({
       query: ({ params }) => {
         return {
-          ...createPersonaHttpRequest(PersonaUrls.associateDpskPool, params)
+          ...createHttpRequest(PersonaUrls.associateDpskPool, params)
         }
       },
       invalidatesTags: [{ type: 'PersonaGroup' }]
@@ -73,15 +78,23 @@ export const personaApi = basePersonaApi.injectEndpoints({
     associateIdentityGroupWithMacRegistration: build.mutation({
       query: ({ params }) => {
         return {
-          ...createPersonaHttpRequest(PersonaUrls.associateMacRegistration, params)
+          ...createHttpRequest(PersonaUrls.associateMacRegistration, params)
         }
       },
       invalidatesTags: [{ type: 'PersonaGroup' }]
     }),
-    associateIdentityGroupWithCertificateTemplate: build.mutation({
+    associateIdentityGroupWithPolicySet: build.mutation({
       query: ({ params }) => {
         return {
-          ...createHttpRequest(PersonaUrls.associateCertTemplate, params)
+          ...createHttpRequest(PersonaUrls.associatePolicySet, params)
+        }
+      },
+      invalidatesTags: [{ type: 'PersonaGroup' }]
+    }),
+    dissociateIdentityGroupWithPolicySet: build.mutation({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(PersonaUrls.dissociatePolicySet, params)
         }
       },
       invalidatesTags: [{ type: 'PersonaGroup' }]
@@ -107,7 +120,9 @@ export const personaApi = basePersonaApi.injectEndpoints({
           const activities = [
             'CreateGroup',
             'UpdateGroup',
-            'DeleteGroup'
+            'DeleteGroup',
+            'CreateGroupAssociation',
+            'DeleteGroupAssociation'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(personaApi.util.invalidateTags([
@@ -135,7 +150,9 @@ export const personaApi = basePersonaApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'CreatePersona'
+            'CreatePersona',
+            'CreateGroupAssociation',
+            'DeleteGroupAssociation'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(personaApi.util.invalidateTags([
@@ -147,8 +164,8 @@ export const personaApi = basePersonaApi.injectEndpoints({
       }
     }),
     updatePersonaGroup: build.mutation<CommonAsyncResponse, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        const req = createPersonaHttpRequest(PersonaUrls.updatePersonaGroup, params, customHeaders)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PersonaUrls.updatePersonaGroup, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -157,8 +174,8 @@ export const personaApi = basePersonaApi.injectEndpoints({
       invalidatesTags: [{ type: 'PersonaGroup' }]
     }),
     deletePersonaGroup: build.mutation({
-      query: ({ params, customHeaders }) => {
-        const req = createPersonaHttpRequest(PersonaUrls.deletePersonaGroup, params, customHeaders)
+      query: ({ params }) => {
+        const req = createHttpRequest(PersonaUrls.deletePersonaGroup, params)
         return {
           ...req
         }
@@ -191,8 +208,8 @@ export const personaApi = basePersonaApi.injectEndpoints({
 
     // Persona
     addPersona: build.mutation<CommonAsyncResponse, RequestPayload>({
-      query: ( { params, payload, customHeaders }) => {
-        const req = createPersonaHttpRequest(PersonaUrls.addPersona, params, customHeaders)
+      query: ( { params, payload }) => {
+        const req = createHttpRequest(PersonaUrls.addPersona, params)
 
         return {
           ...req,
@@ -205,10 +222,9 @@ export const personaApi = basePersonaApi.injectEndpoints({
       ]
     }),
     importPersonas: build.mutation<{}, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        const req = createPersonaHttpRequest(PersonaUrls.importPersonas, params, {
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PersonaUrls.importPersonas, params, {
           ...ignoreErrorModal,
-          ...customHeaders,
           'Content-Type': undefined
         })
         return {
@@ -280,8 +296,8 @@ export const personaApi = basePersonaApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     updatePersona: build.mutation<CommonAsyncResponse, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        const req = createPersonaHttpRequest(PersonaUrls.updatePersona, params, customHeaders)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PersonaUrls.updatePersona, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -301,8 +317,8 @@ export const personaApi = basePersonaApi.injectEndpoints({
       invalidatesTags: [{ type: 'Persona' }]
     }),
     deletePersonas: build.mutation({
-      query: ({ params, payload, customHeaders }) => {
-        const req = createPersonaHttpRequest(PersonaUrls.deletePersonas, params, customHeaders)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PersonaUrls.deletePersonas, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -311,9 +327,9 @@ export const personaApi = basePersonaApi.injectEndpoints({
       invalidatesTags: [{ type: 'Persona' }]
     }),
     addPersonaDevices: build.mutation<PersonaDevice, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        const req = createPersonaHttpRequest(PersonaUrls.addPersonaDevices, params, {
-          ...ignoreErrorModal, ...customHeaders
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PersonaUrls.addPersonaDevices, params, {
+          ...ignoreErrorModal
         })
         return {
           ...req,
@@ -323,9 +339,9 @@ export const personaApi = basePersonaApi.injectEndpoints({
       invalidatesTags: [{ type: 'Persona' }]
     }),
     deletePersonaDevices: build.mutation<PersonaDevice, RequestPayload>({
-      query: ({ params, customHeaders }) => {
+      query: ({ params }) => {
         return {
-          ...createPersonaHttpRequest(PersonaUrls.deletePersonaDevices, params, customHeaders)
+          ...createHttpRequest(PersonaUrls.deletePersonaDevices, params)
         }
       },
       invalidatesTags: [{ type: 'Persona' }]
@@ -368,7 +384,8 @@ export const {
   useAddPersonaGroupMutation,
   useAssociateIdentityGroupWithDpskMutation,
   useAssociateIdentityGroupWithMacRegistrationMutation,
-  useAssociateIdentityGroupWithCertificateTemplateMutation,
+  useAssociateIdentityGroupWithPolicySetMutation,
+  useDissociateIdentityGroupWithPolicySetMutation,
   useSearchPersonaGroupListQuery,
   useLazySearchPersonaGroupListQuery,
   useGetPersonaGroupByIdQuery,

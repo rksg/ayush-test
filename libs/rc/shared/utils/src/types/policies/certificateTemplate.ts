@@ -42,7 +42,19 @@ export enum AlgorithmType {
 
 export enum UsageType {
   CLIENT_AUTH = 'CLIENT_AUTH',
-  SERVER_AUTH = 'SERVER_AUTH'
+  SERVER_AUTH = 'SERVER_AUTH',
+  CODE_SIGNING = 'CODE_SIGNING',
+  EMAIL_PROTECTION = 'EMAIL_PROTECTION',
+  IPSEC_END_SYSTEM = 'IPSEC_END_SYSTEM',
+  IPSEC_TUNNEL = 'IPSEC_TUNNEL',
+  IPSEC_USER = 'IPSEC_USER',
+  TIME_STAMPING = 'TIME_STAMPING',
+  OCSP_SIGNING = 'OCSP_SIGNING',
+  SMART_CARD_LOGON = 'SMART_CARD_LOGON',
+  MICROSOFT_SGC = 'MICROSOFT_SGC',
+  NETSCAPE_SGC = 'NETSCAPE_SGC',
+  DOCUMENT_SIGNING = 'DOCUMENT_SIGNING',
+  HOTSPOT_AUTH = 'HOTSPOT_AUTH'
 }
 
 export enum KeyUsageType {
@@ -216,7 +228,7 @@ export interface Certificate {
   state?: string
   country?: string
   organizationUnit?: string
-  keyUsage?: KeyUsageType[]
+  keyUsages?: KeyUsageType[]
   privateKeyBase64?: string
   shaThumbprint?: string
   chain?: string
@@ -326,4 +338,9 @@ export enum ServerClientCertAlgorithmType {
 export type ServerClientCertificateResult = {
   requestId: string
   id?: string
+}
+
+export enum ServerClientCertType {
+  PUBLIC = 'publicKey',
+  PRIVATE = 'privateKey'
 }

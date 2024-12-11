@@ -2,10 +2,16 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Form, Input, InputNumber, Radio, RadioChangeEvent, Space, Switch } from 'antd'
 import { useIntl }                                                          from 'react-intl'
+import { useParams }                                                        from 'react-router-dom'
 
 import { Button, Fieldset, GridCol, GridRow, StepsFormLegacy, PasswordInput, Tooltip, Select } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
-import { useGetCertificateAuthoritiesQuery, useGetCertificateListQuery }                       from '@acx-ui/rc/services'
+import { useGetCertificateAuthoritiesQuery,
+  useGetCertificateAuthorityOnRadiusQuery,
+  useGetCertificateListQuery,
+  useGetClientCertificateOnRadiusQuery,
+  useGetServerCertificateOnRadiusQuery
+} from '@acx-ui/rc/services'
 import {
   AAAPolicyType, checkObjectNotExists, servicePolicyNameRegExp,
   networkWifiIpRegExp, networkWifiSecretRegExp,
@@ -15,7 +21,7 @@ import {
   PolicyOperation,
   CertificateStatusType,
   ExtendedKeyUsages,
-  OcspURLRegExp
+  URLRegExp
 } from '@acx-ui/rc/utils'
 
 import { CertificateWarning }                                     from '../AAAUtil/CertificateWarning'
@@ -32,7 +38,6 @@ type AAASettingFormProps = {
   edit: boolean,
   saveState: AAAPolicyType,
   type?: string,
-  allowTlsEnabled?: boolean,
   networkView?: boolean
 }
 
@@ -46,6 +51,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
     }
   })
   const form = Form.useFormInstance()
+  const params = useParams()
   const { useWatch } = Form
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const { isTemplate } = useConfigTemplate()
@@ -69,6 +75,30 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
     sortField: 'name',
     sortOrder: 'ASC'
   }
+
+  const { caRef } = useGetCertificateAuthorityOnRadiusQuery(
+    { params }, {
+      skip: !edit,
+      selectFromResult: ({ data }) => {
+        return { caRef: data?.data?.[0]?.id }
+      }
+    })
+
+  const { clientCertRef } = useGetClientCertificateOnRadiusQuery(
+    { params }, {
+      skip: !edit,
+      selectFromResult: ({ data }) => {
+        return { clientCertRef: data?.data?.[0]?.id }
+      }
+    })
+
+  const { serverCertRef } = useGetServerCertificateOnRadiusQuery(
+    { params }, {
+      skip: !edit,
+      selectFromResult: ({ data }) => {
+        return { serverCertRef: data?.data?.[0]?.id }
+      }
+    })
 
   const { caSelectOptions } = useGetCertificateAuthoritiesQuery(
     { payload: defaultPayload }, {
@@ -157,12 +187,12 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
 
   const handleTlsEnabledOnChange = (checked: boolean) => {
     if (checked) {
-      form.setFieldValue(['primary', 'port'], 2083)
+      form.setFieldValue(['primary', 'port'], DEFAULT_RADSEC_PORT)
     } else {
       if (type === 'ACCOUNTING') {
-        form.setFieldValue(['primary', 'port'], 1812)
+        form.setFieldValue(['primary', 'port'], AUTH_FORBIDDEN_PORT)
       } else {
-        form.setFieldValue(['primary', 'port'], 1813)
+        form.setFieldValue(['primary', 'port'], ACCT_FORBIDDEN_PORT)
       }
     }
   }
@@ -221,15 +251,29 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
       }
       if (saveState.radSecOptions?.ocspUrl) {
         form.setFieldValue(['radSecOptions', 'ocspValidationEnabled'], true)
+        form.setFieldValue(['radSecOptions', 'ocspUrl'],
+          saveState.radSecOptions?.ocspUrl?.replace('http://', ''))
       }
       if (saveState.radSecOptions) {
+        form.setFieldValue(['radSecOptions', 'certificateAuthorityId'],
+          caRef ?? saveState.radSecOptions.certificateAuthorityId ?? null)
+        form.setFieldValue(['radSecOptions', 'clientCertificateId'],
+          clientCertRef ?? saveState.radSecOptions.clientCertificateId ?? null)
+        form.setFieldValue(['radSecOptions', 'serverCertificateId'],
+          serverCertRef ?? saveState.radSecOptions.serverCertificateId ?? null)
+        form.setFieldValue(['radSecOptions', 'originalCertificateAuthorityId'],
+          saveState.radSecOptions.certificateAuthorityId)
+        form.setFieldValue(['radSecOptions', 'originalClientCertificateId'],
+          saveState.radSecOptions.clientCertificateId)
+        form.setFieldValue(['radSecOptions', 'originalServerCertificateId'],
+          saveState.radSecOptions.serverCertificateId)
         form.validateFields([
           ['radSecOptions', 'certificateAuthorityId'],
           ['radSecOptions', 'clientCertificateId'],
           ['radSecOptions', 'serverCertificateId']])
       }
     }
-  }, [saveState])
+  }, [saveState, caRef, clientCertRef, serverCertRef, edit, form])
 
   useEffect(() => {
     if (createdCaId.current && caSelectOptions.find(ca => ca.value === createdCaId.current)) {
@@ -256,6 +300,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
 
   const ACCT_FORBIDDEN_PORT = 1812
   const AUTH_FORBIDDEN_PORT = 1813
+  const DEFAULT_RADSEC_PORT = 2083
   const validateRadiusPort = async (value: number)=>{
     if((value === ACCT_FORBIDDEN_PORT && type === 'ACCOUNTING')||
     (value === AUTH_FORBIDDEN_PORT && type === 'AUTHENTICATION')){
@@ -314,8 +359,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
             name={['radSecOptions', 'tlsEnabled']}
             initialValue={props.saveState.radSecOptions?.tlsEnabled}
             valuePropName='checked'
-            children={<Switch
-              disabled={props.allowTlsEnabled? true: false}
+            children={<Switch disabled={showCertificateAuthorityDrawer || showCertificateDrawer}
               onChange={handleTlsEnabledOnChange} />}
           />
         </UI.StyledSpace>}
@@ -346,7 +390,8 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
               name={['radSecOptions', 'ocspValidationEnabled']}
               valuePropName='checked'
               children={
-                <Switch checked={ocspValidationEnabled}/>
+                <Switch checked={ocspValidationEnabled}
+                  disabled={showCertificateAuthorityDrawer || showCertificateDrawer}/>
               }
             />
           </UI.StyledSpace>
@@ -355,11 +400,11 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
             label={$t({ defaultMessage: 'OCSP URL' })}
             rules={[
               { required: true },
-              { max: 1024 },
-              { validator: (_, value) => OcspURLRegExp(value) }
+              { max: 1017 }, // 1024 - 7 ('http://')
+              { validator: (_, value) => URLRegExp(value) }
             ]}
             initialValue={''}
-            children={<Input />}
+            children={<Input addonBefore='http://'/>}
           />}
           <Space>
             <Form.Item
@@ -387,7 +432,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
           <Form.Item
             label={$t({ defaultMessage: 'Client Certificate' })}
             name={['radSecOptions', 'clientCertificateId']}
-            initialValue={saveState.radSecOptions?.clientCertificateId ?? null}
+            initialValue={null}
             rules={[
               { required: false },
               { validator: (_, certId) => {
@@ -420,7 +465,7 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
                   title={$t(MessageMapping.server_certificate_tooltip)}/>
               </>}
             name={['radSecOptions', 'serverCertificateId']}
-            initialValue={saveState.radSecOptions?.serverCertificateId ?? null}
+            initialValue={null}
             rules={[
               { required: false },
               { validator: (_, certId) => {
@@ -448,17 +493,14 @@ export const AAASettingForm = (props: AAASettingFormProps) => {
           </Form.Item>
           <Form.Item
             name={['radSecOptions', 'originalCertificateAuthorityId']}
-            initialValue={saveState.radSecOptions?.certificateAuthorityId}
             children={<Input />}
             hidden={true} />
           <Form.Item
             name={['radSecOptions', 'originalClientCertificateId']}
-            initialValue={saveState.radSecOptions?.clientCertificateId}
             children={<Input />}
             hidden={true} />
           <Form.Item
             name={['radSecOptions', 'originalServerCertificateId']}
-            initialValue={saveState.radSecOptions?.serverCertificateId}
             children={<Input />}
             hidden={true} />
         </UI.RacSecDiv>

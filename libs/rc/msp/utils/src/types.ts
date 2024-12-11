@@ -41,10 +41,10 @@ export interface DelegationEntitlementRecord {
   outOfComplianceDevices?: number;
   futureOutOfComplianceDevices?: number;
   futureOfComplianceDate?: number;
-  wifiDeviceCount?: number;
-  switchDeviceCount?: number;
-  rwgDeviceCount?: number;
-  edgeDeviceCount?: number
+  wifiDeviceCount?: string;
+  switchDeviceCount?: string;
+  rwgDeviceCount?: string;
+  edgeDeviceCount?: string;
 }
 
 export interface MspEc {
@@ -443,6 +443,7 @@ export interface MspRecData {
   name?: string;
   delegations?: MspIntegratorDelegated[];
   admin_delegations?: MspEcDelegatedAdmins[];
+  privilege_group_ids?: string[];
 }
 
 export interface MspMultiRecData {
@@ -606,4 +607,40 @@ export interface AssignedMultiEcMspAdmins {
   mspEcId: string
   mspAdminRoles: SelectedMspMspAdmins[]
   privilege_group_ids?: string[]
+}
+
+export interface MileageReportsResponse {
+  data: MileageData[],
+  pageSize: number,
+  page: number,
+  totalCount: number
+}
+
+export interface MileageData {
+  licenseType: EntitlementDeviceType,
+  lastDate: string,
+  device: number,
+  usedQuantity: number,
+  quantity: number,
+  availableBreakUp: MileageBreakUp[]
+}
+
+export interface MileageBreakUp {
+  quantity: number,
+  expirationDate: string
+}
+
+export interface MileageReportsRequestPayload {
+  page: number,
+  pageSize: number,
+  filters: {
+      usageType: string,
+      licenseType: EntitlementDeviceType
+  }
+}
+
+export interface MileageSeriesData {
+  value: number;
+  extraData: MileageBreakUp[];
+  isZeroQuantity?: boolean;
 }

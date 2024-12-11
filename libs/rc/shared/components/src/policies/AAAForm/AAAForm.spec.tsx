@@ -8,8 +8,8 @@ import { Provider }                                                             
 import { fireEvent, mockServer, render, screen, waitFor, within }                  from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                                            from '@acx-ui/user'
 
-import { aaaData, successResponse, aaaList, aaaTemplateList, caList, certList } from './__tests__/fixtures'
-import { AAAForm }                                                              from './AAAForm'
+import { aaaData, successResponse, aaaList, aaaTemplateList, caList, certList, radiusCaRef, radiusClientCertRef, radiusServerCertRef } from './__tests__/fixtures'
+import { AAAForm }                                                                                                                     from './AAAForm'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -60,7 +60,21 @@ describe('AAAForm', () => {
       rest.post(
         CertificateUrls.getCertificateList.url,
         (_, res, ctx) => res(ctx.json(certList))
-      )
+      ),
+      rest.get(
+        AaaUrls.getCertificateAuthorityOnRadius.url,
+        (_, res, ctx) => res(ctx.json(radiusCaRef))
+      ),
+      rest.get(
+        AaaUrls.getClientCertificateOnRadius.url.replace('?certType=CLIENT', ''),
+        (_, res, ctx) => {
+          return res(ctx.json(radiusClientCertRef))
+        }),
+      rest.get(
+        AaaUrls.getServerCertificateOnRadius.url.replace('?certType=SERVER', ''),
+        (_, res, ctx) => {
+          return res(ctx.json(radiusServerCertRef))
+        })
     )
   })
 

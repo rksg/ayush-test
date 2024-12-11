@@ -2,38 +2,38 @@ import { Col, Form, Input } from 'antd'
 import { useIntl }          from 'react-intl'
 
 
-import { useLazyVenuesListQuery }                     from '@acx-ui/rc/services'
+import { useVenuesListQuery }                         from '@acx-ui/rc/services'
 import { checkObjectNotExists, whitespaceOnlyRegExp } from '@acx-ui/rc/utils'
-import { validationMessages }                         from '@acx-ui/utils'
+import { useParams }                                  from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
 function BasicInformationPage () {
   const { $t } = useIntl()
+  const params = useParams()
 
-  const venuesListPayload = {
-    searchString: '',
-    fields: ['name', 'id'],
-    searchTargetFields: ['name'],
-    filters: {},
-    pageSize: 10000
-  }
-
-  const [ venuesList ] = useLazyVenuesListQuery()
+  const { data: venuesList } = useVenuesListQuery({
+    params, payload: {
+      fields: ['name', 'ssid'],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  })
 
   const nameValidator = async (value: string) => {
-    if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {
-      return Promise.reject($t(validationMessages.name))
-    }
-    const payload = { ...venuesListPayload, searchString: value }
-    const list = (await venuesList({ payload }, true).unwrap()).data.map(n => ({ name: n.name }))
-    return checkObjectNotExists(list, { name: value },
-      $t({ defaultMessage: '<VenueSingular></VenueSingular>' }))
+    const list = venuesList?.data.map((n: { name: string }) => n.name) || []
+    return checkObjectNotExists(list,
+      value, $t({ defaultMessage: '<VenueSingular></VenueSingular>' }))
   }
 
-
   return (
-    <div style={{ marginLeft: '85px' }}>
+    <div style={{
+      marginLeft: '85px',
+      height: '100%',
+      maxHeight: 'calc(100vh - 320px)',
+      minHeight: '200px'
+    }}>
       <UI.PageTitle>
         {$t({ defaultMessage: '<VenueSingular></VenueSingular> Details' })}
       </UI.PageTitle>
@@ -43,7 +43,13 @@ function BasicInformationPage () {
           label={$t({ defaultMessage: '<VenueSingular></VenueSingular> Name' })}
           validateTrigger={'onBlur'}
           rules={[
-            { type: 'string', required: true },
+            {
+              type: 'string', required: true,
+              message: $t({
+                defaultMessage:
+                  'Please enter a <VenueSingular></VenueSingular> Name.'
+              })
+            },
             { min: 2, transform: (value) => value.trim() },
             { max: 32, transform: (value) => value.trim() },
             { validator: (_, value) => whitespaceOnlyRegExp(value) },
@@ -99,7 +105,7 @@ function BasicInformationPage () {
           <Input.TextArea
             rows={8}
             placeholder={$t({ // eslint-disable-next-line max-len
-              defaultMessage: 'For example, the network is to be deployed in an elementary school with about 2,000 students. We will probably need a network for staff, one for students, and perhaps one for visitors. This description can be as long or as short as you like. But the more you tell me, the better would be my recommendations.'
+              defaultMessage: 'For instance, the network deployment is planned to support around 2,000 people and will likely include separate networks for staff, registered clients, and visitors.'
             })}
           />
         </Form.Item>

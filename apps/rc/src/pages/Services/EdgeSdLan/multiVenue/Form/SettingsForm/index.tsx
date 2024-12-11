@@ -5,10 +5,10 @@ import { findIndex, find }                                         from 'lodash'
 import { useIntl }                                                 from 'react-intl'
 import { useParams }                                               from 'react-router-dom'
 
-import {  StepsForm, Tooltip, useStepFormContext, Loader }                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
-import { InformationSolid }                                                    from '@acx-ui/icons'
-import { SpaceWrapper, CompatibilityWarningCircleIcon, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import {  StepsForm, Tooltip, useStepFormContext, Loader }                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
+import { InformationSolid }                                                      from '@acx-ui/icons'
+import { SpaceWrapper, CompatibilityWarningTriangleIcon, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
   useGetEdgeClusterListQuery,
   useGetEdgeFeatureSetsQuery,
@@ -345,7 +345,7 @@ const ClusterFirmwareInfo = (props: {
           })}
         </Loader>
         }>
-        <CompatibilityWarningCircleIcon />
+        <CompatibilityWarningTriangleIcon />
       </Tooltip>
       }
     </Space>)

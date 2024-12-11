@@ -49,6 +49,7 @@ import {
   AssignActionEnum
 } from '@acx-ui/msp/utils'
 import { GoogleMapWithPreference, usePlacesAutocomplete } from '@acx-ui/rc/components'
+import { useGetPrivilegeGroupsQuery }                     from '@acx-ui/rc/services'
 import {
   Address,
   emailRegExp,
@@ -227,6 +228,10 @@ export function ManageIntegrator () {
   useGetAssignedMspEcToIntegratorQuery(
     { params: { mspIntegratorId: mspEcTenantId, mspIntegratorType: tenantType },
       enable: isRbacEnabled }, { skip: action !== 'edit' })
+  const adminRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
+  const isSystemAdmin = userProfile?.roles?.some(role => adminRoles.includes(role as RolesEnum))
+  const { data: privilegeGroupList } = useGetPrivilegeGroupsQuery({ params: useParams() },
+    { skip: !isRbacPhase2Enabled || isEditMode || isSystemAdmin })
 
   useEffect(() => {
     if (licenseSummary) {
@@ -268,20 +273,29 @@ export function ManageIntegrator () {
       const initialAddress = isMapEnabled ? '' : defaultAddress.addressLine
       formRef.current?.setFieldValue(['address', 'addressLine'], initialAddress)
       if (userProfile) {
-        const administrator = [] as MspAdministrator[]
-        administrator.push ({
-          id: userProfile.adminId,
-          lastName: userProfile.lastName,
-          name: userProfile.firstName,
-          email: userProfile.email,
-          role: RolesEnum.PRIME_ADMIN,
-          detailLevel: userProfile.detailLevel
-        })
-        setAdministrator(administrator)
+        if (isSystemAdmin) {
+          const administrator = [] as MspAdministrator[]
+          administrator.push ({
+            id: userProfile.adminId,
+            lastName: userProfile.lastName,
+            name: userProfile.firstName,
+            email: userProfile.email,
+            role: userProfile.role as RolesEnum,
+            detailLevel: userProfile.detailLevel
+          })
+          setAdministrator(administrator)
+        } else {
+          const pg = privilegeGroupList?.find(pg => pg.name === userProfile?.role)
+          if (pg) {
+            const pgList = [] as PrivilegeGroup[]
+            pgList.push({ id: pg.id, name: userProfile.role as RolesEnum })
+            setPrivilegeGroups(pgList)
+          }
+        }
       }
       setSubscriptionStartDate(moment())
     }
-  }, [data, licenseSummary, licenseAssignment, userProfile, ecAdministrators])
+  }, [data, licenseSummary, licenseAssignment, userProfile, ecAdministrators, privilegeGroupList])
 
   useEffect(() => {
     if (delegatedAdmins && Administrators) {
@@ -999,11 +1013,26 @@ export function ManageIntegrator () {
           <Paragraph>{address.addressLine}</Paragraph>
         </Form.Item>
 
-        <Form.Item
+        {!isRbacPhase2Enabled && <Form.Item
           label={intl.$t({ defaultMessage: 'MSP Administrators' })}
         >
           <Paragraph>{displayMspAdmins()}</Paragraph>
-        </Form.Item>
+        </Form.Item>}
+
+        {isRbacPhase2Enabled && <div>
+          <Form.Item style={{ height: '20px', margin: '0' }}
+            label={intl.$t({ defaultMessage: 'MSP Delegations' })}
+          />
+          <Form.Item style={{ margin: '0' }}
+            label={intl.$t({ defaultMessage: 'Users' })}
+          >
+            <Paragraph>{displayMspAdmins()}</Paragraph>
+          </Form.Item>
+          <Form.Item
+            label={intl.$t({ defaultMessage: 'Privilege Groups' })}
+          >
+            <Paragraph>{displayPrivilegeGroups()}</Paragraph>
+          </Form.Item></div>}
 
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Assigned Customers' })}

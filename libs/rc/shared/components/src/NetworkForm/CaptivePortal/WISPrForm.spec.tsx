@@ -90,7 +90,7 @@ describe('CaptiveNetworkForm-WISPr', () => {
         <Provider>
           <NetworkFormContext.Provider
             value={{
-              editMode: true, cloneMode: true, data: wisprDataWPA2
+              editMode: true, cloneMode: true, data: wisprDataWPA2, isRuckusAiMode: false
             }}
           >
             <MLOContext.Provider value={{
@@ -161,7 +161,7 @@ describe('CaptiveNetworkForm-WISPr', () => {
       render(
         <Provider>
           <NetworkFormContext.Provider
-            value={{ editMode: false, cloneMode: false, data: wisprDataWPA2 }}>
+            value={{ editMode: false, cloneMode: false, data: wisprDataWPA2, isRuckusAiMode: false }}>
             <MLOContext.Provider value={{
               isDisableMLO: false,
               disableMLO: jest.fn()
@@ -195,7 +195,7 @@ describe('CaptiveNetworkForm-WISPr', () => {
       render(
         <Provider>
           <NetworkFormContext.Provider
-            value={{ editMode: true, cloneMode: true, data: wisprDataForAllAccept }}>
+            value={{ editMode: true, cloneMode: true, data: wisprDataForAllAccept, isRuckusAiMode: false }}>
             <MLOContext.Provider value={{
               isDisableMLO: false,
               disableMLO: jest.fn()
@@ -225,7 +225,7 @@ describe('CaptiveNetworkForm-WISPr', () => {
       render(
         <Provider>
           <NetworkFormContext.Provider
-            value={{ editMode: true, cloneMode: true, data: wisprDataForOnlyAuth }}>
+            value={{ editMode: true, cloneMode: true, data: wisprDataForOnlyAuth, isRuckusAiMode: false }}>
             <MLOContext.Provider value={{
               isDisableMLO: false,
               disableMLO: jest.fn()
@@ -298,7 +298,7 @@ describe('CaptiveNetworkForm-WISPr', () => {
         <Provider>
           <NetworkFormContext.Provider
             value={{
-              editMode: false, cloneMode: false, data: wisprDataWPA2
+              editMode: false, cloneMode: false, data: wisprDataWPA2, isRuckusAiMode: false
             }}
           >
             <MLOContext.Provider value={{

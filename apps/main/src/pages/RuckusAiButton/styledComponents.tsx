@@ -18,11 +18,11 @@ const Button = styled(AntButton).attrs({ type: 'primary' })`
     background-color: var(--acx-neutrals-10);
     border: none;
     &:hover, &:focus {
-      border-color: var(--acx-accents-orange-55);
-      background-color: var(--acx-accents-orange-55);
+      border-color: var(--acx-accents-orange-10);
+      background-color: var(--acx-accents-orange-10);
     }
     > svg {
-      width: 16px;
+      width: 20px;
       height: 100%;
     }
   }
@@ -42,26 +42,30 @@ export const ButtonSolid = styled(Button)`
 export const GptModal = styled(Modal)<{ titleType: string, needBackground: boolean }>`
   .ant-modal-content {
     border-radius: 24px;
-    .ant-modal-header{
+    .ant-modal-header {
       border-radius: 24px;
 
       ${(props) =>
     props.titleType === 'wizard' &&
         `
+        padding-bottom: 0px;
         display: flex;
         justify-content: center;
       `}
-
     }
-    .ant-modal-footer{
+    .ant-modal-footer {
       background: none;
       text-align: center;
     }
     .ant-modal-body {
-      max-height: calc(80vh - 100px);
+      margin-top: -20px;
+      margin-right: 20px;
       overflow-y: auto;
-      ${(props) => props.needBackground &&
-        `
+      ${(props) => props.titleType === 'wizard' && `
+        margin-right: 0px;`}
+      ${(props) => props.needBackground && `
+        margin-right: 0px;
+        overflow-y: unset !important;
         background-image: url(${RuckusAiBackground});
         background-size: cover;
         background-position: center center;
@@ -74,7 +78,8 @@ export const GptModal = styled(Modal)<{ titleType: string, needBackground: boole
 
       .ant-pro-steps-form-step.ant-pro-steps-form-step-active {
         overflow-y: auto;
-        max-height: calc(100vh - 400px);
+        min-height: 200px;
+        max-height: calc(100vh - 250px);
         padding-right: 30px;
         margin-right: -35px;
         margin-bottom: 10px;
@@ -163,8 +168,6 @@ export const GptStep = styled(Steps)`
   }
 `
 
-
-
 export const VirticalContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 180px);
@@ -172,8 +175,8 @@ export const VirticalContainer = styled.div`
   gap: 20px;
   justify-content: center;
   align-content: center;
+  margin-left: 20px;
 `
-
 
 export const VirticalBox = styled.div`
   display: flex;
@@ -197,26 +200,31 @@ export const GptStepsForm = styled(StepsForm)`
 `
 
 export const CongratContainer = styled.div`
+
   position: relative;
-  margin-top: 100px;
+  margin-top: 80px;
   z-index: 1;
-  display: flex;
+  display: grid;
+  justify-items: center;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100%;
+  min-height: 250px;
+  max-height: calc(100vh - 280px);
+  overflow-y: auto;
 `
 
 
-export const CongrateTitle = styled.span`
-  margin-top: 30px;
+export const CongrateTitle = styled.div`
   font-family: var(--acx-accent-brand-font);
   font-size: var(--acx-headline-2-font-size);
   font-weight: var(--acx-headline-2-font-weight-bold);
 `
 
-export const CongratSubtitle = styled.span`
-  margin-top: 15px;
+export const CongratSubtitle = styled.div`
+  margin-top: 10px;
+  margin-bottom: 20px;
   color: var(--acx-primary-black);
   font-family: var(--acx-neutral-brand-font);
   font-size: var(--acx-headline-4-line-height);

@@ -31,7 +31,7 @@ import { useTableQuery, dpskAdminRoutePathKeeper }                              
 import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink, useLocation }   from '@acx-ui/react-router-dom'
 import { useParams }                                                                       from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                       from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }                                                 from '@acx-ui/user'
+import { hasCrossVenuesPermission, hasRoles, useUserProfileContext }                       from '@acx-ui/user'
 import { AccountType, AccountVertical, getJwtTokenPayload, isDelegationMode, useTenantId } from '@acx-ui/utils'
 
 import RuckusAiButton from '../RuckusAiButton'
@@ -86,11 +86,14 @@ function Layout () {
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const isReportsAdmin = hasRoles([RolesEnum.REPORTS_ADMIN])
+  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const isSupportDelegation = userProfile?.support && isSupportToMspDashboardAllowed
   const isHospitality = getJwtTokenPayload().acx_account_vertical === AccountVertical.HOSPITALITY
   const showMspHomeButton = isSupportDelegation && (tenantType === AccountType.MSP ||
     tenantType === AccountType.MSP_NON_VAR || tenantType === AccountType.VAR)
+  const hasOnboardingAssistantAccess = isOnboardingAssistantEnabled &&
+    isAdmin && hasCrossVenuesPermission()
   const userProfileBasePath = useTenantLink('/userprofile')
   const basePath = useTenantLink('/users/guestsManager')
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
@@ -197,7 +200,7 @@ function Layout () {
         {isDelegationMode()
           ? <MspEcDropdownList/>
           : <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>}
-        {isOnboardingAssistantEnabled && <RuckusAiButton />}
+        {hasOnboardingAssistantAccess && <RuckusAiButton />}
         {!(isGuestManager || isDPSKAdmin || isReportsAdmin) &&
           <>
             <AlarmsButton/>

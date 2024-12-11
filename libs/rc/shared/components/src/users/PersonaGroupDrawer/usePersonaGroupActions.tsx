@@ -1,28 +1,26 @@
 import {
   CommonAsyncResponse,
   useAddPersonaGroupMutation,
-  useAssociateIdentityGroupWithCertificateTemplateMutation,
   useAssociateIdentityGroupWithDpskMutation,
   useAssociateIdentityGroupWithMacRegistrationMutation,
+  useAssociateIdentityGroupWithPolicySetMutation,
+  useDissociateIdentityGroupWithPolicySetMutation,
   useUpdatePersonaGroupMutation
 } from '@acx-ui/rc/services'
 import { PersonaGroup } from '@acx-ui/rc/utils'
 
-import { usePersonaAsyncHeaders } from '../usePersonaAsyncHeaders'
-
 
 
 export function usePersonaGroupAction () {
-  const { isAsync, customHeaders } = usePersonaAsyncHeaders()
-
   const [addPersonaGroup] = useAddPersonaGroupMutation()
   const [updatePersonaGroup] = useUpdatePersonaGroupMutation()
   const [associateDpsk] = useAssociateIdentityGroupWithDpskMutation()
   const [associateMacReg] = useAssociateIdentityGroupWithMacRegistrationMutation()
-  const [associateCertTemplate] = useAssociateIdentityGroupWithCertificateTemplateMutation()
+  const [associatePolicySet] = useAssociateIdentityGroupWithPolicySetMutation()
+  const [dissociatePolicySet] = useDissociateIdentityGroupWithPolicySetMutation()
 
   const createPersonaGroupMutation = async (submittedData: PersonaGroup, callback?: Function) => {
-    const { dpskPoolId, macRegistrationPoolId, certificateTemplateId, ...groupData } = submittedData
+    const { dpskPoolId, macRegistrationPoolId, policySetId, ...groupData } = submittedData
 
     const associateDpskCallback = (groupId: string) => {
       if (dpskPoolId) {
@@ -38,73 +36,93 @@ export function usePersonaGroupAction () {
         })
       }
     }
-    const associateCertificateTemplateCallback = (groupId: string) => {
-      if (certificateTemplateId) {
-        associateCertTemplate({
-          params: { groupId, templateId: certificateTemplateId }
+    const associatePolicySetCallback = (groupId: string) => {
+      if (policySetId) {
+        associatePolicySet({
+          params: { groupId, policySetId }
         })
       }
     }
 
     return await addPersonaGroup({
-      payload: { ...(isAsync ? groupData : submittedData) },
-      customHeaders,
-      callback: (response: CommonAsyncResponse) => {
+      payload: groupData,
+      onSuccess: (response: CommonAsyncResponse) => {
         callback?.(response)
-        if (response.id && isAsync) {
+        if (response.id) {
           associateDpskCallback(response.id)
           associateMacRegistrationCallback(response.id)
-          associateCertificateTemplateCallback(response.id)
+          associatePolicySetCallback(response.id)
         }
+      },
+      onError: (response?: CommonAsyncResponse) => {
+        callback?.(response)
       }
     }).unwrap()
-      .then(result => {
-        if(!isAsync) callback?.(result)
-      })
   }
 
   const updatePersonaGroupMutation
-  = async (groupId: string, patchData?: Partial<PersonaGroup>) => {
-    if (!patchData || Object.keys(patchData).length === 0) return
+  = async (groupId: string, oldData?: PersonaGroup, newData?: PersonaGroup) => {
+    if (!newData || !oldData || Object.keys(newData).length === 0) return
 
-    const { dpskPoolId, macRegistrationPoolId, certificateTemplateId, ...groupData } = patchData
+    const personaGroupKeys = [
+      'name',
+      'description',
+      'macRegistrationPoolId',
+      'dpskPoolId',
+      'policySetId'
+    ] as const
+    const patchData: Partial<PersonaGroup> = {}
+
+    personaGroupKeys.forEach(key => {
+      if (newData[key] !== oldData[key]) {
+        Object.assign(patchData, { [key]: newData[key] })
+      }
+    })
+
+    const { dpskPoolId, macRegistrationPoolId, policySetId, ...groupData } = patchData
     const associationPromises = []
 
-    if (isAsync) {
-      if (macRegistrationPoolId) {
-        associationPromises.push(associateMacReg({
-          params: {
-            groupId,
-            poolId: macRegistrationPoolId
-          }
-        }))
-      }
+    if (macRegistrationPoolId) {
+      associationPromises.push(associateMacReg({
+        params: {
+          groupId,
+          poolId: macRegistrationPoolId
+        }
+      }))
+    }
 
-      if (dpskPoolId) {
-        associationPromises.push(associateDpsk({
-          params: {
-            groupId,
-            poolId: dpskPoolId
-          }
-        }))
-      }
+    if (dpskPoolId) {
+      associationPromises.push(associateDpsk({
+        params: {
+          groupId,
+          poolId: dpskPoolId
+        }
+      }))
+    }
 
-      if (certificateTemplateId) {
-        associationPromises.push(associateCertTemplate({
-          params: {
-            groupId,
-            templateId: certificateTemplateId
-          }
-        }))
-      }
+    if (policySetId) {
+      associationPromises.push(associatePolicySet({
+        params: {
+          groupId,
+          policySetId
+        }
+      }))
+    } else if (newData.hasOwnProperty('policySetId')
+      && newData.policySetId === undefined
+      && oldData.policySetId) {
+      associationPromises.push(dissociatePolicySet({
+        params: {
+          groupId,
+          policySetId: oldData.policySetId
+        }
+      }))
     }
 
     let updatePersonaGroupPromise
-    if (Object.keys(isAsync ? groupData : patchData).length !== 0) {
+    if (Object.keys(groupData).length !== 0) {
       updatePersonaGroupPromise = updatePersonaGroup({
         params: { groupId },
-        payload: isAsync ? groupData : patchData,
-        customHeaders
+        payload: groupData
       })
       associationPromises.push(updatePersonaGroupPromise)
     }

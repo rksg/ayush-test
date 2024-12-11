@@ -7,6 +7,7 @@ import { useParams }                                       from 'react-router-do
 
 import { cssStr, Tooltip }                          from '@acx-ui/components'
 import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { WarningCircleSolid }                       from '@acx-ui/icons'
 import {
   useQueryEthernetPortProfilesWithOverwritesQuery
 } from '@acx-ui/rc/services'
@@ -31,6 +32,8 @@ import {
   ApCompatibilityType,
   InCompatibilityFeatures
 } from '../ApCompatibility'
+import { DhcpOption82Settings }  from '../DhcpOption82Settings'
+import { SoftGRETunnelSettings } from '../SoftGRETunnelSettings'
 
 import EthernetPortProfileDrawer from './EthernetPortProfileDrawer'
 import EthernetPortProfileInput  from './EthernetPortProfileInput'
@@ -90,14 +93,18 @@ export function LanPortSettings (props: {
   const form = Form.useFormInstance()
   const lan = form?.getFieldValue('lan')?.[index]
   const params = useParams()
-
+  const hasVni = lan?.vni > 0
   // Ethernet Port Profile
   const { isTemplate } = useConfigTemplate()
   const ethernetPortProfileId = Form.useWatch( ['lan', index, 'ethernetPortProfileId'] ,form)
+  const isEthernetPortEnable = Form.useWatch( ['lan', index, 'enabled'] ,form)
   const [currentEthernetPortData, setCurrentEthernetPortData] =
     useState<EthernetPortProfileViewData>()
   const [ethernetProfileCreateId, setEthernetProfileCreateId] = useState<String>()
+  const [enableSoftGRETunnel, setEnableSoftGRETunnel] = useState<boolean>(false)
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
+  const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
+
 
   // Non ethernet port profile
   const handlePortTypeChange = (value: string, index:number) => {
@@ -208,7 +215,7 @@ export function LanPortSettings (props: {
         disabled={readOnly
           || isDhcpEnabled
           || !selectedPortCaps?.supportDisable
-          || lan?.vni > 0
+          || hasVni
         }
         onChange={() => onChangedByCustom('enabled')}
       />}
@@ -219,29 +226,46 @@ export function LanPortSettings (props: {
       children={<Input />}
     />
     {!isTemplate && isEthernetPortProfileEnabled ?
-      (<><Space>
-        <Form.Item
-          name={['lan', index, 'ethernetPortProfileId']}
-          label={$t({ defaultMessage: 'Ethernet Port Profile' })}
-          children={<Select
-            disabled={readOnly
-              || isDhcpEnabled
-              || !lan?.enabled
-              || lan?.vni > 0}
-            options={ethernetPortDropdownItems}
-            onChange={() => onChangedByCustom('ethernetPortProfileId')}
-          />} />
-        <EthernetPortProfileDrawer
-          updateInstance={(createId) => {
-            setEthernetProfileCreateId(createId)
-          }}
-          currentEthernetPortData={currentEthernetPortData} />
-      </Space>
-      <EthernetPortProfileInput
-        currentEthernetPortData={currentEthernetPortData}
-        currentIndex={index}
-        onGUIChanged={onGUIChanged}
-        isEditable={!!serialNumber} /></>) :
+      (isEthernetPortEnable && <>
+        {(
+          hasVni ? <Form.Item name={['lan', index, 'ethernetPortProfileId']} hidden/> :
+            <Space>
+              <Form.Item
+                name={['lan', index, 'ethernetPortProfileId']}
+                label={$t({ defaultMessage: 'Ethernet Port Profile' })}
+                children={<Select
+                  disabled={readOnly
+                         || isDhcpEnabled
+                         || !lan?.enabled
+                         || hasVni}
+                  options={ethernetPortDropdownItems}
+                  style={{ width: '250px' }}
+                  onChange={() => onChangedByCustom('ethernetPortProfileId')}
+                />} />
+              <EthernetPortProfileDrawer
+                updateInstance={(createId) => {
+                  setEthernetProfileCreateId(createId)
+                }}
+                currentEthernetPortData={currentEthernetPortData} />
+            </Space>
+        )}
+        <EthernetPortProfileInput
+          currentEthernetPortData={currentEthernetPortData}
+          currentIndex={index}
+          onGUIChanged={onGUIChanged}
+          isEditable={!!serialNumber} />
+        {
+          isEthernetPortProfileEnabled && isEthernetSoftgreEnabled &&
+            (<>
+              <SoftGRETunnelSettings
+                enableSoftGRETunnel={enableSoftGRETunnel}
+                setEnableSoftGRETunnel={setEnableSoftGRETunnel}
+                isSoftGRETunnelToggleDisable={!isEthernetPortEnable}
+              />
+              {enableSoftGRETunnel && <DhcpOption82Settings />}
+            </>)
+        }
+      </>) :
       (<>
         <Form.Item
           name={['lan', index, 'type']}
@@ -256,7 +280,7 @@ export function LanPortSettings (props: {
             || isDhcpEnabled
             || !lan?.enabled
             || selectedPortCaps?.trunkPortOnly
-            || lan?.vni > 0}
+            || hasVni}
             options={Object.keys(ApLanPortTypeEnum).map(type => ({ label: type, value: type }))}
             onChange={(value) => handlePortTypeChange(value, index)} />} />
         <Form.Item
@@ -291,7 +315,7 @@ export function LanPortSettings (props: {
               || isDhcpEnabled
               || !lan?.enabled
               || (lan?.type === ApLanPortTypeEnum.TRUNK && !isTrunkPortUntaggedVlanEnabled)
-              || lan?.vni > 0}
+              || hasVni}
             onChange={(value) => {
               const isTrunkPort = lan?.type === ApLanPortTypeEnum.TRUNK
               if (!isTrunkPort || isTrunkPortUntaggedVlanEnabled) {
@@ -323,9 +347,13 @@ export function LanPortSettings (props: {
               || isDhcpEnabled
               || !lan?.enabled
               || lan?.type !== ApLanPortTypeEnum.GENERAL
-              || lan?.vni > 0}
+              || hasVni}
             onChange={() => onChangedByCustom('vlanMembers')} />} />
       </>)}
+    {(hasVni && <Space size='small'>
+      <WarningCircleSolid />
+      {$t({ defaultMessage: 'This LAN port is associated with the PIN service currently.' })}
+    </Space>)}
     <Form.Item
       hidden={true}
       name={['lan', index, 'vni']}

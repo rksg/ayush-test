@@ -127,7 +127,7 @@ export const mockEdgeServiceList = {
       edgeId: '96B341ADD6C16C11ED8B8B000C296600F5',
       serviceName: 'Mock mDNS',
       serviceId: 'edge-mdns-1',
-      serviceType: EdgeServiceTypeEnum.MDNS,
+      serviceType: EdgeServiceTypeEnum.MDNS_PROXY,
       status: 'Up',
       currentVersion: '1.1.1',
       targetVersion: ''
@@ -220,7 +220,6 @@ export const mockEdgeClusterList = {
       venueName: 'venue_1',
       clusterStatus: ClusterStatusEnum.CLUSTER_READY,
       highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE,
-      firmwareVersion: '2.1.0.480',
       hasCorePort: true,
       activeAps: 1000,
       isHqosEnabled: true,
@@ -241,7 +240,8 @@ export const mockEdgeClusterList = {
           cpuCores: 2,
           cpuUsedPercentage: 25,
           memoryUsedKb: 4626208,
-          memoryTotalKb: 7949424
+          memoryTotalKb: 7949424,
+          firmwareVersion: '2.2.0.1015'
         },
         {
           name: 'Smart Edge 2',
@@ -259,7 +259,8 @@ export const mockEdgeClusterList = {
           cpuCores: 2,
           cpuUsedPercentage: 25,
           memoryUsedKb: 4626208,
-          memoryTotalKb: 7949420
+          memoryTotalKb: 7949420,
+          firmwareVersion: '2.2.0.1015'
         }
       ]
     },
@@ -272,7 +273,6 @@ export const mockEdgeClusterList = {
       venueName: 'venue_2',
       clusterStatus: 'test',
       highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY,
-      firmwareVersion: '2.1.0.580',
       hasCorePort: true,
       edgeList: [
         {
@@ -287,7 +287,8 @@ export const mockEdgeClusterList = {
           venueId: 'mock_venue_1',
           tags: ['Tag1', 'Tag2'],
           clusterNodeStatus: ClusterNodeStatusEnum.CLUSTER_NODE_READY,
-          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE,
+          firmwareVersion: '2.2.0.1031'
         },
         {
           name: 'Smart Edge 5',
@@ -301,7 +302,8 @@ export const mockEdgeClusterList = {
           venueId: 'mock_venue_1',
           tags: ['Tag1', 'Tag2'],
           clusterNodeStatus: ClusterNodeStatusEnum.CLUSTER_NODE_READY,
-          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_BACKUP
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_BACKUP,
+          firmwareVersion: '2.2.0.1031'
         }
       ]
     },{
@@ -325,7 +327,8 @@ export const mockEdgeClusterList = {
           venueId: '0000000003',
           tags: ['Tag1', 'Tag2'],
           clusterNodeStatus: ClusterNodeStatusEnum.CLUSTER_NODE_READY,
-          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE,
+          firmwareVersion: '2.1.0.1031'
         }
       ]
     },{
@@ -374,7 +377,7 @@ export const mockEdgeClusterList = {
       venueId: '0000000005',
       venueName: 'venue_5',
       clusterStatus: ClusterStatusEnum.CLUSTER_UNHEALTHY,
-      firmwareVersion: '2.1.0.480',
+      highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY,
       hasCorePort: true,
       edgeList: [
         {
@@ -389,7 +392,8 @@ export const mockEdgeClusterList = {
           venueId: 'mock_venue_1',
           tags: ['Tag1', 'Tag2'],
           clusterNodeStatus: ClusterNodeStatusEnum.CLUSTER_NODE_UNHEALTHY,
-          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE,
+          firmwareVersion: '2.1.0.750'
         },
         {
           name: 'Smart Edge 9',
@@ -403,7 +407,8 @@ export const mockEdgeClusterList = {
           venueId: 'mock_venue_1',
           tags: ['Tag1', 'Tag2'],
           clusterNodeStatus: ClusterNodeStatusEnum.CLUSTER_NODE_UNHEALTHY,
-          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_BACKUP
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_BACKUP,
+          firmwareVersion: '2.1.0.750'
         }
       ]
     }

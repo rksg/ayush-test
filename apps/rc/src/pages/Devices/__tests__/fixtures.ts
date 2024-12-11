@@ -1,4 +1,4 @@
-import { ApRadioBands, ApVenueStatusEnum, AFCPowerMode, AFCStatus, ApViewModel, EthernetPortType } from '@acx-ui/rc/utils'
+import { AFCPowerMode, AFCStatus, ApRadioBands, ApVenueStatusEnum, ApViewModel, EthernetPortType } from '@acx-ui/rc/utils'
 
 export const mockDefaultTrunkEthertnetPortProfileId = 'mockdefaultTrunkEthertnetPortProfileId'
 
@@ -1609,6 +1609,36 @@ export const ApLanPorts_T750SE = {
   useVenueSettings: true
 }
 
+export const ApLanPorts_has_vni = {
+  poeMode: 'Auto',
+  poeOut: false,
+  lanPorts: [
+    {
+      type: EthernetPortType.ACCESS,
+      untagId: 1,
+      vlanMembers: '1',
+      vni: 8193,
+      portId: '1',
+      enabled: true
+    },
+    {
+      type: 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      portId: '2',
+      enabled: true
+    },
+    {
+      type: 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      portId: '3',
+      enabled: true
+    }
+  ],
+  useVenueSettings: false
+}
+
 export const ApData_T750SE = {
   apGroupId: '75f7751cd7d34bf19cc9446f92d82ee5',
   venueId: mockVenue.id,
@@ -1746,7 +1776,8 @@ export const ApCap_T750SE = {
   support11BE: false,
   maxChannelization24G: 40,
   maxChannelization5G: 160,
-  supportMesh: true
+  supportMesh: true,
+  supportSmartMonitor: true
 }
 
 export const apDeviceRadio = {
