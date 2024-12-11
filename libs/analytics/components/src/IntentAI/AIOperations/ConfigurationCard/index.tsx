@@ -5,7 +5,7 @@ import { useIntl }  from 'react-intl'
 import { Card, Tooltip, cssStr } from '@acx-ui/components'
 import { noDataDisplay }         from '@acx-ui/utils'
 
-import * as UI              from '../../common/KpiCard/styledComponents'
+import * as UI              from '../../common/KPIs/styledComponents'
 import { useIntentContext } from '../../IntentContext'
 
 export const ConfigurationCard = () => {
