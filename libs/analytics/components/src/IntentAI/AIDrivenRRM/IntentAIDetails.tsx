@@ -89,7 +89,6 @@ export function createIntentAIDetails () {
     const crrmData = queryResult.data!
     const fields = useCommonFields(intent)
     const noData = state === 'no-data' || !hasData
-    const isPausedOrNa = intent.status === 'paused' || intent.status === 'na'
 
     return <>
       <div hidden>
@@ -113,7 +112,7 @@ export function createIntentAIDetails () {
           </FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 18, xxl: 20 }}>
-          {!isPausedOrNa ? <>
+          {!noData ? <>
             <DetailsSection data-testid='Details'>
               <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
               <DetailsSection.Details>

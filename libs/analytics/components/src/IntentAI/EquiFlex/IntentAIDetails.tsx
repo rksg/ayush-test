@@ -69,7 +69,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
 
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const { intent, kpis } = useIntentContext()
+    const { intent, kpis, state } = useIntentContext()
     const { displayStatus, sliceValue, metadata, updatedAt } = intent
     const valuesText = useValuesText()
     const isMlisa = get('IS_MLISA_SA') === 'true'
@@ -93,7 +93,6 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
         : []
       )
     ]
-    const isPausedOrNa = intent.status === 'paused' || intent.status === 'na'
 
     return <>
       <IntentDetailsHeader />
@@ -113,7 +112,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
           </FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 18, xxl: 20 }}>
-          {!isPausedOrNa ? <>
+          {!(state === 'no-data') ? <>
             <DetailsSection data-testid='Details'>
               <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
               <GridRow>

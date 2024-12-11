@@ -26,7 +26,7 @@ export function createIntentAIDetails (
 ) {
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const { intent, kpis } = useIntentContext()
+    const { intent, kpis, state } = useIntentContext()
     const { displayStatus, sliceValue, metadata, updatedAt } = intent
     const valuesText = useValuesText()
     const fields = [
@@ -35,7 +35,6 @@ export function createIntentAIDetails (
         ? [ { label: $t({ defaultMessage: 'AP Impact Count' }), children: <ImpactedAPCount /> } ]
         : []
     ]
-    const isPausedOrNa = intent.status === 'paused' || intent.status === 'na'
 
     return <>
       <IntentDetailsHeader />
@@ -57,7 +56,7 @@ export function createIntentAIDetails (
                 <GridCol data-testid='Configuration' col={{ span: 12 }}>
                   <ConfigurationCard />
                 </GridCol>
-                {!isPausedOrNa && getGraphKPIs(intent, kpis).map(kpi => (
+                {!(state === 'no-data') && getGraphKPIs(intent, kpis).map(kpi => (
                   <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
                     <KpiCard kpi={kpi} />
                   </GridCol>
@@ -66,7 +65,7 @@ export function createIntentAIDetails (
             </DetailsSection.Details>
           </DetailsSection>
 
-          {!isPausedOrNa ? <GridRow>
+          {!(state === 'no-data') ? <GridRow>
             <GridCol col={{ span: 12 }}>
               <DetailsSection data-testid='Benefits'>
                 <DetailsSection.Title

@@ -3,7 +3,6 @@ import _            from 'lodash'
 import { useIntl }  from 'react-intl'
 
 import { Card, Tooltip, cssStr } from '@acx-ui/components'
-import { noDataDisplay }         from '@acx-ui/utils'
 
 import * as UI              from '../../common/KpiCard/styledComponents'
 import { useIntentContext } from '../../IntentContext'
@@ -13,9 +12,8 @@ export const ConfigurationCard = () => {
   const { configuration, intent, state } = useIntentContext()
   const valueFormatter = _.get(configuration, 'valueFormatter', String)
   const config = configuration!
-  const isPausedOrNa = intent.status === 'paused' || intent.status === 'na'
 
-  const values = isPausedOrNa ? [
+  const values = (state === 'no-data') ? [
     {
       key: 'currentValue',
       label: $t({ defaultMessage: 'Current' }),
@@ -26,11 +24,11 @@ export const ConfigurationCard = () => {
     : [{
       key: 'currentValue',
       label: $t({ defaultMessage: 'Current' }),
-      value: state === 'no-data' ? noDataDisplay : valueFormatter(intent.currentValue)
+      value: valueFormatter(intent.currentValue)
     }, {
       key: 'recommendedValue',
       label: $t({ defaultMessage: 'Recommended' }),
-      value: state === 'no-data' ? noDataDisplay : valueFormatter(intent.recommendedValue),
+      value: valueFormatter(intent.recommendedValue),
       tooltip: config.tooltip
     }]
 
