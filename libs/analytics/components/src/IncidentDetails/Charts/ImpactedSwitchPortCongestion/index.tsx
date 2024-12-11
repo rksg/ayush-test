@@ -1,18 +1,14 @@
 import { useMemo } from 'react'
 
-import { get }             from 'lodash'
 import { MessageDescriptor,
   defineMessage, useIntl }          from 'react-intl'
 
 import { defaultSort, sortProp } from '@acx-ui/analytics/utils'
 import {  Card, Loader, Table,
-  TableProps, Tooltip }         from '@acx-ui/components'
-import { noDataDisplay } from '@acx-ui/utils'
+  TableProps }         from '@acx-ui/components'
 
-import switchImg     from '../../../../../assets/switch.png'
-import { DetailsContainer,
-  Image, Statistic }                from '../SwitchDetail/styledComponents'
-import { ChartProps } from '../types'
+import { DetailsCard } from '../SwitchDetail/DetailsCard'
+import { ChartProps }  from '../types'
 
 import { usePortImpactedSwitchQuery,
   ImpactedSwitchPort }          from './services'
@@ -24,7 +20,6 @@ import { usePortImpactedSwitchQuery,
  * @returns {JSX.Element}
  */
 export function SwitchDetail ({ incident }: ChartProps) {
-  const { $t } = useIntl()
 
   const impactedSwitch = usePortImpactedSwitchQuery({ id: incident.id,
     n: 100, search: '' })
@@ -46,26 +41,7 @@ export function SwitchDetail ({ incident }: ChartProps) {
   }
 
   return <Loader states={[impactedSwitch]}>
-    <Card title={$t({ defaultMessage: 'Details' })} type='no-border'>
-      <DetailsContainer>
-        <Image src={switchImg} alt={$t({ defaultMessage: 'switch image' })} />
-        {fields.map(({ key, title, Component, valueFormatter, infoFormatter })=>{
-          const { value, info = undefined } = get(data, `${key}.value`)
-            ? get(data, key) : { value: get(data, key) }
-          return <Statistic
-            key={key}
-            title={<>{$t(title)}{info && <Tooltip.Info title={infoFormatter?.(info)}/>}</>}
-            prefix={Component && <Component value={value} />}
-            value={Component
-              ? undefined
-              : impactedSwitch.data
-                ? valueFormatter ? valueFormatter(value) : value
-                : noDataDisplay
-            }
-          />
-        })}
-      </DetailsContainer>
-    </Card>
+    <DetailsCard fields={fields} data={data} impactedSwitch={impactedSwitch} />
   </Loader>
 }
 
