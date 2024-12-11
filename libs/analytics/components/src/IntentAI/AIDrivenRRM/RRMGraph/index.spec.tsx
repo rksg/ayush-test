@@ -1,4 +1,6 @@
 import 'jest-styled-components'
+import React from 'react'
+
 import userEvent    from '@testing-library/user-event'
 import EChartsReact from 'echarts-for-react'
 
@@ -12,7 +14,7 @@ import { mockedIntentCRRM }  from '../__tests__/fixtures'
 
 import { mockCrrmData } from './__tests__/fixtures'
 
-import { IntentAIRRMGraph } from '.'
+import { DataGraph, detailsZoomScale, IntentAIRRMGraph } from '.'
 
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
@@ -25,9 +27,14 @@ jest.mock('@acx-ui/components', () => ({
     ...props
   }: GraphProps) => {
     // to get connectChart covered
-    const getEchartsInstance = jest.fn(() => ({ group: '' }))
-    chartRef({ getEchartsInstance } as unknown as EChartsReact)
-    expect(getEchartsInstance).toHaveBeenCalledTimes(1)
+    const mockInstance = { dispatchAction: jest.fn() }
+    chartRef({ getEchartsInstance: () => mockInstance } as unknown as EChartsReact)
+    if (onEvents?.mouseover) {
+      onEvents.mouseover({ seriesIndex: '0', name: 'AP X' })
+    }
+    if (onEvents?.mouseout) {
+      onEvents.mouseout()
+    }
     return <div {...props} data-testid='rrm-graph' />
   }
 }))
@@ -82,5 +89,38 @@ describe('CloudRRM', () => {
       wrapper: Provider
     })
     expect(container).toHaveTextContent('Beyond data retention period')
+  })
+})
+
+describe('DataGraph', () => {
+  it('dispatches showTip on mouseover and hideTip on mouseout', async () => {
+    const mockDispatchAction = jest.fn()
+    const graphGroupRef = { current: [{ dispatchAction: mockDispatchAction }] }
+
+    jest.spyOn(React, 'useRef').mockReturnValue(graphGroupRef)
+
+    render(
+      <DataGraph
+        graphs={[mockCrrmData[0]]}
+        zoomScale={detailsZoomScale}
+      />
+    )
+
+    const graphs = screen.getAllByTestId('rrm-graph')
+    expect(graphs).toHaveLength(2)
+
+    await userEvent.hover(graphs[0])
+
+    expect(mockDispatchAction).toHaveBeenCalledTimes(4)
+    expect(mockDispatchAction).toHaveBeenCalledWith({
+      type: 'showTip',
+      seriesIndex: '0',
+      name: 'AP X'
+    })
+
+    await userEvent.unhover(graphs[0])
+
+    expect(mockDispatchAction).toHaveBeenCalledTimes(4)
+    expect(mockDispatchAction).toHaveBeenCalledWith({ type: 'hideTip' })
   })
 })
