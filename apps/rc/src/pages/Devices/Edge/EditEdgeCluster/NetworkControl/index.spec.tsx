@@ -75,7 +75,8 @@ describe('Edge Cluster Network Control Tab', () => {
   mockEdgeClusterListForHqos.edgeList.forEach(e => e.cpuCores = 4)
   beforeEach(() => {
     jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff => ff !== Features.EDGE_MDNS_PROXY_TOGGLE)
+      .mockImplementation(ff => ff !== Features.EDGE_MDNS_PROXY_TOGGLE
+        && ff !== Features.EDGE_ARPT_TOGGLE)
 
     store.dispatch(edgeApi.util.resetApiState())
     store.dispatch(edgeDhcpApi.util.resetApiState())
