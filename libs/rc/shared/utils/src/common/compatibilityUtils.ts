@@ -28,6 +28,8 @@ export const getCompatibilityFeatureDisplayName = (featureName?: Incompatibility
       return $t({ defaultMessage: 'Distribution Switch' })
     case IncompatibilityFeatures.PIN_AS:
       return $t({ defaultMessage: 'Access Switch' })
+    case IncompatibilityFeatures.ARP_TERMINATION:
+      return $t({ defaultMessage: 'ARP Termination' })
     default:
       return featureName
   }
