@@ -18,10 +18,11 @@ interface SoftGREProfileSettingsProps {
   index: number
   softgreProfileId: string
   onGUIChanged?: (fieldName: string) => void
+  readonly: boolean
 }
 
 export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
-  const { index, softgreProfileId, onGUIChanged } = props
+  const { index, softgreProfileId, onGUIChanged, readonly } = props
   const { $t } = useIntl()
   const params = useParams()
   const softGreProfileIdFieldName = ['lan', index, 'softGreProfileId']
@@ -71,6 +72,7 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
           children={
             <Select
               style={{ width: '100%' }}
+              disabled={readonly}
               data-testid={'softgre-profile-select'}
               onChange={onChange}
               options={[
@@ -84,13 +86,13 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
         />
         <UI.TypeSpace split={<Divider type='vertical' />}>
           <Button type='link'
-            disabled={false}
             onClick={() => {
               setDetailDrawerVisible(true)
             }}>
             {$t({ defaultMessage: 'Profile Details' })}
           </Button>
           <Button type='link'
+            disabled={readonly}
             onClick={() => {
               setAddDrawerVisible(true)
             }}>

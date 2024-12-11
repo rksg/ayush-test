@@ -7,6 +7,7 @@ import {
   Switch,
   Space
 } from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Tooltip }                    from '@acx-ui/components'
@@ -79,6 +80,7 @@ export const DhcpOption82SettingsFormField = (props: {
   onGUIChanged?: (fieldName: string) => void
   isUnderAPNetworking?: boolean
   existedDHCP82OptionSettings?: DhcpOption82Settings
+  readonly: boolean
  }) => {
 
   const { $t } = useIntl()
@@ -89,7 +91,8 @@ export const DhcpOption82SettingsFormField = (props: {
     index = 0,
     onGUIChanged,
     isUnderAPNetworking,
-    existedDHCP82OptionSettings
+    existedDHCP82OptionSettings,
+    readonly
   } = props
 
   const { venueApModelLanPortSettingsV1 } = useContext(SoftgreProfileAndDHCP82Context)
@@ -105,17 +108,21 @@ export const DhcpOption82SettingsFormField = (props: {
       if (isUnderAPNetworking && existedDHCP82OptionSettings) {
         settings = existedDHCP82OptionSettings
       }
-      /* eslint-disable max-len */
-      form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption1Enabled'], settings.subOption1Enabled)
-      form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption1Format'], settings.subOption1Format)
-      form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption2Enabled'], settings.subOption2Enabled)
-      form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption2Format'], settings.subOption2Format)
-      form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption150Enabled'], settings.subOption150Enabled)
-      form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption151Enabled'], settings.subOption151Enabled)
-      form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption151Format'], settings.subOption151Format)
-      form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption151Input'], settings.subOption151Input)
-      form?.setFieldValue(['lan', index, 'dhcpOption82', 'macFormat'], settings.macFormat)
-      /* eslint-enable max-len */
+
+      if(!_.isEmpty(settings)) {
+        /* eslint-disable max-len */
+        form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption1Enabled'], settings.subOption1Enabled)
+        form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption1Format'], settings.subOption1Format)
+        form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption2Enabled'], settings.subOption2Enabled)
+        form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption2Format'], settings.subOption2Format)
+        form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption150Enabled'], settings.subOption150Enabled)
+        form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption151Enabled'], settings.subOption151Enabled)
+        form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption151Format'], settings.subOption151Format)
+        form?.setFieldValue(['lan', index, 'dhcpOption82', 'subOption151Input'], settings.subOption151Input)
+        form?.setFieldValue(['lan', index, 'dhcpOption82', 'macFormat'], settings.macFormat)
+        /* eslint-enable max-len */
+      }
+
     }
   }, [venueApModelLanPortSettingsV1, existedDHCP82OptionSettings])
 
@@ -219,14 +226,17 @@ export const DhcpOption82SettingsFormField = (props: {
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={true}
-            children={<Switch onChange={onFormFieldChange}/>}
+            children={<Switch disabled={readonly} onChange={onFormFieldChange}/>}
           />
           { dhcpOption82SubOption1Enabled &&
             <Form.Item
               name={dhcpOption82SubOption1FormatFieldName}
               initialValue={DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO_LOCATION}
               children={
-                <Select options={dhcp82SubOption1Options} onChange={onFormFieldChange} />
+                <Select
+                  disabled={readonly}
+                  options={dhcp82SubOption1Options}
+                  onChange={onFormFieldChange} />
               }
             />
           }
@@ -242,14 +252,17 @@ export const DhcpOption82SettingsFormField = (props: {
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
-            children={<Switch onChange={onFormFieldChange}/>}
+            children={<Switch disabled={readonly} onChange={onFormFieldChange}/>}
           />
           { dhcpOption82SubOption2Enabled &&
             <Form.Item
               name={dhcpOption82SubOption2FormatFieldName}
               initialValue={DhcpOption82SubOption2Enum.SUBOPT2_CLIENT_MAC}
               children={
-                <Select options={dhcp82SubOption2Options} onChange={onFormFieldChange}/>
+                <Select
+                  disabled={readonly}
+                  options={dhcp82SubOption2Options}
+                  onChange={onFormFieldChange}/>
               }
             />
           }
@@ -264,7 +277,7 @@ export const DhcpOption82SettingsFormField = (props: {
           style={{ marginBottom: '10px' }}
           valuePropName='checked'
           initialValue={false}
-          children={<Switch onChange={onFormFieldChange}/>}
+          children={<Switch disabled={readonly} onChange={onFormFieldChange}/>}
         />
       </UI.FieldLabel>
       <UI.FieldLabel width={labelWidth}>
@@ -278,14 +291,14 @@ export const DhcpOption82SettingsFormField = (props: {
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
-            children={<Switch onChange={onFormFieldChange}/>}
+            children={<Switch disabled={readonly} onChange={onFormFieldChange}/>}
           />
           { dhcpOption82SubOption151Enabled &&
             <Form.Item
               name={dhcpOption82SubOption151FormatFieldName}
               initialValue={DhcpOption82SubOption151Enum.SUBOPT151_AREA_NAME}
               children={
-                <Select onChange={onFormFieldChange}>
+                <Select disabled={readonly} onChange={onFormFieldChange}>
                   <Option value={DhcpOption82SubOption151Enum.SUBOPT151_AREA_NAME}>
                     {$t({ defaultMessage: 'Area Name' })}
                   </Option>
@@ -305,6 +318,7 @@ export const DhcpOption82SettingsFormField = (props: {
               ]}
               children={
                 <Input style={{ width: '320px' }}
+                  disabled={readonly}
                   onChange={onFormFieldChange}
                 />
               }
@@ -333,7 +347,7 @@ export const DhcpOption82SettingsFormField = (props: {
             name={dhcpOption82MacFormat}
             initialValue={DhcpOption82MacEnum.COLON}
             children={
-              <Select onChange={onFormFieldChange}>
+              <Select disabled={readonly} onChange={onFormFieldChange}>
                 <Option value={DhcpOption82MacEnum.COLON}>
                   {$t({ defaultMessage: 'AA:BB:CC:DD:EE:FF' })}
                 </Option>
