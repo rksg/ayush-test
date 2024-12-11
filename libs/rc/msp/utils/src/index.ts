@@ -67,6 +67,15 @@ export const MSPUtils = () => {
     return assignedDevices
   }
 
+  const transformAvailableLicenses = (entitlements: DelegationEntitlementRecord[]) => {
+    let availableLicenses = 0
+    entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
+      availableLicenses += entitlement?.availableLicenses || 0
+    })
+    return availableLicenses > 0 ? availableLicenses :
+      transformDeviceEntitlement(entitlements) - transformInstalledDevice(entitlements)
+  }
+
   const transformDeviceUtilization = (entitlements: DelegationEntitlementRecord[]) => {
     entitlements = entitlements ?? []
     let consumed = 0
@@ -239,6 +248,7 @@ export const MSPUtils = () => {
     isOnboardedMsp,
     transformInstalledDevice,
     transformDeviceEntitlement,
+    transformAvailableLicenses,
     transformDeviceUtilization,
     transformOutOfComplianceDevices,
     transformFutureOutOfComplianceDevices,
