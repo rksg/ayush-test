@@ -50,7 +50,7 @@ const ImageGraph = ({ beforeSrc, afterSrc }: { beforeSrc?: string, afterSrc?: st
   <Legend />
 </>
 
-function DataGraph (props: {
+export function DataGraph (props: {
   graphs: ProcessedCloudRRMGraph[],
   zoomScale: ScalePower<number, number, never>
 }) {
@@ -107,7 +107,7 @@ function DataGraph (props: {
   </>
 }
 
-const detailsZoomScale = scalePow()
+export const detailsZoomScale = scalePow()
   .exponent(0.01)
   .domain([3, 10, 20, 30, 63, 125, 250, 375, 500])
   .range([0.8, 0.45, 0.3, 0.25, 0.135, 0.1, 0.075, 0.06, 0.05])
