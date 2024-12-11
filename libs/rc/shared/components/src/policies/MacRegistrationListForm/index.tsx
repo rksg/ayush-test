@@ -4,7 +4,7 @@ import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
 import { Loader, PageHeader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import {
   useAddMacRegListMutation, useAddMacRegListWithIdentityMutation,
   useDeleteAdaptivePolicySetFromMacListMutation,
