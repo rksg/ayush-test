@@ -9,6 +9,8 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
+import { Tooltip }                    from '@acx-ui/components'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   DhcpOption82SubOption1Enum,
   DhcpOption82SubOption2Enum,
@@ -316,27 +318,34 @@ export const DhcpOption82SettingsFormField = (props: {
         (dhcpOption82SubOption151Enabled &&
           DhcpOption82SubOption151Enum.SUBOPT151_ESSID === dhcpOption82SubOption151Format)) &&
         <UI.FieldLabel width={labelWidth}>
-          <div style={{ display: 'grid', gridTemplateColumns: '240px' }}>
-            <Form.Item
-              name={dhcpOption82MacFormat}
-              label={$t({ defaultMessage: 'AP & Client MAC format delimiter' })}
-              tooltip={apAndClientMacFormatDelimiter}
-              initialValue={DhcpOption82MacEnum.COLON}
-              children={
-                <Select onChange={onFormFieldChange}>
-                  <Option value={DhcpOption82MacEnum.COLON}>
-                    {$t({ defaultMessage: 'AA:BB:CC:DD:EE:FF' })}
-                  </Option>
-                  <Option value={DhcpOption82MacEnum.HYPHEN}>
-                    {$t({ defaultMessage: 'AA-BB-CC-DD-EE-FF' })}
-                  </Option>
-                  <Option value={DhcpOption82MacEnum.NODELIMITER}>
-                    {$t({ defaultMessage: 'AABBCCDDEEFF' })}
-                  </Option>
-                </Select>
-              }
-            />
-          </div>
+          <Space>
+            {$t({ defaultMessage: 'AP & Client MAC Format Delimiter' })}
+            <Tooltip
+              title={apAndClientMacFormatDelimiter}
+              placement='right'
+            >
+              <QuestionMarkCircleOutlined
+                style={{ height: '14px', marginBottom: -3 }}
+              />
+            </Tooltip>
+          </Space>
+          <Form.Item
+            name={dhcpOption82MacFormat}
+            initialValue={DhcpOption82MacEnum.COLON}
+            children={
+              <Select onChange={onFormFieldChange}>
+                <Option value={DhcpOption82MacEnum.COLON}>
+                  {$t({ defaultMessage: 'AA:BB:CC:DD:EE:FF' })}
+                </Option>
+                <Option value={DhcpOption82MacEnum.HYPHEN}>
+                  {$t({ defaultMessage: 'AA-BB-CC-DD-EE-FF' })}
+                </Option>
+                <Option value={DhcpOption82MacEnum.NODELIMITER}>
+                  {$t({ defaultMessage: 'AABBCCDDEEFF' })}
+                </Option>
+              </Select>
+            }
+          />
         </UI.FieldLabel>
       }
     </>
