@@ -88,7 +88,7 @@ export function createIntentAIDetails () {
     const queryResult = useIntentAICRRMQuery()
     const crrmData = queryResult.data!
     const fields = useCommonFields(intent)
-    const noData = state === 'no-data' || !hasData
+    const noData = state === 'no-data'
 
     return <>
       <div hidden>
@@ -105,7 +105,7 @@ export function createIntentAIDetails () {
                 children={<FormattedMessage {...valuesText.summaryText} values={richTextFormatValues} />}/>
               <DescriptionSection fields={fields}/>
               <br />
-              {hasData && state !== 'no-data'
+              {hasData && !noData
                 ? <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })} />
                 : null}
             </IntentDetailsSidebar>)}
@@ -129,7 +129,7 @@ export function createIntentAIDetails () {
             <DetailsSection data-testid='Key Performance Indications'>
               <DetailsSection.Title
                 children={$t({ defaultMessage: 'Key Performance Indications' })} />
-              <DetailsSection.Details style={{ ...(!noData && { minHeight: 385 }) }}>
+              <DetailsSection.Details style={{ ...(hasData && { minHeight: 385 }) }}>
                 <Loader states={[queryResult]}>
                   <IntentAIRRMGraph
                     crrmData={crrmData}
