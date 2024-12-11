@@ -81,7 +81,7 @@ function ImpactedSwitchTable (props: {
   const columns: TableProps<Port>['columns'] = useMemo(()=>[ {
     key: 'portNumber',
     dataIndex: 'portNumber',
-    title: $t({ defaultMessage: 'Port Number/LAG Name' }),
+    title: $t({ defaultMessage: 'Port Number/LAG' }),
     fixed: 'left',
     width: 100,
     sorter: { compare: sortProp('portNumber', defaultSort) },
@@ -99,6 +99,7 @@ function ImpactedSwitchTable (props: {
   ],[])
 
   return <Table
+    rowKey='portNumber'
     columns={columns}
     dataSource={rows}
     pagination={{ defaultPageSize: 5, pageSize: 5 }}
