@@ -41,7 +41,8 @@ export function ImpactedUplinkPortDetails ({ incident }: ChartProps) {
       max: 3,
       count: impactedSwitches?.length,
       data: impactedSwitches.map(({ name, mac: title }) => ({ name, title })),
-      title: $t({ defaultMessage: 'Impacted switches' }),
+      // eslint-disable-next-line max-len
+      title: $t({ defaultMessage: 'Impacted {switchCount, plural, one {switch} other {switches}}' }, { switchCount }),
       // eslint-disable-next-line max-len
       details: $t({ defaultMessage: 'Out of {switchCount} {switchCount, plural, one {switch} other {switches}}' }, { switchCount })
     },
@@ -50,7 +51,8 @@ export function ImpactedUplinkPortDetails ({ incident }: ChartProps) {
       max: 3,
       count: impactedUplinkPorts?.length,
       data: [],
-      title: $t({ defaultMessage: 'Impacted uplink ports' }),
+      title: $t({ defaultMessage: 'Impacted uplink {portCount, plural, one {port} other {ports}}' },
+        { portCount: uplinkPortCount }),
       details: $t({ defaultMessage:
         'Out of {portCount} uplink {portCount, plural, one {port} other {ports}}' },
       { portCount: uplinkPortCount })

@@ -57,7 +57,7 @@ describe('ImpactedUplinkPortDetails', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(screen.getByText(/mm\-126/i)).toBeVisible()
-    expect(screen.getByText('Impacted switches')).toBeVisible()
+    expect(screen.getByText('Impacted switch')).toBeVisible()
     expect(screen.getByText('Out of 1 switch')).toBeVisible()
     expect(screen.getByText('Impacted uplink ports')).toBeVisible()
     expect(screen.getByText('Out of 30 uplink ports')).toBeVisible()
