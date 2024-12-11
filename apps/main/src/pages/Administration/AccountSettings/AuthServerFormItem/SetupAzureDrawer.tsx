@@ -434,6 +434,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       tooltip={$t({ defaultMessage:
         'If this option is enabled, a public certificate needs to be configured' })}
       name='samlRequestSigned'
+      valuePropName='checked'
     >
       <Switch style={{ marginLeft: '70px' }}
         checkedChildren={$t({ defaultMessage: 'Yes' })}
@@ -444,13 +445,12 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     </Form.Item>
     }
     {isSsoEncryptionEnabled &&
-    <Form layout='vertical' form={form}>
       <SelectServerCertificate
         serverSertificates={certificateList?.data}
         setSelected={setCertificateId}
         selected={certificateId}
       />
-    </Form>}
+    }
     </>
   }
 

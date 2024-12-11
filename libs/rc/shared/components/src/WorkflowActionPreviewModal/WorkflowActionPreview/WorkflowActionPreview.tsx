@@ -27,7 +27,8 @@ import { EnrollmentPortalDesignModal } from '../../EnrollmentPortalDesignModal'
 import { ActionNavigationDrawer }      from '../ActionNavigationDrawer'
 import * as UI                         from '../styledComponents'
 
-import { DpskActionPreview } from './DpskActionPreview'
+import { CertTemplateActionPreview } from './CertTemplateActionPreview'
+import { DpskActionPreview }         from './DpskActionPreview'
 
 import { AupPreview, DataPromptPreview, DisplayMessagePreview, MacRegActionPreview } from './index'
 
@@ -37,7 +38,8 @@ const previewMap = {
   [ActionType.DATA_PROMPT]: DataPromptPreview,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessagePreview ,
   [ActionType.DPSK]: DpskActionPreview,
-  [ActionType.MAC_REG]: MacRegActionPreview
+  [ActionType.MAC_REG]: MacRegActionPreview,
+  [ActionType.CERT_TEMPLATE]: CertTemplateActionPreview
 }
 
 export interface WorkflowActionPreviewProps {

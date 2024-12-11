@@ -29,7 +29,7 @@ export interface SoftGreViewData {
   disassociateClientEnabled: boolean
   activations: SoftGreActivation[]
   venueActivations: SoftGreWiredActivation[]
-  apActivations: SoftGreWiredActivation[]
+  apActivations: SoftGreWiredApActivation[]
 }
 
 export interface VenueTableUsageBySoftGre extends SoftGreActivation {
@@ -64,5 +64,11 @@ export interface SoftGreWiredActivation {
   venueId: string
   apModel?: string
   apSerialNumbers: string[],
+  portId: number
+}
+
+export interface SoftGreWiredApActivation {
+  venueId: string
+  apSerialNumber: string,
   portId: number
 }

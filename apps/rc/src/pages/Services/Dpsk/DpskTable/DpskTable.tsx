@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { Divider, Space } from 'antd'
 import { useIntl }        from 'react-intl'
 
@@ -53,6 +55,7 @@ export default function DpskTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteDpsk ] = useDeleteDpskMutation()
+  const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
 
   const settingsId = 'dpsk-table'
   const tableQuery = useTableQuery({
@@ -63,15 +66,23 @@ export default function DpskTable () {
     pagination: { settingsId }
   })
 
+  const readOnlyRows: { fieldName: keyof DpskSaveData, fieldText: string }[] = useMemo(() => {
+    if (isIdentityGroupRequired) {
+      return [{ fieldName: 'networkIds', fieldText: intl.$t({ defaultMessage: 'Network' }) }]
+    } else {
+      return [
+        { fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Identity Group' }) },
+        { fieldName: 'networkIds', fieldText: intl.$t({ defaultMessage: 'Network' }) }
+      ]
+    }
+  }, [isIdentityGroupRequired])
+
   const doDelete = (selectedRow: DpskSaveData, callback: () => void) => {
     doProfileDelete(
       [selectedRow],
       intl.$t({ defaultMessage: 'DPSK Service' }),
       selectedRow.name,
-      [
-        { fieldName: 'identityId', fieldText: intl.$t({ defaultMessage: 'Identity' }) },
-        { fieldName: 'networkIds', fieldText: intl.$t({ defaultMessage: 'Network' }) }
-      ],
+      readOnlyRows,
       async () => deleteDpsk({
         params: { serviceId: selectedRow.id }
       }).then(callback)
