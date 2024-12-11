@@ -75,7 +75,7 @@ export const DhcpOption82SettingsFormField = (props: {
   context?: string
   index?: number
   onGUIChanged?: (fieldName: string) => void
-  isUnderAPNetworking: boolean
+  isUnderAPNetworking?: boolean
   existedDHCP82OptionSettings?: DhcpOption82Settings
  }) => {
 
