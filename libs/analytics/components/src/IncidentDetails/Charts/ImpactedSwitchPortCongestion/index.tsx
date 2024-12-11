@@ -106,7 +106,7 @@ function ImpactedSwitchTable (props: {
     dataIndex: 'connectedDeviceName',
     title: $t({ defaultMessage: 'Peer Device' }),
     fixed: 'left',
-    width: 80,
+    width: 100,
     sorter: { compare: sortProp('connectedDevice.name', defaultSort) },
     searchable: true
   }
