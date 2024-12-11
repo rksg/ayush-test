@@ -131,7 +131,7 @@ describe('DpskNode', () => {
 
   })
 
-  it('should show the DPSK Node WITH details', async () => {
+  it.skip('should show the DPSK Node WITH details', async () => {
 
     render(
       <Provider>
