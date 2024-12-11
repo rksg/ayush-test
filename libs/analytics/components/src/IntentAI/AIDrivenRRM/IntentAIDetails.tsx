@@ -77,7 +77,7 @@ export function createIntentAIDetails () {
 
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const { intent, kpis, isDataRetained: hasData, state, isColdTierData } = useIntentContext()
+    const { intent, kpis, state, isDataRetained, isHotTierData } = useIntentContext()
     const valuesText = useValuesText()
 
     const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
@@ -86,7 +86,7 @@ export function createIntentAIDetails () {
     const queryResult = useIntentAICRRMQuery()
     const crrmData = queryResult.data!
     const fields = useCommonFields(intent)
-    const noData = state === 'no-data' || !hasData || isColdTierData
+    const noData = state === 'no-data' || !isDataRetained
 
     return <>
       <div hidden>
@@ -103,7 +103,7 @@ export function createIntentAIDetails () {
                 children={<FormattedMessage {...valuesText.summaryText} values={richTextFormatValues} />}/>
               <DescriptionSection fields={fields}/>
               <br />
-              {hasData && state !== 'no-data' && !isColdTierData
+              {isDataRetained && state !== 'no-data' && isHotTierData
                 ? <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })} />
                 : null}
             </IntentDetailsSidebar>)}
@@ -126,7 +126,7 @@ export function createIntentAIDetails () {
           <DetailsSection data-testid='Key Performance Indications'>
             <DetailsSection.Title
               children={$t({ defaultMessage: 'Key Performance Indications' })} />
-            <DetailsSection.Details style={{ ...(!noData && { minHeight: 385 }) }}>
+            <DetailsSection.Details style={{ ...((!noData && isHotTierData ) && { minHeight: 385 }) }}>
               <Loader states={[queryResult]}>
                 <IntentAIRRMGraph
                   crrmData={crrmData}

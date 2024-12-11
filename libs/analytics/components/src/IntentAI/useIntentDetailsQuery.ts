@@ -12,8 +12,8 @@ import { getIntl, NetworkPath, noDataDisplay, NodeType } from '@acx-ui/utils'
 
 import { NetworkNode } from '../NetworkFilter/services'
 
-import { DisplayStates, Statuses, StatusReasons }                                          from './states'
-import { coldTierDataText, dataRetentionText, IntentWlan, isColdTierData, isDataRetained } from './utils'
+import { DisplayStates, Statuses, StatusReasons }          from './states'
+import { coldTierDataText, dataRetentionText, IntentWlan } from './utils'
 
 export type IntentKPIConfig = {
   key: string;
@@ -76,6 +76,10 @@ export type Intent = {
   updatedAt: string
   currentValue: IntentConfigurationValue
   recommendedValue: IntentConfigurationValue
+  dataCheck: {
+    isDataRetained: boolean
+    isHotTierData: boolean
+  }
 } & Partial<IntentKpi>
 
 export const useIntentParams = () => {
@@ -140,6 +144,7 @@ export function getGraphKPIs (
 ) {
   const { $t } = getIntl()
   const state = intentState(intent)
+  const { isHotTierData, isDataRetained } = intent.dataCheck
 
   return kpis.map((kpi) => {
     const ret = {
@@ -154,9 +159,9 @@ export function getGraphKPIs (
       footer: string
       delta: { value: string; trend: TrendTypeEnum } | undefined
     }
-    if (isColdTierData(intent.metadata.dataEndTime)) {
+    if (!isHotTierData) {
       ret.footer = $t(coldTierDataText)
-    } else if (!isDataRetained(intent.metadata.dataEndTime)) {
+    } else if (!isDataRetained) {
       ret.footer = $t(dataRetentionText)
     } else if (state !== 'no-data') {
       const result = getKPIData(intent, kpi)
@@ -201,6 +206,7 @@ export const api = intentAIApi.injectEndpoints({
               statusTrail { status statusReason displayStatus createdAt }
               ${kpiHelper(kpis)}
               ${!code.includes('ecoflex') ? 'currentValue recommendedValue' : ''}
+              dataCheck
             }
           }
         `,

@@ -96,7 +96,7 @@ export const IntentAIRRMGraph: React.FC<{
   summaryUrlAfter?: string,
 }> = ({ crrmData, summaryUrlBefore, summaryUrlAfter }) => {
   const { $t } = useIntl()
-  const { intent, state, isDataRetained, isColdTierData } = useIntentContext()
+  const { intent, state, isDataRetained, isHotTierData } = useIntentContext()
   const [ visible, setVisible ] = useState<boolean>(false)
   const [ key, setKey ] = useState(0)
 
@@ -107,7 +107,7 @@ export const IntentAIRRMGraph: React.FC<{
   const title = $t({ defaultMessage: 'Key Performance Indications' })
   const noData = state === 'no-data'
 
-  if (isColdTierData) return <Card>{$t(coldTierDataText)}</Card>
+  if (!isHotTierData) return <Card>{$t(coldTierDataText)}</Card>
   if (!isDataRetained) return <Card>{$t(dataRetentionText)}</Card>
   if (noData) {
     return <Card>

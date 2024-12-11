@@ -13,7 +13,6 @@ import {
   useIntentDetailsQuery,
   useIntentParams
 } from './useIntentDetailsQuery'
-import { isColdTierData, isDataRetained } from './utils'
 
 export type IntentConfigurationConfig = {
   label: MessageDescriptor
@@ -25,9 +24,9 @@ type IIntentContext = {
   intent: Intent
   configuration?: IntentConfigurationConfig
   kpis: IntentKPIConfig[]
-  isDataRetained: boolean
   state: ReturnType<typeof intentState>
-  isColdTierData: boolean
+  isDataRetained: boolean
+  isHotTierData: boolean
 }
 
 export const IntentContext = createContext({} as IIntentContext)
@@ -66,9 +65,9 @@ export function createIntentContextProvider (
       intent: intent!,
       configuration: spec.configuration,
       kpis: spec.kpis,
-      isDataRetained: (intent && isDataRetained(intent.metadata.dataEndTime))!,
       state: (intent && intentState(intent))!,
-      isColdTierData: (intent && isColdTierData(intent.metadata.dataEndTime))!
+      isDataRetained: intent?.dataCheck.isDataRetained!,
+      isHotTierData: intent?.dataCheck.isHotTierData!
     }
 
     return <Loader states={[isDetectError? _.omit(query, ['error']) : query]}>

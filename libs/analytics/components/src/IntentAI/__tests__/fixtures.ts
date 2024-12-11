@@ -5,7 +5,6 @@ import { IntentConfigurationConfig, useIntentContext } from '../IntentContext'
 import { Statuses }                                    from '../states'
 import { AIFeatureProps }                              from '../Table'
 import { Intent, IntentKPIConfig, intentState }        from '../useIntentDetailsQuery'
-import { isColdTierData, isDataRetained }              from '../utils'
 
 export const mockIntentContext = (config: {
   intent: Intent
@@ -17,8 +16,8 @@ export const mockIntentContext = (config: {
     intent: config.intent,
     kpis: config.kpis ?? [],
     state: intentState(config.intent),
-    isDataRetained: isDataRetained(config.intent.metadata.dataEndTime),
-    isColdTierData: isColdTierData(config.intent.metadata.dataEndTime)
+    isDataRetained: true,
+    isHotTierData: true
   }
   jest.mocked(useIntentContext).mockReturnValue(context)
   return context
