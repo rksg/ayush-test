@@ -22,7 +22,14 @@ export function ImpactedSwitchUplinkTable ({ incident }: ChartProps) {
       return {
         ...response,
         data: response.data?.impactedSwitches.flatMap(
-          ({ name, mac, serial , ports }) => ports.map(port => ({ name, mac, serial, ...port })))
+          ({ name, mac, serial , ports }) => {
+            const portCheckRegEx = new RegExp('\\d+/\\d+/\\d+')
+            return ports.map(port => {
+              let portNumber = port.portNumber
+              const isPort = portCheckRegEx.test(portNumber)
+              if(!isPort) portNumber = portNumber + ' (LAG)'
+              return{ name, mac, serial, ...port, portNumber }})
+          })
           .flatMap(({ connectedDevice, ...item }, index) => ({
             ...item,
             ...connectedDevice,
@@ -67,7 +74,7 @@ function ImpactedSwitchesTable (props: {
   }, {
     key: 'portNumber',
     dataIndex: 'portNumber',
-    title: $t({ defaultMessage: 'Switch Port' }),
+    title: $t({ defaultMessage: 'Switch Port/LAG' }),
     searchable: true
   },
   {
