@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 
 import { Form, Switch, Space } from 'antd'
 import { useIntl }             from 'react-intl'
