@@ -11,8 +11,7 @@ import * as UI from './styledComponents'
 export const StatusTrail = () => {
   const params = useIntentParams()
 
-  const query = useIntentStatusTrailQuery({ ...params })
-  if (query.isSuccess && !query.data) return null // 404
+  const query = useIntentStatusTrailQuery(params)
   const isDetectError = query.isError && !!_.pick(query.error, ['data'])
 
   const statusTrail = isDetectError ?
