@@ -47,7 +47,6 @@ export enum TimeSeriesChartTypes {
   ChannelChangeCount,
   AirtimeUtilizationChart,
   SwitchMemoryUtilizationChart,
-  SwitchDDoSAttackChart,
   SwitchImpactedPortsCount,
   SwitchUplinkPortCongestionChart
 }
@@ -69,7 +68,6 @@ export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesC
   [TimeSeriesChartTypes.ChannelChangeCount]: channelChangeCount,
   [TimeSeriesChartTypes.AirtimeUtilizationChart]: airtimeUtilizationChart,
   [TimeSeriesChartTypes.SwitchMemoryUtilizationChart]: switchMemoryUtilizationChart,
-  [TimeSeriesChartTypes.SwitchDDoSAttackChart]: switchDDoSAttackChart,
   [TimeSeriesChartTypes.SwitchImpactedPortsCount]: SwitchImpactedPortsCount,
   [TimeSeriesChartTypes.SwitchUplinkPortCongestionChart]: switchUplinkPortCongestionChart
 }
