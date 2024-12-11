@@ -10,7 +10,7 @@ import { useIntl }             from 'react-intl'
 
 import { Tooltip }                    from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { URLRegExp }                  from '@acx-ui/rc/utils'
+import { HttpURLRegExp }              from '@acx-ui/rc/utils'
 
 export function RedirectUrlInput () {
   const intl = useIntl()
@@ -63,7 +63,7 @@ export function RedirectUrlInput () {
           { required: redirectCheckbox,
             message: REDIRECT_INVALID_MSG
           },
-          { validator: (_, value) => redirectCheckbox ? URLRegExp(value) : Promise.resolve(),
+          { validator: (_, value) => redirectCheckbox ? HttpURLRegExp(value) : Promise.resolve(),
             message: REDIRECT_INVALID_MSG
           }
         ]}

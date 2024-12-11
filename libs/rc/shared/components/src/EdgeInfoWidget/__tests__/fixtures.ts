@@ -24,7 +24,8 @@ export const currentEdge:EdgeStatus = {
   memoryUsed: 120 * Math.pow(1024, 2),
   memoryTotal: 50 * Math.pow(1024, 2),
   diskUsed: 250 * Math.pow(1024, 3),
-  diskTotal: 162 * Math.pow(1024, 3)
+  diskTotal: 162 * Math.pow(1024, 3),
+  isArpTerminationEnabled: true
 }
 
 export const edgeDnsServers: EdgeDnsServers = {

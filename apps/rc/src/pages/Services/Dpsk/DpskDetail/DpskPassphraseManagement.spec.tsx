@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed }    from '@acx-ui/feature-toggle'
-import { clientApi, networkApi, serviceApi } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { clientApi, networkApi, serviceApi }        from '@acx-ui/rc/services'
 import {
   ServiceType,
   DpskDetailsTabKey,
@@ -485,5 +485,23 @@ describe('DpskPassphraseManagement', () => {
 
     await screen.findByRole('button', { name: 'Revoke' })
     expect(screen.queryByRole('button', { name: /Edit Passphrase/ })).toBeNull()
+  })
+
+  it('should be editable when when identity group is mandatory', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DPSK_REQUIRE_IDENTITY_GROUP)
+    render(
+      <Provider>
+        <DpskPassphraseManagement />
+      </Provider>, {
+        route: { params: paramsForPassphraseTab, path: detailPath }
+      }
+    )
+
+    const targetRecord = mockedDpskPassphraseList.data[3]
+
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
+    await userEvent.click(within(targetRow).getByRole('checkbox'))
+    expect(screen.queryByRole('button', { name: /Edit Passphrase/ })).toBeVisible()
   })
 })

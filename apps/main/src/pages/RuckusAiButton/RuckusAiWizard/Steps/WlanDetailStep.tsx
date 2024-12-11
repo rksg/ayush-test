@@ -29,7 +29,9 @@ export function WlanDetailStep (props: {
   payload: string, sessionId: string,
   showAlert: boolean,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  formInstance: ProFormInstance<any> | undefined
+  formInstance: ProFormInstance<any> | undefined,
+  isRegenWlan: boolean,
+  setIsRegenWlan: (isRegen: boolean) => void,
 }) {
   const { $t } = useIntl()
   const { formInstance } = props
@@ -46,28 +48,30 @@ export function WlanDetailStep (props: {
   const [configuredIndex, setConfiguredIndex] = useState<number>(0)
 
   useEffect(() => {
-    if (
-      !_.isEqual(
-        initialData.map(({ 'SSID Name': _, ...rest }) => rest),
-        data.map(({ 'SSID Name': _, ...rest }) => rest)
-      )
-    ) {
+    if (props.isRegenWlan || _.isEmpty(data)) {
       formInstance?.resetFields()
       formInstance?.setFieldsValue({ data: initialData })
       setData(initialData)
       setSsidTypes(new Map(initialData.map(item => [item.id, item['SSID Type']])))
       setConfigFlags()
+      props.setIsRegenWlan(false)
     } else {
-      initialData.forEach((item, index) => {
-        formInstance?.setFieldValue(['data', index, 'SSID Name'], item['SSID Name'])
+
+      let newData = [] as NetworkConfig[]
+      initialData.forEach((item) => {
+        const originDatas = formInstance?.getFieldsValue().data || data
+        const findData = originDatas.find((d: { id: string }) => d.id === item.id)
+        if (findData) {
+          newData.push({ ...findData, 'SSID Name': item['SSID Name'] })
+        } else {
+          newData.push(item)
+        }
       })
 
-      setData(prevData =>
-        prevData.map((item, index) => ({
-          ...item,
-          'SSID Name': initialData[index]?.['SSID Name'] || item['SSID Name']
-        }))
-      )
+      setData(newData)
+      formInstance?.setFieldsValue({ data: newData })
+      setSsidTypes(new Map(newData.map(item => [item.id, item['SSID Type']])))
+
     }
 
   }, [props.payload])
@@ -293,6 +297,7 @@ export function WlanDetailStep (props: {
           visible={networkModalVisible}
           mask={true}
           children={getNetworkForm}
+          destroyOnClose
         />
       }
     </UI.Container>
