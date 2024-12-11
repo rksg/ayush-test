@@ -19383,6 +19383,32 @@ exports[`Test Details should render SwitchLoopDetection correctly 1`] = `
         />
       </div>
     </div>
+    <div
+      class="ant-col ant-col-5 ant-col-offset-4 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+        style="min-height: 249px;"
+      >
+        <div
+          data-testid="impactedSwitchesDonut"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+        style="min-height: 249px;"
+      >
+        <div
+          data-testid="impactedVlanTable"
+        />
+      </div>
+    </div>
   </div>
 </DocumentFragment>
 `;
@@ -21959,7 +21985,7 @@ exports[`Test Details should render SwitchTcpSynDDoS correctly 1`] = `
         style="min-height: 129px;"
       >
         <div
-          data-testid="impactedSwitchDDoSDonut"
+          data-testid="impactedSwitchesDonut"
         />
       </div>
     </div>

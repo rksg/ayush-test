@@ -4,12 +4,13 @@ import { granularityToHours, type Incident } from '@acx-ui/analytics/utils'
 import { GridRow, GridCol }                  from '@acx-ui/components'
 import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 
-import { FixedAutoSizer }                                   from '../../DescriptionSection/styledComponents'
-import { ImpactedSwitchDDoSDonut, ImpactedSwitchDDoSTable } from '../Charts/ImpactedSwitchDDoS'
-import { IncidentAttributes, Attributes }                   from '../IncidentAttributes'
-import { Insights }                                         from '../Insights'
-import { TimeSeries }                                       from '../TimeSeries'
-import { TimeSeriesChartTypes }                             from '../TimeSeries/config'
+import { FixedAutoSizer }                 from '../../DescriptionSection/styledComponents'
+import { ImpactedSwitchDDoSTable }        from '../Charts/ImpactedSwitchDDoS'
+import { ImpactedSwitchesDonut }          from '../Charts/ImpactedSwitchesDonut'
+import { IncidentAttributes, Attributes } from '../IncidentAttributes'
+import { Insights }                       from '../Insights'
+import { TimeSeries }                     from '../TimeSeries'
+import { TimeSeriesChartTypes }           from '../TimeSeries/config'
 
 import { IncidentHeader } from './IncidentHeader'
 
@@ -58,7 +59,7 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
         <Insights incident={incident} />
       </GridCol>
       <GridCol col={{ offset: 4, span: 5 }} style={{ minHeight: '129px' }}>
-        <ImpactedSwitchDDoSDonut incident={incident}/>
+        <ImpactedSwitchesDonut incident={incident} />
       </GridCol>
       <GridCol col={{ span: 15 }} style={{ minHeight: '129px' }}>
         <TimeSeries
