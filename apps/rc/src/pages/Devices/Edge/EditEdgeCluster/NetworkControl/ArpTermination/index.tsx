@@ -10,7 +10,7 @@ import { useGetEdgeClusterArpTerminationSettingsQuery, useGetEdgeFeatureSetsQuer
 import { EdgeClusterStatus, EdgeStatus, IncompatibilityFeatures }                   from '@acx-ui/rc/utils'
 import { compareVersions }                                                          from '@acx-ui/utils'
 
-import { StyledFormItem, StyledFormItemTimer, tooltipIconStyle } from '../styledComponents'
+import { StyledFormItem, tooltipIconStyle } from '../styledComponents'
 
 const checkArpByClusterFw = (requiredFw?: string, edgeNodeList?: EdgeStatus[]) => {
   return !!requiredFw &&
@@ -61,9 +61,9 @@ export const ArpTerminationFormItem = (props: {
     })
   }, [arpTerminationSettings])
 
-  return <Loader states={[{ isLoading: isArpTerminationSettingsLoading }]}>
-    <Row gutter={20}>
-      <Col span={7}>
+  return <><Row gutter={20}>
+    <Col span={7}>
+      <Loader states={[{ isLoading: isArpTerminationSettingsLoading }]}>
         <StepsForm.FieldLabel width='50%'>
           <Space>
             {$t({ defaultMessage: 'ARP Termination' })}
@@ -80,15 +80,16 @@ export const ArpTerminationFormItem = (props: {
             <Switch disabled={!isArpControllable}/>
           </Form.Item>
         </StepsForm.FieldLabel>
-      </Col>
-    </Row>
+      </Loader>
+    </Col>
+  </Row>
 
-    <Row gutter={20}>
-      <Col span={7}>
-        <Form.Item noStyle dependencies={['arpTerminationSwitch']} >
-          {({ getFieldValue }) => {
-            return getFieldValue('arpTerminationSwitch') &&
-            <StepsForm.FieldLabel width='50%'>
+  <Row gutter={20}>
+    <Col span={4}>
+      <Form.Item noStyle dependencies={['arpTerminationSwitch']} >
+        {({ getFieldValue }) => {
+          return getFieldValue('arpTerminationSwitch') &&
+            <StepsForm.FieldLabel width='91%'>
               <Space>
                 {$t({ defaultMessage: 'ARP Termination Aging Timer' })}
                 <Tooltip.Question
@@ -104,11 +105,13 @@ export const ArpTerminationFormItem = (props: {
                 <Switch />
               </Form.Item>
             </StepsForm.FieldLabel>
-          }}
-        </Form.Item>
-        <StyledFormItemTimer dependencies={['arpTerminationSwitch', 'arpAgingTimerSwitch']}>
-          {({ getFieldValue }) => {
-            return getFieldValue('arpTerminationSwitch') && getFieldValue('arpAgingTimerSwitch') &&
+        }}
+      </Form.Item>
+    </Col>
+    <Col span={3}>
+      <Form.Item dependencies={['arpTerminationSwitch', 'arpAgingTimerSwitch']}>
+        {({ getFieldValue }) => {
+          return getFieldValue('arpTerminationSwitch') && getFieldValue('arpAgingTimerSwitch') &&
               <Space align='center'>
                 <StyledFormItem
                   name='agingTimeSec'
@@ -124,9 +127,9 @@ export const ArpTerminationFormItem = (props: {
                 />
                 {$t({ defaultMessage: 'seconds' })}
               </Space>
-          }}
-        </StyledFormItemTimer>
-      </Col>
-    </Row>
-  </Loader>
+        }}
+      </Form.Item>
+    </Col>
+  </Row>
+  </>
 }
