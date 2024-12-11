@@ -32,7 +32,7 @@ export function SwitchDetail ({ incident }: ChartProps) {
   }[] = [
     { key: 'name', title: defineMessage({ defaultMessage: 'Switch Name' }) },
     { key: 'model', title: defineMessage({ defaultMessage: 'Switch Model' }) },
-    { key: 'mac', title: defineMessage({ defaultMessage: 'Switch Mac' }) },
+    { key: 'mac', title: defineMessage({ defaultMessage: 'Switch MAC' }) },
     { key: 'firmware', title: defineMessage({ defaultMessage: 'Switch Firmware Version' }) }
   ]
 
