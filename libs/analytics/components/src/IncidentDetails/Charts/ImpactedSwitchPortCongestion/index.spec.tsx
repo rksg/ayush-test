@@ -4,7 +4,7 @@ import { dataApiURL, Provider, store } from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved,
   findTBody, within }                                                from '@acx-ui/test-utils'
 
-import { mockImpactedSwitches } from './__tests__/fixtures'
+import { mockImpactedSwitches, mockImpactedSwitchesWithUnknown }     from './__tests__/fixtures'
 import { api }                  from './services'
 
 import { SwitchDetail, ImpactedSwitchPortConjestionTable } from '.'
@@ -89,7 +89,27 @@ describe('ImpactedSwitchPortCongestion',()=>{
       const body = within(await findTBody())
       const rows = await body.findAllByRole('row')
       expect(rows).toHaveLength(2)
+      expect(await screen.findByText('Impacted Ports')).toBeVisible()
       expect(within(rows[0]).getAllByRole('cell')[1].textContent).toMatch('Device 1')
+      expect(within(rows[0]).getAllByRole('cell')[0].textContent).toMatch('1/2/3')
+    })
+    it('should render for R1 with unknown peer device', async () => {
+      mockGraphqlQuery(dataApiURL, 'ImpactedSwitches', mockImpactedSwitchesWithUnknown)
+      render(
+        <Provider>
+          <ImpactedSwitchPortConjestionTable incident={fakeIncident1} />
+        </Provider>, {
+          route: {
+            path: '/tenantId/t/analytics/incidents',
+            wrapRoutes: false
+          }
+        })
+
+      const body = within(await findTBody())
+      const rows = await body.findAllByRole('row')
+      expect(rows).toHaveLength(1)
+      expect(await screen.findByText('Impacted Port')).toBeVisible()
+      expect(within(rows[0]).getAllByRole('cell')[1].textContent).toMatch('-')
       expect(within(rows[0]).getAllByRole('cell')[0].textContent).toMatch('1/2/3')
     })
     it('should render for RA', async () => {
