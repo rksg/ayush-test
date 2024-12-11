@@ -3,7 +3,7 @@ import { Provider, dataApiURL }                  from '@acx-ui/store'
 import { mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 import { DateRange }                             from '@acx-ui/utils'
 
-import { configChangeSeries, configChanges, kpiForOverview, pagedConfigChange } from './__tests__/fixtures'
+import { configChangeSeries, configChanges, kpiForOverview, pagedConfigChanges } from './__tests__/fixtures'
 import {
   useConfigChangeQuery,
   useConfigChangeSeriesQuery,
@@ -55,13 +55,12 @@ describe('usePagedConfigChangeQuery', () => {
   afterEach(() => jest.resetAllMocks())
   it('should return correct data when SORTER_ABBR.DESC', async () => {
     mockGraphqlQuery(dataApiURL, 'PagedConfigChange',
-      { data: { network: { hierarchyNode: { pagedConfigChanges: {
-        data: pagedConfigChange, total: configChanges.length } } } } })
+      { data: { network: { hierarchyNode: { pagedConfigChanges: pagedConfigChanges } } } })
     const { result } = renderHook(() =>
       usePagedConfigChangeQuery(param), { wrapper: Provider })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(result.current.data).toEqual({
-      data: pagedConfigChange.map((item, id) => ({ ...item, id })),
+      data: pagedConfigChanges.data.map((item, id) => ({ ...item, id })),
       total: configChanges.length
     })
   })
@@ -75,13 +74,12 @@ describe('usePagedConfigChangeQuery', () => {
       pageSize: 10
     }
     mockGraphqlQuery(dataApiURL, 'PagedConfigChange',
-      { data: { network: { hierarchyNode: { pagedConfigChanges: {
-        data: pagedConfigChange, total: configChanges.length } } } } })
+      { data: { network: { hierarchyNode: { pagedConfigChanges: pagedConfigChanges } } } })
     const { result } = renderHook(() =>
       usePagedConfigChangeQuery(ascDataParam), { wrapper: Provider })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(result.current.data).toEqual({
-      data: pagedConfigChange
+      data: pagedConfigChanges.data
         .map((item, id) => ({ ...item, id: configChanges.length - id - 1 })),
       total: configChanges.length
     })

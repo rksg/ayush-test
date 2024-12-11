@@ -15,33 +15,62 @@ import {
   Cascader,
   Filter
 }                                    from '@acx-ui/components'
-import { ConfigChangePaginationParams } from '@acx-ui/components'
-import { get }                          from '@acx-ui/config'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
-import { noDataDisplay }                from '@acx-ui/utils'
+import { ConfigChangePaginationParams }                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                       from '@acx-ui/formatter'
+import { DownloadOutlined }                                from '@acx-ui/icons'
+import { exportMessageMapping, noDataDisplay, PathFilter } from '@acx-ui/utils'
 
-import { ConfigChangeContext }                                       from '../context'
-import { hasConfigChange }                                           from '../KPI'
-import { usePagedConfigChangeQuery, PagedConfigChange, SORTER_ABBR } from '../services'
+import { ConfigChangeContext }                                                                 from '../context'
+import { hasConfigChange }                                                                     from '../KPI'
+import { usePagedConfigChangeQuery, PagedConfigChange, SORTER_ABBR, useLazyConfigChangeQuery } from '../services'
 
+import { genDownloadConfigChange }              from './download'
 import { Badge, CascaderFilterWrapper }         from './styledComponents'
 import { EntityType, enumTextMap, jsonMapping } from './util'
 
-const DEFAULT_SORTER = {
+export const DEFAULT_SORTER = {
   sortField: 'timestamp',
   sortOrder: SORTER_ABBR.DESC
 }
 
-const transferSorter = (order:string) => {
-  return order === 'ascend' ? SORTER_ABBR.ASC : SORTER_ABBR.DESC
+export const transferSorter = (order:string) => {
+  switch(order){
+    case 'ascend':
+      return SORTER_ABBR.ASC
+    case 'descend':
+      return SORTER_ABBR.DESC
+    default:
+      return DEFAULT_SORTER.sortOrder
+  }
+}
+
+export function useDownloadConfigChange () {
+  const showIntentAI = [
+    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
+    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
+  ].some(Boolean)
+
+  const [download] = useLazyConfigChangeQuery()
+
+  const onDownloadClick = async (
+    payload: PathFilter,
+    columns: TableProps<ConfigChange>['columns']
+  ) => {
+    const entityTypeMapping = getConfigChangeEntityTypeMapping(showIntentAI)
+    const data = await download(payload)
+      .unwrap()
+      .catch((error) => { console.error(error) }) // eslint-disable-line no-console
+    genDownloadConfigChange(data!, columns, entityTypeMapping, payload)
+  }
+  return { onDownloadClick }
 }
 
 export function PagedTable () {
-
-  const isMLISA = get('IS_MLISA_SA')
-  const isIntentAIConfigChangeEnable = useIsSplitOn(Features.MLISA_4_11_0_TOGGLE)
-  const showIntentAI = Boolean(isMLISA || isIntentAIConfigChangeEnable)
+  const showIntentAI = [
+    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
+    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
+  ].some(Boolean)
 
   const { $t } = useIntl()
   const { pathFilters } = useAnalyticsFilter()
@@ -54,10 +83,16 @@ export function PagedTable () {
     sorter, setSorter, reset
   } = useContext(ConfigChangeContext)
 
-  const queryResults = usePagedConfigChangeQuery({
+  const { onDownloadClick } = useDownloadConfigChange()
+
+  const basicPayload = {
     ...pathFilters,
     startDate: startDate.toISOString(),
-    endDate: endDate.toISOString(),
+    endDate: endDate.toISOString()
+  }
+
+  const queryResults = usePagedConfigChangeQuery({
+    ...basicPayload,
     page: pagination.current,
     pageSize: pagination.pageSize,
     filterBy: {
@@ -172,9 +207,7 @@ export function PagedTable () {
     _, __, customSorter, customAction
   ) => {
     const order = (customSorter as SorterResult<ConfigChange>).order
-    if(customAction.action === 'sort') {
-      setSorter(order ? transferSorter(order) : DEFAULT_SORTER.sortOrder)
-    }
+    customAction.action === 'sort' && setSorter(transferSorter(order!))
   }
 
   const options = Object.keys(kpiConfig).reduce((agg, key)=> {
@@ -217,6 +250,11 @@ export function PagedTable () {
         enableApiFilter={true}
         onFilterChange={handleFilterChange}
         onChange={handleTableChange}
+        iconButton={{
+          icon: <DownloadOutlined />,
+          disabled: !Boolean(queryResults.data?.total),
+          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
+          onClick: async () => await onDownloadClick(basicPayload, ColumnHeaders) }}
       />
     </Loader>
   </>

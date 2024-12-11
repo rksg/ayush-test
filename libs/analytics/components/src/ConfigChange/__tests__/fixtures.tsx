@@ -133,7 +133,8 @@ export const kpiForConnection = {
 
 export const configChangeSeries = configChanges.map(({ timestamp, type }) => ({ timestamp, type }))
 
-export const pagedConfigChange = [
-  ...configChanges.slice()
-    .sort((a, b) => Number(b.timestamp) - Number(a.timestamp)).slice(0, 10)
-]
+export const pagedConfigChanges = {
+  data: [ ...configChanges.slice()
+    .sort((a, b) => Number(b.timestamp) - Number(a.timestamp)).slice(0, 10) ],
+  total: configChanges.length
+}

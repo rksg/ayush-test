@@ -141,11 +141,10 @@ describe('Table', () => {
   it('should render table with legend filtered', async () => {
     const TestComponent = () => {
       const { applyLegendFilter } = useContext(ConfigChangeContext)
-      return <div onClick={() => { applyLegendFilter({
-        'AP': false, 'AP Group': true, 'Zone': true, 'WLAN': false, 'WLAN Group': true,
-        'IntentAI': true
-      })
-      }}>Test</div>
+      return <div data-testid='test'
+        onClick={() => { applyLegendFilter({
+          'AP': false, 'AP Group': true, 'Zone': true,
+          'WLAN': false, 'WLAN Group': true, 'IntentAI': true }) }}/>
     }
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: data } } } })
@@ -154,7 +153,7 @@ describe('Table', () => {
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
 
-    await userEvent.click(await screen.findByText('Test'))
+    await userEvent.click(await screen.findByTestId('test'))
 
     const tbody = await findTBody()
     expect(tbody).toBeVisible()
@@ -168,8 +167,7 @@ describe('Table', () => {
   it('should select row when selected value is passed in', async () => {
     const TestComponent = () => {
       const { setSelected } = useContext(ConfigChangeContext)
-      return <div onClick={() => { setSelected(data[1])
-      }}>Test</div>
+      return <div data-testid='test' onClick={() => { setSelected(data[1]) }}/>
     }
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: data } } } })
@@ -182,7 +180,7 @@ describe('Table', () => {
     // eslint-disable-next-line testing-library/no-node-access
     expect(radio[1]?.parentNode).not.toHaveClass('ant-radio-checked')
 
-    await userEvent.click(await screen.findByText('Test'))
+    await userEvent.click(await screen.findByTestId('test'))
 
     // eslint-disable-next-line testing-library/no-node-access
     expect(radio[1]?.parentNode).toHaveClass('ant-radio-checked')

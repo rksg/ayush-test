@@ -7,14 +7,14 @@ import { apGroupKeyMap }    from './mapping/apGroupKeyMap'
 import { apKeyMap }         from './mapping/apKeyMap'
 import { apSpecificKeyMap } from './mapping/apSpecificKeyMap'
 import { enumMap }          from './mapping/enumMap'
-import { intentAi }         from './mapping/intentAi'
+import { intentAIKeyMap }   from './mapping/intentAIKeyMap'
 import { wlanGroupKeyMap }  from './mapping/wlanGroupKeyMap'
 import { wlanKeyMap }       from './mapping/wlanKeyMap'
 import { zoneKeyMap }       from './mapping/zoneKeyMap'
 
 const filteredConfigText = ['TBD', 'NA']
 
-export type EntityType = 'zone' | 'wlan' | 'apGroup' | 'ap'
+export type EntityType = 'zone' | 'wlan' | 'apGroup' | 'ap' | 'intentAI'
 
 type MappingFields = 'text' | 'textAlto' | 'enumType'
 
@@ -67,7 +67,16 @@ export const jsonMapping = {
     enumMap: enumMapGenerator(apKeyMap, apSpecificKeyMap)
   },
   intentAI: {
-    configMap: configMapGenerator(intentAi),
-    enumMap: enumMapGenerator(intentAi)
+    configMap: configMapGenerator(intentAIKeyMap),
+    enumMap: enumMapGenerator(intentAIKeyMap)
   }
+}
+
+export const getEntityValue = (type: string, key: string, value: string) => {
+  return enumTextMap.get(
+    `${(jsonMapping[type as EntityType].enumMap).get(key, '')}-${value}`, value)
+}
+
+export const getConfiguration = (type: string, key: string) => {
+  return jsonMapping[type as EntityType].configMap.get(key, key)
 }

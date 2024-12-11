@@ -1,24 +1,21 @@
 import { useContext } from 'react'
 
 import userEvent from '@testing-library/user-event'
+import _         from 'lodash'
 
 import type { ConfigChange, ConfigChangePaginationParams }             from '@acx-ui/components'
-import { get }                                                         from '@acx-ui/config'
-import { Provider, dataApiURL }                                        from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                from '@acx-ui/feature-toggle'
+import { dataApiURL, Provider }                                        from '@acx-ui/store'
+import { mockGraphqlQuery, render, waitForElementToBeRemoved, screen } from '@acx-ui/test-utils'
 import { DateRange }                                                   from '@acx-ui/utils'
 
-import { configChanges } from './__tests__/fixtures'
-import { Chart }         from './Chart'
-import {
-  ConfigChangeProvider,
-  ConfigChangeContext
-} from './context'
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { configChangeSeries }                        from './__tests__/fixtures'
+import { ConfigChangeContext, ConfigChangeProvider } from './context'
+import { SyncedChart }                               from './SyncedChart'
 
 jest.mock('@acx-ui/components', () => {
   const configChange = (require('./__tests__/fixtures')
-    .configChanges as ConfigChange[])
+    .configChangeSeries as ConfigChange[])
     .sort((a, b) => Number(b.timestamp) - Number(a.timestamp))
     .map((value, id)=>({ ...value, id }))
     .at(-1)!
@@ -41,46 +38,38 @@ jest.mock('@acx-ui/components', () => {
   }
 })
 
-const mockGet = jest.mocked(get)
-jest.mock('@acx-ui/config', () => ({
-  get: jest.fn()
-}))
-
-describe('Chart', () => {
-  const data = configChanges
+describe('SyncedChart', () => {
+  const data = configChangeSeries
     .sort((a, b) => Number(b.timestamp) - Number(a.timestamp))
     .map((value, id)=>({ ...value, id }))
-  beforeEach(() => {
-    mockGet.mockReturnValue('true')
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-  })
+  beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
   it('should render page correctly', async () => {
-    mockGraphqlQuery(dataApiURL, 'ConfigChange',
-      { data: { network: { hierarchyNode: { configChanges: data } } } })
+    mockGraphqlQuery(dataApiURL, 'ConfigChangeSeries',
+      { data: { network: { hierarchyNode: { configChangeSeries: data } } } })
     render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
-      <Chart/>
+      <SyncedChart/>
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
     expect(await screen.findAllByText('intentAI')).toHaveLength(1)
   })
   it('should show empty chart', async () => {
-    mockGraphqlQuery(dataApiURL, 'ConfigChange',
-      { data: { network: { hierarchyNode: { configChanges: [] } } } })
+    mockGraphqlQuery(dataApiURL, 'ConfigChangeSeries',
+      { data: { network: { hierarchyNode: { configChangeSeries: [] } } } })
     render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
-      <Chart/>
+      <SyncedChart/>
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
   })
   it('should render page correctly with selected data', async () => {
     const TestComponent = () => {
       const { setSelected } = useContext(ConfigChangeContext)
-      return <div data-testid='test' onClick={() => { setSelected(data[0]) }}/>
+      return <div data-testid='test' onClick={() => { setSelected(data[0] as ConfigChange) }}/>
     }
-    mockGraphqlQuery(dataApiURL, 'ConfigChange',
-      { data: { network: { hierarchyNode: { configChanges: data } } } })
+    mockGraphqlQuery(dataApiURL, 'ConfigChangeSeries',
+      { data: { network: { hierarchyNode: { configChangeSeries: data } } } })
     render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
-      <div><Chart/><TestComponent/></div>
+      <div><SyncedChart/><TestComponent/></div>
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
 
@@ -89,10 +78,10 @@ describe('Chart', () => {
     expect(await screen.findByText('ap')).toBeVisible()
   })
   it('should handle click on dot', async () => {
-    mockGraphqlQuery(dataApiURL, 'ConfigChange',
-      { data: { network: { hierarchyNode: { configChanges } } } })
+    mockGraphqlQuery(dataApiURL, 'ConfigChangeSeries',
+      { data: { network: { hierarchyNode: { configChangeSeries: data } } } })
     render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
-      <Chart/>
+      <SyncedChart/>
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     expect(await screen.findAllByText('intentAI')).toHaveLength(1)
     expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
@@ -103,5 +92,29 @@ describe('Chart', () => {
     expect(await screen.findAllByText('intentAI')).toHaveLength(2)
     expect(await screen.findByText(
       '{"current":2,"pageSize":10,"defaultPageSize":10,"total":0}')).toBeVisible()
+  })
+  it('should query with non-empty filter', async () => {
+    const TestComp = () => {
+      const {
+        legendFilter, entityTypeFilter, setEntityTypeFilter
+      } = useContext(ConfigChangeContext)
+      return <>
+        <div data-testid='test' onClick={() => { setEntityTypeFilter(['ap']) }} />
+        <div data-testid='filter'>
+          {legendFilter.filter(
+            t => (_.isEmpty(entityTypeFilter) || entityTypeFilter.includes(t))
+          ).join(',')}
+        </div>
+      </>
+    }
+    mockGraphqlQuery(dataApiURL, 'ConfigChangeSeries',
+      { data: { network: { hierarchyNode: { configChangeSeries: data } } } })
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
+      <><TestComp/><SyncedChart/></>
+    </ConfigChangeProvider>, { wrapper: Provider, route: {} })
+
+    await userEvent.click(await screen.findByTestId('test'))
+    expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
+    expect(await screen.findByTestId('filter')).toHaveTextContent('ap')
   })
 })

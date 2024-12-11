@@ -191,6 +191,7 @@ export const api = dataApi.injectEndpoints({
 
 const {
   useConfigChangeQuery,
+  useLazyConfigChangeQuery,
   usePagedConfigChangeQuery,
   useConfigChangeSeriesQuery,
   useConfigChangeKPIChangesQuery
@@ -204,6 +205,7 @@ function useKPIChangesQuery (params: KpiChangesParams) {
 
 export {
   useConfigChangeQuery,
+  useLazyConfigChangeQuery,
   usePagedConfigChangeQuery,
   useConfigChangeSeriesQuery,
   useKPIChangesQuery
