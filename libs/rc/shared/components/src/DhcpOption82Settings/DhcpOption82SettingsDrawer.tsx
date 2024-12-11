@@ -63,6 +63,7 @@ export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProp
       width={850}
       children={
         <DhcpOption82SettingsFormField
+          labelWidth={'280px'}
           context={'lanport'}
           onGUIChanged={onGUIChanged}
           index={index}
@@ -75,7 +76,7 @@ export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProp
       footer={
         <Drawer.FormFooter
           buttonLabel={{
-            save: $t({ defaultMessage: 'Add' })
+            save: $t({ defaultMessage: 'Apply' })
           }}
           onCancel={handleClose}
           onSave={handleAdd}

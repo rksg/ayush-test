@@ -14,10 +14,8 @@ interface SoftGRETunnelSettingsProps {
   index: number
   softgreProfileId: string
   softgreTunnelEnable: boolean
-  setSoftgreTunnelEnable: Function
   onGUIChanged?: (fieldName: string) => void
 }
-
 
 export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   const { $t } = useIntl()
@@ -27,15 +25,10 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
     index,
     softgreProfileId,
     softgreTunnelEnable,
-    setSoftgreTunnelEnable,
     onGUIChanged
   } = props
-  const form = Form.useFormInstance()
-  const softgreTunnelFieldName = ['lan', index, 'softgreTunnelEnable']
 
-  useEffect(() => {
-    form.setFieldValue(softgreTunnelFieldName, softgreTunnelEnable)
-  }, [softgreTunnelEnable])
+  const softgreTunnelFieldName = ['lan', index, 'softgreTunnelEnable']
 
   return (
     <>
@@ -60,7 +53,6 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             <Switch
               disabled={isSoftGRETunnelToggleDisable}
               onClick={(checked) => {
-                setSoftgreTunnelEnable(checked)
                 onGUIChanged && onGUIChanged('softgreTunnelEnable')
                 onChangeSoftgreTunnel && onChangeSoftgreTunnel(checked)
               }}
