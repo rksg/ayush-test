@@ -89,9 +89,9 @@ function ImpactedSwitchTable (props: {
   const ports = props.data
   const rows: Port[] = ports.map(impactedSwitchPort => ({
     portNumber: impactedSwitchPort.portNumber,
-    connectedDeviceName: impactedSwitchPort.connectedDevice.name === 'Unknown' ? '--' : 
-    impactedSwitchPort.connectedDevice.name,
-  }));
+    connectedDeviceName: impactedSwitchPort.connectedDevice.name === 'Unknown' ? '--' :
+      impactedSwitchPort.connectedDevice.name
+  }))
 
   const columns: TableProps<Port>['columns'] = useMemo(()=>[ {
     key: 'portNumber',
