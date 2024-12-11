@@ -84,10 +84,16 @@ export function ImpactedSwitchPortConjestionTable ({ incident }: ChartProps) {
 function ImpactedSwitchTable (props: {
     data: ImpactedSwitchPort[]
   }) {
+  type Port = { portNumber: string; connectedDeviceName: string; }
   const { $t } = useIntl()
-  const rows = props.data
+  const ports = props.data
+  const rows: Port[] = ports.map(impactedSwitchPort => ({
+    portNumber: impactedSwitchPort.portNumber,
+    connectedDeviceName: impactedSwitchPort.connectedDevice.name === 'Unknown' ? '--' : 
+    impactedSwitchPort.connectedDevice.name,
+  }));
 
-  const columns: TableProps<ImpactedSwitchPort>['columns'] = useMemo(()=>[ {
+  const columns: TableProps<Port>['columns'] = useMemo(()=>[ {
     key: 'portNumber',
     dataIndex: 'portNumber',
     title: $t({ defaultMessage: 'Port with congestion' }),
@@ -96,8 +102,8 @@ function ImpactedSwitchTable (props: {
     sorter: { compare: sortProp('portNumber', defaultSort) },
     searchable: true
   }, {
-    key: 'connectedDevice.name',
-    dataIndex: 'connectedDevice.name',
+    key: 'connectedDeviceName',
+    dataIndex: 'connectedDeviceName',
     title: $t({ defaultMessage: 'Peer Device' }),
     fixed: 'left',
     width: 80,
