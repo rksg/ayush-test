@@ -22815,6 +22815,49 @@ exports[`Test Details should render SwitchUplinkPortCongestion correctly 1`] = `
         />
       </div>
     </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+        style="min-height: 129px;"
+      >
+        <div
+          data-testid="impactedUplinkPortDetails"
+        />
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+        style="min-height: 129px;"
+      >
+        <div
+          data-testid="timeseries"
+        >
+          <div
+            data-testid="timeseries-SwitchUplinkPortCongestionChart"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-20 ant-col-offset-4 c0"
+      style="padding: 10px 10px 10px 10px;"
+    >
+      <div
+        class="c1"
+        style="min-height: 129px;"
+      >
+        <div
+          data-testid="impactedSwitchUplinkTable"
+        />
+      </div>
+    </div>
   </div>
 </DocumentFragment>
 `;
