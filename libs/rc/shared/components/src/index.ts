@@ -34,6 +34,11 @@ export {
 export { DefaultVlanDrawer } from './DefaultVlanDrawer'
 export { DevicesDashboardWidgetV2 } from './DevicesDashboardWidget'
 export { DevicesWidget, seriesMappingAP } from './DevicesWidget'
+export {
+  DhcpOption82Settings,
+  DhcpOption82SettingsFormField,
+  DhcpOption82SettingsDrawer
+} from './DhcpOption82Settings'
 export { EdgeSettingForm } from './EdgeSettingForm'
 export { EdgesTable, EdgeStatusLight, defaultEdgeTablePayload } from './EdgesTable'
 export { useExportCsv as useEdgeExportCsv } from './EdgesTable/useExportCsv'

@@ -355,10 +355,8 @@ export function useRadiusServer () {
   const updateRadiusServer = async (saveData: NetworkSaveData, networkId?: string) => {
     if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
 
-    return Promise.all([
-      updateProfile(saveData, networkId),
-      updateSettings(saveData, networkId)
-    ])
+    await updateSettings(saveData, networkId) // It is necessary to ensure that updateSettings is completed before updateProfile.
+    await updateProfile(saveData, networkId)
   }
 
   return {

@@ -81,12 +81,21 @@ const { useIntentTransitionMutation } = intentAIApi.injectEndpoints({
 
 export function useInitialValues <Preferences> () {
   const { id, metadata, status, statusReason, displayStatus } = useIntentContext().intent
-  const settings = metadata?.scheduledAt ? {
-    date: moment(metadata.scheduledAt),
-    time: moment.duration(moment(metadata.scheduledAt).format('HH:mm:ss')).asHours()
-  } : { date: undefined, time: undefined }
+  let settings: { date?: Moment, time?: number } = { date: undefined, time: undefined }
+
+  if (status === Statuses.new) {
+    settings = { date: moment(), time: undefined }
+  } else if (metadata?.scheduledAt) {
+    settings = {
+      date: moment(metadata.scheduledAt),
+      time: moment.duration(moment(metadata.scheduledAt).format('HH:mm:ss')).asHours()
+
+    }
+  }
   return { id, status, statusReason, displayStatus, settings } as FormValues<Preferences>
 }
+
+const intentAIPath = '/analytics/intentAI'
 
 export function createUseIntentTransition <Preferences> (
   getFormDTO: (values: FormValues<Preferences>) => IntentTransitionPayload<Preferences>
@@ -95,9 +104,9 @@ export function createUseIntentTransition <Preferences> (
     const { $t } = useIntl()
     const { intent } = useIntentContext()
     const intentRef = useRef(intent)
-    const basePath = useTenantLink('/intentAI')
+    const basePath = useTenantLink(intentAIPath)
     const navigate = useNavigate()
-    const navigateToTable = useNavigateToPath('/analytics/intentAI')
+    const navigateToTable = useNavigateToPath(intentAIPath)
     const [doSubmit, response] = useIntentTransitionMutation()
 
     const submit = useCallback(async (values: FormValues<Preferences>) => {

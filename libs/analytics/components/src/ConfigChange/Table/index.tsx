@@ -9,7 +9,7 @@ import {
   useAnalyticsFilter,
   kpiConfig,
   productNames
-} from '@acx-ui/analytics/utils'
+}                                    from '@acx-ui/analytics/utils'
 import {
   Loader,
   TableProps,
@@ -32,7 +32,6 @@ import { Badge, CascaderFilterWrapper }                 from './styledComponents
 import { filterData, getConfiguration, getEntityValue } from './util'
 
 export function Table () {
-
   const showIntentAI = [
     useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
     useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
@@ -48,14 +47,17 @@ export function Table () {
     selected, onRowClick, dotSelect
   } = useContext(ConfigChangeContext)
 
-  const queryResults = useConfigChangeQuery({
+  const basicQueryPayload = {
     ...pathFilters,
     startDate: startDate.toISOString(),
     endDate: endDate.toISOString()
-  }, { selectFromResult: queryResults => ({
-    ...queryResults,
-    data: filterData(queryResults.data ?? [], kpiFilter, legendFilter)
-  }) })
+  }
+
+  const queryResults = useConfigChangeQuery(basicQueryPayload,
+    { selectFromResult: queryResults => ({
+      ...queryResults,
+      data: filterData(queryResults.data ?? [], kpiFilter, legendFilter)
+    }) })
 
   const entityTypeMapping = getConfigChangeEntityTypeMapping(showIntentAI)
 
@@ -181,8 +183,12 @@ export function Table () {
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: () => {
             downloadConfigChangeList(
-              queryResults.data, ColumnHeaders, entityTypeMapping, pathFilters)
-          } }}
+              queryResults.data,
+              ColumnHeaders,
+              entityTypeMapping,
+              basicQueryPayload
+            )}
+        }}
       />
     </Loader>
   </>

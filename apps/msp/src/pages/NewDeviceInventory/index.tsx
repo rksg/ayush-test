@@ -141,7 +141,9 @@ export function NewDeviceInventory () {
 
   const filterQueryParams = {
     params: { tenantId: isIntegrator ? (parentTenantId as string) : (tenantId as string) },
-    payload: {} }
+    payload: isIntegrator ? { filters: {
+      id: [ tenantId ]
+    } } : {} }
 
   const { data: customerNameList } = useCustomerNamesFilterListQuery(filterQueryParams)
   const { data: venueNameList } = useVenueNamesFilterListQuery(filterQueryParams)
@@ -261,7 +263,7 @@ export function NewDeviceInventory () {
           onChange={tableQuery.handleTableChange}
           actions={actions}
           onFilterChange={tableQuery.handleFilterChange}
-          rowKey='name'
+          rowKey='serialNumber'
         />
       </Loader>
     </>
