@@ -19,14 +19,21 @@ function WelcomePage () {
       zIndex: 1,
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'center',
       alignItems: 'center',
-      height: '100%'
+      height: '100%',
+      minHeight: '200px',
+      maxHeight: 'calc(100vh - 250px)',
+      overflowY: 'auto'
     }}
   >
-    <WelcomeLogo style={{
-      width: '110px', height: '110px'
-    }} />
+    <div style={{
+      height: '110px'
+    }} >
+      <WelcomeLogo style={{
+        width: '110px', height: '110px'
+      }} />
+    </div>
+
     <span style={{
       fontSize: '24px',
       fontWeight: 700,
