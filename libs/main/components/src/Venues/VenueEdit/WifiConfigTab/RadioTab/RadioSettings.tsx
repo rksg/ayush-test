@@ -632,7 +632,6 @@ export function RadioSettings () {
     if (!validateChannels(indoorChannel5, method5, indoorTitle5)) return false
 
     const outdoorChannel5 = radioParams50G?.allowedOutdoorChannels
-    const method5 = radioParams50G?.method
     const outdoorTitle5 = $t({ defaultMessage: '5 GHz - Outdoor AP channel selection' })
     if (!validateChannels(outdoorChannel5, method5, outdoorTitle5)) return false
 
