@@ -73,11 +73,11 @@ export function ImpactedSwitchPortConjestionTable ({ incident }: ChartProps) {
   const { $t } = useIntl()
 
   const impactedSwitch = usePortImpactedSwitchQuery({ id: incident.id, n: 100, search: '' })
-  const portCount = impactedSwitch.data?.ports?.length 
+  const portCount = impactedSwitch.data?.ports?.length
 
   return <Loader states={[impactedSwitch]}>
-    <Card title=
-    {$t({ defaultMessage: 'Impacted {portCount, plural, one {Port} other {Ports}}' }, { portCount })} 
+    <Card title={$t({ defaultMessage: 'Impacted {portCount, plural, one {Port} other {Ports}}' },
+      { portCount })}
     type='no-border'>
       <ImpactedSwitchTable data={impactedSwitch.data?.ports!} />
     </Card>

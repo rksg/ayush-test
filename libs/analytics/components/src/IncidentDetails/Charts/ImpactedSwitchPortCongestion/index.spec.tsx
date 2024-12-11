@@ -4,8 +4,8 @@ import { dataApiURL, Provider, store } from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved,
   findTBody, within }                                                from '@acx-ui/test-utils'
 
-import { mockImpactedSwitches, mockImpactedSwitchesWithUnknown }     from './__tests__/fixtures'
-import { api }                  from './services'
+import { mockImpactedSwitches, mockImpactedSwitchesWithUnknown } from './__tests__/fixtures'
+import { api }                                                   from './services'
 
 import { SwitchDetail, ImpactedSwitchPortConjestionTable } from '.'
 
