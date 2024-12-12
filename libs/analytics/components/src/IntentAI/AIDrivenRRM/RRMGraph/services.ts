@@ -62,15 +62,15 @@ const { useIntentAIRRMGraphQuery } = intentAIApi.injectEndpoints({
         { band }
       ) => {
         const data = response.intent.graph
-        const sortedData = {
-          current: data.compareData.result,
-          projected: data.data.result
-        }
-        if (!Object.keys(sortedData.current).length && !Object.keys(sortedData.projected).length) {
+        if (data.compareData === null && data.data === null) {
           return {
             data: [],
             csv: ''
           }
+        }
+        const sortedData = {
+          current: data.compareData?.result,
+          projected: data.data?.result
         }
         const processedGraphs: ReturnType<typeof deriveTxPowerHighlight> = flow(
           [ deriveInterferingGraphs, pairGraphs, deriveTxPowerHighlight]
