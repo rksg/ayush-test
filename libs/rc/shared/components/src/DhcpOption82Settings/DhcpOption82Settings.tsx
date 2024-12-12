@@ -47,15 +47,15 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
   const [ getVenueSoftGreProfileConfiguration ] = useLazyGetSoftGreProfileConfigurationOnVenueQuery()
   const [ getAPSoftGreProfileConfiguration ] = useLazyGetSoftGreProfileConfigurationOnAPQuery()
   const dhcpOption82FieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Enabled']
-  const dhcpOption82SubOption1EnabledFieldName = ['lan', index, 'dhcpOption82', 'subOption1Enabled']
-  const dhcpOption82SubOption1FormatFieldName = ['lan', index, 'dhcpOption82', 'subOption1Format']
-  const dhcpOption82SubOption2EnabledFieldName = ['lan', index, 'dhcpOption82', 'subOption2Enabled']
-  const dhcpOption82SubOption2FormatFieldName = ['lan', index, 'dhcpOption82', 'subOption2Format']
-  const dhcpOption82SubOption150EnabledFieldName = ['lan', index, 'dhcpOption82', 'subOption150Enabled']
-  const dhcpOption82SubOption151EnabledFieldName = ['lan', index, 'dhcpOption82', 'subOption151Enabled']
-  const dhcpOption82SubOption151FormatFieldName = ['lan', index, 'dhcpOption82', 'subOption151Format']
-  const dhcpOption82SubOption151InputFieldName = ['lan', index, 'dhcpOption82', 'subOption151Input']
-  const dhcpOption82MacFormat = ['lan', index, 'dhcpOption82','macFormat']
+  const dhcpOption82SubOption1EnabledFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption1Enabled']
+  const dhcpOption82SubOption1FormatFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption1Format']
+  const dhcpOption82SubOption2EnabledFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption2Enabled']
+  const dhcpOption82SubOption2FormatFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption2Format']
+  const dhcpOption82SubOption150EnabledFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption150Enabled']
+  const dhcpOption82SubOption151EnabledFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Enabled']
+  const dhcpOption82SubOption151FormatFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Format']
+  const dhcpOption82SubOption151InputFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Input']
+  const dhcpOption82MacFormat = ['lan', index, 'dhcpOption82','dhcpOption82Settings', 'macFormat']
   /* eslint-enable max-len */
   useEffect(() => {
     const setData = async () => {
