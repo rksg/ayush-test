@@ -40,6 +40,10 @@ const intent = {
   status: 'active',
   metadata: {
     dataEndTime: '2023-06-26T00:00:25.772Z'
+  },
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierData: true
   }
 }
 

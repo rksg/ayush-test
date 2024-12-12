@@ -38,6 +38,10 @@ describe('IntentAIDetails', () => {
   it('handle cold tier data retention', async () => {
     const { params } = mockIntentContextWith({
       code: 'c-crrm-channel5g-auto',
+      dataCheck: {
+        isDataRetained: true,
+        isHotTierData: false
+      },
       status: Statuses.active,
       kpi_number_of_interfering_links: {
         data: {

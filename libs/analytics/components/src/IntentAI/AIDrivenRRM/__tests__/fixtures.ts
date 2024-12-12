@@ -218,7 +218,11 @@ export const mockedIntentCRRM = {
   },
   preferences: null,
   currentValue: null,
-  recommendedValue: null
+  recommendedValue: null,
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierData: true
+  }
 } as unknown as Intent
 
 export const mockedIntentCRRMnew = { // this fixture is used to test new crrm intent

@@ -74,5 +74,9 @@ export const mocked = {
     compareData: null
   },
   currentValue: false,
-  recommendedValue: false
+  recommendedValue: false,
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierDate: true
+  }
 } as unknown as Intent

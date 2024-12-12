@@ -8,16 +8,18 @@ import { Intent, IntentKPIConfig, intentState }        from '../useIntentDetails
 
 export const mockIntentContext = (config: {
   intent: Intent
-  kpis?: IntentKPIConfig[],
+  kpis?: IntentKPIConfig[]
   configuration?: IntentConfigurationConfig
+  isDataRetained?: boolean
+  isHotTierData?: boolean
 }) => {
   const context: ReturnType<typeof useIntentContext> = {
     configuration: config.configuration,
     intent: config.intent,
     kpis: config.kpis ?? [],
     state: intentState(config.intent),
-    isDataRetained: true,
-    isHotTierData: true
+    isDataRetained: config.isDataRetained ?? true,
+    isHotTierData: config.isHotTierData ?? true
   }
   jest.mocked(useIntentContext).mockReturnValue(context)
   return context

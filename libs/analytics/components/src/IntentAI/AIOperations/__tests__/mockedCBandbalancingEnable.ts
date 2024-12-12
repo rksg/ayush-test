@@ -47,5 +47,9 @@ export const mocked = {
     compareData: { timestamp: '2024-08-06T00:00:00.000Z', result: 1 }
   },
   currentValue: true,
-  recommendedValue: true
+  recommendedValue: true,
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierDate: true
+  }
 } as unknown as Intent

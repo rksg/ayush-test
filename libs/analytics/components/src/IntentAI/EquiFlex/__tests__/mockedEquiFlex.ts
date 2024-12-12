@@ -36,5 +36,9 @@ export const mocked = {
         ssid: 'DENSITY'
       }
     ]
+  },
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierData: true
   }
 } as unknown as Intent

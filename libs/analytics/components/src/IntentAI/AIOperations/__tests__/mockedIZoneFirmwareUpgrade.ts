@@ -28,6 +28,10 @@ export const mocked = {
   kpi_aps_on_latest_fw_version: {
     data: { timestamp: '2024-08-29T00:00:00.000Z', result: [ 0, 0 ] },
     compareData: { timestamp: '2024-06-09T00:00:00.000Z', result: [ 0, 0 ] }
+  },
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierDate: true
   }
 } as unknown as Intent
 

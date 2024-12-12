@@ -69,8 +69,7 @@ describe('CloudRRM', () => {
   })
 
   it('handle cold tier data', async () => {
-    jest.mocked(Date.now).mockRestore()
-    mockIntentContext({ intent: mockedIntentCRRM })
+    mockIntentContext({ intent: mockedIntentCRRM, isHotTierData: false })
     const { container } = render(<IntentAIRRMGraph crrmData={mockCrrmData} />, {
       wrapper: Provider
     })
@@ -78,11 +77,10 @@ describe('CloudRRM', () => {
   })
 
   it('handle beyond data retention', async () => {
-    jest.mocked(Date.now).mockRestore()
-    mockIntentContext({ intent: mockedIntentCRRM })
+    mockIntentContext({ intent: mockedIntentCRRM, isDataRetained: false })
     const { container } = render(<IntentAIRRMGraph crrmData={mockCrrmData} />, {
       wrapper: Provider
     })
-    expect(container).toHaveTextContent('Metrics / Charts unavailable for data beyond 30 days.')
+    expect(container).toHaveTextContent('Beyond data retention period')
   })
 })

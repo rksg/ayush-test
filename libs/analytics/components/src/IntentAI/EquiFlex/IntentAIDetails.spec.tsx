@@ -49,7 +49,11 @@ describe('IntentAIDetails', () => {
   it('handle cold tier data', async () => {
     const { params } = mockIntentContextWith({
       code: 'c-probeflex-5g',
-      status: Statuses.active
+      status: Statuses.active,
+      dataCheck: {
+        isHotTierData: false,
+        isDataRetained: true
+      }
     })
     render(
       <CProbeFlex5g.IntentAIDetails />,

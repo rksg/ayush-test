@@ -84,5 +84,9 @@ export const mockedIntentEcoFlex = {
       createdAt: '2023-05-17T07:04:11.663Z'
     }
   ],
-  preferences: null
+  preferences: null,
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierData: true
+  }
 } as unknown as Intent

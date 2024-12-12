@@ -108,6 +108,10 @@ describe('getGraphKPIs', () => {
       kpi_number_of_interfering_links: {
         data: { timestamp: null, result: 2 },
         compareData: { timestamp: null, result: 5 }
+      },
+      dataCheck: {
+        isDataRetained: true,
+        isHotTierData: false
       }
     }, kpis)
     expect(result.value).toEqual('--')
@@ -122,11 +126,15 @@ describe('getGraphKPIs', () => {
       kpi_number_of_interfering_links: {
         data: { timestamp: null, result: 2 },
         compareData: { timestamp: null, result: 5 }
+      },
+      dataCheck: {
+        isDataRetained: false,
+        isHotTierData: true
       }
     }, kpis)
     expect(result.value).toEqual('--')
     expect(result.delta).toEqual(undefined)
-    expect(result.footer).toEqual('Metrics / Charts unavailable for data beyond 30 days.')
+    expect(result.footer).toEqual('Beyond data retention period')
   })
 })
 

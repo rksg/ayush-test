@@ -40,6 +40,10 @@ export const mocked = {
         disabled: 31
       }
     }
+  },
+  dataCheck: {
+    isDataRetained: false,
+    isHotTierData: true
   }
 } as unknown as Intent
 export const mockNetworkHierarchy = {

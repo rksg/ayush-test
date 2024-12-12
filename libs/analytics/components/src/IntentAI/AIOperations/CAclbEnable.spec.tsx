@@ -46,7 +46,6 @@ jest.mock('../IntentContext')
 
 beforeEach(() => {
   store.dispatch(intentAIApi.util.resetApiState())
-
   moment.tz.setDefault('Asia/Singapore')
   const now = +new Date('2024-08-08T12:00:00.000Z')
   jest.spyOn(Date, 'now').mockReturnValue(now)

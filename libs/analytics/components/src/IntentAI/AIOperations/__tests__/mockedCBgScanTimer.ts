@@ -36,5 +36,9 @@ export const mocked = {
   kpi_co_channel_interference_ratio: {
     data: { timestamp: '2024-08-20T00:00:00.000Z', result: null },
     compareData: null
+  },
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierDate: true
   }
 } as unknown as Intent

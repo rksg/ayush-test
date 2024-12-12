@@ -24,5 +24,9 @@ export const mocked = {
   updatedAt: '2024-08-20T06:05:49.767Z',
   preferences: null,
   currentValue: null,
-  recommendedValue: true
+  recommendedValue: true,
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierDate: true
+  }
 } as unknown as Intent
