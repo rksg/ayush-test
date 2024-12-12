@@ -15,11 +15,10 @@ import { useCommonFields }      from '../common/commonFields'
 import { DetailsSection }       from '../common/DetailsSection'
 import { IntentDetailsHeader }  from '../common/IntentDetailsHeader'
 import { IntentIcon }           from '../common/IntentIcon'
-import { KpiCard }              from '../common/KPIs'
+import { KPIGrid }              from '../common/KPIs'
 import { richTextFormatValues } from '../common/richTextFormatValues'
 import { StatusTrail }          from '../common/StatusTrail'
 import { useIntentContext }     from '../IntentContext'
-import { getGraphKPIs }         from '../useIntentDetailsQuery'
 import { IntentWlan }           from '../utils'
 
 import * as SideNotes from './IntentAIForm/SideNotes'
@@ -68,7 +67,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
 
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const { intent, kpis } = useIntentContext()
+    const { intent } = useIntentContext()
     const valuesText = useValuesText()
     const isMlisa = get('IS_MLISA_SA') === 'true'
     const { wlans } = intent.metadata
@@ -116,11 +115,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
               <GridCol data-testid='Configuration' col={{ span: 12 }}>
                 <ConfigurationCard />
               </GridCol>
-              {getGraphKPIs(intent, kpis).map(kpi => (
-                <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
-                  <KpiCard kpi={kpi} />
-                </GridCol>
-              ))}
+              <KPIGrid/>
             </GridRow>
           </DetailsSection>
 

@@ -10,10 +10,9 @@ import { DetailsSection }       from '../common/DetailsSection'
 import { IntentDetailsHeader }  from '../common/IntentDetailsHeader'
 import { IntentDetailsSidebar } from '../common/IntentDetailsSidebar'
 import { IntentIcon }           from '../common/IntentIcon'
-import { KpiCard }              from '../common/KPIs'
+import { KPIGrid }              from '../common/KPIs'
 import { StatusTrail }          from '../common/StatusTrail'
 import { useIntentContext }     from '../IntentContext'
-import { getGraphKPIs }         from '../useIntentDetailsQuery'
 
 import { ConfigurationCard }   from './ConfigurationCard'
 import { createUseValuesText } from './createUseValuesText'
@@ -25,7 +24,7 @@ export function createIntentAIDetails (
 ) {
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const { intent, kpis } = useIntentContext()
+    const { intent } = useIntentContext()
     const valuesText = useValuesText()
     const fields = [
       ...useCommonFields(intent),
@@ -54,11 +53,7 @@ export function createIntentAIDetails (
                 <GridCol data-testid='Configuration' col={{ span: 12 }}>
                   <ConfigurationCard />
                 </GridCol>
-                {getGraphKPIs(intent, kpis).map(kpi => (
-                  <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
-                    <KpiCard kpi={kpi} />
-                  </GridCol>
-                ))}
+                <KPIGrid/>
               </GridRow>
             </DetailsSection.Details>
           </DetailsSection>

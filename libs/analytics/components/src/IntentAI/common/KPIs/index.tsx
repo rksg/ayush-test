@@ -26,7 +26,7 @@ export const KPICard: React.FC<{
 }
 
 export const KPIGrid = () => {
-  let { intent, kpis } = useIntentContext()
+  const { intent, kpis } = useIntentContext()
   const sanitisedKpis = kpis
     // pick only 2 required field
     // which its value is primitive value type
@@ -39,10 +39,9 @@ export const KPIGrid = () => {
   const intentKpis = isDetectError ?
     (_.pick(query.error, ['data']) as { data: IntentKpi }).data
     : query.data
-  intent = { ...intent, ...intentKpis }
 
   return <>
-    {getGraphKPIs(intent, kpis).map(kpi => (
+    {getGraphKPIs({ ...intent, ...intentKpis }, kpis).map(kpi => (
       <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
         <KPICard kpi={kpi} />
       </GridCol>
@@ -51,22 +50,20 @@ export const KPIGrid = () => {
 }
 
 export const KPIFields = () => {
-  let { intent, kpis } = useIntentContext()
-  const sanitisedKpis = kpis
-    // pick only 2 required field
-    // which its value is primitive value type
-    // to prevent RTK Query unable to use param as cache key
-    .map(kpi => _.pick(kpi, ['key', 'deltaSign']))
-  const query = useIntentKpisQuery({ ...intent, kpis: sanitisedKpis })
+  const { intent, kpis } = useIntentContext()
+  const query = useIntentKpisQuery({
+    ...intent,
+    kpis: kpis.map(kpi => _.pick(kpi, ['key', 'deltaSign']))
+  })
 
   const isDetectError = query.isError && !!_.pick(query.error, ['data'])
 
   const intentKpis = isDetectError ?
     (_.pick(query.error, ['data']) as { data: IntentKpi }).data
     : query.data
-  intent = { ...intent, ...intentKpis }
 
   return <>
-    {getGraphKPIs(intent, kpis).map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
+    {getGraphKPIs({ ...intent, ...intentKpis }, kpis)
+      .map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
   </>
 }
