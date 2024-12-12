@@ -7,8 +7,9 @@ import {
   Switch,
   Space
 } from 'antd'
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import { NamePath } from 'antd/lib/form/interface'
+import _            from 'lodash'
+import { useIntl }  from 'react-intl'
 
 import { Tooltip }                    from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
@@ -28,15 +29,15 @@ const { useWatch } = Form
 const { Option } = Select
 
 interface DhcpOption82FormField {
-  dhcpOption82SubOption1EnabledFieldName: (string|number)[]
-  dhcpOption82SubOption1FormatFieldName: (string|number)[]
-  dhcpOption82SubOption2EnabledFieldName: (string|number)[]
-  dhcpOption82SubOption2FormatFieldName: (string|number)[]
-  dhcpOption82SubOption150EnabledFieldName: (string|number)[]
-  dhcpOption82SubOption151EnabledFieldName: (string|number)[]
-  dhcpOption82SubOption151FormatFieldName: (string|number)[]
-  dhcpOption82SubOption151InputFieldName: (string|number)[]
-  dhcpOption82MacFormat: (string|number)[]
+  dhcpOption82SubOption1EnabledFieldName: NamePath
+  dhcpOption82SubOption1FormatFieldName: NamePath
+  dhcpOption82SubOption2EnabledFieldName: NamePath
+  dhcpOption82SubOption2FormatFieldName: NamePath
+  dhcpOption82SubOption150EnabledFieldName: NamePath
+  dhcpOption82SubOption151EnabledFieldName: NamePath
+  dhcpOption82SubOption151FormatFieldName: NamePath
+  dhcpOption82SubOption151InputFieldName: NamePath
+  dhcpOption82MacFormat: NamePath
 }
 
 /* eslint-disable max-len */
