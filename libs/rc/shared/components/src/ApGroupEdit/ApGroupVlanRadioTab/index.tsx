@@ -127,8 +127,7 @@ export function ApGroupVlanRadioTab () {
 
     if (venueId)
       getInitTableData()
-  }, [getApGroupNetworkListV2,
-    tenantId, apGroupId, getRbacApGroupNetworkList, venueId])
+  }, [getApGroupNetworkListV2, tenantId, apGroupId, getRbacApGroupNetworkList, venueId])
 
   const handleUpdateAllApGroupVlanRadio = async () => {
     const updateData = updateDataRef.current
