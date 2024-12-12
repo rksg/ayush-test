@@ -330,6 +330,9 @@ export function NetworkForm (props:{
   useEffect(() => {
     if(saveState){
       saveContextRef.current = saveState
+      if(saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.WISPr && saveState.guestPortal?.wisprPage) {
+        updateSaveState(_.omit(saveState, ['guestPortal', 'wisprPage']))
+      }
     }
   }, [saveState])
 
