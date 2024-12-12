@@ -86,10 +86,14 @@ export const ImpactedSwitchesDrawer: React.FC<ImpactedDrawerProps> = (props) => 
     width={drawerWidth}
     title={$t(
       {
-        defaultMessage: '{count} Impacted {count, plural, one {Switch} other {Switches}}',
+        // eslint-disable-next-line max-len
+        defaultMessage: '{count} Impacted {count, plural, one {Switch} other {Switches}} in VLAN ID: {vlanId}',
         description: 'Translation strings - Impacted, Switch, Switches)'
       },
-      { count: impactedCount }
+      {
+        count: impactedCount,
+        vlanId: vlan.vlanId
+      }
     )}
     visible={visible}
     onClose={onClose}
