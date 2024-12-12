@@ -19,7 +19,8 @@ export function RedirectUrlInput () {
     intl.$t({ defaultMessage: 'If unchecked, users will reach the page they originally requested' })
 
   const REDIRECT_INVALID_MSG =
-    intl.$t({ defaultMessage: 'Please enter the redirect URL. This field cannot be left blank.' })
+    // eslint-disable-next-line max-len
+    intl.$t({ defaultMessage: 'Please enter the redirect URL. It should start with \'http\' or \'https\' and include a valid domain name or IP address.' })
 
   const form = Form.useFormInstance()
   const { useWatch } = Form
