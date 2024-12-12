@@ -10,8 +10,8 @@ import { Features, useIsSplitOn }                               from '@acx-ui/fe
 import {
   LanPortPoeSettings,
   LanPortSettings,
-  ConvertPoeOutToFormData,
-  SoftgreProfileProvider }
+  ConvertPoeOutToFormData
+}
   from '@acx-ui/rc/components'
 import {
   useGetVenueSettingsQuery,
@@ -482,28 +482,17 @@ export function LanPorts () {
             >
               <Row>
                 <Col span={8}>
-                  <SoftgreProfileProvider value={{
-                    index,
-                    isSoftgreTunnelEnable: (!!lan.softGreProfileId),
-                    softgreProfileId: (lan.softGreProfileId ? lan.softGreProfileId : ''),
-                    queryPayload: {
-                      venueId: venueId ? venueId : '',
-                      apModel: selectedModel.model,
-                      portId: lan.portId ? lan.portId : ''
-                    }
-                  }}>
-                    <LanPortSettings
-                      selectedPortCaps={selectedPortCaps}
-                      selectedModel={selectedModel}
-                      setSelectedPortCaps={setSelectedPortCaps}
-                      selectedModelCaps={selectedModelCaps}
-                      isDhcpEnabled={isDhcpEnabled}
-                      isTrunkPortUntaggedVlanEnabled={supportTrunkPortUntaggedVlan}
-                      onGUIChanged={handleGUIChanged}
-                      index={index}
-                      venueId={venueId}
-                    />
-                  </SoftgreProfileProvider>
+                  <LanPortSettings
+                    selectedPortCaps={selectedPortCaps}
+                    selectedModel={selectedModel}
+                    setSelectedPortCaps={setSelectedPortCaps}
+                    selectedModelCaps={selectedModelCaps}
+                    isDhcpEnabled={isDhcpEnabled}
+                    isTrunkPortUntaggedVlanEnabled={supportTrunkPortUntaggedVlan}
+                    onGUIChanged={handleGUIChanged}
+                    index={index}
+                    venueId={venueId}
+                  />
                 </Col>
               </Row>
             </Tabs.TabPane>
