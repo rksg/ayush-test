@@ -25,10 +25,9 @@ describe('SoftGRETunnelSettings', () => {
         <Form>
           <SoftGRETunnelSettings
             index={1}
-            isSoftGRETunnelToggleDisable={false}
-            softgreProfileId={''}
-            softgreTunnelEnable={true}
-            setSoftgreTunnelEnable={() => {}}
+            softGreProfileId={''}
+            softGreTunnelEnable={true}
+            readonly={false}
           />
         </Form>
       </Provider>
