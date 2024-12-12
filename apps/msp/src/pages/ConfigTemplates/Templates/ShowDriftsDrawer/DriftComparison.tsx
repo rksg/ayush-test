@@ -33,7 +33,7 @@ export function DriftViewer (props: { value: ConfigTemplateDriftValueType }) {
   if (isImageUrl(value)) {
     return <ImageViewer imageUrl={value as string} />
   }
-  return <span>{convertDriftDisplayValue(value)}</span>
+  return <>{convertDriftDisplayValue(value)}</>
 }
 
 function convertDriftDisplayValue (value: ConfigTemplateDriftValueType): string {

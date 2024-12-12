@@ -14,38 +14,35 @@ jest.mock('antd', () => ({
 }))
 
 describe('DriftComparison', () => {
-  const mockData: ConfigTemplateDriftRecord = {
-    path: 'WifiNetwork',
-    data: {
-      template: 'template value',
-      instance: 'instance value'
+  it('renders the component with the correct data and background colors', () => {
+    const mockData: ConfigTemplateDriftRecord = {
+      path: 'WifiNetwork',
+      data: {
+        template: 'template value',
+        instance: 'instance value'
+      }
     }
-  }
-
-  const mockEmptyTemplateData: ConfigTemplateDriftRecord = {
-    path: 'Empty Template',
-    data: {
-      template: '',
-      instance: 'instance value'
-    }
-  }
-
-  const mockEmptyInstanceData: ConfigTemplateDriftRecord = {
-    path: 'Empty Instance',
-    data: {
-      template: 'template value',
-      instance: ''
-    }
-  }
-
-  it('renders the component with the correct data', () => {
     render(<DriftComparison {...mockData} />)
+
     expect(screen.getByText('WifiNetwork')).toBeInTheDocument()
-    expect(screen.getByText('template value')).toBeInTheDocument()
-    expect(screen.getByText('instance value')).toBeInTheDocument()
+
+    const templateCol = screen.getByText('template value')
+    expect(templateCol).toBeInTheDocument()
+    expect(templateCol).toHaveStyle('background-color: #FBD9AB')
+
+    const instanceCol = screen.getByText('instance value')
+    expect(instanceCol).toBeInTheDocument()
+    expect(instanceCol).toHaveStyle('background-color: #FBD9AB')
   })
 
   it('displays correct background colors when template is empty', () => {
+    const mockEmptyTemplateData: ConfigTemplateDriftRecord = {
+      path: 'Empty Template',
+      data: {
+        template: '',
+        instance: 'instance value'
+      }
+    }
     render(<DriftComparison {...mockEmptyTemplateData} />)
     const instanceCol = screen.getByText('instance value')
     expect(instanceCol).toHaveStyle('background-color: #B4E8C7')
@@ -55,21 +52,19 @@ describe('DriftComparison', () => {
   })
 
   it('displays correct background colors when instance is empty', () => {
+    const mockEmptyInstanceData: ConfigTemplateDriftRecord = {
+      path: 'Empty Instance',
+      data: {
+        template: 'template value',
+        instance: ''
+      }
+    }
     render(<DriftComparison {...mockEmptyInstanceData} />)
     const templateCol = screen.getByText('template value')
     expect(templateCol).toHaveStyle('background-color: #B4E8C7')
 
     const instanceCol = templateCol.nextSibling!
     expect(instanceCol).toHaveStyle('background-color: #F2F2F2')
-  })
-
-  it('displays correct background colors when both are not empty', () => {
-    render(<DriftComparison {...mockData} />)
-    const templateCol = screen.getByText('template value')
-    expect(templateCol).toHaveStyle('background-color: #FBD9AB')
-
-    const instanceCol = screen.getByText('instance value')
-    expect(instanceCol).toHaveStyle('background-color: #FBD9AB')
   })
 
   describe('DriftViewer', () => {
