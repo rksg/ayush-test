@@ -88,9 +88,25 @@ jest.mock('../Charts/ImpactedSwitchVLANDetails', () => ({
   ImpactedSwitchVLANsDetails: () => <div data-testid='impactedSwitchVLANsDetails' />
 }))
 jest.mock('../Charts/ImpactedSwitchDDoS', () => ({
-  ImpactedSwitchDDoSTable: () => <div data-testid='impactedSwitchDDoSTable' />,
-  ImpactedSwitchDDoSDonut: () => <div data-testid='impactedSwitchDDoSDonut' />
+  ImpactedSwitchDDoSTable: () => <div data-testid='impactedSwitchDDoSTable' />
 }))
+
+jest.mock('../Charts/ImpactedSwitchesDonut', () => ({
+  ImpactedSwitchesDonut: () => <div data-testid='impactedSwitchesDonut' />
+}))
+
+jest.mock('../Charts/ImpactedSwitchLoopDetection', () => ({
+  ImpactedVlanTable: () => <div data-testid='impactedVlanTable' />
+}))
+
+jest.mock('../Charts/ImpactedUplinkPortDetails', () => ({
+  ImpactedUplinkPortDetails: () => <div data-testid='impactedUplinkPortDetails' />
+}))
+
+jest.mock('../Charts/ImpactedSwitchUplinkTable', () => ({
+  ImpactedSwitchUplinkTable: () => <div data-testid='impactedSwitchUplinkTable' />
+}))
+
 jest.mock('../Charts/WanthroughputTable', () => ({
   WanthroughputTable: () => <div data-testid='wanthroughputTable' />
 }))
@@ -207,7 +223,7 @@ describe('Test', () => {
         fakeIncident: fakeIncidentDDoS,
         hasNetworkImpact: false,
         hasTimeSeries: true,
-        charts: ['impactedSwitchDDoSTable','impactedSwitchDDoSDonut']
+        charts: ['impactedSwitchDDoSTable']
       },
       {
         component: SwitchLoopDetection,
@@ -220,14 +236,14 @@ describe('Test', () => {
         component: SwitchPortCongestion,
         fakeIncident: fakeIncidentPortCongestion,
         hasNetworkImpact: false,
-        hasTimeSeries: false,
+        hasTimeSeries: true,
         charts: []
       },
       {
         component: SwitchUplinkPortCongestion,
         fakeIncident: fakeIncidentUplinkPortCongestion,
         hasNetworkImpact: false,
-        hasTimeSeries: false,
+        hasTimeSeries: true,
         charts: []
       },
       {
@@ -420,15 +436,15 @@ describe('Test', () => {
       component: SwitchPortCongestion,
       fakeIncident: fakeIncidentPortCongestion,
       hasNetworkImpact: false,
-      hasTimeSeries: false,
+      hasTimeSeries: true,
       charts: []
     },
     {
       component: SwitchUplinkPortCongestion,
       fakeIncident: fakeIncidentUplinkPortCongestion,
       hasNetworkImpact: false,
-      hasTimeSeries: false,
-      charts: []
+      hasTimeSeries: true,
+      charts: ['ImpactedUplinkPortDetails']
     }].forEach((test) => it(`should not render anything for ${test.component.name}`, () => {
       jest.mocked(useIsSplitOn).mockReturnValue(false)
       const params = { incidentId: test.fakeIncident.id }
