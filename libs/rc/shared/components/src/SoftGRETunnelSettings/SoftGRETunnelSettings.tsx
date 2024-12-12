@@ -1,13 +1,10 @@
-import { useContext } from 'react'
-
 import { Form, Switch, Space } from 'antd'
 import { useIntl }             from 'react-intl'
 
 import { Tooltip, Alert } from '@acx-ui/components'
 
-import { SoftgreProfileAndDHCP82Context } from './SoftGREProfileAndDHCP82Context'
-import { SoftGREProfileSettings }         from './SoftGREProfileSettings'
-import { FieldLabel }                     from './styledComponents'
+import { SoftGREProfileSettings } from './SoftGREProfileSettings'
+import { FieldLabel }             from './styledComponents'
 
 interface SoftGRETunnelSettingsProps {
   index: number
@@ -19,7 +16,6 @@ interface SoftGRETunnelSettingsProps {
 
 export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   const { $t } = useIntl()
-  const { onChangeSoftgreTunnel } = useContext(SoftgreProfileAndDHCP82Context)
   const {
     index,
     softgreProfileId,
@@ -52,9 +48,8 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
           children={
             <Switch
               disabled={readonly}
-              onClick={(checked) => {
+              onClick={() => {
                 onGUIChanged && onGUIChanged('softgreTunnelEnable')
-                onChangeSoftgreTunnel && onChangeSoftgreTunnel(checked)
               }}
             />
           }
