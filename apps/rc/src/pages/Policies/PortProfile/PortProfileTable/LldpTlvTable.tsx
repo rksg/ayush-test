@@ -41,7 +41,7 @@ export default function LldpTlvTable () {
 
   const tableQuery = useTableQuery({
     useQuery: useSwitchPortProfileLldpTlvsListQuery,
-    defaultPayload: defaultPayload,
+    defaultPayload,
     sorter: {
       sortField: 'id',
       sortOrder: 'ASC'
@@ -88,6 +88,7 @@ export default function LldpTlvTable () {
       title: $t({ defaultMessage: 'System Description' }),
       key: 'systemDescription',
       dataIndex: 'systemDescription',
+      searchable: true,
       sorter: true
     },
     {

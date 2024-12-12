@@ -82,7 +82,8 @@ export default function SwitchPortProfileTable () {
         sorter: true,
         render: (_, row) => {
           return <Tooltip
-            title={row.taggedVlans?.join(', ')}
+            title={row.taggedVlans?.join('\n')}
+            dottedUnderline={row.taggedVlans?.length ? true : false}
           >
             {row.taggedVlans ? row.taggedVlans.length : 0}
           </Tooltip>
@@ -96,6 +97,7 @@ export default function SwitchPortProfileTable () {
         render: (_, row) => {
           return <Tooltip
             title={row.macOuis?.map(item=> item.note).join('\n')}
+            dottedUnderline={row.macOuis?.length ? true : false}
           >
             {row.macOuis ? row.macOuis.length : 0}
           </Tooltip>
@@ -109,6 +111,7 @@ export default function SwitchPortProfileTable () {
         render: (_, row) => {
           return <Tooltip
             title={row.lldpTlvs?.map(item=> item.systemName).join('\n')}
+            dottedUnderline={row.lldpTlvs?.length ? true : false}
           >
             {row.lldpTlvs ? row.lldpTlvs.length : 0}
           </Tooltip>
@@ -122,6 +125,7 @@ export default function SwitchPortProfileTable () {
         render: (_, row) => {
           return <Tooltip
             title={row.regularProfiles?.join('\n')}
+            dottedUnderline={row.regularProfiles?.length ? true : false}
           >
             {row.regularProfiles ? row.regularProfiles.length : 0}
           </Tooltip>

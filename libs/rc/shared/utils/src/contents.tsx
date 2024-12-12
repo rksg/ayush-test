@@ -1,4 +1,4 @@
-import { defineMessage, MessageDescriptor } from 'react-intl'
+import { defineMessage, FormattedMessage, MessageDescriptor } from 'react-intl'
 
 import {
   DHCPConfigTypeEnum
@@ -533,6 +533,26 @@ export const EthernetPortProfileMessages = {
   }),
   GUEST_VLAN: defineMessage({
     defaultMessage: 'A guest VLAN is used if you want to allow a device that fails authentication to access the Internet but restrict it from accessing internal network resources'
+  })
+  /* eslint-enable */
+}
+
+export const SwitchPortProfileMessages = {
+  /* eslint-disable max-len */
+  MAC_OUI: <FormattedMessage
+    defaultMessage={'Click here to lookup MAC OUI at IEEE ({link})'}
+    values={{
+      link: <a
+        className='link'
+        target='_blank'
+        href={'https://standards-oui.ieee.org'}
+        rel='noreferrer'>
+        {'https://standards-oui.ieee.org'}
+      </a>
+    }}
+  />,
+  LLDP_TLV: defineMessage({
+    defaultMessage: 'Define LLDP match criterion - like the System Name and/or Description.'
   })
   /* eslint-enable */
 }

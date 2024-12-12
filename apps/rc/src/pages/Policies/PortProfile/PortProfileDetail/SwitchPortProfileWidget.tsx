@@ -68,7 +68,8 @@ export default function SwitchPortProfileWidget (){
     },
     {
       title: $t({ defaultMessage: '802.1X Authentication' }),
-      content: data?.dot1x ? $t({ defaultMessage: 'ON' }) : $t({ defaultMessage: 'OFF' })
+      content: data?.dot1x ? $t({ defaultMessage: 'ON' }) : $t({ defaultMessage: 'OFF' }),
+      colSpan: 5
     },
     {
       title: $t({ defaultMessage: 'MAC Auth' }),

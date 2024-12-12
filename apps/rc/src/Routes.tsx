@@ -121,6 +121,7 @@ import MacRegistrationListsTable                                        from './
 import MyPolicies                                                       from './pages/Policies/MyPolicies'
 import PortProfile                                                      from './pages/Policies/PortProfile'
 import SwitchPortProfileDetail                                          from './pages/Policies/PortProfile/PortProfileDetail/SwitchPortProfileDetail'
+import { SwitchPortProfileForm }                                        from './pages/Policies/PortProfile/PortProfileForm/SwitchPortProfileForm'
 import SelectPolicyForm                                                 from './pages/Policies/SelectPolicyForm'
 import SnmpAgentDetail                                                  from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
 import SnmpAgentForm                                                    from './pages/Policies/SnmpAgent/SnmpAgentForm/SnmpAgentForm'
@@ -1513,7 +1514,15 @@ function PolicyRoutes () {
           element={<PortProfile />}
         />
         <Route
-          path='policies/portProfile/:activeTab/:activeSubTab/:portProfileId/detail'
+          path='policies/portProfile/switch/profiles/add'
+          element={<SwitchPortProfileForm />}
+        />
+        <Route
+          path='policies/portProfile/switch/profiles/:portProfileId/edit'
+          element={<SwitchPortProfileForm />}
+        />
+        <Route
+          path='policies/portProfile/switch/profiles/:portProfileId/detail'
           element={<SwitchPortProfileDetail />}
         />
       </>
