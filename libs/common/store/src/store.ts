@@ -51,6 +51,7 @@ import {
   baseRuckusAssistantApi as ruckusAssistantApi,
   baseDirectoryServerApi as directoryServerApi
 } from './baseApi'
+import { cancelMiddleware } from './cancelMiddleware'
 
 const isDev = process.env['NODE_ENV'] === 'development'
 
@@ -113,6 +114,7 @@ export const store = configureStore({
       serializableCheck: isDev ? undefined : false,
       immutableCheck: isDev ? undefined : false
     }).concat([
+      cancelMiddleware,
       dynamicMiddleware.middleware,
       commonApi.middleware,
       networkApi.middleware,
