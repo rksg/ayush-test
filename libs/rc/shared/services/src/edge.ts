@@ -7,6 +7,7 @@ import {
 } from '@acx-ui/components'
 import {
   ApiVersionEnum,
+  ClusterArpTerminationSettings,
   ClusterNetworkSettings,
   ClusterSubInterfaceSettings,
   CommonResult,
@@ -996,6 +997,36 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
+    updateEdgeClusterArpTerminationSettings: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.updateEdgeClusterArpTerminationSettings, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'ARP_TERMINATION' }]
+    }),
+    getEdgeClusterArpTerminationSettings: build.query<ClusterArpTerminationSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeClusterArpTerminationSettings, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'ARP_TERMINATION' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update ARP Termination Settings'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'ARP_TERMINATION' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
     patchEdgeClusterSubInterfaceSettings: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.patchEdgeClusterSubInterfaceSettings, params)
@@ -1250,6 +1281,8 @@ export const {
   useGetEdgeClusterQuery,
   usePatchEdgeClusterNetworkSettingsMutation,
   useGetEdgeClusterNetworkSettingsQuery,
+  useUpdateEdgeClusterArpTerminationSettingsMutation,
+  useGetEdgeClusterArpTerminationSettingsQuery,
   usePatchEdgeClusterSubInterfaceSettingsMutation,
   useGetEdgeClusterSubInterfaceSettingsQuery,
   useGetEdgesPortStatusQuery,
