@@ -37,6 +37,9 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('./ApSnmp', () => ({
+  ApSnmp: () => <div>ApSnmp Component</div>
+}))
 
 describe('ServerTab', () => {
   beforeEach(() => {

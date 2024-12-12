@@ -65,8 +65,7 @@ import {
   useConfigTemplatePageHeaderTitle,
   useConfigTemplateQueryFnSwitcher,
   NetworkTunnelSdLanAction,
-  NetworkTunnelSoftGreAction,
-  MacRegistrationPool
+  NetworkTunnelSoftGreAction
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -331,6 +330,9 @@ export function NetworkForm (props:{
   useEffect(() => {
     if(saveState){
       saveContextRef.current = saveState
+      if(saveState.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.WISPr && saveState.guestPortal?.wisprPage) {
+        updateSaveState(_.omit(saveState, ['guestPortal', 'wisprPage']))
+      }
     }
   }, [saveState])
 
@@ -393,22 +395,22 @@ export function NetworkForm (props:{
   useEffect(() => {
     if (!macRegistrationPool?.data?.length) return
 
-    const fullNetworkSaveData = merge({}, saveState, {
+    const targetMacRegistrationListId = macRegistrationPool.data[0].id
+    const resolvedNetworkSaveData = {
       wlan: {
-        macRegistrationListId: (macRegistrationPool?.data as MacRegistrationPool[])[0].id || ''
+        macRegistrationListId: targetMacRegistrationListId
       }
-    })
+    }
 
-    form.setFieldValue('wlan.macRegistrationListId', (macRegistrationPool?.data as MacRegistrationPool[])[0].id || '')
+    form.setFieldValue('wlan.macRegistrationListId', targetMacRegistrationListId)
 
-    updateSaveData(fullNetworkSaveData)
+    updateSaveData(resolvedNetworkSaveData)
   }, [macRegistrationPool])
 
   useEffect(() => {
     if (!radiusServerConfigurations) return
 
-    const fullNetworkSaveData = merge({}, saveState, radiusServerConfigurations)
-    const resolvedNetworkSaveData = deriveRadiusFieldsFromServerData(fullNetworkSaveData)
+    const resolvedNetworkSaveData = deriveRadiusFieldsFromServerData(radiusServerConfigurations)
 
     form.setFieldsValue({
       ...resolvedNetworkSaveData

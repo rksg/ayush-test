@@ -529,15 +529,8 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                           >
                             <tr>
                               <th
-                                class="ant-table-cell ant-table-selection-column react-resizable"
-                              >
-                                <div
-                                  class=""
-                                />
-                                <div
-                                  class=""
-                                />
-                              </th>
+                                class="ant-table-cell ant-table-selection-column"
+                              />
                               <th
                                 class="ant-table-cell ant-table-cell-ellipsis ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
@@ -941,16 +934,9 @@ exports[`VideoCallQoe Table should render no data when no data is returned 1`] =
                                 />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                                 style="position: sticky; right: 0px;"
-                              >
-                                <div
-                                  class=""
-                                />
-                                <div
-                                  class=""
-                                />
-                              </th>
+                              />
                             </tr>
                           </thead>
                           <tbody
@@ -1614,15 +1600,8 @@ exports[`VideoCallQoe Table should render table 1`] = `
                           >
                             <tr>
                               <th
-                                class="ant-table-cell ant-table-selection-column react-resizable"
-                              >
-                                <div
-                                  class=""
-                                />
-                                <div
-                                  class=""
-                                />
-                              </th>
+                                class="ant-table-cell ant-table-selection-column"
+                              />
                               <th
                                 class="ant-table-cell ant-table-cell-ellipsis ant-table-column-has-sorters react-resizable"
                                 tabindex="0"
@@ -2026,16 +2005,9 @@ exports[`VideoCallQoe Table should render table 1`] = `
                                 />
                               </th>
                               <th
-                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first react-resizable"
+                                class="ant-table-cell ant-table-cell-fix-right ant-table-cell-fix-right-first"
                                 style="position: sticky; right: 0px;"
-                              >
-                                <div
-                                  class=""
-                                />
-                                <div
-                                  class=""
-                                />
-                              </th>
+                              />
                             </tr>
                           </thead>
                           <tbody

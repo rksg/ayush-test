@@ -10,7 +10,7 @@ import { useIntl }             from 'react-intl'
 
 import { Tooltip }                    from '@acx-ui/components'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { URLRegExp }                  from '@acx-ui/rc/utils'
+import { HttpURLRegExp }              from '@acx-ui/rc/utils'
 
 export function RedirectUrlInput () {
   const intl = useIntl()
@@ -19,7 +19,8 @@ export function RedirectUrlInput () {
     intl.$t({ defaultMessage: 'If unchecked, users will reach the page they originally requested' })
 
   const REDIRECT_INVALID_MSG =
-    intl.$t({ defaultMessage: 'Please enter the redirect URL. This field cannot be left blank.' })
+    // eslint-disable-next-line max-len
+    intl.$t({ defaultMessage: 'Please enter the redirect URL. It should start with \'http\' or \'https\' and include a valid domain name or IP address.' })
 
   const form = Form.useFormInstance()
   const { useWatch } = Form
@@ -63,7 +64,7 @@ export function RedirectUrlInput () {
           { required: redirectCheckbox,
             message: REDIRECT_INVALID_MSG
           },
-          { validator: (_, value) => redirectCheckbox ? URLRegExp(value) : Promise.resolve(),
+          { validator: (_, value) => redirectCheckbox ? HttpURLRegExp(value) : Promise.resolve(),
             message: REDIRECT_INVALID_MSG
           }
         ]}

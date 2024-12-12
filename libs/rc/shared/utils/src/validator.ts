@@ -95,6 +95,15 @@ export function URLRegExp (value: string) {
   }
   return Promise.resolve()
 }
+export function HttpURLRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp('^https?:\\/\\/([A-Za-z0-9]+([\\-\\.]{1}[A-Za-z0-9]+)*\\.[A-Za-z]{2,}|(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|localhost)(:([1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?(\\/.*)?([?#].*)?$')
+  if (value!=='' && !re.test(value)) {
+    return Promise.reject($t(validationMessages.validateURL))
+  }
+  return Promise.resolve()
+}
 export function URLProtocolRegExp (value: string) {
   const { $t } = getIntl()
   let ok = true
@@ -776,8 +785,9 @@ export function cliVariableNameRegExp (value: string) {
 }
 
 export function cliIpAddressRegExp (value: string) {
+  /* {1-223}.{0-255}.{0-255}.{1–255} */
   const { $t } = getIntl()
-  const re = new RegExp(/^([1-9]|[1-9]\d|1\d\d|2[0-2][0-3]|22[0-3])(\.([0-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])){2}\.([1-9]|[1-9]\d|1\d\d|2[0-4]\d|25[0-4])$/)
+  const re = new RegExp(/^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9])\.)((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){2}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]?|[1-9])$/)
 
   if (value && !re.test(value)) {
     return Promise.reject($t(validationMessages.ipAddress))
@@ -957,6 +967,9 @@ export function validateSwitchStaticRouteNextHop (ipAddress: string) {
 }
 
 export function validateSwitchStaticRouteAdminDistance (ipAddress: string) {
+  if(!ipAddress){
+    return Promise.resolve()
+  }
   const { $t } = getIntl()
   const adRegexp = new RegExp('^([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])$')
   if (!adRegexp.test(ipAddress)) {

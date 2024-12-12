@@ -22,11 +22,12 @@ import {
 
 import { VlanDate } from '../index'
 
-export function VlanInput ({ apgroup, wlan, vlanPoolSelectOptions, onChange }: {
+export function VlanInput ({ apgroup, wlan, vlanPoolSelectOptions, onChange, selected }: {
   apgroup: NetworkApGroup,
   wlan?: NetworkSaveData['wlan'],
   vlanPoolSelectOptions?: VlanPool[],
-  onChange: (data: VlanDate) => void
+  onChange: (data: VlanDate) => void,
+  selected: boolean
 }) {
   const { $t } = useIntl()
 
@@ -133,6 +134,10 @@ export function VlanInput ({ apgroup, wlan, vlanPoolSelectOptions, onChange }: {
   }
 
   const isPoolType = editingVlan.vlanType === VlanType.Pool
+  if (!selected) {
+    return <></>
+  }
+
   return (
     <Space size='small'>
       { isEditMode ? (

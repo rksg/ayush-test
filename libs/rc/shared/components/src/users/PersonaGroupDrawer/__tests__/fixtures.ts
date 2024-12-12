@@ -240,5 +240,56 @@ export const certificateTemplateList = {
   ]
 }
 
+export const mockAdaptivePolicySetTableResult = {
+  paging: {
+    totalCount: 1,
+    page: 1,
+    pageSize: 1,
+    pageCount: 1
+  },
+  content: [
+    {
+      id: 'abb1a52d-fd77-434c-8895-36ee9a432ad1',
+      name: '1010',
+      description: '1010',
+      mappedPolicyCount: 1,
+      assignmentCount: 4,
+      policyNames: [
+        'policy1'
+      ],
+      externalAssignments: [
+        {
+          identityName: 'IdentityGroup',
+          identityId: [
+            '86a51b7d-1e15-4ad0-8d4a-504e08b845a2'
+          ],
+          links: []
+        },
+        {
+          identityName: 'asfasdfasdf',
+          identityId: [
+            'fb89f5320870417494b443e4eeabb51d'
+          ],
+          links: []
+        },
+        {
+          identityName: 'JackyTest',
+          identityId: [
+            '4772bb0632684d28b634eac9d57e2902'
+          ],
+          links: []
+        },
+        {
+          identityName: 'template_022',
+          identityId: [
+            'eabc9db1eff948eeb902a22860213a42'
+          ],
+          links: []
+        }
+      ]
+    }
+  ]
+}
+
 const paginationPattern = '?size=:pageSize&page=:page&sort=:sort'
 export const replacePagination = (url: string) => url.replace(paginationPattern, '')

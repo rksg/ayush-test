@@ -8,6 +8,7 @@ import {
   Select,
   Switch
 } from 'antd'
+import { isEmpty } from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -55,17 +56,25 @@ const { useWatch } = Form
 export function AaaSettingsForm () {
   const { editMode, cloneMode, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const isWifiRbacEnabledFF = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isWifiRbacEnabled = !isRuckusAiMode && isWifiRbacEnabledFF
+  const isRadsecFeatureEnabledFF = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const isRadsecFeatureEnabled = !isRuckusAiMode && isRadsecFeatureEnabledFF
   const { isTemplate } = useConfigTemplate()
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
 
   // TODO: Remove deprecated codes below when RadSec feature is delivery
   useEffect(()=>{
-    if(!supportRadsec && data && (editMode || cloneMode)) {
+    if(!supportRadsec && !isRuckusAiMode && data && (editMode || cloneMode)) {
       setFieldsValue()
     }
   }, [data])
+
+  useEffect(() => {
+    if (isRuckusAiMode && !isEmpty(data?.wlan)) {
+      setFieldsValue()
+    }
+  }, [data?.wlan])
 
   useEffect(()=>{
     if(supportRadsec && data && (editMode || cloneMode)) {
@@ -112,12 +121,13 @@ export function AaaSettingsForm () {
 
 function SettingsForm () {
   const { $t } = useIntl()
-  const { editMode, cloneMode } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, isRuckusAiMode } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
   const form = Form.useFormInstance()
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
   const useCertificateTemplate = useWatch('useCertificateTemplate')
-  const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const isCertificateTemplateEnabledFF = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const isCertificateTemplateEnabled = !isRuckusAiMode && isCertificateTemplateEnabledFF
   const { isTemplate } = useConfigTemplate()
   const wpa2Description = <>
     {$t(WifiNetworkMessages.WPA2_DESCRIPTION)}
@@ -256,7 +266,7 @@ function CertAuth () {
 
 function AaaService () {
   const { $t } = useIntl()
-  const { editMode, setData, data } = useContext(NetworkFormContext)
+  const { editMode, setData, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   const enableAccountingService = useWatch('enableAccountingService', form)
   const enableMacAuthentication = useWatch<boolean>(
@@ -264,8 +274,12 @@ function AaaService () {
   const [selectedAuthRadius, selectedAcctRadius] =
     [useWatch<Radius>('authRadius'), useWatch<Radius>('accountingRadius')]
   const support8021xMacAuth = useIsSplitOn(Features.WIFI_8021X_MAC_AUTH_TOGGLE)
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const isWifiRbacEnabledFF = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isWifiRbacEnabled = !isRuckusAiMode && isWifiRbacEnabledFF
+
+  const isRadsecFeatureEnabledFF = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const isRadsecFeatureEnabled = !isRuckusAiMode && isRadsecFeatureEnabledFF
+
   const { isTemplate } = useConfigTemplate()
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
   const labelWidth = '250px'
