@@ -78,7 +78,7 @@ afterEach((done) => {
 const mockIntentContextWith = (data: Partial<Intent> = {}) => {
   const intent = _.merge({}, mocked, data) as Intent
   mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail', { data: { intent } })
-  mockGraphqlQuery(intentAIUrl, 'IntentKpis', { data: { intent } })
+  mockGraphqlQuery(intentAIUrl, 'IntentKPIs', { data: { intent } })
   const context = mockIntentContext({ intent, configuration, kpis })
   return { params: _.pick(context.intent, ['code', 'root', 'sliceId']) }
 }

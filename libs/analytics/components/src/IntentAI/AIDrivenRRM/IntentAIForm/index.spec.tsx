@@ -68,6 +68,8 @@ describe('IntentAIForm', () => {
       data: { transition: { success: true, errorMsg: '' , errorCode: '' } }
     })
 
+    mockGraphqlQuery(intentAIUrl, 'IntentKPIs', { data: { mockedIntentCRRM } })
+
     jest.spyOn(require('../../utils'), 'isDataRetained')
       .mockImplementation(() => true)
 

@@ -79,7 +79,7 @@ const mockIntentContextWith = (data: Partial<Intent> = {}) => {
   let intent = { ...mocked, code: 'c-bgscan24g-timer' }
   intent = _.merge({}, intent, data) as typeof intent
   mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail', { data: { intent } })
-  mockGraphqlQuery(intentAIUrl, 'IntentKpis', { data: { intent } })
+  mockGraphqlQuery(intentAIUrl, 'IntentKPIs', { data: { intent } })
   mockIntentContext({ intent, configuration, kpis })
   return {
     params: { code: mocked.code, root: mocked.root, sliceId: mocked.sliceId }
