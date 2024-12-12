@@ -4,7 +4,7 @@ import { defineMessage }     from 'react-intl'
 import { getIntl } from '@acx-ui/utils'
 
 import {
-  NetworkApGroup,
+  NetworkApGroup, NetworkSaveData,
   NetworkVenue,
   RadioEnum,
   RadioTypeEnum,
@@ -18,15 +18,15 @@ import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
 export const vlanContents = {
   vlan: defineMessage({
-    defaultMessage: `VLAN-{id} {isCustom, selectordinal,
-      one {(Custom)}
+    defaultMessage: `VLAN-{id} {isCustom, select,
+      true {(Custom)}
       other {(Default)}
     }`,
     description: 'Translation not needed'
   }),
   vlanPool: defineMessage({
-    defaultMessage: `VLAN Pool: {poolName} {isCustom, selectordinal,
-      one {(Custom)}
+    defaultMessage: `VLAN Pool: {poolName} {isCustom, select,
+      true {(Custom)}
       other {(Default)}
     }`,
     description: 'Translation string - VLAN Pool'
@@ -40,7 +40,7 @@ export const getVlanString = (vlanPool?: VlanPool | null, vlanId?: number, isCus
     return {
       vlanString: vlanPool.name,
       vlanType: VlanType.Pool,
-      vlanText: $t(vlanContents.vlanPool, { isCustom, poolName: vlanPool.name })
+      vlanText: $t(vlanContents.vlanPool, { isCustom: true, poolName: vlanPool.name })
     }
   }
 
@@ -49,6 +49,16 @@ export const getVlanString = (vlanPool?: VlanPool | null, vlanId?: number, isCus
     vlanType: VlanType.VLAN,
     vlanText: $t(vlanContents.vlan, { isCustom, id: vlanId })
   }
+}
+
+export const getVlanPool = (apgroup: NetworkApGroup, wlan?: NetworkSaveData['wlan'], vlanPoolSelectOptions?: VlanPool[]) => {
+  return apgroup.vlanPoolId
+    ? {
+      name: vlanPoolSelectOptions?.find((vlanPool) => vlanPool.id === apgroup?.vlanPoolId)?.name || '',
+      id: apgroup.vlanPoolId,
+      vlanMembers: []
+    }
+    : wlan?.advancedCustomization?.vlanPool
 }
 
 const radioTypeEnumToRadioEnum = (radioTypes: RadioTypeEnum[]) => {
