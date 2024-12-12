@@ -23,6 +23,8 @@ jest.mock('./RRMGraph/DownloadRRMComparison', () => ({
 
 const mockIntentContextWith = (data: Partial<Intent>) => {
   const intent = _.merge({}, mockedIntentCRRM, data) as Intent
+  mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail', { data: { intent } })
+  mockGraphqlQuery(intentAIUrl, 'IntentKpis', { data: { intent } })
   const context = mockIntentContext({ intent, kpis })
   return { params: _.pick(context.intent, ['code', 'root', 'sliceId']) }
 }
@@ -61,7 +63,10 @@ describe('IntentAIDetails', () => {
     )
 
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
-    expect(await screen.findByTestId('Details'))
+    const loaders = screen.getAllByRole('img', { name: 'loader' })
+    loaders.forEach(loader => expect(loader).toBeVisible())
+    const details = await screen.findByTestId('Details')
+    expect(await within(details).findByTestId('KPI'))
       .toHaveTextContent('Beyond data retention period')
   })
 
@@ -245,7 +250,7 @@ describe('IntentAIDetails', () => {
       /* eslint-enable max-len */
     })
 
-    it('should render graph loader seperately', async () => {
+    it('should render loaders seperately', async () => {
       const { params } = mockIntentContextWith({ code: 'c-crrm-channel24g-auto' })
       render(
         <CCrrmChannelAuto.IntentAIDetails />,
@@ -253,7 +258,8 @@ describe('IntentAIDetails', () => {
       )
       expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
       expect(screen.queryByTestId('IntentAIRRMGraph')).not.toBeInTheDocument()
-      expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+      const loaders = screen.getAllByRole('img', { name: 'loader' })
+      loaders.forEach(loader => expect(loader).toBeVisible())
       const details = await screen.findByTestId('Details')
       expect(await within(details).findAllByTestId('KPI')).toHaveLength(1)
 

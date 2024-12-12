@@ -3,8 +3,15 @@ import { message } from 'antd'
 import _           from 'lodash'
 import moment      from 'moment-timezone'
 
-import { intentAIApi, intentAIUrl, Provider, store }                                                from '@acx-ui/store'
-import { mockGraphqlMutation, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { intentAIApi, intentAIUrl, Provider, store } from '@acx-ui/store'
+import {
+  mockGraphqlMutation,
+  mockGraphqlQuery,
+  render,
+  screen,
+  waitForElementToBeRemoved,
+  within
+} from '@acx-ui/test-utils'
 
 import { mockIntentContext } from '../__tests__/fixtures'
 import { Statuses }          from '../states'
@@ -70,6 +77,8 @@ afterEach((done) => {
 
 const mockIntentContextWith = (data: Partial<Intent> = {}) => {
   const intent = _.merge({}, mocked, data) as Intent
+  mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail', { data: { intent } })
+  mockGraphqlQuery(intentAIUrl, 'IntentKpis', { data: { intent } })
   const context = mockIntentContext({ intent, configuration, kpis })
   return { params: _.pick(context.intent, ['code', 'root', 'sliceId']) }
 }

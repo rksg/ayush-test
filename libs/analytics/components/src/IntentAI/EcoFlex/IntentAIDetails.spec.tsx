@@ -16,6 +16,8 @@ jest.mock('../IntentContext')
 
 const mockIntentContextWith = (data: Partial<Intent> = {}) => {
   const intent = _.merge({}, mockedIntentEcoFlex, data) as Intent
+  mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail', { data: { intent } })
+  mockGraphqlQuery(intentAIUrl, 'IntentKpis', { data: { intent } })
   const context = mockIntentContext({ intent, configuration, kpis })
   return {
     params: _.pick(context.intent, ['code', 'root', 'sliceId'])

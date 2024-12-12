@@ -105,6 +105,7 @@ beforeEach(() => {
 
 const mockIntentContextWith = (data: Partial<Intent> = {}) => {
   const intent = { ...mocked, ...data }
+  mockGraphqlQuery(intentAIUrl, 'IntentKpis', { data: { intent } })
   mockIntentContext({ intent, kpis })
   return {
     params: { code: mocked.code, root: mocked.root, sliceId: mocked.sliceId }
