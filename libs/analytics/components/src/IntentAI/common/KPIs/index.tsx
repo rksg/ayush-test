@@ -2,6 +2,7 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Card, GridCol, TrendPill } from '@acx-ui/components'
+import { Loader }                   from '@acx-ui/components'
 
 import { useIntentContext }                            from '../../IntentContext'
 import { getGraphKPIs, IntentKpi, useIntentKpisQuery } from '../../useIntentDetailsQuery'
@@ -40,13 +41,13 @@ export const KPIGrid = () => {
     (_.pick(query.error, ['data']) as { data: IntentKpi }).data
     : query.data
 
-  return <>
+  return <Loader states={[isDetectError? _.omit(query, ['error']) : query]}>
     {getGraphKPIs({ ...intent, ...intentKpis }, kpis).map(kpi => (
       <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
         <KPICard kpi={kpi} />
       </GridCol>
     ))}
-  </>
+  </Loader>
 }
 
 export const KPIFields = () => {
@@ -62,8 +63,8 @@ export const KPIFields = () => {
     (_.pick(query.error, ['data']) as { data: IntentKpi }).data
     : query.data
 
-  return <>
+  return <Loader states={[isDetectError? _.omit(query, ['error']) : query]}>
     {getGraphKPIs({ ...intent, ...intentKpis }, kpis)
       .map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
-  </>
+  </Loader>
 }

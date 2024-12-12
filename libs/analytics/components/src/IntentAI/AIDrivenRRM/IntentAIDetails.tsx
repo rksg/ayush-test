@@ -14,7 +14,7 @@ import { DetailsSection }       from '../common/DetailsSection'
 import { IntentDetailsHeader }  from '../common/IntentDetailsHeader'
 import { IntentDetailsSidebar } from '../common/IntentDetailsSidebar'
 import { IntentIcon }           from '../common/IntentIcon'
-import { KPIs }                 from '../common/KPIs'
+import { KPIGrid }              from '../common/KPIs'
 import { richTextFormatValues } from '../common/richTextFormatValues'
 import { StatusTrail }          from '../common/StatusTrail'
 import { useIntentContext }     from '../IntentContext'
@@ -114,7 +114,7 @@ export function createIntentAIDetails () {
             <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
             <DetailsSection.Details>
               <GridRow>
-                <KPIs/>
+                <KPIGrid/>
               </GridRow>
             </DetailsSection.Details>
           </DetailsSection>

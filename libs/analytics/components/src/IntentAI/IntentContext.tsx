@@ -45,7 +45,7 @@ export function createIntentContextProvider (
     const params = useIntentParams()
 
     const spec = specs[params.code]
-    const query = useIntentDetailsQuery({ ...params }, { skip: !spec })
+    const query = useIntentDetailsQuery(params, { skip: !spec })
     if (!spec) return null // no matching spec
     if (query.isSuccess && !query.data) return null // 404
 
