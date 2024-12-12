@@ -159,6 +159,8 @@ export function Venues (props: VenuesProps) {
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+  const isSupport6gOWETransitionOption =
+    { isSupport6gOWETransition: useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G) }
   const form = Form.useFormInstance()
   const { cloneMode, data, setData, editMode } = useContext(NetworkFormContext)
 
@@ -168,7 +170,7 @@ export function Venues (props: VenuesProps) {
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
 
   const prevIsWPA3securityRef = useRef(false)
-  const isWPA3security = IsNetworkSupport6g(data)
+  const isWPA3security = IsNetworkSupport6g(data, isSupport6gOWETransitionOption)
 
   const { $t } = useIntl()
   const tableQuery = useNetworkVenueList()
@@ -345,7 +347,7 @@ export function Venues (props: VenuesProps) {
 
   useEffect(() => {
     if (data?.wlan) {
-      const isSupport6G = IsNetworkSupport6g(data)
+      const isSupport6G = IsNetworkSupport6g(data, isSupport6gOWETransitionOption)
       if (prevIsWPA3securityRef.current === true && !isSupport6G) {
         if (activatedNetworkVenues?.length > 0) {
           // remove radio 6g when wlanSecurity is changed from WPA3 to others

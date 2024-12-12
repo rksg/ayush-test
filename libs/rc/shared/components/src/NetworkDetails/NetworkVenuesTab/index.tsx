@@ -199,6 +199,8 @@ export function NetworkVenuesTab () {
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+  const isSupport6gOWETransitionOption =
+    { isSupport6gOWETransition: useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G) }
   const { $t } = useIntl()
   const networkId = params.networkId
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
@@ -356,7 +358,7 @@ export function NetworkVenuesTab () {
     const networkId = (network && network?.id) ? network.id : ''
     const newNetworkVenue = generateDefaultNetworkVenue(venueId, networkId)
 
-    if (IsNetworkSupport6g(network)) {
+    if (IsNetworkSupport6g(network, isSupport6gOWETransitionOption)) {
       newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
     }
 
@@ -487,7 +489,7 @@ export function NetworkVenuesTab () {
     activatingVenues.forEach(venue => {
       const newNetworkVenue = generateDefaultNetworkVenue(venue.id, (network && network?.id) ? network.id : '')
 
-      if (IsNetworkSupport6g(network)) {
+      if (IsNetworkSupport6g(network, isSupport6gOWETransitionOption)) {
         newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
       }
       const alreadyActivatedVenue = networkVenues.find(x => x.venueId === venue.id)

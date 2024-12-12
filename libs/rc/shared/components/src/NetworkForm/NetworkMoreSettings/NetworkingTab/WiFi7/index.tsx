@@ -38,6 +38,8 @@ const CheckboxGroup = ({ wlanData, mloEnabled, wifi7Enabled } :
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   const wifi7Mlo3LinkFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE)
+  const isSupport6gOWETransitionOption =
+    { isSupport6gOWETransition: useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G) }
 
   const labels = {
     labelOf24G: $t({ defaultMessage: '2.4 GHz' }),
@@ -55,7 +57,8 @@ const CheckboxGroup = ({ wlanData, mloEnabled, wifi7Enabled } :
   const dpskWlanSecurity = useWatch('dpskWlanSecurity') // for DPSK network
   const wisprWlanSecurity = useWatch('pskProtocol') // for WISPr network
 
-  const isEnabled6GHz = isEnableOptionOf6GHz(wlanData, { wlanSecurity, aaaWlanSecurity, dpskWlanSecurity, wisprWlanSecurity })
+  const isEnabled6GHz = isEnableOptionOf6GHz(wlanData,
+    { wlanSecurity, aaaWlanSecurity, dpskWlanSecurity, wisprWlanSecurity }, isSupport6gOWETransitionOption)
 
   useEffect(() => {
     const updateMloOptions = () => {
@@ -167,6 +170,8 @@ const CheckboxGroup = ({ wlanData, mloEnabled, wifi7Enabled } :
 function WiFi7 () {
   const { $t } = useIntl()
   const wifi7MloFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
+  const isSupport6gOWETransitionOption =
+    { isSupport6gOWETransition: useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G) }
   const { setData, data: wlanData } = useContext(NetworkFormContext)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const form = Form.useFormInstance()
@@ -196,7 +201,8 @@ function WiFi7 () {
   useEffect(()=>{
     if(editMode && wlanData !== null){
 
-      const shouldMLOBeDisable = !(wlanData.type !== NetworkTypeEnum.DPSK && IsNetworkSupport6g(wlanData))
+      const shouldMLOBeDisable = !(wlanData.type !== NetworkTypeEnum.DPSK &&
+          IsNetworkSupport6g(wlanData, isSupport6gOWETransitionOption))
 
       disableMLO(shouldMLOBeDisable)
 

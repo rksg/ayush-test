@@ -120,11 +120,13 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const { $t } = useIntl()
 
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isSupport6gOWETransitionOption =
+    { isSupport6gOWETransition: useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G) }
   const { isTemplate } = useConfigTemplate()
 
   const { networkVenue, venueName, network, formName, tenantId } = props
   const { wlan, type } = network || {}
-  const isSupport6G = IsNetworkSupport6g(network)
+  const isSupport6G = IsNetworkSupport6g(network, isSupport6gOWETransitionOption)
 
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [vlanPoolSelectOptions, setVlanPoolSelectOptions] = useState<VlanPool[]>()
