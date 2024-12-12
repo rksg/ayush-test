@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ImpactedSwitchDDoS ImpactedSwitchDDoSDonut should render 1`] = `
+exports[`ImpactedSwitchesDonut ImpactedSwitch should render 1`] = `
 @supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
 
 }

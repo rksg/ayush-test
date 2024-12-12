@@ -45,6 +45,7 @@ export interface DelegationEntitlementRecord {
   switchDeviceCount?: string;
   rwgDeviceCount?: string;
   edgeDeviceCount?: string;
+  availableLicenses?: number;
 }
 
 export interface MspEc {
