@@ -5,7 +5,7 @@ import {
   Switch,
   Space
 } from 'antd'
-import { useIntl } from 'react-intl'
+import { defineMessages, useIntl } from 'react-intl'
 
 
 import { Subtitle, Tooltip }                          from '@acx-ui/components'
@@ -32,6 +32,8 @@ export function CloudpathServerForm () {
   const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+
+  const isNonProxyAcctDpskFFEnabled = useIsSplitOn(Features.ACX_UI_NON_PROXY_ACCOUNTING_DPSK_TOGGLE)
 
   // TODO: Remove deprecated codes below when RadSec feature is delivery
   useEffect(()=>{
@@ -63,11 +65,32 @@ export function CloudpathServerForm () {
     iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
   />
 
+  const messages = defineMessages({
+    dpskProxyServiceTooltip: {
+      id: 'dpskProxyServiceTooltip',
+      // eslint-disable-next-line max-len
+      defaultMessage: 'Use the {system} as proxy in DPSK networks. A proxy {serverType} server is used when APs send {messageType} messages to the {system} and the {system} forwards these messages to an external {serverType} server.'
+    }
+  })
+
+  const dpskProxyServiceTooltipMsg = $t(messages.dpskProxyServiceTooltip, {
+    system: isNonProxyAcctDpskFFEnabled ? 'RUCKUS One' : 'controller',
+    serverType: isNonProxyAcctDpskFFEnabled ? 'authentication' : 'AAA',
+    messageType: isNonProxyAcctDpskFFEnabled ? 'authentication' : 'authentication/accounting'
+  })
+
+
   const DPSKProxyServiceTooltip = <Tooltip.Question
+    placement='bottom'
+    title={dpskProxyServiceTooltipMsg}
+    iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+  />
+
+  const DPSKAcctProxyServiceTooltip = <Tooltip.Question
     placement='bottom'
     title={$t({
       // eslint-disable-next-line max-len
-      defaultMessage: 'Use the controller as proxy in DPSK networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.'
+      defaultMessage: 'Use the RUCKUS One as proxy in DPSK networks. A proxy accounting server is used when APs send accounting messages to the RUCKUS One and the RUCKUS One forwards these messages to an external accounting server.'
     })}
     iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
   />
@@ -76,6 +99,10 @@ export function CloudpathServerForm () {
 
   const authProxyNetworkTypes = [NetworkTypeEnum.OPEN, NetworkTypeEnum.AAA, NetworkTypeEnum.DPSK]
   const accountingProxyNetworkTypes = [NetworkTypeEnum.OPEN, NetworkTypeEnum.AAA]
+
+  if (isNonProxyAcctDpskFFEnabled) {
+    accountingProxyNetworkTypes.push(NetworkTypeEnum.DPSK)
+  }
 
   return (
     <Space direction='vertical' size='middle'>
@@ -122,7 +149,8 @@ export function CloudpathServerForm () {
           <UI.FieldLabel width={labelWidth}>
             <Space align='start'>
               { $t({ defaultMessage: 'Proxy Service' }) }
-              {proxyServiceTooltip}
+              { (data?.type === NetworkTypeEnum.DPSK)?
+                DPSKAcctProxyServiceTooltip : proxyServiceTooltip }
             </Space>
             <Form.Item
               name='enableAccountingProxy'
