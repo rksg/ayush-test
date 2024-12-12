@@ -64,8 +64,8 @@ export function ConfigChange () {
           setPagination={setPagination}
         />
       </GridCol>
-      <GridCol col={{ span: 8 }}><KPIs/></GridCol>
-      <GridCol col={{ span: 16 }} style={{ minHeight: '180px' }}>
+      <GridCol col={{ span: 8, xxl: 6 }}><KPIs/></GridCol>
+      <GridCol col={{ span: 16, xxl: 18 }} style={{ minHeight: '180px' }}>
         <Table
           selected={selected}
           onRowClick={onRowClick}
