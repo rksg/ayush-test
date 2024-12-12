@@ -3,12 +3,15 @@ import { GridRow, GridCol }       from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 import { FixedAutoSizer }                 from '../../DescriptionSection/styledComponents'
+import { ImpactedSwitchesDonut }          from '../Charts/ImpactedSwitchesDonut'
+import { ImpactedVlanTable  }             from '../Charts/ImpactedSwitchLoopDetection'
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
 
 import { IncidentHeader } from './IncidentHeader'
 
 export const SwitchLoopDetection = (incident: Incident) => {
+
   const attributeList = [
     Attributes.IncidentCategory,
     Attributes.IncidentSubCategory,
@@ -36,6 +39,12 @@ export const SwitchLoopDetection = (incident: Incident) => {
       </GridCol>
       <GridCol col={{ span: 20 }}>
         <Insights incident={incident} />
+      </GridCol>
+      <GridCol col={{ offset: 4, span: 5 }} style={{ minHeight: '249px' }}>
+        <ImpactedSwitchesDonut incident={incident}/>
+      </GridCol>
+      <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '249px' }}>
+        <ImpactedVlanTable incident={incident} />
       </GridCol>
     </GridRow>
   </> : null
