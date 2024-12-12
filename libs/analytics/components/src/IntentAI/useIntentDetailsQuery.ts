@@ -24,7 +24,7 @@ export type IntentKPIConfig = {
   valueFormatter?: ReturnType<typeof formatter>;
 }
 
-export type IntentKpi = Record<`kpi_${string}`, {
+export type IntentKPI = Record<`kpi_${string}`, {
   data: {
     timestamp: string | null
     result: number | [number, number]
@@ -78,7 +78,7 @@ export type Intent = {
   updatedAt: string
   currentValue: IntentConfigurationValue
   recommendedValue: IntentConfigurationValue
-} & Partial<IntentKpi>
+} & Partial<IntentKPI>
 
 export const useIntentParams = () => {
   const { tenantId, root, ...params } = useParams() as {
@@ -128,7 +128,7 @@ const kpiHelper = (kpis: IntentDetailsQueryPayload['kpis']) => {
 
 export function getKPIData (intent: Intent, config: IntentKPIConfig) {
   const key = `kpi_${_.snakeCase(config.key)}` as `kpi_${string}`
-  const kpi = intent[key] as IntentKpi[`kpi_${string}`]
+  const kpi = intent[key] as IntentKPI[`kpi_${string}`]
   // avoid druid error will receive null
   return {
     data: kpi?.data,
@@ -210,10 +210,10 @@ export const api = intentAIApi.injectEndpoints({
         ({ ...error, data: meta?.response?.data?.intent }),
       providesTags: [{ type: 'Intent', id: 'INTENT_DETAILS' }]
     }),
-    intentKpis: build.query<IntentKpi | undefined, IntentDetailsQueryPayload>({
+    intentKPIs: build.query<IntentKPI | undefined, IntentDetailsQueryPayload>({
       query: ({ root, sliceId, code, kpis }) => ({
         document: gql`
-        query IntentKpis($root: String!, $sliceId: String!, $code: String!) {
+        query IntentKPIs($root: String!, $sliceId: String!, $code: String!) {
           intent(root: $root, sliceId: $sliceId, code: $code) {
             ${kpiHelper(kpis)}
           }
@@ -221,7 +221,7 @@ export const api = intentAIApi.injectEndpoints({
       `,
         variables: { root, sliceId, code }
       }),
-      transformResponse: (response: { intent?: Intent }) => response.intent as IntentKpi,
+      transformResponse: (response: { intent?: Intent }) => response.intent as IntentKPI,
       transformErrorResponse: (error, meta) =>
         ({ ...error, data: meta?.response?.data?.intent }),
       providesTags: [{ type: 'Intent', id: 'INTENT_KPIS' }]
@@ -248,6 +248,6 @@ export const api = intentAIApi.injectEndpoints({
 
 export const {
   useIntentDetailsQuery,
-  useIntentKpisQuery,
+  useIntentKPIsQuery,
   useIntentStatusTrailQuery
 } = api

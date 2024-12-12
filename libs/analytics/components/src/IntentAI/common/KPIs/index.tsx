@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl'
 import { Card, GridCol, TrendPill, Loader } from '@acx-ui/components'
 
 import { useIntentContext }                            from '../../IntentContext'
-import { getGraphKPIs, IntentKpi, useIntentKpisQuery } from '../../useIntentDetailsQuery'
+import { getGraphKPIs, IntentKPI, useIntentKPIsQuery } from '../../useIntentDetailsQuery'
 import { KpiField }                                    from '../KpiField'
 
 import * as UI from './styledComponents'
@@ -27,21 +27,21 @@ export const KPICard: React.FC<{
 
 export const KPIGrid = () => {
   const { intent, kpis } = useIntentContext()
-  const sanitisedKpis = kpis
+  const sanitisedKPIs = kpis
     // pick only 2 required field
     // which its value is primitive value type
     // to prevent RTK Query unable to use param as cache key
     .map(kpi => _.pick(kpi, ['key', 'deltaSign']))
-  const query = useIntentKpisQuery({ ...intent, kpis: sanitisedKpis })
+  const query = useIntentKPIsQuery({ ...intent, kpis: sanitisedKPIs }, { skip: kpis.length === 0 })
 
   const isDetectError = query.isError && !!_.pick(query.error, ['data'])
 
-  const intentKpis = isDetectError ?
-    (_.pick(query.error, ['data']) as { data: IntentKpi }).data
+  const intentKPIs = isDetectError ?
+    (_.pick(query.error, ['data']) as { data: IntentKPI }).data
     : query.data
 
   return <Loader states={[isDetectError? _.omit(query, ['error']) : query]}>
-    {getGraphKPIs({ ...intent, ...intentKpis }, kpis).map(kpi => (
+    {getGraphKPIs({ ...intent, ...intentKPIs }, kpis).map(kpi => (
       <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
         <KPICard kpi={kpi} />
       </GridCol>
@@ -51,19 +51,19 @@ export const KPIGrid = () => {
 
 export const KPIFields = () => {
   const { intent, kpis } = useIntentContext()
-  const query = useIntentKpisQuery({
+  const query = useIntentKPIsQuery({
     ...intent,
     kpis: kpis.map(kpi => _.pick(kpi, ['key', 'deltaSign']))
-  })
+  }, { skip: kpis.length === 0 })
 
   const isDetectError = query.isError && !!_.pick(query.error, ['data'])
 
-  const intentKpis = isDetectError ?
-    (_.pick(query.error, ['data']) as { data: IntentKpi }).data
+  const intentKPIs = isDetectError ?
+    (_.pick(query.error, ['data']) as { data: IntentKPI }).data
     : query.data
 
   return <Loader states={[isDetectError? _.omit(query, ['error']) : query]}>
-    {getGraphKPIs({ ...intent, ...intentKpis }, kpis)
+    {getGraphKPIs({ ...intent, ...intentKPIs }, kpis)
       .map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
   </Loader>
 }
