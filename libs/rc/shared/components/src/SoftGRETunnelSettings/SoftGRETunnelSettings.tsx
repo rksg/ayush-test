@@ -8,8 +8,8 @@ import { FieldLabel }             from './styledComponents'
 
 interface SoftGRETunnelSettingsProps {
   index: number
-  softgreProfileId: string
-  softgreTunnelEnable: boolean
+  softGreProfileId: string
+  softGreTunnelEnable: boolean
   onGUIChanged?: (fieldName: string) => void
   readonly: boolean
 }
@@ -18,13 +18,13 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   const { $t } = useIntl()
   const {
     index,
-    softgreProfileId,
-    softgreTunnelEnable,
+    softGreProfileId,
+    softGreTunnelEnable,
     onGUIChanged,
     readonly
   } = props
 
-  const softgreTunnelFieldName = ['lan', index, 'softgreTunnelEnable']
+  const softgreTunnelFieldName = ['lan', index, 'softGreTunnelEnable']
 
   return (
     <>
@@ -49,14 +49,14 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             <Switch
               disabled={readonly}
               onClick={() => {
-                onGUIChanged && onGUIChanged('softgreTunnelEnable')
+                onGUIChanged && onGUIChanged('softGreTunnelEnable')
               }}
             />
           }
         />
       </FieldLabel>
       {
-        softgreTunnelEnable && <>
+        softGreTunnelEnable && <>
           <Alert
             data-testid={'enable-softgre-tunnel-banner'}
             showIcon={true}
@@ -65,7 +65,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
           />
           <SoftGREProfileSettings
             index={index}
-            softgreProfileId={softgreProfileId}
+            softGreProfileId={softGreProfileId}
             onGUIChanged={onGUIChanged}
             readonly={readonly}
           />

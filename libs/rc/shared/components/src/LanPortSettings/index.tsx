@@ -281,8 +281,8 @@ export function LanPortSettings (props: {
               <SoftGRETunnelSettings
                 readonly={isSoftGRETunnelSettingReadonly()}
                 index={index}
-                softgreProfileId={selectedPortCaps.softGreProfileId ?? ''}
-                softgreTunnelEnable={isSoftGreTunnelEnable}
+                softGreProfileId={selectedPortCaps.softGreProfileId ?? ''}
+                softGreTunnelEnable={isSoftGreTunnelEnable}
                 onGUIChanged={onGUIChanged}
               />
               {isSoftGreTunnelEnable &&
