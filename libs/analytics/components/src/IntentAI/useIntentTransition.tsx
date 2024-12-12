@@ -4,9 +4,12 @@ import { gql }                       from 'graphql-request'
 import moment, { Moment }            from 'moment-timezone'
 import { FormattedMessage, useIntl } from 'react-intl'
 
+import { getUserProfile as getUserProfileRA }            from '@acx-ui/analytics/utils'
 import { showToast }                                     from '@acx-ui/components'
+import { get }                                           from '@acx-ui/config'
 import { useNavigate, useNavigateToPath, useTenantLink } from '@acx-ui/react-router-dom'
 import { intentAIApi }                                   from '@acx-ui/store'
+import { getUserProfile as getUserProfileR1 }            from '@acx-ui/user'
 import { encodeParameter }                               from '@acx-ui/utils'
 
 import { validateScheduleTiming } from './common/ScheduleTiming'
@@ -19,7 +22,7 @@ import {
 import { Wlan }                                   from './EquiFlex/IntentAIForm/WlanSelection'
 import { useIntentContext }                       from './IntentContext'
 import { DisplayStates, Statuses, StatusReasons } from './states'
-import { IntentWlan }                             from './utils'
+import { IntentWlan, TransitionIntentMetadata }   from './utils'
 
 type MutationResponse = { success: boolean, errorMsg: string, errorCode: string }
 
@@ -46,6 +49,7 @@ export type IntentTransitionPayload <Preferences = unknown> = {
     scheduledAt?: string
     preferences?: Preferences
     wlans?: IntentWlan[]
+    changedByName?: string
   }
 }
 
@@ -110,7 +114,18 @@ export function createUseIntentTransition <Preferences> (
     const [doSubmit, response] = useIntentTransitionMutation()
 
     const submit = useCallback(async (values: FormValues<Preferences>) => {
-      return validateScheduleTiming(values) ? doSubmit(getFormDTO(values)) : false
+      const userName = get('IS_MLISA_SA')
+        ? getUserProfileRA().firstName
+        : getUserProfileR1().profile.firstName
+
+      const formDto = getFormDTO(values)
+      const metadataWithName = {
+        ...formDto?.metadata,
+        changedByName: userName
+      } as TransitionIntentMetadata
+      return validateScheduleTiming(values) ? doSubmit({
+        ...formDto, metadata: metadataWithName
+      }) : false
     }, [doSubmit])
 
     useEffect(() => {

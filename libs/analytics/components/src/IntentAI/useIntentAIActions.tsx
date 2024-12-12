@@ -4,13 +4,15 @@ import { Modal as AntModal }                          from 'antd'
 import moment, { Moment }                             from 'moment-timezone'
 import { FormattedMessage, RawIntlProvider, useIntl } from 'react-intl'
 
-import { DateTimePicker, showToast }     from '@acx-ui/components'
-import { get }                           from '@acx-ui/config'
-import { DateFormatEnum, formatter }     from '@acx-ui/formatter'
+import { getUserProfile as getUserProfileRA } from '@acx-ui/analytics/utils'
+import { DateTimePicker, showToast }          from '@acx-ui/components'
+import { get }                                from '@acx-ui/config'
+import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
 import {
   useLazyVenueRadioActiveNetworksQuery
 } from '@acx-ui/rc/services'
 import { RadioTypeEnum }                         from '@acx-ui/rc/utils'
+import { getUserProfile as getUserProfileR1 }    from '@acx-ui/user'
 import { Filters, getIntl, useEncodedParameter } from '@acx-ui/utils'
 
 import { IntentListItem, stateToGroupedStates } from './config'
@@ -195,6 +197,9 @@ export function useIntentAIActions () {
   }
 
   const doAllOptimize = async (rows:IntentListItem[], scheduledAt:string) => {
+    const userName = get('IS_MLISA_SA')
+      ? getUserProfileRA().firstName
+      : getUserProfileR1().profile.firstName
     const optimizeList = await Promise.all(rows.map(async (row) => {
       const { code, preferences, displayStatus, status } = row
       const metadata = { scheduledAt } as TransitionIntentMetadata
@@ -204,6 +209,7 @@ export function useIntentAIActions () {
       } else if (code.startsWith('c-crrm-')) { // AI-Driven
         metadata.preferences = { ...(preferences ?? {}), crrmFullOptimization: true }
       }
+      metadata.changedByName = userName
       return { id: row.id, displayStatus, status, metadata } as TransitionIntentItem
     }))
 
@@ -278,12 +284,15 @@ export function useIntentAIActions () {
   const revert = async (date: Moment, rows:IntentListItem[], onOk: ()=>void) => {
     if (validateDate(date)) {
       const scheduledAt = date.toISOString()
+      const userName = get('IS_MLISA_SA')
+        ? getUserProfileRA().firstName
+        : getUserProfileR1().profile.firstName
       const data = rows.map(item =>(
         {
           id: item.id,
           displayStatus: item.displayStatus,
           status: item.status,
-          metadata: { scheduledAt }
+          metadata: { scheduledAt, changedByName: userName }
         } as TransitionIntentItem))
       const response = await transitionIntent({
         action: Actions.Revert,
@@ -307,12 +316,15 @@ export function useIntentAIActions () {
     action: Actions,
     rows:IntentListItem[],
     onOk: ()=>void) => {
+    const userName = get('IS_MLISA_SA')
+      ? getUserProfileRA().firstName
+      : getUserProfileR1().profile.firstName
     const data = rows.map(item =>
       ({ id: item.id,
         displayStatus: item.displayStatus,
         status: item.status,
         statusTrail: item.statusTrail,
-        metadata: item.metadata
+        metadata: { ...item.metadata, changedByName: userName }
       } as TransitionIntentItem))
     const response = await transitionIntent({
       action,

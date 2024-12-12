@@ -5,10 +5,11 @@ import { message, Modal } from 'antd'
 import moment             from 'moment-timezone'
 import { BrowserRouter }  from 'react-router-dom'
 
-import { get }                            from '@acx-ui/config'
-import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
-import { Provider, intentAIUrl }          from '@acx-ui/store'
-import { act, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { getUserProfile, Invitation, Tenant } from '@acx-ui/analytics/utils'
+import { get }                                from '@acx-ui/config'
+import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { Provider, intentAIUrl }              from '@acx-ui/store'
+import { act, waitForElementToBeRemoved }     from '@acx-ui/test-utils'
 import {
   mockGraphqlMutation,
   screen,
@@ -17,6 +18,7 @@ import {
   waitFor,
   renderHook
 }                                                               from '@acx-ui/test-utils'
+import { getUserProfile as getUserProfileR1, setUserProfile } from '@acx-ui/user'
 
 import { mockAIDrivenRow, mockEquiFlexRows } from './__tests__/fixtures'
 import { AiFeatures, IntentListItem }        from './config'
@@ -64,6 +66,27 @@ jest.spyOn(global.Date, 'now').mockImplementation(
   () => new Date('2024-07-20T04:01:00.000Z').getTime()
 )
 
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  getUserProfile: jest.fn()
+}))
+const userProfile = jest.mocked(getUserProfile)
+const mockUserProfileRAI = {
+  accountId: 'accountId',
+  firstName: 'FirstName RAI',
+  lastName: 'lastName',
+  email: '',
+  userId: '',
+  role: '',
+  support: false,
+  invitations: [] as Invitation[],
+  selectedTenant: { id: 'accountId', permission: {} } as unknown as Tenant,
+  tenants: [
+    { id: 'accountId', permissions: {} },
+    { id: 'accountId2', permissions: {} }
+  ] as Tenant[]
+}
+
 const extractItem = {
   root: 'root',
   sliceId: 'sliceId',
@@ -85,6 +108,11 @@ describe('useIntentAIActions', () => {
     mockedVenueRadioActiveNetworksQuery.mockReturnValue({ unwrap: () => Promise.resolve(r1Wlans) })
     mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
     jest.spyOn(Date, 'now').mockReturnValue(now)
+    userProfile.mockReturnValue(mockUserProfileRAI)
+    setUserProfile({
+      allowedOperations: [],
+      profile: { ...getUserProfileR1().profile, firstName: 'FirstName R1' }
+    })
   })
   afterEach(() => {
     jest.mocked(get).mockReturnValue('')
@@ -133,7 +161,8 @@ describe('useIntentAIActions', () => {
             displayStatus: DisplayStates.new,
             status: Statuses.new,
             metadata: {
-              scheduledAt: '2024-07-21T00:45:00.000Z' ,
+              scheduledAt: '2024-07-21T00:45:00.000Z',
+              changedByName: 'FirstName R1',
               preferences: {
                 crrmFullOptimization: true
               }
@@ -173,6 +202,7 @@ describe('useIntentAIActions', () => {
             status: Statuses.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
+              changedByName: 'FirstName R1',
               preferences: {
                 crrmFullOptimization: true
               }
@@ -214,6 +244,7 @@ describe('useIntentAIActions', () => {
             status: Statuses.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
+              changedByName: 'FirstName R1',
               wlans: [{ name: 'i4', ssid: 's4' },{ name: 'i5', ssid: 's5' },{ name: 'i6', ssid: 's6' }]
             }
           }]
@@ -310,6 +341,7 @@ describe('useIntentAIActions', () => {
           status: Statuses.new,
           metadata: {
             scheduledAt: '2024-07-21T04:45:00.000Z',
+            changedByName: 'FirstName R1',
             preferences: {
               crrmFullOptimization: true
             }
@@ -320,6 +352,7 @@ describe('useIntentAIActions', () => {
           status: Statuses.new,
           metadata: {
             scheduledAt: '2024-07-21T04:45:00.000Z',
+            changedByName: 'FirstName R1',
             wlans: [{ name: 'i4', ssid: 's4' },{ name: 'i5', ssid: 's5' },{ name: 'i6', ssid: 's6' }]
           }
         }]
@@ -370,6 +403,7 @@ describe('useIntentAIActions', () => {
             status: Statuses.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
+              changedByName: 'FirstName RAI',
               preferences: {
                 crrmFullOptimization: true
               }
@@ -411,6 +445,7 @@ describe('useIntentAIActions', () => {
             status: Statuses.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
+              changedByName: 'FirstName RAI',
               wlans: [{ name: 'n1', ssid: 's1' },{ name: 'n2', ssid: 's2' },{ name: 'n3', ssid: 's3' }]
             }
           }]
@@ -539,13 +574,18 @@ describe('useIntentAIActions', () => {
           displayStatus: DisplayStates.active,
           status: Statuses.active,
           statusTrail,
-          metadata: mockAIDrivenRow.metadata
+          metadata: {
+            ...mockAIDrivenRow.metadata,
+            changedByName: 'FirstName RAI'
+          }
         },{
           id: '17',
           displayStatus: DisplayStates.active,
           status: Statuses.active,
           statusTrail,
-          metadata: {}
+          metadata: {
+            changedByName: 'FirstName RAI'
+          }
         }]
       })
       await waitFor(() => expect(mockOK).toBeCalledTimes(1))
@@ -588,12 +628,14 @@ describe('useIntentAIActions', () => {
           id: '15',
           displayStatus: DisplayStates.active,
           status: Statuses.active,
-          metadata: { scheduledAt: '2024-07-21T04:45:00.000Z' }
+          metadata: { scheduledAt: '2024-07-21T04:45:00.000Z',
+            changedByName: 'FirstName RAI' }
         },{
           id: '17',
           displayStatus: DisplayStates.active,
           status: Statuses.active,
-          metadata: { scheduledAt: '2024-07-21T04:45:00.000Z' }
+          metadata: { scheduledAt: '2024-07-21T04:45:00.000Z',
+            changedByName: 'FirstName RAI' }
         }]
       })
       await waitFor(() => expect(mockOK).toBeCalledTimes(1))

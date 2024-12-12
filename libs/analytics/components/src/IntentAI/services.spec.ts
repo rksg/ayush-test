@@ -558,14 +558,14 @@ describe('Intent services', () => {
           ...expectedCommonResult,
           status: Statuses.scheduled,
           statusLabel: 'Scheduled',
-          statusTooltip: 'The change recommendation has been scheduled for 06/17/2023 00:00, via the user action "Optimize".'
+          statusTooltip: 'The change recommendation has been scheduled for 06/17/2023 00:00, via the user action "Optimize" initiated by the user fakeUserWithOptimize.'
         },
         {
           ...intentListWithAllStatus.intents.data[2],
           ...expectedCommonResult,
           status: Statuses.scheduled,
           statusLabel: 'Scheduled',
-          statusTooltip: 'The change recommendation has been scheduled for 06/17/2023 00:00, via the user action "1-Click Optimize".'
+          statusTooltip: 'The change recommendation has been scheduled for 06/17/2023 00:00, via the user action "1-Click Optimize" initiated by the user fakeUserWithOneClickOptimize.'
         },
         {
           ...intentListWithAllStatus.intents.data[3],
@@ -603,7 +603,7 @@ describe('Intent services', () => {
           ...expectedCommonResult,
           status: Statuses.revertScheduled,
           statusLabel: 'Revert Scheduled',
-          statusTooltip: 'The Revert of the IntentAI recommended changes are scheduled for 06/17/2023 00:00, via user action "Revert".'
+          statusTooltip: 'The Revert of the IntentAI recommended changes are scheduled for 06/17/2023 00:00, via user action "Revert" initiated by the user fakeUserWithRevert.'
         },
         {
           ...intentListWithAllStatus.intents.data[8],
@@ -634,14 +634,14 @@ describe('Intent services', () => {
           ...expectedCommonResult,
           status: Statuses.paused,
           statusLabel: 'Paused',
-          statusTooltip: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
+          statusTooltip: 'The Intent is paused by the user action "Pause" initiated by the user fakeUser. A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
         },
         {
           ...intentListWithAllStatus.intents.data[12],
           ...expectedCommonResult,
           status: Statuses.paused,
           statusLabel: 'Paused',
-          statusTooltip: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
+          statusTooltip: 'The Intent is paused by the user action "Pause" initiated by the user fakeUser. A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
         },
         {
           ...intentListWithAllStatus.intents.data[13],
