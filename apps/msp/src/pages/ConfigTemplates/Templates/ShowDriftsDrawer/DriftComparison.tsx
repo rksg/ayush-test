@@ -49,11 +49,11 @@ function ImageViewer (props: { imageUrl: string }) {
 
   return <Tooltip
     placement='left'
-    overlayStyle={{ maxWidth: '400px' }}
+    overlayStyle={{ maxWidth: '430px' }}
     title={<>
       <img src={imageUrl}
         alt='Drift Value Preview'
-        style={{ maxWidth: 400, maxHeight: 400 }}
+        style={{ maxWidth: 400, maxHeight: 400, display: loading ? 'none' : undefined }}
         onLoad={() => setLoading(false)}
         onError={() => setLoading(false)}
       />
