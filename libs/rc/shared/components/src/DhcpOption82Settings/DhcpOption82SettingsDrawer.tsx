@@ -1,12 +1,6 @@
-import { useContext } from 'react'
-
-import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer }               from '@acx-ui/components'
-import { DhcpOption82Settings } from '@acx-ui/rc/utils'
-
-import { SoftgreProfileAndDHCP82Context } from '../SoftGRETunnelSettings'
+import { Drawer } from '@acx-ui/components'
 
 import { DhcpOption82SettingsFormField } from './DhcpOption82SettingsFormField'
 interface DhcpOption82SettingsDrawerProps {
@@ -15,8 +9,6 @@ interface DhcpOption82SettingsDrawerProps {
   callbackFn?: () => void
   index: number
   onGUIChanged?: (fieldName: string) => void
-  isUnderAPNetworking: boolean,
-  existedDHCP82OptionSettings?: DhcpOption82Settings
   readonly: boolean
 }
 
@@ -29,25 +21,15 @@ export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProp
     callbackFn = () => {},
     index,
     onGUIChanged,
-    isUnderAPNetworking,
-    existedDHCP82OptionSettings,
     readonly
   } = props
 
   const { $t } = useIntl()
-  const form = Form.useFormInstance()
-  const {
-    onChangeDHCPOption82Settings
-  } = useContext(SoftgreProfileAndDHCP82Context)
 
   const handleAdd = async () => {
     try {
       setVisible(false)
       onGUIChanged && onGUIChanged('AddDHCPOption82')
-      if(!isUnderAPNetworking && onChangeDHCPOption82Settings) {
-        const settings = form?.getFieldValue(['lan', index, 'dhcpOption82']) as DhcpOption82Settings
-        onChangeDHCPOption82Settings(settings)
-      }
       callbackFn()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -70,8 +52,6 @@ export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProp
           context={'lanport'}
           onGUIChanged={onGUIChanged}
           index={index}
-          isUnderAPNetworking={isUnderAPNetworking}
-          existedDHCP82OptionSettings={existedDHCP82OptionSettings}
         />
       }
       onClose={handleClose}

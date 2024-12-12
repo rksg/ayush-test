@@ -294,7 +294,7 @@ export function LanPortSettings (props: {
                   serialNumber={serialNumber}
                   venueId={venueId}
                   portId={selectedModel.lanPorts![index].portId}
-                  softGreProfileId={selectedPortCaps.softGreProfileId}
+                  apModel={selectedModelCaps.model}
                 />
               }
             </>)
