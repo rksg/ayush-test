@@ -102,7 +102,7 @@ export function Introduction (
           `}
         />
       </StepsForm.TextContent>
-      {!isDataRetained && !isHotTierData && compareSlider}
+      {isDataRetained && isHotTierData && compareSlider}
     </Col>
     <Col span={7} offset={2}>
       <SideNotes.Introduction />
