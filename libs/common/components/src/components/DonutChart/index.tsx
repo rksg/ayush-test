@@ -17,7 +17,8 @@ import {
   TooltipFormatterParams,
   tooltipOptions,
   defaultRichTextFormatValues,
-  EventParams
+  EventParams,
+  qualitativeColorSet
 } from '../Chart/helper'
 import * as ChartUI from '../Chart/styledComponents'
 
@@ -25,11 +26,12 @@ import { SubTitle } from './styledComponents'
 
 import type { EChartsOption }     from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
+import { ZRColor } from 'echarts/types/dist/shared'
 
 export type DonutChartData = {
   value: number,
   name: string,
-  color: string
+  color?: string
 }
 
 interface DonutChartOptionalProps {
@@ -140,7 +142,7 @@ export function DonutChart ({
   const dataFormatter = _dataFormatter ?? ((value: unknown) => String(value))
 
   const sum = data.reduce((acc, cur) => acc + cur.value, 0)
-  const colors = data.map(series => series.color)
+  const colors = data.map(series => series.color) as ZRColor[]
   const isEmpty = data.length === 0 || (data.length === 1 && data[0].name === '')
   const isSmall = props.size === 'small'
   const isCustomEmptyStatus = isEmpty && !!props.value
@@ -305,7 +307,7 @@ export function DonutChart ({
         }
       }
     },
-    color: colors,
+    color: colors[0] ? colors : qualitativeColorSet(),
     series: [
       {
         animation: false,

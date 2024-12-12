@@ -6,7 +6,7 @@ import { useIntl }       from 'react-intl'
 import AutoSizer         from 'react-virtualized-auto-sizer'
 import { v4 as uuidv4 }  from 'uuid'
 
-import { Card, DonutChart, Loader } from '@acx-ui/components'
+import { Card, DonutChart, Loader, StackedAreaChart } from '@acx-ui/components'
 import { useChatChartQuery }        from '@acx-ui/rc/services'
 import { WidgetListData }           from '@acx-ui/rc/utils'
 
@@ -92,12 +92,33 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
       chatId: data.chatId
     }
   })
+  const getChart = (type: string, width:number, height:number) => {
+    if(type === 'pie') {
+      return <DonutChart
+      style={{ width, height }}
+      size={'medium'}
+      data={queryResults.data?.chartOption || []}
+      animation={true}
+      legend={'name-value'}
+      showTotal/>
+    } else if(type === 'line') {
+      return <StackedAreaChart
+        style={{ width, height }}
+        data={queryResults.data?.chartOption || []}
+      />
+    } else if(type === 'bar') {
+      // TODO:
+    } else if(type === 'table') {
+      // TODO:
+    } 
+    return 
+  }
   // const queryResults = {
   //   data: {
   //     chartOption: [
-  //       { name: 'Requires Attention',value: 1,color: '#ED1C24' },
-  //       { name: 'In Setup Phase',value: 64,color: '#ACAEB0' },
-  //       { name: 'Operational',value: 1,color: '#23AB36' }
+  //       { name: 'Requires Attention',value: 1 },
+  //       { name: 'In Setup Phase',value: 64 },
+  //       { name: 'Operational',value: 1 }
   //     ]
   //   }
   // }
@@ -105,15 +126,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
     <Loader states={[{ isLoading: queryResults.isLoading }]}>
       <Card key={data.id} title={data.title || $t({ defaultMessage: 'Title' })}>
         <AutoSizer>
-          {({ height, width }) => (
-            <DonutChart
-              style={{ width, height }}
-              size={'medium'}
-              data={queryResults.data?.chartOption || []}
-              animation={true}
-              legend={'name-value'}
-              showTotal/>
-          )}
+          {({ height, width }) => getChart(data.chartType, width, height)}
         </AutoSizer>
       </Card>
     </Loader>

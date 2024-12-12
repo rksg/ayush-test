@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Spin }         from 'antd'
 import { DndProvider }  from 'react-dnd'
@@ -26,9 +26,17 @@ export default function AICanvas () {
   const [chats, setChats] = useState([] as ChatMessage[])
 
   const [ searchText, setSearchText ] = useState('')
+  const scroll = useRef(null)
   const linkToDashboard = useTenantLink('/dashboard')
   const placeholder = $t({ defaultMessage: `Enter a description to generate widgets 
   based on your needs. The more you describe, the better widgets I can recommend.` })
+
+  useEffect(()=>{
+    setTimeout(()=>{
+      // @ts-ignore
+      scroll.current.scrollTo({ top: scroll.current.scrollHeight })
+    }, 100)
+  }, [chats])
 
   const onKeyDown = (event: React.KeyboardEvent) => {
     if(event.key === 'Enter'){
@@ -118,7 +126,7 @@ export default function AICanvas () {
             </div>
           </div>
           <div className='content'>
-            <div className='chatroom'>
+            <div className='chatroom' ref={scroll}>
               <div className='placeholder'>
                 <div onClick={()=> {
                   handleSearch('Generate Top Wi-Fi Networks Pie Chart')

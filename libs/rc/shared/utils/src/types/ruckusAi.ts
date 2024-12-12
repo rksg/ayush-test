@@ -1,3 +1,4 @@
+import { TimeSeriesChartData } from '@acx-ui/analytics/utils';
 import { DonutChartData } from '@acx-ui/components'
 
 export interface RuckusAiConversation {
@@ -24,7 +25,7 @@ export enum RuckusAiConfigurationStepsEnum {
 // Ruckus AI Chat
 export interface WidgetData {
   id: number;
-  chartOption: DonutChartData[]; // TODO enhance to more type of chart data
+  chartOption: DonutChartData[] & TimeSeriesChartData[]; // TODO enhance to more type of chart data
 }
 
 export interface RuckusAiChat {

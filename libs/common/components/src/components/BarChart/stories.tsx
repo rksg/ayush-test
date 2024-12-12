@@ -69,6 +69,11 @@ function switchTrafficLabelFormatter (params: CallbackDataParams): string {
   return '{traffic|' +formatter('bytesFormat')(usage) + '}'
 }
 
+function testLabelFormatter (params: CallbackDataParams): string {
+  const usage = Array.isArray(params.data) ? params.data[params?.encode?.['x'][0]!] : params.data
+  return '{data|' +formatter('bytesFormat')(usage) + '}'
+}
+
 export const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
   const name = Array.isArray(params) && Array.isArray(params[0].data) ? params[0].data[0] : ''
   const mac = Array.isArray(params) && Array.isArray(params[0].data) ? params[0].data[5] : ''
@@ -101,6 +106,16 @@ const getSwitchUsageRichStyle = () => ({
 
 const getSwitchTrafficRichStyle = () => ({
   traffic: {
+    color: cssStr('--acx-primary-black'),
+    fontFamily: cssStr('--acx-neutral-brand-font'),
+    fontSize: cssNumber('--acx-body-5-font-size'),
+    lineHeight: cssNumber('--acx-body-5-line-height'),
+    fontWeight: cssNumber('--acx-body-5-font-weight')
+  }
+})
+
+const testRichStyle = () => ({
+  data: {
     color: cssStr('--acx-primary-black'),
     fontFamily: cssStr('--acx-neutral-brand-font'),
     fontSize: cssNumber('--acx-body-5-font-size'),
@@ -159,4 +174,13 @@ storiesOf('BarChart', module)
         grid={{ right: '15%' }}
         labelFormatter={switchUsageLabelFormatter}
         labelRichStyle={getSwitchUsageRichStyle()}
+      />))
+  .add('Test', () =>
+    wrapInsideCard('Test',
+      <BarChart
+        style={{ width: '100%', height: '100%' }}
+        data={data(true)}
+        barWidth={8}
+        labelFormatter={testLabelFormatter}
+        labelRichStyle={testRichStyle()}
       />))

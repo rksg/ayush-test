@@ -202,7 +202,7 @@ export const Grid = styled.div`
 .rglb_group-item .group-item-container #card-container .card-shadow {
   background: rgba(15, 15, 15, 0.3);
   position: absolute;
-  border-radius: 3px;
+  border-radius: 8px;
   transition: all 0.2s ease-out;
 }
 .rglb_group-item .group-item-container #card-container .card {
