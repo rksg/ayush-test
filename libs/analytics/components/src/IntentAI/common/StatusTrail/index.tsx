@@ -18,16 +18,16 @@ export const StatusTrail = () => {
     (_.pick(query.error, ['data']) as { data: IntentStatusTrail }).data
     : query.data
 
-  return <Card>
-    <UI.Wrapper>
-      <Loader states={[isDetectError? _.omit(query, ['error']) : query]}>
+  return <Loader states={[isDetectError? _.omit(query, ['error']) : query]}>
+    <Card>
+      <UI.Wrapper>
         {statusTrail?.map(({ displayStatus, createdAt }, index) => (
           <div key={index}>
             <UI.DateLabel children={formatter(DateFormatEnum.DateTimeFormat)(createdAt)} />
             {getIntentStatus(displayStatus)}
           </div>
         ))}
-      </Loader>
-    </UI.Wrapper>
-  </Card>
+      </UI.Wrapper>
+    </Card>
+  </Loader>
 }

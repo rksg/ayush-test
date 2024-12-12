@@ -1,8 +1,7 @@
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Card, GridCol, TrendPill } from '@acx-ui/components'
-import { Loader }                   from '@acx-ui/components'
+import { Card, GridCol, TrendPill, Loader } from '@acx-ui/components'
 
 import { useIntentContext }                            from '../../IntentContext'
 import { getGraphKPIs, IntentKpi, useIntentKpisQuery } from '../../useIntentDetailsQuery'
