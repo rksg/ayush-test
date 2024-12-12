@@ -98,8 +98,8 @@ export function LanPortSettings (props: {
   const { isTemplate } = useConfigTemplate()
   const ethernetPortProfileId = Form.useWatch( ['lan', index, 'ethernetPortProfileId'] ,form)
   const isEthernetPortEnable = Form.useWatch( ['lan', index, 'enabled'] ,form)
-  const softgreTunnelFieldName = ['lan', index, 'softgreTunnelEnable']
-  const isSoftGreTunnelEnable = Form.useWatch(softgreTunnelFieldName, form)
+  const softGreTunnelFieldName = ['lan', index, 'softGreTunnelEnable']
+  const isSoftGreTunnelEnable = Form.useWatch(softGreTunnelFieldName, form)
   const [currentEthernetPortData, setCurrentEthernetPortData] =
     useState<EthernetPortProfileViewData>()
   const [ethernetProfileCreateId, setEthernetProfileCreateId] = useState<String>()
@@ -198,7 +198,7 @@ export function LanPortSettings (props: {
   }, [ethernetPortProfileId, ethernetPortListQuery?.data])
 
   useEffect(() => {
-    form.setFieldValue(softgreTunnelFieldName, !!lan.softGreProfileId)
+    form.setFieldValue(softGreTunnelFieldName, !!lan.softGreProfileId)
   }, [selectedPortCaps])
 
   return (<>
@@ -294,6 +294,7 @@ export function LanPortSettings (props: {
                   serialNumber={serialNumber}
                   venueId={venueId}
                   portId={selectedModel.lanPorts![index].portId}
+                  softGreProfileId={selectedPortCaps.softGreProfileId}
                 />
               }
             </>)
