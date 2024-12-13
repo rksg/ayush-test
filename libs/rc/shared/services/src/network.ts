@@ -619,15 +619,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         })
       }
     }),
-    getVenueNetworkApGroup: build.query<TableResult<NetworkVenue>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.venueNetworkApGroup, params)
-        return {
-          ...req,
-          body: payload
-        }
-      }
-    }),
+
     apNetworkList: build.query<TableResult<Network>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.getApNetworkList, params)
@@ -1166,7 +1158,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-
+    // method name will be renamed after feature flag is removed
     enhanceVenueNetworkTableV2: build.query<TableResult<Network>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const {
@@ -1920,8 +1912,6 @@ export const {
   useLazyGetNetworkQuery,
   useGetNetworkDeepQuery,
   useLazyGetNetworkDeepQuery,
-  useGetVenueNetworkApGroupQuery,
-  useLazyGetVenueNetworkApGroupQuery,
   useNetworkDetailHeaderQuery,
   useNetworkVenueListV2Query,
   useNetworkVenueTableV2Query,

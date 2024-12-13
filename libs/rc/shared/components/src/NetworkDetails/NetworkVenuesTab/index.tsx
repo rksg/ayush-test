@@ -12,7 +12,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useAddNetworkVenuesMutation,
@@ -34,7 +34,8 @@ import {
   useEnhanceNetworkVenueTableQuery,
   useGetEnhancedVlanPoolPolicyTemplateListQuery,
   useAddRbacNetworkVenueMutation,
-  useDeleteRbacNetworkVenueMutation
+  useDeleteRbacNetworkVenueMutation,
+  useEnhanceNetworkVenueTableV2Query
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -129,6 +130,7 @@ const useNetworkVenueList = (props: { settingsId: string, networkId?: string } )
   const { isTemplate } = useConfigTemplate()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
+  const isUseNewRbacNetworkVenueApi = useIsSplitOn(Features.WIFI_NETWORK_VENUE_QUERY)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
@@ -143,11 +145,15 @@ const useNetworkVenueList = (props: { settingsId: string, networkId?: string } )
       searchTargetFields: defaultPayload.searchTargetFields as string[]
     },
     pagination: { settingsId },
-    option: { skip: isApCompatibilitiesByModel || resolvedRbacEnabled }
+    option: { skip: resolvedRbacEnabled }
   })
 
   const rbacTableQuery = useTableQuery({
-    useQuery: useNewNetworkVenueTableQuery,
+    useQuery: isApCompatibilitiesByModel
+      ? (isUseNewRbacNetworkVenueApi
+        ? useEnhanceNetworkVenueTableV2Query
+        : useEnhanceNetworkVenueTableQuery)
+      : useNewNetworkVenueTableQuery,
     apiParams: { networkId: networkId! },
     defaultPayload: {
       ...defaultRbacPayload,
@@ -158,26 +164,10 @@ const useNetworkVenueList = (props: { settingsId: string, networkId?: string } )
       searchTargetFields: defaultRbacPayload.searchTargetFields as string[]
     },
     pagination: { settingsId },
-    option: { skip: isApCompatibilitiesByModel || !resolvedRbacEnabled || !networkId }
+    option: { skip: !resolvedRbacEnabled || !networkId }
   })
 
-  const enhancedRbacTableQuery = useTableQuery({
-    useQuery: useEnhanceNetworkVenueTableQuery,
-    apiParams: { networkId: networkId! },
-    defaultPayload: {
-      ...defaultRbacPayload,
-      isTemplate: isTemplate,
-      isTemplateRbacEnabled: isConfigTemplateRbacEnabled
-    },
-    search: {
-      searchTargetFields: defaultRbacPayload.searchTargetFields as string[]
-    },
-    pagination: { settingsId },
-    option: { skip: !isApCompatibilitiesByModel || !resolvedRbacEnabled || !networkId }
-  })
-
-  return isApCompatibilitiesByModel ? enhancedRbacTableQuery
-    : (resolvedRbacEnabled ? rbacTableQuery : nonRbacTableQuery)
+  return resolvedRbacEnabled ? rbacTableQuery : nonRbacTableQuery
 }
 
 const defaultArray: Venue[] = []
