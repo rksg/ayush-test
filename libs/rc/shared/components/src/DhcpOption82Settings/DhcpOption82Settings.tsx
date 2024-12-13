@@ -126,6 +126,7 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
                 name={dhcpOption82FieldName}
                 noStyle>
                 <Switch
+                  data-testid={'dhcpoption82-switch-toggle'}
                   disabled={readonly}
                   onChange={() => {
                     onGUIChanged && onGUIChanged('DHCPOption82Enabled')
