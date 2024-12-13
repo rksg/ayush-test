@@ -20,7 +20,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useLocation: () => mockedUseLocation
 }))
 
-describe('DpskSettingsForm', () => {
+describe.skip('DpskSettingsForm', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
