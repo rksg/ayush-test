@@ -87,9 +87,7 @@ const IsSupport6g = (editData: Network, options?: Record<string, boolean>) => {
 // eslint-disable-next-line max-len
 export function ApGroupVlanRadioDrawer ({ updateData }: { updateData: (data: Network, oldData: Network) => void }) {
   const { $t } = useIntl()
-
-  const isSupport6gOWETransitionOption =
-    { isSupport6gOWETransition: useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G) }
+  const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
 
   const { venueId, apGroupId,
     drawerStatus, setDrawerStatus, vlanPoolingNameMap } = useContext(ApGroupVlanRadioContext)
@@ -111,7 +109,7 @@ export function ApGroupVlanRadioDrawer ({ updateData }: { updateData: (data: Net
       const data = cloneDeep(editData)
       const initApGroupData = getApGroupData(data, venueId, apGroupId)
       setEditingAgGroup(initApGroupData)
-      setIsSupport6G(IsSupport6g(data, isSupport6gOWETransitionOption))
+      setIsSupport6G(IsSupport6g(data, { isSupport6gOWETransition }))
       form.setFieldsValue({
         ...initApGroupData
       })

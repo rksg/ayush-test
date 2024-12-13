@@ -183,8 +183,7 @@ export function VenueNetworksTab () {
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const isSupport6gOWETransitionOption =
-    { isSupport6gOWETransition: useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G) }
+  const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
   const { venueId } = params
@@ -303,7 +302,7 @@ export function VenueNetworksTab () {
         const venueId = params.venueId as string
         if (checked) { // activate
           const newNetworkVenue = generateDefaultNetworkVenue(venueId as string, row.id)
-          if (IsNetworkSupport6g(row.deepNetwork, isSupport6gOWETransitionOption)) {
+          if (IsNetworkSupport6g(row.deepNetwork, { isSupport6gOWETransition })) {
             newNetworkVenue.allApGroupsRadioTypes.push(RadioTypeEnum._6_GHz)
           }
 
