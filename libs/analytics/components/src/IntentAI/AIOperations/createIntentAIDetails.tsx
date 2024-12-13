@@ -56,7 +56,7 @@ export function createIntentAIDetails (
                 <GridCol data-testid='Configuration' col={{ span: 12 }}>
                   <ConfigurationCard />
                 </GridCol>
-                {!(state === 'no-data') && getGraphKPIs(intent, kpis).map(kpi => (
+                {state !== 'no-data' && getGraphKPIs(intent, kpis).map(kpi => (
                   <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
                     <KpiCard kpi={kpi} />
                   </GridCol>
@@ -65,7 +65,7 @@ export function createIntentAIDetails (
             </DetailsSection.Details>
           </DetailsSection>
 
-          {!(state === 'no-data') ? <GridRow>
+          {state !== 'no-data' ? <GridRow>
             <GridCol col={{ span: 12 }}>
               <DetailsSection data-testid='Benefits'>
                 <DetailsSection.Title

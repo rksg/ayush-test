@@ -112,7 +112,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
           </FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 18, xxl: 20 }}>
-          {!(state === 'no-data') ? <>
+          {state !== 'no-data' ? <>
             <DetailsSection data-testid='Details'>
               <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
               <GridRow>
