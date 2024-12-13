@@ -682,6 +682,21 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/switchPortProfiles/portProfiles/query',
     newApi: true
   },
+  addSwitchPortProfile: {
+    method: 'post',
+    url: '/switchPortProfiles/portProfiles',
+    newApi: true
+  },
+  editSwitchPortProfile: {
+    method: 'put',
+    url: '/switchPortProfiles/portProfiles/:portProfileId',
+    newApi: true
+  },
+  deleteSwitchPortProfile: {
+    method: 'delete',
+    url: '/switchPortProfiles/portProfiles/:portProfileId',
+    newApi: true
+  },
   getSwitchPortProfileDetail: {
     method: 'get',
     url: '/switchPortProfiles/portProfiles/:portProfileId',

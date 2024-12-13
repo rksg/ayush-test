@@ -1,14 +1,14 @@
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { Loader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
 import {
+  useDeleteSwitchPortProfileMutation,
   // useDeleteDirectoryServerMutation,
   useSwitchPortProfilesListQuery
 }from '@acx-ui/rc/services'
 import {
   filterByAccessForServicePolicyMutation,
-  getPolicyDetailsLink,
   getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
@@ -20,9 +20,8 @@ import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-rout
 export default function SwitchPortProfileTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  // const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
-  // const [ deleteFn ] = useDeleteDirectoryServerMutation()
+  const [ deleteSwitchPortProfile ] = useDeleteSwitchPortProfileMutation()
   const settingsId = 'switch-port-profile-table'
 
   const defaultPayload = {
@@ -34,17 +33,6 @@ export default function SwitchPortProfileTable () {
     useQuery: useSwitchPortProfilesListQuery,
     defaultPayload
   })
-
-  // const doDelete = (selectedRows: SwitchPortProfiles[], callback: () => void) => {
-  // doProfileDelete(
-  //   selectedRows,
-  //   $t({ defaultMessage: 'Port Profile(s)' }),
-  //   selectedRows[0].name,
-  //   [{ fieldName: 'id', fieldText: $t({ defaultMessage: 'Switch Port' }) }],
-  //   async () => deleteFn({
-  //     params, payload: selectedRows.map(row => row.id) }).then(callback)
-  // )
-  // }
 
   function useColumns () {
     const { $t } = useIntl()
@@ -82,7 +70,7 @@ export default function SwitchPortProfileTable () {
         sorter: true,
         render: (_, row) => {
           return <Tooltip
-            title={row.taggedVlans?.join('\n')}
+            title={row.taggedVlans?.join(', ')}
             dottedUnderline={row.taggedVlans?.length ? true : false}
           >
             {row.taggedVlans ? row.taggedVlans.length : 0}
@@ -96,7 +84,7 @@ export default function SwitchPortProfileTable () {
         sorter: true,
         render: (_, row) => {
           return <Tooltip
-            title={row.macOuis?.map(item=> item.note).join('\n')}
+            title={row.macOuis?.map(item=> item.oui).join('\n')}
             dottedUnderline={row.macOuis?.length ? true : false}
           >
             {row.macOuis ? row.macOuis.length : 0}
@@ -118,16 +106,16 @@ export default function SwitchPortProfileTable () {
         }
       },
       {
-        key: 'regularProfiles',
+        key: 'appliedSwitchesInfo',
         title: $t({ defaultMessage: 'Switches' }),
-        dataIndex: 'regularProfiles',
+        dataIndex: 'appliedSwitchesInfo',
         sorter: true,
         render: (_, row) => {
           return <Tooltip
-            title={row.regularProfiles?.join('\n')}
-            dottedUnderline={row.regularProfiles?.length ? true : false}
+            title={row.appliedSwitchesInfo?.map(item=> item.switchName).join('\n')}
+            dottedUnderline={row.appliedSwitchesInfo?.length ? true : false}
           >
-            {row.regularProfiles ? row.regularProfiles.length : 0}
+            {row.appliedSwitchesInfo ? row.appliedSwitchesInfo.length : 0}
           </Tooltip>
         }
       }
@@ -139,9 +127,41 @@ export default function SwitchPortProfileTable () {
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: () => {
-      // onClick: (selectedRows: SwitchPortProfiles[], clearSelection) => {
-        // doDelete(selectedRows, clearSelection)
+      onClick: (selectedRows: SwitchPortProfiles[], clearSelection) => {
+        const appliedSwitchesCount = selectedRows.reduce(
+          (count, row) => count + (row.appliedSwitchesInfo?.length || 0), 0)
+
+        if(appliedSwitchesCount > 0){
+          showActionModal({
+            type: 'confirm',
+            title: $t({ defaultMessage: 'Delete ICX Port Profile(s)?' }),
+            // eslint-disable-next-line max-len
+            content: $t({ defaultMessage: 'Deleting this profile(s) will cause the associated ports to lose the configuration.' }),
+            okText: $t({ defaultMessage: 'Delete' }),
+            cancelText: $t({ defaultMessage: 'Cancel' }),
+            onOk: () => {
+              Promise.all(selectedRows.map(selectedRows =>
+                deleteSwitchPortProfile({ params: { portProfileId: selectedRows.id } })))
+                .then(clearSelection)
+            }
+          })
+        }else{
+          showActionModal({
+            type: 'confirm',
+            title: $t({ defaultMessage: 'Delete {portProfileTitle}?' },
+              { portProfileTitle: selectedRows.length === 1 ?
+                selectedRows[0].name : $t({ defaultMessage: 'ICX Port Profiles' }) }),
+            // eslint-disable-next-line max-len
+            content: $t({ defaultMessage: 'Are you sure you want to delete {count, plural, one {this profile} other {these profiles}}?' }, { count: selectedRows.length }),
+            okText: $t({ defaultMessage: 'Delete' }),
+            cancelText: $t({ defaultMessage: 'Cancel' }),
+            onOk: () => {
+              Promise.all(selectedRows.map(selectedRows =>
+                deleteSwitchPortProfile({ params: { portProfileId: selectedRows.id } })))
+                .then(clearSelection)
+            }
+          })
+        }
       }
     },
     {
@@ -151,11 +171,7 @@ export default function SwitchPortProfileTable () {
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,
-          pathname: `${tenantBasePath.pathname}/` + getPolicyDetailsLink({
-            type: PolicyType.SWITCH_PORT_PROFILE,
-            oper: PolicyOperation.EDIT,
-            policyId: id!
-          })
+          pathname: `${tenantBasePath.pathname}/policies/portProfile/switch/profiles/${id}/edit`
         })
       }
     }

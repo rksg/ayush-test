@@ -1761,7 +1761,40 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: JSON.stringify(payload)
         }
-      }
+      },
+      providesTags: [{ type: 'SwitchPortProfile', id: 'LIST' }]
+    }),
+    addSwitchPortProfile: build.mutation<SwitchPortProfiles, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.addSwitchPortProfile, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'LIST' }]
+    }),
+    editSwitchPortProfile: build.mutation<SwitchPortProfiles, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.editSwitchPortProfile, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'LIST' }]
+    }),
+    deleteSwitchPortProfile: build.mutation<SwitchPortProfiles, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.deleteSwitchPortProfile, params, customHeaders.v1)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchPortProfile', id: 'LIST' }]
     }),
     switchPortProfilesDetail: build.query<SwitchPortProfiles, RequestPayload>({
       query: ({ params }) => {
@@ -2137,6 +2170,9 @@ export const {
   useUpdateSwitchAuthenticationMutation,
   useSwitchPortProfilesListQuery,
   useSwitchPortProfilesDetailQuery,
+  useAddSwitchPortProfileMutation,
+  useEditSwitchPortProfileMutation,
+  useDeleteSwitchPortProfileMutation,
   useSwitchPortProfileAppliedListQuery,
   useSwitchPortProfileMacOuisListQuery,
   useLazySwitchPortProfileMacOuisListQuery,

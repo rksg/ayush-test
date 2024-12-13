@@ -16,8 +16,8 @@ import EthernetPortProfileTable from '../EthernetPortProfile/EthernetPortProfile
 import SwitchPortProfile from './PortProfileTable/SwitchPortProfile'
 
 export enum PortProfileTabsEnum {
-  WIFI = 'portProfile/list',
-  SWITCH = 'switchPortProfile/list',
+  WIFI = 'wifi',
+  SWITCH = 'switch',
 }
 
 const ProfileTabs = () => {

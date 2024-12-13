@@ -6,8 +6,3 @@ export const FieldLabel = styled.div<{ width: string }>`
   line-height: 32px;
   grid-template-columns: ${props => props.width} 1fr;
 `
-
-export const TableWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-`

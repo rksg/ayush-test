@@ -1032,7 +1032,8 @@ export interface SwitchPortProfiles {
   macAuth: boolean
   lldpTlvs?: LldpTlvs[]
   macOuis?: MacOuis[]
-  regularProfiles: string[]
+  regularProfiles?: string[]
+  appliedSwitchesInfo?: SwitchPortProfilesAppliedTargets[]
 }
 
 export interface SwitchPortProfilesAppliedTargets {

@@ -1,14 +1,16 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Divider, Form, Input, Space, Switch, Typography  } from 'antd'
 import { DefaultOptionType }                                from 'antd/lib/select'
 import { useIntl }                                          from 'react-intl'
 
-import { PageHeader, Select, Tooltip, Loader, Table, TableProps, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { PageHeader, Select, Tooltip, Loader, Table, TableProps, StepsForm } from '@acx-ui/components'
 import {
-
+  useAddSwitchPortProfileMutation,
+  useEditSwitchPortProfileMutation,
   useLazySwitchPortProfileMacOuisListQuery,
   useSwitchPortProfileLldpTlvsListQuery,
+  useSwitchPortProfilesDetailQuery,
   useSwitchPortProfilesListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -17,12 +19,11 @@ import {
   LldpTlvs,
   MacOuis,
   PORT_SPEED,
-  PortProfileUI,
   redirectPreviousPage,
   SwitchPortProfileMessages,
   SwitchPortProfiles,
   useTableQuery } from '@acx-ui/rc/utils'
-import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -38,16 +39,21 @@ const defaultPayload = {
 
 export function SwitchPortProfileForm () {
   const intl = useIntl()
-  const formRef = useRef<StepsFormLegacyInstance<SwitchPortProfiles>>()
-  const { portProfileId } = useParams()
+  const [form] = Form.useForm()
+  const params = useParams()
+  const editMode = params.portProfileId ? true : false
   const navigate = useNavigate()
-  const location = useLocation()
   const basePath = useTenantLink('/policies/portProfile/switch/profiles/')
-  const [resetField, setResetField] = useState(false)
+  const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([])
   const [macOuisOptions, setMacOuisOptions] = useState<DefaultOptionType[]>([])
-  const [ portProfileMap, setPortProfileMap ] = useState<PortProfileMap>({})
+  const [portProfileMap, setPortProfileMap] = useState<PortProfileMap>({})
+  const [macOuisList, setMacOuisList] = useState<MacOuis[]>([])
 
-  const editMode = portProfileId ? true : false
+  const [addSwitchPortProfile] = useAddSwitchPortProfileMutation()
+  const [editSwitchPortProfile] = useEditSwitchPortProfileMutation()
+  const switchPortProfilesDetail = useSwitchPortProfilesDetailQuery(
+    { params }, { skip: !editMode }
+  )
   const [switchPortProfileMacOuisList] = useLazySwitchPortProfileMacOuisListQuery()
 
   const lldpTlvTableQuery = useTableQuery({
@@ -94,9 +100,14 @@ export function SwitchPortProfileForm () {
         page: '1',
         pageSize: '10000'
       }
-    }).unwrap()).data
+    }).unwrap())?.data
 
-    return list.map((n: MacOuis) => ({ label: n.oui, value: n.oui }))
+    if(list){
+      setMacOuisList(list)
+      return list.map((n: MacOuis) => ({ label: n.oui, value: n.id }))
+    } else {
+      return []
+    }
   }
 
   useEffect(()=>{
@@ -113,17 +124,18 @@ export function SwitchPortProfileForm () {
 
       setPortProfileMap(portProfileMap)
     }
-  }, [switchPortProfilesList])
 
-  const resetFields = () => {
-    setResetField(true)
-    onClose()
-  }
-
-  const onClose = () => {
-    formRef.current?.resetFields()
-  }
-
+    if(switchPortProfilesDetail.data){
+      form.setFieldsValue(switchPortProfilesDetail.data)
+      if(switchPortProfilesDetail.data.macOuis){
+        form.setFieldValue('macOuis',
+          switchPortProfilesDetail.data.macOuis.map(item => item.id ?? ''))
+      }
+      if(switchPortProfilesDetail.data.lldpTlvs){
+        setSelectedRowKeys(switchPortProfilesDetail.data.lldpTlvs.map(item => item.id ?? ''))
+      }
+    }
+  }, [switchPortProfilesList, switchPortProfilesDetail])
 
   const columns: TableProps<LldpTlvs>['columns'] = [
     {
@@ -167,14 +179,34 @@ export function SwitchPortProfileForm () {
     }
   ]
 
-  const handleUpdatePortProfile = () => {
-    return Promise.resolve()
+  const handleAddPortProfile = async () => {
+    const payload = form.getFieldsValue()
+    try {
+      await form.validateFields()
+      await addSwitchPortProfile({ payload }).unwrap()
+
+      redirectPreviousPage(navigate, '', `${basePath.pathname}`)
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
   }
-  const handleAddPortProfile = () => {
-    return Promise.resolve()
-  }
-  const handleUpdateContext = () => {
-    return Promise.resolve()
+  const handleUpdatePortProfile = async () => {
+    const { id, ...data } = form.getFieldsValue()
+    const payload = {
+      ...form.getFieldsValue(),
+      lldpTlvs: lldpTlvTableQuery.data?.data?.filter(
+        (item: LldpTlvs) => item.id && selectedRowKeys.includes(item.id)),
+      macOuis: macOuisList.filter(
+        (item: MacOuis) => item.id && data.macOuis.includes(item.id))
+    }
+    try {
+      await form.validateFields()
+      await editSwitchPortProfile({ params, payload }).unwrap()
+
+      redirectPreviousPage(navigate, '', `${basePath.pathname}`)
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
   }
 
   return (
@@ -199,10 +231,9 @@ export function SwitchPortProfileForm () {
         ]}
       />
 
-      <StepsFormLegacy
-        formRef={formRef}
+      <StepsForm
+        form={form}
         onFinish={editMode ? handleUpdatePortProfile : handleAddPortProfile}
-        onFormChange={handleUpdateContext}
         onCancel={() =>
           redirectPreviousPage(navigate, '', `${basePath.pathname}`)
         }
@@ -212,8 +243,8 @@ export function SwitchPortProfileForm () {
             : intl.$t({ defaultMessage: 'Add' })
         }}
       >
-        <StepsFormLegacy.StepForm>
-          <Form.Item name='oui'
+        <StepsForm.StepForm>
+          <Form.Item name='name'
             label={intl.$t({ defaultMessage: 'Profile Name' })}
             rules={[
               { required: true }
@@ -244,9 +275,7 @@ export function SwitchPortProfileForm () {
               name={'poeEnable'}
               initialValue={false}
               valuePropName='checked'
-              children={<Switch
-                disabled={editMode}
-                data-testid='poeEnable'/>}
+              children={<Switch data-testid='poeEnable'/>}
             />
           </UI.FieldLabel>
           <Form.Item
@@ -276,9 +305,7 @@ export function SwitchPortProfileForm () {
               name={'portProtected'}
               initialValue={false}
               valuePropName='checked'
-              children={<Switch
-                disabled={editMode}
-                data-testid='portProtected'/>}
+              children={<Switch data-testid='portProtected'/>}
             />
           </UI.FieldLabel>
           <Form.Item
@@ -298,9 +325,7 @@ export function SwitchPortProfileForm () {
               name={'rstpAdminEdgePort'}
               initialValue={false}
               valuePropName='checked'
-              children={<Switch
-                disabled={editMode}
-                data-testid='rstpAdminEdgePort'/>}
+              children={<Switch data-testid='rstpAdminEdgePort'/>}
             />
           </UI.FieldLabel>
           <UI.FieldLabel width={'250px'}>
@@ -311,9 +336,7 @@ export function SwitchPortProfileForm () {
               name={'stpBpduGuard'}
               initialValue={false}
               valuePropName='checked'
-              children={<Switch
-                disabled={editMode}
-                data-testid='stpBpduGuard'/>}
+              children={<Switch data-testid='stpBpduGuard'/>}
             />
           </UI.FieldLabel>
           <UI.FieldLabel width={'250px'}>
@@ -324,9 +347,7 @@ export function SwitchPortProfileForm () {
               name={'stpRootGuard'}
               initialValue={false}
               valuePropName='checked'
-              children={<Switch
-                disabled={editMode}
-                data-testid='stpRootGuard'/>}
+              children={<Switch data-testid='stpRootGuard'/>}
             />
           </UI.FieldLabel>
           <Divider />
@@ -338,9 +359,7 @@ export function SwitchPortProfileForm () {
               name={'dhcpSnoopingTrust'}
               initialValue={false}
               valuePropName='checked'
-              children={<Switch
-                disabled={editMode}
-                data-testid='dhcpSnoopingTrust'/>}
+              children={<Switch data-testid='dhcpSnoopingTrust'/>}
             />
           </UI.FieldLabel>
           <UI.FieldLabel width={'250px'}>
@@ -359,18 +378,12 @@ export function SwitchPortProfileForm () {
           <Form.Item
             name='ingressAcl'
             label={intl.$t({ defaultMessage: 'Ingress ACL (IPv4)' })}
-            rules={[
-              { required: true }
-            ]}
           >
             <Input style={{ width: '280px' }}/>
           </Form.Item>
           <Form.Item
             name='egressAcl'
             label={intl.$t({ defaultMessage: 'Egress ACL (IPv4)' })}
-            rules={[
-              { required: true }
-            ]}
           >
             <Input style={{ width: '280px' }}/>
           </Form.Item>
@@ -383,9 +396,7 @@ export function SwitchPortProfileForm () {
               name={'dot1x'}
               initialValue={false}
               valuePropName='checked'
-              children={<Switch
-                disabled={editMode}
-                data-testid='dot1x'/>}
+              children={<Switch data-testid='dot1x'/>}
             />
           </UI.FieldLabel>
           <UI.FieldLabel width={'250px'}>
@@ -396,9 +407,7 @@ export function SwitchPortProfileForm () {
               name={'macAuth'}
               initialValue={false}
               valuePropName='checked'
-              children={<Switch
-                disabled={editMode}
-                data-testid='macAuth'/>}
+              children={<Switch data-testid='macAuth'/>}
             />
           </UI.FieldLabel>
           <Divider />
@@ -416,10 +425,6 @@ export function SwitchPortProfileForm () {
                 title={SwitchPortProfileMessages.MAC_OUI}
                 placement='bottom'
               /></label>}
-            rules={[{
-              required: true,
-              message: intl.$t({ defaultMessage: 'Please enter MAC OUI' })
-            }]}
             data-testid='macOuis'
             children={
               <Select
@@ -436,17 +441,19 @@ export function SwitchPortProfileForm () {
                 title={intl.$t(SwitchPortProfileMessages.LLDP_TLV)}
                 placement='bottom'
               /></label>}
-            rules={[{
-              required: true,
-              message: intl.$t({ defaultMessage: 'Please enter LLDP TLV' })
-            }]}
             data-testid='lldpTlvs'
           >
             <Loader states={[lldpTlvTableQuery]}>
               <Table
                 rowKey='id'
                 columns={columns}
-                rowSelection={{ type: 'checkbox' }}
+                rowSelection={{
+                  type: 'checkbox',
+                  selectedRowKeys,
+                  onChange: (selectedKeys) => {
+                    setSelectedRowKeys(selectedKeys as string[])
+                  }
+                }}
                 dataSource={lldpTlvTableQuery.data?.data}
                 pagination={lldpTlvTableQuery.pagination}
                 onChange={lldpTlvTableQuery.handleTableChange}
@@ -455,8 +462,8 @@ export function SwitchPortProfileForm () {
               />
             </Loader>
           </Form.Item>
-        </StepsFormLegacy.StepForm>
-      </StepsFormLegacy>
+        </StepsForm.StepForm>
+      </StepsForm>
     </>
   )
 }
