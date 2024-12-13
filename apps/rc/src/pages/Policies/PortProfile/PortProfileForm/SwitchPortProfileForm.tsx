@@ -9,11 +9,13 @@ import {
   useAddSwitchPortProfileMutation,
   useEditSwitchPortProfileMutation,
   useLazySwitchPortProfileMacOuisListQuery,
+  useLazySwitchPortProfilesListQuery,
   useSwitchPortProfileLldpTlvsListQuery,
-  useSwitchPortProfilesDetailQuery,
-  useSwitchPortProfilesListQuery
+  useSwitchPortProfilesDetailQuery
 } from '@acx-ui/rc/services'
 import {
+  checkObjectNotExists,
+  checkVlanMember,
   getDefaultPortSpeedOption,
   getPolicyListRoutePath,
   LldpTlvs,
@@ -21,7 +23,10 @@ import {
   PORT_SPEED,
   redirectPreviousPage,
   SwitchPortProfileMessages,
-  useTableQuery
+  SwitchPortProfiles,
+  useTableQuery,
+  validateDuplicateVlanId,
+  validateVlanExcludingReserved
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -45,6 +50,7 @@ export function SwitchPortProfileForm () {
   const [macOuisOptions, setMacOuisOptions] = useState<DefaultOptionType[]>([])
   const [macOuisList, setMacOuisList] = useState<MacOuis[]>([])
 
+  const [switchPortProfilesList] = useLazySwitchPortProfilesListQuery()
   const [addSwitchPortProfile] = useAddSwitchPortProfileMutation()
   const [editSwitchPortProfile] = useEditSwitchPortProfileMutation()
   const { data: switchPortProfilesDetail, isLoading } = useSwitchPortProfilesDetailQuery(
@@ -59,10 +65,6 @@ export function SwitchPortProfileForm () {
       sortField: 'id',
       sortOrder: 'ASC'
     }
-  })
-
-  const switchPortProfilesList = useSwitchPortProfilesListQuery({
-    payload: { fields: ['id'] }
   })
 
   const { useWatch } = Form
@@ -109,6 +111,21 @@ export function SwitchPortProfileForm () {
     }
   }
 
+  const profileNameDuplicateValidator = async (name: string) => {
+    const list = (await switchPortProfilesList({
+      payload: {
+        page: '1',
+        pageSize: '10000'
+      }
+    }).unwrap()).data
+      .filter((n: SwitchPortProfiles) => n.id !== params.portProfileId)
+      .map((n: SwitchPortProfiles) =>
+        ({ name: n.name.replace(/[^a-z0-9]/gi, '').toLowerCase() }))
+    // eslint-disable-next-line max-len
+    return checkObjectNotExists(list, { name: name.replace(/[^a-z0-9]/gi, '').toLowerCase() } ,
+      intl.$t({ defaultMessage: 'Profile Name' }))
+  }
+
   useEffect(()=>{
     MacOuisSelectList().then(options => setMacOuisOptions(options))
 
@@ -129,7 +146,7 @@ export function SwitchPortProfileForm () {
           switchPortProfilesDetail.taggedVlans.join(','))
       }
     }
-  }, [switchPortProfilesList, switchPortProfilesDetail])
+  }, [switchPortProfilesDetail])
 
   const columns: TableProps<LldpTlvs>['columns'] = [
     {
@@ -241,7 +258,8 @@ export function SwitchPortProfileForm () {
             <Form.Item name='name'
               label={intl.$t({ defaultMessage: 'Profile Name' })}
               rules={[
-                { required: true }
+                { required: true },
+                { validator: (_, value) => profileNameDuplicateValidator(value) }
               ]}
               validateFirst
               hasFeedback
@@ -251,12 +269,23 @@ export function SwitchPortProfileForm () {
             <Form.Item
               name='untaggedVlan'
               label={intl.$t({ defaultMessage: 'Untagged VLAN' })}
+              rules={[
+                { validator: (_, value) => validateVlanExcludingReserved(value) },
+                { validator: (_, value) => form.getFieldValue('taggedVlans') &&
+                  validateDuplicateVlanId(
+                    value, form.getFieldValue('taggedVlans')
+                      .split(',').map((vlan: string) => ({ vlanId: Number(vlan) }))
+                  ) }
+              ]}
             >
               <Input type='number' style={{ width: '280px' }}/>
             </Form.Item>
             <Form.Item
               name='taggedVlans'
               label={intl.$t({ defaultMessage: 'Tagged VLAN' })}
+              rules={[
+                { validator: (_, value) => checkVlanMember(value) }
+              ]}
             >
               <Input style={{ width: '280px' }}/>
             </Form.Item>

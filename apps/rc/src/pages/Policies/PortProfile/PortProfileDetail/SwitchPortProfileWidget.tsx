@@ -14,10 +14,11 @@ export default function SwitchPortProfileWidget (){
 
   const taggedVlanContent = () => {
     if(data?.taggedVlans){
-      return (<Tooltip
-        title={data.taggedVlans?.join('\n')}
-        dottedUnderline={true}
-      >
+      const sortedVlans = Array.isArray(data.taggedVlans)
+        ? [...data.taggedVlans].sort((a, b) => Number(a) - Number(b)).join(', ')
+        : ''
+
+      return (<Tooltip title={sortedVlans} dottedUnderline={true} placement='bottom'>
         {data.taggedVlans ? data.taggedVlans.length : 0}
       </Tooltip>)
     }else{
@@ -29,6 +30,7 @@ export default function SwitchPortProfileWidget (){
       return (<Tooltip
         title={data.macOuis?.map(item=> item.note).join('\n')}
         dottedUnderline={true}
+        placement='bottom'
       >
         {data.macOuis ? data.macOuis.length : 0}
       </Tooltip>)
@@ -41,6 +43,7 @@ export default function SwitchPortProfileWidget (){
       return (<Tooltip
         title={data.lldpTlvs?.map(item=> item.systemName).join('\n')}
         dottedUnderline={true}
+        placement='bottom'
       >
         {data.lldpTlvs ? data.lldpTlvs.length : 0}
       </Tooltip>)

@@ -2169,6 +2169,7 @@ export const {
   useGetSwitchAuthenticationQuery,
   useUpdateSwitchAuthenticationMutation,
   useSwitchPortProfilesListQuery,
+  useLazySwitchPortProfilesListQuery,
   useSwitchPortProfilesDetailQuery,
   useAddSwitchPortProfileMutation,
   useEditSwitchPortProfileMutation,

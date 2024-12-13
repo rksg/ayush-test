@@ -109,7 +109,7 @@ export default function SwitchPortProfileTable () {
         dataIndex: 'dot1x',
         show: false,
         render: function (_, row) {
-          return row.dot1x ? $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })
+          return row.dot1x ? $t({ defaultMessage: 'ON' }) : $t({ defaultMessage: 'OFF' })
         }
       },
       {
@@ -119,7 +119,7 @@ export default function SwitchPortProfileTable () {
         show: false,
         render: function (_, row) {
           return row.macAuth ?
-            $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })
+            $t({ defaultMessage: 'ON' }) : $t({ defaultMessage: 'OFF' })
         }
       },
       {

@@ -17,10 +17,6 @@ export default function SwitchPortProfileDetail () {
   const { portProfileId } = useParams()
 
   const portProfileRoute = getPolicyListRoutePath(true) + '/portProfile/switch/profiles'
-  //   const navigate = useNavigate()
-  // const params = useParams()
-  //   const tenantBasePath: Path = useTenantLink('')
-  // const [ deleteFn ] = useDeleteDirectoryServerMutation()
   const settingsId = 'switch-port-profile-detail'
 
   const defaultPayload = {
@@ -32,17 +28,6 @@ export default function SwitchPortProfileDetail () {
     useQuery: useSwitchPortProfileAppliedListQuery,
     defaultPayload
   })
-
-  // const doDelete = (selectedRows: SwitchPortProfiles[], callback: () => void) => {
-  // doProfileDelete(
-  //   selectedRows,
-  //   $t({ defaultMessage: 'Port Profile(s)' }),
-  //   selectedRows[0].name,
-  //   [{ fieldName: 'id', fieldText: $t({ defaultMessage: 'Switch Port' }) }],
-  //   async () => deleteFn({
-  //     params, payload: selectedRows.map(row => row.id) }).then(callback)
-  // )
-  // }
 
   function useColumns () {
     const { $t } = useIntl()

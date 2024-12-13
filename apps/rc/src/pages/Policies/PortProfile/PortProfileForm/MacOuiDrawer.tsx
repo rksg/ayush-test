@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { Drawer, showToast }                 from '@acx-ui/components'
+import { Drawer, showToast, Tooltip }        from '@acx-ui/components'
 import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import {
   useAddSwitchPortProfileMacOuiMutation, useEditSwitchPortProfileMacOuiMutation,
@@ -11,7 +11,8 @@ import {
 } from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
-  MacOuis } from '@acx-ui/rc/utils'
+  MacOuis,
+  SwitchPortProfileMessages } from '@acx-ui/rc/utils'
 
 interface MacOuiDrawerProps {
   visible: boolean
@@ -101,7 +102,10 @@ export function MacOuiDrawer (props: MacOuiDrawerProps) {
   const content =
     <Form layout='vertical' form={form}>
       <Form.Item name='oui'
-        label={intl.$t({ defaultMessage: 'MAC OUI' })}
+        label={<label>{intl.$t({ defaultMessage: 'MAC OUI' })}
+          <Tooltip.Question
+            title={SwitchPortProfileMessages.MAC_OUI}
+          /></label>}
         rules={[
           { required: true },
           { validator: (_, value) => {
