@@ -131,8 +131,11 @@ export default function LldpTlvTable () {
         const portProfileCount = rows.filter(item => item.portProfiles).length
 
         if(portProfileCount > 0){
-          const portProfileNames = rows.filter(item => item.portProfiles).map(
-            item => item.portProfiles?.map(item => portProfileMap[item])).join(', ')
+          const portProfileNames = Array.from(new Set(
+            rows
+              .filter(item => item.portProfiles)
+              .flatMap(item => item.portProfiles?.map(profile => portProfileMap[profile]))
+          )).join(', ')
 
           showActionModal({
             type: 'confirm',
