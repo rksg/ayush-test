@@ -217,7 +217,9 @@ const PortalInstance = (props: {
                   ...portalList
                 ]}
                 onChange={(v) => {
-                  setPortal(v, isEnabledRbacService)
+                  if(v) {
+                    setPortal(v, isEnabledRbacService)
+                  }
                 }}
               />
             }
