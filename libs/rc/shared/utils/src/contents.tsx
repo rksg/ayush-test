@@ -560,5 +560,11 @@ export const SwitchPortProfileMessages = {
   />,
   LLDP_TLV: defineMessage({
     defaultMessage: 'Define LLDP match criterion - like the System Name and/or Description.'
-  })
+  }),
+  // eslint-disable-next-line max-len
+  POE_ENABLED: defineMessage({ defaultMessage: 'When MAC OUI or LLDP TLV is selected for this port profile, the “PoE Enable” toggle button cannot be turned off.' }),
+  // eslint-disable-next-line max-len
+  MACOUI_POE_DISABLED: defineMessage({ defaultMessage: 'The "PoE Enable" toggle button is currently off. To select MAC OUI, please turn on the "PoE Enable" toggle button above.' }),
+  // eslint-disable-next-line max-len
+  LLDPTLV_POE_DISABLED: defineMessage({ defaultMessage: 'The "PoE Enable" toggle button is currently off. To select LLDP TLV, please turn on the "PoE Enable" toggle button above.' })
 }

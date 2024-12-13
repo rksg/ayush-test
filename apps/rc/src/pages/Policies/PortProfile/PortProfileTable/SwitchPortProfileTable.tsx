@@ -67,7 +67,6 @@ export default function SwitchPortProfileTable () {
         key: 'taggedVlans',
         title: $t({ defaultMessage: 'Tagged VLAN' }),
         dataIndex: 'taggedVlans',
-        sorter: true,
         render: (_, row) => {
           return <Tooltip
             title={row.taggedVlans?.join(', ')}
@@ -81,7 +80,6 @@ export default function SwitchPortProfileTable () {
         key: 'macOuis',
         title: $t({ defaultMessage: 'MAC OUI' }),
         dataIndex: 'macOuis',
-        sorter: true,
         render: (_, row) => {
           return <Tooltip
             title={row.macOuis?.map(item=> item.oui).join('\n')}
@@ -95,7 +93,6 @@ export default function SwitchPortProfileTable () {
         key: 'lldpTlvs',
         title: $t({ defaultMessage: 'LLDP TLV' }),
         dataIndex: 'lldpTlvs',
-        sorter: true,
         render: (_, row) => {
           return <Tooltip
             title={row.lldpTlvs?.map(item=> item.systemName).join('\n')}
@@ -106,13 +103,43 @@ export default function SwitchPortProfileTable () {
         }
       },
       {
-        key: 'appliedSwitchesInfo',
+        key: 'dot1x',
+        title: $t({ defaultMessage: '802.1x' }),
+        dataIndex: 'dot1x',
+        show: false,
+        render: function (_, row) {
+          return row.dot1x ? $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })
+        }
+      },
+      {
+        key: 'macAuth',
+        title: $t({ defaultMessage: 'Mac Auth' }),
+        dataIndex: 'macAuth',
+        show: false,
+        render: function (_, row) {
+          return row.dot1x ? $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })
+        }
+      },
+      {
+        key: 'switches',
         title: $t({ defaultMessage: 'Switches' }),
-        dataIndex: 'appliedSwitchesInfo',
-        sorter: true,
+        dataIndex: 'switches',
         render: (_, row) => {
           return <Tooltip
             title={row.appliedSwitchesInfo?.map(item=> item.switchName).join('\n')}
+            dottedUnderline={row.appliedSwitchesInfo?.length ? true : false}
+          >
+            {row.appliedSwitchesInfo ? row.appliedSwitchesInfo.length : 0}
+          </Tooltip>
+        }
+      },
+      {
+        key: 'venues',
+        title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
+        dataIndex: 'venues',
+        render: (_, row) => {
+          return <Tooltip
+            title={row.appliedSwitchesInfo?.map(item=> item.venueName).join('\n')}
             dottedUnderline={row.appliedSwitchesInfo?.length ? true : false}
           >
             {row.appliedSwitchesInfo ? row.appliedSwitchesInfo.length : 0}

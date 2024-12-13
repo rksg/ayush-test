@@ -21,15 +21,11 @@ import {
   PORT_SPEED,
   redirectPreviousPage,
   SwitchPortProfileMessages,
-  SwitchPortProfiles,
-  useTableQuery } from '@acx-ui/rc/utils'
+  useTableQuery
+} from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
-
-type PortProfileMap = {
-  [key: string]: string
-}
 
 const defaultPayload = {
   fields: [
@@ -44,14 +40,14 @@ export function SwitchPortProfileForm () {
   const editMode = params.portProfileId ? true : false
   const navigate = useNavigate()
   const basePath = useTenantLink('/policies/portProfile/switch/profiles/')
+  const [poeEnable, setPoeEnable] = useState<boolean>(false)
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([])
   const [macOuisOptions, setMacOuisOptions] = useState<DefaultOptionType[]>([])
-  const [portProfileMap, setPortProfileMap] = useState<PortProfileMap>({})
   const [macOuisList, setMacOuisList] = useState<MacOuis[]>([])
 
   const [addSwitchPortProfile] = useAddSwitchPortProfileMutation()
   const [editSwitchPortProfile] = useEditSwitchPortProfileMutation()
-  const switchPortProfilesDetail = useSwitchPortProfilesDetailQuery(
+  const { data: switchPortProfilesDetail, isLoading } = useSwitchPortProfilesDetailQuery(
     { params }, { skip: !editMode }
   )
   const [switchPortProfileMacOuisList] = useLazySwitchPortProfileMacOuisListQuery()
@@ -68,6 +64,9 @@ export function SwitchPortProfileForm () {
   const switchPortProfilesList = useSwitchPortProfilesListQuery({
     payload: { fields: ['id'] }
   })
+
+  const { useWatch } = Form
+  const [macOuis] = [useWatch<string>('macOuis', form)]
 
   const portProfileRoute = getPolicyListRoutePath(true) + '/portProfile/switch/profiles'
 
@@ -113,26 +112,16 @@ export function SwitchPortProfileForm () {
   useEffect(()=>{
     MacOuisSelectList().then(options => setMacOuisOptions(options))
 
-    if(switchPortProfilesList.data){
-      const portProfileMap: PortProfileMap = {}
-
-      switchPortProfilesList.data.data.forEach((profile: SwitchPortProfiles) => {
-        if(profile.id){
-          portProfileMap[profile.id] = profile.name
-        }
-      })
-
-      setPortProfileMap(portProfileMap)
-    }
-
-    if(switchPortProfilesDetail.data){
-      form.setFieldsValue(switchPortProfilesDetail.data)
-      if(switchPortProfilesDetail.data.macOuis){
+    if(switchPortProfilesDetail){
+      form.setFieldsValue(switchPortProfilesDetail)
+      if(switchPortProfilesDetail.macOuis){
         form.setFieldValue('macOuis',
-          switchPortProfilesDetail.data.macOuis.map(item => item.id ?? ''))
+          switchPortProfilesDetail.macOuis.map(item => item.id ?? ''))
+        setPoeEnableValue(switchPortProfilesDetail.macOuis.length > 0)
       }
-      if(switchPortProfilesDetail.data.lldpTlvs){
-        setSelectedRowKeys(switchPortProfilesDetail.data.lldpTlvs.map(item => item.id ?? ''))
+      if(switchPortProfilesDetail.lldpTlvs){
+        setSelectedRowKeys(switchPortProfilesDetail.lldpTlvs.map(item => item.id ?? ''))
+        setPoeEnableValue(switchPortProfilesDetail.lldpTlvs.length > 0)
       }
     }
   }, [switchPortProfilesList, switchPortProfilesDetail])
@@ -162,22 +151,13 @@ export function SwitchPortProfileForm () {
       key: 'descMatchingType',
       dataIndex: 'descMatchingType',
       sorter: true
-    },
-    {
-      title: intl.$t({ defaultMessage: 'Profile Name' }),
-      key: 'portProfiles',
-      dataIndex: 'portProfiles',
-      sorter: false,
-      render: (_, row) => {
-        return <Tooltip
-          title={row.portProfiles?.map(item => portProfileMap[item]).join('\n')}
-          dottedUnderline={row.portProfiles && row.portProfiles.length > 0}
-        >
-          {row.portProfiles ? row.portProfiles.length : 0}
-        </Tooltip>
-      }
     }
   ]
+
+  const setPoeEnableValue = (value: boolean) => {
+    setPoeEnable(value)
+    form.setFieldValue('poeEnable', value)
+  }
 
   const handleAddPortProfile = async () => {
     const data = { ...form.getFieldsValue() }
@@ -186,7 +166,7 @@ export function SwitchPortProfileForm () {
       lldpTlvs: lldpTlvTableQuery.data?.data?.filter(
         (item: LldpTlvs) => item.id && selectedRowKeys.includes(item.id)),
       macOuis: macOuisList.filter(
-        (item: MacOuis) => item.id && data.macOuis.includes(item.id))
+        (item: MacOuis) => item.id && data.macOuis?.includes(item.id))
     }
     try {
       await form.validateFields()
@@ -204,7 +184,7 @@ export function SwitchPortProfileForm () {
       lldpTlvs: lldpTlvTableQuery.data?.data?.filter(
         (item: LldpTlvs) => item.id && selectedRowKeys.includes(item.id)),
       macOuis: macOuisList.filter(
-        (item: MacOuis) => item.id && data.macOuis.includes(item.id))
+        (item: MacOuis) => item.id && data.macOuis?.includes(item.id))
     }
     try {
       await form.validateFields()
@@ -237,240 +217,269 @@ export function SwitchPortProfileForm () {
           }
         ]}
       />
-
-      <StepsForm
-        form={form}
-        onFinish={editMode ? handleUpdatePortProfile : handleAddPortProfile}
-        onCancel={() =>
-          redirectPreviousPage(navigate, '', `${basePath.pathname}`)
-        }
-        buttonLabel={{
-          submit: editMode
-            ? intl.$t({ defaultMessage: 'Apply' })
-            : intl.$t({ defaultMessage: 'Add' })
-        }}
-      >
-        <StepsForm.StepForm>
-          <Form.Item name='name'
-            label={intl.$t({ defaultMessage: 'Profile Name' })}
-            rules={[
-              { required: true }
-            ]}
-            validateFirst
-            hasFeedback
-            validateTrigger={'onBlur'}>
-            <Input style={{ width: '280px' }}/>
-          </Form.Item>
-          <Form.Item
-            name='untaggedVlan'
-            label={intl.$t({ defaultMessage: 'Untagged VLAN' })}
-          >
-            <Input type='number' style={{ width: '280px' }}/>
-          </Form.Item>
-          <Form.Item
-            name='taggedVlan'
-            label={intl.$t({ defaultMessage: 'Tagged VLAN' })}
-          >
-            <Input style={{ width: '280px' }}/>
-          </Form.Item>
-          <Divider />
-          <UI.FieldLabel width={'250px'}>
-            <Space align='start'>
-              { intl.$t({ defaultMessage: 'PoE Enable' }) }
-            </Space>
+      <Loader states={[{ isLoading }]}>
+        <StepsForm
+          form={form}
+          onFinish={editMode ? handleUpdatePortProfile : handleAddPortProfile}
+          onCancel={() =>
+            redirectPreviousPage(navigate, '', `${basePath.pathname}`)
+          }
+          buttonLabel={{
+            submit: editMode
+              ? intl.$t({ defaultMessage: 'Apply' })
+              : intl.$t({ defaultMessage: 'Add' })
+          }}
+        >
+          <StepsForm.StepForm>
+            <Form.Item name='name'
+              label={intl.$t({ defaultMessage: 'Profile Name' })}
+              rules={[
+                { required: true }
+              ]}
+              validateFirst
+              hasFeedback
+              validateTrigger={'onBlur'}>
+              <Input style={{ width: '280px' }}/>
+            </Form.Item>
             <Form.Item
-              name={'poeEnable'}
-              initialValue={false}
-              valuePropName='checked'
-              children={<Switch data-testid='poeEnable'/>}
-            />
-          </UI.FieldLabel>
-          <Form.Item
-            name='poeClass'
-            label={intl.$t({ defaultMessage: 'PoE Class' })}
-          >
-            <Select
-              style={{ width: '280px' }}
-              options={poeClassOptions}
-            />
-          </Form.Item>
-          <Form.Item
-            name='poePriority'
-            label={intl.$t({ defaultMessage: 'PoE Priority' })}
-          >
-            <Select
-              style={{ width: '280px' }}
-              options={poePriorityOptions}
-            />
-          </Form.Item>
-          <Divider />
-          <UI.FieldLabel width={'250px'}>
-            <Space align='start'>
-              { intl.$t({ defaultMessage: 'Protected Port' }) }
-            </Space>
+              name='untaggedVlan'
+              label={intl.$t({ defaultMessage: 'Untagged VLAN' })}
+            >
+              <Input type='number' style={{ width: '280px' }}/>
+            </Form.Item>
             <Form.Item
-              name={'portProtected'}
-              initialValue={false}
-              valuePropName='checked'
-              children={<Switch data-testid='portProtected'/>}
-            />
-          </UI.FieldLabel>
-          <Form.Item
-            name='portSpeed'
-            label={intl.$t({ defaultMessage: 'Port Speed' })}
-          >
-            <Select
-              style={{ width: '280px' }}
-              options={portSpeedOptions}
-            />
-          </Form.Item>
-          <UI.FieldLabel width={'250px'}>
-            <Space align='start'>
-              { intl.$t({ defaultMessage: 'RSTP Admin Edge Port' }) }
-            </Space>
-            <Form.Item
-              name={'rstpAdminEdgePort'}
-              initialValue={false}
-              valuePropName='checked'
-              children={<Switch data-testid='rstpAdminEdgePort'/>}
-            />
-          </UI.FieldLabel>
-          <UI.FieldLabel width={'250px'}>
-            <Space align='start'>
-              { intl.$t({ defaultMessage: 'STP BPDU Guard' }) }
-            </Space>
-            <Form.Item
-              name={'stpBpduGuard'}
-              initialValue={false}
-              valuePropName='checked'
-              children={<Switch data-testid='stpBpduGuard'/>}
-            />
-          </UI.FieldLabel>
-          <UI.FieldLabel width={'250px'}>
-            <Space align='start'>
-              { intl.$t({ defaultMessage: 'STP Root Guard' }) }
-            </Space>
-            <Form.Item
-              name={'stpRootGuard'}
-              initialValue={false}
-              valuePropName='checked'
-              children={<Switch data-testid='stpRootGuard'/>}
-            />
-          </UI.FieldLabel>
-          <Divider />
-          <UI.FieldLabel width={'250px'}>
-            <Space align='start'>
-              { intl.$t({ defaultMessage: 'DHCP Snooping Trust' }) }
-            </Space>
-            <Form.Item
-              name={'dhcpSnoopingTrust'}
-              initialValue={false}
-              valuePropName='checked'
-              children={<Switch data-testid='dhcpSnoopingTrust'/>}
-            />
-          </UI.FieldLabel>
-          <UI.FieldLabel width={'250px'}>
-            <Space align='start'>
-              { intl.$t({ defaultMessage: 'IPSG' }) }
-            </Space>
-            <Form.Item
-              name={'ipsg'}
-              initialValue={false}
-              valuePropName='checked'
-              children={<Switch
-                disabled={editMode}
-                data-testid='ipsg'/>}
-            />
-          </UI.FieldLabel>
-          <Form.Item
-            name='ingressAcl'
-            label={intl.$t({ defaultMessage: 'Ingress ACL (IPv4)' })}
-          >
-            <Input style={{ width: '280px' }}/>
-          </Form.Item>
-          <Form.Item
-            name='egressAcl'
-            label={intl.$t({ defaultMessage: 'Egress ACL (IPv4)' })}
-          >
-            <Input style={{ width: '280px' }}/>
-          </Form.Item>
-          <Divider />
-          <UI.FieldLabel width={'250px'}>
-            <Space align='start'>
-              { intl.$t({ defaultMessage: '802.1x' }) }
-            </Space>
-            <Form.Item
-              name={'dot1x'}
-              initialValue={false}
-              valuePropName='checked'
-              children={<Switch data-testid='dot1x'/>}
-            />
-          </UI.FieldLabel>
-          <UI.FieldLabel width={'250px'}>
-            <Space align='start'>
-              { intl.$t({ defaultMessage: 'Macauth' }) }
-            </Space>
-            <Form.Item
-              name={'macAuth'}
-              initialValue={false}
-              valuePropName='checked'
-              children={<Switch data-testid='macAuth'/>}
-            />
-          </UI.FieldLabel>
-          <Divider />
-          <Space direction='vertical' style={{ margin: '16px 0' }}>
-            <Typography.Title level={4}>
-              { intl.$t({ defaultMessage: 'Define Match Criteria' }) }</Typography.Title>
-          </Space>
-          <Form.Item name='id' hidden={true}>
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name={'macOuis'}
-            label={<label>{intl.$t({ defaultMessage: 'MAC OUI' })}
-              <Tooltip.Question
-                title={SwitchPortProfileMessages.MAC_OUI}
-                placement='bottom'
-              /></label>}
-            data-testid='macOuis'
-            children={
-              <Select
-                mode='multiple'
-                showArrow
-                options={macOuisOptions}
-                style={{ width: '280px' }}
-              />}
-          />
-          <Form.Item
-            name={'lldpTlvs'}
-            label={<label>{intl.$t({ defaultMessage: 'LLDP TLV' })}
-              <Tooltip.Question
-                title={intl.$t(SwitchPortProfileMessages.LLDP_TLV)}
-                placement='bottom'
-              /></label>}
-            data-testid='lldpTlvs'
-          >
-            <Loader states={[lldpTlvTableQuery]}>
-              <Table
-                rowKey='id'
-                columns={columns}
-                rowSelection={{
-                  type: 'checkbox',
-                  selectedRowKeys,
-                  onChange: (selectedKeys) => {
-                    setSelectedRowKeys(selectedKeys as string[])
-                  }
-                }}
-                dataSource={lldpTlvTableQuery.data?.data}
-                pagination={lldpTlvTableQuery.pagination}
-                onChange={lldpTlvTableQuery.handleTableChange}
-                onFilterChange={lldpTlvTableQuery.handleFilterChange}
-                enableApiFilter={true}
+              name='taggedVlan'
+              label={intl.$t({ defaultMessage: 'Tagged VLAN' })}
+            >
+              <Input style={{ width: '280px' }}/>
+            </Form.Item>
+            <Divider />
+            <UI.FieldLabel width={'250px'}>
+              <Space align='start'>
+                { intl.$t({ defaultMessage: 'PoE Enable' }) }
+              </Space>
+              <Form.Item
+                name={'poeEnable'}
+                initialValue={false}
+                valuePropName='checked'
+                // eslint-disable-next-line max-len
+                children={<Tooltip title={intl.$t(SwitchPortProfileMessages.POE_ENABLED)}>
+                  <Switch
+                    data-testid='poeEnable'
+                    disabled={macOuis?.length > 0 || selectedRowKeys?.length > 0}
+                    checked={poeEnable}
+                    onChange={setPoeEnableValue}
+                  />
+                </Tooltip>}
               />
-            </Loader>
-          </Form.Item>
-        </StepsForm.StepForm>
-      </StepsForm>
+            </UI.FieldLabel>
+            <Form.Item
+              name='poeClass'
+              label={intl.$t({ defaultMessage: 'PoE Class' })}
+            >
+              <Select
+                style={{ width: '280px' }}
+                options={poeClassOptions}
+              />
+            </Form.Item>
+            <Form.Item
+              name='poePriority'
+              label={intl.$t({ defaultMessage: 'PoE Priority' })}
+            >
+              <Select
+                style={{ width: '280px' }}
+                options={poePriorityOptions}
+              />
+            </Form.Item>
+            <Divider />
+            <UI.FieldLabel width={'250px'}>
+              <Space align='start'>
+                { intl.$t({ defaultMessage: 'Protected Port' }) }
+              </Space>
+              <Form.Item
+                name={'portProtected'}
+                initialValue={false}
+                valuePropName='checked'
+                children={<Switch data-testid='portProtected'/>}
+              />
+            </UI.FieldLabel>
+            <Form.Item
+              name='portSpeed'
+              label={intl.$t({ defaultMessage: 'Port Speed' })}
+            >
+              <Select
+                style={{ width: '280px' }}
+                options={portSpeedOptions}
+              />
+            </Form.Item>
+            <UI.FieldLabel width={'250px'}>
+              <Space align='start'>
+                { intl.$t({ defaultMessage: 'RSTP Admin Edge Port' }) }
+              </Space>
+              <Form.Item
+                name={'rstpAdminEdgePort'}
+                initialValue={false}
+                valuePropName='checked'
+                children={<Switch data-testid='rstpAdminEdgePort'/>}
+              />
+            </UI.FieldLabel>
+            <UI.FieldLabel width={'250px'}>
+              <Space align='start'>
+                { intl.$t({ defaultMessage: 'STP BPDU Guard' }) }
+              </Space>
+              <Form.Item
+                name={'stpBpduGuard'}
+                initialValue={false}
+                valuePropName='checked'
+                children={<Switch data-testid='stpBpduGuard'/>}
+              />
+            </UI.FieldLabel>
+            <UI.FieldLabel width={'250px'}>
+              <Space align='start'>
+                { intl.$t({ defaultMessage: 'STP Root Guard' }) }
+              </Space>
+              <Form.Item
+                name={'stpRootGuard'}
+                initialValue={false}
+                valuePropName='checked'
+                children={<Switch data-testid='stpRootGuard'/>}
+              />
+            </UI.FieldLabel>
+            <Divider />
+            <UI.FieldLabel width={'250px'}>
+              <Space align='start'>
+                { intl.$t({ defaultMessage: 'DHCP Snooping Trust' }) }
+              </Space>
+              <Form.Item
+                name={'dhcpSnoopingTrust'}
+                initialValue={false}
+                valuePropName='checked'
+                children={<Switch data-testid='dhcpSnoopingTrust'/>}
+              />
+            </UI.FieldLabel>
+            <UI.FieldLabel width={'250px'}>
+              <Space align='start'>
+                { intl.$t({ defaultMessage: 'IPSG' }) }
+              </Space>
+              <Form.Item
+                name={'ipsg'}
+                initialValue={false}
+                valuePropName='checked'
+                children={<Switch
+                  disabled={editMode}
+                  data-testid='ipsg'/>}
+              />
+            </UI.FieldLabel>
+            <Form.Item
+              name='ingressAcl'
+              label={intl.$t({ defaultMessage: 'Ingress ACL (IPv4)' })}
+            >
+              <Input style={{ width: '280px' }}/>
+            </Form.Item>
+            <Form.Item
+              name='egressAcl'
+              label={intl.$t({ defaultMessage: 'Egress ACL (IPv4)' })}
+            >
+              <Input style={{ width: '280px' }}/>
+            </Form.Item>
+            <Divider />
+            <UI.FieldLabel width={'250px'}>
+              <Space align='start'>
+                { intl.$t({ defaultMessage: '802.1x' }) }
+              </Space>
+              <Form.Item
+                name={'dot1x'}
+                initialValue={false}
+                valuePropName='checked'
+                children={<Switch data-testid='dot1x'/>}
+              />
+            </UI.FieldLabel>
+            <UI.FieldLabel width={'250px'}>
+              <Space align='start'>
+                { intl.$t({ defaultMessage: 'Macauth' }) }
+              </Space>
+              <Form.Item
+                name={'macAuth'}
+                initialValue={false}
+                valuePropName='checked'
+                children={<Switch data-testid='macAuth'/>}
+              />
+            </UI.FieldLabel>
+            <Divider />
+            <Space direction='vertical' style={{ margin: '16px 0' }}>
+              <Typography.Title level={4}>
+                { intl.$t({ defaultMessage: 'Define Match Criteria' }) }</Typography.Title>
+            </Space>
+            <Form.Item name='id' hidden={true}>
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name={'macOuis'}
+              label={<label>{intl.$t({ defaultMessage: 'MAC OUI' })}
+                <Tooltip.Question
+                  title={SwitchPortProfileMessages.MAC_OUI}
+                /></label>}
+              data-testid='macOuis'
+              children={
+                <Tooltip
+                  title={!poeEnable && intl.$t(SwitchPortProfileMessages.MACOUI_POE_DISABLED)}
+                >
+                  <Select
+                    mode='multiple'
+                    showArrow
+                    options={macOuisOptions}
+                    onChange={(selectedOuis) =>
+                    { selectedOuis.length > 0 && setPoeEnableValue(true) }}
+                    style={{ width: '280px' }}
+                    disabled={!poeEnable}
+                  />
+                </Tooltip>
+              }
+            />
+            <Form.Item
+              name={'lldpTlvs'}
+              label={<label>{intl.$t({ defaultMessage: 'LLDP TLV' })}
+                <Tooltip.Question
+                  title={intl.$t(SwitchPortProfileMessages.LLDP_TLV)}
+                /></label>}
+              data-testid='lldpTlvs'
+            >
+              <Loader states={[lldpTlvTableQuery]}>
+                <Table
+                  rowKey='id'
+                  columns={columns}
+                  rowSelection={{
+                    type: 'checkbox',
+                    selectedRowKeys,
+                    renderCell (checked, record, index, node) {
+                      if (!poeEnable) {
+                        return <Tooltip
+                          title={intl.$t(SwitchPortProfileMessages.LLDPTLV_POE_DISABLED)}>
+                          {node}</Tooltip>
+                      }
+                      return node
+                    },
+                    getCheckboxProps: () => ({
+                      disabled: !poeEnable
+                    }),
+                    onChange: (selectedKeys) => {
+                      if(selectedKeys.length > 0) {
+                        setPoeEnableValue(true)
+                      }
+                      setSelectedRowKeys(selectedKeys as string[])
+                    }
+                  }}
+                  dataSource={lldpTlvTableQuery.data?.data}
+                  pagination={lldpTlvTableQuery.pagination}
+                  onChange={lldpTlvTableQuery.handleTableChange}
+                  onFilterChange={lldpTlvTableQuery.handleFilterChange}
+                  enableApiFilter={true}
+                />
+              </Loader>
+            </Form.Item>
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Loader>
     </>
   )
 }
