@@ -10,21 +10,18 @@ import { Descriptions, TextContent, PopoverWrapper, PopoverGlobalStyle } from '.
 
 export interface DescriptionRowProps {
   label: string
-  tooltip?: string
+  tooltip?: React.ReactNode
   popover?: string
   children: React.ReactNode
   onClick?: () => void
   tooltipPlacement?: TooltipPlacement
-  formattedTooltip?: React.ReactNode
 }
 
 export const DescriptionRow: React.FC<Omit<DescriptionRowProps, 'label'>> = (props) => {
   let textContent = <TextContent onClick={props.onClick}>{props.children}</TextContent>
-  if (props.tooltip || props.formattedTooltip) {
+  if (props.tooltip) {
     textContent = <Tooltip
-      title={props.formattedTooltip
-        ? props.formattedTooltip
-        : props.tooltip}
+      title={props.tooltip}
       dottedUnderline={true}
       placement={props.tooltipPlacement ?? 'top'}
     >

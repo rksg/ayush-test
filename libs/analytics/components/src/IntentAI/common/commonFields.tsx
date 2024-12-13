@@ -35,7 +35,7 @@ export const useCommonFields = (intent: IntentDetail) => {
     {
       label: $t({ defaultMessage: 'Status' }),
       children: getIntentStatus(displayStatus),
-      formattedTooltip: getStatusTooltip(
+      tooltip: getStatusTooltip(
         displayStatus, sliceValue, { ...metadata, updatedAt }),
       tooltipPlacement: 'right' as TooltipPlacement
     },

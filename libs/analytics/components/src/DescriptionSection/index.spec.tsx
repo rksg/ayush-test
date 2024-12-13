@@ -1,3 +1,5 @@
+import { FormattedMessage } from 'react-intl'
+
 import { screen, render, fireEvent } from '@acx-ui/test-utils'
 
 import { DescriptionRow, DescriptionSection } from '.'
@@ -17,26 +19,18 @@ describe('DescriptionRow', () => {
 
     const {
       asFragment: asChildrenTitleFragment
-    } = render(<DescriptionRow label='label' children='children'/>)
+    } = render(<DescriptionRow children='children'/>)
     expect(asChildrenTitleFragment()).toMatchSnapshot()
 
     const {
       asFragment: asNoTitleFragment
-    } = render(<DescriptionRow label='label' children={<div data-testid='children'/>}/>)
+    } = render(<DescriptionRow children={<div data-testid='children'/>}/>)
     expect(asNoTitleFragment()).toMatchSnapshot()
 
-    const formattedTooltip = {
-      id: 'tooltip.test',
-      defaultMessage: 'This is a test tooltip for {value}'
-    }
-    const tooltipValues = { value: 'DescriptionRow' }
-    const {
-      asFragment: asFormattedTooltipFragment
-    } = render(<DescriptionRow
+    const { asFragment: asFormattedTooltipFragment } = render(<DescriptionRow
       {...props}
-      formattedTooltip={formattedTooltip}
-      tooltipValues={tooltipValues}/>
-    )
+      tooltip={<FormattedMessage defaultMessage='test {value}' values={{ value: 'value' }} />}
+    />)
     expect(asFormattedTooltipFragment()).toMatchSnapshot()
   })
   it('should handle onClick', async () => {
