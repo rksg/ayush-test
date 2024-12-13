@@ -433,3 +433,12 @@ export interface ErrorDetails {
   message?: string,
   errorMessage?: string
 }
+
+export interface ScopePermission extends Record<string, string|boolean> {
+  name: string
+  id: string
+  read: boolean
+  create: boolean
+  update: boolean
+  delete: boolean
+}

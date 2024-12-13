@@ -35,7 +35,7 @@ export const FieldLabelPermission = styled.div<{ width: string }>`
 export const FieldLabelAttributes = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
-  grid-template-columns: 465px 48px 48px 48px 48px 48px;
+  grid-template-columns: 465px 48px 48px 48px 48px;
   grid-template-rows: 40px;
   grid-column-gap: 2px;
   align-items: center;
@@ -111,5 +111,21 @@ export const SelectedCount = styled.div`
 export const PermissionCheckbox = styled(Checkbox)`
   .ant-checkbox {
     background-color: var(--acx-primary-white);
+  }
+`
+export const PermissionTableWrapper = styled.div`
+  .grid-item.ant-form-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+  }
+  .ant-table-thead > tr > th {
+    text-align: center;
+  }
+  .ant-table-tbody > tr.ant-table-row:hover > td,
+  .ant-table-tbody > tr > td.ant-table-cell-row-hover {
+    background-color: transparent;
   }
 `
