@@ -123,6 +123,11 @@ export function SwitchPortProfileForm () {
         setSelectedRowKeys(switchPortProfilesDetail.lldpTlvs.map(item => item.id ?? ''))
         setPoeEnableValue(switchPortProfilesDetail.lldpTlvs.length > 0)
       }
+
+      if(switchPortProfilesDetail.taggedVlans){
+        form.setFieldValue('taggedVlans',
+          switchPortProfilesDetail.taggedVlans.join(','))
+      }
     }
   }, [switchPortProfilesList, switchPortProfilesDetail])
 
