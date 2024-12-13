@@ -8,11 +8,11 @@ export const DriftSetCollapse = styled(Collapse)`
     padding-top: 8px;
     padding-left: 0;
     align-items: center;
-    .ant-collapse-expand-icon {
+    div.ant-collapse-expand-icon {
       svg {
         width: 18px;
         margin-right: 8px;
-        margin-top: 4px;
+        padding-top: 4px;
         path {
           stroke: var(--acx-accents-blue-50);
         }

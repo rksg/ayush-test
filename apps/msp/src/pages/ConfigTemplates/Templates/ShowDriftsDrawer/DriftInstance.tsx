@@ -35,10 +35,7 @@ export function DriftInstance (props: DriftInstanceProps) {
   const onCollapseChange = (key: string | string[]) => {
     if (key && key.length > 0) {
       getDriftReport({ params: { templateId, tenantId: instanceId } }).then(result => {
-        // setDriftData(result.data ?? [])
-        setDriftData([...(result.data ?? []), { diffName: 'something error', diffData: [{
-          path: '!error', data: { template: 'error', instance: 'error' }
-        }] }])
+        setDriftData(result.data ?? [])
       })
     }
   }
