@@ -4,8 +4,8 @@ import { Input, Space } from 'antd'
 import {
   Form
 } from 'antd'
-import { cloneDeep }                 from 'lodash'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { cloneDeep } from 'lodash'
+import { useIntl }   from 'react-intl'
 
 import {
   Button,
@@ -25,6 +25,8 @@ import {
   ManagementFrameProtectionEnum,
   PolicyOperation,
   PolicyType,
+  SecurityOptionsDescription,
+  WifiNetworkMessages,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -83,28 +85,15 @@ function Hotspot20Form () {
   const { disableMLO } = useContext(MLOContext)
   const form = Form.useFormInstance()
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
-  const wpa2Description = <FormattedMessage
-    /* eslint-disable max-len */
-    defaultMessage={`
-      WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006.
-      WPA2 should be selected unless you have a specific reason to choose otherwise.
-      <highlight>
-        6GHz radios are only supported with WPA3.
-      </highlight>
-    `}
-    /* eslint-enable */
-    values={{
-      highlight: (chunks) => <Space align='start'>
-        <InformationSolid />
-        {chunks}
-      </Space>
-    }}
-  />
+  const wpa2Description = <>
+    {$t(WifiNetworkMessages.WPA2_DESCRIPTION)}
+    <Space align='start'>
+      <InformationSolid />
+      {$t(SecurityOptionsDescription.WPA2_DESCRIPTION_WARNING)}
+    </Space>
+  </>
 
-  const wpa3Description = $t({
-    // eslint-disable-next-line max-len
-    defaultMessage: 'WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.'
-  })
+  const wpa3Description = $t(SecurityOptionsDescription.WPA3)
 
   useEffect(() => {
     if (!editMode && !cloneMode) {
