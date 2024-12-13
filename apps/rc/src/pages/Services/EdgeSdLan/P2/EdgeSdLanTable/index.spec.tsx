@@ -29,6 +29,8 @@ describe('SD-LAN Table P2', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
 
+    store.dispatch(edgeSdLanApi.util.resetApiState())
+
     mockedUsedNavigate.mockReset()
     mockedGetClusterList.mockReset()
     mockedDeleteReq.mockReset()
@@ -69,8 +71,6 @@ describe('SD-LAN Table P2', () => {
       }
     )
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    screen.getByRole('columnheader', { name: 'Cluster' })
     await waitFor(() => expect(mockedGetClusterList).toBeCalled())
     const rows = await screen.findAllByRole('row', { name: /Mocked_SDLAN_/i })
     expect(rows.length).toBe(3)
@@ -90,7 +90,6 @@ describe('SD-LAN Table P2', () => {
       }
     )
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     await screen.findByRole('row', { name: /Mocked_SDLAN_1/i })
     const networkNumStr = await screen.findByTestId('network-names-mocked-sd-lan-1')
     await hover(networkNumStr)
@@ -106,7 +105,6 @@ describe('SD-LAN Table P2', () => {
       }
     )
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /Mocked_SDLAN_1/i })
     await click(within(row).getByRole('checkbox'))
     await click(screen.getByRole('button', { name: 'Edit' }))
@@ -133,7 +131,6 @@ describe('SD-LAN Table P2', () => {
       }
     )
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /Mocked_SDLAN_2/i })
     await click(within(row).getByRole('checkbox'))
     await click(screen.getByRole('button', { name: 'Delete' }))
@@ -153,7 +150,6 @@ describe('SD-LAN Table P2', () => {
       }
     )
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     const rows = await screen.findAllByRole('row', { name: /Mocked_SDLAN_/i })
     expect(within(rows[0]).getByRole('cell', { name: /Mocked_SDLAN_1/i })).toBeVisible()
     await click(within(rows[0]).getByRole('checkbox'))
@@ -185,8 +181,6 @@ describe('SD-LAN Table P2', () => {
       }
     )
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    screen.getByRole('columnheader', { name: 'Cluster' })
     const row = await screen.findByRole('row', { name: /Mocked_SDLAN_1/i })
     // eslint-disable-next-line max-len
     expect(row).toHaveTextContent(/Mocked_SDLAN_1\s*Mocked-Venue-1\s*SE_Cluster 0\s*SE_Cluster 3\s*2\s*Mocked_tunnel-1\s*Mocked_tunnel-3\s*Poor/)
@@ -218,8 +212,6 @@ describe('SD-LAN Table P2', () => {
       }
     )
 
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    screen.getByRole('columnheader', { name: 'Cluster' })
     await screen.findByRole('row', { name: /sdLan_good_health/i })
     // eslint-disable-next-line max-len
     screen.getByRole('row', { name: 'sdLan_good_health Mocked-Venue-1 SE_Cluster 0 SE_Cluster 3 2 Mocked_tunnel-1 Mocked_tunnel-3 Good' })

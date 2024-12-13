@@ -104,7 +104,8 @@ export const WlanSecurityFormItems = () => {
     const wlanSecurity = form.getFieldValue('pskProtocol')
     return (
       <>
-        {SecurityOptionsDescription[wlanSecurity as keyof typeof PskWlanSecurityEnum]}
+        {wlanSecurity in PskWlanSecurityEnum &&
+          $t(SecurityOptionsDescription[wlanSecurity as keyof typeof PskWlanSecurityEnum])}
         {[
           WlanSecurityEnum.WPA2Personal,
           WlanSecurityEnum.WPAPersonal,
@@ -112,7 +113,7 @@ export const WlanSecurityFormItems = () => {
         ].indexOf(wlanSecurity) > -1 &&
           <Space align='start'>
             <InformationSolid />
-            {SecurityOptionsDescription.WPA2_DESCRIPTION_WARNING}
+            {$t(SecurityOptionsDescription.WPA2_DESCRIPTION_WARNING)}
           </Space>
         }
       </>
@@ -133,7 +134,9 @@ export const WlanSecurityFormItems = () => {
   const networkSecurityDescription = () => {
     const networkSecurity = form.getFieldValue('networkSecurity')
     return (
-      WisprSecurityOptionsDescription[networkSecurity as keyof typeof WisprSecurityEnum]
+      networkSecurity in WisprSecurityOptionsDescription &&
+        // eslint-disable-next-line max-len
+        $t(WisprSecurityOptionsDescription[networkSecurity as keyof typeof WisprSecurityOptionsDescription])
     )
   }
   const securityOptions = Object.keys(PskWlanSecurityEnum).filter(key => {

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { Col, Row }  from 'antd'
+import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
@@ -44,31 +45,32 @@ export const ComplianceBanner = () => {
     { params, payload: MspAttentionNotesPayload })
 
   return (
-    <UI.BannerComplianceNotes>
-      <Row justify='space-between' gutter={[16, 16]}>
-        <Col>
-          <UI.ComplianceNotesLabel>
-            <InformationSolid />
-            {$t({ defaultMessage: 'Attention Notes' })}
-          </UI.ComplianceNotesLabel>
-        </Col>
-        <Col>
-          <ShowMoreNotesLink
-            shownMoreNotesInBanner={shownMoreNotesInBanner}
-            setShownMoreNotesInBanner={setShownMoreNotesInBanner}
-          />
-        </Col>
-      </Row>
-      {
-        queryData?.data.map((note) => (
-          <div className='note' key={note.summary}>- {note.summary}
-            {shownMoreNotesInBanner && note.details &&
+    _.isEmpty(queryData?.data) ? <></>
+      : <UI.BannerComplianceNotes>
+        <Row justify='space-between' gutter={[16, 16]}>
+          <Col>
+            <UI.ComplianceNotesLabel>
+              <InformationSolid />
+              {$t({ defaultMessage: 'Attention Notes' })}
+            </UI.ComplianceNotesLabel>
+          </Col>
+          <Col>
+            <ShowMoreNotesLink
+              shownMoreNotesInBanner={shownMoreNotesInBanner}
+              setShownMoreNotesInBanner={setShownMoreNotesInBanner}
+            />
+          </Col>
+        </Row>
+        {
+          queryData?.data.map((note) => (
+            <div className='note' key={note.summary}>- {note.summary}
+              {shownMoreNotesInBanner && note.details &&
               <div className='detail' key={note.details}>{note.details}</div>
-            }
-          </div>
-        ))
-      }
-    </UI.BannerComplianceNotes>
+              }
+            </div>
+          ))
+        }
+      </UI.BannerComplianceNotes>
   )
 }
 

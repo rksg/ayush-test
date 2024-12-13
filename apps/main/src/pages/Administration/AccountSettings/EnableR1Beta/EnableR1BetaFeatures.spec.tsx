@@ -117,6 +117,13 @@ describe('Enable RUCKUS One Beta Feature List Checkbox', () => {
   })
 
   it('should display drawer and save correctly when manage link clicked', async () => {
+    Object.defineProperty(window, 'location', {
+      value: {
+        ...window.location,
+        reload: jest.fn()
+      }
+    })
+
     render(
       <Provider>
         <EnableR1BetaFeatures
@@ -139,6 +146,7 @@ describe('Enable RUCKUS One Beta Feature List Checkbox', () => {
       status: 'fulfilled'
     })]
     await waitFor(() => expect(user.useUpdateBetaFeatureListMutation).toHaveLastReturnedWith(value))
+    await waitFor(() => expect(window.location.reload).toHaveBeenCalled())
   })
 
   it('should show terms and conditions when link clicked', async () => {
