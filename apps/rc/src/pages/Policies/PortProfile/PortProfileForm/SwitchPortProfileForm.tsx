@@ -163,6 +163,7 @@ export function SwitchPortProfileForm () {
     const data = { ...form.getFieldsValue() }
     const payload = {
       ...form.getFieldsValue(),
+      taggedVlans: data.taggedVlans.split(','),
       lldpTlvs: lldpTlvTableQuery.data?.data?.filter(
         (item: LldpTlvs) => item.id && selectedRowKeys.includes(item.id)),
       macOuis: macOuisList.filter(
@@ -181,6 +182,7 @@ export function SwitchPortProfileForm () {
     const { id, ...data } = form.getFieldsValue()
     const payload = {
       ...form.getFieldsValue(),
+      taggedVlans: data.taggedVlans.split(','),
       lldpTlvs: lldpTlvTableQuery.data?.data?.filter(
         (item: LldpTlvs) => item.id && selectedRowKeys.includes(item.id)),
       macOuis: macOuisList.filter(
@@ -248,7 +250,7 @@ export function SwitchPortProfileForm () {
               <Input type='number' style={{ width: '280px' }}/>
             </Form.Item>
             <Form.Item
-              name='taggedVlan'
+              name='taggedVlans'
               label={intl.$t({ defaultMessage: 'Tagged VLAN' })}
             >
               <Input style={{ width: '280px' }}/>

@@ -724,7 +724,7 @@ export const getAdminPassword = (
     )
 }
 
-export const vlanPortsParser = (vlans: string, maxRangesToShow: number = 20) => {
+export const vlanPortsParser = (vlans: string, maxRangesToShow: number = 20, title: string = '') => {
   const numbers = vlans.split(' ').map(Number).sort((a, b) => a - b)
   let ranges = []
 
@@ -740,7 +740,7 @@ export const vlanPortsParser = (vlans: string, maxRangesToShow: number = 20) => 
   if (ranges.length > maxRangesToShow) {
     const remainingCount = ranges.length - maxRangesToShow
     ranges = ranges.slice(0, maxRangesToShow)
-    return `${ranges.join(', ')}, and ${remainingCount} more...`
+    return `${ranges.join(', ')}, and ${remainingCount} ${title} more...`
   }
 
   return ranges.join(', ')

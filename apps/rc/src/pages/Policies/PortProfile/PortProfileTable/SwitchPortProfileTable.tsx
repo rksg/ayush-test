@@ -2,6 +2,7 @@
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { CountAndNamesTooltip }                                from '@acx-ui/rc/components'
 import {
   useDeleteSwitchPortProfileMutation,
   // useDeleteDirectoryServerMutation,
@@ -13,7 +14,8 @@ import {
   PolicyOperation,
   PolicyType,
   SwitchPortProfiles,
-  useTableQuery
+  useTableQuery,
+  vlanPortsParser
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -69,7 +71,8 @@ export default function SwitchPortProfileTable () {
         dataIndex: 'taggedVlans',
         render: (_, row) => {
           return <Tooltip
-            title={row.taggedVlans?.join(', ')}
+            // eslint-disable-next-line max-len
+            title={row.taggedVlans ? vlanPortsParser(row.taggedVlans?.join(' ') || '', 200, $t({ defaultMessage: 'Tagged VLANs' })) : ''}
             dottedUnderline={row.taggedVlans?.length ? true : false}
           >
             {row.taggedVlans ? row.taggedVlans.length : 0}
@@ -81,12 +84,11 @@ export default function SwitchPortProfileTable () {
         title: $t({ defaultMessage: 'MAC OUI' }),
         dataIndex: 'macOuis',
         render: (_, row) => {
-          return <Tooltip
-            title={row.macOuis?.map(item=> item.oui).join('\n')}
-            dottedUnderline={row.macOuis?.length ? true : false}
-          >
-            {row.macOuis ? row.macOuis.length : 0}
-          </Tooltip>
+          return <CountAndNamesTooltip
+            data={{ count: row.macOuis?.length ||
+              0, names: row.macOuis?.map(item=> item.oui) || [] }}
+            maxShow={25}
+          />
         }
       },
       {
@@ -94,12 +96,11 @@ export default function SwitchPortProfileTable () {
         title: $t({ defaultMessage: 'LLDP TLV' }),
         dataIndex: 'lldpTlvs',
         render: (_, row) => {
-          return <Tooltip
-            title={row.lldpTlvs?.map(item=> item.systemName).join('\n')}
-            dottedUnderline={row.lldpTlvs?.length ? true : false}
-          >
-            {row.lldpTlvs ? row.lldpTlvs.length : 0}
-          </Tooltip>
+          return <CountAndNamesTooltip
+            data={{ count: row.lldpTlvs?.length ||
+              0, names: row.lldpTlvs?.map(item=> item.systemName) || [] }}
+            maxShow={25}
+          />
         }
       },
       {
@@ -113,11 +114,12 @@ export default function SwitchPortProfileTable () {
       },
       {
         key: 'macAuth',
-        title: $t({ defaultMessage: 'Mac Auth' }),
+        title: $t({ defaultMessage: 'MAC Auth' }),
         dataIndex: 'macAuth',
         show: false,
         render: function (_, row) {
-          return row.dot1x ? $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })
+          return row.macAuth ?
+            $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })
         }
       },
       {
@@ -125,12 +127,11 @@ export default function SwitchPortProfileTable () {
         title: $t({ defaultMessage: 'Switches' }),
         dataIndex: 'switches',
         render: (_, row) => {
-          return <Tooltip
-            title={row.appliedSwitchesInfo?.map(item=> item.switchName).join('\n')}
-            dottedUnderline={row.appliedSwitchesInfo?.length ? true : false}
-          >
-            {row.appliedSwitchesInfo ? row.appliedSwitchesInfo.length : 0}
-          </Tooltip>
+          return <CountAndNamesTooltip
+            data={{ count: row.appliedSwitchesInfo?.length ||
+              0, names: row.appliedSwitchesInfo?.map(item=> item.switchName) || [] }}
+            maxShow={25}
+          />
         }
       },
       {
@@ -138,12 +139,11 @@ export default function SwitchPortProfileTable () {
         title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
         dataIndex: 'venues',
         render: (_, row) => {
-          return <Tooltip
-            title={row.appliedSwitchesInfo?.map(item=> item.venueName).join('\n')}
-            dottedUnderline={row.appliedSwitchesInfo?.length ? true : false}
-          >
-            {row.appliedSwitchesInfo ? row.appliedSwitchesInfo.length : 0}
-          </Tooltip>
+          return <CountAndNamesTooltip
+            data={{ count: row.appliedSwitchesInfo?.length ||
+              0, names: row.appliedSwitchesInfo?.map(item=> item.venueName) || [] }}
+            maxShow={25}
+          />
         }
       }
     ]
