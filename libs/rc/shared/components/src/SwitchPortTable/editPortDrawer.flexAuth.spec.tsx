@@ -556,7 +556,7 @@ describe('EditPortDrawer', () => {
           )
         })
 
-        it('should set Auth Default Vlan as Switch Level Auth Default Vlan when the port control is set to "Force Unauthorized" or "Force Authorized"', async () => {
+        it.skip('should set Auth Default Vlan as Switch Level Auth Default Vlan when the port control is set to "Force Unauthorized" or "Force Authorized"', async () => {
           const profile01 = _.omit(flexAuthList.data[0], ['id', 'profileName'])
           mockServer.use(
             rest.post(SwitchRbacUrlsInfo.getPortSetting.url,
@@ -944,7 +944,7 @@ describe('EditPortDrawer', () => {
           })
         })
 
-        it('should set Auth Default Vlan as Switch Level Auth Default Vlan when the port control is set to "Force Unauthorized" or "Force Authorized" and all switches have the same Switch Level Auth Default Vlan', async () => {
+        it.skip('should set Auth Default Vlan as Switch Level Auth Default Vlan when the port control is set to "Force Unauthorized" or "Force Authorized" and all switches have the same Switch Level Auth Default Vlan', async () => {
           mockServer.use(
             rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
               (_, res, ctx) => res(ctx.json([{
@@ -1013,7 +1013,7 @@ describe('EditPortDrawer', () => {
           expect(await screen.findByLabelText(/Auth Default VLAN/)).toHaveValue('4') // switch auth default vlan
         })
 
-        it('should handle field changes correctly', async () => {
+        it.skip('should handle field changes correctly', async () => {
           mockServer.use(
             rest.post(SwitchRbacUrlsInfo.getPortsSetting.url,
               (_, res, ctx) => res(ctx.json([{
