@@ -8,7 +8,8 @@ import {
   Select,
   Switch
 } from 'antd'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { isEmpty } from 'lodash'
+import { useIntl } from 'react-intl'
 
 import {
   Button,
@@ -35,7 +36,8 @@ import {
   WlanSecurityEnum,
   hasPolicyPermission,
   macAuthMacFormatOptions,
-  useConfigTemplate
+  useConfigTemplate,
+  SecurityOptionsDescription
 } from '@acx-ui/rc/utils'
 
 import { CertificateTemplateForm, MAX_CERTIFICATE_PER_TENANT } from '../../policies'
@@ -54,17 +56,25 @@ const { useWatch } = Form
 export function AaaSettingsForm () {
   const { editMode, cloneMode, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const isWifiRbacEnabledFF = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isWifiRbacEnabled = !isRuckusAiMode && isWifiRbacEnabledFF
+  const isRadsecFeatureEnabledFF = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const isRadsecFeatureEnabled = !isRuckusAiMode && isRadsecFeatureEnabledFF
   const { isTemplate } = useConfigTemplate()
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
 
   // TODO: Remove deprecated codes below when RadSec feature is delivery
   useEffect(()=>{
-    if(!supportRadsec && data && (editMode || cloneMode)) {
+    if(!supportRadsec && !isRuckusAiMode && data && (editMode || cloneMode)) {
       setFieldsValue()
     }
   }, [data])
+
+  useEffect(() => {
+    if (isRuckusAiMode && !isEmpty(data?.wlan)) {
+      setFieldsValue()
+    }
+  }, [data?.wlan])
 
   useEffect(()=>{
     if(supportRadsec && data && (editMode || cloneMode)) {
@@ -111,35 +121,23 @@ export function AaaSettingsForm () {
 
 function SettingsForm () {
   const { $t } = useIntl()
-  const { editMode, cloneMode } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, isRuckusAiMode } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
   const form = Form.useFormInstance()
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
   const useCertificateTemplate = useWatch('useCertificateTemplate')
-  const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const isCertificateTemplateEnabledFF = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const isCertificateTemplateEnabled = !isRuckusAiMode && isCertificateTemplateEnabledFF
   const { isTemplate } = useConfigTemplate()
-  const wpa2Description = <FormattedMessage
-    /* eslint-disable max-len */
-    defaultMessage={`
-      WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006.
-      WPA2 should be selected unless you have a specific reason to choose otherwise.
-      <highlight>
-        6GHz radios are only supported with WPA3.
-      </highlight>
-    `}
-    /* eslint-enable */
-    values={{
-      highlight: (chunks) => <Space align='start'>
-        <InformationSolid />
-        {chunks}
-      </Space>
-    }}
-  />
+  const wpa2Description = <>
+    {$t(WifiNetworkMessages.WPA2_DESCRIPTION)}
+    <Space align='start'>
+      <InformationSolid />
+      {$t(SecurityOptionsDescription.WPA2_DESCRIPTION_WARNING)}
+    </Space>
+  </>
 
-  const wpa3Description = $t({
-    // eslint-disable-next-line max-len
-    defaultMessage: 'WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.'
-  })
+  const wpa3Description = $t(SecurityOptionsDescription.WPA3)
 
   useEffect(() => {
     if (!editMode && !cloneMode) {
@@ -268,7 +266,7 @@ function CertAuth () {
 
 function AaaService () {
   const { $t } = useIntl()
-  const { editMode, setData, data } = useContext(NetworkFormContext)
+  const { editMode, setData, data, isRuckusAiMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   const enableAccountingService = useWatch('enableAccountingService', form)
   const enableMacAuthentication = useWatch<boolean>(
@@ -276,8 +274,12 @@ function AaaService () {
   const [selectedAuthRadius, selectedAcctRadius] =
     [useWatch<Radius>('authRadius'), useWatch<Radius>('accountingRadius')]
   const support8021xMacAuth = useIsSplitOn(Features.WIFI_8021X_MAC_AUTH_TOGGLE)
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isRadsecFeatureEnabled = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const isWifiRbacEnabledFF = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isWifiRbacEnabled = !isRuckusAiMode && isWifiRbacEnabledFF
+
+  const isRadsecFeatureEnabledFF = useIsSplitOn(Features.WIFI_RADSEC_TOGGLE)
+  const isRadsecFeatureEnabled = !isRuckusAiMode && isRadsecFeatureEnabledFF
+
   const { isTemplate } = useConfigTemplate()
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
   const labelWidth = '250px'
@@ -317,10 +319,7 @@ function AaaService () {
 
   const proxyServiceTooltip = <Tooltip.Question
     placement='bottom'
-    title={$t({
-      // eslint-disable-next-line max-len
-      defaultMessage: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.'
-    })}
+    title={$t(WifiNetworkMessages.ENABLE_PROXY_TOOLTIP)}
     iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
   />
 

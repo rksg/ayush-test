@@ -399,7 +399,7 @@ describe('Edge SD-LAN form: settings', () => {
 
     // show fw info
     await screen.findByText('Cluster Firmware Version: 1.9.0.200')
-    const fwWarningIcon = await screen.findByTestId('WarningCircleSolid')
+    const fwWarningIcon = await screen.findByTestId('WarningTriangleSolid')
     await userEvent.hover(fwWarningIcon)
     expect(await screen.findByRole('tooltip', { hidden: true }))
       .toHaveTextContent('2.1.0.600')
@@ -413,7 +413,7 @@ describe('Edge SD-LAN form: settings', () => {
       'clusterId_5')
 
     await screen.findByText('Cluster Firmware Version: 1.9.0.100')
-    const fwWarningIcons = await screen.findAllByTestId('WarningCircleSolid')
+    const fwWarningIcons = await screen.findAllByTestId('WarningTriangleSolid')
     expect(fwWarningIcons.length).toBe(2)
     await userEvent.hover(fwWarningIcons[1])
     expect(await screen.findByRole('tooltip', { hidden: true }))

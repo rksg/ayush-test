@@ -621,7 +621,9 @@ export function EditPortDrawer ({
             : $t(EditPortMessages.POE_CAPABILITY_DISABLE)
           ) : ''
       case 'useVenuesettings':
-        return flexibleAuthenticationEnabled
+        const flexAuthEnabled = getFlexAuthEnabled(aggregatePortsData, isMultipleEdit,
+          flexibleAuthenticationEnabled, flexibleAuthenticationEnabledCheckbox)
+        return flexAuthEnabled
           ? $t(EditPortMessages.USE_VENUE_SETTINGS_DISABLED_WHEN_FLEX_AUTH_ENABLED)
           : (disabledUseVenueSetting ? $t(EditPortMessages.USE_VENUE_SETTINGS_DISABLE) : '')
       case 'ingressAcl': return !hasSwitchProfile ? $t(EditPortMessages.ADD_ACL_DISABLE) : ''
@@ -1297,7 +1299,6 @@ export function EditPortDrawer ({
                     && hasMultipleValue.includes('authenticationProfileId')
                     && !authenticationProfileIdCheckbox ? [{
                         validator: () => {
-                          // TODO: checking with UX
                           return Promise.reject($t(FlexAuthMessages.CANNOT_APPLIED_DIFF_PROFILES))
                         }
                       }] : []),
@@ -1403,7 +1404,7 @@ export function EditPortDrawer ({
                     options={Object.values(PortControl).map(controlType => ({
                       label: $t(portControlTypeLabel[controlType]),
                       value: controlType,
-                      disabled: controlType === ''
+                      disabled: controlType !== PortControl.AUTO
                     }))}
                     disabled={getFieldDisabled('dot1xPortControl')}
                     onChange={(value) => handleAuthFieldChange({
@@ -1427,7 +1428,6 @@ export function EditPortDrawer ({
                       && hasMultipleValue.includes('authDefaultVlan')
                       && !authDefaultVlanCheckbox ? [{
                         validator: () => {
-                          // TODO: checking with UX
                           // eslint-disable-next-line max-len
                           return Promise.reject($t(FlexAuthMessages.CANNOT_APPLIED_DIFF_AUTH_DEFAULT_VLAN))
                         }
@@ -1438,8 +1438,6 @@ export function EditPortDrawer ({
                           = getUnionValuesByKey('switchLevelAuthDefaultVlan', aggregatePortsData)
                       const isAnyForceControl = isForceControlType([dot1xPortControl])
                       if (isDisabled && isAnyForceControl && switchAuthDefaultVlans?.length > 1) {
-                        //TODO: checking wording with UX
-                        // const type = dot1xPortControl as PortControl
                         return Promise.reject($t(FlexAuthMessages.CANNOT_SET_FORCE_CONTROL_TYPE))
                       }
                       return Promise.resolve()

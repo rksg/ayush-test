@@ -9,7 +9,7 @@ import {
 const { mockEdgeCompatibilitiesVenue } = EdgeCompatibilityFixtures
 
 export const transformedMockEdgeCompatibilitiesVenue = {
-  compatibilities: mockEdgeCompatibilitiesVenue.compatibilities.map(item => ({
+  compatibilities: mockEdgeCompatibilitiesVenue?.compatibilities?.map(item => ({
     id: item.id,
     total: item.total,
     incompatible: item.incompatible,

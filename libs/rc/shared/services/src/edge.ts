@@ -6,6 +6,8 @@ import {
   Filter
 } from '@acx-ui/components'
 import {
+  ApiVersionEnum,
+  ClusterArpTerminationSettings,
   ClusterNetworkSettings,
   ClusterSubInterfaceSettings,
   CommonResult,
@@ -41,6 +43,7 @@ import {
   EdgeUrlsInfo,
   EdgesTopResources,
   EdgesTopTraffic,
+  GetApiVersionHeader,
   PaginationQueryResult,
   PingEdge,
   SEARCH,
@@ -939,12 +942,23 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       providesTags: [{ type: 'Edge', id: 'SDLAN_EDGE_COMPATIBILITY' }]
     }),
-    getSdLanApCompatibilities: build.query<EdgeSdLanApCompatibilitiesResponse, RequestPayload>({
+    getSdLanApCompatibilitiesDeprecated: build.query<EdgeSdLanApCompatibilitiesResponse, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getSdLanApCompatibilities, params)
         return {
           ...req,
           body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'SDLAN_AP_COMPATIBILITY' }]
+    }),
+    getSdLanApCompatibilities: build.query<EdgeServicesApCompatibilitiesResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(EdgeUrlsInfo.getSdLanApCompatibilities, params, apiCustomHeader)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'Edge', id: 'SDLAN_AP_COMPATIBILITY' }]
@@ -978,6 +992,36 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'CLUSTER_DETAIL' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    updateEdgeClusterArpTerminationSettings: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.updateEdgeClusterArpTerminationSettings, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'ARP_TERMINATION' }]
+    }),
+    getEdgeClusterArpTerminationSettings: build.query<ClusterArpTerminationSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeClusterArpTerminationSettings, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'ARP_TERMINATION' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update ARP Termination Settings'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'ARP_TERMINATION' }]))
           })
         })
       },
@@ -1237,6 +1281,8 @@ export const {
   useGetEdgeClusterQuery,
   usePatchEdgeClusterNetworkSettingsMutation,
   useGetEdgeClusterNetworkSettingsQuery,
+  useUpdateEdgeClusterArpTerminationSettingsMutation,
+  useGetEdgeClusterArpTerminationSettingsQuery,
   usePatchEdgeClusterSubInterfaceSettingsMutation,
   useGetEdgeClusterSubInterfaceSettingsQuery,
   useGetEdgesPortStatusQuery,
@@ -1249,6 +1295,7 @@ export const {
   useLazyGetSdLanEdgeCompatibilitiesQuery,
   useGetSdLanApCompatibilitiesQuery,
   useLazyGetSdLanApCompatibilitiesQuery,
+  useLazyGetSdLanApCompatibilitiesDeprecatedQuery,
   useGetHqosEdgeCompatibilitiesQuery,
   useGetPinEdgeCompatibilitiesQuery,
   useLazyGetPinEdgeCompatibilitiesQuery,

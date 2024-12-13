@@ -26,7 +26,9 @@ import {
   TimelineData,
   TYPES,
   Event,
-  Quality
+  Quality,
+  BTM_REQUEST,
+  BTM_RESPONSE
 } from './config'
 import {
   getConnectionQualityFor,
@@ -47,7 +49,9 @@ import {
   getRoamingSubtitleConfig,
   getChartData,
   labelFormatter,
-  calculateInterval
+  calculateInterval,
+  getEventColor,
+  getTimelineData
 } from './util'
 
 
@@ -352,6 +356,8 @@ describe('util', () => {
     ]
     it('should return correct data for categorizeEvent', () => {
       const expectedResult = [
+        { event: 'EVENT_CLIENT_BTM_REQ_SENT', ttc: null, category: BTM_REQUEST },
+        { event: 'EVENT_CLIENT_BTM_RESP_RECEIVED', ttc: null, category: BTM_RESPONSE },
         { event: 'EVENT_CLIENT_DISCONNECT', ttc: null, category: DISCONNECT },
         { event: 'EVENT_CLIENT_BLOCKED', ttc: null, category: DISCONNECT },
         { event: 'EVENT_CLIENT_ROAMING', ttc: 5000, category: SLOW },
@@ -766,10 +772,13 @@ describe('util', () => {
         }
       }
       it('should return correct chart config', () => {
-        expect(getRoamingChartConfig(roamingData)).toEqual([
-          { chartType: 'bar', key: 'test1', label: 'apName1', series: 'roaming' },
-          { chartType: 'bar', key: 'test2', label: 'apName2', series: 'roaming' }
+        const isVisible = expect.any(Function)
+        const data = getRoamingChartConfig(roamingData)
+        expect(data).toEqual([
+          { chartType: 'bar', key: 'test1', label: 'apName1', series: 'roaming', isVisible },
+          { chartType: 'bar', key: 'test2', label: 'apName2', series: 'roaming', isVisible }
         ])
+        expect(data[0].isVisible()).toEqual(true)
       })
     })
     describe('getRoamingSubtitleConfig', () => {
@@ -792,7 +801,7 @@ describe('util', () => {
       it('should return correct chart config for normal list', () => {
         expect(getRoamingSubtitleConfig(roamingData)).toEqual([
           {
-            isLast: false,
+            isVisible: expect.any(Function),
             noData: false,
             title: 'apName1 on radio1GHz',
             value: 'apName1',
@@ -801,7 +810,7 @@ describe('util', () => {
             apFirmware: 'apFirmware1'
           },
           {
-            isLast: true,
+            isVisible: expect.any(Function),
             noData: false,
             title: 'apName2 on radio2GHz',
             value: 'apName2',
@@ -820,7 +829,7 @@ describe('util', () => {
           apFirmware: '',
           value: '',
           noData: true,
-          isLast: true
+          isVisible: expect.any(Function)
         }])
       })
     })
@@ -992,4 +1001,46 @@ describe('util', () => {
       expect(calculateInterval([start, end])).toEqual(secs5)
     })
   })
+
+  describe('getEventColor', () => {
+    it.each([
+      { category: DISCONNECT, btmInfo: undefined, expectedColor: '--acx-neutrals-50' },
+      { category: SUCCESS, btmInfo: undefined, expectedColor: '--acx-semantics-green-50' },
+      { category: FAILURE, btmInfo: undefined, expectedColor: '--acx-semantics-red-50' },
+      { category: SLOW, btmInfo: undefined, expectedColor: '--acx-semantics-yellow-50' },
+      { category: BTM_REQUEST, btmInfo: undefined, expectedColor: '--acx-semantics-green-50' },
+      {
+        category: BTM_RESPONSE,
+        btmInfo: 'BTM_EVENT_RECEIVE_ACCEPT',
+        expectedColor: '--acx-semantics-green-50'
+      },
+      {
+        category: BTM_RESPONSE,
+        btmInfo: 'BTM_EVENT_RECEIVE_REJECT',
+        expectedColor: '--acx-semantics-yellow-50'
+      }
+    ])(
+      'should return "$expectedColor" color for "$category" with btmInfo "$btmInfo"',
+      ({ category, btmInfo, expectedColor }) => {
+        expect(getEventColor(category, btmInfo)).toEqual(expectedColor)
+      }
+    )
+  })
+
+  it('getTimelineData should return empty array for no match', () => {
+    expect(getTimelineData([], [], {}, true)).toEqual({
+      connectionEvents: {
+        'all': [],
+        'btm-request': [],
+        'btm-response': [],
+        'disconnect': [],
+        'failure': [],
+        'slow': [],
+        'success': []
+      },
+      networkIncidents: { all: [], connection: [], infrastructure: [], performance: [] },
+      roaming: { all: [] }
+    })
+  })
+
 })

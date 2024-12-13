@@ -1324,22 +1324,23 @@ export const rootCauseRecommendationMap = {
     DEFAULT: {
       rootCauses: defineMessage({
         defaultMessage: `
-          <p>System has detected the AP(s) are underperforming due to low WAN bandwidth availability. This can occur due to following reasons:</p>
+          <p>The system has detected that the Access Point(s) (APs) may be underperforming due to a physical link speed or duplex mismatch between the AP and the upstream device. This issue can arise due to following reasons:</p>
           <ol>
-            <li>Upstream peer device configuration is wrong and not matching as per AP Ethernet WAN port capacity.</li>
-            <li>Upstream peer device cannnot support multi gig throughput needed by APs.</li>
-            <li>Faulty cables and incorrect cable types can lead to Ethernet link not negotiated properly.</li>
+            <li>The upstream peer device configuration does not match the AP's Ethernet uplink port capacity.</li>
+            <li>The upstream peer device cannot support the multi-gigabit throughput required by the AP(s).</li>
+            <li>Faulty cables or incorrect cable types can prevent proper Ethernet link negotiation.</li>
           </ol>
         `
       }),
       recommendations: defineMessage({
         defaultMessage: `
-          <p>To remediate the problems identified above, follow the corresponding recommended actions:</p>
+          <p>To resolve the identified issues, consider following these steps:</p>
           <ol>
-            <li>Check the peer device configuration. It should match with AP WAN Port capacity.</li>
-            <li>Check the peer device capacity for supporting multi gig throughput.</li>
-            <li>Check the cable for good Ethernet link negotiation.</li>
+            <li>Verify that the configuration of the upstream peer device aligns with the AP uplink port's capacity (e.g., speed and duplex settings).</li>
+            <li>Ensure that the upstream device supports the multi-gigabit throughput needed by the AP(s).</li>
+            <li>Verify cable type and quality, replace faulty cables or upgrade to appropriate types.</li>
           </ol>
+          <p>Confirm that the Ethernet port profiles configured in the network controller match the AP and upstream device requirements.</p>
         `
       })
     }

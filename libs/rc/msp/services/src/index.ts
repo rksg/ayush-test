@@ -36,7 +36,8 @@ import {
   MspCompliances,
   LicenseAttentionNotes,
   RecommendFirmwareUpgradeByApModel,
-  LicenseCalculatorDataResponse
+  LicenseCalculatorDataResponse,
+  MileageReportsResponse
 } from '@acx-ui/msp/utils'
 import {
   TableResult,
@@ -490,8 +491,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     updateMspEcDelegatedAdmins: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.updateMspEcDelegatedAdmins, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.updateMspEcDelegatedAdmins, params)
         return {
           ...req,
           body: payload
@@ -1045,6 +1047,57 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getLicenseMileageReports: build.query<MileageReportsResponse, RequestPayload>({
+      query: ({ payload }) => {
+        const request = createHttpRequest(MspRbacUrlsInfo.getLicenseMileageReports)
+        return {
+          ...request,
+          body: payload
+        }
+      }
+    }),
+    customerNamesFilterList: build.query<{
+      data: string[]
+    }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customerListReq =
+          createHttpRequest(MspUrlsInfo.getCustomerNamesFilter, params)
+        return {
+          ...customerListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    venueNamesFilterList: build.query<{
+      data: string[]
+    }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const venuesListReq =
+          createHttpRequest(MspUrlsInfo.getVenuesFilter, params)
+        return {
+          ...venuesListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    deviceModelFilterList: build.query<{
+      data: string[]
+    }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const deviceModelsListReq =
+          createHttpRequest(MspUrlsInfo.getdeviceModelsFilter, params)
+        return {
+          ...deviceModelsListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     })
   })
 })
@@ -1164,7 +1217,11 @@ export const {
   useGetEntitlementsAttentionNotesQuery,
   useGetCalculatedLicencesMutation,
   useUpdateMspEcDelegationsMutation,
-  useUpdateMspMultipleEcDelegationsMutation
+  useUpdateMspMultipleEcDelegationsMutation,
+  useGetLicenseMileageReportsQuery,
+  useCustomerNamesFilterListQuery,
+  useDeviceModelFilterListQuery,
+  useVenueNamesFilterListQuery
 } = mspApi
 
 export * from './hospitalityVerticalFFCheck'

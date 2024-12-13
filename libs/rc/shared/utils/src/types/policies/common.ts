@@ -80,7 +80,7 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.HQOS_BANDWIDTH]: defineMessage({ defaultMessage: 'HQoS Bandwidth' }),
   [PolicyType.SOFTGRE]: defineMessage({ defaultMessage: 'Tunnel the traffic to a SoftGRE gateway' }),
   [PolicyType.ETHERNET_PORT_PROFILE]: defineMessage({ defaultMessage: 'An Ethernet port profile is a configuration that specifies how a network port functions and behaves.' }),
-  [PolicyType.FLEX_AUTH]: defineMessage({ defaultMessage: 'Define 802.1x and MACAUTH settings for switch clients. These profiles can be applied at the switch port(s) level.' }),
+  [PolicyType.FLEX_AUTH]: defineMessage({ defaultMessage: 'Define 802.1x and MAC-AUTH settings for switch clients. These profiles can be applied at the switch port(s) level.' }),
   [PolicyType.SERVER_CERTIFICATES]: defineMessage({ defaultMessage: 'Server Certificates' }),
   [PolicyType.DIRECTORY_SERVER]: defineMessage({ defaultMessage: 'Create an Active Directory or LDAP server for network access on a captive portal' }),
   [PolicyType.PORT_PROFILE]: defineMessage({ defaultMessage: 'A port profile is a configuration that specifies how a port functions and behaves.' }),

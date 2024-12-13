@@ -18,29 +18,10 @@ export enum AAAWlanSecurityEnum {
   WPA3 = 'WPA3'
 }
 
-export enum SecurityOptionsDescription {
-  /* eslint-disable max-len */
-  WPA2Personal = 'WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise.',
-  WPA3 = 'WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.',
-  WPA23Mixed = 'WPA2/WPA3 mixed mode supports the high-end WPA3 which is the highest level of Wi-Fi security available and WPA2 which is still common and provides good security. Typically, mobile devices manufactured after 2006 support WPA2 and devices manufactures after 2019 support WPA3.',
-  WPAPersonal = 'WPA security can be chosen if you have older devices that don\'t support WPA2. These devices were likely manufactured prior to 2006. We recommend you upgrade or replace these older devices.',
-  WEP = 'Ruckus Networks does not recommend using WEP to secure your wireless network because it is insecure and can be exploited easily. RUCKUS One offers WEP to enable customers with very old devices (that are difficult or costly to replace) to continue using those devices to connect to the wireless network. If you must use WEP, DO NOT use the devices using WEP to transport sensitive information over the wireless network.',
-  WPA2_DESCRIPTION_WARNING = '6GHz radios are only supported with WPA3.'
-  /* eslint-enable */
-}
-
 export enum WisprSecurityEnum {
   NONE = 'None',
   PSK = 'Pre-Share Key (PSK)',
   OWE = 'OWE encryption'
-}
-
-export enum WisprSecurityOptionsDescription {
-  /* eslint-disable max-len */
-  NONE = '',
-  PSK = 'Require users to enter a passphrase to connect',
-  OWE = 'Secures open Wi-Fi networks by encrypting data without needing passwords.'
-  /* eslint-enable */
 }
 
 export enum SecurityOptionsPassphraseLabel {
@@ -189,6 +170,30 @@ export const WifiNetworkMessages = {
   })
 }
 
+export const WisprSecurityOptionsDescription = {
+  PSK: defineMessage({
+    defaultMessage: 'Require users to enter a passphrase to connect'
+  }),
+  OWE: WifiNetworkMessages.ENABLE_OWE_TOOLTIP
+}
+
+export const SecurityOptionsDescription = {
+  WPA2Personal: WifiNetworkMessages.WPA2_DESCRIPTION,
+  WPA3: WifiNetworkMessages.WPA3_DESCRIPTION,
+  WPA23Mixed: defineMessage({
+    defaultMessage: 'WPA2/WPA3 mixed mode supports the high-end WPA3 which is the highest level of Wi-Fi security available and WPA2 which is still common and provides good security. Typically, mobile devices manufactured after 2006 support WPA2 and devices manufactures after 2019 support WPA3.'
+  }),
+  WPAPersonal: defineMessage({
+    defaultMessage: 'WPA security can be chosen if you have older devices that don\'t support WPA2. These devices were likely manufactured prior to 2006. We recommend you upgrade or replace these older devices.'
+  }),
+  WEP: defineMessage({
+    defaultMessage: 'Ruckus Networks does not recommend using WEP to secure your wireless network because it is insecure and can be exploited easily. RUCKUS One offers WEP to enable customers with very old devices (that are difficult or costly to replace) to continue using those devices to connect to the wireless network. If you must use WEP, DO NOT use the devices using WEP to transport sensitive information over the wireless network.'
+  }),
+  WPA2_DESCRIPTION_WARNING: defineMessage({
+    defaultMessage: '6GHz radios are only supported with WPA3.'
+  })
+}
+
 export const WifiTroubleshootingMessages = {
   Target_Host_IP_TOOLTIP: defineMessage({
     defaultMessage: 'The target host or IP address must be a valid IP address or domain name'
@@ -300,7 +305,7 @@ export const EditPortMessages = {
     defaultMessage: 'Authentication needs RADIUS server and AAA policy to support. If you have set them on R1, will apply the configuration for Authentication automatically. If no, please set them to make Authentication work.'
   }),
   ONLY_SUPPORT_FW_ABOVE_10010F: defineMessage({
-    defaultMessage: 'The firmware version on the selected switches is at least 10.0.10f or higher.'
+    defaultMessage: 'The firmware version on the selected switches must be FI 10.0.10f or higher.'
   }),
   UNTAGGED_PORT_CANNOT_ENABLE_FLEX_AUTH: defineMessage({
     defaultMessage: 'This port is Untagged port. So can not enable Authentication.'
@@ -347,19 +352,19 @@ export const FlexAuthMessages = {
     defaultMessage: 'Guest VLAN is already defined previously and needs to be consistent across all the ports that have authentication enabled.'
   }),
   CANNOT_SET_FORCE_CONTROL_TYPE: defineMessage({
-    defaultMessage: 'The Auth Default VLAN is a required setting. When the 802.1x Port Control value is set to Force Authorized or Force Unauthorized, the Auth Default VLAN cannot be configured. Please change the 802.1x Port Control value to reconfigure it.'
+    defaultMessage: 'The Auth Default VLAN is a required setting. When the 802.1x Port Control value is set to Force Authorized or Force Unauthorized, the Auth Default VLAN cannot be configured. If the Auth Default VLAN is needed, please change the 802.1x Port Control to ‘Auto’.'
   }),
   CANNOT_SET_FORCE_CONTROL_TYPE_FOR_PROFILE: defineMessage({
-    defaultMessage: 'When the 802.1x Port Control value in the selected profile(s) is/are set to Force Authorized or Force Unauthorized, the Auth Default VLAN value must match the switch-level Auth Default VLAN.'
+    defaultMessage: 'When the 802.1x Port Control value in the selected profile(s) is set to Force Authorized or Force Unauthorized, the Auth Default VLAN value must match the switch-level Auth Default VLAN.'
   }),
   VLAN_CANNOT_SAME_AS_TARGET_VLAN: defineMessage({
     defaultMessage: '{sourceVlan} can not be the same as {targetVlan}'
   }),
   CANNOT_APPLIED_DIFF_PROFILES: defineMessage({
-    defaultMessage: 'The selected profiles may either be unset or assigned to different profiles. Please assign the same value.'
+    defaultMessage: 'The selected ports have different profiles or some of them have no profile selected previously. Apply a common profile to all the selected ports.'
   }),
   CANNOT_APPLIED_DIFF_AUTH_DEFAULT_VLAN: defineMessage({
-    defaultMessage: 'The selected ports may either be unset or assigned to different Auth Default VLAN. Please assign the same value.'
+    defaultMessage: 'The selected ports have different or no Auth Default VLAN set previously. Define a common Auth Default VLAN for the selected ports.'
   })
 }
 
@@ -380,7 +385,7 @@ export const PortStatusMessages = {
     defaultMessage: 'Port used by other VLAN setting'
   }),
   USED_BY_AUTH: defineMessage({
-    defaultMessage: 'This port has already enabled authentication'
+    defaultMessage: 'This port has authentication (802.1x and MAC-AUTH) enabled and cannot be manually added to a VLAN'
   }),
   CURRENT: defineMessage({
     defaultMessage: 'VLANs'
@@ -533,12 +538,14 @@ export const EthernetPortProfileMessages = {
   }),
   GUEST_VLAN: defineMessage({
     defaultMessage: 'A guest VLAN is used if you want to allow a device that fails authentication to access the Internet but restrict it from accessing internal network resources'
+  }),
+  USE_RADIUS_PROXY: defineMessage({
+    defaultMessage: 'This option requires your access points to run firmware version 7.0.0.400 or higher.'
   })
   /* eslint-enable */
 }
 
 export const SwitchPortProfileMessages = {
-  /* eslint-disable max-len */
   MAC_OUI: <FormattedMessage
     defaultMessage={'Click here to lookup MAC OUI at IEEE ({link})'}
     values={{
@@ -554,5 +561,4 @@ export const SwitchPortProfileMessages = {
   LLDP_TLV: defineMessage({
     defaultMessage: 'Define LLDP match criterion - like the System Name and/or Description.'
   })
-  /* eslint-enable */
 }

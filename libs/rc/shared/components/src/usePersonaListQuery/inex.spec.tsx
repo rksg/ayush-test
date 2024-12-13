@@ -1,12 +1,12 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }                    from '@acx-ui/feature-toggle'
-import { personaApi, serviceApi }          from '@acx-ui/rc/services'
-import { DpskUrls, PersonaUrls }           from '@acx-ui/rc/utils'
-import { Provider, store }                 from '@acx-ui/store'
-import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
+import { useIsSplitOn }                           from '@acx-ui/feature-toggle'
+import { personaApi, policyApi, serviceApi }      from '@acx-ui/rc/services'
+import { CertificateUrls, DpskUrls, PersonaUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                        from '@acx-ui/store'
+import { mockServer, renderHook, waitFor }        from '@acx-ui/test-utils'
 
-import { mockedDpskDeviceList, mockedIdentityGroupList, mockedIdentityList } from './__tests__/fixtures'
+import { mockedDpskDeviceList, mockedIdentityGroupList, mockedIdentityList, mockedCertificateList } from './__tests__/fixtures'
 
 import { usePersonaListQuery } from '.'
 
@@ -15,6 +15,7 @@ describe('useEdgeClusterActions', () => {
   beforeEach(() => {
     store.dispatch(personaApi.util.resetApiState())
     store.dispatch(serviceApi.util.resetApiState())
+    store.dispatch(policyApi.util.resetApiState())
     mockServer.use(
       rest.get(
         PersonaUrls.getPersonaGroupById.url,
@@ -33,6 +34,10 @@ describe('useEdgeClusterActions', () => {
         (req, res, ctx) => {
           return res(ctx.json(mockedDpskDeviceList))
         }
+      ),
+      rest.post(
+        CertificateUrls.getCertificatesByIdentity.url,
+        (_, res, ctx) => res(ctx.json(mockedCertificateList))
       )
     )
   })
@@ -50,5 +55,6 @@ describe('useEdgeClusterActions', () => {
       wrapper: ({ children }) => <Provider children={children} />
     })
     await waitFor(() => expect(result.current.data?.data[2].deviceCount).toBe(1))
+    await waitFor(() => expect(result.current.data?.data[0].certificateCount).toBe(3))
   })
 })

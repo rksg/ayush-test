@@ -400,6 +400,11 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'PATCH',
     url: '/adminDelegations',
     newApi: true
+  },
+  getLicenseMileageReports: {
+    method: 'post',
+    url: '/entitlements/mileageReports/query',
+    newApi: true
   }
 
 }

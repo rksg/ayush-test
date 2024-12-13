@@ -1,8 +1,8 @@
 import { Card }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { DogAndPerson, RuckusAiLogo, WelcomeLogo } from '@acx-ui/icons'
-import { useUserProfileContext }                   from '@acx-ui/user'
+import { DogAndPerson, WelcomeLogo } from '@acx-ui/icons'
+import { useUserProfileContext }     from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -19,14 +19,21 @@ function WelcomePage () {
       zIndex: 1,
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'center',
       alignItems: 'center',
-      height: '100%'
+      height: '100%',
+      minHeight: '200px',
+      maxHeight: 'calc(100vh - 250px)',
+      overflowY: 'auto'
     }}
   >
-    <WelcomeLogo style={{
-      width: '110px', height: '110px'
-    }} />
+    <div style={{
+      height: '110px'
+    }} >
+      <WelcomeLogo style={{
+        width: '110px', height: '110px'
+      }} />
+    </div>
+
     <span style={{
       fontSize: '24px',
       fontWeight: 700,
@@ -40,19 +47,28 @@ function WelcomePage () {
       fontWeight: 700,
       fontFamily: 'Montserrat'
     }}>
-      {$t({ defaultMessage: "I'm" })}
-      <RuckusAiLogo
+      {$t({ defaultMessage: "I'm your personal" })}
+      {/* <RuckusAiLogo
         style={{
           height: '20px',
           marginBottom: '-1px'
-        }} />
+        }} /> */}
+      <span
+        style={{
+          fontSize: '24px',
+          fontWeight: 700,
+          fontFamily: 'Montserrat',
+          color: '#EC7100'
+        }}
+      > {$t({ defaultMessage: 'Onboarding Assistant' })}</span>
     </span>
-    <span style={{ fontSize: '14px', color: '#808284', marginTop: '15px', fontWeight: 600 }}>
-      {$t({ defaultMessage: 'Your personal onboarding assistant' })}
-    </span>
-
     <Card
-      style={{ width: '780px', margin: '100px 30px 30px 30px', height: '125px' }}
+      style={{
+        width: '780px',
+        margin: '100px 30px 30px 30px',
+        height: '125px',
+        background: '#FFFFFFCC'
+      }}
     >
       <UI.WelcomeMeta
         avatar={<DogAndPerson style={{
@@ -61,10 +77,17 @@ function WelcomePage () {
           left: '-1px',
           zIndex: '1'
         }} />}
-        title={$t({ defaultMessage: 'About RUCKUS AI' })}
+        title={<>{$t({ defaultMessage: 'About' })} <span
+          style={{
+            fontSize: '18px',
+            fontWeight: 700,
+            fontFamily: 'Montserrat',
+            color: '#EC7100'
+          }}
+        > {$t({ defaultMessage: 'Onboarding Assistant' })}</span></>}
         style={{ fontFamily: 'Montserrat' }}
         // eslint-disable-next-line max-len
-        description={$t({ defaultMessage: 'RUCKUS AI automates and optimizes complex network onboarding processes, leading to increased efficiency and productivity.' })}
+        description={$t({ defaultMessage: 'Onboarding Assistant automates and optimizes complex network onboarding processes, leading to increased efficiency and productivity.' })}
       />
     </Card>
   </div>
