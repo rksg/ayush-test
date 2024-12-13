@@ -180,7 +180,14 @@ export function SwitchPortProfileForm () {
   ]
 
   const handleAddPortProfile = async () => {
-    const payload = form.getFieldsValue()
+    const data = { ...form.getFieldsValue() }
+    const payload = {
+      ...form.getFieldsValue(),
+      lldpTlvs: lldpTlvTableQuery.data?.data?.filter(
+        (item: LldpTlvs) => item.id && selectedRowKeys.includes(item.id)),
+      macOuis: macOuisList.filter(
+        (item: MacOuis) => item.id && data.macOuis.includes(item.id))
+    }
     try {
       await form.validateFields()
       await addSwitchPortProfile({ payload }).unwrap()
