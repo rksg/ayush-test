@@ -1404,7 +1404,7 @@ export function EditPortDrawer ({
                     options={Object.values(PortControl).map(controlType => ({
                       label: $t(portControlTypeLabel[controlType]),
                       value: controlType,
-                      disabled: controlType === ''
+                      disabled: controlType !== PortControl.AUTO
                     }))}
                     disabled={getFieldDisabled('dot1xPortControl')}
                     onChange={(value) => handleAuthFieldChange({
