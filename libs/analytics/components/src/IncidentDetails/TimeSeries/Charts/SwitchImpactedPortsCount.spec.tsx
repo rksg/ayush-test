@@ -6,9 +6,9 @@ import { buffer10d }            from '../__tests__/fixtures'
 import { TimeSeriesChartTypes } from '../config'
 import { Api }                  from '../services'
 
-import { SwitchDDoSAttackChart } from './SwitchDDoSAttackChart'
+import { SwitchImpactedPortsCount } from './SwitchImpactedPortsCount'
 
-describe('SwitchDDoSAttackChart', () => {
+describe('SwitchImpactedPortsCount', () => {
   const chart = {
     ddosAttackOnPortTimeSeries: {
       time: ['2022-04-07T09:00:00.000Z', '2022-04-08T09:00:00.000Z', '2022-04-08T09:00:00.000Z'],
@@ -25,7 +25,7 @@ describe('SwitchDDoSAttackChart', () => {
   afterEach(() => store.dispatch(Api.util.resetApiState()))
 
   it('renders projected time line', () => {
-    const { asFragment } = render(<SwitchDDoSAttackChart
+    const { asFragment } = render(<SwitchImpactedPortsCount
       chartRef={() => {}}
       buffer={buffer10d}
       incident={incident}
@@ -35,12 +35,12 @@ describe('SwitchDDoSAttackChart', () => {
     expect(asFragment().querySelector('svg')).toBeDefined()
   })
 
-  describe('switchDDoSAttackQuery', () => {
+  describe('switchImpactedPortsCountQuery', () => {
     it('call corresponidng api and transform response', async () => {
       const { status, data, error } = await store.dispatch(
         Api.endpoints.Charts.initiate({
           incident,
-          charts: [TimeSeriesChartTypes.SwitchDDoSAttackChart],
+          charts: [TimeSeriesChartTypes.SwitchImpactedPortsCount],
           minGranularity: 'PT1H',
           buffer: buffer10d
         })

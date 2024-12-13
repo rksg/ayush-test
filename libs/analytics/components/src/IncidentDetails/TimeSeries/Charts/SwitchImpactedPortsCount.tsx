@@ -12,23 +12,23 @@ import { formatter }                      from '@acx-ui/formatter'
 
 import type { TimeSeriesChartProps } from '../types'
 
-
-const switchDDoSAttackQuery = (incident: Incident) => gql`
-  ddosAttackOnPortTimeSeries: timeSeries(granularity: $granularity) {
+// TODO: replace impactedPortsByDDoSwith switchImpactedPortsByCode, in later releases.
+const switchImpactedPortsCountQuery = (incident: Incident) => gql`
+  timeSeries(granularity: $granularity) {
     time
-    ddos: impactedPortsByDDoS(code: "${incident.code}")
+    portCount: impactedPortsByDDoS(code: "${incident.code}")
   }
 `
 
-export const SwitchDDoSAttackChart = (props: TimeSeriesChartProps) => {
+export const SwitchImpactedPortsCount = (props: TimeSeriesChartProps) => {
   const { $t } = useIntl()
 
   const seriesMapping = [
-    { key: 'ddos', name: $t({ defaultMessage: 'Ports Attacked' }) }
+    { key: 'portCount', name: $t({ defaultMessage: 'Port Count' }) }
   ]
 
   const chartResults = getSeriesData(
-    props.data.ddosAttackOnPortTimeSeries as Record<string, TimeSeriesDataType[]>, seriesMapping)
+    props.data.timeSeries as Record<string, TimeSeriesDataType[]>, seriesMapping)
 
   return <Card title={$t({ defaultMessage: 'Impacted Port Count' })} type='no-border'>
     <AutoSizer>
@@ -48,7 +48,7 @@ export const SwitchDDoSAttackChart = (props: TimeSeriesChartProps) => {
 }
 
 const chartConfig = {
-  chart: SwitchDDoSAttackChart,
-  query: switchDDoSAttackQuery
+  chart: SwitchImpactedPortsCount,
+  query: switchImpactedPortsCountQuery
 }
 export default chartConfig
