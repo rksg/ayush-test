@@ -20,7 +20,7 @@ export type IntentConfigurationConfig = {
   tooltip?: (intent: Intent) => MessageDescriptor
 }
 
-type IIntentContext = {
+export type IIntentContext = {
   intent: Intent
   configuration?: IntentConfigurationConfig
   kpis: IntentKPIConfig[]
