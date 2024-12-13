@@ -5,6 +5,7 @@ import { DefaultOptionType }                                from 'antd/lib/selec
 import { useIntl }                                          from 'react-intl'
 
 import { PageHeader, Select, Tooltip, Loader, Table, TableProps, StepsForm } from '@acx-ui/components'
+import { InformationSolid }                                                  from '@acx-ui/icons'
 import {
   useAddSwitchPortProfileMutation,
   useEditSwitchPortProfileMutation,
@@ -513,6 +514,12 @@ export function SwitchPortProfileForm () {
                 />
               </Loader>
             </Form.Item>
+            {editMode &&
+              <Space align='start'>
+                <InformationSolid />
+                {intl.$t(SwitchPortProfileMessages.APPLY_PORT_PROFILE_CHANGE)}
+              </Space>
+            }
           </StepsForm.StepForm>
         </StepsForm>
       </Loader>

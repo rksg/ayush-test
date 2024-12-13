@@ -74,6 +74,7 @@ export default function SwitchPortProfileTable () {
             // eslint-disable-next-line max-len
             title={row.taggedVlans ? vlanPortsParser(row.taggedVlans?.join(' ') || '', 200, $t({ defaultMessage: 'Tagged VLANs' })) : ''}
             dottedUnderline={row.taggedVlans?.length ? true : false}
+            placement='bottom'
           >
             {row.taggedVlans ? row.taggedVlans.length : 0}
           </Tooltip>

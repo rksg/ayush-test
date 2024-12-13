@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, showActionModal, Tooltip } from '@acx-ui/components'
+import { Loader, Table, TableProps, showActionModal } from '@acx-ui/components'
+import { CountAndNamesTooltip }                       from '@acx-ui/rc/components'
 import {
   useDeleteSwitchPortProfileMacOuiMutation,
   useSwitchPortProfileMacOuisListQuery,
@@ -89,12 +90,12 @@ export default function MacOuiTable () {
       dataIndex: 'portProfiles',
       sorter: false,
       render: (_, row) => {
-        return <Tooltip
-          title={row.portProfiles?.map(item => portProfileMap[item]).join('\n')}
-          dottedUnderline={row.portProfiles && row.portProfiles.length > 0}
-        >
-          {row.portProfiles ? row.portProfiles.length : 0}
-        </Tooltip>
+        return <CountAndNamesTooltip
+          data={{
+            count: row.portProfiles?.length || 0,
+            names: row.portProfiles?.map(item => portProfileMap[item]) || [] }}
+          maxShow={25}
+        />
       }
     }
   ]
