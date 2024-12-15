@@ -107,21 +107,21 @@ export function LanPortSettings (props: {
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
   const isUnderAPNetworking = !!serialNumber
 
-  const isSoftGRETunnelSettingReadonly = () => {
-    if(!isUnderAPNetworking){
-      return !isEthernetPortEnable
-    }
-    // TODO Add readonly condition here
-    return false
-  }
+  // const isSoftGRETunnelSettingReadonly = () => {
+  //   if(!isUnderAPNetworking){
+  //     return !isEthernetPortEnable
+  //   }
+  //   // TODO Add readonly condition here
+  //   return false
+  // }
 
-  const isDhcpOption82SettingsReadonly = () => {
-    if (!isUnderAPNetworking) {
-      return false
-    }
-    // TODO Add readonly condition here
-    return false
-  }
+  // const isDhcpOption82SettingsReadonly = () => {
+  //   if (!isUnderAPNetworking) {
+  //     return false
+  //   }
+  //   // TODO Add readonly condition here
+  //   return false
+  // }
 
   // Non ethernet port profile
   const handlePortTypeChange = (value: string, index:number) => {
@@ -279,7 +279,7 @@ export function LanPortSettings (props: {
           isEthernetPortProfileEnabled && isEthernetSoftgreEnabled &&
             (<>
               <SoftGRETunnelSettings
-                readonly={isSoftGRETunnelSettingReadonly()}
+                readonly={!isEthernetPortEnable}
                 index={index}
                 softGreProfileId={selectedPortCaps.softGreProfileId ?? ''}
                 softGreTunnelEnable={isSoftGreTunnelEnable}
@@ -287,7 +287,7 @@ export function LanPortSettings (props: {
               />
               {isSoftGreTunnelEnable &&
                 <DhcpOption82Settings
-                  readonly={isDhcpOption82SettingsReadonly()}
+                  readonly={false}
                   index={index}
                   onGUIChanged={onGUIChanged}
                   isUnderAPNetworking={isUnderAPNetworking}
