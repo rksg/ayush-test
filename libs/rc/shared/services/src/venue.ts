@@ -2186,7 +2186,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
               { ...softgreProfileReq,
                 body: JSON.stringify({
                   filters: {
-                    venueIds: [venueId]
+                    'venueActivations.venueId': [venueId]
                   }
                 })
               }
