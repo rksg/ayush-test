@@ -185,7 +185,12 @@ export const DhcpOption82SettingsFormField = (props: {
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={true}
-            children={<Switch disabled={readonly} onChange={onFormFieldChange}/>}
+            children={<Switch
+              disabled={readonly}
+              onChange={onFormFieldChange}
+              data-testid={'dhcpOption82SubOption1-switch'}
+
+            />}
           />
           { dhcpOption82SubOption1Enabled &&
             <Form.Item

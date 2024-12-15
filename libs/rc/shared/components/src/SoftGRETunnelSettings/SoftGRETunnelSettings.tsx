@@ -47,6 +47,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
           name={softgreTunnelFieldName}
           children={
             <Switch
+              data-testid={'softgre-tunnel-switch'}
               disabled={readonly}
               onClick={() => {
                 onGUIChanged && onGUIChanged('softGreTunnelEnable')
