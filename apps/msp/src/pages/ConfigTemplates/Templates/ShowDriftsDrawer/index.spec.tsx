@@ -3,13 +3,18 @@ import { rest }  from 'msw'
 
 import { MspUrlsInfo }                                                            from '@acx-ui/msp/utils'
 import { configTemplateApi }                                                      from '@acx-ui/rc/services'
-import { ConfigTemplateUrlsInfo }                                                 from '@acx-ui/rc/utils'
+import { ConfigTemplateType, ConfigTemplateUrlsInfo }                             from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { mockedConfigTemplate, mockedDriftTenants, mockedMSPCustomers } from './__tests__/fixtures'
 
 import { SelectedCustomersIndicator, ShowDriftsDrawer } from '.'
+
+jest.mock('./CustomerFirmwareReminder', () => ({
+  ...jest.requireActual('./CustomerFirmwareReminder'),
+  CustomerFirmwareReminder: () => <div>CustomerFirmwareReminder</div>
+}))
 
 describe('ShowDriftsDrawer', () => {
   beforeEach(() => {
@@ -159,6 +164,23 @@ describe('ShowDriftsDrawer', () => {
     await waitFor(() => {
       expect(mockPatchDriftReportFn).toHaveBeenCalledTimes(mockedDriftTenants.data.length)
     })
+  })
+
+  it('should render the customer firmware reminder', async () => {
+    const venueTemplate = {
+      id: '1',
+      name: 'Template 1',
+      createdOn: 1690598400000,
+      createdBy: 'Author 1',
+      type: ConfigTemplateType.VENUE,
+      lastModified: 1690598400000,
+      lastApplied: 1690598405000
+    }
+    render(<Provider>
+      <ShowDriftsDrawer setVisible={jest.fn()} selectedTemplate={venueTemplate} />
+    </Provider>)
+
+    expect(await screen.findByText('CustomerFirmwareReminder')).toBeInTheDocument()
   })
 
   describe('SelectedCustomersIndicator', () => {
