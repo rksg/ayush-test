@@ -1,7 +1,8 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer } from '@acx-ui/components'
+import { Drawer }                                 from '@acx-ui/components'
+import { SoftGreProfileDispatcher, SoftGreState } from '@acx-ui/rc/utils'
 
 import { DhcpOption82SettingsFormField } from './DhcpOption82SettingsFormField'
 interface DhcpOption82SettingsDrawerProps {
@@ -12,6 +13,8 @@ interface DhcpOption82SettingsDrawerProps {
   index: number
   onGUIChanged?: (fieldName: string) => void
   readonly: boolean
+  portId?: string
+  dispatch?: React.Dispatch<SoftGreProfileDispatcher>;
 }
 
 
@@ -24,7 +27,9 @@ export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProp
     cancelCallbackFn,
     index,
     onGUIChanged,
-    readonly
+    readonly,
+    portId,
+    dispatch
   } = props
 
   const { $t } = useIntl()
@@ -35,6 +40,7 @@ export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProp
       setVisible(false)
       onGUIChanged && onGUIChanged('AddDHCPOption82')
       applyCallbackFn()
+      dispatch && dispatch({ state: SoftGreState.ModifyDHCPOption82Settings, portId })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

@@ -5,12 +5,13 @@ import { Form,  Switch, Space } from 'antd'
 import _                        from 'lodash'
 import { useIntl }              from 'react-intl'
 
-import { Tooltip }                                    from '@acx-ui/components'
+import { Tooltip }                                     from '@acx-ui/components'
 import {
   useLazyGetSoftGreProfileConfigurationOnAPQuery,
   useLazyGetSoftGreProfileConfigurationOnVenueQuery
 } from '@acx-ui/rc/services'
-import { LanPortSoftGreProfileSettings } from '@acx-ui/rc/utils'
+import { LanPortSoftGreProfileSettings }          from '@acx-ui/rc/utils'
+import { SoftGreProfileDispatcher, SoftGreState } from '@acx-ui/rc/utils'
 
 import { DhcpOption82SettingsDrawer } from './DhcpOption82SettingsDrawer'
 import { FieldLabel, ConfigIcon }     from './styledComponents'
@@ -24,6 +25,7 @@ interface DhcpOption82SettingsProps {
   portId?: string
   apModel?: string
   readonly: boolean
+  dispatch?: React.Dispatch<SoftGreProfileDispatcher>;
 }
 
 export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
@@ -41,7 +43,8 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
     venueId,
     portId,
     apModel,
-    readonly
+    readonly,
+    dispatch
   } = props
   /* eslint-disable max-len */
   const [ getVenueSoftGreProfileConfiguration ] = useLazyGetSoftGreProfileConfigurationOnVenueQuery()
@@ -132,18 +135,18 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
                 <Switch
                   data-testid={'dhcpoption82-switch-toggle'}
                   disabled={readonly}
-                  onChange={() => {
+                  onChange={(checked) => {
                     onGUIChanged && onGUIChanged('DHCPOption82Enabled')
-                  }}
-                  onClick={(checked) => {
                     if (checked) {
                       setDrawerVisible(true)
+                      dispatch && dispatch({ state: SoftGreState.TurnOnDHCPOption82, portId })
                     } else {
                       setIconVisible(false)
                       form.setFieldValue(dhcpOption82FieldName, false)
+                      dispatch && dispatch({ state: SoftGreState.TurnOffDHCPOption82, portId })
                     }
-                  }
-                  }/>
+                  }}
+                />
               </Form.Item>
               {
                 iconVisible && <ConfigIcon
@@ -165,6 +168,7 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
         index={index}
         onGUIChanged={onGUIChanged}
         readonly={readonly}
+        dispatch={dispatch}
       />
     </>
   )

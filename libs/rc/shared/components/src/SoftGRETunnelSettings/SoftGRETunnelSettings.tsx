@@ -79,6 +79,8 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             softGreProfileId={softGreProfileId}
             onGUIChanged={onGUIChanged}
             readonly={readonly}
+            portId={portId}
+            dispatch={dispatch}
           />
         </>
       }

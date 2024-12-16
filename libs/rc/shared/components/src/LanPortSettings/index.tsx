@@ -5,9 +5,9 @@ import { DefaultOptionType }                               from 'antd/lib/select
 import { FormattedMessage, useIntl }                       from 'react-intl'
 import { useParams }                                       from 'react-router-dom'
 
-import { cssStr, Tooltip }                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
-import { WarningCircleSolid }                       from '@acx-ui/icons'
+import { cssStr, Tooltip }                           from '@acx-ui/components'
+import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import { WarningCircleSolid }                        from '@acx-ui/icons'
 import {
   useQueryEthernetPortProfilesWithOverwritesQuery
 } from '@acx-ui/rc/services'
@@ -302,6 +302,7 @@ export function LanPortSettings (props: {
                   venueId={venueId}
                   portId={selectedModel.lanPorts![index].portId}
                   apModel={selectedModelCaps.model}
+                  dispatch={dispatch}
                 />
               }
             </>)
