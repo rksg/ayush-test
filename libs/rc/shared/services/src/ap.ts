@@ -910,7 +910,7 @@ export const apApi = baseApApi.injectEndpoints({
     }),
 
     getApLanPortsWithEthernetProfiles: build.query<WifiApSetting | null, RequestPayload>({
-      async queryFn ({ params, enableRbac, enableEthernetProfile },
+      async queryFn ({ params, enableRbac, enableEthernetProfile, apModel },
         _queryApi, _extraOptions, fetchWithBQ) {
         if (!params?.serialNumber) {
           return Promise.resolve({ data: null } as QueryReturnValue<
@@ -938,7 +938,7 @@ export const apApi = baseApApi.injectEndpoints({
           ...createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList),
           body: JSON.stringify({
             filters: {
-              apSerialNumbers: [params.serialNumber]
+              venueIds: [params.venueId]
             },
             page: 1,
             pageSize: 10
@@ -951,9 +951,16 @@ export const apApi = baseApApi.injectEndpoints({
           for (let eth of ethList.data) {
             const port = eth.apActivations?.find(ap => ap.apSerialNumber === params.serialNumber)
             let targetPort = port && apLanPorts.lanPorts
-              ?.find(l => l.portId?.toString() === port.portId?.toString())
-            if (targetPort) {
+              ?.find(l => l.portId === port.portId?.toString())
+            if (targetPort && !targetPort.ethernetPortProfileId) {
               targetPort.ethernetPortProfileId = eth.id
+            }
+
+            const venuePort = eth.venueActivations?.find(
+              v => v.venueId === params.venueId && v.apModel === apModel)?.portId?.toString()
+            let venueTargetPort = apLanPorts.lanPorts?.find(l => l.portId === venuePort)
+            if (venueTargetPort && !venueTargetPort.ethernetPortProfileId) {
+              venueTargetPort.ethernetPortProfileId = eth.id
             }
           }
         }
