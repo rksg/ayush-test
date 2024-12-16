@@ -87,8 +87,6 @@ export * from './useIncidentToggles'
 export { Profile } from './Profile'
 export * from './Developers'
 export * from './Developers/Webhooks'
-export { IntentAIForm } from './IntentAI/IntentAIForm'
-export { IntentAIDetails } from './IntentAI/IntentAIDetails'
-export { IntentAIWidget } from './IntentAI/IntentAIWidget'
 
+export { IntentAIForm, IntentAIDetails, IntentAIWidget } from './IntentAI'
 export const AppInsights = React.lazy(() => import('./AppInsights'))
