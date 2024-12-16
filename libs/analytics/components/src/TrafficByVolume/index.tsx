@@ -6,6 +6,7 @@ import { getSeriesData }                                  from '@acx-ui/analytic
 import { HistoricalCard, Loader, StackedAreaChart,
   NoData, MultiLineTimeSeriesChart, qualitativeColorSet } from '@acx-ui/components'
 import { formatter }            from '@acx-ui/formatter'
+import { useLoadTimeTracking }  from '@acx-ui/utils'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import {
@@ -38,6 +39,11 @@ function TrafficByVolumeWidget ({
       data: getSeriesData(data!, vizType === 'area' ? seriesMapping.splice(1) : seriesMapping),
       ...rest
     })
+  })
+
+  useLoadTimeTracking({
+    itemName: 'TrafficByVolumeWidget',
+    isSuccess: queryResults?.isSuccess
   })
 
   return (

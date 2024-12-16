@@ -27,6 +27,7 @@ import {
 import { useParams, TenantLink }        from '@acx-ui/react-router-dom'
 import { RequestPayload, SwitchScopes } from '@acx-ui/types'
 import { hasPermission }                from '@acx-ui/user'
+import { useLoadTimeTracking }          from '@acx-ui/utils'
 
 import { SwitchLagModal, SwitchLagParams } from '../SwitchLagDrawer/SwitchLagModal'
 import {
@@ -105,6 +106,11 @@ export function ClientsTable (props: {
   useEffect(() => {
     setSwitchCount?.(tableQuery.data?.totalCount || 0)
   }, [tableQuery.data])
+
+  useLoadTimeTracking({
+    itemName: 'WiredClientsTable',
+    isSuccess: tableQuery?.isSuccess
+  })
 
   const { authenticationProfiles } = useGetFlexAuthenticationProfilesQuery({
     payload: {

@@ -7,6 +7,7 @@ import { useIsSplitOn, Features }                              from '@acx-ui/fea
 import { useAlarmSummariesQuery, useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
 import { AlaramSeverity, Dashboard }                           from '@acx-ui/rc/utils'
 import { useParams }                                           from '@acx-ui/react-router-dom'
+import { useLoadTimeTracking }                                 from '@acx-ui/utils'
 import { useDashboardFilter }                                  from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -66,6 +67,12 @@ export function AlarmWidgetV2 () {
   }
 
   const { data } = overviewV2Query
+
+  useLoadTimeTracking({
+    itemName: 'AlarmWidgetV2',
+    isSuccess: overviewV2Query?.isSuccess
+  })
+
   return (
     <Loader states={[overviewV2Query]}>
       <Card title={$t({ defaultMessage: 'Alarms' })}

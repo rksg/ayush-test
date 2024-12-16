@@ -30,10 +30,10 @@ import { LowPowerBannerAndModal, TopologyFloorPlanWidget, VenueAlarmWidget, Venu
 import {
   useGetVenueRadioCustomizationQuery,
   useGetVenueTripleBandRadioSettingsQuery }                            from '@acx-ui/rc/services'
-import { ShowTopologyFloorplanOn }            from '@acx-ui/rc/utils'
-import { useNavigateToPath }                  from '@acx-ui/react-router-dom'
-import { generateVenueFilter, useDateFilter } from '@acx-ui/utils'
-import type { AnalyticsFilter }               from '@acx-ui/utils'
+import { ShowTopologyFloorplanOn }                                             from '@acx-ui/rc/utils'
+import { useNavigateToPath }                                                   from '@acx-ui/react-router-dom'
+import { generateVenueFilter, useDateFilter, LoadTimeProvider, TrackingPages } from '@acx-ui/utils'
+import type { AnalyticsFilter }                                                from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -68,7 +68,7 @@ export function VenueOverviewTab () {
     }
   ]
 
-  return (<>
+  return (<LoadTimeProvider page={TrackingPages.VENUE_DASHBOARD}>
     {
       (
         (tripleBand?.enabled === true) &&
@@ -82,7 +82,7 @@ export function VenueOverviewTab () {
     }
     <CommonDashboardWidgets filters={venueFilter}/>
     <ContentSwitcher tabDetails={tabDetails} size='large' />
-  </>)
+  </LoadTimeProvider>)
 }
 
 function CommonDashboardWidgets (props: { filters: AnalyticsFilter }) {

@@ -9,7 +9,8 @@ import {
   Alarm,
   EventSeverityEnum
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }           from '@acx-ui/react-router-dom'
+import { useLoadTimeTracking } from '@acx-ui/utils'
 
 import { getAlarmsDonutChartData } from '../AlarmWidget'
 
@@ -69,6 +70,11 @@ export function VenueAlarmWidget () {
   })
 
   const { data } = overviewV2Query
+
+  useLoadTimeTracking({
+    itemName: 'VenueAlarmWidget',
+    isSuccess: overviewV2Query?.isSuccess
+  })
 
   const onAlarmClick = () => {
     const event = new CustomEvent('showAlarmDrawer',

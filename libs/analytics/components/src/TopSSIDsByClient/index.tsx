@@ -10,6 +10,7 @@ import {
   SparklineChart } from '@acx-ui/components'
 import { formatter, intlFormats } from '@acx-ui/formatter'
 import { TenantLink }             from '@acx-ui/react-router-dom'
+import { useLoadTimeTracking }    from '@acx-ui/utils'
 import type { AnalyticsFilter }   from '@acx-ui/utils'
 
 import { useTopSSIDsByClientQuery, TopSSIDsByClient } from './services'
@@ -90,6 +91,10 @@ function TopSSIDsByClientWidget ({
     rowKey='name'
   /> : <NoData/>
 
+  useLoadTimeTracking({
+    itemName: 'TopSSIDsByClientWidget',
+    isSuccess: queryResults?.isSuccess
+  })
 
   return (
     <Loader states={[queryResults]}>

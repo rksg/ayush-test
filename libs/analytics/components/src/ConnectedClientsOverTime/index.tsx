@@ -10,6 +10,7 @@ import {
   Loader, StackedAreaChart,
   NoData, MultiLineTimeSeriesChart, qualitativeColorSet } from '@acx-ui/components'
 import { formatter }            from '@acx-ui/formatter'
+import { useLoadTimeTracking }  from '@acx-ui/utils'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { ConnectedClientsOverTimeData, useConnectedClientsOverTimeQuery } from './services'
@@ -37,6 +38,11 @@ export function ConnectedClientsOverTime ({
       ...rest,
       data: getSeriesData(data!, vizType === 'area' ? seriesMapping.splice(1) : seriesMapping)
     })
+  })
+
+  useLoadTimeTracking({
+    itemName: 'ConnectedClientsOverTime',
+    isSuccess: queryResults?.isSuccess
   })
 
   return (

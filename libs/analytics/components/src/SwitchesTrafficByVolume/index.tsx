@@ -8,6 +8,7 @@ import { HistoricalCard, Loader, MultiLineTimeSeriesChart,
   qualitativeColorSet, StackedAreaChart, NoData, Select } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { formatter }              from '@acx-ui/formatter'
+import { useLoadTimeTracking }    from '@acx-ui/utils'
 import type { AnalyticsFilter }   from '@acx-ui/utils'
 
 import {
@@ -52,6 +53,12 @@ export function SwitchesTrafficByVolume ({
     })
   }
   )
+
+  useLoadTimeTracking({
+    itemName: 'SwitchesTrafficByVolume',
+    isSuccess: queryResults?.isSuccess
+  })
+
   return (
     <Loader states={[queryResults]}>
       <HistoricalCard title={$t({ defaultMessage: 'Traffic by Volume' })}>

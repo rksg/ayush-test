@@ -10,7 +10,7 @@ import { Features, useIsSplitOn }                               from '@acx-ui/fe
 import { useClientSummariesQuery, useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
 import { ChartData, Dashboard }                                 from '@acx-ui/rc/utils'
 import { useNavigateToPath, useParams, TenantLink }             from '@acx-ui/react-router-dom'
-import { useDashboardFilter }                                   from '@acx-ui/utils'
+import { useDashboardFilter, useLoadTimeTracking }              from '@acx-ui/utils'
 
 import * as UI from '../DevicesWidget/styledComponents'
 
@@ -109,6 +109,12 @@ export function ClientsWidgetV2 () {
   })
   const { $t } = intl
   const { apClientCount, apData, switchClientCount, switchData } = queryResults.data
+
+  useLoadTimeTracking({
+    itemName: 'ClientsWidgetV2',
+    isSuccess: queryResults?.isSuccess
+  })
+
   return (
     <Loader states={[queryResults]}>
       <Card title={$t({ defaultMessage: 'Clients' })} onArrowClick={onArrowClick}>

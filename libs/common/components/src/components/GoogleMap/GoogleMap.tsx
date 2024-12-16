@@ -3,7 +3,8 @@ import React, { useRef, useEffect } from 'react'
 import { Wrapper, WrapperProps, Status } from '@googlemaps/react-wrapper'
 import { useIntl }                       from 'react-intl'
 
-import { get } from '@acx-ui/config'
+import { get }                 from '@acx-ui/config'
+import { useLoadTimeTracking } from '@acx-ui/utils'
 
 import { Loader } from '../Loader'
 import { NoData } from '../NoData'
@@ -77,6 +78,12 @@ const Map: React.FC<Omit<MapProps, 'libraries'>> = ({
 
 const NotEnabled = () => {
   const { $t } = useIntl()
+
+  useLoadTimeTracking({
+    itemName: 'ActualMapV2',
+    isSuccess: true
+  })
+
   return <UI.MapContainer>
     <NoData text={$t({ defaultMessage: 'Map is not enabled' })} />
   </UI.MapContainer>

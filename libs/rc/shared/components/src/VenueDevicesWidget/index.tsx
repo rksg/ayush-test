@@ -4,6 +4,7 @@ import { useRwgListQuery, useVenueDetailsHeaderQuery } from '@acx-ui/rc/services
 import { useParams }                                   from '@acx-ui/react-router-dom'
 import { RolesEnum }                                   from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }             from '@acx-ui/user'
+import { useLoadTimeTracking }                         from '@acx-ui/utils'
 
 import {
   getApDonutChartData,
@@ -33,6 +34,11 @@ export function VenueDevicesWidget () {
   ]) || isCustomRole
   const { data: rwgs } = useRwgListQuery({ params: useParams() },
     { skip: !(showRwgUI && rwgHasPermission) })
+
+  useLoadTimeTracking({
+    itemName: 'VenueDevicesWidget',
+    isSuccess: queryResults?.isSuccess
+  })
 
   return (
     <Loader states={[queryResults]}>

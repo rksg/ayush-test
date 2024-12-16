@@ -9,8 +9,8 @@ import {
   Dashboard,
   ApVenueStatusEnum
 } from '@acx-ui/rc/utils'
-import { useNavigateToPath, useParams } from '@acx-ui/react-router-dom'
-import { useDashboardFilter }           from '@acx-ui/utils'
+import { useNavigateToPath, useParams }            from '@acx-ui/react-router-dom'
+import { useDashboardFilter, useLoadTimeTracking } from '@acx-ui/utils'
 
 import { getAPStatusDisplayName } from '../MapWidget/VenuesMap/helper'
 
@@ -71,6 +71,12 @@ export function VenuesDashboardWidgetV2 () {
       ...rest
     })
   })
+
+  useLoadTimeTracking({
+    itemName: 'VenuesDashboardWidgetV2',
+    isSuccess: queryResults?.isSuccess
+  })
+
   return (
     <Loader states={[queryResults]}>
       <Card title={$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}

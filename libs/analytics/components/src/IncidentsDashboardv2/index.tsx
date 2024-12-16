@@ -5,6 +5,7 @@ import { incidentSeverities, IncidentFilter }                                   
 import { HistoricalCard, Loader, NoActiveData, DonutChart, DonutChartData, cssStr } from '@acx-ui/components'
 import { useNavigateToPath }                                                        from '@acx-ui/react-router-dom'
 import { hasRaiPermission }                                                         from '@acx-ui/user'
+import { useLoadTimeTracking }                                                      from '@acx-ui/utils'
 
 import { useIncidentToggles } from '../useIncidentToggles'
 
@@ -18,6 +19,11 @@ export function IncidentsDashboardv2 ({ filters }: { filters: IncidentFilter }) 
 
   const response = useIncidentsBySeverityDashboardv2Query({ ...filters, toggles })
   const { data: severities } = response
+
+  useLoadTimeTracking({
+    itemName: 'IncidentsDashboardv2',
+    isSuccess: response?.isSuccess
+  })
 
   const incidentCountBySeverity: { [severity: string] : number } = {}
   let noData = true

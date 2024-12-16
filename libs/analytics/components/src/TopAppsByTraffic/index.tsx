@@ -10,6 +10,7 @@ import {
 } from '@acx-ui/components'
 import type { DonutChartData }  from '@acx-ui/components'
 import { formatter }            from '@acx-ui/formatter'
+import { useLoadTimeTracking }  from '@acx-ui/utils'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { HierarchyNodeData, useTopAppsByTrafficQuery } from './services'
@@ -48,6 +49,11 @@ export function TopAppsByTraffic ({
   })
 
   const isDataAvailable = queryResults.data && queryResults.data.length > 0
+
+  useLoadTimeTracking({
+    itemName: 'TopAppsByTraffic',
+    isSuccess: queryResults?.isSuccess
+  })
 
   return (
     <Loader states={[queryResults]}>

@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 import { healthApi }                               from '@acx-ui/analytics/services'
 import { kpiConfig }                               from '@acx-ui/analytics/utils'
 import { Card, GridRow, GridCol, Loader, Tooltip } from '@acx-ui/components'
+import { useLoadTimeTracking }                     from '@acx-ui/utils'
 import type { AnalyticsFilter }                    from '@acx-ui/utils'
 
 import { KpiWidget } from '../KpiWidget'
@@ -22,6 +23,11 @@ function VenueHealthWidget ({
     kpis: ['timeToConnect','clientThroughput']
   })
   const { data } = queryResults
+
+  useLoadTimeTracking({
+    itemName: 'VenueHealthWidget',
+    isSuccess: queryResults?.isSuccess
+  })
 
   return(
     <Loader states={[queryResults]}>

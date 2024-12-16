@@ -11,7 +11,7 @@ import { formatter, intlFormats }                                               
 import { useGetEdgesTopResourcesQuery }                                             from '@acx-ui/rc/services'
 import { EdgesTopResources }                                                        from '@acx-ui/rc/utils'
 import { NavigateFunction, Path, useNavigate, useTenantLink }                       from '@acx-ui/react-router-dom'
-import { FilterNameNode }                                                           from '@acx-ui/utils'
+import { FilterNameNode, useLoadTimeTracking }                                      from '@acx-ui/utils'
 import type { AnalyticsFilter }                                                     from '@acx-ui/utils'
 
 export { TopEdgesByResourcesWidget as TopEdgesByResources }
@@ -122,6 +122,11 @@ function TopEdgesByResourcesWidget ({ filters }: { filters : AnalyticsFilter }) 
       value: 'memory'
     }
   ]
+
+  useLoadTimeTracking({
+    itemName: 'TopEdgesByResourcesWidget',
+    isSuccess: queryResults?.isSuccess
+  })
 
   return (
     <Loader states={[queryResults]}>

@@ -4,7 +4,7 @@ import { useDashboardV2OverviewQuery, useDeviceSummariesQuery, useRwgListQuery }
 import { useParams }                                                             from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                             from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                                       from '@acx-ui/user'
-import { useDashboardFilter }                                                    from '@acx-ui/utils'
+import { useDashboardFilter, useLoadTimeTracking }                               from '@acx-ui/utils'
 
 import {
   getApStackedBarChartData,
@@ -47,8 +47,13 @@ export function DevicesDashboardWidgetV2 () {
     RolesEnum.ADMINISTRATOR,
     RolesEnum.READ_ONLY]) || isCustomRole
 
-  const { data: rwgs, isLoading: rwgLoading } =
+  const { data: rwgs, isLoading: rwgLoading, isSuccess: rwgSuccess } =
     useRwgListQuery({ params: useParams() }, { skip: !(showRwgUI && rwgHasPermission) })
+
+  useLoadTimeTracking({
+    itemName: 'DevicesDashboardWidgetV2',
+    isSuccess: queryResults?.isSuccess && rwgSuccess
+  })
 
   return (
     <Loader states={[queryResults, { isLoading: rwgLoading }]}>

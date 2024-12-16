@@ -12,6 +12,7 @@ import {
   ContentSwitcherProps
 } from '@acx-ui/components'
 import { formatter, intlFormats } from '@acx-ui/formatter'
+import { useLoadTimeTracking }    from '@acx-ui/utils'
 import type { AnalyticsFilter }   from '@acx-ui/utils'
 
 import { useTopApplicationsByTrafficQuery, TopApplicationByTrafficData } from './services'
@@ -94,6 +95,11 @@ export function TopApplicationsByTraffic ({
     { label: $t({ defaultMessage: 'Upload' }) , children: uploadTable, value: 'upload' },
     { label: $t({ defaultMessage: 'Download' }), children: downloadTable, value: 'download' }
   ]
+
+  useLoadTimeTracking({
+    itemName: 'TopApplicationsByTraffic',
+    isSuccess: queryResults?.isSuccess
+  })
 
   return (
     <Loader states={[queryResults]}>

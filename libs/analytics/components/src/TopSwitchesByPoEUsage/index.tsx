@@ -17,6 +17,7 @@ import {
 } from '@acx-ui/components'
 import { formatter, intlFormats }                             from '@acx-ui/formatter'
 import { NavigateFunction, Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { useLoadTimeTracking }                                from '@acx-ui/utils'
 import type { AnalyticsFilter }                               from '@acx-ui/utils'
 
 import { useTopSwitchesByPoEUsageQuery } from './services'
@@ -83,6 +84,11 @@ function TopSwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }
       })
     })
   const { data } = queryResults
+
+  useLoadTimeTracking({
+    itemName: 'TopSwitchesByPoEUsageWidget',
+    isSuccess: queryResults?.isSuccess
+  })
 
   return (
     <Loader states={[queryResults]}>

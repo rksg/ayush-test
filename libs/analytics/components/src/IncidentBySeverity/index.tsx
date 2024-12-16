@@ -1,5 +1,6 @@
 
-import { IncidentFilter } from '@acx-ui/analytics/utils'
+import { IncidentFilter }      from '@acx-ui/analytics/utils'
+import { useLoadTimeTracking } from '@acx-ui/utils'
 
 import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from '../IncidentBySeverity/services'
 import { useIncidentToggles }                                   from '../useIncidentToggles'
@@ -20,6 +21,11 @@ export function IncidentBySeverity ({ type, filters, setIncidentCount }: Inciden
       data: { ...data } as IncidentsBySeverityData,
       ...rest
     })
+  })
+
+  useLoadTimeTracking({
+    itemName: 'IncidentBySeverity',
+    isSuccess: queryResult?.isSuccess
   })
 
   setIncidentCount &&

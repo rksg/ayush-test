@@ -4,8 +4,9 @@ import { isEqual, isEmpty } from 'lodash'
 import { useIntl }          from 'react-intl'
 import AutoSizer            from 'react-virtualized-auto-sizer'
 
-import { Loader, Carousel }                 from '@acx-ui/components'
-import type { DashboardFilter, PathFilter } from '@acx-ui/utils'
+import { Loader, Carousel }                                  from '@acx-ui/components'
+import type { DashboardFilter, PathFilter }                  from '@acx-ui/utils'
+import { useLoadTimeTracking, TrackingPages, trackingItems } from '@acx-ui/utils'
 
 import { factsConfig, getFactsData } from './facts'
 import {
@@ -91,6 +92,11 @@ function DidYouKnowWidget ({
     slidesToScroll: 1,
     autoplay: false
   }), [])
+
+  useLoadTimeTracking({
+    itemName: trackingItems[TrackingPages.DASHBOARD].DID_YOU_KNOW,
+    isSuccess: isSuccess
+  })
 
   const onChange = useCallback((_: number, nextSlide: number) => {
     setOffset(nextSlide)

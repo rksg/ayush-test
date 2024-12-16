@@ -8,6 +8,7 @@ import {
   TableProps,
   NoData } from '@acx-ui/components'
 import { TenantLink }           from '@acx-ui/react-router-dom'
+import { useLoadTimeTracking }  from '@acx-ui/utils'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import { useTopSwitchesByErrorQuery, TopSwitchesByErrorData } from './services'
@@ -78,6 +79,11 @@ function TopSwitchesByErrorWidget ({
       rowKey='mac'
     />
   </CustomTable> : <NoData/>
+
+  useLoadTimeTracking({
+    itemName: 'TopSwitchesByErrorWidget',
+    isSuccess: queryResults?.isSuccess
+  })
 
   return (
     <Loader states={[queryResults]}>

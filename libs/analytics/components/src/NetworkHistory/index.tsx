@@ -14,6 +14,7 @@ import {
   NoData
 } from '@acx-ui/components'
 import { TimeStamp, TimeStampRange } from '@acx-ui/types'
+import { useLoadTimeTracking }       from '@acx-ui/utils'
 
 import { useIncidentToggles } from '../useIncidentToggles'
 
@@ -71,6 +72,12 @@ export const NetworkHistory = forwardRef<
   })
   const Card = historicalIcon ? HistoricalCard : NormalCard
   const title = hideTitle ? undefined : $t({ defaultMessage: 'Network History' })
+
+  useLoadTimeTracking({
+    itemName: 'NetworkHistory',
+    isSuccess: queryResults?.isSuccess
+  })
+
   return (
     <Loader states={[queryResults]}>
       <Card title={title} type={type}>

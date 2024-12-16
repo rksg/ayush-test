@@ -3,6 +3,7 @@ import AutoSizer                  from 'react-virtualized-auto-sizer'
 
 import type { DonutChartData }                                             from '@acx-ui/components'
 import { HistoricalCard, Loader, NoData, DonutChart, qualitativeColorSet } from '@acx-ui/components'
+import { useLoadTimeTracking }                                             from '@acx-ui/utils'
 import type { AnalyticsFilter }                                            from '@acx-ui/utils'
 
 import { useTopSwitchModelsQuery } from './services'
@@ -36,6 +37,11 @@ function TopSwitchModelsWidget ({ filters }: { filters: AnalyticsFilter }) {
   })
 
   const isDataAvailable = queryResults.data && queryResults.data.length > 0
+
+  useLoadTimeTracking({
+    itemName: 'TopSwitchModelsWidget',
+    isSuccess: queryResults?.isSuccess
+  })
 
   return (
     <Loader states={[queryResults]}>

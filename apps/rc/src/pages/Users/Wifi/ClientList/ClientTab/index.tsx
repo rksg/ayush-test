@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 import { ContentSwitcher, ContentSwitcherProps, CustomButtonProps, showActionModal } from '@acx-ui/components'
 import { ClientDualTable }                                                           from '@acx-ui/rc/components'
 import { UNSAFE_NavigationContext as NavigationContext, useParams }                  from '@acx-ui/react-router-dom'
-import { getIntl }                                                                   from '@acx-ui/utils'
+import { getIntl, LoadTimeProvider, TrackingPages }                                  from '@acx-ui/utils'
 
 import { ClientConnectionDiagnosis } from './CCD'
 import { CcdResultViewerProps }      from './CCD/CcdResultViewer'
@@ -62,7 +62,9 @@ export function ClientTab () {
       label: $t({ defaultMessage: 'Wireless Clients' }),
       value: 'clientTable',
       disabled: ccdControlContext?.isTracing,
-      children: <ClientDualTable clientMac={clientMac} />
+      children: <LoadTimeProvider page={TrackingPages.WIRELESS_CLIENTS}>
+        <ClientDualTable clientMac={clientMac} />
+      </LoadTimeProvider>
     },
     {
       label: $t({ defaultMessage: 'Diagnostics' }),

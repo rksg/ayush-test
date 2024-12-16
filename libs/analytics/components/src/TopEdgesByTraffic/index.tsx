@@ -7,7 +7,7 @@ import { BarChart, EventParams, HistoricalCard, Loader, NoData, cssNumber, cssSt
 import { formatter }                                                                from '@acx-ui/formatter'
 import { useGetEdgesTopTrafficQuery }                                               from '@acx-ui/rc/services'
 import { NavigateFunction, Path, useNavigate, useTenantLink }                       from '@acx-ui/react-router-dom'
-import { FilterNameNode }                                                           from '@acx-ui/utils'
+import { FilterNameNode, useLoadTimeTracking }                                      from '@acx-ui/utils'
 import type { AnalyticsFilter }                                                     from '@acx-ui/utils'
 
 export { TopEdgesByTrafficWidget as TopEdgesByTraffic }
@@ -74,6 +74,11 @@ function TopEdgesByTrafficWidget ({ filters }: { filters : AnalyticsFilter }) {
     }
   })
   const { data } = queryResults
+
+  useLoadTimeTracking({
+    itemName: 'TopEdgesByTrafficWidget',
+    isSuccess: queryResults?.isSuccess
+  })
 
   return (
     <Loader states={[queryResults]}>
