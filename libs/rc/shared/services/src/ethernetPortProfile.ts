@@ -111,7 +111,6 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
           let apEthPortProfiles = ethList.data?.filter(
             m => m.apSerialNumbers && m.apSerialNumbers.includes(params.serialNumber!)
           ) ?? [] as EthernetPortProfileViewData[]
-
           const getApPortOverwrite = async (
             venueId:string, serialNumber:string, portId:number) => {
             const apPortOverwriteReq = createHttpRequest(
@@ -136,7 +135,6 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
               eth.apPortOverwrites?.push(portOverwrite)
             }
           }
-
           for (let lanPort of (selectedModelCaps as CapabilitiesApModel)?.lanPorts ) {
             if (!bindingPortIds.includes(lanPort.id)) {
               const portOverwrite = await getApPortOverwrite(
