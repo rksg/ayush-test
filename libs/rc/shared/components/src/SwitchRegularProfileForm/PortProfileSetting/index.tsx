@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 
 import { Row, Col, Form } from 'antd'
-import { useParams }      from 'react-router-dom'
 
 import { showActionModal, StepsFormLegacy, Table, TableProps } from '@acx-ui/components'
 import { useIsSplitOn, Features }                              from '@acx-ui/feature-toggle'
@@ -37,7 +36,6 @@ type PortProfileMap = {
 export function PortProfileSetting () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
-  const { tenantId } = useParams()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const { currentData } = useContext(ConfigurationProfileFormContext)
   const [ editMode, setEditMode ] = useState(false)
@@ -48,7 +46,6 @@ export function PortProfileSetting () {
   const [ selectedRowKeys, setSelectedRowKeys ] = useState([])
 
   const { data: portProfilesList } = useSwitchPortProfilesListQuery({
-    params: { tenantId },
     payload,
     enableRbac: isSwitchRbacEnabled
   })
