@@ -48,13 +48,17 @@ export const genAclPayloadObject = (accessControlProfile: AccessControlFormField
 
   aclPayloadObject.policyName = accessControlProfile.policyName!
   aclPayloadObject.description = accessControlProfile.description
-  aclPayloadObject.enableLayer2 = accessControlProfile.enableLayer2
+  // eslint-disable-next-line max-len
+  aclPayloadObject.enableLayer2 = accessControlProfile.enableLayer2 || !!accessControlProfile.l2AclPolicyId
   aclPayloadObject.l2AclPolicyId = accessControlProfile.l2AclPolicyId
-  aclPayloadObject.enableLayer3 = accessControlProfile.enableLayer3
+  // eslint-disable-next-line max-len
+  aclPayloadObject.enableLayer3 = accessControlProfile.enableLayer3 || !!accessControlProfile.l3AclPolicyId
   aclPayloadObject.l3AclPolicyId = accessControlProfile.l3AclPolicyId
-  aclPayloadObject.enableDeviceOs = accessControlProfile.enableDeviceOs
+  // eslint-disable-next-line max-len
+  aclPayloadObject.enableDeviceOs = accessControlProfile.enableDeviceOs || !!accessControlProfile.devicePolicyId
   aclPayloadObject.devicePolicyId = accessControlProfile.devicePolicyId
-  aclPayloadObject.enableApplications = accessControlProfile.enableApplications
+  // eslint-disable-next-line max-len
+  aclPayloadObject.enableApplications = accessControlProfile.enableApplications || !!accessControlProfile.applicationPolicyId
   aclPayloadObject.applicationPolicyId = accessControlProfile.applicationPolicyId
   aclPayloadObject.enableClientRateLimit =
     accessControlProfile.rateLimiting?.enableUploadLimit
