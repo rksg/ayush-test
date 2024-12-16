@@ -208,7 +208,6 @@ export function LanPorts () {
     setActiveTabIndex(tabIndex)
     setSelectedPortCaps(selectedModelCaps?.lanPorts?.[tabIndex] as LanPort)
   }
-
   const handleCustomize = async (useVenueSettings: boolean) => {
     const lanPorts = (useVenueSettings ? venueLanPorts : apLanPorts) as WifiApSetting
     lanPorts.lanPorts = getLanPortsWithDefaultEthernetPortProfile(
@@ -369,7 +368,7 @@ export function LanPorts () {
 
     setEditNetworkingContextData && setEditNetworkingContextData({
       ...editNetworkingContextData,
-      updateLanPorts: () => handleFinish(form?.getFieldsValue() as WifiApSetting),
+      updateLanPorts: () => handleFinish(form?.getFieldsValue(true) as WifiApSetting),
       discardLanPortsChanges: () => handleDiscard()
     })
   }

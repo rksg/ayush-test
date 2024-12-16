@@ -1040,7 +1040,8 @@ export const apApi = baseApApi.injectEndpoints({
                 policyId: l.softGreProfileId
               },
               payload: {
-                dhcpOption82Enabled: l.dhcpOption82?.dhcpOption82Enabled
+                dhcpOption82Enabled: l.dhcpOption82?.dhcpOption82Enabled,
+                dhcpOption82Settings: l.dhcpOption82?.dhcpOption82Settings
               }
             }))
 
