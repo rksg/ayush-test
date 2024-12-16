@@ -53,6 +53,7 @@ export enum Features {
   EDGE_MDNS_PROXY_TOGGLE = 'edge-mdns-proxy-toggle',
   EDGE_THIRDPARTY_MGMT_TOGGLE = 'edge-poc-thirdparty-mgmt-toggle',
   EDGE_ARPT_TOGGLE = 'edge-arpt-toggle',
+  EDGE_AV_REPORT_TOGGLE= 'edge-av-report-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
@@ -249,6 +250,7 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   LOCATION_BASED_SERVICES = 'LOCATION-BASED-SERVICES',
   RBAC_IMPLICIT_P1 = 'RBAC-IMPLICIT-P1',
   EDGE_ADV = 'EDGE-ADV',
+  EDGE_AV_REPORT = 'EDGE-AV-REPORT',
   // for testing only
   TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
   TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',
