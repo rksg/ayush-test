@@ -4,6 +4,7 @@ import { Button, PageHeader, Tabs } from '@acx-ui/components'
 import {
   filterByAccessForServicePolicyMutation,
   getPolicyListRoutePath,
+  PortProfileTabsEnum,
   getPolicyRoutePath,
   getScopeKeyByPolicy,
   PolicyOperation,
@@ -14,11 +15,6 @@ import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react
 import EthernetPortProfileTable from '../EthernetPortProfile/EthernetPortProfileTable'
 
 import SwitchPortProfile from './PortProfileTable/SwitchPortProfile'
-
-export enum PortProfileTabsEnum {
-  WIFI = 'wifi',
-  SWITCH = 'switch',
-}
 
 const ProfileTabs = () => {
   const { $t } = useIntl()

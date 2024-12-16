@@ -120,6 +120,7 @@ import MacRegistrationListDetails
 import MacRegistrationListsTable                                        from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
 import MyPolicies                                                       from './pages/Policies/MyPolicies'
 import PortProfile                                                      from './pages/Policies/PortProfile'
+import CreatePortProfile                                                from './pages/Policies/PortProfile/create'
 import SwitchPortProfileDetail                                          from './pages/Policies/PortProfile/PortProfileDetail/SwitchPortProfileDetail'
 import { SwitchPortProfileForm }                                        from './pages/Policies/PortProfile/PortProfileForm/SwitchPortProfileForm'
 import SelectPolicyForm                                                 from './pages/Policies/SelectPolicyForm'
@@ -1504,6 +1505,10 @@ function PolicyRoutes () {
       </>
       }
       {isSwitchPortProfileEnabled && <>
+        <Route
+          path='policies/portProfile/create'
+          element={<CreatePortProfile />}
+        />
         <Route
           path='policies/portProfile/:activeTab/'
           element={<PortProfile />}

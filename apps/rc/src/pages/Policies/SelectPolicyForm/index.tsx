@@ -30,7 +30,7 @@ import {
   policyTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { WifiScopes }                                  from '@acx-ui/types'
+import { SwitchScopes, WifiScopes }                    from '@acx-ui/types'
 import { hasPermission }                               from '@acx-ui/user'
 
 export default function SelectPolicyForm () {
@@ -76,6 +76,7 @@ export default function SelectPolicyForm () {
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   // eslint-disable-next-line max-len
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
+  const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
 
   const navigateToCreatePolicy = async function (data: { policyType: PolicyType }) {
     const policyCreatePath = getPolicyRoutePath({
@@ -165,6 +166,12 @@ export default function SelectPolicyForm () {
       type: PolicyType.DIRECTORY_SERVER,
       categories: [RadioCardCategory.WIFI],
       disabled: !(isDirectoryServerEnabled && hasPermission({ scopes: [WifiScopes.CREATE] }))
+    },
+    {
+      type: PolicyType.PORT_PROFILE,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
+      disabled: !(isEthernetPortProfileEnabled && isSwitchPortProfileEnabled &&
+        hasPermission({ scopes: [WifiScopes.CREATE, SwitchScopes.CREATE] }))
     }
   ]
 

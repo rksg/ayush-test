@@ -1044,4 +1044,9 @@ export interface SwitchPortProfilesAppliedTargets {
   model: string
   venueId: string
   venueName: string
- }
+}
+
+export enum PortProfileTabsEnum {
+  WIFI = 'wifi',
+  SWITCH = 'switch',
+}
