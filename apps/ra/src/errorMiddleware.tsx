@@ -3,23 +3,10 @@ import React from 'react'
 import { Middleware, isRejectedWithValue }            from '@reduxjs/toolkit'
 import { FormattedMessage, defineMessage, IntlShape } from 'react-intl'
 
-import { ActionModalType, ErrorDetailsProps, showActionModal }                                from '@acx-ui/components'
-import { getIntl, setUpIntl, IntlSetUpError, isShowApiError, isIgnoreErrorModal, userLogout } from '@acx-ui/utils'
+import { ActionModalType, ErrorDetailsProps, showActionModal }                                                    from '@acx-ui/components'
+import { getIntl, setUpIntl, IntlSetUpError, isShowApiError, isIgnoreErrorModal, userLogout, CatchErrorResponse } from '@acx-ui/utils'
 
 import type { GraphQLResponse } from 'graphql-request/dist/types'
-
-export interface CatchErrorDetails {
-  code: string,
-  message: string
-}
-
-export interface CatchErrorResponse {
-  data: {
-    errors: CatchErrorDetails[],
-    requestId: string
-  },
-  status: number
-}
 
 function formatGraphQLErrors (
   response: Required<Pick<GraphQLResponse, 'errors'>> & GraphQLResponse
