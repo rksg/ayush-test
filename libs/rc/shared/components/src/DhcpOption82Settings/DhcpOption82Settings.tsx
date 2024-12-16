@@ -94,9 +94,13 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
   }, [serialNumber, venueId, portId, apModel])
 
 
-  const callbackFn = () => {
+  const applyCallbackFn = () => {
     form.setFieldValue(dhcpOption82FieldName, true)
     setIconVisible(true)
+  }
+
+  const cancelCallbackFn = () => {
+    form.setFieldValue(dhcpOption82FieldName, false)
   }
 
 
@@ -156,7 +160,8 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
       <DhcpOption82SettingsDrawer
         visible={drawerVisible}
         setVisible={setDrawerVisible}
-        callbackFn={callbackFn}
+        applyCallbackFn={applyCallbackFn}
+        cancelCallbackFn={cancelCallbackFn}
         index={index}
         onGUIChanged={onGUIChanged}
         readonly={readonly}

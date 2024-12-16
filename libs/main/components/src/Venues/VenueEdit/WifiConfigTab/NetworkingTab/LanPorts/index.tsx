@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useRef } from 'react'
+import { useContext, useState, useEffect, useRef, useReducer } from 'react'
 
 import { Col, Form, Image, Row, Select, Space, Tooltip } from 'antd'
 import { isEqual, clone, cloneDeep }                     from 'lodash'
@@ -35,10 +35,13 @@ import {
   EditPortMessages,
   isEqualLanPort,
   LanPort,
+  SoftGreChanges,
   useConfigTemplate,
   VenueLanPorts,
   VenueSettings,
-  WifiNetworkMessages
+  WifiNetworkMessages,
+  SoftGreState,
+  SoftGreProfileDispatcher
 } from '@acx-ui/rc/utils'
 import {
   useParams
@@ -98,6 +101,7 @@ export function LanPorts () {
   const { setReadyToScroll } = useContext(AnchorContext)
 
   const customGuiChagedRef = useRef(false)
+  const pendingLanPortChanges = useRef<SoftGreChanges[]>([])
   const { venueApCaps, isLoadingVenueApCaps } = useContext(VenueUtilityContext)
   const isDhcpEnabled = useIsVenueDhcpEnabled(venueId)
   const { isTemplate } = useConfigTemplate()
@@ -432,6 +436,76 @@ export function LanPorts () {
     setResetModels([])
   }
 
+  const actionRunner = (current: SoftGreProfileDispatcher, next: SoftGreProfileDispatcher) => {
+    console.log('actionRunner Before', current)
+    console.log(pendingLanPortChanges.current)
+    const pendingChanges = pendingLanPortChanges.current
+    const isPendingChangesEmpty = !_.isEmpty(pendingChanges)
+    const model = selectedModel.model
+    const existedChanges = pendingChanges.find((change) => change.model === model)
+    switch(next.state){
+      case SoftGreState.TurnOnSoftGre:
+        const incomingChange = {
+          id: next.portId!,
+          softGRESettings: { softGreEnabled: true }
+        }
+        if (isPendingChangesEmpty || !existedChanges) {
+          pendingLanPortChanges.current = [{
+            model: model,
+            lanPorts: [incomingChange]
+          }]
+        }
+        if (existedChanges) {
+          let changeNotFound = true
+          let newLanPortsChangesList = existedChanges?.lanPorts.map((lanPort) => {
+            return lanPort.id === next.portId ? incomingChange : lanPort
+          })
+          if (changeNotFound){
+            return newLanPortsChangesList?.push(incomingChange)
+          }
+          existedChanges.lanPorts = newLanPortsChangesList
+        }
+
+
+        break
+      case SoftGreState.TurnOffSoftGre:
+        console.log('SoftGreState.TurnOffSoftGre')
+        console.log(next)
+        pendingLanPortChanges.current = [
+          {
+            model: selectedModel.model,
+            lanPorts: [
+              { id: next.portId!,
+                softGRESettings: {
+                  softGreEnabled: false
+                }
+              }
+            ]
+          }
+        ]
+        break
+      case SoftGreState.ModifySoftGreProfile:
+        console.log('SoftGreState.ModifySoftGreProfile')
+        break
+      case SoftGreState.TurnOnDHCPOption82:
+        console.log('SoftGreState.TurnOnDHCPOption82')
+        break
+      case SoftGreState.TurnOffDHCPOption82:
+        console.log('SoftGreState.TurnOffDHCPOption82')
+        break
+      case SoftGreState.ModifyDHCPOption82Settings:
+        console.log('SoftGreState.ModifyDHCPOption82Settings')
+        break
+      default:
+        console.error(`Invalid action: ${next}`) // eslint-disable-line no-console
+        break
+    }
+    console.log('actionrunner After change')
+    console.log(pendingLanPortChanges.current)
+    return next
+  }
+  const [state, dispatch] = useReducer(actionRunner, { state: SoftGreState.Init, portId: '0' })
+
   return (<Loader states={[{
     isLoading: venueLanPorts.isLoading || isLoadingVenueApCaps,
     isFetching: isUpdatingVenueLanPorts
@@ -492,6 +566,8 @@ export function LanPorts () {
                     onGUIChanged={handleGUIChanged}
                     index={index}
                     venueId={venueId}
+                    pendingLanPortChanges={pendingLanPortChanges}
+                    dispatch={dispatch}
                   />
                 </Col>
               </Row>

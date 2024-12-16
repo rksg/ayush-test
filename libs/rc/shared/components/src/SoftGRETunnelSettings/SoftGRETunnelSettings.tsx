@@ -1,27 +1,32 @@
-import { Form, Switch, Space } from 'antd'
+import { Form, Space, Switch } from 'antd'
 import { useIntl }             from 'react-intl'
 
-import { Tooltip, Alert } from '@acx-ui/components'
+import { Alert, Tooltip }                         from '@acx-ui/components'
+import { SoftGreProfileDispatcher, SoftGreState } from '@acx-ui/rc/utils'
 
 import { SoftGREProfileSettings } from './SoftGREProfileSettings'
 import { FieldLabel }             from './styledComponents'
 
 interface SoftGRETunnelSettingsProps {
-  index: number
-  softGreProfileId: string
-  softGreTunnelEnable: boolean
-  onGUIChanged?: (fieldName: string) => void
-  readonly: boolean
+  index: number;
+  portId?: string;
+  softGreProfileId: string;
+  softGreTunnelEnable: boolean;
+  onGUIChanged?: (fieldName: string) => void;
+  readonly: boolean;
+  dispatch?: React.Dispatch<SoftGreProfileDispatcher>;
 }
 
 export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   const { $t } = useIntl()
   const {
     index,
+    portId,
     softGreProfileId,
     softGreTunnelEnable,
     onGUIChanged,
-    readonly
+    readonly,
+    dispatch
   } = props
 
   const softgreTunnelFieldName = ['lan', index, 'softGreTunnelEnable']
@@ -49,8 +54,13 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             <Switch
               data-testid={'softgre-tunnel-switch'}
               disabled={readonly}
-              onClick={() => {
+              onClick={(value) => {
                 onGUIChanged && onGUIChanged('softGreTunnelEnable')
+                if (dispatch) {
+                  value ?
+                    dispatch({ state: SoftGreState.TurnOnSoftGre, portId }) :
+                    dispatch({ state: SoftGreState.TurnOffSoftGre, portId })
+                }
               }}
             />
           }

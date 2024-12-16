@@ -1,3 +1,4 @@
+import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Drawer } from '@acx-ui/components'
@@ -6,7 +7,8 @@ import { DhcpOption82SettingsFormField } from './DhcpOption82SettingsFormField'
 interface DhcpOption82SettingsDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  callbackFn?: () => void
+  applyCallbackFn: () => void
+  cancelCallbackFn: () => void
   index: number
   onGUIChanged?: (fieldName: string) => void
   readonly: boolean
@@ -18,25 +20,28 @@ export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProp
   const {
     visible,
     setVisible,
-    callbackFn = () => {},
+    applyCallbackFn,
+    cancelCallbackFn,
     index,
     onGUIChanged,
     readonly
   } = props
 
   const { $t } = useIntl()
+  const form = Form.useFormInstance()
 
   const handleAdd = async () => {
     try {
       setVisible(false)
       onGUIChanged && onGUIChanged('AddDHCPOption82')
-      callbackFn()
+      applyCallbackFn()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
 
   const handleClose = () => {
+    cancelCallbackFn()
     setVisible(false)
   }
 
