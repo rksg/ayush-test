@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import { render, screen, within } from '@acx-ui/test-utils'
+import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { render, screen, within }         from '@acx-ui/test-utils'
 
 import { ReportList } from '.'
 
@@ -38,6 +39,16 @@ describe('ReportList', () => {
       hash: '',
       search: ''
     })
+  })
+
+  it('should render report cards with feature flag ON', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+    render(<ReportList />, { route: { path, params } })
+
+    expect(await screen.findByText('RUCKUS Edge Applications')).toBeVisible()
+    expect(screen.getByText('RUCKUS Edge Applications')).toBeVisible()
   })
 
 })
