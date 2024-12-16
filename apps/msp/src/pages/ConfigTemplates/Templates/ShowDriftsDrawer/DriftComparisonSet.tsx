@@ -62,10 +62,11 @@ function DriftSetCollapseHeader (props: ConfigTemplateDriftSet) {
 function DriftSetCollapseHeaderIcon (props: ConfigTemplateDriftSet & { isActive?: boolean }) {
   const { isActive } = props
   const driftSetErrorStatus = getErrorStatusFromDriftSet(props)
-  const isFailed = driftSetErrorStatus === 'failed'
 
   if (driftSetErrorStatus) {
-    const resolvedIcon = isFailed ? <WarningCircleOutlined /> : <QuestionMarkCircleOutlined />
+    const resolvedIcon = driftSetErrorStatus === 'failed'
+      ? <WarningCircleOutlined />
+      : <QuestionMarkCircleOutlined />
     return <StatusTooltip status={driftSetErrorStatus}>{resolvedIcon}</StatusTooltip>
   }
   return isActive ? <MinusSquareOutlined /> : <PlusSquareOutlined />

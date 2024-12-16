@@ -45,6 +45,17 @@ describe('DriftComparisonSet', () => {
     render(<DriftComparisonSet {...mockData} />)
 
     expect(screen.getByText('?TestCategory')).toBeInTheDocument()
-    expect(screen.queryAllByText('Drifts are not available')).toHaveLength(2)
+    expect(screen.queryAllByText('Drifts are not available')).toHaveLength(2) // 1 for label tooltip, 1 for icon tooltip
+  })
+
+  it('renders the failed DriftComparisonSet', async () => {
+    const mockData: ConfigTemplateDriftSet = {
+      diffName: 'TestCategory',
+      diffData: [{ path: '!error', data: { template: 'template1', instance: 'instance1' } }]
+    }
+    render(<DriftComparisonSet {...mockData} />)
+
+    expect(screen.getByText('TestCategory')).toBeInTheDocument()
+    expect(screen.queryAllByText('Failed to handle drift content')).toHaveLength(2) // // 1 for label tooltip, 1 for icon tooltip
   })
 })
