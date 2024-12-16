@@ -956,7 +956,15 @@ export const apApi = baseApApi.injectEndpoints({
               targetPort.ethernetPortProfileId = eth.id
             }
 
+            if (!apModel) {
+              const apReq = createHttpRequest(urlsInfo.getAp, params)
+              const apQuery = await fetchWithBQ(apReq)
+              const apData = apQuery.data as ApDetails
+              apModel = apData.model
+            }
+
             const venuePort = eth.venueActivations?.find(
+              // eslint-disable-next-line no-loop-func
               v => v.venueId === params.venueId && v.apModel === apModel)?.portId?.toString()
             let venueTargetPort = apLanPorts.lanPorts?.find(l => l.portId === venuePort)
             if (venueTargetPort && !venueTargetPort.ethernetPortProfileId) {
