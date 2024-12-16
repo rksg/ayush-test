@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import { read } from 'fs'
-
 import { Form, Input, InputNumber, Select, Space, Switch } from 'antd'
 import { DefaultOptionType }                               from 'antd/lib/select'
 import { FormattedMessage, useIntl }                       from 'react-intl'
