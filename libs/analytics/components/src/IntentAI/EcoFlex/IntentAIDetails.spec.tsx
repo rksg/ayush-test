@@ -59,7 +59,7 @@ describe('IntentAIDetails', () => {
 
       expect(await screen.findByTestId('Benefits'))
         .toHaveTextContent(/intelligent PowerSave modes for access points during off-peak hours/)
-      expect(await screen.findByTestId('Potential trade-off'))
+      expect(await screen.findByTestId('Potential Trade-off'))
         .toHaveTextContent(/EcoFlex enabled network will operate in reduced capacity during/)
       expect(await screen.findByTestId('Status Trail')).toBeVisible()
     }
@@ -105,7 +105,7 @@ describe('IntentAIDetails', () => {
 
       expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
       expect(screen.queryByTestId('Benefits')).not.toBeInTheDocument()
-      expect(screen.queryByTestId('Potential trade-off')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('Potential Trade-off')).not.toBeInTheDocument()
       expect(await screen.findByTestId('Status Trail')).toBeVisible()
       expect(await screen.findByTestId('Current Status')).toBeVisible()
       expect(await screen.findByText('No recommendation was generated. Reason:')).toBeVisible()

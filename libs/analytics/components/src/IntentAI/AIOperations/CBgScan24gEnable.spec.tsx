@@ -91,7 +91,7 @@ describe('IntentAIDetails', () => {
 
     expect(screen.queryByTestId('KPI')).not.toBeInTheDocument()
     expect(screen.queryByTestId('Benefits')).not.toBeInTheDocument()
-    expect(screen.queryByTestId('Potential trade-off')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('Potential Trade-off')).not.toBeInTheDocument()
 
     expect(await screen.findByTestId('Status Trail')).toBeVisible()
     expect(await screen.findByTestId('Current Status')).toBeVisible()
@@ -111,7 +111,7 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByTestId('Configuration')).toBeVisible()
     expect(screen.queryByTestId('KPI')).not.toBeInTheDocument()
     expect(await screen.findByTestId('Benefits')).toBeVisible()
-    expect(await screen.findByTestId('Potential trade-off')).toBeVisible()
+    expect(await screen.findByTestId('Potential Trade-off')).toBeVisible()
     expect(await screen.findByTestId('Status Trail')).toBeVisible()
   })
 })

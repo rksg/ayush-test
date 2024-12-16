@@ -136,8 +136,8 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
                 </DetailsSection>
               </GridCol>
               <GridCol col={{ span: 12 }}>
-                <DetailsSection data-testid='Potential trade-off'>
-                  <DetailsSection.Title children={$t({ defaultMessage: 'Potential trade-off' })} />
+                <DetailsSection data-testid='Potential Trade-off'>
+                  <DetailsSection.Title children={$t({ defaultMessage: 'Potential Trade-off' })} />
                   <Card>{$t(SideNotes.tradeoff)}</Card>
                 </DetailsSection>
               </GridCol>

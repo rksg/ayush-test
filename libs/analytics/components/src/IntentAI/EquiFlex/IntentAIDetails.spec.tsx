@@ -76,7 +76,7 @@ describe('IntentAIDetails', () => {
 
       expect(await screen.findByTestId('Benefits'))
         .toHaveTextContent(/ML based probe responses in Wi-Fi network, dynamically manage/)
-      expect(await screen.findByTestId('Potential trade-off'))
+      expect(await screen.findByTestId('Potential Trade-off'))
         // eslint-disable-next-line max-len
         .toHaveTextContent(/include increased complexity in network management, potential delays in connecting lesser-priority devices/)
       expect(await screen.findByTestId('Status Trail')).toBeVisible()
@@ -171,7 +171,7 @@ describe('IntentAIDetails', () => {
 
       expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
       expect(screen.queryByTestId('Benefits')).not.toBeInTheDocument()
-      expect(screen.queryByTestId('Potential trade-off')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('Potential Trade-off')).not.toBeInTheDocument()
       expect(await screen.findByTestId('Status Trail')).toBeVisible()
       expect(await screen.findByTestId('Current Status')).toBeVisible()
       expect(await screen.findByText('No recommendation was generated. Reason:')).toBeVisible()
