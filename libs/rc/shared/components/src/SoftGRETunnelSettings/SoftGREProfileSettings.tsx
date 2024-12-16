@@ -16,13 +16,13 @@ const defaultSoftgreOption = { label: '', value: '' }
 
 interface SoftGREProfileSettingsProps {
   index: number
-  softgreProfileId: string
+  softGreProfileId: string
   onGUIChanged?: (fieldName: string) => void
   readonly: boolean
 }
 
 export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
-  const { index, softgreProfileId, onGUIChanged, readonly } = props
+  const { index, softGreProfileId, onGUIChanged, readonly } = props
   const { $t } = useIntl()
   const params = useParams()
   const softGreProfileIdFieldName = ['lan', index, 'softGreProfileId']
@@ -52,10 +52,10 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
       setsoftGREProfileOptionList(softGreProfileList.map((softGreProfile) => {
         return { label: softGreProfile.name, value: softGreProfile.id }
       }))
-      if (softgreProfileId) {
-        form.setFieldValue(softGreProfileIdFieldName,softgreProfileId)
+      if (softGreProfileId) {
+        form.setFieldValue(softGreProfileIdFieldName,softGreProfileId)
         setSoftGREProfile(softGREProfileOptionList.find(
-          (profile) => profile.value === softgreProfileId) ?? defaultSoftgreOption
+          (profile) => profile.value === softGreProfileId) ?? defaultSoftgreOption
         )
       }
     }

@@ -1,14 +1,16 @@
-import { useState, useContext, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 
 import { Form,  Switch, Space } from 'antd'
+import _                        from 'lodash'
 import { useIntl }              from 'react-intl'
 
-import { Tooltip }                                               from '@acx-ui/components'
-import { useLazyGetSoftGreProfileConfigurationOnAPQuery }        from '@acx-ui/rc/services'
-import { DhcpOption82Settings as DhcpOption82SettingsInterface } from '@acx-ui/rc/utils'
-
-import { SoftgreProfileAndDHCP82Context } from '../SoftGRETunnelSettings'
+import { Tooltip }                                    from '@acx-ui/components'
+import {
+  useLazyGetSoftGreProfileConfigurationOnAPQuery,
+  useLazyGetSoftGreProfileConfigurationOnVenueQuery
+} from '@acx-ui/rc/services'
+import { LanPortSoftGreProfileSettings } from '@acx-ui/rc/utils'
 
 import { DhcpOption82SettingsDrawer } from './DhcpOption82SettingsDrawer'
 import { FieldLabel, ConfigIcon }     from './styledComponents'
@@ -20,6 +22,7 @@ interface DhcpOption82SettingsProps {
   serialNumber?: string
   venueId?: string
   portId?: string
+  apModel?: string
   readonly: boolean
 }
 
@@ -28,11 +31,8 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
 
   const [ iconVisible, setIconVisible ] = useState<boolean>(false)
   const [ drawerVisible, setDrawerVisible ] = useState<boolean>(false)
-  // eslint-disable-next-line max-len
-  const [existedDHCP82OptionSettings, setExistedDHCP82OptionSettings] = useState<DhcpOption82SettingsInterface>()
   const form = Form.useFormInstance()
 
-  const { venueApModelLanPortSettingsV1 } = useContext(SoftgreProfileAndDHCP82Context)
   const {
     index,
     onGUIChanged,
@@ -40,33 +40,58 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
     serialNumber,
     venueId,
     portId,
+    apModel,
     readonly
   } = props
-  const [ getSoftGreProfileConfiguration ] = useLazyGetSoftGreProfileConfigurationOnAPQuery()
+  /* eslint-disable max-len */
+  const [ getVenueSoftGreProfileConfiguration ] = useLazyGetSoftGreProfileConfigurationOnVenueQuery()
+  const [ getAPSoftGreProfileConfiguration ] = useLazyGetSoftGreProfileConfigurationOnAPQuery()
   const dhcpOption82FieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Enabled']
-
+  const dhcpOption82SubOption1EnabledFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption1Enabled']
+  const dhcpOption82SubOption1FormatFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption1Format']
+  const dhcpOption82SubOption2EnabledFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption2Enabled']
+  const dhcpOption82SubOption2FormatFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption2Format']
+  const dhcpOption82SubOption150EnabledFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption150Enabled']
+  const dhcpOption82SubOption151EnabledFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Enabled']
+  const dhcpOption82SubOption151FormatFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Format']
+  const dhcpOption82SubOption151InputFieldName = ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Input']
+  const dhcpOption82MacFormat = ['lan', index, 'dhcpOption82','dhcpOption82Settings', 'macFormat']
+  /* eslint-enable max-len */
   useEffect(() => {
     const setData = async () => {
+      let lanPortSoftGreProfileSettings = {} as LanPortSoftGreProfileSettings | undefined
       if (isUnderAPNetworking) {
-        const { data } = await getSoftGreProfileConfiguration({
+        const { data } = await getAPSoftGreProfileConfiguration({
           params: { serialNumber, venueId, portId }
         })
-        if(data?.softGreSettings?.dhcpOption82Enabled) {
-          form.setFieldValue(dhcpOption82FieldName, true)
-          setExistedDHCP82OptionSettings(data?.softGreSettings?.dhcpOption82Settings)
-          setIconVisible(true)
-        }
+        lanPortSoftGreProfileSettings = data?.softGreSettings
       } else {
-        // eslint-disable-next-line max-len
-        const dhcpOption82Enabled = venueApModelLanPortSettingsV1?.softGreSettings?.dhcpOption82Enabled
-        if (dhcpOption82Enabled) {
-          form.setFieldValue(dhcpOption82FieldName, dhcpOption82Enabled)
-          setIconVisible(true)
-        }
+        const { data } = await getVenueSoftGreProfileConfiguration({
+          params: { apModel, venueId, portId }
+        })
+        lanPortSoftGreProfileSettings = data?.softGreSettings
+      }
+
+      if(lanPortSoftGreProfileSettings && !_.isEmpty(lanPortSoftGreProfileSettings) &&
+        lanPortSoftGreProfileSettings?.dhcpOption82Enabled) {
+        form.setFieldValue(dhcpOption82FieldName, true)
+        /* eslint-disable max-len */
+        const settings = lanPortSoftGreProfileSettings?.dhcpOption82Settings
+        form?.setFieldValue(dhcpOption82SubOption1EnabledFieldName, settings?.subOption1Enabled)
+        form?.setFieldValue(dhcpOption82SubOption1FormatFieldName, settings?.subOption1Format)
+        form?.setFieldValue(dhcpOption82SubOption2EnabledFieldName, settings?.subOption2Enabled)
+        form?.setFieldValue(dhcpOption82SubOption2FormatFieldName, settings?.subOption2Format)
+        form?.setFieldValue(dhcpOption82SubOption150EnabledFieldName, settings?.subOption150Enabled)
+        form?.setFieldValue(dhcpOption82SubOption151EnabledFieldName, settings?.subOption151Enabled)
+        form?.setFieldValue(dhcpOption82SubOption151FormatFieldName, settings?.subOption151Format)
+        form?.setFieldValue(dhcpOption82SubOption151InputFieldName, settings?.subOption151Input)
+        form?.setFieldValue(dhcpOption82MacFormat, settings?.macFormat)
+        /* eslint-enable max-len */
+        setIconVisible(true)
       }
     }
     setData()
-  }, [venueApModelLanPortSettingsV1, serialNumber, venueId, portId])
+  }, [serialNumber, venueId, portId, apModel])
 
 
   const callbackFn = () => {
@@ -101,6 +126,7 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
                 name={dhcpOption82FieldName}
                 noStyle>
                 <Switch
+                  data-testid={'dhcpoption82-switch-toggle'}
                   disabled={readonly}
                   onChange={() => {
                     onGUIChanged && onGUIChanged('DHCPOption82Enabled')
@@ -117,6 +143,7 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
               </Form.Item>
               {
                 iconVisible && <ConfigIcon
+                  data-testid={'dhcp82toption-icon'}
                   onClick={() => {
                     setDrawerVisible(true)
                   }}
@@ -127,13 +154,11 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
         />
       </FieldLabel>
       <DhcpOption82SettingsDrawer
-        isUnderAPNetworking={isUnderAPNetworking}
         visible={drawerVisible}
         setVisible={setDrawerVisible}
         callbackFn={callbackFn}
         index={index}
         onGUIChanged={onGUIChanged}
-        existedDHCP82OptionSettings={existedDHCP82OptionSettings}
         readonly={readonly}
       />
     </>
