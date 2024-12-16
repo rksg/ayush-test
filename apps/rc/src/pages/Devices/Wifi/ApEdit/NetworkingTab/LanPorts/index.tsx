@@ -17,7 +17,8 @@ import {
 import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings } from '@acx-ui/rc/components'
 import {
-  useGetApLanPortsWithEthernetProfilesQuery,
+  useDeactivateSoftGreProfileOnAPMutation,
+  useGetApLanPortsWithActivatedProfilesQuery,
   useGetDefaultApLanPortsQuery,
   useLazyGetDHCPProfileListViewModelQuery,
   useLazyGetVenueLanPortWithEthernetSettingsQuery,
@@ -98,13 +99,15 @@ export function LanPorts () {
 
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
+  const isSoftGREOnEthernetEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
 
   const formRef = useRef<StepsFormLegacyInstance<WifiApSetting>>()
   const { data: apLanPortsData, isLoading: isApLanPortsLoading } =
-  useGetApLanPortsWithEthernetProfilesQuery({
+  useGetApLanPortsWithActivatedProfilesQuery({
     params: { tenantId, serialNumber, venueId },
     enableRbac: isUseWifiRbacApi,
-    enableEthernetProfile: isEthernetPortProfileEnabled
+    enableEthernetProfile: isEthernetPortProfileEnabled,
+    enableSoftGreOnEthernet: isSoftGREOnEthernetEnabled
   })
   const { data: defaultLanPorts, isLoading: isDefaultPortsLoading } = useGetDefaultApLanPortsQuery({
     params: { venueId, serialNumber }
@@ -120,6 +123,10 @@ export function LanPorts () {
     isLoading: isEthernetPortProfileUpdating }] = useUpdateApEthernetPortsMutation()
   const [resetApCustomization, {
     isLoading: isApLanPortsResetting }] = useResetApLanPortsMutation()
+  const [deactivateSoftGreProfileSettings, {
+    isLoading: isSoftGreProfileDeactivting }] = useDeactivateSoftGreProfileOnAPMutation()
+
+
 
   const [apLanPorts, setApLanPorts] = useState({} as WifiApSetting)
   const [venueLanPorts, setVenueLanPorts] = useState({})
@@ -182,7 +189,6 @@ export function LanPorts () {
         setIsDhcpEnabled(isDhcpEnabled)
         setLanData(lanPorts?.lanPorts as LanPort[])
         setFormInitializing(false)
-
         setReadyToScroll?.(r => [...(new Set(r.concat('LAN-Ports')))])
       }
       setData()
@@ -284,14 +290,24 @@ export function LanPorts () {
         useVenueSettings
       }
 
-      isEthernetPortProfileEnabled ? await updateEthernetPortProfile({
-        params: { venueId, serialNumber },
-        payload
-      }).unwrap() : await updateApCustomization({
-        params: { tenantId, serialNumber, venueId },
-        payload,
-        enableRbac: true
-      }).unwrap()
+      if (isEthernetPortProfileEnabled) {
+
+        // Must deactivate existing SoftGre relation before add new
+        if (isSoftGREOnEthernetEnabled) {
+          handleSoftGreDeactivate(values)
+        }
+
+        await updateEthernetPortProfile({
+          params: { venueId, serialNumber },
+          payload
+        }).unwrap()
+      } else {
+        await updateApCustomization({
+          params: { tenantId, serialNumber, venueId },
+          payload,
+          enableRbac: true
+        }).unwrap()
+      }
     } else {
       if (values?.useVenueSettings) {
         await resetApCustomization({ params: { tenantId, serialNumber } }).unwrap()
@@ -307,6 +323,17 @@ export function LanPorts () {
         await updateApCustomization({ params: { tenantId, serialNumber }, payload }).unwrap()
       }
     }
+  }
+
+  const handleSoftGreDeactivate = (values: WifiApSetting) => {
+    values.lan?.forEach(lanPort => {
+      const originSoftGreId = lanData.find(l => l.portId === lanPort.portId)?.softGreProfileId
+      if (originSoftGreId && (!lanPort.enabled || !lanPort.softGreTunnelEnable)) {
+        deactivateSoftGreProfileSettings({
+          params: { venueId, serialNumber, portId: lanPort.portId, policyId: originSoftGreId }
+        }).unwrap()
+      }
+    })
   }
 
   const handleDiscard = async () => {
@@ -380,7 +407,10 @@ export function LanPorts () {
 
   return <Loader states={[{
     isLoading: formInitializing,
-    isFetching: isApLanPortsUpdating || isApLanPortsResetting || isEthernetPortProfileUpdating
+    isFetching: isApLanPortsUpdating ||
+      isApLanPortsResetting ||
+      isEthernetPortProfileUpdating ||
+      isSoftGreProfileDeactivting
   }]}>
     {selectedModel?.lanPorts
       ? <StepsFormLegacy
