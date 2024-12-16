@@ -349,18 +349,10 @@ export const fetchRbacApGroupNetworkVenueList = async (arg: any, fetchWithBQ: an
           const apGroupName = apGroupIdNameMap.find(apg => apg.key === params.apGroupId)?.value ?? ''
 
           const apgVlanPool = apGroupVlanPoolList?.data?.find(vlanPool => {
-            const apGroupsVenueIds: string[] = []
-            const apGroupNetworkIds: string[] = []
-            let apgIds: string[] = []
-            vlanPool.wifiNetworkVenueApGroups.forEach(apg => {
-              apGroupsVenueIds.push(apg.venueId)
-              apGroupNetworkIds.push(apg.wifiNetworkId)
-              apgIds = apgIds.concat(apg.apGroupIds)
+            const vlanPoolApGroups = vlanPool.wifiNetworkVenueApGroups.find(apg => {
+              return (apg.venueId === venueId && apg.wifiNetworkId === networkId)
             })
-            const uniqApgIds = uniq(apgIds)
-            return apGroupsVenueIds.includes(params.venueId) &&
-              apGroupNetworkIds.includes(params.networkId) &&
-              uniqApgIds.includes(params.apGroupId)
+            return vlanPoolApGroups && vlanPoolApGroups.apGroupIds.includes(params.apGroupId)
           })
 
           return {
@@ -466,18 +458,10 @@ export const fetchEnhanceRbacApGroupNetworkVenueList = async (arg: any, fetchWit
             const { apGroupId = '' } = apGroup
             const apGroupName = apGroupIdNameMap.find(apg => apg.key === apGroupId)?.value
             const apgVlanPool = apGroupVlanPoolList?.data?.find(vlanPool => {
-              const apGroupsVenueIds: string[] = []
-              const apGroupNetworkIds: string[] = []
-              let apgIds: string[] = []
-              vlanPool.wifiNetworkVenueApGroups.forEach(apg => {
-                apGroupsVenueIds.push(apg.venueId)
-                apGroupNetworkIds.push(apg.wifiNetworkId)
-                apgIds = apgIds.concat(apg.apGroupIds)
+              const vlanPoolApGroups = vlanPool.wifiNetworkVenueApGroups.find(apg => {
+                return (apg.venueId === venueId && apg.wifiNetworkId === networkId)
               })
-              const uniqApgIds = uniq(apgIds)
-              return apGroupsVenueIds.includes(venueId) &&
-                     apGroupNetworkIds.includes(networkId) &&
-                     uniqApgIds.includes(apGroupId)
+              return vlanPoolApGroups && vlanPoolApGroups.apGroupIds.includes(apGroupId)
             })
 
             return {
@@ -713,36 +697,11 @@ export const fetchEnhanceRbacAllApGroupNetworkVenueList = async (arg: any, fetch
         const venueApGroups = (!networkVenueResult)? undefined : ((networkVenueResult.isAllApGroups)
           ? []
           : networkVenueResult.apGroups?.map((apGroup: NetworkApGroup) => {
-            //const { apGroupId = '' } = apGroup
-            //const apGroupName = apGroupIdNameMap.find(apg => apg.key === apGroupId)?.value
-            /*
-          const apgVlanPool = apGroupVlanPoolList?.data?.find(vlanPool => {
-            const apGroupsVenueIds: string[] = []
-            const apGroupNetworkIds: string[] = []
-            let apgIds: string[] = []
-            vlanPool.wifiNetworkVenueApGroups.forEach(apg => {
-              apGroupsVenueIds.push(apg.venueId)
-              apGroupNetworkIds.push(apg.wifiNetworkId)
-              apgIds = apgIds.concat(apg.apGroupIds)
-            })
-            const uniqApgIds = uniq(apgIds)
-            return apGroupsVenueIds.includes(venueId) &&
-                   apGroupNetworkIds.includes(networkId) &&
-                   uniqApgIds.includes(apGroupId)
-          })
-          */
 
             return {
               ...apGroup,
               ...({ venueId, networkId }),
-              radio: 'Both'//,
-              //isDefault: !apGroupName,
-              //apGroupName,
-              /*
-            ...(apgVlanPool && {
-              vlanPoolId: apgVlanPool.id,
-              vlanPoolName: apgVlanPool.name
-            }) */
+              radio: 'Both'
             }
           }))
 
@@ -868,18 +827,10 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
             const apGroupName = apGroupIdNameMap.find(apg => apg.key === params.apGroupId)?.value
 
             const apgVlanPool = apGroupVlanPoolList?.data?.find(vlanPool => {
-              const apGroupsVenueIds: string[] = []
-              const apGroupNetworkIds: string[] = []
-              let apgIds: string[] = []
-              vlanPool.wifiNetworkVenueApGroups.forEach(apg => {
-                apGroupsVenueIds.push(apg.venueId)
-                apGroupNetworkIds.push(apg.wifiNetworkId)
-                apgIds = apgIds.concat(apg.apGroupIds)
+              const vlanPoolApGroups = vlanPool.wifiNetworkVenueApGroups.find(apg => {
+                return (apg.venueId === venueId && apg.wifiNetworkId === networkId)
               })
-              const uniqApgIds = uniq(apgIds)
-              return apGroupsVenueIds.includes(params.venueId) &&
-                apGroupNetworkIds.includes(params.networkId) &&
-                uniqApgIds.includes(params.apGroupId)
+              return vlanPoolApGroups && vlanPoolApGroups.apGroupIds.includes(params.apGroupId)
             })
 
             return {
@@ -990,19 +941,12 @@ export const fetchEnhanceRbacVenueNetworkList = async (arg: any, fetchWithBQ: an
             : networkVenueResult.apGroups?.map((apGroup: NetworkApGroup) => {
               const { apGroupId = '' } = apGroup
               const apGroupName = apGroupIdNameMap.find(apg => apg.key === apGroupId)?.value
+
               const apgVlanPool = apGroupVlanPoolList?.data?.find(vlanPool => {
-                const apGroupsVenueIds: string[] = []
-                const apGroupNetworkIds: string[] = []
-                let apgIds: string[] = []
-                vlanPool.wifiNetworkVenueApGroups.forEach(apg => {
-                  apGroupsVenueIds.push(apg.venueId)
-                  apGroupNetworkIds.push(apg.wifiNetworkId)
-                  apgIds = apgIds.concat(apg.apGroupIds)
+                const vlanPoolApGroups = vlanPool.wifiNetworkVenueApGroups.find(apg => {
+                  return (apg.venueId === venueId && apg.wifiNetworkId === networkId)
                 })
-                const uniqApgIds = uniq(apgIds)
-                return apGroupsVenueIds.includes(venueId) &&
-                       apGroupNetworkIds.includes(networkId) &&
-                       uniqApgIds.includes(apGroupId)
+                return vlanPoolApGroups && vlanPoolApGroups.apGroupIds.includes(apGroupId)
               })
 
               return {
@@ -1222,18 +1166,10 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ page
           const apGroupName = apGroupIdNameMap.find(apg => apg.key === params.apGroupId)?.value
 
           const apgVlanPool = apGroupVlanPoolList?.data?.find(vlanPool => {
-            const apGroupsVenueIds: string[] = []
-            const apGroupNetworkIds: string[] = []
-            let apgIds: string[] = []
-            vlanPool.wifiNetworkVenueApGroups.forEach(apg => {
-              apGroupsVenueIds.push(apg.venueId)
-              apGroupNetworkIds.push(apg.wifiNetworkId)
-              apgIds = apgIds.concat(apg.apGroupIds)
+            const vlanPoolApGroups = vlanPool.wifiNetworkVenueApGroups.find(apg => {
+              return (apg.venueId === venueId && apg.wifiNetworkId === networkId)
             })
-            const uniqApgIds = uniq(apgIds)
-            return apGroupsVenueIds.includes(params.venueId) &&
-              apGroupNetworkIds.includes(params.networkId) &&
-              uniqApgIds.includes(params.apGroupId)
+            return vlanPoolApGroups && vlanPoolApGroups.apGroupIds.includes(params.apGroupId)
           })
 
           return {
@@ -1360,18 +1296,10 @@ export const fetchEnhanceRbacNetworkVenueList = async (queryArgs: RequestPayload
             const { apGroupId = '' } = apGroup
             const apGroupName = apGroupIdNameMap.find(apg => apg.key === apGroupId)?.value
             const apgVlanPool = apGroupVlanPoolList?.data?.find(vlanPool => {
-              const apGroupsVenueIds: string[] = []
-              const apGroupNetworkIds: string[] = []
-              let apgIds: string[] = []
-              vlanPool.wifiNetworkVenueApGroups.forEach(apg => {
-                apGroupsVenueIds.push(apg.venueId)
-                apGroupNetworkIds.push(apg.wifiNetworkId)
-                apgIds = apgIds.concat(apg.apGroupIds)
+              const vlanPoolApGroups = vlanPool.wifiNetworkVenueApGroups.find(apg => {
+                return (apg.venueId === venueId && apg.wifiNetworkId === networkId)
               })
-              const uniqApgIds = uniq(apgIds)
-              return apGroupsVenueIds.includes(venueId) &&
-                     apGroupNetworkIds.includes(networkId) &&
-                     uniqApgIds.includes(apGroupId)
+              return vlanPoolApGroups && vlanPoolApGroups.apGroupIds.includes(apGroupId)
             })
 
             return {
