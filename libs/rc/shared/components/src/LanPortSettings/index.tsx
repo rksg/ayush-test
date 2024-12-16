@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import { read } from 'fs'
+
 import { Form, Input, InputNumber, Select, Space, Switch } from 'antd'
 import { DefaultOptionType }                               from 'antd/lib/select'
 import { FormattedMessage, useIntl }                       from 'react-intl'
@@ -279,7 +281,7 @@ export function LanPortSettings (props: {
           isEthernetPortProfileEnabled && isEthernetSoftgreEnabled &&
             (<>
               <SoftGRETunnelSettings
-                readonly={!isEthernetPortEnable}
+                readonly={!isEthernetPortEnable || (readOnly ?? false)}
                 index={index}
                 softGreProfileId={selectedPortCaps.softGreProfileId ?? ''}
                 softGreTunnelEnable={isSoftGreTunnelEnable}
@@ -287,7 +289,7 @@ export function LanPortSettings (props: {
               />
               {isSoftGreTunnelEnable &&
                 <DhcpOption82Settings
-                  readonly={false}
+                  readonly={readOnly ?? false}
                   index={index}
                   onGUIChanged={onGUIChanged}
                   isUnderAPNetworking={isUnderAPNetworking}
