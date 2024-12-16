@@ -9,8 +9,12 @@ import { Provider, store, intentAIApi }       from '@acx-ui/store'
 import { mockServer, render, screen, within } from '@acx-ui/test-utils'
 
 import { mockIntentContext } from '../__tests__/fixtures'
-import { Statuses }          from '../states'
-import { IntentDetail }      from '../useIntentDetailsQuery'
+import {
+  Statuses,
+  StatusReasons,
+  DisplayStates
+} from '../states'
+import { IntentDetail } from '../useIntentDetailsQuery'
 
 import { mockedIntentEquiFlex, mockWifiNetworkList } from './__tests__/fixtures'
 import { configuration, kpis }                       from './common'
@@ -156,7 +160,9 @@ describe('IntentAIDetails', () => {
     it('handle inactive EquiFlex', async () => {
       const { params } = mockIntentContextWith({
         code: 'c-probeflex-5g',
-        status: Statuses.na
+        status: Statuses.na,
+        statusReason: StatusReasons.notEnoughData,
+        displayStatus: DisplayStates.naNotEnoughData
       })
       render(
         <CProbeFlex5g.IntentAIDetails />,
@@ -168,8 +174,7 @@ describe('IntentAIDetails', () => {
       expect(screen.queryByTestId('Potential trade-off')).not.toBeInTheDocument()
       expect(await screen.findByTestId('Status Trail')).toBeVisible()
       expect(await screen.findByTestId('Current Status')).toBeVisible()
-      // eslint-disable-next-line max-len
-      expect(await screen.findByText('The change recommendation has been automatically scheduled for 07/15/2023 14:15, by IntentAI.')).toBeVisible()
+      expect(await screen.findByText('No recommendation was generated. Reason:')).toBeVisible()
 
       expect(await screen.findByTestId('Overview text'))
         // eslint-disable-next-line max-len
