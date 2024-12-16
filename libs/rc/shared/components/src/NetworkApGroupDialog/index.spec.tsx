@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                    from '@acx-ui/feature-toggle'
+
 import { networkApi, policyApi, venueApi } from '@acx-ui/rc/services'
 import {
   ApGroupConfigTemplateUrlsInfo,
@@ -35,7 +35,6 @@ import { NetworkApGroupDialog } from './index'
 
 
 const venueName = 'My-Venue'
-
 const mockApGroupsList = jest.fn()
 
 describe('NetworkApGroupDialog', () => {
@@ -152,8 +151,6 @@ describe('NetworkApGroupDialog', () => {
   })
 
   it('should has 6 GHz and could click apply', async () => {
-
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     let wlanWPA3 = { ...network.wlan, wlanSecurity: WlanSecurityEnum.WPA3 }
     const wpa3Network = {

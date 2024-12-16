@@ -15,7 +15,7 @@ import bannerImg from '../../../assets/banner_bkg.png'
 
 import { Icon }                                        from './common/IntentIcon'
 import { AiFeatures, codes, IntentListItem }           from './config'
-import { useIntentAITableQuery }                       from './services'
+import { getStatusTooltip, useIntentAITableQuery }     from './services'
 import { DisplayStates, Statuses }                     from './states'
 import * as UI                                         from './styledComponents'
 import { IntentAIDateTimePicker, useIntentAIActions }  from './useIntentAIActions'
@@ -311,10 +311,11 @@ export function IntentAITable (
       filterSearch: true,
       filterPlaceholder: $t({ defaultMessage: 'All Status' }),
       render: (_, row: IntentListItem ) => {
-        const { statusLabel, statusTooltip } = row
+        const { statusLabel, displayStatus, sliceValue, metadata, updatedAt } = row
         return <Tooltip
           placement='top'
-          title={statusTooltip}
+          title={getStatusTooltip(
+            displayStatus, sliceValue, { ...metadata, updatedAt })}
           dottedUnderline={true}
         >
           {statusLabel}
