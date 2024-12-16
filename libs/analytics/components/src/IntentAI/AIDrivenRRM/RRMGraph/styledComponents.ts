@@ -45,6 +45,8 @@ export const GraphTitle = styled.div`
   background-color: var(--acx-primary-white);
   width: fit-content;
   height: fit-content;
+  padding-inline: 0.25em;
+  margin-left: -0.25em;
 `
 
 export const GraphSubTitle = styled.div`
@@ -55,6 +57,8 @@ export const GraphSubTitle = styled.div`
   background-color: var(--acx-primary-white);
   width: fit-content;
   height: fit-content;
+  padding-inline: 0.25em;
+  margin-left: -0.25em;
 `
 
 export const CrrmArrow = styled.div`
