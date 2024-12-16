@@ -40,7 +40,7 @@ export const KPIGrid = () => {
     (_.pick(query.error, ['data']) as { data: IntentKPI }).data
     : query.data
 
-  return <Loader states={[isDetectError? _.omit(query, ['error']) : query]}>
+  return <Loader states={[query]}>
     {getGraphKPIs({ ...intent, ...intentKPIs }, kpis).map(kpi => (
       <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
         <KPICard kpi={kpi} />
@@ -62,7 +62,7 @@ export const KPIFields = () => {
     (_.pick(query.error, ['data']) as { data: IntentKPI }).data
     : query.data
 
-  return <Loader states={[isDetectError? _.omit(query, ['error']) : query]}>
+  return <Loader states={[query]}>
     {getGraphKPIs({ ...intent, ...intentKPIs }, kpis)
       .map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
   </Loader>

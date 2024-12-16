@@ -18,7 +18,7 @@ export const StatusTrail = () => {
     (_.pick(query.error, ['data']) as { data: IntentStatusTrail }).data
     : query.data
 
-  return <Loader states={[isDetectError? _.omit(query, ['error']) : query]}>
+  return <Loader states={[query]}>
     <Card>
       <UI.Wrapper>
         {statusTrail?.map(({ displayStatus, createdAt }, index) => (
