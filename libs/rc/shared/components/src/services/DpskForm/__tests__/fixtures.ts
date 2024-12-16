@@ -211,3 +211,41 @@ export const identityGroupList = {
   numberOfElements: 3,
   empty: false
 }
+
+export const mockedTemplateList = {
+  paging: { totalCount: 2, page: 1, pageSize: 2, pageCount: 1 },
+  content: [
+    {
+      id: 200,
+      name: 'RADIUS Conditions',
+      description: 'Evaluates RADIUS policy conditions from the currently supported list.',
+      returnType: 'RADIUS_ATTRIB_GROUP',
+      ruleType: 'RADIUS'
+    },
+    {
+      id: 100,
+      name: 'DSPK Policy Conditions',
+      description: 'Evaluates DPSK properties from the currently supported list.',
+      returnType: 'RADIUS_ATTRIB_GROUP',
+      ruleType: 'DPSK'
+    }
+  ]
+}
+
+export const mockedAdaptivePolicyList = {
+  paging: {
+    totalCount: 1,
+    page: 1,
+    pageSize: 1,
+    pageCount: 1
+  },
+  content: [
+    {
+      id: '6dc81c95-3687-4352-b25b-aa5b583e5e2a',
+      name: 'test1',
+      description: 'for test',
+      policyType: 'RADIUS',
+      onMatchResponse: 'test'
+    }
+  ]
+}

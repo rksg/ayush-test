@@ -120,11 +120,12 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const { $t } = useIntl()
 
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
   const { isTemplate } = useConfigTemplate()
 
   const { networkVenue, venueName, network, formName, tenantId } = props
   const { wlan, type } = network || {}
-  const isSupport6G = IsNetworkSupport6g(network)
+  const isSupport6G = IsNetworkSupport6g(network, { isSupport6gOWETransition })
 
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [vlanPoolSelectOptions, setVlanPoolSelectOptions] = useState<VlanPool[]>()
@@ -282,8 +283,14 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
         </Col></Tooltip>
         <Col span={8}>
           <UI.FormItemRounded>
-            { selected &&
-            (<VlanInput apgroup={apgroup} wlan={wlan} vlanPoolSelectOptions={vlanPoolSelectOptions} onChange={handleVlanInputChange}/>) }
+            <VlanInput
+              key={name}
+              apgroup={apgroup}
+              wlan={wlan}
+              vlanPoolSelectOptions={vlanPoolSelectOptions}
+              onChange={handleVlanInputChange}
+              selected={selected}
+            />
           </UI.FormItemRounded>
         </Col>
         <Col span={8}>
@@ -411,7 +418,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                       </Col>
                       { fields.map((field, index) => (
                         <Form.Item key={field.key} noStyle>
-                          <ApGroupItem name={field.name} apgroup={formInitData.apgroups[index]} />
+                          <ApGroupItem key={field.key} name={field.name} apgroup={form.getFieldValue('apgroups')[index]} />
                         </Form.Item>
                       ))}
                     </Row>}
