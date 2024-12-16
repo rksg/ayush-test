@@ -21,7 +21,7 @@ export function DriftComparisonSet (props: ConfigTemplateDriftSet) {
   >
     <Collapse.Panel
       key={diffName}
-      collapsible={driftSetErrorStatus.hasIssue ? 'disabled' : 'header'}
+      collapsible={driftSetErrorStatus ? 'disabled' : 'header'}
       header={<DriftSetCollapseHeader {...props} />}
     >
       {filterDriftRecordIdByName(diffData).map((item, index) => {
@@ -35,25 +35,17 @@ export function DriftComparisonSet (props: ConfigTemplateDriftSet) {
 
 type DriftSetErrorStatus = 'unknown' | 'failed'
 
-function getErrorStatusFromDriftSet (props: ConfigTemplateDriftSet): {
-  hasIssue: boolean
-  status?: DriftSetErrorStatus
-} {
+function getErrorStatusFromDriftSet (props: ConfigTemplateDriftSet): DriftSetErrorStatus | null {
   const { diffName, diffData } = props
-  const isUnknown = diffName.startsWith('?')
-  const isFailed = diffData.some(item => item.path === '!error')
-  if (isFailed) {
-    return {
-      hasIssue: true,
-      status: 'failed'
-    }
-  } else if (isUnknown) {
-    return {
-      hasIssue: true,
-      status: 'unknown'
-    }
+
+  if (diffData.some(item => item.path === '!error')) {
+    return 'failed'
   }
-  return { hasIssue: false }
+
+  if (diffName.startsWith('?')) {
+    return 'unknown'
+  }
+  return null
 }
 
 function DriftSetCollapseHeader (props: ConfigTemplateDriftSet) {
@@ -61,8 +53,8 @@ function DriftSetCollapseHeader (props: ConfigTemplateDriftSet) {
   const diffNameLabel = <UI.BoldLabel>{diffName}</UI.BoldLabel>
   const driftSetErrorStatus = getErrorStatusFromDriftSet(props)
 
-  if (driftSetErrorStatus.hasIssue) {
-    return <StatusTooltip status={driftSetErrorStatus.status!}>{diffNameLabel}</StatusTooltip>
+  if (driftSetErrorStatus) {
+    return <StatusTooltip status={driftSetErrorStatus}>{diffNameLabel}</StatusTooltip>
   }
   return diffNameLabel
 }
@@ -70,16 +62,16 @@ function DriftSetCollapseHeader (props: ConfigTemplateDriftSet) {
 function DriftSetCollapseHeaderIcon (props: ConfigTemplateDriftSet & { isActive?: boolean }) {
   const { isActive } = props
   const driftSetErrorStatus = getErrorStatusFromDriftSet(props)
-  const isFailed = driftSetErrorStatus.status === 'failed'
+  const isFailed = driftSetErrorStatus === 'failed'
 
-  if (driftSetErrorStatus.hasIssue) {
+  if (driftSetErrorStatus) {
     const resolvedIcon = isFailed ? <WarningCircleOutlined /> : <QuestionMarkCircleOutlined />
-    return <StatusTooltip status={driftSetErrorStatus.status!}>{resolvedIcon}</StatusTooltip>
+    return <StatusTooltip status={driftSetErrorStatus}>{resolvedIcon}</StatusTooltip>
   }
   return isActive ? <MinusSquareOutlined /> : <PlusSquareOutlined />
 }
 
-function StatusTooltip (props: React.PropsWithChildren<{ status: 'unknown' | 'failed' }>) {
+function StatusTooltip (props: React.PropsWithChildren<{ status: DriftSetErrorStatus }>) {
   const { status, children } = props
   const { $t } = useIntl()
   const title = status === 'unknown'
