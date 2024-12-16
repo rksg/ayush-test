@@ -25,7 +25,7 @@ export const KPICard: React.FC<{
   </Card>
 }
 
-export const KPIGrid = () => {
+export const useKPIsQuery = () => {
   const { intent, kpis } = useIntentContext()
   const sanitisedKPIs = kpis
     // pick only 2 required field
@@ -40,27 +40,25 @@ export const KPIGrid = () => {
     (_.pick(query.error, ['data']) as { data: IntentKPI }).data
     : query.data
 
-  return <Loader states={[query]}>
+  return { query, intentKPIs, kpis, intent }
+}
+
+export const KPIGrid = () => {
+  const { query, intentKPIs, kpis, intent } = useKPIsQuery()
+
+  return <>
     {getGraphKPIs({ ...intent, ...intentKPIs }, kpis).map(kpi => (
       <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
-        <KPICard kpi={kpi} />
+        <Loader states={[query]}>
+          <KPICard kpi={kpi} />
+        </Loader>
       </GridCol>
     ))}
-  </Loader>
+  </>
 }
 
 export const KPIFields = () => {
-  const { intent, kpis } = useIntentContext()
-  const query = useIntentKPIsQuery({
-    ...intent,
-    kpis: kpis.map(kpi => _.pick(kpi, ['key', 'deltaSign']))
-  }, { skip: kpis.length === 0 })
-
-  const isDetectError = query.isError && !!_.pick(query.error, ['data'])
-
-  const intentKPIs = isDetectError ?
-    (_.pick(query.error, ['data']) as { data: IntentKPI }).data
-    : query.data
+  const { query, intentKPIs, kpis, intent } = useKPIsQuery()
 
   return <Loader states={[query]}>
     {getGraphKPIs({ ...intent, ...intentKPIs }, kpis)

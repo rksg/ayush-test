@@ -2,11 +2,11 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { get }                                                  from '@acx-ui/config'
-import { networkApi }                                           from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                                       from '@acx-ui/rc/utils'
-import { Provider, store, intentAIApi, intentAIUrl }            from '@acx-ui/store'
-import { mockGraphqlQuery, mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { get }                                                           from '@acx-ui/config'
+import { networkApi }                                                    from '@acx-ui/rc/services'
+import { CommonUrlsInfo }                                                from '@acx-ui/rc/utils'
+import { Provider, store, intentAIApi, intentAIUrl }                     from '@acx-ui/store'
+import { mockGraphqlQuery, mockServer, render, screen, within, waitFor } from '@acx-ui/test-utils'
 
 import { mockIntentContext } from '../__tests__/fixtures'
 import {
@@ -65,9 +65,12 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     const loaders = screen.getAllByRole('img', { name: 'loader' })
     loaders.forEach(loader => expect(loader).toBeVisible())
-    const details = await screen.findByTestId('Details')
-    expect(await within(details).findByTestId('KPI'))
-      .toHaveTextContent('Beyond data retention period')
+    const kpiContainers = await screen.findAllByTestId('KPI')
+    for (const kpiContainer of kpiContainers) {
+      await waitFor(() => {
+        expect(kpiContainer).toHaveTextContent('Beyond data retention period')
+      })
+    }
   })
 
   describe('renders correctly', () => {

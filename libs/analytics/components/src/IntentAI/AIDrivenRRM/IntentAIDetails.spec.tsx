@@ -1,7 +1,7 @@
 import _ from 'lodash'
 
-import { intentAIUrl, Provider, store, intentAIApi } from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen, within }  from '@acx-ui/test-utils'
+import { intentAIUrl, Provider, store, intentAIApi }         from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, within, waitFor } from '@acx-ui/test-utils'
 
 import { mockIntentContext } from '../__tests__/fixtures'
 import { Statuses }          from '../states'
@@ -65,9 +65,12 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     const loaders = screen.getAllByRole('img', { name: 'loader' })
     loaders.forEach(loader => expect(loader).toBeVisible())
-    const details = await screen.findByTestId('Details')
-    expect(await within(details).findByTestId('KPI'))
-      .toHaveTextContent('Beyond data retention period')
+    const kpiContainers = await screen.findAllByTestId('KPI')
+    for (const kpiContainer of kpiContainers) {
+      await waitFor(() => {
+        expect(kpiContainer).toHaveTextContent('Beyond data retention period')
+      })
+    }
   })
 
   describe('renders correctly', () => {
