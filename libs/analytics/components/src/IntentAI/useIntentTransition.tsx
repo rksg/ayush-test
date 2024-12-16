@@ -4,12 +4,12 @@ import { gql }                       from 'graphql-request'
 import moment, { Moment }            from 'moment-timezone'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { getUserProfile as getUserProfileRA }            from '@acx-ui/analytics/utils'
+import { getUserFullName as getUserFullNameRA }          from '@acx-ui/analytics/utils'
 import { showToast }                                     from '@acx-ui/components'
 import { get }                                           from '@acx-ui/config'
 import { useNavigate, useNavigateToPath, useTenantLink } from '@acx-ui/react-router-dom'
 import { intentAIApi }                                   from '@acx-ui/store'
-import { getUserProfile as getUserProfileR1 }            from '@acx-ui/user'
+import { getUserFullName as getUserFullNameR1 }          from '@acx-ui/user'
 import { encodeParameter }                               from '@acx-ui/utils'
 
 import { validateScheduleTiming } from './common/ScheduleTiming'
@@ -114,10 +114,7 @@ export function createUseIntentTransition <Preferences> (
     const [doSubmit, response] = useIntentTransitionMutation()
 
     const submit = useCallback(async (values: FormValues<Preferences>) => {
-      const userName = get('IS_MLISA_SA')
-        ? `${getUserProfileRA().firstName} ${getUserProfileRA().lastName}`
-        : `${getUserProfileR1().profile.firstName} ${getUserProfileR1().profile.lastName}`
-
+      const userName = get('IS_MLISA_SA') ? getUserFullNameRA() : getUserFullNameR1()
       const formDto = getFormDTO(values)
       const metadataWithName = {
         ...formDto?.metadata,

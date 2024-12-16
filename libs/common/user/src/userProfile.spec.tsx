@@ -22,7 +22,8 @@ import {
   WrapIfAccessible,
   hasRaiPermission,
   isCustomAdmin,
-  hasCrossVenuesPermission
+  hasCrossVenuesPermission,
+  getUserFullName
 } from './userProfile'
 
 
@@ -465,5 +466,21 @@ describe('AuthRoute', () => {
       </Router>
     )
     expect(await screen.findByText('test page')).toBeVisible()
+  })
+})
+
+describe('user name', () => {
+  it('check full user name is correct', () => {
+    const profile = getUserProfile()
+    setUserProfile({
+      ...profile,
+      profile: {
+        ...profile.profile,
+        firstName: 'FirstName',
+        lastName: 'LastName'
+      }
+    })
+
+    expect(getUserFullName()).toBe('FirstName LastName')
   })
 })

@@ -4,15 +4,15 @@ import { Modal as AntModal }                          from 'antd'
 import moment, { Moment }                             from 'moment-timezone'
 import { FormattedMessage, RawIntlProvider, useIntl } from 'react-intl'
 
-import { getUserProfile as getUserProfileRA } from '@acx-ui/analytics/utils'
-import { DateTimePicker, showToast }          from '@acx-ui/components'
-import { get }                                from '@acx-ui/config'
-import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
+import { getUserFullName as getUserFullNameRA } from '@acx-ui/analytics/utils'
+import { DateTimePicker, showToast }            from '@acx-ui/components'
+import { get }                                  from '@acx-ui/config'
+import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
 import {
   useLazyVenueRadioActiveNetworksQuery
 } from '@acx-ui/rc/services'
 import { RadioTypeEnum }                         from '@acx-ui/rc/utils'
-import { getUserProfile as getUserProfileR1 }    from '@acx-ui/user'
+import { getUserFullName as getUserFullNameR1 }  from '@acx-ui/user'
 import { Filters, getIntl, useEncodedParameter } from '@acx-ui/utils'
 
 import { IntentListItem, stateToGroupedStates } from './config'
@@ -197,9 +197,7 @@ export function useIntentAIActions () {
   }
 
   const doAllOptimize = async (rows:IntentListItem[], scheduledAt:string) => {
-    const userName = get('IS_MLISA_SA')
-      ? `${getUserProfileRA().firstName} ${getUserProfileRA().lastName}`
-      : `${getUserProfileR1().profile.firstName} ${getUserProfileR1().profile.lastName}`
+    const userName = get('IS_MLISA_SA') ? getUserFullNameRA() : getUserFullNameR1()
     const optimizeList = await Promise.all(rows.map(async (row) => {
       const { code, preferences, displayStatus, status } = row
       const metadata = { scheduledAt } as TransitionIntentMetadata
@@ -284,9 +282,7 @@ export function useIntentAIActions () {
   const revert = async (date: Moment, rows:IntentListItem[], onOk: ()=>void) => {
     if (validateDate(date)) {
       const scheduledAt = date.toISOString()
-      const userName = get('IS_MLISA_SA')
-        ? `${getUserProfileRA().firstName} ${getUserProfileRA().lastName}`
-        : `${getUserProfileR1().profile.firstName} ${getUserProfileR1().profile.lastName}`
+      const userName = get('IS_MLISA_SA') ? getUserFullNameRA() : getUserFullNameR1()
       const data = rows.map(item =>(
         {
           id: item.id,
@@ -316,9 +312,7 @@ export function useIntentAIActions () {
     action: Actions,
     rows:IntentListItem[],
     onOk: ()=>void) => {
-    const userName = get('IS_MLISA_SA')
-      ? `${getUserProfileRA().firstName} ${getUserProfileRA().lastName}`
-      : `${getUserProfileR1().profile.firstName} ${getUserProfileR1().profile.lastName}`
+    const userName = get('IS_MLISA_SA') ? getUserFullNameRA() : getUserFullNameR1()
     const data = rows.map(item =>
       ({ id: item.id,
         displayStatus: item.displayStatus,

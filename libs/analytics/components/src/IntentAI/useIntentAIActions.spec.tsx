@@ -5,11 +5,11 @@ import { message, Modal } from 'antd'
 import moment             from 'moment-timezone'
 import { BrowserRouter }  from 'react-router-dom'
 
-import { getUserProfile, Invitation, Tenant } from '@acx-ui/analytics/utils'
-import { get }                                from '@acx-ui/config'
-import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import { Provider, intentAIUrl }              from '@acx-ui/store'
-import { act, waitForElementToBeRemoved }     from '@acx-ui/test-utils'
+import { getUserFullName }                from '@acx-ui/analytics/utils'
+import { get }                            from '@acx-ui/config'
+import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { Provider, intentAIUrl }          from '@acx-ui/store'
+import { act, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import {
   mockGraphqlMutation,
   screen,
@@ -68,24 +68,9 @@ jest.spyOn(global.Date, 'now').mockImplementation(
 
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
-  getUserProfile: jest.fn()
+  getUserFullName: jest.fn()
 }))
-const userProfile = jest.mocked(getUserProfile)
-const mockUserProfileRAI = {
-  accountId: 'accountId',
-  firstName: 'FirstName RAI',
-  lastName: 'LastName-RAI',
-  email: '',
-  userId: '',
-  role: '',
-  support: false,
-  invitations: [] as Invitation[],
-  selectedTenant: { id: 'accountId', permission: {} } as unknown as Tenant,
-  tenants: [
-    { id: 'accountId', permissions: {} },
-    { id: 'accountId2', permissions: {} }
-  ] as Tenant[]
-}
+const userFullNameRA = jest.mocked(getUserFullName)
 
 const extractItem = {
   root: 'root',
@@ -108,7 +93,7 @@ describe('useIntentAIActions', () => {
     mockedVenueRadioActiveNetworksQuery.mockReturnValue({ unwrap: () => Promise.resolve(r1Wlans) })
     mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
     jest.spyOn(Date, 'now').mockReturnValue(now)
-    userProfile.mockReturnValue(mockUserProfileRAI)
+    userFullNameRA.mockReturnValue('FirstName RAI LastName-RAI')
     setUserProfile({
       allowedOperations: [],
       profile: { ...getUserProfileR1().profile, firstName: 'FirstName R1', lastName: 'LastName-R1' }
