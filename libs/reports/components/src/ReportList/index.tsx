@@ -1,15 +1,14 @@
 import { useIntl, defineMessage } from 'react-intl'
 
-import { PageHeader, GridRow, GridCol, RadioCard }  from '@acx-ui/components'
-import { Features, TierFeatures, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                    from '@acx-ui/rc/components'
-import { useNavigate, useTenantLink }               from '@acx-ui/react-router-dom'
+import { PageHeader, GridRow, GridCol, RadioCard } from '@acx-ui/components'
+import { Features }                                from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                   from '@acx-ui/rc/components'
+import { useNavigate, useTenantLink }              from '@acx-ui/react-router-dom'
 
 export function ReportList () {
   const { $t } = useIntl()
 
   const isEdgeAvReportReady = useIsEdgeFeatureReady(Features.EDGE_AV_REPORT_TOGGLE)
-  const isEdgeAvReportEnabled = useIsTierAllowed(TierFeatures.EDGE_AV_REPORT)
 
   /* eslint-disable max-len */
   const reports = [
@@ -62,7 +61,7 @@ export function ReportList () {
       title: $t({ defaultMessage: 'RUCKUS Edge Applications' }),
       description: $t({ defaultMessage: 'Top RUCKUS Edge applications and traffic distribution by clients and trend' }),
       path: 'edgeApplications',
-      disabled: !isEdgeAvReportReady || !isEdgeAvReportEnabled
+      disabled: !isEdgeAvReportReady
     }
   ]
   /* eslint-enable */

@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { render, screen, within }         from '@acx-ui/test-utils'
+import { useIsEdgeFeatureReady }  from '@acx-ui/rc/components'
+import { render, screen, within } from '@acx-ui/test-utils'
 
 import { ReportList } from '.'
 
@@ -11,6 +11,10 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUseNavigate
 }))
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false) }))
 
 describe('ReportList', () => {
   const path = '/:tenantId/t'
@@ -42,8 +46,7 @@ describe('ReportList', () => {
   })
 
   it('should render report cards with feature flag ON', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
 
     render(<ReportList />, { route: { path, params } })
 
