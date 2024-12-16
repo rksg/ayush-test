@@ -1,14 +1,16 @@
 import React, { useEffect } from 'react'
 
-import { useDrag }       from 'react-dnd'
-import { getEmptyImage } from 'react-dnd-html5-backend'
-import { useIntl }       from 'react-intl'
-import AutoSizer         from 'react-virtualized-auto-sizer'
-import { v4 as uuidv4 }  from 'uuid'
+import { CallbackDataParams } from 'echarts/types/dist/shared'
+import { useDrag }            from 'react-dnd'
+import { getEmptyImage }      from 'react-dnd-html5-backend'
+import { useIntl }            from 'react-intl'
+import AutoSizer              from 'react-virtualized-auto-sizer'
+import { v4 as uuidv4 }       from 'uuid'
 
-import { Card, DonutChart, Loader, StackedAreaChart } from '@acx-ui/components'
-import { useChatChartQuery }        from '@acx-ui/rc/services'
-import { WidgetListData }           from '@acx-ui/rc/utils'
+import { BarChartData }                                                                   from '@acx-ui/analytics/utils'
+import { BarChart, Card, cssNumber, cssStr, DonutChart, Loader, StackedAreaChart, Table } from '@acx-ui/components'
+import { useChatChartQuery }                                                              from '@acx-ui/rc/services'
+import { WidgetListData }                                                                 from '@acx-ui/rc/utils'
 
 import { ItemTypes } from './GroupItem'
 
@@ -19,32 +21,42 @@ interface WidgetListProps {
 interface WidgetCategory {
   width: number
   height: number
-  currentSizeIndex: number
-  sizes: { width: number, height:number }[]
-}
-
-const PIE = {
-  width: 1,
-  height: 4,
-  currentSizeIndex: 0,
-  sizes: [
-    {
-      width: 1,
-      height: 4
-    },
-    {
-      width: 2,
-      height: 6
-    },
-    {
-      width: 4,
-      height: 9
-    }
-  ]
+  currentSizeIndex?: number
+  sizes?: { width: number, height:number }[]
 }
 
 const ChartConfig:{ [key:string]: WidgetCategory } = {
-  pie: PIE
+  pie: {
+    width: 1,
+    height: 4,
+    currentSizeIndex: 0,
+    sizes: [
+      {
+        width: 1,
+        height: 4
+      },
+      {
+        width: 2,
+        height: 6
+      },
+      {
+        width: 4,
+        height: 9
+      }
+    ]
+  },
+  line: {
+    width: 2,
+    height: 4
+  },
+  bar: {
+    width: 2,
+    height: 4
+  },
+  table: {
+    width: 2,
+    height: 4
+  }
 }
 
 export const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
@@ -92,26 +104,54 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
       chatId: data.chatId
     }
   })
+
+  function labelFormatter (params: CallbackDataParams): string {
+    const usage = Array.isArray(params.data) ? params.data[params?.encode?.['x'][0]!] : params.data
+    return '{data|' + usage + '}'
+  }
+
+  const richStyle = () => ({
+    data: {
+      color: cssStr('--acx-primary-black'),
+      fontFamily: cssStr('--acx-neutral-brand-font'),
+      fontSize: cssNumber('--acx-body-5-font-size'),
+      lineHeight: cssNumber('--acx-body-5-line-height'),
+      fontWeight: cssNumber('--acx-body-5-font-weight')
+    }
+  })
+
+
   const getChart = (type: string, width:number, height:number) => {
     if(type === 'pie') {
       return <DonutChart
-      style={{ width, height }}
-      size={'medium'}
-      data={queryResults.data?.chartOption || []}
-      animation={true}
-      legend={'name-value'}
-      showTotal/>
+        style={{ width, height }}
+        size={'medium'}
+        data={queryResults.data?.chartOption || []}
+        animation={true}
+        showTotal
+      />
     } else if(type === 'line') {
       return <StackedAreaChart
         style={{ width, height }}
         data={queryResults.data?.chartOption || []}
       />
     } else if(type === 'bar') {
-      // TODO:
+      return <BarChart
+        style={{ width: '100%', height: '100%' }}
+        data={(queryResults.data?.chartOption || []) as BarChartData}
+        barWidth={queryResults.data?.multiseries ? 8 : undefined}
+        labelFormatter={labelFormatter}
+        labelRichStyle={queryResults.data?.multiseries ? richStyle() : undefined}
+      />
     } else if(type === 'table') {
-      // TODO:
-    } 
-    return 
+      return <Table
+        columns={queryResults.data?.chartOption?.columns || []}
+        dataSource={queryResults.data?.chartOption?.dataSource}
+        type='compact'
+        rowKey={queryResults.data?.chartOption?.columns?.[0]?.key || 'id'}
+      />
+    }
+    return
   }
   // const queryResults = {
   //   data: {

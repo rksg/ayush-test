@@ -133,6 +133,11 @@ export default function AICanvas () {
                 }}>
                 “Generate Top Wi-Fi Networks Pie Chart”
                 </div>
+                <div onClick={()=> {
+                  handleSearch('Generate Switch Traffic by Volume Line Chart')
+                }}>
+                “Generate Switch Traffic by Volume Line Chart”
+                </div>
               </div>
               <div className='messages-wrapper'>
                 {chats?.map((i) => (

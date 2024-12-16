@@ -1,5 +1,6 @@
 import { Space }          from 'antd'
 import ReactECharts       from 'echarts-for-react'
+import { ZRColor }        from 'echarts/types/dist/shared'
 import { find }           from 'lodash'
 import { renderToString } from 'react-dom/server'
 import {
@@ -26,7 +27,6 @@ import { SubTitle } from './styledComponents'
 
 import type { EChartsOption }     from 'echarts'
 import type { EChartsReactProps } from 'echarts-for-react'
-import { ZRColor } from 'echarts/types/dist/shared'
 
 export type DonutChartData = {
   value: number,

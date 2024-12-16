@@ -68,9 +68,6 @@ function TopSwitchesByErrorWidget ({
   }
 
   const { data } = queryResults
-  if(data){
-    console.log(getDataSource(data.topNSwitchesByErrors))
-  }
 
   const topSwitchesByErrorTable =
   data && data.topNSwitchesByErrors && data.topNSwitchesByErrors.length ? <CustomTable>

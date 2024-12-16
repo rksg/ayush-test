@@ -1,5 +1,5 @@
-import { TimeSeriesChartData } from '@acx-ui/analytics/utils';
-import { DonutChartData } from '@acx-ui/components'
+import { BarChartData, TimeSeriesChartData } from '@acx-ui/analytics/utils'
+import { DonutChartData, TableColumn }       from '@acx-ui/components'
 
 export interface RuckusAiConversation {
   sessionId: string,
@@ -24,8 +24,16 @@ export enum RuckusAiConfigurationStepsEnum {
 
 // Ruckus AI Chat
 export interface WidgetData {
-  id: number;
-  chartOption: DonutChartData[] & TimeSeriesChartData[]; // TODO enhance to more type of chart data
+  id: number,
+  chartOption: DonutChartData[] & TimeSeriesChartData[] & BarChartData & TableData,
+  unit: { [key:string]: string }
+  multiseries?: boolean // for bar chart
+}
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+interface TableData {
+  columns: TableColumn<any, 'text'>[]
+  dataSource: any[]
 }
 
 export interface RuckusAiChat {
