@@ -29,8 +29,8 @@ import {
 import { RequestPayload }             from '@acx-ui/types'
 import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
-import { QueryFn }           from './servicePolicy.utils'
-import { apGroupsChangeSet } from './utils'
+import { QueryFn }                        from './servicePolicy.utils'
+import { apGroupsChangeSet, isFulfilled } from './utils'
 
 const defaultNetworkVenue = {
   dual5gEnabled: true,
@@ -173,30 +173,23 @@ export const aggregatedRbacNetworksVenueData = (
   }
 }
 
-export const getNetworkDeepList =
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, max-len
-  async (networkIds: string[], fetchWithBQ: any, isTemplate: boolean = false, enableRbac: boolean = false) => {
-    let networkDeepList: NetworkDetail[] = []
+export const getNetworkDeepList = async (networkIds: string[], fetchWithBQ: any, isTemplate: boolean = false, enableRbac: boolean = false) => {
+  let networkDeepList: NetworkDetail[] = []
 
-    if (networkIds.length === 1 && networkIds[0] === 'UNKNOWN-NETWORK-ID') {
-      return { response: networkDeepList }
-    }
-    const reqs = networkIds.map(networkId => {
-      return fetchWithBQ(createHttpRequest(
-        resolveGetNetworkApiInfo(isTemplate, enableRbac)
-        , { networkId }
-      ))
-    })
-
-    const results = await Promise.allSettled(reqs)
-    networkDeepList = results.filter(isFulfilled).map(p => p.value.data)
-
+  if (networkIds.length === 1 && networkIds[0] === 'UNKNOWN-NETWORK-ID') {
     return { response: networkDeepList }
   }
+  const reqs = networkIds.map(networkId => {
+    return fetchWithBQ(createHttpRequest(
+      resolveGetNetworkApiInfo(isTemplate, enableRbac)
+      , { networkId }
+    ))
+  })
 
+  const results = await Promise.allSettled(reqs)
+  networkDeepList = results.filter(isFulfilled).map(p => p.value.data)
 
-export function isFulfilled <T,> (p: PromiseSettledResult<T>): p is PromiseFulfilledResult<T> {
-  return p.status === 'fulfilled'
+  return { response: networkDeepList }
 }
 
 export const getApGroupIdNameMap = async (apGroupIds: string[], isTemplate: boolean = false, fetchWithBQ: any) => {
@@ -1461,6 +1454,30 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
             }))
           }
 
+          if (deleteApGroups.length > 0) {
+            const deactivateVenueApGroupUrlInfo = isTemplate ? ConfigTemplateUrlsInfo.deactivateVenueApGroupRbac : WifiRbacUrlsInfo.deactivateVenueApGroup
+            await Promise.all(deleteApGroups.map(apGroup => {
+              const apGroupSettingReq = {
+                ...createHttpRequest(
+                  deactivateVenueApGroupUrlInfo, {
+                    venueId: oldPayload.venueId,
+                    networkId: oldPayload.networkId,
+                    apGroupId: apGroup.apGroupId
+                  })
+              }
+              return fetchWithBQ(apGroupSettingReq)
+            }))
+          }
+
+          // deactivatedVlanPool need before the updateApGroups
+          if (deactivatedVlanPoolParamsList.length > 0) {
+            const deactivateApGroupVlanPoolUrlInfo = isTemplate ? PoliciesConfigTemplateUrlsInfo.deactivateApGroupVlanPool :WifiRbacUrlsInfo.deactivateApGroupVlanPool
+            await Promise.all(deactivatedVlanPoolParamsList.map(params => {
+              const activatedVlanPoolReq = createHttpRequest( deactivateApGroupVlanPoolUrlInfo, params )
+              return fetchWithBQ(activatedVlanPoolReq)
+            }))
+          }
+
           if (updateApGroups.length > 0) {
             const updateVenueApGroupsUrlInfo = isTemplate ? ConfigTemplateUrlsInfo.updateVenueApGroupsRbac : WifiRbacUrlsInfo.updateVenueApGroups
             await Promise.all(updateApGroups.map(apGroup => {
@@ -1477,33 +1494,10 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
             }))
           }
 
-          if (deleteApGroups.length > 0) {
-            const deactivateVenueApGroupUrlInfo = isTemplate ? ConfigTemplateUrlsInfo.deactivateVenueApGroupRbac : WifiRbacUrlsInfo.deactivateVenueApGroup
-            await Promise.all(deleteApGroups.map(apGroup => {
-              const apGroupSettingReq = {
-                ...createHttpRequest(
-                  deactivateVenueApGroupUrlInfo, {
-                    venueId: oldPayload.venueId,
-                    networkId: oldPayload.networkId,
-                    apGroupId: apGroup.apGroupId
-                  })
-              }
-              return fetchWithBQ(apGroupSettingReq)
-            }))
-          }
-
           if (activatedVlanPoolParamsList.length > 0) {
             const activateApGroupVlanPoolUrlInfo = isTemplate ? PoliciesConfigTemplateUrlsInfo.activateApGroupVlanPool :WifiRbacUrlsInfo.activateApGroupVlanPool
             await Promise.all(activatedVlanPoolParamsList.map(params => {
               const activatedVlanPoolReq = createHttpRequest( activateApGroupVlanPoolUrlInfo, params )
-              return fetchWithBQ(activatedVlanPoolReq)
-            }))
-          }
-
-          if (deactivatedVlanPoolParamsList.length > 0) {
-            const deactivateApGroupVlanPoolUrlInfo = isTemplate ? PoliciesConfigTemplateUrlsInfo.deactivateApGroupVlanPool :WifiRbacUrlsInfo.deactivateApGroupVlanPool
-            await Promise.all(deactivatedVlanPoolParamsList.map(params => {
-              const activatedVlanPoolReq = createHttpRequest( deactivateApGroupVlanPoolUrlInfo, params )
               return fetchWithBQ(activatedVlanPoolReq)
             }))
           }
