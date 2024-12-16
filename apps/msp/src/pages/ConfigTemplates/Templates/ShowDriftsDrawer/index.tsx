@@ -10,10 +10,11 @@ import {
   Loader
 } from '@acx-ui/components'
 import { useGetDriftInstancesQuery, usePatchDriftReportMutation } from '@acx-ui/rc/services'
-import { ConfigTemplate }                                         from '@acx-ui/rc/utils'
+import { ConfigTemplate, ConfigTemplateType }                     from '@acx-ui/rc/utils'
 
-import { MAX_SYNC_EC_TENANTS } from '../../constants'
-import { useEcFilters }        from '../templateUtils'
+import { MAX_SYNC_EC_TENANTS }      from '../../constants'
+import { CustomerFirmwareReminder } from '../CustomerFirmwareReminder'
+import { useEcFilters }             from '../templateUtils'
 
 import { DriftInstance } from './DriftInstance'
 import * as UI           from './styledComponents'
@@ -106,6 +107,7 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
       <Space direction='vertical' size='small'>
         {/* eslint-disable-next-line max-len */}
         <p>{ $t({ defaultMessage: 'During sync all configurations in the selected template overwrite the corresponding configuration in the associated customers.' }) }</p>
+        { selectedTemplate.type === ConfigTemplateType.VENUE && <CustomerFirmwareReminder /> }
         <Toolbar
           customerOptions={driftInstances}
           onSyncAllChange={onSyncAllChange}

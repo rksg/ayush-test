@@ -1,4 +1,4 @@
-import { Intent } from '../../useIntentDetailsQuery'
+import { IntentDetail } from '../../useIntentDetailsQuery'
 
 export const mockedIntentEquiFlex = {
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
@@ -56,7 +56,7 @@ export const mockedIntentEquiFlex = {
   preferences: null,
   currentValue: true,
   recommendedValue: true
-} as unknown as Intent
+} as unknown as IntentDetail
 
 export const mockedEquiFlexKpi = {
   data: {

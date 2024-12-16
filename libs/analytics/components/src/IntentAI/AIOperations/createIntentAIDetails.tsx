@@ -13,6 +13,7 @@ import { IntentIcon }           from '../common/IntentIcon'
 import { KPIGrid }              from '../common/KPIs'
 import { StatusTrail }          from '../common/StatusTrail'
 import { useIntentContext }     from '../IntentContext'
+import { getStatusTooltip }     from '../services'
 
 import { ConfigurationCard }   from './ConfigurationCard'
 import { createUseValuesText } from './createUseValuesText'
@@ -24,7 +25,8 @@ export function createIntentAIDetails (
 ) {
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const { intent } = useIntentContext()
+    const { intent, state } = useIntentContext()
+    const { displayStatus, sliceValue, metadata, updatedAt } = intent
     const valuesText = useValuesText()
     const fields = [
       ...useCommonFields(intent),
@@ -53,26 +55,35 @@ export function createIntentAIDetails (
                 <GridCol data-testid='Configuration' col={{ span: 12 }}>
                   <ConfigurationCard />
                 </GridCol>
-                <KPIGrid/>
+                {state !== 'no-data' && <KPIGrid/>}
               </GridRow>
             </DetailsSection.Details>
           </DetailsSection>
-
-          <GridRow>
+          {state !== 'no-data' ? <GridRow>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection data-testid='Why is the recommendation?'>
+              <DetailsSection data-testid='Benefits'>
                 <DetailsSection.Title
-                  children={$t({ defaultMessage: 'Why is the recommendation?' })} />
+                  children={$t({ defaultMessage: 'Benefits' })} />
                 <DetailsSection.Details children={<Card>{valuesText.reasonText}</Card>} />
               </DetailsSection>
             </GridCol>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection data-testid='Potential trade-off'>
-                <DetailsSection.Title children={$t({ defaultMessage: 'Potential trade-off' })} />
+              <DetailsSection data-testid='Potential Trade-off'>
+                <DetailsSection.Title children={$t({ defaultMessage: 'Potential Trade-off' })} />
                 <DetailsSection.Details children={<Card>{valuesText.tradeoffText}</Card>} />
               </DetailsSection>
             </GridCol>
-          </GridRow>
+          </GridRow> : <GridRow>
+            <GridCol col={{ span: 12 }}>
+              <DetailsSection data-testid='Current Status'>
+                <DetailsSection.Title children={$t({ defaultMessage: 'Current Status' })} />
+                <DetailsSection.Details
+                  children={<Card>{getStatusTooltip(
+                    displayStatus, sliceValue, { ...metadata, updatedAt })}</Card>}
+                />
+              </DetailsSection>
+            </GridCol>
+          </GridRow>}
 
           <DetailsSection data-testid='Status Trail'>
             <DetailsSection.Title children={$t({ defaultMessage: 'Status Trail' })} />

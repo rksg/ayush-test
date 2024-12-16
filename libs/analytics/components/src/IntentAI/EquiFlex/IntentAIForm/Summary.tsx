@@ -9,14 +9,14 @@ import { StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
 import { KPIFields }            from '../../common/KPIs'
 import { richTextFormatValues } from '../../common/richTextFormatValues'
 import { ScheduleTiming }       from '../../common/ScheduleTiming'
-import { Intent }               from '../../useIntentDetailsQuery'
+import { IntentDetail }         from '../../useIntentDetailsQuery'
 
 import type { Wlan } from './WlanSelection'
 
 
 export function Summary () {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<Intent>()
+  const { form } = useStepFormContext<IntentDetail>()
   const wlans = form.getFieldValue('wlans') as Wlan[]
   const isEnabled = form.getFieldValue('preferences').enable
   return <Row gutter={20}>

@@ -101,9 +101,22 @@ export default function MspCustomersLicences () {
       key: 'apswLicense',
       align: 'center',
       sorter: false,
-      width: 230,
+      width: 140,
       render: function (data: React.ReactNode, row: MspEc) {
         return mspUtils.transformDeviceEntitlement(row.entitlements)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Licenses Available' }) ,
+      dataIndex: 'availableLicenses',
+      key: 'availableLicenses',
+      align: 'center',
+      sorter: false,
+      width: 140,
+      render: function (data: React.ReactNode, row: MspEc) {
+        const nextExpirationDate = mspUtils.transformExpirationDate(row)
+        const remainingDays = EntitlementUtil.timeLeftInDays(nextExpirationDate)
+        return remainingDays < 0 ? 0 : mspUtils.transformAvailableLicenses(row.entitlements)
       }
     },
     {
@@ -142,7 +155,7 @@ export default function MspCustomersLicences () {
       }
     },
     {
-      title: $t({ defaultMessage: 'Configured SmartEdge vAppliances' }),
+      title: $t({ defaultMessage: 'Configured Edge vAppliances' }),
       dataIndex: 'edgeDeviceCount',
       key: 'edgeDeviceCount',
       align: 'center',
