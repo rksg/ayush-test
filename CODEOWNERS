@@ -57,7 +57,7 @@
 # @@@group2   	@user1 @user2
 
 # Start adding the rules from here
-/** @@TDC @@SGDC @@BDC @@HQ
+* @@TDC @@SGDC @@BDC @@HQ
 
 # Update CODEOWNERS accordingly
 # CODEOWNERS              @user1 @user2
