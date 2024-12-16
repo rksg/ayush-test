@@ -65,3 +65,7 @@ AllGroupsCheck(1)
 # Restricting this only for master and release branches for now
 CODEOWNERS.destination_branch_pattern master
 CODEOWNERS.destination_branch_pattern release/*
+
+# Suppress info comment on pull request creation about added code owners. Info comment will be added by default.
+# CODEOWNERS.toplevel.create_pull_request_comment disable
+/api-docs/*     @@"api-docs-review-team"
