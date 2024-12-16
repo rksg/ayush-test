@@ -1,14 +1,270 @@
-import { Middleware } from '@reduxjs/toolkit'
+import React from 'react'
 
-import { showExpiredSessionModal } from '@acx-ui/analytics/components'
+import { Middleware, isRejectedWithValue }            from '@reduxjs/toolkit'
+import { FormattedMessage, defineMessage, IntlShape } from 'react-intl'
 
-import type { AnyAction } from '@reduxjs/toolkit'
+import { ActionModalType, ErrorDetailsProps, showActionModal }                                from '@acx-ui/components'
+import { getIntl, setUpIntl, IntlSetUpError, isShowApiError, isIgnoreErrorModal, userLogout } from '@acx-ui/utils'
 
-export const errorMiddleware: Middleware = () => (next: CallableFunction) =>
-  (action: AnyAction) => {
-    if (action.meta?.baseQueryMeta?.response?.status === 401) {
-      showExpiredSessionModal()
-    } else {
-      return next(action)
+import type { GraphQLResponse } from 'graphql-request/dist/types'
+
+export interface CatchErrorDetails {
+  code: string,
+  message: string
+}
+
+export interface CatchErrorResponse {
+  data: {
+    errors: CatchErrorDetails[],
+    requestId: string
+  },
+  status: number
+}
+
+function formatGraphQLErrors (
+  response: Required<Pick<GraphQLResponse, 'errors'>> & GraphQLResponse
+): CatchErrorResponse['data'] {
+  return {
+    requestId: response.extensions?.requestId,
+    errors: response.errors.map(error => ({
+      code: error.extensions?.code,
+      message: error.message
+    }))
+  }
+}
+
+type QueryMeta = {
+  response?: Response | GraphQLResponse
+  request: Request
+}
+export type ErrorAction = {
+  type: string,
+  meta?: {
+    baseQueryMeta?: QueryMeta,
+    arg?: {
+      endpointName: string
     }
   }
+} & ({
+  payload: ({
+    // fetchBaseQuery
+    data?: ErrorDetailsProps | CatchErrorResponse['data']
+    originalStatus?: number
+    status?: number
+  } | {
+    // GraphQL
+    message: string
+    name: string
+    stack: string
+  } | {
+    // FETCH_ERROR
+    error: string
+    status: string
+  } | string | number)
+})
+
+interface ErrorMessageType {
+  title: { defaultMessage: string },
+  content: { defaultMessage: string }
+}
+
+let isModalShown = false
+
+const isDevModeOn = window.location.hostname === 'localhost'
+
+export const errorMessage = {
+  SERVER_ERROR: {
+    title: defineMessage({ defaultMessage: 'Server Error' }),
+    content: defineMessage({
+      defaultMessage: 'An internal error has occurred. Please contact support.'
+    })
+  },
+  BAD_REQUEST: {
+    title: defineMessage({ defaultMessage: 'Bad Request' }),
+    content: defineMessage({
+      defaultMessage: 'Your request resulted in an error. Please contact Support.'
+    })
+  },
+  VALIDATION_ERROR: {
+    title: defineMessage({ defaultMessage: 'Validation Error' }),
+    content: defineMessage({
+      defaultMessage: 'An internal error has occurred. Please contact Support.'
+    })
+  },
+  SESSION_EXPIRED: {
+    title: defineMessage({ defaultMessage: 'Session Expired' }),
+    content: defineMessage({
+      defaultMessage: 'Your session has expired. Please login again.'
+    })
+  },
+  OPERATION_FAILED: {
+    title: defineMessage({ defaultMessage: 'Operation Failed' }),
+    content: defineMessage({
+      defaultMessage: 'The operation failed because of a request time out'
+    })
+  },
+  REQUEST_IN_PROGRESS: {
+    title: defineMessage({ defaultMessage: 'Request in Progress' }),
+    content: defineMessage({
+      defaultMessage: `A configuration request is currently being executed and additional
+      requests cannot be performed at this time.<br></br>Try again once the request has completed.`
+    })
+  },
+  CHECK_YOUR_CONNECTION: {
+    title: defineMessage({ defaultMessage: 'Check Your Connection' }),
+    content: defineMessage({
+      defaultMessage: 'RUCKUS AI needs you to be online,<br></br>you appear to be offline.'
+    })
+  },
+  COUNTRY_INVALID: {
+    title: defineMessage({ defaultMessage: 'Error' }),
+    content: defineMessage({
+      defaultMessage: `The service is currently not supported in the country which you entered.
+      <br></br>Please make sure that you entered the correct address.`
+    })
+  }
+}
+
+export const getErrorContent = (action: ErrorAction) => {
+  // IntlSetUpError can be thrown by bootstrap.tsx when getting
+  // user's preferred language, before intl is initialized
+  let intl: IntlShape
+  try {
+    intl = getIntl()
+  } catch (error) {
+    if (!(error instanceof IntlSetUpError)) throw error
+    setUpIntl({ locale: 'en-US' })
+    intl = getIntl()
+  }
+  const { $t } = intl
+  const queryMeta = action.meta?.baseQueryMeta
+  const status = (queryMeta?.response) ? queryMeta.response.status :
+    (typeof action.payload !== 'object') ? undefined :
+      ('originalStatus' in action.payload) ? action.payload.originalStatus :
+        ('status' in action.payload) ? action.payload.status : undefined
+  const request = queryMeta?.request
+  const response = queryMeta?.response
+
+  let errorMsg = {} as ErrorMessageType
+  let type: ActionModalType = 'error'
+  let errors: ErrorDetailsProps
+    | CatchErrorResponse['data']
+    | string
+    | undefined
+
+  if (action.type?.includes('data-api') && response && 'errors' in response) {
+    errors = formatGraphQLErrors({ ...response, errors: response.errors! })
+  } else if (typeof action.payload === 'string') {
+    errors = action.payload
+  } else if (typeof action.payload === 'object') {
+    if('data' in action.payload) {
+      errors = action.payload.data
+    } else if ('error' in action.payload) {
+      errors = action.payload.error
+    } else if ('message' in action.payload) {
+      errors = action.payload.message
+    }
+  }
+  let callback = undefined
+
+  switch (status) {
+    case 400:
+      errorMsg = errorMessage.BAD_REQUEST
+      break
+    case 401:
+      errorMsg = errorMessage.SESSION_EXPIRED
+      type = 'info'
+      if(!isDevModeOn) {
+        callback = userLogout
+      }
+      break
+    case 408: // request timeout
+      errorMsg = errorMessage.OPERATION_FAILED
+      break
+    case 423:
+      errorMsg = errorMessage.REQUEST_IN_PROGRESS
+      errors = ''
+      break
+    case 504: // no connection [development mode]
+    case 0:   // no connection
+    case 'FETCH_ERROR' as unknown as number: // no connection
+      errorMsg = errorMessage.CHECK_YOUR_CONNECTION
+      type = 'info'
+      callback = () => window.location.reload()
+      break
+    case 422:
+      errorMsg = errorMessage.VALIDATION_ERROR
+      break
+    default:
+      // TODO: shouldIgnoreErrorCode
+      errorMsg = errorMessage.SERVER_ERROR
+      break
+  }
+  let content = <FormattedMessage {...errorMsg?.content} values={{ br: () => <br /> }} />
+  if (errors && isShowApiError(request)) {
+    if (typeof errors === 'string') {
+      content = <p>{errors}</p>
+    }
+    else if ('errors' in errors) { // CatchErrorDetails
+      const errorsMessageList = errors.errors.map(err=>err.message)
+      content = <>{errorsMessageList.map(msg=><p key={msg}>{msg}</p>)}</>
+    }
+  }
+
+  return {
+    title: $t(errorMsg?.title),
+    content,
+    type,
+    errors: errors as ErrorDetailsProps,
+    callback
+  }
+}
+
+export const showErrorModal = (details: {
+  title: string,
+  content: JSX.Element,
+  type: ActionModalType,
+  errors?: ErrorDetailsProps,
+  callback?: () => void
+}) => {
+  const { title, content, type, errors, callback } = details
+  if (title && !isModalShown) {
+    isModalShown = true
+    showActionModal({
+      type,
+      title,
+      content,
+      ...(type === 'error' && { customContent: {
+        action: 'SHOW_ERRORS',
+        errorDetails: errors
+      } }),
+      onOk: () => {
+        callback?.()
+        isModalShown = false
+      }
+    })
+  }
+}
+
+const shouldIgnoreErrorModal = (action?: ErrorAction) => {
+  const request = action?.meta?.baseQueryMeta?.request
+  return isIgnoreErrorModal(request)
+}
+
+export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
+  if (action?.payload && typeof action.payload === 'object' && 'meta' in action.payload
+    && action.meta && !action.meta?.baseQueryMeta) {
+    // baseQuery (for retry API)
+    const payload = action.payload as { meta?: QueryMeta }
+    action.meta.baseQueryMeta = payload.meta
+    delete payload.meta
+  }
+
+  if (isRejectedWithValue(action)) {
+    const details = getErrorContent(action)
+    if (!shouldIgnoreErrorModal(action)) {
+      showErrorModal(details)
+    }
+  }
+  return next(action)
+}
