@@ -977,6 +977,11 @@ export interface DhcpOption82Settings {
   subOption151Enabled:	boolean
 }
 
+export interface VenueApModelLanPortSettingsV1 {
+  softGreEnabled: boolean
+  softGreSettings?: LanPortSoftGreProfileSettings
+}
+
 export interface LanPortSoftGreProfileSettings {
   dhcpOption82Enabled?: boolean
   dhcpOption82Settings?: DhcpOption82Settings

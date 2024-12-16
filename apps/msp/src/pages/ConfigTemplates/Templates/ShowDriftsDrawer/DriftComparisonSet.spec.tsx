@@ -9,16 +9,25 @@ jest.mock('./DriftComparison', () => ({
   DriftComparison: ({ path }: ConfigTemplateDriftRecord) => <div>{path}</div>
 }))
 
-describe('DriftComparisonSet', () => {
-  const mockData: ConfigTemplateDriftSet = {
-    diffName: 'Test Category',
-    diffData: [
-      { path: 'Item 1', data: { template: 'template1', instance: 'instance1' } },
-      { path: 'Item 2', data: { template: 'template2', instance: 'instance2' } }
-    ]
-  }
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  Tooltip: ({ children, title }: { children: React.ReactNode; title: string }) => (
+    <div>
+      <div data-testid='tooltip-title'>{title}</div>
+      {children}
+    </div>
+  )
+}))
 
+describe('DriftComparisonSet', () => {
   it('renders the correct number of DriftComparison components', async () => {
+    const mockData: ConfigTemplateDriftSet = {
+      diffName: 'Test Category',
+      diffData: [
+        { path: 'Item 1', data: { template: 'template1', instance: 'instance1' } },
+        { path: 'Item 2', data: { template: 'template2', instance: 'instance2' } }
+      ]
+    }
     render(<DriftComparisonSet {...mockData} />)
 
     expect(screen.getByText('Test Category')).toBeInTheDocument()
@@ -26,5 +35,16 @@ describe('DriftComparisonSet', () => {
 
     expect(screen.getByText('Item 1')).toBeInTheDocument()
     expect(screen.getByText('Item 2')).toBeInTheDocument()
+  })
+
+  it('renders the unknown DriftComparisonSet', async () => {
+    const mockData: ConfigTemplateDriftSet = {
+      diffName: '?TestCategory',
+      diffData: []
+    }
+    render(<DriftComparisonSet {...mockData} />)
+
+    expect(screen.getByText('?TestCategory')).toBeInTheDocument()
+    expect(screen.queryAllByText('Drifts are not available')).toHaveLength(2)
   })
 })
