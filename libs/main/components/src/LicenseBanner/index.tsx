@@ -90,7 +90,7 @@ export function LicenseBanner (props: BannerProps) {
   const isFFEnabled = useIsSplitOn(Features.LICENSE_BANNER)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const isComplianceNotesEnabled = useIsSplitOn(Features.ENTITLEMENT_COMPLIANCE_NOTES_TOGGLE)
-  const isComplianceNotesP2Enabled = true// useIsSplitOn(Features.ENTITLEMENT_COMPLIANCE_NOTES_P2_TOGGLE)
+  const isAttentionNotesToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_ATTENTION_NOTES_TOGGLE)
 
   const [expireList, setExpireList] = useState<ExpireInfo[]>([])
 
@@ -101,7 +101,7 @@ export function LicenseBanner (props: BannerProps) {
   const { data: mspBannerData } = useGetMspEntitlementBannersQuery({ params },
     { skip: !isMSPUser || isEntitlementRbacApiEnabled })
   const { data: queryData } = useGetEntitlementsAttentionNotesQuery(
-    { params, payload: isComplianceNotesP2Enabled ? GeneralAttentionNotesPayload
+    { params, payload: isAttentionNotesToggleEnabled ? GeneralAttentionNotesPayload
       : MspAttentionNotesPayload }, { skip: !isComplianceNotesEnabled })
 
   const recPayload = {
@@ -267,8 +267,9 @@ export function LicenseBanner (props: BannerProps) {
               b: chunks => chunks,
               a: (chunks) =>
                 <UI.ActiveBtn onClick={()=>{setLicenseExpanded(false)}}
-                  tenantType={'v'}
-                  to={'mspLicenses/compliance'}>
+                  tenantType={isMSPUser ? 'v' : 't'}
+                  to={isMSPUser ? 'mspLicenses/compliance'
+                    : 'administration/subscriptions/compliance'}>
                   {chunks}
                 </UI.ActiveBtn>
             }}
