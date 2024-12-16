@@ -6,6 +6,7 @@ import { Row, Col, Form } from 'antd'
 import { Card, Select }                   from '@acx-ui/components'
 import { useIsSplitOn, Features }         from '@acx-ui/feature-toggle'
 import { useSwitchPortProfilesListQuery } from '@acx-ui/rc/services'
+import { validateDuplicatePortProfile }   from '@acx-ui/rc/utils'
 import { useParams }                      from '@acx-ui/react-router-dom'
 import { getIntl }                        from '@acx-ui/utils'
 
@@ -36,7 +37,7 @@ export function PortProfileStep () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [portProfiles, setPortProfiles] = useState<ModelsType[]>([])
 
-  const { data } = useSwitchPortProfilesListQuery({
+  const { data: portProfilesList } = useSwitchPortProfilesListQuery({
     params: { tenantId },
     payload,
     enableRbac: isSwitchRbacEnabled
@@ -44,10 +45,10 @@ export function PortProfileStep () {
 
 
   useEffect(() => {
-    if(data){
-      if (data?.data) {
+    if(portProfilesList){
+      if (portProfilesList) {
         setPortProfiles(
-          data.data
+          portProfilesList.data
             .map((item) => ({
               label: item.name,
               value: item.id
@@ -58,7 +59,7 @@ export function PortProfileStep () {
         }
       }
     }
-  }, [data, portProfileSettingValues])
+  }, [portProfilesList, portProfileSettingValues])
 
   return (
     <div style={{ minHeight: '380px' }}>
@@ -80,7 +81,10 @@ export function PortProfileStep () {
                   rules={[{
                     required: true,
                     message: $t({ defaultMessage: 'Please enter Port Profile' })
-                  }]}
+                  },
+                  { validator: (_, value) =>
+                    portProfilesList?.data &&
+                      validateDuplicatePortProfile(value, portProfilesList.data) }]}
                   data-testid='portProfileList'
                   children={
                     <Select
