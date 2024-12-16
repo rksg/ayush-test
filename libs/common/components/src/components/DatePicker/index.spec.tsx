@@ -9,15 +9,19 @@ import { formatter, DateFormatEnum } from '@acx-ui/formatter'
 import { render, screen }            from '@acx-ui/test-utils'
 import {
   DateRange,
-  useDateFilter
+  useDateFilter,
+  getJwtTokenPayload,
+  AccountTier
 } from '@acx-ui/utils'
 
 import { DatePicker, DateTimePicker, RangePicker, restrictDateTo3Months } from '.'
 
+const mockGetJwtTokenPayload = getJwtTokenPayload as jest.Mock
 const mockUseDateFilter = useDateFilter as jest.Mock
 
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
+  getJwtTokenPayload: jest.fn(),
   useDateFilter: jest.fn()
 }))
 
@@ -42,6 +46,11 @@ describe('RangePicker', () => {
       endDate: '2022-01-02T00:00:00+08:00',
       range: 'Last 24 Hours'
     })
+
+    mockGetJwtTokenPayload.mockReturnValue({ acx_account_tier: AccountTier.PLATINUM })
+  })
+  afterEach(() => {
+    mockGetJwtTokenPayload.mockClear()
   })
   it('should open when click on date select', async () => {
     render(
@@ -364,6 +373,33 @@ describe('RangePicker', () => {
     const applyButton = await screen.findByText('Apply')
     await user.click(applyButton)
     expect(apply).toBeCalledTimes(0)
+  })
+
+  it('should restrict date for gold tier license', async () => {
+    mockGetJwtTokenPayload.mockReturnValue({ acx_account_tier: AccountTier.GOLD })
+    const apply = jest.fn()
+    render(
+      <IntlProvider locale='en'>
+        <RangePicker
+          selectionType={DateRange.custom}
+          selectedRange={{
+            startDate: moment().subtract(3, 'months').seconds(0),
+            endDate: moment().seconds(0)
+          }}
+          onDateApply={apply}
+        />
+      </IntlProvider>
+    )
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    const dateSelect = await screen.findAllByTitle(
+      moment().subtract(2, 'months').format('YYYY-MM-DD')
+    )
+    await user.click(dateSelect[0])
+    const applyButton = await screen.findByText('Apply')
+    await user.click(applyButton)
+    expect(apply).toHaveBeenCalledTimes(1)
   })
 
   it('should display all time', async () => {

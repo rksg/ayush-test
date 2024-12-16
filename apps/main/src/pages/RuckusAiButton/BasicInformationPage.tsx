@@ -28,7 +28,12 @@ function BasicInformationPage () {
   }
 
   return (
-    <div style={{ marginLeft: '85px' }}>
+    <div style={{
+      marginLeft: '85px',
+      height: '100%',
+      maxHeight: 'calc(100vh - 320px)',
+      minHeight: '200px'
+    }}>
       <UI.PageTitle>
         {$t({ defaultMessage: '<VenueSingular></VenueSingular> Details' })}
       </UI.PageTitle>
