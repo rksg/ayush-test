@@ -54,7 +54,7 @@ const { Option } = Select
 const { useWatch } = Form
 
 export function AaaSettingsForm () {
-  const { editMode, cloneMode, data, isRuckusAiMode } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data, setData, isRuckusAiMode } = useContext(NetworkFormContext)
   const form = Form.useFormInstance()
   const isWifiRbacEnabledFF = useIsSplitOn(Features.WIFI_RBAC_API)
   const isWifiRbacEnabled = !isRuckusAiMode && isWifiRbacEnabledFF
@@ -62,6 +62,7 @@ export function AaaSettingsForm () {
   const isRadsecFeatureEnabled = !isRuckusAiMode && isRadsecFeatureEnabledFF
   const { isTemplate } = useConfigTemplate()
   const supportRadsec = isRadsecFeatureEnabled && !isTemplate
+  const [hasSetRuckusAiFields, setRuckusAiFields] = useState(false)
 
   // TODO: Remove deprecated codes below when RadSec feature is delivery
   useEffect(()=>{
@@ -71,10 +72,13 @@ export function AaaSettingsForm () {
   }, [data])
 
   useEffect(() => {
-    if (isRuckusAiMode && !isEmpty(data?.wlan)) {
-      setFieldsValue()
+    if (isRuckusAiMode && (!isEmpty(data?.accountingRadiusId))
+      && !hasSetRuckusAiFields && editMode) {
+      setRuckusAiFields(true)
+      form.setFieldValue('enableAccountingService', true)
+      setData && setData({ ...data, enableAccountingService: true })
     }
-  }, [data?.wlan])
+  }, [data?.accountingRadiusId])
 
   useEffect(()=>{
     if(supportRadsec && data && (editMode || cloneMode)) {

@@ -17,7 +17,7 @@ import {
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
 import { useIntentContext }  from '../../IntentContext'
-import { Intent }            from '../../useIntentDetailsQuery'
+import { IntentDetail }      from '../../useIntentDetailsQuery'
 import { dataRetentionText } from '../../utils'
 
 import { Legend } from './Legend'
@@ -75,7 +75,7 @@ const drawerZoomScale = scalePow()
   .domain([3, 10, 63, 125, 250, 375, 500])
   .range([2.5, 1, 0.3, 0.2, 0.15, 0.125, 0.07])
 
-const GraphTitle = ({ details }: { details: Intent }) => {
+const GraphTitle = ({ details }: { details: IntentDetail }) => {
   const { $t } = useIntl()
   return <UI.GraphTitleWrapper>
     <div>

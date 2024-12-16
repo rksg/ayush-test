@@ -7,16 +7,24 @@ import { SoftGREProfileSettings } from './SoftGREProfileSettings'
 import { FieldLabel }             from './styledComponents'
 
 interface SoftGRETunnelSettingsProps {
-  isSoftGRETunnelToggleDisable: boolean
-  enableSoftGRETunnel: boolean
-  setEnableSoftGRETunnel: (visible: boolean) => void
+  index: number
+  softGreProfileId: string
+  softGreTunnelEnable: boolean
+  onGUIChanged?: (fieldName: string) => void
+  readonly: boolean
 }
-
 
 export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   const { $t } = useIntl()
+  const {
+    index,
+    softGreProfileId,
+    softGreTunnelEnable,
+    onGUIChanged,
+    readonly
+  } = props
 
-  const { enableSoftGRETunnel, setEnableSoftGRETunnel, isSoftGRETunnelToggleDisable } = props
+  const softgreTunnelFieldName = ['lan', index, 'softGreTunnelEnable']
 
   return (
     <>
@@ -36,24 +44,32 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
         <Form.Item
           valuePropName='checked'
           style={{ marginTop: '-5px' }}
+          name={softgreTunnelFieldName}
           children={
             <Switch
-              checked={enableSoftGRETunnel}
-              disabled={isSoftGRETunnelToggleDisable}
-              onClick={(checked) => setEnableSoftGRETunnel(checked)}
+              data-testid={'softgre-tunnel-switch'}
+              disabled={readonly}
+              onClick={() => {
+                onGUIChanged && onGUIChanged('softGreTunnelEnable')
+              }}
             />
           }
         />
       </FieldLabel>
       {
-        enableSoftGRETunnel && <>
+        softGreTunnelEnable && <>
           <Alert
-            data-testId={'enable-softgre-tunnel-banner'}
+            data-testid={'enable-softgre-tunnel-banner'}
             showIcon={true}
             style={{ verticalAlign: 'middle' }}
             message={$t({ defaultMessage: 'Enabling on the uplink will disconnect AP(s)' })}
           />
-          <SoftGREProfileSettings />
+          <SoftGREProfileSettings
+            index={index}
+            softGreProfileId={softGreProfileId}
+            onGUIChanged={onGUIChanged}
+            readonly={readonly}
+          />
         </>
       }
     </>
