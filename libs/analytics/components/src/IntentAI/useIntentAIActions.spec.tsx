@@ -74,7 +74,7 @@ const userProfile = jest.mocked(getUserProfile)
 const mockUserProfileRAI = {
   accountId: 'accountId',
   firstName: 'FirstName RAI',
-  lastName: 'lastName',
+  lastName: 'LastName-RAI',
   email: '',
   userId: '',
   role: '',
@@ -111,7 +111,7 @@ describe('useIntentAIActions', () => {
     userProfile.mockReturnValue(mockUserProfileRAI)
     setUserProfile({
       allowedOperations: [],
-      profile: { ...getUserProfileR1().profile, firstName: 'FirstName R1' }
+      profile: { ...getUserProfileR1().profile, firstName: 'FirstName R1', lastName: 'LastName-R1' }
     })
   })
   afterEach(() => {
@@ -162,7 +162,7 @@ describe('useIntentAIActions', () => {
             status: Statuses.new,
             metadata: {
               scheduledAt: '2024-07-21T00:45:00.000Z',
-              changedByName: 'FirstName R1',
+              changedByName: 'FirstName R1 LastName-R1',
               preferences: {
                 crrmFullOptimization: true
               }
@@ -202,7 +202,7 @@ describe('useIntentAIActions', () => {
             status: Statuses.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
-              changedByName: 'FirstName R1',
+              changedByName: 'FirstName R1 LastName-R1',
               preferences: {
                 crrmFullOptimization: true
               }
@@ -244,7 +244,7 @@ describe('useIntentAIActions', () => {
             status: Statuses.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
-              changedByName: 'FirstName R1',
+              changedByName: 'FirstName R1 LastName-R1',
               wlans: [{ name: 'i4', ssid: 's4' },{ name: 'i5', ssid: 's5' },{ name: 'i6', ssid: 's6' }]
             }
           }]
@@ -341,7 +341,7 @@ describe('useIntentAIActions', () => {
           status: Statuses.new,
           metadata: {
             scheduledAt: '2024-07-21T04:45:00.000Z',
-            changedByName: 'FirstName R1',
+            changedByName: 'FirstName R1 LastName-R1',
             preferences: {
               crrmFullOptimization: true
             }
@@ -352,7 +352,7 @@ describe('useIntentAIActions', () => {
           status: Statuses.new,
           metadata: {
             scheduledAt: '2024-07-21T04:45:00.000Z',
-            changedByName: 'FirstName R1',
+            changedByName: 'FirstName R1 LastName-R1',
             wlans: [{ name: 'i4', ssid: 's4' },{ name: 'i5', ssid: 's5' },{ name: 'i6', ssid: 's6' }]
           }
         }]
@@ -403,7 +403,7 @@ describe('useIntentAIActions', () => {
             status: Statuses.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
-              changedByName: 'FirstName RAI',
+              changedByName: 'FirstName RAI LastName-RAI',
               preferences: {
                 crrmFullOptimization: true
               }
@@ -445,7 +445,7 @@ describe('useIntentAIActions', () => {
             status: Statuses.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
-              changedByName: 'FirstName RAI',
+              changedByName: 'FirstName RAI LastName-RAI',
               wlans: [{ name: 'n1', ssid: 's1' },{ name: 'n2', ssid: 's2' },{ name: 'n3', ssid: 's3' }]
             }
           }]
@@ -576,7 +576,7 @@ describe('useIntentAIActions', () => {
           statusTrail,
           metadata: {
             ...mockAIDrivenRow.metadata,
-            changedByName: 'FirstName RAI'
+            changedByName: 'FirstName RAI LastName-RAI'
           }
         },{
           id: '17',
@@ -584,7 +584,7 @@ describe('useIntentAIActions', () => {
           status: Statuses.active,
           statusTrail,
           metadata: {
-            changedByName: 'FirstName RAI'
+            changedByName: 'FirstName RAI LastName-RAI'
           }
         }]
       })
@@ -629,13 +629,13 @@ describe('useIntentAIActions', () => {
           displayStatus: DisplayStates.active,
           status: Statuses.active,
           metadata: { scheduledAt: '2024-07-21T04:45:00.000Z',
-            changedByName: 'FirstName RAI' }
+            changedByName: 'FirstName RAI LastName-RAI' }
         },{
           id: '17',
           displayStatus: DisplayStates.active,
           status: Statuses.active,
           metadata: { scheduledAt: '2024-07-21T04:45:00.000Z',
-            changedByName: 'FirstName RAI' }
+            changedByName: 'FirstName RAI LastName-RAI' }
         }]
       })
       await waitFor(() => expect(mockOK).toBeCalledTimes(1))

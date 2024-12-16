@@ -198,8 +198,8 @@ export function useIntentAIActions () {
 
   const doAllOptimize = async (rows:IntentListItem[], scheduledAt:string) => {
     const userName = get('IS_MLISA_SA')
-      ? getUserProfileRA().firstName
-      : getUserProfileR1().profile.firstName
+      ? `${getUserProfileRA().firstName} ${getUserProfileRA().lastName}`
+      : `${getUserProfileR1().profile.firstName} ${getUserProfileR1().profile.lastName}`
     const optimizeList = await Promise.all(rows.map(async (row) => {
       const { code, preferences, displayStatus, status } = row
       const metadata = { scheduledAt } as TransitionIntentMetadata
@@ -285,8 +285,8 @@ export function useIntentAIActions () {
     if (validateDate(date)) {
       const scheduledAt = date.toISOString()
       const userName = get('IS_MLISA_SA')
-        ? getUserProfileRA().firstName
-        : getUserProfileR1().profile.firstName
+        ? `${getUserProfileRA().firstName} ${getUserProfileRA().lastName}`
+        : `${getUserProfileR1().profile.firstName} ${getUserProfileR1().profile.lastName}`
       const data = rows.map(item =>(
         {
           id: item.id,
@@ -317,8 +317,8 @@ export function useIntentAIActions () {
     rows:IntentListItem[],
     onOk: ()=>void) => {
     const userName = get('IS_MLISA_SA')
-      ? getUserProfileRA().firstName
-      : getUserProfileR1().profile.firstName
+      ? `${getUserProfileRA().firstName} ${getUserProfileRA().lastName}`
+      : `${getUserProfileR1().profile.firstName} ${getUserProfileR1().profile.lastName}`
     const data = rows.map(item =>
       ({ id: item.id,
         displayStatus: item.displayStatus,

@@ -172,7 +172,7 @@ export const parseTransitionGQLByAction = (action: Actions, data: TransitionInte
     paramsGQL.push(
       `$id${currentIndex}:String!, $status${currentIndex}:String!, \n
       $statusReason${currentIndex}:String, \n
-      ${metadata ? '$metadata'+currentIndex+':JSON' : ''}`
+      $metadata${currentIndex}:JSON`
     )
     transitionsGQLs.push(buildTransitionGQL(currentIndex))
     variables[`id${currentIndex}`] = id

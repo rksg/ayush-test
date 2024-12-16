@@ -115,8 +115,8 @@ export function createUseIntentTransition <Preferences> (
 
     const submit = useCallback(async (values: FormValues<Preferences>) => {
       const userName = get('IS_MLISA_SA')
-        ? getUserProfileRA().firstName
-        : getUserProfileR1().profile.firstName
+        ? `${getUserProfileRA().firstName} ${getUserProfileRA().lastName}`
+        : `${getUserProfileR1().profile.firstName} ${getUserProfileR1().profile.lastName}`
 
       const formDto = getFormDTO(values)
       const metadataWithName = {

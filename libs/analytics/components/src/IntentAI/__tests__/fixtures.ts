@@ -275,7 +275,7 @@ const intentStatus = {
   sliceType: 'zone',
   sliceValue: 'zone-1',
   metadata: {
-    changedByName: 'fakeUser'
+    changedByName: 'fakeUser lastName5566'
   },
   path: [
     { type: 'system', name: 'vsz611' },
@@ -310,7 +310,7 @@ export const intentListWithAllStatus = {
       displayStatus: 'scheduled',
       metadata: {
         scheduledAt: '2023-06-17T00:00:00.000Z',
-        changedByName: 'fakeUserWithOptimize'
+        changedByName: 'fakeUserWithOptimize lastName5566'
       }
     },
     {
@@ -320,7 +320,7 @@ export const intentListWithAllStatus = {
       displayStatus: 'scheduled-one-click',
       metadata: {
         scheduledAt: '2023-06-17T00:00:00.000Z',
-        changedByName: 'fakeUserWithOneClickOptimize'
+        changedByName: 'fakeUserWithOneClickOptimize lastName5566'
       }
     },
     {
@@ -360,7 +360,7 @@ export const intentListWithAllStatus = {
       displayStatus: 'revertscheduled',
       metadata: {
         scheduledAt: '2023-06-17T00:00:00.000Z',
-        changedByName: 'fakeUserWithRevert'
+        changedByName: 'fakeUserWithRevert lastName5566'
       }
     },
     {
