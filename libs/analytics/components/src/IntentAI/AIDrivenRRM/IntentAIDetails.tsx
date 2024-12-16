@@ -165,8 +165,7 @@ export function createIntentAIDetails () {
                   </Card>} />
               </DetailsSection>
             </GridCol>
-          </GridRow>
-          }
+          </GridRow>}
 
           <DetailsSection data-testid='Status Trail'>
             <DetailsSection.Title children={$t({ defaultMessage: 'Status Trail' })} />

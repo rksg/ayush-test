@@ -151,8 +151,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
                     displayStatus, sliceValue, { ...metadata, updatedAt })}</Card>} />
               </DetailsSection>
             </GridCol>
-          </GridRow>
-          }
+          </GridRow>}
 
           <DetailsSection data-testid='Status Trail'>
             <DetailsSection.Title children={$t({ defaultMessage: 'Status Trail' })} />

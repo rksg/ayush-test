@@ -79,19 +79,17 @@ export function createIntentAIDetails (
                 <DetailsSection.Details children={<Card>{valuesText.tradeoffText}</Card>} />
               </DetailsSection>
             </GridCol>
-          </GridRow>
-            : <GridRow>
-              <GridCol col={{ span: 12 }}>
-                <DetailsSection data-testid='Current Status'>
-                  <DetailsSection.Title children={$t({ defaultMessage: 'Current Status' })} />
-                  <DetailsSection.Details
-                    children={<Card>{getStatusTooltip(
-                      displayStatus, sliceValue, { ...metadata, updatedAt })}</Card>}
-                  />
-                </DetailsSection>
-              </GridCol>
-            </GridRow>
-          }
+          </GridRow> : <GridRow>
+            <GridCol col={{ span: 12 }}>
+              <DetailsSection data-testid='Current Status'>
+                <DetailsSection.Title children={$t({ defaultMessage: 'Current Status' })} />
+                <DetailsSection.Details
+                  children={<Card>{getStatusTooltip(
+                    displayStatus, sliceValue, { ...metadata, updatedAt })}</Card>}
+                />
+              </DetailsSection>
+            </GridCol>
+          </GridRow>}
 
           <DetailsSection data-testid='Status Trail'>
             <DetailsSection.Title children={$t({ defaultMessage: 'Status Trail' })} />
