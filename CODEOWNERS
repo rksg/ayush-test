@@ -56,6 +56,9 @@
 # Start adding the rules from here
 * @@UI
 
+# For every group at least somebody must approve
+AllGroupsCheck(1)
+
 # Update CODEOWNERS accordingly
 # CODEOWNERS              @user1 @user2
 
