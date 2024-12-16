@@ -948,6 +948,10 @@ export const apApi = baseApApi.injectEndpoints({
         const ethListQuery = await fetchWithBQ(ethReq)
         const ethList = ethListQuery.data as TableResult<EthernetPortProfileViewData>
         if (ethList.data && apLanPorts.lanPorts) {
+          const apReq = createHttpRequest(urlsInfo.getAp, params)
+          const apQuery = await fetchWithBQ(apReq)
+          const apData = apQuery.data as ApDetails
+          const apModel = apData.model
           for (let eth of ethList.data) {
             const port = eth.apActivations?.find(ap => ap.apSerialNumber === params.serialNumber)
             let targetPort = port && apLanPorts.lanPorts
@@ -955,11 +959,6 @@ export const apApi = baseApApi.injectEndpoints({
             if (targetPort && !targetPort.ethernetPortProfileId) {
               targetPort.ethernetPortProfileId = eth.id
             }
-
-            const apReq = createHttpRequest(urlsInfo.getAp, params)
-            const apQuery = await fetchWithBQ(apReq)
-            const apData = apQuery.data as ApDetails
-            const apModel = apData.model
 
             const venuePort = eth.venueActivations?.find(
               v => v.venueId === params.venueId && v.apModel === apModel)?.portId?.toString()
