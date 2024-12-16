@@ -56,13 +56,12 @@
 # Start adding the rules from here
 * @@UI
 
+# For every group at least somebody must approve
+AllGroupsCheck(1)
+
 # Update CODEOWNERS accordingly
 # CODEOWNERS              @user1 @user2
 
 # Restricting this only for master and release branches for now
 CODEOWNERS.destination_branch_pattern master
 CODEOWNERS.destination_branch_pattern release/*
-
-# Suppress info comment on pull request creation about added code owners. Info comment will be added by default.
-# CODEOWNERS.toplevel.create_pull_request_comment disable
-/api-docs/*     @@"api-docs-review-team"
