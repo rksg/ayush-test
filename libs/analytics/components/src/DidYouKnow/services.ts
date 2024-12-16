@@ -10,7 +10,6 @@ import type { DashboardFilter, PathFilter } from '@acx-ui/utils'
 
 import { DidYouKnowData, getFactsData } from './facts'
 
-
 interface Response <FactsData> {
   network: {
     hierarchyNode: {
@@ -23,7 +22,7 @@ interface Response <FactsData> {
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     customFacts: build.query<
-      { facts: DidYouKnowData[] },
+      ReturnType<typeof getFactsData>,
       (PathFilter | DashboardFilter) & { requestedList: string[], weekRange: boolean }
         >({
           query: (payload) => {
@@ -33,9 +32,9 @@ export const api = dataApi.injectEndpoints({
             return {
               document: gql`
                 query Facts(
-                  ${useFilter ? '$filter: FilterInput' : ''},
+                  ${useFilter ? '$filter: FilterInput' : ''}
                   $path: [HierarchyNodeInput]
-                  $startDate: DateTime,
+                  $startDate: DateTime
                   $endDate: DateTime
                   $requestedList: [String]
                 ) {
@@ -55,12 +54,11 @@ export const api = dataApi.injectEndpoints({
               }
             }
           },
-          transformResponse: (response: Response<DidYouKnowData[]>) => ({
-            facts: response.network.hierarchyNode.facts
-          })
+          transformResponse: (response: Response<DidYouKnowData[]>) =>
+            getFactsData(response.network.hierarchyNode.facts)
         }),
     customAvailableFacts: build.query<
-      string[],
+      string[][],
       (PathFilter | DashboardFilter) & { weekRange: boolean }
         >({
           query: (payload) => {
@@ -69,10 +67,10 @@ export const api = dataApi.injectEndpoints({
             const filterVariables = getFilterVariables(payload)
             return {
               document: gql`
-                query Facts(
-                  ${useFilter ? '$filter: FilterInput' : ''},
+                query AvailableFacts(
+                  ${useFilter ? '$filter: FilterInput' : ''}
                   $path: [HierarchyNodeInput]
-                  $startDate: DateTime,
+                  $startDate: DateTime
                   $endDate: DateTime
                 ) {
                   network(start: $startDate, end: $endDate${useFilter ? ', filter: $filter' : ''}) {
@@ -88,8 +86,9 @@ export const api = dataApi.injectEndpoints({
               }
             }
           },
-          transformResponse: (response: Response<string[]>) => {
-            return response.network.hierarchyNode.availableFacts
+          transformResponse: (response: Response<string[][]>) => {
+            const items = response.network.hierarchyNode.availableFacts
+            return _(items).chunk(2).shuffle().value()
           }
         })
   })
@@ -98,37 +97,26 @@ export const api = dataApi.injectEndpoints({
 export const { useCustomFactsQuery, useCustomAvailableFactsQuery } = api
 
 export function useFactsQuery (
-  maxFactPerSlide: number | undefined,
-  maxSlideChar: number | undefined,
-  carouselFactsMap: Record<number, { facts: string[] }>,
-  content: string[][],
+  factsSets: string[][] | undefined,
+  loaded: string[],
   offset: number,
   filters: PathFilter | DashboardFilter) {
   const isSplitOn = useIsSplitOn(Features.ANALYTIC_SNAPSHOT_TOGGLE)
   const weekRange = Boolean(get('IS_MLISA_SA')) || isSplitOn
+
+  const hasData = Boolean(factsSets?.length &&
+    factsSets[offset].every(key => loaded.includes(key)))
+
   return useCustomFactsQuery(
-    { ...filters, requestedList: carouselFactsMap?.[offset]?.facts, weekRange },
-    {
-      selectFromResult: ({ data, ...rest }) => ({
-        data: getFactsData(data?.facts!, { maxFactPerSlide, maxSlideChar }),
-        ...rest
-      }),
-      skip: !Boolean(content[offset]?.length === 0 )
-    }
+    { ...filters, requestedList: factsSets?.[offset] ?? [], weekRange },
+    { skip: hasData || _.isEmpty(factsSets) }
   )
 }
 
 export function useAvailableFactsQuery (filters: PathFilter | DashboardFilter) {
   const isSplitOn = useIsSplitOn(Features.ANALYTIC_SNAPSHOT_TOGGLE)
   const weekRange = Boolean(get('IS_MLISA_SA')) || isSplitOn
-  return useCustomAvailableFactsQuery(
-    { ...filters, weekRange },
-    {
-      selectFromResult: ({ data }) => ({
-        availableFacts: data
-      })
-    }
-  )
+  return useCustomAvailableFactsQuery({ ...filters, weekRange })
 }
 
 const getBaseVariables = (payload: (PathFilter | DashboardFilter) & { weekRange: boolean }) => {

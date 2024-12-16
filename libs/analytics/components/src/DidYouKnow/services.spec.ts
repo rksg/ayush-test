@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 import { defaultNetworkPath }               from '@acx-ui/analytics/utils'
 import { dataApiURL, store }                from '@acx-ui/store'
 import { mockGraphqlQuery }                 from '@acx-ui/test-utils'
@@ -6,6 +8,7 @@ import { DateRange }                        from '@acx-ui/utils'
 
 import { expectedFactsResult }          from './__tests__/fixtures'
 import { expectedAvailableFactsResult } from './__tests__/fixtures'
+import { getFactsData }                 from './facts'
 import { api }                          from './services'
 
 const pathFilter: PathFilter & { requestedList: string[]; weekRange: boolean } = {
@@ -36,8 +39,9 @@ describe('customFacts', () => {
     const { status, data, error } = await store.dispatch(
       api.endpoints.customFacts.initiate(pathFilter)
     )
+    const expected = getFactsData(expectedFactsResult.network.hierarchyNode.facts)
     expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual(expectedFactsResult.network.hierarchyNode)
+    expect(data).toStrictEqual(expected)
     expect(error).toBe(undefined)
   })
   it('should return correct data with DashboardFilter', async () => {
@@ -47,8 +51,9 @@ describe('customFacts', () => {
     const { status, data, error } = await store.dispatch(
       api.endpoints.customFacts.initiate(dashboardFilter)
     )
+    const expected = getFactsData(expectedFactsResult.network.hierarchyNode.facts)
     expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual(expectedFactsResult.network.hierarchyNode)
+    expect(data).toStrictEqual(expected)
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
@@ -69,29 +74,31 @@ describe('availableFacts', () => {
     store.dispatch(api.util.resetApiState())
   )
   it('should return correct data with PathFilter', async () => {
-    mockGraphqlQuery(dataApiURL, 'Facts', {
+    mockGraphqlQuery(dataApiURL, 'AvailableFacts', {
       data: expectedAvailableFactsResult
     })
     const { status, data, error } = await store.dispatch(
       api.endpoints.customAvailableFacts.initiate(pathFilter)
     )
+    const expected = _.chunk(expectedAvailableFactsResult.network.hierarchyNode.availableFacts, 2)
     expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual(expectedAvailableFactsResult.network.hierarchyNode.availableFacts)
+    expect(data).toStrictEqual(expected)
     expect(error).toBe(undefined)
   })
   it('should return correct data with DashboardFilter', async () => {
-    mockGraphqlQuery(dataApiURL, 'Facts', {
+    mockGraphqlQuery(dataApiURL, 'AvailableFacts', {
       data: expectedAvailableFactsResult
     })
     const { status, data, error } = await store.dispatch(
       api.endpoints.customAvailableFacts.initiate(dashboardFilter)
     )
+    const expected = _.chunk(expectedAvailableFactsResult.network.hierarchyNode.availableFacts, 2)
     expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual(expectedAvailableFactsResult.network.hierarchyNode.availableFacts)
+    expect(data).toStrictEqual(expected)
     expect(error).toBe(undefined)
   })
   it('should return error', async () => {
-    mockGraphqlQuery(dataApiURL, 'Facts', {
+    mockGraphqlQuery(dataApiURL, 'AvailableFacts', {
       error: new Error('something went wrong!')
     })
     const { status, data, error } = await store.dispatch(
