@@ -15,8 +15,7 @@ import {
   CapabilitiesApModel,
   ApLanPortTypeEnum,
   EthernetPortType,
-  EthernetPortAuthType,
-  VenueActivation
+  EthernetPortAuthType
 } from '@acx-ui/rc/utils'
 import { baseEthernetPortProfileApi } from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
@@ -126,7 +125,6 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
               portId: portId }
           }
 
-          // ap level binding
           for (let eth of apEthPortProfiles) {
             eth.apPortOverwrites = []
             for (let apActivation of (eth.apActivations ?? [])) {
@@ -139,29 +137,6 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
             }
           }
 
-          // venue model binding
-          for (let venueEth of ethList.data) {
-            let modelActivations = venueEth?.venueActivations?.filter(
-              va => va.venueId === params.venueId &&
-              va.apModel === (selectedModelCaps as CapabilitiesApModel).model
-            ) ?? [] as VenueActivation[]
-            for (let modelActivation of modelActivations) {
-              if (!bindingPortIds.includes(modelActivation.portId?.toString())) {
-                if (!venueEth.apPortOverwrites) {
-                  venueEth.apPortOverwrites = []
-                }
-                bindingPortIds.push(modelActivation.portId?.toString())
-                const venuePortOverwrite = await getApPortOverwrite(
-                  params.venueId!,
-                  params.apSerialNumber!,
-                  modelActivation.portId!
-                )
-                venueEth.apPortOverwrites.push(venuePortOverwrite)
-              }
-            }
-          }
-
-          // default capability binding
           for (let lanPort of (selectedModelCaps as CapabilitiesApModel)?.lanPorts ) {
             if (!bindingPortIds.includes(lanPort.id)) {
               const portOverwrite = await getApPortOverwrite(
