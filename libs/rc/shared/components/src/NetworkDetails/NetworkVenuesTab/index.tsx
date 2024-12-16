@@ -184,13 +184,14 @@ export function NetworkVenuesTab () {
   const hasUpdatePermission = hasPermission({ scopes: [WifiScopes.UPDATE] })
   const hasCreatePermission = hasPermission({ scopes: [WifiScopes.CREATE] })
   const params = useParams()
+  const networkId = params.networkId
+  const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
-  const { $t } = useIntl()
-  const networkId = params.networkId
+  const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
@@ -346,7 +347,7 @@ export function NetworkVenuesTab () {
     const networkId = (network && network?.id) ? network.id : ''
     const newNetworkVenue = generateDefaultNetworkVenue(venueId, networkId)
 
-    if (IsNetworkSupport6g(network)) {
+    if (IsNetworkSupport6g(network, { isSupport6gOWETransition })) {
       newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
     }
 
@@ -477,7 +478,7 @@ export function NetworkVenuesTab () {
     activatingVenues.forEach(venue => {
       const newNetworkVenue = generateDefaultNetworkVenue(venue.id, (network && network?.id) ? network.id : '')
 
-      if (IsNetworkSupport6g(network)) {
+      if (IsNetworkSupport6g(network, { isSupport6gOWETransition })) {
         newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
       }
       const alreadyActivatedVenue = networkVenues.find(x => x.venueId === venue.id)

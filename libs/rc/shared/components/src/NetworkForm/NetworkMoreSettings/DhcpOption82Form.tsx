@@ -49,7 +49,10 @@ export function DhcpOption82Form (props: { labelWidth?: string }) {
       switchStyle={{ marginLeft: dhcpOption82Enabled? '140px' : '155px' }}
       style={{ width: 'max-content', marginLeft: '-8px' }}
       onChange={onChangeDhcpOption82}>
-      <DhcpOption82SettingsFormField labelWidth={labelWidth} />
+      <DhcpOption82SettingsFormField
+        labelWidth={labelWidth}
+        readonly={false}
+      />
     </FieldsetItem>
   )
 }
