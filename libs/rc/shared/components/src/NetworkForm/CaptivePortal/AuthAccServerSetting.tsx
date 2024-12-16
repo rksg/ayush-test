@@ -8,10 +8,10 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Subtitle, Tooltip }                               from '@acx-ui/components'
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                      from '@acx-ui/icons'
-import { GuestNetworkTypeEnum, Radius, useConfigTemplate } from '@acx-ui/rc/utils'
+import { Subtitle, Tooltip }                                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                                           from '@acx-ui/icons'
+import { GuestNetworkTypeEnum, Radius, useConfigTemplate, WifiNetworkMessages } from '@acx-ui/rc/utils'
 
 import { AAAInstance }    from '../AAAInstance'
 import NetworkFormContext from '../NetworkFormContext'
@@ -46,10 +46,7 @@ export function AuthAccServerSetting () {
   const proxyServiceTooltip = <Tooltip
     placement='bottom'
     children={<QuestionMarkCircleOutlined />}
-    title={$t({
-      // eslint-disable-next-line max-len
-      defaultMessage: 'Use the controller as proxy in 802.1X networks. A proxy AAA server is used when APs send authentication/accounting messages to the controller and the controller forwards these messages to an external AAA server.'
-    })}
+    title={$t(WifiNetworkMessages.ENABLE_PROXY_TOOLTIP)}
   />
   const [
     enableAccountingService,
