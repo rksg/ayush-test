@@ -4,12 +4,9 @@ import { gql }                       from 'graphql-request'
 import moment, { Moment }            from 'moment-timezone'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { getUserFullName as getUserFullNameRA }          from '@acx-ui/analytics/utils'
 import { showToast }                                     from '@acx-ui/components'
-import { get }                                           from '@acx-ui/config'
 import { useNavigate, useNavigateToPath, useTenantLink } from '@acx-ui/react-router-dom'
 import { intentAIApi }                                   from '@acx-ui/store'
-import { getUserFullName as getUserFullNameR1 }          from '@acx-ui/user'
 import { encodeParameter }                               from '@acx-ui/utils'
 
 import { validateScheduleTiming } from './common/ScheduleTiming'

@@ -83,11 +83,11 @@ export const states = {
   },
   [DisplayStates.scheduled]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
-    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled for {scheduledAt}, via the user action "Optimize" initiated by the user{changedByName}' })
+    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled for {scheduledAt}, via the user action "Optimize" initiated by the user{changedByName, select, undefined {} other { {changedByName}}}.' })
   },
   [DisplayStates.scheduledOneClick]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
-    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled for {scheduledAt}, via the user action "1-Click Optimize" initiated by the user{changedByName}' })
+    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled for {scheduledAt}, via the user action "1-Click Optimize" initiated by the user{changedByName, select, undefined {} other { {changedByName}}}.' })
   },
   [DisplayStates.applyScheduled]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
@@ -107,7 +107,7 @@ export const states = {
   },
   [DisplayStates.revertScheduled]: {
     text: defineMessage({ defaultMessage: 'Revert Scheduled' }),
-    tooltip: defineMessage({ defaultMessage: 'The Revert of the IntentAI recommended changes are scheduled for {scheduledAt}, via user action "Revert" initiated by the user{changedByName}' })
+    tooltip: defineMessage({ defaultMessage: 'The Revert of the IntentAI recommended changes are scheduled for {scheduledAt}, via user action "Revert" initiated by the user{changedByName, select, undefined {} other { {changedByName}}}.' })
   },
   [DisplayStates.revertScheduleInProgress]: {
     text: defineMessage({ defaultMessage: 'Revert In Progress' }),
@@ -123,11 +123,11 @@ export const states = {
   },
   [DisplayStates.pausedFromInactive]: {
     text: defineMessage({ defaultMessage: 'Paused' }),
-    tooltip: defineMessage({ defaultMessage: 'The Intent is paused by the user action "Pause" initiated by the user{changedByName} A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.' })
+    tooltip: defineMessage({ defaultMessage: 'The Intent is paused by the user action "Pause" initiated by the user{changedByName, select, undefined {} other { {changedByName}}}. A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.' })
   },
   [DisplayStates.pausedFromActive]: {
     text: defineMessage({ defaultMessage: 'Paused' }),
-    tooltip: defineMessage({ defaultMessage: 'The Intent is paused by the user action "Pause" initiated by the user{changedByName} A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.' })
+    tooltip: defineMessage({ defaultMessage: 'The Intent is paused by the user action "Pause" initiated by the user{changedByName, select, undefined {} other { {changedByName}}}. A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.' })
   },
   [DisplayStates.pausedByDefault]: {
     text: defineMessage({ defaultMessage: 'Paused' }),
