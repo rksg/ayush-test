@@ -1,4 +1,3 @@
-import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Drawer }                                 from '@acx-ui/components'
@@ -33,7 +32,6 @@ export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProp
   } = props
 
   const { $t } = useIntl()
-  const form = Form.useFormInstance()
 
   const handleAdd = async () => {
     try {
@@ -41,7 +39,11 @@ export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProp
       onGUIChanged && onGUIChanged('AddDHCPOption82')
       applyCallbackFn()
       // eslint-disable-next-line
-      dispatch && dispatch({ state: SoftGreState.ModifyDHCPOption82Settings, portId, index })
+      dispatch && dispatch({
+        state: SoftGreState.TurnOnAndModifyDHCPOption82Settings,
+        portId,
+        index
+      })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
