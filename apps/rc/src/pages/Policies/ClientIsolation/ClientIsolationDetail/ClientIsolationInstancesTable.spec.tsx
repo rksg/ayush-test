@@ -48,7 +48,7 @@ describe('ClientIsolationInstancesTable', () => {
   it('should render the table view with rbac api', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE
       || ff === Features.WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE)
-    
+
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenues.url,
