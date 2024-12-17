@@ -12,7 +12,6 @@ import { DateRange }                                                       from 
 import {
   intentHighlights,
   intentListResult,
-  intentListWithAllStatus,
   filterOptions
 } from './__tests__/fixtures'
 import { mockedIntentAps }                                                                from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
