@@ -5,7 +5,7 @@ import { Form,  Switch, Space } from 'antd'
 import _                        from 'lodash'
 import { useIntl }              from 'react-intl'
 
-import { Tooltip }                                     from '@acx-ui/components'
+import { Tooltip }                                    from '@acx-ui/components'
 import {
   useLazyGetSoftGreProfileConfigurationOnAPQuery,
   useLazyGetSoftGreProfileConfigurationOnVenueQuery
@@ -139,13 +139,14 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
                     onGUIChanged && onGUIChanged('DHCPOption82Enabled')
                     if (checked) {
                       setDrawerVisible(true)
-                      // eslint-disable-next-line
-                      dispatch && dispatch({ state: SoftGreState.TurnOnDHCPOption82, portId, index })
                     } else {
                       setIconVisible(false)
                       form.setFieldValue(dhcpOption82FieldName, false)
-                      // eslint-disable-next-line
-                      dispatch && dispatch({ state: SoftGreState.TurnOffDHCPOption82, portId, index })
+                      dispatch && dispatch({
+                        state: SoftGreState.TurnOffDHCPOption82,
+                        portId,
+                        index
+                      })
                     }
                   }}
                 />
@@ -171,6 +172,7 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
         onGUIChanged={onGUIChanged}
         readonly={readonly}
         dispatch={dispatch}
+        portId={portId}
       />
     </>
   )
