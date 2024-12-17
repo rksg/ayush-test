@@ -1,14 +1,19 @@
+import { rest } from 'msw'
 
-import { StepsForm } from '@acx-ui/components'
+import { StepsForm }   from '@acx-ui/components'
+import { firmwareApi } from '@acx-ui/rc/services'
 import {
-  EdgeStatus
+  EdgeGeneralFixtures,
+  FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { Provider, store }            from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
+
 
 import { ArpTerminationFormItem } from '.'
 
 jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
   useGetEdgeFeatureSetsQuery: jest.fn(() => ({
     data: {
       featureSets: [{
@@ -26,21 +31,32 @@ jest.mock('@acx-ui/rc/services', () => ({
   }))
 }))
 
+const { mockedVenueFirmwareList } = EdgeGeneralFixtures
+
 describe('Edge Cluster Network Control Tab > ARP Termination', () => {
-  const mockVenueId = 'mock_venue_1'
-  const mockClusterId= 'mock_cluster_2'
-  let params: { tenantId: string, clusterId: string, activeTab?: string } = {
-    tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
-    clusterId: mockClusterId,
-    activeTab: 'networkControl'
-  }
+  let params: { tenantId: string, clusterId: string, activeTab: string }
+  beforeEach(() => {
+    params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      clusterId: 'testClusterId',
+      activeTab: 'networkControl'
+    }
+    store.dispatch(firmwareApi.util.resetApiState())
+    mockServer.use(
+      rest.post(
+        FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(mockedVenueFirmwareList))
+      )
+    )
+  })
 
   it('renders correctly when isArpControllable is true', () => {
+    const mockVenueId = 'mock_venue_3'
+    const mockClusterId= params.clusterId
     const props = {
       currentClusterStatus: {
         clusterId: mockClusterId,
-        venueId: mockVenueId,
-        edgeList: [{ firmwareVersion: '2.3.0' }] as EdgeStatus[]
+        venueId: mockVenueId
       },
       setEdgeFeatureName: jest.fn()
     }
@@ -69,14 +85,12 @@ describe('Edge Cluster Network Control Tab > ARP Termination', () => {
   })
 
   it('renders correctly when isArpControllable is false', () => {
+    const mockVenueId = 'mock_venue_2'
+    const mockClusterId= params.clusterId
     const props = {
       currentClusterStatus: {
         clusterId: mockClusterId,
-        venueId: mockVenueId,
-        edgeList: [
-          { firmwareVersion: '2.3.0' },
-          { firmwareVersion: '2.2.0' }
-        ] as EdgeStatus[]
+        venueId: mockVenueId
       },
       setEdgeFeatureName: jest.fn()
     }
