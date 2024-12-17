@@ -312,6 +312,24 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
         }
       }
     }),
+    activateSoftGreProfileOnAP: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SoftGreUrls.activateSoftGreProfileOnAP, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    deactivateSoftGreProfileOnAP: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SoftGreUrls.deactivateSoftGreProfileOnAP, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
     // eslint-disable-next-line max-len
     getSoftGreProfileConfigurationOnVenue: build.query<VenueApModelLanPortSettingsV1 ,RequestPayload>({
       query: ({ params }) => {
@@ -341,6 +359,8 @@ export const {
   useDectivateSoftGreMutation,
   useActivateSoftGreProfileOnVenueMutation,
   useDeactivateSoftGreProfileOnVenueMutation,
+  useActivateSoftGreProfileOnAPMutation,
+  useDeactivateSoftGreProfileOnAPMutation,
   useGetSoftGreProfileConfigurationOnVenueQuery,
   useLazyGetSoftGreProfileConfigurationOnVenueQuery,
   useGetSoftGreProfileConfigurationOnAPQuery,
