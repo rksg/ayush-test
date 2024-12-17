@@ -73,7 +73,7 @@ export default function useCertificateForm () {
             { type: getContentType(publickKeyext) }))
       }
       if (formData.privateKey) {
-        const privateKeyExt = formData.publicKey.file.name.split('.').pop() as string
+        const privateKeyExt = formData.privateKey.file.name.split('.').pop() as string
         uploadCertData.append('privateKeyFile',
           new Blob([formData.privateKey.file],
             { type: getContentType(privateKeyExt) }))
