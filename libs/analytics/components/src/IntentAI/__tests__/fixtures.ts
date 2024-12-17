@@ -4,11 +4,11 @@ import { AiFeatures }                                  from '../config'
 import { IntentConfigurationConfig, useIntentContext } from '../IntentContext'
 import { Statuses }                                    from '../states'
 import { AIFeatureProps }                              from '../Table'
-import { Intent, IntentKPIConfig, intentState }        from '../useIntentDetailsQuery'
+import { IntentDetail, IntentKPIConfig, intentState }  from '../useIntentDetailsQuery'
 import { isDataRetained }                              from '../utils'
 
 export const mockIntentContext = (config: {
-  intent: Intent
+  intent: IntentDetail
   kpis?: IntentKPIConfig[],
   configuration?: IntentConfigurationConfig
 }) => {
@@ -35,6 +35,7 @@ export const notEnoughLicenses = {
   sliceType: 'zone',
   sliceValue: '01-Alethea-WiCheck Test',
   metadata: {
+    scheduledAt: '2023-07-01T06:00:00.000Z',
     audit: [{
       code: 'global',
       stage: 'filter',
@@ -70,7 +71,10 @@ export const noAps = {
   updatedAt: '2023-11-14T06:05:21.004Z',
   sliceType: 'zone',
   sliceValue: '25-US-CA-D25-SandeepKour-home',
-  metadata: { audit: [ { code: 'global', stage: 'filter', failure: { 'no-aps': false } } ] },
+  metadata: {
+    audit: [ { code: 'global', stage: 'filter', failure: { 'no-aps': false } } ],
+    scheduledAt: '2023-07-01T06:00:00.000Z'
+  },
   path: [
     {
       type: 'system',
@@ -215,7 +219,9 @@ export const intentListResult = {
       updatedAt: '2023-06-16T06:05:02.839Z',
       sliceType: 'zone',
       sliceValue: 'zone-1',
-      metadata: {},
+      metadata: {
+        scheduledAt: '2023-07-01T06:00:00.000Z'
+      },
       path: [
         { type: 'system', name: 'vsz611' },
         { type: 'zone', name: 'zone-1' }
@@ -301,7 +307,10 @@ export const intentListWithAllStatus = {
       ...intentStatus,
       status: 'new',
       statusReason: '',
-      displayStatus: 'new'
+      displayStatus: 'new',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,
@@ -336,13 +345,19 @@ export const intentListWithAllStatus = {
       ...intentStatus,
       status: 'applyscheduleinprogress',
       statusReason: '',
-      displayStatus: 'applyscheduleinprogress'
+      displayStatus: 'applyscheduleinprogress',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,
       status: 'active',
       statusReason: '',
-      displayStatus: 'active'
+      displayStatus: 'active',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,
@@ -350,7 +365,8 @@ export const intentListWithAllStatus = {
       statusReason: 'apply-failed',
       displayStatus: 'paused-apply-failed',
       metadata: {
-        failures: ['errMsg from the notification service']
+        failures: ['errMsg from the notification service'],
+        scheduledAt: '2023-06-17T00:00:00.000Z'
       }
     },
     {
@@ -367,7 +383,10 @@ export const intentListWithAllStatus = {
       ...intentStatus,
       status: 'revertscheduleinprogress',
       statusReason: '',
-      displayStatus: 'revertscheduleinprogress'
+      displayStatus: 'revertscheduleinprogress',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,
@@ -375,37 +394,51 @@ export const intentListWithAllStatus = {
       statusReason: 'revert-failed',
       displayStatus: 'paused-revert-failed',
       metadata: {
-        failures: ['errMsg from the notification service']
+        failures: ['errMsg from the notification service'],
+        scheduledAt: '2023-06-17T00:00:00.000Z'
       }
     },
     {
       ...intentStatus,
       status: 'paused',
       statusReason: 'reverted',
-      displayStatus: 'paused-reverted'
+      displayStatus: 'paused-reverted',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,
       status: 'paused',
       statusReason: 'from-inactive',
-      displayStatus: 'paused-from-inactive'
+      displayStatus: 'paused-from-inactive',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,
       status: 'paused',
       statusReason: 'from-active',
-      displayStatus: 'paused-from-active'
+      displayStatus: 'paused-from-active',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,
       status: 'paused',
       statusReason: 'by-default',
-      displayStatus: 'paused-by-default'
+      displayStatus: 'paused-by-default',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,
       metadata: {
-        failures: ['no-ap-mesh-checker']
+        failures: ['no-ap-mesh-checker'],
+        scheduledAt: '2023-06-17T00:00:00.000Z'
       },
       status: 'na',
       statusReason: 'conflicting-configuration',
@@ -415,18 +448,25 @@ export const intentListWithAllStatus = {
       ...intentStatus,
       status: 'na',
       statusReason: 'no-aps',
-      displayStatus: 'na-no-aps'
+      displayStatus: 'na-no-aps',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,
       status: 'na',
       statusReason: 'not-enough-license',
-      displayStatus: 'na-not-enough-license'
+      displayStatus: 'na-not-enough-license',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,
       metadata: {
-        failures: ['no-ap-peer-data']
+        failures: ['no-ap-peer-data'],
+        scheduledAt: '2023-06-17T00:00:00.000Z'
       },
       status: 'na',
       statusReason: 'not-enough-data',
@@ -436,20 +476,29 @@ export const intentListWithAllStatus = {
       ...intentStatus,
       status: 'na',
       statusReason: 'verified',
-      displayStatus: 'na-verified'
+      displayStatus: 'na-verified',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       ...intentStatus,
       status: 'na',
       statusReason: 'waiting-for-etl',
-      displayStatus: 'na-waiting-for-etl'
+      displayStatus: 'na-waiting-for-etl',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     },
     {
       //Simulate a displayStatus not defined in UI config and should be handled by UI without errors
       ...intentStatus,
       status: 'na',
       statusReason: 'not-defined',
-      displayStatus: 'na-not-defined'
+      displayStatus: 'na-not-defined',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
     }
   ], total: 20
   }

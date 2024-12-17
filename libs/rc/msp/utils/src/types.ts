@@ -585,6 +585,18 @@ export const MspAttentionNotesPayload = {
   }
 }
 
+export const GeneralAttentionNotesPayload = {
+  page: 1,
+  pageSize: 3,
+  fields: ['summary', 'details'],
+  sortField: 'status',
+  sortOrder: 'DESC',
+  filters: {
+    status: ['VALID'],
+    licenseCheck: true
+  }
+}
+
 export interface LicenseCalculatorData {
     effectiveDate: string,
     expirationDate: string,
