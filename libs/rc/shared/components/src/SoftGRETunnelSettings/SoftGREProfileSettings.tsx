@@ -69,6 +69,9 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
           label={$t({ defaultMessage: 'SoftGRE Profile' })}
           initialValue=''
           name={softGreProfileIdFieldName}
+          rules={[
+            { required: true }
+          ]}
           children={
             <Select
               style={{ width: '100%' }}
