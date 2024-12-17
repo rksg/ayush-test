@@ -1,5 +1,3 @@
-
-import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Drawer } from '@acx-ui/components'
@@ -9,20 +7,29 @@ interface DhcpOption82SettingsDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   callbackFn?: () => void
+  index: number
+  onGUIChanged?: (fieldName: string) => void
+  readonly: boolean
 }
 
 
 export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProps) => {
 
-  const { visible, setVisible, callbackFn = () => {} } = props
-  const { $t } = useIntl()
-  const [form] = Form.useForm()
+  const {
+    visible,
+    setVisible,
+    callbackFn = () => {},
+    index,
+    onGUIChanged,
+    readonly
+  } = props
 
+  const { $t } = useIntl()
 
   const handleAdd = async () => {
     try {
-      form.resetFields()
       setVisible(false)
+      onGUIChanged && onGUIChanged('AddDHCPOption82')
       callbackFn()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -31,7 +38,6 @@ export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProp
 
   const handleClose = () => {
     setVisible(false)
-    form.resetFields()
   }
 
   return (
@@ -40,14 +46,21 @@ export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProp
       visible={visible}
       width={850}
       children={
-        <DhcpOption82SettingsFormField />
+        <DhcpOption82SettingsFormField
+          readonly={readonly}
+          labelWidth={'280px'}
+          context={'lanport'}
+          onGUIChanged={onGUIChanged}
+          index={index}
+        />
       }
       onClose={handleClose}
       destroyOnClose={true}
       footer={
         <Drawer.FormFooter
+          showSaveButton={!readonly}
           buttonLabel={{
-            save: $t({ defaultMessage: 'Add' })
+            save: $t({ defaultMessage: 'Apply' })
           }}
           onCancel={handleClose}
           onSave={handleAdd}

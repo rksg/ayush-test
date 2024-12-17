@@ -5,7 +5,7 @@ import { useRaiR1HelpPageLink } from '@acx-ui/rc/utils'
 import * as UI           from './styledComponents'
 import { IntentAITable } from './Table'
 
-export const IntentAITabContent = () => {
+const IntentAITabContent = () => {
   const { pathFilters } = useAnalyticsFilter()
   //Get URL here to avoid triggering many times in the banner component
   const helpUrl = useRaiR1HelpPageLink()
@@ -22,3 +22,5 @@ export const IntentAITabContent = () => {
     </GridRow>
   )
 }
+
+export default IntentAITabContent

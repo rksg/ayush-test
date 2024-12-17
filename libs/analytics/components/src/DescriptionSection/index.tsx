@@ -7,12 +7,13 @@ import { Tooltip } from '@acx-ui/components'
 
 import { Descriptions, TextContent, PopoverWrapper, PopoverGlobalStyle } from './styledComponents'
 
+
 export interface DescriptionRowProps {
   label: string
-  tooltip?: string
+  tooltip?: React.ReactNode
   popover?: string
-  children: React.ReactNode,
-  onClick?: () => void,
+  children: React.ReactNode
+  onClick?: () => void
   tooltipPlacement?: TooltipPlacement
 }
 

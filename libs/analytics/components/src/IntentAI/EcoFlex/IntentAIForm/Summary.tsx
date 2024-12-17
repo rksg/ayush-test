@@ -7,13 +7,13 @@ import { StepsForm, useStepFormContext } from '@acx-ui/components'
 
 import { richTextFormatValues }    from '../../common/richTextFormatValues'
 import { ScheduleTiming }          from '../../common/ScheduleTiming'
-import { Intent }                  from '../../useIntentDetailsQuery'
+import { IntentDetail }            from '../../useIntentDetailsQuery'
 import { ComparisonDonutChart }    from '../ComparisonDonutChart'
 import { useIntentAIEcoFlexQuery } from '../ComparisonDonutChart/services'
 
 export const Summary:React.FC<{ kpiQuery:ReturnType<typeof useIntentAIEcoFlexQuery> }> = (props) => {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<Intent>()
+  const { form } = useStepFormContext<IntentDetail>()
   const isEnabled = form.getFieldValue('preferences').enable
   const enableExcludedHours = form.getFieldValue('preferences').enableExcludedHours
   const enableExcludedAPs = form.getFieldValue('preferences').enableExcludedAPs

@@ -3,8 +3,10 @@ import { defineMessage } from 'react-intl'
 
 import { get } from '@acx-ui/config'
 
-import { IntentListItem, StatusTrail, StatusTrailItem } from '../config'
-import { DisplayStates, Statuses, StatusReasons }       from '../states'
+import { IntentListItem, StatusTrail }            from '../config'
+import { DisplayStates, Statuses, StatusReasons } from '../states'
+
+type TransitionStatus = Pick<StatusTrail, 'status' | 'statusReason'>
 
 export const isDataRetained = (time?: string) => {
   const retainDate = moment().startOf('day').subtract(get('DRUID_RETAIN_PERIOD_DAYS'), 'days')
@@ -37,7 +39,7 @@ export type TransitionIntentItem = {
   id: string
   displayStatus: DisplayStates
   status: Statuses
-  statusTrail?: StatusTrail
+  statusTrail?: StatusTrail[]
   metadata?: TransitionIntentMetadata
 }
 
@@ -87,7 +89,7 @@ export const isVisibledByAction = (rows: IntentListItem[], action: Actions) => {
   }
 }
 
-const getCancelTransitionStatus = (item: TransitionIntentItem):StatusTrailItem => {
+const getCancelTransitionStatus = (item: TransitionIntentItem): TransitionStatus => {
   if ([DisplayStates.scheduled, DisplayStates.scheduledOneClick].includes(item.displayStatus)) {
     return { status: Statuses.new }
   }
@@ -99,7 +101,7 @@ const getCancelTransitionStatus = (item: TransitionIntentItem):StatusTrailItem =
     { status: Statuses.active } : preStatusTrail
 }
 
-const getResumeTransitionStatus = (item: TransitionIntentItem):StatusTrailItem => {
+const getResumeTransitionStatus = (item: TransitionIntentItem): TransitionStatus => {
   const preStatusTrail = item.statusTrail?.find(({ status }) => status !== item.status)
   if (!preStatusTrail) throw new Error('Invalid statusTrail(Resume)')
 
@@ -123,7 +125,7 @@ const getResumeTransitionStatus = (item: TransitionIntentItem):StatusTrailItem =
 export const getTransitionStatus =(
   action: Actions,
   item: TransitionIntentItem
-):StatusTrailItem => {
+): TransitionStatus => {
   const { displayStatus } = item
   switch (action) {
     case Actions.One_Click_Optimize:
