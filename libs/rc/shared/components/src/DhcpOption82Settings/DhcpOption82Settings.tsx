@@ -139,11 +139,13 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
                     onGUIChanged && onGUIChanged('DHCPOption82Enabled')
                     if (checked) {
                       setDrawerVisible(true)
-                      dispatch && dispatch({ state: SoftGreState.TurnOnDHCPOption82, portId })
+                      // eslint-disable-next-line
+                      dispatch && dispatch({ state: SoftGreState.TurnOnDHCPOption82, portId, index })
                     } else {
                       setIconVisible(false)
                       form.setFieldValue(dhcpOption82FieldName, false)
-                      dispatch && dispatch({ state: SoftGreState.TurnOffDHCPOption82, portId })
+                      // eslint-disable-next-line
+                      dispatch && dispatch({ state: SoftGreState.TurnOffDHCPOption82, portId, index })
                     }
                   }}
                 />

@@ -989,10 +989,7 @@ export interface LanPortSoftGreProfileSettings {
 
 export interface SoftGreChanges {
   model: string,
-  lanPorts: {
-    id: string
-    softGRESettings: VenueApModelLanPortSettingsV1
-  }[]
+  lanPorts: SoftGreLanPortChange[]
 }
 
 export enum SoftGreState {
@@ -1009,5 +1006,16 @@ export enum SoftGreState {
 
 export interface SoftGreProfileDispatcher {
   portId?: string,
-  state: SoftGreState
+  state: SoftGreState,
+  index: number,
+  softGreProfileId?: string
+}
+
+export interface SoftGreProfileSettingsChange extends VenueApModelLanPortSettingsV1 {
+  softGreProfileId?: string,
+}
+
+export interface SoftGreLanPortChange {
+    id: string
+    softGRESettings: SoftGreProfileSettingsChange
 }

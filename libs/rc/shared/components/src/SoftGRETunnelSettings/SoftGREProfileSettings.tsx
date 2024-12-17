@@ -46,7 +46,12 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
       softGREProfileOptionList.find((profile) => profile.value === value) ??
        { label: $t({ defaultMessage: 'Select...' }), value: '' }
     )
-    dispatch && dispatch({ state: SoftGreState.ModifySoftGreProfile, portId })
+    dispatch && dispatch({
+      state: SoftGreState.ModifySoftGreProfile,
+      portId,
+      index,
+      softGreProfileId: form.getFieldValue(['lan', index, 'softGreProfileId'])
+    })
   }
 
   useEffect(() => {

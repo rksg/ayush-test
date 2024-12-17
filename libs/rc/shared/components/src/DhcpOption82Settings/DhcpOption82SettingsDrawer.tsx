@@ -40,7 +40,8 @@ export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProp
       setVisible(false)
       onGUIChanged && onGUIChanged('AddDHCPOption82')
       applyCallbackFn()
-      dispatch && dispatch({ state: SoftGreState.ModifyDHCPOption82Settings, portId })
+      // eslint-disable-next-line
+      dispatch && dispatch({ state: SoftGreState.ModifyDHCPOption82Settings, portId, index })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

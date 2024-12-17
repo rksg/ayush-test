@@ -30,6 +30,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   } = props
 
   const softgreTunnelFieldName = ['lan', index, 'softGreTunnelEnable']
+  const form = Form.useFormInstance()
 
   return (
     <>
@@ -58,8 +59,17 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
                 onGUIChanged && onGUIChanged('softGreTunnelEnable')
                 if (dispatch) {
                   value ?
-                    dispatch({ state: SoftGreState.TurnOnSoftGre, portId }) :
-                    dispatch({ state: SoftGreState.TurnOffSoftGre, portId })
+                    dispatch({
+                      state: SoftGreState.TurnOnSoftGre,
+                      portId,
+                      index,
+                      softGreProfileId: form.getFieldValue(['lan', index, 'softGreProfileId'])
+                    }) :
+                    dispatch({
+                      state: SoftGreState.TurnOffSoftGre,
+                      portId,
+                      index
+                    })
                 }
               }}
             />
