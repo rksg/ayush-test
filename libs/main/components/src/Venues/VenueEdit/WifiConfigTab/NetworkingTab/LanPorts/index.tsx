@@ -448,8 +448,8 @@ export function LanPorts () {
     switch(next.state){
       case SoftGreState.TurnOnSoftGre:
         const turnOnChange: SoftGreLanPortChange = {
-          id: next.portId!,
-          softGRESettings: {
+          lanPortId: next.portId!,
+          venueLanPortSettings: {
             softGreEnabled: true,
             softGreProfileId: form.getFieldValue(['lan', next.index, 'softGreProfileId'])
           }
@@ -467,13 +467,13 @@ export function LanPorts () {
         if (existedChanges) {
           let changeNotFound = true
           let newLanPortsChangesList = existedChanges?.lanPorts.map((lanPort) => {
-            if(lanPort.id === next.portId) {
+            if(lanPort.lanPortId === next.portId) {
               changeNotFound = false
-              _.set(lanPort, ['softGRESettings','softGreEnabled'], true)
+              _.set(lanPort, ['venueLanPortSettings','softGreEnabled'], true)
               // eslint-disable-next-line
               _.set(
                 lanPort,
-                ['softGRESettings','softGreProfileId'],
+                ['venueLanPortSettings','softGreProfileId'],
                 form.getFieldValue(['lan', next.index, 'softGreProfileId'])
               )
             }
@@ -490,8 +490,8 @@ export function LanPorts () {
         console.log('SoftGreState.TurnOffSoftGre')
         console.log(next)
         const turnOffChange: SoftGreLanPortChange = {
-          id: next.portId!,
-          softGRESettings: {
+          lanPortId: next.portId!,
+          venueLanPortSettings: {
             softGreEnabled: false,
             softGreProfileId:
               lanPortOrinData
@@ -512,11 +512,11 @@ export function LanPorts () {
         }
         if (existedChanges) {
           existedChanges.lanPorts = existedChanges?.lanPorts.map((lanPort) => {
-            if (lanPort.id === next.portId) {
-              _.set(lanPort, ['softGRESettings','softGreEnabled'], false)
+            if (lanPort.lanPortId === next.portId) {
+              _.set(lanPort, ['venueLanPortSettings','softGreEnabled'], false)
               _.set(
                 lanPort,
-                ['softGRESettings','softGreProfileId'],
+                ['venueLanPortSettings','softGreProfileId'],
                 lanPortOrinData
                   ?.find((lanOrin) =>lanOrin.model === model)
                   ?.lanPorts.find((lan) => lan.portId === next.portId)
@@ -533,8 +533,8 @@ export function LanPorts () {
       case SoftGreState.ModifySoftGreProfile:
         console.log('SoftGreState.ModifySoftGreProfile')
         const modifySoftGreProfileChange: SoftGreLanPortChange = {
-          id: next.portId!,
-          softGRESettings: {
+          lanPortId: next.portId!,
+          venueLanPortSettings: {
             softGreEnabled: true,
             softGreProfileId: form.getFieldValue(['lan', next.index, 'softGreProfileId'])
           }
@@ -551,9 +551,9 @@ export function LanPorts () {
         }
         if (existedChanges) {
           existedChanges.lanPorts = existedChanges?.lanPorts.map((lanPort) => {
-            if (lanPort.id === next.portId) {
+            if (lanPort.lanPortId === next.portId) {
               // eslint-disable-next-line
-              _.set(lanPort, ['softGRESettings','softGreProfileId'], form.getFieldValue(['lan', next.index, 'softGreProfileId']))
+              _.set(lanPort, ['venueLanPortSettings','softGreProfileId'], form.getFieldValue(['lan', next.index, 'softGreProfileId']))
               console.log('modify - change found')
               console.log(lanPort)
             }
@@ -561,14 +561,55 @@ export function LanPorts () {
           })
         }
         break
-      case SoftGreState.TurnOnDHCPOption82:
+      case SoftGreState.TurnOnAndModifyDHCPOption82Settings:
+        console.log('SoftGreState.TurnOnAndModifyDHCPOption82Settings')
+        const turnOnDHCPOption82Change: SoftGreLanPortChange = {
+          lanPortId: next.portId!,
+          venueLanPortSettings: {
+            softGreEnabled: true,
+            softGreProfileId: form.getFieldValue(['lan', next.index, 'softGreProfileId']),
+            softGreSettings: {
+              dhcpOption82Enabled: true,
+              // eslint-disable-next-line max-len
+              dhcpOption82Settings: form.getFieldValue(['lan', next.index, 'dhcpOption82Settings'])
+            }
+          }
+        }
+        if (isPendingChangesEmpty || !existedChanges) {
+          console.log('no exist change')
+          pendingLanPortChanges.current = [
+            ...pendingChanges,
+            ...[{
+              model: model,
+              lanPorts: [turnOnDHCPOption82Change]
+            }]
+          ]
+        }
+        if (existedChanges) {
+          let changeNotFound = true
+          let newLanPortsChangesList = existedChanges?.lanPorts.map((lanPort) => {
+            if(lanPort.lanPortId === next.portId) {
+              changeNotFound = false
+              _.set(lanPort, ['venueLanPortSettings','softGreSettings','dhcpOption82Enabled'], true)
+              // eslint-disable-next-line
+              _.set(
+                lanPort,
+                ['venueLanPortSettings','softGreSettings','dhcpOption82Settings'],
+                form.getFieldValue(['lan', next.index, 'dhcpOption82', 'dhcpOption82Settings'])
+              )
+            }
+            return lanPort
+          })
+          if (changeNotFound){
+            console.log('changeNotFound')
+            newLanPortsChangesList?.push(turnOnDHCPOption82Change)
+          }
+          existedChanges.lanPorts = newLanPortsChangesList
+        }
         console.log('SoftGreState.TurnOnDHCPOption82')
         break
       case SoftGreState.TurnOffDHCPOption82:
         console.log('SoftGreState.TurnOffDHCPOption82')
-        break
-      case SoftGreState.ModifyDHCPOption82Settings:
-        console.log('SoftGreState.ModifyDHCPOption82Settings')
         break
       default:
         console.error(`Invalid action: ${next}`) // eslint-disable-line no-console
