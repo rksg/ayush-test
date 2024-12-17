@@ -245,7 +245,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       sorter: { compare: sortProp('root', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'Ap Count' }),
+      title: $t({ defaultMessage: 'AP Count' }),
       width: 100,
       dataIndex: 'apCount',
       key: 'apCount',
@@ -294,7 +294,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       }
     },
     {
-      title: $t({ defaultMessage: 'AP Count' }),
+      title: $t({ defaultMessage: 'APs With Connected Clients' }),
       dataIndex: 'apCount',
       key: 'apCount',
       width: 130,

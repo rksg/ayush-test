@@ -16,4 +16,10 @@ export const Title = styled(Typography.Title).attrs({ level: 4 })`
 
 export const Details = styled.div`
   flex: 1;
+  ul {
+    padding-inline-start: 15px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
 `

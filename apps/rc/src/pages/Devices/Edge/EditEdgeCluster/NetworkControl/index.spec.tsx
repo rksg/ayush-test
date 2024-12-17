@@ -13,7 +13,8 @@ import {
   EdgeHqosProfileFixtures,
   EdgeHqosProfilesUrls,
   EdgeMdnsFixtures,
-  EdgeMdnsProxyUrls
+  EdgeMdnsProxyUrls,
+  EdgeUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
@@ -69,13 +70,24 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetEdgeFeatureSetsQuery: jest.fn(() => ({
+    arpRequiredFw: '2.3.0'
+  })),
+  useGetVenueEdgeFirmwareListQuery: jest.fn(() => ({
+    venueEdgeFw: '2.3.0.200'
+  }))
+}))
+
 describe('Edge Cluster Network Control Tab', () => {
   let params: { tenantId: string, clusterId: string, activeTab?: string }
   const mockEdgeClusterListForHqos = _.cloneDeep(mockEdgeClusterList.data[0])
   mockEdgeClusterListForHqos.edgeList.forEach(e => e.cpuCores = 4)
   beforeEach(() => {
     jest.mocked(useIsEdgeFeatureReady)
-      .mockImplementation(ff => ff !== Features.EDGE_MDNS_PROXY_TOGGLE)
+      .mockImplementation(ff => ff !== Features.EDGE_MDNS_PROXY_TOGGLE
+        && ff !== Features.EDGE_ARPT_TOGGLE)
 
     store.dispatch(edgeApi.util.resetApiState())
     store.dispatch(edgeDhcpApi.util.resetApiState())
@@ -560,6 +572,158 @@ describe('Edge Cluster Network Control Tab', () => {
       expect(await screen.findByTestId('EdgeCompatibilityDrawer')).toBeVisible()
     })
   })
+
+  describe('ARP Termination', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff => ff === Features.EDGE_ARPT_TOGGLE
+          || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+
+      params = {
+        tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
+        clusterId: mockEdgeClusterList.data[0].clusterId,
+        activeTab: 'networkControl'
+      }
+    })
+
+    it('should change cluster ARP Termination settings', async () => {
+      const mockedUpddateArpTerminationSettingsReq = jest.fn()
+      const mockedGetArpTerminationSettingsReq = jest.fn()
+      mockServer.use(
+        rest.get(
+          EdgeUrlsInfo.getEdgeClusterArpTerminationSettings.url,
+          (req, res, ctx) => {
+            mockedGetArpTerminationSettingsReq()
+            return res(ctx.json({
+              enabled: true,
+              agingTimerEnabled: true,
+              agingTimeSec: 600
+            }))}
+        ),
+        rest.put(
+          EdgeUrlsInfo.updateEdgeClusterArpTerminationSettings.url,
+          (req, res, ctx) => {
+            mockedUpddateArpTerminationSettingsReq(req.body)
+            return res(ctx.status(202))
+          }
+        )
+      )
+
+      render(
+        <Provider>
+          <EdgeNetworkControl
+            currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
+        </Provider>, {
+          route: {
+            params,
+            path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
+          }
+        })
+
+      await screen.findByText('ARP Termination')
+      const arpSwitch = getArpSwitchBtn()
+      await waitFor(() => expect(mockedGetArpTerminationSettingsReq).toBeCalled())
+      await waitFor(() => expect(arpSwitch).toBeChecked())
+      const arpAgingSwitch = getArpAgingSwitchBtn()
+      await waitFor(() => expect(arpAgingSwitch).toBeChecked())
+      const arpAgingTimer = getArpAgingTimerSpinBtn()
+      await waitFor(() => expect(arpAgingTimer).toHaveValue('600'))
+
+      await userEvent.click(arpAgingSwitch!)
+      await waitFor(() => expect(arpAgingTimer).not.toBeVisible())
+      await userEvent.click(arpSwitch!)
+      await waitFor(() => expect(arpAgingSwitch).not.toBeVisible())
+
+      await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+      expect(mockedUpddateArpTerminationSettingsReq).toBeCalledWith({
+        enabled: false,
+        agingTimerEnabled: true,
+        agingTimeSec: 600
+      })
+    })
+
+    it('should not trigger API when there is no change', async () => {
+      const mockedUpddateArpTerminationSettingsReq = jest.fn()
+      const mockedGetArpTerminationSettingsReq = jest.fn()
+      mockServer.use(
+        rest.get(
+          EdgeUrlsInfo.getEdgeClusterArpTerminationSettings.url,
+          (req, res, ctx) => {
+            mockedGetArpTerminationSettingsReq()
+            return res(ctx.json({
+              enabled: true,
+              agingTimerEnabled: true,
+              agingTimeSec: 600
+            }))}
+        ),
+        rest.put(
+          EdgeUrlsInfo.updateEdgeClusterArpTerminationSettings.url,
+          (req, res, ctx) => {
+            mockedUpddateArpTerminationSettingsReq(req.params)
+            return res(ctx.status(202))
+          }
+        )
+      )
+
+      render(
+        <Provider>
+          <EdgeNetworkControl
+            currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
+        </Provider>, {
+          route: {
+            params,
+            path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
+          }
+        })
+
+      await screen.findByText('ARP Termination')
+      const arpSwitch = getArpSwitchBtn()
+      await waitFor(() => expect(mockedGetArpTerminationSettingsReq).toBeCalled())
+      await waitFor(() => expect(arpSwitch).toBeChecked())
+      const arpAgingSwitch = getArpAgingSwitchBtn()
+      await waitFor(() => expect(arpAgingSwitch).toBeChecked())
+      const arpAgingTimer = getArpAgingTimerSpinBtn()
+      await waitFor(() => expect(arpAgingTimer).toHaveValue('600'))
+
+      await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+      expect(mockedUpddateArpTerminationSettingsReq).toBeCalledTimes(0)
+    })
+
+    it('should show compatibility component', async () => {
+      const mockedGetArpTerminationSettingsReq = jest.fn()
+      mockServer.use(
+        rest.get(
+          EdgeUrlsInfo.getEdgeClusterArpTerminationSettings.url,
+          (req, res, ctx) => {
+            mockedGetArpTerminationSettingsReq()
+            return res(ctx.json({
+              enabled: true,
+              agingTimerEnabled: true,
+              agingTimeSec: 600
+            }))}
+        )
+      )
+
+      render(
+        <Provider>
+          <EdgeNetworkControl
+            currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
+        </Provider>, {
+          route: {
+            params,
+            path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
+          }
+        })
+
+      await screen.findByText('ARP Termination')
+      await waitFor(() => expect(mockedGetArpTerminationSettingsReq).toBeCalled())
+      const toolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
+      expect(toolTips.length).toBe(1)
+      toolTips.forEach(t => expect(t).toBeVisible())
+      expect(await screen.findByTestId('EdgeCompatibilityDrawer')).toBeVisible()
+    })
+  })
+
 })
 
 const getMdnsSwitchBtn = () => {
@@ -572,4 +736,21 @@ const getMdnsDropdownBtn = () => {
   const comboboxs = screen.getAllByRole('combobox')
   const mdnsCombobox = comboboxs.find(btn => btn.id === 'edgeMdnsId')
   return mdnsCombobox
+}
+
+const getArpSwitchBtn = () => {
+  const switchBtn = screen.getAllByRole('switch')
+  const aprSwitch = switchBtn.find(btn => btn.id === 'arpTerminationSwitch')
+  return aprSwitch
+}
+
+const getArpAgingSwitchBtn = () => {
+  const switchBtn = screen.getAllByRole('switch')
+  const aprAgingSwitch = switchBtn.find(btn => btn.id === 'arpAgingTimerSwitch')
+  return aprAgingSwitch
+}
+
+const getArpAgingTimerSpinBtn = () => {
+  const spinBtn = screen.getAllByRole('spinbutton').find(btn => btn.id === 'agingTimeSec')
+  return spinBtn
 }

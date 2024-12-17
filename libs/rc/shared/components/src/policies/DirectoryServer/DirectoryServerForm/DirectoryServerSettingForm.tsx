@@ -204,6 +204,7 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
               style={{ display: 'inline-block', width: 'calc(75%)' , paddingRight: '20px' }}
               rules={[
                 { required: true },
+                { max: 255 },
                 { validator: (_, value) => domainNameRegExp(value),
                   message: $t({ defaultMessage: 'Please enter a valid FQDN or IP address' })
                 }
@@ -300,7 +301,7 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
                 { max: 255 }
               ]}
               children={readMode? (data?.keyAttribute || noDataDisplay)
-                :<Input/>}
+                :<Input placeholder='uid'/>}
             />
             <Form.Item
               {...(readMode? undefined : { name: 'searchFilter' })}
@@ -310,7 +311,7 @@ export const DirectoryServerSettingForm = (props: DirectoryServerFormSettingForm
                 { max: 255 }
               ]}
               children={readMode? (data?.searchFilter || noDataDisplay)
-                :<Input/>}
+                :<Input placeholder='objectClass=*'/>}
             />
           </Col>)
         }

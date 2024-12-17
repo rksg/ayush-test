@@ -66,6 +66,7 @@ export interface EdgeStatus extends EdgeResourceUtilization {
   hasCorePort?: boolean
   incompatible?: number // UI only
   isHqosEnabled?: boolean
+  isArpTerminationEnabled?: boolean
 }
 export interface EdgeDetails {
   serialNumber: string
@@ -528,4 +529,10 @@ export interface SubInterface {
   ip?: string
   subnet?: string
   interfaceName?: string
+}
+
+export interface ClusterArpTerminationSettings {
+  enabled: boolean
+  agingTimerEnabled: boolean
+  agingTimeSec: number
 }
