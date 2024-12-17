@@ -45,7 +45,8 @@ import {
   useEnhanceVenueNetworkTableQuery,
   useGetEnhancedVlanPoolPolicyTemplateListQuery,
   useDeleteRbacNetworkVenueMutation,
-  useAddRbacNetworkVenueMutation
+  useAddRbacNetworkVenueMutation,
+  useEnhanceVenueNetworkTableV2Query
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -129,6 +130,7 @@ const useVenueNetworkList = (props: { settingsId: string, venueId?: string } ) =
   const { settingsId, venueId } = props
   const { isTemplate } = useConfigTemplate()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isUseNewRbacNetworkVenueApi = useIsSplitOn(Features.WIFI_NETWORK_VENUE_QUERY)
   const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
@@ -140,31 +142,24 @@ const useVenueNetworkList = (props: { settingsId: string, venueId?: string } ) =
       isTemplate: isTemplate
     },
     pagination: { settingsId },
-    option: { skip: isApCompatibilitiesByModel || resolvedRbacEnabled }
+    option: { skip: resolvedRbacEnabled || !venueId }
   })
 
   const rbacTableQuery = useTableQuery({
-    useQuery: useNewVenueNetworkTableQuery,
+    useQuery: isApCompatibilitiesByModel
+      ? (isUseNewRbacNetworkVenueApi? useEnhanceVenueNetworkTableV2Query : useEnhanceVenueNetworkTableQuery)
+      : useNewVenueNetworkTableQuery,
     defaultPayload: {
       ...defaultRbacPayload,
       isTemplate: isTemplate
     },
     pagination: { settingsId },
-    option: { skip: isApCompatibilitiesByModel || !resolvedRbacEnabled || !venueId }
+    option: { skip: !resolvedRbacEnabled || !venueId }
   })
 
-  const enhancedRbacTableQuery = useTableQuery({
-    useQuery: useEnhanceVenueNetworkTableQuery,
-    defaultPayload: {
-      ...defaultRbacPayload,
-      isTemplate: isTemplate
-    },
-    pagination: { settingsId },
-    option: { skip: !isApCompatibilitiesByModel || !resolvedRbacEnabled || !venueId }
-  })
 
-  return isApCompatibilitiesByModel ? enhancedRbacTableQuery
-    : (resolvedRbacEnabled ? rbacTableQuery : nonRbacTableQuery)
+
+  return resolvedRbacEnabled? rbacTableQuery : nonRbacTableQuery
 }
 
 const defaultArray: NetworkExtended[] = []
@@ -183,6 +178,7 @@ export function VenueNetworksTab () {
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
   const { venueId } = params
@@ -301,7 +297,7 @@ export function VenueNetworksTab () {
         const venueId = params.venueId as string
         if (checked) { // activate
           const newNetworkVenue = generateDefaultNetworkVenue(venueId as string, row.id)
-          if (IsNetworkSupport6g(row.deepNetwork)) {
+          if (IsNetworkSupport6g(row.deepNetwork, { isSupport6gOWETransition })) {
             newNetworkVenue.allApGroupsRadioTypes.push(RadioTypeEnum._6_GHz)
           }
 

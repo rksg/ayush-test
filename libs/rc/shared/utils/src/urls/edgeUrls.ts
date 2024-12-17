@@ -323,6 +323,16 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/edgeClusters/:clusterId/subInterfaces',
     newApi: true
   },
+  updateEdgeClusterArpTerminationSettings: {
+    method: 'put',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/arpTerminationSettings',
+    newApi: true
+  },
+  getEdgeClusterArpTerminationSettings: {
+    method: 'get',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/arpTerminationSettings',
+    newApi: true
+  },
   getEdgeFeatureSets: {
     method: 'post',
     url: '/edgeFeatureSets/query',

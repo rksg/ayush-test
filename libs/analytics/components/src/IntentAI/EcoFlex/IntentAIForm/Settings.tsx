@@ -6,14 +6,14 @@ import { StepsForm, useStepFormContext } from '@acx-ui/components'
 
 import { ScheduleTiming } from '../../common/ScheduleTiming'
 import { ScheduleWeekly } from '../../common/ScheduleWeekly'
-import { Intent }         from '../../useIntentDetailsQuery'
+import { IntentDetail }   from '../../useIntentDetailsQuery'
 
 import { APsSelection } from './APSelection'
 const { Paragraph } = Typography
 
 export function Settings () {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<Intent>()
+  const { form } = useStepFormContext<IntentDetail>()
   const enableExcludedHours = Form.useWatch(['preferences', 'enableExcludedHours'])
   const enableExcludedAPs = Form.useWatch(['preferences', 'enableExcludedAPs'])
   const isEnabled = form.getFieldValue('preferences').enable

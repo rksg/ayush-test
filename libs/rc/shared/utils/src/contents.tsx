@@ -18,29 +18,10 @@ export enum AAAWlanSecurityEnum {
   WPA3 = 'WPA3'
 }
 
-export enum SecurityOptionsDescription {
-  /* eslint-disable max-len */
-  WPA2Personal = 'WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise.',
-  WPA3 = 'WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.',
-  WPA23Mixed = 'WPA2/WPA3 mixed mode supports the high-end WPA3 which is the highest level of Wi-Fi security available and WPA2 which is still common and provides good security. Typically, mobile devices manufactured after 2006 support WPA2 and devices manufactures after 2019 support WPA3.',
-  WPAPersonal = 'WPA security can be chosen if you have older devices that don\'t support WPA2. These devices were likely manufactured prior to 2006. We recommend you upgrade or replace these older devices.',
-  WEP = 'Ruckus Networks does not recommend using WEP to secure your wireless network because it is insecure and can be exploited easily. RUCKUS One offers WEP to enable customers with very old devices (that are difficult or costly to replace) to continue using those devices to connect to the wireless network. If you must use WEP, DO NOT use the devices using WEP to transport sensitive information over the wireless network.',
-  WPA2_DESCRIPTION_WARNING = '6GHz radios are only supported with WPA3.'
-  /* eslint-enable */
-}
-
 export enum WisprSecurityEnum {
   NONE = 'None',
   PSK = 'Pre-Share Key (PSK)',
   OWE = 'OWE encryption'
-}
-
-export enum WisprSecurityOptionsDescription {
-  /* eslint-disable max-len */
-  NONE = '',
-  PSK = 'Require users to enter a passphrase to connect',
-  OWE = 'Secures open Wi-Fi networks by encrypting data without needing passwords.'
-  /* eslint-enable */
 }
 
 export enum SecurityOptionsPassphraseLabel {
@@ -186,6 +167,30 @@ export const WifiNetworkMessages = {
   }),
   AP_NAME_TOOLTIP: defineMessage({
     defaultMessage: 'Name must be between 2 and 32 alpha-numeric characters. Backtick "`" and the "$(" combination are not allowed.'
+  })
+}
+
+export const WisprSecurityOptionsDescription = {
+  PSK: defineMessage({
+    defaultMessage: 'Require users to enter a passphrase to connect'
+  }),
+  OWE: WifiNetworkMessages.ENABLE_OWE_TOOLTIP
+}
+
+export const SecurityOptionsDescription = {
+  WPA2Personal: WifiNetworkMessages.WPA2_DESCRIPTION,
+  WPA3: WifiNetworkMessages.WPA3_DESCRIPTION,
+  WPA23Mixed: defineMessage({
+    defaultMessage: 'WPA2/WPA3 mixed mode supports the high-end WPA3 which is the highest level of Wi-Fi security available and WPA2 which is still common and provides good security. Typically, mobile devices manufactured after 2006 support WPA2 and devices manufactures after 2019 support WPA3.'
+  }),
+  WPAPersonal: defineMessage({
+    defaultMessage: 'WPA security can be chosen if you have older devices that don\'t support WPA2. These devices were likely manufactured prior to 2006. We recommend you upgrade or replace these older devices.'
+  }),
+  WEP: defineMessage({
+    defaultMessage: 'Ruckus Networks does not recommend using WEP to secure your wireless network because it is insecure and can be exploited easily. RUCKUS One offers WEP to enable customers with very old devices (that are difficult or costly to replace) to continue using those devices to connect to the wireless network. If you must use WEP, DO NOT use the devices using WEP to transport sensitive information over the wireless network.'
+  }),
+  WPA2_DESCRIPTION_WARNING: defineMessage({
+    defaultMessage: '6GHz radios are only supported with WPA3.'
   })
 }
 
@@ -535,7 +540,7 @@ export const EthernetPortProfileMessages = {
     defaultMessage: 'A guest VLAN is used if you want to allow a device that fails authentication to access the Internet but restrict it from accessing internal network resources'
   }),
   USE_RADIUS_PROXY: defineMessage({
-    defaultMessage: 'This option requires your access points to run firmware version 7.0.0.104 or higher.'
+    defaultMessage: 'This option requires your access points to run firmware version 7.0.0.400 or higher.'
   })
   /* eslint-enable */
 }

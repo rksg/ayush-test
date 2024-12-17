@@ -56,7 +56,7 @@ export default function DirectoryServerDrawer (props: DirectoryServerDrawerProps
     <Drawer
       title={readMode
         ? $t({ defaultMessage: 'Directory Server Details: {name}' }, { name: policyName })
-        : $t({ defaultMessage: 'Add DirectoryServer' })
+        : $t({ defaultMessage: 'Add Directory Server' })
       }
       visible={visible}
       width={450}

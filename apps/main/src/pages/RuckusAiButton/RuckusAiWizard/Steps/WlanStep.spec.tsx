@@ -2,25 +2,32 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }      from '@acx-ui/store'
+import { CommonUrlsInfo, RuckusAssistantUrlInfo } from '@acx-ui/rc/utils'
+import { Provider  }                              from '@acx-ui/store'
 import {
   mockServer,
   render,
   renderHook,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
-import { mock_payload, mock_description } from './__test__/WlanStepFixtures'
-import { WlanStep }                       from './WlanStep'
+import { mock_payload, mock_description, mock_addwlan_response } from './__test__/WlanStepFixtures'
+import { WlanStep }                                              from './WlanStep'
 
 describe('WlanStep', () => {
-
+  const createFn = jest.fn()
   beforeEach(() => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json({ data: [{ name: 'wlan1' }] }))
+      ),
+      rest.post(
+        RuckusAssistantUrlInfo.createOnboardConfigs.url,
+        (_req, res, ctx) => {
+          createFn()
+          return res(ctx.json(mock_addwlan_response))}
       )
     )
   })
@@ -36,6 +43,7 @@ describe('WlanStep', () => {
       <Provider>
         <Form form={formRef.current}>
           <WlanStep
+            sessionId={'sessionId'}
             showAlert={false}
             payload={mock_payload}
             formInstance={formRef.current}
@@ -45,6 +53,7 @@ describe('WlanStep', () => {
       </Provider>)
     expect(await screen.findByText('Add Network Profile')).toBeVisible()
     userEvent.click(screen.getByRole('button', { name: /Add Network Profile/i }))
+    await waitFor(() => expect(createFn).toHaveBeenCalledTimes(1))
     expect(await screen.findByText('3')).toBeVisible()
     await userEvent.click(screen.getByTestId('wlan-checkbox-0'))
     await userEvent.type(screen.getByTestId('wlan-name-input-2'), 'wlan1')
@@ -65,6 +74,7 @@ describe('WlanStep', () => {
       <Provider>
         <Form form={formRef.current}>
           <WlanStep
+            sessionId={'sessionId'}
             showAlert={true}
             payload={mock_payload}
             formInstance={formRef.current}
