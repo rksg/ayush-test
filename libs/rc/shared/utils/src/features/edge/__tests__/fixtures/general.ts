@@ -177,6 +177,17 @@ export const mockedVenueFirmwareList = [
         category: 'RECOMMENDED'
       }
     ]
+  },
+  {
+    id: 'mock_venue_3',
+    name: 'Mock Venue 3',
+    versions: [
+      {
+        name: '2.3.0.200',
+        id: '2.3.0.200',
+        category: 'RECOMMENDED'
+      }
+    ]
   }
 ]
 
