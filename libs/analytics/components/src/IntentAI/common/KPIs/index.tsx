@@ -3,9 +3,9 @@ import { useIntl } from 'react-intl'
 
 import { Card, GridCol, TrendPill, Loader } from '@acx-ui/components'
 
-import { useIntentContext }                            from '../../IntentContext'
-import { getGraphKPIs, IntentKPI, useIntentKPIsQuery } from '../../useIntentDetailsQuery'
-import { KpiField }                                    from '../KpiField'
+import { useIntentContext }                 from '../../IntentContext'
+import { getGraphKPIs, useIntentKPIsQuery } from '../../useIntentDetailsQuery'
+import { KpiField }                         from '../KpiField'
 
 import * as UI from './styledComponents'
 
@@ -34,11 +34,7 @@ export const useKPIsQuery = () => {
     .map(kpi => _.pick(kpi, ['key', 'deltaSign']))
   const query = useIntentKPIsQuery({ ...intent, kpis: sanitisedKPIs }, { skip: kpis.length === 0 })
 
-  const isDetectError = query.isError && !!_.pick(query.error, ['data'])
-
-  const intentKPIs = isDetectError ?
-    (_.pick(query.error, ['data']) as { data: IntentKPI }).data
-    : query.data
+  const intentKPIs = query.data
 
   return { query, intentKPIs, kpis, intent }
 }
