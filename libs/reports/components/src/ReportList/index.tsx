@@ -77,20 +77,22 @@ export function ReportList () {
         breadcrumb={[{ text: $t({ defaultMessage: 'Business Insights' }) }]}
       />
       <GridRow>
-        {reports.map(({ title, description, path }) => (
-          <GridCol key={path} col={{ span: 6 }}>
-            <RadioCard
-              type='button'
-              buttonText={viewText}
-              title={title}
-              description={description}
-              value={path}
-              onClick={() => navigate({
-                ...basePath,
-                pathname: `${basePath.pathname}/${path}`
-              })}
-            />
-          </GridCol>
+        {reports.map(({ title, description, path, disabled }) => (
+          !disabled && (
+            <GridCol key={path} col={{ span: 6 }}>
+              <RadioCard
+                type='button'
+                buttonText={viewText}
+                title={title}
+                description={description}
+                value={path}
+                onClick={() => navigate({
+                  ...basePath,
+                  pathname: `${basePath.pathname}/${path}`
+                })}
+              />
+            </GridCol>
+          )
         ))
         }
       </GridRow>
