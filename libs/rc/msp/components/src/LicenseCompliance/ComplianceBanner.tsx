@@ -5,10 +5,11 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { cssNumber }                             from '@acx-ui/components'
-import { InformationSolid }                      from '@acx-ui/icons'
-import { useGetEntitlementsAttentionNotesQuery } from '@acx-ui/msp/services'
-import { MspAttentionNotesPayload }              from '@acx-ui/msp/utils'
+import { cssNumber }                                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { InformationSolid }                                       from '@acx-ui/icons'
+import { useGetEntitlementsAttentionNotesQuery }                  from '@acx-ui/msp/services'
+import { GeneralAttentionNotesPayload, MspAttentionNotesPayload } from '@acx-ui/msp/utils'
 
 import * as UI from './styledComponents'
 
@@ -40,9 +41,11 @@ export const ComplianceBanner = () => {
   const { $t } = useIntl()
   const params = useParams()
   const [ shownMoreNotesInBanner, setShownMoreNotesInBanner ] = useState(false)
+  const isAttentionNotesToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_ATTENTION_NOTES_TOGGLE)
 
   const { data: queryData } = useGetEntitlementsAttentionNotesQuery(
-    { params, payload: MspAttentionNotesPayload })
+    { params, payload: isAttentionNotesToggleEnabled
+      ? GeneralAttentionNotesPayload : MspAttentionNotesPayload })
 
   return (
     _.isEmpty(queryData?.data) ? <></>

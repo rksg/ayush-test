@@ -1,7 +1,7 @@
 import { useContext, useEffect, useReducer, useRef, useState } from 'react'
 
 import { Col, Form, Image, Row, Select, Space, Tooltip } from 'antd'
-import _, { clone, cloneDeep, isEqual }                  from 'lodash'
+import _, { isEqual, clone, cloneDeep }                     from 'lodash'
 import { useIntl }                                       from 'react-intl'
 
 import {
@@ -13,24 +13,25 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  ConvertPoeOutToFormData,
   LanPortPoeSettings,
-  LanPortSettings
-} from '@acx-ui/rc/components'
+  LanPortSettings,
+  ConvertPoeOutToFormData
+}
+  from '@acx-ui/rc/components'
 import {
-  useActivateEthernetPortProfileOnVenueApModelPortIdMutation,
+  useGetVenueSettingsQuery,
+  useGetVenueLanPortsQuery,
   useGetDefaultVenueLanPortsQuery,
+  useUpdateVenueLanPortsMutation,
+  useGetVenueTemplateSettingsQuery,
+  useGetVenueTemplateLanPortsQuery,
+  useUpdateVenueTemplateLanPortsMutation,
   useGetDHCPProfileListQuery,
   useGetDhcpTemplateListQuery,
-  useGetVenueLanPortsQuery,
-  useGetVenueLanPortWithEthernetSettingsQuery,
-  useGetVenueSettingsQuery,
-  useGetVenueTemplateLanPortsQuery,
-  useGetVenueTemplateSettingsQuery,
+  useActivateEthernetPortProfileOnVenueApModelPortIdMutation,
   useUpdateEthernetPortSettingsByVenueApModelMutation,
-  useUpdateVenueLanPortsMutation,
-  useUpdateVenueLanPortSpecificSettingsMutation,
-  useUpdateVenueTemplateLanPortsMutation
+  useGetVenueLanPortWithEthernetSettingsQuery,
+  useUpdateVenueLanPortSpecificSettingsMutation
 } from '@acx-ui/rc/services'
 import {
   ApLanPortTypeEnum,
@@ -48,7 +49,9 @@ import {
   VenueSettings,
   WifiNetworkMessages
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import {
+  useParams
+} from '@acx-ui/react-router-dom'
 
 import { VenueUtilityContext }            from '../..'
 import DefaultApModelDiagram              from '../../../../assets/images/aps/ap-model-placeholder.png'
@@ -57,6 +60,7 @@ import {
   useVenueConfigTemplateQueryFnSwitcher
 } from '../../../../venueConfigTemplateApiSwitcher'
 import { VenueEditContext } from '../../../index'
+
 
 const { useWatch } = Form
 
@@ -340,7 +344,7 @@ export function LanPorts () {
     const { lanPorts, ...rest } = venueLanPorts
     const { lanPorts: originLanPorts, ...originRest } = originVenueLanPorts
 
-    if(!_.isEqual(rest, originRest)) {
+    if(!isEqual(rest, originRest)) {
       await updateLanPortSpecificSetting({
         params: {
           venueId: venueId,

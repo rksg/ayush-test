@@ -1,11 +1,10 @@
-import { Form, Space, Switch } from 'antd'
+import { Form, Switch, Space } from 'antd'
 import { useIntl }             from 'react-intl'
 
-import { Alert, Tooltip }                         from '@acx-ui/components'
+import { Tooltip, Alert, StepsForm } from '@acx-ui/components'
 import { SoftGreProfileDispatcher, SoftGreState } from '@acx-ui/rc/utils'
 
 import { SoftGREProfileSettings } from './SoftGREProfileSettings'
-import { FieldLabel }             from './styledComponents'
 
 interface SoftGRETunnelSettingsProps {
   index: number;
@@ -34,8 +33,8 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
 
   return (
     <>
-      <FieldLabel width='180px'>
-        <Space style={{ marginBottom: '10px' }}>
+      <StepsForm.FieldLabel width={'280px'}>
+        <Space>
           {$t({ defaultMessage: 'Enable SoftGRE Tunnel' })}
           <Tooltip.Question
             title={
@@ -75,7 +74,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             />
           }
         />
-      </FieldLabel>
+      </StepsForm.FieldLabel>
       {
         softGreTunnelEnable && <>
           <Alert

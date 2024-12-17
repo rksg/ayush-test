@@ -4,25 +4,34 @@ import { cloneDeep }              from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Loader, StepsFormLegacy }                                               from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
+import { Loader, StepsFormLegacy } from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import {
   useGetVLANPoolPolicyViewModelListQuery,
   useLazyApGroupNetworkListV2Query,
   useLazyNewApGroupNetworkListQuery,
-  useUpdateNetworkVenuesMutation, useUpdateNetworkVenueTemplateMutation,
-  useGetEnhancedVlanPoolPolicyTemplateListQuery, useUpdateNetworkVenueMutation
+  useLazyNewApGroupNetworkListV2Query,
+  useUpdateNetworkVenuesMutation,
+  useUpdateNetworkVenueTemplateMutation,
+  useGetEnhancedVlanPoolPolicyTemplateListQuery,
+  useUpdateNetworkVenueMutation
 } from '@acx-ui/rc/services'
 import {
   KeyValue,
   Network,
-  NetworkVenue, useConfigTemplate, useConfigTemplateMutationFnSwitcher,
+  NetworkVenue,
+  useConfigTemplate,
+  useConfigTemplateMutationFnSwitcher,
   VLANPoolViewModelType
 } from '@acx-ui/rc/utils'
 
-import { defaultApGroupNetworkPayload, defaultNewApGroupNetworkPayload, getCurrentVenue } from '../../ApGroupNetworkTable'
-import { usePathBasedOnConfigTemplate }                                                   from '../../configTemplates'
-import { ApGroupEditContext }                                                             from '../context'
+import {
+  defaultApGroupNetworkPayload,
+  defaultNewApGroupNetworkPayload,
+  getCurrentVenue
+} from '../../ApGroupNetworkTable'
+import { usePathBasedOnConfigTemplate } from '../../configTemplates'
+import { ApGroupEditContext }           from '../context'
 
 import { ApGroupVlanRadioDrawer, ApGroupVlanRadioDrawerState } from './ApGroupVlanRadioDrawer'
 import { ApGroupVlanRadioTable }                               from './ApGroupVlanRadioTable'
@@ -47,6 +56,7 @@ export type VlanPoolNameMapType = { vlanPoolingNameMap: KeyValue<string, string>
 export function ApGroupVlanRadioTab () {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
+  const isUseNewRbacNetworkVenueApi = useIsSplitOn(Features.WIFI_NETWORK_VENUE_QUERY)
 
   const {
     isApGroupTableFlag,
@@ -69,6 +79,7 @@ export function ApGroupVlanRadioTab () {
 
   const [getApGroupNetworkListV2] = useLazyApGroupNetworkListV2Query()
   const [getRbacApGroupNetworkList] = useLazyNewApGroupNetworkListQuery()
+  const [getRbacApGroupNetworkListV2] = useLazyNewApGroupNetworkListV2Query()
   const [updateNetworkVenues] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useUpdateNetworkVenuesMutation,
     useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
@@ -86,34 +97,36 @@ export function ApGroupVlanRadioTab () {
   const { vlanPoolingNameMap }: VlanPoolNameMapType = useGetVLANPoolPolicyInstance(!(tableData?.length))
 
   useEffect(() => {
-    const payload = cloneDeep({
-      ...defaultApGroupNetworkPayload,
-      isTemplate: isTemplate,
-      filters: { isAllApGroups: [false] }
-    })
 
     const getApGroupNetworkData = async (venueId: string) => {
       if (isRbacEnabled) {
-        const { data } = await getRbacApGroupNetworkList({
-          params: { venueId, apGroupId },
-          payload: cloneDeep({
-            ...defaultNewApGroupNetworkPayload,
-            isTemplate: isTemplate,
-            isTemplateRbacEnabled: isRbacEnabled,
-            filters: {
-              'venueApGroups.apGroupIds': [apGroupId],
-              'venueApGroups.isAllApGroups': [false]
-            }
-          })
+        const params = { venueId, apGroupId }
+        const payload = cloneDeep({
+          ...defaultNewApGroupNetworkPayload,
+          isTemplate: isTemplate,
+          isTemplateRbacEnabled: isRbacEnabled,
+          filters: {
+            'venueApGroups.apGroupIds': [apGroupId],
+            'venueApGroups.isAllApGroups': [false]
+          }
         })
 
-        return data
+        if (isUseNewRbacNetworkVenueApi) {
+          const { data } = await getRbacApGroupNetworkListV2({ params, payload })
+          return data
+        } else {
+          const { data } = await getRbacApGroupNetworkList({ params, payload })
+          return data
+        }
       } else {
-        const { data } = await getApGroupNetworkListV2({
-          params: { tenantId, venueId, apGroupId },
-          payload
+        const params = { tenantId, venueId, apGroupId }
+        const payload = cloneDeep({
+          ...defaultApGroupNetworkPayload,
+          isTemplate: isTemplate,
+          filters: { isAllApGroups: [false] }
         })
 
+        const { data } = await getApGroupNetworkListV2({ params, payload })
         return data
       }
     }
@@ -125,10 +138,13 @@ export function ApGroupVlanRadioTab () {
       setTableData(cloneDeep(initData))
     }
 
-    if (venueId)
+    if (venueId) {
       getInitTableData()
-  }, [getApGroupNetworkListV2,
-    tenantId, apGroupId, getRbacApGroupNetworkList, venueId])
+    }
+
+  }, [ tenantId, venueId, apGroupId,
+    getApGroupNetworkListV2, getRbacApGroupNetworkList, getRbacApGroupNetworkListV2,
+    isRbacEnabled, isTemplate, isUseNewRbacNetworkVenueApi ])
 
   const handleUpdateAllApGroupVlanRadio = async () => {
     const updateData = updateDataRef.current
