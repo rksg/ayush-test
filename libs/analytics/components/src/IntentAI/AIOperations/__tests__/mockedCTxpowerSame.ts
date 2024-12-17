@@ -1,4 +1,4 @@
-import { Intent } from '../../useIntentDetailsQuery'
+import { IntentDetail } from '../../useIntentDetailsQuery'
 
 export const mocked = {
   id: 'ab853454-ba3b-4ae2-9d2d-b2184c05f3c5',
@@ -32,4 +32,4 @@ export const mocked = {
   },
   currentValue: 'Full',
   recommendedValue: '-1dB'
-} as unknown as Intent
+} as unknown as IntentDetail

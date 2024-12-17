@@ -4,13 +4,13 @@ import { useIntl }  from 'react-intl'
 import { StepsForm, useStepFormContext } from '@acx-ui/components'
 
 import { ScheduleTiming } from '../../common/ScheduleTiming'
-import { Intent }         from '../../useIntentDetailsQuery'
+import { IntentDetail }   from '../../useIntentDetailsQuery'
 
 import WlanSelection from './WlanSelection'
 
 export function Settings () {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<Intent>()
+  const { form } = useStepFormContext<IntentDetail>()
   const isEnabled = form.getFieldValue('preferences').enable
   return <Row gutter={20}>
     <Col span={15}>
