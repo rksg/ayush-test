@@ -45,13 +45,21 @@ describe('ReportList', () => {
     })
   })
 
-  it('should render report cards with feature flag ON', async () => {
+  it('should render report cards with feature ready', async () => {
     jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
 
     render(<ReportList />, { route: { path, params } })
 
     expect(await screen.findByText('RUCKUS Edge Applications')).toBeVisible()
     expect(screen.getByText('RUCKUS Edge Applications')).toBeVisible()
+  })
+
+  it('should render report cards without feature ready', async () => {
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+
+    render(<ReportList />, { route: { path, params } })
+
+    expect(screen.queryByText('RUCKUS Edge Applications')).toBeNull()
   })
 
 })
