@@ -86,13 +86,42 @@ export const useSoftGreProfileActivation = (
     }
   }
 
-  const actionRunner = (current: SoftGreProfileDispatcher, next: SoftGreProfileDispatcher) => {
-    console.log('actionRunner Before', current)
-    console.log(pendingLanPortChanges.current)
+  const updatePendingLanPortChange = (
+    nextChange: SoftGreLanPortChange,
+    next: SoftGreProfileDispatcher,
+    callback: (lanPort: SoftGreLanPortChange) => void
+  ) => {
     const pendingChanges = pendingLanPortChanges.current
     const isPendingChangesEmpty = _.isEmpty(pendingChanges)
     const model = selectedModel.model
     const existedModelChanges = pendingChanges.find((change) => change.model === model)
+    if (isPendingChangesEmpty || !existedModelChanges) {
+      pendingLanPortChanges.current = [
+        ...pendingChanges,
+        ...[{
+          model: model,
+          lanPorts: [nextChange]
+        }]
+      ]
+    }
+
+    if (existedModelChanges) {
+      let changeNotFound = true
+      let newLanPortsChangesList = existedModelChanges?.lanPorts.map((lanPort) => {
+        if(lanPort.lanPortId === next.portId) {
+          changeNotFound = false
+          callback(lanPort)
+        }
+        return lanPort
+      })
+      if (changeNotFound){
+        newLanPortsChangesList?.push(nextChange)
+      }
+      existedModelChanges.lanPorts = newLanPortsChangesList
+    }
+  }
+
+  const actionRunner = (current: SoftGreProfileDispatcher, next: SoftGreProfileDispatcher) => {
     switch(next.state){
       case SoftGreState.TurnOnSoftGre:
         const turnOnChange: SoftGreLanPortChange = {
@@ -102,71 +131,29 @@ export const useSoftGreProfileActivation = (
             softGreProfileId: form.getFieldValue(['lan', next.index, 'softGreProfileId'])
           }
         }
-        if (isPendingChangesEmpty || !existedModelChanges) {
-          console.log('no exist change')
-          pendingLanPortChanges.current = [
-            ...pendingChanges,
-            ...[{
-              model: model,
-              lanPorts: [turnOnChange]
-            }]
-          ]
+        const turnOnSoftGreCallback = (lanPort: SoftGreLanPortChange) => {
+          _.set(lanPort, ['venueLanPortSettings','softGreEnabled'], true)
+          _.set(
+            lanPort,
+            ['venueLanPortSettings','softGreProfileId'],
+            form.getFieldValue(['lan', next.index, 'softGreProfileId'])
+          )
         }
-        if (existedModelChanges) {
-          let changeNotFound = true
-          let newLanPortsChangesList = existedModelChanges?.lanPorts.map((lanPort) => {
-            if(lanPort.lanPortId === next.portId) {
-              changeNotFound = false
-              _.set(lanPort, ['venueLanPortSettings','softGreEnabled'], true)
-              // eslint-disable-next-line
-              _.set(
-                lanPort,
-                ['venueLanPortSettings','softGreProfileId'],
-                form.getFieldValue(['lan', next.index, 'softGreProfileId'])
-              )
-            }
-            return lanPort
-          })
-          if (changeNotFound){
-            console.log('changeNotFound')
-            newLanPortsChangesList?.push(turnOnChange)
-          }
-          existedModelChanges.lanPorts = newLanPortsChangesList
-        }
+        updatePendingLanPortChange(turnOnChange, next, turnOnSoftGreCallback)
         break
       case SoftGreState.TurnOffSoftGre:
-        console.log('SoftGreState.TurnOffSoftGre')
-        console.log(next)
         const turnOffChange: SoftGreLanPortChange = {
           lanPortId: next.portId!,
           venueLanPortSettings: {
             softGreEnabled: false
           }
         }
-        if (isPendingChangesEmpty || !existedModelChanges) {
-          console.log('no exist change')
-          pendingLanPortChanges.current = [
-            ...pendingChanges,
-            ...[{
-              model: model,
-              lanPorts: [turnOffChange]
-            }]
-          ]
+        const turnOffSoftGreCallback = (lanPort: SoftGreLanPortChange) => {
+          _.set(lanPort, ['venueLanPortSettings','softGreEnabled'], false)
         }
-        if (existedModelChanges) {
-          existedModelChanges.lanPorts = existedModelChanges?.lanPorts.map((lanPort) => {
-            if (lanPort.lanPortId === next.portId) {
-              _.set(lanPort, ['venueLanPortSettings','softGreEnabled'], false)
-              console.log('modify - change found')
-              console.log(selectedModel)
-              console.log(lanPort)
-            }
-            return lanPort
-          })
-        }
+        updatePendingLanPortChange(turnOffChange, next, turnOffSoftGreCallback)
         break
       case SoftGreState.ModifySoftGreProfile:
-        console.log('SoftGreState.ModifySoftGreProfile')
         const modifySoftGreProfileChange: SoftGreLanPortChange = {
           lanPortId: next.portId!,
           venueLanPortSettings: {
@@ -174,30 +161,16 @@ export const useSoftGreProfileActivation = (
             softGreProfileId: form.getFieldValue(['lan', next.index, 'softGreProfileId'])
           }
         }
-        if (isPendingChangesEmpty || !existedModelChanges) {
-          console.log('no exist change')
-          pendingLanPortChanges.current = [
-            ...pendingChanges,
-            ...[{
-              model: model,
-              lanPorts: [modifySoftGreProfileChange]
-            }]
-          ]
+        const modifySoftGreProfileCallback = (lanPort: SoftGreLanPortChange) => {
+          _.set(
+            lanPort,
+            ['venueLanPortSettings','softGreProfileId'],
+            form.getFieldValue(['lan', next.index, 'softGreProfileId'])
+          )
         }
-        if (existedModelChanges) {
-          existedModelChanges.lanPorts = existedModelChanges?.lanPorts.map((lanPort) => {
-            if (lanPort.lanPortId === next.portId) {
-              // eslint-disable-next-line
-              _.set(lanPort, ['venueLanPortSettings','softGreProfileId'], form.getFieldValue(['lan', next.index, 'softGreProfileId']))
-              console.log('modify - change found')
-              console.log(lanPort)
-            }
-            return lanPort
-          })
-        }
+        updatePendingLanPortChange(modifySoftGreProfileChange, next, modifySoftGreProfileCallback)
         break
       case SoftGreState.TurnOnAndModifyDHCPOption82Settings:
-        console.log('SoftGreState.TurnOnAndModifyDHCPOption82Settings')
         const turnOnDHCPOption82Change: SoftGreLanPortChange = {
           lanPortId: next.portId!,
           venueLanPortSettings: {
@@ -210,40 +183,17 @@ export const useSoftGreProfileActivation = (
             }
           }
         }
-        if (isPendingChangesEmpty || !existedModelChanges) {
-          console.log('no exist change')
-          pendingLanPortChanges.current = [
-            ...pendingChanges,
-            ...[{
-              model: model,
-              lanPorts: [turnOnDHCPOption82Change]
-            }]
-          ]
+        const turnOnDHCPOption82Callback = (lanPort: SoftGreLanPortChange) => {
+          _.set(lanPort, ['venueLanPortSettings','softGreSettings','dhcpOption82Enabled'], true)
+          _.set(
+            lanPort,
+            ['venueLanPortSettings','softGreSettings','dhcpOption82Settings'],
+            form.getFieldValue(['lan', next.index, 'dhcpOption82', 'dhcpOption82Settings'])
+          )
         }
-        if (existedModelChanges) {
-          let changeNotFound = true
-          let newLanPortsChangesList = existedModelChanges?.lanPorts.map((lanPort) => {
-            if(lanPort.lanPortId === next.portId) {
-              changeNotFound = false
-              _.set(lanPort, ['venueLanPortSettings','softGreSettings','dhcpOption82Enabled'], true)
-              // eslint-disable-next-line
-              _.set(
-                lanPort,
-                ['venueLanPortSettings','softGreSettings','dhcpOption82Settings'],
-                form.getFieldValue(['lan', next.index, 'dhcpOption82', 'dhcpOption82Settings'])
-              )
-            }
-            return lanPort
-          })
-          if (changeNotFound){
-            console.log('changeNotFound')
-            newLanPortsChangesList?.push(turnOnDHCPOption82Change)
-          }
-          existedModelChanges.lanPorts = newLanPortsChangesList
-        }
+        updatePendingLanPortChange(turnOnDHCPOption82Change, next, turnOnDHCPOption82Callback)
         break
       case SoftGreState.TurnOffDHCPOption82:
-        console.log('SoftGreState.TurnOffDHCPOption82')
         const turnOffDHCPOption82Change: SoftGreLanPortChange = {
           lanPortId: next.portId!,
           venueLanPortSettings: {
@@ -254,37 +204,14 @@ export const useSoftGreProfileActivation = (
             }
           }
         }
-        if (isPendingChangesEmpty || !existedModelChanges) {
-          console.log('no exist change')
-          pendingLanPortChanges.current = [
-            ...pendingChanges,
-            ...[{
-              model: model,
-              lanPorts: [turnOffDHCPOption82Change]
-            }]
-          ]
+        const turnOffDHCPOption82Callback = (lanPort: SoftGreLanPortChange) => {
+          // eslint-disable-next-line
+          _.set(lanPort, ['venueLanPortSettings','softGreSettings','dhcpOption82Enabled'], false)
+          _.unset(lanPort, ['venueLanPortSettings','softGreSettings','dhcpOption82Settings'])
         }
-        if (existedModelChanges) {
-          let changeNotFound = true
-          let newLanPortsChangesList = existedModelChanges?.lanPorts.map((lanPort) => {
-            if(lanPort.lanPortId === next.portId) {
-              changeNotFound = false
-              // eslint-disable-next-line
-              _.set(lanPort, ['venueLanPortSettings','softGreSettings','dhcpOption82Enabled'], false)
-              _.unset(lanPort, ['venueLanPortSettings','softGreSettings','dhcpOption82Settings'])
-            }
-            return lanPort
-          })
-          if (changeNotFound){
-            console.log('changeNotFound')
-            newLanPortsChangesList?.push(turnOffDHCPOption82Change)
-          }
-          existedModelChanges.lanPorts = newLanPortsChangesList
-        }
+        updatePendingLanPortChange(turnOffDHCPOption82Change, next, turnOffDHCPOption82Callback)
         break
       case SoftGreState.TurnOnLanPort:
-        console.log('SoftGreState.TurnOnLanPort')
-        console.log(form.getFieldValue(['lan', next.index, 'dhcpOption82Settings']))
         const softGreProfileId = form.getFieldValue(['lan', next.index, 'softGreProfileId'])
         const softGreEnabled = !!softGreProfileId
         const turnOnLanPortChange: SoftGreLanPortChange = {
@@ -295,37 +222,14 @@ export const useSoftGreProfileActivation = (
           },
           lanPortEnable: true
         }
-        if (isPendingChangesEmpty || !existedModelChanges) {
-          console.log('no exist change')
-          pendingLanPortChanges.current = [
-            ...pendingChanges,
-            ...[{
-              model: model,
-              lanPorts: [turnOnLanPortChange]
-            }]
-          ]
+        const turnOnLanPortCallback = (lanPort: SoftGreLanPortChange) => {
+          _.set(lanPort, ['lanPortEnable'], true)
+          _.set(lanPort, ['venueLanPortSettings','softGreEnabled'], softGreEnabled)
+          _.set(lanPort, ['venueLanPortSettings', 'softGreProfileId'], softGreProfileId)
         }
-        if (existedModelChanges) {
-          let changeNotFound = true
-          let newLanPortsChangesList = existedModelChanges?.lanPorts.map((lanPort) => {
-            if(lanPort.lanPortId === next.portId) {
-              changeNotFound = false
-              _.set(lanPort, ['lanPortEnable'], true)
-              _.set(lanPort, ['venueLanPortSettings','softGreEnabled'], softGreEnabled)
-              _.set(lanPort, ['venueLanPortSettings', 'softGreProfileId'], softGreProfileId
-              )
-            }
-            return lanPort
-          })
-          if (changeNotFound){
-            console.log('changeNotFound')
-            newLanPortsChangesList?.push(turnOnLanPortChange)
-          }
-          existedModelChanges.lanPorts = newLanPortsChangesList
-        }
+        updatePendingLanPortChange(turnOnLanPortChange, next, turnOnLanPortCallback)
         break
       case SoftGreState.TurnOffLanPort:
-        console.log('SoftGreState.TurnOffLanPort')
         const turnOffLanPortChange: SoftGreLanPortChange = {
           lanPortId: next.portId!,
           venueLanPortSettings: {
@@ -333,39 +237,15 @@ export const useSoftGreProfileActivation = (
           },
           lanPortEnable: false
         }
-        if (isPendingChangesEmpty || !existedModelChanges) {
-          console.log('no exist change')
-          pendingLanPortChanges.current = [
-            ...pendingChanges,
-            ...[{
-              model: model,
-              lanPorts: [turnOffLanPortChange]
-            }]
-          ]
+        const turnOffLanPortCallback = (lanPort: SoftGreLanPortChange) => {
+          _.set(lanPort, ['lanPortEnable'], false)
         }
-        if (existedModelChanges) {
-          let changeNotFound = true
-          let newLanPortsChangesList = existedModelChanges?.lanPorts.map((lanPort) => {
-            if(lanPort.lanPortId === next.portId) {
-              changeNotFound = false
-              // eslint-disable-next-line
-              _.set(lanPort, ['lanPortEnable'], false)
-            }
-            return lanPort
-          })
-          if (changeNotFound){
-            console.log('changeNotFound')
-            newLanPortsChangesList?.push(turnOffLanPortChange)
-          }
-          existedModelChanges.lanPorts = newLanPortsChangesList
-        }
+        updatePendingLanPortChange(turnOffLanPortChange, next, turnOffLanPortCallback)
         break
       default:
         console.error(`Invalid action: ${next}`) // eslint-disable-line no-console
         break
     }
-    console.log('actionrunner After change')
-    console.log(pendingLanPortChanges.current)
     return next
   }
   // eslint-disable-next-line
