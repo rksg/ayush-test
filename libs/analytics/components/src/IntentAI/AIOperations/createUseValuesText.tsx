@@ -4,7 +4,7 @@ import { incidentScope } from '@acx-ui/analytics/utils'
 
 import { richTextFormatValues } from '../common/richTextFormatValues'
 import { useIntentContext }     from '../IntentContext'
-import { Intent }               from '../useIntentDetailsQuery'
+import { IntentDetail }         from '../useIntentDetailsQuery'
 
 export function createUseValuesText<ValuesType = unknown> (
   config: {
@@ -14,7 +14,7 @@ export function createUseValuesText<ValuesType = unknown> (
     tradeoff: MessageDescriptor
     noData: MessageDescriptor
   },
-  getValuesFn?: (intent: Intent) => ValuesType
+  getValuesFn?: (intent: IntentDetail) => ValuesType
 ) {
   return function useValuesText () {
     const { intent, state } = useIntentContext()

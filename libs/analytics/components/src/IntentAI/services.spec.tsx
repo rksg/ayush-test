@@ -1,9 +1,12 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
+import { FormattedMessage } from 'react-intl'
+
 import { defaultNetworkPath }                                              from '@acx-ui/analytics/utils'
 import { intentAIUrl, store, Provider }                                    from '@acx-ui/store'
 import { mockGraphqlQuery, mockGraphqlMutation, renderHook, act, waitFor } from '@acx-ui/test-utils'
+import { render }                                                          from '@acx-ui/test-utils'
 import { DateRange }                                                       from '@acx-ui/utils'
 
 import {
@@ -12,13 +15,30 @@ import {
   intentListWithAllStatus,
   filterOptions
 } from './__tests__/fixtures'
-import { mockedIntentAps }                                                  from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
-import { IntentListItem }                                                   from './config'
-import { api, useIntentAITableQuery, TransitionMutationResponse, IntentAP } from './services'
-import { DisplayStates, Statuses, StatusReasons }                           from './states'
-import { Actions }                                                          from './utils'
+import { mockedIntentAps }                                                                from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
+import { IntentListItem }                                                                 from './config'
+import { api, useIntentAITableQuery, TransitionMutationResponse, IntentAP, formatValues } from './services'
+import { DisplayStates, Statuses, StatusReasons }                                         from './states'
+import { Actions }                                                                        from './utils'
 
 import type { TableCurrentDataSource } from 'antd/lib/table/interface'
+
+describe('formatValues', () => {
+  it('renders elements', () => {
+    const { asFragment } = render(<FormattedMessage
+      defaultMessage={`
+        <p>paragraph</p>
+        <ul>
+          <li>item 1</li>
+          <li>item 2</li>
+        </ul>
+      `}
+      values={formatValues}
+    />)
+
+    expect(asFragment()).toMatchSnapshot()
+  })
+})
 
 describe('Intent services', () => {
   beforeEach(() => {
@@ -39,8 +59,7 @@ describe('Intent services', () => {
         scope: `vsz611 (SZ Cluster)
 > zone-1 (Venue)`,
         status: Statuses.active,
-        statusLabel: 'Active',
-        statusTooltip: 'IntentAI is active on Venue zone-1.'
+        statusLabel: 'Active'
       },
       {
         ...intentListResult.intents.data[1],
@@ -51,8 +70,7 @@ describe('Intent services', () => {
 > 01-US-CA-D1-Test-Home (Domain)
 > 01-Alethea-WiCheck Test (Venue)`,
         status: Statuses.na,
-        statusLabel: 'No Recommendation, Not Enough License',
-        statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for Venue 01-Alethea-WiCheck Test.'
+        statusLabel: 'No Recommendation, Not Enough License'
       },
       {
         ...intentListResult.intents.data[2],
@@ -63,8 +81,7 @@ describe('Intent services', () => {
 > 25-US-CA-D25-SandeepKour-home (Domain)
 > 25-US-CA-D25-SandeepKour-home (Venue)`,
         status: Statuses.na,
-        statusLabel: 'No Recommendation, No APs',
-        statusTooltip: 'No recommendation was generated. Reason: No APs are detected in the network.'
+        statusLabel: 'No Recommendation, No APs'
       }
     ]
     const filterOptionsResult = {
@@ -101,6 +118,7 @@ describe('Intent services', () => {
         }
       ]
     }
+
     it('should fetch data correctly', async () => {
       mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
         data: intentListResult
@@ -550,160 +568,128 @@ describe('Intent services', () => {
           ...intentListWithAllStatus.intents.data[0],
           ...expectedCommonResult,
           status: Statuses.new,
-          statusLabel: 'New',
-          statusTooltip: 'IntentAI has analyzed the data and generated a change recommendations, awaiting your approval. To review the details, specify Intent priority, and apply the recommendations, click "Optimize." Alternatively, use "1-Click Optimize" to instantly apply the changes with default priority.'
+          statusLabel: 'New'
         },
         {
           ...intentListWithAllStatus.intents.data[1],
           ...expectedCommonResult,
           status: Statuses.scheduled,
-          statusLabel: 'Scheduled',
-          statusTooltip: 'The change recommendation has been scheduled for 06/17/2023 00:00, via the user action "Optimize".'
+          statusLabel: 'Scheduled'
         },
         {
           ...intentListWithAllStatus.intents.data[2],
           ...expectedCommonResult,
           status: Statuses.scheduled,
-          statusLabel: 'Scheduled',
-          statusTooltip: 'The change recommendation has been scheduled for 06/17/2023 00:00, via the user action "1-Click Optimize".'
+          statusLabel: 'Scheduled'
         },
         {
           ...intentListWithAllStatus.intents.data[3],
           ...expectedCommonResult,
           status: Statuses.applyScheduled,
-          statusLabel: 'Scheduled',
-          statusTooltip: 'The change recommendation has been automatically scheduled for 06/17/2023 00:00, by IntentAI.'
+          statusLabel: 'Scheduled'
         },
         {
           ...intentListWithAllStatus.intents.data[4],
           ...expectedCommonResult,
           status: Statuses.applyScheduleInProgress,
-          statusLabel: 'Apply In Progress',
-          statusTooltip: 'IntentAI recommended changes are getting applied to Venue zone-1.'
+          statusLabel: 'Apply In Progress'
         },
         {
           ...intentListWithAllStatus.intents.data[5],
           ...expectedCommonResult,
           status: Statuses.active,
-          statusLabel: 'Active',
-          statusTooltip: 'IntentAI is active on Venue zone-1.'
+          statusLabel: 'Active'
         },
         {
           ...intentListWithAllStatus.intents.data[6],
           ...expectedCommonResult,
           status: Statuses.paused,
-          statusLabel: 'Paused, Applied Failed',
-          statusTooltip: `IntentAI recommended changes failed to apply to Venue zone-1 due to:
- - errMsg from the notification service
-
- The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.`
+          statusLabel: 'Paused, Applied Failed'
         },
         {
           ...intentListWithAllStatus.intents.data[7],
           ...expectedCommonResult,
           status: Statuses.revertScheduled,
-          statusLabel: 'Revert Scheduled',
-          statusTooltip: 'The Revert of the IntentAI recommended changes are scheduled for 06/17/2023 00:00, via user action "Revert".'
+          statusLabel: 'Revert Scheduled'
         },
         {
           ...intentListWithAllStatus.intents.data[8],
           ...expectedCommonResult,
           status: Statuses.revertScheduleInProgress,
-          statusLabel: 'Revert In Progress',
-          statusTooltip: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on Venue zone-1.'
+          statusLabel: 'Revert In Progress'
         },
         {
           ...intentListWithAllStatus.intents.data[9],
           ...expectedCommonResult,
           status: Statuses.paused,
-          statusLabel: 'Paused, Revert Failed',
-          statusTooltip: `The Revert action on the IntentAI recommended change, failed due to the following reason:
- - errMsg from the notification service
-
- The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.`
+          statusLabel: 'Paused, Revert Failed'
         },
         {
           ...intentListWithAllStatus.intents.data[10],
           ...expectedCommonResult,
           status: Statuses.paused,
-          statusLabel: 'Paused, Revert Success',
-          statusTooltip: 'The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
+          statusLabel: 'Paused, Revert Success'
         },
         {
           ...intentListWithAllStatus.intents.data[11],
           ...expectedCommonResult,
           status: Statuses.paused,
-          statusLabel: 'Paused',
-          statusTooltip: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
+          statusLabel: 'Paused'
         },
         {
           ...intentListWithAllStatus.intents.data[12],
           ...expectedCommonResult,
           status: Statuses.paused,
-          statusLabel: 'Paused',
-          statusTooltip: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
+          statusLabel: 'Paused'
         },
         {
           ...intentListWithAllStatus.intents.data[13],
           ...expectedCommonResult,
           status: Statuses.paused,
-          statusLabel: 'Paused',
-          statusTooltip: 'The Intent is in default state of "Paused". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
+          statusLabel: 'Paused'
         },
         {
           ...intentListWithAllStatus.intents.data[14],
           ...expectedCommonResult,
           status: Statuses.na,
-          statusLabel: 'No Recommendation, Conflicting Configuration',
-          statusTooltip: `No recommendation was generated. Reason:
- - The network has active Mesh APs, which are currently not supported.
-
-`
+          statusLabel: 'No Recommendation, Conflicting Configuration'
         },
         {
           ...intentListWithAllStatus.intents.data[15],
           ...expectedCommonResult,
           status: Statuses.na,
-          statusLabel: 'No Recommendation, No APs',
-          statusTooltip: 'No recommendation was generated. Reason: No APs are detected in the network.'
+          statusLabel: 'No Recommendation, No APs'
         },
         {
           ...intentListWithAllStatus.intents.data[16],
           ...expectedCommonResult,
           status: Statuses.na,
-          statusLabel: 'No Recommendation, Not Enough License',
-          statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for Venue zone-1.'
+          statusLabel: 'No Recommendation, Not Enough License'
         },
         {
           ...intentListWithAllStatus.intents.data[17],
           ...expectedCommonResult,
           status: Statuses.na,
-          statusLabel: 'No Recommendation, Not Enough Data',
-          statusTooltip: `No recommendation was generated. Reason:
- - Insufficient data on neighbour APs.
-
-`
+          statusLabel: 'No Recommendation, Not Enough Data'
         },
         {
           ...intentListWithAllStatus.intents.data[18],
           ...expectedCommonResult,
           status: Statuses.na,
-          statusLabel: 'Verified',
-          statusTooltip: 'IntentAI has validated Venue zone-1 configurations. No new changes have been recommended.'
+          statusLabel: 'Verified'
         },
         {
           ...intentListWithAllStatus.intents.data[19],
           ...expectedCommonResult,
           status: Statuses.na,
-          statusLabel: 'No Recommendation',
-          statusTooltip: 'No recommendation was generated. Reason: Awaiting data processing and recommendation generation by ML algorithms.'
+          statusLabel: 'No Recommendation'
         }
       ]
+
       expect(error).toBe(undefined)
       expect(status).toBe('fulfilled')
       expect(data?.intents).toEqual(expectedResult)
     })
-
   })
 
   it('should return correct ap details', async () => {

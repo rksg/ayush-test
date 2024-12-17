@@ -4,17 +4,20 @@ import { useEffect } from 'react'
 import { Col, Form, InputNumber, Row, Space, Switch } from 'antd'
 import { useIntl }                                    from 'react-intl'
 
-import { Loader, StepsForm, Tooltip, useStepFormContext }                           from '@acx-ui/components'
-import { ApCompatibilityToolTip }                                                   from '@acx-ui/rc/components'
-import { useGetEdgeClusterArpTerminationSettingsQuery, useGetEdgeFeatureSetsQuery } from '@acx-ui/rc/services'
-import { EdgeClusterStatus, EdgeStatus, IncompatibilityFeatures }                   from '@acx-ui/rc/utils'
-import { compareVersions }                                                          from '@acx-ui/utils'
+import { Loader, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { ApCompatibilityToolTip }                         from '@acx-ui/rc/components'
+import {
+  useGetEdgeClusterArpTerminationSettingsQuery,
+  useGetEdgeFeatureSetsQuery,
+  useGetVenueEdgeFirmwareListQuery
+} from '@acx-ui/rc/services'
+import { EdgeClusterStatus, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { compareVersions }                            from '@acx-ui/utils'
 
 import { StyledFormItem, tooltipIconStyle } from '../styledComponents'
 
-const checkArpByClusterFw = (requiredFw?: string, edgeNodeList?: EdgeStatus[]) => {
-  return !!requiredFw &&
-    edgeNodeList?.every(edge => compareVersions(edge.firmwareVersion, requiredFw) >= 0)
+const checkArpByVenueFirmware = (requiredFw?: string, venueEdgeFw?: string) => {
+  return !!requiredFw && !!venueEdgeFw && compareVersions(venueEdgeFw, requiredFw) >= 0
 }
 
 export const ArpTerminationFormItem = (props: {
@@ -39,7 +42,16 @@ export const ArpTerminationFormItem = (props: {
     }
   })
 
-  const isArpControllable = checkArpByClusterFw(arpRequiredFw, currentClusterStatus.edgeList)
+  const { venueEdgeFw } = useGetVenueEdgeFirmwareListQuery({}, {
+    skip: !Boolean(currentClusterStatus.venueId),
+    selectFromResult: ({ data }) => {
+      return {
+        venueEdgeFw: data?.filter(fw => fw.id === currentClusterStatus.venueId)?.[0].versions?.[0].id
+      }
+    }
+  })
+  const isArpControllable = checkArpByVenueFirmware(arpRequiredFw, venueEdgeFw)
+
   const {
     data: arpTerminationSettings,
     isLoading: isArpTerminationSettingsLoading
