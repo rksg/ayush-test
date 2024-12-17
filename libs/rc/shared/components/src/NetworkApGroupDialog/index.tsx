@@ -20,7 +20,9 @@ import {
 import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
   useGetEnhancedVlanPoolPolicyTemplateListQuery,
-  useGetNetworkApGroupsV2Query, useGetRbacNetworkApGroupsQuery,
+  useGetNetworkApGroupsV2Query,
+  useGetRbacNetworkApGroupsQuery,
+  useGetRbacNetworkApGroupsV2Query,
   useGetVLANPoolPolicyViewModelListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -84,13 +86,15 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const intl = useIntl()
 
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isUseNewRbacNetworkVenueApi = useIsSplitOn(Features.WIFI_NETWORK_VENUE_QUERY)
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
   const { isTemplate } = useConfigTemplate()
 
   const { networkVenue, venueName, network, formName, tenantId } = props
   const { wlan } = network || {}
-  const isSupport6G = IsNetworkSupport6g(network)
+  const isSupport6G = IsNetworkSupport6g(network, { isSupport6gOWETransition })
 
-  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [vlanPoolSelectOptions, setVlanPoolSelectOptions] = useState<VlanPool[]>()
 
   const [form] = Form.useForm()
@@ -117,27 +121,30 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
     vlanMembers: networkVenue?.vlanMembers ?? []
   } : null, wlan?.vlanId)
 
-  const { data: networkApGroupsData, isLoading: isNetworkLoading } = useNetworkApGroupsInstance()
-
   function useNetworkApGroupsInstance () {
-    const networkApGroupsV2Query = useGetNetworkApGroupsV2Query({ params: { tenantId },
-      payload: [{
-        networkId: networkVenue?.networkId,
-        venueId: networkVenue?.venueId,
-        isTemplate: isTemplate
-      }]
-    }, { skip: isWifiRbacEnabled || !networkVenue || !wlan })
+    const params = { tenantId }
+    const payload = [{
+      networkId: networkVenue?.networkId,
+      venueId: networkVenue?.venueId,
+      isTemplate: isTemplate
+    }]
 
-    const networkApGroupsRbacQuery = useGetRbacNetworkApGroupsQuery({ params: { tenantId },
-      payload: [{
-        networkId: networkVenue?.networkId,
-        venueId: networkVenue?.venueId,
-        isTemplate: isTemplate
-      }]
-    }, { skip: !isWifiRbacEnabled || !networkVenue || !wlan })
+    const hasNetworkVenueAndWlan = networkVenue && wlan
+    const networkApGroupsV2Query = useGetNetworkApGroupsV2Query({ params, payload
+    }, { skip: isWifiRbacEnabled || !hasNetworkVenueAndWlan })
 
-    return isWifiRbacEnabled ? networkApGroupsRbacQuery : networkApGroupsV2Query
+    const networkApGroupsRbacQuery = useGetRbacNetworkApGroupsQuery({ params, payload
+    }, { skip: isUseNewRbacNetworkVenueApi || !isWifiRbacEnabled || !hasNetworkVenueAndWlan })
+
+    const networkApGroupsRbacV2Query = useGetRbacNetworkApGroupsV2Query({ params, payload
+    }, { skip: !isUseNewRbacNetworkVenueApi || !isWifiRbacEnabled || !hasNetworkVenueAndWlan })
+
+    return isWifiRbacEnabled
+      ? (isUseNewRbacNetworkVenueApi? networkApGroupsRbacV2Query : networkApGroupsRbacQuery)
+      : networkApGroupsV2Query
   }
+
+  const { data: networkApGroupsData, isLoading: isNetworkLoading } = useNetworkApGroupsInstance()
 
   const formInitData = useMemo(() => {
     // if specific AP groups were selected or the  All APs option is disabled,
