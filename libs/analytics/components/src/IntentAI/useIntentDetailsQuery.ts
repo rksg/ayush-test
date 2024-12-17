@@ -9,9 +9,9 @@ import { useParams }               from '@acx-ui/react-router-dom'
 import { intentAIApi }             from '@acx-ui/store'
 import { getIntl, noDataDisplay }  from '@acx-ui/utils'
 
-import { Intent }                                 from './config'
-import { DisplayStates, Statuses, StatusReasons } from './states'
-import { dataRetentionText, isDataRetained }      from './utils'
+import { Intent }                            from './config'
+import { Statuses }                          from './states'
+import { dataRetentionText, isDataRetained } from './utils'
 
 export type IntentKPIConfig = {
   key: string;
@@ -31,13 +31,6 @@ export type IntentKPI = Record<`kpi_${string}`, {
     timestamp: string | null
     result: number | [number, number]
   } | null
-}>
-
-export type IntentStatusTrail = Array<{
-  status: Statuses
-  statusReason: StatusReasons
-  displayStatus: DisplayStates
-  createdAt?: string
 }>
 
 export type IntentConfigurationValue =
@@ -197,7 +190,7 @@ export const api = intentAIApi.injectEndpoints({
         ({ ...error, data: meta?.response?.data?.intent }),
       providesTags: [{ type: 'Intent', id: 'INTENT_KPIS' }]
     }),
-    intentStatusTrail: build.query<IntentStatusTrail | undefined, IntentDetailsQueryPayload>({
+    intentStatusTrail: build.query<Intent['statusTrail'], IntentDetailsQueryPayload>({
       query: ({ root, sliceId, code }) => ({
         document: gql`
         query IntentStatusTrail($root: String!, $sliceId: String!, $code: String!) {
@@ -208,8 +201,8 @@ export const api = intentAIApi.injectEndpoints({
       `,
         variables: { root, sliceId, code }
       }),
-      transformResponse: (response: { intent?: Intent })=>
-        response.intent?.statusTrail as IntentStatusTrail,
+      transformResponse: (response: { intent: { statusTrail: Intent['statusTrail'] } })=>
+        response.intent.statusTrail,
       transformErrorResponse: (error, meta) =>
         ({ ...error, data: meta?.response?.data?.intent }),
       providesTags: [{ type: 'Intent', id: 'INTENT_STATUS_TRAIL' }]
