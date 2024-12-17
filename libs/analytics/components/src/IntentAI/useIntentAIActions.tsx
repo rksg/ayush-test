@@ -122,6 +122,11 @@ const getR1WlanPayload = (venueId:string, code:string) => ({
   }
 })
 
+export const getUserName = () => {
+  const userName = get('IS_MLISA_SA') ? getUserFullNameRA() : getUserFullNameR1()
+  return userName
+}
+
 export function useIntentAIActions () {
   const { $t } = useIntl()
   const [recommendationWlans] = useLazyIntentWlansQuery()
@@ -197,7 +202,6 @@ export function useIntentAIActions () {
   }
 
   const doAllOptimize = async (rows:IntentListItem[], scheduledAt:string) => {
-    const userName = get('IS_MLISA_SA') ? getUserFullNameRA() : getUserFullNameR1()
     const optimizeList = await Promise.all(rows.map(async (row) => {
       const { code, preferences, displayStatus, status } = row
       const metadata = { scheduledAt } as TransitionIntentMetadata
@@ -207,7 +211,7 @@ export function useIntentAIActions () {
       } else if (code.startsWith('c-crrm-')) { // AI-Driven
         metadata.preferences = { ...(preferences ?? {}), crrmFullOptimization: true }
       }
-      metadata.changedByName = userName
+      metadata.changedByName = getUserName()
       return { id: row.id, displayStatus, status, metadata } as TransitionIntentItem
     }))
 
@@ -282,13 +286,12 @@ export function useIntentAIActions () {
   const revert = async (date: Moment, rows:IntentListItem[], onOk: ()=>void) => {
     if (validateDate(date)) {
       const scheduledAt = date.toISOString()
-      const userName = get('IS_MLISA_SA') ? getUserFullNameRA() : getUserFullNameR1()
       const data = rows.map(item =>(
         {
           id: item.id,
           displayStatus: item.displayStatus,
           status: item.status,
-          metadata: { scheduledAt, changedByName: userName }
+          metadata: { scheduledAt, changedByName: getUserName() }
         } as TransitionIntentItem))
       const response = await transitionIntent({
         action: Actions.Revert,
@@ -312,13 +315,12 @@ export function useIntentAIActions () {
     action: Actions,
     rows:IntentListItem[],
     onOk: ()=>void) => {
-    const userName = get('IS_MLISA_SA') ? getUserFullNameRA() : getUserFullNameR1()
     const data = rows.map(item =>
       ({ id: item.id,
         displayStatus: item.displayStatus,
         status: item.status,
         statusTrail: item.statusTrail,
-        metadata: { ...item.metadata, changedByName: userName }
+        metadata: { ...item.metadata, changedByName: getUserName() }
       } as TransitionIntentItem))
     const response = await transitionIntent({
       action,
