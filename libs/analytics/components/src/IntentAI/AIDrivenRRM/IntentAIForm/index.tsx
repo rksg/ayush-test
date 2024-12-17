@@ -95,7 +95,7 @@ export function IntentAIForm () {
         children={<Summary
           summaryUrlBefore={summaryUrlBefore}
           summaryUrlAfter={summaryUrlAfter}
-          crrmData={crrmData}
+          queryResult={queryResult}
         />}
       />
     </StepsForm>
