@@ -16,8 +16,6 @@ export { DidYouKnowWidget as DidYouKnow }
 
 type DidYouKnowWidgetProps = {
   filters: PathFilter | DashboardFilter
-  maxFactPerSlide?: number
-  maxSlideChar?: number
 }
 export const getCarouselFactsMap = (facts: string[]) => {
   let map: Record<number, { facts: string[] }> = {}
