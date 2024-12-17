@@ -51,7 +51,7 @@ describe('DriftComparisonSet', () => {
   it('renders the failed DriftComparisonSet', async () => {
     const mockData: ConfigTemplateDriftSet = {
       diffName: 'TestCategory',
-      diffData: [{ path: '!error', data: { template: 'template1', instance: 'instance1' } }]
+      diffData: [{ path: 'error', data: { template: 'template1', instance: 'instance1' } }]
     }
     render(<DriftComparisonSet {...mockData} />)
 

@@ -38,7 +38,7 @@ type DriftSetErrorStatus = 'unknown' | 'failed'
 function getErrorStatusFromDriftSet (props: ConfigTemplateDriftSet): DriftSetErrorStatus | null {
   const { diffName, diffData } = props
 
-  if (diffData.some(item => item.path === '!error')) {
+  if (diffData.some(item => item.path === 'error')) {
     return 'failed'
   }
 
