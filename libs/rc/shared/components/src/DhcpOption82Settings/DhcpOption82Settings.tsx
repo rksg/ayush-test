@@ -103,7 +103,9 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
   }
 
   const cancelCallbackFn = () => {
-    form.setFieldValue(dhcpOption82FieldName, false)
+    if(!iconVisible) {
+      form.setFieldValue(dhcpOption82FieldName, false)
+    }
   }
 
 

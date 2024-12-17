@@ -5,9 +5,9 @@ import { DefaultOptionType }                               from 'antd/lib/select
 import { FormattedMessage, useIntl }                       from 'react-intl'
 import { useParams }                                       from 'react-router-dom'
 
-import { cssStr, Tooltip }                           from '@acx-ui/components'
-import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
-import { WarningCircleSolid }                        from '@acx-ui/icons'
+import { cssStr, Tooltip }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { WarningCircleSolid }                       from '@acx-ui/icons'
 import {
   useQueryEthernetPortProfilesWithOverwritesQuery
 } from '@acx-ui/rc/services'
@@ -20,7 +20,7 @@ import {
   EthernetPortProfileViewData,
   EthernetPortType,
   LanPort,
-  SoftGreChanges, SoftGreProfileDispatcher,
+  SoftGreProfileDispatcher,
   SoftGreState,
   useConfigTemplate,
   VenueLanPorts,
@@ -74,7 +74,6 @@ export function LanPortSettings (props: {
   useVenueSettings?: boolean,
   venueId?: string,
   serialNumber?: string
-  pendingLanPortChanges?: React.MutableRefObject<SoftGreChanges[]>,
   dispatch?: React.Dispatch<SoftGreProfileDispatcher>
 }) {
   const { $t } = useIntl()
@@ -111,22 +110,6 @@ export function LanPortSettings (props: {
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
   const isUnderAPNetworking = !!serialNumber
-
-  // const isSoftGRETunnelSettingReadonly = () => {
-  //   if(!isUnderAPNetworking){
-  //     return !isEthernetPortEnable
-  //   }
-  //   // TODO Add readonly condition here
-  //   return false
-  // }
-
-  // const isDhcpOption82SettingsReadonly = () => {
-  //   if (!isUnderAPNetworking) {
-  //     return false
-  //   }
-  //   // TODO Add readonly condition here
-  //   return false
-  // }
 
   // Non ethernet port profile
   const handlePortTypeChange = (value: string, index:number) => {
@@ -243,7 +226,20 @@ export function LanPortSettings (props: {
           || !selectedPortCaps?.supportDisable
           || hasVni
         }
-        onChange={() => onChangedByCustom('enabled')}
+        onChange={(value) => {
+          onChangedByCustom('enabled')
+          value ?
+            dispatch && dispatch({
+              state: SoftGreState.TurnOnLanPort,
+              portId: selectedModel.lanPorts![index].portId,
+              index
+            }) :
+            dispatch && dispatch({
+              state: SoftGreState.TurnOffLanPort,
+              portId: selectedModel.lanPorts![index].portId,
+              index
+            })
+        }}
       />}
     />
     <Form.Item

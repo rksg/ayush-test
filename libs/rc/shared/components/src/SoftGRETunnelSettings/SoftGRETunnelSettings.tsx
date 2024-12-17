@@ -1,7 +1,7 @@
 import { Form, Switch, Space } from 'antd'
 import { useIntl }             from 'react-intl'
 
-import { Tooltip, Alert, StepsForm } from '@acx-ui/components'
+import { Tooltip, Alert, StepsForm }              from '@acx-ui/components'
 import { SoftGreProfileDispatcher, SoftGreState } from '@acx-ui/rc/utils'
 
 import { SoftGREProfileSettings } from './SoftGREProfileSettings'

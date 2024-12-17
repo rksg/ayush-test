@@ -1,7 +1,7 @@
-import { useContext, useEffect, useReducer, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Image, Row, Select, Space, Tooltip } from 'antd'
-import _, { isEqual, clone, cloneDeep }                     from 'lodash'
+import { isEqual, clone, cloneDeep }                     from 'lodash'
 import { useIntl }                                       from 'react-intl'
 
 import {
@@ -15,7 +15,8 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   LanPortPoeSettings,
   LanPortSettings,
-  ConvertPoeOutToFormData
+  ConvertPoeOutToFormData,
+  useSoftGreProfileActivation
 }
   from '@acx-ui/rc/components'
 import {
@@ -40,10 +41,6 @@ import {
   EditPortMessages,
   isEqualLanPort,
   LanPort,
-  SoftGreChanges,
-  SoftGreLanPortChange,
-  SoftGreProfileDispatcher,
-  SoftGreState,
   useConfigTemplate,
   VenueLanPorts,
   VenueSettings,
@@ -60,7 +57,6 @@ import {
   useVenueConfigTemplateQueryFnSwitcher
 } from '../../../../venueConfigTemplateApiSwitcher'
 import { VenueEditContext } from '../../../index'
-
 
 const { useWatch } = Form
 
@@ -107,7 +103,6 @@ export function LanPorts () {
   const { setReadyToScroll } = useContext(AnchorContext)
 
   const customGuiChagedRef = useRef(false)
-  const pendingLanPortChanges = useRef<SoftGreChanges[]>([])
   const { venueApCaps, isLoadingVenueApCaps } = useContext(VenueUtilityContext)
   const isDhcpEnabled = useIsVenueDhcpEnabled(venueId)
   const { isTemplate } = useConfigTemplate()
@@ -164,7 +159,7 @@ export function LanPorts () {
   const [selectedModelCaps, setSelectedModelCaps] = useState({} as CapabilitiesApModel)
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
   const [resetModels, setResetModels] = useState([] as string[])
-
+  const { dispatch, handleUpdateSoftGreProfile } = useSoftGreProfileActivation(selectedModel)
 
   const form = Form.useFormInstance()
   const [apModel, apPoeMode, lanPoeOut, lanPorts] = [
@@ -422,6 +417,8 @@ export function LanPorts () {
           })
           // Update ethernet port profile
           handleUpdateEthernetPortProfile(venueLanPort.model, lanPort, originLanPort)
+          // Update SoftGre Profile
+          handleUpdateSoftGreProfile(venueLanPort.model, lanPort, originLanPort)
           // Update Lan settings
           handleUpdateLanPortSettings(venueLanPort.model, lanPort, originLanPort)
         })
@@ -441,190 +438,6 @@ export function LanPorts () {
 
     setResetModels([])
   }
-
-  const actionRunner = (current: SoftGreProfileDispatcher, next: SoftGreProfileDispatcher) => {
-    console.log('actionRunner Before', current)
-    console.log(pendingLanPortChanges.current)
-    const pendingChanges = pendingLanPortChanges.current
-    const isPendingChangesEmpty = _.isEmpty(pendingChanges)
-    const model = selectedModel.model
-    const existedChanges = pendingChanges.find((change) => change.model === model)
-    switch(next.state){
-      case SoftGreState.TurnOnSoftGre:
-        const turnOnChange: SoftGreLanPortChange = {
-          lanPortId: next.portId!,
-          venueLanPortSettings: {
-            softGreEnabled: true,
-            softGreProfileId: form.getFieldValue(['lan', next.index, 'softGreProfileId'])
-          }
-        }
-        if (isPendingChangesEmpty || !existedChanges) {
-          console.log('no exist change')
-          pendingLanPortChanges.current = [
-            ...pendingChanges,
-            ...[{
-              model: model,
-              lanPorts: [turnOnChange]
-            }]
-          ]
-        }
-        if (existedChanges) {
-          let changeNotFound = true
-          let newLanPortsChangesList = existedChanges?.lanPorts.map((lanPort) => {
-            if(lanPort.lanPortId === next.portId) {
-              changeNotFound = false
-              _.set(lanPort, ['venueLanPortSettings','softGreEnabled'], true)
-              // eslint-disable-next-line
-              _.set(
-                lanPort,
-                ['venueLanPortSettings','softGreProfileId'],
-                form.getFieldValue(['lan', next.index, 'softGreProfileId'])
-              )
-            }
-            return lanPort
-          })
-          if (changeNotFound){
-            console.log('changeNotFound')
-            newLanPortsChangesList?.push(turnOnChange)
-          }
-          existedChanges.lanPorts = newLanPortsChangesList
-        }
-        break
-      case SoftGreState.TurnOffSoftGre:
-        console.log('SoftGreState.TurnOffSoftGre')
-        console.log(next)
-        const turnOffChange: SoftGreLanPortChange = {
-          lanPortId: next.portId!,
-          venueLanPortSettings: {
-            softGreEnabled: false,
-            softGreProfileId:
-              lanPortOrinData
-                ?.find((lanOrin) =>lanOrin.model === model)
-                ?.lanPorts.find((lan) => lan.portId === next.portId)
-                ?.softGreProfileId
-          }
-        }
-        if (isPendingChangesEmpty || !existedChanges) {
-          console.log('no exist change')
-          pendingLanPortChanges.current = [
-            ...pendingChanges,
-            ...[{
-              model: model,
-              lanPorts: [turnOffChange]
-            }]
-          ]
-        }
-        if (existedChanges) {
-          existedChanges.lanPorts = existedChanges?.lanPorts.map((lanPort) => {
-            if (lanPort.lanPortId === next.portId) {
-              _.set(lanPort, ['venueLanPortSettings','softGreEnabled'], false)
-              _.set(
-                lanPort,
-                ['venueLanPortSettings','softGreProfileId'],
-                lanPortOrinData
-                  ?.find((lanOrin) =>lanOrin.model === model)
-                  ?.lanPorts.find((lan) => lan.portId === next.portId)
-                  ?.softGreProfileId
-              )
-              console.log('modify - change found')
-              console.log(selectedModel)
-              console.log(lanPort)
-            }
-            return lanPort
-          })
-        }
-        break
-      case SoftGreState.ModifySoftGreProfile:
-        console.log('SoftGreState.ModifySoftGreProfile')
-        const modifySoftGreProfileChange: SoftGreLanPortChange = {
-          lanPortId: next.portId!,
-          venueLanPortSettings: {
-            softGreEnabled: true,
-            softGreProfileId: form.getFieldValue(['lan', next.index, 'softGreProfileId'])
-          }
-        }
-        if (isPendingChangesEmpty || !existedChanges) {
-          console.log('no exist change')
-          pendingLanPortChanges.current = [
-            ...pendingChanges,
-            ...[{
-              model: model,
-              lanPorts: [modifySoftGreProfileChange]
-            }]
-          ]
-        }
-        if (existedChanges) {
-          existedChanges.lanPorts = existedChanges?.lanPorts.map((lanPort) => {
-            if (lanPort.lanPortId === next.portId) {
-              // eslint-disable-next-line
-              _.set(lanPort, ['venueLanPortSettings','softGreProfileId'], form.getFieldValue(['lan', next.index, 'softGreProfileId']))
-              console.log('modify - change found')
-              console.log(lanPort)
-            }
-            return lanPort
-          })
-        }
-        break
-      case SoftGreState.TurnOnAndModifyDHCPOption82Settings:
-        console.log('SoftGreState.TurnOnAndModifyDHCPOption82Settings')
-        const turnOnDHCPOption82Change: SoftGreLanPortChange = {
-          lanPortId: next.portId!,
-          venueLanPortSettings: {
-            softGreEnabled: true,
-            softGreProfileId: form.getFieldValue(['lan', next.index, 'softGreProfileId']),
-            softGreSettings: {
-              dhcpOption82Enabled: true,
-              // eslint-disable-next-line max-len
-              dhcpOption82Settings: form.getFieldValue(['lan', next.index, 'dhcpOption82Settings'])
-            }
-          }
-        }
-        if (isPendingChangesEmpty || !existedChanges) {
-          console.log('no exist change')
-          pendingLanPortChanges.current = [
-            ...pendingChanges,
-            ...[{
-              model: model,
-              lanPorts: [turnOnDHCPOption82Change]
-            }]
-          ]
-        }
-        if (existedChanges) {
-          let changeNotFound = true
-          let newLanPortsChangesList = existedChanges?.lanPorts.map((lanPort) => {
-            if(lanPort.lanPortId === next.portId) {
-              changeNotFound = false
-              _.set(lanPort, ['venueLanPortSettings','softGreSettings','dhcpOption82Enabled'], true)
-              // eslint-disable-next-line
-              _.set(
-                lanPort,
-                ['venueLanPortSettings','softGreSettings','dhcpOption82Settings'],
-                form.getFieldValue(['lan', next.index, 'dhcpOption82', 'dhcpOption82Settings'])
-              )
-            }
-            return lanPort
-          })
-          if (changeNotFound){
-            console.log('changeNotFound')
-            newLanPortsChangesList?.push(turnOnDHCPOption82Change)
-          }
-          existedChanges.lanPorts = newLanPortsChangesList
-        }
-        console.log('SoftGreState.TurnOnDHCPOption82')
-        break
-      case SoftGreState.TurnOffDHCPOption82:
-        console.log('SoftGreState.TurnOffDHCPOption82')
-        break
-      default:
-        console.error(`Invalid action: ${next}`) // eslint-disable-line no-console
-        break
-    }
-    console.log('actionrunner After change')
-    console.log(pendingLanPortChanges.current)
-    return next
-  }
-  // eslint-disable-next-line
-  const [state, dispatch] = useReducer(actionRunner, { state: SoftGreState.Init, portId: '0', index: 0 })
 
   return (<Loader states={[{
     isLoading: venueLanPorts.isLoading || isLoadingVenueApCaps,
@@ -686,7 +499,6 @@ export function LanPorts () {
                     onGUIChanged={handleGUIChanged}
                     index={index}
                     venueId={venueId}
-                    pendingLanPortChanges={pendingLanPortChanges}
                     dispatch={dispatch}
                   />
                 </Col>
