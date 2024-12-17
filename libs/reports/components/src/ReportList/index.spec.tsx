@@ -54,7 +54,7 @@ describe('ReportList', () => {
     expect(screen.getByText('RUCKUS Edge Applications')).toBeVisible()
   })
 
-  it('should render report cards without feature ready', async () => {
+  it('should not render report cards without feature ready', async () => {
     jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
 
     render(<ReportList />, { route: { path, params } })
