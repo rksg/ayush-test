@@ -22,6 +22,7 @@ import {
   LldpTlvs,
   MacOuis,
   PORT_SPEED,
+  radiusIpAddressRegExp,
   redirectPreviousPage,
   SwitchPortProfileMessages,
   SwitchPortProfiles,
@@ -39,6 +40,14 @@ const defaultPayload = {
   ]
 }
 
+interface FormPayload {
+  taggedVlans?: string;
+  macOuis?: string[];
+  ipsg?: boolean;
+  dot1x?: boolean;
+  macAuth?: boolean;
+}
+
 export function SwitchPortProfileForm () {
   const intl = useIntl()
   const [form] = Form.useForm()
@@ -46,8 +55,8 @@ export function SwitchPortProfileForm () {
   const editMode = params.portProfileId ? true : false
   const navigate = useNavigate()
   const basePath = useTenantLink('/policies/portProfile/switch/profiles/')
-  const [poeEnable, setPoeEnable] = useState<boolean>(false)
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([])
+  const [ingressTooltipVisible, setIngressTooltipVisible] = useState<boolean>(false)
   const [macOuisOptions, setMacOuisOptions] = useState<DefaultOptionType[]>([])
   const [macOuisList, setMacOuisList] = useState<MacOuis[]>([])
 
@@ -69,7 +78,15 @@ export function SwitchPortProfileForm () {
   })
 
   const { useWatch } = Form
-  const [macOuis] = [useWatch<string>('macOuis', form)]
+  const [
+    poeEnable,
+    ipsg,
+    macOuis
+  ] = [
+    useWatch<boolean>('poeEnable', form),
+    useWatch<boolean>('ipsg', form),
+    useWatch<string>('macOuis', form)
+  ]
 
   const portProfileRoute = getPolicyListRoutePath(true) + '/portProfile/switch/profiles'
 
@@ -135,11 +152,9 @@ export function SwitchPortProfileForm () {
       if(switchPortProfilesDetail.macOuis){
         form.setFieldValue('macOuis',
           switchPortProfilesDetail.macOuis.map(item => item.id ?? ''))
-        setPoeEnableValue(switchPortProfilesDetail.macOuis.length > 0)
       }
       if(switchPortProfilesDetail.lldpTlvs){
         setSelectedRowKeys(switchPortProfilesDetail.lldpTlvs.map(item => item.id ?? ''))
-        setPoeEnableValue(switchPortProfilesDetail.lldpTlvs.length > 0)
       }
 
       if(switchPortProfilesDetail.taggedVlans){
@@ -177,21 +192,23 @@ export function SwitchPortProfileForm () {
     }
   ]
 
-  const setPoeEnableValue = (value: boolean) => {
-    setPoeEnable(value)
-    form.setFieldValue('poeEnable', value)
+  const proceedPayload = (data: FormPayload) => {
+    return {
+      ...data,
+      taggedVlans: data.taggedVlans ? data.taggedVlans.split(',') : undefined,
+      lldpTlvs: lldpTlvTableQuery.data?.data?.filter(
+        (item: LldpTlvs) => item.id && selectedRowKeys.includes(item.id)),
+      macOuis: macOuisList.filter(
+        (item: MacOuis) => item.id && data.macOuis?.includes(item.id)),
+      dot1x: data.ipsg ? false : data.dot1x,
+      macAuth: data.ipsg ? false : data.macAuth
+    }
   }
 
   const handleAddPortProfile = async () => {
     const data = { ...form.getFieldsValue() }
-    const payload = {
-      ...form.getFieldsValue(),
-      taggedVlans: data.taggedVlans.split(','),
-      lldpTlvs: lldpTlvTableQuery.data?.data?.filter(
-        (item: LldpTlvs) => item.id && selectedRowKeys.includes(item.id)),
-      macOuis: macOuisList.filter(
-        (item: MacOuis) => item.id && data.macOuis?.includes(item.id))
-    }
+    const payload = proceedPayload(data)
+
     try {
       await form.validateFields()
       await addSwitchPortProfile({ payload }).unwrap()
@@ -202,15 +219,9 @@ export function SwitchPortProfileForm () {
     }
   }
   const handleUpdatePortProfile = async () => {
-    const { id, ...data } = form.getFieldsValue()
-    const payload = {
-      ...form.getFieldsValue(),
-      taggedVlans: data.taggedVlans.split(','),
-      lldpTlvs: lldpTlvTableQuery.data?.data?.filter(
-        (item: LldpTlvs) => item.id && selectedRowKeys.includes(item.id)),
-      macOuis: macOuisList.filter(
-        (item: MacOuis) => item.id && data.macOuis?.includes(item.id))
-    }
+    const data = { ...form.getFieldsValue() }
+    const payload = proceedPayload(data)
+
     try {
       await form.validateFields()
       await editSwitchPortProfile({ params, payload }).unwrap()
@@ -221,12 +232,58 @@ export function SwitchPortProfileForm () {
     }
   }
 
+  const validateUntaggedVlan = (value: number) => {
+    return new Promise<void>((resolve, reject) => {
+      if (value !== undefined) {
+        const untaggedVlanValue = value.toString()
+        if (untaggedVlanValue) {
+          validateVlanExcludingReserved(untaggedVlanValue)
+            .then(() => {
+              if (form.getFieldValue('taggedVlans') !== undefined) {
+                return validateDuplicateVlanId(
+                  value,
+                  form.getFieldValue('taggedVlans')
+                    .split(',')
+                    .map((vlan: string) => ({ vlanId: Number(vlan) }))
+                )
+              }
+              return resolve()
+            })
+            .then(() => resolve())
+            .catch((error) => reject(error))
+        } else {
+          resolve()
+        }
+      } else {
+        resolve()
+      }
+    })
+  }
+
+  const validateTaggedVlan = (value: string) => {
+    return new Promise<void>((resolve, reject) => {
+      if (value !== undefined) {
+        if (value) {
+          checkVlanMember(value)
+            .then(() => resolve())
+            .catch((error) => reject(error))
+        } else {
+          resolve()
+        }
+      } else {
+        resolve()
+      }
+    })
+  }
+
   return (
     <>
 
       <PageHeader
         title={
-          intl.$t(
+          editMode ? intl.$t(
+            { defaultMessage: 'Edit ICX Port Profile' }
+          ) : intl.$t(
             { defaultMessage: 'Add ICX Port Profile' }
           )
         }
@@ -271,12 +328,7 @@ export function SwitchPortProfileForm () {
               name='untaggedVlan'
               label={intl.$t({ defaultMessage: 'Untagged VLAN' })}
               rules={[
-                { validator: (_, value) => validateVlanExcludingReserved(value) },
-                { validator: (_, value) => form.getFieldValue('taggedVlans') &&
-                  validateDuplicateVlanId(
-                    value, form.getFieldValue('taggedVlans')
-                      .split(',').map((vlan: string) => ({ vlanId: Number(vlan) }))
-                  ) }
+                { validator: (_, value) => validateUntaggedVlan(value) }
               ]}
             >
               <Input type='number' style={{ width: '280px' }}/>
@@ -285,7 +337,16 @@ export function SwitchPortProfileForm () {
               name='taggedVlans'
               label={intl.$t({ defaultMessage: 'Tagged VLAN' })}
               rules={[
-                { validator: (_, value) => checkVlanMember(value) }
+                { validator: (_, value) => validateTaggedVlan(value) }
+              ]}
+            >
+              <Input style={{ width: '280px' }}/>
+            </Form.Item>
+            <Form.Item
+              name='radius'
+              label={intl.$t({ defaultMessage: 'RADIUS' })}
+              rules={[
+                { validator: (_, value) => radiusIpAddressRegExp(value) }
               ]}
             >
               <Input style={{ width: '280px' }}/>
@@ -297,15 +358,16 @@ export function SwitchPortProfileForm () {
               </Space>
               <Form.Item
                 name={'poeEnable'}
-                initialValue={false}
                 valuePropName='checked'
-                // eslint-disable-next-line max-len
+                initialValue={poeEnable}
                 children={<Tooltip title={intl.$t(SwitchPortProfileMessages.POE_ENABLED)}>
                   <Switch
                     data-testid='poeEnable'
                     disabled={macOuis?.length > 0 || selectedRowKeys?.length > 0}
-                    checked={poeEnable}
-                    onChange={setPoeEnableValue}
+                    onChange={(checked) => {
+                      form.setFieldValue('poeEnable', checked)
+                    }}
+                    defaultChecked={poeEnable}
                   />
                 </Tooltip>}
               />
@@ -396,22 +458,49 @@ export function SwitchPortProfileForm () {
             </UI.FieldLabel>
             <UI.FieldLabel width={'250px'}>
               <Space align='start'>
-                { intl.$t({ defaultMessage: 'IPSG' }) }
+                <Form.Item
+                  label={<><span style={{ color: 'var(--acx-primary-black)' }}>
+                    {intl.$t({ defaultMessage: 'IPSG' })}</span>
+                  <Tooltip.Question
+                    title={intl.$t(SwitchPortProfileMessages.IPSG_ENABLED)}
+                  /></>}
+                  style={{ marginTop: '5px' }}
+                />
               </Space>
               <Form.Item
                 name={'ipsg'}
                 initialValue={false}
                 valuePropName='checked'
                 children={<Switch
-                  disabled={editMode}
-                  data-testid='ipsg'/>}
+                  data-testid='ipsg'
+                  onChange={(checked: boolean) => {
+                    if(checked){
+                      form.setFieldValue('ingressAcl', undefined)
+                    }
+                  }}
+                />}
               />
             </UI.FieldLabel>
             <Form.Item
               name='ingressAcl'
               label={intl.$t({ defaultMessage: 'Ingress ACL (IPv4)' })}
+              style={{ width: '280px' }}
             >
-              <Input style={{ width: '280px' }}/>
+              {ipsg ?
+                <Tooltip
+                  title={intl.$t(SwitchPortProfileMessages.INGRESS_ACL_DISABLED)}
+                  visible={ingressTooltipVisible}
+                ><Input
+                    style={{ width: '280px' }}
+                    disabled={true}
+                    value={''}
+                    onMouseOver={() => ipsg && setIngressTooltipVisible(true)}
+                    onMouseOut={() => ipsg && setIngressTooltipVisible(false)}
+                  /></Tooltip> :
+                <Input
+                  style={{ width: '280px' }}
+                />
+              }
             </Form.Item>
             <Form.Item
               name='egressAcl'
@@ -428,18 +517,26 @@ export function SwitchPortProfileForm () {
                 name={'dot1x'}
                 initialValue={false}
                 valuePropName='checked'
-                children={<Switch data-testid='dot1x'/>}
+                children={ipsg ? <Tooltip
+                  title={intl.$t(SwitchPortProfileMessages.DOT1X_DISABLED)}>
+                  <Switch data-testid='dot1x' disabled={true} checked={false} />
+                </Tooltip> :
+                  <Switch data-testid='dot1x' />}
               />
             </UI.FieldLabel>
             <UI.FieldLabel width={'250px'}>
               <Space align='start'>
-                { intl.$t({ defaultMessage: 'Macauth' }) }
+                { intl.$t({ defaultMessage: 'MAC Auth' }) }
               </Space>
               <Form.Item
                 name={'macAuth'}
                 initialValue={false}
                 valuePropName='checked'
-                children={<Switch data-testid='macAuth'/>}
+                children={ipsg ? <Tooltip
+                  title={intl.$t(SwitchPortProfileMessages.MAC_AUTH_DISABLED)}>
+                  <Switch data-testid='macAuth' disabled={true} checked={false} />
+                </Tooltip> :
+                  <Switch data-testid='macAuth' />}
               />
             </UI.FieldLabel>
             <Divider />
@@ -447,38 +544,38 @@ export function SwitchPortProfileForm () {
               <Typography.Title level={4}>
                 { intl.$t({ defaultMessage: 'Define Match Criteria' }) }</Typography.Title>
             </Space>
-            <Form.Item name='id' hidden={true}>
-              <Input />
-            </Form.Item>
             <Form.Item
               name={'macOuis'}
-              label={<label>{intl.$t({ defaultMessage: 'MAC OUI' })}
+              label={<>{intl.$t({ defaultMessage: 'MAC OUI' })}
                 <Tooltip.Question
                   title={SwitchPortProfileMessages.MAC_OUI}
-                /></label>}
+                /></>}
               data-testid='macOuis'
-              children={
+              children={!poeEnable ?
                 <Tooltip
-                  title={!poeEnable && intl.$t(SwitchPortProfileMessages.MACOUI_POE_DISABLED)}
+                  title={intl.$t(SwitchPortProfileMessages.MACOUI_POE_DISABLED)}
                 >
                   <Select
                     mode='multiple'
                     showArrow
-                    options={macOuisOptions}
-                    onChange={(selectedOuis) =>
-                    { selectedOuis.length > 0 && setPoeEnableValue(true) }}
                     style={{ width: '280px' }}
-                    disabled={!poeEnable}
+                    disabled={true}
                   />
-                </Tooltip>
+                </Tooltip> :
+                <Select
+                  mode='multiple'
+                  showArrow
+                  options={macOuisOptions}
+                  style={{ width: '280px' }}
+                />
               }
             />
             <Form.Item
               name={'lldpTlvs'}
-              label={<label>{intl.$t({ defaultMessage: 'LLDP TLV' })}
+              label={<>{intl.$t({ defaultMessage: 'LLDP TLV' })}
                 <Tooltip.Question
                   title={intl.$t(SwitchPortProfileMessages.LLDP_TLV)}
-                /></label>}
+                /></>}
               data-testid='lldpTlvs'
             >
               <Loader states={[lldpTlvTableQuery]}>
@@ -500,9 +597,6 @@ export function SwitchPortProfileForm () {
                       disabled: !poeEnable
                     }),
                     onChange: (selectedKeys) => {
-                      if(selectedKeys.length > 0) {
-                        setPoeEnableValue(true)
-                      }
                       setSelectedRowKeys(selectedKeys as string[])
                     }
                   }}

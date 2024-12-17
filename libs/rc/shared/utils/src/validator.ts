@@ -1269,3 +1269,13 @@ export function validateDuplicatePortProfile (selectedPortProfiles: string[], po
     return Promise.resolve()
   }
 }
+
+export function radiusIpAddressRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^(((2[0-4]\d)|(25[0-5]))|(1\d{2})|([1-9]\d)|(\d))[.](((2[0-4]\d)|(25[0-5]))|(1\d{2})|([1-9]\d)|(\d))[.](((2[0-4]\d)|(25[0-5]))|(1\d{2})|([1-9]\d)|(\d))[.](((2[0-4]\d)|(25[0-5]))|(1\d{2})|([1-9]\d)|(\d))$/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.ipAddress))
+  }
+  return Promise.resolve()
+}

@@ -568,5 +568,13 @@ export const SwitchPortProfileMessages = {
   // eslint-disable-next-line max-len
   LLDPTLV_POE_DISABLED: defineMessage({ defaultMessage: 'The "PoE Enable" toggle button is currently off. To select LLDP TLV, please turn on the "PoE Enable" toggle button above.' }),
   // eslint-disable-next-line max-len
-  APPLY_PORT_PROFILE_CHANGE: defineMessage({ defaultMessage: 'Changes to the port profile will get automatically applied to the associated ports.' })
+  APPLY_PORT_PROFILE_CHANGE: defineMessage({ defaultMessage: 'Changes to the port profile will get automatically applied to the associated ports.' }),
+  // eslint-disable-next-line max-len
+  IPSG_ENABLED: defineMessage({ defaultMessage: 'When the IPSG toggle button is turned on, the "Ingress ACL (IPv4)" cannot be configured, and the "802.1x" and "MAC Auth" buttons cannot be enabled.' }),
+  // eslint-disable-next-line max-len
+  INGRESS_ACL_DISABLED: defineMessage({ defaultMessage: 'The "IPSG" toggle button is currently on. To configure the Ingress ACL (IPv4), please turn off the "IPSG" toggle button above.' }),
+  // eslint-disable-next-line max-len
+  DOT1X_DISABLED: defineMessage({ defaultMessage: 'The "IPSG" toggle button is currently on. To enable 802.1x, please turn off the "IPSG" toggle button above.' }),
+  // eslint-disable-next-line max-len
+  MAC_AUTH_DISABLED: defineMessage({ defaultMessage: 'The "IPSG" toggle button is currently on. To enable MAC Auth, please turn off the "IPSG" toggle button above.' })
 }
