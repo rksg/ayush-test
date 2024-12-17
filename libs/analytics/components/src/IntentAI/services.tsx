@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import React        from 'react'
 
-import { gql } from 'graphql-request'
-import _       from 'lodash'
+import { gql }              from 'graphql-request'
+import _                    from 'lodash'
+import { FormattedMessage } from 'react-intl'
 
 import { formattedPath }             from '@acx-ui/analytics/utils'
 import { TableProps }                from '@acx-ui/components'
@@ -30,6 +32,8 @@ import {
   parseTransitionGQLByAction,
   TransitionIntentItem
 } from './utils'
+
+import type { Props as FormattedMessageProps } from 'react-intl/lib/src/components/message'
 
 type Metadata = {
   failures?: (keyof typeof failureCodes)[]
@@ -64,22 +68,35 @@ export type IntentAP = {
   version: string
 }
 
-export const getStatusTooltip = (state: DisplayStates, sliceValue: string, metadata: Metadata) => {
-  const { $t } = getIntl()
+export const formatValues: FormattedMessageProps['values'] = {
+  ul: (chunks) => React.createElement('ul', { children: chunks }),
+  li: (chunks) => React.createElement('li', { children: chunks }),
+  p: (chunks) => React.createElement('p', { children: chunks })
+}
 
+export const getStatusTooltip = (
+  state: DisplayStates, sliceValue: string, metadata: Metadata) => {
+  const { $t } = getIntl()
   const stateConfig = states[state]
 
-  const errMsg: string = metadata.failures?.map(failure => {
-    return failureCodes[failure] ? $t(failureCodes[failure]) : failure
-  }).join('\n - ') || ''
+  const errMsg = React.createElement('ul', {},
+    (metadata as Metadata).failures?.map(failure =>
+      React.createElement('li', { key: failure }, failureCodes[failure]
+        ? $t(failureCodes[failure]) : failure
+      )
+    )
+  )
 
-  return $t(stateConfig.tooltip, {
-    errorMessage: `\n - ${errMsg}\n\n`,
+  const values = {
+    ...formatValues,
+    zoneName: sliceValue,
     scheduledAt: formatter(DateFormatEnum.DateTimeFormat)(metadata.scheduledAt),
-    zoneName: sliceValue
+    errorMessage: errMsg
     // userName: metadata.scheduledBy //TODO: scheduledBy is ID, how to get userName for R1 case?
     // newConfig: metadata.newConfig //TODO: how to display newConfig?
-  })
+  }
+
+  return <FormattedMessage {...stateConfig.tooltip} values={values} />
 }
 
 type MutationResponse = { success: boolean, errorMsg: string, errorCode: string }
@@ -171,7 +188,7 @@ export const api = intentAIApi.injectEndpoints({
         const { $t } = getIntl()
         const items = response.intents.data.reduce((intents, intent) => {
           const {
-            id, path, sliceValue, code, displayStatus, metadata, updatedAt
+            id, path, sliceValue, code, displayStatus
           } = intent
           const detail = codes[code]
           detail && states[displayStatus] && intents.push({
@@ -181,9 +198,8 @@ export const api = intentAIApi.injectEndpoints({
             intent: $t(detail.intent),
             scope: formattedPath(path, sliceValue),
             category: $t(detail.category),
-            statusLabel: states[displayStatus] ? $t(states[displayStatus].text) : displayStatus,
-            statusTooltip: getStatusTooltip(displayStatus, sliceValue, { ...metadata, updatedAt })
-          } as (IntentListItem))
+            statusLabel: states[displayStatus] ? $t(states[displayStatus].text) : displayStatus
+          } as IntentListItem)
           return intents
         }, [] as Array<IntentListItem>)
         return { intents: items, total: response.intents.total }

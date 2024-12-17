@@ -41,6 +41,7 @@ const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
     }
   )
 
+  const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   const isEdgeArptReady = useIsEdgeFeatureReady(Features.EDGE_ARPT_TOGGLE)
 
   const onClose = () => {
@@ -102,14 +103,15 @@ const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
         }
       />
 
-      <Divider/>
 
-      <Form.Item
+      {(isEdgeHqosEnabled || isEdgeArptReady) && <Divider/>}
+
+      {isEdgeHqosEnabled && <Form.Item
         label={$t({ defaultMessage: 'Hierarchical QoS' })}
         children={
           transformDisplayEnabledDisabled(currentEdge?.isHqosEnabled??false)
         }
-      />
+      />}
 
       {isEdgeArptReady && <Form.Item
         label={$t({ defaultMessage: 'ARP Termination' })}
