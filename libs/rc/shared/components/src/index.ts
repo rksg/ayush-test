@@ -257,7 +257,7 @@ export {
 } from './Compatibility'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
 export { useEdgeClusterActions } from './useEdgeClusterActions'
-export { usePersonaListQuery } from './usePersonaListQuery'
+// export { usePersonaListQuery } from './usePersonaListQuery'
 export { EdgeClusterSettingForm } from './EdgeFormItem/EdgeClusterSettingForm'
 export type { EdgeClusterSettingFormType } from './EdgeFormItem/EdgeClusterSettingForm'
 export { EdgeLagTable } from './EdgeLagTable'

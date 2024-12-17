@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, Tabs }                                               from '@acx-ui/components'
+import { usePersonaListQuery }                                        from '@acx-ui/edge/components'
 import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
 import { useApListQuery, useGetEdgePinByIdQuery }                     from '@acx-ui/rc/services'
 import { Persona, TableQuery, transformDisplayNumber, useTableQuery } from '@acx-ui/rc/utils'
 
-import { usePersonaListQuery } from '../usePersonaListQuery'
+// import { usePersonaListQuery } from '../usePersonaListQuery'
 
 import { AccessSwitchTable, AccessSwitchTableDataType } from './AccessSwitchTable'
 import { ApsTable, defaultApPayload }                   from './ApsTable'

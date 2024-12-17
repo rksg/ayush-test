@@ -415,6 +415,9 @@ export { ReactComponent as Stadium } from './icons/Stadium.svg'
 export { ReactComponent as TransportHub } from './icons/TransportHub.svg'
 export { ReactComponent as Warehhouse } from './icons/Warehhouse.svg'
 export { ReactComponent as WelcomeLogo } from './icons/WelcomeLogo.svg'
-
+export { ReactComponent as ApIconOutlined } from './icons/ApIconOutlined.svg'
+export { ReactComponent as PinIdentityOutlined } from './icons/PinIdentityOutlined.svg'
+export { ReactComponent as SecuredNetwork } from './icons/SecuredNetwork.svg'
+export { ReactComponent as StackSwitchOutlined } from './icons/StackSwitchOutlined.svg'
 
 export * from './styledComponents'

@@ -4,6 +4,7 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
+import { usePersonaListQuery }                                                from '@acx-ui/edge/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                                                   from '@acx-ui/icons'
 import {
@@ -21,10 +22,10 @@ import { exportMessageMapping }                                        from '@ac
 import { IdentityDetailsLink, IdentityGroupLink, PropertyUnitLink } from '../../CommonLinkHelper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }          from '../../ImportFileDrawer'
 import { useIsEdgeFeatureReady }                                    from '../../useEdgeActions'
-import { usePersonaListQuery }                                      from '../../usePersonaListQuery'
-import { PersonaDrawer }                                            from '../PersonaDrawer'
-import { PersonaGroupSelect }                                       from '../PersonaGroupSelect'
-import { PersonaBlockedIcon }                                       from '../styledComponents'
+// import { usePersonaListQuery }                                      from '../../usePersonaListQuery'
+import { PersonaDrawer }      from '../PersonaDrawer'
+import { PersonaGroupSelect } from '../PersonaGroupSelect'
+import { PersonaBlockedIcon } from '../styledComponents'
 
 const IdentitiesContext = createContext({} as {
   setIdentitiesCount: (data: number) => void
