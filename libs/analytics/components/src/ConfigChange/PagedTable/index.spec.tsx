@@ -9,7 +9,7 @@ import { DateRange }                                                            
 import { pagedConfigChanges }                         from '../__tests__/fixtures'
 import { ConfigChangeContext, ConfigChangeProvider }  from '../context'
 import { DEFAULT_SORTER, PagedTable, transferSorter } from '../PagedTable'
-import { SORTER_ABBR, api, useLazyConfigChangeQuery }                           from '../services'
+import { SORTER_ABBR, api }                           from '../services'
 
 import { genDownloadConfigChange } from './download'
 

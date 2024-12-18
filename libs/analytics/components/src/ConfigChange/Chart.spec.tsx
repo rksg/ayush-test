@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 
 import type { ConfigChange, ConfigChangePaginationParams }             from '@acx-ui/components'
 import { get }                                                         from '@acx-ui/config'
+import { useIsSplitOn }                                                from '@acx-ui/feature-toggle'
 import { Provider, dataApiURL }                                        from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { DateRange }                                                   from '@acx-ui/utils'
@@ -14,7 +15,6 @@ import {
   ConfigChangeProvider,
   ConfigChangeContext
 } from './context'
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 
 jest.mock('@acx-ui/components', () => {
   const configChange = (require('./__tests__/fixtures')
