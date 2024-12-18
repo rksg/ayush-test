@@ -14,7 +14,6 @@ export enum Features {
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
   AP_TX_POWER_TOGGLE = 'ap-tx-power-toggle',
   BETA_BUTTON = 'acx-ui-beta-button-toggle',
-  CLOUDPATH_ASYNC_API_TOGGLE = 'acx-ui-cloudpath-async-api-toggle',
   CLOUDPATH_BETA = 'BETA-CP',
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
   CONFIG_TEMPLATE = 'acx-ui-config-template',
