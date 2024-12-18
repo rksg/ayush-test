@@ -36,6 +36,10 @@ export const api = dataApi.injectEndpoints({
                   key
                   oldValues
                   newValues
+                  sliceValue
+                  path {
+                    type name
+                  }
                 }
               }
             }

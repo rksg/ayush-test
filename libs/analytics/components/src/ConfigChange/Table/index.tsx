@@ -9,7 +9,9 @@ import {
   sortProp,
   useAnalyticsFilter,
   kpiConfig,
-  productNames
+  productNames,
+  formattedPath,
+  impactedArea
 }                                    from '@acx-ui/analytics/utils'
 import {
   Loader,
@@ -18,7 +20,8 @@ import {
   ConfigChange,
   type ConfigChangeChartRowMappingType,
   getConfigChangeEntityTypeMapping,
-  Cascader
+  Cascader,
+  Tooltip
 }                                    from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
@@ -133,7 +136,7 @@ export function Table (props: {
     },
     {
       key: 'type',
-      title: $t({ defaultMessage: 'Entity Type' }),
+      title: $t({ defaultMessage: 'Entity' }),
       dataIndex: 'type',
       render: (_, row) => {
         const config = entityTypeMapping.find(type => type.key === row.type)
@@ -145,15 +148,24 @@ export function Table (props: {
     },
     {
       key: 'name',
-      title: $t({ defaultMessage: 'Entity Name' }),
+      title: $t({ defaultMessage: 'Scope' }),
       dataIndex: 'name',
-      render: (_, { name }, __, highlightFn) => highlightFn(String(name)),
+      render: (_, value, __, highlightFn ) => {
+        const scope = impactedArea(value.path, value.sliceValue) as string
+        return <Tooltip
+          placement='top'
+          title={formattedPath(value.path, value.sliceValue)}
+          dottedUnderline={true}
+        >
+          {highlightFn(scope)}
+        </Tooltip>
+      },
       searchable: true,
       sorter: { compare: sortProp('name', defaultSort) }
     },
     {
       key: 'key',
-      title: $t({ defaultMessage: 'Configuration' }),
+      title: $t({ defaultMessage: 'Configuration / Intent' }),
       dataIndex: 'key',
       render: (_, { type, key }) => {
         const value = getConfiguration(type, key)
@@ -163,7 +175,7 @@ export function Table (props: {
     },
     {
       key: 'oldValues',
-      title: $t({ defaultMessage: 'Change From' }),
+      title: $t({ defaultMessage: 'Old Value' }),
       dataIndex: ['oldValues'],
       align: 'center',
       render: (_, { oldValues, type, key }) => {
@@ -178,7 +190,7 @@ export function Table (props: {
     },
     {
       key: 'newValues',
-      title: $t({ defaultMessage: 'Change To' }),
+      title: $t({ defaultMessage: 'New Value / Action' }),
       dataIndex: ['newValues'],
       align: 'center',
       render: (_, { newValues, type, key }) => {

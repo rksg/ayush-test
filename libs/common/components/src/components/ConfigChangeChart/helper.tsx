@@ -4,10 +4,10 @@ import ReactECharts, { EChartsReactProps } from 'echarts-for-react'
 import { debounce }                        from 'lodash'
 import { renderToString }                  from 'react-dom/server'
 
-import { get }                              from '@acx-ui/config'
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }        from '@acx-ui/formatter'
-import { getIntl, TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
+import { get }                                        from '@acx-ui/config'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                  from '@acx-ui/formatter'
+import { getIntl, PathNode, TABLE_DEFAULT_PAGE_SIZE } from '@acx-ui/utils'
 
 import { cssNumber, cssStr }   from '../../theme/helper'
 import { qualitativeColorSet } from '../Chart/helper'
@@ -24,6 +24,8 @@ export type ConfigChange = {
   key: string
   oldValues: string[]
   newValues: string[]
+  sliceValue: string
+  path: [PathNode]
 }
 
 type OnDatazoomEvent = { batch: { startValue: number, endValue: number }[] }
