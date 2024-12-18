@@ -946,8 +946,8 @@ export const apApi = baseApApi.injectEndpoints({
             const apQuery = await fetchWithBQ(apReq)
             const apData = apQuery.data as ApDetails
             const apModel = apData.model
-            const apActivateEths = ethList.data.filter(eth => eth.apSerialNumbers.includes(params.serialNumber!))
-            const venueActivateEths = ethList.data.filter(eth => eth.venueIds.includes(params.venueId!))
+            const apActivateEths = ethList.data.filter(eth => eth.apSerialNumbers?.includes(params.serialNumber!)) ?? []
+            const venueActivateEths = ethList.data.filter(eth => eth.venueIds?.includes(params.venueId!)) ?? []
             for (let eth of apActivateEths) {
               const ports = eth.apActivations?.filter(ap => ap.apSerialNumber === params.serialNumber) ?? []
               for (let port of ports) {
