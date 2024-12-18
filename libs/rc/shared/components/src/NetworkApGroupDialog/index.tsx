@@ -144,7 +144,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       : networkApGroupsV2Query
   }
 
-  const { data: networkApGroupsData, isLoading: isNetworkLoading } = useNetworkApGroupsInstance()
+  const { data: networkApGroupsData, isFetching: isNetworkFetching } = useNetworkApGroupsInstance()
 
   const formInitData = useMemo(() => {
     // if specific AP groups were selected or the  All APs option is disabled,
@@ -169,7 +169,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
   const [loading, setLoading] = useState(false)
 
-  const { data: instanceListResult, isLoading: isVlanPoolLoading } = useConfigTemplateQueryFnSwitcher<TableResult<VLANPoolViewModelType>>({
+  const { data: instanceListResult, isFetching: isVlanPoolFetching } = useConfigTemplateQueryFnSwitcher<TableResult<VLANPoolViewModelType>>({
     useQueryFn: useGetVLANPoolPolicyViewModelListQuery,
     useTemplateQueryFn: useGetEnhancedVlanPoolPolicyTemplateListQuery,
     skip: false,
@@ -211,10 +211,10 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       closable={true}
       width={840}
       onOk={onOk}
-      okButtonProps={{ disabled: loading || isNetworkLoading || isVlanPoolLoading }}
-      cancelButtonProps={{ disabled: loading || isNetworkLoading || isVlanPoolLoading }}
+      okButtonProps={{ disabled: loading || isNetworkFetching || isVlanPoolFetching }}
+      cancelButtonProps={{ disabled: loading || isNetworkFetching || isVlanPoolFetching }}
     >
-      <Spin spinning={loading || isNetworkLoading || isVlanPoolLoading}><Form
+      <Spin spinning={loading || isNetworkFetching || isVlanPoolFetching}><Form
         form={form}
         layout='horizontal'
         size='small'
