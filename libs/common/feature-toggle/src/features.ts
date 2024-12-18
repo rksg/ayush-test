@@ -14,7 +14,6 @@ export enum Features {
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
   AP_TX_POWER_TOGGLE = 'ap-tx-power-toggle',
   BETA_BUTTON = 'acx-ui-beta-button-toggle',
-  CLOUDPATH_ASYNC_API_TOGGLE = 'acx-ui-cloudpath-async-api-toggle',
   CLOUDPATH_BETA = 'BETA-CP',
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
   CONFIG_TEMPLATE = 'acx-ui-config-template',
@@ -53,6 +52,7 @@ export enum Features {
   EDGE_MDNS_PROXY_TOGGLE = 'edge-mdns-proxy-toggle',
   EDGE_THIRDPARTY_MGMT_TOGGLE = 'edge-poc-thirdparty-mgmt-toggle',
   EDGE_ARPT_TOGGLE = 'edge-arpt-toggle',
+  EDGE_AV_REPORT_TOGGLE= 'edge-av-report-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
@@ -252,6 +252,7 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   LOCATION_BASED_SERVICES = 'LOCATION-BASED-SERVICES',
   RBAC_IMPLICIT_P1 = 'RBAC-IMPLICIT-P1',
   EDGE_ADV = 'EDGE-ADV',
+  EDGE_AV_REPORT = 'EDGE-AV-REPORT',
   // for testing only
   TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
   TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',
@@ -279,6 +280,7 @@ export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.LOCATION_BASED_SERVICES, description: defineMessage({ defaultMessage: 'LBS: RUCKUS One now lets you create a Location Based Service (LBS) Server linked to multiple <venuePlural></venuePlural> for efficient tracking and management of location-specific information. This feature gathers location data from connected access points (APs) and routes it to third-party application servers. You can add and manage LBS server profiles and enable Location Based Services for any <venueSingular></venueSingular> directly from the RUCKUS One web interface, enhancing your <venueSingular></venueSingular> management capabilities.' }), status: true },
   { key: TierFeatures.RBAC_IMPLICIT_P1, description: defineMessage({ defaultMessage: 'Role-based access control: Role-based access control (RBAC) and attributes-based access control (ABAC) are functionalities that provide a structured and efficient approach to managing administrator permissions and access rules in RUCKUS One.' }), status: true },
   { key: TierFeatures.EDGE_ADV, description: defineMessage({ defaultMessage: 'Personal Identity Networks: Personal Identity Networks (PIN) use VxLAN tunneling to extend Wi-Fi client access to the RUCKUS Edge, creating seamless connectivity across the network domain. It enables Wi-Fi clients to securely access their networks and connected devices while also establishing Personal Area Networks (PAN) for secure, individualized connectivity. PINs can be configured for any <venueSingular></venueSingular> that has Property Management enabled and has RUCKUS APs, ICX switches, and Edge devices deployed.' }), status: true },
+  { key: TierFeatures.EDGE_AV_REPORT, description: defineMessage({ defaultMessage: 'Edge Application Report: This feature introduces the Deep Packet Inspection (DPI) module into RUCKUS Edge and an Application Visibility (AV) report on Ruckus One. It provides detailed application visibility into different types of applications running on the network, enabling administrators to gain insights into network traffic.' }), status: true },
   // for testing only
   { key: TierFeatures.TEST_SELECTIVE_BETA_01, description: defineMessage({ defaultMessage: 'Test 01: Test selective 01. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },
   { key: TierFeatures.TEST_SELECTIVE_BETA_02, description: defineMessage({ defaultMessage: 'Test 02: Test selective 02. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },
