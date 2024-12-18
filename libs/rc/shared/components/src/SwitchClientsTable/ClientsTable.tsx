@@ -109,7 +109,7 @@ export function ClientsTable (props: {
 
   useLoadTimeTracking({
     itemName: 'WiredClientsTable',
-    isSuccess: tableQuery?.isSuccess
+    states: [tableQuery]
   })
 
   const { authenticationProfiles } = useGetFlexAuthenticationProfilesQuery({

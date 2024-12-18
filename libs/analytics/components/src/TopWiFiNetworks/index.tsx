@@ -108,7 +108,7 @@ export function TopWiFiNetworks ({
 
   useLoadTimeTracking({
     itemName: 'TopWiFiNetworks',
-    isSuccess: queryResults?.isSuccess
+    states: [queryResults]
   })
 
   return (

@@ -77,7 +77,7 @@ function TopEdgesByTrafficWidget ({ filters }: { filters : AnalyticsFilter }) {
 
   useLoadTimeTracking({
     itemName: 'TopEdgesByTrafficWidget',
-    isSuccess: queryResults?.isSuccess
+    states: [queryResults]
   })
 
   return (

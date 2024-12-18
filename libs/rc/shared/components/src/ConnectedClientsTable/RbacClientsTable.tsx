@@ -706,7 +706,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
 
   useLoadTimeTracking({
     itemName: 'WirelessClientsTable',
-    isSuccess: tableQuery?.isSuccess
+    states: [tableQuery]
   })
 
   return (

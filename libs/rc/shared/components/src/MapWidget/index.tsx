@@ -43,7 +43,7 @@ function ActualMapV2 () {
 
   useLoadTimeTracking({
     itemName: 'ActualMapV2',
-    isSuccess: queryResults?.isSuccess
+    states: [queryResults]
   })
 
   return (

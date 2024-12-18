@@ -40,7 +40,7 @@ function TopSwitchModelsWidget ({ filters }: { filters: AnalyticsFilter }) {
 
   useLoadTimeTracking({
     itemName: 'TopSwitchModelsWidget',
-    isSuccess: queryResults?.isSuccess
+    states: [queryResults]
   })
 
   return (

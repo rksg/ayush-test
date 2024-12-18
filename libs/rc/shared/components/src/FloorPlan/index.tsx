@@ -177,7 +177,7 @@ export function FloorPlan () {
 
   useLoadTimeTracking({
     itemName: 'FloorPlan',
-    isSuccess: floorPlanQuery?.isSuccess
+    states: [floorPlanQuery]
   })
 
   const [

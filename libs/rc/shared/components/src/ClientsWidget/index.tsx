@@ -112,7 +112,7 @@ export function ClientsWidgetV2 () {
 
   useLoadTimeTracking({
     itemName: 'ClientsWidgetV2',
-    isSuccess: queryResults?.isSuccess
+    states: [queryResults]
   })
 
   return (

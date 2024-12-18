@@ -74,7 +74,7 @@ export function VenuesDashboardWidgetV2 () {
 
   useLoadTimeTracking({
     itemName: 'VenuesDashboardWidgetV2',
-    isSuccess: queryResults?.isSuccess
+    states: [queryResults]
   })
 
   return (

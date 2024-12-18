@@ -37,7 +37,7 @@ export function VenueDevicesWidget () {
 
   useLoadTimeTracking({
     itemName: 'VenueDevicesWidget',
-    isSuccess: queryResults?.isSuccess
+    states: [queryResults]
   })
 
   return (

@@ -95,7 +95,7 @@ function DidYouKnowWidget ({
 
   useLoadTimeTracking({
     itemName: trackingItems[TrackingPages.DASHBOARD].DID_YOU_KNOW,
-    isSuccess: isSuccess
+    states: [{ isSuccess, isLoading }]
   })
 
   const onChange = useCallback((_: number, nextSlide: number) => {

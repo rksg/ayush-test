@@ -56,7 +56,7 @@ export function SwitchesTrafficByVolume ({
 
   useLoadTimeTracking({
     itemName: 'SwitchesTrafficByVolume',
-    isSuccess: queryResults?.isSuccess
+    states: [queryResults]
   })
 
   return (

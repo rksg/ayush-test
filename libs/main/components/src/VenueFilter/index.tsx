@@ -37,7 +37,7 @@ export function VenueFilter () {
 
   useLoadTimeTracking({
     itemName: 'VenueFilter',
-    isSuccess: queryResults?.isSuccess
+    states: [queryResults]
   })
 
   return (

@@ -70,7 +70,7 @@ export function AlarmWidgetV2 () {
 
   useLoadTimeTracking({
     itemName: 'AlarmWidgetV2',
-    isSuccess: overviewV2Query?.isSuccess
+    states: [overviewV2Query]
   })
 
   return (

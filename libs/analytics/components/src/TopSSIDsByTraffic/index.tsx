@@ -93,7 +93,7 @@ function TopSSIDsByTrafficWidget ({
 
   useLoadTimeTracking({
     itemName: 'TopSSIDsByTrafficWidget',
-    isSuccess: queryResults?.isSuccess
+    states: [queryResults]
   })
 
   return (

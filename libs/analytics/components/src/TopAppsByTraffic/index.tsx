@@ -52,7 +52,7 @@ export function TopAppsByTraffic ({
 
   useLoadTimeTracking({
     itemName: 'TopAppsByTraffic',
-    isSuccess: queryResults?.isSuccess
+    states: [queryResults]
   })
 
   return (

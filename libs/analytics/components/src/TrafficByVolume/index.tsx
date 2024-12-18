@@ -43,7 +43,7 @@ function TrafficByVolumeWidget ({
 
   useLoadTimeTracking({
     itemName: 'TrafficByVolumeWidget',
-    isSuccess: queryResults?.isSuccess
+    states: [queryResults]
   })
 
   return (

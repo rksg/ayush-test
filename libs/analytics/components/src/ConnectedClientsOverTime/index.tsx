@@ -42,7 +42,7 @@ export function ConnectedClientsOverTime ({
 
   useLoadTimeTracking({
     itemName: 'ConnectedClientsOverTime',
-    isSuccess: queryResults?.isSuccess
+    states: [queryResults]
   })
 
   return (

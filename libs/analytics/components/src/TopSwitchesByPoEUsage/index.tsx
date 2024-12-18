@@ -87,7 +87,7 @@ function TopSwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }
 
   useLoadTimeTracking({
     itemName: 'TopSwitchesByPoEUsageWidget',
-    isSuccess: queryResults?.isSuccess
+    states: [queryResults]
   })
 
   return (

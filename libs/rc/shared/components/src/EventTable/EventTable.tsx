@@ -278,7 +278,7 @@ export const EventTable = ({
 
   useLoadTimeTracking({
     itemName: 'EventTable',
-    isSuccess: tableQuery?.isSuccess
+    states: [tableQuery]
   })
 
   return <Loader states={[tableQuery]}>

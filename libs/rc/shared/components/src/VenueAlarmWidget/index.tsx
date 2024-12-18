@@ -73,7 +73,7 @@ export function VenueAlarmWidget () {
 
   useLoadTimeTracking({
     itemName: 'VenueAlarmWidget',
-    isSuccess: overviewV2Query?.isSuccess
+    states: [overviewV2Query]
   })
 
   const onAlarmClick = () => {

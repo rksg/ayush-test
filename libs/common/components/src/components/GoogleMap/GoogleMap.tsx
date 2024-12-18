@@ -81,7 +81,7 @@ const NotEnabled = () => {
 
   useLoadTimeTracking({
     itemName: 'ActualMapV2',
-    isSuccess: true
+    states: [{ isSuccess: true }]
   })
 
   return <UI.MapContainer>

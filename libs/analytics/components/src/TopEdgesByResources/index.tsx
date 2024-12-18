@@ -125,7 +125,7 @@ function TopEdgesByResourcesWidget ({ filters }: { filters : AnalyticsFilter }) 
 
   useLoadTimeTracking({
     itemName: 'TopEdgesByResourcesWidget',
-    isSuccess: queryResults?.isSuccess
+    states: [queryResults]
   })
 
   return (

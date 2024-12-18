@@ -22,7 +22,7 @@ export function IncidentsDashboardv2 ({ filters }: { filters: IncidentFilter }) 
 
   useLoadTimeTracking({
     itemName: 'IncidentsDashboardv2',
-    isSuccess: response?.isSuccess
+    states: [response]
   })
 
   const incidentCountBySeverity: { [severity: string] : number } = {}

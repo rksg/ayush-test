@@ -63,7 +63,7 @@ export function ClientExperience ({
 
   useLoadTimeTracking({
     itemName: 'ClientExperience',
-    isSuccess: queryResults?.isSuccess
+    states: [queryResults]
   })
 
   return(<Loader states={[queryResults]}>

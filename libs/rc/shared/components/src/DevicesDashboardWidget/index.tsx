@@ -52,7 +52,7 @@ export function DevicesDashboardWidgetV2 () {
 
   useLoadTimeTracking({
     itemName: 'DevicesDashboardWidgetV2',
-    isSuccess: queryResults?.isSuccess && rwgSuccess
+    states: [queryResults, { isLoading: rwgLoading, isSuccess: rwgSuccess }]
   })
 
   return (

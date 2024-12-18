@@ -95,7 +95,7 @@ function TopSwitchesByTrafficWidget ({ filters }: { filters : AnalyticsFilter })
 
   useLoadTimeTracking({
     itemName: 'TopSwitchesByTrafficWidget',
-    isSuccess: queryResults?.isSuccess
+    states: [queryResults]
   })
 
   return (

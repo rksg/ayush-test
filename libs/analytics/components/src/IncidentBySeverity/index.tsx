@@ -25,7 +25,7 @@ export function IncidentBySeverity ({ type, filters, setIncidentCount }: Inciden
 
   useLoadTimeTracking({
     itemName: 'IncidentBySeverity',
-    isSuccess: queryResult?.isSuccess
+    states: [queryResult]
   })
 
   setIncidentCount &&

@@ -26,7 +26,7 @@ function VenueHealthWidget ({
 
   useLoadTimeTracking({
     itemName: 'VenueHealthWidget',
-    isSuccess: queryResults?.isSuccess
+    states: [queryResults]
   })
 
   return(

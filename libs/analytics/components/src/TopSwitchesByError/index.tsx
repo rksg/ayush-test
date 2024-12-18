@@ -82,7 +82,7 @@ function TopSwitchesByErrorWidget ({
 
   useLoadTimeTracking({
     itemName: 'TopSwitchesByErrorWidget',
-    isSuccess: queryResults?.isSuccess
+    states: [queryResults]
   })
 
   return (

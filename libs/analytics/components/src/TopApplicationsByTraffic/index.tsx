@@ -98,7 +98,7 @@ export function TopApplicationsByTraffic ({
 
   useLoadTimeTracking({
     itemName: 'TopApplicationsByTraffic',
-    isSuccess: queryResults?.isSuccess
+    states: [queryResults]
   })
 
   return (

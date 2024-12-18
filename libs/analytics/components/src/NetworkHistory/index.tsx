@@ -75,7 +75,7 @@ export const NetworkHistory = forwardRef<
 
   useLoadTimeTracking({
     itemName: 'NetworkHistory',
-    isSuccess: queryResults?.isSuccess
+    states: [queryResults]
   })
 
   return (
