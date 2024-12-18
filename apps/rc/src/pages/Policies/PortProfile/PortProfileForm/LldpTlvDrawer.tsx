@@ -11,6 +11,7 @@ import {
   useLazySwitchPortProfileLldpTlvsListQuery } from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
+  LldpTlvMatchingTitle,
   LldpTlvMatchingType,
   LldpTlvs } from '@acx-ui/rc/utils'
 
@@ -121,15 +122,12 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
         ]}>
         <Radio.Group>
           <Space direction='vertical'>
-            <Radio value={LldpTlvMatchingType.FULL_MAPPING}>
-              {intl.$t({ defaultMessage: 'Exact' })}
-            </Radio>
-            <Radio value={LldpTlvMatchingType.BEGIN}>
-              {intl.$t({ defaultMessage: 'Begin with' })}
-            </Radio>
-            <Radio value={LldpTlvMatchingType.INCLUDE}>
-              {intl.$t({ defaultMessage: 'Include' })}
-            </Radio>
+            {Object.entries(LldpTlvMatchingType).map(([key, value]) => (
+              <Radio key={key} value={value}>
+                {intl.$t({ defaultMessage: '{nameMatchingType}' },
+                  { nameMatchingType: LldpTlvMatchingTitle[value] })}
+              </Radio>
+            ))}
           </Space>
         </Radio.Group>
       </Form.Item>
@@ -150,15 +148,12 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
         ]}>
         <Radio.Group>
           <Space direction='vertical'>
-            <Radio value={LldpTlvMatchingType.FULL_MAPPING}>
-              {intl.$t({ defaultMessage: 'Exact' })}
-            </Radio>
-            <Radio value={LldpTlvMatchingType.BEGIN}>
-              {intl.$t({ defaultMessage: 'Begin with' })}
-            </Radio>
-            <Radio value={LldpTlvMatchingType.INCLUDE}>
-              {intl.$t({ defaultMessage: 'Include' })}
-            </Radio>
+            {Object.entries(LldpTlvMatchingType).map(([key, value]) => (
+              <Radio key={key} value={value}>
+                {intl.$t({ defaultMessage: '{descMatchingType}' },
+                  { descMatchingType: LldpTlvMatchingTitle[value] })}
+              </Radio>
+            ))}
           </Space>
         </Radio.Group>
       </Form.Item>

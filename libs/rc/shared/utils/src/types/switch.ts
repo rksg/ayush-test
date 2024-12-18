@@ -1010,6 +1010,13 @@ export enum LldpTlvMatchingType {
   INCLUDE = 'INCLUDE'
 }
 
+export const LldpTlvMatchingTitle: Record<LldpTlvMatchingType, string> = {
+  [LldpTlvMatchingType.FULL_MAPPING]: 'Exact',
+  [LldpTlvMatchingType.BEGIN]: 'Begin with',
+  [LldpTlvMatchingType.INCLUDE]: 'Include'
+}
+
+
 export interface PortProfilesBySwitchId {
   portProfileId: string
   portProfileName: string

@@ -10,6 +10,7 @@ import {
   useSwitchPortProfilesListQuery
 } from '@acx-ui/rc/services'
 import {
+  LldpTlvMatchingTitle,
   LldpTlvs,
   SwitchPortProfiles,
   useTableQuery
@@ -83,7 +84,12 @@ export default function LldpTlvTable () {
       title: $t({ defaultMessage: 'Name Match' }),
       key: 'nameMatchingType',
       dataIndex: 'nameMatchingType',
-      sorter: true
+      sorter: true,
+      render: (_, row) => {
+        const nameMatchingType = row.nameMatchingType as keyof typeof LldpTlvMatchingTitle
+        return $t({ defaultMessage: '{nameMatchingType}' },
+          { nameMatchingType: LldpTlvMatchingTitle[nameMatchingType] })
+      }
     },
     {
       title: $t({ defaultMessage: 'System Description' }),
@@ -96,7 +102,12 @@ export default function LldpTlvTable () {
       title: $t({ defaultMessage: 'Description Match' }),
       key: 'descMatchingType',
       dataIndex: 'descMatchingType',
-      sorter: true
+      sorter: true,
+      render: (_, row) => {
+        const descMatchingType = row.descMatchingType as keyof typeof LldpTlvMatchingTitle
+        return $t({ defaultMessage: '{descMatchingType}' },
+          { descMatchingType: LldpTlvMatchingTitle[descMatchingType] })
+      }
     },
     {
       title: $t({ defaultMessage: 'Profile Name' }),
