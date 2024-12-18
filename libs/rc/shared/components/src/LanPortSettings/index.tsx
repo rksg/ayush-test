@@ -275,7 +275,7 @@ export function LanPortSettings (props: {
           currentEthernetPortData={currentEthernetPortData}
           currentIndex={index}
           onGUIChanged={onGUIChanged}
-          isEditable={!!serialNumber} />
+          isEditable={!readOnly && !!serialNumber} />
         {
           isEthernetPortProfileEnabled && isEthernetSoftgreEnabled &&
             (<>
