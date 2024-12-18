@@ -935,11 +935,7 @@ export const apApi = baseApApi.injectEndpoints({
           const ethReq = {
             ...createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList),
             body: JSON.stringify({
-              filters: {
-                venueIds: [params.venueId]
-              },
-              page: 1,
-              pageSize: 10
+              pageSize: 1000
             })
           }
 
@@ -950,19 +946,27 @@ export const apApi = baseApApi.injectEndpoints({
             const apQuery = await fetchWithBQ(apReq)
             const apData = apQuery.data as ApDetails
             const apModel = apData.model
-            for (let eth of ethList.data) {
-              const port = eth.apActivations?.find(ap => ap.apSerialNumber === params.serialNumber)
-              let targetPort = port && apLanPorts.lanPorts
-                ?.find(l => l.portId === port.portId?.toString())
-              if (targetPort && !targetPort.ethernetPortProfileId) {
-                targetPort.ethernetPortProfileId = eth.id
+            const apActivateEths = ethList.data.filter(eth => eth.apSerialNumbers.includes(params.serialNumber!))
+            const venueActivateEths = ethList.data.filter(eth => eth.venueIds.includes(params.venueId!))
+            for (let eth of apActivateEths) {
+              const ports = eth.apActivations?.filter(ap => ap.apSerialNumber === params.serialNumber) ?? []
+              for (let port of ports) {
+                let targetPort = apLanPorts.lanPorts
+                  ?.find(l => l.portId === port.portId?.toString())
+                if (targetPort && !targetPort.ethernetPortProfileId) {
+                  targetPort.ethernetPortProfileId = eth.id
+                }
               }
+            }
 
-              const venuePort = eth.venueActivations?.find(
-                v => v.venueId === params.venueId && v.apModel === apModel)?.portId?.toString()
-              let venueTargetPort = apLanPorts.lanPorts?.find(l => l.portId === venuePort)
-              if (venueTargetPort && !venueTargetPort.ethernetPortProfileId) {
-                venueTargetPort.ethernetPortProfileId = eth.id
+            for (let eth of venueActivateEths) {
+              const venuePorts = eth.venueActivations?.filter(
+                v => v.venueId === params.venueId && v.apModel === apModel) ?? []
+              for (let venuePort of venuePorts) {
+                let venueTargetPort = apLanPorts.lanPorts?.find(l => l.portId === venuePort.portId?.toString())
+                if (venueTargetPort && !venueTargetPort.ethernetPortProfileId) {
+                  venueTargetPort.ethernetPortProfileId = eth.id
+                }
               }
             }
           }
