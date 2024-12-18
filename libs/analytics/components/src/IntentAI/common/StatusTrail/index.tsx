@@ -1,5 +1,3 @@
-import _ from 'lodash'
-
 import { Card, Loader }              from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
