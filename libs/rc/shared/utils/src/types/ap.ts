@@ -484,7 +484,9 @@ export interface LanPort {
   type?: 'ACCESS' | 'GENERAL' | 'TRUNK',
   vni: number,
   ethernetPortProfileId?: string,
-  softGreProfileId?: string
+  softGreProfileId?: string,
+  softGreTunnelEnable?: boolean,
+  dhcpOption82?: LanPortSoftGreProfileSettings
 }
 
 export enum ApModelTypeEnum {
@@ -975,6 +977,11 @@ export interface DhcpOption82Settings {
   subOption2Enabled:	boolean
   subOption150Enabled:	boolean
   subOption151Enabled:	boolean
+}
+
+export interface VenueApModelLanPortSettingsV1 {
+  softGreEnabled: boolean
+  softGreSettings?: LanPortSoftGreProfileSettings
 }
 
 export interface LanPortSoftGreProfileSettings {

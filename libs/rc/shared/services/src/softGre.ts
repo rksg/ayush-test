@@ -13,6 +13,7 @@ import { CommonResult,
   onSocketActivityChanged,
   onActivityMessageReceived,
   SoftGreOptionsData,
+  VenueApModelLanPortSettingsV1,
   VenueTableSoftGreActivation,
   CommonRbacUrlsInfo,
   NewAPModel
@@ -310,6 +311,35 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       }
+    }),
+    activateSoftGreProfileOnAP: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SoftGreUrls.activateSoftGreProfileOnAP, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    deactivateSoftGreProfileOnAP: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SoftGreUrls.deactivateSoftGreProfileOnAP, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    // eslint-disable-next-line max-len
+    getSoftGreProfileConfigurationOnVenue: build.query<VenueApModelLanPortSettingsV1 ,RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(SoftGreUrls.getSoftGreProfileConfigurationOnVenue, params)
+      }
+    }),
+    getSoftGreProfileConfigurationOnAP: build.query<VenueApModelLanPortSettingsV1 ,RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(SoftGreUrls.getSoftGreProfileConfigurationOnAP, params)
+      }
     })
   })
 })
@@ -328,5 +358,11 @@ export const {
   useActivateSoftGreMutation,
   useDectivateSoftGreMutation,
   useActivateSoftGreProfileOnVenueMutation,
-  useDeactivateSoftGreProfileOnVenueMutation
+  useDeactivateSoftGreProfileOnVenueMutation,
+  useActivateSoftGreProfileOnAPMutation,
+  useDeactivateSoftGreProfileOnAPMutation,
+  useGetSoftGreProfileConfigurationOnVenueQuery,
+  useLazyGetSoftGreProfileConfigurationOnVenueQuery,
+  useGetSoftGreProfileConfigurationOnAPQuery,
+  useLazyGetSoftGreProfileConfigurationOnAPQuery
 } = softGreApi
