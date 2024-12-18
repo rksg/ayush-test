@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { ScalePower } from 'd3'
-import { scalePow }   from 'd3-scale'
-import { connect }    from 'echarts'
-import ReactECharts   from 'echarts-for-react'
-import { useIntl }    from 'react-intl'
-import AutoSizer      from 'react-virtualized-auto-sizer'
+import { ScalePower }  from 'd3'
+import { scalePow }    from 'd3-scale'
+import { EChartsType } from 'echarts'
+import ReactECharts    from 'echarts-for-react'
+import { useIntl }     from 'react-intl'
+import AutoSizer       from 'react-virtualized-auto-sizer'
 
 import {
   Card,
@@ -24,23 +24,62 @@ import { Legend } from './Legend'
 import * as UI    from './styledComponents'
 
 const ImageGraph = ({ beforeSrc, afterSrc }: { beforeSrc?: string, afterSrc?: string }) => <>
-  {beforeSrc && <img src={beforeSrc} alt='rrm-graph-before' width='100%' height='100%' />}
+  {beforeSrc && <img
+    src={beforeSrc}
+    alt='rrm-graph-before'
+    style={{
+      margin: 'auto',
+      width: 'auto',
+      height: 'auto',
+      maxWidth: '100%',
+      maxHeight: '100%'
+    }}
+  />}
   <UI.CrrmArrow children={<UI.RightArrow/>} />
-  {afterSrc && <img src={afterSrc} alt='rrm-graph-after' width='100%' height='100%' />}
+  {afterSrc && <img
+    src={afterSrc}
+    alt='rrm-graph-after'
+    style={{
+      margin: 'auto',
+      width: 'auto',
+      height: 'auto',
+      maxWidth: '100%',
+      maxHeight: '100%'
+    }}
+  />}
   <Legend />
 </>
 
-function DataGraph (props: {
+export function DataGraph (props: {
   graphs: ProcessedCloudRRMGraph[],
   zoomScale: ScalePower<number, number, never>
 }) {
+  const graphGroupRef = React.useRef<EChartsType[]>([])
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
-      instance.group = 'graphGroup'
+      if (!graphGroupRef.current.includes(instance)) {
+        graphGroupRef.current.push(instance)
+      }
     }
   }
-  useEffect(() => { connect('graphGroup') }, [])
+
+  const onEvents = {
+    mouseover: (params: { seriesIndex: string, name: string }) => {
+      graphGroupRef.current.forEach((graph) => {
+        graph.dispatchAction({
+          type: 'showTip',
+          seriesIndex: params.seriesIndex,
+          name: params.name
+        })
+      })
+    },
+    mouseout: () => {
+      graphGroupRef.current.forEach((graph) => {
+        graph.dispatchAction({ type: 'hideTip' })
+      })
+    }
+  }
 
   if (!props.graphs?.length) return null
 
@@ -48,6 +87,7 @@ function DataGraph (props: {
     <div><AutoSizer>{({ height, width }) => <BasicGraph
       style={{ width, height }}
       chartRef={connectChart}
+      onEvents={onEvents}
       title=''
       data={props.graphs[0]}
       zoomScale={props.zoomScale}
@@ -57,6 +97,7 @@ function DataGraph (props: {
     <div><AutoSizer>{({ height, width }) => <BasicGraph
       style={{ width, height }}
       chartRef={connectChart}
+      onEvents={onEvents}
       title=''
       data={props.graphs[1]}
       zoomScale={props.zoomScale}
@@ -66,7 +107,7 @@ function DataGraph (props: {
   </>
 }
 
-const detailsZoomScale = scalePow()
+export const detailsZoomScale = scalePow()
   .exponent(0.01)
   .domain([3, 10, 20, 30, 63, 125, 250, 375, 500])
   .range([0.8, 0.45, 0.3, 0.25, 0.135, 0.1, 0.075, 0.06, 0.05])

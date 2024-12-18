@@ -1137,10 +1137,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     addMacRegList: build.mutation<MacRegistrationPool, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
-        // eslint-disable-next-line max-len
-        const req = createHttpRequest(MacRegListUrlsInfo.createMacRegistrationPool, params, headers)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.createMacRegistrationPool, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1160,10 +1158,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
     }),
     updateMacRegList: build.mutation<MacRegistrationPool, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
-        // eslint-disable-next-line max-len
-        const req = createHttpRequest(MacRegListUrlsInfo.updateMacRegistrationPool, params, headers)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.updateMacRegistrationPool, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1172,10 +1168,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
     }),
     deleteMacRegList: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, customHeaders }) => {
-        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
-        // eslint-disable-next-line max-len
-        const req = createHttpRequest(MacRegListUrlsInfo.deleteMacRegistrationPool, params, headers)
+      query: ({ params }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.deleteMacRegistrationPool, params)
         return {
           ...req
         }
@@ -1194,10 +1188,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
     deleteMacRegistrations: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
-        // eslint-disable-next-line max-len
-        const req = createHttpRequest(MacRegListUrlsInfo.deleteMacRegistrations, params, headers)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.deleteMacRegistrations, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1216,9 +1208,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'MacRegistrationPool', id: 'DETAIL' }]
     }),
     addMacRegistration: build.mutation<MacRegistration, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
-        const req = createHttpRequest(MacRegListUrlsInfo.addMacRegistration, params, headers)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.addMacRegistration, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1227,10 +1218,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
     updateMacRegistration: build.mutation<MacRegistration, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
-        // eslint-disable-next-line max-len
-        const req = createHttpRequest(MacRegListUrlsInfo.updateMacRegistration, params, headers)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.updateMacRegistration, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -2084,9 +2073,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     uploadMacRegistration: build.mutation<{}, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        // eslint-disable-next-line max-len
-        const req = createHttpRequest(MacRegListUrlsInfo.uploadMacRegistration, params, customHeaders)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.uploadMacRegistration, params)
         return {
           ...req,
           body: payload
