@@ -1,5 +1,5 @@
-import { Tenant, Settings }                                                                      from './types'
-import { getUserProfile, setUserProfile, getPendoConfig, updateSelectedTenant, getUserFullName } from './userProfile'
+import { Tenant, Settings }                                                                  from './types'
+import { getUserProfile, setUserProfile, getPendoConfig, updateSelectedTenant, getUserName } from './userProfile'
 
 jest.mock('@acx-ui/config', () => ({
   get: () => ''
@@ -72,7 +72,7 @@ describe('User Profile', () => {
       selectedTenant: { ...defaultMockUserProfile.data.tenants[0] }
     })
     expect(value.search).toEqual('?selectedTenants=WyIxIl0=')
-    expect(getUserFullName()).toBe('FirstName LastName')
+    expect(getUserName()).toBe('FirstName LastName')
   })
   it('should set selected tenant from url', () => {
     setUserProfile(defaultMockUserProfile.data)

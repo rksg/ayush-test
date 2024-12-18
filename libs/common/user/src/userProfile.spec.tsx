@@ -23,7 +23,7 @@ import {
   hasRaiPermission,
   isCustomAdmin,
   hasCrossVenuesPermission,
-  getUserFullName
+  getUserName
 } from './userProfile'
 
 
@@ -481,6 +481,6 @@ describe('user name', () => {
       }
     })
 
-    expect(getUserFullName()).toBe('FirstName LastName')
+    expect(getUserName()).toBe('FirstName LastName')
   })
 })

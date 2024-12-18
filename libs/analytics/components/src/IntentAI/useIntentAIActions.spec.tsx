@@ -5,7 +5,7 @@ import { message, Modal } from 'antd'
 import moment             from 'moment-timezone'
 import { BrowserRouter }  from 'react-router-dom'
 
-import { getUserFullName }                from '@acx-ui/analytics/utils'
+import { getUserName }                    from '@acx-ui/analytics/utils'
 import { get }                            from '@acx-ui/config'
 import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { Provider, intentAIUrl }          from '@acx-ui/store'
@@ -68,9 +68,9 @@ jest.spyOn(global.Date, 'now').mockImplementation(
 
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
-  getUserFullName: jest.fn()
+  getUserName: jest.fn()
 }))
-const userFullNameRA = jest.mocked(getUserFullName)
+const userNameRA = jest.mocked(getUserName)
 
 const extractItem = {
   root: 'root',
@@ -93,7 +93,7 @@ describe('useIntentAIActions', () => {
     mockedVenueRadioActiveNetworksQuery.mockReturnValue({ unwrap: () => Promise.resolve(r1Wlans) })
     mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
     jest.spyOn(Date, 'now').mockReturnValue(now)
-    userFullNameRA.mockReturnValue('FirstName RAI LastName-RAI')
+    userNameRA.mockReturnValue('FirstName RAI LastName-RAI')
     setUserProfile({
       allowedOperations: [],
       profile: { ...getUserProfileR1().profile, firstName: 'FirstName R1', lastName: 'LastName-R1' }

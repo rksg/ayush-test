@@ -4,15 +4,15 @@ import { Modal as AntModal }                          from 'antd'
 import moment, { Moment }                             from 'moment-timezone'
 import { FormattedMessage, RawIntlProvider, useIntl } from 'react-intl'
 
-import { getUserFullName as getUserFullNameRA } from '@acx-ui/analytics/utils'
-import { DateTimePicker, showToast }            from '@acx-ui/components'
-import { get }                                  from '@acx-ui/config'
-import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
+import { getUserName as getRAIUserName } from '@acx-ui/analytics/utils'
+import { DateTimePicker, showToast }     from '@acx-ui/components'
+import { get }                           from '@acx-ui/config'
+import { DateFormatEnum, formatter }     from '@acx-ui/formatter'
 import {
   useLazyVenueRadioActiveNetworksQuery
 } from '@acx-ui/rc/services'
 import { RadioTypeEnum }                         from '@acx-ui/rc/utils'
-import { getUserFullName as getUserFullNameR1 }  from '@acx-ui/user'
+import { getUserName as getR1UserName }          from '@acx-ui/user'
 import { Filters, getIntl, useEncodedParameter } from '@acx-ui/utils'
 
 import { IntentListItem, stateToGroupedStates } from './config'
@@ -122,10 +122,7 @@ const getR1WlanPayload = (venueId:string, code:string) => ({
   }
 })
 
-export const getUserName = () => {
-  const userName = get('IS_MLISA_SA') ? getUserFullNameRA() : getUserFullNameR1()
-  return userName
-}
+export const getUserName = () => get('IS_MLISA_SA') ? getRAIUserName() : getR1UserName()
 
 export function useIntentAIActions () {
   const { $t } = useIntl()
