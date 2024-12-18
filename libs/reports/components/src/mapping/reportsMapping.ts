@@ -7,6 +7,7 @@ export enum ReportType {
   WIRELESS = 'wireless',
   WIRED = 'wired',
   APPLICATION = 'app',
+  EDGE_APPLICATION = 'edgeApp',
   CLIENT = 'client',
   ACCESS_POINT = 'ap',
   SWITCH = 'switch',
@@ -20,6 +21,7 @@ export enum ReportType {
 export const reportTypeLabelMapping: Record<ReportType, MessageDescriptor> = {
   [ReportType.OVERVIEW]: defineMessage({ defaultMessage: 'Overview' }),
   [ReportType.APPLICATION]: defineMessage({ defaultMessage: 'Applications' }),
+  [ReportType.EDGE_APPLICATION]: defineMessage({ defaultMessage: 'Edge Applications' }),
   [ReportType.CLIENT]: defineMessage({ defaultMessage: 'Clients' }),
   [ReportType.ACCESS_POINT]: defineMessage({ defaultMessage: 'Access Points' }),
   [ReportType.SWITCH]: defineMessage({ defaultMessage: 'Switches' }),
@@ -35,6 +37,7 @@ export const reportTypeLabelMapping: Record<ReportType, MessageDescriptor> = {
 export const reportTypeDataStudioMapping: Record<ReportType, string> = {
   [ReportType.OVERVIEW]: 'Overview',
   [ReportType.APPLICATION]: 'Applications',
+  [ReportType.EDGE_APPLICATION]: 'Edge Applications',
   [ReportType.CLIENT]: 'Clients',
   [ReportType.ACCESS_POINT]: 'Access Points',
   [ReportType.SWITCH]: 'Switches',
@@ -50,6 +53,7 @@ export const reportTypeDataStudioMapping: Record<ReportType, string> = {
 export const reportTypeMapping: Record<ReportType, FilterMode> = {
   [ReportType.OVERVIEW]: 'none',
   [ReportType.APPLICATION]: 'ap',
+  [ReportType.EDGE_APPLICATION]: 'edge',
   [ReportType.CLIENT]: 'ap',
   [ReportType.ACCESS_POINT]: 'ap',
   [ReportType.SWITCH]: 'switch',
