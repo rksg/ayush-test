@@ -4,9 +4,9 @@ import { useIntl }                               from 'react-intl'
 import { Descriptions }    from '@acx-ui/components'
 import { ScopePermission } from '@acx-ui/rc/utils'
 
-import * as UI from '../styledComponents'
+import * as UI from '../../styledComponents'
 
-import { Flat } from './ExplictCustomRoles/AddExplictCustomRole'
+import { Flat } from './AddExplictCustomRole'
 
 interface PermissionsTabProps {
   updateSelected?: (key: string, permission: string, enabled: boolean) => void,
