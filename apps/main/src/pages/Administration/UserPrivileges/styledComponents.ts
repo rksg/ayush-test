@@ -129,3 +129,8 @@ export const PermissionTableWrapper = styled.div`
     background-color: transparent;
   }
 `
+export const PermissionSummaryWrapper = styled.div`
+  .ant-descriptions-item .ant-descriptions-item-label {
+    color: var(--acx-primary-black);
+  }
+`

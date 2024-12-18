@@ -24,15 +24,24 @@ export const PermissionsTab = (props: PermissionsTabProps) => {
   const summary = updateSelected ? false : true
 
   const getIndeterminate = (key: string, permission: string) => {
-    const parent = scopeHierarchy.find(sc => sc.key === key ||
+    /*const parent = scopeHierarchy.find(sc => sc.key === key ||
         sc.children?.some(child => child.key === key || child.children?.some(cc => cc.key === key)))
-    // Only global permissions can have indeterminate checkboxes
-    if (key !== parent?.key) {
-      return false
-    }
     const scopeFamily = Flat(scopeHierarchy.find(s => s.key === parent?.key))
     const children = permissions.filter(p =>
       scopeFamily.map(sc => sc.key).includes(p.id) && p.id !== parent?.key)
+    // Return true if some children have this permission enabled but not all
+    return children.some(p => p[permission]) && !children.every(p => p[permission])*/
+
+    const scope = scopeHierarchy.find(sc => sc.key === key) ||
+    scopeHierarchy.flatMap(sc => sc.children).find(c => c?.key === key) ||
+    scopeHierarchy.flatMap(sc => sc.children).flatMap(c => c?.children)
+      .find(cc => cc?.key === key)
+    // Only parents can have indeterminate checkboxes
+    if (!scope || !scope.children) {
+      return false
+    }
+    const children = permissions.filter(p =>
+      Flat(scope).map(c => c.key).includes(p.id) && p.id !== key)
     // Return true if some children have this permission enabled but not all
     return children.some(p => p[permission]) && !children.every(p => p[permission])
   }
@@ -133,17 +142,19 @@ export const PermissionsTab = (props: PermissionsTabProps) => {
 
   const summaryContent = tabScopes.some(s => s.children)
     ? tabScopes.map(scope =>
-      (<Form.Item
-        label={scope.title?.toString()}
-        children={<Descriptions labelWidthPercent={15}>
-          {scope.children?.map(s =>
-            <Descriptions.Item
-              label={s.title?.toString()}
-              children={getPermissionsSummaryList(s.key.toString())}
-            />
-          )}
-        </Descriptions>}
-      />)
+      (<UI.PermissionSummaryWrapper>
+        <Form.Item
+          label={scope.title?.toString()}
+          children={<Descriptions labelWidthPercent={15}>
+            {scope.children?.map(s =>
+              <Descriptions.Item
+                label={s.title?.toString()}
+                children={getPermissionsSummaryList(s.key.toString())}
+              />
+            )}
+          </Descriptions>}
+        />
+      </UI.PermissionSummaryWrapper>)
     )
     : tabScopes.map(scope =>
       (<Descriptions labelWidthPercent={15}>
