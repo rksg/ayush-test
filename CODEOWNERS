@@ -49,9 +49,15 @@
 # restriction will be at bitbucket level per group enforcement
 
 # @@@group1   	@user1 @user2
+@@@UI  @"JDENG1" @"KYEH" @"GCHIU" @"YGUO1" @"TLIN4" @"yw1046" @"JCHIU1" @"JSYU" @"PLIN" @"cl1092" @"JKAO1" @"ac1236" @"rl1093" @"JCHEOW" @"STAN2" @"MDEHEZ" @"sb1212" @"VKANDHVAR" @"ELEU" @"CBOKIL" @"jc1318"
+
 # @@@group2   	@user1 @user2
 
 # Start adding the rules from here
+* @@UI
+
+# For every group at least somebody must approve
+AllGroupsCheck(1)
 
 # Update CODEOWNERS accordingly
 # CODEOWNERS              @user1 @user2

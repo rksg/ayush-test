@@ -7,7 +7,7 @@ import { Loader }    from '@acx-ui/components'
 import { formatter } from '@acx-ui/formatter'
 
 import {
-  Intent,
+  IntentDetail,
   IntentKPIConfig,
   intentState,
   useIntentDetailsQuery,
@@ -17,11 +17,11 @@ import {
 export type IntentConfigurationConfig = {
   label: MessageDescriptor
   valueFormatter?: ReturnType<typeof formatter>
-  tooltip?: (intent: Intent) => MessageDescriptor
+  tooltip?: (intent: IntentDetail) => MessageDescriptor
 }
 
 export type IIntentContext = {
-  intent: Intent
+  intent: IntentDetail
   configuration?: IntentConfigurationConfig
   kpis: IntentKPIConfig[]
   state: ReturnType<typeof intentState>
@@ -58,7 +58,7 @@ export function createIntentContextProvider (
     const isDetectError = query.isError && !!_.pick(query.error, ['data'])
 
     const intent = isDetectError ?
-      (_.pick(query.error, ['data']) as { data: Intent }).data
+      (_.pick(query.error, ['data']) as { data: IntentDetail }).data
       : query.data
 
     const context: IIntentContext = {

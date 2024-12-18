@@ -1,4 +1,4 @@
-import { Intent } from '../../useIntentDetailsQuery'
+import { IntentDetail } from '../../useIntentDetailsQuery'
 
 export const mocked = {
   id: 'effb97a3-2a9b-4106-9db1-4ca0536784aa',
@@ -75,4 +75,4 @@ export const mocked = {
     isDataRetained: true,
     isHotTierDate: true
   }
-} as unknown as Intent
+} as unknown as IntentDetail

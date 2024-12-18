@@ -18,6 +18,7 @@ import { KpiCard }                  from '../common/KpiCard'
 import { richTextFormatValues }     from '../common/richTextFormatValues'
 import { StatusTrail }              from '../common/StatusTrail'
 import { useIntentContext }         from '../IntentContext'
+import { getStatusTooltip }         from '../services'
 import { getGraphKPIs, getKPIData } from '../useIntentDetailsQuery'
 
 import { IntentAIRRMGraph, SummaryGraphAfter, SummaryGraphBefore } from './RRMGraph'
@@ -79,6 +80,7 @@ export function createIntentAIDetails () {
     const { $t } = useIntl()
     const { intent, kpis, state, isDataRetained, isHotTierData } = useIntentContext()
     const valuesText = useValuesText()
+    const { displayStatus, sliceValue, metadata, updatedAt } = intent
 
     const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
     const [summaryUrlAfter, setSummaryUrlAfter] = useState<string>('')
@@ -86,7 +88,7 @@ export function createIntentAIDetails () {
     const queryResult = useIntentAICRRMQuery()
     const crrmData = queryResult.data!
     const fields = useCommonFields(intent)
-    const noData = state === 'no-data' || !isDataRetained
+    const noData = state === 'no-data'
 
     return <>
       <div hidden>
@@ -103,54 +105,67 @@ export function createIntentAIDetails () {
                 children={<FormattedMessage {...valuesText.summaryText} values={richTextFormatValues} />}/>
               <DescriptionSection fields={fields}/>
               <br />
-              {isDataRetained && state !== 'no-data' && isHotTierData
+              {isDataRetained && isHotTierData && !noData
                 ? <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })} />
                 : null}
             </IntentDetailsSidebar>)}
           </FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 18, xxl: 20 }}>
-          <DetailsSection data-testid='Details'>
-            <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
-            <DetailsSection.Details>
-              <GridRow>
-                {getGraphKPIs(intent, kpis).map(kpi => (
-                  <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
-                    <KpiCard kpi={kpi} />
-                  </GridCol>
-                ))}
-              </GridRow>
-            </DetailsSection.Details>
-          </DetailsSection>
+          {!noData ? <>
+            <DetailsSection data-testid='Details'>
+              <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
+              <DetailsSection.Details>
+                <GridRow>
+                  {getGraphKPIs(intent, kpis).map(kpi => (
+                    <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
+                      <KpiCard kpi={kpi} />
+                    </GridCol>
+                  ))}
+                </GridRow>
+              </DetailsSection.Details>
+            </DetailsSection>
 
-          <DetailsSection data-testid='Key Performance Indications'>
-            <DetailsSection.Title
-              children={$t({ defaultMessage: 'Key Performance Indications' })} />
-            <DetailsSection.Details style={{ ...((!noData && isHotTierData ) && { minHeight: 385 }) }}>
-              <Loader states={[queryResult]}>
-                <IntentAIRRMGraph
-                  crrmData={crrmData}
-                  summaryUrlBefore={summaryUrlBefore}
-                  summaryUrlAfter={summaryUrlAfter}
-                />
-              </Loader>
-            </DetailsSection.Details>
-          </DetailsSection>
+            <DetailsSection data-testid='Key Performance Indications'>
+              <DetailsSection.Title
+                children={$t({ defaultMessage: 'Key Performance Indications' })} />
+              <DetailsSection.Details style={{ ...((!noData && isHotTierData ) && { minHeight: 385 }) }}>
+                <Loader states={[queryResult]}>
+                  <IntentAIRRMGraph
+                    crrmData={crrmData}
+                    summaryUrlBefore={summaryUrlBefore}
+                    summaryUrlAfter={summaryUrlAfter}
+                  />
+                </Loader>
+              </DetailsSection.Details>
+            </DetailsSection>
 
-          <GridRow>
+            <GridRow>
+              <GridCol col={{ span: 12 }}>
+                <DetailsSection data-testid='Benefits'>
+                  <DetailsSection.Title children={$t({ defaultMessage: 'Benefits' })} />
+                  <DetailsSection.Details children={<Card>{valuesText.benefitText}</Card>} />
+                </DetailsSection>
+              </GridCol>
+              <GridCol col={{ span: 12 }}>
+                <DetailsSection data-testid='Potential Trade-off'>
+                  <DetailsSection.Title children={$t({ defaultMessage: 'Potential Trade-off' })} />
+                  <DetailsSection.Details children={<Card>{valuesText.tradeoffText}</Card>} />
+                </DetailsSection>
+              </GridCol>
+            </GridRow>
+          </> : <GridRow>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection data-testid='Benefits'>
-                <DetailsSection.Title children={$t({ defaultMessage: 'Benefits' })} />
-                <DetailsSection.Details children={<Card>{valuesText.benefitText}</Card>} />
+              <DetailsSection data-testid='Current Status'>
+                <DetailsSection.Title children={$t({ defaultMessage: 'Current Status' })} />
+                <DetailsSection.Details children={
+                  <Card>
+                    {getStatusTooltip(
+                      displayStatus, sliceValue, { ...metadata, updatedAt })}
+                  </Card>} />
               </DetailsSection>
             </GridCol>
-            <GridCol col={{ span: 12 }}>
-              <DetailsSection data-testid='Potential trade-off'>
-                <DetailsSection.Title children={$t({ defaultMessage: 'Potential trade-off' })} />
-                <DetailsSection.Details children={<Card>{valuesText.tradeoffText}</Card>} />
-              </DetailsSection>
-            </GridCol>
-          </GridRow>
+          </GridRow>}
 
           <DetailsSection data-testid='Status Trail'>
             <DetailsSection.Title children={$t({ defaultMessage: 'Status Trail' })} />

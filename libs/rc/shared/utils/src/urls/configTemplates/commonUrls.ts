@@ -325,6 +325,11 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/venues/:venueId/wifiNetworks/:networkId/settings',
     newApi: true
   },
+  getNetworkVenuesTemplateRbac: {
+    method: 'get',
+    url: '/templates/venues/wifiNetworks/query',
+    newApi: true
+  },
   addNetworkVenuesTemplate: {
     method: 'post',
     url: '/templates/networkActivations/mappings',
