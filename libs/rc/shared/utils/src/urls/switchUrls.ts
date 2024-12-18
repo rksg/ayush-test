@@ -746,5 +746,10 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/switchPortProfiles/lldpTlvs/:lldpTlvId',
     newApi: true
+  },
+  getPortProfileListBySwitchId: {
+    method: 'get',
+    url: '/venues/:venueId/switches/:switchId/availablePortProfiles',
+    newApi: true
   }
 }

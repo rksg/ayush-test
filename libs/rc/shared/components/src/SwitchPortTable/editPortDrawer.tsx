@@ -13,8 +13,8 @@ import {
   Tooltip,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { PoeUsage }               from '@acx-ui/icons'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { PoeUsage }                        from '@acx-ui/icons'
 import {
   switchApi,
   useLazyGetAclUnionQuery,
@@ -30,7 +30,8 @@ import {
   useGetSwitchQuery,
   useSwitchDetailHeaderQuery,
   useSavePortsSettingMutation,
-  useCyclePoeMutation
+  useCyclePoeMutation,
+  useLazyPortProfilesListBySwitchIdQuery
 } from '@acx-ui/rc/services'
 import {
   EditPortMessages,
@@ -51,7 +52,8 @@ import {
   isVerGEVer,
   validateVlanExcludingReserved,
   Vlan,
-  VlanModalType
+  VlanModalType,
+  isFirmwareVersionAbove10020a
 } from '@acx-ui/rc/utils'
 import { useParams }     from '@acx-ui/react-router-dom'
 import { store }         from '@acx-ui/store'
@@ -125,7 +127,8 @@ import {
   sortOptions,
   PortVlan,
   MultipleText,
-  updateSwitchVlans
+  updateSwitchVlans,
+  getPortProfileOptions
 } from './editPortDrawer.utils'
 import { LldpQOSTable }    from './lldpQOSTable'
 import { SelectVlanModal } from './selectVlanModal'
@@ -144,7 +147,7 @@ export const allMultipleEditableFields = [
   'lldpQos', 'tags', 'untaggedVlan', 'poeBudget', 'portProtected',
   'flexibleAuthenticationEnabled', 'authenticationCustomize', 'authenticationProfileId',
   'authDefaultVlan', 'guestVlan', 'authenticationType', 'changeAuthOrder', 'dot1xPortControl',
-  'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction'
+  'restrictedVlan', 'criticalVlan', 'authFailAction', 'authTimeoutAction', 'switchPortProfileId'
 ]
 
 interface ProfileVlans {
@@ -223,6 +226,7 @@ export function EditPortDrawer ({
   const isSwitch785048CPortSpeedEnabled =
     useIsSplitOn(Features.SWITCH_ICX7850_48C_SUPPORT_PORT_SPEED_TOGGLE)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
+  const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
 
   const hasCreatePermission = hasPermission({ scopes: [SwitchScopes.CREATE] })
 
@@ -230,6 +234,8 @@ export function EditPortDrawer ({
   const selectedSwitchList = switchList?.filter(s => switches.includes(s.id))
   const isFirmwareAbove10010f = !!selectedSwitchList?.length
     && selectedSwitchList?.every(s => isFirmwareVersionAbove10010f(s.firmware))
+  const isFirmwareAbove10020a = !!selectedSwitchList?.length
+    && selectedSwitchList?.every(s => isFirmwareVersionAbove10020a(s.firmware))
 
   const switchId = switches?.[0]
   const disablePortSpeed = handlePortSpeedFor765048F(selectedPorts)
@@ -241,6 +247,7 @@ export function EditPortDrawer ({
   const [poeClassOptions, setPoeClassOptions] = useState([] as {
     label: { defaultMessage: string; }; value: string; }[]
   )
+  const [portProfileOptions, setPortProfileOptions] = useState([] as DefaultOptionType[])
   const [vlanUsedByVe, setVlanUsedByVe] = useState('')
   const [lldpQosList, setLldpQosList] = useState([] as LldpQosModel[])
 
@@ -287,6 +294,7 @@ export function EditPortDrawer ({
   const [getSwitchRoutedList] = useLazyGetSwitchRoutedListQuery()
   const [getVenueRoutedList] = useLazyGetVenueRoutedListQuery()
   const [getAclUnion] = useLazyGetAclUnionQuery()
+  const [getPortProfilesList] = useLazyPortProfilesListBySwitchIdQuery()
   const [savePortsSetting, { isLoading: isPortsSettingUpdating }] = useSavePortsSettingMutation()
   const [cyclePoe, { isLoading: isCyclePoeUpdating }] = useCyclePoeMutation()
 
@@ -412,6 +420,13 @@ export function EditPortDrawer ({
         params: { tenantId, switchId, venueId: switchDetail?.venueId },
         enableRbac: isSwitchRbacEnabled
       }, true).unwrap()
+
+      const portProfileList = await getPortProfilesList({
+        params: { tenantId, switchId, venueId: switchDetail?.venueId },
+        enableRbac: isSwitchRbacEnabled
+      }, true).unwrap()
+      setPortProfileOptions(getPortProfileOptions(portProfileList))
+
       const vid = isVenueLevel ? venueId : switchDetail?.venueId
       const switchVlans = await getVlans()
       const vlansByVenue = await getVlansByVenue({
@@ -1664,6 +1679,33 @@ export function EditPortDrawer ({
           </Space>}
           <UI.ContentDivider />
         </>
+        }
+
+        {/* Port Profile */}
+        {isSwitchPortProfileEnabled && isFirmwareAbove10020a &&
+        <><div style={{ marginBottom: isMultipleEdit ? '0' : '30px' }}>
+          <Space style={{
+            width: '510px', display: 'flex', justifyContent: 'space-between',
+            marginBottom: isMultipleEdit ? '16px' : '4px'
+          }}>
+            <Subtitle level={3} style={{ margin: 0 }}>
+              {$t({ defaultMessage: 'Port Profile' })}
+            </Subtitle>
+          </Space>
+          {getFieldTemplate({
+            field: 'switchPortProfileId',
+            content: <Form.Item
+              {...getFormItemLayout(isMultipleEdit)}
+              name='switchPortProfileId'
+              label={$t(FIELD_LABEL.portProfile)}
+              initialValue={''}
+              children={shouldRenderMultipleText({
+                field: 'switchPortProfileId', ...commonRequiredProps
+              }) ? <MultipleText />
+                : <Select
+                  options={portProfileOptions}
+                  disabled={getFieldDisabled('switchPortProfileId')} />} />
+          })}</div><UI.ContentDivider /></>
         }
 
         {/* Port VLAN */}

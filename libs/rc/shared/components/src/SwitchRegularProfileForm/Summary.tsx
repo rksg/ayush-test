@@ -45,6 +45,8 @@ export function Summary () {
   const { data: portProfileData } = useSwitchPortProfilesListQuery({
     payload: defaultPayload,
     enableRbac: isSwitchRbacEnabled
+  }, {
+    skip: !isSwitchPortProfileToggle
   })
 
   useEffect(() => {

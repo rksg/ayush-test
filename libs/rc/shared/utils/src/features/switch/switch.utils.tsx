@@ -766,6 +766,19 @@ export const isFirmwareVersionAbove10010f = function (firmwareVersion?: string) 
   }
 }
 
+
+export const isFirmwareVersionAbove10020a = function (firmwareVersion?: string) {
+  /*
+  Only support the firmware versions listed below:
+  1. > 10020a
+  */
+  if (firmwareVersion) {
+    return (!isVerGEVer(firmwareVersion, '10020', false) || isVerGEVer(firmwareVersion, '10020a', false))
+  } else {
+    return false
+  }
+}
+
 export const isFirmwareSupportAdminPassword = (
   firmwareVersion: string
 ) => {

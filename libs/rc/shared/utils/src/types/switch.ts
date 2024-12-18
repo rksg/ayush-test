@@ -1010,6 +1010,13 @@ export enum LldpTlvMatchingType {
   INCLUDE = 'INCLUDE'
 }
 
+export interface PortProfilesBySwitchId {
+  portProfileId: string
+  portProfileName: string
+  configSource: string
+  ports?: string[]
+}
+
 export interface SwitchPortProfiles {
   id?: string
   name: string

@@ -65,7 +65,8 @@ import {
   SwitchPortProfiles,
   LldpTlvs,
   MacOuis,
-  SwitchPortProfilesAppliedTargets
+  SwitchPortProfilesAppliedTargets,
+  PortProfilesBySwitchId
 } from '@acx-ui/rc/utils'
 import { baseSwitchApi }  from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
@@ -1901,6 +1902,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'SwitchPortProfile', id: 'LldpTlvs' }]
+    }),
+    portProfilesListBySwitchId: build.query<PortProfilesBySwitchId[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getPortProfileListBySwitchId, params, customHeaders.v1)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -2184,5 +2194,6 @@ export const {
   useLazySwitchPortProfileLldpTlvsListQuery,
   useAddSwitchPortProfileLldpTlvMutation,
   useEditSwitchPortProfileLldpTlvMutation,
-  useDeleteSwitchPortProfileLldpTlvMutation
+  useDeleteSwitchPortProfileLldpTlvMutation,
+  useLazyPortProfilesListBySwitchIdQuery
 } = switchApi
