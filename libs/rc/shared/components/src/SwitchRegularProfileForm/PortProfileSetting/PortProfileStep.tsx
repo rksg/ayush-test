@@ -91,6 +91,10 @@ export function PortProfileStep () {
                       mode='multiple'
                       showArrow
                       options={portProfiles}
+                      filterOption={(input, option) =>
+                        option?.label?.toString()
+                          .toLowerCase().includes(input.toLowerCase()) ?? false
+                      }
                       style={{ width: '400px' }}
                     />}
                 />
