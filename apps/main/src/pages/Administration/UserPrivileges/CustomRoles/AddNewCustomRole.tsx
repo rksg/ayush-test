@@ -4,7 +4,7 @@ import { AddCustomRole }        from './AddCustomRole'
 import { AddExplictCustomRole } from './ExplictCustomRoles/AddExplictCustomRole'
 
 export function AddNewCustomRole () {
-  const isExplicitCustomRoleEnabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
+  const isExplicitCustomRoleEnabled = useIsSplitOn(Features.RBAC_PHASE3_TOGGLE)
 
   return (
     isExplicitCustomRoleEnabled ? <AddExplictCustomRole /> : <AddCustomRole />
