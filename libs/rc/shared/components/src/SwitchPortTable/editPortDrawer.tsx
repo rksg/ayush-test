@@ -191,6 +191,7 @@ export function EditPortDrawer ({
     taggedVlans,
     voiceVlan,
     portSpeedCheckbox,
+    ipsgCheckbox,
     ipsg,
     lldpQosCheckbox,
     ingressAclCheckbox,
@@ -292,7 +293,7 @@ export function EditPortDrawer ({
 
   const commonRequiredProps = {
     isMultipleEdit, isCloudPort, hasMultipleValue, isFirmwareAbove10010f,
-    form, aggregateData: aggregatePortsData, portVlansCheckbox
+    form, aggregateData: aggregatePortsData, portVlansCheckbox, ipsgCheckbox
   }
   const authFormWatchValues = [
     authenticationType, dot1xPortControl, authDefaultVlan,
@@ -611,6 +612,8 @@ export function EditPortDrawer ({
   }
 
   const getFieldTooltip = (field: string) => {
+    const flexAuthEnabled = getFlexAuthEnabled(aggregatePortsData, isMultipleEdit,
+      flexibleAuthenticationEnabled, flexibleAuthenticationEnabledCheckbox)
     switch (field) {
       case 'portEnable':
         return isCloudPort ? $t({ defaultMessage: 'Uplink port cannot be disabled' }) : ''
@@ -621,14 +624,15 @@ export function EditPortDrawer ({
             : $t(EditPortMessages.POE_CAPABILITY_DISABLE)
           ) : ''
       case 'useVenuesettings':
-        const flexAuthEnabled = getFlexAuthEnabled(aggregatePortsData, isMultipleEdit,
-          flexibleAuthenticationEnabled, flexibleAuthenticationEnabledCheckbox)
         return flexAuthEnabled
           ? $t(EditPortMessages.USE_VENUE_SETTINGS_DISABLED_WHEN_FLEX_AUTH_ENABLED)
           : (disabledUseVenueSetting ? $t(EditPortMessages.USE_VENUE_SETTINGS_DISABLE) : '')
       case 'ingressAcl': return !hasSwitchProfile ? $t(EditPortMessages.ADD_ACL_DISABLE) : ''
       case 'egressAcl': return !hasSwitchProfile ? $t(EditPortMessages.ADD_ACL_DISABLE) : ''
       case 'portSpeed': return hasBreakoutPort ? $t(EditPortMessages.PORT_SPEED_TOOLTIP) : ''
+      case 'ipsg':
+        return flexAuthEnabled
+          ? $t(EditPortMessages.CANNOT_ENABLE_IPSG_WHEN_FLEX_AUTH_ENABLED) : ''
       case 'flexibleAuthenticationEnabled':
         const disableKey = getFlexAuthButtonStatus(commonRequiredProps)
         return disableKey ? $t(EditPortMessages[disableKey as keyof typeof EditPortMessages]) : ''
@@ -665,6 +669,8 @@ export function EditPortDrawer ({
         return (isMultipleEdit && !portSpeedCheckbox) || disablePortSpeed || hasBreakoutPort
       case 'ingressAcl': return (isMultipleEdit && !ingressAclCheckbox) || ipsg
       case 'cyclePoe': return disableCyclePoeCapability || !cyclePoeEnable
+      case 'ipsg': return getFlexAuthEnabled(aggregatePortsData, isMultipleEdit,
+        flexibleAuthenticationEnabled, flexibleAuthenticationEnabledCheckbox)
       // Flex auth
       case 'flexibleAuthenticationEnabled':
         return (isMultipleEdit && !checkboxEnabled)
@@ -1031,6 +1037,15 @@ export function EditPortDrawer ({
         })
       } else if (changedField === 'ipsg') {
         changedValue && form.setFieldValue('ingressAcl', '')
+      } else if (changedField === 'ipsgCheckbox') {
+        if (!changedValue && hasMultipleValue.includes('ipsg')) {
+          const resetFieldValues = {
+            ...form.getFieldsValue(),
+            flexibleAuthenticationEnabled: false,
+            flexibleAuthenticationEnabledCheckbox: false
+          }
+          form.setFieldsValue(resetFieldValues)
+        }
       } else if (handleVlanFields.includes(changedField)) {
         const revert = changedValues?.revert ?? useVenueSettings
         const status = checkPortEditStatus(
@@ -2124,18 +2139,23 @@ export function EditPortDrawer ({
             children={shouldRenderMultipleText({
               field: 'ipsg', ...commonRequiredProps
             }) ? <MultipleText />
-              : <Form.Item
-                noStyle
-                name='ipsg'
-                valuePropName='checked'
-                initialValue={false}
-              >
-                <Switch
-                  data-testid='ipsg-checkbox'
-                  disabled={getFieldDisabled('ipsg')}
-                  className={getToggleClassName('ipsg', isMultipleEdit, hasMultipleValue)}
-                />
-              </Form.Item>}
+              : <Tooltip title={getFieldTooltip('ipsg')}>
+                <Space>
+                  <Form.Item
+                    noStyle
+                    name='ipsg'
+                    valuePropName='checked'
+                    initialValue={false}
+                  >
+                    <Switch
+                      data-testid='ipsg-checkbox'
+                      disabled={getFieldDisabled('ipsg')}
+                      className={getToggleClassName('ipsg', isMultipleEdit, hasMultipleValue)}
+                    />
+                  </Form.Item>
+                </Space>
+              </Tooltip>
+            }
           />
         })}
 
