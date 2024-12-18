@@ -74,9 +74,12 @@ export function CloudpathServerForm () {
   })
 
   const dpskProxyServiceTooltipMsg = $t(messages.dpskProxyServiceTooltip, {
-    system: isNonProxyAcctDpskFFEnabled ? 'RUCKUS One' : 'controller',
-    serverType: isNonProxyAcctDpskFFEnabled ? 'authentication' : 'AAA',
-    messageType: isNonProxyAcctDpskFFEnabled ? 'authentication' : 'authentication/accounting'
+    system: isNonProxyAcctDpskFFEnabled ?
+      $t({ defaultMessage: 'RUCKUS One' }) : $t({ defaultMessage: 'controller' }),
+    serverType: isNonProxyAcctDpskFFEnabled ?
+      $t({ defaultMessage: 'authentication' }) : $t({ defaultMessage: 'AAA' }),
+    messageType: isNonProxyAcctDpskFFEnabled ?
+      $t({ defaultMessage: 'authentication' }) : $t({ defaultMessage: 'authentication/accounting' })
   })
 
 
