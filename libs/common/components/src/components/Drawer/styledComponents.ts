@@ -3,7 +3,8 @@ import styled, { createGlobalStyle } from 'styled-components'
 
 export enum DrawerTypes {
   Default = 'default',
-  FullHeight = 'fullHeight'
+  FullHeight = 'fullHeight',
+  Dark='dark'
 }
 
 export const DrawerStyle = createGlobalStyle<{ $type: DrawerTypes }>`
@@ -11,7 +12,27 @@ export const DrawerStyle = createGlobalStyle<{ $type: DrawerTypes }>`
     .ant-drawer-content-wrapper {
       height: 100vh;
       margin-top: calc(-1 * var(--acx-drawer-top-space));
-    }` : ''}
+    }` : props.$type === DrawerTypes.Dark ? `
+    :root .ant-drawer {
+      height: calc(100vh - var(--acx-header-height));
+      margin-top: var(--acx-header-height);
+      div.ant-drawer-content-wrapper {
+        border-radius: 0px;
+        .ant-drawer-content { 
+          opacity: 0.98;
+          background: #333;
+          color: #fff;
+          .ant-drawer-header {
+            border: 0px;
+            svg {
+              path {
+                stroke: var(--acx-primary-white);
+              }
+            }
+          }
+        }
+      }
+  }` : ''}
 `
 
 export const Drawer = styled(AntDrawer)`
@@ -48,4 +69,32 @@ export const SubTitle = styled.div`
   padding-top: 8px;
   color: var(--acx-neutrals-60);
   font-weight: var(--acx-headline-5-font-weight);
+`
+
+export const History = styled.div`
+  .duration {
+    margin: 0 -20px;
+    border-bottom: 1px solid var(--acx-neutrals-80);
+    &:last-of-type {
+      border: 0px;
+    }
+    &:first-of-type .title{
+      margin-top: -40px;
+    }
+    .title {
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 16px;   
+      color: var(--acx-neutrals-30);
+      margin-bottom: 6px;
+      padding: 20px 16px 0px;
+    }
+    .chat {
+      padding: 12px 16px;
+      &:hover { 
+        background: var(--acx-neutrals-70);
+        opacity: 0.9;
+      }
+    }
+  }
 `

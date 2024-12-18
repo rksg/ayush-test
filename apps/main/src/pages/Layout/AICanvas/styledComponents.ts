@@ -13,6 +13,35 @@ export const Input = styled(AntInput.TextArea)`
     color: var(--acx-neutrals-50);
   }
 `
+export const History = styled.div`
+  .duration {
+    margin: 0 -20px;
+    border-bottom: 1px solid var(--acx-neutrals-80);
+    &:last-of-type {
+      border: 0px;
+    }
+    &:first-of-type .title{
+      margin-top: -40px;
+    }
+    .title {
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 16px;   
+      color: var(--acx-neutrals-30);
+      margin-bottom: 6px;
+      padding: 20px 16px 0px;
+      cursor: default;
+    }
+    .chat {
+      padding: 12px 16px;
+      cursor: pointer;
+      &:hover { 
+        background: var(--acx-neutrals-70);
+        opacity: 0.9;
+      }
+    }
+  }
+`
 
 export const Wrapper = styled.div`
 animation: fadeIn 0.1s linear 0s both;
@@ -27,38 +56,49 @@ overflow: auto; /* Enable scroll if needed */
 background-color: transparent;
 border-top: 75px solid rgba(255,255,255, 0.4);
 
+.chat-wrapper {
+  height: calc(100vh - 60px);
+  background-color: var(--acx-primary-white);
+}
 .chat {
+  background-image: url(${RuckusAiBackground});
+  background-repeat: no-repeat;
   position: fixed;
   width: 350px;
+  height: calc(100vh - 60px);
   top: 60px;
   z-index: 2;
   .header {
     border: 1px solid #E5E5E5;
     border-right: 0px;
-    background-color: var(--acx-primary-white);
+    background-color: rgba(255, 255, 255, .3);
     height: 60px;
-    padding: 15px 25px;
+    padding: 15px 20px;
     display: flex;
     justify-content: space-between;
-    .title{
-      svg {
-        margin-right: 10px;
-       }
-       padding: 5px;
-       font-family: var(--acx-accent-brand-font);
-       font-weight: var(--acx-headline-3-font-weight);
-       font-size: var(--acx-headline-3-font-size);
+    align-items: center;
+    .title {
+      display: flex;
+      align-items: center;
+      cursor: default;
+      span {
+        padding-left: 10px;
+        font-family: var(--acx-accent-brand-font);
+        font-weight: var(--acx-headline-3-font-weight);
+        font-size: var(--acx-headline-3-font-size);
+      }
     }
     .actions{
-      button {
-        margin-left: 15px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      svg {
+        width: 20px;
       }
     }
   }
   .content {
-    background-color: #fefefe;
-    background-image: url(${RuckusAiBackground});
-    background-repeat: no-repeat;
+    background: transparent;
     height: calc(100vh - 120px);
     width: 350px;
     position: fixed;
@@ -164,6 +204,7 @@ export const Canvas = styled.div`
     justify-content: space-between;
     padding: 15px 25px;
     .title{
+      cursor: default;
       padding: 5px;
       font-family: var(--acx-accent-brand-font);
       font-weight: 500;

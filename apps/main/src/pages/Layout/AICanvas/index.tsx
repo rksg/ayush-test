@@ -6,11 +6,12 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
-import { Button }                                                     from '@acx-ui/components'
-import { HistoricalOutlined, Plus, RuckusAiDog, SendMessageOutlined } from '@acx-ui/icons'
-import { useChatAiMutation }                                          from '@acx-ui/rc/services'
-import { ChatMessage }                                                from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                 from '@acx-ui/react-router-dom'
+import { Button, Drawer, DrawerTypes }                                              from '@acx-ui/components'
+import { CloseSymbol, RuckusAiDog, SendMessageOutlined, HistoricalOutlined, Plus  } from '@acx-ui/icons'
+// import { HistoricalOutlined, Plus  } from '@acx-ui/icons-new'
+import { useChatAiMutation }          from '@acx-ui/rc/services'
+import { ChatMessage }                from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 import Canvas             from './Canvas'
 import { DraggableChart } from './components/WidgetChart'
@@ -22,6 +23,7 @@ export default function AICanvas () {
   const navigate = useNavigate()
   const [chatAi] = useChatAiMutation()
   const [loading, setLoading] = useState(false)
+  const [historyVisible, setHistoryVisible] = useState(false)
   const [sessionId, setSessionId] = useState('')
   const [chats, setChats] = useState([] as ChatMessage[])
 
@@ -110,57 +112,120 @@ export default function AICanvas () {
 
     </div>
   }
+  const history = [
+    {
+      duration: 'Yesterday',
+      history: [
+        {
+          title: 'Alerts and notifications'
+        },
+        {
+          title: 'Device inventory & Status'
+        }
+      ]
+    },
+    {
+      duration: 'Previous 7 days',
+      history: [
+        {
+          title: 'Client related'
+        },
+        {
+          title: 'Map'
+        }
+      ]
+    },
+    {
+      duration: 'December 20, 2024',
+      history: [
+        {
+          title: 'Network topology'
+        }
+      ]
+    }
+  ]
+
+  const content = <UI.History>
+    {
+      history.map(i => <div className='duration'>
+        <div className='title'>{i.duration}</div>
+        {
+          i.history.map(j => <div className='chat'>{j.title}</div>)
+        }
+      </div>)
+    }
+  </UI.History>
+
+  const onHistoryDrawer = () => {
+    setHistoryVisible(!historyVisible)
+  }
 
   return (
     <DndProvider backend={HTML5Backend}>
       <UI.Wrapper>
-        <div className='chat'>
-          <div className='header'>
-            <div className='title'>
-              <RuckusAiDog />
-              <span>{$t({ defaultMessage: 'RUCKUS AI' })}</span>
-            </div>
-            <div className='actions'>
-              <Button icon={<Plus />} onClick={()=>{}} />
-              <Button icon={<HistoricalOutlined />} onClick={()=>{onClose()}} />
-            </div>
-          </div>
-          <div className='content'>
-            <div className='chatroom' ref={scroll}>
-              <div className='placeholder'>
-                <div onClick={()=> {
-                  handleSearch('Generate Top Wi-Fi Networks Pie Chart')
-                }}>
-                “Generate Top Wi-Fi Networks Pie Chart”
-                </div>
-                <div onClick={()=> {
-                  handleSearch('Generate Switch Traffic by Volume Line Chart')
-                }}>
-                “Generate Switch Traffic by Volume Line Chart”
-                </div>
+        <div className='chat-wrapper'>
+          <div className='chat'>
+            <div className='header'>
+              <div className='actions'>
+                <HistoricalOutlined onClick={onHistoryDrawer} />
+                <Plus style={{ marginLeft: '16px' }} onClick={()=>{}} />
               </div>
-              <div className='messages-wrapper'>
-                {chats?.map((i) => (
-                  <Message key={i.id} chat={i} />
-                ))}
-                {loading && <div className='loading'><Spin /></div>}
+              <div className='title'>
+                <RuckusAiDog />
+                <span>{$t({ defaultMessage: 'RUCKUS AI' })}</span>
               </div>
-              <div className='input'>
-                <UI.Input
-                  autoFocus
-                  value={searchText}
-                  onChange={({ target: { value } }) => setSearchText(value)}
-                  onKeyDown={onKeyDown}
-                  data-testid='search-input'
-                  rows={10}
-                  placeholder={placeholder}
-                />
-                <Button icon={<SendMessageOutlined />} onClick={()=> { handleSearch() }} />
+              <div className='actions' style={{ width: '56px', justifyContent: 'end' }}>
+                <CloseSymbol onClick={()=>{onClose()}}/>
+              </div>
+            </div>
+            <div className='content'>
+              <div className='chatroom' ref={scroll}>
+                <div className='placeholder'>
+                  <div onClick={()=> {
+                    handleSearch('Generate Top Wi-Fi Networks Pie Chart')
+                  }}>
+                  “Generate Top Wi-Fi Networks Pie Chart”
+                  </div>
+                  <div onClick={()=> {
+                    handleSearch('Generate Switch Traffic by Volume Line Chart')
+                  }}>
+                  “Generate Switch Traffic by Volume Line Chart”
+                  </div>
+                </div>
+                <div className='messages-wrapper'>
+                  {chats?.map((i) => (
+                    <Message key={i.id} chat={i} />
+                  ))}
+                  {loading && <div className='loading'><Spin /></div>}
+                </div>
+                <div className='input'>
+                  <UI.Input
+                    autoFocus
+                    value={searchText}
+                    onChange={({ target: { value } }) => setSearchText(value)}
+                    onKeyDown={onKeyDown}
+                    data-testid='search-input'
+                    rows={10}
+                    placeholder={placeholder}
+                  />
+                  <Button icon={<SendMessageOutlined />} onClick={()=> { handleSearch() }} />
+                </div>
               </div>
             </div>
           </div>
         </div>
         <Canvas />
+        <Drawer
+          drawerType={DrawerTypes.Dark}
+          visible={historyVisible}
+          onClose={onHistoryDrawer}
+          children={content}
+          placement={'left'}
+          mask={true}
+          maskClosable={true}
+          maskStyle={{}}
+          width={'350px'}
+        />
       </UI.Wrapper>
     </DndProvider>
 
