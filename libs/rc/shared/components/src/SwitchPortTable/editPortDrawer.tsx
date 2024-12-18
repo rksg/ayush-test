@@ -13,8 +13,8 @@ import {
   Tooltip,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { PoeUsage }                        from '@acx-ui/icons'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { PoeUsage }                          from '@acx-ui/icons'
 import {
   switchApi,
   useLazyGetAclUnionQuery,
@@ -31,7 +31,7 @@ import {
   useSwitchDetailHeaderQuery,
   useSavePortsSettingMutation,
   useCyclePoeMutation,
-  useLazyPortProfilesListBySwitchIdQuery
+  useLazyPortProfileOptionsBySwitchIdQuery
 } from '@acx-ui/rc/services'
 import {
   EditPortMessages,
@@ -294,7 +294,7 @@ export function EditPortDrawer ({
   const [getSwitchRoutedList] = useLazyGetSwitchRoutedListQuery()
   const [getVenueRoutedList] = useLazyGetVenueRoutedListQuery()
   const [getAclUnion] = useLazyGetAclUnionQuery()
-  const [getPortProfilesList] = useLazyPortProfilesListBySwitchIdQuery()
+  const [getPortProfileOptionsList] = useLazyPortProfileOptionsBySwitchIdQuery()
   const [savePortsSetting, { isLoading: isPortsSettingUpdating }] = useSavePortsSettingMutation()
   const [cyclePoe, { isLoading: isCyclePoeUpdating }] = useCyclePoeMutation()
 
@@ -421,7 +421,7 @@ export function EditPortDrawer ({
         enableRbac: isSwitchRbacEnabled
       }, true).unwrap()
 
-      const portProfileList = await getPortProfilesList({
+      const portProfileList = await getPortProfileOptionsList({
         params: { tenantId, switchId, venueId: switchDetail?.venueId },
         enableRbac: isSwitchRbacEnabled
       }, true).unwrap()

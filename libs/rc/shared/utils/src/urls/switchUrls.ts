@@ -747,9 +747,14 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/switchPortProfiles/lldpTlvs/:lldpTlvId',
     newApi: true
   },
-  getPortProfileListBySwitchId: {
+  getPortProfileOptionsBySwitchId: {
     method: 'get',
     url: '/venues/:venueId/switches/:switchId/availablePortProfiles',
+    newApi: true
+  },
+  getPortProfilesListBySwitchId: {
+    method: 'post',
+    url: '/venues/:venueId/switches/:switchId/switchPortProfiles/query',
     newApi: true
   }
 }

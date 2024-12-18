@@ -1903,12 +1903,22 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SwitchPortProfile', id: 'LldpTlvs' }]
     }),
-    portProfilesListBySwitchId: build.query<PortProfilesBySwitchId[], RequestPayload>({
+    portProfileOptionsBySwitchId: build.query<PortProfilesBySwitchId[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
-          SwitchUrlsInfo.getPortProfileListBySwitchId, params, customHeaders.v1)
+          SwitchUrlsInfo.getPortProfileOptionsBySwitchId, params, customHeaders.v1)
         return {
           ...req
+        }
+      }
+    }),
+    portProfilesListBySwitchId: build.query<TableResult<SwitchPortProfiles>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getPortProfilesListBySwitchId, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
         }
       }
     })
@@ -2195,5 +2205,6 @@ export const {
   useAddSwitchPortProfileLldpTlvMutation,
   useEditSwitchPortProfileLldpTlvMutation,
   useDeleteSwitchPortProfileLldpTlvMutation,
-  useLazyPortProfilesListBySwitchIdQuery
+  useLazyPortProfileOptionsBySwitchIdQuery,
+  usePortProfilesListBySwitchIdQuery
 } = switchApi
