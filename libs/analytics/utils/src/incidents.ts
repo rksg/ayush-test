@@ -98,9 +98,9 @@ export function nodeTypes (nodeType: NodeType|SliceType): string {
     case 'domain':
       return $t({ defaultMessage: 'Domain' })
     case 'wlan':
-      return $t({ defaultMessage: 'Wlan' })
+      return $t({ defaultMessage: 'WLAN' })
     case 'wlanGroup':
-      return $t({ defaultMessage: 'Wlan Group' })
+      return $t({ defaultMessage: 'WLAN Group' })
     default:
       return $t({ defaultMessage: 'Unknown' })
   }
