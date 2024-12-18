@@ -1,3 +1,4 @@
+import { SuspenseBoundary }                 from '@acx-ui/components'
 import { Provider, intentAIUrl }            from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
@@ -14,8 +15,9 @@ import { mocked as mockedCTxpowerSame }                from './AIOperations/__te
 import { mocked as mockedIZoneFirmwareUpgrade }        from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
 import { mockedIntentEcoFlex }                         from './EcoFlex/__tests__/fixtures'
 import { mockedIntentEquiFlex }                        from './EquiFlex/__tests__/fixtures'
-import { IntentAIForm }                                from './IntentAIForm'
-import { Intent }                                      from './useIntentDetailsQuery'
+import { IntentDetail }                                from './useIntentDetailsQuery'
+
+import { IntentAIForm } from './index'
 
 jest.mock('./AIDrivenRRM/CCrrmChannelAuto', () => ({
   kpis: [],
@@ -90,9 +92,9 @@ jest.mock('./EcoFlex/IEcoFlex', () => ({
   IntentAIForm: () => <div data-testid='i-ecoflex-IntentAIForm'/>
 }))
 
-const doCRRMTest = async (codes: string[], intent: Intent) => {
-  for (const code of codes) {
-    const { unmount } = render(<IntentAIForm />, {
+const doCRRMTest = async (codes: string[], intent: IntentDetail) => {
+  for await (const code of codes) {
+    const { unmount } = render(<SuspenseBoundary><IntentAIForm /></SuspenseBoundary>, {
       route: { params: { code, root: intent.root, sliceId: intent.sliceId } },
       wrapper: Provider
     })
@@ -101,9 +103,9 @@ const doCRRMTest = async (codes: string[], intent: Intent) => {
   }
 }
 
-const doTest = async (codes: string[], intent: Intent) => {
-  for (const code of codes) {
-    const { unmount } = render(<IntentAIForm />, {
+const doTest = async (codes: string[], intent: IntentDetail) => {
+  for await (const code of codes) {
+    const { unmount } = render(<SuspenseBoundary><IntentAIForm /></SuspenseBoundary>, {
       route: { params: { code, root: intent.root, sliceId: intent.sliceId } },
       wrapper: Provider
     })
@@ -112,7 +114,7 @@ const doTest = async (codes: string[], intent: Intent) => {
   }
 }
 
-describe.skip('IntentAIForm', () => {
+describe('IntentAIForm', () => {
   it('should render for AIDrivenRRM', async () => {
     mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent: mockedIntentCRRM } })
     const codes = ['c-crrm-channel24g-auto', 'c-crrm-channel5g-auto', 'c-crrm-channel6g-auto']

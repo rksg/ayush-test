@@ -9,7 +9,7 @@ import { mockGraphqlMutation, mockGraphqlQuery, render, screen, waitForElementTo
 
 import { mockIntentContext } from '../../__tests__/fixtures'
 import { Statuses }          from '../../states'
-import { Intent }            from '../../useIntentDetailsQuery'
+import { IntentDetail }      from '../../useIntentDetailsQuery'
 import { mocked }            from '../__tests__/mockedEquiFlex'
 import { kpis }              from '../common'
 
@@ -103,7 +103,7 @@ beforeEach(() => {
   })
 })
 
-const mockIntentContextWith = (data: Partial<Intent> = {}) => {
+const mockIntentContextWith = (data: Partial<IntentDetail> = {}) => {
   const intent = { ...mocked, ...data }
   mockIntentContext({ intent, kpis })
   return {
@@ -206,7 +206,7 @@ describe('IntentAIForm', () => {
     })
     it('should use all wlans when no saved wlans', async () => {
       mockGet.mockReturnValue('true') // RAI
-      const data = { ...mocked, metadata: { wlans: [] } } as Intent
+      const data = { ...mocked, metadata: { wlans: [] } } as IntentDetail
       const { params } = mockIntentContextWith(data)
       render(<IntentAIForm />, { route: { params }, wrapper: Provider })
       const form = within(await screen.findByTestId('steps-form'))
@@ -239,7 +239,7 @@ describe('IntentAIForm', () => {
 
   it('should validate when no wlans', async () => {
     mockGet.mockReturnValue('true') // RAI
-    const data = { ...mocked, metadata: {} } as Intent
+    const data = { ...mocked, metadata: {} } as IntentDetail
     mockGraphqlQuery(intentAIUrl, 'Wlans', {
       data: {
         intent: {

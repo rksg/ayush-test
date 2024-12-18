@@ -1,3 +1,4 @@
+import { SuspenseBoundary }                 from '@acx-ui/components'
 import { Provider, intentAIUrl }            from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
@@ -15,8 +16,9 @@ import {  mockedEtlFail }                              from './AIOperations/__te
 import { mocked as mockedIZoneFirmwareUpgrade }        from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
 import { mockedIntentEcoFlex }                         from './EcoFlex/__tests__/fixtures'
 import { mockedIntentEquiFlex }                        from './EquiFlex/__tests__/fixtures'
-import { IntentAIDetails }                             from './IntentAIDetails'
-import { Intent }                                      from './useIntentDetailsQuery'
+import { IntentDetail }                                from './useIntentDetailsQuery'
+
+import { IntentAIDetails } from './index'
 
 jest.mock('./AIDrivenRRM/CCrrmChannelAuto', () => ({
   kpis: [],
@@ -73,9 +75,9 @@ jest.mock('./AIOperations/CBgScan6gTimer', () => ({
   IntentAIDetails: () => <div data-testid='c-bgscan6g-timer-IntentAIDetails'/>
 }))
 
-const doCRRMTest = async (codes: string[], intent: Intent) => {
-  for (const code of codes) {
-    const { unmount } = render(<IntentAIDetails />, {
+const doCRRMTest = async (codes: string[], intent: IntentDetail) => {
+  for await (const code of codes) {
+    const { unmount } = render(<SuspenseBoundary><IntentAIDetails /></SuspenseBoundary>, {
       route: { params: { code, root: intent.root, sliceId: intent.sliceId } },
       wrapper: Provider
     })
@@ -102,9 +104,9 @@ jest.mock('./EcoFlex/IEcoFlex.tsx', () => ({
   IntentAIDetails: () => <div data-testid='i-ecoflex-IntentAIDetails'/>
 }))
 
-const doTest = async (codes: string[], intent: Intent) => {
-  for (const code of codes) {
-    const { unmount } = render(<IntentAIDetails />, {
+const doTest = async (codes: string[], intent: IntentDetail) => {
+  for await (const code of codes) {
+    const { unmount } = render(<SuspenseBoundary><IntentAIDetails /></SuspenseBoundary>, {
       route: { params: { code, root: intent.root, sliceId: intent.sliceId } },
       wrapper: Provider
     })

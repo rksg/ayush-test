@@ -168,6 +168,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
 
   const handleApplyArpTermination = async () => {
     const originalArpSettings = form.getFieldValue('originalArpSettings')
+    if (!clusterId || !currentClusterStatus?.venueId || !originalArpSettings) return
 
     const currentArpSettings: ClusterArpTerminationSettings = {
       enabled: form.getFieldValue('arpTerminationSwitch'),
@@ -190,7 +191,6 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
     }
 
     if (needUpdate) {
-      if (!clusterId || !currentClusterStatus?.venueId) return
       const requestPayload = {
         params: {
           venueId: currentClusterStatus?.venueId,

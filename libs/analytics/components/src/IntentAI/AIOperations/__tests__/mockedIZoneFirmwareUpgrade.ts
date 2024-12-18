@@ -1,4 +1,4 @@
-import { Intent } from '../../useIntentDetailsQuery'
+import { IntentDetail } from '../../useIntentDetailsQuery'
 
 export const mocked = {
   id: '2c392d0a-124f-4183-b5c4-529d6571f540',
@@ -29,7 +29,7 @@ export const mocked = {
     data: { timestamp: '2024-08-29T00:00:00.000Z', result: [ 0, 0 ] },
     compareData: { timestamp: '2024-06-09T00:00:00.000Z', result: [ 0, 0 ] }
   }
-} as unknown as Intent
+} as unknown as IntentDetail
 
 export const mockedIntentAps = [
   {
