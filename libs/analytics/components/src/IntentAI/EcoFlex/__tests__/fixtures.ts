@@ -1,4 +1,4 @@
-import { Intent } from '../../useIntentDetailsQuery'
+import { IntentDetail } from '../../useIntentDetailsQuery'
 
 export const excludedHours= {
   sun: [],
@@ -85,4 +85,4 @@ export const mockedIntentEcoFlex = {
     }
   ],
   preferences: null
-} as unknown as Intent
+} as unknown as IntentDetail

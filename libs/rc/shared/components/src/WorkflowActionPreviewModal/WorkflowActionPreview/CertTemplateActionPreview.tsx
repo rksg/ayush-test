@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Col, List, Row, Space, Typography } from 'antd'
+import Link                                  from 'antd/lib/typography/Link'
 import { QRCodeSVG }                         from 'qrcode.react'
 import { useIntl }                           from 'react-intl'
 
@@ -46,18 +47,18 @@ export function CertTemplateActionPreview (props: GenericActionPreviewProps<Cert
   }, [networkListResponse])
 
   return <ContentPreview body={
-    (networkListResponse.length > 1 && selectedSsid === '') ?
-      <GridRow justify={'center'}>
-        <GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
-          <Title level={3}>
-            { $t({ defaultMessage: 'Connect to the network' }) }
-          </Title>
-        </GridCol>
+    <GridRow justify={'center'}>
+      <GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
+        <Title level={2}>
+          { $t({ defaultMessage: 'Connect to the network' }) }
+        </Title>
+      </GridCol>
+      {(networkListResponse.length > 1 && selectedSsid === '') ?
         <GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
           <Text strong>
             {$t({
               defaultMessage:
-                'Install the certificate in order to connect to the following networks:'
+                'Install certificate in order to connect to the following networks:'
             })}
           </Text>
           <List
@@ -72,62 +73,41 @@ export function CertTemplateActionPreview (props: GenericActionPreviewProps<Cert
               </List.Item>
             )}
           />
-        </GridCol>
-        <GridCol col={{ span: 24 }}>
-          <Space direction='vertical' align='center'>
-            <Text>
-              {$t({
-                defaultMessage:
-                  'Scan or click this QR code to download the certificate that' +
-                  ' is required in order to connect to the network:'
-              })}
-            </Text>
-            <QRCodeSVG
-              value={`WIFI:T:WPA;S:${selectedSsid};P:$aMgj23Klpz;H:false;`}
-              size={180}
-              bgColor={'#ffffff'}
-              fgColor={'#000000'}
-              level={'L'}
-              includeMargin={false}
-              onClick={() => setSelectedSsid('')}
-            />
-          </Space>
-        </GridCol>
-      </GridRow> :
-      <GridRow>
+        </GridCol> :
         <GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
-          <Title level={3}>
-            { $t({ defaultMessage: 'Connect to the network' }) }
-          </Title>
-        </GridCol>
-        <GridCol col={{ span: 20 }}>
           <Space>
             <Text strong>
               <span>{ $t({ defaultMessage: 'Wi-Fi Network name: ' })} { selectedSsid }</span>
             </Text>
           </Space>
-        </GridCol>
-        <GridCol col={{ span: 24 }}>
-          <Space direction='vertical' align='center'>
-            <Text>
-              {$t({
-                defaultMessage:
-                  'Scan or click this QR code to download the certificate that' +
-                  ' is required in order to connect to the network:'
-              })}
-            </Text>
-            <QRCodeSVG
-              value={`WIFI:T:WPA;S:${selectedSsid};P:$aMgj23Klpz;H:false;`}
-              size={180}
-              bgColor={'#ffffff'}
-              fgColor={'#000000'}
-              level={'L'}
-              includeMargin={false}
-              onClick={() => setSelectedSsid('')}
-            />
-          </Space>
-        </GridCol>
-      </GridRow>
+        </GridCol>}
+      <GridCol col={{ span: 24 }}>
+        <Space direction='vertical' align='center'>
+          <Text>
+            {$t({
+              defaultMessage:
+                  'Scan or click to download the certificate'
+            })}
+          </Text>
+          <QRCodeSVG
+            value={`WIFI:T:WPA;S:${selectedSsid};P:$aMgj23Klpz;H:false;`}
+            size={180}
+            bgColor={'#ffffff'}
+            fgColor={'#000000'}
+            level={'L'}
+            includeMargin={false}
+            onClick={() => setSelectedSsid('')}
+          />
+        </Space>
+      </GridCol>
+      <GridCol col={{ span: 24 }}>
+        <Space direction='vertical' align='center'>
+          <Link strong={true}>
+            <Text strong={true}><b>{$t({ defaultMessage: 'Download Certificate' })}</b><br /></Text>
+          </Link>
+        </Space>
+      </GridCol>
+    </GridRow>
   }
   {...rest}
   />

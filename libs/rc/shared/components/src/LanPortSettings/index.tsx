@@ -98,13 +98,30 @@ export function LanPortSettings (props: {
   const { isTemplate } = useConfigTemplate()
   const ethernetPortProfileId = Form.useWatch( ['lan', index, 'ethernetPortProfileId'] ,form)
   const isEthernetPortEnable = Form.useWatch( ['lan', index, 'enabled'] ,form)
+  const softGreTunnelFieldName = ['lan', index, 'softGreTunnelEnable']
+  const isSoftGreTunnelEnable = Form.useWatch(softGreTunnelFieldName, form)
   const [currentEthernetPortData, setCurrentEthernetPortData] =
     useState<EthernetPortProfileViewData>()
   const [ethernetProfileCreateId, setEthernetProfileCreateId] = useState<String>()
-  const [enableSoftGRETunnel, setEnableSoftGRETunnel] = useState<boolean>(false)
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
+  const isUnderAPNetworking = !!serialNumber
 
+  // const isSoftGRETunnelSettingReadonly = () => {
+  //   if(!isUnderAPNetworking){
+  //     return !isEthernetPortEnable
+  //   }
+  //   // TODO Add readonly condition here
+  //   return false
+  // }
+
+  // const isDhcpOption82SettingsReadonly = () => {
+  //   if (!isUnderAPNetworking) {
+  //     return false
+  //   }
+  //   // TODO Add readonly condition here
+  //   return false
+  // }
 
   // Non ethernet port profile
   const handlePortTypeChange = (value: string, index:number) => {
@@ -179,6 +196,10 @@ export function LanPortSettings (props: {
       }
     }
   }, [ethernetPortProfileId, ethernetPortListQuery?.data])
+
+  useEffect(() => {
+    form.setFieldValue(softGreTunnelFieldName, !!lan.softGreProfileId)
+  }, [selectedPortCaps])
 
   return (<>
     {selectedPortCaps?.isPoeOutPort && <Form.Item
@@ -258,11 +279,24 @@ export function LanPortSettings (props: {
           isEthernetPortProfileEnabled && isEthernetSoftgreEnabled &&
             (<>
               <SoftGRETunnelSettings
-                enableSoftGRETunnel={enableSoftGRETunnel}
-                setEnableSoftGRETunnel={setEnableSoftGRETunnel}
-                isSoftGRETunnelToggleDisable={!isEthernetPortEnable}
+                readonly={!isEthernetPortEnable || (readOnly ?? false)}
+                index={index}
+                softGreProfileId={selectedPortCaps.softGreProfileId ?? ''}
+                softGreTunnelEnable={isSoftGreTunnelEnable}
+                onGUIChanged={onGUIChanged}
               />
-              {enableSoftGRETunnel && <DhcpOption82Settings />}
+              {isSoftGreTunnelEnable &&
+                <DhcpOption82Settings
+                  readonly={readOnly ?? false}
+                  index={index}
+                  onGUIChanged={onGUIChanged}
+                  isUnderAPNetworking={isUnderAPNetworking}
+                  serialNumber={serialNumber}
+                  venueId={venueId}
+                  portId={selectedModel.lanPorts![index].portId}
+                  apModel={selectedModelCaps.model}
+                />
+              }
             </>)
         }
       </>) :

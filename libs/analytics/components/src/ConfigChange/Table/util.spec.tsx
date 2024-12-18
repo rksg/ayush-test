@@ -54,7 +54,7 @@ describe('filterData', () => {
   it('should return correct data', () => {
     const legend = ['ap', 'apGroup', 'zone', 'wlan', 'wlanGroup', 'intentAI']
     expect(filterData(configChanges, [], legend).length).toEqual(configChanges.length)
-    expect(filterData(configChanges, ['clientThroughput'], legend).length).toEqual(3)
+    expect(filterData(configChanges, ['clientThroughput'], legend).length).toEqual(5)
   })
   it('should filter out legend', () => {
     const noAPLegend = ['apGroup', 'zone', 'wlan', 'wlanGroup', 'intentAI']

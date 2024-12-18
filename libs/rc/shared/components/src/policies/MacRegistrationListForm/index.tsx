@@ -3,8 +3,8 @@ import React, { useEffect, useRef } from 'react'
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { Loader, PageHeader, showToast, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
+import { Loader, PageHeader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import {
   useAddMacRegListMutation, useAddMacRegListWithIdentityMutation,
   useDeleteAdaptivePolicySetFromMacListMutation,
@@ -46,9 +46,6 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
   const [addMacRegList] = useAddMacRegListMutation()
   const [addMacRegListWithIdentity] = useAddMacRegListWithIdentityMutation()
   const [updateMacRegList, { isLoading: isUpdating }] = useUpdateMacRegListMutation()
-
-  const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
-  const customHeaders = (isAsync) ? { Accept: 'application/vnd.ruckus.v2+json' } : undefined
 
   const [bindPolicySet] = useUpdateAdaptivePolicySetToMacListMutation()
   const [unbindPolicySet] = useDeleteAdaptivePolicySetFromMacListMutation()
@@ -96,21 +93,11 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
           defaultAccess: data.defaultAccess ?? 'ACCEPT'
         }
         // eslint-disable-next-line max-len
-        result = await addMacRegList({ payload: saveData, customHeaders }).unwrap() as MacRegistrationPool
+        result = await addMacRegList({ payload: saveData }).unwrap() as MacRegistrationPool
       }
 
       if (result.id && data.policySetId) {
         await bindPolicySet({ params: { policyId: result.id, policySetId: data.policySetId } })
-      }
-
-      if (!isAsync) {
-        showToast({
-          type: 'success',
-          content: intl.$t(
-            { defaultMessage: 'List {name} was added' },
-            { name: data.name }
-          )
-        })
       }
 
       modalMode ? modalCallBack?.(result) : navigate(linkToList, { replace: true })
@@ -132,24 +119,13 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
 
       await updateMacRegList({
         params: { policyId },
-        payload: saveData,
-        customHeaders
+        payload: saveData
       }).unwrap()
 
       if (formData.policySetId) {
         await bindPolicySet({ params: { policyId, policySetId: formData.policySetId } })
       } else if (data?.policySetId) {
         await unbindPolicySet({ params: { policyId, policySetId: data?.policySetId } })
-      }
-
-      if (!isAsync) {
-        showToast({
-          type: 'success',
-          content: intl.$t(
-            { defaultMessage: 'List {name} was updated' },
-            { name: saveData.name }
-          )
-        })
       }
 
       modalMode ? modalCallBack?.() : navigate(linkToList, { replace: true })

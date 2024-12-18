@@ -2,12 +2,15 @@ import { useContext, useState, useEffect, useRef } from 'react'
 
 import { Col, Form, Image, Row, Select, Space, Tooltip } from 'antd'
 import { isEqual, clone, cloneDeep }                     from 'lodash'
-import _                                                 from 'lodash'
 import { useIntl }                                       from 'react-intl'
 
-import { AnchorContext, Button, Loader, Tabs, showActionModal }         from '@acx-ui/components'
-import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
-import { LanPortPoeSettings, LanPortSettings, ConvertPoeOutToFormData }
+import { AnchorContext, Button, Loader, Tabs, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
+import {
+  LanPortPoeSettings,
+  LanPortSettings,
+  ConvertPoeOutToFormData
+}
   from '@acx-ui/rc/components'
 import {
   useGetVenueSettingsQuery,
@@ -330,7 +333,7 @@ export function LanPorts () {
     const { lanPorts, ...rest } = venueLanPorts
     const { lanPorts: originLanPorts, ...originRest } = originVenueLanPorts
 
-    if(!_.isEqual(rest, originRest)) {
+    if(!isEqual(rest, originRest)) {
       await updateLanPortSpecificSetting({
         params: {
           venueId: venueId,

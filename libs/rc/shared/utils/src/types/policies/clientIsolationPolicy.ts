@@ -31,6 +31,8 @@ export interface VenueUsageByClientIsolation {
   address: string
   networkCount: number
   networkNames: string[]
+  apCount: number
+  apNames: string[]
 }
 
 export interface ClientIsolationActivations {
@@ -47,6 +49,21 @@ export interface ClientIsolationViewModel {
   venueIds?: string[]
   venueCount?: number
   activations?: ClientIsolationActivations[]
+  venueActivations: ClientIsolationVenueActivations[]
+  apActivations: ClientIsolationApActivations[]
+}
+
+export interface ClientIsolationVenueActivations {
+  venueId: string
+  apModel?: string
+  apSerialNumbers: string[],
+  portId: number
+}
+
+export interface ClientIsolationApActivations {
+  venueId: string
+  apSerialNumber: string,
+  portId: number
 }
 
 export interface ClientIsolationTableChangePayload extends TableChangePayload {
