@@ -61,7 +61,7 @@ describe('getGraphKPIs', () => {
         data: { timestamp: null, result: 2 },
         compareData: { timestamp: null, result: 5 }
       }
-    }, kpis)
+    }, kpis, true)
     expect(result.value).toEqual('2')
     expect(result.delta).toEqual({ trend: 'positive', value: '-60%' })
     expect(result.footer).toEqual('')
@@ -70,7 +70,7 @@ describe('getGraphKPIs', () => {
     const [ result ] = getGraphKPIs({
       ...mockedIntentCRRM,
       kpi_number_of_interfering_links: { data: null, compareData: null }
-    }, kpis)
+    }, kpis, true)
     expect(result.value).toEqual('--')
     expect(result.delta).toEqual(undefined)
     expect(result.footer).toEqual('')
@@ -82,7 +82,7 @@ describe('getGraphKPIs', () => {
         data: { timestamp: null, result: 2 },
         compareData: null
       }
-    }, kpis)
+    }, kpis, true)
     expect(result.value).toEqual('2')
     expect(result.delta).toEqual(undefined)
     expect(result.footer).toEqual('')
@@ -95,7 +95,7 @@ describe('getGraphKPIs', () => {
         data: { timestamp: null, result: 2 },
         compareData: { timestamp: null, result: 5 }
       }
-    }, kpis)
+    }, kpis, true)
     expect(result.value).toEqual('--')
     expect(result.delta).toBeUndefined()
     expect(result.footer).toEqual('')
@@ -113,7 +113,7 @@ describe('getGraphKPIs', () => {
         isDataRetained: true,
         isHotTierData: false
       }
-    }, kpis)
+    }, kpis, true)
     expect(result.value).toEqual('--')
     expect(result.delta).toEqual(undefined)
     expect(result.footer).toEqual('Metrics / Charts unavailable for data beyond 30 days.')
@@ -131,7 +131,7 @@ describe('getGraphKPIs', () => {
         isDataRetained: false,
         isHotTierData: true
       }
-    }, kpis)
+    }, kpis, true)
     expect(result.value).toEqual('--')
     expect(result.delta).toEqual(undefined)
     expect(result.footer).toEqual('Beyond data retention period')

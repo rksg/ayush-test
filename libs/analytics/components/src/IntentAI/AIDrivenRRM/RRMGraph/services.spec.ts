@@ -1,3 +1,4 @@
+import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { Provider, intentAIUrl }                 from '@acx-ui/store'
 import { mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 
@@ -11,6 +12,7 @@ jest.mock('../../IntentContext')
 describe('useIntentAICRRMQuery', () => {
   afterEach(() => jest.resetAllMocks())
   it('should return correct data', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockIntentContext({ intent: mockedIntentCRRMApplied, isHotTierData: true })
     mockGraphqlQuery(intentAIUrl, 'IntentAIRRMGraph', {
       data: { intent: mockedCRRMGraphs }

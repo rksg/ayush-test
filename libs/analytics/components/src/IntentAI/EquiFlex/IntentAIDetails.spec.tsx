@@ -3,6 +3,7 @@ import _         from 'lodash'
 import { rest }  from 'msw'
 
 import { get }                                from '@acx-ui/config'
+import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { networkApi }                         from '@acx-ui/rc/services'
 import { CommonUrlsInfo }                     from '@acx-ui/rc/utils'
 import { Provider, store, intentAIApi }       from '@acx-ui/store'
@@ -51,6 +52,7 @@ describe('IntentAIDetails', () => {
   })
 
   it('handle cold tier data', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const { params } = mockIntentContextWith({
       code: 'c-probeflex-5g',
       status: Statuses.active,

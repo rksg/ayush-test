@@ -128,15 +128,8 @@ export function getGraphKPIs (
       footer: string
       delta: { value: string; trend: TrendTypeEnum } | undefined
     }
-    if (isConfigChangeEnabled) {
-      if (!isHotTierData) {
-        ret.footer = $t(coldTierDataText)
-      } else if (!isDataRetained) {
-        ret.footer = $t(dataRetentionText)
-      }
-    } else if (oldIsDataRetained(intent.metadata.dataEndTime)){
-      ret.footer = $t(dataRetentionText)
-    } else if (state !== 'no-data') {
+
+    if (isHotTierData && isDataRetained && state !== 'no-data') {
       const result = getKPIData(intent, kpi)
       ret.value = kpi.format(_.get(result, ['data', 'result'], null))
 
@@ -152,6 +145,10 @@ export function getGraphKPIs (
           trend: TrendTypeEnum
         }
       }
+    } else if (!isHotTierData) {
+      ret.footer = $t(coldTierDataText)
+    } else if (!isDataRetained) {
+      ret.footer = $t(dataRetentionText)
     }
     return ret
   })
