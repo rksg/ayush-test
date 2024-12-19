@@ -283,19 +283,17 @@ export function LanPortSettings (props: {
           currentIndex={index}
           onGUIChanged={onGUIChanged}
           isEditable={!readOnly && !!serialNumber} />
-        {
-          isEthernetPortProfileEnabled && isEthernetSoftgreEnabled &&
-            (<>
-              <SoftGRETunnelSettings
-                readonly={!isEthernetPortEnable || (readOnly ?? false)}
-                index={index}
-                softGreProfileId={selectedPortCaps.softGreProfileId ?? ''}
-                softGreTunnelEnable={isSoftGreTunnelEnable}
-                portId={selectedModel.lanPorts![index].portId}
-                onGUIChanged={onGUIChanged}
-                dispatch={dispatch}
-              />
-              {isSoftGreTunnelEnable &&
+        {isEthernetSoftgreEnabled && <>
+          <SoftGRETunnelSettings
+            readonly={!isEthernetPortEnable || (readOnly ?? false)}
+            index={index}
+            softGreProfileId={selectedPortCaps.softGreProfileId ?? ''}
+            softGreTunnelEnable={isSoftGreTunnelEnable}
+            portId={selectedModel.lanPorts![index].portId}
+            onGUIChanged={onGUIChanged}
+            dispatch={dispatch}
+          />
+          {isSoftGreTunnelEnable &&
                 <DhcpOption82Settings
                   readonly={readOnly ?? false}
                   index={index}
@@ -307,8 +305,14 @@ export function LanPortSettings (props: {
                   apModel={selectedModelCaps.model}
                   dispatch={dispatch}
                 />
-              }
-            </>)
+          }
+        </>}
+        {isEthernetClientIsolationEnabled &&
+          <ClientIsolationSettingsFields
+            index={index}
+            onGUIChanged={onGUIChanged}
+            readOnly={readOnly}
+          />
         }
       </>) :
       (<>
