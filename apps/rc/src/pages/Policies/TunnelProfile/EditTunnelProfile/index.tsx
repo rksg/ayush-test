@@ -92,6 +92,9 @@ const EditTunnelProfile = () => {
   if (isDMZUsed)
     formInitValues.disabledFields.push('mtuType')
 
+  if (pinId || isDMZUsed)
+    formInitValues.disabledFields.push('natTraversalEnabled')
+
   return (
     <Loader states={[{
       isLoading: isFetching || isSdLanP1Fetching || isSdLanHaFetching || isPinFetching

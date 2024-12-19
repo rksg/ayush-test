@@ -4,6 +4,7 @@ import {
   Input,
   InputNumber,
   Radio,
+  RadioChangeEvent,
   Row,
   Select,
   Space,
@@ -75,6 +76,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeVxLanTunnelKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeNatTraversalP1Ready = useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
   const ageTimeUnit = useWatch<AgeTimeUnit>('ageTimeUnit')
   const mtuRequestTimeoutUnit = useWatch<MtuRequestTimeoutUnit>('mtuRequestTimeoutUnit')
   const mtuType = useWatch('mtuType')
@@ -98,6 +100,12 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
 
   const handelMtuRequestTimeUnitChange = () => {
     form.validateFields(['mtuRequestTimeout'])
+  }
+
+  const handleNetworkSegmentTypeChange = (e: RadioChangeEvent) => {
+    if (isEdgeNatTraversalP1Ready && e.target.value === TunnelTypeEnum.VXLAN) {
+      form.setFieldsValue({ natTraversalEnabled: false })
+    }
   }
 
   return (
@@ -135,7 +143,9 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
             tooltip={$t(MessageMapping.tunnel_type_tooltip)}
             children={
               <Radio.Group disabled={isDefaultTunnelProfile
-                    || !!disabledFields?.includes('type')}>
+                    || !!disabledFields?.includes('type')}
+              onChange={handleNetworkSegmentTypeChange}
+              >
                 <Space direction='vertical'>
                   <Radio value={TunnelTypeEnum.VLAN_VXLAN}>
                     {$t({ defaultMessage: 'VLAN to VNI map' })}
@@ -149,6 +159,35 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
               </Radio.Group>
             }
           />
+        </Col>
+      }
+      { isEdgeNatTraversalP1Ready &&
+        <Col span={14}>
+          <UI.StyledSpace align='center'>
+            <UI.FormItemWrapper>
+              <Form.Item
+                label={$t({ defaultMessage: 'Enable NAT-T Support' })}
+                tooltip={$t(MessageMapping.nat_traversal_support_tooltip)}
+              />
+            </UI.FormItemWrapper>
+            <Form.Item
+              noStyle
+              dependencies={['type']}
+            >
+              {({ getFieldValue }) => {
+                const netSegType = getFieldValue('type')
+                return <Form.Item
+                  name='natTraversalEnabled'
+                  valuePropName='checked'
+                  children={
+                    <Switch disabled={isDefaultTunnelProfile ||
+                      !!disabledFields?.includes('natTraversalEnabled') ||
+                      netSegType === TunnelTypeEnum.VXLAN}/>
+                  }
+                />
+              }}
+            </Form.Item>
+          </UI.StyledSpace>
         </Col>
       }
       <Col span={24}>

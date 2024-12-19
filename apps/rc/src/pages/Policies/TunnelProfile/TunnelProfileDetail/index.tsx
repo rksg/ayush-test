@@ -7,12 +7,12 @@ import { useIsEdgeFeatureReady }                         from '@acx-ui/rc/compon
 import { useGetTunnelProfileViewDataListQuery }          from '@acx-ui/rc/services'
 import {
   filterByAccessForServicePolicyMutation,
+  isDefaultTunnelProfile as getIsDefaultTunnelProfile,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   getScopeKeyByPolicy,
   getTunnelTypeString,
-  isDefaultTunnelProfile as getIsDefaultTunnelProfile,
   mtuRequestTimeoutUnitConversion,
   MtuTypeEnum,
   PolicyOperation,
@@ -31,6 +31,7 @@ const TunnelProfileDetail = () => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeVxLanKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
+  const isEdgeNatTraversalP1Ready = useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
   const { $t } = useIntl()
   const params = useParams()
   const tablePath = getPolicyRoutePath({
@@ -65,6 +66,13 @@ const TunnelProfileDetail = () => {
           isEdgeVxLanKaReady)
       }
     }] : []),
+    ...(isEdgeNatTraversalP1Ready ? [
+      {
+        title: $t({ defaultMessage: 'NAT-T Support' }),
+        content: tunnelProfileData.natTraversalEnabled ?
+          $t({ defaultMessage: 'ON' }) :
+          $t({ defaultMessage: 'OFF' })
+      }] : []),
     {
       title: $t({ defaultMessage: 'Gateway Path MTU Mode' }),
       content: MtuTypeEnum.AUTO === tunnelProfileData.mtuType ?
