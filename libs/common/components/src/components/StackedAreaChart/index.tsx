@@ -150,7 +150,7 @@ export function StackedAreaChart <
     },
     xAxis: {
       ...xAxisOptions(),
-      type: 'time',
+      type: 'time', // 'category'
       axisLabel: {
         ...axisLabelOptions(),
         formatter: dateAxisFormatter()

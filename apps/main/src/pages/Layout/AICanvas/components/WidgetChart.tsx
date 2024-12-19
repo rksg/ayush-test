@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect } from 'react'
 
 import { CallbackDataParams } from 'echarts/types/dist/shared'
@@ -10,7 +11,7 @@ import { v4 as uuidv4 }       from 'uuid'
 import { BarChartData }                                                                   from '@acx-ui/analytics/utils'
 import { BarChart, Card, cssNumber, cssStr, DonutChart, Loader, StackedAreaChart, Table } from '@acx-ui/components'
 import { useChatChartQuery }                                                              from '@acx-ui/rc/services'
-import { WidgetListData }                                                                 from '@acx-ui/rc/utils'
+import { WidgetData, WidgetListData }                                                     from '@acx-ui/rc/utils'
 
 import { ItemTypes } from './GroupItem'
 
@@ -46,8 +47,8 @@ const ChartConfig:{ [key:string]: WidgetCategory } = {
     ]
   },
   line: {
-    width: 2,
-    height: 4
+    width: 4,
+    height: 10
   },
   bar: {
     width: 2,
@@ -97,6 +98,7 @@ export const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
 }
 
 export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
+  console.log(data)
   const { $t } = useIntl()
   const queryResults = useChatChartQuery({
     params: {
@@ -121,34 +123,34 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
   })
 
 
-  const getChart = (type: string, width:number, height:number) => {
+  const getChart = (type: string, width:number, height:number, chartData:WidgetData) => {
     if(type === 'pie') {
       return <DonutChart
         style={{ width, height }}
         size={'medium'}
-        data={queryResults.data?.chartOption || []}
+        data={chartData?.chartOption || []}
         animation={true}
         showTotal
       />
     } else if(type === 'line') {
       return <StackedAreaChart
         style={{ width, height }}
-        data={queryResults.data?.chartOption || []}
+        data={chartData?.chartOption || []}
       />
     } else if(type === 'bar') {
       return <BarChart
         style={{ width: '100%', height: '100%' }}
-        data={(queryResults.data?.chartOption || []) as BarChartData}
-        barWidth={queryResults.data?.multiseries ? 8 : undefined}
-        labelFormatter={labelFormatter}
-        labelRichStyle={queryResults.data?.multiseries ? richStyle() : undefined}
+        data={(chartData?.chartOption || []) as BarChartData}
+        barWidth={chartData?.multiseries ? 8 : undefined}
+        // labelFormatter={labelFormatter}
+        // labelRichStyle={chartData?.multiseries ? richStyle() : undefined}
       />
     } else if(type === 'table') {
       return <Table
-        columns={queryResults.data?.chartOption?.columns || []}
-        dataSource={queryResults.data?.chartOption?.dataSource}
+        columns={chartData?.chartOption?.columns || []}
+        dataSource={chartData?.chartOption?.dataSource}
         type='compact'
-        rowKey={queryResults.data?.chartOption?.columns?.[0]?.key || 'id'}
+        rowKey={chartData?.chartOption?.columns?.[0]?.key || 'id'}
       />
     }
     return
@@ -156,17 +158,44 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
   // const queryResults = {
   //   data: {
   //     chartOption: [
-  //       { name: 'Requires Attention',value: 1 },
-  //       { name: 'In Setup Phase',value: 64 },
-  //       { name: 'Operational',value: 1 }
-  //     ]
+  //       {
+  //           "key": "switchId_Total Uplink Traffic (Bytes)",
+  //           "name": "Total Uplink Traffic (Bytes)",
+  //           "data": [
+  //               [
+  //                   "D4:C1:9E:15:E9:21",
+  //                   278871529
+  //               ],
+  //               [
+  //                   "58:FB:96:0E:81:B2",
+  //                   46174041
+  //               ]
+  //           ]
+  //       },
+  //       {
+  //           "key": "switchId_Total Downlink Traffic (Bytes)",
+  //           "name": "Total Downlink Traffic (Bytes)",
+  //           "data": [
+  //               [
+  //                   "D4:C1:9E:15:E9:21",
+  //                   12376117
+  //               ],
+  //               [
+  //                   "58:FB:96:0E:81:B2",
+  //                   6073197
+  //               ]
+  //           ]
+  //       }
+  //   ]
   //   }
   // }
+  const chartData = data // data.type === 'card' ? queryResults.data : data
+  console.log('chartData: ', chartData)
   return (
     <Loader states={[{ isLoading: queryResults.isLoading }]}>
       <Card key={data.id} title={data.title || $t({ defaultMessage: 'Title' })}>
         <AutoSizer>
-          {({ height, width }) => getChart(data.chartType, width, height)}
+          {({ height, width }) => getChart(data.chartType, width, height, chartData)}
         </AutoSizer>
       </Card>
     </Loader>

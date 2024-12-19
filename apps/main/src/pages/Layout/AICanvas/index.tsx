@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useEffect, useRef, useState } from 'react'
 
 import { Spin }         from 'antd'
@@ -8,10 +9,9 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { Button, Drawer, DrawerTypes }                                              from '@acx-ui/components'
 import { CloseSymbol, RuckusAiDog, SendMessageOutlined, HistoricalOutlined, Plus  } from '@acx-ui/icons'
-// import { HistoricalOutlined, Plus  } from '@acx-ui/icons-new'
-import { useChatAiMutation }          from '@acx-ui/rc/services'
-import { ChatMessage }                from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { useChatAiMutation, useLazyGetChatQuery }                                   from '@acx-ui/rc/services'
+import { ChatMessage }                                                              from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                               from '@acx-ui/react-router-dom'
 
 import Canvas             from './Canvas'
 import { DraggableChart } from './components/WidgetChart'
@@ -22,9 +22,10 @@ export default function AICanvas () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const [chatAi] = useChatAiMutation()
+  const [getChat] = useLazyGetChatQuery()
   const [loading, setLoading] = useState(false)
   const [historyVisible, setHistoryVisible] = useState(false)
-  const [sessionId, setSessionId] = useState('')
+  const [sessionId, setSessionId] = useState('134657a9-6357-4b58-81a9-c1005556ab4d')
   const [chats, setChats] = useState([] as ChatMessage[])
 
   const [ searchText, setSearchText ] = useState('')
@@ -39,6 +40,17 @@ export default function AICanvas () {
       scroll.current.scrollTo({ top: scroll.current.scrollHeight })
     }, 100)
   }, [chats])
+
+  const getChats = async ()=>{
+    const response = await getChat({ params: { sessionId } }).unwrap()
+    setChats(response.messages)
+  }
+
+  useEffect(() => {
+    if(sessionId) {
+      getChats()
+    }
+  }, [sessionId])
 
   const onKeyDown = (event: React.KeyboardEvent) => {
     if(event.key === 'Enter'){
@@ -102,8 +114,8 @@ export default function AICanvas () {
           {chat.text}
         </div>
       </div>
-      { chat.role === 'AI' && chat.widgets?.length && <DraggableChart data={{
-        ...chat.widgets[0],
+      { chat.role === 'AI' && chat.widgets && <DraggableChart data={{
+        ...(chat.widgets[0] ? chat.widgets[0] : chat.widgets),
         sessionId,
         id: chat.id,
         chatId: chat.id

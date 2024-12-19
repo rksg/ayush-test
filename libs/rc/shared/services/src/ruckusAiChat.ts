@@ -9,6 +9,14 @@ import { createHttpRequest }   from '@acx-ui/utils'
 
 export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
   endpoints: (build) => ({
+    getChat: build.query<RuckusAiChat, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.getChat, params)
+        return {
+          ...req
+        }
+      }
+    }),
     chatAi: build.mutation<RuckusAiChat, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(RuckusAiChatUrlInfo.chats)
@@ -30,6 +38,8 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
 })
 
 export const {
+  useGetChatQuery,
+  useLazyGetChatQuery,
   useChatAiMutation,
   useChatChartQuery
 } = ruckusAiChatApi
