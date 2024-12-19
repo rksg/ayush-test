@@ -12,7 +12,8 @@ import {
   Tooltip,
   Button
 } from '@acx-ui/components'
-import { formatter }  from '@acx-ui/formatter'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { formatter }              from '@acx-ui/formatter'
 import {
   useAlarmsListQuery,
   useClearAlarmMutation,
@@ -76,6 +77,7 @@ export function AlarmsDrawer (props: AlarmsType) {
   const params = useParams()
   const { $t } = useIntl()
   const { visible, setVisible } = props
+  const isFilterProductToggleEnabled = useIsSplitOn(Features.ALARM_WITH_PRODUCT_FILTER_TOGGLE)
 
   window.addEventListener('showAlarmDrawer',(function (e:CustomEvent){
     setVisible(true)
@@ -95,6 +97,7 @@ export function AlarmsDrawer (props: AlarmsType) {
   }) as EventListener)
 
   const [severity, setSeverity] = useState('all')
+  const [productType, setProductType] = useState('all')
   const [venueId, setVenueId] = useState('')
   const [serialNumber, setSerialNumber] = useState('')
 
@@ -145,6 +148,9 @@ export function AlarmsDrawer (props: AlarmsType) {
   useEffect(()=>{
     const { payload, pagination: paginationValue } = tableQuery
     let filters = severity === 'all' ? {} : { severity: [severity] }
+    if (isFilterProductToggleEnabled && productType !== 'all') {
+      filters = { ...filters, ...{ product: [productType] } }
+    }
     tableQuery.setPayload({
       ...payload,
       filters
@@ -184,7 +190,7 @@ export function AlarmsDrawer (props: AlarmsType) {
         tableQuery?.handleTableChange?.(pagination, {}, sorter, extra)
       }
     }
-  }, [tableQuery.data, severity, serialNumber, venueId])
+  }, [tableQuery.data, severity, serialNumber, venueId, productType])
 
   const getIconBySeverity = (severity: EventSeverityEnum)=>{
 
@@ -251,6 +257,26 @@ export function AlarmsDrawer (props: AlarmsType) {
           { $t({ defaultMessage: 'Major' }) }
         </Select.Option>
       </Select>
+      {isFilterProductToggleEnabled && <Select value={productType}
+        size='small'
+        onChange={(val)=>{
+          setProductType(val)
+        }}
+        dropdownMatchSelectWidth={false}>
+        <Select.Option value={'all'}>
+          { $t({ defaultMessage: 'Products' }) }
+        </Select.Option>
+        <Select.Option value={'WIFI'}>
+          { $t({ defaultMessage: 'Wi-Fi' }) }
+        </Select.Option>
+        <Select.Option value={'SWITCH'}>
+          { $t({ defaultMessage: 'Switch' }) }
+        </Select.Option>
+        <Select.Option value={'EDGE'}>
+          { $t({ defaultMessage: 'RUCKUS Edge' }) }
+        </Select.Option>
+      </Select>}
+
       <Button type='link'
         disabled={!hasPermission || tableQuery.data?.totalCount === 0}
         size='small'
@@ -374,7 +400,7 @@ export function AlarmsDrawer (props: AlarmsType) {
   </>
 
   return <UI.Drawer
-    width={400}
+    width={isFilterProductToggleEnabled ? 415 : 400}
     title={$t({ defaultMessage: 'Alarms' })}
     visible={visible}
     onClose={() => {
