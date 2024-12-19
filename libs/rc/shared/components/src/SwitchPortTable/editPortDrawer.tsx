@@ -669,8 +669,10 @@ export function EditPortDrawer ({
         return (isMultipleEdit && !portSpeedCheckbox) || disablePortSpeed || hasBreakoutPort
       case 'ingressAcl': return (isMultipleEdit && !ingressAclCheckbox) || ipsg
       case 'cyclePoe': return disableCyclePoeCapability || !cyclePoeEnable
-      case 'ipsg': return getFlexAuthEnabled(aggregatePortsData, isMultipleEdit,
-        flexibleAuthenticationEnabled, flexibleAuthenticationEnabledCheckbox)
+      case 'ipsg':
+        return (isMultipleEdit && !checkboxEnabled)
+        || getFlexAuthEnabled(aggregatePortsData, isMultipleEdit,
+          flexibleAuthenticationEnabled, flexibleAuthenticationEnabledCheckbox)
       // Flex auth
       case 'flexibleAuthenticationEnabled':
         return (isMultipleEdit && !checkboxEnabled)
@@ -720,6 +722,8 @@ export function EditPortDrawer ({
         return disablePoeCapability || !poeEnable
       case 'voiceVlan': return vlansOptions?.length === 1
       case 'portSpeed': return !portSpeedOptions.length || disablePortSpeed || hasBreakoutPort
+      case 'ipsg':
+        return !isNotOverrideAuthEnabled && flexibleAuthenticationEnabled
       case 'flexibleAuthenticationEnabled':
         return !!getFlexAuthButtonStatus(commonRequiredProps)
       case 'authenticationProfileId':
@@ -1038,11 +1042,14 @@ export function EditPortDrawer ({
       } else if (changedField === 'ipsg') {
         changedValue && form.setFieldValue('ingressAcl', '')
       } else if (changedField === 'ipsgCheckbox') {
-        if (!changedValue && hasMultipleValue.includes('ipsg')) {
+        const ipsgValues = getUnionValuesByKey('ipsg', aggregatePortsData)
+        const ipsgEnabled = ipsgValues?.length === 1 && ipsgValues[0]
+        if (!changedValue && (hasMultipleValue.includes('ipsg') || ipsgEnabled)) {
           const resetFieldValues = {
             ...form.getFieldsValue(),
             flexibleAuthenticationEnabled: false,
-            flexibleAuthenticationEnabledCheckbox: false
+            flexibleAuthenticationEnabledCheckbox: false,
+            ...( ipsgEnabled ? { ipsg: true } : {})
           }
           form.setFieldsValue(resetFieldValues)
         }

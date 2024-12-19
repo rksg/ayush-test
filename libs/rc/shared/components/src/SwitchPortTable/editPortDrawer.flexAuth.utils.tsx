@@ -49,6 +49,7 @@ export interface AggregatePortSettings {
   criticalVlan: Record<string, number[]>
   dot1xPortControl: Record<string, string[]>
   shouldAlertAaaAndRadiusNotApply: boolean
+  ipsg: Record<string, boolean[]>
 }
 
 export const aggregatePortSettings = (
@@ -71,10 +72,11 @@ export const aggregatePortSettings = (
     restrictedVlan: {},
     criticalVlan: {},
     dot1xPortControl: {},
-    shouldAlertAaaAndRadiusNotApply: false
+    shouldAlertAaaAndRadiusNotApply: false,
+    ipsg: {}
   }
 
-  const updateResult = <T extends string | number | Number>(
+  const updateResult = <T extends string | number | Number | boolean>(
     result: Record<string | number, T[]>,
     index: string,
     value: T | T[],
@@ -90,11 +92,12 @@ export const aggregatePortSettings = (
     switchMac, port, taggedVlans = [], untaggedVlan = '',
     switchLevelAuthDefaultVlan, guestVlan, authDefaultVlan, restrictedVlan, criticalVlan,
     profileAuthDefaultVlan, authenticationProfileId,
-    dot1xPortControl, enableAuthPorts, shouldAlertAaaAndRadiusNotApply
+    dot1xPortControl, enableAuthPorts, shouldAlertAaaAndRadiusNotApply, ipsg = false
   }) => {
     const index = switchMac as string
     result.taggedVlans[index] = updateResult(result.taggedVlans, index, taggedVlans)
     result.untaggedVlan[index] = updateResult(result.untaggedVlan, index, untaggedVlan as string)
+    result.ipsg[index] = updateResult(result.ipsg, index, ipsg)
 
     if (authDefaultVlan)
       result.authDefaultVlan[index] = updateResult(result.authDefaultVlan, index, authDefaultVlan, false)
@@ -270,7 +273,9 @@ export const getFlexAuthButtonStatus = (props: {
   const switchIds = Object.keys(aggregateUntaggedVlan ?? {})
   const isUntaggedPort = switchIds.some(id => checkUntaggedPortMismatch(id))
   const isEitherPortEnabledIPSG
-    = (ipsgCheckbox || !isMultipleEdit) ? form.getFieldValue('ipsg') : hasMultipleValue.includes('ipsg')
+    = (ipsgCheckbox || !isMultipleEdit || (isMultipleEdit && !hasMultipleValue.includes('ipsg')))
+      ? form.getFieldValue('ipsg')
+      : hasMultipleValue.includes('ipsg')
 
   if (!isFirmwareAbove10010f) {
     return 'ONLY_SUPPORT_FW_ABOVE_10010F'
