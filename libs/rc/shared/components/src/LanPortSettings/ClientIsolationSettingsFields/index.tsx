@@ -83,7 +83,7 @@ const ClientIsolationSettingsFields = (props: ClientIsplationSettingFieldsProps)
         />
         <Form.Item
           name={['lan', index, 'clientIsolationSettings', 'packetsType']}
-          label={$t({ defaultMessage: 'Port Type' })}
+          label={$t({ defaultMessage: 'Isolate Packets' })}
           initialValue={IsolatePacketsTypeEnum.UNICAST}
           children={
             <Select
@@ -113,7 +113,7 @@ const ClientIsolationSettingsFields = (props: ClientIsplationSettingFieldsProps)
               <Select
                 style={{ width: '260px' }}
                 options={[
-                  { label: $t({ defaultMessage: 'Not active...' }), value: null, title: null },
+                  { label: $t({ defaultMessage: 'Not active' }), value: null, title: null },
                   ...clientIsolationAllowListOptions
                 ]}
                 onChange={(value) => {
@@ -132,7 +132,7 @@ const ClientIsolationSettingsFields = (props: ClientIsplationSettingFieldsProps)
               onClick={()=>setDetailVisible(true)}
               disabled={!clientIsolationProfileId}
             >
-              {$t({ defaultMessage: 'Profile Details' })}
+              {$t({ defaultMessage: 'Policy Details' })}
             </Button>
             <Button
               type='link'

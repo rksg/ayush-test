@@ -63,6 +63,7 @@ const ClientIsolationAllowListDetailsDrawer = (props: ClientIsolationAllowListDe
         )}
       />
       <Table<ClientIsolationClient>
+        rowKey='mac'
         columns={columns}
         dataSource={clientIsolationData?.allowlist}
       />
