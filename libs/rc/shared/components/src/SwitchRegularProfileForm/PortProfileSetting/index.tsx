@@ -152,7 +152,11 @@ export function PortProfileSetting () {
 
     const concatModels = {
       ...data,
-      models: [...new Set([...data.models, ...filteredWithProfileId[0].models])]
+      models: [...new Set([
+        ...data.models,
+        ...(filteredWithProfileId.length === 1 ?
+          filteredWithProfileId[0].models : [])
+      ])]
     }
     const portProfileAPIData = [
       ...result.map(item=>portProfilesAPIParser(item)),
