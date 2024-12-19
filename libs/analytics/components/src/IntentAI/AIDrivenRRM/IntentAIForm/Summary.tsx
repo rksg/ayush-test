@@ -2,24 +2,17 @@
 import { Row, Col, Form } from 'antd'
 import { useIntl }        from 'react-intl'
 
-import { Loader, StepsForm } from '@acx-ui/components'
+import { StepsForm } from '@acx-ui/components'
 
-import { KpiField }             from '../../common/KpiField'
-import { ScheduleTiming }       from '../../common/ScheduleTiming'
-import { useIntentContext }     from '../../IntentContext'
-import { getGraphKPIs }         from '../../useIntentDetailsQuery'
-import { IntentAIRRMGraph }     from '../RRMGraph'
-import { useIntentAICRRMQuery } from '../RRMGraph/services'
+import { KpiField }         from '../../common/KpiField'
+import { ScheduleTiming }   from '../../common/ScheduleTiming'
+import { useIntentContext } from '../../IntentContext'
+import { getGraphKPIs }     from '../../useIntentDetailsQuery'
+import { IntentAIRRMGraph } from '../RRMGraph'
 
 import * as SideNotes from './SideNotes'
 
-export function Summary (
-  { summaryUrlBefore, summaryUrlAfter, queryResult } :
-  {
-    summaryUrlBefore?: string,
-    summaryUrlAfter?: string,
-    queryResult: ReturnType<typeof useIntentAICRRMQuery>
-  }) {
+export function Summary () {
   const { $t } = useIntl()
   const { intent, kpis } = useIntentContext()
 
@@ -27,13 +20,7 @@ export function Summary (
     <Col span={16}>
       <StepsForm.Title children={$t({ defaultMessage: 'Summary' })} />
       <Form.Item label={$t({ defaultMessage: 'Projected interfering links reduction' })}>
-        <Loader states={[queryResult]}>
-          <IntentAIRRMGraph
-            crrmData={queryResult.data}
-            summaryUrlBefore={summaryUrlBefore}
-            summaryUrlAfter={summaryUrlAfter}
-          />
-        </Loader>
+        <IntentAIRRMGraph/>
       </Form.Item>
       {getGraphKPIs(intent, kpis).map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
       <ScheduleTiming.FieldSummary />

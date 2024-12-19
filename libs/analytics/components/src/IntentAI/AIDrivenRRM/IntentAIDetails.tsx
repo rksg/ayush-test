@@ -1,11 +1,9 @@
 /* eslint-disable max-len */
-import { useState } from 'react'
-
 import { Typography }                               from 'antd'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { Card, GridCol, GridRow, Loader } from '@acx-ui/components'
-import { getIntl }                        from '@acx-ui/utils'
+import { Card, GridCol, GridRow } from '@acx-ui/components'
+import { getIntl }                from '@acx-ui/utils'
 
 import { DescriptionSection }       from '../../DescriptionSection'
 import { FixedAutoSizer }           from '../../DescriptionSection/styledComponents'
@@ -21,9 +19,8 @@ import { useIntentContext }         from '../IntentContext'
 import { getStatusTooltip }         from '../services'
 import { getGraphKPIs, getKPIData } from '../useIntentDetailsQuery'
 
-import { IntentAIRRMGraph, SummaryGraphAfter, SummaryGraphBefore } from './RRMGraph'
-import { DownloadRRMComparison }                                   from './RRMGraph/DownloadRRMComparison'
-import { useIntentAICRRMQuery }                                    from './RRMGraph/services'
+import { IntentAIRRMGraph }      from './RRMGraph'
+import { DownloadRRMComparison } from './RRMGraph/DownloadRRMComparison'
 
 export function createUseValuesText () {
   return function useValuesText () {
@@ -82,19 +79,10 @@ export function createIntentAIDetails () {
     const valuesText = useValuesText()
     const { displayStatus, sliceValue, metadata, updatedAt } = intent
 
-    const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
-    const [summaryUrlAfter, setSummaryUrlAfter] = useState<string>('')
-
-    const queryResult = useIntentAICRRMQuery()
-    const crrmData = queryResult.data!
     const fields = useCommonFields(intent)
     const noData = state === 'no-data'
 
     return <>
-      <div hidden>
-        <SummaryGraphBefore detailsPage crrmData={crrmData} setUrl={setSummaryUrlBefore} />
-        <SummaryGraphAfter detailsPage crrmData={crrmData} setUrl={setSummaryUrlAfter} />
-      </div>
       <IntentDetailsHeader />
       <GridRow>
         <GridCol col={{ span: 6, xxl: 4 }}>
@@ -130,13 +118,7 @@ export function createIntentAIDetails () {
               <DetailsSection.Title
                 children={$t({ defaultMessage: 'Key Performance Indications' })} />
               <DetailsSection.Details style={{ ...(hasData && { minHeight: 385 }) }}>
-                <Loader states={[queryResult]}>
-                  <IntentAIRRMGraph
-                    crrmData={crrmData}
-                    summaryUrlBefore={summaryUrlBefore}
-                    summaryUrlAfter={summaryUrlAfter}
-                  />
-                </Loader>
+                <IntentAIRRMGraph/>
               </DetailsSection.Details>
             </DetailsSection>
 

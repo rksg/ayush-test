@@ -12,7 +12,8 @@ import {
   Drawer,
   DrawerTypes,
   Graph as BasicGraph,
-  ProcessedCloudRRMGraph
+  ProcessedCloudRRMGraph,
+  Loader
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
@@ -20,8 +21,9 @@ import { useIntentContext }  from '../../IntentContext'
 import { IntentDetail }      from '../../useIntentDetailsQuery'
 import { dataRetentionText } from '../../utils'
 
-import { Legend } from './Legend'
-import * as UI    from './styledComponents'
+import { Legend }               from './Legend'
+import { useIntentAICRRMQuery } from './services'
+import * as UI                  from './styledComponents'
 
 const ImageGraph = ({ beforeSrc, afterSrc }: { beforeSrc?: string, afterSrc?: string }) => <>
   {beforeSrc && <img src={beforeSrc} alt='rrm-graph-before' width='100%' height='100%' />}
@@ -90,11 +92,7 @@ const GraphTitle = ({ details }: { details: IntentDetail }) => {
   </UI.GraphTitleWrapper>
 }
 
-export const IntentAIRRMGraph: React.FC<{
-  crrmData: ProcessedCloudRRMGraph[],
-  summaryUrlBefore?: string,
-  summaryUrlAfter?: string,
-}> = ({ crrmData, summaryUrlBefore, summaryUrlAfter }) => {
+export const IntentAIRRMGraph = () => {
   const { $t } = useIntl()
   const { intent, state, isDataRetained } = useIntentContext()
   const [ visible, setVisible ] = useState<boolean>(false)
@@ -104,6 +102,11 @@ export const IntentAIRRMGraph: React.FC<{
   const closeDrawer = () => setVisible(false)
   useEffect(() => setKey(Math.random()), [visible]) // to reset graph zoom
 
+  const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
+  const [summaryUrlAfter, setSummaryUrlAfter] = useState<string>('')
+
+  const queryResult = useIntentAICRRMQuery()
+  const crrmData = queryResult.data!
   const title = $t({ defaultMessage: 'Key Performance Indications' })
   const noData = state === 'no-data'
 
@@ -115,36 +118,42 @@ export const IntentAIRRMGraph: React.FC<{
   }
 
   return <UI.Wrapper>
-    <Card>
-      <UI.GraphWrapper data-testid='graph-wrapper'
-        key={'graph-details'}
-      >
-        <ImageGraph
-          beforeSrc={summaryUrlBefore}
-          afterSrc={summaryUrlAfter}
-        />
-        <GraphTitle details={intent} />
-      </UI.GraphWrapper>
-    </Card>
-    <UI.ViewMoreButton
-      hidden={noData}
-      onClick={showDrawer}
-      children={$t({ defaultMessage: 'View More' })}
-    />
-    <Drawer
-      key={key}
-      drawerType={DrawerTypes.FullHeight}
-      width={'90vw'}
-      title={title}
-      visible={visible}
-      onClose={closeDrawer}
-      children={
-        <UI.GraphWrapper>
-          <DataGraph {...{ graphs: crrmData, zoomScale: drawerZoomScale }} />
+    <div hidden>
+      <SummaryGraphBefore detailsPage crrmData={crrmData} setUrl={setSummaryUrlBefore} />
+      <SummaryGraphAfter detailsPage crrmData={crrmData} setUrl={setSummaryUrlAfter} />
+    </div>
+    <Loader states={[queryResult]}>
+      <Card>
+        <UI.GraphWrapper data-testid='graph-wrapper'
+          key={'graph-details'}
+        >
+          <ImageGraph
+            beforeSrc={summaryUrlBefore}
+            afterSrc={summaryUrlAfter}
+          />
           <GraphTitle details={intent} />
         </UI.GraphWrapper>
-      }
-    />
+      </Card>
+      <UI.ViewMoreButton
+        hidden={noData}
+        onClick={showDrawer}
+        children={$t({ defaultMessage: 'View More' })}
+      />
+      <Drawer
+        key={key}
+        drawerType={DrawerTypes.FullHeight}
+        width={'90vw'}
+        title={title}
+        visible={visible}
+        onClose={closeDrawer}
+        children={
+          <UI.GraphWrapper>
+            <DataGraph {...{ graphs: crrmData, zoomScale: drawerZoomScale }} />
+            <GraphTitle details={intent} />
+          </UI.GraphWrapper>
+        }
+      />
+    </Loader>
   </UI.Wrapper>
 }
 
