@@ -264,6 +264,8 @@ jest.mock('./pages/Services/EdgeSdLan/index', () => ({
   EdgeSdLanTable: () => <div data-testid='EdgeSdLanTable' />,
   EdgeSdLanDetail: () => <div data-testid='EdgeSdLanDetail' />
 }))
+
+// Edge PIN service
 jest.mock('./pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetail', () => () => {
   return <div data-testid='PersonalIdentityNetworkDetail' />
 })
@@ -278,6 +280,20 @@ jest.mock('./pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTable
 })
 jest.mock('./pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetailEnhanced', () => () => {
   return <div data-testid='PersonalIdentityNetworkDetailEnhanced' />
+})
+
+// Edge mDNS Proxy service
+jest.mock('./pages/Services/MdnsProxy/Edge/AddEdgeMdnsProxy', () => () => {
+  return <div data-testid='AddEdgeMdnsProxy' />
+})
+jest.mock('./pages/Services/MdnsProxy/Edge/EdgeMdnsProxyDetails', () => () => {
+  return <div data-testid='EdgeMdnsProxyDetails' />
+})
+jest.mock('./pages/Services/MdnsProxy/Edge/EdgeMdnsProxyTable', () => () => {
+  return <div data-testid='EdgeMdnsProxyTable' />
+})
+jest.mock('./pages/Services/MdnsProxy/Edge/EditEdgeMdnsProxy', () => () => {
+  return <div data-testid='EditEdgeMdnsProxy' />
 })
 
 describe('RcRoutes: Devices', () => {
@@ -657,6 +673,46 @@ describe('RcRoutes: Devices', () => {
       test('should navigate to Edge SD-LAN detail page', async () => {
         render(<Provider><RcRoutes /></Provider>, getRouteData(detailPagePath))
         expect(screen.getByTestId('EdgeSdLanDetail')).toBeVisible()
+      })
+
+    })
+
+    describe('RcRoutes: Services > Edge PIN service', () => {
+      const addFormPath = getServiceRoutePath({ type: ServiceType.PIN, oper: ServiceOperation.CREATE })
+      const editFormPath = getServiceDetailsLink({ type: ServiceType.PIN, oper: ServiceOperation.EDIT, serviceId: 'SERVICE_ID' })
+      const listPagePath = getServiceRoutePath({ type: ServiceType.PIN, oper: ServiceOperation.LIST })
+      const detailPagePath = getServiceDetailsLink({ type: ServiceType.PIN, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
+
+      beforeEach(() => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_PIN_HA_TOGGLE)
+      })
+      afterEach(() => {
+        jest.mocked(useIsSplitOn).mockReset()
+      })
+
+      const getRouteData = (tailPath: string) => ({
+        route: {
+          path: '/tenantId/t/' + tailPath,
+          wrapRoutes: false
+        }
+      })
+
+      test('should navigate to create Edge PIN page', async () => {
+        render(<Provider><RcRoutes /></Provider>, getRouteData(addFormPath))
+        expect(screen.getByTestId('AddPersonalIdentityNetwork')).toBeVisible()
+      })
+
+      test('should navigate to edit Edge PIN page', async () => {
+        render(<Provider><RcRoutes /></Provider>, getRouteData(editFormPath))
+        expect(screen.getByTestId('EditPersonalIdentityNetwork')).toBeVisible()
+      })
+      test('should navigate to Edge PIN list page', async () => {
+        render(<Provider><RcRoutes /></Provider>, getRouteData(listPagePath))
+        expect(screen.getByTestId('PersonalIdentityNetworkTable')).toBeVisible()
+      })
+      test('should navigate to Edge PIN detail page', async () => {
+        render(<Provider><RcRoutes /></Provider>, getRouteData(detailPagePath))
+        expect(screen.getByTestId('PersonalIdentityNetworkDetail')).toBeVisible()
       })
 
     })
