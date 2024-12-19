@@ -627,7 +627,8 @@ const parsingApFromNewType = (rbacAp: Record<string, unknown>, result: APExtende
                   Rssi: item.rssi,
                   band: item.band,
                   channel: item.channel,
-                  txPower: item.transmitterPower
+                  txPower: item.transmitterPower,
+                  actualTxPower: item.actualTxPower
                 }
               default:
                 return undefined
