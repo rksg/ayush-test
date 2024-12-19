@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
-import { EdgeUrlsInfo }                                    from '@acx-ui/rc/utils'
-import { Provider }                                        from '@acx-ui/store'
-import { mockServer, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { EdgeUrlsInfo }                                           from '@acx-ui/rc/utils'
+import { Provider }                                               from '@acx-ui/store'
+import { mockServer, renderHook, screen, waitFor, within }        from '@acx-ui/test-utils'
 
 import { mockedEdges } from './__tests__/fixtures'
 
