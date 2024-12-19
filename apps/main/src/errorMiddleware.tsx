@@ -123,6 +123,10 @@ export const getErrorContent = (action: ErrorAction) => {
       errorMsg = errorMessage.REQUEST_IN_PROGRESS
       errors = ''
       break
+    case 429:
+      errorMsg = errorMessage.TOO_MANY_REQUESTS
+      errors = ''
+      break
     case 504: // no connection [development mode]
     case 0:   // no connection
     case 'FETCH_ERROR' as unknown as number: // no connection

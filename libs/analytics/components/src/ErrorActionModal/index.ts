@@ -55,8 +55,8 @@ export function showExpiredSessionModal () {
   )
 }
 
-export function showErrorModal (errorMessage: ErrorMessageType, action: AnyAction): void {
-  showModal('error', errorMessage, undefined, getErrorContent(action))
+export function showErrorModal (errorMessage: ErrorMessageType, action?: AnyAction): void {
+  showModal('error', errorMessage, undefined, action && getErrorContent(action))
 }
 
 export function getErrorContent (action: AnyAction) : ErrorDetailsProps {

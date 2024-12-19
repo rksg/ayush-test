@@ -32,7 +32,7 @@ describe('errorMiddleware', () => {
     [422, errorMessage.VALIDATION_ERROR],
     [423, errorMessage.REQUEST_IN_PROGRESS],
     [500, errorMessage.SERVER_ERROR]
-  ])('should call showErrorModal with correct error message for status code %i',
+  ])('should call showErrorModal with correct error message and error content for status code %i',
     (statusCode, expectedErrorMessage) => {
       const action = {
         meta: {
@@ -43,6 +43,21 @@ describe('errorMiddleware', () => {
       errorMiddlewareInstance(next)(action)
       expect(showErrorModal).toHaveBeenCalledTimes(1)
       expect(showErrorModal).toHaveBeenCalledWith(expectedErrorMessage, action)
+    })
+
+  it.each([
+    [429, errorMessage.TOO_MANY_REQUESTS]
+  ])('should call showErrorModal only with correct error message for status code %i',
+    (statusCode, expectedErrorMessage) => {
+      const action = {
+        meta: {
+          ...rejectedWithValueAction.meta,
+          baseQueryMeta: { response: { status: statusCode } }
+        }
+      } as any
+      errorMiddlewareInstance(next)(action)
+      expect(showErrorModal).toHaveBeenCalledTimes(1)
+      expect(showErrorModal).toHaveBeenCalledWith(expectedErrorMessage)
     })
 
   it('should call showExpiredSessionModal for status code 401', () => {

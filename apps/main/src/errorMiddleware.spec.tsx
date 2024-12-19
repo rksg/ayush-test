@@ -78,6 +78,16 @@ describe('getErrorContent', () => {
       payload: { originalStatus: 423 }
     } as unknown as ErrorAction).title).toBe('Request in Progress')
   })
+  it('should handle 429', () => {
+    expect(getErrorContent({
+      meta: { baseQueryMeta: { response: { status: 429 } } },
+      payload: {}
+    } as unknown as ErrorAction).title).toBe('Too Many Requests')
+    expect(getErrorContent({
+      meta: {},
+      payload: { originalStatus: 429 }
+    } as unknown as ErrorAction).title).toBe('Too Many Requests')
+  })
   it('should handle 504', () => {
     expect(getErrorContent({
       meta: { baseQueryMeta: { response: { status: 504 } } },

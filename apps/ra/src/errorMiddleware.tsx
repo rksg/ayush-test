@@ -26,6 +26,9 @@ export const errorMiddleware: Middleware = () => (next: CallableFunction) =>
         case 423:
           showErrorModal(errorMessage.REQUEST_IN_PROGRESS, action)
           break
+        case 429:
+          showErrorModal(errorMessage.TOO_MANY_REQUESTS)
+          break
         default:
           showErrorModal(errorMessage.SERVER_ERROR, action)
       }

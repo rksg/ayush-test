@@ -61,6 +61,12 @@ export const errorMessage = {
       requests cannot be performed at this time.<br></br>Try again once the request has completed.`
     })
   },
+  TOO_MANY_REQUESTS: {
+    title: defineMessage({ defaultMessage: 'Too Many Requests' }),
+    content: defineMessage({
+      defaultMessage: 'Too many requests. Please try again later.'
+    })
+  },
   CHECK_YOUR_CONNECTION: get('IS_MLISA_SA') ? {
     title: defineMessage({ defaultMessage: 'Check Your Connection' }),
     content: defineMessage({
