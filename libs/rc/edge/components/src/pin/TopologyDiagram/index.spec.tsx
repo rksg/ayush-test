@@ -14,6 +14,20 @@ import TopologyDiagram from './'
 const mockPinData = EdgePinFixtures.mockPinData as unknown as PersonalIdentityNetworks
 
 describe('TopologyDiagram', () => {
+  it('should have loader when isLoading is true', () => {
+    const props = {
+      pinData: undefined,
+      apCount: 6,
+      identityCount: 6,
+      onClick: jest.fn(),
+      isLoading: true
+    }
+
+    render(<TopologyDiagram {...props} />)
+    screen.getByRole('img', { name: 'loader' })
+    expect(screen.getByTestId('diagram')).toBeInTheDocument()
+  })
+
   it('renders without errors', () => {
     const props = {
       pinData: mockPinData,

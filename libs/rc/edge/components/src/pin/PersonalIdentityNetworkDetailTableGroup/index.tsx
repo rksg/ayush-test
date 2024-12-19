@@ -26,10 +26,6 @@ export const PersonalIdentityNetworkDetailTableGroup = forwardRef((props: Person
   const { $t } = useIntl()
   const [currentTab, setCurrentTab] = useState<PinDetailTableGroupTabType>()
 
-  useImperativeHandle(ref, () => ({
-    setCurrentTab
-  }))
-
   const networkIds = pinData?.tunneledWlans?.map(t => t.networkId)
   const accessSwitchData = pinData?.accessSwitchInfos?.map(as => ({
     ...as,
@@ -68,6 +64,10 @@ export const PersonalIdentityNetworkDetailTableGroup = forwardRef((props: Person
       />
     }
   }
+
+  useImperativeHandle(ref, () => ({
+    setCurrentTab
+  }))
 
   const handleTabChange = (val: string) => {
     setCurrentTab(val as PinDetailTableGroupTabType)

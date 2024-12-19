@@ -76,14 +76,14 @@ export const DiagramDetailTableGroup = (props: DiagramDetailTableGroupProps) => 
       <Typography.Text strong>
         {$t({ defaultMessage: 'Network Topology' })}
       </Typography.Text>
-      <UI.TopologyContainer>
-        <TopologyDiagram
-          pinData={pinData}
-          apCount={apListTableQuery.data?.totalCount}
-          identityCount={personaListTableQuery.data?.totalCount}
-          onClick={handleDiagramOnClick}
-        />
-      </UI.TopologyContainer>
+      <TopologyDiagram
+        pinData={pinData}
+        apCount={apListTableQuery.data?.totalCount}
+        identityCount={personaListTableQuery.data?.totalCount}
+        onClick={handleDiagramOnClick}
+        // eslint-disable-next-line max-len
+        isLoading={isPinDataLoading || apListTableQuery.isLoading || personaListTableQuery.isLoading}
+      />
     </Card>
     <Card>
       <UI.InstancesMargin>

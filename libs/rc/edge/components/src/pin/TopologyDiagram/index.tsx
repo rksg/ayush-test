@@ -4,12 +4,14 @@ import * as d3     from 'd3'
 import { set }     from 'lodash'
 import { useIntl } from 'react-intl'
 
+import { Loader }                                           from '@acx-ui/components'
 import { PersonalIdentityNetworks, transformDisplayNumber } from '@acx-ui/rc/utils'
 
 import Diagram                        from '../../assets/images/personal-identity-diagrams/pin-edge-switch-ap-horizontal.svg'
 import { PinDetailTableGroupTabType } from '../type'
 
-import { diagramItemInfo } from './configs'
+import { diagramItemInfo }   from './configs'
+import { TopologyContainer } from './styledComponents'
 
 
 type TextType = d3.Selection<SVGTextElement, unknown, null, undefined> | null
@@ -34,10 +36,11 @@ export interface TopologyDiagramProps {
   apCount: number | undefined
   identityCount: number | undefined
   onClick: (type: PinDetailTableGroupTabType) => void
+  isLoading?: boolean
 }
 
 const TopologyDiagram = (props: TopologyDiagramProps) => {
-  const { pinData, apCount, identityCount, onClick } = props
+  const { pinData, apCount, identityCount, onClick, isLoading = false } = props
   const { $t } = useIntl()
 
   const graphRef = useRef<SVGSVGElement>(null)
@@ -151,7 +154,13 @@ const TopologyDiagram = (props: TopologyDiagramProps) => {
     )
   }, [identityCount])
 
-  return <svg ref={graphRef} width='100%' height='100%' overflow='visible' />
+  // cannot use props.isLoading as Loader state,
+  // because svg needs to be in document when initializing
+  return <Loader states={[ { isLoading: false, isFetching: isLoading } ]}>
+    <TopologyContainer>
+      <svg ref={graphRef} width='100%' height='100%' overflow='visible' />
+    </TopologyContainer>
+  </Loader>
 }
 
 export default TopologyDiagram
