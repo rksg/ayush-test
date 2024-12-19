@@ -184,7 +184,10 @@ export const getPortProfileOptions = (portProfilesList?: PortProfilesBySwitchId[
   const { $t } = getIntl()
   const options = Object.values(portProfilesList ?? {}).flat()?.map((
     item: PortProfilesBySwitchId) => ({
-    label: item.portProfileName, value: item.portProfileId, disabled: false
+    label: `${item.portProfileName}
+          ${item.configSource==='SWITCH_LEVEL' ? ' (Modified locally)' : ''}`,
+    value: item.portProfileId,
+    disabled: false
   }))
 
   return [

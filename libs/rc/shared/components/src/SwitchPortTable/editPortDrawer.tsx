@@ -421,11 +421,13 @@ export function EditPortDrawer ({
         enableRbac: isSwitchRbacEnabled
       }, true).unwrap()
 
-      const portProfileList = await getPortProfileOptionsList({
-        params: { tenantId, switchId, venueId: switchDetail?.venueId },
-        enableRbac: isSwitchRbacEnabled
-      }, true).unwrap()
-      setPortProfileOptions(getPortProfileOptions(portProfileList))
+      if(isSwitchPortProfileEnabled && isFirmwareAbove10020a) {
+        const portProfileList = await getPortProfileOptionsList({
+          params: { tenantId, switchId, venueId: switchDetail?.venueId },
+          enableRbac: isSwitchRbacEnabled
+        }, true).unwrap()
+        setPortProfileOptions(getPortProfileOptions(portProfileList))
+      }
 
       const vid = isVenueLevel ? venueId : switchDetail?.venueId
       const switchVlans = await getVlans()

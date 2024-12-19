@@ -1016,11 +1016,16 @@ export const LldpTlvMatchingTitle: Record<LldpTlvMatchingType, string> = {
   [LldpTlvMatchingType.INCLUDE]: 'Include'
 }
 
+export enum PortProfileConfigSourceType {
+  SWITCH_LEVEL = 'SWITCH_LEVEL',
+  PROFILE_LEVEL = 'PROFILE_LEVEL',
+  GLOBAL_LEVEL = 'GLOBAL_LEVEL'
+}
 
 export interface PortProfilesBySwitchId {
   portProfileId: string
   portProfileName: string
-  configSource: string
+  configSource: PortProfileConfigSourceType
   ports?: string[]
 }
 
