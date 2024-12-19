@@ -274,12 +274,12 @@ export function LanPortSettings (props: {
           currentEthernetPortData={currentEthernetPortData}
           currentIndex={index}
           onGUIChanged={onGUIChanged}
-          isEditable={!!serialNumber} />
+          isEditable={!readOnly && !!serialNumber} />
         {
           isEthernetPortProfileEnabled && isEthernetSoftgreEnabled &&
             (<>
               <SoftGRETunnelSettings
-                readonly={!isEthernetPortEnable}
+                readonly={!isEthernetPortEnable || (readOnly ?? false)}
                 index={index}
                 softGreProfileId={selectedPortCaps.softGreProfileId ?? ''}
                 softGreTunnelEnable={isSoftGreTunnelEnable}
@@ -287,7 +287,7 @@ export function LanPortSettings (props: {
               />
               {isSoftGreTunnelEnable &&
                 <DhcpOption82Settings
-                  readonly={false}
+                  readonly={readOnly ?? false}
                   index={index}
                   onGUIChanged={onGUIChanged}
                   isUnderAPNetworking={isUnderAPNetworking}
