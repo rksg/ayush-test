@@ -28,7 +28,7 @@ export default function SwitchPortProfileWidget (){
   const macOuiContent = () => {
     if(data?.macOuis){
       return (<Tooltip
-        title={data.macOuis?.map(item=> item.note).join('\n')}
+        title={data.macOuis?.map(item=> item.oui).join('\n')}
         dottedUnderline={true}
         placement='bottom'
       >
