@@ -3,8 +3,9 @@ import React, { createContext, useContext } from 'react'
 import _                     from 'lodash'
 import { MessageDescriptor } from 'react-intl'
 
-import { Loader }    from '@acx-ui/components'
-import { formatter } from '@acx-ui/formatter'
+import { Loader }                 from '@acx-ui/components'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { formatter }              from '@acx-ui/formatter'
 
 import {
   IntentDetail,
@@ -25,8 +26,8 @@ export type IIntentContext = {
   configuration?: IntentConfigurationConfig
   kpis: IntentKPIConfig[]
   state: ReturnType<typeof intentState>
-  isDataRetained: boolean
-  isHotTierData: boolean
+  isDataRetained?: boolean
+  isHotTierData?: boolean
 }
 
 export const IntentContext = createContext({} as IIntentContext)
@@ -43,6 +44,7 @@ export function createIntentContextProvider (
 ) {
   const Component: React.FC = function () {
     const params = useIntentParams()
+    const isConfigChangeEnabled = useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE)
 
     const spec = specs[params.code]
     const kpis = spec?.kpis
@@ -61,13 +63,16 @@ export function createIntentContextProvider (
       (_.pick(query.error, ['data']) as { data: IntentDetail }).data
       : query.data
 
+
     const context: IIntentContext = {
       intent: intent!,
       configuration: spec.configuration,
       kpis: spec.kpis,
       state: (intent && intentState(intent))!,
-      isDataRetained: intent?.dataCheck.isDataRetained!,
-      isHotTierData: intent?.dataCheck.isHotTierData!
+      ...(isConfigChangeEnabled ? {
+        isDataRetained: intent?.dataCheck.isDataRetained!,
+        isHotTierData: intent?.dataCheck.isHotTierData!
+      } : {})
     }
 
     return <Loader states={[isDetectError? _.omit(query, ['error']) : query]}>

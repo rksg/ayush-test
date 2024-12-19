@@ -1,10 +1,17 @@
 import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
+import { get } from '@acx-ui/config'
+
 import { IntentListItem, StatusTrail }            from '../config'
 import { DisplayStates, Statuses, StatusReasons } from '../states'
 
 type TransitionStatus = Pick<StatusTrail, 'status' | 'statusReason'>
+
+export const isDataRetained = (time?: string) => {
+  const retainDate = moment().startOf('day').subtract(get('DRUID_RETAIN_PERIOD_DAYS'), 'days')
+  return moment(time).isAfter(retainDate)
+}
 
 export const dataRetentionText = defineMessage({ defaultMessage: 'Beyond data retention period' })
 

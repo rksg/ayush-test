@@ -9,9 +9,9 @@ import { useParams }               from '@acx-ui/react-router-dom'
 import { intentAIApi }             from '@acx-ui/store'
 import { getIntl, noDataDisplay }  from '@acx-ui/utils'
 
-import { Intent }                              from './config'
-import { Statuses }                            from './states'
-import { coldTierDataText, dataRetentionText } from './utils'
+import { Intent }                                                                   from './config'
+import { Statuses }                                                                 from './states'
+import { coldTierDataText, dataRetentionText, isDataRetained as oldIsDataRetained } from './utils'
 
 export type IntentKPIConfig = {
   key: string;
@@ -106,11 +106,14 @@ export function getKPIData (intent: IntentDetail, config: IntentKPIConfig) {
 
 export function getGraphKPIs (
   intent: IntentDetail,
-  kpis: IntentKPIConfig[]
+  kpis: IntentKPIConfig[],
+  isConfigChangeEnabled: boolean
 ) {
   const { $t } = getIntl()
   const state = intentState(intent)
-  const { isHotTierData, isDataRetained } = intent.dataCheck
+  const isHotTierData = isConfigChangeEnabled ? intent.dataCheck.isHotTierData : true
+  const isDataRetained = isConfigChangeEnabled
+    ? intent.dataCheck.isDataRetained : oldIsDataRetained(intent.metadata.dataEndTime)
 
   return kpis.map((kpi) => {
     const ret = {
@@ -125,9 +128,13 @@ export function getGraphKPIs (
       footer: string
       delta: { value: string; trend: TrendTypeEnum } | undefined
     }
-    if (!isHotTierData) {
-      ret.footer = $t(coldTierDataText)
-    } else if (!isDataRetained) {
+    if (isConfigChangeEnabled) {
+      if (!isHotTierData) {
+        ret.footer = $t(coldTierDataText)
+      } else if (!isDataRetained) {
+        ret.footer = $t(dataRetentionText)
+      }
+    } else if (oldIsDataRetained(intent.metadata.dataEndTime)){
       ret.footer = $t(dataRetentionText)
     } else if (state !== 'no-data') {
       const result = getKPIData(intent, kpi)

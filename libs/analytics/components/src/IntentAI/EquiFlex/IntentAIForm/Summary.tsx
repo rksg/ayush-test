@@ -5,6 +5,7 @@ import { Row, Col, Form }            from 'antd'
 import { useIntl, FormattedMessage } from 'react-intl'
 
 import { StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { useIsSplitOn, Features }                 from '@acx-ui/feature-toggle'
 
 import { KpiField }             from '../../common/KpiField'
 import { richTextFormatValues } from '../../common/richTextFormatValues'
@@ -18,6 +19,7 @@ import type { Wlan } from './WlanSelection'
 
 export function Summary () {
   const { $t } = useIntl()
+  const isConfigChangeEnabled = useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE)
   const { intent, kpis } = useIntentContext()
   const { form } = useStepFormContext<IntentDetail>()
   const wlans = form.getFieldValue('wlans') as Wlan[]
@@ -27,7 +29,7 @@ export function Summary () {
       <StepsForm.Title children={$t({ defaultMessage: 'Summary' })} />
 
       {isEnabled
-        ? <> {getGraphKPIs(intent, kpis).map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
+        ? <> {getGraphKPIs(intent, kpis, isConfigChangeEnabled).map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
           <ScheduleTiming.FieldSummary />
           <Form.Item name='networks'
             label={$t({ defaultMessage: 'Networks' })}

@@ -5,6 +5,7 @@ import { Typography }                               from 'antd'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
 import { Card, GridCol, GridRow, Loader } from '@acx-ui/components'
+import { useIsSplitOn, Features }         from '@acx-ui/feature-toggle'
 import { getIntl }                        from '@acx-ui/utils'
 
 import { DescriptionSection }       from '../../DescriptionSection'
@@ -78,6 +79,7 @@ export function createIntentAIDetails () {
 
   return function IntentAIDetails () {
     const { $t } = useIntl()
+    const isConfigChangeEnabled = useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE)
     const { intent, kpis, state, isDataRetained, isHotTierData } = useIntentContext()
     const valuesText = useValuesText()
     const { displayStatus, sliceValue, metadata, updatedAt } = intent
@@ -117,7 +119,7 @@ export function createIntentAIDetails () {
               <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
               <DetailsSection.Details>
                 <GridRow>
-                  {getGraphKPIs(intent, kpis).map(kpi => (
+                  {getGraphKPIs(intent, kpis, isConfigChangeEnabled).map(kpi => (
                     <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
                       <KpiCard kpi={kpi} />
                     </GridCol>

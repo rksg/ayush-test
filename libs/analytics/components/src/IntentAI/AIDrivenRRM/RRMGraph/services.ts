@@ -63,13 +63,9 @@ const { useIntentAIRRMGraphQuery } = intentAIApi.injectEndpoints({
         { band }
       ) => {
         const data = response.intent.graph
-        const sortedData = {
-          current: data.compareData?.result,
-          projected: data.data?.result
-        }
         const processedGraphs: ReturnType<typeof deriveTxPowerHighlight> = flow(
           [ deriveInterferingGraphs, pairGraphs, deriveTxPowerHighlight]
-        )(Object.values(sortedData!).filter(v => v !== null), band)
+        )(Object.values(data!).filter(v => v !== null), band)
 
         const kpiGraph = processedGraphs.map(graph => {
           const affectedAPs = new Set()

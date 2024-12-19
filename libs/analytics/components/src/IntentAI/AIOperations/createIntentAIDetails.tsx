@@ -2,6 +2,7 @@ import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
 import { Card, GridCol, GridRow } from '@acx-ui/components'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 
 import { DescriptionSection }   from '../../DescriptionSection'
 import { FixedAutoSizer }       from '../../DescriptionSection/styledComponents'
@@ -29,6 +30,7 @@ export function createIntentAIDetails (
     const { intent, kpis, state } = useIntentContext()
     const { displayStatus, sliceValue, metadata, updatedAt } = intent
     const valuesText = useValuesText()
+    const isConfigChangeEnabled = useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE)
     const fields = [
       ...useCommonFields(intent),
       ...options.showImpactedAPs
@@ -56,7 +58,8 @@ export function createIntentAIDetails (
                 <GridCol data-testid='Configuration' col={{ span: 12 }}>
                   <ConfigurationCard />
                 </GridCol>
-                {state !== 'no-data' && getGraphKPIs(intent, kpis).map(kpi => (
+                {state !== 'no-data' && getGraphKPIs(
+                  intent, kpis, isConfigChangeEnabled).map(kpi => (
                   <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
                     <KpiCard kpi={kpi} />
                   </GridCol>
