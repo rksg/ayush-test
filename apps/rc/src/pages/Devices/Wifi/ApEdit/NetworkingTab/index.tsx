@@ -205,7 +205,7 @@ export function NetworkingTab () {
 
   return (
     <StepsFormLegacy
-      onFinish={async () => await handleUpdateSetting(false)}
+      onFinish={() => handleUpdateSetting(false)}
       onCancel={() => handleDiscardChanges()}
       buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
     >

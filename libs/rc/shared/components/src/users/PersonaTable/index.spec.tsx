@@ -24,7 +24,7 @@ jest.mock('@acx-ui/rc/utils', () => ({
   downloadFile: jest.fn()
 }))
 
-jest.mock('@acx-ui/edge/components', () => ({
+jest.mock('../../usePersonaListQuery', () => ({
   usePersonaListQuery: () => ({
     data: { data: mockPersonaTableResult.content },
     isLoading: false,

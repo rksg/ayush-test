@@ -7,28 +7,20 @@ import { showToast }       from '../../Toast'
 
 function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
 
-const SingleStepTest = () => {
-  const form = Form.useFormInstance()
+export function SingleStep () {
   return (
     <StepsFormLegacy
-      formProps={{ form }}
-      // onCancel={() => showToast({ type: 'info', content: 'Cancel' })}
-      // onFinish={() => {
-      //   console.log('lijoijo')
-      //   wait(1000) // mimic external service call
-      //   showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
-      // }}
-      // buttonLabel={{ submit: 'Add' }}
+      onCancel={() => showToast({ type: 'info', content: 'Cancel' })}
+      onFinish={async () => {
+        await wait(1000) // mimic external service call
+        showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
+      }}
+      buttonLabel={{ submit: 'Add' }}
     >
       <StepsFormLegacy.StepForm>
         <Row gutter={20}>
           <Col span={8}>
-            <Form.Item name='field1'
-              label='Field 1'
-              rules={[
-                { required: true }
-              ]}
-            >
+            <Form.Item name='field1' label='Field 1'>
               <Input />
             </Form.Item>
             <Form.Item name='field2' label='Field 2'>
@@ -51,25 +43,6 @@ const SingleStepTest = () => {
             </Form.Item>
           </Col>
         </Row>
-      </StepsFormLegacy.StepForm>
-    </StepsFormLegacy>
-  )
-}
-
-export const SingleStep = () => {
-  return (
-    <StepsFormLegacy
-      onCancel={() => showToast({ type: 'info', content: 'Cancel' })}
-      onFinish={async () => {
-        await wait(1000) // mimic external service call
-        showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
-      }}
-      buttonLabel={{ submit: 'Add' }}
-    >
-      <StepsFormLegacy.StepForm>
-        <Form.Item>
-          <SingleStepTest />
-        </Form.Item>
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
   )
