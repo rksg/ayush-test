@@ -574,7 +574,7 @@ export const SwitchPortProfileMessages = {
   // eslint-disable-next-line max-len
   IPSG_ENABLED: defineMessage({ defaultMessage: 'IPSG needs to be disabled in order to enable Ingress ACL, 802.1x and MAC Auth to this profile.' }),
   // eslint-disable-next-line max-len
-  INGRESS_ACL_DISABLED: defineMessage({ defaultMessage: 'Ingress ACL cannot be selected if IPSG is turned ON.' }),
+  INGRESS_ACL_DISABLED: defineMessage({ defaultMessage: 'Ingress ACL cannot be configured if IPSG is turned ON.' }),
   // eslint-disable-next-line max-len
   DOT1X_DISABLED: defineMessage({ defaultMessage: '802.1x cannot be selected if IPSG is turned ON.' }),
   // eslint-disable-next-line max-len
