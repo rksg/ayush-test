@@ -982,9 +982,39 @@ export interface DhcpOption82Settings {
 export interface VenueApModelLanPortSettingsV1 {
   softGreEnabled: boolean
   softGreSettings?: LanPortSoftGreProfileSettings
+  softGreProfileId?: string
 }
 
 export interface LanPortSoftGreProfileSettings {
   dhcpOption82Enabled?: boolean
   dhcpOption82Settings?: DhcpOption82Settings
+}
+
+export interface SoftGreChanges {
+  model: string,
+  lanPorts: SoftGreLanPortChange[]
+}
+
+export enum SoftGreState {
+  Init,
+  TurnOffSoftGre,
+  TurnOnSoftGre,
+  ModifySoftGreProfile,
+  TurnOffDHCPOption82,
+  TurnOnAndModifyDHCPOption82Settings,
+  TurnOnLanPort,
+  TurnOffLanPort,
+}
+
+export interface SoftGreProfileDispatcher {
+  portId?: string,
+  state: SoftGreState,
+  index: number,
+  softGreProfileId?: string
+}
+
+export interface SoftGreLanPortChange {
+    lanPortId: string
+    lanPortEnable?: boolean
+    venueLanPortSettings: VenueApModelLanPortSettingsV1
 }

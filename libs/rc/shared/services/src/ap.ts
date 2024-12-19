@@ -1056,7 +1056,7 @@ export const apApi = baseApApi.injectEndpoints({
               },
               payload: {
                 dhcpOption82Enabled: l.dhcpOption82?.dhcpOption82Enabled,
-                dhcpOption82Settings: l.dhcpOption82?.dhcpOption82Settings
+                dhcpOption82Settings: (l.dhcpOption82?.dhcpOption82Enabled)? l.dhcpOption82?.dhcpOption82Settings : undefined
               }
             }))
 
