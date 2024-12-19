@@ -4,6 +4,7 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 export enum Features {
   ABAC_POLICIES_TOGGLE = 'abac-policies-toggle',
   ALARM_NEW_API_TOGGLE = 'acx-ui-new-alarm-api-toggle',
+  ALARM_WITH_PRODUCT_FILTER_TOGGLE = 'alarm-with-product-filter-toggle',
   ALLOWED_OPERATIONS_TOGGLE = 'allowed-operations-toggle',
   AP_FIRMWARE_UPGRADE_BY_MODEL_TOGGLE = 'ap-fw-mgmt-upgrade-by-model',
   AP_GROUP_TOGGLE = 'wifi-eda-ap-group-table-toggle',
@@ -240,7 +241,8 @@ export enum Features {
   INTENT_AI_CONFIG_CHANGE_TOGGLE = 'acx-ui-intent-ai-config-change-toggle',
   WIFI_R370_TOGGLE = 'wifi-r370-toggle',
   MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE = 'mac-registration-require-identity-group',
-  DPSK_REQUIRE_IDENTITY_GROUP = 'dpsk-require-identity-group'
+  DPSK_REQUIRE_IDENTITY_GROUP = 'dpsk-require-identity-group',
+  ACX_UI_NON_PROXY_ACCOUNTING_DPSK_TOGGLE = 'acx-ui-non-proxy-accounting-dpsk-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

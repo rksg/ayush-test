@@ -98,7 +98,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         if (networkDeepData && enableRbac) {
           const arg = {
             params,
-            payload: { isTemplate: true }
+            payload: { isTemplate: true, page: 1, pageSize: 10000 }
           }
 
           const {
