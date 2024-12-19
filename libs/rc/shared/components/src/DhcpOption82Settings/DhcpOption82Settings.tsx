@@ -102,8 +102,7 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
 
   return (
     <>
-      <FieldLabel width='180px'>
-
+      <FieldLabel width='220px'>
         <Space style={{ marginBottom: '10px' }}>
           {$t({ defaultMessage: 'DHCP Option 82' })}
           <Tooltip.Question

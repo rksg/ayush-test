@@ -399,13 +399,6 @@ export const LbsServerProfileMessages = {
 }
 
 /* eslint-enable */
-
-export enum IsolatePacketsTypeEnum {
-  UNICAST = 'UNICAST',
-  MULTICAST = 'MULTICAST',
-  UNICAST_MULTICAST = 'UNICAST_MULTICAST',
-}
-
 export enum RfBandUsageEnum {
   _2_4GHZ = '2.4GHZ',
   _5_0GHZ = '5.0GHZ',
@@ -543,4 +536,11 @@ export const EthernetPortProfileMessages = {
     defaultMessage: 'This option requires your access points to run firmware version 7.0.0.400 or higher.'
   })
   /* eslint-enable */
+}
+
+export const ClientIsolationMessages = {
+  /* eslint-disable max-len */
+  ENABLE_TOGGLE: defineMessage({
+    defaultMessage: 'Please note that the uplink port does not support client isolation, which will cause the AP(s) to disconnect. Enabling or disabling wired client isolation will prompt a reboot of AP devices within this <venueSingular></venueSingular>.'
+  })
 }

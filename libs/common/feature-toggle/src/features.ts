@@ -221,6 +221,7 @@ export enum Features {
   WIFI_WLAN_DEPRECATE_WEP = 'wifi-wlan-deprecate-wpa',
   WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE = 'wifi-over-the-ds-ft-support-toggle',
   WIFI_COMPATIBILITY_BY_MODEL = 'wifi-compatibility-check-by-model-toggle',
+  WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE = 'wifi-ethernet-client-isolation-toggle',
   WIFI_ETHERNET_SOFTGRE_TOGGLE = 'wifi-ethernet-softgre-toggle',
   ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE = 'entitlement-license-compliance-phase2-toggle',
   BRAND360_MDU_TOGGLE = 'acx-ui-brand360-mdu-toggle',
