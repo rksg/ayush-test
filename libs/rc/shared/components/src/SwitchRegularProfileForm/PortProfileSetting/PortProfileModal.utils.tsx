@@ -10,7 +10,8 @@ export interface PortsType {
 
 export const portProfilesUIParser = (portProfiles: PortProfileAPI[]) => {
   const groupedProfiles = portProfiles.reduce((acc, profile) => {
-    const modelsKey = profile.models.slice().sort().join(',')
+    const modelsKey = Array.isArray(profile.models) ?
+      profile.models.slice().sort().join(',') : profile.models
 
     if (!acc[modelsKey]) {
       acc[modelsKey] = {

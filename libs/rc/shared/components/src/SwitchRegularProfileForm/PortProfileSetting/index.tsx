@@ -80,7 +80,7 @@ export function PortProfileSetting () {
     defaultSortOrder: 'ascend',
     sorter: { compare: sortProp('model', defaultSort) },
     render: (_, { models }) => {
-      return models.join(', ')
+      return Array.isArray(models) ? models.join(', ') : models
     }
   }, {
     title: $t({ defaultMessage: 'Profile Name' }),
@@ -88,7 +88,8 @@ export function PortProfileSetting () {
     key: 'portProfileId',
     sorter: { compare: sortProp('portProfileId', defaultSort) },
     render: (_, { portProfileId }) => {
-      return portProfileId.map(id => portProfileMap[id]).join(', ')
+      return Array.isArray(portProfileId) ?
+        portProfileId.map(id => portProfileMap[id]).join(', ') : portProfileMap[portProfileId]
     }
   }]
 
@@ -119,7 +120,8 @@ export function PortProfileSetting () {
               return row.id !== id
             })
             setPortProfilesTable(portProfiles)
-            form.setFieldValue('portProfiles', portProfiles)
+            form.setFieldValue('portProfiles',
+              portProfiles.map(item=>portProfilesAPIParser(item)).flat())
             clearSelection()
           }
         })
@@ -132,21 +134,31 @@ export function PortProfileSetting () {
   }
 
   const onSave = (data: PortProfileUI) => {
-    const proceedData = data
     if(data.portProfileId === undefined){
-      proceedData.portProfileId = portProfileSettingValues?.portProfileId ?? []
+      data.portProfileId = portProfileSettingValues?.portProfileId ?? []
     }
+
+    const filteredWithProfileId = portProfilesTable.filter(item => {
+      return JSON.stringify(item.portProfileId.sort()) ===
+        JSON.stringify(data.portProfileId.sort())
+    })
 
     const result = portProfileSettingValues?.id ? portProfilesTable.filter(item => {
       return item.id !== portProfileSettingValues?.id
     }) : portProfilesTable.filter(item => {
-      return JSON.stringify(item.models) !== JSON.stringify(proceedData.models)
+      return JSON.stringify(item.portProfileId.sort()) !==
+        JSON.stringify(data.portProfileId.sort())
     })
 
+    const concatModels = {
+      ...data,
+      models: [...new Set([...data.models, ...filteredWithProfileId[0].models])]
+    }
     const portProfileAPIData = [
       ...result.map(item=>portProfilesAPIParser(item)),
-      portProfilesAPIParser(proceedData)].flat()
-    setPortProfilesTable([...result, proceedData])
+      portProfilesAPIParser(concatModels)].flat()
+
+    setPortProfilesTable([...result, concatModels])
     form.setFieldValue('portProfiles', portProfileAPIData)
     setSelectedRowKeys([])
     setPortModalVisible(false)
