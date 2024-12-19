@@ -311,10 +311,10 @@ export const EditPortMessages = {
     defaultMessage: 'This port is Untagged port. So can not enable Authentication.'
   }),
   CANNOT_ENABLE_FLEX_AUTH_WHEN_IPSG_ENABLED: defineMessage({
-    defaultMessage: 'This port enables IPSG. So can not enable Authentication.'
+    defaultMessage: 'Authentication cannot be enabled if IPSG is turned ON.'
   }),
   CANNOT_ENABLE_IPSG_WHEN_FLEX_AUTH_ENABLED: defineMessage({
-    defaultMessage: 'This port enables Authentication. So can not enable IPSG.'
+    defaultMessage: 'IPSG cannot be enabled if Authentication is turned ON.'
   }),
   CLOUD_PORT_CANNOT_ENABLE_FLEX_AUTH: defineMessage({
     defaultMessage: 'Authentication cannot be enabled on the uplink port because it will result in switch losing connection to RUCKUS One.'
