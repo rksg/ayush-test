@@ -1241,6 +1241,7 @@ export const mockEthProfiles = {
       vlanMembers: '1-4094',
       isDefault: true,
       apSerialNumbers: ['serial-number'],
+      venueIds: [],
       apActivations: [
         {
           venueId: mockVenue.id,
@@ -1257,6 +1258,7 @@ export const mockEthProfiles = {
       vlanMembers: '1',
       isDefault: true,
       apSerialNumbers: ['serial-number'],
+      venueIds: [],
       apActivations: [
         {
           venueId: mockVenue.id,
