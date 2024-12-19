@@ -7,13 +7,13 @@ import { ServiceType }     from '../../constants'
 import { PolicyType }      from '../../types'
 import { PolicyOperation } from '../policy'
 
+import { getPolicyAllowedOperation, getServiceAllowedOperation } from './allowedOperationUtils'
 import {
   policyOperScopeMap, policyTypeScopeMap, serviceOperScopeMap, serviceTypeScopeMap,
   SvcPcyAllowedScope, SvcPcyAllowedType, SvcPcyScopeMap,
   SvcPcyAllowedOper, SvcPcyOperMap
 } from './servicePolicyAbacContentsMap'
 import { ServiceOperation } from './serviceRouteUtils'
-
 
 export function filterByAccessForServicePolicyMutation <Item> (items: Item[]): Item[] {
   if (!hasCrossVenuesPermission({ needGlobalPermission: true })) return []
@@ -51,7 +51,12 @@ export function getScopeKeyByService (type: ServiceType, oper: ServiceOperation)
 // eslint-disable-next-line max-len
 export function hasServicePermission (props: { type: ServiceType, oper: ServiceOperation, roles?: RolesEnum[] }) {
   const specialCheckFn = () => props.type === ServiceType.DPSK && !!hasDpskAccess()
-  return hasGenericPermission(props, getScopeKeyByService, specialCheckFn)
+  return hasGenericPermission({
+    ...props,
+    getScopeKeyFn: getScopeKeyByService,
+    getAllowedOperation: getServiceAllowedOperation,
+    specialCheckFn
+  })
 }
 
 export function ServiceAuthRoute (props: {
@@ -95,7 +100,11 @@ export function getScopeKeyByPolicy (type: PolicyType, oper: PolicyOperation): S
 }
 
 export function hasPolicyPermission (props: { type: PolicyType, oper: PolicyOperation }) {
-  return hasGenericPermission(props, getScopeKeyByPolicy)
+  return hasGenericPermission({
+    ...props,
+    getScopeKeyFn: getScopeKeyByPolicy,
+    getAllowedOperation: getPolicyAllowedOperation
+  })
 }
 
 export function PolicyAuthRoute (props: {
@@ -170,18 +179,26 @@ function getSpecialScopeKey<T extends SvcPcyAllowedType, U extends SvcPcyAllowed
   return null
 }
 
-type PermissionProps<T extends SvcPcyAllowedType, U extends SvcPcyAllowedOper> = {
+type hasGenericPermissionProps<T extends SvcPcyAllowedType, U extends SvcPcyAllowedOper> = {
   type: T
   oper: U
-  roles?: RolesEnum[]
+  roles?: RolesEnum[],
+  getScopeKeyFn: (type: T, oper: U) => ScopeKeys,
+  getAllowedOperation: (type: T, oper: U) => string | undefined,
+  specialCheckFn?: () => boolean
 }
 
 function hasGenericPermission<T extends SvcPcyAllowedType, U extends SvcPcyAllowedOper> (
-  props: PermissionProps<T, U>,
-  getScopeKeyFn: (type: T, oper: U) => ScopeKeys,
-  specialCheckFn?: () => boolean
+  props: hasGenericPermissionProps<T, U>
 ): boolean {
-  const { type, oper, roles } = props
+  const { type, oper, roles, getScopeKeyFn, specialCheckFn, getAllowedOperation } = props
+
+  // TODO: Implement isAllowedOperationCheckEnabled
+  const isAllowedOperationCheckEnabled = true
+  if (isAllowedOperationCheckEnabled) {
+    return hasPermission({ allowedOperations: getAllowedOperation(type, oper) })
+  }
+
   const scopeKeys = getScopeKeyFn(type, oper)
 
   // eslint-disable-next-line max-len

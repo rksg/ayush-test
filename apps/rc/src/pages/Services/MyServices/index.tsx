@@ -21,11 +21,14 @@ import {
 import {
   filterByAccessForServicePolicyMutation,
   getSelectServiceRoutePath,
+  getServiceAllowedOperation,
   isServiceCardEnabled,
   ServiceOperation,
-  ServiceType
+  ServiceType,
+  useIsAllowedOperationCheckEnabled
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { hasPermission }         from '@acx-ui/user'
 
 import { ServiceCard } from '../ServiceCard'
 
@@ -166,11 +169,7 @@ export default function MyServices () {
       <PageHeader
         title={$t({ defaultMessage: 'My Services' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
-        extra={filterByAccessForServicePolicyMutation([
-          <TenantLink to={getSelectServiceRoutePath(true)}>
-            <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
-          </TenantLink>
-        ])}
+        extra={<AddServiceLink services={services} />}
       />
       <GridRow>
         {services.filter(svc => isServiceCardEnabled(svc, ServiceOperation.LIST)).map(service => {
@@ -189,4 +188,25 @@ export default function MyServices () {
       </GridRow>
     </>
   )
+}
+
+function AddServiceLink (props: { services: { type: ServiceType }[] }) {
+  const { services } = props
+  const isAllowedOperationCheckEnabled = useIsAllowedOperationCheckEnabled()
+  const { $t } = useIntl()
+
+  const addServiceLink = <TenantLink to={getSelectServiceRoutePath(true)}>
+    <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
+  </TenantLink>
+
+  const hasAddServicePermission = services.some(svc => {
+    return hasPermission({
+      allowedOperations: getServiceAllowedOperation(svc.type, ServiceOperation.CREATE)
+    })
+  })
+
+  if (isAllowedOperationCheckEnabled) {
+    return hasAddServicePermission ? addServiceLink : null
+  }
+  return filterByAccessForServicePolicyMutation([addServiceLink])[0]
 }

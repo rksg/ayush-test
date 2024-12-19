@@ -34,11 +34,13 @@ import {
   PolicyOperation,
   PolicyType,
   filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation,
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
   isPolicyCardEnabled,
   policyTypeDescMapping,
-  policyTypeLabelMapping
+  policyTypeLabelMapping,
+  useIsAllowedOperationCheckEnabled
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -47,6 +49,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { hasPermission } from '@acx-ui/user'
 
 const defaultPayload = {
   fields: ['id']
@@ -82,11 +85,7 @@ export default function MyPolicies () {
       <PageHeader
         title={$t({ defaultMessage: 'Policies & Profiles' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
-        extra={filterByAccessForServicePolicyMutation([
-          <TenantLink to={getSelectPolicyRoutePath(true)}>
-            <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>
-          </TenantLink>
-        ])}
+        extra={<AddPolicyLink policies={policies} />}
       />
       <GridRow>
         {
@@ -134,6 +133,27 @@ export default function MyPolicies () {
       />}
     </>
   )
+}
+
+function AddPolicyLink (props: { policies: { type: PolicyType }[] }) {
+  const { policies } = props
+  const isAllowedOperationCheckEnabled = useIsAllowedOperationCheckEnabled()
+  const { $t } = useIntl()
+
+  const addServiceLink = <TenantLink to={getSelectPolicyRoutePath(true)}>
+    <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>
+  </TenantLink>
+
+  const hasAddPolicyPermission = policies.some(policy => {
+    return hasPermission({
+      allowedOperations: getPolicyAllowedOperation(policy.type, PolicyOperation.CREATE)
+    })
+  })
+
+  if (isAllowedOperationCheckEnabled) {
+    return hasAddPolicyPermission ? addServiceLink : null
+  }
+  return filterByAccessForServicePolicyMutation([addServiceLink])[0]
 }
 
 interface PolicyCardData {
