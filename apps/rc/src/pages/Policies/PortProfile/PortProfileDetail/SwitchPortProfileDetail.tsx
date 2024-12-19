@@ -36,9 +36,7 @@ export default function SwitchPortProfileDetail () {
         key: 'switchName',
         title: $t({ defaultMessage: 'Switch' }),
         dataIndex: 'switchName',
-        sorter: true,
         searchable: true,
-        defaultSortOrder: 'ascend',
         render: function (_, row, __, highlightFn) {
           return (
             <TenantLink
@@ -110,7 +108,7 @@ export default function SwitchPortProfileDetail () {
           <Card>
             <Card.Title style={{ marginTop: '16px', marginBottom: '16px' }}>
               {$t({ defaultMessage: 'Instances({count})' },
-                { count: tableQuery.data?.data.length })}</Card.Title>
+                { count: tableQuery.data?.data?.length })}</Card.Title>
             <Loader states={[tableQuery]}>
               <Table<SwitchPortProfilesAppliedTargets>
                 settingsId={settingsId}
@@ -120,7 +118,6 @@ export default function SwitchPortProfileDetail () {
                 onChange={tableQuery.handleTableChange}
                 rowKey='switchId'
                 onFilterChange={tableQuery.handleFilterChange}
-                enableApiFilter={true}
               />
             </Loader>
           </Card>
