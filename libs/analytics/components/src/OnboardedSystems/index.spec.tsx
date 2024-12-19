@@ -17,6 +17,7 @@ jest.mock('./services', () => ({
 }))
 
 describe('OnboardedSystems', () => {
+  beforeAll(() => Object.defineProperty(window, 'location', { value: { ...window.location } }))
   beforeEach(() => {
     jest.clearAllMocks()
     setUserProfile({ accountId: tenants[0].id, tenants } as UserProfile)
