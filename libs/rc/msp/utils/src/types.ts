@@ -589,7 +589,7 @@ export const GeneralAttentionNotesPayload = {
   page: 1,
   pageSize: 3,
   fields: ['summary', 'details'],
-  sortField: 'status',
+  sortField: 'endDate',
   sortOrder: 'DESC',
   filters: {
     status: ['VALID'],
