@@ -91,6 +91,7 @@ COPY --from=build /app/dist/apps ./dist/apps
 
 ARG PRECOMMIT
 ARG GIT_COMMIT_BRANCH
+ARG CI_TEST_TIMEOUT=40000  # Set CI test timeout to 40 seconds
 
 ENV NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail"
 
