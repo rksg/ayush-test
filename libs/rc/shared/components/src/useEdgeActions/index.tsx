@@ -28,6 +28,7 @@ export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
   const isEnabledWithBooleanFlag = isEdgeEnabled && isEdgeFeatureReady
   switch(featureFlagKey) {
     case Features.EDGE_PIN_HA_TOGGLE:
+    case Features.EDGE_PIN_ENHANCE_TOGGLE:
       return isEnabledWithBooleanFlag && isEdgeAdvEnabled
     default:
       return isEnabledWithBooleanFlag

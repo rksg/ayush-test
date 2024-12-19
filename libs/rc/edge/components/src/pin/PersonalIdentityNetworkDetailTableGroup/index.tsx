@@ -13,7 +13,7 @@ import { AssignedSegmentsTable, PersonaTableProps } from './AssignedSegmentsTabl
 import { DistSwitchesTable }                        from './DistSwitchesTable'
 import { NetworksTable }                            from './NetworksTable'
 
-export interface PersonalIdentitNetworkDetailTableGroupProps {
+export interface PersonalIdentityNetworkDetailTableGroupProps {
   pinData: PersonalIdentityNetworks | undefined,
   apListTableQuery: ApTableProps['tableQuery'],
   personaListTableQuery: PersonaTableProps['tableQuery'],
@@ -21,7 +21,7 @@ export interface PersonalIdentitNetworkDetailTableGroupProps {
 }
 
 // eslint-disable-next-line max-len
-export const PersonalIdentityNetworkDetailTableGroup = forwardRef((props: PersonalIdentitNetworkDetailTableGroupProps, ref) => {
+export const PersonalIdentityNetworkDetailTableGroup = forwardRef((props: PersonalIdentityNetworkDetailTableGroupProps, ref) => {
   const { pinData, apListTableQuery, personaListTableQuery, isLoading = false } = props
   const { $t } = useIntl()
   const [currentTab, setCurrentTab] = useState<PinDetailTableGroupTabType>()

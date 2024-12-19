@@ -264,6 +264,21 @@ jest.mock('./pages/Services/EdgeSdLan/index', () => ({
   EdgeSdLanTable: () => <div data-testid='EdgeSdLanTable' />,
   EdgeSdLanDetail: () => <div data-testid='EdgeSdLanDetail' />
 }))
+jest.mock('./pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetail', () => () => {
+  return <div data-testid='PersonalIdentityNetworkDetail' />
+})
+jest.mock('./pages/Services/PersonalIdentityNetwork/AddPersonalIdentityNetwork', () => () => {
+  return <div data-testid='AddPersonalIdentityNetwork' />
+})
+jest.mock('./pages/Services/PersonalIdentityNetwork/EditPersonalIdentityNetwork', () => () => {
+  return <div data-testid='EditPersonalIdentityNetwork' />
+})
+jest.mock('./pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTable', () => () => {
+  return <div data-testid='PersonalIdentityNetworkTable' />
+})
+jest.mock('./pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetailEnhanced', () => () => {
+  return <div data-testid='PersonalIdentityNetworkDetailEnhanced' />
+})
 
 describe('RcRoutes: Devices', () => {
   beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))

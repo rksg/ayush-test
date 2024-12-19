@@ -5,10 +5,10 @@ import { useGetEdgePinByIdQuery }          from '@acx-ui/rc/services'
 import { useTableQuery }                   from '@acx-ui/rc/utils'
 import { render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { usePersonaListQuery }                         from '../../identityGroup/usePersonaListQuery'
-import { PersonalIdentitNetworkDetailTableGroupProps } from '../PersonalIdentityNetworkDetailTableGroup'
-import { TopologyDiagramProps }                        from '../TopologyDiagram'
-import { PinDetailTableGroupTabType }                  from '../type'
+import { usePersonaListQuery }                          from '../../identityGroup/usePersonaListQuery'
+import { PersonalIdentityNetworkDetailTableGroupProps } from '../PersonalIdentityNetworkDetailTableGroup'
+import { TopologyDiagramProps }                         from '../TopologyDiagram'
+import { PinDetailTableGroupTabType }                   from '../type'
 
 import { DiagramDetailTableGroup } from './'
 
@@ -33,7 +33,7 @@ jest.mock('../PersonalIdentityNetworkDetailTableGroup', () => {
   const { forwardRef } = jest.requireActual('react')
   return {
     // eslint-disable-next-line max-len, @typescript-eslint/no-explicit-any
-    PersonalIdentityNetworkDetailTableGroup: forwardRef((props: PersonalIdentitNetworkDetailTableGroupProps, ref: { current: { setCurrentTab: jest.Mock<any, any> } }) => {
+    PersonalIdentityNetworkDetailTableGroup: forwardRef((props: PersonalIdentityNetworkDetailTableGroupProps, ref: { current: { setCurrentTab: jest.Mock<any, any> } }) => {
       ref.current = { setCurrentTab: mockSetCurrentTab }
       return <div data-testid='PersonalIdentityNetworkDetailTableGroup'>
         <div data-testid='pinData'>{JSON.stringify(props.pinData)}</div>

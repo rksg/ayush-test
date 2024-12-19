@@ -161,26 +161,26 @@ import MyServices                                                       from './
 import NetworkSegAuthDetail                                             from './pages/Services/NetworkSegWebAuth/NetworkSegAuthDetail'
 import NetworkSegAuthForm                                               from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
 import NetworkSegAuthTable                                              from './pages/Services/NetworkSegWebAuth/NetworkSegAuthTable'
-import AddPersonalIdentitNetwork                                        from './pages/Services/PersonalIdentityNetwork/AddPersonalIdentityNetwork'
+import AddPersonalIdentityNetwork                                       from './pages/Services/PersonalIdentityNetwork/AddPersonalIdentityNetwork'
 import EditPersonalIdentityNetwork                                      from './pages/Services/PersonalIdentityNetwork/EditPersonalIdentityNetwork'
-// import PersonalIdentityNetworkDetail                                    from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetail'
-import PersonalIdentityNetworkDetail        from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetailEnhanced'
-import PersonalIdentityNetworkTable         from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTable'
-import PortalServiceDetail                  from './pages/Services/Portal/PortalDetail'
-import PortalTable                          from './pages/Services/Portal/PortalTable'
-import ResidentPortalDetail                 from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
-import ResidentPortalTable                  from './pages/Services/ResidentPortal/ResidentPortalTable/ResidentPortalTable'
-import SelectServiceForm                    from './pages/Services/SelectServiceForm'
-import ServiceCatalog                       from './pages/Services/ServiceCatalog'
-import WifiCallingTable                     from './pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable'
-import Timeline                             from './pages/Timeline'
-import PersonaPortal                        from './pages/Users/Persona'
-import PersonaDetails                       from './pages/Users/Persona/PersonaDetails'
-import PersonaGroupDetails                  from './pages/Users/Persona/PersonaGroupDetails'
-import SwitchClientList                     from './pages/Users/Switch/ClientList'
-import WifiClientDetails                    from './pages/Users/Wifi/ClientDetails'
-import { WifiClientList, WirelessTabsEnum } from './pages/Users/Wifi/ClientList'
-import GuestManagerPage                     from './pages/Users/Wifi/GuestManagerPage'
+import PersonalIdentityNetworkDetail                                    from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetail'
+import PersonalIdentityNetworkDetailEnhanced                            from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetailEnhanced'
+import PersonalIdentityNetworkTable                                     from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTable'
+import PortalServiceDetail                                              from './pages/Services/Portal/PortalDetail'
+import PortalTable                                                      from './pages/Services/Portal/PortalTable'
+import ResidentPortalDetail                                             from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
+import ResidentPortalTable                                              from './pages/Services/ResidentPortal/ResidentPortalTable/ResidentPortalTable'
+import SelectServiceForm                                                from './pages/Services/SelectServiceForm'
+import ServiceCatalog                                                   from './pages/Services/ServiceCatalog'
+import WifiCallingTable                                                 from './pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable'
+import Timeline                                                         from './pages/Timeline'
+import PersonaPortal                                                    from './pages/Users/Persona'
+import PersonaDetails                                                   from './pages/Users/Persona/PersonaDetails'
+import PersonaGroupDetails                                              from './pages/Users/Persona/PersonaGroupDetails'
+import SwitchClientList                                                 from './pages/Users/Switch/ClientList'
+import WifiClientDetails                                                from './pages/Users/Wifi/ClientDetails'
+import { WifiClientList, WirelessTabsEnum }                             from './pages/Users/Wifi/ClientList'
+import GuestManagerPage                                                 from './pages/Users/Wifi/GuestManagerPage'
 
 
 export default function RcRoutes () {
@@ -519,7 +519,9 @@ const edgeFirewallRoutes = () => {
   </>
 }
 
-const edgePinRoutes = () => {
+const useEdgePinRoutes = () => {
+  const isEdgePinEnhancementReady = useIsEdgeFeatureReady(Features.EDGE_PIN_ENHANCE_TOGGLE)
+
   return <>
     <Route
       path={getServiceRoutePath({ type: ServiceType.PIN,
@@ -527,7 +529,7 @@ const edgePinRoutes = () => {
       element={
         // eslint-disable-next-line max-len
         <ServiceAuthRoute serviceType={ServiceType.PIN} oper={ServiceOperation.CREATE}>
-          <AddPersonalIdentitNetwork />
+          <AddPersonalIdentityNetwork />
         </ServiceAuthRoute>
       }
     />
@@ -539,7 +541,8 @@ const edgePinRoutes = () => {
     <Route
       path={getServiceRoutePath({ type: ServiceType.PIN,
         oper: ServiceOperation.DETAIL })}
-      element={<PersonalIdentityNetworkDetail />}
+      // eslint-disable-next-line max-len
+      element={isEdgePinEnhancementReady ? <PersonalIdentityNetworkDetailEnhanced /> : <PersonalIdentityNetworkDetail />}
     />
     <Route
       path={getServiceRoutePath({ type: ServiceType.PIN,
@@ -608,6 +611,7 @@ function ServiceRoutes () {
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
+  const pinRoutes = useEdgePinRoutes()
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -724,7 +728,7 @@ function ServiceRoutes () {
         element={<DpskDetails />}
       />
 
-      {(isEdgePinReady) && edgePinRoutes()}
+      {(isEdgePinReady) && pinRoutes}
 
       <Route
         path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
