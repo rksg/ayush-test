@@ -20,16 +20,14 @@ export const NetworksTable = (props: NetworkTableProps) => {
   const { networkIds } = props
   const { $t } = useIntl()
 
-  const defaultPayload = {
-    fields: ['id', 'name', 'nwSubType'],
-    filters: { id: networkIds }
-  }
-
   const tableQuery = useTableQuery({
     useQuery: useWifiNetworkListQuery,
-    defaultPayload: defaultPayload,
+    defaultPayload: {
+      fields: ['id', 'name', 'nwSubType'],
+      filters: { id: networkIds }
+    },
     option: {
-      skip: Number(networkIds?.length) === 0
+      skip: !networkIds?.length
     }
   })
 

@@ -1,28 +1,33 @@
 import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
 
-import { apApi, pinApi, personaApi } from '@acx-ui/rc/services'
+import { useApListQuery } from '@acx-ui/rc/services'
 import {
-  CommonUrlsInfo,
   EdgePinFixtures,
-  EdgeGeneralFixtures,
-  EdgePinUrls,
-  EdgeUrlsInfo,
-  PersonaUrls,
-  PropertyUrlsInfo
+  useTableQuery,
+  PersonalIdentityNetworks,
+  Persona,
+  TableQuery
 } from '@acx-ui/rc/utils'
-import { Provider, store }                                       from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { Provider }                   from '@acx-ui/store'
+import { render, renderHook, screen } from '@acx-ui/test-utils'
 
-import {
-  mockedApList,
-  mockedPersonaList,
-  replacePagination } from './__tests__/fixtures'
+import { usePersonaListQuery } from '../../identityGroup/usePersonaListQuery'
+
+import { defaultApPayload } from './ApsTable'
 
 import { PersonalIdentityNetworkDetailTableGroup } from '.'
-const { mockPinData, mockPinStatsList, mockPinSwitchInfoData } = EdgePinFixtures
-const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockPinData } = EdgePinFixtures
 
+jest.mock('@acx-ui/rc/services', () => ({
+  useApListQuery: jest.fn().mockReturnValue({
+    data: { totalCount: 2 }
+  })
+}))
+jest.mock('../../identityGroup/usePersonaListQuery', () => ({
+  usePersonaListQuery: jest.fn().mockReturnValue({
+    data: {}
+  })
+}))
 jest.mock('./ApsTable', () => ({
   ApsTable: () => <div data-testid='ApsTable' />
 }))
@@ -35,57 +40,49 @@ jest.mock('./DistSwitchesTable', () => ({
 jest.mock('./AccessSwitchTable', () => ({
   AccessSwitchTable: () => <div data-testid='AccessSwitchTable' />
 }))
+jest.mock('./NetworksTable', () => ({
+  NetworksTable: () => <div data-testid='NetworksTable' />
+}))
 
 describe('PersonalIdentityNetwork DetailTableGroup', () => {
 
-  beforeEach(() => {
-    store.dispatch(pinApi.util.resetApiState())
-    store.dispatch(personaApi.util.resetApiState())
-    store.dispatch(apApi.util.resetApiState())
-
-    mockServer.use(
-      rest.get(
-        EdgePinUrls.getEdgePinById.url,
-        (_req, res, ctx) => res(ctx.json(mockPinData))),
-      rest.post(
-        EdgeUrlsInfo.getEdgeClusterStatusList.url,
-        (_req, res, ctx) => res(ctx.json(mockEdgeClusterList))),
-      rest.get(
-        PersonaUrls.getPersonaGroupById.url,
-        (_req, res, ctx) => res(ctx.json({}))),
-      rest.get(
-        PropertyUrlsInfo.getPropertyConfigs.url,
-        (_req, res, ctx) => res(ctx.json({}))),
-      rest.post(
-        EdgePinUrls.getEdgePinStatsList.url,
-        (_req, res, ctx) => res(ctx.json(mockPinStatsList))),
-      rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (_req, res, ctx) => res(ctx.json(mockedApList))),
-      rest.post(
-        replacePagination(PersonaUrls.searchPersonaList.url),
-        (_req, res, ctx) => res(ctx.json(mockedPersonaList))),
-      rest.get(
-        EdgePinUrls.getSwitchInfoByPinId.url,
-        (_req, res, ctx) => res(ctx.json(mockPinSwitchInfoData)))
-    )
-  })
-
   it('Switch tab', async () => {
-    const user = userEvent.setup()
+    const { result: apTableQueryResult } = renderHook(
+      () => useTableQuery({
+        useQuery: useApListQuery,
+        defaultPayload: {
+          ...defaultApPayload,
+          filters: { venueId: [''] }
+        }
+      }),
+      { wrapper: ({ children }) => <Provider children={children} /> })
+
+    const { result: personaTableQueryResult } = renderHook(
+      () => usePersonaListQuery({
+        personaGroupId: 'mock-persona-group-id'
+      }),
+      { wrapper: ({ children }) => <Provider children={children} /> })
+
     render(
       <Provider>
-        <PersonalIdentityNetworkDetailTableGroup pinId='test' />
+        <PersonalIdentityNetworkDetailTableGroup
+          pinData={mockPinData as unknown as PersonalIdentityNetworks}
+          apListTableQuery={apTableQueryResult.current}
+          // eslint-disable-next-line max-len
+          personaListTableQuery={personaTableQueryResult.current as TableQuery<Persona, { keyword: string, groupId: string }, unknown>}
+          isLoading={false}
+        />
       </Provider>
     )
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await screen.findByTestId('NetworksTable')
+    await userEvent.click(await screen.findByRole('tab', { name: /Aps/i }))
     await screen.findByTestId('ApsTable')
-    await user.click(await screen.findByRole('tab', { name: /Dist. Switches/i }))
+    await userEvent.click(await screen.findByRole('tab', { name: /Dist. Switches/i }))
     await screen.findByTestId('DistSwitchesTable')
-    await user.click(await screen.findByRole('tab', { name: /Access Switches/i }))
+    await userEvent.click(await screen.findByRole('tab', { name: /Access Switches/i }))
     await screen.findByTestId('AccessSwitchTable')
-    await user.click(await screen.findByRole('tab', { name: /Assigned Segments/i }))
+    await userEvent.click(await screen.findByRole('tab', { name: /Assigned Segments/i }))
     await screen.findByTestId('AssignedSegmentsTable')
 
     expect(screen.getByRole('tab', {

@@ -16,22 +16,23 @@ describe('useEdgeClusterActions', () => {
     store.dispatch(personaApi.util.resetApiState())
     store.dispatch(serviceApi.util.resetApiState())
     store.dispatch(policyApi.util.resetApiState())
+
     mockServer.use(
       rest.get(
         PersonaUrls.getPersonaGroupById.url,
-        (req, res, ctx) => {
+        (_req, res, ctx) => {
           return res(ctx.json(mockedIdentityGroupList))
         }
       ),
       rest.post(
         PersonaUrls.searchPersonaList.url.split('?')[0],
-        (req, res, ctx) => {
+        (_req, res, ctx) => {
           return res(ctx.json(mockedIdentityList))
         }
       ),
       rest.get(
         DpskUrls.getPassphraseDevices.url,
-        (req, res, ctx) => {
+        (_req, res, ctx) => {
           return res(ctx.json(mockedDpskDeviceList))
         }
       ),

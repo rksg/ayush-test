@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { Typography, Space, Row, Col } from 'antd'
-import { useIntl }                     from 'react-intl'
+import { Typography, Space } from 'antd'
+import { useIntl }           from 'react-intl'
 
 import { Card }                                   from '@acx-ui/components'
 import { useIsSplitOn, Features }                 from '@acx-ui/feature-toggle'
@@ -21,12 +21,12 @@ interface DiagramDetailTableGroupProps {
 }
 
 export const DiagramDetailTableGroup = (props: DiagramDetailTableGroupProps) => {
-
   const { pinId } = props
   const { $t } = useIntl()
+
   const tableDetailsGroupRef = useRef<{
     setCurrentTab: (tab: string) => void
-  }>()
+      }>()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const [isApPayloadReady,setIsApPayloadReady] = useState(false)
@@ -53,18 +53,19 @@ export const DiagramDetailTableGroup = (props: DiagramDetailTableGroupProps) => 
   }) as TableQuery<Persona, { keyword: string, groupId: string }, unknown>
 
   useEffect(() => {
+    if (!pinData?.venueId) return
+
     apListTableQuery.setPayload({
       ...defaultApPayload,
-      filters: { venueId: [pinData?.venueId ?? ''] }
+      filters: { venueId: [pinData?.venueId] }
     })
   }, [pinData])
 
   useEffect(() => {
-    if(apListTableQuery?.payload?.filters?.venueId?.length > 0) {
+    if(!!apListTableQuery?.payload?.filters?.venueId[0]) {
       setIsApPayloadReady(true)
     }
-  }, [apListTableQuery.payload.filters])
-
+  }, [apListTableQuery.payload?.filters])
 
   const handleDiagramOnClick = (componentType: PinDetailTableGroupTabType) => {
     tableDetailsGroupRef.current?.setCurrentTab(componentType as string)
@@ -75,14 +76,14 @@ export const DiagramDetailTableGroup = (props: DiagramDetailTableGroupProps) => 
       <Typography.Text strong>
         {$t({ defaultMessage: 'Network Topology' })}
       </Typography.Text>
-      <div style={{ height: '160px', width: '590px', margin: '0 auto' }}>
+      <UI.TopologyContainer>
         <TopologyDiagram
           pinData={pinData}
-          apCount={apListTableQuery.data?.totalCount ?? 0}
-          identityCount={personaListTableQuery.data?.totalCount ?? 0}
+          apCount={apListTableQuery.data?.totalCount}
+          identityCount={personaListTableQuery.data?.totalCount}
           onClick={handleDiagramOnClick}
         />
-      </div>
+      </UI.TopologyContainer>
     </Card>
     <Card>
       <UI.InstancesMargin>

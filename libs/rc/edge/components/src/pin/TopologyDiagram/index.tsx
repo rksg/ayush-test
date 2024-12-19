@@ -1,57 +1,59 @@
 import { useEffect, useRef } from 'react'
 
 import * as d3     from 'd3'
+import { set }     from 'lodash'
 import { useIntl } from 'react-intl'
 
-// import { Loader }                   from '@acx-ui/components'
 import { PersonalIdentityNetworks, transformDisplayNumber } from '@acx-ui/rc/utils'
 
 import Diagram                        from '../../assets/images/personal-identity-diagrams/pin-edge-switch-ap-horizontal.svg'
 import { PinDetailTableGroupTabType } from '../type'
 
+import { diagramItemInfo } from './configs'
+
+
 type TextType = d3.Selection<SVGTextElement, unknown, null, undefined> | null
 type ActionFrameType = d3.Selection<SVGRectElement, unknown, null, undefined> | null
+type GraphRefInterface = {
+  img: d3.Selection<d3.BaseType, unknown, null, undefined> | null ,
+  identityFrame: ActionFrameType,
+  identityLabel: TextType,
+  networkFrame: ActionFrameType,
+  networkLabel: TextType,
+  apFrame: ActionFrameType,
+  apLabel: TextType,
+  distributionSwitchFrame: ActionFrameType,
+  distributionSwitchLabel: TextType,
+  accessSwitchFrame: ActionFrameType,
+  accessSwitchLabel: TextType,
+  edgeLabel: TextType
+}
 
-interface TopologyDiagramProps {
+export interface TopologyDiagramProps {
   pinData: PersonalIdentityNetworks | undefined
-  apCount: number
-  identityCount: number
+  apCount: number | undefined
+  identityCount: number | undefined
   onClick: (type: PinDetailTableGroupTabType) => void
-  isLoading?: boolean
 }
 
 const TopologyDiagram = (props: TopologyDiagramProps) => {
-  const { pinData, apCount, identityCount, onClick, isLoading = false } = props
+  const { pinData, apCount, identityCount, onClick } = props
   const { $t } = useIntl()
+
   const graphRef = useRef<SVGSVGElement>(null)
-  const graphElemRef = useRef<{
-    img: d3.Selection<d3.BaseType, unknown, null, undefined> | null ,
-    identityFrame: ActionFrameType,
-    identityText: TextType,
-    networkFrame: ActionFrameType,
-    networkText: TextType,
-    apFrame: ActionFrameType,
-    apText: TextType,
-    distributionSwitchFrame: ActionFrameType,
-    distributionSwitchText: TextType,
-    accessSwitchFrame: ActionFrameType,
-    accessSwitchText: TextType,
-    edgeFrame: ActionFrameType,
-    edgeText: TextType
-  }>({
+  const graphElemRef = useRef<GraphRefInterface>({
     img: null,
-    identityText: null,
+    identityLabel: null,
     identityFrame: null,
-    networkText: null,
+    networkLabel: null,
     networkFrame: null,
-    apText: null,
+    apLabel: null,
     apFrame: null,
-    distributionSwitchText: null,
+    distributionSwitchLabel: null,
     distributionSwitchFrame: null,
-    accessSwitchText: null,
+    accessSwitchLabel: null,
     accessSwitchFrame: null,
-    edgeText: null,
-    edgeFrame: null
+    edgeLabel: null
   })
 
 
@@ -59,193 +61,97 @@ const TopologyDiagram = (props: TopologyDiagramProps) => {
     return d3.select(graphRef.current)
   }
 
-  const initIdentity = () => {
+  const initControlFrameAndLabel = () => {
     const d3Object = getD3Instance()
-    graphElemRef.current.identityFrame = d3Object.append('rect')
-      .attr('x', 0)
-      .attr('y', 65)
-      .attr('width', '75px')
-      .attr('height', '60px')
-      .attr('data-testid', 'diagramNode')
-      .style('fill', 'transparent')
-      .style('cursor', 'pointer')
-      .on('click', () => {
-        console.log('click identityFrame')
-        onClick(PinDetailTableGroupTabType.IDENTITY)
-      })
+    const refKeys = Object.keys(graphElemRef.current)
 
-    graphElemRef.current['identityText'] = d3Object.append('text')
-      .attr('x', 5)
-      .attr('y', 150)
-      .style('font-size', '12px')
-      .style('fill', 'black')
+    diagramItemInfo.forEach((item) => {
+      // item label
+      const labelId = item.label.id
 
+      if (refKeys.includes(labelId)) {
+        const svgText = d3Object.append('text')
+        Object.entries(item.label.attr).forEach(([key, value]) => svgText.attr(key, value))
+
+        svgText.attr('data-testid', 'diagramLabel')
+        svgText.style('font-size', '12px')
+        svgText.style('fill', 'black')
+        set(graphElemRef.current, labelId, svgText)
+      }
+
+      // item control frame
+      if (!item.controlFrame) return
+      const frameId = item.controlFrame.id
+
+      if (refKeys.includes(frameId)) {
+        const svgRect = d3Object.append('rect')
+        Object.entries(item.controlFrame.attr).forEach(([key, value]) => svgRect.attr(key, value))
+        svgRect.attr('data-testid', 'diagramControlFrame')
+        svgRect.style('fill', 'transparent')
+        svgRect.style('cursor', 'pointer')
+        svgRect.on('click', () => onClick(item.controlFrame.type))
+        set(graphElemRef.current, frameId, svgRect)
+      }
+    })
+
+    graphElemRef.current['edgeLabel']?.text($t({ defaultMessage: 'RUCKUS Edge' } ))
   }
 
-  const initNetwork = () => {
-    const d3Object = getD3Instance()
-    graphElemRef.current.networkFrame = d3Object.append('rect')
-      .attr('x', 75)
-      .attr('y', 20)
-      .attr('width', '50px')
-      .attr('height', '65px')
-      .attr('data-testid', 'diagramNode')
-      .style('fill', 'transparent')
-      .style('cursor', 'pointer')
-      .on('click', () => {
-        console.log('click networkFrame')
-        onClick(PinDetailTableGroupTabType.NETWORK)
-      })
-
-    graphElemRef.current['networkText'] = d3Object.append('text')
-      .attr('x', 80)
-      .attr('y', 10)
-      .style('font-size', '12px')
-      .style('fill', 'black')
-
-  }
-
-  const initAp = () => {
-    const d3Object = getD3Instance()
-    graphElemRef.current.apFrame = d3Object.append('rect')
-      .attr('x', 125)
-      .attr('y', 60)
-      .attr('width', '85px')
-      .attr('height', '60px')
-      .attr('data-testid', 'diagramNode')
-      .style('fill', 'transparent')
-      .style('cursor', 'pointer')
-      .on('click', () => {
-        console.log('click apFrame')
-        onClick(PinDetailTableGroupTabType.AP)
-      })
-
-    graphElemRef.current['apText'] = d3Object.append('text')
-      .attr('x', '155')
-      .attr('y', '150')
-      .style('font-size', '12px')
-      .style('fill', 'black')
-  }
-
-  const initAccessSwitch = () => {
-    const d3Object = getD3Instance()
-    graphElemRef.current.accessSwitchFrame = d3Object.append('rect')
-      .attr('x', 255)
-      .attr('y', 60)
-      .attr('width', '90px')
-      .attr('height', '60px')
-      .attr('data-testid', 'diagramNode')
-      .style('fill', 'transparent')
-      .style('cursor', 'pointer')
-      .on('click', () => {
-        console.log('click accessSwitchFrame')
-        onClick(PinDetailTableGroupTabType.AS)
-      })
-
-    graphElemRef.current['accessSwitchText'] = d3Object.append('text')
-      .attr('x', '255')
-      .attr('y', '150')
-      .style('font-size', '12px')
-      .style('fill', 'black')
-  }
-
-  const initDistributionSwitch = () => {
-    const d3Object = getD3Instance()
-    graphElemRef.current.distributionSwitchFrame = d3Object.append('rect')
-      .attr('x', 395)
-      .attr('y', 60)
-      .attr('width', '90px')
-      .attr('height', '60px')
-      .attr('data-testid', 'diagramNode')
-      .style('fill', 'transparent')
-      .style('cursor', 'pointer')
-      .on('click', () => {
-        console.log('click distributionFrame')
-        onClick(PinDetailTableGroupTabType.DS)
-      })
-
-    graphElemRef.current['distributionSwitchText'] = d3Object.append('text')
-      .attr('x', '400')
-      .attr('y', '150')
-      .style('font-size', '12px')
-      .style('fill', 'black')
-  }
-
-  const initTexts = () => {
-    const d3Object = getD3Instance()
-    initIdentity()
-    initNetwork()
-    initAp()
-    initDistributionSwitch()
-    initAccessSwitch()
-
-    graphElemRef.current['edgeText'] = d3Object.append('text')
-      .attr('x', '535')
-      .attr('y', '150')
-      .style('font-size', '12px')
-      .style('fill', 'black')
-      .text($t({ defaultMessage: 'RUCKUS Edge' } ))
-  }
-
-  const updateInfo = (data: PersonalIdentityNetworks) => {
-    console.log('pinData', data)
+  const updatePinInfo = (data: PersonalIdentityNetworks) => {
     const wlanCount = transformDisplayNumber(data?.tunneledWlans.length)
     const asCount = transformDisplayNumber(data.accessSwitchInfos.length)
     const dsCount = transformDisplayNumber(data.distributionSwitchInfos.length)
 
-    graphElemRef.current.networkText?.text(
+    graphElemRef.current.networkLabel?.text(
       $t({ defaultMessage: 'Network: {wlanCount}' },
         { wlanCount })
     )
 
-    graphElemRef.current.accessSwitchText?.text(
+    graphElemRef.current.accessSwitchLabel?.text(
       $t({ defaultMessage: 'Access Switch: {asCount}' },
         { asCount })
     )
 
-    graphElemRef.current.distributionSwitchText?.text(
+    graphElemRef.current.distributionSwitchLabel?.text(
       $t({ defaultMessage: 'Dist. Switch: {dsCount}' },
         { dsCount })
     )
   }
 
   useEffect(() => {
+    if (graphElemRef.current.img) return
+
     const d3Object = getD3Instance()
+    graphElemRef.current.img = d3Object.append('svg:image')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', '100%')
+      .attr('height', '100%')
+      .attr('data-testid', 'diagram')
+      .attr('xlink:href', Diagram)
 
-    if (graphElemRef.current.img === null) {
-      graphElemRef.current.img = d3Object.append('svg:image')
-        .attr('x', 0)
-        .attr('y', 0)
-        .attr('width', '100%')
-        .attr('height', '100%')
-        .attr('data-testid', 'diagramNode')
-        .attr('xlink:href', Diagram)
-
-      initTexts()
-    }
+    initControlFrameAndLabel()
   }, [])
 
   useEffect(() => {
-    console.log('Diagram', pinData)
-    if (pinData)
-      updateInfo(pinData)
+    if (pinData) updatePinInfo(pinData)
   }, [pinData])
 
   useEffect(() => {
-    graphElemRef.current.apText?.text(
+    graphElemRef.current.apLabel?.text(
       $t({ defaultMessage: 'AP: {apCount}' },
         { apCount })
     )
   }, [apCount])
 
   useEffect(() => {
-    graphElemRef.current.identityText?.text(
+    graphElemRef.current.identityLabel?.text(
       $t({ defaultMessage: 'Identity: {identityCount}' },
         { identityCount })
     )
   }, [identityCount])
 
-  return <svg ref={graphRef} width='100%' height='100%' />
+  return <svg ref={graphRef} width='100%' height='100%' overflow='visible' />
 }
 
 export default TopologyDiagram

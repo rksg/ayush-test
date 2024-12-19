@@ -1,12 +1,11 @@
-import { Space } from 'antd'
-import styled    from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 export const InstancesMargin = styled.div`
   margin: 10px 0px;
 `
 
-export const StyledSpace = styled(Space)`
-  & > .ant-space-item:not(:last-child) {
-    margin-bottom: -15px;
-  }
+export const TopologyContainer = styled.div`
+  height: 160px;
+  width: 590px;
+  margin: 0 auto;
 `

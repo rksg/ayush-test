@@ -1,14 +1,9 @@
-import {
-  DpskDetailsTabKey,
-  getPolicyDetailsLink,
-  getServiceDetailsLink,
-  MacRegistrationDetailsTabKey,
-  PolicyOperation,
-  PolicyType,
-  ServiceOperation,
-  ServiceType
-} from '@acx-ui/rc/utils'
 import { render,screen } from '@acx-ui/test-utils'
+
+import { ServiceType }                                                         from '../../constants'
+import { getPolicyDetailsLink, MacRegistrationDetailsTabKey, PolicyOperation } from '../../features/policy/policyRouteUtils'
+import { DpskDetailsTabKey, getServiceDetailsLink, ServiceOperation }          from '../../features/service/serviceRouteUtils'
+import { PolicyType }                                                          from '../../types/policies/common'
 
 import {
   ConnectionMeteringLink,
