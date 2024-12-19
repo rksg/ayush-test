@@ -25,6 +25,7 @@ export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
   const isEdgeFeatureReady = useIsSplitOn(featureFlagKey)
   const isEdgeAdvEnabled = useIsTierAllowed(TierFeatures.EDGE_ADV)
   const isEdgeAvReportEnabled = useIsTierAllowed(TierFeatures.EDGE_AV_REPORT)
+  const isEdgeNatTEnabled = useIsTierAllowed(TierFeatures.EDGE_NAT_T)
 
   const isEnabledWithBooleanFlag = isEdgeEnabled && isEdgeFeatureReady
   switch(featureFlagKey) {
@@ -32,6 +33,8 @@ export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
       return isEnabledWithBooleanFlag && isEdgeAdvEnabled
     case Features.EDGE_AV_REPORT_TOGGLE:
       return isEnabledWithBooleanFlag && isEdgeAvReportEnabled
+    case Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE:
+      return isEnabledWithBooleanFlag && isEdgeNatTEnabled
     default:
       return isEnabledWithBooleanFlag
   }

@@ -229,6 +229,10 @@ describe('EditTunnelProfile', () => {
   describe('when NAT-T Support P1 is ready', () => {
     const mockedReqSdLan = jest.fn()
     beforeEach(() => {
+      jest.mocked(useIsTierAllowed).mockImplementation((flag: string) => {
+        if (flag === TierFeatures.EDGE_NAT_T ) return true
+        return false
+      })
       jest.mocked(useIsSplitOn).mockImplementation((flag: string) => {
         if (flag === Features.EDGES_TOGGLE ||
           flag === Features.EDGES_SD_LAN_HA_TOGGLE ||
