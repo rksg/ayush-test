@@ -28,7 +28,7 @@ import {
   useMacRegListsQuery,
   useSyslogPolicyListQuery,
   useGetDirectoryServerViewDataListQuery,
-  useSwitchPortProfilesListQuery
+  useSwitchPortProfilesCountQuery
 } from '@acx-ui/rc/services'
 import {
   IncompatibilityFeatures,
@@ -360,7 +360,7 @@ function useCardData (): PolicyCardData[] {
       type: PolicyType.PORT_PROFILE,
       categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
       // eslint-disable-next-line max-len
-      totalCount: (useSwitchPortProfilesListQuery({ params, payload: {} }, { skip: !isSwitchPortProfileEnabled }).data?.totalCount ?? 0) + (useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !isEthernetPortProfileEnabled }).data?.totalCount ?? 0),
+      totalCount: (useSwitchPortProfilesCountQuery({ params, payload: {} }, { skip: !isSwitchPortProfileEnabled }).data ?? 0) + (useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !isEthernetPortProfileEnabled }).data?.totalCount ?? 0),
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink('/policies/portProfile/wifi'),
       disabled: !isEthernetPortProfileEnabled && !isSwitchPortProfileEnabled

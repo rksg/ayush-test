@@ -1765,6 +1765,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchPortProfile', id: 'LIST' }]
     }),
+    switchPortProfilesCount: build.query<number, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          SwitchUrlsInfo.getSwitchPortProfilesCount, params, customHeaders.v1)
+        return {
+          ...req
+        }
+      }
+    }),
     addSwitchPortProfile: build.mutation<SwitchPortProfiles, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
@@ -2190,6 +2199,7 @@ export const {
   useUpdateSwitchAuthenticationMutation,
   useSwitchPortProfilesListQuery,
   useLazySwitchPortProfilesListQuery,
+  useSwitchPortProfilesCountQuery,
   useSwitchPortProfilesDetailQuery,
   useAddSwitchPortProfileMutation,
   useEditSwitchPortProfileMutation,

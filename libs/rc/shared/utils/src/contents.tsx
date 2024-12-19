@@ -562,19 +562,21 @@ export const SwitchPortProfileMessages = {
     defaultMessage: 'Define LLDP match criterion - like the System Name and/or Description.'
   }),
   // eslint-disable-next-line max-len
-  POE_ENABLED: defineMessage({ defaultMessage: 'When MAC OUI or LLDP TLV is selected for this port profile, the “PoE Enable” toggle button cannot be turned off.' }),
+  POE_ENABLED: defineMessage({ defaultMessage: 'When MAC OUI or LLDP TLV is selected for this port profile, PoE cannot be turned off.' }),
   // eslint-disable-next-line max-len
-  MACOUI_POE_DISABLED: defineMessage({ defaultMessage: 'The "PoE Enable" toggle button is currently off. To select MAC OUI, please turn on the "PoE Enable" toggle button above.' }),
+  POE_LABEL: defineMessage({ defaultMessage: 'PoE needs to be enabled in order to assign MAC OUI and LLDP TLV to this profile.' }),
   // eslint-disable-next-line max-len
-  LLDPTLV_POE_DISABLED: defineMessage({ defaultMessage: 'The "PoE Enable" toggle button is currently off. To select LLDP TLV, please turn on the "PoE Enable" toggle button above.' }),
+  MACOUI_POE_DISABLED: defineMessage({ defaultMessage: 'PoE needs to be enabled in order to assign MAC OUI to this profile. ' }),
+  // eslint-disable-next-line max-len
+  LLDPTLV_POE_DISABLED: defineMessage({ defaultMessage: 'PoE needs to be enabled in order to assign LLDP TLV to this profile. ' }),
   // eslint-disable-next-line max-len
   APPLY_PORT_PROFILE_CHANGE: defineMessage({ defaultMessage: 'Changes to the port profile will get automatically applied to the associated ports.' }),
   // eslint-disable-next-line max-len
-  IPSG_ENABLED: defineMessage({ defaultMessage: 'When the IPSG toggle button is turned on, the "Ingress ACL (IPv4)" cannot be configured, and the "802.1x" and "MAC Auth" buttons cannot be enabled.' }),
+  IPSG_ENABLED: defineMessage({ defaultMessage: 'IPSG needs to be disabled in order to enable Ingress ACL, 802.1x and MAC Auth to this profile.' }),
   // eslint-disable-next-line max-len
-  INGRESS_ACL_DISABLED: defineMessage({ defaultMessage: 'The "IPSG" toggle button is currently on. To configure the Ingress ACL (IPv4), please turn off the "IPSG" toggle button above.' }),
+  INGRESS_ACL_DISABLED: defineMessage({ defaultMessage: 'Ingress ACL cannot be selected if IPSG is turned ON.' }),
   // eslint-disable-next-line max-len
-  DOT1X_DISABLED: defineMessage({ defaultMessage: 'The "IPSG" toggle button is currently on. To enable 802.1x, please turn off the "IPSG" toggle button above.' }),
+  DOT1X_DISABLED: defineMessage({ defaultMessage: '802.1x cannot be selected if IPSG is turned ON.' }),
   // eslint-disable-next-line max-len
-  MAC_AUTH_DISABLED: defineMessage({ defaultMessage: 'The "IPSG" toggle button is currently on. To enable MAC Auth, please turn off the "IPSG" toggle button above.' })
+  MAC_AUTH_DISABLED: defineMessage({ defaultMessage: 'MAC Auth cannot be selected if IPSG is turned ON.' })
 }

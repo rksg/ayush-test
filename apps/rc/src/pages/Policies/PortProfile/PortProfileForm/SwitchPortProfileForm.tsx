@@ -354,20 +354,32 @@ export function SwitchPortProfileForm () {
             <Divider />
             <UI.FieldLabel width={'250px'}>
               <Space align='start'>
-                { intl.$t({ defaultMessage: 'PoE Enable' }) }
+                {
+                  <Form.Item
+                    label={<><span style={{ color: 'var(--acx-primary-black)' }}>
+                      {intl.$t({ defaultMessage: 'PoE Enable' })}</span>
+                    <Tooltip.Question
+                      title={intl.$t(SwitchPortProfileMessages.POE_LABEL)}
+                    /></>}
+                    style={{ marginTop: '5px' }}
+                  />
+                }
               </Space>
               <Form.Item
                 name={'poeEnable'}
                 valuePropName='checked'
-                initialValue={poeEnable}
-                children={<Tooltip title={intl.$t(SwitchPortProfileMessages.POE_ENABLED)}>
+                initialValue={true}
+                children={<Tooltip title={poeEnable &&
+                  (macOuis?.length > 0 || selectedRowKeys?.length > 0) ?
+                  intl.$t(SwitchPortProfileMessages.POE_ENABLED) : ''}>
                   <Switch
                     data-testid='poeEnable'
                     disabled={macOuis?.length > 0 || selectedRowKeys?.length > 0}
                     onChange={(checked) => {
                       form.setFieldValue('poeEnable', checked)
                     }}
-                    defaultChecked={poeEnable}
+                    defaultChecked={true}
+                    checked={poeEnable}
                   />
                 </Tooltip>}
               />
