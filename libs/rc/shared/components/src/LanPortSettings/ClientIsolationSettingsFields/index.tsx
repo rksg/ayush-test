@@ -131,7 +131,7 @@ const ClientIsolationSettingsFields = (props: ClientIsplationSettingFieldsProps)
                   { label: $t({ defaultMessage: 'Not active' }), value: null, title: null },
                   ...clientIsolationAllowListOptions
                 ]}
-                onChange={(value) => onClientIsolationProfileIdChanged(value)}
+                onChange={onClientIsolationProfileIdChanged}
                 disabled={readOnly}
               />
             }
@@ -164,7 +164,7 @@ const ClientIsolationSettingsFields = (props: ClientIsplationSettingFieldsProps)
               <ClientIsolationForm
                 editMode={false}
                 isEmbedded={true}
-                updateInstance={(createId) => updateClientIsolationInstance(createId)}
+                updateInstance={updateClientIsolationInstance}
               />
             }
             width={'80%'}
