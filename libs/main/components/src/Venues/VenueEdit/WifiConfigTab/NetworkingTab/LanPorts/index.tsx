@@ -444,7 +444,7 @@ export function LanPorts () {
     isFetching: isUpdatingVenueLanPorts
   }]}>
     <Row gutter={24}>
-      <Col span={8}>
+      <Col span={6}>
         <Form.Item
           name='model'
           label={$t({ defaultMessage: 'AP Model' })}

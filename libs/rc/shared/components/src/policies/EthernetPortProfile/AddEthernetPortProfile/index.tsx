@@ -7,7 +7,7 @@ import { EthernetPortProfileFormType }                                          
 import { EthernetPortProfileForm, requestPreProcess } from '../EthernetPortProfileForm'
 
 interface AddEthernetPortProfileFormProps {
-  isNoPageHeader?: boolean
+  isEmbedded?: boolean
   onClose?: ()=>void
   updateInstance?: (createId:string)=>void
 }
@@ -18,7 +18,7 @@ export const AddEthernetPortProfile = (props: AddEthernetPortProfileFormProps) =
   const [ createEthernetPortProfile ] = useCreateEthernetPortProfileMutation()
   const [ updateEthernetPortProfileRadiusId ] = useUpdateEthernetPortProfileRadiusIdMutation()
   const [form] = Form.useForm()
-  const { onClose, isNoPageHeader, updateInstance } = props
+  const { onClose, isEmbedded, updateInstance } = props
 
   const handleAddEthernetPortProfile = async (data: EthernetPortProfileFormType) => {
     try {
@@ -59,7 +59,7 @@ export const AddEthernetPortProfile = (props: AddEthernetPortProfileFormProps) =
           onFinish={handleAddEthernetPortProfile}
           form={form}
           onCancel={onClose}
-          isNoPageHeader={isNoPageHeader}
+          isEmbedded={isEmbedded}
         />
       </Col>
     </Row>
