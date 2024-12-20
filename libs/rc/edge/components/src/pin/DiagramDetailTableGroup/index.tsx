@@ -8,7 +8,7 @@ import { useIsSplitOn, Features }                 from '@acx-ui/feature-toggle'
 import { useApListQuery, useGetEdgePinByIdQuery } from '@acx-ui/rc/services'
 import { Persona, TableQuery, useTableQuery }     from '@acx-ui/rc/utils'
 
-import { usePersonaListQuery }                     from '../../identityGroup/usePersonaListQuery'
+import { usePersonaListQuery }                     from '../../identityGroup'
 import { PersonalIdentityNetworkDetailTableGroup } from '../PersonalIdentityNetworkDetailTableGroup'
 import { defaultApPayload }                        from '../PersonalIdentityNetworkDetailTableGroup/ApsTable'
 import  TopologyDiagram                            from '../TopologyDiagram'

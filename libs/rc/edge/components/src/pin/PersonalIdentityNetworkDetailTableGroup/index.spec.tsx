@@ -11,7 +11,7 @@ import {
 import { Provider }                   from '@acx-ui/store'
 import { render, renderHook, screen } from '@acx-ui/test-utils'
 
-import { usePersonaListQuery } from '../../identityGroup/usePersonaListQuery'
+import { usePersonaListQuery } from '../../identityGroup'
 
 import { defaultApPayload } from './ApsTable'
 
@@ -23,7 +23,7 @@ jest.mock('@acx-ui/rc/services', () => ({
     data: { totalCount: 2 }
   })
 }))
-jest.mock('../../identityGroup/usePersonaListQuery', () => ({
+jest.mock('../../identityGroup', () => ({
   usePersonaListQuery: jest.fn().mockReturnValue({
     data: {}
   })

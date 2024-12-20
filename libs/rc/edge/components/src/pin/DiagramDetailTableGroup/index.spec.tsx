@@ -5,7 +5,7 @@ import { useGetEdgePinByIdQuery }          from '@acx-ui/rc/services'
 import { useTableQuery }                   from '@acx-ui/rc/utils'
 import { render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { usePersonaListQuery }                          from '../../identityGroup/usePersonaListQuery'
+import { usePersonaListQuery }                          from '../../identityGroup'
 import { PersonalIdentityNetworkDetailTableGroupProps } from '../PersonalIdentityNetworkDetailTableGroup'
 import { TopologyDiagramProps }                         from '../TopologyDiagram'
 import { PinDetailTableGroupTabType }                   from '../type'
@@ -25,7 +25,7 @@ jest.mock('@acx-ui/rc/utils', () => ({
   })
 }))
 
-jest.mock('../../identityGroup/usePersonaListQuery', () => ({
+jest.mock('../../identityGroup', () => ({
   usePersonaListQuery: jest.fn()
 }))
 

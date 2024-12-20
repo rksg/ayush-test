@@ -1,9 +1,15 @@
 import { render,screen } from '@acx-ui/test-utils'
 
-import { ServiceType }                                                         from '../../constants'
-import { getPolicyDetailsLink, MacRegistrationDetailsTabKey, PolicyOperation } from '../../features/policy/policyRouteUtils'
-import { DpskDetailsTabKey, getServiceDetailsLink, ServiceOperation }          from '../../features/service/serviceRouteUtils'
-import { PolicyType }                                                          from '../../types/policies/common'
+import { ServiceType } from '../../constants'
+import {
+  DpskDetailsTabKey,
+  getPolicyDetailsLink,
+  getServiceDetailsLink,
+  MacRegistrationDetailsTabKey,
+  PolicyOperation,
+  ServiceOperation
+} from '../../features'
+import { PolicyType } from '../../types'
 
 import {
   ConnectionMeteringLink,
