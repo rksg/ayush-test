@@ -9,13 +9,14 @@ import {
   EthernetPortProfileUrls,
   EthernetPortProfileViewData,
   EthernetPortProfile,
-  EthernetPortOverwrites,
   ApiVersionEnum,
   GetApiVersionHeader,
   CapabilitiesApModel,
   ApLanPortTypeEnum,
   EthernetPortType,
-  EthernetPortAuthType
+  EthernetPortAuthType,
+  LanPortAPSettings,
+  LanPortVenueSettings
 } from '@acx-ui/rc/utils'
 import { baseEthernetPortProfileApi } from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
@@ -119,7 +120,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
                 portId: portId.toString()
               })
             const apEthPortOverwrites = await fetchWithBQ(apPortOverwriteReq)
-            return { ...(apEthPortOverwrites.data as EthernetPortOverwrites),
+            return { ...(apEthPortOverwrites.data as LanPortAPSettings),
               portId: portId }
           }
 
@@ -269,7 +270,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
     }),
 
     // eslint-disable-next-line max-len
-    getEthernetPortProfileSettingsByVenueApModel: build.query<EthernetPortOverwrites, RequestPayload>({
+    getEthernetPortProfileSettingsByVenueApModel: build.query<LanPortVenueSettings, RequestPayload>({
       query: ({ params }) => {
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
         const req = createHttpRequest(
@@ -281,7 +282,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
     }),
 
     updateEthernetPortSettingsByVenueApModel:
-      build.mutation<EthernetPortOverwrites, RequestPayload>({
+      build.mutation<LanPortVenueSettings, RequestPayload>({
         query: ({ params, payload }) => {
           const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
           const req = createHttpRequest(
@@ -308,7 +309,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
       }
     }),
     getEthernetPortProfileOverwritesByApPortId:
-    build.query<EthernetPortOverwrites, RequestPayload>({
+    build.query<LanPortAPSettings, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
           EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId, params)
