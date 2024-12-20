@@ -47,6 +47,7 @@ export function SwitchPortTable (props: {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchV6AclEnabled = useIsSplitOn(Features.SUPPORT_SWITCH_V6_ACL)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
+  const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
 
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -80,7 +81,7 @@ export function SwitchPortTable (props: {
     enableAggregateStackMember: false,
     enableRbac: isSwitchRbacEnabled
   }, {
-    skip: !isSwitchRbacEnabled || !vid || !isSwitchFlexAuthEnabled
+    skip: !isSwitchRbacEnabled || !vid || !isSwitchFlexAuthEnabled || !isSwitchPortProfileEnabled
   })
 
   const vlanFilterOptions = Array.isArray(vlanList) ? vlanList.map(v => ({
