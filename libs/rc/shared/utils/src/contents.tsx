@@ -541,6 +541,6 @@ export const EthernetPortProfileMessages = {
 export const ClientIsolationMessages = {
   /* eslint-disable max-len */
   ENABLE_TOGGLE: defineMessage({
-    defaultMessage: 'Please note that the uplink port does not support client isolation, which will cause the AP(s) to disconnect. Enabling or disabling wired client isolation will prompt a reboot of AP devices within this <venueSingular></venueSingular>.'
+    defaultMessage: 'Switching client isolation requires a manual device reboot to take effect. You can select the specific AP devices from the AP list and click the ‘Reboot’ button to restart them.'
   })
 }

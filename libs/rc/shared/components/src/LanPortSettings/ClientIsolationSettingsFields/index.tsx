@@ -48,12 +48,27 @@ const ClientIsolationSettingsFields = (props: ClientIsplationSettingFieldsProps)
         }
       })
 
+  const onClientIsolationProfileIdChanged = (value: string) => {
+    if(!value) {
+      setDetailVisible(false)
+    }
+    onGUIChanged?.('clientIsolationProfileId')
+  }
+
+  const updateClientIsolationInstance = (createId?: string) => {
+    if(createId) {
+      setClientIsoCreateId(createId)
+    }
+    setFormVisible(false)
+  }
+
   useEffect(() => {
     if(clientIsoCreateId) {
       form.setFieldValue(clientIsolationProfileIdFieldName, clientIsoCreateId)
       setClientIsoCreateId('')
     }
   }, [clientIsolationAllowListOptions])
+
 
   return (
     <>
@@ -116,12 +131,7 @@ const ClientIsolationSettingsFields = (props: ClientIsplationSettingFieldsProps)
                   { label: $t({ defaultMessage: 'Not active' }), value: null, title: null },
                   ...clientIsolationAllowListOptions
                 ]}
-                onChange={(value) => {
-                  if(!value) {
-                    setDetailVisible(false)
-                  }
-                  onGUIChanged?.('clientIsolationProfileId')
-                }}
+                onChange={(value) => onClientIsolationProfileIdChanged(value)}
                 disabled={readOnly}
               />
             }
@@ -154,13 +164,7 @@ const ClientIsolationSettingsFields = (props: ClientIsplationSettingFieldsProps)
               <ClientIsolationForm
                 editMode={false}
                 isEmbedded={true}
-                updateInstance={(createId) => {
-                  if(createId) {
-                    setClientIsoCreateId(createId)
-                  }
-
-                  setFormVisible(false)
-                }}
+                updateInstance={(createId) => updateClientIsolationInstance(createId)}
               />
             }
             width={'80%'}

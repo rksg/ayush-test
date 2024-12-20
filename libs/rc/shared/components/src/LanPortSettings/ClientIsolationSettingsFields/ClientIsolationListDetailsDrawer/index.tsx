@@ -1,11 +1,11 @@
 import { Form, Table, TableProps } from 'antd'
 import { useIntl }                 from 'react-intl'
 
-import { Drawer }                     from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { useGetClientIsolationQuery } from '@acx-ui/rc/services'
-import { ClientIsolationClient }      from '@acx-ui/rc/utils'
-import { useParams }                  from '@acx-ui/react-router-dom'
+import { Drawer }                                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { useGetClientIsolationQuery }                    from '@acx-ui/rc/services'
+import { ClientIsolationClient, transformDisplayNumber } from '@acx-ui/rc/utils'
+import { useParams }                                     from '@acx-ui/react-router-dom'
 
 interface ClientIsolationAllowListDetailsDrawerProps {
   visible: boolean
@@ -59,7 +59,7 @@ const ClientIsolationAllowListDetailsDrawer = (props: ClientIsolationAllowListDe
       <Form.Item
         label={$t(
           { defaultMessage: 'Client Entries ({count})' },
-          { count: clientIsolationData?.allowlist?.length || 0 }
+          { count: transformDisplayNumber(clientIsolationData?.allowlist?.length) }
         )}
       />
       <Table<ClientIsolationClient>
