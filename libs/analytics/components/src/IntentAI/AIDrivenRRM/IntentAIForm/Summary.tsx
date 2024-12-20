@@ -20,7 +20,7 @@ export function Summary () {
     <Col span={16}>
       <StepsForm.Title children={$t({ defaultMessage: 'Summary' })} />
       <Form.Item label={$t({ defaultMessage: 'Projected interfering links reduction' })}>
-        <IntentAIRRMGraph/>
+        <IntentAIRRMGraph />
       </Form.Item>
       {getGraphKPIs(intent, kpis).map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
       <ScheduleTiming.FieldSummary />

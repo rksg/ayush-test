@@ -133,7 +133,7 @@ const GraphTitle = ({ details }: { details: IntentDetail }) => {
   </UI.GraphTitleWrapper>
 }
 
-export const IntentAIRRMGraph = () => {
+export const IntentAIRRMGraph = ({ detailsPage } : { detailsPage?: boolean }) => {
   const { $t } = useIntl()
   const { intent, state, isDataRetained } = useIntentContext()
   const [ visible, setVisible ] = useState<boolean>(false)
@@ -158,10 +158,18 @@ export const IntentAIRRMGraph = () => {
   }
 
   return <UI.Wrapper>
-    <div hidden>
-      <SummaryGraphBefore detailsPage crrmData={crrmData} setUrl={setSummaryUrlBefore} />
-      <SummaryGraphAfter detailsPage crrmData={crrmData} setUrl={setSummaryUrlAfter} />
-    </div>
+    {crrmData && <div hidden data-testid='hidden-graph'>
+      <SummaryGraphBefore
+        detailsPage={detailsPage}
+        crrmData={crrmData}
+        setUrl={setSummaryUrlBefore}
+      />
+      <SummaryGraphAfter
+        detailsPage={detailsPage}
+        crrmData={crrmData}
+        setUrl={setSummaryUrlAfter}
+      />
+    </div>}
     <Loader states={[queryResult]}>
       <Card>
         <UI.GraphWrapper data-testid='graph-wrapper'

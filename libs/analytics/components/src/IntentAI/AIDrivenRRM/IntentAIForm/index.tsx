@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
@@ -17,8 +15,6 @@ import {
   IntentTransitionPayload,
   useInitialValues
 } from '../../useIntentTransition'
-import { SliderGraphAfter, SliderGraphBefore, SummaryGraphAfter, SummaryGraphBefore } from '../RRMGraph'
-import { useIntentAICRRMQuery }                                                       from '../RRMGraph/services'
 
 import { Introduction } from './Introduction'
 import { Priority }     from './Priority'
@@ -46,21 +42,11 @@ export function IntentAIForm () {
   const { $t } = useIntl()
   const navigate = useNavigate()
 
-  const queryResult = useIntentAICRRMQuery()
-  const crrmData = queryResult.data!
-  const [sliderUrlBefore, setSliderUrlBefore] = useState<string>('')
-  const [sliderUrlAfter, setSliderUrlAfter] = useState<string>('')
-
   const { submit } = useIntentTransition()
   const initialValues = useInitialValues()
 
   return (<>
     <IntentWizardHeader />
-    {/* hide the graph, only rendering the graph image for the slider & summary */}
-    {crrmData && <div hidden data-testid='hidden-graph'>
-      <SliderGraphBefore crrmData={crrmData} setUrl={setSliderUrlBefore} />
-      <SliderGraphAfter crrmData={crrmData} setUrl={setSliderUrlAfter} />
-    </div>}
     <StepsForm
       buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
       initialValues={{
@@ -72,11 +58,7 @@ export function IntentAIForm () {
     >
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Introduction' })}
-        children={<Introduction
-          sliderUrlBefore={sliderUrlBefore}
-          sliderUrlAfter={sliderUrlAfter}
-          queryResult={queryResult}
-        />}
+        children={<Introduction />}
       />
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Intent Priority' })}
