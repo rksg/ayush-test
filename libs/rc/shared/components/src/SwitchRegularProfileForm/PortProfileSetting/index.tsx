@@ -135,9 +135,12 @@ export function PortProfileSetting () {
 
   const arraysAreEqual = (arr1: string[], arr2: string[]) => {
     if (arr1.length !== arr2.length) return false
-    const sortedArr1 = arr1.slice().sort()
-    const sortedArr2 = arr2.slice().sort()
-    return sortedArr1.every((val, index) => val === sortedArr2[index])
+
+    const set1 = new Set(arr1)
+    const set2 = new Set(arr2)
+
+    // Check if both sets are equal
+    return set1.size === set2.size && [...set1].every(item => set2.has(item))
   }
 
   const onSave = (data: PortProfileUI) => {
@@ -163,19 +166,21 @@ export function PortProfileSetting () {
     if (filteredByProfileId) {
       mergedPortProfiles = {
         ...data,
-        models: [...new Set([...data.models, ...filteredByProfileId.models])]
+        models: [...new Set(editMode ? data.models :
+          [...data.models, ...filteredByProfileId.models])]
       }
     } else if (filteredByModel) {
       mergedPortProfiles = {
         ...data,
-        portProfileId: [...new Set([...data.portProfileId, ...filteredByModel.portProfileId])]
+        portProfileId: [...new Set(editMode ? data.portProfileId :
+          [...data.portProfileId, ...filteredByModel.portProfileId])]
       }
     }
 
     const portProfileAPIData = [
       ...result.map(item => portProfilesAPIParser(item)),
       portProfilesAPIParser(mergedPortProfiles)
-    ]
+    ].flat()
 
     setPortProfilesTable([...result, mergedPortProfiles])
     form.setFieldValue('portProfiles', portProfileAPIData)
