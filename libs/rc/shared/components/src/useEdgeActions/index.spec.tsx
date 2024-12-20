@@ -84,6 +84,14 @@ describe('Edge enabled evaluation', () => {
         expect(result.current).toBe(false)
       })
 
+      it('should return false when query with EDGE and EDGE-AV-REPORT feature is OFF', () => {
+        jest.mocked(useIsSplitOn).mockReturnValue(true)
+        jest.mocked(useIsTierAllowed).mockReturnValue(false)
+
+        const { result } = renderHook(() => useIsEdgeFeatureReady(Features.EDGE_AV_REPORT_TOGGLE))
+        expect(result.current).toBe(false)
+      })
+
       it('other feature flags should not considered PLM FF', () => {
         jest.mocked(useIsSplitOn).mockReturnValue(true)
         jest.mocked(useIsTierAllowed).mockReturnValue(false)
