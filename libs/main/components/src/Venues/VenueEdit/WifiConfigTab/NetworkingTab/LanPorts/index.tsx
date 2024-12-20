@@ -1,16 +1,22 @@
-import { useContext, useState, useEffect, useRef } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Image, Row, Select, Space, Tooltip } from 'antd'
 import { isEqual, clone, cloneDeep }                     from 'lodash'
-import _                                                 from 'lodash'
 import { useIntl }                                       from 'react-intl'
 
-import { AnchorContext, Button, Loader, Tabs, showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
+import {
+  AnchorContext,
+  Button,
+  Loader,
+  showActionModal,
+  Tabs
+} from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   LanPortPoeSettings,
   LanPortSettings,
-  ConvertPoeOutToFormData
+  ConvertPoeOutToFormData,
+  useSoftGreProfileActivation
 }
   from '@acx-ui/rc/components'
 import {
@@ -51,7 +57,6 @@ import {
   useVenueConfigTemplateQueryFnSwitcher
 } from '../../../../venueConfigTemplateApiSwitcher'
 import { VenueEditContext } from '../../../index'
-
 
 const { useWatch } = Form
 
@@ -154,7 +159,7 @@ export function LanPorts () {
   const [selectedModelCaps, setSelectedModelCaps] = useState({} as CapabilitiesApModel)
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
   const [resetModels, setResetModels] = useState([] as string[])
-
+  const { dispatch, handleUpdateSoftGreProfile } = useSoftGreProfileActivation(selectedModel)
 
   const form = Form.useFormInstance()
   const [apModel, apPoeMode, lanPoeOut, lanPorts] = [
@@ -334,7 +339,7 @@ export function LanPorts () {
     const { lanPorts, ...rest } = venueLanPorts
     const { lanPorts: originLanPorts, ...originRest } = originVenueLanPorts
 
-    if(!_.isEqual(rest, originRest)) {
+    if(!isEqual(rest, originRest)) {
       await updateLanPortSpecificSetting({
         params: {
           venueId: venueId,
@@ -412,6 +417,8 @@ export function LanPorts () {
           })
           // Update ethernet port profile
           handleUpdateEthernetPortProfile(venueLanPort.model, lanPort, originLanPort)
+          // Update SoftGre Profile
+          handleUpdateSoftGreProfile(venueLanPort.model, lanPort, originLanPort)
           // Update Lan settings
           handleUpdateLanPortSettings(venueLanPort.model, lanPort, originLanPort)
         })
@@ -492,6 +499,7 @@ export function LanPorts () {
                     onGUIChanged={handleGUIChanged}
                     index={index}
                     venueId={venueId}
+                    dispatch={dispatch}
                   />
                 </Col>
               </Row>

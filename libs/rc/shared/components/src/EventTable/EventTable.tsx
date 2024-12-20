@@ -22,7 +22,7 @@ import { computeRangeFilter, DateRangeFilter, exportMessageMapping }      from '
 import { TimelineDrawer } from '../TimelineDrawer'
 import { useIsEdgeReady } from '../useEdgeActions'
 
-import { filtersFrom, getDescription, getDetail, getSource, valueFrom } from './helpers'
+import { filtersFrom, getDescription, getSource, valueFrom } from './helpers'
 import {
   severityMapping,
   eventTypeMapping,
@@ -269,10 +269,6 @@ export const EventTable = ({
     {
       title: defineMessage({ defaultMessage: 'Description' }),
       value: getDescription(data)
-    },
-    {
-      title: defineMessage({ defaultMessage: 'Detail' }),
-      value: getDetail(data)
     }
   ]
 

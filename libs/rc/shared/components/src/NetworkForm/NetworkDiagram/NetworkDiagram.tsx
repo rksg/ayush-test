@@ -60,7 +60,9 @@ interface DefaultDiagramProps extends DiagramProps {
 }
 interface DpskDiagramProps extends DiagramProps {
   isCloudpathEnabled?: boolean;
-  enableAuthProxy?: boolean
+  enableAuthProxy?: boolean;
+  enableAccountingProxy?: boolean;
+  enableAaaAuthBtn?: boolean;
 }
 
 interface OpenDiagramProps extends DiagramProps {
@@ -108,8 +110,13 @@ function getDiagram (props: NetworkDiagramProps) {
 }
 
 function getDPSKDiagram (props:DpskDiagramProps) {
-  return props?.isCloudpathEnabled ? (!!props?.enableAuthProxy? DpskUsingRadiusDiagram
-    : DpskUsingRadiusNonProxyDiagram) : DpskDiagram
+  return props?.isCloudpathEnabled ? getDpskUsingRadiusDiagram(props) : DpskDiagram
+}
+function getDpskUsingRadiusDiagram (props: DpskDiagramProps) {
+  const enableAuthProxyService = props.enableAuthProxy && props.enableAaaAuthBtn
+  const enableAccProxyService = props.enableAccountingProxy && !props.enableAaaAuthBtn
+  return enableAuthProxyService || enableAccProxyService ?
+    DpskUsingRadiusDiagram : DpskUsingRadiusNonProxyDiagram
 }
 function getPSKDiagram (props: PskDiagramProps) {
   return props?.enableMACAuth ? AaaDiagram : PskDiagram

@@ -301,11 +301,27 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           ...req,
           body: JSON.stringify(payload)
         }
-      }
+      },
+      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }]
     }),
     deactivateSoftGreProfileOnVenue: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(SoftGreUrls.deactivateSoftGreProfileOnVenue, params)
+      },
+      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }]
+    }),
+    activateSoftGreProfileOnAP: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(SoftGreUrls.deactivateSoftGreProfileOnVenue, params)
+        const req = createHttpRequest(SoftGreUrls.activateSoftGreProfileOnAP, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    deactivateSoftGreProfileOnAP: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SoftGreUrls.deactivateSoftGreProfileOnAP, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -341,6 +357,8 @@ export const {
   useDectivateSoftGreMutation,
   useActivateSoftGreProfileOnVenueMutation,
   useDeactivateSoftGreProfileOnVenueMutation,
+  useActivateSoftGreProfileOnAPMutation,
+  useDeactivateSoftGreProfileOnAPMutation,
   useGetSoftGreProfileConfigurationOnVenueQuery,
   useLazyGetSoftGreProfileConfigurationOnVenueQuery,
   useGetSoftGreProfileConfigurationOnAPQuery,

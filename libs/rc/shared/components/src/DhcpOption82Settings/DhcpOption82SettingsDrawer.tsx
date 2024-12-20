@@ -1,15 +1,19 @@
 import { useIntl } from 'react-intl'
 
-import { Drawer } from '@acx-ui/components'
+import { Drawer }                                 from '@acx-ui/components'
+import { SoftGreProfileDispatcher, SoftGreState } from '@acx-ui/rc/utils'
 
 import { DhcpOption82SettingsFormField } from './DhcpOption82SettingsFormField'
 interface DhcpOption82SettingsDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
-  callbackFn?: () => void
+  applyCallbackFn: () => void
+  cancelCallbackFn: () => void
   index: number
   onGUIChanged?: (fieldName: string) => void
   readonly: boolean
+  portId?: string
+  dispatch?: React.Dispatch<SoftGreProfileDispatcher>;
 }
 
 
@@ -18,10 +22,13 @@ export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProp
   const {
     visible,
     setVisible,
-    callbackFn = () => {},
+    applyCallbackFn,
+    cancelCallbackFn,
     index,
     onGUIChanged,
-    readonly
+    readonly,
+    portId,
+    dispatch
   } = props
 
   const { $t } = useIntl()
@@ -30,13 +37,20 @@ export const DhcpOption82SettingsDrawer = (props: DhcpOption82SettingsDrawerProp
     try {
       setVisible(false)
       onGUIChanged && onGUIChanged('AddDHCPOption82')
-      callbackFn()
+      applyCallbackFn()
+      // eslint-disable-next-line
+      dispatch && dispatch({
+        state: SoftGreState.TurnOnAndModifyDHCPOption82Settings,
+        portId,
+        index
+      })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
 
   const handleClose = () => {
+    cancelCallbackFn()
     setVisible(false)
   }
 
