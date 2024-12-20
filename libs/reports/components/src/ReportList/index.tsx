@@ -1,10 +1,14 @@
 import { useIntl, defineMessage } from 'react-intl'
 
 import { PageHeader, GridRow, GridCol, RadioCard } from '@acx-ui/components'
+import { Features }                                from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                   from '@acx-ui/rc/components'
 import { useNavigate, useTenantLink }              from '@acx-ui/react-router-dom'
 
 export function ReportList () {
   const { $t } = useIntl()
+
+  const isEdgeAvReportReady = useIsEdgeFeatureReady(Features.EDGE_AV_REPORT_TOGGLE)
 
   /* eslint-disable max-len */
   const reports = [
@@ -52,6 +56,12 @@ export function ReportList () {
       title: $t({ defaultMessage: 'WLANs' }),
       description: $t({ defaultMessage: 'Top Wi-Fi networks by traffic, client count and trends' }),
       path: 'wlans'
+    },
+    {
+      title: $t({ defaultMessage: 'RUCKUS Edge Applications' }),
+      description: $t({ defaultMessage: 'Top RUCKUS Edge applications and traffic distribution by clients and trend' }),
+      path: 'edgeApplications',
+      disabled: !isEdgeAvReportReady
     }
   ]
   /* eslint-enable */
@@ -67,20 +77,22 @@ export function ReportList () {
         breadcrumb={[{ text: $t({ defaultMessage: 'Business Insights' }) }]}
       />
       <GridRow>
-        {reports.map(({ title, description, path }) => (
-          <GridCol key={path} col={{ span: 6 }}>
-            <RadioCard
-              type='button'
-              buttonText={viewText}
-              title={title}
-              description={description}
-              value={path}
-              onClick={() => navigate({
-                ...basePath,
-                pathname: `${basePath.pathname}/${path}`
-              })}
-            />
-          </GridCol>
+        {reports.map(({ title, description, path, disabled }) => (
+          !disabled && (
+            <GridCol key={path} col={{ span: 6 }}>
+              <RadioCard
+                type='button'
+                buttonText={viewText}
+                title={title}
+                description={description}
+                value={path}
+                onClick={() => navigate({
+                  ...basePath,
+                  pathname: `${basePath.pathname}/${path}`
+                })}
+              />
+            </GridCol>
+          )
         ))
         }
       </GridRow>

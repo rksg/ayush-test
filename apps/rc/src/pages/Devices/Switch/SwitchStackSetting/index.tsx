@@ -307,9 +307,7 @@ export function SwitchStackSetting (props: {
         <StaticRoutes readOnly={readOnly} switchDetail={switchDetail}/> }
       {
         isSwitchFlexAuthEnabled && isSwitchFirmwareAbove10010f && <>
-          <Space style={{
-            display: 'flex', margin: '40px 0 30px', justifyContent: 'space-between'
-          }}>
+          <Space size={8} style={{ display: 'flex', margin: '40px 0 30px' }}>
             <Typography.Text style={{ display: 'flex', fontSize: '12px' }}>
               {$t({ defaultMessage: 'Authentication' })}
             </Typography.Text>
@@ -317,7 +315,7 @@ export function SwitchStackSetting (props: {
               noStyle
               name='authEnable'
               valuePropName='checked'
-              children={<Switch />}
+              children={<Switch style={{ display: 'flex' }} />}
             />
           </Space>
           { authEnable && <>

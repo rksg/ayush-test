@@ -104,6 +104,98 @@ describe('NetworkDiagram', () => {
       expect(diagram.src).toContain('Dpsk')
       expect(asFragment()).toMatchSnapshot()
     })
+
+    it('should render DPSK authentication proxy radius diagram successfully', async () => {
+      const { asFragment } = render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram isCloudpathEnabled={true}
+              enableAaaAuthBtn={true}
+              enableAuthProxy={true}/>
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('DpskUsingRadius')
+      expect(asFragment()).toMatchSnapshot()
+    })
+
+    it('should render DPSK authentication non-proxy radius diagram successfully', async () => {
+      const { asFragment } = render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram isCloudpathEnabled={true}
+              enableAaaAuthBtn={true}
+              enableAuthProxy={false}/>
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('DpskUsingRadiusNonProxy')
+      expect(asFragment()).toMatchSnapshot()
+    })
+
+    it('should render DPSK accounting proxy radius diagram successfully', async () => {
+      const { asFragment } = render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram isCloudpathEnabled={true}
+              enableAaaAuthBtn={false}
+              enableAccountingProxy={true}/>
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('DpskUsingRadius')
+      expect(asFragment()).toMatchSnapshot()
+    })
+
+    it('should render DPSK accounting non-proxy radius diagram successfully', async () => {
+      const { asFragment } = render(
+        <Provider>
+          <NetworkFormContext.Provider value={{
+            editMode: false,
+            cloneMode: false,
+            data: { type },
+            setData: jest.fn()
+          }}>
+            <NetworkDiagram isCloudpathEnabled={true}
+              enableAaaAuthBtn={false}
+              enableAccountingProxy={false}/>
+          </NetworkFormContext.Provider>
+        </Provider>, {
+          route: {
+            params
+          }
+        })
+      const diagram = screen.getByRole('img') as HTMLImageElement
+      expect(diagram.src).toContain('DpskUsingRadiusNonProxy')
+      expect(asFragment()).toMatchSnapshot()
+    })
   })
 
   describe('NetworkDiagram - OPEN', () => {

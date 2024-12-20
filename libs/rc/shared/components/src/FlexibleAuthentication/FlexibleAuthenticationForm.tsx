@@ -201,7 +201,7 @@ export const FlexibleAuthenticationForm = (props: {
                 options={Object.values(PortControl).map(controlType => ({
                   label: $t(portControlTypeLabel[controlType]),
                   value: controlType,
-                  disabled: controlType === ''
+                  disabled: controlType !== PortControl.AUTO
                 }))}
                 disabled={getAuthFieldDisabled('dot1xPortControl', authFormWatchValues)}
                 onChange={(value) => handleAuthFieldChange({
