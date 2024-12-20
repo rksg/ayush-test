@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Features, useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getSelectServiceRoutePath,
@@ -289,9 +289,9 @@ jest.mock('./pages/Services/MdnsProxy/Edge/AddEdgeMdnsProxy', () => () => {
 jest.mock('./pages/Services/MdnsProxy/Edge/EdgeMdnsProxyDetails', () => () => {
   return <div data-testid='EdgeMdnsProxyDetails' />
 })
-jest.mock('./pages/Services/MdnsProxy/Edge/EdgeMdnsProxyTable', () => () => {
-  return <div data-testid='EdgeMdnsProxyTable' />
-})
+jest.mock('./pages/Services/MdnsProxy/Edge/EdgeMdnsProxyTable', () => ({
+  EdgeMdnsProxyTable: () => <div data-testid='EdgeMdnsProxyTable' />
+}))
 jest.mock('./pages/Services/MdnsProxy/Edge/EditEdgeMdnsProxy', () => () => {
   return <div data-testid='EditEdgeMdnsProxy' />
 })
@@ -684,10 +684,13 @@ describe('RcRoutes: Devices', () => {
       const detailPagePath = getServiceDetailsLink({ type: ServiceType.PIN, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
 
       beforeEach(() => {
-        jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_PIN_HA_TOGGLE)
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE
+          || ff === Features.EDGES_TOGGLE)
+        jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.EDGE_ADV)
       })
       afterEach(() => {
         jest.mocked(useIsSplitOn).mockReset()
+        jest.mocked(useIsTierAllowed).mockReset()
       })
 
       const getRouteData = (tailPath: string) => ({
@@ -715,6 +718,19 @@ describe('RcRoutes: Devices', () => {
         expect(screen.getByTestId('PersonalIdentityNetworkDetail')).toBeVisible()
       })
 
+      describe('Enhance Edge PIN service', () => {
+        beforeEach(() => {
+          jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE
+            || ff === Features.EDGE_PIN_ENHANCE_TOGGLE
+            || ff === Features.EDGES_TOGGLE)
+        })
+
+        test('should navigate to Edge enhanced PIN detail page', async () => {
+          render(<Provider><RcRoutes /></Provider>, getRouteData(detailPagePath))
+          expect(screen.getByTestId('PersonalIdentityNetworkDetailEnhanced')).toBeVisible()
+          expect(screen.queryByTestId('PersonalIdentityNetworkDetail')).toBeNull()
+        })
+      })
     })
   })
 
