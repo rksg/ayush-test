@@ -53,7 +53,7 @@ export function createIntentContextProvider (
       // which its value is primitive value type
       // to prevent RTK Query unable to use param as cache key
       .map(kpi => _.pick(kpi, ['key', 'deltaSign']))
-    const query = useIntentDetailsQuery({ ...params, kpis }, { skip: !spec })
+    const query = useIntentDetailsQuery({ ...params, kpis, isConfigChangeEnabled }, { skip: !spec })
 
     if (!spec) return null // no matching spec
     if (query.isSuccess && !query.data) return null // 404
@@ -64,7 +64,6 @@ export function createIntentContextProvider (
       (_.pick(query.error, ['data']) as { data: IntentDetail }).data
       : query.data
 
-
     const context: IIntentContext = {
       intent: intent!,
       configuration: spec.configuration,
@@ -73,9 +72,9 @@ export function createIntentContextProvider (
       isDataRetained: isConfigChangeEnabled
         ? intent?.dataCheck.isDataRetained!
         : isDataRetained(intent?.metadata.dataEndTime),
-      ...(isConfigChangeEnabled ? {
-        isHotTierData: intent?.dataCheck.isHotTierData!
-      } : {})
+      isHotTierData: isConfigChangeEnabled
+        ? intent?.dataCheck.isHotTierData!
+        : true
     }
 
     return <Loader states={[isDetectError? _.omit(query, ['error']) : query]}>

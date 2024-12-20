@@ -14,7 +14,6 @@ import {
   Graph as BasicGraph,
   ProcessedCloudRRMGraph
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
 import { useIntentContext }                    from '../../IntentContext'
@@ -141,7 +140,6 @@ export const IntentAIRRMGraph: React.FC<{
   const { intent, state, isDataRetained, isHotTierData } = useIntentContext()
   const [ visible, setVisible ] = useState<boolean>(false)
   const [ key, setKey ] = useState(0)
-  const isConfigChangeEnabled = useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE)
 
   const showDrawer = () => setVisible(true)
   const closeDrawer = () => setVisible(false)
@@ -150,12 +148,8 @@ export const IntentAIRRMGraph: React.FC<{
   const title = $t({ defaultMessage: 'Key Performance Indications' })
   const noData = state === 'no-data'
 
-  if (isConfigChangeEnabled) {
-    if (!isHotTierData) return <Card>{$t(coldTierDataText)}</Card>
-    if (!isDataRetained) return <Card>{$t(dataRetentionText)}</Card>
-  } else {
-    if (!isDataRetained) return <Card>{$t(dataRetentionText)}</Card>
-  }
+  if (!isHotTierData) return <Card>{$t(coldTierDataText)}</Card>
+  if (!isDataRetained) return <Card>{$t(dataRetentionText)}</Card>
 
   if (noData) {
     return <Card>

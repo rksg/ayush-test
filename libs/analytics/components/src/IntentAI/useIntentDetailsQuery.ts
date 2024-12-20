@@ -163,8 +163,9 @@ type IntentDetailsQueryPayload = {
 
 export const api = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
-    intentDetails: build.query<IntentDetail | undefined, IntentDetailsQueryPayload>({
-      query: ({ root, sliceId, code, kpis }: IntentDetailsQueryPayload) => ({
+    intentDetails: build.query<
+    IntentDetail | undefined, IntentDetailsQueryPayload & { isConfigChangeEnabled: boolean }>({
+      query: ({ root, sliceId, code, kpis, isConfigChangeEnabled }) => ({
         document: gql`
           query IntentDetails($root: String!, $sliceId: String!, $code: String!) {
             intent(root: $root, sliceId: $sliceId, code: $code) {
@@ -176,7 +177,7 @@ export const api = intentAIApi.injectEndpoints({
               statusTrail { status statusReason displayStatus createdAt }
               ${kpiHelper(kpis)}
               ${!code.includes('ecoflex') ? 'currentValue recommendedValue' : ''}
-              dataCheck
+              ${isConfigChangeEnabled ? 'dataCheck' : ''}
             }
           }
         `,

@@ -131,7 +131,7 @@ export function createIntentAIDetails () {
             <DetailsSection data-testid='Key Performance Indications'>
               <DetailsSection.Title
                 children={$t({ defaultMessage: 'Key Performance Indications' })} />
-              <DetailsSection.Details style={{ ...((!noData && isConfigChangeEnabled ? (isDataRetained && isHotTierData) : isDataRetained) && { minHeight: 385 }) }}>
+              <DetailsSection.Details style={{ ...((!noData && isDataRetained && isHotTierData) && { minHeight: 385 }) }}>
                 <Loader states={[queryResult]}>
                   <IntentAIRRMGraph
                     crrmData={crrmData}

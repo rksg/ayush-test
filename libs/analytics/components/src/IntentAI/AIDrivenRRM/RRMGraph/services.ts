@@ -10,10 +10,9 @@ import {
   pairGraphs,
   trimPairedGraphs
 } from '@acx-ui/components'
-import { BandEnum }               from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { intentAIApi }            from '@acx-ui/store'
-import { getIntl }                from '@acx-ui/utils'
+import { BandEnum }    from '@acx-ui/components'
+import { intentAIApi } from '@acx-ui/store'
+import { getIntl }     from '@acx-ui/utils'
 
 import { useIntentContext } from '../../IntentContext'
 import { useIntentParams }  from '../../useIntentDetailsQuery'
@@ -64,10 +63,9 @@ const { useIntentAIRRMGraphQuery } = intentAIApi.injectEndpoints({
         { band }
       ) => {
         const data = response.intent.graph
-        // console.log('data', data)
         const sortedData = {
-          current: data.compareData?.result,
-          projected: data.data?.result
+          current: data.compareData.result,
+          projected: data.data.result
         }
         const processedGraphs: ReturnType<typeof deriveTxPowerHighlight> = flow(
           [ deriveInterferingGraphs, pairGraphs, deriveTxPowerHighlight]
@@ -98,19 +96,14 @@ const { useIntentAIRRMGraphQuery } = intentAIApi.injectEndpoints({
 
 export function useIntentAICRRMQuery () {
   const params = useIntentParams()
-  const isConfigChangeEnabled = useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE)
   const band = intentBandMapping[params.code as keyof typeof intentBandMapping]
   const { isHotTierData, isDataRetained } = useIntentContext()
-  // console.log('isDataRetained', isDataRetained)
-  // console.log('isHotTierData', isHotTierData)
   const queryResult = useIntentAIRRMGraphQuery({ ...params, band }, {
     selectFromResult: result => {
       const { data = [], csv = '' } = result.data ?? {}
       return { ...result, data, csv }
     },
-    skip: isConfigChangeEnabled
-      ? !isHotTierData || !isDataRetained
-      : !isDataRetained ?? false
+    skip: !isHotTierData || !isDataRetained
   })
   return queryResult
 }
