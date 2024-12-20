@@ -231,6 +231,8 @@ export function EditPortDrawer ({
   const selectedSwitchList = switchList?.filter(s => switches.includes(s.id))
   const isFirmwareAbove10010f = !!selectedSwitchList?.length
     && selectedSwitchList?.every(s => isFirmwareVersionAbove10010f(s.firmware))
+  const isAnyFirmwareAbove10010f = !!selectedSwitchList?.length
+    && selectedSwitchList?.some(s => isFirmwareVersionAbove10010f(s.firmware))
 
   const switchId = switches?.[0]
   const disablePortSpeed = handlePortSpeedFor765048F(selectedPorts)
@@ -485,10 +487,11 @@ export function EditPortDrawer ({
       setData()
     } else if (selectedPorts) {
       setLoading(true)
+      resetFields()
     }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps, max-len
-  }, [selectedPorts, isSwitchDetailLoading, isSwitchDataLoading, isDefaultVlanLoading, visible])
+  }, [selectedPorts, isSwitchDetailLoading, isSwitchDataLoading, isDefaultVlanLoading, switchesDefaultVlan, visible])
 
   const getSinglePortValue = async (
     portSpeed: string[],
@@ -1233,74 +1236,77 @@ export function EditPortDrawer ({
         <UI.ContentDivider />
 
         {/* Flex Auth */}
-        { isSwitchFlexAuthEnabled && (isFirmwareAbove10010f || isMultipleEdit) && <>
-          { getFieldTemplate({
-            field: 'flexibleAuthenticationEnabled',
-            extraLabel: true,
-            content: <Form.Item
-              noStyle
-              label={false}
-              children={shouldRenderMultipleText({
-                field: 'flexibleAuthenticationEnabled', ...commonRequiredProps
-              }) ? <MultipleText />
-                : <Tooltip title={getFieldTooltip('flexibleAuthenticationEnabled')}>
-                  <Space style={{ display: 'flex', flex: 'auto', justifyContent: 'space-between' }}>
-                    <Form.Item
-                      name='flexibleAuthenticationEnabled'
-                      noStyle
-                      valuePropName='checked'
-                      initialValue={false}
-                    >
-                      <Switch
-                        data-testid='flex-enable-switch'
-                        disabled={getFieldDisabled('flexibleAuthenticationEnabled')}
-                        className={
-                          // eslint-disable-next-line max-len
-                          getToggleClassName('flexibleAuthenticationEnabled', isMultipleEdit, hasMultipleValue)
-                        }
-                        onChange={async (checked) => {
-                          if (checked && useVenueSettings) {
-                            onValuesChange({
-                              untaggedVlan: defaultVlan,
-                              revert: true, status: 'port'
-                            })
-                          }
-                        }}
-                      />
-                    </Form.Item>
-                    { flexibleAuthenticationEnabled && <>
+        { // eslint-disable-next-line max-len
+          isSwitchFlexAuthEnabled && (isFirmwareAbove10010f || (isAnyFirmwareAbove10010f && isMultipleEdit)) && <>
+            { getFieldTemplate({
+              field: 'flexibleAuthenticationEnabled',
+              extraLabel: true,
+              content: <Form.Item
+                noStyle
+                label={false}
+                children={shouldRenderMultipleText({
+                  field: 'flexibleAuthenticationEnabled', ...commonRequiredProps
+                }) ? <MultipleText />
+                  : <Tooltip title={getFieldTooltip('flexibleAuthenticationEnabled')}>
+                    <Space style={{
+                      display: 'flex', flex: 'auto', justifyContent: 'space-between'
+                    }}>
                       <Form.Item
-                        name='authenticationCustomize'
-                        hidden
-                        initialValue={false}
+                        name='flexibleAuthenticationEnabled'
+                        noStyle
                         valuePropName='checked'
-                        children={<Switch />}
-                      />
-                      <Button
-                        type='link'
-                        size='small'
-                        disabled={getFieldDisabled('authenticationCustomize')}
-                        onClick={() => handleClickCustomize({
-                          ...commonRequiredProps,
-                          selectedPorts,
-                          authenticationCustomize,
-                          authenticationProfileId,
-                          authProfiles,
-                          isProfileValid: !getFieldDisabled('renderAuthProfile')
-                        })}
-                      >{
-                          authenticationCustomize
-                            ? $t({ defaultMessage: 'Use Profile Settings' })
-                            : $t({ defaultMessage: 'Customize' })
-                        }</Button>
-                    </>}
-                  </Space>
-                </Tooltip>
-              }
-            />
-          })}
+                        initialValue={false}
+                      >
+                        <Switch
+                          data-testid='flex-enable-switch'
+                          disabled={getFieldDisabled('flexibleAuthenticationEnabled')}
+                          className={
+                          // eslint-disable-next-line max-len
+                            getToggleClassName('flexibleAuthenticationEnabled', isMultipleEdit, hasMultipleValue)
+                          }
+                          onChange={async (checked) => {
+                            if (checked && useVenueSettings) {
+                              onValuesChange({
+                                untaggedVlan: defaultVlan,
+                                revert: true, status: 'port'
+                              })
+                            }
+                          }}
+                        />
+                      </Form.Item>
+                      { flexibleAuthenticationEnabled && <>
+                        <Form.Item
+                          name='authenticationCustomize'
+                          hidden
+                          initialValue={false}
+                          valuePropName='checked'
+                          children={<Switch />}
+                        />
+                        <Button
+                          type='link'
+                          size='small'
+                          disabled={getFieldDisabled('authenticationCustomize')}
+                          onClick={() => handleClickCustomize({
+                            ...commonRequiredProps,
+                            selectedPorts,
+                            authenticationCustomize,
+                            authenticationProfileId,
+                            authProfiles,
+                            isProfileValid: !getFieldDisabled('renderAuthProfile')
+                          })}
+                        >{
+                            authenticationCustomize
+                              ? $t({ defaultMessage: 'Use Profile Settings' })
+                              : $t({ defaultMessage: 'Customize' })
+                          }</Button>
+                      </>}
+                    </Space>
+                  </Tooltip>
+                }
+              />
+            })}
 
-          { flexibleAuthenticationEnabled && !authenticationCustomize &&
+            { flexibleAuthenticationEnabled && !authenticationCustomize &&
           <Space style={{ display: 'block', marginLeft: isMultipleEdit ? '24px' : '0' }}>
             { getFieldTemplate({
               field: 'authenticationProfileId',
@@ -1357,7 +1363,7 @@ export function EditPortDrawer ({
             }
           </Space>}
 
-          { authenticationCustomize &&
+            { authenticationCustomize &&
           <Space style={{ display: 'block', marginLeft: isMultipleEdit ? '24px' : '0' }}>
             { getFieldTemplate({
               field: 'authenticationType',
@@ -1684,8 +1690,8 @@ export function EditPortDrawer ({
               />
             })}
           </Space>}
-          <UI.ContentDivider />
-        </>
+            <UI.ContentDivider />
+          </>
         }
 
         {/* Port VLAN */}
