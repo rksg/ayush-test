@@ -1,3 +1,4 @@
+import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { intentAIUrl, store }           from '@acx-ui/store'
 import { mockGraphqlQuery, renderHook } from '@acx-ui/test-utils'
 
@@ -14,6 +15,9 @@ import {
 } from './useIntentDetailsQuery'
 
 describe('intentAI services', () => {
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  })
   describe('intent details', () => {
     it('should return correct value', async () => {
       mockGraphqlQuery(intentAIUrl, 'IntentDetails', {

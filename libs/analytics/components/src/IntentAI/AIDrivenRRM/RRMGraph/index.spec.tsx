@@ -5,6 +5,7 @@ import userEvent    from '@testing-library/user-event'
 import EChartsReact from 'echarts-for-react'
 
 import { GraphProps }     from '@acx-ui/components'
+import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
@@ -53,6 +54,7 @@ describe('CloudRRM', () => {
   })
 
   it('should render correctly for active states', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<IntentAIRRMGraph
       crrmData={mockCrrmData}
       summaryUrlBefore='data:image/svg+xml;charset=UTF-8,img-before.png'

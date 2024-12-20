@@ -1,3 +1,4 @@
+import { useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
 import { Provider as wrapper, intentAIUrl, store, intentAIApi }                from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
@@ -53,6 +54,7 @@ describe('IntentAIForm', () => {
   beforeEach(() => {
     store.dispatch(intentAIApi.util.resetApiState())
     jest.spyOn(Date, 'now').mockReturnValue(+new Date('2023-07-15T14:15:00.000Z'))
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
   it('handle API respond with data for IntentAIForm & IntentAIDetails', async () => {
     mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
