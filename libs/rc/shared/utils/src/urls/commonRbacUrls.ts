@@ -640,12 +640,6 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
 
-  getVenueLanPortSettings: {
-    method: 'get',
-    url: '/venues/:venueId/apModels/:apModel/lanPorts/:portId/settings',
-    newApi: true
-  },
-
   updateVenueLanPortSpecificSettings: {
     method: 'put',
     url: '/venues/:venueId/apModels/:apModel/lanPortSpecificSettings',
