@@ -50,8 +50,6 @@ export function IntentAIForm () {
   const crrmData = queryResult.data!
   const [sliderUrlBefore, setSliderUrlBefore] = useState<string>('')
   const [sliderUrlAfter, setSliderUrlAfter] = useState<string>('')
-  const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
-  const [summaryUrlAfter, setSummaryUrlAfter] = useState<string>('')
 
   const { submit } = useIntentTransition()
   const initialValues = useInitialValues()
@@ -62,8 +60,6 @@ export function IntentAIForm () {
     {crrmData && <div hidden data-testid='hidden-graph'>
       <SliderGraphBefore crrmData={crrmData} setUrl={setSliderUrlBefore} />
       <SliderGraphAfter crrmData={crrmData} setUrl={setSliderUrlAfter} />
-      <SummaryGraphBefore crrmData={crrmData} setUrl={setSummaryUrlBefore} />
-      <SummaryGraphAfter crrmData={crrmData} setUrl={setSummaryUrlAfter} />
     </div>}
     <StepsForm
       buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
@@ -92,11 +88,7 @@ export function IntentAIForm () {
       />
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Summary' })}
-        children={<Summary
-          summaryUrlBefore={summaryUrlBefore}
-          summaryUrlAfter={summaryUrlAfter}
-          queryResult={queryResult}
-        />}
+        children={<Summary />}
       />
     </StepsForm>
   </>)

@@ -97,13 +97,12 @@ export const IntentAIRRMGraph = () => {
   const { intent, state, isDataRetained } = useIntentContext()
   const [ visible, setVisible ] = useState<boolean>(false)
   const [ key, setKey ] = useState(0)
+  const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
+  const [summaryUrlAfter, setSummaryUrlAfter] = useState<string>('')
 
   const showDrawer = () => setVisible(true)
   const closeDrawer = () => setVisible(false)
   useEffect(() => setKey(Math.random()), [visible]) // to reset graph zoom
-
-  const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
-  const [summaryUrlAfter, setSummaryUrlAfter] = useState<string>('')
 
   const queryResult = useIntentAICRRMQuery()
   const crrmData = queryResult.data!
