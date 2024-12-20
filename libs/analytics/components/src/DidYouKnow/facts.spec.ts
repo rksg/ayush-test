@@ -184,28 +184,19 @@ describe('Facts data format', () => {
         labels: []
       }
     ]
-    const output = { current: [
-      [
-        'Most trafficked WLAN (user traffic) last week was <b>wp3</b>,'+
-        ' accounting for <b>27%</b> of user traffic.',
-        'Top 3 zones with the highest number of incidents last week were <b>760-AP</b>,' +
-        ' <b>Divya-1</b> and <b>R760_AP_SV</b>.',
-        'Top 3 applications in terms of user traffic last week were <b>Youtube.com</b>,' +
-        ' <b>common-internet-file-system</b> and <b>windows_update</b>.',
-        '<b>96%</b> of user traffic went through 15% of APs last week.',
-        'Top 3 applications in terms of users last week were <b>dns</b>,' +
-        ' <b>google_api</b> and <b>google_gen</b>.'
-      ],
-      [
-        'Average daily airtime utilization last week was 2.4 GHz: <b>53.8%</b>,' +
-        ' 5 GHz: <b>10.09%</b>, and 6(5) GHz: <b>6.62%</b>, which is a change of 2.4 GHz: ' +
-        '<b>-8.63%</b>, 5 GHz: <b>0.54%</b>, and 6(5) GHz: <b>-1.74%</b>' +
-        ' compared to the previous week.',
-        'Busiest WLAN in terms of users last week was <b>CIOT_WPA2</b>, accounting for <b>32%</b>' +
-        ' of total users.',
-        'The average session duration last week was <b>46 m 37 s</b>.'
-      ]
-    ] }
+
+    /* eslint-disable max-len */
+    const output = { current: {
+      busiestSsidByTraffic: 'Most trafficked WLAN (user traffic) last week was <b>wp3</b>, accounting for <b>27%</b> of user traffic.',
+      topIncidentsZones: 'Top 3 zones with the highest number of incidents last week were <b>760-AP</b>, <b>Divya-1</b> and <b>R760_AP_SV</b>.',
+      topApplicationsByTraffic: 'Top 3 applications in terms of user traffic last week were <b>Youtube.com</b>, <b>common-internet-file-system</b> and <b>windows_update</b>.',
+      userTrafficThroughAPs: '<b>96%</b> of user traffic went through 15% of APs last week.',
+      topApplicationsByClients: 'Top 3 applications in terms of users last week were <b>dns</b>, <b>google_api</b> and <b>google_gen</b>.',
+      airtimeUtilization: 'Average daily airtime utilization last week was 2.4 GHz: <b>53.8%</b>, 5 GHz: <b>10.09%</b>, and 6(5) GHz: <b>6.62%</b>, which is a change of 2.4 GHz: <b>-8.63%</b>, 5 GHz: <b>0.54%</b>, and 6(5) GHz: <b>-1.74%</b> compared to the previous week.',
+      busiestSsidByClients: 'Busiest WLAN in terms of users last week was <b>CIOT_WPA2</b>, accounting for <b>32%</b> of total users.',
+      avgSessionDuration: 'The average session duration last week was <b>46 m 37 s</b>.'
+    } }
+    /* eslint-enable */
     const { result } = renderHook(() => getFactsData(input))
     expect(result).toStrictEqual(output)
   })
@@ -285,29 +276,19 @@ describe('Facts data format', () => {
         ]
       }
     ]
-    const output = { current: [
-      [
-        '<b>96%</b> of user traffic went through 15% of APs last week.',
-        'Top 3 applications in terms of users last week were <b>dns</b>, <b>google_api</b>'+
-      ' and <b>google_gen</b>.',
-        'The average session duration last week was <b>45 m 41 s</b>.',
-        'Average daily airtime utilization last week was 2.4 GHz: <b>53.78%</b>,'+
-      ' 5 GHz: <b>10.1%</b>, and 6(5) GHz: <b>6.64%</b>, which is a change of'+
-      ' 2.4 GHz: <b>-8.62%</b>, 5 GHz: <b>0.6%</b>, and 6(5) GHz: <b>-1.74%</b>'+
-      ' compared to the previous week.'
-      ],
-      [
-        'Top 3 zones with the highest number of incidents last week were <b>760-AP</b>,'+
-      ' <b>Divya-1</b> and <b>R760_AP_SV</b>.',
-        'Top 3 applications in terms of user traffic last week were <b>Youtube.com</b>,'+
-      ' <b>common-internet-file-system</b> and <b>windows_update</b>.',
-        'Busiest WLAN in terms of users last week was <b>CIOT_WPA2</b>,'+
-      ' accounting for <b>32%</b> of total users.',
-        'Most trafficked WLAN (user traffic) last week was <b>wp3</b>,'+
-      ' accounting for <b>26%</b> of user traffic.'
-      ]
-    ]
-    }
+
+    /* eslint-disable max-len */
+    const output = { current: {
+      userTrafficThroughAPs: '<b>96%</b> of user traffic went through 15% of APs last week.',
+      topApplicationsByClients: 'Top 3 applications in terms of users last week were <b>dns</b>, <b>google_api</b> and <b>google_gen</b>.',
+      avgSessionDuration: 'The average session duration last week was <b>45 m 41 s</b>.',
+      airtimeUtilization: 'Average daily airtime utilization last week was 2.4 GHz: <b>53.78%</b>, 5 GHz: <b>10.1%</b>, and 6(5) GHz: <b>6.64%</b>, which is a change of 2.4 GHz: <b>-8.62%</b>, 5 GHz: <b>0.6%</b>, and 6(5) GHz: <b>-1.74%</b> compared to the previous week.',
+      topIncidentsZones: 'Top 3 zones with the highest number of incidents last week were <b>760-AP</b>, <b>Divya-1</b> and <b>R760_AP_SV</b>.',
+      topApplicationsByTraffic: 'Top 3 applications in terms of user traffic last week were <b>Youtube.com</b>, <b>common-internet-file-system</b> and <b>windows_update</b>.',
+      busiestSsidByClients: 'Busiest WLAN in terms of users last week was <b>CIOT_WPA2</b>, accounting for <b>32%</b> of total users.',
+      busiestSsidByTraffic: 'Most trafficked WLAN (user traffic) last week was <b>wp3</b>, accounting for <b>26%</b> of user traffic.'
+    } }
+    /* eslint-enable */
     const { result } = renderHook(() => getFactsData(input))
     expect(result).toStrictEqual(output)
   })
@@ -325,11 +306,7 @@ describe('Facts data format', () => {
       }
     ]
     const output = {
-      current: [
-        [
-          'topApplicationsByTrafficDemo'
-        ]
-      ]
+      current: { topApplicationsByTrafficDemo: 'topApplicationsByTrafficDemo' }
     }
     const { result } = renderHook(() => getFactsData(input))
     expect(result).toStrictEqual(output)
