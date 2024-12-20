@@ -33,7 +33,7 @@ type PortProfileMap = {
   [key: string]: string
 }
 
-export function PortProfileSetting () {
+export function PortProfile () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)

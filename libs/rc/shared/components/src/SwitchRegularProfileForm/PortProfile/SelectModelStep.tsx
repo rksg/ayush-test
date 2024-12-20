@@ -11,8 +11,6 @@ import { getIntl }                from '@acx-ui/utils'
 
 import PortProfileContext from './PortProfileContext'
 import * as UI            from './styledComponents'
-// import VlanPortsContext from './VlanPortsContext'
-
 
 export interface ModelsType {
   label: string

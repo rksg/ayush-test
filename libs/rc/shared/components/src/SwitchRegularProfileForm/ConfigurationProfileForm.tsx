@@ -36,7 +36,7 @@ import { usePathBasedOnConfigTemplate } from '../configTemplates'
 import { AclSetting }                               from './AclSetting'
 import { ConfigurationProfileFormContext }          from './ConfigurationProfileFormContext'
 import { GeneralSetting }                           from './GeneralSetting'
-import { PortProfileSetting }                       from './PortProfileSetting'
+import { PortProfile }                              from './PortProfile'
 import { Summary }                                  from './Summary'
 import { generateTrustedPortsModels, TrustedPorts } from './TrustedPorts'
 import { VenueSetting }                             from './VenueSetting'
@@ -449,7 +449,7 @@ export function ConfigurationProfileForm () {
             title={$t({ defaultMessage: 'Port Profile' })}
             onFinish={updateCurrentData}
           >
-            <PortProfileSetting />
+            <PortProfile />
           </StepsForm.StepForm>
           }
 

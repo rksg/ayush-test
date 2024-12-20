@@ -50,7 +50,7 @@ export function PortProfileModal (props: {
       closable={true}
       type={ModalType.ModalStepsForm}
       title={$t({ defaultMessage: 'Select Ports By Model' })}
-      data-testid='PortProfileSettingModal'
+      data-testid='PortProfileModal'
     >
       <StepsForm
         editMode={editMode}

@@ -6,9 +6,9 @@ import { SwitchConfigurationProfile }      from '@acx-ui/rc/utils'
 import { Provider }                        from '@acx-ui/store'
 import { render, screen, within, waitFor } from '@acx-ui/test-utils'
 
+import { AclSetting }                                                from '../AclSetting'
 import { ConfigurationProfileFormContext, ConfigurationProfileType } from '../ConfigurationProfileFormContext'
 
-import { AclSetting } from '.'
 
 const currentData = {
   name: 'test-profile',

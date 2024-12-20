@@ -10,7 +10,7 @@ import { useGetVenuesTemplateListQuery, useSwitchPortProfilesListQuery, useVenue
 import { PortProfileUI, TableResult, Venue, transformDisplayOnOff, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
 
 import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
-import { portProfilesUIParser }            from './PortProfileSetting/PortProfileModal.utils'
+import { portProfilesUIParser }            from './PortProfile/PortProfileModal.utils'
 
 const defaultPayload = {
   searchString: '',
