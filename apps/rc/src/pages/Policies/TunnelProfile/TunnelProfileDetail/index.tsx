@@ -17,6 +17,7 @@ import {
   MtuTypeEnum,
   PolicyOperation,
   PolicyType,
+  transformDisplayOnOff,
   TunnelProfileViewData,
   TunnelTypeEnum
 } from '@acx-ui/rc/utils'
@@ -69,9 +70,7 @@ const TunnelProfileDetail = () => {
     ...(isEdgeNatTraversalP1Ready ? [
       {
         title: $t({ defaultMessage: 'NAT-T Support' }),
-        content: tunnelProfileData.natTraversalEnabled ?
-          $t({ defaultMessage: 'ON' }) :
-          $t({ defaultMessage: 'OFF' })
+        content: transformDisplayOnOff(!!tunnelProfileData.natTraversalEnabled)
       }] : []),
     {
       title: $t({ defaultMessage: 'Gateway Path MTU Mode' }),
