@@ -76,12 +76,8 @@ cp tools/dev/prepare-commit-msg .git/hooks/prepare-commit-msg
 
 ### Creating a pull request
 
-Create a PR using the Bitbucket UI. You need at least 1 reviewer to approve the PR before it can be
+Create a PR using the Bitbucket UI. You need at least 1 gatekeeper to approve the PR before it can be
 merged.
-
-## Codeowners Approval Mechanism
-
-Currently, there is a codeowners mechanism in place. Approval from a gatekeeper is required to merge changes.
 
 **Gatekeepers by region:**
 
