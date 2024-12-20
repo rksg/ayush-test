@@ -42,6 +42,7 @@ type Metadata = {
   updatedAt?: string
   oneClickOptimize?: boolean
   scheduledBy?: string
+  changedByName?: string
 }
 
 export type HighlightItem = {
@@ -92,8 +93,8 @@ export const getStatusTooltip = (
     ...formatValues,
     zoneName: sliceValue,
     scheduledAt: formatter(DateFormatEnum.DateTimeFormat)(metadata.scheduledAt),
-    errorMessage: errMsg
-    // userName: metadata.scheduledBy //TODO: scheduledBy is ID, how to get userName for R1 case?
+    errorMessage: errMsg,
+    changedByName: metadata.changedByName
     // newConfig: metadata.newConfig //TODO: how to display newConfig?
   }
 

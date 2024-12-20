@@ -183,7 +183,7 @@ function SettingsForm () {
     if (supportRadsec) {
       form.setFieldsValue(data)
     }
-  },[data?.id])
+  },[data?.id, data?.wlan?.wlanSecurity])
 
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 

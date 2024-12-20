@@ -1,3 +1,4 @@
+import _                 from 'lodash'
 import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
@@ -30,12 +31,13 @@ export type IntentWlan = {
 }
 
 export type TransitionIntentMetadata = {
-  scheduledAt: string
+  scheduledAt?: string
   applyScheduledAt?: string
   wlans?: IntentWlan[]
   preferences?: {
     crrmFullOptimization: boolean
   }
+  changedByName?: string
 }
 
 export type TransitionIntentItem = {
@@ -155,9 +157,9 @@ export type TransitionMutationPayload = {
   displayStatus: DisplayStates
 }
 
-const buildTransitionGQL = (index:number, includeMetadata:boolean) => `t${index}: transition(
+const buildTransitionGQL = (index:number) => `t${index}: transition(
   id: $id${index}, status: $status${index}, statusReason: $statusReason${index},
-   ${includeMetadata? 'metadata: $metadata'+index : ''}) {
+   metadata: $metadata${index}) {
     success
     errorMsg
     errorCode
@@ -167,7 +169,7 @@ export const parseTransitionGQLByAction = (action: Actions, data: TransitionInte
   const paramsGQL:string[] = []
   const transitionsGQLs:string[] = []
   const variables:Record<string, string|TransitionIntentMetadata|null> = {}
-  const includeMetadata = [Actions.Revert, Actions.One_Click_Optimize].includes(action)
+  const sendWholeMetadata = [Actions.Revert, Actions.One_Click_Optimize].includes(action)
   data.forEach((item, index) => {
     const currentIndex = index + 1
     const { id, metadata } = item
@@ -175,13 +177,15 @@ export const parseTransitionGQLByAction = (action: Actions, data: TransitionInte
     paramsGQL.push(
       `$id${currentIndex}:String!, $status${currentIndex}:String!, \n
       $statusReason${currentIndex}:String, \n
-      ${includeMetadata && metadata? '$metadata'+currentIndex+':JSON': ''}`
+      $metadata${currentIndex}:JSON`
     )
-    transitionsGQLs.push(buildTransitionGQL(currentIndex, includeMetadata))
+    transitionsGQLs.push(buildTransitionGQL(currentIndex))
     variables[`id${currentIndex}`] = id
     variables[`status${currentIndex}`] = status
     variables[`statusReason${currentIndex}`] = statusReason ?? null
-    if (includeMetadata && metadata) variables[`metadata${currentIndex}`] = metadata
+
+    if (metadata) variables[`metadata${currentIndex}`] =
+      sendWholeMetadata ? metadata : _.pick(metadata, ['changedByName'])
   })
   return { paramsGQL,transitionsGQLs, variables } as {
     paramsGQL:string[],
