@@ -118,7 +118,7 @@ export function createIntentAIDetails () {
               <DetailsSection.Title
                 children={$t({ defaultMessage: 'Key Performance Indications' })} />
               <DetailsSection.Details style={{ ...(hasData && { minHeight: 385 }) }}>
-                <IntentAIRRMGraph detailsPage />
+                <IntentAIRRMGraph width={350} />
               </DetailsSection.Details>
             </DetailsSection>
 

@@ -133,7 +133,7 @@ const GraphTitle = ({ details }: { details: IntentDetail }) => {
   </UI.GraphTitleWrapper>
 }
 
-export const IntentAIRRMGraph = ({ detailsPage } : { detailsPage?: boolean }) => {
+export const IntentAIRRMGraph = ({ width = 250 } : { width?: number }) => {
   const { $t } = useIntl()
   const { intent, state, isDataRetained } = useIntentContext()
   const [ visible, setVisible ] = useState<boolean>(false)
@@ -160,12 +160,12 @@ export const IntentAIRRMGraph = ({ detailsPage } : { detailsPage?: boolean }) =>
   return <UI.Wrapper>
     {crrmData && <div hidden data-testid='hidden-graph'>
       <SummaryGraphBefore
-        detailsPage={detailsPage}
+        width={width}
         crrmData={crrmData}
         setUrl={setSummaryUrlBefore}
       />
       <SummaryGraphAfter
-        detailsPage={detailsPage}
+        width={width}
         crrmData={crrmData}
         setUrl={setSummaryUrlAfter}
       />
@@ -276,8 +276,8 @@ export const SliderGraphAfter = (
   />
 }
 export const SummaryGraphBefore = (
-  { crrmData, setUrl, detailsPage }:
-  { crrmData: ProcessedCloudRRMGraph[], setUrl: (url: string) => void, detailsPage?: boolean }
+  { crrmData, setUrl, width }:
+  { crrmData: ProcessedCloudRRMGraph[], setUrl: (url: string) => void, width: number }
 ) => {
   return <GraphImage
     crrmData={crrmData}
@@ -285,12 +285,12 @@ export const SummaryGraphBefore = (
     setUrl={setUrl}
     justifyContent='start'
     backgroundColor='transparent'
-    width={detailsPage ? 350 : 250}
+    width={width}
   />
 }
 export const SummaryGraphAfter = (
-  { crrmData, setUrl, detailsPage }:
-  { crrmData: ProcessedCloudRRMGraph[], setUrl: (url: string) => void, detailsPage?: boolean }
+  { crrmData, setUrl, width }:
+  { crrmData: ProcessedCloudRRMGraph[], setUrl: (url: string) => void, width: number }
 ) => {
   return <GraphImage
     crrmData={crrmData}
@@ -298,6 +298,6 @@ export const SummaryGraphAfter = (
     setUrl={setUrl}
     justifyContent='end'
     backgroundColor='transparent'
-    width={detailsPage ? 350 : 250}
+    width={width}
   />
 }
