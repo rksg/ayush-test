@@ -1,4 +1,4 @@
-import { IsolatePacketsTypeEnum } from './IsolatePacketsTypeEnum'
+import { IsolatePacketsTypeEnum } from './ClientIsolationEnum'
 
 export class ClientIsolationOptions {
   // if client isolation is enabled and packetsType is null, packetsType will be set to \"UNICAST\".
