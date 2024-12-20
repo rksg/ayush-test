@@ -59,6 +59,14 @@ describe('Edge enabled evaluation', () => {
       expect(result.current).toBe(true)
     })
 
+    it('should return false when query with EDGE and EDGE-AV-REPORT feature is OFF', () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff !== TierFeatures.EDGE_AV_REPORT)
+
+      const { result } = renderHook(() => useIsEdgeFeatureReady(Features.EDGE_AV_REPORT_TOGGLE))
+      expect(result.current).toBe(false)
+    })
+
     describe('edge PIN toggle', () => {
       it('should return true when edge is enabled and feature flag is ready', () => {
         jest.mocked(useIsSplitOn).mockReturnValue(true)

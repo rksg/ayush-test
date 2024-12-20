@@ -24,12 +24,15 @@ export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
   const isEdgeEnabled = useIsEdgeReady()
   const isEdgeFeatureReady = useIsSplitOn(featureFlagKey)
   const isEdgeAdvEnabled = useIsTierAllowed(TierFeatures.EDGE_ADV)
+  const isEdgeAvReportEnabled = useIsTierAllowed(TierFeatures.EDGE_AV_REPORT)
 
   const isEnabledWithBooleanFlag = isEdgeEnabled && isEdgeFeatureReady
   switch(featureFlagKey) {
     case Features.EDGE_PIN_HA_TOGGLE:
     case Features.EDGE_PIN_ENHANCE_TOGGLE:
       return isEnabledWithBooleanFlag && isEdgeAdvEnabled
+    case Features.EDGE_AV_REPORT_TOGGLE:
+      return isEnabledWithBooleanFlag && isEdgeAvReportEnabled
     default:
       return isEnabledWithBooleanFlag
   }

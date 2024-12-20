@@ -20,6 +20,8 @@ import {
   EthernetPortProfileViewData,
   EthernetPortType,
   LanPort,
+  SoftGreProfileDispatcher,
+  SoftGreState,
   useConfigTemplate,
   VenueLanPorts,
   WifiApSetting,
@@ -72,6 +74,7 @@ export function LanPortSettings (props: {
   useVenueSettings?: boolean,
   venueId?: string,
   serialNumber?: string
+  dispatch?: React.Dispatch<SoftGreProfileDispatcher>
 }) {
   const { $t } = useIntl()
   const {
@@ -86,7 +89,8 @@ export function LanPortSettings (props: {
     readOnly,
     useVenueSettings,
     venueId,
-    serialNumber
+    serialNumber,
+    dispatch
   } = props
 
   const [ drawerVisible, setDrawerVisible ] = useState(false)
@@ -106,22 +110,6 @@ export function LanPortSettings (props: {
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
   const isUnderAPNetworking = !!serialNumber
-
-  // const isSoftGRETunnelSettingReadonly = () => {
-  //   if(!isUnderAPNetworking){
-  //     return !isEthernetPortEnable
-  //   }
-  //   // TODO Add readonly condition here
-  //   return false
-  // }
-
-  // const isDhcpOption82SettingsReadonly = () => {
-  //   if (!isUnderAPNetworking) {
-  //     return false
-  //   }
-  //   // TODO Add readonly condition here
-  //   return false
-  // }
 
   // Non ethernet port profile
   const handlePortTypeChange = (value: string, index:number) => {
@@ -238,7 +226,20 @@ export function LanPortSettings (props: {
           || !selectedPortCaps?.supportDisable
           || hasVni
         }
-        onChange={() => onChangedByCustom('enabled')}
+        onChange={(value) => {
+          onChangedByCustom('enabled')
+          value ?
+            dispatch && dispatch({
+              state: SoftGreState.TurnOnLanPort,
+              portId: selectedModel.lanPorts![index].portId,
+              index
+            }) :
+            dispatch && dispatch({
+              state: SoftGreState.TurnOffLanPort,
+              portId: selectedModel.lanPorts![index].portId,
+              index
+            })
+        }}
       />}
     />
     <Form.Item
@@ -274,7 +275,7 @@ export function LanPortSettings (props: {
           currentEthernetPortData={currentEthernetPortData}
           currentIndex={index}
           onGUIChanged={onGUIChanged}
-          isEditable={!!serialNumber} />
+          isEditable={!readOnly && !!serialNumber} />
         {
           isEthernetPortProfileEnabled && isEthernetSoftgreEnabled &&
             (<>
@@ -283,7 +284,9 @@ export function LanPortSettings (props: {
                 index={index}
                 softGreProfileId={selectedPortCaps.softGreProfileId ?? ''}
                 softGreTunnelEnable={isSoftGreTunnelEnable}
+                portId={selectedModel.lanPorts![index].portId}
                 onGUIChanged={onGUIChanged}
+                dispatch={dispatch}
               />
               {isSoftGreTunnelEnable &&
                 <DhcpOption82Settings
@@ -295,6 +298,7 @@ export function LanPortSettings (props: {
                   venueId={venueId}
                   portId={selectedModel.lanPorts![index].portId}
                   apModel={selectedModelCaps.model}
+                  dispatch={dispatch}
                 />
               }
             </>)
