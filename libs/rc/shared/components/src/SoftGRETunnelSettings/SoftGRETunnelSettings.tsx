@@ -33,7 +33,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
 
   return (
     <>
-      <StepsForm.FieldLabel width={'280px'}>
+      <StepsForm.FieldLabel width={'220px'}>
         <Space>
           {$t({ defaultMessage: 'Enable SoftGRE Tunnel' })}
           <Tooltip.Question

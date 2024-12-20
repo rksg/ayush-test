@@ -237,6 +237,7 @@ export enum Features {
   BTM_EVENTS_TOGGLE = 'acx-ui-btm-events-toggle',
   RUCKUS_AI_BTM_EVENTS_TOGGLE = 'ruckus-ai-btm-events-toggle',
   MLISA_4_11_0_TOGGLE = 'acx-ui-mlisa-4-11-0-toggle',
+  ANALYTIC_SNAPSHOT_TOGGLE = 'acx-ui-analytic-snapshot-toggle',
   VIEWMODEL_UI_EC_INVENTORIES_QUERY_PERFORMANCE_CHANGES_TOGGLE = 'viewmodel-ui-ec-inventories-query-performance-changes-toggle',
   RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE = 'ruckus-ai-intent-ai-config-change-toggle',
   INTENT_AI_CONFIG_CHANGE_TOGGLE = 'acx-ui-intent-ai-config-change-toggle',
