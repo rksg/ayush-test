@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { Row, Col, Badge, Typography } from 'antd'
-import { useIntl }                     from 'react-intl'
+import { IntlShape, useIntl }          from 'react-intl'
 
 import {
   Button,
@@ -45,6 +45,19 @@ const FunctionEnabledStatusLightConfig = {
   }
 }
 
+const recipientTypeFilterOpts = ($t: IntlShape['$t']) => [
+  { key: '', value: $t({ defaultMessage: 'All Recipient Type' }) },
+  {
+    key: 'PRIVILEDGE',
+    value: $t({ defaultMessage: 'Priviledges Groups' })
+  },
+  {
+    key: 'GLOBAL',
+    value: $t({ defaultMessage: 'Global Recipients' })
+  }
+]
+
+
 export const NotificationsTable = () => {
   const { $t } = useIntl()
   const params = useParams()
@@ -52,6 +65,7 @@ export const NotificationsTable = () => {
   const [showDrawer, setShowDrawer] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const notificationChannelEnabled = useIsSplitOn(Features.NOTIFICATION_CHANNEL_SELECTION_TOGGLE)
+  const notificationAdminContextualEnabled = true//useIsSplitOn(Features.NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE)
   // eslint-disable-next-line max-len
   const [editData, setEditData] = useState<NotificationRecipientUIModel>({} as NotificationRecipientUIModel)
 
@@ -107,9 +121,25 @@ export const NotificationsTable = () => {
       key: 'description',
       dataIndex: 'description',
       defaultSortOrder: 'ascend',
-      width: 600,
+      // width: 600,
       sorter: { compare: sortProp('description', defaultSort) }
     },
+    ...(!notificationAdminContextualEnabled ? [] : [
+      {
+        title: $t({ defaultMessage: 'Recipient Type' }),
+        dataIndex: 'recipientType',
+        key: 'recipientType',
+        filterMultiple: false,
+        filterable: recipientTypeFilterOpts($t),
+        sorter: true
+      },
+      {
+        title: $t({ defaultMessage: 'Delivery Preference' }),
+        dataIndex: 'deliveryPreference',
+        key: 'deliveryPreference',
+        sorter: true
+      }
+    ]),
     {
       title: $t({ defaultMessage: 'Email Address' }),
       key: 'email',
