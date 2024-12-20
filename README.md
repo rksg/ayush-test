@@ -79,6 +79,18 @@ cp tools/dev/prepare-commit-msg .git/hooks/prepare-commit-msg
 Create a PR using the Bitbucket UI. You need at least 1 reviewer to approve the PR before it can be
 merged.
 
+## Codeowners Approval Mechanism
+
+Currently, there is a codeowners mechanism in place. Approval from a gatekeeper is required to merge changes.
+
+**Gatekeepers by region:**
+
+- **TDC:** James, Karen, George, Ann, Cherry, YC, Jacky, Jeffery, Peter, Bess, Joe, Amy, Roil, Jerry.
+- **SGDC:** Jason, ShiawUen, Mickael
+- **BDC:** Suraj, Vivek
+- **HQ:** Eric
+
+
 ### Deleting a branch
 
 After a PR is merged, you should delete the branch. Do this on the [#ruckus-alto-cicd](https://arris.slack.com/archives/CC04J4E3V) Slack channel.
