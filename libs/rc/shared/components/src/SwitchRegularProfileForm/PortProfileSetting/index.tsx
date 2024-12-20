@@ -138,31 +138,54 @@ export function PortProfileSetting () {
       data.portProfileId = portProfileSettingValues?.portProfileId ?? []
     }
 
-    const filteredWithProfileId = portProfilesTable.filter(item => {
+    const filteredByProfileId = portProfilesTable.filter(item => {
       return JSON.stringify(item.portProfileId.sort()) ===
         JSON.stringify(data.portProfileId.sort())
+    })
+
+    const filteredByModel = portProfilesTable.filter(item => {
+      return JSON.stringify(item.models.sort()) ===
+        JSON.stringify(data.models.sort())
     })
 
     const result = portProfileSettingValues?.id ? portProfilesTable.filter(item => {
       return item.id !== portProfileSettingValues?.id
     }) : portProfilesTable.filter(item => {
       return JSON.stringify(item.portProfileId.sort()) !==
-        JSON.stringify(data.portProfileId.sort())
+        JSON.stringify(data.portProfileId.sort()) &&
+        JSON.stringify(item.models.sort()) !== JSON.stringify(data.models.sort())
     })
 
-    const concatModels = {
-      ...data,
-      models: [...new Set([
-        ...data.models,
-        ...(filteredWithProfileId.length === 1 ?
-          filteredWithProfileId[0].models : [])
-      ])]
+    let mergedPortProfiles: PortProfileUI = {
+      models: [],
+      portProfileId: []
     }
+
+    if(filteredByProfileId.length === 1){
+      mergedPortProfiles = {
+        ...data,
+        models: [...new Set([
+          ...data.models,
+          ...filteredByProfileId[0].models
+        ])]
+      }
+    }else if(filteredByModel.length === 1){
+      mergedPortProfiles = {
+        ...data,
+        portProfileId: [...new Set([
+          ...data.portProfileId,
+          ...filteredByModel[0].portProfileId
+        ])]
+      }
+    }else{
+      mergedPortProfiles = { ...data }
+    }
+
     const portProfileAPIData = [
       ...result.map(item=>portProfilesAPIParser(item)),
-      portProfilesAPIParser(concatModels)].flat()
+      portProfilesAPIParser(mergedPortProfiles)].flat()
 
-    setPortProfilesTable([...result, concatModels])
+    setPortProfilesTable([...result, mergedPortProfiles])
     form.setFieldValue('portProfiles', portProfileAPIData)
     setSelectedRowKeys([])
     setPortModalVisible(false)
