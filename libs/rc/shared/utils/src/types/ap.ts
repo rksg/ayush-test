@@ -12,6 +12,7 @@ import {
   PoeModeEnum,
   VenueLanPort
 } from '../models'
+import { IsolatePacketsTypeEnum } from '../models/ClientIsolationEnum'
 
 import { ApVenueStatusEnum, CountAndNames } from '.'
 
@@ -486,7 +487,10 @@ export interface LanPort {
   ethernetPortProfileId?: string,
   softGreProfileId?: string,
   softGreTunnelEnable?: boolean,
-  dhcpOption82?: LanPortSoftGreProfileSettings
+  dhcpOption82?: LanPortSoftGreProfileSettings,
+  clientIsolationProfileId?: string,
+  clientIsolationEnabled?: boolean,
+  clientIsolationSettings?: LanPortClientIsolationSettings
 }
 
 export enum ApModelTypeEnum {
@@ -1017,4 +1021,10 @@ export interface SoftGreLanPortChange {
     lanPortId: string
     lanPortEnable?: boolean
     venueLanPortSettings: VenueApModelLanPortSettingsV1
+}
+
+
+export interface LanPortClientIsolationSettings {
+  packetsType: IsolatePacketsTypeEnum
+  autoVrrp: boolean
 }
