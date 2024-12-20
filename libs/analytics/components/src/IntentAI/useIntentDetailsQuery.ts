@@ -46,7 +46,7 @@ export type IntentDetail = Intent & Partial<IntentKpi> & {
     isDataRetained: boolean
     isHotTierData: boolean
   }
-} & Partial<IntentKpi>
+}
 
 export const useIntentParams = () => {
   const { tenantId, root, ...params } = useParams() as {

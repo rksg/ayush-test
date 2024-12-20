@@ -14,6 +14,7 @@ import {
   useIntentDetailsQuery,
   useIntentParams
 } from './useIntentDetailsQuery'
+import { isDataRetained } from './utils'
 
 export type IntentConfigurationConfig = {
   label: MessageDescriptor
@@ -69,8 +70,10 @@ export function createIntentContextProvider (
       configuration: spec.configuration,
       kpis: spec.kpis,
       state: (intent && intentState(intent))!,
+      isDataRetained: isConfigChangeEnabled
+        ? intent?.dataCheck.isDataRetained!
+        : isDataRetained(intent?.metadata.dataEndTime),
       ...(isConfigChangeEnabled ? {
-        isDataRetained: intent?.dataCheck.isDataRetained!,
         isHotTierData: intent?.dataCheck.isHotTierData!
       } : {})
     }

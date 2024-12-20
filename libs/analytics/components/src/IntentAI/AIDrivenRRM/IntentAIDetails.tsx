@@ -107,7 +107,7 @@ export function createIntentAIDetails () {
                 children={<FormattedMessage {...valuesText.summaryText} values={richTextFormatValues} />}/>
               <DescriptionSection fields={fields}/>
               <br />
-              {isDataRetained && isHotTierData && !noData
+              {!noData && (isConfigChangeEnabled ? (isDataRetained && isHotTierData) : isDataRetained)
                 ? <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })} />
                 : null}
             </IntentDetailsSidebar>)}
@@ -131,7 +131,7 @@ export function createIntentAIDetails () {
             <DetailsSection data-testid='Key Performance Indications'>
               <DetailsSection.Title
                 children={$t({ defaultMessage: 'Key Performance Indications' })} />
-              <DetailsSection.Details style={{ ...((!noData && isHotTierData ) && { minHeight: 385 }) }}>
+              <DetailsSection.Details style={{ ...((!noData && isConfigChangeEnabled ? (isDataRetained && isHotTierData) : isDataRetained) && { minHeight: 385 }) }}>
                 <Loader states={[queryResult]}>
                   <IntentAIRRMGraph
                     crrmData={crrmData}
