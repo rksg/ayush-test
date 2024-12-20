@@ -133,57 +133,49 @@ export function PortProfileSetting () {
     setPortModalVisible(false)
   }
 
+  const arraysAreEqual = (arr1: string[], arr2: string[]) => {
+    if (arr1.length !== arr2.length) return false
+    const sortedArr1 = arr1.slice().sort()
+    const sortedArr2 = arr2.slice().sort()
+    return sortedArr1.every((val, index) => val === sortedArr2[index])
+  }
+
   const onSave = (data: PortProfileUI) => {
     if(data.portProfileId === undefined){
       data.portProfileId = portProfileSettingValues?.portProfileId ?? []
     }
 
-    const filteredByProfileId = portProfilesTable.filter(item => {
-      return JSON.stringify(item.portProfileId.sort()) ===
-        JSON.stringify(data.portProfileId.sort())
-    })
+    const result = portProfileSettingValues?.id
+      ? portProfilesTable.filter(item => item.id !== portProfileSettingValues?.id)
+      : portProfilesTable.filter(item => {
+        return (
+          !arraysAreEqual(item.portProfileId, data.portProfileId) &&
+        !arraysAreEqual(item.models, data.models)
+        )
+      })
 
-    const filteredByModel = portProfilesTable.filter(item => {
-      return JSON.stringify(item.models.sort()) ===
-        JSON.stringify(data.models.sort())
-    })
+    const filteredByProfileId = portProfilesTable.find(item =>
+      arraysAreEqual(item.portProfileId, data.portProfileId))
+    const filteredByModel = portProfilesTable.find(item => arraysAreEqual(item.models, data.models))
 
-    const result = portProfileSettingValues?.id ? portProfilesTable.filter(item => {
-      return item.id !== portProfileSettingValues?.id
-    }) : portProfilesTable.filter(item => {
-      return JSON.stringify(item.portProfileId.sort()) !==
-        JSON.stringify(data.portProfileId.sort()) &&
-        JSON.stringify(item.models.sort()) !== JSON.stringify(data.models.sort())
-    })
+    let mergedPortProfiles = { ...data }
 
-    let mergedPortProfiles: PortProfileUI = {
-      models: [],
-      portProfileId: []
-    }
-
-    if(filteredByProfileId.length === 1){
+    if (filteredByProfileId) {
       mergedPortProfiles = {
         ...data,
-        models: [...new Set([
-          ...data.models,
-          ...filteredByProfileId[0].models
-        ])]
+        models: [...new Set([...data.models, ...filteredByProfileId.models])]
       }
-    }else if(filteredByModel.length === 1){
+    } else if (filteredByModel) {
       mergedPortProfiles = {
         ...data,
-        portProfileId: [...new Set([
-          ...data.portProfileId,
-          ...filteredByModel[0].portProfileId
-        ])]
+        portProfileId: [...new Set([...data.portProfileId, ...filteredByModel.portProfileId])]
       }
-    }else{
-      mergedPortProfiles = { ...data }
     }
 
     const portProfileAPIData = [
-      ...result.map(item=>portProfilesAPIParser(item)),
-      portProfilesAPIParser(mergedPortProfiles)].flat()
+      ...result.map(item => portProfilesAPIParser(item)),
+      portProfilesAPIParser(mergedPortProfiles)
+    ]
 
     setPortProfilesTable([...result, mergedPortProfiles])
     form.setFieldValue('portProfiles', portProfileAPIData)
