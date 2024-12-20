@@ -205,7 +205,7 @@ export const IntentAIRRMGraph = ({ detailsPage } : { detailsPage?: boolean }) =>
   </UI.Wrapper>
 }
 
-const GraphImage = (
+export const GraphImage = (
   { crrmData, data, setUrl, justifyContent, backgroundColor, width } :
   {
     crrmData: ProcessedCloudRRMGraph[],
