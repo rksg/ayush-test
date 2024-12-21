@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { useWebhooks } from '@acx-ui/analytics/components'
@@ -26,6 +28,7 @@ import Notifications     from './Notifications'
 import OnpremMigration   from './OnpremMigration'
 import Subscriptions     from './Subscriptions'
 import UserPrivileges    from './UserPrivileges'
+import R1Webhooks        from './Webhooks'
 
 const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boolean }) => {
   const { $t } = useIntl()
@@ -35,6 +38,10 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
   const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
+  const isWebhookToggleEnabled = true//useIsSplitOn(Features.WEBHOOK_TOGGLE)
+  const [webhookCount, setWebhookCount] = useState(0)
+  const { title: webhookTitle, component: webhookComponent } = useWebhooks()
+
 
   const defaultPayload = {
     filters: venueId ? { venueId: [venueId] } :
@@ -94,10 +101,20 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
       title: $t({ defaultMessage: 'Version Management' }),
       component: <FWVersionMgmt />
     },
-    {
-      key: 'webhooks',
-      ...useWebhooks()
-    },
+    isWebhookToggleEnabled
+      ? {
+        key: 'webhooks',
+        title: $t({
+          defaultMessage: 'Webhooks {webhookCount, select, null {} other {({webhookCount})}}',
+          description: 'Translation string - Webhooks'
+        }, { webhookCount }),
+        component: <R1Webhooks setTitleCount={setWebhookCount}/>
+      }
+      : {
+        key: 'webhooks',
+        title: webhookTitle,
+        component: webhookComponent
+      },
     {
       key: 'onpremMigration',
       title: $t({ defaultMessage: 'ZD Migration' }),
