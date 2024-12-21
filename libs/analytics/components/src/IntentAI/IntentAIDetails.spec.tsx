@@ -81,6 +81,7 @@ const doCRRMTest = async (codes: string[], intent: IntentDetail) => {
       route: { params: { code, root: intent.root, sliceId: intent.sliceId } },
       wrapper: Provider
     })
+    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
     expect(await screen.findByTestId('c-crrm-channel-auto-IntentAIDetails')).toBeVisible()
     unmount()
   }
