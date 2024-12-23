@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, Dispatch, SetStateAction  } from 'react'
+import React, { createContext, useEffect, useState, useContext, Dispatch, SetStateAction  } from 'react'
 
 import { Divider, Menu } from 'antd'
 import moment            from 'moment-timezone'
@@ -51,6 +51,7 @@ import {
   AnalyticsFilter,
   getDatePickerValues,
   LoadTimeProvider,
+  LoadTimeContext,
   TrackingPages
 } from '@acx-ui/utils'
 
@@ -88,6 +89,7 @@ export const useDashBoardUpdatedFilter = () => {
 export default function Dashboard () {
   const { $t } = useIntl()
   const isEdgeEnabled = useIsEdgeReady()
+  const { dashboardFilters } = useDashBoardUpdatedFilter()
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
@@ -121,7 +123,7 @@ export default function Dashboard () {
 
   return (
     <DashboardFilterProvider>
-      <LoadTimeProvider page={TrackingPages.DASHBOARD}>
+      <LoadTimeProvider page={TrackingPages.DASHBOARD} filters={dashboardFilters}>
         <DashboardPageHeader />
         <CommonDashboardWidgets />
         <Divider dashed
@@ -153,6 +155,8 @@ export default function Dashboard () {
 
 function DashboardPageHeader () {
   const { dashboardFilters, setDateFilterState } = useDashBoardUpdatedFilter()
+  const { onChangeFilter } = useContext(LoadTimeContext)
+
   const { startDate , endDate, range } = dashboardFilters
   const { $t } = useIntl()
   const isEdgeEnabled = useIsEdgeReady()
@@ -203,6 +207,10 @@ function DashboardPageHeader () {
       }] : [])
     ]}
   />
+
+  useEffect(() => {
+    onChangeFilter({ filterValues: dashboardFilters }) ////
+  }, [dashboardFilters])
 
   return (
     <PageHeader

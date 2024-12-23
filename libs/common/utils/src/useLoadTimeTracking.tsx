@@ -1,12 +1,14 @@
 import { createContext, useContext, useEffect, useState, useRef } from 'react'
 
+
 import { SerializedError }     from '@reduxjs/toolkit'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import _                       from 'lodash'
 import moment                  from 'moment-timezone'
 
-export const TRACKING_INTERVAL = 1800_000
-export const TIME_THRESHOLD_OF_PAGE = 1800_000
-export const TIME_THRESHOLD_OF_COMPONENT = 300_000
+// export const TRACKING_INTERVAL = 1800_000
+// export const TIME_THRESHOLD_OF_PAGE = 1800_000
+export const TIME_THRESHOLD_OF_COMPONENT = 10_000 //300_000
 
 interface QueryState {
   isSuccess: boolean;
@@ -20,6 +22,12 @@ type LoadTimes = {
     time: number,
     isUnfulfilled: boolean
   }
+}
+
+type DateFilter = {
+  range: string,
+  startDate: string,
+  endDate: string
 }
 
 enum LoadTimeStatus {
@@ -120,7 +128,7 @@ const getLocalTime = () => {
   return moment().tz(localTimezone).format('YYYY-MM-DD HH:mm:ss')
 }
 
-export const getTrackingItemsCount = (page: TrackingPages) => {
+export const getTrackingItemsCount = (page: TrackingPages, hasFilters?: boolean) => {
   const getItemsForPage = <T extends TrackingPages>(pageKey: T) => {
     const activeTab = page === TrackingPages.DASHBOARD
       ? (localStorage.getItem('dashboard-tab') || 'ap')
@@ -155,7 +163,11 @@ export const getTrackingItemsCount = (page: TrackingPages) => {
     case TrackingPages.VENUE_DASHBOARD:
     case TrackingPages.EVENTS:
       const items = getItemsForPage(page)
-      return Object.keys(items).length
+      const filteredItems = Object.keys(items).filter(key => {
+        const item = items[key]
+        return hasFilters ? item.hasFilter === true : true
+      })
+      return filteredItems.length
     default:
       return 0
   }
@@ -166,27 +178,58 @@ export const LoadTimeContext
 
 export interface LoadTimeContextType {
   recordLoadTime: (name: string, time: number, isUnfulfilled: boolean) => void
+  onChangeFilter: (filter: any) => void //(filter: DateFilter) => void
+  currentFilters?: DateFilter
+  pageLoadStart: number
+  isFilterChanged?: boolean
 }
 
-export const LoadTimeProvider = (
-  { page, children }: { page: TrackingPages, children: React.ReactNode }
-) => {
+export const LoadTimeProvider = ({ page, children, filters }: {
+  page: TrackingPages, children: React.ReactNode, filters?: DateFilter
+}) => {
   const isLoadTimeSet = useRef(false)
-  const [pageLoadStart] = useState(getCurrentTime())
+  const [pageLoadStart, setPageLoadStart] = useState(getCurrentTime())
   const [loadTimes, setLoadTimes] = useState<LoadTimes>({})
+  const [currentFilters, setCurrentFilters] = useState({} as unknown as DateFilter)
+  const [isFilterChanged, setIsFilterChanged] = useState(false)
 
   const recordLoadTime = (name: string, time: number, isUnfulfilled = false) => {
     setLoadTimes((prev) => ({ ...prev, [name]: { time, isUnfulfilled } }))
   }
 
+  const onChangeFilter = (updatedFilter: DateFilter) => {
+    // && !_.isEmpty(filters)
+    const hasFiltersChanged
+      = (!_.isEmpty((updatedFilter as any)?.filterValues)
+      || !_.isEmpty((updatedFilter as any)?.searchValue)
+      ) && !_.isEqual(updatedFilter, filters)
+
+    console.log(hasFiltersChanged, isLoadTimeSet.current, updatedFilter, currentFilters, filters)
+    if (hasFiltersChanged && isLoadTimeSet.current) {
+      // eslint-disable-next-line no-console
+      console.log('======== filter changes & reset load time ========', getCurrentTime())
+      setPageLoadStart(getCurrentTime())
+      setCurrentFilters(updatedFilter)
+      isLoadTimeSet.current = false
+      setLoadTimes({})
+      setIsFilterChanged(true)
+    }
+  }
+
   useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log('loadTimes: ', loadTimes, page, getTrackingItemsCount(page))
+    setCurrentFilters({} as unknown as DateFilter)
+    setLoadTimes({})
+  }, [])
+
+  useEffect(() => {
+    // eslint-disable-next-line no-console, max-len
+    console.log('loadTimes: ', loadTimes, page, getTrackingItemsCount(page), filters, currentFilters)
     const trackingItemsCount = getTrackingItemsCount(page)
     const trackedCount = Object.keys(loadTimes).length
     const isLoadTimeUnset = !isLoadTimeSet.current
     const isAllItemTracked = trackedCount === trackingItemsCount
 
+    console.log(isLoadTimeUnset , trackedCount, trackingItemsCount , isAllItemTracked)
     if (isLoadTimeUnset && trackingItemsCount && isAllItemTracked) {
       const { pendo } = window
       const totalLoadTime = getCurrentTime() - pageLoadStart
@@ -197,7 +240,8 @@ export const LoadTimeProvider = (
         page_title: page,
         load_time_ms: totalLoadTime,
         load_time_text: getLoadTimeStatus(totalLoadTime),
-        components_load_time_ms: formatLoadTimes(loadTimes)
+        components_load_time_ms: formatLoadTimes(loadTimes),
+        filters: currentFilters?.range ? currentFilters : filters ////
       }
 
       // eslint-disable-next-line no-console
@@ -208,6 +252,7 @@ export const LoadTimeProvider = (
 
       isLoadTimeSet.current = true
       setLoadTimes({})
+      setIsFilterChanged(false)
 
       if (pendo) {
         // console.log('*** ', pendo)
@@ -217,7 +262,7 @@ export const LoadTimeProvider = (
   }, [loadTimes])
 
   return (
-    <LoadTimeContext.Provider value={{ recordLoadTime }}>
+    <LoadTimeContext.Provider value={{ recordLoadTime, onChangeFilter, pageLoadStart, isFilterChanged }}>
       {children}
     </LoadTimeContext.Provider>
   )
@@ -229,7 +274,8 @@ export function useLoadTimeTracking ({ itemName, states }: {
 }) {
   const isStartTimeSet = useRef(false)
   const isEndTimeSet = useRef(false)
-  const { recordLoadTime } = useContext(LoadTimeContext)
+  // const isFilterChanged = useRef(false)
+  const { recordLoadTime, isFilterChanged, pageLoadStart } = useContext(LoadTimeContext)
 
   const [startTime, setStartTime] = useState(null as unknown as number)
   const [endTime, setEndTime] = useState(null as unknown as number)
@@ -238,6 +284,8 @@ export function useLoadTimeTracking ({ itemName, states }: {
   const isLoadTimeTrackingEnabled = !!recordLoadTime
   const isLoading = Boolean(states?.some(state => state.isLoading))
   const isSuccess = Boolean(states?.every(state => state.isSuccess))
+  const isFetching = isFilterChanged && Boolean(states?.some(state => state.isFetching))
+  const isRefetchSuccess = isFilterChanged && Boolean(states?.every(state => !state.isFetching))
 
   useEffect(() => {
     const isStartTimeUnset = !isStartTimeSet.current
@@ -251,30 +299,45 @@ export function useLoadTimeTracking ({ itemName, states }: {
   }, [])
 
   useEffect(() => {
-    const currentTime = getCurrentTime()
-    const isEndTimeUnset = !isEndTimeSet.current
-    const loadDuration = currentTime - startTime
-    const hasReachedThreshold = loadDuration > 3_000 //
-    // eslint-disable-next-line max-len
-    const canSetEndTime = startTime && isEndTimeUnset && hasReachedThreshold && isLoadTimeTrackingEnabled
-    // eslint-disable-next-line no-console
-    console.log('***isLoading: ', itemName, hasReachedThreshold, loadDuration)
+    if (isFilterChanged && isEndTimeSet.current && isLoadTimeTrackingEnabled) {
+      setStartTime(pageLoadStart)
+      setEndTime(null as unknown as number)
+      setIsUnfulfilled(false)
+      isEndTimeSet.current = false
+    }
+  }, [isFilterChanged])
 
-    if (canSetEndTime) {
+  useEffect(() => {
+    const currentTime = getCurrentTime()
+    const start = isFetching ? pageLoadStart : startTime
+    const loadDuration = currentTime - start
+    const isEndTimeUnset = !isEndTimeSet.current
+    const hasReachedThreshold = loadDuration > TIME_THRESHOLD_OF_COMPONENT
+    // eslint-disable-next-line max-len
+    const shouldSetEndTime = startTime && isEndTimeUnset && hasReachedThreshold && isLoadTimeTrackingEnabled
+    // eslint-disable-next-line no-console
+    // console.log(canSetEndTime, startTime , isEndTimeUnset , hasReachedThreshold , isLoadTimeTrackingEnabled)
+    // eslint-disable-next-line no-console
+    console.log('***isLoading: ', itemName, hasReachedThreshold, loadDuration,
+      ' shouldSetEndTime: ', shouldSetEndTime,
+      ' isLoading: ',isLoading, ' ,isFetching:', isFetching, ',isSuccess: ', isSuccess, ',isRefetchSuccess: ', isRefetchSuccess)
+
+    if (shouldSetEndTime) {
       setEndTime(currentTime)
       setIsUnfulfilled(true)
       isEndTimeSet.current = true
     }
-  }, [isLoading])
+  }, [isLoading, isFetching])
 
   useEffect(() => {
     const isEndTimeUnset = !isEndTimeSet.current
-    if (isEndTimeUnset && isSuccess && isLoadTimeTrackingEnabled) {
+    const success = isSuccess || isRefetchSuccess
+    if (isEndTimeUnset && success && isLoadTimeTrackingEnabled) {
       const end = getCurrentTime()
       setEndTime(end)
       isEndTimeSet.current = true
     }
-  }, [isSuccess])
+  }, [isSuccess, isRefetchSuccess])
 
   useEffect(() => {
     if (startTime && endTime && isLoadTimeTrackingEnabled) {
