@@ -224,7 +224,9 @@ describe('Lan Port', () => {
         rest.get(EthernetPortProfileUrls.getEthernetPortProfile.url,
           (_, res, ctx) => res(ctx.json(mockDefaultTunkEthertnetPortProfile))),
         rest.get(EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId.url,
-          (_, res, ctx) => res(ctx.json(lanPortSettingPort1)))
+          (_, res, ctx) => res(ctx.json(lanPortSettingPort1))),
+        rest.get(WifiUrlsInfo.updateAp.url,
+          (_, res, ctx) => res(ctx.json({ model: 'T750SE' })))
       )
     })
 

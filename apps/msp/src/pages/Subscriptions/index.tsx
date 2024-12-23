@@ -68,6 +68,10 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   {
     key: 'FUTURE',
     value: $t({ defaultMessage: 'Show Future' })
+  },
+  {
+    key: 'VALID,FUTURE',
+    value: $t({ defaultMessage: 'Show Active & Future' })
   }
 ]
 
@@ -242,6 +246,7 @@ export function Subscriptions () {
       key: 'status',
       filterMultiple: false,
       filterValueNullable: true,
+      filterValueArray: true,
       filterable: statusTypeFilterOpts($t),
       sorter: { compare: sortProp('status', defaultSort) },
       render: function (_, row) {

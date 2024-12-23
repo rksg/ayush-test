@@ -738,7 +738,7 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
       activatedNetworkIds.push(networkId)
 
       item.venueApGroups?.forEach(venueApGroup => {
-        const { apGroupIds, isAllApGroups } = venueApGroup
+        const { apGroupIds, isAllApGroups, venueId } = venueApGroup
         if (!isAllApGroups) {
           apGroupIds?.forEach(apGroupId => {
             networkApGroupParamsList.push({ venueId, networkId, apGroupId })
@@ -886,7 +886,7 @@ export const fetchEnhanceRbacVenueNetworkList = async (arg: any, fetchWithBQ: an
       activatedNetworkIds.push(networkId)
 
       item.venueApGroups?.forEach(venueApGroup => {
-        const { apGroupIds, isAllApGroups } = venueApGroup
+        const { apGroupIds, isAllApGroups, venueId } = venueApGroup
         if (!isAllApGroups) {
           apGroupIds?.forEach(apGroupId => {
             networkApGroupParamsList.push({ venueId, networkId, apGroupId })
