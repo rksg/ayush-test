@@ -5,6 +5,7 @@ import { rest }    from 'msw'
 import { UserProfile, setUserProfile }                                                      from '@acx-ui/analytics/utils'
 import { Provider, smartZoneURL }                                                           from '@acx-ui/store'
 import { screen, render, mockServer, waitForElementToBeRemoved, mockRestApiQuery, waitFor } from '@acx-ui/test-utils'
+import { decodeTenantId }                                                                   from '@acx-ui/utils'
 
 import { mockSmartZoneList, mockSmartZoneStatusList, tenants, tenantsWithNoPermission, tenantsWithPermission } from './__tests__/fixtures'
 import { FormattedOnboardedSystem }                                                                            from './services'
@@ -16,10 +17,15 @@ jest.mock('./services', () => ({
   ...jest.requireActual('./services')
 }))
 
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  decodeTenantId: jest.fn()
+}))
+
 describe('OnboardedSystems', () => {
-  beforeAll(() => Object.defineProperty(window, 'location', { value: { ...window.location } }))
   beforeEach(() => {
     jest.clearAllMocks()
+    jest.mocked(decodeTenantId).mockReturnValue(tenants[0].id)
     setUserProfile({ accountId: tenants[0].id, tenants } as UserProfile)
     mockServer.use(
       rest.post(`${smartZoneURL}/smartzones/query`,
