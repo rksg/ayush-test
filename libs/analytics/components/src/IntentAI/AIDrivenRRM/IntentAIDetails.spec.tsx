@@ -7,9 +7,9 @@ import { mockIntentContext } from '../__tests__/fixtures'
 import { Statuses }          from '../states'
 import { IntentDetail }      from '../useIntentDetailsQuery'
 
-import { mockedCRRMGraphs, mockedIntentCRRM } from './__tests__/fixtures'
-import * as CCrrmChannelAuto                  from './CCrrmChannelAuto'
-import { kpis }                               from './common'
+import { mockedCRRMGraphs, mockedIntentCRRM, mockedIntentCRRMKPIs, mockedIntentCRRMStatusTrail } from './__tests__/fixtures'
+import * as CCrrmChannelAuto                                                                     from './CCrrmChannelAuto'
+import { kpis }                                                                                  from './common'
 
 jest.mock('../IntentContext')
 jest.mock('./RRMGraph', () => ({
@@ -23,8 +23,10 @@ jest.mock('./RRMGraph/DownloadRRMComparison', () => ({
 
 const mockIntentContextWith = (data: Partial<IntentDetail>) => {
   const intent = _.merge({}, mockedIntentCRRM, data) as IntentDetail
-  mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail', { data: { intent } })
-  mockGraphqlQuery(intentAIUrl, 'IntentKPIs', { data: { intent } })
+  mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail',
+    { data: { intent: mockedIntentCRRMStatusTrail } })
+  mockGraphqlQuery(intentAIUrl, 'IntentKPIs',
+    { data: { intent: mockedIntentCRRMKPIs } })
   const context = mockIntentContext({ intent, kpis })
   return { params: _.pick(context.intent, ['code', 'root', 'sliceId']) }
 }
