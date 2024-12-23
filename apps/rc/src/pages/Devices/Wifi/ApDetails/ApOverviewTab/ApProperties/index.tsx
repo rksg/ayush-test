@@ -31,8 +31,10 @@ export function ApProperties (props:{
 
   const getTxPowerDisplayInfo = (currentAP: ApViewModel, channel: RadioProperties) => {
     if (isApTxPowerToggleEnabled) {
-      return ((isApFwVersionLargerThan711(currentAP?.fwVersion))?
-        channel?.actualTxPower : channel?.txPower) || noDataDisplay
+      const txPower = ((isApFwVersionLargerThan711(currentAP?.fwVersion))?
+        channel?.actualTxPower : channel?.txPower)
+
+      return txPower !== undefined && txPower !== null ? txPower : noDataDisplay
     }
     return channel?.txPower || noDataDisplay
   }
