@@ -9,8 +9,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AaaUrls,
   EthernetPortProfileUrls,
-  SoftGreUrls,
-  FirmwareUrlsInfo } from '@acx-ui/rc/utils'
+  SoftGreUrls } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
   fireEvent,
@@ -19,7 +18,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { dummyRadiusServiceList, ethernetPortProfileList, initLanData, mockDefaultTunkEthertnetPortProfile, mockedApModelFamilies, selectedSinglePortModel, selectedSinglePortModelCaps, selectedTrunkPortCaps, trunkWithPortBasedName } from './__tests__/fixtures'
+import { dummyRadiusServiceList, ethernetPortProfileList, initLanData, mockDefaultTunkEthertnetPortProfile, portOverwrite, selectedApModel, selectedApModelCaps, selectedSinglePortModel, selectedSinglePortModelCaps, selectedTrunkPortCaps, trunkWithPortBasedName } from './__tests__/fixtures'
 
 import { LanPortSettings } from '.'
 
@@ -28,8 +27,6 @@ jest.mock('../ApCompatibility', () => ({
   ApCompatibilityToolTip: () => <div data-testid={'ApCompatibilityToolTip'} />,
   ApCompatibilityDrawer: () => <div data-testid={'ApCompatibilityDrawer'} />
 }))
-
-const venueId='mock-venue-id'
 
 export const mockSoftgreViewModel = {
   fields: null,
@@ -145,18 +142,8 @@ const lanData = [{
   enabled: true
 }]
 
-beforeEach(() => {
-  mockServer.use(
-    rest.post(FirmwareUrlsInfo.getApModelFamilies.url,
-      (_, res, ctx) => {
-        return res(ctx.json(mockedApModelFamilies))
-      }
-    )
-  )
-})
-
-
 describe('LanPortSettings', () => {
+
   it('should render correctly', async () => {
     render(<Provider>
       <Form initialValues={{ lan: lanData }}>
@@ -273,7 +260,9 @@ describe('LanPortSettings', () => {
   })
 })
 
-describe.skip('LanPortSettings - Ethernet Port Profile', () => {
+describe('Ethernet Port Profile', () => {
+  const venueId = '123'
+  const apSerial = '123456789042'
 
   beforeEach(() => {
     mockServer.use(
@@ -285,13 +274,7 @@ describe.skip('LanPortSettings - Ethernet Port Profile', () => {
       ),
       rest.get(
         EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId.url,
-        (_, res, ctx) => res(ctx.json({
-          data: {
-            enabled: true,
-            overwriteUntagId: 1,
-            overwriteVlanMembers: '1-4094'
-          }
-        }))
+        (_, res, ctx) => res(ctx.json(portOverwrite))
       ),
       rest.get(
         EthernetPortProfileUrls.getEthernetPortProfile.url,
@@ -307,10 +290,6 @@ describe.skip('LanPortSettings - Ethernet Port Profile', () => {
     )
   })
 
-  afterEach(() => {
-    mockServer.resetHandlers()
-  })
-
   it('AP Level - should render with ethernet port profile correctly', async () => {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
       return ff === Features.ETHERNET_PORT_PROFILE_TOGGLE
@@ -318,20 +297,20 @@ describe.skip('LanPortSettings - Ethernet Port Profile', () => {
 
     const apParams = {
       tenantId: 'tenant-id',
-      serialNumber: '123456789042'
+      serialNumber: apSerial
     }
 
     render(<Provider>
-      <Form initialValues={{ lan: lanData }}>
+      <Form initialValues={{ lan: initLanData }}>
         <LanPortSettings
           index={0}
           readOnly={false}
-          selectedPortCaps={selectedPortCaps}
-          selectedModel={selectedModel}
+          selectedPortCaps={selectedTrunkPortCaps}
+          selectedModel={selectedApModel}
           setSelectedPortCaps={jest.fn()}
-          selectedModelCaps={selectedModelCaps}
+          selectedModelCaps={selectedApModelCaps}
           isDhcpEnabled={false}
-          isTrunkPortUntaggedVlanEnabled={true}
+          isTrunkPortUntaggedVlanEnabled={false}
           useVenueSettings={false}
           serialNumber={apParams.serialNumber}
           venueId={venueId}
