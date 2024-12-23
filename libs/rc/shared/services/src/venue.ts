@@ -107,7 +107,9 @@ import {
   SoftGreViewData,
   ClientIsolationUrls,
   ClientIsolationViewModel,
-  LanPortsUrls
+  LanPortsUrls,
+  VenueLanPortSettings,
+  LanPort
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                                                          from '@acx-ui/store'
 import { ITimeZone, RequestPayload }                                                             from '@acx-ui/types'
@@ -2208,6 +2210,27 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const isEthernetClientIsolationEnabled = (arg.payload as any)?.ClientIsolationEnabled
 
         if(venueId) {
+          venueLanPortSettings.forEach(async (venueLanPort) => {
+            const venueLanPortSettingsQuery =venueLanPort.lanPorts.map((lanPort) => {
+              return fetchWithBQ(
+                createHttpRequest(
+                  LanPortsUrls.getVenueLanPortSettings,
+                  { venueId, apModel: venueLanPort.model, portId: lanPort.portId },
+                  apiCustomHeader
+                )
+              )
+            })
+
+            const results = await Promise.allSettled(venueLanPortSettingsQuery)
+            results.forEach((result, index) => {
+              if (result.status === 'fulfilled') {
+                const lanPortSettings = result.value.data as LanPort
+                Object.assign(venueLanPort.lanPorts[index], lanPortSettings)
+              }
+            })
+          })
+
+
 
           // Mapping Ethernet port profile relation to Lan port settings
           const ethernetPortProfileReq = createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList)
@@ -2255,8 +2278,17 @@ export const venueApi = baseVenueApi.injectEndpoints({
             mappingLanPortWithClientIsolationPolicy(venueLanPortSettings, clientIsolationPolicies, venueId)
           }
         }
-        console.log(venueLanPortSettings)
         return { data: venueLanPortSettings }
+      }
+    }),
+
+    getVenueLanPortSettings: build.query<VenueLanPortSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          LanPortsUrls.getVenueLanPortSettings, params)
+        return {
+          ...req
+        }
       }
     }),
 
@@ -2432,6 +2464,8 @@ export const {
 
   useGetVenueLanPortWithEthernetSettingsQuery,
   useLazyGetVenueLanPortWithEthernetSettingsQuery,
+  useGetVenueLanPortSettingsQuery,
+  useLazyGetVenueLanPortSettingsQuery,
   useUpdateVenueLanPortSettingsMutation,
   useUpdateVenueLanPortSpecificSettingsMutation
 } = venueApi

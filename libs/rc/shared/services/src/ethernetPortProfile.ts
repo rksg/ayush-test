@@ -15,8 +15,8 @@ import {
   ApLanPortTypeEnum,
   EthernetPortType,
   EthernetPortAuthType,
-  LanPortAPSettings,
-  LanPortVenueSettings
+  APLanPortSettings,
+  VenueLanPortSettings
 } from '@acx-ui/rc/utils'
 import { baseEthernetPortProfileApi } from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
@@ -120,7 +120,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
                 portId: portId.toString()
               })
             const apEthPortOverwrites = await fetchWithBQ(apPortOverwriteReq)
-            return { ...(apEthPortOverwrites.data as LanPortAPSettings),
+            return { ...(apEthPortOverwrites.data as APLanPortSettings),
               portId: portId }
           }
 
@@ -270,7 +270,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
     }),
 
     // eslint-disable-next-line max-len
-    getEthernetPortProfileSettingsByVenueApModel: build.query<LanPortVenueSettings, RequestPayload>({
+    getEthernetPortProfileSettingsByVenueApModel: build.query<VenueLanPortSettings, RequestPayload>({
       query: ({ params }) => {
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
         const req = createHttpRequest(
@@ -282,7 +282,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
     }),
 
     updateEthernetPortSettingsByVenueApModel:
-      build.mutation<LanPortVenueSettings, RequestPayload>({
+      build.mutation<VenueLanPortSettings, RequestPayload>({
         query: ({ params, payload }) => {
           const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
           const req = createHttpRequest(
@@ -309,7 +309,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
       }
     }),
     getEthernetPortProfileOverwritesByApPortId:
-    build.query<LanPortAPSettings, RequestPayload>({
+    build.query<APLanPortSettings, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
           EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId, params)
