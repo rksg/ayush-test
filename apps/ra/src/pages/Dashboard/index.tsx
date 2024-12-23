@@ -102,11 +102,7 @@ const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
           <SLA pathFilters={pathFilters} />
         </div>
         <div style={{ gridArea: 'd1' }}>
-          <DidYouKnow
-            filters={pathFilters}
-            maxFactPerSlide={2}
-            maxSlideChar={290}
-          />
+          <DidYouKnow filters={pathFilters} />
         </div>
         <div style={{ gridArea: 'd2' }}>
           <ChatWithMelissa/>
@@ -155,11 +151,7 @@ const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
         </>
       }
       <div style={{ gridArea: 'd1' }}>
-        <DidYouKnow
-          filters={pathFilters}
-          maxFactPerSlide={3}
-          maxSlideChar={290}
-        />
+        <DidYouKnow filters={pathFilters} />
       </div>
       { enableAppInsights
         ? <div style={{ gridArea: 'd2' }}>

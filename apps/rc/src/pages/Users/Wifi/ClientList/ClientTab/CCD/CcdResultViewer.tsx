@@ -7,7 +7,7 @@ import { isEmpty } from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { useRunCcdMutation }  from '@acx-ui/rc/services'
-import { CatchErrorResponse } from '@acx-ui/rc/utils'
+import { CatchErrorResponse } from '@acx-ui/utils'
 
 import { CcdEndPoints, CcdEndPointRectX, CcdDataMessage, CcdStatus, CcdMsg }           from './contents'
 import { DrawRectangle, DrawRectangleArrow, GetInfo, RectArrowHeight, RectArrowWidth } from './DrawCcdUtils'

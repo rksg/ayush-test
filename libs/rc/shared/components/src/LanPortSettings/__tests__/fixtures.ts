@@ -9,6 +9,14 @@ export const mockDefaultTrunkEthertnetPortProfileId = 'tenant-id_TRUNK'
 export const mockTrunkEthertnetPortProfileId1 = 'mockTrunkEthertnetPortProfileId1'
 export const mockAccessEthertnetPortProfileId1 = 'mockAccessEthertnetPortProfileId1'
 export const trunkWithPortBasedName = 'Trunk with Port Based'
+export const clientIsolationProfileId = '__Client_Isolation_Profile_ID__'
+export const clientIsolationProfileId2 = '__Client_Isolation_Profile_ID_2__'
+export const clientIsolationProfileId3 = '__Client_Isolation_Profile_ID_3__'
+export const clientIsolationProfileName = '__Client_Isolation_Profile_Name__'
+export const clientIsolationProfileName2 = '__Client_Isolation_Profile_Name_2__'
+export const clientIsolationProfileName3 = '__Client_Isolation_Profile_Name_3__'
+export const clientIsolationProfileDescription = '__Client_Isolation_Profile_Description__'
+
 
 export const ethernetPortProfileList = [
   {
@@ -215,4 +223,58 @@ export const mockedApModelFamilies = [
       'H670'
     ]
   }
+]
+
+export const mockedClientIsolationProfile = {
+  id: clientIsolationProfileId,
+  name: clientIsolationProfileName,
+  description: clientIsolationProfileDescription,
+  allowlist: [
+    {
+      mac: 'AA:BB:CC:DD:EE:11',
+      description: 'Client 1'
+    },
+    {
+      mac: 'AA:BB:CC:DD:EE:22',
+      description: 'Client 2'
+    },
+    {
+      mac: 'AA:BB:CC:DD:EE:33',
+      description: 'Client 3'
+    }
+  ]
+}
+
+export const mockedClientIsolationProfile2 = {
+  id: clientIsolationProfileId2,
+  name: clientIsolationProfileName2,
+  description: 'Here is the description 2',
+  allowlist: [
+    {
+      mac: '22:BB:CC:DD:EE:11',
+      description: 'Client 2-1'
+    },
+    {
+      mac: '22:BB:CC:DD:EE:22',
+      description: 'Client 2-2'
+    }
+  ]
+}
+
+export const mockedClientIsolationProfile3 = {
+  id: clientIsolationProfileId3,
+  name: clientIsolationProfileName3,
+  description: 'Here is the description 3',
+  allowlist: [
+    {
+      mac: 'AA:BB:CC:DD:EE:11',
+      description: 'Client 3-1'
+    }
+  ]
+}
+
+export const mockedClientIsolationList = [
+  mockedClientIsolationProfile,
+  mockedClientIsolationProfile2,
+  mockedClientIsolationProfile3
 ]

@@ -498,19 +498,6 @@ export interface WifiCallingSettingContextType {
   setWifiCallingSettingList: (wifiCallingSettingList: WifiCallingSetting[]) => void
 }
 
-export interface CatchErrorDetails {
-  code: string,
-  message: string
-}
-
-export interface CatchErrorResponse {
-  data: {
-    errors: CatchErrorDetails[],
-    requestId: string
-  },
-  status: number
-}
-
 export enum ClientStatusEnum {
   HISTORICAL = 'historical',
   CONNECTED = 'connected'
