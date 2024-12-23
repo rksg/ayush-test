@@ -70,7 +70,7 @@ export function APDetailsCard (props: {
   const getTxPowerDisplayInfo = (currentAP: ApViewModel, channel: RadioProperties) => {
     if (isApTxPowerToggleEnabled) {
       const txPower = ((isApFwVersionLargerThan711(currentAP?.fwVersion) &&
-      (!supportR370 || supportAggressiveTxPower))?
+      (!supportR370 || supportAggressiveTxPower))? channel?.actualTxPower : channel?.txPower)
 
       return txPower !== undefined && txPower !== null ? txPower : noDataDisplay
     }
