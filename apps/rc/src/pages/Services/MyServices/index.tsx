@@ -22,10 +22,10 @@ import {
   filterByAccessForServicePolicyMutation,
   getSelectServiceRoutePath,
   getServiceAllowedOperation,
+  isAllowedOperationCheckEnabled,
   isServiceCardEnabled,
   ServiceOperation,
-  ServiceType,
-  useIsAllowedOperationCheckEnabled
+  ServiceType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { hasPermission }         from '@acx-ui/user'
@@ -192,7 +192,6 @@ export default function MyServices () {
 
 function AddServiceLink (props: { services: { type: ServiceType }[] }) {
   const { services } = props
-  const isAllowedOperationCheckEnabled = useIsAllowedOperationCheckEnabled()
   const { $t } = useIntl()
 
   const addServiceLink = <TenantLink to={getSelectServiceRoutePath(true)}>
@@ -205,7 +204,7 @@ function AddServiceLink (props: { services: { type: ServiceType }[] }) {
     })
   })
 
-  if (isAllowedOperationCheckEnabled) {
+  if (isAllowedOperationCheckEnabled()) {
     return hasAddServicePermission ? addServiceLink : null
   }
   return filterByAccessForServicePolicyMutation([addServiceLink])[0]

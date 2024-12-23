@@ -5,8 +5,8 @@ import { ServiceType }     from '../../constants'
 import { PolicyType }      from '../../types'
 import { PolicyOperation } from '../policy'
 
-import { filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, getScopeKeyByService } from './servicePolicyAbacUtils'
-import { ServiceOperation }                                                                  from './serviceRouteUtils'
+import { filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, getScopeKeyByService, hasServicePermission } from './servicePolicyAbacUtils'
+import { ServiceOperation }                                                                                        from './serviceRouteUtils'
 
 const mockedFilterByAccess = jest.fn()
 jest.mock('@acx-ui/user', () => ({
@@ -15,7 +15,20 @@ jest.mock('@acx-ui/user', () => ({
   filterByAccess: (items: any[]) => mockedFilterByAccess(items)
 }))
 
+const mockedIsAllowedOperationCheckEnabled = jest.fn()
+const mockedGetServiceAllowedOperation = jest.fn()
+jest.mock('./allowedOperationUtils', () => ({
+  ...jest.requireActual('./allowedOperationUtils'),
+  isAllowedOperationCheckEnabled: () => mockedIsAllowedOperationCheckEnabled(),
+  getServiceAllowedOperation: () => mockedGetServiceAllowedOperation()
+}))
+
 describe('servicePolicyAbacUtils', () => {
+  afterEach(() => {
+    mockedIsAllowedOperationCheckEnabled.mockReset()
+    mockedGetServiceAllowedOperation.mockReset()
+  })
+
   describe('serviceTypeScopeMap', () => { // Test for a combination of all service types and operations to ensure they are all covered
     Object.values(ServiceType).forEach(serviceType => {
       Object.values(ServiceOperation).filter(oper => !isNaN(Number(oper))).forEach(oper => {
@@ -92,6 +105,23 @@ describe('servicePolicyAbacUtils', () => {
     expect(getScopeKeyByPolicy(PolicyType.AAA, PolicyOperation.CREATE)).toEqual<ScopeKeys>([WifiScopes.CREATE])
     // eslint-disable-next-line max-len
     expect(getScopeKeyByPolicy(PolicyType.AAA, PolicyOperation.DELETE)).toEqual<ScopeKeys>([WifiScopes.DELETE])
+  })
+
+  it('check service permission when isAllowedOperationCheckEnabled is true', () => {
+    const originalUserProfile = getUserProfile()
+    setUserProfile({
+      ...originalUserProfile,
+      allowedOperations: ['POST:/wifiCallingServiceProfiles']
+    })
+
+    mockedIsAllowedOperationCheckEnabled.mockReturnValue(true)
+    mockedGetServiceAllowedOperation.mockReturnValue('POST:/wifiCallingServiceProfiles')
+    // eslint-disable-next-line max-len
+    expect(hasServicePermission({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE })).toBe(true)
+
+    mockedGetServiceAllowedOperation.mockReturnValue('PUT:/wifiCallingServiceProfiles/{serviceId}')
+    // eslint-disable-next-line max-len
+    expect(hasServicePermission({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.EDIT })).toBe(false)
   })
 
   describe('filterByAccessForServicePolicyMutation', () => {

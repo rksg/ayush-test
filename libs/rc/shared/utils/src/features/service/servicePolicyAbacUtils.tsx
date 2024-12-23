@@ -7,7 +7,7 @@ import { ServiceType }     from '../../constants'
 import { PolicyType }      from '../../types'
 import { PolicyOperation } from '../policy'
 
-import { getPolicyAllowedOperation, getServiceAllowedOperation } from './allowedOperationUtils'
+import { getPolicyAllowedOperation, getServiceAllowedOperation, isAllowedOperationCheckEnabled } from './allowedOperationUtils'
 import {
   policyOperScopeMap, policyTypeScopeMap, serviceOperScopeMap, serviceTypeScopeMap,
   SvcPcyAllowedScope, SvcPcyAllowedType, SvcPcyScopeMap,
@@ -193,18 +193,16 @@ function hasGenericPermission<T extends SvcPcyAllowedType, U extends SvcPcyAllow
 ): boolean {
   const { type, oper, roles, getScopeKeyFn, specialCheckFn, getAllowedOperation } = props
 
-  // TODO: Implement isAllowedOperationCheckEnabled
-  const isAllowedOperationCheckEnabled = true
-  if (isAllowedOperationCheckEnabled) {
-    return hasPermission({ allowedOperations: getAllowedOperation(type, oper) })
-  }
-
-  const scopeKeys = getScopeKeyFn(type, oper)
-
   // eslint-disable-next-line max-len
   if ([ServiceOperation.LIST, ServiceOperation.DETAIL, PolicyOperation.LIST, PolicyOperation.DETAIL].includes(oper as unknown as SvcPcyAllowedOper)) {
     return true // Always allow users to access the view page
   }
+
+  if (isAllowedOperationCheckEnabled()) {
+    return hasPermission({ allowedOperations: getAllowedOperation(type, oper) })
+  }
+
+  const scopeKeys = getScopeKeyFn(type, oper)
 
   if (specialCheckFn && specialCheckFn()) {
     return true

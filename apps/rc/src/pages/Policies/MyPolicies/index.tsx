@@ -37,10 +37,10 @@ import {
   getPolicyAllowedOperation,
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
+  isAllowedOperationCheckEnabled,
   isPolicyCardEnabled,
   policyTypeDescMapping,
-  policyTypeLabelMapping,
-  useIsAllowedOperationCheckEnabled
+  policyTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -137,7 +137,6 @@ export default function MyPolicies () {
 
 function AddPolicyLink (props: { policies: { type: PolicyType }[] }) {
   const { policies } = props
-  const isAllowedOperationCheckEnabled = useIsAllowedOperationCheckEnabled()
   const { $t } = useIntl()
 
   const addServiceLink = <TenantLink to={getSelectPolicyRoutePath(true)}>
@@ -150,7 +149,7 @@ function AddPolicyLink (props: { policies: { type: PolicyType }[] }) {
     })
   })
 
-  if (isAllowedOperationCheckEnabled) {
+  if (isAllowedOperationCheckEnabled()) {
     return hasAddPolicyPermission ? addServiceLink : null
   }
   return filterByAccessForServicePolicyMutation([addServiceLink])[0]
