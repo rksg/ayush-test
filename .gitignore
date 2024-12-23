@@ -20,6 +20,7 @@ node_modules
 
 # testing
 /coverage
+/test-results.xml
 
 # IDEs and editors
 /.idea
