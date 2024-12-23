@@ -109,7 +109,8 @@ import {
   ClientIsolationViewModel,
   LanPortsUrls,
   VenueLanPortSettings,
-  LanPort
+  LanPort,
+  LanPortClientIsolationSettings
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                                                          from '@acx-ui/store'
 import { ITimeZone, RequestPayload }                                                             from '@acx-ui/types'
@@ -2207,7 +2208,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
 
         const isEthernetPortProfileEnabled = (arg.payload as any)?.isEthernetPortProfileEnabled
         const isEthernetSoftgreEnabled = (arg.payload as any)?.isEthernetSoftgreEnabled
-        const isEthernetClientIsolationEnabled = (arg.payload as any)?.ClientIsolationEnabled
+        const isEthernetClientIsolationEnabled = (arg.payload as any)?.isEthernetClientIsolationEnabled
 
         if(venueId) {
           venueLanPortSettings.forEach(async (venueLanPort) => {
@@ -2225,7 +2226,12 @@ export const venueApi = baseVenueApi.injectEndpoints({
             results.forEach((result, index) => {
               if (result.status === 'fulfilled') {
                 const lanPortSettings = result.value.data as LanPort
-                Object.assign(venueLanPort.lanPorts[index], lanPortSettings)
+                venueLanPort.lanPorts[index].softGreEnabled = lanPortSettings.softGreEnabled
+                venueLanPort.lanPorts[index].clientIsolationEnabled = lanPortSettings.clientIsolationEnabled
+                if(lanPortSettings.clientIsolationEnabled) {
+                  venueLanPort.lanPorts[index].clientIsolationSettings =
+                    lanPortSettings.clientIsolationSettings as LanPortClientIsolationSettings
+                }
               }
             })
           })
