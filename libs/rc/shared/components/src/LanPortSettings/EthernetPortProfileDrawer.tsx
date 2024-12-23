@@ -23,7 +23,7 @@ export default function EthernetPortProfileDrawer (props:{
   const [formVisible, setFormVisible]=useState(false)
   const [detailVisible, setDetailVisible]=useState(false)
   const getContent = <AddEthernetPortProfile
-    isNoPageHeader={true}
+    isEmbedded={true}
     onClose={()=>{
       onClose()
     }}
@@ -32,7 +32,7 @@ export default function EthernetPortProfileDrawer (props:{
 
   return (
     <>
-      <Space size={'large'}>
+      <Space split='|'>
         <Button type='link'
           onClick={()=>setDetailVisible(true)}
           disabled={disabled}>

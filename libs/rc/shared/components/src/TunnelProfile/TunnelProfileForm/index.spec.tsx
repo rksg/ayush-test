@@ -118,6 +118,9 @@ describe('TunnelProfileForm', () => {
   })
 
   it('should correctly lock fields', async () => {
+    jest.mocked(useIsEdgeFeatureReady)
+      .mockImplementation(ff =>(ff === Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE))
+
     const { result: formRef } = renderHook(() => {
       const [form] = Form.useForm()
       form.setFieldValue('disabledFields', [
@@ -127,7 +130,8 @@ describe('TunnelProfileForm', () => {
         'forceFragmentation',
         'ageTimeMinutes',
         'ageTimeUnit',
-        'type'
+        'type',
+        'natTraversalEnabled'
       ])
       return form
     })
@@ -141,10 +145,13 @@ describe('TunnelProfileForm', () => {
     expect(await screen.findByRole('textbox', { name: 'Profile Name' })).toBeDisabled()
     expect(screen.getByRole('radio', { name: 'Auto' })).toBeDisabled()
     expect(screen.getByRole('radio', { name: 'Manual' })).toBeDisabled()
-    const fragmentToggle = screen.getByRole('switch')
-    expect(fragmentToggle.id).toBe('forceFragmentation')
-    expect(fragmentToggle).toBeDisabled()
+    const switchBtns = screen.getAllByRole('switch')
+    const fragmentSwitch = switchBtns.find(btn => btn.id === 'forceFragmentation')
+    expect(fragmentSwitch).toBeDisabled()
     expect(screen.getByRole('spinbutton')).toBeDisabled()
+    expect(screen.getByRole('combobox')).toBeDisabled()
+    const natTraversalSwitch = switchBtns.find(btn => btn.id === 'natTraversalEnabled')
+    expect(natTraversalSwitch).toBeDisabled()
     expect(screen.getByRole('combobox')).toBeDisabled()
   })
 
@@ -292,6 +299,50 @@ describe('TunnelProfileForm', () => {
       await userEvent.type(keepAliveIntervalInput, '0')
       expect(await screen.findByText('Tunnel Keep Alive Interval must be between 1 and 5'))
         .toBeVisible()
+    })
+  })
+
+  describe('when NAT-Traversal Support is ready', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff =>(ff === Features.EDGES_SD_LAN_TOGGLE
+          || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
+          || ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE
+          || ff === Features.EDGE_PIN_HA_TOGGLE
+          || ff === Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
+    })
+
+    it('NAT-T switch should be enable when type is vlan_vxlan', async () => {
+      const user = userEvent.setup()
+      render(
+        <Form initialValues={defaultValues}>
+          <TunnelProfileForm />
+        </Form>
+      )
+      expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
+      expect(screen.getByText('Enable NAT-T Support')).toBeInTheDocument()
+      await user.click(screen.getByRole('radio', { name: 'VLAN to VNI map' }))
+      const switchBtns = screen.getAllByRole('switch')
+      const natTraversalSwitch = switchBtns.find(btn => btn.id === 'natTraversalEnabled')
+      expect(natTraversalSwitch).toBeEnabled()
+    })
+
+    it('NAT-T switch should be disabled when type is vxlan', async () => {
+      const user = userEvent.setup()
+      render(
+        <Form initialValues={defaultValues}>
+          <TunnelProfileForm />
+        </Form>
+      )
+      expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
+      expect(screen.getByText('Enable NAT-T Support')).toBeInTheDocument()
+      const switchBtns = screen.getAllByRole('switch')
+      const natTraversalSwitch = switchBtns.find(btn => btn.id === 'natTraversalEnabled')
+      expect(natTraversalSwitch).toBeEnabled()
+      await user.click(switchBtns[0])
+      await user.click(screen.getByRole('radio', { name: 'VNI' }))
+      expect(natTraversalSwitch).not.toBeChecked()
+      expect(natTraversalSwitch).toBeDisabled()
     })
   })
 })

@@ -2,14 +2,14 @@ import { useMemo } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps }                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import { useGetVenuesQuery }                      from '@acx-ui/rc/services'
-import { VenueActivation, defaultSort, sortProp } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                  from '@acx-ui/react-router-dom'
+import { Table, TableProps }                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { useGetVenuesQuery }                                 from '@acx-ui/rc/services'
+import { ProfileLanVenueActivations, defaultSort, sortProp } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                             from '@acx-ui/react-router-dom'
 
 interface VenueTableProps {
-  venueActivations: VenueActivation[]
+  venueActivations: ProfileLanVenueActivations[]
 }
 
 export const VenueTable = (props: VenueTableProps) => {
