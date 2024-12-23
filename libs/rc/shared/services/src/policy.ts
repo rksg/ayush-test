@@ -1996,7 +1996,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
               if (!acc[va.venueId]) {
                 acc[va.venueId] = new Set<string>()
               }
-              va.apSerialNumbers.forEach(serial => acc[va.venueId].add(serial))
+              va.apSerialNumbers?.forEach(serial => acc[va.venueId].add(serial))
             })
             item.apActivations.forEach(aa => {
               if (!acc[aa.venueId]) {

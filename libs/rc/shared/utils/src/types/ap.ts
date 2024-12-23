@@ -1028,3 +1028,17 @@ export interface LanPortClientIsolationSettings {
   packetsType: IsolatePacketsTypeEnum
   autoVrrp: boolean
 }
+
+export interface LanPortVenueSettings {
+  portId?: number
+  enabled?: boolean
+  softGreEnabled?: boolean
+  softGreSettings?: LanPortSoftGreProfileSettings
+  clientIsolationEnabled?: boolean
+  clientIsolationSettings?: LanPortClientIsolationSettings
+}
+
+export interface LanPortAPSettings extends LanPortVenueSettings {
+  overwriteUntagId?: number
+  overwriteVlanMembers?: string
+}
