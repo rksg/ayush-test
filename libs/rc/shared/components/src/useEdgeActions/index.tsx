@@ -1,8 +1,8 @@
 import { Form, Input, Modal }       from 'antd'
 import { RawIntlProvider, useIntl } from 'react-intl'
 
-import { showActionModal }        from '@acx-ui/components'
-import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { showActionModal }                                        from '@acx-ui/components'
+import { useIsSplitOn, Features, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
 import {
   useDeleteEdgeMutation,
   useFactoryResetEdgeMutation,
@@ -23,7 +23,22 @@ export const useIsEdgeReady = () => {
 export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
   const isEdgeEnabled = useIsEdgeReady()
   const isEdgeFeatureReady = useIsSplitOn(featureFlagKey)
-  return isEdgeEnabled && isEdgeFeatureReady
+  const isEdgeAdvEnabled = useIsTierAllowed(TierFeatures.EDGE_ADV)
+  const isEdgeAvReportEnabled = useIsTierAllowed(TierFeatures.EDGE_AV_REPORT)
+  const isEdgeNatTEnabled = useIsTierAllowed(TierFeatures.EDGE_NAT_T)
+
+  const isEnabledWithBooleanFlag = isEdgeEnabled && isEdgeFeatureReady
+  switch(featureFlagKey) {
+    case Features.EDGE_PIN_HA_TOGGLE:
+    case Features.EDGE_PIN_ENHANCE_TOGGLE:
+      return isEnabledWithBooleanFlag && isEdgeAdvEnabled
+    case Features.EDGE_AV_REPORT_TOGGLE:
+      return isEnabledWithBooleanFlag && isEdgeAvReportEnabled
+    case Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE:
+      return isEnabledWithBooleanFlag && isEdgeNatTEnabled
+    default:
+      return isEnabledWithBooleanFlag
+  }
 }
 
 export const useEdgeActions = () => {

@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
 import { cloneDeep, omit, uniq }                   from 'lodash'
+import { Params }                                  from 'react-router-dom'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
@@ -100,27 +102,37 @@ import {
   EthernetPortProfileUrls,
   EthernetPortProfileViewData,
   CompatibilityResponse,
-  IncompatibleFeatureLevelEnum
+  IncompatibleFeatureLevelEnum,
+  SoftGreUrls,
+  SoftGreViewData,
+  ClientIsolationUrls,
+  ClientIsolationViewModel
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                                                          from '@acx-ui/store'
 import { ITimeZone, RequestPayload }                                                             from '@acx-ui/types'
 import { APT_QUERY_CACHE_TIME, batchApi, createHttpRequest, ignoreErrorModal, getVenueTimeZone } from '@acx-ui/utils'
 
 import { getNewApViewmodelPayloadFromOld, fetchAppendApPositions } from './apUtils'
-import { fetchRbacAllApGroupNetworkVenueList }                     from './networkVenueUtils'
+import {
+  fetchEnhanceRbacAllApGroupNetworkVenueList,
+  fetchRbacAllApGroupNetworkVenueList
+} from './networkVenueUtils'
 import {
   getVenueDHCPProfileFn,
   getVenueRoguePolicyFn,
   transformGetVenueDHCPPoolsResponse,
   updateVenueRoguePolicyFn
 } from './servicePolicy.utils'
-import { handleCallbackWhenActivitySuccess, isPayloadHasField }                          from './utils'
+import { handleCallbackWhenActivitySuccess, isPayloadHasField } from './utils'
 import {
   convertToApMeshDataList,
   convertToMeshTopologyDataList,
   createVenueDefaultRadioCustomizationFetchArgs, createVenueDefaultRegulatoryChannelsFetchArgs,
-  createVenueRadioCustomizationFetchArgs, createVenueUpdateRadioCustomizationFetchArgs
-}   from './venue.utils'
+  createVenueRadioCustomizationFetchArgs, createVenueUpdateRadioCustomizationFetchArgs,
+  mappingLanPortWithClientIsolationPolicy,
+  mappingLanPortWithEthernetPortProfile,
+  mappingLanPortWithSoftGreProfile
+} from './venue.utils'
 
 const customHeaders = {
   v1: {
@@ -686,69 +698,31 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }))
 
         const venueIds = uniq(filters.map(item => item.venueId))
-        let venueApgroupMap = new Map<string, NetworkApGroup[]>()
-        let networkVenuesApGroupList = [] as NetworkVenue[]
-
-        for (let venueId of venueIds) {
-          // get apGroup list filter by venueId
-          const apGroupPayload = {
-            fields: ['name', 'id'],
-            pageSize: 10000,
-            sortField: 'name',
-            sortOrder: 'ASC',
-            filters: { venueId: [venueId] }
-          }
-
-          const apGroupListInfo = {
-            ...createHttpRequest(payloadData[0].isTemplate
-              ? ApGroupConfigTemplateUrlsInfo.getApGroupsListRbac
-              : WifiRbacUrlsInfo.getApGroupsList, params),
-            body: JSON.stringify(apGroupPayload)
-          }
-
-          const apGroupsQuery = await fetchWithBQ(apGroupListInfo)
-          const apGroupListData = apGroupsQuery.data as {
-            data: {
-              id: string,
-              name: string
-            }[]
-          }
-
-          const apgroupsDefaultValue = apGroupListData.data.map((d) => {
-            return {
-              apGroupId: d.id,
-              ...(d.name && { apGroupName: d.name }),
-              isDefault: !d.name,
-              radio: 'Both',
-              radioTypes: ['2.4-GHz', '5-GHz'],
-              validationError: false,
-              validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
-              validationErrorReachedMaxConnectedNetworksLimit: false,
-              validationErrorSsidAlreadyActivated: false
-            } as NetworkApGroup
-          })
-
-          venueApgroupMap.set(venueId, apgroupsDefaultValue)
-        }
+        const isTemplate = payloadData[0].isTemplate
+        const venueApgroupMap = await getVenueApgroupMapWithDefaultValue(venueIds, params, isTemplate, fetchWithBQ)
 
         const paramsVenueId = payloadData[0].venueId
         const paramsNetworkId = payloadData[0].networkId
-        const paramsIsTemplate = payloadData[0].isTemplate
+        const apGroupIds = venueApgroupMap.get(paramsVenueId)?.map(item => item.apGroupId)
+
+        let networkVenuesApGroupList = [] as NetworkVenue[]
+        const apGroupNetworkListParams = {
+          ...params,
+          venueId: paramsVenueId
+        }
+        const apGroupNetworkListPayload = {
+          isTemplate: isTemplate,
+          apGroupIds: apGroupIds,
+          filters: { 'venueApGroups.apGroupIds': apGroupIds }
+        }
 
         const {
           error: apGroupNetworkListQueryError,
           networkList,
           networkDeepListList
         } = await fetchRbacAllApGroupNetworkVenueList({
-          params: {
-            ...params,
-            venueId: paramsVenueId
-          },
-          payload: {
-            isTemplate: paramsIsTemplate,
-            apGroupIds: venueApgroupMap.get(paramsVenueId)?.map(item => item.apGroupId),
-            filters: { 'venueApGroups.apGroupIds': venueApgroupMap.get(paramsVenueId)?.map(item => item.apGroupId) }
-          }
+          params: apGroupNetworkListParams,
+          payload: apGroupNetworkListPayload
         }, fetchWithBQ)
 
         networkVenuesApGroupList = networkDeepListList.response
@@ -770,17 +744,98 @@ export const venueApi = baseVenueApi.injectEndpoints({
         } else {
           aggregatedList = networkVenuesApGroupList.map(networkVenue => {
             const { venueId, apGroups=[] } = networkVenue
-            const currentApGroupsDefaultValue = venueApgroupMap.get(venueId!)
-
             const newApgroups = cloneDeep(apGroups)
 
-            currentApGroupsDefaultValue?.forEach(apGroup => {
-              const customApGroup = apGroups.find(item => item.apGroupId === apGroup.apGroupId)
-              const customApGroupIndex = apGroups.findIndex(item => item.apGroupId === apGroup.apGroupId)
+            const currentApGroupsDefaultValue = venueApgroupMap.get(venueId!)
+            currentApGroupsDefaultValue?.forEach(apGroupDefaultValue => {
+              const customApGroup = apGroups.find(item => item.apGroupId === apGroupDefaultValue.apGroupId)
+              const customApGroupIndex = apGroups.findIndex(item => item.apGroupId === apGroupDefaultValue.apGroupId)
               if (!customApGroup) {
-                newApgroups.push(cloneDeep(apGroup))
+                newApgroups.push(cloneDeep(apGroupDefaultValue))
               } else {
-                newApgroups[customApGroupIndex] = { ...customApGroup, ...apGroup }
+                newApgroups[customApGroupIndex] = { ...apGroupDefaultValue, ...customApGroup }
+              }
+            })
+
+            return {
+              ...networkVenue,
+              apGroups: newApgroups
+            }
+          })
+        }
+
+        return networkList.data
+          ? { data: aggregatedList }
+          : { error: apGroupNetworkListQueryError as FetchBaseQueryError }
+      }
+    }),
+
+    getRbacNetworkApGroupsV2: build.query<NetworkVenue[], RequestPayload>({
+      async queryFn ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) {
+
+        const payloadData = payload as { venueId: string, networkId: string, isTemplate: boolean }[]
+        const filters = payloadData.map(item => ({
+          venueId: item.venueId,
+          networkId: item.networkId
+        }))
+
+        const venueIds = uniq(filters.map(item => item.venueId))
+        const isTemplate = payloadData[0].isTemplate
+        const venueApgroupMap = await getVenueApgroupMapWithDefaultValue(venueIds, params, isTemplate, fetchWithBQ)
+
+        const paramsVenueId = payloadData[0].venueId
+        const paramsNetworkId = payloadData[0].networkId
+        const apGroupIds = venueApgroupMap.get(paramsVenueId)?.map(item => item.apGroupId)
+
+        let networkVenuesApGroupList = [] as NetworkVenue[]
+        const apGroupNetworkListParams = {
+          ...params,
+          venueId: paramsVenueId
+        }
+        const apGroupNetworkListPayload = {
+          isTemplate: isTemplate,
+          apGroupIds: apGroupIds,
+          filters: { 'venueApGroups.apGroupIds': apGroupIds }
+        }
+
+        const {
+          error: apGroupNetworkListQueryError,
+          networkList,
+          networkDeepListList
+        } = await fetchEnhanceRbacAllApGroupNetworkVenueList({
+          params: apGroupNetworkListParams,
+          payload: apGroupNetworkListPayload
+        }, fetchWithBQ)
+
+        networkVenuesApGroupList = networkDeepListList.response
+          .flatMap(networkInfo => networkInfo.venues)
+          .filter(networkVenue => networkVenue.networkId === paramsNetworkId) as NetworkVenue[]
+
+        let aggregatedList: NetworkVenue[] | undefined
+
+        if (filters.length === 1 && !filters[0].networkId ) { // for create Netwrok
+          const venueId = filters[0].venueId
+          const networkVenueData = networkVenuesApGroupList[0]
+          const networkVenue = omit(networkVenueData, ['networkId', 'id'])
+
+          aggregatedList = [{
+            ...networkVenue,
+            apGroups: cloneDeep(venueApgroupMap.get(venueId))
+          }]
+
+        } else {
+          aggregatedList = networkVenuesApGroupList.map(networkVenue => {
+            const { venueId, apGroups=[] } = networkVenue
+            const newApgroups = cloneDeep(apGroups)
+
+            const currentApGroupsDefaultValue = venueApgroupMap.get(venueId!)
+            currentApGroupsDefaultValue?.forEach(apGroupDefaultValue => {
+              const customApGroup = apGroups.find(item => item.apGroupId === apGroupDefaultValue.apGroupId)
+              const customApGroupIndex = apGroups.findIndex(item => item.apGroupId === apGroupDefaultValue.apGroupId)
+              if (!customApGroup) {
+                newApgroups.push(cloneDeep(apGroupDefaultValue))
+              } else {
+                newApgroups[customApGroupIndex] = { ...apGroupDefaultValue, ...customApGroup }
               }
             })
 
@@ -2147,7 +2202,13 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const venueLanPortSettings = venueLanPortsQuery.data as VenueLanPorts[]
         const venueId = arg.params?.venueId
 
+        const isEthernetPortProfileEnabled = (arg.payload as any)?.isEthernetPortProfileEnabled
+        const isEthernetSoftgreEnabled = (arg.payload as any)?.isEthernetSoftgreEnabled
+        const isEthernetClientIsolationEnabled = (arg.payload as any)?.ClientIsolationEnabled
+
         if(venueId) {
+
+          // Mapping Ethernet port profile relation to Lan port settings
           const ethernetPortProfileReq = createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList)
           const ethernetPortProfileQuery = await fetchWithBQ(
             { ...ethernetPortProfileReq,
@@ -2159,19 +2220,41 @@ export const venueApi = baseVenueApi.injectEndpoints({
             }
           )
           const ethernetPortProfiles = (ethernetPortProfileQuery.data as TableResult<EthernetPortProfileViewData>).data
+          mappingLanPortWithEthernetPortProfile(venueLanPortSettings, ethernetPortProfiles, venueId)
 
-          ethernetPortProfiles.forEach((profile) => {
-            if (profile.venueActivations) {
-              profile.venueActivations.forEach((activity)=>{
-                const targetLanPort = venueLanPortSettings.find(setting => setting.model === activity.apModel && venueId === activity.venueId)
-                  ?.lanPorts.find(lanPort => lanPort.portId?.toString() === activity.portId?.toString())
-                if(targetLanPort) {
-                  targetLanPort.ethernetPortProfileId = profile.id
-                }
-              })
-            }
-          })
+          // Mapping SoftGRE profile relation to Lan port settings
+          if(isEthernetPortProfileEnabled && isEthernetSoftgreEnabled) {
+            const softgreProfileReq = createHttpRequest(SoftGreUrls.getSoftGreViewDataList)
+            const softgreProfileQuery = await fetchWithBQ(
+              { ...softgreProfileReq,
+                body: JSON.stringify({
+                  filters: {
+                    'venueActivations.venueId': [venueId]
+                  }
+                })
+              }
+            )
+            const softgreProfiles = (softgreProfileQuery.data as TableResult<SoftGreViewData>).data
+            mappingLanPortWithSoftGreProfile(venueLanPortSettings, softgreProfiles, venueId)
+          }
+
+          // Mapping Client Isolation Policy relation to Lan port settings
+          if(isEthernetClientIsolationEnabled) {
+            const clientIsolationReq = createHttpRequest(ClientIsolationUrls.queryClientIsolation)
+            const clientIsolationQuery = await fetchWithBQ(
+              { ...clientIsolationReq,
+                body: JSON.stringify({
+                  filters: {
+                    'venueActivations.venueId': [venueId]
+                  }
+                })
+              }
+            )
+            const clientIsolationPolicies = (clientIsolationQuery.data as TableResult<ClientIsolationViewModel>).data
+            mappingLanPortWithClientIsolationPolicy(venueLanPortSettings, clientIsolationPolicies, venueId)
+          }
         }
+
         return { data: venueLanPortSettings }
       }
     }),
@@ -2216,6 +2299,7 @@ export const {
   useGetNetworkApGroupsQuery,
   useGetNetworkApGroupsV2Query,
   useGetRbacNetworkApGroupsQuery,
+  useGetRbacNetworkApGroupsV2Query,
   useGetFloorPlanQuery,
   useFloorPlanListQuery,
   useDeleteFloorPlanMutation,
@@ -2385,4 +2469,53 @@ export const useScheduleSlotIndexMap = (tableData: VenueSubset[], isMapEnabled?:
   }, [isMapEnabled, tableData])
 
   return scheduleSlotIndexMap
+}
+
+export const getVenueApgroupMapWithDefaultValue = async (venueIds: string[], params: Params<string> | undefined, isTemplate: boolean = false, fetchWithBQ: any) => {
+  let venueApgroupMap = new Map<string, NetworkApGroup[]>()
+  const apGroupUrlInfo = isTemplate
+    ? ApGroupConfigTemplateUrlsInfo.getApGroupsListRbac
+    : WifiRbacUrlsInfo.getApGroupsList
+
+  for (let venueId of venueIds) {
+    // get apGroup list filter by venueId
+    const apGroupPayload = {
+      fields: ['name', 'id'],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC',
+      filters: { venueId: [venueId] }
+    }
+
+    const apGroupListInfo = {
+      ...createHttpRequest(apGroupUrlInfo, params),
+      body: JSON.stringify(apGroupPayload)
+    }
+
+    const apGroupsQuery = await fetchWithBQ(apGroupListInfo)
+    const apGroupListData = apGroupsQuery.data as {
+            data: {
+              id: string,
+              name: string
+            }[]
+          }
+
+    const apgroupsDefaultValue = apGroupListData.data.map((d) => {
+      return {
+        apGroupId: d.id,
+        ...(d.name && { apGroupName: d.name }),
+        isDefault: !d.name,
+        radio: 'Both',
+        radioTypes: ['2.4-GHz', '5-GHz'],
+        validationError: false,
+        validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+        validationErrorReachedMaxConnectedNetworksLimit: false,
+        validationErrorSsidAlreadyActivated: false
+      } as NetworkApGroup
+    })
+
+    venueApgroupMap.set(venueId, apgroupsDefaultValue)
+  }
+
+  return venueApgroupMap
 }

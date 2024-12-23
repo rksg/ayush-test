@@ -41,10 +41,11 @@ export interface DelegationEntitlementRecord {
   outOfComplianceDevices?: number;
   futureOutOfComplianceDevices?: number;
   futureOfComplianceDate?: number;
-  wifiDeviceCount?: number;
-  switchDeviceCount?: number;
-  rwgDeviceCount?: number;
-  edgeDeviceCount?: number
+  wifiDeviceCount?: string;
+  switchDeviceCount?: string;
+  rwgDeviceCount?: string;
+  edgeDeviceCount?: string;
+  availableLicenses?: number;
 }
 
 export interface MspEc {
@@ -584,6 +585,18 @@ export const MspAttentionNotesPayload = {
   }
 }
 
+export const GeneralAttentionNotesPayload = {
+  page: 1,
+  pageSize: 3,
+  fields: ['summary', 'details'],
+  sortField: 'endDate',
+  sortOrder: 'DESC',
+  filters: {
+    status: ['VALID'],
+    licenseCheck: true
+  }
+}
+
 export interface LicenseCalculatorData {
     effectiveDate: string,
     expirationDate: string,
@@ -642,4 +655,5 @@ export interface MileageReportsRequestPayload {
 export interface MileageSeriesData {
   value: number;
   extraData: MileageBreakUp[];
+  isZeroQuantity?: boolean;
 }

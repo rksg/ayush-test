@@ -121,11 +121,12 @@ function SettingsForm () {
     ]
     const showWarning = showWarningSecurity.indexOf(wlanSecurity) > -1
     return (<>
-      {SecurityOptionsDescription[wlanSecurity as keyof typeof PskWlanSecurityEnum]}
+      {wlanSecurity in PskWlanSecurityEnum &&
+        $t(SecurityOptionsDescription[wlanSecurity as keyof typeof PskWlanSecurityEnum])}
       {showWarning &&
           <Space align='start' size={2}>
             <InformationSolid />
-            {SecurityOptionsDescription.WPA2_DESCRIPTION_WARNING}
+            {$t(SecurityOptionsDescription.WPA2_DESCRIPTION_WARNING)}
           </Space>
       }
     </>)

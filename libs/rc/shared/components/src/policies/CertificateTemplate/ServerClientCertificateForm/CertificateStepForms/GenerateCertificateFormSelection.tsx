@@ -3,7 +3,8 @@ import { useIntl }            from 'react-intl'
 
 import { CertificateGenerationType, ExtendedKeyUsages, GenerateCertificateFormData } from '@acx-ui/rc/utils'
 
-import { generateCertificateTitle } from '../../contentsMap'
+import { generateCertificateDescription, generateCertificateTitle } from '../../contentsMap'
+import { RadioItemDescription }                                     from '../../styledComponents'
 
 import { GenerateCertificate }        from './GenerateCertificate'
 import { GenerateCertificateWithCSR } from './GenerateCertificateWIthCSR'
@@ -35,6 +36,9 @@ export const GenerateCertificateFormSelection =
               return (
                 <Radio key={type} value={type}>
                   {$t(generateCertificateTitle[type])}
+                  <RadioItemDescription>
+                    {$t(generateCertificateDescription[type])}
+                  </RadioItemDescription>
                 </Radio>
               )
             })}

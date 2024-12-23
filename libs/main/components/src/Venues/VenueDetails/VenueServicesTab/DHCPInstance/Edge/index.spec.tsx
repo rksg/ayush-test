@@ -1,9 +1,18 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeDHCPFixtures, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeUrlsInfo, getServiceDetailsLink, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved, within }                                                           from '@acx-ui/test-utils'
+import { edgeDhcpApi, edgeApi } from '@acx-ui/rc/services'
+import {
+  EdgeDHCPFixtures,
+  EdgeDhcpUrls,
+  EdgeGeneralFixtures,
+  EdgeUrlsInfo,
+  getServiceDetailsLink,
+  ServiceOperation,
+  ServiceType
+} from '@acx-ui/rc/utils'
+import { Provider, store }                                               from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import EdgeDhcpTab from '.'
 
@@ -20,6 +29,9 @@ describe('Venue Edge Dhcp Instance', () => {
       venueId: '37f4bba57a3746e0bc651a1e70a02f55',
       activeTab: 'services'
     }
+
+    store.dispatch(edgeDhcpApi.util.resetApiState())
+    store.dispatch(edgeApi.util.resetApiState())
 
     mockServer.use(
       rest.post(

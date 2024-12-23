@@ -13,7 +13,7 @@ import {
   Subtitle,
   showToast
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ManageAdminsDrawer,
   ManageDelegateAdminDrawer,
@@ -79,7 +79,8 @@ export function AddRecCustomer () {
   const { Paragraph } = Typography
   const isEditMode = action === 'edit'
   const multiPropertySelectionEnabled = useIsSplitOn(Features.MSP_MULTI_PROPERTY_CREATION_TOGGLE)
-  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isRbacPhase2Enabled = useIsSplitOn(Features.RBAC_PHASE2_TOGGLE)
 
@@ -187,7 +188,7 @@ export function AddRecCustomer () {
         }
       }
     }
-  }, [delegatedAdmins, Administrators])
+  }, [delegatedAdmins, Administrators, privilegeGroupList])
 
   useEffect(() => {
     if (techPartners?.data && mspEcTenantId) {
@@ -368,7 +369,7 @@ export function AddRecCustomer () {
           }
         />}
       </UI.FieldLabelAdmins>
-      {(isRbacPhase2Enabled && !isEditMode)
+      {(isAbacToggleEnabled && isRbacPhase2Enabled && !isEditMode)
         ? <div>
           <UI.FieldLabelAdmins2 width='275px' style={{ marginTop: '-12px' }}>
             <label>{intl.$t({ defaultMessage: 'MSP Delegations' })}</label>

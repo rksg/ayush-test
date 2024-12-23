@@ -191,6 +191,7 @@ export function EditPortDrawer ({
     taggedVlans,
     voiceVlan,
     portSpeedCheckbox,
+    ipsgCheckbox,
     ipsg,
     lldpQosCheckbox,
     ingressAclCheckbox,
@@ -230,6 +231,8 @@ export function EditPortDrawer ({
   const selectedSwitchList = switchList?.filter(s => switches.includes(s.id))
   const isFirmwareAbove10010f = !!selectedSwitchList?.length
     && selectedSwitchList?.every(s => isFirmwareVersionAbove10010f(s.firmware))
+  const isAnyFirmwareAbove10010f = !!selectedSwitchList?.length
+    && selectedSwitchList?.some(s => isFirmwareVersionAbove10010f(s.firmware))
 
   const switchId = switches?.[0]
   const disablePortSpeed = handlePortSpeedFor765048F(selectedPorts)
@@ -292,7 +295,7 @@ export function EditPortDrawer ({
 
   const commonRequiredProps = {
     isMultipleEdit, isCloudPort, hasMultipleValue, isFirmwareAbove10010f,
-    form, aggregateData: aggregatePortsData, portVlansCheckbox
+    form, aggregateData: aggregatePortsData, portVlansCheckbox, ipsgCheckbox
   }
   const authFormWatchValues = [
     authenticationType, dot1xPortControl, authDefaultVlan,
@@ -484,10 +487,11 @@ export function EditPortDrawer ({
       setData()
     } else if (selectedPorts) {
       setLoading(true)
+      resetFields()
     }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps, max-len
-  }, [selectedPorts, isSwitchDetailLoading, isSwitchDataLoading, isDefaultVlanLoading, visible])
+  }, [selectedPorts, isSwitchDetailLoading, isSwitchDataLoading, isDefaultVlanLoading, switchesDefaultVlan, visible])
 
   const getSinglePortValue = async (
     portSpeed: string[],
@@ -611,6 +615,8 @@ export function EditPortDrawer ({
   }
 
   const getFieldTooltip = (field: string) => {
+    const flexAuthEnabled = getFlexAuthEnabled(aggregatePortsData, isMultipleEdit,
+      flexibleAuthenticationEnabled, flexibleAuthenticationEnabledCheckbox)
     switch (field) {
       case 'portEnable':
         return isCloudPort ? $t({ defaultMessage: 'Uplink port cannot be disabled' }) : ''
@@ -621,12 +627,15 @@ export function EditPortDrawer ({
             : $t(EditPortMessages.POE_CAPABILITY_DISABLE)
           ) : ''
       case 'useVenuesettings':
-        return flexibleAuthenticationEnabled
+        return flexAuthEnabled
           ? $t(EditPortMessages.USE_VENUE_SETTINGS_DISABLED_WHEN_FLEX_AUTH_ENABLED)
           : (disabledUseVenueSetting ? $t(EditPortMessages.USE_VENUE_SETTINGS_DISABLE) : '')
       case 'ingressAcl': return !hasSwitchProfile ? $t(EditPortMessages.ADD_ACL_DISABLE) : ''
       case 'egressAcl': return !hasSwitchProfile ? $t(EditPortMessages.ADD_ACL_DISABLE) : ''
       case 'portSpeed': return hasBreakoutPort ? $t(EditPortMessages.PORT_SPEED_TOOLTIP) : ''
+      case 'ipsg':
+        return flexAuthEnabled
+          ? $t(EditPortMessages.CANNOT_ENABLE_IPSG_WHEN_FLEX_AUTH_ENABLED) : ''
       case 'flexibleAuthenticationEnabled':
         const disableKey = getFlexAuthButtonStatus(commonRequiredProps)
         return disableKey ? $t(EditPortMessages[disableKey as keyof typeof EditPortMessages]) : ''
@@ -663,6 +672,10 @@ export function EditPortDrawer ({
         return (isMultipleEdit && !portSpeedCheckbox) || disablePortSpeed || hasBreakoutPort
       case 'ingressAcl': return (isMultipleEdit && !ingressAclCheckbox) || ipsg
       case 'cyclePoe': return disableCyclePoeCapability || !cyclePoeEnable
+      case 'ipsg':
+        return (isMultipleEdit && !checkboxEnabled)
+        || getFlexAuthEnabled(aggregatePortsData, isMultipleEdit,
+          flexibleAuthenticationEnabled, flexibleAuthenticationEnabledCheckbox)
       // Flex auth
       case 'flexibleAuthenticationEnabled':
         return (isMultipleEdit && !checkboxEnabled)
@@ -712,6 +725,8 @@ export function EditPortDrawer ({
         return disablePoeCapability || !poeEnable
       case 'voiceVlan': return vlansOptions?.length === 1
       case 'portSpeed': return !portSpeedOptions.length || disablePortSpeed || hasBreakoutPort
+      case 'ipsg':
+        return !isNotOverrideAuthEnabled && flexibleAuthenticationEnabled
       case 'flexibleAuthenticationEnabled':
         return !!getFlexAuthButtonStatus(commonRequiredProps)
       case 'authenticationProfileId':
@@ -1029,6 +1044,18 @@ export function EditPortDrawer ({
         })
       } else if (changedField === 'ipsg') {
         changedValue && form.setFieldValue('ingressAcl', '')
+      } else if (changedField === 'ipsgCheckbox') {
+        const ipsgValues = getUnionValuesByKey('ipsg', aggregatePortsData)
+        const ipsgEnabled = ipsgValues?.length === 1 && ipsgValues[0]
+        if (!changedValue && (hasMultipleValue.includes('ipsg') || ipsgEnabled)) {
+          const resetFieldValues = {
+            ...form.getFieldsValue(),
+            flexibleAuthenticationEnabled: false,
+            flexibleAuthenticationEnabledCheckbox: false,
+            ...( ipsgEnabled ? { ipsg: true } : {})
+          }
+          form.setFieldsValue(resetFieldValues)
+        }
       } else if (handleVlanFields.includes(changedField)) {
         const revert = changedValues?.revert ?? useVenueSettings
         const status = checkPortEditStatus(
@@ -1209,74 +1236,77 @@ export function EditPortDrawer ({
         <UI.ContentDivider />
 
         {/* Flex Auth */}
-        { isSwitchFlexAuthEnabled && (isFirmwareAbove10010f || isMultipleEdit) && <>
-          { getFieldTemplate({
-            field: 'flexibleAuthenticationEnabled',
-            extraLabel: true,
-            content: <Form.Item
-              noStyle
-              label={false}
-              children={shouldRenderMultipleText({
-                field: 'flexibleAuthenticationEnabled', ...commonRequiredProps
-              }) ? <MultipleText />
-                : <Tooltip title={getFieldTooltip('flexibleAuthenticationEnabled')}>
-                  <Space style={{ display: 'flex', flex: 'auto', justifyContent: 'space-between' }}>
-                    <Form.Item
-                      name='flexibleAuthenticationEnabled'
-                      noStyle
-                      valuePropName='checked'
-                      initialValue={false}
-                    >
-                      <Switch
-                        data-testid='flex-enable-switch'
-                        disabled={getFieldDisabled('flexibleAuthenticationEnabled')}
-                        className={
-                          // eslint-disable-next-line max-len
-                          getToggleClassName('flexibleAuthenticationEnabled', isMultipleEdit, hasMultipleValue)
-                        }
-                        onChange={async (checked) => {
-                          if (checked && useVenueSettings) {
-                            onValuesChange({
-                              untaggedVlan: defaultVlan,
-                              revert: true, status: 'port'
-                            })
-                          }
-                        }}
-                      />
-                    </Form.Item>
-                    { flexibleAuthenticationEnabled && <>
+        { // eslint-disable-next-line max-len
+          isSwitchFlexAuthEnabled && (isFirmwareAbove10010f || (isAnyFirmwareAbove10010f && isMultipleEdit)) && <>
+            { getFieldTemplate({
+              field: 'flexibleAuthenticationEnabled',
+              extraLabel: true,
+              content: <Form.Item
+                noStyle
+                label={false}
+                children={shouldRenderMultipleText({
+                  field: 'flexibleAuthenticationEnabled', ...commonRequiredProps
+                }) ? <MultipleText />
+                  : <Tooltip title={getFieldTooltip('flexibleAuthenticationEnabled')}>
+                    <Space style={{
+                      display: 'flex', flex: 'auto', justifyContent: 'space-between'
+                    }}>
                       <Form.Item
-                        name='authenticationCustomize'
-                        hidden
-                        initialValue={false}
+                        name='flexibleAuthenticationEnabled'
+                        noStyle
                         valuePropName='checked'
-                        children={<Switch />}
-                      />
-                      <Button
-                        type='link'
-                        size='small'
-                        disabled={getFieldDisabled('authenticationCustomize')}
-                        onClick={() => handleClickCustomize({
-                          ...commonRequiredProps,
-                          selectedPorts,
-                          authenticationCustomize,
-                          authenticationProfileId,
-                          authProfiles,
-                          isProfileValid: !getFieldDisabled('renderAuthProfile')
-                        })}
-                      >{
-                          authenticationCustomize
-                            ? $t({ defaultMessage: 'Use Profile Settings' })
-                            : $t({ defaultMessage: 'Customize' })
-                        }</Button>
-                    </>}
-                  </Space>
-                </Tooltip>
-              }
-            />
-          })}
+                        initialValue={false}
+                      >
+                        <Switch
+                          data-testid='flex-enable-switch'
+                          disabled={getFieldDisabled('flexibleAuthenticationEnabled')}
+                          className={
+                          // eslint-disable-next-line max-len
+                            getToggleClassName('flexibleAuthenticationEnabled', isMultipleEdit, hasMultipleValue)
+                          }
+                          onChange={async (checked) => {
+                            if (checked && useVenueSettings) {
+                              onValuesChange({
+                                untaggedVlan: defaultVlan,
+                                revert: true, status: 'port'
+                              })
+                            }
+                          }}
+                        />
+                      </Form.Item>
+                      { flexibleAuthenticationEnabled && <>
+                        <Form.Item
+                          name='authenticationCustomize'
+                          hidden
+                          initialValue={false}
+                          valuePropName='checked'
+                          children={<Switch />}
+                        />
+                        <Button
+                          type='link'
+                          size='small'
+                          disabled={getFieldDisabled('authenticationCustomize')}
+                          onClick={() => handleClickCustomize({
+                            ...commonRequiredProps,
+                            selectedPorts,
+                            authenticationCustomize,
+                            authenticationProfileId,
+                            authProfiles,
+                            isProfileValid: !getFieldDisabled('renderAuthProfile')
+                          })}
+                        >{
+                            authenticationCustomize
+                              ? $t({ defaultMessage: 'Use Profile Settings' })
+                              : $t({ defaultMessage: 'Customize' })
+                          }</Button>
+                      </>}
+                    </Space>
+                  </Tooltip>
+                }
+              />
+            })}
 
-          { flexibleAuthenticationEnabled && !authenticationCustomize &&
+            { flexibleAuthenticationEnabled && !authenticationCustomize &&
           <Space style={{ display: 'block', marginLeft: isMultipleEdit ? '24px' : '0' }}>
             { getFieldTemplate({
               field: 'authenticationProfileId',
@@ -1333,7 +1363,7 @@ export function EditPortDrawer ({
             }
           </Space>}
 
-          { authenticationCustomize &&
+            { authenticationCustomize &&
           <Space style={{ display: 'block', marginLeft: isMultipleEdit ? '24px' : '0' }}>
             { getFieldTemplate({
               field: 'authenticationType',
@@ -1402,7 +1432,7 @@ export function EditPortDrawer ({
                     options={Object.values(PortControl).map(controlType => ({
                       label: $t(portControlTypeLabel[controlType]),
                       value: controlType,
-                      disabled: controlType === ''
+                      disabled: controlType !== PortControl.AUTO
                     }))}
                     disabled={getFieldDisabled('dot1xPortControl')}
                     onChange={(value) => handleAuthFieldChange({
@@ -1660,8 +1690,8 @@ export function EditPortDrawer ({
               />
             })}
           </Space>}
-          <UI.ContentDivider />
-        </>
+            <UI.ContentDivider />
+          </>
         }
 
         {/* Port VLAN */}
@@ -2122,18 +2152,23 @@ export function EditPortDrawer ({
             children={shouldRenderMultipleText({
               field: 'ipsg', ...commonRequiredProps
             }) ? <MultipleText />
-              : <Form.Item
-                noStyle
-                name='ipsg'
-                valuePropName='checked'
-                initialValue={false}
-              >
-                <Switch
-                  data-testid='ipsg-checkbox'
-                  disabled={getFieldDisabled('ipsg')}
-                  className={getToggleClassName('ipsg', isMultipleEdit, hasMultipleValue)}
-                />
-              </Form.Item>}
+              : <Tooltip title={getFieldTooltip('ipsg')}>
+                <Space>
+                  <Form.Item
+                    noStyle
+                    name='ipsg'
+                    valuePropName='checked'
+                    initialValue={false}
+                  >
+                    <Switch
+                      data-testid='ipsg-checkbox'
+                      disabled={getFieldDisabled('ipsg')}
+                      className={getToggleClassName('ipsg', isMultipleEdit, hasMultipleValue)}
+                    />
+                  </Form.Item>
+                </Space>
+              </Tooltip>
+            }
           />
         })}
 

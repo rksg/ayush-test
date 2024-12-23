@@ -42,6 +42,11 @@ export const GraphTitle = styled.div`
   font-size: var(--acx-subtitle-4-font-size);
   line-height: var(--acx-subtitle-4-line-height);
   font-weight: var(--acx-subtitle-4-font-weight);
+  background-color: var(--acx-primary-white);
+  width: fit-content;
+  height: fit-content;
+  padding-inline: 0.25em;
+  margin-left: -0.25em;
 `
 
 export const GraphSubTitle = styled.div`
@@ -49,6 +54,11 @@ export const GraphSubTitle = styled.div`
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
   font-weight: var(--acx-body-font-weight);
+  background-color: var(--acx-primary-white);
+  width: fit-content;
+  height: fit-content;
+  padding-inline: 0.25em;
+  margin-left: -0.25em;
 `
 
 export const CrrmArrow = styled.div`

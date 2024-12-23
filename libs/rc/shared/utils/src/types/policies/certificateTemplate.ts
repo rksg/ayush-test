@@ -339,3 +339,8 @@ export type ServerClientCertificateResult = {
   requestId: string
   id?: string
 }
+
+export enum ServerClientCertType {
+  PUBLIC = 'publicKey',
+  PRIVATE = 'privateKey'
+}

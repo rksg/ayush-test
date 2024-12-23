@@ -41,7 +41,7 @@ export function NetworkControlTab () {
   const wifi_network_application_control_FF = useIsSplitOn(Features.WIFI_NETWORK_APPLICATION_CONTROL)
 
   const applicationRecognitionControlTooltipContent = $t({ defaultMessage:
-    `Application Recognition & Control (ARC) manages the usage and reporting of network guest application activities. 
+    `Application Recognition & Control (ARC) manages the usage and reporting of network guest application activities.
     Disabling this feature stops the monitoring and reporting of these activities. ` })
 
   const form = Form.useFormInstance()
@@ -134,8 +134,10 @@ export function NetworkControlTab () {
                 { validator: () => validateWifiCallingSetting() }
               ]}
             >
-              {enableWifiCalling && <WifiCallingSettingModal />}
-              {enableWifiCalling && <WifiCallingSettingTable />}
+              {enableWifiCalling ? <>
+                <WifiCallingSettingModal />
+                <WifiCallingSettingTable />
+              </> : <></>}
             </Form.Item>
           </WifiCallingSettingContext.Provider>
         </UI.FieldLabel>

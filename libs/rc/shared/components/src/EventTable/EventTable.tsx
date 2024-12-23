@@ -22,7 +22,7 @@ import { computeRangeFilter, DateRangeFilter, exportMessageMapping }      from '
 import { TimelineDrawer } from '../TimelineDrawer'
 import { useIsEdgeReady } from '../useEdgeActions'
 
-import { filtersFrom, getDescription, getDetail, getSource, valueFrom } from './helpers'
+import { filtersFrom, getDescription, getSource, valueFrom } from './helpers'
 import {
   severityMapping,
   eventTypeMapping,
@@ -79,6 +79,7 @@ export const EventTable = ({
   const [current, setCurrent] = useState<Event>()
   const isEdgeEnabled = useIsEdgeReady()
   const isRogueEventsFilterEnabled = useIsSplitOn(Features.ROGUE_EVENTS_FILTER)
+  const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
   const { exportCsv, disabled } = useExportCsv<Event>(tableQuery)
   const [addExportSchedules] = useAddExportSchedulesMutation()
 
@@ -268,10 +269,6 @@ export const EventTable = ({
     {
       title: defineMessage({ defaultMessage: 'Description' }),
       value: getDescription(data)
-    },
-    {
-      title: defineMessage({ defaultMessage: 'Detail' }),
-      value: getDetail(data)
     }
   ]
 
@@ -288,6 +285,7 @@ export const EventTable = ({
       enableApiFilter={true}
       iconButton={!isCustomRole && hasCrossVenuesPermission()
         ? tableIconButtonConfig : {} as IconButtonProps}
+      filterPersistence={enabledUXOptFeature}
     />
     {current && <TimelineDrawer
       title={defineMessage({ defaultMessage: 'Event Details' })}

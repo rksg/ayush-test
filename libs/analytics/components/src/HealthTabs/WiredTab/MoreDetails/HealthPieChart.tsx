@@ -17,8 +17,8 @@ import {
   TopNByPortCongestionResult, TopNByStormPortCountResult,
   showTopNTableResult
 } from './config'
-import { usePieChartDataQuery } from './services'
-import { PieChartTitle }        from './styledComponents'
+import { usePieChartDataQuery }         from './services'
+import { NoDataWrapper, PieChartTitle } from './styledComponents'
 
 type PieChartData = {
   mac: string
@@ -159,10 +159,9 @@ export const MoreDetailsPieChart = ({
             labelTextStyle={{ overflow: 'truncate', width: width * 0.5 }} // 50% of width
             showLegend
             dataFormatter={tooltipFormatter(total, formatter('countFormat'))}
-          /> : <p style={{
-            position: 'relative', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+          /> : <NoDataWrapper>
             <NoData />
-          </p>
+          </NoDataWrapper>
           }
           {hasOthers &&
             <Space align='start' style={{ width }}>

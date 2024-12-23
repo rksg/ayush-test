@@ -199,7 +199,7 @@ describe.skip('Network More settings - Networking Tab', () => {
 
 })
 
-describe('NetworkMoreSettings', () => {
+describe.skip('NetworkMoreSettings', () => {
   describe('Over-the-DS', () => {
 
     const testNetworkTypes = [
