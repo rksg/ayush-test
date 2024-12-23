@@ -7,7 +7,6 @@ import { FormattedMessage } from 'react-intl'
 
 import { formattedPath }             from '@acx-ui/analytics/utils'
 import { TableProps }                from '@acx-ui/components'
-import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { intentAIApi }               from '@acx-ui/store'
 import {
@@ -139,9 +138,9 @@ export const api = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
     intentAIList: build.query<
       { intents:IntentListItem[], total: number },
-      Payload & { isConfigChangeEnabled: boolean }
+      Payload
     >({
-      query: ({ isConfigChangeEnabled, ...payload }) => ({
+      query: (payload) => ({
         document: gql`
         query IntentAIList(
           $path: [HierarchyNodeInput],
@@ -174,7 +173,6 @@ export const api = intentAIApi.injectEndpoints({
                 type
                 name
               }
-              ${isConfigChangeEnabled ? 'dataCheck' : ''}
             }
             total
           }
@@ -454,7 +452,6 @@ export function useIntentAITableQuery (filter: PathFilter) {
     defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
     total: 0
   }
-  const isConfigChangeEnabled = useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE)
 
   const intentTableFilters = useEncodedParameter<Filters>('intentTableFilters')
   const filters = intentTableFilters.read() || {}
@@ -481,8 +478,7 @@ export function useIntentAITableQuery (filter: PathFilter) {
         ...filter,
         page: pagination.page,
         pageSize: pagination.pageSize,
-        filterBy: perpareFilterBy(filters),
-        isConfigChangeEnabled
+        filterBy: perpareFilterBy(filters)
       }
     ),
     onPageChange: handlePageChange,

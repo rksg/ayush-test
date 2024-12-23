@@ -6,7 +6,6 @@ import { FormattedMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { Card, GridCol, GridRow }  from '@acx-ui/components'
 import { get }                     from '@acx-ui/config'
-import { useIsSplitOn, Features }  from '@acx-ui/feature-toggle'
 import { useWifiNetworkListQuery } from '@acx-ui/rc/services'
 
 import { DescriptionSection }   from '../../DescriptionSection'
@@ -70,8 +69,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
 
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const isConfigChangeEnabled = useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE)
-    const { intent, kpis, state } = useIntentContext()
+    const { intent, kpis, state, isDataRetained, isHotTierData } = useIntentContext()
     const { displayStatus, sliceValue, metadata, updatedAt } = intent
     const valuesText = useValuesText()
     const isMlisa = get('IS_MLISA_SA') === 'true'
@@ -121,7 +119,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
                 <GridCol data-testid='Configuration' col={{ span: 12 }}>
                   <ConfigurationCard />
                 </GridCol>
-                {getGraphKPIs(intent, kpis, isConfigChangeEnabled).map(kpi => (
+                {getGraphKPIs(intent, kpis, isDataRetained, isHotTierData).map(kpi => (
                   <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
                     <KpiCard kpi={kpi} />
                   </GridCol>

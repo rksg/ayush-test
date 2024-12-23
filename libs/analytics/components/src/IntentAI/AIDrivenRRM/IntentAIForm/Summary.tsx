@@ -3,7 +3,6 @@ import { Row, Col, Form } from 'antd'
 import { useIntl }        from 'react-intl'
 
 import { StepsForm, ProcessedCloudRRMGraph } from '@acx-ui/components'
-import { useIsSplitOn, Features }            from '@acx-ui/feature-toggle'
 
 import { KpiField }         from '../../common/KpiField'
 import { ScheduleTiming }   from '../../common/ScheduleTiming'
@@ -17,8 +16,7 @@ export function Summary (
   { summaryUrlBefore, summaryUrlAfter, crrmData } :
   { summaryUrlBefore?: string, summaryUrlAfter?: string, crrmData: ProcessedCloudRRMGraph[] }) {
   const { $t } = useIntl()
-  const isConfigChangeEnabled = useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE)
-  const { intent, kpis } = useIntentContext()
+  const { intent, kpis, isDataRetained, isHotTierData } = useIntentContext()
 
   return <Row gutter={20}>
     <Col span={16}>
@@ -30,7 +28,7 @@ export function Summary (
           summaryUrlAfter={summaryUrlAfter}
         />
       </Form.Item>
-      {getGraphKPIs(intent, kpis, isConfigChangeEnabled).map(
+      {getGraphKPIs(intent, kpis, isDataRetained, isHotTierData).map(
         kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
       <ScheduleTiming.FieldSummary />
     </Col>

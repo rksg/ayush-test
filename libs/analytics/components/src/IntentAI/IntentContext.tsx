@@ -22,13 +22,13 @@ export type IntentConfigurationConfig = {
   tooltip?: (intent: IntentDetail) => MessageDescriptor
 }
 
-export type IIntentContext = {
+type IIntentContext = {
   intent: IntentDetail
   configuration?: IntentConfigurationConfig
   kpis: IntentKPIConfig[]
   state: ReturnType<typeof intentState>
-  isDataRetained?: boolean
-  isHotTierData?: boolean
+  isDataRetained: boolean
+  isHotTierData: boolean
 }
 
 export const IntentContext = createContext({} as IIntentContext)

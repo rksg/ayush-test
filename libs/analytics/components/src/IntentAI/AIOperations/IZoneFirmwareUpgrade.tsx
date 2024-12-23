@@ -4,7 +4,6 @@ import _                                            from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
 import { StepsForm, useStepFormContext } from '@acx-ui/components'
-import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
 import { formatter }                     from '@acx-ui/formatter'
 
 import { TradeOff }                                           from '../../TradeOff'
@@ -167,15 +166,14 @@ export const IntentAIForm = createIntentAIForm<{ enable: boolean }>({
 }).addStep({
   title: defineMessage({ defaultMessage: 'Summary' }),
   Content: () => {
-    const { intent, kpis, configuration } = useIntentContext()
-    const isConfigChangeEnabled = useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE)
+    const { intent, kpis, configuration, isDataRetained, isHotTierData } = useIntentContext()
     const { form } = useStepFormContext()
 
     const enable = form.getFieldValue('preferences').enable
     return enable
       ? <>
         {configuration && <ConfigurationField configuration={configuration} intent={intent}/>}
-        {getGraphKPIs(intent, kpis, isConfigChangeEnabled).map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
+        {getGraphKPIs(intent, kpis, isDataRetained, isHotTierData).map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
         <ScheduleTiming.FieldSummary />
       </>
       : options.no.content
