@@ -2211,7 +2211,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const isEthernetClientIsolationEnabled = (arg.payload as any)?.isEthernetClientIsolationEnabled
 
         if(venueId) {
-          venueLanPortSettings.forEach(async (venueLanPort) => {
+          const results: ((LanPort | null)[])[] = []
+          for (const venueLanPort of venueLanPortSettings) {
+
             const venueLanPortSettingsQuery =venueLanPort.lanPorts.map((lanPort) => {
               return fetchWithBQ(
                 createHttpRequest(
@@ -2222,21 +2224,25 @@ export const venueApi = baseVenueApi.injectEndpoints({
               )
             })
 
-            const results = await Promise.allSettled(venueLanPortSettingsQuery)
-            results.forEach((result, index) => {
-              if (result.status === 'fulfilled') {
-                const lanPortSettings = result.value.data as LanPort
-                venueLanPort.lanPorts[index].softGreEnabled = lanPortSettings.softGreEnabled
-                venueLanPort.lanPorts[index].clientIsolationEnabled = lanPortSettings.clientIsolationEnabled
-                if(lanPortSettings.clientIsolationEnabled) {
-                  venueLanPort.lanPorts[index].clientIsolationSettings =
+            const reqs = await Promise.allSettled(venueLanPortSettingsQuery)
+            results.push(reqs.map((result) => {
+              return result.status === 'fulfilled' ? result.value.data as LanPort : null
+            }))
+          }
+          results.forEach((result, index) => {
+            const target = venueLanPortSettings[index]
+
+            result.forEach((lanPortSettings, idx ) => {
+              if (lanPortSettings === null) return
+
+              target.lanPorts[idx].softGreEnabled = lanPortSettings.softGreEnabled
+              target.lanPorts[idx].clientIsolationEnabled = lanPortSettings.clientIsolationEnabled
+              if(lanPortSettings.clientIsolationEnabled) {
+                target.lanPorts[idx].clientIsolationSettings =
                     lanPortSettings.clientIsolationSettings as LanPortClientIsolationSettings
-                }
               }
             })
           })
-
-
 
           // Mapping Ethernet port profile relation to Lan port settings
           const ethernetPortProfileReq = createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList)
