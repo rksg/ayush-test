@@ -6,18 +6,20 @@ import {
 } from 'antd'
 import { MenuItemType } from 'rc-menu/lib/interface'
 
-import { ScopeKeys } from '@acx-ui/types'
+import { OpsIds, ScopeKeys } from '@acx-ui/types'
 
 import * as UI from './styledComponents'
 
 export interface DropdownProps extends Omit<AntDropdownProps, 'overlay' | 'trigger' | 'children'> {
   overlay: React.ReactElement<AntMenuProps>
   scopeKey?: ScopeKeys,
+  rbacOpsId?: OpsIds,
   children: (selectedKeys: string | null) => React.ReactElement
 }
 
 export interface DropdownItemType extends MenuItemType {
   scopeKey?: ScopeKeys,
+  rbacOpsId?: OpsIds,
   allowedOperationUrl?: string
 }
 

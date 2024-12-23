@@ -16,6 +16,7 @@ export interface ApiInfo {
   newApi?: boolean;
   oldUrl?: string;
   oldMethod?: string;
+  rbacOpsApi?: string;
   defaultHeaders?: {
     'Content-Type'?: string;
     'Accept'?: string

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-import { ScopeKeys } from '@acx-ui/types'
+import { OpsIds, ScopeKeys } from '@acx-ui/types'
 
 import { TenantType, useTenantLink  } from './useTenantLink'
 
@@ -11,9 +11,10 @@ import type { LinkProps } from 'react-router-dom'
  */
 export function TenantLink ({
   tenantType,
+  rbacOpsId,
   scopeKey,
   ...props
-}: LinkProps & { tenantType?: TenantType, scopeKey?: ScopeKeys, }) {
+}: LinkProps & { tenantType?: TenantType, scopeKey?: ScopeKeys, rbacOpsId?: OpsIds }) {
   const to = useTenantLink(props.to, tenantType)
 
   return <Link {...props} to={to} />

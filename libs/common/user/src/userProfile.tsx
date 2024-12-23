@@ -5,6 +5,7 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 import { get }            from '@acx-ui/config'
 import { TenantNavigate } from '@acx-ui/react-router-dom'
 import {
+  OpsIds,
   RolesEnum as Role,
   ScopeKeys
 } from '@acx-ui/types'
@@ -27,6 +28,7 @@ type Profile = {
   accountTier?: string
   betaEnabled?: boolean
   abacEnabled?: boolean
+  rbacOpsApiEnabled?: boolean
   scopes?: ScopeKeys
   isCustomRole?: boolean,
   hasAllVenues?: boolean,
@@ -41,12 +43,14 @@ const userProfile: Profile = {
   abacEnabled: false,
   scopes: []
 }
-const SHOW_WITHOUT_RBAC_CHECK = 'SHOW_WITHOUT_RBAC_CHECK'
+export const SHOW_WITHOUT_RBAC_CHECK = 'SHOW_WITHOUT_RBAC_CHECK'
 
 interface FilterItemType {
   scopeKey?: ScopeKeys,
   key?: string,
+  rbacOpsId?: OpsIds
   props?: {
+    rbacOpsId?: OpsIds,
     scopeKey?: ScopeKeys,
     key?: string
   }
@@ -60,6 +64,7 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.accountTier = profile.accountTier
   userProfile.betaEnabled = profile.betaEnabled
   userProfile.abacEnabled = profile.abacEnabled
+  userProfile.rbacOpsApiEnabled = profile.rbacOpsApiEnabled
   userProfile.isCustomRole = profile.isCustomRole
   userProfile.scopes = profile?.scopes
   userProfile.hasAllVenues = profile?.hasAllVenues
@@ -81,18 +86,40 @@ export const getShowWithoutRbacCheckKey = (id:string) => {
  * DO NOT use hasAccess. It will be private after RBAC feature release.
  */
 
-export function hasAccess (id?: string, roles?: Role[]) {
+export function hasAccess (props?: { opsIds?: OpsIds, roles?: Role[] }) {
   if (get('IS_MLISA_SA')) return true
   // measure to permit all undefined id for admins
-  if (!id) return hasRoles(roles || [Role.PRIME_ADMIN, Role.ADMINISTRATOR, Role.DPSK_ADMIN])
-  return hasAllowedOperations(id)
+  const { rbacOpsApiEnabled } = getUserProfile()
+  if(rbacOpsApiEnabled) {
+    return hasAllowedOperations(props?.opsIds || [])
+  } else {
+    return hasRoles(props?.roles || [Role.PRIME_ADMIN, Role.ADMINISTRATOR, Role.DPSK_ADMIN])
+  }
 }
 
-function hasAllowedOperations (id:string) {
-  const { allowedOperations } = getUserProfile()
-
-  if(id.startsWith(SHOW_WITHOUT_RBAC_CHECK)) return true
-  return allowedOperations?.includes(id)
+/**
+ * Checks if the user has the required RBAC permissions for the allowed operations API.
+ *
+ * @param opsId The operational IDs (OpsIds) to validate against the user's profile.
+ *
+ * OR  -> If it's a single operation or any single scope in the list matches, access is granted (e.g., `['DELETE:/venues', 'DELETE:/networks']`).
+ * AND ->  If the `opsId` is an array, all elements must match (e.g., `[['DELETE:/venues', 'DELETE:/networks']]`).
+ * Ignore check -> If `SHOW_WITHOUT_RBAC_CHECK` is included, access is automatically granted (e.g., `[[SHOW_WITHOUT_RBAC_CHECK]]`).
+ */
+function hasAllowedOperations (opsId: OpsIds) {
+  const { rbacOpsApiEnabled } = getUserProfile()
+  if (rbacOpsApiEnabled) {
+    return opsId?.some(opsId => {
+      if (Array.isArray(opsId)) {
+        return opsId.every(i => opsId.includes(i))
+      } else if (opsId.includes(SHOW_WITHOUT_RBAC_CHECK)) {
+        return true
+      } else {
+        return opsId.includes(opsId)
+      }
+    })
+  }
+  return true
 }
 
 export function filterByAccess <Item> (items: Item[]) {
@@ -101,9 +128,9 @@ export function filterByAccess <Item> (items: Item[]) {
   } else {
     return items.filter(item => {
       const filterItem = item as FilterItemType
-      const allowedOperations = filterItem?.key
+      const allowedOperations = filterItem?.rbacOpsId
       const scopes = filterItem?.scopeKey || filterItem?.props?.scopeKey || []
-      return hasPermission({ scopes, allowedOperations })
+      return hasPermission({ scopes, rbacOpsIds: allowedOperations })
     })
   }
 }
@@ -127,23 +154,25 @@ export function hasPermission (props?: {
     permission?: RaiPermission,
     // R1
     scopes?: ScopeKeys,
-    allowedOperations?:string,
+    rbacOpsIds?: OpsIds,
     roles?: Role[]
 }): boolean {
-  const { scopes = [], allowedOperations, permission, roles } = props || {}
+  const { scopes = [], rbacOpsIds, permission, roles } = props || {}
   if (get('IS_MLISA_SA')) {
     return !!(permission && permissions[permission])
   } else {
-    const { abacEnabled, isCustomRole } = getUserProfile()
-    if(!abacEnabled) {
-      return hasAccess(allowedOperations, roles)
-    }else {
+    const { abacEnabled, isCustomRole, rbacOpsApiEnabled } = getUserProfile()
+    if(rbacOpsApiEnabled) {
+      return hasAccess({ opsIds: rbacOpsIds })
+    } if(!abacEnabled) {
+      return hasAccess({ opsIds: undefined, roles })
+    } else {
       if(isCustomRole){
         const isScopesValid = scopes.length > 0 ? hasScope(scopes): true
-        const isOperationsValid = allowedOperations ? hasAllowedOperations(allowedOperations): true
+        const isOperationsValid = rbacOpsIds ? hasAllowedOperations(rbacOpsIds): true
         return !!(isScopesValid && isOperationsValid)
       } else {
-        return hasAccess(allowedOperations, roles)
+        return hasAccess({ opsIds: rbacOpsIds, roles })
       }
     }
   }
@@ -202,7 +231,8 @@ export function hasCrossVenuesPermission (props?: Permission) {
   if (get('IS_MLISA_SA')) {
     return true
   }
-  const { abacEnabled, hasAllVenues, isCustomRole } = getUserProfile()
+  const { abacEnabled, hasAllVenues, isCustomRole, rbacOpsApiEnabled } = getUserProfile()
+  if(rbacOpsApiEnabled) return true
   if(!abacEnabled) return true
   if(props?.needGlobalPermission) {
     return !isCustomRole && hasAllVenues && hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR])
@@ -214,13 +244,22 @@ export function hasCrossVenuesPermission (props?: Permission) {
 export function AuthRoute (props: {
     scopes?: ScopeKeys,
     children: ReactElement,
+    rbacOpsId?: OpsIds,
     requireCrossVenuesPermission?: boolean | Permission
   }) {
-  const { scopes = [], children, requireCrossVenuesPermission } = props
+  const { scopes = [], children, requireCrossVenuesPermission, rbacOpsId } = props
+  const { rbacOpsApiEnabled } = getUserProfile()
+
+  if (rbacOpsApiEnabled) {
+    return hasPermission({ rbacOpsIds: rbacOpsId }) ?
+      children : <TenantNavigate replace to='/no-permissions' />
+  }
+
   if(typeof requireCrossVenuesPermission === 'object') {
     return hasCrossVenuesPermission(requireCrossVenuesPermission)
       ? children : <TenantNavigate replace to='/no-permissions' />
   }
+
   if(requireCrossVenuesPermission) {
     return hasScope(scopes) && hasCrossVenuesPermission()
       ? children : <TenantNavigate replace to='/no-permissions' />
@@ -234,7 +273,7 @@ export function WrapIfAccessible ({ id, wrapper, children }: {
   wrapper: (children: React.ReactElement) => React.ReactElement,
   children: React.ReactElement
 }) {
-  return hasAccess(id) ? wrapper(children) : children
+  return hasAccess({ opsIds: [id] }) ? wrapper(children) : children
 }
 WrapIfAccessible.defaultProps = { id: undefined }
 
