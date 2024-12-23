@@ -44,8 +44,14 @@ describe('useIntentAICRRMQuery', () => {
   })
   it('should return correct when isHotTierData is false', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-
-    mockIntentContext({ intent: mockedIntentCRRMApplied, isHotTierData: false })
+    const coldTierDataMock = {
+      ...mockedIntentCRRM,
+      dataCheck: {
+        isHotTierData: false,
+        isDataRetained: true
+      }
+    }
+    mockIntentContext({ intent: coldTierDataMock })
     mockGraphqlQuery(intentAIUrl, 'IntentAIRRMGraph', {
       data: { intent: mockedCRRMGraphsApplied }
     })

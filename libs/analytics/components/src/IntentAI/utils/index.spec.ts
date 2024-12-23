@@ -1,9 +1,14 @@
+import moment from 'moment-timezone'
+
+import { get } from '@acx-ui/config'
+
 import { DisplayStates, Statuses, StatusReasons } from '../states'
 
 import {
   getDefaultTime,
   getTransitionStatus,
-  Actions
+  Actions,
+  isDataRetained
 } from '.'
 
 jest.mock('@acx-ui/config', () => ({ get: jest.fn() }))
@@ -12,6 +17,19 @@ jest.spyOn(global.Date, 'now').mockImplementation(
 )
 
 describe('IntentAI utils', () => {
+  describe('isDataRetained', () => {
+    beforeEach(() => jest.mocked(get).mockReturnValue('380'))
+    it('should return true', () => {
+      expect(isDataRetained(moment().subtract(100, 'days').toISOString())).toBeTruthy()
+    })
+    it('should return false', () => {
+      expect(isDataRetained(moment().subtract(400, 'days').toISOString())).toBeFalsy()
+    })
+    it('should handle undefined', () => {
+      expect(isDataRetained(undefined)).toBeTruthy()
+    })
+  })
+
   it('should handle getDefaultTime', () => {
     expect(getDefaultTime().toISOString()).toBe('2024-07-21T03:00:00.000Z')
   })

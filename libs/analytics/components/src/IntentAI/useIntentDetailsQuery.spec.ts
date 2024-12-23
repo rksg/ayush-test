@@ -53,9 +53,18 @@ describe('getKPIData', () => {
       kpi_number_of_interfering_links: { data: null, compareData: null }
     }, kpis[0])).toEqual({ compareData: null, data: null })
   })
+  it('should return correct data with ff off', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    expect(getKPIData(mockedIntentCRRM, kpis[0])).toEqual({
+      compareData: { result: 2, timestamp: '2023-06-26T00:00:25.772Z' },
+      data: { result: 0, timestamp: null }
+    })
+  })
 })
 
 describe('getGraphKPIs', () => {
+  const mockIsHotTierData = true
+  const mockIsDataRetained = true
   beforeEach(() => {
     jest.spyOn(Date, 'now').mockReturnValue(+new Date('2023-07-15T14:15:00.000Z'))
   })
@@ -66,7 +75,7 @@ describe('getGraphKPIs', () => {
         data: { timestamp: null, result: 2 },
         compareData: { timestamp: null, result: 5 }
       }
-    }, kpis, true)
+    }, kpis, mockIsDataRetained, mockIsHotTierData)
     expect(result.value).toEqual('2')
     expect(result.delta).toEqual({ trend: 'positive', value: '-60%' })
     expect(result.footer).toEqual('')
@@ -75,7 +84,7 @@ describe('getGraphKPIs', () => {
     const [ result ] = getGraphKPIs({
       ...mockedIntentCRRM,
       kpi_number_of_interfering_links: { data: null, compareData: null }
-    }, kpis, true)
+    }, kpis, mockIsDataRetained, mockIsHotTierData)
     expect(result.value).toEqual('--')
     expect(result.delta).toEqual(undefined)
     expect(result.footer).toEqual('')
@@ -87,7 +96,7 @@ describe('getGraphKPIs', () => {
         data: { timestamp: null, result: 2 },
         compareData: null
       }
-    }, kpis, true)
+    }, kpis, mockIsDataRetained, mockIsHotTierData)
     expect(result.value).toEqual('2')
     expect(result.delta).toEqual(undefined)
     expect(result.footer).toEqual('')
@@ -100,7 +109,7 @@ describe('getGraphKPIs', () => {
         data: { timestamp: null, result: 2 },
         compareData: { timestamp: null, result: 5 }
       }
-    }, kpis, true)
+    }, kpis, mockIsDataRetained, mockIsHotTierData)
     expect(result.value).toEqual('--')
     expect(result.delta).toBeUndefined()
     expect(result.footer).toEqual('')
@@ -118,7 +127,7 @@ describe('getGraphKPIs', () => {
         isDataRetained: true,
         isHotTierData: false
       }
-    }, kpis, true)
+    }, kpis, mockIsDataRetained, false)
     expect(result.value).toEqual('--')
     expect(result.delta).toEqual(undefined)
     expect(result.footer).toEqual('Metrics / Charts unavailable for data beyond 30 days.')
@@ -136,7 +145,7 @@ describe('getGraphKPIs', () => {
         isDataRetained: false,
         isHotTierData: true
       }
-    }, kpis, true)
+    }, kpis, false, mockIsHotTierData)
     expect(result.value).toEqual('--')
     expect(result.delta).toEqual(undefined)
     expect(result.footer).toEqual('Beyond data retention period')

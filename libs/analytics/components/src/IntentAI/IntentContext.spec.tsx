@@ -69,6 +69,20 @@ describe('IntentAIForm', () => {
     }
   })
 
+  it('handle API respond with data for IntentAIForm & IntentAIDetails with ff off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+
+    for (const key of ['IntentAIForm', 'IntentAIDetails'] as const) {
+      const Component = components[key]
+      const { unmount } = render(<Component />, { wrapper, route: { params } })
+      const target = await screen.findByTestId(key)
+      expect(target).toBeVisible()
+      expect(await within(target).findByText(intent.code)).toBeVisible()
+      unmount()
+    }
+  })
+
   it('handle no matching code', async () => {
     const params = { root: intent.tenantId, sliceId: intent.sliceId, code: 'not-existed' }
     const { container } = render(<components.IntentAIForm />, { wrapper, route: { params } })

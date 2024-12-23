@@ -85,7 +85,14 @@ describe('CloudRRM', () => {
   })
 
   it('handle cold tier data', async () => {
-    mockIntentContext({ intent: mockedIntentCRRM, isHotTierData: false })
+    const coldTierDataMock = {
+      ...mockedIntentCRRM,
+      dataCheck: {
+        isHotTierData: false,
+        isDataRetained: true
+      }
+    }
+    mockIntentContext({ intent: coldTierDataMock })
     const { container } = render(<IntentAIRRMGraph crrmData={mockCrrmData} />, {
       wrapper: Provider
     })
@@ -93,7 +100,14 @@ describe('CloudRRM', () => {
   })
 
   it('handle beyond data retention', async () => {
-    mockIntentContext({ intent: mockedIntentCRRM, isDataRetained: false })
+    const beyondDataRetentionMock = {
+      ...mockedIntentCRRM,
+      dataCheck: {
+        isHotTierData: true,
+        isDataRetained: false
+      }
+    }
+    mockIntentContext({ intent: beyondDataRetentionMock })
     const { container } = render(<IntentAIRRMGraph crrmData={mockCrrmData} />, {
       wrapper: Provider
     })

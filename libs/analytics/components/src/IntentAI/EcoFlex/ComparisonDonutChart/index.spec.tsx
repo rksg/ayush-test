@@ -55,7 +55,14 @@ describe('ComparisonDonutChart', () => {
   })
 
   it('handle beyond data retention', async () => {
-    mockIntentContext({ intent: mocked, isDataRetained: false })
+    const beyondDataRetentionMock = {
+      ...mocked,
+      dataCheck: {
+        isDataRetained: false,
+        isHotTierData: true
+      }
+    }
+    mockIntentContext({ intent: beyondDataRetentionMock })
 
     const { container } = render(<ComparisonDonutChart kpiQuery={mockedQueryResult}/>, {
       wrapper: Provider

@@ -42,7 +42,7 @@ export const mocked = {
     }
   },
   dataCheck: {
-    isDataRetained: false,
+    isDataRetained: true,
     isHotTierData: true
   }
 } as unknown as IntentDetail

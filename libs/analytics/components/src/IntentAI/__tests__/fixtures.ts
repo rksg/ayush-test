@@ -18,8 +18,8 @@ export const mockIntentContext = (config: {
     intent: config.intent,
     kpis: config.kpis ?? [],
     state: intentState(config.intent),
-    isDataRetained: config.isDataRetained ?? true,
-    isHotTierData: config.isHotTierData ?? true
+    isDataRetained: config.intent.dataCheck?.isDataRetained ?? true,
+    isHotTierData: config.intent.dataCheck?.isHotTierData ?? true
   }
   jest.mocked(useIntentContext).mockReturnValue(context)
   return context
