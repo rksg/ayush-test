@@ -34,7 +34,7 @@ export default function MacOuiTable () {
   const [ portProfileMap, setPortProfileMap ] = useState<PortProfileMap>({})
 
   const defaultPayload = {
-    fields: [ 'id' ],
+    fields: [ 'oui' ],
     Pagination: { settingsId }
   }
 
@@ -42,8 +42,12 @@ export default function MacOuiTable () {
     useQuery: useSwitchPortProfileMacOuisListQuery,
     defaultPayload: defaultPayload,
     sorter: {
-      sortField: 'id',
+      sortField: 'oui',
       sortOrder: 'ASC'
+    },
+    search: {
+      searchString: '',
+      searchTargetFields: ['oui']
     }
   })
 
@@ -81,8 +85,7 @@ export default function MacOuiTable () {
       title: $t({ defaultMessage: 'Note' }),
       key: 'note',
       dataIndex: 'note',
-      sorter: true,
-      searchable: true
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Profile Name' }),

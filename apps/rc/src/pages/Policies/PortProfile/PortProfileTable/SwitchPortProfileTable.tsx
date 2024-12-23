@@ -33,7 +33,11 @@ export default function SwitchPortProfileTable () {
 
   const tableQuery = useTableQuery<SwitchPortProfiles>({
     useQuery: useSwitchPortProfilesListQuery,
-    defaultPayload
+    defaultPayload,
+    search: {
+      searchString: '',
+      searchTargetFields: ['name', 'venues']
+    }
   })
 
   function useColumns () {
@@ -139,6 +143,8 @@ export default function SwitchPortProfileTable () {
         key: 'venues',
         title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
         dataIndex: 'venues',
+        filterable: true,
+        filterKey: 'venueId',
         render: (_, row) => {
           return <CountAndNamesTooltip
             data={{ count: row.appliedSwitchesInfo?.length ||

@@ -35,9 +35,7 @@ export default function LldpTlvTable () {
   const [ editData, setEditData ] = useState<LldpTlvs>()
 
   const defaultPayload = {
-    fields: [
-      'id'
-    ],
+    fields: [ 'systemName' ],
     Pagination: { settingsId }
   }
 
@@ -47,6 +45,10 @@ export default function LldpTlvTable () {
     sorter: {
       sortField: 'id',
       sortOrder: 'ASC'
+    },
+    search: {
+      searchString: '',
+      searchTargetFields: ['systemName']
     }
   })
 
@@ -95,7 +97,6 @@ export default function LldpTlvTable () {
       title: $t({ defaultMessage: 'System Description' }),
       key: 'systemDescription',
       dataIndex: 'systemDescription',
-      searchable: true,
       sorter: true
     },
     {
