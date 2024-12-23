@@ -71,7 +71,7 @@ export function VarCustomers () {
   const { tenantId } = useParams()
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
-  const isExplicitCustomRoleEnabled = useIsSplitOn(Features.RBAC_PHASE3_TOGGLE)
+  const isRbacPhase3ToggleEnabled = useIsSplitOn(Features.RBAC_PHASE3_TOGGLE)
   const mspUtils = MSPUtils()
   const {
     state
@@ -82,8 +82,8 @@ export function VarCustomers () {
   const adminRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
   // special handle here, only system administratot/prime admin can do VAR delegation ACX-68291
   // backend will fix this later
-  const isAdmin = isExplicitCustomRoleEnabled
-    ? hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const isAdmin = isRbacPhase3ToggleEnabled
+    ? hasRoles(adminRoles)
     : userProfile?.roles?.some(role => adminRoles.includes(role as RolesEnum))
 
   const [ handleInvitation
