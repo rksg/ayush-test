@@ -44,9 +44,10 @@ type KPIProps = ConfigChangeKPIConfig & {
 }
 
 const KPI = ({ apiMetric, kpiKey, label, format, deltaSign, values }: KPIProps) => {
-  const isMLISA = get('IS_MLISA_SA')
-  const isPagedConfigChange = useIsSplitOn(Features.CONFIG_CHANGE_PAGINATION)
-  const isPaged = Boolean(isMLISA || isPagedConfigChange)
+  const isPaged = [
+    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
+    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
+  ].some(Boolean)
 
   const { $t } = useIntl()
 

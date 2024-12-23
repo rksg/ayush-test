@@ -17,7 +17,6 @@ export enum Features {
   BETA_BUTTON = 'acx-ui-beta-button-toggle',
   CLOUDPATH_BETA = 'BETA-CP',
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
-  CONFIG_CHANGE_PAGINATION = 'acx-ui-config-change-pagination-toggle',
   CONFIG_TEMPLATE = 'acx-ui-config-template',
   CONFIG_TEMPLATE_DRIFTS = 'acx-ui-config-template-drifts',
   CONFIG_TEMPLATE_EXTRA = 'acx-ui-config-template-extra',

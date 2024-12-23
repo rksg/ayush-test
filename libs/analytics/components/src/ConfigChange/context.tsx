@@ -7,7 +7,6 @@ import {
   brushPeriod,
   getConfigChangeEntityTypeMapping
 }     from '@acx-ui/components'
-import { get }                      from '@acx-ui/config'
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { DateRange, defaultRanges } from '@acx-ui/utils'
 
@@ -67,9 +66,10 @@ export function ConfigChangeProvider (props: {
   children: ReactElement
 } & Pick<ConfigChangeContextType, 'dateRange'>) {
 
-  const isMLISA = get('IS_MLISA_SA')
-  const isPagedConfigChange = useIsSplitOn(Features.CONFIG_CHANGE_PAGINATION)
-  const isPaged = Boolean(isMLISA || isPagedConfigChange)
+  const isPaged = [
+    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
+    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
+  ].some(Boolean)
 
   const showIntentAI = [
     useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
@@ -87,7 +87,7 @@ export function ConfigChangeProvider (props: {
   }
 
   const [selected, setSelected] = useState<ConfigChangeType | null >(null)
-  // TODO: remove dotSelect when removing Features.CONFIG_CHANGE_PAGINATION
+  // TODO: remove dotSelect when removing INTENT_AI_CONFIG_CHANGE_TOGGLE and RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE
   const [dotSelect, setDotSelect] = useState<number | null>(null)
   const [chartZoom, setChartZoom] = useState<{ start: number, end: number } | undefined>(undefined)
   const [initialZoom, setInitialZoom] = useState<{

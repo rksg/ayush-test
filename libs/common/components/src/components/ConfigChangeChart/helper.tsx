@@ -435,13 +435,11 @@ export function useLegendTableFilter (
   pagination?: ConfigChangePaginationParams,
   setPagination?: (params: { current: number, pageSize: number }) => void
 ){
-  const isMLISA = get('IS_MLISA_SA')
-  const isPagedConfigChange = useIsSplitOn(Features.CONFIG_CHANGE_PAGINATION)
-  const isPaged = Boolean(isMLISA || isPagedConfigChange)
   const showIntentAI = [
     useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
     useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
   ].some(Boolean)
+  const isPaged = showIntentAI
 
   useEffect(() => {
     const chartRowMapping = getConfigChangeEntityTypeMapping(showIntentAI)

@@ -48,9 +48,9 @@ describe('ConfigChange', () => {
   it('should render component correctly when IS_MLISA_SA', async () => {
     mockGet.mockReturnValue('true')
     render(<ConfigChange/>, { wrapper: Provider, route: {} })
-    expect(await screen.findByTestId('SyncedChart')).toBeVisible()
+    expect(await screen.findByTestId('Chart')).toBeVisible()
     expect(await screen.findByTestId('KPIs')).toBeVisible()
-    expect(await screen.findByTestId('PagedTable')).toBeVisible()
+    expect(await screen.findByTestId('Table')).toBeVisible()
     expect((await screen.findAllByTestId('GridCol'))[0]).toHaveStyle('minHeight: 200px')
   })
 })
