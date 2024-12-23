@@ -106,7 +106,11 @@ import {
   SoftGreUrls,
   SoftGreViewData,
   ClientIsolationUrls,
-  ClientIsolationViewModel
+  ClientIsolationViewModel,
+  LanPortsUrls,
+  VenueLanPortSettings,
+  LanPort,
+  LanPortClientIsolationSettings
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                                                          from '@acx-ui/store'
 import { ITimeZone, RequestPayload }                                                             from '@acx-ui/types'
@@ -2178,7 +2182,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
-    updateVenueAntennaType: build.mutation< CommonResult, RequestPayload>({
+    updateVenueAntennaType: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
         const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
@@ -2204,9 +2208,41 @@ export const venueApi = baseVenueApi.injectEndpoints({
 
         const isEthernetPortProfileEnabled = (arg.payload as any)?.isEthernetPortProfileEnabled
         const isEthernetSoftgreEnabled = (arg.payload as any)?.isEthernetSoftgreEnabled
-        const isEthernetClientIsolationEnabled = (arg.payload as any)?.ClientIsolationEnabled
+        const isEthernetClientIsolationEnabled = (arg.payload as any)?.isEthernetClientIsolationEnabled
 
         if(venueId) {
+          const results: ((LanPort | null)[])[] = []
+          for (const venueLanPort of venueLanPortSettings) {
+
+            const venueLanPortSettingsQuery =venueLanPort.lanPorts.map((lanPort) => {
+              return fetchWithBQ(
+                createHttpRequest(
+                  LanPortsUrls.getVenueLanPortSettings,
+                  { venueId, apModel: venueLanPort.model, portId: lanPort.portId },
+                  apiCustomHeader
+                )
+              )
+            })
+
+            const reqs = await Promise.allSettled(venueLanPortSettingsQuery)
+            results.push(reqs.map((result) => {
+              return result.status === 'fulfilled' ? result.value.data as LanPort : null
+            }))
+          }
+          results.forEach((result, index) => {
+            const target = venueLanPortSettings[index]
+
+            result.forEach((lanPortSettings, idx ) => {
+              if (lanPortSettings === null) return
+
+              target.lanPorts[idx].softGreEnabled = lanPortSettings.softGreEnabled
+              target.lanPorts[idx].clientIsolationEnabled = lanPortSettings.clientIsolationEnabled
+              if(lanPortSettings.clientIsolationEnabled) {
+                target.lanPorts[idx].clientIsolationSettings =
+                    lanPortSettings.clientIsolationSettings as LanPortClientIsolationSettings
+              }
+            })
+          })
 
           // Mapping Ethernet port profile relation to Lan port settings
           const ethernetPortProfileReq = createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList)
@@ -2254,8 +2290,28 @@ export const venueApi = baseVenueApi.injectEndpoints({
             mappingLanPortWithClientIsolationPolicy(venueLanPortSettings, clientIsolationPolicies, venueId)
           }
         }
-
         return { data: venueLanPortSettings }
+      }
+    }),
+
+    getVenueLanPortSettings: build.query<VenueLanPortSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          LanPortsUrls.getVenueLanPortSettings, params)
+        return {
+          ...req
+        }
+      }
+    }),
+
+    updateVenueLanPortSettings: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          LanPortsUrls.updateVenueLanPortSettings, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
       }
     }),
 
@@ -2420,6 +2476,9 @@ export const {
 
   useGetVenueLanPortWithEthernetSettingsQuery,
   useLazyGetVenueLanPortWithEthernetSettingsQuery,
+  useGetVenueLanPortSettingsQuery,
+  useLazyGetVenueLanPortSettingsQuery,
+  useUpdateVenueLanPortSettingsMutation,
   useUpdateVenueLanPortSpecificSettingsMutation
 } = venueApi
 

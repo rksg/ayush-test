@@ -5,11 +5,11 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                                        from '@acx-ui/feature-toggle'
-import { venueApi }                                                                                      from '@acx-ui/rc/services'
-import { AaaUrls, CommonRbacUrlsInfo, CommonUrlsInfo, EthernetPortProfileUrls, WifiUrlsInfo }            from '@acx-ui/rc/utils'
-import { Provider, store }                                                                               from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, within, waitFor, waitForElementToBeRemoved, renderHook } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                                           from '@acx-ui/feature-toggle'
+import { venueApi }                                                                                         from '@acx-ui/rc/services'
+import { AaaUrls, CommonRbacUrlsInfo, CommonUrlsInfo, EthernetPortProfileUrls, LanPortsUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                  from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, within, waitFor, waitForElementToBeRemoved, renderHook }    from '@acx-ui/test-utils'
 
 import { NetworkingSettingContext }     from '..'
 import { VenueUtilityContext }          from '../..'
@@ -125,6 +125,10 @@ describe('LanPortsForm', () => {
           mockedUpdateEthernetPortSettingApiFn()
           return res(ctx.status(202))
         }
+      ),
+      rest.get(
+        LanPortsUrls.getVenueLanPortSettings.url,
+        (_, res, ctx) => res(ctx.json({}))
       )
     )
   })
