@@ -29,6 +29,7 @@ import {
   ApGroup,
   ApGroupViewModel,
   ApLedSettings,
+  ApUsbSettings,
   ApLldpNeighborsResponse,
   ApManagementVlan,
   ApNeighborsResponse,
@@ -1137,6 +1138,27 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'Led' }]
     }),
+    getApUsb: build.query<ApUsbSettings, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApUsb, params, customHeaders)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'USB' }]
+    }),
+    updateApUsb: build.mutation<ApUsbSettings, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApUsb, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'USB' }]
+    }),
     getApBandModeSettings: build.query<ApBandModeSettings, RequestPayload<void>>({
       query: ({ params, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
@@ -1699,6 +1721,8 @@ export const {
   useGetApLedQuery,
   useUpdateApLedMutation,
   useResetApLedMutation,
+  useGetApUsbQuery,
+  useUpdateApUsbMutation,
   useGetApBandModeSettingsQuery,
   useLazyGetApBandModeSettingsQuery,
   useUpdateApBandModeSettingsMutation,

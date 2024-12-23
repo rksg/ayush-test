@@ -11,6 +11,7 @@ import { useNavigate }                             from '@acx-ui/react-router-do
 import { VenueEditContext, createAnchorSectionItem } from '../..'
 
 import { AccessPointLED }   from './AccessPointLED'
+import { AccessPointUSB }   from './AccessPointUSB'
 import { ApManagementVlan } from './ApManagementVlan'
 import { BssColoring }      from './BssColoring'
 
@@ -22,6 +23,7 @@ export interface ModelOption {
 
 export interface AdvanceSettingContext {
   updateAccessPointLED?: (() => void),
+  updateAccessPointUSB?: (() => void),
   updateBssColoring?: (() => void),
   updateApManagementVlan?: (() => void)
 }
@@ -31,6 +33,7 @@ export function AdvancedTab () {
   const navigate = useNavigate()
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { isTemplate } = useConfigTemplate()
+  const isAllowUseApUsbSupport = useIsSplitOn(Features.AP_USB_PORT_SUPPORT_TOGGLE)
 
   const {
     editContextData,
@@ -49,6 +52,14 @@ export function AdvancedTab () {
         'access-point-led',
         <div style={{ maxWidth: '465px' }}><AccessPointLED /></div>,
         'apLed'
+      )
+    ] : []),
+    ...((isAllowUseApUsbSupport && !isTemplate) ? [
+      createAnchorSectionItem(
+        $t({ defaultMessage: 'Access Point USB Support' }),
+        'access-point-usb',
+        <div style={{ maxWidth: '465px' }}><AccessPointUSB /></div>,
+        'apUsb'
       )
     ] : []),
     createAnchorSectionItem(
@@ -72,6 +83,7 @@ export function AdvancedTab () {
   const handleUpdateAllSettings = async () => {
     try {
       await editAdvancedContextData?.updateAccessPointLED?.()
+      await editAdvancedContextData?.updateAccessPointUSB?.()
       await editAdvancedContextData?.updateBssColoring?.()
       await editAdvancedContextData?.updateApManagementVlan?.()
 
@@ -84,6 +96,7 @@ export function AdvancedTab () {
       if (editAdvancedContextData) {
         const newData = { ...editAdvancedContextData }
         delete newData.updateAccessPointLED
+        delete newData.updateAccessPointUSB
         delete newData.updateBssColoring
         delete newData.updateApManagementVlan
         setEditAdvancedContextData(newData)

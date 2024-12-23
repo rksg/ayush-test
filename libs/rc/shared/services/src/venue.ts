@@ -104,7 +104,8 @@ import {
   CompatibilityResponse,
   IncompatibleFeatureLevelEnum,
   SoftGreUrls,
-  SoftGreViewData
+  SoftGreViewData,
+  VenueApUsbStatus
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                                                          from '@acx-ui/store'
 import { ITimeZone, RequestPayload }                                                             from '@acx-ui/types'
@@ -1110,6 +1111,31 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
 
         const req = createHttpRequest(urlsInfo.updateVenueLedOn, params, apiCustomHeader)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    getVenueApUsbStatus: build.query<VenueApUsbStatus[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          CommonRbacUrlsInfo.getVenueApUsbStatus,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
+
+        return {
+          ...req
+        }
+      }
+    }),
+    updateVenueApUsbStatus: build.mutation<CommonResult, RequestPayload<VenueApUsbStatus[]>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          CommonRbacUrlsInfo.updateVenueApUsbStatus,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
+
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -2317,6 +2343,9 @@ export const {
   useGetVenueLedOnQuery,
   useLazyGetVenueLedOnQuery,
   useUpdateVenueLedOnMutation,
+  useGetVenueApUsbStatusQuery,
+  useLazyGetVenueApUsbStatusQuery,
+  useUpdateVenueApUsbStatusMutation,
   useGetVenueApModelBandModeSettingsQuery,
   useLazyGetVenueApModelBandModeSettingsQuery,
   useUpdateVenueApModelBandModeSettingsMutation,
