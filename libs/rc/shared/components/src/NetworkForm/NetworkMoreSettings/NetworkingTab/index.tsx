@@ -41,6 +41,7 @@ export function NetworkingTab (props: {
 
   const showSingleSessionIdAccounting = hasAccountingRadius(data, wlanData)
   const wifi6AndWifi7Flag = useIsSplitOn(Features.WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE)
+  const supportHotspot20NasId = useIsSplitOn(Features.WIFI_NAS_ID_HOTSPOT20_TOGGLE)
 
   const [
     enableFastRoaming,
@@ -530,7 +531,7 @@ export function NetworkingTab (props: {
 
       { wifi6AndWifi7Flag && enableAP70 && <WiFi7/> }
 
-      {hasAuthRadius(data, wlanData) &&
+      {(hasAuthRadius(data, wlanData) || supportHotspot20NasId) &&
       <>
         <StepsForm.Subtitle>
           {$t({ defaultMessage: 'RADIUS Options' })}

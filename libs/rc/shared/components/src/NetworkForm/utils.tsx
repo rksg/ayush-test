@@ -110,6 +110,7 @@ export const hasAuthRadius = (data: NetworkSaveData | null, wlanData: any) => {
 
   switch (type) {
     case NetworkTypeEnum.AAA:
+    // case NetworkTypeEnum.HOTSPOT20:    // Please remove mark if remove ff: Features.WIFI_NAS_ID_HOTSPOT20_TOGGLE
       return true
 
     case NetworkTypeEnum.OPEN:
