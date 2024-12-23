@@ -3,14 +3,14 @@ import { MessageDescriptor } from 'react-intl'
 
 import { get } from '@acx-ui/config'
 
-import { apGroupKeyMap }    from './mapping/apGroupKeyMap'
-import { apKeyMap }         from './mapping/apKeyMap'
-import { apSpecificKeyMap } from './mapping/apSpecificKeyMap'
-import { enumMap }          from './mapping/enumMap'
-import { intentAIKeyMap }   from './mapping/intentAIKeyMap'
-import { wlanGroupKeyMap }  from './mapping/wlanGroupKeyMap'
-import { wlanKeyMap }       from './mapping/wlanKeyMap'
-import { zoneKeyMap }       from './mapping/zoneKeyMap'
+import { apGroupKeyMap }    from '../mapping/apGroupKeyMap'
+import { apKeyMap }         from '../mapping/apKeyMap'
+import { apSpecificKeyMap } from '../mapping/apSpecificKeyMap'
+import { enumMap }          from '../mapping/enumMap'
+import { intentAIKeyMap }   from '../mapping/intentAIKeyMap'
+import { wlanGroupKeyMap }  from '../mapping/wlanGroupKeyMap'
+import { wlanKeyMap }       from '../mapping/wlanKeyMap'
+import { zoneKeyMap }       from '../mapping/zoneKeyMap'
 
 const filteredConfigText = ['TBD', 'NA']
 
