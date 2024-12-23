@@ -88,6 +88,16 @@ describe('getErrorContent', () => {
       payload: { originalStatus: 429 }
     } as unknown as ErrorAction).title).toBe('Too Many Requests')
   })
+  it('should handle 503', () => {
+    expect(getErrorContent({
+      meta: { baseQueryMeta: { response: { status: 503 } } },
+      payload: {}
+    } as unknown as ErrorAction).title).toBe('Service Unavailable')
+    expect(getErrorContent({
+      meta: {},
+      payload: { originalStatus: 503 }
+    } as unknown as ErrorAction).title).toBe('Service Unavailable')
+  })
   it('should handle 504', () => {
     expect(getErrorContent({
       meta: { baseQueryMeta: { response: { status: 504 } } },

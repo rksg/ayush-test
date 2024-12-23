@@ -127,6 +127,10 @@ export const getErrorContent = (action: ErrorAction) => {
       errorMsg = errorMessage.TOO_MANY_REQUESTS
       errors = ''
       break
+    case 503:
+      errorMsg = errorMessage.SERVICE_UNAVAILABLE
+      errors = ''
+      break
     case 504: // no connection [development mode]
     case 0:   // no connection
     case 'FETCH_ERROR' as unknown as number: // no connection

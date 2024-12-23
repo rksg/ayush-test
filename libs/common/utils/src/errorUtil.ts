@@ -67,6 +67,12 @@ export const errorMessage = {
       defaultMessage: 'Too many requests. Please try again later.'
     })
   },
+  SERVICE_UNAVAILABLE: {
+    title: defineMessage({ defaultMessage: 'Service Unavailable' }),
+    content: defineMessage({
+      defaultMessage: 'Service unavailable. Please try again later.'
+    })
+  },
   CHECK_YOUR_CONNECTION: get('IS_MLISA_SA') ? {
     title: defineMessage({ defaultMessage: 'Check Your Connection' }),
     content: defineMessage({

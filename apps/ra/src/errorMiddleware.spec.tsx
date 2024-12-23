@@ -46,7 +46,8 @@ describe('errorMiddleware', () => {
     })
 
   it.each([
-    [429, errorMessage.TOO_MANY_REQUESTS]
+    [429, errorMessage.TOO_MANY_REQUESTS],
+    [503, errorMessage.SERVICE_UNAVAILABLE]
   ])('should call showErrorModal only with correct error message for status code %i',
     (statusCode, expectedErrorMessage) => {
       const action = {

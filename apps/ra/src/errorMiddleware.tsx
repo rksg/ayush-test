@@ -29,6 +29,9 @@ export const errorMiddleware: Middleware = () => (next: CallableFunction) =>
         case 429:
           showErrorModal(errorMessage.TOO_MANY_REQUESTS)
           break
+        case 503:
+          showErrorModal(errorMessage.SERVICE_UNAVAILABLE)
+          break
         default:
           showErrorModal(errorMessage.SERVER_ERROR, action)
       }
