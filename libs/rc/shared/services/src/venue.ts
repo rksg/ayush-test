@@ -104,7 +104,9 @@ import {
   CompatibilityResponse,
   IncompatibleFeatureLevelEnum,
   SoftGreUrls,
-  SoftGreViewData
+  SoftGreViewData,
+  ClientIsolationUrls,
+  ClientIsolationViewModel
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                                                          from '@acx-ui/store'
 import { ITimeZone, RequestPayload }                                                             from '@acx-ui/types'
@@ -121,12 +123,15 @@ import {
   transformGetVenueDHCPPoolsResponse,
   updateVenueRoguePolicyFn
 } from './servicePolicy.utils'
-import { handleCallbackWhenActivitySuccess, isPayloadHasField }                          from './utils'
+import { handleCallbackWhenActivitySuccess, isPayloadHasField } from './utils'
 import {
   convertToApMeshDataList,
   convertToMeshTopologyDataList,
   createVenueDefaultRadioCustomizationFetchArgs, createVenueDefaultRegulatoryChannelsFetchArgs,
-  createVenueRadioCustomizationFetchArgs, createVenueUpdateRadioCustomizationFetchArgs
+  createVenueRadioCustomizationFetchArgs, createVenueUpdateRadioCustomizationFetchArgs,
+  mappingLanPortWithClientIsolationPolicy,
+  mappingLanPortWithEthernetPortProfile,
+  mappingLanPortWithSoftGreProfile
 } from './venue.utils'
 
 const customHeaders = {
@@ -2197,12 +2202,13 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const venueLanPortSettings = venueLanPortsQuery.data as VenueLanPorts[]
         const venueId = arg.params?.venueId
 
-        // eslint-disable-next-line
         const isEthernetPortProfileEnabled = (arg.payload as any)?.isEthernetPortProfileEnabled
-        // eslint-disable-next-line
         const isEthernetSoftgreEnabled = (arg.payload as any)?.isEthernetSoftgreEnabled
+        const isEthernetClientIsolationEnabled = (arg.payload as any)?.ClientIsolationEnabled
 
         if(venueId) {
+
+          // Mapping Ethernet port profile relation to Lan port settings
           const ethernetPortProfileReq = createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList)
           const ethernetPortProfileQuery = await fetchWithBQ(
             { ...ethernetPortProfileReq,
@@ -2214,18 +2220,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
             }
           )
           const ethernetPortProfiles = (ethernetPortProfileQuery.data as TableResult<EthernetPortProfileViewData>).data
+          mappingLanPortWithEthernetPortProfile(venueLanPortSettings, ethernetPortProfiles, venueId)
 
-          ethernetPortProfiles.forEach((profile) => {
-            if (profile.venueActivations) {
-              profile.venueActivations.forEach((activity)=>{
-                const targetLanPort = venueLanPortSettings.find(setting => setting.model === activity.apModel && venueId === activity.venueId)
-                  ?.lanPorts.find(lanPort => lanPort.portId?.toString() === activity.portId?.toString())
-                if(targetLanPort) {
-                  targetLanPort.ethernetPortProfileId = profile.id
-                }
-              })
-            }
-          })
+          // Mapping SoftGRE profile relation to Lan port settings
           if(isEthernetPortProfileEnabled && isEthernetSoftgreEnabled) {
             const softgreProfileReq = createHttpRequest(SoftGreUrls.getSoftGreViewDataList)
             const softgreProfileQuery = await fetchWithBQ(
@@ -2238,19 +2235,26 @@ export const venueApi = baseVenueApi.injectEndpoints({
               }
             )
             const softgreProfiles = (softgreProfileQuery.data as TableResult<SoftGreViewData>).data
-            softgreProfiles.forEach((profile) => {
-              if (profile.venueActivations) {
-                profile.venueActivations.forEach((activity)=>{
-                  const targetLanPort = venueLanPortSettings.find(setting => setting.model === activity.apModel && venueId === activity.venueId)
-                    ?.lanPorts.find(lanPort => lanPort.portId?.toString() === activity.portId?.toString())
-                  if(targetLanPort) {
-                    targetLanPort.softGreProfileId = profile.id
+            mappingLanPortWithSoftGreProfile(venueLanPortSettings, softgreProfiles, venueId)
+          }
+
+          // Mapping Client Isolation Policy relation to Lan port settings
+          if(isEthernetClientIsolationEnabled) {
+            const clientIsolationReq = createHttpRequest(ClientIsolationUrls.queryClientIsolation)
+            const clientIsolationQuery = await fetchWithBQ(
+              { ...clientIsolationReq,
+                body: JSON.stringify({
+                  filters: {
+                    'venueActivations.venueId': [venueId]
                   }
                 })
               }
-            })
+            )
+            const clientIsolationPolicies = (clientIsolationQuery.data as TableResult<ClientIsolationViewModel>).data
+            mappingLanPortWithClientIsolationPolicy(venueLanPortSettings, clientIsolationPolicies, venueId)
           }
         }
+
         return { data: venueLanPortSettings }
       }
     }),
