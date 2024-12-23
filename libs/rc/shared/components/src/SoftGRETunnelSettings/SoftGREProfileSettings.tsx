@@ -1,17 +1,14 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Select, Button, Divider, Space } from 'antd'
-import { DefaultOptionType }                    from 'antd/lib/select'
-import { useIntl }                              from 'react-intl'
+import { Form, Select, Button, Space } from 'antd'
+import { DefaultOptionType }           from 'antd/lib/select'
+import { useIntl }                     from 'react-intl'
 
 import { useGetSoftGreViewDataListQuery }         from '@acx-ui/rc/services'
 import { SoftGreProfileDispatcher, SoftGreState } from '@acx-ui/rc/utils'
 import { useParams }                              from '@acx-ui/react-router-dom'
 
 import SoftGreDrawer from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
-
-
-import * as UI from './styledComponents'
 
 const defaultSoftgreOption = { label: '', value: '' }
 
@@ -41,6 +38,9 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
   })
 
   const onChange = (value: string) => {
+    if(!value) {
+      setDetailDrawerVisible(false)
+    }
     onGUIChanged && onGUIChanged('softgreProfile')
     setSoftGREProfile(
       softGREProfileOptionList.find((profile) => profile.value === value) ??
@@ -83,7 +83,7 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
           ]}
           children={
             <Select
-              style={{ width: '100%' }}
+              style={{ width: '260px' }}
               disabled={readonly}
               data-testid={'softgre-profile-select'}
               onChange={onChange}
@@ -96,7 +96,7 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
               placeholder={$t({ defaultMessage: 'Select...' })}
             />}
         />
-        <UI.TypeSpace split={<Divider type='vertical' />}>
+        <Space split='|'>
           <Button type='link'
             onClick={() => {
               setDetailDrawerVisible(true)
@@ -110,7 +110,7 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
             }}>
             {$t({ defaultMessage: 'Add Profile' })}
           </Button>
-        </UI.TypeSpace>
+        </Space>
       </Space>
       <SoftGreDrawer
         visible={detailDrawerVisible}

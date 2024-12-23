@@ -405,13 +405,6 @@ export const LbsServerProfileMessages = {
 }
 
 /* eslint-enable */
-
-export enum IsolatePacketsTypeEnum {
-  UNICAST = 'UNICAST',
-  MULTICAST = 'MULTICAST',
-  UNICAST_MULTICAST = 'UNICAST_MULTICAST',
-}
-
 export enum RfBandUsageEnum {
   _2_4GHZ = '2.4GHZ',
   _5_0GHZ = '5.0GHZ',
@@ -549,4 +542,11 @@ export const EthernetPortProfileMessages = {
     defaultMessage: 'This option requires your access points to run firmware version 7.0.0.400 or higher.'
   })
   /* eslint-enable */
+}
+
+export const ClientIsolationMessages = {
+  /* eslint-disable max-len */
+  ENABLE_TOGGLE: defineMessage({
+    defaultMessage: 'Switching client isolation requires a manual device reboot to take effect. You can select the specific AP devices from the AP list and click the ‘Reboot’ button to restart them.'
+  })
 }

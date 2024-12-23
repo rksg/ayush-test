@@ -20,7 +20,7 @@ export const DmzTunnelProfileFormItem = (props: DmzTunnelProfileFormItemProps) =
   const formInitValues = {
     mtuType: MtuTypeEnum.MANUAL,
     type: TunnelTypeEnum.VLAN_VXLAN,
-    disabledFields: ['mtuType', 'type']
+    disabledFields: ['mtuType', 'type', 'natTraversalEnabled']
   }
 
   const dropdownFormItem = <Form.Item
