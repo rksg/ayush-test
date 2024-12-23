@@ -50,7 +50,8 @@ import {
   baseWorkflowApi,
   videoCallQoeApi,
   baseRuckusAssistantApi as ruckusAssistantApi,
-  baseDirectoryServerApi as directoryServerApi
+  baseDirectoryServerApi as directoryServerApi,
+  baseClientIsolationApi as clientIsolationApi
 } from './baseApi'
 
 const isDev = process.env['NODE_ENV'] === 'development'
@@ -104,7 +105,8 @@ export const store = configureStore({
     [ethernetPortProfileApi.reducerPath]: ethernetPortProfileApi.reducer,
     [edgeHqosProfilesApi.reducerPath]: edgeHqosProfilesApi.reducer,
     [ruckusAssistantApi.reducerPath]: ruckusAssistantApi.reducer,
-    [directoryServerApi.reducerPath]: directoryServerApi.reducer
+    [directoryServerApi.reducerPath]: directoryServerApi.reducer,
+    [clientIsolationApi.reducerPath]: clientIsolationApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -160,7 +162,8 @@ export const store = configureStore({
       ethernetPortProfileApi.middleware,
       edgeHqosProfilesApi.middleware,
       ruckusAssistantApi.middleware,
-      directoryServerApi.middleware
+      directoryServerApi.middleware,
+      clientIsolationApi.middleware
     ])
   },
 

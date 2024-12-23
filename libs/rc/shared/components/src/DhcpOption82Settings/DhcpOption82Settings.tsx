@@ -154,6 +154,7 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
               </Form.Item>
               {
                 iconVisible && <ConfigIcon
+                  style={{ cursor: 'pointer' }}
                   data-testid={'dhcp82toption-icon'}
                   onClick={() => {
                     setDrawerVisible(true)
