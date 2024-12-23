@@ -1,15 +1,17 @@
-import userEvent from '@testing-library/user-event'
+import { AnyAction } from '@reduxjs/toolkit'
+import userEvent     from '@testing-library/user-event'
 
-import  * as components from '@acx-ui/components'
+import * as components  from '@acx-ui/components'
 import { screen }       from '@acx-ui/test-utils'
 import {
   getIntl,
   setUpIntl,
   userLogout,
-  IntlSetUpError
+  IntlSetUpError,
+  formatGraphQLErrors
 } from '@acx-ui/utils'
 
-import { showExpiredSessionModal } from '.'
+import { showExpiredSessionModal, getErrorContent } from '.'
 
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
@@ -63,5 +65,67 @@ describe('ExpiredSessionModal', () => {
       enumerable: true,
       value: location
     })
+  })
+})
+
+
+describe('getErrorContent', () => {
+  it('should return action payload when action type includes "data-api" and response has errors',
+    () => {
+      const action: AnyAction = {
+        type: 'data-api/error',
+        meta: {
+          baseQueryMeta: {
+            response: {
+              errors: [
+                {
+                  message: 'Error message',
+                  extensions: {
+                    code: 'ERROR_CODE'
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+
+      const result = getErrorContent(action)
+      expect(result).toEqual(formatGraphQLErrors(action.meta.baseQueryMeta.response))
+    })
+
+  it('should return action payload when it is a string', () => {
+    const action = { type: 'type', payload: 'Error message' }
+
+    const result = getErrorContent(action)
+    expect(result).toBe(action.payload)
+  })
+
+  it('should return action payload.data when it is an object with data property', () => {
+    const action = { type: 'type', payload: { data: 'Error message' } }
+
+    const result = getErrorContent(action)
+    expect(result).toBe(action.payload.data)
+  })
+
+  it('should return action payload.error when it is an object with error property', () => {
+    const action = { type: 'type', payload: { error: 'Error message' } }
+
+    const result = getErrorContent(action)
+    expect(result).toBe(action.payload.error)
+  })
+
+  it('should return action payload.message when it is an object with message property', () => {
+    const action = { type: 'type', payload: { message: 'Error message' } }
+
+    const result = getErrorContent(action)
+    expect(result).toBe(action.payload.message)
+  })
+
+  it('should return action when none of the above conditions are met', () => {
+    const action = { type: 'type', payload: {} }
+
+    const result = getErrorContent(action)
+    expect(result).toBe(action)
   })
 })
