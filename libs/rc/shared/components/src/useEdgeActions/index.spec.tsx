@@ -129,6 +129,43 @@ describe('Edge enabled evaluation', () => {
         expect(result.current).toBe(false)
       })
     })
+
+    describe('edge NAT-T toggle', () => {
+      it('should return true when edge is enabled and feature flag is ready', () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff =>
+          ff === Features.EDGES_TOGGLE ||
+          ff === Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
+        jest.mocked(useIsTierAllowed).mockImplementation(ff =>
+          ff === TierFeatures.EDGE_NAT_T)
+
+        const { result } = renderHook(() =>
+          useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE))
+        expect(result.current).toBe(true)
+      })
+
+      it('should return false when boolean feature flag is not ready', () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff =>
+          ff === Features.EDGES_TOGGLE)
+        jest.mocked(useIsTierAllowed).mockImplementation(ff =>
+          ff === TierFeatures.EDGE_NAT_T)
+
+        const { result } = renderHook(() =>
+          useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE))
+        expect(result.current).toBe(false)
+      })
+
+      it('should return false when query with NAT-T and featureID is OFF', () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff =>
+          ff === Features.EDGES_TOGGLE ||
+          ff === Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
+        jest.mocked(useIsTierAllowed).mockImplementation(ff =>
+          ff === TierFeatures.EDGE_ADV)
+
+        const { result } = renderHook(() =>
+          useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE))
+        expect(result.current).toBe(false)
+      })
+    })
   })
 })
 
