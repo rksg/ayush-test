@@ -17,7 +17,7 @@ import { mockIntentContext } from '../__tests__/fixtures'
 import { Statuses }          from '../states'
 import { IntentDetail }      from '../useIntentDetailsQuery'
 
-import { mocked }                                             from './__tests__/mockedCDfschannelsEnable'
+import { mocked, mockedKPIs, mockedStatusTrail }              from './__tests__/mockedCDfschannelsEnable'
 import { configuration, kpis, IntentAIDetails, IntentAIForm } from './CDfschannelsEnable'
 
 const { click, selectOptions } = userEvent
@@ -61,6 +61,8 @@ beforeEach(() => {
   mockGraphqlMutation(intentAIUrl, 'IntentTransition', {
     data: { transition: { success: true, errorMsg: '' , errorCode: '' } }
   })
+  mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail', { data: { intent: mockedStatusTrail } })
+  mockGraphqlQuery(intentAIUrl, 'IntentKPIs', { data: { intent: mockedKPIs } })
 })
 
 afterEach((done) => {
@@ -78,8 +80,6 @@ afterEach((done) => {
 const mockIntentContextWith = (data: Partial<IntentDetail> = {}) => {
   let intent = mocked
   intent = _.merge({}, intent, data) as typeof intent
-  mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail', { data: { intent } })
-  mockGraphqlQuery(intentAIUrl, 'IntentKPIs', { data: { intent } })
   mockIntentContext({ intent, configuration, kpis })
   return {
     params: { code: mocked.code, root: mocked.root, sliceId: mocked.sliceId }

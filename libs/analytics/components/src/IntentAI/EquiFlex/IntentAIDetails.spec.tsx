@@ -16,11 +16,11 @@ import {
 } from '../states'
 import { IntentDetail } from '../useIntentDetailsQuery'
 
-import { mockedIntentEquiFlex, mockWifiNetworkList } from './__tests__/fixtures'
-import { configuration, kpis }                       from './common'
-import * as CProbeFlex24g                            from './CProbeFlex24g'
-import * as CProbeFlex5g                             from './CProbeFlex5g'
-import * as CProbeFlex6g                             from './CProbeFlex6g'
+import { mockedIntentEquiFlex, mockedIntentEquiFlexKPIs, mockedIntentEquiFlexStatusTrail, mockWifiNetworkList } from './__tests__/fixtures'
+import { configuration, kpis }                                                                                  from './common'
+import * as CProbeFlex24g                                                                                       from './CProbeFlex24g'
+import * as CProbeFlex5g                                                                                        from './CProbeFlex5g'
+import * as CProbeFlex6g                                                                                        from './CProbeFlex6g'
 
 jest.mock('../IntentContext')
 jest.mock('@acx-ui/config', () => ({
@@ -29,9 +29,12 @@ jest.mock('@acx-ui/config', () => ({
 const mockGet = get as jest.Mock
 
 const mockIntentContextWith = (data: Partial<IntentDetail> = {}) => {
+  mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail',
+    { data: { intent: mockedIntentEquiFlexStatusTrail } })
+  mockGraphqlQuery(intentAIUrl, 'IntentKPIs',
+    { data: { intent: mockedIntentEquiFlexKPIs } })
+
   const intent = _.merge({}, mockedIntentEquiFlex, data) as IntentDetail
-  mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail', { data: { intent } })
-  mockGraphqlQuery(intentAIUrl, 'IntentKPIs', { data: { intent } })
   const context = mockIntentContext({ intent, configuration, kpis })
   return {
     params: _.pick(context.intent, ['code', 'root', 'sliceId']),

@@ -17,8 +17,8 @@ import { mockIntentContext } from '../__tests__/fixtures'
 import { Statuses }          from '../states'
 import { IntentDetail }      from '../useIntentDetailsQuery'
 
-import { mocked, mockedIntentAps }                            from './__tests__/mockedIZoneFirmwareUpgrade'
-import { configuration, kpis, IntentAIDetails, IntentAIForm } from './IZoneFirmwareUpgrade'
+import { mocked, mockedIntentAps, mockedKPIs, mockedStatusTrail } from './__tests__/mockedIZoneFirmwareUpgrade'
+import { configuration, kpis, IntentAIDetails, IntentAIForm }     from './IZoneFirmwareUpgrade'
 
 const { click, selectOptions, hover } = userEvent
 
@@ -61,6 +61,8 @@ beforeEach(() => {
   mockGraphqlMutation(intentAIUrl, 'IntentTransition', {
     data: { transition: { success: true, errorMsg: '' , errorCode: '' } }
   })
+  mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail', { data: { intent: mockedStatusTrail } })
+  mockGraphqlQuery(intentAIUrl, 'IntentKPIs', { data: { intent: mockedKPIs } })
 })
 
 afterEach((done) => {
@@ -77,8 +79,6 @@ afterEach((done) => {
 
 const mockIntentContextWith = (data: Partial<IntentDetail> = {}) => {
   const intent = _.merge({}, mocked, data) as IntentDetail
-  mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail', { data: { intent } })
-  mockGraphqlQuery(intentAIUrl, 'IntentKPIs', { data: { intent } })
   const context = mockIntentContext({ intent, configuration, kpis })
   return { params: _.pick(context.intent, ['code', 'root', 'sliceId']) }
 }

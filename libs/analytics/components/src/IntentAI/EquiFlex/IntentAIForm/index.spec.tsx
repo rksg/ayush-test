@@ -7,11 +7,11 @@ import { get }                                                                  
 import { intentAIApi, intentAIUrl, Provider, store }                                                from '@acx-ui/store'
 import { mockGraphqlMutation, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { mockIntentContext } from '../../__tests__/fixtures'
-import { Statuses }          from '../../states'
-import { IntentDetail }      from '../../useIntentDetailsQuery'
-import { mocked }            from '../__tests__/mockedEquiFlex'
-import { kpis }              from '../common'
+import { mockIntentContext }  from '../../__tests__/fixtures'
+import { Statuses }           from '../../states'
+import { IntentDetail }       from '../../useIntentDetailsQuery'
+import { mocked, mockedKPIs } from '../__tests__/mockedEquiFlex'
+import { kpis }               from '../common'
 
 import { IntentAIForm } from '.'
 
@@ -101,11 +101,11 @@ beforeEach(() => {
       }
     }
   })
+  mockGraphqlQuery(intentAIUrl, 'IntentKPIs', { data: { intent: mockedKPIs } })
 })
 
 const mockIntentContextWith = (data: Partial<IntentDetail> = {}) => {
   const intent = { ...mocked, ...data }
-  mockGraphqlQuery(intentAIUrl, 'IntentKPIs', { data: { intent } })
   mockIntentContext({ intent, kpis })
   return {
     params: { code: mocked.code, root: mocked.root, sliceId: mocked.sliceId }

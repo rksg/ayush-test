@@ -17,7 +17,7 @@ import { mockIntentContext } from '../__tests__/fixtures'
 import { Statuses }          from '../states'
 import { IntentDetail }      from '../useIntentDetailsQuery'
 
-import { mocked }                                             from './__tests__/mockedCBgScanEnable'
+import { mocked, mockedStatusTrail }                          from './__tests__/mockedCBgScanEnable'
 import { configuration, kpis, IntentAIDetails, IntentAIForm } from './CBgScan24gEnable'
 
 const { click, selectOptions } = userEvent
@@ -61,6 +61,7 @@ beforeEach(() => {
   mockGraphqlMutation(intentAIUrl, 'IntentTransition', {
     data: { transition: { success: true, errorMsg: '' , errorCode: '' } }
   })
+  mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail', { data: { intent: mockedStatusTrail } })
 })
 
 afterEach((done) => {
@@ -78,7 +79,6 @@ afterEach((done) => {
 const mockIntentContextWith = (data: Partial<IntentDetail> = {}) => {
   let intent = { ...mocked, code: 'c-bgscan24g-enable' }
   intent = _.merge({}, intent, data) as typeof intent
-  mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail', { data: { intent } })
   mockIntentContext({ intent, configuration, kpis })
   return {
     params: { code: mocked.code, root: mocked.root, sliceId: mocked.sliceId }

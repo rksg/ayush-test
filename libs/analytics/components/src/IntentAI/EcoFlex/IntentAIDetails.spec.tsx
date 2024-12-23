@@ -11,17 +11,17 @@ import {
 } from '../states'
 import { IntentDetail } from '../useIntentDetailsQuery'
 
-import { mockedIntentEcoFlex } from './__tests__/fixtures'
-import { mockKpiData }         from './__tests__/mockedEcoFlex'
-import { configuration, kpis } from './common'
-import * as EcoFlex            from './IEcoFlex'
+import { mockedIntentEcoFlex, mockedIntentEcoFlexStatusTrail } from './__tests__/fixtures'
+import { mockKpiData }                                         from './__tests__/mockedEcoFlex'
+import { configuration, kpis }                                 from './common'
+import * as EcoFlex                                            from './IEcoFlex'
 
 jest.mock('../IntentContext')
 
 const mockIntentContextWith = (data: Partial<IntentDetail> = {}) => {
+  mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail',
+    { data: { intent: mockedIntentEcoFlexStatusTrail } })
   const intent = _.merge({}, mockedIntentEcoFlex, data) as IntentDetail
-  mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail', { data: { intent } })
-  mockGraphqlQuery(intentAIUrl, 'IntentKpis', { data: { intent } })
   const context = mockIntentContext({ intent, configuration, kpis })
   return {
     params: _.pick(context.intent, ['code', 'root', 'sliceId'])
