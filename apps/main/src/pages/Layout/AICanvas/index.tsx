@@ -236,7 +236,7 @@ export default function AICanvas () {
           mask={true}
           maskClosable={true}
           maskStyle={{}}
-          width={'350px'}
+          width={'400px'}
         />
       </UI.Wrapper>
     </DndProvider>

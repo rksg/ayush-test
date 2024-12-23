@@ -218,8 +218,8 @@ const test = {
       y: 'time',
       seriesName: 'Total Traffic'
     }
-  ]
-  // "multiSeries": false
+  ],
+  multiSeries: false
 }
 
 function switchUsageLabelFormatter (params: CallbackDataParams): string {

@@ -8,10 +8,13 @@ import { useIntl }            from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 import { v4 as uuidv4 }       from 'uuid'
 
-import { BarChartData }                                                                   from '@acx-ui/analytics/utils'
-import { BarChart, Card, cssNumber, cssStr, DonutChart, Loader, StackedAreaChart, Table } from '@acx-ui/components'
-import { useChatChartQuery }                                                              from '@acx-ui/rc/services'
-import { WidgetData, WidgetListData }                                                     from '@acx-ui/rc/utils'
+import { BarChartData }                                                             from '@acx-ui/analytics/utils'
+import { BarChart, cssNumber, cssStr, DonutChart, Loader, StackedAreaChart, Table } from '@acx-ui/components'
+import { formatter }                                                                from '@acx-ui/formatter'
+import { useChatChartQuery }                                                        from '@acx-ui/rc/services'
+import { WidgetData, WidgetListData }                                               from '@acx-ui/rc/utils'
+
+import * as UI from '../styledComponents'
 
 import { ItemTypes } from './GroupItem'
 
@@ -47,12 +50,12 @@ const ChartConfig:{ [key:string]: WidgetCategory } = {
     ]
   },
   line: {
-    width: 4,
-    height: 10
-  },
-  bar: {
     width: 2,
     height: 4
+  },
+  bar: {
+    width: 3,
+    height: 8
   },
   table: {
     width: 2,
@@ -90,7 +93,7 @@ export const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
         cursor: 'move'
       }}
     >
-      <div style={{ margin: '7px', height: '165px', width: '200px' }}>
+      <div style={{ margin: '7px', height: '165px', width: '300px' }}>
         <WidgetChart data={data} />
       </div>
     </div>
@@ -98,7 +101,6 @@ export const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
 }
 
 export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
-  console.log(data)
   const { $t } = useIntl()
   const queryResults = useChatChartQuery({
     params: {
@@ -109,7 +111,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
 
   function labelFormatter (params: CallbackDataParams): string {
     const usage = Array.isArray(params.data) ? params.data[params?.encode?.['x'][0]!] : params.data
-    return '{data|' + usage + '}'
+    return '{data|' + formatter('bytesFormat')(usage) + '}'
   }
 
   const richStyle = () => ({
@@ -139,14 +141,15 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
       />
     } else if(type === 'bar') {
       return <BarChart
-        style={{ width: '100%', height: '100%' }}
+        style={{ width, height }}
         data={(chartData?.chartOption || []) as BarChartData}
         barWidth={chartData?.multiseries ? 8 : undefined}
-        // labelFormatter={labelFormatter}
-        // labelRichStyle={chartData?.multiseries ? richStyle() : undefined}
+        labelFormatter={labelFormatter}
+        labelRichStyle={richStyle()}
       />
     } else if(type === 'table') {
       return <Table
+        style={{ width, height }}
         columns={chartData?.chartOption?.columns || []}
         dataSource={chartData?.chartOption?.dataSource}
         type='compact'
@@ -190,14 +193,16 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
   //   }
   // }
   const chartData = data // data.type === 'card' ? queryResults.data : data
-  console.log('chartData: ', chartData)
   return (
     <Loader states={[{ isLoading: queryResults.isLoading }]}>
-      <Card key={data.id} title={data.title || $t({ defaultMessage: 'Title' })}>
+      <UI.Widget
+        key={data.id}
+        title={data.type === 'card' ? (data.title || $t({ defaultMessage: 'Title' })) : ''}
+      >
         <AutoSizer>
           {({ height, width }) => getChart(data.chartType, width, height, chartData)}
         </AutoSizer>
-      </Card>
+      </UI.Widget>
     </Loader>
   )
 }

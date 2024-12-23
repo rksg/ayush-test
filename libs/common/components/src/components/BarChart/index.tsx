@@ -115,7 +115,7 @@ export function BarChart<TChartData extends BarChartData>
       }
     },
     yAxis: {
-      type: 'category',
+      type: 'category', // time: '{yyyy}-{MM}-{dd} {HH}:{mm}'
       axisLine: {
         show: false
       },

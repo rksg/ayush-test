@@ -1,6 +1,8 @@
 import { Input as AntInput } from 'antd'
 import styled                from 'styled-components/macro'
 
+import { Card } from '@acx-ui/components'
+
 import CanvasBackground   from './assets/CanvasBackground.svg'
 import RuckusAiBackground from './assets/RuckusAiBackground.svg'
 
@@ -64,7 +66,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
   background-image: url(${RuckusAiBackground});
   background-repeat: no-repeat;
   position: fixed;
-  width: 350px;
+  width: 400px;
   height: calc(100vh - 60px);
   top: 60px;
   z-index: 2;
@@ -100,7 +102,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
   .content {
     background: transparent;
     height: calc(100vh - 120px);
-    width: 350px;
+    width: 400px;
     position: fixed;
     top: 120px;
     overflow: auto;
@@ -176,11 +178,11 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         height: 150px;
         position: fixed;
         bottom: 0;    
-        width: 350px;
+        width: 400px;
         padding: 10px;
         button {
           position: fixed;
-          left: 300px;
+          left: 350px;
           bottom: 10px;
         }
       }
@@ -192,10 +194,10 @@ border-top: 75px solid rgba(255,255,255, 0.4);
 
 export const Canvas = styled.div`
   position: fixed;
-  width: calc(100vw - 350px);
+  width: calc(100vw - 400px);
   top: 60px;
   z-index: 2;
-  left: 350px;
+  left: 400px;
   .header {
     border: 1px solid #E5E5E5;
     background-color: var(--acx-primary-white);
@@ -306,4 +308,10 @@ export const Grid = styled.div`
 // .section {
 //   background-color: var(--acx-accents-blue-10);
 // }
+`
+
+export const Widget = styled(Card)`
+  .ant-card-body {
+    overflow: auto;
+  }
 `

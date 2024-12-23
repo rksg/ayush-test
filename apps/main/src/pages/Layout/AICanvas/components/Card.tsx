@@ -159,7 +159,7 @@ function Card (props: CardProps) {
                 zIndex: 1
               }}
             >
-              <b>{id}</b>
+              {/* <b>{id}</b> */}
               <button
                 style={{ height: '30px', marginLeft: '10px' }}
                 onClick={() => {
