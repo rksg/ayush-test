@@ -215,7 +215,7 @@ function AllRoutes () {
         <Route path='' element={<Wired tab={AISwitchTabsEnum.SWITCH_LIST}/>} />
         <Route path='reports/wired'
           element={<Wired tab={AISwitchTabsEnum.WIRED_REPORT}/>} />
-        <Route path=':switchId/serial/details/:activeTab' element={<SwitchDetails/>} />
+        <Route path=':switchId/:serial/details/:activeTab' element={<SwitchDetails/>} />
       </Route>
       <Route path='users'>
         <Route path='wifi/clients'

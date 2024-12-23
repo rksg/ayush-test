@@ -7,7 +7,7 @@ import { screen, render, renderHook } from '@acx-ui/test-utils'
 import { mockIntentContext }                     from '../../__tests__/fixtures'
 import { mockedIntentCRRM, mockedIntentCRRMnew } from '../../AIDrivenRRM/__tests__/fixtures'
 import { Statuses }                              from '../../states'
-import { Intent }                                from '../../useIntentDetailsQuery'
+import { IntentDetail }                          from '../../useIntentDetailsQuery'
 import { useInitialValues }                      from '../../useIntentTransition'
 
 import { getScheduledAt, ScheduleTiming, validateScheduleTiming } from '.'
@@ -253,7 +253,7 @@ describe('ScheduleTiming.FieldSummary', () => {
         intent: {
           ...mockedIntentCRRMnew,
           status: Statuses.scheduled,
-          metadata: { scheduledAt: '2024-08-12T00:00:00' } as Intent['metadata']
+          metadata: { scheduledAt: '2024-08-12T00:00:00' } as IntentDetail['metadata']
         }
       })
       renderForm(<ScheduleTiming.FieldSummary/>)

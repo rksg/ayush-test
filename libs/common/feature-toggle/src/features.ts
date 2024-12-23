@@ -4,6 +4,7 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 export enum Features {
   ABAC_POLICIES_TOGGLE = 'abac-policies-toggle',
   ALARM_NEW_API_TOGGLE = 'acx-ui-new-alarm-api-toggle',
+  ALARM_WITH_PRODUCT_FILTER_TOGGLE = 'alarm-with-product-filter-toggle',
   ALLOWED_OPERATIONS_TOGGLE = 'allowed-operations-toggle',
   AP_FIRMWARE_UPGRADE_BY_MODEL_TOGGLE = 'ap-fw-mgmt-upgrade-by-model',
   AP_GROUP_TOGGLE = 'wifi-eda-ap-group-table-toggle',
@@ -14,7 +15,6 @@ export enum Features {
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
   AP_TX_POWER_TOGGLE = 'ap-tx-power-toggle',
   BETA_BUTTON = 'acx-ui-beta-button-toggle',
-  CLOUDPATH_ASYNC_API_TOGGLE = 'acx-ui-cloudpath-async-api-toggle',
   CLOUDPATH_BETA = 'BETA-CP',
   CONFIG_CHANGE = 'acx-ui-config-change-toggle',
   CONFIG_TEMPLATE = 'acx-ui-config-template',
@@ -41,6 +41,7 @@ export enum Features {
   EDGE_DHCP_HA_TOGGLE = 'edge-dhcp-ha-toggle',
   EDGE_FIREWALL_HA_TOGGLE = 'edge-firewall-ha-toggle',
   EDGE_PIN_HA_TOGGLE = 'edge-pin-ha-toggle',
+  EDGE_PIN_ENHANCE_TOGGLE = 'edge-pin-enhance-toggle',
   EDGE_GRACEFUL_SHUTDOWN_TOGGLE = 'edge-graceful-shutdown-toggle',
   EDGE_VXLAN_TUNNEL_KA_TOGGLE = 'edge-vxlan-tunnel-ka-toggle',
   EDGE_SD_LAN_MV_TOGGLE = 'edge-sdlan-mv-toggle',
@@ -52,9 +53,13 @@ export enum Features {
   EDGE_FIRMWARE_NOTIFICATION_BATCH_OPERATION_TOGGLE= 'edge-firmware-notification-batch-operation-toggle',
   EDGE_MDNS_PROXY_TOGGLE = 'edge-mdns-proxy-toggle',
   EDGE_THIRDPARTY_MGMT_TOGGLE = 'edge-poc-thirdparty-mgmt-toggle',
+  EDGE_ARPT_TOGGLE = 'edge-arpt-toggle',
+  EDGE_AV_REPORT_TOGGLE= 'edge-av-report-toggle',
+  EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE = 'edge-nat-traversal-phase1-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
+  ENTITLEMENT_ATTENTION_NOTES_TOGGLE = 'entitlement-attention-notes-toggle',
   ENTITLEMENT_COMPLIANCE_NOTES_TOGGLE = 'entitlement-no-courtesy-licenses-toggle',
   ENTITLEMENT_LICENSE_COMPLIANCE_TOGGLE= 'entitlement-license-compliance-toggle',
   ENTITLEMENT_RBAC_API = 'abac-policies-toggle',
@@ -181,6 +186,7 @@ export enum Features {
   WIFI_POWER_SAVING_MODE_TOGGLE = 'wifi-power-saving-mode-indicator-toggle',
   WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE = 'wifi-softgre-over-wireless-toggle',
   WIFI_RADSEC_TOGGLE = 'wifi-radsec-toggle',
+  WIFI_OWE_TRANSITION_FOR_6G = 'wifi-owe-transition-for-6g',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
   EDGE_HA_TOGGLE = 'edge-ha-toggle',
   EDGE_HA_AA_TOGGLE = 'edge-ha-aa-toggle',
@@ -220,6 +226,7 @@ export enum Features {
   WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE = 'wifi-over-the-ds-ft-support-toggle',
   WIFI_COMPATIBILITY_BY_MODEL = 'wifi-compatibility-check-by-model-toggle',
   WIFI_ETHERNET_SOFTGRE_TOGGLE = 'wifi-ethernet-softgre-toggle',
+  WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE = 'wifi-ethernet-client-isolation-toggle',
   ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE = 'entitlement-license-compliance-phase2-toggle',
   BRAND360_MDU_TOGGLE = 'acx-ui-brand360-mdu-toggle',
   SERVER_CERTIFICATE_MANAGEMENT_UI_TOGGLE = 'server-certificate-management-ui-toggle',
@@ -232,12 +239,14 @@ export enum Features {
   BTM_EVENTS_TOGGLE = 'acx-ui-btm-events-toggle',
   RUCKUS_AI_BTM_EVENTS_TOGGLE = 'ruckus-ai-btm-events-toggle',
   MLISA_4_11_0_TOGGLE = 'acx-ui-mlisa-4-11-0-toggle',
+  ANALYTIC_SNAPSHOT_TOGGLE = 'acx-ui-analytic-snapshot-toggle',
   VIEWMODEL_UI_EC_INVENTORIES_QUERY_PERFORMANCE_CHANGES_TOGGLE = 'viewmodel-ui-ec-inventories-query-performance-changes-toggle',
   RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE = 'ruckus-ai-intent-ai-config-change-toggle',
   INTENT_AI_CONFIG_CHANGE_TOGGLE = 'acx-ui-intent-ai-config-change-toggle',
   WIFI_R370_TOGGLE = 'wifi-r370-toggle',
   MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE = 'mac-registration-require-identity-group',
-  DPSK_REQUIRE_IDENTITY_GROUP = 'dpsk-require-identity-group'
+  DPSK_REQUIRE_IDENTITY_GROUP = 'dpsk-require-identity-group',
+  ACX_UI_NON_PROXY_ACCOUNTING_DPSK_TOGGLE = 'acx-ui-non-proxy-accounting-dpsk-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
@@ -249,6 +258,8 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   LOCATION_BASED_SERVICES = 'LOCATION-BASED-SERVICES',
   RBAC_IMPLICIT_P1 = 'RBAC-IMPLICIT-P1',
   EDGE_ADV = 'EDGE-ADV',
+  EDGE_AV_REPORT = 'EDGE-AV-REPORT',
+  EDGE_NAT_T = 'EDGE-NAT-T',
   // for testing only
   TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
   TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',
@@ -276,6 +287,8 @@ export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.LOCATION_BASED_SERVICES, description: defineMessage({ defaultMessage: 'LBS: RUCKUS One now lets you create a Location Based Service (LBS) Server linked to multiple <venuePlural></venuePlural> for efficient tracking and management of location-specific information. This feature gathers location data from connected access points (APs) and routes it to third-party application servers. You can add and manage LBS server profiles and enable Location Based Services for any <venueSingular></venueSingular> directly from the RUCKUS One web interface, enhancing your <venueSingular></venueSingular> management capabilities.' }), status: true },
   { key: TierFeatures.RBAC_IMPLICIT_P1, description: defineMessage({ defaultMessage: 'Role-based access control: Role-based access control (RBAC) and attributes-based access control (ABAC) are functionalities that provide a structured and efficient approach to managing administrator permissions and access rules in RUCKUS One.' }), status: true },
   { key: TierFeatures.EDGE_ADV, description: defineMessage({ defaultMessage: 'Personal Identity Networks: Personal Identity Networks (PIN) use VxLAN tunneling to extend Wi-Fi client access to the RUCKUS Edge, creating seamless connectivity across the network domain. It enables Wi-Fi clients to securely access their networks and connected devices while also establishing Personal Area Networks (PAN) for secure, individualized connectivity. PINs can be configured for any <venueSingular></venueSingular> that has Property Management enabled and has RUCKUS APs, ICX switches, and Edge devices deployed.' }), status: true },
+  { key: TierFeatures.EDGE_AV_REPORT, description: defineMessage({ defaultMessage: 'Edge Application Report: This feature introduces the Deep Packet Inspection (DPI) module into RUCKUS Edge and an Application Visibility (AV) report on Ruckus One. It provides detailed application visibility into different types of applications running on the network, enabling administrators to gain insights into network traffic.' }), status: true },
+  { key: TierFeatures.EDGE_NAT_T, description: defineMessage({ defaultMessage: 'Edge Tunnel Profile support NAT-Traversal' }), status: false },
   // for testing only
   { key: TierFeatures.TEST_SELECTIVE_BETA_01, description: defineMessage({ defaultMessage: 'Test 01: Test selective 01. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },
   { key: TierFeatures.TEST_SELECTIVE_BETA_02, description: defineMessage({ defaultMessage: 'Test 02: Test selective 02. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },

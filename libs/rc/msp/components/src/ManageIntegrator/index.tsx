@@ -667,7 +667,7 @@ export function ManageIntegrator () {
   }
 
   const MspAdminsForm = () => {
-    return (isRbacPhase2Enabled && !isEditMode)
+    return (isAbacToggleEnabled && isRbacPhase2Enabled && !isEditMode)
       ? <div>
         <UI.FieldLabelAdmins2 width='275px' style={{ marginTop: '15px' }}>
           <label>{intl.$t({ defaultMessage: 'MSP Delegations' })}</label>

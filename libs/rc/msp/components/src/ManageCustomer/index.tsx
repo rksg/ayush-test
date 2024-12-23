@@ -878,7 +878,7 @@ export function ManageCustomer () {
 
   const MspAdminsForm = () => {
     return <>
-      {(isRbacPhase2Enabled && !isEditMode)
+      {(isAbacToggleEnabled && isRbacPhase2Enabled && !isEditMode)
         ? <div>
           <UI.FieldLabelAdmins2 width='275px' style={{ marginTop: '15px' }}>
             <label>{intl.$t({ defaultMessage: 'MSP Delegations' })}</label>

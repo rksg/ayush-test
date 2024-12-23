@@ -4,20 +4,29 @@ import { Network, NetworkDetail, NetworkSaveData, WifiNetwork } from './types/ne
 const SupportRadio6gSecurityList = [
   WlanSecurityEnum.WPA3,
   WlanSecurityEnum.OWE,
-  WlanSecurityEnum.WPA23Mixed // support with AP firmware 7.0+
+  WlanSecurityEnum.WPA23Mixed, // support with AP firmware 7.0+
+  WlanSecurityEnum.OWETransition // support with AP firmware 7.1+
 ]
 
-export const IsSecuritySupport6g = (wlanSecurity?: WlanSecurityEnum) => {
-  return !!(wlanSecurity && SupportRadio6gSecurityList.includes(wlanSecurity))
+export const IsSecuritySupport6g = (wlanSecurity?: WlanSecurityEnum,
+  options?: Record<string, boolean>) => {
+  const supportSecurityList = options?.isSupport6gOWETransition
+    ? SupportRadio6gSecurityList
+    : SupportRadio6gSecurityList.filter((wlanSecurityEnum) => (
+      wlanSecurityEnum !== WlanSecurityEnum.OWETransition
+    ))
+  //console.log('supportSecurityList: ', supportSecurityList)
+  return !!(wlanSecurity && supportSecurityList.includes(wlanSecurity))
 }
 
-export const IsNetworkSupport6g = (networkDetail?: NetworkDetail | NetworkSaveData | null) => {
+export const IsNetworkSupport6g = (networkDetail?: NetworkDetail | NetworkSaveData | null,
+  options?: Record<string, boolean>) => {
   const { wlan } = networkDetail || {}
   const { wlanSecurity } = wlan || {}
 
   if (!wlanSecurity) return false
 
-  return IsSecuritySupport6g(wlanSecurity)
+  return IsSecuritySupport6g(wlanSecurity, options)
 }
 
 export const transformNetwork = (item: Network) => {

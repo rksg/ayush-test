@@ -1,13 +1,23 @@
-import { useContext, useState, useEffect, useRef } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Image, Row, Select, Space, Tooltip } from 'antd'
 import { isEqual, clone, cloneDeep }                     from 'lodash'
-import _                                                 from 'lodash'
 import { useIntl }                                       from 'react-intl'
 
-import { AnchorContext, Button, Loader, Tabs, showActionModal }         from '@acx-ui/components'
-import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
-import { LanPortPoeSettings, LanPortSettings, ConvertPoeOutToFormData }
+import {
+  AnchorContext,
+  Button,
+  Loader,
+  showActionModal,
+  Tabs
+} from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  LanPortPoeSettings,
+  LanPortSettings,
+  ConvertPoeOutToFormData,
+  useSoftGreProfileActivation
+}
   from '@acx-ui/rc/components'
 import {
   useGetVenueSettingsQuery,
@@ -20,9 +30,11 @@ import {
   useGetDHCPProfileListQuery,
   useGetDhcpTemplateListQuery,
   useActivateEthernetPortProfileOnVenueApModelPortIdMutation,
-  useUpdateEthernetPortSettingsByVenueApModelMutation,
   useGetVenueLanPortWithEthernetSettingsQuery,
-  useUpdateVenueLanPortSpecificSettingsMutation
+  useUpdateVenueLanPortSpecificSettingsMutation,
+  useUpdateVenueLanPortSettingsMutation,
+  useActivateClientIsolationOnVenueMutation,
+  useDeleteClientIsolationOnVenueMutation
 } from '@acx-ui/rc/services'
 import {
   ApLanPortTypeEnum,
@@ -31,6 +43,7 @@ import {
   EditPortMessages,
   isEqualLanPort,
   LanPort,
+  VenueLanPortSettings,
   useConfigTemplate,
   VenueLanPorts,
   VenueSettings,
@@ -47,7 +60,6 @@ import {
   useVenueConfigTemplateQueryFnSwitcher
 } from '../../../../venueConfigTemplateApiSwitcher'
 import { VenueEditContext } from '../../../index'
-
 
 const { useWatch } = Form
 
@@ -104,6 +116,8 @@ export function LanPorts () {
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
+  const isEthernetClientIsolationEnabled =
+    useIsSplitOn(Features.WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE)
 
   const { defaultLanPortsByModelMap, isDefaultPortsLoading } =
     useGetDefaultVenueLanPortsQuery({ params: { venueId } },
@@ -124,7 +138,8 @@ export function LanPorts () {
     enableRbac: isWifiRbacEnabled,
     payload: {
       isEthernetPortProfileEnabled,
-      isEthernetSoftgreEnabled
+      isEthernetSoftgreEnabled,
+      isEthernetClientIsolationEnabled
     }
   })
   // eslint-disable-next-line max-len
@@ -136,8 +151,9 @@ export function LanPorts () {
   const [updateActivateEthernetPortProfile] =
     useActivateEthernetPortProfileOnVenueApModelPortIdMutation()
 
-  const [updateEthernetPortSetting] =
-    useUpdateEthernetPortSettingsByVenueApModelMutation()
+  const [updateActivateClientIsolationPolicy] = useActivateClientIsolationOnVenueMutation()
+  const [updateDeactivateClientIsolationPolicy] = useDeleteClientIsolationOnVenueMutation()
+  const [updateLanPortSetting] = useUpdateVenueLanPortSettingsMutation()
 
   const [updateLanPortSpecificSetting] =
     useUpdateVenueLanPortSpecificSettingsMutation()
@@ -150,7 +166,7 @@ export function LanPorts () {
   const [selectedModelCaps, setSelectedModelCaps] = useState({} as CapabilitiesApModel)
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
   const [resetModels, setResetModels] = useState([] as string[])
-
+  const { dispatch, handleUpdateSoftGreProfile } = useSoftGreProfileActivation(selectedModel)
 
   const form = Form.useFormInstance()
   const [apModel, apPoeMode, lanPoeOut, lanPorts] = [
@@ -302,24 +318,76 @@ export function LanPorts () {
     }
   }
 
+  const handleDeactivateClientIsolationPolicy = async (
+    model:string,
+    lanPort:LanPort,
+    originLanPort?:LanPort
+  ) => {
+    const originClientIsolationId = originLanPort?.clientIsolationProfileId
+    if(!originClientIsolationId) {
+      return
+    }
+
+    if(originClientIsolationId || !lanPort.clientIsolationEnabled) {
+      await updateDeactivateClientIsolationPolicy({
+        params: {
+          venueId: venueId,
+          apModel: model,
+          portId: lanPort.portId,
+          policyId: originClientIsolationId
+        }
+      }).unwrap()
+    }
+  }
+  const handleUpdateClientIsolationPolicy = async (
+    model:string,
+    lanPort:LanPort
+  ) => {
+    const clientIsolationId = lanPort.clientIsolationProfileId
+
+    if(clientIsolationId && lanPort.clientIsolationEnabled) {
+      await updateActivateClientIsolationPolicy({
+        params: {
+          venueId: venueId,
+          apModel: model,
+          portId: lanPort.portId,
+          policyId: clientIsolationId
+        }
+      }).unwrap()
+    }
+  }
+
   const handleUpdateLanPortSettings = async (
     model:string,
     lanPort:LanPort,
     originLanPort?:LanPort
   ) => {
-    if (lanPort.enabled !== originLanPort?.enabled) {
-      await updateEthernetPortSetting({
+    const venueLanPortSetting = getVenueLanPortSettingsByLanPortData(lanPort)
+    const originVenueLanPortSetting =
+      (originLanPort)? getVenueLanPortSettingsByLanPortData(originLanPort): {}
+
+    if(!isEqual(venueLanPortSetting, originVenueLanPortSetting)) {
+      await updateLanPortSetting({
         params: {
           venueId: venueId,
           apModel: model,
           portId: lanPort.portId
         },
-        payload: {
-          enabled: lanPort.enabled
-        }
+        payload: venueLanPortSetting
       }).unwrap()
     }
+
+    // Activate Client Isolation must wait Lan settings enable client isolation saved
+    if(isEthernetClientIsolationEnabled) {
+      handleUpdateClientIsolationPolicy(model, lanPort)
+    }
   }
+
+  const getVenueLanPortSettingsByLanPortData = (lanPortData: LanPort):VenueLanPortSettings => ({
+    enabled: lanPortData.enabled,
+    clientIsolationEnabled: lanPortData.clientIsolationEnabled,
+    clientIsolationSettings: lanPortData.clientIsolationSettings
+  })
 
   const handleUpdateLanPortSpecificSettings = async (
     model:string,
@@ -330,7 +398,7 @@ export function LanPorts () {
     const { lanPorts, ...rest } = venueLanPorts
     const { lanPorts: originLanPorts, ...originRest } = originVenueLanPorts
 
-    if(!_.isEqual(rest, originRest)) {
+    if(!isEqual(rest, originRest)) {
       await updateLanPortSpecificSetting({
         params: {
           venueId: venueId,
@@ -408,6 +476,14 @@ export function LanPorts () {
           })
           // Update ethernet port profile
           handleUpdateEthernetPortProfile(venueLanPort.model, lanPort, originLanPort)
+          // Update SoftGre Profile
+          handleUpdateSoftGreProfile(venueLanPort.model, lanPort, originLanPort)
+
+          // Before disable Client Isolation must deacticvate Client Isolation policy
+          if(isEthernetClientIsolationEnabled) {
+            handleDeactivateClientIsolationPolicy(venueLanPort.model, lanPort, originLanPort)
+          }
+
           // Update Lan settings
           handleUpdateLanPortSettings(venueLanPort.model, lanPort, originLanPort)
         })
@@ -433,7 +509,7 @@ export function LanPorts () {
     isFetching: isUpdatingVenueLanPorts
   }]}>
     <Row gutter={24}>
-      <Col span={8}>
+      <Col span={6}>
         <Form.Item
           name='model'
           label={$t({ defaultMessage: 'AP Model' })}
@@ -488,6 +564,7 @@ export function LanPorts () {
                     onGUIChanged={handleGUIChanged}
                     index={index}
                     venueId={venueId}
+                    dispatch={dispatch}
                   />
                 </Col>
               </Row>

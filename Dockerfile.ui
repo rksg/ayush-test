@@ -2,6 +2,7 @@ ARG CI_SERVICE_BASE
 ARG GAR_CONTAINER_URL
 ARG GAR_DOCKER_ROOT_URL
 
+FROM ${GAR_CONTAINER_URL}nginx:1.21.6-alpine as final-stage
 FROM ${GAR_DOCKER_ROOT_URL}/acx-service/acx-ui-cache/nx-cache:latest as nx-cache
 FROM ${CI_SERVICE_BASE}node:master--latest as build-base
 
@@ -44,20 +45,20 @@ ENV NX_CACHE_DIRECTORY=/app/node_modules/.cache/nx
 
 COPY --from=nx-cache /app/node_modules/.cache/nx /app/node_modules/.cache/nx
 
-# Remove files and folders older than 24 hours from the nx cache
-RUN find /app/node_modules/.cache/nx -type f -mmin +1440 -delete && \
-    find /app/node_modules/.cache/nx -type d -empty -delete
+# # Remove files and folders older than 24 hours from the nx cache
+# RUN find /app/node_modules/.cache/nx -type f -mmin +1440 -delete && \
+#     find /app/node_modules/.cache/nx -type d -empty -delete
 
 COPY tools/tests ./tools/tests
 
 # Copy the tar.xz file if it exists
-COPY nxcache/nxcache.tar.xz* ./
+# COPY nxcache/nxcache.tar.xz* ./
 
 # Extract it only if the file exists
-RUN if [ -f ./nxcache.tar.xz ]; then \
-      mkdir -p ./node_modules/.cache/nx && \
-      tar -xJf ./nxcache.tar.xz -C ./node_modules/.cache/nx; \
-    fi
+# RUN if [ -f ./nxcache.tar.xz ]; then \
+#       mkdir -p ./node_modules/.cache/nx && \
+#       tar -xJf ./nxcache.tar.xz -C ./node_modules/.cache/nx; \
+#     fi
 
 # dump git information
 RUN source ${ENV_FILE} \
@@ -101,6 +102,9 @@ RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_
         CICD_BUILD=true node ./node_modules/.bin/nx run rc-components:test $NX_RUN_OPTIONS; \
     fi
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+        CICD_BUILD=true node ./node_modules/.bin/nx run cloudpath-components:test $NX_RUN_OPTIONS; \
+    fi    
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
         CICD_BUILD=true node ./node_modules/.bin/nx run edge-components:test $NX_RUN_OPTIONS; \
     fi
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
@@ -139,7 +143,7 @@ RUN ./node_modules/.bin/nx reset
 RUN rm -rf ./node_modules
 
 ###############################################################
-FROM ${GAR_CONTAINER_URL}nginx:1.21.6-alpine
+FROM final-stage
 
 WORKDIR /usr/share/nginx/html
 
