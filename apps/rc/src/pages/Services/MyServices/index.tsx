@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Button, GridCol, GridRow, PageHeader, RadioCardCategory } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                   from '@acx-ui/rc/components'
+import { GridCol, GridRow, PageHeader, RadioCardCategory } from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                           from '@acx-ui/rc/components'
 import {
   useGetDHCPProfileListViewModelQuery,
   useGetDhcpStatsQuery,
@@ -19,16 +19,14 @@ import {
   useGetEdgeTnmServiceListQuery
 } from '@acx-ui/rc/services'
 import {
-  filterByAccessForServicePolicyMutation,
+  AddProfileButton,
   getSelectServiceRoutePath,
   getServiceAllowedOperation,
-  isAllowedOperationCheckEnabled,
   isServiceCardEnabled,
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { hasPermission }         from '@acx-ui/user'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { ServiceCard } from '../ServiceCard'
 
@@ -169,7 +167,14 @@ export default function MyServices () {
       <PageHeader
         title={$t({ defaultMessage: 'My Services' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
-        extra={<AddServiceLink services={services} />}
+        extra={<AddProfileButton
+          items={services}
+          operation={ServiceOperation.CREATE}
+          linkText={$t({ defaultMessage: 'Add Service' })}
+          targetPath={getSelectServiceRoutePath(true)}
+          // eslint-disable-next-line max-len
+          getAllowedOperation={(type: ServiceType, oper: ServiceOperation) => getServiceAllowedOperation(type, oper)}
+        />}
       />
       <GridRow>
         {services.filter(svc => isServiceCardEnabled(svc, ServiceOperation.LIST)).map(service => {
@@ -188,24 +193,4 @@ export default function MyServices () {
       </GridRow>
     </>
   )
-}
-
-function AddServiceLink (props: { services: { type: ServiceType }[] }) {
-  const { services } = props
-  const { $t } = useIntl()
-
-  const addServiceLink = <TenantLink to={getSelectServiceRoutePath(true)}>
-    <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
-  </TenantLink>
-
-  const hasAddServicePermission = services.some(svc => {
-    return hasPermission({
-      allowedOperations: getServiceAllowedOperation(svc.type, ServiceOperation.CREATE)
-    })
-  })
-
-  if (isAllowedOperationCheckEnabled()) {
-    return hasAddServicePermission ? addServiceLink : null
-  }
-  return filterByAccessForServicePolicyMutation([addServiceLink])[0]
 }

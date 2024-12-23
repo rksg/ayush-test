@@ -1,5 +1,7 @@
 import { ReactElement } from 'react'
 
+import { Button }                                                                                         from '@acx-ui/components'
+import { TenantLink }                                                                                     from '@acx-ui/react-router-dom'
 import { RolesEnum, ScopeKeys }                                                                           from '@acx-ui/types'
 import { AuthRoute, filterByAccess, goToNoPermission, hasCrossVenuesPermission, hasPermission, hasRoles } from '@acx-ui/user'
 
@@ -125,6 +127,33 @@ export function PolicyAuthRoute (props: {
     requireCrossVenuesPermission={{ needGlobalPermission: true }}
     children={children}
   />
+}
+
+interface AddProfileButtonProps<T, O> {
+  items: { type: T }[]
+  operation: O
+  targetPath: string
+  linkText: string
+  getAllowedOperation: (type: T, oper: O) => string | undefined
+}
+
+export function AddProfileButton <T, O> (props: AddProfileButtonProps<T, O>) {
+  const { items, operation, targetPath, getAllowedOperation, linkText } = props
+
+  const AddButton = <TenantLink to={targetPath}>
+    <Button type='primary'>{linkText}</Button>
+  </TenantLink>
+
+  const hasAddProfilePermission = items.some(svc => {
+    return hasPermission({
+      allowedOperations: getAllowedOperation(svc.type, operation)
+    })
+  })
+
+  if (isAllowedOperationCheckEnabled()) {
+    return hasAddProfilePermission ? AddButton : null
+  }
+  return filterByAccessForServicePolicyMutation([AddButton])[0]
 }
 
 function isCardEnabled<T, U> (

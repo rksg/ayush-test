@@ -1,3 +1,4 @@
+import { render, screen }                                  from '@acx-ui/test-utils'
 import { EdgeScopes, ScopeKeys, SwitchScopes, WifiScopes } from '@acx-ui/types'
 import { getUserProfile, setUserProfile }                  from '@acx-ui/user'
 
@@ -5,10 +6,10 @@ import { ServiceType }     from '../../constants'
 import { PolicyType }      from '../../types'
 import { PolicyOperation } from '../policy'
 
-import { filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, getScopeKeyByService, hasServicePermission } from './servicePolicyAbacUtils'
-import { ServiceOperation }                                                                                        from './serviceRouteUtils'
+import { AddProfileButton, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, getScopeKeyByService, hasServicePermission } from './servicePolicyAbacUtils'
+import { ServiceOperation }                                                                                                          from './serviceRouteUtils'
 
-const mockedFilterByAccess = jest.fn()
+const mockedFilterByAccess = jest.fn().mockImplementation(items => items)
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,6 +28,7 @@ describe('servicePolicyAbacUtils', () => {
   afterEach(() => {
     mockedIsAllowedOperationCheckEnabled.mockReset()
     mockedGetServiceAllowedOperation.mockReset()
+    mockedFilterByAccess.mockClear()
   })
 
   describe('serviceTypeScopeMap', () => { // Test for a combination of all service types and operations to ensure they are all covered
@@ -108,9 +110,8 @@ describe('servicePolicyAbacUtils', () => {
   })
 
   it('check service permission when isAllowedOperationCheckEnabled is true', () => {
-    const originalUserProfile = getUserProfile()
     setUserProfile({
-      ...originalUserProfile,
+      ...getUserProfile(),
       allowedOperations: ['POST:/wifiCallingServiceProfiles']
     })
 
@@ -125,10 +126,6 @@ describe('servicePolicyAbacUtils', () => {
   })
 
   describe('filterByAccessForServicePolicyMutation', () => {
-    afterEach(() => {
-      mockedFilterByAccess.mockClear()
-    })
-
     it('should return an empty array if hasCrossVenuesPermission returns false', () => {
       const userProfile = getUserProfile()
       setUserProfile({
@@ -158,6 +155,72 @@ describe('servicePolicyAbacUtils', () => {
       const items = [{ id: 1 }, { id: 2 }]
       filterByAccessForServicePolicyMutation(items)
       expect(mockedFilterByAccess).toHaveBeenCalledWith(items)
+    })
+  })
+
+  describe('AddProfileButton', () => {
+    it('renders the link when permission is allowed and operation check is enabled', () => {
+      setUserProfile({
+        ...getUserProfile(),
+        allowedOperations: ['POST:/wifiCallingServiceProfiles']
+      })
+      mockedIsAllowedOperationCheckEnabled.mockReturnValue(true)
+
+      render(
+        <AddProfileButton
+          items={[{ type: ServiceType.WIFI_CALLING }]}
+          getAllowedOperation={() => 'POST:/wifiCallingServiceProfiles'}
+          operation={ServiceOperation.CREATE}
+          linkText={'Add Service'}
+          targetPath={'/add-service'}
+        />,{
+          route: { params: { tenantId: '_TENANT_ID' }, path: '/:tenantId' }
+        }
+      )
+
+      expect(screen.getByText('Add Service')).toBeInTheDocument()
+      expect(screen.getByRole('link')).toHaveAttribute('href', '/_TENANT_ID/t/add-service')
+    })
+
+    it('returns null when no permission and operation check is enabled', () => {
+      setUserProfile({
+        ...getUserProfile(),
+        allowedOperations: []
+      })
+      mockedIsAllowedOperationCheckEnabled.mockReturnValue(true)
+
+      render(
+        <AddProfileButton
+          items={[{ type: ServiceType.WIFI_CALLING }]}
+          getAllowedOperation={() => 'POST:/wifiCallingServiceProfiles'}
+          operation={ServiceOperation.CREATE}
+          linkText={'Add Service'}
+          targetPath={'/add-service'}
+        />,{
+          route: { params: { tenantId: '_TENANT_ID' }, path: '/:tenantId' }
+        }
+      )
+
+      expect(screen.queryByText('Add Service')).toBeNull()
+    })
+
+    it('renders the link when operation check is disabled', () => {
+      mockedIsAllowedOperationCheckEnabled.mockReturnValue(false)
+
+      render(
+        <AddProfileButton
+          items={[{ type: ServiceType.WIFI_CALLING }]}
+          getAllowedOperation={() => 'POST:/wifiCallingServiceProfiles'}
+          operation={ServiceOperation.CREATE}
+          linkText={'Add Service'}
+          targetPath={'/add-service'}
+        />,{
+          route: { params: { tenantId: '_TENANT_ID' }, path: '/:tenantId' }
+        }
+      )
+
+      expect(screen.getByText('Add Service')).toBeInTheDocument()
+      expect(screen.getByRole('link')).toHaveAttribute('href', '/_TENANT_ID/t/add-service')
     })
   })
 })
