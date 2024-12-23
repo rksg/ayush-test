@@ -13,6 +13,7 @@
   },
   "files": [],
   "include": [],
+  "types": ["jest", "node", "@testing-library/jest-dom"],
   "references": [
     {
       "path": "./tsconfig.lib.json"
