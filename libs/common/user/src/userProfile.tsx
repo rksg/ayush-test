@@ -109,15 +109,15 @@ export function hasAccess (props?: { opsIds?: OpsIds, roles?: Role[] }) {
  * Ignore check -> If `SHOW_WITHOUT_RBAC_CHECK` is included, access is automatically granted (e.g., `[[SHOW_WITHOUT_RBAC_CHECK]]`).
  */
 function hasAllowedOperations (opsId: OpsIds) {
-  const { rbacOpsApiEnabled } = getUserProfile()
+  const { rbacOpsApiEnabled, allowedOperations } = getUserProfile()
   if (rbacOpsApiEnabled) {
     return opsId?.some(opsId => {
       if (Array.isArray(opsId)) {
-        return opsId.every(i => opsId.includes(i))
-      } else if (opsId.includes(SHOW_WITHOUT_RBAC_CHECK)) {
+        return opsId.every(i => allowedOperations.includes(i))
+      } else if (opsId?.includes(SHOW_WITHOUT_RBAC_CHECK)) {
         return true
       } else {
-        return opsId.includes(opsId)
+        return allowedOperations.includes(opsId)
       }
     })
   }

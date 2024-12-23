@@ -27,22 +27,29 @@ import {
 } from './userProfile'
 
 
-function setRole (role: RolesEnum, abacEnabled?: boolean, isCustomRole?:boolean,
-  scopes?:ScopeKeys, hasAllVenues?: boolean) {
+function setRole(props: {
+  role: RolesEnum,
+  abacEnabled?: boolean,
+  isCustomRole?: boolean,
+  scopes?: ScopeKeys,
+  hasAllVenues?: boolean,
+  rbacOpsApiEnabled?: boolean
+}) {
   const profile = getUserProfile()
   setUserProfile({
     ...profile,
     profile: {
       ...profile.profile,
-      roles: [role]
+      roles: [props.role]
     },
     allowedOperations: ['GET:/networks', 'GET:/switches'],
     accountTier: '',
     betaEnabled: false,
-    abacEnabled: abacEnabled ?? false,
-    isCustomRole,
-    scopes,
-    hasAllVenues: hasAllVenues ?? true
+    abacEnabled: props.abacEnabled ?? false,
+    isCustomRole: props.isCustomRole,
+    rbacOpsApiEnabled: props.rbacOpsApiEnabled,
+    scopes: props.scopes,
+    hasAllVenues: props.hasAllVenues ?? true
   })
 }
 
@@ -57,17 +64,17 @@ beforeEach(() => jest.mocked(get).mockReset())
 describe('hasAccess', () => {
   describe('without id', () => {
     it('allow admins', () => {
-      setRole(RolesEnum.PRIME_ADMIN)
+      setRole({ role: RolesEnum.PRIME_ADMIN })
       expect(hasAccess()).toBe(true)
-      setRole(RolesEnum.ADMINISTRATOR)
+      setRole({ role: RolesEnum.ADMINISTRATOR })
       expect(hasAccess()).toBe(true)
-      setRole(RolesEnum.DPSK_ADMIN)
+      setRole({ role: RolesEnum.DPSK_ADMIN })
       expect(hasAccess()).toBe(true)
     })
     it('block guest manager & read-only', () => {
-      setRole(RolesEnum.GUEST_MANAGER)
+      setRole({ role: RolesEnum.GUEST_MANAGER })
       expect(hasAccess()).toBe(false)
-      setRole(RolesEnum.READ_ONLY)
+      setRole({ role: RolesEnum.READ_ONLY })
       expect(hasAccess()).toBe(false)
     })
     it('returns true for IS_MLISA_SA', () => {
@@ -78,26 +85,26 @@ describe('hasAccess', () => {
 
   describe('when id in allowedOperations', () => {
     it('allow when operation in allowedOperations', () => {
-      setRole(RolesEnum.READ_ONLY)
-      expect(hasAccess('GET:/networks')).toBe(true)
+      setRole({ role: RolesEnum.READ_ONLY, rbacOpsApiEnabled: true })
+      expect(hasAccess({ opsIds: ['GET:/networks'] })).toBe(true)
     })
 
     it('block when operation NOT in allowedOperations', () => {
-      setRole(RolesEnum.READ_ONLY)
-      expect(hasAccess('GET:/network')).toBe(false)
+      setRole({ role: RolesEnum.READ_ONLY, rbacOpsApiEnabled: true })
+      expect(hasAccess({ opsIds: ['GET:/venues'] })).toBe(false)
     })
   })
 })
 
 describe('hasRoles', () => {
-  beforeEach(() => setRole(RolesEnum.ADMINISTRATOR))
+  beforeEach(() => setRole({role: RolesEnum.ADMINISTRATOR}))
 
-  it('check role', () => {
-    expect(hasRoles(RolesEnum.PRIME_ADMIN)).toBe(false)
-    expect(hasRoles(RolesEnum.ADMINISTRATOR)).toBe(true)
-    expect(hasRoles(RolesEnum.GUEST_MANAGER)).toBe(false)
-    expect(hasRoles(RolesEnum.READ_ONLY)).toBe(false)
-  })
+    it('check role', () => {
+      expect(hasRoles(RolesEnum.PRIME_ADMIN)).toBe(false)
+      expect(hasRoles(RolesEnum.ADMINISTRATOR)).toBe(true)
+      expect(hasRoles(RolesEnum.GUEST_MANAGER)).toBe(false)
+      expect(hasRoles(RolesEnum.READ_ONLY)).toBe(false)
+    })
   it('check roles', () => {
     expect(hasRoles([RolesEnum.PRIME_ADMIN])).toBe(false)
     expect(hasRoles([RolesEnum.ADMINISTRATOR])).toBe(true)
@@ -133,6 +140,7 @@ describe('hasRoles', () => {
       accountTier: '',
       betaEnabled: false,
       abacEnabled: true,
+      rbacOpsApiEnabled: false,
       isCustomRole: false,
       scopes: []
     })
@@ -153,7 +161,7 @@ describe('hasRoles', () => {
 })
 
 describe('isCustomAdmin', () => {
-  beforeEach(() => setRole(RolesEnum.ADMINISTRATOR))
+  beforeEach(() => setRole({role: RolesEnum.ADMINISTRATOR}))
   it('check system admin', () => {
     expect(isCustomAdmin()).toBe(false)
   })
@@ -179,7 +187,7 @@ describe('isCustomAdmin', () => {
 })
 
 describe('hasCrossVenuesPermission', () => {
-  beforeEach(() => setRole(RolesEnum.ADMINISTRATOR))
+  beforeEach(() => setRole({role: RolesEnum.ADMINISTRATOR}))
   it('check permissions for All Venues', () => {
     const profile = getUserProfile()
     setUserProfile({
@@ -232,16 +240,16 @@ describe('filterByAccess', () => {
       {}
     ]
 
-    setRole(RolesEnum.PRIME_ADMIN)
-    expect(filterByAccess(items)).toHaveLength(1)
+    setRole({role: RolesEnum.PRIME_ADMIN})
+    expect(filterByAccess(items)).toHaveLength(2)
 
-    setRole(RolesEnum.ADMINISTRATOR)
-    expect(filterByAccess(items)).toHaveLength(1)
+    setRole({role: RolesEnum.ADMINISTRATOR})
+    expect(filterByAccess(items)).toHaveLength(2)
 
-    setRole(RolesEnum.GUEST_MANAGER)
+    setRole({role: RolesEnum.GUEST_MANAGER})
     expect(filterByAccess(items)).toHaveLength(0)
 
-    setRole(RolesEnum.READ_ONLY)
+    setRole({role: RolesEnum.READ_ONLY})
     expect(filterByAccess(items)).toHaveLength(0)
 
   })
@@ -262,16 +270,16 @@ describe('filterByAccess', () => {
 
     jest.mocked(get).mockReturnValue('true')
 
-    setRole(RolesEnum.PRIME_ADMIN)
+    setRole({role: RolesEnum.PRIME_ADMIN})
     expect(filterByAccess(items)).toHaveLength(2)
 
-    setRole(RolesEnum.ADMINISTRATOR)
+    setRole({role: RolesEnum.ADMINISTRATOR})
     expect(filterByAccess(items)).toHaveLength(2)
 
-    setRole(RolesEnum.GUEST_MANAGER)
+    setRole({role: RolesEnum.GUEST_MANAGER})
     expect(filterByAccess(items)).toHaveLength(2)
 
-    setRole(RolesEnum.READ_ONLY)
+    setRole({role: RolesEnum.READ_ONLY})
     expect(filterByAccess(items)).toHaveLength(2)
   })
 })
@@ -291,50 +299,56 @@ describe('hasRaiPermission', () => {
 })
 
 describe('hasPermission', () => {
-  beforeEach(() => setRole(RolesEnum.ADMINISTRATOR))
+  beforeEach(() => setRole({role: RolesEnum.ADMINISTRATOR}))
 
   describe('ABAC FF disabled', () => {
     it('check ADMIN user permission', () => {
       expect(hasPermission()).toBe(true)
-      expect(hasPermission({ scopes: [], allowedOperations: 'GET:/networks' })).toBe(true)
-      expect(hasPermission({ scopes: [], allowedOperations: 'GET:/edges' })).toBe(false)
+      expect(hasPermission({ scopes: [], rbacOpsIds: ['GET:/networks'] })).toBe(true)
+      expect(hasPermission({ scopes: [], rbacOpsIds: ['GET:/edges'] })).toBe(true)
     })
     it('check READ ONLY user permission', () => {
-      setRole(RolesEnum.READ_ONLY)
+      setRole({ role: RolesEnum.READ_ONLY, rbacOpsApiEnabled: true })
       expect(hasPermission()).toBe(false)
-      expect(hasPermission({ allowedOperations: 'GET:/networks' })).toBe(true)
-      expect(hasPermission({ allowedOperations: 'GET:/edges' })).toBe(false)
+      expect(hasPermission({ rbacOpsIds: ['GET:/networks'] })).toBe(true)
+      expect(hasPermission({ rbacOpsIds: ['GET:/edges'] })).toBe(false)
       expect(
-        hasPermission({ scopes: [SwitchScopes.DELETE], allowedOperations: 'GET:/networks' })
+        hasPermission({ scopes: [SwitchScopes.DELETE], rbacOpsIds: ['GET:/networks'] })
       ).toBe(true)
     })
   })
 
   describe('ABAC FF enabled', () => {
     it('check ADMIN user permission', () => {
-      setRole(RolesEnum.ADMINISTRATOR, true)
-      expect(hasPermission()).toBe(true)
-      expect(hasPermission({ allowedOperations: 'GET:/switches' })).toBe(true)
-      expect(hasPermission({ allowedOperations: 'GET:/edges' })).toBe(false)
-      expect(hasPermission({ scopes: [], allowedOperations: 'GET:/networks' })).toBe(true)
-      expect(hasPermission({ scopes: [], allowedOperations: 'GET:/edges' })).toBe(false)
+      setRole({role: RolesEnum.ADMINISTRATOR, abacEnabled: true, rbacOpsApiEnabled: true})
+      expect(hasPermission()).toBe(false)
+      expect(hasPermission({ rbacOpsIds: ['GET:/switches'] })).toBe(true)
+      expect(hasPermission({ rbacOpsIds: ['GET:/edges'] })).toBe(false)
+      expect(hasPermission({ scopes: [], rbacOpsIds: ['GET:/networks'] })).toBe(true)
+      expect(hasPermission({ scopes: [], rbacOpsIds: ['GET:/edges'] })).toBe(false)
     })
 
     it('check CUSTOM user permission', () => {
-      setRole('CUSTOM USER' as RolesEnum, true, true,[SwitchScopes.READ, WifiScopes.READ])
+      setRole({
+        role: 'CUSTOM USER' as RolesEnum,
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [SwitchScopes.READ, WifiScopes.READ],
+        rbacOpsApiEnabled: false
+      })
       expect(hasPermission()).toBe(true)
-      expect(hasPermission({ allowedOperations: 'GET:/switches' })).toBe(true)
-      expect(hasPermission({ allowedOperations: 'GET:/edges' })).toBe(false)
-      expect(hasPermission({ scopes: [], allowedOperations: 'GET:/networks' })).toBe(true)
-      expect(hasPermission({ scopes: [], allowedOperations: 'GET:/edges' })).toBe(false)
+      expect(hasPermission({ scopes: [], rbacOpsIds: ['GET:/networks'] })).toBe(true)
       expect(
-        hasPermission({ scopes: [SwitchScopes.READ], allowedOperations: 'GET:/switches' })
+        hasPermission({ scopes: [SwitchScopes.READ]})
       ).toBe(true)
       expect(
-        hasPermission({ scopes: [SwitchScopes.DELETE], allowedOperations: 'GET:/switches' })
+        hasPermission({ scopes: [SwitchScopes.DELETE] })
       ).toBe(false)
       expect(
         hasPermission({ scopes: [[SwitchScopes.READ, WifiScopes.READ]] })
+      ).toBe(true)
+      expect(
+        hasPermission({ scopes: [[SwitchScopes.READ, WifiScopes.READ]], rbacOpsIds: ['GET:/edges'] })
       ).toBe(true)
       expect(
         hasPermission({ scopes: [[SwitchScopes.READ, WifiScopes.READ], SwitchScopes.DELETE] })
@@ -343,7 +357,30 @@ describe('hasPermission', () => {
         hasPermission({ scopes: [[SwitchScopes.READ, WifiScopes.UPDATE]] })
       ).toBe(false)
     })
+
+    it('check CUSTOM user permission with allowedOprations API', () => {
+      setRole({
+        role: 'CUSTOM USER' as RolesEnum,
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [SwitchScopes.READ, WifiScopes.READ],
+        rbacOpsApiEnabled: true
+      })
+      expect(hasPermission()).toBe(false)
+      expect(hasPermission({ rbacOpsIds: ['GET:/switches'] })).toBe(true)
+      expect(hasPermission({ rbacOpsIds: ['GET:/edges'] })).toBe(false)
+      expect(hasPermission({ rbacOpsIds: ['SHOW_WITHOUT_RBAC_CHECK'] })).toBe(true)
+      expect(hasPermission({ scopes: [], rbacOpsIds: ['GET:/networks'] })).toBe(true)
+      expect(hasPermission({ scopes: [], rbacOpsIds: ['GET:/edges'] })).toBe(false)
+      expect(
+        hasPermission({ scopes: [SwitchScopes.READ], rbacOpsIds: ['GET:/switches'] })
+      ).toBe(true)
+      expect(
+        hasPermission({ scopes: [SwitchScopes.DELETE], rbacOpsIds: ['GET:/switches'] })
+      ).toBe(true)
+    })
   })
+
   it('checks RAI permissions', () => {
     jest.mocked(get).mockReturnValue('true')
     setRaiPermissions({ READ_INCIDENTS: true } as RaiPermissions)
@@ -366,7 +403,7 @@ describe('WrapIfAccessible', () => {
   })
 
   it('should not wrap if user does not have access', () => {
-    setRole(RolesEnum.READ_ONLY)
+    setRole({role: RolesEnum.READ_ONLY})
     render(
       <WrapIfAccessible wrapper={children =>
         <div data-testid='wrapper'>{children}</div>
@@ -380,7 +417,12 @@ describe('WrapIfAccessible', () => {
 
 describe('AuthRoute', () => {
   it('should go to no permissions page for scope', async () => {
-    setRole(RolesEnum.READ_ONLY, true, true, [SwitchScopes.READ])
+    setRole({
+      role: RolesEnum.READ_ONLY,
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [SwitchScopes.READ]
+    })
     render(
       <Router>
         <AuthRoute scopes={[SwitchScopes.UPDATE]}>
@@ -393,7 +435,13 @@ describe('AuthRoute', () => {
   })
 
   it('should go to no permissions page for cross venues', async () => {
-    setRole(RolesEnum.ADMINISTRATOR, true, true, [], false)
+    setRole({
+      role: RolesEnum.ADMINISTRATOR,
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [],
+      hasAllVenues: false
+    })
     render(
       <Router>
         <AuthRoute requireCrossVenuesPermission scopes={[SwitchScopes.CREATE]}>
@@ -406,7 +454,13 @@ describe('AuthRoute', () => {
   })
 
   it('should go to correct page for cross venues', async () => {
-    setRole(RolesEnum.ADMINISTRATOR, true, false, [], true)
+    setRole({
+      role: RolesEnum.ADMINISTRATOR,
+      abacEnabled: true,
+      isCustomRole: false,
+      scopes: [],
+      hasAllVenues: true
+    })
     render(
       <Router>
         <AuthRoute requireCrossVenuesPermission>
@@ -419,7 +473,13 @@ describe('AuthRoute', () => {
   })
 
   it('should go to no permissions page for global permission', async () => {
-    setRole(RolesEnum.ADMINISTRATOR, true, false, [], false)
+    setRole({
+      role: RolesEnum.ADMINISTRATOR,
+      abacEnabled: true,
+      isCustomRole: false,
+      scopes: [],
+      hasAllVenues: false
+    })
     render(
       <Router>
         <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }}>
@@ -432,7 +492,13 @@ describe('AuthRoute', () => {
   })
 
   it('should go to correct page for for global permission', async () => {
-    setRole(RolesEnum.ADMINISTRATOR, true, false, [], true)
+    setRole({
+      role: RolesEnum.ADMINISTRATOR,
+      abacEnabled: true,
+      isCustomRole: false,
+      scopes: [],
+      hasAllVenues: true
+    })
     render(
       <Router>
         <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }}>
@@ -445,7 +511,12 @@ describe('AuthRoute', () => {
   })
 
   it('should go to correct page: custom role', async () => {
-    setRole(RolesEnum.READ_ONLY, true, true, [SwitchScopes.UPDATE])
+      setRole({
+        role: RolesEnum.READ_ONLY,
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [SwitchScopes.UPDATE]
+      })
     render(
       <Router>
         <AuthRoute scopes={[SwitchScopes.UPDATE]}>
@@ -457,7 +528,11 @@ describe('AuthRoute', () => {
   })
 
   it('should go to correct page: system role', async () => {
-    setRole(RolesEnum.PRIME_ADMIN, true, false)
+    setRole({
+      role: RolesEnum.PRIME_ADMIN,
+      abacEnabled: true,
+      isCustomRole: false
+    })
     render(
       <Router>
         <AuthRoute scopes={[SwitchScopes.UPDATE]}>
