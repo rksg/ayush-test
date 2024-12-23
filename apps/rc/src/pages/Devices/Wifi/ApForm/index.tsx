@@ -42,7 +42,6 @@ import {
   ApErrorHandlingMessages,
   APMeshRole,
   apNameRegExp,
-  CatchErrorResponse,
   checkObjectNotExists,
   checkValues,
   DeviceGps,
@@ -63,7 +62,7 @@ import {
   useParams,
   useLocation
 } from '@acx-ui/react-router-dom'
-import { validationMessages } from '@acx-ui/utils'
+import { validationMessages, CatchErrorResponse } from '@acx-ui/utils'
 
 import { ApDataContext, ApEditContext } from '../ApEdit/index'
 

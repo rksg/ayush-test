@@ -71,6 +71,8 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.venuesList = profile?.venuesList
   userProfile.betaFeaturesList = profile?.betaFeaturesList
 }
+export const getUserName = () =>
+  `${userProfile.profile.firstName} ${userProfile.profile.lastName}`
 
 export const getShowWithoutRbacCheckKey = (id:string) => {
   return SHOW_WITHOUT_RBAC_CHECK + '_' + id
