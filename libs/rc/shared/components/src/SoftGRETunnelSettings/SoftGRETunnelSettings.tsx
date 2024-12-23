@@ -28,7 +28,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
     dispatch
   } = props
 
-  const softgreTunnelFieldName = ['lan', index, 'softGreTunnelEnable']
+  const softgreTunnelFieldName = ['lan', index, 'softGreEnabled']
   const form = Form.useFormInstance()
 
   return (
@@ -55,7 +55,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
               data-testid={'softgre-tunnel-switch'}
               disabled={readonly}
               onClick={(value) => {
-                onGUIChanged && onGUIChanged('softGreTunnelEnable')
+                onGUIChanged && onGUIChanged('softGreEnabled')
                 if (dispatch) {
                   value ?
                     dispatch({

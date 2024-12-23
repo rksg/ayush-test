@@ -1976,8 +1976,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
             )
           )
 
-          if (networkIds.length <= 0) return defaultRes
-
           // query network name with networkId
           const networkQueryPayload = {
             fields: ['name', 'id'],
@@ -2012,10 +2010,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
           const apSerialNumbersSet = Object.values(apsGroupByVenueData).reduce((all, venueSet) => {
             return new Set([...all, ...venueSet])
           }, new Set())
+
           if(apSerialNumbersSet.size > 0){
             const apsQueryPayload = {
               fields: ['name', 'serialNumber'],
-              filters: { serialNumber: apSerialNumbersSet },
+              filters: { serialNumber: Array.from(apSerialNumbersSet) },
               pageSize: 10000
             }
             const apsReq = createHttpRequest(CommonRbacUrlsInfo.getApsList)
@@ -2051,6 +2050,19 @@ export const policyApi = basePolicyApi.injectEndpoints({
                 venuesMap[venueId].networkNames.push(networkData?.data?.filter(n => n.id === wifiNetworkId).map(n => n.name)[0])
               }
             })
+          })
+          Object.keys(apsGroupByVenueData).forEach((venueId) => {
+            if (!venuesMap[venueId]) {
+              venuesMap[venueId] = {
+                venueId: venueId,
+                venueName: '',
+                address: '',
+                networkCount: 0,
+                networkNames: [],
+                apCount: 0,
+                apNames: []
+              }
+            }
           })
 
           venueData.data.forEach(venue => {
