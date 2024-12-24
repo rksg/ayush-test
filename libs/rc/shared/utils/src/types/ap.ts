@@ -486,7 +486,7 @@ export interface LanPort {
   vni: number,
   ethernetPortProfileId?: string,
   softGreProfileId?: string,
-  softGreTunnelEnable?: boolean,
+  softGreEnabled?: boolean,
   dhcpOption82?: LanPortSoftGreProfileSettings,
   clientIsolationProfileId?: string,
   clientIsolationEnabled?: boolean,
@@ -1029,7 +1029,7 @@ export interface LanPortClientIsolationSettings {
   autoVrrp: boolean
 }
 
-export interface LanPortVenueSettings {
+export interface VenueLanPortSettings {
   portId?: number
   enabled?: boolean
   softGreEnabled?: boolean
@@ -1038,7 +1038,7 @@ export interface LanPortVenueSettings {
   clientIsolationSettings?: LanPortClientIsolationSettings
 }
 
-export interface LanPortAPSettings extends LanPortVenueSettings {
+export interface APLanPortSettings extends VenueLanPortSettings {
   overwriteUntagId?: number
   overwriteVlanMembers?: string
 }
