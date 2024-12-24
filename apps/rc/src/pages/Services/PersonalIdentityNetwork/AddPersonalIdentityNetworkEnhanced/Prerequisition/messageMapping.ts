@@ -10,6 +10,7 @@ export const messageMapping = {
 export const prerequisitionListMessage = [
   {
     title: defineMessage({ defaultMessage: 'Property Management' }),
+    tooltip: defineMessage({ defaultMessage: 'Property management allows for assigning units within a <venueSingular></venueSingular>, offering a personalized experience for users. It facilitates network segmentation, enabling customized access and security for different spaces or tenants\' identities.' }),
     steps: [
       { label: defineMessage({ defaultMessage: 'Enable <b>property management</b> at the <venueSingular></venueSingular> where you intend to segment the identities' }) },
       { label: defineMessage({ defaultMessage: 'Select / create an <b>identity group</b> associated with a <b>DPSK service</b> in this property' }) }

@@ -1,5 +1,8 @@
 import { Col, Row, Typography  }     from 'antd'
+import { isNil }                     from 'lodash'
 import { useIntl, FormattedMessage } from 'react-intl'
+
+import { Tooltip } from '@acx-ui/components'
 
 import { DiagramGallery }                            from './DiagramGallery'
 import { messageMapping, prerequisitionListMessage } from './messageMapping'
@@ -24,6 +27,7 @@ export const Prerequisition = () => {
                 return <li key={index}>
                   <PrerequisitionFormBlock
                     title={item.title}
+                    tooltip={item.tooltip}
                     steps={item.steps}
                   />
                 </li>
@@ -42,14 +46,20 @@ export const Prerequisition = () => {
 
 const PrerequisitionFormBlock = (props: {
   title: { defaultMessage: string; },
+  tooltip?: { defaultMessage: string; },
   steps: { label: { defaultMessage: string; }; }[]
 }) => {
   const { $t } = useIntl()
-  const { title, steps } = props
+  const { title, tooltip, steps } = props
 
   return <Row>
     <Col span={22}>
-      <Typography.Title level={4}>{$t(title)}</Typography.Title>
+      <Typography.Title level={4}>
+        {$t(title)}
+        {!isNil(tooltip) && <Tooltip.Question
+          title={$t(tooltip)}
+          iconStyle={UI.questionIconStyle}/>}
+      </Typography.Title>
       <UI.PrerequisiteListItemContiner>
         {steps.map((item, index) => <li key={index}>
           <Typography.Text>

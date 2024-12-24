@@ -1,5 +1,11 @@
 import styled from 'styled-components'
 
+export const questionIconStyle = {
+  width: '16px', height: '16px',
+  marginLeft: '4px',
+  verticalAlign: 'text-top'
+}
+
 export const PrerequisiteListContiner = styled.div`
   padding: 10px;
 
