@@ -1,5 +1,7 @@
 import { TableChangePayload } from '../../useTableQuery'
 
+import { ProfileLanApActivations, ProfileLanVenueActivations } from './common'
+
 export interface ClientIsolationClient {
   mac: string
   description?: string
@@ -49,21 +51,8 @@ export interface ClientIsolationViewModel {
   venueIds?: string[]
   venueCount?: number
   activations?: ClientIsolationActivations[]
-  venueActivations: ClientIsolationVenueActivations[]
-  apActivations: ClientIsolationApActivations[]
-}
-
-export interface ClientIsolationVenueActivations {
-  venueId: string
-  apModel?: string
-  apSerialNumbers: string[],
-  portId: number
-}
-
-export interface ClientIsolationApActivations {
-  venueId: string
-  apSerialNumber: string,
-  portId: number
+  venueActivations: ProfileLanVenueActivations[]
+  apActivations: ProfileLanApActivations[]
 }
 
 export interface ClientIsolationTableChangePayload extends TableChangePayload {

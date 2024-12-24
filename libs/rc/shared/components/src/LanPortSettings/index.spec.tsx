@@ -110,7 +110,8 @@ const selectedPortCaps = {
   supportDisable: true,
   trunkPortOnly: false,
   untagId: 1,
-  vlanMembers: '1-4094'
+  vlanMembers: '1-4094',
+  vni: 1
 }
 
 const selectedModel = {

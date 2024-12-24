@@ -1,5 +1,8 @@
 import { Radius }                                                             from '../../models'
 import { EthernetPortAuthType, EthernetPortSupplicantType, EthernetPortType } from '../../models/EthernetPortProfileEnum'
+import { APLanPortSettings }                                                  from '../ap'
+
+import { ProfileLanApActivations, ProfileLanVenueActivations } from './common'
 
 export interface EthernetPortProfileViewData {
     id: string
@@ -19,9 +22,9 @@ export interface EthernetPortProfileViewData {
     enableAccountingProxy?: boolean
     apSerialNumbers: string[]
     venueIds: string[]
-    venueActivations?: VenueActivation[]
-    apActivations?: ApActivation[]
-    apPortOverwrites?: EthernetPortOverwrites[]
+    venueActivations?: ProfileLanVenueActivations[]
+    apActivations?: ProfileLanApActivations[]
+    apPortOverwrites?: APLanPortSettings[]
   }
 
 export interface EthernetPortProfile {
@@ -41,7 +44,7 @@ export interface EthernetPortProfile {
     enableAuthProxy?: boolean
     enableAccountingProxy?: boolean
     apSerialNumbers?: string[]
-    venueActivations?: VenueActivation[]
+    venueActivations?: ProfileLanVenueActivations[]
   }
 
 export interface EthernetPortProfileFormType extends EthernetPortProfile {
@@ -52,24 +55,6 @@ export interface EthernetPortProfileFormType extends EthernetPortProfile {
     accountingEnabled?: boolean
   }
 
-export interface EthernetPortOverwrites {
-  portId?: number
-  enabled?: boolean
-  overwriteUntagId?: number
-  overwriteVlanMembers?: string
-}
-
-export interface VenueActivation {
-  venueId?: string
-  apModel?: string
-  portId?: number
-}
-
-export interface ApActivation {
-  venueId?: string
-  apSerialNumber?: string
-  portId?: number
-}
 
 export interface EthernetPortSupplicantOptions {
   type: EthernetPortSupplicantType

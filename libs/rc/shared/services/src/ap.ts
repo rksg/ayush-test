@@ -1047,7 +1047,7 @@ export const apApi = baseApApi.injectEndpoints({
               }
             }))
           const softGreActivateRequests = apSettings?.lanPorts
-            ?.filter(l => l.softGreProfileId && (l.softGreTunnelEnable === true) && (l.enabled === true))
+            ?.filter(l => l.softGreProfileId && (l.softGreEnabled === true) && (l.enabled === true))
             .map(l => ({
               params: {
                 venueId: params!.venueId,
@@ -1057,7 +1057,7 @@ export const apApi = baseApApi.injectEndpoints({
               },
               payload: {
                 dhcpOption82Enabled: l.dhcpOption82?.dhcpOption82Enabled,
-                dhcpOption82Settings: l.dhcpOption82?.dhcpOption82Settings
+                dhcpOption82Settings: (l.dhcpOption82?.dhcpOption82Enabled)? l.dhcpOption82?.dhcpOption82Settings : undefined
               }
             }))
 
