@@ -5,7 +5,7 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 import { get }            from '@acx-ui/config'
 import { TenantNavigate } from '@acx-ui/react-router-dom'
 import {
-  OpsIds,
+  RbacOpsIds,
   RolesEnum as Role,
   ScopeKeys
 } from '@acx-ui/types'
@@ -48,9 +48,9 @@ export const SHOW_WITHOUT_RBAC_CHECK = 'SHOW_WITHOUT_RBAC_CHECK'
 interface FilterItemType {
   scopeKey?: ScopeKeys,
   key?: string,
-  rbacOpsId?: OpsIds
+  rbacOpsId?: RbacOpsIds
   props?: {
-    rbacOpsId?: OpsIds,
+    rbacOpsId?: RbacOpsIds,
     scopeKey?: ScopeKeys,
     key?: string
   }
@@ -88,12 +88,12 @@ export const getShowWithoutRbacCheckKey = (id:string) => {
  * DO NOT use hasAccess. It will be private after RBAC feature release.
  */
 
-export function hasAccess (props?: { opsIds?: OpsIds, roles?: Role[] }) {
+export function hasAccess (props?: { rbacOpsIds?: RbacOpsIds, roles?: Role[] }) {
   if (get('IS_MLISA_SA')) return true
   // measure to permit all undefined id for admins
   const { rbacOpsApiEnabled } = getUserProfile()
   if(rbacOpsApiEnabled) {
-    return hasAllowedOperations(props?.opsIds || [])
+    return hasAllowedOperations(props?.rbacOpsIds || [])
   } else {
     return hasRoles(props?.roles || [Role.PRIME_ADMIN, Role.ADMINISTRATOR, Role.DPSK_ADMIN])
   }
@@ -102,22 +102,22 @@ export function hasAccess (props?: { opsIds?: OpsIds, roles?: Role[] }) {
 /**
  * Checks if the user has the required RBAC permissions for the allowed operations API.
  *
- * @param opsId The operational IDs (OpsIds) to validate against the user's profile.
+ * @param opsId The operational IDs (RbacOpsIds) to validate against the user's profile.
  *
  * OR  -> If it's a single operation or any single scope in the list matches, access is granted (e.g., `['DELETE:/venues', 'DELETE:/networks']`).
  * AND ->  If the `opsId` is an array, all elements must match (e.g., `[['DELETE:/venues', 'DELETE:/networks']]`).
  * Ignore check -> If `SHOW_WITHOUT_RBAC_CHECK` is included, access is automatically granted (e.g., `[[SHOW_WITHOUT_RBAC_CHECK]]`).
  */
-function hasAllowedOperations (opsId: OpsIds) {
+function hasAllowedOperations (rbacOpsIds: RbacOpsIds) {
   const { rbacOpsApiEnabled, allowedOperations } = getUserProfile()
   if (rbacOpsApiEnabled) {
-    return opsId?.some(opsId => {
-      if (Array.isArray(opsId)) {
-        return opsId.every(i => allowedOperations.includes(i))
-      } else if (opsId?.includes(SHOW_WITHOUT_RBAC_CHECK)) {
+    return rbacOpsIds?.some(rbacOpsIds => {
+      if (Array.isArray(rbacOpsIds)) {
+        return rbacOpsIds.every(i => allowedOperations.includes(i))
+      } else if (rbacOpsIds?.includes(SHOW_WITHOUT_RBAC_CHECK)) {
         return true
       } else {
-        return allowedOperations.includes(opsId)
+        return allowedOperations.includes(rbacOpsIds)
       }
     })
   }
@@ -156,7 +156,7 @@ export function hasPermission (props?: {
     permission?: RaiPermission,
     // R1
     scopes?: ScopeKeys,
-    rbacOpsIds?: OpsIds,
+    rbacOpsIds?: RbacOpsIds,
     roles?: Role[]
 }): boolean {
   const { scopes = [], rbacOpsIds, permission, roles } = props || {}
@@ -165,16 +165,16 @@ export function hasPermission (props?: {
   } else {
     const { abacEnabled, isCustomRole, rbacOpsApiEnabled } = getUserProfile()
     if(rbacOpsApiEnabled) {
-      return hasAccess({ opsIds: rbacOpsIds })
+      return hasAccess({ rbacOpsIds: rbacOpsIds })
     } if(!abacEnabled) {
-      return hasAccess({ opsIds: undefined, roles })
+      return hasAccess({ rbacOpsIds: undefined, roles })
     } else {
       if(isCustomRole){
         const isScopesValid = scopes.length > 0 ? hasScope(scopes): true
         const isOperationsValid = rbacOpsIds ? hasAllowedOperations(rbacOpsIds): true
         return !!(isScopesValid && isOperationsValid)
       } else {
-        return hasAccess({ opsIds: rbacOpsIds, roles })
+        return hasAccess({ rbacOpsIds: rbacOpsIds, roles })
       }
     }
   }
@@ -246,7 +246,7 @@ export function hasCrossVenuesPermission (props?: Permission) {
 export function AuthRoute (props: {
     scopes?: ScopeKeys,
     children: ReactElement,
-    rbacOpsId?: OpsIds,
+    rbacOpsId?: RbacOpsIds,
     requireCrossVenuesPermission?: boolean | Permission
   }) {
   const { scopes = [], children, requireCrossVenuesPermission, rbacOpsId } = props
@@ -275,7 +275,7 @@ export function WrapIfAccessible ({ id, wrapper, children }: {
   wrapper: (children: React.ReactElement) => React.ReactElement,
   children: React.ReactElement
 }) {
-  return hasAccess({ opsIds: [id] }) ? wrapper(children) : children
+  return hasAccess({ rbacOpsIds: [id] }) ? wrapper(children) : children
 }
 WrapIfAccessible.defaultProps = { id: undefined }
 

@@ -86,12 +86,12 @@ describe('hasAccess', () => {
   describe('when id in allowedOperations', () => {
     it('allow when operation in allowedOperations', () => {
       setRole({ role: RolesEnum.READ_ONLY, rbacOpsApiEnabled: true })
-      expect(hasAccess({ opsIds: ['GET:/networks'] })).toBe(true)
+      expect(hasAccess({ rbacOpsIds: ['GET:/networks'] })).toBe(true)
     })
 
     it('block when operation NOT in allowedOperations', () => {
       setRole({ role: RolesEnum.READ_ONLY, rbacOpsApiEnabled: true })
-      expect(hasAccess({ opsIds: ['GET:/venues'] })).toBe(false)
+      expect(hasAccess({ rbacOpsIds: ['GET:/venues'] })).toBe(false)
     })
   })
 })

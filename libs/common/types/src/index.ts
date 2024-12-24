@@ -73,7 +73,7 @@ export enum EdgeScopes {
 // eslint-disable-next-line max-len
 export type ScopeKeys = (WifiScopes|SwitchScopes|EdgeScopes|(WifiScopes|SwitchScopes|EdgeScopes)[])[]
 
-export type OpsIds = (string | string[])[]
+export type RbacOpsIds = (string | string[])[]
 
 export interface ITimeZone {
   dstOffset: number

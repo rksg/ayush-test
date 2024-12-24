@@ -2,7 +2,7 @@ import { useCallback, useRef } from 'react'
 
 import { ButtonProps as AntButtonProps, TooltipProps } from 'antd'
 
-import { OpsIds, ScopeKeys } from '@acx-ui/types'
+import { RbacOpsIds, ScopeKeys } from '@acx-ui/types'
 
 import { Tooltip } from '../Tooltip'
 
@@ -11,7 +11,7 @@ import * as UI from './styledComponents'
 export interface ButtonProps extends Omit<AntButtonProps, 'type'> {
   type?: 'default' | 'primary' | 'link'
   scopeKey?: ScopeKeys
-  rbacOpsId?: OpsIds
+  rbacOpsId?: RbacOpsIds
 }
 
 export function Button ({ type = 'default', scopeKey, rbacOpsId, ...props }: ButtonProps) {
