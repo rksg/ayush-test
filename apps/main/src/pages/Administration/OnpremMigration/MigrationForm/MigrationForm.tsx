@@ -14,12 +14,12 @@ import {
   useAddZdMigrationMutation
 } from '@acx-ui/rc/services'
 import {
-  CatchErrorResponse,
   MigrationActionTypes,
   MigrationContextType,
   TaskContextType
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { CatchErrorResponse }         from '@acx-ui/utils'
 
 import MigrationContext , { mainReducer } from '../MigrationContext'
 

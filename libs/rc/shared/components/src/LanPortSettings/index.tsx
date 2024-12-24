@@ -20,6 +20,8 @@ import {
   EthernetPortProfileViewData,
   EthernetPortType,
   LanPort,
+  SoftGreProfileDispatcher,
+  SoftGreState,
   useConfigTemplate,
   VenueLanPorts,
   WifiApSetting,
@@ -35,8 +37,9 @@ import {
 import { DhcpOption82Settings }  from '../DhcpOption82Settings'
 import { SoftGRETunnelSettings } from '../SoftGRETunnelSettings'
 
-import EthernetPortProfileDrawer from './EthernetPortProfileDrawer'
-import EthernetPortProfileInput  from './EthernetPortProfileInput'
+import ClientIsolationSettingsFields from './ClientIsolationSettingsFields'
+import EthernetPortProfileDrawer     from './EthernetPortProfileDrawer'
+import EthernetPortProfileInput      from './EthernetPortProfileInput'
 
 export const ConvertPoeOutToFormData = (
   lanPortsData: WifiApSetting | VenueLanPorts,
@@ -72,6 +75,7 @@ export function LanPortSettings (props: {
   useVenueSettings?: boolean,
   venueId?: string,
   serialNumber?: string
+  dispatch?: React.Dispatch<SoftGreProfileDispatcher>
 }) {
   const { $t } = useIntl()
   const {
@@ -86,7 +90,8 @@ export function LanPortSettings (props: {
     readOnly,
     useVenueSettings,
     venueId,
-    serialNumber
+    serialNumber,
+    dispatch
   } = props
 
   const [ drawerVisible, setDrawerVisible ] = useState(false)
@@ -98,30 +103,17 @@ export function LanPortSettings (props: {
   const { isTemplate } = useConfigTemplate()
   const ethernetPortProfileId = Form.useWatch( ['lan', index, 'ethernetPortProfileId'] ,form)
   const isEthernetPortEnable = Form.useWatch( ['lan', index, 'enabled'] ,form)
-  const softGreTunnelFieldName = ['lan', index, 'softGreTunnelEnable']
+  const softGreTunnelFieldName = ['lan', index, 'softGreEnabled']
   const isSoftGreTunnelEnable = Form.useWatch(softGreTunnelFieldName, form)
   const [currentEthernetPortData, setCurrentEthernetPortData] =
     useState<EthernetPortProfileViewData>()
   const [ethernetProfileCreateId, setEthernetProfileCreateId] = useState<String>()
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
+  const isEthernetClientIsolationEnabled =
+    useIsSplitOn(Features.WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE)
+
   const isUnderAPNetworking = !!serialNumber
-
-  // const isSoftGRETunnelSettingReadonly = () => {
-  //   if(!isUnderAPNetworking){
-  //     return !isEthernetPortEnable
-  //   }
-  //   // TODO Add readonly condition here
-  //   return false
-  // }
-
-  // const isDhcpOption82SettingsReadonly = () => {
-  //   if (!isUnderAPNetworking) {
-  //     return false
-  //   }
-  //   // TODO Add readonly condition here
-  //   return false
-  // }
 
   // Non ethernet port profile
   const handlePortTypeChange = (value: string, index:number) => {
@@ -238,7 +230,20 @@ export function LanPortSettings (props: {
           || !selectedPortCaps?.supportDisable
           || hasVni
         }
-        onChange={() => onChangedByCustom('enabled')}
+        onChange={(value) => {
+          onChangedByCustom('enabled')
+          value ?
+            dispatch && dispatch({
+              state: SoftGreState.TurnOnLanPort,
+              portId: selectedModel.lanPorts![index].portId,
+              index
+            }) :
+            dispatch && dispatch({
+              state: SoftGreState.TurnOffLanPort,
+              portId: selectedModel.lanPorts![index].portId,
+              index
+            })
+        }}
       />}
     />
     <Form.Item
@@ -254,15 +259,18 @@ export function LanPortSettings (props: {
               <Form.Item
                 name={['lan', index, 'ethernetPortProfileId']}
                 label={$t({ defaultMessage: 'Ethernet Port Profile' })}
-                children={<Select
-                  disabled={readOnly
-                         || isDhcpEnabled
-                         || !lan?.enabled
-                         || hasVni}
-                  options={ethernetPortDropdownItems}
-                  style={{ width: '250px' }}
-                  onChange={() => onChangedByCustom('ethernetPortProfileId')}
-                />} />
+                children={
+                  <Select
+                    disabled={readOnly
+                          || isDhcpEnabled
+                          || !lan?.enabled
+                          || hasVni}
+                    options={ethernetPortDropdownItems}
+                    style={{ width: '260px' }}
+                    onChange={() => onChangedByCustom('ethernetPortProfileId')}
+                  />
+                }
+              />
               <EthernetPortProfileDrawer
                 updateInstance={(createId) => {
                   setEthernetProfileCreateId(createId)
@@ -274,20 +282,20 @@ export function LanPortSettings (props: {
           currentEthernetPortData={currentEthernetPortData}
           currentIndex={index}
           onGUIChanged={onGUIChanged}
-          isEditable={!!serialNumber} />
-        {
-          isEthernetPortProfileEnabled && isEthernetSoftgreEnabled &&
-            (<>
-              <SoftGRETunnelSettings
-                readonly={!isEthernetPortEnable}
-                index={index}
-                softGreProfileId={selectedPortCaps.softGreProfileId ?? ''}
-                softGreTunnelEnable={isSoftGreTunnelEnable}
-                onGUIChanged={onGUIChanged}
-              />
-              {isSoftGreTunnelEnable &&
+          isEditable={!readOnly && !!serialNumber} />
+        {isEthernetSoftgreEnabled && <>
+          <SoftGRETunnelSettings
+            readonly={!isEthernetPortEnable || (readOnly ?? false)}
+            index={index}
+            softGreProfileId={selectedPortCaps.softGreProfileId ?? ''}
+            softGreTunnelEnable={isSoftGreTunnelEnable}
+            portId={selectedModel.lanPorts![index].portId}
+            onGUIChanged={onGUIChanged}
+            dispatch={dispatch}
+          />
+          {isSoftGreTunnelEnable &&
                 <DhcpOption82Settings
-                  readonly={false}
+                  readonly={readOnly ?? false}
                   index={index}
                   onGUIChanged={onGUIChanged}
                   isUnderAPNetworking={isUnderAPNetworking}
@@ -295,9 +303,16 @@ export function LanPortSettings (props: {
                   venueId={venueId}
                   portId={selectedModel.lanPorts![index].portId}
                   apModel={selectedModelCaps.model}
+                  dispatch={dispatch}
                 />
-              }
-            </>)
+          }
+        </>}
+        {isEthernetClientIsolationEnabled &&
+          <ClientIsolationSettingsFields
+            index={index}
+            onGUIChanged={onGUIChanged}
+            readOnly={readOnly}
+          />
         }
       </>) :
       (<>

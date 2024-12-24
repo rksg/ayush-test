@@ -2,7 +2,7 @@
 import { QueryReturnValue, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { reduce }                                                               from 'lodash'
 
-import { Filter }               from '@acx-ui/components'
+import { Filter }   from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -84,7 +84,9 @@ import {
   SwitchInformation,
   FeatureSetResponse,
   CompatibilityResponse,
-  EthernetPortProfileViewData
+  EthernetPortProfileViewData,
+  SoftGreUrls,
+  SoftGreViewData
 } from '@acx-ui/rc/utils'
 import { baseApApi }                    from '@acx-ui/store'
 import { MaybePromise, RequestPayload } from '@acx-ui/types'
@@ -906,10 +908,13 @@ export const apApi = baseApApi.injectEndpoints({
       },
       providesTags: [{ type: 'Ap', id: 'LanPorts' }]
     }),
-
-    getApLanPortsWithEthernetProfiles: build.query<WifiApSetting | null, RequestPayload>({
-      async queryFn ({ params, enableRbac, enableEthernetProfile },
-        _queryApi, _extraOptions, fetchWithBQ) {
+    getApLanPortsWithActivatedProfiles: build.query<WifiApSetting | null, RequestPayload>({
+      async queryFn ({
+        params, enableRbac,
+        enableEthernetProfile,
+        enableSoftGreOnEthernet
+      },
+      _queryApi, _extraOptions, fetchWithBQ) {
         if (!params?.serialNumber) {
           return Promise.resolve({ data: null } as QueryReturnValue<
             null,
@@ -924,46 +929,81 @@ export const apApi = baseApApi.injectEndpoints({
         )
         let apLanPorts = apLanPortSettings.data as WifiApSetting
 
-        if (!enableEthernetProfile) {
-          return apLanPortSettings.data
-            ? { data: apLanPorts }
-            : { error: apLanPortSettings.error } as QueryReturnValue<WifiApSetting,
-            FetchBaseQueryError,
-            FetchBaseQueryMeta>
-        }
+        if (enableEthernetProfile) {
+          const ethReq = {
+            ...createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList),
+            body: JSON.stringify({
+              pageSize: 1000
+            })
+          }
 
-        const ethReq = {
-          ...createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList),
-          body: JSON.stringify({
-            filters: {
-              apSerialNumbers: [params.serialNumber]
-            },
-            page: 1,
-            pageSize: 10
-          })
-        }
+          const ethListQuery = await fetchWithBQ(ethReq)
+          const ethList = ethListQuery.data as TableResult<EthernetPortProfileViewData>
+          if (ethList.data && apLanPorts.lanPorts) {
+            const apReq = createHttpRequest(urlsInfo.getAp, params)
+            const apQuery = await fetchWithBQ(apReq)
+            const apData = apQuery.data as ApDetails
+            const apModel = apData.model
+            const apActivateEths = ethList.data.filter(eth => eth.apSerialNumbers?.includes(params.serialNumber!)) ?? []
+            const venueActivateEths = ethList.data.filter(eth => eth.venueIds?.includes(params.venueId!)) ?? []
+            for (let eth of venueActivateEths) {
+              const venuePorts = eth.venueActivations?.filter(
+                v => v.venueId === params.venueId && v.apModel === apModel) ?? []
+              for (let venuePort of venuePorts) {
+                let venueTargetPort = apLanPorts.lanPorts?.find(l => l.portId === venuePort.portId?.toString())
+                if (venueTargetPort) {
+                  venueTargetPort.ethernetPortProfileId = eth.id
+                }
+              }
+            }
 
-        const ethListQuery = await fetchWithBQ(ethReq)
-        const ethList = ethListQuery.data as TableResult<EthernetPortProfileViewData>
-        if (ethList.data && apLanPorts.lanPorts) {
-          for (let eth of ethList.data) {
-            const port = eth.apActivations?.find(ap => ap.apSerialNumber === params.serialNumber)
-            let targetPort = port && apLanPorts.lanPorts
-              ?.find(l => l.portId?.toString() === port.portId?.toString())
-            if (targetPort) {
-              targetPort.ethernetPortProfileId = eth.id
+            for (let eth of apActivateEths) {
+              const ports = eth.apActivations?.filter(ap => ap.apSerialNumber === params.serialNumber) ?? []
+              for (let port of ports) {
+                let targetPort = apLanPorts.lanPorts
+                  ?.find(l => l.portId === port.portId?.toString())
+                if (targetPort) {
+                  targetPort.ethernetPortProfileId = eth.id
+                }
+              }
             }
           }
         }
 
-        return apLanPorts
+        if (enableSoftGreOnEthernet) {
+          const softGreReq = {
+            ...createHttpRequest(SoftGreUrls.getSoftGreViewDataList),
+            body: JSON.stringify({
+              filters: {
+                'apActivations.apSerialNumber': [params.serialNumber]
+              },
+              pageSize: 1000
+            })
+          }
+
+          const softGreListQuery = await fetchWithBQ(softGreReq)
+          const softGreList = softGreListQuery.data as TableResult<SoftGreViewData>
+          if (softGreList.data && apLanPorts.lanPorts) {
+            for (let softGre of softGreList.data) {
+              const port = softGre.apActivations?.find(ap => ap.apSerialNumber === params.serialNumber)
+              let targetPort = port && apLanPorts.lanPorts
+                ?.find(l => l.portId?.toString() === port.portId?.toString())
+              if (targetPort) {
+                targetPort.softGreProfileId = softGre.id
+              }
+            }
+          }
+        }
+
+        return apLanPortSettings.data
           ? { data: apLanPorts }
           : { error: apLanPortSettings.error } as QueryReturnValue<WifiApSetting,
-        FetchBaseQueryError,
-        FetchBaseQueryMeta>
+            FetchBaseQueryError,
+            FetchBaseQueryMeta>
       },
       providesTags: [{ type: 'Ap', id: 'LanPorts' }]
     }),
+
     updateApLanPorts: build.mutation<WifiApSetting, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
@@ -1003,6 +1043,20 @@ export const apApi = baseApApi.injectEndpoints({
                 overwriteVlanMembers: l.vlanMembers
               }
             }))
+          const softGreActivateRequests = apSettings?.lanPorts
+            ?.filter(l => l.softGreProfileId && (l.softGreEnabled === true) && (l.enabled === true))
+            .map(l => ({
+              params: {
+                venueId: params!.venueId,
+                serialNumber: params!.serialNumber,
+                portId: l.portId,
+                policyId: l.softGreProfileId
+              },
+              payload: {
+                dhcpOption82Enabled: l.dhcpOption82?.dhcpOption82Enabled,
+                dhcpOption82Settings: (l.dhcpOption82?.dhcpOption82Enabled)? l.dhcpOption82?.dhcpOption82Settings : undefined
+              }
+            }))
 
           const lanPortSpecificSettings = {
             params: {
@@ -1021,6 +1075,9 @@ export const apApi = baseApApi.injectEndpoints({
 
           await batchApi(EthernetPortProfileUrls.updateEthernetPortOverwritesByApPortId,
             overwriteRequests!, fetchWithBQ, customHeaders)
+
+          await batchApi(SoftGreUrls.activateSoftGreProfileOnAP,
+            softGreActivateRequests!, fetchWithBQ, customHeaders)
 
           const res = await fetchWithBQ({
             ...(createHttpRequest(WifiRbacUrlsInfo.updateApLanPortSpecificSettings,
@@ -1633,7 +1690,7 @@ export const {
   useStartPacketCaptureMutation,
   useGetDefaultApLanPortsQuery,
   useGetApLanPortsQuery,
-  useGetApLanPortsWithEthernetProfilesQuery,
+  useGetApLanPortsWithActivatedProfilesQuery,
   useUpdateApLanPortsMutation,
   useUpdateApEthernetPortsMutation,
   useResetApLanPortsMutation,
