@@ -187,6 +187,12 @@ function Table <RecordType extends Record<string, any>> ({
   const updateSearch = _.debounce(() => {
     onFilter.current?.(filterValues, { searchString: searchValue }, groupByValue)
   }, 1000)
+  const debouncedOnChangeFilter = _.debounce((filterValues, searchValue, groupByValue) => {
+    if (!_.isEmpty(filterValues) || !_.isEmpty(searchValue)) {
+      onChangeFilter?.({ filterValues, searchValue, groupByValue })
+    }
+  }, 300)
+
   const filterWidth = filterableWidth || 200
   const searchWidth = searchableWidth || 292
 
@@ -196,6 +202,10 @@ function Table <RecordType extends Record<string, any>> ({
     if (stickyHeaders === undefined) stickyHeaders = true
     if (stickyPagination === undefined) stickyPagination = true
   }
+
+  useEffect(() => {
+    onChangeFilter?.({ filterValues, searchValue, groupByValue }, true)
+  }, [])
 
   useEffect(() => {
     onFilter.current = onFilterChange
@@ -209,8 +219,9 @@ function Table <RecordType extends Record<string, any>> ({
   }, [searchValue]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (!_.isEmpty(filterValues) || !_.isEmpty(searchValue)) { ////debounced
-      onChangeFilter?.({ filterValues, searchValue, groupByValue })
+    debouncedOnChangeFilter(filterValues, searchValue, groupByValue)
+    return () => {
+      debouncedOnChangeFilter.cancel()
     }
   }, [filterValues, searchValue, groupByValue])
 

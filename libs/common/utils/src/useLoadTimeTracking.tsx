@@ -1,14 +1,19 @@
 import { createContext, useContext, useEffect, useState, useRef } from 'react'
 
-
 import { SerializedError }     from '@reduxjs/toolkit'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import { FilterValue }         from 'antd/lib/table/interface'
 import _                       from 'lodash'
 import moment                  from 'moment-timezone'
 
-// export const TRACKING_INTERVAL = 1800_000
-// export const TIME_THRESHOLD_OF_PAGE = 1800_000
-export const TIME_THRESHOLD_OF_COMPONENT = 10_000 //300_000
+import { AnalyticsFilter } from './types/analyticsFilter'
+// import { Filter } from '../../components/src/components/Table/filters'
+
+const TIME_THRESHOLD_OF_COMPONENT = 10_000 //300_000
+const LOAD_TIME = {
+  NORMAL: 1_000,
+  SLOW: 7_000
+}
 
 interface QueryState {
   isSuccess: boolean;
@@ -24,11 +29,13 @@ type LoadTimes = {
   }
 }
 
-type DateFilter = {
-  range: string,
-  startDate: string,
-  endDate: string
+type TableFilter = {
+  filterValues?: Record<string, FilterValue|null>,
+  searchValue?: string,
+  groupByValue?: string | undefined
 }
+
+type Filters = Partial<TableFilter> & Partial<AnalyticsFilter>
 
 enum LoadTimeStatus {
   NORMAL = 'Normal',
@@ -40,13 +47,13 @@ export enum TrackingPages {
   DASHBOARD = 'Dashboard',
   WIRELESS_CLIENTS = 'Wireless Clients List',
   WIRED_CLIENTS = 'Wired Clients List',
-  VENUE_DASHBOARD = 'Venue Dashboard',
+  VENUES = 'Venues',
   EVENTS = 'Events'
 }
 
 export const trackingItems = {
   [TrackingPages.DASHBOARD]: {
-    ORGANIZATION_DROPDOWN: '',
+    ORGANIZATION_DROPDOWN: 'VenueFilter',
     ALARMS: 'AlarmWidgetV2',
     INCIDENTS: 'IncidentsDashboardv2',
     CLIENT_EXPERIENCE: 'ClientExperience',
@@ -79,26 +86,28 @@ export const trackingItems = {
   [TrackingPages.WIRED_CLIENTS]: {
     WiredClientsTable: 'WiredClientsTable'
   },
-  [TrackingPages.VENUE_DASHBOARD]: {
-    VenueAlarmWidget: 'VenueAlarmWidget',
-    IncidentBySeverity: 'IncidentBySeverity',
-    VenueDevicesWidget: 'VenueDevicesWidget',
-    VenueHealthWidget: 'VenueHealthWidget',
-    FloorPlan: 'FloorPlan', ////TODO:should check
-    AP_TABS: {
-      TrafficByVolumeWidget: 'TrafficByVolumeWidget',
-      NetworkHistory: 'NetworkHistory',
-      ConnectedClientsOverTime: 'ConnectedClientsOverTime',
-      TopApplicationsByTraffic: 'TopApplicationsByTraffic',
-      TopSSIDsByTrafficWidget: 'TopSSIDsByTrafficWidget',
-      TopSSIDsByClientWidget: 'TopSSIDsByClientWidget'
-    },
-    SWITCH_TABS: {
-      SwitchesTrafficByVolume: 'SwitchesTrafficByVolume',
-      TopSwitchesByPoEUsageWidget: 'TopSwitchesByPoEUsageWidget',
-      TopSwitchesByTrafficWidget: 'TopSwitchesByTrafficWidget',
-      TopSwitchesByErrorWidget: 'TopSwitchesByErrorWidget',
-      TopSwitchModelsWidget: 'TopSwitchModelsWidget'
+  [TrackingPages.VENUES]: {
+    OVERVIEW: {
+      VenueAlarmWidget: 'VenueAlarmWidget',
+      IncidentBySeverity: 'IncidentBySeverity',
+      VenueDevicesWidget: 'VenueDevicesWidget',
+      VenueHealthWidget: 'VenueHealthWidget',
+      FloorPlan: 'FloorPlan', ////TODO:should check
+      AP_TABS: {
+        TrafficByVolumeWidget: 'TrafficByVolumeWidget',
+        NetworkHistory: 'NetworkHistory',
+        ConnectedClientsOverTime: 'ConnectedClientsOverTime',
+        TopApplicationsByTraffic: 'TopApplicationsByTraffic',
+        TopSSIDsByTrafficWidget: 'TopSSIDsByTrafficWidget',
+        TopSSIDsByClientWidget: 'TopSSIDsByClientWidget'
+      },
+      SWITCH_TABS: {
+        SwitchesTrafficByVolume: 'SwitchesTrafficByVolume',
+        TopSwitchesByPoEUsageWidget: 'TopSwitchesByPoEUsageWidget',
+        TopSwitchesByTrafficWidget: 'TopSwitchesByTrafficWidget',
+        TopSwitchesByErrorWidget: 'TopSwitchesByErrorWidget',
+        TopSwitchModelsWidget: 'TopSwitchModelsWidget'
+      }
     }
   },
   [TrackingPages.EVENTS]: {
@@ -107,8 +116,8 @@ export const trackingItems = {
 }
 
 const getLoadTimeStatus = (time: number): string => {
-  if (time < 1000) return LoadTimeStatus.NORMAL
-  if (time <= 7000) return LoadTimeStatus.SLOW
+  if (time < LOAD_TIME.NORMAL) return LoadTimeStatus.NORMAL
+  if (time <= LOAD_TIME.SLOW) return LoadTimeStatus.SLOW
   return LoadTimeStatus.UNACCEPTABLE
 }
 
@@ -128,12 +137,29 @@ const getLocalTime = () => {
   return moment().tz(localTimezone).format('YYYY-MM-DD HH:mm:ss')
 }
 
-export const getTrackingItemsCount = (page: TrackingPages, hasFilters?: boolean) => {
-  const getItemsForPage = <T extends TrackingPages>(pageKey: T) => {
+export const getTrackingItemsCount = (
+  page: TrackingPages, subTab?: string, hasFilters?: boolean
+) => {
+  const getItemsForPage = <T extends TrackingPages>(pageKey: T, subTab?: string) => {
     const activeTab = page === TrackingPages.DASHBOARD
       ? (localStorage.getItem('dashboard-tab') || 'ap')
-      : (page === TrackingPages.VENUE_DASHBOARD ? (localStorage.getItem('venue-tab') || 'ap') : '')
-    const pageItems = trackingItems[pageKey]
+      : (page === TrackingPages.VENUES ? (localStorage.getItem('venue-tab') || 'ap') : '')
+
+    const getPageItems = () => {
+      const pageItems = trackingItems[pageKey]
+
+      if (!subTab) {
+        return pageItems
+      }
+
+      if (subTab in pageItems) {
+        return pageItems[subTab as keyof typeof pageItems]
+      }
+
+      return {}
+    }
+
+    const pageItems = getPageItems()
 
     return Object.keys(pageItems).reduce((result, key) => {
       const itemKey = key as keyof typeof pageItems
@@ -160,9 +186,9 @@ export const getTrackingItemsCount = (page: TrackingPages, hasFilters?: boolean)
     case TrackingPages.DASHBOARD:
     case TrackingPages.WIRELESS_CLIENTS:
     case TrackingPages.WIRED_CLIENTS:
-    case TrackingPages.VENUE_DASHBOARD:
+    case TrackingPages.VENUES:
     case TrackingPages.EVENTS:
-      const items = getItemsForPage(page)
+      const items = getItemsForPage(page, subTab)
       const filteredItems = Object.keys(items).filter(key => {
         const item = items[key]
         return hasFilters ? item.hasFilter === true : true
@@ -178,57 +204,62 @@ export const LoadTimeContext
 
 export interface LoadTimeContextType {
   recordLoadTime: (name: string, time: number, isUnfulfilled: boolean) => void
-  onChangeFilter: (filter: any) => void //(filter: DateFilter) => void
-  currentFilters?: DateFilter
+  onChangeFilter: (updatedFilter: Filters, isInit?: boolean) => void
+  setSubTab: (name: string) => void
   pageLoadStart: number
   isFilterChanged?: boolean
 }
 
-export const LoadTimeProvider = ({ page, children, filters }: {
-  page: TrackingPages, children: React.ReactNode, filters?: DateFilter
+export const LoadTimeProvider = ({ page, children }: {
+  page: TrackingPages, children: React.ReactNode, filters?: Filters
 }) => {
   const isLoadTimeSet = useRef(false)
   const [pageLoadStart, setPageLoadStart] = useState(getCurrentTime())
+  const [subTab, setSubTab] = useState('')
   const [loadTimes, setLoadTimes] = useState<LoadTimes>({})
-  const [currentFilters, setCurrentFilters] = useState({} as unknown as DateFilter)
+  const [currentFilters, setCurrentFilters] = useState({} as unknown as Filters)
   const [isFilterChanged, setIsFilterChanged] = useState(false)
 
   const recordLoadTime = (name: string, time: number, isUnfulfilled = false) => {
     setLoadTimes((prev) => ({ ...prev, [name]: { time, isUnfulfilled } }))
   }
 
-  const onChangeFilter = (updatedFilter: DateFilter) => {
-    // && !_.isEmpty(filters)
-    const hasFiltersChanged
-      = (!_.isEmpty((updatedFilter as any)?.filterValues)
-      || !_.isEmpty((updatedFilter as any)?.searchValue)
-      ) && !_.isEqual(updatedFilter, filters)
+  const onChangeFilter = (updatedFilter: Filters, isInit?: boolean) => {
+    const hasChanged = (
+      (updatedFilter?.filterValues || updatedFilter?.searchValue || updatedFilter?.range) &&
+      !_.isEqual(updatedFilter, currentFilters)
+    )
 
-    console.log(hasFiltersChanged, isLoadTimeSet.current, updatedFilter, currentFilters, filters)
-    if (hasFiltersChanged && isLoadTimeSet.current) {
-      // eslint-disable-next-line no-console
-      console.log('======== filter changes & reset load time ========', getCurrentTime())
+    if (isInit) {
+      setCurrentFilters(updatedFilter)
+    } else if (hasChanged && isLoadTimeSet.current) {
+      // eslint-disable-next-line no-console, max-len
+      console.log('=== filter changes & reset load time ===',
+        getCurrentTime(), updatedFilter, currentFilters
+      )
       setPageLoadStart(getCurrentTime())
       setCurrentFilters(updatedFilter)
+      // setCurrentFilters({
+      //   filter: {},
+      //   ...updatedFilter
+      // })
       isLoadTimeSet.current = false
       setLoadTimes({})
       setIsFilterChanged(true)
     }
   }
 
-  useEffect(() => {
-    setCurrentFilters({} as unknown as DateFilter)
-    setLoadTimes({})
-  }, [])
+  // useEffect(() => {
+  //   setLoadTimes({})
+  // }, [])
 
   useEffect(() => {
-    // eslint-disable-next-line no-console, max-len
-    console.log('loadTimes: ', loadTimes, page, getTrackingItemsCount(page), filters, currentFilters)
-    const trackingItemsCount = getTrackingItemsCount(page)
+    const trackingItemsCount = getTrackingItemsCount(page, subTab)
     const trackedCount = Object.keys(loadTimes).length
     const isLoadTimeUnset = !isLoadTimeSet.current
     const isAllItemTracked = trackedCount === trackingItemsCount
 
+    // eslint-disable-next-line no-console
     console.log(isLoadTimeUnset , trackedCount, trackingItemsCount , isAllItemTracked)
     if (isLoadTimeUnset && trackingItemsCount && isAllItemTracked) {
       const { pendo } = window
@@ -237,11 +268,11 @@ export const LoadTimeProvider = ({ page, children, filters }: {
       const loadTimeStatus = getLoadTimeStatus(totalLoadTime)
       const trackEventData = {
         time: localtime,
-        page_title: page,
+        page_title: `${page} ${subTab}`,
         load_time_ms: totalLoadTime,
         load_time_text: getLoadTimeStatus(totalLoadTime),
         components_load_time_ms: formatLoadTimes(loadTimes),
-        filters: currentFilters?.range ? currentFilters : filters ////
+        filters: currentFilters
       }
 
       // eslint-disable-next-line no-console
@@ -250,9 +281,10 @@ export const LoadTimeProvider = ({ page, children, filters }: {
       // eslint-disable-next-line no-console
       console.log('*** ', trackEventData)
 
-      isLoadTimeSet.current = true
+
       setLoadTimes({})
       setIsFilterChanged(false)
+      isLoadTimeSet.current = true
 
       if (pendo) {
         // console.log('*** ', pendo)
@@ -262,7 +294,9 @@ export const LoadTimeProvider = ({ page, children, filters }: {
   }, [loadTimes])
 
   return (
-    <LoadTimeContext.Provider value={{ recordLoadTime, onChangeFilter, pageLoadStart, isFilterChanged }}>
+    <LoadTimeContext.Provider value={{
+      recordLoadTime, onChangeFilter, setSubTab, pageLoadStart, isFilterChanged
+    }}>
       {children}
     </LoadTimeContext.Provider>
   )
@@ -274,7 +308,6 @@ export function useLoadTimeTracking ({ itemName, states }: {
 }) {
   const isStartTimeSet = useRef(false)
   const isEndTimeSet = useRef(false)
-  // const isFilterChanged = useRef(false)
   const { recordLoadTime, isFilterChanged, pageLoadStart } = useContext(LoadTimeContext)
 
   const [startTime, setStartTime] = useState(null as unknown as number)
@@ -289,8 +322,6 @@ export function useLoadTimeTracking ({ itemName, states }: {
 
   useEffect(() => {
     const isStartTimeUnset = !isStartTimeSet.current
-    // eslint-disable-next-line no-console
-    console.log('***')
     if (isStartTimeUnset && isLoadTimeTrackingEnabled) {
       const start = getCurrentTime()
       setStartTime(start)
@@ -313,16 +344,9 @@ export function useLoadTimeTracking ({ itemName, states }: {
     const loadDuration = currentTime - start
     const isEndTimeUnset = !isEndTimeSet.current
     const hasReachedThreshold = loadDuration > TIME_THRESHOLD_OF_COMPONENT
-    // eslint-disable-next-line max-len
-    const shouldSetEndTime = startTime && isEndTimeUnset && hasReachedThreshold && isLoadTimeTrackingEnabled
-    // eslint-disable-next-line no-console
-    // console.log(canSetEndTime, startTime , isEndTimeUnset , hasReachedThreshold , isLoadTimeTrackingEnabled)
-    // eslint-disable-next-line no-console
-    console.log('***isLoading: ', itemName, hasReachedThreshold, loadDuration,
-      ' shouldSetEndTime: ', shouldSetEndTime,
-      ' isLoading: ',isLoading, ' ,isFetching:', isFetching, ',isSuccess: ', isSuccess, ',isRefetchSuccess: ', isRefetchSuccess)
+    const shouldSetEndTime = startTime && isEndTimeUnset && hasReachedThreshold
 
-    if (shouldSetEndTime) {
+    if (shouldSetEndTime && isLoadTimeTrackingEnabled) {
       setEndTime(currentTime)
       setIsUnfulfilled(true)
       isEndTimeSet.current = true

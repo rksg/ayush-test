@@ -209,7 +209,11 @@ function DashboardPageHeader () {
   />
 
   useEffect(() => {
-    onChangeFilter({ filterValues: dashboardFilters }) ////
+    onChangeFilter?.(dashboardFilters, true)
+  }, [])
+
+  useEffect(() => {
+    onChangeFilter?.(dashboardFilters)
   }, [dashboardFilters])
 
   return (
