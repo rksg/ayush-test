@@ -24,7 +24,7 @@ interface PersonalIdentityNetworkFormProps {
   onFinish: Function
   initialValues?: Object
   steps: PersonalIdentityNetworkFormStep[]
-  hasPrerequisition?: boolean
+  hasPrerequisite?: boolean
 }
 
 interface PersonalIdentityNetworkFormStep {
@@ -37,7 +37,7 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
   const params = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const { initialValues: formInitialValues, hasPrerequisition = false } = props
+  const { initialValues: formInitialValues, hasPrerequisite = false } = props
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
 
@@ -150,7 +150,7 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
       onCancel={() => redirectPreviousPage(navigate, previousPath, linkToServices)}
       onFinish={handleFinish}
       initialValues={formInitialValues}
-      hasPrerequisiteStep={hasPrerequisition}
+      hasPrerequisiteStep={hasPrerequisite}
     >
       {
         props.steps.map((item, index) =>

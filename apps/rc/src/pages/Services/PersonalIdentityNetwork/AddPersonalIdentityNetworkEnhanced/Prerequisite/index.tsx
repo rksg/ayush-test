@@ -8,7 +8,7 @@ import { DiagramGallery }                            from './DiagramGallery'
 import { messageMapping, prerequisitionListMessage } from './messageMapping'
 import * as UI                                       from './styledComponents'
 
-export const Prerequisition = () => {
+export const Prerequisite = () => {
   const { $t } = useIntl()
 
   return <Row>

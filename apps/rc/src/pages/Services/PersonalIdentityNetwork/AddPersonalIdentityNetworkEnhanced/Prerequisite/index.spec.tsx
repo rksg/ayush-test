@@ -2,7 +2,7 @@
 
 import { render, screen } from '@acx-ui/test-utils'
 
-import { Prerequisition } from './'
+import { Prerequisition } from '.'
 
 jest.mock('./DiagramGallery', () => ({
   DiagramGallery: () => <div data-testid='diagram-gallery' />

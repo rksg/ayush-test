@@ -14,7 +14,7 @@ import { SmartEdgeForm }                           from '../PersonalIdentityNetw
 import { SummaryForm }                             from '../PersonalIdentityNetworkForm/SummaryForm'
 import { WirelessNetworkForm }                     from '../PersonalIdentityNetworkForm/WirelessNetworkForm'
 
-import { Prerequisition } from './Prerequisition'
+import { Prerequisite } from './Prerequisite'
 
 const AddPersonalIdentityNetworkEnhanced = () => {
   const { tenantId } = useParams()
@@ -27,7 +27,7 @@ const AddPersonalIdentityNetworkEnhanced = () => {
   const steps = [
     {
       title: $t({ defaultMessage: 'Prerequisition' }),
-      content: <Prerequisition />
+      content: <Prerequisite />
     },
     {
       title: $t({ defaultMessage: 'General Settings' }),
@@ -71,7 +71,7 @@ const AddPersonalIdentityNetworkEnhanced = () => {
           initialValues={{
             vxlanTunnelProfileId: tenantId
           }}
-          hasPrerequisition
+          hasPrerequisite
           onFinish={addPin}
         />
       </PersonalIdentityNetworkFormDataProvider>
