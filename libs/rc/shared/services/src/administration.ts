@@ -35,7 +35,8 @@ import {
   TwiliosIncommingPhoneNumbers,
   TwiliosMessagingServices,
   Webhook,
-  WebhookRecord
+  WebhookRecord,
+  TableResult
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -922,7 +923,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       }
     }),
-    getWebhooks: build.query<Webhook[], RequestPayload>({
+    getWebhooks: build.query<TableResult<Webhook>, RequestPayload>({
       query: ({ params }) => {
         const req =
           createHttpRequest(AdministrationUrlsInfo.getWebhooks, params)

@@ -434,6 +434,18 @@ export interface ErrorDetails {
   errorMessage?: string
 }
 
+export enum WebhookPayloadEnum {
+  RUCKUS = 'cliRUCKUS One',
+  DATADOG = 'DataDog',
+  MICROSOFT_TEAM = 'Microsoft Teams',
+  // JIRA = 'Jira',
+  PAGERDUTY = 'PagerDuty',
+  SERVICE_NOW = 'ServiceNow',
+  SLACK = 'Slack',
+  // ELASTIC = 'Elastic',
+  SPLUNK = 'Splink'
+}
+
 export interface Webhook {
   id?: string,
   name?: string,
