@@ -5,14 +5,17 @@ import { Loader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/com
 import { CountAndNamesTooltip }                                from '@acx-ui/rc/components'
 import {
   useDeleteSwitchPortProfileMutation,
-  // useDeleteDirectoryServerMutation,
-  useSwitchPortProfilesListQuery
+  useSwitchPortProfilesListQuery,
+  useVenuesListQuery
 }from '@acx-ui/rc/services'
 import {
+  FILTER,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByPolicy,
+  GROUPBY,
   PolicyOperation,
   PolicyType,
+  SEARCH,
   SwitchPortProfiles,
   useTableQuery,
   vlanPortsParser
@@ -27,7 +30,7 @@ export default function SwitchPortProfileTable () {
   const settingsId = 'switch-port-profile-table'
 
   const defaultPayload = {
-    fields: [ 'id' ],
+    fields: [ 'id', 'name' ],
     pagination: { settingsId }
   }
 
@@ -36,8 +39,21 @@ export default function SwitchPortProfileTable () {
     defaultPayload,
     search: {
       searchString: '',
-      searchTargetFields: ['name', 'venues']
+      searchTargetFields: ['name']
     }
+  })
+
+  const { venueFilterOptions } = useVenuesListQuery({
+    payload: {
+      fields: ['name', 'country', 'latitude', 'longitude', 'id'],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      venueFilterOptions: data?.data.map(v => ({ key: v.id, value: v.name })) || true
+    })
   })
 
   function useColumns () {
@@ -143,7 +159,7 @@ export default function SwitchPortProfileTable () {
         key: 'venues',
         title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
         dataIndex: 'venues',
-        filterable: true,
+        filterable: venueFilterOptions,
         filterKey: 'venueId',
         render: (_, row) => {
           return <CountAndNamesTooltip
@@ -213,6 +229,11 @@ export default function SwitchPortProfileTable () {
 
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
+
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH, groupBy?: GROUPBY) => {
+    tableQuery.handleFilterChange(customFilters, customSearch, groupBy)
+  }
+
   return (
     <Loader states={[tableQuery]}>
       <Table<SwitchPortProfiles>
@@ -224,7 +245,7 @@ export default function SwitchPortProfileTable () {
         rowKey='id'
         rowActions={allowedRowActions}
         rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
-        onFilterChange={tableQuery.handleFilterChange}
+        onFilterChange={handleFilterChange}
         enableApiFilter={true}
       />
     </Loader>
