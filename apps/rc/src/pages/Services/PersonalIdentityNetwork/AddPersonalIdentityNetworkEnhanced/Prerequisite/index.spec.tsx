@@ -2,21 +2,21 @@
 
 import { render, screen } from '@acx-ui/test-utils'
 
-import { Prerequisition } from '.'
+import { Prerequisite } from '.'
 
 jest.mock('./DiagramGallery', () => ({
   DiagramGallery: () => <div data-testid='diagram-gallery' />
 }))
 
-describe('PIN form > Prerequisition', () => {
+describe('PIN form > Prerequisite', () => {
   it('renders description', () => {
-    render(<Prerequisition />)
+    render(<Prerequisite />)
     const description = screen.getByText(/The following list outlines the prerequisites for building a PIN service/)
     expect(description).toBeInTheDocument()
   })
 
   it('renders prerequisite list', () => {
-    render(<Prerequisition />)
+    render(<Prerequisite />)
 
     screen.getByRole('heading', { name: 'Property Management' })
     screen.getByRole('heading', { name: 'Edge Cluster' })
@@ -24,7 +24,7 @@ describe('PIN form > Prerequisition', () => {
   })
 
   it('renders diagram gallery', () => {
-    render(<Prerequisition />)
+    render(<Prerequisite />)
     const diagramGallery = screen.getByTestId('diagram-gallery')
     expect(diagramGallery).toBeInTheDocument()
   })

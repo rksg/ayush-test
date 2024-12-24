@@ -11,7 +11,7 @@ import {
 } from '@acx-ui/test-utils'
 import { RequestPayload } from '@acx-ui/types'
 
-import AddPersonalIdentityNetwork from './AddPersonalIdentityNetwork'
+import AddPersonalIdentityNetwork from '.'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -19,6 +19,9 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('./Prerequisite', () => ({
+  Prerequisite: () => <div data-testid='Prerequisite' />
+}))
 jest.mock('../PersonalIdentityNetworkForm/GeneralSettingsForm', () => ({
   GeneralSettingsForm: () => <div data-testid='GeneralSettingsForm' />
 }))
@@ -38,12 +41,10 @@ jest.mock('../PersonalIdentityNetworkForm/SummaryForm', () => ({
   SummaryForm: () => <div data-testid='SummaryForm' />
 }))
 jest.mock('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext', () => ({
-  ...jest.requireActual('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext'),
   PersonalIdentityNetworkFormDataProvider: ({ children }: { children: ReactNode }) =>
     <div data-testid='PersonalIdentityNetworkFormDataProvider' children={children} />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
   useEdgePinActions: () => ({
     addPin: (req: RequestPayload) => new Promise((resolve) => {
       resolve(true)
@@ -73,6 +74,9 @@ describe('Add PersonalIdentityNetwork', () => {
       wrapper: Provider,
       route: { params, path: createPinPath }
     })
+    // Prerequisite step
+    await screen.findByTestId('Prerequisite')
+    await user.click(await screen.findByRole('button', { name: 'Start' }))
     // step 1
     await screen.findByTestId('GeneralSettingsForm')
     await user.click(await screen.findByRole('button', { name: 'Next' }))
@@ -110,6 +114,8 @@ describe('Add PersonalIdentityNetwork', () => {
     expect(screen.getByRole('link', {
       name: 'Personal Identity Network'
     })).toBeVisible()
-    await screen.findByTestId('GeneralSettingsForm')
+
+    await screen.findByTestId('Prerequisite')
+    expect(screen.queryByTestId('GeneralSettingsForm')).toBeNull()
   })
 })
