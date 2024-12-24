@@ -327,7 +327,7 @@ export function LanPorts () {
   const handleSoftGreDeactivate = (values: WifiApSetting) => {
     values.lan?.forEach(lanPort => {
       const originSoftGreId = lanData.find(l => l.portId === lanPort.portId)?.softGreProfileId
-      if (originSoftGreId && (!lanPort.enabled || !lanPort.softGreTunnelEnable)) {
+      if (originSoftGreId && (!lanPort.enabled || !lanPort.softGreEnabled)) {
         deactivateSoftGreProfileSettings({
           params: { venueId, serialNumber, portId: lanPort.portId, policyId: originSoftGreId }
         }).unwrap()

@@ -1,33 +1,39 @@
-import { Form, Space, Switch } from 'antd'
+import { Form, Switch, Space } from 'antd'
 import { useIntl }             from 'react-intl'
 
-import { Tooltip, Alert, StepsForm } from '@acx-ui/components'
+import { Tooltip, Alert, StepsForm }              from '@acx-ui/components'
+import { SoftGreProfileDispatcher, SoftGreState } from '@acx-ui/rc/utils'
 
 import { SoftGREProfileSettings } from './SoftGREProfileSettings'
 
 interface SoftGRETunnelSettingsProps {
-  index: number
-  softGreProfileId: string
-  softGreTunnelEnable: boolean
-  onGUIChanged?: (fieldName: string) => void
-  readonly: boolean
+  index: number;
+  portId?: string;
+  softGreProfileId: string;
+  softGreTunnelEnable: boolean;
+  onGUIChanged?: (fieldName: string) => void;
+  readonly: boolean;
+  dispatch?: React.Dispatch<SoftGreProfileDispatcher>;
 }
 
 export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   const { $t } = useIntl()
   const {
     index,
+    portId,
     softGreProfileId,
     softGreTunnelEnable,
     onGUIChanged,
-    readonly
+    readonly,
+    dispatch
   } = props
 
-  const softgreTunnelFieldName = ['lan', index, 'softGreTunnelEnable']
+  const softgreTunnelFieldName = ['lan', index, 'softGreEnabled']
+  const form = Form.useFormInstance()
 
   return (
     <>
-      <StepsForm.FieldLabel width={'280px'}>
+      <StepsForm.FieldLabel width={'220px'}>
         <Space>
           {$t({ defaultMessage: 'Enable SoftGRE Tunnel' })}
           <Tooltip.Question
@@ -48,8 +54,22 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             <Switch
               data-testid={'softgre-tunnel-switch'}
               disabled={readonly}
-              onClick={() => {
-                onGUIChanged && onGUIChanged('softGreTunnelEnable')
+              onClick={(value) => {
+                onGUIChanged && onGUIChanged('softGreEnabled')
+                if (dispatch) {
+                  value ?
+                    dispatch({
+                      state: SoftGreState.TurnOnSoftGre,
+                      portId,
+                      index,
+                      softGreProfileId: form.getFieldValue(['lan', index, 'softGreProfileId'])
+                    }) :
+                    dispatch({
+                      state: SoftGreState.TurnOffSoftGre,
+                      portId,
+                      index
+                    })
+                }
               }}
             />
           }
@@ -68,6 +88,8 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             softGreProfileId={softGreProfileId}
             onGUIChanged={onGUIChanged}
             readonly={readonly}
+            portId={portId}
+            dispatch={dispatch}
           />
         </>
       }

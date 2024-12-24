@@ -12,7 +12,7 @@ import {
   mockVenueApCompatibilities
 } from '../ApCompatibilityDrawer/__test__/fixtures'
 
-import { ApCompatibilityDetailTable } from '.'
+import { ApCompatibilityDetailTable, IsApModelSupported } from '.'
 
 
 describe('ApCompatibilityDetailTable', () => {
@@ -88,6 +88,55 @@ describe('ApCompatibilityDetailTable', () => {
 
     // read-only mode, without checkboxes
     expect(screen.queryAllByRole('checkbox')).toHaveLength(0)
+
+  })
+
+  it('should the IsApModelSupported function working', () => {
+    const requirements = [{
+      firmware: '6.2.3.103.251',
+      models: ['R750', 'R770']
+    }, {
+      firmware: '7.0.0.0.1',
+      models: ['R500', 'R750', 'R770']
+    }]
+
+    // miss the input data, skip the check => return true
+    expect(IsApModelSupported()).toBeTruthy()
+    expect(IsApModelSupported('R750')).toBeTruthy()
+
+    expect(IsApModelSupported('R750', requirements)).toBeTruthy()
+    expect(IsApModelSupported('R500', requirements)).toBeTruthy()
+    expect(IsApModelSupported('R300', requirements)).toBeFalsy()
+  })
+
+  it('should render correctly with AP compatibility data and unsupported AP model', async () => {
+    const compatibility = mockNetworkApCompatibilities.compatibilities[0]
+    const { incompatibleFeatures: data } = compatibility
+    const apInfo: CompatibilitySelectedApInfo = {
+      name: 'fake AP',
+      serialNumber: '__moke_sn',
+      model: 'R350',
+      firmwareVersion: '6.0.0.0.0'
+    }
+
+    render(
+      <Provider>
+        <ApCompatibilityDetailTable
+          requirementOnly={true}
+          data={data!}
+          apInfo={apInfo} />
+      </Provider>
+    )
+
+    // ap info
+    expect(await screen.findByText(apInfo.model)).toBeInTheDocument()
+    expect(await screen.findByText(apInfo.firmwareVersion)).toBeInTheDocument()
+
+    // table title
+    expect(await screen.findByText('Incompatible Feature')).toBeInTheDocument()
+    expect(await screen.findByText('Min. Required Versions')).toBeInTheDocument()
+    // table body
+    expect(await screen.findByText('Model unsupported')).toBeInTheDocument()
 
   })
 })

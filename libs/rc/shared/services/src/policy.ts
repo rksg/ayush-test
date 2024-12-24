@@ -75,7 +75,8 @@ import {
   TxStatus,
   ScepKeyData,
   ServerCertificate,
-  ServerClientCertificateResult
+  ServerClientCertificateResult,
+  NewAPModel
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }                                 from '@acx-ui/store'
 import { RequestPayload }                                from '@acx-ui/types'
@@ -1975,8 +1976,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
             )
           )
 
-          if (networkIds.length <= 0) return defaultRes
-
           // query network name with networkId
           const networkQueryPayload = {
             fields: ['name', 'id'],
@@ -1989,7 +1988,48 @@ export const policyApi = basePolicyApi.injectEndpoints({
           if (networkRes.error) return defaultRes
           const networkData = networkRes.data as TableResult<Network>
 
-          // merge data
+          // apSerialNumbers group by venueId
+          const apsGroupByVenueData = activationData.data.reduce((acc:{ [key: string]: Set<string> }, item) => {
+            item.venueActivations.forEach(va => {
+              if (!acc[va.venueId]) {
+                acc[va.venueId] = new Set<string>()
+              }
+              va.apSerialNumbers?.forEach(serial => acc[va.venueId].add(serial))
+            })
+            item.apActivations.forEach(aa => {
+              if (!acc[aa.venueId]) {
+                acc[aa.venueId] = new Set<string>()
+              }
+              acc[aa.venueId].add(aa.apSerialNumber)
+            })
+            return acc
+          }, {})
+
+          // Collect AP names by serial numbers
+          let apMapping: { [key: string]: string } = {}
+          const apSerialNumbersSet = Object.values(apsGroupByVenueData).reduce((all, venueSet) => {
+            return new Set([...all, ...venueSet])
+          }, new Set())
+
+          if(apSerialNumbersSet.size > 0){
+            const apsQueryPayload = {
+              fields: ['name', 'serialNumber'],
+              filters: { serialNumber: Array.from(apSerialNumbersSet) },
+              pageSize: 10000
+            }
+            const apsReq = createHttpRequest(CommonRbacUrlsInfo.getApsList)
+            const apsRes = await fetchWithBQ({ ...apsReq, body: JSON.stringify(apsQueryPayload) })
+            if (apsRes && apsRes.data) {
+              const { data: apsData } = apsRes.data as TableResult<NewAPModel>
+              apsData.forEach((ap: NewAPModel) => {
+                if (ap.name) {
+                  apMapping[ap.serialNumber] = ap.name
+                }
+              })
+            }
+          }
+
+          // merge network data
           const venuesMap: { [key: string]: VenueUsageByClientIsolation }= {}
           activationData.data.forEach(item => {
             item.activations?.forEach(activation => {
@@ -2001,7 +2041,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
                     venueName: '',
                     address: '',
                     networkCount: 0,
-                    networkNames: []
+                    networkNames: [],
+                    apCount: 0,
+                    apNames: []
                   }
                 }
                 venuesMap[venueId].networkCount += 1
@@ -2009,11 +2051,26 @@ export const policyApi = basePolicyApi.injectEndpoints({
               }
             })
           })
+          Object.keys(apsGroupByVenueData).forEach((venueId) => {
+            if (!venuesMap[venueId]) {
+              venuesMap[venueId] = {
+                venueId: venueId,
+                venueName: '',
+                address: '',
+                networkCount: 0,
+                networkNames: [],
+                apCount: 0,
+                apNames: []
+              }
+            }
+          })
 
           venueData.data.forEach(venue => {
             if (venuesMap[venue.id]) {
               venuesMap[venue.id].venueName = venue.name
               venuesMap[venue.id].address = venue.addressLine
+              venuesMap[venue.id].apCount = apsGroupByVenueData[venue.id]?.size || 0
+              venuesMap[venue.id].apNames = Array.from(apsGroupByVenueData[venue.id] || []).map(serial => apMapping[serial] || serial)
             }
           })
 
