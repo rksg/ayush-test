@@ -106,7 +106,7 @@ export function hasAccess (props?: { rbacOpsIds?: RbacOpsIds, roles?: Role[] }) 
  *
  * OR  -> If it's a single operation or any single scope in the list matches, access is granted (e.g., `['DELETE:/venues', 'DELETE:/networks']`).
  * AND ->  If the `opsId` is an array, all elements must match (e.g., `[['DELETE:/venues', 'DELETE:/networks']]`).
- * Ignore check -> If `SHOW_WITHOUT_RBAC_CHECK` is included, access is automatically granted (e.g., `[[SHOW_WITHOUT_RBAC_CHECK]]`).
+ * Ignore check -> If `SHOW_WITHOUT_RBAC_CHECK` is included, access is automatically granted (e.g., `[SHOW_WITHOUT_RBAC_CHECK]`).
  */
 function hasAllowedOperations (rbacOpsIds: RbacOpsIds) {
   const { rbacOpsApiEnabled, allowedOperations } = getUserProfile()
