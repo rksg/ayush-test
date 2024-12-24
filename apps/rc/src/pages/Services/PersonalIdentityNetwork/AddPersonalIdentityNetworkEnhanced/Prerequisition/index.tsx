@@ -2,7 +2,7 @@ import { Col, Row, Typography  }     from 'antd'
 import { isNil }                     from 'lodash'
 import { useIntl, FormattedMessage } from 'react-intl'
 
-import { Tooltip } from '@acx-ui/components'
+import { cssNumber, Tooltip } from '@acx-ui/components'
 
 import { DiagramGallery }                            from './DiagramGallery'
 import { messageMapping, prerequisitionListMessage } from './messageMapping'
@@ -54,7 +54,9 @@ const PrerequisitionFormBlock = (props: {
 
   return <Row>
     <Col span={22}>
-      <Typography.Title level={4}>
+      <Typography.Title level={4}
+        style={{ fontWeight: cssNumber('--acx-headline-4-font-weight-bold') }}
+      >
         {$t(title)}
         {!isNil(tooltip) && <Tooltip.Question
           title={$t(tooltip)}
