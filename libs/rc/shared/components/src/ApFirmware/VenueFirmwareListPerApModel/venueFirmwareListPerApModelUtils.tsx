@@ -1,9 +1,9 @@
 import { useState } from 'react'
 
-import { Space }     from 'antd'
-import _             from 'lodash'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { Space }              from 'antd'
+import _                      from 'lodash'
+import { IntlShape, useIntl } from 'react-intl'
+import { useParams }          from 'react-router-dom'
 
 import { Tooltip }                      from '@acx-ui/components'
 import {
@@ -115,7 +115,8 @@ export function useUpgradePerferences () {
   }
 }
 
-export function renderCurrentFirmwaresColumn (data: FirmwareVenuePerApModel['currentApFirmwares']) {
+// eslint-disable-next-line max-len
+export function renderCurrentFirmwaresColumn (data: FirmwareVenuePerApModel['currentApFirmwares'], intl: IntlShape) {
   const firmwareGroupsMap = groupByFirmware(data)
   const firmwareGroupsText = Object
     .keys(firmwareGroupsMap)
@@ -129,11 +130,11 @@ export function renderCurrentFirmwaresColumn (data: FirmwareVenuePerApModel['cur
       // eslint-disable-next-line max-len
       const isEarlyAccess = firmwareInfo.labels?.includes(FirmwareLabel.ALPHA) || firmwareInfo.labels?.includes(FirmwareLabel.BETA)
       if (isEarlyAccess) {
-        label = ' (Early Access)'
+        label = ` ${intl.$t({ defaultMessage: '(Early Access)' })}`
       } else {
         // eslint-disable-next-line max-len
         if (!firmwareInfo.labels?.includes(FirmwareLabel.GA) && (firmwareInfo.labels?.includes(FirmwareLabel.LEGACYALPHA) || firmwareInfo.labels?.includes(FirmwareLabel.LEGACYBETA))) {
-          label = ' (Legacy Early Access)'
+          label = ` ${intl.$t({ defaultMessage: '(Legacy Early Access)' })}`
         }
       }
       return `${firmware}${label}: ${firmwareInfo.apModel.join(', ')}`
@@ -161,10 +162,10 @@ function groupByFirmware (data: FirmwareVenuePerApModel['currentApFirmwares']): 
     }
     acc[firmware] = {
       apModel: [...acc[firmware].apModel, apModel],
-      labels
+      labels: labels || []
     }
     return acc
-  }, {} as { [firmware in string]: { apModel: string[], labels: string[] } })
+  }, {} as { [firmware in string]: { apModel: string[], labels: FirmwareLabel[] } })
 }
 
 // eslint-disable-next-line max-len

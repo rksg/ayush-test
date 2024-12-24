@@ -26,27 +26,22 @@ export function VersionBannerPerApModel () {
     selectFromResult ({ data, isLoading }) {
       if (!data || data.length === 0 || isLoading) return { updateGroupsWithLatestVersion: [] }
 
-      // eslint-disable-next-line max-len
       let updateGroups = convertApModelFirmwaresToUpdateGroups(
         data.filter(d => d.labels?.includes(FirmwareLabel.GA))
       )
-      // eslint-disable-next-line max-len
       let updateAlphaGroups = convertApModelFirmwaresToUpdateGroups(
         data.filter(d => d.labels?.includes(FirmwareLabel.ALPHA))
       )
-      // eslint-disable-next-line max-len
       let updateBetaGroups = convertApModelFirmwaresToUpdateGroups(
         data.filter(d => d.labels?.includes(FirmwareLabel.BETA))
       )
 
-      if (apFirmwareContext.isAlphaFlag || apFirmwareContext.isBetaFlag) {
-        updateGroups = [
-          ...updateGroups,
-          ...(apFirmwareContext.isAlphaFlag ? updateAlphaGroups : []),
-          // eslint-disable-next-line max-len
-          ...((apFirmwareContext.isBetaFlag || apFirmwareContext.isAlphaFlag) ? updateBetaGroups : [])
-        ]
-      }
+      updateGroups = [
+        ...updateGroups,
+        ...(apFirmwareContext.isAlphaFlag ? updateAlphaGroups : []),
+        // eslint-disable-next-line max-len
+        ...((apFirmwareContext.isBetaFlag || apFirmwareContext.isAlphaFlag) ? updateBetaGroups : [])
+      ]
 
       updateGroups.sort((a, b) => compareVersions(b.firmwares[0].name, a.firmwares[0].name))
       updateGroups = filterVersionBehindGA(updateGroups)
@@ -152,7 +147,7 @@ function VersionPerApModelInfo (props: VersionInfoPerApModelProps) {
   const generateVersionName = (firmware: VersionLabelType) => {
     // eslint-disable-next-line max-len
     if (firmware.labels?.includes(FirmwareLabel.ALPHA) || firmware.labels?.includes(FirmwareLabel.BETA)) {
-      return `${firmware.name} (Early Access)`
+      return `${ $t({ defaultMessage: '{name} (Early Access)' }, { name: firmware.name }) }`
     }
     return firmware.name
   }

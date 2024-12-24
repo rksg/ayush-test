@@ -3,8 +3,7 @@ import { useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Select }          from '@acx-ui/components'
-import { compareVersions } from '@acx-ui/utils'
+import { Select } from '@acx-ui/components'
 
 import { ApModelIndividualDisplayDataType } from '../venueFirmwareListPerApModelUtils'
 
@@ -16,7 +15,6 @@ interface UpdateEarlyAccessPerApModelIndividualProps extends ApModelIndividualDi
   labelSize?: 'small' | 'large'
   emptyOptionLabel?: string
   noOptionsMessage?: string
-  isUpgrade?: boolean
 }
 
 // eslint-disable-next-line max-len
@@ -25,16 +23,11 @@ export function UpdateEarlyAccessPerApModelIndividual (props: UpdateEarlyAccessP
   const { apModel, versionOptions, update, defaultVersion, extremeFirmware,
     labelSize = 'small',
     emptyOptionLabel = $t({ defaultMessage: 'Do not update firmware' }),
-    noOptionsMessage = $t({ defaultMessage: 'The AP is up-to-date' }),
-    isUpgrade = true
+    noOptionsMessage = $t({ defaultMessage: 'The AP is up-to-date' })
   } = props
   const [ selectedVersion, setSelectedVersion ] = useState(defaultVersion)
 
-  const resolvedVersionOptions = isUpgrade
-    ? versionOptions
-    : versionOptions
-      .sort((a, b) => -compareVersions(a.key, b.key))
-      .slice(0, 4) // When donwgrade, only show the last 4 versions and sort by firmware version
+  const resolvedVersionOptions = versionOptions
 
   const [ filteredOptions, setFilteredOptions ] = useState(resolvedVersionOptions)
 

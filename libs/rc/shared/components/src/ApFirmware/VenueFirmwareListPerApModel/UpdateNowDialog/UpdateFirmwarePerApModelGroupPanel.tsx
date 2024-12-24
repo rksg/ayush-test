@@ -4,10 +4,10 @@ import { useEffect, useRef, useState } from 'react'
 import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 
-import { Loader }                            from '@acx-ui/components'
-import { useGetAllApModelFirmwareListQuery } from '@acx-ui/rc/services'
-import { FirmwareVenuePerApModel }           from '@acx-ui/rc/utils'
-import { getIntl }                           from '@acx-ui/utils'
+import { Loader }                                 from '@acx-ui/components'
+import { useGetAllApModelFirmwareListQuery }      from '@acx-ui/rc/services'
+import { FirmwareLabel, FirmwareVenuePerApModel } from '@acx-ui/rc/utils'
+import { getIntl }                                from '@acx-ui/utils'
 
 import { compareVersions, getVersionLabel } from '../../FirmwareUtils'
 import * as UI                              from '../styledComponents'
@@ -39,7 +39,9 @@ export function UpdateFirmwarePerApModelGroupPanel (props: UpdateFirmwarePerApMo
   useEffect(() => {
     if (!apModelFirmwares) return
 
-    const updateGrps = convertApModelFirmwaresToUpdateGroups(apModelFirmwares)
+    const updateGrps = convertApModelFirmwaresToUpdateGroups(
+      apModelFirmwares.filter(d => d.labels?.includes(FirmwareLabel.GA))
+    )
     const venuesBasedUpdateGrps = filterByVenues(selectedVenuesFirmwares, updateGrps)
     const displayData = convertToApModelGroupDisplayData(venuesBasedUpdateGrps, initialPayload)
 

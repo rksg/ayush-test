@@ -4,6 +4,7 @@ import { useContext, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Tooltip, showActionModal, Filter } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
 import {
   renderCurrentFirmwaresColumn,
   useChangeScheduleVisiblePerApModel,
@@ -45,6 +46,7 @@ import { DowngradePerApModelDialog } from './DowngradeDialog'
 export function VenueFirmwareListPerApModel () {
   const { $t } = useIntl()
   const apFirmwareContext = useContext(ApFirmwareContext)
+  const isApFwMgmtEarlyAccess = useIsSplitOn(Features.AP_FW_MGMT_EARLY_ACCESS_TOGGLE)
   const pagination = { pageSize: 10, defaultPageSize: 10 }
   const [searchString, setSearchString] = useState('')
   const [filterString, setFilterString] = useState('')
@@ -109,7 +111,8 @@ export function VenueFirmwareListPerApModel () {
   const rowActions: TableProps<FirmwareVenuePerApModel>['rowActions'] = [
     {
       scopeKey: [WifiScopes.UPDATE],
-      visible: (rows) => rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)),
+      // eslint-disable-next-line max-len
+      visible: (rows) => rows.some(row => !isApFirmwareUpToDate(isFirmwareUpToDate(row, isApFwMgmtEarlyAccess))),
       label: $t({ defaultMessage: 'Update Now' }),
       onClick: (rows) => {
         setSelectedRows(rows)
@@ -119,7 +122,7 @@ export function VenueFirmwareListPerApModel () {
     {
       scopeKey: [WifiScopes.UPDATE],
       // eslint-disable-next-line max-len
-      visible: (rows) => isEarlyAccess && rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)),
+      visible: (rows) => isEarlyAccess && rows.some(row => !isApFirmwareUpToDate(isFirmwareUpToDate(row, isApFwMgmtEarlyAccess))),
       label: $t({ defaultMessage: 'Update with Early Access Now' }),
       onClick: (rows) => {
         setSelectedRows(rows)
@@ -128,7 +131,8 @@ export function VenueFirmwareListPerApModel () {
     },
     {
       scopeKey: [WifiScopes.UPDATE],
-      visible: (rows) => rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)),
+      // eslint-disable-next-line max-len
+      visible: (rows) => rows.some(row => !isApFirmwareUpToDate(isFirmwareUpToDate(row, isApFwMgmtEarlyAccess))),
       label: $t({ defaultMessage: 'Change Update Schedule' }),
       onClick: (rows) => {
         setSelectedRows(rows)
@@ -206,8 +210,10 @@ export function VenueFirmwareListPerApModel () {
 }
 
 function useColumns () {
-  const { $t } = useIntl()
+  const intl = useIntl()
+  const { $t } = intl
   const versionFilterOptions = useVersionFilterOptions()
+  const isApFwMgmtEarlyAccess = useIsSplitOn(Features.AP_FW_MGMT_EARLY_ACCESS_TOGGLE)
 
   const columns: TableProps<FirmwareVenuePerApModel>['columns'] = [
     {
@@ -227,7 +233,7 @@ function useColumns () {
       filterKey: 'currentApFirmwares.firmware',
       render: function (data, row) {
         return row.currentApFirmwares && row.currentApFirmwares.length > 0
-          ? renderCurrentFirmwaresColumn(row.currentApFirmwares)
+          ? renderCurrentFirmwaresColumn(row.currentApFirmwares, intl)
           : noDataDisplay
       }
     },
@@ -242,11 +248,11 @@ function useColumns () {
     },
     {
       title: $t({ defaultMessage: 'Status' }),
-      key: 'isApFirmwareUpToDate',
-      dataIndex: 'isApFirmwareUpToDate',
+      key: isApFwMgmtEarlyAccess ? 'isFirmwareUpToDate' : 'isApFirmwareUpToDate',
+      dataIndex: isApFwMgmtEarlyAccess ? 'isFirmwareUpToDate' : 'isApFirmwareUpToDate',
       sorter: true,
       render: function (_, row) {
-        return getApFirmwareStatusDescription(row)
+        return getApFirmwareStatusDescription(row, isApFwMgmtEarlyAccess)
       }
     },
     {
@@ -302,15 +308,24 @@ function hasApSchedule (nextSchedules: FirmwareVenuePerApModel['nextApFirmwareSc
 }
 
 export function getApFirmwareStatusDescription (
-  data: Pick<FirmwareVenuePerApModel, 'isApFirmwareUpToDate' | 'currentApFirmwares'>
+  // eslint-disable-next-line max-len
+  data: Pick<FirmwareVenuePerApModel, 'isApFirmwareUpToDate' | 'currentApFirmwares' | 'isFirmwareUpToDate'>,
+  isApFwMgmtEarlyAccess: boolean = false
 ): string {
   const { $t } = getIntl()
   // eslint-disable-next-line max-len
-  if (data.isApFirmwareUpToDate === undefined || (data.currentApFirmwares ?? []).length === 0) {
+  const isApFirmwareUpToDate = isApFwMgmtEarlyAccess ? data.isFirmwareUpToDate : data.isApFirmwareUpToDate
+  // eslint-disable-next-line max-len
+  if (isApFirmwareUpToDate === undefined || (data.currentApFirmwares ?? []).length === 0) {
     return noDataDisplay
   }
 
-  return data.isApFirmwareUpToDate
+  return isApFirmwareUpToDate
     ? $t({ defaultMessage: 'Up to date' })
     : $t({ defaultMessage: 'Update available' })
+}
+
+// eslint-disable-next-line max-len
+export const isFirmwareUpToDate = (data: FirmwareVenuePerApModel, isApFwMgmtEarlyAccess: boolean) => {
+  return isApFwMgmtEarlyAccess ? data.isFirmwareUpToDate : data.isApFirmwareUpToDate
 }

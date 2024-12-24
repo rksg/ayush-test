@@ -2,7 +2,7 @@ import _             from 'lodash'
 import moment        from 'moment-timezone'
 import { IntlShape } from 'react-intl'
 
-import { DateFormatEnum, formatter }        from '@acx-ui/formatter'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   firmwareTypeTrans,
   FirmwareCategory,
@@ -18,6 +18,8 @@ import {
   FirmwareLabel
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
+
+import { ApModelIndividualDisplayDataType, UpdateFirmwarePerApModelFirmware } from './VenueFirmwareListPerApModel'
 
 export const expirationTimeUnits: Record<string, string> = {
   HOURS_AFTER_TIME: 'Hours',
@@ -312,4 +314,30 @@ export function getActiveApModels (selectedRows: FirmwareVenue[]): string[] {
 
 export function compareABFSequence (seq1: number = 0, seq2: number = 0): number {
   return seq1 - seq2
+}
+
+// eslint-disable-next-line max-len
+export function convertToPayloadForApModelFirmware (displayData: ApModelIndividualDisplayDataType[]): UpdateFirmwarePerApModelFirmware {
+  return displayData.map((displayDataItem: ApModelIndividualDisplayDataType) => ({
+    apModel: displayDataItem.apModel,
+    firmware: displayDataItem.defaultVersion
+  }))
+}
+
+export function patchPayloadForApModelFirmware (
+  targetFirmwares: UpdateFirmwarePerApModelFirmware, apModel: string, version: string
+): UpdateFirmwarePerApModelFirmware {
+
+  const result: Array<UpdateFirmwarePerApModelFirmware[number] | null> = [...targetFirmwares]
+
+  const targetFirmware = version ? { apModel, firmware: version } : null
+  const targetIndex = result.findIndex(existing => existing?.apModel === apModel)
+
+  if (targetIndex === -1) {
+    result.push(targetFirmware)
+  } else {
+    result.splice(targetIndex, 1, targetFirmware)
+  }
+
+  return _.compact(result)
 }

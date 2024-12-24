@@ -477,7 +477,8 @@ export interface FirmwareVenuePerApModel {
   id: string;
   name: string;
   isApFirmwareUpToDate?: boolean;
-  currentApFirmwares?: { apModel: string, firmware: string, labels: string[] }[];
+  isFirmwareUpToDate?: boolean;
+  currentApFirmwares?: { apModel: string, firmware: string, labels?: FirmwareLabel[] }[];
   lastApFirmwareUpdate?: string;
   nextApFirmwareSchedules?: Schedule[];
 }
