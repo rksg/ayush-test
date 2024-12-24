@@ -122,6 +122,7 @@ export enum Features {
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   RBAC_PHASE2_SSO_TOGGLE = 'acx-ui-rbac-phase2-toggle',
   RBAC_PHASE2_TOGGLE = 'acx-ui-rbac-phase21-toggle',
+  RBAC_PHASE3_TOGGLE = 'acx-ui-rbac-phase3-toggle',
   REC_TO_MSP_CONVERSION_TOGGLE = 'acx-rec-to-msp-conversion-toggle',
   RECOMMENDATION_DELETE = 'acx-ui-recommendation-delete-toggle',
   RECOMMENDATION_REVERT = 'acx-ui-recommendation-revert-toggle',
