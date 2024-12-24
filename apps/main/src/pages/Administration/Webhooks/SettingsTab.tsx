@@ -1,4 +1,4 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 
 import { Form, Input, Select } from 'antd'
 import { useIntl }             from 'react-intl'
@@ -16,7 +16,7 @@ import * as UI from './styledComponents'
 const SettingsTab = () => {
   const { $t } = useIntl()
   //   const { treeData, updateChecked } = props
-  const [testURLEnabled, setTestURLEnabled] = useState<boolean>(false)
+  // const [testURLEnabled, setTestURLEnabled] = useState<boolean>(false)
 
   //   const onCheck = (checked: Key[]) => {
   //     const checkedChildren = checked.filter(key => !treeData.map(t => t.key).includes(key))
@@ -48,7 +48,7 @@ const SettingsTab = () => {
       <Input type='url' />
       <Button
         type='default'
-        disabled={!testURLEnabled}
+        // disabled={!testURLEnabled}
         onClick={() => {}}>
         {$t({ defaultMessage: 'Test' })}
       </Button>

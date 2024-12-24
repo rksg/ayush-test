@@ -33,7 +33,9 @@ import {
   NotificationSmsUsage,
   NotificationSmsConfig,
   TwiliosIncommingPhoneNumbers,
-  TwiliosMessagingServices
+  TwiliosMessagingServices,
+  Webhook,
+  WebhookRecord
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -919,6 +921,60 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getWebhooks: build.query<Webhook[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getWebhooks, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'WEBHOOK_LIST' }]
+    }),
+    getWebhookEntry: build.query<WebhookRecord, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getWebhookEntry, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    addWebhook: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.addWebhook, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    updateWebhook: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateWebhook, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    deleteWebhook: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteWebhook, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    webhookSendSampleEvent: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.webhookSendSampleEvent, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -1004,5 +1060,11 @@ export const {
   useGetTwiliosIncomingPhoneNumbersQuery,
   useLazyGetTwiliosIncomingPhoneNumbersQuery,
   useGetTwiliosMessagingServicesQuery,
-  useLazyGetTwiliosMessagingServicesQuery
+  useLazyGetTwiliosMessagingServicesQuery,
+  useGetWebhooksQuery,
+  useGetWebhookEntryQuery,
+  useAddWebhookMutation,
+  useUpdateWebhookMutation,
+  useDeleteWebhookMutation,
+  useWebhookSendSampleEventMutation
 } = administrationApi

@@ -433,3 +433,30 @@ export interface ErrorDetails {
   message?: string,
   errorMessage?: string
 }
+
+export interface Webhook {
+  id?: string,
+  name?: string,
+  url?: string,
+  payload?: string,
+  status?: string
+}
+
+export interface WebhookRecord {
+  id?: string,
+  name?: string,
+  url?: string,
+  secret?: string,
+  payload?: string,
+  status?: string,
+  incident?: {
+    severity: string[]
+  },
+  activity?: { product: string[] },
+  event?: {
+    severity: string[],
+    type: string[],
+    product: string[]
+  }
+}
+
