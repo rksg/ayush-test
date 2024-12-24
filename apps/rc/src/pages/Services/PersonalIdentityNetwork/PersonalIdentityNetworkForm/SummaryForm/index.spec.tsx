@@ -3,8 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsForm }              from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { StepsForm }             from '@acx-ui/components'
+import { Features }              from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
   EdgePinFixtures,
   EdgePinUrls
@@ -30,6 +31,11 @@ const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useIsEdgeFeatureReady: jest.fn()
 }))
 
 type MockSelectProps = React.PropsWithChildren<{
@@ -146,7 +152,7 @@ describe('Enhanced PersonalIdentityNetworkForm - SummaryForm', () => {
 
   let params: { tenantId: string, serviceId: string }
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_PIN_ENHANCE_TOGGLE || ff === Features.EDGES_TOGGLE)
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_PIN_ENHANCE_TOGGLE || ff === Features.EDGES_TOGGLE)
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serviceId: 'testServiceId'

@@ -5,10 +5,10 @@ import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features }               from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }  from '@acx-ui/rc/components'
 import { useGetEdgePinByIdQuery } from '@acx-ui/rc/services'
 import {
-  CatchErrorResponse,
   EdgePinFixtures,
   EdgePinUrls
 } from '@acx-ui/rc/utils'
@@ -19,7 +19,8 @@ import {
   screen,
   waitFor
 } from '@acx-ui/test-utils'
-import { RequestPayload } from '@acx-ui/types'
+import { RequestPayload }     from '@acx-ui/types'
+import { CatchErrorResponse } from '@acx-ui/utils'
 
 import { afterSubmitMessage } from '../PersonalIdentityNetworkForm'
 
@@ -64,7 +65,8 @@ jest.mock('@acx-ui/rc/components', () => ({
         }])
       }, 300)
     })
-  })
+  }),
+  useIsEdgeFeatureReady: jest.fn()
 }))
 
 const mockedUsedNavigate = jest.fn()
@@ -77,10 +79,9 @@ const updatePinPath = '/:tenantId/t/services/personalIdentityNetwork/:serviceId/
 
 describe('Edit PersonalIdentityNetwork', () => {
   let params: { tenantId: string, serviceId: string }
+  jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
+    data: mockPinData, isLoading: false, refetch: jest.fn() }))
   beforeEach(() => {
-    jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
-      data: mockPinData, isLoading: false, refetch: jest.fn() }))
-
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serviceId: 'testServiceId'
@@ -156,8 +157,8 @@ describe('Edit PersonalIdentityNetwork', () => {
 describe('Enhanced PersonalIdentityNetwork', () => {
   let params: { tenantId: string, serviceId: string }
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_PIN_ENHANCE_TOGGLE || ff === Features.EDGES_TOGGLE)
-
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
+      ff === Features.EDGE_PIN_ENHANCE_TOGGLE || ff === Features.EDGES_TOGGLE)
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       serviceId: 'testServiceId'

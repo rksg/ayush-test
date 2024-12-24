@@ -3,8 +3,9 @@ import { ReactNode } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Provider }               from '@acx-ui/store'
+import { Features }              from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { Provider }              from '@acx-ui/store'
 import {
   render,
   screen,
@@ -24,6 +25,7 @@ jest.mock('../PersonalIdentityNetworkForm/GeneralSettingsForm', () => ({
   GeneralSettingsForm: () => <div data-testid='GeneralSettingsForm' />
 }))
 jest.mock('../PersonalIdentityNetworkForm/NetworkTopologyForm', () => ({
+  Wireless: 'Wireless',
   NetworkTopologyForm: () => <div data-testid='NetworkTopologyForm' />
 }))
 jest.mock('../PersonalIdentityNetworkForm/SmartEdgeForm', () => ({
@@ -57,7 +59,8 @@ jest.mock('@acx-ui/rc/components', () => ({
         }])
       }, 300)
     })
-  })
+  }),
+  useIsEdgeFeatureReady: jest.fn()
 }))
 
 const createPinPath = '/:tenantId/services/personalIdentityNetwork/create'
@@ -118,7 +121,7 @@ describe('Add PersonalIdentityNetwork', () => {
   })
 
   it('should show enhanced default steps correctly', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_PIN_ENHANCE_TOGGLE || ff === Features.EDGES_TOGGLE)
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_PIN_ENHANCE_TOGGLE || ff === Features.EDGES_TOGGLE)
     const user = userEvent.setup()
     render(<AddPersonalIdentityNetwork />, {
       wrapper: Provider,
