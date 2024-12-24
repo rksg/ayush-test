@@ -16,7 +16,7 @@ import { WirelessNetworkForm }                     from '../PersonalIdentityNetw
 
 import { Prerequisition } from './Prerequisition'
 
-const AddPersonalIdentityNetworkEnahanced = () => {
+const AddPersonalIdentityNetworkEnhanced = () => {
   const { tenantId } = useParams()
   const { $t } = useIntl()
   const { addPin } = useEdgePinActions()
@@ -79,4 +79,4 @@ const AddPersonalIdentityNetworkEnahanced = () => {
   )
 }
 
-export default AddPersonalIdentityNetworkEnahanced
+export default AddPersonalIdentityNetworkEnhanced

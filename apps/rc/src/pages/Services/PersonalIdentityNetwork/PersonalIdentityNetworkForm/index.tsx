@@ -8,17 +8,15 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { showActionModal, StepsForm, StepsFormGotoStepFn } from '@acx-ui/components'
 import { useValidateEdgePinNetworkMutation }               from '@acx-ui/rc/services'
 import {
-  CatchErrorResponse,
   CommonErrorsResult,
   CommonResult,
-  CatchErrorDetails,
   getServiceListRoutePath,
   LocationExtended,
   PersonalIdentityNetworkFormData,
   redirectPreviousPage
 } from '@acx-ui/rc/utils'
-import { useTenantLink } from '@acx-ui/react-router-dom'
-import { getIntl }       from '@acx-ui/utils'
+import { useTenantLink }                                  from '@acx-ui/react-router-dom'
+import { getIntl, CatchErrorDetails, CatchErrorResponse } from '@acx-ui/utils'
 
 interface PersonalIdentityNetworkFormProps {
   editMode?: boolean
