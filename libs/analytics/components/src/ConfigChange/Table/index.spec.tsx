@@ -160,7 +160,11 @@ describe('Table', () => {
       newValues: ['480'],
       oldValues: [],
       timestamp: '1685427082900',
-      type: 'ap'
+      type: 'ap',
+      path: [
+        { type: 'ap', name: '94:B3:4F:3D:21:80' }
+      ],
+      sliceValue: 'RuckusAP1'
     })
   })
 
