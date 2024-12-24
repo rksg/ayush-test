@@ -1,6 +1,6 @@
 import { Radius }                                                             from '../../models'
 import { EthernetPortAuthType, EthernetPortSupplicantType, EthernetPortType } from '../../models/EthernetPortProfileEnum'
-import { LanPortAPSettings }                                                  from '../ap'
+import { APLanPortSettings }                                                  from '../ap'
 
 import { ProfileLanApActivations, ProfileLanVenueActivations } from './common'
 
@@ -24,7 +24,7 @@ export interface EthernetPortProfileViewData {
     venueIds: string[]
     venueActivations?: ProfileLanVenueActivations[]
     apActivations?: ProfileLanApActivations[]
-    apPortOverwrites?: LanPortAPSettings[]
+    apPortOverwrites?: APLanPortSettings[]
   }
 
 export interface EthernetPortProfile {
