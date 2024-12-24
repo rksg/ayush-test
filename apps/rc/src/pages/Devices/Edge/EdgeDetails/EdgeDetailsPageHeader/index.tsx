@@ -21,9 +21,9 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { EdgeScopes, OpsIds, ScopeKeys } from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { useDateFilter }                 from '@acx-ui/utils'
+import { EdgeScopes, RbacOpsIds, ScopeKeys } from '@acx-ui/types'
+import { filterByAccess, hasPermission }     from '@acx-ui/user'
+import { useDateFilter }                     from '@acx-ui/utils'
 
 import { HaStatusBadge }          from '../../HaStatusBadge'
 import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
@@ -75,7 +75,7 @@ export const EdgeDetailsPageHeader = () => {
     label: string,
     key: string,
     showupstatus?: EdgeStatusEnum[],
-    rbacOpsId?: OpsIds
+    rbacOpsId?: RbacOpsIds
   } []
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
