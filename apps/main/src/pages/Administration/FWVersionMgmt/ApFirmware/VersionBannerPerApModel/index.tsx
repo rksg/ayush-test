@@ -3,6 +3,7 @@ import { useContext, useState } from 'react'
 import { Col, Divider, Row, Space } from 'antd'
 import { useIntl }                  from 'react-intl'
 
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   ApFirmwareUpdateGroupType,
@@ -20,6 +21,7 @@ import { ApFirmwareContext } from '../index'
 export function VersionBannerPerApModel () {
   const { $t } = useIntl()
   const apFirmwareContext = useContext(ApFirmwareContext)
+  const isApFwMgmtEarlyAccess = useIsSplitOn(Features.AP_FW_MGMT_EARLY_ACCESS_TOGGLE)
   const [ shownMoreFirmwaresInBanner, setShownMoreFirmwaresInBanner ] = useState(false)
   const { updateGroupsWithLatestVersion } = useGetAllApModelFirmwareListQuery({}, {
     refetchOnMountOrArgChange: 300,
@@ -27,7 +29,7 @@ export function VersionBannerPerApModel () {
       if (!data || data.length === 0 || isLoading) return { updateGroupsWithLatestVersion: [] }
 
       let updateGroups = convertApModelFirmwaresToUpdateGroups(
-        data.filter(d => d.labels?.includes(FirmwareLabel.GA))
+        isApFwMgmtEarlyAccess ? data.filter(d => d.labels?.includes(FirmwareLabel.GA)) : data
       )
       let updateAlphaGroups = convertApModelFirmwaresToUpdateGroups(
         data.filter(d => d.labels?.includes(FirmwareLabel.ALPHA))

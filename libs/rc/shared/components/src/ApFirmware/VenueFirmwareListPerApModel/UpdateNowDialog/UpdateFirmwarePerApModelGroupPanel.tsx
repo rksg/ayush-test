@@ -5,6 +5,7 @@ import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 
 import { Loader }                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { useGetAllApModelFirmwareListQuery }      from '@acx-ui/rc/services'
 import { FirmwareLabel, FirmwareVenuePerApModel } from '@acx-ui/rc/utils'
 import { getIntl }                                from '@acx-ui/utils'
@@ -30,6 +31,7 @@ type DisplayDataType = {
 
 export function UpdateFirmwarePerApModelGroupPanel (props: UpdateFirmwarePerApModelPanelProps) {
   const { selectedVenuesFirmwares, updatePayload, initialPayload } = props
+  const isApFwMgmtEarlyAccess = useIsSplitOn(Features.AP_FW_MGMT_EARLY_ACCESS_TOGGLE)
   const { data: apModelFirmwares, isLoading } = useGetAllApModelFirmwareListQuery({}, {
     refetchOnMountOrArgChange: 300
   })
@@ -40,7 +42,9 @@ export function UpdateFirmwarePerApModelGroupPanel (props: UpdateFirmwarePerApMo
     if (!apModelFirmwares) return
 
     const updateGrps = convertApModelFirmwaresToUpdateGroups(
-      apModelFirmwares.filter(d => d.labels?.includes(FirmwareLabel.GA))
+      isApFwMgmtEarlyAccess
+        ? apModelFirmwares.filter(d => d.labels?.includes(FirmwareLabel.GA))
+        : apModelFirmwares
     )
     const venuesBasedUpdateGrps = filterByVenues(selectedVenuesFirmwares, updateGrps)
     const displayData = convertToApModelGroupDisplayData(venuesBasedUpdateGrps, initialPayload)

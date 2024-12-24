@@ -6,6 +6,7 @@ import { CheckboxChangeEvent } from 'antd/es/checkbox'
 import { useIntl }             from 'react-intl'
 
 import { Loader }                            from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { useGetAllApModelFirmwareListQuery } from '@acx-ui/rc/services'
 import { FirmwareLabel }                     from '@acx-ui/rc/utils'
 
@@ -24,6 +25,7 @@ import { UpdateFirmwarePerApModelFirmware } from '.'
 // eslint-disable-next-line max-len
 export function UpdateFirmwarePerApModelIndividualPanel (props: UpdateFirmwarePerApModelPanelProps) {
   const { $t } = useIntl()
+  const isApFwMgmtEarlyAccess = useIsSplitOn(Features.AP_FW_MGMT_EARLY_ACCESS_TOGGLE)
   const { selectedVenuesFirmwares, updatePayload, initialPayload, isUpgrade = true } = props
   const { data: apModelFirmwares, isLoading } = useGetAllApModelFirmwareListQuery({}, {
     refetchOnMountOrArgChange: 300
@@ -38,7 +40,8 @@ export function UpdateFirmwarePerApModelIndividualPanel (props: UpdateFirmwarePe
 
     // eslint-disable-next-line max-len
     const updatedDisplayData = convertToApModelIndividualDisplayData(
-      apModelFirmwares.filter(d => d.labels?.includes(FirmwareLabel.GA)),
+      // eslint-disable-next-line max-len
+      isApFwMgmtEarlyAccess ? apModelFirmwares.filter(d => d.labels?.includes(FirmwareLabel.GA)) : apModelFirmwares,
       selectedVenuesFirmwares,
       initialPayload,
       isUpgrade
