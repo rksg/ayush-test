@@ -1,58 +1,69 @@
 import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
-import { directoryServerApi } from '@acx-ui/rc/services'
 import {
-  CommonRbacUrlsInfo,
-  DirectoryServerUrls,
-  getPolicyDetailsLink,
+  useDeleteSwitchPortProfileMutation,
+  useSwitchPortProfilesListQuery
+} from '@acx-ui/rc/services'
+import {
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType
-} from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+  PolicyType } from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
 import {
-  mockServer,
   render,
   screen,
   waitFor,
-  waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
 
 import SwitchPortProfileTable from './SwitchPortProfileTable'
 
 const mockedTableResult = {
-  totalCount: 2,
-  page: 1,
-  data: [{
-    wifiNetworkIds: [],
-    port: 389,
-    domainName: 'ou=mathematicians,dc=example,dc=com',
-    tenantId: '13c94993c1894fadbcf7b68e1f94b876',
-    name: 'Online LDAP Test Server',
-    host: 'ldap.forumsys.com',
-    id: 'a5ac9a7a3be54dba9c8741c67d1c41fa',
-    type: 'LDAP'
-  }, {
-    wifiNetworkIds: ['network1'],
-    port: 389,
-    domainName: 'dc=tdcad,dc=com',
-    tenantId: '13c94993c1894fadbcf7b68e1f94b876',
-    name: 'ldap-profile4',
-    host: '1.169.93.183',
-    id: '49d2173ae5d943daa454af8de40fd4d9',
-    type: 'LDAP'
-  }]
-}
-
-const mockedNetworkResult = {
   totalCount: 1,
   page: 1,
   data: [{
-    id: 'network1',
-    name: 'My Network1'
+    id: 'profile1',
+    name: 'Profile One',
+    type: 'Standard',
+    untaggedVlan: '10',
+    taggedVlans: ['20', '30'],
+    macOuis: [{ oui: 'AA:BB:CC' }, { oui: 'BB:CC:DD' }, { oui: 'CC:DD:EE' }],
+    lldpTlvs: [{ systemName: 'Switch1' }],
+    dot1x: true,
+    macAuth: false,
+    appliedSwitchesInfo: []
+  }]
+}
+
+const mockedTableMultipleResults = {
+  totalCount: 2,
+  page: 1,
+  data: [{
+    id: 'profile1',
+    name: 'Profile One',
+    type: 'Standard',
+    untaggedVlan: '10',
+    taggedVlans: ['20', '30'],
+    macOuis: [{ oui: 'AA:BB:CC' }, { oui: 'BB:CC:DD' }, { oui: 'CC:DD:EE' }],
+    lldpTlvs: [{ systemName: 'Switch1' }],
+    dot1x: true,
+    macAuth: false,
+    appliedSwitchesInfo: []
+  }, {
+    id: 'profile2',
+    name: 'Profile Two',
+    type: 'Advanced',
+    untaggedVlan: '15',
+    taggedVlans: ['25', '35'],
+    macOuis: [{ oui: 'DD:EE:FF' }],
+    lldpTlvs: [{ systemName: 'Switch2' }],
+    dot1x: false,
+    macAuth: true,
+    appliedSwitchesInfo: [{
+      switchName: 'Switch1',
+      venueName: 'Venue1'
+    }]
   }]
 }
 
@@ -64,152 +75,166 @@ const mockedTenantPath: Path = {
 }
 
 jest.mock('@acx-ui/react-router-dom', () => ({
-  ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUseNavigate,
   useTenantLink: (): Path => mockedTenantPath
 }))
 
+jest.mock('@acx-ui/rc/services', () => ({
+  useSwitchPortProfilesListQuery: jest.fn(),
+  useDeleteSwitchPortProfileMutation: jest.fn()
+}))
+
 describe('SwitchPortProfileTable', () => {
   const params = {
-    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+    tenantId: 'test-tenant-id'
   }
 
-  // eslint-disable-next-line max-len
-  const tablePath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.DIRECTORY_SERVER, oper: PolicyOperation.LIST })
-
-  beforeEach(async () => {
-    store.dispatch(directoryServerApi.util.resetApiState())
-    mockServer.use(
-      rest.post(
-        DirectoryServerUrls.getDirectoryServerViewDataList.url,
-        (req, res, ctx) => res(ctx.json(mockedTableResult))
-      ),
-      rest.post(
-        CommonRbacUrlsInfo.getWifiNetworksList.url,
-        (req, res, ctx) => res(ctx.json(mockedNetworkResult))
-      )
-    )
+  const tablePath = '/:tenantId/t/' + getPolicyRoutePath({
+    type: PolicyType.SWITCH_PORT_PROFILE,
+    oper: PolicyOperation.LIST
   })
 
-  it('should render table', async () => {
+  beforeEach(() => {
+    // Mock the RTK Query hooks
+    (useSwitchPortProfilesListQuery as jest.Mock).mockReturnValue({
+      data: mockedTableResult,
+      isLoading: false,
+      isFetching: false
+    })
+
+    const mockDeleteMutation = jest.fn().mockResolvedValue({ data: { requestId: '12345' } })
+    ;(useDeleteSwitchPortProfileMutation as jest.Mock).mockReturnValue([
+      mockDeleteMutation,
+      { isLoading: false }
+    ])
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('should render table with correct columns', async () => {
     render(
       <Provider>
         <SwitchPortProfileTable />
-      </Provider>, {
+      </Provider>,
+      {
         route: { params, path: tablePath }
       }
     )
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
-    const targetName = mockedTableResult.data[0].name
-    // eslint-disable-next-line max-len
-    expect(await screen.findByRole('button', { name: /Add Directory Server/i })).toBeVisible()
-    expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
+    // Check column headers
+    expect(screen.getByText('Name')).toBeVisible()
+    expect(screen.getByText('Server Type')).toBeVisible()
+    expect(screen.getByText('Untagged VLAN')).toBeVisible()
+    expect(screen.getByText('Tagged VLAN')).toBeVisible()
+    expect(screen.getByText('MAC OUI')).toBeVisible()
+    expect(screen.getByText('LLDP TLV')).toBeVisible()
+    expect(screen.getByText('Switches')).toBeVisible()
   })
 
-  it('should render breadcrumb correctly', async () => {
+  it('should display profile data correctly', async () => {
     render(
       <Provider>
         <SwitchPortProfileTable />
-      </Provider>, {
+      </Provider>,
+      {
         route: { params, path: tablePath }
       }
     )
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
-    expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'Policies & Profiles'
-    })).toBeVisible()
+    const profile = mockedTableResult.data[0]
+    const row = await screen.findByRole('row', { name: new RegExp(profile.name) })
+
+    expect(within(row).getByText(profile.name)).toBeVisible()
+    expect(within(row).getByText(profile.type)).toBeVisible()
+    expect(within(row).getByText(profile.untaggedVlan)).toBeVisible()
+    expect(within(row).getByText('2')).toBeVisible() // Tagged VLANs count
+    expect(within(row).getByText('3')).toBeVisible() // MAC OUI count
+    expect(within(row).getByText('1')).toBeVisible() // LLDP TLV count
   })
 
-  it('should delete selected row', async () => {
-    const deleteFn = jest.fn()
-
-    mockServer.use(
-      rest.delete(
-        DirectoryServerUrls.deleteDirectoryServer.url,
-        (req, res, ctx) => {
-          deleteFn(req.body)
-          return res(ctx.json({ requestId: '12345' }))
-        }
-      )
-    )
+  it('should handle delete profile without switches', async () => {
+    const mockDeleteFn = jest.fn().mockResolvedValue({ data: { requestId: '12345' } })
+    ;(useDeleteSwitchPortProfileMutation as jest.Mock).mockReturnValue([
+      mockDeleteFn,
+      { isLoading: false }
+    ])
 
     render(
       <Provider>
         <SwitchPortProfileTable />
-      </Provider>, {
+      </Provider>,
+      {
         route: { params, path: tablePath }
       }
     )
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
-    const target = mockedTableResult.data[0]
-    const row = await screen.findByRole('row', { name: new RegExp(target.name) })
+    const profile = mockedTableResult.data[0]
+    const row = await screen.findByRole('row', { name: new RegExp(profile.name) })
     await userEvent.click(within(row).getByRole('checkbox'))
-
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
 
-    expect(await screen.findByText('Delete "' + target.name + '"?')).toBeVisible()
+    expect(await screen.findByText(`Delete ${profile.name}?`)).toBeVisible()
 
-    await userEvent.click(await screen.findByRole('button', { name: /Delete Policy/i }))
+    const delBtn = await within(await screen.findByRole('dialog'))
+      .findByRole('button', { name: /Delete/ })
+    await userEvent.click(delBtn)
 
     await waitFor(() => {
-      expect(deleteFn).toHaveBeenCalled()
-    })
-    await waitFor(() => {
-      expect(screen.queryByRole('dialog')).toBeNull()
+      expect(mockDeleteFn).toHaveBeenCalledWith({ params: { portProfileId: profile.id } })
     })
   })
 
-  it('should not delete selected row when it is applied to Network', async () => {
-
+  it('should show warning when deleting profile with switches', async () => {
+    (useSwitchPortProfilesListQuery as jest.Mock).mockReturnValue({
+      data: mockedTableMultipleResults,
+      isLoading: false,
+      isFetching: false
+    })
     render(
       <Provider>
         <SwitchPortProfileTable />
-      </Provider>, {
+      </Provider>,
+      {
         route: { params, path: tablePath }
       }
     )
 
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const profile1 = mockedTableMultipleResults.data[0]
+    const row1 = await screen.findByRole('row', { name: new RegExp(profile1.name) })
+    await userEvent.click(within(row1).getByRole('checkbox'))
+    const profile2 = mockedTableMultipleResults.data[1]
+    const row2 = await screen.findByRole('row', { name: new RegExp(profile2.name) })
+    await userEvent.click(within(row2).getByRole('checkbox'))
+    await userEvent.click(await screen.findByRole('button', { name: /Delete/ }))
 
-    const target = mockedTableResult.data[1]
-    const row = await screen.findByRole('row', { name: new RegExp(target.name) })
-    await userEvent.click(within(row).getByRole('checkbox'))
-
-    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
-
-    // eslint-disable-next-line max-len
-    expect(await screen.findByText('You are unable to delete this record due to its usage in Network')).toBeVisible()
+    const delDialog = await within(await screen.findByRole('dialog'))
+      .findByText('Delete ICX Port Profile(s)?')
+    expect(delDialog).toBeVisible()
+    expect(
+      screen.getByText(/will cause the associated ports to lose the configuration/)).toBeVisible()
   })
 
-  it('should navigate to the Edit view', async () => {
+  it('should navigate to edit view', async () => {
     render(
       <Provider>
         <SwitchPortProfileTable />
-      </Provider>, {
+      </Provider>,
+      {
         route: { params, path: tablePath }
       }
     )
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
-    const target = mockedTableResult.data[0]
-    const row = await screen.findByRole('row', { name: new RegExp(target.name) })
+    const profile = mockedTableResult.data[0]
+    const row = await screen.findByRole('row', { name: new RegExp(profile.name) })
     await userEvent.click(within(row).getByRole('checkbox'))
-
     await userEvent.click(screen.getByRole('button', { name: /Edit/ }))
-
-    const editPath = getPolicyDetailsLink({
-      type: PolicyType.DIRECTORY_SERVER,
-      oper: PolicyOperation.EDIT,
-      policyId: target.id
-    })
 
     expect(mockedUseNavigate).toHaveBeenCalledWith({
       ...mockedTenantPath,
-      pathname: `${mockedTenantPath.pathname}/${editPath}`
+      // eslint-disable-next-line max-len
+      pathname: `${mockedTenantPath.pathname}/policies/portProfile/switch/profiles/${profile.id}/edit`
     })
   })
 })
