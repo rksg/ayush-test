@@ -3,7 +3,8 @@ import { ReactNode } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
-import { Provider } from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Provider }               from '@acx-ui/store'
 import {
   render,
   screen,
@@ -21,6 +22,9 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('../PersonalIdentityNetworkForm/GeneralSettingsForm', () => ({
   GeneralSettingsForm: () => <div data-testid='GeneralSettingsForm' />
+}))
+jest.mock('../PersonalIdentityNetworkForm/NetworkTopologyForm', () => ({
+  NetworkTopologyForm: () => <div data-testid='NetworkTopologyForm' />
 }))
 jest.mock('../PersonalIdentityNetworkForm/SmartEdgeForm', () => ({
   SmartEdgeForm: () => <div data-testid='SmartEdgeForm' />
@@ -111,5 +115,34 @@ describe('Add PersonalIdentityNetwork', () => {
       name: 'Personal Identity Network'
     })).toBeVisible()
     await screen.findByTestId('GeneralSettingsForm')
+  })
+
+  it('should show enhanced default steps correctly', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_PIN_ENHANCE_TOGGLE || ff === Features.EDGES_TOGGLE)
+    const user = userEvent.setup()
+    render(<AddPersonalIdentityNetwork />, {
+      wrapper: Provider,
+      route: { params, path: createPinPath }
+    })
+    // step 1
+    await screen.findByTestId('GeneralSettingsForm')
+    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    // step 2
+    await screen.findByTestId('NetworkTopologyForm')
+    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    // step 3
+    await screen.findByTestId('SmartEdgeForm')
+    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    // step 4
+    await screen.findByTestId('WirelessNetworkForm')
+    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    // step 5
+    await screen.findByTestId('SummaryForm')
+    await user.click(screen.getByRole('button', { name: 'Add' }))
+    await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
+      hash: '',
+      pathname: `/${params.tenantId}/t/services/list`,
+      search: ''
+    }))
   })
 })

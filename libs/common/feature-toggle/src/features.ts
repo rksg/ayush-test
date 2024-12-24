@@ -40,6 +40,7 @@ export enum Features {
   EDGE_DHCP_HA_TOGGLE = 'edge-dhcp-ha-toggle',
   EDGE_FIREWALL_HA_TOGGLE = 'edge-firewall-ha-toggle',
   EDGE_PIN_HA_TOGGLE = 'edge-pin-ha-toggle',
+  EDGE_PIN_ENHANCE_TOGGLE = 'edge-pin-enhance-toggle',
   EDGE_GRACEFUL_SHUTDOWN_TOGGLE = 'edge-graceful-shutdown-toggle',
   EDGE_VXLAN_TUNNEL_KA_TOGGLE = 'edge-vxlan-tunnel-ka-toggle',
   EDGE_SD_LAN_MV_TOGGLE = 'edge-sdlan-mv-toggle',
