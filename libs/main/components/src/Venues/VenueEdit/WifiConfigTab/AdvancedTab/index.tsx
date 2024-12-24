@@ -34,6 +34,7 @@ export function AdvancedTab () {
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { isTemplate } = useConfigTemplate()
   const isAllowUseApUsbSupport = useIsSplitOn(Features.AP_USB_PORT_SUPPORT_TOGGLE)
+  const supportApMgmgtVlan = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
 
   const {
     editContextData,
@@ -41,9 +42,6 @@ export function AdvancedTab () {
     editAdvancedContextData,
     setEditAdvancedContextData,
     previousPath } = useContext(VenueEditContext)
-
-
-  const supportApMgmgtVlan = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
 
   const anchorItems = [
     ...(!isTemplate ? [

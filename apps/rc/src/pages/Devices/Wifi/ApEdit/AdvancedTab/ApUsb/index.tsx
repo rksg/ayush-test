@@ -1,11 +1,12 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Row, Switch } from 'antd'
-import { isEmpty }                from 'lodash'
-import { useIntl }                from 'react-intl'
-import { useParams }              from 'react-router-dom'
+import { Col, Form, Row, Space, Switch } from 'antd'
+import { isEmpty }                       from 'lodash'
+import { useIntl }                       from 'react-intl'
+import { useParams }                     from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { Loader, StepsFormLegacy, StepsFormLegacyInstance, Tooltip } from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                                from '@acx-ui/icons'
 import {
   useGetApUsbQuery,
   useLazyGetVenueApUsbStatusQuery,
@@ -29,6 +30,9 @@ export function ApUsb () {
     editAdvancedContextData,
     setEditAdvancedContextData
   } = useContext(ApEditContext)
+
+  // eslint-disable-next-line max-len
+  const usbInfoMessage = $t({ defaultMessage: 'Enable or disable the USB port for IoT-connected devices. When enabled, the port supports IoT device connectivity and data transfer' })
 
   const { apData: apDetails, venueData } = useContext(ApDataContext)
   const venueId = venueData?.id
@@ -157,7 +161,16 @@ export function ApUsb () {
         <Row gutter={0} style={{ height: '40px' }}>
           <Col span={8}>
             <FieldLabel width='180px' >
-              {$t({ defaultMessage: 'USB Support' })}
+              <Space>
+                {$t({ defaultMessage: 'USB Support' })}
+                <Tooltip title={usbInfoMessage} placement='bottom'>
+                  <QuestionMarkCircleOutlined style={{
+                    height: '14px',
+                    marginBottom: -3,
+                    marginLeft: -8
+                  }}/>
+                </Tooltip>
+              </Space>
               <Form.Item
                 name='usbPortEnable'
                 valuePropName='checked'
