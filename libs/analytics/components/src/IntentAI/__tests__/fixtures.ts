@@ -280,7 +280,9 @@ const intentStatus = {
   updatedAt: '2023-06-16T06:05:02.839Z',
   sliceType: 'zone',
   sliceValue: 'zone-1',
-  metadata: {},
+  metadata: {
+    changedByName: 'fakeUser lastName5566'
+  },
   path: [
     { type: 'system', name: 'vsz611' },
     { type: 'zone', name: 'EDU-MeshZone_S12348' }
@@ -316,7 +318,8 @@ export const intentListWithAllStatus = {
       statusReason: '',
       displayStatus: 'scheduled',
       metadata: {
-        scheduledAt: '2023-06-17T00:00:00.000Z'
+        scheduledAt: '2023-06-17T00:00:00.000Z',
+        changedByName: 'fakeUserWithOptimize lastName5566'
       }
     },
     {
@@ -325,7 +328,8 @@ export const intentListWithAllStatus = {
       statusReason: 'one-click',
       displayStatus: 'scheduled-one-click',
       metadata: {
-        scheduledAt: '2023-06-17T00:00:00.000Z'
+        scheduledAt: '2023-06-17T00:00:00.000Z',
+        changedByName: 'fakeUserWithOneClickOptimize lastName5566'
       }
     },
     {
@@ -371,7 +375,8 @@ export const intentListWithAllStatus = {
       statusReason: '',
       displayStatus: 'revertscheduled',
       metadata: {
-        scheduledAt: '2023-06-17T00:00:00.000Z'
+        scheduledAt: '2023-06-17T00:00:00.000Z',
+        changedByName: 'fakeUserWithRevert lastName5566'
       }
     },
     {
