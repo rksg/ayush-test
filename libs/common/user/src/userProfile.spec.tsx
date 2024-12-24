@@ -328,6 +328,20 @@ describe('hasPermission', () => {
       expect(hasPermission({ scopes: [], rbacOpsIds: ['GET:/edges'] })).toBe(false)
     })
 
+    it('check not CUSTOM user permission', () => {
+      setRole({
+        role: RolesEnum.ADMINISTRATOR,
+        abacEnabled: true,
+        isCustomRole: false,
+        rbacOpsApiEnabled: false })
+
+      expect(hasPermission()).toBe(true)
+      expect(hasPermission({ rbacOpsIds: ['GET:/switches'] })).toBe(true)
+      expect(hasPermission({ rbacOpsIds: ['GET:/edges'] })).toBe(true)
+      expect(hasPermission({ scopes: [], rbacOpsIds: ['GET:/networks'] })).toBe(true)
+      expect(hasPermission({ scopes: [], rbacOpsIds: ['GET:/edges'] })).toBe(true)
+    })
+
     it('check CUSTOM user permission', () => {
       setRole({
         role: 'CUSTOM USER' as RolesEnum,
@@ -370,6 +384,7 @@ describe('hasPermission', () => {
         rbacOpsApiEnabled: true
       })
       expect(hasPermission()).toBe(false)
+      expect(hasCrossVenuesPermission()).toBe(true)
       expect(hasPermission({ rbacOpsIds: ['GET:/switches'] })).toBe(true)
       expect(hasPermission({ rbacOpsIds: ['GET:/edges'] })).toBe(false)
       expect(hasPermission({ rbacOpsIds: ['SHOW_WITHOUT_RBAC_CHECK'] })).toBe(true)
@@ -502,15 +517,55 @@ describe('AuthRoute', () => {
       scopes: [],
       hasAllVenues: true
     })
-    render(
-      <Router>
-        <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }}>
-          <div>test page</div>
-        </AuthRoute>
-      </Router>
+    render(<Router>
+      <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }}>
+        <div>test page</div>
+      </AuthRoute>
+    </Router>
 
     )
     expect(await screen.findByText('test page')).toBeVisible()
+  })
+
+  it('should go to correct page for for global permission with opsAPI', async () => {
+    setRole({
+      role: RolesEnum.ADMINISTRATOR,
+      abacEnabled: true,
+      isCustomRole: false,
+      scopes: [],
+      hasAllVenues: true,
+      rbacOpsApiEnabled: true
+    })
+    render(<Router>
+      <AuthRoute
+        requireCrossVenuesPermission={{ needGlobalPermission: true }}
+        rbacOpsId={[['GET:/networks', 'GET:/switches' ]]}>
+        <div>test page</div>
+      </AuthRoute>
+    </Router>
+
+    )
+    expect(await screen.findByText('test page')).toBeVisible()
+  })
+
+  it('should not go to correct page for for global permission with opsAPI', async () => {
+    setRole({
+      role: RolesEnum.ADMINISTRATOR,
+      abacEnabled: true,
+      isCustomRole: false,
+      scopes: [],
+      hasAllVenues: true,
+      rbacOpsApiEnabled: true
+    })
+    render(<Router>
+      <AuthRoute
+        requireCrossVenuesPermission={{ needGlobalPermission: true }}>
+        <div>test page</div>
+      </AuthRoute>
+    </Router>
+
+    )
+    expect(await screen.findByTestId('no-permissions')).toBeVisible()
   })
 
   it('should go to correct page: custom role', async () => {
