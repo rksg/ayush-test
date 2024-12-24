@@ -41,6 +41,7 @@ export enum Features {
   EDGE_DHCP_HA_TOGGLE = 'edge-dhcp-ha-toggle',
   EDGE_FIREWALL_HA_TOGGLE = 'edge-firewall-ha-toggle',
   EDGE_PIN_HA_TOGGLE = 'edge-pin-ha-toggle',
+  EDGE_PIN_ENHANCE_TOGGLE = 'edge-pin-enhance-toggle',
   EDGE_GRACEFUL_SHUTDOWN_TOGGLE = 'edge-graceful-shutdown-toggle',
   EDGE_VXLAN_TUNNEL_KA_TOGGLE = 'edge-vxlan-tunnel-ka-toggle',
   EDGE_SD_LAN_MV_TOGGLE = 'edge-sdlan-mv-toggle',
@@ -121,6 +122,7 @@ export enum Features {
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   RBAC_PHASE2_SSO_TOGGLE = 'acx-ui-rbac-phase2-toggle',
   RBAC_PHASE2_TOGGLE = 'acx-ui-rbac-phase21-toggle',
+  RBAC_PHASE3_TOGGLE = 'acx-ui-rbac-phase3-toggle',
   REC_TO_MSP_CONVERSION_TOGGLE = 'acx-rec-to-msp-conversion-toggle',
   RECOMMENDATION_DELETE = 'acx-ui-recommendation-delete-toggle',
   RECOMMENDATION_REVERT = 'acx-ui-recommendation-revert-toggle',
@@ -244,7 +246,8 @@ export enum Features {
   WIFI_R370_TOGGLE = 'wifi-r370-toggle',
   MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE = 'mac-registration-require-identity-group',
   DPSK_REQUIRE_IDENTITY_GROUP = 'dpsk-require-identity-group',
-  ACX_UI_NON_PROXY_ACCOUNTING_DPSK_TOGGLE = 'acx-ui-non-proxy-accounting-dpsk-toggle'
+  ACX_UI_NON_PROXY_ACCOUNTING_DPSK_TOGGLE = 'acx-ui-non-proxy-accounting-dpsk-toggle',
+  AP_FW_MGMT_EARLY_ACCESS_TOGGLE = 'ap-fw-mgmt-early-access-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
