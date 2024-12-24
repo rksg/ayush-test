@@ -11,6 +11,7 @@ import {
   ContentSwitcher,
   ContentSwitcherProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { formatter, intlFormats } from '@acx-ui/formatter'
 import { useLoadTimeTracking }    from '@acx-ui/utils'
 import type { AnalyticsFilter }   from '@acx-ui/utils'
@@ -26,6 +27,7 @@ export function TopApplicationsByTraffic ({
 }) {
   const { $t } = useIntl()
   const queryResults = useTopApplicationsByTrafficQuery(filters)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const columns=[
     {
@@ -98,7 +100,8 @@ export function TopApplicationsByTraffic ({
 
   useLoadTimeTracking({
     itemName: 'TopApplicationsByTraffic',
-    states: [queryResults]
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
   })
 
   return (

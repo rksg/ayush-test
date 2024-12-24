@@ -15,6 +15,7 @@ import {
   Loader,
   NoData
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import { formatter, intlFormats }                             from '@acx-ui/formatter'
 import { NavigateFunction, Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { useLoadTimeTracking }                                from '@acx-ui/utils'
@@ -74,7 +75,7 @@ function TopSwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }
   const navigate = useNavigate()
 
   const intl = useIntl()
-
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const queryResults = useTopSwitchesByPoEUsageQuery(filters,
     {
@@ -87,7 +88,8 @@ function TopSwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }
 
   useLoadTimeTracking({
     itemName: 'TopSwitchesByPoEUsageWidget',
-    states: [queryResults]
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
   })
 
   return (

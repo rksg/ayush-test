@@ -21,6 +21,7 @@ import {
   TooltipWrapper,
   EventParams
 }                                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import { formatter }                                          from '@acx-ui/formatter'
 import { NavigateFunction, Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { useLoadTimeTracking }                                from '@acx-ui/utils'
@@ -82,6 +83,7 @@ function TopSwitchesByTrafficWidget ({ filters }: { filters : AnalyticsFilter })
   const { $t } = useIntl()
   const basePath = useTenantLink('/devices/switch/')
   const navigate = useNavigate()
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const queryResults = useTopSwitchesByTrafficQuery(filters,
     {
@@ -95,7 +97,8 @@ function TopSwitchesByTrafficWidget ({ filters }: { filters : AnalyticsFilter })
 
   useLoadTimeTracking({
     itemName: 'TopSwitchesByTrafficWidget',
-    states: [queryResults]
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
   })
 
   return (

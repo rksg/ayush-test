@@ -22,6 +22,7 @@ export function MapWidgetV2 () {
 
 function ActualMapV2 () {
   const { venueIds } = useDashboardFilter()
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const queryResults = useDashboardV2OverviewQuery({
     params: useParams(),
@@ -43,7 +44,8 @@ function ActualMapV2 () {
 
   useLoadTimeTracking({
     itemName: 'ActualMapV2',
-    states: [queryResults]
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
   })
 
   return (

@@ -13,6 +13,7 @@ import {
   MultiLineTimeSeriesChart,
   NoData
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { TimeStamp, TimeStampRange } from '@acx-ui/types'
 import { useLoadTimeTracking }       from '@acx-ui/utils'
 
@@ -48,6 +49,8 @@ export const NetworkHistory = forwardRef<
   } = props
   const { $t } = useIntl()
   const toggles = useIncidentToggles()
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+
   let seriesMapping = [
     {
       key: 'newClientCount',
@@ -75,7 +78,8 @@ export const NetworkHistory = forwardRef<
 
   useLoadTimeTracking({
     itemName: 'NetworkHistory',
-    states: [queryResults]
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
   })
 
   return (

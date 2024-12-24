@@ -36,6 +36,7 @@ export function SwitchesTrafficByVolume ({
 }) {
   const { $t } = useIntl()
   const supportPortTraffic = useIsSplitOn(Features.SWITCH_PORT_TRAFFIC)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const seriesMapping = [
     { key: 'switchTotalTraffic', name: $t({ defaultMessage: 'Total' }) },
     { key: 'switchTotalTraffic_tx', name: $t({ defaultMessage: 'Tx' }) },
@@ -56,7 +57,8 @@ export function SwitchesTrafficByVolume ({
 
   useLoadTimeTracking({
     itemName: 'SwitchesTrafficByVolume',
-    states: [queryResults]
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
   })
 
   return (

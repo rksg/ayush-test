@@ -107,6 +107,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
   const params = useParams()
   const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
   const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const { showAllColumns, searchString, setConnectedClientCount } = props
   const [ tableSelected, setTableSelected] = useState({
@@ -706,7 +707,8 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
 
   useLoadTimeTracking({
     itemName: 'WirelessClientsTable',
-    states: [tableQuery]
+    states: [tableQuery],
+    isEnabled: isMonitoringPageEnabled
   })
 
   return (

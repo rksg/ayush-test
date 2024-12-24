@@ -3,6 +3,7 @@ import AutoSizer                  from 'react-virtualized-auto-sizer'
 
 import type { DonutChartData }                                             from '@acx-ui/components'
 import { HistoricalCard, Loader, NoData, DonutChart, qualitativeColorSet } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { useLoadTimeTracking }                                             from '@acx-ui/utils'
 import type { AnalyticsFilter }                                            from '@acx-ui/utils'
 
@@ -29,6 +30,8 @@ export { TopSwitchModelsWidget as TopSwitchModels }
 
 function TopSwitchModelsWidget ({ filters }: { filters: AnalyticsFilter }) {
   const { $t } = useIntl()
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+
   const queryResults = useTopSwitchModelsQuery(filters,{
     selectFromResult: ({ data, ...rest }) => ({
       data: getTopSwitchModelsDonutChartData(data!),
@@ -40,7 +43,8 @@ function TopSwitchModelsWidget ({ filters }: { filters: AnalyticsFilter }) {
 
   useLoadTimeTracking({
     itemName: 'TopSwitchModelsWidget',
-    states: [queryResults]
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
   })
 
   return (

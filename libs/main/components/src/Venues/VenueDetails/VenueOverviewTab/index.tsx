@@ -42,7 +42,7 @@ export function VenueOverviewTab () {
   const { dateFilter } = useDateFilter()
   const { venueId } = useParams()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const { onChangeFilter, setSubTab } = useContext(LoadTimeContext)
+  const { onPageFilterChange, setSubTab } = useContext(LoadTimeContext)
 
   const venueFilter = {
     ...dateFilter,
@@ -71,11 +71,11 @@ export function VenueOverviewTab () {
 
   useEffect(() => {
     setSubTab?.('OVERVIEW')
-    onChangeFilter(venueFilter, true)
+    onPageFilterChange?.(venueFilter, true)
   }, [])
 
   useEffect(() => {
-    onChangeFilter?.(venueFilter)
+    onPageFilterChange?.(venueFilter)
   }, [venueFilter])
 
   return (<>

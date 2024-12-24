@@ -87,6 +87,7 @@ export function ClientsWidgetV2 () {
   const { venueIds } = useDashboardFilter()
 
   const isNewDashboardQueryEnabled = useIsSplitOn(Features.DASHBOARD_NEW_API_TOGGLE)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const query = isNewDashboardQueryEnabled ? useClientSummariesQuery : useDashboardV2OverviewQuery
 
   const queryResults = query({
@@ -112,7 +113,8 @@ export function ClientsWidgetV2 () {
 
   useLoadTimeTracking({
     itemName: 'ClientsWidgetV2',
-    states: [queryResults]
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
   })
 
   return (

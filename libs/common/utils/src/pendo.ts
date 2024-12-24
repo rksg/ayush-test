@@ -4,7 +4,7 @@ declare global {
   var pendo: { // eslint-disable-line no-var
     initialize(init: Record<string, Record<string, string | boolean>>): void
     identify(init: Record<string, Record<string, string | boolean>>): void
-    track(name: string, data: Record<string, string | number | Record<string, string>>): void
+    track(name: string, data: Record<string, unknown>): void
   }
   function pendoInitalization (): Promise<void>
 }

@@ -5,6 +5,7 @@ import { useIntl }          from 'react-intl'
 import AutoSizer            from 'react-virtualized-auto-sizer'
 
 import { Loader, Carousel }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import type { DashboardFilter, PathFilter }                  from '@acx-ui/utils'
 import { useLoadTimeTracking, TrackingPages, trackingItems } from '@acx-ui/utils'
 
@@ -38,6 +39,8 @@ function DidYouKnowWidget ({
   const [offset, setOffset] = useState(0)
   const [content, setContent] = useState<string[][]>(Array.from({ length: 5 }, () => []))
   const [carouselFactsMap, setCarouselFactsMap] = useState<Record<number, { facts: string[] }>>({})
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+
   const { data, isFetching, refetch, isSuccess, isLoading, initialLoadedFacts, availableFacts } =
     useFactsQuery(
       { ...filters, requestedList: carouselFactsMap?.[offset]?.facts },
@@ -95,7 +98,8 @@ function DidYouKnowWidget ({
 
   useLoadTimeTracking({
     itemName: trackingItems[TrackingPages.DASHBOARD].DID_YOU_KNOW,
-    states: [{ isSuccess, isLoading, isFetching }]
+    states: [{ isSuccess, isLoading, isFetching }],
+    isEnabled: isMonitoringPageEnabled
   })
 
   const onChange = useCallback((_: number, nextSlide: number) => {

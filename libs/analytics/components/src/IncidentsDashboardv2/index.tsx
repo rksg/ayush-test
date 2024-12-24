@@ -3,6 +3,7 @@ import AutoSizer                  from 'react-virtualized-auto-sizer'
 
 import { incidentSeverities, IncidentFilter }                                       from '@acx-ui/analytics/utils'
 import { HistoricalCard, Loader, NoActiveData, DonutChart, DonutChartData, cssStr } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import { useNavigateToPath }                                                        from '@acx-ui/react-router-dom'
 import { hasRaiPermission }                                                         from '@acx-ui/user'
 import { useLoadTimeTracking }                                                      from '@acx-ui/utils'
@@ -16,13 +17,15 @@ export function IncidentsDashboardv2 ({ filters }: { filters: IncidentFilter }) 
   const { $t } = useIntl()
   const toggles = useIncidentToggles()
   const onArrowClick = useNavigateToPath('/analytics/incidents/')
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const response = useIncidentsBySeverityDashboardv2Query({ ...filters, toggles })
   const { data: severities } = response
 
   useLoadTimeTracking({
     itemName: 'IncidentsDashboardv2',
-    states: [response]
+    states: [response],
+    isEnabled: isMonitoringPageEnabled
   })
 
   const incidentCountBySeverity: { [severity: string] : number } = {}

@@ -8,10 +8,11 @@ import {
   DonutChart,
   qualitativeColorSet
 } from '@acx-ui/components'
-import type { DonutChartData }  from '@acx-ui/components'
-import { formatter }            from '@acx-ui/formatter'
-import { useLoadTimeTracking }  from '@acx-ui/utils'
-import type { AnalyticsFilter } from '@acx-ui/utils'
+import type { DonutChartData }    from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { formatter }              from '@acx-ui/formatter'
+import { useLoadTimeTracking }    from '@acx-ui/utils'
+import type { AnalyticsFilter }   from '@acx-ui/utils'
 
 import { HierarchyNodeData, useTopAppsByTrafficQuery } from './services'
 
@@ -41,6 +42,8 @@ export function TopAppsByTraffic ({
   filters: AnalyticsFilter;
 }) {
   const { $t } = useIntl()
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+
   const queryResults = useTopAppsByTrafficQuery(filters,{
     selectFromResult: ({ data, ...rest }) => ({
       data: getTopAppsByTrafficChartData(data!),
@@ -52,7 +55,8 @@ export function TopAppsByTraffic ({
 
   useLoadTimeTracking({
     itemName: 'TopAppsByTraffic',
-    states: [queryResults]
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
   })
 
   return (

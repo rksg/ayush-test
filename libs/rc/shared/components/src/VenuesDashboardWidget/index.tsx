@@ -55,6 +55,7 @@ export function VenuesDashboardWidgetV2 () {
 
   const { venueIds } = useDashboardFilter()
 
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const isNewDashboardQueryEnabled = useIsSplitOn(Features.DASHBOARD_NEW_API_TOGGLE)
   const query = isNewDashboardQueryEnabled ? useVenueSummariesQuery : useDashboardV2OverviewQuery
 
@@ -74,7 +75,8 @@ export function VenuesDashboardWidgetV2 () {
 
   useLoadTimeTracking({
     itemName: 'VenuesDashboardWidgetV2',
-    states: [queryResults]
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
   })
 
   return (

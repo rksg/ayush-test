@@ -7,7 +7,6 @@ import _                       from 'lodash'
 import moment                  from 'moment-timezone'
 
 import { AnalyticsFilter } from './types/analyticsFilter'
-// import { Filter } from '../../components/src/components/Table/filters'
 
 const TIME_THRESHOLD_OF_COMPONENT = 10_000 //300_000
 const LOAD_TIME = {
@@ -203,49 +202,46 @@ export const LoadTimeContext
   = createContext<LoadTimeContextType>({} as LoadTimeContextType)
 
 export interface LoadTimeContextType {
-  recordLoadTime: (name: string, time: number, isUnfulfilled: boolean) => void
-  onChangeFilter: (updatedFilter: Filters, isInit?: boolean) => void
+  updateLoadTime: (name: string, time: number, isUnfulfilled: boolean) => void
+  onPageFilterChange: (updatedFilter: Filters, isInit?: boolean) => void
   setSubTab: (name: string) => void
   pageLoadStart: number
-  isFilterChanged?: boolean
+  isFiltersChanged?: boolean
 }
 
 export const LoadTimeProvider = ({ page, children }: {
   page: TrackingPages, children: React.ReactNode, filters?: Filters
 }) => {
   const isLoadTimeSet = useRef(false)
-  const [pageLoadStart, setPageLoadStart] = useState(getCurrentTime())
   const [subTab, setSubTab] = useState('')
   const [loadTimes, setLoadTimes] = useState<LoadTimes>({})
-  const [currentFilters, setCurrentFilters] = useState({} as unknown as Filters)
-  const [isFilterChanged, setIsFilterChanged] = useState(false)
+  const [isFiltersChanged, setisFiltersChanged] = useState(false)
+  const [pageLoadStart, setPageLoadStart] = useState(getCurrentTime())
+  const [pageFilters, setPageFilters] = useState({} as unknown as Filters)
 
-  const recordLoadTime = (name: string, time: number, isUnfulfilled = false) => {
+  const updateLoadTime = (name: string, time: number, isUnfulfilled = false) => {
     setLoadTimes((prev) => ({ ...prev, [name]: { time, isUnfulfilled } }))
   }
 
-  const onChangeFilter = (updatedFilter: Filters, isInit?: boolean) => {
+  const onPageFilterChange = (updatedFilters: Filters, isInit?: boolean) => {
     const hasChanged = (
-      (updatedFilter?.filterValues || updatedFilter?.searchValue || updatedFilter?.range) &&
-      !_.isEqual(updatedFilter, currentFilters)
+      (updatedFilters?.filterValues || updatedFilters?.searchValue || updatedFilters?.range) &&
+      !_.isEqual(updatedFilters, pageFilters)
     )
 
     if (isInit) {
-      setCurrentFilters(updatedFilter)
+      setPageFilters(updatedFilters)
     } else if (hasChanged && isLoadTimeSet.current) {
       // eslint-disable-next-line no-console, max-len
       console.log('=== filter changes & reset load time ===',
-        getCurrentTime(), updatedFilter, currentFilters
+        getCurrentTime(), updatedFilters, pageFilters
       )
       setPageLoadStart(getCurrentTime())
-      setCurrentFilters(updatedFilter)
-      // setCurrentFilters({
-      //   filter: {},
-      //   ...updatedFilter
-      // })
+      setPageFilters(updatedFilters)
+
       isLoadTimeSet.current = false
       setLoadTimes({})
-      setIsFilterChanged(true)
+      setisFiltersChanged(true)
     }
   }
 
@@ -272,7 +268,7 @@ export const LoadTimeProvider = ({ page, children }: {
         load_time_ms: totalLoadTime,
         load_time_text: getLoadTimeStatus(totalLoadTime),
         components_load_time_ms: formatLoadTimes(loadTimes),
-        filters: currentFilters
+        filters: pageFilters
       }
 
       // eslint-disable-next-line no-console
@@ -281,72 +277,70 @@ export const LoadTimeProvider = ({ page, children }: {
       // eslint-disable-next-line no-console
       console.log('*** ', trackEventData)
 
-
       setLoadTimes({})
-      setIsFilterChanged(false)
+      setisFiltersChanged(false)
       isLoadTimeSet.current = true
 
       if (pendo) {
-        // console.log('*** ', pendo)
-        // pendo.track('testPageloadtime', trackEventData)
+        // eslint-disable-next-line no-console
+        console.log('*** ', pendo)
+        pendo.track('testPageloadtime', trackEventData)
       }
     }
   }, [loadTimes])
 
   return (
     <LoadTimeContext.Provider value={{
-      recordLoadTime, onChangeFilter, setSubTab, pageLoadStart, isFilterChanged
+      updateLoadTime, onPageFilterChange, setSubTab, pageLoadStart, isFiltersChanged
     }}>
       {children}
     </LoadTimeContext.Provider>
   )
 }
 
-export function useLoadTimeTracking ({ itemName, states }: {
+export function useLoadTimeTracking ({ itemName, states, isEnabled }: {
   itemName: string,
-  states?: QueryState[]
+  states: QueryState[],
+  isEnabled: boolean
 }) {
   const isStartTimeSet = useRef(false)
   const isEndTimeSet = useRef(false)
-  const { recordLoadTime, isFilterChanged, pageLoadStart } = useContext(LoadTimeContext)
+  const { updateLoadTime, isFiltersChanged, pageLoadStart } = useContext(LoadTimeContext)
 
   const [startTime, setStartTime] = useState(null as unknown as number)
   const [endTime, setEndTime] = useState(null as unknown as number)
   const [isUnfulfilled, setIsUnfulfilled] = useState(false)
 
-  const isLoadTimeTrackingEnabled = !!recordLoadTime
+  const isMonitoringEnabled = !!updateLoadTime && isEnabled
   const isLoading = Boolean(states?.some(state => state.isLoading))
-  const isSuccess = Boolean(states?.every(state => state.isSuccess))
-  const isFetching = isFilterChanged && Boolean(states?.some(state => state.isFetching))
-  const isRefetchSuccess = isFilterChanged && Boolean(states?.every(state => !state.isFetching))
+  const isFetching = isFiltersChanged && Boolean(states?.some(state => state.isFetching))
+  const isAllSuccess = Boolean(states?.every(state => state.isSuccess))
+  const isAllFetchSuccess = isFiltersChanged && Boolean(states?.every(state => !state.isFetching))
 
   useEffect(() => {
-    const isStartTimeUnset = !isStartTimeSet.current
-    if (isStartTimeUnset && isLoadTimeTrackingEnabled) {
-      const start = getCurrentTime()
-      setStartTime(start)
+    if (!isStartTimeSet.current && isMonitoringEnabled) {
+      setStartTime(getCurrentTime())
       isStartTimeSet.current = true
     }
   }, [])
 
   useEffect(() => {
-    if (isFilterChanged && isEndTimeSet.current && isLoadTimeTrackingEnabled) {
+    if (isFiltersChanged && isEndTimeSet.current && isMonitoringEnabled) {
       setStartTime(pageLoadStart)
       setEndTime(null as unknown as number)
       setIsUnfulfilled(false)
       isEndTimeSet.current = false
     }
-  }, [isFilterChanged])
+  }, [isFiltersChanged])
 
   useEffect(() => {
     const currentTime = getCurrentTime()
     const start = isFetching ? pageLoadStart : startTime
     const loadDuration = currentTime - start
-    const isEndTimeUnset = !isEndTimeSet.current
     const hasReachedThreshold = loadDuration > TIME_THRESHOLD_OF_COMPONENT
-    const shouldSetEndTime = startTime && isEndTimeUnset && hasReachedThreshold
+    const shouldSetEndTime = startTime && !isEndTimeSet.current && hasReachedThreshold
 
-    if (shouldSetEndTime && isLoadTimeTrackingEnabled) {
+    if (shouldSetEndTime && isMonitoringEnabled) {
       setEndTime(currentTime)
       setIsUnfulfilled(true)
       isEndTimeSet.current = true
@@ -354,19 +348,17 @@ export function useLoadTimeTracking ({ itemName, states }: {
   }, [isLoading, isFetching])
 
   useEffect(() => {
-    const isEndTimeUnset = !isEndTimeSet.current
-    const success = isSuccess || isRefetchSuccess
-    if (isEndTimeUnset && success && isLoadTimeTrackingEnabled) {
-      const end = getCurrentTime()
-      setEndTime(end)
+    const isSuccess = isAllSuccess || isAllFetchSuccess
+    if (!isEndTimeSet.current && isSuccess && isMonitoringEnabled) {
+      setEndTime(getCurrentTime())
       isEndTimeSet.current = true
     }
-  }, [isSuccess, isRefetchSuccess])
+  }, [isAllSuccess, isAllFetchSuccess])
 
   useEffect(() => {
-    if (startTime && endTime && isLoadTimeTrackingEnabled) {
+    if (startTime && endTime && isMonitoringEnabled) {
       const loadDuration = endTime - startTime
-      recordLoadTime(itemName, loadDuration, isUnfulfilled)
+      updateLoadTime(itemName, loadDuration, isUnfulfilled)
     }
   }, [startTime, endTime, itemName])
 

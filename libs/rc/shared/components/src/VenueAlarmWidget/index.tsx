@@ -51,6 +51,7 @@ export const getChartData = (alarms: Alarm[]): DonutChartData[] => {
 export function VenueAlarmWidget () {
   const { venueId } = useParams()
   const { $t } = useIntl()
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   // Alarms list query
   const isNewAlarmQueryEnabled = useIsSplitOn(Features.ALARM_NEW_API_TOGGLE)
@@ -73,7 +74,8 @@ export function VenueAlarmWidget () {
 
   useLoadTimeTracking({
     itemName: 'VenueAlarmWidget',
-    states: [overviewV2Query]
+    states: [overviewV2Query],
+    isEnabled: isMonitoringPageEnabled
   })
 
   const onAlarmClick = () => {

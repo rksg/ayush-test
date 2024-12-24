@@ -43,6 +43,7 @@ export function AlarmWidgetV2 () {
   // Dashboard overview query
   const { venueIds } = useDashboardFilter()
   const isNewAlarmQueryEnabled = useIsSplitOn(Features.ALARM_NEW_API_TOGGLE)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const query = isNewAlarmQueryEnabled ? useAlarmSummariesQuery : useDashboardV2OverviewQuery
 
   const overviewV2Query = query({
@@ -70,7 +71,8 @@ export function AlarmWidgetV2 () {
 
   useLoadTimeTracking({
     itemName: 'AlarmWidgetV2',
-    states: [overviewV2Query]
+    states: [overviewV2Query],
+    isEnabled: isMonitoringPageEnabled
   })
 
   return (

@@ -17,6 +17,7 @@ export function DevicesDashboardWidgetV2 () {
   const { venueIds } = useDashboardFilter()
 
   const isNewDashboardQueryEnabled = useIsSplitOn(Features.DASHBOARD_NEW_API_TOGGLE)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const query = isNewDashboardQueryEnabled ? useDeviceSummariesQuery : useDashboardV2OverviewQuery
 
   const queryResults = query({
@@ -52,7 +53,8 @@ export function DevicesDashboardWidgetV2 () {
 
   useLoadTimeTracking({
     itemName: 'DevicesDashboardWidgetV2',
-    states: [queryResults, { isLoading: rwgLoading, isSuccess: rwgSuccess }]
+    states: [queryResults, { isLoading: rwgLoading, isSuccess: rwgSuccess }],
+    isEnabled: isMonitoringPageEnabled
   })
 
   return (

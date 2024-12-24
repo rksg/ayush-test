@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 import { healthApi }                               from '@acx-ui/analytics/services'
 import { kpiConfig }                               from '@acx-ui/analytics/utils'
 import { Card, GridRow, GridCol, Loader, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import { useLoadTimeTracking }                     from '@acx-ui/utils'
 import type { AnalyticsFilter }                    from '@acx-ui/utils'
 
@@ -18,6 +19,7 @@ function VenueHealthWidget ({
   filters: AnalyticsFilter;
 }){
   const { $t } = useIntl()
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const queryResults= healthApi.useGetKpiThresholdsQuery({
     ...filters,
     kpis: ['timeToConnect','clientThroughput']
@@ -26,7 +28,8 @@ function VenueHealthWidget ({
 
   useLoadTimeTracking({
     itemName: 'VenueHealthWidget',
-    states: [queryResults]
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
   })
 
   return(

@@ -155,7 +155,7 @@ export default function Dashboard () {
 
 function DashboardPageHeader () {
   const { dashboardFilters, setDateFilterState } = useDashBoardUpdatedFilter()
-  const { onChangeFilter } = useContext(LoadTimeContext)
+  const { onPageFilterChange } = useContext(LoadTimeContext)
 
   const { startDate , endDate, range } = dashboardFilters
   const { $t } = useIntl()
@@ -209,11 +209,11 @@ function DashboardPageHeader () {
   />
 
   useEffect(() => {
-    onChangeFilter?.(dashboardFilters, true)
+    onPageFilterChange?.(dashboardFilters, true)
   }, [])
 
   useEffect(() => {
-    onChangeFilter?.(dashboardFilters)
+    onPageFilterChange?.(dashboardFilters)
   }, [dashboardFilters])
 
   return (

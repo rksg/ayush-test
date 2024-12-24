@@ -100,6 +100,7 @@ export function FloorPlan () {
   const [networkDevicesVisibility, setNetworkDevicesVisibility] = useState<NetworkDeviceType[]>([])
   const { isCustomRole } = useUserProfileContext()
   const showRwgDevice = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN,
     RolesEnum.ADMINISTRATOR,
     RolesEnum.READ_ONLY]) || isCustomRole
@@ -177,7 +178,8 @@ export function FloorPlan () {
 
   useLoadTimeTracking({
     itemName: 'FloorPlan',
-    states: [floorPlanQuery]
+    states: [floorPlanQuery],
+    isEnabled: isMonitoringPageEnabled
   })
 
   const [

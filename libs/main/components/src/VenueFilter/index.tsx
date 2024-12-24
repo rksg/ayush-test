@@ -1,6 +1,7 @@
 import { useIntl, defineMessage } from 'react-intl'
 
 import { Cascader, Loader }                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import { useVenuesListQuery }                      from '@acx-ui/rc/services'
 import { useParams }                               from '@acx-ui/react-router-dom'
 import { useDashboardFilter, useLoadTimeTracking } from '@acx-ui/utils'
@@ -16,6 +17,8 @@ const transformResult = (data: Venue[]) => data.map(
 export function VenueFilter () {
   const { $t } = useIntl()
   const { setNodeFilter, venueIds } = useDashboardFilter()
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+
   const value = venueIds.map((id: string) => [id])
 
   const queryResults = useVenuesListQuery({
@@ -37,7 +40,8 @@ export function VenueFilter () {
 
   useLoadTimeTracking({
     itemName: 'VenueFilter',
-    states: [queryResults]
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
   })
 
   return (

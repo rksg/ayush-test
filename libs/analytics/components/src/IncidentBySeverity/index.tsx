@@ -1,6 +1,7 @@
 
-import { IncidentFilter }      from '@acx-ui/analytics/utils'
-import { useLoadTimeTracking } from '@acx-ui/utils'
+import { IncidentFilter }         from '@acx-ui/analytics/utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useLoadTimeTracking }    from '@acx-ui/utils'
 
 import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from '../IncidentBySeverity/services'
 import { useIncidentToggles }                                   from '../useIncidentToggles'
@@ -16,6 +17,8 @@ export type IncidentBySeverityProps = {
 
 export function IncidentBySeverity ({ type, filters, setIncidentCount }: IncidentBySeverityProps) {
   const toggles = useIncidentToggles()
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+
   const queryResult = useIncidentsBySeverityQuery({ ...filters, toggles }, {
     selectFromResult: ({ data, ...rest }) => ({
       data: { ...data } as IncidentsBySeverityData,
@@ -25,7 +28,8 @@ export function IncidentBySeverity ({ type, filters, setIncidentCount }: Inciden
 
   useLoadTimeTracking({
     itemName: 'IncidentBySeverity',
-    states: [queryResult]
+    states: [queryResult],
+    isEnabled: isMonitoringPageEnabled
   })
 
   setIncidentCount &&

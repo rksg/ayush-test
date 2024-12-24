@@ -157,7 +157,7 @@ function Table <RecordType extends Record<string, any>> ({
   const { dataSource, filterableWidth, searchableWidth, style } = props
   const wrapperRef = useRef<HTMLDivElement>(null)
   const layout = useLayoutContext()
-  const { onChangeFilter } = useContext(LoadTimeContext)
+  const { onPageFilterChange } = useContext(LoadTimeContext)
 
   const rowKey = (props.rowKey ?? 'key')
   const intl = useIntl()
@@ -187,9 +187,9 @@ function Table <RecordType extends Record<string, any>> ({
   const updateSearch = _.debounce(() => {
     onFilter.current?.(filterValues, { searchString: searchValue }, groupByValue)
   }, 1000)
-  const debouncedOnChangeFilter = _.debounce((filterValues, searchValue, groupByValue) => {
+  const debouncedOnPageFilterChange = _.debounce((filterValues, searchValue, groupByValue) => {
     if (!_.isEmpty(filterValues) || !_.isEmpty(searchValue)) {
-      onChangeFilter?.({ filterValues, searchValue, groupByValue })
+      onPageFilterChange?.({ filterValues, searchValue, groupByValue })
     }
   }, 300)
 
@@ -204,7 +204,7 @@ function Table <RecordType extends Record<string, any>> ({
   }
 
   useEffect(() => {
-    onChangeFilter?.({ filterValues, searchValue, groupByValue }, true)
+    onPageFilterChange?.({ filterValues, searchValue, groupByValue }, true)
   }, [])
 
   useEffect(() => {
@@ -219,9 +219,9 @@ function Table <RecordType extends Record<string, any>> ({
   }, [searchValue]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    debouncedOnChangeFilter(filterValues, searchValue, groupByValue)
+    debouncedOnPageFilterChange(filterValues, searchValue, groupByValue)
     return () => {
-      debouncedOnChangeFilter.cancel()
+      debouncedOnPageFilterChange.cancel()
     }
   }, [filterValues, searchValue, groupByValue])
 

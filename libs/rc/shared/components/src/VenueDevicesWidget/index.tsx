@@ -28,6 +28,7 @@ export function VenueDevicesWidget () {
     })
   })
   const { isCustomRole } = useUserProfileContext()
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
   const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR,
     RolesEnum.READ_ONLY
@@ -37,7 +38,8 @@ export function VenueDevicesWidget () {
 
   useLoadTimeTracking({
     itemName: 'VenueDevicesWidget',
-    states: [queryResults]
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
   })
 
   return (

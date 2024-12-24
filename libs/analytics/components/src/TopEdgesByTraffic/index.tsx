@@ -4,6 +4,7 @@ import AutoSizer              from 'react-virtualized-auto-sizer'
 
 import { BarChartData, calculateGranularity, getBarChartSeriesData }                from '@acx-ui/analytics/utils'
 import { BarChart, EventParams, HistoricalCard, Loader, NoData, cssNumber, cssStr } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import { formatter }                                                                from '@acx-ui/formatter'
 import { useGetEdgesTopTrafficQuery }                                               from '@acx-ui/rc/services'
 import { NavigateFunction, Path, useNavigate, useTenantLink }                       from '@acx-ui/react-router-dom'
@@ -47,6 +48,8 @@ function TopEdgesByTrafficWidget ({ filters }: { filters : AnalyticsFilter }) {
   const { $t } = useIntl()
   const basePath = useTenantLink('/devices/edge/')
   const navigate = useNavigate()
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+
   const queryResults = useGetEdgesTopTrafficQuery({
     payload: {
       start: filters?.startDate,
@@ -77,7 +80,8 @@ function TopEdgesByTrafficWidget ({ filters }: { filters : AnalyticsFilter }) {
 
   useLoadTimeTracking({
     itemName: 'TopEdgesByTrafficWidget',
-    states: [queryResults]
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
   })
 
   return (

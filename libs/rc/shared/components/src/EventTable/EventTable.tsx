@@ -80,6 +80,7 @@ export const EventTable = ({
   const isEdgeEnabled = useIsEdgeReady()
   const isRogueEventsFilterEnabled = useIsSplitOn(Features.ROGUE_EVENTS_FILTER)
   const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const { exportCsv, disabled } = useExportCsv<Event>(tableQuery)
   const [addExportSchedules] = useAddExportSchedulesMutation()
 
@@ -274,7 +275,8 @@ export const EventTable = ({
 
   useLoadTimeTracking({
     itemName: 'EventTable',
-    states: [tableQuery]
+    states: [tableQuery],
+    isEnabled: isMonitoringPageEnabled
   })
 
   return <Loader states={[tableQuery]}>

@@ -3,8 +3,9 @@ import React, { useRef, useEffect } from 'react'
 import { Wrapper, WrapperProps, Status } from '@googlemaps/react-wrapper'
 import { useIntl }                       from 'react-intl'
 
-import { get }                 from '@acx-ui/config'
-import { useLoadTimeTracking } from '@acx-ui/utils'
+import { get }                    from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useLoadTimeTracking }    from '@acx-ui/utils'
 
 import { Loader } from '../Loader'
 import { NoData } from '../NoData'
@@ -78,10 +79,12 @@ const Map: React.FC<Omit<MapProps, 'libraries'>> = ({
 
 const NotEnabled = () => {
   const { $t } = useIntl()
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   useLoadTimeTracking({
     itemName: 'ActualMapV2',
-    states: [{ isSuccess: true }]
+    states: [{ isSuccess: true }],
+    isEnabled: isMonitoringPageEnabled
   })
 
   return <UI.MapContainer>

@@ -75,6 +75,7 @@ export function ClientsTable (props: {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const enabledUXOptFeature = useIsSplitOn(Features.UX_OPTIMIZATION_FEATURE_TOGGLE)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const [editLagModalVisible, setEditLagModalVisible] = useState(false)
   const [editLag, setEditLag] = useState([] as Lag[])
@@ -109,7 +110,8 @@ export function ClientsTable (props: {
 
   useLoadTimeTracking({
     itemName: 'WiredClientsTable',
-    states: [tableQuery]
+    states: [tableQuery],
+    isEnabled: isMonitoringPageEnabled
   })
 
   const { authenticationProfiles } = useGetFlexAuthenticationProfilesQuery({
