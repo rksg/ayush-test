@@ -4,9 +4,9 @@ import { useIntl, FormattedMessage } from 'react-intl'
 
 import { cssNumber, Tooltip } from '@acx-ui/components'
 
-import { DiagramGallery }                            from './DiagramGallery'
-import { messageMapping, prerequisitionListMessage } from './messageMapping'
-import * as UI                                       from './styledComponents'
+import { DiagramGallery }                          from './DiagramGallery'
+import { messageMapping, prerequisiteListMessage } from './messageMapping'
+import * as UI                                     from './styledComponents'
 
 export const Prerequisite = () => {
   const { $t } = useIntl()
@@ -23,9 +23,9 @@ export const Prerequisite = () => {
           <Typography.Title level={3}>{$t({ defaultMessage: 'Prerequisite' })}</Typography.Title>
           <UI.PrerequisiteListContiner>
             <ol>
-              {prerequisitionListMessage.map((item, index) => {
+              {prerequisiteListMessage.map((item, index) => {
                 return <li key={index}>
-                  <PrerequisitionFormBlock
+                  <PrerequisiteFormBlock
                     title={item.title}
                     tooltip={item.tooltip}
                     steps={item.steps}
@@ -44,7 +44,7 @@ export const Prerequisite = () => {
   </Row>
 }
 
-const PrerequisitionFormBlock = (props: {
+const PrerequisiteFormBlock = (props: {
   title: { defaultMessage: string; },
   tooltip?: { defaultMessage: string; },
   steps: { label: { defaultMessage: string; }; }[]

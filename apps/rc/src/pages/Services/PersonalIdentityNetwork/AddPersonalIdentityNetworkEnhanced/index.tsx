@@ -26,7 +26,7 @@ const AddPersonalIdentityNetworkEnhanced = () => {
 
   const steps = [
     {
-      title: $t({ defaultMessage: 'Prerequisition' }),
+      title: $t({ defaultMessage: 'Prerequisite' }),
       content: <Prerequisite />
     },
     {

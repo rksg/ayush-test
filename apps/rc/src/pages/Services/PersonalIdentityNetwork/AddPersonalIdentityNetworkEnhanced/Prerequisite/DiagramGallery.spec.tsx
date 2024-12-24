@@ -14,7 +14,7 @@ jest.mock('./styledComponents', () => {
   }
 })
 
-describe('PIN form > Prerequisition > DiagramGallery', () => {
+describe('PIN form > Prerequisite > DiagramGallery', () => {
   it('renders the correct initial diagram', () => {
     render(<DiagramGallery />)
     const image = screen.getByAltText('PIN Topology')
