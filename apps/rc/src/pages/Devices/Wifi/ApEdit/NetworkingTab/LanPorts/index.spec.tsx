@@ -9,6 +9,7 @@ import {
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
   EthernetPortProfileUrls,
+  LanPortsUrls,
   WifiRbacUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -69,7 +70,10 @@ describe('Lan Port', () => {
       rest.put(WifiRbacUrlsInfo.updateApLanPorts.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.delete(WifiUrlsInfo.resetApLanPorts.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(LanPortsUrls.getVenueLanPortSettings.url,
+        (_, res, ctx) => res(ctx.json({}))
+      )
     )
   })
 
@@ -226,7 +230,9 @@ describe('Lan Port', () => {
         rest.get(EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId.url,
           (_, res, ctx) => res(ctx.json(lanPortSettingPort1))),
         rest.get(WifiUrlsInfo.updateAp.url,
-          (_, res, ctx) => res(ctx.json({ model: 'T750SE' })))
+          (_, res, ctx) => res(ctx.json({ model: 'T750SE' }))),
+        rest.get(LanPortsUrls.getVenueLanPortSettings.url,
+          (_, res, ctx) => res(ctx.json({})))
       )
     })
 
