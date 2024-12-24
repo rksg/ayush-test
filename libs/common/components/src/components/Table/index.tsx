@@ -59,7 +59,7 @@ export interface TableProps <RecordType>
   extends Omit<ProAntTableProps<RecordType, ParamsType>,
   'bordered' | 'columns' | 'title' | 'type' | 'rowSelection'> {
     /** @default 'tall' */
-    type?: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered'
+    type?: 'tall' | 'compact' | 'tooltip' | 'form' | 'compactBordered' | 'compactWidget'
     rowKey?: ProAntTableProps<RecordType, ParamsType>['rowKey']
     columns: TableColumn<RecordType, 'text'>[]
     actions?: Array<TableAction>
@@ -531,7 +531,7 @@ function Table <RecordType extends Record<string, any>> ({
       <Space size={12}>
         {Boolean(searchables.length) &&
           renderSearch<RecordType>(
-            intl, searchables, searchValue, setSearchValue, searchWidth
+            intl, searchables, searchValue, setSearchValue, searchWidth, type === 'compactWidget'
           )}
         {filterables.map((column, i) =>
           renderFilter<RecordType>(
@@ -552,7 +552,7 @@ function Table <RecordType extends Record<string, any>> ({
       {(
         Boolean(activeFilters.length) ||
         (Boolean(searchValue) && searchValue.length >= MIN_SEARCH_LENGTH) ||
-        isGroupByActive)
+        isGroupByActive) && type !== 'compactWidget'
         && <Button
           style={props.floatRightFilters ? { marginLeft: '12px' } : {}}
           onClick={() => {
@@ -564,6 +564,7 @@ function Table <RecordType extends Record<string, any>> ({
           {$t({ defaultMessage: 'Clear Filters' })}
         </Button>}
       { type === 'tall' && iconButton && <IconButton {...iconButton}/> }
+      { type === 'compactWidget' && <span>{$t({ defaultMessage: 'Total results: ' })}{dataSource?.length}</span> }
     </UI.HeaderComps>
   </> : null
 

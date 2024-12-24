@@ -54,8 +54,19 @@ const ChartConfig:{ [key:string]: WidgetCategory } = {
     height: 4
   },
   bar: {
-    width: 3,
-    height: 8
+    width: 2,
+    height: 8,
+    currentSizeIndex: 0,
+    sizes: [
+      {
+        width: 1,
+        height: 4
+      },
+      {
+        width: 2,
+        height: 8
+      }
+    ]
   },
   table: {
     width: 2,
@@ -93,7 +104,10 @@ export const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
         cursor: 'move'
       }}
     >
-      <div style={{ margin: '7px', height: '165px', width: '300px' }}>
+      <div style={{
+        margin: '7px',
+        height: data.chartType === 'bar' ? '300px' : '165px',
+        width: data.chartType === 'pie' ? '200px' : '300px' }}>
         <WidgetChart data={data} />
       </div>
     </div>
@@ -143,16 +157,16 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
       return <BarChart
         style={{ width, height }}
         data={(chartData?.chartOption || []) as BarChartData}
-        barWidth={chartData?.multiseries ? 8 : undefined}
+        barWidth={8}
         labelFormatter={labelFormatter}
         labelRichStyle={richStyle()}
       />
     } else if(type === 'table') {
       return <Table
-        style={{ width, height }}
-        columns={chartData?.chartOption?.columns || []}
+        style={{ width: width-30 }}
+        columns={chartData?.chartOption?.columns.map(i => ({ ...i, searchable: true })) || []}
         dataSource={chartData?.chartOption?.dataSource}
-        type='compact'
+        type='compactWidget'
         rowKey={chartData?.chartOption?.columns?.[0]?.key || 'id'}
       />
     }
@@ -198,6 +212,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
       <UI.Widget
         key={data.id}
         title={data.type === 'card' ? (data.title || $t({ defaultMessage: 'Title' })) : ''}
+        className={data.chartType === 'table' ? 'table' : ''}
       >
         <AutoSizer>
           {({ height, width }) => getChart(data.chartType, width, height, chartData)}

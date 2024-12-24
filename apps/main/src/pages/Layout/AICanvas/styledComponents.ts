@@ -115,6 +115,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
       height: calc(100vh - 270px);
       overflow: auto;
       position: relative;
+      margin-right: 4px;
       .placeholder {
         display: flex;
         flex-direction: column;
@@ -184,6 +185,14 @@ border-top: 75px solid rgba(255,255,255, 0.4);
           position: fixed;
           left: 350px;
           bottom: 10px;
+          border: 0px;
+          background: var(--acx-accents-orange-50);
+          &.ant-btn[disabled] {
+            background: var(--acx-neutrals-40);
+          }
+          svg { 
+            path { stroke: var(--acx-primary-white); } }
+          }
         }
       }
     }
@@ -311,7 +320,7 @@ export const Grid = styled.div`
 `
 
 export const Widget = styled(Card)`
-  .ant-card-body {
+  &.table .ant-card-body {
     overflow: auto;
   }
 `

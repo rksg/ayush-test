@@ -59,7 +59,7 @@ export default function AICanvas () {
     }
   }
   const handleSearch = async (suggestion?: string) => {
-    if (!suggestion && searchText.length <= 1) return
+    if ((!suggestion && searchText.length <= 1) || loading) return
     const question = suggestion || searchText
     const newMessage = {
       id: uuidv4(),
@@ -220,7 +220,11 @@ export default function AICanvas () {
                     rows={10}
                     placeholder={placeholder}
                   />
-                  <Button icon={<SendMessageOutlined />} onClick={()=> { handleSearch() }} />
+                  <Button
+                    icon={<SendMessageOutlined />}
+                    disabled={loading || searchText.length <= 1}
+                    onClick={()=> { handleSearch() }}
+                  />
                 </div>
               </div>
             </div>
