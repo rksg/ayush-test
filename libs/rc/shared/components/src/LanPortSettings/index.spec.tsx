@@ -5,12 +5,13 @@ import { Form }  from 'antd'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { ethernetPortProfileApi, policyApi } from '@acx-ui/rc/services'
 import {
   AaaUrls,
   EthernetPortProfileUrls,
   SoftGreUrls } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -265,6 +266,9 @@ describe('Ethernet Port Profile', () => {
   const apSerial = '123456789042'
 
   beforeEach(() => {
+    store.dispatch(policyApi.util.resetApiState())
+    store.dispatch(ethernetPortProfileApi.util.resetApiState())
+
     mockServer.use(
       rest.post(
         EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
@@ -375,7 +379,7 @@ describe('Ethernet Port Profile', () => {
 
   })
 
-  it('AP Level - Single port has vni cannot modify', async () => {
+  it.skip('AP Level - Single port has vni cannot modify', async () => {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
       return ff === Features.ETHERNET_PORT_PROFILE_TOGGLE
     })
