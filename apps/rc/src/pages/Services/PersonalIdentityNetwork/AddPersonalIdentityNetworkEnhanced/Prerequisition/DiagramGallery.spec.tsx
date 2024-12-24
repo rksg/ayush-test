@@ -18,7 +18,7 @@ describe('PIN form > Prerequisition > DiagramGallery', () => {
   it('renders the correct initial diagram', () => {
     render(<DiagramGallery />)
     const image = screen.getByAltText('PIN Topology')
-    expect(image.getAttribute('src')).toBe('personal-identity-ap-edge.svg')
+    expect(image.getAttribute('src')).toBe('pin-ap-edge-vertical.svg')
   })
 
   it('updates the current diagram when a dot is clicked', async () => {
@@ -27,7 +27,7 @@ describe('PIN form > Prerequisition > DiagramGallery', () => {
     await userEvent.click(controlDots[1])
     const image = screen.getByAltText('PIN Topology')
     await waitFor(() =>
-      expect(image.getAttribute('src')).toBe('personal-identity-switch-edge.svg'))
+      expect(image.getAttribute('src')).toBe('pin-switch-edge-vertical.svg'))
     expect(controlDots[1]).toHaveTextContent('true')
   })
 })

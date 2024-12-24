@@ -5,9 +5,9 @@ import { useIntl } from 'react-intl'
 
 import { SpaceWrapper } from '@acx-ui/rc/components'
 
-import PinApEdgeDiagram       from '../../../../../assets/images/personal-identity-diagrams/personal-identity-ap-edge.svg'
-import PinApSwitchEdgeDiagram from '../../../../../assets/images/personal-identity-diagrams/personal-identity-ap-switch-edge.svg'
-import PinSwitchEdgeDiagram   from '../../../../../assets/images/personal-identity-diagrams/personal-identity-switch-edge.svg'
+import PinApEdgeDiagram       from '../../../../../assets/images/personal-identity-diagrams/pin-ap-edge-vertical.svg'
+import PinApSwitchEdgeDiagram from '../../../../../assets/images/personal-identity-diagrams/pin-ap-switch-edge-vertical.svg'
+import PinSwitchEdgeDiagram   from '../../../../../assets/images/personal-identity-diagrams/pin-switch-edge-vertical.svg'
 
 import { ControlDot } from './styledComponents'
 

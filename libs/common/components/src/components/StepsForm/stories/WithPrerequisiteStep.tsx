@@ -1,21 +1,63 @@
-import React from 'react'
-
-import { Row, Col, Form, Input, Select } from 'antd'
+import { Row, Col, Form, Input, List, Typography, Space } from 'antd'
 
 import { StepsForm } from '..'
 import { showToast } from '../../Toast'
 
 function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
 
-export function BasicMultiSteps () {
+const data = {
+  venuePropertyMgmt: {
+    title: 'Property Management',
+    steps: [
+      'Enable property management at the venue where you intend to segment the identities',
+      'Select/ create an identity group associated with a DPSK service in this property'
+    ] },
+  cluster: {
+    title: 'Edge Cluster',
+    steps: [
+      'Deploy a Edge cluster at the venue where PIN will be activated'
+    ] },
+  wifi: {
+    title: 'Wi-Fi (optional)',
+    steps: [
+      // eslint-disable-next-line max-len
+      'Create and activate DPSK networks at the venue, ensuring they use the selected DPSK service in the property management identity group'
+    ] }
+}
+
+export function BasicWithPrerequisiteStep () {
   return (
     <StepsForm
+      hasPrerequisiteStep
       onCancel={() => showToast({ type: 'info', content: 'Cancel' })}
       onFinish={async () => {
         await wait(1000) // mimic external service call
         showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
       }}
     >
+      <StepsForm.StepForm title='Prerequisite Step'>
+        <Row gutter={20}>
+          <Col span={10}>
+            <StepsForm.Title children='Prerequisite' />
+            <Space size={30} direction='vertical'>
+              {Object.entries(data).map(([typeKey, stepsInfo]) =>
+                <List
+                  key={typeKey}
+                  bordered
+                  header={<Typography.Text strong>{stepsInfo.title}</Typography.Text>}
+                  dataSource={stepsInfo.steps}
+                  renderItem={item => (
+                    <List.Item>
+                      <Typography.Text>{item}</Typography.Text>
+                    </List.Item>
+                  )}
+                />
+              )}
+            </Space>
+          </Col>
+        </Row>
+      </StepsForm.StepForm>
+
       <StepsForm.StepForm title='Step 1'>
         <Row gutter={20}>
           <Col span={10}>
@@ -24,29 +66,6 @@ export function BasicMultiSteps () {
               <Input />
             </Form.Item>
             <Form.Item name='field2' label='Field 2'>
-              <Select>
-                <Select.Option value='option1'>Option 1</Select.Option>
-                <Select.Option value='option2'>Option 2</Select.Option>
-                <Select.Option value='option3'>Option 3</Select.Option>
-              </Select>
-            </Form.Item>
-            <Form.Item name='field3' label='Field 3'>
-              <Select disabled>
-                <Select.Option value='option1'>Option 1</Select.Option>
-                <Select.Option value='option2'>Option 2</Select.Option>
-                <Select.Option value='option3'>Option 3</Select.Option>
-              </Select>
-            </Form.Item>
-            <Form.Item name='field4' label='Field 4'>
-              <Input disabled />
-            </Form.Item>
-            <Form.Item name='field5' label='Field 5'>
-              <Input />
-            </Form.Item>
-            <Form.Item name='field6' label='Field 6'>
-              <Input />
-            </Form.Item>
-            <Form.Item name='field7' label='Field 7'>
               <Input />
             </Form.Item>
           </Col>
@@ -57,10 +76,10 @@ export function BasicMultiSteps () {
         <Row gutter={20}>
           <Col span={10}>
             <StepsForm.Title children='Step 2' />
-            <Form.Item name='field8' label='Field 8'>
+            <Form.Item name='field3' label='Field 3'>
               <Input />
             </Form.Item>
-            <Form.Item name='field9' label='Field 9'>
+            <Form.Item name='field4' label='Field 4'>
               <Input />
             </Form.Item>
           </Col>
