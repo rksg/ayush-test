@@ -13,6 +13,8 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
+  useEnhanceNetworkVenueTableQuery,
+  useEnhanceNetworkVenueTableV2Query,
   useNetworkVenueListV2Query,
   useNewNetworkVenueTableQuery,
   useScheduleSlotIndexMap
@@ -118,6 +120,8 @@ const useNetworkVenueList = () => {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
+  const isUseNewRbacNetworkVenueApi = useIsSplitOn(Features.WIFI_NETWORK_VENUE_QUERY)
 
   const networkId = resolvedRbacEnabled? (params.networkId ?? getNetworkId()) : getNetworkId()
 
@@ -132,7 +136,11 @@ const useNetworkVenueList = () => {
   })
 
   const rbacTableQuery = useTableQuery({
-    useQuery: useNewNetworkVenueTableQuery,
+    useQuery: isApCompatibilitiesByModel
+      ? (isUseNewRbacNetworkVenueApi
+        ? useEnhanceNetworkVenueTableV2Query
+        : useEnhanceNetworkVenueTableQuery)
+      : useNewNetworkVenueTableQuery,
     apiParams: { networkId: networkId! },
     defaultPayload: {
       ...defaultRbacPayload,
