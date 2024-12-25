@@ -423,6 +423,10 @@ const compactBorderedStyle = css`
 `
 
 const compactWidgetStyle = css`
+  .ant-input-affix-wrapper {
+    width: 230px !important;
+    margin-right: 5px;
+  }
   .ant-pro-table {
     .ant-table {
       &-thead > tr:first-child > th,
@@ -441,6 +445,10 @@ const compactWidgetStyle = css`
         padding-top: 6px;
         padding-bottom: 6px;
         border-bottom: 1px solid var(--acx-neutrals-30) !important;
+      }
+
+      .ant-table-tbody > tr:last-child > td {
+        border-bottom: 0px !important;
       }
 
       .ant-table-tbody > tr:first-child {

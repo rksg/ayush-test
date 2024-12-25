@@ -531,7 +531,8 @@ function Table <RecordType extends Record<string, any>> ({
       <Space size={12}>
         {Boolean(searchables.length) &&
           renderSearch<RecordType>(
-            intl, searchables, searchValue, setSearchValue, searchWidth, type === 'compactWidget'
+            intl, searchables, searchValue, setSearchValue, searchWidth,
+            $t({ defaultMessage: 'Search...' })
           )}
         {filterables.map((column, i) =>
           renderFilter<RecordType>(
@@ -564,7 +565,11 @@ function Table <RecordType extends Record<string, any>> ({
           {$t({ defaultMessage: 'Clear Filters' })}
         </Button>}
       { type === 'tall' && iconButton && <IconButton {...iconButton}/> }
-      { type === 'compactWidget' && <span>{$t({ defaultMessage: 'Total results: ' })}{dataSource?.length}</span> }
+      { type === 'compactWidget' && <div>{$t({ defaultMessage: 'Total results:' })}
+        <span style={{ marginLeft: '2px' }}>{getFilteredData<RecordType>(
+          dataSource, filterValues, activeFilters, searchables, searchValue)?.length}</span>
+      </div>
+      }
     </UI.HeaderComps>
   </> : null
 

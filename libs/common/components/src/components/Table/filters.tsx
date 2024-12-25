@@ -108,7 +108,7 @@ export function renderSearch <RecordType> (
   searchValue: string,
   setSearchValue: Function,
   width: number,
-  ignorePlaceHolder?: boolean
+  customPlaceHolder?: string
 ): React.ReactNode {
 
   const getColumnTitle = (column: TableColumn<RecordType, 'text'>): string => {
@@ -126,7 +126,7 @@ export function renderSearch <RecordType> (
 
     return ''
   }
-  const placeHolderText = ignorePlaceHolder ? '' : intl.$t({ defaultMessage: 'Search {searchables}' }, {
+  const placeHolderText = customPlaceHolder || intl.$t({ defaultMessage: 'Search {searchables}' }, {
     searchables: searchables.map(column => getColumnTitle(column)).join(', ')
   })
   return <UI.SearchInput
