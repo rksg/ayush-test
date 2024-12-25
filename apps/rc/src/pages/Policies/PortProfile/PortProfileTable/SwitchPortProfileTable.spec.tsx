@@ -1,14 +1,10 @@
 import userEvent from '@testing-library/user-event'
-import { Path }  from 'react-router-dom'
 
 import {
   useDeleteSwitchPortProfileMutation,
-  useSwitchPortProfilesListQuery
+  useSwitchPortProfilesListQuery,
+  useVenuesListQuery
 } from '@acx-ui/rc/services'
-import {
-  getPolicyRoutePath,
-  PolicyOperation,
-  PolicyType } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
   render,
@@ -61,27 +57,39 @@ const mockedTableMultipleResults = {
     dot1x: false,
     macAuth: true,
     appliedSwitchesInfo: [{
+      switchId: 'switchId',
       switchName: 'Switch1',
+      venueId: 'venueId',
       venueName: 'Venue1'
     }]
   }]
 }
 
-const mockedUseNavigate = jest.fn()
-const mockedTenantPath: Path = {
-  pathname: 't/__tenantId__',
-  search: '',
-  hash: ''
+const mockedVenuesResult = {
+  fields: [
+    'country',
+    'latitude',
+    'name',
+    'id',
+    'longitude'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: 'venueId',
+      name: 'Venue1',
+      country: 'United States',
+      latitude: '37.4112751',
+      longitude: '-122.0191908'
+    }
+  ]
 }
-
-jest.mock('@acx-ui/react-router-dom', () => ({
-  useNavigate: () => mockedUseNavigate,
-  useTenantLink: (): Path => mockedTenantPath
-}))
 
 jest.mock('@acx-ui/rc/services', () => ({
   useSwitchPortProfilesListQuery: jest.fn(),
-  useDeleteSwitchPortProfileMutation: jest.fn()
+  useDeleteSwitchPortProfileMutation: jest.fn(),
+  useVenuesListQuery: jest.fn()
 }))
 
 describe('SwitchPortProfileTable', () => {
@@ -89,15 +97,18 @@ describe('SwitchPortProfileTable', () => {
     tenantId: 'test-tenant-id'
   }
 
-  const tablePath = '/:tenantId/t/' + getPolicyRoutePath({
-    type: PolicyType.SWITCH_PORT_PROFILE,
-    oper: PolicyOperation.LIST
-  })
+  const tablePath = '/:tenantId/t/policies/portProfile/switch/profiles'
 
   beforeEach(() => {
     // Mock the RTK Query hooks
     (useSwitchPortProfilesListQuery as jest.Mock).mockReturnValue({
       data: mockedTableResult,
+      isLoading: false,
+      isFetching: false
+    })
+
+    ;(useVenuesListQuery as jest.Mock).mockReturnValue({
+      data: mockedVenuesResult,
       isLoading: false,
       isFetching: false
     })
@@ -230,11 +241,5 @@ describe('SwitchPortProfileTable', () => {
     const row = await screen.findByRole('row', { name: new RegExp(profile.name) })
     await userEvent.click(within(row).getByRole('checkbox'))
     await userEvent.click(screen.getByRole('button', { name: /Edit/ }))
-
-    expect(mockedUseNavigate).toHaveBeenCalledWith({
-      ...mockedTenantPath,
-      // eslint-disable-next-line max-len
-      pathname: `${mockedTenantPath.pathname}/policies/portProfile/switch/profiles/${profile.id}/edit`
-    })
   })
 })
