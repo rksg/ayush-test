@@ -753,6 +753,110 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
 </DocumentFragment>
 `;
 
+exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK accounting non-proxy radius diagram successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+<div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="c0"
+      >
+        <img
+          alt="Dynamic Pre-Shared Key (DPSK)"
+          src="DpskUsingRadiusNonProxy"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK accounting proxy radius diagram successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+<div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="c0"
+      >
+        <img
+          alt="Dynamic Pre-Shared Key (DPSK)"
+          src="DpskUsingRadius"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK authentication non-proxy radius diagram successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+<div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="c0"
+      >
+        <img
+          alt="Dynamic Pre-Shared Key (DPSK)"
+          src="DpskUsingRadiusNonProxy"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK authentication proxy radius diagram successfully 1`] = `
+<DocumentFragment>
+  .c0 {
+  width: 358px;
+  margin-top: 40px;
+}
+
+<div
+    class="ant-row ant-row-center"
+  >
+    <div
+      class="ant-col"
+    >
+      <div
+        class="c0"
+      >
+        <img
+          alt="Dynamic Pre-Shared Key (DPSK)"
+          src="DpskUsingRadius"
+        />
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK diagram successfully 1`] = `
 <DocumentFragment>
   .c0 {
