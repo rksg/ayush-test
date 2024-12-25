@@ -11,7 +11,7 @@ import {
 } from '@acx-ui/test-utils'
 import { RequestPayload } from '@acx-ui/types'
 
-import AddPersonalIdentityNetwork from '.'
+import AddPersonalIdentityNetworkEnhanced from '.'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -19,11 +19,15 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-jest.mock('./Prerequisite', () => ({
+jest.mock('../PersonalIdentityNetworkForm/Prerequisite', () => ({
   Prerequisite: () => <div data-testid='Prerequisite' />
 }))
 jest.mock('../PersonalIdentityNetworkForm/GeneralSettingsForm', () => ({
   GeneralSettingsForm: () => <div data-testid='GeneralSettingsForm' />
+}))
+jest.mock('../PersonalIdentityNetworkForm/NetworkTopologyForm', () => ({
+  Wireless: 'Wireless',
+  NetworkTopologyForm: () => <div data-testid='NetworkTopologyForm' />
 }))
 jest.mock('../PersonalIdentityNetworkForm/SmartEdgeForm', () => ({
   SmartEdgeForm: () => <div data-testid='SmartEdgeForm' />
@@ -45,6 +49,7 @@ jest.mock('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext', (
     <div data-testid='PersonalIdentityNetworkFormDataProvider' children={children} />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
+  useIsEdgeFeatureReady: jest.fn(),
   useEdgePinActions: () => ({
     addPin: (req: RequestPayload) => new Promise((resolve) => {
       resolve(true)
@@ -59,7 +64,7 @@ jest.mock('@acx-ui/rc/components', () => ({
 
 const createPinPath = '/:tenantId/services/personalIdentityNetwork/create'
 
-describe('Add PersonalIdentityNetwork', () => {
+describe('Add Enhanced PersonalIdentityNetwork', () => {
   let params: { tenantId: string, serviceId: string }
   beforeEach(() => {
     params = {
@@ -68,33 +73,29 @@ describe('Add PersonalIdentityNetwork', () => {
     }
   })
 
-  it('should create PersonalIdentityNetwork successfully', async () => {
-    const user = userEvent.setup()
-    render(<AddPersonalIdentityNetwork />, {
+  it('should create PersonalIdentityNetwork with default steps', async () => {
+    render(<AddPersonalIdentityNetworkEnhanced />, {
       wrapper: Provider,
       route: { params, path: createPinPath }
     })
     // Prerequisite step
     await screen.findByTestId('Prerequisite')
-    await user.click(await screen.findByRole('button', { name: 'Start' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Start' }))
     // step 1
     await screen.findByTestId('GeneralSettingsForm')
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
     // step 2
-    await screen.findByTestId('SmartEdgeForm')
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    await screen.findByTestId('NetworkTopologyForm')
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
     // step 3
-    await screen.findByTestId('WirelessNetworkForm')
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
+    await screen.findByTestId('SmartEdgeForm')
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
     // step 4
-    await screen.findByTestId('DistributionSwitchForm')
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
-    // step5
-    await screen.findByTestId('AccessSwitchForm')
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
-    // step6
+    await screen.findByTestId('WirelessNetworkForm')
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    // step 5
     await screen.findByTestId('SummaryForm')
-    await user.click(screen.getByRole('button', { name: 'Add' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
       hash: '',
       pathname: `/${params.tenantId}/t/services/list`,
@@ -103,7 +104,7 @@ describe('Add PersonalIdentityNetwork', () => {
   })
 
   it('should render breadcrumb correctly', async () => {
-    render(<AddPersonalIdentityNetwork />, {
+    render(<AddPersonalIdentityNetworkEnhanced />, {
       wrapper: Provider,
       route: { params, path: createPinPath }
     })
