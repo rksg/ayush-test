@@ -2,7 +2,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, Card, GridCol, GridRow, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
-import { useSwitchPortProfileAppliedListQuery }                                  from '@acx-ui/rc/services'
+import { useSwitchPortProfileAppliedListQuery, useVenuesListQuery }              from '@acx-ui/rc/services'
 import {
   getPolicyListRoutePath,
   SwitchPortProfilesAppliedTargets,
@@ -24,6 +24,19 @@ export default function SwitchPortProfileDetail () {
     pagination: { settingsId }
   }
 
+  const { venueFilterOptions } = useVenuesListQuery({
+    payload: {
+      fields: ['name', 'country', 'latitude', 'longitude', 'id'],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      venueFilterOptions: data?.data.map(v => ({ key: v.id, value: v.name })) || true
+    })
+  })
+
   const tableQuery = useTableQuery({
     useQuery: useSwitchPortProfileAppliedListQuery,
     defaultPayload
@@ -37,6 +50,7 @@ export default function SwitchPortProfileDetail () {
         title: $t({ defaultMessage: 'Switch' }),
         dataIndex: 'switchName',
         searchable: true,
+        sorter: true,
         render: function (_, row, __, highlightFn) {
           return (
             <TenantLink
@@ -52,13 +66,16 @@ export default function SwitchPortProfileDetail () {
         key: 'model',
         title: $t({ defaultMessage: 'Model' }),
         dataIndex: 'model',
-        filterable: true
+        filterable: true,
+        sorter: true
       },
       {
         key: 'venueName',
         title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
         dataIndex: 'venueName',
-        filterable: true,
+        filterable: venueFilterOptions,
+        filterKey: 'venueId',
+        sorter: true,
         render: function (_, row) {
           return <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
             {row.venueName}</TenantLink>
