@@ -1,14 +1,15 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, Button, GridRow, Loader, GridCol }                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
-import { useGetVLANPoolPolicyDetailQuery, useGetVlanPoolPolicyTemplateDetailQuery }      from '@acx-ui/rc/services'
+import { PageHeader, Button, GridRow, Loader, GridCol }                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { useGetVLANPoolPolicyDetailQuery, useGetVlanPoolPolicyTemplateDetailQuery } from '@acx-ui/rc/services'
 import {
   VLANPoolPolicyType,
   PolicyType,
   PolicyOperation,
   useConfigTemplateQueryFnSwitcher,
-  usePolicyListBreadcrumb, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy
+  usePolicyListBreadcrumb, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy,
+  useTemplateAwarePolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -35,6 +36,7 @@ export function VLANPoolDetail () {
         breadcrumb={breadcrumb}
         extra={filterByAccessForServicePolicyMutation([
           <PolicyConfigTemplateLinkSwitcher
+            key={useTemplateAwarePolicyAllowedOperation(PolicyType.VLAN_POOL, PolicyOperation.EDIT)}
             scopeKey={getScopeKeyByPolicy(PolicyType.VLAN_POOL, PolicyOperation.EDIT)}
             type={PolicyType.VLAN_POOL}
             oper={PolicyOperation.EDIT}

@@ -13,6 +13,7 @@ import {
   DHCPSaveData,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
+  useTemplateAwareServiceAllowedOperation,
   ServiceOperation,
   ServiceType,
   TableResult,
@@ -62,6 +63,7 @@ export function DHCPDetail () {
         breadcrumb={breadcrumb}
         extra={filterByAccessForServicePolicyMutation([
           <ServiceConfigTemplateLinkSwitcher
+            key={useTemplateAwareServiceAllowedOperation(ServiceType.DHCP, ServiceOperation.EDIT)}
             scopeKey={getScopeKeyByService(ServiceType.DHCP, ServiceOperation.EDIT)}
             type={ServiceType.DHCP}
             oper={ServiceOperation.EDIT}

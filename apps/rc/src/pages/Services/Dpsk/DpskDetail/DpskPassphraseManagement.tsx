@@ -32,17 +32,18 @@ import {
   NewDpskPassphrase,
   ServiceOperation,
   ServiceType,
+  filterDpskOperationsByPermission,
   getPassphraseStatus,
   getScopeKeyByService,
-  hasDpskAccess,
+  isAllowedOperationCheckEnabled,
   transformAdvancedDpskExpirationText,
   unlimitedNumberOfDeviceLabel,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams }                                               from '@acx-ui/react-router-dom'
-import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
-import { getIntl, validationMessages }                             from '@acx-ui/utils'
+import { useParams }                               from '@acx-ui/react-router-dom'
+import { WifiScopes }                              from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { getIntl, validationMessages }             from '@acx-ui/utils'
 
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 import ManageDevicesDrawer                              from './ManageDevicesDrawer'
@@ -251,8 +252,16 @@ export default function DpskPassphraseManagement () {
     return isCloudpathEnabled && selectedRows.length === 1
   }
 
+  const hasAddNetworkPermission = () => {
+    if (isAllowedOperationCheckEnabled()) {
+      return hasPermission({ allowedOperations: 'POST:/wifiNetworks' })
+    }
+    return hasCrossVenuesPermission() && hasPermission({ scopes: [WifiScopes.CREATE] })
+  }
+
   const rowActions: TableProps<NewDpskPassphrase>['rowActions'] = [
     {
+      key: 'PUT:/dpskServices/{serviceId}/passphrases/{passphraseId}',
       scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Edit Passphrase' }),
       visible: canEdit,
@@ -273,6 +282,7 @@ export default function DpskPassphraseManagement () {
       }
     },
     {
+      key: 'PATCH:/dpskServices/{serviceId}/passphrases',
       scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Revoke' }),
       visible: isCloudpathEnabled,
@@ -296,6 +306,7 @@ export default function DpskPassphraseManagement () {
       }
     },
     {
+      key: 'PATCH:/dpskServices/{serviceId}/passphrases',
       scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Unrevoke' }),
       visible: isCloudpathEnabled,
@@ -312,6 +323,7 @@ export default function DpskPassphraseManagement () {
       }
     },
     {
+      key: 'DELETE:/dpskServices/{serviceId}/passphrases',
       scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
@@ -320,28 +332,32 @@ export default function DpskPassphraseManagement () {
     }
   ]
 
-  const allowedRowActions = (hasDpskAccess() && filterByAccess(rowActions)) || []
+  const allowedRowActions = filterDpskOperationsByPermission(rowActions)
 
   const actions = [
-    ...hasDpskAccess() ? [{
-      label: $t({ defaultMessage: 'Add Passphrases' }),
-      onClick: () => {
-        setPassphrasesDrawerEditMode({ isEdit: false })
-        setAddPassphrasesDrawerVisible(true)
+    ...(filterDpskOperationsByPermission([
+      {
+        key: 'POST:/dpskServices/{serviceId}/passphrases',
+        label: $t({ defaultMessage: 'Add Passphrases' }),
+        onClick: () => {
+          setPassphrasesDrawerEditMode({ isEdit: false })
+          setAddPassphrasesDrawerVisible(true)
+        }
+      },
+      {
+        key: 'POST:/dpskServices/{serviceId}/passphrases/csvFiles',
+        label: $t({ defaultMessage: 'Import From File' }),
+        onClick: () => setUploadCsvDrawerVisible(true)
       }
-    }]: [],
-    ...hasDpskAccess() ? [{
-      label: $t({ defaultMessage: 'Import From File' }),
-      onClick: () => setUploadCsvDrawerVisible(true)
-    }]: [],
+    ])),
     {
       label: $t({ defaultMessage: 'Export To File' }),
       onClick: () => downloadPassphrases()
     },
-    ...(hasCrossVenuesPermission() && hasPermission({ scopes: [WifiScopes.CREATE] })) ? [{
+    ...(hasAddNetworkPermission() ? [{
       label: $t({ defaultMessage: 'Add DPSK Network' }),
       onClick: () => setNetworkModalVisible(true)
-    }]: []
+    }]: [])
   ]
 
   return (<>

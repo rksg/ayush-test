@@ -15,7 +15,7 @@ import {
   PolicyType,
   useConfigTemplate,
   useConfigTemplateQueryFnSwitcher,
-  usePolicyAllowedOperation,
+  useTemplateAwarePolicyAllowedOperation,
   usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
 
@@ -46,7 +46,7 @@ export function AAAPolicyDetail () {
         breadcrumb={breadcrumb}
         extra={filterByAccessForServicePolicyMutation([
           <PolicyConfigTemplateLinkSwitcher
-            key={usePolicyAllowedOperation(PolicyType.AAA, PolicyOperation.EDIT)}
+            key={useTemplateAwarePolicyAllowedOperation(PolicyType.AAA, PolicyOperation.EDIT)}
             scopeKey={getScopeKeyByPolicy(PolicyType.AAA, PolicyOperation.EDIT)}
             type={PolicyType.AAA}
             oper={PolicyOperation.EDIT}

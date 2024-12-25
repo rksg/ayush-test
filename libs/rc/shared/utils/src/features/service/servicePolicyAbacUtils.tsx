@@ -5,9 +5,10 @@ import { TenantLink }                                                           
 import { RolesEnum, ScopeKeys }                                                                           from '@acx-ui/types'
 import { AuthRoute, filterByAccess, goToNoPermission, hasCrossVenuesPermission, hasPermission, hasRoles } from '@acx-ui/user'
 
-import { ServiceType }     from '../../constants'
-import { PolicyType }      from '../../types'
-import { PolicyOperation } from '../policy'
+import { useConfigTemplate } from '../../configTemplate'
+import { ServiceType }       from '../../constants'
+import { PolicyType }        from '../../types'
+import { PolicyOperation }   from '../policy'
 
 import { getPolicyAllowedOperation, getServiceAllowedOperation, isAllowedOperationCheckEnabled } from './allowedOperationUtils'
 import {
@@ -25,6 +26,13 @@ export function filterByAccessForServicePolicyMutation <Item> (items: Item[]): I
 export function hasDpskAccess () {
   return hasCrossVenuesPermission()
     && hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR, RolesEnum.DPSK_ADMIN])
+}
+
+export function filterDpskOperationsByPermission<Item> (rowActions: Item[]): Item[] {
+  if (isAllowedOperationCheckEnabled()) {
+    return filterByAccess(rowActions)
+  }
+  return (hasDpskAccess() && filterByAccess(rowActions)) || []
 }
 
 export function isServiceCardEnabled (
@@ -50,8 +58,9 @@ export function getScopeKeyByService (type: ServiceType, oper: ServiceOperation)
   })
 }
 
-// eslint-disable-next-line max-len
-export function hasServicePermission (props: { type: ServiceType, oper: ServiceOperation, roles?: RolesEnum[] }) {
+export function hasServicePermission (props: {
+  type: ServiceType, oper: ServiceOperation, roles?: RolesEnum[], isTemplate?: boolean
+}) {
   const specialCheckFn = () => props.type === ServiceType.DPSK && !!hasDpskAccess()
   return hasGenericPermission({
     ...props,
@@ -61,12 +70,22 @@ export function hasServicePermission (props: { type: ServiceType, oper: ServiceO
   })
 }
 
+export function useTemplateAwareServicePermission (type: ServiceType, oper: ServiceOperation) {
+  const { isTemplate } = useConfigTemplate()
+
+  return hasServicePermission({ type, oper, isTemplate })
+}
+
 export function ServiceAuthRoute (props: {
   serviceType: ServiceType,
   oper: ServiceOperation,
   children: ReactElement
 }) {
   const { serviceType, oper, children } = props
+
+  if (isAllowedOperationCheckEnabled()) {
+    return hasServicePermission({ type: serviceType, oper }) ? children : goToNoPermission()
+  }
 
   if ([ServiceOperation.DETAIL, ServiceOperation.LIST].includes(oper)) {
     return <AuthRoute
@@ -101,12 +120,19 @@ export function getScopeKeyByPolicy (type: PolicyType, oper: PolicyOperation): S
   })
 }
 
-export function hasPolicyPermission (props: { type: PolicyType, oper: PolicyOperation }) {
+// eslint-disable-next-line max-len
+export function hasPolicyPermission (props: { type: PolicyType, oper: PolicyOperation, isTemplate?: boolean }) {
   return hasGenericPermission({
     ...props,
     getScopeKeyFn: getScopeKeyByPolicy,
     getAllowedOperation: getPolicyAllowedOperation
   })
+}
+
+export function useTemplateAwarePolicyPermission (type: PolicyType, oper: PolicyOperation) {
+  const { isTemplate } = useConfigTemplate()
+
+  return hasPolicyPermission({ type, oper, isTemplate })
 }
 
 export function PolicyAuthRoute (props: {
@@ -115,6 +141,10 @@ export function PolicyAuthRoute (props: {
   children: ReactElement
 }) {
   const { policyType, oper, children } = props
+
+  if (isAllowedOperationCheckEnabled()) {
+    return hasPolicyPermission({ type: policyType, oper }) ? children : goToNoPermission()
+  }
 
   if ([PolicyOperation.LIST, PolicyOperation.DETAIL].includes(oper)) {
     return <AuthRoute
@@ -212,15 +242,17 @@ type hasGenericPermissionProps<T extends SvcPcyAllowedType, U extends SvcPcyAllo
   type: T
   oper: U
   roles?: RolesEnum[],
+  isTemplate?: boolean
   getScopeKeyFn: (type: T, oper: U) => ScopeKeys,
-  getAllowedOperation: (type: T, oper: U) => string | undefined,
+  getAllowedOperation: (type: T, oper: U, isTemplate?: boolean) => string | undefined,
   specialCheckFn?: () => boolean
 }
 
 function hasGenericPermission<T extends SvcPcyAllowedType, U extends SvcPcyAllowedOper> (
   props: hasGenericPermissionProps<T, U>
 ): boolean {
-  const { type, oper, roles, getScopeKeyFn, specialCheckFn, getAllowedOperation } = props
+  // eslint-disable-next-line max-len
+  const { type, oper, roles, isTemplate, getScopeKeyFn, specialCheckFn, getAllowedOperation } = props
 
   // eslint-disable-next-line max-len
   if ([ServiceOperation.LIST, ServiceOperation.DETAIL, PolicyOperation.LIST, PolicyOperation.DETAIL].includes(oper as unknown as SvcPcyAllowedOper)) {
@@ -228,7 +260,7 @@ function hasGenericPermission<T extends SvcPcyAllowedType, U extends SvcPcyAllow
   }
 
   if (isAllowedOperationCheckEnabled()) {
-    return hasPermission({ allowedOperations: getAllowedOperation(type, oper) })
+    return hasPermission({ allowedOperations: getAllowedOperation(type, oper, isTemplate) })
   }
 
   const scopeKeys = getScopeKeyFn(type, oper)

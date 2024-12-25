@@ -15,22 +15,10 @@ export const isAllowedOperationCheckEnabled = () => {
 }
 
 const getAllowedOperation = <T extends SvcPcyAllowedType, O extends SvcPcyAllowedOper>(
-  map: AllowedOperationMap<T, O>,
-  type: T,
-  oper: O
+  { map, type, oper, isTemplate = false }:
+  { map: AllowedOperationMap<T, O>, type: T, oper: O, isTemplate?: boolean }
 ) => {
-  return map[type]?.[oper]
-}
-
-export const useAllowedOperation = <T extends SvcPcyAllowedType, O extends SvcPcyAllowedOper>(
-  map: AllowedOperationMap<T, O>,
-  type: T,
-  oper: O
-) => {
-  const { isTemplate } = useConfigTemplate()
-  const allowedOperation = getAllowedOperation(map, type, oper)
-
-  return applyTemplateIfNeeded(allowedOperation, isTemplate)
+  return applyTemplateIfNeeded(map[type]?.[oper], isTemplate)
 }
 
 // eslint-disable-next-line max-len
@@ -40,20 +28,26 @@ export const applyTemplateIfNeeded = (allowedOperation: string | undefined, isTe
     : allowedOperation
 }
 
-// eslint-disable-next-line max-len
-export const getServiceAllowedOperation = (type: ServiceType, oper: ServiceOperation): string | undefined => {
-  return getAllowedOperation(serviceAllowedOperationMap, type, oper)
-}
-
-export const useServiceAllowedOperation = (type: ServiceType, oper: ServiceOperation) => {
-  return useAllowedOperation(serviceAllowedOperationMap, type, oper)
+export const getServiceAllowedOperation = (
+  type: ServiceType, oper: ServiceOperation, isTemplate?: boolean
+): string | undefined => {
+  return getAllowedOperation({ map: serviceAllowedOperationMap, type, oper, isTemplate })
 }
 
 // eslint-disable-next-line max-len
-export const getPolicyAllowedOperation = (type: PolicyType, oper: PolicyOperation): string | undefined => {
-  return getAllowedOperation(policyAllowedOperationMap, type, oper)
+export const useTemplateAwareServiceAllowedOperation = (type: ServiceType, oper: ServiceOperation) => {
+  const { isTemplate } = useConfigTemplate()
+  return getServiceAllowedOperation(type, oper, isTemplate)
 }
 
-export const usePolicyAllowedOperation = (type: PolicyType, oper: PolicyOperation) => {
-  return useAllowedOperation(policyAllowedOperationMap, type, oper)
+export const getPolicyAllowedOperation = (
+  type: PolicyType, oper: PolicyOperation, isTemplate?: boolean
+): string | undefined => {
+  return getAllowedOperation({ map: policyAllowedOperationMap, type, oper, isTemplate })
+}
+
+// eslint-disable-next-line max-len
+export const useTemplateAwarePolicyAllowedOperation = (type: PolicyType, oper: PolicyOperation) => {
+  const { isTemplate } = useConfigTemplate()
+  return getPolicyAllowedOperation(type, oper, isTemplate)
 }

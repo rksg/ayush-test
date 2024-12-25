@@ -12,12 +12,13 @@ import {
 import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
 import { useGetWifiCallingServiceQuery, useGetWifiCallingServiceTemplateQuery } from '@acx-ui/rc/services'
 import {
-  useServiceAllowedOperation,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
   ServiceOperation,
-  ServiceType, useConfigTemplateQueryFnSwitcher, useServiceListBreadcrumb,
-  WifiCallingDetailContextType
+  ServiceType, useConfigTemplateQueryFnSwitcher,
+  useServiceListBreadcrumb,
+  WifiCallingDetailContextType,
+  useTemplateAwareServiceAllowedOperation
 } from '@acx-ui/rc/utils'
 
 import { ServiceConfigTemplateLinkSwitcher } from '../../../configTemplates'
@@ -55,7 +56,8 @@ export const WifiCallingDetailView = () => {
         breadcrumb={breadcrumb}
         extra={filterByAccessForServicePolicyMutation([
           <ServiceConfigTemplateLinkSwitcher
-            key={useServiceAllowedOperation(ServiceType.WIFI_CALLING, ServiceOperation.EDIT)}
+            // eslint-disable-next-line max-len
+            key={useTemplateAwareServiceAllowedOperation(ServiceType.WIFI_CALLING, ServiceOperation.EDIT)}
             scopeKey={getScopeKeyByService(ServiceType.WIFI_CALLING, ServiceOperation.EDIT)}
             type={ServiceType.WIFI_CALLING}
             oper={ServiceOperation.EDIT}

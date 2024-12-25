@@ -7,13 +7,24 @@ import { PolicyOperation } from '../policy'
 import {
   applyTemplateIfNeeded,
   getServiceAllowedOperation,
-  useServiceAllowedOperation,
   getPolicyAllowedOperation,
-  usePolicyAllowedOperation
+  useTemplateAwareServiceAllowedOperation,
+  useTemplateAwarePolicyAllowedOperation
 } from './allowedOperationUtils'
 import { ServiceOperation } from './serviceRouteUtils'
 
+const mockedUseConfigTemplate = jest.fn()
+jest.mock('../../configTemplate', () => ({
+  ...jest.requireActual('../../configTemplate'),
+  useConfigTemplate: () => mockedUseConfigTemplate()
+}))
+
 describe('allowedOperationUtils', () => {
+
+  afterEach(() => {
+    mockedUseConfigTemplate.mockReset()
+  })
+
   describe('applyTemplateIfNeeded', () => {
     it('should modify the operation when isTemplate is true', () => {
       const operation = 'http:/path'
@@ -28,31 +39,37 @@ describe('allowedOperationUtils', () => {
 
   describe('getServiceAllowedOperation', () => {
     it('should retrieve the correct service operation', () => {
-      // eslint-disable-next-line max-len
-      expect(getServiceAllowedOperation(ServiceType.WIFI_CALLING, ServiceOperation.CREATE)).toBe('POST:/wifiCallingServiceProfiles')
+      expect(getServiceAllowedOperation(ServiceType.WIFI_CALLING, ServiceOperation.CREATE))
+        .toBe('POST:/wifiCallingServiceProfiles')
+
+      expect(getServiceAllowedOperation(ServiceType.WIFI_CALLING, ServiceOperation.CREATE, true))
+        .toBe('POST:/templates/wifiCallingServiceProfiles')
     })
   })
 
   describe('getPolicyAllowedOperation', () => {
     it('should retrieve the correct policy operation', () => {
-      // eslint-disable-next-line max-len
-      expect(getPolicyAllowedOperation(PolicyType.AAA, PolicyOperation.CREATE)).toBe('POST:/radiusServerProfiles')
+      expect(getPolicyAllowedOperation(PolicyType.AAA, PolicyOperation.CREATE))
+        .toBe('POST:/radiusServerProfiles')
+
+      expect(getPolicyAllowedOperation(PolicyType.AAA, PolicyOperation.CREATE, true))
+        .toBe('POST:/templates/radiusServerProfiles')
     })
   })
 
-  describe('useServiceAllowedOperation', () => {
-    it('should use the correct service operation', () => {
-      // eslint-disable-next-line max-len
-      const { result } = renderHook(() => useServiceAllowedOperation(ServiceType.WIFI_CALLING, ServiceOperation.CREATE))
-      expect(result.current).toBe('POST:/wifiCallingServiceProfiles')
+  it('useTemplateAwareServiceAllowedOperation', () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+    const { result } = renderHook(() => {
+      return useTemplateAwareServiceAllowedOperation(ServiceType.DHCP, ServiceOperation.CREATE)
     })
+    expect(result.current).toBe('POST:/templates/dhcpConfigServiceProfiles')
   })
 
-  describe('usePolicyAllowedOperation', () => {
-    it('should use the correct policy operation', () => {
-      // eslint-disable-next-line max-len
-      const { result } = renderHook(() => usePolicyAllowedOperation(PolicyType.AAA, PolicyOperation.CREATE))
-      expect(result.current).toBe('POST:/radiusServerProfiles')
+  it('useTemplateAwarePolicyAllowedOperation', () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+    const { result } = renderHook(() => {
+      return useTemplateAwarePolicyAllowedOperation(PolicyType.AAA, PolicyOperation.CREATE)
     })
+    expect(result.current).toBe('POST:/templates/radiusServerProfiles')
   })
 })
