@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { storiesOf } from '@storybook/react'
 
 import { formatter } from '@acx-ui/formatter'
@@ -23,40 +22,9 @@ export const data = [
   { key: '5GHz', name: '5 GHz', data: getData() }
 ]
 
-const test = [
-  {
-    key: 'switchId_Total Uplink Traffic (Bytes)',
-    name: 'Total Uplink Traffic (Bytes)',
-    data: [
-      [
-        'D4:C1:9E:15:E9:21',
-        278871529
-      ],
-      [
-        '58:FB:96:0E:81:B2',
-        46174041
-      ]
-    ]
-  },
-  {
-    key: 'switchId_Total Downlink Traffic (Bytes)',
-    name: 'Total Downlink Traffic (Bytes)',
-    data: [
-      [
-        'D4:C1:9E:15:E9:21',
-        12376117
-      ],
-      [
-        '58:FB:96:0E:81:B2',
-        6073197
-      ]
-    ]
-  }
-]
-
 storiesOf('StackedAreaChart', module)
   .add('Chart View', () => <StackedAreaChart
-    data={test}
+    data={data}
     style={{ width: 500 }}
   />)
   .add('StepChart View', () => <StackedAreaChart

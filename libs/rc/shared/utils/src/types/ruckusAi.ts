@@ -22,20 +22,13 @@ export enum RuckusAiConfigurationStepsEnum {
   SUMMARY = 'apply'
 }
 
-// Ruckus AI Chat
-export interface WidgetData {
-  id: number,
-  chartOption: DonutChartData[] & TimeSeriesChartData[] & BarChartData & TableData,
-  unit: { [key:string]: string }
-  multiseries?: boolean // for bar chart
-}
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 interface TableData {
   columns: TableColumn<any, 'text'>[]
   dataSource: any[]
 }
 
+// Ruckus AI Chat
 export interface RuckusAiChat {
   sessionId: string,
   messages: ChatMessage[]
@@ -51,12 +44,19 @@ export interface ChatMessage {
 export interface ChatWidget {
   title: string,
   chartType: string,
+  type?: 'time' & 'category',
+  chartOption: DonutChartData[] & TimeSeriesChartData[] & BarChartData & TableData,
 }
 
 export interface WidgetListData {
   id: string,
-  title: string,
-  chartType: string,
+  chatId: string,
   sessionId: string,
-  chatId: string
+  chartType: string,
+  chartOption: DonutChartData[] & TimeSeriesChartData[] & BarChartData & TableData,
+  title?: string,
+  type?: string,
+  unit?: { [key:string]: string },
+  axisType?: 'time' & 'category', // for line/bar chart
+  multiseries?: boolean // for bar chart
 }

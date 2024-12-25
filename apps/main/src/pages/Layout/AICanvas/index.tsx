@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useEffect, useRef, useState } from 'react'
 
 import { Spin }         from 'antd'
@@ -115,10 +114,11 @@ export default function AICanvas () {
         </div>
       </div>
       { chat.role === 'AI' && chat.widgets && <DraggableChart data={{
-        ...(chat.widgets[0] ? chat.widgets[0] : chat.widgets),
+        ...chat.widgets[0],
         sessionId,
         id: chat.id,
-        chatId: chat.id
+        chatId: chat.id,
+        axisType: chat.widgets[0]?.type // TODO: Remove after API response changed
       }}
       /> }
 

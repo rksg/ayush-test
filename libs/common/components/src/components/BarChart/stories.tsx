@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { ReactNode } from 'react'
 
 import { withKnobs, object }                       from '@storybook/addon-knobs'

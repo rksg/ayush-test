@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react'
 
 import { CallbackDataParams } from 'echarts/types/dist/shared'
@@ -12,7 +11,7 @@ import { BarChartData }                                                         
 import { BarChart, cssNumber, cssStr, DonutChart, Loader, StackedAreaChart, Table } from '@acx-ui/components'
 import { formatter }                                                                from '@acx-ui/formatter'
 import { useChatChartQuery }                                                        from '@acx-ui/rc/services'
-import { WidgetData, WidgetListData }                                               from '@acx-ui/rc/utils'
+import { WidgetListData }                                                           from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'
 
@@ -139,7 +138,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
   })
 
 
-  const getChart = (type: string, width:number, height:number, chartData:WidgetData) => {
+  const getChart = (type: string, width:number, height:number, chartData:WidgetListData) => {
     if(type === 'pie') {
       return <DonutChart
         style={{ width, height }}
@@ -152,6 +151,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
       return <StackedAreaChart
         style={{ width, height }}
         data={chartData?.chartOption || []}
+        xAxisType={chartData?.axisType}
       />
     } else if(type === 'bar') {
       return <BarChart
@@ -164,7 +164,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
     } else if(type === 'table') {
       return <Table
         style={{ width: width-30 }}
-        columns={chartData?.chartOption?.columns.map(i => ({ ...i, searchable: true })) || []}
+        columns={chartData?.chartOption?.columns?.map(i => ({ ...i, searchable: true })) || []}
         dataSource={chartData?.chartOption?.dataSource}
         type='compactWidget'
         rowKey={chartData?.chartOption?.columns?.[0]?.key || 'id'}
@@ -206,7 +206,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
   //   ]
   //   }
   // }
-  const chartData = data // data.type === 'card' ? queryResults.data : data
+  const chartData = data //data.type === 'card' ? queryResults.data : data
   return (
     <Loader states={[{ isLoading: queryResults.isLoading }]}>
       <UI.Widget
@@ -215,7 +215,8 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
         className={data.chartType === 'table' ? 'table' : ''}
       >
         <AutoSizer>
-          {({ height, width }) => getChart(data.chartType, width, height, chartData)}
+          {({ height, width }) => getChart(
+            data.chartType, width, height, chartData as WidgetListData)}
         </AutoSizer>
       </UI.Widget>
     </Loader>

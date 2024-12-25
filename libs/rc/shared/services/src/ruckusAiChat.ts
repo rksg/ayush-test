@@ -1,7 +1,7 @@
 import {
   RuckusAiChat,
   RuckusAiChatUrlInfo,
-  WidgetData
+  WidgetListData
 } from '@acx-ui/rc/utils'
 import { baseRuckusAiChatApi } from '@acx-ui/store'
 import { RequestPayload }      from '@acx-ui/types'
@@ -26,7 +26,7 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
         }
       }
     }),
-    chatChart: build.query<WidgetData, RequestPayload>({
+    chatChart: build.query<WidgetListData, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(RuckusAiChatUrlInfo.chart, params)
         return {

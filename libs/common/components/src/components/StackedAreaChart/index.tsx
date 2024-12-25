@@ -57,6 +57,7 @@ export interface StackedAreaChartProps
     chartRef?: RefCallback<ReactECharts>
     zoom?: TimeStampRange
     onDataZoom?: (range: TimeStampRange) => void
+    xAxisType?: 'time' & 'category'
   }
 
 export function getSeriesTotal <DataType extends TimeSeriesChartData> (
@@ -102,6 +103,7 @@ export function StackedAreaChart <
   disableAxis,
   disableGrid,
   totalMean,
+  xAxisType,
   ...props
 }: StackedAreaChartProps<TChartData>) {
   const eChartsRef = useRef<ReactECharts>(null)
@@ -150,7 +152,7 @@ export function StackedAreaChart <
     },
     xAxis: {
       ...xAxisOptions(),
-      type: 'time', // 'category'
+      type: xAxisType || 'time',
       axisLabel: {
         ...axisLabelOptions(),
         formatter: dateAxisFormatter()
