@@ -4,7 +4,7 @@ import { MaybePromise }                                       from '@reduxjs/too
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { reduce }                                             from 'lodash'
 
-import { Filter }                                 from '@acx-ui/components'
+import { Filter }                  from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -89,7 +89,11 @@ import {
   EthernetPortProfileViewData,
   SoftGreUrls,
   SoftGreViewData,
-  ClientIsolationUrls, ClientIsolationViewModel
+  ClientIsolationUrls,
+  ClientIsolationViewModel,
+  LanPortsUrls,
+  LanPort,
+  LanPortClientIsolationSettings
 } from '@acx-ui/rc/utils'
 import { baseApApi }      from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
@@ -932,6 +936,38 @@ export const apApi = baseApApi.injectEndpoints({
           createHttpRequest(urlsInfo.getApLanPorts, params, apiCustomHeader)
         )
         let apLanPorts = apLanPortSettings.data as WifiApSetting
+
+        if (params?.serialNumber) {
+          const results: ((LanPort | null)[])[] = []
+          const apLanPortSettingsQuery = apLanPorts?.lanPorts?.map((lanPort) => {
+            return fetchWithBQ(createHttpRequest(LanPortsUrls.getApLanPortSettings,
+              {
+                venueId: params?.venueId,
+                serialNumber: params.serialNumber,
+                portId: lanPort.portId
+              },
+              apiCustomHeader
+            ))
+          })
+          const reqs = await Promise.allSettled(apLanPortSettingsQuery!)
+          results.push(reqs.map((result) => {
+            return result.status === 'fulfilled' ? result.value.data as LanPort : null
+          }))
+          results.forEach((result) => {
+            const target = apLanPorts
+            result.forEach((lanPortSettings, idx) => {
+              if (lanPortSettings === null) return
+              if(target.lanPorts) {
+                target.lanPorts[idx].softGreEnabled = lanPortSettings.softGreEnabled
+                target.lanPorts[idx].clientIsolationEnabled = lanPortSettings.clientIsolationEnabled
+                if (lanPortSettings.clientIsolationEnabled) {
+                  target.lanPorts[idx].clientIsolationSettings =
+                    lanPortSettings.clientIsolationSettings as LanPortClientIsolationSettings
+                }
+              }
+            })
+          })
+        }
 
         if (enableEthernetProfile) {
           const ethReq = {
