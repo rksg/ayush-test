@@ -19,7 +19,7 @@ const SwitchProfileTabs = () => {
     })
 
   return (
-    <Tabs onChange={onTabChange} activeKey={params.activeSubTab} type='card'>
+    <Tabs onChange={onTabChange} activeKey={params.activeSubTab} type='card' stickyTop={false}>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Profiles' })} key='profiles' />
       <Tabs.TabPane tab={$t({ defaultMessage: 'MAC OUI' })} key='macoui' />
       <Tabs.TabPane tab={$t({ defaultMessage: 'LLDP TLV' })} key='lldptlv' />

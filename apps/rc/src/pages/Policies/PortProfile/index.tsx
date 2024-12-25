@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Tabs } from '@acx-ui/components'
+import { useIsSplitOn, Features }   from '@acx-ui/feature-toggle'
 import {
   filterByAccessForServicePolicyMutation,
   getPolicyListRoutePath,
@@ -20,6 +21,8 @@ const ProfileTabs = () => {
   const { $t } = useIntl()
   const params = useParams()
   const basePath = useTenantLink('/policies/portProfile')
+  const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
+  const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
   const navigate = useNavigate()
   const onTabChange = (tab: string) => {
     if (tab === 'switch') tab = `${tab}/profiles`
@@ -30,8 +33,14 @@ const ProfileTabs = () => {
   }
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Wi-Fi' })} key='wifi' />
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Switch' })} key='switch' />
+      <Tabs.TabPane
+        tab={$t({ defaultMessage: 'Wi-Fi' })}
+        key='wifi'
+        disabled={!isEthernetPortProfileEnabled} />
+      <Tabs.TabPane
+        tab={$t({ defaultMessage: 'Switch' })}
+        key='switch'
+        disabled={!isSwitchPortProfileEnabled} />
     </Tabs>
   )
 }
