@@ -1,5 +1,4 @@
 import { EventTable, useEventsTableQuery } from '@acx-ui/rc/components'
-import { LoadTimeProvider, TrackingPages } from '@acx-ui/utils'
 
 const Events = () => {
   const settingsId = 'timeline-event-table'
@@ -8,11 +7,11 @@ const Events = () => {
     undefined,
     { settingsId }
   )
-  return <LoadTimeProvider page={TrackingPages.EVENTS}>
-    <EventTable
-      settingsId={settingsId}
-      tableQuery={tableQuery}
-      showScheduleExport={true}/>
-  </LoadTimeProvider>
+
+  return <EventTable
+    settingsId={settingsId}
+    tableQuery={tableQuery}
+    showScheduleExport={true}
+  />
 }
 export { Events }

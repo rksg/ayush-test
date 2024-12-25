@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState, Key, useEffect, useRef, useDebugValue } from 'react'
+import React, { useMemo, useState, Key, useEffect, useRef, useDebugValue } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps, ProColumnType } from '@ant-design/pro-table'
 import { Menu, Space }                                                from 'antd'
@@ -8,7 +8,7 @@ import Highlighter                                                    from 'reac
 import { useIntl }                                                    from 'react-intl'
 
 import { MinusSquareOutlined, PlusSquareOutlined, SettingsOutlined } from '@acx-ui/icons'
-import { TABLE_DEFAULT_PAGE_SIZE, LoadTimeContext }                  from '@acx-ui/utils'
+import { TABLE_DEFAULT_PAGE_SIZE }                                   from '@acx-ui/utils'
 
 import { getTitleWithIndicator }               from '../BetaIndicator'
 import { Button, DisabledButton, ButtonProps } from '../Button'
@@ -157,7 +157,6 @@ function Table <RecordType extends Record<string, any>> ({
   const { dataSource, filterableWidth, searchableWidth, style } = props
   const wrapperRef = useRef<HTMLDivElement>(null)
   const layout = useLayoutContext()
-  const { onPageFilterChange } = useContext(LoadTimeContext)
 
   const rowKey = (props.rowKey ?? 'key')
   const intl = useIntl()
@@ -187,11 +186,6 @@ function Table <RecordType extends Record<string, any>> ({
   const updateSearch = _.debounce(() => {
     onFilter.current?.(filterValues, { searchString: searchValue }, groupByValue)
   }, 1000)
-  const debouncedOnPageFilterChange = _.debounce((filterValues, searchValue, groupByValue) => {
-    if (!_.isEmpty(filterValues) || !_.isEmpty(searchValue)) {
-      onPageFilterChange?.({ filterValues, searchValue, groupByValue })
-    }
-  }, 300)
 
   const filterWidth = filterableWidth || 200
   const searchWidth = searchableWidth || 292
@@ -204,10 +198,6 @@ function Table <RecordType extends Record<string, any>> ({
   }
 
   useEffect(() => {
-    onPageFilterChange?.({ filterValues, searchValue, groupByValue }, true)
-  }, [])
-
-  useEffect(() => {
     onFilter.current = onFilterChange
   }, [onFilterChange])
 
@@ -217,13 +207,6 @@ function Table <RecordType extends Record<string, any>> ({
     }
     return () => updateSearch.cancel()
   }, [searchValue]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    debouncedOnPageFilterChange(filterValues, searchValue, groupByValue)
-    return () => {
-      debouncedOnPageFilterChange.cancel()
-    }
-  }, [filterValues, searchValue, groupByValue])
 
   useEffect(() => {
     onFilter.current?.(filterValues, { searchString: searchValue }, groupByValue)

@@ -70,7 +70,7 @@ export function VenueOverviewTab () {
   ]
 
   useEffect(() => {
-    setSubTab?.('OVERVIEW')
+    setSubTab?.('Overview')
     onPageFilterChange?.(venueFilter, true)
   }, [])
 

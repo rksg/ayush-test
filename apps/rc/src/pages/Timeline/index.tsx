@@ -1,10 +1,10 @@
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { PageHeader, Tabs, RangePicker }         from '@acx-ui/components'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { goToNotFound }                          from '@acx-ui/user'
-import { useDateFilter }                         from '@acx-ui/utils'
+import { PageHeader, Tabs, RangePicker }                  from '@acx-ui/components'
+import { useNavigate, useParams, useTenantLink }          from '@acx-ui/react-router-dom'
+import { goToNotFound }                                   from '@acx-ui/user'
+import { useDateFilter, LoadTimeProvider, TrackingPages } from '@acx-ui/utils'
 
 import { Activities } from './Activities'
 import { AdminLogs }  from './AdminLogs'
@@ -30,7 +30,7 @@ function Timeline () {
   }
   const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
   return (
-    <>
+    <LoadTimeProvider page={TrackingPages.TIMELINE}>
       <PageHeader
         title={$t({ defaultMessage: 'Timeline' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Administration' }) }]}
@@ -54,7 +54,7 @@ function Timeline () {
         ]}
       />
       {Tab && <Tab/>}
-    </>
+    </LoadTimeProvider>
   )
 }
 export default Timeline

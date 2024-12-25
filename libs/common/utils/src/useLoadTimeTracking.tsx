@@ -8,6 +8,7 @@ import moment                  from 'moment-timezone'
 
 import { AnalyticsFilter } from './types/analyticsFilter'
 
+const PENDO_TRACK_EVENT_NAME = 'testPageloadtime'
 const TIME_THRESHOLD_OF_COMPONENT = 10_000 //300_000
 const LOAD_TIME = {
   NORMAL: 1_000,
@@ -19,6 +20,10 @@ interface QueryState {
   isLoading?: boolean;
   isFetching?: boolean;
   error?: Error | SerializedError | FetchBaseQueryError;
+  payload?: {
+    filters?: unknown
+    searchString?: string
+  }
 }
 
 type LoadTimes = {
@@ -29,8 +34,8 @@ type LoadTimes = {
 }
 
 type TableFilter = {
-  filterValues?: Record<string, FilterValue|null>,
-  searchValue?: string,
+  filterValues?: Record<string, FilterValue|null>|unknown,
+  searchValue?: string|unknown,
   groupByValue?: string | undefined
 }
 
@@ -47,7 +52,7 @@ export enum TrackingPages {
   WIRELESS_CLIENTS = 'Wireless Clients List',
   WIRED_CLIENTS = 'Wired Clients List',
   VENUES = 'Venues',
-  EVENTS = 'Events'
+  TIMELINE = 'Timeline'
 }
 
 export const trackingItems = {
@@ -109,8 +114,10 @@ export const trackingItems = {
       }
     }
   },
-  [TrackingPages.EVENTS]: {
-    EventTable: 'EventTable'
+  [TrackingPages.TIMELINE]: {
+    EVENT: {
+      EventTable: 'EventTable'
+    }
   }
 }
 
@@ -136,7 +143,23 @@ const getLocalTime = () => {
   return moment().tz(localTimezone).format('YYYY-MM-DD HH:mm:ss')
 }
 
-export const getTrackingItemsCount = (
+const getPageType = (page: TrackingPages, subTab?: string) => {
+  switch (page) {
+    case TrackingPages.DASHBOARD:
+      return 'Dashboard'
+    case TrackingPages.VENUES:
+      if (subTab === 'Overview') return 'Dashboard'
+      return ''
+    case TrackingPages.WIRELESS_CLIENTS:
+    case TrackingPages.WIRED_CLIENTS:
+    case TrackingPages.TIMELINE:
+      return 'Table'
+    default:
+      return ''
+  }
+}
+
+const getTrackingItemsCount = (
   page: TrackingPages, subTab?: string, hasFilters?: boolean
 ) => {
   const getItemsForPage = <T extends TrackingPages>(pageKey: T, subTab?: string) => {
@@ -146,15 +169,12 @@ export const getTrackingItemsCount = (
 
     const getPageItems = () => {
       const pageItems = trackingItems[pageKey]
-
       if (!subTab) {
         return pageItems
       }
-
       if (subTab in pageItems) {
         return pageItems[subTab as keyof typeof pageItems]
       }
-
       return {}
     }
 
@@ -186,7 +206,7 @@ export const getTrackingItemsCount = (
     case TrackingPages.WIRELESS_CLIENTS:
     case TrackingPages.WIRED_CLIENTS:
     case TrackingPages.VENUES:
-    case TrackingPages.EVENTS:
+    case TrackingPages.TIMELINE:
       const items = getItemsForPage(page, subTab)
       const filteredItems = Object.keys(items).filter(key => {
         const item = items[key]
@@ -229,6 +249,8 @@ export const LoadTimeProvider = ({ page, children }: {
       !_.isEqual(updatedFilters, pageFilters)
     )
 
+    // eslint-disable-next-line no-console
+    console.log('## onPageFilterChange:', isInit, hasChanged, isLoadTimeSet.current)
     if (isInit) {
       setPageFilters(updatedFilters)
     } else if (hasChanged && isLoadTimeSet.current) {
@@ -245,12 +267,8 @@ export const LoadTimeProvider = ({ page, children }: {
     }
   }
 
-  // useEffect(() => {
-  //   setLoadTimes({})
-  // }, [])
-
   useEffect(() => {
-    const trackingItemsCount = getTrackingItemsCount(page, subTab)
+    const trackingItemsCount = getTrackingItemsCount(page, subTab?.toUpperCase())
     const trackedCount = Object.keys(loadTimes).length
     const isLoadTimeUnset = !isLoadTimeSet.current
     const isAllItemTracked = trackedCount === trackingItemsCount
@@ -264,7 +282,8 @@ export const LoadTimeProvider = ({ page, children }: {
       const loadTimeStatus = getLoadTimeStatus(totalLoadTime)
       const trackEventData = {
         time: localtime,
-        page_title: `${page} ${subTab}`,
+        page_title: subTab ? `${page}-${subTab}` : page,
+        page_type: getPageType(page),
         load_time_ms: totalLoadTime,
         load_time_text: getLoadTimeStatus(totalLoadTime),
         components_load_time_ms: formatLoadTimes(loadTimes),
@@ -284,7 +303,7 @@ export const LoadTimeProvider = ({ page, children }: {
       if (pendo) {
         // eslint-disable-next-line no-console
         console.log('*** ', pendo)
-        pendo.track('testPageloadtime', trackEventData)
+        pendo.track(PENDO_TRACK_EVENT_NAME, trackEventData)
       }
     }
   }, [loadTimes])
@@ -300,29 +319,59 @@ export const LoadTimeProvider = ({ page, children }: {
 
 export function useLoadTimeTracking ({ itemName, states, isEnabled }: {
   itemName: string,
-  states: QueryState[],
-  isEnabled: boolean
+  isEnabled: boolean,
+  states: unknown[],
+  pageRangeFilter?: {
+    startDate?: string
+    endDate?: string
+    range?: string
+  }
 }) {
   const isStartTimeSet = useRef(false)
   const isEndTimeSet = useRef(false)
-  const { updateLoadTime, isFiltersChanged, pageLoadStart } = useContext(LoadTimeContext)
+  const {
+    updateLoadTime, onPageFilterChange, pageLoadStart, isFiltersChanged
+  } = useContext(LoadTimeContext)
 
   const [startTime, setStartTime] = useState(null as unknown as number)
   const [endTime, setEndTime] = useState(null as unknown as number)
   const [isUnfulfilled, setIsUnfulfilled] = useState(false)
 
   const isMonitoringEnabled = !!updateLoadTime && isEnabled
-  const isLoading = Boolean(states?.some(state => state.isLoading))
-  const isFetching = isFiltersChanged && Boolean(states?.some(state => state.isFetching))
-  const isAllSuccess = Boolean(states?.every(state => state.isSuccess))
-  const isAllFetchSuccess = isFiltersChanged && Boolean(states?.every(state => !state.isFetching))
+  const status = states as QueryState[] ///
+  const isLoading = Boolean(status?.some(state => state.isLoading))
+  const isFetching = isFiltersChanged && Boolean(status?.some(state => state.isFetching))
+  const isAllSuccess = Boolean(status?.every(state => state.isSuccess))
+  const isAllFetchSuccess = isFiltersChanged && Boolean(status?.every(state => !state.isFetching))
+
+  const pageQuery = (states?.length === 1 ? states[0] : null) as {
+    payload?: {
+      filters?: unknown
+      searchString?: string
+    }
+  }
 
   useEffect(() => {
     if (!isStartTimeSet.current && isMonitoringEnabled) {
       setStartTime(getCurrentTime())
       isStartTimeSet.current = true
     }
+    if (pageQuery?.payload && isMonitoringEnabled) {
+      onPageFilterChange?.({
+        filterValues: pageQuery?.payload?.filters,
+        searchValue: pageQuery?.payload?.searchString ?? ''
+      }, true)
+    }
   }, [])
+
+  useEffect(() => {
+    if (pageQuery?.payload) {
+      onPageFilterChange?.({
+        filterValues: pageQuery.payload.filters,
+        searchValue: pageQuery.payload.searchString ?? ''
+      })
+    }
+  }, [pageQuery?.payload?.filters, pageQuery?.payload?.searchString])
 
   useEffect(() => {
     if (isFiltersChanged && isEndTimeSet.current && isMonitoringEnabled) {
