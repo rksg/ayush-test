@@ -108,7 +108,7 @@ export function hasAccess (props?: { rbacOpsIds?: RbacOpsIds, roles?: Role[] }) 
  * AND ->  If the `opsId` is an array, all elements must match (e.g., `[['DELETE:/venues', 'DELETE:/networks']]`).
  * Ignore check -> If `SHOW_WITHOUT_RBAC_CHECK` is included, access is automatically granted (e.g., `[SHOW_WITHOUT_RBAC_CHECK]`).
  */
-function hasAllowedOperations (rbacOpsIds: RbacOpsIds) {
+export function hasAllowedOperations (rbacOpsIds: RbacOpsIds) {
   const { rbacOpsApiEnabled, allowedOperations } = getUserProfile()
   if (rbacOpsApiEnabled) {
     return rbacOpsIds?.some(rbacOpsIds => {
@@ -135,6 +135,19 @@ export function filterByAccess <Item> (items: Item[]) {
       return hasPermission({ scopes, rbacOpsIds: allowedOperations })
     })
   }
+}
+
+export function filterByOperations <Item> (items: Item[]) {
+  if (get('IS_MLISA_SA')) return items
+
+  const { rbacOpsApiEnabled } = getUserProfile()
+  if (!rbacOpsApiEnabled) return items
+
+  return items.filter(item => {
+    const filterItem = item as FilterItemType
+    const allowedOperations = filterItem?.rbacOpsId
+    return allowedOperations ? hasAllowedOperations(allowedOperations) : true
+  })
 }
 
 let permissions: RaiPermissions = {} as RaiPermissions
