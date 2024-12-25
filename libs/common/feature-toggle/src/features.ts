@@ -247,6 +247,7 @@ export enum Features {
   WIFI_R370_TOGGLE = 'wifi-r370-toggle',
   MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE = 'mac-registration-require-identity-group',
   DPSK_REQUIRE_IDENTITY_GROUP = 'dpsk-require-identity-group',
+  AP_USB_PORT_SUPPORT_TOGGLE = 'wifi-usb-port-support-toggle',
   ACX_UI_NON_PROXY_ACCOUNTING_DPSK_TOGGLE = 'acx-ui-non-proxy-accounting-dpsk-toggle',
   AP_FW_MGMT_EARLY_ACCESS_TOGGLE = 'ap-fw-mgmt-early-access-toggle'
 }
