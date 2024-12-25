@@ -19,7 +19,7 @@ import {
   SummaryStep,
   WirelessNetworkStep
 } from '../PersonalIdentityNetworkForm'
-import { Wireless }                                from '../PersonalIdentityNetworkForm/NetworkTopologyForm'
+import { NetworkTopologyType }                     from '../PersonalIdentityNetworkForm/NetworkTopologyForm'
 import { PersonalIdentityNetworkFormDataProvider } from '../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext'
 
 const AddPersonalIdentityNetwork = () => {
@@ -37,7 +37,7 @@ const AddPersonalIdentityNetwork = () => {
 
   const steps = useMemo(() => {
     return isEdgePinEnhanceReady ?
-      getStepsByTopologyType(networkTopologyType || Wireless) :
+      getStepsByTopologyType(networkTopologyType || NetworkTopologyType.Wireless) :
       // eslint-disable-next-line max-len
       [GeneralSettingsStep, SmartEdgeStep, WirelessNetworkStep, DistributionSwitchStep, AccessSwitchStep, SummaryStep]
   }, [networkTopologyType])
@@ -58,7 +58,7 @@ const AddPersonalIdentityNetwork = () => {
           steps={steps}
           initialValues={{
             vxlanTunnelProfileId: tenantId,
-            networkTopologyType: Wireless
+            networkTopologyType: NetworkTopologyType.Wireless
           }}
           onFinish={addPin}
         />

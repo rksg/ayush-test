@@ -18,13 +18,13 @@ import {
 import { useTenantLink }                                  from '@acx-ui/react-router-dom'
 import { CatchErrorDetails, CatchErrorResponse, getIntl } from '@acx-ui/utils'
 
-import { AccessSwitchForm }                                  from './AccessSwitchForm'
-import { DistributionSwitchForm }                            from './DistributionSwitchForm'
-import { GeneralSettingsForm }                               from './GeneralSettingsForm'
-import { NetworkTopologyForm, ThreeTier, TwoTier, Wireless } from './NetworkTopologyForm'
-import { SmartEdgeForm }                                     from './SmartEdgeForm'
-import { SummaryForm }                                       from './SummaryForm'
-import { WirelessNetworkForm }                               from './WirelessNetworkForm'
+import { AccessSwitchForm }                         from './AccessSwitchForm'
+import { DistributionSwitchForm }                   from './DistributionSwitchForm'
+import { GeneralSettingsForm }                      from './GeneralSettingsForm'
+import { NetworkTopologyForm, NetworkTopologyType } from './NetworkTopologyForm'
+import { SmartEdgeForm }                            from './SmartEdgeForm'
+import { SummaryForm }                              from './SummaryForm'
+import { WirelessNetworkForm }                      from './WirelessNetworkForm'
 
 interface PersonalIdentityNetworkFormProps {
   editMode?: boolean
@@ -252,13 +252,13 @@ export const afterSubmitMessage = (
 export const getStepsByTopologyType = (type: string) => {
   const steps = [GeneralSettingsStep, NetworkTopologyStep, SmartEdgeStep]
   switch (type) {
-    case Wireless:
+    case NetworkTopologyType.Wireless:
       steps.push(WirelessNetworkStep, SummaryStep)
       break
-    case TwoTier:
+    case NetworkTopologyType.TwoTier:
       steps.push(DistributionSwitchStep, AccessSwitchStep, SummaryStep)
       break
-    case ThreeTier:
+    case NetworkTopologyType.ThreeTier:
       steps.push(DistributionSwitchStep, AccessSwitchStep, WirelessNetworkStep, SummaryStep)
       break
   }
