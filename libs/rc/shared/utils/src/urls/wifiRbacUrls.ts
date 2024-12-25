@@ -595,6 +595,16 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apSmartMonitorSettings',
     newApi: true
   },
+  getVenueRebootTimeout: {
+    method: 'get',
+    url: '/venues/:venueId/apRebootTimeoutSettings',
+    newApi: true
+  },
+  updateVenueRebootTimeout: {
+    method: 'put',
+    url: '/venues/:venueId/apRebootTimeoutSettings',
+    newApi: true
+  },
   getVenueClientAdmissionControl: {
     method: 'get',
     // url: '/venues/:venueId/clientAdmissionControlSettings',

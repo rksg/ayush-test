@@ -776,6 +776,11 @@ export interface VenueApSmartMonitor {
 	threshold: number
 }
 
+export interface VenueApRebootTimeout {
+	gwLossTimeout: number,
+	serverLossTimeout: number
+}
+
 export interface ApManagementVlan {
 	vlanOverrideEnabled: boolean
 	vlanId: number
