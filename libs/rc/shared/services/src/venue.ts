@@ -105,6 +105,7 @@ import {
   IncompatibleFeatureLevelEnum,
   SoftGreUrls,
   SoftGreViewData,
+  VenueApUsbStatus,
   ClientIsolationUrls,
   ClientIsolationViewModel,
   LanPortsUrls,
@@ -1124,6 +1125,33 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       }
+    }),
+    getVenueApUsbStatus: build.query<VenueApUsbStatus[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          CommonRbacUrlsInfo.getVenueApUsbStatus,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
+
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Venue', id: 'VENUE_USB_SETTINGS' }]
+    }),
+    updateVenueApUsbStatus: build.mutation<CommonResult, RequestPayload<VenueApUsbStatus[]>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          CommonRbacUrlsInfo.updateVenueApUsbStatus,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
+
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'VENUE_USB_SETTINGS' }]
     }),
     // eslint-disable-next-line max-len
     getVenueApModelBandModeSettings: build.query<VenueApModelBandModeSettings[], RequestPayload<void>>({
@@ -2211,38 +2239,40 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const isEthernetClientIsolationEnabled = (arg.payload as any)?.isEthernetClientIsolationEnabled
 
         if(venueId) {
-          const results: ((LanPort | null)[])[] = []
-          for (const venueLanPort of venueLanPortSettings) {
-
-            const venueLanPortSettingsQuery =venueLanPort.lanPorts.map((lanPort) => {
-              return fetchWithBQ(
-                createHttpRequest(
-                  LanPortsUrls.getVenueLanPortSettings,
-                  { venueId, apModel: venueLanPort.model, portId: lanPort.portId },
-                  apiCustomHeader
+          if(isEthernetSoftgreEnabled || isEthernetClientIsolationEnabled) {
+            const results: ((LanPort | null)[])[] = []
+            for (const venueLanPort of venueLanPortSettings) {
+              const venueLanPortSettingsQuery =venueLanPort.lanPorts.map((lanPort) => {
+                return fetchWithBQ(
+                  createHttpRequest(
+                    LanPortsUrls.getVenueLanPortSettings,
+                    { venueId, apModel: venueLanPort.model, portId: lanPort.portId },
+                    apiCustomHeader
+                  )
                 )
-              )
-            })
+              })
 
-            const reqs = await Promise.allSettled(venueLanPortSettingsQuery)
-            results.push(reqs.map((result) => {
-              return result.status === 'fulfilled' ? result.value.data as LanPort : null
-            }))
+              const reqs = await Promise.allSettled(venueLanPortSettingsQuery)
+              results.push(reqs.map((result) => {
+                return result.status === 'fulfilled' ? result.value.data as LanPort : null
+              }))
+            }
+            results.forEach((result, index) => {
+              const target = venueLanPortSettings[index]
+
+              result.forEach((lanPortSettings, idx ) => {
+                if (lanPortSettings === null) return
+
+                target.lanPorts[idx].softGreEnabled = lanPortSettings.softGreEnabled
+                target.lanPorts[idx].clientIsolationEnabled = lanPortSettings.clientIsolationEnabled
+                if(lanPortSettings.clientIsolationEnabled) {
+                  target.lanPorts[idx].clientIsolationSettings =
+                      lanPortSettings.clientIsolationSettings as LanPortClientIsolationSettings
+                }
+              })
+            })
           }
-          results.forEach((result, index) => {
-            const target = venueLanPortSettings[index]
 
-            result.forEach((lanPortSettings, idx ) => {
-              if (lanPortSettings === null) return
-
-              target.lanPorts[idx].softGreEnabled = lanPortSettings.softGreEnabled
-              target.lanPorts[idx].clientIsolationEnabled = lanPortSettings.clientIsolationEnabled
-              if(lanPortSettings.clientIsolationEnabled) {
-                target.lanPorts[idx].clientIsolationSettings =
-                    lanPortSettings.clientIsolationSettings as LanPortClientIsolationSettings
-              }
-            })
-          })
 
           // Mapping Ethernet port profile relation to Lan port settings
           const ethernetPortProfileReq = createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList)
@@ -2377,6 +2407,9 @@ export const {
   useGetVenueLedOnQuery,
   useLazyGetVenueLedOnQuery,
   useUpdateVenueLedOnMutation,
+  useGetVenueApUsbStatusQuery,
+  useLazyGetVenueApUsbStatusQuery,
+  useUpdateVenueApUsbStatusMutation,
   useGetVenueApModelBandModeSettingsQuery,
   useLazyGetVenueApModelBandModeSettingsQuery,
   useUpdateVenueApModelBandModeSettingsMutation,

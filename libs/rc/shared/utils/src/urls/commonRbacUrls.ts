@@ -286,7 +286,6 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueApModels: {
     method: 'get',
     url: '/venues/:venueId/aps/models',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/ap-models',
     newApi: true
   },
   getVenueLedOn: {
@@ -299,6 +298,16 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     // url: '/venues/:venueId/ledSettings',
     url: '/venues/:venueId/apModelLedSettings',
+    newApi: true
+  },
+  getVenueApUsbStatus: {
+    method: 'get',
+    url: '/venues/:venueId/apModelUsbPortSettings',
+    newApi: true
+  },
+  updateVenueApUsbStatus: {
+    method: 'put',
+    url: '/venues/:venueId/apModelUsbPortSettings',
     newApi: true
   },
   getVenueApModelBandModeSettings: {
