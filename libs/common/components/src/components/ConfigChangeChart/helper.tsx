@@ -16,6 +16,8 @@ import { TooltipWrapper }      from '../Chart/styledComponents'
 import type { ECharts, TooltipComponentFormatterCallbackParams } from 'echarts'
 
 export type ConfigChange = {
+  root?: string
+  sliceId?: string
   id?: number
   filterId?: number
   timestamp: string

@@ -30,6 +30,8 @@ export const api = dataApi.injectEndpoints({
             network(start: $startDate, end: $endDate) {
               hierarchyNode(path: $path) {
                 configChanges {
+                  root
+                  sliceId
                   timestamp
                   type
                   name

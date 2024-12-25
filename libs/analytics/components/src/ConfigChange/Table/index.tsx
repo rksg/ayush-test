@@ -20,9 +20,11 @@ import {
   getConfigChangeEntityTypeMapping,
   Cascader
 }                                    from '@acx-ui/components'
+import { get }                       from '@acx-ui/config'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { DownloadOutlined }          from '@acx-ui/icons'
+import { TenantLink }                from '@acx-ui/react-router-dom'
 import {
   exportMessageMapping,
   noDataDisplay,
@@ -126,8 +128,26 @@ export function Table (props: {
       key: 'timestamp',
       title: $t({ defaultMessage: 'Timestamp' }),
       dataIndex: 'timestamp',
-      render: (_, { timestamp }) =>
-        formatter(DateFormatEnum.DateTimeFormat)(moment(Number(timestamp))),
+      render: (_, row) => {
+        const timestamp = formatter(DateFormatEnum.DateTimeFormat)(moment(Number(row.timestamp)))
+        if (row.type === 'intentAI') {
+          const code = row.key.substring(row.key.lastIndexOf('.') + 1)
+          if (get('IS_MLISA_SA')) {
+            return (
+              <TenantLink to={`/intentAI/${row.root}/${row.sliceId}/${code}`}>
+                {timestamp}
+              </TenantLink>
+            )
+          } else {
+            return (
+              <TenantLink to={`/analytics/intentAI/${row.sliceId}/${code}`}>
+                {timestamp}
+              </TenantLink>
+            )
+          }
+        }
+        return timestamp
+      },
       sorter: { compare: sortProp('timestamp', defaultSort) },
       width: 130
     },
