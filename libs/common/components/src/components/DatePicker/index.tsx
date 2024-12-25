@@ -46,18 +46,22 @@ interface DatePickerProps {
   showAllTime?: boolean;
   showLast8hours?: boolean;
   isReport?: boolean;
+  maxMonthRange?: number;
 }
 const AntRangePicker = AntDatePicker.RangePicker
 
-export const restrictDateTo3Months = (values: RangeValueType, range: string) => {
+export const restrictDateToMonthsRange = (
+  values: RangeValueType,
+  range: string,
+  maxMonthRange: number) => {
   let startDate = values?.[0] || null
   let endDate = values?.[1] || null
-  if (endDate && startDate && endDate.diff(startDate, 'months') > 3) {
+  if (endDate && startDate && endDate.diff(startDate, 'months') > maxMonthRange) {
     if (range === 'start') {
-      endDate = startDate.clone().add(3, 'months')
+      endDate = startDate.clone().add(maxMonthRange, 'months')
     }
     if (range === 'end') {
-      startDate = endDate.clone().subtract(3, 'months')
+      startDate = endDate.clone().subtract(maxMonthRange, 'months')
     }
   }
   return { startDate, endDate }
@@ -71,7 +75,8 @@ export const RangePicker = ({
   showAllTime,
   selectionType,
   isReport,
-  showLast8hours
+  showLast8hours,
+  maxMonthRange
 }: DatePickerProps) => {
   const { $t } = useIntl()
   const { translatedRanges, translatedOptions } = useMemo(() => {
@@ -157,7 +162,7 @@ export const RangePicker = ({
         onCalendarChange={(values: RangeValueType, _: string[], info: { range: string }) => {
           const { range } = info
           setBoundary(range)
-          setRange(restrictDateTo3Months(values, range))
+          setRange(restrictDateToMonthsRange(values, range, maxMonthRange || 3))
         }}
         mode={['date', 'date']}
         renderExtraFooter={() => (
