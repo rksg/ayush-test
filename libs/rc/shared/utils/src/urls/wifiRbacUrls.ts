@@ -486,6 +486,16 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/ledSettings',
     newApi: true
   },
+  getApUsb: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/usbPortSettings',
+    newApi: true
+  },
+  updateApUsb: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/usbPortSettings',
+    newApi: true
+  },
   getApBandModeSettings: {
     method: 'get',
     url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',

@@ -162,6 +162,7 @@ import NetworkSegAuthDetail                                             from './
 import NetworkSegAuthForm                                               from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
 import NetworkSegAuthTable                                              from './pages/Services/NetworkSegWebAuth/NetworkSegAuthTable'
 import AddPersonalIdentityNetwork                                       from './pages/Services/PersonalIdentityNetwork/AddPersonalIdentityNetwork'
+import AddPersonalIdentityNetworkEnhanced                               from './pages/Services/PersonalIdentityNetwork/AddPersonalIdentityNetworkEnhanced'
 import EditPersonalIdentityNetwork                                      from './pages/Services/PersonalIdentityNetwork/EditPersonalIdentityNetwork'
 import PersonalIdentityNetworkDetail                                    from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetail'
 import PersonalIdentityNetworkDetailEnhanced                            from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetailEnhanced'
@@ -529,7 +530,9 @@ const useEdgePinRoutes = () => {
       element={
         // eslint-disable-next-line max-len
         <ServiceAuthRoute serviceType={ServiceType.PIN} oper={ServiceOperation.CREATE}>
-          <AddPersonalIdentityNetwork />
+          {isEdgePinEnhancementReady
+            ? <AddPersonalIdentityNetworkEnhanced />
+            : <AddPersonalIdentityNetwork /> }
         </ServiceAuthRoute>
       }
     />

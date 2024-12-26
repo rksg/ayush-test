@@ -14,9 +14,12 @@ import {
   Schedule,
   LatestEdgeFirmwareVersion,
   EolApFirmware,
-  FirmwareSwitchVenueV1002
+  FirmwareSwitchVenueV1002,
+  FirmwareLabel
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
+
+import { ApModelIndividualDisplayDataType, UpdateFirmwarePerApModelFirmware } from './VenueFirmwareListPerApModel'
 
 export const expirationTimeUnits: Record<string, string> = {
   HOURS_AFTER_TIME: 'Hours',
@@ -113,13 +116,18 @@ export type VersionLabelType = {
   name: string,
   category: FirmwareCategory,
   onboardDate?: string,
-  releaseDate?: string
+  releaseDate?: string,
+  labels?: FirmwareLabel[]
 }
 // eslint-disable-next-line max-len
 export const getVersionLabel = (intl: IntlShape, version: VersionLabelType, showType = true): string => {
   const transform = firmwareTypeTrans(intl.$t)
   const versionName = version?.name
-  const versionType = transform(version?.category)
+  const versionType = transform(
+    version?.labels?.includes(FirmwareLabel.ALPHA) || version?.labels?.includes(FirmwareLabel.BETA)
+      ? FirmwareCategory.EARLY_ACCESS
+      : version?.category
+  )
   const displayDate = version.releaseDate ?? version.onboardDate
   const versionDate = displayDate
     ? formatter(DateFormatEnum.DateFormat)(displayDate)
@@ -306,4 +314,30 @@ export function getActiveApModels (selectedRows: FirmwareVenue[]): string[] {
 
 export function compareABFSequence (seq1: number = 0, seq2: number = 0): number {
   return seq1 - seq2
+}
+
+// eslint-disable-next-line max-len
+export function convertToPayloadForApModelFirmware (displayData: ApModelIndividualDisplayDataType[]): UpdateFirmwarePerApModelFirmware {
+  return displayData.map((displayDataItem: ApModelIndividualDisplayDataType) => ({
+    apModel: displayDataItem.apModel,
+    firmware: displayDataItem.defaultVersion
+  }))
+}
+
+export function patchPayloadForApModelFirmware (
+  targetFirmwares: UpdateFirmwarePerApModelFirmware, apModel: string, version: string
+): UpdateFirmwarePerApModelFirmware {
+
+  const result: Array<UpdateFirmwarePerApModelFirmware[number] | null> = [...targetFirmwares]
+
+  const targetFirmware = version ? { apModel, firmware: version } : null
+  const targetIndex = result.findIndex(existing => existing?.apModel === apModel)
+
+  if (targetIndex === -1) {
+    result.push(targetFirmware)
+  } else {
+    result.splice(targetIndex, 1, targetFirmware)
+  }
+
+  return _.compact(result)
 }
