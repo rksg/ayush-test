@@ -131,20 +131,18 @@ export function Table (props: {
       render: (_, row) => {
         const timestamp = formatter(DateFormatEnum.DateTimeFormat)(moment(Number(row.timestamp)))
         if (row.type === 'intentAI') {
-          const code = row.key.substring(row.key.lastIndexOf('.') + 1)
-          if (get('IS_MLISA_SA')) {
-            return (
-              <TenantLink to={`/intentAI/${row.root}/${row.sliceId}/${code}`}>
-                {timestamp}
-              </TenantLink>
-            )
-          } else {
-            return (
-              <TenantLink to={`/analytics/intentAI/${row.sliceId}/${code}`}>
-                {timestamp}
-              </TenantLink>
-            )
+          if (!row.root || !row.sliceId) {
+            return timestamp
           }
+          const code = row.key.substring(row.key.lastIndexOf('.') + 1)
+          const linkPath = get('IS_MLISA_SA')
+            ? `/intentAI/${row.root}/${row.sliceId}/${code}`
+            : `/analytics/intentAI/${row.sliceId}/${code}`
+          return (
+            <TenantLink to={linkPath}>
+              {timestamp}
+            </TenantLink>
+          )
         }
         return timestamp
       },
