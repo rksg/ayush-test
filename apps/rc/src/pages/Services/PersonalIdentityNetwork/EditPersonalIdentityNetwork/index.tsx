@@ -17,6 +17,7 @@ import {
   getStepsByTopologyType,
   NetworkTopologyStep,
   PersonalIdentityNetworkForm,
+  PrerequisiteStep,
   SmartEdgeStep,
   SummaryStep,
   WirelessNetworkStep
@@ -104,7 +105,8 @@ const getStepsByEditData = (data?: PersonalIdentityNetworks) => {
       steps = getStepsByTopologyType(NetworkTopologyType.TwoTier)
     }
   }
-  return steps.filter(step => step.title !== NetworkTopologyStep.title &&
+  return steps.filter(step => step.title !== PrerequisiteStep.title &&
+    step.title !== NetworkTopologyStep.title &&
     step.title !== SummaryStep.title)
 }
 
