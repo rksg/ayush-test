@@ -13,8 +13,9 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Drawer, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { Drawer, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                          from '@acx-ui/icons'
 import {
   SwitchModel,
   SwitchModelPortData,
@@ -24,7 +25,8 @@ import {
   validateVlanExcludingReserved,
   validateDuplicateVlanId,
   validateVlanNameWithoutDVlans,
-  Vlan
+  Vlan,
+  versionAbove10020a
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 import { getIntl }        from '@acx-ui/utils'
@@ -58,6 +60,7 @@ export interface VlanSettingDrawerProps {
   portsUsedBy?: PortsUsedByProps
   stackMember?: StackMember[],
   gptObject?: GptObjectProps
+  switchFirmware?: string
 }
 
 export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
@@ -65,7 +68,7 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
   const { vlan, setVlan, visible, setVisible, editMode,
     vlansList, isProfileLevel, switchFamilyModel,
     enablePortModelConfigure = true, portSlotsData, portsUsedBy,
-    stackMember, gptObject } = props
+    stackMember, gptObject, switchFirmware } = props
   const [form] = Form.useForm<Vlan>()
 
   const onClose = () => {
@@ -96,6 +99,7 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
           portsUsedBy={portsUsedBy}
           stackMember={stackMember}
           gptObject={gptObject}
+          switchFirmware={switchFirmware}
         />
       }
       footer={
@@ -135,6 +139,7 @@ interface VlanSettingFormProps {
   portsUsedBy?: PortsUsedByProps
   stackMember?: StackMember[],
   gptObject?: GptObjectProps
+  switchFirmware?: string
 }
 
 function VlanSettingForm (props: VlanSettingFormProps) {
@@ -151,11 +156,14 @@ function VlanSettingForm (props: VlanSettingFormProps) {
 
   const { form, vlan, setVlan, vlansList, isProfileLevel, editMode,
     switchFamilyModel, portSlotsData, enablePortModelConfigure = true,
-    portsUsedBy, stackMember, gptObject } = props
+    portsUsedBy, stackMember, gptObject, switchFirmware } = props
 
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
+  const is10020aSwitchOnlyRstpEnabled = useIsSplitOn(Features.SWITCH_UPDATE_RSTP_ABOVE_10020A)
   const isSwitchLevel = !!switchFamilyModel
   const isRuckusAiMode = !_.isEmpty(gptObject)
+  const hideStp = is10020aSwitchOnlyRstpEnabled &&
+    isSwitchLevel && versionAbove10020a(switchFirmware ?? '')
 
   const multicastVersionEnabled = () : boolean => {
     const igmpSnooping = form.getFieldValue('igmpSnooping')
@@ -405,14 +413,29 @@ function VlanSettingForm (props: VlanSettingFormProps) {
         />
         <Form.Item
           name='spanningTreeProtocol'
-          label={$t({ defaultMessage: 'Spanning tree protocol' })}
+          label={<>
+            {$t({ defaultMessage: 'Spanning tree protocol' })}
+            {is10020aSwitchOnlyRstpEnabled && !isSwitchLevel &&
+              <Tooltip
+                title={$t({
+                  // eslint-disable-next-line max-len
+                  defaultMessage: 'Beginning with firmware version FI 10.0.20a and later, only RSTP will be applied even if STP is selected.'
+                })}
+                placement='top'
+              >
+                <QuestionMarkCircleOutlined />
+              </Tooltip>
+            }
+          </>}
           initialValue={'none'}
           children={
             <Select>
               <Option value={'rstp'}>
                 {$t({ defaultMessage: 'RSTP' })}</Option>
-              <Option value={'stp'}>
-                {$t({ defaultMessage: 'STP' })}</Option>
+              {!hideStp &&
+                <Option value={'stp'}>
+                  {$t({ defaultMessage: 'STP' })}</Option>
+              }
               <Option value={'none'}>
                 {$t({ defaultMessage: 'NONE' })}</Option>
             </Select>
