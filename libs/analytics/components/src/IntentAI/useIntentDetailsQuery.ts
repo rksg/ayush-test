@@ -163,7 +163,7 @@ export const api = intentAIApi.injectEndpoints({
               status statusReason displayStatus
               sliceType sliceValue updatedAt
               path { type name }
-              statusTrail { status statusReason displayStatus createdAt }
+              statusTrail { status statusReason displayStatus createdAt retries }
               ${kpiHelper(kpis)}
               ${!code.includes('ecoflex') ? 'currentValue recommendedValue' : ''}
             }

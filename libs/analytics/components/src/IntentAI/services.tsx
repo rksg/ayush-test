@@ -164,7 +164,7 @@ export const api = intentAIApi.injectEndpoints({
               sliceId
               metadata
               preferences
-              statusTrail { status statusReason createdAt }
+              statusTrail { status statusReason createdAt retries }
               path {
                 type
                 name

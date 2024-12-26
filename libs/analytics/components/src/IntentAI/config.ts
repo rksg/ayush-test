@@ -13,6 +13,7 @@ export type StatusTrail = {
   statusReason?: StatusReasons
   displayStatus: DisplayStates
   createdAt: string
+  retries?: number
 }
 
 type IntentPreferences = {
@@ -131,7 +132,7 @@ export const states = {
     ` }) //TODO: The new configuration is: {newConfig}.
   },
   [DisplayStates.pausedApplyFailed]: {
-    text: defineMessage({ defaultMessage: 'Paused, Applied Failed' }),
+    text: defineMessage({ defaultMessage: 'Paused, Applied Failed{retries, select, undefined {} other { (retry {retries} of 3)}}' }),
     tooltip: defineMessage({ defaultMessage: `
       <p>IntentAI recommended changes failed to apply to <VenueSingular></VenueSingular> {zoneName} due to:</p>
       {errorMessage}
