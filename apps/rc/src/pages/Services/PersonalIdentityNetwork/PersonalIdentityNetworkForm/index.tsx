@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { FormInstance }                        from 'antd'
 import { omit }                                from 'lodash'
-import { useIntl }                             from 'react-intl'
+import { defineMessage, useIntl }              from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { showActionModal, StepsForm, StepsFormGotoStepFn } from '@acx-ui/components'
@@ -16,7 +16,15 @@ import {
   redirectPreviousPage
 } from '@acx-ui/rc/utils'
 import { useTenantLink }                                  from '@acx-ui/react-router-dom'
-import { getIntl, CatchErrorDetails, CatchErrorResponse } from '@acx-ui/utils'
+import { CatchErrorDetails, CatchErrorResponse, getIntl } from '@acx-ui/utils'
+
+import { AccessSwitchForm }                                  from './AccessSwitchForm'
+import { DistributionSwitchForm }                            from './DistributionSwitchForm'
+import { GeneralSettingsForm }                               from './GeneralSettingsForm'
+import { NetworkTopologyForm, ThreeTier, TwoTier, Wireless } from './NetworkTopologyForm'
+import { SmartEdgeForm }                                     from './SmartEdgeForm'
+import { SummaryForm }                                       from './SummaryForm'
+import { WirelessNetworkForm }                               from './WirelessNetworkForm'
 
 interface PersonalIdentityNetworkFormProps {
   editMode?: boolean
@@ -27,8 +35,37 @@ interface PersonalIdentityNetworkFormProps {
 }
 
 interface PersonalIdentityNetworkFormStep {
-  title: string
+  title: { defaultMessage: string }
   content: ReactNode
+}
+
+export const GeneralSettingsStep = {
+  title: defineMessage({ defaultMessage: 'General Settings' }),
+  content: <GeneralSettingsForm />
+}
+export const NetworkTopologyStep = {
+  title: defineMessage({ defaultMessage: 'Network Topology' }),
+  content: <NetworkTopologyForm />
+}
+export const SmartEdgeStep = {
+  title: defineMessage({ defaultMessage: 'RUCKUS Edge' }),
+  content: <SmartEdgeForm />
+}
+export const DistributionSwitchStep = {
+  title: defineMessage({ defaultMessage: 'Dist. Switch' }),
+  content: <DistributionSwitchForm />
+}
+export const AccessSwitchStep = {
+  title: defineMessage({ defaultMessage: 'Access Switch' }),
+  content: <AccessSwitchForm />
+}
+export const WirelessNetworkStep = {
+  title: defineMessage({ defaultMessage: 'Wireless Network' }),
+  content: <WirelessNetworkForm />
+}
+export const SummaryStep = {
+  title: defineMessage({ defaultMessage: 'Summary' }),
+  content: <SummaryForm />
 }
 
 export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormProps) => {
@@ -155,7 +192,7 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
           <StepsForm.StepForm
             key={`step-${index}`}
             name={index.toString()}
-            title={item.title}
+            title={$t(item.title)}
           >
             {item.content}
           </StepsForm.StepForm>)
@@ -210,4 +247,20 @@ export const afterSubmitMessage = (
     message.push(replaceMacWithName(errorMsg))
   }
   return message.map(m=><p>{m}</p>)
+}
+
+export const getStepsByTopologyType = (type: string) => {
+  const steps = [GeneralSettingsStep, NetworkTopologyStep, SmartEdgeStep]
+  switch (type) {
+    case Wireless:
+      steps.push(WirelessNetworkStep, SummaryStep)
+      break
+    case TwoTier:
+      steps.push(DistributionSwitchStep, AccessSwitchStep, SummaryStep)
+      break
+    case ThreeTier:
+      steps.push(DistributionSwitchStep, AccessSwitchStep, WirelessNetworkStep, SummaryStep)
+      break
+  }
+  return steps
 }
