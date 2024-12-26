@@ -46,6 +46,7 @@ import { DowngradePerApModelDialog } from './DowngradeDialog'
 export function VenueFirmwareListPerApModel () {
   const { $t } = useIntl()
   const apFirmwareContext = useContext(ApFirmwareContext)
+  const isApFwMgmtEarlyAccess = useIsSplitOn(Features.AP_FW_MGMT_EARLY_ACCESS_TOGGLE)
   const pagination = { pageSize: 10, defaultPageSize: 10 }
   const [searchString, setSearchString] = useState('')
   const [filterString, setFilterString] = useState('')
@@ -121,7 +122,7 @@ export function VenueFirmwareListPerApModel () {
     {
       scopeKey: [WifiScopes.UPDATE],
       // eslint-disable-next-line max-len
-      visible: (rows) => isEarlyAccess && rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)),
+      visible: (rows) => isApFwMgmtEarlyAccess && isEarlyAccess && rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)),
       label: $t({ defaultMessage: 'Update with Early Access Now' }),
       onClick: (rows) => {
         setSelectedRows(rows)
@@ -212,7 +213,6 @@ function useColumns () {
   const intl = useIntl()
   const { $t } = intl
   const versionFilterOptions = useVersionFilterOptions()
-  const isApFwMgmtEarlyAccess = useIsSplitOn(Features.AP_FW_MGMT_EARLY_ACCESS_TOGGLE)
 
   const columns: TableProps<FirmwareVenuePerApModel>['columns'] = [
     {
