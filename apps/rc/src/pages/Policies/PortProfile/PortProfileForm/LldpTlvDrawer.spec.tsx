@@ -36,6 +36,10 @@ describe('LldpTlvDrawer', () => {
     )
   })
 
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
   it('renders correctly', () => {
     render(
       <Provider>

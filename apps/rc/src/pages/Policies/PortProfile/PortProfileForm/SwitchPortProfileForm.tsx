@@ -278,7 +278,6 @@ export function SwitchPortProfileForm () {
 
   return (
     <>
-
       <PageHeader
         title={
           editMode ? intl.$t(
@@ -562,12 +561,12 @@ export function SwitchPortProfileForm () {
                 <Tooltip.Question
                   title={SwitchPortProfileMessages.MAC_OUI}
                 /></>}
-              data-testid='macOuis'
               children={!poeEnable ?
                 <Tooltip
                   title={intl.$t(SwitchPortProfileMessages.MACOUI_POE_DISABLED)}
                 >
                   <Select
+                    data-testid='macOuis'
                     mode='multiple'
                     showArrow
                     style={{ width: '280px' }}
@@ -575,6 +574,7 @@ export function SwitchPortProfileForm () {
                   />
                 </Tooltip> :
                 <Select
+                  data-testid='macOuis'
                   mode='multiple'
                   showArrow
                   options={macOuisOptions}

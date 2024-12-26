@@ -52,7 +52,9 @@ export default function SwitchPortProfileTable () {
     }
   }, {
     selectFromResult: ({ data }) => ({
-      venueFilterOptions: data?.data.map(v => ({ key: v.id, value: v.name })) || true
+      venueFilterOptions: data?.data
+        .map(v => ({ key: v.id, value: v.name }))
+        .sort((a, b) => a.value.localeCompare(b.value)) || true
     })
   })
 
