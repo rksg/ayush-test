@@ -1,5 +1,6 @@
-import { screen } from '@testing-library/react'
-import { rest }   from 'msw'
+import { screen }  from '@testing-library/react'
+import { rest }    from 'msw'
+import { useIntl } from 'react-intl'
 
 import { FirmwareUrlsInfo }                    from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
@@ -22,6 +23,13 @@ import {
   useUpgradePerferences
 } from './venueFirmwareListPerApModelUtils'
 
+jest.mock('react-intl', () => ({
+  ...jest.requireActual('react-intl'),
+  useIntl: () => ({
+    formatMessage: () => '',
+    $t: jest.fn()
+  })
+}))
 
 describe('venueFirmwareListPerApModelUtils parser', () => {
 
@@ -132,7 +140,7 @@ describe('venueFirmwareListPerApModelUtils parser', () => {
     const data = mockedFirmwareVenuesPerApModel.data[0].currentApFirmwares
     render(
       <Provider>
-        {renderCurrentFirmwaresColumn(data)}
+        {renderCurrentFirmwaresColumn(data, useIntl())}
       </Provider>
     )
 

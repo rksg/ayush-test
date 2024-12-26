@@ -14,6 +14,8 @@ export interface EdgeClusterTypeCardProps extends Pick<AntCardProps, 'children'>
   disabled?: boolean
   warningTooltip?: string
   onClick?: (id: string) => void
+  width?: string
+  height?: string
 }
 
 export const EdgeClusterTypeCard = ({
@@ -23,7 +25,9 @@ export const EdgeClusterTypeCard = ({
   icon,
   disabled = false,
   warningTooltip,
-  onClick
+  onClick,
+  width,
+  height
 }: EdgeClusterTypeCardProps) => {
   const handleClick = () => {
     onClick?.(id)
@@ -36,6 +40,8 @@ export const EdgeClusterTypeCard = ({
         disabled={disabled}
         hasWarning={Boolean(warningTooltip)}
         onClick={disabled ? undefined : handleClick}
+        width={width}
+        height={height}
       >
         <AntCard
           bordered={false}

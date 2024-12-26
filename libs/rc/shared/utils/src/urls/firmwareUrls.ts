@@ -230,6 +230,15 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
+  getVenueApModelFirmwareSchedulesList: {
+    method: 'post',
+    url: '/venues/apModelFirmwares/schedules/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   getAllApModelFirmwareList: {
     method: 'get',
     url: '/apModelFirmwares',
