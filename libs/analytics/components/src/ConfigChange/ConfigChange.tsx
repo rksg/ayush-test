@@ -10,7 +10,7 @@ import { PagedTable }           from './PagedTable'
 import { SyncedChart }          from './SyncedChart'
 import { Table }                from './Table'
 
-export function ConfigChange () {
+export default function ConfigChange () {
   const isMLISA = get('IS_MLISA_SA')
   const isPaged = [
     useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),

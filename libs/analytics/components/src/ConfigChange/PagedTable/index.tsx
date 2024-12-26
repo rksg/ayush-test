@@ -14,10 +14,10 @@ import {
   getConfigChangeEntityTypeMapping,
   Filter
 }                                    from '@acx-ui/components'
-import { ConfigChangePaginationParams } from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
-import { noDataDisplay }                from '@acx-ui/utils'
+import { ConfigChangePaginationParams }              from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTreatmentsOn } from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                 from '@acx-ui/formatter'
+import { noDataDisplay }                             from '@acx-ui/utils'
 
 import { ConfigChangeContext }                                       from '../context'
 import { usePagedConfigChangeQuery, PagedConfigChange, SORTER_ABBR } from '../services'
@@ -121,20 +121,30 @@ export const useColumns = () => {
 }
 
 export function PagedTable () {
+  const showIntentAI = useIsTreatmentsOn([
+    Features.INTENT_AI_CONFIG_CHANGE_TOGGLE,
+    Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE
+  ])
+
   const { pathFilters } = useAnalyticsFilter()
   const {
     timeRanges: [startDate, endDate],
-    kpiFilter,
-    legendFilter, entityNameSearch, setEntityNameSearch, entityTypeFilter, setEntityTypeFilter,
+    kpiFilter, legendFilter,
+    entityNameSearch, setEntityNameSearch,
+    entityTypeFilter, setEntityTypeFilter,
     pagination, applyPagination,
     selected, onRowClick,
     sorter, setSorter, reset
   } = useContext(ConfigChangeContext)
 
-  const queryResults = usePagedConfigChangeQuery({
+  const basicPayload = {
     ...pathFilters,
     startDate: startDate.toISOString(),
-    endDate: endDate.toISOString(),
+    endDate: endDate.toISOString()
+  }
+
+  const queryResults = usePagedConfigChangeQuery({
+    ...basicPayload,
     page: pagination.current,
     pageSize: pagination.pageSize,
     filterBy: {
@@ -144,7 +154,7 @@ export function PagedTable () {
         _.isEmpty(entityTypeFilter) || entityTypeFilter.includes(t)))
     },
     sortBy: sorter
-  })
+  }, { skip: showIntentAI === null })
 
   useEffect(
     ()=> applyPagination({ total: queryResults.data?.total || 0 }),

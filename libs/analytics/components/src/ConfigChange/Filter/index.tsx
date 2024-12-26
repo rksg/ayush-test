@@ -122,7 +122,7 @@ function useDownload () {
 }
 
 export const Download = () => {
-  const { $t } = getIntl()
+  const { $t } = useIntl()
   const { pathFilters } = useAnalyticsFilter()
   const { timeRanges: [startDate, endDate], pagination,
     kpiFilter, entityNameSearch, entityTypeFilter, legendFilter

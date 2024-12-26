@@ -1,5 +1,6 @@
 import userEvent from '@testing-library/user-event'
 
+import { getConfigChangeEntityTypeMapping }          from '@acx-ui/components'
 import { Provider, dataApiURL, store }               from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitFor } from '@acx-ui/test-utils'
 import { DateRange, defaultRanges }                  from '@acx-ui/utils'
@@ -149,7 +150,9 @@ describe('Download', () => {
   it('should render download button and generate download data', async () => {
     const context = {
       pagination: { total: data.length },
-      timeRanges: defaultRanges()[DateRange.last7Days]!
+      timeRanges: defaultRanges()[DateRange.last7Days],
+      kpiFilter: [], entityNameSearch: '', entityTypeFilter: [],
+      legendFilter: getConfigChangeEntityTypeMapping(false).map(item => item.key)
     } as unknown as ConfigChangeContextType
     mockGraphqlQuery(dataApiURL, 'ConfigChangeSeries', { data: { network: { hierarchyNode: {
       configChanges: data } } } })
@@ -164,7 +167,9 @@ describe('Download', () => {
   it('should disable download button when no data', async () => {
     const context = {
       pagination: { total: 0 },
-      timeRanges: defaultRanges()[DateRange.last7Days]!
+      timeRanges: defaultRanges()[DateRange.last7Days],
+      kpiFilter: [], entityNameSearch: '', entityTypeFilter: [],
+      legendFilter: getConfigChangeEntityTypeMapping(false).map(item => item.key)
     } as unknown as ConfigChangeContextType
     render(
       <ConfigChangeContext.Provider value={context} children={<Download/>} />,
@@ -179,7 +184,9 @@ describe('Download', () => {
     spy.mockReset()
     const context = {
       pagination: { total: data.length },
-      timeRanges: defaultRanges()[DateRange.last7Days]!
+      timeRanges: defaultRanges()[DateRange.last7Days],
+      kpiFilter: [], entityNameSearch: '', entityTypeFilter: [],
+      legendFilter: getConfigChangeEntityTypeMapping(false).map(item => item.key)
     } as unknown as ConfigChangeContextType
     mockGraphqlQuery(dataApiURL, 'ConfigChangeSeries', { error: 'some-error' })
     render(

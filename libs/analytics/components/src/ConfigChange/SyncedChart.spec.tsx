@@ -86,12 +86,12 @@ describe('SyncedChart', () => {
     expect(await screen.findAllByText('intentAI')).toHaveLength(1)
     expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
     expect(await screen.findByText(
-      '{"current":1,"pageSize":10,"defaultPageSize":10,"total":0}')).toBeVisible()
+      '{"current":1,"pageSize":10,"defaultPageSize":10,"total":11}')).toBeVisible()
 
     await userEvent.click(screen.getByTestId('dot'))
     expect(await screen.findAllByText('intentAI')).toHaveLength(2)
     expect(await screen.findByText(
-      '{"current":2,"pageSize":10,"defaultPageSize":10,"total":0}')).toBeVisible()
+      '{"current":2,"pageSize":10,"defaultPageSize":10,"total":11}')).toBeVisible()
   })
   it('should query with non-empty filter', async () => {
     const TestComp = () => {

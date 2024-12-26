@@ -5,7 +5,7 @@ import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { ConfigChange } from '.'
+import ConfigChange from './ConfigChange'
 
 jest.mock('./Chart', () => ({ Chart: () => <div data-testid='Chart' /> }))
 jest.mock('./SyncedChart', () => ({ SyncedChart: () => <div data-testid='SyncedChart' /> }))

@@ -3756,4 +3756,112 @@ export const ApGroupNetworkTableData = [{
   nwSubType: 'open',
   ssid: 'joe-open',
   vlan: 1
+}, {
+  activated: {
+    isActivated: true,
+    isDisabled: false,
+    errors: []
+  },
+  clients: 0,
+  deepNetwork: {
+    enableAccountingProxy: false,
+    enableAuthProxy: false,
+    id: '41daa5cf6f1046728f1c99772e035a11',
+    isOweMaster: true,
+    name: 'joe-open',
+    tenantId: 'b338eaa6796443829192a61093e143f9',
+    type: NetworkTypeEnum.OPEN,
+    venues: [{
+      allApGroupsRadio: RadioEnum.Both,
+      allApGroupsRadioTypes: [RadioTypeEnum._5_GHz, RadioTypeEnum._2_4_GHz],
+      apGroups: [{
+        apGroupId: '58195e050b8a4770acc320f6233ad8d9',
+        apGroupName: 'joe-test-apg',
+        id: '19c1b37510f649a4beeb88569eacbc5c',
+        isDefault: false,
+        radio: RadioEnum.Both,
+        radioTypes: [RadioTypeEnum._5_GHz, RadioTypeEnum._2_4_GHz],
+        validationError: false,
+        validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+        validationErrorReachedMaxConnectedNetworksLimit: false,
+        validationErrorSsidAlreadyActivated: false
+      }],
+      dual5gEnabled: false,
+      id: '4aa21b1f0381415ab39809f045681332',
+      isAllApGroups: false,
+      networkId: '41daa5cf6f1046728f1c99772e035a11',
+      tripleBandEnabled: true,
+      venueId: '991eb992ece042a183b6945a2398ddb9'
+    }],
+    wlan: {
+      enabled: true,
+      macAddressAuthentication: false,
+      ssid: 'joe-open',
+      vlanId: 10,
+      wlanSecurity: WlanSecurityEnum.OWETransition
+    }
+  },
+  id: '41daa5cf6f1046728f1c99772e035a11',
+  description: '',
+  isAllApGroups: false,
+  isOweMaster: true,
+  owePairNetworkId: '65abccab9f1e480cb806d10f08587e10',
+  name: 'joe-open-owe-transition',
+  nwSubType: 'open',
+  ssid: 'joe-open-owe-transition',
+  vlan: 1
+}, {
+  activated: {
+    isActivated: true,
+    isDisabled: false,
+    errors: []
+  },
+  clients: 0,
+  deepNetwork: {
+    enableAccountingProxy: false,
+    enableAuthProxy: false,
+    id: '65abccab9f1e480cb806d10f08587e10',
+    isOweMaster: true,
+    name: 'joe-open',
+    tenantId: 'b338eaa6796443829192a61093e143f9',
+    type: NetworkTypeEnum.OPEN,
+    venues: [{
+      allApGroupsRadio: RadioEnum.Both,
+      allApGroupsRadioTypes: [RadioTypeEnum._5_GHz, RadioTypeEnum._2_4_GHz],
+      apGroups: [{
+        apGroupId: '58195e050b8a4770acc320f6233ad8d9',
+        apGroupName: 'joe-test-apg',
+        id: '19c1b37510f649a4beeb88569eacbc5c',
+        isDefault: false,
+        radio: RadioEnum.Both,
+        radioTypes: [RadioTypeEnum._5_GHz, RadioTypeEnum._2_4_GHz],
+        validationError: false,
+        validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+        validationErrorReachedMaxConnectedNetworksLimit: false,
+        validationErrorSsidAlreadyActivated: false
+      }],
+      dual5gEnabled: false,
+      id: '4aa21b1f0381415ab39809f045681332',
+      isAllApGroups: false,
+      networkId: '65abccab9f1e480cb806d10f08587e10',
+      tripleBandEnabled: true,
+      venueId: '991eb992ece042a183b6945a2398ddb9'
+    }],
+    wlan: {
+      enabled: true,
+      macAddressAuthentication: false,
+      ssid: 'joe-open',
+      vlanId: 10,
+      wlanSecurity: WlanSecurityEnum.OWETransition
+    }
+  },
+  id: '65abccab9f1e480cb806d10f08587e10',
+  description: '',
+  isAllApGroups: false,
+  isOweMaster: false,
+  owePairNetworkId: '41daa5cf6f1046728f1c99772e035a11',
+  name: 'joe-open-owe-transition-owe-tr',
+  nwSubType: 'open',
+  ssid: 'joe-open-owe-transition-owe-tr',
+  vlan: 1
 }]
