@@ -22,6 +22,7 @@ import { AccessSwitchForm }                                  from './AccessSwitc
 import { DistributionSwitchForm }                            from './DistributionSwitchForm'
 import { GeneralSettingsForm }                               from './GeneralSettingsForm'
 import { NetworkTopologyForm, ThreeTier, TwoTier, Wireless } from './NetworkTopologyForm'
+import { Prerequisite }                                      from './Prerequisite'
 import { SmartEdgeForm }                                     from './SmartEdgeForm'
 import { SummaryForm }                                       from './SummaryForm'
 import { WirelessNetworkForm }                               from './WirelessNetworkForm'
@@ -32,6 +33,7 @@ interface PersonalIdentityNetworkFormProps {
   onFinish: Function
   initialValues?: Object
   steps: PersonalIdentityNetworkFormStep[]
+  hasPrerequisite?: boolean
 }
 
 interface PersonalIdentityNetworkFormStep {
@@ -39,6 +41,10 @@ interface PersonalIdentityNetworkFormStep {
   content: ReactNode
 }
 
+export const PrerequisiteStep = {
+  title: defineMessage({ defaultMessage: 'Prerequisite' }),
+  content: <Prerequisite />
+}
 export const GeneralSettingsStep = {
   title: defineMessage({ defaultMessage: 'General Settings' }),
   content: <GeneralSettingsForm />
@@ -68,12 +74,14 @@ export const SummaryStep = {
   content: <SummaryForm />
 }
 
+export { ThreeTier, TwoTier, Wireless }
+
 export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const { initialValues: formInitialValues } = props
+  const { initialValues: formInitialValues, hasPrerequisite = false } = props
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
 
@@ -186,6 +194,7 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
       onCancel={() => redirectPreviousPage(navigate, previousPath, linkToServices)}
       onFinish={handleFinish}
       initialValues={formInitialValues}
+      hasPrerequisiteStep={hasPrerequisite}
     >
       {
         props.steps.map((item, index) =>
@@ -250,7 +259,7 @@ export const afterSubmitMessage = (
 }
 
 export const getStepsByTopologyType = (type: string) => {
-  const steps = [GeneralSettingsStep, NetworkTopologyStep, SmartEdgeStep]
+  const steps = [PrerequisiteStep, GeneralSettingsStep, NetworkTopologyStep, SmartEdgeStep]
   switch (type) {
     case Wireless:
       steps.push(WirelessNetworkStep, SummaryStep)
