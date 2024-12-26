@@ -4,8 +4,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { SwitchUrlsInfo }                                 from '@acx-ui/rc/utils'
-import { Provider }                                       from '@acx-ui/store'
+import { SwitchUrlsInfo }                                         from '@acx-ui/rc/utils'
+import { Provider }                                               from '@acx-ui/store'
 import { fireEvent, render, screen, mockServer, waitFor, within } from '@acx-ui/test-utils'
 
 
