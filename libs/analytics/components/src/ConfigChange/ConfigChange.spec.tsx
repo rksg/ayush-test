@@ -1,11 +1,11 @@
-import { ReactNode, Suspense } from 'react'
+import { ReactNode } from 'react'
 
-import { get }                                       from '@acx-ui/config'
-import { useIsSplitOn }                              from '@acx-ui/feature-toggle'
-import { Provider }                                  from '@acx-ui/store'
-import { render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { get }            from '@acx-ui/config'
+import { useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
-import { ConfigChange } from '.'
+import ConfigChange from './ConfigChange'
 
 jest.mock('./Chart', () => ({ Chart: () => <div data-testid='Chart' /> }))
 jest.mock('./SyncedChart', () => ({ SyncedChart: () => <div data-testid='SyncedChart' /> }))
@@ -25,25 +25,13 @@ jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
 
-const wrapper = ({ children }: { children: ReactNode }) =>
-  <Suspense fallback={<div>Loading Component</div>}>
-    <Provider>
-      {children}
-    </Provider>
-  </Suspense>
-
 describe('ConfigChange', () => {
-  const assertComponentLoading = async () => {
-    const loading = screen.queryByText('Loading Component')
-    if (loading) await waitForElementToBeRemoved(loading, { timeout: 10000, interval: 100 })
-  }
   beforeEach(() => {
     mockGet.mockReturnValue('')
     jest.mocked(useIsSplitOn).mockReturnValue(false)
   })
   it('should render component correctly', async () => {
-    render(<ConfigChange/>, { wrapper, route: {} })
-    await assertComponentLoading()
+    render(<ConfigChange/>, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('Chart')).toBeVisible()
     expect(await screen.findByTestId('KPIs')).toBeVisible()
     expect(await screen.findByTestId('Table')).toBeVisible()
@@ -51,8 +39,7 @@ describe('ConfigChange', () => {
   })
   it('should render paged table with corresponding synced chart correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    render(<ConfigChange/>, { wrapper, route: {} })
-    await assertComponentLoading()
+    render(<ConfigChange/>, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('SyncedChart')).toBeVisible()
     expect(await screen.findByTestId('KPIs')).toBeVisible()
     expect(await screen.findByTestId('PagedTable')).toBeVisible()
@@ -60,8 +47,7 @@ describe('ConfigChange', () => {
   })
   it('should render component correctly when IS_MLISA_SA', async () => {
     mockGet.mockReturnValue('true')
-    render(<ConfigChange/>, { wrapper, route: {} })
-    await assertComponentLoading()
+    render(<ConfigChange/>, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('Chart')).toBeVisible()
     expect(await screen.findByTestId('KPIs')).toBeVisible()
     expect(await screen.findByTestId('Table')).toBeVisible()
