@@ -37,6 +37,11 @@ function BasicChart (){
     [dateRange]
   )
 
+  useEffect(
+    ()=> applyPagination({ total: queryResults.data?.length || 0 }),
+    [queryResults]
+  )
+
   return <Loader states={[queryResults]}>
     <Card type='no-border'>
       <AutoSizer>

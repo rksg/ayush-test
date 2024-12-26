@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 
 import { isEmpty } from 'lodash'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { kpiConfig, productNames, useAnalyticsFilter } from '@acx-ui/analytics/utils'
@@ -123,16 +124,27 @@ function useDownload () {
 export const Download = () => {
   const { $t } = getIntl()
   const { pathFilters } = useAnalyticsFilter()
-  const { timeRanges: [startDate, endDate], pagination } = useContext(ConfigChangeContext)
+  const { timeRanges: [startDate, endDate], pagination,
+    kpiFilter, entityNameSearch, entityTypeFilter, legendFilter
+  } = useContext(ConfigChangeContext)
   const { columnHeaders } = useColumns()
   const { onDownloadClick } = useDownload()
+  const payload = {
+    ...pathFilters,
+    startDate: startDate.toISOString(),
+    endDate: endDate.toISOString(),
+    filterBy: {
+      kpiFilter,
+      entityName: entityNameSearch,
+      entityType: legendFilter.filter(t => (
+        _.isEmpty(entityTypeFilter) || entityTypeFilter.includes(t)))
+    }
+  }
   return <Tooltip title={$t(exportMessageMapping.EXPORT_TO_CSV)}>
     <Button
       icon={<DownloadOutlined />}
       disabled={pagination.total === 0}
-      onClick={async () => await onDownloadClick({
-        ...pathFilters, startDate: startDate.toISOString(), endDate: endDate.toISOString()
-      }, columnHeaders)}
+      onClick={async () => await onDownloadClick(payload, columnHeaders)}
     /></Tooltip>
 }
 
