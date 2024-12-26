@@ -16,7 +16,7 @@ import {
   Filter
 }                                    from '@acx-ui/components'
 import { ConfigChangePaginationParams }                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { Features, useIsTreatmentsOn }                     from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                       from '@acx-ui/formatter'
 import { DownloadOutlined }                                from '@acx-ui/icons'
 import { exportMessageMapping, noDataDisplay, PathFilter } from '@acx-ui/utils'
@@ -46,10 +46,10 @@ export const transferSorter = (order:string) => {
 }
 
 export function useDownloadConfigChange () {
-  const showIntentAI = [
-    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
-    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
-  ].some(Boolean)
+  const showIntentAI = useIsTreatmentsOn([
+    Features.INTENT_AI_CONFIG_CHANGE_TOGGLE,
+    Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE
+  ])
 
   const [download] = useLazyConfigChangeQuery()
 
@@ -57,7 +57,7 @@ export function useDownloadConfigChange () {
     payload: PathFilter,
     columns: TableProps<ConfigChange>['columns']
   ) => {
-    const entityTypeMapping = getConfigChangeEntityTypeMapping(showIntentAI)
+    const entityTypeMapping = getConfigChangeEntityTypeMapping(Boolean(showIntentAI))
     const data = await download(payload)
       .unwrap()
       .catch((error) => { console.error(error) }) // eslint-disable-line no-console
@@ -67,10 +67,10 @@ export function useDownloadConfigChange () {
 }
 
 export function PagedTable () {
-  const showIntentAI = [
-    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
-    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
-  ].some(Boolean)
+  const showIntentAI = useIsTreatmentsOn([
+    Features.INTENT_AI_CONFIG_CHANGE_TOGGLE,
+    Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE
+  ])
 
   const { $t } = useIntl()
   const { pathFilters } = useAnalyticsFilter()
@@ -102,14 +102,14 @@ export function PagedTable () {
         _.isEmpty(entityTypeFilter) || entityTypeFilter.includes(t)))
     },
     sortBy: sorter
-  })
+  }, { skip: showIntentAI === null })
 
   useEffect(
     ()=> applyPagination({ total: queryResults.data?.total || 0 }),
     [queryResults]
   )
 
-  const entityTypeMapping = getConfigChangeEntityTypeMapping(showIntentAI)
+  const entityTypeMapping = getConfigChangeEntityTypeMapping(Boolean(showIntentAI))
 
   const ColumnHeaders: TableProps<PagedConfigChange['data'][0]>['columns'] = [
     {
