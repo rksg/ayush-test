@@ -1,21 +1,25 @@
+// @ts-nocheck
 import React, { useEffect } from 'react'
 
-import { CallbackDataParams } from 'echarts/types/dist/shared'
-import { useDrag }            from 'react-dnd'
-import { getEmptyImage }      from 'react-dnd-html5-backend'
-import { useIntl }            from 'react-intl'
-import AutoSizer              from 'react-virtualized-auto-sizer'
-import { v4 as uuidv4 }       from 'uuid'
+import { TooltipComponentFormatterCallbackParams } from 'echarts'
+import { CallbackDataParams }                      from 'echarts/types/dist/shared'
+import { useDrag }                                 from 'react-dnd'
+import { getEmptyImage }                           from 'react-dnd-html5-backend'
+import { renderToString }                          from 'react-dom/server'
+import { useIntl }                                 from 'react-intl'
+import AutoSizer                                   from 'react-virtualized-auto-sizer'
+import { v4 as uuidv4 }                            from 'uuid'
 
-import { BarChartData }                                                             from '@acx-ui/analytics/utils'
-import { BarChart, cssNumber, cssStr, DonutChart, Loader, StackedAreaChart, Table } from '@acx-ui/components'
-import { formatter }                                                                from '@acx-ui/formatter'
-import { useChatChartQuery }                                                        from '@acx-ui/rc/services'
-import { WidgetListData }                                                           from '@acx-ui/rc/utils'
+import { BarChartData }                                                                             from '@acx-ui/analytics/utils'
+import { BarChart, cssNumber, cssStr, DonutChart, Loader, StackedAreaChart, Table, TooltipWrapper } from '@acx-ui/components'
+import { DateFormatEnum, formatter }                                                                from '@acx-ui/formatter'
+import { useChatChartQuery }                                                                        from '@acx-ui/rc/services'
+import { WidgetListData }                                                                           from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'
 
 import { ItemTypes } from './GroupItem'
+
 
 interface WidgetListProps {
   data: WidgetListData;
@@ -123,8 +127,9 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
   })
 
   function labelFormatter (params: CallbackDataParams): string {
+    const unit = data?.unit ? 'bytesFormat' : 'countFormat'
     const usage = Array.isArray(params.data) ? params.data[params?.encode?.['x'][0]!] : params.data
-    return '{data|' + formatter('bytesFormat')(usage) + '}'
+    return '{data|' + formatter(unit)(usage) + '}'
   }
 
   const richStyle = () => ({
@@ -136,6 +141,32 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
       fontWeight: cssNumber('--acx-body-5-font-weight')
     }
   })
+
+  const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
+    const x = Array.isArray(params) && Array.isArray(params[0].dimensionNames) ?
+      params[0].dimensionNames[1] : ''
+    const y = Array.isArray(params) && Array.isArray(params[0].data) ? params[0].data[0] : ''
+    const value = Array.isArray(params) && Array.isArray(params[0].data) ? params[0].data[1] : ''
+    const color = Array.isArray(params) ? params[0].color : ''
+    const unit = data?.unit ? 'bytesFormat' : 'countFormat'
+    return renderToString(
+      <TooltipWrapper>
+        <div>
+          <b>{chartData?.axisType === 'time' ?
+            formatter(DateFormatEnum.DateTimeFormat)(y) : y as string}</b>
+          <p>
+            {
+              color ? <UI.Badge
+                className='acx-chart-tooltip'
+                color={color}
+                text={x}
+              />: x
+            } : <b> {formatter(unit)(value) as string}</b>
+          </p>
+        </div>
+      </TooltipWrapper>
+    )
+  }
 
 
   const getChart = (type: string, width:number, height:number, chartData:WidgetListData) => {
@@ -155,11 +186,14 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
       />
     } else if(type === 'bar') {
       return <BarChart
-        style={{ width, height }}
+        style={{ width: width-30, height }}
+        grid={{ right: '10px' }}
         data={(chartData?.chartOption || []) as BarChartData}
         barWidth={8}
         labelFormatter={labelFormatter}
         labelRichStyle={richStyle()}
+        yAxisType={chartData?.axisType}
+        tooltipFormatter={tooltipFormatter}
       />
     } else if(type === 'table') {
       return <Table

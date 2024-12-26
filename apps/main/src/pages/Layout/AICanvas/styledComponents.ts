@@ -1,5 +1,5 @@
-import { Input as AntInput } from 'antd'
-import styled                from 'styled-components/macro'
+import { Input as AntInput, Badge as AntBadge } from 'antd'
+import styled                                   from 'styled-components/macro'
 
 import { Card } from '@acx-ui/components'
 
@@ -322,5 +322,22 @@ export const Grid = styled.div`
 export const Widget = styled(Card)`
   &.table .ant-card-body {
     overflow: auto;
+  }
+`
+
+export const Badge = styled(AntBadge)`
+  .ant-badge-status-dot {
+    height: 6px;
+    width: 6px;
+  }
+  .ant-badge-status-text {
+    margin-left: 4px;
+    font-family: var(--acx-neutral-brand-font);
+    font-size: var(--acx-body-5-font-size);
+    line-height: var(--acx-body-5-line-height);
+    color: var(--acx-primary-white);
+    b {
+      font-weight: var(--acx-body-font-weight-bold);
+    }
   }
 `

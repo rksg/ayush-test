@@ -234,7 +234,8 @@ export const tooltipOptions = () => ({
 
 export const timeSeriesTooltipFormatter = (
   series: TimeSeriesChartData[],
-  dataFormatters: { default: ChartFormatterFn } & Record<string, ChartFormatterFn>
+  dataFormatters: { default: ChartFormatterFn } & Record<string, ChartFormatterFn>,
+  ignoreTimeXAxis?: boolean
 ) => (
   parameters: TooltipFormatterParams | TooltipFormatterParams[]
 ) => {
@@ -247,7 +248,7 @@ export const timeSeriesTooltipFormatter = (
     <RawIntlProvider value={intl}>
       <UI.TooltipWrapper>
         <time dateTime={new Date(time).toJSON()}>
-          {formatter(DateFormatEnum.DateTimeFormat)(time) as string}
+          {ignoreTimeXAxis ? time : formatter(DateFormatEnum.DateTimeFormat)(time) as string}
         </time>
         <ul>{
           series.map((data: TimeSeriesChartData)=> {

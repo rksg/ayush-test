@@ -103,7 +103,6 @@ export function StackedAreaChart <
   disableAxis,
   disableGrid,
   totalMean,
-  xAxisType,
   ...props
 }: StackedAreaChartProps<TChartData>) {
   const eChartsRef = useRef<ReactECharts>(null)
@@ -111,6 +110,7 @@ export function StackedAreaChart <
   useLegendSelectChanged(eChartsRef)
 
   const { $t } = useIntl()
+  const xAxisType = props.xAxisType || 'time'
 
   disableLegend = Boolean(disableLegend)
   const [canResetZoom, resetZoomCallback] =
@@ -147,12 +147,13 @@ export function StackedAreaChart <
       trigger: 'axis',
       formatter: timeSeriesTooltipFormatter(
         data,
-        { ...seriesFormatters, default: dataFormatter }
+        { ...seriesFormatters, default: dataFormatter },
+        xAxisType !== 'time'
       )
     },
     xAxis: {
       ...xAxisOptions(),
-      type: xAxisType || 'time',
+      type: xAxisType,
       axisLabel: {
         ...axisLabelOptions(),
         formatter: dateAxisFormatter()

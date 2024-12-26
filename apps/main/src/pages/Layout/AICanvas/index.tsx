@@ -113,12 +113,11 @@ export default function AICanvas () {
           {chat.text}
         </div>
       </div>
-      { chat.role === 'AI' && chat.widgets && <DraggableChart data={{
+      { chat.role === 'AI' && !!chat.widgets?.length && <DraggableChart data={{
         ...chat.widgets[0],
         sessionId,
         id: chat.id,
-        chatId: chat.id,
-        axisType: chat.widgets[0]?.type // TODO: Remove after API response changed
+        chatId: chat.id
       }}
       /> }
 
