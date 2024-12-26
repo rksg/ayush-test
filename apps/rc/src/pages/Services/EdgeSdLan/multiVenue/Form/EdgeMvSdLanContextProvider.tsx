@@ -20,6 +20,8 @@ export function useEdgeMvSdLanContext () {
 }
 
 export function EdgeMvSdLanContextProvider (props: { children: ReactNode }) {
+  const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+
   const allSdLansQuery = useGetEdgeMvSdLanViewDataListQuery({
     payload: {
       fields: ['id', 'venueId', 'edgeClusterId', 'guestEdgeClusterId',
@@ -29,13 +31,14 @@ export function EdgeMvSdLanContextProvider (props: { children: ReactNode }) {
 
   const allSdLans = allSdLansQuery.data?.data ?? []
 
-  const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const allPinsQuery = useGetEdgePinViewDataListQuery({
     payload: {
       fields: ['id','venueId', 'edgeClusterInfo', 'tunneledWlans'],
       pageSize: 10000
-    } })
+    } }, { skip: !isEdgePinReady })
+
   const allPins = isEdgePinReady ? allPinsQuery.data?.data ?? [] : []
+
   return <EdgeMvSdLanContext.Provider value={{ allSdLans, allPins }}>
     <Loader states={[allSdLansQuery, allPinsQuery]}>
       {props.children}
