@@ -22,6 +22,9 @@ jest.mock('react-router-dom', () => ({
 jest.mock('../PersonalIdentityNetworkForm/GeneralSettingsForm', () => ({
   GeneralSettingsForm: () => <div data-testid='GeneralSettingsForm' />
 }))
+jest.mock('../PersonalIdentityNetworkForm/NetworkTopologyForm', () => ({
+  NetworkTopologyForm: () => <div data-testid='NetworkTopologyForm' />
+}))
 jest.mock('../PersonalIdentityNetworkForm/SmartEdgeForm', () => ({
   SmartEdgeForm: () => <div data-testid='SmartEdgeForm' />
 }))
@@ -43,7 +46,7 @@ jest.mock('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext', (
     <div data-testid='PersonalIdentityNetworkFormDataProvider' children={children} />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
+  // ...jest.requireActual('@acx-ui/rc/components'),
   useEdgePinActions: () => ({
     addPin: (req: RequestPayload) => new Promise((resolve) => {
       resolve(true)
