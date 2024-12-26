@@ -1106,7 +1106,9 @@ export const apApi = baseApApi.injectEndpoints({
               payload: {
                 enabled: l.enabled,
                 overwriteUntagId: l.untagId,
-                overwriteVlanMembers: l.vlanMembers
+                overwriteVlanMembers: l.vlanMembers,
+                clientIsolationEnabled: l.clientIsolationEnabled,
+                clientIsolationSettings: l.clientIsolationSettings
               }
             }))
           const softGreActivateRequests = apSettings?.lanPorts
@@ -1121,6 +1123,16 @@ export const apApi = baseApApi.injectEndpoints({
               payload: {
                 dhcpOption82Enabled: l.dhcpOption82?.dhcpOption82Enabled,
                 dhcpOption82Settings: (l.dhcpOption82?.dhcpOption82Enabled)? l.dhcpOption82?.dhcpOption82Settings : undefined
+              }
+            }))
+          const clientIsolationActivateRequests = apSettings?.lanPorts
+            ?.filter(l => l.clientIsolationEnabled && (l.clientIsolationEnabled === true) && (l.enabled === true))
+            .map(l => ({
+              params: {
+                venueId: params!.venueId,
+                serialNumber: params!.serialNumber,
+                portId: l.portId,
+                policyId: l.clientIsolationProfileId
               }
             }))
 
@@ -1144,6 +1156,9 @@ export const apApi = baseApApi.injectEndpoints({
 
           await batchApi(SoftGreUrls.activateSoftGreProfileOnAP,
             softGreActivateRequests!, fetchWithBQ, customHeaders)
+
+          await batchApi(ClientIsolationUrls.activateClientIsolationOnAp,
+            clientIsolationActivateRequests!, fetchWithBQ, customHeaders)
 
           const res = await fetchWithBQ({
             ...(createHttpRequest(WifiRbacUrlsInfo.updateApLanPortSpecificSettings,

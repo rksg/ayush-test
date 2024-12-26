@@ -26,7 +26,8 @@ import {
   useLazyGetVenueSettingsQuery,
   useResetApLanPortsMutation,
   useUpdateApEthernetPortsMutation,
-  useUpdateApLanPortsMutation
+  useUpdateApLanPortsMutation,
+  useDeactivateClientIsolationOnApMutation
 } from '@acx-ui/rc/services'
 import {
   ApLanPortTypeEnum,
@@ -128,6 +129,9 @@ export function LanPorts () {
     isLoading: isApLanPortsResetting }] = useResetApLanPortsMutation()
   const [deactivateSoftGreProfileSettings, {
     isLoading: isSoftGreProfileDeactivting }] = useDeactivateSoftGreProfileOnAPMutation()
+  const [deactivateClientIsolationOnAp, {
+    isLoading: isDeactivateClientIsolationOnAp
+  }] = useDeactivateClientIsolationOnApMutation()
 
 
 
@@ -299,6 +303,10 @@ export function LanPorts () {
           handleSoftGreDeactivate(values)
         }
 
+        if (isEthernetClientIsolationEnabled) {
+          handleClientIsolationDeactivate(values)
+        }
+
         await updateEthernetPortProfile({
           params: { venueId, serialNumber },
           payload
@@ -333,6 +341,19 @@ export function LanPorts () {
       if (originSoftGreId && (!lanPort.enabled || !lanPort.softGreEnabled)) {
         deactivateSoftGreProfileSettings({
           params: { venueId, serialNumber, portId: lanPort.portId, policyId: originSoftGreId }
+        }).unwrap()
+      }
+    })
+  }
+
+  const handleClientIsolationDeactivate = (values: WifiApSetting) => {
+    values.lan?.forEach(lanPort => {
+      const originClientIsolationProfileId
+        = lanData.find(l => l.portId === lanPort.portId)?.clientIsolationProfileId
+      if (originClientIsolationProfileId && (!lanPort.enabled || !lanPort.clientIsolationEnabled)) {
+        deactivateClientIsolationOnAp({
+          // eslint-disable-next-line max-len
+          params: { venueId, serialNumber, portId: lanPort.portId, policyId: originClientIsolationProfileId }
         }).unwrap()
       }
     })
@@ -412,7 +433,8 @@ export function LanPorts () {
     isFetching: isApLanPortsUpdating ||
       isApLanPortsResetting ||
       isEthernetPortProfileUpdating ||
-      isSoftGreProfileDeactivting
+      isSoftGreProfileDeactivting ||
+      isDeactivateClientIsolationOnAp
   }]}>
     {selectedModel?.lanPorts
       ? <StepsFormLegacy
