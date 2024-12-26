@@ -1,0 +1,148 @@
+import { useContext } from 'react'
+
+import { isEmpty } from 'lodash'
+import { useIntl } from 'react-intl'
+
+import { kpiConfig, productNames, useAnalyticsFilter } from '@acx-ui/analytics/utils'
+import {
+  Button,
+  Cascader,
+  ConfigChange,
+  getConfigChangeEntityTypeMapping,
+  GridCol,
+  SearchInput,
+  TableProps,
+  Tooltip
+}                                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                          from '@acx-ui/icons'
+import { PathFilter, getIntl, exportMessageMapping } from '@acx-ui/utils'
+
+import { ConfigChangeContext }     from '../context'
+import { hasConfigChange }         from '../KPI'
+import { useColumns }              from '../PagedTable'
+import { useDownloadConfigChange } from '../services'
+
+import { handleConfigChangeDownload } from './handleConfigChangeDownload'
+import { CascaderFilterWrapper }      from './styledComponents'
+
+export const Search = () => {
+  const { $t } = useIntl()
+  const { entityNameSearch, setEntityNameSearch } = useContext(ConfigChangeContext)
+  const placeHolderText =$t({ defaultMessage: 'Search Entity Name' })
+  return <SearchInput
+    onChange={e => setEntityNameSearch(e.target.value)}
+    placeholder={placeHolderText}
+    title={placeHolderText}
+    value={entityNameSearch}
+    allowClear
+  />
+}
+
+export const KPIFilter = () => {
+  const { $t } = useIntl()
+  const { reset, kpiFilter, applyKpiFilter } = useContext(ConfigChangeContext)
+  const options = Object.keys(kpiConfig).reduce((agg, key)=> {
+    const config = kpiConfig[key as keyof typeof kpiConfig]
+    if(hasConfigChange(config)){
+      agg.push({ value: key, label: $t(config.configChange.text || config.text, productNames) })
+    }
+    return agg
+  }, [] as { value: string, label: string }[])
+  return <CascaderFilterWrapper>
+    <Cascader
+      multiple
+      defaultValue={kpiFilter.map(kpi => [kpi])}
+      placeholder={$t({ defaultMessage: 'Add KPI filter' })}
+      options={options}
+      onApply={selectedOptions => {
+        reset()
+        applyKpiFilter(selectedOptions?.length ? selectedOptions?.flat() as string[] : [])
+      }}
+      allowClear
+    />
+  </CascaderFilterWrapper>
+}
+
+export const EntityTypeFilter = () => {
+  const showIntentAI = [
+    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
+    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
+  ].some(Boolean)
+
+  const { $t } = useIntl()
+  const { reset, entityTypeFilter, setEntityTypeFilter } = useContext(ConfigChangeContext)
+  const entityTypeMapping = getConfigChangeEntityTypeMapping(showIntentAI)
+    .map(ele => ({ value: ele.key, label: ele.label }))
+  return <CascaderFilterWrapper>
+    <Cascader
+      multiple
+      defaultValue={entityTypeFilter.map(entity => [entity])}
+      placeholder={$t({ defaultMessage: 'Entity Type' })}
+      options={entityTypeMapping}
+      onApply={selectedOptions => {
+        reset()
+        setEntityTypeFilter(selectedOptions?.length ? selectedOptions?.flat() as string[] : [])
+      }}
+      allowClear
+    />
+  </CascaderFilterWrapper>
+}
+
+export const Reset = () => {
+  const { $t } = useIntl()
+  const {
+    entityTypeFilter, kpiFilter, entityNameSearch, resetFilter
+  } = useContext(ConfigChangeContext)
+  return (!isEmpty(entityTypeFilter) || !isEmpty(kpiFilter) || entityNameSearch !== '')
+    ? <Button onClick={resetFilter}>{$t({ defaultMessage: 'Clear Filters' })}</Button>
+    : null
+}
+
+function useDownload () {
+  const showIntentAI = [
+    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
+    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
+  ].some(Boolean)
+
+  const [download] = useDownloadConfigChange()
+
+  const onDownloadClick = async (
+    payload: PathFilter,
+    columns: TableProps<ConfigChange>['columns']
+  ) => {
+    const entityTypeMapping = getConfigChangeEntityTypeMapping(showIntentAI)
+    const data = await download(payload)
+      .unwrap()
+      .catch((error) => { console.error(error) }) // eslint-disable-line no-console
+    handleConfigChangeDownload(data!, columns, entityTypeMapping, payload)
+  }
+  return { onDownloadClick }
+}
+
+export const Download = () => {
+  const { $t } = getIntl()
+  const { pathFilters } = useAnalyticsFilter()
+  const { timeRanges: [startDate, endDate], pagination } = useContext(ConfigChangeContext)
+  const { columnHeaders } = useColumns()
+  const { onDownloadClick } = useDownload()
+  return <Tooltip title={$t(exportMessageMapping.EXPORT_TO_CSV)}>
+    <Button
+      icon={<DownloadOutlined />}
+      disabled={pagination.total === 0}
+      onClick={async () => await onDownloadClick({
+        ...pathFilters, startDate: startDate.toISOString(), endDate: endDate.toISOString()
+      }, columnHeaders)}
+    /></Tooltip>
+}
+
+export const Filter = () => {
+  return <>
+    <GridCol col={{ span: 6 }}><Search/></GridCol>
+    <GridCol col={{ span: 6 }}><KPIFilter/></GridCol>
+    <GridCol col={{ span: 6 }}><EntityTypeFilter/></GridCol>
+    <GridCol col={{ span: 3 }}><Reset/></GridCol>
+    <GridCol col={{ span: 2 }}>{/* Reset Chart Button */}</GridCol>
+    <GridCol col={{ span: 1 }}><Download/></GridCol>
+  </>
+}

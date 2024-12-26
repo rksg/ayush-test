@@ -5,28 +5,24 @@ import _                              from 'lodash'
 import moment                         from 'moment'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
-import { useAnalyticsFilter, kpiConfig, productNames } from '@acx-ui/analytics/utils'
+import { useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
   Loader,
   TableProps,
   Table as CommonTable,
   ConfigChange,
   getConfigChangeEntityTypeMapping,
-  Cascader,
   Filter
 }                                    from '@acx-ui/components'
-import { ConfigChangePaginationParams }                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                       from '@acx-ui/formatter'
-import { DownloadOutlined }                                from '@acx-ui/icons'
-import { exportMessageMapping, noDataDisplay, PathFilter } from '@acx-ui/utils'
+import { ConfigChangePaginationParams } from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
+import { noDataDisplay }                from '@acx-ui/utils'
 
-import { ConfigChangeContext }                                                                 from '../context'
-import { hasConfigChange }                                                                     from '../KPI'
-import { usePagedConfigChangeQuery, PagedConfigChange, SORTER_ABBR, useLazyConfigChangeQuery } from '../services'
+import { ConfigChangeContext }                                       from '../context'
+import { usePagedConfigChangeQuery, PagedConfigChange, SORTER_ABBR } from '../services'
 
-import { genDownloadConfigChange }              from './download'
-import { Badge, CascaderFilterWrapper }         from './styledComponents'
+import { Badge }                                from './styledComponents'
 import { EntityType, enumTextMap, jsonMapping } from './util'
 
 export const DEFAULT_SORTER = {
@@ -45,73 +41,15 @@ export const transferSorter = (order:string) => {
   }
 }
 
-export function useDownloadConfigChange () {
-  const showIntentAI = [
-    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
-    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
-  ].some(Boolean)
-
-  const [download] = useLazyConfigChangeQuery()
-
-  const onDownloadClick = async (
-    payload: PathFilter,
-    columns: TableProps<ConfigChange>['columns']
-  ) => {
-    const entityTypeMapping = getConfigChangeEntityTypeMapping(showIntentAI)
-    const data = await download(payload)
-      .unwrap()
-      .catch((error) => { console.error(error) }) // eslint-disable-line no-console
-    genDownloadConfigChange(data!, columns, entityTypeMapping, payload)
-  }
-  return { onDownloadClick }
-}
-
-export function PagedTable () {
+export const useColumns = () => {
   const showIntentAI = [
     useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
     useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
   ].some(Boolean)
 
   const { $t } = useIntl()
-  const { pathFilters } = useAnalyticsFilter()
-  const {
-    timeRanges: [startDate, endDate],
-    kpiFilter, applyKpiFilter,
-    legendFilter, entityNameSearch, setEntityNameSearch, entityTypeFilter, setEntityTypeFilter,
-    pagination, applyPagination,
-    selected, onRowClick,
-    sorter, setSorter, reset
-  } = useContext(ConfigChangeContext)
-
-  const { onDownloadClick } = useDownloadConfigChange()
-
-  const basicPayload = {
-    ...pathFilters,
-    startDate: startDate.toISOString(),
-    endDate: endDate.toISOString()
-  }
-
-  const queryResults = usePagedConfigChangeQuery({
-    ...basicPayload,
-    page: pagination.current,
-    pageSize: pagination.pageSize,
-    filterBy: {
-      kpiFilter,
-      entityName: entityNameSearch,
-      entityType: legendFilter.filter(t => (
-        _.isEmpty(entityTypeFilter) || entityTypeFilter.includes(t)))
-    },
-    sortBy: sorter
-  })
-
-  useEffect(
-    ()=> applyPagination({ total: queryResults.data?.total || 0 }),
-    [queryResults]
-  )
-
   const entityTypeMapping = getConfigChangeEntityTypeMapping(showIntentAI)
-
-  const ColumnHeaders: TableProps<PagedConfigChange['data'][0]>['columns'] = [
+  const columnHeaders: TableProps<PagedConfigChange['data'][0]>['columns'] = [
     {
       key: 'timestamp',
       title: $t({ defaultMessage: 'Timestamp' }),
@@ -130,7 +68,6 @@ export function PagedTable () {
         const config = entityTypeMapping.find(type => type.key === row.type)
         return config ? <Badge key={row.id} color={config.color} text={config.label}/> : row.type
       },
-      filterable: entityTypeMapping.map(({ label, ...rest }) => ({ ...rest, value: label })),
       width: 100
     },
     {
@@ -180,6 +117,41 @@ export function PagedTable () {
       }
     }
   ]
+  return { columnHeaders }
+}
+
+export function PagedTable () {
+  const { pathFilters } = useAnalyticsFilter()
+  const {
+    timeRanges: [startDate, endDate],
+    kpiFilter,
+    legendFilter, entityNameSearch, setEntityNameSearch, entityTypeFilter, setEntityTypeFilter,
+    pagination, applyPagination,
+    selected, onRowClick,
+    sorter, setSorter, reset
+  } = useContext(ConfigChangeContext)
+
+  const queryResults = usePagedConfigChangeQuery({
+    ...pathFilters,
+    startDate: startDate.toISOString(),
+    endDate: endDate.toISOString(),
+    page: pagination.current,
+    pageSize: pagination.pageSize,
+    filterBy: {
+      kpiFilter,
+      entityName: entityNameSearch,
+      entityType: legendFilter.filter(t => (
+        _.isEmpty(entityTypeFilter) || entityTypeFilter.includes(t)))
+    },
+    sortBy: sorter
+  })
+
+  useEffect(
+    ()=> applyPagination({ total: queryResults.data?.total || 0 }),
+    [queryResults]
+  )
+
+  const { columnHeaders } = useColumns()
 
   const rowSelection = {
     onChange: (_: React.Key[], selectedRows: ConfigChange[]) => {
@@ -210,52 +182,25 @@ export function PagedTable () {
     customAction.action === 'sort' && setSorter(transferSorter(order!))
   }
 
-  const options = Object.keys(kpiConfig).reduce((agg, key)=> {
-    const config = kpiConfig[key as keyof typeof kpiConfig]
-    if(hasConfigChange(config)){
-      agg.push({ value: key, label: $t(config.configChange.text || config.text, productNames) })
-    }
-    return agg
-  }, [] as { value: string, label: string }[])
-
-  return <>
-    <CascaderFilterWrapper>
-      <Cascader
-        multiple
-        defaultValue={kpiFilter.map(kpi=>[kpi])}
-        placeholder={$t({ defaultMessage: 'Add KPI filter' })}
-        options={options}
-        onApply={selectedOptions => {
-          reset()
-          applyKpiFilter(selectedOptions?.length ? selectedOptions?.flat() as string[] : [])
-        }}
-        allowClear
-      />
-    </CascaderFilterWrapper>
-    <Loader states={[queryResults]}>
-      <CommonTable
-        settingsId='config-change-table'
-        columns={ColumnHeaders}
-        dataSource={queryResults.data?.data}
-        rowSelection={{ type: 'radio', ...rowSelection }}
-        tableAlertRender={false}
-        rowKey='id'
-        showSorterTooltip={false}
-        columnEmptyText={noDataDisplay}
-        pagination={{
-          ...pagination,
-          total: queryResults.data?.total || 0,
-          onChange: handlePaginationChange
-        }}
-        enableApiFilter={true}
-        onFilterChange={handleFilterChange}
-        onChange={handleTableChange}
-        iconButton={{
-          icon: <DownloadOutlined />,
-          disabled: !Boolean(queryResults.data?.total),
-          tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
-          onClick: async () => await onDownloadClick(basicPayload, ColumnHeaders) }}
-      />
-    </Loader>
-  </>
+  return <Loader states={[queryResults]}>
+    <CommonTable
+      settingsId='config-change-table'
+      columns={columnHeaders}
+      dataSource={queryResults.data?.data}
+      rowSelection={{ type: 'radio', ...rowSelection }}
+      tableAlertRender={false}
+      rowKey='id'
+      showSorterTooltip={false}
+      columnEmptyText={noDataDisplay}
+      pagination={{
+        ...pagination,
+        total: queryResults.data?.total || 0,
+        onChange: handlePaginationChange
+      }}
+      enableApiFilter={true}
+      onFilterChange={handleFilterChange}
+      onChange={handleTableChange}
+      highLightValue={entityNameSearch}
+    />
+  </Loader>
 }

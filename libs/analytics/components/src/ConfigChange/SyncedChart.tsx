@@ -32,9 +32,10 @@ function BasicChart (){
     }
   })
 
-  useEffect(() => {
-    setChartZoom?.({ start: startDate.valueOf(), end: endDate.valueOf() })
-  }, [dateRange])
+  useEffect(
+    () => setChartZoom?.({ start: startDate.valueOf(), end: endDate.valueOf() }),
+    [dateRange]
+  )
 
   return <Loader states={[queryResults]}>
     <Card type='no-border'>

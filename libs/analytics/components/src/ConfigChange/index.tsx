@@ -4,6 +4,7 @@ import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 
 import { Chart }                from './Chart'
 import { ConfigChangeProvider } from './context'
+import { Filter }               from './Filter'
 import { KPIs }                 from './KPI'
 import { PagedTable }           from './PagedTable'
 import { SyncedChart }          from './SyncedChart'
@@ -19,14 +20,17 @@ export function ConfigChange () {
   const { selectedRange: dateRange } = useDateRange()
 
   return <ConfigChangeProvider dateRange={dateRange}>
-    <GridRow>
-      <GridCol col={{ span: 24 }} style={{ minHeight: isMLISA ? '200px' : '170px' }}>
-        { isPaged ? <SyncedChart/> : <Chart/> }
-      </GridCol>
-      <GridCol col={{ span: 8, xxl: 6 }}><KPIs/></GridCol>
-      <GridCol col={{ span: 16, xxl: 18 }} style={{ minHeight: '180px' }}>
-        { isPaged ? <PagedTable /> : <Table/> }
-      </GridCol>
-    </GridRow>
+    <>
+      {isPaged ? <GridRow><Filter/></GridRow> : null}
+      <GridRow>
+        <GridCol col={{ span: 24 }} style={{ minHeight: isMLISA ? '200px' : '170px' }}>
+          { isPaged ? <SyncedChart/> : <Chart/> }
+        </GridCol>
+        <GridCol col={{ span: 8, xxl: 6 }}><KPIs/></GridCol>
+        <GridCol col={{ span: 16, xxl: 18 }} style={{ minHeight: '180px' }}>
+          { isPaged ? <PagedTable /> : <Table/> }
+        </GridCol>
+      </GridRow>
+    </>
   </ConfigChangeProvider>
 }

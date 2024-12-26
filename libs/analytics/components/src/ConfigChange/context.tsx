@@ -22,10 +22,11 @@ export interface ActionContextType {
   chartZoom: { start: number, end: number } | undefined
   setChartZoom: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
   initialZoom: { start: number, end: number } | undefined
-  setInitialZoom: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
+  setInitialZoom: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
   sorter: string
-  setSorter: Dispatch<SetStateAction<string>>,
+  setSorter: Dispatch<SetStateAction<string>>
   reset: () => void
+  resetFilter: () => void
 }
 
 export interface PaginationContextType {
@@ -65,16 +66,11 @@ export const ConfigChangeContext =
 export function ConfigChangeProvider (props: {
   children: ReactElement
 } & Pick<ConfigChangeContextType, 'dateRange'>) {
-
-  const isPaged = [
-    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
-    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
-  ].some(Boolean)
-
   const showIntentAI = [
     useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
     useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
   ].some(Boolean)
+  const isPaged = showIntentAI
 
   const [pagination, setPagination] = useState<
     ConfigChangePaginationParams
@@ -114,6 +110,7 @@ export function ConfigChangeProvider (props: {
     setSelected(params)
     setChartZoom(initialZoom)
   }
+
   const actionContext = {
     selected, setSelected,
     dotSelect, setDotSelect,
@@ -121,12 +118,6 @@ export function ConfigChangeProvider (props: {
     chartZoom, setChartZoom,
     initialZoom, setInitialZoom,
     sorter, setSorter
-  }
-
-  const reset = () => {
-    setSelected(null)
-    setDotSelect(null)
-    setPagination(CONFIG_CHANGE_DEFAULT_PAGINATION)
   }
 
   const timeRanges = defaultRanges()[props.dateRange]!
@@ -167,13 +158,25 @@ export function ConfigChangeProvider (props: {
     entityTypeFilter, setEntityTypeFilter
   }
 
+  const reset = () => {
+    setSelected(null)
+    setDotSelect(null)
+    setPagination(CONFIG_CHANGE_DEFAULT_PAGINATION)
+  }
+
+  const resetFilter = () => {
+    setEntityNameSearch('')
+    setEntityTypeFilter([])
+    setKpiFilter([])
+  }
+
   const context = {
     ...timeRangeContext,
     ...kpiFilterContext,
     ...filterByContext,
     ...paginationContext,
     ...actionContext,
-    reset
+    reset, resetFilter
   }
 
   return <ConfigChangeContext.Provider

@@ -2,50 +2,20 @@ import { useContext } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
-import { Provider, dataApiURL, store }                                                             from '@acx-ui/store'
-import { findTBody, mockGraphqlQuery, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
-import { DateRange }                                                                               from '@acx-ui/utils'
+import { Provider, dataApiURL, store }                                                    from '@acx-ui/store'
+import { findTBody, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { DateRange }                                                                      from '@acx-ui/utils'
 
-import { pagedConfigChanges }                         from '../__tests__/fixtures'
-import { ConfigChangeContext, ConfigChangeProvider }  from '../context'
+import { pagedConfigChanges }                        from '../__tests__/fixtures'
+import { ConfigChangeContext, ConfigChangeProvider } from '../context'
+// import { genDownloadConfigChange }                    from '../Filter/Download'
 import { DEFAULT_SORTER, PagedTable, transferSorter } from '../PagedTable'
 import { SORTER_ABBR, api }                           from '../services'
 
-import { genDownloadConfigChange } from './download'
-
-const mockGenDownloadConfigChange = jest.mocked(genDownloadConfigChange)
-jest.mock('./download', () => ({
-  genDownloadConfigChange: jest.fn()
-}))
-
-jest.mock('antd', () => {
-  const components = jest.requireActual('antd')
-  const Select = ({
-    children,
-    showArrow,                // remove and left unassigned to prevent warning
-    showSearch,               // remove and left unassigned to prevent warning
-    allowClear,               // remove and left unassigned to prevent warning
-    maxTagCount,              // remove and left unassigned to prevent warning
-    dropdownMatchSelectWidth, // remove and left unassigned to prevent warning
-    filterOption,             // remove and left unassigned to prevent warning
-    ...props
-  }: React.PropsWithChildren<{
-    showArrow: boolean,
-    showSearch: boolean,
-    allowClear:boolean,
-    maxTagCount: number,
-    dropdownMatchSelectWidth: boolean,
-    filterOption: () => void,
-    onChange?: (value: string) => void }>) => {
-    return (<select {...props} onChange={(e) => props.onChange?.(e.target.value)}>
-      {/* Additional <option> to ensure it is possible to reset value to empty */}
-      <option value={undefined}></option>
-      {children}
-    </select>)
-  }
-  Select.Option = 'option'
-  return { ...components, Select }
-})
+// const mockGenDownloadConfigChange = jest.mocked(genDownloadConfigChange)
+// jest.mock('../Filter/Download', () => ({
+//   genDownloadConfigChange: jest.fn()
+// }))
 
 describe('transferSorter', () => {
   it('should return correct result', () => {
@@ -56,11 +26,12 @@ describe('transferSorter', () => {
 })
 
 describe('Table', () => {
+  const original = Date.now
   const data = pagedConfigChanges.data.map((value, id)=>({ ...value, id }))
+  afterAll(() => Date.now = original)
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
-    // mockGet.mockReturnValue('true')
-    // jest.mocked(useIsSplitOn).mockReturnValue(true)
+    Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
   })
   it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'PagedConfigChange',
@@ -103,10 +74,8 @@ describe('Table', () => {
     expect(await screen.findByText('true')).toBeVisible()
     expect(await screen.findByText('Default')).toBeVisible()
     expect(await screen.findByText('Enabled')).toBeVisible()
-
-    expect(await screen.findByText('Add KPI filter')).toBeVisible()
   })
-  it('should handle click correctly', async () => {
+  it('should handle row click correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'PagedConfigChange', { data: { network: { hierarchyNode: {
       pagedConfigChanges: { ...pagedConfigChanges, data } } } } })
     render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
@@ -122,29 +91,6 @@ describe('Table', () => {
 
     // eslint-disable-next-line testing-library/no-node-access
     expect(radio[0]?.parentNode).toHaveClass('ant-radio-checked')
-  })
-  it('should handle kpi filter', async () => {
-    const TestComponent = () => {
-      const { kpiFilter } = useContext(ConfigChangeContext)
-      return <div data-testid='kpiFilter'>{JSON.stringify(kpiFilter)}</div>
-    }
-    mockGraphqlQuery(dataApiURL, 'PagedConfigChange', { data: { network: { hierarchyNode: {
-      pagedConfigChanges: { ...pagedConfigChanges, data } } } } })
-    render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
-      <><PagedTable/><TestComponent/></>
-    </ConfigChangeProvider>,
-    { wrapper: Provider, route: {} })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
-
-    await userEvent.click(await screen.findByText('Add KPI filter'))
-    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
-    expect(await screen.findByTestId('kpiFilter')).toHaveTextContent('[]')
-
-    await userEvent.click(await screen.findByText('Add KPI filter'))
-    await userEvent.click(
-      await screen.findByRole('menuitemcheckbox', { name: 'Client Throughput' }))
-    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
-    expect(await screen.findByTestId('kpiFilter')).toHaveTextContent('["clientThroughput"]')
   })
   it('should handle pagination correctly', async () => {
     const TestComponent = () => {
@@ -162,36 +108,6 @@ describe('Table', () => {
     await userEvent.click(await screen.findByText(2))
     expect(await screen.findByTestId('pagination'))
       .toHaveTextContent('{"current":2,"pageSize":10,"defaultPageSize":10,"total":11}')
-  })
-  it('should handle filter correctly', async () => {
-    const TestComponent = () => {
-      const { entityNameSearch, entityTypeFilter } = useContext(ConfigChangeContext)
-      return <>
-        <div data-testid='entityNameSearch'>{entityNameSearch}</div>
-        <div data-testid='entityTypeFilter'>{JSON.stringify(entityTypeFilter)}</div>
-      </>
-    }
-    mockGraphqlQuery(dataApiURL, 'PagedConfigChange', { data: { network: { hierarchyNode: {
-      pagedConfigChanges: { ...pagedConfigChanges, data } } } } })
-    render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
-      <div><PagedTable/><TestComponent/></div>
-    </ConfigChangeProvider>, { wrapper: Provider, route: {} })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
-
-    expect(await screen.findByTestId('entityNameSearch')).toHaveTextContent('')
-    await userEvent.type(screen.getByRole('textbox'),'ABC')
-    await waitFor(async () => {
-      expect(await screen.findByTestId('entityNameSearch')).toHaveTextContent('ABC')
-    })
-
-    expect(await screen.findByTestId('entityTypeFilter')).toHaveTextContent('[]')
-    await userEvent.selectOptions(
-      (await screen.findAllByRole('combobox'))[1],
-      await screen.findByRole('option', { name: 'AP' })
-    )
-    await waitFor(async () => {
-      expect(await screen.findByTestId('entityTypeFilter')).toHaveTextContent('["ap"]')
-    })
   })
   it('should handle sort correctly', async () => {
     const TestComponent = () => {
@@ -242,31 +158,58 @@ describe('Table', () => {
     // eslint-disable-next-line testing-library/no-node-access
     expect(radio[0]?.parentNode).toHaveClass('ant-radio-checked')
   })
-  it('should render download button and generate download data', async () => {
-    mockGraphqlQuery(dataApiURL, 'PagedConfigChange', { data: { network: { hierarchyNode: {
-      pagedConfigChanges: { ...pagedConfigChanges, data } } } } })
-    mockGraphqlQuery(dataApiURL, 'ConfigChange', { data: { network: { hierarchyNode: {
-      configChanges: data } } } })
+  // it('should render download button and generate download data', async () => {
+  //   mockGraphqlQuery(dataApiURL, 'PagedConfigChange', { data: { network: { hierarchyNode: {
+  //     pagedConfigChanges: { ...pagedConfigChanges, data } } } } })
+  //   mockGraphqlQuery(dataApiURL, 'ConfigChange', { data: { network: { hierarchyNode: {
+  //     configChanges: data } } } })
+  //   render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
+  //     <PagedTable/>
+  //   </ConfigChangeProvider>, { wrapper: Provider, route: {} })
+  //   expect(await screen.findByTestId('DownloadOutlined')).toBeInTheDocument()
+  //   await userEvent.click(await screen.findByTestId('DownloadOutlined'))
+  //   await new Promise(r => setTimeout(r, 1))
+  //   expect(mockGenDownloadConfigChange).toBeCalledTimes(1)
+  // })
+  // it('should catch error when download fail', async () => {
+  //   const spy = jest.spyOn(console, 'error')
+  //   spy.mockReset()
+  //   mockGraphqlQuery(dataApiURL, 'PagedConfigChange', { data: { network: { hierarchyNode: {
+  //     pagedConfigChanges: { ...pagedConfigChanges, data } } } } })
+  //   mockGraphqlQuery(dataApiURL, 'ConfigChange', { error: 'some-error' })
+  //   render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
+  //     <PagedTable/>
+  //   </ConfigChangeProvider>, { wrapper: Provider, route: {} })
+  //   expect(await screen.findByTestId('DownloadOutlined')).toBeInTheDocument()
+  //   await userEvent.click(await screen.findByTestId('DownloadOutlined'))
+  //   await new Promise(r => setTimeout(r, 1))
+  //   await waitFor(() => { expect(spy).toBeCalledTimes(1) })
+  // })
+  it('should handle query args', async () => {
+    const TestComponent = () => {
+      const {
+        setEntityTypeFilter, setEntityNameSearch, setKpiFilter
+      } = useContext(ConfigChangeContext)
+      return <>
+        <div data-testid='setEntityNameSearch' onClick={() =>setEntityNameSearch('search')}/>
+        <div data-testid='setEntityTypeFilter' onClick={() =>setEntityTypeFilter(['ap'])}/>
+        <div data-testid='setKpiFilter' onClick={() => setKpiFilter('kpikey1')}/>
+      </>
+    }
+    mockGraphqlQuery(
+      dataApiURL,
+      'PagedConfigChange',
+      { data: { network: { hierarchyNode: { pagedConfigChanges: { data: [], total: 0 } } } } },
+      true
+    )
     render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
-      <PagedTable/>
+      <div><PagedTable/><TestComponent/></div>
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
-    expect(await screen.findByTestId('DownloadOutlined')).toBeInTheDocument()
-    await userEvent.click(await screen.findByTestId('DownloadOutlined'))
-    await new Promise(r => setTimeout(r, 1))
-    expect(mockGenDownloadConfigChange).toBeCalledTimes(1)
-  })
-  it('should catch error when download fail', async () => {
-    const spy = jest.spyOn(console, 'error')
-    spy.mockReset()
-    mockGraphqlQuery(dataApiURL, 'PagedConfigChange', { data: { network: { hierarchyNode: {
-      pagedConfigChanges: { ...pagedConfigChanges, data } } } } })
-    mockGraphqlQuery(dataApiURL, 'ConfigChange', { error: 'some-error' })
-    render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
-      <PagedTable/>
-    </ConfigChangeProvider>, { wrapper: Provider, route: {} })
-    expect(await screen.findByTestId('DownloadOutlined')).toBeInTheDocument()
-    await userEvent.click(await screen.findByTestId('DownloadOutlined'))
-    await new Promise(r => setTimeout(r, 1))
-    await waitFor(() => { expect(spy).toBeCalledTimes(1) })
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
+    await userEvent.click(await screen.findByTestId('setEntityNameSearch'))
+    await userEvent.click(await screen.findByTestId('setEntityTypeFilter'))
+    await userEvent.click(await screen.findByTestId('setKpiFilter'))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
   })
 })
