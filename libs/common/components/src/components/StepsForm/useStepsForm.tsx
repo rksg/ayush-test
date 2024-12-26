@@ -29,6 +29,7 @@ type UseStepsFormParam <T> = Omit<
   'form' | 'defaultFormValues' | 'current' | 'submit'
 > & {
   editMode?: boolean
+  hasPrerequisiteStep?: boolean
   form?: FormInstance<T>
   defaultFormValues?: Partial<T>
   current?: number
@@ -67,6 +68,7 @@ export function useStepsForm <T> ({
   onFinishFailed,
   customSubmit,
   alert,
+  hasPrerequisiteStep = false,
   ...config
 }: UseStepsFormParam<T>) {
   const { $t } = useIntl()
@@ -85,6 +87,9 @@ export function useStepsForm <T> ({
   const props = formConfig.formProps as FormProps<T>
   const currentStep = steps[formConfig.current]
   const isSubmitting = submitting || customSubmitting
+  const isFirstStep = formConfig.current === 0
+  const isLastStep = formConfig.current === steps.length - 1
+  const isPrerequisiteStep = hasPrerequisiteStep && !editMode && isFirstStep
 
   function guardSubmit (callback: (done: () => void) => void) {
     setSubmitting(true)
@@ -208,7 +213,7 @@ export function useStepsForm <T> ({
   </UI.Steps>
 
   const labels = {
-    next: $t({ defaultMessage: 'Next' }),
+    next: isPrerequisiteStep ? $t({ defaultMessage: 'Start' }) : $t({ defaultMessage: 'Next' }),
     apply: $t({ defaultMessage: 'Apply' }),
     submit: $t({ defaultMessage: 'Add' }),
     pre: $t({ defaultMessage: 'Back' }),
@@ -225,7 +230,7 @@ export function useStepsForm <T> ({
       value={StepsFormActionButtonEnum.PRE}
       onClick={(e) => newConfig.gotoStep(formConfig.current - 1, e)}
       children={labels.pre}
-      hidden={formConfig.current === 0}
+      hidden={isFirstStep}
     />,
     // TODO:
     // - handle disable when validation not passed
@@ -237,7 +242,7 @@ export function useStepsForm <T> ({
       onClick={() => submit()}
       children={labels.apply}
     />,
-    submit: labels.submit.length === 0? null: formConfig.current < steps.length - 1
+    submit: labels.submit.length === 0 ? null : (!isLastStep
       ? <Button
         type='primary'
         value={StepsFormActionButtonEnum.NEXT}
@@ -252,8 +257,8 @@ export function useStepsForm <T> ({
         disabled={customSubmitLoading}
         onClick={() => submit()}
         children={labels.submit}
-      />,
-    customSubmit: customSubmit && (formConfig.current === steps.length - 1 || editMode)
+      />),
+    customSubmit: customSubmit && (isLastStep || editMode)
       ? <Button
         type='primary'
         value={StepsFormActionButtonEnum.SUBMIT}
@@ -296,7 +301,7 @@ export function useStepsForm <T> ({
 
   const currentStepEl = steps[newConfig.current]
 
-  const formLayout = steps.length > 1
+  const formLayout = steps.length > 1 && !isPrerequisiteStep
     ? <>
       <Col span={4} data-testid='steps-form-steps'>{stepsEls}</Col>
       <Col span={20} data-testid='steps-form-body'>{currentStepEl}</Col>
