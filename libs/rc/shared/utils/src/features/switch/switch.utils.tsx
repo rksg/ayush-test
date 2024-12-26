@@ -773,7 +773,7 @@ export const isFirmwareVersionAbove10020a = function (firmwareVersion?: string) 
   1. > 10020a
   */
   if (firmwareVersion) {
-    return (!isVerGEVer(firmwareVersion, '10020', false) || isVerGEVer(firmwareVersion, '10020a', false))
+    return isVerGEVer(firmwareVersion, '10020a', false)
   } else {
     return false
   }

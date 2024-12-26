@@ -81,7 +81,7 @@ export function SwitchPortTable (props: {
     enableAggregateStackMember: false,
     enableRbac: isSwitchRbacEnabled
   }, {
-    skip: !isSwitchRbacEnabled || !vid || !isSwitchFlexAuthEnabled || !isSwitchPortProfileEnabled
+    skip: !isSwitchRbacEnabled || !vid || (!isSwitchFlexAuthEnabled && !isSwitchPortProfileEnabled)
   })
 
   const vlanFilterOptions = Array.isArray(vlanList) ? vlanList.map(v => ({
