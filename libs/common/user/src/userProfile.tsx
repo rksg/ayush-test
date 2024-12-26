@@ -88,13 +88,15 @@ export const getShowWithoutRbacCheckKey = (id:string) => {
  * DO NOT use hasAccess. It will be private after RBAC feature release.
  */
 
-export function hasAccess (props?: { rbacOpsIds?: RbacOpsIds, roles?: Role[] }) {
+export function hasAccess (props?: { legacyKey?: string,
+  rbacOpsIds?: RbacOpsIds, roles?: Role[] }) {
   if (get('IS_MLISA_SA')) return true
   // measure to permit all undefined id for admins
   const { rbacOpsApiEnabled } = getUserProfile()
   if(rbacOpsApiEnabled) {
     return hasAllowedOperations(props?.rbacOpsIds || [])
   } else {
+    if(props?.legacyKey?.startsWith(SHOW_WITHOUT_RBAC_CHECK)) return true
     return hasRoles(props?.roles || [Role.PRIME_ADMIN, Role.ADMINISTRATOR, Role.DPSK_ADMIN])
   }
 }
@@ -131,8 +133,9 @@ export function filterByAccess <Item> (items: Item[]) {
     return items.filter(item => {
       const filterItem = item as FilterItemType
       const allowedOperations = filterItem?.rbacOpsId
+      const legacyKey = filterItem?.key
       const scopes = filterItem?.scopeKey || filterItem?.props?.scopeKey || []
-      return hasPermission({ scopes, rbacOpsIds: allowedOperations })
+      return hasPermission({ scopes, rbacOpsIds: allowedOperations, legacyKey })
     })
   }
 }
@@ -170,9 +173,10 @@ export function hasPermission (props?: {
     // R1
     scopes?: ScopeKeys,
     rbacOpsIds?: RbacOpsIds,
-    roles?: Role[]
+    roles?: Role[],
+    legacyKey?: string,
 }): boolean {
-  const { scopes = [], rbacOpsIds, permission, roles } = props || {}
+  const { scopes = [], rbacOpsIds, permission, roles, legacyKey } = props || {}
   if (get('IS_MLISA_SA')) {
     return !!(permission && permissions[permission])
   } else {
@@ -180,13 +184,13 @@ export function hasPermission (props?: {
     if(rbacOpsApiEnabled) {
       return hasAccess({ rbacOpsIds: rbacOpsIds })
     } if(!abacEnabled) {
-      return hasAccess({ rbacOpsIds: undefined, roles })
+      return hasAccess({ rbacOpsIds: undefined, roles, legacyKey })
     } else {
       if(isCustomRole){
         const isScopesValid = scopes.length > 0 ? hasScope(scopes): true
         return !!(isScopesValid)
       } else {
-        return hasAccess({ rbacOpsIds: rbacOpsIds, roles })
+        return hasAccess({ rbacOpsIds: rbacOpsIds, roles, legacyKey })
       }
     }
   }
@@ -288,7 +292,7 @@ export function WrapIfAccessible ({ id, wrapper, children }: {
   wrapper: (children: React.ReactElement) => React.ReactElement,
   children: React.ReactElement
 }) {
-  return hasAccess({ rbacOpsIds: [id] }) ? wrapper(children) : children
+  return hasAccess({ legacyKey: id }) ? wrapper(children) : children
 }
 WrapIfAccessible.defaultProps = { id: undefined }
 
