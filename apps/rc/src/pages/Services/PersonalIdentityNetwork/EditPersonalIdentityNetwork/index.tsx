@@ -4,22 +4,31 @@ import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, PageHeader }                                                          from '@acx-ui/components'
-import { useEdgePinActions }                                                           from '@acx-ui/rc/components'
-import { useGetEdgePinByIdQuery }                                                      from '@acx-ui/rc/services'
-import { ServiceOperation, ServiceType, getServiceListRoutePath, getServiceRoutePath } from '@acx-ui/rc/utils'
+import { Loader, PageHeader }                                                                                    from '@acx-ui/components'
+import { Features }                                                                                              from '@acx-ui/feature-toggle'
+import { useEdgePinActions, useIsEdgeFeatureReady }                                                              from '@acx-ui/rc/components'
+import { useGetEdgePinByIdQuery }                                                                                from '@acx-ui/rc/services'
+import { getServiceListRoutePath, getServiceRoutePath, PersonalIdentityNetworks, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 
-import { PersonalIdentityNetworkForm }             from '../PersonalIdentityNetworkForm'
-import { AccessSwitchForm }                        from '../PersonalIdentityNetworkForm/AccessSwitchForm'
-import { DistributionSwitchForm }                  from '../PersonalIdentityNetworkForm/DistributionSwitchForm'
-import { GeneralSettingsForm }                     from '../PersonalIdentityNetworkForm/GeneralSettingsForm'
+import {
+  AccessSwitchStep,
+  DistributionSwitchStep,
+  GeneralSettingsStep,
+  getStepsByTopologyType,
+  NetworkTopologyStep,
+  PersonalIdentityNetworkForm,
+  PrerequisiteStep,
+  SmartEdgeStep,
+  SummaryStep,
+  WirelessNetworkStep
+} from '../PersonalIdentityNetworkForm'
+import { ThreeTier, TwoTier, Wireless }            from '../PersonalIdentityNetworkForm/NetworkTopologyForm'
 import { PersonalIdentityNetworkFormDataProvider } from '../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext'
-import { SmartEdgeForm }                           from '../PersonalIdentityNetworkForm/SmartEdgeForm'
-import { WirelessNetworkForm }                     from '../PersonalIdentityNetworkForm/WirelessNetworkForm'
 
 const EditPersonalIdentityNetwork = () => {
 
   const { $t } = useIntl()
+  const isEdgePinEnhanceReady = useIsEdgeFeatureReady(Features.EDGE_PIN_ENHANCE_TOGGLE)
   const params = useParams()
   const [form] = Form.useForm()
   const { editPin } = useEdgePinActions()
@@ -53,28 +62,12 @@ const EditPersonalIdentityNetwork = () => {
     }
   }, [pinData])
 
-  const steps = [
-    {
-      title: $t({ defaultMessage: 'General Settings' }),
-      content: <GeneralSettingsForm editMode />
-    },
-    {
-      title: $t({ defaultMessage: 'RUCKUS Edge' }),
-      content: <SmartEdgeForm editMode />
-    },
-    {
-      title: $t({ defaultMessage: 'Wireless Network' }),
-      content: <WirelessNetworkForm />
-    },
-    {
-      title: $t({ defaultMessage: 'Dist. Switch' }),
-      content: <DistributionSwitchForm />
-    },
-    {
-      title: $t({ defaultMessage: 'Access Switch' }),
-      content: <AccessSwitchForm />
-    }
-  ]
+  const steps = useMemo(() => {
+    return isEdgePinEnhanceReady ?
+      getStepsByEditData(pinData):
+      // eslint-disable-next-line max-len
+      [GeneralSettingsStep, SmartEdgeStep, WirelessNetworkStep, DistributionSwitchStep, AccessSwitchStep]
+  }, [pinData])
 
   return (
     <>
@@ -101,6 +94,20 @@ const EditPersonalIdentityNetwork = () => {
       </PersonalIdentityNetworkFormDataProvider>
     </>
   )
+}
+
+const getStepsByEditData = (data?: PersonalIdentityNetworks) => {
+  let steps = getStepsByTopologyType(Wireless)
+  if(data?.distributionSwitchInfos?.length || data?.accessSwitchInfos?.length) {
+    if(data?.vxlanTunnelProfileId) {
+      steps = getStepsByTopologyType(ThreeTier)
+    } else {
+      steps = getStepsByTopologyType(TwoTier)
+    }
+  }
+  return steps.filter(step => step.title !== PrerequisiteStep.title &&
+    step.title !== NetworkTopologyStep.title &&
+    step.title !== SummaryStep.title)
 }
 
 export default EditPersonalIdentityNetwork
