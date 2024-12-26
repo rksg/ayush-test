@@ -16,7 +16,6 @@ import {
   SummaryStep,
   WirelessNetworkStep
 } from '../PersonalIdentityNetworkForm'
-import { NetworkTopologyType }                     from '../PersonalIdentityNetworkForm/NetworkTopologyForm'
 import { PersonalIdentityNetworkFormDataProvider } from '../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext'
 
 const AddPersonalIdentityNetwork = () => {
@@ -47,8 +46,7 @@ const AddPersonalIdentityNetwork = () => {
           form={form}
           steps={steps}
           initialValues={{
-            vxlanTunnelProfileId: tenantId,
-            networkTopologyType: NetworkTopologyType.Wireless
+            vxlanTunnelProfileId: tenantId
           }}
           onFinish={addPin}
         />
