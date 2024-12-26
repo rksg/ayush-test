@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 
 import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
@@ -8,28 +9,28 @@ import { useEdgePinActions }                                                    
 import { getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 
 import {
-  AccessSwitchStep,
-  DistributionSwitchStep,
-  GeneralSettingsStep,
+  getStepsByTopologyType,
   PersonalIdentityNetworkForm,
-  SmartEdgeStep,
-  SummaryStep,
-  WirelessNetworkStep
+  Wireless
 } from '../PersonalIdentityNetworkForm'
 import { PersonalIdentityNetworkFormDataProvider } from '../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext'
 
-const AddPersonalIdentityNetwork = () => {
+const AddPersonalIdentityNetworkEnhanced = () => {
 
   const { tenantId } = useParams()
   const { $t } = useIntl()
   const [form] = Form.useForm()
+
+  // eslint-disable-next-line max-len
+  const networkTopologyType = Form.useWatch('networkTopologyType', form) || form.getFieldValue('networkTopologyType')
   const { addPin } = useEdgePinActions()
 
   const tablePath = getServiceRoutePath(
     { type: ServiceType.PIN, oper: ServiceOperation.LIST })
 
-  // eslint-disable-next-line max-len
-  const steps = [GeneralSettingsStep, SmartEdgeStep, WirelessNetworkStep, DistributionSwitchStep, AccessSwitchStep, SummaryStep]
+  const steps = useMemo(() => {
+    return getStepsByTopologyType(networkTopologyType || Wireless)
+  }, [networkTopologyType])
 
   return (
     <>
@@ -43,10 +44,12 @@ const AddPersonalIdentityNetwork = () => {
       />
       <PersonalIdentityNetworkFormDataProvider>
         <PersonalIdentityNetworkForm
+          hasPrerequisite
           form={form}
           steps={steps}
           initialValues={{
-            vxlanTunnelProfileId: tenantId
+            vxlanTunnelProfileId: tenantId,
+            networkTopologyType: Wireless
           }}
           onFinish={addPin}
         />
@@ -55,4 +58,4 @@ const AddPersonalIdentityNetwork = () => {
   )
 }
 
-export default AddPersonalIdentityNetwork
+export default AddPersonalIdentityNetworkEnhanced
