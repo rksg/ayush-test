@@ -70,13 +70,13 @@ export function VenueAlarmWidget () {
     })
   })
 
-  const { data } = overviewV2Query
-
   useLoadTimeTracking({
     itemName: 'VenueAlarmWidget',
     states: [overviewV2Query],
     isEnabled: isMonitoringPageEnabled
   })
+
+  const { data } = overviewV2Query
 
   const onAlarmClick = () => {
     const event = new CustomEvent('showAlarmDrawer',

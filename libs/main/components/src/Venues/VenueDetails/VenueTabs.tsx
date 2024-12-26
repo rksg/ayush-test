@@ -1,3 +1,5 @@
+import { useContext } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                                                     from '@acx-ui/components'
@@ -12,6 +14,7 @@ import {
 import { useNavigate, useParams, useTenantLink }             from '@acx-ui/react-router-dom'
 import { RolesEnum }                                         from '@acx-ui/types'
 import { hasRaiPermission, hasRoles, useUserProfileContext } from '@acx-ui/user'
+import { LoadTimeContext }                                   from '@acx-ui/utils'
 
 function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const { $t } = useIntl()
@@ -21,6 +24,8 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const navigate = useNavigate()
   const { isTemplate } = useConfigTemplate()
   const enableProperty = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const { onPageTabChange } = useContext(LoadTimeContext)
+
   const { data: unitQuery } = useGetPropertyUnitListQuery({
     params: { venueId: params.venueId },
     payload: {
@@ -54,6 +59,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
     })
+    onPageTabChange?.()
   }
 
   const data = props.venueDetail

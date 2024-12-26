@@ -1,27 +1,48 @@
+import { useContext } from 'react'
+
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { PageHeader, Tabs, RangePicker }                  from '@acx-ui/components'
-import { useNavigate, useParams, useTenantLink }          from '@acx-ui/react-router-dom'
-import { goToNotFound }                                   from '@acx-ui/user'
-import { useDateFilter, LoadTimeProvider, TrackingPages } from '@acx-ui/utils'
+import { PageHeader, Tabs, RangePicker }                                   from '@acx-ui/components'
+import { useNavigate, useParams, useTenantLink }                           from '@acx-ui/react-router-dom'
+import { goToNotFound }                                                    from '@acx-ui/user'
+import { useDateFilter, LoadTimeContext, LoadTimeProvider, TrackingPages } from '@acx-ui/utils'
 
 import { Activities } from './Activities'
 import { AdminLogs }  from './AdminLogs'
 import { Events }     from './Events'
 
-function Timeline () {
+function TimelineTabs () {
   const { $t } = useIntl()
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const { activeTab } = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/timeline')
+  const { onPageTabChange } = useContext(LoadTimeContext)
 
-  const onTabChange = (tab: string) =>
+  const onTabChange = (tab: string) => {
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
     })
+    onPageTabChange?.()
+  }
+
+  return (
+    <Tabs activeKey={activeTab} onChange={onTabChange}>
+      <Tabs.TabPane key={'activities'}
+        tab={$t(defineMessage({ defaultMessage: 'Activities' }))} />
+      <Tabs.TabPane key={'events'}
+        tab={$t(defineMessage({ defaultMessage: 'Events' }))} />
+      <Tabs.TabPane key={'adminLogs'}
+        tab={$t(defineMessage({ defaultMessage: 'Admin Logs' }))} />
+    </Tabs>
+  )
+}
+
+function Timeline () {
+  const { $t } = useIntl()
+  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const { activeTab } = useParams()
 
   const tabs = {
     activities: () => <Activities />,
@@ -34,16 +55,7 @@ function Timeline () {
       <PageHeader
         title={$t({ defaultMessage: 'Timeline' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Administration' }) }]}
-        footer={
-          <Tabs activeKey={activeTab} onChange={onTabChange}>
-            <Tabs.TabPane key={'activities'}
-              tab={$t(defineMessage({ defaultMessage: 'Activities' }))} />
-            <Tabs.TabPane key={'events'}
-              tab={$t(defineMessage({ defaultMessage: 'Events' }))} />
-            <Tabs.TabPane key={'adminLogs'}
-              tab={$t(defineMessage({ defaultMessage: 'Admin Logs' }))} />
-          </Tabs>
-        }
+        footer={<TimelineTabs />}
         extra={[
           <RangePicker
             selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}

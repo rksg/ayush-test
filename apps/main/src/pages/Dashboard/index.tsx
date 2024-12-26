@@ -89,7 +89,6 @@ export const useDashBoardUpdatedFilter = () => {
 export default function Dashboard () {
   const { $t } = useIntl()
   const isEdgeEnabled = useIsEdgeReady()
-  const { dashboardFilters } = useDashBoardUpdatedFilter()
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
@@ -123,7 +122,7 @@ export default function Dashboard () {
 
   return (
     <DashboardFilterProvider>
-      <LoadTimeProvider page={TrackingPages.DASHBOARD} filters={dashboardFilters}>
+      <LoadTimeProvider page={TrackingPages.DASHBOARD}>
         <DashboardPageHeader />
         <CommonDashboardWidgets />
         <Divider dashed

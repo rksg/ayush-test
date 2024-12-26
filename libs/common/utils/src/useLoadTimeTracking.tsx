@@ -8,22 +8,16 @@ import moment                  from 'moment-timezone'
 
 import { AnalyticsFilter } from './types/analyticsFilter'
 
-const PENDO_TRACK_EVENT_NAME = 'testPageloadtime'
-const TIME_THRESHOLD_OF_COMPONENT = 10_000 //300_000
-const LOAD_TIME = {
-  NORMAL: 1_000,
-  SLOW: 7_000
-}
+const PENDO_TRACK_EVENT_NAME = 'testPageloadtime' // 'pageloadtime'
+const TIME_THRESHOLD_OF_COMPONENT = 300_000
+const LOAD_TIME = { NORMAL: 1_000, SLOW: 7_000 }
 
 interface QueryState {
-  isSuccess: boolean;
-  isLoading?: boolean;
-  isFetching?: boolean;
-  error?: Error | SerializedError | FetchBaseQueryError;
-  payload?: {
-    filters?: unknown
-    searchString?: string
-  }
+  isSuccess: boolean
+  isLoading?: boolean
+  isFetching?: boolean
+  isError?: boolean
+  error?: Error | SerializedError | FetchBaseQueryError
 }
 
 type LoadTimes = {
@@ -121,7 +115,7 @@ export const trackingItems = {
   }
 }
 
-const getLoadTimeStatus = (time: number): string => {
+export const getLoadTimeStatus = (time: number): string => {
   if (time < LOAD_TIME.NORMAL) return LoadTimeStatus.NORMAL
   if (time <= LOAD_TIME.SLOW) return LoadTimeStatus.SLOW
   return LoadTimeStatus.UNACCEPTABLE
@@ -143,7 +137,7 @@ const getLocalTime = () => {
   return moment().tz(localTimezone).format('YYYY-MM-DD HH:mm:ss')
 }
 
-const getPageType = (page: TrackingPages, subTab?: string) => {
+export const getPageType = (page: TrackingPages, subTab?: string) => {
   switch (page) {
     case TrackingPages.DASHBOARD:
       return 'Dashboard'
@@ -159,14 +153,20 @@ const getPageType = (page: TrackingPages, subTab?: string) => {
   }
 }
 
-const getTrackingItemsCount = (
+const getPageActiveTab = (page: TrackingPages) => {
+  if (page === TrackingPages.DASHBOARD) {
+    return localStorage.getItem('dashboard-tab') || 'ap'
+  } else if (page === TrackingPages.VENUES) {
+    return localStorage.getItem('venue-tab') || 'ap'
+  }
+  return ''
+}
+
+export const getTrackingItemsCount = (
   page: TrackingPages, subTab?: string, hasFilters?: boolean
 ) => {
   const getItemsForPage = <T extends TrackingPages>(pageKey: T, subTab?: string) => {
-    const activeTab = page === TrackingPages.DASHBOARD
-      ? (localStorage.getItem('dashboard-tab') || 'ap')
-      : (page === TrackingPages.VENUES ? (localStorage.getItem('venue-tab') || 'ap') : '')
-
+    const activeTab = getPageActiveTab(page)
     const getPageItems = () => {
       const pageItems = trackingItems[pageKey]
       if (!subTab) {
@@ -207,7 +207,7 @@ const getTrackingItemsCount = (
     case TrackingPages.WIRED_CLIENTS:
     case TrackingPages.VENUES:
     case TrackingPages.TIMELINE:
-      const items = getItemsForPage(page, subTab)
+      const items = getItemsForPage(page, subTab?.toUpperCase())
       const filteredItems = Object.keys(items).filter(key => {
         const item = items[key]
         return hasFilters ? item.hasFilter === true : true
@@ -224,13 +224,14 @@ export const LoadTimeContext
 export interface LoadTimeContextType {
   updateLoadTime: (name: string, time: number, isUnfulfilled: boolean) => void
   onPageFilterChange: (updatedFilter: Filters, isInit?: boolean) => void
+  onPageTabChange: () => void
   setSubTab: (name: string) => void
   pageLoadStart: number
-  isFiltersChanged?: boolean
+  isFiltersChanged: boolean
 }
 
 export const LoadTimeProvider = ({ page, children }: {
-  page: TrackingPages, children: React.ReactNode, filters?: Filters
+  page: TrackingPages, children: React.ReactNode
 }) => {
   const isLoadTimeSet = useRef(false)
   const [subTab, setSubTab] = useState('')
@@ -249,26 +250,28 @@ export const LoadTimeProvider = ({ page, children }: {
       !_.isEqual(updatedFilters, pageFilters)
     )
 
-    // eslint-disable-next-line no-console
-    console.log('## onPageFilterChange:', isInit, hasChanged, isLoadTimeSet.current)
     if (isInit) {
       setPageFilters(updatedFilters)
     } else if (hasChanged && isLoadTimeSet.current) {
       // eslint-disable-next-line no-console, max-len
-      console.log('=== filter changes & reset load time ===',
-        getCurrentTime(), updatedFilters, pageFilters
-      )
+      console.log('=== filter changes & reset load time ===', getCurrentTime(), updatedFilters, pageFilters)
       setPageLoadStart(getCurrentTime())
       setPageFilters(updatedFilters)
-
-      isLoadTimeSet.current = false
-      setLoadTimes({})
       setisFiltersChanged(true)
+      setLoadTimes({})
+      isLoadTimeSet.current = false
     }
   }
 
+  const onPageTabChange = () => {
+    setPageLoadStart(getCurrentTime())
+    setisFiltersChanged(false)
+    setLoadTimes({})
+    isLoadTimeSet.current = false
+  }
+
   useEffect(() => {
-    const trackingItemsCount = getTrackingItemsCount(page, subTab?.toUpperCase())
+    const trackingItemsCount = getTrackingItemsCount(page, subTab)
     const trackedCount = Object.keys(loadTimes).length
     const isLoadTimeUnset = !isLoadTimeSet.current
     const isAllItemTracked = trackedCount === trackingItemsCount
@@ -283,16 +286,16 @@ export const LoadTimeProvider = ({ page, children }: {
       const trackEventData = {
         time: localtime,
         page_title: subTab ? `${page}-${subTab}` : page,
-        page_type: getPageType(page),
+        page_type: getPageType(page, subTab),
         load_time_ms: totalLoadTime,
         load_time_text: getLoadTimeStatus(totalLoadTime),
         components_load_time_ms: formatLoadTimes(loadTimes),
-        filters: pageFilters
+        filters: pageFilters,
+        active_tab: getPageActiveTab(page)
       }
 
-      // eslint-disable-next-line no-console
-      console.log('All components loaded. Page load time:',
-        totalLoadTime, 'ms', loadTimeStatus)
+      // eslint-disable-next-line no-console, max-len
+      console.log('All components loaded. Page load time:', totalLoadTime, 'ms', loadTimeStatus)
       // eslint-disable-next-line no-console
       console.log('*** ', trackEventData)
 
@@ -310,7 +313,8 @@ export const LoadTimeProvider = ({ page, children }: {
 
   return (
     <LoadTimeContext.Provider value={{
-      updateLoadTime, onPageFilterChange, setSubTab, pageLoadStart, isFiltersChanged
+      updateLoadTime, onPageFilterChange, onPageTabChange,
+      setSubTab, pageLoadStart, isFiltersChanged
     }}>
       {children}
     </LoadTimeContext.Provider>
@@ -339,6 +343,7 @@ export function useLoadTimeTracking ({ itemName, states, isEnabled }: {
 
   const isMonitoringEnabled = !!updateLoadTime && isEnabled
   const status = states as QueryState[] ///
+  // const isError = Boolean(status?.some(state => state.isError))
   const isLoading = Boolean(status?.some(state => state.isLoading))
   const isFetching = isFiltersChanged && Boolean(status?.some(state => state.isFetching))
   const isAllSuccess = Boolean(status?.every(state => state.isSuccess))
@@ -395,6 +400,19 @@ export function useLoadTimeTracking ({ itemName, states, isEnabled }: {
       isEndTimeSet.current = true
     }
   }, [isLoading, isFetching])
+
+  // useEffect(() => {
+  //   const currentTime = getCurrentTime()
+  //   const start = isFetching ? pageLoadStart : startTime
+  //   const loadDuration = currentTime - start
+
+  //   if (startTime && !isEndTimeSet.current && isMonitoringEnabled) {
+  //     console.log('*** ', itemName)
+  //     setEndTime(currentTime)
+  //     setIsUnfulfilled(true)
+  //     isEndTimeSet.current = true
+  //   }
+  // }, [isError])
 
   useEffect(() => {
     const isSuccess = isAllSuccess || isAllFetchSuccess
