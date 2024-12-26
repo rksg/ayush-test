@@ -184,8 +184,7 @@ export function hasPermission (props?: {
     } else {
       if(isCustomRole){
         const isScopesValid = scopes.length > 0 ? hasScope(scopes): true
-        const isOperationsValid = rbacOpsIds ? hasAllowedOperations(rbacOpsIds): true
-        return !!(isScopesValid && isOperationsValid)
+        return !!(isScopesValid)
       } else {
         return hasAccess({ rbacOpsIds: rbacOpsIds, roles })
       }
@@ -248,6 +247,7 @@ export function hasCrossVenuesPermission (props?: Permission) {
   }
   const { abacEnabled, hasAllVenues, isCustomRole, rbacOpsApiEnabled } = getUserProfile()
   if(rbacOpsApiEnabled) return true
+
   if(!abacEnabled) return true
   if(props?.needGlobalPermission) {
     return !isCustomRole && hasAllVenues && hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR])
@@ -262,11 +262,11 @@ export function AuthRoute (props: {
     rbacOpsId?: RbacOpsIds,
     requireCrossVenuesPermission?: boolean | Permission
   }) {
-  const { scopes = [], children, requireCrossVenuesPermission, rbacOpsId } = props
+  const { scopes = [], children, requireCrossVenuesPermission, rbacOpsId = [] } = props
   const { rbacOpsApiEnabled } = getUserProfile()
 
   if (rbacOpsApiEnabled) {
-    return hasPermission({ rbacOpsIds: rbacOpsId }) ?
+    return hasAllowedOperations(rbacOpsId) ?
       children : <TenantNavigate replace to='/no-permissions' />
   }
 
