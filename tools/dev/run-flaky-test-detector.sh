@@ -2,10 +2,8 @@
 
 new_test_files=$(git diff --cached --name-only --diff-filter=AMRT | grep -E ".*\\.spec\\.(js|ts|tsx|jsx)$")
 
-echo $new_test_files
-
 if [ -z "$new_test_files" ]; then
-  echo "No new test files to lint."
+  echo "No new test files to test."
   exit 0
 fi
 

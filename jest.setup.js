@@ -206,7 +206,7 @@ HTMLCanvasElement.prototype.getContext = () => null
 
 const jestTimeout = process.env.CI_TEST_TIMEOUT || 20000
 jest.setTimeout(jestTimeout)
-console.log(`Jest timeout set to: ${jestTimeout} milliseconds`);
+console.log(`is process.env.CICD_BUILD ${process.env.CICD_BUILD} Jest timeout set to: ${jestTimeout} milliseconds ${process.env.CI_TEST_TIMEOUT}`)
 
 // Mock module because the xarrow component will get the error: '_c.getTotalLength is not a function' when testing
 jest.mock('react-xarrows', () => {
