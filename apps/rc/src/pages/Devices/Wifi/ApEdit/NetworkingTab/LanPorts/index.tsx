@@ -81,6 +81,8 @@ export function LanPorts () {
   const navigate = useNavigate()
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isResetLanPortEnabled = useIsSplitOn(Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
+  const isEthernetClientIsolationEnabled =
+    useIsSplitOn(Features.WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE)
 
 
   const {
@@ -107,7 +109,8 @@ export function LanPorts () {
     params: { tenantId, serialNumber, venueId },
     enableRbac: isUseWifiRbacApi,
     enableEthernetProfile: isEthernetPortProfileEnabled,
-    enableSoftGreOnEthernet: isSoftGREOnEthernetEnabled
+    enableSoftGreOnEthernet: isSoftGREOnEthernetEnabled,
+    enableClientIsolationOnEthernet: isEthernetClientIsolationEnabled
   })
   const { data: defaultLanPorts, isLoading: isDefaultPortsLoading } = useGetDefaultApLanPortsQuery({
     params: { venueId, serialNumber }
@@ -327,7 +330,7 @@ export function LanPorts () {
   const handleSoftGreDeactivate = (values: WifiApSetting) => {
     values.lan?.forEach(lanPort => {
       const originSoftGreId = lanData.find(l => l.portId === lanPort.portId)?.softGreProfileId
-      if (originSoftGreId && (!lanPort.enabled || !lanPort.softGreTunnelEnable)) {
+      if (originSoftGreId && (!lanPort.enabled || !lanPort.softGreEnabled)) {
         deactivateSoftGreProfileSettings({
           params: { venueId, serialNumber, portId: lanPort.portId, policyId: originSoftGreId }
         }).unwrap()
