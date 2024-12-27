@@ -38,10 +38,12 @@ const mockedTableResult = {
   appliedSwitchesInfo: []
 }
 
+const mockedAddProfile = jest.fn()
 
 beforeEach(() => {
   mockServer.use(
     rest.post(SwitchUrlsInfo.addSwitchPortProfile.url, (req, res, ctx) => {
+      mockedAddProfile()
       return res(ctx.json({ success: true }))
     }),
     rest.put(SwitchUrlsInfo.editSwitchPortProfile.url, (req, res, ctx) => {
@@ -64,7 +66,7 @@ afterEach(() => {
 })
 
 describe('SwitchPortProfileForm', () => {
-  const params = { tenantId: 'tenant-id', switchId: 'switch-id' }
+  const params = { tenantId: 'tenant-id', switchId: 'switch-id', portProfileId: 'profile1' }
   it('renders correctly', async () => {
     render(
       <Provider>
@@ -91,6 +93,49 @@ describe('SwitchPortProfileForm', () => {
 
     const saveButton = await screen.findByRole('button', { name: /Add/ })
     await userEvent.click(saveButton)
+    await waitFor(()=>{
+      expect(mockedAddProfile).toBeCalled()
+    })
+  })
+
+  it('edits the form successfully', async () => {
+    const mockedEditProfile = jest.fn()
+
+    mockServer.use(
+      rest.get(SwitchUrlsInfo.getSwitchPortProfileDetail.url, (req, res, ctx) => {
+        return res(ctx.json(mockedTableResult))
+      }),
+      rest.put(SwitchUrlsInfo.editSwitchPortProfile.url, (req, res, ctx) => {
+        mockedEditProfile()
+        return res(ctx.json({ success: true }))
+      })
+    )
+
+    render(
+      <Provider>
+        <SwitchPortProfileForm />
+      </Provider>,
+      {
+        route: { params,
+          path: '/:tenantId/t/policies/portProfile/switch/profiles/:portProfileId/edit' }
+      }
+    )
+
+    const profileName = await screen.findByLabelText(/Profile Name/)
+    await userEvent.clear(profileName)
+    await userEvent.type(profileName, 'Updated Profile')
+
+    const untaggedVlan = await screen.findByLabelText(/Untagged VLAN/)
+    await userEvent.clear(untaggedVlan)
+    await userEvent.type(untaggedVlan, '200')
+
+    const saveButton = await screen.findByRole('button', { name: /Apply/ })
+    await userEvent.click(saveButton)
+
+    // Wait for the edit API to be called
+    await waitFor(() => {
+      expect(mockedEditProfile).toBeCalled()
+    })
   })
 
   it('handles form validation errors', async () => {
@@ -124,7 +169,7 @@ describe('SwitchPortProfileForm', () => {
     expect(poeSwitch).toBeChecked()
 
     // MAC OUI and LLDP TLV should be enabled
-    const macOuiSelect = await screen.findByTestId('macOuis')
+    const macOuiSelect = await screen.findByRole('combobox', { name: 'MAC OUI' })
     expect(macOuiSelect).not.toBeDisabled()
 
     const lldpTlvTable = await screen.findByRole('table')
@@ -135,14 +180,12 @@ describe('SwitchPortProfileForm', () => {
     await userEvent.click(poeSwitch)
     expect(poeSwitch).not.toBeChecked()
 
-    // MAC OUI and LLDP TLV should now be disabled
-    // expect(macOuiSelect).toBeDisabled()
     await waitFor(() => {
       expect(lldpCheckbox[0]).toBeDisabled()
     })
   })
 
-  it.skip('handles MAC OUI selection', async () => {
+  it('handles MAC OUI selection', async () => {
     render(
       <Provider>
         <SwitchPortProfileForm />
@@ -152,19 +195,17 @@ describe('SwitchPortProfileForm', () => {
       }
     )
 
-    const macOuiSelect = await screen.findByLabelText(/MAC OUIs/)
+    const macOuiSelect = await screen.findByRole('combobox', { name: 'MAC OUI' })
     fireEvent.mouseDown(macOuiSelect)
 
-    await waitFor(() => {
-      expect(screen.getByText('aa:bb:cc')).toBeInTheDocument()
+    await waitFor(async () => {
+      expect(await screen.findByText('aa:bb:cc')).toBeInTheDocument()
     })
 
-    fireEvent.click(screen.getByText('aa:bb:cc'))
-
-    expect(macOuiSelect).toHaveTextContent('aa:bb:cc')
+    await userEvent.click(await screen.findByText('aa:bb:cc'))
   })
 
-  it.skip('handles LLDP TLV selection', async () => {
+  it('handles LLDP TLV selection', async () => {
     render(
       <Provider>
         <SwitchPortProfileForm />
@@ -175,14 +216,14 @@ describe('SwitchPortProfileForm', () => {
     )
 
     const lldpTlvTable = await screen.findByRole('table')
-    const checkbox = within(lldpTlvTable).getByRole('checkbox', { name: /Test System/ })
+    const checkbox = await within(lldpTlvTable).findAllByRole('checkbox')
 
-    fireEvent.click(checkbox)
+    await userEvent.click(checkbox[1])
 
-    expect(checkbox).toBeChecked()
+    expect(checkbox[1]).toBeChecked()
   })
 
-  it.skip('disables authentication options when IPSG is enabled', async () => {
+  it('disables authentication options when IPSG is enabled', async () => {
     render(
       <Provider>
         <SwitchPortProfileForm />
@@ -192,12 +233,14 @@ describe('SwitchPortProfileForm', () => {
       }
     )
 
-    const ipsgSwitch = await screen.findByRole('switch', { name: /IPSG/ })
-    fireEvent.click(ipsgSwitch)
+    const ipsgSwitch = await screen.findByTestId('ipsg')
+    await userEvent.click(ipsgSwitch)
 
-    const dot1xCheckbox = screen.getByLabelText(/802.1x/)
-    const macAuthCheckbox = screen.getByLabelText(/MAC Authentication/)
+    const ingressAclInput = await screen.findByTestId('ingressAcl')
+    const dot1xCheckbox = await screen.findByTestId('dot1x')
+    const macAuthCheckbox = await screen.findByTestId('macAuth')
 
+    expect(ingressAclInput).toBeDisabled()
     expect(dot1xCheckbox).toBeDisabled()
     expect(macAuthCheckbox).toBeDisabled()
   })

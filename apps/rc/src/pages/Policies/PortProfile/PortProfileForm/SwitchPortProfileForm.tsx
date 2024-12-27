@@ -502,6 +502,7 @@ export function SwitchPortProfileForm () {
                   title={intl.$t(SwitchPortProfileMessages.INGRESS_ACL_DISABLED)}
                   visible={ingressTooltipVisible}
                 ><Input
+                    data-testid='ingressAcl'
                     style={{ width: '280px' }}
                     disabled={true}
                     value={''}
@@ -566,7 +567,7 @@ export function SwitchPortProfileForm () {
                   title={intl.$t(SwitchPortProfileMessages.MACOUI_POE_DISABLED)}
                 >
                   <Select
-                    data-testid='macOuis'
+                    data-testid='macOuisSelectList'
                     mode='multiple'
                     showArrow
                     style={{ width: '280px' }}
@@ -574,7 +575,7 @@ export function SwitchPortProfileForm () {
                   />
                 </Tooltip> :
                 <Select
-                  data-testid='macOuis'
+                  data-testid='macOuisSelectList'
                   mode='multiple'
                   showArrow
                   options={macOuisOptions}
