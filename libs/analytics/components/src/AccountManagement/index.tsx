@@ -97,7 +97,7 @@ export function AccountManagement ({ tab }:{ tab: AccountManagementTabEnum }) {
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics')
   const tabs = useTabs()
-  const onTabChange = (tabKey: string) => {
+  const onTabClick = (tabKey: string) => {
     const tab = tabs.find(({ key }) => key === tabKey)
     if (tab?.url) {
       window.open(tab.url, '_blank')
@@ -114,7 +114,7 @@ export function AccountManagement ({ tab }:{ tab: AccountManagementTabEnum }) {
       title={$t({ defaultMessage: 'Account Management' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'Administration' }) }]}
       footer={
-        tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>
+        tabs.length > 1 && <Tabs activeKey={tab} onTabClick={onTabClick}>
           {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
         </Tabs>
       }
