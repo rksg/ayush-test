@@ -20,14 +20,12 @@ export enum NetworkTopologyType {
   ThreeTier = '3-Tier'
 }
 
-const compatibleSwitchList = ['ICX7550', 'ICX7650', 'ICX7850']
-
 export const NetworkTopologyForm = () => {
   const { $t } = useIntl()
-  const { switchList } = useContext(PersonalIdentityNetworkFormContext)
+  const { switchList, requiredSwitchModels } = useContext(PersonalIdentityNetworkFormContext)
   const [isCompatibilityDrawerVisible, setIsCompatibilityDrawerVisible] = useState(false)
   const existedSwitchModelList = switchList?.map(switchItem => switchItem.model)
-  const hasCompatibleSwitch = compatibleSwitchList.some(model =>
+  const hasCompatibleSwitch = requiredSwitchModels?.some(model =>
     existedSwitchModelList?.some(existedSwitchModel => existedSwitchModel?.startsWith(model)))
 
   return (

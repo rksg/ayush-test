@@ -21,14 +21,6 @@ describe('DistributionSwitchDrawer', () => {
   }
   const path = '/:tenantId/t/services/personalIdentityNetwork/:serviceId/edit'
 
-  beforeEach(() => {
-    mockServer.use(
-      rest.post(
-        SwitchUrlsInfo.getSwitchFeatureSets.url,
-        (_req, res, ctx) => res(ctx.json({}))
-      ))
-  })
-
   it('Should render successfully', async () => {
     const user = userEvent.setup()
     render(

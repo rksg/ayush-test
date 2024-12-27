@@ -146,13 +146,13 @@ const useVenueEdgeCompatibilitiesData = (props: EdgeCompatibilityDrawerProps, sk
             ...(venueId ? { venueIds: [venueId] } : undefined),
             ...(edgeId ? { edgeIds: [edgeId] } : undefined)
           } }
-        }).unwrap()
+        }, true).unwrap()
         // eslint-disable-next-line max-len
         edgeCompatibilitiesResponse = sdLanToApCompatibilityData(venueEdgeCompatibilities.compatibilities ?? [])
       } else if (type === EdgeCompatibilityType.ALONE) {
         const edgeFeatureSets = await getEdgeFeatureSets({
           payload: { filters: { featureNames } }
-        }).unwrap()
+        }, true).unwrap()
 
         edgeCompatibilitiesResponse = edgeFeatureSets.featureSets.map(item => {
           return {
