@@ -6,6 +6,7 @@ export const mockAccountingRadiusId = '__Accounting_Radius_ID_1__'
 export const mockAccountingRadiusId2 = '__Accounting_Radius_ID_2__'
 export const mockAccuntingRadiusName = '__Accounting_Radius_Name_1__'
 export const mockDefaultTrunkEthertnetPortProfileId = 'tenant-id_TRUNK'
+export const mockDefaultAccessEthertnetPortProfileId = 'tenant-id_ACCESS'
 export const mockTrunkEthertnetPortProfileId1 = 'mockTrunkEthertnetPortProfileId1'
 export const mockAccessEthertnetPortProfileId1 = 'mockAccessEthertnetPortProfileId1'
 export const trunkWithPortBasedName = 'Trunk with Port Based'
@@ -30,6 +31,16 @@ export const ethernetPortProfileList = [
     isDefault: true
   },
   {
+    id: mockDefaultAccessEthertnetPortProfileId,
+    tenantId: 'tenant-id',
+    name: 'Default Access',
+    type: 'ACCESS',
+    untagId: 1,
+    vlanMembers: '1',
+    authType: 'DISABLED',
+    isDefault: true
+  },
+  {
     id: mockTrunkEthertnetPortProfileId1,
     tenantId: 'tenant-id',
     name: trunkWithPortBasedName,
@@ -39,22 +50,28 @@ export const ethernetPortProfileList = [
     isDefault: false,
     authRadiusId: mockAuthRadiusId,
     authType: 'PORT_BASED_AUTHENTICATOR',
-    apSerialNumbers: [
-      '123456789042'
-    ],
+    apSerialNumbers: [],
     apActivations: []
   },
   {
     id: mockAccessEthertnetPortProfileId1,
     tenantId: 'tenant-id',
-    name: 'access Profile 1',
-    type: 'ACCESS',
+    name: 'trunk Profile 1',
+    type: 'TRUNK',
     untagId: 1,
     vlanMembers: '1',
     isDefault: false,
     authType: 'DISABLED',
-    apSerialNumbers: [],
-    apActivations: []
+    apSerialNumbers: [
+      '123456789042'
+    ],
+    apActivations: [
+      {
+        venueId: '123',
+        apSerialNumber: '123456789042',
+        portId: 1
+      }
+    ]
   }
 ]
 
@@ -144,7 +161,39 @@ export const selectedSinglePortModelCaps = {
     untagId: 1,
     vlanMembers: '1-4094',
     portId: '1',
+    enabled: true,
+    id: '1'
+  }]
+}
+
+export const portOverwrite = {
+  enabled: true,
+  overwriteUntagId: 1,
+  overwriteVlanMembers: '1-4094'
+}
+export const selectedApModel = {
+  lanPorts: [{
+    type: 'TRUNK',
+    untagId: 1,
+    vlanMembers: '1-4094',
+    portId: '1',
     enabled: true
+  }],
+  model: 'R370',
+  useVenueSettings: false
+}
+export const selectedApModelCaps = {
+  canSupportPoeMode: false,
+  canSupportPoeOut: false,
+  model: 'R370',
+  lanPorts: [{
+    defaultType: 'TRUNK',
+    type: 'TRUNK',
+    untagId: 1,
+    vlanMembers: '1-4094',
+    portId: '1',
+    enabled: true,
+    id: '1'
   }]
 }
 
