@@ -311,7 +311,7 @@ describe('filterByOperations', () => {
         key: getShowWithoutRbacCheckKey('test')
       }
     ])).toHaveLength(1)
-    
+
     setRole({ role: RolesEnum.PRIME_ADMIN, rbacOpsApiEnabled: true })
     expect(filterByAccess([
       {
