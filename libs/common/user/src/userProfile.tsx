@@ -267,7 +267,8 @@ export function AuthRoute (props: {
   const { rbacOpsApiEnabled } = getUserProfile()
 
   if (rbacOpsApiEnabled) {
-    return hasAllowedOperations(rbacOpsIds) ?
+    const shouldSkipRBACCheck = rbacOpsIds.length === 0
+    return (shouldSkipRBACCheck || hasAllowedOperations(rbacOpsIds)) ?
       children : <TenantNavigate replace to='/no-permissions' />
   }
 
