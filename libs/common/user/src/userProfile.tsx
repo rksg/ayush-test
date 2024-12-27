@@ -48,9 +48,9 @@ export const SHOW_WITHOUT_RBAC_CHECK = 'SHOW_WITHOUT_RBAC_CHECK'
 interface FilterItemType {
   scopeKey?: ScopeKeys,
   key?: string,
-  rbacOpsId?: RbacOpsIds
+  rbacOpsIds?: RbacOpsIds
   props?: {
-    rbacOpsId?: RbacOpsIds,
+    rbacOpsIds?: RbacOpsIds,
     scopeKey?: ScopeKeys,
     key?: string
   }
@@ -94,7 +94,7 @@ export function hasAccess (props?: { legacyKey?: string,
   // measure to permit all undefined id for admins
   const { rbacOpsApiEnabled } = getUserProfile()
   if(rbacOpsApiEnabled) {
-    return hasAllowedOperations(props?.rbacOpsIds || [])
+    return props?.rbacOpsIds ? hasAllowedOperations(props?.rbacOpsIds) : true
   } else {
     if(props?.legacyKey?.startsWith(SHOW_WITHOUT_RBAC_CHECK)) return true
     return hasRoles(props?.roles || [Role.PRIME_ADMIN, Role.ADMINISTRATOR, Role.DPSK_ADMIN])
@@ -132,7 +132,7 @@ export function filterByAccess <Item> (items: Item[]) {
   } else {
     return items.filter(item => {
       const filterItem = item as FilterItemType
-      const allowedOperations = filterItem?.rbacOpsId
+      const allowedOperations = filterItem?.rbacOpsIds
       const legacyKey = filterItem?.key
       const scopes = filterItem?.scopeKey || filterItem?.props?.scopeKey || []
       return hasPermission({ scopes, rbacOpsIds: allowedOperations, legacyKey })
@@ -148,7 +148,7 @@ export function filterByOperations <Item> (items: Item[]) {
 
   return items.filter(item => {
     const filterItem = item as FilterItemType
-    const allowedOperations = filterItem?.rbacOpsId
+    const allowedOperations = filterItem?.rbacOpsIds
     return allowedOperations ? hasAllowedOperations(allowedOperations) : true
   })
 }
@@ -263,14 +263,14 @@ export function hasCrossVenuesPermission (props?: Permission) {
 export function AuthRoute (props: {
     scopes?: ScopeKeys,
     children: ReactElement,
-    rbacOpsId?: RbacOpsIds,
+    rbacOpsIds?: RbacOpsIds,
     requireCrossVenuesPermission?: boolean | Permission
   }) {
-  const { scopes = [], children, requireCrossVenuesPermission, rbacOpsId = [] } = props
+  const { scopes = [], children, requireCrossVenuesPermission, rbacOpsIds = [] } = props
   const { rbacOpsApiEnabled } = getUserProfile()
 
   if (rbacOpsApiEnabled) {
-    return hasAllowedOperations(rbacOpsId) ?
+    return hasAllowedOperations(rbacOpsIds) ?
       children : <TenantNavigate replace to='/no-permissions' />
   }
 

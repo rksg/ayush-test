@@ -176,7 +176,7 @@ export type RecordWithChildren <RecordType> = RecordType & {
 export type TableAction = {
   key?: string
   scopeKey?: ScopeKeys
-  rbacOpsId?: RbacOpsIds
+  rbacOpsIds?: RbacOpsIds
   allowedOperationUrl?: string
   label: string
   disabled?: boolean
@@ -188,7 +188,7 @@ export type TableAction = {
 export type TableRowAction<RecordType> = {
   key?: string
   scopeKey?: ScopeKeys
-  rbacOpsId?: RbacOpsIds
+  rbacOpsIds?: RbacOpsIds
   roles?: RolesEnum[]
   allowedOperationUrl?: string
   label: string

@@ -75,7 +75,7 @@ export const EdgeDetailsPageHeader = () => {
     label: string,
     key: string,
     showupstatus?: EdgeStatusEnum[],
-    rbacOpsId?: RbacOpsIds
+    rbacOpsIds?: RbacOpsIds
   } []
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
@@ -107,7 +107,7 @@ export const EdgeDetailsPageHeader = () => {
         menuConfig.filter(item =>
           item.showupstatus?.includes(status) && hasPermission({
             scopes: item.scopeKey,
-            rbacOpsIds: item.rbacOpsId
+            rbacOpsIds: item.rbacOpsIds
           })
         ).map(({ showupstatus, scopeKey, ...itemFields }) => {
           return { ...itemFields }

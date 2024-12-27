@@ -11,10 +11,10 @@ import * as UI from './styledComponents'
 export interface ButtonProps extends Omit<AntButtonProps, 'type'> {
   type?: 'default' | 'primary' | 'link'
   scopeKey?: ScopeKeys
-  rbacOpsId?: RbacOpsIds
+  rbacOpsIds?: RbacOpsIds
 }
 
-export function Button ({ type = 'default', scopeKey, rbacOpsId, ...props }: ButtonProps) {
+export function Button ({ type = 'default', scopeKey, rbacOpsIds, ...props }: ButtonProps) {
   const ref = useRef<HTMLButtonElement>(null)
   const handleOnMouseUp = useCallback(() => {
     ref.current?.blur()
