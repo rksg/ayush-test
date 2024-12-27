@@ -204,9 +204,9 @@ jest.mock('@acx-ui/icons-new', ()=> {
 // For Error: Not implemented: HTMLCanvasElement.prototype.getContext (without installing the canvas npm package)
 HTMLCanvasElement.prototype.getContext = () => null
 
+// Set local test timeout to 20s, CI build timeout to 40s
 const jestTimeout = process.env.CICD_BUILD ? 40000 : 20000
 jest.setTimeout(jestTimeout)
-console.log(`is process.env.CICD_BUILD ${process.env.CICD_BUILD} Jest timeout set to: ${jestTimeout} milliseconds`)
 
 // Mock module because the xarrow component will get the error: '_c.getTotalLength is not a function' when testing
 jest.mock('react-xarrows', () => {
