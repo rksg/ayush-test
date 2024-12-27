@@ -36,7 +36,10 @@ function AccessControlTabs () {
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedAccessControlProfileListQuery,
-    defaultPayload,
+    defaultPayload: {
+      ...defaultPayload,
+      noDetails: true
+    },
     enableRbac
   })
 
