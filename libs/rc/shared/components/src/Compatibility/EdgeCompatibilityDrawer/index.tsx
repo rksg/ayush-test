@@ -146,7 +146,7 @@ const useVenueEdgeCompatibilitiesData = (props: EdgeCompatibilityDrawerProps, sk
             ...(venueId ? { venueIds: [venueId] } : undefined),
             ...(edgeId ? { edgeIds: [edgeId] } : undefined)
           } }
-        }, true).unwrap()
+        }).unwrap()
         // eslint-disable-next-line max-len
         edgeCompatibilitiesResponse = sdLanToApCompatibilityData(venueEdgeCompatibilities.compatibilities ?? [])
       } else if (type === EdgeCompatibilityType.ALONE) {

@@ -179,7 +179,7 @@ export const useEdgeSvcsPcysCompatibilitiesData = (props: {
     try {
       setIsInitializing(true)
 
-      const reqs: unknown[] = [getEdgeSvcPcyCompatibilities({ payload: { filters: { serviceIds: ids } } }, true).unwrap()]
+      const reqs: unknown[] = [getEdgeSvcPcyCompatibilities({ payload: { filters: { serviceIds: ids } } }).unwrap()]
       if (apCompatibilityFn) {
         reqs.push(apCompatibilityFn[0]({ payload: { filters: { serviceIds: ids } } }).unwrap())
       }

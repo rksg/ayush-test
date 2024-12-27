@@ -332,7 +332,7 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
   const isDpskLoading = !!personaGroupData?.dpskPoolId && isNil(dpskData)
 
   const { requiredFw_DS, requiredFw_AS, requiredSwitchModels } = useGetSwitchFeatureSetsQuery({
-    payload: { filter: { field: 'GROUP', values: ['PIN'] } }
+    payload: { filter: { featureNames: { field: 'GROUP', values: ['PIN'] } } }
   }, {
     selectFromResult: ({ data }) => {
       const reqs = data?.featureSets?.find(item => item.featureName === 'PIN_DS')?.requirements
