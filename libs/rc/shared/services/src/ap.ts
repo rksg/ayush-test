@@ -4,7 +4,7 @@ import { MaybePromise }                                       from '@reduxjs/too
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { reduce, uniq }                                       from 'lodash'
 
-import { Filter }   from '@acx-ui/components'
+import { Filter }                                 from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -89,7 +89,8 @@ import {
   CompatibilityResponse,
   EthernetPortProfileViewData,
   SoftGreUrls,
-  SoftGreViewData
+  SoftGreViewData,
+  ClientIsolationUrls, ClientIsolationViewModel
 } from '@acx-ui/rc/utils'
 import { baseApApi }      from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
@@ -921,7 +922,8 @@ export const apApi = baseApApi.injectEndpoints({
       async queryFn ({
         params, enableRbac,
         enableEthernetProfile,
-        enableSoftGreOnEthernet
+        enableSoftGreOnEthernet,
+        enableClientIsolationOnEthernet
       },
       _queryApi, _extraOptions, fetchWithBQ) {
         if (!params?.serialNumber) {
@@ -1002,6 +1004,32 @@ export const apApi = baseApApi.injectEndpoints({
               }
             }
           }
+        }
+
+        if (enableClientIsolationOnEthernet) {
+          const clientIsolationReq = {
+            ...createHttpRequest(ClientIsolationUrls.queryClientIsolation),
+            body: JSON.stringify({
+              filters: {
+                'apActivations.apSerialNumber': [params.serialNumber]
+              },
+              pageSize: 1000
+            })
+          }
+
+          const clientIsolationListQuery = await fetchWithBQ(clientIsolationReq)
+          const clientIsolationList = clientIsolationListQuery.data as TableResult<ClientIsolationViewModel>
+          if (clientIsolationList.data && apLanPorts.lanPorts) {
+            for (let clientIsolation of clientIsolationList.data) {
+              const port = clientIsolation.apActivations?.find(ap => ap.apSerialNumber === params.serialNumber)
+              let targetPort = port && apLanPorts.lanPorts
+                ?.find(l => l.portId?.toString() === port.portId?.toString())
+              if (targetPort) {
+                targetPort.clientIsolationProfileId = clientIsolation.id
+              }
+            }
+          }
+
         }
 
         return apLanPortSettings.data
