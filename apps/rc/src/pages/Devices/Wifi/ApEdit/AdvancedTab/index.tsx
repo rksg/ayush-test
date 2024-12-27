@@ -12,12 +12,16 @@ import { ApDataContext, ApEditContext } from '..'
 
 import { ApLed }                from './ApLed'
 import { ApManagementVlanForm } from './ApManagementVlan'
+import { ApUsb }                from './ApUsb'
 import { BssColoring }          from './BssColoring'
 
 
 export interface ApAdvancedContext {
   updateApLed?: (data?: unknown) => void | Promise<void>
   discardApLedChanges?: (data?: unknown) => void | Promise<void>
+
+  updateApUsb?: (data?: unknown) => void | Promise<void>
+  discardApUsbChanges?: (data?: unknown) => void | Promise<void>
 
   updateBssColoring?: (data?: unknown) => void | Promise<void>
   discardBssColoringChanges?: (data?: unknown) => void | Promise<void>
@@ -43,8 +47,11 @@ export function AdvancedTab () {
   const { apCapabilities } = useContext(ApDataContext)
 
   const supportApMgmtVlan = useIsSplitOn(Features.AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE)
+  const isAllowUseApUsbSupport = useIsSplitOn(Features.AP_USB_PORT_SUPPORT_TOGGLE)
+  const isApModelSupportUsb = apCapabilities?.usbPowerEnable
 
   const apLedTitle = $t({ defaultMessage: 'Access Point LEDs' })
+  const apUsbTitle = $t({ defaultMessage: 'Access Point USB Support' })
   const bssColoringTitle = $t({ defaultMessage: 'BSS Coloring' })
   const apMgmtVlanTitle = $t({ defaultMessage: 'Access Point Management VLAN' })
 
@@ -61,6 +68,19 @@ export function AdvancedTab () {
         </>
       )
     },
+    ...((isAllowUseApUsbSupport && isApModelSupportUsb)? [{
+      title: apUsbTitle,
+      key: 'apUsb',
+      content: (
+        <>
+          <StepsFormLegacy.SectionTitle id='ap-usb'>
+            { apUsbTitle }
+          </StepsFormLegacy.SectionTitle>
+          <ApUsb />
+        </>
+      )
+
+    }] : []),
     ...(apCapabilities?.support11AX? [{
       title: bssColoringTitle,
       key: 'bssColoring',
@@ -100,6 +120,8 @@ export function AdvancedTab () {
       const newData = { ...editAdvancedContextData }
       delete newData.updateApLed
       delete newData.discardApLedChanges
+      delete newData.updateApUsb
+      delete newData.discardApUsbChanges
       delete newData.updateBssColoring
       delete newData.discardBssColoringChanges
       delete newData.updateApManagementVlan
@@ -112,6 +134,7 @@ export function AdvancedTab () {
 
     try {
       await editAdvancedContextData.updateApLed?.()
+      await editAdvancedContextData.updateApUsb?.()
       await editAdvancedContextData.updateBssColoring?.()
       await editAdvancedContextData.updateApManagementVlan?.()
 
@@ -131,6 +154,7 @@ export function AdvancedTab () {
   const handleDiscardChanges = async () => {
     try {
       await editAdvancedContextData.discardApLedChanges?.()
+      await editAdvancedContextData.discardApUsbChanges?.()
       await editAdvancedContextData.discardBssColoringChanges?.()
       await editAdvancedContextData.discardApManagementVlan?.()
 
