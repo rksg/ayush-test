@@ -82,8 +82,8 @@ describe.skip('Test useApActions', () => {
         DHCPUrls.queryDhcpProfiles.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
-      rest.get(
-        WifiRbacUrlsInfo.getDhcpAp.url,
+      rest.post(
+        WifiRbacUrlsInfo.getDhcpAps.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.post(
@@ -178,9 +178,9 @@ describe.skip('Test useApActions', () => {
         DHCPUrls.queryDhcpProfiles.url,
         (req, res, ctx) => res(ctx.json(dhcpList))
       ),
-      rest.get(
-        WifiRbacUrlsInfo.getDhcpAp.url,
-        (req, res, ctx) => res(ctx.json(dhcpApSetting))
+      rest.post(
+        WifiRbacUrlsInfo.getDhcpAps.url,
+        (req, res, ctx) => res(ctx.json({ data: [dhcpApSetting] }))
       ),
       rest.get(
         DHCPUrls.getDHCProfileDetail.url,

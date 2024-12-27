@@ -2,7 +2,7 @@
 import { QueryReturnValue }                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { MaybePromise }                                       from '@reduxjs/toolkit/dist/query/tsHelpers'
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
-import { reduce }                                             from 'lodash'
+import { reduce, uniq }                                       from 'lodash'
 
 import { Filter }   from '@acx-ui/components'
 import {
@@ -577,20 +577,26 @@ export const apApi = baseApApi.injectEndpoints({
 
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
         const newPayload = payload as { venueId: string, serialNumber: string }[]
+        const venueIds = uniq(newPayload.map(item => item.venueId))
+
         const venueDhcpMap = await getVenueDhcpRelation(newPayload, fetchWithBQ)
         const result = [] as DhcpApInfo[]
         const cacheDhcpProfileData: { [dhcpId: string]: DHCPSaveData } = {}
+
+        const venueDhcpApsReq = createHttpRequest(WifiRbacUrlsInfo.getDhcpAps, undefined, customHeaders)
+        const venueDhcpApsRes = await fetchWithBQ({
+          ...venueDhcpApsReq,
+          body: JSON.stringify({ venueIds })
+        })
+        const venueDhcpApsData = ((venueDhcpApsRes?.data) ?? { data: [] }) as { data: NewDhcpAp[] }
+        const venueDhcpAps = (venueDhcpApsData.data ?? []) as NewDhcpAp[]
+
         for (let item of newPayload) {
-          const dhcpApReq = createHttpRequest(
-            WifiRbacUrlsInfo.getDhcpAp,
-            { venueId: item.venueId, serialNumber: item.serialNumber },
-            customHeaders
-          )
-          const dhcpApRes = await fetchWithBQ(dhcpApReq)
-          const dhcpAp = dhcpApRes.data as NewDhcpAp
+          const { venueId, serialNumber } = item
+          const dhcpAp = venueDhcpAps.find( ap => ap.serialNumber === serialNumber)
           if (!dhcpAp) continue
 
-          const dhcpId = venueDhcpMap[item.venueId]
+          const dhcpId = venueDhcpMap[venueId]
           await setDhcpProfileToCache(cacheDhcpProfileData, fetchWithBQ, dhcpId)
           result.push({
             ...dhcpAp,
@@ -1794,12 +1800,12 @@ const getVenueDhcpRelation = async (
 ) => {
   const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
   const newPayload = payload as { venueId: string, serialNumber: string }[]
+  const venueIds = uniq(newPayload.map(item => item.venueId))
   const dhcpListPayload = {
     fields: ['id', 'venueIds'],
-    filters: {
-      venueIds: newPayload.map(item => item.venueId)
-    }
+    filters: { venueIds }
   }
+
   const dhcpListReq = createHttpRequest(DHCPUrls.queryDhcpProfiles, undefined, customHeaders)
   const dhcpListRes = await fetchWithBQ({ ...dhcpListReq, body: JSON.stringify(dhcpListPayload) })
   const dhcpList = (dhcpListRes.data as TableResult<DHCPSaveData>).data
