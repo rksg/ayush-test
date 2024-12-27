@@ -8,7 +8,8 @@ import {
   userLogout,
   ErrorMessageType,
   errorMessage,
-  formatGraphQLErrors
+  formatGraphQLErrors,
+  isGraphQLError
 } from '@acx-ui/utils'
 
 let isModalShown = false
@@ -64,7 +65,7 @@ export function getErrorContent (action: AnyAction) : ErrorDetailsProps {
   const response = queryMeta?.response
   let errors
   errors = action
-  if (action.type?.includes('data-api') && response && 'errors' in response) {
+  if (isGraphQLError(action.type, response)) {
     errors = formatGraphQLErrors({ ...response, errors: response.errors! })
   } else if (typeof action.payload === 'string') {
     errors = action.payload

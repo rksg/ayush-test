@@ -265,11 +265,11 @@ const setAPRadioInfo = (
   row.channelU50 = get(radios.radioU50, 'channel') || undefined
   row.channel60 = get(radios.radio60, 'channel') || undefined
 
-  row.actualTxPower24 = get(radios.radio24, 'actualTxPower') || undefined
-  row.actualTxPower50 = get(radios.radio50, 'actualTxPower') || undefined
-  row.actualTxPowerL50 = get(radios.radioL50, 'actualTxPower') || undefined
-  row.actualTxPowerU50 = get(radios.radioU50, 'actualTxPower') || undefined
-  row.actualTxPower60 = get(radios.radio60, 'actualTxPower') || undefined
+  row.actualTxPower24 = get(radios.radio24, 'actualTxPower')
+  row.actualTxPower50 = get(radios.radio50, 'actualTxPower')
+  row.actualTxPowerL50 = get(radios.radioL50, 'actualTxPower')
+  row.actualTxPowerU50 = get(radios.radioU50, 'actualTxPower')
+  row.actualTxPower60 = get(radios.radio60, 'actualTxPower')
 
   if (channelColumnShow) {
     if (!channelColumnShow.channel24 && radios.radio24) channelColumnShow.channel24 = true
@@ -625,7 +625,8 @@ const parsingApFromNewType = (rbacAp: Record<string, unknown>, result: APExtende
                   Rssi: item.rssi,
                   band: item.band,
                   channel: item.channel,
-                  txPower: item.transmitterPower
+                  txPower: item.transmitterPower,
+                  actualTxPower: item.actualTxPower
                 }
               default:
                 return undefined
