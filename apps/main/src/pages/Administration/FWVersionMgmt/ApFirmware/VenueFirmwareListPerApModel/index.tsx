@@ -27,8 +27,8 @@ import {
   useGetVenueApModelFirmwareListQuery, useGetVenueApModelFirmwareSchedulesListQuery,
   useSkipVenueSchedulesPerApModelMutation
 } from '@acx-ui/rc/services'
-import { FirmwareType, FirmwareVenuePerApModel } from '@acx-ui/rc/utils'
-import { RolesEnum, WifiScopes }                 from '@acx-ui/types'
+import { dateSort, defaultSort, FirmwareType, FirmwareVenuePerApModel, sortProp, SortResult } from '@acx-ui/rc/utils'
+import { RolesEnum, WifiScopes }                                                              from '@acx-ui/types'
 import {
   filterByAccess,
   hasPermission,
@@ -219,7 +219,7 @@ function useColumns () {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'name',
       dataIndex: 'name',
-      sorter: true,
+      sorter: { compare: sortProp('name', defaultSort) },
       defaultSortOrder: 'ascend',
       searchable: true
     },
@@ -227,6 +227,11 @@ function useColumns () {
       title: $t({ defaultMessage: 'Current Firmware' }),
       key: 'currentApFirmwares',
       dataIndex: 'currentApFirmwares',
+      sorter: { compare: (a, b) => {
+        const aFirmware = a.currentApFirmwares?.[0]?.firmware || '0'
+        const bFirmware = b.currentApFirmwares?.[0]?.firmware || '0'
+        return compareVersions(aFirmware, bFirmware)
+      } },
       filterable: versionFilterOptions ?? false,
       filterMultiple: false,
       filterKey: 'currentApFirmwares.firmware',
@@ -240,7 +245,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Last Update' }),
       key: 'lastApFirmwareUpdate',
       dataIndex: 'lastApFirmwareUpdate',
-      sorter: true,
+      sorter: { compare: sortProp('lastApFirmwareUpdate', dateSort) },
       render: function (_, row) {
         return toUserDate(row.lastApFirmwareUpdate || noDataDisplay)
       }
@@ -249,7 +254,12 @@ function useColumns () {
       title: $t({ defaultMessage: 'Status' }),
       key: 'isApFirmwareUpToDate',
       dataIndex: 'isApFirmwareUpToDate',
-      sorter: true,
+      sorter: { compare: (a, b) => {
+        const aDesc = getApFirmwareStatusDescription(a)
+        const bDesc = getApFirmwareStatusDescription(b)
+        // eslint-disable-next-line max-len
+        return String(aDesc).localeCompare(String(bDesc), getIntl().locale, { sensitivity: 'base' }) as SortResult
+      } },
       render: function (_, row) {
         return getApFirmwareStatusDescription(row)
       }
@@ -258,7 +268,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Next Update Schedule' }),
       key: 'nextApFirmwareSchedules',
       dataIndex: 'nextApFirmwareSchedules',
-      sorter: true,
+      sorter: { compare: sortProp('nextApFirmwareSchedules', dateSort) },
       defaultSortOrder: 'ascend',
       render: function (_, row) {
         const schedules = getApSchedules(row.nextApFirmwareSchedules)
