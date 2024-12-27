@@ -28,7 +28,7 @@ describe('ChannelDistributionHeatMap', () => {
     expect(await screen.findByText('Switch Model')).toBeVisible()
     expect(await screen.findByText('ICX8200-24P')).toBeVisible()
 
-    expect(await screen.findByText('Switch Mac')).toBeVisible()
+    expect(await screen.findByText('Switch MAC')).toBeVisible()
     expect(await screen.findByText('38:45:3B:3C:F1:20')).toBeVisible()
 
     expect(await screen.findByText('Switch Firmware Version')).toBeVisible()
@@ -55,7 +55,7 @@ describe('ChannelDistributionHeatMap', () => {
 
     expect(await screen.findByText('Switch Name')).toBeVisible()
     expect(await screen.findByText('Switch Model')).toBeVisible()
-    expect(await screen.findByText('Switch Mac')).toBeVisible()
+    expect(await screen.findByText('Switch MAC')).toBeVisible()
     expect(await screen.findByText('Switch Firmware Version')).toBeVisible()
     expect(await screen.findByText('Memory Utilization')).toBeVisible()
     expect(await screen.findByText('Number of APs')).toBeVisible()

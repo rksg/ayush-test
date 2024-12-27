@@ -8,7 +8,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { formatter }              from '@acx-ui/formatter'
 
 import {
-  Intent,
+  IntentDetail,
   IntentKPIConfig,
   intentState,
   useIntentDetailsQuery,
@@ -19,11 +19,11 @@ import { isDataRetained } from './utils'
 export type IntentConfigurationConfig = {
   label: MessageDescriptor
   valueFormatter?: ReturnType<typeof formatter>
-  tooltip?: (intent: Intent) => MessageDescriptor
+  tooltip?: (intent: IntentDetail) => MessageDescriptor
 }
 
 type IIntentContext = {
-  intent: Intent
+  intent: IntentDetail
   configuration?: IntentConfigurationConfig
   kpis: IntentKPIConfig[]
   isDataRetained: boolean
@@ -45,7 +45,7 @@ export function createIntentContextProvider (
 ) {
   const Component: React.FC = function () {
     const params = useIntentParams()
-    const isStatusTrailTooltipEnabled = useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE)
+    const loadStatusMetadata = useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE)
 
     const spec = specs[params.code]
     const kpis = spec?.kpis
@@ -53,8 +53,7 @@ export function createIntentContextProvider (
       // which its value is primitive value type
       // to prevent RTK Query unable to use param as cache key
       .map(kpi => _.pick(kpi, ['key', 'deltaSign']))
-    const query = useIntentDetailsQuery(
-      { ...params, kpis, isStatusTrailTooltipEnabled }, { skip: !spec })
+    const query = useIntentDetailsQuery({ ...params, kpis, loadStatusMetadata }, { skip: !spec })
 
     if (!spec) return null // no matching spec
     if (query.isSuccess && !query.data) return null // 404
@@ -62,7 +61,7 @@ export function createIntentContextProvider (
     const isDetectError = query.isError && !!_.pick(query.error, ['data'])
 
     const intent = isDetectError ?
-      (_.pick(query.error, ['data']) as { data: Intent }).data
+      (_.pick(query.error, ['data']) as { data: IntentDetail }).data
       : query.data
 
     const context: IIntentContext = {

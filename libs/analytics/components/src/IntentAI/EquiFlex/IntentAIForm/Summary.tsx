@@ -11,7 +11,7 @@ import { richTextFormatValues } from '../../common/richTextFormatValues'
 import { ScheduleTiming }       from '../../common/ScheduleTiming'
 import { useIntentContext }     from '../../IntentContext'
 import { getGraphKPIs }         from '../../useIntentDetailsQuery'
-import { Intent }               from '../../useIntentDetailsQuery'
+import { IntentDetail }         from '../../useIntentDetailsQuery'
 
 import type { Wlan } from './WlanSelection'
 
@@ -19,7 +19,7 @@ import type { Wlan } from './WlanSelection'
 export function Summary () {
   const { $t } = useIntl()
   const { intent, kpis } = useIntentContext()
-  const { form } = useStepFormContext<Intent>()
+  const { form } = useStepFormContext<IntentDetail>()
   const wlans = form.getFieldValue('wlans') as Wlan[]
   const isEnabled = form.getFieldValue('preferences').enable
   return <Row gutter={20}>

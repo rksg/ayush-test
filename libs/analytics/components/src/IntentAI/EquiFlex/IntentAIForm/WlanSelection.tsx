@@ -10,7 +10,7 @@ import { RadioTypeEnum }                      from '@acx-ui/rc/utils'
 
 import { useIntentContext }    from '../../IntentContext'
 import { useIntentWlansQuery } from '../../services'
-import { Intent }              from '../../useIntentDetailsQuery'
+import { IntentDetail }        from '../../useIntentDetailsQuery'
 
 export type Wlan = {
   name: string
@@ -27,7 +27,7 @@ const codeToRadio: Record<string, RadioTypeEnum> = {
 export default function WlanSelection ({ disabled }: { disabled: boolean }) {
   const isMlisa = Boolean(get('IS_MLISA_SA'))
   const { intent } = useIntentContext()
-  const { form } = useStepFormContext<Intent>()
+  const { form } = useStepFormContext<IntentDetail>()
   const { root, code, sliceId } = intent
   const { $t } = useIntl()
   const savedWlans = form.getFieldValue('wlans') as Wlan[]

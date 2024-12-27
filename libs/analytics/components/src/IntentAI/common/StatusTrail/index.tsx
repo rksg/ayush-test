@@ -2,6 +2,7 @@ import { Card, Tooltip }             from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
+import { Metadata }         from '../../config'
 import { useIntentContext } from '../../IntentContext'
 import { getStatusTooltip } from '../../services'
 import { getIntentStatus }  from '../getIntentStatus'
@@ -18,7 +19,7 @@ export const StatusTrail = () => {
         <div key={index}>
           <UI.DateLabel children={formatter(DateFormatEnum.DateTimeFormat)(createdAt)} />
           {isStatusTrailTooltipEnabled ? <Tooltip
-            title={getStatusTooltip(displayStatus, sliceValue, metadata || {})}
+            title={getStatusTooltip(displayStatus, sliceValue, (metadata || {}) as Metadata)}
             placement='right'
             dottedUnderline={true}
           >

@@ -8,7 +8,7 @@ import {
   api,
   getGraphKPIs,
   getKPIData,
-  Intent,
+  IntentDetail,
   intentState,
   useIntentParams
 } from './useIntentDetailsQuery'
@@ -144,7 +144,7 @@ describe('intentState', () => {
       [Statuses.revertScheduleInProgress]: 'active'
     }
     for (const [ status, expected ] of Object.entries(expectedSets)) {
-      const intent = { status } as unknown as Intent
+      const intent = { status } as unknown as IntentDetail
       expect(intentState(intent)).toEqual(expected)
     }
   })

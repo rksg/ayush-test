@@ -14,12 +14,13 @@ import {
   aiFeaturesLabel,
   codes,
   stateToGroupedStates,
-  IntentConfig
+  Intent
 } from './config'
 import { Wlan }                                   from './EquiFlex/IntentAIForm/WlanSelection'
 import { useIntentContext }                       from './IntentContext'
 import { DisplayStates, Statuses, StatusReasons } from './states'
-import { IntentWlan }                             from './utils'
+import { getUserName }                            from './useIntentAIActions'
+import { IntentWlan, TransitionIntentMetadata }   from './utils'
 
 type MutationResponse = { success: boolean, errorMsg: string, errorCode: string }
 
@@ -39,13 +40,14 @@ export type FormValues <Preferences> = {
 }
 
 export type IntentTransitionPayload <Preferences = unknown> = {
-  id: IntentConfig['id']
-  status: IntentConfig['status']
-  statusReason?: IntentConfig['statusReason']
+  id: Intent['id']
+  status: Intent['status']
+  statusReason?: Intent['statusReason']
   metadata?: {
     scheduledAt?: string
     preferences?: Preferences
     wlans?: IntentWlan[]
+    changedByName?: string
   }
 }
 
@@ -110,7 +112,14 @@ export function createUseIntentTransition <Preferences> (
     const [doSubmit, response] = useIntentTransitionMutation()
 
     const submit = useCallback(async (values: FormValues<Preferences>) => {
-      return validateScheduleTiming(values) ? doSubmit(getFormDTO(values)) : false
+      const formDto = getFormDTO(values)
+      const metadataWithName = {
+        ...formDto?.metadata,
+        changedByName: getUserName()
+      } as TransitionIntentMetadata
+      return validateScheduleTiming(values) ? doSubmit({
+        ...formDto, metadata: metadataWithName
+      }) : false
     }, [doSubmit])
 
     useEffect(() => {

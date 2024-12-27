@@ -1,4 +1,4 @@
-import { Intent } from '../../useIntentDetailsQuery'
+import { IntentDetail } from '../../useIntentDetailsQuery'
 
 export const mockedIntentCRRM = {
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
@@ -264,7 +264,7 @@ export const mockedIntentCRRM = {
   preferences: null,
   currentValue: null,
   recommendedValue: null
-} as unknown as Intent
+} as unknown as IntentDetail
 
 export const mockedIntentCRRMnew = { // this fixture is used to test new crrm intent
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b7',
@@ -309,7 +309,7 @@ export const mockedIntentCRRMnew = { // this fixture is used to test new crrm in
     }
   },
   preferences: null
-} as unknown as Intent
+} as unknown as IntentDetail
 
 export const mockedIntentCRRMApplied = { // this fixture is used to test applied crrm intent
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b8',
@@ -366,7 +366,7 @@ export const mockedIntentCRRMApplied = { // this fixture is used to test applied
     }
   },
   preferences: null
-} as unknown as Intent
+} as unknown as IntentDetail
 
 export const mockedCRRMGraphs = {
   graph: {

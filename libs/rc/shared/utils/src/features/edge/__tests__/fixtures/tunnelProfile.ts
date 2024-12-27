@@ -101,7 +101,8 @@ export const mockedTunnelProfileData = {
   mtuType: 'MANUAL',
   mtuSize: 1450,
   forceFragmentation: true,
-  ageTimeMinutes: 20
+  ageTimeMinutes: 20,
+  natTraversalEnabled: false
 }
 
 export const mockedDefaultTunnelProfileData = {
