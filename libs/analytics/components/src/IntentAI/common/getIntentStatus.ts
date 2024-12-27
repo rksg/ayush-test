@@ -7,7 +7,7 @@ import { DisplayStates } from '../states'
 
 export function getIntentStatus (displayStatus: DisplayStates, retriesNum?: number) {
   const { $t } = getIntl()
-  const retries = retriesNum ?? undefined
+  const retries = retriesNum && retriesNum > 1 ? retriesNum : undefined
   const state = states[displayStatus] ?? { text: defineMessage({ defaultMessage: 'Unknown' }) }
   return $t(state.text, { retries })
 }
