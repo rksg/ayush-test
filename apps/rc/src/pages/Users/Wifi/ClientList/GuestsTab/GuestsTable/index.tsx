@@ -294,7 +294,7 @@ export const GuestsTable = () => {
       key: 'guestStatus',
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'guestStatus',
-      sorter: true,
+      sorter: false,
       render: function (_, { guestStatus }) {
         return guestStatus === GuestStatusEnum.EXPIRED
           ? <span style={{ color: cssStr('--acx-semantics-red-50') }}>{guestStatus}</span>
