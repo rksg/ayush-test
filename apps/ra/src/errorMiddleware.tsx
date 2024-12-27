@@ -1,5 +1,5 @@
 import { isRejectedWithValue, Middleware } from '@reduxjs/toolkit'
-import { FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import { FetchBaseQueryMeta }              from '@reduxjs/toolkit/query'
 
 import { showErrorModal, showExpiredSessionModal } from '@acx-ui/analytics/components'
 import { errorMessage }                            from '@acx-ui/utils'
