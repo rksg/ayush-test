@@ -43,7 +43,7 @@ const userProfile: Profile = {
   abacEnabled: false,
   scopes: []
 }
-export const SHOW_WITHOUT_RBAC_CHECK = 'SHOW_WITHOUT_RBAC_CHECK'
+const SHOW_WITHOUT_RBAC_CHECK = 'SHOW_WITHOUT_RBAC_CHECK'
 
 interface FilterItemType {
   scopeKey?: ScopeKeys,
@@ -104,11 +104,10 @@ export function hasAccess (props?: { legacyKey?: string,
 /**
  * Checks if the user has the required RBAC permissions for the allowed operations API.
  *
- * @param opsId The operational IDs (RbacOpsIds) to validate against the user's profile.
+ * @param rbacOpsIds The operational IDs (RbacOpsIds) to validate against the user's profile.
  *
  * OR  -> If it's a single operation or any single scope in the list matches, access is granted (e.g., `['DELETE:/venues', 'DELETE:/networks']`).
  * AND ->  If the `opsId` is an array, all elements must match (e.g., `[['DELETE:/venues', 'DELETE:/networks']]`).
- * Ignore check -> If `SHOW_WITHOUT_RBAC_CHECK` is included, access is automatically granted (e.g., `[SHOW_WITHOUT_RBAC_CHECK]`).
  */
 export function hasAllowedOperations (rbacOpsIds: RbacOpsIds) {
   const { rbacOpsApiEnabled, allowedOperations } = getUserProfile()
@@ -116,8 +115,6 @@ export function hasAllowedOperations (rbacOpsIds: RbacOpsIds) {
     return rbacOpsIds?.some(rbacOpsIds => {
       if (Array.isArray(rbacOpsIds)) {
         return rbacOpsIds.every(i => allowedOperations.includes(i))
-      } else if (rbacOpsIds?.includes(SHOW_WITHOUT_RBAC_CHECK)) {
-        return true
       } else {
         return allowedOperations.includes(rbacOpsIds)
       }

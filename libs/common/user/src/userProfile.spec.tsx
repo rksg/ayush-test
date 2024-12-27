@@ -441,7 +441,7 @@ describe('hasPermission', () => {
       expect(hasCrossVenuesPermission()).toBe(true)
       expect(hasPermission({ rbacOpsIds: ['GET:/switches'] })).toBe(true)
       expect(hasPermission({ rbacOpsIds: ['GET:/edges'] })).toBe(false)
-      expect(hasPermission({ rbacOpsIds: ['SHOW_WITHOUT_RBAC_CHECK'] })).toBe(true)
+      expect(hasPermission({ scopes: [SwitchScopes.READ] })).toBe(true)
       expect(hasPermission({ scopes: [], rbacOpsIds: ['GET:/networks'] })).toBe(true)
       expect(hasPermission({ scopes: [], rbacOpsIds: ['GET:/edges'] })).toBe(false)
       expect(
