@@ -104,7 +104,7 @@ const activtatedVenueNetworksPayload = {
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC',
-  fields: [ 'id', 'name', 'type' ]
+  fields: [ 'id', 'name', 'nwSubType', 'dsaeOnboardNetwork' ]
 }
 
 export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) => {
@@ -215,13 +215,17 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
 
   const { dpskNetworkList, isNetworkLoading } = useVenueNetworkActivationsViewModelListQuery({
     params: { ...params },
-    payload: { ...activtatedVenueNetworksPayload, venueId: venueId }
+    payload: {
+      ...activtatedVenueNetworksPayload,
+      filters: {
+        'venueApGroups.venueId': [venueId],
+        'nwSubType': [ NetworkTypeEnum.DPSK ]
+      } }
   }, {
     skip: !Boolean(venueId),
     selectFromResult: ({ data, isLoading }) => {
       return {
-        dpskNetworkList: data?.data?.filter(item =>
-          item.nwSubType === NetworkTypeEnum.DPSK && !isDsaeOnboardingNetwork(item)),
+        dpskNetworkList: data?.data?.filter(item => !isDsaeOnboardingNetwork(item)),
         isNetworkLoading: isLoading
       }
     }
