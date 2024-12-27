@@ -113,13 +113,16 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
     defaultPayload: {
       sortField: 'name',
       sortOrder: 'ASC',
-      venueId,
       fields: [
         'id',
         'name',
-        'type',
-        'vlanPool'
-      ]
+        'nwSubType',
+        'vlanPool', // for GUI trigger vlan pooling API in RBAC version
+        'dsaeOnboardNetwork'
+      ],
+      filters: {
+        'venueApGroups.venueId': [venueId]
+      }
     },
     option: {
       skip: !Boolean(venueId)
