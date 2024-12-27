@@ -36,8 +36,8 @@ import { ConfigChangeContext, KPIFilterContext } from '../context'
 import { hasConfigChange }                       from '../KPI'
 import { useConfigChangeQuery }                  from '../services'
 
-import { Badge, CascaderFilterWrapper }                 from './styledComponents'
-import { filterData, getConfiguration, getEntityValue } from './util'
+import { Badge, CascaderFilterWrapper }     from './styledComponents'
+import { getConfiguration, getEntityValue } from './util'
 
 export function downloadConfigChangeList (
   configChanges: ConfigChange[],
@@ -112,14 +112,12 @@ export function Table (props: {
   const { selected, onRowClick, pagination, setPagination, dotSelect, legend } = props
   const legendList = Object.keys(legend).filter(key => legend[key])
 
-  const queryResults = useConfigChangeQuery({
-    ...pathFilters,
-    startDate: startDate.toISOString(),
-    endDate: endDate.toISOString()
-  }, { selectFromResult: queryResults => ({
-    ...queryResults,
-    data: filterData(queryResults.data ?? [], kpiFilter, legendList, showIntentAI)
-  }) })
+  const queryResults = useConfigChangeQuery(
+    kpiFilter, legendList, showIntentAI, {
+      ...pathFilters,
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString()
+    })
 
   const entityTypeMapping = getConfigChangeEntityTypeMapping(showIntentAI)
 
@@ -131,9 +129,6 @@ export function Table (props: {
       render: (_, row) => {
         const timestamp = formatter(DateFormatEnum.DateTimeFormat)(moment(Number(row.timestamp)))
         if (row.type === 'intentAI') {
-          if (!row.root || !row.sliceId) {
-            return timestamp
-          }
           const code = row.key.substring(row.key.lastIndexOf('.') + 1)
           const linkPath = get('IS_MLISA_SA')
             ? `/intentAI/${row.root}/${row.sliceId}/${code}`

@@ -5,6 +5,8 @@ import type { ConfigChange }       from '@acx-ui/components'
 import { dataApi }                 from '@acx-ui/store'
 import { NetworkPath, PathFilter } from '@acx-ui/utils'
 
+import { filterData } from './Table/util'
+
 interface KpiChangesParams {
   kpis: string[],
   path: NetworkPath,
@@ -16,35 +18,30 @@ interface KpiChangesParams {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    configChange: build.query<
+    customConfigChange: build.query<
       ConfigChange[],
-      PathFilter
+      PathFilter & { fields: string[] }
     >({
-      query: (payload) => ({
-        document: gql`
-          query ConfigChange(
-            $path: [HierarchyNodeInput],
-            $startDate: DateTime,
-            $endDate: DateTime
-          ) {
-            network(start: $startDate, end: $endDate) {
-              hierarchyNode(path: $path) {
-                configChanges {
-                  root
-                  sliceId
-                  timestamp
-                  type
-                  name
-                  key
-                  oldValues
-                  newValues
+      query: (payload) => {
+        return {
+          document: gql`
+            query ConfigChange(
+              $path: [HierarchyNodeInput],
+              $startDate: DateTime,
+              $endDate: DateTime
+            ) {
+              network(start: $startDate, end: $endDate) {
+                hierarchyNode(path: $path) {
+                  configChanges {
+                    ${payload.fields.join('\n')}
+                  }
                 }
               }
             }
-          }
-        `,
-        variables: pick(payload, ['path', 'startDate', 'endDate'])
-      }),
+          `,
+          variables: pick(payload, ['path', 'startDate', 'endDate'])
+        }
+      },
       transformResponse: (
         response: { network: { hierarchyNode: { configChanges: ConfigChange[] } } } ) =>
         response.network.hierarchyNode.configChanges
@@ -82,8 +79,8 @@ export const api = dataApi.injectEndpoints({
   })
 })
 
-const {
-  useConfigChangeQuery,
+export const {
+  useCustomConfigChangeQuery,
   useConfigChangeKPIChangesQuery
 } = api
 
@@ -91,6 +88,23 @@ function useKPIChangesQuery (params: KpiChangesParams) {
   return useConfigChangeKPIChangesQuery(params,
     { skip: Object.keys(params).some(key=>!params[key as keyof KpiChangesParams]) }
   )
+}
+
+function useConfigChangeQuery (
+  kpiFilter: string[],
+  legendList: string[],
+  showIntentAI: boolean,
+  params: PathFilter) {
+  let fields: string[] = ['timestamp', 'type', 'name', 'key', 'oldValues', 'newValues']
+  if (showIntentAI) {
+    fields.push('root', 'sliceId')
+  }
+  return useCustomConfigChangeQuery({ ...params, fields }, {
+    selectFromResult: queryResults => ({
+      ...queryResults,
+      data: filterData(queryResults.data ?? [], kpiFilter, legendList, showIntentAI)
+    })
+  })
 }
 
 export {

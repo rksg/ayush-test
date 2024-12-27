@@ -16,8 +16,6 @@ import { TooltipWrapper }      from '../Chart/styledComponents'
 import type { ECharts, TooltipComponentFormatterCallbackParams } from 'echarts'
 
 export type ConfigChange = {
-  root?: string
-  sliceId?: string
   id?: number
   filterId?: number
   timestamp: string
@@ -26,6 +24,8 @@ export type ConfigChange = {
   key: string
   oldValues: string[]
   newValues: string[]
+  root?: string
+  sliceId?: string
 }
 
 type OnDatazoomEvent = { batch: { startValue: number, endValue: number }[] }
