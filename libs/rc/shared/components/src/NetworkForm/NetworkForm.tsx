@@ -271,6 +271,9 @@ export function NetworkForm (props:{
 
       const newSavedata = merge({}, updateSate, saveData)
       newSavedata.wlan = { ...updateSate?.wlan, ...saveData.wlan }
+      if(saveData.guestPortal?.walledGardens !== undefined && newSavedata.guestPortal){
+        newSavedata.guestPortal.walledGardens = saveData.guestPortal?.walledGardens
+      }
       return { ...saveState, ...newSavedata }
     })
   }

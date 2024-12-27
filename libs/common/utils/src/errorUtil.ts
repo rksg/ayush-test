@@ -6,6 +6,11 @@ import { CatchErrorResponse } from './types/catchError'
 
 import type { GraphQLResponse } from 'graphql-request/dist/types'
 
+export function isGraphQLError (type: string | undefined, response?: object): boolean {
+  const reducerPaths = ['data-api', 'network-health']
+  return !!(type && reducerPaths.find(p => type.includes(p)) && response && 'errors' in response)
+}
+
 export function formatGraphQLErrors (
   response: Required<Pick<GraphQLResponse, 'errors'>> & GraphQLResponse
 ): CatchErrorResponse['data'] {
