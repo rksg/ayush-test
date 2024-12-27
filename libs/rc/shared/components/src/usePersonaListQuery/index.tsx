@@ -51,6 +51,8 @@ export const usePersonaListQuery = (props: UsePersonaListQueryProps) => {
     if (!personaGroupQuery.data || !personaListTableQuery.data) return
     if (personaListTableQuery.isLoading || personaListTableQuery.isFetching) return
 
+    setDataSource(personaListTableQuery.data?.data ?? [])
+
     const serviceId = personaGroupQuery.data?.dpskPoolId
     const templateId = personaGroupQuery.data?.certificateTemplateId
 
