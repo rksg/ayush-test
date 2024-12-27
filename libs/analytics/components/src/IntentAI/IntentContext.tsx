@@ -45,7 +45,10 @@ export function createIntentContextProvider (
 ) {
   const Component: React.FC = function () {
     const params = useIntentParams()
-    const loadStatusMetadata = useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE)
+    const loadStatusMetadata = [
+      useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
+      useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
+    ].some(Boolean)
 
     const spec = specs[params.code]
     const kpis = spec?.kpis
