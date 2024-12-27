@@ -184,13 +184,13 @@ export function hasPermission (props?: {
     if(rbacOpsApiEnabled) {
       return hasAccess({ rbacOpsIds: rbacOpsIds })
     } if(!abacEnabled) {
-      return hasAccess({ rbacOpsIds: undefined, roles, legacyKey })
+      return hasAccess({ roles, legacyKey })
     } else {
       if(isCustomRole){
         const isScopesValid = scopes.length > 0 ? hasScope(scopes): true
         return !!(isScopesValid)
       } else {
-        return hasAccess({ rbacOpsIds: rbacOpsIds, roles, legacyKey })
+        return hasAccess({ roles, legacyKey })
       }
     }
   }
