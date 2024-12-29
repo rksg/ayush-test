@@ -93,7 +93,6 @@ export const RangePicker = ({
   const componentRef = useRef<HTMLDivElement | null>(null)
   const rangeRef = useRef<RangeRef>(null)
   const [range, setRange] = useState<DateRangeType>(selectedRange)
-  const [boundary, setBoundary] = useState<string>('')
   const [activeIndex, setActiveIndex] = useState<0|1>(0)
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
   const { acx_account_tier: accountTier } = getJwtTokenPayload()
@@ -174,7 +173,6 @@ export const RangePicker = ({
         onCalendarChange={(values: RangeValueType, _: string[], info: { range: string }) => {
           const { range } = info
           const restrictRange = restrictDateToMonthsRange(values, range, maxMonthRange || 3)
-          setBoundary(range)
           setActiveIndex((range === 'start') ? 1 : 0) 
           setRange(prevRange => ({
             ...prevRange,
