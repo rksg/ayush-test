@@ -173,7 +173,7 @@ export const RangePicker = ({
         onCalendarChange={(values: RangeValueType, _: string[], info: { range: string }) => {
           const { range } = info
           const restrictRange = restrictDateToMonthsRange(values, range, maxMonthRange || 3)
-          setActiveIndex((range === 'start') ? 1 : 0) 
+          setActiveIndex((range === 'start') ? 1 : 0)
           setRange(prevRange => ({
             ...prevRange,
             startDate: restrictRange.startDate || null,

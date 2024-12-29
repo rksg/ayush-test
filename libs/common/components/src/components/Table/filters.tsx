@@ -11,6 +11,7 @@ import _               from 'lodash'
 import moment          from 'moment'
 import { IntlShape }   from 'react-intl'
 
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
 import { DateFilter, DateRange, getDateRangeFilter, useDateFilter } from '@acx-ui/utils'
 
 import { RangePicker } from '../DatePicker'
@@ -18,7 +19,6 @@ import { RangePicker } from '../DatePicker'
 import * as UI from './styledComponents'
 
 import type { TableColumn, RecordWithChildren } from './types'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 export interface Filter extends Record<string, FilterValue|null> {}
 
