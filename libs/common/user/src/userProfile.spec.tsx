@@ -643,7 +643,7 @@ describe('AuthRoute', () => {
     expect(await screen.findByText('test page')).toBeVisible()
   })
 
-  it('should go to correct page for for global permission with opsAPI', async () => {
+  it('should go to correct page for for global permission without rbacOpsIds', async () => {
     setRole({
       role: RolesEnum.ADMINISTRATOR,
       abacEnabled: true,
