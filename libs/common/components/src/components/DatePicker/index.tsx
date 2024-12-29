@@ -106,11 +106,11 @@ export const RangePicker = ({
 
   const disabledDate = useCallback(
     (current: Moment) => (
-      (boundary === 'start' && current.isAfter(
+      (activeIndex === 1 && current.isAfter(
         range.startDate?.clone().add(maxMonthRange || 3, 'months'))) ||
       !current.isBetween(allowedDateRange[0], allowedDateRange[1], null, '[]')
     ),
-    [allowedDateRange, boundary, range.endDate, range.startDate]
+    [allowedDateRange, activeIndex]
   )
 
   useEffect(
@@ -121,6 +121,12 @@ export const RangePicker = ({
   useEffect(() => {
     const handleClickForDatePicker = (event: MouseEvent) => {
       const target = event.target as HTMLElement
+      if (target instanceof HTMLInputElement && target.placeholder === 'Start date') {
+        setActiveIndex(0)
+      } else if  (target instanceof HTMLInputElement && target.placeholder === 'End date') {
+        setActiveIndex(1)
+      }
+
       if (componentRef.current && !componentRef.current.contains(event.target as Node)) {
         setIsCalendarOpen(false)
         setActiveIndex(0)
@@ -162,7 +168,6 @@ export const RangePicker = ({
         activePickerIndex={activeIndex}
         onClick={() => {
           setIsCalendarOpen(true)
-          setActiveIndex(0)
         }}
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
         suffixIcon={<ClockOutlined />}
