@@ -172,6 +172,11 @@ export function LanPorts () {
 
         const queryPayload = {
           params: { tenantId, venueId },
+          payload: {
+            isEthernetPortProfileEnabled,
+            isEthernetSoftgreEnabled: isSoftGREOnEthernetEnabled,
+            isEthernetClientIsolationEnabled
+          },
           enableRbac: isUseWifiRbacApi
         }
 
@@ -309,7 +314,8 @@ export function LanPorts () {
 
         await updateEthernetPortProfile({
           params: { venueId, serialNumber },
-          payload
+          payload,
+          useVenueSettings
         }).unwrap()
       } else {
         await updateApCustomization({
@@ -336,9 +342,13 @@ export function LanPorts () {
   }
 
   const handleSoftGreDeactivate = (values: WifiApSetting) => {
+    const { useVenueSettings } = values
     values.lan?.forEach(lanPort => {
       const originSoftGreId = lanData.find(l => l.portId === lanPort.portId)?.softGreProfileId
-      if (originSoftGreId && (!lanPort.enabled || !lanPort.softGreEnabled)) {
+      if (
+        originSoftGreId &&
+        (!lanPort.enabled || !lanPort.softGreEnabled || useVenueSettings)
+      ) {
         deactivateSoftGreProfileSettings({
           params: { venueId, serialNumber, portId: lanPort.portId, policyId: originSoftGreId }
         }).unwrap()
@@ -347,10 +357,14 @@ export function LanPorts () {
   }
 
   const handleClientIsolationDeactivate = (values: WifiApSetting) => {
+    const { useVenueSettings } = values
     values.lan?.forEach(lanPort => {
       const originClientIsolationProfileId
         = lanData.find(l => l.portId === lanPort.portId)?.clientIsolationProfileId
-      if (originClientIsolationProfileId && (!lanPort.enabled || !lanPort.clientIsolationEnabled)) {
+      if (
+        originClientIsolationProfileId &&
+        (!lanPort.enabled || !lanPort.clientIsolationEnabled || useVenueSettings)
+      ) {
         deactivateClientIsolationOnAp({
           // eslint-disable-next-line max-len
           params: { venueId, serialNumber, portId: lanPort.portId, policyId: originClientIsolationProfileId }

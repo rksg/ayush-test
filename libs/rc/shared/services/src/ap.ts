@@ -4,7 +4,7 @@ import { MaybePromise }                                       from '@reduxjs/too
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { reduce }                                             from 'lodash'
 
-import { Filter }                                 from '@acx-ui/components'
+import { Filter }                   from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -1084,7 +1084,7 @@ export const apApi = baseApApi.injectEndpoints({
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
     }),
     updateApEthernetPorts: build.mutation<CommonResult, RequestPayload>({
-      queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+      queryFn: async ({ params, payload, useVenueSettings }, _queryApi, _extraOptions, fetchWithBQ) => {
         try {
           const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
           const apSettings = payload as WifiApSetting
@@ -1155,11 +1155,14 @@ export const apApi = baseApApi.injectEndpoints({
           await batchApi(EthernetPortProfileUrls.updateEthernetPortOverwritesByApPortId,
             overwriteRequests!, fetchWithBQ, customHeaders)
 
-          await batchApi(SoftGreUrls.activateSoftGreProfileOnAP,
-            softGreActivateRequests!, fetchWithBQ, customHeaders)
+          if(!useVenueSettings) {
+            await batchApi(SoftGreUrls.activateSoftGreProfileOnAP,
+              softGreActivateRequests!, fetchWithBQ, customHeaders)
 
-          await batchApi(ClientIsolationUrls.activateClientIsolationOnAp,
-            clientIsolationActivateRequests!, fetchWithBQ, customHeaders)
+            await batchApi(ClientIsolationUrls.activateClientIsolationOnAp,
+              clientIsolationActivateRequests!, fetchWithBQ, customHeaders)
+          }
+
 
           const res = await fetchWithBQ({
             ...(createHttpRequest(WifiRbacUrlsInfo.updateApLanPortSpecificSettings,
