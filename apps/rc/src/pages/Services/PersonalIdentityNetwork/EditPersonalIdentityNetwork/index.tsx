@@ -22,7 +22,7 @@ import {
   SummaryStep,
   WirelessNetworkStep
 } from '../PersonalIdentityNetworkForm'
-import { ThreeTier, TwoTier, Wireless }            from '../PersonalIdentityNetworkForm/NetworkTopologyForm'
+import { NetworkTopologyType }                     from '../PersonalIdentityNetworkForm/NetworkTopologyForm'
 import { PersonalIdentityNetworkFormDataProvider } from '../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext'
 
 const EditPersonalIdentityNetwork = () => {
@@ -97,12 +97,12 @@ const EditPersonalIdentityNetwork = () => {
 }
 
 const getStepsByEditData = (data?: PersonalIdentityNetworks) => {
-  let steps = getStepsByTopologyType(Wireless)
+  let steps = getStepsByTopologyType(NetworkTopologyType.Wireless)
   if(data?.distributionSwitchInfos?.length || data?.accessSwitchInfos?.length) {
     if(data?.vxlanTunnelProfileId) {
-      steps = getStepsByTopologyType(ThreeTier)
+      steps = getStepsByTopologyType(NetworkTopologyType.ThreeTier)
     } else {
-      steps = getStepsByTopologyType(TwoTier)
+      steps = getStepsByTopologyType(NetworkTopologyType.TwoTier)
     }
   }
   return steps.filter(step => step.title !== PrerequisiteStep.title &&
