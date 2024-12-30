@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
 
 import { DateRangeType, RangePicker, Tabs } from '@acx-ui/components'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import {
   ACLDirection,
   EdgeFirewallSetting,
@@ -16,7 +17,6 @@ import { useDateFilter } from '@acx-ui/utils'
 import { DDoSRulesTable }        from './DDoSRulesTable'
 import { StatefulACLRulesTable } from './StatefulACLRulesTable'
 import * as UI                   from './styledComponents'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 interface GroupedStatsTablesProps {
   className?: string;
