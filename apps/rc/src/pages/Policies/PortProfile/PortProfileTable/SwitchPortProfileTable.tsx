@@ -177,6 +177,17 @@ export default function SwitchPortProfileTable () {
 
   const rowActions: TableProps<SwitchPortProfiles>['rowActions'] = [
     {
+      scopeKey: getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.EDIT),
+      label: $t({ defaultMessage: 'Edit' }),
+      visible: (selectedRows) => selectedRows?.length === 1,
+      onClick: ([{ id }]) => {
+        navigate({
+          ...tenantBasePath,
+          pathname: `${tenantBasePath.pathname}/policies/portProfile/switch/profiles/${id}/edit`
+        })
+      }
+    },
+    {
       scopeKey: getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows: SwitchPortProfiles[], clearSelection) => {
@@ -214,17 +225,6 @@ export default function SwitchPortProfileTable () {
             }
           })
         }
-      }
-    },
-    {
-      scopeKey: getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.EDIT),
-      label: $t({ defaultMessage: 'Edit' }),
-      visible: (selectedRows) => selectedRows?.length === 1,
-      onClick: ([{ id }]) => {
-        navigate({
-          ...tenantBasePath,
-          pathname: `${tenantBasePath.pathname}/policies/portProfile/switch/profiles/${id}/edit`
-        })
       }
     }
   ]

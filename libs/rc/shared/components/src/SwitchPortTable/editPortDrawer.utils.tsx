@@ -188,7 +188,7 @@ export const getPortProfileOptions = (portProfilesList?: PortProfilesBySwitchId[
           ${item.configSource==='SWITCH_LEVEL' ? ' (Modified locally)' : ''}`,
     value: item.portProfileId,
     disabled: false
-  }))
+  })).sort((a, b) => a.label.localeCompare(b.label))
 
   return [
     { label: $t({ defaultMessage: 'None' }), value: '', disabled: false },

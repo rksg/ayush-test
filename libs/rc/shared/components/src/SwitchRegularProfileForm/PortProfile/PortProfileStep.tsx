@@ -20,7 +20,7 @@ const payload = {
   ],
   page: 1,
   pageSize: 10000,
-  sortField: 'id',
+  sortField: 'name',
   sortOrder: 'ASC'
 }
 
