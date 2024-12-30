@@ -11,7 +11,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Button, CaretDownSolidIcon, Dropdown, PageHeader, RangePicker }       from '@acx-ui/components'
-import { Features }                                                            from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
 import { EdgeStatusLight, useEdgeActions, useIsEdgeFeatureReady }              from '@acx-ui/rc/components'
 import {
   EdgeStatusEnum, rebootShutdownEdgeStatusWhiteList, resettabaleEdgeStatuses
@@ -44,6 +44,7 @@ export const EdgeDetailsPageHeader = () => {
   const status = currentEdge?.deviceStatus as EdgeStatusEnum
   const currentEdgeOperational = status === EdgeStatusEnum.OPERATIONAL
   const isGracefulShutdownReady = useIsEdgeFeatureReady(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
   const menuConfig = [
     {
@@ -144,6 +145,7 @@ export const EdgeDetailsPageHeader = () => {
           onDateApply={setDateFilter as CallableFunction}
           showTimePicker
           selectionType={range}
+          maxMonthRange={isDateRangeLimit ? 1 : 3}
         />,
         ...filterByAccess([
           <Dropdown
