@@ -10,9 +10,9 @@ import { getServiceListRoutePath, getServiceRoutePath, ServiceOperation, Service
 
 import {
   getStepsByTopologyType,
-  PersonalIdentityNetworkForm,
-  Wireless
+  PersonalIdentityNetworkForm
 } from '../PersonalIdentityNetworkForm'
+import { NetworkTopologyType }                     from '../PersonalIdentityNetworkForm/NetworkTopologyForm'
 import { PersonalIdentityNetworkFormDataProvider } from '../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext'
 
 const AddPersonalIdentityNetworkEnhanced = () => {
@@ -29,7 +29,7 @@ const AddPersonalIdentityNetworkEnhanced = () => {
     { type: ServiceType.PIN, oper: ServiceOperation.LIST })
 
   const steps = useMemo(() => {
-    return getStepsByTopologyType(networkTopologyType || Wireless)
+    return getStepsByTopologyType(networkTopologyType || NetworkTopologyType.Wireless)
   }, [networkTopologyType])
 
   return (
@@ -49,7 +49,7 @@ const AddPersonalIdentityNetworkEnhanced = () => {
           steps={steps}
           initialValues={{
             vxlanTunnelProfileId: tenantId,
-            networkTopologyType: Wireless
+            networkTopologyType: NetworkTopologyType.Wireless
           }}
           onFinish={addPin}
         />

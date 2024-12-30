@@ -141,9 +141,9 @@ describe('ApEdit', () => {
         (req, res, ctx) => res(ctx.json({}))
       ),
       // rbac API
-      rest.get(
-        WifiRbacUrlsInfo.getDhcpAp.url,
-        (req, res, ctx) => res(ctx.json({}))
+      rest.post(
+        WifiRbacUrlsInfo.getDhcpAps.url,
+        (req, res, ctx) => res(ctx.json({ data: dhcpAp[0].response }))
       ),
       rest.get(
         WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
