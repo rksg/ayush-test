@@ -13,7 +13,7 @@ import { defaultSort, sortProp, useTableQuery, Webhook, WebhookPayloadEnum } fro
 import { SwitchScopes, WifiScopes }                                          from '@acx-ui/types'
 import { filterByAccess, hasCrossVenuesPermission, hasPermission }           from '@acx-ui/user'
 
-import { fakeWebhooks }                from './__tests__/fixtures'
+// import { fakeWebhooks }                from './__tests__/fixtures'
 import { getWebhookPayloadEnumString } from './webhookConfig'
 import { WebhookForm }                 from './WebhookForm'
 
