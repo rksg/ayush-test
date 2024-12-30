@@ -7,6 +7,7 @@ import { render, screen, waitFor } from '@acx-ui/test-utils'
 import {
   getLoadTimeStatus,
   getPageType,
+  getPageLoadStart,
   getTrackingItemsCount,
   LoadTimeContext,
   LoadTimeProvider,
@@ -24,7 +25,7 @@ describe('useLoadTimeTracking', () => {
 
   it('test getPageType', () => {
     expect(getPageType(TrackingPages.DASHBOARD)).toBe('Dashboard')
-    expect(getPageType(TrackingPages.VENUES, 'Overview')).toBe('Dashboard')
+    expect(getPageType(TrackingPages.VENUES, 'OVERVIEW')).toBe('Dashboard')
     expect(getPageType(TrackingPages.VENUES, 'Test')).toBe('')
     expect(getPageType(TrackingPages.WIRELESS_CLIENTS)).toBe('Table')
     expect(getPageType(TrackingPages.WIRED_CLIENTS)).toBe('Table')
@@ -32,17 +33,25 @@ describe('useLoadTimeTracking', () => {
     expect(getPageType('Test')).toBe('')
   })
 
+  it('test getPageLoadStart', () => {
+    const loadTimes = {
+      WiredClientsTable: { time: 2424, startTime: 1735539469319, isUnfulfilled: false }
+    }
+    expect(getPageLoadStart(1735539468537, loadTimes)).toBe(1735539468537)
+    expect(getPageLoadStart(1735539469389, loadTimes)).toBe(1735539469319)
+  })
+
   it('test getTrackingItemsCount', () => {
-    expect(getTrackingItemsCount(TrackingPages.DASHBOARD)).toBe(13)
-    expect(getTrackingItemsCount(TrackingPages.VENUES, 'Overview')).toBe(11)
-    expect(getTrackingItemsCount(TrackingPages.VENUES, 'Test')).toBe(0)
-    expect(getTrackingItemsCount(TrackingPages.WIRED_CLIENTS)).toBe(1)
+    expect(getTrackingItemsCount(TrackingPages.DASHBOARD, null, true)).toBe(13)
+    expect(getTrackingItemsCount(TrackingPages.VENUES, 'OVERVIEW', true)).toBe(11)
+    expect(getTrackingItemsCount(TrackingPages.VENUES, 'Test', true)).toBe(0)
+    expect(getTrackingItemsCount(TrackingPages.WIRED_CLIENTS, null, true)).toBe(1)
     expect(getTrackingItemsCount('Test')).toBe(0)
 
     localStorage.setItem('dashboard-tab', 'switch')
-    expect(getTrackingItemsCount(TrackingPages.DASHBOARD)).toBe(14)
+    expect(getTrackingItemsCount(TrackingPages.DASHBOARD, null, true)).toBe(14)
     localStorage.setItem('dashboard-tab', 'edge')
-    expect(getTrackingItemsCount(TrackingPages.DASHBOARD)).toBe(11)
+    expect(getTrackingItemsCount(TrackingPages.DASHBOARD, null, true)).toBe(11)
   })
 
   describe('LoadTimeProvider', () => {
@@ -54,17 +63,6 @@ describe('useLoadTimeTracking', () => {
       return (
         <div>
           <button onClick={handleFilterChange}>Change Filter</button>
-        </div>
-      )
-    }
-    const TestTabComponent = () => {
-      const { onPageTabChange } = useContext(LoadTimeContext)
-      const handleTabChange = () => {
-        onPageTabChange()
-      }
-      return (
-        <div>
-          <button onClick={handleTabChange}>Change Tab</button>
         </div>
       )
     }
@@ -83,23 +81,25 @@ describe('useLoadTimeTracking', () => {
 
       return <div>
         Test Component
-        <TestTabComponent />
         <TestFilterComponent />
       </div>
     }
 
     it('should render correctly', async () => {
       const mockPendoTrack = jest.fn()
+      const params = { tenantId: 'tenant-id' }
       window.pendo = {
         initialize: jest.fn(),
         identify: jest.fn(),
         track: mockPendoTrack
       }
+
       render(
-        <LoadTimeProvider page={TrackingPages.WIRED_CLIENTS}>
+        <LoadTimeProvider>
           <TestComponent />
-        </LoadTimeProvider>
-      )
+        </LoadTimeProvider>, {
+          route: { path: '/:tenantId/t/users/switch/clients', params }
+        })
 
       expect(screen.getByText('Test Component')).toBeInTheDocument()
 
@@ -107,7 +107,7 @@ describe('useLoadTimeTracking', () => {
       expect(mockPendoTrack).toHaveBeenCalledWith('testPageloadtime', {
         active_tab: '',
         components_load_time_ms: expect.any(String),
-        filters: { filterValues: {}, searchValue: '' },
+        filters: '{"filterValues":{},"searchValue":""}',
         load_time_ms: expect.any(Number),
         load_time_text: 'Normal',
         page_title: 'Wired Clients List',
@@ -116,9 +116,28 @@ describe('useLoadTimeTracking', () => {
       })
 
       await userEvent.click(screen.getByText('Change Filter'))
-      await waitFor(() => expect(mockPendoTrack).toBeCalledTimes(2))
-      await userEvent.click(screen.getByText('Change Tab'))
-      await waitFor(() => expect(mockPendoTrack).toBeCalledTimes(2))
+      await waitFor(() => expect(mockPendoTrack).toBeCalledTimes(1))
+    })
+
+    it('should render unsupported page correctly', async () => {
+      const mockPendoTrack = jest.fn()
+      const params = { tenantId: 'tenant-id' }
+      window.pendo = {
+        initialize: jest.fn(),
+        identify: jest.fn(),
+        track: mockPendoTrack
+      }
+
+      render(
+        <LoadTimeProvider>
+          <TestComponent />
+        </LoadTimeProvider>, {
+          route: { path: '/:tenantId/t/users/switch/test', params }
+        })
+
+      expect(screen.getByText('Test Component')).toBeInTheDocument()
+      await userEvent.click(screen.getByText('Change Filter'))
+      expect(mockPendoTrack).not.toBeCalled()
     })
   })
 

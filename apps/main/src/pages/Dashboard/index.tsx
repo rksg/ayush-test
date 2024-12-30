@@ -50,9 +50,7 @@ import {
   getDateRangeFilter,
   AnalyticsFilter,
   getDatePickerValues,
-  LoadTimeProvider,
-  LoadTimeContext,
-  TrackingPages
+  LoadTimeContext
 } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -122,32 +120,30 @@ export default function Dashboard () {
 
   return (
     <DashboardFilterProvider>
-      <LoadTimeProvider page={TrackingPages.DASHBOARD}>
-        <DashboardPageHeader />
-        <CommonDashboardWidgets />
-        <Divider dashed
-          style={{
-            borderColor: 'var(--acx-neutrals-30)',
-            margin: '20px 0px 5px 0px' }}/>
-        <ContentSwitcher
-          tabDetails={tabDetails}
-          size='large'
-          defaultValue={localStorage.getItem('dashboard-tab') || tabDetails[0].value}
-          onChange={onTabChange}
-          extra={
-            <UI.Wrapper>
-              <TenantLink to={'/reports'}>
-                {$t({ defaultMessage: 'See more reports' })} <UI.ArrowChevronRightIcons />
-              </TenantLink>
-            </UI.Wrapper>
-          }
-        />
-        <Divider dashed
-          style={{
-            borderColor: 'var(--acx-neutrals-30)',
-            margin: '20px 0px' }}/>
-        <DashboardMapWidget />
-      </LoadTimeProvider>
+      <DashboardPageHeader />
+      <CommonDashboardWidgets />
+      <Divider dashed
+        style={{
+          borderColor: 'var(--acx-neutrals-30)',
+          margin: '20px 0px 5px 0px' }}/>
+      <ContentSwitcher
+        tabDetails={tabDetails}
+        size='large'
+        defaultValue={localStorage.getItem('dashboard-tab') || tabDetails[0].value}
+        onChange={onTabChange}
+        extra={
+          <UI.Wrapper>
+            <TenantLink to={'/reports'}>
+              {$t({ defaultMessage: 'See more reports' })} <UI.ArrowChevronRightIcons />
+            </TenantLink>
+          </UI.Wrapper>
+        }
+      />
+      <Divider dashed
+        style={{
+          borderColor: 'var(--acx-neutrals-30)',
+          margin: '20px 0px' }}/>
+      <DashboardMapWidget />
     </DashboardFilterProvider>
   )
 }

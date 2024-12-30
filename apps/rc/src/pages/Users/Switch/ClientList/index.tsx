@@ -7,7 +7,6 @@ import { Features, useIsSplitOn }                                              f
 import { SwitchClientsTable, SwitchClientContext, defaultSwitchClientPayload } from '@acx-ui/rc/components'
 import { useGetSwitchClientListQuery }                                         from '@acx-ui/rc/services'
 import { usePollingTableQuery }                                                from '@acx-ui/rc/utils'
-import { LoadTimeProvider, TrackingPages }                                     from '@acx-ui/utils'
 
 export default function ClientList () {
   const { $t } = useIntl()
@@ -37,8 +36,6 @@ export default function ClientList () {
       title={$t({ defaultMessage: 'Wired ({switchCount})' }, { switchCount })}
       breadcrumb={[{ text: $t({ defaultMessage: 'Clients' }) }]}
     />
-    <LoadTimeProvider page={TrackingPages.WIRED_CLIENTS}>
-      <SwitchClientsTable filterByVenue={true} filterBySwitch={true} />
-    </LoadTimeProvider>
+    <SwitchClientsTable filterByVenue={true} filterBySwitch={true} />
   </SwitchClientContext.Provider>
 }

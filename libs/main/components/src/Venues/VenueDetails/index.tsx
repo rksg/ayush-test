@@ -1,7 +1,6 @@
-import { useConfigTemplate }               from '@acx-ui/rc/utils'
-import { useParams }                       from '@acx-ui/react-router-dom'
-import { goToNotFound, hasRaiPermission }  from '@acx-ui/user'
-import { LoadTimeProvider, TrackingPages } from '@acx-ui/utils'
+import { useConfigTemplate }              from '@acx-ui/rc/utils'
+import { useParams }                      from '@acx-ui/react-router-dom'
+import { goToNotFound, hasRaiPermission } from '@acx-ui/user'
 
 import { VenueAnalyticsTab } from './VenueAnalyticsTab'
 import { VenueClientsTab }   from './VenueClientsTab'
@@ -40,8 +39,8 @@ export function VenueDetails () {
   const tabs = GenTabs()
 
   const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
-  return <LoadTimeProvider page={TrackingPages.VENUES}>
+  return <>
     <VenuePageHeader />
     { Tab && <Tab /> }
-  </LoadTimeProvider>
+  </>
 }

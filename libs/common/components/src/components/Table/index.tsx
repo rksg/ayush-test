@@ -1,4 +1,4 @@
-import React, { useMemo, useState, Key, useEffect, useRef, useDebugValue } from 'react'
+import React, { useContext, useMemo, useState, Key, useEffect, useRef, useDebugValue } from 'react'
 
 import ProTable, { ProTableProps as ProAntTableProps, ProColumnType } from '@ant-design/pro-table'
 import { Menu, Space }                                                from 'antd'
@@ -8,7 +8,7 @@ import Highlighter                                                    from 'reac
 import { useIntl }                                                    from 'react-intl'
 
 import { MinusSquareOutlined, PlusSquareOutlined, SettingsOutlined } from '@acx-ui/icons'
-import { TABLE_DEFAULT_PAGE_SIZE }                                   from '@acx-ui/utils'
+import { TABLE_DEFAULT_PAGE_SIZE, LoadTimeContext }                  from '@acx-ui/utils'
 
 import { getTitleWithIndicator }               from '../BetaIndicator'
 import { Button, DisabledButton, ButtonProps } from '../Button'
@@ -157,6 +157,7 @@ function Table <RecordType extends Record<string, any>> ({
   const { dataSource, filterableWidth, searchableWidth, style } = props
   const wrapperRef = useRef<HTMLDivElement>(null)
   const layout = useLayoutContext()
+  const { onPageFilterChange } = useContext(LoadTimeContext)
 
   const rowKey = (props.rowKey ?? 'key')
   const intl = useIntl()
@@ -218,6 +219,10 @@ function Table <RecordType extends Record<string, any>> ({
       : getFilteredData<RecordType>(
         dataSource, filterValues, activeFilters, searchables, searchValue)) ?? [])
   }, [dataSource, onDisplayRowChange, searchValue, filterValues])
+
+  useEffect(() => {
+    onPageFilterChange?.({ filterValues, searchValue }, true)
+  }, [])
 
   useEffect(() => {
     if (dataSource) {

@@ -1,12 +1,10 @@
-import { useContext } from 'react'
-
 import moment                     from 'moment-timezone'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { PageHeader, Tabs, RangePicker }                                   from '@acx-ui/components'
-import { useNavigate, useParams, useTenantLink }                           from '@acx-ui/react-router-dom'
-import { goToNotFound }                                                    from '@acx-ui/user'
-import { useDateFilter, LoadTimeContext, LoadTimeProvider, TrackingPages } from '@acx-ui/utils'
+import { PageHeader, Tabs, RangePicker }         from '@acx-ui/components'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { goToNotFound }                          from '@acx-ui/user'
+import { useDateFilter }                         from '@acx-ui/utils'
 
 import { Activities } from './Activities'
 import { AdminLogs }  from './AdminLogs'
@@ -17,14 +15,12 @@ function TimelineTabs () {
   const { activeTab } = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/timeline')
-  const { onPageTabChange } = useContext(LoadTimeContext)
 
   const onTabChange = (tab: string) => {
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
     })
-    onPageTabChange?.()
   }
 
   return (
@@ -50,23 +46,22 @@ function Timeline () {
     adminLogs: () => <AdminLogs />
   }
   const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
-  return (
-    <LoadTimeProvider page={TrackingPages.TIMELINE}>
-      <PageHeader
-        title={$t({ defaultMessage: 'Timeline' })}
-        breadcrumb={[{ text: $t({ defaultMessage: 'Administration' }) }]}
-        footer={<TimelineTabs />}
-        extra={[
-          <RangePicker
-            selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
-            onDateApply={setDateFilter as CallableFunction}
-            showTimePicker
-            selectionType={range}
-          />
-        ]}
-      />
-      {Tab && <Tab/>}
-    </LoadTimeProvider>
+  return (<>
+    <PageHeader
+      title={$t({ defaultMessage: 'Timeline' })}
+      breadcrumb={[{ text: $t({ defaultMessage: 'Administration' }) }]}
+      footer={<TimelineTabs />}
+      extra={[
+        <RangePicker
+          selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
+          onDateApply={setDateFilter as CallableFunction}
+          showTimePicker
+          selectionType={range}
+        />
+      ]}
+    />
+    {Tab && <Tab/>}
+  </>
   )
 }
 export default Timeline
