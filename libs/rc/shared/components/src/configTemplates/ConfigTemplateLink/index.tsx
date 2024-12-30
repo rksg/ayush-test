@@ -27,6 +27,7 @@ import { configTemplateDefaultDetailsTab } from './contentMap'
 type GeneralConfigTemplateLinkProps<T> = T & {
   children: ReactNode
   attachCurrentPathToState?: boolean
+  rbacOpsIds?: RbacOpsIds
 }
 
 interface ConfigTemplateLinkProps extends Omit<LinkProps, 'to'> {

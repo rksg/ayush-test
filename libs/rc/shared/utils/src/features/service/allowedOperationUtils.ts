@@ -1,6 +1,5 @@
-import { alarmList } from './../../../../components/src/EdgeInfoWidget/__tests__/fixtures';
-import { RbacOpsIds }     from '@acx-ui/types'
-import { getUserProfile, hasAllowedOperations } from '@acx-ui/user'
+import { RbacOpsIds }           from '@acx-ui/types'
+import { hasAllowedOperations } from '@acx-ui/user'
 
 import { useConfigTemplate } from '../../configTemplate'
 import { ServiceType }       from '../../constants'

@@ -35,6 +35,7 @@ export default function PortalServiceDetail () {
         breadcrumb={breadcrumb}
         extra={filterByAccess([
           <ServiceConfigTemplateDetailsLink
+            // eslint-disable-next-line max-len
             rbacOpsIds={useTemplateAwareServiceAllowedOperation(ServiceType.PORTAL, ServiceOperation.EDIT)}
             type={ServiceType.PORTAL}
             oper={ServiceOperation.EDIT}
