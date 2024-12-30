@@ -38,24 +38,16 @@ export const getServiceAllowedOperation = (
   return getAllowedOperation({ map: serviceAllowedOperationMap, type, oper, isTemplate })
 }
 
-// eslint-disable-next-line max-len
-export const useTemplateAwareServiceAllowedOperation = (type: ServiceType, oper: ServiceOperation) => {
-  const { isTemplate } = useConfigTemplate()
-  return getServiceAllowedOperation(type, oper, isTemplate)
-}
-
-export const hasSomeServicesPermission = (oper: ServiceOperation) => {
-  const allServices = Object.keys(serviceAllowedOperationMap)
-  return allServices.some(service => {
-    const allowedOperations = getServiceAllowedOperation(service as ServiceType, oper)
-    return allowedOperations ? hasAllowedOperations(allowedOperations) : false
-  })
-}
-
 export const getPolicyAllowedOperation = (
   type: PolicyType, oper: PolicyOperation, isTemplate?: boolean
 ): RbacOpsIds | undefined => {
   return getAllowedOperation({ map: policyAllowedOperationMap, type, oper, isTemplate })
+}
+
+// eslint-disable-next-line max-len
+export const useTemplateAwareServiceAllowedOperation = (type: ServiceType, oper: ServiceOperation) => {
+  const { isTemplate } = useConfigTemplate()
+  return getServiceAllowedOperation(type, oper, isTemplate)
 }
 
 // eslint-disable-next-line max-len
@@ -64,10 +56,22 @@ export const useTemplateAwarePolicyAllowedOperation = (type: PolicyType, oper: P
   return getPolicyAllowedOperation(type, oper, isTemplate)
 }
 
+export const hasSomeServicesPermission = (oper: ServiceOperation) => {
+  return hasSomeProfilesPermission(serviceAllowedOperationMap, oper, getServiceAllowedOperation)
+}
+
 export const hasSomePoliciesPermission = (oper: PolicyOperation) => {
-  const allPolicies = Object.keys(policyAllowedOperationMap)
-  return allPolicies.some(policy => {
-    const allowedOperations = getPolicyAllowedOperation(policy as PolicyType, oper)
+  hasSomeProfilesPermission(policyAllowedOperationMap, oper, getPolicyAllowedOperation)
+}
+
+export const hasSomeProfilesPermission = <T extends SvcPcyAllowedType, O extends SvcPcyAllowedOper>(
+  map: AllowedOperationMap<T, O>,
+  oper: O,
+  getProfileAllowdOperation: (type: T, oper: O, isTemplate?: boolean) => RbacOpsIds | undefined
+) => {
+  const allProfiles = Object.keys(map)
+  return allProfiles.some(profile => {
+    const allowedOperations = getProfileAllowdOperation(profile as T, oper)
     return allowedOperations ? hasAllowedOperations(allowedOperations) : false
   })
 }

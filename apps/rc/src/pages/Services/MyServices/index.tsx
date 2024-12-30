@@ -21,7 +21,7 @@ import {
 import {
   AddProfileButton,
   getSelectServiceRoutePath,
-  getServiceAllowedOperation,
+  hasSomeServicesPermission,
   isServiceCardEnabled,
   ServiceOperation,
   ServiceType
@@ -168,12 +168,10 @@ export default function MyServices () {
         title={$t({ defaultMessage: 'My Services' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
         extra={<AddProfileButton
-          items={services}
+          hasSomeProfilesPermission={hasSomeServicesPermission}
           operation={ServiceOperation.CREATE}
           linkText={$t({ defaultMessage: 'Add Service' })}
           targetPath={getSelectServiceRoutePath(true)}
-          // eslint-disable-next-line max-len
-          getAllowedOperation={(type: ServiceType, oper: ServiceOperation) => getServiceAllowedOperation(type, oper)}
         />}
       />
       <GridRow>

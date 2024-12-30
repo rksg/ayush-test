@@ -34,9 +34,9 @@ import {
   IncompatibilityFeatures,
   PolicyOperation,
   PolicyType,
-  getPolicyAllowedOperation,
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
+  hasSomePoliciesPermission,
   isPolicyCardEnabled,
   policyTypeDescMapping,
   policyTypeLabelMapping
@@ -83,12 +83,10 @@ export default function MyPolicies () {
         title={$t({ defaultMessage: 'Policies & Profiles' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
         extra={<AddProfileButton
-          items={policies}
+          hasSomeProfilesPermission={hasSomePoliciesPermission}
           operation={PolicyOperation.CREATE}
           linkText={$t({ defaultMessage: 'Add Policy or Profile' })}
           targetPath={getSelectPolicyRoutePath(true)}
-          // eslint-disable-next-line max-len
-          getAllowedOperation={(type: PolicyType, oper: PolicyOperation) => getPolicyAllowedOperation(type, oper)}
         />}
       />
       <GridRow>

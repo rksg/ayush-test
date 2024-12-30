@@ -6,6 +6,7 @@ import { ServiceType }     from '../../constants'
 import { PolicyType }      from '../../types'
 import { PolicyOperation } from '../policy'
 
+import { hasSomeServicesPermission }                                                                                                 from './allowedOperationUtils'
 import { AddProfileButton, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, getScopeKeyByService, hasServicePermission } from './servicePolicyAbacUtils'
 import { ServiceOperation }                                                                                                          from './serviceRouteUtils'
 
@@ -166,8 +167,7 @@ describe('servicePolicyAbacUtils', () => {
 
       render(
         <AddProfileButton
-          items={[{ type: ServiceType.WIFI_CALLING }]}
-          getAllowedOperation={() => ['POST:/wifiCallingServiceProfiles']}
+          hasSomeProfilesPermission={hasSomeServicesPermission}
           operation={ServiceOperation.CREATE}
           linkText={'Add Service'}
           targetPath={'/add-service'}
@@ -189,8 +189,7 @@ describe('servicePolicyAbacUtils', () => {
 
       render(
         <AddProfileButton
-          items={[{ type: ServiceType.WIFI_CALLING }]}
-          getAllowedOperation={() => ['POST:/wifiCallingServiceProfiles']}
+          hasSomeProfilesPermission={hasSomeServicesPermission}
           operation={ServiceOperation.CREATE}
           linkText={'Add Service'}
           targetPath={'/add-service'}
@@ -211,8 +210,7 @@ describe('servicePolicyAbacUtils', () => {
 
       render(
         <AddProfileButton
-          items={[{ type: ServiceType.WIFI_CALLING }]}
-          getAllowedOperation={() => ['POST:/wifiCallingServiceProfiles']}
+          hasSomeProfilesPermission={hasSomeServicesPermission}
           operation={ServiceOperation.CREATE}
           linkText={'Add Service'}
           targetPath={'/add-service'}
