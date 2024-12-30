@@ -39,6 +39,7 @@ import ApTabs from './ApTabs'
 
 function ApPageHeader () {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
 
   const { $t } = useIntl()
@@ -179,6 +180,7 @@ function ApPageHeader () {
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
             selectionType={range}
+            maxMonthRange={isDateRangeLimit ? 1 : 3}
           />
           : <></>,
         ...((isReadOnly) ? dropdown : filterByAccess(dropdown)),
