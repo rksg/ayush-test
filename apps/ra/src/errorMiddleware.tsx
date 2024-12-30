@@ -5,6 +5,17 @@ import { errorMessage }                            from '@acx-ui/utils'
 
 import type { AnyAction } from '@reduxjs/toolkit'
 
+// TODO: workaround for skipping general error dialog
+const ignoreEndpointList = [
+  'clientInfo',
+  'clientIncidentsInfo'
+]
+
+const shouldIgnoreErrorModal = (action?: AnyAction) => {
+  const endpoint = action?.meta?.arg?.endpointName || ''
+  return ignoreEndpointList.includes(endpoint)
+}
+
 export const errorMiddleware: Middleware = () => (next: CallableFunction) =>
   (action: AnyAction) => {
     const status = action.meta?.baseQueryMeta?.response?.status
@@ -12,7 +23,7 @@ export const errorMiddleware: Middleware = () => (next: CallableFunction) =>
       showExpiredSessionModal()
       return
     }
-    if (isRejectedWithValue(action)) {
+    if (isRejectedWithValue(action) && !shouldIgnoreErrorModal(action)) {
       switch (status) {
         case 400:
           showErrorModal(errorMessage.BAD_REQUEST, action)
