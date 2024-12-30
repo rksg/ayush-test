@@ -9,16 +9,12 @@ import {
   Loader
 } from '@acx-ui/components'
 import {
-  Features,
-  useIsSplitOn
-} from '@acx-ui/feature-toggle'
-import {
   useGetVenueApRebootTimeoutQuery,
   useUpdateVenueApRebootTimeoutMutation,
   useGetVenueTemplateApRebootTimeoutSettingsQuery,
   useUpdateVenueTemplateApRebootTimeoutSettingsMutation
 } from '@acx-ui/rc/services'
-import { VenueApRebootTimeout, useConfigTemplate } from '@acx-ui/rc/utils'
+import { VenueApRebootTimeout } from '@acx-ui/rc/utils'
 import {
   TimeoutHourEnum,
   TimeoutMinuteEnum
@@ -72,8 +68,6 @@ export function RebootTimeout () {
   const [rebootTimeoutGatewayEnabled, setRebootTimeoutGatewayEnabled] = useState(true)
   const [rebootTimeoutServerEnabled, setRebootTimeoutServerEnabled] = useState(true)
 
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-
   const {
     editContextData,
     setEditContextData,
@@ -92,8 +86,7 @@ export function RebootTimeout () {
 
   const venueApRebootTimeout = useVenueConfigTemplateQueryFnSwitcher<VenueApRebootTimeout>({
     useQueryFn: useGetVenueApRebootTimeoutQuery,
-    useTemplateQueryFn: useGetVenueTemplateApRebootTimeoutSettingsQuery,
-    enableRbac: isUseRbacApi
+    useTemplateQueryFn: useGetVenueTemplateApRebootTimeoutSettingsQuery
   })
 
   const toggleRebootTimeoutGateway = (checked: boolean) => {
