@@ -32,7 +32,7 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
   const [switchPortProfileLldpTlvsList] = useLazySwitchPortProfileLldpTlvsListQuery()
   const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
 
-  const nameDuplicateValidator = async (systemName: string) => {
+  const itemDuplicateValidator = async (lldpTlv: LldpTlvs) => {
     const list = (await switchPortProfileLldpTlvsList({
       payload: {
         page: '1',
@@ -40,11 +40,14 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
       }
     }).unwrap()).data
       .filter((n: LldpTlvs) => n.id !== editData?.id)
+      .filter((n: LldpTlvs) => n.systemDescription === lldpTlv.systemDescription)
+      .filter((n: LldpTlvs) => n.nameMatchingType === lldpTlv.nameMatchingType)
+      .filter((n: LldpTlvs) => n.descMatchingType === lldpTlv.descMatchingType)
       .map((n: LldpTlvs) =>
         ({ name: n.systemName.replace(/[^a-z0-9]/gi, '').toLowerCase() }))
     // eslint-disable-next-line max-len
-    return checkObjectNotExists(list, { name: systemName.replace(/[^a-z0-9]/gi, '').toLowerCase() } ,
-      intl.$t({ defaultMessage: 'LLDP TLV' }))
+    return checkObjectNotExists(list, { name: lldpTlv.systemName.replace(/[^a-z0-9]/gi, '').toLowerCase() } ,
+      intl.$t({ defaultMessage: 'LLDP TLV' }), intl.$t({ defaultMessage: 'value' }))
   }
 
   useEffect(()=>{
@@ -108,7 +111,7 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
         label={intl.$t({ defaultMessage: 'System Name' })}
         rules={[
           { required: true },
-          { validator: (_, value) => nameDuplicateValidator(value) }
+          { validator: () => itemDuplicateValidator(form.getFieldsValue()) }
         ]}
         validateFirst
         hasFeedback
