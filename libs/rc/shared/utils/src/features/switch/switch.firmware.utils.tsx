@@ -47,6 +47,10 @@ export const invalidVersionFor82Av = (version: string): boolean => {
   }
 }
 
+export const versionAbove10020a = (version: string): boolean => {
+  return !!version && _.isString(version) && isVerGEVer(version, '10020a', false)
+}
+
 export const getStackUnitsMinLimitation = (
   switchModel: string, firmwareVersion: string, firmwareVersionAboveTen: string): number => {
   if (switchModel?.includes('ICX8200')) {

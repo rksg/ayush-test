@@ -301,16 +301,14 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           ...req,
           body: JSON.stringify(payload)
         }
-      }
+      },
+      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }]
     }),
     deactivateSoftGreProfileOnVenue: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SoftGreUrls.deactivateSoftGreProfileOnVenue, params)
-        return {
-          ...req,
-          body: JSON.stringify(payload)
-        }
-      }
+      query: ({ params }) => {
+        return createHttpRequest(SoftGreUrls.deactivateSoftGreProfileOnVenue, params)
+      },
+      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }]
     }),
     activateSoftGreProfileOnAP: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -322,11 +320,10 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
       }
     }),
     deactivateSoftGreProfileOnAP: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params }) => {
         const req = createHttpRequest(SoftGreUrls.deactivateSoftGreProfileOnAP, params)
         return {
-          ...req,
-          body: JSON.stringify(payload)
+          ...req
         }
       }
     }),

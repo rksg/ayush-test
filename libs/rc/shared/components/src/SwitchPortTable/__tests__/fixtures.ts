@@ -463,7 +463,7 @@ export const portSetting = [{
 }, {
   dhcpSnoopingTrust: false,
   id: '58:fb:96:0e:82:8a/1/1/5',
-  ipsg: true,
+  ipsg: false,
   lldpEnable: false,
   lldpQos: [{
     applicationType: 'GUEST_VOICE',

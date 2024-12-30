@@ -67,6 +67,7 @@ function SwitchPageHeader () {
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
   const [getSwitchList] = useLazyGetSwitchListQuery()
   const [getSwitchVenueVersionList] = useLazyGetSwitchVenueVersionListQuery()
@@ -329,6 +330,7 @@ function SwitchPageHeader () {
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
             selectionType={range}
+            maxMonthRange={isDateRangeLimit ? 1 : 3}
           />,
           ...filterByAccess([
             <Dropdown overlay={menu}

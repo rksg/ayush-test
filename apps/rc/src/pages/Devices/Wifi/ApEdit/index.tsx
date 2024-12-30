@@ -224,6 +224,7 @@ const processApEditSettings = (props: ApEditSettingsProps) => {
       break
     case 'advanced':
       editAdvancedContextData.updateApLed?.()
+      editAdvancedContextData.updateApUsb?.()
       editAdvancedContextData.updateBssColoring?.()
       editAdvancedContextData.updateApManagementVlan?.()
       break
@@ -261,6 +262,7 @@ const discardApEditSettings = (props: ApEditSettingsProps) => {
       break
     case 'advanced':
       editAdvancedContextData.discardApLedChanges?.()
+      editAdvancedContextData.discardApUsbChanges?.()
       editAdvancedContextData.discardBssColoringChanges?.()
       editAdvancedContextData.discardApManagementVlan?.()
       break
@@ -334,6 +336,8 @@ const resetApEditContextData = (props: ApEditContextProps) => {
       const newAdvancedContextData = { ...editAdvancedContextData }
       delete newAdvancedContextData.updateApLed
       delete newAdvancedContextData.discardApLedChanges
+      delete newAdvancedContextData.updateApUsb
+      delete newAdvancedContextData.discardApUsbChanges
       delete newAdvancedContextData.updateBssColoring
       delete newAdvancedContextData.discardBssColoringChanges
       delete newAdvancedContextData.updateApManagementVlan
