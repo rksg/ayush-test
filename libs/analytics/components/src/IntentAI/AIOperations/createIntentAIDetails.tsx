@@ -10,11 +10,10 @@ import { DetailsSection }       from '../common/DetailsSection'
 import { IntentDetailsHeader }  from '../common/IntentDetailsHeader'
 import { IntentDetailsSidebar } from '../common/IntentDetailsSidebar'
 import { IntentIcon }           from '../common/IntentIcon'
-import { KpiCard }              from '../common/KpiCard'
+import { KPIGrid }              from '../common/KPIs'
 import { StatusTrail }          from '../common/StatusTrail'
 import { useIntentContext }     from '../IntentContext'
 import { getStatusTooltip }     from '../services'
-import { getGraphKPIs }         from '../useIntentDetailsQuery'
 
 import { ConfigurationCard }   from './ConfigurationCard'
 import { createUseValuesText } from './createUseValuesText'
@@ -26,7 +25,7 @@ export function createIntentAIDetails (
 ) {
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const { intent, kpis, state } = useIntentContext()
+    const { intent, state } = useIntentContext()
     const { displayStatus, sliceValue, metadata, updatedAt } = intent
     const valuesText = useValuesText()
     const fields = [
@@ -56,15 +55,10 @@ export function createIntentAIDetails (
                 <GridCol data-testid='Configuration' col={{ span: 12 }}>
                   <ConfigurationCard />
                 </GridCol>
-                {state !== 'no-data' && getGraphKPIs(intent, kpis).map(kpi => (
-                  <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
-                    <KpiCard kpi={kpi} />
-                  </GridCol>
-                ))}
+                {state !== 'no-data' && <KPIGrid/>}
               </GridRow>
             </DetailsSection.Details>
           </DetailsSection>
-
           {state !== 'no-data' ? <GridRow>
             <GridCol col={{ span: 12 }}>
               <DetailsSection data-testid='Benefits'>
