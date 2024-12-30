@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Tabs } from '@acx-ui/components'
@@ -23,6 +25,7 @@ const ProfileTabs = () => {
   const basePath = useTenantLink('/policies/portProfile')
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
+  const activeTab = !isEthernetPortProfileEnabled ? 'switch' : params.activeTab
   const navigate = useNavigate()
   const onTabChange = (tab: string) => {
     if (tab === 'switch') tab = `${tab}/profiles`
@@ -31,8 +34,15 @@ const ProfileTabs = () => {
       pathname: `${basePath.pathname}/${tab}`
     })
   }
+
+  useEffect(() => {
+    if (!isEthernetPortProfileEnabled) {
+      onTabChange('switch')
+    }
+  }, [isEthernetPortProfileEnabled])
+
   return (
-    <Tabs onChange={onTabChange} activeKey={params.activeTab}>
+    <Tabs onChange={onTabChange} activeKey={activeTab}>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Wi-Fi' })}
         key='wifi'

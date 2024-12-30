@@ -321,7 +321,7 @@ export function SwitchPortProfileForm () {
               validateFirst
               hasFeedback
               validateTrigger={'onBlur'}>
-              <Input style={{ width: '280px' }}/>
+              <Input style={{ width: '280px' }} disabled={editMode} />
             </Form.Item>
             <Form.Item
               name='untaggedVlan'
