@@ -11,7 +11,7 @@ import { AccessSwitch, DistributionSwitch, PersonalIdentityNetworkFormData }   f
 
 import { DistributionSwitchTable }            from '../DistributionSwitchForm/DistributionSwitchTable'
 import { Sub5Bold }                           from '../GeneralSettingsForm/styledComponents'
-import { TwoTier, Wireless }                  from '../NetworkTopologyForm'
+import { NetworkTopologyType }                from '../NetworkTopologyForm'
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 
 import { SmartEdgeTable, SmartEdgeTableData } from './SmartEdgeTable'
@@ -138,7 +138,7 @@ export const SummaryForm = () => {
       </>
     }
     {
-      !(isEdgePinEnhanceReady && networkTopologyType === Wireless) &&
+      !(isEdgePinEnhanceReady && networkTopologyType === NetworkTopologyType.Wireless) &&
       <>
         <Subtitle level={4}>
           { $t({ defaultMessage: 'Distribution Switch ({num})' },
@@ -157,7 +157,7 @@ export const SummaryForm = () => {
       </>
     }
     {
-      (isEdgePinEnhanceReady && networkTopologyType !== TwoTier) &&
+      (isEdgePinEnhanceReady && networkTopologyType !== NetworkTopologyType.TwoTier) &&
       <>
         <Subtitle level={4}>
           { $t({ defaultMessage: 'Wireless Network' }) }
