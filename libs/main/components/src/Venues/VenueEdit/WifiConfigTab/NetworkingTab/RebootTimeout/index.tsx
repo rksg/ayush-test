@@ -72,10 +72,7 @@ export function RebootTimeout () {
   const [rebootTimeoutGatewayEnabled, setRebootTimeoutGatewayEnabled] = useState(true)
   const [rebootTimeoutServerEnabled, setRebootTimeoutServerEnabled] = useState(true)
 
-  const { isTemplate } = useConfigTemplate()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const resolvedRbacEnabled = isTemplate ? enableTemplateRbac : isUseRbacApi
 
   const {
     editContextData,
@@ -173,8 +170,7 @@ export function RebootTimeout () {
 
       await updateVenueApRebootTimeout({
         params: { venueId },
-        payload: payload,
-        enableRbac: resolvedRbacEnabled
+        payload: payload
       }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
