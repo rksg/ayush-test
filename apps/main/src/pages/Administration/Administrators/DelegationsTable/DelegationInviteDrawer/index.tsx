@@ -12,9 +12,9 @@ import {
 } from '@acx-ui/rc/services'
 import {
   sfdcEmailRegExp,
-  CommonErrorsResult,
-  CatchErrorDetails
+  CommonErrorsResult
 } from '@acx-ui/rc/utils'
+import { CatchErrorDetails } from '@acx-ui/utils'
 
 interface DelegationInviteDrawerProps {
   visible: boolean

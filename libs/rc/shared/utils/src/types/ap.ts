@@ -486,7 +486,7 @@ export interface LanPort {
   vni: number,
   ethernetPortProfileId?: string,
   softGreProfileId?: string,
-  softGreTunnelEnable?: boolean,
+  softGreEnabled?: boolean,
   dhcpOption82?: LanPortSoftGreProfileSettings,
   clientIsolationProfileId?: string,
   clientIsolationEnabled?: boolean,
@@ -540,7 +540,8 @@ export interface CapabilitiesApModel {
   supportAggressiveTxPower?: boolean,
   supportAutoCellSizing?: boolean,
   supportSmartMonitor?: boolean,
-  supportMesh5GOnly6GOnly?: boolean
+  supportMesh5GOnly6GOnly?: boolean,
+  usbPowerEnable?: boolean
 }
 
 export interface PingAp {
@@ -591,6 +592,11 @@ export interface ApLanPort {
 
 export interface ApLedSettings {
   ledEnabled: boolean,
+  useVenueSettings: boolean
+}
+
+export interface ApUsbSettings {
+  usbPortEnable: boolean,
   useVenueSettings: boolean
 }
 
@@ -1029,7 +1035,7 @@ export interface LanPortClientIsolationSettings {
   autoVrrp: boolean
 }
 
-export interface LanPortVenueSettings {
+export interface VenueLanPortSettings {
   portId?: number
   enabled?: boolean
   softGreEnabled?: boolean
@@ -1038,7 +1044,7 @@ export interface LanPortVenueSettings {
   clientIsolationSettings?: LanPortClientIsolationSettings
 }
 
-export interface LanPortAPSettings extends LanPortVenueSettings {
+export interface APLanPortSettings extends VenueLanPortSettings {
   overwriteUntagId?: number
   overwriteVlanMembers?: string
 }
