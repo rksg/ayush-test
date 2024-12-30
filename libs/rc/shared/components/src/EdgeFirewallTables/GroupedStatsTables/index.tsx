@@ -16,6 +16,7 @@ import { useDateFilter } from '@acx-ui/utils'
 import { DDoSRulesTable }        from './DDoSRulesTable'
 import { StatefulACLRulesTable } from './StatefulACLRulesTable'
 import * as UI                   from './styledComponents'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 interface GroupedStatsTablesProps {
   className?: string;
@@ -30,6 +31,7 @@ export const GroupedStatsTables =
     const { startDate, endDate, range, setDateFilter } = useDateFilter()
     const [aclDirection, setACLDirection] = useState(ACLDirection.INBOUND)
     const directionOpts = getACLDirectionOptions($t)
+    const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
     const handleACLDirectionChange = (val:ACLDirection) => {
       setACLDirection(val)
@@ -51,6 +53,7 @@ export const GroupedStatsTables =
             selectionType={range}
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
+            maxMonthRange={isDateRangeLimit ? 1 : 3}
           />
         </UI.ActionsContainer>
         <DDoSRulesTable
@@ -81,6 +84,7 @@ export const GroupedStatsTables =
             selectionType={range}
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
+            maxMonthRange={isDateRangeLimit ? 1 : 3}
           />
         </UI.ActionsContainer>
         <StatefulACLRulesTable
