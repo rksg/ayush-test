@@ -55,6 +55,7 @@ import {
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
   getServiceRoutePath,
+  hasSomePoliciesPermission,
   hasSomeServicesPermission,
   PolicyAuthRoute,
   PolicyOperation,
@@ -880,7 +881,13 @@ function PolicyRoutes () {
     <Route path=':tenantId/t'>
       <Route path='*' element={<PageNotFound />} />
       <Route path={getPolicyListRoutePath()} element={<MyPolicies />} />
-      <Route path={getSelectPolicyRoutePath()} element={<SelectPolicyForm />} />
+      <Route path={getSelectPolicyRoutePath()}
+        element={getUserProfile().rbacOpsApiEnabled
+          // eslint-disable-next-line max-len
+          ? hasSomePoliciesPermission(PolicyOperation.CREATE) ? <SelectPolicyForm /> : goToNoPermission()
+          : <SelectPolicyForm />
+        }
+      />
       <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}

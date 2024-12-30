@@ -30,7 +30,6 @@ export const applyTemplateIfNeeded = (
     }
     return item
   })
-
 }
 
 export const getServiceAllowedOperation = (
@@ -63,4 +62,12 @@ export const getPolicyAllowedOperation = (
 export const useTemplateAwarePolicyAllowedOperation = (type: PolicyType, oper: PolicyOperation) => {
   const { isTemplate } = useConfigTemplate()
   return getPolicyAllowedOperation(type, oper, isTemplate)
+}
+
+export const hasSomePoliciesPermission = (oper: PolicyOperation) => {
+  const allPolicies = Object.keys(policyAllowedOperationMap)
+  return allPolicies.some(policy => {
+    const allowedOperations = getPolicyAllowedOperation(policy as PolicyType, oper)
+    return allowedOperations ? hasAllowedOperations(allowedOperations) : false
+  })
 }
