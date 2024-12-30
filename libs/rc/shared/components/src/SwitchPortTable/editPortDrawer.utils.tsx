@@ -192,7 +192,7 @@ export const getPortProfileOptions = (portProfilesList?: PortProfilesBySwitchId[
 
   return [
     { label: $t({ defaultMessage: 'None' }), value: '', disabled: false },
-    ...sortOptions(options)
+    ...options
   ] as DefaultOptionType[]
 }
 
