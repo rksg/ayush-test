@@ -4,7 +4,7 @@ import { MaybePromise }                                       from '@reduxjs/too
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { reduce }                                             from 'lodash'
 
-import { Filter }                   from '@acx-ui/components'
+import { Filter }                  from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
