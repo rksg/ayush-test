@@ -69,7 +69,8 @@ export function RebootTimeout () {
   const colSpan = 8
   const { $t } = useIntl()
   const { venueId } = useParams()
-  const [rebootTimeoutEnabled, setRebootTimeoutEnabled] = useState(true)
+  const [rebootTimeoutGatewayEnabled, setRebootTimeoutGatewayEnabled] = useState(true)
+  const [rebootTimeoutServerEnabled, setRebootTimeoutServerEnabled] = useState(true)
 
   const { isTemplate } = useConfigTemplate()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
@@ -98,13 +99,17 @@ export function RebootTimeout () {
     enableRbac: isUseRbacApi
   })
 
-  const toggleRebootTimeout = (checked: boolean) => {
-    setRebootTimeoutEnabled(checked)
+  const toggleRebootTimeoutGateway = (checked: boolean) => {
+    setRebootTimeoutGatewayEnabled(checked)
   }
 
+  const toggleRebootTimeoutServer = (checked: boolean) => {
+    setRebootTimeoutServerEnabled(checked)
+  }
   const fieldDataKey = ['rebootTimeout']
 
-  const rebootTimeoutEnabledFieldName = [...fieldDataKey, 'enabled']
+  const rebootTimeoutGatewayEnabledFieldName = [...fieldDataKey, 'gateway', 'enabled']
+  const rebootTimeoutServerEnabledFieldName = [...fieldDataKey, 'server', 'enabled']
   const rebootTimeoutGwLossHourFieldName = [
     ...fieldDataKey,
     'gwLossTimeout',
@@ -135,9 +140,15 @@ export function RebootTimeout () {
       // form.setFieldsValue({ rebootTimeout: venueApRebootTimeoutData })
       form.setFieldsValue({
         rebootTimeout: {
+          gateway: {
+            enabled: venueApRebootTimeoutData.gwLossTimeout > 0
+          },
           gwLossTimeout: {
             hour: Math.floor(venueApRebootTimeoutData.gwLossTimeout / 3600),
             minute: Math.floor((venueApRebootTimeoutData.gwLossTimeout % 3600) / 60)
+          },
+          server: {
+            enabled: venueApRebootTimeoutData.serverLossTimeout > 0
           },
           serverLossTimeout: {
             hour: Math.floor(venueApRebootTimeoutData.serverLossTimeout / 3600),
@@ -155,9 +166,10 @@ export function RebootTimeout () {
       const formData =
         form.getFieldsValue().rebootTimeout
       let payload: VenueApRebootTimeout = {
-        gwLossTimeout: formData.gwLossTimeout.hour * 60 * 60 + formData.gwLossTimeout.minute * 60,
         // eslint-disable-next-line max-len
-        serverLossTimeout: formData.serverLossTimeout.hour * 60 * 60 + formData.serverLossTimeout.minute * 60
+        gwLossTimeout: formData.gateway.enabled ? formData.gwLossTimeout.hour * 60 * 60 + formData.gwLossTimeout.minute * 60 : 0,
+        // eslint-disable-next-line max-len
+        serverLossTimeout: formData.server.enabled ? formData.serverLossTimeout.hour * 60 * 60 + formData.serverLossTimeout.minute * 60 : 0
       }
 
       await updateVenueApRebootTimeout({
@@ -200,103 +212,124 @@ export function RebootTimeout () {
         <Col span={colSpan}>
           <FieldLabel width='200px'>
             <Space>
-              {$t({ defaultMessage: 'Reboot Timeout' })}
+              {$t({ defaultMessage: 'Default gateway' })}
             </Space>
             <Form.Item
-              name={rebootTimeoutEnabledFieldName}
+              name={rebootTimeoutGatewayEnabledFieldName}
               valuePropName={'checked'}
               initialValue={true}
               children={
                 <Switch
-                  checked={rebootTimeoutEnabled}
+                  checked={rebootTimeoutGatewayEnabled}
                   onChange={handleChanged}
-                  onClick={toggleRebootTimeout}
+                  onClick={toggleRebootTimeoutGateway}
                 />
               }
             />
           </FieldLabel>
         </Col>
       </Row>
-      {rebootTimeoutEnabled && (
-        <>
-          <Row>
-            <Space size={40}>
-              <Form.Item
-                // eslint-disable-next-line max-len
-                label={$t({ defaultMessage: 'Reboot AP if it cannot reach default gateway after' })}
-              >
-                <Space align='center'>
-                  <Form.Item
-                    noStyle
-                    name={rebootTimeoutGwLossHourFieldName}
-                    initialValue={0}
-                  >
-                    <Select
-                      style={{ width: '60px' }}
-                      onChange={handleChanged}>{HourTypeOptions.map(option => {
-                        const { value, label } = option
-                        return <Select.Option key={value} value={value}>{$t(label)}</Select.Option>
-                      })}
-                    </Select>
-                  </Form.Item>
-                  <div>{$t({ defaultMessage: 'hours' })}</div>
-                  <Form.Item
-                    noStyle
-                    name={rebootTimeoutGwLossMinuteFieldName}
-                    initialValue={30}
-                  >
-                    <Select
-                      style={{ width: '60px' }}
-                      onChange={handleChanged}>{MinuteTypeOptions.map(option => {
-                        const { value, label } = option
-                        return <Select.Option key={value} value={value}>{$t(label)}</Select.Option>
-                      })}
-                    </Select>
-                  </Form.Item>
-                  <div>{$t({ defaultMessage: 'minutes' })}</div>
-                </Space>
-              </Form.Item>
+      {rebootTimeoutGatewayEnabled && (
+        <Row>
+          <Space size={40}>
+            <Form.Item
+              // eslint-disable-next-line max-len
+              label={$t({ defaultMessage: 'Reboot AP if it cannot reach default gateway after' })}
+            >
+              <Space align='center'>
+                <Form.Item
+                  noStyle
+                  name={rebootTimeoutGwLossHourFieldName}
+                  initialValue={0}
+                >
+                  <Select
+                    style={{ width: '60px' }}
+                    onChange={handleChanged}>{HourTypeOptions.map(option => {
+                      const { value, label } = option
+                      return <Select.Option key={value} value={value}>{$t(label)}</Select.Option>
+                    })}
+                  </Select>
+                </Form.Item>
+                <div>{$t({ defaultMessage: 'hours' })}</div>
+                <Form.Item
+                  noStyle
+                  name={rebootTimeoutGwLossMinuteFieldName}
+                  initialValue={30}
+                >
+                  <Select
+                    style={{ width: '60px' }}
+                    onChange={handleChanged}>{MinuteTypeOptions.map(option => {
+                      const { value, label } = option
+                      return <Select.Option key={value} value={value}>{$t(label)}</Select.Option>
+                    })}
+                  </Select>
+                </Form.Item>
+                <div>{$t({ defaultMessage: 'minutes' })}</div>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Row>
+      )}
+      <Row gutter={0}>
+        <Col span={colSpan}>
+          <FieldLabel width='200px'>
+            <Space>
+              {$t({ defaultMessage: 'The controller' })}
             </Space>
-          </Row>
-          <Row>
-            <Space size={40}>
-              <Form.Item
-                label={$t({ defaultMessage: 'Reboot AP if it cannot reach the controller after' })}
-              >
-                <Space align='center'>
-                  <Form.Item
-                    noStyle
-                    name={rebootTimeoutServerLossHourFieldName}
-                    initialValue={2}
-                  >
-                    <Select
-                      style={{ width: '60px' }}
-                      onChange={handleChanged}>{HourTypeOptions.map(option => {
-                        const { value, label } = option
-                        return <Select.Option key={value} value={value}>{$t(label)}</Select.Option>
-                      })}
-                    </Select>
-                  </Form.Item>
-                  <div>{$t({ defaultMessage: 'hours' })}</div>
-                  <Form.Item
-                    noStyle
-                    name={rebootTimeoutServerLossMinuteFieldName}
-                    initialValue={0}
-                  >
-                    <Select
-                      style={{ width: '60px' }}
-                      onChange={handleChanged}>{MinuteTypeOptions.map(option => {
-                        const { value, label } = option
-                        return <Select.Option key={value} value={value}>{$t(label)}</Select.Option>
-                      })}
-                    </Select>
-                  </Form.Item>
-                  <div>{$t({ defaultMessage: 'minutes' })}</div>
-                </Space>
-              </Form.Item>
-            </Space>
-          </Row>
-        </>
+            <Form.Item
+              name={rebootTimeoutServerEnabledFieldName}
+              valuePropName={'checked'}
+              initialValue={true}
+              children={
+                <Switch
+                  checked={rebootTimeoutServerEnabled}
+                  onChange={handleChanged}
+                  onClick={toggleRebootTimeoutServer}
+                />
+              }
+            />
+          </FieldLabel>
+        </Col>
+      </Row>
+      {rebootTimeoutServerEnabled && (
+        <Row>
+          <Space size={40}>
+            <Form.Item
+              label={$t({ defaultMessage: 'Reboot AP if it cannot reach the controller after' })}
+            >
+              <Space align='center'>
+                <Form.Item
+                  noStyle
+                  name={rebootTimeoutServerLossHourFieldName}
+                  initialValue={2}
+                >
+                  <Select
+                    style={{ width: '60px' }}
+                    onChange={handleChanged}>{HourTypeOptions.map(option => {
+                      const { value, label } = option
+                      return <Select.Option key={value} value={value}>{$t(label)}</Select.Option>
+                    })}
+                  </Select>
+                </Form.Item>
+                <div>{$t({ defaultMessage: 'hours' })}</div>
+                <Form.Item
+                  noStyle
+                  name={rebootTimeoutServerLossMinuteFieldName}
+                  initialValue={0}
+                >
+                  <Select
+                    style={{ width: '60px' }}
+                    onChange={handleChanged}>{MinuteTypeOptions.map(option => {
+                      const { value, label } = option
+                      return <Select.Option key={value} value={value}>{$t(label)}</Select.Option>
+                    })}
+                  </Select>
+                </Form.Item>
+                <div>{$t({ defaultMessage: 'minutes' })}</div>
+              </Space>
+            </Form.Item>
+          </Space>
+        </Row>
       )}
     </Loader>
   )
