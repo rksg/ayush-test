@@ -1,170 +1,197 @@
 import { TreeDataNode } from 'antd'
+import { IntlShape }    from 'react-intl'
 
-export const incidentsTree: TreeDataNode[] = [
-  {
-    key: 'i-0',
-    title: 'Severity',
-    children: [
-      {
-        key: 'i-0-0',
-        title: 'P1'
-      },
-      {
-        key: 'i-0-1',
-        title: 'P2'
-      },
-      {
-        key: 'i-0-2',
-        title: 'P3'
-      },
-      {
-        key: 'i-0-3',
-        title: 'P4'
-      }
-    ]
+import { WebhookActivityEnum, WebhookEventEnum, WebhookIncidentEnum, WebhookPayloadEnum } from '@acx-ui/rc/utils'
+
+export const getIncidentsTree = ($t: IntlShape['$t']) => {
+  return [
+    {
+      key: 'incident-severity',
+      title: $t({ defaultMessage: 'Severity' }),
+      children: [
+        {
+          key: WebhookIncidentEnum.SEVERITY_P1,
+          title: $t({ defaultMessage: 'P1' })
+        },
+        {
+          key: WebhookIncidentEnum.SEVERITY_P2,
+          title: $t({ defaultMessage: 'P2' })
+        },
+        {
+          key: WebhookIncidentEnum.SEVERITY_P3,
+          title: $t({ defaultMessage: 'P3' })
+        },
+        {
+          key: WebhookIncidentEnum.SEVERITY_P4,
+          title: $t({ defaultMessage: 'P4' })
+        }
+      ]
+    } as TreeDataNode
+  ]}
+export const getActivitiesTree = ($t: IntlShape['$t']) => {
+  return [
+    {
+      key: 'activity-product',
+      title: $t({ defaultMessage: 'Products' }),
+      children: [
+        {
+          key: WebhookActivityEnum.PRODUCT_GENERAL,
+          title: $t({ defaultMessage: 'General' })
+        },
+        {
+          key: WebhookActivityEnum.PRODUCT_WIFI,
+          title: $t({ defaultMessage: 'Wi-Fi' })
+        },
+        {
+          key: WebhookActivityEnum.PRODUCT_SWITCH,
+          title: $t({ defaultMessage: 'Switch' })
+        },
+        {
+          key: WebhookActivityEnum.PRODUCT_EDGE,
+          title: $t({ defaultMessage: 'RUCKUS Edge' })
+        }
+      ]
+    } as TreeDataNode
+  ]}
+export const getEventsTree = ($t: IntlShape['$t']) => {
+  return [
+    {
+      key: 'event-severity',
+      title: $t({ defaultMessage: 'Severity' }),
+      children: [
+        {
+          key: WebhookEventEnum.SEVERITY_CRITICAL,
+          title: $t({ defaultMessage: 'Critical' })
+        },
+        {
+          key: WebhookEventEnum.SEVERITY_MAJOR,
+          title: $t({ defaultMessage: 'Major' })
+        },
+        {
+          key: WebhookEventEnum.SEVERITY_MINOR,
+          title: $t({ defaultMessage: 'Minor' })
+        },
+        {
+          key: WebhookEventEnum.SEVERITY_WARNING,
+          title: $t({ defaultMessage: 'Warning' })
+        },
+        {
+          key: WebhookEventEnum.SEVERITY_INFO,
+          title: $t({ defaultMessage: 'Informational' })
+        }
+      ]
+    } as TreeDataNode,
+    {
+      key: 'event-type',
+      title: $t({ defaultMessage: 'Event Types' }),
+      children: [
+        {
+          key: WebhookEventEnum.TYPE_AP,
+          title: $t({ defaultMessage: 'AP' })
+        },
+        {
+          key: WebhookEventEnum.TYPE_SECURITY,
+          title: $t({ defaultMessage: 'Security' })
+        },
+        {
+          key: WebhookEventEnum.TYPE_CLIENT,
+          title: $t({ defaultMessage: 'Client' })
+        },
+        {
+          key: WebhookEventEnum.TYPE_SWITCH,
+          title: $t({ defaultMessage: 'Switch' })
+        },
+        {
+          key: WebhookEventEnum.TYPE_NETWORK,
+          title: $t({ defaultMessage: 'Network' })
+        },
+        {
+          key: WebhookEventEnum.TYPE_EDGE,
+          title: $t({ defaultMessage: 'RUCKUS Edge' })
+        },
+        {
+          key: WebhookEventEnum.TYPE_PROFILE,
+          title: $t({ defaultMessage: 'Profile' })
+        }
+      ]
+    } as TreeDataNode,
+    {
+      key: 'event-product',
+      title: $t({ defaultMessage: 'Products' }),
+      children: [
+        {
+          key: WebhookEventEnum.PRODUCT_GENERAL,
+          title: $t({ defaultMessage: 'General' })
+        },
+        {
+          key: WebhookEventEnum.PRODUCT_WIFI,
+          title: $t({ defaultMessage: 'Wi-Fi' })
+        },
+        {
+          key: WebhookEventEnum.PRODUCT_SWITCH,
+          title: $t({ defaultMessage: 'Switch' })
+        },
+        {
+          key: WebhookEventEnum.PRODUCT_EDGE,
+          title: $t({ defaultMessage: 'RUCKUS Edge' })
+        }
+      ]
+    } as TreeDataNode
+  ]}
+export const getAdminLogsTree = ($t: IntlShape['$t']) => {
+  return [
+    {
+      key: 'adminLog-type',
+      title: $t({ defaultMessage: 'Event Types' }),
+      children: [
+        {
+          key: 'al-0-0',
+          title: $t({ defaultMessage: 'AP' })
+        },
+        {
+          key: 'al-0-1',
+          title: $t({ defaultMessage: 'Security' })
+        },
+        {
+          key: 'al-0-2',
+          title: $t({ defaultMessage: 'Client' })
+        },
+        {
+          key: 'al-0-3',
+          title: $t({ defaultMessage: 'Switch' })
+        },
+        {
+          key: 'al-0-4',
+          title: $t({ defaultMessage: 'Network' })
+        },
+        {
+          key: 'al-0-5',
+          title: $t({ defaultMessage: 'RUCKUS Edge' })
+        },
+        {
+          key: 'al-0-6',
+          title: $t({ defaultMessage: 'Profile' })
+        }
+      ]
+    } as TreeDataNode
+  ]}
+export const getWebhookPayloadEnumString = ($t: IntlShape['$t'], payload: WebhookPayloadEnum) => {
+  switch (payload) {
+    case WebhookPayloadEnum.RUCKUS:
+      return $t({ defaultMessage: 'RUCKUS One' })
+    case WebhookPayloadEnum.DATADOG:
+      return $t({ defaultMessage: 'DataDog' })
+    case WebhookPayloadEnum.MICROSOFT_TEAM:
+      return $t({ defaultMessage: 'Microsoft Teams' })
+    case WebhookPayloadEnum.PAGERDUTY:
+      return $t({ defaultMessage: 'PagerDuty' })
+    case WebhookPayloadEnum.SERVICE_NOW:
+      return $t({ defaultMessage: 'ServiceNow' })
+    case WebhookPayloadEnum.SLACK:
+      return $t({ defaultMessage: 'Slack' })
+    case WebhookPayloadEnum.SPLUNK:
+      return $t({ defaultMessage: 'Splunk' })
+    default:
+      return ''
   }
-]
-export const activitiesTree: TreeDataNode[] = [
-  {
-    key: 'a-0',
-    title: 'Products',
-    children: [
-      {
-        key: 'a-0-0',
-        title: 'General'
-      },
-      {
-        key: 'a-0-1',
-        title: 'Wi-Fi'
-      },
-      {
-        key: 'a-0-2',
-        title: 'Switch'
-      },
-      {
-        key: 'a-0-3',
-        title: 'RUCKUS Edge'
-      }
-    ]
-  }
-]
-export const eventsTree: TreeDataNode[] = [
-  {
-    key: 'e-0',
-    title: 'Severity',
-    children: [
-      {
-        key: 'e-0-0',
-        title: 'Critical'
-      },
-      {
-        key: 'e-0-1',
-        title: 'Major'
-      },
-      {
-        key: 'e-0-2',
-        title: 'Minor'
-      },
-      {
-        key: 'e-0-3',
-        title: 'Warning'
-      },
-      {
-        key: 'e-0-4',
-        title: 'Informational'
-      }
-    ]
-  },
-  {
-    key: '1',
-    title: 'Event Types',
-    children: [
-      {
-        key: '1-0',
-        title: 'AP'
-      },
-      {
-        key: '1-1',
-        title: 'Security'
-      },
-      {
-        key: '1-2',
-        title: 'Client'
-      },
-      {
-        key: '1-3',
-        title: 'Switch'
-      },
-      {
-        key: '1-4',
-        title: 'Network'
-      },
-      {
-        key: '1-5',
-        title: 'RUCKUS Edge'
-      },
-      {
-        key: '1-6',
-        title: 'Profile'
-      }
-    ]
-  },
-  {
-    key: '2',
-    title: 'Products',
-    children: [
-      {
-        key: '2-0',
-        title: 'General'
-      },
-      {
-        key: '2-1',
-        title: 'Wi-Fi'
-      },
-      {
-        key: '2-2',
-        title: 'Switch'
-      },
-      {
-        key: '2-3',
-        title: 'RUCKUS Edge'
-      }
-    ]
-  }
-]
-export const adminLogsTree: TreeDataNode[] = [
-  {
-    key: 'al-0',
-    title: 'Event Types',
-    children: [
-      {
-        key: 'al-0-0',
-        title: 'AP'
-      },
-      {
-        key: 'al-0-1',
-        title: 'Security'
-      },
-      {
-        key: 'al-0-2',
-        title: 'Client'
-      },
-      {
-        key: 'al-0-3',
-        title: 'Switch'
-      },
-      {
-        key: 'al-0-4',
-        title: 'Network'
-      },
-      {
-        key: 'al-0-5',
-        title: 'RUCKUS Edge'
-      },
-      {
-        key: 'al-0-6',
-        title: 'Profile'
-      }
-    ]
-  }
-]
+}

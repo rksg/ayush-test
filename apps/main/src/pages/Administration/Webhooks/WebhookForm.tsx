@@ -1,111 +1,123 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { FetchBaseQueryError }                   from '@reduxjs/toolkit/query'
-import { Form, FormInstance, FormProps, Switch } from 'antd'
-import _                                         from 'lodash'
-import { useIntl }                               from 'react-intl'
+import { Form, FormProps, Switch } from 'antd'
+import { useIntl }                 from 'react-intl'
 
-import type { Webhook, WebhookDto } from '@acx-ui/analytics/components'
-import {
-  useCreateWebhookMutation,
-  useUpdateWebhookMutation,
-  webhookDtoKeys
-} from '@acx-ui/analytics/components'
-import { handleError }        from '@acx-ui/analytics/components'
-import { incidentSeverities } from '@acx-ui/analytics/utils'
 import {
   Drawer,
   DrawerProps,
-  showToast,
   Tabs
 } from '@acx-ui/components'
+import { useAddWebhookMutation, useUpdateWebhookMutation, useGetWebhookEntryQuery }                               from '@acx-ui/rc/services'
+import { Webhook, WebhookActivityEnum, WebhookEventEnum, WebhookIncidentEnum, WebhookPayloadEnum, WebhookRecord } from '@acx-ui/rc/utils'
 
-import SettingsTab                                                  from './SettingsTab'
-import * as UI                                                      from './styledComponents'
-import { activitiesTree, adminLogsTree, eventsTree, incidentsTree } from './webhookConfig'
-import WebhookFormTab                                               from './WebhookFormTab'
+// import { fakeWebhookEntry }                                                     from './__tests__/fixtures'
+import SettingsTab                                                              from './SettingsTab'
+import * as UI                                                                  from './styledComponents'
+import { getAdminLogsTree, getEventsTree, getActivitiesTree, getIncidentsTree } from './webhookConfig'
+import WebhookFormTab                                                           from './WebhookFormTab'
 
-import type { DefaultOptionType } from 'antd/lib/select'
+const incidentProps = [ ...new Set(Object.keys(WebhookIncidentEnum).map(key =>
+  key.slice(0, key.indexOf('_')))) ]
 
-const severities = Object.keys(incidentSeverities).map(key => ({
-  key,
-  value: [
-    `incident_create_${key.toLowerCase()}`,
-    `incident_update_${key.toLowerCase()}`
-  ]
-}))
+const activityProps = [ ...new Set(Object.keys(WebhookActivityEnum).map(key =>
+  key.slice(0, key.indexOf('_')))) ]
 
-const initialValues = {
-  enabled: true,
-  eventTypes: severities.flatMap(v => v.value)
-} as Partial<Webhook> as Webhook
-
-
-function useWebhookMutation (
-  webhook?: Webhook | null
-) {
-  const [doCreate, createResponse] = useCreateWebhookMutation()
-  const [doUpdate, updateResponse] = useUpdateWebhookMutation()
-
-  return webhook
-    ? { submit: doUpdate, response: updateResponse }
-    : { submit: doCreate, response: createResponse }
-}
+const eventProps = [ ...new Set(Object.keys(WebhookEventEnum).map(key =>
+  key.slice(0, key.indexOf('_')))) ]
 
 export function WebhookForm (props: {
-  webhook?: Webhook | null
-  onClose: () => void
+  visible: boolean
+  setVisible: (visible: boolean) => void
+  selected?: Webhook
 }) {
-  const { submit, response } = useWebhookMutation(props.webhook)
-  const webhook = props.webhook || initialValues
   const { $t } = useIntl()
-  const [form] = Form.useForm<WebhookDto>()
+  const [form] = Form.useForm<Webhook>()
   const [currentTab, setCurrentTab] = useState('settings')
+  const [settings, setSettings] = useState<WebhookRecord>()
+  const [incidents, setIncidents] = useState<string[]>([])
+  const [activities, setActivities] = useState<string[]>([])
+  const [events, setEvents] = useState<string[]>([])
+  const [adminLogs, setAdminLogs] = useState<string[]>([])
+  const [enabled, setEnabled] = useState<boolean>()
+  const webhook = useGetWebhookEntryQuery({ id: props.selected?.id }, { skip: !props.selected })
+  // const webhook = props.selected ? { data: fakeWebhookEntry } : undefined
+  const [addWebhook] = useAddWebhookMutation()
+  const [updateWebhook] = useUpdateWebhookMutation()
+
+
+  const setWebhookEditValues = (data: WebhookRecord) => {
+    setSettings({
+      ...data,
+      payload: WebhookPayloadEnum[data.payload as keyof typeof WebhookPayloadEnum]
+    })
+    const incidents = incidentProps.flatMap(prop => data.incident[prop.toLowerCase()]?.map(i =>
+      WebhookIncidentEnum[(prop + '_' + i) as keyof typeof WebhookIncidentEnum]))
+    const activities = activityProps.flatMap(prop => data.activity[prop.toLowerCase()]?.map(a =>
+      WebhookActivityEnum[(prop + '_' + a) as keyof typeof WebhookActivityEnum]))
+    const events = eventProps.flatMap(prop => data.event[prop.toLowerCase()]?.map(e =>
+      WebhookEventEnum[(prop + '_' + e) as keyof typeof WebhookEventEnum]))
+    setIncidents(incidents)
+    setActivities(activities)
+    setEvents(events)
+    setEnabled(data.status === 'ON' ? true : false)
+  }
+
+  useEffect(() => {
+    if (webhook?.data) {
+      setWebhookEditValues(webhook.data)
+    }
+  },[webhook?.data])
 
   const onClose = useCallback(() => {
     form.resetFields()
-    props.onClose()
-  }, [form, props.onClose])
+    props.setVisible(false)
+  }, [form, props.setVisible])
 
   // reset form fields every time user choose to edit/create record
-  useEffect(() => { form.resetFields() }, [form, props.webhook?.id])
+  useEffect(() => { form.resetFields() }, [form, props.selected?.id, settings])
 
-  useEffect(() => {
-    if (response.isSuccess) {
-      onClose()
-      showToast({
-        type: 'success',
-        content: webhook?.id
-          ? $t({ defaultMessage: 'Webhook was updated' })
-          : $t({ defaultMessage: 'Webhook was created' })
-      })
-    }
-
-    if (response.isError) {
-      handleError(
-        response.error as FetchBaseQueryError,
-        webhook?.id
-          ? $t({ defaultMessage: 'Failed to update webhook' })
-          : $t({ defaultMessage: 'Failed to create webhook' })
-      )
-    }
-
-    // reset mutation response everytime submission ended
-    const isEnded = response.isSuccess || response.isError
-    if (isEnded) response.reset()
-  }, [$t, onClose, response, webhook?.id])
-
-  const formProps: FormProps<WebhookDto> = {
+  const formProps: FormProps<Webhook> = {
     layout: 'vertical',
     form,
-    initialValues: _.pick(webhook, webhookDtoKeys) as Partial<WebhookDto>
+    initialValues: settings
   }
 
   const onSave = async () => {
     try {
       await form.validateFields()
-      const values = form.getFieldsValue()
-      await submit(values).unwrap()
+      const values = form.getFieldsValue(['name','url','secret','payload'])
+      const payload: WebhookRecord = {
+        ...values,
+        payload: Object.keys(WebhookPayloadEnum)[Object.values(WebhookPayloadEnum)
+          .indexOf(values.payload as WebhookPayloadEnum)],
+        status: enabled ? 'ON' : 'OFF',
+        incident: {},
+        activity: {},
+        event: {}
+      }
+      const incidentEnumKeys = incidents.map(value => value.slice(value.indexOf('_') + 1))
+      const activityEnumKeys = activities.map(value => value.slice(value.indexOf('_') + 1))
+      const eventEnumKeys = events.map(value => value.slice(value.indexOf('_') + 1))
+      incidentProps.forEach(prop => {
+        payload.incident[prop.toLowerCase()] = incidentEnumKeys
+          .filter(key => key.split('_')[0] === prop).map(key => key.split('_')[1])
+      })
+      activityProps.forEach(prop => {
+        payload.activity[prop.toLowerCase()] = activityEnumKeys
+          .filter(key => key.split('_')[0] === prop).map(key => key.split('_')[1])
+      })
+      eventProps.forEach(prop => {
+        payload.event[prop.toLowerCase()] = eventEnumKeys.filter(key => key.split('_')[0] === prop)
+          .map(key => key.split('_')[1])
+      })
+      if (props.selected) {
+        await updateWebhook({ params: { webhookId: props.selected.id }, payload: payload }).unwrap()
+      }
+      else {
+        await addWebhook({ payload: payload }).unwrap()
+      }
+      onClose()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -115,33 +127,33 @@ export function WebhookForm (props: {
     {
       key: 'settings',
       title: $t({ defaultMessage: 'Settings' }),
-      component: <SettingsTab />
+      component: <SettingsTab form={form} isEditMode={props.selected ? true : false} />
     },
     {
       key: 'incidents',
       title: $t({ defaultMessage: 'Incidents' }),
       component: <WebhookFormTab
-        treeData={incidentsTree}
-        checked={form.getFieldValue('incidents')}
-        updateChecked={(checked) => form.setFieldValue('incidents', checked)}
+        treeData={getIncidentsTree($t)}
+        checked={incidents}
+        updateChecked={(checked) => setIncidents(checked as string[])}
       />
     },
     {
       key: 'activities',
       title: $t({ defaultMessage: 'Activities' }),
       component: <WebhookFormTab
-        treeData={activitiesTree}
-        checked={form.getFieldValue('activities')}
-        updateChecked={(checked) => form.setFieldValue('activities', checked)}
+        treeData={getActivitiesTree($t)}
+        checked={activities}
+        updateChecked={(checked) => setActivities(checked as string[])}
       />
     },
     {
       key: 'events',
       title: $t({ defaultMessage: 'Events' }),
       component: <WebhookFormTab
-        treeData={eventsTree}
-        checked={form.getFieldValue('events')}
-        updateChecked={(checked) => form.setFieldValue('events', checked)}
+        treeData={getEventsTree($t)}
+        checked={events}
+        updateChecked={(checked) => setEvents(checked as string[])}
         multiColumn={true}
       />
     },
@@ -149,9 +161,9 @@ export function WebhookForm (props: {
       key: 'adminLogs',
       title: $t({ defaultMessage: 'Admin Logs' }),
       component: <WebhookFormTab
-        treeData={adminLogsTree}
-        checked={form.getFieldValue('adminLogs')}
-        updateChecked={(checked) => form.setFieldValue('adminLogs', checked)}
+        treeData={getAdminLogsTree($t)}
+        checked={adminLogs}
+        updateChecked={(checked) => setAdminLogs(checked as string[])}
         multiColumn={true}
       />
     }
@@ -165,15 +177,22 @@ export function WebhookForm (props: {
 
   const drawerProps: DrawerProps = {
     destroyOnClose: true,
-    visible: Boolean(props.webhook !== null),
+    visible: props.visible,
     width: 450,
-    title: webhook?.id
+    title: webhook?.data
       ? $t({ defaultMessage: 'Edit Webhook' })
       : $t({ defaultMessage: 'Create Webhook' }),
     onClose: onClose,
     footer: <Drawer.FormFooter
-      extra={<WebhookSwitch key={`toggle-${webhook?.id}`} {...{ form, webhook }} />}
-      buttonLabel={{ save: webhook?.id
+      extra={<label>
+        <Switch key={`toggle-${webhook?.data?.id}`}
+          checked={enabled}
+          onChange={(value) => setEnabled(value)}
+        />
+        <span>{enabled ? $t({ defaultMessage: 'Enabled' })
+          : $t({ defaultMessage: 'Disabled' })}</span>
+      </label>}
+      buttonLabel={{ save: webhook?.data
         ? $t({ defaultMessage: 'Save' })
         : $t({ defaultMessage: 'Create' })
       }}
@@ -196,24 +215,4 @@ export function WebhookForm (props: {
       </Form>
     </UI.WebhookFormWrapper>
   </Drawer>
-}
-
-export const resourceGroupFilterOption = (input: string, option?: DefaultOptionType) => {
-  return (option?.label as string)?.toLowerCase().includes(input.toLowerCase())
-}
-
-function WebhookSwitch (props: { webhook?: Webhook, form: FormInstance<WebhookDto> }) {
-  const { $t } = useIntl()
-  const [enabled, setEnabled] = useState<boolean | undefined>(props.webhook?.enabled)
-
-  return (<label>
-    <Switch
-      checked={enabled}
-      onChange={(value) => {
-        setEnabled(value)
-        props.form.setFieldsValue({ enabled: value })
-      }}
-    />
-    <span>{enabled ? $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })}</span>
-  </label>)
 }

@@ -435,7 +435,7 @@ export interface ErrorDetails {
 }
 
 export enum WebhookPayloadEnum {
-  RUCKUS = 'cliRUCKUS One',
+  RUCKUS = 'RUCKUS One',
   DATADOG = 'DataDog',
   MICROSOFT_TEAM = 'Microsoft Teams',
   // JIRA = 'Jira',
@@ -443,7 +443,41 @@ export enum WebhookPayloadEnum {
   SERVICE_NOW = 'ServiceNow',
   SLACK = 'Slack',
   // ELASTIC = 'Elastic',
-  SPLUNK = 'Splink'
+  SPLUNK = 'Splunk'
+}
+
+export enum WebhookIncidentEnum {
+  SEVERITY_P1 = 'INCIDENT_SEVERITY_P1',
+  SEVERITY_P2 = 'INCIDENT_SEVERITY_P2',
+  SEVERITY_P3 = 'INCIDENT_SEVERITY_P3',
+  SEVERITY_P4 = 'INCIDENT_SEVERITY_P4',
+}
+
+export enum WebhookActivityEnum {
+  PRODUCT_GENERAL = 'ACTIVITY_PRODUCT_GENERAL',
+  PRODUCT_WIFI = 'ACTIVITY_PRODUCT_WIFI',
+  PRODUCT_SWITCH = 'ACTIVITY_PRODUCT_SWITCH',
+  PRODUCT_EDGE = 'ACTIVITY_PRODUCT_EDGE'
+}
+
+export enum WebhookEventEnum {
+  SEVERITY_CRITICAL = 'EVENT_SEVERITY_CRITICAL',
+  SEVERITY_WARNING = 'EVENT_SEVERITY_WARNING',
+  SEVERITY_MAJOR = 'EVENT_SEVERITY_MAJOR',
+  SEVERITY_INFO = 'EVENT_SEVERITY_INFO',
+  SEVERITY_MINOR = 'EVENT_SEVERITY_MINOR',
+  TYPE_AP = 'EVENT_TYPE_AP',
+  TYPE_NETWORK = 'EVENT_TYPE_NETWORK',
+  TYPE_SECURITY = 'EVENT_TYPE_SECURITY',
+  TYPE_EDGE = 'EVENT_TYPE_EDGE',
+  TYPE_CLIENT = 'EVENT_TYPE_CLIENT',
+  TYPE_PROFILE = 'EVENT_TYPE_PROFILE',
+  TYPE_SWITCH = 'EVENT_TYPE_SWITCH',
+  TYPE_ADMIN = 'EVENT_TYPE_ADMIN',
+  PRODUCT_GENERAL = 'EVENT_PRODUCT_GENERAL',
+  PRODUCT_WIFI = 'EVENT_PRODUCT_WIFI',
+  PRODUCT_SWITCH = 'EVENT_PRODUCT_SWITCH',
+  PRODUCT_EDGE = 'EVENT_PRODUCT_EDGE'
 }
 
 export interface Webhook {
@@ -461,14 +495,8 @@ export interface WebhookRecord {
   secret?: string,
   payload?: string,
   status?: string,
-  incident?: {
-    severity: string[]
-  },
-  activity?: { product: string[] },
-  event?: {
-    severity: string[],
-    type: string[],
-    product: string[]
-  }
+  incident: Record<string, string[]>,
+  activity: Record<string, string[]>,
+  event: Record<string, string[]>
 }
 

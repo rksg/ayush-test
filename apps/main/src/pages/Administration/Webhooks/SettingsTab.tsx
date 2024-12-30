@@ -1,27 +1,64 @@
-// import { useState } from 'react'
+import { useState } from 'react'
 
-import { Form, Input, Select } from 'antd'
-import { useIntl }             from 'react-intl'
+import { Form, FormInstance, Input, Select } from 'antd'
+import { useIntl }                           from 'react-intl'
 
-import { Button }            from '@acx-ui/components'
-import { URLProtocolRegExp } from '@acx-ui/rc/utils'
+import { Button, showToast }                              from '@acx-ui/components'
+import { useWebhookSendSampleEventMutation }              from '@acx-ui/rc/services'
+import { URLProtocolRegExp, Webhook, WebhookPayloadEnum } from '@acx-ui/rc/utils'
 
-import * as UI from './styledComponents'
+import * as UI                         from './styledComponents'
+import { getWebhookPayloadEnumString } from './webhookConfig'
 
-// interface WebhookTabProps {
-// treeData: TreeDataNode[]
-// updateChecked: (checked: Key[]) => void
-// }
+interface SettingsTabProps {
+  form: FormInstance<Webhook>
+  isEditMode?: boolean
+}
 
-const SettingsTab = () => {
+const SettingsTab = (props: SettingsTabProps) => {
   const { $t } = useIntl()
-  //   const { treeData, updateChecked } = props
-  // const [testURLEnabled, setTestURLEnabled] = useState<boolean>(false)
+  const { form, isEditMode = false } = props
+  const [testURLEnabled, setTestURLEnabled] = useState(isEditMode)
+  const [sendSampleEvent] = useWebhookSendSampleEventMutation()
 
-  //   const onCheck = (checked: Key[]) => {
-  //     const checkedChildren = checked.filter(key => !treeData.map(t => t.key).includes(key))
-  //     updateChecked(checkedChildren)
-  //   }
+
+  const updateButtonEnabled = async (field: string) => {
+    try {
+      await form.validateFields([field])
+      const enabled = form.getFieldValue(['url']) &&
+        form.getFieldValue(['secret']) &&
+        form.getFieldValue(['payload']) &&
+        !form.getFieldsError(['url','secret','payload']).some(({ errors }) => errors.length)
+      setTestURLEnabled(enabled)
+    }
+    catch {
+      setTestURLEnabled(false)
+    }
+  }
+
+  const testWebhook = async () => {
+    try {
+      const payloadValue = Object.keys(WebhookPayloadEnum)[Object.values(WebhookPayloadEnum)
+        .indexOf(form.getFieldValue('payload') as WebhookPayloadEnum)]
+      await sendSampleEvent({
+        payload: {
+          url: form.getFieldValue('url'),
+          secret: form.getFieldValue('secret'),
+          payload: payloadValue
+        }
+      }).unwrap()
+      showToast({
+        type: 'success',
+        content: $t({ defaultMessage: 'Webhook sample event was sent successfully' })
+      })
+    }
+    catch {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'Webhook error message' })
+      })
+    }
+  }
 
   return <><Form.Item
     validateFirst
@@ -34,41 +71,42 @@ const SettingsTab = () => {
     ]}
     children={<Input />}
   />
-  <Form.Item
-    validateFirst
-    name='callbackUrl'
-    label={$t({ defaultMessage: 'Webhook URL' })}
-    rules={[
-      { required: true },
-      { validator: (_, value) => URLProtocolRegExp(value) }
-    ]}
-    // children={<Input type='url' />}
-  >
-    <UI.WebhookURLSpaceWrapper direction='horizontal'>
-      <Input type='url' />
-      <Button
-        type='default'
-        // disabled={!testURLEnabled}
-        onClick={() => {}}>
-        {$t({ defaultMessage: 'Test' })}
-      </Button>
-    </UI.WebhookURLSpaceWrapper>
-  </Form.Item>
+  <UI.WebhookURLSpaceWrapper direction='horizontal'>
+    <Form.Item
+      validateFirst
+      name='url'
+      label={$t({ defaultMessage: 'Webhook URL' })}
+      rules={[
+        { required: true },
+        { validator: (_, value) => URLProtocolRegExp(value) }
+      ]}
+      children={<Input type='url' onChange={() => updateButtonEnabled('url')} />}
+    />
+    <Button
+      type='default'
+      disabled={!testURLEnabled}
+      onClick={testWebhook}>
+      {$t({ defaultMessage: 'Test' })}
+    </Button>
+  </UI.WebhookURLSpaceWrapper>
   <Form.Item
     name='secret'
     label={$t({ defaultMessage: 'Secret' })}
     rules={[{ required: true }]}
-    children={<Input.Password />}
+    children={<Input.Password onChange={() => updateButtonEnabled('secret')} />}
   />
   <Form.Item
     name='payload'
     label={$t({ defaultMessage: 'Payload' })}
     rules={[{ required: true }]}
-    children={<Select />}
+    children={<Select onChange={() => updateButtonEnabled('payload')}>
+      {Object.values(WebhookPayloadEnum).map((value) =>
+        (<Select.Option value={value}
+          key={value}
+          children={getWebhookPayloadEnumString($t, value as WebhookPayloadEnum)}/>)
+      )}
+    </Select>}
   />
-  {/* <Form.Item name='enabled' hidden children={<Input hidden />} />
-  {webhook?.id &&<Form.Item name='id' hidden children={<Input hidden />} />} */}
-  {/* <Form.Item><SendSampleIncident /></Form.Item> */}
   </>
 }
 

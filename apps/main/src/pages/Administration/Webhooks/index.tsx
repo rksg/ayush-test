@@ -1,48 +1,21 @@
-import { useEffect, useState, useCallback, Dispatch, SetStateAction } from 'react'
+import { useEffect, useState, Dispatch, SetStateAction } from 'react'
 
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
-import _                       from 'lodash'
-import { useIntl }             from 'react-intl'
+import { useIntl } from 'react-intl'
 
-import type { Webhook, ExtendedWebhook }                                 from '@acx-ui/analytics/components'
-import { useDeleteWebhookMutation, useWebhooksQuery, useResourceGroups } from '@acx-ui/analytics/components'
-import { handleError }                                                   from '@acx-ui/analytics/components'
-import { defaultSort, sortProp }                                         from '@acx-ui/analytics/utils'
 import {
   Loader,
   Table,
   TableProps,
-  showActionModal,
-  showToast
+  showActionModal
 } from '@acx-ui/components'
-import { get }                                                     from '@acx-ui/config'
-import { SwitchScopes, WifiScopes }                                from '@acx-ui/types'
-import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { useDeleteWebhookMutation, useGetWebhooksQuery }                     from '@acx-ui/rc/services'
+import { defaultSort, sortProp, useTableQuery, Webhook, WebhookPayloadEnum } from '@acx-ui/rc/utils'
+import { SwitchScopes, WifiScopes }                                          from '@acx-ui/types'
+import { filterByAccess, hasCrossVenuesPermission, hasPermission }           from '@acx-ui/user'
 
-import { WebhookForm } from './WebhookForm'
-
-
-type WebhookTableProps = TableProps<ExtendedWebhook>
-
-const useWebhooksData = (selectedId?: Webhook['id'] | null) => {
-  const rg = useResourceGroups()
-  const webhooks = useWebhooksQuery(rg.rgMap, {
-    skip: !rg.data && Boolean(get('IS_MLISA_SA')),
-    selectFromResult: (response) => {
-      return {
-        ...response,
-        webhook: selectedId
-          ? _.get(_.keyBy(response.data, 'id'), selectedId)
-          : (selectedId as null | undefined)
-      }
-    }
-  })
-  return {
-    webhooks: webhooks.data,
-    webhook: webhooks.webhook,
-    states: [rg, webhooks]
-  }
-}
+import { fakeWebhooks }                from './__tests__/fixtures'
+import { getWebhookPayloadEnumString } from './webhookConfig'
+import { WebhookForm }                 from './WebhookForm'
 
 interface R1WebhooksProps {
   setTitleCount: Dispatch<SetStateAction<number>>
@@ -55,71 +28,67 @@ const R1Webhooks = (props: R1WebhooksProps) => {
   // string    = existing record
   // undefined = create new webhook
   // null      = no webhook selected
-  const [selectedId, setSelectedId] = useState<string | undefined | null>(null)
+  const [selectedWebhook, setSelectedWebhook] = useState<Webhook>()
+  const [drawerVisible, setDrawerVisible] = useState(false)
 
-  const { webhooks, webhook, states } = useWebhooksData(selectedId)
+  const tableQuery = useTableQuery<Webhook>({
+    useQuery: useGetWebhooksQuery,
+    defaultPayload: {}
+  })
+  // const tableQuery = { data: fakeWebhooks, isLoading: false }
 
-  const [doDelete, response] = useDeleteWebhookMutation()
+  const [deleteWebhook] = useDeleteWebhookMutation()
 
-  // const [count, setCount] = useState(webhooks?.length || 0)
-  useEffect(() => setTitleCount(webhooks?.length || 0), [webhooks?.length])
+  useEffect(() => setTitleCount(tableQuery.data?.totalCount || 0), [tableQuery.data])
 
-  // const title = defineMessage({
-  //   defaultMessage: 'Webhooks {count, select, null {} other {({count})}}',
-  //   description: 'Translation string - Webhooks'
-  // })
-
-  useEffect(() => {
-    if (response.isSuccess) {
-      showToast({ type: 'success', content: $t({ defaultMessage: 'Webhook was deleted' }) })
-    }
-    if (response.isError) {
-      handleError(
-        response.error as FetchBaseQueryError,
-        $t({ defaultMessage: 'Failed to delete webhook' })
-      )
-    }
-
-    // reset mutation response everytime submission ended
-    const isEnded = response.isSuccess || response.isError
-    if (isEnded) response.reset()
-  }, [$t, response])
-
-  const columns: WebhookTableProps['columns'] = [{
+  const columns: TableProps<Webhook>['columns'] = [{
     key: 'name',
     dataIndex: 'name',
     searchable: true,
     title: $t({ defaultMessage: 'Name' }),
     sorter: { compare: sortProp('name', defaultSort) }
   }, {
-    key: 'callbackUrl',
-    dataIndex: 'callbackUrl',
+    key: 'url',
+    dataIndex: 'url',
     searchable: true,
     title: $t({ defaultMessage: 'URL' }),
     width: 300,
-    sorter: { compare: sortProp('callbackUrl', defaultSort) }
-  }, ...(get('IS_MLISA_SA') ? [{
-    key: 'resourceGroup',
-    dataIndex: 'resourceGroup',
+    sorter: { compare: sortProp('url', defaultSort) }
+  }, {
+    key: 'payload',
+    dataIndex: 'payload',
     searchable: true,
-    title: $t({ defaultMessage: 'Resource Group' }),
-    sorter: { compare: sortProp('resourceGroup', defaultSort) }
-  }] : []), {
+    title: $t({ defaultMessage: 'Payload' }),
+    width: 300,
+    sorter: { compare: sortProp('payload', defaultSort) },
+    render: function (_, row) {
+      return getWebhookPayloadEnumString($t,
+        WebhookPayloadEnum[row.payload as keyof typeof WebhookPayloadEnum])
+    }
+  },
+  {
     key: 'status',
     dataIndex: 'status',
-    filterKey: 'enabledStr',
+    filterKey: 'status',
     filterable: [
-      { key: 'true', value: $t({ defaultMessage: 'Enabled' }) },
-      { key: 'false', value: $t({ defaultMessage: 'Disabled' }) }
+      { key: 'ON', value: $t({ defaultMessage: 'Enabled' }) },
+      { key: 'OFF', value: $t({ defaultMessage: 'Disabled' }) }
     ],
     title: $t({ defaultMessage: 'Status' }),
-    sorter: { compare: sortProp('enabled', defaultSort) }
+    sorter: { compare: sortProp('status', defaultSort) },
+    render: function (_, row) {
+      return row.status === 'ON'
+        ? $t({ defaultMessage: 'Enabled' }) : $t({ defaultMessage: 'Disabled' })
+    }
   }]
 
-  const rowActions: WebhookTableProps['rowActions'] = [{
+  const rowActions: TableProps<Webhook>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     scopeKey: [WifiScopes.UPDATE, SwitchScopes.UPDATE],
-    onClick: ([webhook]) => setSelectedId(webhook.id)
+    onClick: ([webhook]) => {
+      setSelectedWebhook(webhook)
+      setDrawerVisible(true)
+    }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
     scopeKey: [WifiScopes.DELETE, SwitchScopes.DELETE],
@@ -127,41 +96,39 @@ const R1Webhooks = (props: R1WebhooksProps) => {
       type: 'confirm',
       title: $t({ defaultMessage: 'Delete "{name}"?' }, { name: webhook.name }),
       content: $t({ defaultMessage: 'Are you sure you want to delete this webhook?' }),
-      onOk: () => doDelete(webhook.id)
+      onOk: (rows, clearSelection) => {
+        deleteWebhook({ params: { id: rows[0].id } })
+          .then(clearSelection)
+      }
     })
   }]
 
-  const actions: WebhookTableProps['actions'] = [{
+  const actions: TableProps<Webhook>['actions'] = [{
     label: $t({ defaultMessage: 'Create Webhook' }),
     scopeKey: [WifiScopes.CREATE, SwitchScopes.CREATE],
-    onClick: () => setSelectedId(undefined)
+    onClick: () => {
+      setSelectedWebhook(undefined)
+      setDrawerVisible(true)
+    }
   }]
 
-  // const component = <Loader states={states}>
-  return <Loader states={states}>
-    <WebhookForm
-      webhook={webhook}
-      onClose={() => setSelectedId(null)}
-    />
-    <Table<ExtendedWebhook>
+  return <Loader states={[tableQuery]}>
+    {drawerVisible && <WebhookForm
+      visible={drawerVisible}
+      setVisible={setDrawerVisible}
+      selected={selectedWebhook}
+    />}
+    <Table
       rowKey='id'
-      settingsId='webhooks-table'
       columns={columns}
-      dataSource={webhooks}
-      searchableWidth={450}
+      dataSource={tableQuery.data?.data}
       actions={hasCrossVenuesPermission() ? filterByAccess(actions) : []}
-      rowActions={filterByAccess(rowActions)}
+      rowActions={rowActions}
       rowSelection={hasCrossVenuesPermission() &&
         hasPermission({ permission: 'WRITE_WEBHOOKS' }) && {
-        type: 'radio',
-        selectedRowKeys: selectedId ? [selectedId] : []
+        type: 'radio'
       }}
-      onDisplayRowChange={
-        useCallback((dataSource: ExtendedWebhook[]) => setTitleCount(dataSource.length), [])
-      }
     />
   </Loader>
-
-  // return { title: $t(title, { count }), component }
 }
 export default R1Webhooks

@@ -10,18 +10,6 @@ export const WebhookFormWrapper = styled.div`
     margin-left: 16px;
   }
 `
-export const SubCheckboxWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 180px;
-  grid-row-gap: 7px;
-  padding: 7px;
-  .ant-checkbox-wrapper {
-    margin-left: 16px;
-  }
-  .ant-tree-switcher, .ant-tree .ant-tree-node-content-wrapper {
-    pointer-events: none;
-  }
-`
 export const WebhookCheckboxWrapper = styled.div`
   .ant-tree-switcher, .ant-tree .ant-tree-node-content-wrapper {
     pointer-events: none;
@@ -41,5 +29,9 @@ export const WebhookURLSpaceWrapper = styled(Space)`
   display: flex;
   .ant-space-item:nth-child(1){
     width: -webkit-fill-available;
+  }
+  align-items: flex-start;
+  button {
+    margin-top: 22px;
   }
 `

@@ -1,4 +1,4 @@
-import { Key, useState } from 'react'
+import { Key, useEffect, useState } from 'react'
 
 import { Form, TreeDataNode } from 'antd'
 import Tree                   from 'antd/lib/tree'
@@ -21,13 +21,19 @@ const WebhookFormTab = (props: WebhookTabProps) => {
     updateChecked(checkedChildren)
   }
 
+  useEffect(() => {
+    setCheckedKeys(checked)
+  }, [checked])
+
+  const parents = treeData.map(t => t.key)
+
   return <Form.Item valuePropName='checked'>
     <UI.WebhookCheckboxWrapper>
       <Tree
         className={multiColumn ? 'multi-col' : ''}
         checkable={true}
         treeData={treeData}
-        expandedKeys={treeData.map(t => t.key)}
+        expandedKeys={parents}
         switcherIcon={<div hidden></div>}
         checkedKeys={checkedKeys}
         onCheck={(checkedKeys) => onCheck(checkedKeys as Key[])}
