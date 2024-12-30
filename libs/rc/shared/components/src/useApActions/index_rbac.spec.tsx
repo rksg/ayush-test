@@ -44,6 +44,8 @@ apList.data.splice(1, 1)
 apList.totalCount = apList.data.length
 apList.data[0].firmwareVersion ='6.2.0.103.261' // invalid Ap Fw version for reset
 apList.data[0].venueId = dhcpList.data[0].venueIds[0]
+apList.data[0].serialNumber = dhcpApSetting.serialNumber
+
 describe('Test useApActions', () => {
 
   beforeEach(() => {
