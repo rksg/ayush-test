@@ -3577,6 +3577,11 @@ export const mockedRogueApPolicyRbac = {
   id: '6015cbb1000f419bb08a04bc6c8fe70c'
 }
 
+export const mockedRebootTimeout = {
+  gwLossRebootTimeout: 7200,
+  serverLossTimeout: 7200
+}
+
 export const mockSoftGreTable = {
   totalCount: 2,
   page: 1,

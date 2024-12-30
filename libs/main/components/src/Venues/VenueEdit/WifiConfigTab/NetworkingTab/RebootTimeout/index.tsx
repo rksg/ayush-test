@@ -220,6 +220,7 @@ export function RebootTimeout () {
               initialValue={true}
               children={
                 <Switch
+                  data-testid='gateway-switch'
                   checked={rebootTimeoutGatewayEnabled}
                   onChange={handleChanged}
                   onClick={toggleRebootTimeoutGateway}
@@ -282,6 +283,7 @@ export function RebootTimeout () {
               initialValue={true}
               children={
                 <Switch
+                  data-testid='server-switch'
                   checked={rebootTimeoutServerEnabled}
                   onChange={handleChanged}
                   onClick={toggleRebootTimeoutServer}
