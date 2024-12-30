@@ -14,7 +14,6 @@ import {
 } from '@acx-ui/rc/services'
 import {
   CommonErrorsResult,
-  CatchErrorDetails,
   sfdcEmailRegExp,
   TenantAuthenticationType,
   TenantAuthentications,
@@ -22,7 +21,8 @@ import {
   PrivilegeGroup,
   CustomGroupType
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }         from '@acx-ui/react-router-dom'
+import { CatchErrorDetails } from '@acx-ui/utils'
 
 import AuthenticationSelector, { AuthTypeRadioButtonEnum } from '../../Administrators/AdministratorsTable/AddAdministratorDialog/AuthenticationSelector'
 import MspCustomerSelector, { ECCustomerRadioButtonEnum }  from '../../Administrators/AdministratorsTable/AddAdministratorDialog/MspCustomersSelector'

@@ -50,6 +50,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+jest.mock('./AccessPointUSB', () => ({
+  ...jest.requireActual('./AccessPointUSB'),
+  AccessPointUSB: () => <div data-testid='mocked-AP-USB'></div>
+}))
+
 const mockAdvancedTab = (
   <VenueUtilityContext.Provider value={{
     venueApCaps: venueCaps,

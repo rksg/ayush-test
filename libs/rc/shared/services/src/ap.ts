@@ -4,7 +4,7 @@ import { MaybePromise }                                       from '@reduxjs/too
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { reduce }                                             from 'lodash'
 
-import { Filter }   from '@acx-ui/components'
+import { Filter }                                 from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -29,6 +29,7 @@ import {
   ApGroup,
   ApGroupViewModel,
   ApLedSettings,
+  ApUsbSettings,
   ApLldpNeighborsResponse,
   ApManagementVlan,
   ApNeighborsResponse,
@@ -88,7 +89,8 @@ import {
   CompatibilityResponse,
   EthernetPortProfileViewData,
   SoftGreUrls,
-  SoftGreViewData
+  SoftGreViewData,
+  ClientIsolationUrls, ClientIsolationViewModel
 } from '@acx-ui/rc/utils'
 import { baseApApi }      from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
@@ -914,7 +916,8 @@ export const apApi = baseApApi.injectEndpoints({
       async queryFn ({
         params, enableRbac,
         enableEthernetProfile,
-        enableSoftGreOnEthernet
+        enableSoftGreOnEthernet,
+        enableClientIsolationOnEthernet
       },
       _queryApi, _extraOptions, fetchWithBQ) {
         if (!params?.serialNumber) {
@@ -997,6 +1000,32 @@ export const apApi = baseApApi.injectEndpoints({
           }
         }
 
+        if (enableClientIsolationOnEthernet) {
+          const clientIsolationReq = {
+            ...createHttpRequest(ClientIsolationUrls.queryClientIsolation),
+            body: JSON.stringify({
+              filters: {
+                'apActivations.apSerialNumber': [params.serialNumber]
+              },
+              pageSize: 1000
+            })
+          }
+
+          const clientIsolationListQuery = await fetchWithBQ(clientIsolationReq)
+          const clientIsolationList = clientIsolationListQuery.data as TableResult<ClientIsolationViewModel>
+          if (clientIsolationList.data && apLanPorts.lanPorts) {
+            for (let clientIsolation of clientIsolationList.data) {
+              const port = clientIsolation.apActivations?.find(ap => ap.apSerialNumber === params.serialNumber)
+              let targetPort = port && apLanPorts.lanPorts
+                ?.find(l => l.portId?.toString() === port.portId?.toString())
+              if (targetPort) {
+                targetPort.clientIsolationProfileId = clientIsolation.id
+              }
+            }
+          }
+
+        }
+
         return apLanPortSettings.data
           ? { data: apLanPorts }
           : { error: apLanPortSettings.error } as QueryReturnValue<WifiApSetting,
@@ -1046,7 +1075,7 @@ export const apApi = baseApApi.injectEndpoints({
               }
             }))
           const softGreActivateRequests = apSettings?.lanPorts
-            ?.filter(l => l.softGreProfileId && (l.softGreTunnelEnable === true) && (l.enabled === true))
+            ?.filter(l => l.softGreProfileId && (l.softGreEnabled === true) && (l.enabled === true))
             .map(l => ({
               params: {
                 venueId: params!.venueId,
@@ -1056,7 +1085,7 @@ export const apApi = baseApApi.injectEndpoints({
               },
               payload: {
                 dhcpOption82Enabled: l.dhcpOption82?.dhcpOption82Enabled,
-                dhcpOption82Settings: l.dhcpOption82?.dhcpOption82Settings
+                dhcpOption82Settings: (l.dhcpOption82?.dhcpOption82Enabled)? l.dhcpOption82?.dhcpOption82Settings : undefined
               }
             }))
 
@@ -1136,6 +1165,27 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'Led' }]
+    }),
+    getApUsb: build.query<ApUsbSettings, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApUsb, params, customHeaders)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'USB' }]
+    }),
+    updateApUsb: build.mutation<ApUsbSettings, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApUsb, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'USB' }]
     }),
     getApBandModeSettings: build.query<ApBandModeSettings, RequestPayload<void>>({
       query: ({ params, enableRbac }) => {
@@ -1699,6 +1749,8 @@ export const {
   useGetApLedQuery,
   useUpdateApLedMutation,
   useResetApLedMutation,
+  useGetApUsbQuery,
+  useUpdateApUsbMutation,
   useGetApBandModeSettingsQuery,
   useLazyGetApBandModeSettingsQuery,
   useUpdateApBandModeSettingsMutation,
