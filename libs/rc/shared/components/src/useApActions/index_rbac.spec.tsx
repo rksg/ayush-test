@@ -29,6 +29,11 @@ import { dhcpApSetting, dhcpList, dhcpResponse, dummySwitchClientList } from './
 
 import { useApActions } from '.'
 
+const mockFileSaver = jest.fn()
+jest.mock('file-saver', () => (data: string, fileName: string) => {
+  mockFileSaver(data, fileName)
+})
+
 const serialNumber = ':serialNumber'
 const tenantId = ':tenantId'
 const venueId = ':venueId'
@@ -39,7 +44,7 @@ apList.data.splice(1, 1)
 apList.totalCount = apList.data.length
 apList.data[0].firmwareVersion ='6.2.0.103.261' // invalid Ap Fw version for reset
 apList.data[0].venueId = dhcpList.data[0].venueIds[0]
-describe.skip('Test useApActions', () => {
+describe('Test useApActions', () => {
 
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API)
@@ -62,7 +67,7 @@ describe.skip('Test useApActions', () => {
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
       ),
       rest.patch(
-        WifiUrlsInfo.rebootAp.url,
+        WifiRbacUrlsInfo.rebootAp.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
       ),
       rest.patch(
@@ -119,7 +124,7 @@ describe.skip('Test useApActions', () => {
     jest.clearAllMocks()
   })
 
-  it.skip('showRebootAp', async () => {
+  it('showRebootAp', async () => {
     const { result } = renderHook(() => useApActions(), {
       wrapper: ({ children }) => <Provider children={children} />
     })

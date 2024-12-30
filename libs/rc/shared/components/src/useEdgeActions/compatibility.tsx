@@ -243,7 +243,7 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
 
       const edgeFeatures = await getEdgeFeatureSets({
         payload: { filters: { featureNames: [featureName] } }
-      }).unwrap()
+      }, true).unwrap()
 
       deviceTypeResultMap[CompatibilityDeviceEnum.EDGE] = {
         id: 'edge_feature_requirements',
@@ -255,7 +255,7 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
       if (isSwitchRelatedEdgeFeature(featureName)) {
         const switchFeature = await getSwitchFeatureSets({
           payload: { filter: { featureNames: { field: 'GROUP', values: ['PIN'] } } }
-        }).unwrap()
+        }, true).unwrap()
         deviceTypeResultMap[CompatibilityDeviceEnum.SWITCH] = {
           id: 'switch_feature_requirements',
           incompatibleFeatures: switchFeature.featureSets,
@@ -275,7 +275,7 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
               page: 1,
               pageSize: 10
             }
-          }).unwrap()
+          }, true).unwrap()
 
           deviceTypeResultMap[CompatibilityDeviceEnum.AP] = {
             id: 'wifi_feature_requirements',
@@ -286,7 +286,7 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
         } else {
           const wifiFeature = await getApFeatureSets({
             params: { featureName: encodeURI(featureName) }
-          }).unwrap()
+          }, true).unwrap()
 
           deviceTypeResultMap[CompatibilityDeviceEnum.AP] = {
             id: 'wifi_feature_requirements',

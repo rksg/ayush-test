@@ -486,7 +486,7 @@ export function getEnhancedAccessControlProfileListFn (isTemplate: boolean = fal
 
     // fill in the mac addresses
     const processFn = async (policy: EnhancedAccessControlInfoType) => {
-      if (!enableRbac) return policy
+      if (!enableRbac || payload?.noDetails) return policy
 
       try {
         const aclPolicyDetail = createHttpRequest(
