@@ -283,30 +283,41 @@ export function LanPortSettings (props: {
           currentIndex={index}
           onGUIChanged={onGUIChanged}
           isEditable={!readOnly && !!serialNumber} />
-        {isEthernetSoftgreEnabled && <>
-          <SoftGRETunnelSettings
-            readonly={!isEthernetPortEnable || (readOnly ?? false)}
-            index={index}
-            softGreProfileId={selectedPortCaps.softGreProfileId ?? ''}
-            softGreTunnelEnable={isSoftGreTunnelEnable}
-            portId={selectedModel.lanPorts![index].portId}
-            onGUIChanged={onGUIChanged}
-            dispatch={dispatch}
-          />
-          {isSoftGreTunnelEnable &&
-                <DhcpOption82Settings
-                  readonly={readOnly ?? false}
-                  index={index}
-                  onGUIChanged={onGUIChanged}
-                  isUnderAPNetworking={isUnderAPNetworking}
-                  serialNumber={serialNumber}
-                  venueId={venueId}
-                  portId={selectedModel.lanPorts![index].portId}
-                  apModel={selectedModelCaps.model}
-                  dispatch={dispatch}
-                />
-          }
-        </>}
+        {isEthernetSoftgreEnabled &&
+          <Form.Item
+            dependencies={[['lan', index, 'softGreProfileId']]}
+            noStyle
+          >
+            {({ getFieldValue }) => {
+              return (
+                <>
+                  <SoftGRETunnelSettings
+                    readonly={!isEthernetPortEnable || (readOnly ?? false)}
+                    index={index}
+                    softGreProfileId={getFieldValue(['lan', index, 'softGreProfileId']) ?? ''}
+                    softGreTunnelEnable={isSoftGreTunnelEnable}
+                    portId={selectedModel.lanPorts![index].portId}
+                    onGUIChanged={onGUIChanged}
+                    dispatch={dispatch}
+                  />
+                  {isSoftGreTunnelEnable &&
+                    <DhcpOption82Settings
+                      readonly={readOnly ?? false}
+                      index={index}
+                      onGUIChanged={onGUIChanged}
+                      isUnderAPNetworking={isUnderAPNetworking}
+                      serialNumber={serialNumber}
+                      venueId={venueId}
+                      portId={selectedModel.lanPorts![index].portId}
+                      apModel={selectedModelCaps.model}
+                      dispatch={dispatch}
+                    />
+                  }
+                </>
+              )
+            }}
+          </Form.Item>
+        }
         {isEthernetClientIsolationEnabled &&
           <ClientIsolationSettingsFields
             index={index}
