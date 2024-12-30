@@ -327,10 +327,16 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   */
+  // deprecated. use the getDhcpAps to replace
   getDhcpAp: {
     method: 'get',
     // url: '/venues/dhcpApSettings/query',
     url: '/venues/:venueId/aps/:serialNumber/dhcpSettings',
+    newApi: true
+  },
+  getDhcpAps: {
+    method: 'post',
+    url: '/venues/aps/dhcpSettings/query',
     newApi: true
   },
   deleteAp: {
