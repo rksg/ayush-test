@@ -15,7 +15,8 @@ export const mockedTunnelProfileViewData = {
       personalIdentityNetworkIds: ['nsg1', 'nsg2'],
       networkIds: ['network1', 'network2'],
       sdLanIds: [],
-      type: TunnelTypeEnum.VXLAN
+      type: TunnelTypeEnum.VXLAN,
+      natTraversalEnabled: true
     },
     {
       id: 'tunnelProfileId2',
@@ -28,7 +29,8 @@ export const mockedTunnelProfileViewData = {
       personalIdentityNetworkIds: ['nsg1', 'nsg2'],
       networkIds: ['network1', 'network2'],
       sdLanIds: [],
-      type: TunnelTypeEnum.VXLAN
+      type: TunnelTypeEnum.VXLAN,
+      natTraversalEnabled: false
     },
     {
       id: 'ecc2d7cf9d2342fdb31ae0e24958fcac',

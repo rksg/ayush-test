@@ -4,15 +4,17 @@ import { Col, Form, Row, Typography } from 'antd'
 import { useIntl }                    from 'react-intl'
 
 import { StepsForm, useStepFormContext }        from '@acx-ui/components'
+import { Features }                             from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                from '@acx-ui/rc/components'
 import { useGetTunnelProfileViewDataListQuery } from '@acx-ui/rc/services'
 import {
+  EdgeMvSdLanFormModel,
+  EdgeMvSdLanFormNetwork,
   getTunnelProfileOptsWithDefault,
   getVlanVxlanDefaultTunnelProfileOpt,
   isVlanVxlanDefaultTunnelProfile,
   MtuTypeEnum,
-  TunnelTypeEnum,
-  EdgeMvSdLanFormModel,
-  EdgeMvSdLanFormNetwork
+  TunnelTypeEnum
 } from '@acx-ui/rc/utils'
 
 import { messageMappings } from '../messageMappings'
@@ -33,12 +35,16 @@ export const TunnelNetworkForm = () => {
   const { $t } = useIntl()
   const { form, editMode } = useStepFormContext<EdgeMvSdLanFormModel>()
   const isGuestTunnelEnabled = form.getFieldValue('isGuestTunnelEnabled')
+  const isEdgeNatTraversalP1Ready = useIsEdgeFeatureReady(Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
 
   const {
     tunnelProfileData,
     isTunnelOptionsLoading
   } = useGetTunnelProfileViewDataListQuery({
-    payload: tunnelProfileDefaultPayload
+    payload: isEdgeNatTraversalP1Ready
+      ? { ...tunnelProfileDefaultPayload,
+        fields: ['name', 'id', 'type', 'mtuType', 'natTraversalEnabled'] }
+      : tunnelProfileDefaultPayload
   }, {
     selectFromResult: ({ data, isLoading }) => {
       return {
@@ -61,6 +67,7 @@ export const TunnelNetworkForm = () => {
 
   const dmzTunnelProfileOptions = (tunnelProfileData
     ?.filter(item => item.mtuType === MtuTypeEnum.MANUAL)
+    ?.filter(item => isEdgeNatTraversalP1Ready ? item.natTraversalEnabled === false : item)
     ?.map(item => ({ label: item.name!, value: item.id! }))) ?? []
 
   const onTunnelChange = (val: string) => {
