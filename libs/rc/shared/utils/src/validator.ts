@@ -1225,7 +1225,7 @@ export function guestPasswordValidator (value: string) {
 
 }
 
-export function validateDuplicatePortProfile (selectedPortProfiles: string[], portProfilesList: SwitchPortProfiles[]) {
+export function validateDuplicatePortProfile (selectedPortProfiles: string[] = [], portProfilesList: SwitchPortProfiles[] = []) {
   const { $t } = getIntl()
   const selectedProfiles = portProfilesList.filter(profile =>
     profile.id && selectedPortProfiles.includes(profile.id)

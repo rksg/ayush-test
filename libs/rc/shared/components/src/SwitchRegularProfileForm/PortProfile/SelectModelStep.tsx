@@ -199,6 +199,7 @@ export function SelectModelStep () {
                       <Col span={5}>
                         <Checkbox
                           value={value}
+                          data-testid={`family-checkbox-${value}`}
                           checked={familyCheckboxes[value]}
                           indeterminate={indeterminateMap[value]}
                           onChange={onFamilyCheckboxChange}
@@ -233,6 +234,7 @@ export function SelectModelStep () {
                   <Checkbox
                     key={value}
                     value={value}
+                    data-testid={value}
                     style={{ display: modelFilterMap[value.split('-')[0]] ? 'flex' : 'none' }}
                   >
                     {label}
