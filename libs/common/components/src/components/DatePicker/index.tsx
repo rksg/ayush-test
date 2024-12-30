@@ -99,7 +99,7 @@ export const RangePicker = ({
   const allowedDateRange = isReport
     ? dateRangeForLast(12,'months')
     : (accountTier === AccountTier.GOLD
-      ? dateRangeForLast(3,'month')
+      ? dateRangeForLast(1,'month')
       : dateRangeForLast(3,'months')
     )
 
