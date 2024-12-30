@@ -36,7 +36,7 @@ export function VLANPoolDetail () {
         breadcrumb={breadcrumb}
         extra={filterByAccessForServicePolicyMutation([
           <PolicyConfigTemplateLinkSwitcher
-            key={useTemplateAwarePolicyAllowedOperation(PolicyType.VLAN_POOL, PolicyOperation.EDIT)}
+            rbacOpsIds={useTemplateAwarePolicyAllowedOperation(PolicyType.VLAN_POOL, PolicyOperation.EDIT)}
             scopeKey={getScopeKeyByPolicy(PolicyType.VLAN_POOL, PolicyOperation.EDIT)}
             type={PolicyType.VLAN_POOL}
             oper={PolicyOperation.EDIT}

@@ -92,13 +92,13 @@ export default function DpskTable () {
 
   const rowActions: TableProps<DpskSaveData>['rowActions'] = [
     {
-      key: getServiceAllowedOperation(ServiceType.DPSK, ServiceOperation.DELETE),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.DPSK, ServiceOperation.DELETE),
       scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.DELETE),
       label: intl.$t({ defaultMessage: 'Delete' }),
       onClick: ([selectedRow], clearSelection) => doDelete(selectedRow, clearSelection)
     },
     {
-      key: getServiceAllowedOperation(ServiceType.DPSK, ServiceOperation.EDIT),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.DPSK, ServiceOperation.EDIT),
       scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: intl.$t({ defaultMessage: 'Edit' }),
       onClick: ([{ id }]) => {
@@ -142,7 +142,7 @@ export default function DpskTable () {
         breadcrumb={breadCrumb}
         extra={filterDpskOperationsByPermission([
           <TenantLink
-            key={getServiceAllowedOperation(ServiceType.DPSK, ServiceOperation.CREATE)}
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.DPSK, ServiceOperation.CREATE)}
             to={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
             scopeKey={getScopeKeyByService(ServiceType.DPSK, ServiceOperation.CREATE)}
           >

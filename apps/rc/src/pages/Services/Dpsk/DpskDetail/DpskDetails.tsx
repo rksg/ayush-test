@@ -71,7 +71,7 @@ export default function DpskDetails () {
         breadcrumb={breadcrumb}
         extra={filterDpskOperationsByPermission([
           <TenantLink
-            key={getServiceAllowedOperation(ServiceType.DPSK, ServiceOperation.EDIT)}
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.DPSK, ServiceOperation.EDIT)}
             to={getServiceDetailsLink({
               type: ServiceType.DPSK,
               oper: ServiceOperation.EDIT,

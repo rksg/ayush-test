@@ -52,7 +52,7 @@ export default function DHCPTable () {
 
   const rowActions: TableProps<DHCPSaveData>['rowActions'] = [
     {
-      key: getServiceAllowedOperation(ServiceType.DHCP, ServiceOperation.DELETE),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.DHCP, ServiceOperation.DELETE),
       scopeKey: getScopeKeyByService(ServiceType.DHCP, ServiceOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedRows) => {
@@ -76,7 +76,7 @@ export default function DHCPTable () {
       }
     },
     {
-      key: getServiceAllowedOperation(ServiceType.DHCP, ServiceOperation.EDIT),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.DHCP, ServiceOperation.EDIT),
       scopeKey: getScopeKeyByService(ServiceType.DHCP, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       disabled: (selectedRows) => {
@@ -111,7 +111,7 @@ export default function DHCPTable () {
         ]}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
-            key={getServiceAllowedOperation(ServiceType.DHCP, ServiceOperation.CREATE)}
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.DHCP, ServiceOperation.CREATE)}
             to={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
             scopeKey={getScopeKeyByService(ServiceType.DHCP, ServiceOperation.CREATE)}
           >

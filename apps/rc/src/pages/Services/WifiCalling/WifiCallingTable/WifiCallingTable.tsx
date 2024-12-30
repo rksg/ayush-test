@@ -117,7 +117,7 @@ export default function WifiCallingTable () {
 
   const rowActions: TableProps<WifiCallingSetting>['rowActions'] = [
     {
-      key: getServiceAllowedOperation(ServiceType.WIFI_CALLING, ServiceOperation.DELETE),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.WIFI_CALLING, ServiceOperation.DELETE),
       scopeKey: getScopeKeyByService(ServiceType.WIFI_CALLING, ServiceOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
@@ -125,7 +125,7 @@ export default function WifiCallingTable () {
       }
     },
     {
-      key: getServiceAllowedOperation(ServiceType.WIFI_CALLING, ServiceOperation.EDIT),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.WIFI_CALLING, ServiceOperation.EDIT),
       scopeKey: getScopeKeyByService(ServiceType.WIFI_CALLING, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
@@ -159,7 +159,8 @@ export default function WifiCallingTable () {
           <TenantLink
             // eslint-disable-next-line max-len
             to={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE })}
-            key={getServiceAllowedOperation(ServiceType.WIFI_CALLING, ServiceOperation.CREATE)}
+            // eslint-disable-next-line max-len
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.WIFI_CALLING, ServiceOperation.CREATE)}
             scopeKey={getScopeKeyByService(ServiceType.WIFI_CALLING, ServiceOperation.CREATE)}
           >
             <Button

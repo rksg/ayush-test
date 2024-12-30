@@ -58,7 +58,7 @@ export function AccessControlTable () {
             oper: PolicyOperation.CREATE
           })}
           scopeKey={getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE)}
-          key={getPolicyAllowedOperation(PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE)}
+          rbacOpsIds={getPolicyAllowedOperation(PolicyType.ACCESS_CONTROL, PolicyOperation.CREATE)}
         >
           <Button
             type='primary'

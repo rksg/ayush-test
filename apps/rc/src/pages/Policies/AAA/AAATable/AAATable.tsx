@@ -80,13 +80,13 @@ export default function AAATable () {
 
   const rowActions: TableProps<AAAViewModalType>['rowActions'] = [
     {
-      key: getPolicyAllowedOperation(PolicyType.AAA, PolicyOperation.DELETE),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.AAA, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.AAA, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => doDelete(selectedRows, clearSelection)
     },
     {
-      key: getPolicyAllowedOperation(PolicyType.AAA, PolicyOperation.EDIT),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.AAA, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.AAA, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows: AAAViewModalType[]) => selectedRows?.length === 1,
@@ -124,7 +124,7 @@ export default function AAATable () {
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
-            key={getPolicyAllowedOperation(PolicyType.AAA, PolicyOperation.CREATE)}
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.AAA, PolicyOperation.CREATE)}
             scopeKey={getScopeKeyByPolicy(PolicyType.AAA, PolicyOperation.CREATE)}
           >
             <Button type='primary'

@@ -106,7 +106,7 @@ const ApplicationPolicyComponent = () => {
   }, [networkTableQuery.data, networkIds])
 
   const actions = [{
-    key: getPolicyAllowedOperation(PolicyType.APPLICATION_POLICY, PolicyOperation.CREATE),
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.APPLICATION_POLICY, PolicyOperation.CREATE),
     scopeKey: getScopeKeyByPolicy(PolicyType.APPLICATION_POLICY, PolicyOperation.CREATE),
     label: $t({ defaultMessage: 'Add Application Policy' }),
     disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_APPLICATION_POLICY,
@@ -131,7 +131,7 @@ const ApplicationPolicyComponent = () => {
 
   const rowActions: TableProps<ApplicationPolicy>['rowActions'] = [
     {
-      key: getPolicyAllowedOperation(PolicyType.APPLICATION_POLICY, PolicyOperation.DELETE),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.APPLICATION_POLICY, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.APPLICATION_POLICY, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
@@ -140,7 +140,7 @@ const ApplicationPolicyComponent = () => {
       }
     },
     {
-      key: getPolicyAllowedOperation(PolicyType.APPLICATION_POLICY, PolicyOperation.EDIT),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.APPLICATION_POLICY, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.APPLICATION_POLICY, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),

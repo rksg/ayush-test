@@ -57,7 +57,7 @@ export const WifiCallingDetailView = () => {
         extra={filterByAccessForServicePolicyMutation([
           <ServiceConfigTemplateLinkSwitcher
             // eslint-disable-next-line max-len
-            key={useTemplateAwareServiceAllowedOperation(ServiceType.WIFI_CALLING, ServiceOperation.EDIT)}
+            rbacOpsIds={useTemplateAwareServiceAllowedOperation(ServiceType.WIFI_CALLING, ServiceOperation.EDIT)}
             scopeKey={getScopeKeyByService(ServiceType.WIFI_CALLING, ServiceOperation.EDIT)}
             type={ServiceType.WIFI_CALLING}
             oper={ServiceOperation.EDIT}

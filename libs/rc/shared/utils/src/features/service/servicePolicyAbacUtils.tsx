@@ -1,16 +1,16 @@
 import { ReactElement } from 'react'
 
-import { Button }                                                                                         from '@acx-ui/components'
-import { TenantLink }                                                                                     from '@acx-ui/react-router-dom'
-import { RolesEnum, ScopeKeys }                                                                           from '@acx-ui/types'
-import { AuthRoute, filterByAccess, goToNoPermission, hasCrossVenuesPermission, hasPermission, hasRoles } from '@acx-ui/user'
+import { Button }                                                                                                         from '@acx-ui/components'
+import { TenantLink }                                                                                                     from '@acx-ui/react-router-dom'
+import { RbacOpsIds, RolesEnum, ScopeKeys }                                                                               from '@acx-ui/types'
+import { AuthRoute, filterByAccess, getUserProfile, goToNoPermission, hasCrossVenuesPermission, hasPermission, hasRoles } from '@acx-ui/user'
 
 import { useConfigTemplate } from '../../configTemplate'
 import { ServiceType }       from '../../constants'
 import { PolicyType }        from '../../types'
 import { PolicyOperation }   from '../policy'
 
-import { getPolicyAllowedOperation, getServiceAllowedOperation, isAllowedOperationCheckEnabled } from './allowedOperationUtils'
+import { getPolicyAllowedOperation, getServiceAllowedOperation } from './allowedOperationUtils'
 import {
   policyOperScopeMap, policyTypeScopeMap, serviceOperScopeMap, serviceTypeScopeMap,
   SvcPcyAllowedScope, SvcPcyAllowedType, SvcPcyScopeMap,
@@ -29,7 +29,7 @@ export function hasDpskAccess () {
 }
 
 export function filterDpskOperationsByPermission<Item> (rowActions: Item[]): Item[] {
-  if (isAllowedOperationCheckEnabled()) {
+  if (getUserProfile().rbacOpsApiEnabled) {
     return filterByAccess(rowActions)
   }
   return (hasDpskAccess() && filterByAccess(rowActions)) || []
@@ -83,7 +83,7 @@ export function ServiceAuthRoute (props: {
 }) {
   const { serviceType, oper, children } = props
 
-  if (isAllowedOperationCheckEnabled()) {
+  if (getUserProfile().rbacOpsApiEnabled) {
     return hasServicePermission({ type: serviceType, oper }) ? children : goToNoPermission()
   }
 
@@ -142,7 +142,7 @@ export function PolicyAuthRoute (props: {
 }) {
   const { policyType, oper, children } = props
 
-  if (isAllowedOperationCheckEnabled()) {
+  if (getUserProfile().rbacOpsApiEnabled) {
     return hasPolicyPermission({ type: policyType, oper }) ? children : goToNoPermission()
   }
 
@@ -164,7 +164,7 @@ interface AddProfileButtonProps<T, O> {
   operation: O
   targetPath: string
   linkText: string
-  getAllowedOperation: (type: T, oper: O) => string | undefined
+  getAllowedOperation: (type: T, oper: O) => RbacOpsIds | undefined
 }
 
 export function AddProfileButton <T, O> (props: AddProfileButtonProps<T, O>) {
@@ -175,12 +175,10 @@ export function AddProfileButton <T, O> (props: AddProfileButtonProps<T, O>) {
   </TenantLink>
 
   const hasAddProfilePermission = items.some(svc => {
-    return hasPermission({
-      allowedOperations: getAllowedOperation(svc.type, operation)
-    })
+    return hasPermission({ rbacOpsIds: getAllowedOperation(svc.type, operation) })
   })
 
-  if (isAllowedOperationCheckEnabled()) {
+  if (getUserProfile().rbacOpsApiEnabled) {
     return hasAddProfilePermission ? AddButton : null
   }
   return filterByAccessForServicePolicyMutation([AddButton])[0]
@@ -244,7 +242,7 @@ type hasGenericPermissionProps<T extends SvcPcyAllowedType, U extends SvcPcyAllo
   roles?: RolesEnum[],
   isTemplate?: boolean
   getScopeKeyFn: (type: T, oper: U) => ScopeKeys,
-  getAllowedOperation: (type: T, oper: U, isTemplate?: boolean) => string | undefined,
+  getAllowedOperation: (type: T, oper: U, isTemplate?: boolean) => RbacOpsIds | undefined,
   specialCheckFn?: () => boolean
 }
 
@@ -254,13 +252,13 @@ function hasGenericPermission<T extends SvcPcyAllowedType, U extends SvcPcyAllow
   // eslint-disable-next-line max-len
   const { type, oper, roles, isTemplate, getScopeKeyFn, specialCheckFn, getAllowedOperation } = props
 
+  if (getUserProfile().rbacOpsApiEnabled) {
+    return hasPermission({ rbacOpsIds: getAllowedOperation(type, oper, isTemplate) })
+  }
+
   // eslint-disable-next-line max-len
   if ([ServiceOperation.LIST, ServiceOperation.DETAIL, PolicyOperation.LIST, PolicyOperation.DETAIL].includes(oper as unknown as SvcPcyAllowedOper)) {
     return true // Always allow users to access the view page
-  }
-
-  if (isAllowedOperationCheckEnabled()) {
-    return hasPermission({ allowedOperations: getAllowedOperation(type, oper, isTemplate) })
   }
 
   const scopeKeys = getScopeKeyFn(type, oper)

@@ -132,7 +132,7 @@ const AccessControlSet = () => {
 
   const rowActions: TableProps<EnhancedAccessControlInfoType>['rowActions'] = [
     {
-      key: getPolicyAllowedOperation(PolicyType.ACCESS_CONTROL, PolicyOperation.DELETE),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.ACCESS_CONTROL, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
@@ -141,7 +141,7 @@ const AccessControlSet = () => {
       }
     },
     {
-      key: getPolicyAllowedOperation(PolicyType.ACCESS_CONTROL, PolicyOperation.EDIT),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.ACCESS_CONTROL, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),

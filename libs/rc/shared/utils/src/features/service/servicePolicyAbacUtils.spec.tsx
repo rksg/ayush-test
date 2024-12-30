@@ -16,17 +16,14 @@ jest.mock('@acx-ui/user', () => ({
   filterByAccess: (items: any[]) => mockedFilterByAccess(items)
 }))
 
-const mockedIsAllowedOperationCheckEnabled = jest.fn()
 const mockedGetServiceAllowedOperation = jest.fn()
 jest.mock('./allowedOperationUtils', () => ({
   ...jest.requireActual('./allowedOperationUtils'),
-  isAllowedOperationCheckEnabled: () => mockedIsAllowedOperationCheckEnabled(),
   getServiceAllowedOperation: () => mockedGetServiceAllowedOperation()
 }))
 
 describe('servicePolicyAbacUtils', () => {
   afterEach(() => {
-    mockedIsAllowedOperationCheckEnabled.mockReset()
     mockedGetServiceAllowedOperation.mockReset()
     mockedFilterByAccess.mockClear()
   })
@@ -109,18 +106,19 @@ describe('servicePolicyAbacUtils', () => {
     expect(getScopeKeyByPolicy(PolicyType.AAA, PolicyOperation.DELETE)).toEqual<ScopeKeys>([WifiScopes.DELETE])
   })
 
-  it('check service permission when isAllowedOperationCheckEnabled is true', () => {
+  it('check service permission when rbacOpsApiEnabled is true', () => {
     setUserProfile({
       ...getUserProfile(),
-      allowedOperations: ['POST:/wifiCallingServiceProfiles']
+      allowedOperations: ['POST:/wifiCallingServiceProfiles'],
+      rbacOpsApiEnabled: true
     })
 
-    mockedIsAllowedOperationCheckEnabled.mockReturnValue(true)
-    mockedGetServiceAllowedOperation.mockReturnValue('POST:/wifiCallingServiceProfiles')
+    mockedGetServiceAllowedOperation.mockReturnValue(['POST:/wifiCallingServiceProfiles'])
     // eslint-disable-next-line max-len
     expect(hasServicePermission({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE })).toBe(true)
 
-    mockedGetServiceAllowedOperation.mockReturnValue('PUT:/wifiCallingServiceProfiles/{serviceId}')
+    // eslint-disable-next-line max-len
+    mockedGetServiceAllowedOperation.mockReturnValue(['PUT:/wifiCallingServiceProfiles/{serviceId}'])
     // eslint-disable-next-line max-len
     expect(hasServicePermission({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.EDIT })).toBe(false)
   })
@@ -162,14 +160,14 @@ describe('servicePolicyAbacUtils', () => {
     it('renders the link when permission is allowed and operation check is enabled', () => {
       setUserProfile({
         ...getUserProfile(),
-        allowedOperations: ['POST:/wifiCallingServiceProfiles']
+        allowedOperations: ['POST:/wifiCallingServiceProfiles'],
+        rbacOpsApiEnabled: true
       })
-      mockedIsAllowedOperationCheckEnabled.mockReturnValue(true)
 
       render(
         <AddProfileButton
           items={[{ type: ServiceType.WIFI_CALLING }]}
-          getAllowedOperation={() => 'POST:/wifiCallingServiceProfiles'}
+          getAllowedOperation={() => ['POST:/wifiCallingServiceProfiles']}
           operation={ServiceOperation.CREATE}
           linkText={'Add Service'}
           targetPath={'/add-service'}
@@ -185,14 +183,14 @@ describe('servicePolicyAbacUtils', () => {
     it('returns null when no permission and operation check is enabled', () => {
       setUserProfile({
         ...getUserProfile(),
-        allowedOperations: []
+        allowedOperations: [],
+        rbacOpsApiEnabled: true
       })
-      mockedIsAllowedOperationCheckEnabled.mockReturnValue(true)
 
       render(
         <AddProfileButton
           items={[{ type: ServiceType.WIFI_CALLING }]}
-          getAllowedOperation={() => 'POST:/wifiCallingServiceProfiles'}
+          getAllowedOperation={() => ['POST:/wifiCallingServiceProfiles']}
           operation={ServiceOperation.CREATE}
           linkText={'Add Service'}
           targetPath={'/add-service'}
@@ -205,12 +203,16 @@ describe('servicePolicyAbacUtils', () => {
     })
 
     it('renders the link when operation check is disabled', () => {
-      mockedIsAllowedOperationCheckEnabled.mockReturnValue(false)
+      setUserProfile({
+        ...getUserProfile(),
+        allowedOperations: [],
+        rbacOpsApiEnabled: false
+      })
 
       render(
         <AddProfileButton
           items={[{ type: ServiceType.WIFI_CALLING }]}
-          getAllowedOperation={() => 'POST:/wifiCallingServiceProfiles'}
+          getAllowedOperation={() => ['POST:/wifiCallingServiceProfiles']}
           operation={ServiceOperation.CREATE}
           linkText={'Add Service'}
           targetPath={'/add-service'}

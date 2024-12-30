@@ -1,3 +1,4 @@
+/* eslint-disable align-import/align-import */
 import { useState } from 'react'
 
 import { Modal as AntModal, Form, Input } from 'antd'
@@ -35,15 +36,14 @@ import {
   filterDpskOperationsByPermission,
   getPassphraseStatus,
   getScopeKeyByService,
-  isAllowedOperationCheckEnabled,
   transformAdvancedDpskExpirationText,
   unlimitedNumberOfDeviceLabel,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams }                               from '@acx-ui/react-router-dom'
-import { WifiScopes }                              from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
-import { getIntl, validationMessages }             from '@acx-ui/utils'
+import { useParams }                                                     from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                    from '@acx-ui/types'
+import { getUserProfile, hasAllowedOperations, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { getIntl, validationMessages }                                   from '@acx-ui/utils'
 
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 import ManageDevicesDrawer                              from './ManageDevicesDrawer'
@@ -253,8 +253,8 @@ export default function DpskPassphraseManagement () {
   }
 
   const hasAddNetworkPermission = () => {
-    if (isAllowedOperationCheckEnabled()) {
-      return hasPermission({ allowedOperations: 'POST:/wifiNetworks' })
+    if (getUserProfile().rbacOpsApiEnabled) {
+      return hasAllowedOperations(['POST:/wifiNetworks'])
     }
     return hasCrossVenuesPermission() && hasPermission({ scopes: [WifiScopes.CREATE] })
   }

@@ -48,7 +48,7 @@ export default function ClientIsolationDetail () {
             oper: PolicyOperation.EDIT,
             policyId: params.policyId as string
           })}
-          key={getPolicyAllowedOperation(PolicyType.CLIENT_ISOLATION, PolicyOperation.EDIT)}
+          rbacOpsIds={getPolicyAllowedOperation(PolicyType.CLIENT_ISOLATION, PolicyOperation.EDIT)}
           scopeKey={getScopeKeyByPolicy(PolicyType.CLIENT_ISOLATION, PolicyOperation.EDIT)}>
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>

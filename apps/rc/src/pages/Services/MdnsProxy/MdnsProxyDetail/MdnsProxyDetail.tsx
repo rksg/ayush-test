@@ -49,7 +49,7 @@ export default function MdnsProxyDetail () {
         ]}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
-            key={getServiceAllowedOperation(ServiceType.MDNS_PROXY, ServiceOperation.EDIT)}
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.MDNS_PROXY, ServiceOperation.EDIT)}
             scopeKey={getScopeKeyByService(ServiceType.MDNS_PROXY, ServiceOperation.EDIT)}
             to={getServiceDetailsLink({
               type: ServiceType.MDNS_PROXY,

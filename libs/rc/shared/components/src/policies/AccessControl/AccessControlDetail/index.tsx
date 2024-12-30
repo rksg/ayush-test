@@ -41,7 +41,7 @@ export function AccessControlDetail () {
         extra={filterByAccessForServicePolicyMutation([
           <PolicyConfigTemplateLinkSwitcher
             // eslint-disable-next-line max-len
-            key={useTemplateAwarePolicyAllowedOperation(PolicyType.ACCESS_CONTROL, PolicyOperation.EDIT)}
+            rbacOpsIds={useTemplateAwarePolicyAllowedOperation(PolicyType.ACCESS_CONTROL, PolicyOperation.EDIT)}
             scopeKey={getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.EDIT)}
             type={PolicyType.ACCESS_CONTROL}
             oper={PolicyOperation.EDIT}

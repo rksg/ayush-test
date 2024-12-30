@@ -60,7 +60,7 @@ export default function VLANPoolTable () {
 
   const rowActions: TableProps<VLANPoolViewModelType>['rowActions'] = [
     {
-      key: getPolicyAllowedOperation(PolicyType.VLAN_POOL, PolicyOperation.DELETE),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.VLAN_POOL, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.VLAN_POOL, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ id, name }], clearSelection) => {
@@ -79,7 +79,7 @@ export default function VLANPoolTable () {
       }
     },
     {
-      key: getPolicyAllowedOperation(PolicyType.VLAN_POOL, PolicyOperation.EDIT),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.VLAN_POOL, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.VLAN_POOL, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([{ id }]) => {
@@ -114,7 +114,7 @@ export default function VLANPoolTable () {
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}
-            key={getPolicyAllowedOperation(PolicyType.VLAN_POOL, PolicyOperation.CREATE)}
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.VLAN_POOL, PolicyOperation.CREATE)}
             scopeKey={getScopeKeyByPolicy(PolicyType.VLAN_POOL, PolicyOperation.CREATE)}
           >
             <Button type='primary'

@@ -20,7 +20,7 @@ export default function DpskDetails () {
         breadcrumb={breadcrumb}
         extra={filterByAccess([
           <ServiceConfigTemplateDetailsLink
-            key={getServiceAllowedOperation(ServiceType.DPSK, ServiceOperation.EDIT, true)}
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.DPSK, ServiceOperation.EDIT, true)}
             type={ServiceType.DPSK}
             oper={ServiceOperation.EDIT}
             serviceId={serviceId!}

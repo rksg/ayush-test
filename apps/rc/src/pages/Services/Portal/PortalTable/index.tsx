@@ -71,7 +71,7 @@ export default function PortalTable () {
 
   const rowActions: TableProps<Portal>['rowActions'] = [
     {
-      key: getServiceAllowedOperation(ServiceType.PORTAL, ServiceOperation.DELETE),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.PORTAL, ServiceOperation.DELETE),
       label: intl.$t({ defaultMessage: 'Delete' }),
       scopeKey: getScopeKeyByService(ServiceType.PORTAL, ServiceOperation.DELETE),
       onClick: ([{ id, serviceName, name }], clearSelection) => {
@@ -89,7 +89,7 @@ export default function PortalTable () {
       }
     },
     {
-      key: getServiceAllowedOperation(ServiceType.PORTAL, ServiceOperation.EDIT),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.PORTAL, ServiceOperation.EDIT),
       label: intl.$t({ defaultMessage: 'Edit' }),
       scopeKey: getScopeKeyByService(ServiceType.PORTAL, ServiceOperation.EDIT),
       onClick: ([{ id }]) => {
@@ -230,7 +230,7 @@ export default function PortalTable () {
         extra={filterByAccessForServicePolicyMutation([
           // eslint-disable-next-line max-len
           <TenantLink
-            key={getServiceAllowedOperation(ServiceType.PORTAL, ServiceOperation.CREATE)}
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.PORTAL, ServiceOperation.CREATE)}
             to={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}
             scopeKey={getScopeKeyByService(ServiceType.PORTAL, ServiceOperation.CREATE)}
           >

@@ -46,7 +46,8 @@ export function AAAPolicyDetail () {
         breadcrumb={breadcrumb}
         extra={filterByAccessForServicePolicyMutation([
           <PolicyConfigTemplateLinkSwitcher
-            key={useTemplateAwarePolicyAllowedOperation(PolicyType.AAA, PolicyOperation.EDIT)}
+            // eslint-disable-next-line max-len
+            rbacOpsIds={useTemplateAwarePolicyAllowedOperation(PolicyType.AAA, PolicyOperation.EDIT)}
             scopeKey={getScopeKeyByPolicy(PolicyType.AAA, PolicyOperation.EDIT)}
             type={PolicyType.AAA}
             oper={PolicyOperation.EDIT}

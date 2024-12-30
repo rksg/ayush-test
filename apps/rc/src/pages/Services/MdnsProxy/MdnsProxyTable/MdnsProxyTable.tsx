@@ -49,7 +49,7 @@ export default function MdnsProxyTable () {
 
   const rowActions: TableProps<MdnsProxyViewModel>['rowActions'] = [
     {
-      key: getServiceAllowedOperation(ServiceType.MDNS_PROXY, ServiceOperation.DELETE),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.MDNS_PROXY, ServiceOperation.DELETE),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([{ id }]) => {
         navigate({
@@ -64,7 +64,7 @@ export default function MdnsProxyTable () {
       scopeKey: getScopeKeyByService(ServiceType.MDNS_PROXY, ServiceOperation.EDIT)
     },
     {
-      key: getServiceAllowedOperation(ServiceType.MDNS_PROXY, ServiceOperation.DELETE),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.MDNS_PROXY, ServiceOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ id, name }], clearSelection) => {
         showActionModal({
@@ -101,7 +101,7 @@ export default function MdnsProxyTable () {
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByService(ServiceType.MDNS_PROXY, ServiceOperation.CREATE)}
-            key={getServiceAllowedOperation(ServiceType.MDNS_PROXY, ServiceOperation.CREATE)}
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.MDNS_PROXY, ServiceOperation.CREATE)}
             // eslint-disable-next-line max-len
             to={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}
           >

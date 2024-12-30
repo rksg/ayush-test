@@ -74,7 +74,7 @@ export default function SyslogTable () {
 
   const rowActions: TableProps<SyslogPolicyListType>['rowActions'] = [
     {
-      key: getPolicyAllowedOperation(PolicyType.SYSLOG, PolicyOperation.DELETE),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.SYSLOG, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.SYSLOG, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
@@ -82,7 +82,7 @@ export default function SyslogTable () {
       }
     },
     {
-      key: getPolicyAllowedOperation(PolicyType.SYSLOG, PolicyOperation.EDIT),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.SYSLOG, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.SYSLOG, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
@@ -119,7 +119,7 @@ export default function SyslogTable () {
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })}
-            key={getPolicyAllowedOperation(PolicyType.SYSLOG, PolicyOperation.CREATE)}
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.SYSLOG, PolicyOperation.CREATE)}
             scopeKey={getScopeKeyByPolicy(PolicyType.SYSLOG, PolicyOperation.CREATE)}
           >
             <Button type='primary' disabled={tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT}>

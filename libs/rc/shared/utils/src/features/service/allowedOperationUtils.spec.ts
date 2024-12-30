@@ -27,12 +27,12 @@ describe('allowedOperationUtils', () => {
 
   describe('applyTemplateIfNeeded', () => {
     it('should modify the operation when isTemplate is true', () => {
-      const operation = 'http:/path'
+      const operation = ['http:/path']
       expect(applyTemplateIfNeeded(operation, true)).toBe('http:/templates/path')
     })
 
     it('should not modify the operation when isTemplate is false', () => {
-      const operation = 'http:/path'
+      const operation = ['http:/path']
       expect(applyTemplateIfNeeded(operation, false)).toBe('http:/path')
     })
   })

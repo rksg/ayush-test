@@ -35,7 +35,7 @@ export default function PortalServiceDetail () {
         breadcrumb={breadcrumb}
         extra={filterByAccess([
           <ServiceConfigTemplateDetailsLink
-            key={useTemplateAwareServiceAllowedOperation(ServiceType.PORTAL, ServiceOperation.EDIT)}
+            rbacOpsIds={useTemplateAwareServiceAllowedOperation(ServiceType.PORTAL, ServiceOperation.EDIT)}
             type={ServiceType.PORTAL}
             oper={ServiceOperation.EDIT}
             serviceId={params.serviceId!}

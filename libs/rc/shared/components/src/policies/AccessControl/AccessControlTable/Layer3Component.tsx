@@ -111,7 +111,7 @@ const Layer3Component = () => {
   }, [networkTableQuery.data, networkIds])
 
   const actions = [{
-    key: getPolicyAllowedOperation(PolicyType.LAYER_3_POLICY, PolicyOperation.CREATE),
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.LAYER_3_POLICY, PolicyOperation.CREATE),
     scopeKey: getScopeKeyByPolicy(PolicyType.LAYER_3_POLICY, PolicyOperation.CREATE),
     label: $t({ defaultMessage: 'Add Layer 3 Policy' }),
     disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_LAYER3_POLICY,
@@ -136,7 +136,7 @@ const Layer3Component = () => {
 
   const rowActions: TableProps<L3AclPolicy>['rowActions'] = [
     {
-      key: getPolicyAllowedOperation(PolicyType.LAYER_3_POLICY, PolicyOperation.DELETE),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.LAYER_3_POLICY, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.LAYER_3_POLICY, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
@@ -145,7 +145,7 @@ const Layer3Component = () => {
       }
     },
     {
-      key: getPolicyAllowedOperation(PolicyType.LAYER_3_POLICY, PolicyOperation.EDIT),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.LAYER_3_POLICY, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.LAYER_3_POLICY, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
