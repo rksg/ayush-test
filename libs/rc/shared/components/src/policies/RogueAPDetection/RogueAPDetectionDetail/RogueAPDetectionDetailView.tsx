@@ -41,7 +41,7 @@ export const RogueAPDetectionDetailView = () => {
         extra={policyName !== RogueApConstant.DefaultProfile
           ? filterByAccessForServicePolicyMutation([
             <PolicyConfigTemplateLinkSwitcher
-              key={allowedOperationForEdit}
+              rbacOpsIds={allowedOperationForEdit}
               scopeKey={getScopeKeyByPolicy(PolicyType.ROGUE_AP_DETECTION, PolicyOperation.EDIT)}
               type={PolicyType.ROGUE_AP_DETECTION}
               oper={PolicyOperation.EDIT}

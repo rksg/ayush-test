@@ -41,7 +41,7 @@ export const SyslogDetailView = () => {
         extra={policyName !== SyslogConstant.DefaultProfile
           ? filterByAccessForServicePolicyMutation([
             <PolicyConfigTemplateLinkSwitcher
-              key={allowedOperationForEdit}
+              rbacOpsIds={allowedOperationForEdit}
               scopeKey={getScopeKeyByPolicy(PolicyType.SYSLOG, PolicyOperation.EDIT)}
               type={PolicyType.SYSLOG}
               oper={PolicyOperation.EDIT}
