@@ -36,6 +36,7 @@ export function VLANPoolDetail () {
         breadcrumb={breadcrumb}
         extra={filterByAccessForServicePolicyMutation([
           <PolicyConfigTemplateLinkSwitcher
+            // eslint-disable-next-line max-len
             rbacOpsIds={useTemplateAwarePolicyAllowedOperation(PolicyType.VLAN_POOL, PolicyOperation.EDIT)}
             scopeKey={getScopeKeyByPolicy(PolicyType.VLAN_POOL, PolicyOperation.EDIT)}
             type={PolicyType.VLAN_POOL}

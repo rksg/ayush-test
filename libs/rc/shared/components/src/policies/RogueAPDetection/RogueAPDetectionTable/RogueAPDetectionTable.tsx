@@ -169,6 +169,7 @@ export function RogueAPDetectionTable () {
           <TenantLink
             // eslint-disable-next-line max-len
             to={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}
+            // eslint-disable-next-line max-len
             rbacOpsIds={getPolicyAllowedOperation(PolicyType.ROGUE_AP_DETECTION, PolicyOperation.CREATE)}
             scopeKey={getScopeKeyByPolicy(PolicyType.ROGUE_AP_DETECTION, PolicyOperation.CREATE)}
           >
