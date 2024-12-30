@@ -6,7 +6,7 @@ import { findTBody, mockGraphqlQuery, render,
 
 import { ImpactedSwitch } from './services'
 
-import { ImpactedSwitchDDoSDonut, ImpactedSwitchDDoSTable } from '.'
+import { ImpactedSwitchDDoSTable } from '.'
 
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
@@ -82,7 +82,12 @@ describe('ImpactedSwitchDDoS',()=>{
       expect(within(rows[1]).getAllByRole('cell')[3].textContent).toMatch('1/1/1, 1/1/23')
     })
     it('should copy the port numbers to clipboard', async () => {
-      jest.spyOn(navigator.clipboard, 'writeText')
+      const writeText = jest.fn()
+      Object.assign(navigator, {
+        clipboard: {
+          writeText
+        }
+      })
       mockGraphqlQuery(dataApiURL, 'ImpactedSwitchDDoS', { data: response() })
       render(<Provider><ImpactedSwitchDDoSTable incident={fakeIncidentDDoS} /></Provider>, {
         route: {
@@ -94,9 +99,9 @@ describe('ImpactedSwitchDDoS',()=>{
       const body = within(await findTBody())
       const rows = await body.findAllByRole('row')
       fireEvent.click(within(rows[0]).getByTestId('CopyOutlined'))
-      expect(navigator.clipboard.writeText).toHaveBeenCalledWith('1/1/1')
+      expect(writeText).toHaveBeenCalledWith('1/1/1')
       fireEvent.click(within(rows[1]).getByTestId('CopyOutlined'))
-      expect(navigator.clipboard.writeText).toHaveBeenCalledWith('1/1/1, 1/1/23')
+      expect(writeText).toHaveBeenCalledWith('1/1/1, 1/1/23')
     })
     it('should render for RA', async () => {
       jest.mocked(get).mockReturnValue('true')
@@ -127,30 +132,6 @@ describe('ImpactedSwitchDDoS',()=>{
           wrapRoutes: false
         }
       })
-      await screen.findByText('Data granularity at this level is not available')
-      jest.mocked(mockOverlapsRollup).mockReturnValue(false)
-    })
-  })
-
-  describe('ImpactedSwitchDDoSDonut', () => {
-    beforeEach(() => store.dispatch(dataApi.util.resetApiState()))
-    it('should render', async () => {
-      mockGraphqlQuery(dataApiURL, 'ImpactedSwitchDDoS', { data: response() })
-      const { asFragment } = render(<Provider>
-        <ImpactedSwitchDDoSDonut incident={fakeIncidentDDoS} />
-      </Provider>)
-      await screen.findByText('Switch Distribution')
-      expect(asFragment()
-        .querySelector('div.ant-card-body > div:nth-child(1) > div > div > div > div:nth-child(1)'))
-        .toMatchSnapshot()
-    })
-    it('should hide chart when under druidRollup', async () => {
-      jest.mocked(mockOverlapsRollup).mockReturnValue(true)
-      mockGraphqlQuery(dataApiURL, 'ImpactedSwitchDDoS', { data: response() })
-      render(<Provider>
-        <ImpactedSwitchDDoSDonut incident={fakeIncidentDDoS} />
-      </Provider>)
-      await screen.findByText('Switch Distribution')
       await screen.findByText('Data granularity at this level is not available')
       jest.mocked(mockOverlapsRollup).mockReturnValue(false)
     })

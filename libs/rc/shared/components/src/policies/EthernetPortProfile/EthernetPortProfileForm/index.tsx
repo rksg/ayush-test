@@ -35,14 +35,21 @@ interface EthernetPortProfileFormProps {
   onFinish: (values: EthernetPortProfileFormType) => void
   form: FormInstance
   onCancel?: () => void
-  isNoPageHeader?: boolean,
   isEditMode?: boolean
+  isEmbedded?: boolean
 }
 
 export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
-  const { title, submitButtonLabel, onFinish, form: formRef, onCancel, isEditMode=false } = props
+  const {
+    title,
+    submitButtonLabel,
+    onFinish,
+    form: formRef,
+    onCancel,
+    isEditMode = false,
+    isEmbedded = false
+  } = props
   const { $t } = useIntl()
-  // const params = useParams()
   const portType = Form.useWatch('type', formRef)
   const untagId = Form.useWatch('untagId', formRef)
   const authTypeRole = Form.useWatch('authTypeRole', formRef)
@@ -50,7 +57,6 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
   const dynamicVlanEnabled = Form.useWatch('dynamicVlanEnabled', formRef)
   const authEnabled = Form.useWatch('authEnabled', formRef)
   const isDynamicVLANEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_DVLAN_TOGGLE)
-  const isNoPageHeader = props.isNoPageHeader? props.isNoPageHeader : false
 
   const tablePath = getPolicyRoutePath({
     type: PolicyType.ETHERNET_PORT_PROFILE,
@@ -111,7 +117,6 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
         .includes(portType)
     })
 
-
   const onPortTypeChanged = (currentPortType:EthernetPortType) => {
     if(currentPortType === EthernetPortType.TRUNK) {
       formRef.setFieldsValue({
@@ -165,7 +170,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
 
   return (
     <>
-      {!isNoPageHeader &&
+      {!isEmbedded &&
       <PageHeader
         title={title}
         breadcrumb={[
@@ -219,7 +224,6 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                 </>
                 }
                 initialValue={EthernetPortType.TRUNK}
-
               >
                 <Select
                   options={getEthernetPortTypeOptions()}
@@ -427,7 +431,6 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
             }
           </>
           }
-
           {dynamicVlanEnabled &&
           <Row>
             <Col span={12}>
@@ -458,7 +461,6 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
       </StepsForm>
     </>
   )
-
 }
 export const requestPreProcess = (data: EthernetPortProfileFormType) => {
   const { authRadius, accountingRadius, authEnabled, authTypeRole, ...result } = cloneDeep(data)

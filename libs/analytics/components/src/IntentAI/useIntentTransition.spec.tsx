@@ -13,7 +13,6 @@ import { mockedIntentCRRM, mockedIntentCRRMnew }       from './AIDrivenRRM/__tes
 import { Statuses }                                    from './states'
 import { createUseIntentTransition, useInitialValues } from './useIntentTransition'
 
-
 const { click } = userEvent
 
 const mockedUseNavigate = jest.fn()

@@ -17,7 +17,7 @@ import * as CProbeFlex5g               from './EquiFlex/CProbeFlex5g'
 import * as CProbeFlex6g               from './EquiFlex/CProbeFlex6g'
 import { createIntentContextProvider } from './IntentContext'
 
-export const IntentAIDetails = createIntentContextProvider('IntentAIDetails', {
+const IntentAIDetails = createIntentContextProvider('IntentAIDetails', {
   'c-aclb-enable': CAclbEnable,
   'c-bandbalancing-enable-below-61': CBandbalancingEnable,
   'c-bandbalancing-enable': CBandbalancingEnable,
@@ -39,3 +39,5 @@ export const IntentAIDetails = createIntentContextProvider('IntentAIDetails', {
   'c-probeflex-6g': CProbeFlex6g,
   'i-ecoflex': IEcoFlex
 })
+
+export default IntentAIDetails

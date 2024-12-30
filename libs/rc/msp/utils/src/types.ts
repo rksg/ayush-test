@@ -45,6 +45,7 @@ export interface DelegationEntitlementRecord {
   switchDeviceCount?: string;
   rwgDeviceCount?: string;
   edgeDeviceCount?: string;
+  availableLicenses?: number;
 }
 
 export interface MspEc {
@@ -579,6 +580,18 @@ export const MspAttentionNotesPayload = {
   filters: {
     type: ['STOP_COURTESY'],
     tenantType: ['MSP', 'ALL'],
+    status: ['VALID'],
+    licenseCheck: true
+  }
+}
+
+export const GeneralAttentionNotesPayload = {
+  page: 1,
+  pageSize: 3,
+  fields: ['summary', 'details'],
+  sortField: 'endDate',
+  sortOrder: 'DESC',
+  filters: {
     status: ['VALID'],
     licenseCheck: true
   }
