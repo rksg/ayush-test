@@ -106,30 +106,29 @@ export function RebootTimeout () {
   const toggleRebootTimeoutServer = (checked: boolean) => {
     setRebootTimeoutServerEnabled(checked)
   }
-  const fieldDataKey = ['rebootTimeout']
 
-  const rebootTimeoutGatewayEnabledFieldName = [...fieldDataKey, 'gateway', 'enabled']
-  const rebootTimeoutServerEnabledFieldName = [...fieldDataKey, 'server', 'enabled']
+  const rebootTimeoutGatewayEnabledFieldName = ['rebootTimeout', 'gateway', 'enabled']
+  const rebootTimeoutServerEnabledFieldName = ['rebootTimeout', 'server', 'enabled']
   const rebootTimeoutGwLossHourFieldName = [
-    ...fieldDataKey,
+    'rebootTimeout',
     'gwLossTimeout',
     'hour'
   ]
 
   const rebootTimeoutGwLossMinuteFieldName = [
-    ...fieldDataKey,
+    'rebootTimeout',
     'gwLossTimeout',
     'minute'
   ]
 
   const rebootTimeoutServerLossHourFieldName = [
-    ...fieldDataKey,
+    'rebootTimeout',
     'serverLossTimeout',
     'hour'
   ]
 
   const rebootTimeoutServerLossMinuteFieldName = [
-    ...fieldDataKey,
+    'rebootTimeout',
     'serverLossTimeout',
     'minute'
   ]
