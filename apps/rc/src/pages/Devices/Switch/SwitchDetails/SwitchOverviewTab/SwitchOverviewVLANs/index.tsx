@@ -70,6 +70,7 @@ export function SwitchOverviewVLANs (props: {
   const [cliApplied, setCliApplied] = useState(false)
   const [isSwitchOperational, setIsSwitchOperational] = useState(false)
   const [switchFamilyModel, setSwitchFamilyModel] = useState('')
+  const [switchFirmware, setSwitchFirmware] = useState('')
   const [portSlotsData, setPortSlotsData] = useState([] as SwitchSlot[][])
   const [isDefaultVlanAppliedACL, setIsDefaultVlanAppliedACL] = useState(false)
 
@@ -444,6 +445,7 @@ export function SwitchOverviewVLANs (props: {
         , !!switchDetail?.syncedSwitchConfig)
 
       setSwitchFamilyModel(switchDetail?.model || '')
+      setSwitchFirmware(switchDetail?.firmware || '')
       setCliApplied(switchDetail?.cliApplied || false)
       setIsSwitchOperational(isOperational || false)
     }
@@ -491,6 +493,7 @@ export function SwitchOverviewVLANs (props: {
           untagged: _.omit(usedUntaggedPorts, editVlan?.untaggedPorts?.split(',') ?? [])
         }}
         stackMember={stackMember?.data ?? undefined}
+        switchFirmware={switchFirmware}
       />}
 
       { isSwitchLevelVlanEnabled && defaultVlanDrawerVisible && <DefaultVlanDrawer
@@ -501,6 +504,7 @@ export function SwitchOverviewVLANs (props: {
         isSwitchLevel={true}
         isAppliedACL={isDefaultVlanAppliedACL}
         vlansList={vlanList}
+        switchFirmware={switchFirmware}
       />}
 
     </Loader>

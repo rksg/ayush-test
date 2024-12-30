@@ -1515,6 +1515,7 @@ export const venueLanPorts = [
       {
         defaultType: 'TRUNK',
         id: '1',
+        portId: '1',
         isPoeOutPort: false,
         isPoePort: false,
         supportDisable: true,
@@ -1525,6 +1526,7 @@ export const venueLanPorts = [
       {
         defaultType: 'TRUNK',
         id: '2',
+        portId: '2',
         isPoeOutPort: false,
         isPoePort: true,
         supportDisable: false,
