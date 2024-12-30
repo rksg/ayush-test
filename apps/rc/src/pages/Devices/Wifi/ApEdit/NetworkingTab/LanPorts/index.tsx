@@ -239,36 +239,38 @@ export function LanPorts () {
   }
 
   const handleFinish = async (values: WifiApSetting) => {
-    try {
-      setEditContextData && setEditContextData({
-        ...editContextData,
-        isDirty: false,
-        hasError: false
-      })
-      setUseVenueSettings(values?.useVenueSettings)
-
-      if (isResetLanPortEnabled && isResetClick.current && isResetLanPort(values)) {
-        showActionModal({
-          type: 'confirm',
-          width: 450,
-          title: $t({ defaultMessage: 'Reset Port Settings to Default' }),
-          content: $t(EditPortMessages.RESET_PORT_WARNING),
-          okText: $t({ defaultMessage: 'Continue' }),
-          onOk: async () => {
-            try {
-              processUpdateLanPorts(values)
-              isResetClick.current = false
-            } catch (error) {
-              console.log(error) // eslint-disable-line no-console
-            }
-          }
+    formRef?.current?.validateFields().then(async () => {
+      try {
+        setEditContextData && setEditContextData({
+          ...editContextData,
+          isDirty: false,
+          hasError: false
         })
-      } else {
-        processUpdateLanPorts(values)
+        setUseVenueSettings(values?.useVenueSettings)
+
+        if (isResetLanPortEnabled && isResetClick.current && isResetLanPort(values)) {
+          showActionModal({
+            type: 'confirm',
+            width: 450,
+            title: $t({ defaultMessage: 'Reset Port Settings to Default' }),
+            content: $t(EditPortMessages.RESET_PORT_WARNING),
+            okText: $t({ defaultMessage: 'Continue' }),
+            onOk: async () => {
+              try {
+                processUpdateLanPorts(values)
+                isResetClick.current = false
+              } catch (error) {
+                console.log(error) // eslint-disable-line no-console
+              }
+            }
+          })
+        } else {
+          processUpdateLanPorts(values)
+        }
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
       }
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
+    }).catch(() => {})
   }
 
   const isResetLanPort = (currentLans: WifiApSetting | undefined) => {
