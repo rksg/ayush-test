@@ -4,7 +4,7 @@ import { MaybePromise }                                       from '@reduxjs/too
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { reduce, uniq }                                       from 'lodash'
 
-import { Filter }                                 from '@acx-ui/components'
+import { Filter }                  from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -90,7 +90,11 @@ import {
   EthernetPortProfileViewData,
   SoftGreUrls,
   SoftGreViewData,
-  ClientIsolationUrls, ClientIsolationViewModel
+  ClientIsolationUrls,
+  ClientIsolationViewModel,
+  LanPortsUrls,
+  LanPort,
+  LanPortClientIsolationSettings
 } from '@acx-ui/rc/utils'
 import { baseApApi }      from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
@@ -940,6 +944,38 @@ export const apApi = baseApApi.injectEndpoints({
         )
         let apLanPorts = apLanPortSettings.data as WifiApSetting
 
+        if (params?.serialNumber) {
+          const results: ((LanPort | null)[])[] = []
+          const apLanPortSettingsQuery = apLanPorts?.lanPorts?.map((lanPort) => {
+            return fetchWithBQ(createHttpRequest(LanPortsUrls.getApLanPortSettings,
+              {
+                venueId: params?.venueId,
+                serialNumber: params.serialNumber,
+                portId: lanPort.portId
+              },
+              apiCustomHeader
+            ))
+          })
+          const reqs = await Promise.allSettled(apLanPortSettingsQuery!)
+          results.push(reqs.map((result) => {
+            return result.status === 'fulfilled' ? result.value.data as LanPort : null
+          }))
+          results.forEach((result) => {
+            const target = apLanPorts
+            result.forEach((lanPortSettings, idx) => {
+              if (lanPortSettings === null) return
+              if(target.lanPorts) {
+                target.lanPorts[idx].softGreEnabled = lanPortSettings.softGreEnabled
+                target.lanPorts[idx].clientIsolationEnabled = lanPortSettings.clientIsolationEnabled
+                if (lanPortSettings.clientIsolationEnabled) {
+                  target.lanPorts[idx].clientIsolationSettings =
+                    lanPortSettings.clientIsolationSettings as LanPortClientIsolationSettings
+                }
+              }
+            })
+          })
+        }
+
         if (enableEthernetProfile) {
           const ethReq = {
             ...createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList),
@@ -1054,7 +1090,7 @@ export const apApi = baseApApi.injectEndpoints({
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
     }),
     updateApEthernetPorts: build.mutation<CommonResult, RequestPayload>({
-      queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+      queryFn: async ({ params, payload, useVenueSettings }, _queryApi, _extraOptions, fetchWithBQ) => {
         try {
           const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
           const apSettings = payload as WifiApSetting
@@ -1077,7 +1113,9 @@ export const apApi = baseApApi.injectEndpoints({
               payload: {
                 enabled: l.enabled,
                 overwriteUntagId: l.untagId,
-                overwriteVlanMembers: l.vlanMembers
+                overwriteVlanMembers: l.vlanMembers,
+                clientIsolationEnabled: l.clientIsolationEnabled,
+                clientIsolationSettings: l.clientIsolationSettings
               }
             }))
           const softGreActivateRequests = apSettings?.lanPorts
@@ -1092,6 +1130,16 @@ export const apApi = baseApApi.injectEndpoints({
               payload: {
                 dhcpOption82Enabled: l.dhcpOption82?.dhcpOption82Enabled,
                 dhcpOption82Settings: (l.dhcpOption82?.dhcpOption82Enabled)? l.dhcpOption82?.dhcpOption82Settings : undefined
+              }
+            }))
+          const clientIsolationActivateRequests = apSettings?.lanPorts
+            ?.filter(l => l.clientIsolationEnabled && (l.clientIsolationEnabled === true) && (l.enabled === true))
+            .map(l => ({
+              params: {
+                venueId: params!.venueId,
+                serialNumber: params!.serialNumber,
+                portId: l.portId,
+                policyId: l.clientIsolationProfileId
               }
             }))
 
@@ -1113,8 +1161,14 @@ export const apApi = baseApApi.injectEndpoints({
           await batchApi(EthernetPortProfileUrls.updateEthernetPortOverwritesByApPortId,
             overwriteRequests!, fetchWithBQ, customHeaders)
 
-          await batchApi(SoftGreUrls.activateSoftGreProfileOnAP,
-            softGreActivateRequests!, fetchWithBQ, customHeaders)
+          if(!useVenueSettings) {
+            await batchApi(SoftGreUrls.activateSoftGreProfileOnAP,
+              softGreActivateRequests!, fetchWithBQ, customHeaders)
+
+            await batchApi(ClientIsolationUrls.activateClientIsolationOnAp,
+              clientIsolationActivateRequests!, fetchWithBQ, customHeaders)
+          }
+
 
           const res = await fetchWithBQ({
             ...(createHttpRequest(WifiRbacUrlsInfo.updateApLanPortSpecificSettings,
