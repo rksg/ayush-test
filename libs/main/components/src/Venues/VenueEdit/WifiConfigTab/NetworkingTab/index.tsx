@@ -21,6 +21,7 @@ import { DirectedMulticast }   from './DirectedMulticast'
 import { LanPorts }            from './LanPorts'
 import { MeshNetwork }         from './MeshNetwork'
 import { RadiusOptions }       from './RadiusOptions'
+import { RebootTimeout }       from './RebootTimeout'
 import { SmartMonitor }        from './SmartMonitor'
 
 
@@ -32,6 +33,7 @@ export interface NetworkingSettingContext {
   updateLanPorts?: (() => void),
   discardLanPorts?: (() => void),
   updateRadiusOptions?: (() => void),
+  updateRebootTimeout?: (() => void),
   updateSmartMonitor?: (() => void)
 }
 
@@ -42,6 +44,8 @@ export function NetworkingTab () {
   const { tenantId, venueId } = useParams()
 
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
+  const isRebootTimeoutFFEnabled = useIsSplitOn(Features.WIFI_AP_REBOOT_TIMEOUT_WLAN_TOGGLE)
 
   const isSmartMonitorFFEnabled = useIsSplitOn(Features.WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE)
 
@@ -141,6 +145,14 @@ export function NetworkingTab () {
         { $t({ defaultMessage: 'Smart Monitor' }) }
       </StepsFormLegacy.SectionTitle>
       <SmartMonitor />
+    </> }] : []),
+  ...(isRebootTimeoutFFEnabled? [{
+    title: $t({ defaultMessage: 'Reboot Timeout' }),
+    content: <>
+      <StepsFormLegacy.SectionTitle id='reboot-timeout'>
+        { $t({ defaultMessage: 'Reboot Timeout' }) }
+      </StepsFormLegacy.SectionTitle>
+      <RebootTimeout />
     </>
   }]: []),
   {
@@ -160,6 +172,7 @@ export function NetworkingTab () {
       await editNetworkingContextData?.updateMesh?.()
       await editNetworkingContextData?.updateDirectedMulticast?.()
       await editNetworkingContextData?.updateRadiusOptions?.()
+      await editNetworkingContextData?.updateRebootTimeout?.()
       await editNetworkingContextData?.updateSmartMonitor?.()
 
       setEditContextData?.({
@@ -176,6 +189,7 @@ export function NetworkingTab () {
         delete newData.updateMesh
         delete newData.updateDirectedMulticast
         delete newData.updateRadiusOptions
+        delete newData.updateRebootTimeout
         delete newData.updateSmartMonitor
 
         setEditNetworkingContextData(newData)
