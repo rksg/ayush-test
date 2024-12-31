@@ -178,14 +178,14 @@ export function hasPermission (props?: {
     return !!(permission && permissions[permission])
   } else {
     const { abacEnabled, isCustomRole, rbacOpsApiEnabled } = getUserProfile()
-    if(rbacOpsApiEnabled) {
+    if (rbacOpsApiEnabled) {
       return hasAccess({ rbacOpsIds: rbacOpsIds })
-    } if(!abacEnabled) {
+    } else if (!abacEnabled) {
       return hasAccess({ roles, legacyKey })
     } else {
-      if(isCustomRole){
-        const isScopesValid = scopes.length > 0 ? hasScope(scopes): true
-        return !!(isScopesValid)
+      if (isCustomRole) {
+        const isScopesValid = scopes.length > 0 ? hasScope(scopes) : true
+        return !!isScopesValid
       } else {
         return hasAccess({ roles, legacyKey })
       }
