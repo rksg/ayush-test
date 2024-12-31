@@ -4,6 +4,12 @@ import { FetchBaseQueryMeta }              from '@reduxjs/toolkit/query'
 import { showErrorModal, showExpiredSessionModal } from '@acx-ui/analytics/components'
 import { errorMessage }                            from '@acx-ui/utils'
 
+type Meta = { baseQueryMeta?: { response?: { errors?: [{ extensions?: { code?: string } }] } } }
+
+const shouldIgnoreErrorModal = (meta?: Meta) => {
+  return meta?.baseQueryMeta?.response?.errors?.[0].extensions?.code === 'RDA-413'
+}
+
 export const errorMiddleware: Middleware = () => next => unknownAction => {
   const action = unknownAction as unknown as {
     meta?: { baseQueryMeta?: FetchBaseQueryMeta }
@@ -13,7 +19,7 @@ export const errorMiddleware: Middleware = () => next => unknownAction => {
     showExpiredSessionModal()
     return
   }
-  if (isRejectedWithValue(action)) {
+  if (isRejectedWithValue(action) && !shouldIgnoreErrorModal(action.meta as Meta)) {
     switch (status) {
       case 400:
         showErrorModal(errorMessage.BAD_REQUEST, action)

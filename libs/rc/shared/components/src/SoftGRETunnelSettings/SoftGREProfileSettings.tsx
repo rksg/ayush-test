@@ -63,13 +63,20 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
       }))
       if (softGreProfileId) {
         form.setFieldValue(softGreProfileIdFieldName,softGreProfileId)
-        setSoftGREProfile(softGREProfileOptionList.find(
-          (profile) => profile.value === softGreProfileId) ?? defaultSoftgreOption
-        )
       }
     }
 
   }, [softGreViewDataList])
+
+  useEffect(() => {
+    if(!softGreProfileId) {
+      return
+    }
+    const selectedProfile = softGREProfileOptionList
+      .find((profile) => profile.value === softGreProfileId)
+    setSoftGREProfile(selectedProfile ? selectedProfile: defaultSoftgreOption)
+
+  }, [softGreProfileId, softGREProfileOptionList])
 
   return (
     <>
