@@ -111,6 +111,7 @@ export function SingleRadioSettings (props:{
   const allowedIndoorChannelsFieldName = [...radioDataKey, 'allowedIndoorChannels']
   const allowedOutdoorChannelsFieldName = [...radioDataKey, 'allowedOutdoorChannels']
   const combinChannelsFieldName = [...radioDataKey, 'combineChannels']
+  const txPowerFieldName = [...radioDataKey, 'txPower']
 
   const [displayRadioBarSettings, setDisplayRadioBarSettings] = useState(
     radioType === ApRadioTypeEnum.Radio5G ? ['5G', 'DFS'] : [])
@@ -325,10 +326,11 @@ export function SingleRadioSettings (props:{
         || (supportR370 && context === 'ap' && !apCapabilities?.supportAutoCellSizing))
         ? txPowerAdjustment6GOptions
         : txPowerAdjustmentOptions
+
       if (isApTxPowerToggleEnabled) {
         if (context === 'venue'
-          || (context === 'ap' && isApFwVersionLargerThan711(firmwareProps?.firmware)
-          && (!supportR370 || apCapabilities?.supportAggressiveTxPower))) {
+          // eslint-disable-next-line max-len
+          || (context === 'ap' && isModelAndFwSupportAggressiveTxPower(firmwareProps, apCapabilities))) {
           return [...res, ...txPowerAdjustmentExtendedOptions].sort((a, b) => {
             if (a.value === 'MIN') return 1
             if (b.value === 'MIN') return -1
@@ -339,7 +341,25 @@ export function SingleRadioSettings (props:{
       return res
     }
     setTxPowerOptions(getTxPowerAdjustmentOptions())
+
+    if(isApTxPowerToggleEnabled
+      && context === 'ap'
+      && !isModelAndFwSupportAggressiveTxPower(firmwareProps, apCapabilities)) {
+      const txPower = form.getFieldValue(txPowerFieldName)
+      const isExtendedOption = txPowerAdjustmentExtendedOptions.some(o => o.value === txPower)
+      if(isExtendedOption) {
+        // -10 ~ -23 map to -10 for legacy firmware and unsupported model
+        form.setFieldValue(txPowerFieldName, '-10')
+      }
+    }
   }, [radioType, firmwareProps])
+
+  const isModelAndFwSupportAggressiveTxPower = (
+    firmwareProps: FirmwareProps | undefined,
+    apCapabilities: CapabilitiesApModel | undefined) => {
+    return isApFwVersionLargerThan711(firmwareProps?.firmware)
+    && (!supportR370 || apCapabilities?.supportAggressiveTxPower)
+  }
 
   const resetToDefaule = () => {
     if (props.onResetDefaultValue) {
