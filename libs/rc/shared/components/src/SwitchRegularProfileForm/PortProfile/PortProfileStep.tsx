@@ -2,12 +2,12 @@ import { useContext, useEffect, useState } from 'react'
 
 import { Row, Col, Form } from 'antd'
 
-import { Card, Select }                   from '@acx-ui/components'
-import { useIsSplitOn, Features }         from '@acx-ui/feature-toggle'
-import { useSwitchPortProfilesListQuery } from '@acx-ui/rc/services'
-import { validateDuplicatePortProfile }   from '@acx-ui/rc/utils'
-import { useParams }                      from '@acx-ui/react-router-dom'
-import { getIntl }                        from '@acx-ui/utils'
+import { Card, Select }                                from '@acx-ui/components'
+import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
+import { useSwitchPortProfilesListQuery }              from '@acx-ui/rc/services'
+import { PortProfileUI, validateDuplicatePortProfile } from '@acx-ui/rc/utils'
+import { useParams }                                   from '@acx-ui/react-router-dom'
+import { getIntl }                                     from '@acx-ui/utils'
 
 import PortProfileContext from './PortProfileContext'
 import { ModelsType }     from './SelectModelStep'
@@ -32,7 +32,7 @@ export function PortProfileStep () {
   const { $t } = getIntl()
   const { tenantId } = useParams()
   const form = Form.useFormInstance()
-  const { portProfileSettingValues } = useContext(PortProfileContext)
+  const { portProfileSettingValues, portProfileList } = useContext(PortProfileContext)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [portProfiles, setPortProfiles] = useState<ModelsType[]>([])
 
@@ -60,6 +60,23 @@ export function PortProfileStep () {
     }
   }, [portProfilesList, portProfileSettingValues])
 
+  function getPortProfileIdIfModelsMatch (
+    source: PortProfileUI[], target: PortProfileUI): string[] {
+    const targetModels = new Set(target.models)
+    const matchingPortProfileIds: string[] = []
+
+    source.forEach(sourceEntry => {
+      const hasMatchingModel = sourceEntry.models.some(model => targetModels.has(model))
+
+      if (hasMatchingModel) {
+        matchingPortProfileIds.push(...sourceEntry.portProfileId)
+      }
+    })
+
+    return matchingPortProfileIds
+  }
+
+
   return (
     <div style={{ minHeight: '380px' }}>
       <Row gutter={20}>
@@ -81,9 +98,16 @@ export function PortProfileStep () {
                     required: true,
                     message: $t({ defaultMessage: 'Please enter Port Profile' })
                   },
-                  { validator: (_, value) =>
-                    portProfilesList?.data &&
-                      validateDuplicatePortProfile(value, portProfilesList.data) }]}
+                  {
+                    validator: (_, value) => {
+                      const sameModelPortProfileIds =
+                        getPortProfileIdIfModelsMatch(portProfileList, portProfileSettingValues)
+                      return portProfilesList?.data &&
+                        validateDuplicatePortProfile(
+                          [...value, ...sameModelPortProfileIds], portProfilesList.data)
+                    }
+                  }
+                  ]}
                   data-testid='portProfileList'
                   children={
                     <Select

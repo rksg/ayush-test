@@ -217,11 +217,11 @@ export function PortProfile () {
       <PortProfileContext.Provider value={{
         portProfileSettingValues: portProfileSettingValues ?? {} as PortProfileUI,
         setPortProfileSettingValues,
+        portProfileList: portProfilesTable,
         editMode
       }}>
         <PortProfileModal
           visible={portModalVisible}
-          editMode={editMode}
           onCancel={onCancel}
           onSave={onSave}
         />
