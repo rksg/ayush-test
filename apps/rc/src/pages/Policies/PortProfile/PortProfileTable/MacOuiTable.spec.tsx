@@ -34,7 +34,6 @@ const mockPortProfilesList = {
   ]
 }
 
-// Mock the MacOuiDrawer component
 jest.mock('../PortProfileForm/MacOuiDrawer', () => ({
   MacOuiDrawer: jest.fn(({ visible, setVisible }) =>
     visible ? (

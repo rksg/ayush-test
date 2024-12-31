@@ -1,4 +1,3 @@
-// apps/rc/src/pages/Policies/PortProfile/PortProfileTable/LldpTlvTable.spec.tsx
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
@@ -39,7 +38,6 @@ const mockPortProfilesList = {
   ]
 }
 
-// Mock the LldpTlvDrawer component
 jest.mock('../PortProfileForm/LldpTlvDrawer', () => ({
   LldpTlvDrawer: jest.fn(({ visible, setVisible }) =>
     visible ? (

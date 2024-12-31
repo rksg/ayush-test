@@ -26,7 +26,7 @@ export function PortProfileModal (props: {
   }, [form, visible])
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onSaveModel = async (data: any) => {
+  const onSaveModel = async (data: PortProfileUI) => {
     if(data.models && data.models.length > 0){
       setNoModelMsg(false)
       return true
@@ -35,7 +35,6 @@ export function PortProfileModal (props: {
     return false
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onFinish = async (data: PortProfileUI) => {
     onSave(data)
   }

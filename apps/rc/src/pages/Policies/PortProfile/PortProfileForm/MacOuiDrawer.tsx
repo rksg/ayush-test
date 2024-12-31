@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react'
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { Drawer, showToast, Tooltip }        from '@acx-ui/components'
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { Drawer, Tooltip }                   from '@acx-ui/components'
 import {
   useAddSwitchPortProfileMacOuiMutation, useEditSwitchPortProfileMacOuiMutation,
   useLazySwitchPortProfileMacOuisListQuery
@@ -29,7 +28,6 @@ export function MacOuiDrawer (props: MacOuiDrawerProps) {
   const [addSwitchPortProfileMacOui] = useAddSwitchPortProfileMacOuiMutation()
   const [editSwitchPortProfileMacOui] = useEditSwitchPortProfileMacOuiMutation()
   const [switchPortProfileMacOuisList] = useLazySwitchPortProfileMacOuisListQuery()
-  const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
 
   const macOuiDuplicateValidator = async (macAddress: string) => {
     const list = (await switchPortProfileMacOuisList({
@@ -82,18 +80,7 @@ export function MacOuiDrawer (props: MacOuiDrawerProps) {
         }).unwrap()
       }
 
-      if (!isAsync) {
-        showToast({
-          type: 'success',
-          content: intl.$t(
-            // eslint-disable-next-line max-len
-            { defaultMessage: 'MAC Address {name} was {isEdit, select, true {updated} other {added}}' },
-            { name: data.macAddress, isEdit }
-          )
-        })
-      }
       onClose()
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

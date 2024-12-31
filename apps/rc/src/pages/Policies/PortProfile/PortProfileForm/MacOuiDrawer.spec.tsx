@@ -1,4 +1,3 @@
-// Import necessary testing libraries and utilities
 import React from 'react'
 
 import '@testing-library/jest-dom'

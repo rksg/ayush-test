@@ -1481,7 +1481,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     getSwitchConfigProfile: build.query<ConfigurationProfile, RequestPayload>({
       query: ({ params, payload, enableRbac,
         enableSwitchLevelCliProfile, enableSwitchPortProfile }) => {
-        const headers = enableSwitchLevelCliProfile || enableSwitchPortProfile || true
+        const headers = enableSwitchLevelCliProfile || enableSwitchPortProfile
           ? customHeaders.v1002 : (enableRbac ? customHeaders.v1001 : {})
 
         const switchUrls = getSwitchUrls(enableRbac)
@@ -1503,7 +1503,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     addSwitchConfigProfile: build.mutation<CliConfiguration, RequestPayload>({
       query: ({ params, payload, enableRbac,
         enableSwitchLevelCliProfile, enableSwitchPortProfile }) => {
-        const headers = enableSwitchLevelCliProfile || enableSwitchPortProfile || true
+        const headers = enableSwitchLevelCliProfile || enableSwitchPortProfile
           ? customHeaders.v1002 : (enableRbac ? customHeaders.v1001 : {})
         const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(switchUrls.addSwitchConfigProfile, params, headers)
@@ -1517,7 +1517,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     updateSwitchConfigProfile: build.mutation<CliConfiguration, RequestPayload>({
       query: ({ params, payload, enableRbac,
         enableSwitchLevelCliProfile, enableSwitchPortProfile }) => {
-        const headers = enableSwitchLevelCliProfile || enableSwitchPortProfile || true
+        const headers = enableSwitchLevelCliProfile || enableSwitchPortProfile
           ? customHeaders.v1002 : (enableRbac ? customHeaders.v1001 : {})
         const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(switchUrls.updateSwitchConfigProfile, params, headers)

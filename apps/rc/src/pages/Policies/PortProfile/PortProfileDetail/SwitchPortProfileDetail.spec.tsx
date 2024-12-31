@@ -1,5 +1,3 @@
-// apps/rc/src/pages/Policies/PortProfile/PortProfileDetail/SwitchPortProfileDetail.spec.tsx
-
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 

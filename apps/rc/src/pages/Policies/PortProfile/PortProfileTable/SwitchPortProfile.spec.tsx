@@ -15,7 +15,6 @@ const mockedTenantPath: Path = {
   hash: ''
 }
 
-// Mock the tab components to simplify testing
 jest.mock('./SwitchPortProfileTable', () => ({
   __esModule: true,
   default: () => <div data-testid='profiles-table'>Profiles Table</div>

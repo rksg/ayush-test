@@ -80,7 +80,6 @@ export default function PortProfile () {
       <TenantLink
         scopeKey={
           getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)}
-        // eslint-disable-next-line max-len
         to={'/policies/portProfile/switch/profiles/add'}
       >
         <Button type='primary'>{$t({ defaultMessage: 'Add ICX Port Profile' })}</Button>

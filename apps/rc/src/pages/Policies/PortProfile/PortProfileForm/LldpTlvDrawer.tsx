@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react'
 import { Form, Input, Radio, Space } from 'antd'
 import { useIntl }                   from 'react-intl'
 
-import { Drawer, showToast }                  from '@acx-ui/components'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { Drawer }                             from '@acx-ui/components'
 import {
   useAddSwitchPortProfileLldpTlvMutation,
   useEditSwitchPortProfileLldpTlvMutation,
@@ -30,7 +29,6 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
   const [addSwitchPortProfileLldpTlv] = useAddSwitchPortProfileLldpTlvMutation()
   const [editSwitchPortProfileLldpTlv] = useEditSwitchPortProfileLldpTlvMutation()
   const [switchPortProfileLldpTlvsList] = useLazySwitchPortProfileLldpTlvsListQuery()
-  const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
 
   const itemDuplicateValidator = async (lldpTlv: LldpTlvs) => {
     const list = (await switchPortProfileLldpTlvsList({
@@ -88,18 +86,7 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
         }).unwrap()
       }
 
-      if (!isAsync) {
-        showToast({
-          type: 'success',
-          content: intl.$t(
-            // eslint-disable-next-line max-len
-            { defaultMessage: 'MAC Address {name} was {isEdit, select, true {updated} other {added}}' },
-            { name: data.macAddress, isEdit }
-          )
-        })
-      }
       onClose()
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

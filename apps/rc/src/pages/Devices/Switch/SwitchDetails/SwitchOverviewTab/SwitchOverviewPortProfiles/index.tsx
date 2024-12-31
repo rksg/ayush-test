@@ -3,10 +3,7 @@ import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { CountAndNamesTooltip }               from '@acx-ui/rc/components'
-import {
-  // useDeleteDirectoryServerMutation,
-  usePortProfilesListBySwitchIdQuery
-}from '@acx-ui/rc/services'
+import { usePortProfilesListBySwitchIdQuery } from '@acx-ui/rc/services'
 import {
   SwitchPortProfiles,
   SwitchViewModel,
