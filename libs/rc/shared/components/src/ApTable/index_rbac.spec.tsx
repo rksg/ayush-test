@@ -252,8 +252,8 @@ describe('Aps', () => {
         DHCPUrls.queryDhcpProfiles.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
-      rest.get(
-        WifiRbacUrlsInfo.getDhcpAp.url,
+      rest.post(
+        WifiRbacUrlsInfo.getDhcpAps.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.delete(

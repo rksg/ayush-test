@@ -1,22 +1,26 @@
-import { Card }                      from '@acx-ui/components'
+import { Card, Loader }              from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { useIntentContext } from '../../IntentContext'
-import { getIntentStatus }  from '../getIntentStatus'
+import { useIntentParams, useIntentStatusTrailQuery } from '../../useIntentDetailsQuery'
+import { getIntentStatus }                            from '../getIntentStatus'
 
 import * as UI from './styledComponents'
 
 export const StatusTrail = () => {
-  const { intent } = useIntentContext()
+  const params = useIntentParams()
 
-  return <Card>
-    <UI.Wrapper>
-      {intent.statusTrail.map(({ displayStatus, createdAt, retries }, index) => (
-        <div key={index}>
-          <UI.DateLabel children={formatter(DateFormatEnum.DateTimeFormat)(createdAt)} />
-          {getIntentStatus(displayStatus, retries)}
-        </div>
-      ))}
-    </UI.Wrapper>
-  </Card>
+  const query = useIntentStatusTrailQuery(params)
+
+  return <Loader states={[query]}>
+    <Card>
+      <UI.Wrapper>
+        {query.data?.map(({ displayStatus, createdAt, retries }, index) => (
+          <div key={index}>
+            <UI.DateLabel children={formatter(DateFormatEnum.DateTimeFormat)(createdAt)} />
+            {getIntentStatus(displayStatus, retries)}
+          </div>
+        ))}
+      </UI.Wrapper>
+    </Card>
+  </Loader>
 }
