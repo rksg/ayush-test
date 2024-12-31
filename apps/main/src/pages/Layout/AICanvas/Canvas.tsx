@@ -119,17 +119,17 @@ export default function Canvas () {
           <span>Canvas</span>
         </div>
         <div className='actions'>
-          {/* <Button role='primary' onClick={()=>{onClose()}}>
+          {/* <Button onClick={()=>{onClose()}}>
             {$t({ defaultMessage: 'Publish' })}
           </Button> */}
-          <Button role='primary' onClick={()=>{saveToLS()}}>
-            {$t({ defaultMessage: 'Save' })}
-          </Button>
           {/* <Button className='black' onClick={()=>{onClose()}}>
             {$t({ defaultMessage: 'Preview' })}
           </Button> */}
           <Button className='black' onClick={() => {onClear()}}>
             {$t({ defaultMessage: 'Clear' })}
+          </Button>
+          <Button type='primary' onClick={()=>{saveToLS()}}>
+            {$t({ defaultMessage: 'Save' })}
           </Button>
         </div>
       </div>
