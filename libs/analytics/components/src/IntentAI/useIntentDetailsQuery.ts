@@ -196,7 +196,7 @@ export const api = intentAIApi.injectEndpoints({
         document: gql`
         query IntentStatusTrail($root: String!, $sliceId: String!, $code: String!) {
           intent(root: $root, sliceId: $sliceId, code: $code) {
-            statusTrail { status statusReason displayStatus createdAt }
+            statusTrail { status statusReason displayStatus retries createdAt }
           }
         }
       `,
