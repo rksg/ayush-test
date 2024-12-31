@@ -5,6 +5,10 @@ import { errorMessage }                            from '@acx-ui/utils'
 
 import type { AnyAction } from '@reduxjs/toolkit'
 
+const shouldIgnoreErrorModal = (action?: AnyAction) => {
+  return action?.meta?.baseQueryMeta?.response?.errors?.[0].extensions?.code === 'RDA-413'
+}
+
 export const errorMiddleware: Middleware = () => (next: CallableFunction) =>
   (action: AnyAction) => {
     const status = action.meta?.baseQueryMeta?.response?.status
@@ -12,7 +16,7 @@ export const errorMiddleware: Middleware = () => (next: CallableFunction) =>
       showExpiredSessionModal()
       return
     }
-    if (isRejectedWithValue(action)) {
+    if (isRejectedWithValue(action) && !shouldIgnoreErrorModal(action)) {
       switch (status) {
         case 400:
           showErrorModal(errorMessage.BAD_REQUEST, action)
