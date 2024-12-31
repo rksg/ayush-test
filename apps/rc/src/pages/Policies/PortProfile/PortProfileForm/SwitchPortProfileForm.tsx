@@ -116,8 +116,11 @@ export function SwitchPortProfileForm () {
   const MacOuisSelectList = async () => {
     const list = (await switchPortProfileMacOuisList({
       payload: {
+        fields: ['oui'],
         page: '1',
-        pageSize: '10000'
+        pageSize: '10000',
+        sortField: 'oui',
+        sortOrder: 'ASC'
       }
     }).unwrap())?.data
 

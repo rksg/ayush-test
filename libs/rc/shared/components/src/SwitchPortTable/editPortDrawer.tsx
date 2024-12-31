@@ -235,8 +235,8 @@ export function EditPortDrawer ({
   const selectedSwitchList = switchList?.filter(s => switches.includes(s.id))
   const isFirmwareAbove10010f = !!selectedSwitchList?.length
     && selectedSwitchList?.every(s => isFirmwareVersionAbove10010f(s.firmware))
-  const isFirmwareAbove10020a = !!selectedSwitchList?.length
-    && selectedSwitchList?.every(s => isFirmwareVersionAbove10020a(s.firmware))
+  const isAnyFirmwareAbove10020a = !!selectedSwitchList?.length
+    && selectedSwitchList?.some(s => isFirmwareVersionAbove10020a(s.firmware))
   const isAnyFirmwareAbove10010f = !!selectedSwitchList?.length
     && selectedSwitchList?.some(s => isFirmwareVersionAbove10010f(s.firmware))
 
@@ -424,7 +424,7 @@ export function EditPortDrawer ({
         enableRbac: isSwitchRbacEnabled
       }, true).unwrap()
 
-      if(isSwitchPortProfileEnabled && isFirmwareAbove10020a) {
+      if(isSwitchPortProfileEnabled && isAnyFirmwareAbove10020a) {
         const portProfileList = await getPortProfileOptionsList({
           params: { tenantId, switchId, venueId: switchDetail?.venueId },
           enableRbac: isSwitchRbacEnabled
@@ -656,6 +656,10 @@ export function EditPortDrawer ({
       case 'flexibleAuthenticationEnabled':
         const disableKey = getFlexAuthButtonStatus(commonRequiredProps)
         return disableKey ? $t(EditPortMessages[disableKey as keyof typeof EditPortMessages]) : ''
+      case 'switchPortProfileId':
+        return isAnyFirmwareAbove10020a && isMultipleEdit &&
+          getFieldDisabled('switchPortProfileId') ?
+          $t(EditPortMessages.SWITCH_PORT_PROFILE_NOT_ENABLED) : ''
       default: return ''
     }
   }
@@ -1712,7 +1716,7 @@ export function EditPortDrawer ({
         }
 
         {/* Port Profile */}
-        {isSwitchPortProfileEnabled && isFirmwareAbove10020a &&
+        {isSwitchPortProfileEnabled && isAnyFirmwareAbove10020a &&
         <><div style={{ marginBottom: isMultipleEdit ? '0' : '30px' }}>
           <Space style={{
             width: '510px', display: 'flex', justifyContent: 'space-between',
@@ -1726,16 +1730,21 @@ export function EditPortDrawer ({
             field: 'switchPortProfileId',
             content: <Form.Item
               {...getFormItemLayout(isMultipleEdit)}
-              name='switchPortProfileId'
               label={$t(FIELD_LABEL.portProfile)}
               initialValue={''}
               children={shouldRenderMultipleText({
                 field: 'switchPortProfileId', ...commonRequiredProps
               }) ? <MultipleText />
-                : <Select
-                  options={portProfileOptions}
-                  disabled={getFieldDisabled('switchPortProfileId')} />} />
-          })}</div><UI.ContentDivider /></>
+                : <Tooltip title={getFieldTooltip('switchPortProfileId')}>
+                  <Form.Item
+                    name='switchPortProfileId'
+                    initialValue='NONE'><Select
+                      options={portProfileOptions}
+                      disabled={getFieldDisabled('switchPortProfileId')} /></Form.Item>
+                </Tooltip>}
+            />
+          })
+          }</div><UI.ContentDivider /></>
         }
 
         {/* Port VLAN */}
