@@ -93,7 +93,7 @@ export function ClientHealth (
   )
   const { data, error } = result
   const parsedData = calculateHealthSummary(data)
-  const isMaxEventError = error?.message?.includes('CTP:MAX_EVENTS_EXCEEDED')
+  const isMaxEventError = error?.message?.includes('RDA-413')
   return isMaxEventError
     ? <ErrorContainer>
       <Tooltip title={maxEventsMsg(
