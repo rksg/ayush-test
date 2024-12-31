@@ -32,8 +32,7 @@ describe('KPIFilter', () => {
   it('should render correctly', async () => {
     const context = {
       kpiFilter: [],
-      applyKpiFilter: jest.fn(),
-      reset: jest.fn()
+      applyKpiFilter: jest.fn()
     } as unknown as ConfigChangeContextType
     render(<ConfigChangeContext.Provider value={context} children={<KPIFilter/>}/>)
     await userEvent.click(await screen.findByText('Add KPI filter'))
@@ -41,14 +40,12 @@ describe('KPIFilter', () => {
       await screen.findByRole('menuitemcheckbox', { name: 'Client Throughput' }))
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     expect(await screen.findByText('Client Throughput')).toBeVisible()
-    expect(context.reset).toBeCalled()
     expect(context.applyKpiFilter).toBeCalledWith(['clientThroughput'])
   })
   it('should render default', async () => {
     const context = {
       kpiFilter: ['clientThroughput'],
-      applyKpiFilter: jest.fn(),
-      reset: jest.fn()
+      applyKpiFilter: jest.fn()
     } as unknown as ConfigChangeContextType
     render(<ConfigChangeContext.Provider value={context} children={<KPIFilter/>}/>)
     // eslint-disable-next-line testing-library/no-node-access
@@ -57,14 +54,12 @@ describe('KPIFilter', () => {
   it('should handle empty', async () => {
     const context = {
       kpiFilter: [],
-      applyKpiFilter: jest.fn(),
-      reset: jest.fn()
+      applyKpiFilter: jest.fn()
     } as unknown as ConfigChangeContextType
     render(<ConfigChangeContext.Provider value={context} children={<KPIFilter/>}/>)
     await userEvent.click(await screen.findByText('Add KPI filter'))
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     expect(await screen.findByText('Add KPI filter')).toBeVisible()
-    expect(context.reset).toBeCalled()
     expect(context.applyKpiFilter).toBeCalledWith([])
   })
 })
@@ -73,22 +68,19 @@ describe('EntityTypeFilter', () => {
   it('should render correctly', async () => {
     const context = {
       entityTypeFilter: [],
-      setEntityTypeFilter: jest.fn(),
-      reset: jest.fn()
+      setEntityTypeFilter: jest.fn()
     } as unknown as ConfigChangeContextType
     render( <ConfigChangeContext.Provider value={context} children={<EntityTypeFilter/>} />)
     await userEvent.click(await screen.findByText('Entity Type'))
     await userEvent.click(await screen.findByRole('menuitemcheckbox', { name: 'AP' }))
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     expect(await screen.findByText('AP')).toBeVisible()
-    expect(context.reset).toBeCalled()
     expect(context.setEntityTypeFilter).toBeCalledWith(['ap'])
   })
   it('should render default', async () => {
     const context = {
       entityTypeFilter: ['ap'],
-      setEntityTypeFilter: jest.fn(),
-      reset: jest.fn()
+      setEntityTypeFilter: jest.fn()
     } as unknown as ConfigChangeContextType
     render(<ConfigChangeContext.Provider value={context} children={<EntityTypeFilter/>} />)
     // eslint-disable-next-line testing-library/no-node-access
@@ -97,14 +89,12 @@ describe('EntityTypeFilter', () => {
   it('should handle empty', async () => {
     const context = {
       entityTypeFilter: [],
-      setEntityTypeFilter: jest.fn(),
-      reset: jest.fn()
+      setEntityTypeFilter: jest.fn()
     } as unknown as ConfigChangeContextType
     render( <ConfigChangeContext.Provider value={context} children={<EntityTypeFilter/>} />)
     await userEvent.click(await screen.findByText('Entity Type'))
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     expect(await screen.findByText('Entity Type')).toBeVisible()
-    expect(context.reset).toBeCalled()
     expect(context.setEntityTypeFilter).toBeCalledWith([])
   })
 })
@@ -152,7 +142,7 @@ describe('Download', () => {
       pagination: { total: data.length },
       timeRanges: defaultRanges()[DateRange.last7Days],
       kpiFilter: [], entityNameSearch: '', entityTypeFilter: [],
-      legendFilter: getConfigChangeEntityTypeMapping(false).map(item => item.key)
+      entityList: getConfigChangeEntityTypeMapping(false).map(item => item.key)
     } as unknown as ConfigChangeContextType
     mockGraphqlQuery(dataApiURL, 'ConfigChangeSeries', { data: { network: { hierarchyNode: {
       configChanges: data } } } })
@@ -168,8 +158,8 @@ describe('Download', () => {
     const context = {
       pagination: { total: 0 },
       timeRanges: defaultRanges()[DateRange.last7Days],
-      kpiFilter: [], entityNameSearch: '', entityTypeFilter: [],
-      legendFilter: getConfigChangeEntityTypeMapping(false).map(item => item.key)
+      kpiFilter: [], entityNameSearch: '', entityTypeFilter: ['ap'],
+      entityList: getConfigChangeEntityTypeMapping(false).map(item => item.key)
     } as unknown as ConfigChangeContextType
     render(
       <ConfigChangeContext.Provider value={context} children={<Download/>} />,
@@ -186,7 +176,7 @@ describe('Download', () => {
       pagination: { total: data.length },
       timeRanges: defaultRanges()[DateRange.last7Days],
       kpiFilter: [], entityNameSearch: '', entityTypeFilter: [],
-      legendFilter: getConfigChangeEntityTypeMapping(false).map(item => item.key)
+      entityList: getConfigChangeEntityTypeMapping(false).map(item => item.key)
     } as unknown as ConfigChangeContextType
     mockGraphqlQuery(dataApiURL, 'ConfigChangeSeries', { error: 'some-error' })
     render(

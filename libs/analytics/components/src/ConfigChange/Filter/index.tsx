@@ -1,7 +1,6 @@
 import { useContext } from 'react'
 
 import { isEmpty } from 'lodash'
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { kpiConfig, productNames, useAnalyticsFilter } from '@acx-ui/analytics/utils'
@@ -15,9 +14,9 @@ import {
   TableProps,
   Tooltip
 }                                                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
-import { DownloadOutlined }                          from '@acx-ui/icons'
-import { PathFilter, getIntl, exportMessageMapping } from '@acx-ui/utils'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                 from '@acx-ui/icons'
+import { PathFilter, exportMessageMapping } from '@acx-ui/utils'
 
 import { ConfigChangeContext }     from '../context'
 import { hasConfigChange }         from '../KPI'
@@ -42,7 +41,7 @@ export const Search = () => {
 
 export const KPIFilter = () => {
   const { $t } = useIntl()
-  const { reset, kpiFilter, applyKpiFilter } = useContext(ConfigChangeContext)
+  const { kpiFilter, applyKpiFilter } = useContext(ConfigChangeContext)
   const options = Object.keys(kpiConfig).reduce((agg, key)=> {
     const config = kpiConfig[key as keyof typeof kpiConfig]
     if(hasConfigChange(config)){
@@ -56,10 +55,9 @@ export const KPIFilter = () => {
       defaultValue={kpiFilter.map(kpi => [kpi])}
       placeholder={$t({ defaultMessage: 'Add KPI filter' })}
       options={options}
-      onApply={selectedOptions => {
-        reset()
+      onApply={selectedOptions =>
         applyKpiFilter(selectedOptions?.length ? selectedOptions?.flat() as string[] : [])
-      }}
+      }
       allowClear
     />
   </CascaderFilterWrapper>
@@ -72,7 +70,7 @@ export const EntityTypeFilter = () => {
   ].some(Boolean)
 
   const { $t } = useIntl()
-  const { reset, entityTypeFilter, setEntityTypeFilter } = useContext(ConfigChangeContext)
+  const { entityTypeFilter, setEntityTypeFilter } = useContext(ConfigChangeContext)
   const entityTypeMapping = getConfigChangeEntityTypeMapping(showIntentAI)
     .map(ele => ({ value: ele.key, label: ele.label }))
   return <CascaderFilterWrapper>
@@ -81,10 +79,9 @@ export const EntityTypeFilter = () => {
       defaultValue={entityTypeFilter.map(entity => [entity])}
       placeholder={$t({ defaultMessage: 'Entity Type' })}
       options={entityTypeMapping}
-      onApply={selectedOptions => {
-        reset()
+      onApply={selectedOptions =>
         setEntityTypeFilter(selectedOptions?.length ? selectedOptions?.flat() as string[] : [])
-      }}
+      }
       allowClear
     />
   </CascaderFilterWrapper>
@@ -125,7 +122,7 @@ export const Download = () => {
   const { $t } = useIntl()
   const { pathFilters } = useAnalyticsFilter()
   const { timeRanges: [startDate, endDate], pagination,
-    kpiFilter, entityNameSearch, entityTypeFilter, legendFilter
+    entityList, kpiFilter, entityNameSearch, entityTypeFilter
   } = useContext(ConfigChangeContext)
   const { columnHeaders } = useColumns()
   const { onDownloadClick } = useDownload()
@@ -136,8 +133,8 @@ export const Download = () => {
     filterBy: {
       kpiFilter,
       entityName: entityNameSearch,
-      entityType: legendFilter.filter(t => (
-        _.isEmpty(entityTypeFilter) || entityTypeFilter.includes(t)))
+      entityType: entityTypeFilter.length === 0
+        ? entityList.map(t => t.key) : entityTypeFilter
     }
   }
   return <Tooltip title={$t(exportMessageMapping.EXPORT_TO_CSV)}>

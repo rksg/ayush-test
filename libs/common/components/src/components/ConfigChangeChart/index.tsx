@@ -114,6 +114,7 @@ export function ConfigChangeChart ({
       position: getTooltipCoordinate(legendHeight + brushTextHeight)
     },
     legend: {
+      selectedMode: !!setLegend,
       right: chartPadding,
       icon: 'circle',
       itemWidth: symbolSize,

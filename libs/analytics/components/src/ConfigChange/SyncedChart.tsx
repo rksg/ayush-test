@@ -1,6 +1,5 @@
 import { memo, useContext, useEffect } from 'react'
 
-import _         from 'lodash'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
 import { useAnalyticsFilter }              from '@acx-ui/analytics/utils'
@@ -13,7 +12,7 @@ function BasicChart (){
   const { pathFilters } = useAnalyticsFilter()
   const {
     timeRanges: [startDate, endDate], setKpiTimeRanges, dateRange,
-    kpiFilter, legendFilter, applyLegendFilter,
+    entityList, kpiFilter,
     entityNameSearch, entityTypeFilter,
     pagination, applyPagination,
     selected, setSelected, onDotClick,
@@ -27,8 +26,8 @@ function BasicChart (){
     filterBy: {
       kpiFilter,
       entityName: entityNameSearch,
-      entityType: legendFilter.filter(t => (
-        _.isEmpty(entityTypeFilter) || entityTypeFilter.includes(t)))
+      entityType: entityTypeFilter.length === 0
+        ? entityList.map(t => t.key) : entityTypeFilter
     }
   })
 
@@ -56,7 +55,6 @@ function BasicChart (){
             chartZoom={chartZoom}
             setChartZoom={setChartZoom}
             setInitialZoom={setInitialZoom}
-            setLegend={applyLegendFilter}
             setSelectedData={setSelected}
             pagination={pagination}
             setPagination={applyPagination}

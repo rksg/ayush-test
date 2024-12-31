@@ -1,4 +1,4 @@
-import { Dispatch, ReactElement, SetStateAction, createContext, useState } from 'react'
+import { Dispatch, ReactElement, SetStateAction, createContext, useEffect, useState } from 'react'
 
 import {
   ConfigChange as ConfigChangeType,
@@ -25,7 +25,6 @@ export interface ActionContextType {
   setInitialZoom: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
   sorter: string
   setSorter: Dispatch<SetStateAction<string>>
-  reset: () => void
   resetFilter: () => void
 }
 
@@ -36,6 +35,7 @@ export interface PaginationContextType {
 }
 
 export interface FilterByContextType {
+  entityList: { key: string, label: string }[]
   entityTypeFilter: string[]
   setEntityTypeFilter: (list: string[]) => void
   legendFilter: string[]
@@ -141,28 +141,32 @@ export function ConfigChangeProvider (props: {
     applyKpiFilter: (keys: string[]) => setKpiFilter(keys)
   }
 
-  const legendList = getConfigChangeEntityTypeMapping(showIntentAI)
+  const entityList = getConfigChangeEntityTypeMapping(showIntentAI)
   const [entityNameSearch, setEntityNameSearch] = useState<string>('')
   const [entityTypeFilter, setEntityTypeFilter] = useState<string[]>([])
-  const [legendFilter, setLegendFilter] = useState<string[]>(legendList.map(item => item.key))
+  // TODO: remove legendFilter when removing INTENT_AI_CONFIG_CHANGE_TOGGLE and RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE
+  const [legendFilter, setLegendFilter] = useState<string[]>(entityList.map(item => item.key))
   const filterByContext = {
     legendFilter,
-    applyLegendFilter: (legend: Record<string, boolean>) => {
-      isPaged && reset()
+    applyLegendFilter: (legend: Record<string, boolean>) =>
       setLegendFilter(Object.keys(legend)
         .filter(key => legend[key])
-        .map(key => legendList.find(item => item.label === key)!.key)
-      )
-    },
+        .map(key => entityList.find(item => item.label === key)!.key)
+      ),
+    entityList,
     entityNameSearch, setEntityNameSearch,
     entityTypeFilter, setEntityTypeFilter
   }
 
-  const reset = () => {
+  useEffect(()=>{
     setSelected(null)
     setDotSelect(null)
-    setPagination(CONFIG_CHANGE_DEFAULT_PAGINATION)
-  }
+    setPagination({ ...pagination,
+      current: CONFIG_CHANGE_DEFAULT_PAGINATION.current,
+      pageSize: CONFIG_CHANGE_DEFAULT_PAGINATION.pageSize,
+      defaultPageSize: CONFIG_CHANGE_DEFAULT_PAGINATION.defaultPageSize
+    })
+  }, [pagination.total])
 
   const resetFilter = () => {
     setEntityNameSearch('')
@@ -176,7 +180,7 @@ export function ConfigChangeProvider (props: {
     ...filterByContext,
     ...paginationContext,
     ...actionContext,
-    reset, resetFilter
+    resetFilter
   }
 
   return <ConfigChangeContext.Provider

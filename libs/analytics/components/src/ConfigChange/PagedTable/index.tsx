@@ -1,7 +1,6 @@
 import { useContext, useEffect } from 'react'
 
 import { SorterResult }               from 'antd/lib/table/interface'
-import _                              from 'lodash'
 import moment                         from 'moment'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
@@ -129,12 +128,12 @@ export function PagedTable () {
   const { pathFilters } = useAnalyticsFilter()
   const {
     timeRanges: [startDate, endDate],
-    kpiFilter, legendFilter,
+    entityList, kpiFilter,
     entityNameSearch, setEntityNameSearch,
     entityTypeFilter, setEntityTypeFilter,
     pagination, applyPagination,
     selected, onRowClick,
-    sorter, setSorter, reset
+    sorter, setSorter
   } = useContext(ConfigChangeContext)
 
   const basicPayload = {
@@ -150,8 +149,8 @@ export function PagedTable () {
     filterBy: {
       kpiFilter,
       entityName: entityNameSearch,
-      entityType: legendFilter.filter(t => (
-        _.isEmpty(entityTypeFilter) || entityTypeFilter.includes(t)))
+      entityType: entityTypeFilter.length === 0
+        ? entityList.map(t => t.key) : entityTypeFilter
     },
     sortBy: sorter
   }, { skip: showIntentAI === null })
@@ -180,7 +179,6 @@ export function PagedTable () {
   const handleFilterChange = (
     filters: Filter, search: { searchString?: string }
   ) => {
-    reset()
     setEntityNameSearch(search.searchString || '')
     setEntityTypeFilter((filters?.type as string[]) || [])
   }

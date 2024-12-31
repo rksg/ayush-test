@@ -6,16 +6,10 @@ import { Provider, dataApiURL, store }                                          
 import { findTBody, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 import { DateRange }                                                                      from '@acx-ui/utils'
 
-import { pagedConfigChanges }                        from '../__tests__/fixtures'
-import { ConfigChangeContext, ConfigChangeProvider } from '../context'
-// import { genDownloadConfigChange }                    from '../Filter/Download'
+import { pagedConfigChanges }                         from '../__tests__/fixtures'
+import { ConfigChangeContext, ConfigChangeProvider }  from '../context'
 import { DEFAULT_SORTER, PagedTable, transferSorter } from '../PagedTable'
 import { SORTER_ABBR, api }                           from '../services'
-
-// const mockGenDownloadConfigChange = jest.mocked(genDownloadConfigChange)
-// jest.mock('../Filter/Download', () => ({
-//   genDownloadConfigChange: jest.fn()
-// }))
 
 describe('transferSorter', () => {
   it('should return correct result', () => {
@@ -158,33 +152,6 @@ describe('Table', () => {
     // eslint-disable-next-line testing-library/no-node-access
     expect(radio[0]?.parentNode).toHaveClass('ant-radio-checked')
   })
-  // it('should render download button and generate download data', async () => {
-  //   mockGraphqlQuery(dataApiURL, 'PagedConfigChange', { data: { network: { hierarchyNode: {
-  //     pagedConfigChanges: { ...pagedConfigChanges, data } } } } })
-  //   mockGraphqlQuery(dataApiURL, 'ConfigChange', { data: { network: { hierarchyNode: {
-  //     configChanges: data } } } })
-  //   render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
-  //     <PagedTable/>
-  //   </ConfigChangeProvider>, { wrapper: Provider, route: {} })
-  //   expect(await screen.findByTestId('DownloadOutlined')).toBeInTheDocument()
-  //   await userEvent.click(await screen.findByTestId('DownloadOutlined'))
-  //   await new Promise(r => setTimeout(r, 1))
-  //   expect(mockGenDownloadConfigChange).toBeCalledTimes(1)
-  // })
-  // it('should catch error when download fail', async () => {
-  //   const spy = jest.spyOn(console, 'error')
-  //   spy.mockReset()
-  //   mockGraphqlQuery(dataApiURL, 'PagedConfigChange', { data: { network: { hierarchyNode: {
-  //     pagedConfigChanges: { ...pagedConfigChanges, data } } } } })
-  //   mockGraphqlQuery(dataApiURL, 'ConfigChange', { error: 'some-error' })
-  //   render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
-  //     <PagedTable/>
-  //   </ConfigChangeProvider>, { wrapper: Provider, route: {} })
-  //   expect(await screen.findByTestId('DownloadOutlined')).toBeInTheDocument()
-  //   await userEvent.click(await screen.findByTestId('DownloadOutlined'))
-  //   await new Promise(r => setTimeout(r, 1))
-  //   await waitFor(() => { expect(spy).toBeCalledTimes(1) })
-  // })
   it('should handle query args', async () => {
     const TestComponent = () => {
       const {

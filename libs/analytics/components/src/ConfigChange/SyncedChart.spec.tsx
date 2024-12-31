@@ -64,7 +64,8 @@ describe('SyncedChart', () => {
   it('should render page correctly with selected data', async () => {
     const TestComponent = () => {
       const { setSelected } = useContext(ConfigChangeContext)
-      return <div data-testid='test' onClick={() => { setSelected(data[0] as ConfigChange) }}/>
+      return <div data-testid='setSelected'
+        onClick={() => { setSelected(data[0] as ConfigChange) }}/>
     }
     mockGraphqlQuery(dataApiURL, 'ConfigChangeSeries',
       { data: { network: { hierarchyNode: { configChangeSeries: data } } } })
@@ -72,9 +73,9 @@ describe('SyncedChart', () => {
       <div><SyncedChart/><TestComponent/></div>
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
     expect(await screen.findByTestId('ConfigChangeChart')).toBeVisible()
+    expect(await screen.findByText('intentAI')).toBeVisible()
 
-    await userEvent.click(await screen.findByTestId('test'))
-    expect(await screen.findAllByText('intentAI')).toHaveLength(1)
+    await userEvent.click(await screen.findByTestId('setSelected'))
     expect(await screen.findByText('ap')).toBeVisible()
   })
   it('should handle click on dot', async () => {
