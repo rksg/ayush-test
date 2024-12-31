@@ -23,7 +23,7 @@ import * as UI                     from './styledComponents'
 
 import type { Child, ApOrSwitch } from './services'
 
-export type FilterMode = 'ap' | 'switch' | 'both' | 'none'
+export type FilterMode = 'ap' | 'switch' | 'edge' | 'both' | 'none'
 
 export type NodesWithSeverity = Pick<Incident, 'sliceType'> & {
   venueName: string;

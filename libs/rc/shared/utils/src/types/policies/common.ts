@@ -95,3 +95,16 @@ export const downloadCertExtension: Record<CertificateAcceptType, String> = {
   [CertificateAcceptType.PKCS12]: 'p12',
   [CertificateAcceptType.PKCS1]: 'key'
 }
+
+export interface ProfileLanVenueActivations {
+  venueId: string
+  apModel: string
+  apSerialNumbers?: string[],
+  portId: number
+}
+
+export interface ProfileLanApActivations {
+  venueId: string
+  apSerialNumber: string,
+  portId: number
+}
