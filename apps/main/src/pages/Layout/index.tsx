@@ -86,14 +86,15 @@ function Layout () {
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const isReportsAdmin = hasRoles([RolesEnum.REPORTS_ADMIN])
-  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const isSupportDelegation = userProfile?.support && isSupportToMspDashboardAllowed
   const isHospitality = getJwtTokenPayload().acx_account_vertical === AccountVertical.HOSPITALITY
   const showMspHomeButton = isSupportDelegation && (tenantType === AccountType.MSP ||
     tenantType === AccountType.MSP_NON_VAR || tenantType === AccountType.VAR)
+  const adminRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
+  const isSystemAdmin = userProfile?.roles?.some(role => adminRoles.includes(role as RolesEnum))
   const hasOnboardingAssistantAccess = isOnboardingAssistantEnabled &&
-    isAdmin && hasCrossVenuesPermission()
+  isSystemAdmin && hasCrossVenuesPermission()
   const userProfileBasePath = useTenantLink('/userprofile')
   const basePath = useTenantLink('/users/guestsManager')
   const dpskBasePath = useTenantLink('/users/dpskAdmin')

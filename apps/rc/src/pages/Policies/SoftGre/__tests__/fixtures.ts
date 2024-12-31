@@ -133,9 +133,7 @@ export const mockSoftGreApActivations = [
   {
     venueId: mockedVenueId4,
     portId: 1,
-    apSerialNumbers: [
-      mockedApSerialNnumber3
-    ]
+    apSerialNumber: mockedApSerialNnumber3
   }
 ]
 

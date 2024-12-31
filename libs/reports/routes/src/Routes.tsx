@@ -15,6 +15,7 @@ export default function ReportsRoutes () {
     switches: <Report type={ReportType.SWITCH} />,
     clients: <Report type={ReportType.CLIENT} />,
     applications: <Report type={ReportType.APPLICATION} />,
+    edgeApplications: <Report type={ReportType.EDGE_APPLICATION} />,
     wlans: <Report type={ReportType.WLAN} />,
     airtime: <Report type={ReportType.AIRTIME_UTILIZATION} />
   }
@@ -30,6 +31,7 @@ export default function ReportsRoutes () {
       <Route path='reports/switches' element={reports.switches} />
       <Route path='reports/clients' element={reports.clients}/>
       <Route path='reports/applications' element={reports.applications} />
+      <Route path='reports/edgeApplications' element={reports.edgeApplications} />
       <Route path='reports/wlans' element={reports.wlans} />
       <Route path='reports/airtime' element={reports.airtime} />
       <Route path='dataStudio' element={<DataStudio />} />

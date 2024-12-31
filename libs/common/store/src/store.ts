@@ -51,7 +51,8 @@ import {
   videoCallQoeApi,
   baseRuckusAssistantApi as ruckusAssistantApi,
   baseDirectoryServerApi as directoryServerApi,
-  baseRuckusAiChatApi as ruckusAiChatApi
+  baseRuckusAiChatApi as ruckusAiChatApi,
+  baseClientIsolationApi as clientIsolationApi
 } from './baseApi'
 
 const isDev = process.env['NODE_ENV'] === 'development'
@@ -106,7 +107,8 @@ export const store = configureStore({
     [edgeHqosProfilesApi.reducerPath]: edgeHqosProfilesApi.reducer,
     [ruckusAssistantApi.reducerPath]: ruckusAssistantApi.reducer,
     [directoryServerApi.reducerPath]: directoryServerApi.reducer,
-    [ruckusAiChatApi.reducerPath]: ruckusAiChatApi.reducer
+    [ruckusAiChatApi.reducerPath]: ruckusAiChatApi.reducer,
+    [clientIsolationApi.reducerPath]: clientIsolationApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -163,7 +165,8 @@ export const store = configureStore({
       edgeHqosProfilesApi.middleware,
       ruckusAssistantApi.middleware,
       directoryServerApi.middleware,
-      ruckusAiChatApi.middleware
+      ruckusAiChatApi.middleware,
+      clientIsolationApi.middleware
     ])
   },
 

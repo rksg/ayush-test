@@ -208,6 +208,7 @@ function processWifiTab (
   switch(editContextData?.unsavedTabKey){
     case 'settings':
       editAdvancedContextData?.updateAccessPointLED?.()
+      editAdvancedContextData?.updateAccessPointUSB?.()
       editAdvancedContextData?.updateBssColoring?.()
       editAdvancedContextData?.updateApManagementVlan?.()
       break

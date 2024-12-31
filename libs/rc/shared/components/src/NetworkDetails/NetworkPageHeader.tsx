@@ -4,6 +4,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, RangePicker }                                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
 import { generateConfigTemplateBreadcrumb, useConfigTemplate, useConfigTemplateTenantLink } from '@acx-ui/rc/utils'
 import { TenantType }                                                                       from '@acx-ui/react-router-dom'
 import { useLocation, useNavigate, useTenantLink, useParams }                               from '@acx-ui/react-router-dom'
@@ -33,6 +34,7 @@ function NetworkPageHeader ({
   const { $t } = useIntl()
   const enableTimeFilter = () => !['aps', 'venues'].includes(activeTab as string)
   const [ disableConfigure, setDisableConfigure ] = useState(false)
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
   const GenBreadcrumb = () => {
     const { isTemplate } = useConfigTemplate()
@@ -75,6 +77,7 @@ function NetworkPageHeader ({
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
             selectionType={range}
+            maxMonthRange={isDateRangeLimit ? 1 : 3}
           />
           : <></>,
         ...(hasCrossVenuesPermission()? filterByAccess([

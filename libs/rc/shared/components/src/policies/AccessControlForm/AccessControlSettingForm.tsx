@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 import { Form, Input } from 'antd'
 import { get }         from 'lodash'
@@ -40,6 +40,8 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
     embeddedMode = false,
     embeddedObject = {} as AclEmbeddedObject
   } = props
+  const fetchDone = useRef(false)
+
   const form = Form.useFormInstance()
 
   const data = useGetAclPolicyInstance(editMode)
@@ -47,7 +49,7 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
   const aclProfileList : AccessControlInfoType[] = useGetAclPolicyListInstance()
 
   useEffect(() => {
-    if (data) {
+    if (data?.name && editMode && !fetchDone.current) {
       form.setFieldValue('oldPayload', data)
       form.setFieldValue('policyName', data.name)
       form.setFieldValue('description', get(data, 'description'))
@@ -80,6 +82,7 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
         )
       }
 
+      fetchDone.current = true
     }
   }, [form, data, editMode])
 
@@ -135,7 +138,6 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
           ]}
           validateFirst
           hasFeedback
-          initialValue={''}
           children={<Input />}
         />
         <Form.Item

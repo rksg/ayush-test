@@ -22,14 +22,20 @@ export const MacRegListUrlsInfo: { [key: string]: ApiInfo } = {
   createMacRegistrationPool: {
     method: 'post',
     url: newMacRegApiBaseUrl,
-    oldUrl: macRegApiBaseUrl,
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   deleteMacRegistrationPool: {
     method: 'delete',
     url: newMacRegApiBaseUrl + '/:policyId',
-    oldUrl: macRegApiBaseUrl + '/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   getMacRegistrationPool: {
     method: 'get',
@@ -40,8 +46,11 @@ export const MacRegListUrlsInfo: { [key: string]: ApiInfo } = {
   updateMacRegistrationPool: {
     method: 'PATCH',
     url: newMacRegApiBaseUrl + '/:policyId',
-    oldUrl: macRegApiBaseUrl + '/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   getMacRegistrations: {
     method: 'get',
@@ -70,8 +79,11 @@ export const MacRegListUrlsInfo: { [key: string]: ApiInfo } = {
   deleteMacRegistrations: {
     method: 'delete',
     url: newMacRegApiBaseUrl + '/:policyId/registrations',
-    oldUrl: macRegApiBaseUrl + '/:policyId/registrations',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   getMacRegistration: {
     method: 'get',
@@ -88,14 +100,20 @@ export const MacRegListUrlsInfo: { [key: string]: ApiInfo } = {
   addMacRegistration: {
     method: 'post',
     url: newMacRegApiBaseUrl + '/:policyId/registrations',
-    oldUrl: macRegApiBaseUrl + '/:policyId/registrations',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   uploadMacRegistration: {
     method: 'post',
     url: newMacRegApiBaseUrl + '/:policyId/registrations/csvFile',
-    oldUrl: macRegApiBaseUrl + '/:policyId/registrations/csvFile',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': undefined,
+      'Accept': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   deleteAdaptivePolicySet: {
     method: 'delete',
@@ -106,5 +124,14 @@ export const MacRegListUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: newMacRegApiBaseUrl + '/:policyId/policySets/:policySetId',
     newApi: true
+  },
+  createMacRegistrationPoolWithIdentity: {
+    method: 'post',
+    url: '/identityGroups/:identityGroupId/macRegistrationPools',
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

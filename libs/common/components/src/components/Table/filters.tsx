@@ -11,6 +11,7 @@ import _               from 'lodash'
 import moment          from 'moment'
 import { IntlShape }   from 'react-intl'
 
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
 import { DateFilter, DateRange, getDateRangeFilter, useDateFilter } from '@acx-ui/utils'
 
 import { RangePicker } from '../DatePicker'
@@ -39,6 +40,7 @@ interface RangePickerProps {
 function RangePickerComp (props: RangePickerProps) {
   const { filterValues, setFilterValues, settingsId, filterPersistence } = props
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   return <UI.FilterRangePicker>
     <RangePicker
       selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
@@ -58,6 +60,7 @@ function RangePickerComp (props: RangePickerProps) {
         setDateFilter(date)
       }}
       selectionType={filterValues['fromTime'] === undefined ? DateRange.allTime : range}
+      maxMonthRange={isDateRangeLimit ? 1 : 3}
       showAllTime
     />
   </UI.FilterRangePicker>

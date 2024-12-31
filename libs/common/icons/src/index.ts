@@ -404,6 +404,7 @@ export { ReactComponent as DisplayMessageActionTypeIcon } from './icons/DisplayM
 export { ReactComponent as DataPromptActionTypeIcon } from './icons/DataPromptActionTypeIcon.svg'
 export { ReactComponent as DpskActionTypeIcon } from './icons/DpskActionTypeIcon.svg'
 export { ReactComponent as MacRegActionTypeIcon } from './icons/MacRegActionTypeIcon.svg'
+export { ReactComponent as CertTemplateActionTypeIcon } from './icons/CertTemplateActionTypeIcon.svg'
 export { ReactComponent as QrCodeSmallIcon } from './icons/QrCodeSmall.svg'
 export { ReactComponent as OnboardingAssistantDog } from './icons/OnboardingAssistantDog.svg'
 export { ReactComponent as RuckusAiDog } from './icons/RuckusAiDog.svg'

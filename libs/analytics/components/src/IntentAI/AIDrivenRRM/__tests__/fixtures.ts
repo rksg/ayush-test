@@ -1,33 +1,6 @@
-import { Intent } from '../../useIntentDetailsQuery'
+import { IntentDetail } from '../../useIntentDetailsQuery'
 
-export const mockedIntentCRRM = {
-  id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
-  root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
-  code: 'c-crrm-channel24g-auto',
-  sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52',
-  status: 'applyscheduled',
-  displayStatus: 'applyscheduled',
-  updatedAt: '2023-06-26T06:04:00.000Z',
-  metadata: {
-    scheduledAt: '2023-07-15T14:15:00.000Z',
-    dataEndTime: '2023-06-26T00:00:25.772Z'
-  },
-  sliceType: 'zone',
-  sliceValue: '21_US_Beta_Samsung',
-  path: [
-    {
-      type: 'system',
-      name: 'vsz34'
-    },
-    {
-      type: 'domain',
-      name: '21_US_Beta_Samsung'
-    },
-    {
-      type: 'zone',
-      name: '21_US_Beta_Samsung'
-    }
-  ],
+export const mockedIntentCRRMStatusTrail = {
   statusTrail: [
     {
       displayStatus: 'applyscheduled',
@@ -205,7 +178,10 @@ export const mockedIntentCRRM = {
       displayStatus: 'new',
       createdAt: '2023-05-17T07:04:11.663Z'
     }
-  ],
+  ]
+}
+
+export const mockedIntentCRRMKPIs = {
   kpi_number_of_interfering_links: {
     data: {
       timestamp: null,
@@ -215,11 +191,43 @@ export const mockedIntentCRRM = {
       timestamp: '2023-06-26T00:00:25.772Z',
       result: 2
     }
+  }
+}
+
+export const mockedIntentCRRM = {
+  id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
+  root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
+  code: 'c-crrm-channel24g-auto',
+  sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52',
+  status: 'applyscheduled',
+  displayStatus: 'applyscheduled',
+  updatedAt: '2023-06-26T06:04:00.000Z',
+  metadata: {
+    scheduledAt: '2023-07-15T14:15:00.000Z',
+    dataEndTime: '2023-06-26T00:00:25.772Z'
   },
+  sliceType: 'zone',
+  sliceValue: '21_US_Beta_Samsung',
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '21_US_Beta_Samsung'
+    },
+    {
+      type: 'zone',
+      name: '21_US_Beta_Samsung'
+    }
+  ],
+  ...mockedIntentCRRMStatusTrail,
+  ...mockedIntentCRRMKPIs,
   preferences: null,
   currentValue: null,
   recommendedValue: null
-} as unknown as Intent
+} as unknown as IntentDetail
 
 export const mockedIntentCRRMnew = { // this fixture is used to test new crrm intent
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b7',
@@ -264,7 +272,7 @@ export const mockedIntentCRRMnew = { // this fixture is used to test new crrm in
     }
   },
   preferences: null
-} as unknown as Intent
+} as unknown as IntentDetail
 
 export const mockedIntentCRRMApplied = { // this fixture is used to test applied crrm intent
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b8',
@@ -321,7 +329,7 @@ export const mockedIntentCRRMApplied = { // this fixture is used to test applied
     }
   },
   preferences: null
-} as unknown as Intent
+} as unknown as IntentDetail
 
 export const mockedCRRMGraphs = {
   graph: {

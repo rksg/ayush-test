@@ -13,6 +13,7 @@ import { CommonResult,
   onSocketActivityChanged,
   onActivityMessageReceived,
   SoftGreOptionsData,
+  VenueApModelLanPortSettingsV1,
   VenueTableSoftGreActivation,
   CommonRbacUrlsInfo,
   NewAPModel
@@ -300,15 +301,41 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           ...req,
           body: JSON.stringify(payload)
         }
-      }
+      },
+      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }]
     }),
     deactivateSoftGreProfileOnVenue: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(SoftGreUrls.deactivateSoftGreProfileOnVenue, params)
+      },
+      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }]
+    }),
+    activateSoftGreProfileOnAP: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(SoftGreUrls.deactivateSoftGreProfileOnVenue, params)
+        const req = createHttpRequest(SoftGreUrls.activateSoftGreProfileOnAP, params)
         return {
           ...req,
           body: JSON.stringify(payload)
         }
+      }
+    }),
+    deactivateSoftGreProfileOnAP: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SoftGreUrls.deactivateSoftGreProfileOnAP, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    // eslint-disable-next-line max-len
+    getSoftGreProfileConfigurationOnVenue: build.query<VenueApModelLanPortSettingsV1 ,RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(SoftGreUrls.getSoftGreProfileConfigurationOnVenue, params)
+      }
+    }),
+    getSoftGreProfileConfigurationOnAP: build.query<VenueApModelLanPortSettingsV1 ,RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(SoftGreUrls.getSoftGreProfileConfigurationOnAP, params)
       }
     })
   })
@@ -328,5 +355,11 @@ export const {
   useActivateSoftGreMutation,
   useDectivateSoftGreMutation,
   useActivateSoftGreProfileOnVenueMutation,
-  useDeactivateSoftGreProfileOnVenueMutation
+  useDeactivateSoftGreProfileOnVenueMutation,
+  useActivateSoftGreProfileOnAPMutation,
+  useDeactivateSoftGreProfileOnAPMutation,
+  useGetSoftGreProfileConfigurationOnVenueQuery,
+  useLazyGetSoftGreProfileConfigurationOnVenueQuery,
+  useGetSoftGreProfileConfigurationOnAPQuery,
+  useLazyGetSoftGreProfileConfigurationOnAPQuery
 } = softGreApi

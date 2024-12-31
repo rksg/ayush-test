@@ -96,7 +96,42 @@ export const mockedClientIsolationQueryData = {
           venueId: '7bf824f4b7f949f2b64e18fb6d05b0f4',
           wifiNetworkId: '936ad54680ba4e5bae59ae1eb817ca24'
         }
+      ],
+      venueActivations: [
+        {
+          venueId: '770c3794b4fd4bf6bf9e64e8f14db293',
+          apModel: 'R610',
+          apSerialNumbers: ['121749001049'],
+          portId: 1
+        }
+      ],
+      apActivations: [
+        {
+          venueId: '770c3794b4fd4bf6bf9e64e8f14db293',
+          apModel: 'R510',
+          apSerialNumber: '121749001050',
+          portId: 2
+        }
       ]
+    }
+  ]
+}
+
+export const mockedClientIsolationQueryApListData = {
+  fields: [
+    'name',
+    'serialNumber'
+  ],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      serialNumber: '121749001049',
+      name: 'AP-R610'
+    },
+    {
+      serialNumber: '121749001050',
+      name: 'AP-R510'
     }
   ]
 }
