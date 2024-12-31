@@ -138,6 +138,95 @@ export const mockedApModelFirmwares = [
   }
 ]
 
+export const mockedEarlyAccessApModelFirmwares = [
+  {
+    id: '7.1.1.520.214',
+    name: '7.1.1.520.214',
+    supportedApModels: [
+      'T670'
+    ],
+    onboardDate: '2024-12-19T05:10:29.596+0000',
+    category: 'RECOMMENDED',
+    labels: [
+      'alpha'
+    ]
+  },
+  {
+    id: '7.1.1.520.209',
+    name: '7.1.1.520.209',
+    supportedApModels: [
+      'T670'
+    ],
+    releaseDate: '2024-12-24T09:22:02.797+00:00',
+    onboardDate: '2024-12-17T01:28:13.599+0000',
+    category: 'RECOMMENDED',
+    labels: [
+      'legacyAlpha',
+      'ga'
+    ]
+  },
+  {
+    id: '7.1.1.520.192',
+    name: '7.1.1.520.192',
+    supportedApModels: [
+      'T670'
+    ],
+    releaseDate: '2024-12-23T06:12:41.585+00:00',
+    onboardDate: '2024-12-11T06:20:21.706+0000',
+    category: 'RECOMMENDED',
+    labels: [
+      'legacyAlpha'
+    ]
+  },
+  {
+    id: '7.1.1.400.18',
+    name: '7.1.1.400.18',
+    supportedApModels: [
+      'T670'
+    ],
+    onboardDate: '2024-10-08T11:26:23.832+0000',
+    category: 'RECOMMENDED',
+    labels: [
+      'beta'
+    ]
+  },
+  {
+    id: '7.0.0.300.6497',
+    name: '7.0.0.300.6497',
+    supportedApModels: [
+      'T670'
+    ],
+    releaseDate: '2024-12-18T08:30:58.174+00:00',
+    onboardDate: '2024-10-25T11:49:14.198+0000',
+    category: 'RECOMMENDED',
+    labels: [
+      'ga'
+    ]
+  },
+  {
+    id: '6.2.3.103.233',
+    name: '6.2.3.103.233',
+    supportedApModels: [],
+    releaseDate: '2023-12-27T02:17:04.068+00:00',
+    onboardDate: '2023-10-19T04:17:28.082+0000',
+    category: 'RECOMMENDED',
+    labels: [
+      'ga'
+    ]
+  },
+  {
+    id: '6.2.0.103.552',
+    name: '6.2.0.103.552',
+    supportedApModels: [],
+    releaseDate: '2023-12-27T02:17:04.076+00:00',
+    onboardDate: '2023-08-25T04:42:47.258+0000',
+    category: 'RECOMMENDED',
+    labels: [
+      'ga'
+    ]
+  }
+]
+
 export const mockedFirmwareVersionIdList = mockedApModelFirmwares.map(fw => fw.id)
 
 export const preference = {
