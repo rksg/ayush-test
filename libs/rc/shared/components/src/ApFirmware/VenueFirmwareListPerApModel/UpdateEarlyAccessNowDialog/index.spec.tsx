@@ -43,7 +43,6 @@ describe('Update Early Access Dialog Per AP Model', () => {
   beforeEach(() => {
     store.dispatch(firmwareApi.util.resetApiState())
     afterSubmitFn.mockClear()
-    afterSubmitFn.mockClear()
 
     mockServer.use(
       rest.get(
