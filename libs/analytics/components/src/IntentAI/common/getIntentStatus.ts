@@ -5,9 +5,11 @@ import { getIntl } from '@acx-ui/utils'
 import { states }        from '../config'
 import { DisplayStates } from '../states'
 
-export function getIntentStatus (displayStatus: DisplayStates, retriesNum?: number) {
+export function getIntentStatus (displayStatus: DisplayStates, retries?: number) {
   const { $t } = getIntl()
-  const retries = retriesNum && retriesNum > 1 ? retriesNum : undefined
   const state = states[displayStatus] ?? { text: defineMessage({ defaultMessage: 'Unknown' }) }
-  return $t(state.text, { retries })
+  return $t(state.text) + (state.showRetries && retries && retries > 1
+    ? $t({ defaultMessage: ' (retry {retries} of 3)}' }, { retries })
+    : ''
+  )
 }

@@ -84,6 +84,7 @@ type CodeInfo = {
 type StateInfo = {
   text: MessageDescriptor,
   tooltip: MessageDescriptor
+  showRetries?: boolean
 }
 
 const categories = {
@@ -132,7 +133,8 @@ export const states = {
     ` }) //TODO: The new configuration is: {newConfig}.
   },
   [DisplayStates.pausedApplyFailed]: {
-    text: defineMessage({ defaultMessage: 'Paused, Applied Failed{retries, select, undefined {} other { (retry {retries} of 3)}}' }),
+    showRetries: true,
+    text: defineMessage({ defaultMessage: 'Paused, Applied Failed' }),
     tooltip: defineMessage({ defaultMessage: `
       <p>IntentAI recommended changes failed to apply to <VenueSingular></VenueSingular> {zoneName} due to:</p>
       {errorMessage}
