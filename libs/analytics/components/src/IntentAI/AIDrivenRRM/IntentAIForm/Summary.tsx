@@ -4,12 +4,11 @@ import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
 import { StepsForm, ProcessedCloudRRMGraph, Tooltip } from '@acx-ui/components'
 
-import { KpiField }             from '../../common/KpiField'
+import { KPIFields }            from '../../common/KPIs'
 import { richTextFormatValues } from '../../common/richTextFormatValues'
 import { ScheduleTiming }       from '../../common/ScheduleTiming'
 import { useIntentContext }     from '../../IntentContext'
 import { Statuses }             from '../../states'
-import { getGraphKPIs }         from '../../useIntentDetailsQuery'
 import { IntentAIRRMGraph }     from '../RRMGraph'
 
 import * as SideNotes from './SideNotes'
@@ -44,7 +43,7 @@ export function Summary (
   { summaryUrlBefore, summaryUrlAfter, crrmData } :
   { summaryUrlBefore?: string, summaryUrlAfter?: string, crrmData: ProcessedCloudRRMGraph[] }) {
   const { $t } = useIntl()
-  const { intent, kpis } = useIntentContext()
+  const { intent } = useIntentContext()
   const rrmGraphTooltip = getRRMGraphTooltip(intent.status)
 
   return <Row gutter={20}>
@@ -66,7 +65,7 @@ export function Summary (
           ​{<FormattedMessage {...rrmGraphTooltip.text} values={richTextFormatValues} />}
         </Tooltip>
       </Form.Item>)}
-      {getGraphKPIs(intent, kpis).map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
+      <KPIFields/>
       <ScheduleTiming.FieldSummary />
     </Col>
     <Col span={7} offset={1}>

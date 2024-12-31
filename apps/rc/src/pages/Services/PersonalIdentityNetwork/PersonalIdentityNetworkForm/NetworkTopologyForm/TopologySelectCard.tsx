@@ -10,10 +10,11 @@ interface TopologySelectCardProps {
   id: string
   diagram: ReactElement
   title: ReactElement | string
+  disabled?: boolean
 }
 
 export const TopologySelectCard = (props: TopologySelectCardProps) => {
-  const { id, diagram, title } = props
+  const { id, diagram, title, disabled } = props
 
   return <Row gutter={[0, 20]} justify='center'>
     <Col span={24}>
@@ -23,6 +24,7 @@ export const TopologySelectCard = (props: TopologySelectCardProps) => {
         icon={diagram}
         width='100%'
         height='500px'
+        disabled={disabled}
       />
     </Col>
     <Col>
