@@ -6,11 +6,9 @@ import { useIntl, FormattedMessage } from 'react-intl'
 
 import { StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
 
-import { KpiField }             from '../../common/KpiField'
+import { KPIFields }            from '../../common/KPIs'
 import { richTextFormatValues } from '../../common/richTextFormatValues'
 import { ScheduleTiming }       from '../../common/ScheduleTiming'
-import { useIntentContext }     from '../../IntentContext'
-import { getGraphKPIs }         from '../../useIntentDetailsQuery'
 import { IntentDetail }         from '../../useIntentDetailsQuery'
 
 import type { Wlan } from './WlanSelection'
@@ -18,7 +16,6 @@ import type { Wlan } from './WlanSelection'
 
 export function Summary () {
   const { $t } = useIntl()
-  const { intent, kpis, isDataRetained, isHotTierData } = useIntentContext()
   const { form } = useStepFormContext<IntentDetail>()
   const wlans = form.getFieldValue('wlans') as Wlan[]
   const isEnabled = form.getFieldValue('preferences').enable
@@ -27,7 +24,7 @@ export function Summary () {
       <StepsForm.Title children={$t({ defaultMessage: 'Summary' })} />
 
       {isEnabled
-        ? <> {getGraphKPIs(intent, kpis, isDataRetained, isHotTierData).map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
+        ? <> <KPIFields/>
           <ScheduleTiming.FieldSummary />
           <Form.Item name='networks'
             label={$t({ defaultMessage: 'Networks' })}

@@ -250,6 +250,11 @@ export interface VenueLed {
 	manual?: boolean
 }
 
+export type VenueApUsbStatus = {
+	model: string,
+	usbPortEnable: boolean
+}
+
 export interface VenueApModelBandModeSettings {
 	model: string,
 	bandMode: BandModeEnum
@@ -774,6 +779,11 @@ export interface VenueApSmartMonitor {
 	enabled: boolean,
 	interval: number,
 	threshold: number
+}
+
+export interface VenueApRebootTimeout {
+	gwLossTimeout: number,
+	serverLossTimeout: number
 }
 
 export interface ApManagementVlan {

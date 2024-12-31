@@ -152,7 +152,7 @@ const useVenueEdgeCompatibilitiesData = (props: EdgeCompatibilityDrawerProps, sk
       } else if (type === EdgeCompatibilityType.ALONE) {
         const edgeFeatureSets = await getEdgeFeatureSets({
           payload: { filters: { featureNames } }
-        }).unwrap()
+        }, true).unwrap()
 
         edgeCompatibilitiesResponse = edgeFeatureSets.featureSets.map(item => {
           return {

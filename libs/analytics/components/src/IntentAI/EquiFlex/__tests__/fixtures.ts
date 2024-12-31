@@ -1,5 +1,36 @@
 import { IntentDetail } from '../../useIntentDetailsQuery'
 
+export const mockedIntentEquiFlexStatusTrail = {
+  statusTrail: [
+    {
+      displayStatus: 'applyscheduled',
+      createdAt: '2023-06-26T06:04:52.740Z'
+    },
+    {
+      displayStatus: 'active',
+      createdAt: '2023-06-25T00:00:25.772Z'
+    },
+    {
+      displayStatus: 'applyscheduleinprogress',
+      createdAt: '2023-06-25T00:00:03.058Z'
+    },
+    {
+      displayStatus: 'new',
+      createdAt: '2023-05-17T07:04:11.663Z'
+    }
+  ]
+}
+
+export const mockedIntentEquiFlexKPIs = {
+  avg_mgmt_traffic_per_client: {
+    data: {
+      timestamp: '2023-06-26T00:00:25.772Z',
+      result: 2
+    },
+    compareData: null
+  }
+}
+
 export const mockedIntentEquiFlex = {
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
   root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
@@ -28,31 +59,8 @@ export const mockedIntentEquiFlex = {
       name: '21_US_Beta_Samsung'
     }
   ],
-  statusTrail: [
-    {
-      displayStatus: 'applyscheduled',
-      createdAt: '2023-06-26T06:04:52.740Z'
-    },
-    {
-      displayStatus: 'active',
-      createdAt: '2023-06-25T00:00:25.772Z'
-    },
-    {
-      displayStatus: 'applyscheduleinprogress',
-      createdAt: '2023-06-25T00:00:03.058Z'
-    },
-    {
-      displayStatus: 'new',
-      createdAt: '2023-05-17T07:04:11.663Z'
-    }
-  ],
-  avg_mgmt_traffic_per_client: {
-    data: {
-      timestamp: '2023-06-26T00:00:25.772Z',
-      result: 2
-    },
-    compareData: null
-  },
+  ...mockedIntentEquiFlexStatusTrail,
+  ...mockedIntentEquiFlexKPIs,
   preferences: null,
   currentValue: true,
   recommendedValue: true,

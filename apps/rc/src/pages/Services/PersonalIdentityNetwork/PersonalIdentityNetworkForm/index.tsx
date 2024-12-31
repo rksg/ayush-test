@@ -2,23 +2,30 @@ import { ReactNode } from 'react'
 
 import { FormInstance }                        from 'antd'
 import { omit }                                from 'lodash'
-import { useIntl }                             from 'react-intl'
+import { defineMessage, useIntl }              from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { showActionModal, StepsForm, StepsFormGotoStepFn } from '@acx-ui/components'
 import { useValidateEdgePinNetworkMutation }               from '@acx-ui/rc/services'
 import {
-  CatchErrorResponse,
   CommonErrorsResult,
   CommonResult,
-  CatchErrorDetails,
   getServiceListRoutePath,
   LocationExtended,
   PersonalIdentityNetworkFormData,
   redirectPreviousPage
 } from '@acx-ui/rc/utils'
-import { useTenantLink } from '@acx-ui/react-router-dom'
-import { getIntl }       from '@acx-ui/utils'
+import { useTenantLink }                                  from '@acx-ui/react-router-dom'
+import { CatchErrorDetails, CatchErrorResponse, getIntl } from '@acx-ui/utils'
+
+import { AccessSwitchForm }                         from './AccessSwitchForm'
+import { DistributionSwitchForm }                   from './DistributionSwitchForm'
+import { GeneralSettingsForm }                      from './GeneralSettingsForm'
+import { NetworkTopologyForm, NetworkTopologyType } from './NetworkTopologyForm'
+import { Prerequisite }                             from './Prerequisite'
+import { SmartEdgeForm }                            from './SmartEdgeForm'
+import { SummaryForm }                              from './SummaryForm'
+import { WirelessNetworkForm }                      from './WirelessNetworkForm'
 
 interface PersonalIdentityNetworkFormProps {
   editMode?: boolean
@@ -26,11 +33,45 @@ interface PersonalIdentityNetworkFormProps {
   onFinish: Function
   initialValues?: Object
   steps: PersonalIdentityNetworkFormStep[]
+  hasPrerequisite?: boolean
 }
 
 interface PersonalIdentityNetworkFormStep {
-  title: string
+  title: { defaultMessage: string }
   content: ReactNode
+}
+
+export const PrerequisiteStep = {
+  title: defineMessage({ defaultMessage: 'Prerequisite' }),
+  content: <Prerequisite />
+}
+export const GeneralSettingsStep = {
+  title: defineMessage({ defaultMessage: 'General Settings' }),
+  content: <GeneralSettingsForm />
+}
+export const NetworkTopologyStep = {
+  title: defineMessage({ defaultMessage: 'Network Topology' }),
+  content: <NetworkTopologyForm />
+}
+export const SmartEdgeStep = {
+  title: defineMessage({ defaultMessage: 'RUCKUS Edge' }),
+  content: <SmartEdgeForm />
+}
+export const DistributionSwitchStep = {
+  title: defineMessage({ defaultMessage: 'Dist. Switch' }),
+  content: <DistributionSwitchForm />
+}
+export const AccessSwitchStep = {
+  title: defineMessage({ defaultMessage: 'Access Switch' }),
+  content: <AccessSwitchForm />
+}
+export const WirelessNetworkStep = {
+  title: defineMessage({ defaultMessage: 'Wireless Network' }),
+  content: <WirelessNetworkForm />
+}
+export const SummaryStep = {
+  title: defineMessage({ defaultMessage: 'Summary' }),
+  content: <SummaryForm />
 }
 
 export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormProps) => {
@@ -38,7 +79,7 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
   const params = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const { initialValues: formInitialValues } = props
+  const { initialValues: formInitialValues, hasPrerequisite = false } = props
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
 
@@ -151,13 +192,14 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
       onCancel={() => redirectPreviousPage(navigate, previousPath, linkToServices)}
       onFinish={handleFinish}
       initialValues={formInitialValues}
+      hasPrerequisiteStep={hasPrerequisite}
     >
       {
         props.steps.map((item, index) =>
           <StepsForm.StepForm
             key={`step-${index}`}
             name={index.toString()}
-            title={item.title}
+            title={$t(item.title)}
           >
             {item.content}
           </StepsForm.StepForm>)
@@ -212,4 +254,20 @@ export const afterSubmitMessage = (
     message.push(replaceMacWithName(errorMsg))
   }
   return message.map(m=><p>{m}</p>)
+}
+
+export const getStepsByTopologyType = (type: string) => {
+  const steps = [PrerequisiteStep, GeneralSettingsStep, NetworkTopologyStep, SmartEdgeStep]
+  switch (type) {
+    case NetworkTopologyType.Wireless:
+      steps.push(WirelessNetworkStep, SummaryStep)
+      break
+    case NetworkTopologyType.TwoTier:
+      steps.push(DistributionSwitchStep, AccessSwitchStep, SummaryStep)
+      break
+    case NetworkTopologyType.ThreeTier:
+      steps.push(DistributionSwitchStep, AccessSwitchStep, WirelessNetworkStep, SummaryStep)
+      break
+  }
+  return steps
 }
