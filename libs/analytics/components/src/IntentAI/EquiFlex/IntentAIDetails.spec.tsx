@@ -2,11 +2,11 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { get }                                from '@acx-ui/config'
-import { networkApi }                         from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                     from '@acx-ui/rc/utils'
-import { Provider, store, intentAIApi }       from '@acx-ui/store'
-import { mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { get }                                                           from '@acx-ui/config'
+import { networkApi }                                                    from '@acx-ui/rc/services'
+import { CommonUrlsInfo }                                                from '@acx-ui/rc/utils'
+import { Provider, store, intentAIApi, intentAIUrl }                     from '@acx-ui/store'
+import { mockGraphqlQuery, mockServer, render, screen, within, waitFor } from '@acx-ui/test-utils'
 
 import { mockIntentContext } from '../__tests__/fixtures'
 import {
@@ -16,11 +16,11 @@ import {
 } from '../states'
 import { IntentDetail } from '../useIntentDetailsQuery'
 
-import { mockedIntentEquiFlex, mockWifiNetworkList } from './__tests__/fixtures'
-import { configuration, kpis }                       from './common'
-import * as CProbeFlex24g                            from './CProbeFlex24g'
-import * as CProbeFlex5g                             from './CProbeFlex5g'
-import * as CProbeFlex6g                             from './CProbeFlex6g'
+import { mockedIntentEquiFlex, mockedIntentEquiFlexKPIs, mockedIntentEquiFlexStatusTrail, mockWifiNetworkList } from './__tests__/fixtures'
+import { configuration, kpis }                                                                                  from './common'
+import * as CProbeFlex24g                                                                                       from './CProbeFlex24g'
+import * as CProbeFlex5g                                                                                        from './CProbeFlex5g'
+import * as CProbeFlex6g                                                                                        from './CProbeFlex6g'
 
 jest.mock('../IntentContext')
 jest.mock('@acx-ui/config', () => ({
@@ -29,6 +29,11 @@ jest.mock('@acx-ui/config', () => ({
 const mockGet = get as jest.Mock
 
 const mockIntentContextWith = (data: Partial<IntentDetail> = {}) => {
+  mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail',
+    { data: { intent: mockedIntentEquiFlexStatusTrail } })
+  mockGraphqlQuery(intentAIUrl, 'IntentKPIs',
+    { data: { intent: mockedIntentEquiFlexKPIs } })
+
   const intent = _.merge({}, mockedIntentEquiFlex, data) as IntentDetail
   const context = mockIntentContext({ intent, configuration, kpis })
   return {
@@ -61,8 +66,14 @@ describe('IntentAIDetails', () => {
     )
 
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
-    expect(await screen.findByTestId('Details'))
-      .toHaveTextContent('Beyond data retention period')
+    const loaders = screen.getAllByRole('img', { name: 'loader' })
+    loaders.forEach(loader => expect(loader).toBeVisible())
+    const kpiContainers = await screen.findAllByTestId('KPI')
+    for (const kpiContainer of kpiContainers) {
+      await waitFor(() => {
+        expect(kpiContainer).toHaveTextContent('Beyond data retention period')
+      })
+    }
   })
 
   describe('renders correctly', () => {
@@ -229,6 +240,20 @@ describe('IntentAIDetails', () => {
       expect(await screen.findByText(`${metadata.wlans?.length} networks selected`)).toBeVisible()
     })
 
+    it('should render loaders seperately', async () => {
+      const { params } = mockIntentContextWith({ code: 'c-probeflex-5g' })
+      render(
+        <CProbeFlex5g.IntentAIDetails />,
+        { route: { params }, wrapper: Provider }
+      )
+
+      expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
+      expect(screen.queryByTestId('IntentAIRRMGraph')).not.toBeInTheDocument()
+      const loaders = screen.getAllByRole('img', { name: 'loader' })
+      loaders.forEach(loader => expect(loader).toBeVisible())
+      const details = await screen.findByTestId('Details')
+      expect(await within(details).findAllByTestId('KPI')).toHaveLength(1)
+    })
   })
 })
 

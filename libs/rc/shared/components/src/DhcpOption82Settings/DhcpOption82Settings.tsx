@@ -111,8 +111,7 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
 
   return (
     <>
-      <FieldLabel width='180px'>
-
+      <FieldLabel width='220px'>
         <Space style={{ marginBottom: '10px' }}>
           {$t({ defaultMessage: 'DHCP Option 82' })}
           <Tooltip.Question
@@ -155,6 +154,7 @@ export const DhcpOption82Settings = (props: DhcpOption82SettingsProps) => {
               </Form.Item>
               {
                 iconVisible && <ConfigIcon
+                  style={{ cursor: 'pointer' }}
                   data-testid={'dhcp82toption-icon'}
                   onClick={() => {
                     setDrawerVisible(true)

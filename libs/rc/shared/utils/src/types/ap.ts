@@ -12,6 +12,7 @@ import {
   PoeModeEnum,
   VenueLanPort
 } from '../models'
+import { IsolatePacketsTypeEnum } from '../models/ClientIsolationEnum'
 
 import { ApVenueStatusEnum, CountAndNames } from '.'
 
@@ -485,8 +486,11 @@ export interface LanPort {
   vni: number,
   ethernetPortProfileId?: string,
   softGreProfileId?: string,
-  softGreTunnelEnable?: boolean,
-  dhcpOption82?: LanPortSoftGreProfileSettings
+  softGreEnabled?: boolean,
+  dhcpOption82?: LanPortSoftGreProfileSettings,
+  clientIsolationProfileId?: string,
+  clientIsolationEnabled?: boolean,
+  clientIsolationSettings?: LanPortClientIsolationSettings
 }
 
 export enum ApModelTypeEnum {
@@ -536,7 +540,8 @@ export interface CapabilitiesApModel {
   supportAggressiveTxPower?: boolean,
   supportAutoCellSizing?: boolean,
   supportSmartMonitor?: boolean,
-  supportMesh5GOnly6GOnly?: boolean
+  supportMesh5GOnly6GOnly?: boolean,
+  usbPowerEnable?: boolean
 }
 
 export interface PingAp {
@@ -587,6 +592,11 @@ export interface ApLanPort {
 
 export interface ApLedSettings {
   ledEnabled: boolean,
+  useVenueSettings: boolean
+}
+
+export interface ApUsbSettings {
+  usbPortEnable: boolean,
   useVenueSettings: boolean
 }
 
@@ -1017,4 +1027,24 @@ export interface SoftGreLanPortChange {
     lanPortId: string
     lanPortEnable?: boolean
     venueLanPortSettings: VenueApModelLanPortSettingsV1
+}
+
+
+export interface LanPortClientIsolationSettings {
+  packetsType: IsolatePacketsTypeEnum
+  autoVrrp: boolean
+}
+
+export interface VenueLanPortSettings {
+  portId?: number
+  enabled?: boolean
+  softGreEnabled?: boolean
+  softGreSettings?: LanPortSoftGreProfileSettings
+  clientIsolationEnabled?: boolean
+  clientIsolationSettings?: LanPortClientIsolationSettings
+}
+
+export interface APLanPortSettings extends VenueLanPortSettings {
+  overwriteUntagId?: number
+  overwriteVlanMembers?: string
 }

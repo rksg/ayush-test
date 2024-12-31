@@ -2,6 +2,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import { usePathBasedOnConfigTemplate }    from '@acx-ui/rc/components'
 import { useVenueDetailsHeaderQuery }      from '@acx-ui/rc/services'
 import {
@@ -23,12 +24,14 @@ import VenueTabs from './VenueTabs'
 
 function DatePicker () {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
   return <RangePicker
     selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
     onDateApply={setDateFilter as CallableFunction}
     showTimePicker
     selectionType={range}
+    maxMonthRange={isDateRangeLimit ? 1 : 3}
   />
 }
 

@@ -1,15 +1,15 @@
 import _ from 'lodash'
 
-import { intentAIUrl, Provider, store, intentAIApi } from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen, within }  from '@acx-ui/test-utils'
+import { intentAIUrl, Provider, store, intentAIApi }         from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, within, waitFor } from '@acx-ui/test-utils'
 
 import { mockIntentContext } from '../__tests__/fixtures'
 import { Statuses }          from '../states'
 import { IntentDetail }      from '../useIntentDetailsQuery'
 
-import { mockedCRRMGraphs, mockedIntentCRRM } from './__tests__/fixtures'
-import * as CCrrmChannelAuto                  from './CCrrmChannelAuto'
-import { kpis }                               from './common'
+import { mockedCRRMGraphs, mockedIntentCRRM, mockedIntentCRRMKPIs, mockedIntentCRRMStatusTrail } from './__tests__/fixtures'
+import * as CCrrmChannelAuto                                                                     from './CCrrmChannelAuto'
+import { kpis }                                                                                  from './common'
 
 jest.mock('../IntentContext')
 jest.mock('./RRMGraph', () => ({
@@ -23,6 +23,10 @@ jest.mock('./RRMGraph/DownloadRRMComparison', () => ({
 
 const mockIntentContextWith = (data: Partial<IntentDetail>) => {
   const intent = _.merge({}, mockedIntentCRRM, data) as IntentDetail
+  mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail',
+    { data: { intent: mockedIntentCRRMStatusTrail } })
+  mockGraphqlQuery(intentAIUrl, 'IntentKPIs',
+    { data: { intent: mockedIntentCRRMKPIs } })
   const context = mockIntentContext({ intent, kpis })
   return { params: _.pick(context.intent, ['code', 'root', 'sliceId']) }
 }
@@ -61,8 +65,14 @@ describe('IntentAIDetails', () => {
     )
 
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
-    expect(await screen.findByTestId('Details'))
-      .toHaveTextContent('Beyond data retention period')
+    const loaders = screen.getAllByRole('img', { name: 'loader' })
+    loaders.forEach(loader => expect(loader).toBeVisible())
+    const kpiContainers = await screen.findAllByTestId('KPI')
+    for (const kpiContainer of kpiContainers) {
+      await waitFor(() => {
+        expect(kpiContainer).toHaveTextContent('Beyond data retention period')
+      })
+    }
   })
 
   describe('renders correctly', () => {

@@ -49,6 +49,7 @@ export interface AggregatePortSettings {
   criticalVlan: Record<string, number[]>
   dot1xPortControl: Record<string, string[]>
   shouldAlertAaaAndRadiusNotApply: boolean
+  ipsg: Record<string, boolean[]>
 }
 
 export const aggregatePortSettings = (
@@ -71,10 +72,11 @@ export const aggregatePortSettings = (
     restrictedVlan: {},
     criticalVlan: {},
     dot1xPortControl: {},
-    shouldAlertAaaAndRadiusNotApply: false
+    shouldAlertAaaAndRadiusNotApply: false,
+    ipsg: {}
   }
 
-  const updateResult = <T extends string | number | Number>(
+  const updateResult = <T extends string | number | Number | boolean>(
     result: Record<string | number, T[]>,
     index: string,
     value: T | T[],
@@ -90,11 +92,12 @@ export const aggregatePortSettings = (
     switchMac, port, taggedVlans = [], untaggedVlan = '',
     switchLevelAuthDefaultVlan, guestVlan, authDefaultVlan, restrictedVlan, criticalVlan,
     profileAuthDefaultVlan, authenticationProfileId,
-    dot1xPortControl, enableAuthPorts, shouldAlertAaaAndRadiusNotApply
+    dot1xPortControl, enableAuthPorts, shouldAlertAaaAndRadiusNotApply, ipsg = false
   }) => {
     const index = switchMac as string
     result.taggedVlans[index] = updateResult(result.taggedVlans, index, taggedVlans)
     result.untaggedVlan[index] = updateResult(result.untaggedVlan, index, untaggedVlan as string)
+    result.ipsg[index] = updateResult(result.ipsg, index, ipsg)
 
     if (authDefaultVlan)
       result.authDefaultVlan[index] = updateResult(result.authDefaultVlan, index, authDefaultVlan, false)
@@ -249,11 +252,12 @@ export const getFlexAuthButtonStatus = (props: {
   isCloudPort: boolean,
   isMultipleEdit: boolean,
   isFirmwareAbove10010f: boolean,
-  portVlansCheckbox: boolean
+  portVlansCheckbox: boolean,
+  ipsgCheckbox: boolean
 }) => {
   const {
     isMultipleEdit, isCloudPort, isFirmwareAbove10010f,
-    aggregateData, portVlansCheckbox, hasMultipleValue, form
+    aggregateData, portVlansCheckbox, ipsgCheckbox, hasMultipleValue, form
   } = props
 
   const checkUntaggedPortMismatch = (id: string) => {
@@ -268,6 +272,10 @@ export const getFlexAuthButtonStatus = (props: {
   const aggregateUntaggedVlan = aggregateData.untaggedVlan
   const switchIds = Object.keys(aggregateUntaggedVlan ?? {})
   const isUntaggedPort = switchIds.some(id => checkUntaggedPortMismatch(id))
+  const isEitherPortEnabledIPSG
+    = (ipsgCheckbox || !isMultipleEdit || (isMultipleEdit && !hasMultipleValue.includes('ipsg')))
+      ? form.getFieldValue('ipsg')
+      : hasMultipleValue.includes('ipsg')
 
   if (!isFirmwareAbove10010f) {
     return 'ONLY_SUPPORT_FW_ABOVE_10010F'
@@ -275,6 +283,8 @@ export const getFlexAuthButtonStatus = (props: {
     return 'CLOUD_PORT_CANNOT_ENABLE_FLEX_AUTH'
   } else if (isUntaggedPort) {
     return 'UNTAGGED_PORT_CANNOT_ENABLE_FLEX_AUTH'
+  } else if (isEitherPortEnabledIPSG) {
+    return 'CANNOT_ENABLE_FLEX_AUTH_WHEN_IPSG_ENABLED'
   }
   return ''
 }
