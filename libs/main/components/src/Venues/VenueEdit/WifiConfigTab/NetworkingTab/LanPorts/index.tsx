@@ -34,7 +34,8 @@ import {
   useUpdateVenueLanPortSpecificSettingsMutation,
   useUpdateVenueLanPortSettingsMutation,
   useActivateClientIsolationOnVenueMutation,
-  useDeleteClientIsolationOnVenueMutation
+  useDeleteClientIsolationOnVenueMutation,
+  useLazyGetVenueLanPortSettingsQuery
 } from '@acx-ui/rc/services'
 import {
   ApLanPortTypeEnum,
@@ -47,7 +48,9 @@ import {
   useConfigTemplate,
   VenueLanPorts,
   VenueSettings,
-  WifiNetworkMessages
+  WifiNetworkMessages,
+  LanPortsUrls,
+  LanPortClientIsolationSettings
 } from '@acx-ui/rc/utils'
 import {
   useParams
@@ -158,6 +161,8 @@ export function LanPorts () {
   const [updateLanPortSpecificSetting] =
     useUpdateVenueLanPortSpecificSettingsMutation()
 
+  const [getVanueLanportSetting] = useLazyGetVenueLanPortSettingsQuery()
+
   const apModelsOptions = venueLanPorts?.data?.map(m => ({ label: m.model, value: m.model })) ?? []
   const [activeTabIndex, setActiveTabIndex] = useState(0)
   const [lanPortOrinData, setLanPortOrinData] = useState(venueLanPorts?.data)
@@ -234,16 +239,78 @@ export function LanPorts () {
 
     const poeOutFormData = ConvertPoeOutToFormData(selected, lanPortsCap) as VenueLanPorts
     const tabIndex = 0
-    const selectedModel = getModelWithDefaultEthernetPortProfile(selected, lanPortsCap, tenantId)
-    setSelectedModel(selectedModel)
-    setSelectedModelCaps(modelCaps as CapabilitiesApModel)
-    setActiveTabIndex(tabIndex)
-    setSelectedPortCaps(modelCaps?.lanPorts?.[tabIndex] as LanPort)
-    form?.setFieldsValue({
-      ...selectedModel,
-      poeOut: poeOutFormData,
-      lan: selectedModel?.lanPorts
+    // const selectedModel = getModelWithDefaultEthernetPortProfile(selected, lanPortsCap, tenantId)
+    // setSelectedModel(selectedModel)
+    // setSelectedModelCaps(modelCaps as CapabilitiesApModel)
+    // setActiveTabIndex(tabIndex)
+    // setSelectedPortCaps(modelCaps?.lanPorts?.[tabIndex] as LanPort)
+    // form?.setFieldsValue({
+    //   ...selectedModel,
+    //   poeOut: poeOutFormData,
+    //   lan: selectedModel?.lanPorts
+    // })
+
+    getModelWithrelativeSettings(selected, lanPortsCap, tenantId).then((selectedModel) => {
+      setSelectedModel(selectedModel)
+      setSelectedModelCaps(modelCaps as CapabilitiesApModel)
+      setActiveTabIndex(tabIndex)
+      setSelectedPortCaps(modelCaps?.lanPorts?.[tabIndex] as LanPort)
+      form?.setFieldsValue({
+        ...selectedModel,
+        poeOut: poeOutFormData,
+        lan: selectedModel?.lanPorts
+      })
     })
+  }
+
+  const getModelWithrelativeSettings = async (
+    selected: VenueLanPorts,
+    lanPortsCaps: LanPort[],
+    tenantId?: string
+  ) => {
+    const selectedModel = cloneDeep(selected)
+    if(isEthernetSoftgreEnabled || isEthernetClientIsolationEnabled) {
+      if(!selectedModel?.isSettingsLoaded) {
+        const venueLanPortSettingsQuery =selectedModel.lanPorts.map((lanPort) => {
+          return getVanueLanportSetting({
+            params: { venueId, apModel: selectedModel.model, portId: lanPort.portId }
+          }).unwrap()
+        })
+
+        const reqs = Promise.allSettled(venueLanPortSettingsQuery).then(
+          (results) => {
+            return results.map((result) => {
+              console.log(result)
+              return result.status === 'fulfilled' ? result.value as VenueLanPortSettings : null
+            })
+          }
+        )
+
+
+        const results = reqs.map((result) => {
+          console.log(result)
+          console.log(result.status)
+          return result.status === 'fulfilled' ? result.value as VenueLanPortSettings : null
+        })
+        console.log(JSON.stringify(results))
+        results.forEach((lanPortSettings, idx ) => {
+          if (lanPortSettings === null) return
+
+          console.log(lanPortSettings)
+          console.log(idx)
+
+          selectedModel.lanPorts[idx].softGreEnabled = lanPortSettings.softGreEnabled
+          selectedModel.lanPorts[idx].clientIsolationEnabled =
+            lanPortSettings.clientIsolationEnabled
+          if(lanPortSettings.clientIsolationEnabled) {
+            selectedModel.lanPorts[idx].clientIsolationSettings =
+                      lanPortSettings.clientIsolationSettings as LanPortClientIsolationSettings
+          }
+        })
+      }
+    }
+
+    return getModelWithDefaultEthernetPortProfile(selected, lanPortsCaps, tenantId)
   }
 
   const handleDiscardLanPorts = async (orinData?: VenueLanPorts[]) => {
