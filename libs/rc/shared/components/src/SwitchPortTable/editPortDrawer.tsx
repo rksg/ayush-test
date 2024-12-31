@@ -724,6 +724,8 @@ export function EditPortDrawer ({
       case 'criticalVlan':
         return (isMultipleEdit && !checkboxEnabled)
           || getAuthFieldDisabled(field, authfieldValues)
+      case 'switchPortProfileId':
+        return (isMultipleEdit && !checkboxEnabled) || isCloudPort
       default:
         return isMultipleEdit && !checkboxEnabled
     }

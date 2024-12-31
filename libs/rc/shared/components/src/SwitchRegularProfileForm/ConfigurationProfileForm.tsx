@@ -344,9 +344,7 @@ export function ConfigurationProfileForm () {
         params,
         payload: proceedData(currentData),
         enableRbac: rbacEnabled,
-        extraQueryArgs: {
-          enableSwitchPortProfile: isSwitchPortProfileToggle
-        }
+        enableSwitchPortProfile: isSwitchPortProfileToggle
       }).unwrap()
 
       if (rbacEnabled && hasAssociatedVenues) {
@@ -381,9 +379,7 @@ export function ConfigurationProfileForm () {
         params,
         payload: proceedData(formData),
         enableRbac: rbacEnabled,
-        extraQueryArgs: {
-          enableSwitchPortProfile: isSwitchPortProfileToggle
-        }
+        enableSwitchPortProfile: isSwitchPortProfileToggle
       }).unwrap()
       await associateWithCliProfile(diffAssociatedSwitch)
       setCurrentData({} as SwitchConfigurationProfile)
