@@ -168,8 +168,7 @@ export default function MyServices () {
         title={$t({ defaultMessage: 'My Services' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
         extra={<AddProfileButton
-          hasSomeProfilesPermission={hasSomeServicesPermission}
-          operation={ServiceOperation.CREATE}
+          hasSomeProfilesPermission={() => hasSomeServicesPermission(ServiceOperation.CREATE)}
           linkText={$t({ defaultMessage: 'Add Service' })}
           targetPath={getSelectServiceRoutePath(true)}
         />}

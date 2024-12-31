@@ -159,22 +159,21 @@ export function PolicyAuthRoute (props: {
   />
 }
 
-interface AddProfileButtonProps<O extends SvcPcyAllowedOper> {
-  operation: O
+interface AddProfileButtonProps {
   targetPath: string
   linkText: string
-  hasSomeProfilesPermission: (oper: O) => boolean
+  hasSomeProfilesPermission: () => boolean
 }
 
-export function AddProfileButton <O extends SvcPcyAllowedOper> (props: AddProfileButtonProps<O>) {
-  const { operation, targetPath, linkText, hasSomeProfilesPermission } = props
+export function AddProfileButton (props: AddProfileButtonProps) {
+  const { targetPath, linkText, hasSomeProfilesPermission } = props
 
   const AddButton = <TenantLink to={targetPath}>
     <Button type='primary'>{linkText}</Button>
   </TenantLink>
 
   if (getUserProfile().rbacOpsApiEnabled) {
-    return hasSomeProfilesPermission(operation) ? AddButton : null
+    return hasSomeProfilesPermission() ? AddButton : null
   }
   return filterByAccessForServicePolicyMutation([AddButton])[0]
 }

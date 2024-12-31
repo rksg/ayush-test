@@ -167,8 +167,7 @@ describe('servicePolicyAbacUtils', () => {
 
       render(
         <AddProfileButton
-          hasSomeProfilesPermission={hasSomeServicesPermission}
-          operation={ServiceOperation.CREATE}
+          hasSomeProfilesPermission={() => hasSomeServicesPermission(ServiceOperation.CREATE)}
           linkText={'Add Service'}
           targetPath={'/add-service'}
         />,{
@@ -189,8 +188,7 @@ describe('servicePolicyAbacUtils', () => {
 
       render(
         <AddProfileButton
-          hasSomeProfilesPermission={hasSomeServicesPermission}
-          operation={ServiceOperation.CREATE}
+          hasSomeProfilesPermission={() => hasSomeServicesPermission(ServiceOperation.CREATE)}
           linkText={'Add Service'}
           targetPath={'/add-service'}
         />,{
@@ -210,8 +208,7 @@ describe('servicePolicyAbacUtils', () => {
 
       render(
         <AddProfileButton
-          hasSomeProfilesPermission={hasSomeServicesPermission}
-          operation={ServiceOperation.CREATE}
+          hasSomeProfilesPermission={() => hasSomeServicesPermission(ServiceOperation.CREATE)}
           linkText={'Add Service'}
           targetPath={'/add-service'}
         />,{

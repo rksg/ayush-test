@@ -61,7 +61,7 @@ export const hasSomeServicesPermission = (oper: ServiceOperation) => {
 }
 
 export const hasSomePoliciesPermission = (oper: PolicyOperation) => {
-  hasSomeProfilesPermission(policyAllowedOperationMap, oper, getPolicyAllowedOperation)
+  return hasSomeProfilesPermission(policyAllowedOperationMap, oper, getPolicyAllowedOperation)
 }
 
 export const hasSomeProfilesPermission = <T extends SvcPcyAllowedType, O extends SvcPcyAllowedOper>(

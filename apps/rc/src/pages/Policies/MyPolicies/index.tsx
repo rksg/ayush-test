@@ -83,8 +83,7 @@ export default function MyPolicies () {
         title={$t({ defaultMessage: 'Policies & Profiles' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
         extra={<AddProfileButton
-          hasSomeProfilesPermission={hasSomePoliciesPermission}
-          operation={PolicyOperation.CREATE}
+          hasSomeProfilesPermission={() => hasSomePoliciesPermission(PolicyOperation.CREATE)}
           linkText={$t({ defaultMessage: 'Add Policy or Profile' })}
           targetPath={getSelectPolicyRoutePath(true)}
         />}
