@@ -73,6 +73,24 @@ describe('Lan Port', () => {
         (_, res, ctx) => res(ctx.json({}))),
       rest.get(LanPortsUrls.getVenueLanPortSettings.url,
         (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(LanPortsUrls.getApLanPortSettings.url
+        .replace(':venueId','4c778ed630394b76b17bce7fe230cf9f')
+        .replace(':serialNumber','serial-number')
+        .replace(':portId','1'),
+      (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(LanPortsUrls.getApLanPortSettings.url
+        .replace(':venueId','4c778ed630394b76b17bce7fe230cf9f')
+        .replace(':serialNumber','serial-number')
+        .replace(':portId','2'),
+      (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(LanPortsUrls.getApLanPortSettings.url
+        .replace(':venueId','4c778ed630394b76b17bce7fe230cf9f')
+        .replace(':serialNumber','serial-number')
+        .replace(':portId','3'),
+      (_, res, ctx) => res(ctx.json({}))
       )
     )
   })
