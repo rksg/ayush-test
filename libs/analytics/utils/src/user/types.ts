@@ -70,4 +70,5 @@ export type ManagedUser = {
       lastName: string
     }
   }
+  isSupport: boolean
 }
