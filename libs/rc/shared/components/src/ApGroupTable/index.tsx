@@ -13,7 +13,7 @@ import { ApGroupViewModel, FILTER, getFilters, transformDisplayNumber, usePollin
 import { TenantLink, useTenantLink }                                                               from '@acx-ui/react-router-dom'
 import { WifiScopes }                                                                              from '@acx-ui/types'
 import { filterByAccess, hasPermission }                                                           from '@acx-ui/user'
-import { DateRange, getDateRangeFilter }                                                           from '@acx-ui/utils'
+import { DateRange, getDateRangeFilter, useLoadTimeTracking }                                      from '@acx-ui/utils'
 
 import {  CountAndNamesTooltip } from '../'
 
@@ -56,6 +56,7 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
   const intl = useIntl()
   const { $t } = intl
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const toggles = useIncidentToggles()
   const navigate = useNavigate()
   const location = useLocation()
@@ -165,8 +166,13 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
     }
   }]
 
-
   const basePath = useTenantLink('/devices')
+
+  useLoadTimeTracking({
+    itemName: 'APGroupTable',
+    states: [tableQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   return (
     <Loader states={[tableQuery]}>

@@ -4,12 +4,13 @@ import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { Loader, TableProps, Table, Tooltip, Button }                                          from '@acx-ui/components'
 import { get }                                                                                 from '@acx-ui/config'
+import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                                           from '@acx-ui/formatter'
 import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI, ChatbotLink }                          from '@acx-ui/icons'
 import { useNavigate, useTenantLink, TenantLink }                                              from '@acx-ui/react-router-dom'
 import { WifiScopes }                                                                          from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
-import { noDataDisplay, PathFilter, useEncodedParameter }                                      from '@acx-ui/utils'
+import { noDataDisplay, PathFilter, useEncodedParameter, useLoadTimeTracking }                 from '@acx-ui/utils'
 
 import bannerImg from '../../../assets/banner_bkg.png'
 
@@ -159,6 +160,7 @@ export function IntentAITable (
   const basePath = useTenantLink('/analytics/intentAI')
   const intentActions = useIntentAIActions()
   const revertInitialDate = useRef(getDefaultTime())
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const {
     tableQuery: queryResults,
@@ -330,6 +332,13 @@ export function IntentAITable (
       render: (_, row) => formatter(DateFormatEnum.DateTimeFormat)(row.updatedAt)
     }
   ]
+
+  useLoadTimeTracking({
+    itemName: 'IntentAITable',
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
+  })
+
   return (
     <Loader states={[queryResults]}>
       <UI.IntentAITableStyle />

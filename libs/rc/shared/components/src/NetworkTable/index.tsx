@@ -25,7 +25,7 @@ import {
 import { TenantLink, useTenantLink }                               from '@acx-ui/react-router-dom'
 import { RequestPayload, WifiScopes }                              from '@acx-ui/types'
 import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
-import { getIntl, noDataDisplay }                                  from '@acx-ui/utils'
+import { getIntl, noDataDisplay, useLoadTimeTracking }             from '@acx-ui/utils'
 
 
 const disabledType: NetworkTypeEnum[] = []
@@ -319,6 +319,7 @@ export function NetworkTable ({
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
   const isBetaDPSK3FeatureEnabled = useIsTierAllowed(TierFeatures.BETA_DPSK3)
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
   const [expandOnBoaroardingNetworks, setExpandOnBoaroardingNetworks] = useState<boolean>(false)
   const [showOnboardNetworkToggle, setShowOnboardNetworkToggle] = useState<boolean>(false)
@@ -430,6 +431,12 @@ export function NetworkTable ({
   const showRowSelection = (selectable
     && hasCrossVenuesPermission()
     && hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, WifiScopes.DELETE] }) )
+
+  useLoadTimeTracking({
+    itemName: 'NetworkTable',
+    states: [tableQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   return (
     <Loader states={[

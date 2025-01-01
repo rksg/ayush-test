@@ -19,12 +19,11 @@ function Timeline () {
   const basePath = useTenantLink('/timeline')
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
-  const onTabChange = (tab: string) => {
+  const onTabChange = (tab: string) =>
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
     })
-  }
 
   const tabs = {
     activities: () => <Activities />,

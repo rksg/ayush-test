@@ -7,8 +7,8 @@ import { render, screen, waitFor } from '@acx-ui/test-utils'
 import {
   getLoadTimeStatus,
   getPageType,
-  getPageLoadStart,
-  getTrackingItemsCount,
+  getPageLoadStartTime,
+  getPageWidgetCount,
   LoadTimeContext,
   LoadTimeProvider,
   TrackingPages,
@@ -33,25 +33,25 @@ describe('useLoadTimeTracking', () => {
     expect(getPageType('Test')).toBe('')
   })
 
-  it('test getPageLoadStart', () => {
+  it('test getPageLoadStartTime', () => {
     const loadTimes = {
       WiredClientsTable: { time: 2424, startTime: 1735539469319, isUnfulfilled: false }
     }
-    expect(getPageLoadStart(1735539468537, loadTimes)).toBe(1735539468537)
-    expect(getPageLoadStart(1735539469389, loadTimes)).toBe(1735539469319)
+    expect(getPageLoadStartTime(1735539468537, loadTimes)).toBe(1735539468537)
+    expect(getPageLoadStartTime(1735539469389, loadTimes)).toBe(1735539469319)
   })
 
-  it('test getTrackingItemsCount', () => {
-    expect(getTrackingItemsCount(TrackingPages.DASHBOARD, null, true)).toBe(13)
-    expect(getTrackingItemsCount(TrackingPages.VENUES, 'OVERVIEW', true)).toBe(11)
-    expect(getTrackingItemsCount(TrackingPages.VENUES, 'Test', true)).toBe(0)
-    expect(getTrackingItemsCount(TrackingPages.WIRED_CLIENTS, null, true)).toBe(1)
-    expect(getTrackingItemsCount('Test')).toBe(0)
+  it('test getPageWidgetCount', () => {
+    expect(getPageWidgetCount(TrackingPages.DASHBOARD, undefined, true)).toBe(13)
+    expect(getPageWidgetCount(TrackingPages.VENUES, 'OVERVIEW', true)).toBe(11)
+    expect(getPageWidgetCount(TrackingPages.VENUES, 'Test', true)).toBe(0)
+    expect(getPageWidgetCount(TrackingPages.WIRED_CLIENTS, undefined, true)).toBe(1)
+    expect(getPageWidgetCount('Test')).toBe(0)
 
     localStorage.setItem('dashboard-tab', 'switch')
-    expect(getTrackingItemsCount(TrackingPages.DASHBOARD, null, true)).toBe(14)
+    expect(getPageWidgetCount(TrackingPages.DASHBOARD, undefined, true)).toBe(14)
     localStorage.setItem('dashboard-tab', 'edge')
-    expect(getTrackingItemsCount(TrackingPages.DASHBOARD, null, true)).toBe(11)
+    expect(getPageWidgetCount(TrackingPages.DASHBOARD, undefined, true)).toBe(11)
   })
 
   describe('LoadTimeProvider', () => {

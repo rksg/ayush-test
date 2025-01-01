@@ -5,8 +5,7 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { FilterValue }         from 'antd/lib/table/interface'
 import _                       from 'lodash'
 import moment                  from 'moment-timezone'
-
-import { useLocation } from '@acx-ui/react-router-dom'
+import { useLocation }         from 'react-router-dom'
 
 import { AnalyticsFilter } from './types/analyticsFilter'
 
@@ -31,9 +30,11 @@ type LoadTimes = {
 }
 
 type TableFilter = {
-  filterValues?: Record<string, FilterValue|null>|unknown,
-  searchValue?: string|unknown,
+  filterValues?: Record<string, FilterValue|null>|unknown
+  searchValue?: string|unknown
   groupByValue?: string | undefined
+  groupId?: string
+  keyword?: string
 }
 
 type Filters = Partial<TableFilter> & Partial<AnalyticsFilter>
@@ -59,13 +60,13 @@ export enum TrackingPages {
   VENUES = 'Venues',
   TIMELINE = 'Timeline',
   // TODO: P2 pages
-  // AP = 'Access Points'
-  // NETWORKS = 'Wi-Fi Networks'
-  // IDENTITY = 'Identity Management'
-  // AI = 'AI Analytics'
+  AP = 'Access Points',
+  NETWORKS = 'Wi-Fi Networks',
+  IDENTITY = 'Identity Management',
+  AI = 'AI Analytics'
 }
 
-export const trackingPageRoutes = {
+export const pageRoutes = {
   DASHBOARD: 'dashboard',
   WIRELESS_CLIENTS: {
     CLIENTS: 'users/wifi/clients'
@@ -77,21 +78,26 @@ export const trackingPageRoutes = {
   },
   TIMELINE: {
     EVENTS: 'timeline/events'
-  }
+  },
   // TODO: P2 pages
-  // AP: {
-  //   LIST: 'devices/wifi'
-  // },
-  // NETWORKS: {
-  //   LIST: 'networks/wireless'
-  // },
-  // IDENTITY: {
-  //   GROUP_LIST: 'users/identity-management/identity-group',
-  //   LIST: 'users/identity-management/identity'
-  // }
+  AP: {
+    LIST: 'devices/wifi',
+    GROUP_LIST: 'devices/wifi/apgroups'
+  },
+  NETWORKS: {
+    LIST: 'networks/wireless'
+  },
+  IDENTITY: {
+    GROUP_LIST: 'users/identity-management/identity-group',
+    LIST: 'users/identity-management/identity'
+  },
+  AI: {
+    INCIDENTS: 'analytics/incidents',
+    INTENT_AI: 'analytics/intentAI'
+  }
 }
 
-export const trackingItems = {
+export const pageWidgets = {
   [TrackingPages.DASHBOARD]: {
     ORGANIZATION_DROPDOWN: 'VenueFilter',
     ALARMS: 'AlarmWidgetV2',
@@ -136,9 +142,9 @@ export const trackingItems = {
       VenueHealthWidget: 'VenueHealthWidget',
       FloorPlan: 'FloorPlan',
       AP_TABS: {
-        TrafficByVolumeWidget: 'TrafficByVolumeWidget',
+        TRAFFIC_BY_VOLUME: 'TrafficByVolumeWidget',
         NetworkHistory: 'NetworkHistory',
-        ConnectedClientsOverTime: 'ConnectedClientsOverTime',
+        CONNECTED_CLIENTS_OVER_TIME: 'ConnectedClientsOverTime',
         TopApplicationsByTraffic: 'TopApplicationsByTraffic',
         TopSSIDsByTrafficWidget: 'TopSSIDsByTrafficWidget',
         TopSSIDsByClientWidget: 'TopSSIDsByClientWidget'
@@ -146,9 +152,9 @@ export const trackingItems = {
       SWITCH_TABS: {
         SwitchesTrafficByVolume: 'SwitchesTrafficByVolume',
         TopSwitchesByPoEUsageWidget: 'TopSwitchesByPoEUsageWidget',
-        TopSwitchesByTrafficWidget: 'TopSwitchesByTrafficWidget',
-        TopSwitchesByErrorWidget: 'TopSwitchesByErrorWidget',
-        TopSwitchModelsWidget: 'TopSwitchModelsWidget'
+        TOP_SWITCHES_BY_TRAFFIC: 'TopSwitchesByTrafficWidget',
+        TOP_SWITCHES_BY_ERROR: 'TopSwitchesByErrorWidget',
+        TOP_SWITCH_MODELS: 'TopSwitchModelsWidget'
       }
     }
   },
@@ -156,16 +162,41 @@ export const trackingItems = {
     EVENTS: {
       EventTable: 'EventTable'
     }
-  }
+  },
   //  TODO: P2 pages
-  // [TrackingPages.IDENTITY]: {
-  //   GROUP_LIST: {
-  //     IdentityGuoupTable: 'IdentityGuoupTable'
-  //   },
-  //   LIST: {
-  //     IdentityTable: 'IdentityTable'
-  //   }
-  // }
+  [TrackingPages.AP]: {
+    LIST: {
+      LIST: 'APTable'
+    },
+    GROUP_LIST: {
+      GROUP_LIST: 'APGroupTable'
+    }
+  },
+  [TrackingPages.NETWORKS]: {
+    LIST: {
+      NetworkTable: 'NetworkTable'
+    }
+  },
+  [TrackingPages.IDENTITY]: {
+    GROUP_LIST: {
+      IdentityGuoupTable: 'IdentityGuoupTable'
+    },
+    LIST: {
+      IdentityTable: 'IdentityTable'
+    }
+  },
+  [TrackingPages.AI]: {
+    INCIDENTS: {
+      //TODO
+      IncidentBySeverity: 'IncidentBySeverity',
+      IncidentBySeverityBarChart: 'IncidentBySeverityBarChart',
+      NetworkHistory: 'NetworkHistory',
+      IncidentTable: 'IncidentTable'
+    },
+    INTENT_AI: {
+      IntentAITable: 'IntentAITable'
+    }
+  }
 }
 
 export const getLoadTimeStatus = (time: number): string => {
@@ -239,7 +270,7 @@ const getLocalTime = () => {
   return moment().tz(localTimezone).format('YYYY-MM-DD HH:mm:ss')
 }
 
-const getMinStartTimeItem = (loadTimes: LoadTimes) => {
+const getMinStartItem = (loadTimes: LoadTimes) => {
   let minItem = null as unknown as {
     time: number,
     startTime: number,
@@ -253,8 +284,8 @@ const getMinStartTimeItem = (loadTimes: LoadTimes) => {
   return minItem
 }
 
-export const getPageLoadStart = (pageLoadStart: number, loadTimes: LoadTimes) => {
-  const minStartTime = getMinStartTimeItem(loadTimes)?.startTime
+export const getPageLoadStartTime = (pageLoadStart: number, loadTimes: LoadTimes) => {
+  const minStartTime = getMinStartItem(loadTimes)?.startTime
   if (minStartTime < pageLoadStart) return minStartTime
   return pageLoadStart
 }
@@ -269,6 +300,7 @@ export const getPageType = (page: TrackingPages, subTab?: string) => {
     case TrackingPages.WIRELESS_CLIENTS:
     case TrackingPages.WIRED_CLIENTS:
     case TrackingPages.TIMELINE:
+    case TrackingPages.AP:
     // case TrackingPages.IDENTITY:
       return 'Table'
     default:
@@ -285,8 +317,8 @@ const getPageActiveTab = (page: TrackingPages) => {
   return ''
 }
 
-const getPageItems = (pageKey: keyof typeof trackingItems, subTab?: string) => {
-  const pageItems = trackingItems[pageKey]
+const getPageWidgetsByTab = (pageKey: keyof typeof pageWidgets, subTab?: string) => {
+  const pageItems = pageWidgets[pageKey]
   if (!subTab) {
     return pageItems
   }
@@ -296,9 +328,9 @@ const getPageItems = (pageKey: keyof typeof trackingItems, subTab?: string) => {
   return {}
 }
 
-const getPageTrackingItems = <T extends TrackingPages>(pageKey: T, subTab?: string) => {
+const getPageWidgets = <T extends TrackingPages>(pageKey: T, subTab?: string) => {
   const activeTab = getPageActiveTab(pageKey)
-  const pageItems = getPageItems(pageKey, subTab)
+  const pageItems = getPageWidgetsByTab(pageKey, subTab)
 
   return Object.keys(pageItems).reduce((result, key) => {
     const itemKey = key as keyof typeof pageItems
@@ -312,8 +344,7 @@ const getPageTrackingItems = <T extends TrackingPages>(pageKey: T, subTab?: stri
       }
     } else {
       return {
-        ...result,
-        [key]: pageItems[itemKey]
+        ...result, [key]: pageItems[itemKey]
       }
     }
     return result
@@ -321,11 +352,11 @@ const getPageTrackingItems = <T extends TrackingPages>(pageKey: T, subTab?: stri
   }, {} as Record<string, any>)
 }
 
-export const getTrackingItemsCount = (
+export const getPageWidgetCount = (
   page: TrackingPages, subTab?: string, isPageRouteSupported?: boolean
 ) => {
   if (isPageRouteSupported) {
-    const items = getPageTrackingItems(page, subTab)
+    const items = getPageWidgets(page, subTab)
     return Object.keys(items).length
   }
   return 0
@@ -382,7 +413,7 @@ export const LoadTimeProvider = ({ children }: {
   }
 
   const location = useLocation()
-  const flatRoutes = flattenRoutes(trackingPageRoutes)
+  const flatRoutes = flattenRoutes(pageRoutes)
   const pathname = location.pathname.split('/t/')?.[1] || location.pathname.split('/v/')?.[1]
 
   useEffect(() => {
@@ -397,15 +428,17 @@ export const LoadTimeProvider = ({ children }: {
     const pageKey = routeInfo?.key
     const page = TrackingPages[pageKey as keyof typeof TrackingPages]
 
-    const enableTrackingItemCount
-      = getTrackingItemsCount(page, routeInfo?.subTab, isPageRouteSupported)
+    const pageWidgetCount
+      = getPageWidgetCount(page, routeInfo?.subTab, isPageRouteSupported)
     const trackedCount = Object.keys(loadTimes).length
     const isLoadTimeUnset = !isLoadTimeSet.current
-    const isAllItemTracked = trackedCount === enableTrackingItemCount
+    const isAllWidgetsTracked = trackedCount === pageWidgetCount
 
-    if (isLoadTimeUnset && enableTrackingItemCount && isAllItemTracked && isPageRouteSupported) {
+    // eslint-disable-next-line no-console
+    console.log(isLoadTimeUnset, pageWidgetCount, isAllWidgetsTracked, isPageRouteSupported)
+    if (isLoadTimeUnset && pageWidgetCount && isAllWidgetsTracked && isPageRouteSupported) {
       const { pendo } = window
-      const totalLoadTime = getCurrentTime() - getPageLoadStart(pageLoadStart, loadTimes)
+      const totalLoadTime = getCurrentTime() - getPageLoadStartTime(pageLoadStart, loadTimes)
       const localtime = getLocalTime()
       const loadTimeStatus = getLoadTimeStatus(totalLoadTime)
       const trackEventData = {
@@ -429,6 +462,8 @@ export const LoadTimeProvider = ({ children }: {
       isLoadTimeSet.current = true
 
       if (pendo) {
+        // eslint-disable-next-line no-console
+        console.log('*** ', pendo)
         pendo.track?.(PENDO_TRACK_EVENT_NAME, trackEventData)
       }
     }
@@ -508,18 +543,27 @@ export function useLoadTimeTracking ({ itemName, states, isEnabled }: {
 
   }, [timerEnabled])
 
+  // console.log(pageQuery?.payload)
+
   useEffect(() => {
     if (pageQuery?.payload && isPageFilterInit && isEnabled) {
+      const { filters, searchString, groupId, keyword } = pageQuery.payload
       onPageFilterChange?.({
-        filterValues: pageQuery?.payload?.filters ?? {},
-        searchValue: (pageQuery?.payload?.searchString || pageQuery?.payload?.keyword) ?? ''
+        filterValues: filters ?? {},
+        searchValue: searchString ?? '',
+        groupId: groupId ?? '',
+        keyword: keyword ?? ''
+        // ...( filters ? { filterValues: filters } : {} ),
+        // ...( searchString ? { searchValue: searchString } : {}),
+        // ...( groupId ? { groupId } : {} ),
+        // ...( keyword ? { keyword } : {} ),
         // TODO
         // groupByValue: pageQuery?.payload?.groupId
       }, !isPageFilterInit)
     }
   }, [
-    pageQuery?.payload?.filters, pageQuery?.payload?.searchString
-    // pageQuery?.payload?.groupId, pageQuery?.payload?.keyword
+    pageQuery?.payload?.filters, pageQuery?.payload?.searchString,
+    pageQuery?.payload?.groupId, pageQuery?.payload?.keyword
   ])
 
   useEffect(() => {
@@ -552,7 +596,7 @@ export function useLoadTimeTracking ({ itemName, states, isEnabled }: {
   useEffect(() => {
     if (startTime && endTime && isEnabled) {
       const loadDuration = endTime - startTime
-      updateLoadTime(itemName, loadDuration, startTime, isUnfulfilled)
+      updateLoadTime?.(itemName, loadDuration, startTime, isUnfulfilled)
     }
   }, [startTime, endTime, itemName])
 

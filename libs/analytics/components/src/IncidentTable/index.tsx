@@ -18,6 +18,7 @@ import {
   formattedPath
 } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Drawer, Tooltip, Button } from '@acx-ui/components'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
 import {
   DownloadOutlined
@@ -25,7 +26,7 @@ import {
 import { TenantLink, useNavigateToPath }                                                       from '@acx-ui/react-router-dom'
 import { SwitchScopes, WifiScopes }                                                            from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
-import { exportMessageMapping, noDataDisplay, handleBlobDownloadFile }                         from '@acx-ui/utils'
+import { exportMessageMapping, noDataDisplay, handleBlobDownloadFile, useLoadTimeTracking }    from '@acx-ui/utils'
 
 import { getRootCauseAndRecommendations } from '../IncidentDetails/rootCauseRecommendation'
 import { useIncidentToggles }             from '../useIncidentToggles'
@@ -126,6 +127,8 @@ export function IncidentTable ({ filters }: {
   const toggles = useIncidentToggles()
   const { $t } = intl
   const queryResults = useIncidentsListQuery({ ...filters, toggles })
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
+
   const [ drawerSelection, setDrawerSelection ] = useState<Incident | null>(null)
   const [ showMuted, setShowMuted ] = useState<boolean>(false)
   const onDrawerClose = () => setDrawerSelection(null)
@@ -270,6 +273,13 @@ export function IncidentTable ({ filters }: {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   ], []) // '$t' 'basePath' 'intl' are not changing
+
+  useLoadTimeTracking({
+    itemName: 'IncidentTable',
+    states: [queryResults],
+    isEnabled: isMonitoringPageEnabled
+  })
+
   return (
     <Loader states={[queryResults]} style={{ height: 'auto' }}>
       <UI.IncidentTableWrapper

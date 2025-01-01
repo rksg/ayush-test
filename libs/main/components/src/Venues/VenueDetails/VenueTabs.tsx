@@ -21,7 +21,6 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const navigate = useNavigate()
   const { isTemplate } = useConfigTemplate()
   const enableProperty = useIsTierAllowed(Features.CLOUDPATH_BETA)
-
   const { data: unitQuery } = useGetPropertyUnitListQuery({
     params: { venueId: params.venueId },
     payload: {

@@ -4,10 +4,10 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { Loader, Carousel }                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
-import type { DashboardFilter, PathFilter }                  from '@acx-ui/utils'
-import { useLoadTimeTracking, TrackingPages, trackingItems } from '@acx-ui/utils'
+import { Loader, Carousel }                                from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import type { DashboardFilter, PathFilter }                from '@acx-ui/utils'
+import { useLoadTimeTracking, TrackingPages, pageWidgets } from '@acx-ui/utils'
 
 import {
   useAvailableFactsQuery,
@@ -77,7 +77,7 @@ function DidYouKnowWidget ({ filters }: DidYouKnowWidgetProps) {
   }, [])
 
   useLoadTimeTracking({
-    itemName: trackingItems[TrackingPages.DASHBOARD].DID_YOU_KNOW,
+    itemName: pageWidgets[TrackingPages.DASHBOARD].DID_YOU_KNOW,
     states: [factsQuery, factListQuery],
     isEnabled: isMonitoringPageEnabled
   })

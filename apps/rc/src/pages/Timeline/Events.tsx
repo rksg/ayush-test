@@ -7,11 +7,9 @@ const Events = () => {
     undefined,
     { settingsId }
   )
-
   return <EventTable
     settingsId={settingsId}
     tableQuery={tableQuery}
-    showScheduleExport={true}
-  />
+    showScheduleExport={true}/>
 }
 export { Events }

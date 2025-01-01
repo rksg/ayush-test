@@ -187,7 +187,6 @@ function Table <RecordType extends Record<string, any>> ({
   const updateSearch = _.debounce(() => {
     onFilter.current?.(filterValues, { searchString: searchValue }, groupByValue)
   }, 1000)
-
   const filterWidth = filterableWidth || 200
   const searchWidth = searchableWidth || 292
 
@@ -221,7 +220,7 @@ function Table <RecordType extends Record<string, any>> ({
   }, [dataSource, onDisplayRowChange, searchValue, filterValues])
 
   useEffect(() => {
-    onPageFilterChange?.({ filterValues, searchValue }, true)
+    onPageFilterChange?.({ filterValues, searchValue, groupByValue }, true)
   }, [])
 
   useEffect(() => {
