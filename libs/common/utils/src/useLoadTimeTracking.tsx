@@ -39,11 +39,14 @@ type TableFilter = {
 
 type Filters = Partial<TableFilter> & Partial<AnalyticsFilter>
 
-type RouteConfig = { [key: string]: string | RouteConfig }
+// type RouteConfig = { [key: string]: string | RouteConfig }
 type FlattenedRoute = {
   key: string;
   subTab: string;
   isRegex: boolean;
+  widgets: string[];
+  widgetCount: number
+  activeTabIndex: string
 }
 type FlattenedRoutes = { [path: string]: FlattenedRoute }
 
@@ -58,6 +61,7 @@ export enum TrackingPages {
   WIRELESS_CLIENTS = 'Wireless Clients List',
   WIRED_CLIENTS = 'Wired Clients List',
   VENUES = 'Venues',
+  // VENUES_DETAILS = 'Venues Details',
   TIMELINE = 'Timeline',
   // TODO: P2 pages
   AP = 'Access Points',
@@ -66,36 +70,230 @@ export enum TrackingPages {
   AI = 'AI Analytics'
 }
 
-export const pageRoutes = {
-  DASHBOARD: 'dashboard',
-  WIRELESS_CLIENTS: {
-    CLIENTS: 'users/wifi/clients'
+const widgetsMapping = {
+  ORGANIZATION_DROPDOWN: 'VenueFilter',
+  ALARMS: 'AlarmWidgetV2',
+  INCIDENTS: 'IncidentsDashboardv2',
+  CLIENT_EXPERIENCE: 'ClientExperience',
+  DID_YOU_KNOW: 'DidYouKnowWidget',
+  VENUES: 'Venues',
+  DEVICES: 'Devices',
+  CLIENTS: 'Clients',
+  TRAFFIC_BY_VOLUME: 'TrafficByVolumeWidget',
+  CONNECTED_CLIENTS_OVER_TIME: 'ConnectedClientsOverTime',
+  TOP_WIFI_NETWORKS: 'TopWiFiNetworks',
+  TOP_APPLICATIONS_BY_TRAFFIC: 'TopAppsByTraffic',
+  TOP_SWITCHES_BY_POE_USAGE: 'TrafficByVolumeWidget',
+  TOP_SWITCHES_BY_TRAFFIC: 'TopSwitchesByTrafficWidget',
+  TOP_SWITCHES_BY_ERROR: 'TopSwitchesByErrorWidget',
+  TOP_SWITCH_MODELS: 'TopSwitchModelsWidget',
+  TOP_5_RUCKUS_EDGES_BY_TRAFFIC: 'TopEdgesByTrafficWidget',
+  TOP_5_RUCKUS_EDGES_BY_RESOURCE_UTILIZATION: 'TopEdgesByResourcesWidget',
+  MAP: 'ActualMapV2',
+  WIRELESS_CLIENTS_TABLE: 'WirelessClientsTable',
+  WIRED_CLIENTS_TABLE: 'WiredClientsTable',
+  VenueAlarmWidget: 'VenueAlarmWidget',
+  IncidentBySeverity: 'IncidentBySeverity',
+  VenueDevicesWidget: 'VenueDevicesWidget',
+  VenueHealthWidget: 'VenueHealthWidget',
+  FloorPlan: 'FloorPlan',
+  NetworkHistory: 'NetworkHistory',
+  TopApplicationsByTraffic: 'TopApplicationsByTraffic',
+  TopSSIDsByTrafficWidget: 'TopSSIDsByTrafficWidget',
+  TopSSIDsByClientWidget: 'TopSSIDsByClientWidget',
+  SwitchesTrafficByVolume: 'SwitchesTrafficByVolume',
+  TopSwitchesByPoEUsageWidget: 'TopSwitchesByPoEUsageWidget',
+  EventTable: 'EventTable',
+  APTable: 'APTable',
+  APGroupTable: 'APGroupTable',
+  NetworkTable: 'NetworkTable',
+  IdentityGuoupTable: 'IdentityGuoupTable',
+  IdentityTable: 'IdentityTable',
+  IncidentBySeverityBarChart: 'IncidentBySeverityBarChart',
+  IncidentTable: 'IncidentTable',
+  IntentAITable: 'IntentAITable'
+}
+
+export const TrackingPageConfig = {
+  [TrackingPages.DASHBOARD]: {
+    key: 'DASHBOARD',
+    route: 'dashboard',
+    widgets: [
+      widgetsMapping.ORGANIZATION_DROPDOWN,
+      widgetsMapping.ALARMS,
+      widgetsMapping.INCIDENTS,
+      widgetsMapping.CLIENT_EXPERIENCE,
+      widgetsMapping.DID_YOU_KNOW,
+      widgetsMapping.VENUES,
+      widgetsMapping.DEVICES,
+      widgetsMapping.CLIENTS,
+      widgetsMapping.MAP
+    ],
+    tabs: {
+      defaultIndex: 'ap',
+      activeIndex: 'dashboard-tab',
+      options: {
+        ap: [
+          widgetsMapping.TRAFFIC_BY_VOLUME,
+          widgetsMapping.CONNECTED_CLIENTS_OVER_TIME,
+          widgetsMapping.TOP_WIFI_NETWORKS,
+          widgetsMapping.TOP_APPLICATIONS_BY_TRAFFIC
+        ],
+        switch: [
+          widgetsMapping.TRAFFIC_BY_VOLUME,
+          widgetsMapping.TOP_SWITCHES_BY_POE_USAGE,
+          widgetsMapping.TOP_SWITCHES_BY_TRAFFIC,
+          widgetsMapping.TOP_SWITCHES_BY_ERROR,
+          widgetsMapping.TOP_SWITCH_MODELS
+        ],
+        edge: [
+          widgetsMapping.TOP_5_RUCKUS_EDGES_BY_TRAFFIC,
+          widgetsMapping.TOP_5_RUCKUS_EDGES_BY_RESOURCE_UTILIZATION
+        ]
+      }
+    }
   },
-  WIRED_CLIENTS: 'users/switch/clients',
-  VENUES: {
-    OVERVIEW: '^venues/([^/]+)/venue-details/overview$',
-    TEST: '^venues/([^/]+)/venue-details/test$'
+  [TrackingPages.WIRELESS_CLIENTS]: {
+    key: 'WIRELESS_CLIENTS',
+    children: [{
+      key: 'CLIENTS',
+      route: 'users/wifi/clients',
+      widgets: [widgetsMapping.WIRELESS_CLIENTS_TABLE]
+    }]
   },
-  TIMELINE: {
-    EVENTS: 'timeline/events'
+  [TrackingPages.WIRED_CLIENTS]: {
+    key: 'WIRED_CLIENTS',
+    route: 'users/switch/clients',
+    widgets: [widgetsMapping.WIRED_CLIENTS_TABLE]
   },
-  // TODO: P2 pages
-  AP: {
-    LIST: 'devices/wifi',
-    GROUP_LIST: 'devices/wifi/apgroups'
+  [TrackingPages.VENUES]: { ///
+    key: 'VENUES',
+    children: [{
+      key: 'OVERVIEW',
+      route: '^venues/([^/]+)/venue-details/overview$',
+      widgets: [
+        widgetsMapping.VenueAlarmWidget,
+        widgetsMapping.IncidentBySeverity,
+        widgetsMapping.VenueDevicesWidget,
+        widgetsMapping.VenueHealthWidget,
+        widgetsMapping.FloorPlan
+      ],
+      tabs: {
+        defaultIndex: 'ap',
+        activeIndex: 'venue-tab',
+        options: {
+          ap: [
+            widgetsMapping.TRAFFIC_BY_VOLUME,
+            widgetsMapping.NetworkHistory,
+            widgetsMapping.CONNECTED_CLIENTS_OVER_TIME,
+            widgetsMapping.TopApplicationsByTraffic,
+            widgetsMapping.TopSSIDsByTrafficWidget,
+            widgetsMapping.TopSSIDsByClientWidget
+          ],
+          switch: [
+            widgetsMapping.SwitchesTrafficByVolume,
+            widgetsMapping.TopSwitchesByPoEUsageWidget,
+            widgetsMapping.TOP_SWITCHES_BY_TRAFFIC,
+            widgetsMapping.TOP_SWITCHES_BY_ERROR,
+            widgetsMapping.TOP_SWITCH_MODELS
+          ]
+        }
+      }
+    }, {
+      key: 'TEST',
+      route: '^venues/([^/]+)/venue-details/test$',
+      widgets: []
+    }]
   },
-  NETWORKS: {
-    LIST: 'networks/wireless'
+  [TrackingPages.TIMELINE]: {
+    key: 'TIMELINE',
+    children: [{
+      key: 'EVENTS',
+      route: 'timeline/events',
+      widgets: [widgetsMapping.EventTable]
+    }]
   },
-  IDENTITY: {
-    GROUP_LIST: 'users/identity-management/identity-group',
-    LIST: 'users/identity-management/identity'
+  [TrackingPages.AP]: {
+    key: 'AP',
+    children: [{
+      key: 'LIST',
+      route: 'devices/wifi',
+      widgets: [widgetsMapping.APTable]
+    }, {
+      key: 'GROUP_LIST',
+      route: 'devices/wifi/apgroups',
+      widgets: [widgetsMapping.APGroupTable]
+    }]
   },
-  AI: {
-    INCIDENTS: 'analytics/incidents',
-    INTENT_AI: 'analytics/intentAI'
+  [TrackingPages.NETWORKS]: {
+    key: 'NETWORKS',
+    children: [{
+      key: 'LIST',
+      route: 'networks/wireless',
+      widgets: [widgetsMapping.NetworkTable]
+    }]
+  },
+  [TrackingPages.IDENTITY]: {
+    key: 'IDENTITY',
+    children: [{
+      key: 'GROUP_LIST',
+      route: 'users/identity-management/identity-group',
+      widgets: [widgetsMapping.IdentityGuoupTable]
+    }, {
+      key: 'LIST',
+      route: 'users/identity-management/identity',
+      widgets: [widgetsMapping.IdentityTable]
+    }]
+  },
+  [TrackingPages.AI]: {
+    key: 'AI',
+    children: [{
+      key: 'INCIDENTS',
+      route: 'analytics/incidents',
+      widgets: [
+        widgetsMapping.IncidentBySeverity,
+        widgetsMapping.IncidentBySeverityBarChart,
+        widgetsMapping.NetworkHistory,
+        widgetsMapping.IncidentTable
+      ]
+    }, {
+      key: 'INTENT_AI',
+      route: 'analytics/intentAI',
+      widgets: [widgetsMapping.IntentAITable]
+    }]
   }
 }
+
+// export const pageRoutes = {
+//   DASHBOARD: 'dashboard',
+//   WIRELESS_CLIENTS: {
+//     CLIENTS: 'users/wifi/clients'
+//   },
+//   WIRED_CLIENTS: 'users/switch/clients',
+//   VENUES: {
+//     OVERVIEW: '^venues/([^/]+)/venue-details/overview$',
+//     TEST: '^venues/([^/]+)/venue-details/test$'
+//   },
+//   TIMELINE: {
+//     EVENTS: 'timeline/events'
+//   },
+//   // TODO: P2 pages
+//   AP: {
+//     LIST: 'devices/wifi',
+//     GROUP_LIST: 'devices/wifi/apgroups'
+//   },
+//   NETWORKS: {
+//     LIST: 'networks/wireless'
+//   },
+//   IDENTITY: {
+//     GROUP_LIST: 'users/identity-management/identity-group',
+//     LIST: 'users/identity-management/identity'
+//   },
+//   AI: {
+//     INCIDENTS: 'analytics/incidents',
+//     INTENT_AI: 'analytics/intentAI'
+//   }
+// }
 
 export const pageWidgets = {
   [TrackingPages.DASHBOARD]: {
@@ -233,28 +431,62 @@ const getRouteDetails = (routes: FlattenedRoutes, currentPath: string) => {
   return null
 }
 
-const flattenRoutes = ( routes: RouteConfig, parentPath = '' ) => {
-  const processNestedRoutes = (key: string, value: RouteConfig): FlattenedRoutes => {
-    const nestedPath = parentPath ? `${parentPath}.${key}` : key
-    return flattenRoutes(value, nestedPath)
-  }
+// export const flattenRoutes = ( routes: RouteConfig, parentPath = '' ) => {
+//   const processNestedRoutes = (key: string, value: RouteConfig): FlattenedRoutes => {
+//     const nestedPath = parentPath ? `${parentPath}.${key}` : key
+//     return flattenRoutes(value, nestedPath)
+//   }
 
-  return Object.entries(routes).reduce<FlattenedRoutes>((flatRoutes, [key, value]) => {
-    if (typeof value === 'object') {
-      const nestedRoutes = processNestedRoutes(key, value)
-      return { ...flatRoutes, ...nestedRoutes }
+//   return Object.entries(routes).reduce<FlattenedRoutes>((flatRoutes, [key, value]) => {
+//     if (typeof value === 'object') {
+//       const nestedRoutes = processNestedRoutes(key, value)
+//       return { ...flatRoutes, ...nestedRoutes }
+//     }
+
+//     const fullPath = value as string
+//     flatRoutes[fullPath] = {
+//       key: parentPath || key,
+//       subTab: parentPath ? key : '',
+//       isRegex: fullPath.startsWith('^')
+//     }
+
+//     return flatRoutes
+//   }, {})
+// }
+
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const flattenRoutes = (routes: Record<string, any>, parentPath = ''): FlattenedRoutes => {
+  return Object.values(routes).reduce<FlattenedRoutes>((flatRoutes, values) => {
+    const { route, key, children, tabs, widgets } = values
+    let tabsWidgets = [], tabIndex = ''
+
+    if (children) {
+      return {
+        ...flatRoutes,
+        ...flattenRoutes(children, key)
+      }
     }
-
-    const fullPath = value as string
-    flatRoutes[fullPath] = {
-      key: parentPath || key,
-      subTab: parentPath ? key : '',
-      isRegex: fullPath.startsWith('^')
+    if (tabs) {
+      tabIndex = localStorage.getItem(tabs.activeIndex) || tabs.defaultIndex
+      if (tabs.options[tabIndex]) {
+        tabsWidgets = tabs.options[tabIndex]
+      }
     }
-
-    return flatRoutes
+    return {
+      ...flatRoutes,
+      [route]: {
+        key: parentPath || key,
+        subTab: parentPath ? key : '',
+        isRegex: route?.startsWith('^'),
+        widgets: [...widgets, ...tabsWidgets] || [],
+        widgetCount: [...widgets, ...tabsWidgets]?.length,
+        activeTabIndex: tabIndex
+      }
+    }
   }, {})
 }
+
 
 const formatLoadTimes = (loadTimes: LoadTimes): string => {
   const result: string[] = []
@@ -308,59 +540,59 @@ export const getPageType = (page: TrackingPages, subTab?: string) => {
   }
 }
 
-const getPageActiveTab = (page: TrackingPages) => {
-  if (page === TrackingPages.DASHBOARD) {
-    return localStorage.getItem('dashboard-tab') || 'ap'
-  } else if (page === TrackingPages.VENUES) {
-    return localStorage.getItem('venue-tab') || 'ap'
-  }
-  return ''
-}
+// const getPageActiveTab = (page: TrackingPages) => {
+//   if (page === TrackingPages.DASHBOARD) {
+//     return localStorage.getItem('dashboard-tab') || 'ap'
+//   } else if (page === TrackingPages.VENUES) {
+//     return localStorage.getItem('venue-tab') || 'ap'
+//   }
+//   return ''
+// }
 
-const getPageWidgetsByTab = (pageKey: keyof typeof pageWidgets, subTab?: string) => {
-  const pageItems = pageWidgets[pageKey]
-  if (!subTab) {
-    return pageItems
-  }
-  if (subTab in pageItems) {
-    return pageItems[subTab as keyof typeof pageItems]
-  }
-  return {}
-}
+// const getPageWidgetsByTab = (pageKey: keyof typeof pageWidgets, subTab?: string) => {
+//   const pageItems = pageWidgets[pageKey]
+//   if (!subTab) {
+//     return pageItems
+//   }
+//   if (subTab in pageItems) {
+//     return pageItems[subTab as keyof typeof pageItems]
+//   }
+//   return {}
+// }
 
-const getPageWidgets = <T extends TrackingPages>(pageKey: T, subTab?: string) => {
-  const activeTab = getPageActiveTab(pageKey)
-  const pageItems = getPageWidgetsByTab(pageKey, subTab)
+// const getPageWidgets = <T extends TrackingPages>(pageKey: T, subTab?: string) => {
+//   const activeTab = getPageActiveTab(pageKey)
+//   const pageItems = getPageWidgetsByTab(pageKey, subTab)
 
-  return Object.keys(pageItems).reduce((result, key) => {
-    const itemKey = key as keyof typeof pageItems
-    if (key.includes('TABS')) {
-      if (key.includes(activeTab.toUpperCase())) {
-        const tabItems = pageItems[itemKey]
-        return {
-          ...result,
-          ...(typeof tabItems === 'object' ? tabItems : {})
-        }
-      }
-    } else {
-      return {
-        ...result, [key]: pageItems[itemKey]
-      }
-    }
-    return result
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }, {} as Record<string, any>)
-}
+//   return Object.keys(pageItems).reduce((result, key) => {
+//     const itemKey = key as keyof typeof pageItems
+//     if (key.includes('TABS')) {
+//       if (key.includes(activeTab.toUpperCase())) {
+//         const tabItems = pageItems[itemKey]
+//         return {
+//           ...result,
+//           ...(typeof tabItems === 'object' ? tabItems : {})
+//         }
+//       }
+//     } else {
+//       return {
+//         ...result, [key]: pageItems[itemKey]
+//       }
+//     }
+//     return result
+//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   }, {} as Record<string, any>)
+// }
 
-export const getPageWidgetCount = (
-  page: TrackingPages, subTab?: string, isPageRouteSupported?: boolean
-) => {
-  if (isPageRouteSupported) {
-    const items = getPageWidgets(page, subTab)
-    return Object.keys(items).length
-  }
-  return 0
-}
+// export const getPageWidgetCount = (
+//   page: TrackingPages, subTab?: string, isPageRouteSupported?: boolean
+// ) => {
+//   if (isPageRouteSupported) {
+//     const items = getPageWidgets(page, subTab)
+//     return Object.keys(items).length
+//   }
+//   return 0
+// }
 
 export const LoadTimeContext
   = createContext<LoadTimeContextType>({} as LoadTimeContextType)
@@ -413,8 +645,10 @@ export const LoadTimeProvider = ({ children }: {
   }
 
   const location = useLocation()
-  const flatRoutes = flattenRoutes(pageRoutes)
+  const flatRoutes = flattenRoutes(TrackingPageConfig) //flattenRoutes(pageRoutes)
   const pathname = location.pathname.split('/t/')?.[1] || location.pathname.split('/v/')?.[1]
+
+  // console.log('flatRoutes: ', flatRoutes)
 
   useEffect(() => {
     const isSupport = isRouteSupported(flatRoutes, pathname)
@@ -428,8 +662,8 @@ export const LoadTimeProvider = ({ children }: {
     const pageKey = routeInfo?.key
     const page = TrackingPages[pageKey as keyof typeof TrackingPages]
 
-    const pageWidgetCount
-      = getPageWidgetCount(page, routeInfo?.subTab, isPageRouteSupported)
+    const pageWidgetCount = routeInfo?.widgetCount
+    // = getPageWidgetCount(page, routeInfo?.subTab, isPageRouteSupported)
     const trackedCount = Object.keys(loadTimes).length
     const isLoadTimeUnset = !isLoadTimeSet.current
     const isAllWidgetsTracked = trackedCount === pageWidgetCount
@@ -449,7 +683,7 @@ export const LoadTimeProvider = ({ children }: {
         load_time_text: getLoadTimeStatus(totalLoadTime),
         components_load_time_ms: formatLoadTimes(loadTimes),
         filters: pageFilters ? JSON.stringify(pageFilters) : '',
-        active_tab: getPageActiveTab(page)
+        active_tab: routeInfo?.activeTabIndex //getPageActiveTab(page)
       }
 
       // eslint-disable-next-line no-console, max-len

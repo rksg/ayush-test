@@ -5,17 +5,101 @@ import userEvent from '@testing-library/user-event'
 import { render, screen, waitFor } from '@acx-ui/test-utils'
 
 import {
+  flattenRoutes,
   getLoadTimeStatus,
   getPageType,
   getPageLoadStartTime,
-  getPageWidgetCount,
+  // getPageWidgetCount,
   LoadTimeContext,
   LoadTimeProvider,
   TrackingPages,
+  TrackingPageConfig,
   useLoadTimeTracking
 } from './useLoadTimeTracking'
 
 describe('useLoadTimeTracking', () => {
+  it ('test flattenRoutes', () => {
+    // expect(flattenRoutes(pageRoutes)).toEqual({
+    //   '^venues/([^/]+)/venue-details/overview$': {key: 'VENUES', subTab: 'OVERVIEW', isRegex: true},
+    //   '^venues/([^/]+)/venue-details/test$': {key: 'VENUES', subTab: 'TEST', isRegex: true},
+    //   'analytics/incidents': {key: 'AI', subTab: 'INCIDENTS', isRegex: false},
+    //   'analytics/intentAI': {key: 'AI', subTab: 'INTENT_AI', isRegex: false},
+    //   'dashboard': {key: 'DASHBOARD', subTab: '', isRegex: false},
+    //   'devices/wifi': {key: 'AP', subTab: 'LIST', isRegex: false},
+    //   'devices/wifi/apgroups': {key: 'AP', subTab: 'GROUP_LIST', isRegex: false},
+    //   'networks/wireless': {key: 'NETWORKS', subTab: 'LIST', isRegex: false},
+    //   'timeline/events': {key: 'TIMELINE', subTab: 'EVENTS', isRegex: false},
+    //   'users/identity-management/identity' : {key: 'IDENTITY', subTab: 'LIST', isRegex: false},
+    //   'users/identity-management/identity-group': {key: 'IDENTITY', subTab: 'GROUP_LIST', isRegex: false},
+    //   'users/switch/clients': {key: 'WIRED_CLIENTS', subTab: '', isRegex: false},
+    //   'users/wifi/clients': {key: 'WIRELESS_CLIENTS', subTab: 'CLIENTS', isRegex: false}
+    // })
+
+    // expect(flattenRoutes(TrackingPageConfig)).toEqual({
+    //   '^venues/([^/]+)/venue-details/overview$': {
+    //     key: 'VENUES', subTab: 'OVERVIEW', isRegex: true
+    //   },
+    //   '^venues/([^/]+)/venue-details/test$': { key: 'VENUES', subTab: 'TEST', isRegex: true },
+    //   'analytics/incidents': { key: 'AI', subTab: 'INCIDENTS', isRegex: false },
+    //   'analytics/intentAI': { key: 'AI', subTab: 'INTENT_AI', isRegex: false },
+    //   'dashboard': { key: 'DASHBOARD', subTab: '', isRegex: false },
+    //   'devices/wifi': { key: 'AP', subTab: 'LIST', isRegex: false },
+    //   'devices/wifi/apgroups': { key: 'AP', subTab: 'GROUP_LIST', isRegex: false },
+    //   'networks/wireless': { key: 'NETWORKS', subTab: 'LIST', isRegex: false },
+    //   'timeline/events': { key: 'TIMELINE', subTab: 'EVENTS', isRegex: false },
+    //   'users/identity-management/identity': { key: 'IDENTITY', subTab: 'LIST', isRegex: false },
+    //   'users/identity-management/identity-group': {
+    //     key: 'IDENTITY', subTab: 'GROUP_LIST', isRegex: false
+    //   },
+    //   'users/switch/clients': { key: 'WIRED_CLIENTS', subTab: '', isRegex: false },
+    //   'users/wifi/clients': { key: 'WIRELESS_CLIENTS', subTab: 'CLIENTS', isRegex: false }
+    // })
+
+    expect(flattenRoutes(TrackingPageConfig)).toEqual(
+      expect.objectContaining({
+        '^venues/([^/]+)/venue-details/overview$': expect.objectContaining({
+          key: 'VENUES', subTab: 'OVERVIEW', isRegex: true, widgetCount: 11
+        }),
+        '^venues/([^/]+)/venue-details/test$': expect.objectContaining({
+          key: 'VENUES', subTab: 'TEST', isRegex: true, widgetCount: 0
+        }),
+        'analytics/incidents': expect.objectContaining({
+          key: 'AI', subTab: 'INCIDENTS', isRegex: false, widgetCount: 4
+        }),
+        'analytics/intentAI': expect.objectContaining({
+          key: 'AI', subTab: 'INTENT_AI', isRegex: false, widgetCount: 1
+        }),
+        'dashboard': expect.objectContaining({
+          key: 'DASHBOARD', subTab: '', isRegex: false, widgetCount: 13
+        }),
+        'devices/wifi': expect.objectContaining({
+          key: 'AP', subTab: 'LIST', isRegex: false, widgetCount: 1
+        }),
+        'devices/wifi/apgroups': expect.objectContaining({
+          key: 'AP', subTab: 'GROUP_LIST', isRegex: false, widgetCount: 1
+        }),
+        'networks/wireless': expect.objectContaining({
+          key: 'NETWORKS', subTab: 'LIST', isRegex: false, widgetCount: 1
+        }),
+        'timeline/events': expect.objectContaining({
+          key: 'TIMELINE', subTab: 'EVENTS', isRegex: false, widgetCount: 1
+        }),
+        'users/identity-management/identity': expect.objectContaining({
+          key: 'IDENTITY', subTab: 'LIST', isRegex: false, widgetCount: 1
+        }),
+        'users/identity-management/identity-group': expect.objectContaining({
+          key: 'IDENTITY', subTab: 'GROUP_LIST', isRegex: false, widgetCount: 1
+        }),
+        'users/switch/clients': expect.objectContaining({
+          key: 'WIRED_CLIENTS', subTab: '', isRegex: false, widgetCount: 1
+        }),
+        'users/wifi/clients': expect.objectContaining({
+          key: 'WIRELESS_CLIENTS', subTab: 'CLIENTS', isRegex: false, widgetCount: 1
+        })
+      })
+    )
+
+  })
   it('test getLoadTimeStatus', () => {
     expect(getLoadTimeStatus(999)).toBe('Normal')
     expect(getLoadTimeStatus(1599)).toBe('Slow')
@@ -41,18 +125,18 @@ describe('useLoadTimeTracking', () => {
     expect(getPageLoadStartTime(1735539469389, loadTimes)).toBe(1735539469319)
   })
 
-  it('test getPageWidgetCount', () => {
-    expect(getPageWidgetCount(TrackingPages.DASHBOARD, undefined, true)).toBe(13)
-    expect(getPageWidgetCount(TrackingPages.VENUES, 'OVERVIEW', true)).toBe(11)
-    expect(getPageWidgetCount(TrackingPages.VENUES, 'Test', true)).toBe(0)
-    expect(getPageWidgetCount(TrackingPages.WIRED_CLIENTS, undefined, true)).toBe(1)
-    expect(getPageWidgetCount('Test')).toBe(0)
+  // it('test getPageWidgetCount', () => {
+  //   expect(getPageWidgetCount(TrackingPages.DASHBOARD, undefined, true)).toBe(13)
+  //   expect(getPageWidgetCount(TrackingPages.VENUES, 'OVERVIEW', true)).toBe(11)
+  //   expect(getPageWidgetCount(TrackingPages.VENUES, 'Test', true)).toBe(0)
+  //   expect(getPageWidgetCount(TrackingPages.WIRED_CLIENTS, undefined, true)).toBe(1)
+  //   expect(getPageWidgetCount('Test')).toBe(0)
 
-    localStorage.setItem('dashboard-tab', 'switch')
-    expect(getPageWidgetCount(TrackingPages.DASHBOARD, undefined, true)).toBe(14)
-    localStorage.setItem('dashboard-tab', 'edge')
-    expect(getPageWidgetCount(TrackingPages.DASHBOARD, undefined, true)).toBe(11)
-  })
+  //   localStorage.setItem('dashboard-tab', 'switch')
+  //   expect(getPageWidgetCount(TrackingPages.DASHBOARD, undefined, true)).toBe(14)
+  //   localStorage.setItem('dashboard-tab', 'edge')
+  //   expect(getPageWidgetCount(TrackingPages.DASHBOARD, undefined, true)).toBe(11)
+  // })
 
   describe('LoadTimeProvider', () => {
     const TestFilterComponent = () => {
