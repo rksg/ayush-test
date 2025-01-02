@@ -102,7 +102,8 @@ export interface NetworkVxLanTunnelProfileInfo {
   vxLanTunnels: TunnelProfileViewData[] | undefined
 }
 
-export const hasAuthRadius = (data: NetworkSaveData | null, wlanData: any) => {
+export const hasAuthRadius = (data: NetworkSaveData | null, wlanData: any,
+  options?: Record<string, boolean>) => {
   if (!data) return false
 
   const { type } = data
@@ -110,8 +111,9 @@ export const hasAuthRadius = (data: NetworkSaveData | null, wlanData: any) => {
 
   switch (type) {
     case NetworkTypeEnum.AAA:
-    // case NetworkTypeEnum.HOTSPOT20:    // Please remove mark if remove ff: Features.WIFI_NAS_ID_HOTSPOT20_TOGGLE
       return true
+    case NetworkTypeEnum.HOTSPOT20:
+      return options?.isSupportHotspot20NasId
 
     case NetworkTypeEnum.OPEN:
     case NetworkTypeEnum.PSK:
