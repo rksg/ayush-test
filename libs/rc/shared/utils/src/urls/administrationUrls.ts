@@ -64,6 +64,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/wifiNetworks/recoveryPassphraseSettings',
     oldUrl: '/recoveryPskSettings',
+    opsApi: 'PUT:/wifiNetworks/recoveryPassphraseSettings',
     newApi: true
   },
   getDelegations: {
