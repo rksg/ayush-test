@@ -2,16 +2,17 @@ import { useContext, useEffect, useState } from 'react'
 
 import { Row, Col, Form } from 'antd'
 
-import { Card, Select }                                from '@acx-ui/components'
-import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
-import { useSwitchPortProfilesListQuery }              from '@acx-ui/rc/services'
-import { PortProfileUI, validateDuplicatePortProfile } from '@acx-ui/rc/utils'
-import { useParams }                                   from '@acx-ui/react-router-dom'
-import { getIntl }                                     from '@acx-ui/utils'
+import { Card, Select }                   from '@acx-ui/components'
+import { useIsSplitOn, Features }         from '@acx-ui/feature-toggle'
+import { useSwitchPortProfilesListQuery } from '@acx-ui/rc/services'
+import { validateDuplicatePortProfile }   from '@acx-ui/rc/utils'
+import { useParams }                      from '@acx-ui/react-router-dom'
+import { getIntl, validationMessages }    from '@acx-ui/utils'
 
 import PortProfileContext from './PortProfileContext'
 import { ModelsType }     from './SelectModelStep'
 
+import { getPortProfileIdIfModelsMatch } from '.'
 
 const payload = {
   fields: [
@@ -44,37 +45,20 @@ export function PortProfileStep () {
 
 
   useEffect(() => {
-    if(portProfilesList){
-      if (portProfilesList) {
-        setPortProfiles(
-          portProfilesList.data
-            .map((item) => ({
-              label: item.name,
-              value: item.id
-            })) as ModelsType[]
-        )
-        if (portProfileSettingValues) {
-          form.setFieldValue('portProfileId', portProfileSettingValues.portProfileId)
-        }
+    if (portProfilesList) {
+      setPortProfiles(
+        portProfilesList.data
+          .map((item) => ({
+            label: item.name,
+            value: item.id
+          })) as ModelsType[]
+      )
+      if (portProfileSettingValues) {
+        form.setFieldValue('portProfileId', portProfileSettingValues.portProfileId)
       }
     }
   }, [portProfilesList, portProfileSettingValues])
 
-  function getPortProfileIdIfModelsMatch (
-    source: PortProfileUI[], target: PortProfileUI): string[] {
-    const targetModels = new Set(target.models)
-    const matchingPortProfileIds: string[] = []
-
-    source.forEach(sourceEntry => {
-      const hasMatchingModel = sourceEntry.models.some(model => targetModels.has(model))
-
-      if (hasMatchingModel) {
-        matchingPortProfileIds.push(...sourceEntry.portProfileId)
-      }
-    })
-
-    return matchingPortProfileIds
-  }
 
 
   return (
@@ -104,7 +88,9 @@ export function PortProfileStep () {
                         getPortProfileIdIfModelsMatch(portProfileList, portProfileSettingValues)
                       return portProfilesList?.data &&
                         validateDuplicatePortProfile(
-                          [...value, ...sameModelPortProfileIds], portProfilesList.data)
+                          [...value, ...sameModelPortProfileIds], portProfilesList.data) ?
+                        Promise.reject($t(validationMessages.SwitchPortProfilesDuplicateInvalid)) :
+                        Promise.resolve()
                     }
                   }
                   ]}

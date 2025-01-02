@@ -33,6 +33,30 @@ type PortProfileMap = {
   [key: string]: string
 }
 
+interface PortProfileAcc {
+  [portProfileId: string]: {
+    portProfileId: string
+    models: string[]
+    ids: string[]
+  }
+}
+
+export function getPortProfileIdIfModelsMatch (
+  source: PortProfileUI[], target: PortProfileUI): string[] {
+  const targetModels = new Set(target.models)
+  const matchingPortProfileIds: string[] = []
+
+  source.forEach(sourceEntry => {
+    const hasMatchingModel = sourceEntry.models.some(model => targetModels.has(model))
+
+    if (hasMatchingModel) {
+      matchingPortProfileIds.push(...sourceEntry.portProfileId)
+    }
+  })
+
+  return matchingPortProfileIds
+}
+
 export function PortProfile () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
@@ -105,7 +129,7 @@ export function PortProfile () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([{ id }], clearSelection) => {
+      onClick: ([{ id, models }], clearSelection) => {
         showActionModal({
           type: 'confirm',
           title: $t({ defaultMessage: 'Delete Profile(s)?' }),
@@ -116,9 +140,16 @@ export function PortProfile () {
             entityValue: undefined
           },
           onOk: async () => {
-            const portProfiles = portProfilesTable?.filter(row => {
-              return row.id !== id
-            })
+            let portProfiles: PortProfileUI[] = []
+            if(id){
+              portProfiles = portProfilesTable?.filter(row => {
+                return row.id !== id
+              })
+            }else{
+              portProfiles = portProfilesTable?.filter(row => {
+                return !arraysAreEqual(row.models, models)
+              })
+            }
             setPortProfilesTable(portProfiles)
             form.setFieldValue('portProfiles',
               portProfiles.map(item=>portProfilesAPIParser(item)).flat())
@@ -182,8 +213,23 @@ export function PortProfile () {
       portProfilesAPIParser(mergedPortProfiles)
     ].flat()
 
+    const groupedValues = Object.values(
+      portProfileAPIData.reduce((acc: PortProfileAcc, item) => {
+        const { portProfileId, models, id } = item
+
+        if (!acc[portProfileId]) {
+          acc[portProfileId] = { portProfileId, models: [...models], ids: id ? [id] : [] }
+        } else {
+          acc[portProfileId].models = [...new Set([...acc[portProfileId].models, ...models])]
+          if (id) acc[portProfileId].ids.push(id)
+        }
+
+        return acc
+      }, {})
+    )
+
     setPortProfilesTable([...result, mergedPortProfiles])
-    form.setFieldValue('portProfiles', portProfileAPIData)
+    form.setFieldValue('portProfiles', groupedValues)
     setSelectedRowKeys([])
     setPortModalVisible(false)
   }

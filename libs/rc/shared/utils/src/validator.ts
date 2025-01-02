@@ -1226,7 +1226,6 @@ export function guestPasswordValidator (value: string) {
 }
 
 export function validateDuplicatePortProfile (selectedPortProfiles: string[] = [], portProfilesList: SwitchPortProfiles[] = []) {
-  const { $t } = getIntl()
   const selectedProfiles = portProfilesList.filter(profile =>
     profile.id && selectedPortProfiles.includes(profile.id)
   )
@@ -1263,11 +1262,7 @@ export function validateDuplicatePortProfile (selectedPortProfiles: string[] = [
     })
   })
 
-  if (Object.keys(lldpTlvDuplicates).length > 0 || Object.keys(macOuiDuplicates).length > 0) {
-    return Promise.reject($t(validationMessages.SwitchPortProfilesDuplicateInvalid))
-  } else {
-    return Promise.resolve()
-  }
+  return Object.keys(lldpTlvDuplicates).length > 0 || Object.keys(macOuiDuplicates).length > 0
 }
 
 export function radiusIpAddressRegExp (value: string) {
