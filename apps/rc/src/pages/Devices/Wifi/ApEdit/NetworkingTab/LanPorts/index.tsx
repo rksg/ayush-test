@@ -365,7 +365,10 @@ export function LanPorts () {
         = lanData.find(l => l.portId === lanPort.portId)?.clientIsolationProfileId
       if (
         originClientIsolationProfileId &&
-        (!lanPort.enabled || !lanPort.clientIsolationEnabled || useVenueSettings)
+          (!lanPort.enabled
+          || !lanPort.clientIsolationEnabled
+          || useVenueSettings
+          || (originClientIsolationProfileId !== lanPort.clientIsolationProfileId))
       ) {
         deactivateClientIsolationOnAp({
           // eslint-disable-next-line max-len
