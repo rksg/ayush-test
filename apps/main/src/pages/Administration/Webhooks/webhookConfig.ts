@@ -112,6 +112,10 @@ export const getEventsTree = ($t: IntlShape['$t']) => {
         {
           key: WebhookEventEnum.TYPE_PROFILE,
           title: $t({ defaultMessage: 'Profile' })
+        },
+        {
+          key: WebhookEventEnum.TYPE_ADMIN,
+          title: $t({ defaultMessage: 'Admin' })
         }
       ]
     } as TreeDataNode,
@@ -134,43 +138,6 @@ export const getEventsTree = ($t: IntlShape['$t']) => {
         {
           key: WebhookEventEnum.PRODUCT_EDGE,
           title: $t({ defaultMessage: 'RUCKUS Edge' })
-        }
-      ]
-    } as TreeDataNode
-  ]}
-export const getAdminLogsTree = ($t: IntlShape['$t']) => {
-  return [
-    {
-      key: 'adminLog-type',
-      title: $t({ defaultMessage: 'Event Types' }),
-      children: [
-        {
-          key: 'al-0-0',
-          title: $t({ defaultMessage: 'AP' })
-        },
-        {
-          key: 'al-0-1',
-          title: $t({ defaultMessage: 'Security' })
-        },
-        {
-          key: 'al-0-2',
-          title: $t({ defaultMessage: 'Client' })
-        },
-        {
-          key: 'al-0-3',
-          title: $t({ defaultMessage: 'Switch' })
-        },
-        {
-          key: 'al-0-4',
-          title: $t({ defaultMessage: 'Network' })
-        },
-        {
-          key: 'al-0-5',
-          title: $t({ defaultMessage: 'RUCKUS Edge' })
-        },
-        {
-          key: 'al-0-6',
-          title: $t({ defaultMessage: 'Profile' })
         }
       ]
     } as TreeDataNode

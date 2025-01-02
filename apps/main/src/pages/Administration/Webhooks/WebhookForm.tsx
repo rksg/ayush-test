@@ -12,10 +12,10 @@ import { useAddWebhookMutation, useUpdateWebhookMutation, useGetWebhookEntryQuer
 import { Webhook, WebhookActivityEnum, WebhookEventEnum, WebhookIncidentEnum, WebhookPayloadEnum, WebhookRecord } from '@acx-ui/rc/utils'
 
 // import { fakeWebhookEntry }                                                     from './__tests__/fixtures'
-import SettingsTab                                                              from './SettingsTab'
-import * as UI                                                                  from './styledComponents'
-import { getAdminLogsTree, getEventsTree, getActivitiesTree, getIncidentsTree } from './webhookConfig'
-import WebhookFormTab                                                           from './WebhookFormTab'
+import SettingsTab                                            from './SettingsTab'
+import * as UI                                                from './styledComponents'
+import { getEventsTree, getActivitiesTree, getIncidentsTree } from './webhookConfig'
+import WebhookFormTab                                         from './WebhookFormTab'
 
 const incidentProps = [ ...new Set(Object.keys(WebhookIncidentEnum).map(key =>
   key.slice(0, key.indexOf('_')))) ]
@@ -38,7 +38,6 @@ export function WebhookForm (props: {
   const [incidents, setIncidents] = useState<string[]>([])
   const [activities, setActivities] = useState<string[]>([])
   const [events, setEvents] = useState<string[]>([])
-  const [adminLogs, setAdminLogs] = useState<string[]>([])
   const [enabled, setEnabled] = useState<boolean>()
   const webhook = useGetWebhookEntryQuery({ id: props.selected?.id }, { skip: !props.selected })
   // const webhook = props.selected ? { data: fakeWebhookEntry } : undefined
@@ -154,16 +153,6 @@ export function WebhookForm (props: {
         treeData={getEventsTree($t)}
         checked={events}
         updateChecked={(checked) => setEvents(checked as string[])}
-        multiColumn={true}
-      />
-    },
-    {
-      key: 'adminLogs',
-      title: $t({ defaultMessage: 'Admin Logs' }),
-      component: <WebhookFormTab
-        treeData={getAdminLogsTree($t)}
-        checked={adminLogs}
-        updateChecked={(checked) => setAdminLogs(checked as string[])}
         multiColumn={true}
       />
     }
