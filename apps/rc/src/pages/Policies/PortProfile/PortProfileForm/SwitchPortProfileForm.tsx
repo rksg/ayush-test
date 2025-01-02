@@ -49,7 +49,7 @@ interface FormPayload {
 }
 
 export function SwitchPortProfileForm () {
-  const intl = useIntl()
+  const { $t } = useIntl()
   const [form] = Form.useForm()
   const params = useParams()
   const editMode = params.portProfileId ? true : false
@@ -91,16 +91,16 @@ export function SwitchPortProfileForm () {
   const portProfileRoute = getPolicyListRoutePath(true) + '/portProfile/switch/profiles'
 
   const poeClassOptions = [
-    { label: intl.$t({ defaultMessage: 'Negotiate' }), value: 'UNSET' },
-    { label: intl.$t({ defaultMessage: '0 (802.3af 15.4 W)' }), value: 'ZERO' },
-    { label: intl.$t({ defaultMessage: '1 (802.3af 4.0 W)' }), value: 'ONE' },
-    { label: intl.$t({ defaultMessage: '2 (802.3af 7.0 W)' }), value: 'TWO' },
-    { label: intl.$t({ defaultMessage: '3 (802.3af 15.4 W)' }), value: 'THREE' },
-    { label: intl.$t({ defaultMessage: '4 (802.3at 30 W)' }), value: 'FOUR' },
-    { label: intl.$t({ defaultMessage: '5 (802.3bt 45 W)' }), value: 'FIVE' },
-    { label: intl.$t({ defaultMessage: '6 (802.3bt 60 W)' }), value: 'SIX' },
-    { label: intl.$t({ defaultMessage: '7 (802.3bt 75 W)' }), value: 'SEVEN' },
-    { label: intl.$t({ defaultMessage: '8 (802.3bt 90 W)' }), value: 'EIGHT' }
+    { label: $t({ defaultMessage: 'Negotiate' }), value: 'UNSET' },
+    { label: $t({ defaultMessage: '0 (802.3af 15.4 W)' }), value: 'ZERO' },
+    { label: $t({ defaultMessage: '1 (802.3af 4.0 W)' }), value: 'ONE' },
+    { label: $t({ defaultMessage: '2 (802.3af 7.0 W)' }), value: 'TWO' },
+    { label: $t({ defaultMessage: '3 (802.3af 15.4 W)' }), value: 'THREE' },
+    { label: $t({ defaultMessage: '4 (802.3at 30 W)' }), value: 'FOUR' },
+    { label: $t({ defaultMessage: '5 (802.3bt 45 W)' }), value: 'FIVE' },
+    { label: $t({ defaultMessage: '6 (802.3bt 60 W)' }), value: 'SIX' },
+    { label: $t({ defaultMessage: '7 (802.3bt 75 W)' }), value: 'SEVEN' },
+    { label: $t({ defaultMessage: '8 (802.3bt 90 W)' }), value: 'EIGHT' }
   ]
 
   const poePriorityOptions = [
@@ -144,7 +144,7 @@ export function SwitchPortProfileForm () {
         ({ name: n.name.replace(/[^a-z0-9]/gi, '').toLowerCase() }))
     // eslint-disable-next-line max-len
     return checkObjectNotExists(list, { name: name.replace(/[^a-z0-9]/gi, '').toLowerCase() } ,
-      intl.$t({ defaultMessage: 'Profile Name' }))
+      $t({ defaultMessage: 'Profile Name' }))
   }
 
   useEffect(()=>{
@@ -169,26 +169,26 @@ export function SwitchPortProfileForm () {
 
   const columns: TableProps<LldpTlvs>['columns'] = [
     {
-      title: intl.$t({ defaultMessage: 'System Name' }),
+      title: $t({ defaultMessage: 'System Name' }),
       key: 'systemName',
       dataIndex: 'systemName',
       sorter: true,
       defaultSortOrder: 'ascend'
     },
     {
-      title: intl.$t({ defaultMessage: 'Name Match' }),
+      title: $t({ defaultMessage: 'Name Match' }),
       key: 'nameMatchingType',
       dataIndex: 'nameMatchingType',
       sorter: true
     },
     {
-      title: intl.$t({ defaultMessage: 'System Description' }),
+      title: $t({ defaultMessage: 'System Description' }),
       key: 'systemDescription',
       dataIndex: 'systemDescription',
       sorter: true
     },
     {
-      title: intl.$t({ defaultMessage: 'Description Match' }),
+      title: $t({ defaultMessage: 'Description Match' }),
       key: 'descMatchingType',
       dataIndex: 'descMatchingType',
       sorter: true
@@ -283,20 +283,20 @@ export function SwitchPortProfileForm () {
     <>
       <PageHeader
         title={
-          editMode ? intl.$t(
+          editMode ? $t(
             { defaultMessage: 'Edit ICX Port Profile' }
-          ) : intl.$t(
+          ) : $t(
             { defaultMessage: 'Add ICX Port Profile' }
           )
         }
         breadcrumb={[
-          { text: intl.$t({ defaultMessage: 'Network Control' }) },
+          { text: $t({ defaultMessage: 'Network Control' }) },
           {
-            text: intl.$t({ defaultMessage: 'Policies & Profiles' }),
+            text: $t({ defaultMessage: 'Policies & Profiles' }),
             link: getPolicyListRoutePath(true)
           },
           {
-            text: intl.$t({ defaultMessage: 'Port Profiles' }),
+            text: $t({ defaultMessage: 'Port Profiles' }),
             link: portProfileRoute
           }
         ]}
@@ -310,13 +310,13 @@ export function SwitchPortProfileForm () {
           }
           buttonLabel={{
             submit: editMode
-              ? intl.$t({ defaultMessage: 'Apply' })
-              : intl.$t({ defaultMessage: 'Add' })
+              ? $t({ defaultMessage: 'Apply' })
+              : $t({ defaultMessage: 'Add' })
           }}
         >
           <StepsForm.StepForm>
             <Form.Item name='name'
-              label={intl.$t({ defaultMessage: 'Profile Name' })}
+              label={$t({ defaultMessage: 'Profile Name' })}
               rules={[
                 { required: true },
                 { validator: (_, value) => profileNameDuplicateValidator(value) }
@@ -328,7 +328,7 @@ export function SwitchPortProfileForm () {
             </Form.Item>
             <Form.Item
               name='untaggedVlan'
-              label={intl.$t({ defaultMessage: 'Untagged VLAN' })}
+              label={$t({ defaultMessage: 'Untagged VLAN' })}
               rules={[
                 { validator: (_, value) => validateUntaggedVlan(value) }
               ]}
@@ -337,7 +337,7 @@ export function SwitchPortProfileForm () {
             </Form.Item>
             <Form.Item
               name='taggedVlans'
-              label={intl.$t({ defaultMessage: 'Tagged VLAN' })}
+              label={$t({ defaultMessage: 'Tagged VLAN' })}
               rules={[
                 { validator: (_, value) => validateTaggedVlan(value) }
               ]}
@@ -346,7 +346,7 @@ export function SwitchPortProfileForm () {
             </Form.Item>
             <Form.Item
               name='radius'
-              label={intl.$t({ defaultMessage: 'RADIUS' })}
+              label={$t({ defaultMessage: 'RADIUS' })}
               rules={[
                 { validator: (_, value) => radiusIpAddressRegExp(value) }
               ]}
@@ -359,9 +359,9 @@ export function SwitchPortProfileForm () {
                 {
                   <Form.Item
                     label={<><span style={{ color: 'var(--acx-primary-black)' }}>
-                      {intl.$t({ defaultMessage: 'PoE Enable' })}</span>
+                      {$t({ defaultMessage: 'PoE Enable' })}</span>
                     <Tooltip.Question
-                      title={intl.$t(SwitchPortProfileMessages.POE_LABEL)}
+                      title={$t(SwitchPortProfileMessages.POE_LABEL)}
                     /></>}
                     style={{ marginTop: '5px' }}
                   />
@@ -373,7 +373,7 @@ export function SwitchPortProfileForm () {
                 initialValue={true}
                 children={<Tooltip title={poeEnable &&
                   (macOuis?.length > 0 || selectedRowKeys?.length > 0) ?
-                  intl.$t(SwitchPortProfileMessages.POE_ENABLED) : ''}>
+                  $t(SwitchPortProfileMessages.POE_ENABLED) : ''}>
                   <Switch
                     data-testid='poeEnable'
                     disabled={macOuis?.length > 0 || selectedRowKeys?.length > 0}
@@ -388,7 +388,7 @@ export function SwitchPortProfileForm () {
             </UI.FieldLabel>
             <Form.Item
               name='poeClass'
-              label={intl.$t({ defaultMessage: 'PoE Class' })}
+              label={$t({ defaultMessage: 'PoE Class' })}
             >
               <Select
                 style={{ width: '280px' }}
@@ -397,7 +397,7 @@ export function SwitchPortProfileForm () {
             </Form.Item>
             <Form.Item
               name='poePriority'
-              label={intl.$t({ defaultMessage: 'PoE Priority' })}
+              label={$t({ defaultMessage: 'PoE Priority' })}
             >
               <Select
                 style={{ width: '280px' }}
@@ -407,7 +407,7 @@ export function SwitchPortProfileForm () {
             <Divider />
             <UI.FieldLabel width={'250px'}>
               <Space align='start'>
-                { intl.$t({ defaultMessage: 'Protected Port' }) }
+                { $t({ defaultMessage: 'Protected Port' }) }
               </Space>
               <Form.Item
                 name={'portProtected'}
@@ -418,7 +418,7 @@ export function SwitchPortProfileForm () {
             </UI.FieldLabel>
             <Form.Item
               name='portSpeed'
-              label={intl.$t({ defaultMessage: 'Port Speed' })}
+              label={$t({ defaultMessage: 'Port Speed' })}
             >
               <Select
                 style={{ width: '280px' }}
@@ -427,7 +427,7 @@ export function SwitchPortProfileForm () {
             </Form.Item>
             <UI.FieldLabel width={'250px'}>
               <Space align='start'>
-                { intl.$t({ defaultMessage: 'RSTP Admin Edge Port' }) }
+                { $t({ defaultMessage: 'RSTP Admin Edge Port' }) }
               </Space>
               <Form.Item
                 name={'rstpAdminEdgePort'}
@@ -438,7 +438,7 @@ export function SwitchPortProfileForm () {
             </UI.FieldLabel>
             <UI.FieldLabel width={'250px'}>
               <Space align='start'>
-                { intl.$t({ defaultMessage: 'STP BPDU Guard' }) }
+                { $t({ defaultMessage: 'STP BPDU Guard' }) }
               </Space>
               <Form.Item
                 name={'stpBpduGuard'}
@@ -449,7 +449,7 @@ export function SwitchPortProfileForm () {
             </UI.FieldLabel>
             <UI.FieldLabel width={'250px'}>
               <Space align='start'>
-                { intl.$t({ defaultMessage: 'STP Root Guard' }) }
+                { $t({ defaultMessage: 'STP Root Guard' }) }
               </Space>
               <Form.Item
                 name={'stpRootGuard'}
@@ -461,7 +461,7 @@ export function SwitchPortProfileForm () {
             <Divider />
             <UI.FieldLabel width={'250px'}>
               <Space align='start'>
-                { intl.$t({ defaultMessage: 'DHCP Snooping Trust' }) }
+                { $t({ defaultMessage: 'DHCP Snooping Trust' }) }
               </Space>
               <Form.Item
                 name={'dhcpSnoopingTrust'}
@@ -474,9 +474,9 @@ export function SwitchPortProfileForm () {
               <Space align='start'>
                 <Form.Item
                   label={<><span style={{ color: 'var(--acx-primary-black)' }}>
-                    {intl.$t({ defaultMessage: 'IPSG' })}</span>
+                    {$t({ defaultMessage: 'IPSG' })}</span>
                   <Tooltip.Question
-                    title={intl.$t(SwitchPortProfileMessages.IPSG_ENABLED)}
+                    title={$t(SwitchPortProfileMessages.IPSG_ENABLED)}
                   /></>}
                   style={{ marginTop: '5px' }}
                 />
@@ -497,20 +497,20 @@ export function SwitchPortProfileForm () {
             </UI.FieldLabel>
             <Form.Item
               name='ingressAcl'
-              label={intl.$t({ defaultMessage: 'Ingress ACL (IPv4)' })}
+              label={$t({ defaultMessage: 'Ingress ACL (IPv4)' })}
               style={{ width: '280px' }}
             >
               {ipsg ?
                 <Tooltip
-                  title={intl.$t(SwitchPortProfileMessages.INGRESS_ACL_DISABLED)}
+                  title={$t(SwitchPortProfileMessages.INGRESS_ACL_DISABLED)}
                   visible={ingressTooltipVisible}
                 ><Input
                     data-testid='ingressAcl'
                     style={{ width: '280px' }}
                     disabled={true}
                     value={''}
-                    onMouseOver={() => ipsg && setIngressTooltipVisible(true)}
-                    onMouseOut={() => ipsg && setIngressTooltipVisible(false)}
+                    onMouseOver={() => setIngressTooltipVisible(true)}
+                    onMouseOut={() => setIngressTooltipVisible(false)}
                   /></Tooltip> :
                 <Input
                   style={{ width: '280px' }}
@@ -519,21 +519,21 @@ export function SwitchPortProfileForm () {
             </Form.Item>
             <Form.Item
               name='egressAcl'
-              label={intl.$t({ defaultMessage: 'Egress ACL (IPv4)' })}
+              label={$t({ defaultMessage: 'Egress ACL (IPv4)' })}
             >
               <Input style={{ width: '280px' }}/>
             </Form.Item>
             <Divider />
             <UI.FieldLabel width={'250px'}>
               <Space align='start'>
-                { intl.$t({ defaultMessage: '802.1x' }) }
+                { $t({ defaultMessage: '802.1x' }) }
               </Space>
               <Form.Item
                 name={'dot1x'}
                 initialValue={false}
                 valuePropName='checked'
                 children={ipsg ? <Tooltip
-                  title={intl.$t(SwitchPortProfileMessages.DOT1X_DISABLED)}>
+                  title={$t(SwitchPortProfileMessages.DOT1X_DISABLED)}>
                   <Switch data-testid='dot1x' disabled={true} checked={false} />
                 </Tooltip> :
                   <Switch data-testid='dot1x' />}
@@ -541,14 +541,14 @@ export function SwitchPortProfileForm () {
             </UI.FieldLabel>
             <UI.FieldLabel width={'250px'}>
               <Space align='start'>
-                { intl.$t({ defaultMessage: 'MAC Auth' }) }
+                { $t({ defaultMessage: 'MAC Auth' }) }
               </Space>
               <Form.Item
                 name={'macAuth'}
                 initialValue={false}
                 valuePropName='checked'
                 children={ipsg ? <Tooltip
-                  title={intl.$t(SwitchPortProfileMessages.MAC_AUTH_DISABLED)}>
+                  title={$t(SwitchPortProfileMessages.MAC_AUTH_DISABLED)}>
                   <Switch data-testid='macAuth' disabled={true} checked={false} />
                 </Tooltip> :
                   <Switch data-testid='macAuth' />}
@@ -557,17 +557,17 @@ export function SwitchPortProfileForm () {
             <Divider />
             <Space direction='vertical' style={{ margin: '16px 0' }}>
               <Typography.Title level={4}>
-                { intl.$t({ defaultMessage: 'Define Match Criteria' }) }</Typography.Title>
+                { $t({ defaultMessage: 'Define Match Criteria' }) }</Typography.Title>
             </Space>
             <Form.Item
               name={'macOuis'}
-              label={<>{intl.$t({ defaultMessage: 'MAC OUI' })}
+              label={<>{$t({ defaultMessage: 'MAC OUI' })}
                 <Tooltip.Question
                   title={SwitchPortProfileMessages.MAC_OUI}
                 /></>}
               children={!poeEnable ?
                 <Tooltip
-                  title={intl.$t(SwitchPortProfileMessages.MACOUI_POE_DISABLED)}
+                  title={$t(SwitchPortProfileMessages.MACOUI_POE_DISABLED)}
                 >
                   <Select
                     data-testid='macOuisSelectList'
@@ -588,9 +588,9 @@ export function SwitchPortProfileForm () {
             />
             <Form.Item
               name={'lldpTlvs'}
-              label={<>{intl.$t({ defaultMessage: 'LLDP TLV' })}
+              label={<>{$t({ defaultMessage: 'LLDP TLV' })}
                 <Tooltip.Question
-                  title={intl.$t(SwitchPortProfileMessages.LLDP_TLV)}
+                  title={$t(SwitchPortProfileMessages.LLDP_TLV)}
                 /></>}
               data-testid='lldpTlvs'
             >
@@ -604,7 +604,7 @@ export function SwitchPortProfileForm () {
                     renderCell (checked, record, index, node) {
                       if (!poeEnable) {
                         return <Tooltip
-                          title={intl.$t(SwitchPortProfileMessages.LLDPTLV_POE_DISABLED)}>
+                          title={$t(SwitchPortProfileMessages.LLDPTLV_POE_DISABLED)}>
                           {node}</Tooltip>
                       }
                       return node
@@ -627,7 +627,7 @@ export function SwitchPortProfileForm () {
             {editMode &&
               <Space align='start'>
                 <InformationSolid />
-                {intl.$t(SwitchPortProfileMessages.APPLY_PORT_PROFILE_CHANGE)}
+                {$t(SwitchPortProfileMessages.APPLY_PORT_PROFILE_CHANGE)}
               </Space>
             }
           </StepsForm.StepForm>

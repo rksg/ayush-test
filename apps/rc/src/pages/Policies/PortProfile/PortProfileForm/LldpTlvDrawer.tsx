@@ -22,7 +22,7 @@ interface LldpTlvDrawerProps {
 }
 
 export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
-  const intl = useIntl()
+  const { $t } = useIntl()
   const { visible, setVisible, isEdit, editData } = props
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm()
@@ -45,7 +45,7 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
         ({ name: n.systemName.replace(/[^a-z0-9]/gi, '').toLowerCase() }))
     // eslint-disable-next-line max-len
     return checkObjectNotExists(list, { name: lldpTlv.systemName.replace(/[^a-z0-9]/gi, '').toLowerCase() } ,
-      intl.$t({ defaultMessage: 'LLDP TLV' }), intl.$t({ defaultMessage: 'value' }))
+      $t({ defaultMessage: 'LLDP TLV' }), $t({ defaultMessage: 'value' }))
   }
 
   useEffect(()=>{
@@ -95,7 +95,7 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
   const content =
     <Form layout='vertical' form={form}>
       <Form.Item name='systemName'
-        label={intl.$t({ defaultMessage: 'System Name' })}
+        label={$t({ defaultMessage: 'System Name' })}
         rules={[
           { required: true },
           { validator: () => itemDuplicateValidator(form.getFieldsValue()) }
@@ -106,7 +106,7 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
         <Input style={{ width: '390px' }}/>
       </Form.Item>
       <Form.Item name='nameMatchingType'
-        label={intl.$t({ defaultMessage: 'Name Match' })}
+        label={$t({ defaultMessage: 'Name Match' })}
         rules={[
           { required: true }
         ]}>
@@ -114,7 +114,7 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
           <Space direction='vertical'>
             {Object.entries(LldpTlvMatchingType).map(([key, value]) => (
               <Radio key={key} value={value}>
-                {intl.$t({ defaultMessage: '{nameMatchingType}' },
+                {$t({ defaultMessage: '{nameMatchingType}' },
                   { nameMatchingType: LldpTlvMatchingTitle[value] })}
               </Radio>
             ))}
@@ -122,7 +122,7 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
         </Radio.Group>
       </Form.Item>
       <Form.Item name='systemDescription'
-        label={intl.$t({ defaultMessage: 'System Description' })}
+        label={$t({ defaultMessage: 'System Description' })}
         rules={[
           { required: true }
         ]}
@@ -132,7 +132,7 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
         <Input style={{ width: '390px' }}/>
       </Form.Item>
       <Form.Item name='descMatchingType'
-        label={intl.$t({ defaultMessage: 'Description Match' })}
+        label={$t({ defaultMessage: 'Description Match' })}
         rules={[
           { required: true }
         ]}>
@@ -140,7 +140,7 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
           <Space direction='vertical'>
             {Object.entries(LldpTlvMatchingType).map(([key, value]) => (
               <Radio key={key} value={value}>
-                {intl.$t({ defaultMessage: '{descMatchingType}' },
+                {$t({ defaultMessage: '{descMatchingType}' },
                   { descMatchingType: LldpTlvMatchingTitle[value] })}
               </Radio>
             ))}
@@ -156,7 +156,7 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
     <Drawer.FormFooter
       onCancel={resetFields}
       // eslint-disable-next-line max-len
-      buttonLabel={{ save: (isEdit ? intl.$t({ defaultMessage: 'Apply' }) : intl.$t({ defaultMessage: 'Add' })) }}
+      buttonLabel={{ save: (isEdit ? $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' })) }}
       onSave={onSubmit}
     />
   )
@@ -164,7 +164,7 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
   return (
     <Drawer
       //eslint-disable-next-line max-len
-      title={isEdit ? intl.$t({ defaultMessage: 'Edit LLDP TLV' }) : intl.$t({ defaultMessage: 'Add LLDP TLV' })}
+      title={isEdit ? $t({ defaultMessage: 'Edit LLDP TLV' }) : $t({ defaultMessage: 'Add LLDP TLV' })}
       visible={visible}
       onClose={onClose}
       children={content}

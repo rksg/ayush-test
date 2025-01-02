@@ -21,7 +21,7 @@ interface MacOuiDrawerProps {
 }
 
 export function MacOuiDrawer (props: MacOuiDrawerProps) {
-  const intl = useIntl()
+  const { $t } = useIntl()
   const { visible, setVisible, isEdit, editData } = props
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm()
@@ -41,7 +41,7 @@ export function MacOuiDrawer (props: MacOuiDrawerProps) {
         ({ name: n.oui.replace(/[^a-z0-9]/gi, '').toLowerCase() }))
     // eslint-disable-next-line max-len
     return checkObjectNotExists(list, { name: macAddress.replace(/[^a-z0-9]/gi, '').toLowerCase() } ,
-      intl.$t({ defaultMessage: 'MAC OUI' }))
+      $t({ defaultMessage: 'MAC OUI' }))
   }
 
   useEffect(()=>{
@@ -89,7 +89,7 @@ export function MacOuiDrawer (props: MacOuiDrawerProps) {
   const content =
     <Form layout='vertical' form={form}>
       <Form.Item name='oui'
-        label={<label>{intl.$t({ defaultMessage: 'MAC OUI' })}
+        label={<label>{$t({ defaultMessage: 'MAC OUI' })}
           <Tooltip.Question
             title={SwitchPortProfileMessages.MAC_OUI}
           /></label>}
@@ -99,7 +99,7 @@ export function MacOuiDrawer (props: MacOuiDrawerProps) {
             const regexMac = new RegExp(/^[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){2}$/)
             if (value && !regexMac.test(value)) {
               return Promise.reject(
-                intl.$t({ defaultMessage: 'Please enter valid MAC OUI' }))
+                $t({ defaultMessage: 'Please enter valid MAC OUI' }))
             }
             return Promise.resolve()
           } },
@@ -113,7 +113,7 @@ export function MacOuiDrawer (props: MacOuiDrawerProps) {
       <Form.Item
         name='note'
         rules={[{ max: 255 }]}
-        label={intl.$t({ defaultMessage: 'Note' })}
+        label={$t({ defaultMessage: 'Note' })}
       >
         <Input.TextArea style={{ width: '390px' }}/>
       </Form.Item>
@@ -126,7 +126,7 @@ export function MacOuiDrawer (props: MacOuiDrawerProps) {
     <Drawer.FormFooter
       onCancel={resetFields}
       // eslint-disable-next-line max-len
-      buttonLabel={{ save: (isEdit ? intl.$t({ defaultMessage: 'Apply' }) : intl.$t({ defaultMessage: 'Add' })) }}
+      buttonLabel={{ save: (isEdit ? $t({ defaultMessage: 'Apply' }) : $t({ defaultMessage: 'Add' })) }}
       onSave={onSubmit}
     />
   )
@@ -134,7 +134,7 @@ export function MacOuiDrawer (props: MacOuiDrawerProps) {
   return (
     <Drawer
       //eslint-disable-next-line max-len
-      title={isEdit ? intl.$t({ defaultMessage: 'Edit MAC OUI' }) : intl.$t({ defaultMessage: 'Add MAC OUI' })}
+      title={isEdit ? $t({ defaultMessage: 'Edit MAC OUI' }) : $t({ defaultMessage: 'Add MAC OUI' })}
       visible={visible}
       onClose={onClose}
       children={content}
