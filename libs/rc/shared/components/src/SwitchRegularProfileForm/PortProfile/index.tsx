@@ -37,7 +37,7 @@ interface PortProfileAcc {
   [portProfileId: string]: {
     portProfileId: string
     models: string[]
-    ids: string[]
+    id?: string
   }
 }
 
@@ -218,10 +218,12 @@ export function PortProfile () {
         const { portProfileId, models, id } = item
 
         if (!acc[portProfileId]) {
-          acc[portProfileId] = { portProfileId, models: [...models], ids: id ? [id] : [] }
+          acc[portProfileId] = { models, portProfileId }
         } else {
           acc[portProfileId].models = [...new Set([...acc[portProfileId].models, ...models])]
-          if (id) acc[portProfileId].ids.push(id)
+          if (id) {
+            acc[portProfileId].id = id
+          }
         }
 
         return acc
