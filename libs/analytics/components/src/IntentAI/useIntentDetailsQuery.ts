@@ -203,7 +203,11 @@ export const api = intentAIApi.injectEndpoints({
             intent(root: $root, sliceId: $sliceId, code: $code) {
               statusTrail {
                 status statusReason displayStatus createdAt
-                ${loadStatusMetadata ? gql`metadata { scheduledAt failures }` : ''}
+                ${loadStatusMetadata ? gql`metadata {
+                  scheduledAt: field(prop: "scheduledAt")
+                  failures: field(prop: "failures"),
+                  changedByName: field(prop: "changedByName")
+                }` : ''}
               }
             }
           }
