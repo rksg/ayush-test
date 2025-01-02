@@ -31,8 +31,10 @@ import {
   MspAssignmentHistory,
   MspAssignmentSummary
 } from '@acx-ui/msp/utils'
+import { useRbacEntitlementSummaryQuery } from '@acx-ui/rc/services'
 import {
   EntitlementDeviceType,
+  EntitlementSummaries,
   EntitlementUtil,
   useTableQuery
 } from '@acx-ui/rc/utils'
@@ -132,7 +134,14 @@ export function AssignMspLicense () {
   const isSeparateServicedateEnabled =
     useIsSplitOn(Features.ENTITLEMENT_SEPARATE_SERVICEDATE_TOGGLE)
 
-  const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
+  const { data: licenseSummary } =
+    useMspAssignmentSummaryQuery({ params: useParams() }, { skip: isEntitlementRbacApiEnabled })
+  const rbacSummaryResults =
+      useRbacEntitlementSummaryQuery(
+        { params: useParams(),
+          payload: { filters: { licenseType: ['APSW'], usageType: 'ASSIGNED' } } },
+        { skip: !isEntitlementRbacApiEnabled })
+
   const { data: assignment } =
     useMspAssignmentHistoryQuery({ params: params }, { skip: isEntitlementRbacApiEnabled })
   const { data: rbacAssignment } = useTableQuery({
@@ -161,7 +170,7 @@ export function AssignMspLicense () {
   }
 
   useEffect(() => {
-    if (licenseSummary) {
+    if (licenseSummary || rbacSummaryResults?.data) {
       if (licenseAssignment) {
         const assigned = isEntitlementRbacApiEnabled ?licenseAssignment : licenseAssignment.filter(
           en => en.mspEcTenantId === tenantId && en.status === 'VALID')
@@ -185,7 +194,9 @@ export function AssignMspLicense () {
         const apswTrialLic =
           apswTrial.length > 0 ? apswTrial.reduce((acc, cur) => cur.quantity + acc, 0) : 0
 
-        checkAvailableLicense(licenseSummary, wLic, sLic, apswLic, apswTrialLic)
+        isEntitlementRbacApiEnabled
+          ? checkRbacAvailableLicense(rbacSummaryResults?.data || [], apswLic, apswTrialLic)
+          : checkAvailableLicense(licenseSummary || [], wLic, sLic, apswLic, apswTrialLic)
 
         isDeviceAgnosticEnabled ?
           form.setFieldsValue({
@@ -201,11 +212,13 @@ export function AssignMspLicense () {
             switchLicenses: sLic
           })
       } else {
-        checkAvailableLicense(licenseSummary)
+        isEntitlementRbacApiEnabled
+          ? checkRbacAvailableLicense(rbacSummaryResults?.data || [])
+          : checkAvailableLicense(licenseSummary || [])
       }
     }
     setSubscriptionStartDate(moment())
-  }, [licenseSummary, licenseAssignment])
+  }, [licenseSummary, licenseAssignment, rbacSummaryResults?.data])
 
 
   const fieldValidator = async (value: string, remainingDevices: number) => {
@@ -434,6 +447,26 @@ export function AssignMspLicense () {
     })
     setAvailableApswTrialLicense(remainingApswTrial + (apswTrialLic || 0))
 
+  }
+
+  const checkRbacAvailableLicense =
+  (entitlements: EntitlementSummaries[], apswLic?: number, apswTrialLic?: number) => {
+
+    const apswLicenses = entitlements.filter(p => p.remainingQuantity > 0 &&
+      p.licenseType === EntitlementDeviceType.APSW && p.isTrial === false)
+    let remainingApsw = 0
+    apswLicenses.forEach( (lic: EntitlementSummaries) => {
+      remainingApsw += lic.remainingQuantity
+    })
+    setAvailableApswLicense(remainingApsw + (apswLic || 0))
+
+    const apswTrialLicenses = entitlements.filter(p => p.remainingQuantity > 0 &&
+      p.licenseType === EntitlementDeviceType.APSW && p.isTrial === true)
+    let remainingApswTrial = 0
+    apswTrialLicenses.forEach( (lic: EntitlementSummaries) => {
+      remainingApswTrial += lic.remainingQuantity
+    })
+    setAvailableApswTrialLicense(remainingApswTrial + (apswTrialLic || 0))
   }
 
   const getSelectExpirationDate = (value: string) => {

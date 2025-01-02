@@ -57,8 +57,8 @@ import {
   MspEcTierEnum,
   MspEcTierPayload
 } from '@acx-ui/msp/utils'
-import { GoogleMapWithPreference, useIsEdgeReady, usePlacesAutocomplete } from '@acx-ui/rc/components'
-import { useGetPrivilegeGroupsQuery, useGetTenantDetailsQuery }           from '@acx-ui/rc/services'
+import { GoogleMapWithPreference, useIsEdgeReady, usePlacesAutocomplete }                       from '@acx-ui/rc/components'
+import { useGetPrivilegeGroupsQuery, useGetTenantDetailsQuery, useRbacEntitlementSummaryQuery } from '@acx-ui/rc/services'
 import {
   Address,
   emailRegExp,
@@ -68,7 +68,8 @@ import {
   EntitlementDeviceType,
   EntitlementDeviceSubType,
   whitespaceOnlyRegExp,
-  PrivilegeGroup
+  PrivilegeGroup,
+  EntitlementSummaries
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -240,7 +241,14 @@ export function ManageCustomer () {
 
   const { data: userProfile } = useUserProfileContext()
   const { data: tenantDetailsData } = useGetTenantDetailsQuery({ params })
-  const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
+  const { data: licenseSummary } =
+    useMspAssignmentSummaryQuery({ params: useParams() }, { skip: isEntitlementRbacApiEnabled })
+  const rbacSummaryResults =
+      useRbacEntitlementSummaryQuery(
+        { params: useParams(),
+          payload: { filters: { licenseType: ['APSW'], usageType: 'ASSIGNED' } } },
+        { skip: !isEntitlementRbacApiEnabled })
+
   const { data: assignment } = useMspAssignmentHistoryQuery({ params: params },
     { skip: isEntitlementRbacApiEnabled })
   const { data: rbacAssignment } = useTableQuery({
@@ -307,8 +315,10 @@ export function ManageCustomer () {
   }, [ecSupport])
 
   useEffect(() => {
-    if (licenseSummary) {
-      checkAvailableLicense(licenseSummary)
+    if (licenseSummary || rbacSummaryResults?.data) {
+      isEntitlementRbacApiEnabled
+        ? checkRbacAvailableLicense(rbacSummaryResults?.data || [])
+        : checkAvailableLicense(licenseSummary || [])
 
       if (isEditMode && data && licenseAssignment) {
         if (ecAdministrators) {
@@ -336,8 +346,13 @@ export function ManageCustomer () {
         const apswTrialLic = apswTrial.length > 0 ?
           apswTrial.reduce((acc, cur) => cur.quantity + acc, 0) : 0
 
-        isTrialEditMode ? checkAvailableLicense(licenseSummary)
-          : checkAvailableLicense(licenseSummary, wLic, sLic, apswLic, apswTrialLic)
+        isTrialEditMode
+          ? isEntitlementRbacApiEnabled
+            ? checkRbacAvailableLicense(rbacSummaryResults?.data || [])
+            : checkAvailableLicense(licenseSummary || [])
+          : isEntitlementRbacApiEnabled
+            ? checkRbacAvailableLicense(rbacSummaryResults?.data || [], apswLic, apswTrialLic)
+            : checkAvailableLicense(licenseSummary || [], wLic, sLic, apswLic, apswTrialLic)
 
         formRef.current?.setFieldsValue({
           name: data?.name,
@@ -396,7 +411,8 @@ export function ManageCustomer () {
       setSubscriptionStartDate(moment())
       setSubscriptionEndDate(moment().add(30,'days'))
     }
-  }, [data, licenseSummary, licenseAssignment, userProfile, ecAdministrators, privilegeGroupList])
+  }, [data, licenseSummary, licenseAssignment, userProfile, ecAdministrators, privilegeGroupList,
+    rbacSummaryResults?.data])
 
   useEffect(() => {
     if (delegatedAdmins && Administrators) {
@@ -858,6 +874,26 @@ export function ManageCustomer () {
       : setAvailableApswLicense(remainingApsw)
     apswTrialLic ? setAvailableApswTrialLicense(remainingApswTrial+apswTrialLic)
       : setAvailableApswTrialLicense(remainingApswTrial)
+  }
+
+  const checkRbacAvailableLicense =
+  (entitlements: EntitlementSummaries[], apswLic?: number, apswTrialLic?: number) => {
+
+    const apswLicenses = entitlements.filter(p => p.remainingQuantity > 0 &&
+      p.licenseType === EntitlementDeviceType.APSW && p.isTrial === false)
+    let remainingApsw = 0
+    apswLicenses.forEach( (lic: EntitlementSummaries) => {
+      remainingApsw += lic.remainingQuantity
+    })
+    setAvailableApswLicense(remainingApsw + (apswLic || 0))
+
+    const apswTrialLicenses = entitlements.filter(p => p.remainingQuantity > 0 &&
+      p.licenseType === EntitlementDeviceType.APSW && p.isTrial === true)
+    let remainingApswTrial = 0
+    apswTrialLicenses.forEach( (lic: EntitlementSummaries) => {
+      remainingApswTrial += lic.remainingQuantity
+    })
+    setAvailableApswTrialLicense(remainingApswTrial + (apswTrialLic || 0))
   }
 
   const getAssignmentId = (deviceType: string) => {
