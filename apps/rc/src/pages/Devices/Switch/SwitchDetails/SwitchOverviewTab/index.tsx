@@ -21,7 +21,7 @@ import {
   isRouter,
   SWITCH_TYPE,
   StackMember,
-  isFirmwareVersionAbove10020a
+  isFirmwareVersionAbove10020b
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -155,7 +155,7 @@ export function SwitchOverviewTab () {
         </Tabs.TabPane>
       }
       {switchDetail && isSwitchPortProfileEnabled &&
-        isFirmwareVersionAbove10020a(switchDetail?.firmware) &&
+        isFirmwareVersionAbove10020b(switchDetail?.firmware) &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Port Profiles' })} key='portProfiles'>
           <SwitchOverviewPortProfiles switchDetail={switchDetail} />
         </Tabs.TabPane>

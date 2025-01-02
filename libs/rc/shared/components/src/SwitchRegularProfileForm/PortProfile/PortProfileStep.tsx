@@ -84,8 +84,14 @@ export function PortProfileStep () {
                   },
                   {
                     validator: (_, value) => {
-                      const sameModelPortProfileIds =
-                        getPortProfileIdIfModelsMatch(portProfileList, portProfileSettingValues)
+                      const portProfileListExcludingSelf = portProfileList.filter(
+                        (item) => item.models.sort().toString() !==
+                        portProfileSettingValues.models.sort().toString())
+
+                      const sameModelPortProfileIds = getPortProfileIdIfModelsMatch(
+                        portProfileListExcludingSelf,
+                        { ...portProfileSettingValues, portProfileId: value })
+
                       return portProfilesList?.data &&
                         validateDuplicatePortProfile(
                           [...value, ...sameModelPortProfileIds], portProfilesList.data) ?

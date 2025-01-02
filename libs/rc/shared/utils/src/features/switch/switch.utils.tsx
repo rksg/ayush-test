@@ -767,13 +767,13 @@ export const isFirmwareVersionAbove10010f = function (firmwareVersion?: string) 
 }
 
 
-export const isFirmwareVersionAbove10020a = function (firmwareVersion?: string) {
+export const isFirmwareVersionAbove10020b = function (firmwareVersion?: string) {
   /*
   Only support the firmware versions listed below:
   1. > 10020a
   */
   if (firmwareVersion) {
-    return isVerGEVer(firmwareVersion, '10020a', false)
+    return isVerGEVer(firmwareVersion, '10020b', false)
   } else {
     return false
   }

@@ -327,6 +327,9 @@ export const EditPortMessages = {
   }),
   SWITCH_PORT_PROFILE_NOT_ENABLED: defineMessage({
     defaultMessage: 'The firmware version on the selected switches must be 10.0.20b or higher.'
+  }),
+  CLOUD_PORT_CANNOT_ENABLE_SWITCH_PORT_PROFILE: defineMessage({
+    defaultMessage: 'Port Profile cannot be enabled on the uplink port because it will result in switch losing connection to RUCKUS One.'
   })
 }
 

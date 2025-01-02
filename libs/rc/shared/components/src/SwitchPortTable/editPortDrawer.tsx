@@ -53,7 +53,7 @@ import {
   validateVlanExcludingReserved,
   Vlan,
   VlanModalType,
-  isFirmwareVersionAbove10020a
+  isFirmwareVersionAbove10020b
 } from '@acx-ui/rc/utils'
 import { useParams }     from '@acx-ui/react-router-dom'
 import { store }         from '@acx-ui/store'
@@ -235,8 +235,10 @@ export function EditPortDrawer ({
   const selectedSwitchList = switchList?.filter(s => switches.includes(s.id))
   const isFirmwareAbove10010f = !!selectedSwitchList?.length
     && selectedSwitchList?.every(s => isFirmwareVersionAbove10010f(s.firmware))
-  const isAnyFirmwareAbove10020a = !!selectedSwitchList?.length
-    && selectedSwitchList?.some(s => isFirmwareVersionAbove10020a(s.firmware))
+  const isFirmwareAbove10020b = !!selectedSwitchList?.length
+    && selectedSwitchList?.every(s => isFirmwareVersionAbove10020b(s.firmware))
+  const isAnyFirmwareAbove10020b = !!selectedSwitchList?.length
+    && selectedSwitchList?.some(s => isFirmwareVersionAbove10020b(s.firmware))
   const isAnyFirmwareAbove10010f = !!selectedSwitchList?.length
     && selectedSwitchList?.some(s => isFirmwareVersionAbove10010f(s.firmware))
 
@@ -424,7 +426,7 @@ export function EditPortDrawer ({
         enableRbac: isSwitchRbacEnabled
       }, true).unwrap()
 
-      if(isSwitchPortProfileEnabled && isAnyFirmwareAbove10020a) {
+      if(isSwitchPortProfileEnabled && isAnyFirmwareAbove10020b) {
         const portProfileList = await getPortProfileOptionsList({
           params: { tenantId, switchId, venueId: switchDetail?.venueId },
           enableRbac: isSwitchRbacEnabled
@@ -657,9 +659,10 @@ export function EditPortDrawer ({
         const disableKey = getFlexAuthButtonStatus(commonRequiredProps)
         return disableKey ? $t(EditPortMessages[disableKey as keyof typeof EditPortMessages]) : ''
       case 'switchPortProfileId':
-        return isAnyFirmwareAbove10020a && isMultipleEdit &&
+        return isAnyFirmwareAbove10020b && isMultipleEdit &&
           getFieldDisabled('switchPortProfileId') ?
-          $t(EditPortMessages.SWITCH_PORT_PROFILE_NOT_ENABLED) : ''
+          (isCloudPort ? $t(EditPortMessages.CLOUD_PORT_CANNOT_ENABLE_SWITCH_PORT_PROFILE) :
+            $t(EditPortMessages.SWITCH_PORT_PROFILE_NOT_ENABLED)) : ''
       default: return ''
     }
   }
@@ -779,7 +782,8 @@ export function EditPortDrawer ({
       case 'authTimeoutAction':
         return isNotOverrideAuthEnabled
           || getAuthFieldDisabled(field, authfieldValues)
-
+      case 'switchPortProfileId':
+        return !isFirmwareAbove10020b || isCloudPort
       default: return false
     }
   }
@@ -1718,7 +1722,7 @@ export function EditPortDrawer ({
         }
 
         {/* Port Profile */}
-        {isSwitchPortProfileEnabled && isAnyFirmwareAbove10020a &&
+        {isSwitchPortProfileEnabled && isAnyFirmwareAbove10020b &&
         <><div style={{ marginBottom: isMultipleEdit ? '0' : '30px' }}>
           <Space style={{
             width: '510px', display: 'flex', justifyContent: 'space-between',
