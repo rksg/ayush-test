@@ -299,19 +299,17 @@ function Hotspot20Service () {
               setDisabledSelectProvider(
                 newProviders.length >= NETWORK_IDENTITY_PROVIDER_MAX_COUNT)
               if (supportHotspot20NasId) {
-                setData && setData({
-                  ...data,
-                  enableAccountingService: false
-                })
+                let enableAcc = false
                 for (let provider of newProviders) {
                   if (identitiesWithAcc.has(provider)) {
-                    setData && setData({
-                      ...data,
-                      enableAccountingService: true
-                    })
-                    return
+                    enableAcc = true
+                    break
                   }
                 }
+                setData && setData({
+                  ...data,
+                  enableAccountingService: enableAcc
+                })
               }
             }}
           />
