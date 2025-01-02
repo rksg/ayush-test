@@ -13,7 +13,7 @@ import {
   useGetVenueApUsbStatusQuery,
   useUpdateVenueApUsbStatusMutation
 } from '@acx-ui/rc/services'
-import { VenueApUsbStatus } from '@acx-ui/rc/utils'
+import { usbTooltipInfo, VenueApUsbStatus } from '@acx-ui/rc/utils'
 
 import { VenueUtilityContext } from '../..'
 import { VenueEditContext }    from '../../..'
@@ -30,12 +30,6 @@ export function AccessPointUSB () {
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
   const initDataRef = useRef<VenueApUsbStatus[]>([])
-  //const navigate = useNavigate()
-
-  const usbTooltipInfo = $t({
-    // eslint-disable-next-line max-len
-    defaultMessage: 'Enable or disable the USB port for IoT-connected devices. When enabled, the port supports IoT device connectivity and data transfer'
-  })
 
   const { venueApCaps, isLoadingVenueApCaps } = useContext(VenueUtilityContext)
 
@@ -154,7 +148,7 @@ export function AccessPointUSB () {
     }
   }, {
     title: $t({ defaultMessage: 'USB Status' }),
-    tooltip: usbTooltipInfo,
+    tooltip: $t(usbTooltipInfo, { br: <br/> }),
     dataIndex: 'usbPortEnable',
     key: 'usbPortEnable',
     render: function (data, row) {

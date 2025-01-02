@@ -8,11 +8,11 @@ import { formatter }                     from '@acx-ui/formatter'
 
 import { TradeOff }                                           from '../../TradeOff'
 import { IntroSummary }                                       from '../common/IntroSummary'
-import { KpiField }                                           from '../common/KpiField'
+import { KPIFields }                                          from '../common/KPIs'
 import { richTextFormatValues }                               from '../common/richTextFormatValues'
 import { getScheduledAt, ScheduleTiming }                     from '../common/ScheduleTiming'
 import { IntentConfigurationConfig, useIntentContext }        from '../IntentContext'
-import { getGraphKPIs, IntentKPIConfig }                      from '../useIntentDetailsQuery'
+import { IntentKPIConfig }                                    from '../useIntentDetailsQuery'
 import { useInitialValues }                                   from '../useIntentTransition'
 import { Actions, getTransitionStatus, TransitionIntentItem } from '../utils'
 
@@ -171,14 +171,14 @@ export const IntentAIForm = createIntentAIForm<{ enable: boolean }>({
 }).addStep({
   title: defineMessage({ defaultMessage: 'Summary' }),
   Content: () => {
-    const { intent, kpis, configuration } = useIntentContext()
+    const { intent, configuration } = useIntentContext()
     const { form } = useStepFormContext()
 
     const enable = form.getFieldValue('preferences').enable
     return enable
       ? <>
         {configuration && <ConfigurationField configuration={configuration} intent={intent}/>}
-        {getGraphKPIs(intent, kpis).map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
+        <KPIFields/>
         <ScheduleTiming.FieldSummary />
       </>
       : options.no.content

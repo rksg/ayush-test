@@ -44,6 +44,8 @@ apList.data.splice(1, 1)
 apList.totalCount = apList.data.length
 apList.data[0].firmwareVersion ='6.2.0.103.261' // invalid Ap Fw version for reset
 apList.data[0].venueId = dhcpList.data[0].venueIds[0]
+apList.data[0].serialNumber = dhcpApSetting.serialNumber
+
 describe('Test useApActions', () => {
 
   beforeEach(() => {
@@ -87,8 +89,8 @@ describe('Test useApActions', () => {
         DHCPUrls.queryDhcpProfiles.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
-      rest.get(
-        WifiRbacUrlsInfo.getDhcpAp.url,
+      rest.post(
+        WifiRbacUrlsInfo.getDhcpAps.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.post(
@@ -183,9 +185,9 @@ describe('Test useApActions', () => {
         DHCPUrls.queryDhcpProfiles.url,
         (req, res, ctx) => res(ctx.json(dhcpList))
       ),
-      rest.get(
-        WifiRbacUrlsInfo.getDhcpAp.url,
-        (req, res, ctx) => res(ctx.json(dhcpApSetting))
+      rest.post(
+        WifiRbacUrlsInfo.getDhcpAps.url,
+        (req, res, ctx) => res(ctx.json({ data: [dhcpApSetting] }))
       ),
       rest.get(
         DHCPUrls.getDHCProfileDetail.url,

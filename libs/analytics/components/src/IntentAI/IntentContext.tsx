@@ -45,13 +45,7 @@ export function createIntentContextProvider (
     const params = useIntentParams()
 
     const spec = specs[params.code]
-    const kpis = spec?.kpis
-      // pick only 2 required field
-      // which its value is primitive value type
-      // to prevent RTK Query unable to use param as cache key
-      .map(kpi => _.pick(kpi, ['key', 'deltaSign']))
-    const query = useIntentDetailsQuery({ ...params, kpis }, { skip: !spec })
-
+    const query = useIntentDetailsQuery(params, { skip: !spec })
     if (!spec) return null // no matching spec
     if (query.isSuccess && !query.data) return null // 404
 

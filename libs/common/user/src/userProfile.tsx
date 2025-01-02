@@ -104,11 +104,10 @@ export function hasAccess (props?: { legacyKey?: string,
 /**
  * Checks if the user has the required RBAC permissions for the allowed operations API.
  *
- * @param opsId The operational IDs (RbacOpsIds) to validate against the user's profile.
+ * @param rbacOpsIds The operational IDs (RbacOpsIds) to validate against the user's profile.
  *
  * OR  -> If it's a single operation or any single scope in the list matches, access is granted (e.g., `['DELETE:/venues', 'DELETE:/networks']`).
  * AND ->  If the `opsId` is an array, all elements must match (e.g., `[['DELETE:/venues', 'DELETE:/networks']]`).
- * Ignore check -> If `SHOW_WITHOUT_RBAC_CHECK` is included, access is automatically granted (e.g., `[SHOW_WITHOUT_RBAC_CHECK]`).
  */
 export function hasAllowedOperations (rbacOpsIds: RbacOpsIds) {
   const { rbacOpsApiEnabled, allowedOperations } = getUserProfile()
@@ -116,8 +115,6 @@ export function hasAllowedOperations (rbacOpsIds: RbacOpsIds) {
     return rbacOpsIds?.some(rbacOpsIds => {
       if (Array.isArray(rbacOpsIds)) {
         return rbacOpsIds.every(i => allowedOperations.includes(i))
-      } else if (rbacOpsIds?.includes(SHOW_WITHOUT_RBAC_CHECK)) {
-        return true
       } else {
         return allowedOperations.includes(rbacOpsIds)
       }
@@ -181,14 +178,14 @@ export function hasPermission (props?: {
     return !!(permission && permissions[permission])
   } else {
     const { abacEnabled, isCustomRole, rbacOpsApiEnabled } = getUserProfile()
-    if(rbacOpsApiEnabled) {
+    if (rbacOpsApiEnabled) {
       return hasAccess({ rbacOpsIds: rbacOpsIds })
-    } if(!abacEnabled) {
+    } else if (!abacEnabled) {
       return hasAccess({ roles, legacyKey })
     } else {
-      if(isCustomRole){
-        const isScopesValid = scopes.length > 0 ? hasScope(scopes): true
-        return !!(isScopesValid)
+      if (isCustomRole) {
+        const isScopesValid = scopes.length > 0 ? hasScope(scopes) : true
+        return !!isScopesValid
       } else {
         return hasAccess({ roles, legacyKey })
       }
@@ -270,7 +267,8 @@ export function AuthRoute (props: {
   const { rbacOpsApiEnabled } = getUserProfile()
 
   if (rbacOpsApiEnabled) {
-    return hasAllowedOperations(rbacOpsIds) ?
+    const shouldSkipRBACCheck = rbacOpsIds.length === 0
+    return (shouldSkipRBACCheck || hasAllowedOperations(rbacOpsIds)) ?
       children : <TenantNavigate replace to='/no-permissions' />
   }
 

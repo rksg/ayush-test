@@ -327,10 +327,16 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   */
+  // deprecated. use the getDhcpAps to replace
   getDhcpAp: {
     method: 'get',
     // url: '/venues/dhcpApSettings/query',
     url: '/venues/:venueId/aps/:serialNumber/dhcpSettings',
+    newApi: true
+  },
+  getDhcpAps: {
+    method: 'post',
+    url: '/venues/aps/dhcpSettings/query',
     newApi: true
   },
   deleteAp: {
@@ -603,6 +609,16 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueSmartMonitor: {
     method: 'put',
     url: '/venues/:venueId/apSmartMonitorSettings',
+    newApi: true
+  },
+  getVenueRebootTimeout: {
+    method: 'get',
+    url: '/venues/:venueId/apRebootTimeoutSettings',
+    newApi: true
+  },
+  updateVenueRebootTimeout: {
+    method: 'put',
+    url: '/venues/:venueId/apRebootTimeoutSettings',
     newApi: true
   },
   getVenueClientAdmissionControl: {
