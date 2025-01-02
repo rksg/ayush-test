@@ -8,7 +8,7 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   ApFirmwareUpdateGroupType,
   convertApModelFirmwaresToUpdateGroups,
-  ExpandableApModelList, filterVersionBehindGA, isAlpha, isAlphaOrBeta, isBeta,
+  ExpandableApModelList, isAlpha, isAlphaOrBeta, isBeta,
   VersionLabelType
 } from '@acx-ui/rc/components'
 import { useGetAllApModelFirmwareListQuery } from '@acx-ui/rc/services'
@@ -46,7 +46,6 @@ export function VersionBannerPerApModel () {
       ]
 
       updateGroups.sort((a, b) => compareVersions(b.firmwares[0].name, a.firmwares[0].name))
-      updateGroups = filterVersionBehindGA(updateGroups)
 
       const tenantLatestVersionUpdateGroup = extractLatestVersionToUpdateGroup(data)
       if (updateGroups.length === 0) { // ACX-56531: At least display the latest version where there is no AP in the tenant

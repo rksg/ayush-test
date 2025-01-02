@@ -167,15 +167,6 @@ function groupByFirmware (data: FirmwareVenuePerApModel['currentApFirmwares']): 
   }, {} as { [firmware in string]: { apModel: string[], labels: FirmwareLabel[] } })
 }
 
-// eslint-disable-next-line max-len
-export function filterVersionBehindGA (data: ApFirmwareUpdateGroupType[]): ApFirmwareUpdateGroupType[] {
-  // eslint-disable-next-line max-len
-  const gaIndex = data.findIndex((group: ApFirmwareUpdateGroupType) => group.firmwares[0]?.labels?.includes(FirmwareLabel.GA))
-  if (gaIndex === -1) return data
-
-  return data.slice(0, gaIndex + 1)
-}
-
 export type ApFirmwareUpdateGroupType = { apModels: string[], firmwares: VersionLabelType[] }
 // eslint-disable-next-line max-len
 export function convertApModelFirmwaresToUpdateGroups (data: ApModelFirmware[]): ApFirmwareUpdateGroupType[] {
