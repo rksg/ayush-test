@@ -374,7 +374,7 @@ export function NetworkForm (props:{
   }, [data, certificateTemplateId, dpskService, portalService, vlanPoolId])
 
   useEffect(() => {
-    if (!wifiCallingIds || wifiCallingIds.length === 0) return
+    if (!wifiCallingIds || wifiCallingIds.length === 0 || saveState?.wlan?.advancedCustomization?.wifiCallingEnabled) return
 
     const fullNetworkSaveData = merge(
       {},
@@ -389,11 +389,17 @@ export function NetworkForm (props:{
       }
     )
 
-    form.setFieldValue('wlan.advancedCustomization.wifiCallingIds', wifiCallingIds)
-    form.setFieldValue('wlan.advancedCustomization.wifiCallingEnabled', true)
+    form.setFieldValue('wlan', {
+      ...form.getFieldValue('wlan'),
+      advancedCustomization: {
+        ...form.getFieldValue('wlan.advancedCustomization'),
+        wifiCallingIds: wifiCallingIds,
+        wifiCallingEnabled: true
+      }
+    })
 
     updateSaveData(fullNetworkSaveData)
-  }, [wifiCallingIds])
+  }, [wifiCallingIds, saveState])
 
   useEffect(() => {
     if (!macRegistrationPool?.data?.length) return
