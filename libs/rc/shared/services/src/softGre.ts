@@ -320,11 +320,10 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
       }
     }),
     deactivateSoftGreProfileOnAP: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params }) => {
         const req = createHttpRequest(SoftGreUrls.deactivateSoftGreProfileOnAP, params)
         return {
-          ...req,
-          body: JSON.stringify(payload)
+          ...req
         }
       }
     }),

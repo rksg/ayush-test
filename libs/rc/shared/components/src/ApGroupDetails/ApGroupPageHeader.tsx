@@ -4,6 +4,7 @@ import { useIntl }                  from 'react-intl'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { Button, PageHeader, RangePicker }                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
 import { LocationOutlined }                                 from '@acx-ui/icons'
 import { ApGroupDetailHeader, useConfigTemplateBreadcrumb } from '@acx-ui/rc/utils'
 import { WifiScopes }                                       from '@acx-ui/types'
@@ -22,6 +23,7 @@ function ApGroupPageHeader () {
 
   const { apGroupId, activeTab, name, venueName, members, networks } = useApGroupContext()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
   const apgHeaderData = {
     title: name || '',
@@ -58,6 +60,7 @@ function ApGroupPageHeader () {
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
             selectionType={range}
+            maxMonthRange={isDateRangeLimit ? 1 : 3}
           />,
         ...filterByAccess([
           <Button type='primary'

@@ -12,8 +12,8 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
+import { mockDHCP82OptionSetting } from './__tests__/fixture'
 import { DhcpOption82Settings }    from './DhcpOption82Settings'
-import { mockDHCP82OptionSetting } from './fixture'
 
 describe('DhcpOption82Settings', () => {
   const mockReqVenueData = jest.fn()
