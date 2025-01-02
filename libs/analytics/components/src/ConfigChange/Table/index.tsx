@@ -116,7 +116,8 @@ export function Table (props: {
   const queryResults = useConfigChangeQuery({
     ...pathFilters,
     startDate: startDate.toISOString(),
-    endDate: endDate.toISOString()
+    endDate: endDate.toISOString(),
+    showIntentAI
   }, { selectFromResult: queryResults => ({
     ...queryResults,
     data: filterData(queryResults.data ?? [], kpiFilter, legendList, showIntentAI)
@@ -151,14 +152,15 @@ export function Table (props: {
       title: $t({ defaultMessage: 'Scope' }),
       dataIndex: 'name',
       render: (_, value, __, highlightFn ) => {
-        const scope = impactedArea(value.path, value.sliceValue) as string
-        return <Tooltip
+        const { name, path, sliceValue } = value
+        const scope = impactedArea(path, sliceValue) as string
+        return showIntentAI ? <Tooltip
           placement='top'
-          title={formattedPath(value.path, value.sliceValue)}
+          title={formattedPath(path, sliceValue)}
           dottedUnderline={true}
         >
           {highlightFn(scope)}
-        </Tooltip>
+        </Tooltip> : highlightFn(String(name))
       },
       searchable: true,
       sorter: { compare: sortProp('name', defaultSort) }

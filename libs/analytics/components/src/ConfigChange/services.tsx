@@ -14,11 +14,16 @@ interface KpiChangesParams {
   afterEnd: string
 }
 
+const pathQuery = (showIntentAI: boolean) => showIntentAI ?
+  `path {
+    type name
+  }` : ''
+
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     configChange: build.query<
       ConfigChange[],
-      PathFilter
+      PathFilter & { showIntentAI: boolean }
     >({
       query: (payload) => ({
         document: gql`
@@ -37,15 +42,13 @@ export const api = dataApi.injectEndpoints({
                   oldValues
                   newValues
                   sliceValue
-                  path {
-                    type name
-                  }
+                  ${pathQuery(payload.showIntentAI)}
                 }
               }
             }
           }
         `,
-        variables: pick(payload, ['path', 'startDate', 'endDate'])
+        variables: pick(payload, ['path', 'startDate', 'endDate', 'showIntentAI'])
       }),
       transformResponse: (
         response: { network: { hierarchyNode: { configChanges: ConfigChange[] } } } ) =>
