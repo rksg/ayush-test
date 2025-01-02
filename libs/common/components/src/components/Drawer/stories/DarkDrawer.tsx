@@ -64,9 +64,6 @@ export function DarkDrawer () {
         onClose={onClose}
         children={content}
         placement={'left'}
-        mask={true}
-        maskClosable={true}
-        maskStyle={{}}
       />
     </>
   )

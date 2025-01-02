@@ -30,8 +30,8 @@ export default function AICanvas () {
   const [ searchText, setSearchText ] = useState('')
   const scroll = useRef(null)
   const linkToDashboard = useTenantLink('/dashboard')
-  const placeholder = $t({ defaultMessage: `Enter a description to generate widgets 
-  based on your needs. The more you describe, the better widgets I can recommend.` })
+  const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment! 
+  I can also generate on-the-fly widgets for operational data, including Alerts and Metrics.` })
 
   useEffect(()=>{
     setTimeout(()=>{
@@ -216,7 +216,7 @@ export default function AICanvas () {
                     onChange={({ target: { value } }) => setSearchText(value)}
                     onKeyDown={onKeyDown}
                     data-testid='search-input'
-                    rows={10}
+                    style={{ height: 90, resize: 'none' }}
                     placeholder={placeholder}
                   />
                   <Button
@@ -236,10 +236,7 @@ export default function AICanvas () {
           onClose={onHistoryDrawer}
           children={content}
           placement={'left'}
-          mask={true}
-          maskClosable={true}
-          maskStyle={{}}
-          width={'400px'}
+          width={'320px'}
         />
       </UI.Wrapper>
     </DndProvider>

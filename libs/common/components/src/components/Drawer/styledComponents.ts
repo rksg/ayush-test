@@ -18,17 +18,10 @@ export const DrawerStyle = createGlobalStyle<{ $type: DrawerTypes }>`
       margin-top: var(--acx-header-height);
       div.ant-drawer-content-wrapper {
         border-radius: 0px;
-        .ant-drawer-content { 
-          opacity: 0.98;
-          background: #333;
-          color: #fff;
+        .ant-drawer-content {
+          background: var(--acx-neutrals-15);
           .ant-drawer-header {
             border: 0px;
-            svg {
-              path {
-                stroke: var(--acx-primary-white);
-              }
-            }
           }
         }
       }
@@ -74,7 +67,7 @@ export const SubTitle = styled.div`
 export const History = styled.div`
   .duration {
     margin: 0 -20px;
-    border-bottom: 1px solid var(--acx-neutrals-80);
+    border-bottom: 1px solid var(--acx-neutrals-30);
     &:last-of-type {
       border: 0px;
     }
@@ -85,15 +78,17 @@ export const History = styled.div`
       font-size: 10px;
       font-weight: 700;
       line-height: 16px;   
-      color: var(--acx-neutrals-30);
+      color: var(--acx-neutrals-60);
       margin-bottom: 6px;
       padding: 20px 16px 0px;
+      cursor: default;
     }
     .chat {
       padding: 12px 16px;
+      cursor: pointer;
       &:hover { 
-        background: var(--acx-neutrals-70);
-        opacity: 0.9;
+        background: var(--acx-neutrals-80);
+        color: var(--acx-primary-white);
       }
     }
   }

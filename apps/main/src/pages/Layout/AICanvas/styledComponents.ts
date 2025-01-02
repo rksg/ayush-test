@@ -3,14 +3,16 @@ import styled                                   from 'styled-components/macro'
 
 import { Card } from '@acx-ui/components'
 
-import CanvasBackground   from './assets/CanvasBackground.svg'
-import RuckusAiBackground from './assets/RuckusAiBackground.svg'
+import CanvasBackground from './assets/CanvasBackground.svg'
+import WaveBackground   from './assets/waves.png'
 
 export const Input = styled(AntInput.TextArea)`
   height: 28px;
   font-size: 12px;
-  background: transparent;
+  background: var(--acx-neutrals-10);;
+  border-radius: 16px;
   border: none;
+  padding: 16px 60px 16px 16px;
   .ant-input::placeholder {
     color: var(--acx-neutrals-50);
   }
@@ -18,7 +20,7 @@ export const Input = styled(AntInput.TextArea)`
 export const History = styled.div`
   .duration {
     margin: 0 -20px;
-    border-bottom: 1px solid var(--acx-neutrals-80);
+    border-bottom: 1px solid var(--acx-neutrals-30);
     &:last-of-type {
       border: 0px;
     }
@@ -29,7 +31,7 @@ export const History = styled.div`
       font-size: 10px;
       font-weight: 700;
       line-height: 16px;   
-      color: var(--acx-neutrals-30);
+      color: var(--acx-neutrals-60);
       margin-bottom: 6px;
       padding: 20px 16px 0px;
       cursor: default;
@@ -38,8 +40,8 @@ export const History = styled.div`
       padding: 12px 16px;
       cursor: pointer;
       &:hover { 
-        background: var(--acx-neutrals-70);
-        opacity: 0.9;
+        background: var(--acx-neutrals-80);
+        color: var(--acx-primary-white);
       }
     }
   }
@@ -59,22 +61,21 @@ background-color: transparent;
 border-top: 75px solid rgba(255,255,255, 0.4);
 
 .chat-wrapper {
-  height: calc(100vh - 60px);
+  height: calc(100vh - 50px);
   background-color: var(--acx-primary-white);
 }
 .chat {
-  background-image: url(${RuckusAiBackground});
+  background-image: url(${WaveBackground});
   background-repeat: no-repeat;
+  background-size: 401px 659px;
   position: fixed;
   width: 400px;
-  height: calc(100vh - 60px);
+  height: calc(100vh - 50px);
   top: 60px;
   z-index: 2;
   .header {
-    border: 1px solid #E5E5E5;
-    border-right: 0px;
-    background-color: rgba(255, 255, 255, .3);
-    height: 60px;
+    background-color: rgba(255, 255, 255, .4);
+    height: 50px;
     padding: 15px 20px;
     display: flex;
     justify-content: space-between;
@@ -112,7 +113,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
       height: calc(100vh - 120px);
     }
     .chatroom {
-      height: calc(100vh - 270px);
+      height: calc(100vh - 250px);
       overflow: auto;
       position: relative;
       margin-right: 4px;
@@ -163,6 +164,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         background: #F8F8FA;
         border: 1px solid #D4D4D4;
         color: #000;
+        margin-right: 0px;
       }
       .chat-bubble {
         background: linear-gradient(275deg, #F7B605 -53.69%, #F79B06 -13.58%, 
@@ -173,22 +175,23 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         padding: 16px;
         border-radius: 16px 16px 16px 0px;
         margin: 7px;
+        margin-left: 10px;
       }
       .input {
         background-color: var(--acx-primary-white);
-        height: 150px;
+        height: 130px;
         position: fixed;
         bottom: 0;    
         width: 400px;
-        padding: 10px;
+        padding: 10px 20px 20px 20px;
         button {
           position: fixed;
-          left: 350px;
-          bottom: 10px;
+          left: 333px;
+          bottom: 57px;
           border: 0px;
           background: var(--acx-accents-orange-50);
           &.ant-btn[disabled] {
-            background: var(--acx-neutrals-40);
+            background: var(--acx-neutrals-30);
           }
           svg { 
             path { stroke: var(--acx-primary-white); } }
@@ -210,16 +213,16 @@ export const Canvas = styled.div`
   .header {
     border: 1px solid #E5E5E5;
     background-color: var(--acx-primary-white);
-    height: 60px;
+    height: 50px;
     display: flex;
     justify-content: space-between;
-    padding: 15px 25px;
+    padding: 8px 25px;
     .title{
       cursor: default;
-      padding: 5px;
+      padding: 10px 0;
       font-family: var(--acx-accent-brand-font);
-      font-weight: 500;
-      font-size: var(--acx-headline-4-font-size);
+      font-weight: 600;
+      font-size: var(--acx-headline-3-font-size);
     }
     .actions{
       button {
@@ -235,7 +238,7 @@ export const Canvas = styled.div`
     background-color: var(--acx-neutrals-30);
     background-image: url(${CanvasBackground});
     border-left: 1px solid #E5E5E5;
-    height: calc(100vh - 120px);
+    height: calc(100vh - 110px);
     overflow: auto;
   }
 `

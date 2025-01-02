@@ -44,17 +44,28 @@ const ChartConfig:{ [key:string]: WidgetCategory } = {
       },
       {
         width: 2,
-        height: 6
+        height: 8
       },
       {
         width: 4,
-        height: 9
+        height: 12
       }
     ]
   },
   line: {
     width: 2,
-    height: 4
+    height: 6,
+    currentSizeIndex: 0,
+    sizes: [
+      {
+        width: 2,
+        height: 6
+      },
+      {
+        width: 4,
+        height: 8
+      }
+    ]
   },
   bar: {
     width: 2,
@@ -62,18 +73,33 @@ const ChartConfig:{ [key:string]: WidgetCategory } = {
     currentSizeIndex: 0,
     sizes: [
       {
-        width: 1,
-        height: 4
-      },
-      {
         width: 2,
         height: 8
+      },
+      {
+        width: 3,
+        height: 10
+      },
+      {
+        width: 4,
+        height: 12
       }
     ]
   },
   table: {
     width: 2,
-    height: 4
+    height: 6,
+    currentSizeIndex: 0,
+    sizes: [
+      {
+        width: 2,
+        height: 6
+      },
+      {
+        width: 4,
+        height: 10
+      }
+    ]
   }
 }
 
@@ -99,6 +125,13 @@ export const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
     preview(getEmptyImage(), { captureDraggingState: true })
   }, [preview])
 
+  const getChartHeight = () => {
+    if(data.chartType === 'bar') {
+      return data?.chartOption?.source?.length > 30 ? '500px' : '250px'
+    }
+    return '165px'
+  }
+
   return (
     <div
       ref={drag}
@@ -109,7 +142,8 @@ export const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
     >
       <div style={{
         margin: '7px',
-        height: data.chartType === 'bar' ? '300px' : '165px',
+        marginLeft: '10px',
+        height: getChartHeight(),
         width: data.chartType === 'pie' ? '200px' : '300px' }}>
         <WidgetChart data={data} />
       </div>
@@ -187,9 +221,10 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
     } else if(type === 'bar') {
       return <BarChart
         style={{ width: width-30, height }}
-        grid={{ right: '10px' }}
+        grid={{ right: '10px', top: chartData?.multiseries ? '15%': '10px' }}
         data={(chartData?.chartOption || []) as BarChartData}
-        barWidth={8}
+        barWidth={chartData?.multiseries || chartData?.chartOption?.source?.length > 30
+          ? 8 : undefined}
         labelFormatter={labelFormatter}
         labelRichStyle={richStyle()}
         yAxisType={chartData?.axisType}
@@ -240,7 +275,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
   //   ]
   //   }
   // }
-  const chartData = data //data.type === 'card' ? queryResults.data : data
+  const chartData = data.type === 'card' ? queryResults.data : data
   return (
     <Loader states={[{ isLoading: queryResults.isLoading }]}>
       <UI.Widget

@@ -116,7 +116,7 @@ export default function Canvas () {
     <UI.Canvas>
       <div className='header'>
         <div className='title'>
-          <span>Canvas</span>
+          <span>{$t({ defaultMessage: 'Custom Canvas' })}</span>
         </div>
         <div className='actions'>
           {/* <Button onClick={()=>{onClose()}}>
