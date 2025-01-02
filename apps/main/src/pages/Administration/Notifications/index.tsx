@@ -31,11 +31,10 @@ import {
   hasCrossVenuesPermission
 } from '@acx-ui/user'
 
-import { AdminNotificationDrawer } from './AdminNotificatioDrawer'
-import { AINotificationDrawer }    from './AINotificationDrawer'
-import { PreferenceDrawer }        from './PreferenceDrawer'
-import RecipientDialog             from './RecipientDialog'
-import * as UI                     from './styledComponents'
+import { AINotificationDrawer } from './AINotificationDrawer'
+import { PreferenceDrawer }     from './PreferenceDrawer'
+import RecipientDialog          from './RecipientDialog'
+import * as UI                  from './styledComponents'
 
 const FunctionEnabledStatusLightConfig = {
   active: {
@@ -240,15 +239,11 @@ export const NotificationsTable = () => {
         editData={editData}
         isDuplicated={isDuplicated}
       />
-      {showDrawer && (notificationAdminContextualEnabled
-        ? <AdminNotificationDrawer
-          showDrawer={showDrawer}
-          setShowDrawer={setShowDrawer}
-        />
-        : <AINotificationDrawer
-          showDrawer={showDrawer}
-          setShowDrawer={setShowDrawer}
-        />)}
+      {showDrawer
+      && <AINotificationDrawer
+        showDrawer={showDrawer}
+        setShowDrawer={setShowDrawer}
+      />}
     </>
   )
 }
