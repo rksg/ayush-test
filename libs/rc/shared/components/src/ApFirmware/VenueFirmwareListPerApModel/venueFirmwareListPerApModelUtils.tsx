@@ -14,7 +14,7 @@ import {
 import { ApModelFirmware, FirmwareLabel, FirmwareVenuePerApModel, UpgradePreferences } from '@acx-ui/rc/utils'
 import { getIntl }                                                                     from '@acx-ui/utils'
 
-import { compareVersions, getVersionLabel, VersionLabelType } from '../FirmwareUtils'
+import { compareVersions, getVersionLabel, isAlphaOrBeta, isLegacyAlphaOrBeta, VersionLabelType } from '../FirmwareUtils'
 
 import * as UI                              from './styledComponents'
 import { UpdateFirmwarePerApModelFirmware } from './UpdateNowDialog'
@@ -128,12 +128,11 @@ export function renderCurrentFirmwaresColumn (data: FirmwareVenuePerApModel['cur
     .map(([ firmware, firmwareInfo ]) => {
       let label = ''
       // eslint-disable-next-line max-len
-      const isEarlyAccess = firmwareInfo.labels?.includes(FirmwareLabel.ALPHA) || firmwareInfo.labels?.includes(FirmwareLabel.BETA)
+      const isEarlyAccess = isAlphaOrBeta(firmwareInfo.labels as FirmwareLabel[])
       if (isEarlyAccess) {
         label = ` ${intl.$t({ defaultMessage: '(Early Access)' })}`
       } else {
-        // eslint-disable-next-line max-len
-        if (!firmwareInfo.labels?.includes(FirmwareLabel.GA) && (firmwareInfo.labels?.includes(FirmwareLabel.LEGACYALPHA) || firmwareInfo.labels?.includes(FirmwareLabel.LEGACYBETA))) {
+        if (isLegacyAlphaOrBeta(firmwareInfo.labels as FirmwareLabel[])) {
           label = ` ${intl.$t({ defaultMessage: '(Legacy Early Access)' })}`
         }
       }

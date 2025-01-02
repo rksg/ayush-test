@@ -3,8 +3,8 @@ import { useContext, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Tooltip, showActionModal, Filter } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
+import { Loader, Table, TableProps, Tooltip, showActionModal, Filter }                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
 import {
   renderCurrentFirmwaresColumn,
   useChangeScheduleVisiblePerApModel,
@@ -14,7 +14,7 @@ import {
   UpdateNowPerApModelDialog,
   ChangeSchedulePerApModelDialog,
   useUpdateEarlyAccessNowPerApModel,
-  UpdateEarlyAccessNowDialog, convertToApModelIndividualDisplayData
+  UpdateEarlyAccessNowDialog, convertToApModelIndividualDisplayData, isAlpha, isBeta
 } from '@acx-ui/rc/components'
 import {
   compareVersions,
@@ -163,9 +163,9 @@ export function VenueFirmwareListPerApModel () {
   const genUpdateDisplayData = (apModelFirmwares: ApModelFirmware[], selectedRows: FirmwareVenuePerApModel[], forEarlyAccess: boolean = false, isApFwMgmtEarlyAccess: boolean) => {
     let eaApModelFirmwares = [] as ApModelFirmware[]
     // eslint-disable-next-line max-len
-    let updateAlphaGroups = apModelFirmwares.filter(data => data.labels?.includes(FirmwareLabel.ALPHA))
+    let updateAlphaGroups = apModelFirmwares.filter(data => isAlpha(data.labels))
     // eslint-disable-next-line max-len
-    let updateBetaGroups = apModelFirmwares.filter(data => data.labels?.includes(FirmwareLabel.BETA))
+    let updateBetaGroups = apModelFirmwares.filter(data => isBeta(data.labels))
 
     eaApModelFirmwares = [
       ...eaApModelFirmwares,
@@ -199,7 +199,8 @@ export function VenueFirmwareListPerApModel () {
           false,
           isApFwMgmtEarlyAccess
         )
-        if (updatedDisplayData.some(data => data.versionOptions.length === 0)) {
+        // eslint-disable-next-line max-len
+        if (updatedDisplayData.length === 0 || updatedDisplayData.every(data => data.versionOptions.length === 0)) {
           return false
         }
         return rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate))
@@ -220,7 +221,8 @@ export function VenueFirmwareListPerApModel () {
           true,
           isApFwMgmtEarlyAccess
         )
-        if (updatedDisplayData.some(data => data.versionOptions.length === 0)) {
+        // eslint-disable-next-line max-len
+        if (updatedDisplayData.length === 0 || updatedDisplayData.every(data => data.versionOptions.length === 0)) {
           return false
         }
         // eslint-disable-next-line max-len
@@ -372,11 +374,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Next Update Schedule' }),
       key: 'nextApFirmwareSchedules',
       dataIndex: 'nextApFirmwareSchedules',
-      sorter: { compare: (a, b) => {
-        const aNextTime = a.nextApFirmwareSchedules?.[0]?.startDateTime || '1970-01-01T00:00:00Z'
-        const bNextTime = b.nextApFirmwareSchedules?.[0]?.startDateTime || '1970-01-01T00:00:00Z'
-        return dateSort(aNextTime, bNextTime)
-      } },
+      sorter: { compare: sortProp('nextApFirmwareSchedules[0].startDateTime', dateSort) },
       defaultSortOrder: 'ascend',
       render: function (_, row) {
         const schedules = getApSchedules(row.nextApFirmwareSchedules)
