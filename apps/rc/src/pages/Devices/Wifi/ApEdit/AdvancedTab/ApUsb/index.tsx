@@ -12,7 +12,7 @@ import {
   useLazyGetVenueApUsbStatusQuery,
   useUpdateApUsbMutation
 } from '@acx-ui/rc/services'
-import { ApUsbSettings, VenueApUsbStatus } from '@acx-ui/rc/utils'
+import { ApUsbSettings, usbTooltipInfo, VenueApUsbStatus } from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext } from '../..'
 import { FieldLabel }                   from '../../styledComponents'
@@ -30,9 +30,6 @@ export function ApUsb () {
     editAdvancedContextData,
     setEditAdvancedContextData
   } = useContext(ApEditContext)
-
-  // eslint-disable-next-line max-len
-  const usbInfoMessage = $t({ defaultMessage: 'Enable or disable the USB port for IoT-connected devices. When enabled, the port supports IoT device connectivity and data transfer' })
 
   const { apData: apDetails, venueData } = useContext(ApDataContext)
   const venueId = venueData?.id
@@ -163,7 +160,7 @@ export function ApUsb () {
             <FieldLabel width='180px' >
               <Space>
                 {$t({ defaultMessage: 'USB Support' })}
-                <Tooltip title={usbInfoMessage} placement='bottom'>
+                <Tooltip title={$t(usbTooltipInfo, { br: <br/> })} placement='bottom'>
                   <QuestionMarkCircleOutlined style={{
                     height: '14px',
                     marginBottom: -3,

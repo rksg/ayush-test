@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsForm }                                    from '@acx-ui/components'
-import { EdgePinFixtures, EdgePinUrls, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                     from '@acx-ui/store'
+import { StepsForm }                    from '@acx-ui/components'
+import { EdgePinFixtures, EdgePinUrls } from '@acx-ui/rc/utils'
+import { Provider }                     from '@acx-ui/store'
 import {
   mockServer, render, renderHook,
   screen, waitFor, within
@@ -20,14 +20,6 @@ describe('DistributionSwitchDrawer', () => {
     serviceId: 'testServiceId'
   }
   const path = '/:tenantId/t/services/personalIdentityNetwork/:serviceId/edit'
-
-  beforeEach(() => {
-    mockServer.use(
-      rest.post(
-        SwitchUrlsInfo.getSwitchFeatureSets.url,
-        (_req, res, ctx) => res(ctx.json({}))
-      ))
-  })
 
   it('Should render successfully', async () => {
     const user = userEvent.setup()

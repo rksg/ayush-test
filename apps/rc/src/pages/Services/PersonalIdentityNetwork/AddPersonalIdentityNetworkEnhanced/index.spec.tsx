@@ -26,7 +26,7 @@ jest.mock('../PersonalIdentityNetworkForm/GeneralSettingsForm', () => ({
   GeneralSettingsForm: () => <div data-testid='GeneralSettingsForm' />
 }))
 jest.mock('../PersonalIdentityNetworkForm/NetworkTopologyForm', () => ({
-  Wireless: 'Wireless',
+  ...jest.requireActual('../PersonalIdentityNetworkForm/NetworkTopologyForm'),
   NetworkTopologyForm: () => <div data-testid='NetworkTopologyForm' />
 }))
 jest.mock('../PersonalIdentityNetworkForm/SmartEdgeForm', () => ({
