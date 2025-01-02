@@ -75,7 +75,7 @@ describe('Client Isolation Settings Fields', () => {
 
     const showDetailButton = screen.getByRole('button', { name: 'Policy Details' })
     await userEvent.click(showDetailButton)
-    expect(screen.getByText(clientIsolationProfileDescription)).toBeInTheDocument()
+    expect(await screen.findByText(clientIsolationProfileDescription)).toBeInTheDocument()
     const closeButton = screen.getByRole('button', { name: 'Close' })
     await userEvent.click(closeButton)
 
