@@ -79,7 +79,7 @@ describe('IntentAIDetails', () => {
     for (const kpiContainer of kpiContainers) {
       await waitFor(() => {
         expect(kpiContainer).toHaveTextContent(
-          'Metrics / Charts unavailable for data beyond 30 days.')
+          'Metrics / Charts unavailable for data beyond 30 days')
       })
     }
   })

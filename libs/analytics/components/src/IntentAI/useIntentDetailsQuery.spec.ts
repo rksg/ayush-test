@@ -213,7 +213,7 @@ describe('getGraphKPIs', () => {
     }, kpis, mockIsDataRetained, false)
     expect(result.value).toEqual('--')
     expect(result.delta).toEqual(undefined)
-    expect(result.footer).toEqual('Metrics / Charts unavailable for data beyond 30 days.')
+    expect(result.footer).toEqual('Metrics / Charts unavailable for data beyond 30 days')
   })
   it('handle beyond data retention', () => {
     jest.mocked(Date.now).mockRestore()

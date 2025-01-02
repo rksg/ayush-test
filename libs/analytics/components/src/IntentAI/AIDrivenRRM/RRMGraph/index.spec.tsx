@@ -96,7 +96,7 @@ describe('CloudRRM', () => {
     const { container } = render(<IntentAIRRMGraph crrmData={mockCrrmData} />, {
       wrapper: Provider
     })
-    expect(container).toHaveTextContent('Metrics / Charts unavailable for data beyond 30 days.')
+    expect(container).toHaveTextContent('Metrics / Charts unavailable for data beyond 30 days')
   })
 
   it('handle beyond data retention', async () => {
