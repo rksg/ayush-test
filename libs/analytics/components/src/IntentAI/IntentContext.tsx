@@ -45,8 +45,10 @@ export function createIntentContextProvider (
 ) {
   const Component: React.FC = function () {
     const params = useIntentParams()
-    const isConfigChangeEnabled = useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE)
-
+    const isConfigChangeEnabled = [
+      useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE),
+      useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE)
+    ].some(Boolean)
     const spec = specs[params.code]
     const query = useIntentDetailsQuery({ ...params, isConfigChangeEnabled }, { skip: !spec })
     if (!spec) return null // no matching spec
