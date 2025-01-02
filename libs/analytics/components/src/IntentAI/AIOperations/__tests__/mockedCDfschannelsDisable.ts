@@ -82,5 +82,9 @@ export const mocked = {
   ...mockedStatusTrail,
   ...mockedKPIs,
   currentValue: false,
-  recommendedValue: false
+  recommendedValue: false,
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierDate: true
+  }
 } as unknown as IntentDetail

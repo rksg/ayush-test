@@ -26,7 +26,7 @@ export const KPICard: React.FC<{
 }
 
 export const useKPIsQuery = () => {
-  const { intent, kpis } = useIntentContext()
+  const { intent, kpis, isDataRetained, isHotTierData } = useIntentContext()
   const sanitisedKPIs = kpis
     // pick only 2 required field
     // which its value is primitive value type
@@ -36,14 +36,14 @@ export const useKPIsQuery = () => {
 
   const intentKPIs = query.data
 
-  return { query, intentKPIs, kpis, intent }
+  return { query, intentKPIs, kpis, intent, isDataRetained, isHotTierData }
 }
 
 export const KPIGrid = () => {
-  const { query, intentKPIs, kpis, intent } = useKPIsQuery()
+  const { query, intentKPIs, kpis, intent, isDataRetained, isHotTierData } = useKPIsQuery()
 
   return <>
-    {getGraphKPIs({ ...intent, ...intentKPIs }, kpis).map(kpi => (
+    {getGraphKPIs({ ...intent, ...intentKPIs }, kpis, isDataRetained, isHotTierData).map(kpi => (
       <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
         <Loader states={[query]}>
           <KPICard kpi={kpi} />
@@ -54,10 +54,10 @@ export const KPIGrid = () => {
 }
 
 export const KPIFields = () => {
-  const { query, intentKPIs, kpis, intent } = useKPIsQuery()
+  const { query, intentKPIs, kpis, intent, isDataRetained, isHotTierData } = useKPIsQuery()
 
   return <Loader states={[query]}>
-    {getGraphKPIs({ ...intent, ...intentKPIs }, kpis)
+    {getGraphKPIs({ ...intent, ...intentKPIs }, kpis, isDataRetained, isHotTierData)
       .map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
   </Loader>
 }
