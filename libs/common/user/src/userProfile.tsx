@@ -43,7 +43,7 @@ const userProfile: Profile = {
   abacEnabled: false,
   scopes: []
 }
-export const SHOW_WITHOUT_RBAC_CHECK = 'SHOW_WITHOUT_RBAC_CHECK'
+const SHOW_WITHOUT_RBAC_CHECK = 'SHOW_WITHOUT_RBAC_CHECK'
 
 interface FilterItemType {
   scopeKey?: ScopeKeys,
