@@ -194,7 +194,7 @@ export function LanPorts () {
         const venueLanPorts = convertToFormData(venueLanPortsData, apLanPortsCap)
         setApLanPorts(lanPorts)
         setVenueLanPorts(venueLanPorts)
-        setSelectedModel(lanPorts)
+        setSelectedModel(lanPorts.useVenueSettings ? venueLanPorts : lanPorts)
         setSelectedModelCaps(apCaps as CapabilitiesApModel)
         setSelectedPortCaps(apLanPortsCap?.[activeTabIndex] as LanPort)
         setUseVenueSettings(lanPorts.useVenueSettings ?? true)
