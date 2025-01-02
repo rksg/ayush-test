@@ -33,7 +33,7 @@ export const serviceAllowedOperationMap = {
     [ServiceOperation.CREATE]: ['POST:/dpskServices'],
     [ServiceOperation.EDIT]: ['PUT:/dpskServices/{serviceId}'],
     [ServiceOperation.DELETE]: ['DELETE:/dpskServices/{serviceId}'],
-    [ServiceOperation.LIST]: ['POST:/dpskServices']
+    [ServiceOperation.LIST]: ['GET:/dpskServices']
   },
   [ServiceType.PORTAL]: {
     [ServiceOperation.CREATE]: ['POST:/portalServiceProfiles'],

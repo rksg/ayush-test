@@ -14,6 +14,7 @@ import {
   getScopeKeyByService,
   getServiceDetailsLink,
   MdnsProxyAp,
+  MdnsProxyUrls,
   ServiceOperation,
   ServiceType,
   useTableQuery
@@ -155,6 +156,7 @@ export default function MdnsProxyInstances () {
           actions={filterByAccessForServicePolicyMutation([{
             label: $t({ defaultMessage: 'Add Instance' }),
             onClick: handleAddAction,
+            rbacOpsIds: [MdnsProxyUrls.addMdnsProxyApsRbac.opsApi ?? ''],
             scopeKey: getScopeKeyByService(ServiceType.MDNS_PROXY, ServiceOperation.EDIT)
           }])}
           onChange={tableQuery.handleTableChange}
