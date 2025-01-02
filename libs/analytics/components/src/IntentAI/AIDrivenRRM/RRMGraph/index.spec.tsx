@@ -4,9 +4,10 @@ import React from 'react'
 import userEvent    from '@testing-library/user-event'
 import EChartsReact from 'echarts-for-react'
 
-import { GraphProps }                       from '@acx-ui/components'
-import { intentAIUrl, Provider }            from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
+import { GraphProps }                      from '@acx-ui/components'
+import { useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import { intentAIUrl, Provider }           from '@acx-ui/store'
+import { mockGraphqlQuery,render, screen } from '@acx-ui/test-utils'
 
 import { mockIntentContext }                  from '../../__tests__/fixtures'
 import { Statuses }                           from '../../states'
@@ -67,6 +68,7 @@ describe('CloudRRM', () => {
   })
 
   it('should render correctly for active states', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<IntentAIRRMGraph />, { route: { params }, wrapper: Provider })
 
     expect(await screen.findByText('View More')).toBeVisible()
@@ -93,9 +95,30 @@ describe('CloudRRM', () => {
     await userEvent.click(await screen.findByTestId('CloseSymbol'))
   })
 
+  it('handle cold tier data', async () => {
+    const coldTierDataMock = {
+      ...mockedIntentCRRM,
+      dataCheck: {
+        isHotTierData: false,
+        isDataRetained: true
+      }
+    }
+    mockIntentContext({ intent: coldTierDataMock })
+    const { container } = render(<IntentAIRRMGraph />, {
+      wrapper: Provider
+    })
+    expect(container).toHaveTextContent('Metrics / Charts unavailable for data beyond 30 days')
+  })
+
   it('handle beyond data retention', async () => {
-    jest.mocked(Date.now).mockRestore()
-    mockIntentContext({ intent: mockedIntentCRRM })
+    const beyondDataRetentionMock = {
+      ...mockedIntentCRRM,
+      dataCheck: {
+        isHotTierData: true,
+        isDataRetained: false
+      }
+    }
+    mockIntentContext({ intent: beyondDataRetentionMock })
     const { container } = render(<IntentAIRRMGraph />, {
       route: { params },
       wrapper: Provider

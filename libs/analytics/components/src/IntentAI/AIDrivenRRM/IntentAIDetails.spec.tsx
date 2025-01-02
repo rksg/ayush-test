@@ -1,5 +1,6 @@
 import _ from 'lodash'
 
+import { useIsSplitOn }                                      from '@acx-ui/feature-toggle'
 import { intentAIUrl, Provider, store, intentAIApi }         from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, within, waitFor } from '@acx-ui/test-utils'
 
@@ -37,11 +38,16 @@ describe('IntentAIDetails', () => {
     mockGraphqlQuery(intentAIUrl, 'IntentAIRRMGraph', {
       data: { intent: mockedCRRMGraphs }
     })
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
 
-  it('handle beyond data retention', async () => {
+  it('handle cold tier data retention', async () => {
     const { params } = mockIntentContextWith({
       code: 'c-crrm-channel5g-auto',
+      dataCheck: {
+        isDataRetained: true,
+        isHotTierData: false
+      },
       status: Statuses.active,
       kpi_number_of_interfering_links: {
         data: {
@@ -65,12 +71,14 @@ describe('IntentAIDetails', () => {
     )
 
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
+
     const loaders = screen.getAllByRole('img', { name: 'loader' })
     loaders.forEach(loader => expect(loader).toBeVisible())
     const kpiContainers = await screen.findAllByTestId('KPI')
     for (const kpiContainer of kpiContainers) {
       await waitFor(() => {
-        expect(kpiContainer).toHaveTextContent('Beyond data retention period')
+        expect(kpiContainer)
+          .toHaveTextContent('Metrics / Charts unavailable for data beyond 30 days')
       })
     }
   })
@@ -78,6 +86,7 @@ describe('IntentAIDetails', () => {
   describe('renders correctly', () => {
     beforeEach(() => {
       jest.spyOn(Date, 'now').mockReturnValue(+new Date('2023-07-15T14:15:00.000Z'))
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
     })
 
     async function assertRenderCorrectly () {

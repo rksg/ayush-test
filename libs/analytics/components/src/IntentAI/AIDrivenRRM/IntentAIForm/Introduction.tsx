@@ -62,7 +62,7 @@ export const SliderAfter = (props: { image: string }) => {
 
 export function Introduction () {
   const { $t } = useIntl()
-  const { isDataRetained: showData } = useIntentContext()
+  const { isDataRetained, isHotTierData } = useIntentContext()
 
   const queryResult = useIntentAICRRMQuery()
   const crrmData = queryResult.data!
@@ -114,7 +114,7 @@ export function Introduction () {
             `}
           />
         </StepsForm.TextContent>
-        {showData && compareSlider}
+        {isDataRetained && isHotTierData && compareSlider}
       </Col>
       <Col span={7} offset={2}>
         <SideNotes.Introduction />

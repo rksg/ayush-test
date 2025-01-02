@@ -75,7 +75,7 @@ export function createIntentAIDetails () {
 
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const { intent, isDataRetained: hasData, state } = useIntentContext()
+    const { intent, state, isDataRetained, isHotTierData } = useIntentContext()
     const valuesText = useValuesText()
     const { displayStatus, sliceValue, metadata, updatedAt } = intent
 
@@ -93,7 +93,7 @@ export function createIntentAIDetails () {
                 children={<FormattedMessage {...valuesText.summaryText} values={richTextFormatValues} />}/>
               <DescriptionSection fields={fields}/>
               <br />
-              {hasData && !noData
+              {!noData && isDataRetained && isHotTierData
                 ? <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })} />
                 : null}
             </IntentDetailsSidebar>)}
@@ -113,7 +113,7 @@ export function createIntentAIDetails () {
             <DetailsSection data-testid='Key Performance Indications'>
               <DetailsSection.Title
                 children={$t({ defaultMessage: 'Key Performance Indications' })} />
-              <DetailsSection.Details style={{ ...(hasData && { minHeight: 385 }) }}>
+              <DetailsSection.Details style={{ ...((!noData && isDataRetained && isHotTierData) && { minHeight: 385 }) }}>
                 <IntentAIRRMGraph width={350} />
               </DetailsSection.Details>
             </DetailsSection>

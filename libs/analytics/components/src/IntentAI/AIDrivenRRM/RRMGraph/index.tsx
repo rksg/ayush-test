@@ -17,9 +17,9 @@ import {
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { useIntentContext }  from '../../IntentContext'
-import { IntentDetail }      from '../../useIntentDetailsQuery'
-import { dataRetentionText } from '../../utils'
+import { useIntentContext }                    from '../../IntentContext'
+import { IntentDetail }                        from '../../useIntentDetailsQuery'
+import { coldTierDataText, dataRetentionText } from '../../utils'
 
 import { Legend }               from './Legend'
 import { useIntentAICRRMQuery } from './services'
@@ -135,7 +135,7 @@ const GraphTitle = ({ details }: { details: IntentDetail }) => {
 
 export const IntentAIRRMGraph = ({ width = 250 } : { width?: number }) => {
   const { $t } = useIntl()
-  const { intent, state, isDataRetained } = useIntentContext()
+  const { intent, state, isDataRetained, isHotTierData } = useIntentContext()
   const [ visible, setVisible ] = useState<boolean>(false)
   const [ key, setKey ] = useState(0)
   const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
@@ -150,7 +150,9 @@ export const IntentAIRRMGraph = ({ width = 250 } : { width?: number }) => {
   const title = $t({ defaultMessage: 'Key Performance Indications' })
   const noData = state === 'no-data'
 
+  if (!isHotTierData) return <Card>{$t(coldTierDataText)}</Card>
   if (!isDataRetained) return <Card>{$t(dataRetentionText)}</Card>
+
   if (noData) {
     return <Card>
       {$t({ defaultMessage: 'Graph modeling will be generated once Intent is activated.' })}
