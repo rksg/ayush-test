@@ -14,6 +14,7 @@ export interface ApiInfo {
   newApi?: boolean;
   oldUrl?: string;
   oldMethod?: string;
+  opsApi?: string;
   defaultHeaders?: {
     'Content-Type'?: string;
     'Accept'?: string
