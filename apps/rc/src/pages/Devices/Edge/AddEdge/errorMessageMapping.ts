@@ -1,5 +1,4 @@
-import { CatchErrorResponse } from '@acx-ui/rc/utils'
-import { getIntl }            from '@acx-ui/utils'
+import { getIntl, CatchErrorResponse } from '@acx-ui/utils'
 
 export const getErrorModalInfo = (error: CatchErrorResponse) => {
   const { $t } = getIntl()

@@ -31,9 +31,9 @@ import {
   useRefreshMspEntitlementMutation,
   useGetEntitlementsAttentionNotesQuery
 } from '@acx-ui/msp/services'
-import { MspAssignmentSummary, MspAttentionNotesPayload, MspEntitlementSummary }                 from '@acx-ui/msp/utils'
-import { SpaceWrapper, MspSubscriptionUtilizationWidget }                                        from '@acx-ui/rc/components'
-import { useGetTenantDetailsQuery, useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery } from '@acx-ui/rc/services'
+import { GeneralAttentionNotesPayload, MspAssignmentSummary, MspAttentionNotesPayload, MspEntitlementSummary } from '@acx-ui/msp/utils'
+import { SpaceWrapper, MspSubscriptionUtilizationWidget }                                                      from '@acx-ui/rc/components'
+import { useGetTenantDetailsQuery, useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery }               from '@acx-ui/rc/services'
 import {
   dateSort,
   defaultSort,
@@ -68,6 +68,10 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   {
     key: 'FUTURE',
     value: $t({ defaultMessage: 'Show Future' })
+  },
+  {
+    key: 'VALID,FUTURE',
+    value: $t({ defaultMessage: 'Show Active & Future' })
   }
 ]
 
@@ -125,9 +129,12 @@ export function Subscriptions () {
   const showCompliance = isvSmartEdgeEnabled && isComplianceEnabled
   const isExtendedTrialToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_EXTENDED_TRIAL_TOGGLE)
   const isComplianceNotesEnabled = useIsSplitOn(Features.ENTITLEMENT_COMPLIANCE_NOTES_TOGGLE)
+  const isAttentionNotesToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_ATTENTION_NOTES_TOGGLE)
 
   const { data: queryData } = useGetEntitlementsAttentionNotesQuery(
-    { payload: MspAttentionNotesPayload }, { skip: !isComplianceNotesEnabled })
+    { payload: isAttentionNotesToggleEnabled ? GeneralAttentionNotesPayload
+      : MspAttentionNotesPayload },
+    { skip: !isComplianceNotesEnabled })
 
   const {
     state
@@ -239,6 +246,7 @@ export function Subscriptions () {
       key: 'status',
       filterMultiple: false,
       filterValueNullable: true,
+      filterValueArray: true,
       filterable: statusTypeFilterOpts($t),
       sorter: { compare: sortProp('status', defaultSort) },
       render: function (_, row) {

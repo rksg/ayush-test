@@ -81,5 +81,41 @@ export const SoftGreUrls: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  getSoftGreProfileConfigurationOnVenue: {
+    method: 'get',
+    url: '/venues/:venueId/apModels/:apModel/lanPorts/:portId/settings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateSoftGreProfileOnAP: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/lanPorts/:portId/softGreProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateSoftGreProfileOnAP: {
+    method: 'delete',
+    url: '/venues/:venueId/aps/:serialNumber/lanPorts/:portId/softGreProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getSoftGreProfileConfigurationOnAP: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/lanPorts/:portId/settings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

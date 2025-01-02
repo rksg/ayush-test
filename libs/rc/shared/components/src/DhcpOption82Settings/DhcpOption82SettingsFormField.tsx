@@ -5,8 +5,11 @@ import {
   Switch,
   Space
 } from 'antd'
-import { useIntl } from 'react-intl'
+import { NamePath } from 'antd/lib/form/interface'
+import { useIntl }  from 'react-intl'
 
+import { Tooltip }                    from '@acx-ui/components'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   DhcpOption82SubOption1Enum,
   DhcpOption82SubOption2Enum,
@@ -19,12 +22,84 @@ import * as UI from './styledComponents'
 const { useWatch } = Form
 const { Option } = Select
 
+interface DhcpOption82FormField {
+  dhcpOption82SubOption1EnabledFieldName: NamePath
+  dhcpOption82SubOption1FormatFieldName: NamePath
+  dhcpOption82SubOption2EnabledFieldName: NamePath
+  dhcpOption82SubOption2FormatFieldName: NamePath
+  dhcpOption82SubOption150EnabledFieldName: NamePath
+  dhcpOption82SubOption151EnabledFieldName: NamePath
+  dhcpOption82SubOption151FormatFieldName: NamePath
+  dhcpOption82SubOption151InputFieldName: NamePath
+  dhcpOption82MacFormat: NamePath
+}
 
-export const DhcpOption82SettingsFormField = (props: { labelWidth?: string }) => {
+/* eslint-disable max-len */
+const defaultDhcpOption82FormField = {
+  dhcpOption82SubOption1EnabledFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption1Enabled'],
+  dhcpOption82SubOption1FormatFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption1Format'],
+  dhcpOption82SubOption2EnabledFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption2Enabled'],
+  dhcpOption82SubOption2FormatFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption2Format'],
+  dhcpOption82SubOption150EnabledFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption150Enabled'],
+  dhcpOption82SubOption151EnabledFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption151Enabled'],
+  dhcpOption82SubOption151FormatFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption151Format'],
+  dhcpOption82SubOption151InputFieldName: ['wlan','advancedCustomization','dhcpOption82SubOption151Input'],
+  dhcpOption82MacFormat: ['wlan','advancedCustomization','dhcpOption82MacFormat']
+} as DhcpOption82FormField
+
+
+const selectDhcpOption82FormField = (context?: string, index?: number) : DhcpOption82FormField => {
+  if (context && context === 'lanport') {
+    return {
+      dhcpOption82SubOption1EnabledFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption1Enabled'],
+      dhcpOption82SubOption1FormatFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption1Format'],
+      dhcpOption82SubOption2EnabledFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption2Enabled'],
+      dhcpOption82SubOption2FormatFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption2Format'],
+      dhcpOption82SubOption150EnabledFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption150Enabled'],
+      dhcpOption82SubOption151EnabledFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Enabled'],
+      dhcpOption82SubOption151FormatFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Format'],
+      dhcpOption82SubOption151InputFieldName: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings', 'subOption151Input'],
+      dhcpOption82MacFormat: ['lan', index, 'dhcpOption82', 'dhcpOption82Settings','macFormat']
+    } as DhcpOption82FormField
+  }
+  else {
+    return defaultDhcpOption82FormField
+  }
+}
+/* eslint-enable max-len */
+
+export const DhcpOption82SettingsFormField = (props: {
+  labelWidth?: string
+  context?: string
+  index?: number
+  onGUIChanged?: (fieldName: string) => void
+  readonly: boolean
+ }) => {
 
   const { $t } = useIntl()
+  const {
+    labelWidth = '250px',
+    context,
+    index = 0,
+    onGUIChanged,
+    readonly
+  } = props
 
-  const { labelWidth='250px' } = props
+  const {
+    dhcpOption82SubOption1EnabledFieldName,
+    dhcpOption82SubOption1FormatFieldName,
+    dhcpOption82SubOption2EnabledFieldName,
+    dhcpOption82SubOption2FormatFieldName,
+    dhcpOption82SubOption150EnabledFieldName,
+    dhcpOption82SubOption151EnabledFieldName,
+    dhcpOption82SubOption151FormatFieldName,
+    dhcpOption82SubOption151InputFieldName,
+    dhcpOption82MacFormat
+  } = selectDhcpOption82FormField(context, index)
+
+  const onFormFieldChange = () => {
+    onGUIChanged && onGUIChanged('DHCPOption82Settings')
+  }
 
   const dhcp82SubOption1Options = [{
     value: DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO_LOCATION,
@@ -85,21 +160,6 @@ export const DhcpOption82SettingsFormField = (props: { labelWidth?: string }) =>
       $t({ defaultMessage: 'AP MAC address will always be in uppercase, ' +
         'while client MAC address will always be in lowercase.' })
 
-  const dhcpOption82SubOption1EnabledFieldName =
-    ['wlan','advancedCustomization','dhcpOption82SubOption1Enabled']
-  const dhcpOption82SubOption1FormatFieldName =
-    ['wlan','advancedCustomization','dhcpOption82SubOption1Format']
-  const dhcpOption82SubOption2EnabledFieldName =
-    ['wlan','advancedCustomization','dhcpOption82SubOption2Enabled']
-  const dhcpOption82SubOption2FormatFieldName =
-    ['wlan','advancedCustomization','dhcpOption82SubOption2Format']
-  const dhcpOption82SubOption150EnabledFieldName =
-    ['wlan','advancedCustomization','dhcpOption82SubOption150Enabled']
-  const dhcpOption82SubOption151EnabledFieldName =
-    ['wlan','advancedCustomization','dhcpOption82SubOption151Enabled']
-  const dhcpOption82SubOption151FormatFieldName =
-    ['wlan','advancedCustomization','dhcpOption82SubOption151Format']
-
   const [
     dhcpOption82SubOption1Enabled,
     dhcpOption82SubOption2Enabled,
@@ -113,7 +173,6 @@ export const DhcpOption82SettingsFormField = (props: { labelWidth?: string }) =>
     useWatch<DhcpOption82SubOption2Enum>(dhcpOption82SubOption2FormatFieldName),
     useWatch<DhcpOption82SubOption151Enum>(dhcpOption82SubOption151FormatFieldName)
   ]
-
   return (
     <>
       <UI.FieldLabel width={labelWidth}>
@@ -126,14 +185,22 @@ export const DhcpOption82SettingsFormField = (props: { labelWidth?: string }) =>
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={true}
-            children={<Switch />}
+            children={<Switch
+              disabled={readonly}
+              onChange={onFormFieldChange}
+              data-testid={'dhcpOption82SubOption1-switch'}
+
+            />}
           />
           { dhcpOption82SubOption1Enabled &&
             <Form.Item
               name={dhcpOption82SubOption1FormatFieldName}
               initialValue={DhcpOption82SubOption1Enum.SUBOPT1_AP_INFO_LOCATION}
               children={
-                <Select options={dhcp82SubOption1Options} />
+                <Select
+                  disabled={readonly}
+                  options={dhcp82SubOption1Options}
+                  onChange={onFormFieldChange} />
               }
             />
           }
@@ -149,14 +216,17 @@ export const DhcpOption82SettingsFormField = (props: { labelWidth?: string }) =>
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
-            children={<Switch />}
+            children={<Switch disabled={readonly} onChange={onFormFieldChange}/>}
           />
           { dhcpOption82SubOption2Enabled &&
             <Form.Item
               name={dhcpOption82SubOption2FormatFieldName}
               initialValue={DhcpOption82SubOption2Enum.SUBOPT2_CLIENT_MAC}
               children={
-                <Select options={dhcp82SubOption2Options} />
+                <Select
+                  disabled={readonly}
+                  options={dhcp82SubOption2Options}
+                  onChange={onFormFieldChange}/>
               }
             />
           }
@@ -171,7 +241,7 @@ export const DhcpOption82SettingsFormField = (props: { labelWidth?: string }) =>
           style={{ marginBottom: '10px' }}
           valuePropName='checked'
           initialValue={false}
-          children={<Switch />}
+          children={<Switch disabled={readonly} onChange={onFormFieldChange}/>}
         />
       </UI.FieldLabel>
       <UI.FieldLabel width={labelWidth}>
@@ -185,14 +255,14 @@ export const DhcpOption82SettingsFormField = (props: { labelWidth?: string }) =>
             style={{ marginBottom: '10px' }}
             valuePropName='checked'
             initialValue={false}
-            children={<Switch />}
+            children={<Switch disabled={readonly} onChange={onFormFieldChange}/>}
           />
           { dhcpOption82SubOption151Enabled &&
             <Form.Item
               name={dhcpOption82SubOption151FormatFieldName}
               initialValue={DhcpOption82SubOption151Enum.SUBOPT151_AREA_NAME}
               children={
-                <Select>
+                <Select disabled={readonly} onChange={onFormFieldChange}>
                   <Option value={DhcpOption82SubOption151Enum.SUBOPT151_AREA_NAME}>
                     {$t({ defaultMessage: 'Area Name' })}
                   </Option>
@@ -205,13 +275,15 @@ export const DhcpOption82SettingsFormField = (props: { labelWidth?: string }) =>
           }
           { DhcpOption82SubOption151Enum.SUBOPT151_AREA_NAME === dhcpOption82SubOption151Format &&
             <Form.Item
-              name={['wlan','advancedCustomization','dhcpOption82SubOption151Input']}
+              name={dhcpOption82SubOption151InputFieldName}
               style={{ marginLeft: '10px' }}
               rules={[
                 { required: true, message: $t({ defaultMessage: 'Please enter Area Name' }) }
               ]}
               children={
                 <Input style={{ width: '320px' }}
+                  disabled={readonly}
+                  onChange={onFormFieldChange}
                 />
               }
             />
@@ -224,27 +296,34 @@ export const DhcpOption82SettingsFormField = (props: { labelWidth?: string }) =>
         (dhcpOption82SubOption151Enabled &&
           DhcpOption82SubOption151Enum.SUBOPT151_ESSID === dhcpOption82SubOption151Format)) &&
         <UI.FieldLabel width={labelWidth}>
-          <div style={{ display: 'grid', gridTemplateColumns: '240px' }}>
-            <Form.Item
-              name={['wlan','advancedCustomization','dhcpOption82MacFormat']}
-              label={$t({ defaultMessage: 'AP & Client MAC format delimiter' })}
-              tooltip={apAndClientMacFormatDelimiter}
-              initialValue={DhcpOption82MacEnum.COLON}
-              children={
-                <Select>
-                  <Option value={DhcpOption82MacEnum.COLON}>
-                    {$t({ defaultMessage: 'AA:BB:CC:DD:EE:FF' })}
-                  </Option>
-                  <Option value={DhcpOption82MacEnum.HYPHEN}>
-                    {$t({ defaultMessage: 'AA-BB-CC-DD-EE-FF' })}
-                  </Option>
-                  <Option value={DhcpOption82MacEnum.NODELIMITER}>
-                    {$t({ defaultMessage: 'AABBCCDDEEFF' })}
-                  </Option>
-                </Select>
-              }
-            />
-          </div>
+          <Space>
+            {$t({ defaultMessage: 'AP & Client MAC Format Delimiter' })}
+            <Tooltip
+              title={apAndClientMacFormatDelimiter}
+              placement='right'
+            >
+              <QuestionMarkCircleOutlined
+                style={{ height: '14px', marginBottom: -3 }}
+              />
+            </Tooltip>
+          </Space>
+          <Form.Item
+            name={dhcpOption82MacFormat}
+            initialValue={DhcpOption82MacEnum.COLON}
+            children={
+              <Select disabled={readonly} onChange={onFormFieldChange}>
+                <Option value={DhcpOption82MacEnum.COLON}>
+                  {$t({ defaultMessage: 'AA:BB:CC:DD:EE:FF' })}
+                </Option>
+                <Option value={DhcpOption82MacEnum.HYPHEN}>
+                  {$t({ defaultMessage: 'AA-BB-CC-DD-EE-FF' })}
+                </Option>
+                <Option value={DhcpOption82MacEnum.NODELIMITER}>
+                  {$t({ defaultMessage: 'AABBCCDDEEFF' })}
+                </Option>
+              </Select>
+            }
+          />
         </UI.FieldLabel>
       }
     </>

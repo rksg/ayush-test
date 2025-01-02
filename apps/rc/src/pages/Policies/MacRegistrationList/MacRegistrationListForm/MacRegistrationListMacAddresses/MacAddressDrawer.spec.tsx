@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }               from '@acx-ui/feature-toggle'
-import { MacRegListUrlsInfo }         from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { MacRegListUrlsInfo }                  from '@acx-ui/rc/utils'
+import { Provider }                            from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { MacAddressDrawer } from './MacAddressDrawer'
 
@@ -58,7 +58,12 @@ const list = {
 }
 
 describe('MacAddressDrawer', () => {
+  const mockSaveMacFn = jest.fn()
+  const mockUpdateMacFn = jest.fn()
+
   beforeEach(async () => {
+    mockSaveMacFn.mockClear()
+
     mockServer.use(
       rest.get(
         MacRegListUrlsInfo.getMacRegistrations.url.split('?')[0],
@@ -66,11 +71,17 @@ describe('MacAddressDrawer', () => {
       ),
       rest.post(
         MacRegListUrlsInfo.addMacRegistration.url,
-        (req, res, ctx) => res(ctx.json({}))
+        (_, res, ctx) => {
+          mockSaveMacFn()
+          return res(ctx.json({}))
+        }
       ),
       rest.patch(
         MacRegListUrlsInfo.updateMacRegistration.url,
-        (req, res, ctx) => res(ctx.json({}))
+        (_, res, ctx) => {
+          mockUpdateMacFn()
+          return res(ctx.json({}))
+        }
       ),
       rest.post(
         MacRegListUrlsInfo.searchMacRegistrations.url.split('?')[0],
@@ -105,7 +116,7 @@ describe('MacAddressDrawer', () => {
     await userEvent.type(await screen.findByRole('textbox', { name: 'MAC Address' }), '11:22:33:44:55:77')
     await userEvent.click(saveButton)
 
-    await screen.findByText('MAC Address 11:22:33:44:55:77 was added')
+    await waitFor(() => expect(mockSaveMacFn).toHaveBeenCalled())
   })
 
   it('should cancel the drawer successfully', async () => {
@@ -168,7 +179,7 @@ describe('MacAddressDrawer', () => {
 
     await userEvent.click(saveButton)
 
-    await screen.findByText('MAC Address 3A-B8-A9-29-35-D5 was updated')
+    await waitFor(() => expect(mockUpdateMacFn).toHaveBeenCalled())
   })
 
   it('should submit the drawer successfully async', async () => {

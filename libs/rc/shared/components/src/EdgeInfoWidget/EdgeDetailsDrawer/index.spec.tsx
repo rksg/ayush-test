@@ -1,10 +1,12 @@
 
 import { rest } from 'msw'
 
+import { Features }                                                         from '@acx-ui/feature-toggle'
 import { EdgeClusterStatus, EdgeGeneralFixtures, EdgeStatus, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, screen, waitFor }                              from '@acx-ui/test-utils'
 
+import { useIsEdgeFeatureReady }                                 from '../../useEdgeActions'
 import { currentEdge, edgeDnsServers, passwordDetail, tenantID } from '../__tests__/fixtures'
 
 import EdgeDetailsDrawer from '.'
@@ -25,6 +27,11 @@ jest.mock('@acx-ui/components', () => ({
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const mockCluster = mockEdgeClusterList.data[0] as unknown as EdgeClusterStatus
 
+jest.mock('../../useEdgeActions', () => ({
+  ...jest.requireActual('../../useEdgeActions'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
 describe('Edge Detail Drawer', () => {
   it('should render correctly', async () => {
     render(<Provider>
@@ -40,7 +47,6 @@ describe('Edge Detail Drawer', () => {
     expect(screen.queryByText('Login Password')).toBeNull()
     expect(screen.queryByText('Enable Password')).toBeNull()
     expect(await screen.findByText('Edge Cluster 1')).toBeVisible()
-    expect(await screen.findByText('Hierarchical QoS')).toBeVisible()
   })
 
   it('should render -- if data is undefined', async () => {
@@ -140,6 +146,40 @@ describe('Edge Detail Drawer', () => {
     await waitFor(() => expect(passwordInputs[0]).toHaveValue(passwordDetail.loginPassword))
     expect(passwordInputs[1]).toHaveValue(passwordDetail.enablePassword)
     user.useUserProfileContext = originMockData
+  })
+
+  it('should render "Hierarchical QoS" when HQoS_FF is enabled', async () => {
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation((feature) =>
+      feature === Features.EDGE_QOS_TOGGLE)
+
+    render(<Provider>
+      <EdgeDetailsDrawer
+        visible={true}
+        setVisible={jest.fn()}
+        currentEdge={currentEdge}
+        currentCluster={mockCluster}
+        dnsServers={edgeDnsServers}
+      />
+    </Provider>, { route: { params } })
+
+    expect(await screen.findByText('Hierarchical QoS')).toBeVisible()
+  })
+
+  it('should render "ARP Termination" when ARP_FF is enabled', async () => {
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation((feature) =>
+      feature === Features.EDGE_ARPT_TOGGLE)
+
+    render(<Provider>
+      <EdgeDetailsDrawer
+        visible={true}
+        setVisible={jest.fn()}
+        currentEdge={currentEdge}
+        currentCluster={mockCluster}
+        dnsServers={edgeDnsServers}
+      />
+    </Provider>, { route: { params } })
+
+    expect(await screen.findByText('ARP Termination')).toBeVisible()
   })
 
   it('should render "vCPUs" as the unit for virtual Edge serial', async () => {
