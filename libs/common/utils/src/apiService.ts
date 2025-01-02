@@ -176,3 +176,8 @@ export const enableNewApi = function (apiInfo: ApiInfo) {
 export const getUrlForTest = (apiInfo: ApiInfo) => {
   return enableNewApi(apiInfo) ? apiInfo.url : (apiInfo.oldUrl || apiInfo.url)
 }
+
+
+export const getOpsApi = (apiInfo: ApiInfo) => {
+  return apiInfo.opsApi || ''
+}
