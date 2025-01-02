@@ -144,11 +144,7 @@ export function getGraphKPIs (
   })
 }
 
-type IntentDetailsQueryPayload = {
-  root: string
-  sliceId: string
-  code: string
-}
+type IntentDetailsQueryPayload = ReturnType<typeof useIntentParams>
 
 export const api = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
@@ -191,39 +187,11 @@ export const api = intentAIApi.injectEndpoints({
       transformErrorResponse: (error, meta) =>
         ({ ...error, data: meta?.response?.data?.intent }),
       providesTags: [{ type: 'Intent', id: 'INTENT_KPIS' }]
-    }),
-    intentStatusTrail: build.query<
-      Intent['statusTrail'],
-      IntentDetailsQueryPayload & { loadStatusMetadata?: boolean }
-    >({
-      query: ({ loadStatusMetadata, ...variables }) => ({
-        variables,
-        document: gql`
-          query IntentStatusTrail($root: String!, $sliceId: String!, $code: String!) {
-            intent(root: $root, sliceId: $sliceId, code: $code) {
-              statusTrail {
-                status statusReason displayStatus createdAt
-                ${loadStatusMetadata ? gql`metadata {
-                  scheduledAt: field(prop: "scheduledAt")
-                  failures: field(prop: "failures"),
-                  changedByName: field(prop: "changedByName")
-                }` : ''}
-              }
-            }
-          }
-        `
-      }),
-      transformResponse: (response: { intent: { statusTrail: Intent['statusTrail'] } })=>
-        response.intent.statusTrail,
-      transformErrorResponse: (error, meta) =>
-        ({ ...error, data: meta?.response?.data?.intent }),
-      providesTags: [{ type: 'Intent', id: 'INTENT_STATUS_TRAIL' }]
     })
   })
 })
 
 export const {
   useIntentDetailsQuery,
-  useIntentKPIsQuery,
-  useIntentStatusTrailQuery
+  useIntentKPIsQuery
 } = api

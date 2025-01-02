@@ -16,6 +16,7 @@ import {
 }                                                   from '@acx-ui/utils'
 import type { PathFilter } from '@acx-ui/utils'
 
+import { richTextFormatValues } from './common/richTextFormatValues'
 import {
   states,
   codes,
@@ -33,8 +34,6 @@ import {
   parseTransitionGQLByAction,
   TransitionIntentItem
 } from './utils'
-
-import type { Props as FormattedMessageProps } from 'react-intl/lib/src/components/message'
 
 export type HighlightItem = {
   new: number
@@ -61,10 +60,9 @@ export type IntentAP = {
   version: string
 }
 
-export const formatValues: FormattedMessageProps['values'] = {
-  ul: (chunks) => React.createElement('ul', { children: chunks }),
-  li: (chunks) => React.createElement('li', { children: chunks }),
-  p: (chunks) => React.createElement('p', { children: chunks })
+export const formatValues: typeof richTextFormatValues = {
+  ...richTextFormatValues,
+  p: (chunks) => <p>{chunks}</p>
 }
 
 export const getStatusTooltip = (
