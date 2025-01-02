@@ -942,12 +942,16 @@ export function RadioSettings () {
         return
       }
 
-      const { method, allowedChannels, channelBandwidth } = radioParams
+      const { method, allowedChannels, channelBandwidth, useVenueSettings, manualChannel } = radioParams
       const bandwidth = (channelBandwidth === 'AUTO') ? 'auto' : channelBandwidth
 
       if (method === 'MANUAL') {
         radioParams.manualChannel = (allowedChannels && parseInt(allowedChannels[0], 10)) || 0
-        radioParams.allowedChannels = supportCh[bandwidth]
+        if (useVenueSettings) {
+          radioParams.allowedChannels = [manualChannel.toString()]
+        } else {
+          radioParams.allowedChannels = supportCh[bandwidth]
+        }
       } else {
         radioParams.manualChannel = 0
         if (!allowedChannels) {
