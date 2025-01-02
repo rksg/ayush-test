@@ -1,7 +1,7 @@
 
-import { IncidentFilter }         from '@acx-ui/analytics/utils'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { useLoadTimeTracking }    from '@acx-ui/utils'
+import { IncidentFilter }                      from '@acx-ui/analytics/utils'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { useLoadTimeTracking, widgetsMapping } from '@acx-ui/utils'
 
 import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from '../IncidentBySeverity/services'
 import { useIncidentToggles }                                   from '../useIncidentToggles'
@@ -27,7 +27,7 @@ export function IncidentBySeverity ({ type, filters, setIncidentCount }: Inciden
   })
 
   useLoadTimeTracking({
-    itemName: 'IncidentBySeverity',
+    itemName: widgetsMapping.INCIDENT_BY_SEVERITY,
     states: [queryResult],
     isEnabled: isMonitoringPageEnabled
   })

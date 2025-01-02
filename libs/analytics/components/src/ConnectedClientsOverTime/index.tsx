@@ -9,10 +9,10 @@ import {
   HistoricalCard,
   Loader, StackedAreaChart,
   NoData, MultiLineTimeSeriesChart, qualitativeColorSet } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { formatter }              from '@acx-ui/formatter'
-import { useLoadTimeTracking }    from '@acx-ui/utils'
-import type { AnalyticsFilter }   from '@acx-ui/utils'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { formatter }                           from '@acx-ui/formatter'
+import { useLoadTimeTracking, widgetsMapping } from '@acx-ui/utils'
+import type { AnalyticsFilter }                from '@acx-ui/utils'
 
 import { ConnectedClientsOverTimeData, useConnectedClientsOverTimeQuery } from './services'
 
@@ -43,7 +43,7 @@ export function ConnectedClientsOverTime ({
   })
 
   useLoadTimeTracking({
-    itemName: 'ConnectedClientsOverTime',
+    itemName: widgetsMapping.CONNECTED_CLIENTS_OVER_TIME,
     states: [queryResults],
     isEnabled: isMonitoringPageEnabled
   })

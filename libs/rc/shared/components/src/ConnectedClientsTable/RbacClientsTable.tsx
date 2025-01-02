@@ -25,10 +25,10 @@ import {
   ClientInfo,
   getClientHealthClass
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }              from '@acx-ui/react-router-dom'
-import { WifiScopes }                         from '@acx-ui/types'
-import { filterByAccess, hasPermission }      from '@acx-ui/user'
-import { noDataDisplay, useLoadTimeTracking } from '@acx-ui/utils'
+import { TenantLink, useParams }                              from '@acx-ui/react-router-dom'
+import { WifiScopes }                                         from '@acx-ui/types'
+import { filterByAccess, hasPermission }                      from '@acx-ui/user'
+import { noDataDisplay, useLoadTimeTracking, widgetsMapping } from '@acx-ui/utils'
 
 import { ClientHealthIcon } from '../ClientHealthIcon'
 
@@ -706,7 +706,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
     hasPermission({ scopes: [ WifiScopes.UPDATE, WifiScopes.DELETE] }) )
 
   useLoadTimeTracking({
-    itemName: 'WirelessClientsTable',
+    itemName: widgetsMapping.WIRELESS_CLIENTS_TABLE,
     states: [tableQuery],
     isEnabled: isMonitoringPageEnabled
   })

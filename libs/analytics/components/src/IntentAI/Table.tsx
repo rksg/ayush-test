@@ -10,7 +10,7 @@ import { AIDrivenRRM, AIOperation, EquiFlex, EcoFlexAI, ChatbotLink }           
 import { useNavigate, useTenantLink, TenantLink }                                              from '@acx-ui/react-router-dom'
 import { WifiScopes }                                                                          from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
-import { noDataDisplay, PathFilter, useEncodedParameter, useLoadTimeTracking }                 from '@acx-ui/utils'
+import { noDataDisplay, PathFilter, useEncodedParameter, useLoadTimeTracking, widgetsMapping } from '@acx-ui/utils'
 
 import bannerImg from '../../../assets/banner_bkg.png'
 
@@ -334,7 +334,7 @@ export function IntentAITable (
   ]
 
   useLoadTimeTracking({
-    itemName: 'IntentAITable',
+    itemName: widgetsMapping.INTENT_AI_TABLE,
     states: [queryResults],
     isEnabled: isMonitoringPageEnabled
   })

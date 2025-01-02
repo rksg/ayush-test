@@ -7,10 +7,10 @@ import {
   Table,
   TableProps,
   NoData } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { TenantLink }             from '@acx-ui/react-router-dom'
-import { useLoadTimeTracking }    from '@acx-ui/utils'
-import type { AnalyticsFilter }   from '@acx-ui/utils'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { TenantLink }                          from '@acx-ui/react-router-dom'
+import { useLoadTimeTracking, widgetsMapping } from '@acx-ui/utils'
+import type { AnalyticsFilter }                from '@acx-ui/utils'
 
 import { useTopSwitchesByErrorQuery, TopSwitchesByErrorData } from './services'
 import { CustomTable }                                        from './styledComponents'
@@ -83,7 +83,7 @@ function TopSwitchesByErrorWidget ({
   </CustomTable> : <NoData/>
 
   useLoadTimeTracking({
-    itemName: 'TopSwitchesByErrorWidget',
+    itemName: widgetsMapping.TOP_SWITCHES_BY_ERROR,
     states: [queryResults],
     isEnabled: isMonitoringPageEnabled
   })

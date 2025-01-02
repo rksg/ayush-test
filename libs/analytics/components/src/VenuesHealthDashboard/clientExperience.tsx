@@ -6,7 +6,7 @@ import { GridCol, GridRow, HistoricalCard, Loader, ProgressBarV2 } from '@acx-ui
 import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import { useNavigateToPath }                                       from '@acx-ui/react-router-dom'
 import { hasRaiPermission }                                        from '@acx-ui/user'
-import { useLoadTimeTracking }                                     from '@acx-ui/utils'
+import { useLoadTimeTracking, widgetsMapping }                     from '@acx-ui/utils'
 import type { AnalyticsFilter }                                    from '@acx-ui/utils'
 
 import { HealthData, useHealthQuery } from './services'
@@ -64,7 +64,7 @@ export function ClientExperience ({
   const onArrowClick = useNavigateToPath('/analytics/health/')
 
   useLoadTimeTracking({
-    itemName: 'ClientExperience',
+    itemName: widgetsMapping.CLIENT_EXPERIENCE,
     states: [queryResults],
     isEnabled: isMonitoringPageEnabled
   })

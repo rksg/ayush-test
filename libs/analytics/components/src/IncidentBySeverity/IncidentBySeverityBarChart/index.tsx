@@ -12,9 +12,9 @@ import {
   cssStr,
   TrendPill
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { formatter }              from '@acx-ui/formatter'
-import { useLoadTimeTracking }    from '@acx-ui/utils'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { formatter }                           from '@acx-ui/formatter'
+import { useLoadTimeTracking, widgetsMapping } from '@acx-ui/utils'
 
 import { useIncidentToggles }                                   from '../../useIncidentToggles'
 import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from '../services'
@@ -88,7 +88,7 @@ export function IncidentBySeverityBarChart ({ filters }: { filters: IncidentFilt
   }
 
   useLoadTimeTracking({
-    itemName: 'IncidentBySeverityBarChart',
+    itemName: widgetsMapping.INCIDENT_BY_SEVERITY_BAR_CHART,
     states: [prevResult, currentResult],
     isEnabled: isMonitoringPageEnabled
   })

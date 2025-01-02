@@ -1,10 +1,10 @@
 import { useIntl, defineMessage } from 'react-intl'
 
-import { Cascader, Loader }                        from '@acx-ui/components'
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
-import { useVenuesListQuery }                      from '@acx-ui/rc/services'
-import { useParams }                               from '@acx-ui/react-router-dom'
-import { useDashboardFilter, useLoadTimeTracking } from '@acx-ui/utils'
+import { Cascader, Loader }                                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { useVenuesListQuery }                                      from '@acx-ui/rc/services'
+import { useParams }                                               from '@acx-ui/react-router-dom'
+import { useDashboardFilter, useLoadTimeTracking, widgetsMapping } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -39,7 +39,7 @@ export function VenueFilter () {
   })
 
   useLoadTimeTracking({
-    itemName: 'VenueFilter',
+    itemName: widgetsMapping.ORGANIZATION_DROPDOWN,
     states: [queryResults],
     isEnabled: isMonitoringPageEnabled
   })

@@ -8,11 +8,11 @@ import {
   Table,
   NoData,
   SparklineChart } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { formatter, intlFormats } from '@acx-ui/formatter'
-import { TenantLink }             from '@acx-ui/react-router-dom'
-import { useLoadTimeTracking }    from '@acx-ui/utils'
-import type { AnalyticsFilter }   from '@acx-ui/utils'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { formatter, intlFormats }              from '@acx-ui/formatter'
+import { TenantLink }                          from '@acx-ui/react-router-dom'
+import { useLoadTimeTracking, widgetsMapping } from '@acx-ui/utils'
+import type { AnalyticsFilter }                from '@acx-ui/utils'
 
 import { useTopSSIDsByClientQuery, TopSSIDsByClient } from './services'
 import { TrafficPercent }                             from './styledComponents'
@@ -94,7 +94,7 @@ function TopSSIDsByClientWidget ({
   /> : <NoData/>
 
   useLoadTimeTracking({
-    itemName: 'TopSSIDsByClientWidget',
+    itemName: widgetsMapping.TOP_SSIDS_BY_CLIENT_WIDGET,
     states: [queryResults],
     isEnabled: isMonitoringPageEnabled
   })

@@ -9,8 +9,8 @@ import {
   Alarm,
   EventSeverityEnum
 } from '@acx-ui/rc/utils'
-import { useParams }           from '@acx-ui/react-router-dom'
-import { useLoadTimeTracking } from '@acx-ui/utils'
+import { useParams }                           from '@acx-ui/react-router-dom'
+import { useLoadTimeTracking, widgetsMapping } from '@acx-ui/utils'
 
 import { getAlarmsDonutChartData } from '../AlarmWidget'
 
@@ -71,7 +71,7 @@ export function VenueAlarmWidget () {
   })
 
   useLoadTimeTracking({
-    itemName: 'VenueAlarmWidget',
+    itemName: widgetsMapping.VENUE_ALARM_WIDGET,
     states: [overviewV2Query],
     isEnabled: isMonitoringPageEnabled
   })

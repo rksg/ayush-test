@@ -16,7 +16,7 @@ import {
 } from '@acx-ui/rc/services'
 import { FILTER, Persona, PersonaErrorResponse, PersonaGroup, SEARCH } from '@acx-ui/rc/utils'
 import { filterByAccess, hasCrossVenuesPermission }                    from '@acx-ui/user'
-import { exportMessageMapping, useLoadTimeTracking }                   from '@acx-ui/utils'
+import { exportMessageMapping, useLoadTimeTracking, widgetsMapping }   from '@acx-ui/utils'
 
 import { IdentityDetailsLink, IdentityGroupLink, PropertyUnitLink } from '../../CommonLinkHelper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }          from '../../ImportFileDrawer'
@@ -377,7 +377,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
   setIdentitiesCount?.(personaListQuery.data?.totalCount || 0)
 
   useLoadTimeTracking({
-    itemName: 'IdentityTable',
+    itemName: widgetsMapping.IDENTITY_TABLE,
     states: [personaListQuery],
     isEnabled: isMonitoringPageEnabled
   })

@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 
-import { Loader, GoogleMap }                       from '@acx-ui/components'
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
-import { useDashboardV2OverviewQuery }             from '@acx-ui/rc/services'
-import { useParams }                               from '@acx-ui/react-router-dom'
-import { useDashboardFilter, useLoadTimeTracking } from '@acx-ui/utils'
+import { Loader, GoogleMap }                                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { useDashboardV2OverviewQuery }                             from '@acx-ui/rc/services'
+import { useParams }                                               from '@acx-ui/react-router-dom'
+import { useDashboardFilter, useLoadTimeTracking, widgetsMapping } from '@acx-ui/utils'
 
 import { usePreference } from '../usePreference'
 
@@ -43,7 +43,7 @@ function ActualMapV2 () {
   const isLoading = getReqState.isLoading || getReqState.isFetching || updateReqState.isLoading
 
   useLoadTimeTracking({
-    itemName: 'ActualMapV2',
+    itemName: widgetsMapping.MAP,
     states: [queryResults],
     isEnabled: isMonitoringPageEnabled
   })

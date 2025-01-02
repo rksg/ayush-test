@@ -4,7 +4,7 @@ import { useDashboardV2OverviewQuery, useDeviceSummariesQuery, useRwgListQuery }
 import { useParams }                                                             from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                             from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                                       from '@acx-ui/user'
-import { useDashboardFilter, useLoadTimeTracking }                               from '@acx-ui/utils'
+import { useDashboardFilter, useLoadTimeTracking, widgetsMapping }               from '@acx-ui/utils'
 
 import {
   getApStackedBarChartData,
@@ -52,7 +52,7 @@ export function DevicesDashboardWidgetV2 () {
     useRwgListQuery({ params: useParams() }, { skip: !(showRwgUI && rwgHasPermission) })
 
   useLoadTimeTracking({
-    itemName: 'DevicesDashboardWidgetV2',
+    itemName: widgetsMapping.DEVICES_DASHBOARD_WIDGET,
     states: [queryResults, { isLoading: rwgLoading, isSuccess: rwgSuccess }],
     isEnabled: isMonitoringPageEnabled
   })
