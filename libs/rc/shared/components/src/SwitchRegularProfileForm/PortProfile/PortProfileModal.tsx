@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 
 import { Form, Typography } from 'antd'
+import _                    from 'lodash'
 import { useIntl }          from 'react-intl'
 import { useParams }        from 'react-router-dom'
 
@@ -58,10 +59,11 @@ export function PortProfileModal (props: {
 
   const onSaveModel = async (data: PortProfileUI) => {
     if(data.models && data.models.length > 0){
+      const models = _.uniq(data.models)
 
       const sameModelPortProfileIds =
       getPortProfileIdIfModelsMatch(portProfileList,
-        { ...portProfileSettingValues, models: data.models } )
+        { ...portProfileSettingValues, models } )
       if(portProfilesList?.data){
         const duplicateResult = validateDuplicatePortProfile(
           sameModelPortProfileIds, portProfilesList.data)
@@ -75,7 +77,7 @@ export function PortProfileModal (props: {
       }
 
       if(!editMode){
-        setPortProfileSettingValues({ ...data })
+        setPortProfileSettingValues({ ...data, models })
       }
       setNoModelMsg(false)
       return true
