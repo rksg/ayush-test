@@ -7,19 +7,19 @@ import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 import { Card, GridCol, GridRow, Loader } from '@acx-ui/components'
 import { getIntl }                        from '@acx-ui/utils'
 
-import { DescriptionSection }       from '../../DescriptionSection'
-import { FixedAutoSizer }           from '../../DescriptionSection/styledComponents'
-import { useCommonFields }          from '../common/commonFields'
-import { DetailsSection }           from '../common/DetailsSection'
-import { IntentDetailsHeader }      from '../common/IntentDetailsHeader'
-import { IntentDetailsSidebar }     from '../common/IntentDetailsSidebar'
-import { IntentIcon }               from '../common/IntentIcon'
-import { KpiCard }                  from '../common/KpiCard'
-import { richTextFormatValues }     from '../common/richTextFormatValues'
-import { StatusTrail }              from '../common/StatusTrail'
-import { useIntentContext }         from '../IntentContext'
-import { getStatusTooltip }         from '../services'
-import { getGraphKPIs, getKPIData } from '../useIntentDetailsQuery'
+import { DescriptionSection }   from '../../DescriptionSection'
+import { FixedAutoSizer }       from '../../DescriptionSection/styledComponents'
+import { useCommonFields }      from '../common/commonFields'
+import { DetailsSection }       from '../common/DetailsSection'
+import { IntentDetailsHeader }  from '../common/IntentDetailsHeader'
+import { IntentDetailsSidebar } from '../common/IntentDetailsSidebar'
+import { IntentIcon }           from '../common/IntentIcon'
+import { KPIGrid }              from '../common/KPIs'
+import { richTextFormatValues } from '../common/richTextFormatValues'
+import { StatusTrail }          from '../common/StatusTrail'
+import { useIntentContext }     from '../IntentContext'
+import { getStatusTooltip }     from '../services'
+import { getKPIData }           from '../useIntentDetailsQuery'
 
 import { IntentAIRRMGraph, SummaryGraphAfter, SummaryGraphBefore } from './RRMGraph'
 import { DownloadRRMComparison }                                   from './RRMGraph/DownloadRRMComparison'
@@ -78,7 +78,7 @@ export function createIntentAIDetails () {
 
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const { intent, kpis, isDataRetained: hasData, state } = useIntentContext()
+    const { intent, isDataRetained: hasData, state } = useIntentContext()
     const valuesText = useValuesText()
     const { displayStatus, sliceValue, metadata, updatedAt } = intent
 
@@ -117,11 +117,7 @@ export function createIntentAIDetails () {
               <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
               <DetailsSection.Details>
                 <GridRow>
-                  {getGraphKPIs(intent, kpis).map(kpi => (
-                    <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
-                      <KpiCard kpi={kpi} />
-                    </GridCol>
-                  ))}
+                  <KPIGrid/>
                 </GridRow>
               </DetailsSection.Details>
             </DetailsSection>

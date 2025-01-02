@@ -4,10 +4,8 @@ import { useIntl }        from 'react-intl'
 
 import { StepsForm, ProcessedCloudRRMGraph } from '@acx-ui/components'
 
-import { KpiField }         from '../../common/KpiField'
+import { KPIFields }        from '../../common/KPIs'
 import { ScheduleTiming }   from '../../common/ScheduleTiming'
-import { useIntentContext } from '../../IntentContext'
-import { getGraphKPIs }     from '../../useIntentDetailsQuery'
 import { IntentAIRRMGraph } from '../RRMGraph'
 
 import * as SideNotes from './SideNotes'
@@ -16,7 +14,6 @@ export function Summary (
   { summaryUrlBefore, summaryUrlAfter, crrmData } :
   { summaryUrlBefore?: string, summaryUrlAfter?: string, crrmData: ProcessedCloudRRMGraph[] }) {
   const { $t } = useIntl()
-  const { intent, kpis } = useIntentContext()
 
   return <Row gutter={20}>
     <Col span={16}>
@@ -28,7 +25,7 @@ export function Summary (
           summaryUrlAfter={summaryUrlAfter}
         />
       </Form.Item>
-      {getGraphKPIs(intent, kpis).map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
+      <KPIFields/>
       <ScheduleTiming.FieldSummary />
     </Col>
     <Col span={7} offset={1}>

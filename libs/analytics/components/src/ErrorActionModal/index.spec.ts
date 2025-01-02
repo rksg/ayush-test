@@ -68,9 +68,9 @@ describe('ExpiredSessionModal', () => {
   })
 })
 
-
 describe('getErrorContent', () => {
-  it('should return action payload when action type includes "data-api" and response has errors',
+  it.each(['data-api', 'network-health']) (
+    'should return action payload when action type includes "%s" and response has errors',
     () => {
       const action: AnyAction = {
         type: 'data-api/error',
