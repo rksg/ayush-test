@@ -110,6 +110,8 @@ export function LanPortSettings (props: {
   const [ethernetProfileCreateId, setEthernetProfileCreateId] = useState<String>()
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
+  const isDhcpOption82Enabled = useIsSplitOn(Features.WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE)
+
   const isEthernetClientIsolationEnabled =
     useIsSplitOn(Features.WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE)
 
@@ -300,7 +302,7 @@ export function LanPortSettings (props: {
                     onGUIChanged={onGUIChanged}
                     dispatch={dispatch}
                   />
-                  {isSoftGreTunnelEnable &&
+                  {isDhcpOption82Enabled && isSoftGreTunnelEnable &&
                     <DhcpOption82Settings
                       readonly={readOnly ?? false}
                       index={index}
