@@ -9,9 +9,9 @@ import { useParams }               from '@acx-ui/react-router-dom'
 import { intentAIApi }             from '@acx-ui/store'
 import { getIntl, noDataDisplay }  from '@acx-ui/utils'
 
-import { Intent }                            from './config'
-import { Statuses }                          from './states'
-import { dataRetentionText, isDataRetained } from './utils'
+import { Intent }                              from './config'
+import { Statuses }                            from './states'
+import { coldTierDataText, dataRetentionText } from './utils'
 
 export type IntentKPIConfig = {
   key: string;
@@ -42,6 +42,10 @@ export type IntentConfigurationValue =
 export type IntentDetail = Intent & Partial<IntentKPI> & {
   currentValue: IntentConfigurationValue
   recommendedValue: IntentConfigurationValue
+  dataCheck: {
+    isDataRetained: boolean
+    isHotTierData: boolean
+  }
 }
 
 export const useIntentParams = () => {
@@ -102,7 +106,9 @@ export function getKPIData (intent: IntentDetail, config: IntentKPIConfig) {
 
 export function getGraphKPIs (
   intent: IntentDetail,
-  kpis: IntentKPIConfig[]
+  kpis: IntentKPIConfig[],
+  isDataRetained: boolean,
+  isHotTierData: boolean
 ) {
   const { $t } = getIntl()
   const state = intentState(intent)
@@ -121,9 +127,7 @@ export function getGraphKPIs (
       delta: { value: string; trend: TrendTypeEnum } | undefined
     }
 
-    if (!isDataRetained(intent.metadata.dataEndTime)) {
-      ret.footer = $t(dataRetentionText)
-    } else if (state !== 'no-data') {
+    if (isHotTierData && isDataRetained && state !== 'no-data') {
       const result = getKPIData(intent, kpi)
       ret.value = kpi.format(_.get(result, ['data', 'result'], null))
 
@@ -139,6 +143,10 @@ export function getGraphKPIs (
           trend: TrendTypeEnum
         }
       }
+    } else if (!isHotTierData) {
+      ret.footer = $t(coldTierDataText)
+    } else if (!isDataRetained) {
+      ret.footer = $t(dataRetentionText)
     }
     return ret
   })
@@ -153,8 +161,9 @@ type IntentDetailsQueryPayload = {
 
 export const api = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
-    intentDetails: build.query<IntentDetail | undefined, IntentDetailsQueryPayload>({
-      query: ({ root, sliceId, code }: IntentDetailsQueryPayload) => ({
+    intentDetails: build.query<
+    IntentDetail | undefined, IntentDetailsQueryPayload & { isConfigChangeEnabled: boolean }>({
+      query: ({ root, sliceId, code, isConfigChangeEnabled }) => ({
         document: gql`
           query IntentDetails($root: String!, $sliceId: String!, $code: String!) {
             intent(root: $root, sliceId: $sliceId, code: $code) {
@@ -164,6 +173,7 @@ export const api = intentAIApi.injectEndpoints({
               sliceType sliceValue updatedAt
               path { type name }
               ${!code.includes('ecoflex') ? 'currentValue recommendedValue' : ''}
+              ${isConfigChangeEnabled ? 'dataCheck' : ''}
             }
           }
         `,
