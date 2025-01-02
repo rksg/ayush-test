@@ -79,13 +79,13 @@ export function createIntentAIDetails () {
   return function IntentAIDetails () {
     const { $t } = useIntl()
     const { intent, isDataRetained: hasData, state } = useIntentContext()
+    const queryResult = useIntentAICRRMQuery()
     const valuesText = useValuesText()
     const { displayStatus, sliceValue, metadata, updatedAt } = intent
 
     const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
     const [summaryUrlAfter, setSummaryUrlAfter] = useState<string>('')
 
-    const queryResult = useIntentAICRRMQuery()
     const crrmData = queryResult.data!
     const fields = useCommonFields(intent)
     const noData = state === 'no-data'

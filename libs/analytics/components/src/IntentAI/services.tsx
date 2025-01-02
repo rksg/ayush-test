@@ -24,7 +24,8 @@ import {
   stateToGroupedStates,
   IntentListItem,
   Intent,
-  failureCodes
+  failureCodes,
+  Metadata
 } from './config'
 import { DisplayStates } from './states'
 import {
@@ -35,15 +36,6 @@ import {
 } from './utils'
 
 import type { Props as FormattedMessageProps } from 'react-intl/lib/src/components/message'
-
-type Metadata = {
-  failures?: (keyof typeof failureCodes)[]
-  scheduledAt?: string
-  updatedAt?: string
-  oneClickOptimize?: boolean
-  scheduledBy?: string
-  changedByName?: string
-}
 
 export type HighlightItem = {
   new: number
@@ -82,7 +74,7 @@ export const getStatusTooltip = (
   const stateConfig = states[state]
 
   const errMsg = React.createElement('ul', {},
-    (metadata as Metadata).failures?.map(failure =>
+    metadata.failures?.map(failure =>
       React.createElement('li', { key: failure }, failureCodes[failure]
         ? $t(failureCodes[failure]) : failure
       )

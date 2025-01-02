@@ -21,9 +21,9 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { EdgeScopes, ScopeKeys }         from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { useDateFilter }                 from '@acx-ui/utils'
+import { EdgeScopes, RbacOpsIds, ScopeKeys } from '@acx-ui/types'
+import { filterByAccess, hasPermission }     from '@acx-ui/user'
+import { useDateFilter }                     from '@acx-ui/utils'
 
 import { HaStatusBadge }          from '../../HaStatusBadge'
 import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
@@ -75,7 +75,8 @@ export const EdgeDetailsPageHeader = () => {
     scopeKey: ScopeKeys,
     label: string,
     key: string,
-    showupstatus?: EdgeStatusEnum[]
+    showupstatus?: EdgeStatusEnum[],
+    rbacOpsIds?: RbacOpsIds
   } []
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
@@ -105,7 +106,10 @@ export const EdgeDetailsPageHeader = () => {
       onClick={handleMenuClick}
       items={
         menuConfig.filter(item =>
-          item.showupstatus?.includes(status) && hasPermission({ scopes: item.scopeKey })
+          item.showupstatus?.includes(status) && hasPermission({
+            scopes: item.scopeKey,
+            rbacOpsIds: item.rbacOpsIds
+          })
         ).map(({ showupstatus, scopeKey, ...itemFields }) => {
           return { ...itemFields }
         })

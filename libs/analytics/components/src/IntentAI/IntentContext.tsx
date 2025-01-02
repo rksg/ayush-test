@@ -27,6 +27,7 @@ type IIntentContext = {
   kpis: IntentKPIConfig[]
   isDataRetained: boolean
   state: ReturnType<typeof intentState>
+  params: ReturnType<typeof useIntentParams>
 }
 
 export const IntentContext = createContext({} as IIntentContext)
@@ -43,7 +44,6 @@ export function createIntentContextProvider (
 ) {
   const Component: React.FC = function () {
     const params = useIntentParams()
-
     const spec = specs[params.code]
     const query = useIntentDetailsQuery(params, { skip: !spec })
     if (!spec) return null // no matching spec
@@ -60,7 +60,8 @@ export function createIntentContextProvider (
       configuration: spec.configuration,
       kpis: spec.kpis,
       isDataRetained: (intent && isDataRetained(intent.metadata.dataEndTime))!,
-      state: (intent && intentState(intent))!
+      state: (intent && intentState(intent))!,
+      params
     }
 
     return <Loader states={[isDetectError? _.omit(query, ['error']) : query]}>
