@@ -88,7 +88,7 @@ export function RebootTimeout () {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const [options, setOptions] = useState(MinuteTypeOptions)
-  const [serverOptions, setServerOptions] = useState([MinuteTypeOptions[0]])
+  const [serverOptions, setServerOptions] = useState(MinuteTypeOptions)
 
   const {
     editContextData,
@@ -158,21 +158,21 @@ export function RebootTimeout () {
           }
         }
       })
-      // 24 hours 0 minutes
-      if (venueApRebootTimeoutData.gwLossTimeout === 86400) {
-        setOptions([MinuteTypeOptions[0]])
-      }
-      // 0 hours 0 minutes
+
       if (venueApRebootTimeoutData.gwLossTimeout === 0) {
         setOptions([MinuteTypeOptions[1]])
-      }
-      // 0 hours 30 minutes
-      if (venueApRebootTimeoutData.gwLossTimeout === 1800) {
+      } else if (venueApRebootTimeoutData.gwLossTimeout === 1800) {
         setOptions([MinuteTypeOptions[1]])
+      } else if (venueApRebootTimeoutData.gwLossTimeout === 86400) {
+        setOptions([MinuteTypeOptions[0]])
+      } else {
+        setOptions(MinuteTypeOptions)
       }
 
       if (venueApRebootTimeoutData.serverLossTimeout === 1800) {
         setServerOptions([MinuteTypeOptions[1]])
+      } else {
+        setServerOptions([MinuteTypeOptions[0]])
       }
 
       setReadyToScroll?.((r) => [...new Set(r.concat('Reboot-Timeout'))])
