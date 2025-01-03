@@ -9,7 +9,7 @@ import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/comp
 import {
   doProfileDelete,
   useDeleteMacRegistrationsMutation, useGetMacRegListQuery,
-  useSearchMacRegistrationsQuery,
+  useSearchMacRegistrationsQuery, useSearchPersonaListQuery,
   useUpdateMacRegistrationMutation,
   useUploadMacRegistrationMutation
 } from '@acx-ui/rc/services'
@@ -22,9 +22,10 @@ import {
   toDateTimeString,
   useTableQuery,
   filterByAccessForServicePolicyMutation, getScopeKeyByPolicy,
-  PolicyType, PolicyOperation
+  PolicyType, PolicyOperation, IdentityDetailsLink
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useParams }     from '@acx-ui/react-router-dom'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import { MacAddressDrawer } from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
 
@@ -78,6 +79,10 @@ export function MacRegistrationsTab () {
   ] = useDeleteMacRegistrationsMutation()
 
   const [editMacRegistration] = useUpdateMacRegistrationMutation()
+
+  const { data: identityList } = useSearchPersonaListQuery(
+    { payload: { ids: [...new Set(tableQuery.data?.data?.map(d => d.identityId))] } },
+    { skip: !tableQuery.data || !isIdentityRequired })
 
   const rowActions: TableProps<MacRegistration>['rowActions'] = [{
     visible: (selectedRows) => selectedRows.length === 1,
@@ -155,6 +160,23 @@ export function MacRegistrationsTab () {
       searchable: true
     },
     {
+      title: $t({ defaultMessage: 'Identity' }),
+      key: 'username',
+      dataIndex: 'username',
+      sorter: true,
+      render: function (_, row) {
+        if (isIdentityRequired) {
+          const item = identityList?.data?.filter(data => data.id===row.identityId)[0]
+          return (item ? <IdentityDetailsLink
+            name={item.name}
+            personaId={item.id}
+            personaGroupId={item.groupId}
+          /> : noDataDisplay)
+        }
+        return row.username
+      }
+    },
+    {
       title: $t({ defaultMessage: 'Status' }),
       key: 'status',
       dataIndex: 'revoked',
@@ -169,12 +191,6 @@ export function MacRegistrationsTab () {
         }
         return $t({ defaultMessage: 'Active' })
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Username' }),
-      key: 'username',
-      dataIndex: 'username',
-      sorter: true
     },
     {
       title: $t({ defaultMessage: 'E-Mail' }),
@@ -238,6 +254,7 @@ export function MacRegistrationsTab () {
         editData={isEditMode ? editData : undefined}
         // eslint-disable-next-line max-len
         expirationOfPool={returnExpirationString(macRegistrationListQuery.data ?? {} as MacRegistrationPool)}
+        identityGroupId={macRegistrationListQuery?.data?.identityGroupId}
       />
       <ImportFileDrawer
         type={ImportFileDrawerType.DPSK}

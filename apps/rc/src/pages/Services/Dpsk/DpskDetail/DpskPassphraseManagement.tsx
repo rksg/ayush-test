@@ -22,7 +22,8 @@ import {
   useRevokeDpskPassphraseListMutation,
   useUploadPassphrasesMutation,
   getDisabledActionMessage,
-  showAppliedInstanceMessage
+  showAppliedInstanceMessage,
+  useSearchPersonaListQuery
 } from '@acx-ui/rc/services'
 import {
   EXPIRATION_TIME_FORMAT,
@@ -37,12 +38,12 @@ import {
   hasDpskAccess,
   transformAdvancedDpskExpirationText,
   unlimitedNumberOfDeviceLabel,
-  useTableQuery
+  useTableQuery, IdentityDetailsLink
 } from '@acx-ui/rc/utils'
 import { useParams }                                               from '@acx-ui/react-router-dom'
 import { WifiScopes }                                              from '@acx-ui/types'
 import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
-import { getIntl, validationMessages }                             from '@acx-ui/utils'
+import { getIntl, noDataDisplay, validationMessages }              from '@acx-ui/utils'
 
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 import ManageDevicesDrawer                              from './ManageDevicesDrawer'
@@ -97,6 +98,10 @@ export default function DpskPassphraseManagement () {
     pagination: { settingsId }
   })
 
+  const { data: identityList } = useSearchPersonaListQuery(
+    { payload: { ids: [...new Set(tableQuery.data?.data?.map(d => d.identityId))] } },
+    { skip: !tableQuery.data || !isIdentityGroupRequired })
+
   const downloadPassphrases = async () => {
     try {
       const payload = {
@@ -124,10 +129,21 @@ export default function DpskPassphraseManagement () {
     },
     {
       key: 'username',
-      title: $t({ defaultMessage: 'User Name' }),
+      title: $t({ defaultMessage: 'Identity' }),
       dataIndex: 'username',
       sorter: true,
-      searchable: true
+      searchable: true,
+      render: function (_, row) {
+        if (isIdentityGroupRequired) {
+          const item = identityList?.data?.filter(data => data.id===row.identityId)[0]
+          return (item ? <IdentityDetailsLink
+            name={item.name}
+            personaId={item.id}
+            personaGroupId={item.groupId}
+          /> : noDataDisplay)
+        }
+        return row.username
+      }
     },
     {
       key: 'numberOfDevices',
@@ -258,7 +274,12 @@ export default function DpskPassphraseManagement () {
       visible: canEdit,
       onClick: ([selectedRow]) => {
         setPassphrasesDrawerEditMode({ isEdit: true, passphraseId: selectedRow.id })
-        setAddPassphrasesDrawerVisible(true)
+        if (addPassphrasesDrawerVisible) {
+          setAddPassphrasesDrawerVisible(false)
+          setTimeout(() => setAddPassphrasesDrawerVisible(true), 0)
+        } else {
+          setAddPassphrasesDrawerVisible(true)
+        }
         setManageDevicesVisible(false)
       }
     },

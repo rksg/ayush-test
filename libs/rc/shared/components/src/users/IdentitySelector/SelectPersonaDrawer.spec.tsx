@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 
 import { render, screen } from '@acx-ui/test-utils'
 
-import { SelectPersonaDrawer } from './index'
+import { SelectPersonaDrawer } from './SelectPersonaDrawer'
 
 const expectedSelectedPersona = { id: 'test-persona' }
 

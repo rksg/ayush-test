@@ -4,8 +4,9 @@ import { Form, Input } from 'antd'
 import _               from 'lodash'
 import { useIntl }     from 'react-intl'
 
-import { Drawer }                    from '@acx-ui/components'
-import { ExpirationDateSelector }    from '@acx-ui/rc/components'
+import { Drawer }                                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { ExpirationDateSelector, IdentitySelector } from '@acx-ui/rc/components'
 import {
   useAddMacRegistrationMutation, useLazyMacRegistrationsQuery,
   useUpdateMacRegistrationMutation
@@ -13,8 +14,7 @@ import {
 import {
   checkObjectNotExists,
   ExpirationDateEntity,
-  ExpirationMode,
-  MacRegistration,
+  ExpirationMode, MacRegistration,
   MacRegistrationFilterRegExp,
   toExpireEndDate,
   toLocalDateString
@@ -26,18 +26,20 @@ interface MacAddressDrawerProps {
   setVisible: (visible: boolean) => void
   isEdit: boolean
   editData?: MacRegistration,
-  expirationOfPool: string
+  expirationOfPool: string,
+  identityGroupId?: string
 }
 
 export function MacAddressDrawer (props: MacAddressDrawerProps) {
   const intl = useIntl()
-  const { visible, setVisible, isEdit, editData, expirationOfPool } = props
+  const { visible, setVisible, isEdit, editData, expirationOfPool, identityGroupId } = props
   const [resetField, setResetField] = useState(false)
-  const [form] = Form.useForm()
+  const [form] = Form.useForm<MacRegistration>()
   const [addMacRegistration] = useAddMacRegistrationMutation()
   const [editMacRegistration] = useUpdateMacRegistrationMutation()
   const { policyId } = useParams()
   const [ macReg ] = useLazyMacRegistrationsQuery()
+  const isIdentityRequired = useIsSplitOn(Features.MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE)
 
   const macAddressValidator = async (macAddress: string) => {
     const list = (await macReg({
@@ -88,7 +90,8 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
         username: data.username?.length === 0 ? null : data.username,
         email: data.email?.length === 0 ? null : data.email,
         expirationDate: data.expiration?.mode === ExpirationMode.NEVER ? null :
-          toExpireEndDate(data.expiration?.date)
+          toExpireEndDate(data.expiration?.date),
+        identityId: data.identityId
       }
       if (isEdit) {
         await editMacRegistration(
@@ -112,6 +115,14 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
 
   const addManuallyContent =
     <Form layout='vertical' form={form}>
+      {
+        isIdentityRequired && (
+          <Form.Item name='identityId'
+            label={intl.$t({ defaultMessage: 'Associated Identity' })}>
+            <IdentitySelector identityGroupId={identityGroupId} readonly={isEdit}/>
+          </Form.Item>
+        )
+      }
       <Form.Item name='macAddress'
         label={intl.$t({ defaultMessage: 'MAC Address' })}
         rules={[
