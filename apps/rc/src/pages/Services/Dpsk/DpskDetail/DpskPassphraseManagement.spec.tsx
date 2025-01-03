@@ -10,7 +10,7 @@ import {
   ServiceOperation,
   DpskUrls,
   CommonUrlsInfo,
-  ClientUrlsInfo
+  ClientUrlsInfo, PersonaUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -26,7 +26,8 @@ import {
   mockedTenantId,
   mockedServiceId,
   mockedDpskPassphrase,
-  mockedDpskPassphraseDevices
+  mockedDpskPassphraseDevices,
+  mockedIdentityList
 } from './__tests__/fixtures'
 import DpskPassphraseManagement from './DpskPassphraseManagement'
 
@@ -94,6 +95,12 @@ describe('DpskPassphraseManagement', () => {
       rest.post(
         ClientUrlsInfo.getClientMeta.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        PersonaUrls.searchPersonaList.url.split('?')[0],
+        (_req, res, ctx) => {
+          return res(ctx.json(mockedIdentityList))
+        }
       )
     )
   })

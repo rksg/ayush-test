@@ -24,8 +24,7 @@ import {
   filterByAccessForServicePolicyMutation, getScopeKeyByPolicy,
   PolicyType, PolicyOperation, IdentityDetailsLink
 } from '@acx-ui/rc/utils'
-import { useParams }     from '@acx-ui/react-router-dom'
-import { noDataDisplay } from '@acx-ui/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { MacAddressDrawer } from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
 
@@ -171,7 +170,7 @@ export function MacRegistrationsTab () {
             name={item.name}
             personaId={item.id}
             personaGroupId={item.groupId}
-          /> : noDataDisplay)
+          /> : row.username)
         }
         return row.username
       }

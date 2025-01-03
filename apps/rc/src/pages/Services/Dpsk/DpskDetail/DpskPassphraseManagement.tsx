@@ -43,7 +43,7 @@ import {
 import { useParams }                                               from '@acx-ui/react-router-dom'
 import { WifiScopes }                                              from '@acx-ui/types'
 import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
-import { getIntl, noDataDisplay, validationMessages }              from '@acx-ui/utils'
+import { getIntl, validationMessages }                             from '@acx-ui/utils'
 
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 import ManageDevicesDrawer                              from './ManageDevicesDrawer'
@@ -140,7 +140,7 @@ export default function DpskPassphraseManagement () {
             name={item.name}
             personaId={item.id}
             personaGroupId={item.groupId}
-          /> : noDataDisplay)
+          /> : row.username)
         }
         return row.username
       }
