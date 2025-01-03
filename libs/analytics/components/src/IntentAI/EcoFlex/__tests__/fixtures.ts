@@ -88,5 +88,9 @@ export const mockedIntentEcoFlex = {
     }
   ],
   ...mockedIntentEcoFlexStatusTrail,
-  preferences: null
+  preferences: null,
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierData: true
+  }
 } as unknown as IntentDetail

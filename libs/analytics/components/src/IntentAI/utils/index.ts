@@ -16,6 +16,9 @@ export const isDataRetained = (time?: string) => {
 
 export const dataRetentionText = defineMessage({ defaultMessage: 'Beyond data retention period' })
 
+export const coldTierDataText = defineMessage({
+  defaultMessage: 'Metrics / Charts unavailable for data beyond 30 days' })
+
 export const getDefaultTime = () => {
   const datetime3AM = moment().set({ hour: 3, minute: 0, second: 0, millisecond: 0 })
   return moment().isSameOrBefore(datetime3AM) ?

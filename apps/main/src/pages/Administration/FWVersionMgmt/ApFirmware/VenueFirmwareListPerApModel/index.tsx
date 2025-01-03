@@ -27,8 +27,16 @@ import {
   useGetVenueApModelFirmwareListQuery, useGetVenueApModelFirmwareSchedulesListQuery,
   useSkipVenueSchedulesPerApModelMutation
 } from '@acx-ui/rc/services'
-import { dateSort, defaultSort, FirmwareType, FirmwareVenuePerApModel, sortProp, SortResult } from '@acx-ui/rc/utils'
-import { RolesEnum, WifiScopes }                                                              from '@acx-ui/types'
+import {
+  dateSort,
+  defaultSort,
+  FirmwareType,
+  FirmwareVenuePerApModel,
+  sortProp,
+  SortResult,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { RolesEnum, WifiScopes } from '@acx-ui/types'
 import {
   filterByAccess,
   hasPermission,
@@ -47,15 +55,61 @@ export function VenueFirmwareListPerApModel () {
   const { $t } = useIntl()
   const apFirmwareContext = useContext(ApFirmwareContext)
   const isApFwMgmtEarlyAccess = useIsSplitOn(Features.AP_FW_MGMT_EARLY_ACCESS_TOGGLE)
-  const pagination = { pageSize: 10, defaultPageSize: 10 }
   const [searchString, setSearchString] = useState('')
   const [filterString, setFilterString] = useState('')
-  const { data, isLoading } = useGetVenueApModelFirmwareSchedulesListQuery({
-    payload: {
-      firmwareVersion: filterString,
-      search: searchString
+
+  const useGetVenueApModelFirmwareListData = () => {
+    const tableQuery = useTableQuery<FirmwareVenuePerApModel>({
+      useQuery: useGetVenueApModelFirmwareListQuery,
+      defaultPayload: {
+        // eslint-disable-next-line max-len
+        fields: ['name', 'id', 'isApFirmwareUpToDate', 'currentApFirmwares', 'lastApFirmwareUpdate', 'nextApFirmwareSchedules']
+      },
+      search: {
+        searchTargetFields: ['name']
+      },
+      option: {
+        skip: isApFwMgmtEarlyAccess
+      }
+    })
+
+    const { data, isLoading } = useGetVenueApModelFirmwareSchedulesListQuery({
+      payload: {
+        firmwareVersion: filterString,
+        search: searchString
+      }
+    }, {
+      skip: !isApFwMgmtEarlyAccess
+    })
+
+    const pagination = { pageSize: 10, defaultPageSize: 10 }
+    const onFilterChange = (filter: Filter, search: { searchString?: string }) => {
+      if (search.searchString !== searchString) {
+        setSearchString(search.searchString || '')
+      }
+      if ((filter['currentApFirmwares.firmware']?.length ?? 0) > 0) {
+        setFilterString((filter['currentApFirmwares.firmware'] || [''])[0] as string)
+      } else {
+        setFilterString('')
+      }
     }
-  })
+
+    return {
+      data: isApFwMgmtEarlyAccess ? data : tableQuery.data?.data,
+      onChange: isApFwMgmtEarlyAccess ? () => {} : tableQuery.handleTableChange,
+      pagination: isApFwMgmtEarlyAccess ? pagination : tableQuery.pagination,
+      onFilterChange: isApFwMgmtEarlyAccess ? onFilterChange : tableQuery.handleFilterChange,
+      isLoading: isApFwMgmtEarlyAccess ? { isLoading } : tableQuery
+    }
+  }
+
+  const {
+    data,
+    pagination,
+    onChange,
+    onFilterChange,
+    isLoading
+  } = useGetVenueApModelFirmwareListData()
   const isEarlyAccess = (apFirmwareContext.isAlphaFlag || apFirmwareContext.isBetaFlag) as boolean
   const [ selectedRowKeys, setSelectedRowKeys ] = useState([])
   const [ selectedRows, setSelectedRows ] = useState<FirmwareVenuePerApModel[]>([])
@@ -72,16 +126,7 @@ export function VenueFirmwareListPerApModel () {
   } = useUpgradePerferences()
   const [ skipVenueSchedulesUpgrade ] = useSkipVenueSchedulesPerApModelMutation()
 
-  const onFilterChange = (filter: Filter, search: { searchString?: string }) => {
-    if (search.searchString !== searchString) {
-      setSearchString(search.searchString || '')
-    }
-    if ((filter['currentApFirmwares.firmware']?.length ?? 0) > 0) {
-      setFilterString((filter['currentApFirmwares.firmware'] || [''])[0] as string)
-    } else {
-      setFilterString('')
-    }
-  }
+
 
   const clearSelection = () => {
     setSelectedRowKeys([])
@@ -160,11 +205,12 @@ export function VenueFirmwareListPerApModel () {
   ]
 
   return (<>
-    <Loader states={[{ isLoading }]}>
+    <Loader states={[isLoading]}>
       <Table
         columns={useColumns()}
         dataSource={data}
         pagination={pagination}
+        {...(isApFwMgmtEarlyAccess ? {} : { onChange })}
         onFilterChange={onFilterChange}
         enableApiFilter={true}
         rowKey='id'
@@ -252,8 +298,8 @@ function useColumns () {
     },
     {
       title: $t({ defaultMessage: 'Status' }),
-      key: 'isApFirmwareUpToDate',
-      dataIndex: 'isApFirmwareUpToDate',
+      key: 'isFirmwareUpToDate',
+      dataIndex: 'isFirmwareUpToDate',
       sorter: { compare: (a, b) => {
         const aDesc = getApFirmwareStatusDescription(a)
         const bDesc = getApFirmwareStatusDescription(b)

@@ -61,7 +61,7 @@ export function Introduction (
   { sliderUrlBefore, sliderUrlAfter, queryResult }:
   { sliderUrlBefore: string, sliderUrlAfter: string, queryResult: ReturnType<typeof useIntentAICRRMQuery> }) {
   const { $t } = useIntl()
-  const { isDataRetained: showData } = useIntentContext()
+  const { isDataRetained, isHotTierData } = useIntentContext()
   const compareSlider = <Loader states={[queryResult]}>
     <CompareSlider
       style={{ width: '40%', height: '100%' }}
@@ -102,7 +102,7 @@ export function Introduction (
           `}
         />
       </StepsForm.TextContent>
-      {showData && compareSlider}
+      {isDataRetained && isHotTierData && compareSlider}
     </Col>
     <Col span={7} offset={2}>
       <SideNotes.Introduction />
