@@ -2354,6 +2354,32 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
 
+    getVenueLanPortSettingsByModel: build.query<VenueLanPortSettings[], RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+
+        const venueId = arg.params?.venueId
+        const model = arg.params?.apModel
+        const lanPortCount = arg.params?.lanPortCount || 0
+
+        // const lanPorts: LanPort[]
+        const venueLanPortSettingsQuery = Array.from({ length: Number(lanPortCount) }, (_, index) =>{
+          return fetchWithBQ(
+            createHttpRequest(
+              LanPortsUrls.getVenueLanPortSettings,
+              { venueId, apModel: model, portId: (index + 1).toString() }
+            )
+          )
+        })
+
+        const reqs = await Promise.allSettled(venueLanPortSettingsQuery)
+        const results: VenueLanPortSettings[] = reqs.map((result) => {
+          return result.status === 'fulfilled' ? result.value.data as VenueLanPortSettings : {}
+        })
+
+        return { data: results }
+      }
+    }),
+
     updateVenueLanPortSettings: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
@@ -2533,6 +2559,7 @@ export const {
   useLazyGetVenueLanPortWithEthernetSettingsQuery,
   useGetVenueLanPortSettingsQuery,
   useLazyGetVenueLanPortSettingsQuery,
+  useLazyGetVenueLanPortSettingsByModelQuery,
   useUpdateVenueLanPortSettingsMutation,
   useUpdateVenueLanPortSpecificSettingsMutation
 } = venueApi

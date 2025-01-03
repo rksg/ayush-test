@@ -35,7 +35,7 @@ import {
   useUpdateVenueLanPortSettingsMutation,
   useActivateClientIsolationOnVenueMutation,
   useDeleteClientIsolationOnVenueMutation,
-  useLazyGetVenueLanPortSettingsQuery
+  useLazyGetVenueLanPortSettingsByModelQuery
 } from '@acx-ui/rc/services'
 import {
   ApLanPortTypeEnum,
@@ -49,8 +49,7 @@ import {
   VenueLanPorts,
   VenueSettings,
   WifiNetworkMessages,
-  LanPortsUrls,
-  LanPortClientIsolationSettings
+  mergeLanPortSettings
 } from '@acx-ui/rc/utils'
 import {
   useParams
@@ -161,7 +160,7 @@ export function LanPorts () {
   const [updateLanPortSpecificSetting] =
     useUpdateVenueLanPortSpecificSettingsMutation()
 
-  const [getVanueLanportSetting] = useLazyGetVenueLanPortSettingsQuery()
+  const [getVanueLanportSettingsByModel] = useLazyGetVenueLanPortSettingsByModelQuery()
 
   const apModelsOptions = venueLanPorts?.data?.map(m => ({ label: m.model, value: m.model })) ?? []
   const [activeTabIndex, setActiveTabIndex] = useState(0)
@@ -231,86 +230,69 @@ export function LanPorts () {
     setSelectedPortCaps(selectedModelCaps?.lanPorts?.[tabIndex] as LanPort)
   }
 
-  const handleModelChange = (value: string) => {
+  const handleModelChange = async (value: string) => {
     const modelCaps = venueApCaps?.apModels?.filter(item => item.model === value)[0]
     const lanPortsCap = modelCaps?.lanPorts || []
     // eslint-disable-next-line max-len
     const selected = getSelectedModelData(lanPortData as VenueLanPorts[], value)
-
     const poeOutFormData = ConvertPoeOutToFormData(selected, lanPortsCap) as VenueLanPorts
     const tabIndex = 0
-    // const selectedModel = getModelWithDefaultEthernetPortProfile(selected, lanPortsCap, tenantId)
-    // setSelectedModel(selectedModel)
-    // setSelectedModelCaps(modelCaps as CapabilitiesApModel)
-    // setActiveTabIndex(tabIndex)
-    // setSelectedPortCaps(modelCaps?.lanPorts?.[tabIndex] as LanPort)
-    // form?.setFieldsValue({
-    //   ...selectedModel,
-    //   poeOut: poeOutFormData,
-    //   lan: selectedModel?.lanPorts
-    // })
+    const selectedModel = cloneDeep(selected)
+    if(selectedModel && !selectedModel.isSettingsLoaded) {
+      const lanPortSettings = await getVanueLanportSettingsByModel({
+        params: {
+          venueId: venueId,
+          apModel: selectedModel.model,
+          lanPortCount: (selectedModel.lanPorts?.length || 0).toString()
+        }
+      }).unwrap()
 
-    getModelWithrelativeSettings(selected, lanPortsCap, tenantId).then((selectedModel) => {
-      setSelectedModel(selectedModel)
-      setSelectedModelCaps(modelCaps as CapabilitiesApModel)
-      setActiveTabIndex(tabIndex)
-      setSelectedPortCaps(modelCaps?.lanPorts?.[tabIndex] as LanPort)
-      form?.setFieldsValue({
-        ...selectedModel,
-        poeOut: poeOutFormData,
-        lan: selectedModel?.lanPorts
-      })
+      handleModelWithRelativeSettings(selectedModel, lanPortSettings)
+    }
+
+    const selectedModelWithDefault =
+      getModelWithDefaultEthernetPortProfile(selectedModel, lanPortsCap, tenantId)
+
+    setSelectedModel(selectedModelWithDefault)
+    setSelectedModelCaps(modelCaps as CapabilitiesApModel)
+    setActiveTabIndex(tabIndex)
+    setSelectedPortCaps(modelCaps?.lanPorts?.[tabIndex] as LanPort)
+    form?.setFieldsValue({
+      ...selectedModelWithDefault,
+      poeOut: poeOutFormData,
+      lan: selectedModelWithDefault?.lanPorts
     })
   }
 
-  const getModelWithrelativeSettings = async (
+  const handleModelWithRelativeSettings = (
     selected: VenueLanPorts,
-    lanPortsCaps: LanPort[],
-    tenantId?: string
+    lanPortSettings: VenueLanPortSettings[]
   ) => {
-    const selectedModel = cloneDeep(selected)
+
     if(isEthernetSoftgreEnabled || isEthernetClientIsolationEnabled) {
-      if(!selectedModel?.isSettingsLoaded) {
-        const venueLanPortSettingsQuery =selectedModel.lanPorts.map((lanPort) => {
-          return getVanueLanportSetting({
-            params: { venueId, apModel: selectedModel.model, portId: lanPort.portId }
-          }).unwrap()
-        })
-
-        const reqs = Promise.allSettled(venueLanPortSettingsQuery).then(
-          (results) => {
-            return results.map((result) => {
-              console.log(result)
-              return result.status === 'fulfilled' ? result.value as VenueLanPortSettings : null
-            })
-          }
-        )
-
-
-        const results = reqs.map((result) => {
-          console.log(result)
-          console.log(result.status)
-          return result.status === 'fulfilled' ? result.value as VenueLanPortSettings : null
-        })
-        console.log(JSON.stringify(results))
-        results.forEach((lanPortSettings, idx ) => {
-          if (lanPortSettings === null) return
-
-          console.log(lanPortSettings)
-          console.log(idx)
-
-          selectedModel.lanPorts[idx].softGreEnabled = lanPortSettings.softGreEnabled
-          selectedModel.lanPorts[idx].clientIsolationEnabled =
-            lanPortSettings.clientIsolationEnabled
-          if(lanPortSettings.clientIsolationEnabled) {
-            selectedModel.lanPorts[idx].clientIsolationSettings =
-                      lanPortSettings.clientIsolationSettings as LanPortClientIsolationSettings
-          }
-        })
+      if (lanPortSettings?.length) {
+        selected.lanPorts = mergeLanPortSettings(selected.lanPorts, lanPortSettings)
+        selected.isSettingsLoaded = true
       }
-    }
 
-    return getModelWithDefaultEthernetPortProfile(selected, lanPortsCaps, tenantId)
+      const newLanPortData = cloneDeep(lanPortData)
+      const newLanPortOrinData = cloneDeep(lanPortOrinData)
+
+      newLanPortData?.forEach((item, index) => {
+        if(item.model === selected.model) {
+          newLanPortData[index] = selected
+        }
+      })
+
+      newLanPortOrinData?.forEach((item, index) => {
+        if(item.model === selected.model) {
+          newLanPortOrinData[index] = selected
+        }
+      })
+
+      setLanPortData(newLanPortData)
+      setLanPortOrinData(newLanPortOrinData)
+    }
   }
 
   const handleDiscardLanPorts = async (orinData?: VenueLanPorts[]) => {
@@ -686,4 +668,3 @@ function getModelWithDefaultEthernetPortProfile (selectedModel: VenueLanPorts, l
 
   return model
 }
-
