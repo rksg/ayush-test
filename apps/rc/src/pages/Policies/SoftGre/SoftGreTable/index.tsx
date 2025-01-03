@@ -34,7 +34,9 @@ const defaultPayload = {
     'keepAliveInterval',
     'keepAliveRetryTimes',
     'disassociateClientEnabled',
-    'activations'
+    'activations',
+    'venueActivations',
+    'apActivations'
   ],
   filters: {}
 }
@@ -86,7 +88,14 @@ export default function SoftGreTable () {
           [{
             fieldName: 'activations',
             fieldText: $t({ defaultMessage: 'Network with <VenueSingular></VenueSingular>' })
-          }],
+          }, {
+            fieldName: 'apActivations',
+            fieldText: $t({ defaultMessage: 'AP LAN Port with <VenueSingular></VenueSingular>' })
+          }, {
+            fieldName: 'venueActivations',
+            fieldText: $t({ defaultMessage: '<VenueSingular></VenueSingular> LAN Port' })
+          }
+          ],
           async () =>
             Promise.all(selectedRows.map(row => deleteSoftGreFn({ params: { policyId: row.id } })))
               .then(clearSelection)
@@ -236,15 +245,16 @@ function useColumns () {
       title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueCount',
       align: 'center',
-      filterKey: 'activations.venueId',
-      filterable: venueNameMap,
-      sorter: true,
       render: function (_, row) {
-        if (!row?.activations || row?.activations?.length === 0) return 0
+        let venueIds: Set<string> = new Set()
+        row?.activations?.forEach(activation => venueIds.add(activation.venueId))
+        row?.venueActivations?.forEach(activation => venueIds.add(activation.venueId))
+        row?.apActivations?.forEach(activation => venueIds.add(activation.venueId))
+        if (venueIds.size === 0) return 0
         // eslint-disable-next-line max-len
-        const tooltipItems = venueNameMap?.filter(v => row?.activations?.map(venue => venue?.venueId)!.includes(v.key)).map(v => v.value)
+        const tooltipItems = venueNameMap?.filter(v => venueIds.has(v.key)).map(v => v.value)
         // eslint-disable-next-line max-len
-        return <SimpleListTooltip items={tooltipItems} displayText={row?.activations?.length} />
+        return <SimpleListTooltip items={tooltipItems} displayText={venueIds.size} />
       }
     }
   ]
