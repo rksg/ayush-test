@@ -66,8 +66,8 @@ export const useSoftGreProfileActivation = (
     }
 
     if(existedLanPortChanges.venueLanPortSettings.softGreEnabled) {
-      let payload = { dhcpOption82Enabled: false } as LanPortSoftGreProfileSettings
-      if (existedLanPortChanges.venueLanPortSettings.softGreSettings?.dhcpOption82Enabled){
+      let payload = {} as LanPortSoftGreProfileSettings
+      if (existedLanPortChanges.venueLanPortSettings.softGreSettings?.dhcpOption82Enabled) {
         payload = {
           dhcpOption82Enabled: true,
           dhcpOption82Settings:
