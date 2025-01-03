@@ -4,10 +4,17 @@ import { get } from '@acx-ui/config'
 
 import { CatchErrorResponse } from './types/catchError'
 
+import type { AnyAction }       from '@reduxjs/toolkit'
 import type { GraphQLResponse } from 'graphql-request/dist/types'
 
+const reducerPaths = ['data-api', 'network-health']
+
+export function isGraphQLAction (action: AnyAction) : boolean {
+  const type = action.type
+  return !!(type && reducerPaths.find(p => type.includes(p)))
+}
+
 export function isGraphQLError (type: string | undefined, response?: object): boolean {
-  const reducerPaths = ['data-api', 'network-health']
   return !!(type && reducerPaths.find(p => type.includes(p)) && response && 'errors' in response)
 }
 
