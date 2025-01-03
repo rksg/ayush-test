@@ -659,10 +659,14 @@ export function EditPortDrawer ({
         const disableKey = getFlexAuthButtonStatus(commonRequiredProps)
         return disableKey ? $t(EditPortMessages[disableKey as keyof typeof EditPortMessages]) : ''
       case 'switchPortProfileId':
-        return isAnyFirmwareAbove10020b && isMultipleEdit &&
-          getFieldDisabled('switchPortProfileId') ?
-          (isCloudPort ? $t(EditPortMessages.CLOUD_PORT_CANNOT_ENABLE_SWITCH_PORT_PROFILE) :
-            $t(EditPortMessages.SWITCH_PORT_PROFILE_NOT_ENABLED)) : ''
+        if(isAnyFirmwareAbove10020b && isMultipleEdit && getFieldDisabled('switchPortProfileId')) {
+          if(isCloudPort) {
+            return $t(EditPortMessages.CLOUD_PORT_CANNOT_ENABLE_SWITCH_PORT_PROFILE)
+          } else {
+            return isFirmwareAbove10020b ? '' : $t(EditPortMessages.SWITCH_PORT_PROFILE_NOT_ENABLED)
+          }
+        }
+        return ''
       default: return ''
     }
   }

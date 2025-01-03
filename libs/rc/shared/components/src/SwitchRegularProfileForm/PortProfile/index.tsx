@@ -218,7 +218,7 @@ export function PortProfile () {
         const { portProfileId, models, id } = item
 
         if (!acc[portProfileId]) {
-          acc[portProfileId] = { models, portProfileId }
+          acc[portProfileId] = { portProfileId, models, id }
         } else {
           acc[portProfileId].models = [...new Set([...acc[portProfileId].models, ...models])]
           if (id) {

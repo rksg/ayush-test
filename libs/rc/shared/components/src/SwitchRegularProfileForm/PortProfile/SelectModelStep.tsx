@@ -29,7 +29,7 @@ type ModelBoolMap = {
 export function SelectModelStep () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
-  const { portProfileSettingValues } = useContext(PortProfileContext)
+  const { portProfileSettingValues, portProfileList, editMode } = useContext(PortProfileContext)
   const familiesRef = useRef<ModelsType[]>([])
   const modelsRef = useRef<ModelsType[]>([])
   const [ modelFilterMap, setModelFilterMap ] = useState<ModelBoolMap>({})
@@ -38,6 +38,12 @@ export function SelectModelStep () {
 
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
+
+  const selectedModels = editMode ?
+    portProfileList.filter(
+      item => item.models.some(model => !portProfileSettingValues.models.includes(model)))
+      .flatMap(item => item.models) :
+    portProfileList.flatMap(item => item.models)
 
   const initState = (key: string) => {
     setModelFilterMap(prevMap => ({
@@ -136,7 +142,7 @@ export function SelectModelStep () {
         ...(currentModels || []),
         ...modelsRef.current.filter((model) => {
           const family = model.value.split('-')[0]
-          return family === selectedFamily
+          return family === selectedFamily && !selectedModels.includes(model.value)
         }).map((model) => model.value)]
       form.setFieldValue('models', modelsVal)
       toggleFamilyCheckbox(selectedFamily, true)
@@ -181,6 +187,15 @@ export function SelectModelStep () {
     })
   }
 
+  const getDisabledFamily = (family: string) => {
+    const totalModelsByFamilyCount = modelsRef.current.filter(
+      (model) => model.value.includes(family)).length
+    const selectedModelsByFamilyCount = selectedModels.filter(
+      model => model.includes(family)).length
+
+    return totalModelsByFamilyCount === selectedModelsByFamilyCount
+  }
+
   return (
     <Row gutter={20} style={{ marginTop: '20px' }}>
       <Col span={4}>
@@ -202,6 +217,7 @@ export function SelectModelStep () {
                           checked={familyCheckboxes[value]}
                           indeterminate={indeterminateMap[value]}
                           onChange={onFamilyCheckboxChange}
+                          disabled={getDisabledFamily(value)}
                         />
                       </Col>
                       <Col>
@@ -230,14 +246,27 @@ export function SelectModelStep () {
                 onChange={(checkedValues) => {
                   onModelCheckboxGroupChange(checkedValues as string[])}}>
                 {modelsRef.current.map(({ label, value }) => (
-                  <Checkbox
-                    key={value}
-                    value={value}
-                    data-testid={value}
-                    style={{ display: modelFilterMap[value.split('-')[0]] ? 'flex' : 'none' }}
-                  >
-                    {label}
-                  </Checkbox>
+                  selectedModels.includes(value) ?
+                    <Tooltip
+                      title={$t({ defaultMessage: 'The model has been configured.' })} >
+                      <Checkbox
+                        key={value}
+                        value={value}
+                        data-testid={value}
+                        style={{ display: modelFilterMap[value.split('-')[0]] ? 'flex' : 'none' }}
+                        disabled={selectedModels.includes(value)}
+                      >
+                        {label}
+                      </Checkbox>
+                    </Tooltip>
+                    : <Checkbox
+                      key={value}
+                      value={value}
+                      data-testid={value}
+                      style={{ display: modelFilterMap[value.split('-')[0]] ? 'flex' : 'none' }}
+                    >
+                      {label}
+                    </Checkbox>
                 ))}
               </Checkbox.Group>}
             />
