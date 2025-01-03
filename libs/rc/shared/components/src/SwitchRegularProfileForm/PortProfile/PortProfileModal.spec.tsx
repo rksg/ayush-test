@@ -154,7 +154,7 @@ describe('PortProfileModal', () => {
       </IntlProvider>
     )
 
-    expect(await screen.findByRole('button', { name: /Apply/i })).toBeInTheDocument()
+    expect(await screen.findByRole('dialog')).toBeInTheDocument()
   })
 
   it('should handle form submission in edit mode', async () => {

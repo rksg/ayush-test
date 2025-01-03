@@ -122,12 +122,10 @@ describe('SwitchPortProfileForm', () => {
     )
 
     const profileName = await screen.findByLabelText(/Profile Name/)
-    await userEvent.clear(profileName)
-    await userEvent.type(profileName, 'Updated Profile')
+    fireEvent.change(profileName, { target: { value: 'Updated Profile' } })
 
     const untaggedVlan = await screen.findByLabelText(/Untagged VLAN/)
-    await userEvent.clear(untaggedVlan)
-    await userEvent.type(untaggedVlan, '200')
+    fireEvent.change(untaggedVlan, { target: { value: '200' } })
 
     const saveButton = await screen.findByRole('button', { name: /Apply/ })
     await userEvent.click(saveButton)
