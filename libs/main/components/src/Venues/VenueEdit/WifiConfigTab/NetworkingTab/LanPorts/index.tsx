@@ -373,7 +373,7 @@ export function LanPorts () {
     originLanPort?:LanPort
   ) => {
     const originClientIsolationId = originLanPort?.clientIsolationProfileId
-    if(!originClientIsolationId) {
+    if(!originClientIsolationId || originClientIsolationId === lanPort.clientIsolationProfileId) {
       return
     }
 
@@ -390,9 +390,14 @@ export function LanPorts () {
   }
   const handleUpdateClientIsolationPolicy = async (
     model:string,
-    lanPort:LanPort
+    lanPort:LanPort,
+    originLanPort?:LanPort
   ) => {
     const clientIsolationId = lanPort.clientIsolationProfileId
+    console.log(clientIsolationId, originLanPort?.clientIsolationProfileId)
+    if(clientIsolationId === originLanPort?.clientIsolationProfileId) {
+      return
+    }
 
     if(clientIsolationId && lanPort.clientIsolationEnabled) {
       await updateActivateClientIsolationPolicy({
@@ -428,7 +433,7 @@ export function LanPorts () {
 
     // Activate Client Isolation must wait Lan settings enable client isolation saved
     if(isEthernetClientIsolationEnabled) {
-      handleUpdateClientIsolationPolicy(model, lanPort)
+      handleUpdateClientIsolationPolicy(model, lanPort, originLanPort)
     }
   }
 
@@ -510,32 +515,36 @@ export function LanPorts () {
   const processUpdateVenueLanPorts = async (payload: VenueLanPorts[]) => {
     if (isEthernetPortProfileEnabled) {
       payload.forEach((venueLanPort) => {
-        const originVenueLanPort = lanPortOrinData?.find((oldVenueLanPort) => {
-          return oldVenueLanPort.model === venueLanPort.model
-        })
-
-        if (originVenueLanPort) {
-          // Uppdate Lan port specific settings
-          handleUpdateLanPortSpecificSettings(venueLanPort.model, venueLanPort, originVenueLanPort)
-        }
-
-        venueLanPort.lanPorts.forEach((lanPort) => {
-          const originLanPort = originVenueLanPort?.lanPorts.find((oldLanPort)=> {
-            return oldLanPort.portId === lanPort.portId
+        if(venueLanPort.isSettingsLoaded) {
+          const originVenueLanPort = lanPortOrinData?.find((oldVenueLanPort) => {
+            return oldVenueLanPort.model === venueLanPort.model
           })
-          // Update ethernet port profile
-          handleUpdateEthernetPortProfile(venueLanPort.model, lanPort, originLanPort)
-          // Update SoftGre Profile
-          handleUpdateSoftGreProfile(venueLanPort.model, lanPort, originLanPort)
 
-          // Before disable Client Isolation must deacticvate Client Isolation policy
-          if(isEthernetClientIsolationEnabled) {
-            handleDeactivateClientIsolationPolicy(venueLanPort.model, lanPort, originLanPort)
+          if (originVenueLanPort) {
+            // Uppdate Lan port specific settings
+            handleUpdateLanPortSpecificSettings(
+              venueLanPort.model, venueLanPort, originVenueLanPort
+            )
           }
 
-          // Update Lan settings
-          handleUpdateLanPortSettings(venueLanPort.model, lanPort, originLanPort)
-        })
+          venueLanPort.lanPorts.forEach((lanPort) => {
+            const originLanPort = originVenueLanPort?.lanPorts.find((oldLanPort)=> {
+              return oldLanPort.portId === lanPort.portId
+            })
+            // Update ethernet port profile
+            handleUpdateEthernetPortProfile(venueLanPort.model, lanPort, originLanPort)
+            // Update SoftGre Profile
+            handleUpdateSoftGreProfile(venueLanPort.model, lanPort, originLanPort)
+
+            // Before disable Client Isolation must deacticvate Client Isolation policy
+            if(isEthernetClientIsolationEnabled) {
+              handleDeactivateClientIsolationPolicy(venueLanPort.model, lanPort, originLanPort)
+            }
+
+            // Update Lan settings
+            handleUpdateLanPortSettings(venueLanPort.model, lanPort, originLanPort)
+          })
+        }
       })
     }
 
