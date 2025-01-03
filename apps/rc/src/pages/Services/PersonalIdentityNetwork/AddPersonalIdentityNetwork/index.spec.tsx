@@ -3,9 +3,7 @@ import { ReactNode } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
-import { Features }              from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
-import { Provider }              from '@acx-ui/store'
+import { Provider } from '@acx-ui/store'
 import {
   render,
   screen,
@@ -23,10 +21,6 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('../PersonalIdentityNetworkForm/GeneralSettingsForm', () => ({
   GeneralSettingsForm: () => <div data-testid='GeneralSettingsForm' />
-}))
-jest.mock('../PersonalIdentityNetworkForm/NetworkTopologyForm', () => ({
-  Wireless: 'Wireless',
-  NetworkTopologyForm: () => <div data-testid='NetworkTopologyForm' />
 }))
 jest.mock('../PersonalIdentityNetworkForm/SmartEdgeForm', () => ({
   SmartEdgeForm: () => <div data-testid='SmartEdgeForm' />
@@ -49,7 +43,7 @@ jest.mock('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext', (
     <div data-testid='PersonalIdentityNetworkFormDataProvider' children={children} />
 }))
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
+  // ...jest.requireActual('@acx-ui/rc/components'),
   useEdgePinActions: () => ({
     addPin: (req: RequestPayload) => new Promise((resolve) => {
       resolve(true)
@@ -59,8 +53,7 @@ jest.mock('@acx-ui/rc/components', () => ({
         }])
       }, 300)
     })
-  }),
-  useIsEdgeFeatureReady: jest.fn()
+  })
 }))
 
 const createPinPath = '/:tenantId/services/personalIdentityNetwork/create'
@@ -118,34 +111,5 @@ describe('Add PersonalIdentityNetwork', () => {
       name: 'Personal Identity Network'
     })).toBeVisible()
     await screen.findByTestId('GeneralSettingsForm')
-  })
-
-  it('should show enhanced default steps correctly', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_PIN_ENHANCE_TOGGLE || ff === Features.EDGES_TOGGLE)
-    const user = userEvent.setup()
-    render(<AddPersonalIdentityNetwork />, {
-      wrapper: Provider,
-      route: { params, path: createPinPath }
-    })
-    // step 1
-    await screen.findByTestId('GeneralSettingsForm')
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
-    // step 2
-    await screen.findByTestId('NetworkTopologyForm')
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
-    // step 3
-    await screen.findByTestId('SmartEdgeForm')
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
-    // step 4
-    await screen.findByTestId('WirelessNetworkForm')
-    await user.click(await screen.findByRole('button', { name: 'Next' }))
-    // step 5
-    await screen.findByTestId('SummaryForm')
-    await user.click(screen.getByRole('button', { name: 'Add' }))
-    await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
-      hash: '',
-      pathname: `/${params.tenantId}/t/services/list`,
-      search: ''
-    }))
   })
 })

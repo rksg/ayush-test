@@ -60,6 +60,7 @@ import {
   VenueLoadBalancing,
   VenueBssColoring,
   VenueApSmartMonitor,
+  VenueApRebootTimeout,
   TopologyData,
   VenueMdnsFencingPolicy,
   PropertyConfigs,
@@ -105,6 +106,7 @@ import {
   IncompatibleFeatureLevelEnum,
   SoftGreUrls,
   SoftGreViewData,
+  VenueApUsbStatus,
   ClientIsolationUrls,
   ClientIsolationViewModel,
   LanPortsUrls,
@@ -1125,6 +1127,33 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getVenueApUsbStatus: build.query<VenueApUsbStatus[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          CommonRbacUrlsInfo.getVenueApUsbStatus,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
+
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Venue', id: 'VENUE_USB_SETTINGS' }]
+    }),
+    updateVenueApUsbStatus: build.mutation<CommonResult, RequestPayload<VenueApUsbStatus[]>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          CommonRbacUrlsInfo.updateVenueApUsbStatus,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
+
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'VENUE_USB_SETTINGS' }]
+    }),
     // eslint-disable-next-line max-len
     getVenueApModelBandModeSettings: build.query<VenueApModelBandModeSettings[], RequestPayload<void>>({
       query: ({ params }) => {
@@ -1771,6 +1800,27 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getVenueApRebootTimeout: build.query<VenueApRebootTimeout, RequestPayload>({
+      query: ({ params }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+
+        const req = createHttpRequest(WifiRbacUrlsInfo.getVenueRebootTimeout, params, apiCustomHeader)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueApRebootTimeout: build.mutation<VenueApRebootTimeout, RequestPayload>({
+      query: ({ params, payload }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateVenueRebootTimeout, params, apiCustomHeader)
+        return{
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
     getTopology: build.query<TopologyData, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getTopology, params)
@@ -2379,6 +2429,9 @@ export const {
   useGetVenueLedOnQuery,
   useLazyGetVenueLedOnQuery,
   useUpdateVenueLedOnMutation,
+  useGetVenueApUsbStatusQuery,
+  useLazyGetVenueApUsbStatusQuery,
+  useUpdateVenueApUsbStatusMutation,
   useGetVenueApModelBandModeSettingsQuery,
   useLazyGetVenueApModelBandModeSettingsQuery,
   useUpdateVenueApModelBandModeSettingsMutation,
@@ -2475,7 +2528,9 @@ export const {
   useGetVenueApSmartMonitorQuery,
   useLazyGetVenueApSmartMonitorQuery,
   useUpdateVenueApSmartMonitorMutation,
-
+  useGetVenueApRebootTimeoutQuery,
+  useLazyGetVenueApRebootTimeoutQuery,
+  useUpdateVenueApRebootTimeoutMutation,
   useGetVenueLanPortWithEthernetSettingsQuery,
   useLazyGetVenueLanPortWithEthernetSettingsQuery,
   useGetVenueLanPortSettingsQuery,
