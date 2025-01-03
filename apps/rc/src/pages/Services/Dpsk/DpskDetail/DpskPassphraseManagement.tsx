@@ -261,7 +261,7 @@ export default function DpskPassphraseManagement () {
 
   const rowActions: TableProps<NewDpskPassphrase>['rowActions'] = [
     {
-      key: 'PUT:/dpskServices/{serviceId}/passphrases/{passphraseId}',
+      rbacOpsIds: ['PUT:/dpskServices/{serviceId}/passphrases/{passphraseId}'],
       scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Edit Passphrase' }),
       visible: canEdit,
@@ -282,7 +282,7 @@ export default function DpskPassphraseManagement () {
       }
     },
     {
-      key: 'PATCH:/dpskServices/{serviceId}/passphrases',
+      rbacOpsIds: ['PATCH:/dpskServices/{serviceId}/passphrases'],
       scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Revoke' }),
       visible: isCloudpathEnabled,
@@ -306,7 +306,7 @@ export default function DpskPassphraseManagement () {
       }
     },
     {
-      key: 'PATCH:/dpskServices/{serviceId}/passphrases',
+      rbacOpsIds: ['PATCH:/dpskServices/{serviceId}/passphrases'],
       scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Unrevoke' }),
       visible: isCloudpathEnabled,
@@ -323,7 +323,7 @@ export default function DpskPassphraseManagement () {
       }
     },
     {
-      key: 'DELETE:/dpskServices/{serviceId}/passphrases',
+      rbacOpsIds: ['DELETE:/dpskServices/{serviceId}/passphrases'],
       scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
@@ -337,7 +337,7 @@ export default function DpskPassphraseManagement () {
   const actions = [
     ...(filterDpskOperationsByPermission([
       {
-        key: 'POST:/dpskServices/{serviceId}/passphrases',
+        rbacOpsIds: ['POST:/dpskServices/{serviceId}/passphrases'],
         label: $t({ defaultMessage: 'Add Passphrases' }),
         onClick: () => {
           setPassphrasesDrawerEditMode({ isEdit: false })
@@ -345,7 +345,7 @@ export default function DpskPassphraseManagement () {
         }
       },
       {
-        key: 'POST:/dpskServices/{serviceId}/passphrases/csvFiles',
+        rbacOpsIds: ['POST:/dpskServices/{serviceId}/passphrases/csvFiles'],
         label: $t({ defaultMessage: 'Import From File' }),
         onClick: () => setUploadCsvDrawerVisible(true)
       }

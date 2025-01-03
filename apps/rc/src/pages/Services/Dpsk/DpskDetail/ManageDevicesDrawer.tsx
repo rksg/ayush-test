@@ -141,7 +141,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
 
   const actions = [
     {
-      key: 'POST:/dpskServices/{serviceId}/passphrases/{passphraseId}/devices',
+      rbacOpsIds: ['POST:/dpskServices/{serviceId}/passphrases/{passphraseId}/devices'],
       label: $t({ defaultMessage: 'Add Device' }),
       // eslint-disable-next-line max-len
       disabled: !!(passphraseInfo.numberOfDevices && devicesData && devicesData.length >= passphraseInfo.numberOfDevices),
@@ -153,7 +153,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
 
   const rowActions: TableProps<DPSKDeviceInfo>['rowActions'] = [
     {
-      key: 'DELETE:/dpskServices/{serviceId}/passphrases/{passphraseId}/devices',
+      rbacOpsIds: ['DELETE:/dpskServices/{serviceId}/passphrases/{passphraseId}/devices'],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: async (rows, clearSelection) => {
         await deleteDevicesData({
