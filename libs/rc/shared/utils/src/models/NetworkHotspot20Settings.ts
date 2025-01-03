@@ -10,6 +10,7 @@ export class NetworkHotspot20Settings {
   connectionCapabilities?: Hotspot20ConnectionCapability[]
   wifiOperator?: string
   identityProviders?: string[]
+  accProviders?: Set<string>
 
   // operator only allow to activate once
   originalOperator?: string | null      // for editMode
