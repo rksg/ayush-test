@@ -28,12 +28,14 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/admins',
     oldUrl: '/api/tenant/:tenantId/admin',
+    opsApi: 'PUT:/admins',
     newApi: true
   },
   deleteAdmin: {
     method: 'delete',
     url: '/admins/:adminId',
     oldUrl: '/api/tenant/:tenantId/admin/:adminId',
+    opsApi: 'DELETE:/admins/{adminId}',
     newApi: true
   },
   deleteAdmins: {
@@ -46,6 +48,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/admins',
     oldUrl: '/api/tenant/:tenantId/admin',
+    opsApi: 'POST:/admins',
     newApi: true
   },
   getAccountDetails: {
@@ -126,6 +129,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/tenants/delegations',
     oldUrl: '/api/tenant/:tenantId/delegation',
+    opsApi: 'POST:/tenants/delegations',
     newApi: true
   },
   findVAR: {
@@ -144,18 +148,21 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/tenants/notificationRecipients',
     oldUrl: '/api/tenant/:tenantId/notification-recipient',
+    opsApi: 'POST:/tenants/notificationRecipients',
     newApi: true
   },
   updateRecipient: {
     method: 'put',
     url: '/tenants/notificationRecipients/:recipientId',
     oldUrl: '/api/tenant/:tenantId/notification-recipient/:recipientId',
+    opsApi: 'PUT:/tenants/notificationRecipients/{recipientId}',
     newApi: true
   },
   deleteNotificationRecipients: {
     method: 'delete',
     url: '/tenants/notificationRecipients',
     oldUrl: '/api/tenant/:tenantId/notification-recipient',
+    opsApi: 'DELETE:/tenants/notificationRecipients',
     newApi: true
   },
   deleteNotificationRecipient: {
@@ -242,16 +249,19 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   addAdminGroups: {
     method: 'post',
     url: '/groups',
+    opsApi: 'POST:/groups',
     newApi: true
   },
   updateAdminGroups: {
     method: 'PATCH',
     url: '/groups/:groupId',
+    opsApi: 'PATCH:/groups/{groupId}',
     newApi: true
   },
   deleteAdminGroups: {
     method: 'delete',
     url: '/groups',
+    opsApi: 'DELETE:/groups',
     newApi: true
   },
   getAdminGroupLastLogins: {
@@ -272,11 +282,13 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   updateCustomRole: {
     method: 'put',
     url: '/roleAuthentications/customRoles/:customRoleId',
+    opsApi: 'PUT:/roleAuthentications/customRoles/{roleId}',
     newApi: true
   },
   deleteCustomRole: {
     method: 'delete',
     url: '/roleAuthentications/customRoles/:customRoleId',
+    opsApi: 'DELETE:/roleAuthentications/customRoles/{roleId}',
     newApi: true
   },
   getOnePrivilegeGroup: {

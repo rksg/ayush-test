@@ -31,6 +31,7 @@ import {
   dateSort,
   defaultSort,
   FirmwareType,
+  FirmwareUrlsInfo,
   FirmwareVenuePerApModel,
   sortProp,
   SortResult,
@@ -39,10 +40,9 @@ import {
 import { RolesEnum, WifiScopes } from '@acx-ui/types'
 import {
   filterByAccess,
-  hasPermission,
   hasRoles
 }                                                               from '@acx-ui/user'
-import { getIntl, noDataDisplay } from '@acx-ui/utils'
+import { getIntl, getOpsApi, noDataDisplay } from '@acx-ui/utils'
 
 import { isApFirmwareUpToDate } from '../..'
 import { PreferencesDialog }    from '../../PreferencesDialog'
@@ -156,6 +156,7 @@ export function VenueFirmwareListPerApModel () {
   const rowActions: TableProps<FirmwareVenuePerApModel>['rowActions'] = [
     {
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(FirmwareUrlsInfo.patchVenueApModelFirmwares)],
       // eslint-disable-next-line max-len
       visible: (rows) => rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)),
       label: $t({ defaultMessage: 'Update Now' }),
@@ -166,6 +167,7 @@ export function VenueFirmwareListPerApModel () {
     },
     {
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(FirmwareUrlsInfo.patchVenueApModelFirmwares)],
       // eslint-disable-next-line max-len
       visible: (rows) => isApFwMgmtEarlyAccess && isEarlyAccess && rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)),
       label: $t({ defaultMessage: 'Update with Early Access Now' }),
@@ -186,6 +188,7 @@ export function VenueFirmwareListPerApModel () {
     },
     {
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(FirmwareUrlsInfo.skipVenueSchedulesPerApModel)],
       visible: (rows) => rows.every(row => hasApSchedule(row.nextApFirmwareSchedules)),
       label: $t({ defaultMessage: 'Skip Update' }),
       onClick: (rows, clearSelection) => {
@@ -194,6 +197,7 @@ export function VenueFirmwareListPerApModel () {
     },
     {
       scopeKey: [WifiScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(FirmwareUrlsInfo.patchVenueApModelFirmwares)],
       visible: (rows) => canDowngrade(rows),
       // eslint-disable-next-line max-len
       label: $t({ defaultMessage: 'Downgrade' }),

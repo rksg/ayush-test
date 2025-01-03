@@ -9,8 +9,9 @@ import {
   useGetRadiusServerSettingQuery,
   useUpdateRadiusClientConfigMutation
 } from '@acx-ui/rc/services'
-import { ClientConfig }                                        from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess, hasCrossVenuesPermission } from '@acx-ui/user'
+import { ClientConfig, RadiusClientConfigUrlsInfo } from '@acx-ui/rc/utils'
+import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
+import { getOpsApi }                                from '@acx-ui/utils'
 
 import { IpAddressDrawer } from './IpAddressDrawer'
 
@@ -69,6 +70,7 @@ export function RadiusServerForm () {
 
   const ipTableRowActions: TableProps<{ ipAddress:string }>['rowActions'] = [{
     visible: (selectedRows) => selectedRows.length === 1,
+    rbacOpsIds: [getOpsApi(RadiusClientConfigUrlsInfo.updateRadiusClient)],
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows, clearSelection) => {
       setEditIpaddress(selectedRows[0].ipAddress)
@@ -79,6 +81,7 @@ export function RadiusServerForm () {
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
+    rbacOpsIds: [getOpsApi(RadiusClientConfigUrlsInfo.updateRadiusClient)],
     onClick: ([{ ipAddress }], clearSelection) => {
       showActionModal({
         type: 'confirm',
@@ -186,7 +189,7 @@ export function RadiusServerForm () {
                 dataSource={queryResultData?.ipAddress?.map( e => { return { key: e, ipAddress: e }})}
                 showHeader={false}
                 rowSelection={hasCrossVenuesPermission() &&
-                  hasAccess() && { type: 'radio' }}
+                  filterByAccess(ipTableRowActions).length > 0 && { type: 'radio' }}
                 rowActions={filterByAccess(ipTableRowActions)}
                 type={'form'}
                 actions={hasCrossVenuesPermission() ? filterByAccess([{

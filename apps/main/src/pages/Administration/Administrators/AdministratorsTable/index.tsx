@@ -20,10 +20,19 @@ import {
   useDeleteAdminMutation,
   useDeleteAdminsMutation
 } from '@acx-ui/rc/services'
-import { Administrator, sortProp, defaultSort }                 from '@acx-ui/rc/utils'
-import { RolesEnum }                                            from '@acx-ui/types'
-import { filterByAccess, useUserProfileContext, roleStringMap } from '@acx-ui/user'
-import { AccountType }                                          from '@acx-ui/utils'
+import {
+  Administrator,
+  sortProp,
+  defaultSort,
+  AdministrationUrlsInfo
+}                 from '@acx-ui/rc/utils'
+import { RolesEnum } from '@acx-ui/types'
+import {
+  filterByAccess,
+  useUserProfileContext,
+  roleStringMap
+} from '@acx-ui/user'
+import { AccountType, getOpsApi } from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 
@@ -174,6 +183,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
         }
       },
       label: $t({ defaultMessage: 'Edit' }),
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.updateAdmin)],
       onClick: (selectedRows) => {
         // show edit dialog
         setEditMode(true)
@@ -193,6 +203,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
         return allPrimeAdminSelected === false
       },
       label: $t({ defaultMessage: 'Delete' }),
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.deleteAdmin)],
       onClick: (rows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -219,6 +230,7 @@ const AdministratorsTable = (props: AdministratorsTableProps) => {
   const tableActions = []
   if (isPrimeAdminUser && tenantType !== AccountType.MSP_REC) {
     tableActions.push({
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.addAdmin)],
       label: $t({ defaultMessage: 'Add Administrator' }),
       onClick: handleClickAdd
     })

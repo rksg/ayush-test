@@ -306,7 +306,7 @@ export const SubscriptionTable = () => {
       }
       <Table
         columns={columns}
-        actions={hasCrossVenuesPermission() ? filterByAccess(actions) : []}
+        actions={hasCrossVenuesPermission() ? filterByAccess(actions) : []} //TODO:
         dataSource={checkSubscriptionStatus() ? [] : subscriptionData}
         rowKey='id'
       />

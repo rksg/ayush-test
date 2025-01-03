@@ -318,7 +318,7 @@ export const RbacSubscriptionTable = () => {
       }
       <Table
         columns={columns}
-        actions={filterByAccess(actions)}
+        actions={filterByAccess(actions)} //TODO:
         dataSource={checkSubscriptionStatus() ? [] : subscriptionData as Entitlement[]}
         rowKey='id'
       />
