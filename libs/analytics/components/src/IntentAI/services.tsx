@@ -16,8 +16,8 @@ import {
 }                                                   from '@acx-ui/utils'
 import type { PathFilter } from '@acx-ui/utils'
 
+import { getIntentStatus }      from './common/getIntentStatus'
 import { richTextFormatValues } from './common/richTextFormatValues'
-import { getIntentStatus } from './common/getIntentStatus'
 import {
   states,
   codes,

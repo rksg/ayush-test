@@ -41,8 +41,9 @@ export const api = intentAIApi.injectEndpoints({
                     status statusReason displayStatus createdAt
                     metadata {
                       scheduledAt: field(prop: "scheduledAt")
-                      failures: field(prop: "failures"),
+                      failures: field(prop: "failures")
                       changedByName: field(prop: "changedByName")
+                      retries: field(prop: "retries")
                     }
                   }
                 }
