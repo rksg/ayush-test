@@ -442,6 +442,7 @@ export function useIntentAITableQuery (filter: PathFilter) {
     defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
     total: 0
   }
+
   const intentTableFilters = useEncodedParameter<Filters>('intentTableFilters')
   const filters = intentTableFilters.read() || {}
   const [pagination, setPagination] = useState<Pagination>(DEFAULT_PAGINATION)
