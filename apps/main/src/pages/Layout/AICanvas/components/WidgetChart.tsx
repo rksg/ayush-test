@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect } from 'react'
 
 import { TooltipComponentFormatterCallbackParams } from 'echarts'
@@ -192,7 +191,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
             {
               color ? <UI.Badge
                 className='acx-chart-tooltip'
-                color={color}
+                color={color as string}
                 text={x}
               />: x
             } : <b> {formatter(unit)(value) as string}</b>
@@ -221,7 +220,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
     } else if(type === 'bar') {
       return <BarChart
         style={{ width: width-30, height }}
-        grid={{ right: '10px', top: chartData?.multiseries ? '15%': '10px' }}
+        grid={{ right: '10px', top: chartData?.multiseries ? '15%': '0' }}
         data={(chartData?.chartOption || []) as BarChartData}
         barWidth={chartData?.multiseries || chartData?.chartOption?.source?.length > 30
           ? 8 : undefined}

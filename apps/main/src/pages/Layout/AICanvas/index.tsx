@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { Button, Drawer, DrawerTypes }                                              from '@acx-ui/components'
 import { CloseSymbol, RuckusAiDog, SendMessageOutlined, HistoricalOutlined, Plus  } from '@acx-ui/icons'
-import { useChatAiMutation, useLazyGetChatQuery }                                   from '@acx-ui/rc/services'
+import { useChatAiMutation, useLazyGetAllChatsQuery, useLazyGetChatQuery }          from '@acx-ui/rc/services'
 import { ChatMessage }                                                              from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                               from '@acx-ui/react-router-dom'
 
@@ -22,9 +22,10 @@ export default function AICanvas () {
   const navigate = useNavigate()
   const [chatAi] = useChatAiMutation()
   const [getChat] = useLazyGetChatQuery()
+  const [getAllChats] = useLazyGetAllChatsQuery()
   const [loading, setLoading] = useState(false)
   const [historyVisible, setHistoryVisible] = useState(false)
-  const [sessionId, setSessionId] = useState('134657a9-6357-4b58-81a9-c1005556ab4d')
+  const [sessionId, setSessionId] = useState('')
   const [chats, setChats] = useState([] as ChatMessage[])
 
   const [ searchText, setSearchText ] = useState('')
@@ -39,6 +40,17 @@ export default function AICanvas () {
       scroll.current.scrollTo({ top: scroll.current.scrollHeight })
     }, 100)
   }, [chats])
+
+  const getHistory = async () => {
+    const response = await getAllChats({}).unwrap()
+    if(response.length) {
+      setSessionId(response[response.length - 1].id)
+    }
+  }
+
+  useEffect(()=>{
+    getHistory()
+  }, [])
 
   const getChats = async ()=>{
     const response = await getChat({ params: { sessionId } }).unwrap()

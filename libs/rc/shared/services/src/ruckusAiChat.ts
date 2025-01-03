@@ -1,7 +1,8 @@
 import {
   RuckusAiChat,
   RuckusAiChatUrlInfo,
-  WidgetListData
+  WidgetListData,
+  ChatHistory
 } from '@acx-ui/rc/utils'
 import { baseRuckusAiChatApi } from '@acx-ui/store'
 import { RequestPayload }      from '@acx-ui/types'
@@ -9,6 +10,14 @@ import { createHttpRequest }   from '@acx-ui/utils'
 
 export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
   endpoints: (build) => ({
+    getAllChats: build.query<ChatHistory[], RequestPayload>({
+      query: () => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.getAllChats)
+        return {
+          ...req
+        }
+      }
+    }),
     getChat: build.query<RuckusAiChat, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(RuckusAiChatUrlInfo.getChat, params)
@@ -38,6 +47,8 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
 })
 
 export const {
+  useGetAllChatsQuery,
+  useLazyGetAllChatsQuery,
   useGetChatQuery,
   useLazyGetChatQuery,
   useChatAiMutation,

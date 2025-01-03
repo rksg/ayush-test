@@ -29,6 +29,12 @@ interface TableData {
 }
 
 // Ruckus AI Chat
+export interface ChatHistory {
+  id: string,
+  name: string,
+  updatedDate: string,
+}
+
 export interface RuckusAiChat {
   sessionId: string,
   messages: ChatMessage[]
