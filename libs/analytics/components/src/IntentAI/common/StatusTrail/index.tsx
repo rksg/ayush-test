@@ -55,9 +55,9 @@ export const StatusTrail = () => {
                 placement='right'
                 dottedUnderline
               >
-                {getIntentStatus(displayStatus, metadata.retries)}
+                {getIntentStatus(displayStatus, metadata?.retries)}
               </Tooltip>
-                : <>{getIntentStatus(displayStatus, metadata.retries)}</>}
+                : <>{getIntentStatus(displayStatus, metadata?.retries)}</>}
             </div>
           ))}
           {shouldShowLimitedText ? <FormattedMessage
