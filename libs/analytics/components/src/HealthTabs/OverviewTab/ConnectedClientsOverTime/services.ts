@@ -22,7 +22,9 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     healthConnectedClientsOverTime: build.query<
     ConnectedClientsOverTimeData,
-    AnalyticsFilter
+    AnalyticsFilter & {
+      isSwitchHealth10010eEnabled: boolean
+    }
     >({
       query: (payload) => ({
         document: gql`
@@ -41,8 +43,8 @@ export const api = dataApi.injectEndpoints({
               timeSeries(granularity: $granularity) {
                 time
                 wirelessClientsCount: connectedClientCount
-                # TODO: Uncomment this when wired clients are available
-                # wiredClientsCount: switchConnectedClientCount
+                ${payload.isSwitchHealth10010eEnabled ?
+          'wiredClientsCount: switchConnectedClientCount' : ''}
               }
             }
           }
