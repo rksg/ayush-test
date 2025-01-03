@@ -93,7 +93,7 @@ export default function SoftGreTable () {
             fieldText: $t({ defaultMessage: 'AP LAN Port with <VenueSingular></VenueSingular>' })
           }, {
             fieldName: 'venueActivations',
-            fieldText: $t({ defaultMessage: 'Venue LAN Port with <VenueSingular></VenueSingular>' })
+            fieldText: $t({ defaultMessage: '<VenueSingular></VenueSingular> LAN Port' })
           }
           ],
           async () =>
