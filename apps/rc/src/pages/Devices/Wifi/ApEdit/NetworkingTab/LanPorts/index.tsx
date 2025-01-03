@@ -311,7 +311,7 @@ export function LanPorts () {
         }
 
         if (isEthernetClientIsolationEnabled) {
-          handleClientIsolationDeactivate(values)
+          await handleClientIsolationDeactivate(values)
         }
 
         await updateEthernetPortProfile({
@@ -358,7 +358,7 @@ export function LanPorts () {
     })
   }
 
-  const handleClientIsolationDeactivate = (values: WifiApSetting) => {
+  const handleClientIsolationDeactivate = async (values: WifiApSetting) => {
     const { useVenueSettings } = values
     values.lan?.forEach(lanPort => {
       const originClientIsolationProfileId
