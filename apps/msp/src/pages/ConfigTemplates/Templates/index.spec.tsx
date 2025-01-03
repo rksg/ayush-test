@@ -33,7 +33,10 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 jest.mock('./ShowDriftsDrawer', () => ({
   ...jest.requireActual('./ShowDriftsDrawer'),
   ShowDriftsDrawer: (props: ShowDriftsDrawerProps) => {
-    return <div data-testid='ShowDriftsDrawer'>{props.selectedTemplate.name}</div>
+    return <div data-testid='ShowDriftsDrawer'>
+      <span>{props.selectedTemplate.name}</span>
+      <button onClick={() => props.setVisible(false)}>Cancel</button>
+    </div>
   }
 }))
 
@@ -409,8 +412,15 @@ describe('ConfigTemplateList component', () => {
     const row = await screen.findByRole('row', { name: new RegExp(targetTemplate.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
+    // Display Show Drifts by clicking the row action
     await userEvent.click(await screen.findByRole('button', { name: /Show Drifts/ }))
+    const showDriftsDrawer = await screen.findByTestId('ShowDriftsDrawer')
 
+    await userEvent.click(within(showDriftsDrawer).getByRole('button', { name: /Cancel/i }))
+    expect(screen.queryByTestId('ShowDriftsDrawer')).not.toBeInTheDocument()
+
+    // Display Show Drifts by clicking the in-row link
+    await userEvent.click(within(row).getByRole('button', { name: /Drift Detected/ }))
     expect(await screen.findByTestId('ShowDriftsDrawer')).toBeInTheDocument()
   })
 })
