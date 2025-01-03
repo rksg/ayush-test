@@ -22,10 +22,21 @@ import {
   useGetNotificationSmsQuery,
   useUpdateNotificationSmsMutation
 } from '@acx-ui/rc/services'
-import { NotificationSmsConfig, NotificationSmsUsage, SmsProviderType } from '@acx-ui/rc/utils'
-import { store }                                                        from '@acx-ui/store'
-import { RolesEnum }                                                    from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasRoles }                           from '@acx-ui/user'
+import {
+  AdministrationUrlsInfo,
+  NotificationSmsConfig,
+  NotificationSmsUsage,
+  SmsProviderType }
+  from '@acx-ui/rc/utils'
+import { store }     from '@acx-ui/store'
+import { RolesEnum } from '@acx-ui/types'
+import {
+  getUserProfile,
+  hasAllowedOperations,
+  hasCrossVenuesPermission,
+  hasRoles
+} from '@acx-ui/user'
+import { getOpsApi } from '@acx-ui/utils'
 
 import { ButtonWrapper }  from '../AuthServerFormItem/styledComponents'
 import { MessageMapping } from '../MessageMapping'
@@ -66,6 +77,7 @@ export const isTwilioFromNumber = (trilioValue: string) => {
 
 const SmsProviderItem = () => {
   const { $t } = useIntl()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const params = useParams()
   const [form] = Form.useForm()
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -79,8 +91,13 @@ const SmsProviderItem = () => {
   const [isChangeThreshold, setIsChangeThreshold] = useState(false)
   const [submittableThreshold, setSubmittableThreshold] = useState<boolean>(true)
   const isGracePeriodToggleOn = useIsSplitOn(Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
-  const hasPermission = hasCrossVenuesPermission()
-    && hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+
+
+  const hasPermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([
+      getOpsApi(AdministrationUrlsInfo.updateNotificationSms)
+    ]) : hasCrossVenuesPermission() &&
+      hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const FREE_SMS_POOL = 100
 

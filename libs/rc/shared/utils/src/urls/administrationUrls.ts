@@ -95,6 +95,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/tenants/supportDelegations',
     oldUrl: '/api/tenant/:tenantId/delegation/support',
+    opsApi: 'POST:/tenants/supportDelegations',
     newApi: true
   },
   disableAccessSupport: {
@@ -316,6 +317,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   updateNotificationSms: {
     method: 'post',
     url: '/notifications/sms',
+    opsApi: 'POST:/notifications/sms',
     newApi: true
   },
   getNotificationSmsProvider: {

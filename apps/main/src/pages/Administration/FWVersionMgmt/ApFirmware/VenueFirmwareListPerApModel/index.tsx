@@ -216,7 +216,7 @@ export function VenueFirmwareListPerApModel () {
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         // eslint-disable-next-line max-len
-        rowSelection={hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+        rowSelection={filterByAccess(rowActions).length > 0 &&
           { type: 'checkbox', selectedRowKeys }}
         actions={hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) ? [{
           label: $t({ defaultMessage: 'Preferences' }),
