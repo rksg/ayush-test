@@ -23,7 +23,8 @@ import {
   CustomRole,
   specialCharactersRegExp,
   systemDefinedNameValidator,
-  ScopePermission
+  ScopePermission,
+  PermissionType
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -31,11 +32,11 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { EdgeScopes, RolesEnum, SwitchScopes, WifiScopes } from '@acx-ui/types'
+import { RolesEnum } from '@acx-ui/types'
 
 import { AdvancedPermissionsTab } from './AdvancedPermissionsTab'
 import { PermissionsTab }         from './PermissionsTab'
-import { scopeHierarchy }         from './scopeHierarchy'
+import { useScopeHierarchy }      from './useScopeHierarchy'
 
 export function Flat (parent: TreeDataNode | undefined) {
   if (parent) {
@@ -53,27 +54,29 @@ export function Flat (parent: TreeDataNode | undefined) {
 interface CustomRoleData {
   name?: string,
   description?: string,
-  scopes?: string[],
+  features?: string[],
   preDefinedRole?: string
 }
 
-const initialPermissionList: ScopePermission[] = scopeHierarchy.flatMap(s => Flat(s)).map(s => {
-  return {
-    name: s.title ? s.title.toString() : '',
-    id: s.key.toString(),
-    read: true,
-    create: false,
-    update: false,
-    delete: false
-  }
-})
-
-export function AddExplictCustomRole () {
+export function AddExplicitCustomRole () {
   const intl = useIntl()
   const navigate = useNavigate()
   const { action, customRoleId } = useParams()
   const location = useLocation().state as CustomRole
   const [roleNames, setRoleNames] = useState([] as RolesEnum[])
+
+  const scopeHierarchy = useScopeHierarchy(intl.$t)
+
+  const initialPermissionList: ScopePermission[] = scopeHierarchy.flatMap(s => Flat(s)).map(s => {
+    return {
+      name: s.title ? s.title.toString() : '',
+      id: s.key.toString(),
+      read: true,
+      create: false,
+      update: false,
+      delete: false
+    }
+  })
 
   const linkToCustomRoles = useTenantLink('/administration/userPrivileges/customRoles', 't')
   const [form] = Form.useForm()
@@ -96,32 +99,18 @@ export function AddExplictCustomRole () {
     : ((isClone && location?.name && location?.type === CustomGroupType.SYSTEM) ? location.name
       : undefined)
 
-  const wifiScopes = [
-    WifiScopes.READ, WifiScopes.CREATE,
-    WifiScopes.UPDATE, WifiScopes.DELETE
-  ]
-  const switchScopes = [
-    SwitchScopes.READ, SwitchScopes.CREATE,
-    SwitchScopes.UPDATE, SwitchScopes.DELETE
-  ]
-  const edgeScopes = [
-    EdgeScopes.READ, EdgeScopes.CREATE,
-    EdgeScopes.UPDATE, EdgeScopes.DELETE
-  ]
-
-  let scopes: Array<string> = []
-  wifiScopes.map(item => scopes.push(item))
-  switchScopes.map(item => scopes.push(item))
-  edgeScopes.map(item => scopes.push(item))
-
   const getSelectedScopesForPermission =
   (scope: TreeDataNode[], scopePerms: ScopePermission[], permission: string) => {
     const selectedScopes: string[] = []
     scope.forEach(s => {
       const scopePermission = scopePerms.find(p => p.id === s.key)
+      // Only include parent if parent is selected
       if (scopePermission && scopePermission[permission]) {
-        selectedScopes.push(s.key.toString() + '-' + permission.charAt(0))
-      } else if (s.children) {
+        selectedScopes
+          .push(s.key.toString() + '-' + PermissionType[permission as keyof typeof PermissionType])
+      }
+      // Otherwise include selected children
+      else if (s.children) {
         selectedScopes.push(...getSelectedScopesForPermission(s.children, scopePerms, permission))
       }
     })
@@ -130,11 +119,54 @@ export function AddExplictCustomRole () {
 
   const getSelectedScopes = (permissions: ScopePermission[]) => {
     const scopes: string[] = []
-    scopes.push(...getSelectedScopesForPermission(scopeHierarchy, permissions, 'read'))
-    scopes.push(...getSelectedScopesForPermission(scopeHierarchy, permissions, 'create'))
-    scopes.push(...getSelectedScopesForPermission(scopeHierarchy, permissions, 'update'))
-    scopes.push(...getSelectedScopesForPermission(scopeHierarchy, permissions, 'delete'))
+    Object.keys(PermissionType).forEach(key => {
+      scopes.push(...getSelectedScopesForPermission(scopeHierarchy, permissions, key))
+    })
     return scopes
+  }
+
+  const updateRelatedPermissions =
+  (key: string, permission: string, enabled: boolean, permissionList: ScopePermission[]) => {
+    const scope = scopeHierarchy.find(sc => sc.key === key) ||
+      scopeHierarchy.flatMap(sc => sc.children).find(c => c?.key === key) ||
+      scopeHierarchy.flatMap(sc => sc.children).flatMap(c => c?.children)
+        .find(cc => cc?.key === key)
+    if (!scope || permission === '') {
+      return []
+    }
+    const scopeAndChildren = scope.children ? Flat(scope) : [scope]
+    const globalParent = scopeHierarchy.find(sc => sc.key === key ||
+        sc.children?.some(c => c.key === key || c.children?.some(cc => cc.key === key)))
+    const parent = scopeHierarchy.flatMap(sc => sc.children)
+      .find(c => c?.children?.some(cc => cc.key === key))
+    const parents = [ parent, globalParent ].filter(p => p !== undefined && p.key !== key)
+
+    const permissions: ScopePermission[] = []
+    // Everything except this scope, its children, and its parents are unchanged
+    permissions.push(...permissionList.filter(p =>
+      !scopeAndChildren.map(sc => sc.key).includes(p.id)
+      && !parents.map(sc => sc?.key).includes(p.id)))
+    // Set permission for this scope and all its children if any
+    permissions.push(...permissionList.filter(p =>scopeAndChildren.map(s => s.key).includes(p.id))
+      .map(perm => { return { ...perm, [permission]: enabled } }))
+    // Set permission as true for any parents if all their children have that permission enabled
+    // and set as false if not
+    // (Important that parent comes before globalParent in the parents array so that parent permission is set first)
+    parents.forEach(parent => {
+      const perm = permissionList.find(p => p.id === parent?.key)
+      if (!parent || !perm) {
+        return
+      }
+      permissions.push({
+        ...perm,
+        [permission]: !enabled
+          ? enabled
+          : permissions.filter(p =>
+            Flat(parent).map(sc => sc.key).includes(p.id) && p.id !== parent.key)
+            .every(p => p[permission])
+      })
+    })
+    return permissions
   }
 
   const handleAddRole = async () => {
@@ -142,12 +174,11 @@ export function AddExplictCustomRole () {
     const description = form.getFieldValue('description')
     try {
       await form.validateFields()
-      // const checkedScopes = scopes.filter((s) => form.getFieldValue(s))
       const checkedScopes = getSelectedScopes(form.getFieldValue('permissions') ?? [])
       const roleData: CustomRoleData = {
         name: name,
         description: description,
-        scopes: checkedScopes,
+        features: checkedScopes,
         preDefinedRole: clonePreDefinedRole || RolesEnum.READ_ONLY
       }
       if(isEditMode) {
@@ -169,12 +200,15 @@ export function AddExplictCustomRole () {
       form.setFieldValue('description', location?.description)
     }
     if (location && location?.scopes && (isEditMode || isClone)) {
-      const scopes = location.scopes
-      scopes.map(s => form.setFieldValue(s, true))
+      let permissions: ScopePermission[] = initialPermissionList
+      location.scopes.forEach(s => {
+        const id = s.split('-')[0]
+        const perm = Object.keys(PermissionType)
+          .find(key => PermissionType[key as keyof typeof PermissionType] === s.split('-')[1]) ?? ''
+        permissions = updateRelatedPermissions(id, perm, true, permissions)
+      })
+      form.setFieldValue('permissions', permissions)
     }
-    form.setFieldValue(WifiScopes.READ, true)
-    form.setFieldValue(SwitchScopes.READ, true)
-    form.setFieldValue(EdgeScopes.READ, true)
   }, [form, location])
 
   const CustomRoleForm = () => {
@@ -310,46 +344,7 @@ export function AddExplictCustomRole () {
       ?? initialPermissionList)
 
     const updatePermissionList = (key: string, permission: string, enabled: boolean) => {
-      const scope = scopeHierarchy.find(sc => sc.key === key) ||
-        scopeHierarchy.flatMap(sc => sc.children).find(c => c?.key === key) ||
-        scopeHierarchy.flatMap(sc => sc.children).flatMap(c => c?.children)
-          .find(cc => cc?.key === key)
-      if (!scope) {
-        return
-      }
-      const scopeAndChildren = scope.children ? Flat(scope) : [scope]
-      const globalParent = scopeHierarchy.find(sc => sc.key === key ||
-          sc.children?.some(c => c.key === key || c.children?.some(cc => cc.key === key)))
-      const parent = scopeHierarchy.flatMap(sc => sc.children)
-        .find(c => c?.children?.some(cc => cc.key === key))
-      const parents = [ parent, globalParent ].filter(p => p !== undefined && p.key !== key)
-
-      const permissions: ScopePermission[] = []
-      // Everything except this scope, its children, and its parents are unchanged
-      permissions.push(...permissionList.filter(p =>
-        !scopeAndChildren.map(sc => sc.key).includes(p.id)
-        && !parents.map(sc => sc?.key).includes(p.id)))
-      // Set permission for this scope and all its children if any
-      permissions.push(...permissionList.filter(p =>scopeAndChildren.map(s => s.key).includes(p.id))
-        .map(perm => { return { ...perm, [permission]: enabled } }))
-      // Set permission as true for any parents if all their children have that permission enabled
-      // and set as false if not
-      // (Important that parent comes before globalParent in the parents array so that parent permission is set first)
-      parents.forEach(parent => {
-        const perm = permissionList.find(p => p.id === parent?.key)
-        if (!parent || !perm) {
-          return
-        }
-        permissions.push({
-          ...perm,
-          [permission]: !enabled
-            ? enabled
-            : permissions.filter(p =>
-              Flat(parent).map(sc => sc.key).includes(p.id) && p.id !== parent.key)
-              .every(p => p[permission])
-        })
-      })
-
+      const permissions = updateRelatedPermissions(key, permission, enabled, permissionList)
       setPermissionList(permissions)
       form.setFieldValue('permissions', permissions)
     }

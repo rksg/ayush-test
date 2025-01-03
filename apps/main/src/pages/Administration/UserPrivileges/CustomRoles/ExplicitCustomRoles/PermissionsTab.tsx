@@ -6,7 +6,7 @@ import { ScopePermission } from '@acx-ui/rc/utils'
 
 import * as UI from '../../styledComponents'
 
-import { Flat } from './AddExplictCustomRole'
+import { Flat } from './AddExplicitCustomRole'
 
 interface PermissionsTabProps {
   updateSelected?: (key: string, permission: string, enabled: boolean) => void,
@@ -126,18 +126,18 @@ export const PermissionsTab = (props: PermissionsTabProps) => {
     const list = []
     const scopePermission = permissions.find(perm => perm.id === key)
     if (scopePermission?.read) {
-      list.push('Read Only')
+      list.push($t({ defaultMessage: 'Read Only' }))
     }
     if (scopePermission?.create) {
-      list.push('Create')
+      list.push($t({ defaultMessage: ', Create' }))
     }
     if (scopePermission?.update) {
-      list.push('Edit')
+      list.push($t({ defaultMessage: ', Edit' }))
     }
     if (scopePermission?.delete) {
-      list.push('Delete')
+      list.push($t({ defaultMessage: ', Delete' }))
     }
-    return list.join(', ')
+    return list
   }
 
   const summaryContent = tabScopes.some(s => s.children)

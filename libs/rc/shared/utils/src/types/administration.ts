@@ -442,3 +442,10 @@ export interface ScopePermission extends Record<string, string|boolean> {
   update: boolean
   delete: boolean
 }
+
+export enum PermissionType {
+  read = 'r',
+  create = 'c',
+  update = 'u',
+  delete = 'd'
+}
