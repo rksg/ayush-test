@@ -141,9 +141,9 @@ export function SwitchPortProfileForm () {
     }).unwrap()).data
       .filter((n: SwitchPortProfiles) => n.id !== params.portProfileId)
       .map((n: SwitchPortProfiles) =>
-        ({ name: n.name.replace(/[^a-z0-9]/gi, '').toLowerCase() }))
+        ({ name: n.name.toLowerCase() }))
     // eslint-disable-next-line max-len
-    return checkObjectNotExists(list, { name: name.replace(/[^a-z0-9]/gi, '').toLowerCase() } ,
+    return checkObjectNotExists(list, { name: name.toLowerCase() } ,
       $t({ defaultMessage: 'Profile Name' }))
   }
 
