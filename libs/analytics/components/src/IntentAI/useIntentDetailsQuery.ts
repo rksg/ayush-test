@@ -158,9 +158,9 @@ export const api = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
     intentDetails: build.query<
       IntentDetail | undefined,
-      IntentDetailsQueryPayload & { isConfigChangeEnabled: boolean }
+      IntentDetailsQueryPayload & { preventColdTier: boolean }
     >({
-      query: ({ isConfigChangeEnabled, ...variables }) => ({
+      query: ({ preventColdTier, ...variables }) => ({
         variables,
         document: gql`
           query IntentDetails($root: String!, $sliceId: String!, $code: String!) {
@@ -171,7 +171,7 @@ export const api = intentAIApi.injectEndpoints({
               sliceType sliceValue updatedAt
               path { type name }
               ${!variables.code.includes('ecoflex') ? 'currentValue recommendedValue' : ''}
-              ${isConfigChangeEnabled ? 'dataCheck' : ''}
+              ${preventColdTier ? 'dataCheck' : ''}
             }
           }
         `

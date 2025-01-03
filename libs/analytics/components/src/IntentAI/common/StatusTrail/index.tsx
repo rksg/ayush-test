@@ -20,22 +20,22 @@ export const StatusTrail = () => {
   const { $t } = useIntl()
   const { intent: { sliceValue } } = useIntentContext()
 
-  const isEnabled = [
-    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
-    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
+  const preventColdTier = [
+    useIsSplitOn(Features.RUCKUS_AI_PREVENT_COLD_TIER_QUERY_TOGGLE),
+    useIsSplitOn(Features.ACX_UI_PREVENT_COLD_TIER_QUERY_TOGGLE)
   ].some(Boolean)
 
   const query = useIntentStatusTrailQuery({
     ...useIntentParams(),
-    loadStatusMetadata: isEnabled
+    loadStatusMetadata: preventColdTier
   })
 
   const coldTierDays = parseInt(get('DRUID_COLD_TIER_DAYS'), 10)
-  const tooltip = isEnabled ? <Tooltip.Info title={$t({ defaultMessage: `
+  const tooltip = preventColdTier ? <Tooltip.Info title={$t({ defaultMessage: `
     Displays IntentAI status changes for up to {days, plural, one {# day} other {# days}}.
   ` }, { days: coldTierDays })} /> : null
 
-  const shouldShowLimitedText = isEnabled && query.data &&
+  const shouldShowLimitedText = preventColdTier && query.data &&
     query.data?.data.length > 0 &&
     query.data?.total > query.data?.data.length
 
@@ -50,7 +50,7 @@ export const StatusTrail = () => {
           {query.data?.data.map(({ displayStatus, createdAt, metadata }, index) => (
             <div key={index}>
               <UI.DateLabel children={formatter(DateFormatEnum.DateTimeFormat)(createdAt)} />
-              {isEnabled ? <Tooltip
+              {preventColdTier ? <Tooltip
                 title={getStatusTooltip(displayStatus, sliceValue, (metadata || {}) as Metadata)}
                 placement='right'
                 dottedUnderline
