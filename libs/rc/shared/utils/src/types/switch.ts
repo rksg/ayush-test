@@ -1023,10 +1023,16 @@ export enum PortProfileConfigSourceType {
 }
 
 export interface PortProfilesBySwitchId {
+  switchId?: string
   portProfileId: string
   portProfileName: string
   configSource: PortProfileConfigSourceType
   ports?: string[]
+}
+
+export interface PortProfilesForMultiSwitches {
+  switchId: string,
+  availablePortProfiles: PortProfilesBySwitchId[]
 }
 
 export interface SwitchPortProfiles {

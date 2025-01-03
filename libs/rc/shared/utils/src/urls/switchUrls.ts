@@ -757,6 +757,11 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/switches/:switchId/availablePortProfiles',
     newApi: true
   },
+  getPortProfileOptionsForMultiSwitches: {
+    method: 'post',
+    url: '/venues/:venueId/switches/availablePortProfiles',
+    newApi: true
+  },
   getPortProfilesListBySwitchId: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/switchPortProfiles/query',

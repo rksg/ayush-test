@@ -13,8 +13,8 @@ import {
   Tooltip,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { PoeUsage }                          from '@acx-ui/icons'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { PoeUsage }                                from '@acx-ui/icons'
 import {
   switchApi,
   useLazyGetAclUnionQuery,
@@ -31,7 +31,8 @@ import {
   useSwitchDetailHeaderQuery,
   useSavePortsSettingMutation,
   useCyclePoeMutation,
-  useLazyPortProfileOptionsBySwitchIdQuery
+  useLazyPortProfileOptionsBySwitchIdQuery,
+  useLazyPortProfileOptionsForMultiSwitchesQuery
 } from '@acx-ui/rc/services'
 import {
   EditPortMessages,
@@ -53,7 +54,8 @@ import {
   validateVlanExcludingReserved,
   Vlan,
   VlanModalType,
-  isFirmwareVersionAbove10020b
+  isFirmwareVersionAbove10020b,
+  PortProfilesBySwitchId
 } from '@acx-ui/rc/utils'
 import { useParams }     from '@acx-ui/react-router-dom'
 import { store }         from '@acx-ui/store'
@@ -300,6 +302,7 @@ export function EditPortDrawer ({
   const [getVenueRoutedList] = useLazyGetVenueRoutedListQuery()
   const [getAclUnion] = useLazyGetAclUnionQuery()
   const [getPortProfileOptionsList] = useLazyPortProfileOptionsBySwitchIdQuery()
+  const [getPortProfileOptionsForSwitches] = useLazyPortProfileOptionsForMultiSwitchesQuery()
   const [savePortsSetting, { isLoading: isPortsSettingUpdating }] = useSavePortsSettingMutation()
   const [cyclePoe, { isLoading: isCyclePoeUpdating }] = useCyclePoeMutation()
 
@@ -427,11 +430,33 @@ export function EditPortDrawer ({
       }, true).unwrap()
 
       if(isSwitchPortProfileEnabled && isAnyFirmwareAbove10020b) {
-        const portProfileList = await getPortProfileOptionsList({
-          params: { tenantId, switchId, venueId: switchDetail?.venueId },
-          enableRbac: isSwitchRbacEnabled
-        }, true).unwrap()
-        setPortProfileOptions(getPortProfileOptions(portProfileList))
+        if(isMultipleEdit){
+          const portProfilePayload = selectedSwitchList.map(item => item.id)
+          const portProfileList = await getPortProfileOptionsForSwitches({
+            params: { tenantId, switchId, venueId: switchDetail?.venueId },
+            payload: portProfilePayload,
+            enableRbac: isSwitchRbacEnabled
+          }, true).unwrap()
+
+          const groupedOptions = portProfileList.reduce((acc, option) => {
+            option.availablePortProfiles.forEach((item) => {
+              if (!acc[item.portProfileName]) {
+                acc[item.portProfileName] = []
+              }
+              acc[item.portProfileName].push({ switchId: option.switchId, ...item })
+            })
+            return acc
+          }, {} as Record<string, PortProfilesBySwitchId[]>)
+
+          setPortProfileOptions(getPortProfileOptions(groupedOptions, isMultipleEdit))
+        }else{
+          const portProfileList = await getPortProfileOptionsList({
+            params: { tenantId, switchId, venueId: switchDetail?.venueId },
+            enableRbac: isSwitchRbacEnabled
+          }, true).unwrap()
+
+          setPortProfileOptions(getPortProfileOptions(portProfileList))
+        }
       }
 
       const vid = isVenueLevel ? venueId : switchDetail?.venueId
@@ -915,6 +940,21 @@ export function EditPortDrawer ({
           .filter(p => p.switchSerial === item)
           .map(p => p.portIdentifier)
 
+        let switchPortProfileId = null
+        if (isSwitchPortProfileEnabled){
+          if(isMultipleEdit){
+            if(form.getFieldValue('switchPortProfileId') !== ''){
+              const selectedPortProfiles = JSON.parse(form.getFieldValue('switchPortProfileId'))
+              switchPortProfileId = selectedPortProfiles.find(
+                (p: { switchId: string }) => p.switchId === item)?.portProfileId
+            }
+          }else{
+            if(form.getFieldValue('switchPortProfileId') !== ''){
+              switchPortProfileId = form.getFieldValue('switchPortProfileId')
+            }
+          }
+        }
+
         return isSwitchRbacEnabled ? {
           ...transformedValues,
           switchId: item,
@@ -922,6 +962,7 @@ export function EditPortDrawer ({
           ports: ports,
           ...getDefaultVlanMapping('untaggedVlan', item, defaultVlanMap, untaggedVlan),
           ...getDefaultVlanMapping('voiceVlan', item, defaultVlanMap, voiceVlan),
+          ...(isSwitchPortProfileEnabled && { switchPortProfileId }),
           ignoreFields: ignoreFields.toString()
         } : {
           switchId: item,
@@ -931,7 +972,8 @@ export function EditPortDrawer ({
             ...getDefaultVlanMapping('voiceVlan', item, defaultVlanMap, voiceVlan),
             ignoreFields: ignoreFields.toString(),
             port: ports?.[0],
-            ports: ports
+            ports: ports,
+            ...(isSwitchPortProfileEnabled && { switchPortProfileId })
           }
         }
       })
@@ -1748,7 +1790,7 @@ export function EditPortDrawer ({
                 : <Tooltip title={getFieldTooltip('switchPortProfileId')}>
                   <Form.Item
                     name='switchPortProfileId'
-                    initialValue='NONE'><Select
+                    initialValue=''><Select
                       options={portProfileOptions}
                       disabled={getFieldDisabled('switchPortProfileId')} /></Form.Item>
                 </Tooltip>}

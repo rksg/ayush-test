@@ -180,20 +180,36 @@ export const getVlanOptions = (vlans: SwitchVlanUnion, defaultVlan: string, extr
 }
 
 
-export const getPortProfileOptions = (portProfilesList?: PortProfilesBySwitchId[]) => {
+export const getPortProfileOptions = (
+  portProfilesList?: PortProfilesBySwitchId[] | Record<string, PortProfilesBySwitchId[]>,
+  isMultipleEdit: boolean = false) => {
   const { $t } = getIntl()
-  const options = Object.values(portProfilesList ?? {}).flat()?.map((
-    item: PortProfilesBySwitchId) => ({
-    label: `${item.portProfileName}
-          ${item.configSource==='SWITCH_LEVEL' ? ' (Modified locally)' : ''}`,
-    value: item.portProfileId,
-    disabled: false
-  })).sort((a, b) => a.label.localeCompare(b.label))
 
-  return [
-    { label: $t({ defaultMessage: 'None' }), value: '', disabled: false },
-    ...options
-  ] as DefaultOptionType[]
+  if(isMultipleEdit){
+    const options = Object.entries(portProfilesList ?? {}).map(([key, profiles]) => ({
+      label: key,
+      value: JSON.stringify(profiles),
+      disabled: false
+    })).sort((a, b) => a.label.localeCompare(b.label))
+
+    return [
+      { label: $t({ defaultMessage: 'None' }), value: '', disabled: false },
+      ...options
+    ] as DefaultOptionType[]
+  }else{
+    const options = Object.values(portProfilesList ?? {}).flat()?.map((
+      item: PortProfilesBySwitchId) => ({
+      label: `${item.portProfileName}
+            ${item.configSource==='SWITCH_LEVEL' ? ' (Modified locally)' : ''}`,
+      value: item.portProfileId,
+      disabled: false
+    })).sort((a, b) => a.label.localeCompare(b.label))
+
+    return [
+      { label: $t({ defaultMessage: 'None' }), value: '', disabled: false },
+      ...options
+    ] as DefaultOptionType[]
+  }
 }
 
 export const getAllSwitchVlans = (vlans: SwitchVlanUnion) => {
