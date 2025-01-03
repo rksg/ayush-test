@@ -1,4 +1,5 @@
 import { SuspenseBoundary }                 from '@acx-ui/components'
+import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { Provider, intentAIUrl }            from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
@@ -115,6 +116,9 @@ const doTest = async (codes: string[], intent: IntentDetail) => {
 }
 
 describe('IntentAIForm', () => {
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  })
   it('should render for AIDrivenRRM', async () => {
     mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent: mockedIntentCRRM } })
     const codes = ['c-crrm-channel24g-auto', 'c-crrm-channel5g-auto', 'c-crrm-channel6g-auto']

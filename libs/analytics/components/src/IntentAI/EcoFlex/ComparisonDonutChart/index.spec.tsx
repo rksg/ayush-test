@@ -7,7 +7,6 @@ import { mockIntentContext }                      from '../../__tests__/fixtures
 import { Statuses }                               from '../../states'
 import { mocked, mockKpiData, mockKpiResultData } from '../__tests__/mockedEcoFlex'
 
-
 import { useIntentAIEcoFlexQuery } from './services'
 
 import { ComparisonDonutChart } from '.'
@@ -56,8 +55,15 @@ describe('ComparisonDonutChart', () => {
   })
 
   it('handle beyond data retention', async () => {
-    jest.mocked(Date.now).mockRestore()
-    mockIntentContext({ intent: mocked })
+    const beyondDataRetentionMock = {
+      ...mocked,
+      dataCheck: {
+        isDataRetained: false,
+        isHotTierData: true
+      }
+    }
+    mockIntentContext({ intent: beyondDataRetentionMock })
+
     const { container } = render(<ComparisonDonutChart kpiQuery={mockedQueryResult}/>, {
       wrapper: Provider
     })
