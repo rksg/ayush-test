@@ -63,7 +63,11 @@ export const mockedIntentEquiFlex = {
   ...mockedIntentEquiFlexKPIs,
   preferences: null,
   currentValue: true,
-  recommendedValue: true
+  recommendedValue: true,
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierData: true
+  }
 } as unknown as IntentDetail
 
 export const mockedEquiFlexKpi = {

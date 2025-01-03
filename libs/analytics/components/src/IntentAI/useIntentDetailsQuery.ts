@@ -9,9 +9,9 @@ import { useParams }               from '@acx-ui/react-router-dom'
 import { intentAIApi }             from '@acx-ui/store'
 import { getIntl, noDataDisplay }  from '@acx-ui/utils'
 
-import { Intent }                            from './config'
-import { Statuses }                          from './states'
-import { dataRetentionText, isDataRetained } from './utils'
+import { Intent }                              from './config'
+import { Statuses }                            from './states'
+import { coldTierDataText, dataRetentionText } from './utils'
 
 export type IntentKPIConfig = {
   key: string;
@@ -42,6 +42,10 @@ export type IntentConfigurationValue =
 export type IntentDetail = Intent & Partial<IntentKPI> & {
   currentValue: IntentConfigurationValue
   recommendedValue: IntentConfigurationValue
+  dataCheck: {
+    isDataRetained: boolean
+    isHotTierData: boolean
+  }
 }
 
 export const useIntentParams = () => {
@@ -102,7 +106,9 @@ export function getKPIData (intent: IntentDetail, config: IntentKPIConfig) {
 
 export function getGraphKPIs (
   intent: IntentDetail,
-  kpis: IntentKPIConfig[]
+  kpis: IntentKPIConfig[],
+  isDataRetained: boolean,
+  isHotTierData: boolean
 ) {
   const { $t } = getIntl()
   const state = intentState(intent)
@@ -121,9 +127,7 @@ export function getGraphKPIs (
       delta: { value: string; trend: TrendTypeEnum } | undefined
     }
 
-    if (!isDataRetained(intent.metadata.dataEndTime)) {
-      ret.footer = $t(dataRetentionText)
-    } else if (state !== 'no-data') {
+    if (isHotTierData && isDataRetained && state !== 'no-data') {
       const result = getKPIData(intent, kpi)
       ret.value = kpi.format(_.get(result, ['data', 'result'], null))
 
@@ -139,21 +143,24 @@ export function getGraphKPIs (
           trend: TrendTypeEnum
         }
       }
+    } else if (!isHotTierData) {
+      ret.footer = $t(coldTierDataText)
+    } else if (!isDataRetained) {
+      ret.footer = $t(dataRetentionText)
     }
     return ret
   })
 }
 
-type IntentDetailsQueryPayload = {
-  root: string
-  sliceId: string
-  code: string
-}
+type IntentDetailsQueryPayload = ReturnType<typeof useIntentParams>
 
 export const api = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
-    intentDetails: build.query<IntentDetail | undefined, IntentDetailsQueryPayload>({
-      query: (variables: IntentDetailsQueryPayload) => ({
+    intentDetails: build.query<
+      IntentDetail | undefined,
+      IntentDetailsQueryPayload & { preventColdTier: boolean }
+    >({
+      query: ({ preventColdTier, ...variables }) => ({
         variables,
         document: gql`
           query IntentDetails($root: String!, $sliceId: String!, $code: String!) {
@@ -164,6 +171,7 @@ export const api = intentAIApi.injectEndpoints({
               sliceType sliceValue updatedAt
               path { type name }
               ${!variables.code.includes('ecoflex') ? 'currentValue recommendedValue' : ''}
+              ${preventColdTier ? 'dataCheck' : ''}
             }
           }
         `
@@ -191,40 +199,11 @@ export const api = intentAIApi.injectEndpoints({
       transformErrorResponse: (error, meta) =>
         ({ ...error, data: meta?.response?.data?.intent }),
       providesTags: [{ type: 'Intent', id: 'INTENT_KPIS' }]
-    }),
-    intentStatusTrail: build.query<
-      Intent['statusTrail'],
-      IntentDetailsQueryPayload & { loadStatusMetadata?: boolean }
-    >({
-      query: ({ loadStatusMetadata, ...variables }) => ({
-        variables,
-        document: gql`
-          query IntentStatusTrail($root: String!, $sliceId: String!, $code: String!) {
-            intent(root: $root, sliceId: $sliceId, code: $code) {
-              statusTrail {
-                status statusReason displayStatus createdAt
-                ${loadStatusMetadata ? gql`metadata {
-                  changedByName: field(prop: "changedByName")
-                  failures: field(prop: "failures")
-                  retries: field(prop: "retries")
-                  scheduledAt: field(prop: "scheduledAt")
-                }` : ''}
-              }
-            }
-          }
-        `
-      }),
-      transformResponse: (response: { intent: { statusTrail: Intent['statusTrail'] } })=>
-        response.intent.statusTrail,
-      transformErrorResponse: (error, meta) =>
-        ({ ...error, data: meta?.response?.data?.intent }),
-      providesTags: [{ type: 'Intent', id: 'INTENT_STATUS_TRAIL' }]
     })
   })
 })
 
 export const {
   useIntentDetailsQuery,
-  useIntentKPIsQuery,
-  useIntentStatusTrailQuery
+  useIntentKPIsQuery
 } = api

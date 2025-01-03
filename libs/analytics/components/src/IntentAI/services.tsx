@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import React        from 'react'
 
-import { gql }              from 'graphql-request'
-import _                    from 'lodash'
-import { FormattedMessage } from 'react-intl'
+import { gql }                             from 'graphql-request'
+import _                                   from 'lodash'
+import { defineMessage, FormattedMessage } from 'react-intl'
 
 import { formattedPath }             from '@acx-ui/analytics/utils'
 import { TableProps }                from '@acx-ui/components'
@@ -16,6 +16,7 @@ import {
 }                                                   from '@acx-ui/utils'
 import type { PathFilter } from '@acx-ui/utils'
 
+import { richTextFormatValues } from './common/richTextFormatValues'
 import { getIntentStatus } from './common/getIntentStatus'
 import {
   states,
@@ -34,8 +35,6 @@ import {
   parseTransitionGQLByAction,
   TransitionIntentItem
 } from './utils'
-
-import type { Props as FormattedMessageProps } from 'react-intl/lib/src/components/message'
 
 export type HighlightItem = {
   new: number
@@ -62,16 +61,15 @@ export type IntentAP = {
   version: string
 }
 
-export const formatValues: FormattedMessageProps['values'] = {
-  ul: (chunks) => React.createElement('ul', { children: chunks }),
-  li: (chunks) => React.createElement('li', { children: chunks }),
-  p: (chunks) => React.createElement('p', { children: chunks })
+export const formatValues: typeof richTextFormatValues = {
+  ...richTextFormatValues,
+  p: (chunks) => <p>{chunks}</p>
 }
 
 export const getStatusTooltip = (
   state: DisplayStates, sliceValue: string, metadata: Metadata) => {
   const { $t } = getIntl()
-  const stateConfig = states[state]
+  const stateConfig = states[state] ?? { tooltip: defineMessage({ defaultMessage: 'Unknown' }) }
 
   const errMsg = React.createElement('ul', {},
     metadata.failures?.map(failure =>
@@ -445,6 +443,7 @@ export function useIntentAITableQuery (filter: PathFilter) {
     defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
     total: 0
   }
+
   const intentTableFilters = useEncodedParameter<Filters>('intentTableFilters')
   const filters = intentTableFilters.read() || {}
   const [pagination, setPagination] = useState<Pagination>(DEFAULT_PAGINATION)
