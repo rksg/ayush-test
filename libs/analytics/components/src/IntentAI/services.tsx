@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import React        from 'react'
 
-import { gql }              from 'graphql-request'
-import _                    from 'lodash'
-import { FormattedMessage } from 'react-intl'
+import { gql }                             from 'graphql-request'
+import _                                   from 'lodash'
+import { defineMessage, FormattedMessage } from 'react-intl'
 
 import { formattedPath }             from '@acx-ui/analytics/utils'
 import { TableProps }                from '@acx-ui/components'
@@ -68,7 +68,7 @@ export const formatValues: typeof richTextFormatValues = {
 export const getStatusTooltip = (
   state: DisplayStates, sliceValue: string, metadata: Metadata) => {
   const { $t } = getIntl()
-  const stateConfig = states[state]
+  const stateConfig = states[state] ?? { tooltip: defineMessage({ defaultMessage: 'Unknown' }) }
 
   const errMsg = React.createElement('ul', {},
     metadata.failures?.map(failure =>
