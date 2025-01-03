@@ -44,10 +44,13 @@ export const api = dataApi.injectEndpoints({
           }`
       }),
       providesTags: [{ type: 'Monitoring', id: 'INCIDENT_CODE' }],
-      transformResponse: (response: { incident: { impactedSwitches: ImpactedSwitch[] } } ) => (
-        { ...response.incident.impactedSwitches[0],
-          model: response.incident.impactedSwitches[0].model.split('-')[0] }
-      )
+      transformResponse: (response: { incident: { impactedSwitches: ImpactedSwitch[] } } ) => {
+        if(response.incident.impactedSwitches.length){
+          return { ...response.incident.impactedSwitches[0],
+            model: response.incident.impactedSwitches[0].model.split('-')[0] }
+        }
+        return response.incident.impactedSwitches[0]
+      }
     })
   })
 })
