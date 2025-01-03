@@ -26,6 +26,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     //url: '/networks',
     url: '/wifiNetworks',
+    opsApi: 'POST:/wifiNetworks'
     newApi: true
   },
   updateNetworkDeep: {
@@ -235,6 +236,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     // url: '/venues/aps',
     url: '/venues/:venueId/apGroups/:apGroupId/aps',
+    opsApi: 'POST:/venues/{venueId}/apGroups/{apGroupId}/aps',
     newApi: true
   },
   addApWithDefaultGroup: {

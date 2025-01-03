@@ -75,6 +75,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   addSwitch: {
     method: 'post',
     url: '/venues/:venueId/switches',
+    opsApi: 'POST:/venues/{venueId}/switches',
     newApi: true
   },
   updateSwitch: {

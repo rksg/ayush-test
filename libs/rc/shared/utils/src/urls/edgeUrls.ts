@@ -4,6 +4,7 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   addEdge: {
     method: 'post',
     url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges',
+    opsApi: 'POST:/venues/{venueId}/edgeClusters/{edgeClusterId}/edges', //Need confirm with RCG
     newApi: true
   },
   getEdge: {
