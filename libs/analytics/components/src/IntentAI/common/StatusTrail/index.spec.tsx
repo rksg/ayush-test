@@ -16,8 +16,12 @@ describe('StatusTrail', () => {
   const params = { root: intent.root, sliceId: intent.sliceId, code: intent.code }
   beforeEach(() => {
     store.dispatch(intentAIApi.util.resetApiState())
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockIntentContext({ intent, kpis: [] })
-    const { statusTrail } = mockedIntentCRRMStatusTrail
+    const statusTrail = {
+      total: mockedIntentCRRMStatusTrail.statusTrail.length,
+      data: mockedIntentCRRMStatusTrail.statusTrail
+    }
     mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail', { data: { intent: { statusTrail } } })
   })
 
@@ -27,6 +31,17 @@ describe('StatusTrail', () => {
     expect(await screen.findAllByText('Active')).toHaveLength(14)
     expect(await screen.findAllByText('Apply In Progress')).toHaveLength(14)
     expect(await screen.findAllByText('Scheduled')).toHaveLength(15)
+  })
+
+  it('renders limited text when total is less than loaded', async () => {
+    const statusTrail = {
+      total: mockedIntentCRRMStatusTrail.statusTrail.length,
+      data: mockedIntentCRRMStatusTrail.statusTrail.slice(0, 5)
+    }
+    mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail', { data: { intent: { statusTrail } } })
+    render(<StatusTrail />, { wrapper, route: { params } })
+    const limited = 'Limited to the most recent 31 days of status.'
+    expect(await screen.findByText(limited)).toBeVisible()
   })
 
   it('should render correctly with unknown status', async () => {
@@ -41,7 +56,6 @@ describe('StatusTrail', () => {
   })
 
   it('should show hover content correctly for new status', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<StatusTrail />, { wrapper, route: { params } })
     const newStatusTrail = await screen.findByText('New')
     await userEvent.hover(newStatusTrail)
@@ -51,7 +65,6 @@ describe('StatusTrail', () => {
   })
 
   it('should show hover content correctly for scheduled status', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<StatusTrail />, { wrapper, route: { params } })
     const scheduleStatusTrail = await screen.findAllByText('Scheduled')
     await userEvent.hover(scheduleStatusTrail[0])
@@ -61,7 +74,6 @@ describe('StatusTrail', () => {
   })
 
   it('should show hover content correctly for active status', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<StatusTrail />, { wrapper, route: { params } })
     const activeStatusTrail = await screen.findAllByText('Active')
     await userEvent.hover(activeStatusTrail[0])
@@ -70,12 +82,27 @@ describe('StatusTrail', () => {
   })
 
   it('should show hover content correctly for apply in progress status', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<StatusTrail />, { wrapper, route: { params } })
     const applyInProgressStatusTrail = await screen.findAllByText('Apply In Progress')
     await userEvent.hover(applyInProgressStatusTrail[0])
     expect(await screen.findByRole('tooltip', { hidden: true }))
       // eslint-disable-next-line max-len
       .toHaveTextContent('IntentAI recommended changes are getting applied to Venue 21_US_Beta_Samsung.')
+  })
+
+  describe('legacy resolver & data structure', () => {
+    beforeEach(() => {
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
+    })
+
+    it('should render correctly with valid data', async () => {
+      const { statusTrail } = mockedIntentCRRMStatusTrail
+      mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail', { data: { intent: { statusTrail } } })
+      render(<StatusTrail />, { wrapper, route: { params } })
+      expect(await screen.findAllByText('New')).toHaveLength(1)
+      expect(await screen.findAllByText('Active')).toHaveLength(14)
+      expect(await screen.findAllByText('Apply In Progress')).toHaveLength(14)
+      expect(await screen.findAllByText('Scheduled')).toHaveLength(15)
+    })
   })
 })
