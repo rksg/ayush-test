@@ -9,8 +9,8 @@ import {
   Dashboard,
   ApVenueStatusEnum
 } from '@acx-ui/rc/utils'
-import { useNavigateToPath, useParams }                            from '@acx-ui/react-router-dom'
-import { useDashboardFilter, useLoadTimeTracking, widgetsMapping } from '@acx-ui/utils'
+import { useNavigateToPath, useParams }                         from '@acx-ui/react-router-dom'
+import { useDashboardFilter, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { getAPStatusDisplayName } from '../MapWidget/VenuesMap/helper'
 
@@ -73,7 +73,7 @@ export function VenuesDashboardWidgetV2 () {
     })
   })
 
-  useLoadTimeTracking({
+  useTrackLoadTime({
     itemName: widgetsMapping.VENUES_DASHBOARD_WIDGET,
     states: [queryResults],
     isEnabled: isMonitoringPageEnabled

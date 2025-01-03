@@ -24,10 +24,10 @@ import {
   SwitchRow,
   SwitchPortStatus
 } from '@acx-ui/rc/utils'
-import { useParams, TenantLink }               from '@acx-ui/react-router-dom'
-import { RequestPayload, SwitchScopes }        from '@acx-ui/types'
-import { hasPermission }                       from '@acx-ui/user'
-import { useLoadTimeTracking, widgetsMapping } from '@acx-ui/utils'
+import { useParams, TenantLink }            from '@acx-ui/react-router-dom'
+import { RequestPayload, SwitchScopes }     from '@acx-ui/types'
+import { hasPermission }                    from '@acx-ui/user'
+import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { SwitchLagModal, SwitchLagParams } from '../SwitchLagDrawer/SwitchLagModal'
 import {
@@ -108,7 +108,7 @@ export function ClientsTable (props: {
     setSwitchCount?.(tableQuery.data?.totalCount || 0)
   }, [tableQuery.data])
 
-  useLoadTimeTracking({
+  useTrackLoadTime({
     itemName: widgetsMapping.WIRED_CLIENTS_TABLE,
     states: [tableQuery],
     isEnabled: isMonitoringPageEnabled

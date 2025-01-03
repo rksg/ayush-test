@@ -24,7 +24,7 @@ import {
 import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import { formatter }                                          from '@acx-ui/formatter'
 import { NavigateFunction, Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { useLoadTimeTracking, widgetsMapping }                from '@acx-ui/utils'
+import { useTrackLoadTime, widgetsMapping }                   from '@acx-ui/utils'
 import type { AnalyticsFilter }                               from '@acx-ui/utils'
 
 import { useTopSwitchesByTrafficQuery } from './services'
@@ -95,7 +95,7 @@ function TopSwitchesByTrafficWidget ({ filters }: { filters : AnalyticsFilter })
 
   const { data } = queryResults
 
-  useLoadTimeTracking({
+  useTrackLoadTime({
     itemName: widgetsMapping.TOP_SWITCHES_BY_TRAFFIC,
     states: [queryResults],
     isEnabled: isMonitoringPageEnabled

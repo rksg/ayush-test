@@ -11,10 +11,10 @@ import {
   LoadTimeContext,
   LoadTimeProvider,
   TrackingPageConfig,
-  useLoadTimeTracking
-} from './useLoadTimeTracking'
+  useTrackLoadTime
+} from './useTrackLoadTime'
 
-describe('useLoadTimeTracking', () => {
+describe('useTrackLoadTime', () => {
   it ('test flattenRoutes', () => {
     expect(flattenRoutes(TrackingPageConfig)).toEqual(
       expect.objectContaining({
@@ -104,7 +104,7 @@ describe('useLoadTimeTracking', () => {
 
     const TestComponent = () => {
       const { onPageFilterChange } = useContext(LoadTimeContext)
-      useLoadTimeTracking({
+      useTrackLoadTime({
         itemName: 'testItem',
         isEnabled: true,
         states: [{ isLoading: false, isSuccess: true, isFetching: false }]

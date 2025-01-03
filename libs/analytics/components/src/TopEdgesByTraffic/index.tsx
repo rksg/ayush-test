@@ -8,7 +8,7 @@ import { Features, useIsSplitOn }                                               
 import { formatter }                                                                from '@acx-ui/formatter'
 import { useGetEdgesTopTrafficQuery }                                               from '@acx-ui/rc/services'
 import { NavigateFunction, Path, useNavigate, useTenantLink }                       from '@acx-ui/react-router-dom'
-import { FilterNameNode, useLoadTimeTracking, widgetsMapping }                      from '@acx-ui/utils'
+import { FilterNameNode, useTrackLoadTime, widgetsMapping }                         from '@acx-ui/utils'
 import type { AnalyticsFilter }                                                     from '@acx-ui/utils'
 
 export { TopEdgesByTrafficWidget as TopEdgesByTraffic }
@@ -78,7 +78,7 @@ function TopEdgesByTrafficWidget ({ filters }: { filters : AnalyticsFilter }) {
   })
   const { data } = queryResults
 
-  useLoadTimeTracking({
+  useTrackLoadTime({
     itemName: widgetsMapping.TOP_5_RUCKUS_EDGES_BY_TRAFFIC,
     states: [queryResults],
     isEnabled: isMonitoringPageEnabled

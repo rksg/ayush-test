@@ -456,14 +456,12 @@ export const LoadTimeProvider = ({ children }: {
   useEffect(() => {
     const pageKey = pageDetails?.key
     const pageTitle = TrackingPages[pageKey as keyof typeof TrackingPages]
-
-    const isLoadTimeUnset = !isLoadTimeSet.current
     const pageWidgetCount = pageDetails?.widgetCount
+
     const trackedWidgetCount = Object.keys(loadTimes).length
+    const isLoadTimeUnset = !isLoadTimeSet.current
     const isAllWidgetsTracked = trackedWidgetCount === pageWidgetCount
 
-    // eslint-disable-next-line no-console
-    console.log(isLoadTimeUnset, pageWidgetCount, isAllWidgetsTracked, isPageRouteSupported)
     if (isLoadTimeUnset && pageWidgetCount && isAllWidgetsTracked && isPageRouteSupported) {
       const { pendo } = window
       const totalLoadTime = getCurrentTime() - getPageLoadStartTime(pageLoadStart, loadTimes)
@@ -474,24 +472,22 @@ export const LoadTimeProvider = ({ children }: {
         page_title: pageDetails?.subTab ? `${pageTitle} - ${pageDetails?.subTab}` : pageTitle,
         page_type: pageDetails?.type,
         load_time_ms: totalLoadTime,
-        load_time_text: getLoadTimeStatus(totalLoadTime),
+        load_time_text: loadTimeStatus,
         components_load_time_ms: formatLoadTimes(loadTimes),
         criteria: pageCriteria ? JSON.stringify(pageCriteria) : '',
         active_tab: pageDetails?.activeTab
       }
 
       // eslint-disable-next-line no-console, max-len
-      console.log('All components loaded. Page load time:', totalLoadTime, 'ms',
-        '\n', '** status: ', loadTimeStatus,
-        '\n', '** event: ', trackEventData)
+      // console.log('All components loaded. Page load time:', totalLoadTime, 'ms',
+      //   '\n', '** status: ', loadTimeStatus,
+      //   '\n', '** event: ', trackEventData)
 
       setLoadTimes({})
       setIsPageCriteriaChanged(false)
       isLoadTimeSet.current = true
 
       if (pendo) {
-        // eslint-disable-next-line no-console
-        console.log('*** ', pendo)
         pendo.track?.(PENDO_TRACK_EVENT_NAME, trackEventData)
       }
     }
@@ -508,7 +504,7 @@ export const LoadTimeProvider = ({ children }: {
   )
 }
 
-export function useLoadTimeTracking ({ itemName, states, isEnabled }: {
+export function useTrackLoadTime ({ itemName, states, isEnabled }: {
   itemName: string,
   isEnabled: boolean,
   states: unknown[]
@@ -555,15 +551,15 @@ export function useLoadTimeTracking ({ itemName, states, isEnabled }: {
     const timer = setTimeout(() => {
       handleReachThreshold()
     }, COMPONENT_LOAD_TIME_THRESHOLD)
+
     if (!timerEnabled) {
       clearTimeout(timer)
     }
     return () => clearTimeout(timer)
+
   }, [timerEnabled])
 
   useEffect(() => {
-    // eslint-disable-next-line no-console
-    // console.log('states payload', pageQuery?.payload)
     if (!isEnabled) return
     if (pageQuery?.payload) {
       const {
@@ -578,8 +574,6 @@ export function useLoadTimeTracking ({ itemName, states, isEnabled }: {
         personalIdentityNetworkId, propertyId
       }, !isPageCriteriaInit)
     } else if (pageQuery?.originalArgs) {
-      // eslint-disable-next-line no-console
-      // console.log('states originalArgs', pageQuery?.originalArgs)
       const {
         endDate, startDate, range, filterBy, path
       } = pageQuery?.originalArgs
@@ -600,7 +594,7 @@ export function useLoadTimeTracking ({ itemName, states, isEnabled }: {
   }, [isPageCriteriaChanged])
 
   useEffect(() => {
-    if (startTime && !isEndTimeSet.current && isEnabled) {
+    if (isError && startTime && !isEndTimeSet.current && isEnabled) {
       setEndTime(getCurrentTime())
       setIsUnfulfilled(true)
       setTimerEnabled(false)
@@ -610,7 +604,7 @@ export function useLoadTimeTracking ({ itemName, states, isEnabled }: {
 
   useEffect(() => {
     const isSuccess = isAllSuccess || isAllFetchSuccess
-    if (!isEndTimeSet.current && isSuccess && isEnabled) {
+    if (isSuccess && !isEndTimeSet.current && isEnabled) {
       setEndTime(getCurrentTime())
       setTimerEnabled(false)
       isEndTimeSet.current = true

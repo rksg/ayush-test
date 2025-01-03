@@ -23,10 +23,10 @@ import {
   FloorPlanDto, FloorPlanFormDto, NetworkDevice, NetworkDevicePayload,
   NetworkDevicePosition, NetworkDeviceType, TypeWiseNetworkDevices
 } from '@acx-ui/rc/utils'
-import { TenantLink }                                                        from '@acx-ui/react-router-dom'
-import { RolesEnum, SwitchScopes, WifiScopes }                               from '@acx-ui/types'
-import { hasPermission, hasRoles, useUserProfileContext }                    from '@acx-ui/user'
-import { TABLE_QUERY_POLLING_INTERVAL, useLoadTimeTracking, widgetsMapping } from '@acx-ui/utils'
+import { TenantLink }                                                     from '@acx-ui/react-router-dom'
+import { RolesEnum, SwitchScopes, WifiScopes }                            from '@acx-ui/types'
+import { hasPermission, hasRoles, useUserProfileContext }                 from '@acx-ui/user'
+import { TABLE_QUERY_POLLING_INTERVAL, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import AddEditFloorplanModal from './FloorPlanModal'
 import GalleryView           from './GalleryView/GalleryView'
@@ -176,7 +176,7 @@ export function FloorPlan () {
 
   }, [selectedFloorPlan, getNetworkDevices?.data])
 
-  useLoadTimeTracking({
+  useTrackLoadTime({
     itemName: widgetsMapping.FLOOR_PLAN,
     states: [floorPlanQuery],
     isEnabled: isMonitoringPageEnabled

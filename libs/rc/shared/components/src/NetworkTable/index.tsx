@@ -22,10 +22,10 @@ import {
   WlanSecurityEnum,
   WifiNetwork
 } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                                   from '@acx-ui/react-router-dom'
-import { RequestPayload, WifiScopes }                                  from '@acx-ui/types'
-import { filterByAccess, hasCrossVenuesPermission, hasPermission }     from '@acx-ui/user'
-import { getIntl, noDataDisplay, useLoadTimeTracking, widgetsMapping } from '@acx-ui/utils'
+import { TenantLink, useTenantLink }                                from '@acx-ui/react-router-dom'
+import { RequestPayload, WifiScopes }                               from '@acx-ui/types'
+import { filterByAccess, hasCrossVenuesPermission, hasPermission }  from '@acx-ui/user'
+import { getIntl, noDataDisplay, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 
 const disabledType: NetworkTypeEnum[] = []
@@ -432,7 +432,7 @@ export function NetworkTable ({
     && hasCrossVenuesPermission()
     && hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, WifiScopes.DELETE] }) )
 
-  useLoadTimeTracking({
+  useTrackLoadTime({
     itemName: widgetsMapping.NETWORK_TABLE,
     states: [tableQuery],
     isEnabled: isMonitoringPageEnabled

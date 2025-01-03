@@ -4,7 +4,7 @@ import { healthApi }                               from '@acx-ui/analytics/servi
 import { kpiConfig }                               from '@acx-ui/analytics/utils'
 import { Card, GridRow, GridCol, Loader, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
-import { useLoadTimeTracking, widgetsMapping }     from '@acx-ui/utils'
+import { useTrackLoadTime, widgetsMapping }        from '@acx-ui/utils'
 import type { AnalyticsFilter }                    from '@acx-ui/utils'
 
 import { KpiWidget } from '../KpiWidget'
@@ -26,7 +26,7 @@ function VenueHealthWidget ({
   })
   const { data } = queryResults
 
-  useLoadTimeTracking({
+  useTrackLoadTime({
     itemName: widgetsMapping.VENUE_HEALTH_WIDGET,
     states: [queryResults],
     isEnabled: isMonitoringPageEnabled

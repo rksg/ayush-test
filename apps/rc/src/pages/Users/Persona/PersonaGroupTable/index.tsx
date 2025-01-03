@@ -32,9 +32,9 @@ import {
   useSearchMacRegListsQuery,
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { FILTER, PersonaGroup, SEARCH, useTableQuery }               from '@acx-ui/rc/utils'
-import { filterByAccess, hasCrossVenuesPermission }                  from '@acx-ui/user'
-import { exportMessageMapping, useLoadTimeTracking, widgetsMapping } from '@acx-ui/utils'
+import { FILTER, PersonaGroup, SEARCH, useTableQuery }            from '@acx-ui/rc/utils'
+import { filterByAccess, hasCrossVenuesPermission }               from '@acx-ui/user'
+import { exportMessageMapping, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { IdentityGroupContext } from '..'
 
@@ -404,7 +404,7 @@ export function PersonaGroupTable () {
 
   setIdentityGroupCount?.(tableQuery.data?.totalCount || 0)
 
-  useLoadTimeTracking({
+  useTrackLoadTime({
     itemName: widgetsMapping.IDENTITY_GUOUP_TABLE,
     states: [tableQuery],
     isEnabled: isMonitoringPageEnabled

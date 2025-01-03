@@ -5,10 +5,10 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import { getSeriesData }                                  from '@acx-ui/analytics/utils'
 import { HistoricalCard, Loader, StackedAreaChart,
   NoData, MultiLineTimeSeriesChart, qualitativeColorSet } from '@acx-ui/components'
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
-import { formatter }                           from '@acx-ui/formatter'
-import { useLoadTimeTracking, widgetsMapping } from '@acx-ui/utils'
-import type { AnalyticsFilter }                from '@acx-ui/utils'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { formatter }                        from '@acx-ui/formatter'
+import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import {
   useTrafficByVolumeQuery,
@@ -43,7 +43,7 @@ function TrafficByVolumeWidget ({
     })
   })
 
-  useLoadTimeTracking({
+  useTrackLoadTime({
     itemName: widgetsMapping.TRAFFIC_BY_VOLUME,
     states: [queryResults],
     isEnabled: isMonitoringPageEnabled

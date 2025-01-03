@@ -6,7 +6,7 @@ import { HistoricalCard, Loader, NoActiveData, DonutChart, DonutChartData, cssSt
 import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import { useNavigateToPath }                                                        from '@acx-ui/react-router-dom'
 import { hasRaiPermission }                                                         from '@acx-ui/user'
-import { useLoadTimeTracking, widgetsMapping }                                      from '@acx-ui/utils'
+import { useTrackLoadTime, widgetsMapping }                                         from '@acx-ui/utils'
 
 import { useIncidentToggles } from '../useIncidentToggles'
 
@@ -22,7 +22,7 @@ export function IncidentsDashboardv2 ({ filters }: { filters: IncidentFilter }) 
   const response = useIncidentsBySeverityDashboardv2Query({ ...filters, toggles })
   const { data: severities } = response
 
-  useLoadTimeTracking({
+  useTrackLoadTime({
     itemName: widgetsMapping.INCIDENTS_DASHBOARD,
     states: [response],
     isEnabled: isMonitoringPageEnabled

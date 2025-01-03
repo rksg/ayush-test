@@ -23,10 +23,10 @@ import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
-import { TenantLink, useNavigateToPath }                                                                    from '@acx-ui/react-router-dom'
-import { SwitchScopes, WifiScopes }                                                                         from '@acx-ui/types'
-import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission }              from '@acx-ui/user'
-import { exportMessageMapping, noDataDisplay, handleBlobDownloadFile, useLoadTimeTracking, widgetsMapping } from '@acx-ui/utils'
+import { TenantLink, useNavigateToPath }                                                                 from '@acx-ui/react-router-dom'
+import { SwitchScopes, WifiScopes }                                                                      from '@acx-ui/types'
+import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission }           from '@acx-ui/user'
+import { exportMessageMapping, noDataDisplay, handleBlobDownloadFile, useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { getRootCauseAndRecommendations } from '../IncidentDetails/rootCauseRecommendation'
 import { useIncidentToggles }             from '../useIncidentToggles'
@@ -274,7 +274,7 @@ export function IncidentTable ({ filters }: {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   ], []) // '$t' 'basePath' 'intl' are not changing
 
-  useLoadTimeTracking({
+  useTrackLoadTime({
     itemName: widgetsMapping.INCIDENT_TABLE,
     states: [queryResults],
     isEnabled: isMonitoringPageEnabled

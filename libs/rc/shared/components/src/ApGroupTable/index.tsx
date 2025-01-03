@@ -13,7 +13,7 @@ import { ApGroupViewModel, FILTER, getFilters, transformDisplayNumber, usePollin
 import { TenantLink, useTenantLink }                                                               from '@acx-ui/react-router-dom'
 import { WifiScopes }                                                                              from '@acx-ui/types'
 import { filterByAccess, hasPermission }                                                           from '@acx-ui/user'
-import { DateRange, getDateRangeFilter, useLoadTimeTracking, widgetsMapping }                      from '@acx-ui/utils'
+import { DateRange, getDateRangeFilter, useTrackLoadTime, widgetsMapping }                         from '@acx-ui/utils'
 
 import {  CountAndNamesTooltip } from '../'
 
@@ -168,7 +168,7 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
 
   const basePath = useTenantLink('/devices')
 
-  useLoadTimeTracking({
+  useTrackLoadTime({
     itemName: widgetsMapping.AP_GROUP_TABLE,
     states: [tableQuery],
     isEnabled: isMonitoringPageEnabled

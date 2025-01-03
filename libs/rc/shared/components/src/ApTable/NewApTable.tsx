@@ -62,7 +62,7 @@ import {
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload, WifiScopes, RolesEnum }                          from '@acx-ui/types'
 import { filterByAccess, hasPermission }                                  from '@acx-ui/user'
-import { exportMessageMapping, useLoadTimeTracking, widgetsMapping }      from '@acx-ui/utils'
+import { exportMessageMapping, useTrackLoadTime, widgetsMapping }         from '@acx-ui/utils'
 
 import { ApCompatibilityDrawer, ApCompatibilityFeature, ApCompatibilityType } from '../ApCompatibility'
 import { ApGeneralCompatibilityDrawer as EnhancedApCompatibilityDrawer }      from '../Compatibility'
@@ -742,7 +742,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     }
   }
 
-  useLoadTimeTracking({
+  useTrackLoadTime({
     itemName: widgetsMapping.AP_TABLE,
     states: [tableQuery],
     isEnabled: isMonitoringPageEnabled

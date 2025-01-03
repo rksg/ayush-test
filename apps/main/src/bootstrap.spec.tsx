@@ -25,7 +25,7 @@ jest.mock('@acx-ui/utils', () => ({
     {...props}
     data-testid='load-time-provider'
   />,
-  useLoadTimeTracking: jest.fn()
+  useTrackLoadTime: jest.fn()
 }))
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),

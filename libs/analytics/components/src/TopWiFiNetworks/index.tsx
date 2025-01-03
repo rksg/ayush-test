@@ -10,12 +10,12 @@ import {
   ContentSwitcher,
   ContentSwitcherProps
 } from '@acx-ui/components'
-import type { DonutChartData }                 from '@acx-ui/components'
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
-import { formatter }                           from '@acx-ui/formatter'
-import { useNavigateToPath }                   from '@acx-ui/react-router-dom'
-import { useLoadTimeTracking, widgetsMapping } from '@acx-ui/utils'
-import type { AnalyticsFilter }                from '@acx-ui/utils'
+import type { DonutChartData }              from '@acx-ui/components'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { formatter }                        from '@acx-ui/formatter'
+import { useNavigateToPath }                from '@acx-ui/react-router-dom'
+import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import { HierarchyNodeData, useTopSSIDsByNetworkQuery } from './services'
 
@@ -108,7 +108,7 @@ export function TopWiFiNetworks ({
     { label: $t({ defaultMessage: 'By Clients' }), children: wifiByClients, value: 'clients' }
   ]
 
-  useLoadTimeTracking({
+  useTrackLoadTime({
     itemName: widgetsMapping.TOP_WIFI_NETWORKS,
     states: [queryResults],
     isEnabled: isMonitoringPageEnabled

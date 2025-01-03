@@ -9,8 +9,8 @@ import {
   cssStr,
   DonutChart
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
-import { useLoadTimeTracking, widgetsMapping } from '@acx-ui/utils'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { useIncidentToggles }                                   from '../../useIncidentToggles'
 import { IncidentsBySeverityData, useIncidentsBySeverityQuery } from '../services'
@@ -67,7 +67,7 @@ export function IncidentBySeverityDonutChart ({ filters, type }:
       </AutoSizer>
   }
 
-  useLoadTimeTracking({
+  useTrackLoadTime({
     itemName: widgetsMapping.INCIDENT_BY_SEVERITY_DONUT_CHART,
     states: [queryResult],
     isEnabled: isMonitoringPageEnabled

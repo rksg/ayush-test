@@ -13,9 +13,9 @@ import {
   MultiLineTimeSeriesChart,
   NoData
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
-import { TimeStamp, TimeStampRange }           from '@acx-ui/types'
-import { useLoadTimeTracking, widgetsMapping } from '@acx-ui/utils'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { TimeStamp, TimeStampRange }        from '@acx-ui/types'
+import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
 
 import { useIncidentToggles } from '../useIncidentToggles'
 
@@ -76,7 +76,7 @@ export const NetworkHistory = forwardRef<
   const Card = historicalIcon ? HistoricalCard : NormalCard
   const title = hideTitle ? undefined : $t({ defaultMessage: 'Network History' })
 
-  useLoadTimeTracking({
+  useTrackLoadTime({
     itemName: widgetsMapping.NETWORK_HISTORY,
     states: [queryResults],
     isEnabled: isMonitoringPageEnabled

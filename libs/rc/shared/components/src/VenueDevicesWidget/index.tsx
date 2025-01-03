@@ -4,7 +4,7 @@ import { useRwgListQuery, useVenueDetailsHeaderQuery } from '@acx-ui/rc/services
 import { useParams }                                   from '@acx-ui/react-router-dom'
 import { RolesEnum }                                   from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }             from '@acx-ui/user'
-import { useLoadTimeTracking, widgetsMapping }         from '@acx-ui/utils'
+import { useTrackLoadTime, widgetsMapping }            from '@acx-ui/utils'
 
 import {
   getApDonutChartData,
@@ -36,7 +36,7 @@ export function VenueDevicesWidget () {
   const { data: rwgs } = useRwgListQuery({ params: useParams() },
     { skip: !(showRwgUI && rwgHasPermission) })
 
-  useLoadTimeTracking({
+  useTrackLoadTime({
     itemName: widgetsMapping.VENUE_DEVICES_WIDGET,
     states: [queryResults],
     isEnabled: isMonitoringPageEnabled

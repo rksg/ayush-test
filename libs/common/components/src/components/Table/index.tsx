@@ -157,7 +157,6 @@ function Table <RecordType extends Record<string, any>> ({
   const { dataSource, filterableWidth, searchableWidth, style } = props
   const wrapperRef = useRef<HTMLDivElement>(null)
   const layout = useLayoutContext()
-
   const rowKey = (props.rowKey ?? 'key')
   const intl = useIntl()
   const { $t } = intl

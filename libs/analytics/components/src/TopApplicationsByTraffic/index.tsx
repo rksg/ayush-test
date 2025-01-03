@@ -11,10 +11,10 @@ import {
   ContentSwitcher,
   ContentSwitcherProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
-import { formatter, intlFormats }              from '@acx-ui/formatter'
-import { useLoadTimeTracking, widgetsMapping } from '@acx-ui/utils'
-import type { AnalyticsFilter }                from '@acx-ui/utils'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { formatter, intlFormats }           from '@acx-ui/formatter'
+import { useTrackLoadTime, widgetsMapping } from '@acx-ui/utils'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import { useTopApplicationsByTrafficQuery, TopApplicationByTrafficData } from './services'
 import { TrafficPercent }                                                from './styledComponents'
@@ -98,7 +98,7 @@ export function TopApplicationsByTraffic ({
     { label: $t({ defaultMessage: 'Download' }), children: downloadTable, value: 'download' }
   ]
 
-  useLoadTimeTracking({
+  useTrackLoadTime({
     itemName: widgetsMapping.TOP_APPLICATIONS_BY_TRAFFIC,
     states: [queryResults],
     isEnabled: isMonitoringPageEnabled
