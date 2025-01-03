@@ -36,8 +36,8 @@ import { ConfigChangeContext, KPIFilterContext } from '../context'
 import { hasConfigChange }                       from '../KPI'
 import { useConfigChangeQuery }                  from '../services'
 
-import { Badge, CascaderFilterWrapper }     from './styledComponents'
-import { getConfiguration, getEntityValue } from './util'
+import { Badge, CascaderFilterWrapper }                 from './styledComponents'
+import { filterData, getConfiguration, getEntityValue } from './util'
 
 export function downloadConfigChangeList (
   configChanges: ConfigChange[],
@@ -112,12 +112,15 @@ export function Table (props: {
   const { selected, onRowClick, pagination, setPagination, dotSelect, legend } = props
   const legendList = Object.keys(legend).filter(key => legend[key])
 
-  const queryResults = useConfigChangeQuery(
-    kpiFilter, legendList, showIntentAI, {
-      ...pathFilters,
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString()
-    })
+  const queryResults = useConfigChangeQuery({
+    ...pathFilters,
+    startDate: startDate.toISOString(),
+    endDate: endDate.toISOString(),
+    showIntentAI
+  }, { selectFromResult: queryResults => ({
+    ...queryResults,
+    data: filterData(queryResults.data ?? [], kpiFilter, legendList, showIntentAI)
+  }) })
 
   const entityTypeMapping = getConfigChangeEntityTypeMapping(showIntentAI)
 

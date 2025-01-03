@@ -5,8 +5,6 @@ import type { ConfigChange }       from '@acx-ui/components'
 import { dataApi }                 from '@acx-ui/store'
 import { NetworkPath, PathFilter } from '@acx-ui/utils'
 
-import { filterData } from './Table/util'
-
 interface KpiChangesParams {
   kpis: string[],
   path: NetworkPath,
@@ -16,32 +14,41 @@ interface KpiChangesParams {
   afterEnd: string
 }
 
+const rootAndSliceIdQuery = (showIntentAI: boolean) => showIntentAI ?
+  `root
+   sliceId
+  ` : ''
+
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    customConfigChange: build.query<
+    configChange: build.query<
       ConfigChange[],
-      PathFilter & { fields: string[] }
+      PathFilter & { showIntentAI: boolean }
     >({
-      query: (payload) => {
-        return {
-          document: gql`
-            query ConfigChange(
-              $path: [HierarchyNodeInput],
-              $startDate: DateTime,
-              $endDate: DateTime
-            ) {
-              network(start: $startDate, end: $endDate) {
-                hierarchyNode(path: $path) {
-                  configChanges {
-                    ${payload.fields.join('\n')}
-                  }
+      query: (payload) => ({
+        document: gql`
+          query ConfigChange(
+            $path: [HierarchyNodeInput],
+            $startDate: DateTime,
+            $endDate: DateTime
+          ) {
+            network(start: $startDate, end: $endDate) {
+              hierarchyNode(path: $path) {
+                configChanges {
+                  timestamp
+                  type
+                  name
+                  key
+                  oldValues
+                  newValues
+                  ${rootAndSliceIdQuery(payload.showIntentAI)}
                 }
               }
             }
-          `,
-          variables: pick(payload, ['path', 'startDate', 'endDate'])
-        }
-      },
+          }
+        `,
+        variables: pick(payload, ['path', 'startDate', 'endDate'])
+      }),
       transformResponse: (
         response: { network: { hierarchyNode: { configChanges: ConfigChange[] } } } ) =>
         response.network.hierarchyNode.configChanges
@@ -60,27 +67,27 @@ export const api = dataApi.injectEndpoints({
             $afterStart: DateTime, $afterEnd: DateTime,
             $filter: FilterInput
           ) {
-              network(filter: $filter) {
-                before: KPI(path: $path, start: $beforeStart, end: $beforeEnd) {
-                  ${payload.kpis.join('\n')}
-                }
-                after: KPI(path: $path, start: $afterStart, end: $afterEnd) {
-                  ${payload.kpis.join('\n')}
-                }
+            network(filter: $filter) {
+              before: KPI(path: $path, start: $beforeStart, end: $beforeEnd) {
+                ${payload.kpis.join('\n')}
               }
+              after: KPI(path: $path, start: $afterStart, end: $afterEnd) {
+                ${payload.kpis.join('\n')}
+              }
+            }
           }
         `,
         variables: omit(payload, ['kpis'])
       }),
       transformResponse: (response: { network: {
-        before: Record<string, number>, after: Record<string, number>
-      } } ) => response.network
+          before: Record<string, number>, after: Record<string, number>
+        } } ) => response.network
     })
   })
 })
 
-export const {
-  useCustomConfigChangeQuery,
+const {
+  useConfigChangeQuery,
   useConfigChangeKPIChangesQuery
 } = api
 
@@ -88,23 +95,6 @@ function useKPIChangesQuery (params: KpiChangesParams) {
   return useConfigChangeKPIChangesQuery(params,
     { skip: Object.keys(params).some(key=>!params[key as keyof KpiChangesParams]) }
   )
-}
-
-function useConfigChangeQuery (
-  kpiFilter: string[],
-  legendList: string[],
-  showIntentAI: boolean,
-  params: PathFilter) {
-  let fields: string[] = ['timestamp', 'type', 'name', 'key', 'oldValues', 'newValues']
-  if (showIntentAI) {
-    fields.push('root', 'sliceId')
-  }
-  return useCustomConfigChangeQuery({ ...params, fields }, {
-    selectFromResult: queryResults => ({
-      ...queryResults,
-      data: filterData(queryResults.data ?? [], kpiFilter, legendList, showIntentAI)
-    })
-  })
 }
 
 export {

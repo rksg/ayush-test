@@ -9,6 +9,7 @@ import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 
 import { ConfigChangeContext, KPIFilterContext } from './context'
 import { useConfigChangeQuery }                  from './services'
+import { filterData }                            from './Table/util'
 
 function BasicChart (props: {
   selected: ConfigChange | null,
@@ -39,12 +40,14 @@ function BasicChart (props: {
   } = props
   const { pathFilters } = useAnalyticsFilter()
   const legendList = Object.keys(legend).filter(key => legend[key])
-  const queryResults = useConfigChangeQuery(
-    kpiFilter, legendList, showIntentAI, {
-      ...pathFilters,
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString()
-    })
+  const queryResults = useConfigChangeQuery({
+    ...pathFilters,
+    startDate: startDate.toISOString(),
+    showIntentAI
+  }, { selectFromResult: queryResults => ({
+    ...queryResults,
+    data: filterData(queryResults.data ?? [], kpiFilter, legendList, showIntentAI)
+  }) })
 
   useEffect(() => {
     setChartZoom?.({

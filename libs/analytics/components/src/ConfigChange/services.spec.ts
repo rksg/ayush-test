@@ -5,12 +5,11 @@ import { DateRange }                             from '@acx-ui/utils'
 
 import { configChanges, kpiForOverview } from './__tests__/fixtures'
 import {
-  useCustomConfigChangeQuery,
+  useConfigChangeQuery,
   useKPIChangesQuery
 } from './services'
 
 describe('useConfigChangeQuery', () => {
-  const fields: string[] = ['timestamp', 'type', 'name', 'key', 'oldValues', 'newValues']
   const param = {
     path: defaultNetworkPath,
     startDate: '2023-04-01T16:00:00+08:00',
@@ -22,7 +21,7 @@ describe('useConfigChangeQuery', () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
     const { result } = renderHook(() =>
-      useCustomConfigChangeQuery({ ...param, fields }), { wrapper: Provider })
+      useConfigChangeQuery({ ...param, showIntentAI: true }), { wrapper: Provider })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(result.current.data).toEqual(configChanges
       .sort((a, b) => Number(b.timestamp) - Number(a.timestamp))
@@ -37,7 +36,7 @@ describe('useConfigChangeQuery', () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
     const { result } = renderHook(() =>
-      useCustomConfigChangeQuery({ ...noDataParam, fields }), { wrapper: Provider })
+      useConfigChangeQuery({ ...noDataParam, showIntentAI: true }), { wrapper: Provider })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(result.current.data).toEqual([])
   })
