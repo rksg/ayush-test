@@ -2327,7 +2327,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const model = arg.params?.apModel
         const lanPortCount = arg.params?.lanPortCount || 0
 
-        // const lanPorts: LanPort[]
         const venueLanPortSettingsQuery = Array.from({ length: Number(lanPortCount) }, (_, index) =>{
           return fetchWithBQ(
             createHttpRequest(
