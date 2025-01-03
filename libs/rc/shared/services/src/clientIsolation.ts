@@ -32,11 +32,37 @@ export const clientIsolationApi = baseClientIsolationApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'ClientIsolation', id: 'LIST' }]
+    }),
+    activateClientIsolationOnAp: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          ClientIsolationUrls.activateClientIsolationOnAp, params, customHeaders
+        )
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'ClientIsolation', id: 'LIST' }]
+    }),
+    deactivateClientIsolationOnAp: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          ClientIsolationUrls.deactivateClientIsolationOnAp, params, customHeaders
+        )
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'ClientIsolation', id: 'LIST' }]
     })
   })
 })
 
 export const {
   useActivateClientIsolationOnVenueMutation,
-  useDeleteClientIsolationOnVenueMutation
+  useDeleteClientIsolationOnVenueMutation,
+  useActivateClientIsolationOnApMutation,
+  useDeactivateClientIsolationOnApMutation
 } = clientIsolationApi

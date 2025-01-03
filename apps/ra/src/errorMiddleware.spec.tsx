@@ -61,6 +61,14 @@ describe('errorMiddleware', () => {
       expect(showErrorModal).toHaveBeenCalledWith(expectedErrorMessage)
     })
 
+  it('should call not showErrorModal for "too many events" custom error', () => {
+    const action = {
+      meta: { baseQueryMeta: { response: { errors: [{ extensions: { code: 'RDA-413' } }] } } }
+    } as any
+    errorMiddlewareInstance(next)(action)
+    expect(showErrorModal).toHaveBeenCalledTimes(0)
+  })
+
   it('should call showExpiredSessionModal for status code 401', () => {
     const action = { meta: { baseQueryMeta: { response: { status: 401 } } } } as any
     errorMiddlewareInstance(next)(action)
