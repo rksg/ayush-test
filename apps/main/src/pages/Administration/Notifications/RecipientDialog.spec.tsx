@@ -27,6 +27,14 @@ const params = {
 }
 const exampleMobile = /555/
 const mockedSetVisible = jest.fn()
+
+jest.mock('@acx-ui/rc/components', () => ({
+  PhoneInput: ({ name, callback }: {
+    name: string,
+    callback?: (value: string) => void
+  }) => <input data-testid='PhoneInput' placeholder='555' name={name} onChange={e => callback && callback(e.target.value)} />
+}))
+
 describe('Recipient form dialog creation mode', () => {
   const mockedAddFn = jest.fn()
   const dialogProps = {
@@ -467,12 +475,12 @@ describe('Recipient form dialog edit mode', () => {
     expect(mockedUpdateFn).toBeCalledWith({
       id: 'afd39af2f9854963a61c38700089bc40',
       description: 'testUser',
-      endpoints: [ {
+      endpoints: [{
         id: '478127f284b84a6286aef6324613e3f4',
-        active: true,
+        active: false,
         destination: '+886912345690',
         type: NotificationEndpointType.sms
-      },{
+      }, {
         active: true,
         destination: 'another_test_user@gmail.com',
         type: NotificationEndpointType.email

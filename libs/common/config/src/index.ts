@@ -16,6 +16,7 @@ type commonEnvironment = {
   SPLIT_PROXY_ENDPOINT: string
   DRUID_RETAIN_PERIOD_DAYS: string
   DRUID_ROLLUP_DAYS: string
+  DRUID_COLD_TIER_DAYS: string
 }
 
 type R1Environment = {

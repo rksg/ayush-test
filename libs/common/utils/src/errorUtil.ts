@@ -4,10 +4,17 @@ import { get } from '@acx-ui/config'
 
 import { CatchErrorResponse } from './types/catchError'
 
+import type { AnyAction }       from '@reduxjs/toolkit'
 import type { GraphQLResponse } from 'graphql-request/dist/types'
 
+const reducerPaths = ['data-api', 'network-health']
+
+export function isGraphQLAction (action: AnyAction) : boolean {
+  const type = action.type
+  return !!(type && reducerPaths.find(p => type.includes(p)))
+}
+
 export function isGraphQLError (type: string | undefined, response?: object): boolean {
-  const reducerPaths = ['data-api', 'network-health']
   return !!(type && reducerPaths.find(p => type.includes(p)) && response && 'errors' in response)
 }
 
@@ -72,10 +79,22 @@ export const errorMessage = {
       defaultMessage: 'Too many requests. Please try again later.'
     })
   },
+  BAD_GATEWAY: {
+    title: defineMessage({ defaultMessage: 'Bad Gateway' }),
+    content: defineMessage({
+      defaultMessage: 'Bad gateway. Please try again later.'
+    })
+  },
   SERVICE_UNAVAILABLE: {
     title: defineMessage({ defaultMessage: 'Service Unavailable' }),
     content: defineMessage({
       defaultMessage: 'Service unavailable. Please try again later.'
+    })
+  },
+  GATEWAY_TIMEOUT: {
+    title: defineMessage({ defaultMessage: 'Gateway Timeout' }),
+    content: defineMessage({
+      defaultMessage: 'Gateway timeout. Please try again later.'
     })
   },
   CHECK_YOUR_CONNECTION: get('IS_MLISA_SA') ? {
