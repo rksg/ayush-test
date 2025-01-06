@@ -1,6 +1,8 @@
-import { SelectProps } from 'antd'
-import _               from 'lodash'
-import { useIntl }     from 'react-intl'
+import { memo } from 'react'
+
+import { Input, SelectProps } from 'antd'
+import _                      from 'lodash'
+import { useIntl }            from 'react-intl'
 
 import { Select }        from '@acx-ui/components'
 import { RadioTypeEnum } from '@acx-ui/rc/utils'
@@ -10,17 +12,23 @@ const radioTypeEnumToString = (radioType: RadioTypeEnum) => {
 }
 
 type RadioSelectProps = SelectProps & {
-  isSupport6G: boolean
+  isSupport6G: boolean,
+  isSelected?: boolean
 }
 
-export const RadioSelect = (props: RadioSelectProps) => {
+export const RadioSelect = memo((props: RadioSelectProps) => {
   const { $t } = useIntl()
-  const { isSupport6G, ...otherProps } = props
+  const { isSupport6G, isSelected = true, ...otherProps } = props
   // eslint-disable-next-line max-len
   const disabledBandTooltip = $t({ defaultMessage: '6GHz disabled for non-WPA3 networks. To enable 6GHz operation, configure a WLAN for WPA3 operation.' })
   if (!isSupport6G) {
     _.remove(otherProps.value, (v) => v === RadioTypeEnum._6_GHz)
   }
+
+  if (!isSelected) {
+    return <Input type='hidden' />
+  }
+
   return (
     <Select
       {...otherProps}
@@ -41,4 +49,4 @@ export const RadioSelect = (props: RadioSelectProps) => {
       </Select.Option>
     </Select>
   )
-}
+})

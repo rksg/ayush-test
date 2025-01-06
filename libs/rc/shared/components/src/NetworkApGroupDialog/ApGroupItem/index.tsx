@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import { memo, useContext } from 'react'
+
 import { Checkbox, Col, Form, Input } from 'antd'
 import _                              from 'lodash'
 import { useIntl }                    from 'react-intl'
@@ -8,28 +10,25 @@ import {
   getVlanPool,
   IsNetworkSupport6g,
   NetworkApGroup,
-  NetworkSaveData,
   validateRadioBandForDsaeNetwork,
-  VlanPool,
   VlanType
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
-import { VlanDate }    from '../index'
-import { RadioSelect } from '../RadioSelect'
-import * as UI         from '../styledComponents'
-import { VlanInput }   from '../VlanInput'
+import { NetworkApGroupDialogContext, VlanDate } from '../index'
+import { RadioSelect }                           from '../RadioSelect'
+import * as UI                                   from '../styledComponents'
+import { VlanInput }                             from '../VlanInput'
 
 interface ApGroupItemProps {
   apgroup: NetworkApGroup;
   name: number;
-  vlanPoolSelectOptions: VlanPool[] | undefined;
-  network: NetworkSaveData | undefined | null;
 }
 
-export const ApGroupItem = (props: ApGroupItemProps) => {
+export const ApGroupItem = memo((props: ApGroupItemProps) => {
   const intl = useIntl()
-  const { apgroup, name, vlanPoolSelectOptions, network } = props
+  const { network, vlanPoolSelectOptions } = useContext(NetworkApGroupDialogContext)
+  const { apgroup, name } = props
   const { wlan } = network || {}
   const isSupport6G = IsNetworkSupport6g(network)
 
@@ -63,7 +62,7 @@ export const ApGroupItem = (props: ApGroupItemProps) => {
   }
 
   return (
-    <>
+    <Form.Item key={apgroup.apGroupId} noStyle>
       <Tooltip title={errorTooltip}><Col span={8}>
         <Form.Item name={[name, 'apGroupId']} noStyle>
           <Input type='hidden' />
@@ -124,9 +123,16 @@ export const ApGroupItem = (props: ApGroupItemProps) => {
               }
             }
           ]}>
-          { selected ? <RadioSelect isSupport6G={isSupport6G}/> : <Input type='hidden' /> }
+          <RadioSelect isSupport6G={isSupport6G} isSelected={selected}/>
         </UI.FormItemRounded>
       </Col>
-    </>
+    </Form.Item>
   )
-}
+}, (prevProps, nextProps) => {
+  return (
+    prevProps.apgroup.apGroupId === nextProps.apgroup.apGroupId &&
+    prevProps.name === nextProps.name &&
+    prevProps.apgroup.selected === nextProps.apgroup.selected &&
+    _.isEqual(prevProps.apgroup.radioTypes, nextProps.apgroup.radioTypes)
+  )
+})

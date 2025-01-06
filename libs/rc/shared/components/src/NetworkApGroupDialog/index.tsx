@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useEffect, useState, useRef, useMemo } from 'react'
+import { useEffect, useState, useRef, useMemo, createContext } from 'react'
 
 import {
   ModalProps as AntdModalProps,
@@ -81,6 +81,13 @@ export interface ApGroupModalWidgetProps extends AntdModalProps {
   network?: NetworkSaveData | null
   tenantId?: string
 }
+
+export type NetworkApGroupDialogContextProps = {
+  network: NetworkSaveData | undefined | null,
+  vlanPoolSelectOptions: VlanPool[] | undefined
+}
+
+export const NetworkApGroupDialogContext = createContext({} as NetworkApGroupDialogContextProps)
 
 export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const intl = useIntl()
@@ -221,72 +228,71 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
         name={formName}
         onFinish={props.onOk}
       >
-        <Form.Item name='selectionType'
-          rules={[
-            {
-              validator: (obj, value) => {
-                const { $t } = getIntl()
-                if (value === 1 &&
-                  form.getFieldsValue().apgroups.filter((i: { selected: boolean }) => i.selected).length === 0) {
-                  return Promise.reject($t({ defaultMessage: 'Please select AP Group' }))
+        <NetworkApGroupDialogContext.Provider value={{ network, vlanPoolSelectOptions }}>
+          <Form.Item name='selectionType'
+            rules={[
+              {
+                validator: (obj, value) => {
+                  const { $t } = getIntl()
+                  if (value === 1 &&
+                             form.getFieldsValue().apgroups.filter((i: { selected: boolean }) => i.selected).length === 0) {
+                    return Promise.reject($t({ defaultMessage: 'Please select AP Group' }))
+                  }
+                  return Promise.resolve()
                 }
-                return Promise.resolve()
               }
-            }
-          ]}>
-          <Radio.Group>
-            <Space direction='vertical' size='middle'>
-              <Radio value={0} disabled={isDisableAllAPs(networkVenue?.apGroups)}>{intl.$t({ defaultMessage: 'All APs' })}
-                <UI.RadioDescription>{intl.$t({ defaultMessage: 'Including any AP that will be added to this <venueSingular></venueSingular> in the future.' })}</UI.RadioDescription>
-              </Radio>
-              <Form.Item noStyle>
-                { selectionType === 0 && <UI.FormItemRounded>
-                  <Form.Item label={intl.$t({ defaultMessage: 'VLAN' })} labelCol={{ span: 5 }}>
-                    {defaultVlanString.vlanText}
-                  </Form.Item>
-                  <Form.Item name='allApGroupsRadioTypes'
-                    label={intl.$t({ defaultMessage: 'Radio Band' })}
-                    rules={[{ required: true },
-                      {
-                        validator: (_, value) => validateRadioBandForDsaeNetwork(value, network, intl)
-                      }]}
-                    labelCol={{ span: 5 }}>
-                    <RadioSelect isSupport6G={isSupport6G}/>
-                  </Form.Item>
-                </UI.FormItemRounded>}
-              </Form.Item>
+            ]}>
+            <Radio.Group>
+              <Space direction='vertical' size='middle'>
+                <Radio value={0} disabled={isDisableAllAPs(networkVenue?.apGroups)}>{intl.$t({ defaultMessage: 'All APs' })}
+                  <UI.RadioDescription>{intl.$t({ defaultMessage: 'Including any AP that will be added to this <venueSingular></venueSingular> in the future.' })}</UI.RadioDescription>
+                </Radio>
+                <Form.Item noStyle>
+                  { selectionType === 0 && <UI.FormItemRounded>
+                    <Form.Item label={intl.$t({ defaultMessage: 'VLAN' })} labelCol={{ span: 5 }}>
+                      {defaultVlanString.vlanText}
+                    </Form.Item>
+                    <Form.Item name='allApGroupsRadioTypes'
+                      label={intl.$t({ defaultMessage: 'Radio Band' })}
+                      rules={[{ required: true },
+                        {
+                          validator: (_, value) => validateRadioBandForDsaeNetwork(value, network, intl)
+                        }]}
+                      labelCol={{ span: 5 }}>
+                      <RadioSelect isSupport6G={isSupport6G}/>
+                    </Form.Item>
+                  </UI.FormItemRounded>}
+                </Form.Item>
 
-              <Radio value={1}>{intl.$t({ defaultMessage: 'Select specific AP groups' })}
-                <UI.RadioDescription>{intl.$t({ defaultMessage: 'Including any AP that will be added to a selected AP group in the future.' })}</UI.RadioDescription>
-              </Radio>
-              <Form.List name='apgroups'>
-                { (fields) => (
-                  <Form.Item noStyle>
-                    { selectionType === 1 && <Row gutter={[4, 0]} style={{ width: '750px' }}>
-                      <Col span={8}></Col>
-                      <Col span={8}>
-                        <UI.VerticalLabel>{intl.$t({ defaultMessage: 'VLAN' })}</UI.VerticalLabel>
-                      </Col>
-                      <Col span={8}>
-                        <UI.VerticalLabel>{intl.$t({ defaultMessage: 'Radio Band' })}</UI.VerticalLabel>
-                      </Col>
-                      { fields.map((field, index) => (
-                        <Form.Item key={field.key} noStyle>
-                          <ApGroupItem
-                            key={field.key}
-                            name={field.name}
-                            network={network}
-                            vlanPoolSelectOptions={vlanPoolSelectOptions}
-                            apgroup={form.getFieldValue('apgroups')[index]}
-                          />
-                        </Form.Item>
-                      ))}
-                    </Row>}
-                  </Form.Item>
-                )}
-              </Form.List>
+                <Radio value={1}>{intl.$t({ defaultMessage: 'Select specific AP groups' })}
+                  <UI.RadioDescription>{intl.$t({ defaultMessage: 'Including any AP that will be added to a selected AP group in the future.' })}</UI.RadioDescription>
+                </Radio>
+                <Form.List name='apgroups'>
+                  { (fields) => (
+                    <Form.Item noStyle>
+                      { selectionType === 1 && <Row gutter={[4, 0]} style={{ width: '750px' }}>
+                        <Col span={8}></Col>
+                        <Col span={8}>
+                          <UI.VerticalLabel>{intl.$t({ defaultMessage: 'VLAN' })}</UI.VerticalLabel>
+                        </Col>
+                        <Col span={8}>
+                          <UI.VerticalLabel>{intl.$t({ defaultMessage: 'Radio Band' })}</UI.VerticalLabel>
+                        </Col>
+                        { fields.map((field, index) => (
+                          <Form.Item key={field.key} noStyle>
+                            <ApGroupItem
+                              key={field.key}
+                              name={field.name}
+                              apgroup={form.getFieldValue('apgroups')[index]}
+                            />
+                          </Form.Item>
+                        ))}
+                      </Row>}
+                    </Form.Item>
+                  )}
+                </Form.List>
 
-              {/* <Radio value={2}>{$t({ defaultMessage: 'Select APs by tag' })} // TODO: Waiting for TAG feature support
+                {/* <Radio value={2}>{$t({ defaultMessage: 'Select APs by tag' })} // TODO: Waiting for TAG feature support
                 <UI.RadioDescription>{$t({ defaultMessage: 'This network will be only applied to APs with the tags.' })}</UI.RadioDescription>
               </Radio>
               <Form.Item noStyle
@@ -303,9 +309,10 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                   </Form.Item>
                 )}
               </Form.Item> */}
-            </Space>
-          </Radio.Group>
-        </Form.Item>
+              </Space>
+            </Radio.Group>
+          </Form.Item>
+        </NetworkApGroupDialogContext.Provider>
       </Form></Spin>
     </Modal>
   )
