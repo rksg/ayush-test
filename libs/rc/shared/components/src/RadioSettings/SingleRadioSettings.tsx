@@ -344,6 +344,8 @@ export function SingleRadioSettings (props:{
 
     if(isApTxPowerToggleEnabled
       && context === 'ap'
+      && firmwareProps?.firmware !== undefined
+      && (!supportR370 || apCapabilities?.supportAggressiveTxPower !== undefined)
       && !isModelAndFwSupportAggressiveTxPower(firmwareProps, apCapabilities)) {
       const txPower = form.getFieldValue(txPowerFieldName)
       const isExtendedOption = txPowerAdjustmentExtendedOptions.some(o => o.value === txPower)
