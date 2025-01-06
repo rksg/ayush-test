@@ -22,7 +22,6 @@ import {
 import { baseEthernetPortProfileApi } from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
 import { createHttpRequest }          from '@acx-ui/utils'
-import { LanPortSettings } from '../../components/src/LanPortSettings'
 
 
 const createDefaultEthPort = (tenantId: string, type: EthernetPortType) => {
