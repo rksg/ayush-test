@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { Spin }         from 'antd'
+import moment           from 'moment'
 import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
-import { Button, Drawer, DrawerTypes }                                              from '@acx-ui/components'
+import { Button, Drawer, DrawerTypes, Loader }                                      from '@acx-ui/components'
 import { CloseSymbol, RuckusAiDog, SendMessageOutlined, HistoricalOutlined, Plus  } from '@acx-ui/icons'
 import { useChatAiMutation, useLazyGetAllChatsQuery, useLazyGetChatQuery }          from '@acx-ui/rc/services'
-import { ChatMessage }                                                              from '@acx-ui/rc/utils'
+import { ChatHistory, ChatMessage, HistoryListItem }                                from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                               from '@acx-ui/react-router-dom'
 
 import Canvas             from './Canvas'
@@ -24,8 +25,10 @@ export default function AICanvas () {
   const [getChat] = useLazyGetChatQuery()
   const [getAllChats] = useLazyGetAllChatsQuery()
   const [loading, setLoading] = useState(false)
+  const [isChatLoading, setIsChatLoading] = useState(false)
   const [historyVisible, setHistoryVisible] = useState(false)
   const [sessionId, setSessionId] = useState('')
+  const [history, setHistory] = useState([] as HistoryListItem[])
   const [chats, setChats] = useState([] as ChatMessage[])
 
   const [ searchText, setSearchText ] = useState('')
@@ -37,14 +40,82 @@ export default function AICanvas () {
   useEffect(()=>{
     setTimeout(()=>{
       // @ts-ignore
-      scroll.current.scrollTo({ top: scroll.current.scrollHeight })
+      scroll?.current?.scrollTo({ top: scroll.current.scrollHeight })
     }, 100)
   }, [chats])
+
+  const checkDate = (chats: ChatHistory[]) => {
+    const list = {
+      today: [],
+      yesterday: [],
+      sevendays: []
+    } as { [key:string]: { title: string; id: string }[] }
+    chats.forEach((chat: ChatHistory) => {
+      const inputDate = moment(chat.updatedDate)
+      const now = moment()
+      const diffDays = now.diff(inputDate, 'days')
+
+      if (diffDays === 0) {
+        list.today.push({
+          title: chat.name,
+          id: chat.id
+        })
+      } else if (diffDays === 1) {
+        list.yesterday.push({
+          title: chat.name,
+          id: chat.id
+        })
+      } else if (diffDays <= 7) {
+        list.sevendays.push({
+          title: chat.name,
+          id: chat.id
+        })
+      } else {
+        const title = inputDate.format('MMMM D, YYYY')
+        if(!list[title]) {
+          list[title] = []
+        }
+        list[title].push({
+          title: chat.name,
+          id: chat.id
+        })
+      }
+    })
+    return list
+  }
 
   const getHistory = async () => {
     const response = await getAllChats({}).unwrap()
     if(response.length) {
       setSessionId(response[response.length - 1].id)
+      const list = checkDate(response)
+      const historyList = [] as HistoryListItem[]
+      Object.keys(list).forEach(key => {
+        if(list[key].length) {
+          if(key === 'today') {
+            historyList.push({
+              duration: $t({ defaultMessage: 'Today' }),
+              history: list[key]
+            })
+          } else if(key === 'yesterday') {
+            historyList.push({
+              duration: $t({ defaultMessage: 'Yesterday' }),
+              history: list[key]
+            })
+          } else if(key === 'sevendays') {
+            historyList.push({
+              duration: $t({ defaultMessage: 'Previous 7 days' }),
+              history: list[key]
+            })
+          } else {
+            historyList.push({
+              duration: key,
+              history: list[key]
+            })
+          }
+        }
+      })
+      setHistory(historyList)
     }
   }
 
@@ -53,8 +124,10 @@ export default function AICanvas () {
   }, [])
 
   const getChats = async ()=>{
+    setIsChatLoading(true)
     const response = await getChat({ params: { sessionId } }).unwrap()
     setChats(response.messages)
+    setIsChatLoading(false)
   }
 
   useEffect(() => {
@@ -135,45 +208,24 @@ export default function AICanvas () {
 
     </div>
   }
-  const history = [
-    {
-      duration: 'Yesterday',
-      history: [
-        {
-          title: 'Alerts and notifications'
-        },
-        {
-          title: 'Device inventory & Status'
-        }
-      ]
-    },
-    {
-      duration: 'Previous 7 days',
-      history: [
-        {
-          title: 'Client related'
-        },
-        {
-          title: 'Map'
-        }
-      ]
-    },
-    {
-      duration: 'December 20, 2024',
-      history: [
-        {
-          title: 'Network topology'
-        }
-      ]
-    }
-  ]
+
+  const onClickChat = (id: string) => {
+    setSessionId(id)
+    setHistoryVisible(false)
+  }
 
   const content = <UI.History>
     {
       history.map(i => <div className='duration'>
         <div className='title'>{i.duration}</div>
         {
-          i.history.map(j => <div className='chat'>{j.title}</div>)
+          i.history.map(j =>
+            <div
+              className={'chat' + (sessionId === j.id ? ' active' : '')}
+              onClick={() => onClickChat(j.id)}
+            >
+              {j.title}
+            </div>)
         }
       </div>)
     }
@@ -186,6 +238,7 @@ export default function AICanvas () {
   return (
     <DndProvider backend={HTML5Backend}>
       <UI.Wrapper>
+
         <div className='chat-wrapper'>
           <div className='chat'>
             <div className='header'>
@@ -202,42 +255,44 @@ export default function AICanvas () {
               </div>
             </div>
             <div className='content'>
-              <div className='chatroom' ref={scroll}>
-                <div className='placeholder'>
-                  <div onClick={()=> {
-                    handleSearch('Generate Top Wi-Fi Networks Pie Chart')
-                  }}>
-                  “Generate Top Wi-Fi Networks Pie Chart”
+              <Loader states={[{ isLoading: isChatLoading }]}>
+                <div className='chatroom' ref={scroll}>
+                  <div className='placeholder'>
+                    <div onClick={()=> {
+                      handleSearch('Generate Top Wi-Fi Networks Pie Chart')
+                    }}>
+                    “Generate Top Wi-Fi Networks Pie Chart”
+                    </div>
+                    <div onClick={()=> {
+                      handleSearch('Generate Switch Traffic by Volume Line Chart')
+                    }}>
+                    “Generate Switch Traffic by Volume Line Chart”
+                    </div>
                   </div>
-                  <div onClick={()=> {
-                    handleSearch('Generate Switch Traffic by Volume Line Chart')
-                  }}>
-                  “Generate Switch Traffic by Volume Line Chart”
+                  <div className='messages-wrapper'>
+                    {chats?.map((i) => (
+                      <Message key={i.id} chat={i} />
+                    ))}
+                    {loading && <div className='loading'><Spin /></div>}
+                  </div>
+                  <div className='input'>
+                    <UI.Input
+                      autoFocus
+                      value={searchText}
+                      onChange={({ target: { value } }) => setSearchText(value)}
+                      onKeyDown={onKeyDown}
+                      data-testid='search-input'
+                      style={{ height: 90, resize: 'none' }}
+                      placeholder={placeholder}
+                    />
+                    <Button
+                      icon={<SendMessageOutlined />}
+                      disabled={loading || searchText.length <= 1}
+                      onClick={()=> { handleSearch() }}
+                    />
                   </div>
                 </div>
-                <div className='messages-wrapper'>
-                  {chats?.map((i) => (
-                    <Message key={i.id} chat={i} />
-                  ))}
-                  {loading && <div className='loading'><Spin /></div>}
-                </div>
-                <div className='input'>
-                  <UI.Input
-                    autoFocus
-                    value={searchText}
-                    onChange={({ target: { value } }) => setSearchText(value)}
-                    onKeyDown={onKeyDown}
-                    data-testid='search-input'
-                    style={{ height: 90, resize: 'none' }}
-                    placeholder={placeholder}
-                  />
-                  <Button
-                    icon={<SendMessageOutlined />}
-                    disabled={loading || searchText.length <= 1}
-                    onClick={()=> { handleSearch() }}
-                  />
-                </div>
-              </div>
+              </Loader>
             </div>
           </div>
         </div>

@@ -4,7 +4,7 @@ import styled                                   from 'styled-components/macro'
 import { Card } from '@acx-ui/components'
 
 import CanvasBackground from './assets/CanvasBackground.svg'
-import WaveBackground   from './assets/waves.png'
+import WaveBackground   from './assets/waves.svg'
 
 export const Input = styled(AntInput.TextArea)`
   height: 28px;
@@ -40,6 +40,9 @@ export const History = styled.div`
       padding: 12px 16px;
       cursor: pointer;
       &:hover { 
+        background: var(--acx-neutrals-30);
+      }
+      &.active {
         background: var(--acx-neutrals-80);
         color: var(--acx-primary-white);
       }
@@ -65,6 +68,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
   background-color: var(--acx-primary-white);
 }
 .chat {
+  background-color: var(--acx-primary-white);
   background-image: url(${WaveBackground});
   background-repeat: no-repeat;
   background-size: 401px 659px;
@@ -102,21 +106,17 @@ border-top: 75px solid rgba(255,255,255, 0.4);
   }
   .content {
     background: transparent;
-    height: calc(100vh - 120px);
+    height: calc(100vh - 110px);
     width: 400px;
     position: fixed;
-    top: 120px;
+    top: 110px;
     overflow: auto;
-    .widgets {
-      width: 300px;
-      border-left: 1px solid #E5E5E5;
-      height: calc(100vh - 120px);
-    }
     .chatroom {
       height: calc(100vh - 250px);
       overflow: auto;
       position: relative;
       margin-right: 4px;
+      margin-top: 4px;
       .placeholder {
         display: flex;
         flex-direction: column;

@@ -47,6 +47,14 @@ export interface ChatMessage {
   widgets?: ChatWidget[]
 }
 
+export interface HistoryListItem {
+  duration: string
+  history: {
+    title: string
+    id: string
+  }[]
+}
+
 export interface ChatWidget {
   title: string,
   chartType: string,
