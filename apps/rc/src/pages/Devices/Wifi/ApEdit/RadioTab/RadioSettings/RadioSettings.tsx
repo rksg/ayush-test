@@ -620,7 +620,6 @@ export function RadioSettings () {
 
   useEffect(() => {
     if (apRadioSavedData){
-
       const correctApiRadioChannelData = (apiData: ApRadioCustomization) => {
         const data = cloneDeep(apiData)
         const { apRadioParams24G, apRadioParams50G, apRadioParams6G, apRadioParamsDual5G } = data
@@ -673,7 +672,9 @@ export function RadioSettings () {
 
         const { method, manualChannel } = radioParams
         if (method === 'MANUAL') {
-          radioParams.allowedChannels = [manualChannel.toString()]
+          if (!isUseVenueSettings) {
+            radioParams.allowedChannels = [manualChannel.toString()]
+          }
         }
       }
 
@@ -947,9 +948,7 @@ export function RadioSettings () {
 
       if (method === 'MANUAL') {
         radioParams.manualChannel = (allowedChannels && parseInt(allowedChannels[0], 10)) || 0
-        if (useVenueSettings === false) {
-          radioParams.allowedChannels = supportCh[bandwidth]
-        }
+        radioParams.allowedChannels = supportCh[bandwidth]
       } else {
         radioParams.manualChannel = 0
         if (!allowedChannels) {
