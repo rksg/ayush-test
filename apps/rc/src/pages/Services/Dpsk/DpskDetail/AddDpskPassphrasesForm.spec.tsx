@@ -13,6 +13,19 @@ import {
 } from './__tests__/fixtures'
 import AddDpskPassphrasesForm from './AddDpskPassphrasesForm'
 
+jest.mock('@acx-ui/rc/components', () => ({
+  ExpirationDateSelector: () => <div data-testid='ExpirationDateSelector'>
+    Passphrase Expiration
+    <input type='radio' id='NEVER' value='NEVER' /><label htmlFor='NEVER'>Same as pool</label>
+  </div>,
+  PhoneInput: ({ name, callback }: {
+    name: string,
+    callback?: (value: string) => void
+  }) => <input data-testid='PhoneInput'
+    name={name}
+    onChange={e => callback && callback(e.target.value)} />
+}))
+
 
 describe('AddDpskPassphrasesForm', () => {
   beforeEach(() => {
