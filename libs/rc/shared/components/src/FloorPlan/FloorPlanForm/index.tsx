@@ -43,7 +43,7 @@ export default function FloorPlanForm ({ form, formLoading, onFormSubmit, imageF
         rules={[
           { type: 'string', required: true },
           { min: 2 },
-          { max: 32 },
+          { max: 64 },
           { validator: (_, value) => trailingNorLeadingSpaces(value) }
         ]}>
         <Input />
