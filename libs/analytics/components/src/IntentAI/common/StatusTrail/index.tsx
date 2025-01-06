@@ -36,7 +36,6 @@ export const StatusTrail = () => {
   ` }, { days: coldTierDays })} /> : null
 
   const shouldShowLimitedText = preventColdTier && query.data &&
-    query.data?.data.length > 0 &&
     query.data?.total > query.data?.data.length
 
   return <DetailsSection data-testid='Status Trail'>
