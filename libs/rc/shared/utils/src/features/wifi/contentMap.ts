@@ -4,14 +4,14 @@ import { defineMessage } from 'react-intl'
 export const vlanContents = {
   vlan: defineMessage({
     defaultMessage: `VLAN-{id} {isCustom, selectordinal,
-        true {(Custom)}
+        one {(Custom)}
         other {(Default)}
       }`,
     description: 'Translation not needed'
   }),
   vlanPool: defineMessage({
     defaultMessage: `VLAN Pool: {poolName} {isCustom, selectordinal,
-        true {(Custom)}
+        one {(Custom)}
         other {(Default)}
       }`,
     description: 'Translation string - VLAN Pool'
