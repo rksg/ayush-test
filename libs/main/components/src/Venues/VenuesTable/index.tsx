@@ -15,8 +15,12 @@ import {
   cssStr,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  getAPStatusDisplayName,
+  useIsEdgeFeatureReady,
+  useIsEdgeReady
+} from '@acx-ui/rc/components'
 import {
   useVenuesTableQuery,
   useDeleteVenueMutation,
@@ -50,6 +54,7 @@ function useColumns (
 ) {
   const { $t } = useIntl()
   const isEdgeEnabled = useIsEdgeReady()
+  const isStatusColumnEnabled = useIsSplitOn(Features.VENUE_TABLE_ADD_STATUS_COLUMN)
 
   const columns: TableProps<Venue>['columns'] = [
     {
@@ -79,6 +84,15 @@ function useColumns (
         return `${row.country}, ${row.city}`
       }
     },
+    ...(isStatusColumnEnabled ? [{
+      title: $t({ defaultMessage: 'Status' }),
+      key: 'status',
+      dataIndex: 'status',
+      sorter: true,
+      render: function (_: React.ReactNode, row: Venue) {
+        return getAPStatusDisplayName(row.status as ApVenueStatusEnum, false)
+      }
+    }] : []),
     // { // TODO: Waiting for backend support
     //   key: 'incidents',
     //   dataIndex: 'incidents',
