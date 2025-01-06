@@ -1,6 +1,7 @@
 import { Form } from 'antd'
 import { rest } from 'msw'
 
+import { Features, useIsSplitOn }                                                                                                                              from '@acx-ui/feature-toggle'
 import { BasicServiceSetPriorityEnum, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, OpenWlanAdvancedCustomization, TunnelProfileUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                                                                                            from '@acx-ui/store'
 import { mockServer, render, screen, within }                                                                                                                  from '@acx-ui/test-utils'
@@ -42,7 +43,9 @@ describe('Network More settings - Vlan Tab', () => {
 
   it('should visible Dynamic VLAN', async () => {
     const data = {
-      type: NetworkTypeEnum.AAA
+      type: NetworkTypeEnum.AAA,
+      wlan: {
+      }
     }
 
     render(
@@ -145,5 +148,34 @@ describe('Network More settings - Vlan Tab', () => {
     const vlanIdInput = await screen.findByRole('spinbutton', { name: 'VLAN ID' })
     expect(vlanIdInput).toBeDisabled()
     expect(vlanIdInput.getAttribute('value')).toBe('3000')
+  })
+
+  it('should use default VLAN ID on PSK WLAN With Mac Authentication', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NETWORK_PSK_MACAUTH_DYNAMIC_VLAN_TOGGLE)
+    const network = {
+      type: NetworkTypeEnum.PSK,
+      wlan: {
+        macAddressAuthentication: true
+      }
+    } as NetworkSaveData
+
+    render(
+      <Provider>
+        <NetworkFormContext.Provider value={{
+          data: network, editMode: false, cloneMode: false, setData: () => {}
+        }} >
+          <Form>
+            <VlanTab wlanData={mockWlanData} />
+          </Form>
+        </NetworkFormContext.Provider>
+      </Provider>,
+      { route: { params } })
+
+    const vlanIdInput = await screen.findByRole('spinbutton', { name: 'VLAN ID' })
+    expect(vlanIdInput).toBeEnabled()
+
+    const dynamicVlanView = screen.getByText(/Dynamic VLAN/i)
+    expect(within(dynamicVlanView).getByRole('switch')).toBeVisible()
   })
 })

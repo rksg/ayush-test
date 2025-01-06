@@ -56,7 +56,7 @@ export const KPIGrid = () => {
 export const KPIFields = () => {
   const { query, intentKPIs, kpis, intent, isDataRetained, isHotTierData } = useKPIsQuery()
 
-  return <Loader states={[query]}>
+  return <Loader states={[query]} style={{ height: 'min-content' }}>
     {getGraphKPIs({ ...intent, ...intentKPIs }, kpis, isDataRetained, isHotTierData)
       .map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
   </Loader>

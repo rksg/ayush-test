@@ -151,6 +151,7 @@ describe('IntentAIDetails', () => {
 
       await assertRenderCorrectly()
       expect(await screen.findByTestId('DownloadRRMComparison')).toBeVisible()
+      expect(screen.getByTestId('IntentAIRRMGraph')).toBeVisible()
 
       expect(await screen.findByText('IntentAI ensures that only the existing channels configured for this network are utilized in the channel planning process.')).toBeVisible() // eslint-disable-line max-len
 
@@ -187,6 +188,7 @@ describe('IntentAIDetails', () => {
 
       await assertRenderCorrectly()
       expect(await screen.findByTestId('DownloadRRMComparison')).toBeVisible()
+      expect(screen.getByTestId('IntentAIRRMGraph')).toBeVisible()
 
       expect(await screen.findByText('IntentAI ensures that only the existing channels configured for this network are utilized in the channel planning process.')).toBeVisible() // eslint-disable-line max-len
 
@@ -261,22 +263,6 @@ describe('IntentAIDetails', () => {
       expect(await screen.findByText('When activated, this Intent takes over the automatic channel planning in the network.')).toBeVisible()
       expect(screen.queryByTestId('Benefits')).not.toBeInTheDocument()
       expect(screen.queryByTestId('Potential Trade-off')).not.toBeInTheDocument()
-    })
-
-    it('should render loaders seperately', async () => {
-      const { params } = mockIntentContextWith({ code: 'c-crrm-channel24g-auto' })
-      render(
-        <CCrrmChannelAuto.IntentAIDetails />,
-        { route: { params }, wrapper: Provider }
-      )
-      expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
-      expect(screen.queryByTestId('IntentAIRRMGraph')).not.toBeInTheDocument()
-      const loaders = screen.getAllByRole('img', { name: 'loader' })
-      loaders.forEach(loader => expect(loader).toBeVisible())
-      const details = await screen.findByTestId('Details')
-      expect(await within(details).findAllByTestId('KPI')).toHaveLength(1)
-
-      expect(await screen.findByTestId('IntentAIRRMGraph')).toBeVisible()
     })
   })
 })

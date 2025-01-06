@@ -67,5 +67,8 @@ data:
         key: druid.retain.period.days
         name: DRUID_RETAIN_PERIOD_DAYS
       - configmap: configmap-acx-ui
+        key: druid.cold.tier.days
+        name: DRUID_COLD_TIER_DAYS
+      - configmap: configmap-acx-ui
         key: afc.feature.enabled
         name: AFC_FEATURE_ENABLED
