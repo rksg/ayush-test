@@ -13,14 +13,19 @@ import { useIntl } from 'react-intl'
 
 import { Fieldset, Tooltip }                 from '@acx-ui/components'
 import { NetworkSaveData, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { useParams }                         from '@acx-ui/react-router-dom'
+
+import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../../ApCompatibility'
 
 import * as UI from './styledComponents'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 const { useWatch } = Form
 
 export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
 
   const { $t } = useIntl()
+  const { networkId } = useParams()
   const { wlanData } = props
 
   const enableMulticastRateLimitingFieldName = ['wlan', 'advancedCustomization', 'enableMulticastRateLimiting']
@@ -39,8 +44,10 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
     useWatch<boolean>(enableMulticastDownLimitFieldName)
   ]
   const form = Form.useFormInstance()
+  const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
   const getDownloadMaxValue = () => getDLMax(form.getFieldValue('bssMinimumPhyRate'))
 
+  const [drawerVisible, setDrawerVisible] = useState(false)
   const [switchMulticastRateLimitingDisabled, setSwitchMulticastRateLimitingDisabled] = useState(false)
   const multicastFilterTooltipContent = (
     <div>
@@ -107,11 +114,24 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
         <UI.FieldLabel width='250px'>
           <Space>
             {$t({ defaultMessage: 'Multicast Rate Limiting' })}
-            <Tooltip.Question
+            {!isR370UnsupportedFeatures && <Tooltip.Question
               title={$t({ defaultMessage: 'Note that enabling Directed Multicast in <VenueSingular></VenueSingular>/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
               placement='right'
               iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-            />
+            />}
+            {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+              title={$t({ defaultMessage: 'Note that enabling Directed Multicast in <VenueSingular></VenueSingular>/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
+              visible={true}
+              placement='right'
+              onClick={() => setDrawerVisible(true)}
+            />}
+            {<ApCompatibilityDrawer
+              visible={drawerVisible}
+              type={ApCompatibilityType.NETWORK}
+              networkId={networkId}
+              featureName={InCompatibilityFeatures.NETWORK_MULTICAST_RATE_LIMIT}
+              onClose={() => setDrawerVisible(false)}
+            />}
           </Space>
           <Form.Item
             name={['wlan', 'advancedCustomization', 'enableMulticastRateLimiting']}

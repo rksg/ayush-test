@@ -14,14 +14,21 @@ export enum ApCompatibilityType {
 }
 
 export enum InCompatibilityFeatures {
+  AFC = 'AFC',
   AP_70 = 'WIFI7 302MHz',
   BETA_DPSK3 = 'DSAE',
+  AGGRESSIVE_TX_POWER = 'Aggressive Power Reduction with Per MCS TX Power Control',
   AP_NEIGHBORS = 'AP Neighbors',
   BSS_COLORING = 'BSS Coloring',
+  LOCATION_BASED_SERVICE = 'Location Based Service',
+  MAC_AUTH = 'MAC Authentication',
+  NETWORK_MULTICAST_RATE_LIMIT = 'Multicast Rate Limit (Network)',
   QOS_MIRRORING = 'QoS Mirroring',
+  SMART_MONITOR = 'Smart Monitor',
   TRUNK_PORT_VLAN_UNTAG_ID = 'Trunk Port VLAN Untag Id',
   SD_LAN = 'SD-LAN',
-  TUNNEL_PROFILE = 'Tunnel Profile'
+  TUNNEL_PROFILE = 'Tunnel Profile',
+  VENUE_MULTICAST_RATE_LIMIT = 'Multicast Rate Limit (Venue)'
 }
 
 export const retrievedApCompatibilitiesOptions = (

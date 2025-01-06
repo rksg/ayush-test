@@ -5,7 +5,15 @@ import { isEqual }                             from 'lodash'
 import { useIntl }                             from 'react-intl'
 
 import { Loader, StepsFormLegacy, showToast, showActionModal, AnchorContext } from '@acx-ui/components'
-import { LBS_SERVER_PROFILE_MAX_COUNT, LbsServerProfileDrawer }               from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import {
+  ApCompatibilityDrawer,
+  ApCompatibilityToolTip,
+  ApCompatibilityType,
+  InCompatibilityFeatures,
+  LBS_SERVER_PROFILE_MAX_COUNT,
+  LbsServerProfileDrawer
+} from '@acx-ui/rc/components'
 import {
   useGetLbsServerProfileListQuery,
   useActivateLbsServerProfileOnVenueMutation,
@@ -44,6 +52,9 @@ export function LocationBasedService () {
     useState<VenueLbsActivationType>({ enableLbs: false })
   const [stateOfLbsServerProfileId, setStateOfLbsServerProfileId] = useState<string>()
   const [showLbsServerProfileDrawer, setShowLbsServerProfileDrawer] = useState(false)
+  const [drawerVisible, setDrawerVisible] = useState(false)
+
+  const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
 
   const { selectOptions, lbsServerProfileId, enableLbs, isLoading } =
     useGetLbsServerProfileListQuery({ payload: defaultPayload }, {
@@ -193,6 +204,13 @@ export function LocationBasedService () {
           style={{ height: '48px', display: 'flex', alignItems: 'center' }}
         >
           <span>{$t({ defaultMessage: 'Use LBS Server' })}</span>
+          <div style={{ margin: '2px' }}></div>
+          {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+            title={''}
+            visible={true}
+            placement='bottom'
+            onClick={() => setDrawerVisible(true)}
+          />}
           <Switch
             data-testid='lbs-switch'
             checked={stateOfEnableLbs}
@@ -201,6 +219,13 @@ export function LocationBasedService () {
             }}
             style={{ marginLeft: '20px' }}
           />
+          {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+            visible={drawerVisible}
+            type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+            venueId={venueId}
+            featureName={InCompatibilityFeatures.LOCATION_BASED_SERVICE}
+            onClose={() => setDrawerVisible(false)}
+          />}
         </StepsFormLegacy.FieldLabel>
         {stateOfEnableLbs && <Form.Item style={{ margin: '0' }}>
           <Select
