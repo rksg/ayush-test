@@ -194,7 +194,7 @@ export function LanPorts () {
         const venueLanPorts = convertToFormData(venueLanPortsData, apLanPortsCap)
         setApLanPorts(lanPorts)
         setVenueLanPorts(venueLanPorts)
-        setSelectedModel(lanPorts)
+        setSelectedModel(lanPorts.useVenueSettings ? venueLanPorts : lanPorts)
         setSelectedModelCaps(apCaps as CapabilitiesApModel)
         setSelectedPortCaps(apLanPortsCap?.[activeTabIndex] as LanPort)
         setUseVenueSettings(lanPorts.useVenueSettings ?? true)
@@ -366,7 +366,10 @@ export function LanPorts () {
         = lanData.find(l => l.portId === lanPort.portId)?.clientIsolationProfileId
       if (
         originClientIsolationProfileId &&
-        (!lanPort.enabled || !lanPort.clientIsolationEnabled || useVenueSettings)
+          (!lanPort.enabled
+          || !lanPort.clientIsolationEnabled
+          || useVenueSettings
+          || (originClientIsolationProfileId !== lanPort.clientIsolationProfileId))
       ) {
         await deactivateClientIsolationOnAp({
           // eslint-disable-next-line max-len
