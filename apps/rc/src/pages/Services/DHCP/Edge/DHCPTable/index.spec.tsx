@@ -37,8 +37,15 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  ApCompatibilityToolTip: () => <div data-testid='ApCompatibilityToolTip' />
+  ApCompatibilityToolTip: () => <div data-testid='ApCompatibilityToolTip' />,
+  CompatibilityWarningTriangleIcon: () => <div data-testid='CompatibilityWarningTriangleIcon' />,
+  SimpleListTooltip: ({ displayText }: { displayText: string }) =>
+    <div data-testid='SimpleListTooltip' >{displayText}</div>,
+  EdgeServiceStatusLight: () => <div data-testid='EdgeServiceStatusLight' />,
+  useEdgeDhcpActions: () => ({
+    upgradeEdgeDhcp: mockedUpdateFn,
+    isEdgeDhcpUpgrading: false
+  })
 }))
 
 describe('EdgeDhcpTable', () => {
@@ -69,13 +76,6 @@ describe('EdgeDhcpTable', () => {
         (_req, res, ctx) => {
           mockedGetClusterList()
           return res(ctx.json(mockEdgeClusterList))
-        }
-      ),
-      rest.patch(
-        EdgeDhcpUrls.patchDhcpService.url,
-        (req, res, ctx) => {
-          mockedUpdateFn()
-          return res(ctx.status(202))
         }
       ),
       rest.post(
@@ -286,9 +286,6 @@ describe('EdgeDhcpTable', () => {
     const expectedClusterCount = mockDhcpStatsData.data[0].edgeClusterIds.length.toString()
     expect(receivedClusterCount).toEqual(expectedClusterCount)
 
-    const clusterCountCells = screen.getAllByRole('cell', { name: expectedClusterCount })
-    await userEvent.hover(within(clusterCountCells[0]).getByText(expectedClusterCount))
-    expect(await screen.findByRole('tooltip', { hidden: false }))
-      .toHaveTextContent(mockEdgeClusterList.data[0].name)
+    expect(await within(row[0]).findByTestId('SimpleListTooltip')).toBeVisible()
   })
 })
