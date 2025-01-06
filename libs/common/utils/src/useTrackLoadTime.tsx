@@ -454,13 +454,14 @@ export const LoadTimeProvider = ({ children }: {
   }, [pathname])
 
   useEffect(() => {
+    const pageDetails = getRouteDetails(flattenRoutesConfig, pathname)
     const pageKey = pageDetails?.key
     const pageTitle = TrackingPages[pageKey as keyof typeof TrackingPages]
     const pageWidgetCount = pageDetails?.widgetCount
 
-    const trackedWidgetCount = Object.keys(loadTimes).length
+    const trackedWidget = Object.keys(loadTimes)
     const isLoadTimeUnset = !isLoadTimeSet.current
-    const isAllWidgetsTracked = trackedWidgetCount === pageWidgetCount
+    const isAllWidgetsTracked = _.isEqual(trackedWidget.sort(), pageDetails?.widgets.sort())
 
     if (isLoadTimeUnset && pageWidgetCount && isAllWidgetsTracked && isPageRouteSupported) {
       const { pendo } = window

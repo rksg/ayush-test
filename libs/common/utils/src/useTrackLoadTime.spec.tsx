@@ -11,7 +11,8 @@ import {
   LoadTimeContext,
   LoadTimeProvider,
   TrackingPageConfig,
-  useTrackLoadTime
+  useTrackLoadTime,
+  widgetsMapping
 } from './useTrackLoadTime'
 
 describe('useTrackLoadTime', () => {
@@ -105,7 +106,7 @@ describe('useTrackLoadTime', () => {
     const TestComponent = () => {
       const { onPageFilterChange } = useContext(LoadTimeContext)
       useTrackLoadTime({
-        itemName: 'testItem',
+        itemName: widgetsMapping.WIRED_CLIENTS_TABLE,
         isEnabled: true,
         states: [{ isLoading: false, isSuccess: true, isFetching: false }]
       })
