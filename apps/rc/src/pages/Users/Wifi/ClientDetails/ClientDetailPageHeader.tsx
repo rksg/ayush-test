@@ -21,12 +21,14 @@ import { DateFilter, DateRange, encodeParameter, useDateFilter }  from '@acx-ui/
 import ClientDetailTabs from './ClientDetailTabs'
 function DatePicker () {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
   return <RangePicker
     selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
     onDateApply={setDateFilter as CallableFunction}
     showTimePicker
     selectionType={range}
+    maxMonthRange={isDateRangeLimit ? 1 : 3}
   />
 }
 

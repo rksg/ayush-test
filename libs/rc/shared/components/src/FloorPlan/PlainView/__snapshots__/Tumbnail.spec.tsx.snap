@@ -26,6 +26,9 @@ exports[`Floor Plan Thumbnail Image should render correctly 1`] = `
   font-size: var(--acx-subtitle-6-font-size);
   line-height: var(--acx-subtitle-4-line-height);
   background: var(--acx-neutrals-80);
+  text-overflow: ellipsis;
+  overflow: auto;
+  padding: 0px 4px;
 }
 
 .c0 {

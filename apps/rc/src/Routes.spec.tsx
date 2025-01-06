@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getSelectServiceRoutePath,
@@ -96,14 +96,6 @@ jest.mock('./pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable', () =
   return <div data-testid='WifiCallingTable' />
 })
 
-jest.mock('./pages/Services/DHCP/Edge/AddDHCP', () => () => {
-  return <div data-testid='AddDHCP' />
-})
-
-jest.mock('./pages/Services/DHCP/DHCPTable/DHCPTable', () => () => {
-  return <div data-testid='DHCPTable' />
-})
-
 jest.mock('./pages/Services/Dpsk/DpskTable/DpskTable', () => () => {
   return <div data-testid='DpskTable' />
 })
@@ -116,6 +108,14 @@ jest.mock('./pages/Services/Portal/PortalDetail', () => () => {
   return <div data-testid='PortalServiceDetail' />
 })
 
+jest.mock('./pages/Services/Portal/PortalTable', () => () => {
+  return <div data-testid='PortalTable' />
+})
+
+jest.mock('./pages/Services/NetworkSegWebAuth/NetworkSegAuthTable', () => () => {
+  return <div data-testid='NetworkSegAuthTable' />
+})
+
 jest.mock('./pages/Services/NetworkSegWebAuth/NetworkSegAuthForm', () => () => {
   return <div data-testid='NetworkSegAuthForm' />
 })
@@ -124,8 +124,12 @@ jest.mock('./pages/Services/NetworkSegWebAuth/NetworkSegAuthDetail', () => () =>
   return <div data-testid='NetworkSegAuthDetail' />
 })
 
-jest.mock('./pages/Services/Portal/PortalTable', () => () => {
-  return <div data-testid='PortalTable' />
+jest.mock('./pages/Services/DHCP/Edge/AddDHCP', () => () => {
+  return <div data-testid='AddEdgeDhcp' />
+})
+
+jest.mock('./pages/Services/DHCP/DHCPTable/DHCPTable', () => () => {
+  return <div data-testid='DHCPTable' />
 })
 
 jest.mock('./pages/Services/DHCP/Edge/DHCPTable', () => () => {
@@ -137,7 +141,11 @@ jest.mock('./pages/Services/DHCP/Edge/DHCPDetail', () => () => {
 })
 
 jest.mock('./pages/Services/DHCP/Edge/EditDHCP', () => () => {
-  return <div data-testid='EdgeDHCPDetail' />
+  return <div data-testid='EdgeEditDhcp' />
+})
+
+jest.mock('./pages/Users/Switch/ClientList', () => () => {
+  return <div data-testid='SwitchClientList' />
 })
 
 jest.mock('./pages/Users/Wifi/ClientList', () => ({
@@ -147,6 +155,10 @@ jest.mock('./pages/Users/Wifi/ClientList', () => ({
 
 jest.mock('./pages/Users/Wifi/ClientDetails', () => () => {
   return <div data-testid='UserClientDetails' />
+})
+
+jest.mock('./pages/Users/Wifi/GuestManagerPage', () => () => {
+  return <div data-testid='GuestManagerPage' />
 })
 
 jest.mock('./pages/Devices/Edge/AddEdge', () => () => {
@@ -181,26 +193,57 @@ jest.mock('./pages/Policies/MacRegistrationList/MacRegistrarionListTable', () =>
   return <div data-testid='MacRegistrationListsTable' />
 })
 
+const mockUseIsEdgeFeatureReady = jest.fn().mockReturnValue(true)
+
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
+  AAAForm: () => <div data-testid='AAAPolicyForm' />,
+  AAAPolicyDetail: () => <div data-testid='AAAPolicyDetail' />,
+  AccessControlDetail: () => <div data-testid='AccessControlDetail' />,
+  AccessControlForm: () => <div data-testid='AccessControlForm' />,
+  AccessControlTable: () => <div data-testid='AccessControlTable' />,
+  AdaptivePolicySetForm: () => <div data-testid='AdaptivePolicySetForm' />,
+  AddEthernetPortProfile: () => <div data-testid='AddEthernetPortProfile' />,
+  ApGroupDetails: () => <div data-testid='ApGroupDetails' />,
+  ApGroupEdit: () => <div data-testid='ApGroupEdit' />,
+  CertificateAuthorityForm: () => <div data-testid='CertificateAuthorityForm' />,
+  CertificateForm: () => <div data-testid='CertificateForm' />,
+  CertificateTemplateForm: () => <div data-testid='CertificateTemplateForm' />,
+  ClientIsolationForm: () => <div data-testid='ClientIsolationForm' />,
+  CliProfileForm: () => <div data-testid='CliProfileForm' />,
+  CliTemplateForm: () => <div data-testid='CliTemplateForm' />,
+  ConfigurationProfileForm: () => <div data-testid='ConfigurationProfileForm' />,
+  DHCPDetail: () => <div data-testid='DHCPDetail' />,
+  DHCPForm: () => <div data-testid='DHCPForm' />,
+  DpskForm: () => <div data-testid='DpskForm' />,
+  EditEthernetPortProfile: () => <div data-testid='EditEthernetPortProfile' />,
+  EthernetPortProfileDetail: () => <div data-testid='EthernetPortProfileDetail' />,
+  IdentityProviderForm: () => <div data-testid='IdentityProviderForm' />,
+  LbsServerProfileForm: () => <div data-testid='LbsServerProfileForm' />,
+  MacRegistrationListForm: () => <div data-testid='MacRegistrationListForm' />,
+  NetworkForm: () => <div data-testid='NetworkForm' />,
+  PortalForm: () => <div data-testid='PortalForm' />,
+  ResidentPortalForm: () => <div data-testid='ResidentPortalForm' />,
+  RogueAPDetectionDetailView: () => <div data-testid='RogueAPDetectionDetailView' />,
   RogueAPDetectionForm: () => <div data-testid='RogueAPDetectionForm' />,
   RogueAPDetectionTable: () => <div data-testid='RogueAPDetectionTable' />,
-  DpskForm: () => <div data-testid='DpskForm' />,
-  MacRegistrationListForm: () => <div data-testid='MacRegistrationListForm' />,
-  AdaptivePolicySetForm: () => <div data-testid='AdaptivePolicySetForm' />,
-  AccessControlForm: () => <div data-testid='AccessControlForm' />,
-  AAAForm: () => <div data-testid='AAAPolicyForm' />,
+  ServerClientCertificateForm: () => <div data-testid='ServerClientCertificateForm' />,
+  SoftGreForm: () => <div data-testid='SoftGreForm' />,
+  SyslogDetailView: () => <div data-testid='SyslogDetailView' />,
+  SyslogForm: () => <div data-testid='SyslogForm' />,
+  VLANPoolDetail: () => <div data-testid='VLANPoolDetail' />,
+  VLANPoolForm: () => <div data-testid='VLANPoolForm' />,
   WifiCallingConfigureForm: () => <div data-testid='WifiCallingConfigureForm' />,
-  WifiCallingForm: () => <div data-testid='WifiCallingForm' />,
   WifiCallingDetailView: () => <div data-testid='WifiCallingDetailView' />,
-  DHCPForm: () => <div data-testid='DHCPForm' />,
-  DHCPDetail: () => <div data-testid='DHCPDetail' />,
-  PortalForm: () => <div data-testid='PortalForm' />,
-  NetworkForm: () => <div data-testid='NetworkForm' />,
-  AAAPolicyDetail: () => <div data-testid='AAAPolicyDetail' />,
-  NetworkDetails: () => <div data-testid='NetworkDetails' />,
-  AccessControlDetail: () => <div data-testid='AccessControlDetail' />
+  WifiCallingForm: () => <div data-testid='WifiCallingForm' />,
+  WifiOperatorForm: () => <div data-testid='WifiOperatorForm' />,
+  DirectoryServerForm: () => <div data-testid='DirectoryServerForm' />,
+  ConnectionMeteringFormMode: {},
+  useIsEdgeFeatureReady: (ff: Features) => mockUseIsEdgeFeatureReady(ff)
 }))
+
+jest.mock('./pages/Networks/wireless/NetworkDetails', () => () => {
+  return <div data-testid='NetworkDetails' />
+})
 
 jest.mock('./pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupForm', () => () => {
   return <div data-testid='RadiusAttributeGroupForm' />
@@ -232,10 +275,6 @@ jest.mock('./pages/Policies/AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetTa
 
 jest.mock('./pages/Policies/AdaptivePolicy/AdaptivePolicySet/AdaptivePolicySetDetail/AdaptivePolicySetDetail', () => () => {
   return <div data-testid='AdaptivePolicySetDetail' />
-})
-
-jest.mock('./pages/Services/DHCP/Edge/AddDHCP', () => () => {
-  return <div data-testid='AddEdgeDhcp' />
 })
 
 jest.mock('./pages/Services/EdgeFirewall/AddFirewall', () => () => {
@@ -280,6 +319,9 @@ jest.mock('./pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTable
 })
 jest.mock('./pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetailEnhanced', () => () => {
   return <div data-testid='PersonalIdentityNetworkDetailEnhanced' />
+})
+jest.mock('./pages/Services/PersonalIdentityNetwork/AddPersonalIdentityNetworkEnhanced', () => () => {
+  return <div data-testid='AddPersonalIdentityNetworkEnhanced' />
 })
 
 // Edge mDNS Proxy service
@@ -623,7 +665,7 @@ describe('RcRoutes: Devices', () => {
     })
 
     test('should not navigate to create Edge DHCP page', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_HA_TOGGLE)
+      jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff => ff !== Features.EDGE_HA_TOGGLE)
       render(<Provider><RcRoutes /></Provider>, {
         route: {
           path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE }),
@@ -634,7 +676,7 @@ describe('RcRoutes: Devices', () => {
     })
 
     test('should not navigate to create Edge firewall page', async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_FIREWALL_HA_TOGGLE)
+      jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff => ff !== Features.EDGE_FIREWALL_HA_TOGGLE)
       render(<Provider><RcRoutes /></Provider>, {
         route: {
           path: '/tenantId/t/' + getServiceRoutePath({ type: ServiceType.EDGE_FIREWALL, oper: ServiceOperation.CREATE }),
@@ -684,13 +726,11 @@ describe('RcRoutes: Devices', () => {
       const detailPagePath = getServiceDetailsLink({ type: ServiceType.PIN, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
 
       beforeEach(() => {
-        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE
+        jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE
           || ff === Features.EDGES_TOGGLE)
-        jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.EDGE_ADV)
       })
       afterEach(() => {
-        jest.mocked(useIsSplitOn).mockReset()
-        jest.mocked(useIsTierAllowed).mockReset()
+        jest.mocked(mockUseIsEdgeFeatureReady).mockReset()
       })
 
       const getRouteData = (tailPath: string) => ({
@@ -720,7 +760,7 @@ describe('RcRoutes: Devices', () => {
 
       describe('Enhance Edge PIN service', () => {
         beforeEach(() => {
-          jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE
+          jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE
             || ff === Features.EDGE_PIN_ENHANCE_TOGGLE
             || ff === Features.EDGES_TOGGLE)
         })
@@ -729,6 +769,12 @@ describe('RcRoutes: Devices', () => {
           render(<Provider><RcRoutes /></Provider>, getRouteData(detailPagePath))
           expect(screen.getByTestId('PersonalIdentityNetworkDetailEnhanced')).toBeVisible()
           expect(screen.queryByTestId('PersonalIdentityNetworkDetail')).toBeNull()
+        })
+
+        test('should navigate to Edge enhanced PIN create service page', async () => {
+          render(<Provider><RcRoutes /></Provider>, getRouteData(addFormPath))
+          expect(screen.getByTestId('AddPersonalIdentityNetworkEnhanced')).toBeVisible()
+          expect(screen.queryByTestId('AddPersonalIdentityNetwork')).toBeNull()
         })
       })
     })

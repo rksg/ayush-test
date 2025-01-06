@@ -540,7 +540,8 @@ export interface CapabilitiesApModel {
   supportAggressiveTxPower?: boolean,
   supportAutoCellSizing?: boolean,
   supportSmartMonitor?: boolean,
-  supportMesh5GOnly6GOnly?: boolean
+  supportMesh5GOnly6GOnly?: boolean,
+  usbPowerEnable?: boolean
 }
 
 export interface PingAp {
@@ -591,6 +592,11 @@ export interface ApLanPort {
 
 export interface ApLedSettings {
   ledEnabled: boolean,
+  useVenueSettings: boolean
+}
+
+export interface ApUsbSettings {
+  usbPortEnable: boolean,
   useVenueSettings: boolean
 }
 
@@ -1008,6 +1014,7 @@ export enum SoftGreState {
   TurnOnAndModifyDHCPOption82Settings,
   TurnOnLanPort,
   TurnOffLanPort,
+  ResetToDefault
 }
 
 export interface SoftGreProfileDispatcher {

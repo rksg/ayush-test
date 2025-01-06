@@ -1,5 +1,44 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { formatGraphQLErrors } from './errorUtil'
+import { formatGraphQLErrors, isGraphQLAction, isGraphQLError } from './errorUtil'
+
+describe('isGraphQLAction', () => {
+  it('returns false when type is undefined', () => {
+    expect(isGraphQLAction({ type: undefined })).toBe(false)
+  })
+
+  it('returns false when type does not include any reducer paths', () => {
+    expect(isGraphQLAction({ type: 'other-type' })).toBe(false)
+  })
+
+  it.each(
+    ['data-api', 'network-health']
+  )('returns true when type includes a reducer path: %s', (path) => {
+    expect(isGraphQLAction({ type: path })).toBe(true)
+  })
+})
+
+describe('isGraphQLError', () => {
+  it('returns false when type is undefined', () => {
+    expect(isGraphQLError(undefined, {})).toBe(false)
+  })
+
+  it('returns false when type does not include any reducer paths', () => {
+    expect(isGraphQLError('other-type', {})).toBe(false)
+  })
+
+  it('returns false when type includes a reducer path, but response is undefined', () => {
+    expect(isGraphQLError('data-api', undefined)).toBe(false)
+  })
+
+  // eslint-disable-next-line max-len
+  it('returns false when type includes a reducer path, but response does not have an errors property', () => {
+    expect(isGraphQLError('data-api', {})).toBe(false)
+  })
+
+  it('returns true when type includes a reducer path and response has an errors property', () => {
+    expect(isGraphQLError('data-api', { errors: [] })).toBe(true)
+  })
+})
 
 describe('formatGraphQLErrors', () => {
   it('should return empty object for response with no errors', () => {

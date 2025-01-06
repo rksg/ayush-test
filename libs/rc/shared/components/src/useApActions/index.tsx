@@ -189,7 +189,8 @@ export function useApActions () {
         for(let apInfo of rows) {
           requestArr.push(deleteApApi({
             params: {
-              venueId: apInfo.venueId, serialNumber: apInfo.serialNumber
+              venueId: apInfo.venueId,
+              serialNumber: apInfo.serialNumber
             },
             enableRbac: true
           }))
@@ -197,7 +198,7 @@ export function useApActions () {
         Promise.all(requestArr).then(callBack)
       } else {
         rows.length === 1 ?
-          deleteApApi({ params: { tenantId: tenantId, serialNumber: rows[0].serialNumber } })
+          deleteApApi({ params: { tenantId, serialNumber: rows[0].serialNumber } })
             .then(callBack) :
           deleteApApi({
             params: { tenantId },
