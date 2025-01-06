@@ -184,7 +184,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
           },
           {
             text: $t({ defaultMessage: 'Ethernet Port Profile' }),
-            link: '/policies/portProfile/wifi'
+            link: isSwitchPortProfileEnabled ? '/policies/portProfile/wifi' : tablePath
           }
         ]}
       />
