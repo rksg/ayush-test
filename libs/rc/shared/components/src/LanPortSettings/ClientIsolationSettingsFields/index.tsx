@@ -123,9 +123,6 @@ const ClientIsolationSettingsFields = (props: ClientIsplationSettingFieldsProps)
         <Space>
           <Form.Item
             name={clientIsolationProfileIdFieldName}
-            rules={[{
-              required: true
-            }]}
             label={$t({ defaultMessage: 'Client Isolation Allowlist' })}
             children={
               <Select

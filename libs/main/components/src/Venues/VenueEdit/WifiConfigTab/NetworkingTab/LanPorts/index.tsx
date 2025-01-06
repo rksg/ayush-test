@@ -49,6 +49,7 @@ import {
   VenueLanPorts,
   VenueSettings,
   WifiNetworkMessages,
+  SoftGreState,
   mergeLanPortSettings
 } from '@acx-ui/rc/utils'
 import {
@@ -485,6 +486,15 @@ export function LanPorts () {
     let records = clone(resetModels)
     records.push(apModel)
     setResetModels([...new Set(records)])
+
+    defaultLanPortsData.lanPorts.forEach((lanPort, index) => {
+      dispatch({
+        state: SoftGreState.ResetToDefault,
+        portId: lanPort.portId,
+        index
+      })
+    })
+
 
     customGuiChagedRef.current = true
   }
