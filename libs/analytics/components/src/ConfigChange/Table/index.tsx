@@ -131,7 +131,7 @@ export function Table (props: {
       dataIndex: 'timestamp',
       render: (_, row) => {
         const timestamp = formatter(DateFormatEnum.DateTimeFormat)(moment(Number(row.timestamp)))
-        if (row.type === 'intentAI') {
+        if (showIntentAI && row.type === 'intentAI') {
           const code = row.key.substring(row.key.lastIndexOf('.') + 1)
           const linkPath = get('IS_MLISA_SA')
             ? `/intentAI/${row.root}/${row.sliceId}/${code}`
