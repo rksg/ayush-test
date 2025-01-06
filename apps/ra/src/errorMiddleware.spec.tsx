@@ -43,7 +43,9 @@ describe('errorMiddleware', () => {
 
   it.each([
     [429, errorMessage.TOO_MANY_REQUESTS],
-    [503, errorMessage.SERVICE_UNAVAILABLE]
+    [502, errorMessage.BAD_GATEWAY],
+    [503, errorMessage.SERVICE_UNAVAILABLE],
+    [504, errorMessage.GATEWAY_TIMEOUT]
   ])('should call showErrorModal only with correct error message for status code %i',
     (statusCode, expectedErrorMessage) => {
       const action = {

@@ -19,10 +19,20 @@ export const errorMiddleware: Middleware = () => (next: CallableFunction) =>
     if (isRejectedWithValue(action) && !shouldIgnoreErrorModal(action)) {
       if (status === 429) {
         showErrorModal(errorMessage.TOO_MANY_REQUESTS)
-      } else if (status === 503) {
-        showErrorModal(errorMessage.SERVICE_UNAVAILABLE)
       } else if (status >= 500 && status < 600) {
-        showErrorModal(errorMessage.SERVER_ERROR, action)
+        switch (status) {
+          case 502:
+            showErrorModal(errorMessage.BAD_GATEWAY)
+            break
+          case 503:
+            showErrorModal(errorMessage.SERVICE_UNAVAILABLE)
+            break
+          case 504:
+            showErrorModal(errorMessage.GATEWAY_TIMEOUT)
+            break
+          default:
+            showErrorModal(errorMessage.SERVER_ERROR, action)
+        }
       } else if (isGraphQLAction(action)) {
         showErrorModal(errorMessage.SERVER_ERROR, action)
       }

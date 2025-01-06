@@ -79,10 +79,22 @@ export const errorMessage = {
       defaultMessage: 'Too many requests. Please try again later.'
     })
   },
+  BAD_GATEWAY: {
+    title: defineMessage({ defaultMessage: 'Bad Gateway' }),
+    content: defineMessage({
+      defaultMessage: 'Bad gateway. Please try again later.'
+    })
+  },
   SERVICE_UNAVAILABLE: {
     title: defineMessage({ defaultMessage: 'Service Unavailable' }),
     content: defineMessage({
       defaultMessage: 'Service unavailable. Please try again later.'
+    })
+  },
+  GATEWAY_TIMEOUT: {
+    title: defineMessage({ defaultMessage: 'Gateway Timeout' }),
+    content: defineMessage({
+      defaultMessage: 'Gateway timeout. Please try again later.'
     })
   },
   CHECK_YOUR_CONNECTION: get('IS_MLISA_SA') ? {
