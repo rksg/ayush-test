@@ -479,7 +479,8 @@ describe('LanPortSettings -  SoftGre Profile Profile', ()=> {
   it('Venue Level', async () => {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
       return (ff === Features.ETHERNET_PORT_PROFILE_TOGGLE ||
-        ff === Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
+        ff === Features.WIFI_ETHERNET_SOFTGRE_TOGGLE ||
+        ff === Features.WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE)
     })
 
     const apParams = {
