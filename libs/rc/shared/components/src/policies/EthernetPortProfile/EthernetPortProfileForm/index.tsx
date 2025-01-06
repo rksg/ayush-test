@@ -9,12 +9,9 @@ import { PageHeader, PasswordInput, StepsForm, Subtitle, Tooltip } from '@acx-ui
 import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
 import {
   LocationExtended,
-  PolicyOperation,
-  PolicyType,
   WifiNetworkMessages,
   checkVlanMember,
   getPolicyListRoutePath,
-  getPolicyRoutePath,
   redirectPreviousPage,
   EthernetPortAuthType,
   EthernetPortSupplicantType,
@@ -58,14 +55,10 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
   const authEnabled = Form.useWatch('authEnabled', formRef)
   const isDynamicVLANEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_DVLAN_TOGGLE)
 
-  const tablePath = getPolicyRoutePath({
-    type: PolicyType.ETHERNET_PORT_PROFILE,
-    oper: PolicyOperation.LIST
-  })
   const navigate = useNavigate()
   const location = useLocation()
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
-  const linkToTableView = useTenantLink(tablePath)
+  const linkToTableView = useTenantLink('/policies/portProfile/wifi')
 
   const handleFinish = async () => {
     try{
@@ -181,7 +174,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
           },
           {
             text: $t({ defaultMessage: 'Ethernet Port Profile' }),
-            link: tablePath
+            link: '/policies/portProfile/wifi'
           }
         ]}
       />

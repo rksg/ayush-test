@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Checkbox, Divider, Form, Input, Select, Space, Switch } from 'antd'
 import { DefaultOptionType }                                     from 'antd/lib/select'
@@ -31,7 +31,6 @@ import {
   useSwitchDetailHeaderQuery,
   useSavePortsSettingMutation,
   useCyclePoeMutation,
-  useLazyPortProfileOptionsBySwitchIdQuery,
   useLazyPortProfileOptionsForMultiSwitchesQuery
 } from '@acx-ui/rc/services'
 import {
@@ -254,7 +253,6 @@ export function EditPortDrawer ({
   const [poeClassOptions, setPoeClassOptions] = useState([] as {
     label: { defaultMessage: string; }; value: string; }[]
   )
-  const [portProfileOptions, setPortProfileOptions] = useState([] as DefaultOptionType[])
   const [vlanUsedByVe, setVlanUsedByVe] = useState('')
   const [lldpQosList, setLldpQosList] = useState([] as LldpQosModel[])
 
@@ -291,6 +289,7 @@ export function EditPortDrawer ({
   const [lldpModalvisible, setLldpModalvisible] = useState(false)
   const [drawerAclVisible, setDrawerAclVisible] = useState(false)
   const [cyclePoeEnable, setCyclePoeEnable] = useState(false)
+  const portProfileOptions = useRef([] as DefaultOptionType[])
 
   const [getPortSetting] = useLazyGetPortSettingQuery()
   const [getPortsSetting] = useLazyGetPortsSettingQuery()
@@ -301,8 +300,8 @@ export function EditPortDrawer ({
   const [getSwitchRoutedList] = useLazyGetSwitchRoutedListQuery()
   const [getVenueRoutedList] = useLazyGetVenueRoutedListQuery()
   const [getAclUnion] = useLazyGetAclUnionQuery()
-  const [getPortProfileOptionsList] = useLazyPortProfileOptionsBySwitchIdQuery()
-  const [getPortProfileOptionsForSwitches] = useLazyPortProfileOptionsForMultiSwitchesQuery()
+  const [getPortProfileOptionsForSwitches] =
+  useLazyPortProfileOptionsForMultiSwitchesQuery()
   const [savePortsSetting, { isLoading: isPortsSettingUpdating }] = useSavePortsSettingMutation()
   const [cyclePoe, { isLoading: isCyclePoeUpdating }] = useCyclePoeMutation()
 
@@ -430,33 +429,24 @@ export function EditPortDrawer ({
       }, true).unwrap()
 
       if(isSwitchPortProfileEnabled && isAnyFirmwareAbove10020b) {
-        if(isMultipleEdit){
-          const portProfilePayload = selectedSwitchList.map(item => item.id)
-          const portProfileList = await getPortProfileOptionsForSwitches({
-            params: { tenantId, switchId, venueId: switchDetail?.venueId },
-            payload: portProfilePayload,
-            enableRbac: isSwitchRbacEnabled
-          }, true).unwrap()
+        const portProfilePayload = selectedSwitchList.map(item => item.id)
+        const portProfileList = await getPortProfileOptionsForSwitches({
+          params: { tenantId, switchId, venueId: switchDetail?.venueId },
+          payload: portProfilePayload,
+          enableRbac: isSwitchRbacEnabled
+        }, true).unwrap()
 
-          const groupedOptions = portProfileList.reduce((acc, option) => {
-            option.availablePortProfiles.forEach((item) => {
-              if (!acc[item.portProfileName]) {
-                acc[item.portProfileName] = []
-              }
-              acc[item.portProfileName].push({ switchId: option.switchId, ...item })
-            })
-            return acc
-          }, {} as Record<string, PortProfilesBySwitchId[]>)
+        const groupedOptions = portProfileList.reduce((acc, option) => {
+          option.availablePortProfiles.forEach((item) => {
+            if (!acc[item.portProfileName]) {
+              acc[item.portProfileName] = []
+            }
+            acc[item.portProfileName].push({ switchId: option.switchId, ...item })
+          })
+          return acc
+        }, {} as Record<string, PortProfilesBySwitchId[]>)
 
-          setPortProfileOptions(getPortProfileOptions(groupedOptions, isMultipleEdit))
-        }else{
-          const portProfileList = await getPortProfileOptionsList({
-            params: { tenantId, switchId, venueId: switchDetail?.venueId },
-            enableRbac: isSwitchRbacEnabled
-          }, true).unwrap()
-
-          setPortProfileOptions(getPortProfileOptions(portProfileList))
-        }
+        portProfileOptions.current = getPortProfileOptions(groupedOptions)
       }
 
       const vid = isVenueLevel ? venueId : switchDetail?.venueId
@@ -592,7 +582,9 @@ export function EditPortDrawer ({
           (portSetting?.taggedVlans ? portSetting.untaggedVlan : defaultVlan)),
       voiceVlan: (portSetting.revert ? voice
         : (portSetting?.voiceVlan === 0 ? '' : portSetting?.voiceVlan)),
-      ...(isSwitchFlexAuthEnabled ? getFlexAuthDefaultValue(portSetting) : {})
+      ...(isSwitchFlexAuthEnabled ? getFlexAuthDefaultValue(portSetting) : {}),
+      // eslint-disable-next-line max-len
+      ...(isSwitchPortProfileEnabled ? { switchPortProfileId: portProfileOptions.current.find(item => item.value?.toString().includes(portSetting?.switchPortProfileId ?? '')) }: '')
     })
     checkIsVoiceVlanInvalid(true, portSetting?.revert)
   }
@@ -620,8 +612,26 @@ export function EditPortDrawer ({
     const hasEqualValueFields = _.xor(allMultipleEditableFields, hasMultipleValueFields)
     const portSetting = _.pick(portsSetting?.[0], [...hasEqualValueFields, 'profileName'])
 
+    const groupedByPortProfileId = portsSetting.reduce((acc: { [key: string]: string[] }, item) => {
+      if (item.switchPortProfileId !== undefined) {
+        const portProfileName = portProfileOptions.current.find(
+          pitem => pitem.value?.toString().includes(
+            item.switchPortProfileId ?? ''))?.label?.toString() || 'unknown'
+        if (!acc[portProfileName]) {
+          acc[portProfileName] = []
+        }
+        if(acc[portProfileName]){
+          acc[portProfileName].push(item.id)
+        }
+      }
+      return acc
+    }, {})
+
+    const differentPortProfileName = Object.keys(groupedByPortProfileId).length > 1
+
     const hasMultipleValue = _.uniq([
-      ...hasMultipleValueFields,
+      // eslint-disable-next-line max-len
+      ...(_.without(hasMultipleValueFields, !differentPortProfileName ? 'switchPortProfileId' : '')),
       ...((!vlansValue.isTagEqual && ['taggedVlans']) || []),
       ...((!vlansValue.isUntagEqual && ['untaggedVlan']) || []),
       ...((!vlansValue.isVoiceVlanEqual && ['voiceVlan']) || [])
@@ -654,7 +664,9 @@ export function EditPortDrawer ({
         && vlansValue.untagged) || (portSetting.untaggedVlan ? portSetting.untaggedVlan :
         (portSetting?.taggedVlans ? portSetting.untaggedVlan : defaultVlan)),
       // eslint-disable-next-line max-len
-      ...(isSwitchFlexAuthEnabled ? getFlexAuthDefaultValue(portSetting, hasMultipleValueFields) : {})
+      ...(isSwitchFlexAuthEnabled ? getFlexAuthDefaultValue(portSetting, hasMultipleValueFields) : {}),
+      // eslint-disable-next-line max-len
+      ...(isSwitchPortProfileEnabled && !differentPortProfileName ? { switchPortProfileId: portProfileOptions.current.find(p => p.value?.toString().includes(portsSetting[0]?.switchPortProfileId ?? '')) } : '')
     })
   }
 
@@ -942,16 +954,10 @@ export function EditPortDrawer ({
 
         let switchPortProfileId = null
         if (isSwitchPortProfileEnabled){
-          if(isMultipleEdit){
-            if(form.getFieldValue('switchPortProfileId') !== ''){
-              const selectedPortProfiles = JSON.parse(form.getFieldValue('switchPortProfileId'))
-              switchPortProfileId = selectedPortProfiles.find(
-                (p: { switchId: string }) => p.switchId === item)?.portProfileId
-            }
-          }else{
-            if(form.getFieldValue('switchPortProfileId') !== ''){
-              switchPortProfileId = form.getFieldValue('switchPortProfileId')
-            }
+          if(form.getFieldValue('switchPortProfileId') !== ''){
+            const selectedPortProfiles = JSON.parse(form.getFieldValue('switchPortProfileId'))
+            switchPortProfileId = selectedPortProfiles.find(
+              (p: { switchId: string }) => p.switchId === item)?.portProfileId
           }
         }
 
@@ -1791,7 +1797,7 @@ export function EditPortDrawer ({
                   <Form.Item
                     name='switchPortProfileId'
                     initialValue=''><Select
-                      options={portProfileOptions}
+                      options={portProfileOptions.current}
                       disabled={getFieldDisabled('switchPortProfileId')} /></Form.Item>
                 </Tooltip>}
             />

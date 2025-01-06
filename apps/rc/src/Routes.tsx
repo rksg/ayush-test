@@ -102,7 +102,7 @@ import ConnectionMeteringPageForm                   from './pages/Policies/Conne
 import ConnectionMeteringTable                      from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
 import DirectoryServerDetail                        from './pages/Policies/DirectoryServer/DirectoryServerDetail/DirectoryServerDetail'
 import DirectoryServerTable                         from './pages/Policies/DirectoryServer/DirectoryServerTable/DirectoryServerTable'
-import EthernetPortProfileTable                     from './pages/Policies/EthernetPortProfile/EthernetPortProfileTable'
+import EthernetPortProfile                          from './pages/Policies/EthernetPortProfile'
 import AddFlexibleAuthentication                    from './pages/Policies/FlexibleAuthentication/AddFlexibleAuthentication'
 import EditFlexibleAuthentication                   from './pages/Policies/FlexibleAuthentication/EditFlexibleAuthentication'
 import FlexibleAuthenticationDetail                 from './pages/Policies/FlexibleAuthentication/FlexibleAuthenticationDetail'
@@ -1487,7 +1487,7 @@ function PolicyRoutes () {
             type: PolicyType.ETHERNET_PORT_PROFILE ,
             oper: PolicyOperation.LIST
           })}
-          element={<EthernetPortProfileTable/>}
+          element={<EthernetPortProfile/>}
         />
         <Route
           path={getPolicyRoutePath({
