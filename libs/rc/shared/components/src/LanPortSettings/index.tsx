@@ -275,6 +275,7 @@ export function LanPortSettings (props: {
               />
               <EthernetPortProfileDrawer
                 updateInstance={(createId) => {
+                  onChangedByCustom('ethernetPortProfileId')
                   setEthernetProfileCreateId(createId)
                 }}
                 currentEthernetPortData={currentEthernetPortData} />
