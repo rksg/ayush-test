@@ -16,11 +16,13 @@ import {
   EthernetPortType,
   EthernetPortAuthType,
   APLanPortSettings,
-  VenueLanPortSettings
+  VenueLanPortSettings,
+  LanPortsUrls
 } from '@acx-ui/rc/utils'
 import { baseEthernetPortProfileApi } from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
 import { createHttpRequest }          from '@acx-ui/utils'
+import { LanPortSettings } from '../../components/src/LanPortSettings'
 
 
 const createDefaultEthPort = (tenantId: string, type: EthernetPortType) => {
@@ -114,7 +116,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
           ) ?? [] as EthernetPortProfileViewData[]
           const getApPortOverwrite = async (portId:number) => {
             const apPortOverwriteReq = createHttpRequest(
-              EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId,
+              LanPortsUrls.getApLanPortSettings,
               { venueId: params?.venueId,
                 serialNumber: params?.serialNumber,
                 portId: portId.toString()
@@ -308,16 +310,6 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
         }
       }
     }),
-    getEthernetPortProfileOverwritesByApPortId:
-    build.query<APLanPortSettings, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(
-          EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId, params)
-        return {
-          ...req
-        }
-      }
-    }),
     updateEthernetPortProfileOverwritesByApPortId:
       build.mutation<CommonResult, RequestPayload>({
         query: ({ params, payload }) => {
@@ -357,7 +349,6 @@ export const {
   useGetEthernetPortProfileSettingsByVenueApModelQuery,
   useUpdateEthernetPortSettingsByVenueApModelMutation,
   useActivateEthernetPortProfileOnVenueApModelPortIdMutation,
-  useGetEthernetPortProfileOverwritesByApPortIdQuery,
   useUpdateEthernetPortProfileOverwritesByApPortIdMutation,
   useActivateEthernetPortProfileOnApPortIdMutation
 } = ethernetPortProfileApi
