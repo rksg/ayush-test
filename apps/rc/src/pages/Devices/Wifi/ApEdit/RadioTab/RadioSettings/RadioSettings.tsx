@@ -943,7 +943,7 @@ export function RadioSettings () {
         return
       }
 
-      const { method, allowedChannels, channelBandwidth, useVenueSettings } = radioParams
+      const { method, allowedChannels, channelBandwidth } = radioParams
       const bandwidth = (channelBandwidth === 'AUTO') ? 'auto' : channelBandwidth
 
       if (method === 'MANUAL') {
