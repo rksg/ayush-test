@@ -61,6 +61,7 @@ export function useMenuConfig () {
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
   ].some(Boolean)
   const isIntentAIEnabled = useIsSplitOn(Features.INTENT_AI_TOGGLE)
+  const isCanvasEnabled = useIsSplitOn(Features.CANVAS)
 
   type Item = ItemType & {
     permission?: RaiPermission
@@ -340,12 +341,13 @@ export function useMenuConfig () {
         { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) }
       ]
     },
-    {
+    ...(isCanvasEnabled ? [ {
       label: $t({ defaultMessage: 'AI Canvas' }),
       uri: '/canvas',
       inactiveIcon: BulbOutlined,
       activeIcon: BulbSolid
-    },
+    }] : [])
+    ,
     {
       label: $t({ defaultMessage: 'Administration' }),
       inactiveIcon: AdminOutlined,
