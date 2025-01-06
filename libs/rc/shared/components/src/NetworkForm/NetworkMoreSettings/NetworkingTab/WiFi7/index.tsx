@@ -37,6 +37,7 @@ import { sortOptions,
   useWatch,
   Option
 } from './utils'
+import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../../../../ApCompatibility'
 
 const CheckboxGroup = ({ wlanData, mloEnabled, wifi7Enabled } :
   { wlanData : NetworkSaveData | null, mloEnabled: boolean, wifi7Enabled: boolean }) => {
@@ -175,6 +176,7 @@ const CheckboxGroup = ({ wlanData, mloEnabled, wifi7Enabled } :
 function WiFi7 () {
   const { $t } = useIntl()
   const wifi7MloFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
+  const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
   const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
 
   const { setData, data: wlanData } = useContext(NetworkFormContext)
@@ -184,6 +186,9 @@ function WiFi7 () {
   const editMode = params.action === 'edit'
   const { isDisableMLO, disableMLO } = useContext(MLOContext)
   const initWifi7Enabled = get(wlanData, ['wlan', 'advancedCustomization', 'wifi7Enabled'], true)
+  const mloTooltip = $t({ defaultMessage: `MLO allows Wi-Fi 7 devices to use multiple radio channels simultaneously (at least two) for better throughput and efficiency.
+    For MLO to function, radios on APs must be active, and their usage is determined by AP configuration, which limits the number of supported 6 GHz networks` })
+  const [mloDrawerVisible, setMloDrawerVisible] = useState(false)
   const [
     wifi7Enabled,
     mloEnabled
@@ -272,13 +277,24 @@ function WiFi7 () {
                 <Space>
                   {$t({ defaultMessage: 'Enable Multi-Link operation (MLO)' })}
                   {/* eslint-disable max-len */}
-                  <Tooltip.Question
-                    title={$t({ defaultMessage: `MLO allows Wi-Fi 7 devices to use multiple radio channels simultaneously (at least two) for better throughput and efficiency.
-                     For MLO to function, radios on APs must be active, and their usage is determined by AP configuration, which limits the number of supported 6 GHz networks` })
-                    }
+                  {!isR370UnsupportedFeatures && <Tooltip.Question
+                    title={mloTooltip}
                     placement='right'
                     iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-                  />
+                  />}
+                  {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+                    title={mloTooltip}
+                    visible={true}
+                    placement='right'
+                    onClick={() => setMloDrawerVisible(true)}
+                  />}
+                  {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+                    visible={mloDrawerVisible}
+                    type={params.networkId ? ApCompatibilityType.NETWORK : ApCompatibilityType.ALONE}
+                    networkId={params.networkId}
+                    featureName={InCompatibilityFeatures.MLO_3R}
+                    onClose={() => setMloDrawerVisible(false)}
+                  />}
                 </Space>
                 <Form.Item
                   name={['wlan', 'advancedCustomization', 'multiLinkOperationEnabled']}

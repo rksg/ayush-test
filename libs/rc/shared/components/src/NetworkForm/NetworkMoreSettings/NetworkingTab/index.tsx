@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Form, Input, InputNumber, Radio, Space, Switch } from 'antd'
 import { useIntl, defineMessage }                         from 'react-intl'
@@ -8,6 +8,12 @@ import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }               
 import { QuestionMarkCircleOutlined }                                                                            from '@acx-ui/icons'
 import { BasicServiceSetPriorityEnum, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
+import {
+  ApCompatibilityDrawer,
+  ApCompatibilityToolTip,
+  ApCompatibilityType,
+  InCompatibilityFeatures
+} from '../../../ApCompatibility'
 import { RadiusOptionsForm }                  from '../../../RadiusOptionsForm'
 import NetworkFormContext                     from '../../NetworkFormContext'
 import { hasAccountingRadius, hasAuthRadius } from '../../utils'
@@ -41,6 +47,10 @@ export function NetworkingTab (props: {
 
   const showSingleSessionIdAccounting = hasAccountingRadius(data, wlanData)
   const wifi6AndWifi7Flag = useIsSplitOn(Features.WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE)
+  const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+
+  const [airtimeDrawerVisible, setAirtimeDrawerVisible] = useState(false)
+  const [joinRssiDrawerVisible, setJoinRssiDrawerVisible] = useState(false)
 
   const [
     enableFastRoaming,
@@ -298,7 +308,24 @@ export function NetworkingTab (props: {
       />
 
       <UI.FieldLabel width={labelWidth}>
-        { $t({ defaultMessage: 'Airtime Decongestion:' }) }
+        <Space>
+          {isR370UnsupportedFeatures ?
+            $t({ defaultMessage: 'Airtime Decongestion' }) :
+            $t({ defaultMessage: 'Airtime Decongestion:' }) }
+          {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+            title={''}
+            visible={true}
+            placement='right'
+            onClick={() => setAirtimeDrawerVisible(true)}
+          />}
+          {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+            visible={airtimeDrawerVisible}
+            type={wlanData?.id ? ApCompatibilityType.NETWORK : ApCompatibilityType.ALONE}
+            networkId={wlanData?.id}
+            featureName={InCompatibilityFeatures.AIRTIME_DECONGESTION}
+            onClose={() => setAirtimeDrawerVisible(false)}
+          />}
+        </Space>
         <Form.Item
           name={['wlan','advancedCustomization','enableAirtimeDecongestion']}
           style={{ marginBottom: '10px' }}
@@ -310,7 +337,24 @@ export function NetworkingTab (props: {
 
       {!enableAirtimeDecongestion &&
         <UI.FieldLabel width={labelWidth}>
-          { $t({ defaultMessage: 'Join RSSI Threshold:' }) }
+          <Space>
+            {isR370UnsupportedFeatures ?
+              $t({ defaultMessage: 'Join RSSI Threshold' }) :
+              $t({ defaultMessage: 'Join RSSI Threshold:' }) }
+            {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+              title={''}
+              visible={true}
+              placement='right'
+              onClick={() => setJoinRssiDrawerVisible(true)}
+            />}
+            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+              visible={joinRssiDrawerVisible}
+              type={wlanData?.id ? ApCompatibilityType.NETWORK : ApCompatibilityType.ALONE}
+              networkId={wlanData?.id}
+              featureName={InCompatibilityFeatures.JOIN_RSSI_THRESHOLD}
+              onClose={() => setJoinRssiDrawerVisible(false)}
+            />}
+          </Space>
           <div style={{ display: 'grid', gridTemplateColumns: '50px 75px auto' }}>
             <Form.Item
               name={['wlan','advancedCustomization','enableJoinRSSIThreshold']}

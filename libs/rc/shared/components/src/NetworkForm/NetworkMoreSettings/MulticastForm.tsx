@@ -12,13 +12,13 @@ import {
 import { useIntl } from 'react-intl'
 
 import { Fieldset, Tooltip }                 from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { NetworkSaveData, WlanSecurityEnum } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
 
 import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../../ApCompatibility'
 
 import * as UI from './styledComponents'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 const { useWatch } = Form
 
