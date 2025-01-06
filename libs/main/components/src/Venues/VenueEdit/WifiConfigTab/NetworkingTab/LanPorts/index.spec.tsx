@@ -26,8 +26,6 @@ import {
   mockedVenueLanPortSettings2,
   mockedVenueLanPortSettings3,
   radiusList,
-  mockedClientIsolationProfileName1,
-  mockedClientIsolationProfileName2,
   mockedClientIsolation2
 } from '../../../../__tests__/fixtures'
 
