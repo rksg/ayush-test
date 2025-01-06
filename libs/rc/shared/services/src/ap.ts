@@ -944,7 +944,7 @@ export const apApi = baseApApi.injectEndpoints({
         )
         let apLanPorts = apLanPortSettings.data as WifiApSetting
 
-        if (params?.serialNumber) {
+        if (params?.serialNumber && !!apLanPorts?.lanPorts?.length) {
           const apLanPortSettingsQuery = apLanPorts?.lanPorts?.map((lanPort) => {
             return fetchWithBQ(createHttpRequest(LanPortsUrls.getApLanPortSettings,
               {
@@ -960,9 +960,7 @@ export const apApi = baseApApi.injectEndpoints({
             return result.status === 'fulfilled' ? result.value.data as APLanPortSettings : {}
           })
 
-          if(apLanPorts.lanPorts && results) {
-            apLanPorts.lanPorts = mergeLanPortSettings(apLanPorts.lanPorts, results)
-          }
+          apLanPorts.lanPorts = mergeLanPortSettings(apLanPorts.lanPorts, results)
         }
 
         if (enableEthernetProfile) {
