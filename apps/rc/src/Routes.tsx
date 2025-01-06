@@ -162,8 +162,10 @@ import NetworkSegAuthDetail                                             from './
 import NetworkSegAuthForm                                               from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
 import NetworkSegAuthTable                                              from './pages/Services/NetworkSegWebAuth/NetworkSegAuthTable'
 import AddPersonalIdentityNetwork                                       from './pages/Services/PersonalIdentityNetwork/AddPersonalIdentityNetwork'
+import AddPersonalIdentityNetworkEnhanced                               from './pages/Services/PersonalIdentityNetwork/AddPersonalIdentityNetworkEnhanced'
 import EditPersonalIdentityNetwork                                      from './pages/Services/PersonalIdentityNetwork/EditPersonalIdentityNetwork'
 import PersonalIdentityNetworkDetail                                    from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetail'
+import PersonalIdentityNetworkDetailEnhanced                            from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetailEnhanced'
 import PersonalIdentityNetworkTable                                     from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTable'
 import PortalServiceDetail                                              from './pages/Services/Portal/PortalDetail'
 import PortalTable                                                      from './pages/Services/Portal/PortalTable'
@@ -518,7 +520,9 @@ const edgeFirewallRoutes = () => {
   </>
 }
 
-const edgePinRoutes = () => {
+const useEdgePinRoutes = () => {
+  const isEdgePinEnhancementReady = useIsEdgeFeatureReady(Features.EDGE_PIN_ENHANCE_TOGGLE)
+
   return <>
     <Route
       path={getServiceRoutePath({ type: ServiceType.PIN,
@@ -526,7 +530,9 @@ const edgePinRoutes = () => {
       element={
         // eslint-disable-next-line max-len
         <ServiceAuthRoute serviceType={ServiceType.PIN} oper={ServiceOperation.CREATE}>
-          <AddPersonalIdentityNetwork />
+          {isEdgePinEnhancementReady
+            ? <AddPersonalIdentityNetworkEnhanced />
+            : <AddPersonalIdentityNetwork /> }
         </ServiceAuthRoute>
       }
     />
@@ -538,7 +544,8 @@ const edgePinRoutes = () => {
     <Route
       path={getServiceRoutePath({ type: ServiceType.PIN,
         oper: ServiceOperation.DETAIL })}
-      element={<PersonalIdentityNetworkDetail />}
+      // eslint-disable-next-line max-len
+      element={isEdgePinEnhancementReady ? <PersonalIdentityNetworkDetailEnhanced /> : <PersonalIdentityNetworkDetail />}
     />
     <Route
       path={getServiceRoutePath({ type: ServiceType.PIN,
@@ -607,6 +614,7 @@ function ServiceRoutes () {
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
   const isEdgeTnmServiceReady = useIsEdgeFeatureReady(Features.EDGE_THIRDPARTY_MGMT_TOGGLE)
+  const pinRoutes = useEdgePinRoutes()
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -723,7 +731,7 @@ function ServiceRoutes () {
         element={<DpskDetails />}
       />
 
-      {(isEdgePinReady) && edgePinRoutes()}
+      {(isEdgePinReady) && pinRoutes}
 
       <Route
         path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
