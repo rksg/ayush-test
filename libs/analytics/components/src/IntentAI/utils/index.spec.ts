@@ -5,10 +5,10 @@ import { get } from '@acx-ui/config'
 import { DisplayStates, Statuses, StatusReasons } from '../states'
 
 import {
-  isDataRetained,
   getDefaultTime,
   getTransitionStatus,
-  Actions
+  Actions,
+  isDataRetained
 } from '.'
 
 jest.mock('@acx-ui/config', () => ({ get: jest.fn() }))

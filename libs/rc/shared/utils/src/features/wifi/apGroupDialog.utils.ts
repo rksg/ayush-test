@@ -1,5 +1,5 @@
+/* eslint-disable max-len */
 import { assign, findIndex } from 'lodash'
-import { defineMessage }     from 'react-intl'
 
 import { getIntl } from '@acx-ui/utils'
 
@@ -12,26 +12,10 @@ import {
   VlanType
 } from '../../'
 
+import { vlanContents } from './contentMap'
+
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
-/* eslint-disable max-len */
-
-export const vlanContents = {
-  vlan: defineMessage({
-    defaultMessage: `VLAN-{id} {isCustom, select,
-      true {(Custom)}
-      other {(Default)}
-    }`,
-    description: 'Translation not needed'
-  }),
-  vlanPool: defineMessage({
-    defaultMessage: `VLAN Pool: {poolName} {isCustom, select,
-      true {(Custom)}
-      other {(Default)}
-    }`,
-    description: 'Translation string - VLAN Pool'
-  })
-}
 
 export const getVlanString = (vlanPool?: VlanPool | null, vlanId?: number, isCustom = false) => {
   const { $t } = getIntl()

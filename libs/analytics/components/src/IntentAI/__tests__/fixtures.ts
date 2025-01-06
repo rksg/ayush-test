@@ -5,19 +5,21 @@ import { IntentConfigurationConfig, useIntentContext } from '../IntentContext'
 import { Statuses }                                    from '../states'
 import { AIFeatureProps }                              from '../Table'
 import { IntentDetail, IntentKPIConfig, intentState }  from '../useIntentDetailsQuery'
-import { isDataRetained }                              from '../utils'
 
 export const mockIntentContext = (config: {
   intent: IntentDetail
   kpis?: IntentKPIConfig[],
   configuration?: IntentConfigurationConfig
+  isDataRetained?: boolean
+  isHotTierData?: boolean
 }) => {
   const context: ReturnType<typeof useIntentContext> = {
     configuration: config.configuration,
     intent: config.intent,
     kpis: config.kpis ?? [],
     state: intentState(config.intent),
-    isDataRetained: isDataRetained(config.intent.metadata.dataEndTime)
+    isDataRetained: config.intent.dataCheck?.isDataRetained ?? true,
+    isHotTierData: config.intent.dataCheck?.isHotTierData ?? true
   }
   jest.mocked(useIntentContext).mockReturnValue(context)
   return context
@@ -280,7 +282,9 @@ const intentStatus = {
   updatedAt: '2023-06-16T06:05:02.839Z',
   sliceType: 'zone',
   sliceValue: 'zone-1',
-  metadata: {},
+  metadata: {
+    changedByName: 'fakeUser lastName5566'
+  },
   path: [
     { type: 'system', name: 'vsz611' },
     { type: 'zone', name: 'EDU-MeshZone_S12348' }
@@ -316,7 +320,8 @@ export const intentListWithAllStatus = {
       statusReason: '',
       displayStatus: 'scheduled',
       metadata: {
-        scheduledAt: '2023-06-17T00:00:00.000Z'
+        scheduledAt: '2023-06-17T00:00:00.000Z',
+        changedByName: 'fakeUserWithOptimize lastName5566'
       }
     },
     {
@@ -325,7 +330,8 @@ export const intentListWithAllStatus = {
       statusReason: 'one-click',
       displayStatus: 'scheduled-one-click',
       metadata: {
-        scheduledAt: '2023-06-17T00:00:00.000Z'
+        scheduledAt: '2023-06-17T00:00:00.000Z',
+        changedByName: 'fakeUserWithOneClickOptimize lastName5566'
       }
     },
     {
@@ -371,7 +377,8 @@ export const intentListWithAllStatus = {
       statusReason: '',
       displayStatus: 'revertscheduled',
       metadata: {
-        scheduledAt: '2023-06-17T00:00:00.000Z'
+        scheduledAt: '2023-06-17T00:00:00.000Z',
+        changedByName: 'fakeUserWithRevert lastName5566'
       }
     },
     {
