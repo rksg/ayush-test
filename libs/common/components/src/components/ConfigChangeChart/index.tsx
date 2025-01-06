@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
 import ReactECharts from 'echarts-for-react'
-import { useIntl }  from 'react-intl'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
@@ -29,11 +28,13 @@ import {
   getTooltipCoordinate,
   useLegendTableFilter
 } from './helper'
-import { ResetButton, ChartWrapper } from './styledComponents'
+import { ChartWrapper } from './styledComponents'
 
 import type { EChartsOption, SeriesOption } from 'echarts'
 
 export type { ChartRowMappingType as ConfigChangeChartRowMappingType } from './helper'
+
+let resetZoomCallback: () => void
 
 export function ConfigChangeChart ({
   data,
@@ -56,7 +57,6 @@ export function ConfigChangeChart ({
     useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
   ].some(Boolean)
 
-  const { $t } = useIntl()
   const eChartsRef = useRef<ReactECharts>(null)
 
   const chartRowMapping = getConfigChangeEntityTypeMapping(showIntentAI)
@@ -84,8 +84,9 @@ export function ConfigChangeChart ({
     selectedLegend, data, selectedData, setSelectedData, setLegend, pagination,setPagination)
   const { setBoundary } = useBoundaryChange(
     eChartsRef, chartLayoutConfig, chartBoundary, brushWidth, onBrushPositionsChange)
-  const { canResetZoom, resetZoomCallback } =
+  const { resetZoomCallback: resetCallback } =
     useDataZoom(eChartsRef, chartBoundary, setBoundary, chartZoom, setChartZoom, setInitialZoom)
+  resetZoomCallback = resetCallback
 
   const option: EChartsOption = {
     animation: false,
@@ -198,11 +199,8 @@ export function ConfigChangeChart ({
         ref={eChartsRef}
         option={option}
       />
-      {canResetZoom && <ResetButton
-        size='small'
-        onClick={resetZoomCallback}
-        children={$t({ defaultMessage: 'Reset Zoom' })}
-      />}
     </ChartWrapper>
   )
 }
+
+export { resetZoomCallback }
