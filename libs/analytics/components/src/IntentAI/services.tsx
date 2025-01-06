@@ -16,6 +16,7 @@ import {
 }                                                   from '@acx-ui/utils'
 import type { PathFilter } from '@acx-ui/utils'
 
+import { getIntentStatus }      from './common/getIntentStatus'
 import { richTextFormatValues } from './common/richTextFormatValues'
 import {
   states,
@@ -189,7 +190,7 @@ export const api = intentAIApi.injectEndpoints({
             intent: $t(detail.intent),
             scope: formattedPath(path, sliceValue),
             category: $t(detail.category),
-            statusLabel: states[displayStatus] ? $t(states[displayStatus].text) : displayStatus
+            statusLabel: states[displayStatus] ? getIntentStatus(displayStatus) : displayStatus
           } as IntentListItem)
           return intents
         }, [] as Array<IntentListItem>)
@@ -273,7 +274,7 @@ export const api = intentAIApi.injectEndpoints({
           const stateKey = id as unknown as DisplayStates
           const groupedState = stateToGroupedStates[stateKey]
           const key = groupedState ? groupedState.key : id
-          const value = groupedState ? $t(groupedState.group) : $t(states[stateKey].text)
+          const value = groupedState ? $t(groupedState.group) : getIntentStatus(stateKey)
           if (!data.find(({ key: dataKey }) => dataKey === key)) data.push({ key, value })
           return data
         }, [] as DisplayOption[])

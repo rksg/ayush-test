@@ -15,6 +15,7 @@ export type Metadata = {
   failures?: (keyof typeof failureCodes)[]
   oneClickOptimize?: boolean
   preferences?: IntentPreferences
+  retries?: number
   scheduledAt: string
   scheduledBy?: string
   unsupportedAPs?: string[]
@@ -23,10 +24,11 @@ export type Metadata = {
 }
 
 export type StatusTrailMetadata = Pick<Metadata,
-  'scheduledAt' |
-  'failures' |
-  'updatedAt' |
-  'changedByName'
+    'changedByName'
+  | 'failures'
+  | 'scheduledAt'
+  | 'retries'
+  | 'updatedAt'
 >
 
 export type StatusTrail = {
@@ -98,6 +100,7 @@ type CodeInfo = {
 type StateInfo = {
   text: MessageDescriptor,
   tooltip: MessageDescriptor
+  showRetries?: boolean
 }
 
 const categories = {
@@ -146,6 +149,7 @@ export const states = {
     ` }) //TODO: The new configuration is: {newConfig}.
   },
   [DisplayStates.pausedApplyFailed]: {
+    showRetries: true,
     text: defineMessage({ defaultMessage: 'Paused, Applied Failed' }),
     tooltip: defineMessage({ defaultMessage: `
       <p>IntentAI recommended changes failed to apply to <VenueSingular></VenueSingular> {zoneName} due to:</p>
