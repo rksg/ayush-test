@@ -254,6 +254,7 @@ export enum Features {
   ACX_UI_NON_PROXY_ACCOUNTING_DPSK_TOGGLE = 'acx-ui-non-proxy-accounting-dpsk-toggle',
   AP_FW_MGMT_EARLY_ACCESS_TOGGLE = 'ap-fw-mgmt-early-access-toggle',
   ACX_UI_DATE_RANGE_LIMIT = 'acx-ui-date-range-selection-limit-30-days-toggle',
+  NETWORK_PSK_MACAUTH_DYNAMIC_VLAN_TOGGLE = 'wifi-psk-dynamic-vlan-toggle',
   RUCKUS_AI_PREVENT_COLD_TIER_QUERY_TOGGLE = 'ruckus-ai-prevent-cold-tier-query-toggle',
   ACX_UI_PREVENT_COLD_TIER_QUERY_TOGGLE = 'acx-ui-prevent-cold-tier-query-toggle'
 }
