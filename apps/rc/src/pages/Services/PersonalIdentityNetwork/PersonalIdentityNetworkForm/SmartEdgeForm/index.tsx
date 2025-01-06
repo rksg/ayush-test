@@ -15,17 +15,13 @@ import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFo
 import { DhcpPoolTable }        from './DhcpPoolTable'
 import { SelectDhcpPoolDrawer } from './SelectDhcpPoolDrawer'
 
-interface SmartEdgeFormProps {
-  editMode?: boolean
-}
-
-export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
+export const SmartEdgeForm = () => {
 
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
   const tenantBasePath = useTenantLink('')
-  const { form } = useStepFormContext<PersonalIdentityNetworkFormData>()
+  const { form, editMode } = useStepFormContext<PersonalIdentityNetworkFormData>()
   const {
     clusterOptions,
     isClusterOptionsLoading,
@@ -156,7 +152,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
     }
 
     values={{
-      detailPage: props.editMode ?
+      detailPage: editMode ?
         <Button
           type='link'
           size='small'
@@ -195,7 +191,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
                 children={
                   <Select
                     loading={isClusterOptionsLoading}
-                    disabled={props.editMode}
+                    disabled={editMode}
                     placeholder={$t({ defaultMessage: 'Select...' })}
                     onChange={onEdgeChange}
                     options={[
@@ -285,7 +281,7 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
                       : $t({ defaultMessage: 'No Pool selected' })
                   }
                   {
-                    !props.editMode &&
+                    !editMode &&
                   <Button
                     type='link'
                     onClick={openDrawer}

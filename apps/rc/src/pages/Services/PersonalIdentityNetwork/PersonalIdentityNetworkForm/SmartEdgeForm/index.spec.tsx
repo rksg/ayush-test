@@ -273,9 +273,9 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
         <PersonalIdentityNetworkFormContext.Provider
           value={mockContextData}
         >
-          <StepsForm onFinish={mockedFinishFn}>
+          <StepsForm onFinish={mockedFinishFn} editMode>
             <StepsForm.StepForm>
-              <SmartEdgeForm editMode />
+              <SmartEdgeForm />
             </StepsForm.StepForm>
           </StepsForm>
         </PersonalIdentityNetworkFormContext.Provider>
