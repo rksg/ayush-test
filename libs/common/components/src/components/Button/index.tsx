@@ -2,7 +2,7 @@ import { useCallback, useRef } from 'react'
 
 import { ButtonProps as AntButtonProps, TooltipProps } from 'antd'
 
-import { ScopeKeys } from '@acx-ui/types'
+import { RbacOpsIds, ScopeKeys } from '@acx-ui/types'
 
 import { Tooltip } from '../Tooltip'
 
@@ -11,9 +11,10 @@ import * as UI from './styledComponents'
 export interface ButtonProps extends Omit<AntButtonProps, 'type'> {
   type?: 'default' | 'primary' | 'link'
   scopeKey?: ScopeKeys
+  rbacOpsIds?: RbacOpsIds
 }
 
-export function Button ({ type = 'default', scopeKey, ...props }: ButtonProps) {
+export function Button ({ type = 'default', scopeKey, rbacOpsIds, ...props }: ButtonProps) {
   const ref = useRef<HTMLButtonElement>(null)
   const handleOnMouseUp = useCallback(() => {
     ref.current?.blur()

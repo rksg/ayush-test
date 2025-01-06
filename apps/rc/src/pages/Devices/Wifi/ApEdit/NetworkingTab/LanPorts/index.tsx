@@ -26,7 +26,8 @@ import {
   useLazyGetVenueSettingsQuery,
   useResetApLanPortsMutation,
   useUpdateApEthernetPortsMutation,
-  useUpdateApLanPortsMutation
+  useUpdateApLanPortsMutation,
+  useDeactivateClientIsolationOnApMutation
 } from '@acx-ui/rc/services'
 import {
   ApLanPortTypeEnum,
@@ -128,6 +129,9 @@ export function LanPorts () {
     isLoading: isApLanPortsResetting }] = useResetApLanPortsMutation()
   const [deactivateSoftGreProfileSettings, {
     isLoading: isSoftGreProfileDeactivting }] = useDeactivateSoftGreProfileOnAPMutation()
+  const [deactivateClientIsolationOnAp, {
+    isLoading: isDeactivateClientIsolationOnAp
+  }] = useDeactivateClientIsolationOnApMutation()
 
 
 
@@ -168,6 +172,11 @@ export function LanPorts () {
 
         const queryPayload = {
           params: { tenantId, venueId },
+          payload: {
+            isEthernetPortProfileEnabled,
+            isEthernetSoftgreEnabled: isSoftGREOnEthernetEnabled,
+            isEthernetClientIsolationEnabled
+          },
           enableRbac: isUseWifiRbacApi
         }
 
@@ -230,36 +239,38 @@ export function LanPorts () {
   }
 
   const handleFinish = async (values: WifiApSetting) => {
-    try {
-      setEditContextData && setEditContextData({
-        ...editContextData,
-        isDirty: false,
-        hasError: false
-      })
-      setUseVenueSettings(values?.useVenueSettings)
-
-      if (isResetLanPortEnabled && isResetClick.current && isResetLanPort(values)) {
-        showActionModal({
-          type: 'confirm',
-          width: 450,
-          title: $t({ defaultMessage: 'Reset Port Settings to Default' }),
-          content: $t(EditPortMessages.RESET_PORT_WARNING),
-          okText: $t({ defaultMessage: 'Continue' }),
-          onOk: async () => {
-            try {
-              processUpdateLanPorts(values)
-              isResetClick.current = false
-            } catch (error) {
-              console.log(error) // eslint-disable-line no-console
-            }
-          }
+    formRef?.current?.validateFields().then(async () => {
+      try {
+        setEditContextData && setEditContextData({
+          ...editContextData,
+          isDirty: false,
+          hasError: false
         })
-      } else {
-        processUpdateLanPorts(values)
+        setUseVenueSettings(values?.useVenueSettings)
+
+        if (isResetLanPortEnabled && isResetClick.current && isResetLanPort(values)) {
+          showActionModal({
+            type: 'confirm',
+            width: 450,
+            title: $t({ defaultMessage: 'Reset Port Settings to Default' }),
+            content: $t(EditPortMessages.RESET_PORT_WARNING),
+            okText: $t({ defaultMessage: 'Continue' }),
+            onOk: async () => {
+              try {
+                processUpdateLanPorts(values)
+                isResetClick.current = false
+              } catch (error) {
+                console.log(error) // eslint-disable-line no-console
+              }
+            }
+          })
+        } else {
+          processUpdateLanPorts(values)
+        }
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
       }
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
+    }).catch(() => {})
   }
 
   const isResetLanPort = (currentLans: WifiApSetting | undefined) => {
@@ -299,9 +310,14 @@ export function LanPorts () {
           handleSoftGreDeactivate(values)
         }
 
+        if (isEthernetClientIsolationEnabled) {
+          await handleClientIsolationDeactivate(values)
+        }
+
         await updateEthernetPortProfile({
           params: { venueId, serialNumber },
-          payload
+          payload,
+          useVenueSettings
         }).unwrap()
       } else {
         await updateApCustomization({
@@ -328,14 +344,36 @@ export function LanPorts () {
   }
 
   const handleSoftGreDeactivate = (values: WifiApSetting) => {
+    const { useVenueSettings } = values
     values.lan?.forEach(lanPort => {
       const originSoftGreId = lanData.find(l => l.portId === lanPort.portId)?.softGreProfileId
-      if (originSoftGreId && (!lanPort.enabled || !lanPort.softGreEnabled)) {
+      if (
+        originSoftGreId &&
+        (!lanPort.enabled || !lanPort.softGreEnabled || useVenueSettings)
+      ) {
         deactivateSoftGreProfileSettings({
           params: { venueId, serialNumber, portId: lanPort.portId, policyId: originSoftGreId }
         }).unwrap()
       }
     })
+  }
+
+  const handleClientIsolationDeactivate = async (values: WifiApSetting) => {
+    const { useVenueSettings } = values
+
+    for (const lanPort of values.lan!) {
+      const originClientIsolationProfileId
+        = lanData.find(l => l.portId === lanPort.portId)?.clientIsolationProfileId
+      if (
+        originClientIsolationProfileId &&
+        (!lanPort.enabled || !lanPort.clientIsolationEnabled || useVenueSettings)
+      ) {
+        await deactivateClientIsolationOnAp({
+          // eslint-disable-next-line max-len
+          params: { venueId, serialNumber, portId: lanPort.portId, policyId: originClientIsolationProfileId }
+        }).unwrap()
+      }
+    }
   }
 
   const handleDiscard = async () => {
@@ -412,7 +450,8 @@ export function LanPorts () {
     isFetching: isApLanPortsUpdating ||
       isApLanPortsResetting ||
       isEthernetPortProfileUpdating ||
-      isSoftGreProfileDeactivting
+      isSoftGreProfileDeactivting ||
+      isDeactivateClientIsolationOnAp
   }]}>
     {selectedModel?.lanPorts
       ? <StepsFormLegacy

@@ -8,13 +8,15 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { StepsForm, StepsFormProps }  from '@acx-ui/components'
+import { Features }                   from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }      from '@acx-ui/rc/components'
 import { tunnelProfileApi, venueApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
+  EdgeSdLanFixtures,
   EdgeTunnelProfileFixtures,
   TunnelProfileUrls,
-  TunnelTypeEnum,
-  EdgeSdLanFixtures
+  TunnelTypeEnum
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -25,6 +27,7 @@ import {
 
 import { mockedVenueList }                            from '../../__tests__/fixtures'
 import { EdgeMvSdLanContext, EdgeMvSdLanContextType } from '../EdgeMvSdLanContextProvider'
+
 
 import { TunnelNetworkForm } from '.'
 
@@ -66,6 +69,11 @@ jest.mock('./VenueNetworkTable/NetworksDrawer.tsx', () => ({
   NetworksDrawer: () => <div data-testid='NetworksDrawer' />
 }))
 
+jest.mock('libs/rc/shared/components/src/useEdgeActions', () => ({
+  ...jest.requireActual('libs/rc/shared/components/src/useEdgeActions'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
+
 const mockedTunnelProfileViewDataNoDefault = {
   data: EdgeTunnelProfileFixtures.mockedTunnelProfileViewData.data.filter(item =>
     item.id !== 'SLecc2d7cf9d2342fdb31ae0e24958fcac')
@@ -84,6 +92,20 @@ const mockedTunnelProfileViewData = {
       networkIds: ['network2'],
       sdLanIds: ['sdlan1', 'sdlan2'],
       type: TunnelTypeEnum.VLAN_VXLAN
+    },
+    {
+      id: 'tunnelProfileId_dmz',
+      name: 'tunnelProfile_dmz',
+      tags: ['tag2'],
+      mtuType: 'MANUAL',
+      mtuSize: 1990,
+      ageTimeMinutes: 50,
+      forceFragmentation: true,
+      personalIdentityNetworkIds: ['nsg1', 'nsg2'],
+      networkIds: ['network1', 'network2'],
+      sdLanIds: [],
+      type: TunnelTypeEnum.VXLAN,
+      natTraversalEnabled: false
     }
   ])
 }
@@ -229,6 +251,38 @@ describe('Tunneled Venue Networks Form', () => {
       expect(screen.queryByRole('option', { name: 'tunnelProfileId2' })).toBeNull()
       await userEvent.selectOptions(dmzTunnelSelector, 'tunnelProfileId1')
       expect(mockedSetFieldValue).toBeCalledWith('guestTunnelProfileName', 'tunnelProfile1')
+    })
+
+    it('dmzTunnelSelector should filter out the tunnel profile with natTraversal TRUE', async () => {
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation((ff) => ff === Features.EDGE_NAT_TRAVERSAL_PHASE1_TOGGLE)
+
+      const mockedSetFieldValue = jest.fn()
+      const { result: stepFormRef } = renderHook(() => useMockedFormHook({
+        isGuestTunnelEnabled: true,
+        activatedNetworks: {
+          venue_00002: [
+            { name: 'MockedNetwork 1', id: 'network_1' },
+            { name: 'MockedNetwork 4', id: 'network_4' }
+          ] },
+        activatedGuestNetworks: {
+          venue_00002: [
+            { name: 'MockedNetwork 4', id: 'network_4' }
+          ] }
+      }))
+      jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
+
+      render(<MockedTargetComponent
+        form={stepFormRef.current}
+      />, { route: { params: { tenantId: 't-id' } } })
+
+      const dmzTunnelSelector = await screen.findByRole('combobox', { name: 'Tunnel Profile (Cluster- DMZ Cluster tunnel)' })
+      screen.queryByRole('option', { name: 'tunnelProfileId_dmz' })
+      // only Manual mode can be options for DMZ tunnel
+      expect(screen.queryByRole('option', { name: 'tunnelProfileId1' })).toBeNull()
+      expect(screen.queryByRole('option', { name: 'tunnelProfileId2' })).toBeNull()
+      await userEvent.selectOptions(dmzTunnelSelector, 'tunnelProfileId_dmz')
+      expect(mockedSetFieldValue).toBeCalledWith('guestTunnelProfileName', 'tunnelProfile_dmz')
     })
   })
 })
