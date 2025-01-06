@@ -27,12 +27,14 @@ interface MacAddressDrawerProps {
   isEdit: boolean
   editData?: MacRegistration,
   expirationOfPool: string,
-  identityGroupId?: string
+  identityGroupId?: string,
+  defaultIdentityId?: string
 }
 
 export function MacAddressDrawer (props: MacAddressDrawerProps) {
   const intl = useIntl()
-  const { visible, setVisible, isEdit, editData, expirationOfPool, identityGroupId } = props
+  // eslint-disable-next-line max-len
+  const { visible, setVisible, isEdit, editData, expirationOfPool, identityGroupId, defaultIdentityId } = props
   const [resetField, setResetField] = useState(false)
   const [form] = Form.useForm<MacRegistration>()
   const [addMacRegistration] = useAddMacRegistrationMutation()
@@ -40,6 +42,10 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
   const { policyId } = useParams()
   const [ macReg ] = useLazyMacRegistrationsQuery()
   const isIdentityRequired = useIsSplitOn(Features.MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE)
+
+  if (defaultIdentityId) {
+    form.setFieldValue('identityId', defaultIdentityId)
+  }
 
   const macAddressValidator = async (macAddress: string) => {
     const list = (await macReg({
@@ -118,8 +124,11 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
       {
         isIdentityRequired && (
           <Form.Item name='identityId'
+            required={!isEdit}
             label={intl.$t({ defaultMessage: 'Associated Identity' })}>
-            <IdentitySelector identityGroupId={identityGroupId} readonly={isEdit}/>
+            <IdentitySelector identityGroupId={identityGroupId}
+              readonly={isEdit}
+              defaultIdentityId={defaultIdentityId}/>
           </Form.Item>
         )
       }

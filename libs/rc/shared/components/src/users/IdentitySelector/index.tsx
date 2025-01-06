@@ -12,12 +12,14 @@ export const IdentitySelector = ({
   value,
   onChange,
   identityGroupId,
-  readonly = false
+  readonly = false,
+  defaultIdentityId
 }: {
   value?: string;
   onChange?: (value: string) => void;
   identityGroupId?: string;
   readonly?: boolean;
+  defaultIdentityId?: string;
 }) => {
   const form = Form.useFormInstance()
   const { $t } = useIntl()
@@ -41,6 +43,12 @@ export const IdentitySelector = ({
   useEffect(() => {
     if (data) {
       setSelectedIdentity(data)
+      if (defaultIdentityId === data.id) {
+        form.setFieldsValue({
+          username: data.name,
+          email: data.email
+        })
+      }
     }
   }, [data])
 
@@ -60,16 +68,10 @@ export const IdentitySelector = ({
     }
   }
 
-  return readonly ? (
+  return (readonly || defaultIdentityId) ? (
     <Typography>{ renderIdentityMessage() }</Typography>
   ) : (
     <>
-      <Form.Item name='username' label='Username' hidden>
-        <Input />
-      </Form.Item>
-      <Form.Item name='email' label='Email' hidden>
-        <Input />
-      </Form.Item>
       <Input
         onClick={handleOpen}
         value={selectedIdentity?.name || value}

@@ -254,6 +254,7 @@ export function MacRegistrationsTab () {
         // eslint-disable-next-line max-len
         expirationOfPool={returnExpirationString(macRegistrationListQuery.data ?? {} as MacRegistrationPool)}
         identityGroupId={macRegistrationListQuery?.data?.identityGroupId}
+        defaultIdentityId={macRegistrationListQuery?.data?.identityId}
       />
       <ImportFileDrawer
         type={ImportFileDrawerType.DPSK}
