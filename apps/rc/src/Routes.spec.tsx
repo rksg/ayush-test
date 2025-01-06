@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
 import {
   ServiceType,
   getSelectServiceRoutePath,
@@ -110,22 +110,6 @@ jest.mock('./pages/Services/Portal/PortalDetail', () => () => {
 
 jest.mock('./pages/Services/Portal/PortalTable', () => () => {
   return <div data-testid='PortalTable' />
-})
-
-jest.mock('./pages/Services/PersonalIdentityNetwork/AddPersonalIdentityNetwork', () => () => {
-  return <div data-testid='AddPersonalIdentityNetwork' />
-})
-
-jest.mock('./pages/Services/PersonalIdentityNetwork/EditPersonalIdentityNetwork', () => () => {
-  return <div data-testid='EditPersonalIdentityNetwork' />
-})
-
-jest.mock('./pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetail', () => () => {
-  return <div data-testid='PersonalIdentityNetworkDetail' />
-})
-
-jest.mock('./pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTable', () => () => {
-  return <div data-testid='PersonalIdentityNetworkTable' />
 })
 
 jest.mock('./pages/Services/NetworkSegWebAuth/NetworkSegAuthTable', () => () => {
@@ -742,13 +726,11 @@ describe('RcRoutes: Devices', () => {
       const detailPagePath = getServiceDetailsLink({ type: ServiceType.PIN, oper: ServiceOperation.DETAIL, serviceId: 'SERVICE_ID' })
 
       beforeEach(() => {
-        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE
+        jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE
           || ff === Features.EDGES_TOGGLE)
-        jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.EDGE_ADV)
       })
       afterEach(() => {
-        jest.mocked(useIsSplitOn).mockReset()
-        jest.mocked(useIsTierAllowed).mockReset()
+        jest.mocked(mockUseIsEdgeFeatureReady).mockReset()
       })
 
       const getRouteData = (tailPath: string) => ({
@@ -778,7 +760,7 @@ describe('RcRoutes: Devices', () => {
 
       describe('Enhance Edge PIN service', () => {
         beforeEach(() => {
-          jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE
+          jest.mocked(mockUseIsEdgeFeatureReady).mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE
             || ff === Features.EDGE_PIN_ENHANCE_TOGGLE
             || ff === Features.EDGES_TOGGLE)
         })
