@@ -6,6 +6,7 @@ import { useParams }                                  from 'react-router-dom'
 
 import { AnchorContext, Loader, Tooltip }                                                              from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                                                                  from '@acx-ui/icons'
 import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '@acx-ui/rc/components'
 import {
   useGetVenueApSmartMonitorQuery,
@@ -21,7 +22,6 @@ import {
   useVenueConfigTemplateQueryFnSwitcher
 } from '../../../../venueConfigTemplateApiSwitcher'
 import { FieldLabel } from '../../styledComponents'
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
 export function SmartMonitor () {
   const colSpan = 8

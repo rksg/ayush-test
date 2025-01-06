@@ -21,6 +21,12 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import {
+  ApCompatibilityDrawer,
+  ApCompatibilityToolTip,
+  ApCompatibilityType,
+  InCompatibilityFeatures
+} from '../../../../ApCompatibility'
 import { MLOContext }           from '../../../NetworkForm'
 import NetworkFormContext       from '../../../NetworkFormContext'
 import * as UI                  from '../../../NetworkMoreSettings/styledComponents'
@@ -37,7 +43,6 @@ import { sortOptions,
   useWatch,
   Option
 } from './utils'
-import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../../../../ApCompatibility'
 
 const CheckboxGroup = ({ wlanData, mloEnabled, wifi7Enabled } :
   { wlanData : NetworkSaveData | null, mloEnabled: boolean, wifi7Enabled: boolean }) => {
