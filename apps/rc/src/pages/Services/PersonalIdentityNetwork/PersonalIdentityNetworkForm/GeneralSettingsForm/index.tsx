@@ -15,15 +15,10 @@ import { PersonalIdentityDiagram }               from './PersonalIdentityDiagram
 import { PersonalIdentityPreparationListDrawer } from './PersonalIdentityPreparationListDrawer'
 import { PropertyManagementInfo }                from './PropertyManagementInfo'
 
-interface GeneralSettingsFormProps {
-  editMode?: boolean
-}
-
-export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
-  const { editMode } = props
+export const GeneralSettingsForm = () => {
   const { $t } = useIntl()
   const [preparationDrawerVisible,setPreparationDrawerVisible] = useState(false)
-  const { form } = useStepFormContext<PersonalIdentityNetworkFormData>()
+  const { form, editMode } = useStepFormContext<PersonalIdentityNetworkFormData>()
   const {
     venueOptions,
     isVenueOptionsLoading,
@@ -122,7 +117,7 @@ export const GeneralSettingsForm = (props: GeneralSettingsFormProps) => {
                   onChange={onVenueChange}
                   placeholder={$t({ defaultMessage: 'Select...' })}
                   options={venueOptions}
-                  disabled={props.editMode}
+                  disabled={editMode}
                 />
               }
             />

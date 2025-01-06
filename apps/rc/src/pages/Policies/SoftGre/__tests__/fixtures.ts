@@ -18,6 +18,34 @@ export const mockedApId1 = '__AP_ID_1__'
 export const mockedApId2 = '__AP_ID_2__'
 export const mockedApId3 = '__AP_ID_3__'
 
+
+export const mockSoftGreVenueActivations = [
+  {
+    venueId: mockedVenueId1,
+    apModel: 'R770',
+    portId: 1,
+    apSerialNumbers: [
+      mockedApSerialNnumber1,
+      mockedApSerialNnumber2
+    ]
+  }, {
+    venueId: mockedVenueId3,
+    apModel: 'R770',
+    portId: 2,
+    apSerialNumbers: [
+      mockedApSerialNnumber2
+    ]
+  }
+]
+
+export const mockSoftGreApActivations = [
+  {
+    venueId: mockedVenueId4,
+    portId: 1,
+    apSerialNumber: mockedApSerialNnumber3
+  }
+]
+
 export const mockSoftGreTable = {
   totalCount: 4,
   page: 1,
@@ -41,7 +69,9 @@ export const mockSoftGreTable = {
             'b946294426b8413d819751cb3d320a20'
           ]
         }
-      ]
+      ],
+      venueActivations: mockSoftGreVenueActivations,
+      apActivations: mockSoftGreApActivations
     },
     {
       id: '75aa5131892d44a6a85a623dd3e524ed',
@@ -109,33 +139,6 @@ export const mockSoftGreDetailFromListQueryById = {
     ]
   }
 }
-
-export const mockSoftGreVenueActivations = [
-  {
-    venueId: mockedVenueId1,
-    apModel: 'R770',
-    portId: 1,
-    apSerialNumbers: [
-      mockedApSerialNnumber1,
-      mockedApSerialNnumber2
-    ]
-  }, {
-    venueId: mockedVenueId3,
-    apModel: 'R770',
-    portId: 2,
-    apSerialNumbers: [
-      mockedApSerialNnumber2
-    ]
-  }
-]
-
-export const mockSoftGreApActivations = [
-  {
-    venueId: mockedVenueId4,
-    portId: 1,
-    apSerialNumber: mockedApSerialNnumber3
-  }
-]
 
 export const mockSoftGreDetail = {
   id: '0d89c0f5596c4689900fb7f5f53a0859',
