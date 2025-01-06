@@ -285,7 +285,7 @@ export function LanPortSettings (props: {
           currentEthernetPortData={currentEthernetPortData}
           currentIndex={index}
           onGUIChanged={onGUIChanged}
-          isEditable={!readOnly && !!serialNumber} />
+          isEditable={!readOnly && !!serialNumber && !isDhcpEnabled} />
         {isEthernetSoftgreEnabled &&
           <Form.Item
             dependencies={[['lan', index, 'softGreProfileId']]}
@@ -295,7 +295,7 @@ export function LanPortSettings (props: {
               return (
                 <>
                   <SoftGRETunnelSettings
-                    readonly={!isEthernetPortEnable || (readOnly ?? false)}
+                    readonly={!isEthernetPortEnable || isDhcpEnabled || (readOnly ?? false)}
                     index={index}
                     softGreProfileId={getFieldValue(['lan', index, 'softGreProfileId']) ?? ''}
                     softGreTunnelEnable={isSoftGreTunnelEnable}
@@ -325,7 +325,7 @@ export function LanPortSettings (props: {
           <ClientIsolationSettingsFields
             index={index}
             onGUIChanged={onGUIChanged}
-            readOnly={readOnly}
+            readOnly={readOnly || isDhcpEnabled}
           />
         }
       </>) :

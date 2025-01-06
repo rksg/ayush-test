@@ -22,4 +22,5 @@ data:
   mib.files: "https://docs.ruckus.cloud/mib/"
   druid.rollup.period.days: "36500"
   druid.retain.period.days: "90"
+  druid.cold.tier.days: "31"
   afc.feature.enabled: "true"

@@ -10,7 +10,8 @@ import {
   NoData,
   MultiLineTimeSeriesChart,
   qualitativeColorSet } from '@acx-ui/components'
-import type { AnalyticsFilter } from '@acx-ui/utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import type { AnalyticsFilter }   from '@acx-ui/utils'
 
 import { ConnectedClientsOverTimeData, useHealthConnectedClientsOverTimeQuery } from './services'
 
@@ -21,19 +22,25 @@ export function ConnectedClientsOverTime ({
 }: { filters : AnalyticsFilter }) {
   const { $t } = useIntl()
   const chartColors = qualitativeColorSet()
+  const isSwitchHealth10010eEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_10010E_TOGGLE),
+    useIsSplitOn(Features.SWITCH_HEALTH_10010E_TOGGLE)
+  ].some(Boolean)
 
   const seriesMapping = [
     { key: 'wirelessClientsCount', name: $t({ defaultMessage: 'Wireless Clients' }) }
-    // TODO: Uncomment this when wired clients are available
-    //{ key: 'wiredClientsCount', name: $t({ defaultMessage: 'Wired Clients' }) }
   ] as unknown as Array<{ key: Key, name: string }>
+  if(isSwitchHealth10010eEnabled){
+    seriesMapping.push({ key: 'wiredClientsCount', name: $t({ defaultMessage: 'Wired Clients' }) })
+  }
 
-  const queryResults = useHealthConnectedClientsOverTimeQuery(filters, {
-    selectFromResult: ({ data, ...rest }) => ({
-      ...rest,
-      data: getSeriesData(data!, seriesMapping)
+  const queryResults = useHealthConnectedClientsOverTimeQuery(
+    { ...filters , isSwitchHealth10010eEnabled }, {
+      selectFromResult: ({ data, ...rest }) => ({
+        ...rest,
+        data: getSeriesData(data!, seriesMapping)
+      })
     })
-  })
 
   return (
     <Loader states={[queryResults]}>

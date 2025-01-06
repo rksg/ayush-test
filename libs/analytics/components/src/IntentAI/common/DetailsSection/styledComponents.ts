@@ -12,6 +12,10 @@ export const Title = styled(Typography.Title).attrs({ level: 4 })`
   &&& {
     font-weight: var(--acx-headline-4-font-weight-bold);
   }
+  svg {
+    vertical-align: text-top;
+    margin-inline: 3px;
+  }
 `
 
 export const Details = styled.div`
