@@ -33,8 +33,11 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
   const itemDuplicateValidator = async (lldpTlv: LldpTlvs) => {
     const list = (await switchPortProfileLldpTlvsList({
       payload: {
+        fields: ['id'],
         page: '1',
-        pageSize: '10000'
+        pageSize: '10000',
+        sortField: 'id',
+        sortOrder: 'ASC'
       }
     }).unwrap()).data
       .filter((n: LldpTlvs) => n.id !== editData?.id)

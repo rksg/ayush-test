@@ -32,8 +32,11 @@ export function MacOuiDrawer (props: MacOuiDrawerProps) {
   const macOuiDuplicateValidator = async (macAddress: string) => {
     const list = (await switchPortProfileMacOuisList({
       payload: {
+        fields: ['oui'],
         page: '1',
-        pageSize: '10000'
+        pageSize: '10000',
+        sortField: 'oui',
+        sortOrder: 'ASC'
       }
     }).unwrap()).data
       .filter((n: MacOuis) => n.id !== editData?.id)

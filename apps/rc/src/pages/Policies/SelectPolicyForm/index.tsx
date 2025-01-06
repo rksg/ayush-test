@@ -140,7 +140,7 @@ export default function SelectPolicyForm () {
     {
       type: PolicyType.ETHERNET_PORT_PROFILE,
       categories: [RadioCardCategory.WIFI],
-      disabled: !isEthernetPortProfileEnabled
+      disabled: !isEthernetPortProfileEnabled || isSwitchPortProfileEnabled
     },
     {
       type: PolicyType.WORKFLOW,
@@ -170,7 +170,7 @@ export default function SelectPolicyForm () {
     {
       type: PolicyType.PORT_PROFILE,
       categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
-      disabled: !((isEthernetPortProfileEnabled || isSwitchPortProfileEnabled) &&
+      disabled: !(isSwitchPortProfileEnabled &&
         hasPermission({ scopes: [WifiScopes.CREATE, SwitchScopes.CREATE] }))
     }
   ]

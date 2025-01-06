@@ -421,6 +421,50 @@ export function EditPortDrawer ({
     )?.length > 0
   }
 
+  const getPortProfileSelectList = async (selectedSwitchList: SwitchRow[]) => {
+    const portProfilePayload = selectedSwitchList.map(item => item.id)
+    const portProfileList = await getPortProfileOptionsForSwitches({
+      params: { tenantId, switchId, venueId: switchDetail?.venueId },
+      payload: portProfilePayload,
+      enableRbac: isSwitchRbacEnabled
+    }, true).unwrap()
+
+    const groupedOptions = portProfileList.reduce((acc, option) => {
+      option.availablePortProfiles.forEach((item) => {
+        if (!acc[item.portProfileName]) {
+          acc[item.portProfileName] = []
+        }
+        acc[item.portProfileName].push({ switchId: option.switchId, ...item })
+      })
+      return acc
+    }, {} as Record<string, PortProfilesBySwitchId[]>)
+
+    return getPortProfileOptions(groupedOptions)
+  }
+
+  const getGroupPortProfileByName = (
+    portsSetting: PortSettingModel[], portProfileOptions: DefaultOptionType[]) => {
+    return portsSetting.reduce((acc: { [key: string]: string[] }, item) => {
+      if (item.switchPortProfileId !== undefined) {
+        const portProfileName = portProfileOptions.find(
+          pitem => pitem.value?.toString().includes(item.switchPortProfileId ?? '')
+        )?.label?.toString() || 'unknown'
+
+        if (!acc[portProfileName]) {
+          acc[portProfileName] = []
+        }
+        acc[portProfileName].push(item.id)
+      } else {
+        if (!acc['unknown']) {
+          acc['unknown'] = []
+        }
+        acc['unknown'].push(item.id)
+      }
+
+      return acc
+    }, {})
+  }
+
   useEffect(() => {
     const setData = async () => {
       const aclUnion = await getAclUnion({
@@ -429,24 +473,7 @@ export function EditPortDrawer ({
       }, true).unwrap()
 
       if(isSwitchPortProfileEnabled && isAnyFirmwareAbove10020b) {
-        const portProfilePayload = selectedSwitchList.map(item => item.id)
-        const portProfileList = await getPortProfileOptionsForSwitches({
-          params: { tenantId, switchId, venueId: switchDetail?.venueId },
-          payload: portProfilePayload,
-          enableRbac: isSwitchRbacEnabled
-        }, true).unwrap()
-
-        const groupedOptions = portProfileList.reduce((acc, option) => {
-          option.availablePortProfiles.forEach((item) => {
-            if (!acc[item.portProfileName]) {
-              acc[item.portProfileName] = []
-            }
-            acc[item.portProfileName].push({ switchId: option.switchId, ...item })
-          })
-          return acc
-        }, {} as Record<string, PortProfilesBySwitchId[]>)
-
-        portProfileOptions.current = getPortProfileOptions(groupedOptions)
+        portProfileOptions.current = await getPortProfileSelectList(selectedSwitchList)
       }
 
       const vid = isVenueLevel ? venueId : switchDetail?.venueId
@@ -612,34 +639,14 @@ export function EditPortDrawer ({
     const hasEqualValueFields = _.xor(allMultipleEditableFields, hasMultipleValueFields)
     const portSetting = _.pick(portsSetting?.[0], [...hasEqualValueFields, 'profileName'])
 
-    const groupedByPortProfileId = portsSetting.reduce((acc: { [key: string]: string[] }, item) => {
-      if (item.switchPortProfileId !== undefined) {
-        const portProfileName = portProfileOptions.current.find(
-          pitem => pitem.value?.toString().includes(
-            item.switchPortProfileId ?? ''))?.label?.toString() || 'unknown'
-        if (!acc[portProfileName]) {
-          acc[portProfileName] = []
-        }
-        if(acc[portProfileName]){
-          acc[portProfileName].push(item.id)
-        }
-      }else{
-        if (!acc['unknown']) {
-          acc['unknown'] = []
-        }
-        if(acc['unknown']){
-          acc['unknown'].push(item.id)
-        }
-      }
-      return acc
-    }, {})
-
-    const differentPortProfileName = Object.keys(groupedByPortProfileId).length > 1 ||
-      groupedByPortProfileId['unknown'].length > 1
+    const groupedByPortProfileName = isSwitchPortProfileEnabled ? getGroupPortProfileByName(
+      portsSetting, portProfileOptions.current) : {}
+    const differentPortProfileName = Object.keys(groupedByPortProfileName)?.length > 1 ||
+      groupedByPortProfileName['unknown']?.length > 1
 
     const hasMultipleValue = _.uniq([
       // eslint-disable-next-line max-len
-      ...(_.without(hasMultipleValueFields, !differentPortProfileName ? 'switchPortProfileId' : '')),
+      ...(_.without(hasMultipleValueFields, isSwitchPortProfileEnabled && !differentPortProfileName ? 'switchPortProfileId' : '')),
       ...((!vlansValue.isTagEqual && ['taggedVlans']) || []),
       ...((!vlansValue.isUntagEqual && ['untaggedVlan']) || []),
       ...((!vlansValue.isVoiceVlanEqual && ['voiceVlan']) || [])

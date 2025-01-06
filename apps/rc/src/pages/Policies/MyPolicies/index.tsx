@@ -324,6 +324,15 @@ function useCardData (): PolicyCardData[] {
       disabled: !isCertificateTemplateEnabled
     },
     {
+      type: PolicyType.ETHERNET_PORT_PROFILE,
+      categories: [RadioCardCategory.WIFI],
+      // eslint-disable-next-line max-len
+      totalCount: useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !isEthernetPortProfileEnabled }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.LIST })),
+      disabled: !isEthernetPortProfileEnabled || isSwitchPortProfileEnabled
+    },
+    {
       type: PolicyType.HQOS_BANDWIDTH,
       categories: [RadioCardCategory.EDGE],
       // eslint-disable-next-line max-len
@@ -366,7 +375,7 @@ function useCardData (): PolicyCardData[] {
       totalCount: (useSwitchPortProfilesCountQuery({ params, payload: {} }, { skip: !isSwitchPortProfileEnabled }).data ?? 0) + (useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !isEthernetPortProfileEnabled }).data?.totalCount ?? 0),
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink('/policies/portProfile/wifi'),
-      disabled: !isEthernetPortProfileEnabled && !isSwitchPortProfileEnabled
+      disabled: !isSwitchPortProfileEnabled
     }
   ]
 }

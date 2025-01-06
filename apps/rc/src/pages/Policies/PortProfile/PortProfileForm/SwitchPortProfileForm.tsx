@@ -34,12 +34,6 @@ import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
-const defaultPayload = {
-  fields: [
-    'id'
-  ]
-}
-
 interface FormPayload {
   taggedVlans?: string;
   macOuis?: string[];
@@ -70,7 +64,7 @@ export function SwitchPortProfileForm () {
 
   const lldpTlvTableQuery = useTableQuery({
     useQuery: useSwitchPortProfileLldpTlvsListQuery,
-    defaultPayload,
+    defaultPayload: { fields: ['id'] },
     sorter: {
       sortField: 'id',
       sortOrder: 'ASC'
