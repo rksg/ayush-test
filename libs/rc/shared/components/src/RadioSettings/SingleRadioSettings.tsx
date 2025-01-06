@@ -93,7 +93,7 @@ export function SingleRadioSettings (props:{
     supportRadioDfsChannels
   } = useContext(SupportRadioChannelsContext)
 
-  const supportR370 = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+  const isSupportR370ToggleOn = useIsSplitOn(Features.WIFI_R370_TOGGLE)
 
   const bandwidthOptions = bandwidthRadioOptions[radioType]
   const supportChannels = supportRadioChannels[radioType]
@@ -323,7 +323,7 @@ export function SingleRadioSettings (props:{
   useEffect(() => {
     const getTxPowerAdjustmentOptions = () => {
       let res = (radioType === ApRadioTypeEnum.Radio6G
-        || (supportR370 && context === 'ap' && !apCapabilities?.supportAutoCellSizing))
+        || (isSupportR370ToggleOn && context === 'ap' && !apCapabilities?.supportAutoCellSizing))
         ? txPowerAdjustment6GOptions
         : txPowerAdjustmentOptions
 
@@ -345,7 +345,6 @@ export function SingleRadioSettings (props:{
     if(isApTxPowerToggleEnabled
       && context === 'ap'
       && firmwareProps?.firmware !== undefined
-      && (!supportR370 || apCapabilities?.supportAggressiveTxPower !== undefined)
       && !isModelAndFwSupportAggressiveTxPower(firmwareProps, apCapabilities)) {
       const txPower = form.getFieldValue(txPowerFieldName)
       const isExtendedOption = txPowerAdjustmentExtendedOptions.some(o => o.value === txPower)
@@ -360,7 +359,7 @@ export function SingleRadioSettings (props:{
     firmwareProps: FirmwareProps | undefined,
     apCapabilities: CapabilitiesApModel | undefined) => {
     return isApFwVersionLargerThan711(firmwareProps?.firmware)
-    && (!supportR370 || apCapabilities?.supportAggressiveTxPower)
+    && (!isSupportR370ToggleOn || !apCapabilities || apCapabilities?.supportAggressiveTxPower)
   }
 
   const resetToDefaule = () => {
