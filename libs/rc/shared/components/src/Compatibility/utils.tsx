@@ -16,16 +16,34 @@ export const apCompatibilityDataGroupByFeatureDeviceType = (data: ApCompatibilit
 }
 
 export const compatibilityDataGroupByFeatureDeviceType = (data: Compatibility):
- Record<string, IncompatibleFeature[]> => {
+Record<string, IncompatibleFeature[]> => {
   const deviceMap: Record<string, IncompatibleFeature[]> = {}
 
-  data.incompatibleFeatures?.forEach(incompatibleFeature => {
-    const isEdgeFeature = incompatibleFeature.featureType === IncompatibleFeatureTypeEnum.EDGE
+  data.incompatibleFeatures?.forEach(feature => {
+    const isEdgeFeature = feature.featureType === IncompatibleFeatureTypeEnum.EDGE
     const deviceType = isEdgeFeature ? CompatibilityDeviceEnum.EDGE : CompatibilityDeviceEnum.AP
-    if (!deviceMap[deviceType]) deviceMap[deviceType] = []
-    deviceMap[deviceType].push(incompatibleFeature)
-  })
 
+    if (!deviceMap[deviceType]) {
+      deviceMap[deviceType] = []
+    }
+
+    if (feature.featureGroup) {
+      const existingFeature = deviceMap[deviceType].find(f =>
+        f.featureName === feature.featureGroup)
+
+      if (existingFeature) {
+        existingFeature.children = existingFeature.children ?? []
+        existingFeature.children.push(feature)
+      } else {
+        deviceMap[deviceType].push({
+          featureName: feature.featureGroup,
+          children: [feature]
+        })
+      }
+    } else {
+      deviceMap[deviceType].push(feature)
+    }
+  })
   return deviceMap
 }
 
