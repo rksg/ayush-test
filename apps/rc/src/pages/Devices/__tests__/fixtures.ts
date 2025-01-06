@@ -1564,6 +1564,34 @@ export const venueLanPorts = [
     model: 'T750',
     poeMode: 'Auto',
     poeOut: false
+  },
+  {
+    lanPorts: [
+      {
+        type: 'TRUNK',
+        untagId: 1,
+        vlanMembers: '1-4094',
+        portId: '1',
+        enabled: true
+      },
+      {
+        type: 'TRUNK',
+        untagId: 1,
+        vlanMembers: '1-4094',
+        portId: '2',
+        enabled: true
+      },
+      {
+        type: EthernetPortType.ACCESS,
+        untagId: 1,
+        vlanMembers: '1',
+        portId: '3',
+        enabled: true
+      }
+    ],
+    model: 'T750SE',
+    poeMode: 'Auto',
+    poeOut: false
   }
 ]
 
