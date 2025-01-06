@@ -429,11 +429,6 @@ export function LanPorts () {
         payload: venueLanPortSetting
       }).unwrap()
     }
-
-    // Activate Client Isolation must wait Lan settings enable client isolation saved
-    if(isEthernetClientIsolationEnabled) {
-      handleUpdateClientIsolationPolicy(model, lanPort, originLanPort)
-    }
   }
 
   const getVenueLanPortSettingsByLanPortData = (lanPortData: LanPort):VenueLanPortSettings => ({
@@ -547,7 +542,7 @@ export function LanPorts () {
 
             // Activate Client Isolation must wait Lan settings enable client isolation saved
             if(isEthernetClientIsolationEnabled) {
-              handleUpdateClientIsolationPolicy(venueLanPort.model, lanPort)
+              handleUpdateClientIsolationPolicy(venueLanPort.model, lanPort, originLanPort)
             }
           })
         }
