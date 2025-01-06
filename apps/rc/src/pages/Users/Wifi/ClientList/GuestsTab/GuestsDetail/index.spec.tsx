@@ -41,8 +41,11 @@ jest.mock('@acx-ui/rc/utils', () => ({
 }))
 
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  NetworkForm: () => <div data-testid='network-form' />
+  NetworkForm: () => <div data-testid='network-form' />,
+  ClientHealthIcon: () => <div data-testid='ClientHealthIcon' />,
+  ImportFileDrawer: () => <div data-testid='ImportFileDrawer' />,
+  CsvSize: {},
+  ImportFileDrawerType: {}
 }))
 
 const mockNetworkData = { data: AllowedNetworkList, isLoading: false }
