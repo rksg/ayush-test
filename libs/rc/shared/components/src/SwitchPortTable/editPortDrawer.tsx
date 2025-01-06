@@ -623,11 +623,19 @@ export function EditPortDrawer ({
         if(acc[portProfileName]){
           acc[portProfileName].push(item.id)
         }
+      }else{
+        if (!acc['unknown']) {
+          acc['unknown'] = []
+        }
+        if(acc['unknown']){
+          acc['unknown'].push(item.id)
+        }
       }
       return acc
     }, {})
 
-    const differentPortProfileName = Object.keys(groupedByPortProfileId).length > 1
+    const differentPortProfileName = Object.keys(groupedByPortProfileId).length > 1 ||
+      groupedByPortProfileId['unknown'].length > 1
 
     const hasMultipleValue = _.uniq([
       // eslint-disable-next-line max-len

@@ -185,7 +185,7 @@ export const getPortProfileOptions = (
   const { $t } = getIntl()
 
   const options = Object.entries(portProfilesList ?? {}).map(([key, profiles]) => ({
-    label: key,
+    label: `${key} ${profiles[0].configSource==='SWITCH_LEVEL' ? ' (Modified locally)' : ''}` ,
     value: JSON.stringify(profiles),
     disabled: false
   })).sort((a, b) => a.label.localeCompare(b.label))
