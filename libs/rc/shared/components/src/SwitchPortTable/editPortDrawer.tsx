@@ -611,7 +611,7 @@ export function EditPortDrawer ({
         : (portSetting?.voiceVlan === 0 ? '' : portSetting?.voiceVlan)),
       ...(isSwitchFlexAuthEnabled ? getFlexAuthDefaultValue(portSetting) : {}),
       // eslint-disable-next-line max-len
-      ...(isSwitchPortProfileEnabled ? { switchPortProfileId: portProfileOptions.current.find(item => item.value?.toString().includes(portSetting?.switchPortProfileId ?? '')) }: '')
+      ...(isSwitchPortProfileEnabled ? { switchPortProfileId: portProfileOptions.current.find(item => item.value?.toString().includes(portSetting?.switchPortProfileId ?? ''))?.value }: '')
     })
     checkIsVoiceVlanInvalid(true, portSetting?.revert)
   }
@@ -969,8 +969,9 @@ export function EditPortDrawer ({
 
         let switchPortProfileId = null
         if (isSwitchPortProfileEnabled){
-          if(form.getFieldValue('switchPortProfileId') !== ''){
-            const selectedPortProfiles = JSON.parse(form.getFieldValue('switchPortProfileId'))
+          const portProfileValue = form.getFieldValue('switchPortProfileId')
+          if (typeof portProfileValue === 'string' && portProfileValue !== '') {
+            const selectedPortProfiles = JSON.parse(portProfileValue)
             switchPortProfileId = selectedPortProfiles.find(
               (p: { switchId: string }) => p.switchId === item)?.portProfileId
           }
