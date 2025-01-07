@@ -30,8 +30,13 @@ import {
   ApData_T750SE,
   ApLanPorts_has_vni,
   ApLanPorts_T750SE,
-  lanPortSettingPort1,
   mockDefaultTunkEthertnetPortProfile,
+  mockedAPLanPortSettings1,
+  mockedAPLanPortSettings2,
+  mockedAPLanPortSettings3,
+  mockedVenueLanPortSettings1,
+  mockedVenueLanPortSettings2,
+  mockedVenueLanPortSettings3,
   mockEthProfiles,
   venueData,
   venueLanPorts,
@@ -74,23 +79,41 @@ describe('Lan Port', () => {
       rest.get(LanPortsUrls.getVenueLanPortSettings.url,
         (_, res, ctx) => res(ctx.json({}))
       ),
-      rest.get(LanPortsUrls.getApLanPortSettings.url
-        .replace(':venueId','4c778ed630394b76b17bce7fe230cf9f')
-        .replace(':serialNumber','serial-number')
-        .replace(':portId','1'),
-      (_, res, ctx) => res(ctx.json({}))
+      rest.get(
+        LanPortsUrls.getApLanPortSettings.url,
+        (_, res, ctx) => {
+          if(_.params.portId === '1') {
+            return res(ctx.json(mockedAPLanPortSettings1))
+          }
+
+          if(_.params.portId === '2') {
+            return res(ctx.json(mockedAPLanPortSettings2))
+          }
+
+          if(_.params.portId === '3') {
+            return res(ctx.json(mockedAPLanPortSettings3))
+          }
+
+          return res(ctx.json({}))
+        }
       ),
-      rest.get(LanPortsUrls.getApLanPortSettings.url
-        .replace(':venueId','4c778ed630394b76b17bce7fe230cf9f')
-        .replace(':serialNumber','serial-number')
-        .replace(':portId','2'),
-      (_, res, ctx) => res(ctx.json({}))
-      ),
-      rest.get(LanPortsUrls.getApLanPortSettings.url
-        .replace(':venueId','4c778ed630394b76b17bce7fe230cf9f')
-        .replace(':serialNumber','serial-number')
-        .replace(':portId','3'),
-      (_, res, ctx) => res(ctx.json({}))
+      rest.get(
+        LanPortsUrls.getVenueLanPortSettings.url,
+        (_, res, ctx) => {
+          if(_.params.portId === '1') {
+            return res(ctx.json(mockedVenueLanPortSettings1))
+          }
+
+          if(_.params.portId === '2') {
+            return res(ctx.json(mockedVenueLanPortSettings2))
+          }
+
+          if(_.params.portId === '3') {
+            return res(ctx.json(mockedVenueLanPortSettings3))
+          }
+
+          return res(ctx.json({}))
+        }
       )
     )
   })
@@ -245,12 +268,44 @@ describe('Lan Port', () => {
           (_, res, ctx) => res(ctx.json({}))),
         rest.get(EthernetPortProfileUrls.getEthernetPortProfile.url,
           (_, res, ctx) => res(ctx.json(mockDefaultTunkEthertnetPortProfile))),
-        rest.get(EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId.url,
-          (_, res, ctx) => res(ctx.json(lanPortSettingPort1))),
         rest.get(WifiUrlsInfo.updateAp.url,
           (_, res, ctx) => res(ctx.json({ model: 'T750SE' }))),
-        rest.get(LanPortsUrls.getVenueLanPortSettings.url,
-          (_, res, ctx) => res(ctx.json({})))
+        rest.get(
+          LanPortsUrls.getApLanPortSettings.url,
+          (_, res, ctx) => {
+            if(_.params.portId === '1') {
+              return res(ctx.json(mockedAPLanPortSettings1))
+            }
+
+            if(_.params.portId === '2') {
+              return res(ctx.json(mockedAPLanPortSettings2))
+            }
+
+            if(_.params.portId === '3') {
+              return res(ctx.json(mockedAPLanPortSettings3))
+            }
+
+            return res(ctx.json({}))
+          }
+        ),
+        rest.get(
+          LanPortsUrls.getVenueLanPortSettings.url,
+          (_, res, ctx) => {
+            if(_.params.portId === '1') {
+              return res(ctx.json(mockedVenueLanPortSettings1))
+            }
+
+            if(_.params.portId === '2') {
+              return res(ctx.json(mockedVenueLanPortSettings2))
+            }
+
+            if(_.params.portId === '3') {
+              return res(ctx.json(mockedVenueLanPortSettings3))
+            }
+
+            return res(ctx.json({}))
+          }
+        )
       )
     })
 
