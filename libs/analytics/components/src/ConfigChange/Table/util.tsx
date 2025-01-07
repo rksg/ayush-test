@@ -92,7 +92,8 @@ export const filterData = (
   data: ConfigChange[], kpiKeys: string[], legend: string[], showIntentAI: boolean
 ) => {
   const mapping = getConfigChangeEntityTypeMapping(showIntentAI)
-  return data.filter(row => legend.includes(mapping.find(i => i.key === row.type)!.label))
+  return data.filter(row => legend.includes(mapping.find(
+    i => i.key === row.type)?.label || ''))
     .map((value, filterId)=>({ ...value, filterId })).filter(row => kpiKeys.length
       ? kpiKeys.some(k => configChangekpiMap[row.key]?.includes(k))
       : true)
