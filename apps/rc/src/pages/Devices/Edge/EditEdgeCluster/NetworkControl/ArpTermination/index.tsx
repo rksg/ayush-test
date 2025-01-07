@@ -102,7 +102,7 @@ export const ArpTerminationFormItem = (props: {
         {({ getFieldValue }) => {
           return getFieldValue('arpTerminationSwitch') &&
             <StepsForm.FieldLabel width='91%'>
-              <Space>
+              <Space style={{ alignItems: 'flex-start' }}>
                 {$t({ defaultMessage: 'ARP Termination Aging Timer' })}
                 <Tooltip.Question
                   title={$t({ defaultMessage: 'Time in seconds before cached IP to MAC mappings expire. Should be shorter than DHCP lease time to prevent stale entries.' })}
