@@ -152,15 +152,20 @@ export function Table (props: {
       title: $t({ defaultMessage: 'Scope' }),
       dataIndex: 'name',
       render: (_, value, __, highlightFn ) => {
-        const { name, path, sliceValue } = value
-        const scope = impactedArea(path, sliceValue) as string
-        return showIntentAI ? <Tooltip
-          placement='top'
-          title={formattedPath(path, sliceValue)}
-          dottedUnderline={true}
-        >
-          {highlightFn(scope)}
-        </Tooltip> : highlightFn(String(name))
+        const { name } = value
+        if(!showIntentAI){
+          return highlightFn(String(name))
+        } else {
+          const { path, sliceValue } = value
+          const scope = impactedArea(path, sliceValue) as string
+          return <Tooltip
+            placement='top'
+            title={formattedPath(path, sliceValue)}
+            dottedUnderline={true}
+          >
+            {highlightFn(scope)}
+          </Tooltip>
+        }
       },
       searchable: true,
       sorter: { compare: sortProp('name', defaultSort) }

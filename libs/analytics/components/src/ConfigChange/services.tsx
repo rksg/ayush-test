@@ -15,7 +15,8 @@ interface KpiChangesParams {
 }
 
 const pathQuery = (showIntentAI: boolean) => showIntentAI ?
-  `path {
+  `sliceValue
+  path {
     type name
   }` : ''
 
@@ -41,7 +42,6 @@ export const api = dataApi.injectEndpoints({
                   key
                   oldValues
                   newValues
-                  sliceValue
                   ${pathQuery(payload.showIntentAI)}
                 }
               }
