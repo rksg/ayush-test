@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 
 
 import { useIntl } from 'react-intl'
@@ -160,7 +160,7 @@ export function VenueFirmwareListPerApModel () {
   }
 
   // eslint-disable-next-line max-len
-  const genUpdateDisplayData = (apModelFirmwares: ApModelFirmware[], selectedRows: FirmwareVenuePerApModel[], forEarlyAccess: boolean = false, isApFwMgmtEarlyAccess: boolean) => {
+  const genUpdateDisplayData = useCallback((apModelFirmwares: ApModelFirmware[], selectedRows: FirmwareVenuePerApModel[], forEarlyAccess: boolean = false, isApFwMgmtEarlyAccess: boolean) => {
     let eaApModelFirmwares = [] as ApModelFirmware[]
     // eslint-disable-next-line max-len
     let updateAlphaGroups = apModelFirmwares.filter(data => isAlpha(data.labels))
@@ -177,6 +177,21 @@ export function VenueFirmwareListPerApModel () {
 
     const gaApModelFirmwares = apModelFirmwares.filter(d => d.labels?.includes(FirmwareLabel.GA))
 
+    eaApModelFirmwares = eaApModelFirmwares.map(d => {
+      const eaVersion = d.id
+      const filteredApModels = d.supportedApModels?.filter(apModel => {
+        return !gaApModelFirmwares.some(gaApModelFirmware => {
+          return compareVersions(gaApModelFirmware.id, eaVersion) > 0
+            && gaApModelFirmware.supportedApModels?.includes(apModel)
+        })
+      })
+
+      return {
+        ...d,
+        supportedApModels: filteredApModels
+      }
+    })
+
     const filterApModelFirmwares = isApFwMgmtEarlyAccess
       ? ( forEarlyAccess ? eaApModelFirmwares : gaApModelFirmwares )
       : apModelFirmwares
@@ -186,7 +201,8 @@ export function VenueFirmwareListPerApModel () {
       undefined,
       true
     )
-  }
+    // eslint-disable-next-line max-len
+  }, [apModelFirmwares, apFirmwareContext.isBetaFlag, apFirmwareContext.isAlphaFlag, selectedRows, isApFwMgmtEarlyAccess])
 
   const rowActions: TableProps<FirmwareVenuePerApModel>['rowActions'] = [
     {
