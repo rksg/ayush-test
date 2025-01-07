@@ -50,7 +50,7 @@ export const api = dataApi.injectEndpoints({
             }
           }
         `,
-        variables: pick(payload, ['path', 'startDate', 'endDate', 'showIntentAI'])
+        variables: pick(payload, ['path', 'startDate', 'endDate'])
       }),
       transformResponse: (
         response: { network: { hierarchyNode: { configChanges: ConfigChange[] } } } ) =>
