@@ -257,7 +257,8 @@ export enum Features {
   ACX_UI_DATE_RANGE_LIMIT = 'acx-ui-date-range-selection-limit-30-days-toggle',
   NETWORK_PSK_MACAUTH_DYNAMIC_VLAN_TOGGLE = 'wifi-psk-dynamic-vlan-toggle',
   RUCKUS_AI_PREVENT_COLD_TIER_QUERY_TOGGLE = 'ruckus-ai-prevent-cold-tier-query-toggle',
-  ACX_UI_PREVENT_COLD_TIER_QUERY_TOGGLE = 'acx-ui-prevent-cold-tier-query-toggle'
+  ACX_UI_PREVENT_COLD_TIER_QUERY_TOGGLE = 'acx-ui-prevent-cold-tier-query-toggle',
+  WIFI_NAS_ID_HOTSPOT20_TOGGLE = 'wifi-nas-id-for-hotspot20-network'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
