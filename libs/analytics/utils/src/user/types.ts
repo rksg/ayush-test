@@ -13,6 +13,7 @@ export type UserProfile = {
   selectedTenant: Tenant
   accountTier?: string
   betaEnabled?: boolean
+  isSupport: boolean
   preferences?: {
     preferredLanguage: string
   }
@@ -70,5 +71,4 @@ export type ManagedUser = {
       lastName: string
     }
   }
-  isSupport: boolean
 }

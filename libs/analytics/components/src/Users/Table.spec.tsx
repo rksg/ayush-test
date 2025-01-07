@@ -13,10 +13,7 @@ import { UsersTable }       from './Table'
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   getUserProfile: jest.fn().mockImplementation(() => ({
-    selectedTenant: {
-      settings: { franchisor: 'testFranchisor' },
-      support: true
-    },
+    selectedTenant: { settings: { franchisor: 'testFranchisor' } },
     userId: '111',
     accountId: '12345'
   }))
@@ -113,38 +110,31 @@ describe('UsersTable', () => {
 
     expect(setDrawerType).toHaveBeenCalledWith('edit')
   })
+  it('should handle the delete callback', async () => {
+    render(<UsersTable
+      data={[mockDisplayUsers[0]]}
+      selectedRow={mockDisplayUsers[0]}
+      setSelectedRow={setSelectedRow}
+      refreshUserDetails={refreshUserDetails}
+      handleDeleteUser={handleDeleteUser}
+      setDrawerType={setDrawerType}
+      setOpenDrawer={setOpenDrawer}
+      openDrawer={openDrawer}
+      isUsersPageEnabled={isUsersPageEnabled}
+      isEditMode={isEditMode}
+      setVisible={setVisible}
+    />,
+    { wrapper: Provider })
 
-  it.each([
-    [mockDisplayUsers[0]],
-    [mockDisplayUsers[1]]
-  ])('should handle the delete callback',
-    async (mockUser) => {
+    const radio = await screen.findByRole('radio')
+    fireEvent.click(radio)
 
-      render(<UsersTable
-        data={[mockUser]}
-        selectedRow={mockUser}
-        setSelectedRow={setSelectedRow}
-        refreshUserDetails={refreshUserDetails}
-        handleDeleteUser={handleDeleteUser}
-        setDrawerType={setDrawerType}
-        setOpenDrawer={setOpenDrawer}
-        openDrawer={openDrawer}
-        isUsersPageEnabled={isUsersPageEnabled}
-        isEditMode={isEditMode}
-        setVisible={setVisible}
-      />,
-      { wrapper: Provider })
+    const deleteButton = await screen.findByRole('button', { name: 'Delete' })
+    expect(deleteButton).toBeVisible()
+    fireEvent.click(deleteButton)
 
-      handleDeleteUser.mockClear()
-      const radio = await screen.findByRole('radio')
-      fireEvent.click(radio)
-
-      const deleteButton = await screen.findByRole('button', { name: 'Delete' })
-      expect(deleteButton).toBeVisible()
-      fireEvent.click(deleteButton)
-
-      expect(handleDeleteUser).toBeCalledTimes(1)
-    })
+    expect(handleDeleteUser).toBeCalledTimes(1)
+  })
   it('should handle the refresh callback', async () => {
     render(<UsersTable
       data={[mockDisplayUsers[1]]}
@@ -222,8 +212,7 @@ describe('UsersTable', () => {
       invitation: null,
       displayType: 'Internal',
       displayInvitationState: '--',
-      displayInvitor: '--',
-      isSupport: false
+      displayInvitor: '--'
     }
     render(<UsersTable
       data={[user]}

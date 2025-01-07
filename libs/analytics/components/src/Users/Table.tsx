@@ -64,11 +64,8 @@ const getUserActions = (
     user.userId === selectedRow?.id ||
     (tenantId !== accountId && selectedRow?.accountId !== accountId))
 
-  const isDeleteSupportDisabled = user.userId === selectedRow?.id ||
-      !user.selectedTenant.support || !selectedRow?.isSupport
-
-  const isDeleteDisabled = isDeleteSupportDisabled && (user.userId === selectedRow?.id ||
-      (tenantId !== accountId && selectedRow?.accountId !== accountId))
+  const isDeleteDisabled = (user.userId === selectedRow?.id ||
+      (tenantId !== accountId && selectedRow?.accountId !== accountId && !user.isSupport))
 
   const rowActionKey = [
     {

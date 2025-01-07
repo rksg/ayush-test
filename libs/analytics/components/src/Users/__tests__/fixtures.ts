@@ -1,5 +1,5 @@
-import type { DisplayUser }        from '@acx-ui/analytics/services'
-import type { ManagedUser, Roles } from '@acx-ui/analytics/utils'
+import type { DisplayUser }            from '@acx-ui/analytics/services'
+import type { ManagedUser, RolesEnum } from '@acx-ui/analytics/utils'
 
 export const mockManagedUsers: ManagedUser[] = [
   {
@@ -9,14 +9,13 @@ export const mockManagedUsers: ManagedUser[] = [
     email: 'dog1@ruckuswireless.com.uat',
     accountId: '12345',
     accountName: 'RUCKUS NETWORKS, INC',
-    role: 'admin' as Roles,
+    role: 'admin' as RolesEnum,
     tenantId: '0015000000GlI7SAAV',
     resourceGroupId: '087b6de8-953f-405e-b2c2-000000000000',
     resourceGroupName: 'default',
     updatedAt: '2023-09-22T07:31:11.844Z',
     type: null,
-    invitation: null,
-    isSupport: false
+    invitation: null
   },
   {
     id: '0032h00000LUqTmAAL',
@@ -25,7 +24,7 @@ export const mockManagedUsers: ManagedUser[] = [
     email: 'dog1062@email.com',
     accountId: '0012h00000NrlBdAAJ',
     accountName: 'Dog Company 1062',
-    role: 'network-admin' as Roles,
+    role: 'network-admin' as RolesEnum,
     tenantId: '0015000000GlI7SAAV',
     resourceGroupId: '1aac20e7-c7db-4bab-a9d4-28b26995c691',
     resourceGroupName: 'bugbash-12',
@@ -36,8 +35,7 @@ export const mockManagedUsers: ManagedUser[] = [
         firstName: 'userFirst',
         lastName: 'userSecond'
       }
-    },
-    isSupport: true
+    }
   },
   {
     id: '0032h00000LUqYCAA1',
@@ -46,7 +44,7 @@ export const mockManagedUsers: ManagedUser[] = [
     email: 'dog12@email.com',
     accountId: '0012h00000NrlKrAAJ',
     accountName: 'Dog Company 12',
-    role: 'report-only' as Roles,
+    role: 'report-only' as RolesEnum,
     tenantId: '0015000000GlI7SAAV',
     resourceGroupId: '087b6de8-953f-405e-b2c2-000000000000',
     resourceGroupName: 'default',
@@ -57,8 +55,7 @@ export const mockManagedUsers: ManagedUser[] = [
         firstName: 'userThird',
         lastName: 'userFourth'
       }
-    },
-    isSupport: false
+    }
   },
   {
     id: 'rejected user',
@@ -67,7 +64,7 @@ export const mockManagedUsers: ManagedUser[] = [
     email: 'dog12@email.com',
     accountId: '0012h00000NrlKrAAJ',
     accountName: 'Dog Company 12',
-    role: 'report-only' as Roles,
+    role: 'report-only' as RolesEnum,
     tenantId: '0015000000GlI7SAAV',
     resourceGroupId: '087b6de8-953f-405e-b2c2-000000000000',
     resourceGroupName: 'default',
@@ -78,8 +75,7 @@ export const mockManagedUsers: ManagedUser[] = [
         firstName: 'userRej',
         lastName: 'userRej'
       }
-    },
-    isSupport: false
+    }
   },
   {
     id: '111',
@@ -88,14 +84,13 @@ export const mockManagedUsers: ManagedUser[] = [
     email: 'dog111@ruckuswireless.com.uat',
     accountId: '0015000000GlI7SAAV',
     accountName: 'RUCKUS NETWORKS, INC',
-    role: 'admin' as Roles,
+    role: 'admin' as RolesEnum,
     tenantId: '0015000000GlI7SAAV',
     resourceGroupId: '087b6de8-953f-405e-b2c2-000000000000',
     resourceGroupName: 'default',
     updatedAt: '2023-09-22T07:31:11.844Z',
     type: null,
-    invitation: null,
-    isSupport: false
+    invitation: null
   }
 ]
 
