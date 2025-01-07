@@ -8,7 +8,8 @@ import {
   useDeactivateSoftGreProfileOnVenueMutation
 } from '@acx-ui/rc/services'
 import {
-  LanPort, LanPortSoftGreProfileSettings,
+  LanPort,
+  LanPortSoftGreProfileSettings,
   SoftGreChanges,
   SoftGreLanPortChange,
   SoftGreProfileDispatcher,
@@ -142,6 +143,7 @@ export const useSoftGreProfileActivation = (
         updatePendingLanPortChange(turnOnChange, next, turnOnSoftGreCallback)
         break
       case SoftGreState.TurnOffSoftGre:
+      case SoftGreState.ResetToDefault:
         const turnOffChange: SoftGreLanPortChange = {
           lanPortId: next.portId!,
           venueLanPortSettings: {

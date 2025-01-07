@@ -128,6 +128,10 @@ export const getErrorContent = (action: ErrorAction) => {
       errorMsg = errorMessage.TOO_MANY_REQUESTS
       errors = ''
       break
+    case 502:
+      errorMsg = errorMessage.BAD_GATEWAY
+      errors = ''
+      break
     case 503:
       errorMsg = errorMessage.SERVICE_UNAVAILABLE
       errors = ''

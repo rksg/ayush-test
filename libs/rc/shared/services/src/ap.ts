@@ -1132,7 +1132,12 @@ export const apApi = baseApApi.injectEndpoints({
               }
             }))
           const clientIsolationActivateRequests = apSettings?.lanPorts
-            ?.filter(l => l.clientIsolationEnabled && (l.clientIsolationEnabled === true) && (l.enabled === true))
+            ?.filter(l => {
+              return l.clientIsolationEnabled
+                  && l.clientIsolationProfileId
+                  && (l.clientIsolationEnabled === true)
+                  && (l.enabled === true)
+            })
             .map(l => ({
               params: {
                 venueId: params!.venueId,

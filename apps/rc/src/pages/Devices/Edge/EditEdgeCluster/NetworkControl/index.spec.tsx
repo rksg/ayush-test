@@ -14,7 +14,9 @@ import {
   EdgeHqosProfilesUrls,
   EdgeMdnsFixtures,
   EdgeMdnsProxyUrls,
-  EdgeUrlsInfo
+  EdgePinFixtures,
+  EdgeUrlsInfo,
+  EdgePinUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
@@ -27,6 +29,7 @@ const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
 const { mockEdgeHqosProfileStatusList } = EdgeHqosProfileFixtures
 const { mockEdgeMdnsViewDataList } = EdgeMdnsFixtures
+const { mockPinStatsList } = EdgePinFixtures
 
 const mockedUsedNavigate = jest.fn()
 const mockedActivateEdgeDhcp = jest.fn()
@@ -87,7 +90,8 @@ describe('Edge Cluster Network Control Tab', () => {
   beforeEach(() => {
     jest.mocked(useIsEdgeFeatureReady)
       .mockImplementation(ff => ff !== Features.EDGE_MDNS_PROXY_TOGGLE
-        && ff !== Features.EDGE_ARPT_TOGGLE)
+        && ff !== Features.EDGE_ARPT_TOGGLE
+        && ff !== Features.EDGE_PIN_HA_TOGGLE)
 
     store.dispatch(edgeApi.util.resetApiState())
     store.dispatch(edgeDhcpApi.util.resetApiState())
@@ -136,6 +140,10 @@ describe('Edge Cluster Network Control Tab', () => {
       rest.get(
         EdgeHqosProfilesUrls.getEdgeHqosProfileById.url,
         (req, res, ctx) => res(ctx.json(mockEdgeHqosProfileStatusList.data[1]))
+      ),
+      rest.post(
+        EdgePinUrls.getEdgePinStatsList.url,
+        (_req, res, ctx) => res(ctx.json(mockPinStatsList))
       )
     )
   })
@@ -160,11 +168,13 @@ describe('Edge Cluster Network Control Tab', () => {
           path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
         }
       })
+
+    const switchBtns = await screen.findAllByRole('switch')
     await waitFor(() => {
-      expect(screen.getAllByRole('switch')[0]).not.toBeChecked()
+      expect(getDhcpSwitchBtn(switchBtns)).not.toBeChecked()
     })
     await waitFor(() => {
-      expect(screen.getAllByRole('switch')[1]).toBeChecked()
+      expect(getHqosSwitchBtn(switchBtns)).toBeChecked()
     })
 
   })
@@ -189,11 +199,12 @@ describe('Edge Cluster Network Control Tab', () => {
           path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
         }
       })
+    const switchBtns = await screen.findAllByRole('switch')
     await waitFor(() => {
-      expect(screen.getAllByRole('switch')[0]).toBeChecked()
+      expect(getDhcpSwitchBtn(switchBtns)).toBeChecked()
     })
     await waitFor(() => {
-      expect(screen.getAllByRole('switch')[1]).not.toBeChecked()
+      expect(getHqosSwitchBtn(switchBtns)).not.toBeChecked()
     })
 
   })
@@ -212,7 +223,7 @@ describe('Edge Cluster Network Control Tab', () => {
 
 
     await waitFor(() => {
-      expect(screen.getAllByRole('switch')[0]).toBeChecked()
+      expect(getDhcpSwitchBtn()).toBeChecked()
     })
     const comboboxArray = await screen.findAllByRole('combobox')
     expect(comboboxArray[0]).toBeInTheDocument()
@@ -423,6 +434,42 @@ describe('Edge Cluster Network Control Tab', () => {
     expect(toolTips[0]).toBeVisible()
     expect(toolTips[1]).toBeVisible()
     expect(await screen.findByTestId('EdgeCompatibilityDrawer')).toBeVisible()
+  })
+
+  describe('DHCP and Pin FF enabled', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff => ff === Features.EDGE_DHCP_HA_TOGGLE
+          || ff === Features.EDGE_PIN_HA_TOGGLE)
+
+      mockServer.use(
+        rest.post(
+          EdgeDhcpUrls.getDhcpStats.url,
+          (_, res, ctx) => res(ctx.json(mockDhcpStatsData))
+        ),
+        rest.post(
+          EdgePinUrls.getEdgePinStatsList.url,
+          (_req, res, ctx) => res(ctx.json(mockPinStatsList))
+        ))
+    })
+
+    it('should greyout DHCP dropdown when Pin is using', async () => {
+      render(
+        <Provider>
+          <EdgeNetworkControl
+            currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
+        </Provider>, {
+          route: {
+            params,
+            path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
+          }
+        })
+
+      const dhcpSelector = await screen.findByRole('combobox')
+      expect(await screen.findByText('TestDhcp-1')).toBeVisible()
+      await waitFor(() => expect(dhcpSelector).toBeDisabled())
+      expect(getDhcpSwitchBtn()).toBeDisabled()
+    })
   })
 
   describe('mDNS', () => {
@@ -725,6 +772,24 @@ describe('Edge Cluster Network Control Tab', () => {
   })
 
 })
+
+const getDhcpSwitchBtn = (givenSwitchBtns?: HTMLElement[]) => {
+  if (givenSwitchBtns) {
+    return givenSwitchBtns.find(btn => btn.id === 'dhcpSwitch')
+  }
+
+  const switchBtn = screen.getAllByRole('switch')
+  return switchBtn.find(btn => btn.id === 'dhcpSwitch')
+}
+
+const getHqosSwitchBtn = (givenSwitchBtns?: HTMLElement[]) => {
+  if (givenSwitchBtns) {
+    return givenSwitchBtns.find(btn => btn.id === 'hqosSwitch')
+  }
+
+  const switchBtn = screen.getAllByRole('switch')
+  return switchBtn.find(btn => btn.id === 'hqosSwitch')
+}
 
 const getMdnsSwitchBtn = () => {
   const switchBtn = screen.getAllByRole('switch')

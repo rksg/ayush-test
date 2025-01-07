@@ -1,3 +1,4 @@
+import { useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
 import { Provider as wrapper, intentAIUrl, store, intentAIApi }                from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
@@ -40,6 +41,10 @@ const intent = {
   status: 'active',
   metadata: {
     dataEndTime: '2023-06-26T00:00:25.772Z'
+  },
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierData: true
   }
 }
 
@@ -49,8 +54,23 @@ describe('IntentAIForm', () => {
   beforeEach(() => {
     store.dispatch(intentAIApi.util.resetApiState())
     jest.spyOn(Date, 'now').mockReturnValue(+new Date('2023-07-15T14:15:00.000Z'))
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
   it('handle API respond with data for IntentAIForm & IntentAIDetails', async () => {
+    mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+
+    for (const key of ['IntentAIForm', 'IntentAIDetails'] as const) {
+      const Component = components[key]
+      const { unmount } = render(<Component />, { wrapper, route: { params } })
+      const target = await screen.findByTestId(key)
+      expect(target).toBeVisible()
+      expect(await within(target).findByText(intent.code)).toBeVisible()
+      unmount()
+    }
+  })
+
+  it('handle API respond with data for IntentAIForm & IntentAIDetails with ff off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
 
     for (const key of ['IntentAIForm', 'IntentAIDetails'] as const) {
