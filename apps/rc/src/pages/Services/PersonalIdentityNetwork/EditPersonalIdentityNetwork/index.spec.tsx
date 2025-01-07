@@ -4,6 +4,7 @@ import { ReactNode } from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useGetEdgePinByIdQuery } from '@acx-ui/rc/services'
 import {
   CatchErrorResponse,
   EdgePinFixtures,
@@ -18,7 +19,8 @@ import {
 } from '@acx-ui/test-utils'
 import { RequestPayload } from '@acx-ui/types'
 
-import { afterSubmitMessage } from '../PersonalIdentityNetworkForm'
+import { edgeClusterConfigValidationFailed } from '../__tests__/fixtures'
+import { afterSubmitMessage }                from '../PersonalIdentityNetworkForm'
 
 import EditPersonalIdentityNetwork from '.'
 
@@ -42,7 +44,7 @@ jest.mock('../PersonalIdentityNetworkForm/AccessSwitchForm', () => ({
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   // mock API response due to all form steps are mocked
-  useGetEdgePinByIdQuery: () => ({ data: mockPinData, isLoading: false }),
+  useGetEdgePinByIdQuery: jest.fn(),
   useGetEdgePinViewDataListQuery: () => ({ data: mockPinStatsList, isLoading: false })
 }))
 jest.mock('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext', () => ({
@@ -82,6 +84,7 @@ describe('Edit PersonalIdentityNetwork', () => {
     data: mockPinData, isLoading: false, refetch: jest.fn() }))
 
   beforeEach(() => {
+
     mockServer.use(
       rest.put(
         EdgePinUrls.updateEdgePin.url,
@@ -93,12 +96,11 @@ describe('Edit PersonalIdentityNetwork', () => {
   })
 
   it('cancel and go back to device list', async () => {
-    const user = userEvent.setup()
     render(<EditPersonalIdentityNetwork />, {
       wrapper: Provider,
       route: { params, path: updatePinPath }
     })
-    await user.click(await screen.findByRole('button', { name: 'Cancel' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
       hash: '',
       pathname: `/${params.tenantId}/t/services/list`,
@@ -107,7 +109,6 @@ describe('Edit PersonalIdentityNetwork', () => {
   })
 
   it('should update PersonalIdentityNetwork successfully', async () => {
-    const user = userEvent.setup()
     render(
       <Provider>
         <EditPersonalIdentityNetwork />
@@ -116,19 +117,19 @@ describe('Edit PersonalIdentityNetwork', () => {
       })
     // step 1
     await screen.findByTestId('GeneralSettingsForm')
-    await user.click(await screen.findByText('RUCKUS Edge'))
+    await userEvent.click(await screen.findByText('RUCKUS Edge'))
     // step 2
     await screen.findByTestId('SmartEdgeForm')
-    await user.click(await screen.findByText('Wireless Network'))
+    await userEvent.click(await screen.findByText('Wireless Network'))
     // step 3
     await screen.findByTestId('WirelessNetworkForm')
-    await user.click(await screen.findByText('Dist. Switch'))
+    await userEvent.click(await screen.findByText('Dist. Switch'))
     // step 4
     await screen.findByTestId('DistributionSwitchForm')
-    await user.click((await screen.findAllByText('Access Switch'))[0])
+    await userEvent.click((await screen.findAllByText('Access Switch'))[0])
     // step 5
     await screen.findByTestId('AccessSwitchForm')
-    await user.click(await screen.findByRole('button', { name: 'Apply' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledWith({
       hash: '',
       pathname: `/${params.tenantId}/t/services/list`,
@@ -164,19 +165,19 @@ describe('Edit PersonalIdentityNetwork', () => {
 
     // step 1
     await screen.findByTestId('GeneralSettingsForm')
-    await user.click(await screen.findByText('RUCKUS Edge'))
+    await userEvent.click(await screen.findByText('RUCKUS Edge'))
     // step 2
     await screen.findByTestId('SmartEdgeForm')
-    await user.click(await screen.findByText('Wireless Network'))
+    await userEvent.click(await screen.findByText('Wireless Network'))
     // step 3
     await screen.findByTestId('WirelessNetworkForm')
-    await user.click(await screen.findByText('Dist. Switch'))
+    await userEvent.click(await screen.findByText('Dist. Switch'))
     // step 4
     await screen.findByTestId('DistributionSwitchForm')
-    await user.click((await screen.findAllByText('Access Switch'))[0])
+    await userEvent.click((await screen.findAllByText('Access Switch'))[0])
     // step 5
     await screen.findByTestId('AccessSwitchForm')
-    await user.click(await screen.findByRole('button', { name: 'Apply' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
 
     await screen.findByRole('dialog')
     expect(await screen.findByText('Validation Error')).toBeVisible()
