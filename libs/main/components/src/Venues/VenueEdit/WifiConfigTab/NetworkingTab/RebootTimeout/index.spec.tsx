@@ -49,7 +49,7 @@ describe('Venue Reboot Timeout', () => {
       })
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
 
-    await waitFor(() => screen.findByText('Default gateway'))
+    await waitFor(() => screen.findByText('Gateway Connection Monitor'))
     expect(await screen.findByTestId('gateway-switch')).toBeVisible()
     expect(await screen.findByTestId('server-switch')).toBeVisible()
   })
@@ -75,7 +75,7 @@ describe('Venue Reboot Timeout', () => {
       })
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
 
-    await waitFor(() => screen.findByText('Default gateway'))
+    await waitFor(() => screen.findByText('Gateway Connection Monitor'))
 
     expect(await screen.findByTestId('gateway-switch')).not.toBeChecked()
     await userEvent.click(await screen.findByTestId('gateway-switch'))

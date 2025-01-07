@@ -27,7 +27,8 @@ import {
   useResetApLanPortsMutation,
   useUpdateApEthernetPortsMutation,
   useUpdateApLanPortsMutation,
-  useDeactivateClientIsolationOnApMutation
+  useDeactivateClientIsolationOnApMutation,
+  useLazyGetVenueLanPortSettingsByModelQuery
 } from '@acx-ui/rc/services'
 import {
   ApLanPortTypeEnum,
@@ -36,7 +37,8 @@ import {
   LanPort,
   VenueLanPorts,
   WifiApSetting,
-  isEqualLanPort
+  isEqualLanPort,
+  mergeLanPortSettings
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -121,6 +123,8 @@ export function LanPorts () {
   const [getVenueLanPorts] = useLazyGetVenueLanPortsQuery()
   const getDhcpEnabled = useFetchIsVenueDhcpEnabled()
 
+  const [getVenueLanPortSettingsByModel] = useLazyGetVenueLanPortSettingsByModelQuery()
+
   const [updateApCustomization, {
     isLoading: isApLanPortsUpdating }] = useUpdateApLanPortsMutation()
   const [updateEthernetPortProfile, {
@@ -187,14 +191,28 @@ export function LanPorts () {
             await getVenueLanPorts(queryPayload, true).unwrap())
           ?.filter(item => item.model === apDetails?.model)?.[0]
 
+        const venueLanPortsSettings = await getVenueLanPortSettingsByModel({
+          params: {
+            venueId,
+            apModel: apCaps?.model,
+            lanPortCount: apCaps?.lanPorts?.length?.toString()
+          }
+        }).unwrap()
+
+        const venueLanPortsMergedData = cloneDeep(venueLanPortsData)
+
+        venueLanPortsMergedData.lanPorts = mergeLanPortSettings(
+          venueLanPortsMergedData.lanPorts, venueLanPortsSettings
+        )
+
         const isDhcpEnabled = await getDhcpEnabled(venueId!)
 
         const apLanPortsCap = apCaps.lanPorts
         const lanPorts = convertToFormData(apLanPortsData, apLanPortsCap)
-        const venueLanPorts = convertToFormData(venueLanPortsData, apLanPortsCap)
+        const venueLanPorts = convertToFormData(venueLanPortsMergedData, apLanPortsCap)
         setApLanPorts(lanPorts)
         setVenueLanPorts(venueLanPorts)
-        setSelectedModel(lanPorts)
+        setSelectedModel(lanPorts.useVenueSettings ? venueLanPorts : lanPorts)
         setSelectedModelCaps(apCaps as CapabilitiesApModel)
         setSelectedPortCaps(apLanPortsCap?.[activeTabIndex] as LanPort)
         setUseVenueSettings(lanPorts.useVenueSettings ?? true)
@@ -311,7 +329,7 @@ export function LanPorts () {
         }
 
         if (isEthernetClientIsolationEnabled) {
-          handleClientIsolationDeactivate(values)
+          await handleClientIsolationDeactivate(values)
         }
 
         await updateEthernetPortProfile({
@@ -358,21 +376,25 @@ export function LanPorts () {
     })
   }
 
-  const handleClientIsolationDeactivate = (values: WifiApSetting) => {
+  const handleClientIsolationDeactivate = async (values: WifiApSetting) => {
     const { useVenueSettings } = values
-    values.lan?.forEach(lanPort => {
+
+    for (const lanPort of values.lan!) {
       const originClientIsolationProfileId
         = lanData.find(l => l.portId === lanPort.portId)?.clientIsolationProfileId
       if (
         originClientIsolationProfileId &&
-        (!lanPort.enabled || !lanPort.clientIsolationEnabled || useVenueSettings)
+          (!lanPort.enabled
+          || !lanPort.clientIsolationEnabled
+          || useVenueSettings
+          || (originClientIsolationProfileId !== lanPort.clientIsolationProfileId))
       ) {
-        deactivateClientIsolationOnAp({
+        await deactivateClientIsolationOnAp({
           // eslint-disable-next-line max-len
           params: { venueId, serialNumber, portId: lanPort.portId, policyId: originClientIsolationProfileId }
         }).unwrap()
       }
-    })
+    }
   }
 
   const handleDiscard = async () => {

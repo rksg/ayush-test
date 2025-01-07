@@ -1,3 +1,5 @@
+import { APLanPortSettings, LanPort, VenueLanPortSettings } from '../../types'
+
 export function getImageFitPercentage (containerCoordsX: number,
   containerCoordsY: number, imageCoordsX: number, imageCoordsY: number) {
   let differencePercentage = 0
@@ -23,4 +25,24 @@ export function getImageFitPercentage (containerCoordsX: number,
     }
   }
   return differencePercentage
+}
+
+
+export const mergeLanPortSettings = (
+  lanPorts: LanPort[],
+  lanPortSettings: (VenueLanPortSettings | APLanPortSettings) []
+): LanPort[] => {
+  lanPorts.forEach((lanPort, index) => {
+    const venueLanSetting = lanPortSettings?.[index]
+    if(venueLanSetting) {
+      lanPort.enabled = venueLanSetting.enabled
+      lanPort.softGreEnabled = venueLanSetting.softGreEnabled
+      lanPort.clientIsolationEnabled = venueLanSetting.clientIsolationEnabled
+      if (venueLanSetting.clientIsolationEnabled) {
+        lanPort.clientIsolationSettings = venueLanSetting.clientIsolationSettings
+      }
+    }
+  })
+
+  return lanPorts
 }
