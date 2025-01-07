@@ -36,7 +36,11 @@ export const mocked = {
   updatedAt: '2024-08-29T06:05:30.464Z',
   preferences: null,
   currentValue: null,
-  recommendedValue: '7.0.0'
+  recommendedValue: '7.0.0',
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierDate: true
+  }
 } as unknown as IntentDetail
 
 export const mockedIntentAps = [

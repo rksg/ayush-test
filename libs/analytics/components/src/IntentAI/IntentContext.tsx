@@ -3,8 +3,9 @@ import React, { createContext, useContext } from 'react'
 import _                     from 'lodash'
 import { MessageDescriptor } from 'react-intl'
 
-import { Loader }    from '@acx-ui/components'
-import { formatter } from '@acx-ui/formatter'
+import { Loader }                 from '@acx-ui/components'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { formatter }              from '@acx-ui/formatter'
 
 import {
   IntentDetail,
@@ -25,8 +26,9 @@ type IIntentContext = {
   intent: IntentDetail
   configuration?: IntentConfigurationConfig
   kpis: IntentKPIConfig[]
-  isDataRetained: boolean
   state: ReturnType<typeof intentState>
+  isDataRetained: boolean
+  isHotTierData: boolean
 }
 
 export const IntentContext = createContext({} as IIntentContext)
@@ -43,9 +45,12 @@ export function createIntentContextProvider (
 ) {
   const Component: React.FC = function () {
     const params = useIntentParams()
-
+    const preventColdTier = [
+      useIsSplitOn(Features.RUCKUS_AI_PREVENT_COLD_TIER_QUERY_TOGGLE),
+      useIsSplitOn(Features.ACX_UI_PREVENT_COLD_TIER_QUERY_TOGGLE)
+    ].some(Boolean)
     const spec = specs[params.code]
-    const query = useIntentDetailsQuery(params, { skip: !spec })
+    const query = useIntentDetailsQuery({ ...params, preventColdTier }, { skip: !spec })
     if (!spec) return null // no matching spec
     if (query.isSuccess && !query.data) return null // 404
 
@@ -59,8 +64,13 @@ export function createIntentContextProvider (
       intent: intent!,
       configuration: spec.configuration,
       kpis: spec.kpis,
-      isDataRetained: (intent && isDataRetained(intent.metadata.dataEndTime))!,
-      state: (intent && intentState(intent))!
+      state: (intent && intentState(intent))!,
+      isDataRetained: preventColdTier
+        ? intent?.dataCheck.isDataRetained!
+        : isDataRetained(intent?.metadata.dataEndTime),
+      isHotTierData: preventColdTier
+        ? intent?.dataCheck.isHotTierData!
+        : true
     }
 
     return <Loader states={[isDetectError? _.omit(query, ['error']) : query]}>

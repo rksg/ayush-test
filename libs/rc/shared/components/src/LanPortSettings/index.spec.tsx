@@ -10,7 +10,9 @@ import { ethernetPortProfileApi, policyApi } from '@acx-ui/rc/services'
 import {
   AaaUrls,
   EthernetPortProfileUrls,
-  SoftGreUrls } from '@acx-ui/rc/utils'
+  ClientIsolationUrls,
+  SoftGreUrls,
+  LanPortsUrls } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   fireEvent,
@@ -57,6 +59,32 @@ export const mockSoftgreViewModel = {
           ]
         }
       ]
+    }
+  ]
+}
+
+export const mockClientIsolationViewModel = {
+  fields: null,
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: 'b566e720d85749439534788f174f1732',
+      name: 'client-isolation-2',
+      description: '',
+      clientEntries: [
+        '11:11:11:11:11:11'
+      ],
+      activations: []
+    },
+    {
+      id: '79e201950d6a41a68350f1a3d7e2857d',
+      name: 'client_isolation',
+      description: '',
+      clientEntries: [
+        '11:22:33:44:55:66'
+      ],
+      activations: []
     }
   ]
 }
@@ -277,7 +305,7 @@ describe('Ethernet Port Profile', () => {
         }))
       ),
       rest.get(
-        EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId.url,
+        LanPortsUrls.getApLanPortSettings.url,
         (_, res, ctx) => res(ctx.json(portOverwrite))
       ),
       rest.get(
@@ -435,7 +463,7 @@ describe('LanPortSettings -  SoftGre Profile Profile', ()=> {
         }))
       ),
       rest.get(
-        EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId.url,
+        LanPortsUrls.getApLanPortSettings.url,
         (_, res, ctx) => res(ctx.json({
           data: {
             enabled: true,
@@ -473,7 +501,17 @@ describe('LanPortSettings -  SoftGre Profile Profile', ()=> {
         }),
       rest.post(SoftGreUrls.getSoftGreViewDataList.url, (req, res, ctx) => {
         return res(ctx.json(mockSoftgreViewModel))
-      })
+      }),
+      rest.post(AaaUrls.queryAAAPolicyList.url,
+        (_, res, ctx) => {
+          return res(ctx.json(dummyRadiusServiceList))
+        }
+      ),
+      rest.post(ClientIsolationUrls.queryClientIsolation.url,
+        (_, res, ctx) => {
+          return res(ctx.json(mockClientIsolationViewModel))
+        }
+      )
     )
   })
   it('Venue Level', async () => {
@@ -520,5 +558,43 @@ describe('LanPortSettings -  SoftGre Profile Profile', ()=> {
     expect(screen.getByTestId('dhcpOption82SubOption1-switch')).toBeInTheDocument()
     await userEvent.click(screen.getAllByText('Apply')[0])
     expect(screen.getByTestId('dhcp82toption-icon')).toBeInTheDocument()
+  })
+  it('AP Level - should render read-only mode correctly with DHCP service enalbed', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
+      return ff === Features.ETHERNET_PORT_PROFILE_TOGGLE ||
+        ff === Features.RBAC_SERVICE_POLICY_TOGGLE ||
+        ff === Features.WIFI_ETHERNET_SOFTGRE_TOGGLE ||
+        ff === Features.WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE
+    })
+    const apParams = {
+      tenantId: 'tenant-id',
+      serialNumber: '123456789042'
+    }
+
+    render(<Provider>
+      <Form initialValues={{ lan: initLanData }}>
+        <LanPortSettings
+          index={0}
+          readOnly={true}
+          selectedPortCaps={selectedTrunkPortCaps}
+          selectedModel={selectedSinglePortModel}
+          setSelectedPortCaps={jest.fn()}
+          selectedModelCaps={selectedSinglePortModelCaps}
+          isDhcpEnabled={true}
+          isTrunkPortUntaggedVlanEnabled={true}
+          useVenueSettings={false}
+          serialNumber={apParams.serialNumber}
+          venueId={venueId}
+        />
+      </Form>
+    </Provider>, {
+      route: { params: apParams, path: '/:tenantId/t/devices/wifi/:serialNumber/edit/networking' }
+    })
+
+    await screen.findByText(/The following LAN Port settings can’t work because DHCP is enabled/)
+    expect(screen.queryByRole('button', { name: /Override the VLAN Untag ID/ }))
+      .not.toBeInTheDocument()
+    expect(screen.getByRole('switch', { name: /Enable SoftGRE Tunnel/ })).toBeDisabled()
+    expect(screen.getByRole('switch', { name: /Client Isolation/ })).toBeDisabled()
   })
 })
