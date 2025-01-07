@@ -311,6 +311,7 @@ export interface CustomRole {
   createdDate?: string,
   updatedDate?: string,
   scopes?: string[],
+  features?: string[],
   preDefinedRole?: string
 }
 

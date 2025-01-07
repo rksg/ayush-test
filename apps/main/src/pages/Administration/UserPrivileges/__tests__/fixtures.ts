@@ -430,3 +430,44 @@ export const fakedCustomRoleLsit = [
     ]
   }
 ]
+
+export const fakedExplicitCustomRoleLsit = [
+  {
+    description: 'Admin Role',
+    id: '1765e98c7b9446e2a5bdd4720e0e8911',
+    name: 'ADMIN',
+    type: 'System'
+  },
+  {
+    description: 'Prime Admin Role',
+    id: '1765e98c7b9446e2a5bdd4720e0e8912',
+    name: 'PRIME_ADMIN',
+    type: 'System'
+  },
+  {
+    description: 'Read only Role',
+    id: '1765e98c7b9446e2a5bdd4720e0e8913',
+    name: 'READ_ONLY',
+    type: 'System'
+  },
+  {
+    description: 'this is new custom role for wi-fi',
+    id: 'df2277fb9f8c403c8b1a12ffe6ae9809',
+    name: 'new wi-fi custom role',
+    type: 'Custom',
+    features: [
+      'wifi-r',
+      'switch-r',
+      'edge-r',
+      'analytics-r',
+      'admin-r',
+      'msp-r',
+      'wifi.venue.wifi-c',
+      'wifi.clients-c',
+      'wifi.network_control_services-c',
+      'wifi.network_control_policies-c',
+      'switch-u',
+      'edge-d'
+    ]
+  }
+]

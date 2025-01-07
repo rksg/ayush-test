@@ -199,9 +199,9 @@ export function AddExplicitCustomRole () {
       form.setFieldValue('name', isClone ? (location?.name + ' - copy') : location?.name)
       form.setFieldValue('description', location?.description)
     }
-    if (location && location?.scopes && (isEditMode || isClone)) {
+    if (location && location?.features && (isEditMode || isClone)) {
       let permissions: ScopePermission[] = initialPermissionList
-      location.scopes.forEach(s => {
+      location.features.forEach(s => {
         const id = s.split('-')[0]
         const perm = Object.keys(PermissionType)
           .find(key => PermissionType[key as keyof typeof PermissionType] === s.split('-')[1]) ?? ''
