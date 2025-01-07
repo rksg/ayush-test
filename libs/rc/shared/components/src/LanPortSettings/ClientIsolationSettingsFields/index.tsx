@@ -87,6 +87,7 @@ const ClientIsolationSettingsFields = (props: ClientIsplationSettingFieldsProps)
             name={['lan', index, 'clientIsolationEnabled']}
             valuePropName='checked'
             children={<Switch
+              data-testid={'client-isolation-switch'}
               disabled={readOnly}
               onChange={() => onGUIChanged?.('clientIsolationEnabled')}
             />}
