@@ -13,9 +13,11 @@ import {
   getServiceListRoutePath,
   LocationExtended,
   PersonalIdentityNetworkFormData,
-  redirectPreviousPage
+  redirectPreviousPage,
+  EdgeClusterInfo
 } from '@acx-ui/rc/utils'
 import { useTenantLink }                                  from '@acx-ui/react-router-dom'
+import { RequestPayload }                                 from '@acx-ui/types'
 import { CatchErrorDetails, CatchErrorResponse, getIntl } from '@acx-ui/utils'
 
 import { AccessSwitchForm }                         from './AccessSwitchForm'
@@ -83,8 +85,98 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
 
-  const doSwitchValidation = useSwitchValidator()
-  const doEdgeClusterValidation = useEdgeClusterValidator()
+  const [validateEdgePinNetwork] = useValidateEdgePinNetworkMutation()
+  const [validateEdgePinClusterConfig] = useValidateEdgePinClusterConfigMutation()
+
+  // eslint-disable-next-line max-len
+  const doSwitchValidation = async (formData: PersonalIdentityNetworkFormData, payload: RequestPayload, gotoStep: StepsFormGotoStepFn, skipValidation = false) => {
+    if (formData.distributionSwitchInfos?.length > 0 && (
+      formData.accessSwitchInfos.length === 0 || !formData.accessSwitchInfos.every(as =>
+        as.vlanId && as.uplinkInfo?.uplinkId && as.webAuthPageType)
+    )) {
+      gotoStep(4)
+      return Promise.reject()
+    }
+
+    if (!skipValidation &&
+      formData.distributionSwitchInfos?.length > 0 && formData.accessSwitchInfos?.length > 0) {
+      try {
+        await validateEdgePinNetwork({
+          params,
+          payload: {
+            pinId: formData.id || '',
+            venueId: formData.venueId,
+            edgeClusterId: formData.edgeClusterId,
+            distributionSwitchInfos: payload.distributionSwitchInfos,
+            accessSwitchInfos: payload.accessSwitchInfos
+          }
+        }).unwrap()
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
+        const errorRes = error as CatchErrorResponse
+        const overwriteMsg = afterSubmitMessage(errorRes,
+          [...(formData.distributionSwitchInfos || []), ...(formData.accessSwitchInfos || [])])
+
+        if (overwriteMsg.length > 0) {
+          showActionModal({
+            type: 'confirm',
+            width: 450,
+            title: $t({ defaultMessage: 'Please confirm before executing' }),
+            content: overwriteMsg,
+            okText: $t({ defaultMessage: 'Yes' }),
+            cancelText: $t({ defaultMessage: 'No' }),
+            onOk: async () => {
+              handleFinish(formData, gotoStep, true)
+            },
+            onCancel: async () => {}
+          })
+        } else {
+          showActionModal({
+            type: 'error',
+            title: $t({ defaultMessage: 'Validation Error' }),
+            content: <>
+              {errorRes.data.errors.map((error, index) => <p key={index}>{error.message}</p>)}
+            </>
+          })
+        }
+
+        return Promise.reject()
+      }
+    }
+
+    return Promise.resolve()
+  }
+
+  // eslint-disable-next-line max-len
+  const doEdgeClusterValidation = async (payload: RequestPayload) => {
+    try {
+      await validateEdgePinClusterConfig({
+        payload: {
+          edgeClusterInfo: payload.edgeClusterInfo as EdgeClusterInfo
+        }
+      }).unwrap()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+      const errorRes = error as CatchErrorResponse
+
+      // expected error format
+      // eslint-disable-next-line max-len
+      if (errorRes.data.errors.length > 0 && errorRes.data.errors[0].code === 'PERSONAL-IDENTITY-NETWORK-10004') {
+        showActionModal({
+          type: 'error',
+          title: $t({ defaultMessage: 'Validation Error' }),
+          content: <>
+            {errorRes.data.errors.map((error, index) => <p key={index}>{error.message}</p>)}
+          </>
+        })
+      }
+
+      return Promise.reject()
+    }
+
+    return Promise.resolve()
+  }
+
 
   // eslint-disable-next-line max-len
   const handleFinish = async (formData: PersonalIdentityNetworkFormData, gotoStep: StepsFormGotoStepFn, skipValidation = false) => {
@@ -107,8 +199,8 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
     }
 
     try {
-      await doEdgeClusterValidation(payload, gotoStep)
-      await doSwitchValidation(formData, gotoStep, skipValidation)
+      await doEdgeClusterValidation(payload)
+      await doSwitchValidation(formData, payload, gotoStep, skipValidation)
     } catch (error) {
       return
     }
@@ -224,96 +316,4 @@ export const getStepsByTopologyType = (type: string) => {
       break
   }
   return steps
-}
-
-const useSwitchValidator = () => {
-  const [validateEdgePinNetwork] = useValidateEdgePinNetworkMutation()
-
-  // eslint-disable-next-line max-len
-  return async (formData: PersonalIdentityNetworkFormData, gotoStep: StepsFormGotoStepFn, skipValidation = false) => {
-    if (formData.distributionSwitchInfos?.length > 0 && (
-      formData.accessSwitchInfos.length === 0 || !formData.accessSwitchInfos.every(as =>
-        as.vlanId && as.uplinkInfo?.uplinkId && as.webAuthPageType)
-    )) {
-      gotoStep(4)
-      return
-    }
-
-    if (!skipValidation &&
-    formData.distributionSwitchInfos?.length > 0 && formData.accessSwitchInfos?.length > 0) {
-      try {
-        await validateEdgePinNetwork({
-          params,
-          payload: {
-            pinId: formData.id || '',
-            venueId: formData.venueId,
-            edgeClusterId: formData.edgeClusterId,
-            distributionSwitchInfos: payload.distributionSwitchInfos,
-            accessSwitchInfos: payload.accessSwitchInfos
-          }
-        }).unwrap()
-      } catch (error) {
-        console.log(error) // eslint-disable-line no-console
-        const errorRes = error as CatchErrorResponse
-        const overwriteMsg = afterSubmitMessage(errorRes,
-          [...(formData.distributionSwitchInfos || []), ...(formData.accessSwitchInfos || [])])
-
-        if (overwriteMsg.length > 0) {
-          showActionModal({
-            type: 'confirm',
-            width: 450,
-            title: $t({ defaultMessage: 'Please confirm before executing' }),
-            content: overwriteMsg,
-            okText: $t({ defaultMessage: 'Yes' }),
-            cancelText: $t({ defaultMessage: 'No' }),
-            onOk: async () => {
-              handleFinish(formData, gotoStep, true)
-            },
-            onCancel: async () => {}
-          })
-        } else {
-          showActionModal({
-            type: 'error',
-            title: $t({ defaultMessage: 'Validation Error' }),
-            content: <>
-              {errorRes.data.errors.map((error, index) => <p key={index}>{error.message}</p>)}
-            </>
-          })
-        }
-
-        return Promise.reject()
-      }
-    }
-  }
-}
-// eslint-disable-next-line max-len
-const useEdgeClusterValidator = () => {
-  const [validateEdgePinClusterConfig] = useValidateEdgePinClusterConfigMutation()
-
-  return async (payload: PersonalIdentityNetworkFormData) => {
-    try {
-      await validateEdgePinClusterConfig({
-        payload: {
-          edgeClusterInfo: payload.edgeClusterInfo
-        }
-      }).unwrap()
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-      const errorRes = error as CatchErrorResponse
-
-      // expected error format
-      // eslint-disable-next-line max-len
-      if (errorRes.data.errors.length > 0 && errorRes.data.errors[0].code === 'PERSONAL-IDENTITY-NETWORK-10004') {
-        showActionModal({
-          type: 'error',
-          title: $t({ defaultMessage: 'Validation Error' }),
-          content: <>
-            {errorRes.data.errors.map((error, index) => <p key={index}>{error.message}</p>)}
-          </>
-        })
-      }
-
-      return Promise.reject()
-    }
-  }
 }

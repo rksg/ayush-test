@@ -8,7 +8,6 @@ import { rest }      from 'msw'
 import { Features }               from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady }  from '@acx-ui/rc/components'
 import { useGetEdgePinByIdQuery } from '@acx-ui/rc/services'
-import { useGetEdgePinByIdQuery } from '@acx-ui/rc/services'
 import {
   EdgePinFixtures,
   EdgePinUrls
@@ -88,6 +87,7 @@ describe('Edit PersonalIdentityNetwork', () => {
     data: mockPinData, isLoading: false, refetch: jest.fn() }))
 
   beforeEach(() => {
+    mockedUsedNavigate.mockClear()
 
     mockServer.use(
       rest.put(

@@ -18,7 +18,8 @@ import {
   EdgeClusterStatus,
   EdgeUrlsInfo,
   PropertyUrlsInfo,
-  PropertyConfigs
+  PropertyConfigs,
+  EdgeClusterInfo
 } from '@acx-ui/rc/utils'
 import { basePinApi }                          from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -330,9 +331,11 @@ export const pinApi = basePinApi.injectEndpoints({
         }
       }
     }),
-    validateEdgePinClusterConfig: build.mutation<CommonResult, RequestPayload<EdgeClusterInfo>>({
-      query: ({ payload }) => {
-        const req = createHttpRequest(EdgePinUrls.validateEdgeClusterConfig)
+    validateEdgePinClusterConfig: build.mutation<CommonResult, RequestPayload<{ edgeClusterInfo: EdgeClusterInfo }>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgePinUrls.validateEdgeClusterConfig, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
