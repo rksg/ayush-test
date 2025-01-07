@@ -159,10 +159,11 @@ export const FwContainer = styled.div`
 export const FieldLabelSubs = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
-  grid-template-columns: 140px 80px 100px;
+  grid-template-columns: 160px 80px 100px;
   align-items: baseline;
   label:nth-child(2), label:nth-child(3) {
     text-align: center;
+    line-height: 20px;
   }
 `
 export const FieldLabelSubs2 = styled.div<{ width: string }>`

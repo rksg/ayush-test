@@ -14,7 +14,7 @@ import MaxPeriod   from './MaxPeriod'
 
 export default function LicenseCalculatorCard (props: LicenseCalculatorCardProps) {
   const { $t } = useIntl()
-  const { title, subTitle, footerContent } = props
+  const { title, footerContent } = props
   const [currentTab, setCurrentTab] = useState<string | undefined>('maxLicenses')
 
   const { data: tenantDetailsData } = useGetTenantDetailsQuery({ })
@@ -46,7 +46,6 @@ export default function LicenseCalculatorCard (props: LicenseCalculatorCardProps
             marginBottom: '10px' }}>
             <div style={{ flexDirection: 'column', marginTop: '4px' }}>
               <UI.Title>{$t({ defaultMessage: '{title}' }, { title })}</UI.Title>
-              <UI.SubTitle>{$t({ defaultMessage: '{subTitle}' }, { subTitle })}</UI.SubTitle>
               <Tabs onChange={onTabChange} activeKey={currentTab}>
                 { Object.entries(tabs).map((item) =>
                   item[1].visible &&

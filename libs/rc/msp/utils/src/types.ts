@@ -544,16 +544,22 @@ export enum MspEcAccountType {
 
 export interface LicenseCardProps {
   title: string
-  subTitle: string
   data: ComplianceData
-  isMsp: boolean
-  trialType?: string,
+  trialType: string,
   footerContent?: React.ReactElement
+}
+
+export interface MspLicenseCardProps {
+  title: string
+  subTitle?: string
+  selfData: ComplianceData
+  mspData: ComplianceData
+  footerContent?: React.ReactElement,
+  isExtendedTrial?: boolean
 }
 
 export interface LicenseCalculatorCardProps {
   title: string
-  subTitle: string
   footerContent?: React.ReactElement
 }
 

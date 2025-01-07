@@ -166,8 +166,12 @@ describe('LicenseCompliance', () => {
           path: '/:tenantId/t/administration/subscriptions/compliance' }
       })
 
-    expect(screen.getByText('Device Networking Subscriptions')).toBeVisible()
-    expect(screen.getByText('License Expiration')).toBeVisible()
+    expect(screen.getByText('Device Networking Licenses')).toBeVisible()
+
+    const tabMaxLiceses = screen.getByRole('tab', { name: 'Summary' })
+    expect(tabMaxLiceses.getAttribute('aria-selected')).toBeTruthy()
+    const tabMaxPeriod = screen.getByRole('tab', { name: 'My Account' })
+    expect(tabMaxPeriod.getAttribute('aria-selected')).toBe('false')
   })
   it('should render table correctly for msp', async () => {
     const mspCompliances = { ...compliances }
@@ -184,9 +188,13 @@ describe('LicenseCompliance', () => {
           path: '/:tenantId/t/administration/subscriptions/compliance' }
       })
 
-    expect(screen.getAllByText('Device Networking Subscriptions')).toHaveLength(2)
-    expect(screen.getByText('My Account License Expiration')).toBeVisible()
-    expect(screen.getByText('MSP Customers License Expiration')).toBeVisible()
+    expect(screen.getByText('Device Networking Licenses')).toBeVisible()
+
+    const tabMaxLiceses = screen.getByRole('tab', { name: 'MSP Subscriptions' })
+    expect(tabMaxLiceses.getAttribute('aria-selected')).toBeTruthy()
+    const tabMaxPeriod = screen.getByRole('tab', { name: 'My Account' })
+    expect(tabMaxPeriod.getAttribute('aria-selected')).toBe('false')
+
   })
   it('should render table correctly for no self data', async () => {
     services.useGetEntitlementsCompliancesQuery = jest.fn().mockImplementation(() => {
@@ -199,9 +207,11 @@ describe('LicenseCompliance', () => {
         route: { params,
           path: '/:tenantId/t/administration/subscriptions/compliance' }
       })
-    expect(screen.getAllByText('Device Networking Subscriptions')).toHaveLength(2)
-    expect(screen.getByText('My Account License Expiration')).toBeVisible()
-    expect(screen.getByText('MSP Customers License Expiration')).toBeVisible()
+    expect(screen.getByText('Device Networking Licenses')).toBeVisible()
+    const tabMaxLiceses = screen.getByRole('tab', { name: 'MSP Subscriptions' })
+    expect(tabMaxLiceses.getAttribute('aria-selected')).toBeTruthy()
+    const tabMaxPeriod = screen.getByRole('tab', { name: 'My Account' })
+    expect(tabMaxPeriod.getAttribute('aria-selected')).toBe('false')
   })
   it('should render banner correctly when compliance notes enabled', async () => {
     services.useGetEntitlementsCompliancesQuery = jest.fn().mockImplementation(() => {
@@ -241,9 +251,9 @@ describe('LicenseCompliance', () => {
     expect(await screen.findByText('License Distance Calculator')).toBeVisible()
     expect(screen.getByText('Active Extended Trial Licenses')).toBeVisible()
     await userEvent.click(screen.getByText('View Details'))
-    expect(screen.getAllByText('Device Networking Subscriptions')).toHaveLength(4)
+    expect(screen.getAllByText('Device Networking Licenses')).toHaveLength(2)
     await userEvent.click(screen.getByRole('button', { name: 'Close' }))
-    expect(screen.getAllByText('Device Networking Subscriptions')).toHaveLength(3)
+    expect(screen.getAllByText('Device Networking Licenses')).toHaveLength(1)
   })
 
   it('should render timelinegraph', async () => {

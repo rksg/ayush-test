@@ -9,13 +9,14 @@ import { ComplianceData }                     from '@acx-ui/msp/utils'
 import { TrialType }                          from '@acx-ui/rc/utils'
 import { useParams }                          from '@acx-ui/react-router-dom'
 
-import { emptyCompliance }      from './__tests__/fixtures'
-import { ComplianceBanner }     from './ComplianceBanner'
-import { DeviceNetworkingCard } from './DeviceNetworkingCard'
-import LicenseCalculatorCard    from './LicenseCalculator'
-import LicenseTimelineGraph     from './LicenseTimelineGraph'
-import MspCustomersLicences     from './MspCustomersLicences'
-import * as UI                  from './styledComponents'
+import { emptyCompliance }     from './__tests__/fixtures'
+import { ComplianceBanner }    from './ComplianceBanner'
+import LicenseCalculatorCard   from './LicenseCalculator'
+import LicenseTimelineGraph    from './LicenseTimelineGraph'
+import MspCustomersLicences    from './MspCustomersLicences'
+import MspDeviceNetworkingCard from './MspDeviceNetworkingCard'
+import RecDeviceNetworkingCard from './RecDeviceNetworkingCard'
+import * as UI                 from './styledComponents'
 
 
 interface ComplianceProps {
@@ -85,19 +86,11 @@ export const LicenseCompliance = (props: ComplianceProps) => {
     {isComplianceNotesEnabled && <ComplianceBanner />}
     {isMsp
       ? <UI.ComplianceContainer>
-        <DeviceNetworkingCard
-          title={$t({ defaultMessage: 'Device Networking Subscriptions' })}
-          subTitle={$t({ defaultMessage: 'My Account License Expiration' })}
-          data={selfData}
-          isMsp={true}
-          trialType={TrialType.TRIAL}
-        />
-        <DeviceNetworkingCard
-          title={$t({ defaultMessage: 'Device Networking Subscriptions' })}
-          subTitle={$t({ defaultMessage: 'MSP Customers License Expiration' })}
-          isMsp={false}
-          data={ecSummaryData}
-          trialType={isExtendedTrial ? TrialType.EXTENDED_TRIAL : undefined}
+        <MspDeviceNetworkingCard
+          title={$t({ defaultMessage: 'Device Networking Licenses' })}
+          selfData={selfData}
+          mspData={ecSummaryData}
+          isExtendedTrial={isExtendedTrial}
           footerContent={showCompliancePhase2UI ? <div style={{
             display: 'flex',
             flexDirection: 'row',
@@ -113,7 +106,7 @@ export const LicenseCompliance = (props: ComplianceProps) => {
         />
         {
           showCompliancePhase2UI && openMspCustLicencesDrawer && <Drawer
-            title={<>{$t({ defaultMessage: 'Device Networking Subscriptions' }) }
+            title={<>{$t({ defaultMessage: 'Device Networking Licenses' }) }
               {ecSummaryData.licenseGap >= 0 ? <UI.GreenTickIcon /> : <UI.RedTickIcon />}</>}
             visible={openMspCustLicencesDrawer}
             onClose={closeMspCustomersDrawer}
@@ -124,8 +117,7 @@ export const LicenseCompliance = (props: ComplianceProps) => {
           </Drawer>
         }
         { showCompliancePhase2UI && <LicenseCalculatorCard
-          title={$t({ defaultMessage: 'Device Networking Subscriptions' })}
-          subTitle={$t({ defaultMessage: 'License Distance Calculator' })}
+          title={$t({ defaultMessage: 'License Distance Calculator' })}
           footerContent={<div style={{
             display: 'flex',
             flexDirection: 'row',
@@ -163,10 +155,8 @@ export const LicenseCompliance = (props: ComplianceProps) => {
           </Drawer>
         }
       </UI.ComplianceContainer>
-      : <DeviceNetworkingCard
-        title={$t({ defaultMessage: 'Device Networking Subscriptions' })}
-        subTitle={$t({ defaultMessage: 'License Expiration' })}
-        isMsp={false}
+      : <RecDeviceNetworkingCard
+        title={$t({ defaultMessage: 'Device Networking Licenses' })}
         data={selfData}
         trialType={TrialType.TRIAL}
       />}
