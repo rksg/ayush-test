@@ -14,7 +14,8 @@ import {
   Select,
   StepsFormLegacy
 } from '@acx-ui/components'
-import { InformationSolid }     from '@acx-ui/icons'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { InformationSolid }       from '@acx-ui/icons'
 import {
   useGetIdentityProviderListQuery,
   useGetWifiOperatorListQuery
@@ -152,7 +153,7 @@ function Hotspot20Form () {
 
 function Hotspot20Service () {
   const { $t } = useIntl()
-  const { editMode, cloneMode, data } = useContext(NetworkFormContext)
+  const { editMode, cloneMode, data, setData } = useContext(NetworkFormContext)
   const params = useParams()
   const { networkId } = params
   const form = Form.useFormInstance()
@@ -161,8 +162,10 @@ function Hotspot20Service () {
   const [disabledSelectProvider, setDisabledSelectProvider] = useState(false)
   const disabledAddProvider = useRef<boolean>(false)
   const isInitProviders = useRef<boolean>(true)
+  const accProviders = useRef<Set<string>>()
+  const supportHotspot20NasId = useIsSplitOn(Features.WIFI_NAS_ID_HOTSPOT20_TOGGLE)
   const defaultPayload = {
-    fields: ['name', 'id', 'wifiNetworkIds'],
+    fields: ['name', 'id', 'wifiNetworkIds', 'accountingRadiusId'],
     pageSize: 100,
     sortField: 'name',
     sortOrder: 'ASC'
@@ -181,11 +184,21 @@ function Hotspot20Service () {
 
   const { providerSelectOptions, selectedProviderIds } = useGetIdentityProviderListQuery(
     { payload: defaultPayload }, {
-      selectFromResult: ({ data }) => {
-        const d = data?.data
-        const seletedIds = networkId && d?.filter(item => item.wifiNetworkIds
+      selectFromResult: ({ data: identityData }) => {
+        const providers = identityData?.data
+        if (supportHotspot20NasId) {
+          let identitiesWithAcc = new Set<string>()
+          for (let provider of (providers ?? [])) {
+            if (provider.accountingRadiusId) {
+              identitiesWithAcc.add(provider.id as string)
+            }
+          }
+          accProviders.current = identitiesWithAcc
+        }
+        const seletedIds = networkId && providers?.filter(item => item.wifiNetworkIds
           ?.includes(networkId)).map(item => item.id)
-        const providerOptions = d?.map(item => ({ label: item.name, value: item.id } )) ?? []
+        const providerOptions = providers?.map(
+          item => ({ label: item.name, value: item.id } )) ?? []
         disabledAddProvider.current = providerOptions.length >= IDENTITY_PROVIDER_MAX_COUNT
         return { providerSelectOptions: providerOptions, selectedProviderIds: seletedIds }
       }
@@ -287,6 +300,23 @@ function Hotspot20Service () {
             onChange={(newProviders: string[]) => {
               setDisabledSelectProvider(
                 newProviders.length >= NETWORK_IDENTITY_PROVIDER_MAX_COUNT)
+              if (supportHotspot20NasId) {
+                let enableAcc = false
+                for (let provider of newProviders) {
+                  if (accProviders.current?.has(provider)) {
+                    enableAcc = true
+                    break
+                  }
+                }
+                setData && setData({
+                  ...data,
+                  enableAccountingService: enableAcc,
+                  hotspot20Settings: {
+                    ...data?.hotspot20Settings,
+                    identityProviders: newProviders
+                  }
+                })
+              }
             }}
           />
         </Form.Item>

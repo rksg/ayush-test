@@ -71,7 +71,7 @@ describe('Test apGroupDialog.utils', () => {
     expect(ret1.vlanText).toEqual('VLAN-2 (Custom)')
 
     const ret2 = getVlanString({ name: 'vpool', vlanMembers: [] } as VlanPool)
-    expect(ret2.vlanText).toEqual('VLAN Pool: vpool (Default)')
+    expect(ret2.vlanText).toEqual('VLAN Pool: vpool (Custom)')
   })
   it('aggregateApGroupPayload', async () => {
     const ret = aggregateApGroupPayload({ forms: {}, values: info }, data as NetworkVenue)

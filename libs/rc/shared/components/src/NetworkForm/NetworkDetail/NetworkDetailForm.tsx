@@ -56,6 +56,7 @@ export function NetworkDetailForm () {
   const { isTemplate } = useConfigTemplate()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const isExtendSsidDespriptionEnabled = useIsSplitOn(Features.EXTEND_SSID_DESPRIPTION_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
   const onChange = (e: RadioChangeEvent) => {
@@ -188,7 +189,12 @@ export function NetworkDetailForm () {
         <Form.Item
           name='description'
           label={intl.$t({ defaultMessage: 'Description' })}
-          children={<TextArea rows={4} maxLength={64} />}
+          rules={[
+            ...(isExtendSsidDespriptionEnabled ? [{ max: 256 }] : [])
+          ]}
+          children={<TextArea rows={4}
+            maxLength={isExtendSsidDespriptionEnabled ? undefined : 64}
+          />}
         />
         <Form.Item>
           {( !editMode && !cloneMode && (!modalMode || (modalMode && !createType)) ) &&
