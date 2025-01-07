@@ -237,6 +237,7 @@ export type ApModelIndividualDisplayDataType = {
   versionOptions: { key: string, label: string, releaseDate: string }[]
   defaultVersion: string
   extremeFirmware: string
+  earlyAccess?: boolean
 }
 
 export function convertToApModelIndividualDisplayData (
@@ -250,7 +251,7 @@ export function convertToApModelIndividualDisplayData (
   if (_.isEmpty(extremeFirmwareMap)) return []
 
   // eslint-disable-next-line max-len
-  const result: { [apModel in string]: Pick<ApModelIndividualDisplayDataType, 'versionOptions' | 'extremeFirmware'> } = {}
+  const result: { [apModel in string]: Pick<ApModelIndividualDisplayDataType, 'versionOptions' | 'extremeFirmware' | 'earlyAccess'> } = {}
 
   apModelFirmwareList.forEach((apModelFirmware: ApModelFirmware) => {
     if (!apModelFirmware.supportedApModels) return
@@ -262,7 +263,9 @@ export function convertToApModelIndividualDisplayData (
       if (!result[apModel]) {
         result[apModel] = {
           versionOptions: [],
-          extremeFirmware: apModelExtremeFirmware.extremeFirmware
+          extremeFirmware: apModelExtremeFirmware.extremeFirmware,
+          // eslint-disable-next-line max-len
+          earlyAccess: apModelFirmware.labels?.includes(FirmwareLabel.GA) && compareVersions(apModelFirmwareList[0].id, apModelExtremeFirmware.extremeFirmware) < 0
         }
       }
 
@@ -279,10 +282,12 @@ export function convertToApModelIndividualDisplayData (
     })
   })
 
-  return Object.entries(result).map(([ apModel, { versionOptions, extremeFirmware } ]) => ({
+  // eslint-disable-next-line max-len
+  return Object.entries(result).map(([ apModel, { versionOptions, extremeFirmware, earlyAccess } ]) => ({
     apModel,
     versionOptions,
     extremeFirmware,
+    earlyAccess,
     defaultVersion: isUpgrade
       ? getApModelDefaultFirmwareFromOptions(apModel, versionOptions, initialPayload)
       : ''

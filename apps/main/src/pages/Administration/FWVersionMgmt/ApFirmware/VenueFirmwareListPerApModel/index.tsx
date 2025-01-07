@@ -175,11 +175,12 @@ export function VenueFirmwareListPerApModel () {
 
     eaApModelFirmwares.sort((a, b) => compareVersions(b.id, a.id))
 
-    const gaApModelFirmwares = apModelFirmwares.filter(d => d.labels?.includes(FirmwareLabel.GA))
+    const gaApModelFirmwares = apModelFirmwares
+      .filter(apModelFirmware => apModelFirmware.labels?.includes(FirmwareLabel.GA))
 
-    eaApModelFirmwares = eaApModelFirmwares.map(d => {
-      const eaVersion = d.id
-      const filteredApModels = d.supportedApModels?.filter(apModel => {
+    eaApModelFirmwares = eaApModelFirmwares.map(eaApModelFirmware => {
+      const eaVersion = eaApModelFirmware.id
+      const filteredApModels = eaApModelFirmware.supportedApModels?.filter(apModel => {
         return !gaApModelFirmwares.some(gaApModelFirmware => {
           return compareVersions(gaApModelFirmware.id, eaVersion) > 0
             && gaApModelFirmware.supportedApModels?.includes(apModel)
@@ -187,7 +188,7 @@ export function VenueFirmwareListPerApModel () {
       })
 
       return {
-        ...d,
+        ...eaApModelFirmware,
         supportedApModels: filteredApModels
       }
     })
