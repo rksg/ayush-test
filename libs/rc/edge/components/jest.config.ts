@@ -9,10 +9,10 @@ module.exports = {
   coverageDirectory: '../../../../coverage/libs/rc/edge/components',
   coverageThreshold: {
     global: {
-      statements: 90,
-      branches: 78,
-      functions: 89,
-      lines: 90
+      statements: 92,
+      branches: 80,
+      functions: 93,
+      lines: 95
     }
   }
 }

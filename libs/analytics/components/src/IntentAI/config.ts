@@ -8,11 +8,35 @@ import { type NetworkNode } from '../NetworkFilter/services'
 import { DisplayStates, Statuses, StatusReasons } from './states'
 import { type IntentWlan }                        from './utils'
 
+export type Metadata = {
+  appliedAt: string
+  changedByName?: string
+  dataEndTime: string
+  failures?: (keyof typeof failureCodes)[]
+  oneClickOptimize?: boolean
+  preferences?: IntentPreferences
+  retries?: number
+  scheduledAt: string
+  scheduledBy?: string
+  unsupportedAPs?: string[]
+  updatedAt?: string
+  wlans?: IntentWlan[]
+}
+
+export type StatusTrailMetadata = Pick<Metadata,
+    'changedByName'
+  | 'failures'
+  | 'scheduledAt'
+  | 'retries'
+  | 'updatedAt'
+>
+
 export type StatusTrail = {
   status: Statuses
   statusReason?: StatusReasons
   displayStatus: DisplayStates
   createdAt: string
+  metadata: StatusTrailMetadata & object
 }
 
 type IntentPreferences = {
@@ -33,14 +57,7 @@ export type Intent = {
   status: Statuses
   statusReason: StatusReasons
   displayStatus: DisplayStates
-  metadata: object & {
-    scheduledAt: string
-    appliedAt: string
-    wlans?: IntentWlan[]
-    dataEndTime: string
-    preferences?: IntentPreferences
-    unsupportedAPs?: string[]
-  }
+  metadata: Metadata & object
   preferences?: IntentPreferences
   sliceType: NodeType
   sliceValue: string
@@ -83,6 +100,7 @@ type CodeInfo = {
 type StateInfo = {
   text: MessageDescriptor,
   tooltip: MessageDescriptor
+  showRetries?: boolean
 }
 
 const categories = {
@@ -103,14 +121,14 @@ export const states = {
   [DisplayStates.scheduled]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
     tooltip: defineMessage({ defaultMessage: `
-      <p>The change recommendation has been scheduled for {scheduledAt}, via the user action "Optimize".</p>
-    ` }) //TODO: initiated by the user {userName}
+      <p>The change recommendation has been scheduled for {scheduledAt}, via the user action "Optimize" initiated by the user{changedByName, select, undefined {} other { {changedByName}}}.</p>
+    ` })
   },
   [DisplayStates.scheduledOneClick]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
     tooltip: defineMessage({ defaultMessage: `
-      <p>The change recommendation has been scheduled for {scheduledAt}, via the user action "1-Click Optimize".</p>
-    ` }) //TODO: initiated by the user {userName}
+      <p>The change recommendation has been scheduled for {scheduledAt}, via the user action "1-Click Optimize" initiated by the user{changedByName, select, undefined {} other { {changedByName}}}.</p>
+    ` })
   },
   [DisplayStates.applyScheduled]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
@@ -131,6 +149,7 @@ export const states = {
     ` }) //TODO: The new configuration is: {newConfig}.
   },
   [DisplayStates.pausedApplyFailed]: {
+    showRetries: true,
     text: defineMessage({ defaultMessage: 'Paused, Applied Failed' }),
     tooltip: defineMessage({ defaultMessage: `
       <p>IntentAI recommended changes failed to apply to <VenueSingular></VenueSingular> {zoneName} due to:</p>
@@ -141,8 +160,8 @@ export const states = {
   [DisplayStates.revertScheduled]: {
     text: defineMessage({ defaultMessage: 'Revert Scheduled' }),
     tooltip: defineMessage({ defaultMessage: `
-      <p>The Revert of the IntentAI recommended changes are scheduled for {scheduledAt}, via user action "Revert".</p>
-    ` }) //TODO: initiated by the user {userName}
+      <p>The Revert of the IntentAI recommended changes are scheduled for {scheduledAt}, via user action "Revert" initiated by the user{changedByName, select, undefined {} other { {changedByName}}}.</p>
+    ` })
   },
   [DisplayStates.revertScheduleInProgress]: {
     text: defineMessage({ defaultMessage: 'Revert In Progress' }),
@@ -167,14 +186,14 @@ export const states = {
   [DisplayStates.pausedFromInactive]: {
     text: defineMessage({ defaultMessage: 'Paused' }),
     tooltip: defineMessage({ defaultMessage: `
-      <p>The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.</p>
-    ` }) //TODO: initiated by the user {userName}
+      <p>The Intent is paused by the user action "Pause" initiated by the user{changedByName, select, undefined {} other { {changedByName}}}. A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.</p>
+    ` })
   },
   [DisplayStates.pausedFromActive]: {
     text: defineMessage({ defaultMessage: 'Paused' }),
     tooltip: defineMessage({ defaultMessage: `
-      <p>The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.</p>
-    ` }) //TODO: initiated by the user {userName}
+      <p>The Intent is paused by the user action "Pause" initiated by the user{changedByName, select, undefined {} other { {changedByName}}}. A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.</p>
+    ` })
   },
   [DisplayStates.pausedByDefault]: {
     text: defineMessage({ defaultMessage: 'Paused' }),

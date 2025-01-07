@@ -22,9 +22,12 @@ import {
   EdgeSdLanUrls,
   EdgeSdLanFixtures,
   EdgeCompatibilityFixtures,
-  EdgeStatus } from '@acx-ui/rc/utils'
+  EdgeStatus,
+  SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                 from '@acx-ui/store'
 import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
+
+import { mockSwitchFeatureSet } from '../__tests__/fixtures'
 
 import { PersonalIdentityNetworkFormContext, PersonalIdentityNetworkFormDataProvider } from './PersonalIdentityNetworkFormContext'
 
@@ -129,6 +132,10 @@ describe('PersonalIdentityNetworkFormContext', () => {
       rest.post(
         EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
         (_req, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        SwitchUrlsInfo.getSwitchFeatureSets.url,
+        (_req, res, ctx) => res(ctx.json(mockSwitchFeatureSet))
       )
     )
   })
@@ -173,6 +180,9 @@ describe('PersonalIdentityNetworkFormContext', () => {
         expect(result.current.switchList?.length)
           .toBe(mockPinSwitchInfoData.distributionSwitches.length +
           mockPinSwitchInfoData.accessSwitches.length))
+      expect(result.current.requiredFw_DS).toBe('10.0.10f')
+      expect(result.current.requiredFw_AS).toBe('10.0.10f')
+      expect(result.current.requiredSwitchModels).toStrictEqual(['ICX7650', 'ICX7850', 'ICX7550'])
     })
 
     it('should get name correctly', async () => {

@@ -13,6 +13,7 @@ export interface TunnelProfile {
   mtuRequestTimeout?: number // unit is milliseconds
   keepAliveRetry?: number
   keepAliveInterval?: number // unit is seconds
+  natTraversalEnabled?: boolean
 }
 
 export interface TunnelProfileViewData {
@@ -31,6 +32,7 @@ export interface TunnelProfileViewData {
   mtuRequestTimeout: number // unit is seconds
   keepAliveRetry: number
   keepAliveInterval: number // unit is milliseconds
+  natTraversalEnabled?: boolean
 }
 
 export interface TunnelProfileFormType extends TunnelProfile {

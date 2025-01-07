@@ -18,7 +18,7 @@ import * as UI          from './styledComponents'
 
 const tunnelProfileFormInitValues ={
   type: TunnelTypeEnum.VXLAN,
-  disabledFields: ['type']
+  disabledFields: ['type', 'natTraversalEnabled']
 }
 
 export const WirelessNetworkForm = () => {
