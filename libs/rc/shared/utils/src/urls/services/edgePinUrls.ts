@@ -92,5 +92,10 @@ export const EdgePinUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/:venueId/personalIdentityNetworks/accessSwitchInfo',
     newApi: true
+  },
+  validateEdgeClusterConfig: {
+    method: 'post',
+    url: '/personalIdentityNetworks/validateEdgeClusterConfig',
+    newApi: true
   }
 }

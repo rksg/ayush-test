@@ -329,6 +329,15 @@ export const pinApi = basePinApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    validateEdgePinClusterConfig: build.mutation<CommonResult, RequestPayload<EdgeClusterInfo>>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(EdgePinUrls.validateEdgeClusterConfig)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -383,5 +392,6 @@ export const {
   useValidateAccessSwitchInfoMutation,
   useValidateEdgePinNetworkMutation,
   useActivateEdgePinNetworkMutation,
-  useDeactivateEdgePinNetworkMutation
+  useDeactivateEdgePinNetworkMutation,
+  useValidateEdgePinClusterConfigMutation
 } = pinApi
