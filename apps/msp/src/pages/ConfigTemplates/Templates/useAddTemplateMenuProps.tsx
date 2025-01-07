@@ -23,25 +23,29 @@ import { getIntl } from '@acx-ui/utils'
 import * as UI                        from './styledComponents'
 import { getConfigTemplateTypeLabel } from './templateUtils'
 
-export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
+export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> | null {
+  const menuItems = [
+    useWiFiMenuItems(),
+    useVenueItem(),
+    useSwitchMenuItems(),
+    usePolicyMenuItems(),
+    useServiceMenuItems()
+  ].filter(item => item)
+
+  if (menuItems.length === 0) return null
+
   return {
     expandIcon: <UI.MenuExpandArrow />,
     subMenuCloseDelay: 0.2,
-    items: [
-      useWiFiMenuItems(),
-      useVenueItem(),
-      useSwitchMenuItems(),
-      usePolicyMenuItems(),
-      useServiceMenuItems()
-    ]
+    items: menuItems
   }
 }
 
-function usePolicyMenuItems (): ItemType {
+function usePolicyMenuItems (): ItemType | null {
   const visibilityMap = useConfigTemplateVisibilityMap()
   const { $t } = useIntl()
 
-  return {
+  const menuItems = {
     key: 'add-policy',
     label: $t({ defaultMessage: 'Policies' }),
     children: [
@@ -52,6 +56,8 @@ function usePolicyMenuItems (): ItemType {
       createPolicyMenuItem(ConfigTemplateType.RADIUS, visibilityMap)
     ]
   }
+
+  return menuItems.children.filter(item => item).length > 0 ? menuItems : null
 }
 
 // eslint-disable-next-line max-len
@@ -74,11 +80,11 @@ export function createPolicyMenuItem (configTemplateType: ConfigTemplateType, vi
   }
 }
 
-function useServiceMenuItems (): ItemType {
+function useServiceMenuItems (): ItemType | null {
   const visibilityMap = useConfigTemplateVisibilityMap()
   const { $t } = useIntl()
 
-  return {
+  const menuItems = {
     key: 'add-service',
     label: $t({ defaultMessage: 'Services' }),
     children: [
@@ -88,6 +94,8 @@ function useServiceMenuItems (): ItemType {
       createServiceMenuItem(ConfigTemplateType.WIFI_CALLING, visibilityMap)
     ]
   }
+
+  return menuItems.children.filter(item => item).length > 0 ? menuItems : null
 }
 
 // eslint-disable-next-line max-len

@@ -128,13 +128,13 @@ export function hasConfigTemplateAllowedOperation (type: ConfigTemplateType, ope
       isTemplate: true
     })
   } else if (type === ConfigTemplateType.NETWORK) {
-    hasAllowedOperations([getOpsApi(configTemplateNetworkOperationMap[oper])])
+    return hasAllowedOperations([getOpsApi(configTemplateNetworkOperationMap[oper])])
   } else if (type === ConfigTemplateType.VENUE) {
-    hasAllowedOperations([getOpsApi(configTemplateVenueOperationMap[oper])])
+    return hasAllowedOperations([getOpsApi(configTemplateVenueOperationMap[oper])])
   } else if (type === ConfigTemplateType.SWITCH_REGULAR || type === ConfigTemplateType.SWITCH_CLI) {
-    hasAllowedOperations([getOpsApi(configTemplateSwitchProfileOperationMap[oper])])
+    return hasAllowedOperations([getOpsApi(configTemplateSwitchProfileOperationMap[oper])])
   } else if (type === ConfigTemplateType.AP_GROUP) {
-    hasAllowedOperations([getOpsApi(configTemplateApGroupOperationMap[oper])])
+    return hasAllowedOperations([getOpsApi(configTemplateApGroupOperationMap[oper])])
   }
 
   return false

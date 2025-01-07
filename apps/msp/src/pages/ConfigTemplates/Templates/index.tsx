@@ -15,6 +15,7 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import { DateFormatEnum, userDateTimeFormat }                                       from '@acx-ui/formatter'
+import { MspUrlsInfo }                                                              from '@acx-ui/msp/utils'
 import {
   renderConfigTemplateDetailsComponent,
   useAccessControlSubPolicyVisible,
@@ -54,7 +55,7 @@ import {
   ConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }               from '@acx-ui/user'
+import { filterByAccess, hasAllowedOperations }    from '@acx-ui/user'
 import { getOpsApi }                               from '@acx-ui/utils'
 
 import { AppliedToTenantDrawer }                                         from './AppliedToTenantDrawer'
@@ -90,12 +91,14 @@ export function ConfigTemplateList () {
 
   const isDeleteAllowed = (selectedRows: ConfigTemplate[]) => {
     const targetRow = selectedRows[0]
-    return !!deleteMutationMap[targetRow.type]
+    return targetRow
+      &&!!deleteMutationMap[targetRow.type]
       && hasConfigTemplateAllowedOperation(targetRow.type, 'Delete')
   }
 
   const isEditAllowed = (selectedRows: ConfigTemplate[]) => {
-    return hasConfigTemplateAllowedOperation(selectedRows[0].type, 'Edit')
+    const targetRow = selectedRows[0]
+    return targetRow && hasConfigTemplateAllowedOperation(selectedRows[0].type, 'Edit')
   }
 
   const rowActions: TableProps<ConfigTemplate>['rowActions'] = [
@@ -158,12 +161,13 @@ export function ConfigTemplateList () {
     }
   ]
 
-  const actions: TableProps<ConfigTemplate>['actions'] = [
+  const allowedActions = addTemplateMenuProps ? [
     {
       label: $t({ defaultMessage: 'Add Template' }),
       dropdownMenu: addTemplateMenuProps
     }
-  ]
+  ] : undefined
+  const allowedRowActions = filterByAccess(rowActions)
 
   return (
     <>
@@ -174,11 +178,11 @@ export function ConfigTemplateList () {
           })}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
-          actions={filterByAccess(actions)}
+          actions={allowedActions}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowActions={allowedRowActions}
+          rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
@@ -276,15 +280,19 @@ function useColumns (props: TemplateColumnProps) {
       sorter: true,
       align: 'center',
       render: function (_, row) {
-        if (!row.appliedOnTenants) return 0
-        if (!row.appliedOnTenants.length) return row.appliedOnTenants.length
+        const count = row.appliedOnTenants?.length ?? 0
+
+        if (count === 0) return 0
+
+        if (!hasAllowedOperations([getOpsApi(MspUrlsInfo.getMspCustomersList)])) return count
+
         return <Button
           type='link'
           onClick={() => {
             setSelectedTemplates([row])
             setAppliedToTenantDrawerVisible(true)
           }}>
-          {row.appliedOnTenants.length}
+          {count}
         </Button>
       }
     },

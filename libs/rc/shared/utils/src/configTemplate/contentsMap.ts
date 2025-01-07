@@ -1,9 +1,10 @@
 import { ApiInfo } from '@acx-ui/utils'
 
-import { ServiceType }                                                                         from '../constants'
-import { PolicyOperation, ServiceOperation }                                                   from '../features'
-import { ConfigTemplateType, PolicyType }                                                      from '../types'
-import { ApGroupConfigTemplateUrlsInfo, ConfigTemplateUrlsInfo, SwitchConfigTemplateUrlsInfo } from '../urls'
+import { ServiceType }                                                                                                      from '../constants'
+import { PolicyOperation }                                                                                                  from '../features/policy'
+import { ServiceOperation }                                                                                                 from '../features/service'
+import { ConfigTemplateType, PolicyType }                                                                                   from '../types'
+import { ApGroupConfigTemplateUrlsInfo, SwitchConfigTemplateUrlsInfo, VenueConfigTemplateUrlsInfo, ConfigTemplateUrlsInfo } from '../urls'
 
 export const configTemplatePolicyTypeMap: Partial<Record<ConfigTemplateType, PolicyType>> = {
   [ConfigTemplateType.RADIUS]: PolicyType.AAA,
@@ -47,9 +48,9 @@ export const configTemplateNetworkOperationMap: Record<ConfigTemplateOperation, 
 }
 
 export const configTemplateVenueOperationMap: Record<ConfigTemplateOperation, ApiInfo> = {
-  Create: ConfigTemplateUrlsInfo.addVenueTemplate,
-  Edit: ConfigTemplateUrlsInfo.updateVenueTemplate,
-  Delete: ConfigTemplateUrlsInfo.deleteVenueTemplate
+  Create: VenueConfigTemplateUrlsInfo.addVenueTemplate,
+  Edit: VenueConfigTemplateUrlsInfo.updateVenueTemplate,
+  Delete: VenueConfigTemplateUrlsInfo.deleteVenueTemplate
 }
 
 export const configTemplateSwitchProfileOperationMap: Record<ConfigTemplateOperation, ApiInfo> = {
