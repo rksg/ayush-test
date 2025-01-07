@@ -1,6 +1,8 @@
 export const configChanges = [
   {
     timestamp: '1685427082100',
+    root: '30b11d8b-ce40-4344-81ef-84b47753b4a6',
+    sliceId: 'e28d7cdc-db40-41e4-91fc-b91923995424',
     type: 'zone',
     name: 'Config_change_WLAN2',
     key: 'initialState.ccmZone.management_identifiers.map_entries.venueName',
@@ -13,6 +15,8 @@ export const configChanges = [
   },
   {
     timestamp: '1685427082200',
+    root: '30b11d8b-ce40-4344-81ef-84b47753b4a6',
+    sliceId: 'ae025240-0fbe-45ed-b326-b598bed5ae0f',
     type: 'ap',
     name: '94:B3:4F:3D:21:80',
     key: 'initialState.ccmAp.radio24g.radio.channel_select_mode',
@@ -25,6 +29,8 @@ export const configChanges = [
   },
   {
     timestamp: '1685427082300',
+    root: '30b11d8b-ce40-4344-81ef-84b47753b4a6',
+    sliceId: '9b6f5732-11c9-4ffb-9a74-f88be299c0ab',
     type: 'ap',
     name: '94:B3:4F:3D:21:80',
     key: 'initialState.ccmAp.radio24g.radio.channel_width',
@@ -37,6 +43,8 @@ export const configChanges = [
   },
   {
     timestamp: '1685427082400',
+    root: '30b11d8b-ce40-4344-81ef-84b47753b4a6',
+    sliceId: 'f77a8816-3049-40cd-8484-82919275ddc3',
     type: 'wlan',
     name: '!!R770_url_sanity',
     key: 'initialState.CcmWlan.firewall.firewall_url_filtering_policy.enabled',
@@ -49,6 +57,8 @@ export const configChanges = [
   },
   {
     timestamp: '1685427082500',
+    root: '30b11d8b-ce40-4344-81ef-84b47753b4a6',
+    sliceId: '9db36774-198d-4dfa-a837-4fc54a41541b',
     type: 'wlan',
     name: 'ER-12560_1',
     key: 'initialState.CcmWlan.bss_min_rate',
@@ -61,6 +71,8 @@ export const configChanges = [
   },
   {
     timestamp: '1685427082600',
+    root: '30b11d8b-ce40-4344-81ef-84b47753b4a6',
+    sliceId: '935f8ef5-7f10-4226-92c0-1e296bf3a310',
     type: 'zone',
     name: '23A-IND-BNG-D23-Home',
     key: 'initialState.ccmZone.radio24g.radio.bg_scan',
@@ -73,6 +85,8 @@ export const configChanges = [
   },
   {
     timestamp: '1685427082700',
+    root: '30b11d8b-ce40-4344-81ef-84b47753b4a6',
+    sliceId: '9b6f5732-11c9-4ffb-9a74-f88be299c0ab',
     type: 'zone',
     name: '23A-IND-BNG-D23-Home',
     key: 'initialState.ccmZone.radio5g.indoor_channel_range',
@@ -85,6 +99,8 @@ export const configChanges = [
   },
   {
     timestamp: '1685427082800',
+    root: '30b11d8b-ce40-4344-81ef-84b47753b4a6',
+    sliceId: 'ab8b4f08-b388-4309-bfe0-9972558210b6',
     type: 'zone',
     name: 'someTest',
     key: 'unknown',
@@ -97,6 +113,8 @@ export const configChanges = [
   },
   {
     timestamp: '1685427082900',
+    root: '30b11d8b-ce40-4344-81ef-84b47753b4a6',
+    sliceId: '072646e8-6082-40d5-aaf8-0eb1e73f6dbd',
     type: 'ap',
     name: '94:B3:4F:3D:21:80',
     key: 'initialState.ccmAp.radio24g.radio.channel_fly_mtbc',
@@ -109,6 +127,8 @@ export const configChanges = [
   },
   {
     timestamp: '1685427082100',
+    root: '30b11d8b-ce40-4344-81ef-84b47753b4a6',
+    sliceId: 'f75127d7-f974-481e-8067-5ce885a1c7af',
     type: 'intentAI',
     name: 'Config_change_WLAN2',
     key: 'intentAi.c-bgscan24g-enable',
@@ -121,6 +141,8 @@ export const configChanges = [
   },
   {
     timestamp: '1685427082200',
+    root: '30b11d8b-ce40-4344-81ef-84b47753b4a6',
+    sliceId: 'b4187899-38ae-4ace-8e40-0bc444455156',
     type: 'intentAI',
     name: '94:B3:4F:3D:21:80',
     key: 'intentAi.c-bgscan5g-enable',

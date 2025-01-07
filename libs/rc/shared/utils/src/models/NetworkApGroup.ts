@@ -43,6 +43,8 @@ export class NetworkApGroup {
 
   isAllApGroups?: boolean
 
+  selected?: boolean
+
   constructor () {
     this.radio = RadioEnum.Both
 

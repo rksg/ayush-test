@@ -24,8 +24,10 @@ export type ConfigChange = {
   key: string
   oldValues: string[]
   newValues: string[]
-  sliceValue: string
-  path: [PathNode]
+  root?: string
+  sliceId?: string
+  sliceValue?: string
+  path?: [PathNode]
 }
 
 type OnDatazoomEvent = { batch: { startValue: number, endValue: number }[] }

@@ -14,8 +14,10 @@ interface KpiChangesParams {
   afterEnd: string
 }
 
-const pathQuery = (showIntentAI: boolean) => showIntentAI ?
-  `sliceValue
+const additionalParamsQuery = (showIntentAI: boolean) => showIntentAI ?
+  `root
+  sliceId
+  sliceValue
   path {
     type name
   }` : ''
@@ -42,7 +44,7 @@ export const api = dataApi.injectEndpoints({
                   key
                   oldValues
                   newValues
-                  ${pathQuery(payload.showIntentAI)}
+                  ${additionalParamsQuery(payload.showIntentAI)}
                 }
               }
             }
@@ -68,21 +70,21 @@ export const api = dataApi.injectEndpoints({
             $afterStart: DateTime, $afterEnd: DateTime,
             $filter: FilterInput
           ) {
-              network(filter: $filter) {
-                before: KPI(path: $path, start: $beforeStart, end: $beforeEnd) {
-                  ${payload.kpis.join('\n')}
-                }
-                after: KPI(path: $path, start: $afterStart, end: $afterEnd) {
-                  ${payload.kpis.join('\n')}
-                }
+            network(filter: $filter) {
+              before: KPI(path: $path, start: $beforeStart, end: $beforeEnd) {
+                ${payload.kpis.join('\n')}
               }
+              after: KPI(path: $path, start: $afterStart, end: $afterEnd) {
+                ${payload.kpis.join('\n')}
+              }
+            }
           }
         `,
         variables: omit(payload, ['kpis'])
       }),
       transformResponse: (response: { network: {
-        before: Record<string, number>, after: Record<string, number>
-      } } ) => response.network
+          before: Record<string, number>, after: Record<string, number>
+        } } ) => response.network
     })
   })
 })

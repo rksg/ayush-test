@@ -23,9 +23,11 @@ import {
   Cascader,
   Tooltip
 }                                    from '@acx-ui/components'
+import { get }                       from '@acx-ui/config'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { DownloadOutlined }          from '@acx-ui/icons'
+import { TenantLink }                from '@acx-ui/react-router-dom'
 import {
   exportMessageMapping,
   noDataDisplay,
@@ -130,8 +132,21 @@ export function Table (props: {
       key: 'timestamp',
       title: $t({ defaultMessage: 'Timestamp' }),
       dataIndex: 'timestamp',
-      render: (_, { timestamp }) =>
-        formatter(DateFormatEnum.DateTimeFormat)(moment(Number(timestamp))),
+      render: (_, row) => {
+        const timestamp = formatter(DateFormatEnum.DateTimeFormat)(moment(Number(row.timestamp)))
+        if (showIntentAI && row.type === 'intentAI') {
+          const code = row.key.substring(row.key.lastIndexOf('.') + 1)
+          const linkPath = get('IS_MLISA_SA')
+            ? `/intentAI/${row.root}/${row.sliceId}/${code}`
+            : `/analytics/intentAI/${row.sliceId}/${code}`
+          return (
+            <TenantLink to={linkPath}>
+              {timestamp}
+            </TenantLink>
+          )
+        }
+        return timestamp
+      },
       sorter: { compare: sortProp('timestamp', defaultSort) },
       width: 130
     },

@@ -30,8 +30,11 @@ import {
   PhyTypeConstraintEnum,
   ManagementFrameMinimumPhyRateEnum,
   MtuTypeEnum,
-  SoftGreViewData
+  SoftGreViewData,
+  IsolatePacketsTypeEnum
 } from '@acx-ui/rc/utils'
+
+export const mockedVenueId = '__MOCKED_VENUE_ID__'
 
 export const successResponse = {
   requestId: 'request-id'
@@ -122,7 +125,7 @@ export const venueData = {
   createdDate: '2022-07-08T04:59:22.351+00:00',
   description: 'My-Venue',
   floorPlans: [],
-  id: '4c778ed630394b76b17bce7fe230cf9f',
+  id: mockedVenueId,
   name: 'My-Venue',
   updatedDate: '2022-07-08T04:59:22.351+00:00'
 }
@@ -3653,4 +3656,105 @@ export const mockSoftGreTable = {
       ]
     }
   ] as SoftGreViewData[]
+}
+
+export const mockedClientIsolationProfileId1 = '__ClientIsolationProfileId1__'
+export const mockedClientIsolationProfileId2 = '__ClientIsolationProfileId2__'
+export const mockedClientIsolationProfileName1 = 'clientIsolation1'
+export const mockedClientIsolationProfileName2 = 'clientIsolation2'
+export const mockedClientIsolation2 = {
+  id: mockedClientIsolationProfileId2,
+  name: mockedClientIsolationProfileName2,
+  description: 'Hello Client',
+  allowlist: [
+    {
+      mac: 'AA:BB:CC:DD:EE:11',
+      description: 'Client A'
+    },
+    {
+      mac: 'AA:BB:CC:DD:EE:22',
+      description: 'Client B'
+    },
+    {
+      mac: 'AA:BB:CC:DD:EE:33',
+      description: 'Client C'
+    }
+  ]
+}
+
+
+export const mockedClientIsolationQueryData = {
+  fields: null,
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: mockedClientIsolationProfileId1,
+      name: mockedClientIsolationProfileName1,
+      description: '',
+      clientEntries: [
+        'aa:21:92:3e:33:e0',
+        'e6:e2:fd:af:54:49'
+      ],
+      activations: [
+        {
+          venueId: '770c3794b4fd4bf6bf9e64e8f14db293',
+          wifiNetworkId: 'bd789b85931b40fe94d15028dffc6214'
+        },
+        {
+          venueId: '7bf824f4b7f949f2b64e18fb6d05b0f4',
+          wifiNetworkId: '936ad54680ba4e5bae59ae1eb817ca24'
+        }
+      ],
+      venueActivations: [
+        {
+          venueId: '770c3794b4fd4bf6bf9e64e8f14db293',
+          apModel: 'R610',
+          apSerialNumbers: ['121749001049'],
+          portId: 1
+        },
+        {
+          venueId: mockedVenueId,
+          apModel: 'T750',
+          apSerialNumbers: ['121749001051'],
+          portId: 1
+        }
+      ],
+      apActivations: [
+        {
+          venueId: '770c3794b4fd4bf6bf9e64e8f14db293',
+          apModel: 'R510',
+          apSerialNumber: '121749001050',
+          portId: 2
+        }
+      ]
+    },
+    {
+      id: mockedClientIsolationProfileId2,
+      name: mockedClientIsolationProfileName2,
+      description: '',
+      clientEntries: [
+        'AA:BB:CC:DD:EE:11',
+        'AA:BB:CC:DD:EE:22',
+        'AA:BB:CC:DD:EE:33'
+      ]
+    }
+  ]
+}
+
+export const mockedVenueLanPortSettings1 = {
+  clientIsolationEnabled: true,
+  clientIsolationSettings: {
+    packetsType: IsolatePacketsTypeEnum.UNICAST,
+    autoVrrp: false
+  },
+  enabled: true
+}
+
+export const mockedVenueLanPortSettings2 = {
+  enabled: true
+}
+
+export const mockedVenueLanPortSettings3 = {
+  enabled: true
 }

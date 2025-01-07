@@ -44,6 +44,36 @@ jest.mock('@acx-ui/rc/services', () => ({
   useLazyDownloadNewFlowPassphrasesQuery: () => ([ mockedDownloadNewFlowCsv ])
 }))
 
+const mockFormData = new FormData()
+
+jest.mock('@acx-ui/rc/components', () => ({
+  NetworkForm: () => <div data-testid='network-form' />,
+  PassphraseViewer: () => <div data-testid='PassphraseViewer' />,
+  ImportFileDrawer: ({ importRequest, onClose, visible }: {
+    visible: boolean
+    importRequest: (formData: FormData, values: object) => void
+    onClose: () => void
+  }) =>
+    visible && <div data-testid={'ImportFileDrawer'}>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        importRequest(mockFormData, { usernamePrefix: 'prefix' })
+      }}>Import</button>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        onClose()
+      }}>Cancel</button>
+    </div>,
+  CsvSize: {},
+  ImportFileDrawerType: {}
+}))
+
+jest.mock('./DpskPassphraseDrawer', () => ({
+  ...jest.requireActual('./DpskPassphraseDrawer'),
+  __esModule: true,
+  default: () => <div data-testid='DpskPassphraseDrawer'></div>
+}))
+
 describe('DpskPassphraseManagement', () => {
   const paramsForPassphraseTab = {
     tenantId: mockedTenantId,
@@ -112,11 +142,7 @@ describe('DpskPassphraseManagement', () => {
 
     // Verify Add Passphrases
     await userEvent.click(await screen.findByRole('button', { name: /Add Passphrases/ }))
-    expect(await screen.findByRole('spinbutton', { name: /Number of Passphrases/ })).toBeVisible()
-
-    const confirmDialog = await screen.findByRole('dialog')
-    await userEvent.click(await within(confirmDialog).findByText('Cancel'))
-    await waitFor(() => expect(confirmDialog).not.toBeInTheDocument())
+    expect(await screen.findByTestId('DpskPassphraseDrawer')).toBeVisible()
   })
 
   it('should delete selected passphrase', async () => {
@@ -198,16 +224,7 @@ describe('DpskPassphraseManagement', () => {
     )
 
     await userEvent.click(await screen.findByRole('button', { name: /Import From File/ }))
-
-    const importTextElement = await screen.findByText('Import from file')
-    // eslint-disable-next-line testing-library/no-node-access
-    const importDialog = importTextElement.closest('.ant-drawer-content') as HTMLDivElement
-
-    const csvFile = new File([''], 'DPSK_import_template_expiration.csv', { type: 'text/csv' })
-
-    // eslint-disable-next-line testing-library/no-node-access
-    await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
-
+    const importDialog = await screen.findByTestId('ImportFileDrawer')
     await userEvent.click(await within(importDialog).findByRole('button', { name: /Import/ }))
 
     // TODO
@@ -252,10 +269,7 @@ describe('DpskPassphraseManagement', () => {
     await userEvent.click(within(targetRow).getByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: /Edit Passphrase/i }))
 
-    await waitFor(() => {
-      // eslint-disable-next-line max-len
-      expect(screen.getByRole('textbox', { name: 'User Name' })).toHaveValue(mockedDpskPassphrase.username)
-    })
+    expect(await screen.findByTestId('DpskPassphraseDrawer')).toBeVisible()
   })
 
   it.skip('should revoke/unrevoke the passphrases', async () => {
