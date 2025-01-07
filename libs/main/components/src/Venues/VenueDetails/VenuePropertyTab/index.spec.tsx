@@ -68,6 +68,27 @@ const mockPersona: Persona = {
   meteringProfileId: '6ef51aa0-55da-4dea-9936-c6b7c7b11164',
   expirationDate: moment().add(-8, 'days').toISOString()
 }
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ImportFileDrawer: ({ importRequest, onClose, visible }: {
+    visible: boolean
+    importRequest: () => void
+    onClose: () => void
+  }) =>
+    visible && <div data-testid={'ImportFileDrawer'}>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        importRequest()
+      }}>Import</button>
+      <button onClick={(e)=>{
+        e.preventDefault()
+        onClose()
+      }}>Cancel</button>
+    </div>,
+  CsvSize: {},
+  ImportFileDrawerType: {}
+}))
+
 type MockDrawerProps = React.PropsWithChildren<{
   visible: boolean
   onSave: () => void
@@ -317,16 +338,7 @@ describe('Property Unit Page', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: /Import From File/ }))
 
-    const dialog = await screen.findByRole('dialog')
-
-    const csvFile = new File(
-      [''],
-      'unit_import_template.csv',
-      { type: 'text/csv' }
-    )
-
-    // eslint-disable-next-line testing-library/no-node-access
-    await userEvent.upload(document.querySelector('input[type=file]')!, csvFile)
+    const dialog = await screen.findByTestId('ImportFileDrawer')
 
     await userEvent.click(await within(dialog).findByRole('button', { name: /Import/ }))
 
