@@ -66,6 +66,18 @@ const userProfile = {
 
 
 jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API)
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ConnectionMeteringForm: () => <div data-testid='ConnectionMeteringForm' />,
+  ConnectionMeteringFormMode: {},
+  PhoneInput: ({ name, callback }: {
+    name: string,
+    callback?: (value: string) => void
+  }) => <input data-testid='PhoneInput'
+    name={name}
+    onChange={e => callback && callback(e.target.value)} />
+}))
+
 describe('Property Unit Drawer', () => {
   beforeEach(() => {
     closeFn.mockClear()

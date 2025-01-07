@@ -2,7 +2,7 @@
 import { Row, Col, Form }                           from 'antd'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { StepsForm, ProcessedCloudRRMGraph, Tooltip } from '@acx-ui/components'
+import { StepsForm, Tooltip } from '@acx-ui/components'
 
 import { KPIFields }            from '../../common/KPIs'
 import { richTextFormatValues } from '../../common/richTextFormatValues'
@@ -39,9 +39,7 @@ const getRRMGraphTooltip = (status: Statuses) => {
 }
 
 
-export function Summary (
-  { summaryUrlBefore, summaryUrlAfter, crrmData } :
-  { summaryUrlBefore?: string, summaryUrlAfter?: string, crrmData: ProcessedCloudRRMGraph[] }) {
+export function Summary () {
   const { $t } = useIntl()
   const { intent } = useIntentContext()
   const rrmGraphTooltip = getRRMGraphTooltip(intent.status)
@@ -50,11 +48,7 @@ export function Summary (
     <Col span={16}>
       <StepsForm.Title children={$t({ defaultMessage: 'Summary' })} />
       <Form.Item label={$t({ defaultMessage: 'Projected interfering links reduction' })}>
-        <IntentAIRRMGraph
-          crrmData={crrmData}
-          summaryUrlBefore={summaryUrlBefore}
-          summaryUrlAfter={summaryUrlAfter}
-        />
+        <IntentAIRRMGraph />
       </Form.Item>
       {rrmGraphTooltip && (<Form.Item>
         <Tooltip

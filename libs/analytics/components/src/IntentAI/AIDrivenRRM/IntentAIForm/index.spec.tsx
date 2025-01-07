@@ -70,9 +70,6 @@ describe('IntentAIForm', () => {
     })
     mockGraphqlQuery(intentAIUrl, 'IntentKPIs', { data: { intent: mockedIntentCRRMKPIs } })
 
-    jest.spyOn(require('../../utils'), 'isDataRetained')
-      .mockImplementation(() => true)
-
     mockIntentContext({ intent: mockedIntentCRRM, kpis })
   })
 
