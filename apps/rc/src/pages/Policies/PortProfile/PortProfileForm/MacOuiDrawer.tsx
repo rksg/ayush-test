@@ -41,9 +41,9 @@ export function MacOuiDrawer (props: MacOuiDrawerProps) {
     }).unwrap()).data
       .filter((n: MacOuis) => n.id !== editData?.id)
       .map((n: MacOuis) =>
-        ({ name: n.oui.replace(/[^a-z0-9]/gi, '').toLowerCase() }))
+        ({ name: n.oui.replace(/[^a-z0-9]/gi, '') }))
     // eslint-disable-next-line max-len
-    return checkObjectNotExists(list, { name: macAddress.replace(/[^a-z0-9]/gi, '').toLowerCase() } ,
+    return checkObjectNotExists(list, { name: macAddress.replace(/[^a-z0-9]/gi, '') } ,
       $t({ defaultMessage: 'MAC OUI' }))
   }
 

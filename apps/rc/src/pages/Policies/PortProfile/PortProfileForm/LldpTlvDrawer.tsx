@@ -45,9 +45,9 @@ export function LldpTlvDrawer (props: LldpTlvDrawerProps) {
       .filter((n: LldpTlvs) => n.nameMatchingType === lldpTlv.nameMatchingType)
       .filter((n: LldpTlvs) => n.descMatchingType === lldpTlv.descMatchingType)
       .map((n: LldpTlvs) =>
-        ({ name: n.systemName.toLowerCase() }))
+        ({ name: n.systemName }))
     // eslint-disable-next-line max-len
-    return checkObjectNotExists(list, { name: lldpTlv.systemName.toLowerCase() } ,
+    return checkObjectNotExists(list, { name: lldpTlv.systemName } ,
       $t({ defaultMessage: 'LLDP TLV' }), $t({ defaultMessage: 'value' }))
   }
 
