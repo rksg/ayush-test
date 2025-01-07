@@ -26,6 +26,11 @@ export const SwitchImpactedPortsCount = (props: TimeSeriesChartProps) => {
   const seriesMapping = [
     { key: 'portCount', name: $t({ defaultMessage: 'Port Count' }) }
   ]
+  const record = props.incident
+  const timeMarkers = [
+    { timestamp: record.startTime, label: $t({ defaultMessage: 'Detected Time' }) },
+    { timestamp: record.endTime, label: $t({ defaultMessage: 'Finished Time' }) }
+  ]
 
   const chartResults = getSeriesData(
     props.data.timeSeries as Record<string, TimeSeriesDataType[]>, seriesMapping)
@@ -44,6 +49,7 @@ export const SwitchImpactedPortsCount = (props: TimeSeriesChartProps) => {
           style={{ height, width }}
           data={chartResults}
           dataFormatter={formatter('countFormat')}
+          timeMarkers={timeMarkers}
           yAxisProps={{ min: 0 }}
           echartOptions={{ yAxis: { minInterval: 1,
             max: Math.ceil(maxValue * (1 + yAxisBufferPercent)) } }}

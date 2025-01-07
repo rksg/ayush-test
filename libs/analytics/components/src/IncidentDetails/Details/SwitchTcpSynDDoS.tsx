@@ -42,7 +42,7 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
   const granularity = calculateGranularity(start, end, 'PT3M', granularities)
 
   const binMins = granularity === 'PT15M' ? 15 : granularity === 'PT30M' ? 30 : 3
-  const noOfBinsForBuffer = 3
+  const noOfBinsForBuffer = granularity === 'PT15M' ? 5 : granularity === 'PT30M' ? 8 : 3
 
   const buffer = {
     front: { value: binMins * noOfBinsForBuffer, unit: 'minutes' as unitOfTime.Base },
