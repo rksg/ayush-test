@@ -24,10 +24,10 @@ export const History = styled.div`
     &:last-of-type {
       border: 0px;
     }
-    &:first-of-type .title{
+    &:first-of-type .time{
       margin-top: -40px;
     }
-    .title {
+    .time {
       font-size: 10px;
       font-weight: 700;
       line-height: 16px;   
@@ -37,14 +37,38 @@ export const History = styled.div`
       cursor: default;
     }
     .chat {
-      padding: 12px 16px;
-      cursor: pointer;
+      padding: 6px 8px 6px 16px;
+      display: flex;
+      justify-content: space-between;
+      color: var(--acx-primary-black);
       &:hover { 
         background: var(--acx-neutrals-30);
+        .action {
+          display: flex;
+        }
       }
       &.active {
         background: var(--acx-neutrals-80);
         color: var(--acx-primary-white);
+        .action {
+          display: flex;
+        }
+      }
+      .title {
+        overflow:hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        padding: 6px 5px 6px 0;
+        cursor: pointer;
+      }
+      .action {
+        display: none;
+        height: 28px;
+        padding-top: 6px;
+        .button{
+          margin: 0 8px;
+          cursor: pointer;
+        }
       }
     }
   }

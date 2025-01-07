@@ -16,7 +16,8 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Chat', id: 'LIST' }]
     }),
     getChat: build.query<RuckusAiChat, RequestPayload>({
       query: ({ params }) => {
@@ -25,6 +26,24 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    updateChat: build.mutation<RuckusAiChat, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.updateChat)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    deleteChat: build.mutation<RuckusAiChat, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.deleteChat, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Chat', id: 'LIST' }]
     }),
     chatAi: build.mutation<RuckusAiChat, RequestPayload>({
       query: ({ payload }) => {
@@ -48,9 +67,10 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
 
 export const {
   useGetAllChatsQuery,
-  useLazyGetAllChatsQuery,
   useGetChatQuery,
   useLazyGetChatQuery,
   useChatAiMutation,
+  useUpdateChatMutation,
+  useDeleteChatMutation,
   useChatChartQuery
 } = ruckusAiChatApi

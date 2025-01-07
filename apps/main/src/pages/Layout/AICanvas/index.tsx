@@ -1,17 +1,21 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { Spin }         from 'antd'
+import { Form, Spin }   from 'antd'
+import { debounce }     from 'lodash'
 import moment           from 'moment'
 import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
-import { Button, Drawer, DrawerTypes, Loader }                                      from '@acx-ui/components'
+import { Button, Drawer, DrawerTypes, Loader, showActionModal }                     from '@acx-ui/components'
 import { CloseSymbol, RuckusAiDog, SendMessageOutlined, HistoricalOutlined, Plus  } from '@acx-ui/icons'
-import { useChatAiMutation, useLazyGetAllChatsQuery, useLazyGetChatQuery }          from '@acx-ui/rc/services'
-import { ChatHistory, ChatMessage, HistoryListItem }                                from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                               from '@acx-ui/react-router-dom'
+import { DeleteOutlined, EditOutlined }                                             from '@acx-ui/icons-new'
+import { useChatAiMutation, useLazyGetChatQuery, useGetAllChatsQuery,
+  // useUpdateChatMutation,
+  useDeleteChatMutation }          from '@acx-ui/rc/services'
+import { ChatHistory, ChatMessage, HistoryListItem } from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                from '@acx-ui/react-router-dom'
 
 import Canvas             from './Canvas'
 import { DraggableChart } from './components/WidgetChart'
@@ -22,20 +26,29 @@ export default function AICanvas () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const [chatAi] = useChatAiMutation()
+  // const [updateChat] = useUpdateChatMutation()
+  const [deleteChat] = useDeleteChatMutation()
   const [getChat] = useLazyGetChatQuery()
-  const [getAllChats] = useLazyGetAllChatsQuery()
   const [loading, setLoading] = useState(false)
   const [isChatLoading, setIsChatLoading] = useState(false)
   const [historyVisible, setHistoryVisible] = useState(false)
   const [sessionId, setSessionId] = useState('')
   const [history, setHistory] = useState([] as HistoryListItem[])
   const [chats, setChats] = useState([] as ChatMessage[])
+  const [form] = Form.useForm()
 
   const [ searchText, setSearchText ] = useState('')
   const scroll = useRef(null)
   const linkToDashboard = useTenantLink('/dashboard')
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment! 
   I can also generate on-the-fly widgets for operational data, including Alerts and Metrics.` })
+
+  const getAllChatsQuery = useGetAllChatsQuery({})
+  const { data: historyData } = getAllChatsQuery
+
+  useEffect(()=>{
+    form.setFieldValue('searchText', '')
+  }, [])
 
   useEffect(()=>{
     setTimeout(()=>{
@@ -49,79 +62,69 @@ export default function AICanvas () {
       today: [],
       yesterday: [],
       sevendays: []
-    } as { [key:string]: { title: string; id: string }[] }
+    } as { [key:string]: ChatHistory[] }
     chats.forEach((chat: ChatHistory) => {
       const inputDate = moment(chat.updatedDate)
       const now = moment()
       const diffDays = now.diff(inputDate, 'days')
 
       if (diffDays === 0) {
-        list.today.push({
-          title: chat.name,
-          id: chat.id
-        })
+        list.today.push(chat)
       } else if (diffDays === 1) {
-        list.yesterday.push({
-          title: chat.name,
-          id: chat.id
-        })
+        list.yesterday.push(chat)
       } else if (diffDays <= 7) {
-        list.sevendays.push({
-          title: chat.name,
-          id: chat.id
-        })
+        list.sevendays.push(chat)
       } else {
         const title = inputDate.format('MMMM D, YYYY')
         if(!list[title]) {
           list[title] = []
         }
-        list[title].push({
-          title: chat.name,
-          id: chat.id
-        })
+        list[title].push(chat)
       }
     })
     return list
   }
 
-  const getHistory = async () => {
-    const response = await getAllChats({}).unwrap()
-    if(response.length) {
-      setSessionId(response[response.length - 1].id)
-      const list = checkDate(response)
-      const historyList = [] as HistoryListItem[]
-      Object.keys(list).forEach(key => {
-        if(list[key].length) {
-          if(key === 'today') {
-            historyList.push({
-              duration: $t({ defaultMessage: 'Today' }),
-              history: list[key]
-            })
-          } else if(key === 'yesterday') {
-            historyList.push({
-              duration: $t({ defaultMessage: 'Yesterday' }),
-              history: list[key]
-            })
-          } else if(key === 'sevendays') {
-            historyList.push({
-              duration: $t({ defaultMessage: 'Previous 7 days' }),
-              history: list[key]
-            })
-          } else {
-            historyList.push({
-              duration: key,
-              history: list[key]
-            })
-          }
-        }
-      })
-      setHistory(historyList)
+  const setHistoryList = (response: ChatHistory[]) => {
+    const latestId = response[response.length - 1].id
+    if(sessionId !== latestId) {
+      setSessionId(latestId)
     }
+    const list = checkDate(response)
+    const historyList = [] as HistoryListItem[]
+    Object.keys(list).forEach(key => {
+      if(list[key].length) {
+        if(key === 'today') {
+          historyList.push({
+            duration: $t({ defaultMessage: 'Today' }),
+            history: list[key].reverse()
+          })
+        } else if(key === 'yesterday') {
+          historyList.push({
+            duration: $t({ defaultMessage: 'Yesterday' }),
+            history: list[key].reverse()
+          })
+        } else if(key === 'sevendays') {
+          historyList.push({
+            duration: $t({ defaultMessage: 'Previous 7 days' }),
+            history: list[key].reverse()
+          })
+        } else {
+          historyList.push({
+            duration: key,
+            history: list[key].reverse()
+          })
+        }
+      }
+    })
+    setHistory(historyList)
   }
 
   useEffect(()=>{
-    getHistory()
-  }, [])
+    if(historyData?.length) {
+      setHistoryList(historyData)
+    }
+  }, [historyData])
 
   const getChats = async ()=>{
     setIsChatLoading(true)
@@ -140,10 +143,12 @@ export default function AICanvas () {
     if(event.key === 'Enter'){
       event.preventDefault()
       handleSearch()
+    }else{
+      setSearchText(form.getFieldValue('searchQ'))
     }
   }
   const handleSearch = async (suggestion?: string) => {
-    if ((!suggestion && searchText.length <= 1) || loading) return
+    if ((!suggestion && searchText?.length <= 1) || loading) return
     const question = suggestion || searchText
     const newMessage = {
       id: uuidv4(),
@@ -152,13 +157,18 @@ export default function AICanvas () {
     }
     setChats([...chats, newMessage])
     setLoading(true)
-    setSearchText('')
+    // setSearchText('')
+    form.setFieldValue('searchQ', '')
     const response = await chatAi({
       payload: {
         question,
         ...(sessionId && { sessionId })
       }
     }).unwrap()
+
+    if(historyData && sessionId !== historyData[historyData.length - 1].id){
+      getAllChatsQuery.refetch()
+    }
     // const response: RuckusAiChat = {
     //   sessionId: '001',
     //   messages: [
@@ -205,7 +215,6 @@ export default function AICanvas () {
         chatId: chat.id
       }}
       /> }
-
     </div>
   }
 
@@ -214,17 +223,47 @@ export default function AICanvas () {
     setHistoryVisible(false)
   }
 
+  const onEditChatTitle = (chat: ChatHistory) => {
+    // TODO:
+    deleteChat({
+      params: { sessionId: chat.id }
+    }).then()
+  }
+
+  const onDeleteChat = (chat: ChatHistory) => {
+    showActionModal({
+      type: 'confirm',
+      customContent: {
+        action: 'DELETE',
+        entityName: $t({ defaultMessage: 'Chat' }),
+        entityValue: chat.name
+      },
+      onOk: () => {
+        deleteChat({
+          params: { sessionId: chat.id }
+        }).then()
+      }
+    })
+  }
+
   const content = <UI.History>
     {
       history.map(i => <div className='duration'>
-        <div className='title'>{i.duration}</div>
+        <div className='time'>{i.duration}</div>
         {
           i.history.map(j =>
-            <div
-              className={'chat' + (sessionId === j.id ? ' active' : '')}
-              onClick={() => onClickChat(j.id)}
-            >
-              {j.title}
+            <div className={'chat' + (sessionId === j.id ? ' active' : '')}>
+              <div className='title' onClick={() => onClickChat(j.id)}>
+                {j.name}
+              </div>
+              <div className='action'>
+                <div className='button' onClick={()=> { onEditChatTitle(j) }}>
+                  <EditOutlined size='sm' />
+                </div>
+                <div className='button' onClick={()=> { onDeleteChat(j) }}>
+                  <DeleteOutlined size='sm' />
+                </div>
+              </div>
             </div>)
         }
       </div>)
@@ -276,18 +315,23 @@ export default function AICanvas () {
                     {loading && <div className='loading'><Spin /></div>}
                   </div>
                   <div className='input'>
-                    <UI.Input
-                      autoFocus
-                      value={searchText}
-                      onChange={({ target: { value } }) => setSearchText(value)}
-                      onKeyDown={onKeyDown}
-                      data-testid='search-input'
-                      style={{ height: 90, resize: 'none' }}
-                      placeholder={placeholder}
-                    />
+                    <Form form={form}>
+                      <Form.Item
+                        name='searchQ'
+                        children={<UI.Input
+                          autoFocus
+                          // value={searchText}
+                          // onChange={({ target: { value } }) => setSearchText(value)}
+                          onKeyDown={debounce(onKeyDown, 300)}
+                          data-testid='search-input'
+                          style={{ height: 90, resize: 'none' }}
+                          placeholder={placeholder}
+                        />}
+                      />
+                    </Form>
                     <Button
                       icon={<SendMessageOutlined />}
-                      disabled={loading || searchText.length <= 1}
+                      disabled={loading || searchText?.length <= 1}
                       onClick={()=> { handleSearch() }}
                     />
                   </div>

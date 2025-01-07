@@ -157,7 +157,7 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
       sessionId: data.sessionId,
       chatId: data.chatId
     }
-  })
+  }, { skip: data.type !== 'card' })
 
   function labelFormatter (params: CallbackDataParams): string {
     const unit = data?.unit ? 'bytesFormat' : 'countFormat'

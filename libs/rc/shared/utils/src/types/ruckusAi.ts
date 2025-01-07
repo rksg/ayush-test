@@ -49,10 +49,7 @@ export interface ChatMessage {
 
 export interface HistoryListItem {
   duration: string
-  history: {
-    title: string
-    id: string
-  }[]
+  history: ChatHistory[]
 }
 
 export interface ChatWidget {

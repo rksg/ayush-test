@@ -30,5 +30,20 @@ export const RuckusAiChatUrlInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/ruckusAi/chats/:sessionId/charts/:chatId',
     newApi: true
+  },
+  getCanvas: {
+    method: 'get',
+    url: '/ruckusAi/canvas',
+    newApi: true
+  },
+  saveCanvas: {
+    method: 'post',
+    url: '/ruckusAi/canvas',
+    newApi: true
+  },
+  updateCanvas: {
+    method: 'put',
+    url: '/ruckusAi/canvas/:canvasId',
+    newApi: true
   }
 }
