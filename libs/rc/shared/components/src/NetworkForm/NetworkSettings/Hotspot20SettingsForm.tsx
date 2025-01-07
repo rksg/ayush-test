@@ -227,18 +227,6 @@ function Hotspot20Service () {
     }
   }, [cloneMode, editMode, selectedProviderIds])
 
-  useEffect(() => {
-    if (supportHotspot20NasId && !form.isFieldsTouched() && accProviders.current) {
-      setData && setData({
-        ...data,
-        hotspot20Settings: {
-          ...data?.hotspot20Settings,
-          accProviders: accProviders.current
-        }
-      })
-    }
-  }, [accProviders.current])
-
   const handleAddOperator = () => {
     setShowOperatorDrawer(true)
   }
@@ -313,8 +301,16 @@ function Hotspot20Service () {
               setDisabledSelectProvider(
                 newProviders.length >= NETWORK_IDENTITY_PROVIDER_MAX_COUNT)
               if (supportHotspot20NasId) {
+                let enableAcc = false
+                for (let provider of newProviders) {
+                  if (accProviders.current?.has(provider)) {
+                    enableAcc = true
+                    break
+                  }
+                }
                 setData && setData({
                   ...data,
+                  enableAccountingService: enableAcc,
                   hotspot20Settings: {
                     ...data?.hotspot20Settings,
                     identityProviders: newProviders

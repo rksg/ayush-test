@@ -154,8 +154,7 @@ export const hasAccountingRadius = (data: NetworkSaveData | null, wlanData: any)
 
   const { type, enableAccountingService } = data
 
-  switch (type) {
-    case NetworkTypeEnum.CAPTIVEPORTAL:
+  if (type === NetworkTypeEnum.CAPTIVEPORTAL) {
       const { guestPortal } = data
       if (guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
         const wisprPage = wlanData?.guestPortal?.wisprPage
@@ -166,20 +165,6 @@ export const hasAccountingRadius = (data: NetworkSaveData | null, wlanData: any)
           }
         }
       }
-      break
-    case NetworkTypeEnum.HOTSPOT20:
-      const { hotspot20Settings } = data
-      if (!hotspot20Settings?.accProviders || hotspot20Settings?.accProviders?.size === 0) {
-        return false
-      }
-
-      for (let provider of (hotspot20Settings?.identityProviders ?? [])) {
-        if (hotspot20Settings?.accProviders.has(provider)) {
-          return true
-        }
-      }
-
-      return false
   }
 
   return enableAccountingService === true
