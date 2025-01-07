@@ -104,7 +104,8 @@ export const ResetZoom = () => {
     chartZoom, initialZoom
   } = useContext(ConfigChangeContext)
   const canResetZoom =
-    chartZoom?.start !== initialZoom?.start || chartZoom?.end !== initialZoom?.end
+    (initialZoom?.start !== undefined || initialZoom?.end !== undefined) &&
+    (chartZoom?.start !== initialZoom?.start || chartZoom?.end !== initialZoom?.end)
   return canResetZoom ?
     <Button onClick={resetZoomCallback}>{$t({ defaultMessage: 'Reset Zoom' })}</Button> : null
 }
@@ -159,10 +160,10 @@ export const Download = () => {
 
 export const Filter = () => {
   return <>
-    <GridCol col={{ span: 6 }}><Search/></GridCol>
+    <GridCol col={{ span: 7 }}><Search/></GridCol>
     <GridCol col={{ span: 6 }}><KPIFilter/></GridCol>
     <GridCol col={{ span: 6 }}><EntityTypeFilter/></GridCol>
-    <GridCol col={{ span: 3 }}><Reset/></GridCol>
+    <GridCol col={{ span: 2 }}><Reset/></GridCol>
     <GridCol col={{ span: 2 }}><ResetZoom/></GridCol>
     <GridCol col={{ span: 1 }}><Download/></GridCol>
   </>
