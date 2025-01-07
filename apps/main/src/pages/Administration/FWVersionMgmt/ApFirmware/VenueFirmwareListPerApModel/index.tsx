@@ -253,7 +253,20 @@ export function VenueFirmwareListPerApModel () {
     {
       scopeKey: [WifiScopes.UPDATE],
       // eslint-disable-next-line max-len
-      visible: (rows) => rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)),
+      visible: (rows) => {
+        const updatedDisplayData = genUpdateDisplayData(
+          apModelFirmwares || [],
+          rows,
+          false,
+          isApFwMgmtEarlyAccess
+        )
+        // eslint-disable-next-line max-len
+        if (updatedDisplayData.length === 0 || updatedDisplayData.every(data => data.versionOptions.length === 0)) {
+          return false
+        }
+
+        return rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate))
+      },
       label: $t({ defaultMessage: 'Change Update Schedule' }),
       onClick: (rows) => {
         setSelectedRows(rows)
