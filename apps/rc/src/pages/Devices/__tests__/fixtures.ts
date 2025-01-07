@@ -1,4 +1,4 @@
-import { AFCPowerMode, AFCStatus, ApRadioBands, ApVenueStatusEnum, ApViewModel, EthernetPortType } from '@acx-ui/rc/utils'
+import { AFCPowerMode, AFCStatus, ApRadioBands, ApVenueStatusEnum, ApViewModel, EthernetPortType, IsolatePacketsTypeEnum } from '@acx-ui/rc/utils'
 
 export const mockDefaultTrunkEthertnetPortProfileId = 'mockdefaultTrunkEthertnetPortProfileId'
 
@@ -4550,4 +4550,48 @@ export const lanPortSettingPort1 = {
   enabled: true,
   overwriteUntagId: 1,
   overwriteVlanMembers: '1-4094'
+}
+export const mockedAPLanPortSettings1 = {
+  overwriteUntagId: 1,
+  overwriteVlanMembers: '1-4094',
+  clientIsolationEnabled: true,
+  clientIsolationSettings: {
+    packetsType: 'UNICAST',
+    autoVrrp: false
+  },
+  useVenueSettings: false,
+  enabled: true
+}
+
+
+
+export const mockedAPLanPortSettings2 = {
+  overwriteUntagId: 1,
+  overwriteVlanMembers: '1-4094',
+  useVenueSettings: false,
+  enabled: true
+}
+
+export const mockedAPLanPortSettings3 = {
+  overwriteUntagId: 1,
+  overwriteVlanMembers: '1-4094',
+  useVenueSettings: false,
+  enabled: true
+}
+
+export const mockedVenueLanPortSettings1 = {
+  clientIsolationEnabled: true,
+  clientIsolationSettings: {
+    packetsType: IsolatePacketsTypeEnum.UNICAST,
+    autoVrrp: false
+  },
+  enabled: true
+}
+
+export const mockedVenueLanPortSettings2 = {
+  enabled: true
+}
+
+export const mockedVenueLanPortSettings3 = {
+  enabled: true
 }
