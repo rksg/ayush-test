@@ -37,7 +37,10 @@ export interface PagedConfigChange {
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    configChange: build.query<ConfigChange[],PathFilter>({
+    configChange: build.query<
+      ConfigChange[],
+      PathFilter & { showIntentAI?: boolean }
+    >({
       query: (payload) => ({
         document: gql`
           query ConfigChange(
@@ -48,12 +51,8 @@ export const api = dataApi.injectEndpoints({
             network(start: $startDate, end: $endDate) {
               hierarchyNode(path: $path) {
                 configChanges {
-                  timestamp
-                  type
-                  name
-                  key
-                  oldValues
-                  newValues
+                  timestamp type name key oldValues newValues
+                  ${payload.showIntentAI ? 'root sliceId' : ''}
                 }
               }
             }
@@ -69,8 +68,9 @@ export const api = dataApi.injectEndpoints({
     }),
     pagedConfigChange: build.query<
       PagedConfigChange,
-      PathFilter & ConfigChangePaginationParams & {
-        filterBy?: ConfigChangeFilterParams, sortBy?: string }
+      PathFilter & ConfigChangePaginationParams &
+      { filterBy?: ConfigChangeFilterParams, sortBy?: string } &
+      { showIntentAI?: boolean }
     >({
       query: (payload) => ({
         document: gql`
@@ -93,12 +93,8 @@ export const api = dataApi.injectEndpoints({
               ) {
                 total
                 data {
-                  timestamp
-                  type
-                  name
-                  key
-                  oldValues
-                  newValues
+                  timestamp type name key oldValues newValues
+                  ${payload.showIntentAI ? 'root sliceId' : ''}
                 }
               }
             }
@@ -170,21 +166,21 @@ export const api = dataApi.injectEndpoints({
             $afterStart: DateTime, $afterEnd: DateTime,
             $filter: FilterInput
           ) {
-              network(filter: $filter) {
-                before: KPI(path: $path, start: $beforeStart, end: $beforeEnd) {
-                  ${payload.kpis.join('\n')}
-                }
-                after: KPI(path: $path, start: $afterStart, end: $afterEnd) {
-                  ${payload.kpis.join('\n')}
-                }
+            network(filter: $filter) {
+              before: KPI(path: $path, start: $beforeStart, end: $beforeEnd) {
+                ${payload.kpis.join('\n')}
               }
+              after: KPI(path: $path, start: $afterStart, end: $afterEnd) {
+                ${payload.kpis.join('\n')}
+              }
+            }
           }
         `,
         variables: omit(payload, ['kpis'])
       }),
       transformResponse: (response: { network: {
-        before: Record<string, number>, after: Record<string, number>
-      } } ) => response.network
+          before: Record<string, number>, after: Record<string, number>
+        } } ) => response.network
     })
   })
 })

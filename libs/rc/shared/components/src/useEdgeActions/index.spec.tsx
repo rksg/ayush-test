@@ -166,6 +166,43 @@ describe('Edge enabled evaluation', () => {
         expect(result.current).toBe(false)
       })
     })
+
+    describe('Edge ARP Termination toggle', () => {
+      it('should return true when edge is enabled and feature flag is ready', () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff =>
+          ff === Features.EDGES_TOGGLE ||
+          ff === Features.EDGE_ARPT_TOGGLE)
+        jest.mocked(useIsTierAllowed).mockImplementation(ff =>
+          ff === TierFeatures.EDGE_ARPT)
+
+        const { result } = renderHook(() =>
+          useIsEdgeFeatureReady(Features.EDGE_ARPT_TOGGLE))
+        expect(result.current).toBe(true)
+      })
+
+      it('should return false when boolean feature flag is not ready', () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff =>
+          ff === Features.EDGES_TOGGLE)
+        jest.mocked(useIsTierAllowed).mockImplementation(ff =>
+          ff === TierFeatures.EDGE_ARPT)
+
+        const { result } = renderHook(() =>
+          useIsEdgeFeatureReady(Features.EDGE_ARPT_TOGGLE))
+        expect(result.current).toBe(false)
+      })
+
+      it('should return false when query with EDGE-ARPT and featureID is OFF', () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff =>
+          ff === Features.EDGES_TOGGLE ||
+          ff === Features.EDGE_ARPT_TOGGLE)
+        jest.mocked(useIsTierAllowed).mockImplementation(ff =>
+          ff === TierFeatures.EDGE_ADV)
+
+        const { result } = renderHook(() =>
+          useIsEdgeFeatureReady(Features.EDGE_ARPT_TOGGLE))
+        expect(result.current).toBe(false)
+      })
+    })
   })
 })
 

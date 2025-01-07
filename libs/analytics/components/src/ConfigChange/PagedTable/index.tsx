@@ -16,9 +16,11 @@ import {
   Filter
 }                                    from '@acx-ui/components'
 import { ConfigChangePaginationParams }                    from '@acx-ui/components'
+import { get }                                             from '@acx-ui/config'
 import { Features, useIsTreatmentsOn }                     from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                       from '@acx-ui/formatter'
 import { DownloadOutlined }                                from '@acx-ui/icons'
+import { TenantLink }                                      from '@acx-ui/react-router-dom'
 import { exportMessageMapping, noDataDisplay, PathFilter } from '@acx-ui/utils'
 
 import { ConfigChangeContext }                                                                 from '../context'
@@ -101,7 +103,8 @@ export function PagedTable () {
       entityType: legendFilter.filter(t => (
         _.isEmpty(entityTypeFilter) || entityTypeFilter.includes(t)))
     },
-    sortBy: sorter
+    sortBy: sorter,
+    showIntentAI: !!showIntentAI
   }, { skip: showIntentAI === null })
 
   useEffect(
@@ -116,8 +119,21 @@ export function PagedTable () {
       key: 'timestamp',
       title: $t({ defaultMessage: 'Timestamp' }),
       dataIndex: 'timestamp',
-      render: (_, { timestamp }) =>
-        formatter(DateFormatEnum.DateTimeFormat)(moment(Number(timestamp))),
+      render: (_, row) => {
+        const timestamp = formatter(DateFormatEnum.DateTimeFormat)(moment(Number(row.timestamp)))
+        if (showIntentAI && row.type === 'intentAI') {
+          const code = row.key.substring(row.key.lastIndexOf('.') + 1)
+          const linkPath = get('IS_MLISA_SA')
+            ? `/intentAI/${row.root}/${row.sliceId}/${code}`
+            : `/analytics/intentAI/${row.sliceId}/${code}`
+          return (
+            <TenantLink to={linkPath}>
+              {timestamp}
+            </TenantLink>
+          )
+        }
+        return timestamp
+      },
       defaultSortOrder: 'descend',
       sorter: true,
       width: 130
