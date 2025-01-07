@@ -72,6 +72,7 @@ export enum Features {
   ETHERNET_PORT_SUPPORT_PROXY_RADIUS_TOGGLE='acx-ethernet-port-support-proxy-radius-toggle',
   EXPORT_DEVICE = 'viewmodel-export-device-inventory',
   EXPORT_EVENTS_TOGGLE = 'acx-ui-scheduled-events-export-toggle',
+  EXTEND_SSID_DESPRIPTION_TOGGLE = 'acx-ui-extend-ssid-description-toggle',
   G_MAP = 'acx-ui-maps-api-toggle',
   GOOGLE_WORKSPACE_SSO_TOGGLE = 'google-workspace-sso-toggle',
   GROUP_BASED_LOGIN_TOGGLE = 'group-based-login-toggle',
@@ -256,7 +257,8 @@ export enum Features {
   ACX_UI_DATE_RANGE_LIMIT = 'acx-ui-date-range-selection-limit-30-days-toggle',
   NETWORK_PSK_MACAUTH_DYNAMIC_VLAN_TOGGLE = 'wifi-psk-dynamic-vlan-toggle',
   RUCKUS_AI_PREVENT_COLD_TIER_QUERY_TOGGLE = 'ruckus-ai-prevent-cold-tier-query-toggle',
-  ACX_UI_PREVENT_COLD_TIER_QUERY_TOGGLE = 'acx-ui-prevent-cold-tier-query-toggle'
+  ACX_UI_PREVENT_COLD_TIER_QUERY_TOGGLE = 'acx-ui-prevent-cold-tier-query-toggle',
+  WIFI_NAS_ID_HOTSPOT20_TOGGLE = 'wifi-nas-id-for-hotspot20-network'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
