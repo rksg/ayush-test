@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import { useState, useEffect } from 'react'
 
+import { Badge }                         from 'antd'
 import { cloneDeep, findIndex, isEmpty } from 'lodash'
 import { useIntl }                       from 'react-intl'
 
@@ -48,6 +49,21 @@ const incompatibleIconStyle = {
   borderColor: cssStr('--acx-accents-orange-30')
 }
 
+const statusColorMapping = (status: keyof ApVenueStatusEnum) => {
+  switch (status) {
+    case ApVenueStatusEnum.REQUIRES_ATTENTION:
+      return cssStr('--acx-semantics-red-50')
+    case ApVenueStatusEnum.TRANSIENT_ISSUE:
+      return cssStr('--acx-semantics-yellow-40')
+    case ApVenueStatusEnum.IN_SETUP_PHASE:
+      return cssStr('--acx-neutrals-50')
+    case ApVenueStatusEnum.OPERATIONAL:
+      return cssStr('--acx-semantics-green-50')
+    default:
+      return cssStr('--acx-neutrals-50')
+  }
+}
+
 function useColumns (
   searchable?: boolean,
   filterables?: { [key: string]: ColumnType['filterable'] }
@@ -90,7 +106,10 @@ function useColumns (
       dataIndex: 'status',
       sorter: true,
       render: function (_: React.ReactNode, row: Venue) {
-        return getAPStatusDisplayName(row.status as ApVenueStatusEnum, false)
+        return <Badge
+          color={statusColorMapping(row.status as keyof typeof statusColorMapping)}
+          text={getAPStatusDisplayName(row.status as ApVenueStatusEnum, false)}
+        />
       }
     }] : []),
     // { // TODO: Waiting for backend support
