@@ -172,10 +172,10 @@ export function Table (props: {
           return highlightFn(String(name))
         } else {
           const { path, sliceValue } = value
-          const scope = impactedArea(path, sliceValue) as string
+          const scope = impactedArea(path ?? [], sliceValue ?? '') as string
           return <Tooltip
             placement='top'
-            title={formattedPath(path, sliceValue)}
+            title={formattedPath(path ?? [], sliceValue ?? '')}
             dottedUnderline={true}
           >
             {highlightFn(scope)}
