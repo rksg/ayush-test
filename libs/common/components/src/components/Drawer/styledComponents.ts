@@ -4,7 +4,7 @@ import styled, { createGlobalStyle } from 'styled-components'
 export enum DrawerTypes {
   Default = 'default',
   FullHeight = 'fullHeight',
-  Dark='dark'
+  Left='left'
 }
 
 export const DrawerStyle = createGlobalStyle<{ $type: DrawerTypes }>`
@@ -12,7 +12,7 @@ export const DrawerStyle = createGlobalStyle<{ $type: DrawerTypes }>`
     .ant-drawer-content-wrapper {
       height: 100vh;
       margin-top: calc(-1 * var(--acx-drawer-top-space));
-    }` : props.$type === DrawerTypes.Dark ? `
+    }` : props.$type === DrawerTypes.Left ? `
     :root .ant-drawer {
       height: calc(100vh - var(--acx-header-height));
       margin-top: var(--acx-header-height);

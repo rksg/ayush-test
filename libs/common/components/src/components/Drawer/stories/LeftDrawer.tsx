@@ -4,7 +4,7 @@ import { Drawer }               from '..'
 import { Button }               from '../../Button'
 import { DrawerTypes, History } from '../styledComponents'
 
-export function DarkDrawer () {
+export function LeftDrawer () {
   const [visible, setVisible] = useState(false)
   const onClose = () => {
     setVisible(false)
@@ -57,9 +57,9 @@ export function DarkDrawer () {
 
   return (
     <>
-      <Button onClick={onOpen}>Dark Drawer</Button>
+      <Button onClick={onOpen}>Left Drawer</Button>
       <Drawer
-        drawerType={DrawerTypes.Dark}
+        drawerType={DrawerTypes.Left}
         visible={visible}
         onClose={onClose}
         children={content}

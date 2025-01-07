@@ -298,7 +298,7 @@ export default function AICanvas () {
         </div>
         <Canvas />
         <Drawer
-          drawerType={DrawerTypes.Dark}
+          drawerType={DrawerTypes.Left}
           visible={historyVisible}
           onClose={onHistoryDrawer}
           children={content}

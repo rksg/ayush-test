@@ -2,11 +2,11 @@ import { storiesOf } from '@storybook/react'
 
 import { BasicDrawer }          from './BasicDrawer'
 import { CustomDrawer }         from './CustomDrawer'
-import { DarkDrawer }           from './DarkDrawer'
 import { DrawerWithBackButton } from './DrawerWithBackButton'
 import { DrawerWithIcon }       from './DrawerWithIcon'
 import { DrawerWithSubtitle }   from './DrawerWithSubtitle'
 import { FullHeightDrawer }     from './FullHeightDrawer'
+import { LeftDrawer }           from './LeftDrawer'
 
 storiesOf('Drawer', module)
   .add('Basic Drawer', BasicDrawer)
@@ -15,5 +15,5 @@ storiesOf('Drawer', module)
   .add('Drawer With Subtitle', DrawerWithSubtitle)
   .add('Drawer With Icon', DrawerWithIcon)
   .add('Full Height Drawer', FullHeightDrawer)
-  .add('Dark Drawer', DarkDrawer)
+  .add('Left Drawer', LeftDrawer)
 export {}
