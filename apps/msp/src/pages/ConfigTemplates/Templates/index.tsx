@@ -92,13 +92,13 @@ export function ConfigTemplateList () {
   const isDeleteAllowed = (selectedRows: ConfigTemplate[]) => {
     const targetRow = selectedRows[0]
     return targetRow
-      &&!!deleteMutationMap[targetRow.type]
+      && !!deleteMutationMap[targetRow.type]
       && hasConfigTemplateAllowedOperation(targetRow.type, 'Delete')
   }
 
   const isEditAllowed = (selectedRows: ConfigTemplate[]) => {
     const targetRow = selectedRows[0]
-    return targetRow && hasConfigTemplateAllowedOperation(selectedRows[0].type, 'Edit')
+    return targetRow && hasConfigTemplateAllowedOperation(targetRow.type, 'Edit')
   }
 
   const rowActions: TableProps<ConfigTemplate>['rowActions'] = [
