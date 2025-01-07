@@ -32,7 +32,7 @@ const ProfileTabs = () => {
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
-    })
+    }, { replace: true })
   }
 
   useEffect(() => {
