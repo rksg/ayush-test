@@ -5,8 +5,8 @@ import { omit }                                from 'lodash'
 import { defineMessage, useIntl }              from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { showActionModal, StepsForm, StepsFormGotoStepFn }                            from '@acx-ui/components'
-import { useValidateEdgePinNetworkMutation, useValidateEdgePinClusterConfigMutation } from '@acx-ui/rc/services'
+import { showActionModal, StepsForm, StepsFormGotoStepFn }                                 from '@acx-ui/components'
+import { useValidateEdgePinSwitchConfigMutation, useValidateEdgePinClusterConfigMutation } from '@acx-ui/rc/services'
 import {
   CommonErrorsResult,
   CommonResult,
@@ -85,7 +85,7 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
 
-  const [validateEdgePinNetwork] = useValidateEdgePinNetworkMutation()
+  const [validateEdgePinSwitchConfig] = useValidateEdgePinSwitchConfigMutation()
   const [validateEdgePinClusterConfig] = useValidateEdgePinClusterConfigMutation()
 
   // eslint-disable-next-line max-len
@@ -101,7 +101,7 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
     if (!skipValidation &&
       formData.distributionSwitchInfos?.length > 0 && formData.accessSwitchInfos?.length > 0) {
       try {
-        await validateEdgePinNetwork({
+        await validateEdgePinSwitchConfig({
           params,
           payload: {
             pinId: formData.id || '',

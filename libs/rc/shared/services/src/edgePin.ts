@@ -302,9 +302,9 @@ export const pinApi = basePinApi.injectEndpoints({
         }
       }
     }),
-    validateEdgePinNetwork: build.mutation<CommonResult, RequestPayload>({
+    validateEdgePinSwitchConfig: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgePinUrls.validateEdgePinNetwork, params, {
+        const req = createHttpRequest(EdgePinUrls.validateSwitchConfig, params, {
           ...ignoreErrorModal
         })
         return {
@@ -393,7 +393,7 @@ export const {
   useGetAvailableSwitchesQuery,
   useValidateDistributionSwitchInfoMutation,
   useValidateAccessSwitchInfoMutation,
-  useValidateEdgePinNetworkMutation,
+  useValidateEdgePinSwitchConfigMutation,
   useActivateEdgePinNetworkMutation,
   useDeactivateEdgePinNetworkMutation,
   useValidateEdgePinClusterConfigMutation
