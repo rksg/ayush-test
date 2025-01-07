@@ -19,6 +19,7 @@ import {
   ApBandModeSettings,
   ApBssColoringSettings,
   ApSmartMonitor,
+  ApIot,
   ApClientAdmissionControl,
   ApDeep,
   ApDetailHeader,
@@ -1349,6 +1350,28 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'SmartMonitor' }]
     }),
+    getApIot: build.query<ApIot, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApIot, params, customHeaders)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'Iot' }]
+    }),
+    updateApIot: build.mutation<ApIot, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApIot, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'Iot' }]
+    }),
     getApValidChannel: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
       query: ({ params, enableRbac, enableSeparation = false }) => {
         const urlsInfo = (enableSeparation || enableRbac) ? WifiRbacUrlsInfo : WifiUrlsInfo
@@ -1822,6 +1845,9 @@ export const {
   useGetApSmartMonitorQuery,
   useLazyGetApSmartMonitorQuery,
   useUpdateApSmartMonitorMutation,
+  useGetApIotQuery,
+  useLazyGetApIotQuery,
+  useUpdateApIotMutation,
   useGetApCapabilitiesQuery,     // deprecated
   useLazyGetApCapabilitiesQuery, // deprecated
   useGetOldApCapabilitiesByModelQuery,

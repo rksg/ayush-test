@@ -786,6 +786,11 @@ export interface VenueApRebootTimeout {
 	serverLossTimeout: number
 }
 
+export interface VenueIot {
+	enabled: boolean,
+	mqttBrokerAddress: string
+}
+
 export interface ApManagementVlan {
 	vlanOverrideEnabled: boolean
 	vlanId: number
