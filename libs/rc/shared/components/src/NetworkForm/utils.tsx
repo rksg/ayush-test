@@ -155,16 +155,16 @@ export const hasAccountingRadius = (data: NetworkSaveData | null, wlanData: any)
   const { type, enableAccountingService } = data
 
   if (type === NetworkTypeEnum.CAPTIVEPORTAL) {
-      const { guestPortal } = data
-      if (guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
-        const wisprPage = wlanData?.guestPortal?.wisprPage
-        if (wisprPage) {
-          const { customExternalProvider = false, externalProviderName = '' } = wisprPage
-          if (!customExternalProvider && externalProviderName !== '' ) {
-            return !noAccountingPorviderNames.includes(externalProviderName)
-          }
+    const { guestPortal } = data
+    if (guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
+      const wisprPage = wlanData?.guestPortal?.wisprPage
+      if (wisprPage) {
+        const { customExternalProvider = false, externalProviderName = '' } = wisprPage
+        if (!customExternalProvider && externalProviderName !== '' ) {
+          return !noAccountingPorviderNames.includes(externalProviderName)
         }
       }
+    }
   }
 
   return enableAccountingService === true
