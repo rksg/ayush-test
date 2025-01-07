@@ -8,11 +8,35 @@ import { type NetworkNode } from '../NetworkFilter/services'
 import { DisplayStates, Statuses, StatusReasons } from './states'
 import { type IntentWlan }                        from './utils'
 
+export type Metadata = {
+  appliedAt: string
+  changedByName?: string
+  dataEndTime: string
+  failures?: (keyof typeof failureCodes)[]
+  oneClickOptimize?: boolean
+  preferences?: IntentPreferences
+  retries?: number
+  scheduledAt: string
+  scheduledBy?: string
+  unsupportedAPs?: string[]
+  updatedAt?: string
+  wlans?: IntentWlan[]
+}
+
+export type StatusTrailMetadata = Pick<Metadata,
+    'changedByName'
+  | 'failures'
+  | 'scheduledAt'
+  | 'retries'
+  | 'updatedAt'
+>
+
 export type StatusTrail = {
   status: Statuses
   statusReason?: StatusReasons
   displayStatus: DisplayStates
   createdAt: string
+  metadata: StatusTrailMetadata & object
 }
 
 type IntentPreferences = {
@@ -33,14 +57,7 @@ export type Intent = {
   status: Statuses
   statusReason: StatusReasons
   displayStatus: DisplayStates
-  metadata: object & {
-    scheduledAt: string
-    appliedAt: string
-    wlans?: IntentWlan[]
-    dataEndTime: string
-    preferences?: IntentPreferences
-    unsupportedAPs?: string[]
-  }
+  metadata: Metadata & object
   preferences?: IntentPreferences
   sliceType: NodeType
   sliceValue: string
@@ -83,6 +100,7 @@ type CodeInfo = {
 type StateInfo = {
   text: MessageDescriptor,
   tooltip: MessageDescriptor
+  showRetries?: boolean
 }
 
 const categories = {
@@ -131,6 +149,7 @@ export const states = {
     ` }) //TODO: The new configuration is: {newConfig}.
   },
   [DisplayStates.pausedApplyFailed]: {
+    showRetries: true,
     text: defineMessage({ defaultMessage: 'Paused, Applied Failed' }),
     tooltip: defineMessage({ defaultMessage: `
       <p>IntentAI recommended changes failed to apply to <VenueSingular></VenueSingular> {zoneName} due to:</p>

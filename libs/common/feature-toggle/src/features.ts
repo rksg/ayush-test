@@ -123,6 +123,7 @@ export enum Features {
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   RBAC_PHASE2_SSO_TOGGLE = 'acx-ui-rbac-phase2-toggle',
   RBAC_PHASE2_TOGGLE = 'acx-ui-rbac-phase21-toggle',
+  RBAC_OPERATIONS_API_TOGGLE = 'acx-ui-rbac-allow-operations-api-toggle',
   RBAC_PHASE3_TOGGLE = 'acx-ui-rbac-phase3-toggle',
   REC_TO_MSP_CONVERSION_TOGGLE = 'acx-rec-to-msp-conversion-toggle',
   RECOMMENDATION_DELETE = 'acx-ui-recommendation-delete-toggle',
@@ -229,6 +230,7 @@ export enum Features {
   WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE = 'wifi-over-the-ds-ft-support-toggle',
   WIFI_COMPATIBILITY_BY_MODEL = 'wifi-compatibility-check-by-model-toggle',
   WIFI_ETHERNET_SOFTGRE_TOGGLE = 'wifi-ethernet-softgre-toggle',
+  WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE = 'wifi-ethernet-dhcp-option-82-toggle',
   WIFI_ETHERNET_CLIENT_ISOLATION_TOGGLE = 'wifi-ethernet-client-isolation-toggle',
   ENTITLEMENT_LICENSE_COMPLIANCE_PHASE2_TOGGLE = 'entitlement-license-compliance-phase2-toggle',
   BRAND360_MDU_TOGGLE = 'acx-ui-brand360-mdu-toggle',
@@ -252,7 +254,10 @@ export enum Features {
   AP_USB_PORT_SUPPORT_TOGGLE = 'wifi-usb-port-support-toggle',
   ACX_UI_NON_PROXY_ACCOUNTING_DPSK_TOGGLE = 'acx-ui-non-proxy-accounting-dpsk-toggle',
   AP_FW_MGMT_EARLY_ACCESS_TOGGLE = 'ap-fw-mgmt-early-access-toggle',
-  ACX_UI_DATE_RANGE_LIMIT = 'acx-ui-date-range-selection-limit-30-days-toggle'
+  ACX_UI_DATE_RANGE_LIMIT = 'acx-ui-date-range-selection-limit-30-days-toggle',
+  NETWORK_PSK_MACAUTH_DYNAMIC_VLAN_TOGGLE = 'wifi-psk-dynamic-vlan-toggle',
+  RUCKUS_AI_PREVENT_COLD_TIER_QUERY_TOGGLE = 'ruckus-ai-prevent-cold-tier-query-toggle',
+  ACX_UI_PREVENT_COLD_TIER_QUERY_TOGGLE = 'acx-ui-prevent-cold-tier-query-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
@@ -266,6 +271,7 @@ export enum TierFeatures { // for Tier (ex: Beta) feature flag
   EDGE_ADV = 'EDGE-ADV',
   EDGE_AV_REPORT = 'EDGE-AV-REPORT',
   EDGE_NAT_T = 'EDGE-NAT-T',
+  EDGE_ARPT = 'EDGE-ARPT',
   // for testing only
   TEST_SELECTIVE_BETA_01 = 'TEST-SELECTIVE-BETA-01',
   TEST_SELECTIVE_BETA_02 = 'TEST-SELECTIVE-BETA-02',
@@ -295,6 +301,7 @@ export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.EDGE_ADV, description: defineMessage({ defaultMessage: 'Personal Identity Networks: Personal Identity Networks (PIN) use VxLAN tunneling to extend Wi-Fi client access to the RUCKUS Edge, creating seamless connectivity across the network domain. It enables Wi-Fi clients to securely access their networks and connected devices while also establishing Personal Area Networks (PAN) for secure, individualized connectivity. PINs can be configured for any <venueSingular></venueSingular> that has Property Management enabled and has RUCKUS APs, ICX switches, and Edge devices deployed.' }), status: true },
   { key: TierFeatures.EDGE_AV_REPORT, description: defineMessage({ defaultMessage: 'Edge Application Report: This feature introduces the Deep Packet Inspection (DPI) module into RUCKUS Edge and an Application Visibility (AV) report on Ruckus One. It provides detailed application visibility into different types of applications running on the network, enabling administrators to gain insights into network traffic.' }), status: true },
   { key: TierFeatures.EDGE_NAT_T, description: defineMessage({ defaultMessage: 'Edge Tunnel Profile support NAT-Traversal' }), status: false },
+  { key: TierFeatures.EDGE_ARPT, description: defineMessage({ defaultMessage: 'Edge ARP Termination: The RUCKUS Edge Device intercepts ARP requests, responding on behalf of target IPs using IP/MAC mappings learned from ARP traffic. This enhances network efficiency by controlling and reducing ARP broadcast traffic, contributing to a more efficient wireless environment.' }), status: false },
   // for testing only
   { key: TierFeatures.TEST_SELECTIVE_BETA_01, description: defineMessage({ defaultMessage: 'Test 01: Test selective 01. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },
   { key: TierFeatures.TEST_SELECTIVE_BETA_02, description: defineMessage({ defaultMessage: 'Test 02: Test selective 02. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet. Proin gravida dolor sit amet lacus accumsan et viverra justo commodo. Proin sodales pulvinar sic tempor. Sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam fermentum.' }), status: true },

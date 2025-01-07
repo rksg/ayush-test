@@ -3,6 +3,7 @@ import _         from 'lodash'
 import { rest }  from 'msw'
 
 import { get }                                                           from '@acx-ui/config'
+import { useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
 import { networkApi }                                                    from '@acx-ui/rc/services'
 import { CommonUrlsInfo }                                                from '@acx-ui/rc/utils'
 import { Provider, store, intentAIApi, intentAIUrl }                     from '@acx-ui/store'
@@ -55,10 +56,15 @@ describe('IntentAIDetails', () => {
     )
   })
 
-  it('handle beyond data retention', async () => {
+  it('handle cold tier data', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const { params } = mockIntentContextWith({
       code: 'c-probeflex-5g',
-      status: Statuses.active
+      status: Statuses.active,
+      dataCheck: {
+        isHotTierData: false,
+        isDataRetained: true
+      }
     })
     render(
       <CProbeFlex5g.IntentAIDetails />,
@@ -66,12 +72,14 @@ describe('IntentAIDetails', () => {
     )
 
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
+
     const loaders = screen.getAllByRole('img', { name: 'loader' })
     loaders.forEach(loader => expect(loader).toBeVisible())
     const kpiContainers = await screen.findAllByTestId('KPI')
     for (const kpiContainer of kpiContainers) {
       await waitFor(() => {
-        expect(kpiContainer).toHaveTextContent('Beyond data retention period')
+        expect(kpiContainer).toHaveTextContent(
+          'Metrics / Charts unavailable for data beyond 30 days')
       })
     }
   })
