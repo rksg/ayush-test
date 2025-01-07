@@ -83,10 +83,10 @@ describe('Edit PersonalIdentityNetwork', () => {
     serviceId: 'testServiceId'
   }
 
-  jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
-    data: mockPinData, isLoading: false, refetch: jest.fn() }))
-
   beforeEach(() => {
+    jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
+      data: mockPinData, isLoading: false, refetch: jest.fn() }))
+
     mockedUsedNavigate.mockClear()
 
     mockServer.use(
@@ -113,6 +113,12 @@ describe('Edit PersonalIdentityNetwork', () => {
   })
 
   it('should update PersonalIdentityNetwork successfully', async () => {
+    const mockPinData_noSwitch = cloneDeep(mockPinData)
+    mockPinData_noSwitch.distributionSwitchInfos = []
+    mockPinData_noSwitch.accessSwitchInfos = []
+    jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
+      data: mockPinData_noSwitch, isLoading: false, refetch: jest.fn() }))
+
     render(
       <Provider>
         <EditPersonalIdentityNetwork />
@@ -141,18 +147,31 @@ describe('Edit PersonalIdentityNetwork', () => {
     }))
   })
 
-  it('should render breadcrumb correctly', async () => {
-    render(<EditPersonalIdentityNetwork />, {
-      wrapper: Provider,
-      route: { params, path: updatePinPath }
-    })
-    expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'My Services'
-    })).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'Personal Identity Network'
-    })).toBeVisible()
+  it('should be blocked by switch config validation', async () => {
+    render(
+      <Provider>
+        <EditPersonalIdentityNetwork />
+      </Provider>, {
+        route: { params, path: updatePinPath }
+      })
+    // step 1
+    await screen.findByTestId('GeneralSettingsForm')
+    await userEvent.click(await screen.findByText('RUCKUS Edge'))
+    // step 2
+    await screen.findByTestId('SmartEdgeForm')
+    await userEvent.click(await screen.findByText('Wireless Network'))
+    // step 3
+    await screen.findByTestId('WirelessNetworkForm')
+    await userEvent.click(await screen.findByText('Dist. Switch'))
+    // step 4
+    await screen.findByTestId('DistributionSwitchForm')
+    await userEvent.click((await screen.findAllByText('Access Switch'))[0])
+    // step 5
+    await screen.findByTestId('AccessSwitchForm')
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    // should go back step 5
+    await screen.findByTestId('AccessSwitchForm')
+    expect(mockedUsedNavigate).toBeCalledTimes(0)
   })
 
   it('should popup edge cluster config validation failed message', async () => {
