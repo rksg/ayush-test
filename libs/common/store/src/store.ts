@@ -169,7 +169,10 @@ export const store = configureStore({
       clientIsolationApi.middleware
     ])
   },
-
+  // issue in test https://github.com/reduxjs/redux-toolkit/issues/4142
+  enhancers: getDefaultEnhancers => getDefaultEnhancers({
+    autoBatch: { type: 'tick' }
+  }),
   devTools: isDev
 })
 
