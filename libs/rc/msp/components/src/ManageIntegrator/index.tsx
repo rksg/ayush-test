@@ -295,7 +295,7 @@ export function ManageIntegrator () {
       }
       setSubscriptionStartDate(moment())
     }
-  }, [data, licenseSummary, licenseAssignment, userProfile, ecAdministrators])
+  }, [data, licenseSummary, licenseAssignment, userProfile, ecAdministrators, privilegeGroupList])
 
   useEffect(() => {
     if (delegatedAdmins && Administrators) {
@@ -667,7 +667,7 @@ export function ManageIntegrator () {
   }
 
   const MspAdminsForm = () => {
-    return (isRbacPhase2Enabled && !isEditMode)
+    return (isAbacToggleEnabled && isRbacPhase2Enabled && !isEditMode)
       ? <div>
         <UI.FieldLabelAdmins2 width='275px' style={{ marginTop: '15px' }}>
           <label>{intl.$t({ defaultMessage: 'MSP Delegations' })}</label>
@@ -1013,11 +1013,26 @@ export function ManageIntegrator () {
           <Paragraph>{address.addressLine}</Paragraph>
         </Form.Item>
 
-        <Form.Item
+        {!isRbacPhase2Enabled && <Form.Item
           label={intl.$t({ defaultMessage: 'MSP Administrators' })}
         >
           <Paragraph>{displayMspAdmins()}</Paragraph>
-        </Form.Item>
+        </Form.Item>}
+
+        {isRbacPhase2Enabled && <div>
+          <Form.Item style={{ height: '20px', margin: '0' }}
+            label={intl.$t({ defaultMessage: 'MSP Delegations' })}
+          />
+          <Form.Item style={{ margin: '0' }}
+            label={intl.$t({ defaultMessage: 'Users' })}
+          >
+            <Paragraph>{displayMspAdmins()}</Paragraph>
+          </Form.Item>
+          <Form.Item
+            label={intl.$t({ defaultMessage: 'Privilege Groups' })}
+          >
+            <Paragraph>{displayPrivilegeGroups()}</Paragraph>
+          </Form.Item></div>}
 
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Assigned Customers' })}

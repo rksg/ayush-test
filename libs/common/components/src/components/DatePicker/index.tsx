@@ -7,7 +7,6 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { get }                                            from '@acx-ui/config'
 import {  DateFormatEnum, formatter, userDateTimeFormat } from '@acx-ui/formatter'
 import { ClockOutlined }                                  from '@acx-ui/icons'
 import {
@@ -15,7 +14,9 @@ import {
   DateRange,
   dateRangeMap,
   resetRanges,
-  dateRangeForLast
+  dateRangeForLast,
+  getJwtTokenPayload,
+  AccountTier
 } from '@acx-ui/utils'
 
 import { Tooltip } from '../Tooltip'
@@ -45,18 +46,22 @@ interface DatePickerProps {
   showAllTime?: boolean;
   showLast8hours?: boolean;
   isReport?: boolean;
+  maxMonthRange?: number;
 }
 const AntRangePicker = AntDatePicker.RangePicker
 
-export const restrictDateTo3Months = (values: RangeValueType, range: string) => {
+export const restrictDateToMonthsRange = (
+  values: RangeValueType,
+  range: string,
+  maxMonthRange: number) => {
   let startDate = values?.[0] || null
   let endDate = values?.[1] || null
-  if (endDate && startDate && endDate.diff(startDate, 'months') > 3) {
+  if (endDate && startDate && endDate.diff(startDate, 'months', true) > maxMonthRange) {
     if (range === 'start') {
-      endDate = startDate.clone().add(3, 'months')
+      endDate = startDate.clone().add(maxMonthRange, 'months')
     }
     if (range === 'end') {
-      startDate = endDate.clone().subtract(3, 'months')
+      startDate = endDate.clone().subtract(maxMonthRange, 'months')
     }
   }
   return { startDate, endDate }
@@ -70,10 +75,10 @@ export const RangePicker = ({
   showAllTime,
   selectionType,
   isReport,
-  showLast8hours
+  showLast8hours,
+  maxMonthRange
 }: DatePickerProps) => {
   const { $t } = useIntl()
-  const isRA = get('IS_MLISA_SA')
   const { translatedRanges, translatedOptions } = useMemo(() => {
     const ranges = defaultRanges(rangeOptions)
     const translatedRanges: RangesType = {}
@@ -88,21 +93,23 @@ export const RangePicker = ({
   const componentRef = useRef<HTMLDivElement | null>(null)
   const rangeRef = useRef<RangeRef>(null)
   const [range, setRange] = useState<DateRangeType>(selectedRange)
-  const [boundary, setBoundary] = useState<string>('')
+  const [activeIndex, setActiveIndex] = useState<0|1>(0)
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
+  const { acx_account_tier: accountTier } = getJwtTokenPayload()
   const allowedDateRange = isReport
-    ? dateRangeForLast(12, 'months')
-    : isRA
-      ? dateRangeForLast(3, 'months')
-      : dateRangeForLast(1, 'month')
+    ? dateRangeForLast(12,'months')
+    : (accountTier === AccountTier.GOLD
+      ? dateRangeForLast(1,'month')
+      : dateRangeForLast(3,'months')
+    )
 
   const disabledDate = useCallback(
     (current: Moment) => (
-      (boundary === 'start' && current.isAfter(range.startDate?.clone().add(3, 'months'))) ||
-      (boundary === 'end' && current.isBefore(range.endDate?.clone().subtract(3, 'months'))) ||
+      (activeIndex === 1 && current.isAfter(
+        range.startDate?.clone().add(maxMonthRange || 3, 'months'))) ||
       !current.isBetween(allowedDateRange[0], allowedDateRange[1], null, '[]')
     ),
-    [allowedDateRange, boundary, range.endDate, range.startDate]
+    [allowedDateRange, activeIndex]
   )
 
   useEffect(
@@ -113,12 +120,20 @@ export const RangePicker = ({
   useEffect(() => {
     const handleClickForDatePicker = (event: MouseEvent) => {
       const target = event.target as HTMLElement
+      if (target instanceof HTMLInputElement && target.placeholder === 'Start date') {
+        setActiveIndex(0)
+      } else if  (target instanceof HTMLInputElement && target.placeholder === 'End date') {
+        setActiveIndex(1)
+      }
+
       if (componentRef.current && !componentRef.current.contains(event.target as Node)) {
         setIsCalendarOpen(false)
+        setActiveIndex(0)
       }
       const selectedRange = translatedOptions[target.innerText]
       if (selectedRange) {
         resetRanges()
+        setActiveIndex(0)
         rangeRef?.current?.blur()
         setIsCalendarOpen(false)
         onDateApply({ range: selectedRange })
@@ -149,13 +164,21 @@ export const RangePicker = ({
         placement='bottomRight'
         disabledDate={disabledDate}
         open={isCalendarOpen}
-        onClick={() => setIsCalendarOpen(true)}
+        activePickerIndex={activeIndex}
+        onClick={() => {
+          setIsCalendarOpen(true)
+        }}
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
         suffixIcon={<ClockOutlined />}
         onCalendarChange={(values: RangeValueType, _: string[], info: { range: string }) => {
           const { range } = info
-          setBoundary(range)
-          setRange(restrictDateTo3Months(values, range))
+          const restrictRange = restrictDateToMonthsRange(values, range, maxMonthRange || 3)
+          setActiveIndex((range === 'start') ? 1 : 0)
+          setRange(prevRange => ({
+            ...prevRange,
+            startDate: restrictRange.startDate || null,
+            endDate: restrictRange.endDate || null
+          }))
         }}
         mode={['date', 'date']}
         renderExtraFooter={() => (

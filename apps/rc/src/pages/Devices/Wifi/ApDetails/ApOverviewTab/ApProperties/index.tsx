@@ -9,10 +9,16 @@ import {
   Subtitle,
   Descriptions
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
-import { ApDetails, ApVenueStatusEnum, ApViewModel, RadioProperties } from '@acx-ui/rc/utils'
-import { TenantLink }                                                 from '@acx-ui/react-router-dom'
-import { noDataDisplay, isApFwVersionLargerThan711 }                  from '@acx-ui/utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  ApDetails,
+  ApVenueStatusEnum,
+  ApViewModel,
+  RadioProperties,
+  useApContext
+} from '@acx-ui/rc/utils'
+import { TenantLink }                                from '@acx-ui/react-router-dom'
+import { noDataDisplay, isApFwVersionLargerThan711 } from '@acx-ui/utils'
 
 import { ApDetailsDrawer } from './ApDetailsDrawer'
 import * as UI             from './styledComponents'
@@ -24,6 +30,8 @@ export function ApProperties (props:{
   const [visible, setVisible] = useState(false)
   const { currentAP, apDetails, isLoading } = props
   const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
+  const supportR370 = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+  const { supportAggressiveTxPower } = useApContext()
   const onMoreAction = () => {
     setVisible(true)
   }
@@ -31,8 +39,10 @@ export function ApProperties (props:{
 
   const getTxPowerDisplayInfo = (currentAP: ApViewModel, channel: RadioProperties) => {
     if (isApTxPowerToggleEnabled) {
-      return ((isApFwVersionLargerThan711(currentAP?.fwVersion))?
-        channel?.actualTxPower : channel?.txPower) || noDataDisplay
+      const txPower = ((isApFwVersionLargerThan711(currentAP?.fwVersion) &&
+      (!supportR370 || supportAggressiveTxPower))? channel?.actualTxPower : channel?.txPower)
+
+      return txPower !== undefined && txPower !== null ? txPower : noDataDisplay
     }
     return channel?.txPower || noDataDisplay
   }

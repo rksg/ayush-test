@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Intent }         from '../../useIntentDetailsQuery'
+import { IntentDetail }   from '../../useIntentDetailsQuery'
 import { categoryStyles } from '../ComparisonDonutChart/services'
 
 export const mocked = {
@@ -40,8 +40,12 @@ export const mocked = {
         disabled: 31
       }
     }
+  },
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierData: true
   }
-} as unknown as Intent
+} as unknown as IntentDetail
 export const mockNetworkHierarchy = {
   network: {
     venueHierarchy: [{

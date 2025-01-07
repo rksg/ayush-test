@@ -18,16 +18,19 @@ import {
   useActivateHqosOnEdgeClusterMutation,
   useDeactivateHqosOnEdgeClusterMutation,
   useGetDhcpStatsQuery,
-  useGetEdgeHqosProfileViewDataListQuery
+  useGetEdgeHqosProfileViewDataListQuery,
+  useGetEdgePinViewDataListQuery,
+  useUpdateEdgeClusterArpTerminationSettingsMutation
 } from '@acx-ui/rc/services'
-import { EdgeClusterStatus, IncompatibilityFeatures } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }      from '@acx-ui/react-router-dom'
-import { EdgeScopes }                                 from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasPermission }    from '@acx-ui/user'
+import { ClusterArpTerminationSettings, EdgeClusterStatus, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                     from '@acx-ui/react-router-dom'
+import { EdgeScopes }                                                                from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasPermission }                                   from '@acx-ui/user'
 
 import EdgeQosProfileSelectionForm from '../../../../Policies/HqosBandwidth/Edge/HqosBandwidthSelectionForm'
 
-import { MdnsProxyFormItem } from './mDNS'
+import { ArpTerminationFormItem } from './ArpTermination'
+import { MdnsProxyFormItem }      from './mDNS'
 
 
 interface EdgeNetworkControlProps {
@@ -40,6 +43,8 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const isEdgeMdnsReady = useIsEdgeFeatureReady(Features.EDGE_MDNS_PROXY_TOGGLE)
+  const isEdgeArptReady = useIsEdgeFeatureReady(Features.EDGE_ARPT_TOGGLE)
+  const isEdgePinEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
 
   const { currentClusterStatus } = props
   const navigate = useNavigate()
@@ -53,6 +58,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   const [activateEdgeQos] = useActivateHqosOnEdgeClusterMutation()
   const [deactivateEdgeQos] = useDeactivateHqosOnEdgeClusterMutation()
   const { activateEdgeMdnsCluster, deactivateEdgeMdnsCluster } = useEdgeMdnsActions()
+  const [updateEdgeArpTermination] = useUpdateEdgeClusterArpTerminationSettingsMutation()
 
 
   const edgeCpuCores = currentClusterStatus?.edgeList?.map(e => e.cpuCores)[0]
@@ -92,10 +98,25 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
     })
   })
 
+  const { hasPin } = useGetEdgePinViewDataListQuery({
+    payload: {
+      fields: ['id'],
+      filters: { 'edgeClusterInfo.edgeClusterId': [clusterId] }
+    }
+  }, {
+    skip: !Boolean(clusterId) || !isEdgePinEnabled,
+    selectFromResult: ({ data }) => {
+      return {
+        hasPin: Boolean(data?.data?.[0]?.id)
+      }
+    }
+  })
+
   const handleApply = async () => {
     await handleApplyDhcp()
     await handleApplyQos()
     await handleApplyMdns()
+    await handleApplyArpTermination()
   }
 
   const handleApplyDhcp = async () => {
@@ -158,6 +179,42 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
         currentClusterStatus?.venueId,
         clusterId
       )
+    }
+  }
+
+  const handleApplyArpTermination = async () => {
+    const originalArpSettings = form.getFieldValue('originalArpSettings')
+    if (!clusterId || !currentClusterStatus?.venueId || !originalArpSettings) return
+
+    const currentArpSettings: ClusterArpTerminationSettings = {
+      enabled: form.getFieldValue('arpTerminationSwitch'),
+      agingTimerEnabled: form.getFieldValue('arpAgingTimerSwitch'),
+      agingTimeSec: form.getFieldValue('agingTimeSec')
+    }
+
+    const needUpdate =
+      originalArpSettings.enabled !== currentArpSettings.enabled ||
+      originalArpSettings.agingTimerEnabled !== currentArpSettings.agingTimerEnabled ||
+      originalArpSettings.agingTimeSec !== currentArpSettings.agingTimeSec
+
+    if (needUpdate) {
+      if (!currentArpSettings.enabled) {
+        currentArpSettings.agingTimerEnabled = originalArpSettings.agingTimerEnabled
+        currentArpSettings.agingTimeSec = originalArpSettings.agingTimeSec
+      } else if (!currentArpSettings.agingTimerEnabled) {
+        currentArpSettings.agingTimeSec = originalArpSettings.agingTimeSec
+      }
+    }
+
+    if (needUpdate) {
+      const requestPayload = {
+        params: {
+          venueId: currentClusterStatus?.venueId,
+          edgeClusterId: clusterId
+        },
+        payload: currentArpSettings
+      }
+      await updateEdgeArpTermination(requestPayload).unwrap()
     }
   }
 
@@ -241,7 +298,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
                   <Form.Item
                     name='dhcpSwitch'
                     valuePropName='checked'
-                    children={<Switch />}
+                    children={<Switch disabled={hasPin} />}
                   />
                 </StepsForm.FieldLabel>
               }
@@ -252,7 +309,8 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
                 >
                   {
                     ({ getFieldValue }) => {
-                      return getFieldValue('dhcpSwitch') && <EdgeDhcpSelectionForm hasPin={false} />
+                      // eslint-disable-next-line max-len
+                      return getFieldValue('dhcpSwitch') && <EdgeDhcpSelectionForm hasPin={hasPin} />
                     }
                   }
                 </Form.Item>
@@ -306,6 +364,12 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
             clusterId={clusterId}
             setEdgeFeatureName={setEdgeFeatureName}
           />}
+
+          {isEdgeArptReady && currentClusterStatus && <ArpTerminationFormItem
+            currentClusterStatus={currentClusterStatus}
+            setEdgeFeatureName={setEdgeFeatureName}
+          />}
+
         </StepsForm.StepForm>
 
       </StepsForm>

@@ -3,16 +3,15 @@ import { useContext, useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
-import { DownloadOutlined }                                  from '@acx-ui/icons'
+import { Loader, Table, TableColumn, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                       from '@acx-ui/icons'
 import {
   DpskPoolLink,
   IdentityGroupLink,
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
   PersonaGroupDrawer,
-  usePersonaAsyncHeaders,
   useIsEdgeFeatureReady,
   VenueLink,
   CertTemplateLink
@@ -227,7 +226,6 @@ export function PersonaGroupTable () {
     data: {} as PersonaGroup | undefined
   })
   const { setIdentityGroupCount } = useContext(IdentityGroupContext)
-  const { isAsync, customHeaders } = usePersonaAsyncHeaders()
 
   const [getVenues] = useLazyVenuesListQuery()
   const [getCertTemplate] = useLazyGetCertificateTemplateQuery()
@@ -345,14 +343,8 @@ export function PersonaGroupTable () {
         // eslint-disable-next-line max-len
         { fieldName: 'propertyId', fieldText: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }) }
       ],
-      async () => deletePersonaGroup({ params: { groupId: id }, customHeaders })
+      async () => deletePersonaGroup({ params: { groupId: id } })
         .then(() => {
-          if (!isAsync) {
-            showToast({
-              type: 'success',
-              content: $t({ defaultMessage: 'Identity Group {name} was deleted' }, { name })
-            })
-          }
           callback()
         })
     )

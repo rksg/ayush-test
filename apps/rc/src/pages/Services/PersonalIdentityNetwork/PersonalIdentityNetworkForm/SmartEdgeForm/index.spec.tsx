@@ -186,6 +186,7 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
       await screen.findByRole('combobox', { name: 'Cluster' }),
       await screen.findByRole('option', { name: 'Edge Cluster 1' })
     )
+
     const segmentsInput = screen.getByRole('spinbutton', { name: 'Number of Segments' })
     await user.type(segmentsInput, '10')
     const devicesInput = screen.getByRole('spinbutton', { name: 'Number of devices per Segment' })
@@ -272,9 +273,9 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
         <PersonalIdentityNetworkFormContext.Provider
           value={mockContextData}
         >
-          <StepsForm onFinish={mockedFinishFn}>
+          <StepsForm onFinish={mockedFinishFn} editMode>
             <StepsForm.StepForm>
-              <SmartEdgeForm editMode />
+              <SmartEdgeForm />
             </StepsForm.StepForm>
           </StepsForm>
         </PersonalIdentityNetworkFormContext.Provider>

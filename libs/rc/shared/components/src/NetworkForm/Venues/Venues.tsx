@@ -13,6 +13,8 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
+  useEnhanceNetworkVenueTableQuery,
+  useEnhanceNetworkVenueTableV2Query,
   useNetworkVenueListV2Query,
   useNewNetworkVenueTableQuery,
   useScheduleSlotIndexMap
@@ -118,6 +120,8 @@ const useNetworkVenueList = () => {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
+  const isUseNewRbacNetworkVenueApi = useIsSplitOn(Features.WIFI_NETWORK_VENUE_QUERY)
 
   const networkId = resolvedRbacEnabled? (params.networkId ?? getNetworkId()) : getNetworkId()
 
@@ -132,7 +136,11 @@ const useNetworkVenueList = () => {
   })
 
   const rbacTableQuery = useTableQuery({
-    useQuery: useNewNetworkVenueTableQuery,
+    useQuery: isApCompatibilitiesByModel
+      ? (isUseNewRbacNetworkVenueApi
+        ? useEnhanceNetworkVenueTableV2Query
+        : useEnhanceNetworkVenueTableQuery)
+      : useNewNetworkVenueTableQuery,
     apiParams: { networkId: networkId! },
     defaultPayload: {
       ...defaultRbacPayload,
@@ -159,6 +167,8 @@ export function Venues (props: VenuesProps) {
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+  const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
+
   const form = Form.useFormInstance()
   const { cloneMode, data, setData, editMode } = useContext(NetworkFormContext)
 
@@ -168,7 +178,7 @@ export function Venues (props: VenuesProps) {
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
 
   const prevIsWPA3securityRef = useRef(false)
-  const isWPA3security = IsNetworkSupport6g(data)
+  const isWPA3security = IsNetworkSupport6g(data, { isSupport6gOWETransition })
 
   const { $t } = useIntl()
   const tableQuery = useNetworkVenueList()
@@ -345,7 +355,7 @@ export function Venues (props: VenuesProps) {
 
   useEffect(() => {
     if (data?.wlan) {
-      const isSupport6G = IsNetworkSupport6g(data)
+      const isSupport6G = IsNetworkSupport6g(data, { isSupport6gOWETransition })
       if (prevIsWPA3securityRef.current === true && !isSupport6G) {
         if (activatedNetworkVenues?.length > 0) {
           // remove radio 6g when wlanSecurity is changed from WPA3 to others

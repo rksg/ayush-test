@@ -10,5 +10,6 @@ export const MessageMapping = {
   mtu_request_timeout_tooltip: defineMessage({ defaultMessage: 'Maximum time to wait for a response for Path MTU request. The valid range is from 10ms to 10s.' }),
   mtu_request_retry_tooltip: defineMessage({ defaultMessage: 'Maximum number Path MTU requests sent to test one MTU value. The valid range is between 3-64.' }),
   keep_alive_interval_tooltip: defineMessage({ defaultMessage: 'The interval at which AP sends keep-alive requests to RUCKUS Edge.' }),
-  keep_alive_retry_tooltip: defineMessage({ defaultMessage: 'The consecutive number of keep-alive requests that can be lost before disconnecting from RUCKUS Edge.' })
+  keep_alive_retry_tooltip: defineMessage({ defaultMessage: 'The consecutive number of keep-alive requests that can be lost before disconnecting from RUCKUS Edge.' }),
+  nat_traversal_support_tooltip: defineMessage({ defaultMessage: 'Facilitates VxLAN-GPE tunnel traffic through NAT devices for seamless connectivity and interoperability.' })
 }

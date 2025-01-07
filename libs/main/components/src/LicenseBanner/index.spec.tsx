@@ -1,6 +1,7 @@
 import { rest } from 'msw'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { MspRbacUrlsInfo }        from '@acx-ui/msp/utils'
 import { LicenseUrlsInfo }        from '@acx-ui/rc/utils'
 import { Provider }               from '@acx-ui/store'
 import {
@@ -229,9 +230,13 @@ describe('License Single Component', () => {
       rest.get(
         LicenseUrlsInfo.getEntitlementsBanners.url,
         (req, res, ctx) => res(ctx.json([list[2]]))
-      )
-    )
-    mockServer.use(
+      ),
+      rest.post(
+        MspRbacUrlsInfo.getEntitlementsAttentionNotes.url,
+        (req, res, ctx) => res(ctx.json({
+          data: [{ summary: 'Test Summary', details: 'Test Details' }]
+        }))
+      ),
       rest.post(
         LicenseUrlsInfo.getBanners.url,
         (req, res, ctx) => res(ctx.json([newListData.data[2]]))

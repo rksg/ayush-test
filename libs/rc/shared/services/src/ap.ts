@@ -2,9 +2,9 @@
 import { QueryReturnValue }                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { MaybePromise }                                       from '@reduxjs/toolkit/dist/query/tsHelpers'
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
-import { reduce }                                             from 'lodash'
+import { reduce, uniq }                                       from 'lodash'
 
-import { Filter }               from '@acx-ui/components'
+import { Filter }        from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -29,6 +29,7 @@ import {
   ApGroup,
   ApGroupViewModel,
   ApLedSettings,
+  ApUsbSettings,
   ApLldpNeighborsResponse,
   ApManagementVlan,
   ApNeighborsResponse,
@@ -86,7 +87,14 @@ import {
   SwitchInformation,
   FeatureSetResponse,
   CompatibilityResponse,
-  EthernetPortProfileViewData
+  EthernetPortProfileViewData,
+  SoftGreUrls,
+  SoftGreViewData,
+  ClientIsolationUrls,
+  ClientIsolationViewModel,
+  LanPortsUrls,
+  APLanPortSettings,
+  mergeLanPortSettings
 } from '@acx-ui/rc/utils'
 import { baseApApi }      from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
@@ -574,20 +582,26 @@ export const apApi = baseApApi.injectEndpoints({
 
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
         const newPayload = payload as { venueId: string, serialNumber: string }[]
+        const venueIds = uniq(newPayload.map(item => item.venueId))
+
         const venueDhcpMap = await getVenueDhcpRelation(newPayload, fetchWithBQ)
         const result = [] as DhcpApInfo[]
         const cacheDhcpProfileData: { [dhcpId: string]: DHCPSaveData } = {}
+
+        const venueDhcpApsReq = createHttpRequest(WifiRbacUrlsInfo.getDhcpAps, undefined, customHeaders)
+        const venueDhcpApsRes = await fetchWithBQ({
+          ...venueDhcpApsReq,
+          body: JSON.stringify({ venueIds })
+        })
+        const venueDhcpApsData = ((venueDhcpApsRes?.data) ?? { data: [] }) as { data: NewDhcpAp[] }
+        const venueDhcpAps = (venueDhcpApsData.data ?? []) as NewDhcpAp[]
+
         for (let item of newPayload) {
-          const dhcpApReq = createHttpRequest(
-            WifiRbacUrlsInfo.getDhcpAp,
-            { venueId: item.venueId, serialNumber: item.serialNumber },
-            customHeaders
-          )
-          const dhcpApRes = await fetchWithBQ(dhcpApReq)
-          const dhcpAp = dhcpApRes.data as NewDhcpAp
+          const { venueId, serialNumber } = item
+          const dhcpAp = venueDhcpAps.find( ap => ap.serialNumber === serialNumber)
           if (!dhcpAp) continue
 
-          const dhcpId = venueDhcpMap[item.venueId]
+          const dhcpId = venueDhcpMap[venueId]
           await setDhcpProfileToCache(cacheDhcpProfileData, fetchWithBQ, dhcpId)
           result.push({
             ...dhcpAp,
@@ -908,10 +922,14 @@ export const apApi = baseApApi.injectEndpoints({
       },
       providesTags: [{ type: 'Ap', id: 'LanPorts' }]
     }),
-
-    getApLanPortsWithEthernetProfiles: build.query<WifiApSetting | null, RequestPayload>({
-      async queryFn ({ params, enableRbac, enableEthernetProfile },
-        _queryApi, _extraOptions, fetchWithBQ) {
+    getApLanPortsWithActivatedProfiles: build.query<WifiApSetting | null, RequestPayload>({
+      async queryFn ({
+        params, enableRbac,
+        enableEthernetProfile,
+        enableSoftGreOnEthernet,
+        enableClientIsolationOnEthernet
+      },
+      _queryApi, _extraOptions, fetchWithBQ) {
         if (!params?.serialNumber) {
           return Promise.resolve({ data: null } as QueryReturnValue<
             null,
@@ -926,46 +944,126 @@ export const apApi = baseApApi.injectEndpoints({
         )
         let apLanPorts = apLanPortSettings.data as WifiApSetting
 
-        if (!enableEthernetProfile) {
-          return apLanPortSettings.data
-            ? { data: apLanPorts }
-            : { error: apLanPortSettings.error } as QueryReturnValue<WifiApSetting,
-            FetchBaseQueryError,
-            FetchBaseQueryMeta>
-        }
-
-        const ethReq = {
-          ...createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList),
-          body: JSON.stringify({
-            filters: {
-              apSerialNumbers: [params.serialNumber]
-            },
-            page: 1,
-            pageSize: 10
+        if (params?.serialNumber && !!apLanPorts?.lanPorts?.length) {
+          const apLanPortSettingsQuery = apLanPorts?.lanPorts?.map((lanPort) => {
+            return fetchWithBQ(createHttpRequest(LanPortsUrls.getApLanPortSettings,
+              {
+                venueId: params?.venueId,
+                serialNumber: params.serialNumber,
+                portId: lanPort.portId
+              },
+              apiCustomHeader
+            ))
           })
+          const reqs = await Promise.allSettled(apLanPortSettingsQuery!)
+          const results: APLanPortSettings[] = reqs.map((result) => {
+            return result.status === 'fulfilled' ? result.value.data as APLanPortSettings : {}
+          })
+
+          apLanPorts.lanPorts = mergeLanPortSettings(apLanPorts.lanPorts, results)
         }
 
-        const ethListQuery = await fetchWithBQ(ethReq)
-        const ethList = ethListQuery.data as TableResult<EthernetPortProfileViewData>
-        if (ethList.data && apLanPorts.lanPorts) {
-          for (let eth of ethList.data) {
-            const port = eth.apActivations?.find(ap => ap.apSerialNumber === params.serialNumber)
-            let targetPort = port && apLanPorts.lanPorts
-              ?.find(l => l.portId?.toString() === port.portId?.toString())
-            if (targetPort) {
-              targetPort.ethernetPortProfileId = eth.id
+        if (enableEthernetProfile) {
+          const ethReq = {
+            ...createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList),
+            body: JSON.stringify({
+              pageSize: 1000
+            })
+          }
+
+          const ethListQuery = await fetchWithBQ(ethReq)
+          const ethList = ethListQuery.data as TableResult<EthernetPortProfileViewData>
+          if (ethList.data && apLanPorts.lanPorts) {
+            const apReq = createHttpRequest(urlsInfo.getAp, params)
+            const apQuery = await fetchWithBQ(apReq)
+            const apData = apQuery.data as ApDetails
+            const apModel = apData.model
+            const apActivateEths = ethList.data.filter(eth => eth.apSerialNumbers?.includes(params.serialNumber!)) ?? []
+            const venueActivateEths = ethList.data.filter(eth => eth.venueIds?.includes(params.venueId!)) ?? []
+            for (let eth of venueActivateEths) {
+              const venuePorts = eth.venueActivations?.filter(
+                v => v.venueId === params.venueId && v.apModel === apModel) ?? []
+              for (let venuePort of venuePorts) {
+                let venueTargetPort = apLanPorts.lanPorts?.find(l => l.portId === venuePort.portId?.toString())
+                if (venueTargetPort) {
+                  venueTargetPort.ethernetPortProfileId = eth.id
+                }
+              }
+            }
+
+            for (let eth of apActivateEths) {
+              const ports = eth.apActivations?.filter(ap => ap.apSerialNumber === params.serialNumber) ?? []
+              for (let port of ports) {
+                let targetPort = apLanPorts.lanPorts
+                  ?.find(l => l.portId === port.portId?.toString())
+                if (targetPort) {
+                  targetPort.ethernetPortProfileId = eth.id
+                }
+              }
             }
           }
         }
 
-        return apLanPorts
+        if (enableSoftGreOnEthernet) {
+          const softGreReq = {
+            ...createHttpRequest(SoftGreUrls.getSoftGreViewDataList),
+            body: JSON.stringify({
+              filters: {
+                'apActivations.apSerialNumber': [params.serialNumber]
+              },
+              pageSize: 1000
+            })
+          }
+
+          const softGreListQuery = await fetchWithBQ(softGreReq)
+          const softGreList = softGreListQuery.data as TableResult<SoftGreViewData>
+          if (softGreList.data && apLanPorts.lanPorts) {
+            for (let softGre of softGreList.data) {
+              const port = softGre.apActivations?.find(ap => ap.apSerialNumber === params.serialNumber)
+              let targetPort = port && apLanPorts.lanPorts
+                ?.find(l => l.portId?.toString() === port.portId?.toString())
+              if (targetPort) {
+                targetPort.softGreProfileId = softGre.id
+              }
+            }
+          }
+        }
+
+        if (enableClientIsolationOnEthernet) {
+          const clientIsolationReq = {
+            ...createHttpRequest(ClientIsolationUrls.queryClientIsolation),
+            body: JSON.stringify({
+              filters: {
+                'apActivations.apSerialNumber': [params.serialNumber]
+              },
+              pageSize: 1000
+            })
+          }
+
+          const clientIsolationListQuery = await fetchWithBQ(clientIsolationReq)
+          const clientIsolationList = clientIsolationListQuery.data as TableResult<ClientIsolationViewModel>
+          if (clientIsolationList.data && apLanPorts.lanPorts) {
+            for (let clientIsolation of clientIsolationList.data) {
+              const port = clientIsolation.apActivations?.find(ap => ap.apSerialNumber === params.serialNumber)
+              let targetPort = port && apLanPorts.lanPorts
+                ?.find(l => l.portId?.toString() === port.portId?.toString())
+              if (targetPort) {
+                targetPort.clientIsolationProfileId = clientIsolation.id
+              }
+            }
+          }
+
+        }
+
+        return apLanPortSettings.data
           ? { data: apLanPorts }
           : { error: apLanPortSettings.error } as QueryReturnValue<WifiApSetting,
-        FetchBaseQueryError,
-        FetchBaseQueryMeta>
+            FetchBaseQueryError,
+            FetchBaseQueryMeta>
       },
       providesTags: [{ type: 'Ap', id: 'LanPorts' }]
     }),
+
     updateApLanPorts: build.mutation<WifiApSetting, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
@@ -979,7 +1077,7 @@ export const apApi = baseApApi.injectEndpoints({
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
     }),
     updateApEthernetPorts: build.mutation<CommonResult, RequestPayload>({
-      queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+      queryFn: async ({ params, payload, useVenueSettings }, _queryApi, _extraOptions, fetchWithBQ) => {
         try {
           const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
           const apSettings = payload as WifiApSetting
@@ -1002,7 +1100,38 @@ export const apApi = baseApApi.injectEndpoints({
               payload: {
                 enabled: l.enabled,
                 overwriteUntagId: l.untagId,
-                overwriteVlanMembers: l.vlanMembers
+                overwriteVlanMembers: l.vlanMembers,
+                clientIsolationEnabled: l.clientIsolationEnabled,
+                clientIsolationSettings: l.clientIsolationSettings
+              }
+            }))
+          const softGreActivateRequests = apSettings?.lanPorts
+            ?.filter(l => l.softGreProfileId && (l.softGreEnabled === true) && (l.enabled === true))
+            .map(l => ({
+              params: {
+                venueId: params!.venueId,
+                serialNumber: params!.serialNumber,
+                portId: l.portId,
+                policyId: l.softGreProfileId
+              },
+              payload: {
+                dhcpOption82Enabled: l.dhcpOption82?.dhcpOption82Enabled,
+                dhcpOption82Settings: (l.dhcpOption82?.dhcpOption82Enabled)? l.dhcpOption82?.dhcpOption82Settings : undefined
+              }
+            }))
+          const clientIsolationActivateRequests = apSettings?.lanPorts
+            ?.filter(l => {
+              return l.clientIsolationEnabled
+                  && l.clientIsolationProfileId
+                  && (l.clientIsolationEnabled === true)
+                  && (l.enabled === true)
+            })
+            .map(l => ({
+              params: {
+                venueId: params!.venueId,
+                serialNumber: params!.serialNumber,
+                portId: l.portId,
+                policyId: l.clientIsolationProfileId
               }
             }))
 
@@ -1023,6 +1152,15 @@ export const apApi = baseApApi.injectEndpoints({
 
           await batchApi(EthernetPortProfileUrls.updateEthernetPortOverwritesByApPortId,
             overwriteRequests!, fetchWithBQ, customHeaders)
+
+          if(!useVenueSettings) {
+            await batchApi(SoftGreUrls.activateSoftGreProfileOnAP,
+              softGreActivateRequests!, fetchWithBQ, customHeaders)
+
+            await batchApi(ClientIsolationUrls.activateClientIsolationOnAp,
+              clientIsolationActivateRequests!, fetchWithBQ, customHeaders)
+          }
+
 
           const res = await fetchWithBQ({
             ...(createHttpRequest(WifiRbacUrlsInfo.updateApLanPortSpecificSettings,
@@ -1079,6 +1217,27 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'Led' }]
+    }),
+    getApUsb: build.query<ApUsbSettings, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApUsb, params, customHeaders)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'USB' }]
+    }),
+    updateApUsb: build.mutation<ApUsbSettings, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApUsb, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'USB' }]
     }),
     getApBandModeSettings: build.query<ApBandModeSettings, RequestPayload<void>>({
       query: ({ params, enableRbac }) => {
@@ -1635,13 +1794,15 @@ export const {
   useStartPacketCaptureMutation,
   useGetDefaultApLanPortsQuery,
   useGetApLanPortsQuery,
-  useGetApLanPortsWithEthernetProfilesQuery,
+  useGetApLanPortsWithActivatedProfilesQuery,
   useUpdateApLanPortsMutation,
   useUpdateApEthernetPortsMutation,
   useResetApLanPortsMutation,
   useGetApLedQuery,
   useUpdateApLedMutation,
   useResetApLedMutation,
+  useGetApUsbQuery,
+  useUpdateApUsbMutation,
   useGetApBandModeSettingsQuery,
   useLazyGetApBandModeSettingsQuery,
   useUpdateApBandModeSettingsMutation,
@@ -1713,12 +1874,12 @@ const getVenueDhcpRelation = async (
 ) => {
   const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
   const newPayload = payload as { venueId: string, serialNumber: string }[]
+  const venueIds = uniq(newPayload.map(item => item.venueId))
   const dhcpListPayload = {
     fields: ['id', 'venueIds'],
-    filters: {
-      venueIds: newPayload.map(item => item.venueId)
-    }
+    filters: { venueIds }
   }
+
   const dhcpListReq = createHttpRequest(DHCPUrls.queryDhcpProfiles, undefined, customHeaders)
   const dhcpListRes = await fetchWithBQ({ ...dhcpListReq, body: JSON.stringify(dhcpListPayload) })
   const dhcpList = (dhcpListRes.data as TableResult<DHCPSaveData>).data

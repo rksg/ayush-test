@@ -76,8 +76,16 @@ cp tools/dev/prepare-commit-msg .git/hooks/prepare-commit-msg
 
 ### Creating a pull request
 
-Create a PR using the Bitbucket UI. You need at least 1 reviewer to approve the PR before it can be
+Create a PR using the Bitbucket UI. You need at least 1 gatekeeper to approve the PR before it can be
 merged.
+
+**Gatekeepers by region:**
+
+- **TDC:** James, Karen, George, Ann, Cherry, YC, Jacky, Jeffery, Peter, Bess, Joe, Amy, Roil, Jerry.
+- **SGDC:** Jason, ShiawUen, Mickael
+- **BDC:** Suraj, Vivek
+- **HQ:** Eric
+
 
 ### Deleting a branch
 
@@ -196,3 +204,6 @@ After successfully running the script the files should be generated in the respe
 
 ### I18n strings extraction and compilation
 Refer to  [Locale.md](Locale.md)
+
+### ACX-UI Unit Test Submodule NX Cache Setup Workflow
+https://jira-wiki.ruckuswireless.com/display/Team/ACX-UI+Unit+Test+Submodule+NX+Cache+Setup+Workflow

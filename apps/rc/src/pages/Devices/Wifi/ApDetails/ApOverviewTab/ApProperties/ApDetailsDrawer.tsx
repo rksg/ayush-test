@@ -115,7 +115,11 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const { data: venueData } = useGetVenueQuery({ params, enableRbac: isUseRbacApi }, { skip: !params.venueId })
 
   const { authenticationProfiles } = useGetFlexAuthenticationProfilesQuery({
-    payload: {}
+    payload: {
+      pageSize: 10000,
+      sortField: 'profileName',
+      sortOrder: 'ASC'
+    }
   }, {
     skip: !isSwitchFlexAuthEnabled,
     selectFromResult: ( { data } ) => ({

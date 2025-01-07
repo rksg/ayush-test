@@ -1,10 +1,13 @@
+import _                 from 'lodash'
 import moment            from 'moment-timezone'
 import { defineMessage } from 'react-intl'
 
 import { get } from '@acx-ui/config'
 
-import { IntentListItem, StatusTrail, StatusTrailItem } from '../config'
-import { DisplayStates, Statuses, StatusReasons }       from '../states'
+import { IntentListItem, StatusTrail }            from '../config'
+import { DisplayStates, Statuses, StatusReasons } from '../states'
+
+type TransitionStatus = Pick<StatusTrail, 'status' | 'statusReason'>
 
 export const isDataRetained = (time?: string) => {
   const retainDate = moment().startOf('day').subtract(get('DRUID_RETAIN_PERIOD_DAYS'), 'days')
@@ -12,6 +15,9 @@ export const isDataRetained = (time?: string) => {
 }
 
 export const dataRetentionText = defineMessage({ defaultMessage: 'Beyond data retention period' })
+
+export const coldTierDataText = defineMessage({
+  defaultMessage: 'Metrics / Charts unavailable for data beyond 30 days' })
 
 export const getDefaultTime = () => {
   const datetime3AM = moment().set({ hour: 3, minute: 0, second: 0, millisecond: 0 })
@@ -25,19 +31,20 @@ export type IntentWlan = {
 }
 
 export type TransitionIntentMetadata = {
-  scheduledAt: string
+  scheduledAt?: string
   applyScheduledAt?: string
   wlans?: IntentWlan[]
   preferences?: {
     crrmFullOptimization: boolean
   }
+  changedByName?: string
 }
 
 export type TransitionIntentItem = {
   id: string
   displayStatus: DisplayStates
   status: Statuses
-  statusTrail?: StatusTrail
+  statusTrail?: StatusTrail[]
   metadata?: TransitionIntentMetadata
 }
 
@@ -87,7 +94,7 @@ export const isVisibledByAction = (rows: IntentListItem[], action: Actions) => {
   }
 }
 
-const getCancelTransitionStatus = (item: TransitionIntentItem):StatusTrailItem => {
+const getCancelTransitionStatus = (item: TransitionIntentItem): TransitionStatus => {
   if ([DisplayStates.scheduled, DisplayStates.scheduledOneClick].includes(item.displayStatus)) {
     return { status: Statuses.new }
   }
@@ -99,7 +106,7 @@ const getCancelTransitionStatus = (item: TransitionIntentItem):StatusTrailItem =
     { status: Statuses.active } : preStatusTrail
 }
 
-const getResumeTransitionStatus = (item: TransitionIntentItem):StatusTrailItem => {
+const getResumeTransitionStatus = (item: TransitionIntentItem): TransitionStatus => {
   const preStatusTrail = item.statusTrail?.find(({ status }) => status !== item.status)
   if (!preStatusTrail) throw new Error('Invalid statusTrail(Resume)')
 
@@ -123,7 +130,7 @@ const getResumeTransitionStatus = (item: TransitionIntentItem):StatusTrailItem =
 export const getTransitionStatus =(
   action: Actions,
   item: TransitionIntentItem
-):StatusTrailItem => {
+): TransitionStatus => {
   const { displayStatus } = item
   switch (action) {
     case Actions.One_Click_Optimize:
@@ -150,9 +157,9 @@ export type TransitionMutationPayload = {
   displayStatus: DisplayStates
 }
 
-const buildTransitionGQL = (index:number, includeMetadata:boolean) => `t${index}: transition(
+const buildTransitionGQL = (index:number) => `t${index}: transition(
   id: $id${index}, status: $status${index}, statusReason: $statusReason${index},
-   ${includeMetadata? 'metadata: $metadata'+index : ''}) {
+   metadata: $metadata${index}) {
     success
     errorMsg
     errorCode
@@ -162,7 +169,7 @@ export const parseTransitionGQLByAction = (action: Actions, data: TransitionInte
   const paramsGQL:string[] = []
   const transitionsGQLs:string[] = []
   const variables:Record<string, string|TransitionIntentMetadata|null> = {}
-  const includeMetadata = [Actions.Revert, Actions.One_Click_Optimize].includes(action)
+  const sendWholeMetadata = [Actions.Revert, Actions.One_Click_Optimize].includes(action)
   data.forEach((item, index) => {
     const currentIndex = index + 1
     const { id, metadata } = item
@@ -170,13 +177,15 @@ export const parseTransitionGQLByAction = (action: Actions, data: TransitionInte
     paramsGQL.push(
       `$id${currentIndex}:String!, $status${currentIndex}:String!, \n
       $statusReason${currentIndex}:String, \n
-      ${includeMetadata && metadata? '$metadata'+currentIndex+':JSON': ''}`
+      $metadata${currentIndex}:JSON`
     )
-    transitionsGQLs.push(buildTransitionGQL(currentIndex, includeMetadata))
+    transitionsGQLs.push(buildTransitionGQL(currentIndex))
     variables[`id${currentIndex}`] = id
     variables[`status${currentIndex}`] = status
     variables[`statusReason${currentIndex}`] = statusReason ?? null
-    if (includeMetadata && metadata) variables[`metadata${currentIndex}`] = metadata
+
+    if (metadata) variables[`metadata${currentIndex}`] =
+      sendWholeMetadata ? metadata : _.pick(metadata, ['changedByName'])
   })
   return { paramsGQL,transitionsGQLs, variables } as {
     paramsGQL:string[],

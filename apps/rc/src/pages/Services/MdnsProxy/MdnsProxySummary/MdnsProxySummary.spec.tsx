@@ -5,6 +5,12 @@ import MdnsProxyFormContext from '../MdnsProxyForm/MdnsProxyFormContext'
 
 import { MdnsProxySummary } from './MdnsProxySummary'
 
+
+jest.mock('@acx-ui/rc/components', () => ({
+  MdnsProxySummaryForm: () => <div>MdnsProxySummaryForm</div>
+}))
+
+
 describe('MdnsProxySummary', () => {
   it('should render the summary', async () => {
     render(
@@ -17,8 +23,6 @@ describe('MdnsProxySummary', () => {
       </MdnsProxyFormContext.Provider>
     )
 
-    expect(await screen.findByText(mockedFormData.name)).toBeVisible()
-    expect(await screen.findByText('AirPlay')).toBeVisible()
-    expect(await screen.findByText(mockedFormData.scope![0].venueName!)).toBeVisible()
+    expect(await screen.findByText('MdnsProxySummaryForm')).toBeVisible()
   })
 })

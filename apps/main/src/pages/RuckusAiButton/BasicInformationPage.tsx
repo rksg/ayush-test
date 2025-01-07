@@ -28,7 +28,12 @@ function BasicInformationPage () {
   }
 
   return (
-    <div style={{ marginLeft: '85px' }}>
+    <div style={{
+      marginLeft: '85px',
+      height: '100%',
+      maxHeight: 'calc(100vh - 320px)',
+      minHeight: '200px'
+    }}>
       <UI.PageTitle>
         {$t({ defaultMessage: '<VenueSingular></VenueSingular> Details' })}
       </UI.PageTitle>
@@ -38,7 +43,13 @@ function BasicInformationPage () {
           label={$t({ defaultMessage: '<VenueSingular></VenueSingular> Name' })}
           validateTrigger={'onBlur'}
           rules={[
-            { type: 'string', required: true },
+            {
+              type: 'string', required: true,
+              message: $t({
+                defaultMessage:
+                  'Please enter a <VenueSingular></VenueSingular> Name.'
+              })
+            },
             { min: 2, transform: (value) => value.trim() },
             { max: 32, transform: (value) => value.trim() },
             { validator: (_, value) => whitespaceOnlyRegExp(value) },

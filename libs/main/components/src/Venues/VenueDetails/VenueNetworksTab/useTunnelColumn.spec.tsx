@@ -3,7 +3,7 @@ import userEvent, { PointerEventsCheckLevel } from '@testing-library/user-event'
 import { cloneDeep }                          from 'lodash'
 import { rest }                               from 'msw'
 
-import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                        from '@acx-ui/feature-toggle'
 import { NetworkTunnelActionModalProps, useEdgeAllPinData, useSdLanScopedVenueNetworks } from '@acx-ui/rc/components'
 import {
   aggregatedVenueNetworksDataV2,
@@ -198,6 +198,8 @@ describe('VenueNetworksTab - PIN enabled', () => {
 
   describe('Edge and multi-venue SD-LAN FF is on', () => {
     beforeEach(() => {
+      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.EDGE_ADV)
+
       jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
         && ff !== Features.WIFI_RBAC_API
         && ff !== Features.WIFI_COMPATIBILITY_BY_MODEL

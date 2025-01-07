@@ -70,6 +70,22 @@ export const configChanges = [
     key: 'initialState.ccmAp.radio24g.radio.channel_fly_mtbc',
     oldValues: [],
     newValues: ['480']
+  },
+  {
+    timestamp: '1685427082100',
+    type: 'intentAI',
+    name: 'Config_change_WLAN2',
+    key: 'intentAi.c-bgscan24g-enable',
+    oldValues: [ 'Disabled' ],
+    newValues: [ 'Enabled' ]
+  },
+  {
+    timestamp: '1685427082200',
+    type: 'intentAI',
+    name: '94:B3:4F:3D:21:80',
+    key: 'intentAi.c-bgscan5g-enable',
+    oldValues: [ 'Disabled' ],
+    newValues: [ 'Enabled' ]
   }
 ]
 

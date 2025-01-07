@@ -3,10 +3,10 @@ import React, { useEffect, useRef } from 'react'
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { Loader, PageHeader, showToast, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                from '@acx-ui/feature-toggle'
+import { Loader, PageHeader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import {
-  useAddMacRegListMutation,
+  useAddMacRegListMutation, useAddMacRegListWithIdentityMutation,
   useDeleteAdaptivePolicySetFromMacListMutation,
   useGetMacRegListQuery,
   useUpdateAdaptivePolicySetToMacListMutation,
@@ -44,27 +44,29 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
 
   const { data, isLoading } = useGetMacRegListQuery({ params: { policyId } }, { skip: !editMode })
   const [addMacRegList] = useAddMacRegListMutation()
+  const [addMacRegListWithIdentity] = useAddMacRegListWithIdentityMutation()
   const [updateMacRegList, { isLoading: isUpdating }] = useUpdateMacRegListMutation()
-
-  const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
-  const customHeaders = (isAsync) ? { Accept: 'application/vnd.ruckus.v2+json' } : undefined
 
   const [bindPolicySet] = useUpdateAdaptivePolicySetToMacListMutation()
   const [unbindPolicySet] = useDeleteAdaptivePolicySetFromMacListMutation()
+
+  const isIdentityRequired = useIsSplitOn(Features.MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE)
 
   useEffect(() => {
     if (data && editMode) {
       formRef.current?.setFieldsValue({
         name: data.name,
         autoCleanup: data.autoCleanup,
-        ...transferDataToExpirationFormFields(data)
+        ...transferDataToExpirationFormFields(data),
+        defaultAccess: data.defaultAccess,
+        policySetId: data.policySetId
       })
 
-      if(policyEnabled) {
+      if(isIdentityRequired) {
         formRef.current?.setFieldsValue({
-          defaultAccess: data.defaultAccess,
-          policySetId: data.policySetId
+          identityGroupId: data.identityGroupId,
+          identityId: data.identityId,
+          isUseSingleIdentity: !!data.identityId
         })
       }
     }
@@ -72,27 +74,30 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
 
   const handleAddList = async (data: MacRegistrationPoolFormFields) => {
     try {
-      const saveData = {
-        name: data.name,
-        autoCleanup: data.autoCleanup,
-        ...transferExpirationFormFieldsToData(data.expiration),
-        defaultAccess: data.defaultAccess ?? 'ACCEPT'
+      let result = null
+      if(isIdentityRequired) {
+        const saveData = {
+          name: data.name,
+          autoCleanup: data.autoCleanup,
+          ...transferExpirationFormFieldsToData(data.expiration),
+          defaultAccess: data.defaultAccess ?? 'ACCEPT',
+          identityId: data.isUseSingleIdentity ? data.identityId : undefined
+        }
+        // eslint-disable-next-line max-len
+        result = await addMacRegListWithIdentity({ params: { identityGroupId: data.identityGroupId }, payload: saveData }).unwrap() as MacRegistrationPool
+      } else {
+        const saveData = {
+          name: data.name,
+          autoCleanup: data.autoCleanup,
+          ...transferExpirationFormFieldsToData(data.expiration),
+          defaultAccess: data.defaultAccess ?? 'ACCEPT'
+        }
+        // eslint-disable-next-line max-len
+        result = await addMacRegList({ payload: saveData }).unwrap() as MacRegistrationPool
       }
-      // eslint-disable-next-line max-len
-      const result = await addMacRegList({ payload: saveData, customHeaders }).unwrap() as MacRegistrationPool
 
       if (result.id && data.policySetId) {
         await bindPolicySet({ params: { policyId: result.id, policySetId: data.policySetId } })
-      }
-
-      if (!isAsync) {
-        showToast({
-          type: 'success',
-          content: intl.$t(
-            { defaultMessage: 'List {name} was added' },
-            { name: saveData.name }
-          )
-        })
       }
 
       modalMode ? modalCallBack?.(result) : navigate(linkToList, { replace: true })
@@ -107,28 +112,20 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
         name: formData.name,
         ...transferExpirationFormFieldsToData(formData.expiration),
         autoCleanup: formData.autoCleanup,
-        defaultAccess: formData.defaultAccess ?? 'ACCEPT'
+        defaultAccess: formData.defaultAccess ?? 'ACCEPT',
+        identityId: isIdentityRequired ?
+          (formData.isUseSingleIdentity ? formData.identityId : null) : undefined
       }
+
       await updateMacRegList({
         params: { policyId },
-        payload: saveData,
-        customHeaders
+        payload: saveData
       }).unwrap()
 
       if (formData.policySetId) {
         await bindPolicySet({ params: { policyId, policySetId: formData.policySetId } })
       } else if (data?.policySetId) {
         await unbindPolicySet({ params: { policyId, policySetId: data?.policySetId } })
-      }
-
-      if (!isAsync) {
-        showToast({
-          type: 'success',
-          content: intl.$t(
-            { defaultMessage: 'List {name} was updated' },
-            { name: saveData.name }
-          )
-        })
       }
 
       modalMode ? modalCallBack?.() : navigate(linkToList, { replace: true })
@@ -166,7 +163,7 @@ export function MacRegistrationListForm (props: MacRegistrationListFormProps) {
           }]}>
             <Row>
               <Col span={14}>
-                <MacRegistrationListSettingForm/>
+                <MacRegistrationListSettingForm editMode={editMode}/>
               </Col>
             </Row>
           </Loader>

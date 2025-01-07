@@ -1,4 +1,13 @@
-import { Intent } from '../../useIntentDetailsQuery'
+import { IntentDetail } from '../../useIntentDetailsQuery'
+
+export const mockedStatusTrail = {
+  statusTrail: [{
+    status: 'new',
+    statusReason: null,
+    displayStatus: 'new',
+    createdAt: '2024-03-06T06:03:49.850Z'
+  }]
+}
 
 export const mocked = {
   id: 'ba036af1-9da9-4cb4-9732-51998856b887',
@@ -15,14 +24,13 @@ export const mocked = {
     { type: 'system', name: 'AP-MEM-vSZ-61' },
     { type: 'zone', name: 'APMEMv6' }
   ],
-  statusTrail: [{
-    status: 'new',
-    statusReason: null,
-    displayStatus: 'new',
-    createdAt: '2024-03-06T06:03:49.850Z'
-  }],
+  ...mockedStatusTrail,
   updatedAt: '2024-08-20T06:05:49.767Z',
   preferences: null,
   currentValue: null,
-  recommendedValue: true
-} as unknown as Intent
+  recommendedValue: true,
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierDate: true
+  }
+} as unknown as IntentDetail

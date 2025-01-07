@@ -1,4 +1,20 @@
-import { Intent } from '../../useIntentDetailsQuery'
+import { IntentDetail } from '../../useIntentDetailsQuery'
+
+export const mockedStatusTrail = {
+  statusTrail: [
+    { status: 'new', createdAt: '2024-04-03T06:03:59.617Z' }
+  ]
+}
+
+export const mockedKPIs = {
+  kpi_avg_mgmt_traffic_per_client: {
+    data: {
+      timestamp: '2024-08-25T00:00:00.000Z',
+      result: 992883975.0873108
+    },
+    compareData: null
+  }
+}
 
 export const mocked = {
   id: '2c392d0a-124f-4183-b5c4-529d6571f540',
@@ -14,17 +30,9 @@ export const mocked = {
     { type: 'system', name: 'vsz-bruce' },
     { type: 'zone', name: 'weiguo-mesh' }
   ],
-  statusTrail: [
-    { status: 'new', createdAt: '2024-04-03T06:03:59.617Z' }
-  ],
+  ...mockedStatusTrail,
+  ...mockedKPIs,
   currentValue: false,
-  kpi_avg_mgmt_traffic_per_client: {
-    data: {
-      timestamp: '2024-08-25T00:00:00.000Z',
-      result: 992883975.0873108
-    },
-    compareData: null
-  },
   metadata: {
     wlans: [
       {
@@ -36,5 +44,9 @@ export const mocked = {
         ssid: 'DENSITY'
       }
     ]
+  },
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierData: true
   }
-} as unknown as Intent
+} as unknown as IntentDetail

@@ -78,6 +78,36 @@ describe('getErrorContent', () => {
       payload: { originalStatus: 423 }
     } as unknown as ErrorAction).title).toBe('Request in Progress')
   })
+  it('should handle 429', () => {
+    expect(getErrorContent({
+      meta: { baseQueryMeta: { response: { status: 429 } } },
+      payload: {}
+    } as unknown as ErrorAction).title).toBe('Too Many Requests')
+    expect(getErrorContent({
+      meta: {},
+      payload: { originalStatus: 429 }
+    } as unknown as ErrorAction).title).toBe('Too Many Requests')
+  })
+  it('should handle 502', () => {
+    expect(getErrorContent({
+      meta: { baseQueryMeta: { response: { status: 502 } } },
+      payload: {}
+    } as unknown as ErrorAction).title).toBe('Bad Gateway')
+    expect(getErrorContent({
+      meta: {},
+      payload: { originalStatus: 502 }
+    } as unknown as ErrorAction).title).toBe('Bad Gateway')
+  })
+  it('should handle 503', () => {
+    expect(getErrorContent({
+      meta: { baseQueryMeta: { response: { status: 503 } } },
+      payload: {}
+    } as unknown as ErrorAction).title).toBe('Service Unavailable')
+    expect(getErrorContent({
+      meta: {},
+      payload: { originalStatus: 503 }
+    } as unknown as ErrorAction).title).toBe('Service Unavailable')
+  })
   it('should handle 504', () => {
     expect(getErrorContent({
       meta: { baseQueryMeta: { response: { status: 504 } } },
@@ -154,6 +184,43 @@ describe('getErrorContent', () => {
     } as unknown as ErrorAction).content)
 
     expect(screen.getByText('[Validation Error]')).toBeInTheDocument()
+  })
+  it('should handle GraphQL errors from data-api', () => {
+    const graphqlResponse = {
+      data: { shouldBe: 'ignored' },
+      errors: [
+        {
+          message: 'The provided data did not pass validation. Check your input.',
+          extensions: { code: 'RDA-422' }
+        },
+        {
+          message: 'You must be logged in to perform this action.',
+          extensions: { code: 'RDA-401' }
+        }
+      ],
+      extensions: { requestId: '184abe34b822549ef598fca3c19fcfe2' }
+    }
+    const errorAction = {
+      type: 'analytics-data-api/executeQuery/rejected',
+      meta: { baseQueryMeta: { response: graphqlResponse } },
+      payload: {}
+    } as unknown as ErrorAction
+
+    const result = getErrorContent(errorAction)
+    expect(result.errors).toEqual({
+      requestId: '184abe34b822549ef598fca3c19fcfe2',
+      errors: [
+        {
+          code: 'RDA-422',
+          message: 'The provided data did not pass validation. Check your input.'
+        },
+        {
+          code: 'RDA-401',
+          message: 'You must be logged in to perform this action.'
+        }
+      ]
+    })
+    expect(result.title).toBe('Server Error')
   })
 })
 

@@ -111,7 +111,7 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
     chartsRef.current = active
   })
 
-  const isMaxEventError = clientQuery.error?.message?.includes('CTP:MAX_EVENTS_EXCEEDED')
+  const isMaxEventError = clientQuery.error?.message?.includes('RDA-413')
 
   return isMaxEventError
     ? <UI.ErrorPanel data-testid='ct-error-panel'>

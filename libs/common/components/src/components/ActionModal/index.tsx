@@ -89,7 +89,6 @@ export const convertToJSON = (content: ErrorDetailsProps) => {
 
 export const showActionModal = (props: ActionModalProps) => {
   const modal = Modal[props.type]({})
-  console.log('showActionModal')
   const config = transformProps(props, modal)
   modal.update({
     ...config,

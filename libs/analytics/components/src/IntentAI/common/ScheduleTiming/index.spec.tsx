@@ -1,13 +1,13 @@
-import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
-import moment    from 'moment-timezone'
+import userEvent              from '@testing-library/user-event'
+import { Form, FormInstance } from 'antd'
+import moment                 from 'moment-timezone'
 
 import { screen, render, renderHook } from '@acx-ui/test-utils'
 
 import { mockIntentContext }                     from '../../__tests__/fixtures'
 import { mockedIntentCRRM, mockedIntentCRRMnew } from '../../AIDrivenRRM/__tests__/fixtures'
 import { Statuses }                              from '../../states'
-import { Intent }                                from '../../useIntentDetailsQuery'
+import { IntentDetail }                          from '../../useIntentDetailsQuery'
 import { useInitialValues }                      from '../../useIntentTransition'
 
 import { getScheduledAt, ScheduleTiming, validateScheduleTiming } from '.'
@@ -32,23 +32,44 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
-const renderForm = (children: JSX.Element) => {
+const renderForm = (children: JSX.Element, form?: FormInstance) => {
+  let _form = form || renderHook(() => Form.useForm()[0]).result.current
   const { result: { current: initialValues } } = renderHook(() => useInitialValues())
-  const { result: { current: form } } = renderHook(() => Form.useForm()[0])
   const onFinish = jest.fn()
   return {
-    form,
+    form: _form,
     onFinish,
-    formRender: render(<Form {...{ form, onFinish, initialValues }}>
-      {children}
-      <button type='submit'>Submit</button>
-    </Form>)
+    formRender: render(
+      <Form {...{ form: _form, onFinish, initialValues }}>
+        {children}
+        <button type='submit'>Submit</button>
+      </Form>
+    )
   }
 }
 
 describe('ScheduleTiming', () => {
   beforeEach(() => jest.spyOn(Date, 'now').mockReturnValue(+new Date('2024-08-12T10:38:00')))
   afterEach(() => jest.restoreAllMocks())
+
+  it.each(
+    Object.values(Statuses).filter(
+      (status) => status !== Statuses.new && status !== Statuses.scheduled
+    )
+  )('intent status = "%s" disabled = true, should have no date field and undefined time field',
+    async (status) => {
+      mockIntentContext({ intent: { ...mockedIntentCRRM, status }, kpis: [] })
+      const { form, onFinish } = renderForm(<ScheduleTiming disabled/>)
+
+      expect(screen.queryByPlaceholderText('Select date')).not.toBeInTheDocument()
+      expect(await screen.findByPlaceholderText('Select time')).toBeDisabled()
+
+      await click(await screen.findByRole('button', { name: 'Submit' }))
+      expect(onFinish).toBeCalled()
+      const values = form.getFieldsValue()
+      expect(values.settings).toEqual({ date: undefined, time: undefined })
+    })
+
   describe('intent status = new/scheduled', () => {
     beforeEach(() =>
       mockIntentContext({ intent: mockedIntentCRRMnew, kpis: [] }))
@@ -75,10 +96,14 @@ describe('ScheduleTiming', () => {
     })
     it('handle selected date & time, then waited past selected time validation', async () => {
       mockIntentContext({
-        intent: { ...mockedIntentCRRMnew, metadata: {
-          ...mockedIntentCRRMnew.metadata,
-          scheduledAt: '2024-08-12T10:00:00'
-        } },
+        intent: {
+          ...mockedIntentCRRMnew,
+          metadata: {
+            ...mockedIntentCRRMnew.metadata,
+            scheduledAt: '2024-08-12T10:00:00'
+          },
+          status: Statuses.scheduled
+        },
         kpis: []
       })
       const { onFinish } = renderForm(<ScheduleTiming/>)
@@ -86,8 +111,9 @@ describe('ScheduleTiming', () => {
       await click(await screen.findByRole('button', { name: 'Submit' }))
       expect(onFinish).not.toBeCalled()
 
-      // eslint-disable-next-line max-len
-      expect(await screen.findByText('Scheduled time cannot be before 08/12/2024 11:00')).toBeVisible()
+      expect(
+        await screen.findByText('Scheduled time cannot be before 08/12/2024 11:00')
+      ).toBeVisible()
     })
 
     it('handle selected today and some time are disable', async () => {
@@ -120,6 +146,82 @@ describe('ScheduleTiming', () => {
       await click(await screen.findByRole('cell', { name: '2024-08-12' }))
       expect(await screen.findByPlaceholderText('Select time')).toHaveValue('')
     })
+
+    it.each([Statuses.new, Statuses.scheduled])(
+      'intent status = "%s" disabled = true, should have undefiend date and time fields',
+      async (status) => {
+        mockIntentContext({
+          intent: {
+            ...mockedIntentCRRMnew,
+            metadata: {
+              ...mockedIntentCRRMnew.metadata,
+              scheduledAt: '2024-08-12T10:00:00'
+            },
+            status
+          },
+          kpis: []
+        })
+        const { form, onFinish } = renderForm(<ScheduleTiming disabled />)
+
+        expect(await screen.findByPlaceholderText('Select date')).toBeVisible()
+        expect(await screen.findByPlaceholderText('Select time')).toBeVisible()
+
+        expect(await screen.findByPlaceholderText('Select date')).toBeDisabled()
+        expect(await screen.findByPlaceholderText('Select time')).toBeDisabled()
+
+        await click(await screen.findByRole('button', { name: 'Submit' }))
+        expect(onFinish).toBeCalled()
+        const values = form.getFieldsValue()
+        expect(values.settings).toEqual({ date: undefined, time: undefined })
+      }
+    )
+
+    it('intent status = new, should have date = current date and time = undefined', async () => {
+      const currentDateTime = moment()
+      const mockScheduledAt = currentDateTime.toISOString()
+      mockIntentContext({
+        intent: {
+          ...mockedIntentCRRMnew,
+          metadata: { ...mockedIntentCRRMnew.metadata, scheduledAt: mockScheduledAt },
+          status: Statuses.new
+        },
+        kpis: []
+      })
+
+      renderForm(<ScheduleTiming />)
+
+      const date = await screen.findByPlaceholderText('Select date')
+      const time = await screen.findByPlaceholderText('Select time')
+      expect(date).toHaveValue(currentDateTime.format('MM/DD/YYYY'))
+      expect(time).toHaveValue('')
+    })
+
+    it('should reset date and time fields when date field is set to null', async () => {
+      const mockScheduledAt = '2024-08-12T10:30:00'
+      mockIntentContext({
+        intent: {
+          ...mockedIntentCRRM,
+          metadata: {
+            ...mockedIntentCRRM.metadata,
+            scheduledAt: mockScheduledAt
+          },
+          status: Statuses.scheduled
+        },
+        kpis: []
+      })
+
+      const dateName = ['settings', 'date']
+      const timeName = ['settings', 'time']
+      const { form } = renderForm(<ScheduleTiming />)
+      const resetFieldsSpy = jest.spyOn(form, 'resetFields')
+
+      form.setFieldValue(dateName, null)
+      renderForm(<ScheduleTiming />, form)
+
+      expect(resetFieldsSpy).toBeCalledWith([dateName, timeName])
+      expect(form.getFieldValue(dateName)).toEqual(moment(mockScheduledAt))
+      expect(form.getFieldValue(timeName)).toEqual(10.5)
+    })
   })
 
   describe('intent status = active/applyscheduled', () => {
@@ -151,7 +253,7 @@ describe('ScheduleTiming.FieldSummary', () => {
         intent: {
           ...mockedIntentCRRMnew,
           status: Statuses.scheduled,
-          metadata: { scheduledAt: '2024-08-12T00:00:00' } as Intent['metadata']
+          metadata: { scheduledAt: '2024-08-12T00:00:00' } as IntentDetail['metadata']
         }
       })
       renderForm(<ScheduleTiming.FieldSummary/>)

@@ -5,7 +5,7 @@ import { UseLazyQuery }    from '@reduxjs/toolkit/dist/query/react/buildHooks'
 import { QueryDefinition } from '@reduxjs/toolkit/query'
 import { get, isNil }      from 'lodash'
 
-import { useIsSplitOn, Features }           from '@acx-ui/feature-toggle'
+import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
 import {
   useLazyGetApFeatureSetsQuery,
   useLazyGetEdgeFeatureSetsQuery,
@@ -13,14 +13,17 @@ import {
   useLazyGetPinApCompatibilitiesQuery,
   useLazyGetPinEdgeCompatibilitiesQuery,
   useLazyGetSdLanApCompatibilitiesQuery,
+  useLazyGetSdLanApCompatibilitiesDeprecatedQuery,
   useLazyGetSdLanEdgeCompatibilitiesQuery,
-  useLazyGetSwitchFeatureSetsQuery,
-  useLazyGetVenueEdgeCompatibilitiesQuery
+  useLazyGetVenueEdgeCompatibilitiesQuery,
+  useLazyGetEnhanceApFeatureSetsQuery,
+  useLazyGetSwitchFeatureSetsQuery
 } from '@acx-ui/rc/services'
 import {
   ApCompatibility,
   ApIncompatibleDevice,
   ApIncompatibleFeature,
+  Compatibility,
   CompatibilityDeviceEnum,
   EdgeSdLanApCompatibilitiesResponse,
   EdgeSdLanApCompatibility,
@@ -38,11 +41,13 @@ import {
 import { EdgeCompatibilityDrawerProps, EdgeCompatibilityType } from '../Compatibility/EdgeCompatibilityDrawer'
 
 export const useEdgeSdLansCompatibilityData = (serviceIds: string[], skip: boolean = false) => {
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
+
   const results = useEdgeSvcsPcysCompatibilitiesData({
     serviceIds: serviceIds,
     skip: skip,
     useEdgeSvcPcyCompatibleQuery: useLazyGetSdLanEdgeCompatibilitiesQuery,
-    useEdgeSvcPcyApCompatibleQuery: useLazyGetSdLanApCompatibilitiesQuery
+    useEdgeSvcPcyApCompatibleQuery: isApCompatibilitiesByModel ? useLazyGetSdLanApCompatibilitiesQuery : useLazyGetSdLanApCompatibilitiesDeprecatedQuery
   })
   return results as {
     compatibilities: Record<string, EdgeServiceCompatibility[] | EdgeSdLanApCompatibility[]> | undefined
@@ -81,11 +86,13 @@ export const useEdgeSdLanDetailsCompatibilitiesData = (props: {
   serviceId: string,
   skip?: boolean,
 }) => {
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
+
   const results = useEdgeSvcsPcysCompatibilitiesData({
     serviceIds: props.serviceId,
     skip: props.skip,
     useEdgeSvcPcyCompatibleQuery: useLazyGetSdLanEdgeCompatibilitiesQuery,
-    useEdgeSvcPcyApCompatibleQuery: useLazyGetSdLanApCompatibilitiesQuery
+    useEdgeSvcPcyApCompatibleQuery: isApCompatibilitiesByModel ? useLazyGetSdLanApCompatibilitiesQuery : useLazyGetSdLanApCompatibilitiesDeprecatedQuery
   })
 
   const transformed: Record<string, Record<string, ApCompatibility>> = {}
@@ -168,7 +175,7 @@ export const useEdgeSvcsPcysCompatibilitiesData = (props: {
   const [getEdgeSvcPcyCompatibilities] = useEdgeSvcPcyCompatibleQuery()
   const apCompatibilityFn = useEdgeSvcPcyApCompatibleQuery?.()
 
-  const fetchEdgeCompatibilities = async (ids: string[]) => {
+  const fetchEdgeCompatibilities = useCallback(async (ids: string[]) => {
     try {
       setIsInitializing(true)
 
@@ -196,7 +203,7 @@ export const useEdgeSvcsPcysCompatibilitiesData = (props: {
       console.error('EdgeCompatibilityDrawer api error:', e)
       setIsInitializing(false)
     }
-  }
+  }, [apCompatibilityFn, getEdgeSvcPcyCompatibilities])
 
   useEffect(() => {
     if (!skip && serviceIds.length) {
@@ -222,21 +229,23 @@ export const transformEdgeCompatibilitiesWithFeatureName = (compatibilities: Rec
 
 export const useEdgeCompatibilityRequirementData = (featureName: IncompatibilityFeatures, skip: boolean = false) => {
   const [ isInitializing, setIsInitializing ] = useState(false)
-  const [ data, setData ] = useState<Record<string, ApCompatibility>>({})
+  const [ data, setData ] = useState<Record<string, ApCompatibility | Compatibility>>({})
+  const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
 
   const [ getEdgeFeatureSets ] = useLazyGetEdgeFeatureSetsQuery()
   const [ getSwitchFeatureSets ] = useLazyGetSwitchFeatureSetsQuery()
   const [ getApFeatureSets ] = useLazyGetApFeatureSetsQuery()
+  const [ getEnhanceApFeatureSets ] = useLazyGetEnhanceApFeatureSetsQuery()
 
   const fetchEdgeCompatibilities = useCallback(async () => {
     try {
       setIsInitializing(true)
 
-      const deviceTypeResultMap: Record<string, ApCompatibility> = {}
+      const deviceTypeResultMap: Record<string, ApCompatibility | Compatibility> = {}
 
       const edgeFeatures = await getEdgeFeatureSets({
         payload: { filters: { featureNames: [featureName] } }
-      }).unwrap()
+      }, true).unwrap()
 
       deviceTypeResultMap[CompatibilityDeviceEnum.EDGE] = {
         id: 'edge_feature_requirements',
@@ -248,7 +257,7 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
       if (isSwitchRelatedEdgeFeature(featureName)) {
         const switchFeature = await getSwitchFeatureSets({
           payload: { filter: { featureNames: { field: 'GROUP', values: ['PIN'] } } }
-        }).unwrap()
+        }, true).unwrap()
         deviceTypeResultMap[CompatibilityDeviceEnum.SWITCH] = {
           id: 'switch_feature_requirements',
           incompatibleFeatures: switchFeature.featureSets,
@@ -258,15 +267,36 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
       }
 
       if (isApRelatedEdgeFeature(featureName)) {
-        const wifiFeature = await getApFeatureSets({
-          params: { featureName: encodeURI(featureName) }
-        }).unwrap()
-        deviceTypeResultMap[CompatibilityDeviceEnum.AP] = {
-          id: 'wifi_feature_requirements',
-          incompatibleFeatures: [wifiFeature],
-          incompatible: 0,
-          total: 0
-        } as ApCompatibility
+        if (isApCompatibilitiesByModel) {
+          const apFeatureSetsResponse = await getEnhanceApFeatureSets({
+            params: {},
+            payload: {
+              filters: {
+                featureNames: [featureName]
+              },
+              page: 1,
+              pageSize: 10
+            }
+          }, true).unwrap()
+
+          deviceTypeResultMap[CompatibilityDeviceEnum.AP] = {
+            id: 'wifi_feature_requirements',
+            incompatibleFeatures: apFeatureSetsResponse.featureSets,
+            incompatible: 0,
+            total: 0
+          } as Compatibility
+        } else {
+          const wifiFeature = await getApFeatureSets({
+            params: { featureName: encodeURI(featureName) }
+          }, true).unwrap()
+
+          deviceTypeResultMap[CompatibilityDeviceEnum.AP] = {
+            id: 'wifi_feature_requirements',
+            incompatibleFeatures: [wifiFeature],
+            incompatible: 0,
+            total: 0
+          } as ApCompatibility
+        }
       }
 
       setData(deviceTypeResultMap)
@@ -281,7 +311,7 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
   useEffect(() => {
     if (!skip)
       fetchEdgeCompatibilities()
-  }, [fetchEdgeCompatibilities, skip])
+  }, [skip, fetchEdgeCompatibilities])
 
   return useMemo(() => ({ featureInfos: data, isLoading: isInitializing }),
     [data, isInitializing])
@@ -295,9 +325,9 @@ export const useVenueEdgeCompatibilitiesData = (props: Omit<EdgeCompatibilityDra
   const [getEdgeFeatureSets] = useLazyGetEdgeFeatureSetsQuery()
   const [getVenueEdgeCompatibilities] = useLazyGetVenueEdgeCompatibilitiesQuery()
 
-  const fetchEdgeCompatibilities = async () => {
+  const fetchEdgeCompatibilities = useCallback(async () => {
     try {
-      const featureNames = [featureName] ?? []
+      const featureNames = featureName ? [featureName] : []
       let edgeCompatibilitiesResponse: ApCompatibility[] = []
 
       if (type === EdgeCompatibilityType.VENUE) {
@@ -333,12 +363,12 @@ export const useVenueEdgeCompatibilitiesData = (props: Omit<EdgeCompatibilityDra
       console.error('EdgeCompatibilityDrawer api error:', e)
       setIsInitializing(false)
     }
-  }
+  }, [edgeId, featureName, getEdgeFeatureSets, getVenueEdgeCompatibilities, type, venueId])
 
   useEffect(() => {
     if (!skip)
       fetchEdgeCompatibilities()
-  }, [skip])
+  }, [skip, fetchEdgeCompatibilities])
 
   return useMemo(() => ({ edgeCompatibilities, isLoading: isInitializing }),
     [edgeCompatibilities, isInitializing])
