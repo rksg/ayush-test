@@ -26,6 +26,7 @@ import {
   showAppliedInstanceMessage
 } from '@acx-ui/rc/services'
 import {
+  DpskUrls,
   EXPIRATION_TIME_FORMAT,
   ExpirationType,
   MAX_PASSPHRASES_PER_TENANT,
@@ -43,7 +44,7 @@ import {
 import { useParams }                                                     from '@acx-ui/react-router-dom'
 import { WifiScopes }                                                    from '@acx-ui/types'
 import { getUserProfile, hasAllowedOperations, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
-import { getIntl, validationMessages }                                   from '@acx-ui/utils'
+import { getIntl, getOpsApi, validationMessages }                                   from '@acx-ui/utils'
 
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 import ManageDevicesDrawer                              from './ManageDevicesDrawer'
@@ -261,7 +262,7 @@ export default function DpskPassphraseManagement () {
 
   const rowActions: TableProps<NewDpskPassphrase>['rowActions'] = [
     {
-      rbacOpsIds: ['PUT:/dpskServices/{serviceId}/passphrases/{passphraseId}'],
+      rbacOpsIds: [getOpsApi(DpskUrls.updatePassphrase)],
       scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Edit Passphrase' }),
       visible: canEdit,
@@ -282,7 +283,7 @@ export default function DpskPassphraseManagement () {
       }
     },
     {
-      rbacOpsIds: ['PATCH:/dpskServices/{serviceId}/passphrases'],
+      rbacOpsIds: [getOpsApi(DpskUrls.revokePassphrases)],
       scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Revoke' }),
       visible: isCloudpathEnabled,
@@ -306,7 +307,7 @@ export default function DpskPassphraseManagement () {
       }
     },
     {
-      rbacOpsIds: ['PATCH:/dpskServices/{serviceId}/passphrases'],
+      rbacOpsIds: [getOpsApi(DpskUrls.revokePassphrases)],
       scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Unrevoke' }),
       visible: isCloudpathEnabled,
@@ -323,7 +324,7 @@ export default function DpskPassphraseManagement () {
       }
     },
     {
-      rbacOpsIds: ['DELETE:/dpskServices/{serviceId}/passphrases'],
+      rbacOpsIds: [getOpsApi(DpskUrls.deletePassphrase)],
       scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
@@ -337,7 +338,7 @@ export default function DpskPassphraseManagement () {
   const actions = [
     ...(filterDpskOperationsByPermission([
       {
-        rbacOpsIds: ['POST:/dpskServices/{serviceId}/passphrases'],
+        rbacOpsIds: [getOpsApi(DpskUrls.addPassphrase)],
         label: $t({ defaultMessage: 'Add Passphrases' }),
         onClick: () => {
           setPassphrasesDrawerEditMode({ isEdit: false })
@@ -345,7 +346,7 @@ export default function DpskPassphraseManagement () {
         }
       },
       {
-        rbacOpsIds: ['POST:/dpskServices/{serviceId}/passphrases/csvFiles'],
+        rbacOpsIds: [getOpsApi(DpskUrls.uploadPassphrases)],
         label: $t({ defaultMessage: 'Import From File' }),
         onClick: () => setUploadCsvDrawerVisible(true)
       }

@@ -24,9 +24,11 @@ import {
   sortProp,
   defaultSort,
   dateSort,
-  filterDpskOperationsByPermission
+  filterDpskOperationsByPermission,
+  DpskUrls
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
+import { getOpsApi }  from '@acx-ui/utils'
 
 export interface ManageDeviceDrawerProps {
   visible: boolean;
@@ -141,7 +143,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
 
   const actions = [
     {
-      rbacOpsIds: ['POST:/dpskServices/{serviceId}/passphrases/{passphraseId}/devices'],
+      rbacOpsIds: [getOpsApi(DpskUrls.updatePassphraseDevices)],
       label: $t({ defaultMessage: 'Add Device' }),
       // eslint-disable-next-line max-len
       disabled: !!(passphraseInfo.numberOfDevices && devicesData && devicesData.length >= passphraseInfo.numberOfDevices),
@@ -153,7 +155,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
 
   const rowActions: TableProps<DPSKDeviceInfo>['rowActions'] = [
     {
-      rbacOpsIds: ['DELETE:/dpskServices/{serviceId}/passphrases/{passphraseId}/devices'],
+      rbacOpsIds: [getOpsApi(DpskUrls.deletePassphraseDevices)],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: async (rows, clearSelection) => {
         await deleteDevicesData({

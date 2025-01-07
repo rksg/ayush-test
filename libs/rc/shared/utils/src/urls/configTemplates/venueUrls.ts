@@ -4,17 +4,20 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   addVenueTemplate: {
     method: 'post',
     url: '/templates/venues',
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/templates/venues'
   },
   deleteVenueTemplate: {
     method: 'delete',
     url: '/templates/venues/:templateId',
-    newApi: true
+    newApi: true,
+    opsApi: 'DELETE:/templates/venues/{venueId}'
   },
   updateVenueTemplate: {
     method: 'put',
     url: '/templates/venues/:venueId',
-    newApi: true
+    newApi: true,
+    opsApi: 'PUT:/templates/venues/{venueId}'
   },
   getVenueTemplate: {
     method: 'get',

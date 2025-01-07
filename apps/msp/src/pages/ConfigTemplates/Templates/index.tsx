@@ -13,8 +13,8 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
-import { DateFormatEnum, userDateTimeFormat }                                       from '@acx-ui/formatter'
+import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, userDateTimeFormat }                                        from '@acx-ui/formatter'
 import {
   renderConfigTemplateDetailsComponent,
   useAccessControlSubPolicyVisible,
@@ -49,10 +49,13 @@ import {
   ConfigTemplateType,
   getConfigTemplateEditPath,
   PolicyType,
-  ConfigTemplateDriftType
+  ConfigTemplateDriftType,
+  hasConfigTemplateAllowedOperation,
+  ConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
+import { getOpsApi }                               from '@acx-ui/utils'
 
 import { AppliedToTenantDrawer }                                         from './AppliedToTenantDrawer'
 import { ApplyTemplateDrawer }                                           from './ApplyTemplateDrawer'
@@ -85,8 +88,19 @@ export function ConfigTemplateList () {
   })
   const addTemplateMenuProps = useAddTemplateMenuProps()
 
+  const isDeleteAllowed = (selectedRows: ConfigTemplate[]) => {
+    const targetRow = selectedRows[0]
+    return !!deleteMutationMap[targetRow.type]
+      && hasConfigTemplateAllowedOperation(targetRow.type, 'Delete')
+  }
+
+  const isEditAllowed = (selectedRows: ConfigTemplate[]) => {
+    return hasConfigTemplateAllowedOperation(selectedRows[0].type, 'Edit')
+  }
+
   const rowActions: TableProps<ConfigTemplate>['rowActions'] = [
     {
+      visible: isEditAllowed,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([ selectedRow ]) => {
         if (isAccessControlSubPolicy(selectedRow.type)) {
@@ -103,6 +117,7 @@ export function ConfigTemplateList () {
       }
     },
     {
+      rbacOpsIds: [getOpsApi(ConfigTemplateUrlsInfo.applyConfigTemplateRbac)],
       label: $t({ defaultMessage: 'Apply Template' }),
       disabled: (selectedRows) => selectedRows.some(row => isNotAllowToApplyPolicy(row.type)),
       onClick: (rows: ConfigTemplate[]) => {
@@ -113,6 +128,7 @@ export function ConfigTemplateList () {
     ...(driftsEnabled ? [{
       // eslint-disable-next-line max-len
       visible: (selectedRows: ConfigTemplate[]) => selectedRows[0]?.driftStatus === ConfigTemplateDriftType.DRIFT_DETECTED,
+      rbacOpsIds: [getOpsApi(ConfigTemplateUrlsInfo.getDriftReport)],
       label: $t({ defaultMessage: 'Show Drifts' }),
       onClick: (rows: ConfigTemplate[]) => {
         setSelectedTemplates(rows)
@@ -121,7 +137,7 @@ export function ConfigTemplateList () {
     }] : []),
     {
       label: $t({ defaultMessage: 'Delete' }),
-      visible: (selectedRows) => selectedRows[0] && !!deleteMutationMap[selectedRows[0].type],
+      visible: isDeleteAllowed,
       onClick: (selectedRows, clearSelection) => {
         const selectedRow = selectedRows[0]
 

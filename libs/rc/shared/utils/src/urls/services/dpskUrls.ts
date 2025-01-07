@@ -85,25 +85,29 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: NewDpskPassphraseBaseUrl,
     oldUrl: DpskPassphraseBaseUrl,
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/dpskServices/{serviceId}/passphrases'
   },
   updatePassphrase: {
     method: 'put',
     url: NewDpskPassphraseBaseUrlWithId,
     oldUrl: DpskPassphraseBaseUrlWithId,
-    newApi: true
+    newApi: true,
+    opsApi: 'PUT:/dpskServices/{serviceId}/passphrases/{passphraseId}'
   },
   uploadPassphrases: {
     method: 'post',
     url: NewDpskPassphraseBaseUrl + '/csvFiles',
     oldUrl: DpskPassphraseBaseUrl + '/csvFiles',
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/dpskServices/{serviceId}/passphrases/csvFiles'
   },
   deletePassphrase: {
     method: 'delete',
     url: NewDpskPassphraseBaseUrl,
     oldUrl: DpskPassphraseBaseUrl,
-    newApi: true
+    newApi: true,
+    opsApi: 'DELETE:/dpskServices/{serviceId}/passphrases'
   },
   exportPassphrases: {
     method: 'get',
@@ -120,7 +124,8 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     method: 'PATCH',
     url: NewDpskPassphraseBaseUrl,
     oldUrl: DpskPassphraseBaseUrl,
-    newApi: true
+    newApi: true,
+    opsApi: 'PATCH:/dpskServices/{serviceId}/passphrases'
   },
   getPassphraseClient: {
     method: 'get',
@@ -137,13 +142,15 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: NewDpskPassphraseDevices,
     oldUrl: DpskPassphraseDevices,
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/dpskServices/{serviceId}/passphrases/{passphraseId}/devices'
   },
   deletePassphraseDevices: {
     method: 'delete',
     url: NewDpskPassphraseDevices,
     oldUrl: DpskPassphraseDevices,
-    newApi: true
+    newApi: true,
+    opsApi: 'DELETE:/dpskServices/{serviceId}/passphrases/{passphraseId}/devices'
   },
   deleteDpskPolicySet: {
     method: 'delete',

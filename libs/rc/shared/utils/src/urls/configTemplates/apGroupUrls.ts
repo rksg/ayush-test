@@ -13,12 +13,14 @@ export const ApGroupConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1.1+json',
       'Content-Type': 'application/vnd.ruckus.v1.1+json'
-    }
+    },
+    opsApi: 'POST:/templates/venues/{venueId}/apGroups'
   },
   updateApGroup: {
     method: 'put',
     url: '/templates/venues/apGroups/:apGroupId',
-    newApi: true
+    newApi: true,
+    opsApi: 'PUT:/templates/venues/{venueId}/apGroups/{apGroupId}'
   },
   updateApGroupRbac: {
     method: 'put',
@@ -32,7 +34,8 @@ export const ApGroupConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   deleteApGroup: {
     method: 'delete',
     url: '/templates/venues/apGroups/:templateId',
-    newApi: true
+    newApi: true,
+    opsApi: 'DELETE:/templates/venues/{venueId}/apGroups/{apGroupId}'
   },
   deleteApGroupRbac: {
     method: 'delete',

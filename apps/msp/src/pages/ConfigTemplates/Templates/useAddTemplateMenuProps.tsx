@@ -12,6 +12,7 @@ import {
   configTemplatePolicyTypeMap,
   configTemplateServiceTypeMap,
   ConfigTemplateType,
+  hasConfigTemplateAllowedOperation,
   PolicyOperation,
   policyTypeLabelMapping,
   ServiceOperation,
@@ -23,28 +24,16 @@ import * as UI                        from './styledComponents'
 import { getConfigTemplateTypeLabel } from './templateUtils'
 
 export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
-  const visibilityMap = useConfigTemplateVisibilityMap()
-  const wifiMenuItems = useWiFiMenuItems()
-  const policyMenuItems = usePolicyMenuItems()
-  const serviceMenuItems = useServiceMenuItems()
-  const switchMenuItems = useSwitchMenuItems()
-  const items: ItemType[] = [
-    wifiMenuItems,
-    (visibilityMap[ConfigTemplateType.VENUE] ? {
-      key: 'add-venue',
-      label: <ConfigTemplateLink to='venues/add'>
-        {getConfigTemplateTypeLabel(ConfigTemplateType.VENUE)}
-      </ConfigTemplateLink>
-    } : null),
-    switchMenuItems,
-    policyMenuItems,
-    serviceMenuItems
-  ]
-
   return {
     expandIcon: <UI.MenuExpandArrow />,
     subMenuCloseDelay: 0.2,
-    items: items
+    items: [
+      useWiFiMenuItems(),
+      useVenueItem(),
+      useSwitchMenuItems(),
+      usePolicyMenuItems(),
+      useServiceMenuItems()
+    ]
   }
 }
 
@@ -70,7 +59,10 @@ export function createPolicyMenuItem (configTemplateType: ConfigTemplateType, vi
   const { $t } = getIntl()
   const policyType = configTemplatePolicyTypeMap[configTemplateType]
 
-  if (!visibilityMap[configTemplateType] || !policyType) return null
+  if (!visibilityMap[configTemplateType]
+    || !policyType
+    || !hasConfigTemplateAllowedOperation(configTemplateType, 'Create')
+  ) return null
 
   const labelNode = <PolicyConfigTemplateLink type={policyType} oper={PolicyOperation.CREATE}>
     {$t(policyTypeLabelMapping[policyType])}
@@ -103,7 +95,10 @@ export function createServiceMenuItem (configTemplateType: ConfigTemplateType, v
   const { $t } = getIntl()
   const serviceType = configTemplateServiceTypeMap[configTemplateType]
 
-  if (!visibilityMap[configTemplateType] || !serviceType) return null
+  if (!visibilityMap[configTemplateType]
+    || !serviceType
+    || !hasConfigTemplateAllowedOperation(configTemplateType, 'Create')
+  ) return null
 
   const labelNode = <ServiceConfigTemplateLink type={serviceType} oper={ServiceOperation.CREATE}>
     {$t(serviceTypeLabelMapping[serviceType])}
@@ -118,21 +113,25 @@ export function createServiceMenuItem (configTemplateType: ConfigTemplateType, v
 export function useSwitchMenuItems (): ItemType | null {
   const visibilityMap = useConfigTemplateVisibilityMap()
   const { $t } = getIntl()
+  const isSwitchRegularAvailable = visibilityMap[ConfigTemplateType.SWITCH_REGULAR]
+    && hasConfigTemplateAllowedOperation(ConfigTemplateType.SWITCH_REGULAR, 'Create')
 
-  // eslint-disable-next-line max-len
-  if (!visibilityMap[ConfigTemplateType.SWITCH_REGULAR] && !visibilityMap[ConfigTemplateType.SWITCH_CLI]) return null
+  const isSwitchCliAvailable = visibilityMap[ConfigTemplateType.SWITCH_CLI]
+    && hasConfigTemplateAllowedOperation(ConfigTemplateType.SWITCH_CLI, 'Create')
+
+  if (!isSwitchRegularAvailable && !isSwitchCliAvailable) return null
 
   return {
     key: 'add-switch-profile',
     label: $t({ defaultMessage: 'Wired' }),
     children: [
-      (visibilityMap[ConfigTemplateType.SWITCH_REGULAR] ? {
+      (isSwitchRegularAvailable ? {
         key: 'add-switch-regular-profile',
         label: <ConfigTemplateLink to='networks/wired/profiles/add'>
           {getConfigTemplateTypeLabel(ConfigTemplateType.SWITCH_REGULAR)}
         </ConfigTemplateLink>
       } : null),
-      (visibilityMap[ConfigTemplateType.SWITCH_CLI] ? {
+      (isSwitchCliAvailable ? {
         key: 'add-switch-cli-profile',
         label: <ConfigTemplateLink to='networks/wired/profiles/cli/add'>
           {getConfigTemplateTypeLabel(ConfigTemplateType.SWITCH_CLI)}
@@ -145,26 +144,45 @@ export function useSwitchMenuItems (): ItemType | null {
 export function useWiFiMenuItems (): ItemType | null {
   const visibilityMap = useConfigTemplateVisibilityMap()
   const { $t } = getIntl()
+  const isNetworkAvailable = visibilityMap[ConfigTemplateType.NETWORK]
+    && hasConfigTemplateAllowedOperation(ConfigTemplateType.NETWORK, 'Create')
 
-  // eslint-disable-next-line max-len
-  if (!visibilityMap[ConfigTemplateType.NETWORK] && !visibilityMap[ConfigTemplateType.AP_GROUP]) return null
+  const isApGroupAvailable = visibilityMap[ConfigTemplateType.AP_GROUP]
+    && hasConfigTemplateAllowedOperation(ConfigTemplateType.AP_GROUP, 'Create')
+
+  if (!isNetworkAvailable && !isApGroupAvailable) return null
 
   return {
     key: 'add-wifi-profile',
     label: $t({ defaultMessage: 'Wi-Fi' }),
     children: [
-      (visibilityMap[ConfigTemplateType.NETWORK] ? {
+      (isNetworkAvailable ? {
         key: 'add-wifi-network',
         label: <ConfigTemplateLink to='networks/wireless/add'>
           {getConfigTemplateTypeLabel(ConfigTemplateType.NETWORK)}
         </ConfigTemplateLink>
       } : null),
-      (visibilityMap[ConfigTemplateType.AP_GROUP] ? {
+      (isApGroupAvailable ? {
         key: 'add-ap-group',
         label: <ConfigTemplateLink to='devices/apgroups/add'>
           {getConfigTemplateTypeLabel(ConfigTemplateType.AP_GROUP)}
         </ConfigTemplateLink>
       } : null)
     ]
+  }
+}
+
+export function useVenueItem (): ItemType | null {
+  const visibilityMap = useConfigTemplateVisibilityMap()
+
+  if (!visibilityMap[ConfigTemplateType.VENUE]
+    || !hasConfigTemplateAllowedOperation(ConfigTemplateType.VENUE, 'Create')
+  ) return null
+
+  return {
+    key: 'add-venue',
+    label: <ConfigTemplateLink to='venues/add'>
+      {getConfigTemplateTypeLabel(ConfigTemplateType.VENUE)}
+    </ConfigTemplateLink>
   }
 }
