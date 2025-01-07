@@ -157,6 +157,8 @@ describe('Table', () => {
       filterId: 0,
       key: 'initialState.ccmAp.radio24g.radio.channel_fly_mtbc',
       name: '94:B3:4F:3D:21:80',
+      root: '30b11d8b-ce40-4344-81ef-84b47753b4a6',
+      sliceId: '072646e8-6082-40d5-aaf8-0eb1e73f6dbd',
       newValues: ['480'],
       oldValues: [],
       timestamp: '1685427082900',
