@@ -97,6 +97,7 @@ export function SelectModelStep () {
       form.resetFields(['families'])
       const modules = Object.keys(ICX_MODELS_MODULES)
         .filter(key => isSupport8100 || key !== 'ICX8100')
+        .filter(key => key !== 'ICX7150')
       const familiesData = modules.map(key => {
         return { label: `ICX-${key.split('ICX')[1]}`, value: key }
       })
