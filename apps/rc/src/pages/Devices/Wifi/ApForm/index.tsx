@@ -146,6 +146,7 @@ export function ApForm () {
   const [afcEnabled, setAfcEnabled] = useState(false)
   const [tlsEnhancedKeyEnabled, setTlsEnhancedKeyEnabled] = useState(false)
   const [changeTlsEnhancedKey, setChangeTlsEnhancedKey] = useState(false)
+  const [isApAfcEnabled, setIsApAfcEnabled] = useState(false)
 
   const cellularApModels = useRef<string[]>([])
 
@@ -494,6 +495,7 @@ export function ApForm () {
     // Should not display under Add AP. Only display under edit mode
     // Or afc is not enabled
     if (!isEditMode || !afcEnabled || aps.length === 0) {
+      setIsApAfcEnabled(false)
       return false
     }
 
@@ -505,9 +507,11 @@ export function ApForm () {
     // AFC info and Geo-location possibly does not exist.
     // Same, and if Status is in requires status, then false.
     if (!geoLocation || (!!afcStatus && requiredStatus.includes(afcStatus))) {
+      setIsApAfcEnabled(false)
       return false
     }
 
+    setIsApAfcEnabled(true)
     return true
   }
 
@@ -730,6 +734,7 @@ export function ApForm () {
           gpsModalVisible={gpsModalVisible}
           setGpsModalVisible={setGpsModalVisible}
           onSaveCoordinates={onSaveCoordinates}
+          isApAfcEnabled={isApAfcEnabled}
         />
 
       </StepsFormLegacy.StepForm>
@@ -786,7 +791,8 @@ function CoordinatesModal (props: {
   deviceGps: DeviceGps | null,
   gpsModalVisible: boolean,
   setGpsModalVisible: (data: boolean) => void,
-  onSaveCoordinates: (data: DeviceGps | null) => void
+  onSaveCoordinates: (data: DeviceGps | null) => void,
+  isApAfcEnabled: boolean
 }) {
   const { $t } = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
@@ -797,7 +803,8 @@ function CoordinatesModal (props: {
     deviceGps,
     gpsModalVisible,
     setGpsModalVisible,
-    onSaveCoordinates
+    onSaveCoordinates,
+    isApAfcEnabled
   } = props
 
   const [zoom, setZoom] = useState(1)
@@ -806,6 +813,7 @@ function CoordinatesModal (props: {
   })
   const [marker, setMarker] = useState<google.maps.LatLng>()
   const [coordinatesValid, setCoordinatesValid] = useState(true)
+  const default6gEnablementToggle = useIsSplitOn(Features.WIFI_AP_DEFAULT_6G_ENABLEMENT_TOGGLE)
 
   useEffect(() => {
     setTimeout(() => {
@@ -884,6 +892,29 @@ function CoordinatesModal (props: {
     setCoordinatesValid(true)
   }
 
+  const getCountryFromGpsCoordinates = (
+    latitude: string,
+    longitude: string
+  ): Promise<string | null> => {
+    return new Promise((resolve) => {
+      const geocoder = new google.maps.Geocoder()
+      geocoder.geocode(
+        { location: { lat: Number(latitude), lng: Number(longitude) } },
+        (results, status) => {
+          if (status === 'OK' && results) {
+            const countryComponent = results
+              .flatMap((result) => result.address_components)
+              .find((component) => component.types.includes('country'))
+            resolve(countryComponent?.long_name || null)
+          } else {
+            // eslint-disable-next-line no-console
+            console.warn('Geocoding failed:', status)
+          }
+        }
+      )
+    })
+  }
+
   return <Modal
     width={550}
     title={$t({ defaultMessage: 'GPS Coordinates' })}
@@ -915,6 +946,22 @@ function CoordinatesModal (props: {
             return sameAsVenue
               ? Promise.resolve()
               : gpsRegExp(latLng[0], latLng[1])
+          }
+        }, {
+          validator: async (_, value) => {
+            if (default6gEnablementToggle) {
+              const latLng = typeof value === 'string'
+                ? value.split(',').map((v: string) => v.trim())
+                : [value.latitude, value.longitude]
+              const country = await getCountryFromGpsCoordinates(latLng[0], latLng[1])
+              if (!isApAfcEnabled && country === selectedVenue.country) {
+                return Promise.resolve()
+              } else {
+                return Promise.reject($t(validationMessages.diffApGpsWithVenueCountry))
+              }
+            } else {
+              return Promise.resolve()
+            }
           }
         }]}
         validateFirst
