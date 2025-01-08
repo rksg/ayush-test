@@ -330,6 +330,11 @@ export default function DpskPassphraseManagement () {
     {
       scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Delete' }),
+      disabled: ([selectedRow]) => !!selectedRow?.identityId,
+      tooltip: (selectedRow) => getDisabledActionMessage(
+        selectedRow,
+        [{ fieldName: 'identityId', fieldText: $t({ defaultMessage: 'Identity' }) }],
+        $t({ defaultMessage: 'delete' })),
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
         doDelete(selectedRows, clearSelection)
       }

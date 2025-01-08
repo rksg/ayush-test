@@ -7,7 +7,7 @@ import { Loader, Table, TableProps }                       from '@acx-ui/compone
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/components'
 import {
-  doProfileDelete,
+  doProfileDelete, getDisabledActionMessage,
   useDeleteMacRegistrationsMutation, useGetMacRegListQuery,
   useSearchMacRegistrationsQuery, useSearchPersonaListQuery,
   useUpdateMacRegistrationMutation,
@@ -96,6 +96,11 @@ export function MacRegistrationsTab () {
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
+    disabled: ([selectedRow]) => !!selectedRow?.identityId,
+    tooltip: (selectedRow) => getDisabledActionMessage(
+      selectedRow,
+      [{ fieldName: 'identityId', fieldText: $t({ defaultMessage: 'Identity' }) }],
+      $t({ defaultMessage: 'delete' })),
     onClick: (selectedRows: MacRegistration[], clearSelection) => {
       doProfileDelete(
         selectedRows,
