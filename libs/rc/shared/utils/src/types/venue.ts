@@ -277,7 +277,8 @@ export interface VenueLanPorts {
 	model: string,
 	lanPorts: LanPort[],
 	poeMode?: string,
-	poeOut?: boolean
+	poeOut?: boolean,
+	isSettingsLoaded?: boolean
 }
 
 export interface Address {
@@ -779,6 +780,11 @@ export interface VenueApSmartMonitor {
 	enabled: boolean,
 	interval: number,
 	threshold: number
+}
+
+export interface VenueApRebootTimeout {
+	gwLossTimeout: number,
+	serverLossTimeout: number
 }
 
 export interface ApManagementVlan {
