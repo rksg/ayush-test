@@ -28,13 +28,14 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
       }
     }),
     updateChat: build.mutation<RuckusAiChat, RequestPayload>({
-      query: ({ payload }) => {
-        const req = createHttpRequest(RuckusAiChatUrlInfo.updateChat)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.updateChat, params)
         return {
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Chat', id: 'LIST' }]
     }),
     deleteChat: build.mutation<RuckusAiChat, RequestPayload>({
       query: ({ params }) => {

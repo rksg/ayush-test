@@ -107,10 +107,10 @@ export default function Canvas () {
     localStorage.setItem('acx-ui-canvas', JSON.stringify(tmp))
   }
 
-  const onClear = () => {
-    setSections(DEFAULT_CANVAS)
-    setGroups(DEFAULT_CANVAS.reduce((acc:Group[], cur:Section) => [...acc, ...cur.groups], []))
-  }
+  // const onClear = () => {
+  //   setSections(DEFAULT_CANVAS)
+  //   setGroups(DEFAULT_CANVAS.reduce((acc:Group[], cur:Section) => [...acc, ...cur.groups], []))
+  // }
 
   return (
     <UI.Canvas>
@@ -125,9 +125,9 @@ export default function Canvas () {
           {/* <Button className='black' onClick={()=>{onClose()}}>
             {$t({ defaultMessage: 'Preview' })}
           </Button> */}
-          <Button className='black' onClick={() => {onClear()}}>
+          {/* <Button className='black' onClick={() => {onClear()}}>
             {$t({ defaultMessage: 'Clear' })}
-          </Button>
+          </Button> */}
           <Button type='primary' onClick={()=>{saveToLS()}}>
             {$t({ defaultMessage: 'Save' })}
           </Button>

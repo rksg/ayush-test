@@ -44,6 +44,7 @@ export interface ChatMessage {
   id: string,
   role: string,
   text: string,
+  created?: string,
   widgets?: ChatWidget[]
 }
 

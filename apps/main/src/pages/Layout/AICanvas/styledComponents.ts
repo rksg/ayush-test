@@ -125,6 +125,12 @@ border-top: 75px solid rgba(255,255,255, 0.4);
       svg {
         width: 20px;
       }
+      .newChat {
+        margin-left: 16px;
+        &.disabled {
+          color: var(--acx-neutrals-50);
+        }
+      }
     }
   }
   .content {
@@ -141,26 +147,27 @@ border-top: 75px solid rgba(255,255,255, 0.4);
       margin-right: 4px;
       margin-top: 4px;
       .placeholder {
-        display: flex;
-        flex-direction: column;
-        margin-top: 20px;
+        position: fixed;
+        bottom: 130px;
+        width: 400px;
+        left: 20px;
         div{
-          background-color: var(--acx-primary-white);
-          color: var(--acx-neutrals-80);
-          border-radius: 15px;
+          background-color: var(--acx-accents-blue-50);
+          color: var(--acx-primary-white);
+          border-radius: 20px;
           height: 30px;
           width: fit-content;
-          padding: 7px 10px;
-          margin: 7px auto;
-          opacity: 0.6;
+          padding: 7px 12px;
           cursor: pointer;
+          float: left;
+          margin: 4px;
           &:hover{
-            background-color: var(--acx-neutrals-10);
+            background-color: var(--acx-accents-blue-55);
           }
         }
       }
       .messages-wrapper {
-        margin: 30px 10px;
+        margin: 5px 10px 30px 10px;
       }
       .chat-container {
         display: flex;
@@ -192,13 +199,24 @@ border-top: 75px solid rgba(255,255,255, 0.4);
       .chat-bubble {
         background: linear-gradient(275deg, #F7B605 -53.69%, #F79B06 -13.58%, 
           #F65650 26.53%, #EC4C9A 66.65%, #A560FF 106.76%);
-        color: #fff;
+        color: var(--acx-primary-white);
         width: fit-content;
         max-width: 80%;
         padding: 16px;
         border-radius: 16px 16px 16px 0px;
         margin: 7px;
         margin-left: 10px;
+      }
+      .timestamp {
+        color: var(--acx-neutrals-70);
+        display: flex;
+        font-size: 10px;
+        margin-left: 12px;
+        margin-top: -5px;
+        &.right{
+          justify-content: end;
+          margin-right: 2px;
+        }
       }
       .input {
         background-color: var(--acx-primary-white);
@@ -325,7 +343,7 @@ export const Grid = styled.div`
   width: 135px;
   height: 135px;
   border: 1px solid #cccccc;
-  background: #fff;
+  background: var(--acx-primary-white);
   position: absolute;
   display: flex;
   align-items: center;

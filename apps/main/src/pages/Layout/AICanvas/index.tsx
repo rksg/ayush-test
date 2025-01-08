@@ -8,11 +8,10 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
-import { Button, Drawer, DrawerTypes, Loader, showActionModal }                     from '@acx-ui/components'
-import { CloseSymbol, RuckusAiDog, SendMessageOutlined, HistoricalOutlined, Plus  } from '@acx-ui/icons'
-import { DeleteOutlined, EditOutlined }                                             from '@acx-ui/icons-new'
-import { useChatAiMutation, useLazyGetChatQuery, useGetAllChatsQuery,
-  // useUpdateChatMutation,
+import { Button, Drawer, DrawerTypes, Loader, showActionModal, Tooltip } from '@acx-ui/components'
+import { DeleteOutlined, EditOutlined, SendMessageOutlined,
+  HistoricalOutlined, Plus, Close, RuckusAiDog }    from '@acx-ui/icons-new'
+import { useChatAiMutation, useLazyGetChatQuery, useGetAllChatsQuery, useUpdateChatMutation,
   useDeleteChatMutation }          from '@acx-ui/rc/services'
 import { ChatHistory, ChatMessage, HistoryListItem } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                from '@acx-ui/react-router-dom'
@@ -26,7 +25,7 @@ export default function AICanvas () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const [chatAi] = useChatAiMutation()
-  // const [updateChat] = useUpdateChatMutation()
+  const [updateChat] = useUpdateChatMutation()
   const [deleteChat] = useDeleteChatMutation()
   const [getChat] = useLazyGetChatQuery()
   const [loading, setLoading] = useState(false)
@@ -42,6 +41,12 @@ export default function AICanvas () {
   const linkToDashboard = useTenantLink('/dashboard')
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment! 
   I can also generate on-the-fly widgets for operational data, including Alerts and Metrics.` })
+  const questions = [
+    'What can you do?',
+    'Design custom metrics widget',
+    'Generate alerts widget',
+    'Generate device health widget'
+  ]
 
   const getAllChatsQuery = useGetAllChatsQuery({})
   const { data: historyData } = getAllChatsQuery
@@ -215,6 +220,12 @@ export default function AICanvas () {
         chatId: chat.id
       }}
       /> }
+      {
+        chat.created && <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>
+          {moment(chat.created).format('h:m A')}
+        </div>
+      }
+
     </div>
   }
 
@@ -224,11 +235,14 @@ export default function AICanvas () {
   }
 
   const onEditChatTitle = (chat: ChatHistory) => {
-    // TODO:
-    deleteChat({
-      params: { sessionId: chat.id }
+    updateChat({
+      params: { sessionId: chat.id },
+      payload: 'test123'
     }).then()
   }
+
+  // const onEditIcon = (chat: ChatHistory) => {
+  // }
 
   const onDeleteChat = (chat: ChatHistory) => {
     showActionModal({
@@ -253,9 +267,11 @@ export default function AICanvas () {
         {
           i.history.map(j =>
             <div className={'chat' + (sessionId === j.id ? ' active' : '')}>
-              <div className='title' onClick={() => onClickChat(j.id)}>
-                {j.name}
-              </div>
+              <Tooltip title={j.name}>
+                <div className='title' onClick={() => onClickChat(j.id)}>
+                  {j.name}
+                </div>
+              </Tooltip>
               <div className='action'>
                 <div className='button' onClick={()=> { onEditChatTitle(j) }}>
                   <EditOutlined size='sm' />
@@ -274,6 +290,14 @@ export default function AICanvas () {
     setHistoryVisible(!historyVisible)
   }
 
+  const onNewChat = () => {
+    if(historyData && historyData.length >= 10){
+      return
+    }
+    setSessionId('')
+    setChats([])
+  }
+
   return (
     <DndProvider backend={HTML5Backend}>
       <UI.Wrapper>
@@ -283,20 +307,33 @@ export default function AICanvas () {
             <div className='header'>
               <div className='actions'>
                 <HistoricalOutlined onClick={onHistoryDrawer} />
-                <Plus style={{ marginLeft: '16px' }} onClick={()=>{}} />
+                <Tooltip
+                  placement='right'
+                  title={historyData && historyData.length >= 10
+                    ? $t({ defaultMessage: `You’ve reached the maximum number of chats (10). 
+                    Please delete an existing chat to add a new one.` })
+                    : ''}
+                >
+                  <Plus
+                    className={
+                      'newChat' + (historyData && historyData.length >= 10 ? ' disabled' : '')
+                    }
+                    onClick={onNewChat}
+                  />
+                </Tooltip>
               </div>
               <div className='title'>
-                <RuckusAiDog />
+                <RuckusAiDog size='lg' />
                 <span>{$t({ defaultMessage: 'RUCKUS AI' })}</span>
               </div>
               <div className='actions' style={{ width: '56px', justifyContent: 'end' }}>
-                <CloseSymbol onClick={()=>{onClose()}}/>
+                <Close onClick={()=>{onClose()}}/>
               </div>
             </div>
             <div className='content'>
               <Loader states={[{ isLoading: isChatLoading }]}>
                 <div className='chatroom' ref={scroll}>
-                  <div className='placeholder'>
+                  {/* <div className='placeholder'>
                     <div onClick={()=> {
                       handleSearch('Generate Top Wi-Fi Networks Pie Chart')
                     }}>
@@ -307,13 +344,24 @@ export default function AICanvas () {
                     }}>
                     “Generate Switch Traffic by Volume Line Chart”
                     </div>
-                  </div>
+                  </div> */}
                   <div className='messages-wrapper'>
                     {chats?.map((i) => (
                       <Message key={i.id} chat={i} />
                     ))}
                     {loading && <div className='loading'><Spin /></div>}
                   </div>
+                  {
+                    !chats?.length && <div className='placeholder'>
+                      {
+                        questions.map(question => <div onClick={()=> {
+                          handleSearch(question)
+                        }}>
+                          {question}
+                        </div>)
+                      }
+                    </div>
+                  }
                   <div className='input'>
                     <Form form={form}>
                       <Form.Item
