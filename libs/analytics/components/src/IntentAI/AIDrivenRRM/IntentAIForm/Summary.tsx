@@ -12,6 +12,7 @@ import { Statuses }             from '../../states'
 import { IntentAIRRMGraph }     from '../RRMGraph'
 
 import * as SideNotes from './SideNotes'
+import * as UI        from './styledComponents'
 
 const getRRMGraphTooltip = (status: Statuses) => {
   if (!(status === Statuses.new || status === Statuses.active)) {
@@ -54,10 +55,10 @@ export function Summary () {
         <Tooltip
           title={$t(rrmGraphTooltip.title)}
           placement='left'
-          dottedUnderline={true}
         >
-          ​{<FormattedMessage {...rrmGraphTooltip.text} values={richTextFormatValues} />}
+          <UI.InfoIcon />
         </Tooltip>
+        <FormattedMessage {...rrmGraphTooltip.text} values={richTextFormatValues} />
       </Form.Item>)}
       <KPIFields/>
       <ScheduleTiming.FieldSummary />

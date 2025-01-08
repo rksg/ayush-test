@@ -1,5 +1,7 @@
 import styled, { css } from 'styled-components/macro'
 
+import { InformationOutlined } from '@acx-ui/icons'
+
 export const SliderBefore = styled.div`
   display: flex;
   align-items: center;
@@ -48,4 +50,9 @@ export const LabelStyleAfter = styled.div`
     line-height: var(--acx-subtitle-6-line-height);
     font-weight: var(--acx-subtitle-6-font-weight);
   }
+`
+
+export const InfoIcon = styled(InformationOutlined)`
+  margin-bottom: -3px;
+  margin-right: 3px;
 `
