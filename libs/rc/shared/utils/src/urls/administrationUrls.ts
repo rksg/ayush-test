@@ -344,32 +344,32 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getWebhooks: {
     method: 'post',
-    url: '/webhook/query',
+    url: '/webhooks/query',
     newApi: true
   },
   getWebhookEntry: {
     method: 'get',
-    url: '/webhook/:webhookId',
+    url: '/webhooks/:webhookId',
     newApi: true
   },
   addWebhook: {
     method: 'post',
-    url: '/webhook/',
+    url: '/webhooks/',
     newApi: true
   },
   updateWebhook: {
     method: 'put',
-    url: '/webhook/:webhookId',
+    url: '/webhooks/:webhookId',
     newApi: true
   },
   deleteWebhook: {
     method: 'delete',
-    url: '/webhook/:webhookId',
+    url: '/webhooks/:webhookId',
     newApi: true
   },
   webhookSendSampleEvent: {
     method: 'post',
-    url: '/webhook/send-sample-event',
+    url: '/webhooks/send-sample-event',
     newApi: true
   }
 }

@@ -38,7 +38,7 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
   const isRbacEarlyAccessEnable = useIsTierAllowed(TierFeatures.RBAC_IMPLICIT_P1)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE) && isRbacEarlyAccessEnable
-  const isWebhookToggleEnabled = true//useIsSplitOn(Features.WEBHOOK_TOGGLE)
+  const isWebhookToggleEnabled = useIsSplitOn(Features.WEBHOOK_TOGGLE)
   const [webhookCount, setWebhookCount] = useState(0)
   const { title: webhookTitle, component: webhookComponent } = useWebhooks()
 

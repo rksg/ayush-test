@@ -102,6 +102,10 @@ export const getEventsTree = ($t: IntlShape['$t']) => {
           title: $t({ defaultMessage: 'Switch' })
         },
         {
+          key: WebhookEventEnum.TYPE_ADMIN,
+          title: $t({ defaultMessage: 'Admin' })
+        },
+        {
           key: WebhookEventEnum.TYPE_NETWORK,
           title: $t({ defaultMessage: 'Network' })
         },
@@ -112,10 +116,6 @@ export const getEventsTree = ($t: IntlShape['$t']) => {
         {
           key: WebhookEventEnum.TYPE_PROFILE,
           title: $t({ defaultMessage: 'Profile' })
-        },
-        {
-          key: WebhookEventEnum.TYPE_ADMIN,
-          title: $t({ defaultMessage: 'Admin' })
         }
       ]
     } as TreeDataNode,
