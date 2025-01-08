@@ -266,7 +266,19 @@ export function IotController () {
                     </>
                   }
                   initialValue={''}
-                  children={<Input />}
+                  children={
+                    isUseVenueSettings ? (
+                      <span data-testid={'mqttBrokerAddress-span'}>
+                        {formRef?.current?.getFieldValue(
+                          iotMqttBrokerAddressFieldName
+                        )}
+                      </span>
+                    ) : (
+                      <Input
+                        onChange={handleChange}
+                      />
+                    )
+                  }
                 />
               </Space>
             </Row>
