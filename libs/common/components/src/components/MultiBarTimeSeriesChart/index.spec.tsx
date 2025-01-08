@@ -97,6 +97,16 @@ describe('MultiBarTimeSeriesChart', () => {
     jest.restoreAllMocks()
   })
 
+  it('should render with zoom enabled', () => {
+    const mockSetCanResetZoom = jest.fn()
+    const useStateSpy = jest.spyOn(React, 'useState')
+    useStateSpy.mockImplementation(() => [true, mockSetCanResetZoom])
+    render(
+      <MultiBarTimeSeriesChart data={getData()} chartBoundary={[1595829463000, 1609048663000]} />
+    )
+    expect(screen.getByRole('button', { name: 'Reset Zoom' })).toBeVisible()
+  })
+
   it('should render with label & tooltip formatter', () => {
     const tooltipFormatter = jest.fn(() => 'tooltip')
     const labelFormatter = jest.fn(() => 'label')
