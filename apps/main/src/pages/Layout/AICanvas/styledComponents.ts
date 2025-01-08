@@ -25,15 +25,14 @@ export const History = styled.div`
       border: 0px;
     }
     &:first-of-type .time{
-      margin-top: -40px;
+      margin-top: -25px;
     }
     .time {
       font-size: 10px;
       font-weight: 700;
       line-height: 16px;   
       color: var(--acx-neutrals-60);
-      margin-bottom: 6px;
-      padding: 20px 16px 0px;
+      padding: 12px 16px 6px 16px;
       cursor: default;
     }
     .chat {

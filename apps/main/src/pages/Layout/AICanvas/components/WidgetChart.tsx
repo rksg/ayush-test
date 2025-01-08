@@ -176,10 +176,16 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
   })
 
   const tooltipFormatter = (params: TooltipComponentFormatterCallbackParams) => {
+    const yIndex = Array.isArray(params) && params[0]?.encode?.y?.length ?
+      params[0]?.encode?.y[0] : 0
+    const xIndex = Array.isArray(params) && params[0]?.encode?.x?.length ?
+      params[0]?.encode?.x[0] : 1
+    const y = Array.isArray(params) && Array.isArray(params[0].data) ?
+      params[0].data[yIndex] : ''
     const x = Array.isArray(params) && Array.isArray(params[0].dimensionNames) ?
-      params[0].dimensionNames[1] : ''
-    const y = Array.isArray(params) && Array.isArray(params[0].data) ? params[0].data[0] : ''
-    const value = Array.isArray(params) && Array.isArray(params[0].data) ? params[0].data[1] : ''
+      params[0].dimensionNames[xIndex] : ''
+    const value = Array.isArray(params) && Array.isArray(params[0].data) ?
+      params[0].data[xIndex] : ''
     const color = Array.isArray(params) ? params[0].color : ''
     const unit = data?.unit ? 'bytesFormat' : 'countFormat'
     return renderToString(
