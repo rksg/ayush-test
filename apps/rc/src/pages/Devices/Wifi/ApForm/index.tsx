@@ -949,12 +949,12 @@ function CoordinatesModal (props: {
           }
         }, {
           validator: async (_, value) => {
-            if (default6gEnablementToggle) {
+            if (default6gEnablementToggle && !isApAfcEnabled) {
               const latLng = typeof value === 'string'
                 ? value.split(',').map((v: string) => v.trim())
                 : [value.latitude, value.longitude]
               const country = await getCountryFromGpsCoordinates(latLng[0], latLng[1])
-              if (!isApAfcEnabled && country === selectedVenue.country) {
+              if (country === selectedVenue.country) {
                 return Promise.resolve()
               } else {
                 return Promise.reject($t(validationMessages.diffApGpsWithVenueCountry))
