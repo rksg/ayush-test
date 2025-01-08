@@ -11,7 +11,8 @@ import {
   AaaUrls,
   EthernetPortProfileUrls,
   ClientIsolationUrls,
-  SoftGreUrls } from '@acx-ui/rc/utils'
+  SoftGreUrls,
+  LanPortsUrls } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   fireEvent,
@@ -304,7 +305,7 @@ describe('Ethernet Port Profile', () => {
         }))
       ),
       rest.get(
-        EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId.url,
+        LanPortsUrls.getApLanPortSettings.url,
         (_, res, ctx) => res(ctx.json(portOverwrite))
       ),
       rest.get(
@@ -462,7 +463,7 @@ describe('LanPortSettings -  SoftGre Profile Profile', ()=> {
         }))
       ),
       rest.get(
-        EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId.url,
+        LanPortsUrls.getApLanPortSettings.url,
         (_, res, ctx) => res(ctx.json({
           data: {
             enabled: true,
