@@ -714,7 +714,7 @@ export interface ApSmartMonitor {
 export interface ApIot {
   useVenueSettings: boolean,
   enabled: boolean,
-	mqttBrokerAddress: string
+  mqttBrokerAddress: string
 }
 
 export interface APExtendedGrouped extends APExtended {

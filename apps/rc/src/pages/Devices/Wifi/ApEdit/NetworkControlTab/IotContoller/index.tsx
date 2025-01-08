@@ -20,7 +20,8 @@ import {
   useUpdateApIotMutation
 } from '@acx-ui/rc/services'
 import {
-  domainNameRegExp
+  domainNameRegExp,
+  transformDisplayOnOff
 } from '@acx-ui/rc/utils'
 import { ApIot, VenueIot } from '@acx-ui/rc/utils'
 import {
@@ -224,11 +225,7 @@ export function IotController () {
                   children={
                     isUseVenueSettings ? (
                       <span data-testid={'enabled-span'}>
-                        {formRef?.current?.getFieldValue(
-                          iotEnabledFieldName
-                        )
-                          ? $t({ defaultMessage: 'On' })
-                          : $t({ defaultMessage: 'Off' })}
+                        {transformDisplayOnOff(venueIot?.enabled)}
                       </span>
                     ) : (
                       <Switch
