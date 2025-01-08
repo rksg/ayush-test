@@ -391,3 +391,16 @@ export const mockSwitchFeatureSet = {
     }
   ]
 }
+
+export const edgeClusterConfigValidationFailed = {
+  requestId: '3fb4f398-e3cf-4516-914a-35706431e5cd',
+  errors: [
+    {
+      code: 'PERSONAL-IDENTITY-NETWORK-10004',
+      // eslint-disable-next-line max-len
+      message: 'DHCP pool[x-eb24-4b66-b141-7e5e8c827229] not found, please check DHCP pool settings.',
+      service: 'edge-api',
+      entityType: 'pinService'
+    }
+  ]
+}
