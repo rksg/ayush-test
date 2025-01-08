@@ -152,6 +152,26 @@ describe('SwitchPortProfileForm', () => {
     expect(await screen.findByText('Please enter Profile Name')).toBeInTheDocument()
   })
 
+
+  it('handles duplicate profile name validation errors', async () => {
+    render(
+      <Provider>
+        <SwitchPortProfileForm />
+      </Provider>,
+      {
+        route: { params, path: '/:tenantId/t/policies/portProfile/switch/profiles/add' }
+      }
+    )
+
+    const profileName = await screen.findByLabelText(/Profile Name/)
+    fireEvent.change(profileName, { target: { value: 'Profile One' } })
+    const saveButton = await screen.findByRole('button', { name: /Add/ })
+    await userEvent.click(saveButton)
+
+    expect(
+      await screen.findByText('Profile Name with that name already exists')).toBeInTheDocument()
+  })
+
   it('disables MAC OUI select and LLDP TLV checkboxes when PoE is turned off', async () => {
     render(
       <Provider>
