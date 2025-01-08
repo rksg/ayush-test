@@ -274,12 +274,7 @@ export default function DpskPassphraseManagement () {
       visible: canEdit,
       onClick: ([selectedRow]) => {
         setPassphrasesDrawerEditMode({ isEdit: true, passphraseId: selectedRow.id })
-        if (addPassphrasesDrawerVisible) {
-          setAddPassphrasesDrawerVisible(false)
-          setTimeout(() => setAddPassphrasesDrawerVisible(true), 0)
-        } else {
-          setAddPassphrasesDrawerVisible(true)
-        }
+        setAddPassphrasesDrawerVisible(true)
         setManageDevicesVisible(false)
       }
     },

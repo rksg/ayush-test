@@ -1,11 +1,10 @@
-import React from 'react'
-
 import { screen, fireEvent, waitFor } from '@testing-library/react'
 import { Form }                       from 'antd'
 import { rest }                       from 'msw'
 
+import { personaApi }                     from '@acx-ui/rc/services'
 import { Persona, PersonaUrls }           from '@acx-ui/rc/utils'
-import { Provider }                       from '@acx-ui/store'
+import { Provider, store }                from '@acx-ui/store'
 import { mockServer, render, renderHook } from '@acx-ui/test-utils'
 
 import { IdentitySelector } from './index'
@@ -38,10 +37,9 @@ jest.mock('./SelectPersonaDrawer', () => ({
 
 describe('IdentitySelector', () => {
   const identityId = 'persona-id-1'
-  const mockOnChange = jest.fn()
-  jest.fn()
   beforeEach(() => {
     jest.clearAllMocks()
+    store.dispatch(personaApi.util.resetApiState())
     mockServer.use(
       rest.get(
         PersonaUrls.getPersonaById.url,
@@ -68,9 +66,7 @@ describe('IdentitySelector', () => {
           form={formRef.current}
           initialValues={{ identityId: identityId }}
         >
-          <Form.Item name='identityId'>
-            <IdentitySelector identityGroupId='group-1' readonly={true} />
-          </Form.Item>
+          <IdentitySelector identityGroupId='group-1' readonly={true} />
         </Form>
       </Provider>
     )
@@ -81,15 +77,20 @@ describe('IdentitySelector', () => {
   })
 
   it('renders readonly view with placeholder if no identity', async () => {
+    const mockedApiFn = jest.fn()
     mockServer.use(
       rest.get(
         PersonaUrls.getPersonaById.url,
-        (req, res, ctx) => res(ctx.status(404))
+        (_, res, ctx) => {
+          mockedApiFn()
+          return res(ctx.status(404))
+        }
       )
     )
 
     const { result: formRef } = renderHook(() => {
       const [form] = Form.useForm()
+      form.setFieldValue('identityId', identityId)
       return form
     })
 
@@ -97,7 +98,6 @@ describe('IdentitySelector', () => {
       <Provider>
         <Form form={formRef.current}>
           <IdentitySelector
-            value='1'
             identityGroupId='group-1'
             readonly={true}
           />
@@ -105,6 +105,7 @@ describe('IdentitySelector', () => {
       </Provider>
     )
 
+    await waitFor(() => expect(mockedApiFn).toHaveBeenCalled())
     await waitFor(() => {
       expect(screen.getByText('Identity not found')).toBeInTheDocument()
     })
@@ -161,7 +162,6 @@ describe('IdentitySelector', () => {
           <IdentitySelector
             identityGroupId='group-1'
             readonly={false}
-            onChange={mockOnChange}
           />
         </Form>
       </Provider>
@@ -174,8 +174,7 @@ describe('IdentitySelector', () => {
     const submitButton = screen.getByText('Submit')
     fireEvent.click(submitButton)
 
-    // Assert the state and form updates
-    expect(mockOnChange).toHaveBeenCalledWith('123') // ID passed from the mocked persona
+    // Assert the state and form updates.
     expect(screen.getByPlaceholderText('Select Identity')).toHaveValue('Test User')
   })
 
@@ -191,7 +190,6 @@ describe('IdentitySelector', () => {
           <IdentitySelector
             identityGroupId='group-1'
             readonly={false}
-            onChange={mockOnChange}
           />
         </Form>
       </Provider>
@@ -211,6 +209,6 @@ describe('IdentitySelector', () => {
     ).not.toBeInTheDocument()
 
     // Ensure onChange is not called
-    expect(mockOnChange).not.toHaveBeenCalled()
+    expect(screen.getByPlaceholderText('Select Identity')).toHaveValue('')
   })
 })

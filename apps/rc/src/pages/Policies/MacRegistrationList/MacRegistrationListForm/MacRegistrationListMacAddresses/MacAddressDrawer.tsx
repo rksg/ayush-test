@@ -43,10 +43,6 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
   const [ macReg ] = useLazyMacRegistrationsQuery()
   const isIdentityRequired = useIsSplitOn(Features.MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE)
 
-  if (defaultIdentityId) {
-    form.setFieldValue('identityId', defaultIdentityId)
-  }
-
   const macAddressValidator = async (macAddress: string) => {
     const list = (await macReg({
       params: { policyId },
@@ -64,16 +60,21 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
   }
 
   useEffect(()=>{
-    if (editData && visible) {
-      let expiration: ExpirationDateEntity = new ExpirationDateEntity()
-      if(editData.expirationDate) {
-        expiration.setToByDate(toLocalDateString(editData.expirationDate!))
+    if (visible) {
+      if (editData) {
+        let expiration: ExpirationDateEntity = new ExpirationDateEntity()
+        if(editData.expirationDate) {
+          expiration.setToByDate(toLocalDateString(editData.expirationDate!))
+        }
+        else {
+          expiration.setToNever()
+        }
+        form.setFieldsValue(editData)
+        form.setFieldValue('expiration', expiration)
+      } else {
+        // Single identity case: apply the default identityId into the form for creation
+        form.setFieldValue('identityId', defaultIdentityId)
       }
-      else {
-        expiration.setToNever()
-      }
-      form.setFieldsValue(editData)
-      form.setFieldValue('expiration', expiration)
     }
   }, [editData, visible])
 
@@ -103,7 +104,7 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
         await editMacRegistration(
           {
             params: { policyId, registrationId: editData?.id },
-            payload: _.omit(payload, 'macAddress')
+            payload: _.omit(payload, 'macAddress', 'identityId')
           }).unwrap()
       } else {
         await addMacRegistration({
@@ -123,13 +124,11 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
     <Form layout='vertical' form={form}>
       {
         isIdentityRequired && (
-          <Form.Item name='identityId'
-            required={!isEdit}
-            label={intl.$t({ defaultMessage: 'Associated Identity' })}>
-            <IdentitySelector identityGroupId={identityGroupId}
-              readonly={isEdit}
-              defaultIdentityId={defaultIdentityId}/>
-          </Form.Item>
+          <IdentitySelector
+            readonly={isEdit || defaultIdentityId !== undefined}
+            isEdit={isEdit}
+            identityGroupId={identityGroupId}
+          />
         )
       }
       <Form.Item name='macAddress'
@@ -185,6 +184,7 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
     <Drawer
       //eslint-disable-next-line max-len
       title={isEdit ? intl.$t({ defaultMessage: 'Edit MAC Address' }) : intl.$t({ defaultMessage: 'Add MAC Address' })}
+      push={false}
       visible={visible}
       onClose={onClose}
       children={addManuallyContent}

@@ -3,48 +3,55 @@ import React, { useEffect, useState } from 'react'
 import { Form, Input, Typography } from 'antd'
 import { useIntl }                 from 'react-intl'
 
+import { Loader }                     from '@acx-ui/components'
 import { useLazyGetPersonaByIdQuery } from '@acx-ui/rc/services'
 import { Persona }                    from '@acx-ui/rc/utils'
 
 import { SelectPersonaDrawer } from './SelectPersonaDrawer'
 
 export const IdentitySelector = ({
-  value,
-  onChange,
   identityGroupId,
   readonly = false,
-  defaultIdentityId
+  isEdit = false
 }: {
-  value?: string;
-  onChange?: (value: string) => void;
   identityGroupId?: string;
   readonly?: boolean;
-  defaultIdentityId?: string;
+  isEdit?: boolean;
 }) => {
-  const form = Form.useFormInstance()
+  const formInstance = Form.useFormInstance()
+  const selectedIdentityId = Form.useWatch('identityId', formInstance)
   const { $t } = useIntl()
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [selectedIdentity, setSelectedIdentity] = useState<Persona>()
   const [getPersonaById, result] = useLazyGetPersonaByIdQuery()
-  const { data, isLoading } = result
+  const { data, isLoading, isFetching, error } = result
   const renderIdentityMessage = (): string => {
     if (selectedIdentity) return selectedIdentity.name
-    if (isLoading) return $t({ defaultMessage: 'Loading identity...' })
-    return 'Identity not found'
+    if (isLoading || isFetching || (data === undefined && error === undefined) ) {
+      return $t({ defaultMessage: 'Loading identity...' })
+    }
+    return $t({ defaultMessage: 'Identity not found' })
   }
   const placeholder = $t({ defaultMessage: 'Select Identity' })
 
   useEffect(() => {
-    if (value && identityGroupId && (!selectedIdentity || selectedIdentity.id !== value)) {
-      getPersonaById({ params: { groupId: identityGroupId, id: value } })
+    if (selectedIdentityId && identityGroupId) {
+      if (selectedIdentity?.id !== selectedIdentityId) {
+        setSelectedIdentity(undefined)
+      }
+      getPersonaById({ params: {
+        groupId: identityGroupId,
+        id: selectedIdentityId
+      } })
     }
-  }, [value, identityGroupId])
+  }, [selectedIdentityId, identityGroupId])
 
   useEffect(() => {
     if (data) {
       setSelectedIdentity(data)
-      if (defaultIdentityId === data.id) {
-        form.setFieldsValue({
+      if (!isEdit) {
+        // While creating, override 'username' and 'email' in the form with data from Identity.
+        formInstance.setFieldsValue({
           username: data.name,
           email: data.email
         })
@@ -60,31 +67,41 @@ export const IdentitySelector = ({
     setDrawerVisible(false)
     if (identity) {
       setSelectedIdentity(identity)
-      form.setFieldsValue({
+      formInstance.setFieldsValue({
+        identityId: identity.id,
+        identityName: identity.name,
         username: identity.name,
         email: identity.email
       })
-      onChange?.(identity.id)
     }
   }
 
-  return (readonly || defaultIdentityId) ? (
-    <Typography>{ renderIdentityMessage() }</Typography>
-  ) : (
-    <>
-      <Input
-        onClick={handleOpen}
-        value={selectedIdentity?.name || value}
-        placeholder={placeholder}
+  return <>
+    <Form.Item noStyle name={'identityId'} hidden children={<Input hidden />}/>
+    <Form.Item
+      name='identityName'
+      label={$t({ defaultMessage: 'Associated Identity' })}
+      rules={[{
+        required: !readonly,
+        message: $t({ defaultMessage: 'Please select an identity' })
+      }]}
+    >
+      {readonly
+        ? <Loader states={[{ isLoading, isFetching }]} >
+          <Typography>{ renderIdentityMessage() }</Typography>
+        </Loader>
+        : <Input
+          onClick={handleOpen}
+          placeholder={placeholder}
+        />}
+    </Form.Item>
+    {
+      drawerVisible && <SelectPersonaDrawer
+        onSubmit={handleClose}
+        onCancel={() => setDrawerVisible(false)}
+        identityId={selectedIdentityId}
+        identityGroupId={identityGroupId}
       />
-      {
-        drawerVisible && <SelectPersonaDrawer
-          onSubmit={handleClose}
-          onCancel={() => setDrawerVisible(false)}
-          identityId={value}
-          identityGroupId={identityGroupId}
-        />
-      }
-    </>
-  )
+    }
+  </>
 }

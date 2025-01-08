@@ -121,10 +121,11 @@ export default function AddDpskPassphrasesForm (props: AddDpskPassphrasesFormPro
     <Form layout='vertical' form={form}>
       {
         (editMode.isEdit && isIdentityGroupRequired) && (
-          <Form.Item name='identityId'
-            label={$t({ defaultMessage: 'Associated Identity' })}>
-            <IdentitySelector identityGroupId={identityGroupId} readonly={editMode.isEdit}/>
-          </Form.Item>
+          <IdentitySelector
+            identityGroupId={identityGroupId}
+            readonly={true}
+            isEdit={editMode.isEdit}
+          />
         )
       }
       <Form.Item name='id' initialValue='' noStyle>
