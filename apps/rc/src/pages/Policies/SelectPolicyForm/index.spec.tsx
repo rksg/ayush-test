@@ -117,7 +117,7 @@ describe('SelectPolicyForm', () => {
 
     await screen.findByText(/Tunnel Profile/)
   })
-  it('should render Port Profile when edge is enabled', async () => {
+  it('should render Port Profile when FF is enabled', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(
       ff => ff === Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
 

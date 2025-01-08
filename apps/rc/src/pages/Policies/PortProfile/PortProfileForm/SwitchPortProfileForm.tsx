@@ -42,7 +42,7 @@ interface FormPayload {
   macAuth?: boolean;
 }
 
-export function SwitchPortProfileForm () {
+export default function SwitchPortProfileForm () {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const params = useParams()
