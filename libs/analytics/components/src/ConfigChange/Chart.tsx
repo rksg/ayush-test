@@ -43,7 +43,7 @@ function BasicChart (props: {
   const queryResults = useConfigChangeQuery({
     ...pathFilters,
     startDate: startDate.toISOString(),
-    endDate: endDate.toISOString()
+    showIntentAI
   }, { selectFromResult: queryResults => ({
     ...queryResults,
     data: filterData(queryResults.data ?? [], kpiFilter, legendList, showIntentAI)
