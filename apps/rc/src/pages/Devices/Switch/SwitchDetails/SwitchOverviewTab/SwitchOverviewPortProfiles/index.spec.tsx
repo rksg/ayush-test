@@ -8,42 +8,9 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import SwitchOverviewPortProfiles from '.'
+import { mockedPortProfilesTableResult } from '../../__tests__/fixtures'
 
-const mockedTableResult = {
-  data: [
-    {
-      id: '7d869ac0d966458d8f6d41491445f570',
-      name: 'pProfileGlobal2',
-      type: 'STATIC',
-      taggedVlans: [
-        '4'
-      ],
-      untaggedVlans: 20,
-      poeEnable: true,
-      poeClass: 'ZERO',
-      poePriority: 0,
-      portSpeed: 'NONE',
-      portProtected: false,
-      rstpAdminEdgePort: false,
-      stpBpduGuard: false,
-      stpRootGuard: false,
-      dhcpSnoopingTrust: false,
-      ipsg: false,
-      dot1x: false,
-      macAuth: false,
-      ports: [
-        '1/1/48'
-      ]
-    }
-  ],
-  fields: [
-    'id'
-  ],
-  page: 1,
-  totalCount: 2,
-  totalPages: 1
-}
+import SwitchOverviewPortProfiles from '.'
 
 jest.mock('@acx-ui/rc/services', () => ({
   usePortProfilesListBySwitchIdQuery: jest.fn()
@@ -59,7 +26,7 @@ describe('SwitchPortProfileTable', () => {
   beforeEach(() => {
     // Mock the RTK Query hooks
     (usePortProfilesListBySwitchIdQuery as jest.Mock).mockReturnValue({
-      data: mockedTableResult,
+      data: mockedPortProfilesTableResult,
       isLoading: false,
       isFetching: false
     })
@@ -98,7 +65,7 @@ describe('SwitchPortProfileTable', () => {
       }
     )
 
-    const profile = mockedTableResult.data[0]
+    const profile = mockedPortProfilesTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(profile.name) })
 
     expect(within(row).getByText(profile.name)).toBeVisible()
