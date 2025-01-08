@@ -620,6 +620,7 @@ export function RadioSettings () {
 
   useEffect(() => {
     if (apRadioSavedData){
+
       const correctApiRadioChannelData = (apiData: ApRadioCustomization) => {
         const data = cloneDeep(apiData)
         const { apRadioParams24G, apRadioParams50G, apRadioParams6G, apRadioParamsDual5G } = data
@@ -672,6 +673,7 @@ export function RadioSettings () {
 
         const { method, manualChannel } = radioParams
         if (method === 'MANUAL') {
+          // Use venue settings & channel selection method is "manual", ap's allowedChannels = venue's allowedChannels.
           if (!isUseVenueSettings) {
             radioParams.allowedChannels = [manualChannel.toString()]
           }
