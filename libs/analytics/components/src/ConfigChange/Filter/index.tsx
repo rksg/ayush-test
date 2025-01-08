@@ -162,9 +162,9 @@ export const Filter = () => {
   return <>
     <GridCol col={{ span: 7 }}><Search/></GridCol>
     <GridCol col={{ span: 6 }}><KPIFilter/></GridCol>
-    <GridCol col={{ span: 6 }}><EntityTypeFilter/></GridCol>
-    <GridCol col={{ span: 2 }}><Reset/></GridCol>
-    <GridCol col={{ span: 2 }}><ResetZoom/></GridCol>
+    <GridCol col={{ span: 4, xxl: 6 }}><EntityTypeFilter/></GridCol>
+    <GridCol col={{ span: 3, xxl: 2 }}><Reset/></GridCol>
+    <GridCol col={{ span: 3, xxl: 2 }}><ResetZoom/></GridCol>
     <GridCol col={{ span: 1 }}><Download/></GridCol>
   </>
 }
