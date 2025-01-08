@@ -162,13 +162,10 @@ export function VenueFirmwareListPerApModel () {
   // eslint-disable-next-line max-len
   const genUpdateDisplayData = useCallback((apModelFirmwares: ApModelFirmware[], selectedRows: FirmwareVenuePerApModel[], forEarlyAccess: boolean = false, isApFwMgmtEarlyAccess: boolean) => {
     let eaApModelFirmwares = [] as ApModelFirmware[]
-    // eslint-disable-next-line max-len
     let updateAlphaGroups = apModelFirmwares.filter(data => isAlpha(data.labels))
-    // eslint-disable-next-line max-len
     let updateBetaGroups = apModelFirmwares.filter(data => isBeta(data.labels))
 
     eaApModelFirmwares = [
-      ...eaApModelFirmwares,
       ...(apFirmwareContext.isAlphaFlag ? updateAlphaGroups : []),
       ...((apFirmwareContext.isBetaFlag || apFirmwareContext.isAlphaFlag) ? updateBetaGroups : [])
     ]
@@ -205,19 +202,27 @@ export function VenueFirmwareListPerApModel () {
     // eslint-disable-next-line max-len
   }, [apModelFirmwares, apFirmwareContext.isBetaFlag, apFirmwareContext.isAlphaFlag, selectedRows, isApFwMgmtEarlyAccess])
 
+  // eslint-disable-next-line max-len
+  const hasAvailableUpdateDisplayData = (rows: FirmwareVenuePerApModel[], forEarlyAccess: boolean = false) => {
+    const updatedDisplayData = genUpdateDisplayData(
+      apModelFirmwares || [],
+      rows,
+      forEarlyAccess,
+      isApFwMgmtEarlyAccess
+    )
+    // eslint-disable-next-line max-len
+    if (updatedDisplayData.length === 0 || updatedDisplayData.every(data => data.versionOptions.length === 0)) {
+      return false
+    }
+
+    return true
+  }
+
   const rowActions: TableProps<FirmwareVenuePerApModel>['rowActions'] = [
     {
       scopeKey: [WifiScopes.UPDATE],
-      // eslint-disable-next-line max-len
       visible: (rows) => {
-        const updatedDisplayData = genUpdateDisplayData(
-          apModelFirmwares || [],
-          rows,
-          false,
-          isApFwMgmtEarlyAccess
-        )
-        // eslint-disable-next-line max-len
-        if (updatedDisplayData.length === 0 || updatedDisplayData.every(data => data.versionOptions.length === 0)) {
+        if (!hasAvailableUpdateDisplayData(rows)) {
           return false
         }
         return rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate))
@@ -230,16 +235,9 @@ export function VenueFirmwareListPerApModel () {
     },
     {
       scopeKey: [WifiScopes.UPDATE],
-      // eslint-disable-next-line max-len
       visible: (rows) => {
-        const updatedDisplayData = genUpdateDisplayData(
-          apModelFirmwares || [],
-          rows,
-          true,
-          isApFwMgmtEarlyAccess
-        )
-        // eslint-disable-next-line max-len
-        if (updatedDisplayData.length === 0 || updatedDisplayData.every(data => data.versionOptions.length === 0)) {
+        const forEarlyAccess = true
+        if (!hasAvailableUpdateDisplayData(rows, forEarlyAccess)) {
           return false
         }
         // eslint-disable-next-line max-len
@@ -253,16 +251,8 @@ export function VenueFirmwareListPerApModel () {
     },
     {
       scopeKey: [WifiScopes.UPDATE],
-      // eslint-disable-next-line max-len
       visible: (rows) => {
-        const updatedDisplayData = genUpdateDisplayData(
-          apModelFirmwares || [],
-          rows,
-          false,
-          isApFwMgmtEarlyAccess
-        )
-        // eslint-disable-next-line max-len
-        if (updatedDisplayData.length === 0 || updatedDisplayData.every(data => data.versionOptions.length === 0)) {
+        if (!hasAvailableUpdateDisplayData(rows)) {
           return false
         }
 
