@@ -56,8 +56,6 @@ export const defaultSwitchClientPayload = {
     'switchPortId', 'switchSerialNumber', 'venueId', 'venueName',
     'vlanName', 'vni', 'clientAuthType'
   ],
-  sortField: 'clientMac',
-  sortOrder: 'DESC',
   filters: {}
 }
 
@@ -97,9 +95,14 @@ export function ClientsTable (props: {
       ...defaultSwitchClientPayload
     },
     search: {
+      searchString: '',
       searchTargetFields: defaultSwitchClientPayload.searchTargetFields
     },
     option: { skip: !!props.tableQuery },
+    sorter: {
+      sortField: 'clientName',
+      sortOrder: 'ASC'
+    },
     pagination: { settingsId },
     enableRbac: isSwitchRbacEnabled
   })
