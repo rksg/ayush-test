@@ -209,7 +209,7 @@ export const validationMessages = {
   }),
   diffApGpsWithVenueCountry: defineMessage({
     // eslint-disable-next-line max-len
-    defaultMessage: 'Cannot set AP GPS coordinates to a different country code or country than the <venueSingular></venueSingular>',
+    defaultMessage: 'Cannot set AP GPS coordinates to a location in a different country code or country than the <venueSingular></venueSingular>',
     description: 'Validation - AP GPS Country checks'
   }),
   cellularApDhcpLimitation: defineMessage({
