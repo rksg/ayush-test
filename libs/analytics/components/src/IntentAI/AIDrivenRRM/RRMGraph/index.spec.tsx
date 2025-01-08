@@ -69,9 +69,11 @@ describe('CloudRRM', () => {
 
   it('should render correctly for active states', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockIntentContext({ intent: { ...mockedIntentCRRM, status: Statuses.active } })
     render(<IntentAIRRMGraph />, { route: { params }, wrapper: Provider })
 
     expect(await screen.findByText('View More')).toBeVisible()
+    expect(screen.getByText(/The graph and channel plan are generated/)).toBeInTheDocument()
     expect(screen.queryByTestId('rrm-comparison-button')).toBeNull()
     expect(screen.getByTestId('hidden-graph')).toBeInTheDocument()
     expect(await screen.findByAltText('rrm-graph-before')).toBeVisible()
@@ -84,6 +86,7 @@ describe('CloudRRM', () => {
     render(<IntentAIRRMGraph />, { route: { params }, wrapper: Provider })
     // eslint-disable-next-line max-len
     expect(await screen.findByText('Graph modeling will be generated once Intent is activated.')).toBeVisible()
+    expect(screen.queryByText(/The graph and channel plan are generated/)).not.toBeInTheDocument()
     expect(screen.queryByTestId('rrm-comparison-button')).toBeNull()
   })
 
@@ -108,6 +111,7 @@ describe('CloudRRM', () => {
       wrapper: Provider
     })
     expect(container).toHaveTextContent('Metrics / Charts unavailable for data beyond 30 days')
+    expect(container).not.toHaveTextContent(/The graph and channel plan are generated/)
   })
 
   it('handle beyond data retention', async () => {
@@ -124,6 +128,7 @@ describe('CloudRRM', () => {
       wrapper: Provider
     })
     expect(container).toHaveTextContent('Beyond data retention period')
+    expect(container).not.toHaveTextContent(/The graph and channel plan are generated/)
   })
 })
 

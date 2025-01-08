@@ -1,7 +1,5 @@
 import styled, { css } from 'styled-components/macro'
 
-import { InformationOutlined } from '@acx-ui/icons'
-
 export const SliderBefore = styled.div`
   display: flex;
   align-items: center;
