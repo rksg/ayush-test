@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Col, Form, Input, InputNumber, Row, Select, Space } from 'antd'
 import _                                                     from 'lodash'
@@ -7,7 +7,6 @@ import styled                                                from 'styled-compon
 
 import { Button, Drawer, Modal, Subtitle, Table, Tooltip, Transfer, useStepFormContext } from '@acx-ui/components'
 import {
-  useGetSwitchFeatureSetsQuery,
   useValidateDistributionSwitchInfoMutation
 } from '@acx-ui/rc/services'
 import {
@@ -15,13 +14,15 @@ import {
   checkVlanMember,
   DistributionSwitch,
   DistributionSwitchSaveData,
+  isVerGEVer,
   networkWifiIpRegExp,
-  SwitchLite,
   PersonalIdentityNetworkFormData,
-  isVerGEVer
+  SwitchLite
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }       from '@acx-ui/react-router-dom'
 import { getIntl, validationMessages } from '@acx-ui/utils'
+
+import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 
 const RequiredMark = styled.span`
   &:before {
@@ -40,6 +41,12 @@ export function DistributionSwitchDrawer (props: {
 }) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
+  const requiredFw = '10.0.10f'
+  const {
+    requiredFw_DS = requiredFw,
+    requiredFw_AS = requiredFw,
+    requiredSwitchModels: requiredModels = []
+  } = useContext(PersonalIdentityNetworkFormContext)
   const [form] = Form.useForm<DistributionSwitch>()
   const { open, editRecord, availableSwitches, onClose = ()=>{}, onSaveDS } = props
 
@@ -48,25 +55,11 @@ export function DistributionSwitchDrawer (props: {
   const edgeClusterId = pinForm.getFieldValue('edgeClusterId')
 
   const defaultRecord = { siteKeepAlive: '5', siteRetry: '3' }
-  const requiredFw = '10.0.10f'
 
   const [openModal, setOpenModal] = useState(false)
   const [availableSwitchList, setAvailableSwitchList] = useState<SwitchLite[]>([])
 
   const [validateDistributionSwitchInfo] = useValidateDistributionSwitchInfoMutation()
-  const { requiredFw_DS, requiredFw_AS, requiredModels } = useGetSwitchFeatureSetsQuery({
-    params: { tenantId }, payload: { filter: { field: 'GROUP', values: ['PIN'] } }
-  }, {
-    selectFromResult: ({ data }) => {
-      const reqs = data?.featureSets?.find(item => item.featureName === 'PIN_DS')?.requirements
-      const reqs_as = data?.featureSets?.find(item => item.featureName === 'PIN_AS')?.requirements
-      return {
-        requiredFw_DS: reqs?.find(item => item.firmware)?.firmware || requiredFw,
-        requiredFw_AS: reqs_as?.find(item => item.firmware)?.firmware || requiredFw,
-        requiredModels: reqs?.find(item => item.models)?.models || []
-      }
-    }
-  })
 
   const dsId = Form.useWatch('id', form)
   const accessSwitches = Form.useWatch('accessSwitches', form)

@@ -6,4 +6,17 @@ describe('getIntentStatus', () => {
   it('handle unknown state', () => {
     expect(getIntentStatus('xyz' as DisplayStates)).toEqual('Unknown')
   })
+
+  it.each([
+    { state: DisplayStates.pausedApplyFailed, retries: undefined },
+    { state: DisplayStates.pausedApplyFailed, retries: 1 },
+    { state: DisplayStates.pausedApplyFailed, retries: 2 }
+  ])(
+    'should handle "$state" with "$retries" retries',
+    ({ state, retries }) => {
+      const expected = 'Paused, Applied Failed'
+        + `${retries && retries > 1 ? ` (retry ${retries} of 3)` : ''}`
+      expect(getIntentStatus(state, retries)).toEqual(expected)
+    }
+  )
 })

@@ -3,14 +3,21 @@ import { message } from 'antd'
 import _           from 'lodash'
 import moment      from 'moment-timezone'
 
-import { intentAIApi, intentAIUrl, Provider, store }                              from '@acx-ui/store'
-import { mockGraphqlMutation, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { intentAIApi, intentAIUrl, Provider, store } from '@acx-ui/store'
+import {
+  mockGraphqlMutation,
+  mockGraphqlQuery,
+  render,
+  screen,
+  waitForElementToBeRemoved,
+  within
+} from '@acx-ui/test-utils'
 
 import { mockIntentContext } from '../__tests__/fixtures'
 import { Statuses }          from '../states'
 import { IntentDetail }      from '../useIntentDetailsQuery'
 
-import { mocked }                                             from './__tests__/mockedCAclbEnable'
+import { mocked, mockedKPIs, mockedStatusTrail }              from './__tests__/mockedCAclbEnable'
 import { configuration, kpis, IntentAIDetails, IntentAIForm } from './CAclbEnable'
 
 const { click, selectOptions } = userEvent
@@ -46,7 +53,6 @@ jest.mock('../IntentContext')
 
 beforeEach(() => {
   store.dispatch(intentAIApi.util.resetApiState())
-
   moment.tz.setDefault('Asia/Singapore')
   const now = +new Date('2024-08-08T12:00:00.000Z')
   jest.spyOn(Date, 'now').mockReturnValue(now)
@@ -54,6 +60,8 @@ beforeEach(() => {
   mockGraphqlMutation(intentAIUrl, 'IntentTransition', {
     data: { transition: { success: true, errorMsg: '' , errorCode: '' } }
   })
+  mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail', { data: { intent: mockedStatusTrail } })
+  mockGraphqlQuery(intentAIUrl, 'IntentKPIs', { data: { intent: mockedKPIs } })
 })
 
 afterEach((done) => {
