@@ -146,7 +146,6 @@ export function ApForm () {
   const [afcEnabled, setAfcEnabled] = useState(false)
   const [tlsEnhancedKeyEnabled, setTlsEnhancedKeyEnabled] = useState(false)
   const [changeTlsEnhancedKey, setChangeTlsEnhancedKey] = useState(false)
-  const [isApAfcEnabled, setIsApAfcEnabled] = useState(false)
 
   const cellularApModels = useRef<string[]>([])
 
@@ -495,7 +494,6 @@ export function ApForm () {
     // Should not display under Add AP. Only display under edit mode
     // Or afc is not enabled
     if (!isEditMode || !afcEnabled || aps.length === 0) {
-      setIsApAfcEnabled(false)
       return false
     }
 
@@ -507,11 +505,9 @@ export function ApForm () {
     // AFC info and Geo-location possibly does not exist.
     // Same, and if Status is in requires status, then false.
     if (!geoLocation || (!!afcStatus && requiredStatus.includes(afcStatus))) {
-      setIsApAfcEnabled(false)
       return false
     }
 
-    setIsApAfcEnabled(true)
     return true
   }
 
@@ -734,7 +730,7 @@ export function ApForm () {
           gpsModalVisible={gpsModalVisible}
           setGpsModalVisible={setGpsModalVisible}
           onSaveCoordinates={onSaveCoordinates}
-          isApAfcEnabled={isApAfcEnabled}
+          isApAfcEnabled={displayAFCGeolocation()}
         />
 
       </StepsFormLegacy.StepForm>
