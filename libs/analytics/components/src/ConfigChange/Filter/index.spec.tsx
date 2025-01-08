@@ -133,12 +133,20 @@ describe('Reset', () => {
 })
 
 describe('ResetZoom', () => {
-  it('should render with zoom enabled', () => {
+  it('should not render with zoom disable', () => {
+    const context = {
+      initialZoom: { start: 100, end: 100 },
+      chartZoom: { start: 100, end: 100 }
+    } as unknown as ConfigChangeContextType
+    render(<ConfigChangeContext.Provider value={context} children={<ResetZoom/>}/>)
+    expect(screen.queryByText('Reset Zoom')).not.toBeInTheDocument()
+  })
+  it('should render with zoom enabled', async () => {
     const context = {
       initialZoom: { start: 100, end: 100 },
       chartZoom: { start: 100, end: 101 }
     } as unknown as ConfigChangeContextType
-    render( <ConfigChangeContext.Provider value={context} children={<ResetZoom/>} />)
+    render(<ConfigChangeContext.Provider value={context} children={<ResetZoom/>}/>)
     expect(await screen.findByText('Reset Zoom')).toBeVisible()
   })
 })
