@@ -11,7 +11,7 @@ import { api }                                                                fr
 
 import { handleConfigChangeDownload } from './handleConfigChangeDownload'
 
-import { Search, KPIFilter, EntityTypeFilter, Reset, Download, Filter } from '.'
+import { Search, KPIFilter, EntityTypeFilter, Reset, Download, Filter, ResetZoom } from '.'
 
 const mockHandleConfigChangeDownload = jest.mocked(handleConfigChangeDownload)
 jest.mock('./handleConfigChangeDownload', () => ({
@@ -129,6 +129,17 @@ describe('Reset', () => {
     expect(await screen.findByText('Clear Filters')).toBeVisible()
     await userEvent.click(await screen.findByText('Clear Filters'))
     expect(context.resetFilter).toBeCalled()
+  })
+})
+
+describe('ResetZoom', () => {
+  it('should render with zoom enabled', () => {
+    const context = {
+      initialZoom: { start: 100, end: 100 },
+      chartZoom: { start: 100, end: 101 }
+    } as unknown as ConfigChangeContextType
+    render( <ConfigChangeContext.Provider value={context} children={<ResetZoom/>} />)
+    expect(await screen.findByText('Reset Zoom')).toBeVisible()
   })
 })
 
