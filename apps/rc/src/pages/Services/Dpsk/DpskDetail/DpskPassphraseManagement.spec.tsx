@@ -195,14 +195,7 @@ describe('DpskPassphraseManagement', () => {
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
     await userEvent.click(within(targetRow).getByRole('checkbox'))
 
-    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
-
-    const confirmDialog = await screen.findByRole('dialog')
-    // eslint-disable-next-line max-len
-    expect(within(confirmDialog).getByText('You are unable to delete this record due to its usage in Identity')).toBeVisible()
-
-    await userEvent.click(await screen.findByText('OK'))
-    await waitFor(() => expect(confirmDialog).not.toBeInTheDocument())
+    expect(screen.getByRole('button', { name: /Delete/ })).toBeDisabled()
   })
 
   it('should show error message when import CSV file failed', async () => {
