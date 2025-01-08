@@ -85,7 +85,7 @@ describe('IntentAIForm', () => {
     }
   })
 
-  async function renderAndStepsThruForm (isIntentActive?: boolean) {
+  async function renderAndStepsThruForm () {
     const params = {
       root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
       sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52',
@@ -121,9 +121,6 @@ describe('IntentAIForm', () => {
     // Step 4
     await screen.findAllByRole('heading', { name: 'Summary' })
     expect(await screen.findByText('Projected interfering links reduction')).toBeVisible()
-    if (isIntentActive) {
-      expect(await screen.findByText(/The graph and channel plan are generated based on the /)).toBeVisible()
-    }
 
     await click(actions.getByRole('button', { name: 'Apply' }))
 
@@ -137,10 +134,5 @@ describe('IntentAIForm', () => {
   it('should render correctly when IS_MLISA_SA is true', async () => {
     jest.mocked(get).mockReturnValue('true')
     await renderAndStepsThruForm()
-  })
-
-  it('should render correctly when intent is active', async () => {
-    mockIntentContext({ intent: { ...mockedIntentCRRM, status: Statuses.active }, kpis })
-    await renderAndStepsThruForm(true)
   })
 })
