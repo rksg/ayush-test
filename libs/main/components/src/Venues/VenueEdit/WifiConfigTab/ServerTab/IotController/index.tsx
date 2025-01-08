@@ -84,6 +84,14 @@ export function IotController () {
     }
   }
 
+  const discardIotController = async () => {
+    const venueApIotData = venueApIot.data
+    if (venueApIotData) {
+      form.setFieldsValue({ iot: venueApIotData })
+      setIotEnabled(venueApIotData.enabled)
+    }
+  }
+
   const handleChanged = () => {
     setEditContextData({
       ...editContextData,
@@ -94,7 +102,8 @@ export function IotController () {
 
     setEditServerContextData && setEditServerContextData({
       ...editServerContextData,
-      updateVenueIot: updateIotController
+      updateVenueIot: updateIotController,
+      discardVenueIot: discardIotController
     })
   }
 

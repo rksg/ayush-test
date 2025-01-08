@@ -24,6 +24,7 @@ export interface ServerSettingContext {
   updateVenueApSnmp: (() => void),
   discardVenueApSnmp: (() => void),
   updateVenueIot: (() => void),
+  discardVenueIot: (() => void),
   updateVenueLbs: (() => void),
   discardVenueLbs: (() => void),
 }
