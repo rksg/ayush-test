@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 import { ApCompatibility, ApCompatibilityResponse, ApIncompatibleFeature, Compatibility, CompatibilityDeviceEnum, IncompatibilityFeatures, IncompatibleFeature, IncompatibleFeatureTypeEnum, isEdgeCompatibilityFeature } from '@acx-ui/rc/utils'
 
 // for old API
@@ -29,15 +31,16 @@ Record<string, IncompatibleFeature[]> => {
 
     if (feature.featureGroup) {
       const existingFeature = deviceMap[deviceType].find(f =>
-        f.featureName === feature.featureGroup)
+        f.featureName === feature.featureGroup && f.featureType === feature.featureType)
 
       if (existingFeature) {
         existingFeature.children = existingFeature.children ?? []
-        existingFeature.children.push(feature)
+        existingFeature.children.push(_.omit(feature, 'featureType'))
       } else {
         deviceMap[deviceType].push({
           featureName: feature.featureGroup,
-          children: [feature]
+          featureType: feature.featureType,
+          children: [_.omit(feature, 'featureType')]
         })
       }
     } else {
