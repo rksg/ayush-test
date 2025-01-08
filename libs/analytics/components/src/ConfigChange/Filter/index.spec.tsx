@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 
-import { getConfigChangeEntityTypeMapping }          from '@acx-ui/components'
-import { Provider, dataApiURL, store }               from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen, waitFor } from '@acx-ui/test-utils'
-import { DateRange, defaultRanges }                  from '@acx-ui/utils'
+import { getConfigChangeEntityTypeMapping, resetZoomCallback } from '@acx-ui/components'
+import { Provider, dataApiURL, store }                         from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, waitFor }           from '@acx-ui/test-utils'
+import { DateRange, defaultRanges }                            from '@acx-ui/utils'
 
 import { pagedConfigChanges }                                                 from '../__tests__/fixtures'
 import { ConfigChangeContext, ConfigChangeContextType, ConfigChangeProvider } from '../context'
@@ -16,6 +16,10 @@ import { Search, KPIFilter, EntityTypeFilter, Reset, Download, Filter, ResetZoom
 const mockHandleConfigChangeDownload = jest.mocked(handleConfigChangeDownload)
 jest.mock('./handleConfigChangeDownload', () => ({
   handleConfigChangeDownload: jest.fn()
+}))
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  resetZoomCallback: jest.fn()
 }))
 
 describe('Search', () => {
@@ -148,6 +152,8 @@ describe('ResetZoom', () => {
     } as unknown as ConfigChangeContextType
     render(<ConfigChangeContext.Provider value={context} children={<ResetZoom/>}/>)
     expect(await screen.findByText('Reset Zoom')).toBeVisible()
+    await userEvent.click(await screen.findByText('Reset Zoom'))
+    expect(resetZoomCallback).toBeCalled()
   })
 })
 
