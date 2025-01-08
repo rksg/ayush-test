@@ -2,6 +2,8 @@ import { useContext } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
+import { get }                                                                                     from '@acx-ui/config'
+import { useIsTreatmentsOn }                                                                       from '@acx-ui/feature-toggle'
 import { Provider, dataApiURL, store }                                                             from '@acx-ui/store'
 import { findTBody, mockGraphqlQuery, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 import { DateRange }                                                                               from '@acx-ui/utils'
@@ -47,6 +49,17 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
+const mockGet = get as jest.Mock
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
+
+const mockedUseTenantLink = jest.fn()
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useTenantLink: () => mockedUseTenantLink
+}))
+
 describe('transferSorter', () => {
   it('should return correct result', () => {
     expect(transferSorter('ascend')).toBe(SORTER_ABBR.ASC)
@@ -59,8 +72,6 @@ describe('Table', () => {
   const data = pagedConfigChanges.data.map((value, id)=>({ ...value, id }))
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
-    // mockGet.mockReturnValue('true')
-    // jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
   it('should render loader', async () => {
     mockGraphqlQuery(dataApiURL, 'PagedConfigChange',
@@ -105,6 +116,33 @@ describe('Table', () => {
     expect(await screen.findByText('Enabled')).toBeVisible()
 
     expect(await screen.findByText('Add KPI filter')).toBeVisible()
+  })
+  describe('should render hyperlink', () => {
+    beforeEach(() => {
+      jest.mocked(useIsTreatmentsOn).mockReturnValue(true)
+      mockGraphqlQuery(dataApiURL, 'PagedConfigChange', { data: { network: { hierarchyNode: {
+        pagedConfigChanges: { ...pagedConfigChanges, data } } } } })
+    })
+    it('should render correct hyperlink for intentAI', async () => {
+      mockGet.mockReturnValue(false)
+      render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
+        <PagedTable/>
+      </ConfigChangeProvider>, { wrapper: Provider, route: { params: { tenantId: 'test' } } })
+      await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
+      expect(await screen.findByRole('link')).toHaveAttribute(
+        // eslint-disable-next-line max-len
+        'href', '/test/t/analytics/intentAI/b4187899-38ae-4ace-8e40-0bc444455156/c-bgscan5g-enable')
+    })
+    it('should render correct hyperlink for SA', async () => {
+      mockGet.mockReturnValue(true)
+      render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
+        <PagedTable/>
+      </ConfigChangeProvider>, { wrapper: Provider, route: {} })
+      await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
+      expect(await screen.findByRole('link')).toHaveAttribute(
+        // eslint-disable-next-line max-len
+        'href', '/intentAI/30b11d8b-ce40-4344-81ef-84b47753b4a6/b4187899-38ae-4ace-8e40-0bc444455156/c-bgscan5g-enable')
+    })
   })
   it('should handle click correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'PagedConfigChange', { data: { network: { hierarchyNode: {
