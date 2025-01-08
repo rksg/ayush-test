@@ -536,9 +536,9 @@ export function LanPorts () {
               return oldLanPort.portId === lanPort.portId
             })
             // Update ethernet port profile
-            handleUpdateEthernetPortProfile(venueLanPort.model, lanPort, originLanPort)
+            await handleUpdateEthernetPortProfile(venueLanPort.model, lanPort, originLanPort)
             // Update SoftGre Profile
-            handleUpdateSoftGreProfile(venueLanPort.model, lanPort, originLanPort)
+            await handleUpdateSoftGreProfile(venueLanPort.model, lanPort, originLanPort)
 
             // Before disable Client Isolation must deacticvate Client Isolation policy
             if(isEthernetClientIsolationEnabled) {
