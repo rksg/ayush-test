@@ -18,7 +18,8 @@ import {
   EdgeClusterStatus,
   EdgeUrlsInfo,
   PropertyUrlsInfo,
-  PropertyConfigs
+  PropertyConfigs,
+  EdgeClusterInfo
 } from '@acx-ui/rc/utils'
 import { basePinApi }                          from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -301,9 +302,9 @@ export const pinApi = basePinApi.injectEndpoints({
         }
       }
     }),
-    validateEdgePinNetwork: build.mutation<CommonResult, RequestPayload>({
+    validateEdgePinSwitchConfig: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(EdgePinUrls.validateEdgePinNetwork, params, {
+        const req = createHttpRequest(EdgePinUrls.validateSwitchConfig, params, {
           ...ignoreErrorModal
         })
         return {
@@ -324,6 +325,17 @@ export const pinApi = basePinApi.injectEndpoints({
     deactivateEdgePinNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgePinUrls.deactivateEdgePinNetwork, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    validateEdgePinClusterConfig: build.mutation<CommonResult, RequestPayload<{ edgeClusterInfo: EdgeClusterInfo }>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgePinUrls.validateEdgeClusterConfig, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
@@ -381,7 +393,8 @@ export const {
   useGetAvailableSwitchesQuery,
   useValidateDistributionSwitchInfoMutation,
   useValidateAccessSwitchInfoMutation,
-  useValidateEdgePinNetworkMutation,
+  useValidateEdgePinSwitchConfigMutation,
   useActivateEdgePinNetworkMutation,
-  useDeactivateEdgePinNetworkMutation
+  useDeactivateEdgePinNetworkMutation,
+  useValidateEdgePinClusterConfigMutation
 } = pinApi
