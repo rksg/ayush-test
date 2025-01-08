@@ -306,6 +306,27 @@ export const Grid = styled.div`
   transition: all 0.2s ease-out;
   .card-actions{
     display: none;
+    position: absolute;
+    right: 0px;
+    z-index: 1;
+    background: var(--acx-primary-black);
+    color: var(--acx-primary-white);
+    padding: 8px;
+    border-radius: 4px;
+    margin: 8px;
+    svg{
+      path {
+        stroke: var(--acx-primary-white);
+      }  
+    }
+    .ant-btn[disabled].ant-btn-default {
+      border: none;
+      svg{
+        path {
+          stroke: var(--acx-neutrals-60);
+        }  
+      }
+    }
   }
   &:hover .card-actions{
     display: block;

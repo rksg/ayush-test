@@ -4,7 +4,9 @@ import _                              from 'lodash'
 import { ConnectDragSource, useDrag } from 'react-dnd'
 import { getEmptyImage }              from 'react-dnd-html5-backend'
 
-import { WidgetListData } from '@acx-ui/rc/utils'
+import { Button }                                    from '@acx-ui/components'
+import { DeleteOutlined, EditOutlined, Plus, Minus } from '@acx-ui/icons-new'
+import { WidgetListData }                            from '@acx-ui/rc/utils'
 
 import { CardInfo, Group, LayoutConfig } from '../Canvas'
 import utils                             from '../utils'
@@ -12,6 +14,7 @@ import { compactLayoutHorizontal }       from '../utils/compact'
 
 import { GroupProps, ItemTypes } from './GroupItem'
 import { WidgetChart }           from './WidgetChart'
+
 
 interface CardProps {
   groupIndex: number
@@ -151,45 +154,36 @@ function Card (props: CardProps) {
               transform: `translate(${x}px, ${y}px)`
             }}
           >
-            <div
-              className='card-actions'
-              style={{
-                position: 'absolute',
-                left: '70px',
-                zIndex: 1
-              }}
-            >
+            <div className='card-actions'>
               {/* <b>{id}</b> */}
-              <button
-                style={{ height: '30px', marginLeft: '10px' }}
+              {/* <Plus />
+              <Minus />
+              <EditOutlined />
+              <DeleteOutlined /> */}
+              <Button
+                icon={<Plus />}
+                disabled={card.currentSizeIndex+1 >= card.sizes?.length}
+                onClick={() => {
+                  increaseCard()
+                }}
+              />
+              <Button
+                icon={<Minus />}
+                disabled={card.currentSizeIndex <= 0}
+                onClick={() => {
+                  decreaseCard()
+                }}
+              />
+              <Button
+                icon={<EditOutlined />}
+                onClick={() => {}}
+              />
+              <Button
+                icon={<DeleteOutlined />}
                 onClick={() => {
                   deleteCard(id, groupIndex)
                 }}
-              >
-                Delete
-              </button>
-              {
-                card.sizes && <button
-                  style={{ height: '30px', width: '30px', marginLeft: '10px' }}
-                  disabled={card.currentSizeIndex+1 >= card.sizes?.length}
-                  onClick={() => {
-                    increaseCard()
-                  }}
-                >
-                  +
-                </button>
-              }
-              {
-                card.sizes && <button
-                  style={{ height: '30px', width: '30px', marginLeft: '10px' }}
-                  disabled={card.currentSizeIndex <= 0}
-                  onClick={() => {
-                    decreaseCard()
-                  }}
-                >
-                  -
-                </button>
-              }
+              />
             </div>
             {
               card.chartType &&

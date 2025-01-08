@@ -20,9 +20,11 @@ import Canvas             from './Canvas'
 import { DraggableChart } from './components/WidgetChart'
 import * as UI            from './styledComponents'
 
-
 export default function AICanvas () {
   const { $t } = useIntl()
+  const [form] = Form.useForm()
+  const scroll = useRef(null)
+  const linkToDashboard = useTenantLink('/dashboard')
   const navigate = useNavigate()
   const [chatAi] = useChatAiMutation()
   const [updateChat] = useUpdateChatMutation()
@@ -34,13 +36,12 @@ export default function AICanvas () {
   const [sessionId, setSessionId] = useState('')
   const [history, setHistory] = useState([] as HistoryListItem[])
   const [chats, setChats] = useState([] as ChatMessage[])
-  const [form] = Form.useForm()
-
   const [ searchText, setSearchText ] = useState('')
-  const scroll = useRef(null)
-  const linkToDashboard = useTenantLink('/dashboard')
+  const [ isNewChat, setIsNewChat ] = useState(false)
+
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment! 
   I can also generate on-the-fly widgets for operational data, including Alerts and Metrics.` })
+
   const questions = [
     'What can you do?',
     'Design custom metrics widget',
@@ -62,32 +63,23 @@ export default function AICanvas () {
     }, 100)
   }, [chats])
 
-  const checkDate = (chats: ChatHistory[]) => {
-    const list = {
-      today: [],
-      yesterday: [],
-      sevendays: []
-    } as { [key:string]: ChatHistory[] }
-    chats.forEach((chat: ChatHistory) => {
-      const inputDate = moment(chat.updatedDate)
-      const now = moment()
-      const diffDays = now.diff(inputDate, 'days')
+  useEffect(()=>{
+    if(historyData?.length) {
+      setHistoryList(historyData)
+    }
+  }, [historyData])
 
-      if (diffDays === 0) {
-        list.today.push(chat)
-      } else if (diffDays === 1) {
-        list.yesterday.push(chat)
-      } else if (diffDays <= 7) {
-        list.sevendays.push(chat)
-      } else {
-        const title = inputDate.format('MMMM D, YYYY')
-        if(!list[title]) {
-          list[title] = []
-        }
-        list[title].push(chat)
-      }
-    })
-    return list
+  useEffect(() => {
+    if(!isNewChat && sessionId) {
+      getChats()
+    }
+  }, [sessionId])
+
+  const getChats = async ()=>{
+    setIsChatLoading(true)
+    const response = await getChat({ params: { sessionId } }).unwrap()
+    setChats(response.messages)
+    setIsChatLoading(false)
   }
 
   const setHistoryList = (response: ChatHistory[]) => {
@@ -125,24 +117,33 @@ export default function AICanvas () {
     setHistory(historyList)
   }
 
-  useEffect(()=>{
-    if(historyData?.length) {
-      setHistoryList(historyData)
-    }
-  }, [historyData])
+  const checkDate = (chats: ChatHistory[]) => {
+    const list = {
+      today: [],
+      yesterday: [],
+      sevendays: []
+    } as { [key:string]: ChatHistory[] }
+    chats.forEach((chat: ChatHistory) => {
+      const inputDate = moment(chat.updatedDate)
+      const now = moment()
+      const diffDays = now.diff(inputDate, 'days')
 
-  const getChats = async ()=>{
-    setIsChatLoading(true)
-    const response = await getChat({ params: { sessionId } }).unwrap()
-    setChats(response.messages)
-    setIsChatLoading(false)
+      if (diffDays === 0) {
+        list.today.push(chat)
+      } else if (diffDays === 1) {
+        list.yesterday.push(chat)
+      } else if (diffDays <= 7) {
+        list.sevendays.push(chat)
+      } else {
+        const title = inputDate.format('MMMM D, YYYY')
+        if(!list[title]) {
+          list[title] = []
+        }
+        list[title].push(chat)
+      }
+    })
+    return list
   }
-
-  useEffect(() => {
-    if(sessionId) {
-      getChats()
-    }
-  }, [sessionId])
 
   const onKeyDown = (event: React.KeyboardEvent) => {
     if(event.key === 'Enter'){
@@ -194,6 +195,9 @@ export default function AICanvas () {
     //     }
     //   ]
     // }
+    if(sessionId && isNewChat) {
+      setIsNewChat(false)
+    }
     if(response.sessionId && !sessionId) {
       setSessionId(response.sessionId)
     }
@@ -205,31 +209,8 @@ export default function AICanvas () {
     navigate(linkToDashboard)
   }
 
-  const Message = (props:{ chat: ChatMessage }) => {
-    const { chat } = props
-    return <div className='message'>
-      <div className={`chat-container ${chat.role === 'USER' ? 'right' : ''}`}>
-        <div className='chat-bubble'>
-          {chat.text}
-        </div>
-      </div>
-      { chat.role === 'AI' && !!chat.widgets?.length && <DraggableChart data={{
-        ...chat.widgets[0],
-        sessionId,
-        id: chat.id,
-        chatId: chat.id
-      }}
-      /> }
-      {
-        chat.created && <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>
-          {moment(chat.created).format('h:m A')}
-        </div>
-      }
-
-    </div>
-  }
-
   const onClickChat = (id: string) => {
+    setIsNewChat(false)
     setSessionId(id)
     setHistoryVisible(false)
   }
@@ -260,6 +241,42 @@ export default function AICanvas () {
     })
   }
 
+  const onHistoryDrawer = () => {
+    setHistoryVisible(!historyVisible)
+  }
+
+  const onNewChat = () => {
+    if(historyData && historyData.length >= 10){
+      return
+    }
+    setSessionId('')
+    setIsNewChat(true)
+    setChats([])
+  }
+
+  const Message = (props:{ chat: ChatMessage }) => {
+    const { chat } = props
+    return <div className='message'>
+      <div className={`chat-container ${chat.role === 'USER' ? 'right' : ''}`}>
+        <div className='chat-bubble'>
+          {chat.text}
+        </div>
+      </div>
+      { chat.role === 'AI' && !!chat.widgets?.length && <DraggableChart data={{
+        ...chat.widgets[0],
+        sessionId,
+        id: chat.id,
+        chatId: chat.id
+      }}
+      /> }
+      {
+        chat.created && <div className={`timestamp ${chat.role === 'USER' ? 'right' : ''}`}>
+          {moment(chat.created).format('h:m A')}
+        </div>
+      }
+    </div>
+  }
+
   const content = <UI.History>
     {
       history.map(i => <div className='duration'>
@@ -285,18 +302,6 @@ export default function AICanvas () {
       </div>)
     }
   </UI.History>
-
-  const onHistoryDrawer = () => {
-    setHistoryVisible(!historyVisible)
-  }
-
-  const onNewChat = () => {
-    if(historyData && historyData.length >= 10){
-      return
-    }
-    setSessionId('')
-    setChats([])
-  }
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -333,18 +338,6 @@ export default function AICanvas () {
             <div className='content'>
               <Loader states={[{ isLoading: isChatLoading }]}>
                 <div className='chatroom' ref={scroll}>
-                  {/* <div className='placeholder'>
-                    <div onClick={()=> {
-                      handleSearch('Generate Top Wi-Fi Networks Pie Chart')
-                    }}>
-                    “Generate Top Wi-Fi Networks Pie Chart”
-                    </div>
-                    <div onClick={()=> {
-                      handleSearch('Generate Switch Traffic by Volume Line Chart')
-                    }}>
-                    “Generate Switch Traffic by Volume Line Chart”
-                    </div>
-                  </div> */}
                   <div className='messages-wrapper'>
                     {chats?.map((i) => (
                       <Message key={i.id} chat={i} />
