@@ -8,7 +8,6 @@ import { Provider, intentAIUrl, store, intentAIApi }                            
 import { mockGraphqlMutation, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { mockIntentContext }                                        from '../../__tests__/fixtures'
-import { Statuses }                                                 from '../../states'
 import { mockedCRRMGraphs, mockedIntentCRRM, mockedIntentCRRMKPIs } from '../__tests__/fixtures'
 import { kpis }                                                     from '../common'
 
