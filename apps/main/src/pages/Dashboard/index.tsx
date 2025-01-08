@@ -152,6 +152,7 @@ function DashboardPageHeader () {
   const { startDate , endDate, range } = dashboardFilters
   const { $t } = useIntl()
   const isEdgeEnabled = useIsEdgeReady()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
   const hasCreatePermission
     = hasPermission({ scopes: [WifiScopes.CREATE, SwitchScopes.CREATE, EdgeScopes.CREATE] })
@@ -219,6 +220,7 @@ function DashboardPageHeader () {
           showTimePicker
           selectionType={range}
           showLast8hours
+          maxMonthRange={isDateRangeLimit ? 1 : 3}
         />
       ]}
     />

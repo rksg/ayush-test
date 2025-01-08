@@ -3,14 +3,21 @@ import { message } from 'antd'
 import _           from 'lodash'
 import moment      from 'moment-timezone'
 
-import { intentAIApi, intentAIUrl, Provider, store }                              from '@acx-ui/store'
-import { mockGraphqlMutation, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { intentAIApi, intentAIUrl, Provider, store } from '@acx-ui/store'
+import {
+  mockGraphqlMutation,
+  mockGraphqlQuery,
+  render,
+  screen,
+  waitForElementToBeRemoved,
+  within
+} from '@acx-ui/test-utils'
 
 import { mockIntentContext } from '../__tests__/fixtures'
 import { Statuses }          from '../states'
 import { IntentDetail }      from '../useIntentDetailsQuery'
 
-import { mocked }                                             from './__tests__/mockedCBandbalancingProactive'
+import { mocked, mockedKPIs, mockedStatusTrail }              from './__tests__/mockedCBandbalancingProactive'
 import { configuration, kpis, IntentAIDetails, IntentAIForm } from './CBandbalancingProactive'
 
 const { click, selectOptions } = userEvent
@@ -54,6 +61,8 @@ beforeEach(() => {
   mockGraphqlMutation(intentAIUrl, 'IntentTransition', {
     data: { transition: { success: true, errorMsg: '' , errorCode: '' } }
   })
+  mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail', { data: { intent: mockedStatusTrail } })
+  mockGraphqlQuery(intentAIUrl, 'IntentKPIs', { data: { intent: mockedKPIs } })
 })
 
 afterEach((done) => {

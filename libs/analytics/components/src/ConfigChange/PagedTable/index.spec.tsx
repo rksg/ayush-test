@@ -2,6 +2,8 @@ import { useContext } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
+import { get }                                                                            from '@acx-ui/config'
+import { useIsSplitOn, useIsTreatmentsOn }                                                from '@acx-ui/feature-toggle'
 import { Provider, dataApiURL, store }                                                    from '@acx-ui/store'
 import { findTBody, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 import { DateRange }                                                                      from '@acx-ui/utils'
@@ -10,6 +12,18 @@ import { pagedConfigChanges }                         from '../__tests__/fixture
 import { ConfigChangeContext, ConfigChangeProvider }  from '../context'
 import { DEFAULT_SORTER, PagedTable, transferSorter } from '../PagedTable'
 import { SORTER_ABBR, api }                           from '../services'
+
+const mockGet = get as jest.Mock
+jest.mock('@acx-ui/config', () => ({
+  ...jest.requireActual('@acx-ui/config'),
+  get: jest.fn()
+}))
+
+const mockedUseTenantLink = jest.fn()
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useTenantLink: () => mockedUseTenantLink
+}))
 
 describe('transferSorter', () => {
   it('should return correct result', () => {
@@ -24,6 +38,9 @@ describe('Table', () => {
   const data = pagedConfigChanges.data.map((value, id)=>({ ...value, id }))
   afterAll(() => Date.now = original)
   beforeEach(() => {
+    mockGet.mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    jest.mocked(useIsTreatmentsOn).mockReturnValue(false)
     store.dispatch(api.util.resetApiState())
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
   })
@@ -68,6 +85,33 @@ describe('Table', () => {
     expect(await screen.findByText('true')).toBeVisible()
     expect(await screen.findByText('Default')).toBeVisible()
     expect(await screen.findByText('Enabled')).toBeVisible()
+  })
+  describe('should render hyperlink', () => {
+    beforeEach(() => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      jest.mocked(useIsTreatmentsOn).mockReturnValue(true)
+      mockGraphqlQuery(dataApiURL, 'PagedConfigChange', { data: { network: { hierarchyNode: {
+        pagedConfigChanges: { ...pagedConfigChanges, data } } } } })
+    })
+    it('should render correct hyperlink for intentAI', async () => {
+      render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
+        <PagedTable/>
+      </ConfigChangeProvider>, { wrapper: Provider, route: { params: { tenantId: 'test' } } })
+      await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
+      expect(await screen.findByRole('link')).toHaveAttribute(
+        // eslint-disable-next-line max-len
+        'href', '/test/t/analytics/intentAI/b4187899-38ae-4ace-8e40-0bc444455156/c-bgscan5g-enable')
+    })
+    it('should render correct hyperlink for SA', async () => {
+      mockGet.mockReturnValue(true)
+      render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
+        <PagedTable/>
+      </ConfigChangeProvider>, { wrapper: Provider, route: {} })
+      await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
+      expect(await screen.findByRole('link')).toHaveAttribute(
+        // eslint-disable-next-line max-len
+        'href', '/intentAI/30b11d8b-ce40-4344-81ef-84b47753b4a6/b4187899-38ae-4ace-8e40-0bc444455156/c-bgscan5g-enable')
+    })
   })
   it('should handle row click correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'PagedConfigChange', { data: { network: { hierarchyNode: {

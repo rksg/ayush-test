@@ -16,6 +16,7 @@ export interface ApiInfo {
   newApi?: boolean;
   oldUrl?: string;
   oldMethod?: string;
+  opsApi?: string;
   defaultHeaders?: {
     'Content-Type'?: string;
     'Accept'?: string
@@ -174,4 +175,9 @@ export const enableNewApi = function (apiInfo: ApiInfo) {
 
 export const getUrlForTest = (apiInfo: ApiInfo) => {
   return enableNewApi(apiInfo) ? apiInfo.url : (apiInfo.oldUrl || apiInfo.url)
+}
+
+
+export const getOpsApi = (apiInfo: ApiInfo) => {
+  return apiInfo.opsApi || ''
 }

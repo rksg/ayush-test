@@ -5,27 +5,29 @@ import { omit }                                from 'lodash'
 import { defineMessage, useIntl }              from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { showActionModal, StepsForm, StepsFormGotoStepFn } from '@acx-ui/components'
-import { useValidateEdgePinNetworkMutation }               from '@acx-ui/rc/services'
+import { showActionModal, StepsForm, StepsFormGotoStepFn }                                 from '@acx-ui/components'
+import { useValidateEdgePinSwitchConfigMutation, useValidateEdgePinClusterConfigMutation } from '@acx-ui/rc/services'
 import {
   CommonErrorsResult,
   CommonResult,
   getServiceListRoutePath,
   LocationExtended,
   PersonalIdentityNetworkFormData,
-  redirectPreviousPage
+  redirectPreviousPage,
+  EdgeClusterInfo
 } from '@acx-ui/rc/utils'
 import { useTenantLink }                                  from '@acx-ui/react-router-dom'
+import { RequestPayload }                                 from '@acx-ui/types'
 import { CatchErrorDetails, CatchErrorResponse, getIntl } from '@acx-ui/utils'
 
-import { AccessSwitchForm }                                  from './AccessSwitchForm'
-import { DistributionSwitchForm }                            from './DistributionSwitchForm'
-import { GeneralSettingsForm }                               from './GeneralSettingsForm'
-import { NetworkTopologyForm, ThreeTier, TwoTier, Wireless } from './NetworkTopologyForm'
-import { Prerequisite }                                      from './Prerequisite'
-import { SmartEdgeForm }                                     from './SmartEdgeForm'
-import { SummaryForm }                                       from './SummaryForm'
-import { WirelessNetworkForm }                               from './WirelessNetworkForm'
+import { AccessSwitchForm }                         from './AccessSwitchForm'
+import { DistributionSwitchForm }                   from './DistributionSwitchForm'
+import { GeneralSettingsForm }                      from './GeneralSettingsForm'
+import { NetworkTopologyForm, NetworkTopologyType } from './NetworkTopologyForm'
+import { Prerequisite }                             from './Prerequisite'
+import { SmartEdgeForm }                            from './SmartEdgeForm'
+import { SummaryForm }                              from './SummaryForm'
+import { WirelessNetworkForm }                      from './WirelessNetworkForm'
 
 interface PersonalIdentityNetworkFormProps {
   editMode?: boolean
@@ -74,8 +76,6 @@ export const SummaryStep = {
   content: <SummaryForm />
 }
 
-export { ThreeTier, TwoTier, Wireless }
-
 export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormProps) => {
   const { $t } = useIntl()
   const params = useParams()
@@ -85,40 +85,23 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
   const linkToServices = useTenantLink(getServiceListRoutePath(true))
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
 
-  const [validateEdgePinNetwork] = useValidateEdgePinNetworkMutation()
+  const [validateEdgePinSwitchConfig] = useValidateEdgePinSwitchConfigMutation()
+  const [validateEdgePinClusterConfig] = useValidateEdgePinClusterConfigMutation()
 
   // eslint-disable-next-line max-len
-  const handleFinish = async (formData: PersonalIdentityNetworkFormData, gotoStep: StepsFormGotoStepFn, skipValidation = false) => {
-    const payload = {
-      id: formData.id,
-      name: formData.name,
-      vxlanTunnelProfileId: formData.vxlanTunnelProfileId,
-      edgeClusterInfo: {
-        edgeClusterId: formData.edgeClusterId,
-        segments: formData.segments,
-        devices: formData.devices,
-        dhcpInfoId: formData.dhcpId,
-        dhcpPoolId: formData.poolId
-      },
-      networkIds: formData.networkIds,
-      distributionSwitchInfos: formData.distributionSwitchInfos?.map(ds => omit(
-        ds, ['accessSwitches', 'name'])),
-      accessSwitchInfos: formData.accessSwitchInfos?.map(as => omit(
-        as, ['name', 'familyId', 'firmwareVersion', 'model']))
-    }
-
+  const doSwitchValidation = async (formData: PersonalIdentityNetworkFormData, payload: RequestPayload, gotoStep: StepsFormGotoStepFn, skipValidation = false) => {
     if (formData.distributionSwitchInfos?.length > 0 && (
       formData.accessSwitchInfos.length === 0 || !formData.accessSwitchInfos.every(as =>
         as.vlanId && as.uplinkInfo?.uplinkId && as.webAuthPageType)
     )) {
       gotoStep(4)
-      return
+      return Promise.reject()
     }
 
     if (!skipValidation &&
       formData.distributionSwitchInfos?.length > 0 && formData.accessSwitchInfos?.length > 0) {
       try {
-        await validateEdgePinNetwork({
+        await validateEdgePinSwitchConfig({
           params,
           payload: {
             pinId: formData.id || '',
@@ -157,8 +140,69 @@ export const PersonalIdentityNetworkForm = (props: PersonalIdentityNetworkFormPr
           })
         }
 
-        return
+        return Promise.reject()
       }
+    }
+
+    return Promise.resolve()
+  }
+
+  // eslint-disable-next-line max-len
+  const doEdgeClusterValidation = async (payload: RequestPayload) => {
+    try {
+      await validateEdgePinClusterConfig({
+        payload: {
+          edgeClusterInfo: payload.edgeClusterInfo as EdgeClusterInfo
+        }
+      }).unwrap()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+      const errorRes = error as CatchErrorResponse
+
+      // expected error format
+      // eslint-disable-next-line max-len
+      if (errorRes.data.errors.length > 0 && errorRes.data.errors[0].code === 'PERSONAL-IDENTITY-NETWORK-10004') {
+        showActionModal({
+          type: 'error',
+          title: $t({ defaultMessage: 'Validation Error' }),
+          content: <>
+            {errorRes.data.errors.map((error, index) => <p key={index}>{error.message}</p>)}
+          </>
+        })
+      }
+
+      return Promise.reject()
+    }
+
+    return Promise.resolve()
+  }
+
+
+  // eslint-disable-next-line max-len
+  const handleFinish = async (formData: PersonalIdentityNetworkFormData, gotoStep: StepsFormGotoStepFn, skipValidation = false) => {
+    const payload = {
+      id: formData.id,
+      name: formData.name,
+      vxlanTunnelProfileId: formData.vxlanTunnelProfileId,
+      edgeClusterInfo: {
+        edgeClusterId: formData.edgeClusterId,
+        segments: formData.segments,
+        devices: formData.devices,
+        dhcpInfoId: formData.dhcpId,
+        dhcpPoolId: formData.poolId
+      },
+      networkIds: formData.networkIds,
+      distributionSwitchInfos: formData.distributionSwitchInfos?.map(ds => omit(
+        ds, ['accessSwitches', 'name'])),
+      accessSwitchInfos: formData.accessSwitchInfos?.map(as => omit(
+        as, ['name', 'familyId', 'firmwareVersion', 'model']))
+    }
+
+    try {
+      await doEdgeClusterValidation(payload)
+      await doSwitchValidation(formData, payload, gotoStep, skipValidation)
+    } catch (error) {
+      return
     }
 
     try {
@@ -261,13 +305,13 @@ export const afterSubmitMessage = (
 export const getStepsByTopologyType = (type: string) => {
   const steps = [PrerequisiteStep, GeneralSettingsStep, NetworkTopologyStep, SmartEdgeStep]
   switch (type) {
-    case Wireless:
+    case NetworkTopologyType.Wireless:
       steps.push(WirelessNetworkStep, SummaryStep)
       break
-    case TwoTier:
+    case NetworkTopologyType.TwoTier:
       steps.push(DistributionSwitchStep, AccessSwitchStep, SummaryStep)
       break
-    case ThreeTier:
+    case NetworkTopologyType.ThreeTier:
       steps.push(DistributionSwitchStep, AccessSwitchStep, WirelessNetworkStep, SummaryStep)
       break
   }

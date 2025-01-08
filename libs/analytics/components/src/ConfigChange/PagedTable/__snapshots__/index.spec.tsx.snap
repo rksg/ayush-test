@@ -21,12 +21,8 @@ exports[`Table should handle query args 1`] = `
               ) {
                 total
                 data {
-                  timestamp
-                  type
-                  name
-                  key
-                  oldValues
-                  newValues
+                  timestamp type name key oldValues newValues
+                  
                 }
               }
             }
@@ -82,12 +78,8 @@ exports[`Table should handle query args 3`] = `
               ) {
                 total
                 data {
-                  timestamp
-                  type
-                  name
-                  key
-                  oldValues
-                  newValues
+                  timestamp type name key oldValues newValues
+                  
                 }
               }
             }
@@ -143,12 +135,8 @@ exports[`Table should handle query args 5`] = `
               ) {
                 total
                 data {
-                  timestamp
-                  type
-                  name
-                  key
-                  oldValues
-                  newValues
+                  timestamp type name key oldValues newValues
+                  
                 }
               }
             }
@@ -201,12 +189,8 @@ exports[`Table should handle query args 7`] = `
               ) {
                 total
                 data {
-                  timestamp
-                  type
-                  name
-                  key
-                  oldValues
-                  newValues
+                  timestamp type name key oldValues newValues
+                  
                 }
               }
             }
