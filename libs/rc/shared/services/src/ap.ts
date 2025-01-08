@@ -2,9 +2,9 @@
 import { QueryReturnValue }                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { MaybePromise }                                       from '@reduxjs/toolkit/dist/query/tsHelpers'
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
-import { reduce }                                             from 'lodash'
+import { reduce, uniq }                                       from 'lodash'
 
-import { Filter }   from '@acx-ui/components'
+import { Filter }        from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -89,7 +89,12 @@ import {
   CompatibilityResponse,
   EthernetPortProfileViewData,
   SoftGreUrls,
-  SoftGreViewData
+  SoftGreViewData,
+  ClientIsolationUrls,
+  ClientIsolationViewModel,
+  LanPortsUrls,
+  APLanPortSettings,
+  mergeLanPortSettings
 } from '@acx-ui/rc/utils'
 import { baseApApi }      from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
@@ -577,20 +582,26 @@ export const apApi = baseApApi.injectEndpoints({
 
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
         const newPayload = payload as { venueId: string, serialNumber: string }[]
+        const venueIds = uniq(newPayload.map(item => item.venueId))
+
         const venueDhcpMap = await getVenueDhcpRelation(newPayload, fetchWithBQ)
         const result = [] as DhcpApInfo[]
         const cacheDhcpProfileData: { [dhcpId: string]: DHCPSaveData } = {}
+
+        const venueDhcpApsReq = createHttpRequest(WifiRbacUrlsInfo.getDhcpAps, undefined, customHeaders)
+        const venueDhcpApsRes = await fetchWithBQ({
+          ...venueDhcpApsReq,
+          body: JSON.stringify({ venueIds })
+        })
+        const venueDhcpApsData = ((venueDhcpApsRes?.data) ?? { data: [] }) as { data: NewDhcpAp[] }
+        const venueDhcpAps = (venueDhcpApsData.data ?? []) as NewDhcpAp[]
+
         for (let item of newPayload) {
-          const dhcpApReq = createHttpRequest(
-            WifiRbacUrlsInfo.getDhcpAp,
-            { venueId: item.venueId, serialNumber: item.serialNumber },
-            customHeaders
-          )
-          const dhcpApRes = await fetchWithBQ(dhcpApReq)
-          const dhcpAp = dhcpApRes.data as NewDhcpAp
+          const { venueId, serialNumber } = item
+          const dhcpAp = venueDhcpAps.find( ap => ap.serialNumber === serialNumber)
           if (!dhcpAp) continue
 
-          const dhcpId = venueDhcpMap[item.venueId]
+          const dhcpId = venueDhcpMap[venueId]
           await setDhcpProfileToCache(cacheDhcpProfileData, fetchWithBQ, dhcpId)
           result.push({
             ...dhcpAp,
@@ -915,7 +926,8 @@ export const apApi = baseApApi.injectEndpoints({
       async queryFn ({
         params, enableRbac,
         enableEthernetProfile,
-        enableSoftGreOnEthernet
+        enableSoftGreOnEthernet,
+        enableClientIsolationOnEthernet
       },
       _queryApi, _extraOptions, fetchWithBQ) {
         if (!params?.serialNumber) {
@@ -931,6 +943,25 @@ export const apApi = baseApApi.injectEndpoints({
           createHttpRequest(urlsInfo.getApLanPorts, params, apiCustomHeader)
         )
         let apLanPorts = apLanPortSettings.data as WifiApSetting
+
+        if (params?.serialNumber && !!apLanPorts?.lanPorts?.length) {
+          const apLanPortSettingsQuery = apLanPorts?.lanPorts?.map((lanPort) => {
+            return fetchWithBQ(createHttpRequest(LanPortsUrls.getApLanPortSettings,
+              {
+                venueId: params?.venueId,
+                serialNumber: params.serialNumber,
+                portId: lanPort.portId
+              },
+              apiCustomHeader
+            ))
+          })
+          const reqs = await Promise.allSettled(apLanPortSettingsQuery!)
+          const results: APLanPortSettings[] = reqs.map((result) => {
+            return result.status === 'fulfilled' ? result.value.data as APLanPortSettings : {}
+          })
+
+          apLanPorts.lanPorts = mergeLanPortSettings(apLanPorts.lanPorts, results)
+        }
 
         if (enableEthernetProfile) {
           const ethReq = {
@@ -998,6 +1029,32 @@ export const apApi = baseApApi.injectEndpoints({
           }
         }
 
+        if (enableClientIsolationOnEthernet) {
+          const clientIsolationReq = {
+            ...createHttpRequest(ClientIsolationUrls.queryClientIsolation),
+            body: JSON.stringify({
+              filters: {
+                'apActivations.apSerialNumber': [params.serialNumber]
+              },
+              pageSize: 1000
+            })
+          }
+
+          const clientIsolationListQuery = await fetchWithBQ(clientIsolationReq)
+          const clientIsolationList = clientIsolationListQuery.data as TableResult<ClientIsolationViewModel>
+          if (clientIsolationList.data && apLanPorts.lanPorts) {
+            for (let clientIsolation of clientIsolationList.data) {
+              const port = clientIsolation.apActivations?.find(ap => ap.apSerialNumber === params.serialNumber)
+              let targetPort = port && apLanPorts.lanPorts
+                ?.find(l => l.portId?.toString() === port.portId?.toString())
+              if (targetPort) {
+                targetPort.clientIsolationProfileId = clientIsolation.id
+              }
+            }
+          }
+
+        }
+
         return apLanPortSettings.data
           ? { data: apLanPorts }
           : { error: apLanPortSettings.error } as QueryReturnValue<WifiApSetting,
@@ -1020,7 +1077,7 @@ export const apApi = baseApApi.injectEndpoints({
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
     }),
     updateApEthernetPorts: build.mutation<CommonResult, RequestPayload>({
-      queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+      queryFn: async ({ params, payload, useVenueSettings }, _queryApi, _extraOptions, fetchWithBQ) => {
         try {
           const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
           const apSettings = payload as WifiApSetting
@@ -1043,7 +1100,9 @@ export const apApi = baseApApi.injectEndpoints({
               payload: {
                 enabled: l.enabled,
                 overwriteUntagId: l.untagId,
-                overwriteVlanMembers: l.vlanMembers
+                overwriteVlanMembers: l.vlanMembers,
+                clientIsolationEnabled: l.clientIsolationEnabled,
+                clientIsolationSettings: l.clientIsolationSettings
               }
             }))
           const softGreActivateRequests = apSettings?.lanPorts
@@ -1058,6 +1117,21 @@ export const apApi = baseApApi.injectEndpoints({
               payload: {
                 dhcpOption82Enabled: l.dhcpOption82?.dhcpOption82Enabled,
                 dhcpOption82Settings: (l.dhcpOption82?.dhcpOption82Enabled)? l.dhcpOption82?.dhcpOption82Settings : undefined
+              }
+            }))
+          const clientIsolationActivateRequests = apSettings?.lanPorts
+            ?.filter(l => {
+              return l.clientIsolationEnabled
+                  && l.clientIsolationProfileId
+                  && (l.clientIsolationEnabled === true)
+                  && (l.enabled === true)
+            })
+            .map(l => ({
+              params: {
+                venueId: params!.venueId,
+                serialNumber: params!.serialNumber,
+                portId: l.portId,
+                policyId: l.clientIsolationProfileId
               }
             }))
 
@@ -1079,8 +1153,14 @@ export const apApi = baseApApi.injectEndpoints({
           await batchApi(EthernetPortProfileUrls.updateEthernetPortOverwritesByApPortId,
             overwriteRequests!, fetchWithBQ, customHeaders)
 
-          await batchApi(SoftGreUrls.activateSoftGreProfileOnAP,
-            softGreActivateRequests!, fetchWithBQ, customHeaders)
+          if(!useVenueSettings) {
+            await batchApi(SoftGreUrls.activateSoftGreProfileOnAP,
+              softGreActivateRequests!, fetchWithBQ, customHeaders)
+
+            await batchApi(ClientIsolationUrls.activateClientIsolationOnAp,
+              clientIsolationActivateRequests!, fetchWithBQ, customHeaders)
+          }
+
 
           const res = await fetchWithBQ({
             ...(createHttpRequest(WifiRbacUrlsInfo.updateApLanPortSpecificSettings,
@@ -1794,12 +1874,12 @@ const getVenueDhcpRelation = async (
 ) => {
   const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
   const newPayload = payload as { venueId: string, serialNumber: string }[]
+  const venueIds = uniq(newPayload.map(item => item.venueId))
   const dhcpListPayload = {
     fields: ['id', 'venueIds'],
-    filters: {
-      venueIds: newPayload.map(item => item.venueId)
-    }
+    filters: { venueIds }
   }
+
   const dhcpListReq = createHttpRequest(DHCPUrls.queryDhcpProfiles, undefined, customHeaders)
   const dhcpListRes = await fetchWithBQ({ ...dhcpListReq, body: JSON.stringify(dhcpListPayload) })
   const dhcpList = (dhcpListRes.data as TableResult<DHCPSaveData>).data

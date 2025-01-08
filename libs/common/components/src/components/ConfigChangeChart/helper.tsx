@@ -39,6 +39,8 @@ export type ConfigChange = {
   key: string
   oldValues: string[]
   newValues: string[]
+  root?: string
+  sliceId?: string
 }
 
 type OnDatazoomEvent = { batch: { startValue: number, endValue: number }[] }

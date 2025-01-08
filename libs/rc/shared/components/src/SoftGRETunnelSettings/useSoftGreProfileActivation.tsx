@@ -8,7 +8,8 @@ import {
   useDeactivateSoftGreProfileOnVenueMutation
 } from '@acx-ui/rc/services'
 import {
-  LanPort, LanPortSoftGreProfileSettings,
+  LanPort,
+  LanPortSoftGreProfileSettings,
   SoftGreChanges,
   SoftGreLanPortChange,
   SoftGreProfileDispatcher,
@@ -66,8 +67,8 @@ export const useSoftGreProfileActivation = (
     }
 
     if(existedLanPortChanges.venueLanPortSettings.softGreEnabled) {
-      let payload = { dhcpOption82Enabled: false } as LanPortSoftGreProfileSettings
-      if (existedLanPortChanges.venueLanPortSettings.softGreSettings?.dhcpOption82Enabled){
+      let payload = {} as LanPortSoftGreProfileSettings
+      if (existedLanPortChanges.venueLanPortSettings.softGreSettings?.dhcpOption82Enabled) {
         payload = {
           dhcpOption82Enabled: true,
           dhcpOption82Settings:
@@ -142,6 +143,7 @@ export const useSoftGreProfileActivation = (
         updatePendingLanPortChange(turnOnChange, next, turnOnSoftGreCallback)
         break
       case SoftGreState.TurnOffSoftGre:
+      case SoftGreState.ResetToDefault:
         const turnOffChange: SoftGreLanPortChange = {
           lanPortId: next.portId!,
           venueLanPortSettings: {

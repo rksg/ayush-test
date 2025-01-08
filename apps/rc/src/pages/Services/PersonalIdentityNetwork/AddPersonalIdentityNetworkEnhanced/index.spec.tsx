@@ -2,14 +2,19 @@
 import { ReactNode } from 'react'
 
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { Provider } from '@acx-ui/store'
+import { EdgePinUrls } from '@acx-ui/rc/utils'
+import { Provider }    from '@acx-ui/store'
 import {
+  mockServer,
   render,
   screen,
   waitFor
 } from '@acx-ui/test-utils'
 import { RequestPayload } from '@acx-ui/types'
+
+import { edgeClusterConfigValidationFailed } from '../__tests__/fixtures'
 
 import AddPersonalIdentityNetworkEnhanced from '.'
 
@@ -26,7 +31,7 @@ jest.mock('../PersonalIdentityNetworkForm/GeneralSettingsForm', () => ({
   GeneralSettingsForm: () => <div data-testid='GeneralSettingsForm' />
 }))
 jest.mock('../PersonalIdentityNetworkForm/NetworkTopologyForm', () => ({
-  Wireless: 'Wireless',
+  ...jest.requireActual('../PersonalIdentityNetworkForm/NetworkTopologyForm'),
   NetworkTopologyForm: () => <div data-testid='NetworkTopologyForm' />
 }))
 jest.mock('../PersonalIdentityNetworkForm/SmartEdgeForm', () => ({
@@ -65,12 +70,16 @@ jest.mock('@acx-ui/rc/components', () => ({
 const createPinPath = '/:tenantId/services/personalIdentityNetwork/create'
 
 describe('Add Enhanced PersonalIdentityNetwork', () => {
-  let params: { tenantId: string, serviceId: string }
+  const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
+
   beforeEach(() => {
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      serviceId: 'testServiceId'
-    }
+    mockedUsedNavigate.mockClear()
+
+    mockServer.use(
+      rest.post(
+        EdgePinUrls.validateEdgeClusterConfig.url,
+        (_req, res, ctx) => res(ctx.status(202)))
+    )
   })
 
   it('should create PersonalIdentityNetwork with default steps', async () => {
@@ -118,5 +127,40 @@ describe('Add Enhanced PersonalIdentityNetwork', () => {
 
     await screen.findByTestId('Prerequisite')
     expect(screen.queryByTestId('GeneralSettingsForm')).toBeNull()
+  })
+
+  it('should popup edge cluster config validation failed message', async () => {
+    mockServer.use(
+      rest.post(
+        EdgePinUrls.validateEdgeClusterConfig.url,
+        (_req, res, ctx) => res(ctx.status(422), ctx.json(edgeClusterConfigValidationFailed)))
+    )
+
+    render(<AddPersonalIdentityNetworkEnhanced />, {
+      wrapper: Provider,
+      route: { params, path: createPinPath }
+    })
+    // Prerequisite step
+    await screen.findByTestId('Prerequisite')
+    await userEvent.click(await screen.findByRole('button', { name: 'Start' }))
+    // step 1
+    await screen.findByTestId('GeneralSettingsForm')
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    // step 2
+    await screen.findByTestId('NetworkTopologyForm')
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    // step 3
+    await screen.findByTestId('SmartEdgeForm')
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    // step 4
+    await screen.findByTestId('WirelessNetworkForm')
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+    // step 5
+    await screen.findByTestId('SummaryForm')
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    await screen.findByRole('dialog')
+    expect(await screen.findByText('Validation Error')).toBeVisible()
+    expect(mockedUsedNavigate).toBeCalledTimes(0)
   })
 })

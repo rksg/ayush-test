@@ -24,7 +24,8 @@ describe('useConfigChangeQuery', () => {
   it('should return correct data', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges } } } })
-    const { result } = renderHook(() => useConfigChangeQuery(param), { wrapper: Provider })
+    const { result } = renderHook(() =>
+      useConfigChangeQuery({ ...param, showIntentAI: true }), { wrapper: Provider })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(result.current.data).toEqual(configChanges
       .sort((a, b) => Number(b.timestamp) - Number(a.timestamp))
@@ -38,7 +39,8 @@ describe('useConfigChangeQuery', () => {
     }
     mockGraphqlQuery(dataApiURL, 'ConfigChange',
       { data: { network: { hierarchyNode: { configChanges: [] } } } })
-    const { result } = renderHook(() => useConfigChangeQuery(noDataParam), { wrapper: Provider })
+    const { result } = renderHook(() =>
+      useConfigChangeQuery({ ...noDataParam, showIntentAI: true }), { wrapper: Provider })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(result.current.data).toEqual([])
   })

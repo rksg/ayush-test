@@ -17,7 +17,8 @@ import {
   useGetDhcpStatsQuery,
   useGetEdgeMvSdLanViewDataListQuery,
   useLazyGetDpskQuery,
-  useGetEdgeFeatureSetsQuery
+  useGetEdgeFeatureSetsQuery,
+  useGetSwitchFeatureSetsQuery
 } from '@acx-ui/rc/services'
 import {
   DhcpStats,
@@ -61,8 +62,11 @@ export interface PersonalIdentityNetworkFormContextType {
   getClusterName: (edgeClusterId: string) => string
   getDhcpName: (dhcpId: string) => string
   getTunnelProfileName: (tunnelId: string) => string
-  getNetworksName: (networkIds: string[]) => (string | undefined)[],
+  getNetworksName: (networkIds: string[]) => (string | undefined)[]
   addNetworkCallback: (dpskPoolId: string) => void
+  requiredFw_DS?: string
+  requiredFw_AS?: string
+  requiredSwitchModels?: string[]
 }
 
 // eslint-disable-next-line max-len
@@ -104,7 +108,7 @@ const activtatedVenueNetworksPayload = {
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC',
-  fields: [ 'id', 'name', 'type' ]
+  fields: [ 'id', 'name', 'nwSubType', 'dsaeOnboardNetwork' ]
 }
 
 export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) => {
@@ -215,13 +219,17 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
 
   const { dpskNetworkList, isNetworkLoading } = useVenueNetworkActivationsViewModelListQuery({
     params: { ...params },
-    payload: { ...activtatedVenueNetworksPayload, venueId: venueId }
+    payload: {
+      ...activtatedVenueNetworksPayload,
+      filters: {
+        'venueApGroups.venueId': [venueId],
+        'nwSubType': [ NetworkTypeEnum.DPSK ]
+      } }
   }, {
     skip: !Boolean(venueId),
     selectFromResult: ({ data, isLoading }) => {
       return {
-        dpskNetworkList: data?.data?.filter(item =>
-          item.nwSubType === NetworkTypeEnum.DPSK && !isDsaeOnboardingNetwork(item)),
+        dpskNetworkList: data?.data?.filter(item => !isDsaeOnboardingNetwork(item)),
         isNetworkLoading: isLoading
       }
     }
@@ -323,6 +331,20 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
 
   const isDpskLoading = !!personaGroupData?.dpskPoolId && isNil(dpskData)
 
+  const { requiredFw_DS, requiredFw_AS, requiredSwitchModels } = useGetSwitchFeatureSetsQuery({
+    payload: { filter: { featureNames: { field: 'GROUP', values: ['PIN'] } } }
+  }, {
+    selectFromResult: ({ data }) => {
+      const reqs = data?.featureSets?.find(item => item.featureName === 'PIN_DS')?.requirements
+      const reqs_as = data?.featureSets?.find(item => item.featureName === 'PIN_AS')?.requirements
+      return {
+        requiredFw_DS: reqs?.find(item => item.firmware)?.firmware,
+        requiredFw_AS: reqs_as?.find(item => item.firmware)?.firmware,
+        requiredSwitchModels: reqs?.find(item => item.models)?.models
+      }
+    }
+  })
+
   const getVenueName = (value: string) => {
     return venueOptions?.find(item => item.value === value)?.label ?? ''
   }
@@ -381,7 +403,10 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         getDhcpName,
         getTunnelProfileName,
         getNetworksName,
-        addNetworkCallback
+        addNetworkCallback,
+        requiredFw_DS,
+        requiredFw_AS,
+        requiredSwitchModels
       }}
     >
       {props.children}

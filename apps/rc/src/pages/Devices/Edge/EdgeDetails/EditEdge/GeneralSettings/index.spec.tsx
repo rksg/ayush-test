@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 import { edgeApi }                 from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
-  EdgeCompatibilityFixtures, EdgeGeneralFixtures, EdgeFirmwareFixtures,
+  EdgeCompatibilityFixtures, EdgeGeneralFixtures, EdgeFirmwareFixtures, VenueFixtures,
   EdgeUrlsInfo, FirmwareUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -14,11 +14,11 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import { mockVenueData }                                from '../../../__tests__/fixtures'
 import { EditEdgeDataContext, EditEdgeDataContextType } from '../EditEdgeDataProvider'
 
 import GeneralSettings from './index'
 
+const { mockVenueOptions } = VenueFixtures
 const { mockEdgeData } = EdgeGeneralFixtures
 const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
 const { mockedVenueFirmwareList } = EdgeFirmwareFixtures
@@ -49,7 +49,7 @@ describe('EditEdge - GeneralSettings', () => {
         }),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json(mockVenueData))),
+        (_, res, ctx) => res(ctx.json(mockVenueOptions))),
       rest.post(
         EdgeUrlsInfo.getEdgeFeatureSets.url,
         (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))),
@@ -158,7 +158,7 @@ describe('EditEdge general settings api fail', () => {
         (_, res, ctx) => res(ctx.status(500), ctx.json(null))),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json(mockVenueData))),
+        (_, res, ctx) => res(ctx.json(mockVenueOptions))),
       rest.post(
         EdgeUrlsInfo.getEdgeFeatureSets.url,
         (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))),

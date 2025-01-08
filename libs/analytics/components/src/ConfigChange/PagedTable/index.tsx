@@ -14,8 +14,10 @@ import {
   Filter
 }                                    from '@acx-ui/components'
 import { ConfigChangePaginationParams }              from '@acx-ui/components'
+import { get }                                       from '@acx-ui/config'
 import { Features, useIsSplitOn, useIsTreatmentsOn } from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                 from '@acx-ui/formatter'
+import { TenantLink }                                from '@acx-ui/react-router-dom'
 import { noDataDisplay }                             from '@acx-ui/utils'
 
 import { ConfigChangeContext }                                       from '../context'
@@ -53,8 +55,21 @@ export const useColumns = () => {
       key: 'timestamp',
       title: $t({ defaultMessage: 'Timestamp' }),
       dataIndex: 'timestamp',
-      render: (_, { timestamp }) =>
-        formatter(DateFormatEnum.DateTimeFormat)(moment(Number(timestamp))),
+      render: (_, row) => {
+        const timestamp = formatter(DateFormatEnum.DateTimeFormat)(moment(Number(row.timestamp)))
+        if (showIntentAI && row.type === 'intentAI') {
+          const code = row.key.substring(row.key.lastIndexOf('.') + 1)
+          const linkPath = get('IS_MLISA_SA')
+            ? `/intentAI/${row.root}/${row.sliceId}/${code}`
+            : `/analytics/intentAI/${row.sliceId}/${code}`
+          return (
+            <TenantLink to={linkPath}>
+              {timestamp}
+            </TenantLink>
+          )
+        }
+        return timestamp
+      },
       defaultSortOrder: 'descend',
       sorter: true,
       width: 130

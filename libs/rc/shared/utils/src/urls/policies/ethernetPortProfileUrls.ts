@@ -86,14 +86,6 @@ export const EthernetPortProfileUrls: { [key: string]: ApiInfo } = {
       Accept: 'application/vnd.ruckus.v1+json'
     }
   },
-  getEthernetPortOverwritesByApPortId: {
-    method: 'get',
-    url: '/venues/:venueId/aps/:serialNumber/lanPorts/:portId/settings',
-    newApi: true,
-    defaultHeaders: {
-      Accept: 'application/vnd.ruckus.v1+json'
-    }
-  },
   updateEthernetPortOverwritesByApPortId: {
     method: 'put',
     url: '/venues/:venueId/aps/:serialNumber/lanPorts/:portId/settings',
