@@ -517,7 +517,7 @@ export function LanPorts () {
   }
 
   const processUpdateVenueLanPorts = async (payload: VenueLanPorts[]) => {
-    if (isEthernetPortProfileEnabled) {
+    if (isEthernetPortProfileEnabled && !isTemplate) {
       payload.forEach((venueLanPort) => {
         if(venueLanPort.isSettingsLoaded) {
           const originVenueLanPort = lanPortOrinData?.find((oldVenueLanPort) => {
@@ -562,7 +562,7 @@ export function LanPorts () {
     setLanPortData(payload)
     setLanPortOrinData(payload)
 
-    if (!isEthernetPortProfileEnabled) {
+    if (!isEthernetPortProfileEnabled || isTemplate) {
       await updateVenueLanPorts({
         params: { tenantId, venueId },
         payload,
