@@ -55,7 +55,6 @@ describe('PortProfileModal', () => {
         <Provider>
           <PortProfileModal
             visible={true}
-            editMode={false}
             onSave={onSave}
             onCancel={onCancel}
           />
@@ -79,7 +78,6 @@ describe('PortProfileModal', () => {
         <Provider>
           <PortProfileModal
             visible={true}
-            editMode={false}
             onSave={onSave}
           />
         </Provider>
@@ -87,8 +85,8 @@ describe('PortProfileModal', () => {
     )
 
     // Simulate selecting a model and ports
-    await userEvent.click(await screen.findByText('ICX-7150'))
-    await userEvent.click(await screen.findByTestId('ICX7150-24'))
+    await userEvent.click(await screen.findByText('ICX-7550'))
+    await userEvent.click(await screen.findByTestId('ICX7550-24'))
     await userEvent.click(await screen.findByRole('button', { name: /Next/i }))
 
     // Simulate selecting ports
@@ -108,7 +106,6 @@ describe('PortProfileModal', () => {
         <Provider>
           <PortProfileModal
             visible={true}
-            editMode={false}
             onSave={onSave}
           />
         </Provider>
@@ -129,7 +126,6 @@ describe('PortProfileModal', () => {
         <Provider>
           <PortProfileModal
             visible={true}
-            editMode={false}
             onSave={jest.fn()}
           />
         </Provider>
@@ -142,22 +138,6 @@ describe('PortProfileModal', () => {
   })
 
   it('should render in edit mode', async () => {
-    render(
-      <IntlProvider locale='en'>
-        <Provider>
-          <PortProfileModal
-            visible={true}
-            editMode={true}
-            onSave={jest.fn()}
-          />
-        </Provider>
-      </IntlProvider>
-    )
-
-    expect(await screen.findByRole('dialog')).toBeInTheDocument()
-  })
-
-  it('should handle form submission in edit mode', async () => {
     const onSave = jest.fn()
     const portProfileSettingValues = {
       id: '15a5c0b224434a66872bf5c96ca0fa80',
@@ -174,7 +154,6 @@ describe('PortProfileModal', () => {
           }}>
             <PortProfileModal
               visible={true}
-              editMode={true}
               onSave={jest.fn()}
             />
           </PortProfileContext.Provider>
@@ -182,7 +161,34 @@ describe('PortProfileModal', () => {
       </IntlProvider>
     )
 
-    expect(await screen.findByTestId('ICX7150-24')).toBeChecked()
+    expect(await screen.findByRole('dialog')).toBeInTheDocument()
+  })
+
+  it('should handle form submission in edit mode', async () => {
+    const onSave = jest.fn()
+    const portProfileSettingValues = {
+      id: '15a5c0b224434a66872bf5c96ca0fa80',
+      models: ['ICX7550-24'],
+      portProfileId: ['port1']
+    }
+    render(
+      <IntlProvider locale='en'>
+        <Provider>
+          <PortProfileContext.Provider value={{
+            portProfileSettingValues: portProfileSettingValues ?? {} as PortProfileUI,
+            setPortProfileSettingValues: onSave,
+            editMode: true
+          }}>
+            <PortProfileModal
+              visible={true}
+              onSave={jest.fn()}
+            />
+          </PortProfileContext.Provider>
+        </Provider>
+      </IntlProvider>
+    )
+
+    expect(await screen.findByTestId('ICX7550-24')).toBeChecked()
     await userEvent.click(await screen.findByText('Port Profile'))
     await waitFor(async () => {
       expect(await screen.findByText('Port Profile 1')).toBeInTheDocument()

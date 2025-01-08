@@ -9,7 +9,7 @@ import { Provider }                                               from '@acx-ui/
 import { fireEvent, render, screen, mockServer, waitFor, within } from '@acx-ui/test-utils'
 
 
-import { SwitchPortProfileForm } from './SwitchPortProfileForm'
+import SwitchPortProfileForm from './SwitchPortProfileForm'
 
 const macOui = {
   id: '7d3a416c-6e73-4dde-8242-299649a16a9c',
