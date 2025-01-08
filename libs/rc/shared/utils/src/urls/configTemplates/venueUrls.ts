@@ -11,13 +11,13 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/templates/venues/:templateId',
     newApi: true,
-    opsApi: 'DELETE:/templates/venues/{venueId}'
+    opsApi: 'DELETE:/templates/venues/{id}'
   },
   updateVenueTemplate: {
     method: 'put',
     url: '/templates/venues/:venueId',
     newApi: true,
-    opsApi: 'PUT:/templates/venues/{venueId}'
+    opsApi: 'PUT:/templates/venues/{id}'
   },
   getVenueTemplate: {
     method: 'get',

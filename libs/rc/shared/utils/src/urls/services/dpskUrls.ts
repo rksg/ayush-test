@@ -86,28 +86,28 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     url: NewDpskPassphraseBaseUrl,
     oldUrl: DpskPassphraseBaseUrl,
     newApi: true,
-    opsApi: 'POST:/dpskServices/{serviceId}/passphrases'
+    opsApi: 'POST:/dpskServices/{id}/passphrases'
   },
   updatePassphrase: {
     method: 'put',
     url: NewDpskPassphraseBaseUrlWithId,
     oldUrl: DpskPassphraseBaseUrlWithId,
     newApi: true,
-    opsApi: 'PUT:/dpskServices/{serviceId}/passphrases/{passphraseId}'
+    opsApi: 'PUT:/dpskServices/{id}/passphrases/{id}'
   },
   uploadPassphrases: {
     method: 'post',
     url: NewDpskPassphraseBaseUrl + '/csvFiles',
     oldUrl: DpskPassphraseBaseUrl + '/csvFiles',
     newApi: true,
-    opsApi: 'POST:/dpskServices/{serviceId}/passphrases/csvFiles'
+    opsApi: 'POST:/dpskServices/{id}/passphrases/csvFiles'
   },
   deletePassphrase: {
     method: 'delete',
     url: NewDpskPassphraseBaseUrl,
     oldUrl: DpskPassphraseBaseUrl,
     newApi: true,
-    opsApi: 'DELETE:/dpskServices/{serviceId}/passphrases'
+    opsApi: 'DELETE:/dpskServices/{id}/passphrases'
   },
   exportPassphrases: {
     method: 'get',
@@ -125,7 +125,7 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     url: NewDpskPassphraseBaseUrl,
     oldUrl: DpskPassphraseBaseUrl,
     newApi: true,
-    opsApi: 'PATCH:/dpskServices/{serviceId}/passphrases'
+    opsApi: 'PATCH:/dpskServices/{id}/passphrases'
   },
   getPassphraseClient: {
     method: 'get',
@@ -143,14 +143,14 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     url: NewDpskPassphraseDevices,
     oldUrl: DpskPassphraseDevices,
     newApi: true,
-    opsApi: 'POST:/dpskServices/{serviceId}/passphrases/{passphraseId}/devices'
+    opsApi: 'POST:/dpskServices/{id}/passphrases/{id}/devices'
   },
   deletePassphraseDevices: {
     method: 'delete',
     url: NewDpskPassphraseDevices,
     oldUrl: DpskPassphraseDevices,
     newApi: true,
-    opsApi: 'DELETE:/dpskServices/{serviceId}/passphrases/{passphraseId}/devices'
+    opsApi: 'DELETE:/dpskServices/{id}/passphrases/{id}/devices'
   },
   deleteDpskPolicySet: {
     method: 'delete',

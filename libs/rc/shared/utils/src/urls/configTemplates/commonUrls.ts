@@ -28,7 +28,7 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: 'POST:/templates/{templateId}/tenants/{tenantId}'
+    opsApi: 'POST:/templates/{id}/tenants/{id}'
   },
   addNetworkTemplate: {
     method: 'post',
@@ -58,7 +58,7 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: 'PUT:/templates/wifiNetworks/{wifiNetworkTemplateId}'
+    opsApi: 'PUT:/templates/wifiNetworks/{id}'
   },
   getNetworkTemplate: {
     method: 'get',
@@ -86,7 +86,7 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: 'DELETE:/templates/wifiNetworks/{wifiNetworkTemplateId}'
+    opsApi: 'DELETE:/templates/wifiNetworks/{id}'
   },
   getNetworkTemplateList: {
     method: 'post',
@@ -359,7 +359,7 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       Accept: 'application/vnd.ruckus.v1+json'
     },
-    opsApi: 'GET:/templates/{templateId}/tenants/{tenantId}/diffReport'
+    opsApi: 'GET:/templates/{id}/tenants/{id}/diffReport'
   },
   patchDriftReport: {
     method: 'PATCH',
@@ -369,6 +369,6 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: 'PATCH:/templates/{templateId}/tenants/{tenantId}/diffReport'
+    opsApi: 'PATCH:/templates/{id}/tenants/{id}/diffReport'
   }
 }

@@ -14,13 +14,13 @@ export const ApGroupConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1.1+json',
       'Content-Type': 'application/vnd.ruckus.v1.1+json'
     },
-    opsApi: 'POST:/templates/venues/{venueId}/apGroups'
+    opsApi: 'POST:/templates/venues/{id}/apGroups'
   },
   updateApGroup: {
     method: 'put',
     url: '/templates/venues/apGroups/:apGroupId',
     newApi: true,
-    opsApi: 'PUT:/templates/venues/{venueId}/apGroups/{apGroupId}'
+    opsApi: 'PUT:/templates/venues/{id}/apGroups/{id}'
   },
   updateApGroupRbac: {
     method: 'put',
@@ -35,7 +35,7 @@ export const ApGroupConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/templates/venues/apGroups/:templateId',
     newApi: true,
-    opsApi: 'DELETE:/templates/venues/{venueId}/apGroups/{apGroupId}'
+    opsApi: 'DELETE:/templates/venues/{id}/apGroups/{id}'
   },
   deleteApGroupRbac: {
     method: 'delete',
