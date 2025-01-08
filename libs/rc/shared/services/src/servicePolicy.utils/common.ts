@@ -20,10 +20,11 @@ export function commonQueryFn (apiInfo: ApiInfo, rbacApiInfo: ApiInfo = apiInfo)
     const resolvedApiInfo = (enableRbac && rbacApiInfo) ? rbacApiInfo : apiInfo
     // eslint-disable-next-line max-len
     const resolvedPayload = resolvedApiInfo?.defaultHeaders?.['Content-Type'] ? JSON.stringify(payload) : payload
+    const allowedReqBody = resolvedPayload && (resolvedApiInfo.method !== 'get')
 
     return {
       ...createHttpRequest(resolvedApiInfo, params),
-      ...(resolvedPayload ? { body: resolvedPayload } : {})
+      ...(allowedReqBody ? { body: resolvedPayload } : {})
     }
   }
 }
