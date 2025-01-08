@@ -1,5 +1,3 @@
-import { EthernetPortType } from "@acx-ui/rc/utils"
-
 /* eslint-disable max-len */
 export const mockAPList = {
   fields: [
