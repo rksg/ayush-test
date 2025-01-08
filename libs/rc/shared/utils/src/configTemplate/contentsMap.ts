@@ -61,6 +61,6 @@ export const configTemplateSwitchProfileOperationMap: Record<ConfigTemplateOpera
 
 export const configTemplateApGroupOperationMap: Record<ConfigTemplateOperation, ApiInfo> = {
   Create: ApGroupConfigTemplateUrlsInfo.addApGroup,
-  Edit: ApGroupConfigTemplateUrlsInfo.updateApGroup,
-  Delete: ApGroupConfigTemplateUrlsInfo.deleteApGroup
+  Edit: ApGroupConfigTemplateUrlsInfo.updateApGroupRbac,
+  Delete: ApGroupConfigTemplateUrlsInfo.deleteApGroupRbac
 }
