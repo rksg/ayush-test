@@ -1,8 +1,15 @@
-import { PageNotFound }                               from '@acx-ui/components'
-import { get }                                        from '@acx-ui/config'
-import { rootRoutes, Route, MLISA_BASE_PATH }         from '@acx-ui/react-router-dom'
-import { ReportType, Report, ReportList, DataStudio } from '@acx-ui/reports/components'
-import { Provider }                                   from '@acx-ui/store'
+import { PageNotFound }                       from '@acx-ui/components'
+import { get }                                from '@acx-ui/config'
+import { rootRoutes, Route, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
+import {
+  ReportType,
+  Report,
+  ReportList,
+  DataStudio,
+  DataSubscriptionsContent,
+  DataSubscriptionsForm
+} from '@acx-ui/reports/components'
+import { Provider } from '@acx-ui/store'
 
 export default function ReportsRoutes () {
   const isRa = get('IS_MLISA_SA')
@@ -35,6 +42,9 @@ export default function ReportsRoutes () {
       <Route path='reports/wlans' element={reports.wlans} />
       <Route path='reports/airtime' element={reports.airtime} />
       <Route path='dataStudio' element={<DataStudio />} />
+      <Route path='dataSubscriptions' element={<DataSubscriptionsContent />} />
+      <Route path='dataSubscriptions/create' element={<DataSubscriptionsForm />} />
+      <Route path='dataSubscriptions/edit' element={<DataSubscriptionsForm editMode />} />
     </Route>
   )
   return (

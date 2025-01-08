@@ -200,6 +200,11 @@ describe('AllRoutes', () => {
       , wrapper: Provider })
     await screen.findByTestId('reports')
   })
+  it('should render Data Subscriptions correctly', async () => {
+    render(<AllRoutes />, { route: { path: '/ai/dataSubscriptions' }
+      , wrapper: Provider })
+    await screen.findByTestId('reports')
+  })
   it('should render zone list correctly', async () => {
     render(<AllRoutes />, { route: { path: '/ai/zones' }
       , wrapper: Provider })
