@@ -51,8 +51,3 @@ export const LabelStyleAfter = styled.div`
     font-weight: var(--acx-subtitle-6-font-weight);
   }
 `
-
-export const InfoIcon = styled(InformationOutlined)`
-  margin-bottom: -3px;
-  margin-right: 3px;
-`

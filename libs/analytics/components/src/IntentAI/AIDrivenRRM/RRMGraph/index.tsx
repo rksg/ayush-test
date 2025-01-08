@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 
-import { ScalePower }  from 'd3'
-import { scalePow }    from 'd3-scale'
-import { EChartsType } from 'echarts'
-import ReactECharts    from 'echarts-for-react'
-import { useIntl }     from 'react-intl'
-import AutoSizer       from 'react-virtualized-auto-sizer'
+import { Form, Space }                              from 'antd'
+import { ScalePower }                               from 'd3'
+import { scalePow }                                 from 'd3-scale'
+import { EChartsType }                              from 'echarts'
+import ReactECharts                                 from 'echarts-for-react'
+import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
+import AutoSizer                                    from 'react-virtualized-auto-sizer'
 
 import {
   Card,
@@ -13,11 +14,15 @@ import {
   DrawerTypes,
   Graph as BasicGraph,
   ProcessedCloudRRMGraph,
-  Loader
+  Loader,
+  Tooltip
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { InformationSolid }          from '@acx-ui/icons'
 
+import { richTextFormatValues }                from '../../common/richTextFormatValues'
 import { useIntentContext }                    from '../../IntentContext'
+import { Statuses }                            from '../../states'
 import { IntentDetail }                        from '../../useIntentDetailsQuery'
 import { coldTierDataText, dataRetentionText } from '../../utils'
 
@@ -133,6 +138,31 @@ const GraphTitle = ({ details }: { details: IntentDetail }) => {
   </UI.GraphTitleWrapper>
 }
 
+const rrmGraphTooltip = (status: Statuses) => {
+  if (!(status === Statuses.new || status === Statuses.active)) {
+    return null
+  }
+
+  const text = status === Statuses.new
+    ? defineMessage({ defaultMessage: `
+      The graph and channel plan are generated based on the <i>default</i> Intent priority.
+      `
+    })
+    : defineMessage({ defaultMessage: `
+      The graph and channel plan are generated based on the <i>previously saved</i> Intent priority.
+      `
+    })
+  return {
+    title: defineMessage({ defaultMessage: `
+      If the Intent priority is changed and applied, the RRM Machine Learning algorithm 
+      will re-learn using the updated Intent priority and recent dynamic metrics during 
+      the next scheduled daily execution, rebuilding the graph and channel plan accordingly.
+      `
+    }),
+    text: text
+  }
+}
+
 export const IntentAIRRMGraph = ({ width = 250 } : { width?: number }) => {
   const { $t } = useIntl()
   const { intent, state, isDataRetained, isHotTierData } = useIntentContext()
@@ -144,6 +174,8 @@ export const IntentAIRRMGraph = ({ width = 250 } : { width?: number }) => {
   const showDrawer = () => setVisible(true)
   const closeDrawer = () => setVisible(false)
   useEffect(() => setKey(Math.random()), [visible]) // to reset graph zoom
+
+  const tooltip = rrmGraphTooltip(intent.status)
 
   const queryResult = useIntentAICRRMQuery()
   const crrmData = queryResult.data!
@@ -159,52 +191,65 @@ export const IntentAIRRMGraph = ({ width = 250 } : { width?: number }) => {
     </Card>
   }
 
-  return <UI.Wrapper>
-    {crrmData && <div hidden data-testid='hidden-graph'>
-      <SummaryGraphBefore
-        width={width}
-        crrmData={crrmData}
-        setUrl={setSummaryUrlBefore}
-      />
-      <SummaryGraphAfter
-        width={width}
-        crrmData={crrmData}
-        setUrl={setSummaryUrlAfter}
-      />
-    </div>}
-    <Loader states={[queryResult]}>
-      <Card>
-        <UI.GraphWrapper data-testid='graph-wrapper'
-          key={'graph-details'}
-        >
-          <ImageGraph
-            beforeSrc={summaryUrlBefore}
-            afterSrc={summaryUrlAfter}
-          />
-          <GraphTitle details={intent} />
-        </UI.GraphWrapper>
-      </Card>
-      <UI.ViewMoreButton
-        hidden={noData}
-        onClick={showDrawer}
-        children={$t({ defaultMessage: 'View More' })}
-      />
-      <Drawer
-        key={key}
-        drawerType={DrawerTypes.FullHeight}
-        width={'90vw'}
-        title={title}
-        visible={visible}
-        onClose={closeDrawer}
-        children={
-          <UI.GraphWrapper>
-            <DataGraph {...{ graphs: crrmData, zoomScale: drawerZoomScale }} />
+  return <>
+    <UI.Wrapper>
+      {crrmData && <div hidden data-testid='hidden-graph'>
+        <SummaryGraphBefore
+          width={width}
+          crrmData={crrmData}
+          setUrl={setSummaryUrlBefore}
+        />
+        <SummaryGraphAfter
+          width={width}
+          crrmData={crrmData}
+          setUrl={setSummaryUrlAfter}
+        />
+      </div>}
+      <Loader states={[queryResult]}>
+        <Card>
+          <UI.GraphWrapper data-testid='graph-wrapper'
+            key={'graph-details'}
+          >
+            <ImageGraph
+              beforeSrc={summaryUrlBefore}
+              afterSrc={summaryUrlAfter}
+            />
             <GraphTitle details={intent} />
           </UI.GraphWrapper>
-        }
-      />
-    </Loader>
-  </UI.Wrapper>
+        </Card>
+        <UI.ViewMoreButton
+          hidden={noData}
+          onClick={showDrawer}
+          children={$t({ defaultMessage: 'View More' })}
+        />
+        <Drawer
+          key={key}
+          drawerType={DrawerTypes.FullHeight}
+          width={'90vw'}
+          title={title}
+          visible={visible}
+          onClose={closeDrawer}
+          children={
+            <UI.GraphWrapper>
+              <DataGraph {...{ graphs: crrmData, zoomScale: drawerZoomScale }} />
+              <GraphTitle details={intent} />
+            </UI.GraphWrapper>
+          }
+        />
+      </Loader>
+    </UI.Wrapper>
+    {tooltip && (<Form.Item
+      extra={<Space align='start'>
+        <Tooltip
+          title={$t(tooltip.title)}
+          placement='left'
+        >
+          <InformationSolid />
+        </Tooltip>
+        <FormattedMessage {...tooltip.text} values={richTextFormatValues} />
+      </Space>}
+    />)}
+  </>
 }
 
 export const GraphImage = (
