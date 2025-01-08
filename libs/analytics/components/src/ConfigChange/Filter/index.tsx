@@ -10,7 +10,6 @@ import {
   ConfigChange,
   getConfigChangeEntityTypeMapping,
   GridCol,
-  resetZoomCallback,
   SearchInput,
   TableProps,
   Tooltip
@@ -101,13 +100,15 @@ export const Reset = () => {
 export const ResetZoom = () => {
   const { $t } = useIntl()
   const {
-    chartZoom, initialZoom
+    chartZoom, initialZoom, setChartZoom
   } = useContext(ConfigChangeContext)
   const canResetZoom =
     (initialZoom?.start !== undefined || initialZoom?.end !== undefined) &&
     (chartZoom?.start !== initialZoom?.start || chartZoom?.end !== initialZoom?.end)
   return canResetZoom ?
-    <Button onClick={resetZoomCallback}>{$t({ defaultMessage: 'Reset Zoom' })}</Button> : null
+    <Button onClick={() => setChartZoom(initialZoom)}>
+      {$t({ defaultMessage: 'Reset Zoom' })}
+    </Button> : null
 }
 
 function useDownload () {

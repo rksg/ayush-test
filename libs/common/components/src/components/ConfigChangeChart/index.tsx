@@ -34,8 +34,6 @@ import type { EChartsOption, SeriesOption } from 'echarts'
 
 export type { ChartRowMappingType as ConfigChangeChartRowMappingType } from './helper'
 
-let resetZoomCallback: () => void
-
 export function ConfigChangeChart ({
   data,
   chartBoundary,
@@ -84,9 +82,7 @@ export function ConfigChangeChart ({
     selectedLegend, data, selectedData, setSelectedData, setLegend, pagination,setPagination)
   const { setBoundary } = useBoundaryChange(
     eChartsRef, chartLayoutConfig, chartBoundary, brushWidth, onBrushPositionsChange)
-  const { resetZoomCallback: resetCallback } =
-    useDataZoom(eChartsRef, chartBoundary, setBoundary, chartZoom, setChartZoom, setInitialZoom)
-  resetZoomCallback = resetCallback
+  useDataZoom(eChartsRef, chartBoundary, setBoundary, chartZoom, setChartZoom, setInitialZoom)
 
   const option: EChartsOption = {
     animation: false,
@@ -202,5 +198,3 @@ export function ConfigChangeChart ({
     </ChartWrapper>
   )
 }
-
-export { resetZoomCallback }
