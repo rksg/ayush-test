@@ -38,7 +38,6 @@ export function UpdateFirmwarePerApModelIndividualPanel (props: UpdateFirmwarePe
   useEffect(() => {
     if (!apModelFirmwares) return
 
-    // eslint-disable-next-line max-len
     const updatedDisplayData = convertToApModelIndividualDisplayData(
       // eslint-disable-next-line max-len
       isApFwMgmtEarlyAccess ? apModelFirmwares.filter(d => d.labels?.includes(FirmwareLabel.GA)) : apModelFirmwares,
