@@ -364,7 +364,10 @@ export function VenueFirmwareList () {
         actions={
           isPreferencesVisible && isScheduleUpdateReady ? [{
             label: $t({ defaultMessage: 'Preferences' }),
-            onClick: () => setPreferenceModalVisible(true)
+            onClick: () => setPreferenceModalVisible(true),
+            disabled: !hasPermission({
+              rbacOpsIds: [genAllowOperationsPath(FirmwareUrlsInfo.updateEdgeUpgradePreferences)]
+            })
           }]
             : []
 
