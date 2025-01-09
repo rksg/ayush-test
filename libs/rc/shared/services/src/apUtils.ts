@@ -21,17 +21,20 @@ import {
   FILTER,
   FloorPlanMeshAP,
   GetApiVersionHeader,
+  LanPort,
   MeshStatus,
   NewAPExtendedGrouped,
   NewApGroupViewModelResponseType,
   NewAPModel,
   NewAPModelExtended,
+  ProfileLanApActivations,
   RadioProperties,
   SwitchClient,
   SwitchInformation,
   SwitchRbacUrlsInfo,
   TableResult,
   Venue,
+  WifiApSetting,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { RequestPayload, MaybePromise } from '@acx-ui/types'
@@ -821,4 +824,21 @@ export const fetchAppendApPositions = async (apListData: TableResult<FloorPlanMe
     apListData.data[targetIdx].xPercent = (p.value?.data as ApPosition).xPercent
     apListData.data[targetIdx].yPercent = (p.value?.data as ApPosition).yPercent
   })
+}
+
+export const findTargetLanPorts = (
+  apLanPorts: WifiApSetting,
+  activations: ProfileLanApActivations[],
+  apSerialNumber: string
+) => {
+  const targetActivations = activations?.filter(ap => ap.apSerialNumber === apSerialNumber)
+  const targetPorts: LanPort[] = []
+  targetActivations?.forEach(activation => {
+    const lanPort = apLanPorts.lanPorts?.find(l => l.portId?.toString() === activation.portId?.toString())
+    if(lanPort) {
+      targetPorts.push(lanPort)
+    }
+  })
+
+  return targetPorts
 }

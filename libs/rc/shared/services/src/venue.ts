@@ -61,6 +61,7 @@ import {
   VenueBssColoring,
   VenueApSmartMonitor,
   VenueApRebootTimeout,
+  VenueIot,
   TopologyData,
   VenueMdnsFencingPolicy,
   PropertyConfigs,
@@ -1819,6 +1820,27 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getVenueIot: build.query<VenueIot, RequestPayload>({
+      query: ({ params }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+
+        const req = createHttpRequest(WifiRbacUrlsInfo.getVenueIot, params, apiCustomHeader)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueIot: build.mutation<VenueIot, RequestPayload>({
+      query: ({ params, payload }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateVenueIot, params, apiCustomHeader)
+        return{
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
     getTopology: build.query<TopologyData, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getTopology, params)
@@ -2520,6 +2542,9 @@ export const {
   useGetVenueApRebootTimeoutQuery,
   useLazyGetVenueApRebootTimeoutQuery,
   useUpdateVenueApRebootTimeoutMutation,
+  useGetVenueIotQuery,
+  useLazyGetVenueIotQuery,
+  useUpdateVenueIotMutation,
   useGetVenueLanPortWithEthernetSettingsQuery,
   useLazyGetVenueLanPortWithEthernetSettingsQuery,
   useGetVenueLanPortSettingsQuery,

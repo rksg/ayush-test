@@ -17,6 +17,7 @@ import {
   ApBandModeSettings,
   ApBssColoringSettings,
   ApSmartMonitor,
+  ApIot,
   ApClientAdmissionControl,
   ApDeep,
   ApDetailHeader,
@@ -115,6 +116,7 @@ import {
   aggregatePoePortInfo,
   aggregateSwitchInfo,
   aggregateVenueInfo,
+  findTargetLanPorts,
   getApListFn,
   getApViewmodelListFn,
   transformApListFromNewModel,
@@ -1018,12 +1020,9 @@ export const apApi = baseApApi.injectEndpoints({
           const softGreList = softGreListQuery.data as TableResult<SoftGreViewData>
           if (softGreList.data && apLanPorts.lanPorts) {
             for (let softGre of softGreList.data) {
-              const port = softGre.apActivations?.find(ap => ap.apSerialNumber === params.serialNumber)
-              let targetPort = port && apLanPorts.lanPorts
-                ?.find(l => l.portId?.toString() === port.portId?.toString())
-              if (targetPort) {
+              findTargetLanPorts(apLanPorts, softGre.apActivations, params.serialNumber).forEach(targetPort => {
                 targetPort.softGreProfileId = softGre.id
-              }
+              })
             }
           }
         }
@@ -1043,15 +1042,11 @@ export const apApi = baseApApi.injectEndpoints({
           const clientIsolationList = clientIsolationListQuery.data as TableResult<ClientIsolationViewModel>
           if (clientIsolationList.data && apLanPorts.lanPorts) {
             for (let clientIsolation of clientIsolationList.data) {
-              const port = clientIsolation.apActivations?.find(ap => ap.apSerialNumber === params.serialNumber)
-              let targetPort = port && apLanPorts.lanPorts
-                ?.find(l => l.portId?.toString() === port.portId?.toString())
-              if (targetPort) {
+              findTargetLanPorts(apLanPorts, clientIsolation.apActivations, params.serialNumber).forEach(targetPort => {
                 targetPort.clientIsolationProfileId = clientIsolation.id
-              }
+              })
             }
           }
-
         }
 
         return apLanPortSettings.data
@@ -1339,6 +1334,28 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'SmartMonitor' }]
+    }),
+    getApIot: build.query<ApIot, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApIot, params, customHeaders)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'Iot' }]
+    }),
+    updateApIot: build.mutation<ApIot, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApIot, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'Iot' }]
     }),
     getApValidChannel: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
       query: ({ params, enableRbac, enableSeparation = false }) => {
@@ -1813,6 +1830,9 @@ export const {
   useGetApSmartMonitorQuery,
   useLazyGetApSmartMonitorQuery,
   useUpdateApSmartMonitorMutation,
+  useGetApIotQuery,
+  useLazyGetApIotQuery,
+  useUpdateApIotMutation,
   useGetApCapabilitiesQuery,     // deprecated
   useLazyGetApCapabilitiesQuery, // deprecated
   useGetOldApCapabilitiesByModelQuery,

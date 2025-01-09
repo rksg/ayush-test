@@ -14,7 +14,7 @@ import {
 import { ApModelFirmware, FirmwareLabel, FirmwareVenuePerApModel, UpgradePreferences } from '@acx-ui/rc/utils'
 import { getIntl }                                                                     from '@acx-ui/utils'
 
-import { compareVersions, getVersionLabel, VersionLabelType } from '../FirmwareUtils'
+import { compareVersions, getVersionLabel, isAlphaOrBeta, isLegacyAlphaOrBeta, VersionLabelType } from '../FirmwareUtils'
 
 import * as UI                              from './styledComponents'
 import { UpdateFirmwarePerApModelFirmware } from './UpdateNowDialog'
@@ -128,12 +128,11 @@ export function renderCurrentFirmwaresColumn (data: FirmwareVenuePerApModel['cur
     .map(([ firmware, firmwareInfo ]) => {
       let label = ''
       // eslint-disable-next-line max-len
-      const isEarlyAccess = firmwareInfo.labels?.includes(FirmwareLabel.ALPHA) || firmwareInfo.labels?.includes(FirmwareLabel.BETA)
+      const isEarlyAccess = isAlphaOrBeta(firmwareInfo.labels as FirmwareLabel[])
       if (isEarlyAccess) {
         label = ` ${intl.$t({ defaultMessage: '(Early Access)' })}`
       } else {
-        // eslint-disable-next-line max-len
-        if (!firmwareInfo.labels?.includes(FirmwareLabel.GA) && (firmwareInfo.labels?.includes(FirmwareLabel.LEGACYALPHA) || firmwareInfo.labels?.includes(FirmwareLabel.LEGACYBETA))) {
+        if (isLegacyAlphaOrBeta(firmwareInfo.labels as FirmwareLabel[])) {
           label = ` ${intl.$t({ defaultMessage: '(Legacy Early Access)' })}`
         }
       }
@@ -166,15 +165,6 @@ function groupByFirmware (data: FirmwareVenuePerApModel['currentApFirmwares']): 
     }
     return acc
   }, {} as { [firmware in string]: { apModel: string[], labels: FirmwareLabel[] } })
-}
-
-// eslint-disable-next-line max-len
-export function filterVersionBehindGA (data: ApFirmwareUpdateGroupType[]): ApFirmwareUpdateGroupType[] {
-  // eslint-disable-next-line max-len
-  const gaIndex = data.findIndex((group: ApFirmwareUpdateGroupType) => group.firmwares[0]?.labels?.includes(FirmwareLabel.GA))
-  if (gaIndex === -1) return data
-
-  return data.slice(0, gaIndex + 1)
 }
 
 export type ApFirmwareUpdateGroupType = { apModels: string[], firmwares: VersionLabelType[] }
@@ -247,6 +237,7 @@ export type ApModelIndividualDisplayDataType = {
   versionOptions: { key: string, label: string, releaseDate: string }[]
   defaultVersion: string
   extremeFirmware: string
+  earlyAccess?: boolean
 }
 
 export function convertToApModelIndividualDisplayData (
@@ -260,7 +251,7 @@ export function convertToApModelIndividualDisplayData (
   if (_.isEmpty(extremeFirmwareMap)) return []
 
   // eslint-disable-next-line max-len
-  const result: { [apModel in string]: Pick<ApModelIndividualDisplayDataType, 'versionOptions' | 'extremeFirmware'> } = {}
+  const result: { [apModel in string]: Pick<ApModelIndividualDisplayDataType, 'versionOptions' | 'extremeFirmware' | 'earlyAccess'> } = {}
 
   apModelFirmwareList.forEach((apModelFirmware: ApModelFirmware) => {
     if (!apModelFirmware.supportedApModels) return
@@ -272,7 +263,9 @@ export function convertToApModelIndividualDisplayData (
       if (!result[apModel]) {
         result[apModel] = {
           versionOptions: [],
-          extremeFirmware: apModelExtremeFirmware.extremeFirmware
+          extremeFirmware: apModelExtremeFirmware.extremeFirmware,
+          // eslint-disable-next-line max-len
+          earlyAccess: apModelFirmware.labels?.includes(FirmwareLabel.GA) && compareVersions(apModelFirmwareList[0].id, apModelExtremeFirmware.extremeFirmware) < 0
         }
       }
 
@@ -289,10 +282,12 @@ export function convertToApModelIndividualDisplayData (
     })
   })
 
-  return Object.entries(result).map(([ apModel, { versionOptions, extremeFirmware } ]) => ({
+  // eslint-disable-next-line max-len
+  return Object.entries(result).map(([ apModel, { versionOptions, extremeFirmware, earlyAccess } ]) => ({
     apModel,
     versionOptions,
     extremeFirmware,
+    earlyAccess,
     defaultVersion: isUpgrade
       ? getApModelDefaultFirmwareFromOptions(apModel, versionOptions, initialPayload)
       : ''
