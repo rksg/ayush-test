@@ -205,7 +205,8 @@ export function AddExplicitCustomRole () {
         const id = s.split('-')[0]
         const perm = Object.keys(PermissionType)
           .find(key => PermissionType[key as keyof typeof PermissionType] === s.split('-')[1]) ?? ''
-        permissions = updateRelatedPermissions(id, perm, true, permissions)
+        const updatedPerms = updateRelatedPermissions(id, perm, true, permissions)
+        permissions = updatedPerms
       })
       form.setFieldValue('permissions', permissions)
     }

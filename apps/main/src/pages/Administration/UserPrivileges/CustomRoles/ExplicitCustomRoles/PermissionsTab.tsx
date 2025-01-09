@@ -142,12 +142,13 @@ export const PermissionsTab = (props: PermissionsTabProps) => {
 
   const summaryContent = tabScopes.some(s => s.children)
     ? tabScopes.map(scope =>
-      (<UI.PermissionSummaryWrapper>
+      (<UI.PermissionSummaryWrapper key={scope.key}>
         <Form.Item
           label={scope.title?.toString()}
           children={<Descriptions labelWidthPercent={15}>
             {scope.children?.map(s =>
               <Descriptions.Item
+                key={s.key}
                 label={s.title?.toString()}
                 children={getPermissionsSummaryList(s.key.toString())}
               />
@@ -157,7 +158,7 @@ export const PermissionsTab = (props: PermissionsTabProps) => {
       </UI.PermissionSummaryWrapper>)
     )
     : tabScopes.map(scope =>
-      (<Descriptions labelWidthPercent={15}>
+      (<Descriptions labelWidthPercent={15} key={scope.key}>
         <Descriptions.Item
           label={scope.title?.toString()}
           children={getPermissionsSummaryList(scope.key.toString())}
