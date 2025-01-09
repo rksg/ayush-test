@@ -14,6 +14,7 @@ FROM ${CI_SERVICE_BASE}node:master--latest as build-base
 WORKDIR /app
 
 RUN apk add curl
+RUN nproc --all
 
 ARG ENV_FILE
 COPY ${ENV_FILE} .
@@ -112,7 +113,7 @@ RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_
     fi
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
         CICD_BUILD=true node ./node_modules/.bin/nx run cloudpath-components:test $NX_RUN_OPTIONS; \
-    fi    
+    fi
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
         CICD_BUILD=true node ./node_modules/.bin/nx run edge-components:test $NX_RUN_OPTIONS; \
     fi
