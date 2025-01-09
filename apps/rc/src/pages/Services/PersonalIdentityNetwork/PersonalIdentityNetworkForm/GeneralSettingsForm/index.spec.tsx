@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { StepsForm }             from '@acx-ui/components'
+import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import { pinApi }                from '@acx-ui/rc/services'
 import {
   EdgePinFixtures, EdgePinUrls
@@ -39,6 +40,9 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
+jest.mock('@acx-ui/rc/components',() => ({
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
 jest.mock('./PersonalIdentityPreparationListDrawer', () => ({
   PersonalIdentityPreparationListDrawer: () => <div data-testid='PersonalIdentityPreparationListDrawer' />
 }))
@@ -47,6 +51,9 @@ jest.mock('./PropertyManagementInfo', () => ({
 }))
 jest.mock('./PersonalIdentityDiagram', () => ({
   PersonalIdentityDiagram: () => <div data-testid='PersonalIdentityDiagram' />
+}))
+jest.mock('./enhanced', () => ({
+  EnhancedGeneralSettingsForm: () => <div data-testid='EnhancedGeneralSettingsForm' />
 }))
 
 const createPinPath = '/:tenantId/services/personalIdentityNetwork/create'
@@ -86,6 +93,7 @@ describe('PersonalIdentityNetworkForm - GeneralSettingsForm', () => {
     expect(await screen.findByRole('textbox', { name: 'Service Name' })).toBeVisible()
     expect(await screen.findByRole('combobox', { name: 'Venue with RUCKUS Edge deployed' })).toBeVisible()
     expect(await screen.findByTestId('PersonalIdentityPreparationListDrawer')).toBeVisible()
+    expect( screen.queryByTestId('EnhancedGeneralSettingsForm')).not.toBeInTheDocument()
   })
 
   it('Step1 - Shuould show property config when the venue has been selected', async () => {
@@ -149,5 +157,28 @@ describe('PersonalIdentityNetworkForm - GeneralSettingsForm', () => {
       await screen.findByRole('option', { name: 'Mock Venue 1' })
     )
     expect(screen.queryByTestId('PersonalIdentityDiagram')).toBeVisible()
+  })
+
+  describe('PIN enhance FF is enabled', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+    })
+
+    it('Should render enhanced form', async () => {
+      render(
+        <Provider>
+          <PersonalIdentityNetworkFormContext.Provider value={mockContextData}>
+            <StepsForm>
+              <StepsForm.StepForm>
+                <GeneralSettingsForm />
+              </StepsForm.StepForm>
+            </StepsForm>
+          </PersonalIdentityNetworkFormContext.Provider>
+        </Provider>,
+        { route: { params, path: createPinPath } })
+
+      expect(await screen.findByTestId('EnhancedGeneralSettingsForm')).toBeVisible()
+      expect(screen.queryByRole('combobox', { name: 'Venue with RUCKUS Edge deployed' })).not.toBeInTheDocument()
+    })
   })
 })

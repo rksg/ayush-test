@@ -4278,6 +4278,17 @@ export const portlistData = {
   totalCount: 2
 }
 
+export const resultOfGetApIotSettings = {
+  mqttBrokerAddress: '1234.ruckus.com',
+  useVenueSettings: true,
+  enabled: true
+}
+
+export const resultOfGetVenueApIotSettings = {
+  mqttBrokerAddress: '1234.ruckus.com',
+  enabled: true
+}
+
 export const resultOfGetApSnmpAgentSettings = {
   apSnmpAgentProfileId: 'c1082e7d05d74eb897bb3600a15c1dc7',
   useVenueSettings: true,
