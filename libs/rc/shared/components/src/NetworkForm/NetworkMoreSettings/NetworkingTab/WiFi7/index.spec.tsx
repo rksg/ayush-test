@@ -8,6 +8,7 @@ import { NetworkSaveData, WlanSecurityEnum }        from '@acx-ui/rc/utils'
 import { Provider }                                 from '@acx-ui/store'
 import { fireEvent, render, screen, within }        from '@acx-ui/test-utils'
 
+import { MLOContext }                                 from '../../../NetworkForm'
 import NetworkFormContext, { NetworkFormContextType } from '../../../NetworkFormContext'
 
 import {
@@ -714,5 +715,43 @@ describe('test wlanSecurity', () => {
       const actual = getIsOwe(mockWlanData)
       expect(actual).toBe(true)
     })
+  })
+
+  it('should disable Multi-Link toggle button on OWE transaction network', async function () {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
+
+    render(
+      <Provider>
+        <NetworkFormContext.Provider value={{
+          editMode: true,
+          cloneMode: false,
+          isRuckusAiMode: false,
+          data: {
+            name: 'test',
+            type: 'open',
+            wlan: {
+              wlanSecurity: WlanSecurityEnum.OWETransition
+            }
+          } as NetworkSaveData
+        } as NetworkFormContextType}>
+          <MLOContext.Provider value={{
+            isDisableMLO: true,
+            disableMLO: jest.fn()
+          }}>
+            <Form>
+              <WiFi7 />
+            </Form>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+
+      </Provider>, {
+        route: { params }
+      }
+    )
+
+    const switchElement = await screen.findByTestId('mlo-switch-1')
+    expect(switchElement).toBeDisabled()
   })
 })

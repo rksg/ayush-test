@@ -175,7 +175,6 @@ const CheckboxGroup = ({ wlanData, mloEnabled, wifi7Enabled } :
 function WiFi7 () {
   const { $t } = useIntl()
   const wifi7MloFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
-  const isSupport6gOWETransition = useIsSplitOn(Features.WIFI_OWE_TRANSITION_FOR_6G)
 
   const { setData, data: wlanData } = useContext(NetworkFormContext)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
@@ -207,7 +206,7 @@ function WiFi7 () {
     if(editMode && wlanData !== null){
 
       const shouldMLOBeDisable = !(wlanData.type !== NetworkTypeEnum.DPSK &&
-          IsNetworkSupport6g(wlanData, { isSupport6gOWETransition }))
+          IsNetworkSupport6g(wlanData))
 
       disableMLO(shouldMLOBeDisable)
 
@@ -291,7 +290,7 @@ function WiFi7 () {
                         title={$t({
                           defaultMessage: 'For the functioning of MLO, ensure that either the WPA3 or OWE encryption method is activated.'
                         })}>
-                        <Switch disabled={!wifi7Enabled || isDisableMLO} />
+                        <Switch data-testid='mlo-switch-1' disabled={!wifi7Enabled || isDisableMLO} />
                       </Tooltip>
                       :
                       <Switch disabled={!wifi7Enabled || isDisableMLO} />
