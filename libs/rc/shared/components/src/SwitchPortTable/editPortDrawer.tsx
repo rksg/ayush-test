@@ -711,7 +711,7 @@ export function EditPortDrawer ({
         const disableKey = getFlexAuthButtonStatus(commonRequiredProps)
         return disableKey ? $t(EditPortMessages[disableKey as keyof typeof EditPortMessages]) : ''
       case 'switchPortProfileId':
-        if(isAnyFirmwareAbove10020b && isMultipleEdit && getFieldDisabled('switchPortProfileId')) {
+        if(isAnyFirmwareAbove10020b && getFieldDisabled('switchPortProfileId')) {
           if(isCloudPort) {
             return $t(EditPortMessages.CLOUD_PORT_CANNOT_ENABLE_SWITCH_PORT_PROFILE)
           } else {
@@ -1813,6 +1813,7 @@ export function EditPortDrawer ({
                   <Form.Item
                     name='switchPortProfileId'
                     initialValue=''><Select
+                      data-testid='portProfileSelectList'
                       options={portProfileOptions.current}
                       disabled={getFieldDisabled('switchPortProfileId')} /></Form.Item>
                 </Tooltip>}
