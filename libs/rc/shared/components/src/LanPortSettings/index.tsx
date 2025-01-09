@@ -5,9 +5,9 @@ import { DefaultOptionType }                               from 'antd/lib/select
 import { FormattedMessage, useIntl }                       from 'react-intl'
 import { useParams }                                       from 'react-router-dom'
 
-import { cssStr, Tooltip }                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
-import { WarningCircleSolid }                       from '@acx-ui/icons'
+import { cssStr, Tooltip }                           from '@acx-ui/components'
+import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import { WarningCircleSolid }                        from '@acx-ui/icons'
 import {
   useQueryEthernetPortProfilesWithOverwritesQuery
 } from '@acx-ui/rc/services'
@@ -19,7 +19,7 @@ import {
   EthernetPortAuthType,
   EthernetPortProfileViewData,
   EthernetPortType,
-  LanPort, SoftGreDuplicationChangeDispatcher,
+  LanPort, SoftGreDuplicationChangeDispatcher, SoftGreDuplicationChangeState,
   SoftGreProfileDispatcher,
   SoftGreState,
   useConfigTemplate,
@@ -238,17 +238,30 @@ export function LanPortSettings (props: {
         }
         onChange={(value) => {
           onChangedByCustom('enabled')
-          value ?
+          const portId = selectedModel.lanPorts![index].portId
+          const voter = (isUnderAPNetworking ?
+            { serialNumber, portId: (portId ? +portId : 0) }:
+            { model: (selectedModel as VenueLanPorts)?.model, portId: (portId ? +portId : 0) })
+          if (value) {
             dispatch && dispatch({
               state: SoftGreState.TurnOnLanPort,
               portId: selectedModel.lanPorts![index].portId,
               index
-            }) :
+            })
+            optionDispatch && optionDispatch ({
+              state: SoftGreDuplicationChangeState.TurnOnSoftGre,
+              softGreProfileId: form.getFieldValue(['lan', index, 'softGreProfileId']),
+              voter: voter
+            })
+          }
+          else {
             dispatch && dispatch({
               state: SoftGreState.TurnOffLanPort,
               portId: selectedModel.lanPorts![index].portId,
               index
             })
+
+          }
         }}
       />}
     />

@@ -2,8 +2,13 @@ import { Form, Switch, Space } from 'antd'
 import { DefaultOptionType }   from 'antd/lib/select'
 import { useIntl }             from 'react-intl'
 
-import { Tooltip, Alert, StepsForm }                                                  from '@acx-ui/components'
-import { SoftGreDuplicationChangeDispatcher, SoftGreProfileDispatcher, SoftGreState } from '@acx-ui/rc/utils'
+import { Tooltip, Alert, StepsForm } from '@acx-ui/components'
+import {
+  SoftGreDuplicationChangeDispatcher,
+  SoftGreDuplicationChangeState,
+  SoftGreProfileDispatcher,
+  SoftGreState
+} from '@acx-ui/rc/utils'
 
 import { SoftGREProfileSettings } from './SoftGREProfileSettings'
 import { FieldLabel }             from './styledComponents'
@@ -69,19 +74,32 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
                 disabled={readonly}
                 onClick={(value) => {
                   onGUIChanged && onGUIChanged('softGreEnabled')
-                  if (dispatch) {
-                    value ?
-                      dispatch({
-                        state: SoftGreState.TurnOnSoftGre,
-                        portId,
-                        index,
-                        softGreProfileId: form.getFieldValue(['lan', index, 'softGreProfileId'])
-                      }) :
-                      dispatch({
-                        state: SoftGreState.TurnOffSoftGre,
-                        portId,
-                        index
-                      })
+                  const voter = (isUnderAPNetworking ?
+                    { serialNumber, portId: (portId ? +portId : 0) }:
+                    { model: apModel, portId: (portId ? +portId : 0) })
+                  if (value) {
+                    dispatch && dispatch({
+                      state: SoftGreState.TurnOnSoftGre,
+                      portId,
+                      index,
+                      softGreProfileId: form.getFieldValue(['lan', index, 'softGreProfileId'])
+                    })
+                    optionDispatch && optionDispatch ({
+                      state: SoftGreDuplicationChangeState.TurnOnSoftGre,
+                      softGreProfileId: form.getFieldValue(['lan', index, 'softGreProfileId']),
+                      voter: voter
+                    })
+                  }
+                  else {
+                    dispatch && dispatch({
+                      state: SoftGreState.TurnOffSoftGre,
+                      portId,
+                      index
+                    })
+                    optionDispatch && optionDispatch ({
+                      state: SoftGreDuplicationChangeState.TurnOffSoftGre,
+                      voter: voter
+                    })
                   }
                 }}
               />

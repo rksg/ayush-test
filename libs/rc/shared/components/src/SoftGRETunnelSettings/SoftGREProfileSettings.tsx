@@ -119,6 +119,16 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
               disabled={readonly}
               data-testid={'softgre-profile-select'}
               onChange={onChange}
+              onClick={() => {
+                console.log('clicked')
+                optionDispatch && optionDispatch({
+                  state: SoftGreDuplicationChangeState.FindTheOnlyVoter,
+                  voter: (isUnderAPNetworking ?
+                    { serialNumber, portId: +portId }:
+                    { model: apModel, portId: +portId }
+                  )
+                })
+              }}
               options={[
                 {
                   label: $t({ defaultMessage: 'Select...' }), value: ''

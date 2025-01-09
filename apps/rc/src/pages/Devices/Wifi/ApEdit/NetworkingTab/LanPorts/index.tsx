@@ -14,8 +14,8 @@ import {
   Tabs,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
-import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
+import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings, useSoftGreProfileLimitedSelection } from '@acx-ui/rc/components'
 import {
   useDeactivateSoftGreProfileOnAPMutation,
   useGetApLanPortsWithActivatedProfilesQuery,
@@ -150,6 +150,7 @@ export function LanPorts () {
   const [lanData, setLanData] = useState([] as LanPort[])
   const [activeTabIndex, setActiveTabIndex] = useState(0)
   const isResetClick = useRef(false)
+  const { softGREProfileOptionList, duplicationChangeDispatch } = useSoftGreProfileLimitedSelection(venueId!)
 
   // TODO: rbac
   const isAllowUpdate = true // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
@@ -539,6 +540,8 @@ export function LanPorts () {
                           venueId={venueId}
                           onGUIChanged={onGUIChanged}
                           serialNumber={serialNumber}
+                          softGREProfileOptionList={softGREProfileOptionList}
+                          optionDispatch={duplicationChangeDispatch}
                         />
                       </Col>
                     </Row>

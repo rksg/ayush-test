@@ -1029,13 +1029,16 @@ export enum SoftGreDuplicationChangeState {
   TurnOnSoftGre,
   TurnOffSoftGre,
   TurnOnLanPort,
-  TurnOffLanPort
+  TurnOffLanPort,
+  ResetToDefault,
+  FindTheOnlyVoter
 }
 
 export interface SoftGreDuplicationChangeDispatcher {
   state: SoftGreDuplicationChangeState
   softGreProfileId?: string
   voter: Voter
+  voters?: Voter[]
 }
 
 export interface SoftGreProfileDispatcher {
@@ -1053,6 +1056,7 @@ export interface Voter {
 
 export interface VoteTallyBoard {
   softGreProfileId: string,
+  name?: string,
   vote: number,
   voters: Voter[]
 }

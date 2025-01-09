@@ -11,7 +11,7 @@ import {
   showActionModal,
   Tabs
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import {
   LanPortPoeSettings,
   LanPortSettings,
@@ -51,14 +51,14 @@ import {
   VenueSettings,
   WifiNetworkMessages,
   SoftGreState,
-  mergeLanPortSettings
+  mergeLanPortSettings, SoftGreDuplicationChangeState
 } from '@acx-ui/rc/utils'
 import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { VenueUtilityContext }            from '../..'
-import DefaultApModelDiagram              from '../../../../assets/images/aps/ap-model-placeholder.png'
+import { VenueUtilityContext }             from '../..'
+import DefaultApModelDiagram               from '../../../../assets/images/aps/ap-model-placeholder.png'
 import {
   useVenueConfigTemplateMutationFnSwitcher,
   useVenueConfigTemplateQueryFnSwitcher
@@ -489,12 +489,24 @@ export function LanPorts () {
     records.push(apModel)
     setResetModels([...new Set(records)])
 
+    let voters = [] as Voter[]
+
     defaultLanPortsData.lanPorts.forEach((lanPort, index) => {
       dispatch({
         state: SoftGreState.ResetToDefault,
         portId: lanPort.portId,
         index
       })
+      voters.push({
+        portId: (lanPort.portId ? +lanPort.portId : 0),
+        model: apModel
+      })
+
+    })
+
+    duplicationChangeDispatch({
+      state: SoftGreDuplicationChangeState.ResetToDefault,
+      voters: voters
     })
 
 
