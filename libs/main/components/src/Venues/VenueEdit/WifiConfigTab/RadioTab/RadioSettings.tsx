@@ -658,6 +658,7 @@ export function RadioSettings () {
     }
 
     const lower5GName = inheritParamsLower5G ? 'Lower 5 GHz' : undefined
+    const lowerMethod5 = radioParamsLower5G?.method
 
     const indoorLowerChannel5 = inheritParamsLower5G
       ? indoorLower5GChs
@@ -665,7 +666,7 @@ export function RadioSettings () {
     const indoorLowerTitle5 = inheritParamsLower5G
       ? $t({ defaultMessage: '5 GHz - Indoor AP channel selection' })
       : $t({ defaultMessage: 'Lower 5 GHz - Indoor AP channel selection' })
-    if (!validateChannels(indoorLowerChannel5, method5, indoorLowerTitle5, lower5GName)) return false
+    if (!validateChannels(indoorLowerChannel5, lowerMethod5, indoorLowerTitle5, lower5GName)) return false
 
     const outdoorLowerChannel5 = inheritParamsLower5G
       ? outdoorLower5GChs
@@ -673,9 +674,10 @@ export function RadioSettings () {
     const outdoorLowerTitle5 = inheritParamsLower5G
       ? $t({ defaultMessage: '5 GHz - Outdoor AP channel selection' })
       : $t({ defaultMessage: 'Lower 5 GHz - Outdoor AP channel selection' })
-    if (!validateChannels(outdoorLowerChannel5, method5, outdoorLowerTitle5, lower5GName)) return false
+    if (!validateChannels(outdoorLowerChannel5, lowerMethod5, outdoorLowerTitle5, lower5GName)) return false
 
     const upper5GName = inheritParamsUpper5G ? 'Upper 5 GHz' : undefined
+    const upperMethod5 = radioParamsUpper5G?.method
 
     const indoorUpperChannel5 = inheritParamsUpper5G
       ? indoorUpper5GChs
@@ -683,7 +685,7 @@ export function RadioSettings () {
     const indoorUpperTitle5 = inheritParamsUpper5G
       ? $t({ defaultMessage: '5 GHz - Indoor AP channel selection' })
       : $t({ defaultMessage: 'Upper 5 GHz - Indoor AP channel selection' })
-    if (!validateChannels(indoorUpperChannel5, method5, indoorUpperTitle5, upper5GName)) return false
+    if (!validateChannels(indoorUpperChannel5, upperMethod5, indoorUpperTitle5, upper5GName)) return false
 
     const outdoorUpperChannel5 = inheritParamsUpper5G
       ? outdoorUpper5GChs
@@ -691,7 +693,7 @@ export function RadioSettings () {
     const outdoorUpperTitle5 = inheritParamsUpper5G
       ? $t({ defaultMessage: '5 GHz - Outdoor AP channel selection' })
       : $t({ defaultMessage: 'Upper 5 GHz - Outdoor AP channel selection' })
-    if (!validateChannels(outdoorUpperChannel5, method5, outdoorUpperTitle5, upper5GName)) return false
+    if (!validateChannels(outdoorUpperChannel5, upperMethod5, outdoorUpperTitle5, upper5GName)) return false
 
     return true
   }
