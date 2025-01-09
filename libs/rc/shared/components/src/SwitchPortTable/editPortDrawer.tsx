@@ -1791,7 +1791,9 @@ export function EditPortDrawer ({
 
         {/* Port Profile */}
         {isSwitchPortProfileEnabled && isAnyFirmwareAbove10020b &&
-        <><div style={{ marginBottom: isMultipleEdit ? '0' : '30px' }}>
+        <><div
+          style={{ marginBottom: isMultipleEdit ? '0' : '30px' }}
+          data-testid='portProfileContainer'>
           <Space style={{
             width: '510px', display: 'flex', justifyContent: 'space-between',
             marginBottom: isMultipleEdit ? '16px' : '4px'
