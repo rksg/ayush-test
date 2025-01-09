@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
-import { Form, Space }                              from 'antd'
+import { Space }                                    from 'antd'
 import { ScalePower }                               from 'd3'
 import { scalePow }                                 from 'd3-scale'
 import { EChartsType }                              from 'echarts'
 import ReactECharts                                 from 'echarts-for-react'
+import _                                            from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 import AutoSizer                                    from 'react-virtualized-auto-sizer'
 
@@ -18,7 +19,7 @@ import {
   Tooltip
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { InformationSolid }          from '@acx-ui/icons'
+import { InformationOutlined }       from '@acx-ui/icons'
 
 import { richTextFormatValues }                from '../../common/richTextFormatValues'
 import { useIntentContext }                    from '../../IntentContext'
@@ -176,6 +177,9 @@ export const IntentAIRRMGraph = ({ width = 250 } : { width?: number }) => {
   useEffect(() => setKey(Math.random()), [visible]) // to reset graph zoom
 
   const tooltip = rrmGraphTooltip(intent.status)
+  const preference = _.get(intent, ['metadata', 'preferences', 'crrmFullOptimization'])
+  const channelPlan = _.get(intent, ['metadata', 'algorithmData', 'isCrrmFullOptimization'])
+  const showTooltip = tooltip && (preference !== channelPlan)
 
   const queryResult = useIntentAICRRMQuery()
   const crrmData = queryResult.data!
@@ -191,65 +195,63 @@ export const IntentAIRRMGraph = ({ width = 250 } : { width?: number }) => {
     </Card>
   }
 
-  return <>
-    <UI.Wrapper>
-      {crrmData && <div hidden data-testid='hidden-graph'>
-        <SummaryGraphBefore
-          width={width}
-          crrmData={crrmData}
-          setUrl={setSummaryUrlBefore}
-        />
-        <SummaryGraphAfter
-          width={width}
-          crrmData={crrmData}
-          setUrl={setSummaryUrlAfter}
-        />
-      </div>}
-      <Loader states={[queryResult]}>
-        <Card>
-          <UI.GraphWrapper data-testid='graph-wrapper'
-            key={'graph-details'}
-          >
-            <ImageGraph
-              beforeSrc={summaryUrlBefore}
-              afterSrc={summaryUrlAfter}
-            />
+  return <UI.Wrapper>
+    {crrmData && <div hidden data-testid='hidden-graph'>
+      <SummaryGraphBefore
+        width={width}
+        crrmData={crrmData}
+        setUrl={setSummaryUrlBefore}
+      />
+      <SummaryGraphAfter
+        width={width}
+        crrmData={crrmData}
+        setUrl={setSummaryUrlAfter}
+      />
+    </div>}
+    <Loader states={[queryResult]}>
+      <Card>
+        <UI.GraphWrapper data-testid='graph-wrapper'
+          key={'graph-details'}
+        >
+          <ImageGraph
+            beforeSrc={summaryUrlBefore}
+            afterSrc={summaryUrlAfter}
+          />
+          <GraphTitle details={intent} />
+        </UI.GraphWrapper>
+        <UI.GraphFooterWrapper>
+          {showTooltip ? (<Space align='start'>
+            <Tooltip
+              title={$t(tooltip.title)}
+              placement='top'
+            >
+              <InformationOutlined />
+            </Tooltip>
+            <FormattedMessage {...tooltip.text} values={richTextFormatValues} />
+          </Space>) : <div />}
+          <UI.ViewMoreButton
+            hidden={noData}
+            onClick={showDrawer}
+            children={$t({ defaultMessage: 'View More' })}
+          />
+        </UI.GraphFooterWrapper>
+      </Card>
+      <Drawer
+        key={key}
+        drawerType={DrawerTypes.FullHeight}
+        width={'90vw'}
+        title={title}
+        visible={visible}
+        onClose={closeDrawer}
+        children={
+          <UI.GraphWrapper>
+            <DataGraph {...{ graphs: crrmData, zoomScale: drawerZoomScale }} />
             <GraphTitle details={intent} />
           </UI.GraphWrapper>
-        </Card>
-        <UI.ViewMoreButton
-          hidden={noData}
-          onClick={showDrawer}
-          children={$t({ defaultMessage: 'View More' })}
-        />
-        <Drawer
-          key={key}
-          drawerType={DrawerTypes.FullHeight}
-          width={'90vw'}
-          title={title}
-          visible={visible}
-          onClose={closeDrawer}
-          children={
-            <UI.GraphWrapper>
-              <DataGraph {...{ graphs: crrmData, zoomScale: drawerZoomScale }} />
-              <GraphTitle details={intent} />
-            </UI.GraphWrapper>
-          }
-        />
-      </Loader>
-    </UI.Wrapper>
-    {tooltip && (<Form.Item
-      extra={<Space align='start'>
-        <Tooltip
-          title={$t(tooltip.title)}
-          placement='left'
-        >
-          <InformationSolid />
-        </Tooltip>
-        <FormattedMessage {...tooltip.text} values={richTextFormatValues} />
-      </Space>}
-    />)}
-  </>
+        }
+      />
+    </Loader>
+  </UI.Wrapper>
 }
 
 export const GraphImage = (
