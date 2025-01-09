@@ -18,15 +18,17 @@ export function PersonaContextForm (props: {
 }) {
   const { $t } = useIntl()
   const { form, defaultValue, onGroupChange } = props
+  const selectedGroupId = Form.useWatch('groupId', form)
   const [searchPersonaList] = useLazySearchPersonaListQuery()
 
   const nameValidator = async (name: string) => {
     try {
+      if (!selectedGroupId) return Promise.resolve()
       const list = (await searchPersonaList({
-        params: { size: '2147483647', page: '0' },
-        payload: { keyword: name }
+        payload: { keyword: name, groupId: selectedGroupId, pageSize: '2147483647', page: '1' }
       }, true).unwrap()).data.filter(p => p.id !== defaultValue?.id).map(p => ({ name: p.name }))
-      return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Identity' }))
+      return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Identity' }),
+        'name', $t({ defaultMessage: 'in this identity group' }))
     } catch (e) {
       return Promise.resolve()
     }
