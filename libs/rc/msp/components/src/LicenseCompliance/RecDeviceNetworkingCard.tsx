@@ -9,13 +9,9 @@ import { LicenseCardProps } from '@acx-ui/msp/utils'
 import RecTabContent from './RecTabContent'
 import * as UI       from './styledComponents'
 
-
 export default function RecDeviceNetworkingCard (props: LicenseCardProps) {
-
   const { $t } = useIntl()
   const [currentTab, setCurrentTab] = useState<string | undefined>('summary')
-
-
   const { title, data, trialType } = props
 
   function onTabChange (tab: string) {

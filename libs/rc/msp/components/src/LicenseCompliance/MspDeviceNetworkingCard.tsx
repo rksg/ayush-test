@@ -10,15 +10,10 @@ import { TrialType }           from '@acx-ui/rc/utils'
 import * as UI    from './styledComponents'
 import TabContent from './TabContent'
 
-
 export default function MspDeviceNetworkingCard (props: MspLicenseCardProps) {
-
   const { $t } = useIntl()
   const [currentTab, setCurrentTab] = useState<string | undefined>('mspSubscriptions')
-
-
   const { title, selfData, mspData, isExtendedTrial, footerContent } = props
-
 
   function onTabChange (tab: string) {
     setCurrentTab(tab)
