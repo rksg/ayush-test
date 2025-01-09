@@ -1,4 +1,4 @@
-export * from './useIsSplitOn'
+export { useIsSplitOn, useAnySplitsOn } from './useIsSplitOn'
 export * from './useIsTierAllowed'
 export * from './SplitProvider'
 export * from './features'

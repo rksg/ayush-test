@@ -17,7 +17,7 @@ import {
 }                                    from '@acx-ui/components'
 import { ConfigChangePaginationParams }                    from '@acx-ui/components'
 import { get }                                             from '@acx-ui/config'
-import { Features, useIsTreatmentsOn }                     from '@acx-ui/feature-toggle'
+import { Features, useAnySplitsOn }                        from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                       from '@acx-ui/formatter'
 import { DownloadOutlined }                                from '@acx-ui/icons'
 import { TenantLink }                                      from '@acx-ui/react-router-dom'
@@ -48,7 +48,7 @@ export const transferSorter = (order:string) => {
 }
 
 export function useDownloadConfigChange () {
-  const showIntentAI = useIsTreatmentsOn([
+  const showIntentAI = useAnySplitsOn([
     Features.INTENT_AI_CONFIG_CHANGE_TOGGLE,
     Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE
   ])
@@ -69,7 +69,7 @@ export function useDownloadConfigChange () {
 }
 
 export function PagedTable () {
-  const showIntentAI = useIsTreatmentsOn([
+  const showIntentAI = useAnySplitsOn([
     Features.INTENT_AI_CONFIG_CHANGE_TOGGLE,
     Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE
   ])
