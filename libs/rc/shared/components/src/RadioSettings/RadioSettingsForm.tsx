@@ -337,7 +337,7 @@ export function RadioSettingsForm (props:{
         label={$t({ defaultMessage: 'Channel selection method:' })}
         name={methodFieldName}>
         <RadioFormSelect
-          disabled={disabled}
+          disabled={disabled || (!isVenueChannelSelectionManualEnabled && context === 'venue' && radioType === ApRadioTypeEnum.Radio6G)}
           bordered={!isUseVenueSettings}
           showArrow={!isUseVenueSettings}
           className={isUseVenueSettings? 'readOnly' : undefined}

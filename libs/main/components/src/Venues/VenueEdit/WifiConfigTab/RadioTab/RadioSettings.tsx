@@ -574,7 +574,8 @@ export function RadioSettings () {
           // eslint-disable-next-line max-len
           { defaultMessage: 'The Radio {dual5GName} inherited the channel selection from the Radio 5 GHz.{br}Please select at least two channels under the {dual5GName} block' },
           { dual5GName, br: <br /> }
-        ): (method === 'MANUAL' && isVenueChannelSelectionManualEnabled)?
+        ):
+        (method === 'MANUAL' && isVenueChannelSelectionManualEnabled)?
         $t({ defaultMessage: 'Please select one channel' }):
         $t({ defaultMessage: 'Please select at least two channels' })
       if (Array.isArray(channels) && ((method === 'MANUAL' && isVenueChannelSelectionManualEnabled)?(channels.length !== 1):(channels.length <2))) {
