@@ -314,22 +314,26 @@ export const Grid = styled.div`
     padding: 8px;
     border-radius: 4px;
     margin: 8px;
-    svg{
-      path {
-        stroke: var(--acx-primary-white);
-      }  
-    }
-    .ant-btn[disabled].ant-btn-default {
-      border: none;
+    .icon{
+      cursor: pointer;
+      margin: 4px;
+      width: 16px;
+      height: 16px;
       svg{
-        path {
-          stroke: var(--acx-neutrals-60);
-        }  
+        width: 16px;
+        height: 16px;
+      }
+      &:hover {
+        color: var(--acx-accents-orange-50);
+      }
+      &.disabled {
+        color: var(--acx-neutrals-70);
+        cursor: not-allowed;
       }
     }
   }
   &:hover .card-actions{
-    display: block;
+    display: flex;
   }
 }
 .rglb_group-item .group-item-container #card-container .card .card-footer {
