@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import userEvent from '@testing-library/user-event'
 
 import { get }                                                                                     from '@acx-ui/config'
-import { useIsTreatmentsOn }                                                                       from '@acx-ui/feature-toggle'
+import { useAnySplitsOn }                                                                          from '@acx-ui/feature-toggle'
 import { Provider, dataApiURL, store }                                                             from '@acx-ui/store'
 import { findTBody, mockGraphqlQuery, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 import { DateRange }                                                                               from '@acx-ui/utils'
@@ -119,7 +119,7 @@ describe('Table', () => {
   })
   describe('should render hyperlink', () => {
     beforeEach(() => {
-      jest.mocked(useIsTreatmentsOn).mockReturnValue(true)
+      jest.mocked(useAnySplitsOn).mockReturnValue(true)
       mockGraphqlQuery(dataApiURL, 'PagedConfigChange', { data: { network: { hierarchyNode: {
         pagedConfigChanges: { ...pagedConfigChanges, data } } } } })
     })
