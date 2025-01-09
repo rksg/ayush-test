@@ -29,6 +29,10 @@ export enum IncompatibilityFeatures {
   ARP_TERMINATION = 'ARP_TERMINATION'
 }
 
+export enum IncompatibilityFeatureGroups {
+  TUNNEL_PROFILE = 'TUNNEL_PROFILE'
+}
+
 export enum EdgeCompatibilityFeatureEnum {
   SD_LAN = 'SD-LAN',
   TUNNEL_PROFILE = 'Tunnel Profile',
