@@ -55,7 +55,7 @@ const bannerTestId = 'banner-test'
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
   useDateRange: jest.fn(),
-  Banner: jest.fn().mockReturnValue(<div data-testid={bannerTestId} />)
+  Banner: () => <div data-testid={bannerTestId} />
 }))
 
 jest.mock('@acx-ui/config', () => ({

@@ -188,8 +188,8 @@ describe('AIFeature component', () => {
       statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.',
       statusTrail: [],
       metadata: {
-        appliedAt: 'appliedAt',
-        scheduledAt: 'scheduledAt',
+        appliedAt: '',
+        scheduledAt: '',
         dataEndTime: '2024-04-19T07:30:00.000Z'
       }
     }
