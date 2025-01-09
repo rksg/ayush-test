@@ -2,7 +2,8 @@ import {
   RuckusAiChat,
   RuckusAiChatUrlInfo,
   WidgetListData,
-  ChatHistory
+  ChatHistory,
+  Canvas
 } from '@acx-ui/rc/utils'
 import { baseRuckusAiChatApi } from '@acx-ui/store'
 import { RequestPayload }      from '@acx-ui/types'
@@ -46,6 +47,32 @@ export const ruckusAiChatApi = baseRuckusAiChatApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Chat', id: 'LIST' }]
     }),
+    getCanvas: build.query<Canvas[], RequestPayload>({
+      query: () => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.getCanvas)
+        return {
+          ...req
+        }
+      }
+    }),
+    updateCanvas: build.mutation<Canvas, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.updateCanvas, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    saveCanvas: build.mutation<Canvas, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(RuckusAiChatUrlInfo.saveCanvas)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     chatAi: build.mutation<RuckusAiChat, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(RuckusAiChatUrlInfo.chats)
@@ -70,6 +97,10 @@ export const {
   useGetAllChatsQuery,
   useGetChatQuery,
   useLazyGetChatQuery,
+  useGetCanvasQuery,
+  useLazyGetCanvasQuery,
+  useUpdateCanvasMutation,
+  useSaveCanvasMutation,
   useChatAiMutation,
   useUpdateChatMutation,
   useDeleteChatMutation,

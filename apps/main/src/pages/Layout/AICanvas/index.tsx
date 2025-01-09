@@ -31,13 +31,14 @@ export default function AICanvas () {
   const [deleteChat] = useDeleteChatMutation()
   const [getChat] = useLazyGetChatQuery()
   const [loading, setLoading] = useState(false)
-  const [isChatLoading, setIsChatLoading] = useState(false)
+  const [isChatLoading, setIsChatLoading] = useState(true)
   const [historyVisible, setHistoryVisible] = useState(false)
   const [sessionId, setSessionId] = useState('')
   const [history, setHistory] = useState([] as HistoryListItem[])
   const [chats, setChats] = useState([] as ChatMessage[])
   const [ searchText, setSearchText ] = useState('')
   const [ isNewChat, setIsNewChat ] = useState(false)
+  const enabledRenameChat = false
 
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment! 
   I can also generate on-the-fly widgets for operational data, including Alerts and Metrics.` })
@@ -290,7 +291,9 @@ export default function AICanvas () {
                 </div>
               </Tooltip>
               <div className='action'>
-                <div className='button' onClick={()=> { onEditChatTitle(j) }}>
+                <div className='button'
+                  style={{ cursor: 'not-allowed' }}
+                  onClick={()=> { enabledRenameChat && onEditChatTitle(j) }}>
                   <EditOutlined size='sm' />
                 </div>
                 <div className='button' onClick={()=> { onDeleteChat(j) }}>
@@ -329,7 +332,7 @@ export default function AICanvas () {
               </div>
               <div className='title'>
                 <RuckusAiDog size='lg' />
-                <span>{$t({ defaultMessage: 'RUCKUS AI' })}</span>
+                <span>{$t({ defaultMessage: 'RUCKUS One Assistant' })}</span>
               </div>
               <div className='actions' style={{ width: '56px', justifyContent: 'end' }}>
                 <Close onClick={()=>{onClose()}}/>

@@ -170,7 +170,7 @@ function Card (props: CardProps) {
               >
                 <Minus />
               </div>
-              <div className='icon'>
+              <div className='icon disabled'>
                 <EditOutlined />
               </div>
               <div

@@ -25,7 +25,7 @@ export const History = styled.div`
       border: 0px;
     }
     &:first-of-type .time{
-      margin-top: -25px;
+      margin-top: -30px;
     }
     .time {
       font-size: 10px;
@@ -114,19 +114,22 @@ border-top: 75px solid rgba(255,255,255, 0.4);
       span {
         padding-left: 10px;
         font-family: var(--acx-accent-brand-font);
-        font-weight: var(--acx-headline-3-font-weight);
-        font-size: var(--acx-headline-3-font-size);
+        font-weight: 700;
+        font-size: var(--acx-headline-4-font-size);
       }
     }
     .actions{
       display: flex;
       align-items: center;
-      cursor: pointer;
+      width: 48px;
+      justify-content: space-between;
+      color: #000;
       svg {
-        width: 20px;
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
       }
       .newChat {
-        margin-left: 16px;
         &.disabled {
           color: var(--acx-neutrals-50);
         }
@@ -195,6 +198,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         border: 1px solid #D4D4D4;
         color: #000;
         margin-right: 0px;
+        font-weight: 400;
       }
       .chat-bubble {
         background: linear-gradient(275deg, #F7B605 -53.69%, #F79B06 -13.58%, 
@@ -206,6 +210,7 @@ border-top: 75px solid rgba(255,255,255, 0.4);
         border-radius: 16px 16px 16px 0px;
         margin: 7px;
         margin-left: 10px;
+        font-weight: 600;
       }
       .timestamp {
         color: var(--acx-neutrals-70);
@@ -262,8 +267,8 @@ export const Canvas = styled.div`
       cursor: default;
       padding: 10px 0;
       font-family: var(--acx-accent-brand-font);
-      font-weight: 600;
-      font-size: var(--acx-headline-3-font-size);
+      font-weight: 700;
+      font-size: var(--acx-headline-4-font-size);
     }
     .actions{
       button {

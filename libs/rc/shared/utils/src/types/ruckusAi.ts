@@ -72,3 +72,9 @@ export interface WidgetListData {
   axisType?: 'time' & 'category', // for line/bar chart
   multiseries?: boolean // for bar chart
 }
+
+export interface Canvas {
+  id: string,
+  name: string,
+  content: string
+}
