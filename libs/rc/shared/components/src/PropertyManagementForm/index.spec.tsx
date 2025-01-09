@@ -1,4 +1,3 @@
-
 import userEvent       from '@testing-library/user-event'
 import { rest }        from 'msw'
 import { useNavigate } from 'react-router-dom'
@@ -6,11 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
-  MacRegListUrlsInfo,
-  MsgTemplateUrls,
-  NewDpskBaseUrl,
-  NewPersonaBaseUrl,
-  PersonaUrls,
+  PropertyConfigs,
   PropertyUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
@@ -25,26 +20,31 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  mockDpskList,
-  mockMacRegistrationList,
-  mockPersonaGroupList,
-  replacePagination,
-  mockedTemplateScope,
-  mockEnabledNoPinPropertyConfig,
-  mockPropertyUnitList,
-  mockResidentPortalProfileList,
-  mockAllTemplates
-} from './__tests__/fixtures'
+  mockEnabledNoPinPropertyConfig } from './__tests__/fixtures'
 
-import { PropertyManagementForm } from '.'
+import { VenuePropertyManagementForm } from '.'
 
+const mockPropertyFormInitialValuesFn = jest.fn()
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 
-describe('Property Config Form', () => {
+jest.mock('./PropertyManagementForm', () => ({
+  ...jest.requireActual('./PropertyManagementForm'),
+  PropertyManagementForm: (props: {
+    venueId: string
+    initialValues: PropertyConfigs
+  }) => {
+    mockPropertyFormInitialValuesFn(props.initialValues)
+    return <div data-testid='PropertyManagementForm'>
+      <span>{'venueId:' + props.venueId}</span>
+      <span>{'initialValues:' + JSON.stringify(props.initialValues)}</span>
+    </div>}
+}))
+
+describe('Venue > Property Config Form', () => {
   const tenantId = '15a04f095a8f4a96acaf17e921e8a6df'
 
   const enabledParams = { tenantId, venueId: 'f892848466d047798430de7ac234e940' }
@@ -82,50 +82,6 @@ describe('Property Config Form', () => {
       rest.get(
         CommonUrlsInfo.getVenue.url,
         (req, res, ctx) => res(ctx.json({ data: 'venue-id' }))
-      ),
-      rest.get(
-        replacePagination(PropertyUrlsInfo.getResidentPortalList.url),
-        (req, res, ctx) => res(ctx.json(mockResidentPortalProfileList))
-      ),
-      rest.get(
-        NewPersonaBaseUrl,
-        (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
-      ),
-      rest.get(
-        replacePagination(MacRegListUrlsInfo.getMacRegistrationPools.url),
-        (req, res, ctx) => res(ctx.json(mockMacRegistrationList))
-      ),
-      rest.get(
-        NewDpskBaseUrl,
-        (req, res, ctx) => res(ctx.json(mockDpskList))
-      ),
-      rest.post(
-        PropertyUrlsInfo.getPropertyUnitList.url,
-        (_, res, ctx) => res(ctx.json(mockPropertyUnitList))
-      ),
-      rest.get(
-        PersonaUrls.getPersonaGroupById.url,
-        (_, res, ctx) => res(ctx.json(mockPersonaGroupList.content[0]))
-      ),
-      rest.get(
-        MsgTemplateUrls.getTemplateScopeByIdWithRegistration.url.split('?')[0],
-        (_, res, ctx) => res(ctx.json(mockedTemplateScope))
-      ),
-      rest.get(
-        MsgTemplateUrls.getAllTemplatesByTemplateScopeId.url.split('?')[0],
-        (_, res, ctx) => res(ctx.json(mockAllTemplates))
-      ),
-      rest.post(
-        PersonaUrls.searchPersonaGroupList.url.split('?')[0],
-        (_, res, ctx) => res(ctx.json({}))
-      ),
-      rest.post(
-        MsgTemplateUrls.getAllTemplateGroupsByCategoryId.url,
-        (_, res, ctx) => res(ctx.json({ paging: { totalCount: 0 } }))
-      ),
-      rest.get(
-        MsgTemplateUrls.getCategoryById.url,
-        (_, res, ctx) => res(ctx.json({}))
       )
     )
   })
@@ -146,7 +102,7 @@ describe('Property Config Form', () => {
     }
 
     render(<Provider>
-      <PropertyManagementForm
+      <VenuePropertyManagementForm
         venueId={enabledParams.venueId}
         onCancel={navigateToVenueOverview}
       />
@@ -166,7 +122,7 @@ describe('Property Config Form', () => {
 
   it('should render simple Property config tab with 404 api response', async () => {
     render(<Provider>
-      <PropertyManagementForm
+      <VenuePropertyManagementForm
         venueId={disabledParams.venueId}
         postSubmit={mockedPostSubmit}
       />
@@ -191,7 +147,7 @@ describe('Property Config Form', () => {
   it.skip('should render Property config tab', async () => {
     render(
       <Provider>
-        <PropertyManagementForm
+        <VenuePropertyManagementForm
           venueId={enabledParams.venueId}
         />
       </Provider>, { route: { params: enabledParams } }
@@ -226,7 +182,7 @@ describe('Property Config Form', () => {
 
     render(
       <Provider>
-        <PropertyManagementForm
+        <VenuePropertyManagementForm
           venueId={enabledParams.venueId}
         />
       </Provider>, { route: { params: enabledParams } }
@@ -261,7 +217,7 @@ describe('Property Config Form', () => {
 
     render(
       <Provider>
-        <PropertyManagementForm
+        <VenuePropertyManagementForm
           venueId={enabledParams.venueId}
         />
       </Provider>, { route: { params: enabledParams } }
@@ -280,7 +236,7 @@ describe('Property Config Form', () => {
   it('should pop up warning dialog while disable property', async () => {
     render(
       <Provider>
-        <PropertyManagementForm
+        <VenuePropertyManagementForm
           venueId={enabledParams.venueId}
         />
       </Provider>, { route: { params: enabledParams } }
