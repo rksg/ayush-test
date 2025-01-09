@@ -11,7 +11,6 @@ import { validationMessages }                                                   
 import { PersonaGroupSelect } from '../PersonaGroupSelect'
 
 
-
 export function PersonaContextForm (props: {
   form: FormInstance,
   defaultValue?: Partial<Persona>,
