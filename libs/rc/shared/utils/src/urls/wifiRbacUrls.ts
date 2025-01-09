@@ -544,6 +544,16 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/smartMonitorSettings',
     newApi: true
   },
+  getApIot: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/iotSettings',
+    newApi: true
+  },
+  updateApIot: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/iotSettings',
+    newApi: true
+  },
   getVenueDirectedMulticast: {
     method: 'get',
     //url: '/venues/:venueId/directedMulticastSettings',
@@ -619,6 +629,16 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueRebootTimeout: {
     method: 'put',
     url: '/venues/:venueId/apRebootTimeoutSettings',
+    newApi: true
+  },
+  getVenueIot: {
+    method: 'get',
+    url: '/venues/:venueId/apIotSettings',
+    newApi: true
+  },
+  updateVenueIot: {
+    method: 'put',
+    url: '/venues/:venueId/apIotSettings',
     newApi: true
   },
   getVenueClientAdmissionControl: {

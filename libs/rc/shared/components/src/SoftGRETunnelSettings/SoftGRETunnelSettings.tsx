@@ -5,6 +5,7 @@ import { Tooltip, Alert, StepsForm }              from '@acx-ui/components'
 import { SoftGreProfileDispatcher, SoftGreState } from '@acx-ui/rc/utils'
 
 import { SoftGREProfileSettings } from './SoftGREProfileSettings'
+import { FieldLabel }             from './styledComponents'
 
 interface SoftGRETunnelSettingsProps {
   index: number;
@@ -33,48 +34,50 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
 
   return (
     <>
-      <StepsForm.FieldLabel width={'220px'}>
-        <Space>
-          {$t({ defaultMessage: 'Enable SoftGRE Tunnel' })}
-          <Tooltip.Question
-            title={
-              $t({ defaultMessage: 'Tunnel the traffic to a SoftGRE gateway. '+
+      <StepsForm.StepForm>
+        <FieldLabel width='220px'>
+          <Space>
+            {$t({ defaultMessage: 'Enable SoftGRE Tunnel' })}
+            <Tooltip.Question
+              title={
+                $t({ defaultMessage: 'Tunnel the traffic to a SoftGRE gateway. '+
               'Please note that the uplink port does not support ' +
               'SoftGRE tunneling, which will cause the AP(s) to disconnect.' })
-            }
-            placement='right'
-            iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-          />
-        </Space>
-        <Form.Item
-          valuePropName='checked'
-          style={{ marginTop: '-5px' }}
-          name={softgreTunnelFieldName}
-          children={
-            <Switch
-              data-testid={'softgre-tunnel-switch'}
-              disabled={readonly}
-              onClick={(value) => {
-                onGUIChanged && onGUIChanged('softGreEnabled')
-                if (dispatch) {
-                  value ?
-                    dispatch({
-                      state: SoftGreState.TurnOnSoftGre,
-                      portId,
-                      index,
-                      softGreProfileId: form.getFieldValue(['lan', index, 'softGreProfileId'])
-                    }) :
-                    dispatch({
-                      state: SoftGreState.TurnOffSoftGre,
-                      portId,
-                      index
-                    })
-                }
-              }}
+              }
+              placement='right'
+              iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
             />
-          }
-        />
-      </StepsForm.FieldLabel>
+          </Space>
+          <Form.Item
+            valuePropName='checked'
+            style={{ marginTop: '-5px' }}
+            name={softgreTunnelFieldName}
+            children={
+              <Switch
+                data-testid={'softgre-tunnel-switch'}
+                disabled={readonly}
+                onClick={(value) => {
+                  onGUIChanged && onGUIChanged('softGreEnabled')
+                  if (dispatch) {
+                    value ?
+                      dispatch({
+                        state: SoftGreState.TurnOnSoftGre,
+                        portId,
+                        index,
+                        softGreProfileId: form.getFieldValue(['lan', index, 'softGreProfileId'])
+                      }) :
+                      dispatch({
+                        state: SoftGreState.TurnOffSoftGre,
+                        portId,
+                        index
+                      })
+                  }
+                }}
+              />
+            }
+          />
+        </FieldLabel>
+      </StepsForm.StepForm>
       {
         softGreTunnelEnable && <>
           <Alert

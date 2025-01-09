@@ -8,7 +8,7 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   ApFirmwareUpdateGroupType,
   convertApModelFirmwaresToUpdateGroups,
-  ExpandableApModelList, filterVersionBehindGA,
+  ExpandableApModelList, isAlpha, isAlphaOrBeta, isBeta,
   VersionLabelType
 } from '@acx-ui/rc/components'
 import { useGetAllApModelFirmwareListQuery } from '@acx-ui/rc/services'
@@ -32,10 +32,10 @@ export function VersionBannerPerApModel () {
         isApFwMgmtEarlyAccess ? data.filter(d => d.labels?.includes(FirmwareLabel.GA)) : data
       )
       let updateAlphaGroups = convertApModelFirmwaresToUpdateGroups(
-        data.filter(d => d.labels?.includes(FirmwareLabel.ALPHA))
+        data.filter(d => isAlpha(d.labels))
       )
       let updateBetaGroups = convertApModelFirmwaresToUpdateGroups(
-        data.filter(d => d.labels?.includes(FirmwareLabel.BETA))
+        data.filter(d => isBeta(d.labels))
       )
 
       updateGroups = [
@@ -46,7 +46,6 @@ export function VersionBannerPerApModel () {
       ]
 
       updateGroups.sort((a, b) => compareVersions(b.firmwares[0].name, a.firmwares[0].name))
-      updateGroups = filterVersionBehindGA(updateGroups)
 
       const tenantLatestVersionUpdateGroup = extractLatestVersionToUpdateGroup(data)
       if (updateGroups.length === 0) { // ACX-56531: At least display the latest version where there is no AP in the tenant
@@ -147,8 +146,7 @@ function VersionPerApModelInfo (props: VersionInfoPerApModelProps) {
   }
 
   const generateVersionName = (firmware: VersionLabelType) => {
-    // eslint-disable-next-line max-len
-    if (firmware.labels?.includes(FirmwareLabel.ALPHA) || firmware.labels?.includes(FirmwareLabel.BETA)) {
+    if (isAlphaOrBeta(firmware.labels)) {
       return `${ $t({ defaultMessage: '{name} (Early Access)' }, { name: firmware.name }) }`
     }
     return firmware.name
