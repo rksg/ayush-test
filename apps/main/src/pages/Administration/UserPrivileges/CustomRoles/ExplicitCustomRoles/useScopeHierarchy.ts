@@ -176,7 +176,7 @@ export function useScopeHierarchy ($t: IntlShape['$t']) {
       ]
     } as TreeDataNode,
     {
-      title: $t({ defaultMessage: 'SmartEdge' }),
+      title: $t({ defaultMessage: 'Edge' }),
       key: 'edge',
       children: [
         {
