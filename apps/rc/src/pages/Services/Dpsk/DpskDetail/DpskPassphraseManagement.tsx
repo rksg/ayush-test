@@ -22,7 +22,8 @@ import {
   useRevokeDpskPassphraseListMutation,
   useUploadPassphrasesMutation,
   getDisabledActionMessage,
-  showAppliedInstanceMessage
+  showAppliedInstanceMessage,
+  useSearchPersonaListQuery
 } from '@acx-ui/rc/services'
 import {
   EXPIRATION_TIME_FORMAT,
@@ -37,7 +38,7 @@ import {
   hasDpskAccess,
   transformAdvancedDpskExpirationText,
   unlimitedNumberOfDeviceLabel,
-  useTableQuery
+  useTableQuery, IdentityDetailsLink
 } from '@acx-ui/rc/utils'
 import { useParams }                                               from '@acx-ui/react-router-dom'
 import { WifiScopes }                                              from '@acx-ui/types'
@@ -97,6 +98,10 @@ export default function DpskPassphraseManagement () {
     pagination: { settingsId }
   })
 
+  const { data: identityList } = useSearchPersonaListQuery(
+    { payload: { ids: [...new Set(tableQuery.data?.data?.map(d => d.identityId))] } },
+    { skip: !tableQuery.data || !isIdentityGroupRequired })
+
   const downloadPassphrases = async () => {
     try {
       const payload = {
@@ -124,10 +129,21 @@ export default function DpskPassphraseManagement () {
     },
     {
       key: 'username',
-      title: $t({ defaultMessage: 'User Name' }),
+      title: $t({ defaultMessage: 'Identity' }),
       dataIndex: 'username',
       sorter: true,
-      searchable: true
+      searchable: true,
+      render: function (_, row) {
+        if (isIdentityGroupRequired) {
+          const item = identityList?.data?.filter(data => data.id===row.identityId)[0]
+          return (item ? <IdentityDetailsLink
+            name={item.name}
+            personaId={item.id}
+            personaGroupId={item.groupId}
+          /> : row.username)
+        }
+        return row.username
+      }
     },
     {
       key: 'numberOfDevices',
@@ -314,6 +330,11 @@ export default function DpskPassphraseManagement () {
     {
       scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Delete' }),
+      disabled: ([selectedRow]) => !!selectedRow?.identityId,
+      tooltip: (selectedRow) => getDisabledActionMessage(
+        selectedRow,
+        [{ fieldName: 'identityId', fieldText: $t({ defaultMessage: 'Identity' }) }],
+        $t({ defaultMessage: 'delete' })),
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
         doDelete(selectedRows, clearSelection)
       }

@@ -68,6 +68,7 @@ export interface CreateDpskPassphrasesFormFields {
   email?: string;
   phoneNumber?: string;
   revocationReason?: string;
+  identityId?: string;
 }
 
 export interface DpskPassphrasesSaveData {
