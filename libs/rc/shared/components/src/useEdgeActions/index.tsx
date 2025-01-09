@@ -2,13 +2,13 @@ import { Form, Input, Modal }       from 'antd'
 import { RawIntlProvider, useIntl } from 'react-intl'
 
 import { showActionModal }                                        from '@acx-ui/components'
-import { useIsSplitOn, Features, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useDeleteEdgeMutation,
   useFactoryResetEdgeMutation,
   useRebootEdgeMutation,
-  useShutdownEdgeMutation,
-  useSendOtpMutation
+  useSendOtpMutation,
+  useShutdownEdgeMutation
 } from '@acx-ui/rc/services'
 import { EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
 import { getIntl }                    from '@acx-ui/utils'
@@ -27,6 +27,7 @@ export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
   const isEdgeAvReportEnabled = useIsTierAllowed(TierFeatures.EDGE_AV_REPORT)
   const isEdgeNatTEnabled = useIsTierAllowed(TierFeatures.EDGE_NAT_T)
   const isEdgeArpTerminationEnabled = useIsTierAllowed(TierFeatures.EDGE_ARPT)
+  const isEdgeMdnsProxyEnabled = useIsTierAllowed(TierFeatures.EDGE_MDNS_PROXY)
 
   const isEnabledWithBooleanFlag = isEdgeEnabled && isEdgeFeatureReady
   switch(featureFlagKey) {
@@ -39,6 +40,8 @@ export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
       return isEnabledWithBooleanFlag && isEdgeNatTEnabled
     case Features.EDGE_ARPT_TOGGLE:
       return isEnabledWithBooleanFlag && isEdgeArpTerminationEnabled
+    case Features.EDGE_MDNS_PROXY_TOGGLE:
+      return isEnabledWithBooleanFlag && isEdgeMdnsProxyEnabled
     default:
       return isEnabledWithBooleanFlag
   }
