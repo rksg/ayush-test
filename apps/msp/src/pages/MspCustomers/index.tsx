@@ -242,35 +242,35 @@ export function MspCustomers () {
         value: $t({ defaultMessage: 'Active' })
       },
       {
-        key: 'Not Active',
+        key: 'Inactive',
         value: $t({ defaultMessage: 'Inactive' })
       },
       {
-        key: 'TRIAL',
+        key: 'Trial',
         value: $t({ defaultMessage: 'Trial' })
       },
       {
-        key: 'EXTENDED_TRIAL',
+        key: 'Extended Trial',
         value: $t({ defaultMessage: 'Extended Trial' })
       }
     ]
 
     const expirationDateFilterOpts = ($t: IntlShape['$t']) => [
-      { key: undefined, value: $t({ defaultMessage: 'All' }) },
+      { key: '', value: $t({ defaultMessage: 'All' }) },
       {
         key: 'Non-Expired',
         value: $t({ defaultMessage: 'Non-Expired' })
       },
       {
-        key: '30',
+        key: '+30',
         value: $t({ defaultMessage: 'Expiring within 30 days' })
       },
       {
-        key: '60',
+        key: '+60',
         value: $t({ defaultMessage: 'Expiring within 60 days' })
       },
       {
-        key: '90',
+        key: '+90',
         value: $t({ defaultMessage: 'Expiring within 90 days' })
       },
       {
@@ -278,15 +278,15 @@ export function MspCustomers () {
         value: $t({ defaultMessage: 'Expired' })
       },
       {
-        key: 'EXPIRED_IN_LAST_30_DAYS',
+        key: '-30',
         value: $t({ defaultMessage: 'Expired in last 30 days' })
       },
       {
-        key: 'EXPIRED_IN_LAST_30_DAYS',
+        key: '-60',
         value: $t({ defaultMessage: 'Expired in last 60 days' })
       },
       {
-        key: 'EXPIRED_IN_LAST_30_DAYS',
+        key: '-90',
         value: $t({ defaultMessage: 'Expired in last 90 days' })
       }
     ]
@@ -321,6 +321,7 @@ export function MspCustomers () {
         key: 'status',
         sorter: true,
         filterMultiple: false,
+        filterPlaceholder: $t({ defaultMessage: 'Service Status' }),
         filterable: isFilterEnable ? statusTypeFilterOpts($t) : false,
         width: 120,
         render: function (_, row) {
@@ -493,6 +494,7 @@ export function MspCustomers () {
         key: 'expirationDate',
         sorter: true,
         filterMultiple: false,
+        filterPlaceholder: $t({ defaultMessage: 'Service Date' }),
         filterable: isFilterEnable ? expirationDateFilterOpts($t) : false,
         render: function (_, row) {
           const nextExpirationDate = mspUtils.transformExpirationDate(row)
