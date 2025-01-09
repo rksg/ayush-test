@@ -249,7 +249,13 @@ export const mockedIntentCRRM = {
   updatedAt: '2023-06-26T06:04:00.000Z',
   metadata: {
     scheduledAt: '2023-07-15T14:15:00.000Z',
-    dataEndTime: '2023-06-26T00:00:25.772Z'
+    dataEndTime: '2023-06-26T00:00:25.772Z',
+    preferences: {
+      crrmFullOptimization: false
+    },
+    algorithmData: {
+      isCrrmFullOptimization: true
+    }
   },
   sliceType: 'zone',
   sliceValue: '21_US_Beta_Samsung',
