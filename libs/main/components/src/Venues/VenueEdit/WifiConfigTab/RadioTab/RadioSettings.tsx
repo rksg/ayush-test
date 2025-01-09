@@ -135,6 +135,7 @@ export function RadioSettings () {
   const is6gChannelSeparation = useIsSplitOn(Features.WIFI_6G_INDOOR_OUTDOOR_SEPARATION)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseRbacApi
+  const isVenueChannelSelectionManualEnabled = useIsSplitOn(Features.ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL)
 
   const {
     editContextData,
@@ -568,40 +569,21 @@ export function RadioSettings () {
     const validateChannels = (channels: unknown[] | undefined, method: string | undefined,
       title: string, dual5GName?: string) => {
 
-      if (Array.isArray(channels)) {
-        const channelsLen = channels.length
-
-        let content = ''
-        if (method === 'MANUAL') {
-          if (channelsLen !== 1) {
-            content = $t({ defaultMessage: 'Please select one channel' })
-          }
-        } else if (channelsLen <2) {
-          if (dual5GName) {
-            const dual5gContent = $t(
-              // eslint-disable-next-line max-len
-              { defaultMessage: 'The Radio {dual5GName} inherited the channel selection from the Radio 5 GHz.{br}Please select at least two channels under the {dual5GName} block' },
-              { dual5GName, br: <br /> }
-            )
-            showActionModal({
-              type: 'error',
-              title: title,
-              content: dual5gContent
-            })
-            return false
-          } else {
-            content = $t({ defaultMessage: 'Please select at least two channels' })
-          }
-        }
-
-        if (content !== '') {
-          showActionModal({
-            type: 'error',
-            title: title,
-            content: content
-          })
-          return false
-        }
+      const content = dual5GName?
+        $t(
+          // eslint-disable-next-line max-len
+          { defaultMessage: 'The Radio {dual5GName} inherited the channel selection from the Radio 5 GHz.{br}Please select at least two channels under the {dual5GName} block' },
+          { dual5GName, br: <br /> }
+        ): (method === 'MANUAL' && isVenueChannelSelectionManualEnabled)?
+        $t({ defaultMessage: 'Please select one channel' }):
+        $t({ defaultMessage: 'Please select at least two channels' })
+      if (Array.isArray(channels) && ((method === 'MANUAL' && isVenueChannelSelectionManualEnabled)?(channels.length !== 1):(channels.length <2))) {
+        showActionModal({
+          type: 'error',
+          title: title,
+          content: content
+        })
+        return false
       }
       return true
     }

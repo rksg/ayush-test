@@ -253,7 +253,8 @@ export enum Features {
   AP_USB_PORT_SUPPORT_TOGGLE = 'wifi-usb-port-support-toggle',
   ACX_UI_NON_PROXY_ACCOUNTING_DPSK_TOGGLE = 'acx-ui-non-proxy-accounting-dpsk-toggle',
   AP_FW_MGMT_EARLY_ACCESS_TOGGLE = 'ap-fw-mgmt-early-access-toggle',
-  ACX_UI_DATE_RANGE_LIMIT = 'acx-ui-date-range-selection-limit-30-days-toggle'
+  ACX_UI_DATE_RANGE_LIMIT = 'acx-ui-date-range-selection-limit-30-days-toggle',
+  ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL = 'acx-ui-venue-channel-selection-manual-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

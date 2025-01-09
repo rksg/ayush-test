@@ -80,9 +80,12 @@ export function RadioSettingsForm (props:{
   const maxFloorFieldName = [...radioDataKey, 'venueHeight', 'maxFloor']
 
   const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
+  const isVenueChannelSelectionManualEnabled = useIsSplitOn(Features.ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL)
 
-  const channelSelectionOpts = (radioType === ApRadioTypeEnum.Radio6G) ?
-    apChannelSelectionMethods6GOptions : apChannelSelectionMethodsOptions
+  const channelSelectionOpts = (!isVenueChannelSelectionManualEnabled && context === 'venue') ?
+    channelSelectionMethodsOptions :
+    (radioType === ApRadioTypeEnum.Radio6G) ?
+      apChannelSelectionMethods6GOptions : apChannelSelectionMethodsOptions
   const navigate = useNavigate()
   const location = useLocation()
   const detailsPath = usePathBasedOnConfigTemplate(`/venues/${venue?.id}/edit/wifi/radio/Normal6GHz`)
@@ -334,7 +337,7 @@ export function RadioSettingsForm (props:{
         label={$t({ defaultMessage: 'Channel selection method:' })}
         name={methodFieldName}>
         <RadioFormSelect
-          disabled={disabled || (context === 'venue' && radioType === ApRadioTypeEnum.Radio6G)}
+          disabled={disabled}
           bordered={!isUseVenueSettings}
           showArrow={!isUseVenueSettings}
           className={isUseVenueSettings? 'readOnly' : undefined}

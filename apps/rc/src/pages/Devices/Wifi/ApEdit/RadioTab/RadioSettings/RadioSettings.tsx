@@ -310,6 +310,8 @@ export function RadioSettings () {
 
   const isWifiSwitchableRfEnabled = useIsSplitOn(Features.WIFI_SWITCHABLE_RF_TOGGLE)
 
+  const isVenueChannelSelectionManualEnabled = useIsSplitOn(Features.ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL)
+
   const { apData, apCapabilities, venueData } = useContext(ApDataContext)
   const venueId = venueData?.id
   const params = {
@@ -673,8 +675,12 @@ export function RadioSettings () {
 
         const { method, manualChannel } = radioParams
         if (method === 'MANUAL') {
-          // Use venue settings & channel selection method is "manual", ap's allowedChannels = venue's allowedChannels.
-          if (!isUseVenueSettings) {
+          if (isVenueChannelSelectionManualEnabled) {
+            // Use venue settings & channel selection method is "manual", ap's allowedChannels = venue's allowedChannels.
+            if (!isUseVenueSettings) {
+              radioParams.allowedChannels = [manualChannel.toString()]
+            }
+          } else {
             radioParams.allowedChannels = [manualChannel.toString()]
           }
         }
