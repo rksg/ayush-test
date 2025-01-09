@@ -907,7 +907,8 @@ export type FeatureSetResponse = {
 }
 
 export type IncompatibleFeature = FeatureSet & {
-  incompatibleDevices?: ApIncompatibleDevice[],
+  incompatibleDevices?: ApIncompatibleDevice[]
+  children?: IncompatibleFeature[]
 }
 
 export type Compatibility = {
