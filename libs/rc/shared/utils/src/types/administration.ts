@@ -484,14 +484,6 @@ export interface Webhook {
   id?: string,
   name?: string,
   url?: string,
-  payload?: string,
-  status?: string
-}
-
-export interface WebhookRecord {
-  id?: string,
-  name?: string,
-  url?: string,
   secret?: string,
   payload?: string,
   status?: string,
@@ -499,4 +491,3 @@ export interface WebhookRecord {
   activity: Record<string, string[]>,
   event: Record<string, string[]>
 }
-

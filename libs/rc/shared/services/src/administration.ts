@@ -35,7 +35,6 @@ import {
   TwiliosIncommingPhoneNumbers,
   TwiliosMessagingServices,
   Webhook,
-  WebhookRecord,
   TableResult
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
@@ -931,9 +930,20 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req
         }
       },
-      providesTags: [{ type: 'Administration', id: 'WEBHOOK_LIST' }]
+      providesTags: [{ type: 'Administration', id: 'WEBHOOK_LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'WEBHOOK'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'Administration', id: 'WEBHOOK_LIST' }
+            ]))
+          })
+        })
+      }
     }),
-    getWebhookEntry: build.query<WebhookRecord, RequestPayload>({
+    getWebhookEntry: build.query<Webhook, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.getWebhookEntry, params)
         return{

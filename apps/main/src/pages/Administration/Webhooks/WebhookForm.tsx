@@ -8,10 +8,15 @@ import {
   DrawerProps,
   Tabs
 } from '@acx-ui/components'
-import { useAddWebhookMutation, useUpdateWebhookMutation, useGetWebhookEntryQuery }                               from '@acx-ui/rc/services'
-import { Webhook, WebhookActivityEnum, WebhookEventEnum, WebhookIncidentEnum, WebhookPayloadEnum, WebhookRecord } from '@acx-ui/rc/utils'
+import { useAddWebhookMutation, useUpdateWebhookMutation } from '@acx-ui/rc/services'
+import {
+  Webhook,
+  WebhookActivityEnum,
+  WebhookEventEnum,
+  WebhookIncidentEnum,
+  WebhookPayloadEnum
+} from '@acx-ui/rc/utils'
 
-// import { fakeWebhookEntry }                                                     from './__tests__/fixtures'
 import SettingsTab                                            from './SettingsTab'
 import * as UI                                                from './styledComponents'
 import { getEventsTree, getActivitiesTree, getIncidentsTree } from './webhookConfig'
@@ -34,18 +39,16 @@ export function WebhookForm (props: {
   const { $t } = useIntl()
   const [form] = Form.useForm<Webhook>()
   const [currentTab, setCurrentTab] = useState('settings')
-  const [settings, setSettings] = useState<WebhookRecord>()
+  const [settings, setSettings] = useState<Webhook>()
   const [incidents, setIncidents] = useState<string[]>([])
   const [activities, setActivities] = useState<string[]>([])
   const [events, setEvents] = useState<string[]>([])
   const [enabled, setEnabled] = useState<boolean>()
-  const webhook = useGetWebhookEntryQuery({ id: props.selected?.id }, { skip: !props.selected })
-  // const webhook = props.selected ? { data: fakeWebhookEntry } : undefined
+  const webhook = props.selected ?? undefined
   const [addWebhook] = useAddWebhookMutation()
   const [updateWebhook] = useUpdateWebhookMutation()
 
-
-  const setWebhookEditValues = (data: WebhookRecord) => {
+  const setWebhookEditValues = (data: Webhook) => {
     setSettings({
       ...data,
       payload: WebhookPayloadEnum[data.payload as keyof typeof WebhookPayloadEnum]
@@ -63,10 +66,10 @@ export function WebhookForm (props: {
   }
 
   useEffect(() => {
-    if (webhook?.data) {
-      setWebhookEditValues(webhook.data)
+    if (webhook) {
+      setWebhookEditValues(webhook)
     }
-  },[webhook?.data])
+  },[webhook])
 
   const onClose = useCallback(() => {
     form.resetFields()
@@ -86,7 +89,7 @@ export function WebhookForm (props: {
     try {
       await form.validateFields()
       const values = form.getFieldsValue(['name','url','secret','payload'])
-      const payload: WebhookRecord = {
+      const payload: Webhook = {
         ...values,
         payload: Object.keys(WebhookPayloadEnum)[Object.values(WebhookPayloadEnum)
           .indexOf(values.payload as WebhookPayloadEnum)],
@@ -168,20 +171,20 @@ export function WebhookForm (props: {
     destroyOnClose: true,
     visible: props.visible,
     width: 450,
-    title: webhook?.data
+    title: webhook
       ? $t({ defaultMessage: 'Edit Webhook' })
       : $t({ defaultMessage: 'Create Webhook' }),
     onClose: onClose,
     footer: <Drawer.FormFooter
       extra={<label>
-        <Switch key={`toggle-${webhook?.data?.id}`}
+        <Switch key={`toggle-${webhook?.id}`}
           checked={enabled}
           onChange={(value) => setEnabled(value)}
         />
         <span>{enabled ? $t({ defaultMessage: 'Enabled' })
           : $t({ defaultMessage: 'Disabled' })}</span>
       </label>}
-      buttonLabel={{ save: webhook?.data
+      buttonLabel={{ save: webhook
         ? $t({ defaultMessage: 'Save' })
         : $t({ defaultMessage: 'Create' })
       }}

@@ -354,7 +354,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addWebhook: {
     method: 'post',
-    url: '/webhooks/',
+    url: '/webhooks',
     newApi: true
   },
   updateWebhook: {

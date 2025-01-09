@@ -13,7 +13,6 @@ import { defaultSort, sortProp, useTableQuery, Webhook, WebhookPayloadEnum } fro
 import { SwitchScopes, WifiScopes }                                          from '@acx-ui/types'
 import { filterByAccess, hasCrossVenuesPermission, hasPermission }           from '@acx-ui/user'
 
-// import { fakeWebhooks }                from './__tests__/fixtures'
 import { getWebhookPayloadEnumString } from './webhookConfig'
 import { WebhookForm }                 from './WebhookForm'
 
@@ -35,7 +34,6 @@ const R1Webhooks = (props: R1WebhooksProps) => {
     useQuery: useGetWebhooksQuery,
     defaultPayload: {}
   })
-  // const tableQuery = { data: fakeWebhooks, isLoading: false }
 
   const [deleteWebhook] = useDeleteWebhookMutation()
 
@@ -92,12 +90,12 @@ const R1Webhooks = (props: R1WebhooksProps) => {
   }, {
     label: $t({ defaultMessage: 'Delete' }),
     scopeKey: [WifiScopes.DELETE, SwitchScopes.DELETE],
-    onClick: ([webhook]) => showActionModal({
+    onClick: ([webhook], clearSelection) => showActionModal({
       type: 'confirm',
       title: $t({ defaultMessage: 'Delete "{name}"?' }, { name: webhook.name }),
       content: $t({ defaultMessage: 'Are you sure you want to delete this webhook?' }),
-      onOk: (rows, clearSelection) => {
-        deleteWebhook({ params: { id: rows[0].id } })
+      onOk: () => {
+        deleteWebhook({ params: { webhookId: webhook.id } })
           .then(clearSelection)
       }
     })
