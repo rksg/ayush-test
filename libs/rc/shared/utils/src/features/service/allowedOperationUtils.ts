@@ -1,14 +1,12 @@
 import { RbacOpsIds }           from '@acx-ui/types'
 import { hasAllowedOperations } from '@acx-ui/user'
 
-import { useConfigTemplate } from '../../configTemplate'
-import { ServiceType }       from '../../constants'
-import { PolicyType }        from '../../types'
-import { PolicyOperation }   from '../policy'
+import { useConfigTemplate }             from '../../configTemplate'
+import { ServiceType, ServiceOperation } from '../../constants'
+import { PolicyType, PolicyOperation }   from '../../types'
 
 import { AllowedOperationMap, policyAllowedOperationMap, serviceAllowedOperationMap } from './allowedOperationContentMap'
 import { SvcPcyAllowedOper, SvcPcyAllowedType }                                       from './servicePolicyAbacContentsMap'
-import { ServiceOperation }                                                           from './serviceRouteUtils'
 
 const getAllowedOperation = <T extends SvcPcyAllowedType, O extends SvcPcyAllowedOper>(
   { map, type, oper, isTemplate = false }:

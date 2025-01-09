@@ -1,11 +1,9 @@
 import { RbacOpsIds } from '@acx-ui/types'
 
-import { ServiceType }     from '../../constants'
-import { PolicyType }      from '../../types'
-import { PolicyOperation } from '../policy'
+import { ServiceType, ServiceOperation } from '../../constants'
+import { PolicyType, PolicyOperation }   from '../../types'
 
 import { SvcPcyAllowedOper, SvcPcyAllowedType } from './servicePolicyAbacContentsMap'
-import { ServiceOperation }                     from './serviceRouteUtils'
 
 export type AllowedOperationMap<T extends SvcPcyAllowedType, O extends SvcPcyAllowedOper> =
   Partial<Record<T, Partial<Record<O, RbacOpsIds>>>>

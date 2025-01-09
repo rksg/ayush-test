@@ -1,9 +1,7 @@
 import { ApiInfo } from '@acx-ui/utils'
 
-import { ServiceType }                                                                                                      from '../constants'
-import { PolicyOperation }                                                                                                  from '../features/policy'
-import { ServiceOperation }                                                                                                 from '../features/service'
-import { ConfigTemplateType, PolicyType }                                                                                   from '../types'
+import { ServiceOperation, ServiceType }                                                                                    from '../constants'
+import { ConfigTemplateType, PolicyType, PolicyOperation }                                                                  from '../types'
 import { ApGroupConfigTemplateUrlsInfo, SwitchConfigTemplateUrlsInfo, VenueConfigTemplateUrlsInfo, ConfigTemplateUrlsInfo } from '../urls'
 
 export const configTemplatePolicyTypeMap: Partial<Record<ConfigTemplateType, PolicyType>> = {
