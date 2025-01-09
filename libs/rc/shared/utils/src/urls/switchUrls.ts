@@ -684,7 +684,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchPortProfilesCount: {
     method: 'get',
-    url: '/switchPortProfiles/portProfiles/totalAmount',
+    url: '/switchPortProfiles/portProfiles/totalAmounts',
     newApi: true
   },
   addSwitchPortProfile: {
