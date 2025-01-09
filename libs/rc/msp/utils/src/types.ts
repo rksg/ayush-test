@@ -657,3 +657,28 @@ export interface MileageSeriesData {
   extraData: MileageBreakUp[];
   isZeroQuantity?: boolean;
 }
+
+export const AssignedEntitlementListPayload = {
+  fields: [
+    'externalId',
+    'licenseType',
+    'effectiveDate',
+    'expirationDate',
+    'quantity',
+    'sku',
+    'licenseDesc',
+    'isR1SKU',
+    'status',
+    'isTrial',
+    'graceEndDate',
+    'usageType'
+  ],
+  page: 1,
+  pageSize: 1000,
+  sortField: 'expirationDate',
+  sortOrder: 'DESC',
+  filters: {
+    licenseType: ['APSW'],
+    usageType: 'ASSIGNED'
+  }
+}
