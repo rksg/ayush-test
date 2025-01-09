@@ -99,7 +99,11 @@ export function SummaryForm (props: {
       {_.isEmpty(ruckusAiSummaryTitle) &&
         <StepsFormLegacy.Title>{$t({ defaultMessage: 'Summary' })}</StepsFormLegacy.Title>}
 
-      <Row gutter={20}>
+      <Row gutter={20}
+        style={{
+          display: 'grid',
+          gridTemplateColumns: isRuckusAiMode ? undefined : '1fr auto 1fr'
+        }}>
         <Col flex={1}>
           <Subtitle level={4}>
             {ruckusAiSummaryTitle || $t({ defaultMessage: 'Network Info' })}
@@ -113,6 +117,7 @@ export function SummaryForm (props: {
             }
             <Form.Item
               label={$t({ defaultMessage: 'Description:' })}
+              style={{ wordBreak: 'break-word' }}
               children={transformDisplayText(summaryData.description)}
             />
           </>

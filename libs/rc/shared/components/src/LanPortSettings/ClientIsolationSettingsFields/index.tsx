@@ -10,6 +10,7 @@ import { ClientIsolationMessages, IsolatePacketsTypeEnum, getIsolatePacketsTypeO
 import { useParams }                                                                     from '@acx-ui/react-router-dom'
 
 import { ClientIsolationForm } from '../../policies/ClientIsolationForm/ClientIsolationForm'
+import { FieldLabel }          from '../styledComponents'
 
 import ClientIsolationAllowListDetailsDrawer from './ClientIsolationListDetailsDrawer'
 
@@ -72,24 +73,27 @@ const ClientIsolationSettingsFields = (props: ClientIsplationSettingFieldsProps)
 
   return (
     <>
-      <StepsForm.FieldLabel width={'220px'}>
-        <Space>
-          {$t({ defaultMessage: 'Client Isolation' })}
-          <Tooltip.Question
-            title={$t(ClientIsolationMessages.ENABLE_TOGGLE)}
-            placement='bottom'
-            iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+      <StepsForm.StepForm>
+        <FieldLabel width='220px'>
+          <Space>
+            {$t({ defaultMessage: 'Client Isolation' })}
+            <Tooltip.Question
+              title={$t(ClientIsolationMessages.ENABLE_TOGGLE)}
+              placement='bottom'
+              iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+            />
+          </Space>
+          <Form.Item
+            name={['lan', index, 'clientIsolationEnabled']}
+            valuePropName='checked'
+            children={<Switch
+              data-testid={'client-isolation-switch'}
+              disabled={readOnly}
+              onChange={() => onGUIChanged?.('clientIsolationEnabled')}
+            />}
           />
-        </Space>
-        <Form.Item
-          name={['lan', index, 'clientIsolationEnabled']}
-          valuePropName='checked'
-          children={<Switch
-            disabled={readOnly}
-            onChange={() => onGUIChanged?.('clientIsolationEnabled')}
-          />}
-        />
-      </StepsForm.FieldLabel>
+        </FieldLabel>
+      </StepsForm.StepForm>
       {isClientIsolationEnabled && <>
         <Alert
           showIcon={true}

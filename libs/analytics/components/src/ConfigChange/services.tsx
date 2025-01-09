@@ -14,11 +14,16 @@ interface KpiChangesParams {
   afterEnd: string
 }
 
+const rootAndSliceIdQuery = (showIntentAI: boolean) => showIntentAI ?
+  `root
+   sliceId
+  ` : ''
+
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     configChange: build.query<
       ConfigChange[],
-      PathFilter
+      PathFilter & { showIntentAI: boolean }
     >({
       query: (payload) => ({
         document: gql`
@@ -36,6 +41,7 @@ export const api = dataApi.injectEndpoints({
                   key
                   oldValues
                   newValues
+                  ${rootAndSliceIdQuery(payload.showIntentAI)}
                 }
               }
             }
@@ -61,21 +67,21 @@ export const api = dataApi.injectEndpoints({
             $afterStart: DateTime, $afterEnd: DateTime,
             $filter: FilterInput
           ) {
-              network(filter: $filter) {
-                before: KPI(path: $path, start: $beforeStart, end: $beforeEnd) {
-                  ${payload.kpis.join('\n')}
-                }
-                after: KPI(path: $path, start: $afterStart, end: $afterEnd) {
-                  ${payload.kpis.join('\n')}
-                }
+            network(filter: $filter) {
+              before: KPI(path: $path, start: $beforeStart, end: $beforeEnd) {
+                ${payload.kpis.join('\n')}
               }
+              after: KPI(path: $path, start: $afterStart, end: $afterEnd) {
+                ${payload.kpis.join('\n')}
+              }
+            }
           }
         `,
         variables: omit(payload, ['kpis'])
       }),
       transformResponse: (response: { network: {
-        before: Record<string, number>, after: Record<string, number>
-      } } ) => response.network
+          before: Record<string, number>, after: Record<string, number>
+        } } ) => response.network
     })
   })
 })

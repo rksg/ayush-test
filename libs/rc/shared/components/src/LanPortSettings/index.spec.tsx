@@ -11,7 +11,8 @@ import {
   AaaUrls,
   EthernetPortProfileUrls,
   ClientIsolationUrls,
-  SoftGreUrls } from '@acx-ui/rc/utils'
+  SoftGreUrls,
+  LanPortsUrls } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   fireEvent,
@@ -304,7 +305,7 @@ describe('Ethernet Port Profile', () => {
         }))
       ),
       rest.get(
-        EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId.url,
+        LanPortsUrls.getApLanPortSettings.url,
         (_, res, ctx) => res(ctx.json(portOverwrite))
       ),
       rest.get(
@@ -462,7 +463,7 @@ describe('LanPortSettings -  SoftGre Profile Profile', ()=> {
         }))
       ),
       rest.get(
-        EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId.url,
+        LanPortsUrls.getApLanPortSettings.url,
         (_, res, ctx) => res(ctx.json({
           data: {
             enabled: true,
@@ -593,7 +594,7 @@ describe('LanPortSettings -  SoftGre Profile Profile', ()=> {
     await screen.findByText(/The following LAN Port settings can’t work because DHCP is enabled/)
     expect(screen.queryByRole('button', { name: /Override the VLAN Untag ID/ }))
       .not.toBeInTheDocument()
-    expect(screen.getByRole('switch', { name: /Enable SoftGRE Tunnel/ })).toBeDisabled()
-    expect(screen.getByRole('switch', { name: /Client Isolation/ })).toBeDisabled()
+    expect(screen.getByTestId('softgre-tunnel-switch')).toBeDisabled()
+    expect(screen.getByTestId('client-isolation-switch')).toBeDisabled()
   })
 })

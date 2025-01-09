@@ -4,7 +4,7 @@ import { MaybePromise }                                       from '@reduxjs/too
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { reduce, uniq }                                       from 'lodash'
 
-import { Filter }                  from '@acx-ui/components'
+import { Filter }        from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -19,6 +19,7 @@ import {
   ApBandModeSettings,
   ApBssColoringSettings,
   ApSmartMonitor,
+  ApIot,
   ApClientAdmissionControl,
   ApDeep,
   ApDetailHeader,
@@ -93,8 +94,8 @@ import {
   ClientIsolationUrls,
   ClientIsolationViewModel,
   LanPortsUrls,
-  LanPort,
-  LanPortClientIsolationSettings
+  APLanPortSettings,
+  mergeLanPortSettings
 } from '@acx-ui/rc/utils'
 import { baseApApi }      from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
@@ -944,8 +945,7 @@ export const apApi = baseApApi.injectEndpoints({
         )
         let apLanPorts = apLanPortSettings.data as WifiApSetting
 
-        if (params?.serialNumber) {
-          const results: ((LanPort | null)[])[] = []
+        if (params?.serialNumber && !!apLanPorts?.lanPorts?.length) {
           const apLanPortSettingsQuery = apLanPorts?.lanPorts?.map((lanPort) => {
             return fetchWithBQ(createHttpRequest(LanPortsUrls.getApLanPortSettings,
               {
@@ -957,23 +957,11 @@ export const apApi = baseApApi.injectEndpoints({
             ))
           })
           const reqs = await Promise.allSettled(apLanPortSettingsQuery!)
-          results.push(reqs.map((result) => {
-            return result.status === 'fulfilled' ? result.value.data as LanPort : null
-          }))
-          results.forEach((result) => {
-            const target = apLanPorts
-            result.forEach((lanPortSettings, idx) => {
-              if (lanPortSettings === null) return
-              if(target.lanPorts) {
-                target.lanPorts[idx].softGreEnabled = lanPortSettings.softGreEnabled
-                target.lanPorts[idx].clientIsolationEnabled = lanPortSettings.clientIsolationEnabled
-                if (lanPortSettings.clientIsolationEnabled) {
-                  target.lanPorts[idx].clientIsolationSettings =
-                    lanPortSettings.clientIsolationSettings as LanPortClientIsolationSettings
-                }
-              }
-            })
+          const results: APLanPortSettings[] = reqs.map((result) => {
+            return result.status === 'fulfilled' ? result.value.data as APLanPortSettings : {}
           })
+
+          apLanPorts.lanPorts = mergeLanPortSettings(apLanPorts.lanPorts, results)
         }
 
         if (enableEthernetProfile) {
@@ -1353,6 +1341,28 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'SmartMonitor' }]
+    }),
+    getApIot: build.query<ApIot, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApIot, params, customHeaders)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'Iot' }]
+    }),
+    updateApIot: build.mutation<ApIot, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApIot, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'Iot' }]
     }),
     getApValidChannel: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
       query: ({ params, enableRbac, enableSeparation = false }) => {
@@ -1827,6 +1837,9 @@ export const {
   useGetApSmartMonitorQuery,
   useLazyGetApSmartMonitorQuery,
   useUpdateApSmartMonitorMutation,
+  useGetApIotQuery,
+  useLazyGetApIotQuery,
+  useUpdateApIotMutation,
   useGetApCapabilitiesQuery,     // deprecated
   useLazyGetApCapabilitiesQuery, // deprecated
   useGetOldApCapabilitiesByModelQuery,
