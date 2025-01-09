@@ -167,6 +167,7 @@ import EditPersonalIdentityNetwork                                      from './
 import PersonalIdentityNetworkDetail                                    from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetail'
 import PersonalIdentityNetworkDetailEnhanced                            from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetailEnhanced'
 import PersonalIdentityNetworkTable                                     from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTable'
+import PersonalIdentityNetworkTableEnhanced                             from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTableEnhanced'
 import PortalServiceDetail                                              from './pages/Services/Portal/PortalDetail'
 import PortalTable                                                      from './pages/Services/Portal/PortalTable'
 import ResidentPortalDetail                                             from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
@@ -539,7 +540,8 @@ const useEdgePinRoutes = () => {
     <Route
       path={getServiceRoutePath({ type: ServiceType.PIN,
         oper: ServiceOperation.LIST })}
-      element={<PersonalIdentityNetworkTable />}
+      // eslint-disable-next-line max-len
+      element={isEdgePinEnhancementReady ? <PersonalIdentityNetworkTableEnhanced /> : <PersonalIdentityNetworkTable />}
     />
     <Route
       path={getServiceRoutePath({ type: ServiceType.PIN,

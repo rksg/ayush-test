@@ -37,10 +37,15 @@ export const EdgePinUrls: { [key: string]: ApiInfo } = {
     newApi: true,
     url: '/personalIdentityNetworks/:serviceId/wifiNetworks/:wifiNetworkId'
   },
-  validateEdgePinNetwork: {
+  validateSwitchConfig: {
     method: 'post',
     newApi: true,
     url: '/personalIdentityNetworks/validateSwitchConfig'
+  },
+  validateEdgeClusterConfig: {
+    method: 'post',
+    url: '/personalIdentityNetworks/validateEdgeClusterConfig',
+    newApi: true
   },
   getWebAuthTemplate: {
     method: 'get',
