@@ -1,8 +1,9 @@
 import { Form, Switch, Space } from 'antd'
+import { DefaultOptionType }   from 'antd/lib/select'
 import { useIntl }             from 'react-intl'
 
-import { Tooltip, Alert, StepsForm }              from '@acx-ui/components'
-import { SoftGreProfileDispatcher, SoftGreState } from '@acx-ui/rc/utils'
+import { Tooltip, Alert, StepsForm }                                                  from '@acx-ui/components'
+import { SoftGreDuplicationChangeDispatcher, SoftGreProfileDispatcher, SoftGreState } from '@acx-ui/rc/utils'
 
 import { SoftGREProfileSettings } from './SoftGREProfileSettings'
 import { FieldLabel }             from './styledComponents'
@@ -15,6 +16,11 @@ interface SoftGRETunnelSettingsProps {
   onGUIChanged?: (fieldName: string) => void;
   readonly: boolean;
   dispatch?: React.Dispatch<SoftGreProfileDispatcher>;
+  softGREProfileOptionList?: DefaultOptionType[];
+  apModel?: string
+  serialNumber?: string
+  isUnderAPNetworking: boolean
+  optionDispatch?: React.Dispatch<SoftGreDuplicationChangeDispatcher>
 }
 
 export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
@@ -26,7 +32,12 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
     softGreTunnelEnable,
     onGUIChanged,
     readonly,
-    dispatch
+    dispatch,
+    softGREProfileOptionList,
+    apModel,
+    serialNumber,
+    isUnderAPNetworking,
+    optionDispatch
   } = props
 
   const softgreTunnelFieldName = ['lan', index, 'softGreEnabled']
@@ -93,6 +104,11 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             readonly={readonly}
             portId={portId}
             dispatch={dispatch}
+            softGREProfileOptionList={softGREProfileOptionList}
+            apModel={apModel}
+            serialNumber={serialNumber}
+            isUnderAPNetworking={isUnderAPNetworking}
+            optionDispatch={optionDispatch}
           />
         </>
       }

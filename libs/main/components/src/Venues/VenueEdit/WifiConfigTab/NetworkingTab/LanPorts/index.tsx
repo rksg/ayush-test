@@ -11,12 +11,13 @@ import {
   showActionModal,
   Tabs
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import {
   LanPortPoeSettings,
   LanPortSettings,
   ConvertPoeOutToFormData,
-  useSoftGreProfileActivation
+  useSoftGreProfileActivation,
+  useSoftGreProfileLimitedSelection
 }
   from '@acx-ui/rc/components'
 import {
@@ -172,6 +173,7 @@ export function LanPorts () {
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
   const [resetModels, setResetModels] = useState([] as string[])
   const { dispatch, handleUpdateSoftGreProfile } = useSoftGreProfileActivation(selectedModel)
+  const { softGREProfileOptionList, duplicationChangeDispatch } = useSoftGreProfileLimitedSelection(venueId!)
 
   const form = Form.useFormInstance()
   const [apModel, apPoeMode, lanPoeOut, lanPorts] = [
@@ -634,6 +636,8 @@ export function LanPorts () {
                     index={index}
                     venueId={venueId}
                     dispatch={dispatch}
+                    softGREProfileOptionList={softGREProfileOptionList}
+                    optionDispatch={duplicationChangeDispatch}
                   />
                 </Col>
               </Row>

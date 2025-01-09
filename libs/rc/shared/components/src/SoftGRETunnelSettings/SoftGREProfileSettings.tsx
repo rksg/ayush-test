@@ -4,9 +4,14 @@ import { Form, Select, Button, Space } from 'antd'
 import { DefaultOptionType }           from 'antd/lib/select'
 import { useIntl }                     from 'react-intl'
 
-import { useGetSoftGreViewDataListQuery }         from '@acx-ui/rc/services'
-import { SoftGreProfileDispatcher, SoftGreState } from '@acx-ui/rc/utils'
-import { useParams }                              from '@acx-ui/react-router-dom'
+import { useGetSoftGreViewDataListQuery } from '@acx-ui/rc/services'
+import {
+  SoftGreDuplicationChangeDispatcher,
+  SoftGreDuplicationChangeState,
+  SoftGreProfileDispatcher,
+  SoftGreState
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import SoftGreDrawer from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
 
@@ -19,17 +24,33 @@ interface SoftGREProfileSettingsProps {
   readonly: boolean
   dispatch?: React.Dispatch<SoftGreProfileDispatcher>
   portId?: string;
+  softGREProfileOptionList?: DefaultOptionType[];
+  optionDispatch?: React.Dispatch<SoftGreDuplicationChangeDispatcher>
+  apModel?: string
+  serialNumber?: string
+  isUnderAPNetworking: boolean
 }
 
 export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
-  const { index, softGreProfileId, onGUIChanged, readonly, dispatch, portId = '0' } = props
+  const {
+    index,
+    softGreProfileId,
+    onGUIChanged,
+    readonly,
+    dispatch,
+    optionDispatch,
+    portId = '0',
+    softGREProfileOptionList= [],
+    apModel,
+    serialNumber,
+    isUnderAPNetworking
+  } = props
   const { $t } = useIntl()
   const params = useParams()
   const softGreProfileIdFieldName = ['lan', index, 'softGreProfileId']
   const form = Form.useFormInstance()
   const [ detailDrawerVisible, setDetailDrawerVisible ] = useState<boolean>(false)
   const [ addDrawerVisible, setAddDrawerVisible ] = useState<boolean>(false)
-  const [ softGREProfileOptionList, setsoftGREProfileOptionList] = useState<DefaultOptionType[]>([])
   const [ softGREProfile, setSoftGREProfile ] = useState<DefaultOptionType>(defaultSoftgreOption)
 
   const softGreViewDataList = useGetSoftGreViewDataListQuery({
@@ -52,15 +73,19 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
       index,
       softGreProfileId: form.getFieldValue(['lan', index, 'softGreProfileId'])
     })
+    optionDispatch && optionDispatch({
+      state: SoftGreDuplicationChangeState.OnChangeSoftGreProfile,
+      softGreProfileId: form.getFieldValue(['lan', index, 'softGreProfileId']),
+      voter: (isUnderAPNetworking ?
+        { serialNumber, portId: +portId }:
+        { model: apModel, portId: +portId }
+      )
+    })
   }
 
   useEffect(() => {
     const softGreProfileList = softGreViewDataList.data?.data ?? []
-
     if(softGreProfileList.length > 0) {
-      setsoftGREProfileOptionList(softGreProfileList.map((softGreProfile) => {
-        return { label: softGreProfile.name, value: softGreProfile.id }
-      }))
       if (softGreProfileId) {
         form.setFieldValue(softGreProfileIdFieldName,softGreProfileId)
       }

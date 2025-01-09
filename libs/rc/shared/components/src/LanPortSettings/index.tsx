@@ -19,7 +19,7 @@ import {
   EthernetPortAuthType,
   EthernetPortProfileViewData,
   EthernetPortType,
-  LanPort,
+  LanPort, SoftGreDuplicationChangeDispatcher,
   SoftGreProfileDispatcher,
   SoftGreState,
   useConfigTemplate,
@@ -76,6 +76,8 @@ export function LanPortSettings (props: {
   venueId?: string,
   serialNumber?: string
   dispatch?: React.Dispatch<SoftGreProfileDispatcher>
+  softGREProfileOptionList?: DefaultOptionType[]
+  optionDispatch?: React.Dispatch<SoftGreDuplicationChangeDispatcher>
 }) {
   const { $t } = useIntl()
   const {
@@ -91,7 +93,9 @@ export function LanPortSettings (props: {
     useVenueSettings,
     venueId,
     serialNumber,
-    dispatch
+    dispatch,
+    softGREProfileOptionList,
+    optionDispatch
   } = props
 
   const [ drawerVisible, setDrawerVisible ] = useState(false)
@@ -302,6 +306,11 @@ export function LanPortSettings (props: {
                     portId={selectedModel.lanPorts![index].portId}
                     onGUIChanged={onGUIChanged}
                     dispatch={dispatch}
+                    softGREProfileOptionList={softGREProfileOptionList}
+                    serialNumber={serialNumber}
+                    apModel={(selectedModel as VenueLanPorts)?.model}
+                    isUnderAPNetworking={isUnderAPNetworking}
+                    optionDispatch={optionDispatch}
                   />
                   {isDhcpOption82Enabled && isSoftGreTunnelEnable &&
                     <DhcpOption82Settings
