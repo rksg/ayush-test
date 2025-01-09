@@ -23,6 +23,7 @@ import {
   RegionButton
 } from '@acx-ui/main/components'
 import { useGetBrandingDataQuery, useGetTenantDetailQuery, useMspEntitlementListQuery } from '@acx-ui/msp/services'
+import { AssignedEntitlementListPayload }                                               from '@acx-ui/msp/utils'
 import { CloudMessageBanner }                                                           from '@acx-ui/rc/components'
 import { useRbacEntitlementListQuery }                                                  from '@acx-ui/rc/services'
 import { ConfigTemplateContext }                                                        from '@acx-ui/rc/utils'
@@ -35,31 +36,6 @@ import HspContext from '../../HspContext'
 
 import { useMenuConfig } from './menuConfig'
 import * as UI           from './styledComponents'
-
-const entitlementListPayload = {
-  fields: [
-    'externalId',
-    'licenseType',
-    'effectiveDate',
-    'expirationDate',
-    'quantity',
-    'sku',
-    'licenseDesc',
-    'isR1SKU',
-    'status',
-    'isTrial',
-    'graceEndDate',
-    'usageType'
-  ],
-  page: 1,
-  pageSize: 1000,
-  sortField: 'expirationDate',
-  sortOrder: 'DESC',
-  filters: {
-    licenseType: ['APSW'],
-    usageType: 'ASSIGNED'
-  }
-}
 
 function Layout () {
   const { $t } = useIntl()
@@ -92,7 +68,7 @@ function Layout () {
   const { data: mspEntitlement } = useMspEntitlementListQuery({ params },
     { skip: isEntitlementRbacApiEnabled })
   const { data: rbacMspEntitlement } = useRbacEntitlementListQuery(
-    { params: useParams(), payload: entitlementListPayload },
+    { params: useParams(), payload: AssignedEntitlementListPayload },
     { skip: !isEntitlementRbacApiEnabled })
 
   const {
