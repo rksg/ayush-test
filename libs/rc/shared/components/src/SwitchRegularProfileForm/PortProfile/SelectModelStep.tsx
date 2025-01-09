@@ -249,7 +249,8 @@ export function SelectModelStep () {
                 {modelsRef.current.map(({ label, value }) => (
                   selectedModels?.includes(value) ?
                     <Tooltip
-                      title={$t({ defaultMessage: 'The model has been configured.' })} >
+                      title={$t({
+                        defaultMessage: 'This model already has port profiles configured.' })} >
                       <Checkbox
                         key={value}
                         value={value}

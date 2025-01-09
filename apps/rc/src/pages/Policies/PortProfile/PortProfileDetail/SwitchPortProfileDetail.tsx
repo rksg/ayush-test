@@ -100,7 +100,7 @@ export default function SwitchPortProfileDetail () {
       <PageHeader
         title={
           $t(
-            { defaultMessage: 'Port Profile' }
+            { defaultMessage: 'Port Profiles' }
           )
         }
         breadcrumb={[

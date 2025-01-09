@@ -424,7 +424,7 @@ export function EditPortDrawer ({
   const getPortProfileSelectList = async (selectedSwitchList: SwitchRow[]) => {
     const portProfilePayload = selectedSwitchList.map(item => item.id)
     const portProfileList = await getPortProfileOptionsForSwitches({
-      params: { tenantId, switchId, venueId: switchDetail?.venueId },
+      params: { tenantId, venueId: switchDetail?.venueId },
       payload: portProfilePayload,
       enableRbac: isSwitchRbacEnabled
     }, true).unwrap()

@@ -130,7 +130,7 @@ export function PortProfileModal (props: {
           <SelectModelStep />
         </StepsForm.StepForm>
         <StepsForm.StepForm
-          title={$t({ defaultMessage: 'Port Profile' })}
+          title={$t({ defaultMessage: 'Port Profiles' })}
         >
           <PortProfileStep />
         </StepsForm.StepForm>

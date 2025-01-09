@@ -77,7 +77,7 @@ export function PortProfileStep () {
                 </label>
                 <Form.Item
                   name={'portProfileId'}
-                  label={<label>{$t({ defaultMessage: 'Port Profile' })}</label>}
+                  label={<label>{$t({ defaultMessage: 'Port Profiles' })}</label>}
                   rules={[{
                     required: true,
                     message: $t({ defaultMessage: 'Please enter Port Profile' })

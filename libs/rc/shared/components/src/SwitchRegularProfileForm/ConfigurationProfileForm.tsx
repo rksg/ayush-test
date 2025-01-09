@@ -442,7 +442,7 @@ export function ConfigurationProfileForm () {
 
           {isSwitchPortProfileToggle &&
           <StepsForm.StepForm
-            title={$t({ defaultMessage: 'Port Profile' })}
+            title={$t({ defaultMessage: 'Port Profiles' })}
             onFinish={updateCurrentData}
           >
             <PortProfile />

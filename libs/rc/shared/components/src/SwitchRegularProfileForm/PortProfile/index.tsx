@@ -240,7 +240,7 @@ export function PortProfile () {
     <>
       <Row gutter={20}>
         <Col span={20}>
-          <StepsFormLegacy.Title children={$t({ defaultMessage: 'Port Profile' })} />
+          <StepsFormLegacy.Title children={$t({ defaultMessage: 'Port Profiles' })} />
           <Table
             rowKey='models'
             rowActions={filterByAccess(rowActions)}

@@ -92,7 +92,7 @@ export default function PortProfile () {
       <PageHeader
         title={
           $t(
-            { defaultMessage: 'Port Profile' }
+            { defaultMessage: 'Port Profiles' }
           )
         }
         breadcrumb={[

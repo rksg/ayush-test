@@ -11,7 +11,8 @@ import {
   useSwitchListQuery,
   useLazyGetSwitchVlanQuery,
   useLazyGetSwitchVlanUnionByVenueQuery,
-  useSwitchPortlistQuery
+  useSwitchPortlistQuery,
+  useSwitchPortProfilesListQuery
 } from '@acx-ui/rc/services'
 import {
   getSwitchModel,
@@ -87,6 +88,11 @@ export function SwitchPortTable (props: {
   const vlanFilterOptions = Array.isArray(vlanList) ? vlanList.map(v => ({
     key: v.vlanId.toString(), value: v.vlanId.toString()
   })) : []
+
+  const { data: switchPortProfilesList } = useSwitchPortProfilesListQuery({
+    params: { tenantId },
+    payload: { fields: ['id'] }
+  }, { skip: !isSwitchPortProfileEnabled })
 
   useEffect(() => {
     const setData = async () => {
@@ -205,6 +211,26 @@ export function SwitchPortTable (props: {
       } else {
         return row.poeUsage
       }
+    }
+  }, {
+    key: 'switchPortProfileId',
+    title: $t({ defaultMessage: 'Profile Name' }),
+    dataIndex: 'switchPortProfileId',
+    show: isSwitchPortProfileEnabled,
+    sorter: true,
+    render: (_, row) => {
+      return switchPortProfilesList?.data?.find(
+        profile => profile.id === row.switchPortProfileId)?.name
+    }
+  }, {
+    key: 'switchPortProfileId',
+    title: $t({ defaultMessage: 'Type' }),
+    dataIndex: 'switchPortProfileId',
+    show: isSwitchPortProfileEnabled,
+    sorter: true,
+    render: (_, row) => {
+      return switchPortProfilesList?.data?.find(
+        profile => profile.id === row.switchPortProfileId)?.type
     }
   }, {
     key: 'vlanIds',
