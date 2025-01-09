@@ -1,5 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { formatGraphQLErrors , isGraphQLError } from './errorUtil'
+import { formatGraphQLErrors, isGraphQLAction, isGraphQLError } from './errorUtil'
+
+describe('isGraphQLAction', () => {
+  it('returns false when type is undefined', () => {
+    expect(isGraphQLAction({ type: undefined })).toBe(false)
+  })
+
+  it('returns false when type does not include any reducer paths', () => {
+    expect(isGraphQLAction({ type: 'other-type' })).toBe(false)
+  })
+
+  it.each(
+    ['data-api', 'network-health']
+  )('returns true when type includes a reducer path: %s', (path) => {
+    expect(isGraphQLAction({ type: path })).toBe(true)
+  })
+})
 
 describe('isGraphQLError', () => {
   it('returns false when type is undefined', () => {

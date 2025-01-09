@@ -99,6 +99,7 @@ export function useIntentAICRRMQuery () {
   const band = intentBandMapping[params.code as keyof typeof intentBandMapping]
   const { isHotTierData, isDataRetained } = useIntentContext()
   const queryResult = useIntentAIRRMGraphQuery({ ...params, band }, {
+    refetchOnMountOrArgChange: false,
     selectFromResult: result => {
       const { data = [], csv = '' } = result.data ?? {}
       return { ...result, data, csv }

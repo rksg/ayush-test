@@ -45,12 +45,12 @@ export function createIntentContextProvider (
 ) {
   const Component: React.FC = function () {
     const params = useIntentParams()
-    const isConfigChangeEnabled = [
-      useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE),
-      useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE)
+    const preventColdTier = [
+      useIsSplitOn(Features.RUCKUS_AI_PREVENT_COLD_TIER_QUERY_TOGGLE),
+      useIsSplitOn(Features.ACX_UI_PREVENT_COLD_TIER_QUERY_TOGGLE)
     ].some(Boolean)
     const spec = specs[params.code]
-    const query = useIntentDetailsQuery({ ...params, isConfigChangeEnabled }, { skip: !spec })
+    const query = useIntentDetailsQuery({ ...params, preventColdTier }, { skip: !spec })
     if (!spec) return null // no matching spec
     if (query.isSuccess && !query.data) return null // 404
 
@@ -65,10 +65,10 @@ export function createIntentContextProvider (
       configuration: spec.configuration,
       kpis: spec.kpis,
       state: (intent && intentState(intent))!,
-      isDataRetained: isConfigChangeEnabled
+      isDataRetained: preventColdTier
         ? intent?.dataCheck.isDataRetained!
         : isDataRetained(intent?.metadata.dataEndTime),
-      isHotTierData: isConfigChangeEnabled
+      isHotTierData: preventColdTier
         ? intent?.dataCheck.isHotTierData!
         : true
     }
