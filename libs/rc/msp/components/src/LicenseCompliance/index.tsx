@@ -9,14 +9,15 @@ import { ComplianceData }                     from '@acx-ui/msp/utils'
 import { TrialType }                          from '@acx-ui/rc/utils'
 import { useParams }                          from '@acx-ui/react-router-dom'
 
-import { emptyCompliance }     from './__tests__/fixtures'
-import { ComplianceBanner }    from './ComplianceBanner'
-import LicenseCalculatorCard   from './LicenseCalculator'
-import LicenseTimelineGraph    from './LicenseTimelineGraph'
-import MspCustomersLicences    from './MspCustomersLicences'
-import MspDeviceNetworkingCard from './MspDeviceNetworkingCard'
-import RecDeviceNetworkingCard from './RecDeviceNetworkingCard'
-import * as UI                 from './styledComponents'
+import { emptyCompliance }      from './__tests__/fixtures'
+import { ComplianceBanner }     from './ComplianceBanner'
+import { DeviceNetworkingCard } from './DeviceNetworkingCard'
+import LicenseCalculatorCard    from './LicenseCalculator'
+import LicenseTimelineGraph     from './LicenseTimelineGraph'
+import MspCustomersLicences     from './MspCustomersLicences'
+import MspDeviceNetworkingCard  from './MspDeviceNetworkingCard'
+import RecDeviceNetworkingCard  from './RecDeviceNetworkingCard'
+import * as UI                  from './styledComponents'
 
 
 interface ComplianceProps {
@@ -82,32 +83,64 @@ export const LicenseCompliance = (props: ComplianceProps) => {
     }
   }, [queryData?.data])
 
+  const solutionTokenFFToggled = useIsSplitOn(Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
+
   return <>
     {isComplianceNotesEnabled && <ComplianceBanner />}
     {isMsp
       ? <UI.ComplianceContainer>
-        <MspDeviceNetworkingCard
-          title={$t({ defaultMessage: 'Device Networking Licenses' })}
-          selfData={selfData}
-          mspData={ecSummaryData}
-          isExtendedTrial={isExtendedTrial}
-          footerContent={showCompliancePhase2UI ? <div style={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'end'
-          }}>
-            <Button
-              size='small'
-              type={'link'}
-              onClick={openMspCustomersDrawer}>
-              {$t({ defaultMessage: 'View Details' })}
-            </Button>
-          </div> : <></>}
-        />
+        { !solutionTokenFFToggled ? <>
+          <DeviceNetworkingCard
+            title={$t({ defaultMessage: 'Device Networking Subscriptions' })}
+            subTitle={$t({ defaultMessage: 'My Account License Expiration' })}
+            data={selfData}
+            isMsp={true}
+            trialType={TrialType.TRIAL}
+          />
+          <DeviceNetworkingCard
+            title={$t({ defaultMessage: 'Device Networking Subscriptions' })}
+            subTitle={$t({ defaultMessage: 'MSP Customers License Expiration' })}
+            isMsp={false}
+            data={ecSummaryData}
+            trialType={isExtendedTrial ? TrialType.EXTENDED_TRIAL : undefined}
+            footerContent={showCompliancePhase2UI ? <div style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'end'
+            }}>
+              <Button
+                size='small'
+                type={'link'}
+                onClick={openMspCustomersDrawer}>
+                {$t({ defaultMessage: 'View Details' })}
+              </Button>
+            </div> : <></>}
+          /></>
+          : <MspDeviceNetworkingCard
+            title={$t({ defaultMessage: 'Device Networking Licenses' })}
+            selfData={selfData}
+            mspData={ecSummaryData}
+            isExtendedTrial={isExtendedTrial}
+            footerContent={showCompliancePhase2UI ? <div style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'end'
+            }}>
+              <Button
+                size='small'
+                type={'link'}
+                onClick={openMspCustomersDrawer}>
+                {$t({ defaultMessage: 'View Details' })}
+              </Button>
+            </div> : <></>}
+          />
+        }
         {
           showCompliancePhase2UI && openMspCustLicencesDrawer && <Drawer
-            title={<>{$t({ defaultMessage: 'Device Networking Licenses' }) }
-              {ecSummaryData.licenseGap >= 0 ? <UI.GreenTickIcon /> : <UI.RedTickIcon />}</>}
+            title={<>{solutionTokenFFToggled
+              ? $t({ defaultMessage: 'Device Networking Licenses' })
+              : $t({ defaultMessage: 'Device Networking Subscriptions' })}
+            {ecSummaryData.licenseGap >= 0 ? <UI.GreenTickIcon /> : <UI.RedTickIcon />}</>}
             visible={openMspCustLicencesDrawer}
             onClose={closeMspCustomersDrawer}
             destroyOnClose={true}
@@ -117,7 +150,13 @@ export const LicenseCompliance = (props: ComplianceProps) => {
           </Drawer>
         }
         { showCompliancePhase2UI && <LicenseCalculatorCard
-          title={$t({ defaultMessage: 'License Distance Calculator' })}
+          title={solutionTokenFFToggled ?
+            $t({ defaultMessage: 'License Distance Calculator' })
+            : $t({ defaultMessage: 'Device Networking Subscriptions' })}
+          subTitle={
+            !solutionTokenFFToggled
+              ? $t({ defaultMessage: 'License Distance Calculator' })
+              : undefined}
           footerContent={<div style={{
             display: 'flex',
             flexDirection: 'row',
@@ -155,10 +194,18 @@ export const LicenseCompliance = (props: ComplianceProps) => {
           </Drawer>
         }
       </UI.ComplianceContainer>
-      : <RecDeviceNetworkingCard
-        title={$t({ defaultMessage: 'Device Networking Licenses' })}
-        data={selfData}
-        trialType={TrialType.TRIAL}
-      />}
+      : solutionTokenFFToggled
+        ? <RecDeviceNetworkingCard
+          title={$t({ defaultMessage: 'Device Networking Licenses' })}
+          data={selfData}
+          trialType={TrialType.TRIAL}
+        />
+        : <DeviceNetworkingCard
+          title={$t({ defaultMessage: 'Device Networking Subscriptions' })}
+          subTitle={$t({ defaultMessage: 'License Expiration' })}
+          isMsp={false}
+          data={selfData}
+          trialType={TrialType.TRIAL}
+        />}
   </>
 }

@@ -54,7 +54,7 @@ export default function RecDeviceNetworkingCard (props: LicenseCardProps) {
               <div style={{ display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between' }}>
-                <UI.Title>{$t({ defaultMessage: '{title}' }, { title })}</UI.Title>
+                <UI.Title>{ title }</UI.Title>
                 { data.licenseGap >= 0
                   ? <UI.GreenTickIcon /> : <UI.RedTickIcon /> }
               </div>

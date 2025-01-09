@@ -56,7 +56,7 @@ export default function MspDeviceNetworkingCard (props: MspLicenseCardProps) {
               <div style={{ display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between' }}>
-                <UI.Title>{$t({ defaultMessage: '{title}' }, { title })}</UI.Title>
+                <UI.Title>{ title }</UI.Title>
                 { currentTab === 'myAccount' ? selfData.licenseGap >= 0
                   ? <UI.GreenTickIcon /> : <UI.RedTickIcon />
                   : mspData.licenseGap >= 0

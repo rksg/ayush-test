@@ -39,7 +39,9 @@ export default function TabContent (props: TabContentProps
 
   return <>
     <UI.FieldLabelSubs width='275px'
-      style={{ fontWeight: '600', paddingBottom: '10px', borderBottom: '1px solid #02a7f0' }}>
+      style={{ fontWeight: '600',
+        paddingBottom: '10px',
+        borderBottom: '1px solid var(--acx-accents-blue-55)' }}>
       <label>{$t({ defaultMessage: 'Devices' })}</label>
       <label>{$t({ defaultMessage: 'Configured' })}</label>
       <label>{$t({ defaultMessage: 'Licenses Used' })}</label>
@@ -61,7 +63,7 @@ export default function TabContent (props: TabContentProps
       <label>{virtualEdgeData?.usedLicenseCount}</label>
     </UI.FieldLabelSubs>
     <UI.FieldLabelSubs width='275px'
-      style={{ paddingBottom: '15px', borderBottom: '1px solid #02a7f0' }}>
+      style={{ paddingBottom: '15px', borderBottom: '1px solid var(--acx-accents-blue-55)' }}>
       <label>{$t({ defaultMessage: 'RWGs' })}</label>
       <label>{rwgData?.installedDeviceCount}</label>
       <label>{rwgData?.usedLicenseCount}</label>
@@ -71,9 +73,13 @@ export default function TabContent (props: TabContentProps
       <label>{$t({ defaultMessage: 'Active Paid Licenses' })}</label>
       <label>{totalActivePaidLicenseCount}</label>
       {totalActivePaidLicenseCount > 0 &&
-              <label style={{ textAlign: 'left', marginLeft: '10px', color: '#ec7100' }}>
-                {`(${nextTotalPaidExpiringLicenseCount} ${$t({ defaultMessage: 'expire on' })} 
-                ${nextPaidExpirationDate})`}</label>}
+              <label style={{ textAlign: 'left',
+                marginLeft: '10px',
+                color: 'var(--acx-accents-orange-50)' }}>
+                {$t({ defaultMessage: '({count} expire on {date})' }, {
+                  count: nextTotalPaidExpiringLicenseCount,
+                  date: nextPaidExpirationDate
+                })}</label>}
     </UI.FieldLabelSubs2>
     {trialType && <UI.FieldLabelSubs2 width='275px'>
       <label>{trialType === TrialType.EXTENDED_TRIAL
@@ -81,10 +87,13 @@ export default function TabContent (props: TabContentProps
         : $t({ defaultMessage: 'Active Trial Licenses' })}</label>
       <label>{totalActiveTrialLicenseCount}</label>
       {totalActiveTrialLicenseCount && totalActiveTrialLicenseCount > 0 &&
-              <label style={{ textAlign: 'left', marginLeft: '10px', color: '#ec7100' }}>
-                {`(${nextTotalTrialExpiringLicenseCount}
-                ${$t({ defaultMessage: 'expire on' })} 
-                ${nextTrialExpirationDate})`}</label>}
+              <label style={{ textAlign: 'left',
+                marginLeft: '10px',
+                color: 'var(--acx-accents-orange-50)' }}>
+                {$t({ defaultMessage: '({count} expire on {date})' }, {
+                  count: nextTotalTrialExpiringLicenseCount,
+                  date: nextTrialExpirationDate
+                })}</label>}
     </UI.FieldLabelSubs2>}
 
     {isMsp && <div>
