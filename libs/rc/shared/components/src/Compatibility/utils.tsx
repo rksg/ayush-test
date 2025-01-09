@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 import { ApCompatibility, ApCompatibilityResponse, ApIncompatibleFeature, Compatibility, CompatibilityDeviceEnum, IncompatibilityFeatures, IncompatibleFeature, IncompatibleFeatureTypeEnum, isEdgeCompatibilityFeature } from '@acx-ui/rc/utils'
 
 // for old API
@@ -16,16 +18,35 @@ export const apCompatibilityDataGroupByFeatureDeviceType = (data: ApCompatibilit
 }
 
 export const compatibilityDataGroupByFeatureDeviceType = (data: Compatibility):
- Record<string, IncompatibleFeature[]> => {
+Record<string, IncompatibleFeature[]> => {
   const deviceMap: Record<string, IncompatibleFeature[]> = {}
 
-  data.incompatibleFeatures?.forEach(incompatibleFeature => {
-    const isEdgeFeature = incompatibleFeature.featureType === IncompatibleFeatureTypeEnum.EDGE
+  data.incompatibleFeatures?.forEach(feature => {
+    const isEdgeFeature = feature.featureType === IncompatibleFeatureTypeEnum.EDGE
     const deviceType = isEdgeFeature ? CompatibilityDeviceEnum.EDGE : CompatibilityDeviceEnum.AP
-    if (!deviceMap[deviceType]) deviceMap[deviceType] = []
-    deviceMap[deviceType].push(incompatibleFeature)
-  })
 
+    if (!deviceMap[deviceType]) {
+      deviceMap[deviceType] = []
+    }
+
+    if (feature.featureGroup) {
+      const existingFeature = deviceMap[deviceType].find(f =>
+        f.featureName === feature.featureGroup && f.featureType === feature.featureType)
+
+      if (existingFeature) {
+        existingFeature.children = existingFeature.children ?? []
+        existingFeature.children.push(_.omit(feature, 'featureType'))
+      } else {
+        deviceMap[deviceType].push({
+          featureName: feature.featureGroup,
+          featureType: feature.featureType,
+          children: [_.omit(feature, 'featureType')]
+        })
+      }
+    } else {
+      deviceMap[deviceType].push(feature)
+    }
+  })
   return deviceMap
 }
 
