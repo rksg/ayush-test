@@ -1,18 +1,16 @@
 import { Map }               from 'immutable'
 import { MessageDescriptor } from 'react-intl'
 
-import { ConfigChange } from '@acx-ui/components'
-import { get }          from '@acx-ui/config'
+import { get } from '@acx-ui/config'
 
-import { apGroupKeyMap }             from '../mapping/apGroupKeyMap'
-import { apKeyMap }                  from '../mapping/apKeyMap'
-import { apSpecificKeyMap }          from '../mapping/apSpecificKeyMap'
-import { enumMap }                   from '../mapping/enumMap'
-import { ethernetPortProfileKeyMap } from '../mapping/ethernetPortProfileKeyMap'
-import { intentAIKeyMap }            from '../mapping/intentAIKeyMap'
-import { wlanGroupKeyMap }           from '../mapping/wlanGroupKeyMap'
-import { wlanKeyMap }                from '../mapping/wlanKeyMap'
-import { zoneKeyMap }                from '../mapping/zoneKeyMap'
+import { apGroupKeyMap }    from '../mapping/apGroupKeyMap'
+import { apKeyMap }         from '../mapping/apKeyMap'
+import { apSpecificKeyMap } from '../mapping/apSpecificKeyMap'
+import { enumMap }          from '../mapping/enumMap'
+import { intentAIKeyMap }   from '../mapping/intentAIKeyMap'
+import { wlanGroupKeyMap }  from '../mapping/wlanGroupKeyMap'
+import { wlanKeyMap }       from '../mapping/wlanKeyMap'
+import { zoneKeyMap }       from '../mapping/zoneKeyMap'
 
 const filteredConfigText = ['TBD', 'NA']
 
@@ -72,27 +70,6 @@ export const jsonMapping = {
     configMap: configMapGenerator(intentAIKeyMap),
     enumMap: enumMapGenerator(intentAIKeyMap)
   }
-}
-
-const configChangekpiMap = [
-  ...apKeyMap,
-  ...apSpecificKeyMap,
-  ...apGroupKeyMap,
-  ...ethernetPortProfileKeyMap,
-  ...wlanGroupKeyMap,
-  ...wlanKeyMap,
-  ...zoneKeyMap,
-  ...intentAIKeyMap
-].reduce((configMap, config) => {
-  configMap[config.value] = Object.keys(config.kpis)
-  return configMap
-}, {} as Record<string, string[]>)
-
-export const filterData = (data: ConfigChange[], kpiKeys: string[], legendFilter: string[]) => {
-  return data.filter(row => legendFilter.includes(row.type))
-    .map((value, filterId)=>({ ...value, filterId })).filter(row => kpiKeys.length
-      ? kpiKeys.some(k => configChangekpiMap[row.key]?.includes(k))
-      : true)
 }
 
 export const getEntityValue = (type: string, key: string, value: string) => {

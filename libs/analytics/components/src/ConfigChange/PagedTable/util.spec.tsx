@@ -1,14 +1,6 @@
 import { defineMessage } from 'react-intl'
 
-import { configChanges } from '../__tests__/fixtures'
-
-import {
-  MappingType,
-  json2keymap,
-  filterData,
-  getEntityValue,
-  getConfiguration
-}                        from './util'
+import { MappingType, getConfiguration, getEntityValue, json2keymap } from './util'
 
 describe('json2keymap', () => {
   it('should apply filter and build mapping with keys', () => {
@@ -50,22 +42,6 @@ describe('json2keymap', () => {
   })
 })
 
-describe('filterData', () => {
-  it('should return correct data', () => {
-    const legend = ['ap', 'apGroup', 'zone', 'wlan', 'wlanGroup', 'intentAI']
-    expect(filterData(configChanges, [], legend).length).toEqual(configChanges.length)
-    expect(filterData(configChanges, ['clientThroughput'], legend).length).toEqual(5)
-  })
-  it('should filter out legend', () => {
-    const noAPLegend = ['apGroup', 'zone', 'wlan', 'wlanGroup', 'intentAI']
-    const noZoneLegend = ['ap', 'apGroup', 'wlan', 'wlanGroup', 'intentAI']
-    const noIntentAILegend = ['ap', 'apGroup', 'zone', 'wlan', 'wlanGroup']
-    expect(filterData(configChanges, [], noAPLegend).length).toEqual(8)
-    expect(filterData(configChanges, [], noZoneLegend).length).toEqual(7)
-    expect(filterData(configChanges, [], noIntentAILegend).length).toEqual(9)
-  })
-})
-
 describe('getEntityValue', () => {
   it('should return a mapped value if present in enumTextMap', () => {
     const type = 'ap'
@@ -101,5 +77,3 @@ describe('getConfiguration', () => {
     expect(getConfiguration(type, key)).toEqual(key)
   })
 })
-
-
