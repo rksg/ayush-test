@@ -1,24 +1,19 @@
-import React from 'react'
-
 import { useIntl } from 'react-intl'
 
 import { GridRow, GridCol, PageHeader } from '@acx-ui/components'
 
 import { generateBreadcrumb } from './utils'
 
-
-type DataSubscriptionsFormProps = {
-  isRAI?:boolean
-  editMode?: boolean
+type DataSubscriptionsCloudStorageProps = {
+  isRAI?: boolean
 }
 
-const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ isRAI, editMode=false }) => {
+const DataSubscriptionsCloudStorage: React.FC<DataSubscriptionsCloudStorageProps> = ({ isRAI }) => {
   const { $t } = useIntl()
   return (
     <>
       <PageHeader
-        title={editMode? $t({ defaultMessage: 'Edit Subscription' }) :
-          $t({ defaultMessage: 'New Subscription' })}
+        title={$t({ defaultMessage: 'Cloud Storage Edit' })}
         breadcrumb={generateBreadcrumb({ isRAI })}
       />
       <GridRow>
@@ -30,4 +25,4 @@ const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ isRAI, ed
   )
 }
 
-export default DataSubscriptionsForm
+export default DataSubscriptionsCloudStorage

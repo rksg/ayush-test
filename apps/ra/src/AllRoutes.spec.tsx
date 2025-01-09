@@ -1,6 +1,7 @@
 import { Navigate, useSearchParams } from 'react-router-dom'
 
 import { getUserProfile }                                        from '@acx-ui/analytics/utils'
+import { get }                                                   from '@acx-ui/config'
 import { Provider }                                              from '@acx-ui/store'
 import { render, screen }                                        from '@acx-ui/test-utils'
 import { RaiPermissions, setRaiPermissions, raiPermissionsList } from '@acx-ui/user'
@@ -24,6 +25,11 @@ jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
   showToast: jest.fn()
 }))
+jest.mock('@acx-ui/config', () => ({
+  ...jest.requireActual('@acx-ui/config'),
+  get: jest.fn()
+}))
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   Navigate: jest.fn(() => <div />),
@@ -36,6 +42,14 @@ jest.mock('@acx-ui/analytics/utils', () => ({
 }))
 const userProfile = getUserProfile as jest.Mock
 
+const defaultReportsPermissions = {
+  READ_DASHBOARD: false,
+  READ_HEALTH: false,
+  READ_REPORTS: false,
+  READ_DATA_STUDIO: false,
+  READ_DATA_SUBSCRIPTIONS: false
+}
+
 describe('AllRoutes', () => {
   const defaultUserProfile = {
     accountId: 'aid',
@@ -47,6 +61,7 @@ describe('AllRoutes', () => {
     }
   }
   beforeEach(() => {
+    jest.mocked(get).mockReturnValue('true')
     setRaiPermissions(Object.keys(raiPermissionsList)
       .reduce((permissions, name) => ({ ...permissions, [name]: true }), {} as RaiPermissions))
     userProfile.mockReturnValue(defaultUserProfile)
@@ -63,7 +78,7 @@ describe('AllRoutes', () => {
   })
 
   it('redirects report users to reports', async () => {
-    setRaiPermissions({ READ_REPORTS: true } as RaiPermissions)
+    setRaiPermissions({ ...defaultReportsPermissions, READ_REPORTS: true } as RaiPermissions)
     render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
     expect(Navigate).toHaveBeenCalledWith({
       replace: true,
@@ -72,7 +87,7 @@ describe('AllRoutes', () => {
   })
 
   it('redirects it helpdesk to health', async () => {
-    setRaiPermissions({ READ_HEALTH: true } as RaiPermissions)
+    setRaiPermissions({ ...defaultReportsPermissions, READ_HEALTH: true } as RaiPermissions)
     render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
     expect(Navigate).toHaveBeenCalledWith({
       replace: true,
@@ -81,11 +96,22 @@ describe('AllRoutes', () => {
   })
 
   it('redirects data studio users to data studio', async () => {
-    setRaiPermissions({ READ_DATA_STUDIO: true } as RaiPermissions)
+    setRaiPermissions({ ...defaultReportsPermissions, READ_DATA_STUDIO: true } as RaiPermissions)
     render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
     expect(Navigate).toHaveBeenCalledWith({
       replace: true,
       to: { pathname: '/ai/reports', search: '?selectedTenants=WyJhaWQiXQ==' }
+    }, {})
+  })
+
+  it('redirects to data subscriptions', async () => {
+    setRaiPermissions({
+      ...defaultReportsPermissions,
+      READ_DATA_SUBSCRIPTIONS: true } as RaiPermissions)
+    render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
+    expect(Navigate).toHaveBeenCalledWith({
+      replace: true,
+      to: { pathname: '/ai/dataSubscriptions', search: '?selectedTenants=WyJhaWQiXQ==' }
     }, {})
   })
 

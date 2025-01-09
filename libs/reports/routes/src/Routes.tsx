@@ -7,7 +7,9 @@ import {
   ReportList,
   DataStudio,
   DataSubscriptionsContent,
-  DataSubscriptionsForm
+  DataSubscriptionsForm,
+  DataSubscriptionsAuditLog,
+  DataSubscriptionsCloudStorage
 } from '@acx-ui/reports/components'
 import { Provider } from '@acx-ui/store'
 
@@ -42,9 +44,16 @@ export default function ReportsRoutes () {
       <Route path='reports/wlans' element={reports.wlans} />
       <Route path='reports/airtime' element={reports.airtime} />
       <Route path='dataStudio' element={<DataStudio />} />
-      <Route path='dataSubscriptions' element={<DataSubscriptionsContent />} />
-      <Route path='dataSubscriptions/create' element={<DataSubscriptionsForm />} />
-      <Route path='dataSubscriptions/edit' element={<DataSubscriptionsForm editMode />} />
+      {isRa ? (<>
+        <Route path='dataSubscriptions' element={<DataSubscriptionsContent isRAI />} />
+        <Route path='dataSubscriptions/create' element={<DataSubscriptionsForm isRAI />} />
+        <Route path='dataSubscriptions/edit/:settingId'
+          element={<DataSubscriptionsForm isRAI editMode />} />
+        <Route path='dataSubscriptions/auditLog/:settingId'
+          element={<DataSubscriptionsAuditLog isRAI/>} />
+        <Route path='dataSubscriptions/cloudStorage/:cofigId'
+          element={<DataSubscriptionsCloudStorage isRAI/>} />
+      </>) : []}
     </Route>
   )
   return (

@@ -1,10 +1,12 @@
 import { find } from 'lodash'
 
 import { LayoutProps }                                           from '@acx-ui/components'
+import { get }                                                   from '@acx-ui/config'
 import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { useSearchParams }                                       from '@acx-ui/react-router-dom'
 import { renderHook }                                            from '@acx-ui/test-utils'
 import { RaiPermissions, raiPermissionsList, setRaiPermissions } from '@acx-ui/user'
+
 
 
 import { useMenuConfig } from './menuConfig'
@@ -12,6 +14,11 @@ import { useMenuConfig } from './menuConfig'
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useSearchParams: jest.fn(() => [{ get: jest.fn() }])
+}))
+
+jest.mock('@acx-ui/config', () => ({
+  ...jest.requireActual('@acx-ui/config'),
+  get: jest.fn()
 }))
 
 const mockSearchGet = jest.fn()
@@ -54,6 +61,7 @@ const manageMlisaRoutes = [
 
 describe('useMenuConfig', () => {
   beforeEach(() => {
+    jest.mocked(get).mockReturnValue('true')
     setRaiPermissions(defaultMockPermissions as RaiPermissions)
   })
   it('should return an array of menu items based on user permissions', () => {
@@ -97,12 +105,13 @@ describe('useMenuConfig', () => {
     const { result } = renderHook(() => useMenuConfig(), { route: true })
     expect(result.current).toMatchSnapshot()
   })
-  it('should not return Data Studio', () => {
+  it('should not return menues under the Business Insights', () => {
     setRaiPermissions({
       ...defaultMockPermissions,
       READ_REPORTS: false,
       READ_OCCUPANCY: false,
-      READ_DATA_STUDIO: false
+      READ_DATA_STUDIO: false,
+      READ_DATA_SUBSCRIPTIONS: false
     } as RaiPermissions)
     const { result } = renderHook(() => useMenuConfig(), { route: true })
     const routes = [
