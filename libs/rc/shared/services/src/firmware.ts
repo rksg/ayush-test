@@ -733,6 +733,27 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'Firmware', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
+    getVenueApModelFirmwareSchedulesList: build.query<FirmwareVenuePerApModel[], RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getVenueApModelFirmwareSchedulesList)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          // eslint-disable-next-line max-len
+          onActivityMessageReceived(msg, ['UpdateNowByApModel', 'ChangeUpgradeScheduleByApMode', 'SkipUpgradeSchedule'], () => {
+            api.dispatch(firmwareApi.util.invalidateTags([
+              { type: 'Firmware', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      providesTags: [{ type: 'Firmware', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
     getAllApModelFirmwareList: build.query<ApModelFirmware[], RequestPayload>({
       query: () => {
         const req = createHttpRequest(FirmwareUrlsInfo.getAllApModelFirmwareList)
@@ -914,6 +935,7 @@ export const {
   useGetScheduledFirmwareQuery,
   useLazyGetScheduledFirmwareQuery,
   useGetVenueApModelFirmwareListQuery,
+  useGetVenueApModelFirmwareSchedulesListQuery,
   useGetAllApModelFirmwareListQuery,
   usePatchVenueApModelFirmwaresMutation,
   useGetVenueApModelFirmwaresQuery,

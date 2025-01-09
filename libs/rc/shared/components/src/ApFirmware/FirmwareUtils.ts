@@ -4,19 +4,22 @@ import { IntlShape } from 'react-intl'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
-  firmwareTypeTrans,
-  FirmwareCategory,
-  FirmwareVersion,
-  FirmwareVenue,
-  FirmwareSwitchVenue,
-  FirmwareVenueVersion,
-  FirmwareType,
-  Schedule,
-  LatestEdgeFirmwareVersion,
   EolApFirmware,
-  FirmwareSwitchVenueV1002
+  FirmwareCategory,
+  FirmwareLabel,
+  FirmwareSwitchVenue,
+  FirmwareSwitchVenueV1002,
+  FirmwareType,
+  firmwareTypeTrans,
+  FirmwareVenue,
+  FirmwareVenueVersion,
+  FirmwareVersion,
+  LatestEdgeFirmwareVersion,
+  Schedule
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
+
+import { ApModelIndividualDisplayDataType, UpdateFirmwarePerApModelFirmware } from './VenueFirmwareListPerApModel'
 
 export const expirationTimeUnits: Record<string, string> = {
   HOURS_AFTER_TIME: 'Hours',
@@ -113,13 +116,16 @@ export type VersionLabelType = {
   name: string,
   category: FirmwareCategory,
   onboardDate?: string,
-  releaseDate?: string
+  releaseDate?: string,
+  labels?: FirmwareLabel[]
 }
 // eslint-disable-next-line max-len
 export const getVersionLabel = (intl: IntlShape, version: VersionLabelType, showType = true): string => {
   const transform = firmwareTypeTrans(intl.$t)
   const versionName = version?.name
-  const versionType = transform(version?.category)
+  const versionType = transform(
+    isAlphaOrBeta(version?.labels) ? FirmwareCategory.EARLY_ACCESS : version?.category
+  )
   const displayDate = version.releaseDate ?? version.onboardDate
   const versionDate = displayDate
     ? formatter(DateFormatEnum.DateFormat)(displayDate)
@@ -127,6 +133,24 @@ export const getVersionLabel = (intl: IntlShape, version: VersionLabelType, show
 
   // eslint-disable-next-line max-len
   return `${versionName}${showType ? ` (${versionType}) ` : ' '}${versionDate ? '- ' + versionDate : ''}`
+}
+
+export const isAlpha = (labels: FirmwareLabel[] = []): boolean => {
+  return !labels.includes(FirmwareLabel.GA) && labels.includes(FirmwareLabel.ALPHA)
+}
+
+export const isBeta = (labels: FirmwareLabel[] = []): boolean => {
+  return !labels.includes(FirmwareLabel.GA) && labels.includes(FirmwareLabel.BETA)
+}
+
+export const isAlphaOrBeta = (labels: FirmwareLabel[] = []): boolean => {
+  return !labels.includes(FirmwareLabel.GA)
+    && (labels.includes(FirmwareLabel.ALPHA) || labels.includes(FirmwareLabel.BETA))
+}
+
+export const isLegacyAlphaOrBeta = (labels: FirmwareLabel[] = []): boolean => {
+  return !labels.includes(FirmwareLabel.GA)
+    && (labels.includes(FirmwareLabel.LEGACYALPHA) || labels.includes(FirmwareLabel.LEGACYBETA))
 }
 
 export const toUserDate = (date: string): string => {
@@ -306,4 +330,30 @@ export function getActiveApModels (selectedRows: FirmwareVenue[]): string[] {
 
 export function compareABFSequence (seq1: number = 0, seq2: number = 0): number {
   return seq1 - seq2
+}
+
+// eslint-disable-next-line max-len
+export function convertToPayloadForApModelFirmware (displayData: ApModelIndividualDisplayDataType[]): UpdateFirmwarePerApModelFirmware {
+  return displayData.map((displayDataItem: ApModelIndividualDisplayDataType) => ({
+    apModel: displayDataItem.apModel,
+    firmware: displayDataItem.defaultVersion
+  }))
+}
+
+export function patchPayloadForApModelFirmware (
+  targetFirmwares: UpdateFirmwarePerApModelFirmware, apModel: string, version: string
+): UpdateFirmwarePerApModelFirmware {
+
+  const result: Array<UpdateFirmwarePerApModelFirmware[number] | null> = [...targetFirmwares]
+
+  const targetFirmware = version ? { apModel, firmware: version } : null
+  const targetIndex = result.findIndex(existing => existing?.apModel === apModel)
+
+  if (targetIndex === -1) {
+    result.push(targetFirmware)
+  } else {
+    result.splice(targetIndex, 1, targetFirmware)
+  }
+
+  return _.compact(result)
 }

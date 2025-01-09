@@ -250,6 +250,11 @@ export interface VenueLed {
 	manual?: boolean
 }
 
+export type VenueApUsbStatus = {
+	model: string,
+	usbPortEnable: boolean
+}
+
 export interface VenueApModelBandModeSettings {
 	model: string,
 	bandMode: BandModeEnum
@@ -272,7 +277,8 @@ export interface VenueLanPorts {
 	model: string,
 	lanPorts: LanPort[],
 	poeMode?: string,
-	poeOut?: boolean
+	poeOut?: boolean,
+	isSettingsLoaded?: boolean
 }
 
 export interface Address {
@@ -774,6 +780,16 @@ export interface VenueApSmartMonitor {
 	enabled: boolean,
 	interval: number,
 	threshold: number
+}
+
+export interface VenueApRebootTimeout {
+	gwLossTimeout: number,
+	serverLossTimeout: number
+}
+
+export interface VenueIot {
+	enabled: boolean,
+	mqttBrokerAddress: string
 }
 
 export interface ApManagementVlan {

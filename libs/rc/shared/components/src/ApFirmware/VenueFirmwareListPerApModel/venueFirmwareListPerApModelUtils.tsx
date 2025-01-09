@@ -1,16 +1,20 @@
 import { useState } from 'react'
 
-import { Space }     from 'antd'
-import _             from 'lodash'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { Space }              from 'antd'
+import _                      from 'lodash'
+import { IntlShape, useIntl } from 'react-intl'
+import { useParams }          from 'react-router-dom'
 
-import { Tooltip }                                                                                               from '@acx-ui/components'
-import { useGetAllApModelFirmwareListQuery, useGetUpgradePreferencesQuery, useUpdateUpgradePreferencesMutation } from '@acx-ui/rc/services'
-import { ApModelFirmware, FirmwareVenuePerApModel, UpgradePreferences }                                          from '@acx-ui/rc/utils'
-import { getIntl }                                                                                               from '@acx-ui/utils'
+import { Tooltip }                      from '@acx-ui/components'
+import {
+  useGetAllApModelFirmwareListQuery,
+  useGetUpgradePreferencesQuery,
+  useUpdateUpgradePreferencesMutation
+} from '@acx-ui/rc/services'
+import { ApModelFirmware, FirmwareLabel, FirmwareVenuePerApModel, UpgradePreferences } from '@acx-ui/rc/utils'
+import { getIntl }                                                                     from '@acx-ui/utils'
 
-import { VersionLabelType, compareVersions, getVersionLabel } from '../FirmwareUtils'
+import { compareVersions, getVersionLabel, isAlphaOrBeta, isLegacyAlphaOrBeta, VersionLabelType } from '../FirmwareUtils'
 
 import * as UI                              from './styledComponents'
 import { UpdateFirmwarePerApModelFirmware } from './UpdateNowDialog'
@@ -26,6 +30,19 @@ export function useUpdateNowPerApModel () {
     updateNowVisible,
     setUpdateNowVisible,
     handleUpdateNowCancel
+  }
+}
+
+export function useUpdateEarlyAccessNowPerApModel () {
+  const [ updateEarlyAccessNowVisible, setUpdateEarlyAccessNowVisible ] = useState(false)
+  const handleUpdateEarlyAccessNowCancel = () => {
+    setUpdateEarlyAccessNowVisible(false)
+  }
+
+  return {
+    updateEarlyAccessNowVisible,
+    setUpdateEarlyAccessNowVisible,
+    handleUpdateEarlyAccessNowCancel
   }
 }
 
@@ -98,7 +115,8 @@ export function useUpgradePerferences () {
   }
 }
 
-export function renderCurrentFirmwaresColumn (data: FirmwareVenuePerApModel['currentApFirmwares']) {
+// eslint-disable-next-line max-len
+export function renderCurrentFirmwaresColumn (data: FirmwareVenuePerApModel['currentApFirmwares'], intl: IntlShape) {
   const firmwareGroupsMap = groupByFirmware(data)
   const firmwareGroupsText = Object
     .keys(firmwareGroupsMap)
@@ -107,7 +125,19 @@ export function renderCurrentFirmwaresColumn (data: FirmwareVenuePerApModel['cur
   const firmwareGroupsTooltipContent = Object
     .entries(firmwareGroupsMap)
     .sort((a, b) => -compareVersions(a[0], b[0]))
-    .map(([ firmware, apModels ]) => `${firmware}: ${apModels.join(', ')}`)
+    .map(([ firmware, firmwareInfo ]) => {
+      let label = ''
+      // eslint-disable-next-line max-len
+      const isEarlyAccess = isAlphaOrBeta(firmwareInfo.labels as FirmwareLabel[])
+      if (isEarlyAccess) {
+        label = ` ${intl.$t({ defaultMessage: '(Early Access)' })}`
+      } else {
+        if (isLegacyAlphaOrBeta(firmwareInfo.labels as FirmwareLabel[])) {
+          label = ` ${intl.$t({ defaultMessage: '(Legacy Early Access)' })}`
+        }
+      }
+      return `${firmware}${label}: ${firmwareInfo.apModel.join(', ')}`
+    })
     .join('\n')
 
   return (
@@ -118,17 +148,23 @@ export function renderCurrentFirmwaresColumn (data: FirmwareVenuePerApModel['cur
 }
 
 // eslint-disable-next-line max-len
-function groupByFirmware (data: FirmwareVenuePerApModel['currentApFirmwares']): { [firmware in string]: string[] } {
+function groupByFirmware (data: FirmwareVenuePerApModel['currentApFirmwares']): { [firmware in string]: { apModel: string[], labels: string[] } } {
   if (!data) return {}
 
   return data.reduce((acc, curr) => {
-    const { firmware, apModel } = curr
+    const { firmware, apModel, labels } = curr
     if (!acc[firmware]) {
-      acc[firmware] = []
+      acc[firmware] = {
+        apModel: [],
+        labels: []
+      }
     }
-    acc[firmware].push(apModel)
+    acc[firmware] = {
+      apModel: [...acc[firmware].apModel, apModel],
+      labels: labels || []
+    }
     return acc
-  }, {} as { [firmware in string]: string[] })
+  }, {} as { [firmware in string]: { apModel: string[], labels: FirmwareLabel[] } })
 }
 
 export type ApFirmwareUpdateGroupType = { apModels: string[], firmwares: VersionLabelType[] }
@@ -146,7 +182,8 @@ export function convertApModelFirmwaresToUpdateGroups (data: ApModelFirmware[]):
           name: curr.name,
           category: curr.category,
           releaseDate: curr.releaseDate,
-          onboardDate: curr.onboardDate
+          onboardDate: curr.onboardDate,
+          labels: curr.labels
         }]
       })
       hasHandledApModels.push(...diff)
@@ -200,6 +237,7 @@ export type ApModelIndividualDisplayDataType = {
   versionOptions: { key: string, label: string, releaseDate: string }[]
   defaultVersion: string
   extremeFirmware: string
+  earlyAccess?: boolean
 }
 
 export function convertToApModelIndividualDisplayData (
@@ -213,7 +251,7 @@ export function convertToApModelIndividualDisplayData (
   if (_.isEmpty(extremeFirmwareMap)) return []
 
   // eslint-disable-next-line max-len
-  const result: { [apModel in string]: Pick<ApModelIndividualDisplayDataType, 'versionOptions' | 'extremeFirmware'> } = {}
+  const result: { [apModel in string]: Pick<ApModelIndividualDisplayDataType, 'versionOptions' | 'extremeFirmware' | 'earlyAccess'> } = {}
 
   apModelFirmwareList.forEach((apModelFirmware: ApModelFirmware) => {
     if (!apModelFirmware.supportedApModels) return
@@ -225,7 +263,9 @@ export function convertToApModelIndividualDisplayData (
       if (!result[apModel]) {
         result[apModel] = {
           versionOptions: [],
-          extremeFirmware: apModelExtremeFirmware.extremeFirmware
+          extremeFirmware: apModelExtremeFirmware.extremeFirmware,
+          // eslint-disable-next-line max-len
+          earlyAccess: apModelFirmware.labels?.includes(FirmwareLabel.GA) && compareVersions(apModelFirmwareList[0].id, apModelExtremeFirmware.extremeFirmware) < 0
         }
       }
 
@@ -242,10 +282,12 @@ export function convertToApModelIndividualDisplayData (
     })
   })
 
-  return Object.entries(result).map(([ apModel, { versionOptions, extremeFirmware } ]) => ({
+  // eslint-disable-next-line max-len
+  return Object.entries(result).map(([ apModel, { versionOptions, extremeFirmware, earlyAccess } ]) => ({
     apModel,
     versionOptions,
     extremeFirmware,
+    earlyAccess,
     defaultVersion: isUpgrade
       ? getApModelDefaultFirmwareFromOptions(apModel, versionOptions, initialPayload)
       : ''

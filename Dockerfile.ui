@@ -1,6 +1,12 @@
 ARG CI_SERVICE_BASE
 ARG GAR_CONTAINER_URL
 ARG GAR_DOCKER_ROOT_URL
+ARG GAR_CICD_BASEIMAGE_CONTAINER_URL
+
+# Avoid "docker build" for more than one hour, causing gcloud credential to time out.
+# So we need to execute "pull image" first.
+FROM ${GAR_CICD_BASEIMAGE_CONTAINER_URL}ci-precommit-sonar:stable as sonar-stage
+FROM ${GAR_CONTAINER_URL}nginx:1.21.6-alpine as final-stage
 
 FROM ${GAR_DOCKER_ROOT_URL}/acx-service/acx-ui-cache/nx-cache:latest as nx-cache
 FROM ${CI_SERVICE_BASE}node:master--latest as build-base
@@ -92,6 +98,10 @@ COPY --from=build /app/dist/apps ./dist/apps
 ARG PRECOMMIT
 ARG GIT_COMMIT_BRANCH
 
+RUN mkdir -p /home/jenkins/nemo-server/workspace/CICD_CI_CACHE_RKSCLOUD_ACX-UI/service/coverage
+RUN chmod 777 /home/jenkins/nemo-server/workspace/CICD_CI_CACHE_RKSCLOUD_ACX-UI/service/coverage
+RUN ln -s /home/jenkins/nemo-server/workspace/CICD_CI_CACHE_RKSCLOUD_ACX-UI/service/coverage /app/
+
 ENV NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail"
 
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
@@ -100,6 +110,9 @@ RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
         CICD_BUILD=true node ./node_modules/.bin/nx run rc-components:test $NX_RUN_OPTIONS; \
     fi
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
+        CICD_BUILD=true node ./node_modules/.bin/nx run cloudpath-components:test $NX_RUN_OPTIONS; \
+    fi    
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
         CICD_BUILD=true node ./node_modules/.bin/nx run edge-components:test $NX_RUN_OPTIONS; \
     fi
@@ -139,7 +152,7 @@ RUN ./node_modules/.bin/nx reset
 RUN rm -rf ./node_modules
 
 ###############################################################
-FROM ${GAR_CONTAINER_URL}nginx:1.21.6-alpine
+FROM final-stage
 
 WORKDIR /usr/share/nginx/html
 

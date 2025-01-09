@@ -4,6 +4,7 @@ import { Modal as AntModal }                          from 'antd'
 import moment, { Moment }                             from 'moment-timezone'
 import { FormattedMessage, RawIntlProvider, useIntl } from 'react-intl'
 
+import { getUserName as getRAIUserName } from '@acx-ui/analytics/utils'
 import { DateTimePicker, showToast }     from '@acx-ui/components'
 import { get }                           from '@acx-ui/config'
 import { DateFormatEnum, formatter }     from '@acx-ui/formatter'
@@ -11,6 +12,7 @@ import {
   useLazyVenueRadioActiveNetworksQuery
 } from '@acx-ui/rc/services'
 import { RadioTypeEnum }                         from '@acx-ui/rc/utils'
+import { getUserName as getR1UserName }          from '@acx-ui/user'
 import { Filters, getIntl, useEncodedParameter } from '@acx-ui/utils'
 
 import { IntentListItem, stateToGroupedStates } from './config'
@@ -120,6 +122,8 @@ const getR1WlanPayload = (venueId:string, code:string) => ({
   }
 })
 
+export const getUserName = () => get('IS_MLISA_SA') ? getRAIUserName() : getR1UserName()
+
 export function useIntentAIActions () {
   const { $t } = useIntl()
   const [recommendationWlans] = useLazyIntentWlansQuery()
@@ -204,6 +208,7 @@ export function useIntentAIActions () {
       } else if (code.startsWith('c-crrm-')) { // AI-Driven
         metadata.preferences = { ...(preferences ?? {}), crrmFullOptimization: true }
       }
+      metadata.changedByName = getUserName()
       return { id: row.id, displayStatus, status, metadata } as TransitionIntentItem
     }))
 
@@ -283,7 +288,7 @@ export function useIntentAIActions () {
           id: item.id,
           displayStatus: item.displayStatus,
           status: item.status,
-          metadata: { scheduledAt }
+          metadata: { scheduledAt, changedByName: getUserName() }
         } as TransitionIntentItem))
       const response = await transitionIntent({
         action: Actions.Revert,
@@ -312,7 +317,7 @@ export function useIntentAIActions () {
         displayStatus: item.displayStatus,
         status: item.status,
         statusTrail: item.statusTrail,
-        metadata: item.metadata
+        metadata: { ...item.metadata, changedByName: getUserName() }
       } as TransitionIntentItem))
     const response = await transitionIntent({
       action,

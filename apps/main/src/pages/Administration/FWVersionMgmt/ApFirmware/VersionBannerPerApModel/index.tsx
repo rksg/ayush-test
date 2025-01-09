@@ -1,30 +1,51 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { Col, Divider, Row, Space } from 'antd'
 import { useIntl }                  from 'react-intl'
 
-import { DateFormatEnum, formatter }      from '@acx-ui/formatter'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   ApFirmwareUpdateGroupType,
-  ExpandableApModelList,
-  convertApModelFirmwaresToUpdateGroups
+  convertApModelFirmwaresToUpdateGroups,
+  ExpandableApModelList, isAlpha, isAlphaOrBeta, isBeta,
+  VersionLabelType
 } from '@acx-ui/rc/components'
-import { VersionLabelType }                  from '@acx-ui/rc/components'
 import { useGetAllApModelFirmwareListQuery } from '@acx-ui/rc/services'
-import { ApModelFirmware }                   from '@acx-ui/rc/utils'
-import { noDataDisplay }                     from '@acx-ui/utils'
+import { ApModelFirmware, FirmwareLabel }    from '@acx-ui/rc/utils'
+import { compareVersions, noDataDisplay }    from '@acx-ui/utils'
 
-import * as UI from '../../styledComponents'
+import * as UI               from '../../styledComponents'
+import { ApFirmwareContext } from '../index'
 
 export function VersionBannerPerApModel () {
   const { $t } = useIntl()
+  const apFirmwareContext = useContext(ApFirmwareContext)
+  const isApFwMgmtEarlyAccess = useIsSplitOn(Features.AP_FW_MGMT_EARLY_ACCESS_TOGGLE)
   const [ shownMoreFirmwaresInBanner, setShownMoreFirmwaresInBanner ] = useState(false)
   const { updateGroupsWithLatestVersion } = useGetAllApModelFirmwareListQuery({}, {
     refetchOnMountOrArgChange: 300,
     selectFromResult ({ data, isLoading }) {
       if (!data || data.length === 0 || isLoading) return { updateGroupsWithLatestVersion: [] }
 
-      let updateGroups = convertApModelFirmwaresToUpdateGroups(data)
+      let updateGroups = convertApModelFirmwaresToUpdateGroups(
+        isApFwMgmtEarlyAccess ? data.filter(d => d.labels?.includes(FirmwareLabel.GA)) : data
+      )
+      let updateAlphaGroups = convertApModelFirmwaresToUpdateGroups(
+        data.filter(d => isAlpha(d.labels))
+      )
+      let updateBetaGroups = convertApModelFirmwaresToUpdateGroups(
+        data.filter(d => isBeta(d.labels))
+      )
+
+      updateGroups = [
+        ...updateGroups,
+        ...(apFirmwareContext.isAlphaFlag ? updateAlphaGroups : []),
+        // eslint-disable-next-line max-len
+        ...((apFirmwareContext.isBetaFlag || apFirmwareContext.isAlphaFlag) ? updateBetaGroups : [])
+      ]
+
+      updateGroups.sort((a, b) => compareVersions(b.firmwares[0].name, a.firmwares[0].name))
 
       const tenantLatestVersionUpdateGroup = extractLatestVersionToUpdateGroup(data)
       if (updateGroups.length === 0) { // ACX-56531: At least display the latest version where there is no AP in the tenant
@@ -86,7 +107,8 @@ function extractLatestVersionToUpdateGroup (apModelFirmwares: ApModelFirmware[])
       name: latest.name,
       category: latest.category,
       releaseDate: latest.releaseDate,
-      onboardDate: latest.onboardDate
+      onboardDate: latest.onboardDate,
+      labels: latest.labels
     }]
   }
 }
@@ -123,11 +145,18 @@ function VersionPerApModelInfo (props: VersionInfoPerApModelProps) {
     return <span>{ $t({ defaultMessage: 'For devices {apModels}' }, { apModels: apModelsForDisplay || noDataDisplay }) }</span>
   }
 
+  const generateVersionName = (firmware: VersionLabelType) => {
+    if (isAlphaOrBeta(firmware.labels)) {
+      return `${ $t({ defaultMessage: '{name} (Early Access)' }, { name: firmware.name }) }`
+    }
+    return firmware.name
+  }
+
   return (
     <UI.FwContainer>
       <Space size={0} direction='vertical'>
         <Space size={4} split={'-'}>
-          <UI.BannerVersionName>{firmware.name}</UI.BannerVersionName>
+          <UI.BannerVersionName>{generateVersionName(firmware)}</UI.BannerVersionName>
           <span>{ formatter(DateFormatEnum.DateFormat)(firmware.releaseDate) } </span>
         </Space>
         <ExpandableApModelList apModels={apModels} generateLabelWrapper={generateLabelWrapper} />

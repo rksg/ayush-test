@@ -60,6 +60,8 @@ import {
   VenueLoadBalancing,
   VenueBssColoring,
   VenueApSmartMonitor,
+  VenueApRebootTimeout,
+  VenueIot,
   TopologyData,
   VenueMdnsFencingPolicy,
   PropertyConfigs,
@@ -104,7 +106,12 @@ import {
   CompatibilityResponse,
   IncompatibleFeatureLevelEnum,
   SoftGreUrls,
-  SoftGreViewData
+  SoftGreViewData,
+  VenueApUsbStatus,
+  ClientIsolationUrls,
+  ClientIsolationViewModel,
+  LanPortsUrls,
+  VenueLanPortSettings
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                                                          from '@acx-ui/store'
 import { ITimeZone, RequestPayload }                                                             from '@acx-ui/types'
@@ -121,12 +128,15 @@ import {
   transformGetVenueDHCPPoolsResponse,
   updateVenueRoguePolicyFn
 } from './servicePolicy.utils'
-import { handleCallbackWhenActivitySuccess, isPayloadHasField }                          from './utils'
+import { handleCallbackWhenActivitySuccess, isPayloadHasField } from './utils'
 import {
   convertToApMeshDataList,
   convertToMeshTopologyDataList,
   createVenueDefaultRadioCustomizationFetchArgs, createVenueDefaultRegulatoryChannelsFetchArgs,
-  createVenueRadioCustomizationFetchArgs, createVenueUpdateRadioCustomizationFetchArgs
+  createVenueRadioCustomizationFetchArgs, createVenueUpdateRadioCustomizationFetchArgs,
+  mappingLanPortWithClientIsolationPolicy,
+  mappingLanPortWithEthernetPortProfile,
+  mappingLanPortWithSoftGreProfile
 } from './venue.utils'
 
 const customHeaders = {
@@ -1116,6 +1126,33 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getVenueApUsbStatus: build.query<VenueApUsbStatus[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          CommonRbacUrlsInfo.getVenueApUsbStatus,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
+
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Venue', id: 'VENUE_USB_SETTINGS' }]
+    }),
+    updateVenueApUsbStatus: build.mutation<CommonResult, RequestPayload<VenueApUsbStatus[]>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          CommonRbacUrlsInfo.updateVenueApUsbStatus,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
+
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Venue', id: 'VENUE_USB_SETTINGS' }]
+    }),
     // eslint-disable-next-line max-len
     getVenueApModelBandModeSettings: build.query<VenueApModelBandModeSettings[], RequestPayload<void>>({
       query: ({ params }) => {
@@ -1762,6 +1799,48 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getVenueApRebootTimeout: build.query<VenueApRebootTimeout, RequestPayload>({
+      query: ({ params }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+
+        const req = createHttpRequest(WifiRbacUrlsInfo.getVenueRebootTimeout, params, apiCustomHeader)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueApRebootTimeout: build.mutation<VenueApRebootTimeout, RequestPayload>({
+      query: ({ params, payload }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateVenueRebootTimeout, params, apiCustomHeader)
+        return{
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    getVenueIot: build.query<VenueIot, RequestPayload>({
+      query: ({ params }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+
+        const req = createHttpRequest(WifiRbacUrlsInfo.getVenueIot, params, apiCustomHeader)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueIot: build.mutation<VenueIot, RequestPayload>({
+      query: ({ params, payload }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateVenueIot, params, apiCustomHeader)
+        return{
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
     getTopology: build.query<TopologyData, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getTopology, params)
@@ -2173,7 +2252,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
-    updateVenueAntennaType: build.mutation< CommonResult, RequestPayload>({
+    updateVenueAntennaType: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
         const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
@@ -2197,12 +2276,13 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const venueLanPortSettings = venueLanPortsQuery.data as VenueLanPorts[]
         const venueId = arg.params?.venueId
 
-        // eslint-disable-next-line
         const isEthernetPortProfileEnabled = (arg.payload as any)?.isEthernetPortProfileEnabled
-        // eslint-disable-next-line
         const isEthernetSoftgreEnabled = (arg.payload as any)?.isEthernetSoftgreEnabled
+        const isEthernetClientIsolationEnabled = (arg.payload as any)?.isEthernetClientIsolationEnabled
 
         if(venueId) {
+
+          // Mapping Ethernet port profile relation to Lan port settings
           const ethernetPortProfileReq = createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList)
           const ethernetPortProfileQuery = await fetchWithBQ(
             { ...ethernetPortProfileReq,
@@ -2214,18 +2294,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
             }
           )
           const ethernetPortProfiles = (ethernetPortProfileQuery.data as TableResult<EthernetPortProfileViewData>).data
+          mappingLanPortWithEthernetPortProfile(venueLanPortSettings, ethernetPortProfiles, venueId)
 
-          ethernetPortProfiles.forEach((profile) => {
-            if (profile.venueActivations) {
-              profile.venueActivations.forEach((activity)=>{
-                const targetLanPort = venueLanPortSettings.find(setting => setting.model === activity.apModel && venueId === activity.venueId)
-                  ?.lanPorts.find(lanPort => lanPort.portId?.toString() === activity.portId?.toString())
-                if(targetLanPort) {
-                  targetLanPort.ethernetPortProfileId = profile.id
-                }
-              })
-            }
-          })
+          // Mapping SoftGRE profile relation to Lan port settings
           if(isEthernetPortProfileEnabled && isEthernetSoftgreEnabled) {
             const softgreProfileReq = createHttpRequest(SoftGreUrls.getSoftGreViewDataList)
             const softgreProfileQuery = await fetchWithBQ(
@@ -2238,20 +2309,72 @@ export const venueApi = baseVenueApi.injectEndpoints({
               }
             )
             const softgreProfiles = (softgreProfileQuery.data as TableResult<SoftGreViewData>).data
-            softgreProfiles.forEach((profile) => {
-              if (profile.venueActivations) {
-                profile.venueActivations.forEach((activity)=>{
-                  const targetLanPort = venueLanPortSettings.find(setting => setting.model === activity.apModel && venueId === activity.venueId)
-                    ?.lanPorts.find(lanPort => lanPort.portId?.toString() === activity.portId?.toString())
-                  if(targetLanPort) {
-                    targetLanPort.softGreProfileId = profile.id
+            mappingLanPortWithSoftGreProfile(venueLanPortSettings, softgreProfiles, venueId)
+          }
+
+          // Mapping Client Isolation Policy relation to Lan port settings
+          if(isEthernetClientIsolationEnabled) {
+            const clientIsolationReq = createHttpRequest(ClientIsolationUrls.queryClientIsolation)
+            const clientIsolationQuery = await fetchWithBQ(
+              { ...clientIsolationReq,
+                body: JSON.stringify({
+                  filters: {
+                    'venueActivations.venueId': [venueId]
                   }
                 })
               }
-            })
+            )
+            const clientIsolationPolicies = (clientIsolationQuery.data as TableResult<ClientIsolationViewModel>).data
+            mappingLanPortWithClientIsolationPolicy(venueLanPortSettings, clientIsolationPolicies, venueId)
           }
         }
         return { data: venueLanPortSettings }
+      }
+    }),
+
+    getVenueLanPortSettings: build.query<VenueLanPortSettings, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          LanPortsUrls.getVenueLanPortSettings, params)
+        return {
+          ...req
+        }
+      }
+    }),
+
+    getVenueLanPortSettingsByModel: build.query<VenueLanPortSettings[], RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+
+        const venueId = arg.params?.venueId
+        const model = arg.params?.apModel
+        const lanPortCount = arg.params?.lanPortCount || 0
+
+        const venueLanPortSettingsQuery = Array.from({ length: Number(lanPortCount) }, (_, index) =>{
+          return fetchWithBQ(
+            createHttpRequest(
+              LanPortsUrls.getVenueLanPortSettings,
+              { venueId, apModel: model, portId: (index + 1).toString() }
+            )
+          )
+        })
+
+        const reqs = await Promise.allSettled(venueLanPortSettingsQuery)
+        const results: VenueLanPortSettings[] = reqs.map((result) => {
+          return result.status === 'fulfilled' ? result.value.data as VenueLanPortSettings : {}
+        })
+
+        return { data: results }
+      }
+    }),
+
+    updateVenueLanPortSettings: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          LanPortsUrls.updateVenueLanPortSettings, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
       }
     }),
 
@@ -2317,6 +2440,9 @@ export const {
   useGetVenueLedOnQuery,
   useLazyGetVenueLedOnQuery,
   useUpdateVenueLedOnMutation,
+  useGetVenueApUsbStatusQuery,
+  useLazyGetVenueApUsbStatusQuery,
+  useUpdateVenueApUsbStatusMutation,
   useGetVenueApModelBandModeSettingsQuery,
   useLazyGetVenueApModelBandModeSettingsQuery,
   useUpdateVenueApModelBandModeSettingsMutation,
@@ -2413,9 +2539,18 @@ export const {
   useGetVenueApSmartMonitorQuery,
   useLazyGetVenueApSmartMonitorQuery,
   useUpdateVenueApSmartMonitorMutation,
-
+  useGetVenueApRebootTimeoutQuery,
+  useLazyGetVenueApRebootTimeoutQuery,
+  useUpdateVenueApRebootTimeoutMutation,
+  useGetVenueIotQuery,
+  useLazyGetVenueIotQuery,
+  useUpdateVenueIotMutation,
   useGetVenueLanPortWithEthernetSettingsQuery,
   useLazyGetVenueLanPortWithEthernetSettingsQuery,
+  useGetVenueLanPortSettingsQuery,
+  useLazyGetVenueLanPortSettingsQuery,
+  useLazyGetVenueLanPortSettingsByModelQuery,
+  useUpdateVenueLanPortSettingsMutation,
   useUpdateVenueLanPortSpecificSettingsMutation
 } = venueApi
 

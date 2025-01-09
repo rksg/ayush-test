@@ -9,6 +9,7 @@ import {
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
   EthernetPortProfileUrls,
+  LanPortsUrls,
   WifiRbacUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -29,8 +30,13 @@ import {
   ApData_T750SE,
   ApLanPorts_has_vni,
   ApLanPorts_T750SE,
-  lanPortSettingPort1,
   mockDefaultTunkEthertnetPortProfile,
+  mockedAPLanPortSettings1,
+  mockedAPLanPortSettings2,
+  mockedAPLanPortSettings3,
+  mockedVenueLanPortSettings1,
+  mockedVenueLanPortSettings2,
+  mockedVenueLanPortSettings3,
   mockEthProfiles,
   venueData,
   venueLanPorts,
@@ -69,7 +75,46 @@ describe('Lan Port', () => {
       rest.put(WifiRbacUrlsInfo.updateApLanPorts.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.delete(WifiUrlsInfo.resetApLanPorts.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(LanPortsUrls.getVenueLanPortSettings.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        LanPortsUrls.getApLanPortSettings.url,
+        (_, res, ctx) => {
+          if(_.params.portId === '1') {
+            return res(ctx.json(mockedAPLanPortSettings1))
+          }
+
+          if(_.params.portId === '2') {
+            return res(ctx.json(mockedAPLanPortSettings2))
+          }
+
+          if(_.params.portId === '3') {
+            return res(ctx.json(mockedAPLanPortSettings3))
+          }
+
+          return res(ctx.json({}))
+        }
+      ),
+      rest.get(
+        LanPortsUrls.getVenueLanPortSettings.url,
+        (_, res, ctx) => {
+          if(_.params.portId === '1') {
+            return res(ctx.json(mockedVenueLanPortSettings1))
+          }
+
+          if(_.params.portId === '2') {
+            return res(ctx.json(mockedVenueLanPortSettings2))
+          }
+
+          if(_.params.portId === '3') {
+            return res(ctx.json(mockedVenueLanPortSettings3))
+          }
+
+          return res(ctx.json({}))
+        }
+      )
     )
   })
 
@@ -223,10 +268,44 @@ describe('Lan Port', () => {
           (_, res, ctx) => res(ctx.json({}))),
         rest.get(EthernetPortProfileUrls.getEthernetPortProfile.url,
           (_, res, ctx) => res(ctx.json(mockDefaultTunkEthertnetPortProfile))),
-        rest.get(EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId.url,
-          (_, res, ctx) => res(ctx.json(lanPortSettingPort1))),
         rest.get(WifiUrlsInfo.updateAp.url,
-          (_, res, ctx) => res(ctx.json({ model: 'T750SE' })))
+          (_, res, ctx) => res(ctx.json({ model: 'T750SE' }))),
+        rest.get(
+          LanPortsUrls.getApLanPortSettings.url,
+          (_, res, ctx) => {
+            if(_.params.portId === '1') {
+              return res(ctx.json(mockedAPLanPortSettings1))
+            }
+
+            if(_.params.portId === '2') {
+              return res(ctx.json(mockedAPLanPortSettings2))
+            }
+
+            if(_.params.portId === '3') {
+              return res(ctx.json(mockedAPLanPortSettings3))
+            }
+
+            return res(ctx.json({}))
+          }
+        ),
+        rest.get(
+          LanPortsUrls.getVenueLanPortSettings.url,
+          (_, res, ctx) => {
+            if(_.params.portId === '1') {
+              return res(ctx.json(mockedVenueLanPortSettings1))
+            }
+
+            if(_.params.portId === '2') {
+              return res(ctx.json(mockedVenueLanPortSettings2))
+            }
+
+            if(_.params.portId === '3') {
+              return res(ctx.json(mockedVenueLanPortSettings3))
+            }
+
+            return res(ctx.json({}))
+          }
+        )
       )
     })
 

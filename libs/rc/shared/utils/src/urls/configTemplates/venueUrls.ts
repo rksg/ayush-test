@@ -607,5 +607,25 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/templates/venues/:venueId/apSmartMonitorSettings',
     newApi: true
+  },
+  getVenueApRebootTimeoutSettings: {
+    method: 'get',
+    url: '/templates/venues/:venueId/apRebootTimeoutSettings',
+    newApi: true
+  },
+  updateVenueApRebootTimeoutSettings: {
+    method: 'put',
+    url: '/templates/venues/:venueId/apRebootTimeoutSettings',
+    newApi: true
+  },
+  getVenueApIotSettings: {
+    method: 'get',
+    url: '/templates/venues/:venueId/apIotSettings',
+    newApi: true
+  },
+  updateVenueApIotSettings: {
+    method: 'put',
+    url: '/templates/venues/:venueId/apIotSettings',
+    newApi: true
   }
 }

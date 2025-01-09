@@ -23,17 +23,20 @@ import {
   FILTER,
   FloorPlanMeshAP,
   GetApiVersionHeader,
+  LanPort,
   MeshStatus,
   NewAPExtendedGrouped,
   NewApGroupViewModelResponseType,
   NewAPModel,
   NewAPModelExtended,
+  ProfileLanApActivations,
   RadioProperties,
   SwitchClient,
   SwitchInformation,
   SwitchRbacUrlsInfo,
   TableResult,
   Venue,
+  WifiApSetting,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { RequestPayload }             from '@acx-ui/types'
@@ -267,11 +270,11 @@ const setAPRadioInfo = (
   row.channelU50 = get(radios.radioU50, 'channel') || undefined
   row.channel60 = get(radios.radio60, 'channel') || undefined
 
-  row.actualTxPower24 = get(radios.radio24, 'actualTxPower') || undefined
-  row.actualTxPower50 = get(radios.radio50, 'actualTxPower') || undefined
-  row.actualTxPowerL50 = get(radios.radioL50, 'actualTxPower') || undefined
-  row.actualTxPowerU50 = get(radios.radioU50, 'actualTxPower') || undefined
-  row.actualTxPower60 = get(radios.radio60, 'actualTxPower') || undefined
+  row.actualTxPower24 = get(radios.radio24, 'actualTxPower')
+  row.actualTxPower50 = get(radios.radio50, 'actualTxPower')
+  row.actualTxPowerL50 = get(radios.radioL50, 'actualTxPower')
+  row.actualTxPowerU50 = get(radios.radioU50, 'actualTxPower')
+  row.actualTxPower60 = get(radios.radio60, 'actualTxPower')
 
   if (channelColumnShow) {
     if (!channelColumnShow.channel24 && radios.radio24) channelColumnShow.channel24 = true
@@ -627,7 +630,8 @@ const parsingApFromNewType = (rbacAp: Record<string, unknown>, result: APExtende
                   Rssi: item.rssi,
                   band: item.band,
                   channel: item.channel,
-                  txPower: item.transmitterPower
+                  txPower: item.transmitterPower,
+                  actualTxPower: item.actualTxPower
                 }
               default:
                 return undefined
@@ -822,4 +826,21 @@ export const fetchAppendApPositions = async (apListData: TableResult<FloorPlanMe
     apListData.data[targetIdx].xPercent = (p.value?.data as ApPosition).xPercent
     apListData.data[targetIdx].yPercent = (p.value?.data as ApPosition).yPercent
   })
+}
+
+export const findTargetLanPorts = (
+  apLanPorts: WifiApSetting,
+  activations: ProfileLanApActivations[],
+  apSerialNumber: string
+) => {
+  const targetActivations = activations?.filter(ap => ap.apSerialNumber === apSerialNumber)
+  const targetPorts: LanPort[] = []
+  targetActivations?.forEach(activation => {
+    const lanPort = apLanPorts.lanPorts?.find(l => l.portId?.toString() === activation.portId?.toString())
+    if(lanPort) {
+      targetPorts.push(lanPort)
+    }
+  })
+
+  return targetPorts
 }

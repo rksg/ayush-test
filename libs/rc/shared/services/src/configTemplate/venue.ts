@@ -13,6 +13,8 @@ import {
   Venue,
   VenueApModelBandModeSettings,
   VenueApSmartMonitor,
+  VenueApRebootTimeout,
+  VenueIot,
   VenueBssColoring,
   VenueClientAdmissionControl,
   VenueConfigTemplateUrlsInfo,
@@ -554,6 +556,44 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'VenueTemplate', id: 'SmartMonitorSettings' }]
+    }),
+    getVenueTemplateApIotSettings: build.query<VenueIot, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        return createHttpRequest(VenueConfigTemplateUrlsInfo.getVenueApIotSettings, params)
+      },
+      providesTags: [{ type: 'VenueTemplate', id: 'IotSettings' }]
+    }),
+    // eslint-disable-next-line max-len
+    updateVenueTemplateApIotSettings: build.mutation<CommonResult, RequestPayload<VenueIot>>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(VenueConfigTemplateUrlsInfo.updateVenueApIotSettings, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'VenueTemplate', id: 'IotSettings' }]
+    }),
+    getVenueTemplateApRebootTimeoutSettings: build.query<VenueApRebootTimeout, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        return createHttpRequest(VenueConfigTemplateUrlsInfo.getVenueApRebootTimeoutSettings, params)
+      },
+      providesTags: [{ type: 'VenueTemplate', id: 'RebootTimeoutSettings' }]
+    }),
+    // eslint-disable-next-line max-len
+    updateVenueTemplateApRebootTimeoutSettings: build.mutation<CommonResult, RequestPayload<VenueApRebootTimeout>>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(VenueConfigTemplateUrlsInfo.updateVenueApRebootTimeoutSettings, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'VenueTemplate', id: 'RebootTimeoutSettings' }]
     })
   })
 })
@@ -611,5 +651,9 @@ export const {
   useAddVenueTemplateSwitchAAAServerMutation,
   useUpdateVenueTemplateSwitchAAAServerMutation,
   useGetVenueTemplateApSmartMonitorSettingsQuery,
-  useUpdateVenueTemplateApSmartMonitorSettingsMutation
+  useUpdateVenueTemplateApSmartMonitorSettingsMutation,
+  useGetVenueTemplateApRebootTimeoutSettingsQuery,
+  useUpdateVenueTemplateApRebootTimeoutSettingsMutation,
+  useGetVenueTemplateApIotSettingsQuery,
+  useUpdateVenueTemplateApIotSettingsMutation
 } = venueConfigTemplateApi
