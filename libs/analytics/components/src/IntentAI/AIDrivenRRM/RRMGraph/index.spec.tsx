@@ -70,20 +70,31 @@ describe('CloudRRM', () => {
   it('should render correctly for active states', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockIntentContext({ intent: { ...mockedIntentCRRM, status: Statuses.active } })
-    render(<IntentAIRRMGraph />, { route: { params }, wrapper: Provider })
+    render(
+      <IntentAIRRMGraph isFullOptimization={false} />,
+      { route: { params }, wrapper: Provider }
+    )
 
     expect(await screen.findByText('View More')).toBeVisible()
-    expect(screen.getByText(/The graph and channel plan are generated/)).toBeInTheDocument()
+    expect(screen.queryByText(/The graph and channel plan are generated/)).not.toBeInTheDocument()
     expect(screen.queryByTestId('rrm-comparison-button')).toBeNull()
     expect(screen.getByTestId('hidden-graph')).toBeInTheDocument()
     expect(await screen.findByAltText('rrm-graph-before')).toBeVisible()
     expect(screen.getByAltText('rrm-graph-after')).toBeVisible()
   })
 
+  it('should render correctly for different optimization preference', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockIntentContext({ intent: { ...mockedIntentCRRM, status: Statuses.active } })
+    render(<IntentAIRRMGraph isFullOptimization={true} />, { route: { params }, wrapper: Provider })
+
+    expect(screen.getByText(/The graph and channel plan are generated/)).toBeInTheDocument()
+  })
+
   it('should render correctly for non-active states', async () => {
     mockIntentContext({ intent: { ...mockedIntentCRRM, status: Statuses.na } })
 
-    render(<IntentAIRRMGraph />, { route: { params }, wrapper: Provider })
+    render(<IntentAIRRMGraph isFullOptimization={true} />, { route: { params }, wrapper: Provider })
     // eslint-disable-next-line max-len
     expect(await screen.findByText('Graph modeling will be generated once Intent is activated.')).toBeVisible()
     expect(screen.queryByText(/The graph and channel plan are generated/)).not.toBeInTheDocument()
@@ -107,7 +118,7 @@ describe('CloudRRM', () => {
       }
     }
     mockIntentContext({ intent: coldTierDataMock })
-    const { container } = render(<IntentAIRRMGraph />, {
+    const { container } = render(<IntentAIRRMGraph isFullOptimization={true} />, {
       wrapper: Provider
     })
     expect(container).toHaveTextContent('Metrics / Charts unavailable for data beyond 30 days')
@@ -123,7 +134,7 @@ describe('CloudRRM', () => {
       }
     }
     mockIntentContext({ intent: beyondDataRetentionMock })
-    const { container } = render(<IntentAIRRMGraph />, {
+    const { container } = render(<IntentAIRRMGraph isFullOptimization={true} />, {
       route: { params },
       wrapper: Provider
     })

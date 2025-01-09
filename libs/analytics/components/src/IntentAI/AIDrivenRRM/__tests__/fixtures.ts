@@ -250,11 +250,8 @@ export const mockedIntentCRRM = {
   metadata: {
     scheduledAt: '2023-07-15T14:15:00.000Z',
     dataEndTime: '2023-06-26T00:00:25.772Z',
-    preferences: {
-      crrmFullOptimization: false
-    },
     algorithmData: {
-      isCrrmFullOptimization: true
+      isCrrmFullOptimization: false
     }
   },
   sliceType: 'zone',

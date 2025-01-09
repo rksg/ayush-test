@@ -164,7 +164,13 @@ const rrmGraphTooltip = (status: Statuses) => {
   }
 }
 
-export const IntentAIRRMGraph = ({ width = 250 } : { width?: number }) => {
+export const IntentAIRRMGraph = ({
+  width = 250,
+  isFullOptimization
+} : {
+    width?: number,
+    isFullOptimization?: boolean
+  }) => {
   const { $t } = useIntl()
   const { intent, state, isDataRetained, isHotTierData } = useIntentContext()
   const [ visible, setVisible ] = useState<boolean>(false)
@@ -177,9 +183,8 @@ export const IntentAIRRMGraph = ({ width = 250 } : { width?: number }) => {
   useEffect(() => setKey(Math.random()), [visible]) // to reset graph zoom
 
   const tooltip = rrmGraphTooltip(intent.status)
-  const preference = _.get(intent, ['metadata', 'preferences', 'crrmFullOptimization'])
   const channelPlan = _.get(intent, ['metadata', 'algorithmData', 'isCrrmFullOptimization'])
-  const showTooltip = tooltip && (preference !== channelPlan)
+  const showTooltip = tooltip && (channelPlan !== isFullOptimization)
 
   const queryResult = useIntentAICRRMQuery()
   const crrmData = queryResult.data!
