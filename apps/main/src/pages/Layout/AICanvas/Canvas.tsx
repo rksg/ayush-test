@@ -107,7 +107,7 @@ export default function Canvas () {
 
   const getDefaultCanvas = async ()=>{
     const response = await getCanvas({}).unwrap()
-    if(response?.length){
+    if(response?.length && response[0].content){
       setCanvasId(response[0].id)
       const data = JSON.parse(response[0].content)
       setSections(data)

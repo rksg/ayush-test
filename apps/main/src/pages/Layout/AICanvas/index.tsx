@@ -67,6 +67,11 @@ export default function AICanvas () {
   useEffect(()=>{
     if(historyData?.length) {
       setHistoryList(historyData)
+    } else if(historyData?.length === 0) {
+      setIsChatLoading(false)
+      setHistory([])
+      setHistoryVisible(false)
+      onNewChat()
     }
   }, [historyData])
 
@@ -173,7 +178,8 @@ export default function AICanvas () {
       }
     }).unwrap()
 
-    if(historyData && sessionId !== historyData[historyData.length - 1].id){
+    if((historyData?.length && sessionId !== historyData[historyData.length - 1].id)
+      || !historyData?.length){
       getAllChatsQuery.refetch()
     }
     // const response: RuckusAiChat = {
@@ -280,7 +286,7 @@ export default function AICanvas () {
 
   const content = <UI.History>
     {
-      history.map(i => <div className='duration'>
+      history.map(i => <div className='duration' key={i.duration}>
         <div className='time'>{i.duration}</div>
         {
           i.history.map(j =>
@@ -314,21 +320,25 @@ export default function AICanvas () {
           <div className='chat'>
             <div className='header'>
               <div className='actions'>
-                <HistoricalOutlined onClick={onHistoryDrawer} />
-                <Tooltip
-                  placement='right'
-                  title={historyData && historyData.length >= 10
-                    ? $t({ defaultMessage: `You’ve reached the maximum number of chats (10). 
-                    Please delete an existing chat to add a new one.` })
-                    : ''}
-                >
-                  <Plus
-                    className={
-                      'newChat' + (historyData && historyData.length >= 10 ? ' disabled' : '')
-                    }
-                    onClick={onNewChat}
-                  />
-                </Tooltip>
+                {historyData?.length ?
+                  <>
+                    <HistoricalOutlined onClick={onHistoryDrawer} />
+                    <Tooltip
+                      placement='right'
+                      title={historyData && historyData.length >= 10
+                        ? $t({ defaultMessage: `You’ve reached the maximum number of chats (10). 
+                      Please delete an existing chat to add a new one.` })
+                        : ''}
+                    >
+                      <Plus
+                        className={
+                          'newChat' + (historyData && historyData.length >= 10 ? ' disabled' : '')
+                        }
+                        onClick={onNewChat}
+                      />
+                    </Tooltip>
+                  </> : null
+                }
               </div>
               <div className='title'>
                 <RuckusAiDog size='lg' />
@@ -350,9 +360,12 @@ export default function AICanvas () {
                   {
                     !chats?.length && <div className='placeholder'>
                       {
-                        questions.map(question => <div onClick={()=> {
-                          handleSearch(question)
-                        }}>
+                        questions.map(question => <div
+                          key={question}
+                          onClick={()=> {
+                            handleSearch(question)
+                          }}
+                        >
                           {question}
                         </div>)
                       }

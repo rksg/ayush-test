@@ -238,10 +238,11 @@ export const WidgetChart: React.FC<WidgetListProps> = ({ data }) => {
     } else if(type === 'table') {
       return <Table
         style={{ width: width-30 }}
-        columns={chartData?.chartOption?.columns?.map(i => ({ ...i, searchable: true })) || []}
+        columns={chartData?.chartOption?.columns?.filter(c => c.key !== 'index')
+          .map(i => ({ ...i, searchable: true })) || []}
         dataSource={chartData?.chartOption?.dataSource}
         type='compactWidget'
-        rowKey={chartData?.chartOption?.columns?.[0]?.key || 'id'}
+        rowKey='index' // API support 'index' column
       />
     }
     return
