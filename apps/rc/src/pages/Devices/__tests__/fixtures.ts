@@ -4286,7 +4286,7 @@ export const resultOfGetApIotSettings = {
 
 export const resultOfGetVenueApIotSettings = {
   mqttBrokerAddress: '1234.ruckus.com',
-  enableApSnmp: true
+  enabled: true
 }
 
 export const resultOfGetApSnmpAgentSettings = {

@@ -10,7 +10,7 @@ import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemov
 
 import { ServerSettingContext } from '..'
 import {
-  venueSyslog
+  venueIot
 } from '../../../../__tests__/fixtures'
 import { VenueEditContext, EditContext } from '../../../index'
 
@@ -33,8 +33,8 @@ describe('IotController', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
-      rest.get(WifiRbacUrlsInfo.getVenueRebootTimeout.url,
-        (_, res, ctx) => res(ctx.json(venueSyslog)))
+      rest.get(WifiRbacUrlsInfo.getVenueIot.url,
+        (_, res, ctx) => res(ctx.json(venueIot)))
     )
   })
 
