@@ -12,7 +12,7 @@ const consolidateActivations = (
   venueId: string
 ):SoftGreActivation[] => {
 
-  let finalActivations = cloneDeep(profile.activations) || []
+  let finalActivations = cloneDeep(profile.activations ?? [])
 
   const isExistVenueActivation = profile.venueActivations?.some(v => v.venueId === venueId) || false
   const isExistApActivation = profile.apActivations?.some(a => a.venueId === venueId) || false
@@ -21,7 +21,7 @@ const consolidateActivations = (
     return finalActivations
   }
 
-  const existingActivation = profile.activations?.some(va => va.venueId === venueId) || false
+  const existingActivation = finalActivations.some(va => va.venueId === venueId)
 
   if (existingActivation) {
     finalActivations.forEach(activation => {
