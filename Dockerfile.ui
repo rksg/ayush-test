@@ -98,10 +98,6 @@ COPY --from=build /app/dist/apps ./dist/apps
 ARG PRECOMMIT
 ARG GIT_COMMIT_BRANCH
 
-RUN mkdir -p /home/jenkins/nemo-server/workspace/CICD_CI_CACHE_RKSCLOUD_ACX-UI/service/coverage
-RUN chmod 777 /home/jenkins/nemo-server/workspace/CICD_CI_CACHE_RKSCLOUD_ACX-UI/service/coverage
-RUN ln -s /home/jenkins/nemo-server/workspace/CICD_CI_CACHE_RKSCLOUD_ACX-UI/service/coverage /app/
-
 ENV NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail"
 
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
