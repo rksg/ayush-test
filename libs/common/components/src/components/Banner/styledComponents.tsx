@@ -1,23 +1,25 @@
 import styled from 'styled-components/macro'
 
-import { Alert, Button } from '@acx-ui/components'
+import { Alert }  from '../Alert'
+import { Button } from '../Button'
 
 export const BannerAlert = styled(Alert)`
-  &.ant-alert-info {
-    padding: 0px 0px;
-    border-radius: 10px;
-    background-color: var(--acx-accents-blue-10);
-    border: 0px solid;
-  }
-  .ant-alert-close-icon {
-    float: right;
-    position: absolute;
-    right: 10px;
-    top: 8px;
-    background-color: var(--acx-primary-white);
-    border-radius: 12px;
-    padding: 5px;
-  }
+&.ant-alert-info {
+  padding: 0px 0px;
+  border-radius: 10px;
+  background-color: var(--acx-accents-blue-10);
+  border: 0px solid;
+}
+
+.ant-alert-close-icon {
+  float: right;
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  background-color: var(--acx-primary-white);
+  border-radius: 12px;
+  padding: 5px;
+}
 `
 
 export const BannerWrapper = styled.div`
