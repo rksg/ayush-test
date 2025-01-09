@@ -277,7 +277,8 @@ export interface VenueLanPorts {
 	model: string,
 	lanPorts: LanPort[],
 	poeMode?: string,
-	poeOut?: boolean
+	poeOut?: boolean,
+	isSettingsLoaded?: boolean
 }
 
 export interface Address {

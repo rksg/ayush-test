@@ -1020,6 +1020,7 @@ export enum SoftGreState {
   TurnOnAndModifyDHCPOption82Settings,
   TurnOnLanPort,
   TurnOffLanPort,
+  ResetToDefault
 }
 
 export interface SoftGreProfileDispatcher {

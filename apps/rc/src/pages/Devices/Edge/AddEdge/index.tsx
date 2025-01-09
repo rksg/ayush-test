@@ -38,6 +38,7 @@ const AddEdge = () => {
     const clusterPayload = {
       name: data.name,
       description: '',
+      highAvailabilityMode: data.highAvailabilityMode,
       smartEdges: [
         {
           name: data.name,

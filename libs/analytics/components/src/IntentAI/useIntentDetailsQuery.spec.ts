@@ -6,8 +6,7 @@ import { mockGraphqlQuery, renderHook } from '@acx-ui/test-utils'
 
 import {
   mockedIntentCRRM,
-  mockedIntentCRRMKPIs,
-  mockedIntentCRRMStatusTrail
+  mockedIntentCRRMKPIs
 }                   from './AIDrivenRRM/__tests__/fixtures'
 import { kpis }     from './AIDrivenRRM/common'
 import { Statuses } from './states'
@@ -87,35 +86,6 @@ describe('intentAI services', () => {
           ..._.pick(mockedIntentCRRM, ['root', 'sliceId', 'code']),
           kpis
         })
-      )
-      expect(error?.name).toBe('Error')
-      expect(error?.message).toContain('GraphQL Error')
-    })
-  })
-  describe('intent status trail', () => {
-    it('should return correct value', async () => {
-      mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail', {
-        data: { intent: mockedIntentCRRMStatusTrail }
-      })
-
-      const { status, data, error } = await store.dispatch(
-        api.endpoints.intentStatusTrail.initiate(
-          _.pick(mockedIntentCRRM, ['root', 'sliceId', 'code'])
-        )
-      )
-      expect(status).toBe('fulfilled')
-      expect(error).toBeUndefined()
-      expect(data).toStrictEqual(mockedIntentCRRMStatusTrail.statusTrail)
-    })
-    it('should handle error', async () => {
-      mockGraphqlQuery(intentAIUrl, 'IntentStatusTrail', {
-        error: mockedError
-      })
-
-      const { error } = await store.dispatch(
-        api.endpoints.intentStatusTrail.initiate(
-          _.pick(mockedIntentCRRM, ['root', 'sliceId', 'code'])
-        )
       )
       expect(error?.name).toBe('Error')
       expect(error?.message).toContain('GraphQL Error')
