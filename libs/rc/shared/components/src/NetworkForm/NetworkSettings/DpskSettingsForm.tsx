@@ -21,10 +21,10 @@ import {
   transformAdvancedDpskExpirationText,
   useConfigTemplateQueryFnSwitcher,
   TableResult,
-  hasServicePermission,
   ServiceType,
   ServiceOperation,
-  useConfigTemplate
+  useConfigTemplate,
+  useTemplateAwareServicePermission
 } from '@acx-ui/rc/utils'
 
 import { DpskForm }       from '../../services/DpskForm/DpskForm'
@@ -201,9 +201,8 @@ function DpskServiceSelector () {
   })
 
   const dpskServiceProfileId = useWatch('dpskServiceProfileId')
-  const hasAddDpskPermission = hasServicePermission({
-    type: ServiceType.DPSK, oper: ServiceOperation.CREATE
-  })
+  // eslint-disable-next-line max-len
+  const hasAddDpskPermission = useTemplateAwareServicePermission(ServiceType.DPSK, ServiceOperation.CREATE)
 
   const findService = (serviceId: string) => {
     return dpskList?.data.find((dpsk: DpskSaveData) => dpsk.id === serviceId)

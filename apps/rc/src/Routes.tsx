@@ -55,6 +55,8 @@ import {
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
   getServiceRoutePath,
+  hasSomePoliciesPermission,
+  hasSomeServicesPermission,
   PolicyAuthRoute,
   PolicyOperation,
   PolicyType,
@@ -65,7 +67,7 @@ import {
 import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
 import { EdgeScopes, SwitchScopes, WifiScopes }        from '@acx-ui/types'
-import { AuthRoute }                                   from '@acx-ui/user'
+import { AuthRoute, getUserProfile, goToNoPermission } from '@acx-ui/user'
 
 import Edges                                        from './pages/Devices/Edge'
 import AddEdge                                      from './pages/Devices/Edge/AddEdge'
@@ -625,9 +627,11 @@ function ServiceRoutes () {
       <Route path={getServiceListRoutePath()} element={<MyServices />} />
       <Route
         path={getSelectServiceRoutePath()}
-        element={
+        element={getUserProfile().rbacOpsApiEnabled
           // eslint-disable-next-line max-len
-          <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }} scopes={[WifiScopes.CREATE, EdgeScopes.CREATE]}>
+          ? hasSomeServicesPermission(ServiceOperation.CREATE) ? <SelectServiceForm /> : goToNoPermission()
+          // eslint-disable-next-line max-len
+          : <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }} scopes={[WifiScopes.CREATE, EdgeScopes.CREATE]}>
             <SelectServiceForm />
           </AuthRoute>
         }/>
@@ -877,7 +881,13 @@ function PolicyRoutes () {
     <Route path=':tenantId/t'>
       <Route path='*' element={<PageNotFound />} />
       <Route path={getPolicyListRoutePath()} element={<MyPolicies />} />
-      <Route path={getSelectPolicyRoutePath()} element={<SelectPolicyForm />} />
+      <Route path={getSelectPolicyRoutePath()}
+        element={getUserProfile().rbacOpsApiEnabled
+          // eslint-disable-next-line max-len
+          ? hasSomePoliciesPermission(PolicyOperation.CREATE) ? <SelectPolicyForm /> : goToNoPermission()
+          : <SelectPolicyForm />
+        }
+      />
       <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}

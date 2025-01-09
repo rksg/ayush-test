@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Button, GridCol, GridRow, PageHeader, RadioCardCategory } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                   from '@acx-ui/rc/components'
+import { GridCol, GridRow, PageHeader, RadioCardCategory } from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                           from '@acx-ui/rc/components'
 import {
   useGetDHCPProfileListViewModelQuery,
   useGetDhcpStatsQuery,
@@ -19,13 +19,14 @@ import {
   useGetEdgeTnmServiceListQuery
 } from '@acx-ui/rc/services'
 import {
-  filterByAccessForServicePolicyMutation,
+  AddProfileButton,
   getSelectServiceRoutePath,
+  hasSomeServicesPermission,
   isServiceCardEnabled,
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { ServiceCard } from '../ServiceCard'
 
@@ -166,11 +167,11 @@ export default function MyServices () {
       <PageHeader
         title={$t({ defaultMessage: 'My Services' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
-        extra={filterByAccessForServicePolicyMutation([
-          <TenantLink to={getSelectServiceRoutePath(true)}>
-            <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
-          </TenantLink>
-        ])}
+        extra={<AddProfileButton
+          hasSomeProfilesPermission={() => hasSomeServicesPermission(ServiceOperation.CREATE)}
+          linkText={$t({ defaultMessage: 'Add Service' })}
+          targetPath={getSelectServiceRoutePath(true)}
+        />}
       />
       <GridRow>
         {services.filter(svc => isServiceCardEnabled(svc, ServiceOperation.LIST)).map(service => {

@@ -111,6 +111,8 @@ export const MdnsProxyUrls: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/aps/:apSerialNumber/multicastDnsProxyProfiles/:serviceId',
     newApi: true,
+    // eslint-disable-next-line max-len
+    opsApi: 'PUT:/venues/{id}/aps/{id}/multicastDnsProxyProfiles/{id}',
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'

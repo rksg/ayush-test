@@ -1,11 +1,11 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, PageHeader }                                              from '@acx-ui/components'
-import { DpskOverview, ServiceConfigTemplateDetailsLink }                  from '@acx-ui/rc/components'
-import { useGetDpskTemplateQuery }                                         from '@acx-ui/rc/services'
-import { ServiceOperation, ServiceType, generateConfigTemplateBreadcrumb } from '@acx-ui/rc/utils'
-import { filterByAccess }                                                  from '@acx-ui/user'
+import { Button, PageHeader }                                                                          from '@acx-ui/components'
+import { DpskOverview, ServiceConfigTemplateDetailsLink }                                              from '@acx-ui/rc/components'
+import { useGetDpskTemplateQuery }                                                                     from '@acx-ui/rc/services'
+import { ServiceOperation, ServiceType, generateConfigTemplateBreadcrumb, getServiceAllowedOperation } from '@acx-ui/rc/utils'
+import { filterByAccess }                                                                              from '@acx-ui/user'
 
 export default function DpskDetails () {
   const { $t } = useIntl()
@@ -20,6 +20,7 @@ export default function DpskDetails () {
         breadcrumb={breadcrumb}
         extra={filterByAccess([
           <ServiceConfigTemplateDetailsLink
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.DPSK, ServiceOperation.EDIT, true)}
             type={ServiceType.DPSK}
             oper={ServiceOperation.EDIT}
             serviceId={serviceId!}
