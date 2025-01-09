@@ -19,10 +19,11 @@ import {
   aggregateVenueInfo,
   transformApListFromNewModel, transformGroupByListFromNewModel,
   transformApFromNewType,
-  getNewApViewmodelPayloadFromOld
+  getNewApViewmodelPayloadFromOld,
+  findTargetLanPorts
 } from './apUtils'
 
-const { mockAPList, mockAPModels, mockGroupedApList } = APGeneralFixtures
+const { mockAPList, mockAPModels, mockGroupedApList, mockedApLanPortSettings_T750SE } = APGeneralFixtures
 const { mockRbacAPGroupList } = APGroupFixtures
 
 const mockAPListWithExtraInfo = {
@@ -56,6 +57,7 @@ const mockVenueList = {
     }
   ]
 }
+
 
 describe('Test apUtils', () => {
   it('test transformApListFromNewModel', async () => {
@@ -249,6 +251,26 @@ describe('Test apUtils', () => {
       expect(result.apStatusData?.cellularInfo?.cellularICCIDSIM1).toBe(undefined)
       expect(result.apStatusData?.cellularInfo?.cellularRxBytesSIM1).toBe(undefined)
 
+    })
+  })
+
+  describe('findTargetLanPorts', () => {
+    const mockApSerialNumber = 'mocked_serialNumber'
+    const mockedActivations = [
+      {
+        venueId: 'mocked_venueId',
+        apSerialNumber: 'mocked_serialNumber',
+        portId: 1
+      },{
+        venueId: 'mocked_venueId',
+        apSerialNumber: 'mocked_serialNumber',
+        portId: 3
+      }]
+    it('test findTargetLanPorts', async () => {
+      const result = findTargetLanPorts(mockedApLanPortSettings_T750SE, mockedActivations, mockApSerialNumber)
+      expect(result.length).toBe(2)
+      expect(result[0].portId).toBe('1')
+      expect(result[1].portId).toBe('3')
     })
   })
 })
