@@ -14,7 +14,6 @@ FROM ${CI_SERVICE_BASE}node:master--latest as build-base
 WORKDIR /app
 
 RUN apk add curl
-RUN nproc --all
 
 ARG ENV_FILE
 COPY ${ENV_FILE} .
@@ -104,6 +103,8 @@ RUN chmod 777 /home/jenkins/nemo-server/workspace/CICD_CI_CACHE_RKSCLOUD_ACX-UI/
 RUN ln -s /home/jenkins/nemo-server/workspace/CICD_CI_CACHE_RKSCLOUD_ACX-UI/service/coverage /app/
 
 ENV NX_RUN_OPTIONS="--coverage --maxWorkers=30% --noStackTrace --bail"
+
+RUN nproc --all
 
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
         CICD_BUILD=true node ./node_modules/.bin/nx run rc:test $NX_RUN_OPTIONS; \
