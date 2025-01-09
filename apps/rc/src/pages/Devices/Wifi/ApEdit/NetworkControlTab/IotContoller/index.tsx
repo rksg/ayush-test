@@ -225,7 +225,7 @@ export function IotController () {
                   children={
                     isUseVenueSettings ? (
                       <span data-testid={'enabled-span'}>
-                        {transformDisplayOnOff(venueIot?.enabled)}
+                        {transformDisplayOnOff(venueIot?.enabled ?? false)}
                       </span>
                     ) : (
                       <Switch
