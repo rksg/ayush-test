@@ -10,9 +10,25 @@ import {
   useGenerateCertificateToIdentityMutation, useGetCertificateAuthorityQuery,
   useSearchPersonaListQuery
 } from '@acx-ui/rc/services'
-import { TableQuery, Certificate, CertificateCategoryType, CertificateStatusType, CertificateTemplate, EXPIRATION_DATE_FORMAT, EXPIRATION_TIME_FORMAT, EnrollmentType, FILTER, PolicyOperation, PolicyType, SEARCH, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy } from '@acx-ui/rc/utils'
-import { RequestPayload }                                                                                                                                                                                                                                                         from '@acx-ui/types'
-import { getIntl, noDataDisplay }                                                                                                                                                                                                                                                 from '@acx-ui/utils'
+import {
+  TableQuery,
+  Certificate,
+  CertificateCategoryType,
+  CertificateStatusType,
+  CertificateTemplate,
+  EXPIRATION_DATE_FORMAT,
+  EXPIRATION_TIME_FORMAT,
+  EnrollmentType,
+  FILTER,
+  PolicyOperation,
+  PolicyType,
+  SEARCH,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByPolicy,
+  IdentityDetailsLink
+} from '@acx-ui/rc/utils'
+import { RequestPayload }         from '@acx-ui/types'
+import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import { issuedByLabel } from '../contentsMap'
 
@@ -141,9 +157,12 @@ export function CertificateTable (
       dataIndex: 'identityId',
       key: 'identityId',
       render: function (_, row) {
-        const item = identityList?.data?.filter(data =>
-          data.id===row.identityId).map(data => data.name)[0]
-        return item ?? noDataDisplay
+        const item = identityList?.data?.filter(data => data.id===row.identityId)[0]
+        return (item ? <IdentityDetailsLink
+          name={item.name}
+          personaId={item.id}
+          personaGroupId={item.groupId}
+        /> : noDataDisplay)
       }
     },
     {
