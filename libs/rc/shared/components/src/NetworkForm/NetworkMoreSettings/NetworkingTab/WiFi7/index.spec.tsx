@@ -754,4 +754,118 @@ describe('test wlanSecurity', () => {
     const switchElement = await screen.findByTestId('mlo-switch-1')
     expect(switchElement).toBeDisabled()
   })
+
+  it('should disable Multi-Link toggle button on DPSK network', async function () {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
+
+    render(
+      <Provider>
+        <NetworkFormContext.Provider value={{
+          editMode: true,
+          cloneMode: false,
+          isRuckusAiMode: false,
+          data: {
+            name: 'test',
+            type: 'dpsk',
+            wlan: {
+              wlanSecurity: WlanSecurityEnum.WPA2Personal
+            }
+          } as NetworkSaveData
+        } as NetworkFormContextType}>
+          <MLOContext.Provider value={{
+            isDisableMLO: true,
+            disableMLO: jest.fn()
+          }}>
+            <Form>
+              <WiFi7 />
+            </Form>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+
+      </Provider>, {
+        route: { params }
+      }
+    )
+
+    const switchElement = await screen.findByTestId('mlo-switch-1')
+    expect(switchElement).toBeDisabled()
+  })
+
+  it('should disable Multi-Link toggle button on OPEN network', async function () {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
+
+    render(
+      <Provider>
+        <NetworkFormContext.Provider value={{
+          editMode: true,
+          cloneMode: false,
+          isRuckusAiMode: false,
+          data: {
+            name: 'test',
+            type: 'open',
+            wlan: {
+              wlanSecurity: WlanSecurityEnum.Open
+            }
+          } as NetworkSaveData
+        } as NetworkFormContextType}>
+          <MLOContext.Provider value={{
+            isDisableMLO: true,
+            disableMLO: jest.fn()
+          }}>
+            <Form>
+              <WiFi7 />
+            </Form>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+
+      </Provider>, {
+        route: { params }
+      }
+    )
+
+    const switchElement = await screen.findByTestId('mlo-switch-1')
+    expect(switchElement).toBeDisabled()
+  })
+
+  it('should not disable Multi-Link toggle button on OWE network', async function () {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
+
+    render(
+      <Provider>
+        <NetworkFormContext.Provider value={{
+          editMode: true,
+          cloneMode: false,
+          isRuckusAiMode: false,
+          data: {
+            name: 'test',
+            type: 'open',
+            wlan: {
+              wlanSecurity: WlanSecurityEnum.OWE
+            }
+          } as NetworkSaveData
+        } as NetworkFormContextType}>
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <Form>
+              <WiFi7 />
+            </Form>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+
+      </Provider>, {
+        route: { params }
+      }
+    )
+
+    const switchElement = await screen.findByTestId('mlo-switch-2')
+    expect(switchElement).not.toBeDisabled()
+  })
 })

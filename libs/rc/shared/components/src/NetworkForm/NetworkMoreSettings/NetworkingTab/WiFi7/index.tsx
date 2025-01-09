@@ -17,7 +17,8 @@ import { InformationSolid }                                       from '@acx-ui/
 import {
   NetworkSaveData,
   IsNetworkSupport6g,
-  NetworkTypeEnum
+  NetworkTypeEnum,
+  WlanSecurityEnum
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -205,8 +206,9 @@ function WiFi7 () {
   useEffect(()=>{
     if(editMode && wlanData !== null){
 
-      const shouldMLOBeDisable = !(wlanData.type !== NetworkTypeEnum.DPSK &&
-          IsNetworkSupport6g(wlanData))
+      const shouldMLOBeDisable = wlanData.type === NetworkTypeEnum.DPSK ||
+        wlanData?.wlanSecurity === WlanSecurityEnum.OWETransition ||
+          !IsNetworkSupport6g(wlanData)
 
       disableMLO(shouldMLOBeDisable)
 
@@ -293,7 +295,7 @@ function WiFi7 () {
                         <Switch data-testid='mlo-switch-1' disabled={!wifi7Enabled || isDisableMLO} />
                       </Tooltip>
                       :
-                      <Switch disabled={!wifi7Enabled || isDisableMLO} />
+                      <Switch data-testid='mlo-switch-2' disabled={!wifi7Enabled || isDisableMLO} />
                   } />
               </UI.FieldLabel>
       }
