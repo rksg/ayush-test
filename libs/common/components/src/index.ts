@@ -18,8 +18,10 @@ export { tooltipFormatter as CloudRRMGraphTooltipFormatter } from './components/
 export type { EventParams } from './components/Chart'
 export * from './components/Collapse'
 export * from './components/ConfigChangeChart'
-export { getConfigChangeEntityTypeMapping, brushPeriod } from './components/ConfigChangeChart/helper'
-export type { ConfigChange } from './components/ConfigChangeChart/helper'
+export {
+  getConfigChangeEntityTypeMapping, brushPeriod, CONFIG_CHANGE_DEFAULT_PAGINATION
+} from './components/ConfigChangeChart/helper'
+export type { ConfigChange, ConfigChangePaginationParams } from './components/ConfigChangeChart/helper'
 export * from './components/ConfigProvider'
 export { ContentSwitcher } from './components/ContentSwitcher'
 export type { ContentSwitcherProps } from './components/ContentSwitcher'
