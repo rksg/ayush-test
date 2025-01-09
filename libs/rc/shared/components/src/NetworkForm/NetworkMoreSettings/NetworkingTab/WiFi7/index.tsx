@@ -295,7 +295,7 @@ function WiFi7 () {
                   />}
                   {isR370UnsupportedFeatures && <ApCompatibilityDrawer
                     visible={mloDrawerVisible}
-                    type={params.networkId ? ApCompatibilityType.NETWORK : ApCompatibilityType.ALONE}
+                    type={ApCompatibilityType.ALONE}
                     networkId={params.networkId}
                     featureName={InCompatibilityFeatures.MLO_3R}
                     onClose={() => setMloDrawerVisible(false)}

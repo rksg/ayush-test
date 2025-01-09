@@ -256,7 +256,7 @@ function SettingsForm () {
               />}
               {isR370UnsupportedFeatures && <ApCompatibilityDrawer
                 visible={drawerVisible}
-                type={ApCompatibilityType.NETWORK}
+                type={ApCompatibilityType.ALONE}
                 networkId={networkId}
                 featureName={InCompatibilityFeatures.MAC_AUTH}
                 onClose={() => setDrawerVisible(false)}

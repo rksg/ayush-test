@@ -127,7 +127,7 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
             />}
             {<ApCompatibilityDrawer
               visible={drawerVisible}
-              type={ApCompatibilityType.NETWORK}
+              type={ApCompatibilityType.ALONE}
               networkId={networkId}
               featureName={InCompatibilityFeatures.NETWORK_MULTICAST_RATE_LIMIT}
               onClose={() => setDrawerVisible(false)}

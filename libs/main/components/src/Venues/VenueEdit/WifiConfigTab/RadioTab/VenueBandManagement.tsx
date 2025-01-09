@@ -12,6 +12,9 @@ import { DeleteOutlinedIcon, EditOutlinedIcon }       from '@acx-ui/icons'
 import { BandModeEnum, VenueApModelBandModeSettings } from '@acx-ui/rc/utils'
 
 import { VenueBandManagementDrawer } from './VenueBandManagementDrawer'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '@acx-ui/rc/components'
+import { useParams } from '@acx-ui/react-router-dom'
 
 const BandModePill = styled((props: { children: React.ReactNode }) =>
   (<Pill type='color'{...props}/>))`
@@ -45,8 +48,12 @@ export const VenueBandManagement = ({ style,
   currentVenueBandModeData, setCurrentVenueBandModeData }: VenueBandManagementPorps) => {
 
   const { $t } = useIntl()
+  const { venueId } = useParams()
 
   const [supportBandManagementApModels, setSupportBandManagementApModels] = useState<string[]>([])
+
+  const [rfDrawerVisible, setRfDrawerVisible] = useState(false)
+  const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
 
   useEffect(()=> {
     const supportBandManagementApModels = triBandApModels
@@ -131,7 +138,22 @@ export const VenueBandManagement = ({ style,
   return (<Space size={8} direction='vertical' style={style}>
     <Row gutter={0}>
       <Col span={18}>
-        Wi-Fi 6/7 band management:
+        <Space>
+          {$t({ defaultMessage: 'Wi-Fi 6/7 band management:' })}
+          {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+              title={''}
+              visible={true}
+              placement='right'
+              onClick={() => setRfDrawerVisible(true)}
+            />}
+            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+              visible={rfDrawerVisible}
+              type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+              venueId={venueId}
+              featureName={InCompatibilityFeatures.SWITCHABLE_RF}
+              onClose={() => setRfDrawerVisible(false)}
+            />}
+        </Space>
       </Col>
       <Col span={6} style={{ textAlign: 'right' }}>
         <Button

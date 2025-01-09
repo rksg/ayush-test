@@ -13,6 +13,9 @@ import SoftGreDrawer from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
 import * as UI                   from './styledComponents'
 import { NetworkTunnelTypeEnum } from './types'
 import { SoftGreNetworkTunnel }  from './useSoftGreTunnelActions'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
 const defaultPayload = {
   fields: ['id', 'name', 'primaryGatewayAddress', 'secondaryGatewayAddress','activations'],
@@ -44,6 +47,10 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
   const [ softGreOption, setSoftGreOption ] = useState<DefaultOptionType[]>([])
   const [ gatewayIpMapIds, setGatewayIpMapIds ] = useState<Record<string, string[]>>({})
   const [ getSoftGreOptions ] = useLazyGetSoftGreOptionsQuery()
+
+  const isR370UnsupportedFeatures = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+  
+  const [softGreDrawerVisible, setSoftGreDrawerVisible] = useState(false)
 
   const softGreProfileId = Form.useWatch(['softGre', 'newProfileId'], form)
 
@@ -129,6 +136,7 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
 
   const handleClickAdd = () => {
     setDetailDrawerVisible(false)
+    setSoftGreDrawerVisible(false)
     setAddDrawerVisible(true)
   }
 
@@ -148,6 +156,22 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
           <Radio value={NetworkTunnelTypeEnum.SoftGre}
             disabled={disabledInfo?.isDisabled || disabledInfo?.noChangePermission}>
             {$t({ defaultMessage: 'SoftGRE Tunneling' })}
+            {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+              title={''}
+              visible={true}
+              placement='top'
+              onClick={() => setSoftGreDrawerVisible(true)}
+              icon={<QuestionMarkCircleOutlined
+                style={{ height: '16px', width: '16px', marginLeft: '3px', marginBottom: -3 }}
+              />}
+            />}
+            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+              visible={softGreDrawerVisible}
+              type={ApCompatibilityType.ALONE}
+              networkId={networkId}
+              featureName={InCompatibilityFeatures.SOFT_GRE}
+              onClose={() => setSoftGreDrawerVisible(false)}
+            />}
           </Radio>
         </Tooltip>
         {currentTunnelType === NetworkTunnelTypeEnum.SoftGre &&

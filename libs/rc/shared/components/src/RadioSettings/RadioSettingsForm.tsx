@@ -91,6 +91,8 @@ export function RadioSettingsForm (props:{
   const [afcDrawerVisible, setAfcDrawerVisible] = useState(false)
   const [txDrawerVisible, setTxDrawerVisible] = useState(false)
   const [mrlDrawerVisible, setMrlDrawerVisible] = useState(false)
+  const [band320DrawerVisible, setBand320DrawerVisible] = useState(false)
+
   const afcTooltip = $t({ defaultMessage: 'For outdoor APs, AFC will be enabled automatically.' })
   const aggressiveTxTooltip = $t({ defaultMessage: 'Adjust the value based on the calibration TX power on this device' })
 
@@ -409,7 +411,27 @@ export function RadioSettingsForm (props:{
         </Space>
       }
       <Form.Item
-        label={$t({ defaultMessage: 'Bandwidth:' })}
+        label={
+          <>
+          {$t({ defaultMessage: 'Bandwidth:' })}
+          {isR370UnsupportedFeatures && (channelBandwidth === '320MHz')&& <ApCompatibilityToolTip
+            title={''}
+            visible={true}
+            placement='right'
+            onClick={() => setBand320DrawerVisible(true)}
+            icon={<QuestionMarkCircleOutlined
+              style={{ height: '16px', width: '16px' }}
+            />}
+          />}
+          {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+            visible={band320DrawerVisible}
+            type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+            venueId={venueId}
+            featureName={InCompatibilityFeatures.BANDWIDTH_320MHZ}
+            onClose={() => setBand320DrawerVisible(false)}
+          />}
+          </>
+        }
         name={channelBandwidthFieldName}>
         <RadioFormSelect
           disabled={disabled}
@@ -437,7 +459,7 @@ export function RadioSettingsForm (props:{
       <Form.Item
         label={<>
           {$t({ defaultMessage: 'Transmit Power adjustment:' })}
-          {isApTxPowerToggleEnabled && !isR370UnsupportedFeatures && <Tooltip.Question
+          {isApTxPowerToggleEnabled && <Tooltip.Question
             title={aggressiveTxTooltip}
             placement='right'
             iconStyle={{ height: '16px', width: '16px' }}
@@ -457,7 +479,7 @@ export function RadioSettingsForm (props:{
             visible={txDrawerVisible}
             type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
             venueId={venueId}
-            featureName={InCompatibilityFeatures.AGGRESSIVE_TX_POWER}
+            featureName={InCompatibilityFeatures.AUTO_CELL_SIZING}
             onClose={() => setTxDrawerVisible(false)}
           />}
         </>}

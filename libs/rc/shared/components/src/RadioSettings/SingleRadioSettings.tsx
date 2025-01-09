@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Row, Form, Switch } from 'antd'
+import { Col, Row, Form, Switch, Space } from 'antd'
 import { isEmpty }                from 'lodash'
 import { useIntl }                from 'react-intl'
 
@@ -32,6 +32,9 @@ import {
   FirmwareProps
 } from './RadioSettingsContents'
 import { RadioSettingsForm } from './RadioSettingsForm'
+import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
+import { useParams } from '@acx-ui/react-router-dom'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
 
 const { useWatch } = Form
@@ -73,6 +76,7 @@ export function SingleRadioSettings (props:{
 
   const { $t } = useIntl()
   const form = Form.useFormInstance()
+  const { venueId } = useParams()
   const {
     disable = false,
     inherit5G = false,
@@ -94,6 +98,8 @@ export function SingleRadioSettings (props:{
   } = useContext(SupportRadioChannelsContext)
 
   const supportR370 = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+  const isR370UnsupportedFeatures = supportR370 && (radioType === ApRadioTypeEnum.Radio6G)
+  const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
 
   const bandwidthOptions = bandwidthRadioOptions[radioType]
   const supportChannels = supportRadioChannels[radioType]
@@ -128,6 +134,8 @@ export function SingleRadioSettings (props:{
   const [indoorChannelErrMsg, setIndoorChannelErrMsg] = useState<string>()
   const [outdoorChannelErrMsg, setOutdoorChannelErrMsg] = useState<string>()
 
+  const [outdoor6gDrawerVisible, setOutdoor6gDrawerVisible] = useState(false)
+
   const previousChannelMethod = useRef<string>()
   const bandWidthOnChanged = useRef(false)
   const methodOnChanged = useRef(false)
@@ -153,8 +161,6 @@ export function SingleRadioSettings (props:{
   const showChannelBarControlLink = (radioType !== ApRadioTypeEnum.Radio24G &&
                                      radioType !== ApRadioTypeEnum.Radio6G)
   const channelColSpan = (radioType === ApRadioTypeEnum.Radio5G) ? 22 : 20
-
-  const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
 
   const [
     channelMethod,
@@ -543,7 +549,25 @@ export function SingleRadioSettings (props:{
         <>
           <Row gutter={20}>
             <Col span={4}>
-              <div>{$t({ defaultMessage: 'Outdoor APs' })}</div>
+              <Space>
+                <div>{$t({ defaultMessage: 'Outdoor APs' })}</div>
+                {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+                  title={''}
+                  visible={true}
+                  placement='right'
+                  onClick={() => setOutdoor6gDrawerVisible(true)}
+                  icon={<QuestionMarkCircleOutlined
+                    style={{ height: '16px', width: '16px' }}
+                  />}
+                />}
+                {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+                  visible={outdoor6gDrawerVisible}
+                  type={context === 'venue' ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+                  venueId={venueId}
+                  featureName={InCompatibilityFeatures.OUTDOOR_6G_CHANNEL}
+                  onClose={() => setOutdoor6gDrawerVisible(false)}
+                />}
+              </Space>
             </Col>
             {outdoorChannelErrMsg &&
               <Col span={6}>

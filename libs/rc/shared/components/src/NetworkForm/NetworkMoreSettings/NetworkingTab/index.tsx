@@ -40,6 +40,10 @@ export function NetworkingTab (props: {
     including beacon report, channel non-preference, cellular capability, and association disallow.
     Other Agile Multi Band capabilities including 802.11k, 802.11r, and 802.11w
     are enabled or disabled separately.` })
+  const bssPriorityTooltipContent = $t({ defaultMessage:
+    'LOW setting reduces the priority of the WLAN by limiting the throughput to all clients connected to this WLAN.\
+              HIGH setting has no throughput limits. Default is WLAN priority set to HIGH.'
+  })
 
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
   const enableDSSupport = useIsSplitOn(Features.WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE)
@@ -51,6 +55,7 @@ export function NetworkingTab (props: {
 
   const [airtimeDrawerVisible, setAirtimeDrawerVisible] = useState(false)
   const [joinRssiDrawerVisible, setJoinRssiDrawerVisible] = useState(false)
+  const [bssPriorityDrawerVisible, setBssPriorityDrawerVisible] = useState(false)
 
   const [
     enableFastRoaming,
@@ -320,7 +325,7 @@ export function NetworkingTab (props: {
           />}
           {isR370UnsupportedFeatures && <ApCompatibilityDrawer
             visible={airtimeDrawerVisible}
-            type={wlanData?.id ? ApCompatibilityType.NETWORK : ApCompatibilityType.ALONE}
+            type={ApCompatibilityType.ALONE}
             networkId={wlanData?.id}
             featureName={InCompatibilityFeatures.AIRTIME_DECONGESTION}
             onClose={() => setAirtimeDrawerVisible(false)}
@@ -349,7 +354,7 @@ export function NetworkingTab (props: {
             />}
             {isR370UnsupportedFeatures && <ApCompatibilityDrawer
               visible={joinRssiDrawerVisible}
-              type={wlanData?.id ? ApCompatibilityType.NETWORK : ApCompatibilityType.ALONE}
+              type={ApCompatibilityType.ALONE}
               networkId={wlanData?.id}
               featureName={InCompatibilityFeatures.JOIN_RSSI_THRESHOLD}
               onClose={() => setJoinRssiDrawerVisible(false)}
@@ -547,12 +552,24 @@ export function NetworkingTab (props: {
           name={['wlan','advancedCustomization','bssPriority']}
           label={<>
             {$t({ defaultMessage: 'BSS Priority' })}
-            <Tooltip.Question
+            {!isR370UnsupportedFeatures && <Tooltip.Question
               // eslint-disable-next-line max-len
-              title={'LOW setting reduces the priority of the WLAN by limiting the throughput to all clients connected to this WLAN.\
-               HIGH setting has no throughput limits. Default is WLAN priority set to HIGH.'}
+              title={bssPriorityTooltipContent}
               placement='right'
-            />
+            />}
+            {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+              title={bssPriorityTooltipContent}
+              visible={true}
+              placement='right'
+              onClick={() => setBssPriorityDrawerVisible(true)}
+            />}
+            {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+              visible={bssPriorityDrawerVisible}
+              type={ApCompatibilityType.ALONE}
+              networkId={wlanData?.id}
+              featureName={InCompatibilityFeatures.BSS_PRIORITY}
+              onClose={() => setBssPriorityDrawerVisible(false)}
+            />}
           </>}
           initialValue={BasicServiceSetPriorityEnum.HIGH}
           valuePropName='value'
