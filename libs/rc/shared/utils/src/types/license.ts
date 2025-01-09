@@ -38,7 +38,7 @@ export interface EntitlementSummaries {
   usedQuantityForOwnAssignment: number,
   isTrial: boolean,
   licenseType: EntitlementDeviceType,
-  remainingQuantity: number,
+  remainingLicenses: number,
   usageType: string
 }
 
