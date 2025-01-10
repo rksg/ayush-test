@@ -6,7 +6,7 @@ import _                       from 'lodash'
 import moment                  from 'moment-timezone'
 import { useLocation }         from 'react-router-dom'
 
-const PENDO_TRACK_EVENT_NAME = 'testPageloadtime' // 'pageloadtime'
+const PENDO_TRACK_EVENT_NAME = 'pageloadtime' // 'pageloadtime' 'testPageloadtime'
 const COMPONENT_LOAD_TIME_THRESHOLD = 600_000 //10min
 const LOAD_TIME = { NORMAL: 1_000, SLOW: 7_000 }
 
@@ -40,14 +40,6 @@ interface QueryResult {
   }
 }
 
-type LoadTimes = {
-  [key: string]: {
-    time: number,
-    startTime: number,
-    isUnfulfilled: boolean
-  }
-}
-
 type FlattenedRoute = {
   key: string;
   type: string
@@ -59,6 +51,14 @@ type FlattenedRoute = {
 }
 type FlattenedRoutes = {
   [path: string]: FlattenedRoute
+}
+
+type LoadTimes = {
+  [key: string]: {
+    time: number,
+    startTime: number,
+    isUnfulfilled: boolean
+  }
 }
 
 enum LoadTimeStatus {
@@ -129,7 +129,7 @@ export const widgetsMapping = {
   INTENT_AI_TABLE: 'IntentAITable'
 }
 
-export const TrackingPageConfig = {
+export const trackingPageConfig = {
   [TrackingPages.DASHBOARD]: {
     key: 'DASHBOARD',
     type: TrackingPageType.DASHBOARD,
@@ -443,7 +443,7 @@ export const LoadTimeProvider = ({ children }: {
   }
 
   const location = useLocation()
-  const flattenRoutesConfig = flattenRoutes(TrackingPageConfig)
+  const flattenRoutesConfig = flattenRoutes(trackingPageConfig)
   const pathname = location.pathname.split('/t/')?.[1] || location.pathname.split('/v/')?.[1]
 
   useEffect(() => {

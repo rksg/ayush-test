@@ -90,7 +90,14 @@ export function VenueOverviewTab () {
       <LowPowerBannerAndModal from={'venue'} />
     }
     <CommonDashboardWidgets filters={venueFilter}/>
-    <ContentSwitcher tabDetails={tabDetails} size='large' />
+    <ContentSwitcher
+      tabDetails={tabDetails}
+      size='large'
+      defaultValue={localStorage.getItem('venue-tab') || tabDetails[0].value}
+      onChange={(value: string): void => {
+        localStorage.setItem('venue-tab', value)
+      }}
+    />
   </>)
 }
 

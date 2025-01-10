@@ -9,6 +9,7 @@ import {
   createHttpRequest,
   getFilters,
   getUrlForTest,
+  getOpsApi,
   batchApi
 } from './apiService'
 
@@ -103,6 +104,19 @@ describe('ApiInfo', () => {
       ...apiInfo1,
       oldUrl: '/api/switch/tenant/:tenantId/aaaServer/query'
     })).toBe('/api/switch/tenant/:tenantId/aaaServer/query')
+  })
+
+  it('test getOpsApi', async () => {
+    const apiInfo1 = {
+      method: 'post',
+      url: '/venues/aaaServers/query'
+    }
+
+    expect(getOpsApi(apiInfo1)).toBe('')
+    expect(getOpsApi({
+      ...apiInfo1,
+      opsApi: 'POST:/venues/aaaServers/query'
+    })).toBe('POST:/venues/aaaServers/query')
   })
 
   it('batchApi: success', async () => {
