@@ -150,7 +150,7 @@ export const states = {
   },
   [DisplayStates.pausedApplyFailed]: {
     showRetries: true,
-    text: defineMessage({ defaultMessage: 'Paused, Applied Failed' }),
+    text: defineMessage({ defaultMessage: 'Paused, Apply Failed' }),
     tooltip: defineMessage({ defaultMessage: `
       <p>IntentAI recommended changes failed to apply to <VenueSingular></VenueSingular> {zoneName} due to:</p>
       {errorMessage}

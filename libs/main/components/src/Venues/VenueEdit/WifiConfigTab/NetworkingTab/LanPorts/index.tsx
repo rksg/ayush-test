@@ -269,30 +269,29 @@ export function LanPorts () {
     lanPortSettings: VenueLanPortSettings[]
   ) => {
 
-    if(isEthernetSoftgreEnabled || isEthernetClientIsolationEnabled) {
-      if (lanPortSettings?.length) {
-        selected.lanPorts = mergeLanPortSettings(selected.lanPorts, lanPortSettings)
-        selected.isSettingsLoaded = true
-      }
-
-      const newLanPortData = cloneDeep(lanPortData)
-      const newLanPortOrinData = cloneDeep(lanPortOrinData)
-
-      newLanPortData?.forEach((item, index) => {
-        if(item.model === selected.model) {
-          newLanPortData[index] = selected
-        }
-      })
-
-      newLanPortOrinData?.forEach((item, index) => {
-        if(item.model === selected.model) {
-          newLanPortOrinData[index] = selected
-        }
-      })
-
-      setLanPortData(newLanPortData)
-      setLanPortOrinData(newLanPortOrinData)
+    if((isEthernetSoftgreEnabled || isEthernetClientIsolationEnabled) && lanPortSettings?.length) {
+      selected.lanPorts = mergeLanPortSettings(selected.lanPorts, lanPortSettings)
     }
+
+    selected.isSettingsLoaded = true
+
+    const newLanPortData = cloneDeep(lanPortData)
+    const newLanPortOrinData = cloneDeep(lanPortOrinData)
+
+    newLanPortData?.forEach((item, index) => {
+      if(item.model === selected.model) {
+        newLanPortData[index] = selected
+      }
+    })
+
+    newLanPortOrinData?.forEach((item, index) => {
+      if(item.model === selected.model) {
+        newLanPortOrinData[index] = selected
+      }
+    })
+
+    setLanPortData(newLanPortData)
+    setLanPortOrinData(newLanPortOrinData)
   }
 
   const handleDiscardLanPorts = async (orinData?: VenueLanPorts[]) => {

@@ -104,6 +104,62 @@ export const mockSoftGreTable = {
           wifiNetworkIds: ['network_7','network_8']
         }
       ]
+    },
+    {
+      id: 'softGreProfileName5-id',
+      name: 'softGreProfileName5',
+      mtuType: MtuTypeEnum.MANUAL,
+      mtuSize: 1450,
+      disassociateClientEnabled: false,
+      primaryGatewayAddress: '1.0.0.1',
+      secondaryGatewayAddress: '1.0.0.2',
+      keepAliveInterval: 100,
+      keepAliveRetryTimes: 8,
+      activations: [],
+      venueActivations: [
+        {
+          venueId: 'venueId-3',
+          apModel: 'R550',
+          portId: 1,
+          apSerialNumbers: []
+        }
+      ],
+      apActivations: []
+    },
+    {
+      id: 'softGreProfileName6-id',
+      name: 'softGreProfileName6',
+      mtuType: MtuTypeEnum.MANUAL,
+      mtuSize: 1450,
+      disassociateClientEnabled: false,
+      primaryGatewayAddress: '1.0.0.3',
+      keepAliveInterval: 100,
+      keepAliveRetryTimes: 8,
+      activations: [],
+      venueActivations: [],
+      apActivations: [{
+        venueId: 'venueId-3',
+        portId: 1,
+        apSerialNumbers: 'ap1'
+      }]
+    },
+    {
+      id: 'softGreProfileName7-id',
+      name: 'softGreProfileName7',
+      mtuType: MtuTypeEnum.MANUAL,
+      mtuSize: 1450,
+      disassociateClientEnabled: false,
+      primaryGatewayAddress: '1.0.0.4',
+      keepAliveInterval: 100,
+      keepAliveRetryTimes: 8,
+      activations: [
+        {
+          venueId: 'venueId-3',
+          wifiNetworkIds: ['network_14']
+        }
+      ],
+      venueActivations: [],
+      apActivations: []
     }
   ] as SoftGreViewData[]
 }
@@ -135,6 +191,14 @@ export const mockedSoftGreScopeVenueMap = {
       profileId: 'softGreProfileName4-id',
       profileName: 'softGreProfileName4',
       venueId: 'venueId-2'
+    }
+  ],
+  'venueId-3': [
+    {
+      networkIds: ['network_14'],
+      profileId: 'softGreProfileName7-id',
+      profileName: 'softGreProfileName7',
+      venueId: 'venueId-3'
     }
   ]
 }
