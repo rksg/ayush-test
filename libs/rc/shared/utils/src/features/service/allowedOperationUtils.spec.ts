@@ -1,8 +1,7 @@
 import { renderHook } from '@acx-ui/test-utils'
 
-import { ServiceType }     from '../../constants'
-import { PolicyType }      from '../../types'
-import { PolicyOperation } from '../policy'
+import { ServiceType, ServiceOperation } from '../../constants'
+import { PolicyType, PolicyOperation }   from '../../types'
 
 import {
   applyTemplateIfNeeded,
@@ -11,7 +10,6 @@ import {
   useTemplateAwareServiceAllowedOperation,
   useTemplateAwarePolicyAllowedOperation
 } from './allowedOperationUtils'
-import { ServiceOperation } from './serviceRouteUtils'
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('../../configTemplate', () => ({
