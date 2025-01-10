@@ -33,13 +33,28 @@ module.exports = async function setupProxy (app) {
   })
   if (await mockServerApi === 'up') {
     app.use(createProxyMiddleware(
-      '/enhancedHotspot20IdentityProviders/query',
+      '/venues/apCompatibilities/query',
       {
         target: MOCK_SERVER_URL,
         changeOrigin: true,
         secure: false,
         pathRewrite: {
-          '.+': '/enhancedHotspot20IdentityProviders-query'
+          '.+': '/venues-apCompatibilities-query'
+        },
+        onProxyReq: function (request) {
+          request.setHeader('origin', CLOUD_URL)
+          request.method = 'GET'
+        }
+      }
+    ))
+    app.use(createProxyMiddleware(
+      '/venues/aps/apCompatibilities/query',
+      {
+        target: MOCK_SERVER_URL,
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: {
+          '.+': '/venues-aps-apCompatibilities-query'
         },
         onProxyReq: function (request) {
           request.setHeader('origin', CLOUD_URL)
