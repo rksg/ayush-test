@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react'
 import { map }     from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { defaultSort, Incident, overlapsRollup, sortProp }                                from '@acx-ui/analytics/utils'
+import { Incident, overlapsRollup, sortProp }                                             from '@acx-ui/analytics/utils'
 import { Card, Loader, NoGranularityText, Table, Button, TableProps, Tooltip, showToast } from '@acx-ui/components'
 import { CopyOutlined }                                                                   from '@acx-ui/icons-new'
 
