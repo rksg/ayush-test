@@ -7,6 +7,7 @@ import { IntlShape, useIntl } from 'react-intl'
 
 import {
   Button,
+  Filter,
   Loader,
   PageHeader,
   Subtitle,
@@ -74,6 +75,10 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
     value: $t({ defaultMessage: 'Show Active & Future' })
   }
 ]
+
+const defaultSelectedFilters: Filter = {
+  status: ['VALID', 'FUTURE']
+}
 
 const entitlementSummaryPayload = {
   filters: {
@@ -489,6 +494,7 @@ export function Subscriptions () {
           actions={filterByAccess(actions)}
           dataSource={subscriptionData}
           stickyHeaders={false}
+          selectedFilters={defaultSelectedFilters}
           rowKey='id'
         />
         {showDialog && <SubscriptionUsageReportDialog
