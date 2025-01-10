@@ -313,6 +313,6 @@ describe('MyPolicies', () => {
       }
     )
 
-    expect(await screen.findByText('Port Profile (2)')).toBeVisible()
+    expect(await screen.findByText('Port Profiles (2)')).toBeVisible()
   })
 })

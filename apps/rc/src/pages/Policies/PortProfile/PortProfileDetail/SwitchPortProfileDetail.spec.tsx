@@ -78,12 +78,8 @@ describe('SwitchPortProfileDetail', () => {
       }
     )
 
-    await waitFor(async () => {
-      expect(await screen.findByText('Port Profile')).toBeInTheDocument()
-    })
-    await waitFor(async () => {
-      expect(await screen.findByRole('table')).toBeInTheDocument()
-    })
+    expect(await screen.findByRole('heading', { name: 'Port Profiles' })).toBeVisible()
+    expect(await screen.findByRole('table')).toBeInTheDocument()
   })
 
   it('displays the correct data in the table', async () => {
