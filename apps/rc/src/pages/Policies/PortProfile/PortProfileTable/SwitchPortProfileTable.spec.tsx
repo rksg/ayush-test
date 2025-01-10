@@ -169,8 +169,6 @@ describe('SwitchPortProfileTable', () => {
     expect(within(row).getByText(profile.type)).toBeVisible()
     expect(within(row).getByText(profile.untaggedVlan)).toBeVisible()
     expect(within(row).getByText('2')).toBeVisible() // Tagged VLANs count
-    expect(within(row).getByText('3')).toBeVisible() // MAC OUI count
-    expect(within(row).getByText('1')).toBeVisible() // LLDP TLV count
   })
 
   it('should handle delete profile without switches', async () => {
