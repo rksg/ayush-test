@@ -17,7 +17,10 @@ import {
   ApRequirement,
   CompatibilitySelectedApInfo,
   FirmwareVenuePerApModel,
-  IncompatibleFeature
+  IncompatibilityFeatureGroups,
+  IncompatibilityFeatures,
+  IncompatibleFeature,
+  getCompatibilityFeatureDisplayName
 } from '@acx-ui/rc/utils'
 import { WifiScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
@@ -87,7 +90,9 @@ const useColumns = (apModelFamilies?: ApModelFamily[], model?: string) => {
     defaultSortOrder: 'ascend',
     render: function (_, row) {
       const { featureName, featureType } = row
-      return <Space>{featureName} {getFeatureTypeTag(featureType)}</Space>
+      const featureDisplayName = getCompatibilityFeatureDisplayName(
+        featureName as IncompatibilityFeatures & IncompatibilityFeatureGroups)
+      return <Space>{featureDisplayName} {getFeatureTypeTag(featureType)}</Space>
     }
   }, {
     title: $t({ defaultMessage: 'Incompatible APs' }),
