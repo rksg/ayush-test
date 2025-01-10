@@ -50,6 +50,7 @@ export default function SwitchPortProfileForm () {
   const navigate = useNavigate()
   const basePath = useTenantLink('/policies/portProfile/switch/profiles/')
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([])
+  const [selectedLldpTlvRows, setSelectedLldpTlvRows] = useState<LldpTlvs[]>([])
   const [ingressTooltipVisible, setIngressTooltipVisible] = useState<boolean>(false)
   const [macOuisOptions, setMacOuisOptions] = useState<DefaultOptionType[]>([])
   const [macOuisList, setMacOuisList] = useState<MacOuis[]>([])
@@ -189,12 +190,31 @@ export default function SwitchPortProfileForm () {
     }
   ]
 
+  const mergeUniqueLldpTlvs = (lldptlvs1: LldpTlvs[], lldptlvs2: LldpTlvs[]) => {
+    const uniqueMap = new Map()
+
+    lldptlvs1.forEach(item => {
+      uniqueMap.set(item.id, item)
+    })
+
+    lldptlvs2.forEach(item => {
+      uniqueMap.set(item.id, item)
+    })
+
+    return Array.from(uniqueMap.values())
+  }
+
   const proceedPayload = (data: FormPayload) => {
+    const lldpTlvsItems = mergeUniqueLldpTlvs(switchPortProfilesDetail?.lldpTlvs?.filter(
+      (item: LldpTlvs) => item.id && selectedRowKeys.includes(item.id)) || [],
+    selectedLldpTlvRows.filter(
+      (item: LldpTlvs) => item.id && selectedRowKeys.includes(item.id))
+    )
+
     return {
       ...data,
       taggedVlans: data.taggedVlans ? data.taggedVlans.split(',') : undefined,
-      lldpTlvs: lldpTlvTableQuery.data?.data?.filter(
-        (item: LldpTlvs) => item.id && selectedRowKeys.includes(item.id)),
+      lldpTlvs: lldpTlvsItems,
       macOuis: macOuisList.filter(
         (item: MacOuis) => item.id && data.macOuis?.includes(item.id)),
       dot1x: data.ipsg ? false : data.dot1x,
@@ -606,8 +626,9 @@ export default function SwitchPortProfileForm () {
                     getCheckboxProps: () => ({
                       disabled: !poeEnable
                     }),
-                    onChange: (selectedKeys) => {
+                    onChange: (selectedKeys, selectedRows) => {
                       setSelectedRowKeys(selectedKeys as string[])
+                      setSelectedLldpTlvRows(selectedRows as LldpTlvs[])
                     }
                   }}
                   dataSource={lldpTlvTableQuery.data?.data}
