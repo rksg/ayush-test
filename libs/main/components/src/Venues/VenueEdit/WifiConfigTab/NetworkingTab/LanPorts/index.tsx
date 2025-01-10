@@ -517,7 +517,7 @@ export function LanPorts () {
   }
 
   const processUpdateVenueLanPorts = async (payload: VenueLanPorts[]) => {
-    if (isEthernetPortProfileEnabled) {
+    if (isEthernetPortProfileEnabled && !isTemplate) {
       payload.forEach((venueLanPort) => {
         if(venueLanPort.isSettingsLoaded) {
           const originVenueLanPort = lanPortOrinData?.find((oldVenueLanPort) => {
@@ -536,9 +536,9 @@ export function LanPorts () {
               return oldLanPort.portId === lanPort.portId
             })
             // Update ethernet port profile
-            handleUpdateEthernetPortProfile(venueLanPort.model, lanPort, originLanPort)
+            await handleUpdateEthernetPortProfile(venueLanPort.model, lanPort, originLanPort)
             // Update SoftGre Profile
-            handleUpdateSoftGreProfile(venueLanPort.model, lanPort, originLanPort)
+            await handleUpdateSoftGreProfile(venueLanPort.model, lanPort, originLanPort)
 
             // Before disable Client Isolation must deacticvate Client Isolation policy
             if(isEthernetClientIsolationEnabled) {
@@ -562,7 +562,7 @@ export function LanPorts () {
     setLanPortData(payload)
     setLanPortOrinData(payload)
 
-    if (!isEthernetPortProfileEnabled) {
+    if (!isEthernetPortProfileEnabled || isTemplate) {
       await updateVenueLanPorts({
         params: { tenantId, venueId },
         payload,

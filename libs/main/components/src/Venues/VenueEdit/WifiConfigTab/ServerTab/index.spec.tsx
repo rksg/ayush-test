@@ -41,6 +41,10 @@ jest.mock('./ApSnmp', () => ({
   ApSnmp: () => <div>ApSnmp Component</div>
 }))
 
+jest.mock('./IotController', () => ({
+  IotController: () => <div>IotController Component</div>
+}))
+
 describe('ServerTab', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())

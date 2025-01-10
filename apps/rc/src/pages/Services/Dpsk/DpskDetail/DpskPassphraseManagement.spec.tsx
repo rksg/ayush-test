@@ -10,7 +10,7 @@ import {
   ServiceOperation,
   DpskUrls,
   CommonUrlsInfo,
-  ClientUrlsInfo
+  ClientUrlsInfo, PersonaUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -26,7 +26,8 @@ import {
   mockedTenantId,
   mockedServiceId,
   mockedDpskPassphrase,
-  mockedDpskPassphraseDevices
+  mockedDpskPassphraseDevices,
+  mockedIdentityList
 } from './__tests__/fixtures'
 import DpskPassphraseManagement from './DpskPassphraseManagement'
 
@@ -124,6 +125,12 @@ describe('DpskPassphraseManagement', () => {
       rest.post(
         ClientUrlsInfo.getClientMeta.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        PersonaUrls.searchPersonaList.url.split('?')[0],
+        (_req, res, ctx) => {
+          return res(ctx.json(mockedIdentityList))
+        }
       )
     )
   })
@@ -188,14 +195,7 @@ describe('DpskPassphraseManagement', () => {
     const targetRow = await screen.findByRole('row', { name: new RegExp(targetRecord.username) })
     await userEvent.click(within(targetRow).getByRole('checkbox'))
 
-    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
-
-    const confirmDialog = await screen.findByRole('dialog')
-    // eslint-disable-next-line max-len
-    expect(within(confirmDialog).getByText('You are unable to delete this record due to its usage in Identity')).toBeVisible()
-
-    await userEvent.click(await screen.findByText('OK'))
-    await waitFor(() => expect(confirmDialog).not.toBeInTheDocument())
+    expect(screen.getByRole('button', { name: /Delete/ })).toBeDisabled()
   })
 
   it('should show error message when import CSV file failed', async () => {

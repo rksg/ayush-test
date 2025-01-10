@@ -15,7 +15,8 @@ import { NetworkTunnelTypeEnum } from './types'
 import { SoftGreNetworkTunnel }  from './useSoftGreTunnelActions'
 
 const defaultPayload = {
-  fields: ['id', 'name', 'primaryGatewayAddress', 'secondaryGatewayAddress','activations'],
+  fields: ['id', 'name', 'primaryGatewayAddress', 'secondaryGatewayAddress', 'activations',
+    'venueActivations', 'apActivations'],
   page: 1,
   pageSize: 10_000,
   searchString: '',

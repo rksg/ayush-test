@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 
-import userEvent from '@testing-library/user-event'
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
 
 import { StepsForm }       from '@acx-ui/components'
 import { EdgePinFixtures } from '@acx-ui/rc/utils'
@@ -32,6 +33,15 @@ jest.mock('react-router-dom', () => ({
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
   getTenantId: jest.fn().mockReturnValue(tenantId)
+}))
+jest.mock('./AddDpskModal', () => ({
+  AddDpskModal: (props: { visible: boolean }) => <div data-testid='AddDpskModal'>
+    {''+props.visible}
+  </div>
+}))
+jest.mock('@acx-ui/rc/components', () => ({
+  TunnelProfileAddModal: () => <div data-testid='TunnelProfileAddModal'>
+  </div>
 }))
 
 type MockSelectProps = React.PropsWithChildren<{
@@ -95,8 +105,8 @@ describe('PersonalIdentityNetworkForm - WirelessNetworkForm', () => {
     const unusedNetworkOptions = mockNetworkGroup.response.length - usedNetowrkIds.length
     expect(checkboxs.length).toBe(unusedNetworkOptions)
     await user.click(await screen.findByRole('checkbox', { name: 'Network 1' }))
-    const addButtons = await screen.findAllByRole('button', { name: 'Add' })
-    await user.click(addButtons[1])
+    const addButton = await screen.findByRole('button', { name: 'Add' })
+    await user.click(addButton)
     expect(mockedFinishFn).toBeCalledTimes(1)
   })
 
@@ -117,8 +127,33 @@ describe('PersonalIdentityNetworkForm - WirelessNetworkForm', () => {
       { route: { params, path: createPinPath } })
 
     await screen.findByRole('checkbox', { name: 'Network 1' })
-    const addButtons = await screen.findAllByRole('button', { name: 'Add' })
-    await user.click(addButtons[1])
+    const addButton = await screen.findByRole('button', { name: 'Add' })
+    await user.click(addButton)
     expect(mockedFinishFn).toBeCalledTimes(1)
+  })
+
+  it('Step3 - should correctly render when no network is available', async () => {
+    const mockContextData_noNetwork = cloneDeep(mockContextData)
+    mockContextData_noNetwork.networkOptions = []
+
+    render(
+      <Provider>
+        <PersonalIdentityNetworkFormContext.Provider
+          value={mockContextData_noNetwork}
+        >
+          <StepsForm onFinish={mockedFinishFn}>
+            <StepsForm.StepForm>
+              <WirelessNetworkForm />
+            </StepsForm.StepForm>
+          </StepsForm>
+        </PersonalIdentityNetworkFormContext.Provider>
+      </Provider>,
+      { route: { params, path: createPinPath } })
+
+    await screen.findByText(/No networks activated on Venue/)
+
+    const addNetworkButton = await screen.findByRole('button', { name: 'Add DPSK Network' })
+    await userEvent.click(addNetworkButton)
+    expect(screen.getByTestId('AddDpskModal')).toHaveTextContent('true')
   })
 })
