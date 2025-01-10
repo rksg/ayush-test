@@ -270,10 +270,8 @@ export function LanPorts () {
     lanPortSettings: VenueLanPortSettings[]
   ) => {
 
-    if(isEthernetSoftgreEnabled || isEthernetClientIsolationEnabled) {
-      if (lanPortSettings?.length) {
-        selected.lanPorts = mergeLanPortSettings(selected.lanPorts, lanPortSettings)
-      }
+    if((isEthernetSoftgreEnabled || isEthernetClientIsolationEnabled) && lanPortSettings?.length) {
+      selected.lanPorts = mergeLanPortSettings(selected.lanPorts, lanPortSettings)
     }
 
     selected.isSettingsLoaded = true
