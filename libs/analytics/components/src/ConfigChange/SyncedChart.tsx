@@ -1,43 +1,40 @@
 import { memo, useContext, useEffect } from 'react'
 
+import _         from 'lodash'
 import AutoSizer from 'react-virtualized-auto-sizer'
 
 import { useAnalyticsFilter }              from '@acx-ui/analytics/utils'
 import { Card, ConfigChangeChart, Loader } from '@acx-ui/components'
-import type { ConfigChange }               from '@acx-ui/components'
 
-import { ConfigChangeContext }  from './context'
-import { useConfigChangeQuery } from './services'
-import { filterData }           from './Table/util'
+import { ConfigChangeContext }        from './context'
+import { useConfigChangeSeriesQuery } from './services'
 
 function BasicChart (){
   const { pathFilters } = useAnalyticsFilter()
   const {
     timeRanges: [startDate, endDate], setKpiTimeRanges, dateRange,
-    kpiFilter, applyKpiFilter,
-    legendFilter, applyLegendFilter,
+    kpiFilter, legendFilter, applyLegendFilter,
+    entityNameSearch, entityTypeFilter,
     pagination, applyPagination,
-    selected, setSelected, onDotClick: onClick,
+    selected, setSelected, onDotClick,
     chartZoom, setChartZoom, setInitialZoom
   } = useContext(ConfigChangeContext)
 
-  const queryResults = useConfigChangeQuery({
+  const queryResults = useConfigChangeSeriesQuery({
     ...pathFilters,
     startDate: startDate.toISOString(),
-    endDate: endDate.toISOString()
-  }, { selectFromResult: queryResults => ({
-    ...queryResults,
-    data: filterData(queryResults.data ?? [], kpiFilter, legendFilter)
-  }) })
+    endDate: endDate.toISOString(),
+    filterBy: {
+      kpiFilter,
+      entityName: entityNameSearch,
+      entityType: legendFilter.filter(t => (
+        _.isEmpty(entityTypeFilter) || entityTypeFilter.includes(t)))
+    }
+  })
 
   useEffect(() => {
     setChartZoom?.({ start: startDate.valueOf(), end: endDate.valueOf() })
   }, [dateRange])
-
-  const onDotClick = (params: ConfigChange) => {
-    applyKpiFilter([])
-    onClick(params)
-  }
 
   return <Loader states={[queryResults]}>
     <Card type='no-border'>
@@ -45,7 +42,7 @@ function BasicChart (){
         {({ width }) =>
           <ConfigChangeChart
             style={{ width }}
-            data={queryResults.data}
+            data={queryResults.data!}
             chartBoundary={[ startDate.valueOf(), endDate.valueOf() ]}
             onDotClick={onDotClick}
             selectedData={selected!}
@@ -63,4 +60,4 @@ function BasicChart (){
   </Loader>
 }
 
-export const Chart = memo(BasicChart)
+export const SyncedChart = memo(BasicChart)
