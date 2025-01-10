@@ -270,30 +270,29 @@ export function LanPorts () {
     lanPortSettings: VenueLanPortSettings[]
   ) => {
 
-    if(isEthernetSoftgreEnabled || isEthernetClientIsolationEnabled) {
-      if (lanPortSettings?.length) {
-        selected.lanPorts = mergeLanPortSettings(selected.lanPorts, lanPortSettings)
-        selected.isSettingsLoaded = true
-      }
-
-      const newLanPortData = cloneDeep(lanPortData)
-      const newLanPortOrinData = cloneDeep(lanPortOrinData)
-
-      newLanPortData?.forEach((item, index) => {
-        if(item.model === selected.model) {
-          newLanPortData[index] = selected
-        }
-      })
-
-      newLanPortOrinData?.forEach((item, index) => {
-        if(item.model === selected.model) {
-          newLanPortOrinData[index] = selected
-        }
-      })
-
-      setLanPortData(newLanPortData)
-      setLanPortOrinData(newLanPortOrinData)
+    if((isEthernetSoftgreEnabled || isEthernetClientIsolationEnabled) && lanPortSettings?.length) {
+      selected.lanPorts = mergeLanPortSettings(selected.lanPorts, lanPortSettings)
     }
+
+    selected.isSettingsLoaded = true
+
+    const newLanPortData = cloneDeep(lanPortData)
+    const newLanPortOrinData = cloneDeep(lanPortOrinData)
+
+    newLanPortData?.forEach((item, index) => {
+      if(item.model === selected.model) {
+        newLanPortData[index] = selected
+      }
+    })
+
+    newLanPortOrinData?.forEach((item, index) => {
+      if(item.model === selected.model) {
+        newLanPortOrinData[index] = selected
+      }
+    })
+
+    setLanPortData(newLanPortData)
+    setLanPortOrinData(newLanPortOrinData)
   }
 
   const handleDiscardLanPorts = async (orinData?: VenueLanPorts[]) => {
@@ -517,7 +516,7 @@ export function LanPorts () {
   }
 
   const processUpdateVenueLanPorts = async (payload: VenueLanPorts[]) => {
-    if (isEthernetPortProfileEnabled) {
+    if (isEthernetPortProfileEnabled && !isTemplate) {
       payload.forEach((venueLanPort) => {
         if(venueLanPort.isSettingsLoaded) {
           const originVenueLanPort = lanPortOrinData?.find((oldVenueLanPort) => {
@@ -536,9 +535,9 @@ export function LanPorts () {
               return oldLanPort.portId === lanPort.portId
             })
             // Update ethernet port profile
-            handleUpdateEthernetPortProfile(venueLanPort.model, lanPort, originLanPort)
+            await handleUpdateEthernetPortProfile(venueLanPort.model, lanPort, originLanPort)
             // Update SoftGre Profile
-            handleUpdateSoftGreProfile(venueLanPort.model, lanPort, originLanPort)
+            await handleUpdateSoftGreProfile(venueLanPort.model, lanPort, originLanPort)
 
             // Before disable Client Isolation must deacticvate Client Isolation policy
             if(isEthernetClientIsolationEnabled) {
@@ -562,7 +561,7 @@ export function LanPorts () {
     setLanPortData(payload)
     setLanPortOrinData(payload)
 
-    if (!isEthernetPortProfileEnabled) {
+    if (!isEthernetPortProfileEnabled || isTemplate) {
       await updateVenueLanPorts({
         params: { tenantId, venueId },
         payload,

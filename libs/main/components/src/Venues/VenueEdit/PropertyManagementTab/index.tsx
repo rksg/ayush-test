@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { PropertyManagementForm }                from '@acx-ui/rc/components'
+import { VenuePropertyManagementForm }           from '@acx-ui/rc/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../index'
@@ -44,7 +44,7 @@ export function PropertyManagementTab () {
   }
 
   return (
-    <PropertyManagementForm
+    <VenuePropertyManagementForm
       form={form}
       venueId={venueId ?? ''}
       onCancel={navigateToVenueOverview}

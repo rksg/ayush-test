@@ -120,46 +120,52 @@ function useColumns (
         ,
         ...props.identityId
       } as TableColumn<Persona>],
-    {
-      key: 'groupId',
-      dataIndex: 'group',
-      title: $t({ defaultMessage: 'Identity Group' }),
-      sorter: true,
-      render: (_, row) => {
-        const name = personaGroupList.data?.data.find(group => group.id === row.groupId)?.name
-        return <IdentityGroupLink personaGroupId={row.groupId} name={name} />
-      },
-      filterMultiple: false,
-      filterable: personaGroupList?.data?.data.map(pg => ({ key: pg.id, value: pg.name })) ?? [],
-      ...props.groupId
-    },
-    {
-      key: 'vlan',
-      dataIndex: 'vlan',
-      title: $t({ defaultMessage: 'VLAN' }),
-      sorter: true,
-      ...props.vlan
-    },
-    {
-      key: 'assignedAp',
-      dataIndex: 'assignedAp',
-      title: $t({ defaultMessage: 'Assigned AP' }),
-      render: (_, row) => {
-      // TODO: fetch AP info by MacAddress?
-        return row?.ethernetPorts?.[0]?.name
-      },
-      ...props.ethernetPorts
-    },
-    {
-      key: 'ethernetPorts',
-      dataIndex: 'ethernetPorts',
-      title: $t({ defaultMessage: 'Assigned Port' }),
-      render: (_, row) => {
-        return row.ethernetPorts?.map(port => `LAN ${port.portIndex}`).join(', ')
-      },
-      ...props.ethernetPorts
-    },
-    ...(networkSegmentationEnabled ? [{
+    ...(props.groupId?.disable)
+      ? []
+      : [{
+        key: 'groupId',
+        dataIndex: 'group',
+        title: $t({ defaultMessage: 'Identity Group' }),
+        sorter: true,
+        render: (_, row) => {
+          const name = personaGroupList.data?.data.find(group => group.id === row.groupId)?.name
+          return <IdentityGroupLink personaGroupId={row.groupId} name={name} />
+        },
+        filterMultiple: false,
+        filterable: personaGroupList?.data?.data.map(pg => ({ key: pg.id, value: pg.name })) ?? [],
+        ...props.groupId
+      } as TableColumn<Persona>],
+    ...(props.vlan?.disable)
+      ? []
+      : [{
+        key: 'vlan',
+        dataIndex: 'vlan',
+        title: $t({ defaultMessage: 'VLAN' }),
+        sorter: true,
+        ...props.vlan
+      }],
+    ...(props.ethernetPorts?.disable)
+      ? []
+      : [{
+        key: 'assignedAp',
+        dataIndex: 'assignedAp',
+        title: $t({ defaultMessage: 'Assigned AP' }),
+        render: (_, row) => {
+          // TODO: fetch AP info by MacAddress?
+          return row?.ethernetPorts?.[0]?.name
+        },
+        ...props.ethernetPorts
+      } as TableColumn<Persona>,
+      {
+        key: 'ethernetPorts',
+        dataIndex: 'ethernetPorts',
+        title: $t({ defaultMessage: 'Assigned Port' }),
+        render: (_, row) => {
+          return row.ethernetPorts?.map(port => `LAN ${port.portIndex}`).join(', ')
+        },
+        ...props.ethernetPorts
+      } as TableColumn<Persona>],
+    ...((!props.vni?.disable && networkSegmentationEnabled) ? [{
       key: 'vni',
       dataIndex: 'vni',
       title: $t({ defaultMessage: 'Segment No.' }),
@@ -178,6 +184,9 @@ type PersonaTableColProps = {
   [key in keyof Persona]?: PersonaTableCol
 }
 export interface PersonaTableProps {
+  mode?: 'display' | 'selectable',
+  defaultSelectedPersonaId?: string,
+  onChange?: (persona?: Persona) => void
   personaGroupId?: string,
   colProps: PersonaTableColProps,
   settingsId?: string
@@ -185,7 +194,10 @@ export interface PersonaTableProps {
 
 export function BasePersonaTable (props: PersonaTableProps) {
   const { $t } = useIntl()
-  const { personaGroupId, colProps, settingsId = 'base-persona-table' } = props
+  const {
+    mode, personaGroupId,
+    colProps, settingsId = 'base-persona-table', onChange
+  } = props
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
 
@@ -207,6 +219,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
   const [getUnitsByIds] = useLazyBatchGetPropertyUnitsByIdsQuery()
   const { setIdentitiesCount } = useContext(IdentitiesContext)
   const columns = useColumns(personaGroupQuery?.data, colProps, unitPool, venueId)
+  const isSelectMode = mode === 'selectable'
 
   const personaListQuery = usePersonaListQuery({ personaGroupId, settingsId })
 
@@ -291,10 +304,12 @@ export function BasePersonaTable (props: PersonaTableProps) {
           setDrawerState({ isEdit: false, visible: true, data: { groupId: personaGroupId } })
         }
       },
-      {
-        label: $t({ defaultMessage: 'Import From File' }),
-        onClick: () => setUploadCsvDrawerVisible(true)
-      }] : []
+      ...isSelectMode
+        ? []
+        : [{
+          label: $t({ defaultMessage: 'Import From File' }),
+          onClick: () => setUploadCsvDrawerVisible(true)
+        }]] : []
 
   const rowActions: TableProps<Persona>['rowActions'] =
     hasCrossVenuesPermission({ needGlobalPermission: true })
@@ -398,13 +413,19 @@ export function BasePersonaTable (props: PersonaTableProps) {
         onChange={personaListQuery.handleTableChange}
         rowKey='id'
         actions={filterByAccess(actions)}
-        rowActions={filterByAccess(rowActions)}
+        rowActions={isSelectMode ? [] : filterByAccess(rowActions)}
         rowSelection={
-          hasCrossVenuesPermission({ needGlobalPermission: true })
-          && { type: personaGroupId ? 'checkbox' : 'radio' }}
+          isSelectMode
+            ? {
+              type: 'radio',
+              onChange: (items) => onChange?.(personaListQuery.data?.data
+                ?.find(p => p.id === items[0]))
+            }
+            : hasCrossVenuesPermission({ needGlobalPermission: true })
+            && { type: personaGroupId ? 'checkbox' : 'radio' }}
         onFilterChange={handleFilterChange}
-        iconButton={{
-          icon: <DownloadOutlined data-testid={'export-persona'} />,
+        iconButton={isSelectMode ? undefined : {
+          icon: <DownloadOutlined data-testid={'export-persona'}/>,
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
           onClick: downloadPersona
         }}

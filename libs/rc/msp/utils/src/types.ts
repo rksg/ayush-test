@@ -544,16 +544,25 @@ export enum MspEcAccountType {
 
 export interface LicenseCardProps {
   title: string
-  subTitle: string
+  subTitle?: string
   data: ComplianceData
-  isMsp: boolean
+  isMsp?: boolean
   trialType?: string,
   footerContent?: React.ReactElement
 }
 
+export interface MspLicenseCardProps {
+  title: string
+  subTitle?: string
+  selfData: ComplianceData
+  mspData: ComplianceData
+  footerContent?: React.ReactElement,
+  isExtendedTrial?: boolean
+}
+
 export interface LicenseCalculatorCardProps {
   title: string
-  subTitle: string
+  subTitle?: string
   footerContent?: React.ReactElement
 }
 
@@ -656,4 +665,29 @@ export interface MileageSeriesData {
   value: number;
   extraData: MileageBreakUp[];
   isZeroQuantity?: boolean;
+}
+
+export const AssignedEntitlementListPayload = {
+  fields: [
+    'externalId',
+    'licenseType',
+    'effectiveDate',
+    'expirationDate',
+    'quantity',
+    'sku',
+    'licenseDesc',
+    'isR1SKU',
+    'status',
+    'isTrial',
+    'graceEndDate',
+    'usageType'
+  ],
+  page: 1,
+  pageSize: 1000,
+  sortField: 'expirationDate',
+  sortOrder: 'DESC',
+  filters: {
+    licenseType: ['APSW'],
+    usageType: 'ASSIGNED'
+  }
 }

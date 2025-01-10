@@ -3278,6 +3278,11 @@ export const venueSyslog = {
   enabled: true
 }
 
+export const venueIot = {
+  mqttBrokerAddress: '1234.ruckus.com',
+  enabled: true
+}
+
 export const syslogServerProfiles = [{
   name: 'SyslogProfile1',
   id: '31846cfe930b49b4802b302f35029589',

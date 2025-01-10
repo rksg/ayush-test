@@ -3,6 +3,7 @@ import { RefObject, useRef, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
 
 import { get }             from '@acx-ui/config'
+import { useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { act, renderHook } from '@acx-ui/test-utils'
 
 import { TooltipFormatterParams } from '../Chart/helper'
@@ -18,6 +19,7 @@ import {
   useDataZoom,
   useDotClick,
   useLegendSelectChanged,
+  useLegendTableFilter,
   useBoundaryChange,
   tooltipFormatter,
   getTooltipCoordinate,
@@ -25,12 +27,13 @@ import {
   getSymbol,
   hexToRGB,
   ConfigChange,
-  getConfigChangeEntityTypeMapping
+  getConfigChangeEntityTypeMapping,
+  CONFIG_CHANGE_DEFAULT_PAGINATION
 }  from './helper'
 
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
-  getIntl: () => ({ $t: jest.fn() })
+  getIntl: () => ({ $t: jest.fn((message) => message.defaultMessage[0].value) })
 }))
 
 const mockGet = get as jest.Mock
@@ -493,6 +496,71 @@ describe('useLegendSelectChanged', () => {
     const { unmount } = renderHook(() => useLegendSelectChanged(eChartsRef, jest.fn()))
     unmount()
     expect(mockOffFn).not.toBeCalledTimes(1)
+  })
+})
+
+describe('useLegendTableFilter', () => {
+  const sampleData = [
+    {
+      id: 0, filterId: 0, timestamp: '1654423052112', type: 'ap', name: 'name',
+      key: 'key', oldValues: [ 'oldValues' ], newValues: [ 'newValues' ]
+    },
+    {
+      id: 1, filterId: 1, timestamp: '1654423052112', type: 'apGroup', name: 'name',
+      key: 'key', oldValues: [ 'oldValues' ], newValues: [ 'newValues' ]
+    },
+    {
+      id: 2, filterId: 2, timestamp: '1654423052112', type: 'wlan', name: 'name',
+      key: 'key', oldValues: [ 'oldValues' ], newValues: [ 'newValues' ]
+    },
+    {
+      id: 3, filterId: 3, timestamp: '1654423052112', type: 'venue', name: 'name',
+      key: 'key', oldValues: [ 'oldValues' ], newValues: [ 'newValues' ]
+    }
+  ]
+  it('should call setLegend', () => {
+    const selectedLegend = { 'AP': true, 'AP Group': true }
+    const setSelectedData = jest.fn()
+    const setLegend = jest.fn()
+
+    renderHook(() => useLegendTableFilter(
+      selectedLegend, sampleData, sampleData[0], setSelectedData, setLegend ))
+    expect(setLegend).toBeCalledWith(selectedLegend)
+  })
+  it('should set selectedData to null when deselecting legend', () => {
+    const selectedLegend = { 'AP': false, 'AP Group': true }
+    const setSelectedData = jest.fn()
+    const setLegend = jest.fn()
+
+    renderHook(() => useLegendTableFilter(
+      selectedLegend, sampleData, sampleData[0], setSelectedData, setLegend ))
+    expect(setSelectedData).toBeCalledWith(null)
+  })
+
+  it('should call setPagination with correct values', () => {
+    const selectedLegend = { 'AP': true, 'AP Group': true }
+    const setSelectedData = jest.fn()
+    const setLegend = jest.fn()
+    const pagination = { current: 1, pageSize: 1, defaultPageSize: 10, total: sampleData.length }
+    const setPagination = jest.fn()
+
+    renderHook(() => useLegendTableFilter(
+      selectedLegend, sampleData, sampleData[3], setSelectedData, setLegend,
+      pagination, setPagination))
+    expect(setPagination).toBeCalledWith({ current: 4, pageSize: 1 })
+  })
+  it('should call setPagination with correct values for paged table/chart', () => {
+    jest.mocked(useIsSplitOn).mockReturnValueOnce(true)
+    const selectedLegend = { 'AP': true, 'AP Group': true }
+    const setSelectedData = jest.fn()
+    const setLegend = jest.fn()
+    const pagination = { current: 4, pageSize: 1, defaultPageSize: 10, total: sampleData.length }
+    const setPagination = jest.fn()
+
+    renderHook(() => useLegendTableFilter(
+      selectedLegend, sampleData, sampleData[3], setSelectedData, setLegend,
+      pagination, setPagination))
+    expect(setPagination).toBeCalledWith(CONFIG_CHANGE_DEFAULT_PAGINATION)
   })
 })
 

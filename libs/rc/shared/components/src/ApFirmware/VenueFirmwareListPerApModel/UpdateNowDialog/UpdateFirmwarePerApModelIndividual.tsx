@@ -25,7 +25,8 @@ export function UpdateFirmwarePerApModelIndividual (props: UpdateFirmwarePerApMo
     labelSize = 'small',
     emptyOptionLabel = $t({ defaultMessage: 'Do not update firmware' }),
     noOptionsMessage = $t({ defaultMessage: 'The AP is up-to-date' }),
-    isUpgrade = true
+    isUpgrade = true,
+    earlyAccess = false
   } = props
   const [ selectedVersion, setSelectedVersion ] = useState(defaultVersion)
 
@@ -68,7 +69,8 @@ export function UpdateFirmwarePerApModelIndividual (props: UpdateFirmwarePerApMo
     <Space>
       <div style={{ width: labelSize === 'small' ? 50 : 90 }}>{apModel}</div>
       {versionOptions.length === 0
-        ? <div><span>{noOptionsMessage} &nbsp;<strong>({extremeFirmware})</strong></span></div>
+        // eslint-disable-next-line max-len
+        ? <div><span>{noOptionsMessage} &nbsp;<strong>({extremeFirmware}{earlyAccess ? ` ${$t({ defaultMessage: 'Early Access' })}` : ''})</strong></span></div>
         : <Select
           value={selectedVersion}
           onChange={onSelectedVersionChange}
