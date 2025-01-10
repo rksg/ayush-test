@@ -50,6 +50,13 @@ export function useDrawer (init: boolean) {
   return { visible, vlan, onOpen, onClose }
 }
 
+export const vlanSorter = (a: unknown, b: unknown) => {
+  const num1 = Number(a)
+  const num2 = Number(b)
+  if (num1 < num2) return -1
+  if (num1 > num2) return 1
+  return 0
+}
 
 function ImpactedVLANsTable (props: {
   data: ImpactedVlan[],
@@ -65,7 +72,7 @@ function ImpactedVLANsTable (props: {
       dataIndex: 'vlanId',
       width: 80,
       title: $t({ defaultMessage: 'VLAN ID' }),
-      sorter: { compare: sortProp('vlanId', defaultSort) },
+      sorter: { compare: sortProp('vlanId', vlanSorter) },
       searchable: true,
       render: function (_, row) {
         return <Button
@@ -127,3 +134,4 @@ function ImpactedVLANsTable (props: {
     /> }
   </>
 }
+
