@@ -189,7 +189,7 @@ describe('PortProfileModal', () => {
     )
 
     expect(await screen.findByTestId('ICX7550-24')).toBeChecked()
-    await userEvent.click(await screen.findByText('Port Profile'))
+    await userEvent.click(await screen.findByText('Port Profiles'))
     await waitFor(async () => {
       expect(await screen.findByText('Port Profile 1')).toBeInTheDocument()
     })

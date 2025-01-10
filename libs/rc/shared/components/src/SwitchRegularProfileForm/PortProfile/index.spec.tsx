@@ -69,7 +69,7 @@ describe('PortProfile', () => {
       </Provider>
     )
 
-    expect(await screen.findByText('Port Profile')).toBeInTheDocument()
+    expect(await screen.findByText('Port Profiles')).toBeInTheDocument()
     expect(await screen.findByRole('button', { name: 'Add Port Profile' })).toBeInTheDocument()
   })
 
