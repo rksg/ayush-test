@@ -2,13 +2,11 @@ import { render, screen }                                  from '@acx-ui/test-ut
 import { EdgeScopes, ScopeKeys, SwitchScopes, WifiScopes } from '@acx-ui/types'
 import { getUserProfile, setUserProfile }                  from '@acx-ui/user'
 
-import { ServiceType }     from '../../constants'
-import { PolicyType }      from '../../types'
-import { PolicyOperation } from '../policy'
+import { ServiceType, ServiceOperation } from '../../constants'
+import { PolicyType, PolicyOperation }   from '../../types'
 
 import { hasSomeServicesPermission }                                                                                                 from './allowedOperationUtils'
 import { AddProfileButton, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, getScopeKeyByService, hasServicePermission } from './servicePolicyAbacUtils'
-import { ServiceOperation }                                                                                                          from './serviceRouteUtils'
 
 const mockedFilterByAccess = jest.fn().mockImplementation(items => items)
 jest.mock('@acx-ui/user', () => ({
