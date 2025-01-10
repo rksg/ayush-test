@@ -264,4 +264,23 @@ describe('LicenseCompliance', () => {
     // eslint-disable-next-line testing-library/no-node-access
     expect(document.querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
   })
+
+  it('should render device networking card with solution token FF enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.ENTITLEMENT_SOLUTION_TOKEN_TOGGLE)
+    render(
+      <Provider>
+        <LicenseCompliance isMsp={false}/>
+      </Provider>, {
+        route: { params,
+          path: '/:tenantId/t/administration/subscriptions/compliance' }
+      })
+
+    expect(screen.getByText('Device Networking Licenses')).toBeVisible()
+
+    const tabMaxLiceses = screen.getByRole('tab', { name: 'Summary' })
+    expect(tabMaxLiceses.getAttribute('aria-selected')).toBeTruthy()
+    const tabMaxPeriod = screen.getByRole('tab', { name: 'My Account' })
+    expect(tabMaxPeriod.getAttribute('aria-selected')).toBe('false')
+  })
 })
