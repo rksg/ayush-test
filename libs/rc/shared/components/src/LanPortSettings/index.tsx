@@ -241,6 +241,9 @@ export function LanPortSettings (props: {
         onChange={(value) => {
           onChangedByCustom('enabled')
           const portId = selectedModel.lanPorts![index].portId
+          const voter = (isUnderAPNetworking ?
+            { serialNumber, portId: (portId ?? '0') }:
+            { model: (selectedModel as VenueLanPorts)?.model, portId: (portId ?? '0') })
           if (value) {
             dispatch && dispatch({
               state: SoftGreState.TurnOnLanPort,
@@ -248,11 +251,9 @@ export function LanPortSettings (props: {
               index
             })
             optionDispatch && optionDispatch ({
-              state: SoftGreDuplicationChangeState.TurnOnSoftGre,
+              state: SoftGreDuplicationChangeState.TurnOnLanPort,
               softGreProfileId: form.getFieldValue(['lan', index, 'softGreProfileId']),
-              voter: (isUnderAPNetworking ?
-                { serialNumber, portId: (portId ?? '0') }:
-                { model: (selectedModel as VenueLanPorts)?.model, portId: (portId ?? '0') })
+              voter: voter
             })
           }
           else {
@@ -261,7 +262,10 @@ export function LanPortSettings (props: {
               portId: selectedModel.lanPorts![index].portId,
               index
             })
-
+            optionDispatch && optionDispatch ({
+              state: SoftGreDuplicationChangeState.TurnOffLanPort,
+              voter: voter
+            })
           }
         }}
       />}

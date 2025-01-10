@@ -76,7 +76,6 @@ export const useSoftGreProfileLimitedSelection = (
   useEffect(() => {
     const activatedSoftGreProfiles = voteTallyBoard.filter(board => board.vote > 0)
     if (activatedSoftGreProfiles.length >= 3 && !isTheOnlyVoter) {
-      // 要加上只有一個的邏輯
       setSoftGREProfileOptionList(softGREProfileOptionList.map((option) => {
         if (!activatedSoftGreProfiles.find(board => board.softGreProfileId === option.value)){
           return { ...option, disabled: true }
@@ -98,8 +97,6 @@ export const useSoftGreProfileLimitedSelection = (
     if (voter) {
       voteTallyBoard.forEach((board) => {
         board.voters.forEach((existedVoter) => {
-          console.log(`existedVoter:${JSON.stringify(existedVoter)}`)
-          console.log(`voter:${JSON.stringify(voter)}`)
           if(isEqual(existedVoter, voter)) {
             isFound = true
             softGreProfileId = board.softGreProfileId
@@ -110,16 +107,14 @@ export const useSoftGreProfileLimitedSelection = (
         })
       })
     }
-    console.log('findVoter call, found? :' + isFound)
     return { isFound, softGreProfileId, voterIndex, isFoundTheOnlyVoter }
   }
 
   const deleteVoter = (boards: VoteTallyBoard[], voter?: Voter) => {
-    console.log('deleteVoter call')
     if (!voter) return boards
     const { isFound, softGreProfileId } = findVoter(voter)
     if (isFound) {
-      const newVoteTallyBoard = boards.map((board) => {
+      return boards.map((board) => {
         if  (softGreProfileId === board.softGreProfileId) {
           return {
             softGreProfileId,
@@ -132,14 +127,11 @@ export const useSoftGreProfileLimitedSelection = (
           return board
         }
       })
-      console.table(newVoteTallyBoard)
-      return newVoteTallyBoard
     }
     return boards
   }
 
   const deleteVoters = (boards: VoteTallyBoard[], voters?: Voter[]) => {
-    console.log('deleteVoters call')
     if (!voters) return boards
     voters.forEach((voter) => {
       const { isFound, softGreProfileId } = findVoter(voter)
@@ -152,14 +144,12 @@ export const useSoftGreProfileLimitedSelection = (
         })
       }
     })
-    console.table(boards)
     return boards
   }
 
   const addVoter = (boards: VoteTallyBoard[], id?: string, voter?: Voter) => {
-    console.log('addVoter call')
     if (!id) return boards
-    const newVoteTallyBoard = boards.map((board) => {
+    return boards.map((board) => {
       if  (id === board.softGreProfileId && voter) {
         return {
           softGreProfileId: id,
@@ -172,8 +162,6 @@ export const useSoftGreProfileLimitedSelection = (
         return board
       }
     })
-    console.table(newVoteTallyBoard)
-    return newVoteTallyBoard
   }
 
   const validateIsFQDNDuplicate = (softGreProfileId: string) => {
@@ -195,7 +183,6 @@ export const useSoftGreProfileLimitedSelection = (
     selectedProfile.FQDNAddresses.forEach(FQDN => {
       activatedSoftGreProfilesWithoutSelected.forEach(board => {
         if (board.FQDNAddresses.includes(FQDN)) {
-          console.log(`Duplicate FQDN:${FQDN}`)
           isDuplicate = true
         }
       })
@@ -208,44 +195,33 @@ export const useSoftGreProfileLimitedSelection = (
     (current: SoftGreDuplicationChangeDispatcher, next: SoftGreDuplicationChangeDispatcher) => {
       switch (next.state) {
         case SoftGreDuplicationChangeState.Init:
-          console.log('Init')
           break
         case SoftGreDuplicationChangeState.OnChangeSoftGreProfile:
-          console.log('OnChangeSoftGreProfile')
-          // 縣刪除原本的board資料
           const deleted = deleteVoter(voteTallyBoard, next.voter)
-          // 然後增加board資料
           const added = addVoter(deleted, next?.softGreProfileId, next.voter)
           setVoteTallyBoard(added)
           break
         case SoftGreDuplicationChangeState.TurnOnSoftGre:
-          console.log('TurnOnSoftGre')
           setVoteTallyBoard(
             addVoter(voteTallyBoard, next?.softGreProfileId, next.voter)
           )
           break
         case SoftGreDuplicationChangeState.TurnOffSoftGre:
-          console.log('TurnOffSoftGre')
-          // 縣刪除原本的board資料
           setVoteTallyBoard(deleteVoter(voteTallyBoard, next.voter))
           break
         case SoftGreDuplicationChangeState.TurnOnLanPort:
-          console.log('TurnOnLanPort')
           setVoteTallyBoard(
             addVoter(voteTallyBoard, next?.softGreProfileId, next.voter)
           )
           break
         case SoftGreDuplicationChangeState.TurnOffLanPort:
-          console.log('TurnOffLanPort')
           // 縣刪除原本的board資料
           setVoteTallyBoard(deleteVoter(voteTallyBoard, next.voter))
           break
         case SoftGreDuplicationChangeState.ResetToDefault:
-          console.log('ResetToDefault')
           setVoteTallyBoard(deleteVoters(voteTallyBoard, next?.voters))
           break
         case SoftGreDuplicationChangeState.FindTheOnlyVoter:
-          console.log('FindTheOnlyVoter')
           const { isFoundTheOnlyVoter } = findVoter(next.voter)
           setIsTheOnlyVoter(isFoundTheOnlyVoter)
           break

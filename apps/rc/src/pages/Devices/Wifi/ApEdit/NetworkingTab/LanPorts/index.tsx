@@ -38,7 +38,7 @@ import {
   VenueLanPorts,
   WifiApSetting,
   isEqualLanPort,
-  mergeLanPortSettings
+  mergeLanPortSettings, Voter, SoftGreDuplicationChangeState
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -460,6 +460,21 @@ export function LanPorts () {
       })
       isResetClick.current = true
       updateEditContext(formRef?.current as StepsFormLegacyInstance)
+
+      let voters = [] as Voter[]
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      defaultLanPortsFormData.lanPorts.forEach((lanPort: any) => {
+        voters.push({
+          portId: (lanPort.portId ?? '0'),
+          serialNumber
+        })
+      })
+
+      duplicationChangeDispatch({
+        state: SoftGreDuplicationChangeState.ResetToDefault,
+        voters: voters
+      })
     }
   }
 
