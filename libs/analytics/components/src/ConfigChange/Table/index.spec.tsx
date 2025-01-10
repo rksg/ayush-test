@@ -229,4 +229,30 @@ describe('Table', () => {
     await userEvent.click(await screen.findByTestId('DownloadOutlined'))
     expect(mockDownload).toBeCalledTimes(1)
   })
+
+  it('should render table when showIntentAI is false', async () => {
+    mockGraphqlQuery(dataApiURL, 'ConfigChange',
+      { data: { network: { hierarchyNode: { configChanges } } } })
+
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
+      <Table/>
+    </ConfigChangeProvider>, { wrapper: Provider, route: {} })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' })[0])
+
+    const tbody = await findTBody()
+    expect(tbody).toBeVisible()
+    const body = within(tbody)
+    expect(await screen.findByRole('table')).toBeVisible()
+    expect(await body.findAllByRole('row')).toHaveLength(9)
+    expect(await screen.findByText('480')).toBeVisible()
+    expect(await screen.findByText('Background scanning')).toBeVisible()
+    expect(await screen.findByText('Auto')).toBeVisible()
+    expect(await screen.findByText('true')).toBeVisible()
+    expect(await screen.findByText('Default')).toBeVisible()
+    expect(await screen.findByText('Enabled')).toBeVisible()
+
+    expect(await screen.findByText('Add KPI filter')).toBeVisible()
+  })
 })
