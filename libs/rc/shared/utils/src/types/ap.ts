@@ -1037,7 +1037,7 @@ export enum SoftGreDuplicationChangeState {
 export interface SoftGreDuplicationChangeDispatcher {
   state: SoftGreDuplicationChangeState
   softGreProfileId?: string
-  voter: Voter
+  voter?: Voter
   voters?: Voter[]
 }
 
@@ -1051,11 +1051,12 @@ export interface SoftGreProfileDispatcher {
 export interface Voter {
   model?: string,
   serialNumber?: string,
-  portId: number,
+  portId: string,
 }
 
 export interface VoteTallyBoard {
   softGreProfileId: string,
+  FQDNAddresses: string[],
   name?: string,
   vote: number,
   voters: Voter[]

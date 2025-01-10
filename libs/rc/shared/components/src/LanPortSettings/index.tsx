@@ -78,6 +78,7 @@ export function LanPortSettings (props: {
   dispatch?: React.Dispatch<SoftGreProfileDispatcher>
   softGREProfileOptionList?: DefaultOptionType[]
   optionDispatch?: React.Dispatch<SoftGreDuplicationChangeDispatcher>
+  validateIsFQDNDuplicate: (softGreProfileId: string) => boolean
 }) {
   const { $t } = useIntl()
   const {
@@ -95,7 +96,8 @@ export function LanPortSettings (props: {
     serialNumber,
     dispatch,
     softGREProfileOptionList,
-    optionDispatch
+    optionDispatch,
+    validateIsFQDNDuplicate
   } = props
 
   const [ drawerVisible, setDrawerVisible ] = useState(false)
@@ -239,9 +241,6 @@ export function LanPortSettings (props: {
         onChange={(value) => {
           onChangedByCustom('enabled')
           const portId = selectedModel.lanPorts![index].portId
-          const voter = (isUnderAPNetworking ?
-            { serialNumber, portId: (portId ? +portId : 0) }:
-            { model: (selectedModel as VenueLanPorts)?.model, portId: (portId ? +portId : 0) })
           if (value) {
             dispatch && dispatch({
               state: SoftGreState.TurnOnLanPort,
@@ -251,7 +250,9 @@ export function LanPortSettings (props: {
             optionDispatch && optionDispatch ({
               state: SoftGreDuplicationChangeState.TurnOnSoftGre,
               softGreProfileId: form.getFieldValue(['lan', index, 'softGreProfileId']),
-              voter: voter
+              voter: (isUnderAPNetworking ?
+                { serialNumber, portId: (portId ?? '0') }:
+                { model: (selectedModel as VenueLanPorts)?.model, portId: (portId ?? '0') })
             })
           }
           else {
@@ -324,6 +325,7 @@ export function LanPortSettings (props: {
                     apModel={(selectedModel as VenueLanPorts)?.model}
                     isUnderAPNetworking={isUnderAPNetworking}
                     optionDispatch={optionDispatch}
+                    validateIsFQDNDuplicate={validateIsFQDNDuplicate}
                   />
                   {isDhcpOption82Enabled && isSoftGreTunnelEnable &&
                     <DhcpOption82Settings

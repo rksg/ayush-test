@@ -26,6 +26,7 @@ interface SoftGRETunnelSettingsProps {
   serialNumber?: string
   isUnderAPNetworking: boolean
   optionDispatch?: React.Dispatch<SoftGreDuplicationChangeDispatcher>
+  validateIsFQDNDuplicate: (softGreProfileId: string) => boolean
 }
 
 export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
@@ -42,7 +43,8 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
     apModel,
     serialNumber,
     isUnderAPNetworking,
-    optionDispatch
+    optionDispatch,
+    validateIsFQDNDuplicate
   } = props
 
   const softgreTunnelFieldName = ['lan', index, 'softGreEnabled']
@@ -75,8 +77,8 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
                 onClick={(value) => {
                   onGUIChanged && onGUIChanged('softGreEnabled')
                   const voter = (isUnderAPNetworking ?
-                    { serialNumber, portId: (portId ? +portId : 0) }:
-                    { model: apModel, portId: (portId ? +portId : 0) })
+                    { serialNumber, portId: portId ?? '0' }:
+                    { model: apModel, portId: portId ?? '0' })
                   if (value) {
                     dispatch && dispatch({
                       state: SoftGreState.TurnOnSoftGre,
@@ -127,6 +129,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             serialNumber={serialNumber}
             isUnderAPNetworking={isUnderAPNetworking}
             optionDispatch={optionDispatch}
+            validateIsFQDNDuplicate={validateIsFQDNDuplicate}
           />
         </>
       }

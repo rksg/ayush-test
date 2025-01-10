@@ -150,7 +150,11 @@ export function LanPorts () {
   const [lanData, setLanData] = useState([] as LanPort[])
   const [activeTabIndex, setActiveTabIndex] = useState(0)
   const isResetClick = useRef(false)
-  const { softGREProfileOptionList, duplicationChangeDispatch } = useSoftGreProfileLimitedSelection(venueId!)
+  const {
+    softGREProfileOptionList,
+    duplicationChangeDispatch,
+    validateIsFQDNDuplicate
+  } = useSoftGreProfileLimitedSelection(venueId!)
 
   // TODO: rbac
   const isAllowUpdate = true // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
@@ -542,6 +546,7 @@ export function LanPorts () {
                           serialNumber={serialNumber}
                           softGREProfileOptionList={softGREProfileOptionList}
                           optionDispatch={duplicationChangeDispatch}
+                          validateIsFQDNDuplicate={validateIsFQDNDuplicate}
                         />
                       </Col>
                     </Row>

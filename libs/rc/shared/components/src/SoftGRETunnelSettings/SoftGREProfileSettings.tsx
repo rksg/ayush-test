@@ -29,6 +29,7 @@ interface SoftGREProfileSettingsProps {
   apModel?: string
   serialNumber?: string
   isUnderAPNetworking: boolean
+  validateIsFQDNDuplicate: (softGreProfileId: string) => boolean
 }
 
 export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
@@ -43,7 +44,8 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
     softGREProfileOptionList= [],
     apModel,
     serialNumber,
-    isUnderAPNetworking
+    isUnderAPNetworking,
+    validateIsFQDNDuplicate
   } = props
   const { $t } = useIntl()
   const params = useParams()
@@ -77,8 +79,8 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
       state: SoftGreDuplicationChangeState.OnChangeSoftGreProfile,
       softGreProfileId: form.getFieldValue(['lan', index, 'softGreProfileId']),
       voter: (isUnderAPNetworking ?
-        { serialNumber, portId: +portId }:
-        { model: apModel, portId: +portId }
+        { serialNumber, portId: portId }:
+        { model: apModel, portId: portId }
       )
     })
   }
@@ -111,7 +113,31 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
           initialValue=''
           name={softGreProfileIdFieldName}
           rules={[
-            { required: true }
+            { required: true },
+            {
+              validator: (_, value) => {
+                console.log('call validator')
+                console.log(value)
+                try {
+                  if (validateIsFQDNDuplicate(value)) {
+                    console.log('duplicate')
+                    return Promise.reject(
+                      $t({ defaultMessage:
+                        'The gateway of the selected SoftGRE tunnel profile ' +
+                        'already exists in another applied profile at the same ' +
+                        '<venueSingular></venueSingular>. Please choose a different one.'
+                      })
+                    )
+                  } else {
+                    console.log('pass')
+                    return Promise.resolve()
+                  }
+                } catch (e) {
+                  console.log(e)
+                  return Promise.resolve()
+                }
+              }
+            }
           ]}
           children={
             <Select
@@ -120,12 +146,11 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
               data-testid={'softgre-profile-select'}
               onChange={onChange}
               onClick={() => {
-                console.log('clicked')
                 optionDispatch && optionDispatch({
                   state: SoftGreDuplicationChangeState.FindTheOnlyVoter,
                   voter: (isUnderAPNetworking ?
-                    { serialNumber, portId: +portId }:
-                    { model: apModel, portId: +portId }
+                    { serialNumber, portId: portId }:
+                    { model: apModel, portId: portId }
                   )
                 })
               }}

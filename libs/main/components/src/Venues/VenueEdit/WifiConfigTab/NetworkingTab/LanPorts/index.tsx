@@ -51,7 +51,7 @@ import {
   VenueSettings,
   WifiNetworkMessages,
   SoftGreState,
-  mergeLanPortSettings, SoftGreDuplicationChangeState
+  mergeLanPortSettings, SoftGreDuplicationChangeState, Voter
 } from '@acx-ui/rc/utils'
 import {
   useParams
@@ -173,7 +173,11 @@ export function LanPorts () {
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
   const [resetModels, setResetModels] = useState([] as string[])
   const { dispatch, handleUpdateSoftGreProfile } = useSoftGreProfileActivation(selectedModel)
-  const { softGREProfileOptionList, duplicationChangeDispatch } = useSoftGreProfileLimitedSelection(venueId!)
+  const {
+    softGREProfileOptionList,
+    duplicationChangeDispatch,
+    validateIsFQDNDuplicate
+  } = useSoftGreProfileLimitedSelection(venueId!)
 
   const form = Form.useFormInstance()
   const [apModel, apPoeMode, lanPoeOut, lanPorts] = [
@@ -498,7 +502,7 @@ export function LanPorts () {
         index
       })
       voters.push({
-        portId: (lanPort.portId ? +lanPort.portId : 0),
+        portId: (lanPort.portId ?? '0'),
         model: apModel
       })
 
@@ -650,6 +654,7 @@ export function LanPorts () {
                     dispatch={dispatch}
                     softGREProfileOptionList={softGREProfileOptionList}
                     optionDispatch={duplicationChangeDispatch}
+                    validateIsFQDNDuplicate={validateIsFQDNDuplicate}
                   />
                 </Col>
               </Row>

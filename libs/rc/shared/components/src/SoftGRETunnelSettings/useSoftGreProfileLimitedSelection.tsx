@@ -43,7 +43,7 @@ export const useSoftGreProfileLimitedSelection = (
             .forEach((venue) => {
               voters.push({
                 model: venue.apModel,
-                portId: venue.portId
+                portId: String(venue.portId)
               })
             })
           softGreProfile.apActivations
@@ -51,12 +51,18 @@ export const useSoftGreProfileLimitedSelection = (
             .forEach((ap) => {
               voters.push({
                 serialNumber: ap.apSerialNumber,
-                portId: ap.portId
+                portId: String(ap.portId)
               })
             })
+          let FQDNAddresses = [softGreProfile.primaryGatewayAddress]
+          if (softGreProfile.secondaryGatewayAddress) {
+            FQDNAddresses.push(softGreProfile.secondaryGatewayAddress)
+          }
+
           return {
             softGreProfileId: softGreProfile.id,
             name: softGreProfile.name,
+            FQDNAddresses,
             vote,
             voters
           } as VoteTallyBoard
@@ -68,11 +74,11 @@ export const useSoftGreProfileLimitedSelection = (
   }, [])
 
   useEffect(() => {
-    const popularSoftGreProfiles = voteTallyBoard.filter(board => board.vote > 0)
-    if (popularSoftGreProfiles.length >= 3 && !isTheOnlyVoter) {
+    const activatedSoftGreProfiles = voteTallyBoard.filter(board => board.vote > 0)
+    if (activatedSoftGreProfiles.length >= 3 && !isTheOnlyVoter) {
       // 要加上只有一個的邏輯
       setSoftGREProfileOptionList(softGREProfileOptionList.map((option) => {
-        if (!popularSoftGreProfiles.find(board => board.softGreProfileId === option.value)){
+        if (!activatedSoftGreProfiles.find(board => board.softGreProfileId === option.value)){
           return { ...option, disabled: true }
         }
         return option
@@ -84,31 +90,33 @@ export const useSoftGreProfileLimitedSelection = (
     }
   }, [voteTallyBoard, isTheOnlyVoter])
 
-  const findVoter = (voter: Voter) => {
+  const findVoter = (voter?: Voter) => {
     let isFound = false
     let softGreProfileId = ''
     let voterIndex = undefined
     let isFoundTheOnlyVoter = false
-
-    voteTallyBoard.forEach((board) => {
-      board.voters.forEach((existedVoter) => {
-        console.log(`existedVoter:${JSON.stringify(existedVoter)}`)
-        console.log(`voter:${JSON.stringify(voter)}`)
-        if(isEqual(existedVoter, voter)) {
-          isFound = true
-          softGreProfileId = board.softGreProfileId
-          if (board.vote === 1) {
-            isFoundTheOnlyVoter = true
+    if (voter) {
+      voteTallyBoard.forEach((board) => {
+        board.voters.forEach((existedVoter) => {
+          console.log(`existedVoter:${JSON.stringify(existedVoter)}`)
+          console.log(`voter:${JSON.stringify(voter)}`)
+          if(isEqual(existedVoter, voter)) {
+            isFound = true
+            softGreProfileId = board.softGreProfileId
+            if (board.vote === 1) {
+              isFoundTheOnlyVoter = true
+            }
           }
-        }
+        })
       })
-    })
+    }
     console.log('findVoter call, found? :' + isFound)
     return { isFound, softGreProfileId, voterIndex, isFoundTheOnlyVoter }
   }
 
-  const deleteVoter = (boards: VoteTallyBoard[], voter: Voter) => {
+  const deleteVoter = (boards: VoteTallyBoard[], voter?: Voter) => {
     console.log('deleteVoter call')
+    if (!voter) return boards
     const { isFound, softGreProfileId } = findVoter(voter)
     if (isFound) {
       const newVoteTallyBoard = boards.map((board) => {
@@ -116,6 +124,7 @@ export const useSoftGreProfileLimitedSelection = (
           return {
             softGreProfileId,
             name: board.name,
+            FQDNAddresses: board.FQDNAddresses,
             vote: board.vote - 1,
             voters: board.voters.filter((v) => !isEqual(v, voter))
           }
@@ -155,6 +164,7 @@ export const useSoftGreProfileLimitedSelection = (
         return {
           softGreProfileId: id,
           name: board.name,
+          FQDNAddresses: board.FQDNAddresses,
           vote: board.vote + 1,
           voters: [ ...board.voters, voter ]
         }
@@ -164,6 +174,34 @@ export const useSoftGreProfileLimitedSelection = (
     })
     console.table(newVoteTallyBoard)
     return newVoteTallyBoard
+  }
+
+  const validateIsFQDNDuplicate = (softGreProfileId: string) => {
+
+    let isDuplicate = false
+
+    if (!softGreProfileId) return isDuplicate
+
+    const selectedProfile = voteTallyBoard.find(board => {
+      return board.softGreProfileId === softGreProfileId
+    })
+
+    if (!selectedProfile) return isDuplicate
+
+    const activatedSoftGreProfilesWithoutSelected = voteTallyBoard.filter(board => {
+      return board.softGreProfileId !== softGreProfileId && board.vote > 0
+    })
+
+    selectedProfile.FQDNAddresses.forEach(FQDN => {
+      activatedSoftGreProfilesWithoutSelected.forEach(board => {
+        if (board.FQDNAddresses.includes(FQDN)) {
+          console.log(`Duplicate FQDN:${FQDN}`)
+          isDuplicate = true
+        }
+      })
+    })
+
+    return isDuplicate
   }
 
   const actionRunner =
@@ -220,10 +258,10 @@ export const useSoftGreProfileLimitedSelection = (
   const [duplicationChangeState, duplicationChangeDispatch] = useReducer(actionRunner, {
     state: SoftGreDuplicationChangeState.Init,
     voter: {
-      portId: 0
+      portId: '0'
     }
   })
 
-  return { softGREProfileOptionList, duplicationChangeDispatch }
+  return { softGREProfileOptionList, duplicationChangeDispatch, validateIsFQDNDuplicate }
 
 }
