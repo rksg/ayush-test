@@ -1,16 +1,23 @@
 import { gql }        from 'graphql-request'
 import { omit, pick } from 'lodash'
 
-import type { ConfigChange }       from '@acx-ui/components'
-import { dataApi }                 from '@acx-ui/store'
-import { NetworkPath, PathFilter } from '@acx-ui/utils'
+import { CONFIG_CHANGE_DEFAULT_PAGINATION, type ConfigChange } from '@acx-ui/components'
+import { dataApi }                                             from '@acx-ui/store'
+import { NetworkPath, PathFilter }                             from '@acx-ui/utils'
+
+export enum SORTER_ABBR {
+  DESC = 'descending',
+  ASC = 'ascending'
+}
+
+interface Response<T> { network: { hierarchyNode: T } }
 
 interface KpiChangesParams {
   kpis: string[],
-  path: NetworkPath,
-  beforeStart: string,
-  beforeEnd: string,
-  afterStart: string,
+  path: NetworkPath
+  beforeStart: string
+  beforeEnd: string
+  afterStart: string
   afterEnd: string
 }
 
@@ -21,12 +28,25 @@ const additionalParamsQuery = (showIntentAI: boolean) => showIntentAI ?
   path {
     type name
   }` : ''
+interface ConfigChangePaginationParams {
+  page?: number
+  pageSize?: number
+}
+interface ConfigChangeFilterParams {
+  entityType?: string[]
+  entityName?: string
+  kpiFilter?: string[]
+}
+export interface PagedConfigChange {
+  total: number,
+  data: ConfigChange[]
+}
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     configChange: build.query<
       ConfigChange[],
-      PathFilter & { showIntentAI: boolean }
+      PathFilter & { showIntentAI?: boolean }
     >({
       query: (payload) => ({
         document: gql`
@@ -38,13 +58,8 @@ export const api = dataApi.injectEndpoints({
             network(start: $startDate, end: $endDate) {
               hierarchyNode(path: $path) {
                 configChanges {
-                  timestamp
-                  type
-                  name
-                  key
-                  oldValues
-                  newValues
-                  ${additionalParamsQuery(payload.showIntentAI)}
+                  timestamp type name key oldValues newValues
+                  ${additionalParamsQuery(payload.showIntentAI ?? false)}
                 }
               }
             }
@@ -53,9 +68,97 @@ export const api = dataApi.injectEndpoints({
         variables: pick(payload, ['path', 'startDate', 'endDate'])
       }),
       transformResponse: (
-        response: { network: { hierarchyNode: { configChanges: ConfigChange[] } } } ) =>
+        response: Response<{ configChanges: ConfigChange[] }>) =>
         response.network.hierarchyNode.configChanges
           .sort((a, b) => Number(b.timestamp) - Number(a.timestamp))
+          .map((value, id)=>({ ...value, id }))
+    }),
+    pagedConfigChange: build.query<
+      PagedConfigChange,
+      PathFilter & ConfigChangePaginationParams &
+      { filterBy?: ConfigChangeFilterParams, sortBy?: string } &
+      { showIntentAI?: boolean }
+    >({
+      query: (payload) => ({
+        document: gql`
+        query PagedConfigChange(
+          $path: [HierarchyNodeInput],
+          $startDate: DateTime,
+          $endDate: DateTime,
+          $page: Int
+          $pageSize: Int
+          $filterBy: JSON,
+          $sortBy: String
+        ) {
+          network(start: $startDate, end: $endDate) {
+            hierarchyNode(path: $path) {
+              pagedConfigChanges(
+                page: $page
+                pageSize: $pageSize
+                filterBy: $filterBy
+                sortBy: $sortBy
+              ) {
+                total
+                data {
+                  timestamp type name key oldValues newValues
+                  ${additionalParamsQuery(payload.showIntentAI ?? false)}
+                }
+              }
+            }
+          }
+        }
+      `,
+        variables: pick(payload, [
+          'path', 'startDate', 'endDate', 'page', 'pageSize', 'filterBy', 'sortBy'])
+      }),
+      transformResponse: (
+        response: Response<{ pagedConfigChanges: PagedConfigChange }>,
+        _,
+        payload: ConfigChangePaginationParams & { sortBy?: string }
+      ) => {
+        const page = payload.page || CONFIG_CHANGE_DEFAULT_PAGINATION.current
+        const pageSize = payload.pageSize || CONFIG_CHANGE_DEFAULT_PAGINATION.pageSize
+        const total = response.network.hierarchyNode.pagedConfigChanges.total
+        return {
+          ...response.network.hierarchyNode.pagedConfigChanges,
+          data: response.network.hierarchyNode.pagedConfigChanges.data
+            .map((value, index)=>{
+              const id = (payload.sortBy === SORTER_ABBR.DESC)
+                ? (page - 1) * pageSize + index
+                : total - ((page - 1)* pageSize + index) - 1
+              return { ...value, id }
+            })
+        }
+      }
+    }),
+    configChangeSeries: build.query<
+      ConfigChange[],
+      PathFilter & { filterBy?: ConfigChangeFilterParams, sortBy?: string }
+    >({
+      query: (payload) => ({
+        document: gql`
+        query ConfigChangeSeries(
+          $path: [HierarchyNodeInput],
+          $startDate: DateTime,
+          $endDate: DateTime,
+          $filterBy: JSON,
+          $sortBy: String
+        ) {
+          network(start: $startDate, end: $endDate) {
+            hierarchyNode(path: $path) { 
+              configChangeSeries(filterBy: $filterBy, sortBy: $sortBy) { timestamp type } 
+            }
+          }
+        }
+      `,
+        variables: {
+          ...pick(payload, ['path', 'startDate', 'endDate', 'filterBy']),
+          sortBy: 'descending'
+        }
+      }),
+      transformResponse: (
+        response: Response<{ configChangeSeries: ConfigChange[] }>) =>
+        response.network.hierarchyNode.configChangeSeries
           .map((value, id)=>({ ...value, id }))
     }),
     configChangeKPIChanges: build.query<
@@ -91,6 +194,9 @@ export const api = dataApi.injectEndpoints({
 
 const {
   useConfigChangeQuery,
+  useLazyConfigChangeQuery,
+  usePagedConfigChangeQuery,
+  useConfigChangeSeriesQuery,
   useConfigChangeKPIChangesQuery
 } = api
 
@@ -102,5 +208,8 @@ function useKPIChangesQuery (params: KpiChangesParams) {
 
 export {
   useConfigChangeQuery,
+  useLazyConfigChangeQuery,
+  usePagedConfigChangeQuery,
+  useConfigChangeSeriesQuery,
   useKPIChangesQuery
 }

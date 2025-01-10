@@ -11,6 +11,7 @@ import { useNavigate }                                                    from '
 import { VenueEditContext, createAnchorSectionItem } from '../..'
 
 import { ApSnmp }               from './ApSnmp'
+import { IotController }        from './IotController'
 import { LocationBasedService } from './LocationBasedService'
 import { MdnsFencing }          from './MdnsFencing/MdnsFencing'
 import { Syslog }               from './Syslog'
@@ -22,6 +23,8 @@ export interface ServerSettingContext {
   discardMdnsFencing: (() => void),
   updateVenueApSnmp: (() => void),
   discardVenueApSnmp: (() => void),
+  updateVenueIot: (() => void),
+  discardVenueIot: (() => void),
   updateVenueLbs: (() => void),
   discardVenueLbs: (() => void),
 }
@@ -35,6 +38,7 @@ export function ServerTab () {
   const isLbsFeatureEnabled = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
   const isLbsFeatureTierAllowed = useIsTierAllowed(TierFeatures.LOCATION_BASED_SERVICES)
   const supportLbs = isLbsFeatureEnabled && isLbsFeatureTierAllowed
+  const isIotFeatureEnabled = useIsSplitOn(Features.IOT_MQTT_BROKER_TOGGLE)
 
   const {
     previousPath,
@@ -57,6 +61,11 @@ export function ServerTab () {
     items.push(createAnchorSectionItem($t({ defaultMessage: 'AP SNMP' }), 'ap-snmp', <ApSnmp />))
   }
 
+  if (isIotFeatureEnabled && !isTemplate) {
+    // eslint-disable-next-line max-len
+    items.push(createAnchorSectionItem($t({ defaultMessage: 'IoT Controller' }), 'iotController', <IotController />))
+  }
+
   if (supportLbs && !isTemplate) {
     // eslint-disable-next-line max-len
     items.push(createAnchorSectionItem($t({ defaultMessage: 'Location Based Service' }), 'locationBasedService', <LocationBasedService />))
@@ -67,6 +76,7 @@ export function ServerTab () {
       await editServerContextData?.updateSyslog?.()
       await editServerContextData?.updateMdnsFencing?.()
       await editServerContextData?.updateVenueApSnmp?.()
+      await editServerContextData?.updateVenueIot?.()
       await editServerContextData?.updateVenueLbs?.()
 
       setEditContextData({
