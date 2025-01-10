@@ -192,6 +192,14 @@ export const mockedSoftGreScopeVenueMap = {
       profileName: 'softGreProfileName4',
       venueId: 'venueId-2'
     }
+  ],
+  'venueId-3': [
+    {
+      networkIds: ['network_14'],
+      profileId: 'softGreProfileName7-id',
+      profileName: 'softGreProfileName7',
+      venueId: 'venueId-3'
+    }
   ]
 }
 
