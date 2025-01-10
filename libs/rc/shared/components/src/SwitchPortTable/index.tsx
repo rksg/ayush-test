@@ -212,27 +212,30 @@ export function SwitchPortTable (props: {
         return row.poeUsage
       }
     }
-  }, {
-    key: 'switchPortProfileId',
-    title: $t({ defaultMessage: 'Profile Name' }),
-    dataIndex: 'switchPortProfileId',
-    show: isSwitchPortProfileEnabled,
-    sorter: true,
-    render: (_, row) => {
-      return switchPortProfilesList?.data?.find(
-        profile => profile.id === row.switchPortProfileId)?.name
-    }
-  }, {
-    key: 'switchPortProfileId',
-    title: $t({ defaultMessage: 'Type' }),
-    dataIndex: 'switchPortProfileId',
-    show: isSwitchPortProfileEnabled,
-    sorter: true,
-    render: (_, row) => {
-      return switchPortProfilesList?.data?.find(
-        profile => profile.id === row.switchPortProfileId)?.type
-    }
-  }, {
+  },
+  //Temporarily commented
+  // {
+  //   key: 'switchPortProfileId',
+  //   title: $t({ defaultMessage: 'Profile Name' }),
+  //   dataIndex: 'switchPortProfileId',
+  //   show: isSwitchPortProfileEnabled,
+  //   sorter: true,
+  //   render: (_, row) => {
+  //     return switchPortProfilesList?.data?.find(
+  //       profile => profile.id === row.switchPortProfileId)?.name
+  //   }
+  // }, {
+  //   key: 'switchPortProfileId',
+  //   title: $t({ defaultMessage: 'Type' }),
+  //   dataIndex: 'switchPortProfileId',
+  //   show: isSwitchPortProfileEnabled,
+  //   sorter: true,
+  //   render: (_, row) => {
+  //     return switchPortProfilesList?.data?.find(
+  //       profile => profile.id === row.switchPortProfileId)?.type
+  //   }
+  // },
+  {
     key: 'vlanIds',
     title: $t({ defaultMessage: 'VLANs' }),
     dataIndex: 'vlanIds',
