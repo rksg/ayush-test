@@ -34,7 +34,7 @@ const list = {
     },
     {
       apMac: '89:28:38:22:77:24',
-      serialNumber: '892838227723',
+      serialNumber: '892838227724',
       deviceType: 'DVCNWTYPE_SWITCH',
       model: 'ICX-7150-Co8P',
       name: "EC 222's AP",
@@ -46,7 +46,7 @@ const list = {
     },
     {
       apMac: '89:28:38:22:77:24',
-      serialNumber: '892838227723',
+      serialNumber: '892838227725',
       deviceType: 'DVCNWTYPE_SWITCH',
       model: 'ICX-7550',
       name: "EC 333's AP",
@@ -58,7 +58,7 @@ const list = {
     },
     {
       apMac: '89:28:38:22:77:26',
-      serialNumber: '892838227723',
+      serialNumber: '892838227726',
       deviceType: 'DVCNWTYPE_SWITCH',
       model: 'ICX-7150-08',
       name: "EC 444's Switch",
@@ -70,7 +70,7 @@ const list = {
     },
     {
       apMac: '89:28:38:22:77:27',
-      serialNumber: '892838227723',
+      serialNumber: '892838227727',
       deviceType: 'DVCNWTYPE_SWITCH',
       model: 'ICX-7850',
       name: "EC 555's Switch",
@@ -82,7 +82,7 @@ const list = {
     },
     {
       apMac: '89:28:38:22:77:28',
-      serialNumber: '892838227723',
+      serialNumber: '892838227728',
       deviceType: 'DVCNWTYPE_WIFI',
       model: 'R650',
       name: "EC 666's Switch",
@@ -94,7 +94,7 @@ const list = {
     },
     {
       apMac: '89:28:38:22:77:29',
-      serialNumber: '892838227723',
+      serialNumber: '892838227729',
       deviceType: 'DVCNWTYPE_SWITCH',
       model: 'ICX-7150',
       name: "EC 777's Switch",
@@ -106,7 +106,7 @@ const list = {
     },
     {
       apMac: '89:28:38:22:77:30',
-      serialNumber: '892838227723',
+      serialNumber: '892838227730',
       deviceType: 'DVCNWTYPE_ANALYTIC',
       model: 'ANALYTIC',
       name: "EC 888's RA",
@@ -118,7 +118,7 @@ const list = {
     },
     {
       switchMac: '89:28:38:22:77:31',
-      serialNumber: '892838227723',
+      serialNumber: '892838227731',
       deviceType: 'DVCNWTYPE_SWITCH',
       model: 'R720',
       name: "EC 999's Switch",
@@ -129,7 +129,7 @@ const list = {
       tenantId: '1456b8a156354b6e98dff3ebc7b25b82'
     },
     {
-      serialNumber: '892838227723',
+      serialNumber: '892838227732',
       deviceType: 'DVCNWTYPE_SWITCH',
       model: 'R720',
       name: "EC 100's Switch",

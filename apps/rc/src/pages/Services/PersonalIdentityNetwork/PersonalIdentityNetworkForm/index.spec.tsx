@@ -1,9 +1,8 @@
-
 import { NetworkTopologyType } from './NetworkTopologyForm'
 
 import { getStepsByTopologyType } from '.'
 
-describe('PersonalIdentityNetworkForm', () => {
+describe('getStepsByTopologyType', () => {
 
   it('Test getStepsByTopologyType', () => {
     const wirelessSteps = getStepsByTopologyType(NetworkTopologyType.Wireless)

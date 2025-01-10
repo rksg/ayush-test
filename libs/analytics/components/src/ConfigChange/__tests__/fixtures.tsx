@@ -96,8 +96,8 @@ export const configChanges = [
     type: 'intentAI',
     name: 'Config_change_WLAN2',
     key: 'intentAi.c-bgscan24g-enable',
-    oldValues: [ 'Disabled' ],
-    newValues: [ 'Enabled' ]
+    oldValues: [ ],
+    newValues: [ 'Apply' ]
   },
   {
     timestamp: '1685427082200',
@@ -106,8 +106,8 @@ export const configChanges = [
     type: 'intentAI',
     name: '94:B3:4F:3D:21:80',
     key: 'intentAi.c-bgscan5g-enable',
-    oldValues: [ 'Disabled' ],
-    newValues: [ 'Enabled' ]
+    oldValues: [ ],
+    newValues: [ 'Apply' ]
   }
 ]
 
@@ -151,4 +151,12 @@ export const kpiForConnection = {
     dhcpSuccess: 0.9967373572593801,
     roamingSuccess: 0.9637681159420289
   }
+}
+
+export const configChangeSeries = configChanges.map(({ timestamp, type }) => ({ timestamp, type }))
+
+export const pagedConfigChanges = {
+  data: [ ...configChanges.slice()
+    .sort((a, b) => Number(b.timestamp) - Number(a.timestamp)).slice(0, 10) ],
+  total: configChanges.length
 }
