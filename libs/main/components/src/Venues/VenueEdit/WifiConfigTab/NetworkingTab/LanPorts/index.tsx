@@ -173,7 +173,6 @@ export function LanPorts () {
   const [selectedModelCaps, setSelectedModelCaps] = useState({} as CapabilitiesApModel)
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
   const [resetModels, setResetModels] = useState([] as string[])
-  // const { dispatch, handleUpdateSoftGreProfile2 } = useSoftGreProfileActivation(selectedModel)
 
   const form = Form.useFormInstance()
   const [apModel, apPoeMode, lanPoeOut, lanPorts] = [
@@ -194,7 +193,6 @@ export function LanPorts () {
 
   useEffect(() => {
     const { model, lan, poeOut, poeMode } = form?.getFieldsValue()
-    console.log(form?.getFieldsValue())
     //if (isEqual(model, apModel) && (isEqual(lan, lanPorts))) {
     if (customGuiChagedRef.current && isEqual(model, apModel)) {
       const newData = lanPortData?.map((item) => {
@@ -219,7 +217,6 @@ export function LanPorts () {
         updateLanPorts: () => handleUpdateLanPorts(newData),
         discardLanPorts: () => handleDiscardLanPorts(lanPortOrinData)
       })
-      console.log(newData)
       setLanPortData(newData)
       setSelectedModel(getSelectedModelData(newData, apModel))
 
@@ -318,9 +315,7 @@ export function LanPorts () {
         isDirty: false,
         hasError: false
       })
-      console.log(data)
       const payload = data ?? lanPortData
-      console.log(payload)
       if (payload) {
         if (isLanPortResetEnabled && isResetLanPort(payload)) {
           showActionModal({
@@ -570,7 +565,6 @@ export function LanPorts () {
   }
 
   const processUpdateVenueLanPorts = async (payload: VenueLanPorts[]) => {
-    console.log('processUpdateVenueLanPorts', payload)
     if (isEthernetPortProfileEnabled && !isTemplate) {
       payload.forEach((venueLanPort) => {
         if(venueLanPort.isSettingsLoaded) {
@@ -596,8 +590,6 @@ export function LanPorts () {
 
             // Update ethernet port profile
             await handleUpdateEthernetPortProfile(venueLanPort.model, lanPort, originLanPort)
-            // Update SoftGre Profile
-            //await handleUpdateSoftGreProfile2(venueLanPort.model, lanPort, originLanPort)
 
             // Before disable Client Isolation must deacticvate Client Isolation policy
             if(isEthernetClientIsolationEnabled) {
@@ -696,7 +688,6 @@ export function LanPorts () {
                     onGUIChanged={handleGUIChanged}
                     index={index}
                     venueId={venueId}
-                    // dispatch={dispatch}
                   />
                 </Col>
               </Row>

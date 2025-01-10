@@ -16,7 +16,6 @@ interface SoftGREProfileSettingsProps {
   softGreProfileId: string
   onGUIChanged?: (fieldName: string) => void
   readonly: boolean
-  // dispatch?: React.Dispatch<SoftGreProfileDispatcher>
   portId?: string;
 }
 
@@ -46,12 +45,6 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
       softGREProfileOptionList.find((profile) => profile.value === value) ??
        { label: $t({ defaultMessage: 'Select...' }), value: '' }
     )
-    // dispatch && dispatch({
-    //   state: SoftGreState.ModifySoftGreProfile,
-    //   portId,
-    //   index,
-    //   softGreProfileId: form.getFieldValue(['lan', index, 'softGreProfileId'])
-    // })
   }
 
   useEffect(() => {
