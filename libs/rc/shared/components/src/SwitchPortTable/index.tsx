@@ -4,15 +4,15 @@ import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Tooltip, Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { Table, TableProps, Tooltip, Loader }                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
 import {
   useGetFlexAuthenticationProfilesQuery,
   useSwitchListQuery,
   useLazyGetSwitchVlanQuery,
   useLazyGetSwitchVlanUnionByVenueQuery,
-  useSwitchPortlistQuery,
-  useSwitchPortProfilesListQuery
+  useSwitchPortlistQuery
+  // useSwitchPortProfilesListQuery
 } from '@acx-ui/rc/services'
 import {
   getSwitchModel,
@@ -89,10 +89,10 @@ export function SwitchPortTable (props: {
     key: v.vlanId.toString(), value: v.vlanId.toString()
   })) : []
 
-  const { data: switchPortProfilesList } = useSwitchPortProfilesListQuery({
-    params: { tenantId },
-    payload: { fields: ['id'] }
-  }, { skip: !isSwitchPortProfileEnabled })
+  // const { data: switchPortProfilesList } = useSwitchPortProfilesListQuery({
+  //   params: { tenantId },
+  //   payload: { fields: ['id'] }
+  // }, { skip: !isSwitchPortProfileEnabled })
 
   useEffect(() => {
     const setData = async () => {
