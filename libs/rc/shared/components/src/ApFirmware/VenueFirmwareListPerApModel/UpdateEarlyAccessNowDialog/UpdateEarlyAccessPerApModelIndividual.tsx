@@ -62,7 +62,8 @@ export function UpdateEarlyAccessPerApModelIndividual (props: UpdateEarlyAccessP
     <Space>
       <div style={{ width: labelSize === 'small' ? 50 : 90 }}>{apModel}</div>
       {versionOptions.length === 0
-        ? <div><span>{noOptionsMessage} &nbsp;<strong>({extremeFirmware})</strong></span></div>
+        // eslint-disable-next-line max-len
+        ? <div><span>{noOptionsMessage} &nbsp;<strong>({extremeFirmware}{` ${$t({ defaultMessage: 'Early Access' })}`})</strong></span></div>
         : <Select
           value={selectedVersion}
           onChange={onSelectedVersionChange}
