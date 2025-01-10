@@ -116,24 +116,15 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
             { required: true },
             {
               validator: (_, value) => {
-                console.log('call validator')
-                console.log(value)
-                try {
-                  if (validateIsFQDNDuplicate(value)) {
-                    console.log('duplicate')
-                    return Promise.reject(
-                      $t({ defaultMessage:
+                if (validateIsFQDNDuplicate(value)) {
+                  return Promise.reject(
+                    $t({ defaultMessage:
                         'The gateway of the selected SoftGRE tunnel profile ' +
                         'already exists in another applied profile at the same ' +
                         '<venueSingular></venueSingular>. Please choose a different one.'
-                      })
-                    )
-                  } else {
-                    console.log('pass')
-                    return Promise.resolve()
-                  }
-                } catch (e) {
-                  console.log(e)
+                    })
+                  )
+                } else {
                   return Promise.resolve()
                 }
               }
