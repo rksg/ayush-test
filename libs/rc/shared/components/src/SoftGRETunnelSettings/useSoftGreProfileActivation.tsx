@@ -120,24 +120,6 @@ export const useSoftGreProfileActivation = (
     }
   }
 
-  const handleUpdateSoftGreProfile2 = async (
-    currentModel: string,
-    currentLanPort: LanPort,
-    originLanPort: LanPort | undefined
-  ) => {
-    // deactivate SoftGRE if lan port disabled or softGre toggle disabled
-    if (currentLanPort.softGreProfileId && currentLanPort.softGreProfileId !== originLanPort?.softGreProfileId) {
-      await deactivateSoftGre({
-        params: {
-          venueId,
-          apModel: currentModel,
-          portId: currentLanPort.portId,
-          policyId: originLanPort?.softGreProfileId
-        }
-      })
-    }
-  }
-
   const actionRunner = (current: SoftGreProfileDispatcher, next: SoftGreProfileDispatcher) => {
     switch(next.state){
       case SoftGreState.TurnOnSoftGre:
@@ -269,6 +251,6 @@ export const useSoftGreProfileActivation = (
   // eslint-disable-next-line
   const [state, dispatch] = useReducer(actionRunner, { state: SoftGreState.Init, portId: '0', index: 0 })
 
-  return { dispatch, handleUpdateSoftGreProfile, handleUpdateSoftGreProfile2 }
+  return { dispatch, handleUpdateSoftGreProfile }
 
 }

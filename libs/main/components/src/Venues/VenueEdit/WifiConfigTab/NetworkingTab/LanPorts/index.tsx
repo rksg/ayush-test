@@ -535,15 +535,6 @@ export function LanPorts () {
     records.push(apModel)
     setResetModels([...new Set(records)])
 
-    // defaultLanPortsData.lanPorts.forEach((lanPort, index) => {
-    //   dispatch({
-    //     state: SoftGreState.ResetToDefault,
-    //     portId: lanPort.portId,
-    //     index
-    //   })
-    // })
-
-
     customGuiChagedRef.current = true
   }
 
