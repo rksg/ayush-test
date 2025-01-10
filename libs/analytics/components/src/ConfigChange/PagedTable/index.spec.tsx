@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import userEvent from '@testing-library/user-event'
 
 import { get }                                                                            from '@acx-ui/config'
-import { useIsSplitOn, useIsTreatmentsOn }                                                from '@acx-ui/feature-toggle'
+import { useAnySplitsOn }                                                                 from '@acx-ui/feature-toggle'
 import { Provider, dataApiURL, store }                                                    from '@acx-ui/store'
 import { findTBody, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 import { DateRange }                                                                      from '@acx-ui/utils'
@@ -39,8 +39,7 @@ describe('Table', () => {
   afterAll(() => Date.now = original)
   beforeEach(() => {
     mockGet.mockReturnValue(false)
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    jest.mocked(useIsTreatmentsOn).mockReturnValue(false)
+    jest.mocked(useAnySplitsOn).mockReturnValue(false)
     store.dispatch(api.util.resetApiState())
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:00.000Z').getTime())
   })
@@ -88,8 +87,7 @@ describe('Table', () => {
   })
   describe('should render hyperlink', () => {
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockReturnValue(true)
-      jest.mocked(useIsTreatmentsOn).mockReturnValue(true)
+      jest.mocked(useAnySplitsOn).mockReturnValue(true)
       mockGraphqlQuery(dataApiURL, 'PagedConfigChange', { data: { network: { hierarchyNode: {
         pagedConfigChanges: { ...pagedConfigChanges, data } } } } })
     })

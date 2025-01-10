@@ -22,6 +22,8 @@ import { baseSoftGreApi }    from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
 import { createHttpRequest } from '@acx-ui/utils'
 
+import consolidateActivations from './softGreUtils'
+
 export const softGreApi = baseSoftGreApi.injectEndpoints({
   endpoints: (build) => ({
     createSoftGre: build.mutation<CommonResult, RequestPayload<SoftGre>>({
@@ -223,7 +225,9 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           let isSame = false
           gatewayIpMaps[id] = [primaryGatewayAddress, secondaryGatewayAddress ?? '']
 
-          item.activations?.forEach(activation => {
+          const profileActivations = consolidateActivations(item, venueId)
+
+          profileActivations.forEach(activation => {
             const isEqualVenue = activation.venueId === venueId
             if (isEqualVenue) {
               activationProfiles.push(item.id)

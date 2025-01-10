@@ -171,7 +171,7 @@ jest.mock('@acx-ui/feature-toggle', () => ({
   SplitProvider: ({ children }) =>
     require('react').createElement('div', null, children),
   useIsSplitOn: jest.fn(),
-  useIsTreatmentsOn: jest.fn(),
+  useAnySplitsOn: jest.fn(),
   useIsTierAllowed: jest.fn(),
   useFFList: jest.fn(),
   useGetBetaList: jest.fn().mockReturnValue([]),

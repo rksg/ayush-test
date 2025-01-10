@@ -13,12 +13,12 @@ import {
   getConfigChangeEntityTypeMapping,
   Filter
 }                                    from '@acx-ui/components'
-import { ConfigChangePaginationParams }              from '@acx-ui/components'
-import { get }                                       from '@acx-ui/config'
-import { Features, useIsSplitOn, useIsTreatmentsOn } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                 from '@acx-ui/formatter'
-import { TenantLink }                                from '@acx-ui/react-router-dom'
-import { noDataDisplay }                             from '@acx-ui/utils'
+import { ConfigChangePaginationParams } from '@acx-ui/components'
+import { get }                          from '@acx-ui/config'
+import { Features, useAnySplitsOn }     from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
+import { TenantLink }                   from '@acx-ui/react-router-dom'
+import { noDataDisplay }                from '@acx-ui/utils'
 
 import { ConfigChangeContext }                                       from '../context'
 import { usePagedConfigChangeQuery, PagedConfigChange, SORTER_ABBR } from '../services'
@@ -43,13 +43,13 @@ export const transferSorter = (order:string) => {
 }
 
 export const useColumns = () => {
-  const showIntentAI = [
-    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
-    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
-  ].some(Boolean)
+  const showIntentAI = useAnySplitsOn([
+    Features.INTENT_AI_CONFIG_CHANGE_TOGGLE,
+    Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE
+  ])
 
   const { $t } = useIntl()
-  const entityTypeMapping = getConfigChangeEntityTypeMapping(showIntentAI)
+  const entityTypeMapping = getConfigChangeEntityTypeMapping(Boolean(showIntentAI))
   const columnHeaders: TableProps<PagedConfigChange['data'][0]>['columns'] = [
     {
       key: 'timestamp',
@@ -135,7 +135,7 @@ export const useColumns = () => {
 }
 
 export function PagedTable () {
-  const showIntentAI = useIsTreatmentsOn([
+  const showIntentAI = useAnySplitsOn([
     Features.INTENT_AI_CONFIG_CHANGE_TOGGLE,
     Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE
   ])

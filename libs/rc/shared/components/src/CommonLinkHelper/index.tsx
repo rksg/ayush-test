@@ -1,3 +1,4 @@
+import { useGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
 import {
   DpskDetailsTabKey,
   getPolicyDetailsLink,
@@ -23,12 +24,26 @@ export function VenueLink (props: { venueId?: string, name?: string, showNoData?
   )
 }
 
-export function IdentityGroupLink (props: { personaGroupId?: string, name?: string }) {
-  const { personaGroupId, name } = props
+// eslint-disable-next-line max-len
+export function IdentityGroupLink (props: {
+  personaGroupId?: string,
+  name?: string,
+  enableFetchName?: boolean,
+  showNoData?: boolean
+}) {
+  const { personaGroupId, name, enableFetchName = false, showNoData = false } = props
+  const { data: groupData, isLoading } = useGetPersonaGroupByIdQuery(
+    { params: { groupId: personaGroupId } },
+    { skip: !personaGroupId || !enableFetchName })
+
   return (
-    <TenantLink to={`users/identity-management/identity-group/${personaGroupId}`}>
-      {name ?? personaGroupId}
-    </TenantLink>
+    personaGroupId
+      ? (enableFetchName && isLoading)
+        ? <></>
+        : <TenantLink to={`users/identity-management/identity-group/${personaGroupId}`}>
+          {name ?? (enableFetchName ? groupData?.name ?? personaGroupId : personaGroupId)}
+        </TenantLink>
+      : <>{showNoData && noDataDisplay}</>
   )
 }
 

@@ -36,10 +36,12 @@ import {
   EdgeVenueFirmware,
   FirmwareCategory,
   FirmwareSwitchVenue,
+  FirmwareUrlsInfo,
   UpgradePreferences,
   dateSort,
   defaultSort,
   firmwareTypeTrans,
+  genAllowOperationsPath,
   sortProp
 } from '@acx-ui/rc/utils'
 import { EdgeScopes, RolesEnum } from '@acx-ui/types'
@@ -172,6 +174,9 @@ export function VenueFirmwareList () {
   const rowActions: TableProps<EdgeVenueFirmware>['rowActions'] = [
     {
       scopeKey: [EdgeScopes.UPDATE],
+      rbacOpsIds: isBatchOperationEnable ?
+        [genAllowOperationsPath(FirmwareUrlsInfo.startEdgeFirmwareVenueUpdateNow)] :
+        [genAllowOperationsPath(FirmwareUrlsInfo.updateEdgeFirmware)],
       visible: (selectedRows) => {
         const hasOutdatedFw = selectedRows?.every(
           item => latestReleaseVersion?.id &&
@@ -192,6 +197,9 @@ export function VenueFirmwareList () {
     rowActions.push(...[
       {
         scopeKey: [EdgeScopes.UPDATE],
+        rbacOpsIds: isBatchOperationEnable ?
+          [genAllowOperationsPath(FirmwareUrlsInfo.updateEdgeFirmwareVenueSchedule)] :
+          [genAllowOperationsPath(FirmwareUrlsInfo.updateEdgeVenueSchedules)],
         visible: (selectedRows: EdgeVenueFirmware[]) => {
           return selectedRows.every(row => hasSchedule(row))
         },
@@ -208,6 +216,9 @@ export function VenueFirmwareList () {
       },
       {
         scopeKey: [EdgeScopes.UPDATE],
+        rbacOpsIds: isBatchOperationEnable ?
+          [genAllowOperationsPath(FirmwareUrlsInfo.skipEdgeFirmwareVenueSchedule)] :
+          [genAllowOperationsPath(FirmwareUrlsInfo.skipEdgeUpgradeSchedules)],
         visible: (selectedRows: EdgeVenueFirmware[]) => {
           return selectedRows.every(row => hasSchedule(row))
         },
@@ -323,7 +334,18 @@ export function VenueFirmwareList () {
   }
 
   const isSelectionVisible = hasPermission({
-    scopes: [EdgeScopes.UPDATE]
+    scopes: [EdgeScopes.UPDATE],
+    rbacOpsIds: isBatchOperationEnable ?
+      [
+        genAllowOperationsPath(FirmwareUrlsInfo.startEdgeFirmwareVenueUpdateNow),
+        genAllowOperationsPath(FirmwareUrlsInfo.updateEdgeFirmwareVenueSchedule),
+        genAllowOperationsPath(FirmwareUrlsInfo.skipEdgeFirmwareVenueSchedule)
+      ] :
+      [
+        genAllowOperationsPath(FirmwareUrlsInfo.updateEdgeFirmware),
+        genAllowOperationsPath(FirmwareUrlsInfo.updateEdgeVenueSchedules),
+        genAllowOperationsPath(FirmwareUrlsInfo.skipEdgeUpgradeSchedules)
+      ]
   })
 
   const isPreferencesVisible
@@ -342,7 +364,10 @@ export function VenueFirmwareList () {
         actions={
           isPreferencesVisible && isScheduleUpdateReady ? [{
             label: $t({ defaultMessage: 'Preferences' }),
-            onClick: () => setPreferenceModalVisible(true)
+            onClick: () => setPreferenceModalVisible(true),
+            disabled: !hasPermission({
+              rbacOpsIds: [genAllowOperationsPath(FirmwareUrlsInfo.updateEdgeUpgradePreferences)]
+            })
           }]
             : []
 
