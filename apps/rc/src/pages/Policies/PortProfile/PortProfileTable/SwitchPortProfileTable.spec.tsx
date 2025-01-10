@@ -5,7 +5,8 @@ import {
   useSwitchPortProfilesListQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
-import { Provider } from '@acx-ui/store'
+import { CountAndNames } from '@acx-ui/rc/utils'
+import { Provider }      from '@acx-ui/store'
 import {
   render,
   screen,
@@ -85,6 +86,13 @@ const mockedVenuesResult = {
     }
   ]
 }
+
+jest.mock('@acx-ui/rc/components', () => ({
+  CountAndNamesTooltip: ({ data }:{ data: CountAndNames }) => <>
+    <div data-testid='venue-count'>count:{data.count}</div>
+    <div data-testid='venue-names'>names:{data.names.join(',')}</div>
+  </>
+}))
 
 jest.mock('@acx-ui/rc/services', () => ({
   useSwitchPortProfilesListQuery: jest.fn(),

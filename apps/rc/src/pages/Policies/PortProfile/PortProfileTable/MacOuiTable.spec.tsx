@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { SwitchUrlsInfo }         from '@acx-ui/rc/utils'
-import { Provider }               from '@acx-ui/store'
-import { render, screen, within } from '@acx-ui/test-utils'
-import { mockServer }             from '@acx-ui/test-utils'
+import { CountAndNames, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                      from '@acx-ui/store'
+import { render, screen, within }        from '@acx-ui/test-utils'
+import { mockServer }                    from '@acx-ui/test-utils'
 
 import MacOuiTable from './MacOuiTable'
 
@@ -33,6 +33,13 @@ const mockPortProfilesList = {
     { id: 'profile2', name: 'Profile 2' }
   ]
 }
+
+jest.mock('@acx-ui/rc/components', () => ({
+  CountAndNamesTooltip: ({ data }:{ data: CountAndNames }) => <>
+    <div data-testid='venue-count'>count:{data.count}</div>
+    <div data-testid='venue-names'>names:{data.names.join(',')}</div>
+  </>
+}))
 
 jest.mock('../PortProfileForm/MacOuiDrawer', () => ({
   MacOuiDrawer: jest.fn(({ visible, setVisible }) =>
