@@ -579,6 +579,96 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         })
       }
     }),
+    // replace getNetworkDeep
+    getNetworkDeepV2: build.query<NetworkSaveData | null, RequestPayload>({
+      async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
+        if (!params?.networkId) return Promise.resolve({ data: null } as QueryReturnValue<
+          null,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta
+        >)
+
+        const networkQuery = await fetchWithBQ(
+          createHttpRequest(
+            WifiRbacUrlsInfo.getNetwork,
+            params,
+            GetApiVersionHeader(ApiVersionEnum.v1)
+          )
+        )
+        const networkDeepData = networkQuery.data as NetworkSaveData
+
+        if (networkDeepData) {
+          const arg = {
+            params,
+            payload: { page: 1, pageSize: 10000 }
+          }
+
+          const {
+            error: networkVenuesListQueryError,
+            networkDeep
+          } = await fetchEnhanceRbacNetworkVenueList(arg, fetchWithBQ)
+
+          const {
+            error: accessControlPolicyNetworkError,
+            data: accessControlPolicyNetwork
+          } = await fetchRbacAccessControlPolicyNetwork(arg, fetchWithBQ)
+
+          const {
+            error: accessControlSubPolicyNetworkError,
+            data: accessControlSubPolicyNetwork
+          } = await fetchRbacAccessControlSubPolicyNetwork(arg, fetchWithBQ)
+
+          if (networkVenuesListQueryError)
+            return { error: networkVenuesListQueryError }
+
+          if (accessControlPolicyNetworkError)
+            return { error: accessControlPolicyNetworkError }
+
+          if (accessControlSubPolicyNetworkError)
+            return { error: accessControlSubPolicyNetworkError }
+
+          if (networkDeep?.venues) {
+            networkDeepData.venues = cloneDeep(networkDeep.venues)
+          }
+
+          if (accessControlPolicyNetwork?.data.length > 0 && networkDeepData.wlan?.advancedCustomization) {
+            networkDeepData.wlan.advancedCustomization.accessControlEnable = true
+            networkDeepData.wlan.advancedCustomization.accessControlProfileId = accessControlPolicyNetwork.data[0].id
+          }
+
+          if (!accessControlPolicyNetwork?.data.length && Object.keys(accessControlSubPolicyNetwork).length && networkDeepData.wlan?.advancedCustomization) {
+            networkDeepData.wlan.advancedCustomization = {
+              ...networkDeepData.wlan.advancedCustomization,
+              ...accessControlSubPolicyNetwork
+            }
+          }
+        }
+
+        return networkQuery as QueryReturnValue<NetworkSaveData,
+        FetchBaseQueryError,
+        FetchBaseQueryMeta>
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'Network', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const useCases = [
+            'UpdateNetworkVenue',
+            'ActivateWifiNetworkOnVenue',
+            'ActivateWifiNetworkTemplateOnVenue',
+            'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue',
+            'UpdateVenueWifiNetworkSettings',
+            'DeactivateApGroupOnWifiNetwork',
+            'ActivateApGroupOnWifiNetwork'
+          ]
+
+          onActivityMessageReceived(msg, useCases, () => {
+            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
+          })
+        })
+      }
+    }),
     networkDetailHeader: build.query<NetworkDetailHeader, RequestPayload>({
       query: ({ params }) => {
         const networkDetailReq = createHttpRequest(
@@ -1910,7 +2000,7 @@ export const {
   useGetNetworkQuery,
   useLazyGetNetworkQuery,
   useGetNetworkDeepQuery,
-  useLazyGetNetworkDeepQuery,
+  useGetNetworkDeepV2Query,
   useNetworkDetailHeaderQuery,
   useNetworkVenueListV2Query,
   useNetworkVenueTableV2Query,

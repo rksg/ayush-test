@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 
 import { Typography } from 'antd'
+import _              from 'lodash'
 import { useIntl }    from 'react-intl'
 
 import { useBrand360Config } from '@acx-ui/analytics/services'
@@ -22,7 +23,9 @@ import {
   RegionButton
 } from '@acx-ui/main/components'
 import { useGetBrandingDataQuery, useGetTenantDetailQuery, useMspEntitlementListQuery } from '@acx-ui/msp/services'
+import { AssignedEntitlementListPayload }                                               from '@acx-ui/msp/utils'
 import { CloudMessageBanner }                                                           from '@acx-ui/rc/components'
+import { useRbacEntitlementListQuery }                                                  from '@acx-ui/rc/services'
 import { ConfigTemplateContext }                                                        from '@acx-ui/rc/utils'
 import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink, TenantLink }     from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                    from '@acx-ui/types'
@@ -56,12 +59,17 @@ function Layout () {
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const isReportsAdmin = hasRoles([RolesEnum.REPORTS_ADMIN])
-  const { data: mspEntitlement } = useMspEntitlementListQuery({ params })
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const isHospitality = getJwtTokenPayload().acx_account_vertical === AccountVertical.HOSPITALITY
   const showSupportHomeButton = isSupportToMspDashboardAllowed && isDelegationMode()
+  const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const { data: mspEntitlement } = useMspEntitlementListQuery({ params },
+    { skip: isEntitlementRbacApiEnabled })
+  const { data: rbacMspEntitlement } = useRbacEntitlementListQuery(
+    { params: useParams(), payload: AssignedEntitlementListPayload },
+    { skip: !isEntitlementRbacApiEnabled })
 
   const {
     state
@@ -116,7 +124,7 @@ function Layout () {
       }
       setDogfood((userProfile?.dogfood && !userProfile?.support) || isRecDelegation)
     }
-    if (mspEntitlement?.length && mspEntitlement?.length > 0) {
+    if (_.isEmpty(mspEntitlement) || _.isEmpty(rbacMspEntitlement?.data)) {
       setHasLicense(true)
     }
   }, [data, userProfile, mspEntitlement])
