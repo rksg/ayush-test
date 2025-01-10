@@ -5,7 +5,13 @@ import _                              from 'lodash'
 import moment                         from 'moment'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
-import { useAnalyticsFilter, kpiConfig, productNames } from '@acx-ui/analytics/utils'
+import {
+  useAnalyticsFilter,
+  kpiConfig,
+  productNames,
+  formattedPath,
+  impactedArea
+}                                    from '@acx-ui/analytics/utils'
 import {
   Loader,
   TableProps,
@@ -13,7 +19,8 @@ import {
   ConfigChange,
   getConfigChangeEntityTypeMapping,
   Cascader,
-  Filter
+  Filter,
+  Tooltip
 }                                    from '@acx-ui/components'
 import { ConfigChangePaginationParams }                    from '@acx-ui/components'
 import { get }                                             from '@acx-ui/config'
@@ -140,7 +147,7 @@ export function PagedTable () {
     },
     {
       key: 'type',
-      title: $t({ defaultMessage: 'Entity Type' }),
+      title: $t({ defaultMessage: 'Entity' }),
       dataIndex: 'type',
       render: (_, row) => {
         const config = entityTypeMapping.find(type => type.key === row.type)
@@ -151,14 +158,29 @@ export function PagedTable () {
     },
     {
       key: 'name',
-      title: $t({ defaultMessage: 'Entity Name' }),
+      title: $t({ defaultMessage: 'Scope' }),
       dataIndex: 'name',
-      render: (_, { name }, __, highlightFn) => highlightFn(String(name)),
+      render: (_, value, __, highlightFn ) => {
+        const { name } = value
+        if(!showIntentAI){
+          return highlightFn(String(name))
+        } else {
+          const { path, sliceValue } = value
+          const scope = impactedArea(path!, sliceValue!) as string
+          return <Tooltip
+            placement='top'
+            title={formattedPath(path!, sliceValue!)}
+            dottedUnderline={true}
+          >
+            {highlightFn(scope)}
+          </Tooltip>
+        }
+      },
       searchable: true
     },
     {
       key: 'key',
-      title: $t({ defaultMessage: 'Configuration' }),
+      title: $t({ defaultMessage: 'Configuration / Intent' }),
       dataIndex: 'key',
       render: (_, { type, key }) => {
         const value = jsonMapping[type as EntityType].configMap.get(key, key)
@@ -167,7 +189,7 @@ export function PagedTable () {
     },
     {
       key: 'oldValues',
-      title: $t({ defaultMessage: 'Change From' }),
+      title: $t({ defaultMessage: 'Old Value' }),
       dataIndex: ['oldValues'],
       align: 'center',
       render: (_, { oldValues, type, key }) => {
@@ -182,7 +204,7 @@ export function PagedTable () {
     },
     {
       key: 'newValues',
-      title: $t({ defaultMessage: 'Change To' }),
+      title: $t({ defaultMessage: 'New Value / Action' }),
       dataIndex: ['newValues'],
       align: 'center',
       render: (_, { newValues, type, key }) => {
