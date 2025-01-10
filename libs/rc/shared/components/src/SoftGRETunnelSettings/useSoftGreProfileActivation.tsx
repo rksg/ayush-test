@@ -34,14 +34,12 @@ export const useSoftGreProfileActivation = (
     currentLanPort: LanPort,
     originLanPort: LanPort | undefined
   ) => {
-
     const pendingChanges = pendingLanPortChanges.current
     const isPendingChangesEmpty = _.isEmpty(pendingChanges)
     const existedModelChanges = pendingChanges.find((change) => change.model === currentModel)
     const existedLanPortChanges = existedModelChanges?.lanPorts.find((lanPort) => {
       return lanPort.lanPortId === currentLanPort.portId
     })
-
     // Ignore when no change, no current model change, no current lan port change
     if (isPendingChangesEmpty || !existedModelChanges || !existedLanPortChanges) {
       return
@@ -119,6 +117,24 @@ export const useSoftGreProfileActivation = (
         newLanPortsChangesList?.push(nextChange)
       }
       existedModelChanges.lanPorts = newLanPortsChangesList
+    }
+  }
+
+  const handleUpdateSoftGreProfile2 = async (
+    currentModel: string,
+    currentLanPort: LanPort,
+    originLanPort: LanPort | undefined
+  ) => {
+    // deactivate SoftGRE if lan port disabled or softGre toggle disabled
+    if (currentLanPort.softGreProfileId && currentLanPort.softGreProfileId !== originLanPort?.softGreProfileId) {
+      await deactivateSoftGre({
+        params: {
+          venueId,
+          apModel: currentModel,
+          portId: currentLanPort.portId,
+          policyId: originLanPort?.softGreProfileId
+        }
+      })
     }
   }
 
@@ -253,9 +269,6 @@ export const useSoftGreProfileActivation = (
   // eslint-disable-next-line
   const [state, dispatch] = useReducer(actionRunner, { state: SoftGreState.Init, portId: '0', index: 0 })
 
-  return { dispatch, handleUpdateSoftGreProfile }
+  return { dispatch, handleUpdateSoftGreProfile, handleUpdateSoftGreProfile2 }
 
 }
-
-
-

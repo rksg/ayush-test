@@ -1,8 +1,9 @@
 import { Form, Switch, Space } from 'antd'
+import { useWatch }            from 'antd/lib/form/Form'
 import { useIntl }             from 'react-intl'
 
-import { Tooltip, Alert, StepsForm }              from '@acx-ui/components'
-import { SoftGreProfileDispatcher, SoftGreState } from '@acx-ui/rc/utils'
+import { Tooltip, Alert, StepsForm } from '@acx-ui/components'
+// import { SoftGreProfileDispatcher, SoftGreState } from '@acx-ui/rc/utils'
 
 import { SoftGREProfileSettings } from './SoftGREProfileSettings'
 import { FieldLabel }             from './styledComponents'
@@ -10,11 +11,11 @@ import { FieldLabel }             from './styledComponents'
 interface SoftGRETunnelSettingsProps {
   index: number;
   portId?: string;
-  softGreProfileId: string;
-  softGreTunnelEnable: boolean;
+  // softGreProfileId: string;
+  // softGreTunnelEnable: boolean;
   onGUIChanged?: (fieldName: string) => void;
   readonly: boolean;
-  dispatch?: React.Dispatch<SoftGreProfileDispatcher>;
+  // dispatch?: React.Dispatch<SoftGreProfileDispatcher>;
 }
 
 export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
@@ -22,16 +23,17 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   const {
     index,
     portId,
-    softGreProfileId,
-    softGreTunnelEnable,
+    // softGreProfileId,
+    // softGreTunnelEnable,
     onGUIChanged,
-    readonly,
-    dispatch
+    readonly
+    // dispatch
   } = props
 
   const softgreTunnelFieldName = ['lan', index, 'softGreEnabled']
   const form = Form.useFormInstance()
-
+  const isSoftGreTunnelToggleEnabled = useWatch<boolean>(softgreTunnelFieldName, form)
+  const softGreProfileId = useWatch<string>(['lan', index, 'softGreProfileId'], form)
   return (
     <>
       <StepsForm.StepForm>
@@ -56,22 +58,23 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
               <Switch
                 data-testid={'softgre-tunnel-switch'}
                 disabled={readonly}
-                onClick={(value) => {
-                  onGUIChanged && onGUIChanged('softGreEnabled')
-                  if (dispatch) {
-                    value ?
-                      dispatch({
-                        state: SoftGreState.TurnOnSoftGre,
-                        portId,
-                        index,
-                        softGreProfileId: form.getFieldValue(['lan', index, 'softGreProfileId'])
-                      }) :
-                      dispatch({
-                        state: SoftGreState.TurnOffSoftGre,
-                        portId,
-                        index
-                      })
-                  }
+                onClick={() => {
+                  onGUIChanged?.('softGreEnabled')
+                  // onGUIChanged && onGUIChanged('softGreEnabled')
+                  // if (dispatch) {
+                  //   value ?
+                  //     dispatch({
+                  //       state: SoftGreState.TurnOnSoftGre,
+                  //       portId,
+                  //       index,
+                  //       softGreProfileId: form.getFieldValue(['lan', index, 'softGreProfileId'])
+                  //     }) :
+                  //     dispatch({
+                  //       state: SoftGreState.TurnOffSoftGre,
+                  //       portId,
+                  //       index
+                  //     })
+                  // }
                 }}
               />
             }
@@ -79,7 +82,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
         </FieldLabel>
       </StepsForm.StepForm>
       {
-        softGreTunnelEnable && <>
+        isSoftGreTunnelToggleEnabled && <>
           <Alert
             data-testid={'enable-softgre-tunnel-banner'}
             showIcon={true}
@@ -92,7 +95,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             onGUIChanged={onGUIChanged}
             readonly={readonly}
             portId={portId}
-            dispatch={dispatch}
+            // dispatch={dispatch}
           />
         </>
       }
