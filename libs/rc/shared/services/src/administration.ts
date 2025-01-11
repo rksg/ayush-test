@@ -33,7 +33,8 @@ import {
   NotificationSmsUsage,
   NotificationSmsConfig,
   TwiliosIncommingPhoneNumbers,
-  TwiliosMessagingServices
+  TwiliosMessagingServices,
+  NotificationRecipientType
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -380,6 +381,10 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           const result = {
             id: data.id,
             description: data.description,
+            emailPreferences: data.emailPreferences,
+            smsPreferences: data.smsPreferences,
+            recipientType: data.privilegeGroup
+              ? NotificationRecipientType.PRIVILEGEGROUP : NotificationRecipientType.GLOBAL,
             endpoints: data.endpoints
           } as NotificationRecipientUIModel
 

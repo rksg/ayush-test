@@ -55,7 +55,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
 
   const [deletePrivilegeGroup, { isLoading: isDeletePrivilegeGroupUpdating }]
     = useDeletePrivilegeGroupMutation()
-  const linkAddPriviledgePath =
+  const linkAddPrivilegePath =
     useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
 
   useEffect(() => {
@@ -74,8 +74,8 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
       tenantType: tenantType as TenantType
     }
     navigate({
-      ...linkAddPriviledgePath,
-      pathname: `${linkAddPriviledgePath.pathname}/create`
+      ...linkAddPrivilegePath,
+      pathname: `${linkAddPrivilegePath.pathname}/create`
     }, { state: stateProp })
   }
 
@@ -150,18 +150,6 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
   ]
 
   const rowActions: TableProps<PrivilegeGroup>['rowActions'] = [
-    // {
-    //   label: $t({ defaultMessage: 'View' }),
-    //   visible: (selectedRows) => {
-    //     return (selectedRows.length === 1 && selectedRows[0].type === CustomGroupType.SYSTEM)
-    //   },
-    //   onClick: (selectedRows) => {
-    //     navigate({
-    //       ...linkAddPriviledgePath,
-    //       pathname: `${linkAddPriviledgePath.pathname}/view/${selectedRows[0].id}`
-    //     }, { state: selectedRows[0] })
-    //   }
-    // },
     {
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => {
@@ -174,8 +162,8 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
           tenantType: tenantType as TenantType
         }
         navigate({
-          ...linkAddPriviledgePath,
-          pathname: `${linkAddPriviledgePath.pathname}/edit/${selectedRows[0].id}`
+          ...linkAddPrivilegePath,
+          pathname: `${linkAddPrivilegePath.pathname}/edit/${selectedRows[0].id}`
         }, { state: stateProp })
       }
     },
@@ -191,8 +179,8 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
           isOnboardedMsp: isOnboardedMsp
         }
         navigate({
-          ...linkAddPriviledgePath,
-          pathname: `${linkAddPriviledgePath.pathname}/clone/${selectedRows[0].id}`
+          ...linkAddPrivilegePath,
+          pathname: `${linkAddPrivilegePath.pathname}/clone/${selectedRows[0].id}`
         }, { state: stateProp })
       }
     },

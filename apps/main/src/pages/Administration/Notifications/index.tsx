@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 
 import { Row, Col, Badge, Typography } from 'antd'
 import { IntlShape, useIntl }          from 'react-intl'
@@ -22,7 +22,8 @@ import {
   NotificationRecipientUIModel,
   NotificationEndpointType,
   sortProp,
-  defaultSort
+  defaultSort,
+  NotificationRecipientType
 } from '@acx-ui/rc/utils'
 import { useParams }         from '@acx-ui/react-router-dom'
 import {
@@ -30,7 +31,9 @@ import {
   hasAccess,
   hasCrossVenuesPermission
 } from '@acx-ui/user'
+import { noDataDisplay } from '@acx-ui/utils'
 
+import { AddRecipientDrawer }   from './AddRecipientDrawer'
 import { AINotificationDrawer } from './AINotificationDrawer'
 import { PreferenceDrawer }     from './PreferenceDrawer'
 import RecipientDialog          from './RecipientDialog'
@@ -48,15 +51,14 @@ const FunctionEnabledStatusLightConfig = {
 const recipientTypeFilterOpts = ($t: IntlShape['$t']) => [
   { key: '', value: $t({ defaultMessage: 'All Recipient Type' }) },
   {
-    key: 'PRIVILEDGE',
-    value: $t({ defaultMessage: 'Priviledges Groups' })
+    key: 'PRIVILEGE',
+    value: $t({ defaultMessage: 'Privileges Groups' })
   },
   {
     key: 'GLOBAL',
     value: $t({ defaultMessage: 'Global Recipients' })
   }
 ]
-
 
 export const NotificationsTable = () => {
   const { $t } = useIntl()
@@ -65,7 +67,8 @@ export const NotificationsTable = () => {
   const [showDrawer, setShowDrawer] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const notificationChannelEnabled = useIsSplitOn(Features.NOTIFICATION_CHANNEL_SELECTION_TOGGLE)
-  const notificationAdminContextualEnabled = true//useIsSplitOn(Features.NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE)
+  const notificationAdminContextualEnabled =
+    useIsSplitOn(Features.NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE)
   // eslint-disable-next-line max-len
   const [editData, setEditData] = useState<NotificationRecipientUIModel>({} as NotificationRecipientUIModel)
 
@@ -115,6 +118,17 @@ export const NotificationsTable = () => {
     /> : data
   }
 
+  const renderDeliveryPreference = (row: NotificationRecipientUIModel) => {
+    const deliveryPreference = []
+    if (row.emailEnabled || row.emailPreferences)
+      deliveryPreference.push($t({ defaultMessage: 'Email' }))
+    if (row.mobileEnabled || row.smsPreferences)
+      deliveryPreference.push($t({ defaultMessage: 'SMS' }))
+    return deliveryPreference.length > 0
+      ? deliveryPreference.join(', ')
+      : noDataDisplay
+  }
+
   const columns: TableProps<NotificationRecipientUIModel>['columns'] = [
     {
       title: $t({ defaultMessage: 'Recipient Name' }),
@@ -131,13 +145,20 @@ export const NotificationsTable = () => {
         key: 'recipientType',
         filterMultiple: false,
         filterable: recipientTypeFilterOpts($t),
-        sorter: true
+        sorter: true,
+        render: (data: ReactNode, row: NotificationRecipientUIModel ) => {
+          return row.recipientType === NotificationRecipientType.PRIVILEGEGROUP
+            ? $t({ defaultMessage: 'Privilege Group' })
+            : $t({ defaultMessage: 'Global' })
+        }
       },
       {
         title: $t({ defaultMessage: 'Delivery Preference' }),
         dataIndex: 'deliveryPreference',
         key: 'deliveryPreference',
-        sorter: true
+        render: (data: ReactNode, row: NotificationRecipientUIModel ) => {
+          return renderDeliveryPreference(row)
+        }
       }
     ]),
     {
@@ -146,7 +167,9 @@ export const NotificationsTable = () => {
       dataIndex: 'email',
       sorter: { compare: sortProp('email', defaultSort) },
       render: (_, row) => {
-        return renderDataWithStatus(row.email, row.emailEnabled)
+        return row.recipientType === NotificationRecipientType.GLOBAL
+          ? renderDataWithStatus(row.email, row.emailEnabled)
+          : noDataDisplay
       }
     },
     {
@@ -155,7 +178,9 @@ export const NotificationsTable = () => {
       dataIndex: 'mobile',
       sorter: { compare: sortProp('mobile', defaultSort) },
       render: (_, row) => {
-        return renderDataWithStatus(row.mobile, row.mobileEnabled)
+        return row.recipientType === NotificationRecipientType.GLOBAL
+          ? renderDataWithStatus(row.mobile, row.mobileEnabled)
+          : noDataDisplay
       }
     }
   ]
@@ -232,13 +257,21 @@ export const NotificationsTable = () => {
         />
       </Loader>
 
-      <RecipientDialog
-        visible={showDialog}
-        setVisible={setShowDialog}
-        editMode={editMode}
-        editData={editData}
-        isDuplicated={isDuplicated}
-      />
+      {notificationAdminContextualEnabled
+        ? <AddRecipientDrawer
+          visible={showDialog}
+          setVisible={setShowDialog}
+          editMode={editMode}
+          editData={editData}
+          isDuplicated={isDuplicated}
+        />
+        : <RecipientDialog
+          visible={showDialog}
+          setVisible={setShowDialog}
+          editMode={editMode}
+          editData={editData}
+          isDuplicated={isDuplicated}
+        />}
       {showDrawer
       && <AINotificationDrawer
         showDrawer={showDrawer}

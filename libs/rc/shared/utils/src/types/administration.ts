@@ -174,9 +174,18 @@ export interface RegisteredUserSelectOption {
   email: string;
 }
 
+export enum NotificationRecipientType {
+  GLOBAL = 'GLOBAL',
+  PRIVILEGEGROUP = 'PRIVILEGEGROUP'
+}
+
 export interface NotificationRecipientUIModel {
   id: string;
   description: string;
+  recipientType: NotificationRecipientType;
+  emailPreferences?: boolean;
+  smsPreferences?: boolean,
+  privilegeGroup?: { id: string };
   endpoints: NotificationEndpoint[];
   email: string;
   emailEnabled: boolean;
@@ -197,6 +206,9 @@ export interface NotificationEndpoint {
 export interface NotificationRecipientResponse {
   id: string;
   description: string;
+  emailPreferences?: boolean;
+  smsPreferences?: boolean,
+  privilegeGroup?: { id: string };
   endpoints: NotificationEndpoint[];
   createdDate: string;
   updatedDate: string;

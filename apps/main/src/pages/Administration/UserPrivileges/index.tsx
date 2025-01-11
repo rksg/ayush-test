@@ -22,10 +22,10 @@ import { useUserProfileContext }                from '@acx-ui/user'
 
 import DelegationsTable from '../Administrators/DelegationsTable'
 
-import CustomRoles      from './CustomRoles'
-import PriviledgeGroups from './PrivilegeGroups'
-import SsoGroups        from './SsoGroups'
-import UsersTable       from './UsersTable'
+import CustomRoles     from './CustomRoles'
+import PrivilegeGroups from './PrivilegeGroups'
+import SsoGroups       from './SsoGroups'
+import UsersTable      from './UsersTable'
 
 
 const UserPrivileges = () => {
@@ -118,7 +118,7 @@ const UserPrivileges = () => {
     privilegeGroups: {
       title: $t({ defaultMessage: 'Privilege Groups ({privilegeGroupCount})' },
         { privilegeGroupCount }),
-      content: <PriviledgeGroups
+      content: <PrivilegeGroups
         isPrimeAdminUser={isPrimeAdminUser}
         tenantType={tenantType}
       />,
