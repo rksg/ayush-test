@@ -8,6 +8,18 @@ export const fakeWebhooks = {
       name: 'commscope',
       url: 'http://www.commscope.com',
       payload: 'RUCKUS',
+      secret: 'secret123',
+      incident: {
+        severity: ['P1', 'P2']
+      },
+      activity: {
+        product: ['WIFI', 'SWITCH']
+      },
+      event: {
+        severity: ['CRITICAL', 'WARNING'],
+        type: ['AP', 'CLIENT', 'PROFILE'],
+        product: ['GENERAL']
+      },
       status: 'ON'
     },
     {
@@ -15,6 +27,18 @@ export const fakeWebhooks = {
       name: 'slack',
       url: 'http://slack.com',
       payload: 'SLACK',
+      secret: 'secret123',
+      incident: {
+        severity: ['P1', 'P2']
+      },
+      activity: {
+        product: ['WIFI', 'SWITCH']
+      },
+      event: {
+        severity: ['CRITICAL', 'WARNING'],
+        type: ['AP', 'CLIENT', 'PROFILE'],
+        product: ['GENERAL']
+      },
       status: 'ON'
     },
     {
@@ -22,6 +46,18 @@ export const fakeWebhooks = {
       name: 'microsoft',
       url: 'http://microsoft.com',
       payload: 'MICROSOFT_TEAM',
+      secret: 'secret123',
+      incident: {
+        severity: ['P1', 'P2']
+      },
+      activity: {
+        product: ['WIFI', 'SWITCH']
+      },
+      event: {
+        severity: ['CRITICAL', 'WARNING'],
+        type: ['AP', 'CLIENT', 'PROFILE'],
+        product: ['GENERAL']
+      },
       status: 'OFF'
     }
   ]

@@ -126,6 +126,7 @@ const R1Webhooks = (props: R1WebhooksProps) => {
         hasPermission({ permission: 'WRITE_WEBHOOKS' }) && {
         type: 'radio'
       }}
+      data-testid='WebhooksTable'
     />
   </Loader>
 }

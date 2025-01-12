@@ -25,13 +25,14 @@ const SettingsTab = (props: SettingsTabProps) => {
   const updateButtonEnabled = async (field: string) => {
     try {
       await form.validateFields([field])
-      const enabled = form.getFieldValue(['url']) &&
-        form.getFieldValue(['secret']) &&
-        form.getFieldValue(['payload']) &&
+      const url = form.getFieldValue(['url'])
+      const secret = form.getFieldValue(['secret'])
+      const payload = form.getFieldValue(['payload'])
+      const enabled = url && secret && payload &&
         !form.getFieldsError(['url','secret','payload']).some(({ errors }) => errors.length)
       setTestURLEnabled(enabled)
     }
-    catch {
+    catch(error) {
       setTestURLEnabled(false)
     }
   }
@@ -58,6 +59,16 @@ const SettingsTab = (props: SettingsTabProps) => {
         content: $t({ defaultMessage: 'Webhook error message' })
       })
     }
+  }
+
+  const payloadOptions = () => {
+    return <Select onChange={() => updateButtonEnabled('payload')}>
+      {Object.values(WebhookPayloadEnum).map((value) =>
+        (<Select.Option value={value}
+          key={value}
+          children={getWebhookPayloadEnumString($t, value as WebhookPayloadEnum)}/>)
+      )}
+    </Select>
   }
 
   return <><Form.Item
@@ -99,13 +110,7 @@ const SettingsTab = (props: SettingsTabProps) => {
     name='payload'
     label={$t({ defaultMessage: 'Payload' })}
     rules={[{ required: true }]}
-    children={<Select onChange={() => updateButtonEnabled('payload')}>
-      {Object.values(WebhookPayloadEnum).map((value) =>
-        (<Select.Option value={value}
-          key={value}
-          children={getWebhookPayloadEnumString($t, value as WebhookPayloadEnum)}/>)
-      )}
-    </Select>}
+    children={payloadOptions()}
   />
   </>
 }
