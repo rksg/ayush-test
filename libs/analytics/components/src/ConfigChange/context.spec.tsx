@@ -70,7 +70,8 @@ describe('ConfigChangeProvider', () => {
         <ConfigChangeContext.Consumer>
           {({ legendFilter, applyLegendFilter,
             entityNameSearch, setEntityNameSearch,
-            entityTypeFilter, setEntityTypeFilter
+            entityTypeFilter, setEntityTypeFilter,
+            resetFilter
           }) =>
             <>
               <div data-testid='legendFilter'>{JSON.stringify(legendFilter)}</div>
@@ -79,6 +80,7 @@ describe('ConfigChangeProvider', () => {
               <div data-testid='setEntityNameSearch' onClick={() =>setEntityNameSearch('search')}/>
               <div data-testid='entityTypeFilter'>{JSON.stringify(entityTypeFilter)}</div>
               <div data-testid='setEntityTypeFilter' onClick={() =>setEntityTypeFilter(['ap'])}/>
+              <div data-testid='resetFilter' onClick={resetFilter}/>
             </>}
         </ConfigChangeContext.Consumer>
       </ConfigChangeProvider>
@@ -96,18 +98,23 @@ describe('ConfigChangeProvider', () => {
     expect(await screen.findByTestId('entityTypeFilter')).toHaveTextContent(JSON.stringify([]))
     await userEvent.click(await screen.findByTestId('setEntityTypeFilter'))
     expect(await screen.findByTestId('entityTypeFilter')).toHaveTextContent(JSON.stringify(['ap']))
+
+    await userEvent.click(await screen.findByTestId('resetFilter'))
+    expect(await screen.findByTestId('entityNameSearch')).toHaveTextContent('')
+    expect(await screen.findByTestId('entityTypeFilter')).toHaveTextContent(JSON.stringify([]))
   })
   it('should handle kpiFilter context', async () => {
     render(
       <ConfigChangeProvider dateRange={DateRange.last30Days}>
         <ConfigChangeContext.Consumer>
-          {({ kpiFilter, setKpiFilter, applyKpiFilter }) =>
+          {({ kpiFilter, setKpiFilter, applyKpiFilter, resetFilter }) =>
             <>
               <div data-testid='kpiFilter'>{JSON.stringify(kpiFilter)}</div>
               <div data-testid='setKpiFilter' onClick={() => setKpiFilter('kpikey1')}/>
               <div
                 data-testid='applyKpiFilter'
                 onClick={() => applyKpiFilter(['kpikey2', 'kpikey3'])}/>
+              <div data-testid='resetFilter' onClick={resetFilter}/>
             </>}
         </ConfigChangeContext.Consumer>
       </ConfigChangeProvider>
@@ -125,6 +132,9 @@ describe('ConfigChangeProvider', () => {
     await userEvent.click(await screen.findByTestId('setKpiFilter'))
     expect(await screen.findByTestId('kpiFilter'))
       .toHaveTextContent(JSON.stringify(['kpikey2', 'kpikey3']))
+
+    await userEvent.click(await screen.findByTestId('resetFilter'))
+    expect(await screen.findByTestId('kpiFilter')).toHaveTextContent(JSON.stringify([]))
   })
   it('should handle timeRange context', async () => {
     render(
@@ -167,7 +177,7 @@ describe('ConfigChangeProvider', () => {
         {({ selected, setSelected, dotSelect, setDotSelect,
           onDotClick, onRowClick, chartZoom, setChartZoom,
           initialZoom, setInitialZoom, sorter, setSorter,
-          pagination, setPagination
+          pagination, applyPagination
         }) => <>
           <div data-testid='chartZoom'>{chartZoom && JSON.stringify(chartZoom)}</div>
           <div data-testid='setChartZoom' onClick={() => setChartZoom({ start: 10, end: 20 })}/>
@@ -187,10 +197,14 @@ describe('ConfigChangeProvider', () => {
 
           <div data-testid='pagination'>{JSON.stringify(pagination)}</div>
           <div
-            data-testid='setPagination'
-            onClick={() => setPagination({
-              ...CONFIG_CHANGE_DEFAULT_PAGINATION, current: 1, total: 100, pageSize: 5 })}/>
-
+            data-testid='setTotal'
+            onClick={() => applyPagination({ total: 100 })}/>
+          <div
+            data-testid='setPageSize'
+            onClick={() => applyPagination({ pageSize: 5 })}/>
+          <div
+            data-testid='changeTotal'
+            onClick={() => applyPagination({ total: 50 })}/>
         </>}
       </ConfigChangeContext.Consumer>
     </ConfigChangeProvider>
@@ -201,10 +215,14 @@ describe('ConfigChangeProvider', () => {
       //init
       expect(await screen.findByTestId('pagination'))
         .toHaveTextContent(JSON.stringify(CONFIG_CHANGE_DEFAULT_PAGINATION))
-      await userEvent.click(await screen.findByTestId('setPagination'))
+      await userEvent.click(await screen.findByTestId('setTotal'))
       expect(await screen.findByTestId('pagination'))
         .toHaveTextContent(JSON.stringify({
-          ...CONFIG_CHANGE_DEFAULT_PAGINATION, current: 1, total: 100, pageSize: 5 }))
+          ...CONFIG_CHANGE_DEFAULT_PAGINATION, total: 100 }))
+      await userEvent.click(await screen.findByTestId('setPageSize'))
+      expect(await screen.findByTestId('pagination'))
+        .toHaveTextContent(JSON.stringify({
+          ...CONFIG_CHANGE_DEFAULT_PAGINATION, total: 100, pageSize: 5 }))
 
       await userEvent.click(await screen.findByTestId('setChartZoom'))
       expect(await screen.findByTestId('chartZoom'))
@@ -241,10 +259,14 @@ describe('ConfigChangeProvider', () => {
 
       expect(await screen.findByTestId('pagination'))
         .toHaveTextContent(JSON.stringify(CONFIG_CHANGE_DEFAULT_PAGINATION))
-      await userEvent.click(await screen.findByTestId('setPagination'))
+      await userEvent.click(await screen.findByTestId('setTotal'))
       expect(await screen.findByTestId('pagination'))
         .toHaveTextContent(JSON.stringify({
-          ...CONFIG_CHANGE_DEFAULT_PAGINATION, current: 1, total: 100, pageSize: 5 }))
+          ...CONFIG_CHANGE_DEFAULT_PAGINATION, total: 100 }))
+      await userEvent.click(await screen.findByTestId('setPageSize'))
+      expect(await screen.findByTestId('pagination'))
+        .toHaveTextContent(JSON.stringify({
+          ...CONFIG_CHANGE_DEFAULT_PAGINATION, total: 100, pageSize: 5 }))
 
       await userEvent.click(await screen.findByTestId('onDotClick'))
       expect(await screen.findByTestId('selected')).toHaveTextContent(JSON.stringify(data[10]))
@@ -261,6 +283,13 @@ describe('ConfigChangeProvider', () => {
       expect(await screen.findByTestId('pagination'))
         .toHaveTextContent(JSON.stringify({
           ...CONFIG_CHANGE_DEFAULT_PAGINATION, current: 18, total: 100, pageSize: 5 }))
+
+      await userEvent.click(await screen.findByTestId('changeTotal'))
+      expect(await screen.findByTestId('pagination'))
+        .toHaveTextContent(JSON.stringify({
+          ...CONFIG_CHANGE_DEFAULT_PAGINATION, total: 50 }))
+      expect(await screen.findByTestId('selected')).not.toHaveTextContent(JSON.stringify(data[10]))
+      expect(await screen.findByTestId('dotSelect')).not.toHaveTextContent(data[10].id.toString())
     })
     it('should handle onDotClick has no id', async () => {
       const { id, ...rest } = data[10]
@@ -278,7 +307,6 @@ describe('ConfigChangeProvider', () => {
 
       await userEvent.click(await screen.findByTestId('onDotClick'))
       expect(await screen.findByTestId('dotSelect')).not.toHaveTextContent(data[5].id.toString())
-
     })
   })
 })

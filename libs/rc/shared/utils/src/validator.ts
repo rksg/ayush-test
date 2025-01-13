@@ -15,9 +15,9 @@ import { RolesEnum }                                from '@acx-ui/types'
 import { roleStringMap }                            from '@acx-ui/user'
 import { byteCounter, getIntl, validationMessages } from '@acx-ui/utils'
 
-import { AclTypeEnum }                from './constants'
-import { IpUtilsService }             from './ipUtilsService'
-import { Acl, AclExtendedRule, Vlan } from './types'
+import { AclTypeEnum }                                                       from './constants'
+import { IpUtilsService }                                                    from './ipUtilsService'
+import { Acl, AclExtendedRule, LldpTlvs, MacOuis, SwitchPortProfiles, Vlan } from './types'
 
 const Netmask = require('netmask').Netmask
 const basicPhoneNumberRegExp = new RegExp (/^\+[1-9]\d{1,14}$/)
@@ -1223,4 +1223,54 @@ export function guestPasswordValidator (value: string) {
   }
   return Promise.resolve()
 
+}
+
+export function validateDuplicatePortProfile (selectedPortProfiles: string[] = [], portProfilesList: SwitchPortProfiles[] = []) {
+  const selectedProfiles = portProfilesList.filter(profile =>
+    profile.id && selectedPortProfiles.includes(profile.id)
+  )
+
+  // Track duplicates
+  const lldpTlvDuplicates: { [tlvId: string]: string[] } = {}
+  const macOuiDuplicates: { [ouiId: string]: string[] } = {}
+
+  // Check LLDP TLVs
+  selectedProfiles.forEach(profile => {
+    profile.lldpTlvs?.forEach((tlv: LldpTlvs) => {
+      // Find profiles in this TLV that are in our selected list
+      const matchingProfiles = tlv.portProfiles?.filter(
+        (p: string) => selectedPortProfiles.includes(p)
+      ) || []
+
+      if (matchingProfiles.length > 1 && tlv.id) {
+        lldpTlvDuplicates[tlv.id] = matchingProfiles
+      }
+    })
+  })
+
+  // Check MAC OUIs
+  selectedProfiles.forEach(profile => {
+    profile.macOuis?.forEach((macOui: MacOuis) => {
+      // Find profiles in this MAC OUI that are in our selected list
+      const matchingProfiles = macOui.portProfiles?.filter(
+        (p: string) => selectedPortProfiles.includes(p)
+      ) || []
+
+      if (matchingProfiles.length > 1 && macOui.id) {
+        macOuiDuplicates[macOui.id] = matchingProfiles
+      }
+    })
+  })
+
+  return Object.keys(lldpTlvDuplicates).length > 0 || Object.keys(macOuiDuplicates).length > 0
+}
+
+export function radiusIpAddressRegExp (value: string) {
+  const { $t } = getIntl()
+  const re = new RegExp(/^(((2[0-4]\d)|(25[0-5]))|(1\d{2})|([1-9]\d)|(\d))[.](((2[0-4]\d)|(25[0-5]))|(1\d{2})|([1-9]\d)|(\d))[.](((2[0-4]\d)|(25[0-5]))|(1\d{2})|([1-9]\d)|(\d))[.](((2[0-4]\d)|(25[0-5]))|(1\d{2})|([1-9]\d)|(\d))$/)
+
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.ipAddress))
+  }
+  return Promise.resolve()
 }

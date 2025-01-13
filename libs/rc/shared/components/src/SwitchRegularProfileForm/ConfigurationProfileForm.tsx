@@ -36,6 +36,7 @@ import { usePathBasedOnConfigTemplate } from '../configTemplates'
 import { AclSetting }                               from './AclSetting'
 import { ConfigurationProfileFormContext }          from './ConfigurationProfileFormContext'
 import { GeneralSetting }                           from './GeneralSetting'
+import { PortProfile }                              from './PortProfile'
 import { Summary }                                  from './Summary'
 import { generateTrustedPortsModels, TrustedPorts } from './TrustedPorts'
 import { VenueSetting }                             from './VenueSetting'
@@ -57,6 +58,7 @@ export function ConfigurationProfileForm () {
   const [form] = Form.useForm()
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSwitchPortProfileToggle = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const rbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
@@ -71,7 +73,10 @@ export function ConfigurationProfileForm () {
     useQueryFn: useGetSwitchConfigProfileQuery,
     useTemplateQueryFn: useGetSwitchConfigProfileTemplateQuery,
     skip: !params.profileId,
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: isSwitchRbacEnabled,
+    extraQueryArgs: {
+      enableSwitchPortProfile: isSwitchPortProfileToggle
+    }
   })
 
   // eslint-disable-next-line max-len
@@ -116,8 +121,9 @@ export function ConfigurationProfileForm () {
 
   useEffect(() => {
     if(data){
-      setCurrentData(data as SwitchConfigurationProfile)
-      updateVlanCurrentData(data, 'init')
+      const newData = { ...data }
+      setCurrentData(newData as SwitchConfigurationProfile)
+      updateVlanCurrentData(newData, 'init')
     }
   }, [data])
 
@@ -337,7 +343,8 @@ export function ConfigurationProfileForm () {
       await addSwitchConfigProfile({
         params,
         payload: proceedData(currentData),
-        enableRbac: rbacEnabled
+        enableRbac: rbacEnabled,
+        enableSwitchPortProfile: isSwitchPortProfileToggle
       }).unwrap()
 
       if (rbacEnabled && hasAssociatedVenues) {
@@ -371,7 +378,8 @@ export function ConfigurationProfileForm () {
       await updateSwitchConfigProfile({
         params,
         payload: proceedData(formData),
-        enableRbac: rbacEnabled
+        enableRbac: rbacEnabled,
+        enableSwitchPortProfile: isSwitchPortProfileToggle
       }).unwrap()
       await associateWithCliProfile(diffAssociatedSwitch)
       setCurrentData({} as SwitchConfigurationProfile)
@@ -431,6 +439,15 @@ export function ConfigurationProfileForm () {
           >
             <AclSetting />
           </StepsForm.StepForm>
+
+          {isSwitchPortProfileToggle &&
+          <StepsForm.StepForm
+            title={$t({ defaultMessage: 'Port Profiles' })}
+            onFinish={updateCurrentData}
+          >
+            <PortProfile />
+          </StepsForm.StepForm>
+          }
 
           {(trustedPorts || arpInspection || ipv4DhcpSnooping) &&
             <StepsForm.StepForm

@@ -11,6 +11,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -59,6 +60,7 @@ export default function VLANPoolTable () {
 
   const rowActions: TableProps<VLANPoolViewModelType>['rowActions'] = [
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.VLAN_POOL, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.VLAN_POOL, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ id, name }], clearSelection) => {
@@ -77,6 +79,7 @@ export default function VLANPoolTable () {
       }
     },
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.VLAN_POOL, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.VLAN_POOL, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([{ id }]) => {
@@ -98,12 +101,8 @@ export default function VLANPoolTable () {
     <>
       <PageHeader
         title={
-          $t({
-            defaultMessage: 'VLAN Pools ({count})'
-          },
-          {
-            count: tableQuery.data?.totalCount
-          })
+          $t({ defaultMessage: 'VLAN Pools ({count})' },
+            { count: tableQuery.data?.totalCount })
         }
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
@@ -115,6 +114,7 @@ export default function VLANPoolTable () {
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.VLAN_POOL, PolicyOperation.CREATE)}
             scopeKey={getScopeKeyByPolicy(PolicyType.VLAN_POOL, PolicyOperation.CREATE)}
           >
             <Button type='primary'
