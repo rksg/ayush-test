@@ -10,5 +10,5 @@ fi
 
 for file in $new_test_files_on_branch; do
   echo  "Running test $file"
-  npx flaky-test-detector --run-tests "node 'node_modules/.bin/jest' $file -c './jest.config.ts'" --test-output-file=./test-results.xml --test-output-format=junit --repeat=10
+  npx flaky-test-detector --run-tests "node 'node_modules/.bin/jest' $file -c './jest.config.ts'" --test-output-file=./flaky-test-detector-results.xml --test-output-format=junit --repeat=10
 done

@@ -687,4 +687,9 @@ describe('Cascader', () => {
     act(() => { screen.getByRole('button', { name: 'Apply' }).click() })
     expect(loadDataMock).toHaveBeenCalledWith(options)
   })
+
+  it('flake1', ( ) => {
+    const randomNumber = Math.floor(Math.random() * 3) + 1
+    expect(randomNumber).toBe(1)
+  })
 })

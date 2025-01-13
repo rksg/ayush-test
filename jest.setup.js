@@ -16,7 +16,6 @@ configure({ asyncUtilTimeout: 3000 })
 // turn off warning from async-validator
 global.ASYNC_VALIDATOR_NO_WARNING = 1
 
-
 jest.mock('socket.io-client', () => ({
   connect: jest.fn().mockImplementation(() => ({
     hasListeners: jest.fn().mockReturnValue(true),
@@ -204,9 +203,7 @@ jest.mock('@acx-ui/icons-new', ()=> {
 // For Error: Not implemented: HTMLCanvasElement.prototype.getContext (without installing the canvas npm package)
 HTMLCanvasElement.prototype.getContext = () => null
 
-// Set local test timeout to 20s, CI build timeout to 40s
-const jestTimeout = process.env.CICD_BUILD ? 40000 : 20000
-jest.setTimeout(jestTimeout)
+jest.setTimeout(20000)
 
 // Mock module because the xarrow component will get the error: '_c.getTotalLength is not a function' when testing
 jest.mock('react-xarrows', () => {
