@@ -1,8 +1,8 @@
 import { Form, Switch, Space } from 'antd'
+import { useWatch }            from 'antd/lib/form/Form'
 import { useIntl }             from 'react-intl'
 
-import { Tooltip, Alert, StepsForm }              from '@acx-ui/components'
-import { SoftGreProfileDispatcher, SoftGreState } from '@acx-ui/rc/utils'
+import { Tooltip, Alert, StepsForm } from '@acx-ui/components'
 
 import { SoftGREProfileSettings } from './SoftGREProfileSettings'
 import { FieldLabel }             from './styledComponents'
@@ -10,11 +10,9 @@ import { FieldLabel }             from './styledComponents'
 interface SoftGRETunnelSettingsProps {
   index: number;
   portId?: string;
-  softGreProfileId: string;
-  softGreTunnelEnable: boolean;
   onGUIChanged?: (fieldName: string) => void;
   readonly: boolean;
-  dispatch?: React.Dispatch<SoftGreProfileDispatcher>;
+  toggleButtonToolTip?: string
 }
 
 export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
@@ -22,16 +20,15 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
   const {
     index,
     portId,
-    softGreProfileId,
-    softGreTunnelEnable,
     onGUIChanged,
     readonly,
-    dispatch
+    toggleButtonToolTip
   } = props
 
   const softgreTunnelFieldName = ['lan', index, 'softGreEnabled']
   const form = Form.useFormInstance()
-
+  const isSoftGreTunnelToggleEnabled = useWatch<boolean>(softgreTunnelFieldName, form)
+  const softGreProfileId = useWatch<string>(['lan', index, 'softGreProfileId'], form)
   return (
     <>
       <StepsForm.StepForm>
@@ -39,7 +36,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
           <Space>
             {$t({ defaultMessage: 'Enable SoftGRE Tunnel' })}
             <Tooltip.Question
-              title={
+              title={toggleButtonToolTip ||
                 $t({ defaultMessage: 'Tunnel the traffic to a SoftGRE gateway. '+
               'Please note that the uplink port does not support ' +
               'SoftGRE tunneling, which will cause the AP(s) to disconnect.' })
@@ -56,22 +53,8 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
               <Switch
                 data-testid={'softgre-tunnel-switch'}
                 disabled={readonly}
-                onClick={(value) => {
-                  onGUIChanged && onGUIChanged('softGreEnabled')
-                  if (dispatch) {
-                    value ?
-                      dispatch({
-                        state: SoftGreState.TurnOnSoftGre,
-                        portId,
-                        index,
-                        softGreProfileId: form.getFieldValue(['lan', index, 'softGreProfileId'])
-                      }) :
-                      dispatch({
-                        state: SoftGreState.TurnOffSoftGre,
-                        portId,
-                        index
-                      })
-                  }
+                onChange={() => {
+                  onGUIChanged?.('softGreEnabled')
                 }}
               />
             }
@@ -79,7 +62,7 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
         </FieldLabel>
       </StepsForm.StepForm>
       {
-        softGreTunnelEnable && <>
+        isSoftGreTunnelToggleEnabled && <>
           <Alert
             data-testid={'enable-softgre-tunnel-banner'}
             showIcon={true}
@@ -92,7 +75,6 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             onGUIChanged={onGUIChanged}
             readonly={readonly}
             portId={portId}
-            dispatch={dispatch}
           />
         </>
       }

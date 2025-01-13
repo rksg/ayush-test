@@ -61,7 +61,9 @@ export const policyTypePathMapping: Record<PolicyType, string> = {
   [PolicyType.ETHERNET_PORT_PROFILE]: 'ethernetPortProfile',
   [PolicyType.FLEX_AUTH]: 'authentication',
   [PolicyType.SERVER_CERTIFICATES]: 'serverCertificates',
-  [PolicyType.DIRECTORY_SERVER]: 'directoryServer'
+  [PolicyType.DIRECTORY_SERVER]: 'directoryServer',
+  [PolicyType.PORT_PROFILE]: 'portProfile',
+  [PolicyType.SWITCH_PORT_PROFILE]: 'switchPortProfile'
 }
 
 export function getPolicyRoutePath (props: PolicyRoutePathProps): string {
