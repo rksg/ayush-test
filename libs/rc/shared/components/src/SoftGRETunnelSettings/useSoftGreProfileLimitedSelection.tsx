@@ -3,6 +3,7 @@ import { useEffect, useState, useReducer } from 'react'
 import { DefaultOptionType } from 'antd/lib/select'
 import { omit, isEqual }     from 'lodash'
 
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { useLazyGetSoftGreViewDataListQuery } from '@acx-ui/rc/services'
 import {
   SoftGreDuplicationChangeDispatcher,
@@ -16,6 +17,7 @@ export const useSoftGreProfileLimitedSelection = (
 ) => {
 
   const params = useParams()
+  const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
 
   const [ softGREProfileOptionList, setSoftGREProfileOptionList] = useState<DefaultOptionType[]>([])
   const [ voteTallyBoard, setVoteTallyBoard ] = useState<VoteTallyBoard[]>([])
@@ -25,10 +27,10 @@ export const useSoftGreProfileLimitedSelection = (
 
   useEffect(() => {
     const setData = async () => {
-      const softGreProfileList = (await getSoftGreViewDataList({
+      const softGreProfileList = (isEthernetSoftgreEnabled ? (await getSoftGreViewDataList({
         params,
         payload: {}
-      }).unwrap()).data
+      }).unwrap()).data : [])
       if(softGreProfileList.length > 0) {
         setSoftGREProfileOptionList(softGreProfileList.map((softGreProfile) => {
           return { label: softGreProfile.name, value: softGreProfile.id }
