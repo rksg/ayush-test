@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { Form, Spin }   from 'antd'
+import { Spin }         from 'antd'
 import { debounce }     from 'lodash'
 import moment           from 'moment'
 import { DndProvider }  from 'react-dnd'
@@ -22,7 +22,6 @@ import * as UI            from './styledComponents'
 
 export default function AICanvas () {
   const { $t } = useIntl()
-  const [form] = Form.useForm()
   const scroll = useRef(null)
   const linkToDashboard = useTenantLink('/dashboard')
   const navigate = useNavigate()
@@ -48,14 +47,10 @@ export default function AICanvas () {
     'Design custom metrics widget',
     'Generate alerts widget',
     'Generate device health widget'
-  ]
+  ] // Only support english default questions in phase 1
 
   const getAllChatsQuery = useGetAllChatsQuery({})
   const { data: historyData } = getAllChatsQuery
-
-  useEffect(()=>{
-    form.setFieldValue('searchText', '')
-  }, [])
 
   useEffect(()=>{
     setTimeout(()=>{
@@ -155,12 +150,10 @@ export default function AICanvas () {
     if(event.key === 'Enter'){
       event.preventDefault()
       handleSearch()
-    }else{
-      setSearchText(form.getFieldValue('searchQ'))
     }
   }
   const handleSearch = async (suggestion?: string) => {
-    if ((!suggestion && searchText?.length <= 1) || loading) return
+    if ((!suggestion && searchText.length <= 1) || loading) return
     const question = suggestion || searchText
     const newMessage = {
       id: uuidv4(),
@@ -169,8 +162,7 @@ export default function AICanvas () {
     }
     setChats([...chats, newMessage])
     setLoading(true)
-    // setSearchText('')
-    form.setFieldValue('searchQ', '')
+    setSearchText('')
     const response = await chatAi({
       payload: {
         question,
@@ -372,23 +364,18 @@ export default function AICanvas () {
                     </div>
                   }
                   <div className='input'>
-                    <Form form={form}>
-                      <Form.Item
-                        name='searchQ'
-                        children={<UI.Input
-                          autoFocus
-                          // value={searchText}
-                          // onChange={({ target: { value } }) => setSearchText(value)}
-                          onKeyDown={debounce(onKeyDown, 300)}
-                          data-testid='search-input'
-                          style={{ height: 90, resize: 'none' }}
-                          placeholder={placeholder}
-                        />}
-                      />
-                    </Form>
+                    <UI.Input
+                      autoFocus
+                      onKeyDown={debounce(onKeyDown, 500)}
+                      value={searchText}
+                      onChange={({ target: { value } }) => setSearchText(value)}
+                      data-testid='search-input'
+                      style={{ height: 90, resize: 'none' }}
+                      placeholder={placeholder}
+                    />
                     <Button
                       icon={<SendMessageOutlined />}
-                      disabled={loading || searchText?.length <= 1}
+                      disabled={loading || searchText.length <= 1}
                       onClick={()=> { handleSearch() }}
                     />
                   </div>

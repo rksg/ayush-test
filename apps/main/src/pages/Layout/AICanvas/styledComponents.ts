@@ -293,7 +293,7 @@ export const Grid = styled.div`
 .rglb_group-item {
   width: 100%;
   margin-bottom: 30px;
-  cursor: move;
+  // cursor: move;
   position: relative;
   transition: all 0.2s ease-out;
 }

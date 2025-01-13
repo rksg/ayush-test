@@ -59,7 +59,7 @@ export interface Section {
 
 const layout:LayoutConfig = {
   containerWidth: 1200,
-  containerHeight: 300, // min height
+  containerHeight: 700, // min height
   calWidth: 380,
   rowHeight: 50,
   col: 4, // fixed (for R1)

@@ -31,75 +31,78 @@ interface WidgetCategory {
   sizes?: { width: number, height:number }[]
 }
 
-const ChartConfig:{ [key:string]: WidgetCategory } = {
-  pie: {
-    width: 1,
-    height: 4,
-    currentSizeIndex: 0,
-    sizes: [
-      {
-        width: 1,
-        height: 4
-      },
-      {
-        width: 2,
-        height: 8
-      },
-      {
-        width: 4,
-        height: 12
-      }
-    ]
-  },
-  line: {
-    width: 2,
-    height: 6,
-    currentSizeIndex: 0,
-    sizes: [
-      {
-        width: 2,
-        height: 6
-      },
-      {
-        width: 4,
-        height: 8
-      }
-    ]
-  },
-  bar: {
-    width: 2,
-    height: 8,
-    currentSizeIndex: 0,
-    sizes: [
-      {
-        width: 2,
-        height: 8
-      },
-      {
-        width: 3,
-        height: 10
-      },
-      {
-        width: 4,
-        height: 12
-      }
-    ]
-  },
-  table: {
-    width: 2,
-    height: 6,
-    currentSizeIndex: 0,
-    sizes: [
-      {
-        width: 2,
-        height: 6
-      },
-      {
-        width: 4,
-        height: 10
-      }
-    ]
+const getChartConfig = (data: WidgetListData) => {
+  const ChartConfig:{ [key:string]: WidgetCategory } = {
+    pie: {
+      width: 1,
+      height: 4,
+      currentSizeIndex: 0,
+      sizes: [
+        {
+          width: 1,
+          height: 4
+        },
+        {
+          width: 2,
+          height: 8
+        },
+        {
+          width: 4,
+          height: 12
+        }
+      ]
+    },
+    line: {
+      width: 2,
+      height: 6,
+      currentSizeIndex: 0,
+      sizes: [
+        {
+          width: 2,
+          height: 6
+        },
+        {
+          width: 4,
+          height: 8
+        }
+      ]
+    },
+    bar: {
+      width: 2,
+      height: data?.chartOption?.source?.length > 30 ? 8 : 6,
+      currentSizeIndex: 0,
+      sizes: [
+        {
+          width: 2,
+          height: data?.chartOption?.source?.length > 30 ? 8 : 6
+        },
+        {
+          width: 3,
+          height: 10
+        },
+        {
+          width: 4,
+          height: 12
+        }
+      ]
+    },
+    table: {
+      width: 2,
+      height: 6,
+      currentSizeIndex: 0,
+      sizes: [
+        {
+          width: 2,
+          height: 6
+        },
+        {
+          width: 4,
+          height: 10
+        }
+      ]
+    }
   }
+  return ChartConfig[data.chartType]
 }
 
 export const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
@@ -114,7 +117,7 @@ export const DraggableChart: React.FC<WidgetListProps> = ({ data }) => {
         id: data.id + uuidv4(),
         type: ItemTypes.CARD,
         isShadow: true,
-        ...(data.chartType? ChartConfig[data.chartType] : [])
+        ...(data.chartType? getChartConfig(data) : [])
       }
       return dragCard
     }
