@@ -714,6 +714,7 @@ export function MspCustomers () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={hasAccess() && { type: isAssignMultipleEcEnabled ? 'checkbox' : 'radio' }}
+          enableApiFilter={true}
         />
         {modalVisible && <ResendInviteModal
           visible={modalVisible}
