@@ -23,8 +23,8 @@ import { hasConfigChange }         from '../KPI'
 import { useColumns }              from '../PagedTable'
 import { useDownloadConfigChange } from '../services'
 
-import { handleConfigChangeDownload } from './handleConfigChangeDownload'
-import { CascaderFilterWrapper }      from './styledComponents'
+import { handleConfigChangeDownload }     from './handleConfigChangeDownload'
+import { CascaderFilterWrapper, GridRow } from './styledComponents'
 
 export const Search = () => {
   const { $t } = useIntl()
@@ -160,12 +160,12 @@ export const Download = () => {
 }
 
 export const Filter = () => {
-  return <>
+  return <GridRow>
     <GridCol col={{ span: 7 }}><Search/></GridCol>
     <GridCol col={{ span: 6 }}><KPIFilter/></GridCol>
     <GridCol col={{ span: 4, xxl: 6 }}><EntityTypeFilter/></GridCol>
     <GridCol col={{ span: 3, xxl: 2 }}><Reset/></GridCol>
     <GridCol col={{ span: 3, xxl: 2 }}><ResetZoom/></GridCol>
     <GridCol col={{ span: 1 }}><Download/></GridCol>
-  </>
+  </GridRow>
 }

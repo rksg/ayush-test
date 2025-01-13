@@ -21,7 +21,7 @@ export default function ConfigChange () {
 
   return <ConfigChangeProvider dateRange={dateRange}>
     <>
-      {isPaged ? <GridRow><Filter/></GridRow> : null}
+      {isPaged ? <Filter /> : null}
       <GridRow>
         <GridCol col={{ span: 24 }} style={{ minHeight: isMLISA ? '200px' : '170px' }}>
           { isPaged ? <SyncedChart/> : <Chart/> }
