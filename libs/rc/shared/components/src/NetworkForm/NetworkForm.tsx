@@ -459,7 +459,7 @@ export function NetworkForm (props:{
       let settingSaveData = tranferSettingsToSave(settingData, editMode)
       if (!editMode) {
         // eslint-disable-next-line max-len
-        settingSaveData = transferMoreSettingsToSave(data, settingSaveData, networkVxLanTunnelProfileInfo, 
+        settingSaveData = transferMoreSettingsToSave(data, settingSaveData, networkVxLanTunnelProfileInfo,
           { isSupportDVlanWithPskMacAuth })
       }
       updateSaveData(settingSaveData)
@@ -493,7 +493,7 @@ export function NetworkForm (props:{
 
     if (!editMode) {
       // eslint-disable-next-line max-len
-      dataMore = transferMoreSettingsToSave(dataMore, saveState, networkVxLanTunnelProfileInfo, 
+      dataMore = transferMoreSettingsToSave(dataMore, saveState, networkVxLanTunnelProfileInfo,
         { isSupportDVlanWithPskMacAuth })
     }
     handlePortalWebPage(dataMore)
