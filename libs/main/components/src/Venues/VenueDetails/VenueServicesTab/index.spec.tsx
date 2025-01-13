@@ -3,7 +3,7 @@ import { rest } from 'msw'
 
 import { Tabs }                                                                                         from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                       from '@acx-ui/feature-toggle'
-import { EdgeDhcpUrls, EdgeGeneralFixtures, EdgePinFixtures, EdgeSdLanUrls, EdgeUrlsInfo, EdgePinUrls } from '@acx-ui/rc/utils'
+import { EdgeDhcpUrls, EdgeGeneralFixtures, EdgePinFixtures, EdgePinUrls, EdgeSdLanUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                                     from '@acx-ui/store'
 import {
   mockServer,
@@ -155,7 +155,8 @@ describe('Venue service tab', () => {
       }
 
       beforeEach(() => {
-        jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.EDGE_ADV)
+        jest.mocked(useIsTierAllowed).mockImplementation(ff =>
+          ff === TierFeatures.EDGE_ADV || ff === TierFeatures.EDGE_MDNS_PROXY)
         jest.mocked(useIsSplitOn).mockReturnValue(true)
 
         mockServer.use(
