@@ -18,6 +18,8 @@ export const useSoftGreProfileLimitedSelection = (
 
   const params = useParams()
   const isEthernetSoftgreEnabled = useIsSplitOn(Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
+  const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
+
 
   const [ softGREProfileOptionList, setSoftGREProfileOptionList] = useState<DefaultOptionType[]>([])
   const [ voteTallyBoard, setVoteTallyBoard ] = useState<VoteTallyBoard[]>([])
@@ -27,10 +29,11 @@ export const useSoftGreProfileLimitedSelection = (
 
   useEffect(() => {
     const setData = async () => {
-      const softGreProfileList = (isEthernetSoftgreEnabled ? (await getSoftGreViewDataList({
-        params,
-        payload: {}
-      }).unwrap()).data : [])
+      const softGreProfileList = ((isEthernetSoftgreEnabled && isEthernetPortProfileEnabled) ?
+        (await getSoftGreViewDataList({
+          params,
+          payload: {}
+        }).unwrap()).data : [])
       if(softGreProfileList.length > 0) {
         setSoftGREProfileOptionList(softGreProfileList.map((softGreProfile) => {
           return { label: softGreProfile.name, value: softGreProfile.id }
