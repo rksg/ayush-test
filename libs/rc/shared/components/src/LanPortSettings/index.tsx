@@ -4,12 +4,9 @@ import { Form, Input, InputNumber, Select, Space, Switch } from 'antd'
 import { DefaultOptionType }                               from 'antd/lib/select'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
-import { cssStr, Tooltip }                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
-import { WarningCircleSolid }                       from '@acx-ui/icons'
-import {
-  useQueryEthernetPortProfilesWithOverwritesQuery
-} from '@acx-ui/rc/services'
+import { cssStr, Tooltip }        from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { WarningCircleSolid }     from '@acx-ui/icons'
 import {
   ApLanPortTypeEnum,
   CapabilitiesApModel,
@@ -94,7 +91,6 @@ export function LanPortSettings (props: {
     useVenueSettings,
     venueId,
     serialNumber,
-    dispatch,
     softGREProfileOptionList,
     optionDispatch,
     validateIsFQDNDuplicate
