@@ -4,12 +4,12 @@ import { Form, Select, Button, Space } from 'antd'
 import { DefaultOptionType }           from 'antd/lib/select'
 import { useIntl }                     from 'react-intl'
 
+import { useGetSoftGreViewDataListQuery } from '@acx-ui/rc/services'
 import {
   SoftGreDuplicationChangeDispatcher,
   SoftGreDuplicationChangeState
 } from '@acx-ui/rc/utils'
-import { useGetSoftGreViewDataListQuery } from '@acx-ui/rc/services'
-import { useParams }                      from '@acx-ui/react-router-dom'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import SoftGreDrawer from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
 
