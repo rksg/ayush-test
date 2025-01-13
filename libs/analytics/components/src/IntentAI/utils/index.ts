@@ -57,7 +57,7 @@ export enum Actions {
   Resume = 'resume'
 }
 
-export const isVisibledByAction = (rows: IntentListItem[], action: Actions) => {
+export const isVisibleByAction = (rows: IntentListItem[], action: Actions) => {
   switch (action) {
     case Actions.One_Click_Optimize:
       return !rows.some(row => row.displayStatus !== DisplayStates.new)
