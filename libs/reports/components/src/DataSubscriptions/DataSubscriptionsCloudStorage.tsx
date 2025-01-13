@@ -6,23 +6,26 @@ import { generateBreadcrumb } from './utils'
 
 type DataSubscriptionsCloudStorageProps = {
   isRAI?: boolean
+  editMode?: boolean
 }
 
-const DataSubscriptionsCloudStorage: React.FC<DataSubscriptionsCloudStorageProps> = ({ isRAI }) => {
-  const { $t } = useIntl()
-  return (
-    <>
-      <PageHeader
-        title={$t({ defaultMessage: 'Cloud Storage Edit' })}
-        breadcrumb={generateBreadcrumb({ isRAI })}
-      />
-      <GridRow>
-        <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>
+const DataSubscriptionsCloudStorage: React.FC<DataSubscriptionsCloudStorageProps> =
+ ({ isRAI, editMode=false }) => {
+   const { $t } = useIntl()
+   return (
+     <>
+       <PageHeader
+         title={editMode? $t({ defaultMessage: 'Cloud Storage Edit' }) :
+           $t({ defaultMessage: 'New Cloud Storage' })}
+         breadcrumb={generateBreadcrumb({ isRAI })}
+       />
+       <GridRow>
+         <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>
 
-        </GridCol>
-      </GridRow>
-    </>
-  )
-}
+         </GridCol>
+       </GridRow>
+     </>
+   )
+ }
 
 export default DataSubscriptionsCloudStorage
