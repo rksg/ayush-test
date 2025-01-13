@@ -16,6 +16,7 @@ import {
 import {
   AclOptionType,
   DevicePolicy, filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation,
   getScopeKeyByPolicy,
   Network, PolicyOperation,
   PolicyType,
@@ -109,6 +110,7 @@ const DevicePolicyComponent = () => {
   }, [networkTableQuery.data, networkIds])
 
   const actions = [{
+    rbacOpsIds: getPolicyAllowedOperation(PolicyType.DEVICE_POLICY, PolicyOperation.CREATE),
     scopeKey: getScopeKeyByPolicy(PolicyType.DEVICE_POLICY, PolicyOperation.CREATE),
     label: $t({ defaultMessage: 'Add Device & OS Policy' }),
     disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_DEVICE_POLICY,
@@ -133,6 +135,7 @@ const DevicePolicyComponent = () => {
 
   const rowActions: TableProps<DevicePolicy>['rowActions'] = [
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.DEVICE_POLICY, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.DEVICE_POLICY, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
@@ -141,6 +144,7 @@ const DevicePolicyComponent = () => {
       }
     },
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.DEVICE_POLICY, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.DEVICE_POLICY, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),

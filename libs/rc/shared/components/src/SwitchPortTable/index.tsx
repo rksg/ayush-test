@@ -4,14 +4,15 @@ import { Space }   from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Tooltip, Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { Table, TableProps, Tooltip, Loader }                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
 import {
   useGetFlexAuthenticationProfilesQuery,
   useSwitchListQuery,
   useLazyGetSwitchVlanQuery,
   useLazyGetSwitchVlanUnionByVenueQuery,
   useSwitchPortlistQuery
+  // useSwitchPortProfilesListQuery
 } from '@acx-ui/rc/services'
 import {
   getSwitchModel,
@@ -47,6 +48,7 @@ export function SwitchPortTable (props: {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchV6AclEnabled = useIsSplitOn(Features.SUPPORT_SWITCH_V6_ACL)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
+  const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
 
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -80,12 +82,17 @@ export function SwitchPortTable (props: {
     enableAggregateStackMember: false,
     enableRbac: isSwitchRbacEnabled
   }, {
-    skip: !isSwitchRbacEnabled || !vid || !isSwitchFlexAuthEnabled
+    skip: !isSwitchRbacEnabled || !vid || (!isSwitchFlexAuthEnabled && !isSwitchPortProfileEnabled)
   })
 
   const vlanFilterOptions = Array.isArray(vlanList) ? vlanList.map(v => ({
     key: v.vlanId.toString(), value: v.vlanId.toString()
   })) : []
+
+  // const { data: switchPortProfilesList } = useSwitchPortProfilesListQuery({
+  //   params: { tenantId },
+  //   payload: { fields: ['id'] }
+  // }, { skip: !isSwitchPortProfileEnabled })
 
   useEffect(() => {
     const setData = async () => {
@@ -205,7 +212,30 @@ export function SwitchPortTable (props: {
         return row.poeUsage
       }
     }
-  }, {
+  },
+  //Temporarily commented
+  // {
+  //   key: 'switchPortProfileId',
+  //   title: $t({ defaultMessage: 'Profile Name' }),
+  //   dataIndex: 'switchPortProfileId',
+  //   show: isSwitchPortProfileEnabled,
+  //   sorter: true,
+  //   render: (_, row) => {
+  //     return switchPortProfilesList?.data?.find(
+  //       profile => profile.id === row.switchPortProfileId)?.name
+  //   }
+  // }, {
+  //   key: 'switchPortProfileId',
+  //   title: $t({ defaultMessage: 'Type' }),
+  //   dataIndex: 'switchPortProfileId',
+  //   show: isSwitchPortProfileEnabled,
+  //   sorter: true,
+  //   render: (_, row) => {
+  //     return switchPortProfilesList?.data?.find(
+  //       profile => profile.id === row.switchPortProfileId)?.type
+  //   }
+  // },
+  {
     key: 'vlanIds',
     title: $t({ defaultMessage: 'VLANs' }),
     dataIndex: 'vlanIds',
