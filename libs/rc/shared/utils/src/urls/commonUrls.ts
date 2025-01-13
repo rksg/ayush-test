@@ -162,7 +162,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId',
     oldUrl: '/api/tenant/:tenantId/venue/:venueId',
-    opsApi: 'PUT:/venues/{venueId}',
+    opsApi: 'PUT:/venues/:id',
     newApi: true
   },
   getVenue: {
@@ -239,6 +239,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/:venueId/floorplans',
     oldUrl: '/api/tenant/:tenantId/venue/:venueId/floor-plan',
+    opsApi: 'POST:/venues/:id/floorplans',
     newApi: true
   },
   updateFloorplan: {

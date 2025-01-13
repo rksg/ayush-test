@@ -18,8 +18,6 @@ import {
 } from '@acx-ui/react-router-dom'
 import { RolesEnum, SwitchScopes, WifiScopes } from '@acx-ui/types'
 import {
-  getUserProfile,
-  hasAllowedOperations,
   hasPermission,
   hasRoles
 }             from '@acx-ui/user'
@@ -58,7 +56,6 @@ function VenueEditTabs () {
     })
   }
 
-  const { rbacOpsApiEnabled } = getUserProfile()
   const { navigator } = useContext(NavigationContext)
   const blockNavigator = navigator as History
   const unblockRef = useRef<Function>()
@@ -96,14 +93,13 @@ function VenueEditTabs () {
     setPreviousPath((location as LocationExtended)?.state?.from?.pathname )
   }, [])
 
-  const hasDetailsPermission = rbacOpsApiEnabled
-    ? hasAllowedOperations([getOpsApi(CommonUrlsInfo.updateVenue)])
-    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
-
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       {
-        hasDetailsPermission &&
+        hasPermission({
+          roles: [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR],
+          rbacOpsIds: [getOpsApi(CommonUrlsInfo.updateVenue)]
+        }) &&
         <Tabs.TabPane
           tab={intl.$t({ defaultMessage: '<VenueSingular></VenueSingular> Details' })}
           key='details' />
