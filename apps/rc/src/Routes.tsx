@@ -104,7 +104,7 @@ import ConnectionMeteringPageForm                   from './pages/Policies/Conne
 import ConnectionMeteringTable                      from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
 import DirectoryServerDetail                        from './pages/Policies/DirectoryServer/DirectoryServerDetail/DirectoryServerDetail'
 import DirectoryServerTable                         from './pages/Policies/DirectoryServer/DirectoryServerTable/DirectoryServerTable'
-import EthernetPortProfileTable                     from './pages/Policies/EthernetPortProfile/EthernetPortProfileTable'
+import EthernetPortProfile                          from './pages/Policies/EthernetPortProfile'
 import AddFlexibleAuthentication                    from './pages/Policies/FlexibleAuthentication/AddFlexibleAuthentication'
 import EditFlexibleAuthentication                   from './pages/Policies/FlexibleAuthentication/EditFlexibleAuthentication'
 import FlexibleAuthenticationDetail                 from './pages/Policies/FlexibleAuthentication/FlexibleAuthenticationDetail'
@@ -121,6 +121,10 @@ import MacRegistrationListDetails
   from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable                                        from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
 import MyPolicies                                                       from './pages/Policies/MyPolicies'
+import PortProfile                                                      from './pages/Policies/PortProfile'
+import CreatePortProfile                                                from './pages/Policies/PortProfile/create'
+import SwitchPortProfileDetail                                          from './pages/Policies/PortProfile/PortProfileDetail/SwitchPortProfileDetail'
+import SwitchPortProfileForm                                            from './pages/Policies/PortProfile/PortProfileForm/SwitchPortProfileForm'
 import SelectPolicyForm                                                 from './pages/Policies/SelectPolicyForm'
 import SnmpAgentDetail                                                  from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
 import SnmpAgentForm                                                    from './pages/Policies/SnmpAgent/SnmpAgentForm/SnmpAgentForm'
@@ -878,6 +882,7 @@ function PolicyRoutes () {
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   // eslint-disable-next-line max-len
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
+  const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -1494,7 +1499,7 @@ function PolicyRoutes () {
             type: PolicyType.ETHERNET_PORT_PROFILE ,
             oper: PolicyOperation.LIST
           })}
-          element={<EthernetPortProfileTable/>}
+          element={<EthernetPortProfile/>}
         />
         <Route
           path={getPolicyRoutePath({
@@ -1516,6 +1521,33 @@ function PolicyRoutes () {
             oper: PolicyOperation.DETAIL
           })}
           element={<EthernetPortProfileDetail/>}
+        />
+      </>
+      }
+      {isSwitchPortProfileEnabled && <>
+        <Route
+          path='policies/portProfile/create'
+          element={<CreatePortProfile />}
+        />
+        <Route
+          path='policies/portProfile/:activeTab/'
+          element={<PortProfile />}
+        />
+        <Route
+          path='policies/portProfile/:activeTab/:activeSubTab'
+          element={<PortProfile />}
+        />
+        <Route
+          path='policies/portProfile/switch/profiles/add'
+          element={<SwitchPortProfileForm />}
+        />
+        <Route
+          path='policies/portProfile/switch/profiles/:portProfileId/edit'
+          element={<SwitchPortProfileForm />}
+        />
+        <Route
+          path='policies/portProfile/switch/profiles/:portProfileId/detail'
+          element={<SwitchPortProfileDetail />}
         />
       </>
       }
