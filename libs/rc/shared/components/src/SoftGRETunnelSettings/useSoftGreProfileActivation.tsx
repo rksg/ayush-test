@@ -34,14 +34,12 @@ export const useSoftGreProfileActivation = (
     currentLanPort: LanPort,
     originLanPort: LanPort | undefined
   ) => {
-
     const pendingChanges = pendingLanPortChanges.current
     const isPendingChangesEmpty = _.isEmpty(pendingChanges)
     const existedModelChanges = pendingChanges.find((change) => change.model === currentModel)
     const existedLanPortChanges = existedModelChanges?.lanPorts.find((lanPort) => {
       return lanPort.lanPortId === currentLanPort.portId
     })
-
     // Ignore when no change, no current model change, no current lan port change
     if (isPendingChangesEmpty || !existedModelChanges || !existedLanPortChanges) {
       return
@@ -256,6 +254,3 @@ export const useSoftGreProfileActivation = (
   return { dispatch, handleUpdateSoftGreProfile }
 
 }
-
-
-

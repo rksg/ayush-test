@@ -4,14 +4,12 @@ import { Form, Select, Button, Space } from 'antd'
 import { DefaultOptionType }           from 'antd/lib/select'
 import { useIntl }                     from 'react-intl'
 
-import { useGetSoftGreViewDataListQuery } from '@acx-ui/rc/services'
 import {
   SoftGreDuplicationChangeDispatcher,
-  SoftGreDuplicationChangeState,
-  SoftGreProfileDispatcher,
-  SoftGreState
+  SoftGreDuplicationChangeState
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+import { useGetSoftGreViewDataListQuery } from '@acx-ui/rc/services'
+import { useParams }                      from '@acx-ui/react-router-dom'
 
 import SoftGreDrawer from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
 
@@ -22,7 +20,6 @@ interface SoftGREProfileSettingsProps {
   softGreProfileId: string
   onGUIChanged?: (fieldName: string) => void
   readonly: boolean
-  dispatch?: React.Dispatch<SoftGreProfileDispatcher>
   portId?: string;
   softGREProfileOptionList?: DefaultOptionType[];
   optionDispatch?: React.Dispatch<SoftGreDuplicationChangeDispatcher>
@@ -38,7 +35,6 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
     softGreProfileId,
     onGUIChanged,
     readonly,
-    dispatch,
     optionDispatch,
     portId = '0',
     softGREProfileOptionList= [],
@@ -64,17 +60,12 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
     if(!value) {
       setDetailDrawerVisible(false)
     }
-    onGUIChanged && onGUIChanged('softgreProfile')
+    onGUIChanged?.('softgreProfile')
+
     setSoftGREProfile(
       softGREProfileOptionList.find((profile) => profile.value === value) ??
        { label: $t({ defaultMessage: 'Select...' }), value: '' }
     )
-    dispatch && dispatch({
-      state: SoftGreState.ModifySoftGreProfile,
-      portId,
-      index,
-      softGreProfileId: form.getFieldValue(['lan', index, 'softGreProfileId'])
-    })
     optionDispatch && optionDispatch({
       state: SoftGreDuplicationChangeState.OnChangeSoftGreProfile,
       softGreProfileId: form.getFieldValue(['lan', index, 'softGreProfileId']),
@@ -155,7 +146,9 @@ export const SoftGREProfileSettings = (props: SoftGREProfileSettingsProps) => {
             />}
         />
         <Space split='|'>
-          <Button type='link'
+          <Button
+            type='link'
+            disabled={!softGreProfileId}
             onClick={() => {
               setDetailDrawerVisible(true)
             }}>
