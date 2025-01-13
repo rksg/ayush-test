@@ -21,11 +21,15 @@ import {
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { InformationOutlined }       from '@acx-ui/icons'
 
-import { richTextFormatValues }                from '../../common/richTextFormatValues'
-import { useIntentContext }                    from '../../IntentContext'
-import { Statuses }                            from '../../states'
-import { IntentDetail }                        from '../../useIntentDetailsQuery'
-import { coldTierDataText, dataRetentionText } from '../../utils'
+import { richTextFormatValues }      from '../../common/richTextFormatValues'
+import { useIntentContext }          from '../../IntentContext'
+import { IntentDetail, intentState } from '../../useIntentDetailsQuery'
+import {
+  coldTierDataText,
+  dataRetentionText,
+  isVisibleByAction,
+  Actions
+} from '../../utils'
 
 import { Legend }               from './Legend'
 import { useIntentAICRRMQuery } from './services'
@@ -139,12 +143,12 @@ const GraphTitle = ({ details }: { details: IntentDetail }) => {
   </UI.GraphTitleWrapper>
 }
 
-const rrmGraphTooltip = (status: Statuses) => {
-  if (!(status === Statuses.new || status === Statuses.active)) {
+const rrmGraphTooltip = (intent: IntentDetail) => {
+  if (!isVisibleByAction([intent], Actions.Optimize)) {
     return null
   }
 
-  const text = status === Statuses.new
+  const text = intentState(intent) === 'inactive'
     ? defineMessage({ defaultMessage: `
       The graph and channel plan are generated based on the <i>default</i> Intent priority.
       `
@@ -155,12 +159,12 @@ const rrmGraphTooltip = (status: Statuses) => {
     })
   return {
     title: defineMessage({ defaultMessage: `
-      If the Intent priority is changed and applied, the RRM Machine Learning algorithm 
-      will re-learn using the updated Intent priority and recent dynamic metrics during 
+      If the Intent priority is changed and applied, the RRM Machine Learning algorithm
+      will re-learn using the updated Intent priority and recent dynamic metrics during
       the next scheduled daily execution, rebuilding the graph and channel plan accordingly.
       `
     }),
-    text: text
+    text
   }
 }
 
@@ -182,7 +186,7 @@ export const IntentAIRRMGraph = ({
   const closeDrawer = () => setVisible(false)
   useEffect(() => setKey(Math.random()), [visible]) // to reset graph zoom
 
-  const tooltip = rrmGraphTooltip(intent.status)
+  const tooltip = rrmGraphTooltip(intent)
   const channelPlan = _.get(intent, ['metadata', 'algorithmData', 'isCrrmFullOptimization'])
   const showTooltip = tooltip && (channelPlan !== isFullOptimization)
 
