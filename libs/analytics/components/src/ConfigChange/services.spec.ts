@@ -9,6 +9,7 @@ import {
   useConfigChangeSeriesQuery,
   usePagedConfigChangeQuery,
   useKPIChangesQuery,
+  useDownloadConfigChange,
   SORTER_ABBR
 } from './services'
 
@@ -168,5 +169,37 @@ describe('useKPIChangesQuery', () => {
     const { result } = renderHook(() => useKPIChangesQuery(param), { wrapper: Provider })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(result.current.data).toEqual({})
+  })
+})
+
+describe('useDownloadConfigChange', () => {
+  const param = {
+    path: defaultNetworkPath,
+    startDate: '2023-04-01T16:00:00+08:00',
+    endDate: '2023-04-30T16:00:00+08:00',
+    range: DateRange.last24Hours,
+    filterBy: { entityName: 'entityName', entityType: [ 'ap' ] }
+  }
+  afterEach(() => jest.resetAllMocks())
+  it('should return correct data', async () => {
+    mockGraphqlQuery(dataApiURL, 'ConfigChangeSeries',
+      { data: { network: { hierarchyNode: { configChangeSeries } } } })
+    const { result } = renderHook(() => useDownloadConfigChange(), { wrapper: Provider })
+    const [ download ] = result.current
+    const data = await download(param).unwrap()
+    expect(data).toEqual(configChangeSeries.map((item, id) => ({ ...item, id })))
+  })
+  it('should return empty data', async () => {
+    const noDataParam = {
+      ...param,
+      startDate: '2023-05-01T16:00:00+08:00',
+      endDate: '2023-05-30T16:00:00+08:00'
+    }
+    mockGraphqlQuery(dataApiURL, 'ConfigChangeSeries',
+      { data: { network: { hierarchyNode: { configChangeSeries: [] } } } })
+    const { result } = renderHook(() => useDownloadConfigChange(), { wrapper: Provider })
+    const [ download ] = result.current
+    const data = await download(noDataParam).unwrap()
+    expect(data).toEqual([])
   })
 })

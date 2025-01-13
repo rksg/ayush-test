@@ -28,7 +28,7 @@ import {
   TableResult,
   VenueSyslogSettingType,
   useConfigTemplateMutationFnSwitcher,
-  hasPolicyPermission
+  useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -170,6 +170,9 @@ export function Syslog () {
     setEnableServerRadio(orinData.enabled ?? false)
   }
 
+  const hasAddProfilePermission = useTemplateAwarePolicyPermission(
+    PolicyType.SYSLOG, PolicyOperation.CREATE
+  )
 
   return (
     <Loader states={[{
@@ -206,7 +209,7 @@ export function Syslog () {
               })}
               style={{ width: '200px' }}
             />
-            { hasPolicyPermission({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE }) &&
+            { hasAddProfilePermission &&
             <Button type='link'
               style={{ marginLeft: '20px' }}
               onClick={async () => {
