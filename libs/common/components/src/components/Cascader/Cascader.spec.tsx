@@ -2,7 +2,7 @@ import React from 'react'
 
 import '@testing-library/jest-dom'
 
-import userEvent, { PointerEventsCheckLevel } from '@testing-library/user-event'
+import userEvent from '@testing-library/user-event'
 
 import { act, render, screen, cleanup, waitFor } from '@acx-ui/test-utils'
 
@@ -578,10 +578,7 @@ describe('Cascader', () => {
     // keyboard events don't trigger onDropdownVisibleChange
     // simulate menu is kept open after left arrow and that menu item can be clicked
     await userEvent.click(document.body)
-    await userEvent.click(
-      screen.getByRole('menuitemcheckbox', { name: /SSID 1/ }),
-      { pointerEventsCheck: PointerEventsCheckLevel.Never }
-    )
+    await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /SSID 1/ }))
   })
 
   it('cancels on escape after use of left arrow', async () => {
@@ -686,10 +683,5 @@ describe('Cascader', () => {
     await userEvent.click(screen.getByRole('menuitemcheckbox', { name: /SSID 1/ }))
     act(() => { screen.getByRole('button', { name: 'Apply' }).click() })
     expect(loadDataMock).toHaveBeenCalledWith(options)
-  })
-
-  it('flake1', ( ) => {
-    const randomNumber = Math.floor(Math.random() * 3) + 1
-    expect(randomNumber).toBe(1)
   })
 })
