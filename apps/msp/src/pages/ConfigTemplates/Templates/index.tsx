@@ -13,8 +13,8 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
-import { DateFormatEnum, userDateTimeFormat }                                       from '@acx-ui/formatter'
+import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, userDateTimeFormat }                                        from '@acx-ui/formatter'
 import {
   renderConfigTemplateDetailsComponent,
   useAccessControlSubPolicyVisible,
@@ -54,11 +54,11 @@ import {
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
 
-import { AppliedToTenantDrawer }                                         from './AppliedToTenantDrawer'
-import { ApplyTemplateDrawer }                                           from './ApplyTemplateDrawer'
-import { ShowDriftsDrawer }                                              from './ShowDriftsDrawer'
-import { getConfigTemplateDriftStatusLabel, getConfigTemplateTypeLabel } from './templateUtils'
-import { useAddTemplateMenuProps }                                       from './useAddTemplateMenuProps'
+import { AppliedToTenantDrawer }                                                                            from './AppliedToTenantDrawer'
+import { ApplyTemplateDrawer }                                                                              from './ApplyTemplateDrawer'
+import { ShowDriftsDrawer }                                                                                 from './ShowDriftsDrawer'
+import { getConfigTemplateDriftStatusLabel, getConfigTemplateEnforcementLabel, getConfigTemplateTypeLabel } from './templateUtils'
+import { useAddTemplateMenuProps }                                                                          from './useAddTemplateMenuProps'
 
 export function ConfigTemplateList () {
   const { $t } = useIntl()
@@ -206,6 +206,7 @@ function useColumns (props: TemplateColumnProps) {
   } = props
   const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
   const driftsEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_DRIFTS)
+  const enforcementEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED)
 
   const typeFilterOptions = Object.entries(ConfigTemplateType).map((type =>
     ({ key: type[1], value: getConfigTemplateTypeLabel(type[1]) })
@@ -214,6 +215,11 @@ function useColumns (props: TemplateColumnProps) {
   const driftStatusFilterOptions = Object.entries(ConfigTemplateDriftType).map((status =>
     ({ key: status[1], value: getConfigTemplateDriftStatusLabel(status[1]) })
   ))
+
+  const enforcementFilterOptions = [
+    { key: true, value: getConfigTemplateEnforcementLabel(true) },
+    { key: false, value: getConfigTemplateEnforcementLabel(false) }
+  ]
 
   const columns: TableProps<ConfigTemplate>['columns'] = [
     {
@@ -272,6 +278,26 @@ function useColumns (props: TemplateColumnProps) {
         </Button>
       }
     },
+    ...(enforcementEnabled ? [{
+      key: 'enforced',
+      title: $t({ defaultMessage: 'Enforcement' }),
+      dataIndex: 'enforced',
+      filterable: enforcementFilterOptions,
+      sorter: true,
+      render: function (_: ReactNode, row: ConfigTemplate) {
+        return getConfigTemplateEnforcementLabel(row.enforced)
+      }
+    }] : []),
+    ...(driftsEnabled ? [{
+      key: 'driftStatus',
+      title: $t({ defaultMessage: 'Drift Status' }),
+      dataIndex: 'driftStatus',
+      filterable: driftStatusFilterOptions,
+      sorter: true,
+      render: function (_: ReactNode, row: ConfigTemplate) {
+        return getConfigTemplateDriftStatusLabel(row.driftStatus)
+      }
+    }] : []),
     {
       key: 'createdBy',
       title: $t({ defaultMessage: 'Created By' }),
@@ -296,16 +322,6 @@ function useColumns (props: TemplateColumnProps) {
         return moment(row.lastModified).format(dateFormat)
       }
     },
-    ...(driftsEnabled ? [{
-      key: 'driftStatus',
-      title: $t({ defaultMessage: 'Drift Status' }),
-      dataIndex: 'driftStatus',
-      filterable: driftStatusFilterOptions,
-      sorter: true,
-      render: function (_: ReactNode, row: ConfigTemplate) {
-        return getConfigTemplateDriftStatusLabel(row.driftStatus)
-      }
-    }] : []),
     {
       key: 'lastApplied',
       title: $t({ defaultMessage: 'Last Applied' }),

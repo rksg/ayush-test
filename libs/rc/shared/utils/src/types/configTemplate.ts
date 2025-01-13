@@ -42,6 +42,7 @@ export interface ConfigTemplate {
   lastModified: number,
   lastApplied: number,
   driftStatus?: ConfigTemplateDriftType
+  enforced?: boolean
 }
 
 export interface ApplyConfigTemplatePaylod {

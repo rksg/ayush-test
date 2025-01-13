@@ -470,6 +470,14 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         }))
         return batchApi(ConfigTemplateUrlsInfo.patchDriftReport, requests, fetchWithBQ)
       }
+    }),
+    updateEnforcementStatus: build.mutation<CommonResult, RequestPayload<{ enabled: boolean }>>({
+      query: ({ params, payload }) => {
+        const apiInfo = payload?.enabled
+          ? ConfigTemplateUrlsInfo.updateEnforcement
+          : ConfigTemplateUrlsInfo.deleteEnforcement
+        return { ...createHttpRequest(apiInfo, params) }
+      }
     })
   })
 })
@@ -500,5 +508,6 @@ export const {
   useAddNetworkVenueTemplatesMutation,
   useGetDriftInstancesQuery,
   useLazyGetDriftReportQuery,
-  usePatchDriftReportMutation
+  usePatchDriftReportMutation,
+  useUpdateEnforcementStatusMutation
 } = configTemplateApi

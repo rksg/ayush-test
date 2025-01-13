@@ -364,5 +364,24 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  updateEnforcement: {
+    method: 'put',
+    url: '/templates/:templateId/enforce',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    },
+    opsApi: 'PUT:/templates/{id}/enforce'
+  },
+  deleteEnforcement: {
+    method: 'delete',
+    url: '/templates/:templateId/enforce',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    },
+    opsApi: 'DELETE:/templates/{id}/enforce'
   }
 }

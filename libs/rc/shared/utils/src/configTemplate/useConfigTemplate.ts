@@ -1,9 +1,10 @@
 import { useConfigTemplateContext } from './ConfigTemplateContext'
 
 export function useConfigTemplate () {
-  const { isTemplate } = useConfigTemplateContext()
+  const { isTemplate, ...rest } = useConfigTemplateContext()
 
   return {
-    isTemplate: !!isTemplate
+    isTemplate: !!isTemplate,
+    ...rest
   }
 }

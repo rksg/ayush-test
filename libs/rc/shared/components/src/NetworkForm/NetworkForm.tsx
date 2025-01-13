@@ -173,7 +173,7 @@ export function NetworkForm (props:{
 
   const isUseWifiRbacApi = isRuckusAiMode ? false : wifiRbacApiEnabled
   const isConfigTemplateRbacEnabled = isRuckusAiMode ? false : configTemplateRbacEnabled
-  const { isTemplate } = useConfigTemplate()
+  const { isTemplate, saveEnforcementConfig } = useConfigTemplate()
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseWifiRbacApi
   const enableServiceRbac = isRuckusAiMode ? false : serviceRbacEnabled
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
@@ -906,6 +906,10 @@ export function NetworkForm (props:{
         }
       }
 
+      if (networkId) {
+        networkId && afterVenueActivationRequest.push(saveEnforcementConfig(networkId))
+      }
+
       await Promise.all(afterVenueActivationRequest)
 
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
@@ -1051,6 +1055,10 @@ export function NetworkForm (props:{
           // eslint-disable-next-line max-len
           updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues, cloneMode, true)
         )
+      }
+
+      if (payload.id) {
+        afterVenueActivationRequest.push(saveEnforcementConfig(payload.id))
       }
 
       await Promise.all(afterVenueActivationRequest)
