@@ -13,7 +13,7 @@ import {
   SearchInput,
   TableProps,
   Tooltip
-}                                                    from '@acx-ui/components'
+} from '@acx-ui/components'
 import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                 from '@acx-ui/icons'
 import { PathFilter, exportMessageMapping } from '@acx-ui/utils'
@@ -97,6 +97,20 @@ export const Reset = () => {
     : null
 }
 
+export const ResetZoom = () => {
+  const { $t } = useIntl()
+  const {
+    chartZoom, initialZoom, setChartZoom
+  } = useContext(ConfigChangeContext)
+  const canResetZoom =
+    (initialZoom?.start !== undefined || initialZoom?.end !== undefined) &&
+    (chartZoom?.start !== initialZoom?.start || chartZoom?.end !== initialZoom?.end)
+  return canResetZoom ?
+    <Button onClick={() => setChartZoom(initialZoom)}>
+      {$t({ defaultMessage: 'Reset Zoom' })}
+    </Button> : null
+}
+
 function useDownload () {
   const showIntentAI = [
     useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
@@ -147,11 +161,11 @@ export const Download = () => {
 
 export const Filter = () => {
   return <>
-    <GridCol col={{ span: 6 }}><Search/></GridCol>
+    <GridCol col={{ span: 7 }}><Search/></GridCol>
     <GridCol col={{ span: 6 }}><KPIFilter/></GridCol>
-    <GridCol col={{ span: 6 }}><EntityTypeFilter/></GridCol>
-    <GridCol col={{ span: 3 }}><Reset/></GridCol>
-    <GridCol col={{ span: 2 }}>{/* Reset Chart Button */}</GridCol>
+    <GridCol col={{ span: 4, xxl: 6 }}><EntityTypeFilter/></GridCol>
+    <GridCol col={{ span: 3, xxl: 2 }}><Reset/></GridCol>
+    <GridCol col={{ span: 3, xxl: 2 }}><ResetZoom/></GridCol>
     <GridCol col={{ span: 1 }}><Download/></GridCol>
   </>
 }
