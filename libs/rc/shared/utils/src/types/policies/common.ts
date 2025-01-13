@@ -38,6 +38,14 @@ export enum PolicyType {
   SWITCH_PORT_PROFILE = 'Switch Port Profile',
 }
 
+export enum PolicyOperation {
+  CREATE,
+  EDIT,
+  DELETE,
+  DETAIL,
+  LIST
+}
+
 export enum PolicyTechnology {
   WIFI = 'WI-FI',
   SWITCH = 'SWITCH'

@@ -15,6 +15,7 @@ import {
   PolicyType,
   useConfigTemplate,
   useConfigTemplateQueryFnSwitcher,
+  useTemplateAwarePolicyAllowedOperation,
   usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
 
@@ -45,6 +46,8 @@ export function AAAPolicyDetail () {
         breadcrumb={breadcrumb}
         extra={filterByAccessForServicePolicyMutation([
           <PolicyConfigTemplateLinkSwitcher
+            // eslint-disable-next-line max-len
+            rbacOpsIds={useTemplateAwarePolicyAllowedOperation(PolicyType.AAA, PolicyOperation.EDIT)}
             scopeKey={getScopeKeyByPolicy(PolicyType.AAA, PolicyOperation.EDIT)}
             type={PolicyType.AAA}
             oper={PolicyOperation.EDIT}

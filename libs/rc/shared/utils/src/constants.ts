@@ -127,6 +127,14 @@ export enum ServiceType {
   EDGE_TNM_SERVICE = 'Edge Thirdparty Network Management'
 }
 
+export enum ServiceOperation {
+  CREATE,
+  EDIT,
+  DELETE,
+  DETAIL,
+  LIST
+}
+
 export enum ServiceStatus {
   UP = 'UP',
   DOWN = 'DOWN'

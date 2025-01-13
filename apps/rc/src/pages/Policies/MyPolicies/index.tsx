@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { find }                      from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                            from '@acx-ui/components'
+import { GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                                    from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                        from '@acx-ui/feature-toggle'
 import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
@@ -31,19 +31,19 @@ import {
   useSwitchPortProfilesCountQuery
 } from '@acx-ui/rc/services'
 import {
+  AddProfileButton,
   IncompatibilityFeatures,
   PolicyOperation,
   PolicyType,
-  filterByAccessForServicePolicyMutation,
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
+  hasSomePoliciesPermission,
   isPolicyCardEnabled,
   policyTypeDescMapping,
   policyTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import {
   Path,
-  TenantLink,
   useNavigate,
   useParams,
   useTenantLink
@@ -83,11 +83,11 @@ export default function MyPolicies () {
       <PageHeader
         title={$t({ defaultMessage: 'Policies & Profiles' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
-        extra={filterByAccessForServicePolicyMutation([
-          <TenantLink to={getSelectPolicyRoutePath(true)}>
-            <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>
-          </TenantLink>
-        ])}
+        extra={<AddProfileButton
+          hasSomeProfilesPermission={() => hasSomePoliciesPermission(PolicyOperation.CREATE)}
+          linkText={$t({ defaultMessage: 'Add Policy or Profile' })}
+          targetPath={getSelectPolicyRoutePath(true)}
+        />}
       />
       <GridRow>
         {

@@ -27,7 +27,8 @@ import {
   Demo,
   PORTAL_LIMIT_NUMBER,
   getScopeKeyByService,
-  filterByAccessForServicePolicyMutation
+  filterByAccessForServicePolicyMutation,
+  getServiceAllowedOperation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { getImageDownloadUrl }                                     from '@acx-ui/utils'
@@ -70,6 +71,7 @@ export default function PortalTable () {
 
   const rowActions: TableProps<Portal>['rowActions'] = [
     {
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.PORTAL, ServiceOperation.DELETE),
       label: intl.$t({ defaultMessage: 'Delete' }),
       scopeKey: getScopeKeyByService(ServiceType.PORTAL, ServiceOperation.DELETE),
       onClick: ([{ id, serviceName, name }], clearSelection) => {
@@ -87,6 +89,7 @@ export default function PortalTable () {
       }
     },
     {
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.PORTAL, ServiceOperation.EDIT),
       label: intl.$t({ defaultMessage: 'Edit' }),
       scopeKey: getScopeKeyByService(ServiceType.PORTAL, ServiceOperation.EDIT),
       onClick: ([{ id }]) => {
@@ -227,6 +230,7 @@ export default function PortalTable () {
         extra={filterByAccessForServicePolicyMutation([
           // eslint-disable-next-line max-len
           <TenantLink
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.PORTAL, ServiceOperation.CREATE)}
             to={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}
             scopeKey={getScopeKeyByService(ServiceType.PORTAL, ServiceOperation.CREATE)}
           >
