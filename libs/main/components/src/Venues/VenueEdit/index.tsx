@@ -228,6 +228,8 @@ function processWifiTab (
       editNetworkingContextData?.updateMesh?.()
       editNetworkingContextData?.updateDirectedMulticast?.()
       editNetworkingContextData?.updateRadiusOptions?.()
+      editNetworkingContextData?.updateRebootTimeout?.()
+      editNetworkingContextData?.updateSmartMonitor?.()
       break
     case 'radio':
 
@@ -268,6 +270,7 @@ function processWifiTab (
       editServerContextData?.updateSyslog?.()
       editServerContextData?.updateMdnsFencing?.()
       editServerContextData?.updateVenueApSnmp?.()
+      editServerContextData?.updateVenueIot?.()
       break
   }
 }
@@ -320,6 +323,7 @@ export function showUnsavedModal (
         editServerContextData?.discardSyslog?.()
         editServerContextData?.discardVenueLbs?.()
         editServerContextData?.discardMdnsFencing?.()
+        editServerContextData?.discardVenueIot?.()
         setEditContextData({
           ...editContextData,
           isDirty: false,

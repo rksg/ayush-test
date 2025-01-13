@@ -711,6 +711,12 @@ export interface ApSmartMonitor {
   threshold: number
 }
 
+export interface ApIot {
+  useVenueSettings: boolean,
+  enabled: boolean,
+  mqttBrokerAddress: string
+}
+
 export interface APExtendedGrouped extends APExtended {
   networks: {
     count: number
@@ -1014,6 +1020,7 @@ export enum SoftGreState {
   TurnOnAndModifyDHCPOption82Settings,
   TurnOnLanPort,
   TurnOffLanPort,
+  ResetToDefault
 }
 
 export interface SoftGreProfileDispatcher {

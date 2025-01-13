@@ -61,6 +61,7 @@ import {
   VenueBssColoring,
   VenueApSmartMonitor,
   VenueApRebootTimeout,
+  VenueIot,
   TopologyData,
   VenueMdnsFencingPolicy,
   PropertyConfigs,
@@ -110,9 +111,7 @@ import {
   ClientIsolationUrls,
   ClientIsolationViewModel,
   LanPortsUrls,
-  VenueLanPortSettings,
-  LanPort,
-  LanPortClientIsolationSettings
+  VenueLanPortSettings
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                                                          from '@acx-ui/store'
 import { ITimeZone, RequestPayload }                                                             from '@acx-ui/types'
@@ -1821,6 +1820,27 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getVenueIot: build.query<VenueIot, RequestPayload>({
+      query: ({ params }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+
+        const req = createHttpRequest(WifiRbacUrlsInfo.getVenueIot, params, apiCustomHeader)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueIot: build.mutation<VenueIot, RequestPayload>({
+      query: ({ params, payload }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateVenueIot, params, apiCustomHeader)
+        return{
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
     getTopology: build.query<TopologyData, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getTopology, params)
@@ -2261,40 +2281,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const isEthernetClientIsolationEnabled = (arg.payload as any)?.isEthernetClientIsolationEnabled
 
         if(venueId) {
-          if(isEthernetSoftgreEnabled || isEthernetClientIsolationEnabled) {
-            const results: ((LanPort | null)[])[] = []
-            for (const venueLanPort of venueLanPortSettings) {
-              const venueLanPortSettingsQuery =venueLanPort.lanPorts.map((lanPort) => {
-                return fetchWithBQ(
-                  createHttpRequest(
-                    LanPortsUrls.getVenueLanPortSettings,
-                    { venueId, apModel: venueLanPort.model, portId: lanPort.portId },
-                    apiCustomHeader
-                  )
-                )
-              })
-
-              const reqs = await Promise.allSettled(venueLanPortSettingsQuery)
-              results.push(reqs.map((result) => {
-                return result.status === 'fulfilled' ? result.value.data as LanPort : null
-              }))
-            }
-            results.forEach((result, index) => {
-              const target = venueLanPortSettings[index]
-
-              result.forEach((lanPortSettings, idx ) => {
-                if (lanPortSettings === null) return
-
-                target.lanPorts[idx].softGreEnabled = lanPortSettings.softGreEnabled
-                target.lanPorts[idx].clientIsolationEnabled = lanPortSettings.clientIsolationEnabled
-                if(lanPortSettings.clientIsolationEnabled) {
-                  target.lanPorts[idx].clientIsolationSettings =
-                      lanPortSettings.clientIsolationSettings as LanPortClientIsolationSettings
-                }
-              })
-            })
-          }
-
 
           // Mapping Ethernet port profile relation to Lan port settings
           const ethernetPortProfileReq = createHttpRequest(EthernetPortProfileUrls.getEthernetPortProfileViewDataList)
@@ -2353,6 +2339,31 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return {
           ...req
         }
+      }
+    }),
+
+    getVenueLanPortSettingsByModel: build.query<VenueLanPortSettings[], RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+
+        const venueId = arg.params?.venueId
+        const model = arg.params?.apModel
+        const lanPortCount = arg.params?.lanPortCount || 0
+
+        const venueLanPortSettingsQuery = Array.from({ length: Number(lanPortCount) }, (_, index) =>{
+          return fetchWithBQ(
+            createHttpRequest(
+              LanPortsUrls.getVenueLanPortSettings,
+              { venueId, apModel: model, portId: (index + 1).toString() }
+            )
+          )
+        })
+
+        const reqs = await Promise.allSettled(venueLanPortSettingsQuery)
+        const results: VenueLanPortSettings[] = reqs.map((result) => {
+          return result.status === 'fulfilled' ? result.value.data as VenueLanPortSettings : {}
+        })
+
+        return { data: results }
       }
     }),
 
@@ -2531,10 +2542,14 @@ export const {
   useGetVenueApRebootTimeoutQuery,
   useLazyGetVenueApRebootTimeoutQuery,
   useUpdateVenueApRebootTimeoutMutation,
+  useGetVenueIotQuery,
+  useLazyGetVenueIotQuery,
+  useUpdateVenueIotMutation,
   useGetVenueLanPortWithEthernetSettingsQuery,
   useLazyGetVenueLanPortWithEthernetSettingsQuery,
   useGetVenueLanPortSettingsQuery,
   useLazyGetVenueLanPortSettingsQuery,
+  useLazyGetVenueLanPortSettingsByModelQuery,
   useUpdateVenueLanPortSettingsMutation,
   useUpdateVenueLanPortSpecificSettingsMutation
 } = venueApi
