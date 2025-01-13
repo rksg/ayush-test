@@ -17,7 +17,7 @@ import {
   NetworkHotspot20Settings
 } from '@acx-ui/rc/utils'
 
-import { isShowDynamicWlan, NetworkVxLanTunnelProfileInfo } from './utils'
+import { isShowDynamicVlan, NetworkVxLanTunnelProfileInfo } from './utils'
 
 const parseAaaSettingDataToSave = (data: NetworkSaveData, editMode: boolean) => {
   let saveData = {
@@ -336,7 +336,7 @@ export function transferMoreSettingsToSave (data: NetworkSaveData,
   }
 
   const { isSupportDVlanWithPskMacAuth=false } = options ?? {}
-  const showDynamicWlan = isShowDynamicWlan(data, {
+  const showDynamicWlan = isShowDynamicVlan(data, {
     isSupportDVlanWithPskMacAuth
   })
 

@@ -9,7 +9,7 @@ import { validationMessages }                                                   
 
 import NetworkFormContext                     from '../../NetworkFormContext'
 import {
-  isShowDynamicWlan,
+  isShowDynamicVlan,
   useNetworkVxLanTunnelProfileInfo,
   useServicePolicyEnabledWithConfigTemplate
 } from '../../utils'
@@ -50,7 +50,7 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
   }, [isPortalDefaultVLANId, form])
 
 
-  const showDynamicWlan = isShowDynamicWlan(data, { isSupportDVlanWithPskMacAuth })
+  const showDynamicWlan = isShowDynamicVlan(data, { isSupportDVlanWithPskMacAuth })
 
   const { enableVxLan: pureVxLanEnabled } = useNetworkVxLanTunnelProfileInfo(wlanData)
   // eslint-disable-next-line max-len
