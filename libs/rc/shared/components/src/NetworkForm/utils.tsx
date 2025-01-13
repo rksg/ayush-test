@@ -938,7 +938,6 @@ export const useUpdateSoftGreActivations = () => {
   return updateSoftGreActivations
 }
 
-
 export const getNetworkTunnelSdLanUpdateData = (
   modalFormValues: NetworkTunnelActionForm,
   sdLanAssociationUpdates: NetworkTunnelSdLanAction[],
@@ -1001,3 +1000,21 @@ export const getNetworkTunnelSdLanUpdateData = (
 
   return updateContent
 }
+
+export const isShowDynamicWlan = (data: NetworkSaveData | null, options?: Record<string, boolean>) => {
+  const { type, wlan } = data || {}
+
+  if (!type || !wlan) return false
+  if (type === NetworkTypeEnum.AAA || type === NetworkTypeEnum.DPSK) return true
+  if (type === NetworkTypeEnum.OPEN && wlan?.macAddressAuthentication ) return true
+
+  if (data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
+      data?.wlan?.bypassCPUsingMacAddressAuthentication) return true
+
+  if (options?.isSupportDVlanWithPskMacAuth &&
+    data?.type === NetworkTypeEnum.PSK &&
+    data.wlan?.macAddressAuthentication) return true
+
+  return false
+
+} 
