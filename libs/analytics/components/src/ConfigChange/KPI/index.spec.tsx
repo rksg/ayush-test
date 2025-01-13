@@ -98,9 +98,8 @@ describe('KPIs', () => {
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('.statistic-selected')).not.toBeNull()
   })
-  it('should call reset when setting KPIs for paged table', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    const mockReset = jest.fn()
+  it('should set correct context', async () => {
+    const mockSetKpiFilter = jest.fn()
     const MockedProvider = (props: {
       children: ReactElement
     } & Pick<ConfigChangeContextType, 'dateRange'>) => {
@@ -109,10 +108,10 @@ describe('KPIs', () => {
         [timeRanges[0].valueOf(), timeRanges[0].clone().add(brushPeriod, 'ms').valueOf()],
         [timeRanges[1].clone().subtract(brushPeriod, 'ms').valueOf(), timeRanges[1].valueOf()]
       ])
-      const [kpiFilter, setKpiFilter] = useState<string[]>([])
+      const [kpiFilter] = useState<string[]>([])
       const context = {
         ..._.omit(props, 'children'),
-        kpiTimeRanges, setKpiTimeRanges, kpiFilter, setKpiFilter, reset: mockReset }
+        kpiTimeRanges, setKpiTimeRanges, kpiFilter, setKpiFilter: mockSetKpiFilter }
       return <ConfigChangeContext.Provider
         value={context as unknown as ConfigChangeContextType}
         // eslint-disable-next-line testing-library/no-node-access
@@ -125,6 +124,6 @@ describe('KPIs', () => {
       { wrapper: Provider, route: {} }
     )
     await userEvent.click(await screen.findByText('Connection Success'))
-    expect(mockReset).toHaveBeenCalled()
+    expect(mockSetKpiFilter).toHaveBeenCalled()
   })
 })

@@ -18,7 +18,6 @@ import {
 import { kpiDelta }                                     from '@acx-ui/analytics/utils'
 import { Button, CaretDownSolidIcon, Dropdown, Loader } from '@acx-ui/components'
 import { get }                                          from '@acx-ui/config'
-import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { formatter }                                    from '@acx-ui/formatter'
 import { noDataDisplay }                                from '@acx-ui/utils'
 
@@ -44,20 +43,12 @@ type KPIProps = ConfigChangeKPIConfig & {
 }
 
 const KPI = ({ apiMetric, kpiKey, label, format, deltaSign, values }: KPIProps) => {
-  const isPaged = [
-    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
-    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
-  ].some(Boolean)
-
   const { $t } = useIntl()
 
   const { trend, value } =
     kpiDelta(values?.before[apiMetric], values?.after[apiMetric], deltaSign, format)
-  const { kpiFilter, setKpiFilter, reset } = useContext(ConfigChangeContext)
-  return <div onClick={() => {
-    isPaged && reset()
-    setKpiFilter?.(kpiKey)
-  }}>
+  const { kpiFilter, setKpiFilter } = useContext(ConfigChangeContext)
+  return <div onClick={() => setKpiFilter?.(kpiKey)}>
     <Statistic
       className={kpiFilter.includes(kpiKey) ? 'statistic-selected' : undefined}
       title={$t(label, productNames)}
