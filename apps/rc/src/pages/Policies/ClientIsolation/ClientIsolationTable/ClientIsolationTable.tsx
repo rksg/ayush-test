@@ -33,7 +33,7 @@ export default function ClientIsolationTable () {
   const settingsId = 'policies-client-isolation-table'
   const defaultPayload = {
     fields: ['id', 'name', 'tenantId', 'clientEntries', 'description',
-      enableRbac ? 'activations':'venueIds'],
+      enableRbac ? 'activations':'venueIds', 'venueActivations', 'apActivations'],
     searchString: '',
     filters: {}
   }

@@ -15,6 +15,21 @@ import { TooltipWrapper }      from '../Chart/styledComponents'
 
 import type { ECharts, TooltipComponentFormatterCallbackParams } from 'echarts'
 
+
+export interface ConfigChangePaginationParams {
+  current: number
+  pageSize: number
+  defaultPageSize?: number
+  total: number
+}
+
+export const CONFIG_CHANGE_DEFAULT_PAGINATION = {
+  current: 1,
+  pageSize: TABLE_DEFAULT_PAGE_SIZE,
+  defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
+  total: 0
+}
+
 export type ConfigChange = {
   id?: number
   filterId?: number
@@ -24,6 +39,8 @@ export type ConfigChange = {
   key: string
   oldValues: string[]
   newValues: string[]
+  root?: string
+  sliceId?: string
 }
 
 type OnDatazoomEvent = { batch: { startValue: number, endValue: number }[] }
@@ -31,14 +48,15 @@ type OnDatazoomEvent = { batch: { startValue: number, endValue: number }[] }
 export interface ConfigChangeChartProps extends Omit<EChartsReactProps, 'option' | 'opts'> {
   data: ConfigChange[]
   chartBoundary: [ number, number],
-  selectedData?: ConfigChange,
-  onDotClick?: (params: ConfigChange) => void,
   onBrushPositionsChange?: (params: number[][]) => void,
   chartZoom?: { start: number, end: number },
   setChartZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
   setInitialZoom?: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
-  setLegend?: Dispatch<SetStateAction<Record<string, boolean>>>,
+  selectedData?: ConfigChange,
   setSelectedData?: React.Dispatch<React.SetStateAction<ConfigChange | null>>,
+  onDotClick?: (params: ConfigChange) => void,
+  setLegend?: (legend: Record<string, boolean>) => void,
+  pagination?: ConfigChangePaginationParams,
   setPagination?: (params: { current: number, pageSize: number }) => void
 }
 
@@ -414,14 +432,16 @@ export function useLegendTableFilter (
   selectedLegend: Record<string, boolean>,
   data: ConfigChange[],
   selectedData?: ConfigChange,
-  setLegend?: Dispatch<SetStateAction<Record<string, boolean>>>,
   setSelectedData?: React.Dispatch<React.SetStateAction<ConfigChange | null>>,
+  setLegend?: (legend: Record<string, boolean>) => void,
+  pagination?: ConfigChangePaginationParams,
   setPagination?: (params: { current: number, pageSize: number }) => void
 ){
   const showIntentAI = [
     useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
     useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
   ].some(Boolean)
+  const isPaged = showIntentAI
 
   useEffect(() => {
     const chartRowMapping = getConfigChangeEntityTypeMapping(showIntentAI)
@@ -431,10 +451,17 @@ export function useLegendTableFilter (
       ({ key }) => key === selectedConfig[0]?.type)[0]?.label
 
     selectedLegend[selectedType] === false && setSelectedData?.(null)
-    setPagination?.({
-      current: Math.ceil((selectedConfig[0]?.filterId! + 1) / TABLE_DEFAULT_PAGE_SIZE),
-      pageSize: TABLE_DEFAULT_PAGE_SIZE
-    })
+    const pageSize = pagination?.pageSize || CONFIG_CHANGE_DEFAULT_PAGINATION.pageSize
+
+    if(isPaged){
+      setPagination?.(CONFIG_CHANGE_DEFAULT_PAGINATION)
+    }
+    else {
+      setPagination?.({
+        current: Math.ceil((selectedConfig[0]?.filterId! + 1) / pageSize),
+        pageSize: pageSize
+      })
+    }
   }, [selectedLegend, data.length])
 }
 
