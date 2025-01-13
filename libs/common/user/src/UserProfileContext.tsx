@@ -27,6 +27,7 @@ export interface UserProfileContextProps {
   betaEnabled?: boolean
   abacEnabled?: boolean
   rbacOpsApiEnabled?: boolean
+  improveErrorDialogEnabled?: boolean
   isCustomRole?: boolean
   hasAllVenues?: boolean
   venuesList?: string[]
@@ -47,18 +48,29 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     isFetching: isUserProfileFetching
   } = useGetUserProfileQuery({ params: { tenantId } })
 
-  let abacEnabled = false, isCustomRole = false, rbacOpsApiEnabled = false
+  let abacEnabled = false,
+    isCustomRole = false,
+    rbacOpsApiEnabled = false,
+    improveErrorDialogEnabled = false
+
   const abacFF = 'abac-policies-toggle'
   const betaListFF = 'acx-ui-selective-early-access-toggle'
   const rbacOpsApiFF = 'acx-ui-rbac-allow-operations-api-toggle'
+  const improveErrorDialogFF = 'acx-ui-error-dialog-improvement-toggle'
 
   const { data: featureFlagStates, isLoading: isFeatureFlagStatesLoading }
     = useFeatureFlagStatesQuery(
-      { params: { tenantId }, payload: [abacFF, betaListFF, rbacOpsApiFF] },
+      { params: { tenantId }, payload: [
+        abacFF,
+        betaListFF,
+        rbacOpsApiFF,
+        improveErrorDialogFF
+      ] },
       { skip: !Boolean(profile) }
     )
   abacEnabled = featureFlagStates?.[abacFF] ?? false
   rbacOpsApiEnabled = featureFlagStates?.[rbacOpsApiFF] ?? false
+  improveErrorDialogEnabled = featureFlagStates?.[improveErrorDialogFF] ?? false
   const betaListEnabled = featureFlagStates?.[betaListFF] ?? false
 
   const { data: beta } = useGetBetaStatusQuery(
@@ -117,6 +129,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       betaEnabled,
       abacEnabled,
       rbacOpsApiEnabled,
+      improveErrorDialogEnabled,
       isCustomRole,
       scopes: profile?.scopes,
       hasAllVenues,
@@ -137,6 +150,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       betaEnabled,
       abacEnabled,
       rbacOpsApiEnabled,
+      improveErrorDialogEnabled,
       isCustomRole,
       hasAllVenues,
       venuesList,

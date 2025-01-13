@@ -82,6 +82,9 @@ export const getErrorContent = (action: ErrorAction) => {
     (typeof action.payload !== 'object') ? undefined :
       ('originalStatus' in action.payload) ? action.payload.originalStatus :
         ('status' in action.payload) ? action.payload.status : undefined
+  const path = (queryMeta?.response) ? queryMeta.response.url :
+    (typeof action.payload !== 'object') ? undefined :
+      ('type' in action.payload) ? action.payload['type'] : undefined
   const request = queryMeta?.request
   const response = queryMeta?.response
 
@@ -175,6 +178,8 @@ export const getErrorContent = (action: ErrorAction) => {
   return {
     title: $t(errorMsg?.title),
     content,
+    path,
+    errorCode: status as number,
     type,
     errors: errors as ErrorDetailsProps,
     callback
@@ -185,10 +190,13 @@ export const showErrorModal = (details: {
   title: string,
   content: JSX.Element,
   type: ActionModalType,
+  path?: string,
+  errorCode?: number,
   errors?: ErrorDetailsProps,
   callback?: () => void
 }) => {
-  const { title, content, type, errors, callback } = details
+  const { title, content, type, errors,
+    path, errorCode, callback } = details
   if (title && !isModalShown) {
     isModalShown = true
     showActionModal({
@@ -197,7 +205,9 @@ export const showErrorModal = (details: {
       content,
       ...(type === 'error' && { customContent: {
         action: 'SHOW_ERRORS',
-        errorDetails: errors
+        errorDetails: errors,
+        path,
+        errorCode
       } }),
       onOk: () => {
         callback?.()

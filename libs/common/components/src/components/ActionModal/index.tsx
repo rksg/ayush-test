@@ -4,10 +4,12 @@ import { Modal, Collapse, Form, Input } from 'antd'
 import { TextAreaRef }                  from 'antd/lib/input/TextArea'
 import { ModalFuncProps }               from 'antd/lib/modal'
 import { pick, has }                    from 'lodash'
+import moment                           from 'moment'
 import { RawIntlProvider }              from 'react-intl'
 
-import { ExpandSquareUp, ExpandSquareDown } from '@acx-ui/icons'
-import { getIntl }                          from '@acx-ui/utils'
+import { ExpandSquareUp, ExpandSquareDown, CopyOutlined, ReportsOutlined, ReportsSolid } from '@acx-ui/icons'
+import { getUserProfile }                                                                from '@acx-ui/user'
+import { getIntl }                                                                       from '@acx-ui/utils'
 
 import { Button, ButtonProps } from '../Button'
 
@@ -34,7 +36,9 @@ type DeleteContent = {
 
 type ErrorContent = {
   action: 'SHOW_ERRORS',
-  errorDetails?: ErrorDetailsProps
+  errorDetails?: ErrorDetailsProps,
+  path?: string,
+  errorCode?: number
 }
 
 type CustomButtonsContent = {
@@ -53,7 +57,7 @@ type CodeContent = {
 
 export interface ActionModalProps extends ModalFuncProps {
   type: ActionModalType,
-  customContent?: DeleteContent | ErrorContent | CustomButtonsContent | CodeContent
+  customContent?: DeleteContent | ErrorContent | CustomButtonsContent | CodeContent,
 }
 
 export interface ModalRef {
@@ -100,6 +104,9 @@ export const showActionModal = (props: ActionModalProps) => {
 
 const transformProps = (props: ActionModalProps, modal: ModalRef) => {
   const { $t } = getIntl()
+  const { improveErrorDialogEnabled } = getUserProfile()
+  // eslint-disable-next-line no-console
+  console.log(improveErrorDialogEnabled)
   const okText = $t({ defaultMessage: 'OK' })
   const cancelText = $t({ defaultMessage: 'Cancel' })
   switch (props.customContent?.action) {
@@ -136,11 +143,13 @@ const transformProps = (props: ActionModalProps, modal: ModalRef) => {
       }
       break
     case 'SHOW_ERRORS':
-      const { errorDetails } = props.customContent
+      const { errorDetails, path, errorCode } = props.customContent
       props = {
         ...props,
         content: <ErrorTemplate
           content={props.content}
+          path={path}
+          errorCode={errorCode}
           errors={errorDetails}
           modal={modal}
           onOk={props.onOk}
@@ -184,6 +193,8 @@ const transformProps = (props: ActionModalProps, modal: ModalRef) => {
 function ErrorTemplate ({ errors, ...props }: {
   content: React.ReactNode,
   errors?: ErrorDetailsProps,
+  path?: string,
+  errorCode?: number,
   onOk?: () => void,
   modal: ModalRef
 }) {
@@ -197,6 +208,8 @@ function ErrorTemplate ({ errors, ...props }: {
 
 function CodeTemplate (props: {
   content?: React.ReactNode
+  path?: string,
+  errorCode?: number,
   onOk?: () => void
   modal: ModalRef
   code?: {
@@ -215,6 +228,8 @@ function CodeTemplate (props: {
           expanded={props.code.expanded}
           header={props.code.label}
           content={props.code.content}
+          path={props.path}
+          errorCode={props.errorCode}
         />}
         <UI.FooterButtons>
           <Button type='primary'
@@ -279,26 +294,89 @@ function CollapsePanel (props: {
   header: string
   content: string
   expanded?: boolean
+  path?: string
+  errorCode?: number
 }) {
   const { $t } = getIntl()
+  const { improveErrorDialogEnabled } = getUserProfile()
   const inputEl = useRef<TextAreaRef>(null)
   const copyText = () => {
     navigator.clipboard.writeText(props.content)
     inputEl.current?.resizableTextArea?.textArea.select()
   }
+  const wrapText = (text: string , maxWidth: number) => {
+    const lines: string[] = []
+    let currentLine: string = ''
+    let words: string[] = text.split('')
+
+    while (words.length) {
+      let char = words.shift()
+      if (char === undefined) break
+
+      if ((currentLine + char).length > maxWidth) {
+        lines.push(currentLine)
+        currentLine = char
+      } else {
+        currentLine += char
+      }
+    }
+
+    if (currentLine) lines.push(currentLine)
+    return lines.join('\n\t\t\t\t')
+  }
+  const getContent = function () {
+    const content = props.content
+    if (improveErrorDialogEnabled) {
+
+      const errorMessage = `
+    URL:\t\t\t${wrapText(props.path || '', 40)}
+    Error Code:\t${props.errorCode}
+    Request ID:\trequest-id
+    Timestamp:\t${moment().format('YYYYMMDD-HHmmss')}
+
+    Code:\t\t\tcode
+    Reason:\t\treason
+    Suggestion:\tsuggestion
+      `
+      return errorMessage
+
+    } else {
+      return content
+    }
+  }
+
+  const getExpandIcon = (isActive: boolean | undefined) => {
+    if(improveErrorDialogEnabled) {
+      return isActive ? <ReportsSolid style={{ marginLeft: '-5px',
+        height: '16px', marginBottom: '-10px' }} />:
+        <ReportsOutlined style={{marginLeft: '-5px', height: '16px', marginBottom: '-10px' }} />
+    }
+    return isActive ? <ExpandSquareUp /> : <ExpandSquareDown />
+  }
+
   return (
     <UI.Collapse
       ghost
       expandIconPosition='end'
-      expandIcon={({ isActive }) => isActive ? <ExpandSquareUp /> : <ExpandSquareDown />}
+      expandIcon={({ isActive }) => getExpandIcon(isActive)}
       defaultActiveKey={props.expanded ? [props.header] : undefined}
     >
-      <Panel header={props.header} key={props.header}>
-        <TextArea ref={inputEl} rows={20} readOnly={true} value={props.content} />
-        <UI.CopyButton
+      <Panel header={improveErrorDialogEnabled? undefined : props.header} key={props.header}>
+        <TextArea ref={inputEl}
+          rows={20}
+          readOnly={true}
+          value={getContent()}
+          style={{ padding: '0px', fontSize: '11px', lineHeight: '16px', border: 'none', 
+            marginTop: '-10px' }} />
+        {improveErrorDialogEnabled ? <UI.CopyButton
           type='link'
           onClick={copyText}
-        >{$t({ defaultMessage: 'Copy to clipboard' })}</UI.CopyButton>
+          style={{ position: 'absolute', right: '20px', bottom: '23px' }}
+        ><CopyOutlined /> </UI.CopyButton> : <UI.CopyButton
+          type='link'
+          onClick={copyText}
+        >{$t({ defaultMessage: 'Copy to clipboard' })}</UI.CopyButton>}
+
       </Panel>
     </UI.Collapse>
   )
