@@ -68,9 +68,6 @@ describe('SoftGRETunnelSettings', () => {
               { label: 'SoftGre1', value: 'testvalue' }
             ]}
             readonly={false}
-            softGREProfileOptionList={[
-              { label: 'SoftGre1', value: 'SoftGre1' }
-            ]}
           />
         </Form>
       </Provider>
