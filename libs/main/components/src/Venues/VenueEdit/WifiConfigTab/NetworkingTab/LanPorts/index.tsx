@@ -15,8 +15,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   LanPortPoeSettings,
   LanPortSettings,
-  ConvertPoeOutToFormData,
-  useSoftGreProfileActivation
+  ConvertPoeOutToFormData
 }
   from '@acx-ui/rc/components'
 import {
@@ -35,7 +34,9 @@ import {
   useUpdateVenueLanPortSettingsMutation,
   useActivateClientIsolationOnVenueMutation,
   useDeleteClientIsolationOnVenueMutation,
-  useLazyGetVenueLanPortSettingsByModelQuery
+  useLazyGetVenueLanPortSettingsByModelQuery,
+  useDeactivateSoftGreProfileOnVenueMutation,
+  useActivateSoftGreProfileOnVenueMutation
 } from '@acx-ui/rc/services'
 import {
   ApLanPortTypeEnum,
@@ -49,7 +50,6 @@ import {
   VenueLanPorts,
   VenueSettings,
   WifiNetworkMessages,
-  SoftGreState,
   mergeLanPortSettings
 } from '@acx-ui/rc/utils'
 import {
@@ -154,6 +154,8 @@ export function LanPorts () {
   const [updateActivateEthernetPortProfile] =
     useActivateEthernetPortProfileOnVenueApModelPortIdMutation()
 
+  const [updateActivateSoftGreProfile] = useActivateSoftGreProfileOnVenueMutation()
+  const [updateDeactivateSoftGreProfile] = useDeactivateSoftGreProfileOnVenueMutation()
   const [updateActivateClientIsolationPolicy] = useActivateClientIsolationOnVenueMutation()
   const [updateDeactivateClientIsolationPolicy] = useDeleteClientIsolationOnVenueMutation()
   const [updateLanPortSetting] = useUpdateVenueLanPortSettingsMutation()
@@ -171,7 +173,6 @@ export function LanPorts () {
   const [selectedModelCaps, setSelectedModelCaps] = useState({} as CapabilitiesApModel)
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
   const [resetModels, setResetModels] = useState([] as string[])
-  const { dispatch, handleUpdateSoftGreProfile } = useSoftGreProfileActivation(selectedModel)
 
   const form = Form.useFormInstance()
   const [apModel, apPoeMode, lanPoeOut, lanPorts] = [
@@ -192,7 +193,6 @@ export function LanPorts () {
 
   useEffect(() => {
     const { model, lan, poeOut, poeMode } = form?.getFieldsValue()
-
     //if (isEqual(model, apModel) && (isEqual(lan, lanPorts))) {
     if (customGuiChagedRef.current && isEqual(model, apModel)) {
       const newData = lanPortData?.map((item) => {
@@ -217,7 +217,6 @@ export function LanPorts () {
         updateLanPorts: () => handleUpdateLanPorts(newData),
         discardLanPorts: () => handleDiscardLanPorts(lanPortOrinData)
       })
-
       setLanPortData(newData)
       setSelectedModel(getSelectedModelData(newData, apModel))
 
@@ -367,6 +366,32 @@ export function LanPorts () {
     }
   }
 
+  const handleDeactivateSoftGreProfile = async (
+    model:string,
+    lanPort:LanPort,
+    originLanPort?:LanPort
+  ) => {
+    const originId = originLanPort?.softGreProfileId
+    if(!originId) {
+      return
+    }
+
+    const isLanPortDisabled = !lanPort.enabled
+    const isSoftGreDisabled = !!!lanPort.softGreEnabled
+    const isSoftGreProfileChanged = originId !== lanPort.softGreProfileId
+
+    if(isLanPortDisabled || isSoftGreDisabled || isSoftGreProfileChanged) {
+      await updateDeactivateSoftGreProfile({
+        params: {
+          venueId: venueId,
+          apModel: model,
+          portId: lanPort.portId,
+          policyId: originId
+        }
+      }).unwrap()
+    }
+  }
+
   const handleDeactivateClientIsolationPolicy = async (
     model:string,
     lanPort:LanPort,
@@ -388,6 +413,29 @@ export function LanPorts () {
       }).unwrap()
     }
   }
+
+  const handleActivateSoftGreProfile = async (
+    model:string,
+    lanPort:LanPort,
+    originLanPort?:LanPort
+  ) => {
+
+    const isLanPortEnabled = lanPort.enabled
+    const isSoftGreEnabled = lanPort.softGreEnabled
+    const isSoftGreProfileChanged = originLanPort?.softGreProfileId !== lanPort.softGreProfileId
+
+    if(isLanPortEnabled && isSoftGreEnabled && isSoftGreProfileChanged) {
+      await updateActivateSoftGreProfile({
+        params: {
+          venueId: venueId,
+          apModel: model,
+          portId: lanPort.portId,
+          policyId: lanPort.softGreProfileId
+        }
+      }).unwrap()
+    }
+  }
+
   const handleUpdateClientIsolationPolicy = async (
     model:string,
     lanPort:LanPort,
@@ -486,15 +534,6 @@ export function LanPorts () {
     records.push(apModel)
     setResetModels([...new Set(records)])
 
-    defaultLanPortsData.lanPorts.forEach((lanPort, index) => {
-      dispatch({
-        state: SoftGreState.ResetToDefault,
-        portId: lanPort.portId,
-        index
-      })
-    })
-
-
     customGuiChagedRef.current = true
   }
 
@@ -534,10 +573,13 @@ export function LanPorts () {
             const originLanPort = originVenueLanPort?.lanPorts.find((oldLanPort)=> {
               return oldLanPort.portId === lanPort.portId
             })
+
+            if(isEthernetSoftgreEnabled) {
+              await handleDeactivateSoftGreProfile(venueLanPort.model, lanPort, originLanPort)
+            }
+
             // Update ethernet port profile
             await handleUpdateEthernetPortProfile(venueLanPort.model, lanPort, originLanPort)
-            // Update SoftGre Profile
-            await handleUpdateSoftGreProfile(venueLanPort.model, lanPort, originLanPort)
 
             // Before disable Client Isolation must deacticvate Client Isolation policy
             if(isEthernetClientIsolationEnabled) {
@@ -548,6 +590,10 @@ export function LanPorts () {
 
             // Update Lan settings
             await handleUpdateLanPortSettings(venueLanPort.model, lanPort, originLanPort)
+
+            if(isEthernetSoftgreEnabled) {
+              await handleActivateSoftGreProfile(venueLanPort.model, lanPort, originLanPort)
+            }
 
             // Activate Client Isolation must wait Lan settings enable client isolation saved
             if(isEthernetClientIsolationEnabled) {
@@ -632,7 +678,6 @@ export function LanPorts () {
                     onGUIChanged={handleGUIChanged}
                     index={index}
                     venueId={venueId}
-                    dispatch={dispatch}
                   />
                 </Col>
               </Row>
