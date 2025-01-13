@@ -517,10 +517,10 @@ export interface CapabilitiesApModel {
   pictureDownloadUrl: string,
   poeModeCapabilities?: string[],
   requireOneEnabledTrunkPort: boolean,
-  simCardPrimaryEnabled: boolean,
-  simCardPrimaryRoaming: boolean,
-  simCardSecondaryEnabled: boolean,
-  simCardSecondaryRoaming: boolean,
+  simCardPrimaryEnabled?: boolean,
+  simCardPrimaryRoaming?: boolean,
+  simCardSecondaryEnabled?: boolean,
+  simCardSecondaryRoaming?: boolean,
   supportChannel144: boolean,
   supportDual5gMode: boolean,
   supportTriRadio: boolean,
@@ -709,6 +709,12 @@ export interface ApSmartMonitor {
   enabled: boolean,
   interval: number,
   threshold: number
+}
+
+export interface ApIot {
+  useVenueSettings: boolean,
+  enabled: boolean,
+  mqttBrokerAddress: string
 }
 
 export interface APExtendedGrouped extends APExtended {

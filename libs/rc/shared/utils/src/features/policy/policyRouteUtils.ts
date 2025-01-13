@@ -1,6 +1,6 @@
 import { generatePath } from '@acx-ui/react-router-dom'
 
-import { PolicyType } from '../../types'
+import { PolicyOperation, PolicyType } from '../../types'
 
 export enum MacRegistrationDetailsTabKey {
   OVERVIEW = 'overview',
@@ -10,14 +10,6 @@ export enum MacRegistrationDetailsTabKey {
 export enum WorkflowDetailsTabKey {
   OVERVIEW = 'overview',
   VERSION_HISTORY = 'versionHistory'
-}
-
-export enum PolicyOperation {
-  CREATE,
-  EDIT,
-  DELETE,
-  DETAIL,
-  LIST
 }
 
 export interface PolicyRoutePathProps {
@@ -69,7 +61,9 @@ export const policyTypePathMapping: Record<PolicyType, string> = {
   [PolicyType.ETHERNET_PORT_PROFILE]: 'ethernetPortProfile',
   [PolicyType.FLEX_AUTH]: 'authentication',
   [PolicyType.SERVER_CERTIFICATES]: 'serverCertificates',
-  [PolicyType.DIRECTORY_SERVER]: 'directoryServer'
+  [PolicyType.DIRECTORY_SERVER]: 'directoryServer',
+  [PolicyType.PORT_PROFILE]: 'portProfile',
+  [PolicyType.SWITCH_PORT_PROFILE]: 'switchPortProfile'
 }
 
 export function getPolicyRoutePath (props: PolicyRoutePathProps): string {

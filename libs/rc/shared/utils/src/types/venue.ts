@@ -787,6 +787,11 @@ export interface VenueApRebootTimeout {
 	serverLossTimeout: number
 }
 
+export interface VenueIot {
+	enabled: boolean,
+	mqttBrokerAddress: string
+}
+
 export interface ApManagementVlan {
 	vlanOverrideEnabled: boolean
 	vlanId: number
@@ -902,7 +907,8 @@ export type FeatureSetResponse = {
 }
 
 export type IncompatibleFeature = FeatureSet & {
-  incompatibleDevices?: ApIncompatibleDevice[],
+  incompatibleDevices?: ApIncompatibleDevice[]
+  children?: IncompatibleFeature[]
 }
 
 export type Compatibility = {

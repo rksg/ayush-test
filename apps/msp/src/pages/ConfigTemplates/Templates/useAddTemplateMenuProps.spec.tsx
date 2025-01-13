@@ -38,7 +38,7 @@ describe('useAddTemplateMenuProps', () => {
   })
   it('should return the correct menu items for the main overlay', () => {
     const { result } = renderHook(() => useAddTemplateMenuProps())
-    expect(result.current.items?.filter(item => item)).toHaveLength(4)
+    expect(result.current?.items?.filter(item => item)).toHaveLength(4)
   })
 
   it('should create the correct policy menu item', () => {
