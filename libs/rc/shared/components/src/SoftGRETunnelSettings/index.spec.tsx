@@ -64,6 +64,9 @@ describe('SoftGRETunnelSettings', () => {
           <SoftGREProfileSettings
             index={1}
             softGreProfileId={''}
+            softGREProfileOptionList={[
+              { label: 'SoftGre1', value: 'testvalue' }
+            ]}
             readonly={false}
           />
         </Form>
