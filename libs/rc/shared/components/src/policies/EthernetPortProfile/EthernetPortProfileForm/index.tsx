@@ -57,6 +57,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
   const dynamicVlanEnabled = Form.useWatch('dynamicVlanEnabled', formRef)
   const authEnabled = Form.useWatch('authEnabled', formRef)
   const isDynamicVLANEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_DVLAN_TOGGLE)
+  const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
 
   const tablePath = getPolicyRoutePath({
     type: PolicyType.ETHERNET_PORT_PROFILE,
@@ -66,6 +67,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
   const location = useLocation()
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
   const linkToTableView = useTenantLink(tablePath)
+  const linkToTableViewWithSwitch = useTenantLink('/policies/portProfile/wifi')
 
   const handleFinish = async () => {
     try{
@@ -78,7 +80,8 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
   }
 
   const handleCancel = () => {
-    (onCancel)? onCancel() : redirectPreviousPage(navigate, previousPath, linkToTableView)
+    (onCancel)? onCancel() : redirectPreviousPage(navigate, previousPath,
+      isSwitchPortProfileEnabled ? linkToTableViewWithSwitch : linkToTableView)
   }
 
   // const ethernetPortProfileListPayload = {
@@ -181,7 +184,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
           },
           {
             text: $t({ defaultMessage: 'Ethernet Port Profile' }),
-            link: tablePath
+            link: isSwitchPortProfileEnabled ? '/policies/portProfile/wifi' : tablePath
           }
         ]}
       />
