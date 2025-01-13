@@ -224,6 +224,7 @@ export function PagedTable () {
       onFilterChange={handleFilterChange}
       onChange={handleTableChange}
       highLightValue={entityNameSearch}
+      preventRenderHeader
     />
   </Loader>
 }

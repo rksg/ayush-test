@@ -93,6 +93,7 @@ export interface TableProps <RecordType>
     getAllPagesData?: () => RecordType[]
     filterPersistence?: boolean
     highLightValue?: string
+    preventRenderHeader?: boolean
   }
 
 export interface TableHighlightFnArgs {
@@ -154,7 +155,7 @@ function Table <RecordType extends Record<string, any>> ({
   type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId,
   enableResizableColumn = true, onDisplayRowChange, stickyHeaders, stickyPagination,
   enablePagination = false, selectedFilters = {}, filterPersistence = false,
-  highLightValue, ...props
+  highLightValue, preventRenderHeader, ...props
 }: TableProps<RecordType>) {
   const { dataSource, filterableWidth, searchableWidth, style } = props
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -381,7 +382,7 @@ function Table <RecordType extends Record<string, any>> ({
   })
 
   const hasRowSelected = Boolean(selectedRowKeys.length)
-  const hasRowActionsOffset = [
+  const hasRowActionsOffset = !preventRenderHeader && [
     props.rowSelection?.type
       && props.tableAlertRender !== false
       && !props.rowSelection?.alwaysShowAlert,
@@ -390,9 +391,9 @@ function Table <RecordType extends Record<string, any>> ({
     groupable.length,
     iconButton
   ].some(Boolean)
-  const shouldRenderHeader = props.alwaysShowFilters
-    || !hasRowSelected || props.tableAlertRender === false
-  const hasHeaderItems = shouldRenderHeader && (
+  const shouldRenderHeader = !preventRenderHeader && (props.alwaysShowFilters
+    || !hasRowSelected || props.tableAlertRender === false)
+  const hasHeaderItems = !preventRenderHeader && (
     Boolean(filterables.length) || Boolean(searchables.length) ||
     Boolean(groupable.length) || Boolean(iconButton)
   )
