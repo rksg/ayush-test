@@ -10,11 +10,11 @@ import {
   getServiceDetailsLink,
   ServiceOperation,
   useServiceListBreadcrumb,
-  hasDpskAccess,
-  getScopeKeyByService
+  getScopeKeyByService,
+  filterDpskOperationsByPermission,
+  getServiceAllowedOperation
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
-import { filterByAccess }                         from '@acx-ui/user'
 
 
 import { dpskTabNameMapping }   from './contentsMap'
@@ -69,8 +69,9 @@ export default function DpskDetails () {
       <PageHeader
         title={dpskDetail?.name}
         breadcrumb={breadcrumb}
-        extra={hasDpskAccess() && filterByAccess([
+        extra={filterDpskOperationsByPermission([
           <TenantLink
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.DPSK, ServiceOperation.EDIT)}
             to={getServiceDetailsLink({
               type: ServiceType.DPSK,
               oper: ServiceOperation.EDIT,
