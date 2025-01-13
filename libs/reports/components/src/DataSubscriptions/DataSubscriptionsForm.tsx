@@ -3,16 +3,17 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 
 import { generateBreadcrumb } from './utils'
-import { GridRow, GridCol, StepsForm, PageHeader } from '@acx-ui/components'
+import { GridRow, GridCol, StepsForm, PageHeader, Select } from '@acx-ui/components'
 import { useNavigate } from '@acx-ui/react-router-dom'
 
+import CloudStorage from './CloudStorageForm'
 
 type DataSubscriptionsFormProps = {
   editMode?: boolean
   isRAI?: boolean
 }
 
-const CloudStorage = () => <div>Cloud Storage</div>
+
 const Settings = () => <div>Settings</div>
 const Summary = () => <div>Summary</div>
 const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ isRAI, editMode=false }) => {
@@ -28,19 +29,19 @@ const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ isRAI, ed
     <GridRow>
       <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>
       <StepsForm
-      onCancel={() => { navigate(-1) }}
-      onFinish={async (values) => { console.log(values) }}
-      buttonLabel={{
-        submit: $t({ defaultMessage: 'Apply' })
-      }}
-      initialValues={{}}
-    >
+        onCancel={() => { navigate(-1) }}
+        onFinish={async (values) => { console.log(values) }}
+        buttonLabel={{
+          submit: $t({ defaultMessage: 'Apply' })
+        }}
+        initialValues={{}}
+      >
       <StepsForm.StepForm
-        title={$t({ defaultMessage: 'Introduction' })}
+        title={$t({ defaultMessage: 'Cloud Storage' })}
         children={<CloudStorage />}
       />
       <StepsForm.StepForm
-        title={$t({ defaultMessage: 'Intent Priority' })}
+        title={$t({ defaultMessage: 'Settings' })}
         children={<Settings />}
       />
       <StepsForm.StepForm
