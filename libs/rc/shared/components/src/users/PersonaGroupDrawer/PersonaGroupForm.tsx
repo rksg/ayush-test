@@ -12,9 +12,9 @@ import {
   useLazySearchPersonaGroupListQuery,
   useSearchMacRegListsQuery
 } from '@acx-ui/rc/services'
-import { DpskSaveData, PersonaGroup, checkObjectNotExists, hasDpskAccess, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
-import { RolesEnum }                                                                                 from '@acx-ui/types'
-import { hasRoles }                                                                                  from '@acx-ui/user'
+import { DpskSaveData, PersonaGroup, ServiceOperation, ServiceType, checkObjectNotExists, hasServicePermission, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
+import { RolesEnum }                                                                                                                       from '@acx-ui/types'
+import { hasRoles }                                                                                                                        from '@acx-ui/user'
 
 import { AdaptivePolicySetForm }   from '../../AdaptivePolicySetForm'
 import { MacRegistrationListForm } from '../../policies/MacRegistrationListForm'
@@ -161,14 +161,15 @@ export function PersonaGroupForm (props: {
                 </Form.Item>
               </Col>
               <Col span={2}>
-                {!defaultValue?.dpskPoolId && hasDpskAccess() &&
-              <Button
-                data-testid='addDpskButton'
-                type={'link'}
-                onClick={() => setDpskModalVisible(true)}
-              >
-                {$t({ defaultMessage: 'Add' })}
-              </Button>
+                {!defaultValue?.dpskPoolId
+                  && hasServicePermission({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })
+                  && <Button
+                    data-testid='addDpskButton'
+                    type={'link'}
+                    onClick={() => setDpskModalVisible(true)}
+                  >
+                    {$t({ defaultMessage: 'Add' })}
+                  </Button>
                 }
               </Col>
             </>

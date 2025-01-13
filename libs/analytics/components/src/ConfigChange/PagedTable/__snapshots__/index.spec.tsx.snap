@@ -1,0 +1,225 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Table should handle query args 1`] = `
+"
+        query PagedConfigChange(
+          $path: [HierarchyNodeInput],
+          $startDate: DateTime,
+          $endDate: DateTime,
+          $page: Int
+          $pageSize: Int
+          $filterBy: JSON,
+          $sortBy: String
+        ) {
+          network(start: $startDate, end: $endDate) {
+            hierarchyNode(path: $path) {
+              pagedConfigChanges(
+                page: $page
+                pageSize: $pageSize
+                filterBy: $filterBy
+                sortBy: $sortBy
+              ) {
+                total
+                data {
+                  timestamp type name key oldValues newValues
+                  
+                }
+              }
+            }
+          }
+        }
+      "
+`;
+
+exports[`Table should handle query args 2`] = `
+Object {
+  "endDate": "2022-01-01T00:01:00.000Z",
+  "filterBy": Object {
+    "entityName": "",
+    "entityType": Array [
+      "ap",
+      "apGroup",
+      "wlan",
+      "zone",
+    ],
+    "kpiFilter": Array [],
+  },
+  "page": 1,
+  "pageSize": 10,
+  "path": Array [
+    Object {
+      "name": "Network",
+      "type": "network",
+    },
+  ],
+  "sortBy": "descending",
+  "startDate": "2021-12-25T00:01:00.000Z",
+}
+`;
+
+exports[`Table should handle query args 3`] = `
+"
+        query PagedConfigChange(
+          $path: [HierarchyNodeInput],
+          $startDate: DateTime,
+          $endDate: DateTime,
+          $page: Int
+          $pageSize: Int
+          $filterBy: JSON,
+          $sortBy: String
+        ) {
+          network(start: $startDate, end: $endDate) {
+            hierarchyNode(path: $path) {
+              pagedConfigChanges(
+                page: $page
+                pageSize: $pageSize
+                filterBy: $filterBy
+                sortBy: $sortBy
+              ) {
+                total
+                data {
+                  timestamp type name key oldValues newValues
+                  
+                }
+              }
+            }
+          }
+        }
+      "
+`;
+
+exports[`Table should handle query args 4`] = `
+Object {
+  "endDate": "2022-01-01T00:01:00.000Z",
+  "filterBy": Object {
+    "entityName": "search",
+    "entityType": Array [
+      "ap",
+      "apGroup",
+      "wlan",
+      "zone",
+    ],
+    "kpiFilter": Array [],
+  },
+  "page": 1,
+  "pageSize": 10,
+  "path": Array [
+    Object {
+      "name": "Network",
+      "type": "network",
+    },
+  ],
+  "sortBy": "descending",
+  "startDate": "2021-12-25T00:01:00.000Z",
+}
+`;
+
+exports[`Table should handle query args 5`] = `
+"
+        query PagedConfigChange(
+          $path: [HierarchyNodeInput],
+          $startDate: DateTime,
+          $endDate: DateTime,
+          $page: Int
+          $pageSize: Int
+          $filterBy: JSON,
+          $sortBy: String
+        ) {
+          network(start: $startDate, end: $endDate) {
+            hierarchyNode(path: $path) {
+              pagedConfigChanges(
+                page: $page
+                pageSize: $pageSize
+                filterBy: $filterBy
+                sortBy: $sortBy
+              ) {
+                total
+                data {
+                  timestamp type name key oldValues newValues
+                  
+                }
+              }
+            }
+          }
+        }
+      "
+`;
+
+exports[`Table should handle query args 6`] = `
+Object {
+  "endDate": "2022-01-01T00:01:00.000Z",
+  "filterBy": Object {
+    "entityName": "search",
+    "entityType": Array [
+      "ap",
+    ],
+    "kpiFilter": Array [],
+  },
+  "page": 1,
+  "pageSize": 10,
+  "path": Array [
+    Object {
+      "name": "Network",
+      "type": "network",
+    },
+  ],
+  "sortBy": "descending",
+  "startDate": "2021-12-25T00:01:00.000Z",
+}
+`;
+
+exports[`Table should handle query args 7`] = `
+"
+        query PagedConfigChange(
+          $path: [HierarchyNodeInput],
+          $startDate: DateTime,
+          $endDate: DateTime,
+          $page: Int
+          $pageSize: Int
+          $filterBy: JSON,
+          $sortBy: String
+        ) {
+          network(start: $startDate, end: $endDate) {
+            hierarchyNode(path: $path) {
+              pagedConfigChanges(
+                page: $page
+                pageSize: $pageSize
+                filterBy: $filterBy
+                sortBy: $sortBy
+              ) {
+                total
+                data {
+                  timestamp type name key oldValues newValues
+                  
+                }
+              }
+            }
+          }
+        }
+      "
+`;
+
+exports[`Table should handle query args 8`] = `
+Object {
+  "endDate": "2022-01-01T00:01:00.000Z",
+  "filterBy": Object {
+    "entityName": "search",
+    "entityType": Array [
+      "ap",
+    ],
+    "kpiFilter": Array [
+      "kpikey1",
+    ],
+  },
+  "page": 1,
+  "pageSize": 10,
+  "path": Array [
+    Object {
+      "name": "Network",
+      "type": "network",
+    },
+  ],
+  "sortBy": "descending",
+  "startDate": "2021-12-25T00:01:00.000Z",
+}
+`;

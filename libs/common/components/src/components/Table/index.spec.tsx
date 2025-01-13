@@ -950,6 +950,20 @@ describe('Table component', () => {
       expect(asFragment().querySelectorAll('mark')).toHaveLength(1)
     })
 
+    it('should highlight only', async () => {
+      const { asFragment } = render(<Table
+        columns={filteredColumns}
+        dataSource={filteredData}
+        highLightValue='John Doe'
+      />)
+      expect(screen
+        .queryByPlaceholderText('Search Name, Given Name, Surname, Description, Address')
+      ).not.toBeInTheDocument()
+
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(asFragment().querySelectorAll('mark')).toHaveLength(1)
+    })
+
     it('should highlight with custom render', async () => {
       const renderFn = jest.fn()
       const columns = [ ...filteredColumns.slice(0,3), {
