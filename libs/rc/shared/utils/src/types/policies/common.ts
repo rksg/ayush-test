@@ -36,6 +36,14 @@ export enum PolicyType {
   DIRECTORY_SERVER = 'Directory Server'
 }
 
+export enum PolicyOperation {
+  CREATE,
+  EDIT,
+  DELETE,
+  DETAIL,
+  LIST
+}
+
 export enum PolicyTechnology {
   WIFI = 'WI-FI',
   SWITCH = 'SWITCH'

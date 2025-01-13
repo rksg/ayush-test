@@ -2,9 +2,9 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Modal, ModalType }                                                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
-import { AAAPolicyType, AAA_LIMIT_NUMBER, PolicyOperation, PolicyType, hasPolicyPermission } from '@acx-ui/rc/utils'
+import { Button, Modal, ModalType }                                                                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                         from '@acx-ui/feature-toggle'
+import { AAAPolicyType, AAA_LIMIT_NUMBER, PolicyOperation, PolicyType, useTemplateAwarePolicyPermission } from '@acx-ui/rc/utils'
 
 import { AAAForm } from '../../policies/AAAForm'
 
@@ -15,15 +15,16 @@ export default function AAAPolicyModal (props:{
   aaaCount: number
   disabled?: boolean
 }) {
-  const { updateInstance, aaaCount, type }=props
+  const { updateInstance, aaaCount, type } = props
   const { $t } = useIntl()
+  const hasPermission = useTemplateAwarePolicyPermission(PolicyType.AAA, PolicyOperation.CREATE)
   const radiusMaxiumnNumber = useIsSplitOn(Features.WIFI_INCREASE_RADIUS_INSTANCE_1024)
     ? 1024
     : AAA_LIMIT_NUMBER
   const onClose = () => {
     setVisible(false)
   }
-  const [visible, setVisible]=useState(false)
+  const [ visible, setVisible ] = useState(false)
   const getContent = <AAAForm networkView={true}
     edit={false}
     type={type}
@@ -32,9 +33,7 @@ export default function AAAPolicyModal (props:{
       if(data)updateInstance(data)
     }}/>
 
-  if (!hasPolicyPermission({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })) {
-    return null
-  }
+  if (!hasPermission) return null
 
   return (
     <>

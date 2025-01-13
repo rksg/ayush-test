@@ -15,8 +15,10 @@ import {
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
   ServiceOperation,
-  ServiceType, useConfigTemplateQueryFnSwitcher, useServiceListBreadcrumb,
-  WifiCallingDetailContextType
+  ServiceType, useConfigTemplateQueryFnSwitcher,
+  useServiceListBreadcrumb,
+  WifiCallingDetailContextType,
+  useTemplateAwareServiceAllowedOperation
 } from '@acx-ui/rc/utils'
 
 import { ServiceConfigTemplateLinkSwitcher } from '../../../configTemplates'
@@ -54,6 +56,8 @@ export const WifiCallingDetailView = () => {
         breadcrumb={breadcrumb}
         extra={filterByAccessForServicePolicyMutation([
           <ServiceConfigTemplateLinkSwitcher
+            // eslint-disable-next-line max-len
+            rbacOpsIds={useTemplateAwareServiceAllowedOperation(ServiceType.WIFI_CALLING, ServiceOperation.EDIT)}
             scopeKey={getScopeKeyByService(ServiceType.WIFI_CALLING, ServiceOperation.EDIT)}
             type={ServiceType.WIFI_CALLING}
             oper={ServiceOperation.EDIT}
