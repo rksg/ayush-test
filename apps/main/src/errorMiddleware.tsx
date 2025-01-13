@@ -210,7 +210,12 @@ export const showErrorModal = (details: {
 const shouldIgnoreErrorModal = (action?: ErrorAction) => {
   const endpoint = action?.meta?.arg?.endpointName || ''
   const request = action?.meta?.baseQueryMeta?.request
-  return ignoreEndpointList.includes(endpoint) || isIgnoreErrorModal(request)
+  const response = action?.meta?.baseQueryMeta?.response
+  const hasSpecificErrorCode = response && 'errors' in response &&
+    response.errors?.[0].extensions?.code === 'RDA-413'
+  return ignoreEndpointList.includes(endpoint) ||
+    isIgnoreErrorModal(request) ||
+    hasSpecificErrorCode
 }
 
 export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
