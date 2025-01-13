@@ -36,7 +36,6 @@ import {
 import {
   AccessStatus,
   CommonResult,
-  hasPolicyPermission,
   L3AclPolicy,
   layer3ProtocolLabelMapping,
   Layer3ProtocolType,
@@ -48,7 +47,8 @@ import {
   TableResult,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplateQueryFnSwitcher
+  useConfigTemplateQueryFnSwitcher,
+  useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
@@ -1038,6 +1038,14 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
     return Promise.all(validationList.map(value => portRegExp(value)))
   }
 
+  const hasCreatePermission = useTemplateAwarePolicyPermission(
+    PolicyType.LAYER_3_POLICY, PolicyOperation.CREATE
+  )
+
+  const hasEditPermission = useTemplateAwarePolicyPermission(
+    PolicyType.LAYER_3_POLICY, PolicyOperation.EDIT
+  )
+
   const modelContent = () => {
     if (onlyAddMode.enable || drawerViewModeId !== '') {
       return null
@@ -1078,7 +1086,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
         />
       </GridCol>
       <AclGridCol>
-        {hasPolicyPermission({ type: PolicyType.LAYER_3_POLICY, oper: PolicyOperation.EDIT }) &&
+        {hasEditPermission &&
           <Button type='link'
             disabled={visible || !l3AclPolicyId}
             onClick={() => {
@@ -1094,7 +1102,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
         }
       </AclGridCol>
       <AclGridCol>
-        {hasPolicyPermission({ type: PolicyType.LAYER_3_POLICY, oper: PolicyOperation.CREATE }) &&
+        {hasCreatePermission &&
           <Button type='link'
             disabled={visible || layer3List.length >= PROFILE_MAX_COUNT_LAYER3_POLICY}
             onClick={() => {
