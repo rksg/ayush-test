@@ -415,6 +415,9 @@ export function LanPorts () {
   }
 
   const handleFormChange = async (formName: string, info: FormChangeInfo) => {
+
+    if (info?.changedFields) return
+
     const index = Number(info?.changedFields?.[0].name.toString().split(',')[1])
     const newLanData = (lanData?.map((item, idx) => {
       return idx === index
