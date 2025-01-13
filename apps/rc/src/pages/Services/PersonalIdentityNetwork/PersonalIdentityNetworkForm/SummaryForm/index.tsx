@@ -82,7 +82,9 @@ export const SummaryForm = () => {
 
   return (<>
     <StepsForm.Title>{$t({ defaultMessage: 'Summary' })}</StepsForm.Title>
-    {isEdgePinEnhanceReady && networkTopologyType !== NetworkTopologyType.TwoTier
+    {
+      // eslint-disable-next-line max-len
+      (!isEdgePinEnhanceReady || (isEdgePinEnhanceReady && networkTopologyType !== NetworkTopologyType.TwoTier))
     && <Alert message={alertMsg} type='info' showIcon />}
     <Subtitle level={4}>
       { $t({ defaultMessage: 'General Settings' }) }

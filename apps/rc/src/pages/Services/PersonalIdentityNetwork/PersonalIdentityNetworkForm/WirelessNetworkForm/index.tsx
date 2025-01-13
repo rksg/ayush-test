@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 
 
 import { useContext, useState } from 'react'
@@ -64,8 +65,7 @@ export const WirelessNetworkForm = () => {
                 loading={isTunnelLoading}
                 placeholder={$t({ defaultMessage: 'Select...' })}
                 options={tunnelProfileOptions}
-              />
-            }
+              />}
           />
         </Col>
         <TunnelProfileAddModal
@@ -75,52 +75,34 @@ export const WirelessNetworkForm = () => {
       <Row gutter={20}>
         <Col>
           <Space direction='vertical'>
-            {
-              isEdgePinEnhanceReady
-                ? $t({
-                  defaultMessage: 'Select DPSK networks that you want to enable PIN service:*'
-                })
-                : $t({
-                  defaultMessage: `Apply the tunnel profile to the following
-                networks that you want to enable personal identity network:`
-                })
+            {isEdgePinEnhanceReady
+              ? $t({ defaultMessage: 'Select DPSK networks that you want to enable PIN service:*' })
+              : $t({ defaultMessage: 'Apply the tunnel profile to the following networks that you want to enable personal identity network:' })
             }
             {!isEdgePinEnhanceReady && <Space size={1}>
               <UI.InfoIcon />
               <UI.Description>
-                {
-                  $t({
-                    defaultMessage: `The client isolation service will be disabled
-                      and VLAN ID will be set to 1 for the checked networks.`
-                  })
-                }
+                {$t({ defaultMessage: 'The client isolation service will be disabled and VLAN ID will be set to 1 for the checked networks.' })}
               </UI.Description>
             </Space>}
             <Loader states={[{ isLoading: isNetworkOptionsLoading, isFetching: false }]}>
               <Form.Item
                 name='networkIds'
                 rules={isEdgePinEnhanceReady ? [{
-                  required: true, message: $t({ defaultMessage: 'Please select a network' })
+                  required: true, message: $t({ defaultMessage: 'Please select network' })
                 }] : undefined}
-                children={
-                  <Checkbox.Group onChange={onNetworkChange}>
-                    <Space direction='vertical'>
-                      {
-                        networkOptions?.map(item => (
-                          <Checkbox value={item.value} children={item.label} key={item.value} />
-                        ))
-                      }
-                      <UI.Description>
-                        {
-                          !networkOptions?.length &&
-                            // eslint-disable-next-line max-len
-                            $t({ defaultMessage: 'No networks activated on <VenueSingular></VenueSingular> ({venueName})' }, { venueName: getVenueName(venueId) })
-                        }
-                      </UI.Description>
-                    </Space>
-                  </Checkbox.Group>
-                }
-              />
+              >
+                <Checkbox.Group onChange={onNetworkChange}>
+                  <Space direction='vertical'>
+                    {networkOptions?.map(item => (
+                      <Checkbox value={item.value} children={item.label} key={item.value} />
+                    ))}
+                    <UI.Description>
+                      {!networkOptions?.length && $t({ defaultMessage: 'No networks activated on <VenueSingular></VenueSingular> ({venueName})' }, { venueName: getVenueName(venueId) })}
+                    </UI.Description>
+                  </Space>
+                </Checkbox.Group>
+              </Form.Item>
             </Loader>
             <Button
               type='link'
@@ -132,23 +114,13 @@ export const WirelessNetworkForm = () => {
               <Space size={1}>
                 <UI.InfoIcon />
                 <UI.Description>
-                  {
-                    $t({
-                      defaultMessage: `The client isolation service will be disabled
-                      and VLAN ID will be set to 1 for the selected networks.`
-                    })
-                  }
+                  {$t({ defaultMessage: 'The client isolation service will be disabled and VLAN ID will be set to 1 for the selected networks.' })}
                 </UI.Description>
               </Space>
               <Space size={1}>
                 <UI.InfoIcon />
                 <UI.Description>
-                  {
-                    $t({
-                      // eslint-disable-next-line max-len
-                      defaultMessage: 'Only DPSK networks linked to the DPSK service ({dpskServiceName}) can operate in this PIN service.'
-                    }, { dpskServiceName: dpskData?.name })
-                  }
+                  {$t({ defaultMessage: 'Only DPSK networks linked to the DPSK service ({dpskServiceName}) can operate in this PIN service.' }, { dpskServiceName: dpskData?.name })}
                 </UI.Description>
               </Space>
             </Row>}
