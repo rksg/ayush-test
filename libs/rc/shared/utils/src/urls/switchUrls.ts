@@ -676,5 +676,90 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/switchFeatureSets/query',
     newApi: true
+  },
+  getSwitchPortProfilesList: {
+    method: 'post',
+    url: '/switchPortProfiles/portProfiles/query',
+    newApi: true
+  },
+  getSwitchPortProfilesCount: {
+    method: 'get',
+    url: '/switchPortProfiles/portProfiles/totalAmounts',
+    newApi: true
+  },
+  addSwitchPortProfile: {
+    method: 'post',
+    url: '/switchPortProfiles/portProfiles',
+    newApi: true
+  },
+  editSwitchPortProfile: {
+    method: 'put',
+    url: '/switchPortProfiles/portProfiles/:portProfileId',
+    newApi: true
+  },
+  deleteSwitchPortProfile: {
+    method: 'delete',
+    url: '/switchPortProfiles/portProfiles/:portProfileId',
+    newApi: true
+  },
+  getSwitchPortProfileDetail: {
+    method: 'get',
+    url: '/switchPortProfiles/portProfiles/:portProfileId',
+    newApi: true
+  },
+  getSwitchPortProfileAppliedList: {
+    method: 'post',
+    url: '/switchPortProfiles/portProfiles/:portProfileId/appliedSwitches/query',
+    newApi: true
+  },
+  getSwitchPortProfileMacOuisList: {
+    method: 'post',
+    url: '/switchPortProfiles/macOuis/query',
+    newApi: true
+  },
+  addSwitchPortProfileMacOui: {
+    method: 'post',
+    url: '/switchPortProfiles/macOuis',
+    newApi: true
+  },
+  editSwitchPortProfileMacOui: {
+    method: 'put',
+    url: '/switchPortProfiles/macOuis/:macOuiId',
+    newApi: true
+  },
+  deleteSwitchPortProfileMacOui: {
+    method: 'delete',
+    url: '/switchPortProfiles/macOuis/:macOuiId',
+    newApi: true
+  },
+  getSwitchPortProfileLldpTlvsList: {
+    method: 'post',
+    url: '/switchPortProfiles/lldpTlvs/query',
+    newApi: true
+  },
+  addSwitchPortProfileLldpTlv: {
+    method: 'post',
+    url: '/switchPortProfiles/lldpTlvs',
+    newApi: true
+  },
+  editSwitchPortProfileLldpTlv: {
+    method: 'put',
+    url: '/switchPortProfiles/lldpTlvs/:lldpTlvId',
+    newApi: true
+  },
+  deleteSwitchPortProfileLldpTlv: {
+    method: 'delete',
+    url: '/switchPortProfiles/lldpTlvs/:lldpTlvId',
+    newApi: true
+  },
+  getPortProfileOptionsForMultiSwitches: {
+    method: 'post',
+    url: '/venues/:venueId/switches/availablePortProfiles',
+    newApi: true
+  },
+  getPortProfilesListBySwitchId: {
+    method: 'post',
+    url: '/venues/:venueId/switches/:switchId/switchPortProfiles/query',
+    newApi: true
   }
 }
