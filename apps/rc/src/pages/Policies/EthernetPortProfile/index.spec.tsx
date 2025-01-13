@@ -13,9 +13,10 @@ import {
 import { Provider }                                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { dummayRadiusServiceList, dummyTableResult, mockEthernetPortProfileId, mockedVenuesResult } from '../__tests__/fixtures'
+import { dummayRadiusServiceList, dummyTableResult, mockEthernetPortProfileId, mockedVenuesResult } from './__tests__/fixtures'
 
-import EthernetPortProfileTable from '.'
+
+import EthernetPortProfile from '.'
 
 const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 const mockedUsedNavigate = jest.fn()
@@ -77,7 +78,7 @@ describe('EthernetPortProfileTable', ()=>{
 
     render(
       <Provider>
-        <EthernetPortProfileTable />
+        <EthernetPortProfile />
       </Provider>, {
         route: { params, path: tablePath }
       }
@@ -91,7 +92,7 @@ describe('EthernetPortProfileTable', ()=>{
   it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
-        <EthernetPortProfileTable />
+        <EthernetPortProfile />
       </Provider>, {
         route: { params, path: tablePath }
       })
@@ -103,7 +104,7 @@ describe('EthernetPortProfileTable', ()=>{
   it('EthernetPortProfile detail page link should be correct', async () => {
     render(
       <Provider>
-        <EthernetPortProfileTable />
+        <EthernetPortProfile />
       </Provider>, {
         route: { params, path: tablePath }
       })
@@ -121,7 +122,7 @@ describe('EthernetPortProfileTable', ()=>{
     const user = userEvent.setup()
     render(
       <Provider>
-        <EthernetPortProfileTable />
+        <EthernetPortProfile />
       </Provider>, {
         route: { params, path: tablePath }
       })
@@ -143,7 +144,7 @@ describe('EthernetPortProfileTable', ()=>{
     const user = userEvent.setup()
     render(
       <Provider>
-        <EthernetPortProfileTable />
+        <EthernetPortProfile />
       </Provider>, {
         route: { params, path: tablePath }
       })
@@ -157,7 +158,7 @@ describe('EthernetPortProfileTable', ()=>{
     const user = userEvent.setup()
     render(
       <Provider>
-        <EthernetPortProfileTable />
+        <EthernetPortProfile />
       </Provider>, {
         route: { params, path: tablePath }
       })
@@ -179,7 +180,7 @@ describe('EthernetPortProfileTable', ()=>{
     const user = userEvent.setup()
     render(
       <Provider>
-        <EthernetPortProfileTable />
+        <EthernetPortProfile />
       </Provider>, {
         route: { params, path: tablePath }
       })
@@ -202,7 +203,7 @@ describe('EthernetPortProfileTable', ()=>{
     const user = userEvent.setup()
     render(
       <Provider>
-        <EthernetPortProfileTable />
+        <EthernetPortProfile />
       </Provider>, {
         route: { params, path: tablePath }
       })
