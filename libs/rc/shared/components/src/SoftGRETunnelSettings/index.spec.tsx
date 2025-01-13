@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
-import { Form } from 'antd'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
 import { softGreApi }      from '@acx-ui/rc/services'
 import { SoftGreUrls }     from '@acx-ui/rc/utils'
@@ -33,13 +34,13 @@ describe('SoftGRETunnelSettings', () => {
         <Form>
           <SoftGRETunnelSettings
             index={1}
-            softGreProfileId={''}
-            softGreTunnelEnable={true}
             readonly={false}
           />
         </Form>
       </Provider>
     )
+    expect(screen.getByText(/Enable SoftGRE Tunnel/)).toBeInTheDocument()
+    await userEvent.click(screen.getByTestId('softgre-tunnel-switch'))
     expect(await screen.findByTestId('enable-softgre-tunnel-banner')).toBeInTheDocument()
   })
   it('Should not display softgre tunnel banner', () => {
@@ -48,13 +49,12 @@ describe('SoftGRETunnelSettings', () => {
         <Form>
           <SoftGRETunnelSettings
             index={1}
-            softGreProfileId={''}
-            softGreTunnelEnable={false}
             readonly={false}
           />
         </Form>
       </Provider>
     )
+
     expect(screen.queryByTestId('enable-softgre-tunnel-banner')).not.toBeInTheDocument()
   })
   it('Should not be disabled is readonly is false', async () => {
@@ -68,6 +68,9 @@ describe('SoftGRETunnelSettings', () => {
               { label: 'SoftGre1', value: 'testvalue' }
             ]}
             readonly={false}
+            softGREProfileOptionList={[
+              { label: 'SoftGre1', value: 'SoftGre1' }
+            ]}
           />
         </Form>
       </Provider>
