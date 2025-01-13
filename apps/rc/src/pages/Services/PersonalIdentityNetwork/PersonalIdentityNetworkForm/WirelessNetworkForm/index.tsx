@@ -8,7 +8,8 @@ import { CheckboxValueType }                       from 'antd/lib/checkbox/Group
 import { useIntl }                                 from 'react-intl'
 
 import { Button, Loader, StepsForm, useStepFormContext }                          from '@acx-ui/components'
-import { TunnelProfileAddModal }                                                  from '@acx-ui/rc/components'
+import { Features }                                                               from '@acx-ui/feature-toggle'
+import { TunnelProfileAddModal, useIsEdgeFeatureReady }                           from '@acx-ui/rc/components'
 import { TunnelProfileFormType, TunnelTypeEnum, PersonalIdentityNetworkFormData } from '@acx-ui/rc/utils'
 
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
@@ -24,12 +25,15 @@ const tunnelProfileFormInitValues ={
 export const WirelessNetworkForm = () => {
 
   const { $t } = useIntl()
+  const isEdgePinEnhanceReady = useIsEdgeFeatureReady(Features.EDGE_PIN_ENHANCE_TOGGLE)
+
   const { form } = useStepFormContext<PersonalIdentityNetworkFormData>()
   const {
     tunnelProfileOptions,
     isTunnelLoading,
     networkOptions,
     isNetworkOptionsLoading,
+    dpskData,
     getVenueName
   } = useContext(PersonalIdentityNetworkFormContext)
   const [dpskModalVisible, setDpskModalVisible] = useState(false)
@@ -72,12 +76,16 @@ export const WirelessNetworkForm = () => {
         <Col>
           <Space direction='vertical'>
             {
-              $t({
-                defaultMessage: `Apply the tunnel profile to the following
+              isEdgePinEnhanceReady
+                ? $t({
+                  defaultMessage: 'Select DPSK networks that you want to enable PIN service:*'
+                })
+                : $t({
+                  defaultMessage: `Apply the tunnel profile to the following
                 networks that you want to enable personal identity network:`
-              })
+                })
             }
-            <Space size={1}>
+            {!isEdgePinEnhanceReady && <Space size={1}>
               <UI.InfoIcon />
               <UI.Description>
                 {
@@ -87,10 +95,13 @@ export const WirelessNetworkForm = () => {
                   })
                 }
               </UI.Description>
-            </Space>
+            </Space>}
             <Loader states={[{ isLoading: isNetworkOptionsLoading, isFetching: false }]}>
               <Form.Item
                 name='networkIds'
+                rules={isEdgePinEnhanceReady ? [{
+                  required: true, message: $t({ defaultMessage: 'Please select a network' })
+                }] : undefined}
                 children={
                   <Checkbox.Group onChange={onNetworkChange}>
                     <Space direction='vertical'>
@@ -116,6 +127,31 @@ export const WirelessNetworkForm = () => {
               onClick={openDpskModal}
               children={$t({ defaultMessage: 'Add DPSK Network' })}
             />
+
+            {isEdgePinEnhanceReady && <Row>
+              <Space size={1}>
+                <UI.InfoIcon />
+                <UI.Description>
+                  {
+                    $t({
+                      defaultMessage: `The client isolation service will be disabled
+                      and VLAN ID will be set to 1 for the selected networks.`
+                    })
+                  }
+                </UI.Description>
+              </Space>
+              <Space size={1}>
+                <UI.InfoIcon />
+                <UI.Description>
+                  {
+                    $t({
+                      // eslint-disable-next-line max-len
+                      defaultMessage: 'Only DPSK networks linked to the DPSK service ({dpskServiceName}) can operate in this PIN service.'
+                    }, { dpskServiceName: dpskData?.name })
+                  }
+                </UI.Description>
+              </Space>
+            </Row>}
             <AddDpskModal
               visible={dpskModalVisible}
               setVisible={setDpskModalVisible}

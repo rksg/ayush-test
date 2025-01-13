@@ -27,7 +27,6 @@ export const SummaryForm = () => {
     getVenueName,
     getClusterName,
     getDhcpName,
-    // getDhcpPoolName,
     getTunnelProfileName,
     getNetworksName
   } = useContext(PersonalIdentityNetworkFormContext)
@@ -53,7 +52,7 @@ export const SummaryForm = () => {
   const alertMsg = <FormattedMessage
     defaultMessage={
       'For segment assignment for <sub5b>AP wired</sub5b>, please go to the\
-      <sub5b><VenueSingular></VenueSingular>/ property Units page</sub5b> to assign an AP\
+      <sub5b><VenueSingular></VenueSingular>/ Property Units page</sub5b> to assign an AP\
       for the specific unit / identity.'}
 
     values={{
@@ -83,11 +82,8 @@ export const SummaryForm = () => {
 
   return (<>
     <StepsForm.Title>{$t({ defaultMessage: 'Summary' })}</StepsForm.Title>
-    <Alert message={
-      alertMsg
-    }
-    type='info'
-    showIcon />
+    {isEdgePinEnhanceReady && networkTopologyType !== NetworkTopologyType.TwoTier
+    && <Alert message={alertMsg} type='info' showIcon />}
     <Subtitle level={4}>
       { $t({ defaultMessage: 'General Settings' }) }
     </Subtitle>

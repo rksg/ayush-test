@@ -21,7 +21,7 @@ export const getCompatibilityFeatureDisplayName = (featureName?: Incompatibility
   const { $t } = getIntl()
   switch(featureName) {
     case IncompatibilityFeatures.HA_AA:
-      return $t({ defaultMessage: 'High-availability’s active-acitve mode' })
+      return $t({ defaultMessage: 'High-availability’s active-active mode' })
     case IncompatibilityFeatures.EDGE_MDNS_PROXY:
       return $t({ defaultMessage: 'mDNS Proxy' })
     case IncompatibilityFeatures.PIN_DS:
