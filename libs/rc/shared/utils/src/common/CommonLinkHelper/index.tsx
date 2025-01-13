@@ -2,10 +2,10 @@
 import { TenantLink }    from '@acx-ui/react-router-dom'
 import { noDataDisplay } from '@acx-ui/utils'
 
-import { ServiceType }                                                         from '../../constants'
-import { getPolicyDetailsLink, MacRegistrationDetailsTabKey, PolicyOperation } from '../../features/policy/policyRouteUtils'
-import { DpskDetailsTabKey, getServiceDetailsLink, ServiceOperation }          from '../../features/service/serviceRouteUtils'
-import { PolicyType }                                                          from '../../types/policies/common'
+import { ServiceOperation, ServiceType }                       from '../../constants'
+import { getPolicyDetailsLink, MacRegistrationDetailsTabKey  } from '../../features/policy/policyRouteUtils'
+import { DpskDetailsTabKey, getServiceDetailsLink }            from '../../features/service/serviceRouteUtils'
+import { PolicyType, PolicyOperation }                         from '../../types/policies/common'
 
 
 export function VenueLink (props: { venueId?: string, name?: string, showNoData?: boolean }) {

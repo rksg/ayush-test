@@ -40,5 +40,7 @@ export const policyTypeLabelMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.ETHERNET_PORT_PROFILE]: defineMessage({ defaultMessage: 'Ethernet Port Profile' }),
   [PolicyType.FLEX_AUTH]: defineMessage({ defaultMessage: 'Authentication' }),
   [PolicyType.SERVER_CERTIFICATES]: defineMessage({ defaultMessage: 'Server Certificates' }),
-  [PolicyType.DIRECTORY_SERVER]: defineMessage({ defaultMessage: 'Directory Server' })
+  [PolicyType.DIRECTORY_SERVER]: defineMessage({ defaultMessage: 'Directory Server' }),
+  [PolicyType.PORT_PROFILE]: defineMessage({ defaultMessage: 'Port Profiles' }),
+  [PolicyType.SWITCH_PORT_PROFILE]: defineMessage({ defaultMessage: 'Port Profiles' })
 }

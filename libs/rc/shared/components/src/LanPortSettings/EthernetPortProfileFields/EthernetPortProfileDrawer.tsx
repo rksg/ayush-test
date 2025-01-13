@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 import { Button, Drawer }                                                                from '@acx-ui/components'
 import { EthernetPortProfileViewData, hasPolicyPermission, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 
-import { AddEthernetPortProfile } from '../policies/EthernetPortProfile/AddEthernetPortProfile'
+import { AddEthernetPortProfile } from '../../policies/EthernetPortProfile/AddEthernetPortProfile'
 
 import EthernetPortProfileDetailsDrawer from './EthernetPortProfileDetailsDrawer'
 

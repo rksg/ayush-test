@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                  from '@acx-ui/rc/components'
 import { IncompatibilityFeatures }                                from '@acx-ui/rc/utils'
 import { Provider }                                               from '@acx-ui/store'
 import {
@@ -17,7 +18,8 @@ jest.mock('@acx-ui/rc/components', () => ({
   EdgeCompatibilityDrawer: (props: { featureName: IncompatibilityFeatures }) =>
     <div data-testid='EdgeCompatibilityDrawer'>
       {props.featureName}
-    </div>
+    </div>,
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
 describe('ServiceCatalog', () => {
@@ -47,6 +49,7 @@ describe('ServiceCatalog', () => {
   it('should render service catalog with feature flag ON', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
 
     render(<Provider>
       <ServiceCatalog />
@@ -62,9 +65,8 @@ describe('ServiceCatalog', () => {
   })
 
   it('should not render edge-firewall service with the HA-FF OFF', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(featureFlag => {
-      return featureFlag === Features.EDGE_HA_TOGGLE
-    })
+    jest.mocked(useIsEdgeFeatureReady)
+      .mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE)
 
     render(
       <ServiceCatalog />, {
@@ -76,10 +78,10 @@ describe('ServiceCatalog', () => {
   })
 
   it('should not render edge-dhcp service with the HA-FF ON and dhcp-HA-FF OFF', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => {
-      return ff === Features.EDGE_HA_TOGGLE
-        || (ff !== Features.EDGE_DHCP_HA_TOGGLE && ff !== Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
-    })
+    jest.mocked(useIsEdgeFeatureReady)
+      .mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE
+        || (ff !== Features.EDGE_DHCP_HA_TOGGLE
+          && ff !== Features.EDGE_COMPATIBILITY_CHECK_TOGGLE))
 
     render(<Provider>
       <ServiceCatalog />
@@ -92,11 +94,10 @@ describe('ServiceCatalog', () => {
 
   describe('Edge SD-LAN', () => {
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => {
-        return ff === Features.EDGES_SD_LAN_HA_TOGGLE
-        || ff === Features.EDGES_TOGGLE
-        || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE
-      })
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE
+          || ff === Features.EDGES_TOGGLE
+          || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
     })
 
     it('should render Edge SD-LAN with feature flag ON', async () => {
@@ -127,11 +128,11 @@ describe('ServiceCatalog', () => {
 
   describe('Edge DHCP', () => {
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => {
-        return ff === Features.EDGE_DHCP_HA_TOGGLE || ff === Features.EDGE_HA_TOGGLE
-        || ff === Features.EDGES_TOGGLE
-        || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE
-      })
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff => ff === Features.EDGE_DHCP_HA_TOGGLE
+          || ff === Features.EDGE_HA_TOGGLE
+          || ff === Features.EDGES_TOGGLE
+          || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
     })
 
     it('should render Edge DHCP with feature flag ON', async () => {
@@ -163,10 +164,10 @@ describe('ServiceCatalog', () => {
   describe('Edge PIN', () => {
     beforeEach(() => {
       jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.EDGE_ADV)
-      jest.mocked(useIsSplitOn).mockImplementation(ff => {
-        return ff === Features.EDGE_PIN_HA_TOGGLE || ff === Features.EDGES_TOGGLE
-        || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE
-      })
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff => ff === Features.EDGE_PIN_HA_TOGGLE
+          || ff === Features.EDGES_TOGGLE
+          || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
     })
 
     it('should render Edge PIN with feature flag ON', async () => {
@@ -197,10 +198,10 @@ describe('ServiceCatalog', () => {
 
   describe('Edge mDNS', () => {
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => {
-        return ff === Features.EDGE_MDNS_PROXY_TOGGLE || ff === Features.EDGES_TOGGLE
-        || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE
-      })
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff => ff === Features.EDGE_MDNS_PROXY_TOGGLE
+          || ff === Features.EDGES_TOGGLE
+          || ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
     })
 
     it('should render Edge mDNS with feature flag ON', async () => {
