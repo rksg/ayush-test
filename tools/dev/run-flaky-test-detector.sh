@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# new_test_files=$(git diff --cached --name-only master...HEAD --diff-filter=AMRT | grep -E ".*\\.spec\\.(js|ts|tsx|jsx)$")
 new_test_files_on_branch=$(git diff --name-only master...HEAD  | grep -E ".*\\.spec\\.(js|ts|tsx|jsx)$")
 
 if [ -z "$new_test_files_on_branch" ]; then
