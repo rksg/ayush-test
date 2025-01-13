@@ -3,11 +3,20 @@ import { TypedUseMutation, TypedUseLazyQuery } from '@reduxjs/toolkit/query/reac
 import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import { Params, TenantType, useParams }       from '@acx-ui/react-router-dom'
 import { RequestPayload, RolesEnum, UseQuery } from '@acx-ui/types'
-import { hasRoles }                            from '@acx-ui/user'
-import { AccountType, getIntl }                from '@acx-ui/utils'
+import { hasAllowedOperations, hasRoles }      from '@acx-ui/user'
+import { AccountType, getIntl, getOpsApi }     from '@acx-ui/utils'
 
-import { CONFIG_TEMPLATE_LIST_PATH } from './configTemplateRouteUtils'
-import { useConfigTemplate }         from './useConfigTemplate'
+import { hasPolicyPermission, hasServicePermission } from '../features'
+import { ConfigTemplateType }                        from '../types'
+
+import { CONFIG_TEMPLATE_LIST_PATH }                                         from './configTemplateRouteUtils'
+import {
+  configTemplateApGroupOperationMap,
+  configTemplateNetworkOperationMap, ConfigTemplateOperation, configTemplatePolicyOperationMap,
+  configTemplatePolicyTypeMap, configTemplateServiceOperationMap, configTemplateServiceTypeMap,
+  configTemplateSwitchProfileOperationMap, configTemplateVenueOperationMap
+} from './contentsMap'
+import { useConfigTemplate } from './useConfigTemplate'
 
 // eslint-disable-next-line max-len
 export function generateConfigTemplateBreadcrumb (): { text: string, link?: string, tenantType?: TenantType }[] {
@@ -96,4 +105,34 @@ export function useConfigTemplateMutationFnSwitcher (
   const templateResult = useTemplateMutationFn()
 
   return isTemplate ? templateResult : result
+}
+
+// eslint-disable-next-line max-len
+export function hasConfigTemplateAllowedOperation (type: ConfigTemplateType, oper: ConfigTemplateOperation): boolean {
+  const policyType = configTemplatePolicyTypeMap[type]
+  const serviceType = configTemplateServiceTypeMap[type]
+
+  if (policyType) {
+    return hasPolicyPermission({
+      type: policyType,
+      oper: configTemplatePolicyOperationMap[oper],
+      isTemplate: true
+    })
+  } else if (serviceType) {
+    return hasServicePermission({
+      type: serviceType,
+      oper: configTemplateServiceOperationMap[oper],
+      isTemplate: true
+    })
+  } else if (type === ConfigTemplateType.NETWORK) {
+    return hasAllowedOperations([getOpsApi(configTemplateNetworkOperationMap[oper])])
+  } else if (type === ConfigTemplateType.VENUE) {
+    return hasAllowedOperations([getOpsApi(configTemplateVenueOperationMap[oper])])
+  } else if (type === ConfigTemplateType.SWITCH_REGULAR || type === ConfigTemplateType.SWITCH_CLI) {
+    return hasAllowedOperations([getOpsApi(configTemplateSwitchProfileOperationMap[oper])])
+  } else if (type === ConfigTemplateType.AP_GROUP) {
+    return hasAllowedOperations([getOpsApi(configTemplateApGroupOperationMap[oper])])
+  }
+
+  return false
 }

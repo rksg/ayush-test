@@ -1,6 +1,6 @@
 import { generatePath } from '@acx-ui/react-router-dom'
 
-import { PolicyType } from '../../types'
+import { PolicyOperation, PolicyType } from '../../types'
 
 export enum MacRegistrationDetailsTabKey {
   OVERVIEW = 'overview',
@@ -10,14 +10,6 @@ export enum MacRegistrationDetailsTabKey {
 export enum WorkflowDetailsTabKey {
   OVERVIEW = 'overview',
   VERSION_HISTORY = 'versionHistory'
-}
-
-export enum PolicyOperation {
-  CREATE,
-  EDIT,
-  DELETE,
-  DETAIL,
-  LIST
 }
 
 export interface PolicyRoutePathProps {
