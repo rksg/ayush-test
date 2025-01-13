@@ -51,7 +51,7 @@ export default function ReportsRoutes () {
           element={<DataSubscriptionsForm isRAI editMode />} />
         <Route path='dataSubscriptions/auditLog/:settingId'
           element={<DataSubscriptionsAuditLog isRAI/>} />
-        <Route path='dataSubscriptions/cloudStorage/:cofigId'
+        <Route path='dataSubscriptions/cloudStorage'
           element={<DataSubscriptionsCloudStorage isRAI/>} />
       </>) : []}
     </Route>

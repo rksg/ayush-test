@@ -38,7 +38,7 @@ export const BannerBG = styled.img`
 
 export const Banner = styled.div`
   position: relative;
-  padding: 20px 20px;
+  padding: 18px 20px;
 `
 
 export const BannerTitle = styled.div`
@@ -46,14 +46,14 @@ export const BannerTitle = styled.div`
   line-height: var(--acx-headline-2-line-height);
   font-weight: var(--acx-headline-5-font-weight-bold);
   display: block;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 `
 export const BannerSubTitle = styled.div`
   font-size: var(--acx-headline-5-font-size);
   line-height: var(--acx-headline-5-line-height);
   font-weight: var(--acx-headline-5-font-weight);
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
 `
 
 export const BannerButton = styled(Button)`
