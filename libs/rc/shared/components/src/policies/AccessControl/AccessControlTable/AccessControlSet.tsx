@@ -15,6 +15,7 @@ import {
 import {
   AclOptionType,
   EnhancedAccessControlInfoType, filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation,
   getPolicyDetailsLink, getScopeKeyByPolicy, Network,
   PolicyOperation,
   PolicyType,
@@ -131,6 +132,7 @@ const AccessControlSet = () => {
 
   const rowActions: TableProps<EnhancedAccessControlInfoType>['rowActions'] = [
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.ACCESS_CONTROL, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
@@ -139,6 +141,7 @@ const AccessControlSet = () => {
       }
     },
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.ACCESS_CONTROL, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),

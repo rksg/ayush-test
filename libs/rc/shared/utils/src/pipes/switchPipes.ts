@@ -79,6 +79,9 @@ export function transformConfigType (type: ConfigTypeEnum | string) {
     case ConfigTypeEnum.AUTHENTICATION:
       transform = $t({ defaultMessage: 'Authentication' })
       break
+    case ConfigTypeEnum.PORT_PROFILE:
+      transform = $t({ defaultMessage: 'Port Profile' })
+      break
   }
 
   return transform

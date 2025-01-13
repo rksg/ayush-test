@@ -1,8 +1,8 @@
 import { renderHook } from '@acx-ui/test-utils'
 
-import { PolicyType } from '../../types'
+import { PolicyType, PolicyOperation } from '../../types'
 
-import { PolicyOperation, getPolicyListRoutePath, getPolicyRoutePath, usePolicyListBreadcrumb, usePolicyPageHeaderTitle } from '.'
+import { getPolicyListRoutePath, getPolicyRoutePath, usePolicyListBreadcrumb, usePolicyPageHeaderTitle } from '.'
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('../../configTemplate', () => ({
