@@ -23,7 +23,6 @@ import {
   AccessStatus,
   CommonResult,
   defaultSort, formatMacAddress,
-  hasPolicyPermission,
   L2AclPolicy,
   MacAddressFilterRegExp, MacRegistrationFilterRegExp,
   PolicyOperation,
@@ -32,11 +31,11 @@ import {
   TableResult,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplateQueryFnSwitcher
+  useConfigTemplateQueryFnSwitcher,
+  useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
-import { WifiScopes }                    from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 
 import { PROFILE_MAX_COUNT_LAYER2_POLICY_MAC_ADDRESS_LIMIT } from '../AccessControl/constants'
@@ -597,6 +596,14 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
     />
   </RuleContentWrapper>
 
+  const hasCreatePermission = useTemplateAwarePolicyPermission(
+    PolicyType.LAYER_2_POLICY, PolicyOperation.CREATE
+  )
+
+  const hasEditPermission = useTemplateAwarePolicyPermission(
+    PolicyType.LAYER_2_POLICY, PolicyOperation.EDIT
+  )
+
   const modeContent = () => {
     if (onlyAddMode.enable || drawerViewModeId !== '') {
       return null
@@ -613,9 +620,6 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
         {onlyViewMode.viewText}
       </Button>
     }
-
-    // eslint-disable-next-line max-len
-    if (!hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, WifiScopes.READ] })) return null
 
     return <GridRow style={{ width: '350px' }}>
       <GridCol col={{ span: 12 }}>
@@ -639,7 +643,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
         />
       </GridCol>
       <AclGridCol>
-        {hasPolicyPermission({ type: PolicyType.LAYER_2_POLICY, oper: PolicyOperation.EDIT }) &&
+        {hasEditPermission &&
           <Button type='link'
             disabled={visible || !l2AclPolicyId}
             onClick={() => {
@@ -655,7 +659,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
         }
       </AclGridCol>
       <AclGridCol>
-        {hasPolicyPermission({ type: PolicyType.LAYER_2_POLICY, oper: PolicyOperation.CREATE }) &&
+        {hasCreatePermission &&
           <Button type='link'
             disabled={visible || layer2List.length >= PROFILE_MAX_COUNT_LAYER2_POLICY}
             onClick={() => {
