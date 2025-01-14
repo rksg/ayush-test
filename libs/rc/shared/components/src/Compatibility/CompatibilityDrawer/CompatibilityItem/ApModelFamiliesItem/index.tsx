@@ -2,8 +2,8 @@ import { intersection } from 'lodash'
 
 import { ApModelFamily, ApModelFamilyType } from '@acx-ui/rc/utils'
 
-import { StyledApModelFamilyWrapper } from '../CompatibilityDrawer/styledComponents'
-import { getApModelFamilyTag }        from '../CompatibilityDrawer/utils'
+import { StyledApModelFamilyWrapper } from '../../styledComponents'
+import { getApModelFamilyTag }        from '../../utils'
 
 
 export const ApModelFamiliesItem = (props: {

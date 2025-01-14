@@ -6,8 +6,9 @@ import { Features, useIsSplitOn }                                               
 import { useGetApModelFamiliesQuery }                                                         from '@acx-ui/rc/services'
 import { ApIncompatibleFeature, ApRequirement, CompatibilityDeviceEnum, IncompatibleFeature } from '@acx-ui/rc/utils'
 
-import { ApModelFamiliesItem } from '../../ApModelFamiliesItem'
-import * as UI                 from '../styledComponents'
+import * as UI from '../styledComponents'
+
+import { ApModelFamiliesItem } from './ApModelFamiliesItem'
 
 export interface SupportedFirmwareInfoProps {
   deviceType: CompatibilityDeviceEnum

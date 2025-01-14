@@ -8,8 +8,8 @@ import { CommonUrlsInfo, EdgeUrlsInfo, WifiUrlsInfo, IncompatibilityFeatures, Ed
 import { Provider, store }                                                                                                                        from '@acx-ui/store'
 import { act, mockServer, render, screen, waitForElementToBeRemoved, within }                                                                     from '@acx-ui/test-utils'
 
-import { CompatibilityItemProps } from '../CompatibilityDrawer/CompatibilityItem'
-import { FeatureItemProps }       from '../CompatibilityDrawer/CompatibilityItem/FeatureItem'
+import { CompatibilityItemProps } from '../../CompatibilityDrawer/CompatibilityItem'
+import { FeatureItemProps }       from '../../CompatibilityDrawer/CompatibilityItem/FeatureItem'
 
 import {
   mockApFeatureCompatibilities
@@ -29,8 +29,8 @@ const {
   mockAvailableVersions
 } = EdgeFirmwareFixtures
 
-jest.mock('../CompatibilityDrawer/CompatibilityItem', () => {
-  const CompatibilityItemComp = jest.requireActual('../CompatibilityDrawer/CompatibilityItem')
+jest.mock('../../CompatibilityDrawer/CompatibilityItem', () => {
+  const CompatibilityItemComp = jest.requireActual('../../CompatibilityDrawer/CompatibilityItem')
   return {
     ...CompatibilityItemComp,
     CompatibilityItem: (props: CompatibilityItemProps) => <div data-testid='CompatibilityItem'>
@@ -38,8 +38,8 @@ jest.mock('../CompatibilityDrawer/CompatibilityItem', () => {
     </div>
   }
 })
-jest.mock('../CompatibilityDrawer/CompatibilityItem/FeatureItem', () => {
-  const FeatureItemComp = jest.requireActual('../CompatibilityDrawer/CompatibilityItem/FeatureItem')
+jest.mock('../../CompatibilityDrawer/CompatibilityItem/FeatureItem', () => {
+  const FeatureItemComp = jest.requireActual('../../CompatibilityDrawer/CompatibilityItem/FeatureItem')
   return {
     ...FeatureItemComp,
     FeatureItem: (props: FeatureItemProps) => <div data-testid='FeatureItem'>
@@ -49,7 +49,7 @@ jest.mock('../CompatibilityDrawer/CompatibilityItem/FeatureItem', () => {
 })
 
 const edgeCompatibilitiesVenue = cloneDeep(mockEdgeCompatibilitiesVenue)
-edgeCompatibilitiesVenue.compatibilities.splice(1, 1)
+edgeCompatibilitiesVenue.compatibilities?.splice(1, 1)
 describe('EdgeCompatibilityDrawer', () => {
   const venueId = 'mock_venue_id'
   const venueName = 'Test Venue'
@@ -203,7 +203,7 @@ describe('EdgeCompatibilityDrawer', () => {
         <EdgeCompatibilityDrawer
           visible={true}
           title='Testing render with given data'
-          data={mockEdgeCompatibilitiesVenue.compatibilities.slice(0, 1)}
+          data={mockEdgeCompatibilitiesVenue.compatibilities?.slice(0, 1)}
           onClose={mockedCloseDrawer}
         />
       </Provider>, {
@@ -228,7 +228,7 @@ describe('EdgeCompatibilityDrawer', () => {
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getVenueEdgeCompatibilities.url,
-        (_, res, ctx) => res(ctx.json({ compatibilities: mockEdgeCompatibilitiesVenue.compatibilities.slice(0, 1) })))
+        (_, res, ctx) => res(ctx.json({ compatibilities: mockEdgeCompatibilitiesVenue.compatibilities?.slice(0, 1) })))
     )
 
     render(
@@ -264,7 +264,7 @@ describe('EdgeCompatibilityDrawer', () => {
         EdgeUrlsInfo.getVenueEdgeCompatibilities.url,
         (req, res, ctx) => {
           mockeReq(req.body)
-          return res(ctx.json({ compatibilities: mockEdgeCompatibilitiesVenue.compatibilities.slice(0, 1) }))
+          return res(ctx.json({ compatibilities: mockEdgeCompatibilitiesVenue.compatibilities?.slice(0, 1) }))
         })
     )
 

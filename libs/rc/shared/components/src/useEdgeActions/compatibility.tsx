@@ -38,7 +38,7 @@ import {
   isSwitchRelatedEdgeFeature
 } from '@acx-ui/rc/utils'
 
-import { EdgeCompatibilityDrawerProps, EdgeCompatibilityType } from '../Compatibility/EdgeCompatibilityDrawer'
+import { EdgeCompatibilityDrawerProps, EdgeCompatibilityType } from '../Compatibility/Edge/EdgeCompatibilityDrawer'
 
 export const useEdgeSdLansCompatibilityData = (serviceIds: string[], skip: boolean = false) => {
   const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)

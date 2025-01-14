@@ -22,7 +22,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { ApModelFamiliesItem } from '../../Compatibility/ApModelFamiliesItem'
+import { ApModelFamiliesItem } from '../../Compatibility/CompatibilityDrawer/CompatibilityItem/ApModelFamiliesItem'
 import {
   StyledFeatureName,
   StyledRequirementWrapper,

@@ -18,8 +18,8 @@ import {
   useEdgeCompatibilityRequirementData,
   useEdgeSdLanDetailsCompatibilitiesData,
   transformEdgeCompatibilitiesWithFeatureName
-} from '../../useEdgeActions/compatibility'
-import { CompatibilityDrawer }           from '../CompatibilityDrawer'
+} from '../../../useEdgeActions/compatibility'
+import { CompatibilityDrawer }           from '../../CompatibilityDrawer'
 import { EdgeDetailCompatibilityDrawer } from '../EdgeDetailCompatibilityDrawer'
 
 export enum EdgeCompatibilityType {

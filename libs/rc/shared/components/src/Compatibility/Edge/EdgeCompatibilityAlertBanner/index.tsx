@@ -4,18 +4,16 @@ import { get }     from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
-  CompatibleAlertBanner,
-  EdgeDetailCompatibilityDrawer,
-  transformEdgeCompatibilitiesWithFeatureName,
-  useEdgeSdLanDetailsCompatibilitiesData
-} from '@acx-ui/rc/components'
-import {
   ACX_UI_EDGE_COMPATIBILITY_NOTE_HIDDEN_KEY,
   ApCompatibility,
   CompatibilityDeviceEnum,
   IncompatibilityFeatures,
   getCompatibilityFeatureDisplayName
 } from '@acx-ui/rc/utils'
+
+import { transformEdgeCompatibilitiesWithFeatureName } from '../../../useEdgeActions/compatibility'
+import { CompatibleAlertBanner }                       from '../../CompatibleAlertBanner'
+import { EdgeDetailCompatibilityDrawer }               from '../EdgeDetailCompatibilityDrawer'
 
 import { StyledSpace } from './styledComponents'
 
@@ -27,7 +25,7 @@ type ApEdgeCompatibilityResult = Record<string, {
   edgeCount: number,
   apCount: number
 }>
-const checkApEdgeCompatibility = (
+const resolveApEdgeCompatibilityInfo = (
   featureNames: IncompatibilityFeatures[],
   edgeData: Record<string, ApCompatibility> | undefined,
   apData: Record<string, ApCompatibility> | undefined
@@ -55,11 +53,18 @@ const checkApEdgeCompatibility = (
   return mapping
 }
 
-export const CompatibilityCheck = ({ serviceId }: { serviceId: string }) => {
-  const { $t, formatList } = useIntl()
-  const [drawerFeature, setDrawerFeature] = useState<string|undefined>()
+interface EdgeCompatibilityAlertBannerProps {
+  compatibilities: Record<CompatibilityDeviceEnum, Record<string, ApCompatibility>>
+  isLoading: boolean
+  featureNames: IncompatibilityFeatures[]
+}
 
-  const { compatibilities, isLoading } = useEdgeSdLanDetailsCompatibilitiesData({ serviceId })
+const emptyData = {}
+export const EdgeCompatibilityAlertBanner = (props: EdgeCompatibilityAlertBannerProps) => {
+  const { $t, formatList } = useIntl()
+  const { compatibilities, isLoading, featureNames } = props
+
+  const [drawerFeature, setDrawerFeature] = useState<string|undefined>()
 
   const toggleCompatibilityDrawer = (feature: string | undefined) => {
     setDrawerFeature(feature)
@@ -71,9 +76,8 @@ export const CompatibilityCheck = ({ serviceId }: { serviceId: string }) => {
     const edgeData = compatibilities?.[CompatibilityDeviceEnum.EDGE]
     const apData = compatibilities?.[CompatibilityDeviceEnum.AP]
 
-    incompatibleInfo = checkApEdgeCompatibility(
-      // eslint-disable-next-line max-len
-      [IncompatibilityFeatures.SD_LAN, IncompatibilityFeatures.TUNNEL_PROFILE],
+    incompatibleInfo = resolveApEdgeCompatibilityInfo(
+      featureNames,
       edgeData, apData)
 
     hasIncompatible = Object.keys(incompatibleInfo)
@@ -122,7 +126,7 @@ export const CompatibilityCheck = ({ serviceId }: { serviceId: string }) => {
         featureName={drawerFeature as IncompatibilityFeatures}
         data={drawerFeature
           ? transformEdgeCompatibilitiesWithFeatureName(compatibilities, drawerFeature)
-          : {}}
+          : emptyData}
         onClose={() => toggleCompatibilityDrawer(undefined)}
       />
     </>

@@ -6,16 +6,16 @@ import { EdgeCompatibilityFixtures, EdgeUrlsInfo, IncompatibilityFeatures } from
 import { store, Provider }                                                  from '@acx-ui/store'
 import { act, mockServer, render, screen, within, renderHook, waitFor }     from '@acx-ui/test-utils'
 
-import { transformEdgeCompatibilitiesWithFeatureName, useEdgeSdLanDetailsCompatibilitiesData } from '../../useEdgeActions/compatibility'
-import { CompatibilityItemProps }                                                              from '../CompatibilityDrawer/CompatibilityItem'
-import { FeatureItemProps }                                                                    from '../CompatibilityDrawer/CompatibilityItem/FeatureItem'
+import { transformEdgeCompatibilitiesWithFeatureName, useEdgeSdLanDetailsCompatibilitiesData } from '../../../useEdgeActions/compatibility'
+import { CompatibilityItemProps }                                                              from '../../CompatibilityDrawer/CompatibilityItem'
+import { FeatureItemProps }                                                                    from '../../CompatibilityDrawer/CompatibilityItem/FeatureItem'
 
 import { EdgeDetailCompatibilityDrawer } from '.'
 
 const { mockEdgeSdLanCompatibilities, mockEdgeSdLanApCompatibilites } = EdgeCompatibilityFixtures
 
-jest.mock('../CompatibilityDrawer/CompatibilityItem', () => {
-  const CompatibilityItemComp = jest.requireActual('../CompatibilityDrawer/CompatibilityItem')
+jest.mock('../../CompatibilityDrawer/CompatibilityItem', () => {
+  const CompatibilityItemComp = jest.requireActual('../../CompatibilityDrawer/CompatibilityItem')
   return {
     ...CompatibilityItemComp,
     CompatibilityItem: (props: CompatibilityItemProps) => <div data-testid='CompatibilityItem'>
@@ -23,8 +23,8 @@ jest.mock('../CompatibilityDrawer/CompatibilityItem', () => {
     </div>
   }
 })
-jest.mock('../CompatibilityDrawer/CompatibilityItem/FeatureItem', () => {
-  const FeatureItemComp = jest.requireActual('../CompatibilityDrawer/CompatibilityItem/FeatureItem')
+jest.mock('../../CompatibilityDrawer/CompatibilityItem/FeatureItem', () => {
+  const FeatureItemComp = jest.requireActual('../../CompatibilityDrawer/CompatibilityItem/FeatureItem')
   return {
     ...FeatureItemComp,
     FeatureItem: (props: FeatureItemProps) => <div data-testid='FeatureItem'>
