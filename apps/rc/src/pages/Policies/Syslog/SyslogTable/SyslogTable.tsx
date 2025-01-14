@@ -14,6 +14,7 @@ import {
   facilityLabelMapping, filterByAccessForServicePolicyMutation,
   FlowLevelEnum,
   flowLevelLabelMapping,
+  getPolicyAllowedOperation,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -73,6 +74,7 @@ export default function SyslogTable () {
 
   const rowActions: TableProps<SyslogPolicyListType>['rowActions'] = [
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.SYSLOG, PolicyOperation.DELETE),
       scopeKey: getScopeKeyByPolicy(PolicyType.SYSLOG, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
@@ -80,6 +82,7 @@ export default function SyslogTable () {
       }
     },
     {
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.SYSLOG, PolicyOperation.EDIT),
       scopeKey: getScopeKeyByPolicy(PolicyType.SYSLOG, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
@@ -114,9 +117,9 @@ export default function SyslogTable () {
           }
         ]}
         extra={filterByAccessForServicePolicyMutation([
-          // eslint-disable-next-line max-len
           <TenantLink
             to={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })}
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.SYSLOG, PolicyOperation.CREATE)}
             scopeKey={getScopeKeyByPolicy(PolicyType.SYSLOG, PolicyOperation.CREATE)}
           >
             <Button type='primary' disabled={tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT}>

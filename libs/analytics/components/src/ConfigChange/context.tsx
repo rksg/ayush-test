@@ -1,4 +1,4 @@
-import { Dispatch, ReactElement, SetStateAction, createContext, useState } from 'react'
+import { Dispatch, ReactElement, SetStateAction, createContext, useEffect, useState } from 'react'
 
 import {
   ConfigChange as ConfigChangeType,
@@ -22,10 +22,10 @@ export interface ActionContextType {
   chartZoom: { start: number, end: number } | undefined
   setChartZoom: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
   initialZoom: { start: number, end: number } | undefined
-  setInitialZoom: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>,
+  setInitialZoom: Dispatch<SetStateAction<{ start: number, end: number } | undefined>>
   sorter: string
-  setSorter: Dispatch<SetStateAction<string>>,
-  reset: () => void
+  setSorter: Dispatch<SetStateAction<string>>
+  resetFilter: () => void
 }
 
 export interface PaginationContextType {
@@ -35,6 +35,7 @@ export interface PaginationContextType {
 }
 
 export interface FilterByContextType {
+  entityList: { key: string, label: string }[]
   entityTypeFilter: string[]
   setEntityTypeFilter: (list: string[]) => void
   legendFilter: string[]
@@ -65,16 +66,11 @@ export const ConfigChangeContext =
 export function ConfigChangeProvider (props: {
   children: ReactElement
 } & Pick<ConfigChangeContextType, 'dateRange'>) {
-
-  const isPaged = [
-    useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
-    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
-  ].some(Boolean)
-
   const showIntentAI = [
     useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
     useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
   ].some(Boolean)
+  const isPaged = showIntentAI
 
   const [pagination, setPagination] = useState<
     ConfigChangePaginationParams
@@ -114,6 +110,7 @@ export function ConfigChangeProvider (props: {
     setSelected(params)
     setChartZoom(initialZoom)
   }
+
   const actionContext = {
     selected, setSelected,
     dotSelect, setDotSelect,
@@ -121,12 +118,6 @@ export function ConfigChangeProvider (props: {
     chartZoom, setChartZoom,
     initialZoom, setInitialZoom,
     sorter, setSorter
-  }
-
-  const reset = () => {
-    setSelected(null)
-    setDotSelect(null)
-    setPagination(CONFIG_CHANGE_DEFAULT_PAGINATION)
   }
 
   const timeRanges = defaultRanges()[props.dateRange]!
@@ -150,21 +141,37 @@ export function ConfigChangeProvider (props: {
     applyKpiFilter: (keys: string[]) => setKpiFilter(keys)
   }
 
-  const legendList = getConfigChangeEntityTypeMapping(showIntentAI)
+  const entityList = getConfigChangeEntityTypeMapping(showIntentAI)
   const [entityNameSearch, setEntityNameSearch] = useState<string>('')
   const [entityTypeFilter, setEntityTypeFilter] = useState<string[]>([])
-  const [legendFilter, setLegendFilter] = useState<string[]>(legendList.map(item => item.key))
+  // TODO: remove legendFilter when removing INTENT_AI_CONFIG_CHANGE_TOGGLE and RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE
+  const [legendFilter, setLegendFilter] = useState<string[]>(entityList.map(item => item.key))
   const filterByContext = {
     legendFilter,
-    applyLegendFilter: (legend: Record<string, boolean>) => {
-      isPaged && reset()
+    applyLegendFilter: (legend: Record<string, boolean>) =>
       setLegendFilter(Object.keys(legend)
         .filter(key => legend[key])
-        .map(key => legendList.find(item => item.label === key)!.key)
-      )
-    },
+        .map(key => entityList.find(item => item.label === key)!.key)
+      ),
+    entityList,
     entityNameSearch, setEntityNameSearch,
     entityTypeFilter, setEntityTypeFilter
+  }
+
+  useEffect(()=>{
+    setSelected(null)
+    setDotSelect(null)
+    setPagination({ ...pagination,
+      current: CONFIG_CHANGE_DEFAULT_PAGINATION.current,
+      pageSize: CONFIG_CHANGE_DEFAULT_PAGINATION.pageSize,
+      defaultPageSize: CONFIG_CHANGE_DEFAULT_PAGINATION.defaultPageSize
+    })
+  }, [pagination.total])
+
+  const resetFilter = () => {
+    setEntityNameSearch('')
+    setEntityTypeFilter([])
+    setKpiFilter([])
   }
 
   const context = {
@@ -173,7 +180,7 @@ export function ConfigChangeProvider (props: {
     ...filterByContext,
     ...paginationContext,
     ...actionContext,
-    reset
+    resetFilter
   }
 
   return <ConfigChangeContext.Provider

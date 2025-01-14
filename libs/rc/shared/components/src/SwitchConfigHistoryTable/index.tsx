@@ -33,6 +33,7 @@ export function SwitchConfigHistoryTable (props: {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchNtpServerEnabled = useIsSplitOn(Features.SWITCH_NTP_SERVER)
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
+  const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
 
   const [visible, setVisible] = useState(false)
   const [showError, setShowError] = useState(true)
@@ -108,6 +109,9 @@ export function SwitchConfigHistoryTable (props: {
     }
     if (!isSwitchFlexAuthEnabled) {
       configTypeOptions = configTypeOptions.filter(ctype => ctype !== ConfigTypeEnum.AUTHENTICATION)
+    }
+    if(!isSwitchPortProfileEnabled){
+      configTypeOptions = configTypeOptions.filter(ctype => ctype !== ConfigTypeEnum.PORT_PROFILE)
     }
     return configTypeOptions.map(ctype=>({
       key: ctype, value: transformConfigType(ctype)
