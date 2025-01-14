@@ -92,7 +92,7 @@ export function Table () {
     },
     {
       key: 'type',
-      title: $t({ defaultMessage: 'Entity' }),
+      title: $t({ defaultMessage: 'Entity Type' }),
       dataIndex: 'type',
       render: (_, row) => {
         const config = entityTypeMapping.find(type => type.key === row.type)!
@@ -104,7 +104,7 @@ export function Table () {
     },
     {
       key: 'name',
-      title: $t({ defaultMessage: 'Scope' }),
+      title: $t({ defaultMessage: 'Entity Name' }),
       dataIndex: 'name',
       render: (_, value, __, highlightFn ) => {
         const { name } = value
@@ -127,7 +127,7 @@ export function Table () {
     },
     {
       key: 'key',
-      title: $t({ defaultMessage: 'Configuration / Intent' }),
+      title: $t({ defaultMessage: 'Configuration' }),
       dataIndex: 'key',
       render: (_, { type, key }) => {
         const value = getConfiguration(type, key)
@@ -137,7 +137,7 @@ export function Table () {
     },
     {
       key: 'oldValues',
-      title: $t({ defaultMessage: 'Old Value' }),
+      title: $t({ defaultMessage: 'Change From' }),
       dataIndex: ['oldValues'],
       align: 'center',
       render: (_, { oldValues, type, key }) => {
@@ -152,7 +152,7 @@ export function Table () {
     },
     {
       key: 'newValues',
-      title: $t({ defaultMessage: 'New Value / Action' }),
+      title: $t({ defaultMessage: 'Change To' }),
       dataIndex: ['newValues'],
       align: 'center',
       render: (_, { newValues, type, key }) => {
