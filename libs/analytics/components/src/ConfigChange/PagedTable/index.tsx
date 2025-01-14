@@ -138,7 +138,7 @@ export function PagedTable () {
   const showIntentAI = useAnySplitsOn([
     Features.INTENT_AI_CONFIG_CHANGE_TOGGLE,
     Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE
-  ]) ?? false
+  ])
 
   const { pathFilters } = useAnalyticsFilter()
   const {
@@ -155,7 +155,7 @@ export function PagedTable () {
     ...pathFilters,
     startDate: startDate.toISOString(),
     endDate: endDate.toISOString(),
-    showIntentAI
+    showIntentAI: showIntentAI ?? false
   }
 
   const queryResults = usePagedConfigChangeQuery({
