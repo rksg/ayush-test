@@ -4,7 +4,7 @@ import { defineMessage } from 'react-intl'
 
 import { get } from '@acx-ui/config'
 
-import { IntentListItem, StatusTrail }            from '../config'
+import { Intent, StatusTrail }                    from '../config'
 import { DisplayStates, Statuses, StatusReasons } from '../states'
 
 type TransitionStatus = Pick<StatusTrail, 'status' | 'statusReason'>
@@ -57,7 +57,7 @@ export enum Actions {
   Resume = 'resume'
 }
 
-export const isVisibledByAction = (rows: IntentListItem[], action: Actions) => {
+export const isVisibleByAction = (rows: Intent[], action: Actions) => {
   switch (action) {
     case Actions.One_Click_Optimize:
       return !rows.some(row => row.displayStatus !== DisplayStates.new)
