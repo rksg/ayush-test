@@ -133,7 +133,9 @@ export const api = dataApi.injectEndpoints({
     }),
     configChangeSeries: build.query<
       ConfigChange[],
-      PathFilter & { filterBy?: ConfigChangeFilterParams, sortBy?: string }
+      PathFilter &
+      { filterBy?: ConfigChangeFilterParams, sortBy?: string } &
+      { isDownload?: boolean }
     >({
       query: (payload) => ({
         document: gql`
@@ -146,7 +148,9 @@ export const api = dataApi.injectEndpoints({
         ) {
           network(start: $startDate, end: $endDate) {
             hierarchyNode(path: $path) { 
-              configChangeSeries(filterBy: $filterBy, sortBy: $sortBy) { timestamp type } 
+              configChangeSeries(filterBy: $filterBy, sortBy: $sortBy) { 
+                timestamp type ${payload.isDownload ? ' name key oldValues newValues' : ''}
+              } 
             }
           }
         }
@@ -194,9 +198,9 @@ export const api = dataApi.injectEndpoints({
 
 const {
   useConfigChangeQuery,
-  useLazyConfigChangeQuery,
   usePagedConfigChangeQuery,
   useConfigChangeSeriesQuery,
+  useLazyConfigChangeSeriesQuery,
   useConfigChangeKPIChangesQuery
 } = api
 
@@ -206,10 +210,17 @@ function useKPIChangesQuery (params: KpiChangesParams) {
   )
 }
 
+function useDownloadConfigChange ()
+{
+  const [download] = useLazyConfigChangeSeriesQuery()
+  return [(parameters: PathFilter & { filterBy?: ConfigChangeFilterParams, sortBy?: string }) =>
+    download({ ...parameters, isDownload: true })]
+}
+
 export {
   useConfigChangeQuery,
-  useLazyConfigChangeQuery,
   usePagedConfigChangeQuery,
   useConfigChangeSeriesQuery,
-  useKPIChangesQuery
+  useKPIChangesQuery,
+  useDownloadConfigChange
 }

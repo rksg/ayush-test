@@ -32,7 +32,8 @@ import {
   ipv6RegExp,
   validateTags,
   multicastIpAddressRegExp,
-  URLProtocolRegExp
+  URLProtocolRegExp,
+  radiusIpAddressRegExp
 } from './validator'
 
 describe('validator', () => {
@@ -563,6 +564,20 @@ describe('validator', () => {
     it('Should display error message if ip address values incorrectly', async () => {
       const result = multicastIpAddressRegExp('8.8.8.8')
       await expect(result).rejects.toEqual('Please enter a valid multicast IP address')
+    })
+  })
+
+
+  describe('radiusIpAddressRegExp', () => {
+    it('Should take care of IP value correctly', async () => {
+      await expect(radiusIpAddressRegExp('10.1.1.1')).resolves.toEqual(undefined)
+      await expect(radiusIpAddressRegExp('192.168.0.1')).resolves.toEqual(undefined)
+    })
+    it('Should display error message if IP value incorrectly', async () => {
+      await expect(
+        radiusIpAddressRegExp('192.168.1.256')).rejects.toEqual('Please enter a valid IP address')
+      await expect(
+        radiusIpAddressRegExp('256.256.256.256')).rejects.toEqual('Please enter a valid IP address')
     })
   })
 })

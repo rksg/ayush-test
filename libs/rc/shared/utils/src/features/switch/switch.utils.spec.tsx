@@ -27,7 +27,9 @@ import {
   isL3FunctionSupported,
   isFirmwareVersionAbove10,
   isFirmwareSupportAdminPassword,
-  isFirmwareVersionAbove10010f
+  isFirmwareVersionAbove10010f,
+  isFirmwareVersionAbove10020b,
+  vlanPortsParser
 } from '.'
 
 const switchRow ={
@@ -447,5 +449,29 @@ describe('Test isFirmwareVersionAbove10010f function', () => {
     expect(isFirmwareVersionAbove10010f('10010f_b467')).toBe(true)
     expect(isFirmwareVersionAbove10010f('SPR10010f_b467')).toBe(true)
     expect(isFirmwareVersionAbove10010f('SPR10020b_rc35')).toBe(true)
+  })
+})
+
+describe('Test isFirmwareVersionAbove10020b function', () => {
+  it('should render correctly', async () => {
+    expect(isFirmwareVersionAbove10020b('SPR09010f')).toBe(false)
+    expect(isFirmwareVersionAbove10020b('SPR10010c_cd1')).toBe(false)
+    expect(isFirmwareVersionAbove10020b('SPR10020_rc35')).toBe(false)
+    expect(isFirmwareVersionAbove10020b('SPR10020a_rc35')).toBe(false)
+
+    expect(isFirmwareVersionAbove10020b('10010f_b467')).toBe(false)
+    expect(isFirmwareVersionAbove10020b('SPR10010f_b467')).toBe(false)
+    expect(isFirmwareVersionAbove10020b('SPR10020b_rc35')).toBe(true)
+    expect(isFirmwareVersionAbove10020b('TNR10020b_b205')).toBe(true)
+    expect(isFirmwareVersionAbove10020b('TNR10020b_cd1')).toBe(true)
+  })
+})
+
+describe('Test vlanPortsParser function', () => {
+  it('should render correctly', async () => {
+    const vlans = '22 66 24 68 26 70 60 62 64'
+    const maxRangesToShow = 5
+    const title = 'Tagged VLANs'
+    expect(vlanPortsParser(vlans, maxRangesToShow, title)).toBe('22, 24, 26, 60, 62, and 4 Tagged VLANs more...')
   })
 })

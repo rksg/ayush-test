@@ -201,6 +201,7 @@ export const mappingLanPortWithSoftGreProfile = (
         )
         if(targetLanPort) {
           targetLanPort.softGreProfileId = profile.id
+          targetLanPort.softGreEnabled = true
         }
       })
     }
