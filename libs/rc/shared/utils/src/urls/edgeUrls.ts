@@ -287,7 +287,8 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   addEdgeCluster: {
     method: 'post',
     url: '/venues/:venueId/edgeClusters',
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/venues/{venueId}/edgeClusters'
   },
   deleteEdgeCluster: {
     method: 'delete',
