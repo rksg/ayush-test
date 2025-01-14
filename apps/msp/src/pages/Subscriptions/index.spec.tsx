@@ -193,7 +193,7 @@ describe('Subscriptions', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(screen.getAllByText('Active')).toHaveLength(2)
-    expect(screen.getAllByText('Expired')).toHaveLength(2)
+    expect(screen.queryByText('Expired')).toBeNull()
     const generateUsageButton = await screen.findByRole('button', { name: 'Generate Usage Report' })
     fireEvent.click(generateUsageButton)
     const licenseManagementButton =
@@ -213,7 +213,7 @@ describe('Subscriptions', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(screen.getAllByText('Active')).toHaveLength(2)
-    expect(screen.getAllByText('Expired')).toHaveLength(2)
+    expect(screen.queryByText('Expired')).toBeNull()
     const generateUsageButton = await screen.findByRole('button', { name: 'Generate Usage Report' })
     fireEvent.click(generateUsageButton)
     const licenseManagementButton =
