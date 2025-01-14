@@ -452,8 +452,12 @@ const apOldNewFieldsMapping: Record<string, string> = {
   [`${apSystemNamePathHeading}.secondaryDnsServer`]: 'networkStatus.secondaryDnsServer',
   [`${apSystemNamePathHeading}.secureBootEnabled`]: 'supportSecureBoot',
   [`${apSystemNamePathHeading}.managementVlan`]: 'networkStatus.managementTrafficVlan',
-  'apStatusData.afcInfo.powerMode': 'afcStatus.powerState', //?
-  'apStatusData.afcInfo.afcStatus': 'afcStatus.afcState', //?
+  'apStatusData.afcInfo.powerMode': 'afcStatus.powerState',
+  'apStatusData.afcInfo.afcStatus': 'afcStatus.afcState',
+  'apStatusData.afcInfo.availableChannels': 'afcStatus.availableChannels',
+  'apStatusData.afcInfo.geoLocation': 'afcStatus.geoLocationSource',
+  'apStatusData.afcInfo.maxPowerDbm': 'afcStatus.maxPower',
+  'apStatusData.afcInfo.minPowerDbm': 'afcStatus.minPower',
   'apStatusData.vxlanStatus.vxlanMtu': 'vxLanTunnelStatus.mtuSize',
   'apStatusData.vxlanStatus.tunStatus': 'vxLanTunnelStatus.connectStatus',
   'apStatusData.vxlanStatus.primaryRvtepInfo.deviceId': 'vxLanTunnelStatus.preferredEdgeId',
@@ -611,11 +615,15 @@ const parsingApFromNewType = (rbacAp: Record<string, unknown>, result: APExtende
 
     if (typeof value === 'object') {
       if (Array.isArray(value)) {
-        if (['lanPortStatuses', 'radioStatuses', 'tags'].includes(key) === false) continue
+        if (['lanPortStatuses', 'radioStatuses', 'tags', 'availableChannels'].includes(key) === false) continue
 
         if (key === 'tags') {
           set(result, oldApFieldName, value.join(','))
-        } else {
+        }
+        else if (key === 'availableChannels') {
+          set(result, oldApFieldName, value)
+        }
+        else {
           set(result, oldApFieldName, value.map(item => {
             switch (key) {
               case 'lanPortStatuses':
