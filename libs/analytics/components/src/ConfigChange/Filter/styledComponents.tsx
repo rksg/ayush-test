@@ -12,10 +12,6 @@ export const Wrapper = styled(AntSpace).attrs({ style: { justifyContent: 'space-
 
 export const Space = styled(AntSpace).attrs({ size: 12 })``
 
-export const SearchInput = styled(AcxSearchInput)`
-  width: 292px;
-`
+export const SearchInput = styled(AcxSearchInput).attrs({ style: { width: '292px' } })``
 
-export const Cascader = styled(AcxCascader)`
-  width: 200px;
-`
+export const Cascader = styled(AcxCascader).attrs({ style: { width: '200px' } })``

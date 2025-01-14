@@ -33,7 +33,6 @@ export const Search = () => {
     title={placeHolderText}
     value={entityNameSearch}
     allowClear
-    style={{ width: '292px' }}
   />
 }
 
@@ -56,7 +55,6 @@ export const KPIFilter = () => {
       applyKpiFilter(selectedOptions?.length ? selectedOptions?.flat() as string[] : [])
     }
     allowClear
-    style={{ width: '200px' }}
   />
 }
 
@@ -79,7 +77,6 @@ export const EntityTypeFilter = () => {
       setEntityTypeFilter(selectedOptions?.length ? selectedOptions?.flat() as string[] : [])
     }
     allowClear
-    style={{ width: '200px' }}
   />
 }
 
