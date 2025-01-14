@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React, { useContext, useEffect, useState, useImperativeHandle, forwardRef, Ref } from 'react'
 
-import { FetchBaseQueryError }    from '@reduxjs/toolkit/dist/query'
+import { FetchBaseQueryError }    from '@reduxjs/toolkit/query'
 import { Badge, Divider, Form }   from 'antd'
 import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'

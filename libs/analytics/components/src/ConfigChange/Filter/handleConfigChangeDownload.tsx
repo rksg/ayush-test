@@ -1,3 +1,4 @@
+
 import { stringify }         from 'csv-stringify/browser/esm/sync'
 import moment                from 'moment'
 import { MessageDescriptor } from 'react-intl'
@@ -5,12 +6,13 @@ import { MessageDescriptor } from 'react-intl'
 import {
   TableProps,
   ConfigChange,
-  type ConfigChangeChartRowMappingType } from '@acx-ui/components'
+  type ConfigChangeChartRowMappingType
+}                                                      from '@acx-ui/components'
 import { getIntl, handleBlobDownloadFile, PathFilter } from '@acx-ui/utils'
 
-import { getConfiguration, getEntityValue } from './util'
+import { getConfiguration, getEntityValue } from '../PagedTable/util'
 
-export function genDownloadConfigChange (
+export function handleConfigChangeDownload (
   configChanges: ConfigChange[],
   columns: TableProps<ConfigChange>['columns'],
   entityTypeMapping: ConfigChangeChartRowMappingType[],

@@ -1,6 +1,6 @@
-import { QueryReturnValue }                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { MaybePromise }                                       from '@reduxjs/toolkit/dist/query/tsHelpers'
-import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import { QueryReturnValue, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+
+import { MaybePromise } from '@acx-ui/types'
 
 import {
   isDev,
