@@ -162,7 +162,25 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       .map(nv => nv.apGroups || []).flat()
       .map(allAg => {
         const apGroup = _.find(networkVenue?.apGroups, ['apGroupId', allAg.apGroupId])
-        return { ...allAg, ...apGroup, selected: !!apGroup }
+
+        if (apGroup) {
+          const {
+            validationError,
+            validationErrorReachedMaxConnectedCaptiveNetworksLimit,
+            validationErrorReachedMaxConnectedNetworksLimit,
+            validationErrorSsidAlreadyActivated
+          } = allAg
+
+          return {
+            ...apGroup,
+            selected: true,
+            validationError: validationError,
+            validationErrorReachedMaxConnectedCaptiveNetworksLimit,
+            validationErrorReachedMaxConnectedNetworksLimit,
+            validationErrorSsidAlreadyActivated
+          }
+        }
+        return { ...allAg, selected: false }
       })
     allApGroups = _.isEmpty(allApGroups) ? [defaultAG] : allApGroups
 

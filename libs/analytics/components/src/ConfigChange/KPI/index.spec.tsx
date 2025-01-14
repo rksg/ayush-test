@@ -1,11 +1,16 @@
-import userEvent from '@testing-library/user-event'
+import { ReactElement, useState } from 'react'
 
+import userEvent from '@testing-library/user-event'
+import _         from 'lodash'
+
+import { brushPeriod }                      from '@acx-ui/components'
+import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { Provider, dataApiURL }             from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
-import { DateRange }                        from '@acx-ui/utils'
+import { DateRange, defaultRanges }         from '@acx-ui/utils'
 
-import { kpiForOverview,  kpiForConnection } from '../__tests__/fixtures'
-import { ConfigChangeProvider }              from '../context'
+import { kpiForOverview,  kpiForConnection }                                  from '../__tests__/fixtures'
+import { ConfigChangeContext, ConfigChangeContextType, ConfigChangeProvider } from '../context'
 
 import { KPIs } from '.'
 
@@ -32,9 +37,10 @@ jest.mock('@acx-ui/analytics/utils', () => ({
 }))
 
 describe('KPIs', () => {
+  beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(false))
   it('should render KPIs correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChangeKPIChanges', { data: { network: kpiForOverview } })
-    render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
       <KPIs />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
 
@@ -63,7 +69,7 @@ describe('KPIs', () => {
   it('should show corresponding KPIs when dropdown changes', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChangeKPIChanges', { data: { network: kpiForOverview } })
     mockGraphqlQuery(dataApiURL, 'ConfigChangeKPIChanges', { data: { network: kpiForConnection } })
-    render(<ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
+    render(<ConfigChangeProvider dateRange={DateRange.last7Days}>
       <KPIs />
     </ConfigChangeProvider>, { wrapper: Provider, route: {} })
 
@@ -78,7 +84,7 @@ describe('KPIs', () => {
   it('should handle onClick when KPI is clicked', async () => {
     mockGraphqlQuery(dataApiURL, 'ConfigChangeKPIChanges', { data: { network: kpiForOverview } })
     const { asFragment } = render(
-      <ConfigChangeProvider dateRange={DateRange.last7Days} setDateRange={jest.fn()}>
+      <ConfigChangeProvider dateRange={DateRange.last7Days}>
         <KPIs />
       </ConfigChangeProvider>, { wrapper: Provider, route: {} })
 
@@ -91,5 +97,33 @@ describe('KPIs', () => {
     expect(await screen.findByText('Connection Success')).toBeVisible()
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector('.statistic-selected')).not.toBeNull()
+  })
+  it('should set correct context', async () => {
+    const mockSetKpiFilter = jest.fn()
+    const MockedProvider = (props: {
+      children: ReactElement
+    } & Pick<ConfigChangeContextType, 'dateRange'>) => {
+      const timeRanges = defaultRanges()[props.dateRange]!
+      const [kpiTimeRanges, setKpiTimeRanges] = useState<number[][]>([
+        [timeRanges[0].valueOf(), timeRanges[0].clone().add(brushPeriod, 'ms').valueOf()],
+        [timeRanges[1].clone().subtract(brushPeriod, 'ms').valueOf(), timeRanges[1].valueOf()]
+      ])
+      const [kpiFilter] = useState<string[]>([])
+      const context = {
+        ..._.omit(props, 'children'),
+        kpiTimeRanges, setKpiTimeRanges, kpiFilter, setKpiFilter: mockSetKpiFilter }
+      return <ConfigChangeContext.Provider
+        value={context as unknown as ConfigChangeContextType}
+        // eslint-disable-next-line testing-library/no-node-access
+        children={props.children}
+      />
+    }
+    mockGraphqlQuery(dataApiURL, 'ConfigChangeKPIChanges', { data: { network: kpiForOverview } })
+    render(
+      <MockedProvider dateRange={DateRange.last7Days}><KPIs /></MockedProvider>,
+      { wrapper: Provider, route: {} }
+    )
+    await userEvent.click(await screen.findByText('Connection Success'))
+    expect(mockSetKpiFilter).toHaveBeenCalled()
   })
 })
