@@ -5,17 +5,21 @@ import { Form, Radio, Space, Typography, Tooltip } from 'antd'
 import { Modal, Loader }          from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { EdgeMvSdLanViewData,
+  EdgePinUrls,
+  EdgeSdLanUrls,
   NetworkTunnelSdLanAction,
   NetworkTypeEnum,
   PolicyOperation,
   PolicyType,
   ServiceOperation,
   ServiceType,
+  genAllowOperationsPath,
   getServiceDetailsLink,
   hasPolicyPermission,
   hasServicePermission } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
-import { getIntl }    from '@acx-ui/utils'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { hasPermission } from '@acx-ui/user'
+import { getIntl }       from '@acx-ui/utils'
 
 import { SpaceWrapper }          from '../SpaceWrapper'
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
@@ -79,6 +83,10 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
   const networkVenueName = network?.venueName
   const hiddenSoftGre = NetworkTypeEnum.CAPTIVEPORTAL === networkType
   const hiddenPin = NetworkTypeEnum.DPSK !== networkType
+  const hasPinAllowOps = hasPermission({
+    rbacOpsIds: [
+      genAllowOperationsPath(EdgePinUrls.updateEdgePin)
+    ] })
 
   const {
     tunnelType: tunnelTypeInitVal,
@@ -216,7 +224,7 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
           </Space>
         </Radio.Group>
       </Form.Item>
-      {isEdgePinHaEnabled && !hiddenPin && venuePinInfo &&
+      {isEdgePinHaEnabled && !hiddenPin && venuePinInfo && hasPinAllowOps &&
         <SpaceWrapper fullWidth>
           <Typography>
             {
@@ -249,17 +257,28 @@ const getIsDisabledAll = (sdlanInfo: EdgeMvSdLanViewData | undefined, currentNet
   return sdlanInfo!.tunneledWlans![0].networkId === currentNetworkId
 }
 
-const usePermissionResult = () => {
+export const usePermissionResult = () => {
+  const isAllowOpsEnabled = useIsSplitOn(Features.RBAC_OPERATIONS_API_TOGGLE)
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
-  const isEdgePinHaEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
-  // eslint-disable-next-line max-len
-  const hasEdgeSdLanPermission = isEdgeSdLanMvEnabled ? hasServicePermission({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.EDIT }) : true
-  // eslint-disable-next-line max-len
-  const hasEdgePinPermission = isEdgePinHaEnabled ? hasServicePermission({ type: ServiceType.PIN, oper: ServiceOperation.EDIT }) : true
+  const hasSdLanPermission = () => {
+    return isAllowOpsEnabled ?
+      hasPermission({
+        rbacOpsIds: [
+          [
+            genAllowOperationsPath(EdgeSdLanUrls.activateEdgeMvSdLanNetwork),
+            genAllowOperationsPath(EdgeSdLanUrls.deactivateEdgeMvSdLanNetwork)
+          ]
+        ]
+      }):
+      hasServicePermission({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.EDIT })
+  }
 
   // eslint-disable-next-line max-len
+  const hasEdgeSdLanPermission = isEdgeSdLanMvEnabled ? hasSdLanPermission() : true
+  // eslint-disable-next-line max-len
   const hasSoftGrePermission = isSoftGreEnabled ? hasPolicyPermission({ type: PolicyType.SOFTGRE, oper: PolicyOperation.EDIT }) : true
-  return hasEdgeSdLanPermission && hasEdgePinPermission && hasSoftGrePermission
+
+  return hasEdgeSdLanPermission && hasSoftGrePermission
 }

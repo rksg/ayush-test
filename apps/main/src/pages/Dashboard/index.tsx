@@ -40,6 +40,7 @@ import {
   VenuesDashboardWidgetV2,
   useIsEdgeReady
 } from '@acx-ui/rc/components'
+import { EdgeUrlsInfo, genAllowOperationsPath }                                                          from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                    from '@acx-ui/react-router-dom'
 import { EdgeScopes, RolesEnum, SwitchScopes, WifiScopes }                                               from '@acx-ui/types'
 import { hasCrossVenuesPermission, filterByAccess, getShowWithoutRbacCheckKey, hasPermission, hasRoles } from '@acx-ui/user'
@@ -190,12 +191,21 @@ function DashboardPageHeader () {
               {$t({ defaultMessage: 'Switch' })}
             </TenantLink>
           }] : []),
-          ...(isEdgeEnabled && hasPermission({ scopes: [EdgeScopes.CREATE] })) ? [{
-            key: 'add-edge',
-            label: <TenantLink to='devices/edge/add'>{
-              $t({ defaultMessage: 'RUCKUS Edge' })
-            }</TenantLink>
-          }] : []
+          ...(isEdgeEnabled &&
+            hasPermission({
+              scopes: [EdgeScopes.CREATE],
+              rbacOpsIds: [
+                [
+                  genAllowOperationsPath(EdgeUrlsInfo.addEdge),
+                  genAllowOperationsPath(EdgeUrlsInfo.addEdgeCluster)
+                ]
+              ]
+            })) ? [{
+              key: 'add-edge',
+              label: <TenantLink to='devices/edge/add'>{
+                $t({ defaultMessage: 'RUCKUS Edge' })
+              }</TenantLink>
+            }] : []
         ]
       }] : [])
     ]}

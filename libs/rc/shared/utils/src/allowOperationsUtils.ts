@@ -1,7 +1,8 @@
 import { ApiInfo } from '@acx-ui/utils'
 
 export const genAllowOperationsPath = (apiInfo: ApiInfo): string => {
-  const pathParts = apiInfo.url.split('/').map((part) => {
+  const targetUrl = apiInfo.opsApi || apiInfo.url
+  const pathParts = targetUrl.split('/').map((part) => {
     if (part.startsWith(':')) {
       return `{${part.replace(':', '')}}`
     }

@@ -10,4 +10,15 @@ describe('AllowOperationsUtils', () => {
 
     expect(result).toBe('GET:/venues/{venueId}/devices/{deviceId}')
   })
+
+  it('should gen allow operations path correctly with opsApiField', async () => {
+    const mockApiInfo = {
+      method: 'post',
+      url: '/venues/:venueId/devices/:deviceId',
+      opsApi: '/venues/{venueId}/devices/{id}'
+    }
+    const result = genAllowOperationsPath(mockApiInfo)
+
+    expect(result).toBe('POST:/venues/{venueId}/devices/{id}')
+  })
 })
