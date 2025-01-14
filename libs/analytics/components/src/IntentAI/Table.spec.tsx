@@ -14,7 +14,7 @@ import { Icon }                                                                 
 import { AiFeatures }                                                                                                                             from './config'
 import { DisplayStates, Statuses, StatusReasons }                                                                                                 from './states'
 import * as UI                                                                                                                                    from './styledComponents'
-import { AIFeature, iconTooltips }                                                                                                        from './Table'
+import { AIFeature, iconTooltips }                                                                                                                from './Table'
 import { Actions, isVisibleByAction }                                                                                                             from './utils'
 
 jest.mock('@acx-ui/config', () => ({
