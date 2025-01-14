@@ -369,7 +369,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   },
   webhookSendSampleEvent: {
     method: 'post',
-    url: '/webhooks/send-sample-event',
+    url: '/webhooks/sendSampleEvents',
     newApi: true
   }
 }
