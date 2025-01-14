@@ -74,12 +74,15 @@ export const EdgeSdLanUrls: { [key: string]: ApiInfo } = {
   activateEdgeMvSdLanNetwork: {
     method: 'put',
     url: '/edgeSdLanServices/:serviceId/venues/:venueId/wifiNetworks/:wifiNetworkId',
-    newApi: true
+    newApi: true,
+    opsApi: 'PUT:/edgeSdLanServices/{sdLanServiceId}/venues/{venueId}/wifiNetworks/{wifiNetworkId}'
   },
   deactivateEdgeMvSdLanNetwork: {
     method: 'delete',
     url: '/edgeSdLanServices/:serviceId/venues/:venueId/wifiNetworks/:wifiNetworkId',
-    newApi: true
+    newApi: true,
+    // eslint-disable-next-line max-len
+    opsApi: 'DELETE:/edgeSdLanServices/{sdLanServiceId}/venues/{venueId}/wifiNetworks/{wifiNetworkId}'
   },
   toggleEdgeSdLanDmz: {
     method: 'PATCH',
