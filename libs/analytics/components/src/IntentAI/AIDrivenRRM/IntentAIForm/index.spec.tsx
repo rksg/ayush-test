@@ -119,6 +119,8 @@ describe('IntentAIForm', () => {
 
     // Step 4
     await screen.findAllByRole('heading', { name: 'Summary' })
+    expect(await screen.findByText('Projected interfering links reduction')).toBeVisible()
+
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
