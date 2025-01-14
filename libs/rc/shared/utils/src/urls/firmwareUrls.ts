@@ -191,7 +191,8 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   updateEdgeFirmware: {
     method: 'PATCH',
     url: '/venues/:venueId/edgeFirmwares',
-    newApi: true
+    newApi: true,
+    opsApi: 'PATCH:/venues/{venueId}/edgeFirmwares'
   },
   getEdgeUpgradePreferences: {
     method: 'get',
@@ -203,17 +204,20 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/api/upgrade/tenant/:tenantId/edgePreference',
     oldUrl: '/api/upgrade/tenant/:tenantId/edgePreference',
-    newApi: true
+    newApi: true,
+    opsApi: 'PUT:/api/upgrade/tenant/{tenantId}/edgePreference'
   },
   skipEdgeUpgradeSchedules: {
     method: 'delete',
     url: '/venues/:venueId/edgeFirmwares/schedules',
-    newApi: true
+    newApi: true,
+    opsApi: 'DELETE:/venues/{venueId}/edgeFirmwares/schedules'
   },
   updateEdgeVenueSchedules: {
     method: 'post',
     url: '/venues/:venueId/edgeFirmwares/schedules',
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/venues/{venueId}/edgeFirmwares/schedules'
   },
   getScheduledFirmware: {
     method: 'get',
@@ -314,7 +318,8 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'PATCH:/edgeFirmwares/batchOperations/{batchId}/venues/{venueId}'
   },
   updateEdgeFirmwareVenueSchedule: {
     method: 'post',
@@ -323,7 +328,8 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'POST:/edgeFirmwares/batchOperations/{batchId}/venues/{venueId}'
   },
   skipEdgeFirmwareVenueSchedule: {
     method: 'delete',
@@ -332,6 +338,7 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    },
+    opsApi: 'DELETE:/edgeFirmwares/batchOperations/{batchId}/venues/{venueId}'
   }
 }

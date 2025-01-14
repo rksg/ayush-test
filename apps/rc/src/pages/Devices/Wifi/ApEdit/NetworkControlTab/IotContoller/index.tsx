@@ -131,6 +131,8 @@ export function IotController () {
         formRef?.current?.setFieldsValue(apIot)
       }
     }
+
+    updateEditContext(formRef?.current as StepsFormLegacyInstance, true)
   }
 
   const handleUpdateIot = async (values: ApIot) => {
