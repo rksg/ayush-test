@@ -193,6 +193,21 @@ jest.mock('./pages/Policies/MacRegistrationList/MacRegistrarionListTable', () =>
   return <div data-testid='MacRegistrationListsTable' />
 })
 
+jest.mock('./pages/Policies/PortProfile/create', () => () => {
+  return <div data-testid='CreatePortProfile' />
+})
+
+jest.mock('./pages/Policies/PortProfile', () => () => {
+  return <div data-testid='PortProfile' />
+})
+
+jest.mock('./pages/Policies/PortProfile/PortProfileForm/SwitchPortProfileForm', () => () => {
+  return <div data-testid='AddEditPortProfile' />
+})
+
+jest.mock('./pages/Policies/PortProfile/PortProfileDetail/SwitchPortProfileDetail', () => () => {
+  return <div data-testid='PortProfileDetail' />
+})
 const mockUseIsEdgeFeatureReady = jest.fn().mockReturnValue(true)
 
 jest.mock('@acx-ui/rc/components', () => ({
@@ -1298,4 +1313,61 @@ describe('RcRoutes: Devices', () => {
     expect(screen.getByTestId('ConnectionMeteringPageForm')).toBeVisible()
   })
 
+  describe('RcRoutes: Port Profile', () => {
+    test('should redirect to port profile create page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/policies/portProfile/create',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('CreatePortProfile')).toBeVisible()
+    })
+    test('should redirect to port profile page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/policies/portProfile/switch/profiles',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('PortProfile')).toBeVisible()
+    })
+    test('should redirect to add port profile page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/policies/portProfile/switch/profiles/add',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AddEditPortProfile')).toBeVisible()
+    })
+    test('should redirect to edit port profile page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/policies/portProfile/switch/profiles/portProfileId/edit',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('AddEditPortProfile')).toBeVisible()
+    })
+    test('should redirect to port profile detail page', async () => {
+      jest.mocked(useIsTierAllowed).mockReturnValue(true)
+
+      render(<Provider><RcRoutes /></Provider>, {
+        route: {
+          path: '/tenantId/t/policies/portProfile/switch/profiles/portProfileId/detail',
+          wrapRoutes: false
+        }
+      })
+      expect(screen.getByTestId('PortProfileDetail')).toBeVisible()
+    })
+  })
 })

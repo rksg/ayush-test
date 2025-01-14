@@ -16,7 +16,8 @@ import {
   DHCPPool,
   IpUtilsService,
   filterByAccessForServicePolicyMutation,
-  getScopeKeyByService
+  getScopeKeyByService,
+  getServiceAllowedOperation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -51,6 +52,7 @@ export default function DHCPTable () {
 
   const rowActions: TableProps<DHCPSaveData>['rowActions'] = [
     {
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.DHCP, ServiceOperation.DELETE),
       scopeKey: getScopeKeyByService(ServiceType.DHCP, ServiceOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedRows) => {
@@ -74,6 +76,7 @@ export default function DHCPTable () {
       }
     },
     {
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.DHCP, ServiceOperation.EDIT),
       scopeKey: getScopeKeyByService(ServiceType.DHCP, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       disabled: (selectedRows) => {
@@ -108,6 +111,7 @@ export default function DHCPTable () {
         ]}
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.DHCP, ServiceOperation.CREATE)}
             to={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
             scopeKey={getScopeKeyByService(ServiceType.DHCP, ServiceOperation.CREATE)}
           >
