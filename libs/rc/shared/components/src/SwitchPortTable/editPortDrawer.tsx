@@ -422,15 +422,15 @@ export function EditPortDrawer ({
   }
 
   const getPortProfileSelectList = async (selectedSwitchList: SwitchRow[]) => {
-    const portProfilePayload = selectedSwitchList.map(item => item.id)
+    const portProfilePayload = selectedSwitchList?.map(item => item.id)
     const portProfileList = await getPortProfileOptionsForSwitches({
       params: { tenantId, venueId: switchDetail?.venueId },
       payload: portProfilePayload,
       enableRbac: isSwitchRbacEnabled
     }, true).unwrap()
 
-    const groupedOptions = portProfileList.reduce((acc, option) => {
-      option.availablePortProfiles.forEach((item) => {
+    const groupedOptions = portProfileList?.reduce((acc, option) => {
+      option?.availablePortProfiles?.forEach((item) => {
         if (!acc[item.portProfileName]) {
           acc[item.portProfileName] = []
         }
@@ -444,9 +444,9 @@ export function EditPortDrawer ({
 
   const getGroupPortProfileByName = (
     portsSetting: PortSettingModel[], portProfileOptions: DefaultOptionType[]) => {
-    return portsSetting.reduce((acc: { [key: string]: string[] }, item) => {
+    return portsSetting?.reduce((acc: { [key: string]: string[] }, item) => {
       if (item.switchPortProfileId !== undefined) {
-        const portProfileName = portProfileOptions.find(
+        const portProfileName = portProfileOptions?.find(
           pitem => pitem.value?.toString().includes(item.switchPortProfileId ?? '')
         )?.label?.toString() || 'unknown'
 
