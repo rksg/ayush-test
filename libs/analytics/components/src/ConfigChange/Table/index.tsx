@@ -1,7 +1,6 @@
 import { useContext } from 'react'
 
-import { stringify }                  from 'csv-stringify/browser/esm/sync'
-import moment, { Moment }             from 'moment'
+import moment                         from 'moment'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
 import {
@@ -16,108 +15,52 @@ import {
   TableProps,
   Table as CommonTable,
   ConfigChange,
-  type ConfigChangeChartRowMappingType,
   getConfigChangeEntityTypeMapping,
   Cascader
-}                                    from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { DownloadOutlined }          from '@acx-ui/icons'
-import {
-  exportMessageMapping,
-  noDataDisplay,
-  getIntl,
-  handleBlobDownloadFile
-}                                    from '@acx-ui/utils'
+} from '@acx-ui/components'
+import { get }                                 from '@acx-ui/config'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }           from '@acx-ui/formatter'
+import { DownloadOutlined }                    from '@acx-ui/icons'
+import { TenantLink }                          from '@acx-ui/react-router-dom'
+import { exportMessageMapping, noDataDisplay } from '@acx-ui/utils'
 
-import { ConfigChangeContext, KPIFilterContext } from '../context'
-import { hasConfigChange }                       from '../KPI'
-import { useConfigChangeQuery }                  from '../services'
+import { ConfigChangeContext }  from '../context'
+import { hasConfigChange }      from '../KPI'
+import { useConfigChangeQuery } from '../services'
 
+import { downloadConfigChangeList }                     from './download'
 import { Badge, CascaderFilterWrapper }                 from './styledComponents'
 import { filterData, getConfiguration, getEntityValue } from './util'
 
-export function downloadConfigChangeList (
-  configChanges: ConfigChange[],
-  columns: TableProps<ConfigChange>['columns'],
-  entityTypeMapping: ConfigChangeChartRowMappingType[],
-  startDate: Moment,
-  endDate: Moment
-) {
-  const { $t } = getIntl()
-  const data = stringify(
-    configChanges.map(item => {
-      const configValue = getConfiguration(item.type, item.key)
-
-      const oldValues = item.oldValues?.map(value => {
-        const mapped = getEntityValue(item.type, item.key, value)
-        return (typeof mapped === 'string')
-          ? mapped : $t(mapped as MessageDescriptor)
-      })
-
-      const newValues = item.newValues?.map(value => {
-        const mapped = getEntityValue(item.type, item.key, value)
-        return (typeof mapped === 'string')
-          ? mapped : $t(mapped as MessageDescriptor)
-      })
-
-      return ({
-        timestamp: moment(Number(item.timestamp)).format(),
-        type: entityTypeMapping.find(type => type.key === item.type)?.label || item.type,
-        name: item.name,
-        key: (typeof configValue === 'string')
-          ? configValue
-          : $t(configValue as MessageDescriptor),
-        oldValues: oldValues.join(', '),
-        newValues: newValues.join(', ')
-      })
-    }),
-    {
-      header: true,
-      quoted: true,
-      cast: {
-        string: s => s === '--' ? '-' : s
-      },
-      columns: columns.map(({ key, title }) => ({
-        key: key,
-        header: title as string
-      }))
-    }
-  )
-  handleBlobDownloadFile(
-    new Blob([data], { type: 'text/csv;charset=utf-8;' }),
-    `Config-Changes-${startDate.format()}-${endDate.format()}.csv`
-  )
-}
-
-export function Table (props: {
-  selected: ConfigChange | null,
-  onRowClick: (params: ConfigChange) => void,
-  pagination: { current: number, pageSize: number },
-  setPagination: (params: { current: number, pageSize: number }) => void,
-  dotSelect: number | null,
-  legend: Record<string, boolean>
-}) {
+export function Table () {
   const showIntentAI = [
     useIsSplitOn(Features.INTENT_AI_CONFIG_CHANGE_TOGGLE),
     useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
   ].some(Boolean)
 
   const { $t } = useIntl()
-  const { kpiFilter, applyKpiFilter } = useContext(KPIFilterContext)
-  const { timeRanges: [startDate, endDate] } = useContext(ConfigChangeContext)
   const { pathFilters } = useAnalyticsFilter()
-  const { selected, onRowClick, pagination, setPagination, dotSelect, legend } = props
-  const legendList = Object.keys(legend).filter(key => legend[key])
+  const {
+    timeRanges: [startDate, endDate],
+    kpiFilter, applyKpiFilter,
+    legendFilter,
+    pagination, applyPagination,
+    selected, onRowClick, dotSelect
+  } = useContext(ConfigChangeContext)
 
-  const queryResults = useConfigChangeQuery({
+  const basicQueryPayload = {
     ...pathFilters,
     startDate: startDate.toISOString(),
-    endDate: endDate.toISOString()
-  }, { selectFromResult: queryResults => ({
-    ...queryResults,
-    data: filterData(queryResults.data ?? [], kpiFilter, legendList, showIntentAI)
-  }) })
+    endDate: endDate.toISOString(),
+    showIntentAI
+  }
+
+  const queryResults = useConfigChangeQuery(basicQueryPayload,
+    { selectFromResult: queryResults => ({
+      ...queryResults,
+      data: filterData(queryResults.data ?? [], kpiFilter, legendFilter)
+    }) })
 
   const entityTypeMapping = getConfigChangeEntityTypeMapping(showIntentAI)
 
@@ -126,8 +69,21 @@ export function Table (props: {
       key: 'timestamp',
       title: $t({ defaultMessage: 'Timestamp' }),
       dataIndex: 'timestamp',
-      render: (_, { timestamp }) =>
-        formatter(DateFormatEnum.DateTimeFormat)(moment(Number(timestamp))),
+      render: (_, row) => {
+        const timestamp = formatter(DateFormatEnum.DateTimeFormat)(moment(Number(row.timestamp)))
+        if (showIntentAI && row.type === 'intentAI') {
+          const code = row.key.substring(row.key.lastIndexOf('.') + 1)
+          const linkPath = get('IS_MLISA_SA')
+            ? `/intentAI/${row.root}/${row.sliceId}/${code}`
+            : `/analytics/intentAI/${row.sliceId}/${code}`
+          return (
+            <TenantLink to={linkPath}>
+              {timestamp}
+            </TenantLink>
+          )
+        }
+        return timestamp
+      },
       sorter: { compare: sortProp('timestamp', defaultSort) },
       width: 130
     },
@@ -136,8 +92,8 @@ export function Table (props: {
       title: $t({ defaultMessage: 'Entity Type' }),
       dataIndex: 'type',
       render: (_, row) => {
-        const config = entityTypeMapping.find(type => type.key === row.type)
-        return config ? <Badge key={row.id} color={config.color} text={config.label}/> : row.type
+        const config = entityTypeMapping.find(type => type.key === row.type)!
+        return <Badge key={row.id} color={config.color} text={config.label}/>
       },
       filterable: entityTypeMapping.map(({ label, ...rest }) => ({ ...rest, value: label })),
       sorter: { compare: sortProp('type', defaultSort) },
@@ -199,10 +155,8 @@ export function Table (props: {
     },
     ...(selected === null ? { selectedRowKeys: [] } : { selectedRowKeys: [selected.id!] })
   }
-
-  const handlePaginationChange = (current: number, pageSize: number) => {
-    setPagination({ current, pageSize })
-  }
+  const handlePaginationChange = (current: number, pageSize: number) =>
+    applyPagination({ current, pageSize })
 
   const options = Object.keys(kpiConfig).reduce((agg, key)=> {
     const config = kpiConfig[key as keyof typeof kpiConfig]
@@ -248,8 +202,7 @@ export function Table (props: {
               queryResults.data,
               ColumnHeaders,
               entityTypeMapping,
-              startDate,
-              endDate
+              basicQueryPayload
             )}
         }}
       />

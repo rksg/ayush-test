@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
 import ReactECharts from 'echarts-for-react'
-import { useIntl }  from 'react-intl'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
@@ -29,7 +28,7 @@ import {
   getTooltipCoordinate,
   useLegendTableFilter
 } from './helper'
-import { ResetButton, ChartWrapper } from './styledComponents'
+import { ChartWrapper } from './styledComponents'
 
 import type { EChartsOption, SeriesOption } from 'echarts'
 
@@ -38,14 +37,15 @@ export type { ChartRowMappingType as ConfigChangeChartRowMappingType } from './h
 export function ConfigChangeChart ({
   data,
   chartBoundary,
-  selectedData,
-  onDotClick,
   onBrushPositionsChange,
   chartZoom,
   setChartZoom,
   setInitialZoom,
-  setLegend,
+  selectedData,
   setSelectedData,
+  setLegend,
+  onDotClick,
+  pagination,
   setPagination,
   ...props
 }: ConfigChangeChartProps) {
@@ -55,7 +55,6 @@ export function ConfigChangeChart ({
     useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_CONFIG_CHANGE_TOGGLE)
   ].some(Boolean)
 
-  const { $t } = useIntl()
   const eChartsRef = useRef<ReactECharts>(null)
 
   const chartRowMapping = getConfigChangeEntityTypeMapping(showIntentAI)
@@ -68,7 +67,7 @@ export function ConfigChangeChart ({
   const [selected, setSelected] = useState<number|undefined>(selectedData?.id)
 
   useEffect(() => {
-    setSelected(selectedData?.filterId)
+    setSelected(selectedData?.id)
   }, [selectedData])
 
   const [selectedLegend, setSelectedLegend] = useState(
@@ -80,11 +79,10 @@ export function ConfigChangeChart ({
   useDotClick(eChartsRef, setSelected, onDotClick)
   useLegendSelectChanged(eChartsRef, setSelectedLegend)
   useLegendTableFilter(
-    selectedLegend, data, selectedData, setLegend, setSelectedData, setPagination)
+    selectedLegend, data, selectedData, setSelectedData, setLegend, pagination,setPagination)
   const { setBoundary } = useBoundaryChange(
     eChartsRef, chartLayoutConfig, chartBoundary, brushWidth, onBrushPositionsChange)
-  const { canResetZoom, resetZoomCallback } =
-    useDataZoom(eChartsRef, chartBoundary, setBoundary, chartZoom, setChartZoom, setInitialZoom)
+  useDataZoom(eChartsRef, chartBoundary, setBoundary, chartZoom, setChartZoom, setInitialZoom)
 
   const option: EChartsOption = {
     animation: false,
@@ -113,6 +111,7 @@ export function ConfigChangeChart ({
       position: getTooltipCoordinate(legendHeight + brushTextHeight)
     },
     legend: {
+      selectedMode: !!setLegend,
       right: chartPadding,
       icon: 'circle',
       itemWidth: symbolSize,
@@ -196,11 +195,6 @@ export function ConfigChangeChart ({
         ref={eChartsRef}
         option={option}
       />
-      {canResetZoom && <ResetButton
-        size='small'
-        onClick={resetZoomCallback}
-        children={$t({ defaultMessage: 'Reset Zoom' })}
-      />}
     </ChartWrapper>
   )
 }

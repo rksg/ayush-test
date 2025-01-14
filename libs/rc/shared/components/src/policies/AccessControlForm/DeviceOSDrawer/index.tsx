@@ -33,7 +33,6 @@ import {
   defaultSort,
   DevicePolicy,
   DeviceRule,
-  hasPolicyPermission,
   OsVendorEnum,
   PolicyOperation,
   PolicyType,
@@ -41,7 +40,8 @@ import {
   TableResult,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplateQueryFnSwitcher
+  useConfigTemplateQueryFnSwitcher,
+  useTemplateAwarePolicyPermission
 } from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
@@ -626,6 +626,14 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     />
   </>
 
+  const hasCreatePermission = useTemplateAwarePolicyPermission(
+    PolicyType.DEVICE_POLICY, PolicyOperation.CREATE
+  )
+
+  const hasEditPermission = useTemplateAwarePolicyPermission(
+    PolicyType.DEVICE_POLICY, PolicyOperation.EDIT
+  )
+
   const modelContent = () => {
     if (onlyAddMode.enable || drawerViewModeId !== '') {
       return null
@@ -666,7 +674,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         />
       </GridCol>
       <AclGridCol>
-        {hasPolicyPermission({ type: PolicyType.DEVICE_POLICY, oper: PolicyOperation.EDIT }) &&
+        {hasEditPermission &&
           <Button type='link'
             disabled={visible || !devicePolicyId}
             onClick={() => {
@@ -682,7 +690,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         }
       </AclGridCol>
       <AclGridCol>
-        {hasPolicyPermission({ type: PolicyType.DEVICE_POLICY, oper: PolicyOperation.CREATE }) &&
+        {hasCreatePermission &&
           <Button type='link'
             disabled={visible || deviceList.length >= PROFILE_MAX_COUNT_DEVICE_POLICY}
             onClick={() => {

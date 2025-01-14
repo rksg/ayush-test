@@ -44,6 +44,17 @@ describe('UpdateFirmwarePerApModelIndividual', () => {
     isUpgrade: true
   }
 
+  const earlyAccessProps: UpdateFirmwarePerApModelIndividualProps = {
+    apModel: 'R750',
+    versionOptions: [],
+    extremeFirmware: '7.1.1.520.214',
+    update: jest.fn(),
+    earlyAccess: true,
+    defaultVersion: '',
+    labelSize: 'large',
+    isUpgrade: true
+  }
+
   it('handles downgrade scenario', async () => {
     render(<UpdateFirmwarePerApModelIndividual {...props} isUpgrade={false} />)
     const dropdownList = screen.getByRole('combobox')
@@ -61,5 +72,11 @@ describe('UpdateFirmwarePerApModelIndividual', () => {
     await userEvent.click(excludedOption)
     await userEvent.click(dropdownList)
     expect(screen.getAllByText(props.versionOptions[4].label).length).toBeGreaterThan(0)
+  })
+
+  it('handles early access version in update now dialog scenario', async () => {
+    render(<UpdateFirmwarePerApModelIndividual {...earlyAccessProps} isUpgrade={false} />)
+
+    expect(screen.getByText(/\(7\.1\.1\.520\.214 early access\)/i)).toBeInTheDocument()
   })
 })

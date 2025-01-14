@@ -4,7 +4,7 @@ import { assign, findIndex } from 'lodash'
 import { getIntl } from '@acx-ui/utils'
 
 import {
-  NetworkApGroup,
+  NetworkApGroup, NetworkSaveData,
   NetworkVenue,
   RadioEnum,
   RadioTypeEnum,
@@ -24,7 +24,7 @@ export const getVlanString = (vlanPool?: VlanPool | null, vlanId?: number, isCus
     return {
       vlanString: vlanPool.name,
       vlanType: VlanType.Pool,
-      vlanText: $t(vlanContents.vlanPool, { isCustom, poolName: vlanPool.name })
+      vlanText: $t(vlanContents.vlanPool, { isCustom: true, poolName: vlanPool.name })
     }
   }
 
@@ -33,6 +33,16 @@ export const getVlanString = (vlanPool?: VlanPool | null, vlanId?: number, isCus
     vlanType: VlanType.VLAN,
     vlanText: $t(vlanContents.vlan, { isCustom, id: vlanId })
   }
+}
+
+export const getVlanPool = (apgroup: NetworkApGroup, wlan?: NetworkSaveData['wlan'], vlanPoolSelectOptions?: VlanPool[]) => {
+  return apgroup.vlanPoolId
+    ? {
+      name: vlanPoolSelectOptions?.find((vlanPool) => vlanPool.id === apgroup?.vlanPoolId)?.name || '',
+      id: apgroup.vlanPoolId,
+      vlanMembers: []
+    }
+    : wlan?.advancedCustomization?.vlanPool
 }
 
 const radioTypeEnumToRadioEnum = (radioTypes: RadioTypeEnum[]) => {

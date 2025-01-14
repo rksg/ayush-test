@@ -9,8 +9,10 @@ import {
   Drawer,
   Loader
 } from '@acx-ui/components'
-import { useGetDriftInstancesQuery, usePatchDriftReportMutation } from '@acx-ui/rc/services'
-import { ConfigTemplate, ConfigTemplateType }                     from '@acx-ui/rc/utils'
+import { useGetDriftInstancesQuery, usePatchDriftReportMutation }     from '@acx-ui/rc/services'
+import { ConfigTemplate, ConfigTemplateType, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { hasAllowedOperations }                                       from '@acx-ui/user'
+import { getOpsApi }                                                  from '@acx-ui/utils'
 
 import { MAX_SYNC_EC_TENANTS }      from '../../constants'
 import { CustomerFirmwareReminder } from '../CustomerFirmwareReminder'
@@ -83,13 +85,13 @@ export function ShowDriftsDrawer (props: ShowDriftsDrawerProps) {
   }
 
   const footer = <div>
-    <Button
+    { hasAllowedOperations([getOpsApi(ConfigTemplateUrlsInfo.patchDriftReport)]) && <Button
       disabled={selectedInstances.length === 0}
       onClick={onSync}
       type='primary'
     >
       <span>{$t({ defaultMessage: 'Sync' })}</span>
-    </Button>
+    </Button>}
     <Button onClick={() => onClose()}>
       {$t({ defaultMessage: 'Cancel' })}
     </Button>
