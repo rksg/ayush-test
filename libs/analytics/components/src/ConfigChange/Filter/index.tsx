@@ -26,7 +26,7 @@ import * as UI                        from './styledComponents'
 export const Search = () => {
   const { $t } = useIntl()
   const { entityNameSearch, setEntityNameSearch } = useContext(ConfigChangeContext)
-  const placeHolderText =$t({ defaultMessage: 'Search Entity Name' })
+  const placeHolderText =$t({ defaultMessage: 'Search Scope' })
   return <UI.SearchInput
     onChange={e => setEntityNameSearch(e.target.value)}
     placeholder={placeHolderText}
@@ -49,7 +49,7 @@ export const KPIFilter = () => {
   return <UI.Cascader
     multiple
     defaultValue={kpiFilter.map(kpi => [kpi])}
-    placeholder={$t({ defaultMessage: 'Add KPI filter' })}
+    placeholder={$t({ defaultMessage: 'KPI' })}
     options={options}
     onApply={selectedOptions =>
       applyKpiFilter(selectedOptions?.length ? selectedOptions?.flat() as string[] : [])
@@ -71,7 +71,7 @@ export const EntityTypeFilter = () => {
   return <UI.Cascader
     multiple
     defaultValue={entityTypeFilter.map(entity => [entity])}
-    placeholder={$t({ defaultMessage: 'Entity Type' })}
+    placeholder={$t({ defaultMessage: 'Entity' })}
     options={entityTypeMapping}
     onApply={selectedOptions =>
       setEntityTypeFilter(selectedOptions?.length ? selectedOptions?.flat() as string[] : [])
@@ -156,8 +156,8 @@ export const Filter = () => {
   return <UI.Wrapper>
     <UI.Space>
       <Search/>
-      <KPIFilter/>
       <EntityTypeFilter/>
+      <KPIFilter/>
     </UI.Space>
     <UI.Space>
       <Reset/>
