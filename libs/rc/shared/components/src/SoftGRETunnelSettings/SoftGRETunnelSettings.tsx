@@ -1,8 +1,13 @@
 import { Form, Switch, Space } from 'antd'
 import { useWatch }            from 'antd/lib/form/Form'
+import { DefaultOptionType }   from 'antd/lib/select'
 import { useIntl }             from 'react-intl'
 
 import { Tooltip, Alert, StepsForm } from '@acx-ui/components'
+import {
+  SoftGreDuplicationChangeDispatcher,
+  SoftGreDuplicationChangeState
+} from '@acx-ui/rc/utils'
 
 import { SoftGREProfileSettings } from './SoftGREProfileSettings'
 import { FieldLabel }             from './styledComponents'
@@ -13,6 +18,12 @@ interface SoftGRETunnelSettingsProps {
   onGUIChanged?: (fieldName: string) => void;
   readonly: boolean;
   toggleButtonToolTip?: string
+  softGREProfileOptionList?: DefaultOptionType[];
+  apModel?: string
+  serialNumber?: string
+  isUnderAPNetworking: boolean
+  optionDispatch?: React.Dispatch<SoftGreDuplicationChangeDispatcher>
+  validateIsFQDNDuplicate: (softGreProfileId: string) => boolean
 }
 
 export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
@@ -22,7 +33,13 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
     portId,
     onGUIChanged,
     readonly,
-    toggleButtonToolTip
+    toggleButtonToolTip,
+    softGREProfileOptionList,
+    apModel,
+    serialNumber,
+    isUnderAPNetworking,
+    optionDispatch,
+    validateIsFQDNDuplicate
   } = props
 
   const softgreTunnelFieldName = ['lan', index, 'softGreEnabled']
@@ -53,8 +70,24 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
               <Switch
                 data-testid={'softgre-tunnel-switch'}
                 disabled={readonly}
-                onChange={() => {
+                onChange={(value) => {
                   onGUIChanged?.('softGreEnabled')
+                  const voter = (isUnderAPNetworking ?
+                    { serialNumber, portId: portId ?? '0' }:
+                    { model: apModel, portId: portId ?? '0' })
+                  if (value) {
+                    optionDispatch && optionDispatch ({
+                      state: SoftGreDuplicationChangeState.TurnOnSoftGre,
+                      softGreProfileId: form.getFieldValue(['lan', index, 'softGreProfileId']),
+                      voter: voter
+                    })
+                  }
+                  else {
+                    optionDispatch && optionDispatch ({
+                      state: SoftGreDuplicationChangeState.TurnOffSoftGre,
+                      voter: voter
+                    })
+                  }
                 }}
               />
             }
@@ -75,6 +108,12 @@ export const SoftGRETunnelSettings = (props: SoftGRETunnelSettingsProps) => {
             onGUIChanged={onGUIChanged}
             readonly={readonly}
             portId={portId}
+            softGREProfileOptionList={softGREProfileOptionList}
+            apModel={apModel}
+            serialNumber={serialNumber}
+            isUnderAPNetworking={isUnderAPNetworking}
+            optionDispatch={optionDispatch}
+            validateIsFQDNDuplicate={validateIsFQDNDuplicate}
           />
         </>
       }

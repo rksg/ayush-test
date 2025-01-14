@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { Form, Input, InputNumber, Select, Space, Switch } from 'antd'
+import { DefaultOptionType }                               from 'antd/lib/select'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 
 import { cssStr, Tooltip }        from '@acx-ui/components'
@@ -14,6 +15,9 @@ import {
   EthernetPortAuthType,
   EthernetPortProfileViewData,
   LanPort,
+  SoftGreDuplicationChangeDispatcher,
+  SoftGreDuplicationChangeState,
+  SoftGreProfileDispatcher,
   useConfigTemplate,
   VenueLanPorts,
   WifiApSetting,
@@ -66,6 +70,10 @@ export function LanPortSettings (props: {
   useVenueSettings?: boolean,
   venueId?: string,
   serialNumber?: string
+  dispatch?: React.Dispatch<SoftGreProfileDispatcher>
+  softGREProfileOptionList?: DefaultOptionType[]
+  optionDispatch?: React.Dispatch<SoftGreDuplicationChangeDispatcher>
+  validateIsFQDNDuplicate: (softGreProfileId: string) => boolean
 }) {
   const { $t } = useIntl()
   const {
@@ -80,7 +88,10 @@ export function LanPortSettings (props: {
     readOnly,
     useVenueSettings,
     venueId,
-    serialNumber
+    serialNumber,
+    softGREProfileOptionList,
+    optionDispatch,
+    validateIsFQDNDuplicate
   } = props
 
   const [ drawerVisible, setDrawerVisible ] = useState(false)
@@ -177,8 +188,25 @@ export function LanPortSettings (props: {
           || !selectedPortCaps?.supportDisable
           || hasVni
         }
-        onChange={() => {
+        onChange={(value) => {
           onChangedByCustom('enabled')
+          const portId = selectedModel.lanPorts![index].portId
+          const voter = (isUnderAPNetworking ?
+            { serialNumber, portId: (portId ?? '0') }:
+            { model: (selectedModel as VenueLanPorts)?.model, portId: (portId ?? '0') })
+          if (value) {
+            optionDispatch && optionDispatch ({
+              state: SoftGreDuplicationChangeState.TurnOnLanPort,
+              softGreProfileId: form.getFieldValue(['lan', index, 'softGreProfileId']),
+              voter: voter
+            })
+          }
+          else {
+            optionDispatch && optionDispatch ({
+              state: SoftGreDuplicationChangeState.TurnOffLanPort,
+              voter: voter
+            })
+          }
         }}
       />}
     />
@@ -218,6 +246,12 @@ export function LanPortSettings (props: {
                 $t({ defaultMessage: 'A port profile cannot be applied to SoftGRE while it is configured with the 802.1X supplicant role.' }):
                 undefined
             }
+            softGREProfileOptionList={softGREProfileOptionList}
+            serialNumber={serialNumber}
+            apModel={(selectedModel as VenueLanPorts)?.model}
+            isUnderAPNetworking={isUnderAPNetworking}
+            optionDispatch={optionDispatch}
+            validateIsFQDNDuplicate={validateIsFQDNDuplicate}
           />
           {isDhcpOption82Enabled && isSoftGreTunnelEnable &&
             <DhcpOption82Settings
