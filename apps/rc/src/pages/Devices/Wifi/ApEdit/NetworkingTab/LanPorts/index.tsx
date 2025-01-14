@@ -14,8 +14,8 @@ import {
   Tabs,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
-import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
+import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings, useSoftGreProfileLimitedSelection } from '@acx-ui/rc/components'
 import {
   useDeactivateSoftGreProfileOnAPMutation,
   useGetApLanPortsWithActivatedProfilesQuery,
@@ -38,7 +38,7 @@ import {
   VenueLanPorts,
   WifiApSetting,
   isEqualLanPort,
-  mergeLanPortSettings
+  mergeLanPortSettings, Voter, SoftGreDuplicationChangeState
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -150,6 +150,11 @@ export function LanPorts () {
   const [lanData, setLanData] = useState([] as LanPort[])
   const [activeTabIndex, setActiveTabIndex] = useState(0)
   const isResetClick = useRef(false)
+  const {
+    softGREProfileOptionList,
+    duplicationChangeDispatch,
+    validateIsFQDNDuplicate
+  } = useSoftGreProfileLimitedSelection(venueId!)
 
   // TODO: rbac
   const isAllowUpdate = true // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
@@ -410,6 +415,9 @@ export function LanPorts () {
   }
 
   const handleFormChange = async (formName: string, info: FormChangeInfo) => {
+
+    if (info?.changedFields) return
+
     const index = Number(info?.changedFields?.[0].name.toString().split(',')[1])
     const newLanData = (lanData?.map((item, idx) => {
       return idx === index
@@ -455,6 +463,21 @@ export function LanPorts () {
       })
       isResetClick.current = true
       updateEditContext(formRef?.current as StepsFormLegacyInstance)
+
+      let voters = [] as Voter[]
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      defaultLanPortsFormData.lanPorts.forEach((lanPort: any) => {
+        voters.push({
+          portId: (lanPort.portId ?? '0'),
+          serialNumber
+        })
+      })
+
+      duplicationChangeDispatch({
+        state: SoftGreDuplicationChangeState.ResetToDefault,
+        voters: voters
+      })
     }
   }
 
@@ -539,6 +562,9 @@ export function LanPorts () {
                           venueId={venueId}
                           onGUIChanged={onGUIChanged}
                           serialNumber={serialNumber}
+                          softGREProfileOptionList={softGREProfileOptionList}
+                          optionDispatch={duplicationChangeDispatch}
+                          validateIsFQDNDuplicate={validateIsFQDNDuplicate}
                         />
                       </Col>
                     </Row>
