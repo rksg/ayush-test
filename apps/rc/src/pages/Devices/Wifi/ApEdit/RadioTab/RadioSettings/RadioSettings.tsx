@@ -677,7 +677,7 @@ export function RadioSettings () {
         if (method === 'MANUAL') {
           if (isVenueChannelSelectionManualEnabled) {
             // Use venue settings & channel selection method is "manual", ap's allowedChannels = venue's allowedChannels.
-            if (!isUseVenueSettings) {
+            if (!radioParams.useVenueSettings) {
               radioParams.allowedChannels = [manualChannel.toString()]
             }
           } else {
