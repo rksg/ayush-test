@@ -15,7 +15,7 @@ describe('AllowOperationsUtils', () => {
     const mockApiInfo = {
       method: 'post',
       url: '/venues/:venueId/devices/:deviceId',
-      opsApi: '/venues/{venueId}/devices/{id}'
+      opsApi: 'POST:/venues/{venueId}/devices/{id}'
     }
     const result = genAllowOperationsPath(mockApiInfo)
 

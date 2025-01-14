@@ -5,7 +5,7 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges',
     newApi: true,
-    opsApi: '/venues/{venueId}/edgeClusters/{clusterId}/edges'
+    opsApi: 'POST:/venues/{venueId}/edgeClusters/{clusterId}/edges'
   },
   getEdge: {
     method: 'get',

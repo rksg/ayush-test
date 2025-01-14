@@ -26,7 +26,7 @@ export const EdgePinUrls: { [key: string]: ApiInfo } = {
     method: 'put',
     newApi: true,
     url: '/personalIdentityNetworks/:serviceId',
-    opsApi: '/personalIdentityNetworks/{pinId}'
+    opsApi: 'PUT:/personalIdentityNetworks/{pinId}'
   },
   activateEdgePinNetwork: {
     method: 'put',
