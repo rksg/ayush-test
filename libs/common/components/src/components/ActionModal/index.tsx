@@ -219,24 +219,38 @@ function CodeTemplate (props: {
   }
 }) {
   const { $t } = getIntl()
+  const { improveErrorDialogEnabled } = getUserProfile()
   const okText = $t({ defaultMessage: 'OK' })
   return (
     <>
       {props.content && <UI.Content children={props.content} />}
       <UI.Footer>
-        {props.code && <CollapsePanel
-          expanded={props.code.expanded}
-          header={props.code.label}
-          content={props.code.content}
-          path={props.path}
-          errorCode={props.errorCode}
-        />}
+        {props.code &&
+          (improveErrorDialogEnabled ? (
+            <CollapsePanel
+              expanded={props.code.expanded}
+              header={props.code.label}
+              content={props.code.content}
+              path={props.path}
+              errorCode={props.errorCode}
+            />
+          ) : (
+            <CollapsePanelLegacy
+              expanded={props.code.expanded}
+              header={props.code.label}
+              content={props.code.content}
+            />
+          ))}
         <UI.FooterButtons>
-          <Button type='primary'
+          <Button
+            type='primary'
             onClick={() => {
               props.onOk?.()
               props.modal.destroy()
-            }}>{okText}</Button>
+            }}
+          >
+            {okText}
+          </Button>
         </UI.FooterButtons>
       </UI.Footer>
     </>
@@ -290,6 +304,7 @@ function CustomButtonsTemplate (props: {
   </>)
 }
 
+
 function CollapsePanel (props: {
   header: string
   content: string
@@ -297,13 +312,13 @@ function CollapsePanel (props: {
   path?: string
   errorCode?: number
 }) {
-  const { $t } = getIntl()
-  const { improveErrorDialogEnabled } = getUserProfile()
   const inputEl = useRef<TextAreaRef>(null)
+
   const copyText = () => {
     navigator.clipboard.writeText(props.content)
     inputEl.current?.resizableTextArea?.textArea.select()
   }
+
   const wrapText = (text: string , maxWidth: number) => {
     const lines: string[] = []
     let currentLine: string = ''
@@ -324,34 +339,31 @@ function CollapsePanel (props: {
     if (currentLine) lines.push(currentLine)
     return lines.join('\n\t\t\t\t')
   }
+
   const getContent = function () {
     const content = props.content
-    if (improveErrorDialogEnabled) {
-
-      const errorMessage = `
+    const errorMessage = `
     URL:\t\t\t${wrapText(props.path || '', 40)}
     Error Code:\t${props.errorCode}
-    Request ID:\trequest-id
     Timestamp:\t${moment().format('YYYYMMDD-HHmmss')}
-
     Code:\t\t\tcode
     Reason:\t\treason
     Suggestion:\tsuggestion
-      `
-      return errorMessage
 
-    } else {
-      return content
-    }
+    ${content}
+      `
+    return errorMessage
   }
 
   const getExpandIcon = (isActive: boolean | undefined) => {
-    if(improveErrorDialogEnabled) {
-      return isActive ? <ReportsSolid style={{ marginLeft: '-5px',
-        height: '16px', marginBottom: '-10px' }} />:
-        <ReportsOutlined style={{marginLeft: '-5px', height: '16px', marginBottom: '-10px' }} />
+    const iconStyle = {
+      marginLeft: '-5px',
+      height: '16px',
+      marginBottom: '-10px'
     }
-    return isActive ? <ExpandSquareUp /> : <ExpandSquareDown />
+
+    return isActive ? <ReportsSolid style={iconStyle} />:
+      <ReportsOutlined style={iconStyle} />
   }
 
   return (
@@ -361,22 +373,54 @@ function CollapsePanel (props: {
       expandIcon={({ isActive }) => getExpandIcon(isActive)}
       defaultActiveKey={props.expanded ? [props.header] : undefined}
     >
-      <Panel header={improveErrorDialogEnabled? undefined : props.header} key={props.header}>
+      <Panel header={undefined} key={props.header}>
         <TextArea ref={inputEl}
           rows={20}
           readOnly={true}
           value={getContent()}
-          style={{ padding: '0px', fontSize: '11px', lineHeight: '16px', border: 'none', 
-            marginTop: '-10px' }} />
-        {improveErrorDialogEnabled ? <UI.CopyButton
+          style={{
+            padding: '0px',
+            fontSize: '11px',
+            lineHeight: '16px',
+            border: 'none',
+            marginTop: '-10px'
+          }} />
+        <UI.CopyButton
           type='link'
           onClick={copyText}
-          style={{ position: 'absolute', right: '20px', bottom: '23px' }}
-        ><CopyOutlined /> </UI.CopyButton> : <UI.CopyButton
-          type='link'
-          onClick={copyText}
-        >{$t({ defaultMessage: 'Copy to clipboard' })}</UI.CopyButton>}
+        >
+          <CopyOutlined />
+        </UI.CopyButton>
+      </Panel>
+    </UI.Collapse>
+  )
+}
 
+
+function CollapsePanelLegacy (props: {
+  header: string
+  content: string
+  expanded?: boolean
+}) {
+  const { $t } = getIntl()
+  const inputEl = useRef<TextAreaRef>(null)
+  const copyText = () => {
+    navigator.clipboard.writeText(props.content)
+    inputEl.current?.resizableTextArea?.textArea.select()
+  }
+  return (
+    <UI.Collapse
+      ghost
+      expandIconPosition='end'
+      expandIcon={({ isActive }) => isActive ? <ExpandSquareUp /> : <ExpandSquareDown />}
+      defaultActiveKey={props.expanded ? [props.header] : undefined}
+    >
+      <Panel header={props.header} key={props.header}>
+        <TextArea ref={inputEl} rows={20} readOnly={true} value={props.content} />
+        <UI.CopyButtonLegacy
+          type='link'
+          onClick={copyText}
+        >{$t({ defaultMessage: 'Copy to clipboard' })}</UI.CopyButtonLegacy>
       </Panel>
     </UI.Collapse>
   )

@@ -67,6 +67,17 @@ export const Collapse = styled(AntCollapse)`
   }
 `
 
+export const CopyButtonLegacy = styled(Button)`
+  display: inline-flex;
+  justify-content: flex-end;
+  font-size: var(--acx-body-5-font-size);
+  line-height: 16px;
+  color: var(--acx-accents-blue-50);
+  height: auto;
+  padding: 0;
+  margin: 4px 0 4px auto;
+`
+
 export const CopyButton = styled(Button)`
   display: inline-flex;
   justify-content: flex-end;
@@ -76,4 +87,7 @@ export const CopyButton = styled(Button)`
   height: auto;
   padding: 0;
   margin: 4px 0 4px auto;
+  position: absolute;
+  right: 40px;
+  bottom: 23px;
 `
