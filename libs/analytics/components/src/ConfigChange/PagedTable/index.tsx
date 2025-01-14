@@ -154,7 +154,8 @@ export function PagedTable () {
   const basicPayload = {
     ...pathFilters,
     startDate: startDate.toISOString(),
-    endDate: endDate.toISOString()
+    endDate: endDate.toISOString(),
+    showIntentAI: showIntentAI ?? false
   }
 
   const queryResults = usePagedConfigChangeQuery({
