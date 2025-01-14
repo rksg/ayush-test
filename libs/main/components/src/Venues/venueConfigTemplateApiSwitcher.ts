@@ -1,5 +1,4 @@
-import { UseMutation }        from '@reduxjs/toolkit/dist/query/react/buildHooks'
-import { MutationDefinition } from '@reduxjs/toolkit/query'
+import { TypedUseMutation } from '@reduxjs/toolkit/query/react'
 
 import {
   useGetVenueQuery,
@@ -25,11 +24,11 @@ export function useVenueConfigTemplateQueryFnSwitcher<ResultType, Payload = unkn
   })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type VenueMutationDefinition = MutationDefinition<any, any, any, any>
 export function useVenueConfigTemplateMutationFnSwitcher (
-  useMutationFn: UseMutation<VenueMutationDefinition>,
-  useTemplateMutationFn: UseMutation<VenueMutationDefinition>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useMutationFn: TypedUseMutation<any, any, any>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useTemplateMutationFn: TypedUseMutation<any, any, any>
 ) {
   return useConfigTemplateMutationFnSwitcher({ useMutationFn, useTemplateMutationFn })
 }

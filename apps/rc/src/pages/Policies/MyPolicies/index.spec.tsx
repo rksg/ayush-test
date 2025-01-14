@@ -20,7 +20,8 @@ import {
   SyslogUrls,
   SwitchUrlsInfo,
   VlanPoolRbacUrls,
-  WifiUrlsInfo
+  WifiUrlsInfo,
+  EthernetPortProfileUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -128,7 +129,18 @@ describe('MyPolicies', () => {
       ),
       rest.post(
         SoftGreUrls.getSoftGreViewDataList.url,
-        (_, res, ctx) => res(ctx.json(mockSoftGreTable)))
+        (_, res, ctx) => res(ctx.json(mockSoftGreTable))),
+      rest.get(
+        SwitchUrlsInfo.getSwitchPortProfilesCount.url,
+        (req, res, ctx) => res(ctx.json(1))
+      ),
+      rest.post(
+        EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
+        (req, res, ctx) => res(ctx.json({
+          totalCount: 1,
+          data: []
+        }))
+      )
     )
   })
 
@@ -286,5 +298,21 @@ describe('MyPolicies', () => {
     )
 
     expect(await screen.findByText('Authentication (1)')).toBeVisible()
+  })
+  it('should render Port Profile correctly', async () => {
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.ETHERNET_PORT_PROFILE_TOGGLE ||
+      ff === Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE
+    )
+    render(
+      <Provider>
+        <MyPolicies />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    expect(await screen.findByText('Port Profiles (2)')).toBeVisible()
   })
 })
