@@ -724,7 +724,7 @@ export const getAdminPassword = (
     )
 }
 
-export const vlanPortsParser = (vlans: string, maxRangesToShow: number = 20) => {
+export const vlanPortsParser = (vlans: string, maxRangesToShow: number = 20, title: string = '') => {
   const numbers = vlans.split(' ').map(Number).sort((a, b) => a - b)
   let ranges = []
 
@@ -740,7 +740,7 @@ export const vlanPortsParser = (vlans: string, maxRangesToShow: number = 20) => 
   if (ranges.length > maxRangesToShow) {
     const remainingCount = ranges.length - maxRangesToShow
     ranges = ranges.slice(0, maxRangesToShow)
-    return `${ranges.join(', ')}, and ${remainingCount} more...`
+    return `${ranges.join(', ')}, and ${remainingCount} ${title} more...`
   }
 
   return ranges.join(', ')
@@ -761,6 +761,19 @@ export const isFirmwareVersionAbove10010f = function (firmwareVersion?: string) 
   if (firmwareVersion) {
     return isVerGEVer(firmwareVersion, '10010f', false) &&
     (!isVerGEVer(firmwareVersion, '10020', false) || isVerGEVer(firmwareVersion, '10020b', false))
+  } else {
+    return false
+  }
+}
+
+
+export const isFirmwareVersionAbove10020b = function (firmwareVersion?: string) {
+  /*
+  Only support the firmware versions listed below:
+  1. > 10020a
+  */
+  if (firmwareVersion) {
+    return isVerGEVer(firmwareVersion, '10020b', false)
   } else {
     return false
   }

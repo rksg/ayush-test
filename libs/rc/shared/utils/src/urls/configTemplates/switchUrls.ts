@@ -77,7 +77,8 @@ export const SwitchConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1.1+json',
       'Content-Type': 'application/vnd.ruckus.v1.1+json'
-    }
+    },
+    opsApi: 'POST:/templates/switchProfiles'
   },
   updateSwitchConfigProfileRbac: {
     method: 'put',
@@ -86,7 +87,8 @@ export const SwitchConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1.1+json',
       'Content-Type': 'application/vnd.ruckus.v1.1+json'
-    }
+    },
+    opsApi: 'PUT:/templates/switchProfiles/{id}'
   },
   deleteSwitchConfigProfileRbac: {
     method: 'delete',
@@ -95,7 +97,8 @@ export const SwitchConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1.1+json',
       'Content-Type': 'application/vnd.ruckus.v1.1+json'
-    }
+    },
+    opsApi: 'DELETE:/templates/switchProfiles/{id}'
   },
   getSwitchConfigProfileListRbac: {
     method: 'post',

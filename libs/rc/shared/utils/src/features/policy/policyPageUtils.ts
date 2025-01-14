@@ -10,11 +10,11 @@ import { getIntl }                    from '@acx-ui/utils'
 import { LocationExtended }                                    from '../../common/redirect.utils'
 import { generateConfigTemplateBreadcrumb, useConfigTemplate } from '../../configTemplate'
 import { generatePageHeaderTitle }                             from '../../pages'
-import { PolicyType }                                          from '../../types'
+import { PolicyType, PolicyOperation }                         from '../../types'
 import { generateDpskManagementBreadcrumb }                    from '../service/servicePageUtils'
 
-import { policyTypeLabelMapping }                                      from './contentsMap'
-import { PolicyOperation, getPolicyListRoutePath, getPolicyRoutePath } from './policyRouteUtils'
+import { policyTypeLabelMapping }                     from './contentsMap'
+import { getPolicyListRoutePath, getPolicyRoutePath } from './policyRouteUtils'
 
 export function usePolicyPageHeaderTitle (isEdit: boolean, policyType: PolicyType) {
   const { isTemplate } = useConfigTemplate()
