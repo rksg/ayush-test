@@ -1023,11 +1023,43 @@ export enum SoftGreState {
   ResetToDefault
 }
 
+export enum SoftGreDuplicationChangeState {
+  Init,
+  OnChangeSoftGreProfile,
+  TurnOnSoftGre,
+  TurnOffSoftGre,
+  TurnOnLanPort,
+  TurnOffLanPort,
+  ResetToDefault,
+  FindTheOnlyVoter
+}
+
+export interface SoftGreDuplicationChangeDispatcher {
+  state: SoftGreDuplicationChangeState
+  softGreProfileId?: string
+  voter?: Voter
+  voters?: Voter[]
+}
+
 export interface SoftGreProfileDispatcher {
   portId?: string,
   state: SoftGreState,
   index: number,
   softGreProfileId?: string
+}
+
+export interface Voter {
+  model?: string,
+  serialNumber?: string,
+  portId: string,
+}
+
+export interface VoteTallyBoard {
+  softGreProfileId: string,
+  FQDNAddresses: string[],
+  name?: string,
+  vote: number,
+  voters: Voter[]
 }
 
 export interface SoftGreLanPortChange {
