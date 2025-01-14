@@ -56,7 +56,9 @@ import {
   getIntl,
   noDataDisplay,
   getJwtTokenPayload,
-  AccountVertical
+  AccountVertical,
+  useTrackLoadTime,
+  widgetsMapping
 } from '@acx-ui/utils'
 
 import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'
@@ -134,6 +136,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const params = useParams()
   const navigate = useNavigate()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isMonitoringPageEnabled = useIsSplitOn(Features.MONITORING_PAGE_LOAD_TIMES)
   const { showAllColumns, searchable, filterableKeys, settingsId = 'switch-table' } = props
   const linkToEditSwitch = useTenantLink('/devices/switch/')
 
@@ -159,6 +162,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       ...defaultSwitchPayload
     },
     search: {
+      searchString: '',
       searchTargetFields: defaultSwitchPayload.searchTargetFields
     },
     option: { skip: Boolean(props.tableQuery) },
@@ -171,6 +175,12 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   useEffect(() => {
     setSwitchCount?.(tableQuery.data?.totalCount || 0)
   }, [tableQuery.data])
+
+  useTrackLoadTime({
+    itemName: widgetsMapping.SWITCH_TABLE,
+    states: [tableQuery],
+    isEnabled: isMonitoringPageEnabled
+  })
 
   const { exportCsv, disabled } = useExportCsv<SwitchRow>(tableQuery as TableQuery<SwitchRow, RequestPayload<unknown>, unknown>)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)

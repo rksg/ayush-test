@@ -75,6 +75,7 @@ enum TrackingPages {
   IDENTITY = 'Identity Management',
   VENUES_DETAILS = 'Venues Details',
   AP = 'Access Points',
+  WIRED = 'Wired',
   NETWORKS = 'Wi-Fi Networks',
   TIMELINE = 'Timeline'
 }
@@ -121,6 +122,7 @@ export const widgetsMapping = {
   EVENT_TABLE: 'EventTable',
   AP_TABLE: 'APTable',
   AP_GROUP_TABLE: 'APGroupTable',
+  SWITCH_TABLE: 'SwitchTable',
   NETWORK_TABLE: 'NetworkTable',
   IDENTITY_GUOUP_TABLE: 'IdentityGuoupTable',
   IDENTITY_TABLE: 'IdentityTable',
@@ -266,6 +268,15 @@ export const trackingPageConfig = {
       type: TrackingPageType.TABLE,
       route: 'devices/wifi/apgroups',
       widgets: [widgetsMapping.AP_GROUP_TABLE]
+    }]
+  },
+  [TrackingPages.WIRED]: {
+    key: 'WIRED',
+    children: [{
+      key: 'Switch List',
+      type: TrackingPageType.TABLE,
+      route: 'devices/switch',
+      widgets: [widgetsMapping.SWITCH_TABLE]
     }]
   },
   [TrackingPages.NETWORKS]: {
@@ -528,8 +539,9 @@ export function useTrackLoadTime ({ itemName, states, isEnabled }: {
   const isAllFetchSuccess
     = isPageCriteriaChanged && Boolean(status?.every(state => !state.isFetching))
 
-  const pageQuery
-    = (pageDetails?.widgets[0] === itemName ? states[0] : null) as QueryResult
+  const pageQuery = (pageDetails?.key === 'DASHBOARD'
+    ? (itemName === widgetsMapping.INCIDENTS_DASHBOARD ? states[0] : null)
+    : (pageDetails?.widgets[0] === itemName ? states[0] : null)) as QueryResult
 
   const handleReachThreshold = () => {
     if (!isEndTimeSet.current && isEnabled) {
