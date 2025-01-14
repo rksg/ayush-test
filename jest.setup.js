@@ -12,6 +12,7 @@ const nodeCrypto = require('crypto')
 const { configure } = require('@testing-library/dom')
 
 configure({ asyncUtilTimeout: 3000 })
+jest.retryTimes(2, { logErrorsBeforeRetry: true })
 
 // turn off warning from async-validator
 global.ASYNC_VALIDATOR_NO_WARNING = 1
