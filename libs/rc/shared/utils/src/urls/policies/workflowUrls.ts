@@ -221,7 +221,7 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: `POST:$${WorkflowSplitOptionsBaseUrl}/:optionId/nextSteps`
+    opsApi: `POST:${WorkflowSplitOptionsBaseUrl}/:optionId/nextSteps`
   },
   getWorkflowOptionById: {
     method: 'get',
