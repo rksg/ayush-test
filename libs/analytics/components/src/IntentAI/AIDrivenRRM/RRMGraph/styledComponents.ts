@@ -115,5 +115,5 @@ export const ViewMoreButton = styled(Button).attrs({ size: 'small', type: 'link'
 
 export const GraphFooterWrapper = styled(Space)`
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 `
