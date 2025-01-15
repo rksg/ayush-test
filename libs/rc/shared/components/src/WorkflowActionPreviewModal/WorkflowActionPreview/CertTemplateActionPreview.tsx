@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
 import { Col, List, Row, Space, Typography } from 'antd'
-import Link                                  from 'antd/lib/typography/Link'
 import { QRCodeSVG }                         from 'qrcode.react'
 import { useIntl }                           from 'react-intl'
 
