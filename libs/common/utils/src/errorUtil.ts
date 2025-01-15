@@ -9,17 +9,8 @@ import type { GraphQLResponse } from 'graphql-request/dist/types'
 
 const reducerPaths = ['data-api', 'network-health']
 
-export interface Action {
-  meta?: {
-    baseQueryMeta?: {
-      response?: {
-        errors?: Array<{
-          extensions?: { code?: string }
-        }>
-      }
-    }
-  }
-}
+export type Meta =
+  { baseQueryMeta?: { response?: { errors?: [{ extensions?: { code?: string } }] } } }
 
 export function isGraphQLAction (action: AnyAction) : boolean {
   const type = action.type
@@ -42,8 +33,8 @@ export function formatGraphQLErrors (
   }
 }
 
-export const hasSpecificErrorCode = (action?: Action) => {
-  return action?.meta?.baseQueryMeta?.response?.errors?.[0].extensions?.code === 'RDA-413'
+export const hasSpecificErrorCode = (meta?: Meta) => {
+  return meta?.baseQueryMeta?.response?.errors?.[0].extensions?.code === 'RDA-413'
 }
 
 export interface ErrorMessageType {
