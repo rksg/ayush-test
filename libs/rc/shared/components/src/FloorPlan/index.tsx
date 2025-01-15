@@ -509,14 +509,14 @@ export function FloorPlan () {
                     onAddEditFloorPlan={onAddEditFloorPlan}
                     isEditMode={false}/>
                 }
-                {(
-                  rbacOpsApiEnabled?
-                    hasAllowedOperations([
+                {
+                  hasPermission({
+                    scopes: [WifiScopes.UPDATE, SwitchScopes.UPDATE],
+                    rbacOpsIds: [
                       getOpsApi(CommonRbacUrlsInfo.UpdateSwitchPosition),
                       getOpsApi(CommonRbacUrlsInfo.UpdateApPosition)
-                    ])
-                    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
-                ) &&
+                    ]
+                  }) &&
                   <Dropdown trigger={['click']}
                     onVisibleChange={onVisibleChange}
                     visible={closeOverlay}
