@@ -162,7 +162,7 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId',
     oldUrl: '/api/tenant/:tenantId/venue/:venueId',
-    opsApi: 'PUT:/venues/:id',
+    opsApi: 'PUT:/venues/{id}',
     newApi: true
   },
   getVenue: {
@@ -239,21 +239,21 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/:venueId/floorplans',
     oldUrl: '/api/tenant/:tenantId/venue/:venueId/floor-plan',
-    opsApi: 'POST:/venues/:id/floorplans',
+    opsApi: 'POST:/venues/{id}/floorplans',
     newApi: true
   },
   updateFloorplan: {
     method: 'put',
     url: '/venues/:venueId/floorplans/:floorPlanId',
     oldUrl: '/api/tenant/:tenantId/venue/:venueId/floor-plan/:floorPlanId',
-    opsApi: 'PUT:/venues/:id/floorplans/:id',
+    opsApi: 'PUT:/venues/{id}/floorplans/{id}',
     newApi: true
   },
   deleteFloorPlan: {
     method: 'delete',
     url: '/venues/:venueId/floorplans/:floorPlanId',
     oldUrl: '/api/tenant/:tenantId/venue/:venueId/floor-plan/:floorPlanId',
-    opsApi: 'DELETE:/venues/:id/floorplans/:id',
+    opsApi: 'DELETE:/venues/{id}/floorplans/{id}',
     newApi: true
   },
   getUploadURL: {
