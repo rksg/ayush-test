@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button }                                                                from '@acx-ui/components'
-import { useLazyGetCanvasQuery, useSaveCanvasMutation, useUpdateCanvasMutation } from '@acx-ui/rc/services'
+import { Button }                                         from '@acx-ui/components'
+import { useLazyGetCanvasQuery, useUpdateCanvasMutation } from '@acx-ui/rc/services'
 
 import Layout  from './components/Layout'
 import * as UI from './styledComponents'
@@ -89,7 +89,6 @@ export default function Canvas () {
   const [canvasId, setCanvasId] = useState('')
   const [getCanvas] = useLazyGetCanvasQuery()
   const [updateCanvas] = useUpdateCanvasMutation()
-  const [saveCanvas] = useSaveCanvasMutation()
 
   useEffect(() => {
     // const data = getFromLS()
@@ -114,6 +113,9 @@ export default function Canvas () {
       const group = data.reduce((acc:Section[], cur:Section) => [...acc, ...cur.groups], [])
       setGroups(group)
     } else {
+      if(response?.length && response[0].id){
+        setCanvasId(response[0].id)
+      }
       emptyCanvas()
     }
   }
@@ -123,13 +125,7 @@ export default function Canvas () {
     tmp.forEach(s => {
       s.groups = groups.filter(g => g.sectionId === s.id)
     })
-    if(!canvasId) {
-      await saveCanvas({
-        payload: {
-          content: JSON.stringify(tmp)
-        }
-      })
-    } else {
+    if(canvasId) {
       await updateCanvas({
         params: { canvasId },
         payload: {
