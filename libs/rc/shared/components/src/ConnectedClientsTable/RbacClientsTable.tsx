@@ -598,7 +598,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
         show: !!showAllColumns,
         render: (_, row) => {
           return AsyncLoadingInColumn(row, () => {
-            return row.radioStatus?.channel || noDataDisplay
+            return row.radioStatus?.channel + (row.band ? ` (${row.band})` : '') || noDataDisplay
           })
         }
       }
