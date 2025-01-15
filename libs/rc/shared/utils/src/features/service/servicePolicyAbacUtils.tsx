@@ -5,10 +5,9 @@ import { TenantLink }                                                           
 import { RbacOpsIds, RolesEnum, ScopeKeys }                                                                               from '@acx-ui/types'
 import { AuthRoute, filterByAccess, getUserProfile, goToNoPermission, hasCrossVenuesPermission, hasPermission, hasRoles } from '@acx-ui/user'
 
-import { useConfigTemplate } from '../../configTemplate'
-import { ServiceType }       from '../../constants'
-import { PolicyType }        from '../../types'
-import { PolicyOperation }   from '../policy'
+import { useConfigTemplate }             from '../../configTemplate'
+import { ServiceType, ServiceOperation } from '../../constants'
+import { PolicyType, PolicyOperation }   from '../../types'
 
 import { getPolicyAllowedOperation, getServiceAllowedOperation } from './allowedOperationUtils'
 import {
@@ -16,7 +15,6 @@ import {
   SvcPcyAllowedScope, SvcPcyAllowedType, SvcPcyScopeMap,
   SvcPcyAllowedOper, SvcPcyOperMap
 } from './servicePolicyAbacContentsMap'
-import { ServiceOperation } from './serviceRouteUtils'
 
 export function filterByAccessForServicePolicyMutation <Item> (items: Item[]): Item[] {
   if (!hasCrossVenuesPermission({ needGlobalPermission: true })) return []

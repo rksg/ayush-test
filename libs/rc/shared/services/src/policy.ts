@@ -1315,9 +1315,12 @@ export const policyApi = basePolicyApi.injectEndpoints({
         if(arg.enableRbac) {
           const res = (response as TableResult<ClientIsolationViewModel>)
           each(res.data, data => {
-            const venueIds = [...new Set(data.activations?.map(act => act.venueId))]
-            data.venueIds = venueIds
-            data.venueCount = venueIds.length
+            let venueIds: Set<string> = new Set()
+            data?.activations?.forEach(activation => venueIds.add(activation.venueId))
+            data?.venueActivations?.forEach(activation => venueIds.add(activation.venueId))
+            data?.apActivations?.forEach(activation => venueIds.add(activation.venueId))
+            data.venueIds = [...venueIds]
+            data.venueCount = venueIds.size
           })
         }
         return response as TableResult<ClientIsolationViewModel>

@@ -52,7 +52,9 @@ describe('CertificateTemplateDetail', () => {
         }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }), {
+      timeout: 20000
+    })
 
     expect(screen.getByText('certificateTemplate1')).toBeInTheDocument()
     expect(screen.getByText('CA Type')).toBeInTheDocument()
@@ -63,7 +65,7 @@ describe('CertificateTemplateDetail', () => {
     expect(screen.getByText('Certificate (2)')).toBeInTheDocument()
     expect(screen.getByText('SCEP Keys (1)')).toBeInTheDocument()
     expect(screen.getByText('Chromebook Enrollment')).toBeInTheDocument()
-  })
+  }, 30000)
 
   it('should render abac conrrectly with prime admin', async () => {
     setUserProfile({

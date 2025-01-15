@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 import { useIsSplitOn }                                                                                                                                                  from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, EdgeCompatibilityFixtures, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeUrlsInfo, getServiceRoutePath, ServiceOperation, ServiceType, VenueFixtures } from '@acx-ui/rc/utils'
 import { Provider }                                                                                                                                                      from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved, within }                                                                                                 from '@acx-ui/test-utils'
+import { mockServer, render, screen, within }                                                                                                                            from '@acx-ui/test-utils'
 
 import { mockDhcpStatsData, mockDhcpUeSummaryStatsData } from '../__tests__/fixtures'
 
@@ -85,7 +85,6 @@ describe('EdgeDhcpDetail', () => {
         route: { params, path: detailPath }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const rows = await screen.findAllByRole('row', { name: /Edge Cluster/i })
     expect(rows.length).toBe(2)
   })
@@ -97,7 +96,6 @@ describe('EdgeDhcpDetail', () => {
       </Provider>, {
         route: { params, path: detailPath }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const rows = await screen.findAllByRole('row', { name: /Mock Venue/i })
     expect(rows.length).toBe(2)
   })

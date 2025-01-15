@@ -10,7 +10,7 @@ import { intentAIUrl, Provider }           from '@acx-ui/store'
 import { mockGraphqlQuery,render, screen } from '@acx-ui/test-utils'
 
 import { mockIntentContext }                  from '../../__tests__/fixtures'
-import { Statuses }                           from '../../states'
+import { Statuses, DisplayStates }            from '../../states'
 import { mockedCRRMGraphs, mockedIntentCRRM } from '../__tests__/fixtures'
 
 import { mockCrrmData } from './__tests__/fixtures'
@@ -67,10 +67,18 @@ describe('CloudRRM', () => {
     })
   })
 
-  it('should render correctly for active states', async () => {
+  it('should render correctly when active', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    render(<IntentAIRRMGraph />, { route: { params }, wrapper: Provider })
-
+    mockIntentContext({ intent: {
+      ...mockedIntentCRRM,
+      status: Statuses.active,
+      displayStatus: DisplayStates.active
+    } })
+    render(
+      <IntentAIRRMGraph isFullOptimization={false} />,
+      { route: { params }, wrapper: Provider }
+    )
+    expect(screen.queryByText(/The graph and channel plan are generated/)).not.toBeInTheDocument()
     expect(await screen.findByText('View More')).toBeVisible()
     expect(screen.queryByTestId('rrm-comparison-button')).toBeNull()
     expect(screen.getByTestId('hidden-graph')).toBeInTheDocument()
@@ -78,12 +86,74 @@ describe('CloudRRM', () => {
     expect(screen.getByAltText('rrm-graph-after')).toBeVisible()
   })
 
-  it('should render correctly for non-active states', async () => {
-    mockIntentContext({ intent: { ...mockedIntentCRRM, status: Statuses.na } })
+  it('should render correctly for changed preference when active', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockIntentContext({ intent: {
+      ...mockedIntentCRRM,
+      status: Statuses.active,
+      displayStatus: DisplayStates.active
+    } })
+    render(<IntentAIRRMGraph isFullOptimization={true} />, { route: { params }, wrapper: Provider })
+    expect(screen.getByText(/The graph and channel plan are generated/)).toBeInTheDocument()
+    expect(screen.getByText(/previously saved/)).toBeInTheDocument()
+    expect(await screen.findByText('View More')).toBeVisible()
+  })
 
-    render(<IntentAIRRMGraph />, { route: { params }, wrapper: Provider })
-    // eslint-disable-next-line max-len
-    expect(await screen.findByText('Graph modeling will be generated once Intent is activated.')).toBeVisible()
+  it('should render correctly when cannot optimize', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockIntentContext({ intent: {
+      ...mockedIntentCRRM,
+      status: Statuses.applyScheduleInProgress,
+      displayStatus: DisplayStates.applyScheduleInProgress
+    } })
+    render(
+      <IntentAIRRMGraph isFullOptimization={false} />,
+      { route: { params }, wrapper: Provider }
+    )
+    expect(screen.queryByText(/The graph and channel plan are generated/)).not.toBeInTheDocument()
+    expect(await screen.findByText('View More')).toBeVisible()
+  })
+
+  it('should render correctly when non-active', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockIntentContext({ intent: {
+      ...mockedIntentCRRM,
+      status: Statuses.new,
+      displayStatus: DisplayStates.new
+    } })
+    render(
+      <IntentAIRRMGraph isFullOptimization={false} />,
+      { route: { params }, wrapper: Provider }
+    )
+    expect(screen.queryByText(/The graph and channel plan are generated/)).not.toBeInTheDocument()
+    expect(await screen.findByText('View More')).toBeVisible()
+  })
+
+  it('should render correctly for changed preference when non-active', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockIntentContext({ intent: {
+      ...mockedIntentCRRM,
+      status: Statuses.new,
+      displayStatus: DisplayStates.new
+    } })
+    render(<IntentAIRRMGraph isFullOptimization={true} />, { route: { params }, wrapper: Provider })
+    expect(screen.getByText(/The graph and channel plan are generated/)).toBeInTheDocument()
+    expect(screen.getByText(/default/)).toBeInTheDocument()
+    expect(await screen.findByText('View More')).toBeVisible()
+  })
+
+  it('should render correctly when no data', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockIntentContext({ intent: {
+      ...mockedIntentCRRM,
+      status: Statuses.na,
+      displayStatus: DisplayStates.naNoAps
+    } })
+    render(<IntentAIRRMGraph isFullOptimization={true} />, { route: { params }, wrapper: Provider })
+    expect(await screen.findByText('Graph modeling will be generated once Intent is activated.'))
+      .toBeVisible()
+    expect(screen.queryByText(/The graph and channel plan are generated/)).not.toBeInTheDocument()
+    expect(screen.queryByText('View More')).not.toBeInTheDocument()
     expect(screen.queryByTestId('rrm-comparison-button')).toBeNull()
   })
 
@@ -104,10 +174,11 @@ describe('CloudRRM', () => {
       }
     }
     mockIntentContext({ intent: coldTierDataMock })
-    const { container } = render(<IntentAIRRMGraph />, {
+    const { container } = render(<IntentAIRRMGraph isFullOptimization={true} />, {
       wrapper: Provider
     })
     expect(container).toHaveTextContent('Metrics / Charts unavailable for data beyond 30 days')
+    expect(container).not.toHaveTextContent(/The graph and channel plan are generated/)
   })
 
   it('handle beyond data retention', async () => {
@@ -119,11 +190,12 @@ describe('CloudRRM', () => {
       }
     }
     mockIntentContext({ intent: beyondDataRetentionMock })
-    const { container } = render(<IntentAIRRMGraph />, {
+    const { container } = render(<IntentAIRRMGraph isFullOptimization={true} />, {
       route: { params },
       wrapper: Provider
     })
     expect(container).toHaveTextContent('Beyond data retention period')
+    expect(container).not.toHaveTextContent(/The graph and channel plan are generated/)
   })
 })
 

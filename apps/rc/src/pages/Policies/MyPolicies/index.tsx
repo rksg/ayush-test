@@ -27,7 +27,8 @@ import {
   useGetWifiOperatorListQuery,
   useMacRegListsQuery,
   useSyslogPolicyListQuery,
-  useGetDirectoryServerViewDataListQuery
+  useGetDirectoryServerViewDataListQuery,
+  useSwitchPortProfilesCountQuery
 } from '@acx-ui/rc/services'
 import {
   AddProfileButton,
@@ -167,6 +168,7 @@ function useCardData (): PolicyCardData[] {
   const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
   // eslint-disable-next-line
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
+  const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
 
   return [
     {
@@ -328,7 +330,7 @@ function useCardData (): PolicyCardData[] {
       totalCount: useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !isEthernetPortProfileEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.LIST })),
-      disabled: !isEthernetPortProfileEnabled
+      disabled: !isEthernetPortProfileEnabled || isSwitchPortProfileEnabled
     },
     {
       type: PolicyType.HQOS_BANDWIDTH,
@@ -365,6 +367,15 @@ function useCardData (): PolicyCardData[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.DIRECTORY_SERVER, oper: PolicyOperation.LIST })),
       disabled: !isDirectoryServerEnabled
+    },
+    {
+      type: PolicyType.PORT_PROFILE,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH],
+      // eslint-disable-next-line max-len
+      totalCount: (useSwitchPortProfilesCountQuery({ params, payload: {} }, { skip: !isSwitchPortProfileEnabled }).data ?? 0) + (useGetEthernetPortProfileViewDataListQuery({ payload: {} }, { skip: !isEthernetPortProfileEnabled }).data?.totalCount ?? 0),
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink('/policies/portProfile/wifi'),
+      disabled: !isSwitchPortProfileEnabled
     }
   ]
 }
