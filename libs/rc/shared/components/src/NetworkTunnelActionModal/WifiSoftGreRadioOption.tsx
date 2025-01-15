@@ -18,7 +18,8 @@ import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InC
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
 const defaultPayload = {
-  fields: ['id', 'name', 'primaryGatewayAddress', 'secondaryGatewayAddress','activations'],
+  fields: ['id', 'name', 'primaryGatewayAddress', 'secondaryGatewayAddress', 'activations',
+    'venueActivations', 'apActivations'],
   page: 1,
   pageSize: 10_000,
   searchString: '',

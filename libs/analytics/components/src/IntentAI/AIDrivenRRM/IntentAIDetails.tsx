@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import { Typography }                               from 'antd'
+import _                                            from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
 import { Card, GridCol, GridRow } from '@acx-ui/components'
@@ -81,6 +82,7 @@ export function createIntentAIDetails () {
 
     const fields = useCommonFields(intent)
     const noData = state === 'no-data'
+    const isFullOptimization = _.get(intent, ['metadata', 'preferences', 'crrmFullOptimization'])
 
     return <>
       <IntentDetailsHeader />
@@ -114,7 +116,7 @@ export function createIntentAIDetails () {
               <DetailsSection.Title
                 children={$t({ defaultMessage: 'Key Performance Indications' })} />
               <DetailsSection.Details style={{ ...((!noData && isDataRetained && isHotTierData) && { minHeight: 385 }) }}>
-                <IntentAIRRMGraph width={350} />
+                <IntentAIRRMGraph width={350} isFullOptimization={isFullOptimization} />
               </DetailsSection.Details>
             </DetailsSection>
 
@@ -145,10 +147,7 @@ export function createIntentAIDetails () {
             </GridCol>
           </GridRow>}
 
-          <DetailsSection data-testid='Status Trail'>
-            <DetailsSection.Title children={$t({ defaultMessage: 'Status Trail' })} />
-            <DetailsSection.Details children={<StatusTrail />} />
-          </DetailsSection>
+          <StatusTrail />
         </GridCol>
       </GridRow>
     </>

@@ -1,8 +1,13 @@
 ARG CI_SERVICE_BASE
 ARG GAR_CONTAINER_URL
 ARG GAR_DOCKER_ROOT_URL
+ARG GAR_CICD_BASEIMAGE_CONTAINER_URL
 
+# Avoid "docker build" for more than one hour, causing gcloud credential to time out.
+# So we need to execute "pull image" first.
+FROM ${GAR_CICD_BASEIMAGE_CONTAINER_URL}ci-precommit-sonar:stable as sonar-stage
 FROM ${GAR_CONTAINER_URL}nginx:1.21.6-alpine as final-stage
+
 FROM ${GAR_DOCKER_ROOT_URL}/acx-service/acx-ui-cache/nx-cache:latest as nx-cache
 FROM ${CI_SERVICE_BASE}node:master--latest as build-base
 
@@ -103,7 +108,7 @@ RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_
     fi
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
         CICD_BUILD=true node ./node_modules/.bin/nx run cloudpath-components:test $NX_RUN_OPTIONS; \
-    fi    
+    fi
 RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" == "master" ]; then \
         CICD_BUILD=true node ./node_modules/.bin/nx run edge-components:test $NX_RUN_OPTIONS; \
     fi

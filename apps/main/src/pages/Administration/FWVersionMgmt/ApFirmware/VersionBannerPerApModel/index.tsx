@@ -8,12 +8,12 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   ApFirmwareUpdateGroupType,
   convertApModelFirmwaresToUpdateGroups,
-  ExpandableApModelList, filterVersionBehindGA,
+  ExpandableApModelList, isAlpha, isAlphaOrBeta, isBeta,
   VersionLabelType
 } from '@acx-ui/rc/components'
-import { useGetAllApModelFirmwareListQuery } from '@acx-ui/rc/services'
-import { ApModelFirmware, FirmwareLabel }    from '@acx-ui/rc/utils'
-import { compareVersions, noDataDisplay }    from '@acx-ui/utils'
+import { useGetAllApModelFirmwareListQuery }                from '@acx-ui/rc/services'
+import { ApModelFirmware, FirmwareCategory, FirmwareLabel } from '@acx-ui/rc/utils'
+import { compareVersions, noDataDisplay }                   from '@acx-ui/utils'
 
 import * as UI               from '../../styledComponents'
 import { ApFirmwareContext } from '../index'
@@ -28,27 +28,54 @@ export function VersionBannerPerApModel () {
     selectFromResult ({ data, isLoading }) {
       if (!data || data.length === 0 || isLoading) return { updateGroupsWithLatestVersion: [] }
 
-      let updateGroups = convertApModelFirmwaresToUpdateGroups(
+      let updateGroups = []
+      let updateGaGroups = convertApModelFirmwaresToUpdateGroups(
         isApFwMgmtEarlyAccess ? data.filter(d => d.labels?.includes(FirmwareLabel.GA)) : data
       )
       let updateAlphaGroups = convertApModelFirmwaresToUpdateGroups(
-        data.filter(d => d.labels?.includes(FirmwareLabel.ALPHA))
+        data.filter(d => isAlpha(d.labels))
       )
       let updateBetaGroups = convertApModelFirmwaresToUpdateGroups(
-        data.filter(d => d.labels?.includes(FirmwareLabel.BETA))
+        data.filter(d => isBeta(d.labels))
       )
 
       updateGroups = [
-        ...updateGroups,
-        ...(apFirmwareContext.isAlphaFlag ? updateAlphaGroups : []),
+        ...updateGaGroups,
+        ...(isApFwMgmtEarlyAccess && apFirmwareContext.isAlphaFlag ? updateAlphaGroups : []),
         // eslint-disable-next-line max-len
-        ...((apFirmwareContext.isBetaFlag || apFirmwareContext.isAlphaFlag) ? updateBetaGroups : [])
+        ...(isApFwMgmtEarlyAccess && (apFirmwareContext.isBetaFlag || apFirmwareContext.isAlphaFlag) ? updateBetaGroups : [])
       ]
 
       updateGroups.sort((a, b) => compareVersions(b.firmwares[0].name, a.firmwares[0].name))
-      updateGroups = filterVersionBehindGA(updateGroups)
 
-      const tenantLatestVersionUpdateGroup = extractLatestVersionToUpdateGroup(data)
+
+      updateGroups = updateGroups.map(apModelFirmware => {
+        const version = apModelFirmware.firmwares[0].name
+        const filteredApModels = apModelFirmware.apModels?.filter(apModel => {
+          return !updateGaGroups.some(gaApModelFirmware => {
+            return compareVersions(gaApModelFirmware.firmwares[0].name, version) > 0
+              && gaApModelFirmware.apModels?.includes(apModel)
+          })
+        })
+
+        return {
+          ...apModelFirmware,
+          apModels: filteredApModels
+        }
+      }).filter(apModelFirmware => apModelFirmware.apModels?.length > 0)
+
+      const tenantLatestVersionUpdateGroup = extractLatestVersionToUpdateGroup(
+        isApFwMgmtEarlyAccess ? [
+          {
+            id: updateGroups[0].firmwares[0].name,
+            name: updateGroups[0].firmwares[0].name,
+            category: updateGroups[0].firmwares[0].category as FirmwareCategory,
+            releaseDate: updateGroups[0].firmwares[0].releaseDate as string,
+            onboardDate: updateGroups[0].firmwares[0].onboardDate as string,
+            supportedApModels: updateGroups[0].apModels,
+            labels: updateGroups[0].firmwares[0].labels
+          }
+        ] : data)
       if (updateGroups.length === 0) { // ACX-56531: At least display the latest version where there is no AP in the tenant
         updateGroups.push(tenantLatestVersionUpdateGroup)
       } else { // ACX-61022: Always display the latest version information in the banner
@@ -147,8 +174,7 @@ function VersionPerApModelInfo (props: VersionInfoPerApModelProps) {
   }
 
   const generateVersionName = (firmware: VersionLabelType) => {
-    // eslint-disable-next-line max-len
-    if (firmware.labels?.includes(FirmwareLabel.ALPHA) || firmware.labels?.includes(FirmwareLabel.BETA)) {
+    if (isAlphaOrBeta(firmware.labels)) {
       return `${ $t({ defaultMessage: '{name} (Early Access)' }, { name: firmware.name }) }`
     }
     return firmware.name

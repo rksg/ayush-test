@@ -102,7 +102,8 @@ export interface NetworkVxLanTunnelProfileInfo {
   vxLanTunnels: TunnelProfileViewData[] | undefined
 }
 
-export const hasAuthRadius = (data: NetworkSaveData | null, wlanData: any) => {
+export const hasAuthRadius = (data: NetworkSaveData | null, wlanData: any,
+  options?: Record<string, boolean>) => {
   if (!data) return false
 
   const { type } = data
@@ -111,6 +112,8 @@ export const hasAuthRadius = (data: NetworkSaveData | null, wlanData: any) => {
   switch (type) {
     case NetworkTypeEnum.AAA:
       return true
+    case NetworkTypeEnum.HOTSPOT20:
+      return options?.isSupportHotspot20NasId
 
     case NetworkTypeEnum.OPEN:
     case NetworkTypeEnum.PSK:
@@ -165,6 +168,24 @@ export const hasAccountingRadius = (data: NetworkSaveData | null, wlanData: any)
   }
 
   return enableAccountingService === true
+}
+
+export const isShowDynamicVlan = (data: NetworkSaveData | null, options?: Record<string, boolean>) => {
+  const { type, wlan } = data || {}
+
+  if (!type || !wlan) return false
+  if (type === NetworkTypeEnum.AAA || type === NetworkTypeEnum.DPSK) return true
+  if (type === NetworkTypeEnum.OPEN && wlan?.macAddressAuthentication ) return true
+
+  if (data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
+      data?.wlan?.bypassCPUsingMacAddressAuthentication) return true
+
+  if (options?.isSupportDVlanWithPskMacAuth &&
+    data?.type === NetworkTypeEnum.PSK &&
+    data.wlan?.macAddressAuthentication) return true
+
+  return false
+
 }
 
 export const hasVxLanTunnelProfile = (data: NetworkSaveData | null) => {
@@ -934,7 +955,6 @@ export const useUpdateSoftGreActivations = () => {
 
   return updateSoftGreActivations
 }
-
 
 export const getNetworkTunnelSdLanUpdateData = (
   modalFormValues: NetworkTunnelActionForm,

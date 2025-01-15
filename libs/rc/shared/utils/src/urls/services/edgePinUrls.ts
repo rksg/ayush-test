@@ -25,7 +25,8 @@ export const EdgePinUrls: { [key: string]: ApiInfo } = {
   updateEdgePin: {
     method: 'put',
     newApi: true,
-    url: '/personalIdentityNetworks/:serviceId'
+    url: '/personalIdentityNetworks/:serviceId',
+    opsApi: 'PUT:/personalIdentityNetworks/{pinId}'
   },
   activateEdgePinNetwork: {
     method: 'put',
@@ -37,10 +38,15 @@ export const EdgePinUrls: { [key: string]: ApiInfo } = {
     newApi: true,
     url: '/personalIdentityNetworks/:serviceId/wifiNetworks/:wifiNetworkId'
   },
-  validateEdgePinNetwork: {
+  validateSwitchConfig: {
     method: 'post',
     newApi: true,
     url: '/personalIdentityNetworks/validateSwitchConfig'
+  },
+  validateEdgeClusterConfig: {
+    method: 'post',
+    url: '/personalIdentityNetworks/validateEdgeClusterConfig',
+    newApi: true
   },
   getWebAuthTemplate: {
     method: 'get',

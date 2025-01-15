@@ -97,9 +97,8 @@ export function SingleRadioSettings (props:{
     supportRadioDfsChannels
   } = useContext(SupportRadioChannelsContext)
 
-  const supportR370 = useIsSplitOn(Features.WIFI_R370_TOGGLE)
-  const isR370UnsupportedFeatures = supportR370 && (radioType === ApRadioTypeEnum.Radio6G)
-  const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
+  const isSupportR370ToggleOn = useIsSplitOn(Features.WIFI_R370_TOGGLE)
+  const isR370Unsupported6gFeatures = isSupportR370ToggleOn && (radioType === ApRadioTypeEnum.Radio6G)
 
   const bandwidthOptions = bandwidthRadioOptions[radioType]
   const supportChannels = supportRadioChannels[radioType]
@@ -117,6 +116,7 @@ export function SingleRadioSettings (props:{
   const allowedIndoorChannelsFieldName = [...radioDataKey, 'allowedIndoorChannels']
   const allowedOutdoorChannelsFieldName = [...radioDataKey, 'allowedOutdoorChannels']
   const combinChannelsFieldName = [...radioDataKey, 'combineChannels']
+  const txPowerFieldName = [...radioDataKey, 'txPower']
 
   const [displayRadioBarSettings, setDisplayRadioBarSettings] = useState(
     radioType === ApRadioTypeEnum.Radio5G ? ['5G', 'DFS'] : [])
@@ -161,6 +161,8 @@ export function SingleRadioSettings (props:{
   const showChannelBarControlLink = (radioType !== ApRadioTypeEnum.Radio24G &&
                                      radioType !== ApRadioTypeEnum.Radio6G)
   const channelColSpan = (radioType === ApRadioTypeEnum.Radio5G) ? 22 : 20
+
+  const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
 
   const [
     channelMethod,
@@ -328,13 +330,14 @@ export function SingleRadioSettings (props:{
   useEffect(() => {
     const getTxPowerAdjustmentOptions = () => {
       let res = (radioType === ApRadioTypeEnum.Radio6G
-        || (supportR370 && context === 'ap' && !apCapabilities?.supportAutoCellSizing))
+        || (isSupportR370ToggleOn && context === 'ap' && !apCapabilities?.supportAutoCellSizing))
         ? txPowerAdjustment6GOptions
         : txPowerAdjustmentOptions
+
       if (isApTxPowerToggleEnabled) {
         if (context === 'venue'
-          || (context === 'ap' && isApFwVersionLargerThan711(firmwareProps?.firmware)
-          && (!supportR370 || apCapabilities?.supportAggressiveTxPower))) {
+          // eslint-disable-next-line max-len
+          || (context === 'ap' && isModelAndFwSupportAggressiveTxPower(firmwareProps, apCapabilities))) {
           return [...res, ...txPowerAdjustmentExtendedOptions].sort((a, b) => {
             if (a.value === 'MIN') return 1
             if (b.value === 'MIN') return -1
@@ -345,7 +348,26 @@ export function SingleRadioSettings (props:{
       return res
     }
     setTxPowerOptions(getTxPowerAdjustmentOptions())
+
+    if(isApTxPowerToggleEnabled
+      && context === 'ap'
+      && firmwareProps?.firmware !== undefined
+      && !isModelAndFwSupportAggressiveTxPower(firmwareProps, apCapabilities)) {
+      const txPower = form.getFieldValue(txPowerFieldName)
+      const isExtendedOption = txPowerAdjustmentExtendedOptions.some(o => o.value === txPower)
+      if(isExtendedOption) {
+        // -10 ~ -23 map to -10 for legacy firmware and unsupported model
+        form.setFieldValue(txPowerFieldName, '-10')
+      }
+    }
   }, [radioType, firmwareProps])
+
+  const isModelAndFwSupportAggressiveTxPower = (
+    firmwareProps: FirmwareProps | undefined,
+    apCapabilities: CapabilitiesApModel | undefined) => {
+    return isApFwVersionLargerThan711(firmwareProps?.firmware)
+    && (!isSupportR370ToggleOn || !apCapabilities || apCapabilities?.supportAggressiveTxPower)
+  }
 
   const resetToDefaule = () => {
     if (props.onResetDefaultValue) {
@@ -551,7 +573,7 @@ export function SingleRadioSettings (props:{
             <Col span={4}>
               <Space>
                 <div>{$t({ defaultMessage: 'Outdoor APs' })}</div>
-                {isR370UnsupportedFeatures && <ApCompatibilityToolTip
+                {isR370Unsupported6gFeatures && <ApCompatibilityToolTip
                   title={''}
                   visible={true}
                   placement='right'
@@ -560,7 +582,7 @@ export function SingleRadioSettings (props:{
                     style={{ height: '16px', width: '16px' }}
                   />}
                 />}
-                {isR370UnsupportedFeatures && <ApCompatibilityDrawer
+                {isR370Unsupported6gFeatures && <ApCompatibilityDrawer
                   visible={outdoor6gDrawerVisible}
                   type={context === 'venue' ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
                   venueId={venueId}

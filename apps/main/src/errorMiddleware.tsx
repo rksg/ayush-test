@@ -1,6 +1,5 @@
-import React from 'react'
-
 import { Middleware, isRejectedWithValue } from '@reduxjs/toolkit'
+import { FetchBaseQueryMeta }              from '@reduxjs/toolkit/query'
 import _                                   from 'lodash'
 import { FormattedMessage, IntlShape }     from 'react-intl'
 
@@ -22,7 +21,7 @@ import {
 import type { GraphQLResponse } from 'graphql-request/dist/types'
 
 type QueryMeta = {
-  response?: Response | GraphQLResponse
+  response?: Response
   request: Request
 }
 export type ErrorAction = {
@@ -83,7 +82,7 @@ export const getErrorContent = (action: ErrorAction) => {
       ('originalStatus' in action.payload) ? action.payload.originalStatus :
         ('status' in action.payload) ? action.payload.status : undefined
   const request = queryMeta?.request
-  const response = queryMeta?.response
+  const response = queryMeta?.response as GraphQLResponse
 
   let errorMsg = {} as ErrorMessageType
   let type: ActionModalType = 'error'
@@ -93,7 +92,7 @@ export const getErrorContent = (action: ErrorAction) => {
     | undefined
 
   if (isGraphQLError(action.type, response)) {
-    errors = formatGraphQLErrors({ ...response!, errors: _.get(response, 'errors') })
+    errors = formatGraphQLErrors({ ...response!, errors: _.get(response, 'errors')! })
   } else if (typeof action.payload === 'string') {
     errors = action.payload
   } else if (typeof action.payload === 'object') {
@@ -127,6 +126,10 @@ export const getErrorContent = (action: ErrorAction) => {
       break
     case 429:
       errorMsg = errorMessage.TOO_MANY_REQUESTS
+      errors = ''
+      break
+    case 502:
+      errorMsg = errorMessage.BAD_GATEWAY
       errors = ''
       break
     case 503:
@@ -209,18 +212,21 @@ const shouldIgnoreErrorModal = (action?: ErrorAction) => {
   return ignoreEndpointList.includes(endpoint) || isIgnoreErrorModal(request)
 }
 
-export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
-  if (action?.payload && typeof action.payload === 'object' && 'meta' in action.payload
-    && action.meta && !action.meta?.baseQueryMeta) {
+export const errorMiddleware: Middleware = () => next => action => {
+  const typedAction = action as unknown as {
+    type: string,
+    meta?: { baseQueryMeta?: FetchBaseQueryMeta },
+    payload: { meta?: QueryMeta, data?: ErrorDetailsProps }
+  }
+  const { meta, payload } = typedAction
+  if (payload && typeof payload === 'object' && meta && !meta.baseQueryMeta) {
     // baseQuery (for retry API)
-    const payload = action.payload as { meta?: QueryMeta }
-    action.meta.baseQueryMeta = payload.meta
+    meta.baseQueryMeta = payload.meta
     delete payload.meta
   }
-
   if (isRejectedWithValue(action)) {
-    const details = getErrorContent(action)
-    if (!shouldIgnoreErrorModal(action)) {
+    const details = getErrorContent(typedAction)
+    if (!shouldIgnoreErrorModal(typedAction)) {
       showErrorModal(details)
     }
   }
