@@ -1,5 +1,4 @@
-import { RetryOptions } from '@reduxjs/toolkit/dist/query/retry'
-import { BaseQueryApi } from '@reduxjs/toolkit/query'
+import { RetryOptions, BaseQueryApi } from '@reduxjs/toolkit/query'
 
 import {
   CommonResult,
