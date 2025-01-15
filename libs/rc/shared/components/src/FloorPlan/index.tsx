@@ -36,6 +36,8 @@ import {
   WifiScopes
 }            from '@acx-ui/types'
 import {
+  getUserProfile,
+  hasAllowedOperations,
   hasPermission,
   hasRoles,
   useUserProfileContext
@@ -68,6 +70,7 @@ export const NetworkDeviceContext = createContext<Function | null>(null)
 export function FloorPlan () {
   const params = useParams()
   const location: Location = useLocation()
+  const { rbacOpsApiEnabled } = getUserProfile()
 
   const floorPlanQuery = useFloorPlanListQuery({ params })
   const { $t } = useIntl()
@@ -496,23 +499,24 @@ export function FloorPlan () {
                   {showRogueAp ? $t({ defaultMessage: 'Hide Rogue APs' })
                     : $t({ defaultMessage: 'View Rogue APs' })}
                 </UI.RogueApButton> }
-                {
-                  hasPermission({
-                    roles: [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR],
-                    rbacOpsIds: [getOpsApi(CommonUrlsInfo.addFloorplan)]
-                  }) &&
+                {(
+                  rbacOpsApiEnabled?
+                    hasAllowedOperations([getOpsApi(CommonUrlsInfo.addFloorplan)])
+                    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+                ) &&
                   <AddEditFloorplanModal
                     buttonTitle={$t({ defaultMessage: '+ Add Floor Plan' })}
                     onAddEditFloorPlan={onAddEditFloorPlan}
                     isEditMode={false}/>
                 }
-                {
-                  hasPermission({
-                    scopes: [WifiScopes.UPDATE, SwitchScopes.UPDATE],
-                    rbacOpsIds: [
+                {(
+                  rbacOpsApiEnabled?
+                    hasAllowedOperations([
                       getOpsApi(CommonRbacUrlsInfo.UpdateSwitchPosition),
                       getOpsApi(CommonRbacUrlsInfo.UpdateApPosition)
-                    ] }) &&
+                    ])
+                    : hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+                ) &&
                   <Dropdown trigger={['click']}
                     onVisibleChange={onVisibleChange}
                     visible={closeOverlay}
@@ -544,10 +548,11 @@ export function FloorPlan () {
               })}
             </Space>}>
           </Empty>
-          { hasPermission({
-            roles: [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR],
-            rbacOpsIds: [getOpsApi(CommonUrlsInfo.addFloorplan)]
-          }) && <AddEditFloorplanModal
+          {(
+            rbacOpsApiEnabled?
+              hasAllowedOperations([ getOpsApi(CommonUrlsInfo.addFloorplan) ]) :
+              hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+          ) && <AddEditFloorplanModal
             buttonTitle={$t({ defaultMessage: 'Add Floor Plan' })}
             onAddEditFloorPlan={onAddEditFloorPlan}
             isEditMode={false}/>
