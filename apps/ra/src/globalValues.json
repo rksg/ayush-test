@@ -11,5 +11,6 @@
   "DRUID_ROLLUP_DAYS": "32",
   "MLISA_LOGOUT_URL": "/analytics/api/auth/v1/user/logout",
   "ENABLED_FEATURES": "",
-  "DRUID_RETAIN_PERIOD_DAYS": "90"
+  "DRUID_RETAIN_PERIOD_DAYS": "90",
+  "DRUID_COLD_TIER_DAYS": "31"
 }

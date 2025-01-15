@@ -127,6 +127,14 @@ export enum ServiceType {
   EDGE_TNM_SERVICE = 'Edge Thirdparty Network Management'
 }
 
+export enum ServiceOperation {
+  CREATE,
+  EDIT,
+  DELETE,
+  DETAIL,
+  LIST
+}
+
 export enum ServiceStatus {
   UP = 'UP',
   DOWN = 'DOWN'
@@ -243,7 +251,8 @@ export enum ConfigTypeEnum {
   ADMIN_PASSWORD = 'ADMIN_PASSWORD',
   ACL = 'ACL',
   VLAN = 'VLAN',
-  AUTHENTICATION = 'AUTHENTICATION'
+  AUTHENTICATION = 'AUTHENTICATION',
+  PORT_PROFILE = 'PORT_PROFILE'
 }
 
 export enum ConfigStatusEnum {

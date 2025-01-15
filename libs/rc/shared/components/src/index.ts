@@ -76,6 +76,7 @@ export { NetworkTable, defaultNetworkPayload, defaultRbacNetworkPayload } from '
 export { NetworkTabContext } from './NetworkTable/context'
 export { AAAInstance } from './NetworkForm/AAAInstance'
 export { MapWidgetV2 } from './MapWidget'
+export { getAPStatusDisplayName } from './MapWidget/VenuesMap/helper'
 export { RadioSettingsChannels } from './RadioSettingsChannels'
 export {
   RadioSettingsChannels320Mhz
@@ -200,7 +201,12 @@ export { AddEdgeMdnsProxyForm } from './EdgeMdns/EdgeMdnsProxyForm/AddEdgeMdnsPr
 export { EditEdgeMdnsProxyForm } from './EdgeMdns/EdgeMdnsProxyForm/EditEdgeMdnsProxyForm'
 
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
-export { PropertyManagementForm } from './PropertyManagementForm'
+export { VenuePropertyManagementForm, PropertyManagementForm  } from './PropertyManagementForm'
+export {
+  useRegisterMessageTemplates,
+  toResidentPortalPayload,
+  getInitialPropertyFormValues
+} from './PropertyManagementForm/utils'
 export { AdaptivePolicySetForm } from './AdaptivePolicySetForm'
 export { RadiusAttributeGroupSettingForm } from './RadiusAttributeGroupSettingForm'
 export { RadiusAttributeForm } from './RadiusAttributeForm'

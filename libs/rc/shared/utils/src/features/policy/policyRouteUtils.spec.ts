@@ -1,9 +1,8 @@
-import { PolicyType } from '../../types'
+import { PolicyType, PolicyOperation } from '../../types'
 
 import {
   getPolicyRoutePath,
   getPolicyDetailsLink,
-  PolicyOperation,
   MacRegistrationDetailsTabKey
 } from '.'
 

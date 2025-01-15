@@ -33,6 +33,7 @@ type Profile = {
   isCustomRole?: boolean,
   hasAllVenues?: boolean,
   venuesList?: string[],
+  selectedBetaListEnabled?: boolean,
   betaFeaturesList?: FeatureAPIResults[]
 }
 const userProfile: Profile = {

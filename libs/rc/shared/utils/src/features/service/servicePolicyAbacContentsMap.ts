@@ -1,8 +1,5 @@
-import { ServiceType }     from '../../constants'
-import { PolicyType }      from '../../types'
-import { PolicyOperation } from '../policy'
-
-import { ServiceOperation } from './serviceRouteUtils'
+import { ServiceType, ServiceOperation } from '../../constants'
+import { PolicyType, PolicyOperation }   from '../../types'
 
 export type SvcPcyAllowedScope = Array<'wifi' | 'edge' | 'switch'>
 export type SvcPcyAllowedType = ServiceType | PolicyType

@@ -2,11 +2,8 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import { PropertyManagementModal } from './PropertyManagementModal'
 
-const mockedSetVisible = jest.fn()
-
 jest.mock('@acx-ui/rc/components', () => ({
-  ...jest.requireActual('@acx-ui/rc/components'),
-  PropertyManagementForm: () => <div data-testid='PropertyManagementForm' />
+  VenuePropertyManagementForm: () => <div data-testid='PropertyManagementForm' />
 }))
 
 describe('PIN GeneralSettings Form - PropertyManagementModal', () => {
@@ -16,7 +13,7 @@ describe('PIN GeneralSettings Form - PropertyManagementModal', () => {
         venueId='venue-id'
         venueName='venue-name'
         visible={true}
-        setVisible={mockedSetVisible}
+        setVisible={jest.fn()}
       />
     )
     expect(screen.getByText('venue-name')).toBeVisible()

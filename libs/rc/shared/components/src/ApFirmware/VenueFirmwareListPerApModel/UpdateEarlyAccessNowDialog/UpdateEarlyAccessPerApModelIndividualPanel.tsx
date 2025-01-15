@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { Space }   from 'antd'
-import { useIntl } from 'react-intl'
+import { Checkbox, Space }     from 'antd'
+import { CheckboxChangeEvent } from 'antd/es/checkbox'
+import { useIntl }             from 'react-intl'
 
 import { Loader }                                                  from '@acx-ui/components'
 import { useGetAllApModelFirmwareListQuery }                       from '@acx-ui/rc/services'
@@ -36,6 +37,7 @@ export function UpdateEarlyAccessPerApModelIndividualPanel (props: UpdateEarlyAc
   const { $t } = useIntl()
   // eslint-disable-next-line max-len
   const { selectedVenuesFirmwares, updatePayload, isAlpha, isBeta } = props
+  const [ showAvailableFirmwareOnly, setShowAvailableFirmwareOnly ] = useState(true)
   const { data: apModelFirmwares, isLoading } = useGetAllApModelFirmwareListQuery({}, {
     refetchOnMountOrArgChange: 300
   })
@@ -89,13 +91,23 @@ export function UpdateEarlyAccessPerApModelIndividualPanel (props: UpdateEarlyAc
     updatePayload(updatePayloadRef.current)
   }
 
+  const handleShowAvailableFirmwareOnlyChange = (e: CheckboxChangeEvent) => {
+    setShowAvailableFirmwareOnly(e.target.checked)
+  }
+
   return (<Loader states={[{ isLoading }]}><UI.Section>
     <Space direction='vertical' size={20}>
       {/* eslint-disable-next-line max-len */}
       <span>{$t({ defaultMessage: 'Only the latest four versions are shown. Use dropdown search for more.' })}</span>
+      <Checkbox
+        onChange={handleShowAvailableFirmwareOnlyChange}
+        checked={showAvailableFirmwareOnly}
+      >
+        {$t({ defaultMessage: 'Show APs with available firmware only' })}
+      </Checkbox>
       <Space direction='vertical' size={10}>
         {displayData?.map(item => {
-          if (item.versionOptions.length === 0) return null
+          if (showAvailableFirmwareOnly && item.versionOptions.length === 0) return null
 
           return <UpdateEarlyAccessPerApModelIndividual key={item.apModel}
             {...item}

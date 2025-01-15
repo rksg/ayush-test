@@ -76,7 +76,7 @@ export function intentState (intent: IntentDetail) {
   }
 }
 
-const kpiHelper = (kpis: IntentDetailsQueryPayload['kpis']) => {
+const kpiHelper = (kpis: Pick<IntentKPIConfig, 'key' | 'deltaSign'>[]) => {
   return kpis?.map(kpi => {
     const name = `kpi_${_.snakeCase(kpi.key)}`
     return `${name}: kpi(key: "${kpi.key}", timeZone: "${moment.tz.guess()}") {
@@ -152,18 +152,16 @@ export function getGraphKPIs (
   })
 }
 
-type IntentDetailsQueryPayload = {
-  root: string
-  sliceId: string
-  code: string
-  kpis?: Pick<IntentKPIConfig, 'key' | 'deltaSign'>[]
-}
+type IntentDetailsQueryPayload = ReturnType<typeof useIntentParams>
 
 export const api = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
     intentDetails: build.query<
-    IntentDetail | undefined, IntentDetailsQueryPayload & { isConfigChangeEnabled: boolean }>({
-      query: ({ root, sliceId, code, isConfigChangeEnabled }) => ({
+      IntentDetail | undefined,
+      IntentDetailsQueryPayload & { preventColdTier: boolean }
+    >({
+      query: ({ preventColdTier, ...variables }) => ({
+        variables,
         document: gql`
           query IntentDetails($root: String!, $sliceId: String!, $code: String!) {
             intent(root: $root, sliceId: $sliceId, code: $code) {
@@ -172,56 +170,40 @@ export const api = intentAIApi.injectEndpoints({
               status statusReason displayStatus
               sliceType sliceValue updatedAt
               path { type name }
-              ${!code.includes('ecoflex') ? 'currentValue recommendedValue' : ''}
-              ${isConfigChangeEnabled ? 'dataCheck' : ''}
+              ${!variables.code.includes('ecoflex') ? 'currentValue recommendedValue' : ''}
+              ${preventColdTier ? 'dataCheck' : ''}
             }
           }
-        `,
-        variables: { root, sliceId, code }
+        `
       }),
       transformResponse: (response: { intent?: IntentDetail }) => response.intent,
       transformErrorResponse: (error, meta) =>
         ({ ...error, data: meta?.response?.data?.intent }),
       providesTags: [{ type: 'Intent', id: 'INTENT_DETAILS' }]
     }),
-    intentKPIs: build.query<IntentKPI | undefined, IntentDetailsQueryPayload>({
-      query: ({ root, sliceId, code, kpis }) => ({
+    intentKPIs: build.query<
+      IntentKPI | undefined,
+      IntentDetailsQueryPayload & { kpis: Pick<IntentKPIConfig, 'key' | 'deltaSign'>[] }
+    >({
+      query: ({ kpis, ...variables }) => ({
+        variables,
         document: gql`
-        query IntentKPIs($root: String!, $sliceId: String!, $code: String!) {
-          intent(root: $root, sliceId: $sliceId, code: $code) {
-            ${kpiHelper(kpis)}
+          query IntentKPIs($root: String!, $sliceId: String!, $code: String!) {
+            intent(root: $root, sliceId: $sliceId, code: $code) {
+              ${kpiHelper(kpis)}
+            }
           }
-        }
-      `,
-        variables: { root, sliceId, code }
+        `
       }),
       transformResponse: (response: { intent?: Intent }) => response.intent as IntentKPI,
       transformErrorResponse: (error, meta) =>
         ({ ...error, data: meta?.response?.data?.intent }),
       providesTags: [{ type: 'Intent', id: 'INTENT_KPIS' }]
-    }),
-    intentStatusTrail: build.query<Intent['statusTrail'], IntentDetailsQueryPayload>({
-      query: ({ root, sliceId, code }) => ({
-        document: gql`
-        query IntentStatusTrail($root: String!, $sliceId: String!, $code: String!) {
-          intent(root: $root, sliceId: $sliceId, code: $code) {
-            statusTrail { status statusReason displayStatus createdAt }
-          }
-        }
-      `,
-        variables: { root, sliceId, code }
-      }),
-      transformResponse: (response: { intent: { statusTrail: Intent['statusTrail'] } })=>
-        response.intent.statusTrail,
-      transformErrorResponse: (error, meta) =>
-        ({ ...error, data: meta?.response?.data?.intent }),
-      providesTags: [{ type: 'Intent', id: 'INTENT_STATUS_TRAIL' }]
     })
   })
 })
 
 export const {
   useIntentDetailsQuery,
-  useIntentKPIsQuery,
-  useIntentStatusTrailQuery
+  useIntentKPIsQuery
 } = api
