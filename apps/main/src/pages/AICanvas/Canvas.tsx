@@ -122,14 +122,20 @@ export default function Canvas () {
 
   const onSave = async () => {
     const tmp = _.cloneDeep(sections)
+    let hasCard = false
     tmp.forEach(s => {
       s.groups = groups.filter(g => g.sectionId === s.id)
+      s.groups.forEach(g => {
+        if(g.cards.length && !hasCard) {
+          hasCard = true
+        }
+      })
     })
     if(canvasId) {
       await updateCanvas({
         params: { canvasId },
         payload: {
-          content: JSON.stringify(tmp)
+          content: hasCard ? JSON.stringify(tmp) : ''
         }
       })
     }
