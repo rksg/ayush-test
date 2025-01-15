@@ -6,11 +6,8 @@ import { useIntl } from 'react-intl'
 import { kpiConfig, productNames, useAnalyticsFilter } from '@acx-ui/analytics/utils'
 import {
   Button,
-  Cascader,
   ConfigChange,
   getConfigChangeEntityTypeMapping,
-  GridCol,
-  SearchInput,
   TableProps,
   Tooltip
 } from '@acx-ui/components'
@@ -23,14 +20,14 @@ import { hasConfigChange }         from '../KPI'
 import { useColumns }              from '../PagedTable'
 import { useDownloadConfigChange } from '../services'
 
-import { handleConfigChangeDownload }     from './handleConfigChangeDownload'
-import { CascaderFilterWrapper, GridRow } from './styledComponents'
+import { handleConfigChangeDownload } from './handleConfigChangeDownload'
+import * as UI                        from './styledComponents'
 
 export const Search = () => {
   const { $t } = useIntl()
   const { entityNameSearch, setEntityNameSearch } = useContext(ConfigChangeContext)
-  const placeHolderText =$t({ defaultMessage: 'Search Entity Name' })
-  return <SearchInput
+  const placeHolderText =$t({ defaultMessage: 'Search Scope' })
+  return <UI.SearchInput
     onChange={e => setEntityNameSearch(e.target.value)}
     placeholder={placeHolderText}
     title={placeHolderText}
@@ -49,18 +46,16 @@ export const KPIFilter = () => {
     }
     return agg
   }, [] as { value: string, label: string }[])
-  return <CascaderFilterWrapper>
-    <Cascader
-      multiple
-      defaultValue={kpiFilter.map(kpi => [kpi])}
-      placeholder={$t({ defaultMessage: 'Add KPI filter' })}
-      options={options}
-      onApply={selectedOptions =>
-        applyKpiFilter(selectedOptions?.length ? selectedOptions?.flat() as string[] : [])
-      }
-      allowClear
-    />
-  </CascaderFilterWrapper>
+  return <UI.Cascader
+    multiple
+    defaultValue={kpiFilter.map(kpi => [kpi])}
+    placeholder={$t({ defaultMessage: 'KPI' })}
+    options={options}
+    onApply={selectedOptions =>
+      applyKpiFilter(selectedOptions?.length ? selectedOptions?.flat() as string[] : [])
+    }
+    allowClear
+  />
 }
 
 export const EntityTypeFilter = () => {
@@ -73,18 +68,16 @@ export const EntityTypeFilter = () => {
   const { entityTypeFilter, setEntityTypeFilter } = useContext(ConfigChangeContext)
   const entityTypeMapping = getConfigChangeEntityTypeMapping(showIntentAI)
     .map(ele => ({ value: ele.key, label: ele.label }))
-  return <CascaderFilterWrapper>
-    <Cascader
-      multiple
-      defaultValue={entityTypeFilter.map(entity => [entity])}
-      placeholder={$t({ defaultMessage: 'Entity Type' })}
-      options={entityTypeMapping}
-      onApply={selectedOptions =>
-        setEntityTypeFilter(selectedOptions?.length ? selectedOptions?.flat() as string[] : [])
-      }
-      allowClear
-    />
-  </CascaderFilterWrapper>
+  return <UI.Cascader
+    multiple
+    defaultValue={entityTypeFilter.map(entity => [entity])}
+    placeholder={$t({ defaultMessage: 'Entity' })}
+    options={entityTypeMapping}
+    onApply={selectedOptions =>
+      setEntityTypeFilter(selectedOptions?.length ? selectedOptions?.flat() as string[] : [])
+    }
+    allowClear
+  />
 }
 
 export const Reset = () => {
@@ -160,12 +153,16 @@ export const Download = () => {
 }
 
 export const Filter = () => {
-  return <GridRow>
-    <GridCol col={{ span: 7 }}><Search/></GridCol>
-    <GridCol col={{ span: 6 }}><KPIFilter/></GridCol>
-    <GridCol col={{ span: 4, xxl: 6 }}><EntityTypeFilter/></GridCol>
-    <GridCol col={{ span: 3, xxl: 2 }}><Reset/></GridCol>
-    <GridCol col={{ span: 3, xxl: 2 }}><ResetZoom/></GridCol>
-    <GridCol col={{ span: 1 }}><Download/></GridCol>
-  </GridRow>
+  return <UI.Wrapper>
+    <UI.Space>
+      <Search/>
+      <EntityTypeFilter/>
+      <KPIFilter/>
+    </UI.Space>
+    <UI.Space>
+      <Reset/>
+      <ResetZoom/>
+      <Download/>
+    </UI.Space>
+  </UI.Wrapper>
 }

@@ -76,6 +76,7 @@ export { NetworkTable, defaultNetworkPayload, defaultRbacNetworkPayload } from '
 export { NetworkTabContext } from './NetworkTable/context'
 export { AAAInstance } from './NetworkForm/AAAInstance'
 export { MapWidgetV2 } from './MapWidget'
+export { getAPStatusDisplayName } from './MapWidget/VenuesMap/helper'
 export { RadioSettingsChannels } from './RadioSettingsChannels'
 export {
   RadioSettingsChannels320Mhz
