@@ -275,15 +275,13 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
           <Space split={<Divider type='vertical' />}>
             {[
               isApMeshTopologyFFOn && (
-                <div key='meshTopology'
-                  style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                   <Switch onChange={setIsApMeshTopologyEnabled} checked={isApMeshTopologyEnabled} />
                   {$t({ defaultMessage: 'Show Mesh Topology' })}
                 </div>
               ),
               hasAllowedOperations([getOpsApi(CommonUrlsInfo.updateFloorplan)]) && (
                 <AddEditFloorplanModal
-                  key='editFloorPlan'
                   buttonTitle={$t({ defaultMessage: 'Edit' })}
                   onAddEditFloorPlan={onEditFloorPlanHandler}
                   isEditMode={true}
