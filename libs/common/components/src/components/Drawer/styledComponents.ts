@@ -1,5 +1,5 @@
-import { Drawer as AntDrawer }       from 'antd'
-import styled, { createGlobalStyle } from 'styled-components'
+import { Drawer as AntDrawer }            from 'antd'
+import styled, { createGlobalStyle, css } from 'styled-components'
 
 export enum DrawerTypes {
   Default = 'default',
@@ -7,25 +7,36 @@ export enum DrawerTypes {
   Left='left'
 }
 
-export const DrawerStyle = createGlobalStyle<{ $type: DrawerTypes }>`
-  ${props => props.$type === DrawerTypes.FullHeight ? `
-    .ant-drawer-content-wrapper {
-      height: 100vh;
-      margin-top: calc(-1 * var(--acx-drawer-top-space));
-    }` : props.$type === DrawerTypes.Left ? `
-    :root .ant-drawer {
-      height: calc(100vh - var(--acx-header-height));
-      margin-top: var(--acx-header-height);
-      div.ant-drawer-content-wrapper {
-        border-radius: 0px;
-        .ant-drawer-content {
-          background: var(--acx-neutrals-15);
-          .ant-drawer-header {
-            border: 0px;
-          }
+const fullHeightStyle = css`
+  .ant-drawer-content-wrapper {
+    height: 100vh;
+    margin-top: calc(-1 * var(--acx-drawer-top-space));
+  }
+`
+
+const leftStyle = css`
+  :root .ant-drawer {
+    height: calc(100vh - var(--acx-header-height));
+    margin-top: var(--acx-header-height);
+    div.ant-drawer-content-wrapper {
+      border-radius: 0px;
+      .ant-drawer-content {
+        background: var(--acx-neutrals-15);
+        .ant-drawer-header {
+          border: 0px;
         }
       }
-  }` : ''}
+    }
+  }
+`
+const styles = {
+  default: '',
+  fullHeight: fullHeightStyle,
+  left: leftStyle
+}
+
+export const DrawerStyle = createGlobalStyle<{ $type: DrawerTypes }>`
+  ${props => styles[props.$type]}
 `
 
 export const Drawer = styled(AntDrawer)`

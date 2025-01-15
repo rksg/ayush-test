@@ -537,7 +537,7 @@ function Table <RecordType extends Record<string, any>> ({
         {Boolean(searchables.length) && highLightValue === undefined &&
           renderSearch<RecordType>(
             intl, searchables, searchValue, setSearchValue, searchWidth,
-            $t({ defaultMessage: 'Search...' })
+            type === 'compactWidget' ? $t({ defaultMessage: 'Search...' }) : undefined
           )}
         {filterables.map((column, i) =>
           renderFilter<RecordType>(

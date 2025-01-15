@@ -56,7 +56,7 @@ export const data = (multiseries = false): BarChartData => ({
 
 })
 
-const test = {
+const timeYAxisData = {
   dimensions: [
     'time',
     'Total Traffic'
@@ -89,133 +89,13 @@ const test = {
     [
       '2024-12-18T05:30:00.000Z',
       54993026
-    ],
-    [
-      '2024-12-18T06:00:00.000Z',
-      60253976
-    ],
-    [
-      '2024-12-18T06:30:00.000Z',
-      55804206
-    ],
-    [
-      '2024-12-18T07:00:00.000Z',
-      63385721
-    ],
-    [
-      '2024-12-18T07:30:00.000Z',
-      57453683
-    ],
-    [
-      '2024-12-18T08:00:00.000Z',
-      63735323
-    ],
-    [
-      '2024-12-18T08:30:00.000Z',
-      55685031
-    ],
-    [
-      '2024-12-18T09:00:00.000Z',
-      55894884
-    ],
-    [
-      '2024-12-18T09:30:00.000Z',
-      55958355
-    ],
-    [
-      '2024-12-18T10:00:00.000Z',
-      56450435
-    ],
-    [
-      '2024-12-18T10:30:00.000Z',
-      56299498
-    ],
-    [
-      '2024-12-18T11:00:00.000Z',
-      56412295
-    ],
-    [
-      '2024-12-18T11:30:00.000Z',
-      55616789
-    ],
-    [
-      '2024-12-18T12:00:00.000Z',
-      56702135
-    ],
-    [
-      '2024-12-18T12:30:00.000Z',
-      54539055
-    ],
-    [
-      '2024-12-18T13:00:00.000Z',
-      53103212
-    ],
-    [
-      '2024-12-18T13:30:00.000Z',
-      52505206
-    ],
-    [
-      '2024-12-18T14:00:00.000Z',
-      55301154
-    ],
-    [
-      '2024-12-18T14:30:00.000Z',
-      52848443
-    ],
-    [
-      '2024-12-18T15:00:00.000Z',
-      52910554
-    ],
-    [
-      '2024-12-18T15:30:00.000Z',
-      52404670
-    ],
-    [
-      '2024-12-18T16:00:00.000Z',
-      55012818
-    ],
-    [
-      '2024-12-18T16:30:00.000Z',
-      52778500
-    ],
-    [
-      '2024-12-18T17:00:00.000Z',
-      52941978
-    ],
-    [
-      '2024-12-18T17:30:00.000Z',
-      53304441
-    ],
-    [
-      '2024-12-18T18:00:00.000Z',
-      54562856
-    ],
-    [
-      '2024-12-18T18:30:00.000Z',
-      52475648
-    ],
-    [
-      '2024-12-18T19:00:00.000Z',
-      54514023
-    ],
-    [
-      '2024-12-18T19:30:00.000Z',
-      59702814
-    ],
-    [
-      '2024-12-18T20:00:00.000Z',
-      53404905
-    ],
-    [
-      '2024-12-18T20:30:00.000Z',
-      30694917
     ]
   ],
   seriesEncode: [
     {
       x: 'Total Traffic',
       y: 'time',
-      seriesName: 'Total Traffic'
+      seriesName: null
     }
   ],
   multiSeries: false
@@ -292,7 +172,7 @@ storiesOf('BarChart', module)
     wrapInsideCard('Top Switches',
       <BarChart
         style={{ width: '100%', height: '100%' }}
-        data={test}
+        data={data()}
         onClick={clickHandler}
       />))
   .add('Single Series - Custom formatter', () =>
@@ -303,6 +183,14 @@ storiesOf('BarChart', module)
         grid={{ right: '15%' }}
         labelFormatter={switchUsageLabelFormatter}
         labelRichStyle={getSwitchUsageRichStyle()}
+      />))
+  .add('Single Series - yAxisType is time', () =>
+    wrapInsideCard('Top Switches',
+      <BarChart
+        style={{ width: '100%', height: '100%' }}
+        data={timeYAxisData}
+        onClick={clickHandler}
+        yAxisType={'time' as unknown as undefined}
       />))
   .add('Multi Series', () =>
     wrapInsideCard('Top Switches by Traffic',
