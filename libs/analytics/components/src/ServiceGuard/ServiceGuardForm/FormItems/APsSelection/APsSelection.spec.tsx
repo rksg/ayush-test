@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { defaultNetworkPath }                              from '@acx-ui/analytics/utils'
-import { get }                                             from '@acx-ui/config'
-import { dataApi, dataApiURL, rbacApi, rbacApiURL, store } from '@acx-ui/store'
-import { mockGraphqlQuery, mockServer, screen, within }    from '@acx-ui/test-utils'
+import { defaultNetworkPath }                                    from '@acx-ui/analytics/utils'
+import { get }                                                   from '@acx-ui/config'
+import { dataApi, dataApiURL, rbacApi, rbacApiURL, store }       from '@acx-ui/store'
+import { mockGraphqlQuery, mockServer, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { NetworkNode }                                                                                     from '../../../../NetworkFilter/services'
 import { mockNetworkHierarchy, mockHiddenAPs, renderForm, mockApHierarchy, mockSystems, mockNetworkNodes } from '../../../__tests__/fixtures'
@@ -13,7 +13,7 @@ import { ClientType }                                                           
 import { APsSelection, transformSANetworkHierarchy } from './APsSelection'
 
 
-const { click, type } = userEvent
+const { click, type, clear } = userEvent
 
 jest.mock('@acx-ui/config', () => ({
   ...jest.requireActual('@acx-ui/config'),
@@ -198,11 +198,12 @@ describe('RA', () => {
 
       expect(await screen.findByRole('menu')).toBeInTheDocument()
 
-      const combobox = await screen.findByRole('combobox')
-
-      await type(combobox, 'ap 1')
-      await click(await screen.findByRole('menuitemcheckbox', { name: /ap 1/ }))
-
+      await waitFor(async () => { // seems combobox is being replaced
+        const combobox = await screen.findByRole('combobox')
+        await clear(combobox)
+        await type(combobox, 'ap 1')
+        await click(await screen.findByRole('menuitemcheckbox', { name: /ap 1/ }))
+      }, { timeout: 10000 })
       await click(screen.getByRole('button', { name: 'Submit' }))
 
       expect(await screen.findByTestId('form-values'))

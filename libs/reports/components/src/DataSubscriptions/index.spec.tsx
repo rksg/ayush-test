@@ -10,7 +10,7 @@ import {
 } from '.'
 
 describe('Lazy-Loaded DataSubscriptions Components', () => {
-  it('should render DataSubscriptionsAuditLog correctly', async () => {
+  it('should render DataSubscriptionsAuditLog correctly', () => {
     const { container } = render(
       <React.Suspense fallback={<div>Loading...</div>}>
         <DataSubscriptionsAuditLog />
@@ -19,7 +19,7 @@ describe('Lazy-Loaded DataSubscriptions Components', () => {
     expect(container).toBeInTheDocument()
   })
 
-  it('should render DataSubscriptionsContent correctly', async () => {
+  it('should render DataSubscriptionsContent correctly', () => {
     const { container } = render(
       <React.Suspense fallback={<div>Loading...</div>}>
         <DataSubscriptionsContent />
@@ -28,7 +28,7 @@ describe('Lazy-Loaded DataSubscriptions Components', () => {
     expect(container).toBeInTheDocument()
   })
 
-  it('should render DataSubscriptionsForm correctly', async () => {
+  it('should render DataSubscriptionsForm correctly', () => {
     const { container } = render(
       <React.Suspense fallback={<div>Loading...</div>}>
         <DataSubscriptionsForm />
@@ -36,7 +36,7 @@ describe('Lazy-Loaded DataSubscriptions Components', () => {
     )
     expect(container).toBeInTheDocument()
   })
-  it('should render DataSubscriptionsCloudStorage correctly', async () => {
+  it('should render DataSubscriptionsCloudStorage correctly', () => {
     const { container } = render(
       <React.Suspense fallback={<div>Loading...</div>}>
         <DataSubscriptionsCloudStorage />

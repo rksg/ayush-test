@@ -216,7 +216,7 @@ export function useMenuConfig () {
       label: $t({ defaultMessage: 'Data Studio' })
     },
     ...(isDataSubscriptionsEnabled ? [{
-      permission: 'READ_DATA_STUDIO' as RaiPermission,
+      permission: 'READ_DATA_SUBSCRIPTIONS' as RaiPermission,
       uri: '/dataSubscriptions',
       label: $t({ defaultMessage: 'Data Subscriptions' })
     }] : []),

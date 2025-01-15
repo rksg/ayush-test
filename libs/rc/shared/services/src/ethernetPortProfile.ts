@@ -1,5 +1,4 @@
-import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import { QueryReturnValue, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 
 import {
   CommonResult,
@@ -232,7 +231,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
         return ethernetPortProfileData
           ? { data: ethernetPortProfileData }
           : { error: ethernetPortProfile.error } as QueryReturnValue<
-          EthernetPortProfile, FetchBaseQueryError>
+          EthernetPortProfile, FetchBaseQueryError, FetchBaseQueryMeta | undefined>
       },
       providesTags: [{ type: 'EthernetPortProfile', id: 'DETAIL' }]
     }),

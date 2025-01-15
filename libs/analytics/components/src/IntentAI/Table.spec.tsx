@@ -15,7 +15,7 @@ import { AiFeatures }                                                           
 import { DisplayStates, Statuses, StatusReasons }                                                                                                 from './states'
 import * as UI                                                                                                                                    from './styledComponents'
 import { AIFeature, iconTooltips }                                                                                                                from './Table'
-import { Actions, isVisibledByAction }                                                                                                            from './utils'
+import { Actions, isVisibleByAction }                                                                                                             from './utils'
 
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
@@ -173,7 +173,7 @@ describe('AIFeature component', () => {
 
   })
 
-  describe('isVisibledByAction', () => {
+  describe('isVisibleByAction', () => {
     const extractItem = {
       aiFeature: AiFeatures.RRM,
       root: 'root',
@@ -209,17 +209,17 @@ describe('AIFeature component', () => {
       metadata: { ...extractItem.metadata, appliedAt: '2024-04-19T07:30:00.000Z' }
     }
     it('should return true for all actions', () => {
-      expect(isVisibledByAction([newRow, newRow], Actions.One_Click_Optimize)).toBeTruthy()
-      expect(isVisibledByAction([newRow, activeRow], Actions.One_Click_Optimize)).toBeFalsy()
-      expect(isVisibledByAction([scheduledOneClickRow], Actions.Optimize)).toBeTruthy()
-      expect(isVisibledByAction([newRow, revertScheduledRow], Actions.Optimize)).toBeFalsy()
-      expect(isVisibledByAction([activeRow, revertScheduledRow], Actions.Revert)).toBeFalsy()
-      expect(isVisibledByAction([activeRowAfterApply, revertScheduledRow], Actions.Revert)).toBeTruthy()
-      expect(isVisibledByAction([newRow, revertScheduledRow], Actions.Revert)).toBeFalsy()
-      expect(isVisibledByAction([scheduledOneClickRow, activeRow], Actions.Pause)).toBeTruthy()
-      expect(isVisibledByAction([newRow, pausedApplyFailedRow], Actions.Pause)).toBeFalsy()
-      expect(isVisibledByAction([scheduledOneClickRow, revertScheduledRow], Actions.Cancel)).toBeTruthy()
-      expect(isVisibledByAction([newRow, revertScheduledRow], Actions.Cancel)).toBeFalsy()
+      expect(isVisibleByAction([newRow, newRow], Actions.One_Click_Optimize)).toBeTruthy()
+      expect(isVisibleByAction([newRow, activeRow], Actions.One_Click_Optimize)).toBeFalsy()
+      expect(isVisibleByAction([scheduledOneClickRow], Actions.Optimize)).toBeTruthy()
+      expect(isVisibleByAction([newRow, revertScheduledRow], Actions.Optimize)).toBeFalsy()
+      expect(isVisibleByAction([activeRow, revertScheduledRow], Actions.Revert)).toBeFalsy()
+      expect(isVisibleByAction([activeRowAfterApply, revertScheduledRow], Actions.Revert)).toBeTruthy()
+      expect(isVisibleByAction([newRow, revertScheduledRow], Actions.Revert)).toBeFalsy()
+      expect(isVisibleByAction([scheduledOneClickRow, activeRow], Actions.Pause)).toBeTruthy()
+      expect(isVisibleByAction([newRow, pausedApplyFailedRow], Actions.Pause)).toBeFalsy()
+      expect(isVisibleByAction([scheduledOneClickRow, revertScheduledRow], Actions.Cancel)).toBeTruthy()
+      expect(isVisibleByAction([newRow, revertScheduledRow], Actions.Cancel)).toBeFalsy()
     })
   })
 

@@ -22,7 +22,7 @@ const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isR
 
   return (<>
     <PageHeader
-      title={$t({ defaultMessage: 'Data-Subscriptions' })}
+      title={$t({ defaultMessage: 'Data Subscriptions' })}
       breadcrumb={generateBreadcrumb({ isRAI, isList: true })}
       extra={hasRaiPermission('WRITE_DATA_SUBSCRIPTIONS') ? <>
         <Button
@@ -49,7 +49,7 @@ const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isR
           title={$t({ defaultMessage: 'Simplify Data Integration' })}
           subTitles={[$t({
             defaultMessage: `Seamlessly transfer data between RUCKUS AI 
-            ans cloud platforms, monitor usage with precision, `
+            and cloud platforms, monitor usage with precision, `
           }), $t({ defaultMessage: 'and customize exports for enhanced business insights.' })]}
           helpUrl={helpUrl}
           closable />
