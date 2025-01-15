@@ -19,9 +19,11 @@ import {
   toReactFlowData,
   ActionTypeTitle,
   UIConfiguration,
-  WorkflowStep
+  WorkflowStep,
+  WorkflowUrls
 } from '@acx-ui/rc/utils'
 import { hasCrossVenuesPermission } from '@acx-ui/user'
+import { getOpsApi }                from '@acx-ui/utils'
 
 import { EnrollmentPortalDesignModal } from '../../EnrollmentPortalDesignModal'
 import { ActionNavigationDrawer }      from '../ActionNavigationDrawer'
@@ -208,6 +210,7 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
                   <UI.Button type='default'
                     size='small'
                     style={{ fontSize: '14px' }}
+                    rbacOpsIds={[getOpsApi(WorkflowUrls.updateWorkflowUIConfig)]}
                     onClick={() => {
                       setNavigatorVisible(false)
                       setPortalVisible(true)

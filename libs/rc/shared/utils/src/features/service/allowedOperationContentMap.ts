@@ -103,5 +103,11 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.EDIT]: ['PUT:/applicationPolicies/{id}'],
     [PolicyOperation.DELETE]: ['DELETE:/applicationPolicies/{id}'],
     [PolicyOperation.LIST]: ['POST:/applicationPolicies/query']
+  },
+  [PolicyType.WORKFLOW]: {
+    [PolicyOperation.CREATE]: ['POST:/workflows'],
+    [PolicyOperation.EDIT]: ['PATCH:/workflows/{id}'],
+    [PolicyOperation.DELETE]: ['DELETE:/workflows/{id}'],
+    [PolicyOperation.LIST]: ['POST:/workflows/query']
   }
 }
