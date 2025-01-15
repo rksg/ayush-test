@@ -175,8 +175,6 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           <UI.StyledSpace align='center'>
             <UI.FormItemWrapper>
               <Form.Item
-                // label={$t({ defaultMessage: 'Enable NAT-T Support' })}
-                // tooltip={$t(MessageMapping.nat_traversal_support_tooltip)}
                 label={<>
                   {$t({ defaultMessage: 'Enable NAT-T Support' })}
                   {<ApCompatibilityToolTip
