@@ -8,7 +8,9 @@ import {
   sortProp,
   useAnalyticsFilter,
   kpiConfig,
-  productNames
+  productNames,
+  formattedPath,
+  impactedArea
 }                                    from '@acx-ui/analytics/utils'
 import {
   Loader,
@@ -16,8 +18,9 @@ import {
   Table as CommonTable,
   ConfigChange,
   getConfigChangeEntityTypeMapping,
-  Cascader
-} from '@acx-ui/components'
+  Cascader,
+  Tooltip
+}                                              from '@acx-ui/components'
 import { get }                                 from '@acx-ui/config'
 import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }           from '@acx-ui/formatter'
@@ -103,7 +106,22 @@ export function Table () {
       key: 'name',
       title: $t({ defaultMessage: 'Entity Name' }),
       dataIndex: 'name',
-      render: (_, { name }, __, highlightFn) => highlightFn(String(name)),
+      render: (_, value, __, highlightFn ) => {
+        const { name } = value
+        if(!showIntentAI){
+          return highlightFn(String(name))
+        } else {
+          const { path, sliceValue } = value
+          const scope = impactedArea(path!, sliceValue!) as string
+          return <Tooltip
+            placement='top'
+            title={formattedPath(path!, sliceValue!)}
+            dottedUnderline={true}
+          >
+            {highlightFn(scope)}
+          </Tooltip>
+        }
+      },
       searchable: true,
       sorter: { compare: sortProp('name', defaultSort) }
     },

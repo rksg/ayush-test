@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import { useState, useEffect } from 'react'
 
+import { Badge }                         from 'antd'
 import { cloneDeep, findIndex, isEmpty } from 'lodash'
 import { useIntl }                       from 'react-intl'
 
@@ -15,8 +16,12 @@ import {
   cssStr,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  getAPStatusDisplayName,
+  useIsEdgeFeatureReady,
+  useIsEdgeReady
+} from '@acx-ui/rc/components'
 import {
   useVenuesTableQuery,
   useDeleteVenueMutation,
@@ -58,12 +63,28 @@ const incompatibleIconStyle = {
   borderColor: cssStr('--acx-accents-orange-30')
 }
 
+const statusColorMapping = (status: keyof ApVenueStatusEnum) => {
+  switch (status) {
+    case ApVenueStatusEnum.REQUIRES_ATTENTION:
+      return cssStr('--acx-semantics-red-50')
+    case ApVenueStatusEnum.TRANSIENT_ISSUE:
+      return cssStr('--acx-semantics-yellow-40')
+    case ApVenueStatusEnum.IN_SETUP_PHASE:
+      return cssStr('--acx-neutrals-50')
+    case ApVenueStatusEnum.OPERATIONAL:
+      return cssStr('--acx-semantics-green-50')
+    default:
+      return cssStr('--acx-neutrals-50')
+  }
+}
+
 function useColumns (
   searchable?: boolean,
   filterables?: { [key: string]: ColumnType['filterable'] }
 ) {
   const { $t } = useIntl()
   const isEdgeEnabled = useIsEdgeReady()
+  const isStatusColumnEnabled = useIsSplitOn(Features.VENUE_TABLE_ADD_STATUS_COLUMN)
 
   const columns: TableProps<Venue>['columns'] = [
     {
@@ -92,7 +113,20 @@ function useColumns (
       render: function (_, row) {
         return `${row.country}, ${row.city}`
       }
-    }, {
+    },
+    ...(isStatusColumnEnabled ? [{
+      title: $t({ defaultMessage: 'Status' }),
+      key: 'status',
+      dataIndex: 'status',
+      sorter: true,
+      render: function (_: React.ReactNode, row: Venue) {
+        return <Badge
+          color={statusColorMapping(row.status as keyof typeof statusColorMapping)}
+          text={getAPStatusDisplayName(row.status as ApVenueStatusEnum, false)}
+        />
+      }
+    }] : []),
+    {
       title: $t({ defaultMessage: 'Wi-Fi APs' }),
       align: 'center',
       key: 'aggregatedApStatus',
