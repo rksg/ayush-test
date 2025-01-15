@@ -5,6 +5,7 @@ export const isApRelatedEdgeFeature = (featureName: IncompatibilityFeatures): bo
   switch(featureName) {
     case IncompatibilityFeatures.SD_LAN:
     case IncompatibilityFeatures.TUNNEL_PROFILE:
+    case IncompatibilityFeatures.NAT_TRAVERSAL:
     case IncompatibilityFeatures.PIN:
     case IncompatibilityFeatures.NAT_TRAVERSAL:
       return true
@@ -25,7 +26,7 @@ export const isEdgeCompatibilityFeature = (featureName: string) =>
   Object.values(EdgeCompatibilityFeatureEnum).includes(featureName as EdgeCompatibilityFeatureEnum)
 
 // eslint-disable-next-line max-len
-export const edgeSdLanRequiredFeatures = [IncompatibilityFeatures.SD_LAN, IncompatibilityFeatures.TUNNEL_PROFILE]
+export const edgeSdLanRequiredFeatures = [IncompatibilityFeatures.SD_LAN, IncompatibilityFeatures.TUNNEL_PROFILE, IncompatibilityFeatures.NAT_TRAVERSAL]
 
 export const retrievedEdgeCompatibilitiesOptions = (
   response?: VenueEdgeCompatibilitiesResponse
