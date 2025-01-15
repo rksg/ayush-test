@@ -16,7 +16,7 @@ import {
   errorMessage,
   ErrorMessageType,
   isGraphQLError,
-  hasSpecificErrorCode,
+  hasGraphQLErrorCode,
   Meta
 } from '@acx-ui/utils'
 
@@ -213,7 +213,7 @@ const shouldIgnoreErrorModal = (action?: ErrorAction) => {
   const request = action?.meta?.baseQueryMeta?.request
   return ignoreEndpointList.includes(endpoint) ||
     isIgnoreErrorModal(request) ||
-    hasSpecificErrorCode(action?.meta as Meta)
+    hasGraphQLErrorCode('RDA-413', action?.meta as Meta)
 }
 
 export const errorMiddleware: Middleware = () => next => action => {

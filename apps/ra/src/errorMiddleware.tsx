@@ -1,11 +1,11 @@
 import { isRejectedWithValue, Middleware } from '@reduxjs/toolkit'
 import { FetchBaseQueryMeta }              from '@reduxjs/toolkit/query'
 
-import { showErrorModal, showExpiredSessionModal } from '@acx-ui/analytics/components'
-import { errorMessage, isGraphQLAction, Meta }     from '@acx-ui/utils'
+import { showErrorModal, showExpiredSessionModal }                  from '@acx-ui/analytics/components'
+import { errorMessage, hasGraphQLErrorCode, isGraphQLAction, Meta } from '@acx-ui/utils'
 
 const shouldIgnoreErrorModal = (meta?: Meta) => {
-  return meta?.baseQueryMeta?.response?.errors?.[0].extensions?.code === 'RDA-413'
+  return hasGraphQLErrorCode('RDA-413', meta as Meta)
 }
 
 export const errorMiddleware: Middleware = () => next => unknownAction => {

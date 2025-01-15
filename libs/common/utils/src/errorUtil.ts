@@ -33,8 +33,8 @@ export function formatGraphQLErrors (
   }
 }
 
-export const hasSpecificErrorCode = (meta?: Meta) => {
-  return meta?.baseQueryMeta?.response?.errors?.[0].extensions?.code === 'RDA-413'
+export const hasGraphQLErrorCode = (code: string, meta?: Meta) => {
+  return meta?.baseQueryMeta?.response?.errors?.[0].extensions?.code === code
 }
 
 export interface ErrorMessageType {
