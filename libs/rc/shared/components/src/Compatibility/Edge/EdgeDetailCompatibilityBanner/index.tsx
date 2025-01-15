@@ -54,13 +54,13 @@ const resolveApEdgeCompatibilityInfo = (
 }
 
 interface EdgeCompatibilityAlertBannerProps {
-  compatibilities: Record<CompatibilityDeviceEnum, Record<string, ApCompatibility>>
+  compatibilities: Partial<Record<CompatibilityDeviceEnum, Record<string, ApCompatibility>>>
   isLoading: boolean
   featureNames: IncompatibilityFeatures[]
 }
 
 const emptyData = {}
-export const EdgeCompatibilityAlertBanner = (props: EdgeCompatibilityAlertBannerProps) => {
+export const EdgeDetailCompatibilityBanner = (props: EdgeCompatibilityAlertBannerProps) => {
   const { $t, formatList } = useIntl()
   const { compatibilities, isLoading, featureNames } = props
 

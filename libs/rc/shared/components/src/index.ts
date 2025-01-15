@@ -263,6 +263,8 @@ export {
   CompatibilityWarningTriangleIcon,
   EdgeDetailCompatibilityDrawer,
   CompatibleAlertBanner,
+  EdgeDetailCompatibilityBanner,
+  EdgeTableCompatibilityWarningTooltip,
   mergeFilterApCompatibilitiesResultByRequiredFeatures
 } from './Compatibility'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'

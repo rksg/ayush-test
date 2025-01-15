@@ -13,8 +13,14 @@ import {
   showActionModal,
   Tooltip
 } from '@acx-ui/components'
-import { CountAndNamesTooltip, MdnsProxyForwardingRulesTable, ToolTipTableStyle, useEdgeMdnssCompatibilityData } from '@acx-ui/rc/components'
-import { useDeleteEdgeMdnsProxyMutation, useGetEdgeMdnsProxyViewDataListQuery, useVenuesListQuery }              from '@acx-ui/rc/services'
+import {
+  CountAndNamesTooltip,
+  MdnsProxyForwardingRulesTable,
+  ToolTipTableStyle,
+  useEdgeMdnssCompatibilityData,
+  EdgeTableCompatibilityWarningTooltip
+} from '@acx-ui/rc/components'
+import { useDeleteEdgeMdnsProxyMutation, useGetEdgeMdnsProxyViewDataListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
   getServiceDetailsLink,
@@ -27,11 +33,10 @@ import {
   EdgeMdnsProxyViewData,
   defaultSort,
   MdnsProxyFeatureTypeEnum,
-  EdgeServiceCompatibility
+  EdgeServiceCompatibility,
+  IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-
-import { CompatibilityCheck } from './CompatibilityCheck'
 
 const settingsId = 'services-edge-mdns-proxy-table'
 export function EdgeMdnsProxyTable () {
@@ -180,9 +185,10 @@ function useColumns (compatibilityData?: Record<string, EdgeServiceCompatibility
             })}>
             {row.name}
           </TenantLink>
-          <CompatibilityCheck
+          <EdgeTableCompatibilityWarningTooltip
             serviceId={row.id!}
-            compatibilityData={compatibilityData}
+            featureName={IncompatibilityFeatures.EDGE_MDNS_PROXY}
+            compatibility={compatibilityData}
           />
         </Space>)
       }

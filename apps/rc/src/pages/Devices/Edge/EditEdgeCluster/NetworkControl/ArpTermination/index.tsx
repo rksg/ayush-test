@@ -81,7 +81,7 @@ export const ArpTerminationFormItem = (props: {
             {$t({ defaultMessage: 'ARP Termination' })}
             <ApCompatibilityToolTip
               title={$t({ defaultMessage: 'Reply to ARP requests using local IP to MAC cache. Reduces broadcast traffic but cache can be stale if IPs are reassigned between hosts.' })}
-              visible
+              showDetailButton
               onClick={() => setEdgeFeatureName(IncompatibilityFeatures.ARP_TERMINATION)}
             />
           </Space>

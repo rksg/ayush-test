@@ -54,7 +54,7 @@ export const MdnsProxyFormItem = (props: {
             {$t({ defaultMessage: 'mDNS Proxy' })}
             <ApCompatibilityToolTip
               title=''
-              visible
+              showDetailButton
               onClick={() => setEdgeFeatureName(IncompatibilityFeatures.EDGE_MDNS_PROXY)}
             />
           </Space>

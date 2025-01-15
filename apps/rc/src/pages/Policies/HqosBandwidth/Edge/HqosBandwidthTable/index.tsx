@@ -3,9 +3,9 @@ import { useMemo } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, cssStr, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
-import { SimpleListTooltip, TrafficClassSettingsTable, ToolTipTableStyle }                 from '@acx-ui/rc/components'
+import { Button, cssStr, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip }                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                from '@acx-ui/feature-toggle'
+import { SimpleListTooltip, TrafficClassSettingsTable, ToolTipTableStyle, EdgeTableCompatibilityWarningTooltip } from '@acx-ui/rc/components'
 import {
   useDeleteEdgeHqosProfileMutation,
   useGetEdgeClusterListQuery,
@@ -13,12 +13,14 @@ import {
   useGetHqosEdgeCompatibilitiesQuery
 } from '@acx-ui/rc/services'
 import {
+  CompatibilityDeviceEnum,
   EdgeHqosViewData,
   filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   getScopeKeyByPolicy,
+  IncompatibilityFeatures,
   PolicyOperation,
   PolicyType,
   useTableQuery
@@ -27,9 +29,6 @@ import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom
 import { EdgeScopes }                             from '@acx-ui/types'
 
 import * as UI from '../styledComponents'
-
-import { CompatibilityCheck } from './CompatibilityCheck'
-
 
 const EdgeHqosBandwidthTable = () => {
   const { $t } = useIntl()
@@ -90,12 +89,12 @@ const EdgeHqosBandwidthTable = () => {
   const currentServiceIds = useMemo(
     () => tableQuery.data?.data?.map(i => i.id!) ?? [],
     [tableQuery.data?.data])
-  const { hqosCompatibilityData = [] } = useGetHqosEdgeCompatibilitiesQuery({
+  const { hqosCompatibilityData } = useGetHqosEdgeCompatibilitiesQuery({
     payload: { filters: { serviceIds: currentServiceIds } } }, {
     skip: !isEdgeCompatibilityEnabled || !currentServiceIds.length,
     selectFromResult: ({ data }) => {
       return {
-        hqosCompatibilityData: data?.compatibilities
+        hqosCompatibilityData: { [CompatibilityDeviceEnum.EDGE]: data?.compatibilities ?? [] }
       }
     }
   })
@@ -120,9 +119,10 @@ const EdgeHqosBandwidthTable = () => {
               })}>
               {row.name}
             </TenantLink>
-            {isEdgeCompatibilityEnabled && <CompatibilityCheck
+            {isEdgeCompatibilityEnabled && <EdgeTableCompatibilityWarningTooltip
               serviceId={row.id!}
-              compatibilityData={hqosCompatibilityData}
+              featureName={IncompatibilityFeatures.HQOS}
+              compatibility={hqosCompatibilityData}
             />}
           </Space>
         )

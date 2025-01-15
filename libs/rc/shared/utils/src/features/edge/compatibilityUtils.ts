@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { EdgeCompatibilityFeatureEnum, IncompatibilityFeatures } from '../../models/CompatibilityEnum'
 import { VenueEdgeCompatibilitiesResponse }                      from '../../types/edge'
 
@@ -23,8 +24,8 @@ export const isSwitchRelatedEdgeFeature = (featureName: IncompatibilityFeatures)
 export const isEdgeCompatibilityFeature = (featureName: string) =>
   Object.values(EdgeCompatibilityFeatureEnum).includes(featureName as EdgeCompatibilityFeatureEnum)
 
-// eslint-disable-next-line max-len
 export const edgeSdLanRequiredFeatures = [IncompatibilityFeatures.SD_LAN, IncompatibilityFeatures.TUNNEL_PROFILE]
+export const edgePinRequiredFeatures = [IncompatibilityFeatures.PIN, IncompatibilityFeatures.TUNNEL_PROFILE]
 
 export const retrievedEdgeCompatibilitiesOptions = (
   response?: VenueEdgeCompatibilitiesResponse

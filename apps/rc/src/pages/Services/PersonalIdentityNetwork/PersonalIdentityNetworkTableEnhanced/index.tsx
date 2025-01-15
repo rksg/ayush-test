@@ -12,8 +12,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
-import { EdgeServiceStatusLight, CountAndNamesTooltip, useEdgePinsCompatibilityData } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                                           from '@acx-ui/feature-toggle'
+import { EdgeServiceStatusLight, CountAndNamesTooltip, useEdgePinsCompatibilityData, EdgeTableCompatibilityWarningTooltip } from '@acx-ui/rc/components'
 import {
   useDeleteEdgePinMutation,
   useGetEdgeClusterListQuery,
@@ -29,6 +29,7 @@ import {
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
+  IncompatibilityFeatures,
   PersonalIdentityNetworksViewData,
   ServiceOperation,
   ServiceType,
@@ -37,8 +38,6 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { noDataDisplay }                                       from '@acx-ui/utils'
-
-import { CompatibilityCheck } from './CompatibilityCheck'
 
 const getEdgePinPayload = {
   fields: [
@@ -168,9 +167,10 @@ const PersonalIdentityNetworkTableEnhanced = () => {
             })}>
             {row.name}
           </TenantLink>
-          <CompatibilityCheck
+          <EdgeTableCompatibilityWarningTooltip
             serviceId={serviceId!}
-            compatibilityData={compatibilityData.compatibilities}
+            featureName={IncompatibilityFeatures.PIN}
+            compatibility={compatibilityData.compatibilities}
           />
         </Space>
       }

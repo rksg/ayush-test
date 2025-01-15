@@ -98,7 +98,7 @@ export const CompatibilityCheck = ({ venueId, venueName } : { venueId: string, v
       <ApCompatibilityToolTip
       // eslint-disable-next-line max-len
         title={$t({ defaultMessage: 'Some APs lower than the minimum firmware version may not setup tunneling.' })}
-        visible={true}
+        showDetailButton
         icon={<CompatibilityWarningTriangleIcon />}
         onClick={() => setOpen(true)}
       />

@@ -53,7 +53,6 @@ edgeCompatibilitiesVenue.compatibilities?.splice(1, 1)
 describe('EdgeCompatibilityDrawer', () => {
   const venueId = 'mock_venue_id'
   const venueName = 'Test Venue'
-  const serviceId = 'mock_sdlan_id'
   const tenantId = 'mock_tenant_id'
   const featureName = IncompatibilityFeatures.SD_LAN
   const mockedCloseDrawer = jest.fn()
@@ -112,49 +111,6 @@ describe('EdgeCompatibilityDrawer', () => {
     expect(sdlanRow).toBeVisible()
     expect(screen.getByRole('row', { name: 'SD-LAN 1 2.1.0.200' })).toBeValid()
     expect(screen.getByRole('row', { name: 'Tunnel Profile 2 2.1.0.400' })).toBeValid()
-    expect(screen.getByTestId('CloseSymbol')).toBeVisible()
-  })
-
-  it('should display render SDLAN incompatible correctly', async () => {
-    mockServer.use(
-      rest.post(
-        EdgeUrlsInfo.getSdLanEdgeCompatibilities.url,
-        (_, res, ctx) => res(ctx.json(mockEdgeSdLanCompatibilities))),
-      rest.post(
-        EdgeUrlsInfo.getSdLanApCompatibilities.url,
-        (_, res, ctx) => res(ctx.json(mockEdgeSdLanApCompatibilites)))
-    )
-
-    render(
-      <Provider>
-        <EdgeCompatibilityDrawer
-          visible={true}
-          title='Testing Title'
-          type={EdgeCompatibilityType.SD_LAN}
-          serviceId={serviceId}
-          featureName={IncompatibilityFeatures.SD_LAN}
-          onClose={mockedCloseDrawer}
-        />
-      </Provider>, {
-        route: { params: { tenantId }, path: '/:tenantId' }
-      })
-
-    expect(await screen.findByText('SD-LAN')).toBeInTheDocument()
-    const compatibilityDevices = await screen.findAllByTestId('CompatibilityItem')
-    expect(compatibilityDevices.length).toBe(2)
-    const features = screen.getAllByTestId('FeatureItem')
-    expect(features.length).toBe(2)
-
-    const edgeBlock = compatibilityDevices[0]
-    expect(within(edgeBlock).getByText('2.1.0.200')).toBeValid()
-    within(edgeBlock).getByText(/Incompatible RUCKUS Edges/)
-    expect(within(edgeBlock).getByText('5 / 14')).toBeValid()
-
-    const wifiBlock = compatibilityDevices[1]
-    expect(within(wifiBlock).getByText('7.0.0.0.234')).toBeValid()
-    within(wifiBlock).getByText(/Incompatible Access Points/)
-    expect(within(wifiBlock).getByText('4 / 16')).toBeValid()
-
     expect(screen.getByTestId('CloseSymbol')).toBeVisible()
   })
 
