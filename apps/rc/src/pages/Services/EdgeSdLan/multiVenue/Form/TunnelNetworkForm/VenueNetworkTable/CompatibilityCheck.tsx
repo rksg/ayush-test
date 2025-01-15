@@ -11,10 +11,22 @@ import {
   CompatibilityWarningTriangleIcon,
   mergeFilterApCompatibilitiesResultByRequiredFeatures
 } from '@acx-ui/rc/components'
-import { useGetApCompatibilitiesVenueQuery, useGetVenueApCompatibilitiesQuery }                                                                  from '@acx-ui/rc/services'
-import { ApCompatibility, ApCompatibilityResponse, Compatibility, CompatibilityResponse, IncompatibilityFeatures, IncompatibleFeatureLevelEnum } from '@acx-ui/rc/utils'
+import {
+  useGetApCompatibilitiesVenueQuery,
+  useGetVenueApCompatibilitiesQuery
+} from '@acx-ui/rc/services'
+import {
+  ApCompatibility,
+  ApCompatibilityResponse,
+  Compatibility,
+  CompatibilityResponse,
+  IncompatibilityFeatures,
+  IncompatibleFeatureLevelEnum,
+  edgeSdLanRequiredFeatures
+} from '@acx-ui/rc/utils'
 
-const SdLanRequiredFeatures = [IncompatibilityFeatures.TUNNEL_PROFILE]
+// eslint-disable-next-line max-len
+const SdLanRequiredFeatures = edgeSdLanRequiredFeatures.filter(f => f !== IncompatibilityFeatures.SD_LAN)
 
 const useCompatibilityData = ({ venueId } : { venueId: string }) => {
   const isApCompatibilitiesByModel = useIsSplitOn(Features.WIFI_COMPATIBILITY_BY_MODEL)
@@ -24,7 +36,7 @@ const useCompatibilityData = ({ venueId } : { venueId: string }) => {
       filters: {
         venueIds: [ venueId ],
         featureLevels: [IncompatibleFeatureLevelEnum.VENUE],
-        featureNames: [IncompatibilityFeatures.SD_LAN, IncompatibilityFeatures.TUNNEL_PROFILE]
+        featureNames: edgeSdLanRequiredFeatures
       },
       page: 1,
       pageSize: 10

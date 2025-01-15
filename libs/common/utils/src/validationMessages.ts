@@ -207,6 +207,11 @@ export const validationMessages = {
     defaultMessage: 'Cannot move AP to another <venueSingular></venueSingular> in different country code or country',
     description: 'Validation - Venue Country checks'
   }),
+  diffApGpsWithVenueCountry: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'Cannot set AP GPS coordinates to a location in a different country code or country than the <venueSingular></venueSingular>',
+    description: 'Validation - AP GPS Country checks'
+  }),
   cellularApDhcpLimitation: defineMessage({
     defaultMessage: `The cellular AP cannot
       be moved to the <venueSingular></venueSingular> which doesn’t enable DHCP service`,
