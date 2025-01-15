@@ -73,22 +73,31 @@ export function CertTemplateActionPreview (props: GenericActionPreviewProps<Cert
               </List.Item>
             )}
           />
-        </GridCol> :
-        <GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
-          <Space>
-            <Text strong>
-              <span>{ $t({ defaultMessage: 'Wi-Fi Network name: ' })} { selectedSsid }</span>
-            </Text>
-          </Space>
-        </GridCol>}
-      <GridCol col={{ span: 24 }}>
-        <Space direction='vertical' align='center'>
           <Text>
             {$t({
               defaultMessage:
-                  'Scan or click to download the certificate'
+                  'Scan or click the QR code to download the certificate:'
             })}
           </Text>
+        </GridCol> :
+        <><GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
+          <Space>
+            <Text>
+              <span>{$t({ defaultMessage: 'Wi-Fi Network name: ' })} {selectedSsid}</span>
+            </Text>
+          </Space>
+        </GridCol>
+        <GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
+          <Text>
+            {$t({
+              defaultMessage:
+                  // eslint-disable-next-line max-len
+                  'Scan or click this QR code to download the certificate that is required in order to connect to the network:'
+            })}
+          </Text>
+        </GridCol></>}
+      <GridCol col={{ span: 24 }}>
+        <Space direction='vertical' align='center'>
           <QRCodeSVG
             value={`WIFI:T:WPA;S:${selectedSsid};P:$aMgj23Klpz;H:false;`}
             size={180}
@@ -102,9 +111,9 @@ export function CertTemplateActionPreview (props: GenericActionPreviewProps<Cert
       </GridCol>
       <GridCol col={{ span: 24 }}>
         <Space direction='vertical' align='center'>
-          <Link strong={true}>
-            <Text strong={true}><b>{$t({ defaultMessage: 'Download Certificate' })}</b><br /></Text>
-          </Link>
+          <Text strong>
+            <span>{$t({ defaultMessage: 'Certificate file password:' })} j4SyOxxF</span>
+          </Text>
         </Space>
       </GridCol>
     </GridRow>
