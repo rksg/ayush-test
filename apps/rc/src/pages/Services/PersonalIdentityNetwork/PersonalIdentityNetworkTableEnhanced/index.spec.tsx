@@ -104,8 +104,8 @@ describe('PersonalIdentityNetworkTableEnhanced', () => {
     const rows = await screen.findAllByRole('row', { name: /nsg/i })
     expect(rows.length).toBe(2)
 
-    expect(rows[0]).toHaveTextContent(/nsg1\s*Edge1\s*0\s*0\s*1\s*Poor/)
-    expect(rows[1]).toHaveTextContent(/nsg2\s*Edge2\s*0\s*0\s*1\s*Unknown/)
+    expect(rows[0]).toHaveTextContent(/nsg1\s*Mock Venue 1\s*Edge1\s*0\s*0\s*1\s*Poor/)
+    expect(rows[1]).toHaveTextContent(/nsg2\s*Mock Venue 2\s*Edge2\s*0\s*0\s*1\s*Unknown/)
     const fwWarningIcon = screen.queryAllByTestId('WarningTriangleSolid')
     expect(fwWarningIcon.length).toBe(0)
   })
