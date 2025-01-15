@@ -140,6 +140,7 @@ function GalleryCard (props: {
       y: imageRef?.current?.offsetHeight || 0
     }
     if (placementCoords.x <= imageCoords.x && placementCoords.y <= imageCoords.y) {
+      // @ts-ignore
       Object.assign(device.position, {
         floorplanId: device?.floorplanId,
         x: placementCoords.x,

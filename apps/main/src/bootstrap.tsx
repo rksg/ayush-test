@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Root }          from 'react-dom/client'
-import { addMiddleware } from 'redux-dynamic-middlewares'
+import { Root } from 'react-dom/client'
 
 import {
   ConfigProvider,
@@ -13,7 +12,7 @@ import { TenantDetail }                       from '@acx-ui/msp/utils'
 import { useGetPreferencesQuery }             from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo, TenantType } from '@acx-ui/rc/utils'
 import { BrowserRouter }                      from '@acx-ui/react-router-dom'
-import { Provider }                           from '@acx-ui/store'
+import { Provider, dynamicMiddleware }        from '@acx-ui/store'
 import {
   UserProfileProvider,
   useUserProfileContext,
@@ -154,8 +153,7 @@ function DataGuardLoader (props: React.PropsWithChildren) {
 
 export async function init (root: Root) {
   renderPendo(pendoInitalization)
-  addMiddleware(errorMiddleware)
-
+  dynamicMiddleware.addMiddleware(errorMiddleware)
   initializeSockets()
 
   root.render(

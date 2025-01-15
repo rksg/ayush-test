@@ -1,9 +1,8 @@
-import React, { ReactNode, useState } from 'react'
+import { ReactNode, useState } from 'react'
 
-import { MutationTrigger }    from '@reduxjs/toolkit/dist/query/react/buildHooks'
-import { MutationDefinition } from '@reduxjs/toolkit/query'
-import moment                 from 'moment'
-import { useIntl }            from 'react-intl'
+import { TypedMutationTrigger } from '@reduxjs/toolkit/query/react'
+import moment                   from 'moment'
+import { useIntl }              from 'react-intl'
 
 
 import {
@@ -344,10 +343,8 @@ function useColumns (props: TemplateColumnProps) {
   return columns
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DeleteTemplateMutationDefinition = MutationDefinition<any, any, any, any>
-// eslint-disable-next-line max-len
-function useDeleteMutation (): Partial<Record<ConfigTemplateType, MutationTrigger<DeleteTemplateMutationDefinition>>> {
+// eslint-disable-next-line max-len, @typescript-eslint/no-explicit-any
+function useDeleteMutation (): Partial<Record<ConfigTemplateType, TypedMutationTrigger<any, any, any>>> {
   const [ deleteNetworkTemplate ] = useDeleteNetworkTemplateMutation()
   const [ deleteAaaTemplate ] = useDeleteAAAPolicyTemplateMutation()
   const [ deleteVenueTemplate ] = useDeleteVenueTemplateMutation()

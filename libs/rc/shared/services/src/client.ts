@@ -1,6 +1,5 @@
-import { QueryReturnValue }    from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
-import { cloneDeep }           from 'lodash'
+import { QueryReturnValue, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
+import { cloneDeep }                                                 from 'lodash'
 
 import { convertEpochToRelativeTime, convertToRelativeTime, formatter } from '@acx-ui/formatter'
 import {
@@ -552,7 +551,8 @@ export const clientApi = baseClientApi.injectEndpoints({
             ...disconnectRequest,
             body: arg.payload
           })
-          return disconnectQuery as QueryReturnValue<CommonResult, FetchBaseQueryError>
+          return disconnectQuery as
+            QueryReturnValue<CommonResult, FetchBaseQueryError, FetchBaseQueryMeta | undefined>
         }
         return { data: 'done' }
       }
