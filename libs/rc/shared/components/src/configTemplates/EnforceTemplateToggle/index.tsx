@@ -11,29 +11,30 @@ import { getOpsApi }                                                         fro
 
 import { withTemplateFeatureGuard } from '../utils'
 
-function EnforceTemplateToggle (props: { templateId?: string }) {
+export function EnforceTemplateToggle (props: { templateId?: string }) {
   const { setSaveEnforcementConfigFn } = useConfigTemplate()
   const { $t } = useIntl()
-  const [ checked, setChecked ] = useState(false)
+  const [ checked , setChecked ] = useState(false)
   const [ updateEnforcementStatus ] = useUpdateEnforcementStatusMutation()
-  const { enforced: initValue, isLoading } = useGetConfigTemplateListQuery({
+  const { initValue, isLoading, isSuccess } = useGetConfigTemplateListQuery({
     params: {}, payload: {
       fields: ['id', 'enforced'],
       filters: { id: [props.templateId] }
     }
   }, {
     skip: !props.templateId,
-    selectFromResult: ({ data, isLoading }) => ({
-      enforced: data?.data?.[0]?.enforced ?? false,
-      isLoading
+    selectFromResult: ({ data, isLoading, isSuccess }) => ({
+      initValue: data?.data?.[0]?.enforced ?? false,
+      isLoading,
+      isSuccess
     })
   })
 
-  const onSave = async (templateId: string) => {
+  const onSave = async (templateId: string, enabled: boolean) => {
     try {
       await updateEnforcementStatus({
         params: { templateId },
-        payload: { enabled: checked }
+        payload: { enabled }
       }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -41,17 +42,16 @@ function EnforceTemplateToggle (props: { templateId?: string }) {
   }
 
   useEffect(() => {
-    setSaveEnforcementConfigFn((templateId: string) => {
-      return onSave(templateId)
-    })
-
-  }, [setSaveEnforcementConfigFn])
+    if (setSaveEnforcementConfigFn) {
+      setSaveEnforcementConfigFn((templateId: string) => onSave(templateId, checked))
+    }
+  }, [setSaveEnforcementConfigFn, checked])
 
   useEffect(() => {
-    setChecked(initValue ?? false)
-  }, [initValue])
+    isSuccess && setChecked(initValue)
+  }, [isSuccess])
 
-  return <Loader states={[ { isLoading } ]}>
+  return <Loader states={[ { isLoading } ]} style={{ height: '40px' }}>
     <Space align='center'>
       <Switch checked={checked} onChange={setChecked} />
       <span style={{ fontSize: cssNumber('--acx-body-4-font-size') }}>
