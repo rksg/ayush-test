@@ -598,11 +598,11 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
         show: !!showAllColumns,
         render: (_, row) => {
           return AsyncLoadingInColumn(row, () => {
-            if (!row.radioStatus) return noDataDisplay;
-            const channel = row.radioStatus.channel || noDataDisplay;
-            const band = row.band ? ` (${row.band})` : '';
-            return channel + band;
-          });
+            if (!row.radioStatus) return noDataDisplay
+            const channel = row.radioStatus.channel || noDataDisplay
+            const band = row.band ? ` (${row.band})` : ''
+            return channel + band
+          })
         }
       }
       // { // TODO: Waiting for TAG feature support
