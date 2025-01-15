@@ -273,22 +273,31 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
         <Col>
           { hasAccess() && !showRogueAp &&
           <Space split={<Divider type='vertical' />}>
-            {isApMeshTopologyFFOn &&
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                <Switch onChange={setIsApMeshTopologyEnabled} checked={isApMeshTopologyEnabled} />
-                {$t({ defaultMessage: 'Show Mesh Topology' })}
-              </div>
-            } { hasAllowedOperations([getOpsApi(CommonUrlsInfo.updateFloorplan)]) &&
-              <AddEditFloorplanModal
-                buttonTitle={$t({ defaultMessage: 'Edit' })}
-                onAddEditFloorPlan={onEditFloorPlanHandler}
-                isEditMode={true}
-                selectedFloorPlan={selectedFloorPlan}/>
-            } { hasAllowedOperations([getOpsApi(CommonUrlsInfo.deleteFloorPlan)]) &&
-            <Button key='deleteBtn' type='link' onClick={deleteHandler} >
-              {$t({ defaultMessage: 'Delete' })}
-            </Button>
-            }
+            {[
+              isApMeshTopologyFFOn && (
+                <div key='meshTopology'
+                  style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <Switch onChange={setIsApMeshTopologyEnabled} checked={isApMeshTopologyEnabled} />
+                  {$t({ defaultMessage: 'Show Mesh Topology' })}
+                </div>
+              ),
+              hasAllowedOperations([getOpsApi(CommonUrlsInfo.updateFloorplan)]) && (
+                <AddEditFloorplanModal
+                  key='editFloorPlan'
+                  buttonTitle={$t({ defaultMessage: 'Edit' })}
+                  onAddEditFloorPlan={onEditFloorPlanHandler}
+                  isEditMode={true}
+                  selectedFloorPlan={selectedFloorPlan}
+                />
+              ),
+              hasAllowedOperations([getOpsApi(CommonUrlsInfo.deleteFloorPlan)]) && (
+                <Button key='deleteBtn' type='link' onClick={deleteHandler}>
+                  {$t({ defaultMessage: 'Delete' })}
+                </Button>
+              )
+            ]
+              .filter(Boolean)
+              .map((item) => item)}
           </Space>
           }
         </Col>
