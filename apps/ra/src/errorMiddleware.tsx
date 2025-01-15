@@ -1,12 +1,12 @@
 import { isRejectedWithValue, Middleware } from '@reduxjs/toolkit'
 
-import { showErrorModal, showExpiredSessionModal } from '@acx-ui/analytics/components'
-import { errorMessage, isGraphQLAction }           from '@acx-ui/utils'
+import { showErrorModal, showExpiredSessionModal }                     from '@acx-ui/analytics/components'
+import { Action, errorMessage, hasSpecificErrorCode, isGraphQLAction } from '@acx-ui/utils'
 
 import type { AnyAction } from '@reduxjs/toolkit'
 
 const shouldIgnoreErrorModal = (action?: AnyAction) => {
-  return action?.meta?.baseQueryMeta?.response?.errors?.[0].extensions?.code === 'RDA-413'
+  return hasSpecificErrorCode(action as Action)
 }
 
 export const errorMiddleware: Middleware = () => (next: CallableFunction) =>
