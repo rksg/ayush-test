@@ -39,7 +39,7 @@ describe('DataSubscriptionsContent', () => {
       route: {},
       wrapper: Provider
     })
-    expect(await screen.findByText('Data-Subscriptions')).toBeVisible()
+    expect(await screen.findByText('Data Subscriptions')).toBeVisible()
     expect(screen.getByTestId(bannerTestId)).toBeVisible()
   })
 })

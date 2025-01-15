@@ -22,7 +22,7 @@ const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isR
 
   return (<>
     <PageHeader
-      title={$t({ defaultMessage: 'Data-Subscriptions' })}
+      title={$t({ defaultMessage: 'Data Subscriptions' })}
       breadcrumb={generateBreadcrumb({ isRAI, isList: true })}
       extra={hasRaiPermission('WRITE_DATA_SUBSCRIPTIONS') ? <>
         <Button
