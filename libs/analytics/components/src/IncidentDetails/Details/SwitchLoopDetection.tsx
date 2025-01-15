@@ -4,6 +4,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 import { FixedAutoSizer }                 from '../../DescriptionSection/styledComponents'
 import { ImpactedSwitchesDonut }          from '../Charts/ImpactedSwitchesDonut'
+import { ImpactedSwitchesByParamDonut }   from '../Charts/ImpactedSwitchesDonut/byParam'
 import { ImpactedVlanTable  }             from '../Charts/ImpactedSwitchLoopDetection'
 import { IncidentAttributes, Attributes } from '../IncidentAttributes'
 import { Insights }                       from '../Insights'
@@ -40,8 +41,14 @@ export const SwitchLoopDetection = (incident: Incident) => {
       <GridCol col={{ span: 20 }}>
         <Insights incident={incident} />
       </GridCol>
-      <GridCol col={{ offset: 4, span: 5 }} style={{ minHeight: '249px' }}>
+      <GridCol col={{ offset: 4, span: 6 }} style={{ minHeight: '249px' }}>
         <ImpactedSwitchesDonut incident={incident}/>
+      </GridCol>
+      <GridCol col={{ span: 6 }} style={{ minHeight: '249px' }}>
+        <ImpactedSwitchesByParamDonut incident={incident} byParam='model'/>
+      </GridCol>
+      <GridCol col={{ span: 6 }} style={{ minHeight: '249px' }}>
+        <ImpactedSwitchesByParamDonut incident={incident} byParam='firmware'/>
       </GridCol>
       <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '249px' }}>
         <ImpactedVlanTable incident={incident} />
