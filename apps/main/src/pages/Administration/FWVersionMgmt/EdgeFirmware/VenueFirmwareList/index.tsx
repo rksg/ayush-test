@@ -41,6 +41,7 @@ import {
   dateSort,
   defaultSort,
   firmwareTypeTrans,
+  genAllowOperationsPath,
   sortProp
 } from '@acx-ui/rc/utils'
 import { EdgeScopes, RolesEnum } from '@acx-ui/types'
@@ -174,8 +175,8 @@ export function VenueFirmwareList () {
     {
       scopeKey: [EdgeScopes.UPDATE],
       rbacOpsIds: isBatchOperationEnable ?
-        [getOpsApi(FirmwareUrlsInfo.startEdgeFirmwareVenueUpdateNow)] :
-        [getOpsApi(FirmwareUrlsInfo.updateEdgeFirmware)],
+        [genAllowOperationsPath(FirmwareUrlsInfo.startEdgeFirmwareVenueUpdateNow)] :
+        [genAllowOperationsPath(FirmwareUrlsInfo.updateEdgeFirmware)],
       visible: (selectedRows) => {
         const hasOutdatedFw = selectedRows?.every(
           item => latestReleaseVersion?.id &&
@@ -197,8 +198,8 @@ export function VenueFirmwareList () {
       {
         scopeKey: [EdgeScopes.UPDATE],
         rbacOpsIds: isBatchOperationEnable ?
-          [getOpsApi(FirmwareUrlsInfo.updateEdgeFirmwareVenueSchedule)] :
-          [getOpsApi(FirmwareUrlsInfo.updateEdgeVenueSchedules)],
+          [genAllowOperationsPath(FirmwareUrlsInfo.updateEdgeFirmwareVenueSchedule)] :
+          [genAllowOperationsPath(FirmwareUrlsInfo.updateEdgeVenueSchedules)],
         visible: (selectedRows: EdgeVenueFirmware[]) => {
           return selectedRows.every(row => hasSchedule(row))
         },
@@ -216,8 +217,8 @@ export function VenueFirmwareList () {
       {
         scopeKey: [EdgeScopes.UPDATE],
         rbacOpsIds: isBatchOperationEnable ?
-          [getOpsApi(FirmwareUrlsInfo.skipEdgeFirmwareVenueSchedule)] :
-          [getOpsApi(FirmwareUrlsInfo.skipEdgeUpgradeSchedules)],
+          [genAllowOperationsPath(FirmwareUrlsInfo.skipEdgeFirmwareVenueSchedule)] :
+          [genAllowOperationsPath(FirmwareUrlsInfo.skipEdgeUpgradeSchedules)],
         visible: (selectedRows: EdgeVenueFirmware[]) => {
           return selectedRows.every(row => hasSchedule(row))
         },
@@ -336,14 +337,14 @@ export function VenueFirmwareList () {
     scopes: [EdgeScopes.UPDATE],
     rbacOpsIds: isBatchOperationEnable ?
       [
-        getOpsApi(FirmwareUrlsInfo.startEdgeFirmwareVenueUpdateNow),
-        getOpsApi(FirmwareUrlsInfo.updateEdgeFirmwareVenueSchedule),
-        getOpsApi(FirmwareUrlsInfo.skipEdgeFirmwareVenueSchedule)
+        genAllowOperationsPath(FirmwareUrlsInfo.startEdgeFirmwareVenueUpdateNow),
+        genAllowOperationsPath(FirmwareUrlsInfo.updateEdgeFirmwareVenueSchedule),
+        genAllowOperationsPath(FirmwareUrlsInfo.skipEdgeFirmwareVenueSchedule)
       ] :
       [
-        getOpsApi(FirmwareUrlsInfo.updateEdgeFirmware),
-        getOpsApi(FirmwareUrlsInfo.updateEdgeVenueSchedules),
-        getOpsApi(FirmwareUrlsInfo.skipEdgeUpgradeSchedules)
+        genAllowOperationsPath(FirmwareUrlsInfo.updateEdgeFirmware),
+        genAllowOperationsPath(FirmwareUrlsInfo.updateEdgeVenueSchedules),
+        genAllowOperationsPath(FirmwareUrlsInfo.skipEdgeUpgradeSchedules)
       ]
   })
 

@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Radio, Space, Typography, Tooltip } from 'antd'
+import { Form, Radio, Space, Tooltip, Typography } from 'antd'
 
-import { Modal, Loader }          from '@acx-ui/components'
+import { Loader, Modal }          from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { EdgeMvSdLanViewData,
+import {
+  EdgeMvSdLanViewData,
   EdgePinUrls,
   EdgeSdLanUrls,
   NetworkTunnelSdLanAction,
@@ -13,12 +14,14 @@ import { EdgeMvSdLanViewData,
   PolicyType,
   ServiceOperation,
   ServiceType,
+  genAllowOperationsPath,
   getServiceDetailsLink,
   hasPolicyPermission,
-  hasServicePermission } from '@acx-ui/rc/utils'
-import { TenantLink }         from '@acx-ui/react-router-dom'
-import { hasPermission }      from '@acx-ui/user'
-import { getIntl, getOpsApi } from '@acx-ui/utils'
+  hasServicePermission
+} from '@acx-ui/rc/utils'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { hasPermission } from '@acx-ui/user'
+import { getIntl }       from '@acx-ui/utils'
 
 import { SpaceWrapper }          from '../SpaceWrapper'
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
@@ -84,7 +87,7 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
   const hiddenPin = NetworkTypeEnum.DPSK !== networkType
   const hasPinAllowOps = hasPermission({
     rbacOpsIds: [
-      getOpsApi(EdgePinUrls.updateEdgePin)
+      genAllowOperationsPath(EdgePinUrls.updateEdgePin)
     ] })
 
   const {
@@ -266,8 +269,8 @@ export const usePermissionResult = () => {
       hasPermission({
         rbacOpsIds: [
           [
-            getOpsApi(EdgeSdLanUrls.activateEdgeMvSdLanNetwork),
-            getOpsApi(EdgeSdLanUrls.deactivateEdgeMvSdLanNetwork)
+            genAllowOperationsPath(EdgeSdLanUrls.activateEdgeMvSdLanNetwork),
+            genAllowOperationsPath(EdgeSdLanUrls.deactivateEdgeMvSdLanNetwork)
           ]
         ]
       }):

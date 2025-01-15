@@ -2,15 +2,14 @@ import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
 
-import { Button }                                                   from '@acx-ui/components'
-import { Features }                                                 from '@acx-ui/feature-toggle'
-import { EdgesTable, EdgesTableQueryProps, useIsEdgeFeatureReady  } from '@acx-ui/rc/components'
-import { useGetVenueEdgeCompatibilitiesQuery }                      from '@acx-ui/rc/services'
-import { EdgeUrlsInfo, retrievedEdgeCompatibilitiesOptions }        from '@acx-ui/rc/utils'
-import { useParams, TenantLink }                                    from '@acx-ui/react-router-dom'
-import { EdgeScopes }                                               from '@acx-ui/types'
-import { hasPermission }                                            from '@acx-ui/user'
-import { getOpsApi }                                                from '@acx-ui/utils'
+import { Button }                                                                    from '@acx-ui/components'
+import { Features }                                                                  from '@acx-ui/feature-toggle'
+import { EdgesTable, EdgesTableQueryProps, useIsEdgeFeatureReady }                   from '@acx-ui/rc/components'
+import { useGetVenueEdgeCompatibilitiesQuery }                                       from '@acx-ui/rc/services'
+import { EdgeUrlsInfo, genAllowOperationsPath, retrievedEdgeCompatibilitiesOptions } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                                     from '@acx-ui/react-router-dom'
+import { EdgeScopes }                                                                from '@acx-ui/types'
+import { hasPermission }                                                             from '@acx-ui/user'
 
 import { CompatibilityCheck } from './CompatibilityCheck'
 
@@ -59,8 +58,8 @@ export const VenueEdge = () => {
     scopes: [EdgeScopes.CREATE],
     rbacOpsIds: [
       [
-        getOpsApi(EdgeUrlsInfo.addEdge),
-        getOpsApi(EdgeUrlsInfo.addEdgeCluster)
+        genAllowOperationsPath(EdgeUrlsInfo.addEdge),
+        genAllowOperationsPath(EdgeUrlsInfo.addEdgeCluster)
       ]
     ]
   })
