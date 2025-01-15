@@ -192,7 +192,7 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'PATCH',
     url: '/venues/:venueId/edgeFirmwares',
     newApi: true,
-    opsApi: 'PATCH:/venues/{venueId}/edgeFirmwares'
+    opsApi: 'PATCH:/venues/{id}/edgeFirmwares'
   },
   getEdgeUpgradePreferences: {
     method: 'get',
@@ -211,13 +211,13 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/venues/:venueId/edgeFirmwares/schedules',
     newApi: true,
-    opsApi: 'DELETE:/venues/{venueId}/edgeFirmwares/schedules'
+    opsApi: 'DELETE:/venues/{id}/edgeFirmwares/schedules'
   },
   updateEdgeVenueSchedules: {
     method: 'post',
     url: '/venues/:venueId/edgeFirmwares/schedules',
     newApi: true,
-    opsApi: 'POST:/venues/{venueId}/edgeFirmwares/schedules'
+    opsApi: 'POST:/venues/{id}/edgeFirmwares/schedules'
   },
   getScheduledFirmware: {
     method: 'get',
