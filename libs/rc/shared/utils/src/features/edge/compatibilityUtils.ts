@@ -6,6 +6,7 @@ export const isApRelatedEdgeFeature = (featureName: IncompatibilityFeatures): bo
     case IncompatibilityFeatures.SD_LAN:
     case IncompatibilityFeatures.TUNNEL_PROFILE:
     case IncompatibilityFeatures.PIN:
+    case IncompatibilityFeatures.NAT_TRAVERSAL:
       return true
     default:
       return false

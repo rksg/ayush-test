@@ -26,7 +26,8 @@ export enum IncompatibilityFeatures {
   PIN_DS = 'PIN_DS',
   PIN_AS = 'PIN_AS',
   EDGE_MDNS_PROXY = 'MDNS_PROXY', // edge mDNS
-  ARP_TERMINATION = 'ARP_TERMINATION'
+  ARP_TERMINATION = 'ARP_TERMINATION',
+  NAT_TRAVERSAL = 'NAT Traversal'
 }
 
 export enum IncompatibilityFeatureGroups {
@@ -40,5 +41,6 @@ export enum EdgeCompatibilityFeatureEnum {
   HQOS = 'HQoS',
   DHCP = 'DHCP',
   MDNS_PROXY = 'MDNS_PROXY',
-  ARP_TERMINATION = 'ARP_TERMINATION'
+  ARP_TERMINATION = 'ARP_TERMINATION',
+  NAT_TRAVERSAL = 'NAT Traversal'
 }
