@@ -17,7 +17,10 @@ module.exports = async function setupProxy (app) {
   })
   app.use(createProxyMiddleware('/analytics', {
     target: await localDataApi === 'up' ? LOCAL_MLISA_URL : CLOUD_URL,
-    changeOrigin: true
+    changeOrigin: true,
+    onProxyReq: (proxyReq, { socket }) => {
+      socket.on('close', () => proxyReq.socket.destroy())
+    }
   }))
 
   app.use(createProxyMiddleware(

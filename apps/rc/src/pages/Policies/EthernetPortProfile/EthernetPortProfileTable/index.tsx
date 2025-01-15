@@ -1,9 +1,11 @@
 
+import { useEffect } from 'react'
+
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, Table, TableProps, Tooltip, showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                                                       from '@acx-ui/rc/components'
+import { Loader, Table, TableProps, Tooltip, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                                   from '@acx-ui/rc/components'
 import {
   useDeleteEthernetPortProfileMutation,
   useGetAAAPolicyViewModelListQuery,
@@ -16,8 +18,6 @@ import {
   getEthernetPortAuthTypeString,
   getEthernetPortTypeString,
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
   getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
@@ -25,10 +25,14 @@ import {
 }                                                                  from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
+interface EthernetPortProfileTableProps {
+  setTableTotalCount?: (totalCount: number) => void;
+}
 
-const EthernetPortProfileTable = () => {
+const EthernetPortProfileTable = (props: EthernetPortProfileTableProps) => {
   const { $t } = useIntl()
   const params = useParams()
+  const { setTableTotalCount } = props
   const defaultEthernetPortProfileTablePayload = {}
   const basePath: Path = useTenantLink('')
   const navigate = useNavigate()
@@ -78,6 +82,12 @@ const EthernetPortProfileTable = () => {
   })
 
   const [deleteEthernetPortProfile] = useDeleteEthernetPortProfileMutation()
+
+  useEffect(() => {
+    if(tableQuery.data?.totalCount && setTableTotalCount){
+      setTableTotalCount(tableQuery.data?.totalCount)
+    }
+  }, [tableQuery.data?.totalCount])
 
   const columns: TableProps<EthernetPortProfileViewData>['columns'] = [
     {
@@ -245,48 +255,19 @@ const EthernetPortProfileTable = () => {
   const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
-    <>
-      <PageHeader
-        title={
-          $t(
-            { defaultMessage: 'Ethernet Port Profile ({count})' },
-            { count: tableQuery.data?.totalCount }
-          )
-        }
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          }
-        ]}
-
-        extra={
-          filterByAccessForServicePolicyMutation([
-            <TenantLink
-              scopeKey={
-                getScopeKeyByPolicy(PolicyType.ETHERNET_PORT_PROFILE, PolicyOperation.CREATE)}
-              // eslint-disable-next-line max-len
-              to={getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE , oper: PolicyOperation.CREATE })}
-            >
-              <Button type='primary'>{$t({ defaultMessage: 'Add Ethernet Port Profile' })}</Button>
-            </TenantLink>
-          ])}
+    <Loader states={[tableQuery]}>
+      <Table
+        rowKey={(row: EthernetPortProfileViewData) => `${row.id}-${row.name}`}
+        columns={columns}
+        rowActions={allowedRowActions}
+        rowSelection={(allowedRowActions.length > 0) && { type: 'checkbox' }}
+        dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+        enableApiFilter={true}
       />
-      <Loader states={[tableQuery]}>
-        <Table
-          rowKey={(row: EthernetPortProfileViewData) => `${row.id}-${row.name}`}
-          columns={columns}
-          rowActions={allowedRowActions}
-          rowSelection={(allowedRowActions.length > 0) && { type: 'checkbox' }}
-          dataSource={tableQuery.data?.data}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-          onFilterChange={tableQuery.handleFilterChange}
-          enableApiFilter={true}
-        />
-      </Loader>
-    </>
+    </Loader>
   )
 }
 
