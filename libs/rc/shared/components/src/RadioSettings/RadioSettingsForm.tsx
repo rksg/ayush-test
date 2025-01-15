@@ -115,7 +115,14 @@ export function RadioSettingsForm (props:{
     if (props?.isAFCEnabled === false) {
       form.setFieldValue(enableAfcFieldName, false)
     }
-  }, [] )
+  }, [
+    enableMulticastRateLimitingFieldName,
+    enableUploadLimitFieldName,
+    enableDownloadLimitFieldName,
+    enableAfcFieldName,
+    form,
+    props?.isAFCEnabled
+  ])
 
   useEffect(()=> {
     if(LPIButtonText?.LPIModeState !== enableAfc) {
