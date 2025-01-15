@@ -3,12 +3,12 @@ import userEvent      from '@testing-library/user-event'
 import moment         from 'moment'
 import { Path, rest } from 'msw'
 
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
-import { MspAdministrator, MspEcTierEnum, MspRbacUrlsInfo, MspUrlsInfo } from '@acx-ui/msp/utils'
-import { PrivilegeGroup }                                                from '@acx-ui/rc/utils'
-import { Provider }                                                      from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent, within, waitFor }        from '@acx-ui/test-utils'
-import { AccountType }                                                   from '@acx-ui/utils'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                            from '@acx-ui/feature-toggle'
+import { MspAdministrator, MspEcTierEnum, MspRbacUrlsInfo, MspUrlsInfo }                     from '@acx-ui/msp/utils'
+import { PrivilegeGroup }                                                                    from '@acx-ui/rc/utils'
+import { Provider }                                                                          from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent, within, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { AccountType }                                                                       from '@acx-ui/utils'
 
 import { MspCustomers } from '.'
 
@@ -274,7 +274,6 @@ const rcServices = require('@acx-ui/rc/services')
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services')
 }))
-const utils = require('@acx-ui/rc/utils')
 const user = require('@acx-ui/user')
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user')
@@ -911,9 +910,6 @@ describe('MspCustomers', () => {
     user.hasRoles = jest.fn().mockImplementation(() => {
       return true
     })
-    utils.useTableQuery = jest.fn().mockImplementation(() => {
-      return { data: list }
-    })
     services.useGetMspEcAlarmListQuery = jest.fn().mockImplementation(() => {
       return { data: alarmList }
     })
@@ -924,7 +920,8 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    fireEvent.click(screen.getAllByRole('checkbox')[0])
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await userEvent.click(screen.getAllByRole('checkbox')[1])
     expect(await screen.findByRole('button', { name: 'Assign MSP Administrators' })).toBeVisible()
     fireEvent.click(screen.getByRole('button', { name: 'Assign MSP Administrators' }))
 
@@ -941,9 +938,6 @@ describe('MspCustomers', () => {
     user.hasRoles = jest.fn().mockImplementation(() => {
       return true
     })
-    utils.useTableQuery = jest.fn().mockImplementation(() => {
-      return { data: list }
-    })
     services.useGetMspEcAlarmListQuery = jest.fn().mockImplementation(() => {
       return { data: alarmList }
     })
@@ -954,7 +948,8 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    fireEvent.click(screen.getAllByRole('checkbox')[1])
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await userEvent.click(screen.getAllByRole('checkbox')[1])
     expect(await screen.findByRole('button', { name: 'Assign MSP Administrators' })).toBeVisible()
     fireEvent.click(screen.getByRole('button', { name: 'Assign MSP Administrators' }))
 
@@ -972,9 +967,6 @@ describe('MspCustomers', () => {
     user.hasRoles = jest.fn().mockImplementation(() => {
       return true
     })
-    utils.useTableQuery = jest.fn().mockImplementation(() => {
-      return { data: list }
-    })
     services.useGetMspEcAlarmListQuery = jest.fn().mockImplementation(() => {
       return { data: alarmList }
     })
@@ -985,7 +977,8 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    fireEvent.click(screen.getAllByRole('checkbox')[0])
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await userEvent.click(screen.getAllByRole('checkbox')[0])
     expect(await screen.findByRole('button', { name: 'Assign MSP Administrators' })).toBeVisible()
     fireEvent.click(screen.getByRole('button', { name: 'Assign MSP Administrators' }))
 
