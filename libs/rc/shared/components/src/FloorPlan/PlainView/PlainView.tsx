@@ -15,9 +15,18 @@ import {
   SearchFitOutlined,
   SearchFullOutlined
 } from '@acx-ui/icons'
-import { FloorplanContext, FloorPlanDto, FloorPlanFormDto, getImageFitPercentage, NetworkDevice, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
-import { hasAccess }                                                                                                                         from '@acx-ui/user'
-import { loadImageWithJWT }                                                                                                                  from '@acx-ui/utils'
+import {
+  CommonUrlsInfo,
+  FloorplanContext,
+  FloorPlanDto,
+  FloorPlanFormDto,
+  getImageFitPercentage,
+  NetworkDevice,
+  NetworkDeviceType,
+  TypeWiseNetworkDevices
+} from '@acx-ui/rc/utils'
+import { hasAccess, hasAllowedOperations } from '@acx-ui/user'
+import { getOpsApi, loadImageWithJWT }     from '@acx-ui/utils'
 
 import AddEditFloorplanModal from '../FloorPlanModal'
 import NetworkDevices        from '../NetworkDevices'
@@ -269,15 +278,17 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
                 <Switch onChange={setIsApMeshTopologyEnabled} checked={isApMeshTopologyEnabled} />
                 {$t({ defaultMessage: 'Show Mesh Topology' })}
               </div>
-            }
-            <AddEditFloorplanModal
-              buttonTitle={$t({ defaultMessage: 'Edit' })}
-              onAddEditFloorPlan={onEditFloorPlanHandler}
-              isEditMode={true}
-              selectedFloorPlan={selectedFloorPlan}/>
+            } { hasAllowedOperations([getOpsApi(CommonUrlsInfo.updateFloorplan)]) &&
+              <AddEditFloorplanModal
+                buttonTitle={$t({ defaultMessage: 'Edit' })}
+                onAddEditFloorPlan={onEditFloorPlanHandler}
+                isEditMode={true}
+                selectedFloorPlan={selectedFloorPlan}/>
+            } { hasAllowedOperations([getOpsApi(CommonUrlsInfo.deleteFloorPlan)]) &&
             <Button key='deleteBtn' type='link' onClick={deleteHandler} >
               {$t({ defaultMessage: 'Delete' })}
             </Button>
+            }
           </Space>
           }
         </Col>

@@ -246,12 +246,14 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/floorplans/:floorPlanId',
     oldUrl: '/api/tenant/:tenantId/venue/:venueId/floor-plan/:floorPlanId',
+    opsApi: 'PUT:/venues/:id/floorplans/:id',
     newApi: true
   },
   deleteFloorPlan: {
     method: 'delete',
     url: '/venues/:venueId/floorplans/:floorPlanId',
     oldUrl: '/api/tenant/:tenantId/venue/:venueId/floor-plan/:floorPlanId',
+    opsApi: 'DELETE:/venues/:id/floorplans/:id',
     newApi: true
   },
   getUploadURL: {
