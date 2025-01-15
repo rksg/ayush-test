@@ -414,7 +414,7 @@ export function RadioSettingsForm (props:{
         label={
           <>
           {$t({ defaultMessage: 'Bandwidth:' })}
-          {isR370UnsupportedFeatures && (channelBandwidth === '320MHz')&& <ApCompatibilityToolTip
+          {isR370UnsupportedFeatures && <ApCompatibilityToolTip
             title={''}
             visible={true}
             placement='right'
@@ -459,7 +459,7 @@ export function RadioSettingsForm (props:{
       <Form.Item
         label={<>
           {$t({ defaultMessage: 'Transmit Power adjustment:' })}
-          {isApTxPowerToggleEnabled && <Tooltip.Question
+          {isApTxPowerToggleEnabled && !isR370UnsupportedFeatures && <Tooltip.Question
             title={aggressiveTxTooltip}
             placement='right'
             iconStyle={{ height: '16px', width: '16px' }}
