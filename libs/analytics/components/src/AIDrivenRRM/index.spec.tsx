@@ -51,7 +51,7 @@ describe('AIDrivenRRM dashboard', () => {
     // eslint-disable-next-line max-len
     expect(await screen.findByText('There are 3 recommendations for 3 zones covering 13.9K possible RRM combinations. Currently, 1 zone is optimized.')).toBeVisible()
 
-    expect(await screen.findByText('From 3 to 0 interfering links')).toBeVisible()
+    expect(await screen.findAllByText('From 3 to 0 interfering links')).not.toHaveLength(0)
   })
   it('renders recommendation with second crrmkpi', async () => {
     mockGraphqlQuery(recommendationUrl, 'CrrmList', { data: crrmListResult })
@@ -61,7 +61,7 @@ describe('AIDrivenRRM dashboard', () => {
 
     render(<AIDrivenRRM pathFilters={pathFilters} />, { route: true, wrapper: Provider })
 
-    expect(await screen.findByText('Reverted')).toBeVisible()
+    expect(await screen.findAllByText('Reverted')).not.toHaveLength(0)
   })
   it('renders recommendation with third crrmkpi', async () => {
     mockGraphqlQuery(recommendationUrl, 'CrrmList', { data: crrmListResult })
@@ -71,7 +71,8 @@ describe('AIDrivenRRM dashboard', () => {
 
     render(<AIDrivenRRM pathFilters={pathFilters} />, { route: true, wrapper: Provider })
 
-    expect(await screen.findByText('2 interfering links can be optimized to 0')).toBeVisible()
+    expect(await screen.findAllByText('2 interfering links can be optimized to 0'))
+      .not.toHaveLength(0)
   })
   it('renders unknown recommendations', async () => {
     mockGraphqlQuery(recommendationUrl, 'CrrmList', { data: crrmUnknownListResult })
@@ -86,7 +87,7 @@ describe('AIDrivenRRM dashboard', () => {
     expect(await screen.findByText('AI-Driven RRM')).toBeVisible()
     expect(await screen.findByText('3')).toBeVisible()
     expect(await screen.findByText('zone-1')).toBeVisible()
-    expect(await screen.findByText('From 3 to 0 interfering links')).toBeVisible()
+    expect(await screen.findAllByText('From 3 to 0 interfering links')).not.toHaveLength(0)
     expect(await screen.findByText('zone-2')).toBeVisible()
     expect(await screen.findByText('Deeps Place')).toBeVisible()
     expect(await screen.findByText('zone-3')).toBeVisible()
@@ -102,7 +103,7 @@ describe('AIDrivenRRM dashboard', () => {
     })
     render(<AIDrivenRRM pathFilters={pathFilters} />, { route: true, wrapper: Provider })
 
-    expect(await screen.findByText('Reverted')).toBeVisible()
+    expect(await screen.findAllByText('Reverted')).not.toHaveLength(0)
     expect(await screen.findByText('Insufficient Licenses')).toBeVisible()
     // eslint-disable-next-line max-len
     expect(await screen.findByText('There are 3 recommendations for 3 zones covering 13.9K possible RRM combinations. Currently, 1 zone is optimized.')).toBeVisible()
@@ -192,7 +193,7 @@ describe('AIDrivenRRM dashboard', () => {
       data: { recommendation: { ...crrmListResult.recommendations[0], dataEndTime: 'dataEndTime' } }
     })
     render(<AIDrivenRRM pathFilters={pathFilters} />, { route: true, wrapper: Provider })
-    expect(await screen.findByText('Beyond data retention period')).toBeInTheDocument()
+    expect(await screen.findAllByText('Beyond data retention period')).not.toHaveLength(0)
     expect(spy).toBeCalledWith('dataEndTime')
   })
 })

@@ -76,12 +76,13 @@ module.exports = async function setupProxy (app) {
       {
         target: LOCAL_MLISA_URL,
         changeOrigin: true,
-        onProxyReq: (proxyReq, { headers }) => {
+        onProxyReq: (proxyReq, { headers, socket }) => {
           proxyReq.setHeader('x-mlisa-tenant-id',
             headers['x-mlisa-tenant-id'] || headers.referer.match(/([0-9a-f]{32})\/[t|v]/)[1])
           proxyReq.setHeader('x-mlisa-user-role',
             headers['x-mlisa-user-role'] || 'alto-report-only')
           proxyReq.setHeader('x-mlisa-user-id', headers['x-mlisa-user-id'] || 'some-id')
+          socket.on('close', () => proxyReq.socket.destroy())
         }
       }
     ))

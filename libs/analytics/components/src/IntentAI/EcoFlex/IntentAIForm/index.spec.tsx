@@ -150,7 +150,7 @@ describe('IntentAIForm', () => {
     expect(container).toMatchSnapshot('step 1')
     await click(actions.getByRole('button', { name: 'Next' }))
 
-    const radioEnabled = screen.getByRole('radio', { name: 'Reduction in energy footprint' })
+    const radioEnabled = await screen.findByRole('radio', { name: 'Reduction in energy footprint' })
     await click(radioEnabled)
     expect(radioEnabled).toBeChecked()
     const currInput = await screen.findByDisplayValue('USD')
