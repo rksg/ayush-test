@@ -13,6 +13,8 @@ import { VenueLed,
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum, SwitchScopes, WifiScopes }   from '@acx-ui/types'
 import {
+  getUserProfile,
+  hasAllowedOperations,
   hasPermission,
   hasRoles }               from '@acx-ui/user'
 import { getIntl, getOpsApi } from '@acx-ui/utils'
@@ -99,6 +101,7 @@ export function VenueEdit () {
   const navigate = useNavigate()
   const basePath = useTenantLink('')
 
+  const { rbacOpsApiEnabled } = getUserProfile()
   const { activeTab } = useParams()
   const enablePropertyManagement = usePropertyManagementEnabled()
 
@@ -123,10 +126,9 @@ export function VenueEdit () {
     editAdvancedContextData, setEditAdvancedContextData
   ] = useState({} as AdvanceSettingContext)
 
-  const hasDetailsPermission = hasPermission({
-    roles: [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR],
-    rbacOpsIds: [getOpsApi(CommonUrlsInfo.updateVenue)]
-  })
+  const hasDetailsPermission = rbacOpsApiEnabled ?
+    hasAllowedOperations([getOpsApi(CommonUrlsInfo.updateVenue)]) :
+    hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   useEffect(() => {
     const notFound = { ...basePath, pathname: `${basePath.pathname}/not-found` }
