@@ -1364,8 +1364,8 @@ describe('SignaleRadioSettings component', () => {
     expect(outdoorChannelSelecter).toEqual(expect.anything())
   })
 
-  // eslint-disable-next-line max-len
   it('should render Venue Radio 6G singleRadioSettings', async () => {
+    // eslint-disable-next-line max-len
     jest.mocked(useIsSplitOn).mockReturnValue(ff => ff !== Features.ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL)
     const radioType = ApRadioTypeEnum.Radio6G
 
@@ -1413,8 +1413,8 @@ describe('SignaleRadioSettings component', () => {
 
   })
 
-  // eslint-disable-next-line max-len
   it('should render Venue Radio 6G indoor outdoor separation singleRadioSettings', async () => {
+    // eslint-disable-next-line max-len
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.ACX_UI_VENUE_CHANNEL_SELECTION_MANUAL)
     const radioType = ApRadioTypeEnum.Radio6G
 
