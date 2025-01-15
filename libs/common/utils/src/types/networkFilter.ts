@@ -2,10 +2,10 @@
 export type NodeType = 'network'
   | 'system'
   | 'controller'
-  | 'domain'
-  | 'zone' | 'switchGroup' | 'switchSubGroup'
-  | 'apGroup'
-  | 'switch' | 'AP'
+  | 'domain' | 'zone'
+  | 'AP' | 'apGroup'
+  | 'switch' | 'switchGroup' | 'switchSubGroup'
+  | 'wlan' | 'wlanGroup'
 
 export type PathNode = {
   type: NodeType
