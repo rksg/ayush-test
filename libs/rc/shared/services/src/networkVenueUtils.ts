@@ -1357,7 +1357,6 @@ export const fetchRbacNetworkList = async (arg:any, fetchWithBQ:any) => {
   const networkListInfo = {
     ...resolvedRequest,
     body: JSON.stringify({
-      pageSize: 10000,
       ...arg.payload,
       filters: updatedFilters
     })
