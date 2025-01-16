@@ -167,7 +167,7 @@ describe('DpskNode', () => {
     expect(popover).toHaveTextContent(mockedDpskData.name)
     expect(popover).toHaveTextContent('Identity Group')
     expect(popover).toHaveTextContent(mockedIdentityGroupData.name)
-  }, 200)
+  })
 
   it('should not render Details in Default panel mode', () => {
     render(

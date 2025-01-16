@@ -1,8 +1,6 @@
 /* eslint-disable max-len */
-import { QueryReturnValue }                                                from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { MaybePromise }                                                    from '@reduxjs/toolkit/dist/query/tsHelpers'
-import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta }              from '@reduxjs/toolkit/query'
-import { cloneDeep, find, forIn, get, invert, isNil, set, uniq, uniqueId } from 'lodash'
+import { QueryReturnValue, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import { cloneDeep, find, forIn, get, invert, isNil, set, uniq, uniqueId }      from 'lodash'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
@@ -39,8 +37,8 @@ import {
   WifiApSetting,
   WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { RequestPayload }             from '@acx-ui/types'
-import { createHttpRequest, getIntl } from '@acx-ui/utils'
+import { RequestPayload, MaybePromise } from '@acx-ui/types'
+import { createHttpRequest, getIntl }   from '@acx-ui/utils'
 
 import { isFulfilled, isPayloadHasField } from './utils'
 
