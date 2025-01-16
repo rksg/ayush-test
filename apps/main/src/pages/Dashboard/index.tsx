@@ -40,10 +40,28 @@ import {
   VenuesDashboardWidgetV2,
   useIsEdgeReady
 } from '@acx-ui/rc/components'
-import { EdgeUrlsInfo }                                                                                  from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                    from '@acx-ui/react-router-dom'
-import { EdgeScopes, RolesEnum, SwitchScopes, WifiScopes }                                               from '@acx-ui/types'
-import { hasCrossVenuesPermission, filterByAccess, getShowWithoutRbacCheckKey, hasPermission, hasRoles } from '@acx-ui/user'
+import {
+  CommonUrlsInfo,
+  EdgeUrlsInfo,
+  SwitchRbacUrlsInfo,
+  WifiRbacUrlsInfo
+} from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
+import {
+  EdgeScopes,
+  RolesEnum,
+  SwitchScopes,
+  WifiScopes
+}                                               from '@acx-ui/types'
+import {
+  hasCrossVenuesPermission,
+  filterByAccess,
+  getShowWithoutRbacCheckKey,
+  hasPermission,
+  hasRoles,
+  getUserProfile,
+  hasAllowedOperations
+} from '@acx-ui/user'
 import {
   useDashboardFilter,
   DateFilter,

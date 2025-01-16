@@ -308,8 +308,8 @@ export function DevicesWidgetv2 (props: {
                       key='rwg-linkContainer'
                       style={{ height: (height/2) - 30 }}>
                       {!isCustomRole && filterByAccess([
-                        <TenantLink to={'/ruckus-wan-gateway/add'}>
-                          rbacOpsIds={[getOpsApi(CommonRbacUrlsInfo.addGateway)]}
+                        <TenantLink to={'/ruckus-wan-gateway/add'}
+                          rbacOpsIds={[getOpsApi(CommonRbacUrlsInfo.addGateway)]}>
                           {$t({ defaultMessage: 'Add RWG' })}
                         </TenantLink>])}
                     </UI.LinkContainer>
