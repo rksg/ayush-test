@@ -14,6 +14,7 @@ import {
   ApCompatibility,
   CompatibilityDeviceEnum,
   IncompatibilityFeatures,
+  edgeSdLanRequiredFeatures,
   getCompatibilityFeatureDisplayName
 } from '@acx-ui/rc/utils'
 
@@ -71,9 +72,7 @@ export const CompatibilityCheck = ({ serviceId }: { serviceId: string }) => {
     const edgeData = compatibilities?.[CompatibilityDeviceEnum.EDGE]
     const apData = compatibilities?.[CompatibilityDeviceEnum.AP]
 
-    incompatibleInfo = checkApEdgeCompatibility(
-      [IncompatibilityFeatures.SD_LAN, IncompatibilityFeatures.TUNNEL_PROFILE],
-      edgeData, apData)
+    incompatibleInfo = checkApEdgeCompatibility(edgeSdLanRequiredFeatures, edgeData, apData)
 
     hasIncompatible = Object.keys(incompatibleInfo)
       .some(name => incompatibleInfo[name].isOneOf)
