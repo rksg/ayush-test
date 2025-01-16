@@ -30,6 +30,7 @@ export interface UserProfileContextProps {
   isCustomRole?: boolean
   hasAllVenues?: boolean
   venuesList?: string[]
+  selectedBetaListEnabled?: boolean
   betaFeaturesList?: FeatureAPIResults[]
 }
 
@@ -59,7 +60,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     )
   abacEnabled = featureFlagStates?.[abacFF] ?? false
   rbacOpsApiEnabled = featureFlagStates?.[rbacOpsApiFF] ?? false
-  const betaListEnabled = featureFlagStates?.[betaListFF] ?? false
+  const selectedBetaListEnabled = featureFlagStates?.[betaListFF] ?? false
 
   const { data: beta } = useGetBetaStatusQuery(
     { params: { tenantId }, enableRbac: abacEnabled },
@@ -95,7 +96,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     .filter((id): id is string => id !== undefined)) || []
 
   const { data: features } = useGetBetaFeatureListQuery({ params },
-    { skip: !(beta?.enabled === 'true') || !betaListEnabled })
+    { skip: !(beta?.enabled === 'true') || !selectedBetaListEnabled })
 
   const betaFeaturesList: FeatureAPIResults[] = (features?.betaFeatures.filter((feature):
     feature is FeatureAPIResults => feature !== undefined)) || []
@@ -121,6 +122,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       scopes: profile?.scopes,
       hasAllVenues,
       venuesList,
+      selectedBetaListEnabled,
       betaFeaturesList
     })
   }
@@ -140,6 +142,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       isCustomRole,
       hasAllVenues,
       venuesList,
+      selectedBetaListEnabled,
       betaFeaturesList
     }}
     children={props.children}

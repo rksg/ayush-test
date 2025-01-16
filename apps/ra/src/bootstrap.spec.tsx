@@ -1,21 +1,21 @@
 import '@testing-library/jest-dom'
-import { AnyAction, Dispatch, MiddlewareAPI } from '@reduxjs/toolkit'
-import { rest }                               from 'msw'
-import { createRoot }                         from 'react-dom/client'
-import { addMiddleware }                      from 'redux-dynamic-middlewares'
+import { Dispatch, MiddlewareAPI } from '@reduxjs/toolkit'
+import { rest }                    from 'msw'
+import { createRoot }              from 'react-dom/client'
 
 import { showActionModal }         from '@acx-ui/components'
+import { dynamicMiddleware }       from '@acx-ui/store'
 import { act, screen, mockServer } from '@acx-ui/test-utils'
 
 import { init } from './bootstrap'
 
 jest.mock('./AllRoutes', () => () => <div data-testid='all-routes' />)
 jest.mock('@acx-ui/theme', () => {}, { virtual: true })
-jest.mock('redux-dynamic-middlewares', () => ({
-  ...jest.requireActual('redux-dynamic-middlewares'),
-  addMiddleware: jest.fn()
+jest.mock('@acx-ui/store', () => ({
+  ...jest.requireActual('@acx-ui/store'),
+  dynamicMiddleware: { addMiddleware: jest.fn() }
 }))
-const middleware = jest.mocked(addMiddleware)
+const middleware = jest.mocked(dynamicMiddleware.addMiddleware)
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
   showActionModal: jest.fn(),
@@ -183,7 +183,7 @@ describe('bootstrap.init', () => {
       expect(middleware).toHaveBeenCalled()
       const next = jest.fn()
       const mw = middleware.mock
-        .calls[0][0]({} as MiddlewareAPI<Dispatch<AnyAction>, unknown>)(next)
+        .calls[0][0]({} as MiddlewareAPI<Dispatch, unknown>)(next)
       mw({ meta: { baseQueryMeta: { response: { status: 200 } } } })
       expect(next).toHaveBeenCalledTimes(1)
       expect(actionModal).toHaveBeenCalledTimes(1)

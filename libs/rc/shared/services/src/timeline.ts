@@ -277,7 +277,7 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
         return {
           ...req,
           body: latestTimeFilter(payload),
-          responseHandler: async (response) => {
+          responseHandler: async (response: Response) => {
             const headerContent = response.headers.get('content-disposition')
             const fileName = headerContent
               ? headerContent.split('filename=')[1]
