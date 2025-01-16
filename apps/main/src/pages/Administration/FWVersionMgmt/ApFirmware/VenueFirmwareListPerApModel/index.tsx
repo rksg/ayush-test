@@ -14,7 +14,7 @@ import {
   UpdateNowPerApModelDialog,
   ChangeSchedulePerApModelDialog,
   useUpdateEarlyAccessNowPerApModel,
-  UpdateEarlyAccessNowDialog, convertToApModelIndividualDisplayData, isAlpha, isBeta
+  UpdateEarlyAccessNowDialog, convertToApModelIndividualDisplayData, isAlphaFilter, isBetaFilter
 } from '@acx-ui/rc/components'
 import {
   compareVersions,
@@ -162,8 +162,8 @@ export function VenueFirmwareListPerApModel () {
   // eslint-disable-next-line max-len
   const genUpdateDisplayData = useCallback((apModelFirmwares: ApModelFirmware[], selectedRows: FirmwareVenuePerApModel[], forEarlyAccess: boolean = false, isApFwMgmtEarlyAccess: boolean) => {
     let eaApModelFirmwares = [] as ApModelFirmware[]
-    let updateAlphaGroups = apModelFirmwares.filter(data => isAlpha(data.labels))
-    let updateBetaGroups = apModelFirmwares.filter(data => isBeta(data.labels))
+    let updateAlphaGroups = apModelFirmwares.filter(data => isAlphaFilter(data.labels))
+    let updateBetaGroups = apModelFirmwares.filter(data => isBetaFilter(data.labels))
 
     eaApModelFirmwares = [
       ...(apFirmwareContext.isAlphaFlag ? updateAlphaGroups : []),

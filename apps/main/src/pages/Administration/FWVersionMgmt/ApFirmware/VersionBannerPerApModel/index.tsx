@@ -8,7 +8,7 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   ApFirmwareUpdateGroupType,
   convertApModelFirmwaresToUpdateGroups,
-  ExpandableApModelList, isAlpha, isAlphaOrBeta, isBeta,
+  ExpandableApModelList, isAlphaFilter, isAlphaOrBetaFilter, isBetaFilter,
   VersionLabelType
 } from '@acx-ui/rc/components'
 import { useGetAllApModelFirmwareListQuery }                from '@acx-ui/rc/services'
@@ -33,10 +33,10 @@ export function VersionBannerPerApModel () {
         isApFwMgmtEarlyAccess ? data.filter(d => d.labels?.includes(FirmwareLabel.GA)) : data
       )
       let updateAlphaGroups = convertApModelFirmwaresToUpdateGroups(
-        data.filter(d => isAlpha(d.labels))
+        data.filter(d => isAlphaFilter(d.labels))
       )
       let updateBetaGroups = convertApModelFirmwaresToUpdateGroups(
-        data.filter(d => isBeta(d.labels))
+        data.filter(d => isBetaFilter(d.labels))
       )
 
       updateGroups = [
@@ -81,7 +81,7 @@ export function VersionBannerPerApModel () {
           const latestGA = data.find(firmware => firmware.labels?.includes(FirmwareLabel.GA))
           const result = data.filter(firmware => {
             const isLaterThanGA = compareVersions(firmware.name, latestGA?.name || '0.0.0') > 0
-            const hasBetaOrAlpha = isAlpha(firmware.labels) || isBeta(firmware.labels)
+            const hasBetaOrAlpha = isAlphaFilter(firmware.labels) || isBetaFilter(firmware.labels)
             return hasBetaOrAlpha && isLaterThanGA
           })
           // eslint-disable-next-line max-len
@@ -186,7 +186,7 @@ function VersionPerApModelInfo (props: VersionInfoPerApModelProps) {
   }
 
   const generateVersionName = (firmware: VersionLabelType) => {
-    if (isAlphaOrBeta(firmware.labels)) {
+    if (isAlphaOrBetaFilter(firmware.labels)) {
       return `${ $t({ defaultMessage: '{name} (Early Access)' }, { name: firmware.name }) }`
     }
     return firmware.name
