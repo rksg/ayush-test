@@ -25,10 +25,10 @@ type ApEdgeCompatibilityResult = Record<string, {
   edgeCount: number,
   apCount: number
 }>
-const resolveApEdgeCompatibilityInfo = (
+export const resolveApEdgeCompatibilityInfo = (
   featureNames: IncompatibilityFeatures[],
-  edgeData: Record<string, ApCompatibility> | undefined,
-  apData: Record<string, ApCompatibility> | undefined
+  edgeData: Partial<Record<IncompatibilityFeatures, ApCompatibility>> | undefined,
+  apData: Partial<Record<IncompatibilityFeatures, ApCompatibility>> | undefined
 ): ApEdgeCompatibilityResult => {
   const mapping = {} as ApEdgeCompatibilityResult
   featureNames.forEach(featureName => {
@@ -53,16 +53,17 @@ const resolveApEdgeCompatibilityInfo = (
   return mapping
 }
 
-interface EdgeCompatibilityAlertBannerProps {
-  compatibilities: Partial<Record<CompatibilityDeviceEnum, Record<string, ApCompatibility>>>
-  isLoading: boolean
+export interface EdgeCompatibilityAlertBannerProps {
+  // eslint-disable-next-line max-len
+  compatibilities: Partial<Record<CompatibilityDeviceEnum, Partial<Record<IncompatibilityFeatures, ApCompatibility>>>>
   featureNames: IncompatibilityFeatures[]
+  isLoading?: boolean
 }
 
 const emptyData = {}
 export const EdgeDetailCompatibilityBanner = (props: EdgeCompatibilityAlertBannerProps) => {
   const { $t, formatList } = useIntl()
-  const { compatibilities, isLoading, featureNames } = props
+  const { compatibilities, featureNames, isLoading = false } = props
 
   const [drawerFeature, setDrawerFeature] = useState<string|undefined>()
 
