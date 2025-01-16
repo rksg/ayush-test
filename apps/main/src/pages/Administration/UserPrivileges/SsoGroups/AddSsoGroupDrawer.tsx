@@ -9,8 +9,7 @@ import {
   useUpdateAdminGroupsMutation
 } from '@acx-ui/rc/services'
 import {
-  AdminGroup,
-  specialCharactersRegExp
+  AdminGroup
 } from '@acx-ui/rc/utils'
 import { RolesEnum } from '@acx-ui/types'
 
@@ -87,8 +86,7 @@ export const AddSsoGroupDrawer = (props: AddGroupDrawerProps) => {
         rules={[
           { required: true },
           { min: 2 },
-          { max: 64 },
-          { validator: (_, value) => specialCharactersRegExp(value) }
+          { max: 64 }
         ]}
         children={<Input />}
       />}
@@ -102,8 +100,7 @@ export const AddSsoGroupDrawer = (props: AddGroupDrawerProps) => {
         rules={[
           { required: true },
           { min: 2 },
-          { max: 64 },
-          { validator: (_, value) => specialCharactersRegExp(value) }
+          { max: 64 }
         ]}
         children={<Input />}
       />}

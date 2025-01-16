@@ -1,5 +1,4 @@
-import { UseQueryHookResult }         from '@reduxjs/toolkit/dist/query/react/buildHooks'
-import { QueryDefinition }            from '@reduxjs/toolkit/query'
+import { TypedUseQueryHookResult }    from '@reduxjs/toolkit/query/react'
 import { get }                        from 'lodash'
 import { MessageDescriptor, useIntl } from 'react-intl'
 
@@ -36,7 +35,7 @@ export type SwitchData = {
     fields: Field[]
     data: SwitchData
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    impactedSwitch: UseQueryHookResult<QueryDefinition<any, any, any, any>>
+    impactedSwitch: TypedUseQueryHookResult<any, any, any, any>
   }
 export function DetailsCard (
   { fields, data, impactedSwitch }:

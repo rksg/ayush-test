@@ -3,7 +3,7 @@ import React from 'react'
 import { Col, Divider, Form, Row } from 'antd'
 import { sumBy }                   from 'lodash'
 
-import { ApIncompatibleFeature, CompatibilityDeviceEnum, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { CompatibilityDeviceEnum, IncompatibilityFeatures, IncompatibleFeature } from '@acx-ui/rc/utils'
 
 import { VerticalFlexDiv } from '../styledComponents'
 
@@ -11,7 +11,7 @@ import { FeatureItem } from './FeatureItem'
 
 export type CompatibilityItemProps = {
   deviceType: CompatibilityDeviceEnum,
-  data: ApIncompatibleFeature[],
+  data: IncompatibleFeature[],
   description?: string | React.ReactNode,
   totalDevices?: number,
   featureName?: IncompatibilityFeatures,
@@ -28,9 +28,14 @@ export const CompatibilityItem = (props: CompatibilityItemProps) => {
     isCrossDeviceType = false
   } = props
 
-  const getFeatures = (items: ApIncompatibleFeature[]) => {
+  const getFeatures = (items: IncompatibleFeature[]) => {
     const isMultipleFeatures = items.length > 1
-    return items?.map((itemDetail, index) => {
+    return items?.reduce((acc: IncompatibleFeature[], cur: IncompatibleFeature) => {
+      if (cur.children) {
+        return [...acc, ...cur.children]
+      }
+      return [...acc, cur]
+    }, []).map((itemDetail, index) => {
       const incompatible = sumBy(itemDetail.incompatibleDevices, (d) => d.count)
       return <React.Fragment key={itemDetail.featureName}>
         {/* `multiple device type` will have space control inside FeatureItem*/}
