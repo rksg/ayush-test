@@ -21,6 +21,13 @@ interface KpiChangesParams {
   afterEnd: string
 }
 
+const additionalParamsQuery = (showIntentAI: boolean) => showIntentAI ?
+  `root
+  sliceId
+  sliceValue
+  path {
+    type name
+  }` : ''
 interface ConfigChangePaginationParams {
   page?: number
   pageSize?: number
@@ -52,7 +59,7 @@ export const api = dataApi.injectEndpoints({
               hierarchyNode(path: $path) {
                 configChanges {
                   timestamp type name key oldValues newValues
-                  ${payload.showIntentAI ? 'root sliceId' : ''}
+                  ${additionalParamsQuery(payload.showIntentAI ?? false)}
                 }
               }
             }
@@ -94,7 +101,7 @@ export const api = dataApi.injectEndpoints({
                 total
                 data {
                   timestamp type name key oldValues newValues
-                  ${payload.showIntentAI ? 'root sliceId' : ''}
+                  ${additionalParamsQuery(payload.showIntentAI ?? false)}
                 }
               }
             }
