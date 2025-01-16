@@ -40,7 +40,7 @@ export function WorkflowDesigner (props: WorkflowDesignerProps) {
       <Space direction={'horizontal'}>
         <Button
           rbacOpsIds={[getOpsApi(WorkflowUrls.updateWorkflowUIConfig)]}
-          disable={hasAllowedOperations([getOpsApi(WorkflowUrls.updateWorkflowUIConfig)])}
+          disabled={hasAllowedOperations([getOpsApi(WorkflowUrls.updateWorkflowUIConfig)])}
           icon={<BrushSolid/>}
           onClick={() => setIsPortalVisible(true)}
         >
