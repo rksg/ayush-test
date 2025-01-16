@@ -83,7 +83,7 @@ export function AlarmsDrawer (props: AlarmsType) {
     setVisible(true)
     setSeverity(e.detail.data.name)
     if (isFilterProductToggleEnabled) {
-      setProductType(e.detail.data.name)
+      setProductType(e.detail.data.product ?? 'all')
     }
 
     if(e.detail.data.venueId){
