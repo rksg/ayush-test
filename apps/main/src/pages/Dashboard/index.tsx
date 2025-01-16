@@ -41,7 +41,7 @@ import {
   useIsEdgeReady,
   VenuesDashboardWidgetV2
 } from '@acx-ui/rc/components'
-import { EdgeUrlsInfo, genAllowOperationsPath }                                                          from '@acx-ui/rc/utils'
+import { EdgeUrlsInfo }                                                                                  from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                    from '@acx-ui/react-router-dom'
 import { EdgeScopes, RolesEnum, SwitchScopes, WifiScopes }                                               from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission, hasRoles } from '@acx-ui/user'
@@ -51,6 +51,7 @@ import {
   DateRange,
   getDatePickerValues,
   getDateRangeFilter,
+  getOpsApi,
   useDashboardFilter
 } from '@acx-ui/utils'
 
@@ -197,8 +198,8 @@ function DashboardPageHeader () {
               scopes: [EdgeScopes.CREATE],
               rbacOpsIds: [
                 [
-                  genAllowOperationsPath(EdgeUrlsInfo.addEdge),
-                  genAllowOperationsPath(EdgeUrlsInfo.addEdgeCluster)
+                  getOpsApi(EdgeUrlsInfo.addEdge),
+                  getOpsApi(EdgeUrlsInfo.addEdgeCluster)
                 ]
               ]
             })) ? [{

@@ -14,14 +14,13 @@ import {
   PolicyType,
   ServiceOperation,
   ServiceType,
-  genAllowOperationsPath,
   getServiceDetailsLink,
   hasPolicyPermission,
   hasServicePermission
 } from '@acx-ui/rc/utils'
-import { TenantLink }    from '@acx-ui/react-router-dom'
-import { hasPermission } from '@acx-ui/user'
-import { getIntl }       from '@acx-ui/utils'
+import { TenantLink }         from '@acx-ui/react-router-dom'
+import { hasPermission }      from '@acx-ui/user'
+import { getIntl, getOpsApi } from '@acx-ui/utils'
 
 import { SpaceWrapper }          from '../SpaceWrapper'
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
@@ -87,7 +86,7 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
   const hiddenPin = NetworkTypeEnum.DPSK !== networkType
   const hasPinAllowOps = hasPermission({
     rbacOpsIds: [
-      genAllowOperationsPath(EdgePinUrls.updateEdgePin)
+      getOpsApi(EdgePinUrls.updateEdgePin)
     ] })
 
   const {
@@ -269,8 +268,8 @@ export const usePermissionResult = () => {
       hasPermission({
         rbacOpsIds: [
           [
-            genAllowOperationsPath(EdgeSdLanUrls.activateEdgeMvSdLanNetwork),
-            genAllowOperationsPath(EdgeSdLanUrls.deactivateEdgeMvSdLanNetwork)
+            getOpsApi(EdgeSdLanUrls.activateEdgeMvSdLanNetwork),
+            getOpsApi(EdgeSdLanUrls.deactivateEdgeMvSdLanNetwork)
           ]
         ]
       }):

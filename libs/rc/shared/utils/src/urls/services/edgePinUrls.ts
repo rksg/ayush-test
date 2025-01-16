@@ -10,22 +10,26 @@ export const EdgePinUrls: { [key: string]: ApiInfo } = {
   createEdgePin: {
     method: 'post',
     newApi: true,
-    url: '/personalIdentityNetworks'
+    url: '/personalIdentityNetworks',
+    opsApi: 'POST:/personalIdentityNetworks'
   },
   getEdgePinStatsList: {
     method: 'post',
     newApi: true,
-    url: '/personalIdentityNetworks/query'
+    url: '/personalIdentityNetworks/query',
+    opsApi: 'POST:/personalIdentityNetworks/query'
   },
   deleteEdgePin: {
     method: 'delete',
     newApi: true,
-    url: '/personalIdentityNetworks/:serviceId'
+    url: '/personalIdentityNetworks/:serviceId',
+    opsApi: 'DELETE:/personalIdentityNetworks/{id}'
   },
   updateEdgePin: {
     method: 'put',
     newApi: true,
-    url: '/personalIdentityNetworks/:serviceId'
+    url: '/personalIdentityNetworks/:serviceId',
+    opsApi: 'PUT:/personalIdentityNetworks/{id}'
   },
   activateEdgePinNetwork: {
     method: 'put',

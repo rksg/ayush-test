@@ -1,6 +1,6 @@
 import { RbacOpsIds } from '@acx-ui/types'
+import { getOpsApi }  from '@acx-ui/utils'
 
-import { genAllowOperationsPath }                                                                               from '../../allowOperationsUtils'
 import { ServiceOperation, ServiceType }                                                                        from '../../constants'
 import { PolicyOperation, PolicyType }                                                                          from '../../types'
 import { EdgeDhcpUrls, EdgeHqosProfilesUrls, EdgeMdnsProxyUrls, EdgePinUrls, EdgeSdLanUrls, TunnelProfileUrls } from '../../urls'
@@ -42,29 +42,29 @@ export const serviceAllowedOperationMap = {
     [ServiceOperation.LIST]: ['POST:/portalServiceProfiles/query']
   },
   [ServiceType.EDGE_SD_LAN]: {
-    [ServiceOperation.CREATE]: [genAllowOperationsPath(EdgeSdLanUrls.addEdgeSdLan)],
-    [ServiceOperation.EDIT]: [genAllowOperationsPath(EdgeSdLanUrls.updateEdgeSdLan)],
-    [ServiceOperation.DELETE]: [genAllowOperationsPath(EdgeSdLanUrls.deleteEdgeSdLan)],
-    [ServiceOperation.LIST]: [genAllowOperationsPath(EdgeSdLanUrls.getEdgeSdLanViewDataList)]
+    [ServiceOperation.CREATE]: [getOpsApi(EdgeSdLanUrls.addEdgeSdLan)],
+    [ServiceOperation.EDIT]: [getOpsApi(EdgeSdLanUrls.updateEdgeSdLan)],
+    [ServiceOperation.DELETE]: [getOpsApi(EdgeSdLanUrls.deleteEdgeSdLan)],
+    [ServiceOperation.LIST]: [getOpsApi(EdgeSdLanUrls.getEdgeSdLanViewDataList)]
   },
   [ServiceType.EDGE_MDNS_PROXY]: {
-    [ServiceOperation.CREATE]: [genAllowOperationsPath(EdgeMdnsProxyUrls.addEdgeMdnsProxy)],
-    [ServiceOperation.EDIT]: [genAllowOperationsPath(EdgeMdnsProxyUrls.updateEdgeMdnsProxy)],
-    [ServiceOperation.DELETE]: [genAllowOperationsPath(EdgeMdnsProxyUrls.deleteEdgeMdnsProxy)],
+    [ServiceOperation.CREATE]: [getOpsApi(EdgeMdnsProxyUrls.addEdgeMdnsProxy)],
+    [ServiceOperation.EDIT]: [getOpsApi(EdgeMdnsProxyUrls.updateEdgeMdnsProxy)],
+    [ServiceOperation.DELETE]: [getOpsApi(EdgeMdnsProxyUrls.deleteEdgeMdnsProxy)],
     // eslint-disable-next-line max-len
-    [ServiceOperation.LIST]: [genAllowOperationsPath(EdgeMdnsProxyUrls.getEdgeMdnsProxyViewDataList)]
+    [ServiceOperation.LIST]: [getOpsApi(EdgeMdnsProxyUrls.getEdgeMdnsProxyViewDataList)]
   },
   [ServiceType.EDGE_DHCP]: {
-    [ServiceOperation.CREATE]: [genAllowOperationsPath(EdgeDhcpUrls.addDhcpService)],
-    [ServiceOperation.EDIT]: [genAllowOperationsPath(EdgeDhcpUrls.updateDhcpService)],
-    [ServiceOperation.DELETE]: [genAllowOperationsPath(EdgeDhcpUrls.deleteDhcpService)],
-    [ServiceOperation.LIST]: [genAllowOperationsPath(EdgeDhcpUrls.getDhcpStats)]
+    [ServiceOperation.CREATE]: [getOpsApi(EdgeDhcpUrls.addDhcpService)],
+    [ServiceOperation.EDIT]: [getOpsApi(EdgeDhcpUrls.updateDhcpService)],
+    [ServiceOperation.DELETE]: [getOpsApi(EdgeDhcpUrls.deleteDhcpService)],
+    [ServiceOperation.LIST]: [getOpsApi(EdgeDhcpUrls.getDhcpStats)]
   },
   [ServiceType.PIN]: {
-    [ServiceOperation.CREATE]: [genAllowOperationsPath(EdgePinUrls.createEdgePin)],
-    [ServiceOperation.EDIT]: [genAllowOperationsPath(EdgePinUrls.updateEdgePin)],
-    [ServiceOperation.DELETE]: [genAllowOperationsPath(EdgePinUrls.deleteEdgePin)],
-    [ServiceOperation.LIST]: [genAllowOperationsPath(EdgePinUrls.getEdgePinStatsList)]
+    [ServiceOperation.CREATE]: [getOpsApi(EdgePinUrls.createEdgePin)],
+    [ServiceOperation.EDIT]: [getOpsApi(EdgePinUrls.updateEdgePin)],
+    [ServiceOperation.DELETE]: [getOpsApi(EdgePinUrls.deleteEdgePin)],
+    [ServiceOperation.LIST]: [getOpsApi(EdgePinUrls.getEdgePinStatsList)]
   }
 }
 
@@ -130,16 +130,16 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.LIST]: ['POST:/applicationPolicies/query']
   },
   [PolicyType.TUNNEL_PROFILE]: {
-    [PolicyOperation.CREATE]: [genAllowOperationsPath(TunnelProfileUrls.createTunnelProfile)],
-    [PolicyOperation.EDIT]: [genAllowOperationsPath(TunnelProfileUrls.updateTunnelProfile)],
-    [PolicyOperation.DELETE]: [genAllowOperationsPath(TunnelProfileUrls.deleteTunnelProfile)],
-    [PolicyOperation.LIST]: [genAllowOperationsPath(TunnelProfileUrls.getTunnelProfileViewDataList)]
+    [PolicyOperation.CREATE]: [getOpsApi(TunnelProfileUrls.createTunnelProfile)],
+    [PolicyOperation.EDIT]: [getOpsApi(TunnelProfileUrls.updateTunnelProfile)],
+    [PolicyOperation.DELETE]: [getOpsApi(TunnelProfileUrls.deleteTunnelProfile)],
+    [PolicyOperation.LIST]: [getOpsApi(TunnelProfileUrls.getTunnelProfileViewDataList)]
   },
   [PolicyType.HQOS_BANDWIDTH]: {
-    [PolicyOperation.CREATE]: [genAllowOperationsPath(EdgeHqosProfilesUrls.addEdgeHqosProfile)],
-    [PolicyOperation.EDIT]: [genAllowOperationsPath(EdgeHqosProfilesUrls.updateEdgeHqosProfile)],
-    [PolicyOperation.DELETE]: [genAllowOperationsPath(EdgeHqosProfilesUrls.deleteEdgeHqosProfile)],
+    [PolicyOperation.CREATE]: [getOpsApi(EdgeHqosProfilesUrls.addEdgeHqosProfile)],
+    [PolicyOperation.EDIT]: [getOpsApi(EdgeHqosProfilesUrls.updateEdgeHqosProfile)],
+    [PolicyOperation.DELETE]: [getOpsApi(EdgeHqosProfilesUrls.deleteEdgeHqosProfile)],
     // eslint-disable-next-line max-len
-    [PolicyOperation.LIST]: [genAllowOperationsPath(EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList)]
+    [PolicyOperation.LIST]: [getOpsApi(EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList)]
   }
 }
