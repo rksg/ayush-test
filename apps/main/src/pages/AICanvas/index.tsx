@@ -8,16 +8,16 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
-import { Button, Drawer, DrawerTypes, Loader, showActionModal, Tooltip } from '@acx-ui/components'
-import { DeleteOutlined, EditOutlined, SendMessageOutlined,
+import { Button, Loader, Tooltip }               from '@acx-ui/components'
+import { SendMessageOutlined,
   HistoricalOutlined, Plus, Close, RuckusAiDog }    from '@acx-ui/icons-new'
-import { useChatAiMutation, useLazyGetChatQuery, useGetAllChatsQuery, useUpdateChatMutation,
-  useDeleteChatMutation }          from '@acx-ui/rc/services'
-import { ChatHistory, ChatMessage, HistoryListItem } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                from '@acx-ui/react-router-dom'
+import { useChatAiMutation, useLazyGetChatQuery, useGetAllChatsQuery } from '@acx-ui/rc/services'
+import { ChatHistory, ChatMessage, HistoryListItem }                   from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink }                                  from '@acx-ui/react-router-dom'
 
 import Canvas             from './Canvas'
 import { DraggableChart } from './components/WidgetChart'
+import HistoryDrawer      from './HistoryDrawer'
 import * as UI            from './styledComponents'
 
 export default function AICanvas () {
@@ -26,8 +26,7 @@ export default function AICanvas () {
   const linkToDashboard = useTenantLink('/dashboard')
   const navigate = useNavigate()
   const [chatAi] = useChatAiMutation()
-  const [updateChat] = useUpdateChatMutation()
-  const [deleteChat] = useDeleteChatMutation()
+
   const [getChat] = useLazyGetChatQuery()
   const [loading, setLoading] = useState(false)
   const [isChatLoading, setIsChatLoading] = useState(true)
@@ -37,7 +36,7 @@ export default function AICanvas () {
   const [chats, setChats] = useState([] as ChatMessage[])
   const [ searchText, setSearchText ] = useState('')
   const [ isNewChat, setIsNewChat ] = useState(false)
-  const enabledRenameChat = false
+
 
   const placeholder = $t({ defaultMessage: `Feel free to ask me anything about your deployment! 
   I can also generate on-the-fly widgets for operational data, including Alerts and Metrics.` })
@@ -214,32 +213,6 @@ export default function AICanvas () {
     setHistoryVisible(false)
   }
 
-  const onEditChatTitle = (chat: ChatHistory) => {
-    updateChat({
-      params: { sessionId: chat.id },
-      payload: 'test123'
-    }).then()
-  }
-
-  // const onEditIcon = (chat: ChatHistory) => {
-  // }
-
-  const onDeleteChat = (chat: ChatHistory) => {
-    showActionModal({
-      type: 'confirm',
-      customContent: {
-        action: 'DELETE',
-        entityName: $t({ defaultMessage: 'Chat' }),
-        entityValue: chat.name
-      },
-      onOk: () => {
-        deleteChat({
-          params: { sessionId: chat.id }
-        }).then()
-      }
-    })
-  }
-
   const onHistoryDrawer = () => {
     setHistoryVisible(!historyVisible)
   }
@@ -276,33 +249,7 @@ export default function AICanvas () {
     </div>
   }
 
-  const content = <UI.History>
-    {
-      history.map(i => <div className='duration' key={i.duration}>
-        <div className='time'>{i.duration}</div>
-        {
-          i.history.map(j =>
-            <div className={'chat' + (sessionId === j.id ? ' active' : '')}>
-              <Tooltip title={j.name}>
-                <div className='title' onClick={() => onClickChat(j.id)}>
-                  {j.name}
-                </div>
-              </Tooltip>
-              <div className='action'>
-                <div className='button'
-                  style={{ cursor: 'not-allowed' }}
-                  onClick={()=> { enabledRenameChat && onEditChatTitle(j) }}>
-                  <EditOutlined size='sm' />
-                </div>
-                <div className='button' onClick={()=> { onDeleteChat(j) }}>
-                  <DeleteOutlined size='sm' />
-                </div>
-              </div>
-            </div>)
-        }
-      </div>)
-    }
-  </UI.History>
+
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -385,16 +332,14 @@ export default function AICanvas () {
           </div>
         </div>
         <Canvas />
-        <Drawer
-          drawerType={DrawerTypes.Left}
+        <HistoryDrawer
           visible={historyVisible}
           onClose={onHistoryDrawer}
-          children={content}
-          placement={'left'}
-          width={'320px'}
+          history={history}
+          sessionId={sessionId}
+          onClickChat={onClickChat}
         />
       </UI.Wrapper>
     </DndProvider>
-
   )
 }
