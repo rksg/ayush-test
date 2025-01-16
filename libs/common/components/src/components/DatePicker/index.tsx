@@ -5,8 +5,10 @@ import {
   DatePickerProps as AntDatePickerProps
 } from 'antd'
 import _           from 'lodash'
+import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import {  DateFormatEnum, formatter, userDateTimeFormat } from '@acx-ui/formatter'
 import { ClockOutlined }                                  from '@acx-ui/icons'
 import {
@@ -16,7 +18,8 @@ import {
   resetRanges,
   dateRangeForLast,
   getJwtTokenPayload,
-  AccountTier
+  AccountTier,
+  getDateRangeFilter
 } from '@acx-ui/utils'
 
 import { Tooltip } from '../Tooltip'
@@ -47,6 +50,7 @@ interface DatePickerProps {
   showLast8hours?: boolean;
   isReport?: boolean;
   maxMonthRange?: number;
+  allowedMonthRange?: number;
 }
 const AntRangePicker = AntDatePicker.RangePicker
 
@@ -76,7 +80,8 @@ export const RangePicker = ({
   selectionType,
   isReport,
   showLast8hours,
-  maxMonthRange
+  maxMonthRange,
+  allowedMonthRange
 }: DatePickerProps) => {
   const { $t } = useIntl()
   const { translatedRanges, translatedOptions } = useMemo(() => {
@@ -90,18 +95,38 @@ export const RangePicker = ({
     }
     return { translatedRanges, translatedOptions }
   }, [$t, rangeOptions])
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const componentRef = useRef<HTMLDivElement | null>(null)
   const rangeRef = useRef<RangeRef>(null)
-  const [range, setRange] = useState<DateRangeType>(selectedRange)
+  const { acx_account_tier: accountTier } = getJwtTokenPayload()
   const [activeIndex, setActiveIndex] = useState<0|1>(0)
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
-  const { acx_account_tier: accountTier } = getJwtTokenPayload()
-  const allowedDateRange = isReport
-    ? dateRangeForLast(12,'months')
-    : (accountTier === AccountTier.GOLD
-      ? dateRangeForLast(1,'month')
-      : dateRangeForLast(3,'months')
-    )
+  const allowedDateRange = (isDateRangeLimit && allowedMonthRange)
+    ? dateRangeForLast(allowedMonthRange,'months')
+    : isReport
+      ? dateRangeForLast(12,'months')
+      : (accountTier === AccountTier.GOLD
+        ? dateRangeForLast(1,'month')
+        : dateRangeForLast(3,'months')
+      )
+
+  const getSelectedRange = function () {
+    return selectedRange.startDate?.isAfter(allowedDateRange[0]) ? selectedRange :
+      {
+        startDate: moment(getDateRangeFilter(DateRange.last24Hours).startDate),
+        endDate: moment(getDateRangeFilter(DateRange.last24Hours).endDate)
+      }
+  }
+
+  const getSelectedType = function () {
+    return selectedRange.startDate?.isAfter(allowedDateRange[0]) || isCalendarOpen ? selectionType :
+      DateRange.last24Hours
+  }
+
+  const selectedRangeData = isDateRangeLimit ? getSelectedRange() : selectedRange
+  const selectionTypeData = isDateRangeLimit ? getSelectedType() : selectionType
+  const [range, setRange] = useState<DateRangeType>(selectedRangeData)
+
 
   const disabledDate = useCallback(
     (current: Moment) => (
@@ -113,8 +138,14 @@ export const RangePicker = ({
   )
 
   useEffect(
-    () => setRange(selectedRange),
-    [selectedRange.startDate, selectedRange.endDate] // eslint-disable-line react-hooks/exhaustive-deps
+    () => {
+      if (isDateRangeLimit && !isCalendarOpen) {
+        setRange(selectedRangeData)
+      } else if (!isDateRangeLimit) {
+        setRange(selectedRangeData)
+      }
+    },
+    [selectedRangeData.startDate, selectedRangeData.endDate] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
   useEffect(() => {
@@ -147,12 +178,12 @@ export const RangePicker = ({
 
   const allTimeKey = showAllTime ? '' : $t(dateRangeMap[DateRange.allTime])
   const last8HoursKey = showLast8hours ? '' : $t(dateRangeMap[DateRange.last8Hours])
-  const rangeText = `[${$t(dateRangeMap[selectionType])}]`
+  const rangeText = `[${$t(dateRangeMap[selectionTypeData])}]`
   return (
     <UI.RangePickerWrapper
       ref={componentRef}
       rangeOptions={rangeOptions}
-      selectionType={selectionType}
+      selectionType={selectionTypeData}
       isCalendarOpen={isCalendarOpen}
       rangeText={rangeText}
       showTimePicker={showTimePicker}
@@ -186,13 +217,13 @@ export const RangePicker = ({
             showTimePicker={showTimePicker}
             range={range}
             setRange={setRange}
-            defaultValue={selectedRange}
+            defaultValue={selectedRangeData}
             setIsCalendarOpen={setIsCalendarOpen}
             onDateApply={onDateApply}
           />
         )}
         value={[range?.startDate, range?.endDate]}
-        format={isCalendarOpen || selectionType === DateRange.custom
+        format={isCalendarOpen || selectionTypeData === DateRange.custom
           ? formatter(showTimePicker ? DateFormatEnum.DateTimeFormat : DateFormatEnum.DateFormat)
           : rangeText
         }

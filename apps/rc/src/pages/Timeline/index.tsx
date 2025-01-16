@@ -13,11 +13,11 @@ import { Events }     from './Events'
 
 function Timeline () {
   const { $t } = useIntl()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const { activeTab } = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/timeline')
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -52,6 +52,7 @@ function Timeline () {
             onDateApply={setDateFilter as CallableFunction}
             showTimePicker
             selectionType={range}
+            allowedMonthRange={isDateRangeLimit ? 3 : undefined}
             maxMonthRange={isDateRangeLimit ? 1 : 3}
           />
         ]}
