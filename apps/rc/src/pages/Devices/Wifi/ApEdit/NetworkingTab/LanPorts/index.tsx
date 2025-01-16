@@ -14,8 +14,8 @@ import {
   Tabs,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
-import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
+import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings, useSoftGreProfileLimitedSelection } from '@acx-ui/rc/components'
 import {
   useDeactivateSoftGreProfileOnAPMutation,
   useGetApLanPortsWithActivatedProfilesQuery,
@@ -27,7 +27,8 @@ import {
   useResetApLanPortsMutation,
   useUpdateApEthernetPortsMutation,
   useUpdateApLanPortsMutation,
-  useDeactivateClientIsolationOnApMutation
+  useDeactivateClientIsolationOnApMutation,
+  useLazyGetVenueLanPortSettingsByModelQuery
 } from '@acx-ui/rc/services'
 import {
   ApLanPortTypeEnum,
@@ -36,7 +37,8 @@ import {
   LanPort,
   VenueLanPorts,
   WifiApSetting,
-  isEqualLanPort
+  isEqualLanPort,
+  mergeLanPortSettings, Voter, SoftGreDuplicationChangeState
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -121,6 +123,8 @@ export function LanPorts () {
   const [getVenueLanPorts] = useLazyGetVenueLanPortsQuery()
   const getDhcpEnabled = useFetchIsVenueDhcpEnabled()
 
+  const [getVenueLanPortSettingsByModel] = useLazyGetVenueLanPortSettingsByModelQuery()
+
   const [updateApCustomization, {
     isLoading: isApLanPortsUpdating }] = useUpdateApLanPortsMutation()
   const [updateEthernetPortProfile, {
@@ -146,6 +150,11 @@ export function LanPorts () {
   const [lanData, setLanData] = useState([] as LanPort[])
   const [activeTabIndex, setActiveTabIndex] = useState(0)
   const isResetClick = useRef(false)
+  const {
+    softGREProfileOptionList,
+    duplicationChangeDispatch,
+    validateIsFQDNDuplicate
+  } = useSoftGreProfileLimitedSelection(venueId!)
 
   // TODO: rbac
   const isAllowUpdate = true // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
@@ -187,14 +196,28 @@ export function LanPorts () {
             await getVenueLanPorts(queryPayload, true).unwrap())
           ?.filter(item => item.model === apDetails?.model)?.[0]
 
+        const venueLanPortsSettings = await getVenueLanPortSettingsByModel({
+          params: {
+            venueId,
+            apModel: apCaps?.model,
+            lanPortCount: apCaps?.lanPorts?.length?.toString()
+          }
+        }).unwrap()
+
+        const venueLanPortsMergedData = cloneDeep(venueLanPortsData)
+
+        venueLanPortsMergedData.lanPorts = mergeLanPortSettings(
+          venueLanPortsMergedData.lanPorts, venueLanPortsSettings
+        )
+
         const isDhcpEnabled = await getDhcpEnabled(venueId!)
 
         const apLanPortsCap = apCaps.lanPorts
         const lanPorts = convertToFormData(apLanPortsData, apLanPortsCap)
-        const venueLanPorts = convertToFormData(venueLanPortsData, apLanPortsCap)
+        const venueLanPorts = convertToFormData(venueLanPortsMergedData, apLanPortsCap)
         setApLanPorts(lanPorts)
         setVenueLanPorts(venueLanPorts)
-        setSelectedModel(lanPorts)
+        setSelectedModel(lanPorts.useVenueSettings ? venueLanPorts : lanPorts)
         setSelectedModelCaps(apCaps as CapabilitiesApModel)
         setSelectedPortCaps(apLanPortsCap?.[activeTabIndex] as LanPort)
         setUseVenueSettings(lanPorts.useVenueSettings ?? true)
@@ -311,7 +334,7 @@ export function LanPorts () {
         }
 
         if (isEthernetClientIsolationEnabled) {
-          handleClientIsolationDeactivate(values)
+          await handleClientIsolationDeactivate(values)
         }
 
         await updateEthernetPortProfile({
@@ -358,21 +381,25 @@ export function LanPorts () {
     })
   }
 
-  const handleClientIsolationDeactivate = (values: WifiApSetting) => {
+  const handleClientIsolationDeactivate = async (values: WifiApSetting) => {
     const { useVenueSettings } = values
-    values.lan?.forEach(lanPort => {
+
+    for (const lanPort of values.lan!) {
       const originClientIsolationProfileId
         = lanData.find(l => l.portId === lanPort.portId)?.clientIsolationProfileId
       if (
         originClientIsolationProfileId &&
-        (!lanPort.enabled || !lanPort.clientIsolationEnabled || useVenueSettings)
+          (!lanPort.enabled
+          || !lanPort.clientIsolationEnabled
+          || useVenueSettings
+          || (originClientIsolationProfileId !== lanPort.clientIsolationProfileId))
       ) {
-        deactivateClientIsolationOnAp({
+        await deactivateClientIsolationOnAp({
           // eslint-disable-next-line max-len
           params: { venueId, serialNumber, portId: lanPort.portId, policyId: originClientIsolationProfileId }
         }).unwrap()
       }
-    })
+    }
   }
 
   const handleDiscard = async () => {
@@ -388,6 +415,9 @@ export function LanPorts () {
   }
 
   const handleFormChange = async (formName: string, info: FormChangeInfo) => {
+
+    if (info?.changedFields) return
+
     const index = Number(info?.changedFields?.[0].name.toString().split(',')[1])
     const newLanData = (lanData?.map((item, idx) => {
       return idx === index
@@ -433,6 +463,21 @@ export function LanPorts () {
       })
       isResetClick.current = true
       updateEditContext(formRef?.current as StepsFormLegacyInstance)
+
+      let voters = [] as Voter[]
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      defaultLanPortsFormData.lanPorts.forEach((lanPort: any) => {
+        voters.push({
+          portId: (lanPort.portId ?? '0'),
+          serialNumber
+        })
+      })
+
+      duplicationChangeDispatch({
+        state: SoftGreDuplicationChangeState.ResetToDefault,
+        voters: voters
+      })
     }
   }
 
@@ -517,6 +562,9 @@ export function LanPorts () {
                           venueId={venueId}
                           onGUIChanged={onGUIChanged}
                           serialNumber={serialNumber}
+                          softGREProfileOptionList={softGREProfileOptionList}
+                          optionDispatch={duplicationChangeDispatch}
+                          validateIsFQDNDuplicate={validateIsFQDNDuplicate}
                         />
                       </Col>
                     </Row>

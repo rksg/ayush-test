@@ -1,4 +1,4 @@
-import { defineMessage, MessageDescriptor } from 'react-intl'
+import { defineMessage, FormattedMessage, MessageDescriptor } from 'react-intl'
 
 import {
   DHCPConfigTypeEnum
@@ -324,6 +324,12 @@ export const EditPortMessages = {
   }),
   GUIDE_TO_AUTHENTICATION: defineMessage({
     defaultMessage: 'Go to "Network Control --> Policies and profiles --> Authentication"'
+  }),
+  SWITCH_PORT_PROFILE_NOT_ENABLED: defineMessage({
+    defaultMessage: 'The firmware version on the selected switches must be FI 10.0.20b or higher.'
+  }),
+  CLOUD_PORT_CANNOT_ENABLE_SWITCH_PORT_PROFILE: defineMessage({
+    defaultMessage: 'Port Profile cannot be enabled on the uplink port because it will result in switch losing connection to RUCKUS One.'
   })
 }
 
@@ -542,6 +548,42 @@ export const EthernetPortProfileMessages = {
     defaultMessage: 'This option requires your access points to run firmware version 7.0.0.400 or higher.'
   })
   /* eslint-enable */
+}
+
+export const SwitchPortProfileMessages = {
+  MAC_OUI: <FormattedMessage
+    defaultMessage={'Click here to lookup MAC OUI at IEEE ({link})'}
+    values={{
+      link: <a
+        className='link'
+        target='_blank'
+        href={'https://standards-oui.ieee.org'}
+        rel='noreferrer'>
+        {'https://standards-oui.ieee.org'}
+      </a>
+    }}
+  />,
+  LLDP_TLV: defineMessage({
+    defaultMessage: 'Define LLDP match criterion - like the System Name and/or Description.'
+  }),
+  // eslint-disable-next-line max-len
+  POE_ENABLED: defineMessage({ defaultMessage: 'When MAC OUI or LLDP TLV is selected for this port profile, PoE cannot be turned off.' }),
+  // eslint-disable-next-line max-len
+  POE_LABEL: defineMessage({ defaultMessage: 'PoE needs to be enabled in order to assign MAC OUI and LLDP TLV to this profile.' }),
+  // eslint-disable-next-line max-len
+  MACOUI_POE_DISABLED: defineMessage({ defaultMessage: 'PoE needs to be enabled in order to assign MAC OUI to this profile. ' }),
+  // eslint-disable-next-line max-len
+  LLDPTLV_POE_DISABLED: defineMessage({ defaultMessage: 'PoE needs to be enabled in order to assign LLDP TLV to this profile. ' }),
+  // eslint-disable-next-line max-len
+  APPLY_PORT_PROFILE_CHANGE: defineMessage({ defaultMessage: 'Changes to the port profile will get automatically applied to the associated ports.' }),
+  // eslint-disable-next-line max-len
+  IPSG_ENABLED: defineMessage({ defaultMessage: 'IPSG needs to be disabled in order to enable Ingress ACL, 802.1x and MAC Auth to this profile.' }),
+  // eslint-disable-next-line max-len
+  INGRESS_ACL_DISABLED: defineMessage({ defaultMessage: 'Ingress ACL cannot be configured if IPSG is turned ON.' }),
+  // eslint-disable-next-line max-len
+  DOT1X_DISABLED: defineMessage({ defaultMessage: '802.1x cannot be selected if IPSG is turned ON.' }),
+  // eslint-disable-next-line max-len
+  MAC_AUTH_DISABLED: defineMessage({ defaultMessage: 'MAC Auth cannot be selected if IPSG is turned ON.' })
 }
 
 export const ClientIsolationMessages = {

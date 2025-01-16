@@ -40,7 +40,7 @@ describe('Client Isolation Settings Fields', () => {
       route: { params, path: '/:tenantId' }
     })
 
-    const enableToggle = screen.getByRole('switch', { name: 'Client Isolation' })
+    const enableToggle = screen.getByTestId('client-isolation-switch')
     await userEvent.click(enableToggle)
     expect(screen.getByText('Enabling on the uplink will disconnect AP(s)')).toBeInTheDocument()
 
@@ -67,7 +67,7 @@ describe('Client Isolation Settings Fields', () => {
       route: { params, path: '/:tenantId' }
     })
 
-    const enableToggle = screen.getByRole('switch', { name: 'Client Isolation' })
+    const enableToggle = screen.getByTestId('client-isolation-switch')
     await userEvent.click(enableToggle)
     const allowListDropdown = screen.getByRole('combobox', { name: 'Client Isolation Allowlist' })
     await userEvent.click(allowListDropdown)
@@ -75,7 +75,7 @@ describe('Client Isolation Settings Fields', () => {
 
     const showDetailButton = screen.getByRole('button', { name: 'Policy Details' })
     await userEvent.click(showDetailButton)
-    expect(screen.getByText(clientIsolationProfileDescription)).toBeInTheDocument()
+    expect(await screen.findByText(clientIsolationProfileDescription)).toBeInTheDocument()
     const closeButton = screen.getByRole('button', { name: 'Close' })
     await userEvent.click(closeButton)
 
@@ -96,7 +96,7 @@ describe('Client Isolation Settings Fields', () => {
       route: { params, path: '/:tenantId' }
     })
 
-    const enableToggle = screen.getByRole('switch', { name: 'Client Isolation' })
+    const enableToggle = screen.getByTestId('client-isolation-switch')
     await userEvent.click(enableToggle)
 
     const addPolicyButton = screen.getByRole('button', { name: 'Add Policy' })
