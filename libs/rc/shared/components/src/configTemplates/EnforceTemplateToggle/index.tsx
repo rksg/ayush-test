@@ -18,13 +18,13 @@ export function EnforceTemplateToggle (props: { templateId?: string }) {
   const [ updateEnforcementStatus ] = useUpdateEnforcementStatusMutation()
   const { initValue, isLoading, isSuccess } = useGetConfigTemplateListQuery({
     params: {}, payload: {
-      fields: ['id', 'enforced'],
+      fields: ['id', 'isEnforced'],
       filters: { id: [props.templateId] }
     }
   }, {
     skip: !props.templateId,
     selectFromResult: ({ data, isLoading, isSuccess }) => ({
-      initValue: data?.data?.[0]?.enforced ?? false,
+      initValue: data?.data?.[0]?.isEnforced ?? false,
       isLoading,
       isSuccess
     })

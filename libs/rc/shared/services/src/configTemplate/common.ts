@@ -41,6 +41,7 @@ import {
   useCasesToRefreshRadiusServerTemplateList, useCasesToRefreshTemplateList,
   useCasesToRefreshNetworkTemplateList
 } from './constants'
+import { AllowedEnforcedConfigTemplateTypes, configTemplateInstanceEnforcedApiMap } from './utils'
 
 export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
@@ -478,6 +479,27 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
           : ConfigTemplateUrlsInfo.deleteEnforcement
         return { ...createHttpRequest(apiInfo, params) }
       }
+    }),
+    getConfigTemplateInstanceEnforced: build.query<
+    { isEnforced: boolean },
+      RequestPayload<{ instanceId: string, type: AllowedEnforcedConfigTemplateTypes }>
+    >({
+      query: ({ params, payload }) => {
+        const { instanceId, type } = payload!
+        const apiInfo = configTemplateInstanceEnforcedApiMap[type]
+        return {
+          ...createHttpRequest(apiInfo, params),
+          body: JSON.stringify({
+            fields: ['id', 'isEnforced'],
+            filters: { id: [instanceId] }
+          })
+        }
+      },
+      transformResponse (result: TableResult<{ isEnforced: boolean }>) {
+        return {
+          isEnforced: result.data[0]?.isEnforced ?? false
+        }
+      }
     })
   })
 })
@@ -509,5 +531,6 @@ export const {
   useGetDriftInstancesQuery,
   useLazyGetDriftReportQuery,
   usePatchDriftReportMutation,
-  useUpdateEnforcementStatusMutation
+  useUpdateEnforcementStatusMutation,
+  useGetConfigTemplateInstanceEnforcedQuery
 } = configTemplateApi

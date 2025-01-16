@@ -103,6 +103,7 @@ export interface Venue {
   edges?: number,
   incompatible?: number
   incompatibleEdges?: number // GUI only
+  isEnforced?: boolean // For Config Template Enforcement feature, it indicates whether the venue template/instance is enforced
 }
 
 export interface AlarmBase {

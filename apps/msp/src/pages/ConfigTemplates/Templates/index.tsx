@@ -303,13 +303,13 @@ function useColumns (props: TemplateColumnProps) {
       }
     },
     ...(enforcementEnabled ? [{
-      key: 'enforced',
+      key: 'isEnforced',
       title: $t({ defaultMessage: 'Enforcement' }),
-      dataIndex: 'enforced',
+      dataIndex: 'isEnforced',
       filterable: enforcementFilterOptions,
       sorter: true,
       render: function (_: ReactNode, row: ConfigTemplate) {
-        return getConfigTemplateEnforcementLabel(row.enforced)
+        return getConfigTemplateEnforcementLabel(row.isEnforced)
       }
     }] : []),
     ...(driftsEnabled ? [{
