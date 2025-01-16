@@ -204,7 +204,8 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/api/upgrade/tenant/:tenantId/edgePreference',
     oldUrl: '/api/upgrade/tenant/:tenantId/edgePreference',
-    newApi: true
+    newApi: true,
+    opsApi: 'PUT:/api/upgrade/tenant/{id}/edgePreference'
   },
   skipEdgeUpgradeSchedules: {
     method: 'delete',
