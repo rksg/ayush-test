@@ -211,6 +211,7 @@ function processWifiTab (
       editAdvancedContextData?.updateAccessPointUSB?.()
       editAdvancedContextData?.updateBssColoring?.()
       editAdvancedContextData?.updateApManagementVlan?.()
+      editAdvancedContextData?.updateRebootTimeout?.()
       break
     case 'networking':
       editNetworkingContextData?.updateCellular?.(editNetworkingContextData.cellularData)
@@ -218,7 +219,6 @@ function processWifiTab (
       editNetworkingContextData?.updateMesh?.()
       editNetworkingContextData?.updateDirectedMulticast?.()
       editNetworkingContextData?.updateRadiusOptions?.()
-      editNetworkingContextData?.updateRebootTimeout?.()
       editNetworkingContextData?.updateSmartMonitor?.()
       break
     case 'radio':
