@@ -6,6 +6,7 @@ import { map }     from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Incident, overlapsRollup, sortProp }                                             from '@acx-ui/analytics/utils'
+import type { SortResult }                                                                from '@acx-ui/analytics/utils'
 import { Card, Loader, NoGranularityText, Table, Button, TableProps, Tooltip, showToast } from '@acx-ui/components'
 import { CopyOutlined }                                                                   from '@acx-ui/icons-new'
 
@@ -50,13 +51,7 @@ export function useDrawer (init: boolean) {
   return { visible, vlan, onOpen, onClose }
 }
 
-export const vlanSorter = (a: unknown, b: unknown) => {
-  const num1 = Number(a)
-  const num2 = Number(b)
-  if (num1 < num2) return -1
-  if (num1 > num2) return 1
-  return 0
-}
+export const vlanSorter = (a: unknown, b: unknown) => Math.sign(Number(a) - Number(b)) as SortResult
 
 function ImpactedVLANsTable (props: {
   data: ImpactedVlan[],
