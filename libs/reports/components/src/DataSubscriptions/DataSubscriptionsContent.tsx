@@ -38,7 +38,7 @@ const DataSubscriptionsContent: React.FC<DataSubscriptionsContentProps> = ({ isR
           type='default'
           onClick={() => navigate({
             ...basePath,
-            pathname: `${basePath.pathname}/cloudStorage`
+            pathname: `${basePath.pathname}/cloudStorage/create`
           })}
         >{$t({ defaultMessage: 'Cloud Storage: Azure' })}</Button>
       </> : []}

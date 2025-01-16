@@ -1,10 +1,10 @@
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import DataSubscriptionsForm from './DataSubscriptionsForm'
+import SubscriptionForm from './SubscriptionForm'
 describe('DataSubscriptionsForm', () => {
-  it('(RAI) should render DataSubscriptionsAuditLog correct', async () => {
-    render(<DataSubscriptionsForm isRAI/>, {
+  it('(RAI) should render SubscriptionForm correct', async () => {
+    render(<SubscriptionForm isRAI/>, {
       route: {},
       wrapper: Provider
     })
