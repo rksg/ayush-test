@@ -180,7 +180,10 @@ function DashboardPageHeader () {
     rbacOpsIds: [
       getOpsApi(WifiRbacUrlsInfo.addAp),
       getOpsApi(SwitchRbacUrlsInfo.addSwitch),
-      getOpsApi(EdgeUrlsInfo.addEdge)
+      [
+        getOpsApi(EdgeUrlsInfo.addEdge),
+        getOpsApi(EdgeUrlsInfo.addEdgeCluster)
+      ]
     ]
   })
 
@@ -259,7 +262,10 @@ function DashboardPageHeader () {
             rbacOpsIds={[
               getOpsApi(WifiRbacUrlsInfo.addAp),
               getOpsApi(SwitchRbacUrlsInfo.addSwitch),
-              getOpsApi(EdgeUrlsInfo.addEdge),
+              [
+                getOpsApi(EdgeUrlsInfo.addEdge),
+                getOpsApi(EdgeUrlsInfo.addEdgeCluster)
+              ],
               getOpsApi(WifiRbacUrlsInfo.addNetworkDeep),
               getOpsApi(CommonUrlsInfo.addVenue)
             ]}

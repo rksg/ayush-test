@@ -269,7 +269,10 @@ export function DevicesWidgetv2 (props: {
                       style={{ height: (height/2) - 30 }}>
                       {filterByAccess([<TenantLink
                         scopeKey={[EdgeScopes.CREATE]}
-                        rbacOpsIds={[getOpsApi(EdgeUrlsInfo.addEdge)]}
+                        rbacOpsIds={[
+                          getOpsApi(EdgeUrlsInfo.addEdge),
+                          getOpsApi(EdgeUrlsInfo.addEdgeCluster)
+                        ]}
                         to={'/devices/edge/add'}>
                         {$t({ defaultMessage: 'Add RUCKUS Edge' })}
                       </TenantLink>])}
