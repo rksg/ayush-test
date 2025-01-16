@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { Features }                          from '@acx-ui/feature-toggle'
-import { getTunnelProfileFormDefaultValues } from '@acx-ui/rc/utils'
-import { render, renderHook, screen }        from '@acx-ui/test-utils'
+import { Features }                                                   from '@acx-ui/feature-toggle'
+import { getTunnelProfileFormDefaultValues, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { render, renderHook, screen }                                 from '@acx-ui/test-utils'
 
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
@@ -28,6 +28,22 @@ jest.mock('antd', () => {
   Select.Option = 'option'
   return { ...components, Select }
 })
+
+jest.mock('../../ApCompatibility/ApCompatibilityToolTip', () => ({
+  ApCompatibilityToolTip: (props: { onClick: () => void }) =>
+    <div data-testid='ApCompatibilityToolTip'>
+      <button onClick={props.onClick}>See compatibility</button>
+    </div>
+}))
+
+jest.mock('../../Compatibility/EdgeCompatibilityDrawer', () => ({
+  ...jest.requireActual('../../Compatibility/EdgeCompatibilityDrawer'),
+  EdgeCompatibilityDrawer: (props: { featureName: string, onClose: () => void }) =>
+    <div data-testid='EdgeCompatibilityDrawer'>
+      <span>Feature:{props.featureName}</span>
+      <button onClick={props.onClose}>Close</button>
+    </div>
+}))
 
 jest.mock('../../useEdgeActions', () => ({
   ...jest.requireActual('../../useEdgeActions'),
@@ -343,6 +359,23 @@ describe('TunnelProfileForm', () => {
       await user.click(screen.getByRole('radio', { name: 'VNI' }))
       expect(natTraversalSwitch).not.toBeChecked()
       expect(natTraversalSwitch).toBeDisabled()
+    })
+
+    it('should show "NAT Traversal" compatibility component', async () => {
+      const user = userEvent.setup()
+      render(
+        <Form initialValues={defaultValues}>
+          <TunnelProfileForm />
+        </Form>
+      )
+
+      const compatibilityToolTips = await screen.findAllByTestId('ApCompatibilityToolTip')
+      expect(compatibilityToolTips.length).toBe(1)
+      compatibilityToolTips.forEach(t => expect(t).toBeVisible())
+      await user.click(compatibilityToolTips[0])
+      const compatibilityDrawer = await screen.findByTestId('EdgeCompatibilityDrawer')
+      expect(compatibilityDrawer).toBeVisible()
+      expect(compatibilityDrawer).toHaveTextContent(IncompatibilityFeatures.NAT_TRAVERSAL)
     })
   })
 })
