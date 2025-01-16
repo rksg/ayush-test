@@ -7,6 +7,7 @@ import { Button }                                                  from '@acx-ui
 import { BrushSolid, EyeOpenOutlined, EyeOpenSolid }               from '@acx-ui/icons'
 import { useGetWorkflowStepsByIdQuery }                            from '@acx-ui/rc/services'
 import { WorkflowPanelMode, InitialEmptyStepsCount, WorkflowUrls } from '@acx-ui/rc/utils'
+import { hasAllowedOperations }                                    from '@acx-ui/user'
 import { getOpsApi }                                               from '@acx-ui/utils'
 
 import { EnrollmentPortalDesignModal } from '../../../EnrollmentPortalDesignModal'
@@ -39,6 +40,7 @@ export function WorkflowDesigner (props: WorkflowDesignerProps) {
       <Space direction={'horizontal'}>
         <Button
           rbacOpsIds={[getOpsApi(WorkflowUrls.updateWorkflowUIConfig)]}
+          disable={hasAllowedOperations([getOpsApi(WorkflowUrls.updateWorkflowUIConfig)])}
           icon={<BrushSolid/>}
           onClick={() => setIsPortalVisible(true)}
         >
