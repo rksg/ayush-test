@@ -11,15 +11,14 @@ import {  Card, Loader,
 import { intlFormats } from '@acx-ui/formatter'
 
 import {
-  CountByType,
   useImpactedSwitchesDetailQuery
 } from './services'
 
 import type { ChartProps } from '../types'
 
-type DonutChartByParamProps = {
+export type DonutChartByParamProps = {
   incident: ChartProps['incident'],
-  byParam: 'model' | 'firmware'
+  param: 'model' | 'firmware'
 }
 
 const paramMapping = {
@@ -29,7 +28,7 @@ const paramMapping = {
 
 type DataKey = 'impactedModelCount' | 'impactedFirmwareCount'
 
-export function ImpactedSwitchesByParamDonut ({ incident, byParam }: DonutChartByParamProps) {
+export function ImpactedSwitchesByParamDonut ({ incident, param }: DonutChartByParamProps) {
   const { $t } = useIntl()
   const { id } = incident
 
@@ -37,22 +36,21 @@ export function ImpactedSwitchesByParamDonut ({ incident, byParam }: DonutChartB
 
   const response = useImpactedSwitchesDetailQuery({ id },
     { skip: druidRolledup })
-  const dataKey:DataKey = paramMapping[byParam] as DataKey
+  const dataKey:DataKey = paramMapping[param] as DataKey
   const sortedData= response.data && Object.entries(response.data[dataKey])
     .sort((a,b)=>b[1]-a[1])
 
   const topDataKey = sortedData?.at(0)?.at(0) || ''
 
-  const title=$t({ defaultMessage: 'Total Impacted Switch {byParam}{plural}' },
-    { byParam, plural: sortedData?.length ? 's' : '' })
+  const title=$t({ defaultMessage: 'Total Impacted Switch {param}{plural}' },
+    { param, plural: sortedData?.length ? 's' : '' })
   const subtitle = $t({
-    defaultMessage: 'Top imapacted {byParam} is {value}' },
-  { byParam, value: topDataKey })
+    defaultMessage: 'Top imapacted {param} is {value}' },
+  { param, value: topDataKey })
 
-  const transformData = (data:{ impactedModelCount:CountByType,
-    impactedFirmwareCount:CountByType })=>{
+  const transformData = (sortedData:[string,number][])=>{
     const colors = qualitativeColorSet()
-    return Object.entries(data[dataKey]).sort((a,b)=>b[1]-a[1]).map(([key,value],index)=>{
+    return sortedData.map(([key,value],index)=>{
       return {
         value: value,
         name: key,
@@ -62,8 +60,8 @@ export function ImpactedSwitchesByParamDonut ({ incident, byParam }: DonutChartB
   }
 
   return <Loader states={[response]}>
-    <Card title={$t({ defaultMessage: 'Impacted Switch {byParam}{plural}' },
-      { byParam, plural: sortedData?.length ? 's' : '' })}
+    <Card title={$t({ defaultMessage: 'Impacted Switch {param}{plural}' },
+      { param, plural: sortedData?.length ? 's' : '' })}
     type='no-border'>
       {druidRolledup
         ? <NoGranularityText />
@@ -76,7 +74,7 @@ export function ImpactedSwitchesByParamDonut ({ incident, byParam }: DonutChartB
               subTitle={subtitle}
               legend='name-value'
               dataFormatter={(v) => $t(intlFormats.countFormat, { value: v as number })}
-              data={transformData(response.data!)}/>
+              data={transformData(sortedData!)}/>
           )}
         </AutoSizer>
       }

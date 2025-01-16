@@ -45,10 +45,10 @@ export const SwitchLoopDetection = (incident: Incident) => {
         <ImpactedSwitchesDonut incident={incident}/>
       </GridCol>
       <GridCol col={{ span: 6 }} style={{ minHeight: '249px' }}>
-        <ImpactedSwitchesByParamDonut incident={incident} byParam='model'/>
+        <ImpactedSwitchesByParamDonut incident={incident} param='model'/>
       </GridCol>
       <GridCol col={{ span: 6 }} style={{ minHeight: '249px' }}>
-        <ImpactedSwitchesByParamDonut incident={incident} byParam='firmware'/>
+        <ImpactedSwitchesByParamDonut incident={incident} param='firmware'/>
       </GridCol>
       <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '249px' }}>
         <ImpactedVlanTable incident={incident} />
