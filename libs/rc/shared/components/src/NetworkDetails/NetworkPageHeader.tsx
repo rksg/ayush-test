@@ -23,7 +23,8 @@ function NetworkPageHeader ({
   setSelectedVenues?: CallableFunction,
   selectedVenues?: string[]
 }) {
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const { startDate, endDate, setDateFilter, range } = useDateFilter({ isDateRangeLimit })
   const { data: networkData, isLoading } = useGetNetwork()
   const navigate = useNavigate()
   const location = useLocation()
@@ -34,7 +35,6 @@ function NetworkPageHeader ({
   const { $t } = useIntl()
   const enableTimeFilter = () => !['aps', 'venues'].includes(activeTab as string)
   const [ disableConfigure, setDisableConfigure ] = useState(false)
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
   const GenBreadcrumb = () => {
     const { isTemplate } = useConfigTemplate()

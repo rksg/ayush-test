@@ -16,6 +16,7 @@ import {
   Badge,
   defaultRichTextFormatValues
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { formatter, DateFormatEnum }                     from '@acx-ui/formatter'
 import { useGetEdgePortTrafficQuery }                    from '@acx-ui/rc/services'
 import { EdgeAllPortTrafficData, EdgeTimeSeriesPayload } from '@acx-ui/rc/utils'
@@ -70,7 +71,8 @@ const transformTrafficSeriesFragment = (data: EdgeAllPortTrafficData): TrafficSe
 
 export function EdgeTrafficByVolumeWidget () {
   const { $t } = useIntl()
-  const filters = useDateFilter()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const filters = useDateFilter({ isDateRangeLimit })
   const params = useParams()
 
   const { data: queryResults = emptyData, isLoading } = useGetEdgePortTrafficQuery({

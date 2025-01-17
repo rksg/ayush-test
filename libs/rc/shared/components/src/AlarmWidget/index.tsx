@@ -38,9 +38,9 @@ export const getAlarmsDonutChartData = (overviewData?: Dashboard): DonutChartDat
 
 export function AlarmWidgetV2 () {
   const { $t } = useIntl()
-
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   // Dashboard overview query
-  const { venueIds } = useDashboardFilter()
+  const { venueIds } = useDashboardFilter({ isDateRangeLimit })
   const isNewAlarmQueryEnabled = useIsSplitOn(Features.ALARM_NEW_API_TOGGLE)
   const query = isNewAlarmQueryEnabled ? useAlarmSummariesQuery : useDashboardV2OverviewQuery
 

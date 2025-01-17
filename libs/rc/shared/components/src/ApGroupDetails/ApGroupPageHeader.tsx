@@ -19,11 +19,11 @@ import { ApGroupDetailSubTitle } from './styledComponents'
 
 
 function ApGroupPageHeader () {
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const { $t } = useIntl()
 
   const { apGroupId, activeTab, name, venueName, members, networks } = useApGroupContext()
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const { startDate, endDate, setDateFilter, range } = useDateFilter({ isDateRangeLimit })
 
   const apgHeaderData = {
     title: name || '',

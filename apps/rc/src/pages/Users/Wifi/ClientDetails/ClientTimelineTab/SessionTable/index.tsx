@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { useIntl, defineMessage } from 'react-intl'
 
 import { Loader, TableProps, Table } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { defaultSort, sortProp }     from '@acx-ui/rc/utils'
 import { TenantLink, useParams }     from '@acx-ui/react-router-dom'
@@ -16,9 +17,10 @@ import {
 
 export function SessionTable () {
   const intl = useIntl()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const { clientId } = useParams()
   const { $t } = intl
-  const { dateFilter } = useDateFilter()
+  const { dateFilter } = useDateFilter({ isDateRangeLimit })
   const filters = {
     ...dateFilter,
     mac: clientId?.toUpperCase()

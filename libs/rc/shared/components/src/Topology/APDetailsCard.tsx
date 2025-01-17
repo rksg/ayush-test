@@ -35,8 +35,8 @@ export function APDetailsCard (props: {
   const { apDetail, isLoading, onClose } = props
   const { $t } = useIntl()
   const toggles = useIncidentToggles()
-
-  const { dateFilter } = useDateFilter()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const { dateFilter } = useDateFilter({ isDateRangeLimit })
   const location = useLocation()
 
   const filters = {

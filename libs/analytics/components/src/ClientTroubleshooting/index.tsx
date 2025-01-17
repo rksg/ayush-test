@@ -69,7 +69,8 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
   const intl = useIntl()
   const { $t } = intl
   const { read, write } = useEncodedParameter<Filters>('clientTroubleShootingSelections')
-  const { startDate, endDate, range } = useDateFilter()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const { startDate, endDate, range } = useDateFilter({ isDateRangeLimit })
   const toggles = useIncidentToggles()
   const isMLISA = get('IS_MLISA_SA')
   const isRoamingTypeEnabled = useIsSplitOn(Features.ROAMING_TYPE_EVENTS_TOGGLE)

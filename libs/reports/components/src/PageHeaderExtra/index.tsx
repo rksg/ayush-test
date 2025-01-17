@@ -25,7 +25,8 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
   const isAPReport = ['ap','both'].includes(reportType)
   const isNetworkFilterDisabled = networkFilterDisabledReports.includes(type)
 
-  const { startDate, endDate, setDateFilter, range } = useDateFilter(moment().subtract(12, 'month'))
+  const { startDate, endDate, setDateFilter, range } =
+    useDateFilter({ earliestStart: moment().subtract(12, 'month') })
   const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
   const component = [

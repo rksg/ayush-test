@@ -28,7 +28,8 @@ import { TopApplications }          from './TopApplications'
 
 export function ClientOverviewTab () {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-  const { dateFilter } = useDateFilter()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const { dateFilter } = useDateFilter({ isDateRangeLimit })
   const filters = useMemo(() => ({
     filter: {},
     ...dateFilter

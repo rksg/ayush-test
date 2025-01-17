@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
 
-import { get }         from '@acx-ui/config'
-import { useLocation } from '@acx-ui/react-router-dom'
+import { get }                    from '@acx-ui/config'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { useLocation }            from '@acx-ui/react-router-dom'
 import {
   AnalyticsFilter,
   PathFilter,
@@ -61,9 +62,10 @@ export interface AnalyticsFilterProps {
 }
 
 export function useAnalyticsFilter (props?: AnalyticsFilterProps) {
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const { read, write } = useEncodedParameter<NetworkFilter>('analyticsNetworkFilter')
   const { pathname } = useLocation()
-  const { dateFilter } = useDateFilter()
+  const { dateFilter } = useDateFilter({ isDateRangeLimit })
   // use dashboard filter as analytics filter when only 1 venue selected
   const dashboardFilter = useEncodedParameter<{ nodes:string[][] }>('dashboardVenueFilter')
   const venuesFilter = dashboardFilter.read()

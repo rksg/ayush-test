@@ -7,6 +7,7 @@ import AutoSizer     from 'react-virtualized-auto-sizer'
 
 import { calculateGranularity, TimeSeriesChartData, getSeriesData }                from '@acx-ui/analytics/utils'
 import { Card, Loader, NoData, MultiBarTimeSeriesChart, GridCol, cssStr, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
 import { formatter }                                                               from '@acx-ui/formatter'
 import { useGetEdgeUptimeQuery }                                                   from '@acx-ui/rc/services'
 import { EdgeStatusTimeSeries, EdgeTimeSeriesPayload }                             from '@acx-ui/rc/utils'
@@ -33,9 +34,9 @@ function getStartAndEndTimes (timeSeries: TimeSeriesChartData[]) {
 }
 
 export function EdgeUpTimeWidget () {
-
   const { $t } = useIntl()
-  const filters = useDateFilter()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const filters = useDateFilter({ isDateRangeLimit })
   const params = useParams()
 
   type Key = keyof Omit<EdgeStatusTimeSeries, 'time'>

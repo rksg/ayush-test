@@ -17,6 +17,7 @@ import {
   Badge,
   defaultRichTextFormatValues
 } from '@acx-ui/components'
+import { useIsSplitOn, Features }                        from '@acx-ui/feature-toggle'
 import { formatter, DateFormatEnum }                     from '@acx-ui/formatter'
 import { useGetEdgeResourceUtilizationQuery }            from '@acx-ui/rc/services'
 import { EdgeResourceTimeSeries, EdgeTimeSeriesPayload } from '@acx-ui/rc/utils'
@@ -28,8 +29,9 @@ import type { EChartsOption, TooltipComponentOption } from 'echarts'
 type Key = keyof Omit<EdgeResourceTimeSeries, 'time'>
 
 export function EdgeResourceUtilizationWidget () {
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const { $t } = useIntl()
-  const filters = useDateFilter()
+  const filters = useDateFilter({ isDateRangeLimit })
   const params = useParams()
 
   const emptyData = {

@@ -70,7 +70,8 @@ export const DashboardFilterProvider = ({ children }: { children : React.ReactNo
   const [dateFilterState, setDateFilterState] = useState<DateFilter>(
     getDateRangeFilter(DateRange.last8Hours)
   )
-  const { filters } = useDashboardFilter()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const { filters } = useDashboardFilter({ isDateRangeLimit })
   const { startDate, endDate, range } = getDatePickerValues(dateFilterState)
   const dashboardFilters = { ...filters, startDate, endDate, range }
 

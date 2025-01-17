@@ -209,7 +209,7 @@ export function EmbeddedReport (props: ReportProps) {
 
   const [ guestToken ] = useGuestTokenMutation()
   const [ embeddedId ] = useEmbeddedIdMutation()
-  const { startDate, endDate } = useDateFilter(moment().subtract(12, 'month'))
+  const { startDate, endDate } = useDateFilter({ earliestStart: moment().subtract(12, 'month') })
   const { pathFilters: { path } } = useAnalyticsFilter()
   const { filters: { paths, bands } } = useReportsFilter()
 

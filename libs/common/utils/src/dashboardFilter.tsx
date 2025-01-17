@@ -9,9 +9,13 @@ import type { NodesFilter } from './types/networkFilter'
 
 export type DashboardFilter = DateFilter & { filter: NodesFilter }
 
-export function useDashboardFilter () {
+export function useDashboardFilter ({
+  isDateRangeLimit = false
+}: {
+  isDateRangeLimit?: boolean;
+} = {}) {
   const { read, write } = useEncodedParameter<{ nodes:string[][] }>('dashboardVenueFilter')
-  const { dateFilter } = useDateFilter()
+  const { dateFilter } = useDateFilter({ isDateRangeLimit })
   return useMemo(() => {
     const { nodes } = read() || { nodes: [] }
     const venueIds = nodes.map(([name]:string[]) => name)

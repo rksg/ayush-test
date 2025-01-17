@@ -82,9 +82,10 @@ export const getSwitchClientStackedBarChartData = (
 }
 
 export function ClientsWidgetV2 () {
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const onArrowClick = useNavigateToPath('/users/')
   const intl = useIntl()
-  const { venueIds } = useDashboardFilter()
+  const { venueIds } = useDashboardFilter({ isDateRangeLimit })
 
   const isNewDashboardQueryEnabled = useIsSplitOn(Features.DASHBOARD_NEW_API_TOGGLE)
   const query = isNewDashboardQueryEnabled ? useClientSummariesQuery : useDashboardV2OverviewQuery

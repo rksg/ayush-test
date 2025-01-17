@@ -31,8 +31,10 @@ import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 import EdgeDetailsTabs from './EdgeDetailsTabs'
 
 export const EdgeDetailsPageHeader = () => {
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const { $t } = useIntl()
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const { startDate, endDate, setDateFilter, range } =
+    useDateFilter({ isDateRangeLimit })
   const params = useParams()
   const { serialNumber } = params
   const { currentEdgeStatus: currentEdge, currentCluster } = useContext(EdgeDetailsDataContext)
@@ -44,7 +46,6 @@ export const EdgeDetailsPageHeader = () => {
   const status = currentEdge?.deviceStatus as EdgeStatusEnum
   const currentEdgeOperational = status === EdgeStatusEnum.OPERATIONAL
   const isGracefulShutdownReady = useIsEdgeFeatureReady(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
-  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
   const menuConfig = [
     {

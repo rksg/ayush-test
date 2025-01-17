@@ -21,7 +21,8 @@ export function MapWidgetV2 () {
 }
 
 function ActualMapV2 () {
-  const { venueIds } = useDashboardFilter()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const { venueIds } = useDashboardFilter({ isDateRangeLimit })
 
   const queryResults = useDashboardV2OverviewQuery({
     params: useParams(),

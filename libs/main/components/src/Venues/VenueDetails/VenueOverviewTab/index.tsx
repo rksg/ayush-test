@@ -39,7 +39,8 @@ import * as UI from './styledComponents'
 
 export function VenueOverviewTab () {
   const { $t } = useIntl()
-  const { dateFilter } = useDateFilter()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const { dateFilter } = useDateFilter({ isDateRangeLimit })
   const { venueId } = useParams()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 

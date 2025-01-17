@@ -32,9 +32,9 @@ import {
   useTenantLink,
   useParams
 }                  from '@acx-ui/react-router-dom'
-import { SwitchScopes }                  from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { useDateFilter }                 from '@acx-ui/utils'
+import { SwitchScopes }                   from '@acx-ui/types'
+import { filterByAccess,  hasPermission } from '@acx-ui/user'
+import { useDateFilter }                  from '@acx-ui/utils'
 
 import AddStackMember from './AddStackMember'
 import SwitchTabs     from './SwitchTabs'
@@ -95,7 +95,8 @@ function SwitchPageHeader () {
   const isStack = switchDetailHeader?.isStack || false
   const isSyncedSwitchConfig = switchDetailHeader?.syncedSwitchConfig
 
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const { startDate, endDate, setDateFilter, range } =
+    useDateFilter({ isDateRangeLimit })
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     switch(e.key) {

@@ -43,7 +43,8 @@ function ApPageHeader () {
   const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
 
   const { $t } = useIntl()
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const { startDate, endDate, setDateFilter, range } =
+    useDateFilter({ isDateRangeLimit })
   const { tenantId, serialNumber, apStatusData, afcEnabled, venueId, model } = useApContext()
   const params = { venueId, serialNumber }
   const { data } = useApDetailHeaderQuery({ params })

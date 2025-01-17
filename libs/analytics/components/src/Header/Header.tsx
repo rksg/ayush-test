@@ -2,6 +2,7 @@ import moment from 'moment-timezone'
 
 import { PageHeader, PageHeaderProps, RangePicker, TimeRangeDropDown } from '@acx-ui/components'
 import { get }                                                         from '@acx-ui/config'
+import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
 import { getShowWithoutRbacCheckKey }                                  from '@acx-ui/user'
 import { useDateFilter }                                               from '@acx-ui/utils'
 
@@ -42,7 +43,8 @@ export const Filter = (
 }
 
 export const useHeaderExtra = ({ datepicker, ...props }: UseHeaderExtraProps) => {
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const { startDate, endDate, setDateFilter, range } = useDateFilter({ isDateRangeLimit })
   return [
     <Filter
       key={getShowWithoutRbacCheckKey('network-filter')}

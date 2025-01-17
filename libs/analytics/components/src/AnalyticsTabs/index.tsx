@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                from '@acx-ui/components'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 import type { AnalyticsFilter }                from '@acx-ui/utils'
 import { useDateFilter }                       from '@acx-ui/utils'
@@ -16,8 +17,9 @@ export function AnalyticsTabs (props: {
   const { $t } = useIntl()
   const location = useLocation()
   const navigate = useNavigate()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
   const { activeSubTab } = useParams()
-  const { dateFilter } = useDateFilter()
+  const { dateFilter } = useDateFilter({ isDateRangeLimit })
   const onTabChange = (tab: string) => {
     navigate({
       ...location,

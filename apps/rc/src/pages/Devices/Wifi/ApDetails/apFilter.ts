@@ -1,11 +1,13 @@
-import { pathToFilter }         from '@acx-ui/analytics/utils'
-import { useDateFilter }        from '@acx-ui/utils'
-import type { AnalyticsFilter } from '@acx-ui/utils'
+import { pathToFilter }           from '@acx-ui/analytics/utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useDateFilter }          from '@acx-ui/utils'
+import type { AnalyticsFilter }   from '@acx-ui/utils'
 
 export const useApFilter = (
   { venueId, apMac }: { venueId?: string, apMac?: string }
 ): AnalyticsFilter => {
-  const { dateFilter } = useDateFilter()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const { dateFilter } = useDateFilter({ isDateRangeLimit })
   return {
     ...dateFilter,
     filter: pathToFilter([

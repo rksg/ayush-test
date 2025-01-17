@@ -1,9 +1,10 @@
 import { useIntl, defineMessage } from 'react-intl'
 
-import { Cascader, Loader }   from '@acx-ui/components'
-import { useVenuesListQuery } from '@acx-ui/rc/services'
-import { useParams }          from '@acx-ui/react-router-dom'
-import { useDashboardFilter } from '@acx-ui/utils'
+import { Cascader, Loader }       from '@acx-ui/components'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { useVenuesListQuery }     from '@acx-ui/rc/services'
+import { useParams }              from '@acx-ui/react-router-dom'
+import { useDashboardFilter }     from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -15,7 +16,8 @@ const transformResult = (data: Venue[]) => data.map(
 
 export function VenueFilter () {
   const { $t } = useIntl()
-  const { setNodeFilter, venueIds } = useDashboardFilter()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
+  const { setNodeFilter, venueIds } = useDashboardFilter({ isDateRangeLimit })
   const value = venueIds.map((id: string) => [id])
 
   const queryResults = useVenuesListQuery({
