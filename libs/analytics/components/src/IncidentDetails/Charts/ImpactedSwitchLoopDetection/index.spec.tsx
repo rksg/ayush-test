@@ -8,7 +8,7 @@ import { findTBody, mockGraphqlQuery, render, within, screen, fireEvent } from '
 
 import { ImpactedVlan } from './services'
 
-import { ImpactedVlanTable, useDrawer } from '.'
+import { ImpactedVlanTable, useDrawer, vlanSorter } from '.'
 
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
@@ -183,5 +183,18 @@ describe('ImpactedVlanTable',()=>{
       jest.mocked(mockOverlapsRollup).mockReturnValue(false)
     })
 
+  })
+  describe('vlanSorter', () => {
+    it('should return -1 when the first number is less than the second', () => {
+      expect(vlanSorter('1', '2')).toBe(-1)
+    })
+
+    it('should return 1 when the first number is greater than the second', () => {
+      expect(vlanSorter('2', 1)).toBe(1)
+    })
+
+    it('should return 0 when both numbers are equal', () => {
+      expect(vlanSorter(2, '2')).toBe(0)
+    })
   })
 })

@@ -1,34 +1,35 @@
-import React, { createContext, useState, useContext, Dispatch, SetStateAction  } from 'react'
+import React, { createContext, Dispatch, SetStateAction, useContext, useState } from 'react'
 
 import { Divider, Menu } from 'antd'
 import moment            from 'moment-timezone'
 import { useIntl }       from 'react-intl'
 
 import {
-  ConnectedClientsOverTime,
-  IncidentsDashboardv2,
   ClientExperience,
+  ConnectedClientsOverTime,
+  DidYouKnow,
+  IncidentsDashboardv2,
+  SwitchesTrafficByVolume,
   SwitchesTrafficByVolumeLegacy,
   TopAppsByTraffic,
+  TopEdgesByResources,
+  TopEdgesByTraffic,
   TopSwitchesByError,
   TopSwitchesByPoEUsage,
   TopSwitchesByTraffic,
   TopSwitchModels,
-  TrafficByVolume,
-  DidYouKnow,
   TopWiFiNetworks,
-  TopEdgesByTraffic,
-  TopEdgesByResources,
-  SwitchesTrafficByVolume } from '@acx-ui/analytics/components'
+  TrafficByVolume
+} from '@acx-ui/analytics/components'
 import {
   Button,
-  Dropdown,
-  GridRow,
-  GridCol,
-  PageHeader,
-  RangePicker,
   ContentSwitcher,
-  ContentSwitcherProps
+  ContentSwitcherProps,
+  Dropdown,
+  GridCol,
+  GridRow,
+  PageHeader,
+  RangePicker
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { VenueFilter }            from '@acx-ui/main/components'
@@ -37,8 +38,8 @@ import {
   ClientsWidgetV2,
   DevicesDashboardWidgetV2,
   MapWidgetV2,
-  VenuesDashboardWidgetV2,
-  useIsEdgeReady
+  useIsEdgeReady,
+  VenuesDashboardWidgetV2
 } from '@acx-ui/rc/components'
 import {
   CommonUrlsInfo,
@@ -63,13 +64,13 @@ import {
   hasAllowedOperations
 } from '@acx-ui/user'
 import {
-  useDashboardFilter,
+  AnalyticsFilter,
   DateFilter,
   DateRange,
-  getDateRangeFilter,
-  AnalyticsFilter,
   getDatePickerValues,
-  getOpsApi
+  getDateRangeFilter,
+  getOpsApi,
+  useDashboardFilter
 } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'

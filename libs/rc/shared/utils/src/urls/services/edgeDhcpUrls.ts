@@ -5,13 +5,15 @@ export const EdgeDhcpUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/edgeDhcpServices',
     oldUrl: '/api/edgeDhcpServices',
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/edgeDhcpServices'
   },
   updateDhcpService: {
     method: 'put',
     url: '/edgeDhcpServices/:id',
     oldUrl: '/api/edgeDhcpServices/:id',
-    newApi: true
+    newApi: true,
+    opsApi: 'PUT:/edgeDhcpServices/{id}'
   },
   patchDhcpService: {
     method: 'PATCH',
@@ -23,7 +25,8 @@ export const EdgeDhcpUrls: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/edgeDhcpServices/:id',
     oldUrl: '/api/edgeDhcpServices/:id',
-    newApi: true
+    newApi: true,
+    opsApi: 'DELETE:/edgeDhcpServices/{id}'
   },
   getDhcp: {
     method: 'get',
@@ -41,7 +44,8 @@ export const EdgeDhcpUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/edgeDhcpServices/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/edgeDhcpServices/dhcps',
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/edgeDhcpServices/query'
   },
   getDhcpHostStats: {
     method: 'post',
