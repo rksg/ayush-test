@@ -2,7 +2,7 @@ import { get }            from '@acx-ui/config'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import DataSubscriptionsContent from './DataSubscriptionsContent'
+import DataSubscriptionsContent from './Content'
 
 const bannerTestId = 'banner-test'
 jest.mock('@acx-ui/components', () => ({
