@@ -10,8 +10,7 @@ import {  Card, Loader,
 import { intlFormats } from '@acx-ui/formatter'
 
 import {
-  useImpactedSwitchesAndTotalSwitchCountQuery,
-  useImpactedSwitchesDetailQuery
+  useImpactedSwitchesAndTotalSwitchCountQuery
 } from './services'
 
 import type { ChartProps } from '../types'
@@ -24,12 +23,6 @@ export function ImpactedSwitchesDonut ({ incident }: ChartProps) {
 
   const response = useImpactedSwitchesAndTotalSwitchCountQuery({ id },
     { skip: druidRolledup })
-  const response2 = useImpactedSwitchesDetailQuery({ id },
-    { skip: druidRolledup })
-
-  // eslint-disable-next-line no-console
-  console.log(response2)
-
 
   const impactedSwitchCount = response.data?.impactedCount ?? 0
   const totalSwitchCount = response.data?.totalCount ?? 0
