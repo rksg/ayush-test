@@ -10,6 +10,7 @@ import {
   ServiceType,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
+  getServiceAllowedOperation,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
@@ -96,6 +97,7 @@ const EdgeSdLanDetail = () => {
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByService(ServiceType.EDGE_SD_LAN, ServiceOperation.EDIT)}
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.EDGE_SD_LAN, ServiceOperation.EDIT)}
             to={getServiceDetailsLink({
               type: ServiceType.EDGE_SD_LAN,
               oper: ServiceOperation.EDIT,
