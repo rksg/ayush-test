@@ -14,6 +14,7 @@ import {
   defaultSort,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
+  getServiceAllowedOperation,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
@@ -236,6 +237,7 @@ const EdgeDHCPDetail = () => {
               serviceId: params.serviceId!
             })}
             scopeKey={getScopeKeyByService(ServiceType.EDGE_DHCP, ServiceOperation.EDIT)}
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.EDGE_DHCP, ServiceOperation.EDIT)}
           >
             <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>

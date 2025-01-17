@@ -15,7 +15,9 @@ import {
   formatGraphQLErrors,
   errorMessage,
   ErrorMessageType,
-  isGraphQLError
+  isGraphQLError,
+  hasGraphQLErrorCode,
+  Meta
 } from '@acx-ui/utils'
 
 import type { GraphQLResponse } from 'graphql-request/dist/types'
@@ -209,7 +211,9 @@ export const showErrorModal = (details: {
 const shouldIgnoreErrorModal = (action?: ErrorAction) => {
   const endpoint = action?.meta?.arg?.endpointName || ''
   const request = action?.meta?.baseQueryMeta?.request
-  return ignoreEndpointList.includes(endpoint) || isIgnoreErrorModal(request)
+  return ignoreEndpointList.includes(endpoint) ||
+    isIgnoreErrorModal(request) ||
+    hasGraphQLErrorCode('RDA-413', action?.meta as Meta)
 }
 
 export const errorMiddleware: Middleware = () => next => action => {
