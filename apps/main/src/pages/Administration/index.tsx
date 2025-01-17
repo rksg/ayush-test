@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -14,11 +14,12 @@ import { Features,
 import {
   useGetAdminListQuery,
   useGetDelegationsQuery,
-  useGetNotificationRecipientsQuery
+  useGetNotificationRecipientsQuery,
+  useGetWebhooksQuery
 } from '@acx-ui/rc/services'
-import { hasAdministratorTab }                   from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                 from '@acx-ui/user'
+import { hasAdministratorTab, useTableQuery, Webhook } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                       from '@acx-ui/user'
 
 import AccountSettings   from './AccountSettings'
 import Administrators    from './Administrators'
@@ -42,7 +43,6 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
   const [webhookCount, setWebhookCount] = useState(0)
   const { title: webhookTitle, component: webhookComponent } = useWebhooks()
 
-
   const defaultPayload = {
     filters: venueId ? { venueId: [venueId] } :
       serialNumber ? { serialNumber: [serialNumber] } : {}
@@ -61,9 +61,19 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
     { params },
     { skip: !isAdministratorAccessible }
   )
+  const webhookData = useTableQuery<Webhook>({
+    useQuery: useGetWebhooksQuery,
+    defaultPayload: {}
+  })
 
   const adminCount = adminList?.data?.length! + thirdPartyAdminList.data?.length! || 0
   const notificationCount = notificationList?.data?.length || 0
+
+  useEffect(() => {
+    if (webhookData.data) {
+      setWebhookCount(webhookData?.data?.totalCount)
+    }
+  }, [webhookData])
 
   return [
     {
