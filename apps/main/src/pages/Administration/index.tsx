@@ -63,7 +63,8 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
   )
   const webhookData = useTableQuery<Webhook>({
     useQuery: useGetWebhooksQuery,
-    defaultPayload: {}
+    defaultPayload: {},
+    option: { skip: !isWebhookToggleEnabled }
   })
 
   const adminCount = adminList?.data?.length! + thirdPartyAdminList.data?.length! || 0
