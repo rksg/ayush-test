@@ -117,6 +117,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/tenants/preferences',
     oldUrl: '/api/tenant/:tenantId/preferences',
+    opsApi: 'PUT:/tenants/preferences',
     newApi: true
   },
   revokeInvitation: {
