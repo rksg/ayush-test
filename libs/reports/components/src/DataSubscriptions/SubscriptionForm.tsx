@@ -75,6 +75,7 @@ const DataSubscriptionsForm: React.FC<DataSubscriptionsFormProps> = ({ isRAI, ed
             }]}
           >
             <Select
+              data-testid='datasetSelect'
               onSelect={() => form.setFieldValue('dataSetColumns', undefined)}
               options={[
                 { value: 'apInventory', label: $t({ defaultMessage: 'AP Inventory' }) },
