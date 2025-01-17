@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom'
-import { rest }         from 'msw'
-import { IntlProvider } from 'react-intl'
+import { rest } from 'msw'
 
 import { RuckusAiChatUrlInfo } from '@acx-ui/rc/utils'
 import { Provider }            from '@acx-ui/store'
@@ -60,16 +59,8 @@ describe('AICanvas', () => {
     jest.clearAllMocks()
   })
 
-  const renderWithIntl = (component: JSX.Element) => {
-    return render(
-      <IntlProvider locale='en'>
-        {component}
-      </IntlProvider>
-    )
-  }
-
   it('should render correctly', async () => {
-    renderWithIntl(
+    render(
       <Provider>
         <AICanvas />
       </Provider>

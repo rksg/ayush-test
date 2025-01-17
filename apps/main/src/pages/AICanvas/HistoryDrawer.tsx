@@ -25,7 +25,7 @@ export default function HistoryDrawer (props: DrawerProps) {
     updateChat({
       params: { sessionId: chat.id },
       payload: 'test123'
-    }).then()
+    })
   }
 
   const onDeleteChat = (chat: ChatHistory) => {
@@ -39,7 +39,7 @@ export default function HistoryDrawer (props: DrawerProps) {
       onOk: () => {
         deleteChat({
           params: { sessionId: chat.id }
-        }).then()
+        })
       }
     })
   }
@@ -58,11 +58,14 @@ export default function HistoryDrawer (props: DrawerProps) {
               </Tooltip>
               <div className='action'>
                 <div className='button'
+                  data-testid='edit'
                   style={{ cursor: 'not-allowed' }}
                   onClick={()=> { onEditChatTitle(j) }}>
                   <EditOutlined size='sm' />
                 </div>
-                <div className='button' onClick={()=> { onDeleteChat(j) }}>
+                <div className='button'
+                  data-testid='delete'
+                  onClick={()=> { onDeleteChat(j) }}>
                   <DeleteOutlined size='sm' />
                 </div>
               </div>

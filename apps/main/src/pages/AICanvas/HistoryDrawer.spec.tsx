@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom'
-import userEvent        from '@testing-library/user-event'
-import { IntlProvider } from 'react-intl'
+import userEvent from '@testing-library/user-event'
 
-import { Provider } from '@acx-ui/store'
+import * as CommonComponent from '@acx-ui/components'
+import { Provider }         from '@acx-ui/store'
 import {
   render,
   screen
@@ -30,21 +30,26 @@ const historyList = [
 const mockedOnClose = jest.fn()
 const mockedOnClickChat = jest.fn()
 
+const mockedShowActionModal = jest.fn().mockImplementation((props) => props.onOk && props.onOk())
+jest.spyOn(CommonComponent, 'showActionModal').mockImplementation(
+  mockedShowActionModal
+)
+
+const mockedUpdate = jest.fn()
+const mockedDelete = jest.fn()
+jest.mock('@acx-ui/rc/services', () => ({
+  useUpdateChatMutation: () => ([ mockedUpdate ]),
+  useDeleteChatMutation: () => ([ mockedDelete ])
+}))
+
 describe('HistoryDrawer', () => {
   afterEach(() => {
     jest.clearAllMocks()
+    mockedShowActionModal.mockClear()
   })
 
-  const renderWithIntl = (component: JSX.Element) => {
-    return render(
-      <IntlProvider locale='en'>
-        {component}
-      </IntlProvider>
-    )
-  }
-
   it('should render correctly', async () => {
-    renderWithIntl(
+    render(
       <Provider>
         <HistoryDrawer
           visible={true}
@@ -56,13 +61,19 @@ describe('HistoryDrawer', () => {
       </Provider>
     )
     expect(await screen.findByText('Previous 7 days')).toBeVisible()
-    expect(await screen.findByText('Switch Traffic Line Chart Request')).toBeVisible()
-    const chatTitle = await screen.findByText('Device Health Widget Creation')
+    const chatTitle = await screen.findByText('Switch Traffic Line Chart Request')
     expect(chatTitle).toBeVisible()
     await userEvent.click(chatTitle)
     expect(mockedOnClickChat).toBeCalled()
     const closeButton = screen.getByRole('button', { name: /close/i })
     await userEvent.click(closeButton)
     expect(mockedOnClickChat).toBeCalled()
+    const deleteButton = screen.getAllByTestId('delete')
+    await userEvent.click(deleteButton[0])
+    expect(mockedShowActionModal).toBeCalledTimes(1)
+    expect(mockedDelete).toBeCalledTimes(1)
+    const editButton = screen.getAllByTestId('edit')
+    await userEvent.click(editButton[0])
+    expect(mockedUpdate).toBeCalledTimes(1)
   })
 })
