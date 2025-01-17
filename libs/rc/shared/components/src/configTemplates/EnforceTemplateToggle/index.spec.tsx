@@ -3,8 +3,7 @@ import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import {
-  ConfigTemplateContext,
-  ConfigTemplateType, ConfigTemplateUrlsInfo
+  ConfigTemplate, ConfigTemplateContext, ConfigTemplateType, ConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider }                                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
@@ -17,7 +16,7 @@ describe('EnforceTemplateToggle', () => {
   const setSaveEnforcementConfigFn = jest.fn().mockImplementation(fn => saveEnforcementConfig.mockImplementation(fn))
   const updateEnforcementOnServer = jest.fn()
   const deleteEnforcementOnServer = jest.fn()
-  const mockedConfigTemplate = {
+  const mockedConfigTemplate: ConfigTemplate = {
     id: 'template12345',
     name: 'Template 1',
     createdOn: 1690598400000,
@@ -25,7 +24,7 @@ describe('EnforceTemplateToggle', () => {
     type: ConfigTemplateType.NETWORK,
     lastModified: 1690598400000,
     lastApplied: 1690598405000,
-    enforced: true
+    isEnforced: true
   }
 
   beforeEach(() => {

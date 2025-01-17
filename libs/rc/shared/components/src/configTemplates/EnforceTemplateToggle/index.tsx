@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Space, Switch } from 'antd'
 import { useIntl }       from 'react-intl'
 
-import { cssNumber, Loader, Tooltip }                                        from '@acx-ui/components'
+import { cssStr, Loader, Tooltip }                                           from '@acx-ui/components'
 import { Features }                                                          from '@acx-ui/feature-toggle'
 import { useGetConfigTemplateListQuery, useUpdateEnforcementStatusMutation } from '@acx-ui/rc/services'
 import { ConfigTemplateUrlsInfo, useConfigTemplate }                         from '@acx-ui/rc/utils'
@@ -54,7 +54,7 @@ export function EnforceTemplateToggle (props: { templateId?: string }) {
   return <Loader states={[ { isLoading } ]} style={{ height: '40px' }}>
     <Space align='center'>
       <Switch checked={checked} onChange={setChecked} />
-      <span style={{ fontSize: cssNumber('--acx-body-4-font-size') }}>
+      <span style={{ fontSize: cssStr('--acx-body-4-font-size') }}>
         {$t({ defaultMessage: 'Enforce template configuration' })}
         <Tooltip.Question
           // eslint-disable-next-line max-len
