@@ -157,7 +157,7 @@ export default function LldpTlvTable () {
                 rows[0].systemName:
                 $t({ defaultMessage: '{count} LLDP TLVs' }, { count: rows.length }) }),
             // eslint-disable-next-line max-len
-            content: $t({ defaultMessage: '{count, plural, one {This} other {These}} OUIs {count, plural, one {is} other {are}} used in the following profile(s). Delete {count, plural, one {this LLDP TLV} other {them}} will result in profiles getting updated: {profilesNames}' }, {
+            content: $t({ defaultMessage: '{count, plural, one {This LLDP TLV} other {These LLDP TLVs}} {count, plural, one {is} other {are}} used in the following profile(s). Delete {count, plural, one {this LLDP TLV} other {them}} will result in profiles getting updated: {profilesNames}' }, {
               count: rows.length,
               profilesNames: <FormattedMessage
                 defaultMessage='{profileNames}'
