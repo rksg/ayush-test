@@ -79,6 +79,7 @@ describe('Venues Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(mockedApCompReq).toBeCalledTimes(2))
     expect(await screen.findByText('My-Venue')).toBeVisible()
     expect(await screen.findByText('Add Venue')).toBeVisible()
   })
@@ -92,7 +93,7 @@ describe('Venues Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await waitFor(() => expect(mockedApCompReq).toBeCalled())
+    await waitFor(() => expect(mockedApCompReq).toBeCalledTimes(2))
     const row1 = await screen.findByRole('row', { name: /My-Venue/i })
     await userEvent.click(within(row1).getByRole('checkbox'))
 
@@ -113,6 +114,7 @@ describe('Venues Table', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(mockedApCompReq).toBeCalledTimes(2))
 
     const row = await screen.findByRole('row', { name: /My-Venue/i })
     await userEvent.click(within(row).getByRole('checkbox'))
