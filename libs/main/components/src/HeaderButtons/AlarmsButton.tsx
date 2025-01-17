@@ -49,7 +49,7 @@ export default function AlarmsHeaderButton () {
         onClick={()=> {
           setVisible(!visible)
           const event = new CustomEvent('showAlarmDrawer',
-            { detail: { data: { name: 'all' } } })
+            { detail: { data: { name: 'all', product: 'all' } } })
           window.dispatchEvent(event)
         }}
       />}

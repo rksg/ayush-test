@@ -478,6 +478,7 @@ export function FloorPlan () {
                   floorPlans={floorPlans ?? []}
                   onFloorPlanClick={onFloorPlanClick}
                   networkDevices={devicesByFlooplanId}
+                  showRogueAp={showRogueAp}
                   networkDevicesVisibility={networkDevicesVisibility}/>
                 : <PlainView
                   setCoordinates={setCoordinates}

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { formatGraphQLErrors, isGraphQLAction, isGraphQLError } from './errorUtil'
+import { formatGraphQLErrors, hasGraphQLErrorCode, isGraphQLAction, isGraphQLError, Meta } from './errorUtil'
 
 describe('isGraphQLAction', () => {
   it('returns false when type is undefined', () => {
@@ -118,5 +118,18 @@ describe('formatGraphQLErrors', () => {
       requestId: '123',
       errors: [{ code: 'ERROR_CODE', message: undefined }]
     })
+  })
+})
+
+describe('hasGraphQLErrorCode', () => {
+  it('should return true when error code matches', () => {
+    const code = 'TEST_ERROR_CODE'
+    const meta = {
+      baseQueryMeta: {
+        response: { errors: [ { extensions: { code: 'TEST_ERROR_CODE' } } ]
+        }
+      }
+    }
+    expect(hasGraphQLErrorCode(code, meta as Meta)).toBe(true)
   })
 })
