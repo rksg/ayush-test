@@ -132,28 +132,26 @@ export function DistributionSwitchForm () {
       availableSwitches={availableSwitches || []}
       onSaveDS={handleSaveDS}
       onClose={()=>setOpenDrawer(false)} />
-    {
-      // eslint-disable-next-line max-len
-      !isEdgePinEnhanceReady && distributionSwitchInfos && distributionSwitchInfos?.length > 0 && <Alert type='info'
-        showIcon
-        message={$t({ defaultMessage:
+    {!isEdgePinEnhanceReady && distributionSwitchInfos?.length > 0 && <Alert type='info'
+      showIcon
+      message={$t({ defaultMessage:
         `Attention Required: Please ensure to configure Static Route on RUCKUS Edge {edgeNames}
          for the distribution switch’s loopback IP addresses to establish the connection.` }, {
-          edgeNames: <>{
-            (edgeList?.data || []).map((edge, index) =>
-              <React.Fragment key={edge.serialNumber}>
-                {index !== 0 && ', '}
-                <StaticRouteModal
-                  edgeClusterId={edgeClusterId}
-                  edgeId={edge.serialNumber}
-                  edgeName={edge.name}
-                  venueId={venueId}>
-                  {edge.name}
-                </StaticRouteModal>
-              </React.Fragment>
-            )
-          }</>
-        })}
-      /> }
+        edgeNames: <>{
+          (edgeList?.data || []).map((edge, index) =>
+            <React.Fragment key={edge.serialNumber}>
+              {index !== 0 && ', '}
+              <StaticRouteModal
+                edgeClusterId={edgeClusterId}
+                edgeId={edge.serialNumber}
+                edgeName={edge.name}
+                venueId={venueId}>
+                {edge.name}
+              </StaticRouteModal>
+            </React.Fragment>
+          )
+        }</>
+      })}
+    /> }
   </>)
 }

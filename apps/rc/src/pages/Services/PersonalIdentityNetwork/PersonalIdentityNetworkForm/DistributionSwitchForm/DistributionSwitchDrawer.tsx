@@ -196,7 +196,7 @@ export function DistributionSwitchDrawer (props: {
           <Col>
             <Subtitle level={4}>
               {$t({ defaultMessage: 'Select Access Switches' })}
-              <UI.RequiredMark style={{ margin: '0 5px' }}/>
+              <UI.RequiredMark />
               <Tooltip.Question iconStyle={{ width: '20px', marginBottom: '-7px' }}
                 title={$t({ defaultMessage: `
                   PIN feature requires your switch running firmware version {requiredFw} or higher.
