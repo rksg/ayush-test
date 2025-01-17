@@ -1,7 +1,5 @@
-import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { MaybePromise }                            from '@reduxjs/toolkit/dist/query/tsHelpers'
-import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
-import _                                           from 'lodash'
+import { QueryReturnValue, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import _                                                             from 'lodash'
 
 import {
   ActionBase,
@@ -32,6 +30,7 @@ import {
   FileDownloadResponse
 } from '@acx-ui/rc/utils'
 import { baseWorkflowApi }                               from '@acx-ui/store'
+import { MaybePromise }                                  from '@acx-ui/types'
 import { RequestPayload }                                from '@acx-ui/types'
 import { batchApi, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 

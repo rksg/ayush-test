@@ -77,9 +77,9 @@ describe('Venue Reboot Timeout', () => {
 
     await waitFor(() => screen.findByText('Gateway Connection Monitor'))
 
-    expect(await screen.findByTestId('gateway-switch')).not.toBeChecked()
-    await userEvent.click(await screen.findByTestId('gateway-switch'))
     expect(await screen.findByTestId('gateway-switch')).toBeChecked()
+    await userEvent.click(await screen.findByTestId('gateway-switch'))
+    expect(await screen.findByTestId('gateway-switch')).not.toBeChecked()
 
     expect(await screen.findByTestId('server-switch')).toBeChecked()
     await userEvent.click(await screen.findByTestId('server-switch'))

@@ -82,6 +82,9 @@ export function AlarmsDrawer (props: AlarmsType) {
   window.addEventListener('showAlarmDrawer',(function (e:CustomEvent){
     setVisible(true)
     setSeverity(e.detail.data.name)
+    if (isFilterProductToggleEnabled) {
+      setProductType(e.detail.data.product ?? 'all')
+    }
 
     if(e.detail.data.venueId){
       setVenueId(e.detail.data.venueId)
@@ -278,7 +281,11 @@ export function AlarmsDrawer (props: AlarmsType) {
       </Select>}
 
       <Button type='link'
-        disabled={!hasPermission || tableQuery.data?.totalCount === 0}
+        disabled={!hasPermission
+          || tableQuery.data?.totalCount === 0
+          || tableQuery.isFetching
+          || isAlarmCleaning || isAlarmByVenueCleaning
+        }
         size='small'
         style={{ fontWeight: 'var(--acx-body-font-weight-bold)' }}
         onClick={async ()=>{
