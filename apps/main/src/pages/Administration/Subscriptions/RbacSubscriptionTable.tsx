@@ -6,6 +6,7 @@ import moment                   from 'moment'
 import { IntlShape, useIntl }   from 'react-intl'
 
 import {
+  Filter,
   Loader,
   Table,
   TableProps
@@ -79,6 +80,10 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
     value: $t({ defaultMessage: 'Show Active & Future' })
   }
 ]
+
+const defaultSelectedFilters: Filter = {
+  status: ['active', 'future']
+}
 
 const entitlementListPayload = {
   fields: [
@@ -320,6 +325,7 @@ export const RbacSubscriptionTable = () => {
         columns={columns}
         actions={filterByAccess(actions)} //TODO:
         dataSource={checkSubscriptionStatus() ? [] : subscriptionData as Entitlement[]}
+        selectedFilters={defaultSelectedFilters}
         rowKey='id'
       />
     </Loader>
