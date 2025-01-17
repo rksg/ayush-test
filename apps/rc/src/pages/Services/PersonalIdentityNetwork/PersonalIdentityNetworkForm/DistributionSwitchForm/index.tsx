@@ -4,6 +4,8 @@ import { Form, Input, Typography } from 'antd'
 import { useIntl }                 from 'react-intl'
 
 import { Alert, StepsForm, TableProps, useStepFormContext }                  from '@acx-ui/components'
+import { Features }                                                          from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                             from '@acx-ui/rc/components'
 import { useGetEdgeListQuery }                                               from '@acx-ui/rc/services'
 import { AccessSwitch, DistributionSwitch, PersonalIdentityNetworkFormData } from '@acx-ui/rc/utils'
 
@@ -15,6 +17,8 @@ import { StaticRouteModal }         from './StaticRouteModal'
 
 export function DistributionSwitchForm () {
   const { $t } = useIntl()
+  const isEdgePinEnhanceReady = useIsEdgeFeatureReady(Features.EDGE_PIN_ENHANCE_TOGGLE)
+
   const { form } = useStepFormContext<PersonalIdentityNetworkFormData>()
   const {
     switchList,
@@ -128,26 +132,28 @@ export function DistributionSwitchForm () {
       availableSwitches={availableSwitches || []}
       onSaveDS={handleSaveDS}
       onClose={()=>setOpenDrawer(false)} />
-    { distributionSwitchInfos && distributionSwitchInfos.length > 0 && <Alert type='info'
-      showIcon
-      message={$t({ defaultMessage:
+    {
+      // eslint-disable-next-line max-len
+      !isEdgePinEnhanceReady && distributionSwitchInfos && distributionSwitchInfos?.length > 0 && <Alert type='info'
+        showIcon
+        message={$t({ defaultMessage:
         `Attention Required: Please ensure to configure Static Route on RUCKUS Edge {edgeNames}
          for the distribution switch’s loopback IP addresses to establish the connection.` }, {
-        edgeNames: <>{
-          (edgeList?.data || []).map((edge, index) =>
-            <React.Fragment key={edge.serialNumber}>
-              {index !== 0 && ', '}
-              <StaticRouteModal
-                edgeClusterId={edgeClusterId}
-                edgeId={edge.serialNumber}
-                edgeName={edge.name}
-                venueId={venueId}>
-                {edge.name}
-              </StaticRouteModal>
-            </React.Fragment>
-          )
-        }</>
-      })}
-    /> }
+          edgeNames: <>{
+            (edgeList?.data || []).map((edge, index) =>
+              <React.Fragment key={edge.serialNumber}>
+                {index !== 0 && ', '}
+                <StaticRouteModal
+                  edgeClusterId={edgeClusterId}
+                  edgeId={edge.serialNumber}
+                  edgeName={edge.name}
+                  venueId={venueId}>
+                  {edge.name}
+                </StaticRouteModal>
+              </React.Fragment>
+            )
+          }</>
+        })}
+      /> }
   </>)
 }

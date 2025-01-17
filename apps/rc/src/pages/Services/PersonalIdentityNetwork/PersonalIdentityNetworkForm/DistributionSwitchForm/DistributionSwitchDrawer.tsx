@@ -3,9 +3,10 @@ import { useContext, useEffect, useState } from 'react'
 import { Col, Form, Input, InputNumber, Row, Select, Space } from 'antd'
 import _                                                     from 'lodash'
 import { useIntl }                                           from 'react-intl'
-import styled                                                from 'styled-components'
 
 import { Button, Drawer, Modal, Subtitle, Table, Tooltip, Transfer, useStepFormContext } from '@acx-ui/components'
+import { Features }                                                                      from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                         from '@acx-ui/rc/components'
 import {
   useValidateDistributionSwitchInfoMutation
 } from '@acx-ui/rc/services'
@@ -24,13 +25,7 @@ import { getIntl, validationMessages } from '@acx-ui/utils'
 
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 
-const RequiredMark = styled.span`
-  &:before {
-    color: var(--acx-accents-orange-50);
-    font-size: var(--acx-body-4-font-size);
-    content: '*';
-  }
-`
+import * as UI from './styledComponents'
 
 export function DistributionSwitchDrawer (props: {
   open: boolean;
@@ -41,6 +36,8 @@ export function DistributionSwitchDrawer (props: {
 }) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
+  const isEdgePinEnhanceReady = useIsEdgeFeatureReady(Features.EDGE_PIN_ENHANCE_TOGGLE)
+
   const requiredFw = '10.0.10f'
   const {
     requiredFw_DS = requiredFw,
@@ -173,6 +170,11 @@ export function DistributionSwitchDrawer (props: {
           rules={[{ required: true }, { validator: (_, value) => networkWifiIpRegExp(value) }]}>
           <Input />
         </Form.Item>
+        {isEdgePinEnhanceReady && <UI.StyledTextParagraph
+          type='secondary'
+          // eslint-disable-next-line max-len
+          children={$t({ defaultMessage: 'A static route will be automatically created/ configured to the cluster nodes for this switch\'s loopback IP address to ensure connectivity.' })}
+        />}
         <Form.Item name='loopbackInterfaceSubnetMask'
           label={$t({ defaultMessage: 'Loopback Interface Subnet Mask' })}
           rules={[{ required: true }, { validator: (_, value) => subnetMaskIpRegExp(value) }]}>
@@ -194,7 +196,7 @@ export function DistributionSwitchDrawer (props: {
           <Col>
             <Subtitle level={4}>
               {$t({ defaultMessage: 'Select Access Switches' })}
-              <RequiredMark style={{ margin: '0 5px' }}/>
+              <UI.RequiredMark style={{ margin: '0 5px' }}/>
               <Tooltip.Question iconStyle={{ width: '20px', marginBottom: '-7px' }}
                 title={$t({ defaultMessage: `
                   PIN feature requires your switch running firmware version {requiredFw} or higher.
