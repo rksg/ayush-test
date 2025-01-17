@@ -11,7 +11,7 @@ import { compactLayout, compactLayoutHorizontal } from '../utils/compact'
 
 import GroupItem, { GroupProps } from './GroupItem'
 
-interface LayoutProps {
+export interface LayoutProps {
   layout: LayoutConfig
   sections: Section[]
   groups: Group[]
