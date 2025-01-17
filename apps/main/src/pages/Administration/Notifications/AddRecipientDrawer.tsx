@@ -5,16 +5,20 @@ import {
   Form,
   Row,
   Col,
-  Input
+  Input,
+  Radio,
+  Space,
+  RadioChangeEvent
 } from 'antd'
 import _             from 'lodash'
 import { FieldData } from 'rc-field-form/lib/interface'
 import { useIntl }   from 'react-intl'
 
-import { Drawer, showToast, Subtitle } from '@acx-ui/components'
-import { PhoneInput }                  from '@acx-ui/rc/components'
+import { Drawer, Select, showToast, Subtitle } from '@acx-ui/components'
+import { PhoneInput }                          from '@acx-ui/rc/components'
 import {
   useAddRecipientMutation,
+  useGetPrivilegeGroupsQuery,
   useUpdateRecipientMutation
 } from '@acx-ui/rc/services'
 import {
@@ -24,7 +28,11 @@ import {
   generalPhoneRegExp
 } from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
+import { RolesEnum }          from '@acx-ui/types'
+import { roleStringMap }      from '@acx-ui/user'
 import { CatchErrorResponse } from '@acx-ui/utils'
+
+import * as UI from './styledComponents'
 
 export interface RecipientDrawerProps {
   className?: string;
@@ -46,7 +54,11 @@ interface RecipientSaveModel {
   }[];
 }
 
-// const AddRecipientDrawer = (props: RecipientDialogProps) => {
+enum RecipientType {
+  GlobalRecipient,
+  AdminRecipient
+}
+
 export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
@@ -61,8 +73,17 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
   } = props
   const [isChanged, setIsChanged] = useState(false)
   const [isValid, setIsValid] = useState(false)
+  const [recipientType, setRecipientType] = useState<RecipientType.GlobalRecipient>()
   const [addRecipient, addState] = useAddRecipientMutation()
   const [updateRecipient, updateState] = useUpdateRecipientMutation()
+
+  const { data: privilegeGroupList } = useGetPrivilegeGroupsQuery({ params })
+
+  const groupList = privilegeGroupList?.map((item) => ({
+    label: roleStringMap[item.name as RolesEnum]
+      ? $t(roleStringMap[item.name as RolesEnum]) : item.name,
+    value: item.name
+  }))
 
   const getSavePayload = (data: NotificationRecipientUIModel) => {
     let dataToSave = {
@@ -235,6 +256,10 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
     form.validateFields(['mobile'])
   }
 
+  const handleMessageMethodChange = (e: RadioChangeEvent) => {
+    setRecipientType(e.target.value)
+  }
+
   useEffect(()=>{
     if (editData && visible) {
       form.setFieldsValue(editData)
@@ -243,6 +268,128 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
 
   const isLoading = addState.isLoading || updateState.isLoading
   const disableSave = !(isChanged && isValid)
+
+  const GlobalRecipientContent = () => {
+    return ( <>
+      <Subtitle level={5}>
+        {$t({ defaultMessage: 'Delivery Preference' })}
+      </Subtitle>
+      <Form.Item
+        required
+        label={$t({ defaultMessage: 'At least one delivery method must be defined.' })}
+        className='email_mobile_help'
+      />
+
+      <Form.Item
+        label={$t({ defaultMessage: 'Email Address' })}
+      >
+        <Row align='middle' justify='space-between'>
+          <Col span={18}>
+            <Form.Item
+              name='email'
+              rules={[
+                { validator: (_, value) => emailRegExp(value) }
+              ]}
+              noStyle
+              initialValue=''
+            >
+              <Input
+                placeholder={$t({ defaultMessage: 'Email' })}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={4}>
+            <Form.Item
+              noStyle
+              name='emailEnabled'
+              valuePropName='checked'
+              initialValue={false}
+            >
+              <Switch />
+            </Form.Item>
+          </Col>
+        </Row>
+      </Form.Item>
+
+      <Form.Item
+        label={$t({ defaultMessage: 'Mobile Number' })}
+      >
+        <Row align='middle' justify='space-between'>
+          <Col span={18}>
+            <Form.Item
+              name='mobile'
+              rules={[
+                { validator: (_, value) => generalPhoneRegExp(value) }
+              ]}
+              noStyle
+              initialValue=''
+              validateFirst
+            >
+              <PhoneInput name={'mobile'} callback={setPhoneValue} onTop={true} />
+            </Form.Item>
+          </Col>
+          <Col span={4}>
+            <Form.Item
+              name='mobileEnabled'
+              valuePropName='checked'
+              initialValue={false}
+            >
+              <Switch />
+            </Form.Item>
+          </Col>
+        </Row>
+      </Form.Item></>
+    )}
+
+  const AdminRecipientContent = () => {
+    return (
+      <>
+        <Form.Item
+          name='role'
+          label={$t({ defaultMessage: 'Privilege Group Name' })}
+          rules={[{ required: true }]}
+        >
+          <Select
+            options={groupList}
+            // onChange={handleChange}
+            placeholder={$t({ defaultMessage: 'Select Group' })}
+          />
+        </Form.Item>
+
+        <Subtitle level={5}>
+          {$t({ defaultMessage: 'Delivery Preference' })}
+        </Subtitle>
+        <Form.Item
+          required
+          label={$t({ defaultMessage: 'At least one delivery method must be defined.' })}
+          className='email_mobile_help'
+        />
+
+        <UI.FieldLabel width={'45px'}>
+          <Form.Item
+            name={'portProtected'}
+            initialValue={false}
+            valuePropName='checked'
+            children={<Switch data-testid='portProtected'/>}
+          />
+          <Space align='start'>
+            { $t({ defaultMessage: 'Enable Email Nortifications' }) }
+          </Space>
+        </UI.FieldLabel>
+
+        <UI.FieldLabel width={'45px'}>
+          <Form.Item
+            name={'portProtected'}
+            initialValue={false}
+            valuePropName='checked'
+            children={<Switch data-testid='portProtected'/>}
+          />
+          <Space align='start'>
+            { $t({ defaultMessage: 'Enable SMS Notifications' }) }
+          </Space>
+        </UI.FieldLabel>
+      </>
+    )}
 
   return (
     <Drawer
@@ -283,6 +430,28 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
         onFieldsChange={handleInputChange}
       >
         <Form.Item
+          name='recipientType'
+          initialValue={RecipientType.GlobalRecipient}
+          rules={[
+            { required: true, message: $t({ defaultMessage: 'Please select a recipient type' }) }
+          ]}
+        >
+          <Radio.Group
+            onChange={handleMessageMethodChange}
+            value={recipientType}
+          >
+            <Space direction='vertical'>
+              <Radio value={RecipientType.GlobalRecipient}>
+                {$t({ defaultMessage: 'Add global recipient' })}
+              </Radio>
+              <Radio value={RecipientType.AdminRecipient}>
+                {$t({ defaultMessage: 'Add Privilege Group as recipient' })}
+              </Radio>
+            </Space>
+          </Radio.Group>
+        </Form.Item>
+
+        <Form.Item
           name='description'
           label={$t({ defaultMessage: 'Name' })}
           rules={[
@@ -292,75 +461,9 @@ export const AddRecipientDrawer = (props: RecipientDrawerProps) => {
         >
           <Input/>
         </Form.Item>
-
-        <Subtitle level={5}>
-          {$t({ defaultMessage: 'Delivery Preference' })}
-        </Subtitle>
-        <Form.Item
-          required
-          label={$t({ defaultMessage: 'At least one delivery method must be defined.' })}
-          className='email_mobile_help'
-        />
-
-        <Form.Item
-          label={$t({ defaultMessage: 'Email Address' })}
-        >
-          <Row align='middle' justify='space-between'>
-            <Col span={18}>
-              <Form.Item
-                name='email'
-                rules={[
-                  { validator: (_, value) => emailRegExp(value) }
-                ]}
-                noStyle
-                initialValue=''
-              >
-                <Input
-                  placeholder={$t({ defaultMessage: 'Email' })}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={4}>
-              <Form.Item
-                noStyle
-                name='emailEnabled'
-                valuePropName='checked'
-                initialValue={false}
-              >
-                <Switch />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form.Item>
-
-        <Form.Item
-          label={$t({ defaultMessage: 'Mobile Number' })}
-        >
-          <Row align='middle' justify='space-between'>
-            <Col span={18}>
-              <Form.Item
-                name='mobile'
-                rules={[
-                  { validator: (_, value) => generalPhoneRegExp(value) }
-                ]}
-                noStyle
-                initialValue=''
-                validateFirst
-              >
-                <PhoneInput name={'mobile'} callback={setPhoneValue} onTop={true} />
-              </Form.Item>
-            </Col>
-            <Col span={4}>
-              <Form.Item
-                name='mobileEnabled'
-                valuePropName='checked'
-                initialValue={false}
-              >
-                <Switch />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form.Item>
+        {recipientType === RecipientType.GlobalRecipient
+          ? <GlobalRecipientContent />
+          : <AdminRecipientContent />}
       </Form>
     </Drawer>
   )

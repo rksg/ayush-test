@@ -75,7 +75,11 @@ export interface UserProfile {
   preferredLanguage?: string
   customRoleName?: string
   customRoleType?: CustomRoleType
-  scopes?: []
+  scopes?: [],
+  preferredNotifications?: {
+    emailPreferences: boolean,
+    smsPreferences: boolean
+  }
 }
 
 export type GuestErrorRes = {

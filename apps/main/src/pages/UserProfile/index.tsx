@@ -2,6 +2,7 @@ import { Row, Col, Form, Select } from 'antd'
 import { useIntl }                from 'react-intl'
 
 import { PageHeader, StepsForm, Tabs, UserProfileSection } from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { MultiFactor }                                     from '@acx-ui/msp/components'
 import {
   useNavigate,
@@ -19,9 +20,8 @@ import {
 } from '@acx-ui/user'
 
 import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
-import {
-  RecentLogin
-} from './RecentLogin'
+import { RecentLogin }               from './RecentLogin'
+import { UserNotifications }         from './UserNotifications'
 
 export function UserProfile () {
   const { $t } = useIntl()
@@ -33,6 +33,8 @@ export function UserProfile () {
   const basePath = useTenantLink('/userprofile')
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const rootPath = useTenantLink('/')
+  const notificationAdminContextualEnabled =
+    useIsSplitOn(Features.NOTIFICATION_ADMIN_CONTEXTUAL_TOGGLE)
 
   const handleUpdateSettings = async (data: Partial<UserProfileInterface>) => {
     await updateUserProfile({ payload: data, params: { tenantId } })
@@ -122,7 +124,14 @@ export function UserProfile () {
       title: $t({ defaultMessage: 'Recent Logins' }),
       disabled: hasRoles([RolesEnum.DPSK_ADMIN]),
       component: userProfile && <RecentLogin userEmail={userProfile!.email} />
-    }
+    },
+    ...(!notificationAdminContextualEnabled ? [] : [
+      {
+        title: $t({ defaultMessage: 'Notifications' }),
+        key: 'notifications',
+        component: <UserNotifications profile={userProfile!}/>
+      }
+    ])
   ]
 
   const ActiveTabPane = tabs.find(({ key }) => key === activeTab)?.component
