@@ -347,7 +347,16 @@ export default function SwitchPortProfileForm () {
                 { validator: (_, value) => validateUntaggedVlan(value) }
               ]}
             >
-              <Input type='number' style={{ width: '280px' }}/>
+              <Input
+                type='number'
+                style={{ width: '280px' }}
+                onKeyDown={(e) => {
+                  if (!/\d/.test(e.key) && e.key !== 'Backspace' &&
+                  e.key !== 'Delete' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
+                    e.preventDefault()
+                  }
+                }}
+              />
             </Form.Item>
             <Form.Item
               name='taggedVlans'
