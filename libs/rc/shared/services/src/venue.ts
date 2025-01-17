@@ -718,6 +718,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const apGroupNetworkListPayload = {
           isTemplate: isTemplate,
           apGroupIds: apGroupIds,
+          fields: ['id', 'venueApGroups'],
+          pageSize: 10000,
           filters: { 'venueApGroups.apGroupIds': apGroupIds }
         }
 
@@ -800,6 +802,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const apGroupNetworkListPayload = {
           isTemplate: isTemplate,
           apGroupIds: apGroupIds,
+          fields: ['id', 'venueApGroups'],
+          pageSize: 10000,
           filters: { 'venueApGroups.apGroupIds': apGroupIds }
         }
 
