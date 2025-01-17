@@ -10,6 +10,7 @@ import {
   PortProfileTabsEnum,
   getPolicyRoutePath,
   getScopeKeyByPolicy,
+  getPolicyAllowedOperation,
   PolicyOperation,
   PolicyType
 } from '@acx-ui/rc/utils'
@@ -79,7 +80,11 @@ export default function PortProfile () {
     ]: [
       <TenantLink
         scopeKey={
-          getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)}
+          getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)
+        }
+        rbacOpsIds={
+          getPolicyAllowedOperation(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.CREATE)
+        }
         to={'/policies/portProfile/switch/profiles/add'}
       >
         <Button type='primary'>{$t({ defaultMessage: 'Add ICX Port Profile' })}</Button>

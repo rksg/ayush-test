@@ -28,6 +28,7 @@ import {
   PolicyType,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
+  getPolicyAllowedOperation,
   getPolicyRoutePath,
   useTableQuery
 } from '@acx-ui/rc/utils'
@@ -179,7 +180,9 @@ const FlexibleAuthenticationDetail = () => {
         }
       ]}
       extra={filterByAccess([
-        <TenantLink scopeKey={[SwitchScopes.UPDATE]}
+        <TenantLink
+          scopeKey={[SwitchScopes.UPDATE]}
+          rbacOpsIds={getPolicyAllowedOperation(PolicyType.FLEX_AUTH, PolicyOperation.EDIT)}
           to={getPolicyDetailsLink({
             type: PolicyType.FLEX_AUTH,
             oper: PolicyOperation.EDIT,

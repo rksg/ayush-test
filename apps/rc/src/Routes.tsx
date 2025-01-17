@@ -1445,27 +1445,43 @@ function PolicyRoutes () {
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.FLEX_AUTH, oper: PolicyOperation.LIST })}
-          element={<FlexibleAuthenticationTable />}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.FLEX_AUTH} oper={PolicyOperation.LIST}>
+              <FlexibleAuthenticationTable />
+            </PolicyAuthRoute>
+          }
         />
         <Route
           path={getPolicyRoutePath({
             type: PolicyType.FLEX_AUTH ,
             oper: PolicyOperation.CREATE
           })}
-          element={<AddFlexibleAuthentication/>}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.FLEX_AUTH} oper={PolicyOperation.CREATE}>
+              <AddFlexibleAuthentication/>
+            </PolicyAuthRoute>
+          }
         />
         <Route
           path={getPolicyRoutePath({
             type: PolicyType.FLEX_AUTH ,
             oper: PolicyOperation.EDIT
           })}
-          element={<EditFlexibleAuthentication/>}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.FLEX_AUTH} oper={PolicyOperation.EDIT}>
+              <EditFlexibleAuthentication/>
+            </PolicyAuthRoute>
+          }
         />
         <Route
           path={getPolicyRoutePath({
             type: PolicyType.FLEX_AUTH, oper: PolicyOperation.DETAIL
           })}
-          element={<FlexibleAuthenticationDetail />}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.FLEX_AUTH} oper={PolicyOperation.DETAIL}>
+              <FlexibleAuthenticationDetail/>
+            </PolicyAuthRoute>
+          }
         />
       </>
       }
@@ -1527,7 +1543,12 @@ function PolicyRoutes () {
       {isSwitchPortProfileEnabled && <>
         <Route
           path='policies/portProfile/create'
-          element={<CreatePortProfile />}
+          element={
+            // eslint-disable-next-line max-len
+            <PolicyAuthRoute policyType={PolicyType.SWITCH_PORT_PROFILE} oper={PolicyOperation.CREATE}>
+              <CreatePortProfile />
+            </PolicyAuthRoute>
+          }
         />
         <Route
           path='policies/portProfile/:activeTab/'
@@ -1539,15 +1560,30 @@ function PolicyRoutes () {
         />
         <Route
           path='policies/portProfile/switch/profiles/add'
-          element={<SwitchPortProfileForm />}
+          element={
+            // eslint-disable-next-line max-len
+            <PolicyAuthRoute policyType={PolicyType.SWITCH_PORT_PROFILE} oper={PolicyOperation.CREATE}>
+              <SwitchPortProfileForm />
+            </PolicyAuthRoute>
+          }
         />
         <Route
           path='policies/portProfile/switch/profiles/:portProfileId/edit'
-          element={<SwitchPortProfileForm />}
+          element={
+            // eslint-disable-next-line max-len
+            <PolicyAuthRoute policyType={PolicyType.SWITCH_PORT_PROFILE} oper={PolicyOperation.EDIT}>
+              <SwitchPortProfileForm />
+            </PolicyAuthRoute>
+          }
         />
         <Route
           path='policies/portProfile/switch/profiles/:portProfileId/detail'
-          element={<SwitchPortProfileDetail />}
+          element={
+            // eslint-disable-next-line max-len
+            <PolicyAuthRoute policyType={PolicyType.SWITCH_PORT_PROFILE} oper={PolicyOperation.DETAIL}>
+              <SwitchPortProfileDetail />
+            </PolicyAuthRoute>
+          }
         />
       </>
       }

@@ -11,6 +11,7 @@ import {
   FILTER,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByPolicy,
+  getPolicyAllowedOperation,
   GROUPBY,
   PolicyOperation,
   PolicyType,
@@ -177,6 +178,7 @@ export default function SwitchPortProfileTable () {
   const rowActions: TableProps<SwitchPortProfiles>['rowActions'] = [
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.EDIT),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => selectedRows?.length === 1,
       onClick: ([{ id }]) => {
@@ -188,6 +190,7 @@ export default function SwitchPortProfileTable () {
     },
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.DELETE),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.SWITCH_PORT_PROFILE, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows: SwitchPortProfiles[], clearSelection) => {
         const appliedSwitchesCount = selectedRows.reduce(

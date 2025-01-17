@@ -13,11 +13,18 @@ import {
   LldpTlvMatchingTitle,
   LldpTlvs,
   SwitchPortProfiles,
+  SwitchUrlsInfo,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
-import { SwitchScopes }                  from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { useParams }    from '@acx-ui/react-router-dom'
+import { SwitchScopes } from '@acx-ui/types'
+import {
+  filterByAccess,
+  getUserProfile,
+  hasAllowedOperations,
+  hasPermission
+} from '@acx-ui/user'
+import { getOpsApi } from '@acx-ui/utils'
 
 import { LldpTlvDrawer } from '../PortProfileForm/LldpTlvDrawer'
 
@@ -28,6 +35,8 @@ type PortProfileMap = {
 export default function LldpTlvTable () {
   const { $t } = useIntl()
   const params = useParams()
+  const { rbacOpsApiEnabled } = getUserProfile()
+
   const settingsId = 'lldp--table'
   const [ portProfileMap, setPortProfileMap ] = useState<PortProfileMap>({})
   const [ visible, setVisible ] = useState(false)
@@ -129,6 +138,7 @@ export default function LldpTlvTable () {
   const rowActions: TableProps<LldpTlvs>['rowActions'] = [
     {
       scopeKey: [SwitchScopes.UPDATE],
+      rbacOpsIds: [getOpsApi(SwitchUrlsInfo.editSwitchPortProfileLldpTlv)],
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -139,6 +149,7 @@ export default function LldpTlvTable () {
     },
     {
       scopeKey: [SwitchScopes.DELETE],
+      rbacOpsIds: [getOpsApi(SwitchUrlsInfo.deleteSwitchPortProfileLldpTlv)],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         const portProfileCount = rows.filter(item => item.portProfiles).length
@@ -195,9 +206,18 @@ export default function LldpTlvTable () {
     }
   ]
 
-  const isSelectionVisible = hasPermission({
-    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
-  })
+  const isSelectionVisible = rbacOpsApiEnabled
+    ? hasAllowedOperations([
+      getOpsApi(SwitchUrlsInfo.editSwitchPortProfileLldpTlv),
+      getOpsApi(SwitchUrlsInfo.deleteSwitchPortProfileLldpTlv)
+    ])
+    : hasPermission({
+      scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
+    })
+
+  const hasCreatePermission = rbacOpsApiEnabled
+    ? hasAllowedOperations([ getOpsApi(SwitchUrlsInfo.addSwitchPortProfileLldpTlv) ])
+    : hasPermission({ scopes: [SwitchScopes.CREATE] })
 
   return (
     <Loader states={[tableQuery]}>
@@ -211,7 +231,7 @@ export default function LldpTlvTable () {
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
-        actions={hasPermission({ scopes: [SwitchScopes.CREATE] }) ? [{
+        actions={hasCreatePermission ? [{
           label: $t({ defaultMessage: 'Add LLDP TLV' }),
           scopeKey: [SwitchScopes.CREATE],
           onClick: () => {

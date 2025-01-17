@@ -1,9 +1,9 @@
 import { RbacOpsIds } from '@acx-ui/types'
 import { getOpsApi }  from '@acx-ui/utils'
 
-import { ServiceOperation, ServiceType }                                                                        from '../../constants'
-import { PolicyOperation, PolicyType }                                                                          from '../../types'
-import { EdgeDhcpUrls, EdgeHqosProfilesUrls, EdgeMdnsProxyUrls, EdgePinUrls, EdgeSdLanUrls, TunnelProfileUrls } from '../../urls'
+import { ServiceOperation, ServiceType }                                                                                        from '../../constants'
+import { PolicyOperation, PolicyType }                                                                                          from '../../types'
+import { EdgeDhcpUrls, EdgeHqosProfilesUrls, EdgeMdnsProxyUrls, EdgePinUrls, EdgeSdLanUrls, SwitchUrlsInfo, TunnelProfileUrls } from '../../urls'
 
 import { SvcPcyAllowedOper, SvcPcyAllowedType } from './servicePolicyAbacContentsMap'
 
@@ -128,6 +128,18 @@ export const policyAllowedOperationMap = {
     [PolicyOperation.EDIT]: ['PUT:/applicationPolicies/{id}'],
     [PolicyOperation.DELETE]: ['DELETE:/applicationPolicies/{id}'],
     [PolicyOperation.LIST]: ['POST:/applicationPolicies/query']
+  },
+  [PolicyType.FLEX_AUTH]: {
+    [PolicyOperation.CREATE]: [getOpsApi(SwitchUrlsInfo.addFlexAuthenticationProfile)],
+    [PolicyOperation.EDIT]: [getOpsApi(SwitchUrlsInfo.updateFlexAuthenticationProfile)],
+    [PolicyOperation.DELETE]: [getOpsApi(SwitchUrlsInfo.deleteFlexAuthenticationProfile)],
+    [PolicyOperation.LIST]: [getOpsApi(SwitchUrlsInfo.getFlexAuthenticationProfiles)]
+  },
+  [PolicyType.SWITCH_PORT_PROFILE]: {
+    [PolicyOperation.CREATE]: [getOpsApi(SwitchUrlsInfo.addSwitchPortProfile)],
+    [PolicyOperation.EDIT]: [getOpsApi(SwitchUrlsInfo.editSwitchPortProfile)],
+    [PolicyOperation.DELETE]: [getOpsApi(SwitchUrlsInfo.deleteSwitchPortProfile)],
+    [PolicyOperation.LIST]: [getOpsApi(SwitchUrlsInfo.getSwitchPortProfilesList)]
   },
   [PolicyType.TUNNEL_PROFILE]: {
     [PolicyOperation.CREATE]: [getOpsApi(TunnelProfileUrls.createTunnelProfile)],
