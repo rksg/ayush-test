@@ -55,6 +55,8 @@ import {
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
   getServiceRoutePath,
+  hasSomePoliciesPermission,
+  hasSomeServicesPermission,
   PolicyAuthRoute,
   PolicyOperation,
   PolicyType,
@@ -65,7 +67,7 @@ import {
 import { Navigate, rootRoutes, Route, TenantNavigate } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
 import { EdgeScopes, SwitchScopes, WifiScopes }        from '@acx-ui/types'
-import { AuthRoute }                                   from '@acx-ui/user'
+import { AuthRoute, getUserProfile, goToNoPermission } from '@acx-ui/user'
 
 import Edges                                        from './pages/Devices/Edge'
 import AddEdge                                      from './pages/Devices/Edge/AddEdge'
@@ -102,7 +104,7 @@ import ConnectionMeteringPageForm                   from './pages/Policies/Conne
 import ConnectionMeteringTable                      from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
 import DirectoryServerDetail                        from './pages/Policies/DirectoryServer/DirectoryServerDetail/DirectoryServerDetail'
 import DirectoryServerTable                         from './pages/Policies/DirectoryServer/DirectoryServerTable/DirectoryServerTable'
-import EthernetPortProfileTable                     from './pages/Policies/EthernetPortProfile/EthernetPortProfileTable'
+import EthernetPortProfile                          from './pages/Policies/EthernetPortProfile'
 import AddFlexibleAuthentication                    from './pages/Policies/FlexibleAuthentication/AddFlexibleAuthentication'
 import EditFlexibleAuthentication                   from './pages/Policies/FlexibleAuthentication/EditFlexibleAuthentication'
 import FlexibleAuthenticationDetail                 from './pages/Policies/FlexibleAuthentication/FlexibleAuthenticationDetail'
@@ -119,6 +121,10 @@ import MacRegistrationListDetails
   from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable                                        from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
 import MyPolicies                                                       from './pages/Policies/MyPolicies'
+import PortProfile                                                      from './pages/Policies/PortProfile'
+import CreatePortProfile                                                from './pages/Policies/PortProfile/create'
+import SwitchPortProfileDetail                                          from './pages/Policies/PortProfile/PortProfileDetail/SwitchPortProfileDetail'
+import SwitchPortProfileForm                                            from './pages/Policies/PortProfile/PortProfileForm/SwitchPortProfileForm'
 import SelectPolicyForm                                                 from './pages/Policies/SelectPolicyForm'
 import SnmpAgentDetail                                                  from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
 import SnmpAgentForm                                                    from './pages/Policies/SnmpAgent/SnmpAgentForm/SnmpAgentForm'
@@ -167,6 +173,7 @@ import EditPersonalIdentityNetwork                                      from './
 import PersonalIdentityNetworkDetail                                    from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetail'
 import PersonalIdentityNetworkDetailEnhanced                            from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetailEnhanced'
 import PersonalIdentityNetworkTable                                     from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTable'
+import PersonalIdentityNetworkTableEnhanced                             from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTableEnhanced'
 import PortalServiceDetail                                              from './pages/Services/Portal/PortalDetail'
 import PortalTable                                                      from './pages/Services/Portal/PortalTable'
 import ResidentPortalDetail                                             from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
@@ -539,7 +546,8 @@ const useEdgePinRoutes = () => {
     <Route
       path={getServiceRoutePath({ type: ServiceType.PIN,
         oper: ServiceOperation.LIST })}
-      element={<PersonalIdentityNetworkTable />}
+      // eslint-disable-next-line max-len
+      element={isEdgePinEnhancementReady ? <PersonalIdentityNetworkTableEnhanced /> : <PersonalIdentityNetworkTable />}
     />
     <Route
       path={getServiceRoutePath({ type: ServiceType.PIN,
@@ -625,9 +633,11 @@ function ServiceRoutes () {
       <Route path={getServiceListRoutePath()} element={<MyServices />} />
       <Route
         path={getSelectServiceRoutePath()}
-        element={
+        element={getUserProfile().rbacOpsApiEnabled
           // eslint-disable-next-line max-len
-          <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }} scopes={[WifiScopes.CREATE, EdgeScopes.CREATE]}>
+          ? hasSomeServicesPermission(ServiceOperation.CREATE) ? <SelectServiceForm /> : goToNoPermission()
+          // eslint-disable-next-line max-len
+          : <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }} scopes={[WifiScopes.CREATE, EdgeScopes.CREATE]}>
             <SelectServiceForm />
           </AuthRoute>
         }/>
@@ -872,12 +882,19 @@ function PolicyRoutes () {
   const isSwitchFlexAuthEnabled = useIsSplitOn(Features.SWITCH_FLEXIBLE_AUTHENTICATION)
   // eslint-disable-next-line max-len
   const isDirectoryServerEnabled = useIsSplitOn(Features.WIFI_CAPTIVE_PORTAL_DIRECTORY_SERVER_TOGGLE)
+  const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
       <Route path='*' element={<PageNotFound />} />
       <Route path={getPolicyListRoutePath()} element={<MyPolicies />} />
-      <Route path={getSelectPolicyRoutePath()} element={<SelectPolicyForm />} />
+      <Route path={getSelectPolicyRoutePath()}
+        element={getUserProfile().rbacOpsApiEnabled
+          // eslint-disable-next-line max-len
+          ? hasSomePoliciesPermission(PolicyOperation.CREATE) ? <SelectPolicyForm /> : goToNoPermission()
+          : <SelectPolicyForm />
+        }
+      />
       <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}
@@ -1482,7 +1499,7 @@ function PolicyRoutes () {
             type: PolicyType.ETHERNET_PORT_PROFILE ,
             oper: PolicyOperation.LIST
           })}
-          element={<EthernetPortProfileTable/>}
+          element={<EthernetPortProfile/>}
         />
         <Route
           path={getPolicyRoutePath({
@@ -1504,6 +1521,33 @@ function PolicyRoutes () {
             oper: PolicyOperation.DETAIL
           })}
           element={<EthernetPortProfileDetail/>}
+        />
+      </>
+      }
+      {isSwitchPortProfileEnabled && <>
+        <Route
+          path='policies/portProfile/create'
+          element={<CreatePortProfile />}
+        />
+        <Route
+          path='policies/portProfile/:activeTab/'
+          element={<PortProfile />}
+        />
+        <Route
+          path='policies/portProfile/:activeTab/:activeSubTab'
+          element={<PortProfile />}
+        />
+        <Route
+          path='policies/portProfile/switch/profiles/add'
+          element={<SwitchPortProfileForm />}
+        />
+        <Route
+          path='policies/portProfile/switch/profiles/:portProfileId/edit'
+          element={<SwitchPortProfileForm />}
+        />
+        <Route
+          path='policies/portProfile/switch/profiles/:portProfileId/detail'
+          element={<SwitchPortProfileDetail />}
         />
       </>
       }

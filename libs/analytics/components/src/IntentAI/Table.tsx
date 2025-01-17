@@ -13,13 +13,13 @@ import { noDataDisplay, PathFilter, useEncodedParameter }                       
 
 import bannerImg from '../../../assets/banner_bkg.png'
 
-import { Icon }                                        from './common/IntentIcon'
-import { AiFeatures, codes, IntentListItem }           from './config'
-import { getStatusTooltip, useIntentAITableQuery }     from './services'
-import { DisplayStates, Statuses }                     from './states'
-import * as UI                                         from './styledComponents'
-import { IntentAIDateTimePicker, useIntentAIActions }  from './useIntentAIActions'
-import { Actions, getDefaultTime, isVisibledByAction } from './utils'
+import { Icon }                                       from './common/IntentIcon'
+import { AiFeatures, codes, IntentListItem }          from './config'
+import { getStatusTooltip, useIntentAITableQuery }    from './services'
+import { DisplayStates, Statuses }                    from './states'
+import * as UI                                        from './styledComponents'
+import { IntentAIDateTimePicker, useIntentAIActions } from './useIntentAIActions'
+import { Actions, getDefaultTime, isVisibleByAction } from './utils'
 
 import type { Filters } from './services'
 
@@ -189,14 +189,14 @@ export function IntentAITable (
     {
       key: getShowWithoutRbacCheckKey(Actions.One_Click_Optimize),
       label: $t({ defaultMessage: '1-Click Optimize' }),
-      visible: rows => isVisibledByAction(rows, Actions.One_Click_Optimize),
+      visible: rows => isVisibleByAction(rows, Actions.One_Click_Optimize),
       onClick: (rows) => intentActions.showOneClickOptimize(rows, clearSelection)
     },
     {
       key: getShowWithoutRbacCheckKey(Actions.Optimize),
       label: selectedRows?.[0]?.displayStatus === DisplayStates.new ?
         $t({ defaultMessage: 'Optimize' }) : $t({ defaultMessage: 'Edit' }),
-      visible: rows => isVisibledByAction(rows, Actions.Optimize),
+      visible: rows => isVisibleByAction(rows, Actions.Optimize),
       onClick: (rows) => {
         const row = rows[0]
         const editPath = get('IS_MLISA_SA')
@@ -211,27 +211,27 @@ export function IntentAITable (
     {
       key: getShowWithoutRbacCheckKey(Actions.Revert),
       label: getRevertPickerJSX() as unknown as string,
-      visible: rows => isVisibledByAction(rows, Actions.Revert),
+      visible: rows => isVisibleByAction(rows, Actions.Revert),
       onClick: () => {}
     },
     {
       key: getShowWithoutRbacCheckKey(Actions.Pause),
       label: $t({ defaultMessage: 'Pause' }),
-      visible: rows => isVisibledByAction(rows, Actions.Pause),
+      visible: rows => isVisibleByAction(rows, Actions.Pause),
       onClick: (rows) =>
         intentActions.handleTransitionIntent(Actions.Pause, rows, () => clearSelection())
     },
     {
       key: getShowWithoutRbacCheckKey(Actions.Cancel),
       label: $t({ defaultMessage: 'Cancel' }),
-      visible: rows => isVisibledByAction(rows, Actions.Cancel),
+      visible: rows => isVisibleByAction(rows, Actions.Cancel),
       onClick: (rows) =>
         intentActions.handleTransitionIntent(Actions.Cancel, rows, () => clearSelection())
     },
     {
       key: getShowWithoutRbacCheckKey(Actions.Resume),
       label: $t({ defaultMessage: 'Resume' }),
-      visible: rows => isVisibledByAction(rows, Actions.Resume),
+      visible: rows => isVisibleByAction(rows, Actions.Resume),
       onClick: (rows) =>
         intentActions.handleTransitionIntent(Actions.Resume, rows, () => clearSelection())
     }

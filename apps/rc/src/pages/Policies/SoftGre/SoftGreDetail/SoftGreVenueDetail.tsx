@@ -96,7 +96,7 @@ function useColumns () {
       dataIndex: 'networkCount',
       align: 'center',
       render: (_, row) => {
-        if (!row.wifiNetworkIds || row.wifiNetworkIds.length === 0) return ''
+        if (!row.wifiNetworkIds || row.wifiNetworkIds.length === 0) return '0'
         const tooltipItems = row?.wifiNetworkNames as string[]
         return <SimpleListTooltip
           items={tooltipItems}
@@ -111,7 +111,7 @@ function useColumns () {
         dataIndex: 'apCount',
         align: 'center' as AlignType,
         render: (_:React.ReactNode, row:VenueTableUsageBySoftGre) => {
-          if (!row.apSerialNumbers || row.apSerialNumbers.length === 0) return ''
+          if (!row.apSerialNumbers || row.apSerialNumbers.length === 0) return '0'
           const tooltipItems = row?.apNames as string[]
           return <SimpleListTooltip items={tooltipItems} displayText={row?.apNames?.length} />
         }

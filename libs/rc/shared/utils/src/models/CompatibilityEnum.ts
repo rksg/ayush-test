@@ -19,6 +19,7 @@ export enum IncompatibilityFeatures {
   TRUNK_PORT_VLAN_UNTAG_ID = 'Trunk Port VLAN Untag Id',
   SD_LAN = 'SD-LAN',
   TUNNEL_PROFILE = 'Tunnel Profile',
+  NAT_TRAVERSAL = 'NAT Traversal',
   HA_AA = 'HA-AA',
   HQOS = 'HQoS',
   DHCP = 'DHCP',  // edge DHCP
@@ -29,9 +30,14 @@ export enum IncompatibilityFeatures {
   ARP_TERMINATION = 'ARP_TERMINATION'
 }
 
+export enum IncompatibilityFeatureGroups {
+  TUNNEL_PROFILE = 'TUNNEL_PROFILE'
+}
+
 export enum EdgeCompatibilityFeatureEnum {
   SD_LAN = 'SD-LAN',
   TUNNEL_PROFILE = 'Tunnel Profile',
+  NAT_TRAVERSAL = 'NAT Traversal',
   HA_AA = 'HA-AA',
   HQOS = 'HQoS',
   DHCP = 'DHCP',
