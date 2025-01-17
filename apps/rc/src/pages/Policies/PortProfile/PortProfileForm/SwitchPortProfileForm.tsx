@@ -19,6 +19,7 @@ import {
   checkVlanMember,
   getDefaultPortSpeedOption,
   getPolicyListRoutePath,
+  LldpTlvMatchingTitle,
   LldpTlvs,
   MacOuis,
   PORT_SPEED,
@@ -174,7 +175,12 @@ export default function SwitchPortProfileForm () {
       title: $t({ defaultMessage: 'Name Match' }),
       key: 'nameMatchingType',
       dataIndex: 'nameMatchingType',
-      sorter: true
+      sorter: true,
+      render: (_, row) => {
+        const nameMatchingType = row.nameMatchingType as keyof typeof LldpTlvMatchingTitle
+        return $t({ defaultMessage: '{nameMatchingType}' },
+          { nameMatchingType: LldpTlvMatchingTitle[nameMatchingType] })
+      }
     },
     {
       title: $t({ defaultMessage: 'System Description' }),
@@ -186,7 +192,12 @@ export default function SwitchPortProfileForm () {
       title: $t({ defaultMessage: 'Description Match' }),
       key: 'descMatchingType',
       dataIndex: 'descMatchingType',
-      sorter: true
+      sorter: true,
+      render: (_, row) => {
+        const descMatchingType = row.descMatchingType as keyof typeof LldpTlvMatchingTitle
+        return $t({ defaultMessage: '{descMatchingType}' },
+          { descMatchingType: LldpTlvMatchingTitle[descMatchingType] })
+      }
     }
   ]
 
