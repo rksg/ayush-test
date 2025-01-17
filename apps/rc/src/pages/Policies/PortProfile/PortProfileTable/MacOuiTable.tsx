@@ -132,7 +132,7 @@ export default function MacOuiTable () {
               { macoui: rows.length === 1 ?
                 rows[0].oui : $t({ defaultMessage: '{count} MAC OUIs' }, { count: rows.length }) }),
             // eslint-disable-next-line max-len
-            content: $t({ defaultMessage: '{count, plural, one {This  MAC OUI} other {These MAC OUIs}} {count, plural, one {is} other {are}} used in the following profile(s). Delete {count, plural, one {this MAC OUI} other {them}} will result in profiles getting updated: {profilesNames}' }, {
+            content: $t({ defaultMessage: '{count, plural, one {This MAC OUI} other {These MAC OUIs}} {count, plural, one {is} other {are}} used in the following profile(s). Delete {count, plural, one {this MAC OUI} other {them}} will result in profiles getting updated: {profilesNames}' }, {
               count: rows.length,
               profilesNames:
               <FormattedMessage
