@@ -11,7 +11,8 @@ import {
   getServiceListRoutePath,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
-  transformEdgeMdnsRulesToViewModelType
+  transformEdgeMdnsRulesToViewModelType,
+  getServiceAllowedOperation
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -39,6 +40,8 @@ const EdgeMdnsProxyDetails = () => {
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByService(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.EDIT)}
+            // eslint-disable-next-line max-len
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.EDGE_MDNS_PROXY, ServiceOperation.EDIT)}
             to={getServiceDetailsLink({
               type: ServiceType.EDGE_MDNS_PROXY,
               oper: ServiceOperation.EDIT,

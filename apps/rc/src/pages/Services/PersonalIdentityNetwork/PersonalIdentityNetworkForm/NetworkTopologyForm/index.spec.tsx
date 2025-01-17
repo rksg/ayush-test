@@ -11,7 +11,11 @@ import { NetworkTopologyForm } from '.'
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  EdgeCompatibilityDrawer: () => <div data-testid='EdgeCompatibilityDrawer' />
+  EdgeCompatibilityDrawer: (props: { visible: boolean, onClose: () => void }) =>
+    <div data-testid='EdgeCompatibilityDrawer'>
+      {`${props.visible}`}
+      <button onClick={() => props.onClose()}>Close</button>
+    </div>
 }))
 
 jest.mock('antd', () => ({
@@ -44,7 +48,7 @@ describe('PersonalIdentityNetworkForm - NetworkTopologyForm', () => {
     expect(screen.getByText('Wireless topology')).toBeVisible()
     expect(screen.getByText('2-tier topology')).toBeVisible()
     expect(screen.getByText('3-tier topology')).toBeVisible()
-    expect(screen.getByTestId('EdgeCompatibilityDrawer')).toBeVisible()
+    expect(screen.getByTestId('EdgeCompatibilityDrawer')).toHaveTextContent('false')
   })
 
   it('the value of the network topology card should be correct', async () => {
@@ -90,5 +94,26 @@ describe('PersonalIdentityNetworkForm - NetworkTopologyForm', () => {
     expect(disabledFrame.length).toBe(2)
     expect(within(disabledFrame[0]).getByRole('radio').getAttribute('value')).toBe('2-Tier')
     expect(within(disabledFrame[1]).getByRole('radio').getAttribute('value')).toBe('3-Tier')
+  })
+
+  it('should show compatibility requirement', async () => {
+    render(
+      <PersonalIdentityNetworkFormContext.Provider
+        value={{ ...mockContextData, switchList: [{ id: '1', model: 'ICX7000-48P' }] }}
+      >
+        <StepsForm>
+          <StepsForm.StepForm>
+            <NetworkTopologyForm />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </PersonalIdentityNetworkFormContext.Provider>
+    )
+
+    screen.getByText('Select the network topology for this venue and ensure device compatibility.')
+    await userEvent.click(screen.getByRole('button', { name: 'See compatibility requirement' }))
+    const compatibilityDrawer = screen.getByTestId('EdgeCompatibilityDrawer')
+    expect(compatibilityDrawer).toHaveTextContent('true')
+    await userEvent.click(within(compatibilityDrawer).getByRole('button', { name: 'Close' }))
+    expect(compatibilityDrawer).toHaveTextContent('false')
   })
 })
