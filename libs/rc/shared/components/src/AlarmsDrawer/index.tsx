@@ -82,6 +82,9 @@ export function AlarmsDrawer (props: AlarmsType) {
   window.addEventListener('showAlarmDrawer',(function (e:CustomEvent){
     setVisible(true)
     setSeverity(e.detail.data.name)
+    if (isFilterProductToggleEnabled) {
+      setProductType(e.detail.data.product ?? 'all')
+    }
 
     if(e.detail.data.venueId){
       setVenueId(e.detail.data.venueId)
