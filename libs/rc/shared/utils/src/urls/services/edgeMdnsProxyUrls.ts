@@ -10,7 +10,8 @@ export const EdgeMdnsProxyUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/edgeMulticastDnsProxyProfiles/query',
     newApi: true,
-    defaultHeaders: versionHeaders
+    defaultHeaders: versionHeaders,
+    opsApi: 'POST:/edgeMulticastDnsProxyProfiles/query'
   },
   getEdgeMdnsProxy: {
     method: 'get',
@@ -22,19 +23,22 @@ export const EdgeMdnsProxyUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/edgeMulticastDnsProxyProfiles',
     newApi: true,
-    defaultHeaders: versionHeaders
+    defaultHeaders: versionHeaders,
+    opsApi: 'POST:/edgeMulticastDnsProxyProfiles'
   },
   updateEdgeMdnsProxy: {
     method: 'put',
     url: '/edgeMulticastDnsProxyProfiles/:serviceId',
     newApi: true,
-    defaultHeaders: versionHeaders
+    defaultHeaders: versionHeaders,
+    opsApi: 'PUT:/edgeMulticastDnsProxyProfiles/{id}'
   },
   deleteEdgeMdnsProxy: {
     method: 'delete',
     url: '/edgeMulticastDnsProxyProfiles/:serviceId',
     newApi: true,
-    defaultHeaders: versionHeaders
+    defaultHeaders: versionHeaders,
+    opsApi: 'DELETE:/edgeMulticastDnsProxyProfiles/{id}'
   },
   activateEdgeMdnsProxyCluster: {
     method: 'put',
