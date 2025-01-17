@@ -130,7 +130,7 @@ export function filterByAccess <Item> (items: Item[]) {
   } else {
     return items.filter(item => {
       const filterItem = item as FilterItemType
-      const allowedOperations = filterItem?.rbacOpsIds
+      const allowedOperations = filterItem?.rbacOpsIds || filterItem?.props?.rbacOpsIds
       const legacyKey = filterItem?.key
       const scopes = filterItem?.scopeKey || filterItem?.props?.scopeKey || []
       return hasPermission({ scopes, rbacOpsIds: allowedOperations, legacyKey })
