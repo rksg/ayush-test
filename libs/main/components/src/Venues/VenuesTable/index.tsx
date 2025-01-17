@@ -15,8 +15,8 @@ import {
   cssStr,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { useEnforcedStatus, useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
   useVenuesTableQuery,
   useDeleteVenueMutation,
@@ -269,10 +269,8 @@ export const VenueTable = ({ settingsId = 'venues-table',
   const navigate = useNavigate()
   const { tenantId } = useParams()
   const columns = useColumns(searchable, filterables)
-  const [
-    deleteVenue,
-    { isLoading: isDeleteVenueUpdating }
-  ] = useDeleteVenueMutation()
+  const [ deleteVenue, { isLoading: isDeleteVenueUpdating } ] = useDeleteVenueMutation()
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
 
   const rowActions: TableProps<Venue>['rowActions'] = [{
     visible: (selectedRows) => selectedRows.length === 1,
@@ -280,11 +278,15 @@ export const VenueTable = ({ settingsId = 'venues-table',
     scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
       navigate(`${selectedRows[0].id}/edit/`, { replace: false })
-    }
+    },
+    disabled: (selectedRows) => hasEnforcedItem(selectedRows),
+    tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows)
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
     visible: hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && hasCrossVenuesPermission(),
+    disabled: (selectedRows) => hasEnforcedItem(selectedRows),
+    tooltip: (selectedRows) => getEnforcedActionMsg(selectedRows),
     onClick: (rows, clearSelection) => {
       showActionModal({
         type: 'confirm',

@@ -27,6 +27,8 @@ import { RequestPayload, WifiScopes }                              from '@acx-ui
 import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 import { getIntl, noDataDisplay }                                  from '@acx-ui/utils'
 
+import { useEnforcedStatus } from '../configTemplates/EnforcedButton'
+
 
 const disabledType: NetworkTypeEnum[] = []
 
@@ -327,7 +329,7 @@ export function NetworkTable ({
   const { $t } = intl
   const navigate = useNavigate()
   const linkToEditNetwork = useTenantLink('/networks/wireless/')
-
+  const { hasEnforcedItem, getEnforcedActionMsg } = useEnforcedStatus()
 
   useEffect(() => {
     if (tableQuery?.data?.data) {
@@ -357,6 +359,18 @@ export function NetworkTable ({
     return list
   }
 
+  const isActionDisabled = (selectedRows: Array<Network|WifiNetwork>) => {
+    // eslint-disable-next-line max-len
+    const isDsaeEnabled = (isBetaDPSK3FeatureEnabled && !isWpaDsae3Toggle) && (!!selectedRows[0]?.dsaeOnboardNetwork)
+    const isEnforced = hasEnforcedItem(selectedRows)
+
+    return isDsaeEnabled || isEnforced
+  }
+
+  const getRowActionTooltip = (selectedRows: Array<Network|WifiNetwork>) => {
+    return getEnforcedActionMsg(selectedRows)
+  }
+
   const rowActions: TableProps<Network|WifiNetwork>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
@@ -364,8 +378,8 @@ export function NetworkTable ({
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/edit`, { replace: false })
       },
-      disabled: (selectedRows) => (isBetaDPSK3FeatureEnabled
-        && !isWpaDsae3Toggle) && (!!selectedRows[0]?.dsaeOnboardNetwork)
+      disabled: isActionDisabled,
+      tooltip: getRowActionTooltip
     },
     {
       label: $t({ defaultMessage: 'Clone' }),
@@ -414,8 +428,8 @@ export function NetworkTable ({
           }).then(clearSelection)
         })
       },
-      disabled: (selectedRows) => (isBetaDPSK3FeatureEnabled
-        && !isWpaDsae3Toggle) && (!!selectedRows[0]?.dsaeOnboardNetwork)
+      disabled: isActionDisabled,
+      tooltip: getRowActionTooltip
     }
   ]
 

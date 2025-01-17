@@ -6,7 +6,7 @@ import { AllowedEnforcedConfigTemplateTypes, useGetConfigTemplateInstanceEnforce
 import { useConfigTemplate }                                                             from '@acx-ui/rc/utils'
 
 // eslint-disable-next-line max-len
-export const enforcedActionMsg = defineMessage({ defaultMessage: 'Action is disabled due to enforcement from the template' })
+const enforcedActionMsg = defineMessage({ defaultMessage: 'Action is disabled due to enforcement from the template' })
 
 interface EnforcedAwareButtonProps extends ButtonProps {
   configTemplateType: AllowedEnforcedConfigTemplateTypes
@@ -34,4 +34,28 @@ export function EnforcedButton (props: EnforcedAwareButtonProps) {
       : <Button {...rest} />
     }
   </Loader>
+}
+
+export function useEnforcedStatus () {
+  const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
+  const isConfigTemplateEnforcedEnabled = useIsSplitOn(Features.CONFIG_TEMPLATE_ENFORCED)
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const hasEnforcedItem = (target?: any): boolean => {
+    if (!target || !isConfigTemplateEnforcedEnabled || isTemplate) return false
+
+    if (Array.isArray(target)) {
+      return target.some(item => item.isEnforced ?? false)
+    }
+
+    return target.isEnforced ?? false
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const getEnforcedActionMsg = (target?: any): string => {
+    return hasEnforcedItem(target) ? $t(enforcedActionMsg) : ''
+  }
+
+  return { hasEnforcedItem, getEnforcedActionMsg }
 }
