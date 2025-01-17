@@ -31,9 +31,9 @@ import {
   useLazyGetPropertyUnitByIdQuery,
   useUpdatePersonaMutation
 } from '@acx-ui/rc/services'
-import { ConnectionMetering, PersonaGroup, useTableQuery } from '@acx-ui/rc/utils'
-import { hasCrossVenuesPermission }                        from '@acx-ui/user'
-import { noDataDisplay }                                   from '@acx-ui/utils'
+import { ConnectionMetering, PersonaGroup, PersonaUrls, useTableQuery }       from '@acx-ui/rc/utils'
+import { filterByOperations, hasAllowedOperations, hasCrossVenuesPermission } from '@acx-ui/user'
+import { getOpsApi, noDataDisplay }                                           from '@acx-ui/utils'
 
 import { blockedTagStyle, PersonaBlockedIcon } from '../styledComponents'
 
@@ -217,7 +217,7 @@ function PersonaDetails () {
   const netSeg = [
     { label: $t({ defaultMessage: 'Assigned Segment No.' }),
       value: personaDetailsQuery.data?.vni ??
-        (vniRetryable ?
+        ((hasAllowedOperations([getOpsApi(PersonaUrls.allocateVni)]) && vniRetryable) ?
           <Space size={'middle'} align={'center'}>
             <Typography.Text>{noDataDisplay}</Typography.Text>
             <Button
@@ -437,8 +437,9 @@ function PersonaDetailsPageHeader (props: {
     })
   }
 
-  const extra = hasCrossVenuesPermission({ needGlobalPermission: true }) && [<Button
+  const extra = hasCrossVenuesPermission({ needGlobalPermission: true }) ? [<Button
     type='primary'
+    rbacOpsIds={[getOpsApi(PersonaUrls.updatePersona)]}
     onClick={showRevokedModal}
     disabled={!allowed}
   >
@@ -449,9 +450,13 @@ function PersonaDetailsPageHeader (props: {
       description: 'Translation strings - Unblock, Block Identity'
     }, { revokedStatus })}
   </Button>,
-  <Button type={'primary'} onClick={onClick} >
+  <Button
+    type={'primary'}
+    onClick={onClick}
+    rbacOpsIds={[getOpsApi(PersonaUrls.updatePersona)]}
+  >
     {$t({ defaultMessage: 'Configure' })}
-  </Button>]
+  </Button>] : []
 
   return (
     <PageHeader
@@ -466,7 +471,7 @@ function PersonaDetailsPageHeader (props: {
             {$t({ defaultMessage: 'Blocked' })}
           </Tag>
         </>}
-      extra={extra}
+      extra={filterByOperations(extra)}
       breadcrumb={[
         {
           text: $t({ defaultMessage: 'Clients' })
