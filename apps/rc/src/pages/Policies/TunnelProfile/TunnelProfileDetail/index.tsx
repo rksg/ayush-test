@@ -8,6 +8,7 @@ import { useGetTunnelProfileViewDataListQuery }          from '@acx-ui/rc/servic
 import {
   filterByAccessForServicePolicyMutation,
   isDefaultTunnelProfile as getIsDefaultTunnelProfile,
+  getPolicyAllowedOperation,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -147,6 +148,8 @@ const TunnelProfileDetail = () => {
           filterByAccessForServicePolicyMutation([
             <TenantLink
               scopeKey={getScopeKeyByPolicy(PolicyType.TUNNEL_PROFILE, PolicyOperation.EDIT)}
+              // eslint-disable-next-line max-len
+              rbacOpsIds={getPolicyAllowedOperation(PolicyType.TUNNEL_PROFILE, PolicyOperation.EDIT)}
               to={getPolicyDetailsLink({
                 type: PolicyType.TUNNEL_PROFILE,
                 oper: PolicyOperation.EDIT,
