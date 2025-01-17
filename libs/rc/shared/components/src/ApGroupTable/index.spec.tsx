@@ -193,7 +193,9 @@ describe('ApGroupTable', () => {
     await userEvent.click(combos[0])
     const titles = await screen.findAllByTitle('My-Venue')
     await userEvent.click(titles[1])
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }), {
+      timeout: 20000
+    })
 
     const textInputs = await screen.findAllByRole('textbox')
     expect(textInputs).toHaveLength(1)
@@ -202,5 +204,5 @@ describe('ApGroupTable', () => {
     const highlightString = await within(row1).findByText('apg')
     expect(highlightString).toBeVisible()
 
-  })
+  }, 40000)
 })

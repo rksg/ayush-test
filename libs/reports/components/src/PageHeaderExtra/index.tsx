@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl'
 import { NetworkFilter, SANetworkFilter } from '@acx-ui/analytics/components'
 import { RangePicker }                    from '@acx-ui/components'
 import { get }                            from '@acx-ui/config'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import { getShowWithoutRbacCheckKey }     from '@acx-ui/user'
 import { useDateFilter }                  from '@acx-ui/utils'
 
@@ -25,6 +26,7 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
   const isNetworkFilterDisabled = networkFilterDisabledReports.includes(type)
 
   const { startDate, endDate, setDateFilter, range } = useDateFilter(moment().subtract(12, 'month'))
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
   const component = [
     <RangePicker
@@ -34,6 +36,7 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
       showTimePicker
       selectionType={range}
       isReport
+      maxMonthRange={isDateRangeLimit ? 1 : 3}
     />
   ]
   showFilter && !isNetworkFilterDisabled && component.unshift(

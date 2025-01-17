@@ -1,5 +1,5 @@
-import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/query/react'
+import { QueryReturnValue }                        from '@reduxjs/toolkit/query'
+import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
 /* eslint-disable max-len */
 import { cloneDeep } from 'lodash'
 

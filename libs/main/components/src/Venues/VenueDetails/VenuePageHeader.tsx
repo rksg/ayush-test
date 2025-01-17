@@ -7,6 +7,7 @@ import { EnforcedButton, usePathBasedOnConfigTemplate } from '@acx-ui/rc/compone
 import { useVenueDetailsHeaderQuery }                   from '@acx-ui/rc/services'
 import {
   ConfigTemplateType,
+  CommonUrlsInfo,
   useConfigTemplate,
   useConfigTemplateBreadcrumb,
   VenueDetailHeader
@@ -18,7 +19,7 @@ import {
 } from '@acx-ui/react-router-dom'
 import { WifiScopes, EdgeScopes, SwitchScopes }       from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey } from '@acx-ui/user'
-import { useDateFilter }                              from '@acx-ui/utils'
+import { getOpsApi, useDateFilter }                   from '@acx-ui/utils'
 
 import VenueTabs from './VenueTabs'
 
@@ -69,6 +70,7 @@ function VenuePageHeader () {
           configTemplateType={ConfigTemplateType.VENUE}
           instanceId={venueId}
           type='primary'
+          rbacOpsIds={[getOpsApi(CommonUrlsInfo.updateVenue)]}
           scopeKey={[WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE]}
           onClick={() =>
             navigate(detailsPath, {

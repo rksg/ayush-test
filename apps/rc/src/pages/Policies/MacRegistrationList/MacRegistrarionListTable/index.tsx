@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 import {
   Button,
   Loader,
-  PageHeader,
+  PageHeader, showActionModal,
   Table,
   TableProps
 } from '@acx-ui/components'
@@ -203,26 +203,47 @@ export default function MacRegistrationListsTable () {
     scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.DELETE),
     label: $t({ defaultMessage: 'Delete' }),
     onClick: ([selectedRow], clearSelection) => {
-      doProfileDelete(
-        [selectedRow],
-        $t({ defaultMessage: 'List' }),
-        selectedRow.name,
-        [
-          isIdentityRequired ?
+      if (isIdentityRequired) {
+        if (selectedRow.registrationCount > 0) {
+          showActionModal({
+            type: 'error',
             // eslint-disable-next-line max-len
-            { fieldName: 'registrationCount', fieldText: $t({ defaultMessage: 'Mac Registration' }) } :
-            { fieldName: 'associationIds', fieldText: $t({ defaultMessage: 'Identity' }) },
-          { fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }
-        ],
-        async () => deleteMacRegList({ params: { policyId: selectedRow.id } })
-          .unwrap()
-          .then(() => {
-            clearSelection()
-          }).catch((error) => {
-            console.log(error) // eslint-disable-line no-console
+            content: $t({ defaultMessage: 'You are unable to delete this list due to it has Mac Registrations' }),
+            customContent: {
+              action: 'SHOW_ERRORS'
+            }
           })
-      )}
+        } else {
+          doProfileDelete(
+            [selectedRow],
+            $t({ defaultMessage: 'List' }),
+            selectedRow.name,
+            [],
+            async () => deleteMacList(selectedRow.id!, clearSelection))
+        }
+      } else {
+        doProfileDelete(
+          [selectedRow],
+          $t({ defaultMessage: 'List' }),
+          selectedRow.name,
+          [
+            { fieldName: 'associationIds', fieldText: $t({ defaultMessage: 'Identity' }) },
+            { fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }
+          ],
+          async () => deleteMacList(selectedRow.id!, clearSelection))
+      }
+    }
   }]
+
+  const deleteMacList = (macListId: string, clearSelection: () => void) => {
+    deleteMacRegList({ params: { policyId: macListId } })
+      .unwrap()
+      .then(() => {
+        clearSelection()
+      }).catch((error) => {
+        console.log(error) // eslint-disable-line no-console
+      })
+  }
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = {
