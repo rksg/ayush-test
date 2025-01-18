@@ -39,6 +39,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
 
   const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgePinEnhanceReady = useIsSplitOn(Features.EDGE_PIN_ENHANCE_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const networkId = network?.id
 
@@ -64,8 +65,59 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
       cachedSoftGre: cachedSoftGre ?? []
     } as NetworkTunnelActionModalProps)
   }
-  return isTemplate
-    ? []
+
+  if (isTemplate) return []
+
+  return isEdgePinEnhanceReady
+    ? [{
+      key: 'tunneledInfo',
+      title: $t({ defaultMessage: 'Network Tunneling' }),
+      dataIndex: 'tunneledInfo',
+      render: function (_: ReactNode, row: Venue) {
+        if (!networkId || !row.activated?.isActivated) return null
+
+        const networkInfo = {
+          id: networkId,
+          type: network.type!,
+          venueId: row.id,
+          venueName: row.name
+        }
+        const venueSdLanInfo = sdLanScopedNetworkVenues.sdLansVenueMap[row.id]?.[0]
+        const venueSoftGre = softGreVenueMap[row.id]
+        const targetSoftGre = venueSoftGre?.filter(sg => sg.networkIds.includes(networkId))
+        // eslint-disable-next-line max-len
+        const venuePinInfo = (pinScopedNetworkVenues[row.id] as PersonalIdentityNetworksViewData[])?.[0]
+        // eslint-disable-next-line max-len
+        const tunnelType = getNetworkTunnelType(networkInfo, venueSoftGre, venueSdLanInfo, venuePinInfo)
+
+        return <><NetworkTunnelSwitchBtn
+          tunnelType={tunnelType}
+          venueSdLanInfo={venueSdLanInfo}
+          onClick={(checked) => {
+            if (checked) {
+              handleClickNetworkTunnel(row, network)()
+            } else {
+              const formValues = {
+                tunnelType: NetworkTunnelTypeEnum.None,
+                softGre: {
+                  oldProfileId: targetSoftGre?.[0].profileId
+                }
+              } as NetworkTunnelActionForm
+
+              // deactivate depending on current tunnel type
+              deactivateNetworkTunnelByType(tunnelType, formValues, networkInfo, venueSdLanInfo)
+            }
+          }}
+        />
+        <NetworkTunnelInfoLabel
+          network={networkInfo}
+          isVenueActivated={Boolean(row.activated?.isActivated)}
+          venueSdLan={venueSdLanInfo}
+          venueSoftGre={targetSoftGre?.[0]}
+          venuePin={venuePinInfo}
+        /></>
+      }
+    }]
     : [...(((isEdgeMvSdLanReady || isSoftGreEnabled) && !isEdgePinHaReady) ? [{
       key: 'tunneledInfo',
       title: $t({ defaultMessage: 'Tunnel' }),
