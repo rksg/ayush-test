@@ -35,13 +35,14 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
   const { isTemplate } = useConfigTemplate()
   const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgePinEnhanceReady = useIsSplitOn(Features.EDGE_PIN_ENHANCE_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
   const deactivateNetworkTunnelByType = useDeactivateNetworkTunnelByType()
   const softGreVenueMap = useGetSoftGreScopeVenueMap()
   // eslint-disable-next-line max-len
   const sdLanVenueMap = tansformSdLanScopedVenueMap(sdLanScopedNetworks.sdLans as EdgeMvSdLanViewData[])
-  const allPins = useEdgeAllPinData()
+  const allPins = useEdgeAllPinData({}, isTemplate)
   const venuePinInfo = find(allPins, p => p.venueId === venueId)
   const pinNetworkIds = allPins?.flatMap(p => p.tunneledWlans?.map(t => t.networkId))
 
@@ -49,7 +50,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
     fields: ['name', 'id'],
     filters: { id: [venueId] }
   } }, {
-    skip: !venueId,
+    skip: !venueId || isTemplate,
     selectFromResult: ({ data }) => ({
       venueInfo: data?.data[0]
     })
@@ -74,107 +75,145 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
     } as NetworkTunnelActionModalProps)
   }
 
-  return isTemplate
-    ? []
-    : [
-      ...(!isEdgePinHaReady && (isEdgeMvSdLanReady || isSoftGreEnabled) ? [{
-        key: 'tunneledInfo',
-        title: $t({ defaultMessage: 'Tunnel' }),
-        dataIndex: 'tunneledInfo',
-        render: function (_: ReactNode, row: Network) {
-          return <NetworkTunnelButton
-            currentVenue={{
-              id: venueId,
-              name: venueInfo?.name,
-              activated: { isActivated: row.activated?.isActivated }
-            } as Venue}
-            currentNetwork={row}
-            sdLanVenueMap={sdLanVenueMap}
-            softGreVenueMap={softGreVenueMap}
-            onClick={handleClickNetworkTunnel}
-          />
+  if (isTemplate) return []
+
+  return isEdgePinEnhanceReady
+    ? [{
+      key: 'tunneledInfo',
+      title: $t({ defaultMessage: 'Network Tunneling' }),
+      dataIndex: 'tunneledInfo',
+      width: 200,
+      align: 'center' as const,
+      render: function (_: ReactNode, row: Network) {
+        const networkInfo = {
+          id: row.id,
+          type: row.nwSubType as NetworkTypeEnum,
+          venueId: venueId,
+          venueName: venueInfo?.name
         }
-      }]: []),
-      ...((isEdgePinHaReady) ?[{
-        key: 'tunneledInfo',
-        title: $t({ defaultMessage: 'Tunnel' }),
-        dataIndex: 'tunneledInfo',
-        children: [{
-          key: 'tunneledInfo.activated',
-          title: <Table.SubTitle>{$t({ defaultMessage: 'Activated' })}</Table.SubTitle>,
-          dataIndex: 'tunneledInfo.activated',
-          align: 'center',
-          render: function (_: ReactNode, row: Network) {
-            const networkInfo = {
-              id: row.id,
-              type: row.nwSubType as NetworkTypeEnum,
-              venueId: venueId,
-              venueName: venueInfo?.name
-            }
-            const venueSdLanInfo = sdLanVenueMap[venueId]
-            const venueSoftGre = softGreVenueMap[venueId]
-            const targetSoftGre = venueSoftGre?.filter(sg => sg.networkIds.includes(row.id))
+        const venueSdLanInfo = sdLanVenueMap[venueId]
+        const venueSoftGre = softGreVenueMap[venueId]
+        const targetSoftGre = venueSoftGre?.filter(sg => sg.networkIds.includes(row.id))
 
-            // eslint-disable-next-line max-len
-            const tunnelType = getNetworkTunnelType(networkInfo, venueSoftGre, venueSdLanInfo, venuePinInfo)
-            const isPinNetwork = !!pinNetworkIds?.includes(row.id)
+        // eslint-disable-next-line max-len
+        const tunnelType = getNetworkTunnelType(networkInfo, venueSoftGre, venueSdLanInfo, venuePinInfo)
+        const isPinNetwork = !!pinNetworkIds?.includes(rowData.id)
 
-            return row.activated?.isActivated
-              ? <NetworkTunnelSwitchBtn
-                tunnelType={tunnelType}
-                venueSdLanInfo={venueSdLanInfo}
-                onClick={(checked) => {
-                  if (checked) {
-                    handleClickNetworkTunnel({
-                      id: venueId,
-                      name: venueInfo?.name,
-                      activated: { isActivated: row.activated?.isActivated }
-                    } as Venue,
-                    row,
-                    isPinNetwork)
-                  } else {
-                    const formValues = {
-                      tunnelType: NetworkTunnelTypeEnum.None,
-                      softGre: {
-                        oldProfileId: targetSoftGre?.[0].profileId
-                      }
-                    } as NetworkTunnelActionForm
-
-                    // deactivate depending on current tunnel type
-                    // eslint-disable-next-line max-len
-                    deactivateNetworkTunnelByType(tunnelType, formValues, networkInfo, venueSdLanInfo)
+        return row.activated?.isActivated
+          ? <><NetworkTunnelSwitchBtn
+            tunnelType={tunnelType}
+            venueSdLanInfo={venueSdLanInfo}
+            onClick={(checked) => {
+              if (checked) {
+                handleClickNetworkTunnel({
+                  id: venueId,
+                  name: venueInfo?.name,
+                  activated: { isActivated: row.activated?.isActivated }
+                } as Venue,
+                row,
+                isPinNetwork)
+              } else {
+                const formValues = {
+                  tunnelType: NetworkTunnelTypeEnum.None,
+                  softGre: {
+                    oldProfileId: targetSoftGre?.[0].profileId
                   }
-                }}
-              />
-              : null
+                } as NetworkTunnelActionForm
+
+                // deactivate depending on current tunnel type
+                // eslint-disable-next-line max-len
+                deactivateNetworkTunnelByType(tunnelType, formValues, networkInfo, venueSdLanInfo)
+              }
+            }}
+          />
+          <NetworkTunnelInfoLabel
+            network={networkInfo}
+            isVenueActivated={Boolean(row.activated?.isActivated)}
+            venueSdLan={venueSdLanInfo}
+            venueSoftGre={targetSoftGre?.[0]}
+            venuePin={venuePinInfo}
+          />
+          </>
+          : null
+      }
+    }]
+    : [...(!isEdgePinHaReady && (isEdgeMvSdLanReady || isSoftGreEnabled) ? [{
+      key: 'tunneledInfo',
+      title: $t({ defaultMessage: 'Tunnel' }),
+      dataIndex: 'tunneledInfo',
+      render: function (_: ReactNode, row: Network) {
+        return <NetworkTunnelButton
+          currentVenue={{
+            id: venueId,
+            name: venueInfo?.name,
+            activated: { isActivated: row.activated?.isActivated }
+          } as Venue}
+          currentNetwork={row}
+          sdLanVenueMap={sdLanVenueMap}
+          softGreVenueMap={softGreVenueMap}
+          onClick={handleClickNetworkTunnel}
+        />
+      }
+    }]: []),
+    ...((isEdgePinHaReady) ?[{
+      key: 'tunneledInfo',
+      title: $t({ defaultMessage: 'Tunnel' }),
+      dataIndex: 'tunneledInfo',
+      children: [{
+        key: 'tunneledInfo.activated',
+        title: <Table.SubTitle>{$t({ defaultMessage: 'Activated' })}</Table.SubTitle>,
+        dataIndex: 'tunneledInfo.activated',
+        align: 'center',
+        render: function (_: ReactNode, row: Network) {
+          const networkInfo = {
+            id: row.id,
+            type: row.nwSubType as NetworkTypeEnum,
+            venueId: venueId,
+            venueName: venueInfo?.name
           }
-        }, {
-          key: 'tunneledInfo.networkTopology',
-          title: <Table.SubTitle>{$t({ defaultMessage: 'Network Topology' })}</Table.SubTitle>,
-          tooltip: $t({ defaultMessage:
+          const venueSdLanInfo = sdLanVenueMap[venueId]
+          const venueSoftGre = softGreVenueMap[venueId]
+          const targetSoftGre = venueSoftGre?.filter(sg => sg.networkIds.includes(row.id))
+
+          // eslint-disable-next-line max-len
+          const tunnelType = getNetworkTunnelType(networkInfo, venueSoftGre, venueSdLanInfo, venuePinInfo)
+          const isPinNetwork = !!pinNetworkIds?.includes(row.id)
+
+          return row.activated?.isActivated
+            ? <NetworkTunnelSwitchBtn
+              tunnelType={tunnelType}
+              venueSdLanInfo={venueSdLanInfo}
+              onClick={}
+            />
+            : null
+        }
+      }, {
+        key: 'tunneledInfo.networkTopology',
+        title: <Table.SubTitle>{$t({ defaultMessage: 'Network Topology' })}</Table.SubTitle>,
+        tooltip: $t({ defaultMessage:
           // eslint-disable-next-line max-len
           'Network traffic can be tunneled using SoftGRE or VxLAN. For VxLAN, in a <venueSingular></venueSingular>, you can choose either SD-LAN or Personal Identity Network (PIN) for DPSK network services, but not both.' }),
-          dataIndex: 'tunneledInfo.networkTopology',
-          render: function (_: ReactNode, row: Network) {
-            const networkInfo = {
-              id: row.id,
-              type: row.nwSubType as NetworkTypeEnum,
-              venueId: venueId,
-              venueName: venueInfo?.name
-            }
-            const venueSdLanInfo = sdLanVenueMap[venueId]
-            const venueSoftGre = softGreVenueMap[venueId]
-            const targetSoftGre = venueSoftGre?.filter(sg => sg.networkIds.includes(row.id))
-
-            return <NetworkTunnelInfoLabel
-              network={networkInfo}
-              isVenueActivated={Boolean(row.activated?.isActivated)}
-              venueSdLan={venueSdLanInfo}
-              venueSoftGre={targetSoftGre?.[0]}
-              venuePin={venuePinInfo}
-            />
+        dataIndex: 'tunneledInfo.networkTopology',
+        render: function (_: ReactNode, row: Network) {
+          const networkInfo = {
+            id: row.id,
+            type: row.nwSubType as NetworkTypeEnum,
+            venueId: venueId,
+            venueName: venueInfo?.name
           }
-        }]
-      }]: [])
+          const venueSdLanInfo = sdLanVenueMap[venueId]
+          const venueSoftGre = softGreVenueMap[venueId]
+          const targetSoftGre = venueSoftGre?.filter(sg => sg.networkIds.includes(row.id))
+
+          return <NetworkTunnelInfoLabel
+            network={networkInfo}
+            isVenueActivated={Boolean(row.activated?.isActivated)}
+            venueSdLan={venueSdLanInfo}
+            venueSoftGre={targetSoftGre?.[0]}
+            venuePin={venuePinInfo}
+          />
+        }
+      }]
+    }]: [])
     ]
 }
