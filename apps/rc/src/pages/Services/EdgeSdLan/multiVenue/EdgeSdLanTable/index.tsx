@@ -36,6 +36,7 @@ import {
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
   defaultSort,
+  getServiceAllowedOperation,
   IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 import {
@@ -280,6 +281,7 @@ const EdgeMvSdLanTable = () => {
   const rowActions: TableProps<EdgeMvSdLanViewData>['rowActions'] = [
     {
       scopeKey: getScopeKeyByService(ServiceType.EDGE_SD_LAN, ServiceOperation.EDIT),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.EDGE_SD_LAN, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => selectedRows.length === 1,
       onClick: (selectedRows) => {
@@ -297,6 +299,7 @@ const EdgeMvSdLanTable = () => {
     },
     {
       scopeKey: getScopeKeyByService(ServiceType.EDGE_SD_LAN, ServiceOperation.DELETE),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.EDGE_SD_LAN, ServiceOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -345,6 +348,8 @@ const EdgeMvSdLanTable = () => {
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByService(ServiceType.EDGE_SD_LAN, ServiceOperation.CREATE)}
+            // eslint-disable-next-line max-len
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.EDGE_SD_LAN, ServiceOperation.CREATE)}
             to={getServiceRoutePath({
               type: ServiceType.EDGE_SD_LAN,
               oper: ServiceOperation.CREATE

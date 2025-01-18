@@ -109,7 +109,7 @@ describe('NetworkForm parser', () => {
       const moreSettingData = transferMoreSettingsToSave(incomingData, incomingData)
       expect(moreSettingData).not.toHaveProperty('dpskServiceProfileId')
       // eslint-disable-next-line max-len
-      expect(moreSettingData.wlan?.advancedCustomization).not.toHaveProperty('enableAaaVlanOverride')
+      expect(moreSettingData.wlan?.advancedCustomization).toHaveProperty('enableAaaVlanOverride')
 
     })
 

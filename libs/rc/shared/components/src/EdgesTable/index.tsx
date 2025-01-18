@@ -130,7 +130,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     { payload: venueOptionsDefaultPayload }, {
       selectFromResult: ({ data }) => {
         return {
-          venueOptions: data?.data.map(item => ({ value: item.name, key: item.id }))
+          venueOptions: data?.data?.map(item => ({ value: item.name, key: item.id }))
         }
       }
     })

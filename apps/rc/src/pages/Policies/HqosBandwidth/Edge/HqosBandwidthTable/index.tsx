@@ -16,6 +16,7 @@ import {
   CompatibilityDeviceEnum,
   EdgeHqosViewData,
   filterByAccessForServicePolicyMutation,
+  getPolicyAllowedOperation,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -177,6 +178,7 @@ const EdgeHqosBandwidthTable = () => {
   const rowActions: TableProps<EdgeHqosViewData>['rowActions'] = [
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.HQOS_BANDWIDTH, PolicyOperation.EDIT),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.HQOS_BANDWIDTH, PolicyOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1 && selectedRows[0]?.isDefault !== true,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -193,6 +195,7 @@ const EdgeHqosBandwidthTable = () => {
     },
     {
       scopeKey: getScopeKeyByPolicy(PolicyType.HQOS_BANDWIDTH, PolicyOperation.DELETE),
+      rbacOpsIds: getPolicyAllowedOperation(PolicyType.HQOS_BANDWIDTH, PolicyOperation.DELETE),
       visible: (selectedRows) => selectedRows[0]?.isDefault !== true,
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
@@ -231,6 +234,8 @@ const EdgeHqosBandwidthTable = () => {
         extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={[EdgeScopes.CREATE]}
+            // eslint-disable-next-line max-len
+            rbacOpsIds={getPolicyAllowedOperation(PolicyType.HQOS_BANDWIDTH, PolicyOperation.CREATE)}
             to={getPolicyRoutePath({
               type: PolicyType.HQOS_BANDWIDTH,
               oper: PolicyOperation.CREATE })}>

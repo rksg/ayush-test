@@ -4,17 +4,20 @@ export const TunnelProfileUrls: { [key: string]: ApiInfo } = {
   createTunnelProfile: {
     method: 'post',
     url: '/tunnelServiceProfiles',
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/tunnelServiceProfiles'
   },
   getTunnelProfileViewDataList: {
     method: 'post',
     url: '/tunnelServiceProfiles/query',
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/tunnelServiceProfiles/query'
   },
   deleteTunnelProfile: {
     method: 'delete',
     url: '/tunnelServiceProfiles/:id',
-    newApi: true
+    newApi: true,
+    opsApi: 'DELETE:/tunnelServiceProfiles/{id}'
   },
   getTunnelProfile: {
     method: 'get',
@@ -24,6 +27,7 @@ export const TunnelProfileUrls: { [key: string]: ApiInfo } = {
   updateTunnelProfile: {
     method: 'put',
     url: '/tunnelServiceProfiles/:id',
-    newApi: true
+    newApi: true,
+    opsApi: 'PUT:/tunnelServiceProfiles/{id}'
   }
 }

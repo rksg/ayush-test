@@ -97,7 +97,7 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
 
         // eslint-disable-next-line max-len
         const tunnelType = getNetworkTunnelType(networkInfo, venueSoftGre, venueSdLanInfo, venuePinInfo)
-        const isPinNetwork = !!pinNetworkIds?.includes(rowData.id)
+        const isPinNetwork = !!pinNetworkIds?.includes(row.id)
 
         return row.activated?.isActivated
           ? <><NetworkTunnelSwitchBtn
@@ -183,7 +183,28 @@ export const useTunnelColumn = (props: useTunnelColumnProps) => {
             ? <NetworkTunnelSwitchBtn
               tunnelType={tunnelType}
               venueSdLanInfo={venueSdLanInfo}
-              onClick={}
+              onClick={(checked) => {
+                if (checked) {
+                  handleClickNetworkTunnel({
+                    id: venueId,
+                    name: venueInfo?.name,
+                    activated: { isActivated: row.activated?.isActivated }
+                  } as Venue,
+                  row,
+                  isPinNetwork)
+                } else {
+                  const formValues = {
+                    tunnelType: NetworkTunnelTypeEnum.None,
+                    softGre: {
+                      oldProfileId: targetSoftGre?.[0].profileId
+                    }
+                  } as NetworkTunnelActionForm
+
+                  // deactivate depending on current tunnel type
+                  // eslint-disable-next-line max-len
+                  deactivateNetworkTunnelByType(tunnelType, formValues, networkInfo, venueSdLanInfo)
+                }
+              }}
             />
             : null
         }

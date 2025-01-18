@@ -17,6 +17,7 @@ import {
   DhcpStats,
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
+  getServiceAllowedOperation,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
@@ -204,6 +205,7 @@ const EdgeDhcpTable = () => {
   const rowActions: TableProps<DhcpStats>['rowActions'] = [
     {
       scopeKey: getScopeKeyByService(ServiceType.EDGE_DHCP, ServiceOperation.EDIT),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.EDGE_DHCP, ServiceOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -220,6 +222,7 @@ const EdgeDhcpTable = () => {
     },
     {
       scopeKey: getScopeKeyByService(ServiceType.EDGE_DHCP, ServiceOperation.EDIT),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.EDGE_DHCP, ServiceOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -277,6 +280,7 @@ const EdgeDhcpTable = () => {
           <TenantLink
             to={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE })}
             scopeKey={getScopeKeyByService(ServiceType.EDGE_DHCP, ServiceOperation.CREATE)}
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.EDGE_DHCP, ServiceOperation.CREATE)}
           >
             <Button type='primary'>{$t({ defaultMessage: 'Add DHCP Service' })}</Button>
           </TenantLink>

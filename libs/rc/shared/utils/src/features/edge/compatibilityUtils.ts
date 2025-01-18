@@ -6,6 +6,7 @@ export const isApRelatedEdgeFeature = (featureName: IncompatibilityFeatures): bo
   switch(featureName) {
     case IncompatibilityFeatures.SD_LAN:
     case IncompatibilityFeatures.TUNNEL_PROFILE:
+    case IncompatibilityFeatures.NAT_TRAVERSAL:
     case IncompatibilityFeatures.PIN:
       return true
     default:
@@ -24,7 +25,7 @@ export const isSwitchRelatedEdgeFeature = (featureName: IncompatibilityFeatures)
 export const isEdgeCompatibilityFeature = (featureName: string) =>
   Object.values(EdgeCompatibilityFeatureEnum).includes(featureName as EdgeCompatibilityFeatureEnum)
 
-export const edgeSdLanRequiredFeatures = [IncompatibilityFeatures.SD_LAN, IncompatibilityFeatures.TUNNEL_PROFILE]
+export const edgeSdLanRequiredFeatures = [IncompatibilityFeatures.SD_LAN, IncompatibilityFeatures.TUNNEL_PROFILE, IncompatibilityFeatures.NAT_TRAVERSAL]
 export const edgePinRequiredFeatures = [IncompatibilityFeatures.PIN, IncompatibilityFeatures.TUNNEL_PROFILE]
 
 export const retrievedEdgeCompatibilitiesOptions = (

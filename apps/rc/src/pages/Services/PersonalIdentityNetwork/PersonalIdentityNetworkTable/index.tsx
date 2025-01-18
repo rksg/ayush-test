@@ -25,6 +25,7 @@ import {
 import {
   filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
+  getServiceAllowedOperation,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
@@ -250,6 +251,7 @@ const PersonalIdentityNetworkTable = () => {
   const rowActions: TableProps<PersonalIdentityNetworksViewData>['rowActions'] = [
     {
       scopeKey: getScopeKeyByService(ServiceType.PIN, ServiceOperation.EDIT),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.PIN, ServiceOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -266,6 +268,7 @@ const PersonalIdentityNetworkTable = () => {
     },
     {
       scopeKey: getScopeKeyByService(ServiceType.PIN, ServiceOperation.DELETE),
+      rbacOpsIds: getServiceAllowedOperation(ServiceType.PIN, ServiceOperation.DELETE),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
@@ -308,6 +311,7 @@ const PersonalIdentityNetworkTable = () => {
             })}
             // eslint-disable-next-line max-len
             scopeKey={getScopeKeyByService(ServiceType.PIN, ServiceOperation.CREATE)}
+            rbacOpsIds={getServiceAllowedOperation(ServiceType.PIN, ServiceOperation.CREATE)}
           >
             {/* eslint-disable-next-line max-len */}
             <Button type='primary'>{$t({ defaultMessage: 'Add Personal Identity Network' })}</Button>
