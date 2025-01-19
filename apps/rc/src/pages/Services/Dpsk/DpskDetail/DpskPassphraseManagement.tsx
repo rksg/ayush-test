@@ -43,8 +43,8 @@ import {
   useTableQuery, IdentityDetailsLink
 } from '@acx-ui/rc/utils'
 import { useParams }                                                     from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                    from '@acx-ui/types'
-import { getUserProfile, hasAllowedOperations, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { RolesEnum, WifiScopes } from '@acx-ui/types'
+import { getUserProfile, hasAllowedOperations, hasCrossVenuesPermission, hasPermission, hasRoles } from '@acx-ui/user'
 import { getIntl, getOpsApi, validationMessages }                                   from '@acx-ui/utils'
 
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
@@ -89,6 +89,7 @@ export default function DpskPassphraseManagement () {
   const params = useParams()
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isIdentityGroupRequired = useIsSplitOn(Features.DPSK_REQUIRE_IDENTITY_GROUP)
+  const isDpskRole = hasRoles(RolesEnum.DPSK_ADMIN)
 
   const settingsId = 'dpsk-passphrase-table'
   const tableQuery = useTableQuery({
@@ -139,6 +140,7 @@ export default function DpskPassphraseManagement () {
         if (isIdentityGroupRequired) {
           const item = identityList?.data?.filter(data => data.id===row.identityId)[0]
           return (item ? <IdentityDetailsLink
+            disableLink={isDpskRole}
             name={item.name}
             personaId={item.id}
             personaGroupId={item.groupId}
