@@ -111,6 +111,8 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
         const apNameMap:{ [key:string]: string[] } = {}
         let apSerialNumbers: string[] = []
 
+        let venues: string[] = []
+
         Object.entries(activations).forEach(([venueId, activation]) => {
           if (activation) {
             venueNetworksMap[venueId] = Array.from(activation.wifiNetworkIds)
@@ -118,10 +120,17 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
 
             apNameMap[venueId] = Array.from(activation.apSerialNumbers)
             apSerialNumbers = apSerialNumbers.concat(Array.from(activation.apSerialNumbers))
+            venues = venues.concat(Array.from(venueId))
           }
         })
 
-        if(networkIds.length === 0 && apSerialNumbers.length === 0) return emptyResponse
+        if(
+          networkIds.length === 0 &&
+          apSerialNumbers.length === 0 &&
+          venues.length === 0) {
+
+          return emptyResponse
+        }
 
         // Collect network names by ids
         const networkIdsSet = Array.from(new Set(networkIds))
