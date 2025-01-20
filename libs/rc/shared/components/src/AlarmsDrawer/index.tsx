@@ -281,7 +281,11 @@ export function AlarmsDrawer (props: AlarmsType) {
       </Select>}
 
       <Button type='link'
-        disabled={!hasPermission || tableQuery.data?.totalCount === 0}
+        disabled={!hasPermission
+          || tableQuery.data?.totalCount === 0
+          || tableQuery.isFetching
+          || isAlarmCleaning || isAlarmByVenueCleaning
+        }
         size='small'
         style={{ fontWeight: 'var(--acx-body-font-weight-bold)' }}
         onClick={async ()=>{
