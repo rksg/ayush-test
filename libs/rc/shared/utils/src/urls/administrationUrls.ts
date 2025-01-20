@@ -10,6 +10,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   updateTenantSelf: {
     method: 'PUT',
     url: '/tenants/self',
+    opsApi: 'PUT:/tenants/self',
     newApi: true
   },
   getRegisteredUsersList: {
@@ -35,7 +36,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/admins/:adminId',
     oldUrl: '/api/tenant/:tenantId/admin/:adminId',
-    opsApi: 'DELETE:/admins/{adminId}',
+    opsApi: 'DELETE:/admins/{id}',
     newApi: true
   },
   deleteAdmins: {
@@ -156,7 +157,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/tenants/notificationRecipients/:recipientId',
     oldUrl: '/api/tenant/:tenantId/notification-recipient/:recipientId',
-    opsApi: 'PUT:/tenants/notificationRecipients/{recipientId}',
+    opsApi: 'PUT:/tenants/notificationRecipients/{id}',
     newApi: true
   },
   deleteNotificationRecipients: {
@@ -258,7 +259,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   updateAdminGroups: {
     method: 'PATCH',
     url: '/groups/:groupId',
-    opsApi: 'PATCH:/groups/{groupId}',
+    opsApi: 'PATCH:/groups/{id}',
     newApi: true
   },
   deleteAdminGroups: {
@@ -285,13 +286,13 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   updateCustomRole: {
     method: 'put',
     url: '/roleAuthentications/customRoles/:customRoleId',
-    opsApi: 'PUT:/roleAuthentications/customRoles/{roleId}',
+    opsApi: 'PUT:/roleAuthentications/customRoles/{id}',
     newApi: true
   },
   deleteCustomRole: {
     method: 'delete',
     url: '/roleAuthentications/customRoles/:customRoleId',
-    opsApi: 'DELETE:/roleAuthentications/customRoles/{roleId}',
+    opsApi: 'DELETE:/roleAuthentications/customRoles/{id}',
     newApi: true
   },
   getOnePrivilegeGroup: {

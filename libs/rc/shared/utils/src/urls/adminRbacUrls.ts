@@ -89,6 +89,7 @@ export const AdminRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/tenants/delegations/support',
     oldUrl: '/tenants/supportDelegations',
+    opsApi: 'POST:/tenants/delegations/support',
     newApi: true
   },
   disableAccessSupport: {

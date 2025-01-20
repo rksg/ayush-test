@@ -185,7 +185,7 @@ export const NotificationsTable = () => {
     },
     {
       label: titleNotification,
-      rbacOpsIds: ['POST:/preferences'],
+      rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.updateTenantSelf)],
       onClick: handleEnableIncidents
     }
   ]

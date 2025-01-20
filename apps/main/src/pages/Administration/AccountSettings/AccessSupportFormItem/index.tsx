@@ -15,7 +15,7 @@ import {
   useGetEcTenantDelegationQuery,
   useGetTenantDelegationQuery
 }                                    from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo }                                         from '@acx-ui/rc/utils'
+import { AdminRbacUrlsInfo }                                              from '@acx-ui/rc/utils'
 import { hasCrossVenuesPermission, hasPermission, useUserProfileContext } from '@acx-ui/user'
 import { getOpsApi }                                                      from '@acx-ui/utils'
 
@@ -111,7 +111,7 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
   || isDisableAccessSupportUpdating
 
   const isRksSupportAllowed = hasPermission({
-    rbacOpsIds: [getOpsApi(AdministrationUrlsInfo.enableAccessSupport)]
+    rbacOpsIds: [getOpsApi(AdminRbacUrlsInfo.enableAccessSupport)]
   })
   const isSupportUser = Boolean(userProfileData?.support)
   // eslint-disable-next-line max-len
