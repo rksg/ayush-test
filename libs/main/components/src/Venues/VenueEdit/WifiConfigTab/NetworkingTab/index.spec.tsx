@@ -86,7 +86,7 @@ describe('NetworkingTab', () => {
       ),
       // rbac
       rest.get(
-        CommonRbacUrlsInfo.getVenueRadiusOptions.url,
+        WifiRbacUrlsInfo.getVenueRadiusOptions.url,
         (_, res, ctx) => res(ctx.json(mockRadiusOptions))
       ),
       rest.get(WifiRbacUrlsInfo.getVenueDirectedMulticast.url,

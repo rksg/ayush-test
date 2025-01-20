@@ -1170,6 +1170,7 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
     }),
+    // deprecated! RBAC API will use the updateApLanPorts to replace.
     resetApLanPorts: build.mutation<WifiApSetting, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.resetApLanPorts, params)
@@ -1203,6 +1204,7 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'Led' }]
     }),
+    // deprecated! RBAC API will use the updateApLed to replace.
     resetApLed: build.mutation<ApLedSettings, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.resetApLed, params)

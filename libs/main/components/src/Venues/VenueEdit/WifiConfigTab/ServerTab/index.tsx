@@ -17,16 +17,16 @@ import { MdnsFencing }          from './MdnsFencing/MdnsFencing'
 import { Syslog }               from './Syslog'
 
 export interface ServerSettingContext {
-  updateSyslog: (() => void),
-  discardSyslog: (() => void),
-  updateMdnsFencing: (() => void),
-  discardMdnsFencing: (() => void),
-  updateVenueApSnmp: (() => void),
-  discardVenueApSnmp: (() => void),
-  updateVenueIot: (() => void),
-  discardVenueIot: (() => void),
-  updateVenueLbs: (() => void),
-  discardVenueLbs: (() => void),
+  updateSyslog?: (() => void),
+  discardSyslog?: (() => void),
+  updateMdnsFencing?: (() => void),
+  discardMdnsFencing?: (() => void),
+  updateVenueApSnmp?: (() => void),
+  discardVenueApSnmp?: (() => void),
+  updateVenueIot?: (() => void),
+  discardVenueIot?: (() => void),
+  updateVenueLbs?: (() => void),
+  discardVenueLbs?: (() => void)
 }
 
 export function ServerTab () {
@@ -44,7 +44,8 @@ export function ServerTab () {
     previousPath,
     editContextData,
     setEditContextData,
-    editServerContextData
+    editServerContextData,
+    setEditServerContextData
   } = useContext(VenueEditContext)
 
   const items = []
@@ -83,6 +84,18 @@ export function ServerTab () {
         ...editContextData,
         isDirty: false
       })
+
+      // clear update functions avoid to be trigger again
+      if (editServerContextData) {
+        const newData = { ...editServerContextData }
+        delete newData.updateSyslog
+        delete newData.updateMdnsFencing
+        delete newData.updateVenueApSnmp
+        delete newData.updateVenueIot
+        delete newData.updateVenueLbs
+
+        setEditServerContextData(newData)
+      }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

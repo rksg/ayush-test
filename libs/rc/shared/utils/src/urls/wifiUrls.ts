@@ -501,6 +501,7 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/clientConnectionDiagnosis',
     newApi: true
   },
+  /*
   getVenueApManagementVlan: {
     method: 'get',
     url: '/venues/:venueId/apManagementTrafficVlanSettings',
@@ -521,6 +522,7 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/managementTrafficVlanSettings',
     newApi: true
   },
+  */
   getApFeatureSets: {
     method: 'get',
     url: '/wifiFeatureSets/:featureName',

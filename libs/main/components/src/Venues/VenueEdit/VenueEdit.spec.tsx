@@ -347,7 +347,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
             (_, res, ctx) => res(ctx.json({}))
           ),
           // rbac
-          rest.put(CommonRbacUrlsInfo.updateVenueMesh.url,
+          rest.put(WifiRbacUrlsInfo.updateVenueMesh.url,
             (_, res, ctx) => res(ctx.json({}))
           )
         )

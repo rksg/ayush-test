@@ -183,6 +183,8 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   */
+  /*
+  // move tp WifiConfigUrls.ts
   getVenueMesh: {
     method: 'get',
     url: '/venues/:venueId/apMeshSettings',
@@ -200,6 +202,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     // url: '/aps/query?mesh=true',
     newApi: true
   },
+  */
   downloadApsCSV: {
     method: 'post',
     url: '/venues/aps/query',
@@ -291,6 +294,8 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/models',
     newApi: true
   },
+  /*
+  // move tp WifiConfigUrls.ts
   getVenueLedOn: {
     method: 'get',
     // url: '/venues/:venueId/ledSettings',
@@ -352,6 +357,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apModelLanPortSettings',
     newApi: true
   },
+  */
   /*
   getVenueNetworkList: {
     method: 'post',
@@ -374,6 +380,8 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   */
+  /*
+  // move tp WifiConfigUrls.ts
   getDenialOfServiceProtection: {
     method: 'get',
     // url: '/venues/:venueId/dosProtectionSettings',
@@ -404,6 +412,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
+  */
   /*
   getRogueApLocation: {
     method: 'get',
@@ -520,6 +529,8 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   */
+  /*
+  // move tp WifiConfigUrls.ts
   getVenueMdnsFencingPolicy: {
     method: 'get',
     //url: '/venues/:venueId/mDnsFencingSettings',
@@ -544,6 +555,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apRadiusOptions',
     newApi: true
   },
+  */
   /*
   addExportSchedules: {
     method: 'post',
