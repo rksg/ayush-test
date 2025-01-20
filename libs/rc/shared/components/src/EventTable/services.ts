@@ -59,7 +59,9 @@ const defaultPayload = {
     'clientMldMac',
     'turnOnTimestamp',
     'turnOffTimestamp',
-    'portList'
+    'portList',
+    'profileName',
+    'action'
   ]
 }
 
