@@ -61,7 +61,9 @@ const defaultPayload = {
     'turnOffTimestamp',
     'portList',
     'profileName',
-    'action'
+    'action',
+    'macOui',
+    'lldpTlv'
   ]
 }
 
