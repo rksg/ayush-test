@@ -40,11 +40,7 @@ const metaFields = [
   'recipientName',
   'edgeName',
   'remoteedgeName',
-  'unitName',
-  'profileName',
-  'action',
-  'macOui',
-  'lldpTlv'
+  'unitName'
 ]
 
 export type EventsExportPayload = {
