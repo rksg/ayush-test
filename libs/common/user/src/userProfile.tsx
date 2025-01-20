@@ -95,7 +95,8 @@ export function hasAccess (props?: { legacyKey?: string,
   // measure to permit all undefined id for admins
   const { rbacOpsApiEnabled } = getUserProfile()
   if(rbacOpsApiEnabled) {
-    return props?.rbacOpsIds ? hasAllowedOperations(props?.rbacOpsIds) : true
+    return (props?.rbacOpsIds && props?.rbacOpsIds?.length > 0)
+      ? hasAllowedOperations(props?.rbacOpsIds) : true
   } else {
     if(props?.legacyKey?.startsWith(SHOW_WITHOUT_RBAC_CHECK)) return true
     return hasRoles(props?.roles || [Role.PRIME_ADMIN, Role.ADMINISTRATOR, Role.DPSK_ADMIN])
@@ -130,7 +131,7 @@ export function filterByAccess <Item> (items: Item[]) {
   } else {
     return items.filter(item => {
       const filterItem = item as FilterItemType
-      const allowedOperations = filterItem?.rbacOpsIds || filterItem?.props?.rbacOpsIds
+      const allowedOperations = filterItem?.rbacOpsIds || filterItem?.props?.rbacOpsIds || []
       const legacyKey = filterItem?.key
       const scopes = filterItem?.scopeKey || filterItem?.props?.scopeKey || []
       return hasPermission({ scopes, rbacOpsIds: allowedOperations, legacyKey })
