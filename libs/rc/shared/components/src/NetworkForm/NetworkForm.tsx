@@ -985,7 +985,7 @@ export function NetworkForm (props:{
       }
     }
     if (editMode && data.wlan?.wlanSecurity) {
-      var toRemoveFromWlan: string[] = []
+      const toRemoveFromWlan: string[] = []
       if (data.wlan.wlanSecurity === WlanSecurityEnum.OWE) {
         toRemoveFromWlan.push('passphrase', 'saePassphrase')
       } else if (data.wlan.wlanSecurity === WlanSecurityEnum.None) {
