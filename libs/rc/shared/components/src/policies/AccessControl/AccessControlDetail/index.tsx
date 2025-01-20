@@ -16,7 +16,8 @@ import {
   PolicyOperation,
   PolicyType,
   useConfigTemplate,
-  usePolicyListBreadcrumb, useTableQuery
+  usePolicyListBreadcrumb, useTableQuery,
+  useTemplateAwarePolicyAllowedOperation
 } from '@acx-ui/rc/utils'
 
 import { PolicyConfigTemplateLinkSwitcher } from '../../../configTemplates'
@@ -39,6 +40,8 @@ export function AccessControlDetail () {
         breadcrumb={breadcrumb}
         extra={filterByAccessForServicePolicyMutation([
           <PolicyConfigTemplateLinkSwitcher
+            // eslint-disable-next-line max-len
+            rbacOpsIds={useTemplateAwarePolicyAllowedOperation(PolicyType.ACCESS_CONTROL, PolicyOperation.EDIT)}
             scopeKey={getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.EDIT)}
             type={PolicyType.ACCESS_CONTROL}
             oper={PolicyOperation.EDIT}

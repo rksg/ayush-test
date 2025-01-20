@@ -783,7 +783,7 @@ export interface VenueApSmartMonitor {
 }
 
 export interface VenueApRebootTimeout {
-	gwLossTimeout: number,
+	gatewayLossTimeout: number,
 	serverLossTimeout: number
 }
 
@@ -907,7 +907,8 @@ export type FeatureSetResponse = {
 }
 
 export type IncompatibleFeature = FeatureSet & {
-  incompatibleDevices?: ApIncompatibleDevice[],
+  incompatibleDevices?: ApIncompatibleDevice[]
+  children?: IncompatibleFeature[]
 }
 
 export type Compatibility = {

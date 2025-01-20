@@ -29,6 +29,7 @@ import EditPersonalIdentityNetwork from '.'
 
 const { mockPinSwitchInfoData, mockPinData, mockPinStatsList } = EdgePinFixtures
 
+const mockValidateEdgePinSwitchConfigMutation = jest.fn()
 jest.mock('../PersonalIdentityNetworkForm/GeneralSettingsForm', () => ({
   GeneralSettingsForm: () => <div data-testid='GeneralSettingsForm' />
 }))
@@ -48,7 +49,8 @@ jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   // mock API response due to all form steps are mocked
   useGetEdgePinByIdQuery: jest.fn(),
-  useGetEdgePinViewDataListQuery: () => ({ data: mockPinStatsList, isLoading: false })
+  useGetEdgePinViewDataListQuery: () => ({ data: mockPinStatsList, isLoading: false }),
+  useValidateEdgePinSwitchConfigMutation: jest.fn().mockImplementation(() => [mockValidateEdgePinSwitchConfigMutation])
 }))
 jest.mock('../PersonalIdentityNetworkForm/PersonalIdentityNetworkFormContext', () => ({
   PersonalIdentityNetworkFormDataProvider: ({ children }: { children: ReactNode }) =>
@@ -88,6 +90,7 @@ describe('Edit PersonalIdentityNetwork', () => {
       data: mockPinData, isLoading: false, refetch: jest.fn() }))
 
     mockedUsedNavigate.mockClear()
+    mockValidateEdgePinSwitchConfigMutation.mockClear()
 
     mockServer.use(
       rest.put(
@@ -209,14 +212,15 @@ describe('Edit PersonalIdentityNetwork', () => {
 })
 
 describe('Enhanced PersonalIdentityNetwork', () => {
-  let params: { tenantId: string, serviceId: string }
+  const params: { tenantId: string, serviceId: string } = {
+    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+    serviceId: 'testServiceId'
+  }
   beforeEach(() => {
     jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
       ff === Features.EDGE_PIN_ENHANCE_TOGGLE || ff === Features.EDGES_TOGGLE)
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      serviceId: 'testServiceId'
-    }
+
+    mockValidateEdgePinSwitchConfigMutation.mockClear()
 
     mockServer.use(
       rest.put(
@@ -255,7 +259,7 @@ describe('Enhanced PersonalIdentityNetwork', () => {
 
   it('should show correct steps with 2-Tier data', async () => {
     const mockModifiedPinData = cloneDeep(mockPinData)
-    mockModifiedPinData.vxlanTunnelProfileId = undefined as unknown as string
+    mockModifiedPinData.tunneledWlans = []
     jest.mocked(useGetEdgePinByIdQuery).mockImplementation(() => ({
       data: mockModifiedPinData, isLoading: false, refetch: jest.fn() }))
 
@@ -306,6 +310,27 @@ describe('Enhanced PersonalIdentityNetwork', () => {
     await user.click(screen.getByText('Wireless Network'))
     // step 5
     expect(await screen.findByTestId('WirelessNetworkForm')).toBeVisible()
+  })
+
+  it('should skip switch validation when topology is wireless', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EditPersonalIdentityNetwork />
+      </Provider>, {
+        route: { params, path: updatePinPath }
+      })
+    // step 1
+    expect(await screen.findByTestId('GeneralSettingsForm')).toBeVisible()
+    await user.click(await screen.findByText('RUCKUS Edge'))
+    // step 2
+    expect(await screen.findByTestId('SmartEdgeForm')).toBeVisible()
+    await userEvent.click(await screen.findByText('Wireless Network'))
+
+    // step 3
+    await screen.findByTestId('WirelessNetworkForm')
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+    expect(mockValidateEdgePinSwitchConfigMutation).toBeCalledTimes(0)
   })
 })
 

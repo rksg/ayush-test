@@ -4,18 +4,21 @@ import { useContext, useEffect, useState } from 'react'
 import { Col, Form, Input, Row, Select } from 'antd'
 import { FormattedMessage, useIntl }     from 'react-intl'
 
-import { Alert, Button, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { useGetEdgePinViewDataListQuery }                        from '@acx-ui/rc/services'
-import { PersonalIdentityNetworkFormData }                       from '@acx-ui/rc/utils'
+import { Alert, Button, StepsForm, Tooltip, useStepFormContext }    from '@acx-ui/components'
+import { Features }                                                 from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                    from '@acx-ui/rc/components'
+import { useGetEdgePinViewDataListQuery }                           from '@acx-ui/rc/services'
+import { PersonalIdentityNetworkFormData, servicePolicyNameRegExp } from '@acx-ui/rc/utils'
 
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 import * as UI                                from '../styledComponents'
 
+import { EnhancedGeneralSettingsForm }           from './enhanced'
 import { PersonalIdentityDiagram }               from './PersonalIdentityDiagram'
 import { PersonalIdentityPreparationListDrawer } from './PersonalIdentityPreparationListDrawer'
 import { PropertyManagementInfo }                from './PropertyManagementInfo'
 
-export const GeneralSettingsForm = () => {
+const OldGeneralSettingsForm = () => {
   const { $t } = useIntl()
   const [preparationDrawerVisible,setPreparationDrawerVisible] = useState(false)
   const { form, editMode } = useStepFormContext<PersonalIdentityNetworkFormData>()
@@ -66,7 +69,8 @@ export const GeneralSettingsForm = () => {
               rules={[
                 { required: true },
                 { min: 2 },
-                { max: 32 }
+                { max: 32 },
+                { validator: (_, value) => servicePolicyNameRegExp(value) }
               ]}
               validateFirst
               hasFeedback
@@ -146,4 +150,12 @@ export const GeneralSettingsForm = () => {
       />
     </Row>
   )
+}
+
+export const GeneralSettingsForm = () => {
+  const isEdgePinEnhancementReady = useIsEdgeFeatureReady(Features.EDGE_PIN_ENHANCE_TOGGLE)
+
+  return isEdgePinEnhancementReady
+    ? <EnhancedGeneralSettingsForm />
+    : <OldGeneralSettingsForm />
 }

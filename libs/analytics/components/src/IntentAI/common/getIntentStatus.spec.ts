@@ -14,8 +14,8 @@ describe('getIntentStatus', () => {
   ])(
     'should handle "$state" with "$retries" retries',
     ({ state, retries }) => {
-      const expected = 'Paused, Applied Failed'
-        + `${retries && retries > 1 ? ` (retry ${retries} of 3)` : ''}`
+      const expected = 'Paused, Apply Failed'
+        + `${retries && retries > 1 ? ` (retry ${retries - 1} of 2)` : ''}`
       expect(getIntentStatus(state, retries)).toEqual(expected)
     }
   )
