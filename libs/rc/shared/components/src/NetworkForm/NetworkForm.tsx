@@ -984,6 +984,24 @@ export function NetworkForm (props:{
         )
       }
     }
+    if (editMode && data.wlan?.wlanSecurity) {
+      var toRemoveFromWlan: string[] = []
+      if (data.wlan.wlanSecurity === WlanSecurityEnum.OWE) {
+        toRemoveFromWlan.push('passphrase', 'saePassphrase')
+      } else if (data.wlan.wlanSecurity === WlanSecurityEnum.None) {
+        toRemoveFromWlan.push('managementFrameProtection', 'passphrase', 'saePassphrase')
+      } else {
+        toRemoveFromWlan.push('managementFrameProtection')
+        if (data.wlan.wlanSecurity === WlanSecurityEnum.WPA3) {
+          toRemoveFromWlan.push('passphrase')
+        } else if (data.wlan.wlanSecurity !== WlanSecurityEnum.WPA23Mixed) {
+          toRemoveFromWlan.push('saePassphrase')
+        }
+      }
+      saveContextRef.current.wlan = omit(saveContextRef.current.wlan,
+        toRemoveFromWlan
+      )
+    }
   }
 
   const handleEditNetwork = async (formData: NetworkSaveData) => {
