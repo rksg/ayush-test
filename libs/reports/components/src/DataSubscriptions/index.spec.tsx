@@ -9,6 +9,34 @@ import {
   DataSubscriptionsCloudStorage
 } from '.'
 
+const bannerTestId = 'banner-test'
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  Banner: () => <div data-testid={bannerTestId} />
+}))
+
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
+
+const mockUseLocationValue = {
+  pathname: '/services/list',
+  search: '',
+  hash: '',
+  state: null
+}
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => jest.fn(),
+  useLocation: jest.fn().mockImplementation(() => mockUseLocationValue)
+}))
+
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useRaiR1HelpPageLink: () => ''
+}))
+
 describe('Lazy-Loaded DataSubscriptions Components', () => {
   it('should render DataSubscriptionsAuditLog correctly', () => {
     const { container } = render(
