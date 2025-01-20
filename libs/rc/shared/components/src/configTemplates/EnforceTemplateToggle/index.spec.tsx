@@ -15,7 +15,6 @@ describe('EnforceTemplateToggle', () => {
   // eslint-disable-next-line max-len
   const setSaveEnforcementConfigFn = jest.fn().mockImplementation(fn => saveEnforcementConfig.mockImplementation(fn))
   const updateEnforcementOnServer = jest.fn()
-  const deleteEnforcementOnServer = jest.fn()
   const mockedConfigTemplate: ConfigTemplate = {
     id: 'template12345',
     name: 'Template 1',
@@ -31,7 +30,6 @@ describe('EnforceTemplateToggle', () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE_ENFORCED)
 
     updateEnforcementOnServer.mockClear()
-    deleteEnforcementOnServer.mockClear()
     setSaveEnforcementConfigFn.mockClear()
     saveEnforcementConfig.mockReset()
 
@@ -47,15 +45,8 @@ describe('EnforceTemplateToggle', () => {
       rest.put(
         ConfigTemplateUrlsInfo.updateEnforcement.url,
         (req, res, ctx) => {
-          updateEnforcementOnServer()
+          updateEnforcementOnServer(req.body)
           return res(ctx.json({ requestId: 'update12345' }))
-        }
-      ),
-      rest.delete(
-        ConfigTemplateUrlsInfo.deleteEnforcement.url,
-        (req, res, ctx) => {
-          deleteEnforcementOnServer()
-          return res(ctx.json({ requestId: 'delete12345' }))
         }
       )
     )
@@ -83,7 +74,8 @@ describe('EnforceTemplateToggle', () => {
 
     saveEnforcementConfig(mockedConfigTemplate.id)
 
-    await waitFor(() => { expect(updateEnforcementOnServer).toHaveBeenCalledTimes(1) })
+    // eslint-disable-next-line max-len
+    await waitFor(() => { expect(updateEnforcementOnServer).toHaveBeenCalledWith({ isEnforced: true }) })
 
     await userEvent.click(screen.getByRole('switch'))
 
@@ -91,6 +83,7 @@ describe('EnforceTemplateToggle', () => {
 
     saveEnforcementConfig(mockedConfigTemplate.id)
 
-    await waitFor(() => { expect(deleteEnforcementOnServer).toHaveBeenCalledTimes(1) })
+    // eslint-disable-next-line max-len
+    await waitFor(() => { expect(updateEnforcementOnServer).toHaveBeenCalledWith({ isEnforced: false }) })
   })
 })
