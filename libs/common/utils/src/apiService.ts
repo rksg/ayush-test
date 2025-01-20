@@ -1,11 +1,9 @@
-import { QueryReturnValue }                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { MaybePromise }                                       from '@reduxjs/toolkit/dist/query/tsHelpers'
-import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
-import _                                                      from 'lodash'
-import { generatePath, Params }                               from 'react-router-dom'
+import { QueryReturnValue, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import _                                                                        from 'lodash'
+import { generatePath, Params }                                                 from 'react-router-dom'
 
-import { get }            from '@acx-ui/config'
-import { RequestPayload } from '@acx-ui/types'
+import { get }                          from '@acx-ui/config'
+import { MaybePromise, RequestPayload } from '@acx-ui/types'
 
 import { getTenantId }                       from './getTenantId'
 import { getJwtTokenPayload, getJwtHeaders } from './jwtToken'
@@ -16,6 +14,7 @@ export interface ApiInfo {
   newApi?: boolean;
   oldUrl?: string;
   oldMethod?: string;
+  opsApi?: string;
   defaultHeaders?: {
     'Content-Type'?: string;
     'Accept'?: string
@@ -174,4 +173,9 @@ export const enableNewApi = function (apiInfo: ApiInfo) {
 
 export const getUrlForTest = (apiInfo: ApiInfo) => {
   return enableNewApi(apiInfo) ? apiInfo.url : (apiInfo.oldUrl || apiInfo.url)
+}
+
+
+export const getOpsApi = (apiInfo: ApiInfo) => {
+  return apiInfo.opsApi || ''
 }

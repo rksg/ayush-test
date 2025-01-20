@@ -3,13 +3,13 @@ import { useEffect, useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { Loader, showToast, Table, TableProps }            from '@acx-ui/components'
+import { Loader, Table, TableProps }                       from '@acx-ui/components'
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/components'
 import {
-  doProfileDelete,
+  doProfileDelete, getDisabledActionMessage,
   useDeleteMacRegistrationsMutation, useGetMacRegListQuery,
-  useSearchMacRegistrationsQuery,
+  useSearchMacRegistrationsQuery, useSearchPersonaListQuery,
   useUpdateMacRegistrationMutation,
   useUploadMacRegistrationMutation
 } from '@acx-ui/rc/services'
@@ -22,7 +22,7 @@ import {
   toDateTimeString,
   useTableQuery,
   filterByAccessForServicePolicyMutation, getScopeKeyByPolicy,
-  PolicyType, PolicyOperation
+  PolicyType, PolicyOperation, IdentityDetailsLink
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -38,8 +38,6 @@ export function MacRegistrationsTab () {
   const [ uploadCsv, uploadCsvResult ] = useUploadMacRegistrationMutation()
 
   const macRegistrationListQuery = useGetMacRegListQuery({ params: { policyId } })
-  const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
-  const customHeaders = (isAsync) ? { Accept: 'application/vnd.ruckus.v2+json' } : undefined
 
   const isIdentityRequired = useIsSplitOn(Features.MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE)
 
@@ -81,6 +79,10 @@ export function MacRegistrationsTab () {
 
   const [editMacRegistration] = useUpdateMacRegistrationMutation()
 
+  const { data: identityList } = useSearchPersonaListQuery(
+    { payload: { ids: [...new Set(tableQuery.data?.data?.map(d => d.identityId))] } },
+    { skip: !tableQuery.data || !isIdentityRequired })
+
   const rowActions: TableProps<MacRegistration>['rowActions'] = [{
     visible: (selectedRows) => selectedRows.length === 1,
     label: $t({ defaultMessage: 'Edit' }),
@@ -94,6 +96,11 @@ export function MacRegistrationsTab () {
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
+    disabled: ([selectedRow]) => !!selectedRow?.identityId,
+    tooltip: (selectedRow) => getDisabledActionMessage(
+      selectedRow,
+      [{ fieldName: 'identityId', fieldText: $t({ defaultMessage: 'Identity' }) }],
+      $t({ defaultMessage: 'delete' })),
     onClick: (selectedRows: MacRegistration[], clearSelection) => {
       doProfileDelete(
         selectedRows,
@@ -102,28 +109,8 @@ export function MacRegistrationsTab () {
         isIdentityRequired ? [] :
           [{ fieldName: 'identityId', fieldText: $t({ defaultMessage: 'Identity' }) }],
         // eslint-disable-next-line max-len
-        async () => deleteMacRegistrations({ params: { policyId, registrationId: selectedRows[0].id }, payload: selectedRows.map(p => p.id), customHeaders })
+        async () => deleteMacRegistrations({ params: { policyId, registrationId: selectedRows[0].id }, payload: selectedRows.map(p => p.id) })
           .then(() => {
-            const macAddress = selectedRows.map(row => row.macAddress).join(', ')
-            if (!isAsync) {
-              if(selectedRows.length > 1) {
-                showToast({
-                  type: 'success',
-                  content: $t(
-                    { defaultMessage: 'MAC Address {macAddress} were deleted' },
-                    { macAddress }
-                  )
-                })
-              } else {
-                showToast({
-                  type: 'success',
-                  content: $t(
-                    { defaultMessage: 'MAC Address {macAddress} was deleted' },
-                    { macAddress }
-                  )
-                })
-              }
-            }
             clearSelection()
           }).catch((error) => {
             console.log(error) // eslint-disable-line no-console
@@ -148,8 +135,7 @@ export function MacRegistrationsTab () {
       editMacRegistration(
         {
           params: { policyId, registrationId: rows[0].id },
-          payload: { revoked: true },
-          customHeaders
+          payload: { revoked: true }
         }).then(clearSelection)
     },
     scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.EDIT)
@@ -162,8 +148,7 @@ export function MacRegistrationsTab () {
       editMacRegistration(
         {
           params: { policyId, registrationId: rows[0].id },
-          payload: { revoked: false },
-          customHeaders
+          payload: { revoked: false }
         }).then(clearSelection)
     },
     scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.EDIT)
@@ -177,6 +162,23 @@ export function MacRegistrationsTab () {
       sorter: true,
       defaultSortOrder: 'ascend',
       searchable: true
+    },
+    {
+      title: $t({ defaultMessage: 'Identity' }),
+      key: 'username',
+      dataIndex: 'username',
+      sorter: true,
+      render: function (_, row) {
+        if (isIdentityRequired) {
+          const item = identityList?.data?.filter(data => data.id===row.identityId)[0]
+          return (item ? <IdentityDetailsLink
+            name={item.name}
+            personaId={item.id}
+            personaGroupId={item.groupId}
+          /> : row.username)
+        }
+        return row.username
+      }
     },
     {
       title: $t({ defaultMessage: 'Status' }),
@@ -193,12 +195,6 @@ export function MacRegistrationsTab () {
         }
         return $t({ defaultMessage: 'Active' })
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Username' }),
-      key: 'username',
-      dataIndex: 'username',
-      sorter: true
     },
     {
       title: $t({ defaultMessage: 'E-Mail' }),
@@ -262,6 +258,8 @@ export function MacRegistrationsTab () {
         editData={isEditMode ? editData : undefined}
         // eslint-disable-next-line max-len
         expirationOfPool={returnExpirationString(macRegistrationListQuery.data ?? {} as MacRegistrationPool)}
+        identityGroupId={macRegistrationListQuery?.data?.identityGroupId}
+        defaultIdentityId={macRegistrationListQuery?.data?.identityId}
       />
       <ImportFileDrawer
         type={ImportFileDrawerType.DPSK}
@@ -275,7 +273,7 @@ export function MacRegistrationsTab () {
         importRequest={async (formData) => {
           try {
             // eslint-disable-next-line max-len
-            await uploadCsv({ params: { policyId }, payload: formData, customHeaders: { ...customHeaders, 'Content-Type': undefined } }).unwrap()
+            await uploadCsv({ params: { policyId }, payload: formData }).unwrap()
             setUploadCsvDrawerVisible(false)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (error) {

@@ -4,17 +4,20 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   addVenueTemplate: {
     method: 'post',
     url: '/templates/venues',
-    newApi: true
+    newApi: true,
+    opsApi: 'POST:/templates/venues'
   },
   deleteVenueTemplate: {
     method: 'delete',
     url: '/templates/venues/:templateId',
-    newApi: true
+    newApi: true,
+    opsApi: 'DELETE:/templates/venues/{id}'
   },
   updateVenueTemplate: {
     method: 'put',
     url: '/templates/venues/:venueId',
-    newApi: true
+    newApi: true,
+    opsApi: 'PUT:/templates/venues/{id}'
   },
   getVenueTemplate: {
     method: 'get',
@@ -606,6 +609,26 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueApSmartMonitorSettings: {
     method: 'put',
     url: '/templates/venues/:venueId/apSmartMonitorSettings',
+    newApi: true
+  },
+  getVenueApRebootTimeoutSettings: {
+    method: 'get',
+    url: '/templates/venues/:venueId/apRebootTimeoutSettings',
+    newApi: true
+  },
+  updateVenueApRebootTimeoutSettings: {
+    method: 'put',
+    url: '/templates/venues/:venueId/apRebootTimeoutSettings',
+    newApi: true
+  },
+  getVenueApIotSettings: {
+    method: 'get',
+    url: '/templates/venues/:venueId/apIotSettings',
+    newApi: true
+  },
+  updateVenueApIotSettings: {
+    method: 'put',
+    url: '/templates/venues/:venueId/apIotSettings',
     newApi: true
   }
 }

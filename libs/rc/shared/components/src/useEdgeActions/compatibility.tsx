@@ -1,9 +1,8 @@
 /* eslint-disable max-len */
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { UseLazyQuery }    from '@reduxjs/toolkit/dist/query/react/buildHooks'
-import { QueryDefinition } from '@reduxjs/toolkit/query'
-import { get, isNil }      from 'lodash'
+import { TypedUseLazyQuery } from '@reduxjs/toolkit/query/react'
+import { get, isNil }        from 'lodash'
 
 import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
 import {
@@ -158,15 +157,14 @@ export const useEdgeMdnsDetailsCompatibilitiesData = (props: {
 }
 
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DefaultQueryDefinition<ResultType> = QueryDefinition<any, any, any, ResultType>
-
 // services / policies
 export const useEdgeSvcsPcysCompatibilitiesData = (props: {
   serviceIds: string[] | string,
   skip?: boolean,
-  useEdgeSvcPcyCompatibleQuery: UseLazyQuery<DefaultQueryDefinition<EdgeServiceCompatibilitiesResponse>>,
-  useEdgeSvcPcyApCompatibleQuery?: UseLazyQuery<DefaultQueryDefinition<EdgeServicesApCompatibilitiesResponse>> | UseLazyQuery<DefaultQueryDefinition<EdgeSdLanApCompatibilitiesResponse>> | undefined
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useEdgeSvcPcyCompatibleQuery: TypedUseLazyQuery<EdgeServiceCompatibilitiesResponse, any, any>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useEdgeSvcPcyApCompatibleQuery?: TypedUseLazyQuery<EdgeServicesApCompatibilitiesResponse, any, any> | TypedUseLazyQuery<EdgeSdLanApCompatibilitiesResponse, any, any> | undefined
 })=> {
   const { serviceIds, skip = false, useEdgeSvcPcyCompatibleQuery, useEdgeSvcPcyApCompatibleQuery } = props
   const [ isInitializing, setIsInitializing ] = useState(false)
@@ -245,7 +243,7 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
 
       const edgeFeatures = await getEdgeFeatureSets({
         payload: { filters: { featureNames: [featureName] } }
-      }).unwrap()
+      }, true).unwrap()
 
       deviceTypeResultMap[CompatibilityDeviceEnum.EDGE] = {
         id: 'edge_feature_requirements',
@@ -257,7 +255,7 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
       if (isSwitchRelatedEdgeFeature(featureName)) {
         const switchFeature = await getSwitchFeatureSets({
           payload: { filter: { featureNames: { field: 'GROUP', values: ['PIN'] } } }
-        }).unwrap()
+        }, true).unwrap()
         deviceTypeResultMap[CompatibilityDeviceEnum.SWITCH] = {
           id: 'switch_feature_requirements',
           incompatibleFeatures: switchFeature.featureSets,
@@ -277,7 +275,7 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
               page: 1,
               pageSize: 10
             }
-          }).unwrap()
+          }, true).unwrap()
 
           deviceTypeResultMap[CompatibilityDeviceEnum.AP] = {
             id: 'wifi_feature_requirements',
@@ -288,7 +286,7 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
         } else {
           const wifiFeature = await getApFeatureSets({
             params: { featureName: encodeURI(featureName) }
-          }).unwrap()
+          }, true).unwrap()
 
           deviceTypeResultMap[CompatibilityDeviceEnum.AP] = {
             id: 'wifi_feature_requirements',

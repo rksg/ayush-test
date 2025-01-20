@@ -53,7 +53,6 @@ describe('LicenseCompliance', () => {
     })
     render(<Provider><LicenseCalculatorCard {...props} /></Provider>)
     expect(screen.getByText('Test Title')).toBeInTheDocument()
-    expect(screen.getByText('Test Subtitle')).toBeInTheDocument()
     expect(screen.getByText('Footer Content')).toBeInTheDocument()
 
     const tabMaxLiceses = screen.getByRole('tab', { name: 'Max Licenses' })

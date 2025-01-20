@@ -8,11 +8,16 @@ import { VenueLed,
   VenueSwitchConfiguration,
   ExternalAntenna,
   VenueRadioCustomization,
-  VeuneApAntennaTypeSettings } from '@acx-ui/rc/utils'
+  VeuneApAntennaTypeSettings,
+  CommonUrlsInfo } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum, SwitchScopes, WifiScopes }   from '@acx-ui/types'
-import { hasPermission, hasRoles }               from '@acx-ui/user'
-import { getIntl }                               from '@acx-ui/utils'
+import {
+  getUserProfile,
+  hasAllowedOperations,
+  hasPermission,
+  hasRoles }               from '@acx-ui/user'
+import { getIntl, getOpsApi } from '@acx-ui/utils'
 
 import { PropertyManagementTab }        from './PropertyManagementTab'
 import { SwitchConfigTab }              from './SwitchConfigTab'
@@ -96,6 +101,7 @@ export function VenueEdit () {
   const navigate = useNavigate()
   const basePath = useTenantLink('')
 
+  const { rbacOpsApiEnabled } = getUserProfile()
   const { activeTab } = useParams()
   const enablePropertyManagement = usePropertyManagementEnabled()
 
@@ -120,12 +126,16 @@ export function VenueEdit () {
     editAdvancedContextData, setEditAdvancedContextData
   ] = useState({} as AdvanceSettingContext)
 
+  const hasDetailsPermission = rbacOpsApiEnabled ?
+    hasAllowedOperations([getOpsApi(CommonUrlsInfo.updateVenue)]) :
+    hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+
   useEffect(() => {
     const notFound = { ...basePath, pathname: `${basePath.pathname}/not-found` }
     const notPermissions = { ...basePath, pathname: `${basePath.pathname}/no-permissions` }
     if (!activeTab) {
       const navigateTo =
-      hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) ? 'details' :
+      hasDetailsPermission ? 'details' :
         hasPermission({ scopes: [WifiScopes.UPDATE] }) ? 'wifi' :
           hasPermission({ scopes: [SwitchScopes.UPDATE] }) ? 'switch' :
             enablePropertyManagement ? 'property' : notFound
@@ -141,7 +151,7 @@ export function VenueEdit () {
     const hasNoPermissions
     = (!hasPermission({ scopes: [WifiScopes.UPDATE] }) && activeTab === 'wifi')
     || (!hasPermission({ scopes: [SwitchScopes.UPDATE] }) && activeTab === 'switch')
-    || (!hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && activeTab === 'details')
+    || (!hasDetailsPermission && activeTab === 'details')
     || (!hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && activeTab === 'property')
 
     if (hasNoPermissions) {
@@ -208,6 +218,7 @@ function processWifiTab (
   switch(editContextData?.unsavedTabKey){
     case 'settings':
       editAdvancedContextData?.updateAccessPointLED?.()
+      editAdvancedContextData?.updateAccessPointUSB?.()
       editAdvancedContextData?.updateBssColoring?.()
       editAdvancedContextData?.updateApManagementVlan?.()
       break
@@ -217,6 +228,8 @@ function processWifiTab (
       editNetworkingContextData?.updateMesh?.()
       editNetworkingContextData?.updateDirectedMulticast?.()
       editNetworkingContextData?.updateRadiusOptions?.()
+      editNetworkingContextData?.updateRebootTimeout?.()
+      editNetworkingContextData?.updateSmartMonitor?.()
       break
     case 'radio':
 
@@ -257,6 +270,7 @@ function processWifiTab (
       editServerContextData?.updateSyslog?.()
       editServerContextData?.updateMdnsFencing?.()
       editServerContextData?.updateVenueApSnmp?.()
+      editServerContextData?.updateVenueIot?.()
       break
   }
 }
@@ -309,6 +323,7 @@ export function showUnsavedModal (
         editServerContextData?.discardSyslog?.()
         editServerContextData?.discardVenueLbs?.()
         editServerContextData?.discardMdnsFencing?.()
+        editServerContextData?.discardVenueIot?.()
         setEditContextData({
           ...editContextData,
           isDirty: false,

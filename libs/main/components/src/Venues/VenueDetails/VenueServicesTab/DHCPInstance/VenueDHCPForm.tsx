@@ -28,7 +28,7 @@ import {
   ApDeviceStatusEnum, APExtended, DHCP_LIMIT_NUMBER,
   getServiceRoutePath, ServiceOperation, ServiceType,
   useConfigTemplateQueryFnSwitcher, VenueDHCPProfile, useConfigTemplate,
-  hasServicePermission
+  useTemplateAwareServicePermission
 } from '@acx-ui/rc/utils'
 
 import useDHCPInfo                                               from './hooks/useDHCPInfo'
@@ -106,9 +106,8 @@ const VenueDHCPForm = (props: {
   const isMaxNumberReached = ()=>{
     return dhcpProfileList && dhcpProfileList.length >= DHCP_LIMIT_NUMBER
   }
-  const hasAddDhcpPermission = hasServicePermission({
-    type: ServiceType.DHCP, oper: ServiceOperation.CREATE
-  })
+  // eslint-disable-next-line max-len
+  const hasAddDhcpPermission = useTemplateAwareServicePermission(ServiceType.DHCP, ServiceOperation.CREATE)
 
   useEffect(() => {
     async function fetchData () {

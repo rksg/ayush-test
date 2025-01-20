@@ -2,8 +2,8 @@ import { Dispatch, SetStateAction } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Modal, ModalType, Tabs } from '@acx-ui/components'
-import { PropertyManagementForm } from '@acx-ui/rc/components'
+import { Modal, ModalType, Tabs }      from '@acx-ui/components'
+import { VenuePropertyManagementForm } from '@acx-ui/rc/components'
 
 interface PropertyManagementModalProps {
   venueId: string
@@ -26,7 +26,7 @@ export const PropertyManagementModal = (props: PropertyManagementModalProps) => 
       tab={$t({ defaultMessage: 'Property Management' })}
       key='property-management'
     >
-      <PropertyManagementForm
+      <VenuePropertyManagementForm
         venueId={venueId}
         onCancel={closeModal}
         postSubmit={closeModal}

@@ -3,10 +3,15 @@ import { FetchArgs } from '@reduxjs/toolkit/query'
 import {
   ApiVersionEnum,
   APMesh,
+  ClientIsolationViewModel,
+  EthernetPortProfile,
   FloorPlanMeshAP,
   GetApiVersionHeader,
   NewAPModel,
+  ProfileLanVenueActivations,
+  SoftGreViewData,
   VenueConfigTemplateUrlsInfo,
+  VenueLanPorts,
   WifiRbacUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -157,4 +162,79 @@ export const convertToMeshTopologyDataList = (newApModels: NewAPModel[], members
 
     return newApMesh
   })
+}
+
+export const mappingLanPortWithEthernetPortProfile = (
+  venueLanPortSettings: VenueLanPorts[],
+  ethernetPortProfiles: EthernetPortProfile[],
+  venueId: string
+) =>{
+  ethernetPortProfiles.forEach((profile) => {
+    if (profile.venueActivations) {
+      profile.venueActivations.forEach((activity)=>{
+        const targetLanPort = getTargetLanPortByActivations(
+          venueLanPortSettings,
+          activity,
+          venueId
+        )
+        if(targetLanPort) {
+          targetLanPort.ethernetPortProfileId = profile.id
+        }
+      })
+    }
+  })
+
+}
+
+export const mappingLanPortWithSoftGreProfile = (
+  venueLanPortSettings: VenueLanPorts[],
+  softGreProfiles: SoftGreViewData[],
+  venueId: string
+) => {
+  softGreProfiles.forEach((profile) => {
+    if (profile.venueActivations) {
+      profile.venueActivations.forEach((activity) => {
+        const targetLanPort = getTargetLanPortByActivations(
+          venueLanPortSettings,
+          activity,
+          venueId
+        )
+        if(targetLanPort) {
+          targetLanPort.softGreProfileId = profile.id
+          targetLanPort.softGreEnabled = true
+        }
+      })
+    }
+  })
+}
+
+export const mappingLanPortWithClientIsolationPolicy = (
+  venueLanPortSettings: VenueLanPorts[],
+  clientIsolationProfiles: ClientIsolationViewModel[],
+  venueId: string
+) => {
+  clientIsolationProfiles.forEach((profile) => {
+    if (profile.venueActivations) {
+      profile.venueActivations.forEach((activity) => {
+        const targetLanPort = getTargetLanPortByActivations(
+          venueLanPortSettings,
+          activity,
+          venueId)
+        if(targetLanPort) {
+          targetLanPort.clientIsolationProfileId = profile.id
+        }
+      })
+    }
+  })
+}
+
+export const getTargetLanPortByActivations = (
+  venueLanPortSettings: VenueLanPorts[],
+  activity:ProfileLanVenueActivations,
+  venueId: string
+) => {
+  return venueLanPortSettings.find(
+    setting => setting.model === activity.apModel &&
+    venueId === activity.venueId)
+    ?.lanPorts.find(lanPort => lanPort.portId?.toString() === activity.portId?.toString())
 }

@@ -26,13 +26,13 @@ describe('CertTemplateActionPreview', () => {
       <CertTemplateActionPreview data={{ certTemplateId: '123' } as CertTempActionContext} />
     </Provider>)
     expect(screen
-      .getByText('Install the certificate in order to connect to the following networks:'))
+      .getByText('Install certificate in order to connect to the following networks:'))
       .toBeInTheDocument()
     expect(screen.getByText('Network1')).toBeInTheDocument()
     expect(screen.getByText('Network2')).toBeInTheDocument()
     expect(screen
       // eslint-disable-next-line max-len
-      .getByText('Scan or click this QR code to download the certificate that is required in order to connect to the network:'))
+      .getByText('Scan or click the QR code to download the certificate:'))
       .toBeInTheDocument()
   })
 

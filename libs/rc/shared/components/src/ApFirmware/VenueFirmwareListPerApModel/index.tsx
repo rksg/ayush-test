@@ -8,6 +8,9 @@ export type {
 export { ChangeSchedulePerApModelDialog } from './ChangeScheduleDialog'
 export type { ChangeSchedulePerApModelDialogProps } from './ChangeScheduleDialog'
 
+export { UpdateEarlyAccessNowDialog } from './UpdateEarlyAccessNowDialog'
+export type { UpdateEarlyAccessNowDialogProps } from './UpdateEarlyAccessNowDialog'
+
 export {
   UpdateFirmwarePerApModelIndividualPanel
 } from './UpdateNowDialog/UpdateFirmwarePerApModelIndividualPanel'

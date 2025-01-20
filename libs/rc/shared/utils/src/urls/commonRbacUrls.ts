@@ -259,6 +259,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     //url: '/switches/:serialNumber/position',
     url: '/venues/:venueId/switches/:serialNumber/positions',
+    opsApi: 'PUT:/venues/{id}/switches/{id}/positions',
     newApi: true
   },
   getVenueCityList: {
@@ -275,18 +276,19 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     // url: '/venues/aps/:serialNumber/floorPositions',
     url: '/venues/:venueId/floorplans/:floorplanId/aps/:serialNumber/floorPositions',
+    opsApi: 'PUT:/venues/{id}/floorplans/{id}/aps/{id}/floorPositions',
     newApi: true
   },
   RemoveApPosition: {
     method: 'delete',
     // url: '/venues/aps/:serialNumber/floorPositions',
     url: '/venues/:venueId/floorplans/:floorplanId/aps/:serialNumber/floorPositions',
+    opsApi: 'DELETE:/venues/{id}/floorplans/{id}/aps/{id}/floorPositions',
     newApi: true
   },
   getVenueApModels: {
     method: 'get',
     url: '/venues/:venueId/aps/models',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/ap-models',
     newApi: true
   },
   getVenueLedOn: {
@@ -299,6 +301,16 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     // url: '/venues/:venueId/ledSettings',
     url: '/venues/:venueId/apModelLedSettings',
+    newApi: true
+  },
+  getVenueApUsbStatus: {
+    method: 'get',
+    url: '/venues/:venueId/apModelUsbPortSettings',
+    newApi: true
+  },
+  updateVenueApUsbStatus: {
+    method: 'put',
+    url: '/venues/:venueId/apModelUsbPortSettings',
     newApi: true
   },
   getVenueApModelBandModeSettings: {

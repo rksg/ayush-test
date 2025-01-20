@@ -6,10 +6,10 @@ import { defineMessage, useIntl }  from 'react-intl'
 
 import { useStepFormContext } from '@acx-ui/components'
 
-import { SideNotes } from '../../common/SideNotes'
-import { Intent }    from '../../useIntentDetailsQuery'
+import { SideNotes }    from '../../common/SideNotes'
+import { IntentDetail } from '../../useIntentDetailsQuery'
 
-export const title = defineMessage({ defaultMessage: 'Why is the recommendation?' })
+export const title = defineMessage({ defaultMessage: 'Benefits' })
 export const benefits = defineMessage({ defaultMessage: 'Implementing intelligent PowerSave modes for access points during off-peak hours conserves energy, reduces operational costs, extends the lifespan of hardware, and contributes to a greener environment. This approach achieves significant energy savings with minimum compromise on service quality.' })
 export const Introduction: React.FC = () => {
   const { $t } = useIntl()
@@ -28,7 +28,7 @@ export const Introduction: React.FC = () => {
 export const tradeoff = defineMessage({ defaultMessage: 'EcoFlex enabled network will operate in reduced capacity during off peak hours. During this time, Client may experience slower connectivity and less throughput.' })
 export const Priority: React.FC = () => {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<Intent>()
+  const { form } = useStepFormContext<IntentDetail>()
   const isEnabled = Form.useWatch(['preferences', 'enable'], form)
   return <SideNotes>
     <SideNotes.Section title={$t({ defaultMessage: 'Industry average power price per kWh' })}>

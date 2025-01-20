@@ -35,14 +35,21 @@ interface EthernetPortProfileFormProps {
   onFinish: (values: EthernetPortProfileFormType) => void
   form: FormInstance
   onCancel?: () => void
-  isNoPageHeader?: boolean,
   isEditMode?: boolean
+  isEmbedded?: boolean
 }
 
 export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
-  const { title, submitButtonLabel, onFinish, form: formRef, onCancel, isEditMode=false } = props
+  const {
+    title,
+    submitButtonLabel,
+    onFinish,
+    form: formRef,
+    onCancel,
+    isEditMode = false,
+    isEmbedded = false
+  } = props
   const { $t } = useIntl()
-  // const params = useParams()
   const portType = Form.useWatch('type', formRef)
   const untagId = Form.useWatch('untagId', formRef)
   const authTypeRole = Form.useWatch('authTypeRole', formRef)
@@ -50,7 +57,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
   const dynamicVlanEnabled = Form.useWatch('dynamicVlanEnabled', formRef)
   const authEnabled = Form.useWatch('authEnabled', formRef)
   const isDynamicVLANEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_DVLAN_TOGGLE)
-  const isNoPageHeader = props.isNoPageHeader? props.isNoPageHeader : false
+  const isSwitchPortProfileEnabled = useIsSplitOn(Features.SWITCH_CONSUMER_PORT_PROFILE_TOGGLE)
 
   const tablePath = getPolicyRoutePath({
     type: PolicyType.ETHERNET_PORT_PROFILE,
@@ -60,6 +67,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
   const location = useLocation()
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
   const linkToTableView = useTenantLink(tablePath)
+  const linkToTableViewWithSwitch = useTenantLink('/policies/portProfile/wifi')
 
   const handleFinish = async () => {
     try{
@@ -72,7 +80,8 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
   }
 
   const handleCancel = () => {
-    (onCancel)? onCancel() : redirectPreviousPage(navigate, previousPath, linkToTableView)
+    (onCancel)? onCancel() : redirectPreviousPage(navigate, previousPath,
+      isSwitchPortProfileEnabled ? linkToTableViewWithSwitch : linkToTableView)
   }
 
   // const ethernetPortProfileListPayload = {
@@ -110,7 +119,6 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
       return portTypeAndAuthTypeMapping[element.value as keyof typeof portTypeAndAuthTypeMapping]
         .includes(portType)
     })
-
 
   const onPortTypeChanged = (currentPortType:EthernetPortType) => {
     if(currentPortType === EthernetPortType.TRUNK) {
@@ -165,7 +173,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
 
   return (
     <>
-      {!isNoPageHeader &&
+      {!isEmbedded &&
       <PageHeader
         title={title}
         breadcrumb={[
@@ -176,7 +184,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
           },
           {
             text: $t({ defaultMessage: 'Ethernet Port Profile' }),
-            link: tablePath
+            link: isSwitchPortProfileEnabled ? '/policies/portProfile/wifi' : tablePath
           }
         ]}
       />
@@ -219,7 +227,6 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                 </>
                 }
                 initialValue={EthernetPortType.TRUNK}
-
               >
                 <Select
                   options={getEthernetPortTypeOptions()}
@@ -427,7 +434,6 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
             }
           </>
           }
-
           {dynamicVlanEnabled &&
           <Row>
             <Col span={12}>
@@ -458,7 +464,6 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
       </StepsForm>
     </>
   )
-
 }
 export const requestPreProcess = (data: EthernetPortProfileFormType) => {
   const { authRadius, accountingRadius, authEnabled, authTypeRole, ...result } = cloneDeep(data)

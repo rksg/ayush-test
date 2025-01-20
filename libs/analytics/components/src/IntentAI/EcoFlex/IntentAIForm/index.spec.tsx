@@ -16,7 +16,7 @@ import {
 
 import { mockIntentContext }                                          from '../../__tests__/fixtures'
 import { Statuses }                                                   from '../../states'
-import { Intent }                                                     from '../../useIntentDetailsQuery'
+import { IntentDetail }                                               from '../../useIntentDetailsQuery'
 import { mocked, mockApHierarchy, mockNetworkHierarchy, mockKpiData } from '../__tests__/mockedEcoFlex'
 import { kpis }                                                       from '../common'
 
@@ -92,7 +92,7 @@ afterEach((done) => {
   }
 })
 
-const mockIntentContextWith = (data: Partial<Intent> = {}) => {
+const mockIntentContextWith = (data: Partial<IntentDetail> = {}) => {
   const intent = { ...mocked, ...data }
   mockIntentContext({ intent, kpis })
   return {
@@ -141,7 +141,7 @@ describe('IntentAIForm', () => {
           excludedAPs: [[{ name: 'name', type: 'zone' }]],
           excludedHours: []
         }
-      } as Intent['metadata']
+      } as IntentDetail['metadata']
     })
     const { container } = render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
@@ -150,7 +150,7 @@ describe('IntentAIForm', () => {
     expect(container).toMatchSnapshot('step 1')
     await click(actions.getByRole('button', { name: 'Next' }))
 
-    const radioEnabled = screen.getByRole('radio', { name: 'Reduction in energy footprint' })
+    const radioEnabled = await screen.findByRole('radio', { name: 'Reduction in energy footprint' })
     await click(radioEnabled)
     expect(radioEnabled).toBeChecked()
     const currInput = await screen.findByDisplayValue('USD')
@@ -201,7 +201,7 @@ describe('IntentAIForm', () => {
         },
         scheduledAt: '',
         dataEndTime: '2024-08-08T12:00:00.000Z'
-      }
+      } as IntentDetail['metadata']
     })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
@@ -264,8 +264,7 @@ describe('IntentAIForm', () => {
         unsupportedAPs: ['00:00:00:00:00:01'],
         scheduledAt: '',
         dataEndTime: ''
-
-      }
+      } as IntentDetail['metadata']
     })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))

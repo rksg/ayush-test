@@ -5,10 +5,9 @@ import { useIntl } from 'react-intl'
 import {
   Button,
   Loader,
-  PageHeader,
+  PageHeader, showActionModal,
   Table,
-  TableProps,
-  showToast
+  TableProps
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }      from '@acx-ui/rc/components'
@@ -41,9 +40,6 @@ export default function MacRegistrationListsTable () {
   const tenantBasePath: Path = useTenantLink('')
   const [networkVenuesMap, setNetworkVenuesMap] = useState(new Map())
   const params = useParams()
-
-  const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
-  const customHeaders = (isAsync) ? { Accept: 'application/vnd.ruckus.v2+json' } : undefined
 
   const isIdentityRequired = useIsSplitOn(Features.MAC_REGISTRATION_REQUIRE_IDENTITY_GROUP_TOGGLE)
 
@@ -207,33 +203,47 @@ export default function MacRegistrationListsTable () {
     scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.DELETE),
     label: $t({ defaultMessage: 'Delete' }),
     onClick: ([selectedRow], clearSelection) => {
-      doProfileDelete(
-        [selectedRow],
-        $t({ defaultMessage: 'List' }),
-        selectedRow.name,
-        [
-          isIdentityRequired ?
+      if (isIdentityRequired) {
+        if (selectedRow.registrationCount > 0) {
+          showActionModal({
+            type: 'error',
             // eslint-disable-next-line max-len
-            { fieldName: 'registrationCount', fieldText: $t({ defaultMessage: 'Mac Registration' }) } :
-            { fieldName: 'associationIds', fieldText: $t({ defaultMessage: 'Identity' }) },
-          { fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }
-        ],
-        async () => deleteMacRegList({ params: { policyId: selectedRow.id }, customHeaders })
-          .unwrap()
-          .then(() => {
-            if (!isAsync) {
-              showToast({
-                type: 'success',
-                content: $t({ defaultMessage: 'List {name} was deleted' },
-                  { name: selectedRow.name })
-              })
+            content: $t({ defaultMessage: 'You are unable to delete this list due to it has Mac Registrations' }),
+            customContent: {
+              action: 'SHOW_ERRORS'
             }
-            clearSelection()
-          }).catch((error) => {
-            console.log(error) // eslint-disable-line no-console
           })
-      )}
+        } else {
+          doProfileDelete(
+            [selectedRow],
+            $t({ defaultMessage: 'List' }),
+            selectedRow.name,
+            [],
+            async () => deleteMacList(selectedRow.id!, clearSelection))
+        }
+      } else {
+        doProfileDelete(
+          [selectedRow],
+          $t({ defaultMessage: 'List' }),
+          selectedRow.name,
+          [
+            { fieldName: 'associationIds', fieldText: $t({ defaultMessage: 'Identity' }) },
+            { fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }
+          ],
+          async () => deleteMacList(selectedRow.id!, clearSelection))
+      }
+    }
   }]
+
+  const deleteMacList = (macListId: string, clearSelection: () => void) => {
+    deleteMacRegList({ params: { policyId: macListId } })
+      .unwrap()
+      .then(() => {
+        clearSelection()
+      }).catch((error) => {
+        console.log(error) // eslint-disable-line no-console
+      })
+  }
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = {

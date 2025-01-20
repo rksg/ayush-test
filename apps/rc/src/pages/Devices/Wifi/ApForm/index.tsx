@@ -42,7 +42,6 @@ import {
   ApErrorHandlingMessages,
   APMeshRole,
   apNameRegExp,
-  CatchErrorResponse,
   checkObjectNotExists,
   checkValues,
   DeviceGps,
@@ -63,7 +62,7 @@ import {
   useParams,
   useLocation
 } from '@acx-ui/react-router-dom'
-import { validationMessages } from '@acx-ui/utils'
+import { validationMessages, CatchErrorResponse } from '@acx-ui/utils'
 
 import { ApDataContext, ApEditContext } from '../ApEdit/index'
 
@@ -731,6 +730,7 @@ export function ApForm () {
           gpsModalVisible={gpsModalVisible}
           setGpsModalVisible={setGpsModalVisible}
           onSaveCoordinates={onSaveCoordinates}
+          isApAfcEnabled={displayAFCGeolocation()}
         />
 
       </StepsFormLegacy.StepForm>
@@ -787,7 +787,8 @@ function CoordinatesModal (props: {
   deviceGps: DeviceGps | null,
   gpsModalVisible: boolean,
   setGpsModalVisible: (data: boolean) => void,
-  onSaveCoordinates: (data: DeviceGps | null) => void
+  onSaveCoordinates: (data: DeviceGps | null) => void,
+  isApAfcEnabled: boolean
 }) {
   const { $t } = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
@@ -798,7 +799,8 @@ function CoordinatesModal (props: {
     deviceGps,
     gpsModalVisible,
     setGpsModalVisible,
-    onSaveCoordinates
+    onSaveCoordinates,
+    isApAfcEnabled
   } = props
 
   const [zoom, setZoom] = useState(1)
@@ -807,6 +809,7 @@ function CoordinatesModal (props: {
   })
   const [marker, setMarker] = useState<google.maps.LatLng>()
   const [coordinatesValid, setCoordinatesValid] = useState(true)
+  const default6gEnablementToggle = useIsSplitOn(Features.WIFI_AP_DEFAULT_6G_ENABLEMENT_TOGGLE)
 
   useEffect(() => {
     setTimeout(() => {
@@ -885,6 +888,29 @@ function CoordinatesModal (props: {
     setCoordinatesValid(true)
   }
 
+  const getCountryFromGpsCoordinates = (
+    latitude: string,
+    longitude: string
+  ): Promise<string | null> => {
+    return new Promise((resolve) => {
+      const geocoder = new google.maps.Geocoder()
+      geocoder.geocode(
+        { location: { lat: Number(latitude), lng: Number(longitude) } },
+        (results, status) => {
+          if (status === 'OK' && results) {
+            const countryComponent = results
+              .flatMap((result) => result.address_components)
+              .find((component) => component.types.includes('country'))
+            resolve(countryComponent?.long_name || null)
+          } else {
+            // eslint-disable-next-line no-console
+            console.warn('Geocoding failed:', status)
+          }
+        }
+      )
+    })
+  }
+
   return <Modal
     width={550}
     title={$t({ defaultMessage: 'GPS Coordinates' })}
@@ -916,6 +942,22 @@ function CoordinatesModal (props: {
             return sameAsVenue
               ? Promise.resolve()
               : gpsRegExp(latLng[0], latLng[1])
+          }
+        }, {
+          validator: async (_, value) => {
+            if (default6gEnablementToggle && !isApAfcEnabled) {
+              const latLng = typeof value === 'string'
+                ? value.split(',').map((v: string) => v.trim())
+                : [value.latitude, value.longitude]
+              const country = await getCountryFromGpsCoordinates(latLng[0], latLng[1])
+              if (country === selectedVenue.country) {
+                return Promise.resolve()
+              } else {
+                return Promise.reject($t(validationMessages.diffApGpsWithVenueCountry))
+              }
+            } else {
+              return Promise.resolve()
+            }
           }
         }]}
         validateFirst

@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }            from '@acx-ui/msp/utils'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }                                            from '@acx-ui/msp/utils'
 import {
   AdministrationUrlsInfo, CONFIG_TEMPLATE_PATH_PREFIX, ConfigTemplateContext,
   ConfigTemplateType, ConfigTemplateUrlsInfo, PoliciesConfigTemplateUrlsInfo,
@@ -45,6 +45,8 @@ describe('ConfigTemplateList component', () => {
   const params = { tenantId: '__TENANT_ID', activeTab: ConfigTemplateTabKey.TEMPLATES }
 
   beforeEach(() => {
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.CONFIG_TEMPLATE)
+
     mockServer.use(
       rest.post(
         ConfigTemplateUrlsInfo.getConfigTemplates.url,

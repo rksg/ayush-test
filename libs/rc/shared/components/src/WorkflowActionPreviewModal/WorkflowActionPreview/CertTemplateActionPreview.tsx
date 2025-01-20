@@ -46,18 +46,18 @@ export function CertTemplateActionPreview (props: GenericActionPreviewProps<Cert
   }, [networkListResponse])
 
   return <ContentPreview body={
-    (networkListResponse.length > 1 && selectedSsid === '') ?
-      <GridRow justify={'center'}>
-        <GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
-          <Title level={3}>
-            { $t({ defaultMessage: 'Connect to the network' }) }
-          </Title>
-        </GridCol>
+    <GridRow justify={'center'}>
+      <GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
+        <Title level={2}>
+          { $t({ defaultMessage: 'Connect to the network' }) }
+        </Title>
+      </GridCol>
+      {(networkListResponse.length > 1 && selectedSsid === '') ?
         <GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
           <Text strong>
             {$t({
               defaultMessage:
-                'Install the certificate in order to connect to the following networks:'
+                'Install certificate in order to connect to the following networks:'
             })}
           </Text>
           <List
@@ -72,62 +72,50 @@ export function CertTemplateActionPreview (props: GenericActionPreviewProps<Cert
               </List.Item>
             )}
           />
-        </GridCol>
-        <GridCol col={{ span: 24 }}>
-          <Space direction='vertical' align='center'>
-            <Text>
-              {$t({
-                defaultMessage:
-                  'Scan or click this QR code to download the certificate that' +
-                  ' is required in order to connect to the network:'
-              })}
-            </Text>
-            <QRCodeSVG
-              value={`WIFI:T:WPA;S:${selectedSsid};P:$aMgj23Klpz;H:false;`}
-              size={180}
-              bgColor={'#ffffff'}
-              fgColor={'#000000'}
-              level={'L'}
-              includeMargin={false}
-              onClick={() => setSelectedSsid('')}
-            />
-          </Space>
-        </GridCol>
-      </GridRow> :
-      <GridRow>
-        <GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
-          <Title level={3}>
-            { $t({ defaultMessage: 'Connect to the network' }) }
-          </Title>
-        </GridCol>
-        <GridCol col={{ span: 20 }}>
+          <Text>
+            {$t({
+              defaultMessage:
+                  'Scan or click the QR code to download the certificate:'
+            })}
+          </Text>
+        </GridCol> :
+        <><GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
           <Space>
-            <Text strong>
-              <span>{ $t({ defaultMessage: 'Wi-Fi Network name: ' })} { selectedSsid }</span>
-            </Text>
-          </Space>
-        </GridCol>
-        <GridCol col={{ span: 24 }}>
-          <Space direction='vertical' align='center'>
             <Text>
-              {$t({
-                defaultMessage:
-                  'Scan or click this QR code to download the certificate that' +
-                  ' is required in order to connect to the network:'
-              })}
+              <span>{$t({ defaultMessage: 'Wi-Fi Network name: ' })} {selectedSsid}</span>
             </Text>
-            <QRCodeSVG
-              value={`WIFI:T:WPA;S:${selectedSsid};P:$aMgj23Klpz;H:false;`}
-              size={180}
-              bgColor={'#ffffff'}
-              fgColor={'#000000'}
-              level={'L'}
-              includeMargin={false}
-              onClick={() => setSelectedSsid('')}
-            />
           </Space>
         </GridCol>
-      </GridRow>
+        <GridCol col={{ span: 24 }} style={{ alignItems: 'center' }}>
+          <Text>
+            {$t({
+              defaultMessage:
+                  // eslint-disable-next-line max-len
+                  'Scan or click this QR code to download the certificate that is required in order to connect to the network:'
+            })}
+          </Text>
+        </GridCol></>}
+      <GridCol col={{ span: 24 }}>
+        <Space direction='vertical' align='center'>
+          <QRCodeSVG
+            value={`WIFI:T:WPA;S:${selectedSsid};P:$aMgj23Klpz;H:false;`}
+            size={180}
+            bgColor={'#ffffff'}
+            fgColor={'#000000'}
+            level={'L'}
+            includeMargin={false}
+            onClick={() => setSelectedSsid('')}
+          />
+        </Space>
+      </GridCol>
+      <GridCol col={{ span: 24 }}>
+        <Space direction='vertical' align='center'>
+          <Text strong>
+            <span>{$t({ defaultMessage: 'Certificate file password:' })} j4SyOxxF</span>
+          </Text>
+        </Space>
+      </GridCol>
+    </GridRow>
   }
   {...rest}
   />

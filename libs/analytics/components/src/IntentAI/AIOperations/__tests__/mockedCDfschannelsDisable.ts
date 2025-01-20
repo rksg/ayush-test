@@ -1,20 +1,6 @@
-import { Intent } from '../../useIntentDetailsQuery'
+import { IntentDetail } from '../../useIntentDetailsQuery'
 
-export const mocked = {
-  id: '4bbe9991-4bbe-4052-9a9d-e6d6f442b0ba',
-  root: '04442d1c-6dc3-4959-a57e-a0bc3d3b0291',
-  code: 'c-dfschannels-disable',
-  sliceId: '6f02e6f8-b246-4d3b-be84-957aeef1beb7',
-  status: 'new',
-  displayStatus: 'new',
-  metadata: { failures: ['dual-5g-disabled-or-no-R760', 'for-country-us'] },
-  sliceType: 'zone',
-  sliceValue: 'AlphaNet_5_1',
-  updatedAt: '2024-09-02T06:05:19.762Z',
-  path: [
-    { type: 'system', name: 'Alphanet-BDC' },
-    { type: 'zone', name: 'AlphaNet_5_1' }
-  ],
+export const mockedStatusTrail = {
   statusTrail: [
     {
       createdAt: '2024-08-29T06:05:49.505Z',
@@ -64,7 +50,10 @@ export const mocked = {
       status: 'na',
       statusReason: 'verified'
     }
-  ],
+  ]
+}
+
+export const mockedKPIs = {
   kpi_avg_dfs_event_count: {
     data: null,
     compareData: null
@@ -72,7 +61,30 @@ export const mocked = {
   kpi_max_dfs_event_count: {
     data: null,
     compareData: null
-  },
+  }
+}
+
+export const mocked = {
+  id: '4bbe9991-4bbe-4052-9a9d-e6d6f442b0ba',
+  root: '04442d1c-6dc3-4959-a57e-a0bc3d3b0291',
+  code: 'c-dfschannels-disable',
+  sliceId: '6f02e6f8-b246-4d3b-be84-957aeef1beb7',
+  status: 'new',
+  displayStatus: 'new',
+  metadata: { failures: ['dual-5g-disabled-or-no-R760', 'for-country-us'] },
+  sliceType: 'zone',
+  sliceValue: 'AlphaNet_5_1',
+  updatedAt: '2024-09-02T06:05:19.762Z',
+  path: [
+    { type: 'system', name: 'Alphanet-BDC' },
+    { type: 'zone', name: 'AlphaNet_5_1' }
+  ],
+  ...mockedStatusTrail,
+  ...mockedKPIs,
   currentValue: false,
-  recommendedValue: false
-} as unknown as Intent
+  recommendedValue: false,
+  dataCheck: {
+    isDataRetained: true,
+    isHotTierDate: true
+  }
+} as unknown as IntentDetail

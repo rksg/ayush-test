@@ -352,5 +352,56 @@ export const mockContextData = {
   getClusterName: jest.fn(),
   getDhcpName: jest.fn(),
   getTunnelProfileName: jest.fn(),
-  getNetworksName: jest.fn()
+  getNetworksName: jest.fn(),
+  requiredFw_DS: '10.0.10f',
+  requiredFw_AS: '10.0.10f',
+  requiredSwitchModels: ['ICX7650', 'ICX7850', 'ICX7550'],
+  addNetworkCallback: jest.fn()
+}
+
+export const mockSwitchFeatureSet = {
+  totalCount: 2,
+  page: 1,
+  featureSets: [
+    {
+      featureName: 'PIN_AS',
+      featureGroup: 'PIN',
+      featureType: 'SWITCH',
+      featureLevel: 'VENUE',
+      requirements: [
+        {
+          firmware: '10.0.10f'
+        }
+      ]
+    },
+    {
+      featureName: 'PIN_DS',
+      featureGroup: 'PIN',
+      featureType: 'SWITCH',
+      featureLevel: 'VENUE',
+      requirements: [
+        {
+          firmware: '10.0.10f',
+          models: [
+            'ICX7650',
+            'ICX7850',
+            'ICX7550'
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+export const edgeClusterConfigValidationFailed = {
+  requestId: '3fb4f398-e3cf-4516-914a-35706431e5cd',
+  errors: [
+    {
+      code: 'PERSONAL-IDENTITY-NETWORK-10004',
+      // eslint-disable-next-line max-len
+      message: 'DHCP pool[x-eb24-4b66-b141-7e5e8c827229] not found, please check DHCP pool settings.',
+      service: 'edge-api',
+      entityType: 'pinService'
+    }
+  ]
 }

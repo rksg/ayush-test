@@ -235,6 +235,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     // url: '/venues/aps',
     url: '/venues/:venueId/apGroups/:apGroupId/aps',
+    opsApi: 'POST:/venues/{id}/apGroups/{id}/aps',
     newApi: true
   },
   addApWithDefaultGroup: {
@@ -327,10 +328,16 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   */
+  // deprecated. use the getDhcpAps to replace
   getDhcpAp: {
     method: 'get',
     // url: '/venues/dhcpApSettings/query',
     url: '/venues/:venueId/aps/:serialNumber/dhcpSettings',
+    newApi: true
+  },
+  getDhcpAps: {
+    method: 'post',
+    url: '/venues/aps/dhcpSettings/query',
     newApi: true
   },
   deleteAp: {
@@ -486,6 +493,16 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/ledSettings',
     newApi: true
   },
+  getApUsb: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/usbPortSettings',
+    newApi: true
+  },
+  updateApUsb: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/usbPortSettings',
+    newApi: true
+  },
   getApBandModeSettings: {
     method: 'get',
     url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
@@ -526,6 +543,16 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   updateApSmartMonitor: {
     method: 'put',
     url: '/venues/:venueId/aps/:serialNumber/smartMonitorSettings',
+    newApi: true
+  },
+  getApIot: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/iotSettings',
+    newApi: true
+  },
+  updateApIot: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/iotSettings',
     newApi: true
   },
   getVenueDirectedMulticast: {
@@ -593,6 +620,26 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueSmartMonitor: {
     method: 'put',
     url: '/venues/:venueId/apSmartMonitorSettings',
+    newApi: true
+  },
+  getVenueRebootTimeout: {
+    method: 'get',
+    url: '/venues/:venueId/apRebootTimeoutSettings',
+    newApi: true
+  },
+  updateVenueRebootTimeout: {
+    method: 'put',
+    url: '/venues/:venueId/apRebootTimeoutSettings',
+    newApi: true
+  },
+  getVenueIot: {
+    method: 'get',
+    url: '/venues/:venueId/apIotSettings',
+    newApi: true
+  },
+  updateVenueIot: {
+    method: 'put',
+    url: '/venues/:venueId/apIotSettings',
     newApi: true
   },
   getVenueClientAdmissionControl: {

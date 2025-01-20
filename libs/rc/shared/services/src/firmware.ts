@@ -1,7 +1,5 @@
-import { QueryReturnValue }                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { MaybePromise }                                       from '@reduxjs/toolkit/dist/query/tsHelpers'
-import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
-import _                                                      from 'lodash'
+import { QueryReturnValue, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import _                                                                        from 'lodash'
 
 import {
   CommonResult,
@@ -41,10 +39,10 @@ import {
   StartEdgeFirmwareVenueUpdateNowPayload,
   UpdateEdgeFirmwareVenueSchedulePayload
 } from '@acx-ui/rc/utils'
-import { baseFirmwareApi }             from '@acx-ui/store'
-import { RequestPayload }              from '@acx-ui/types'
-import { CloudVersion }                from '@acx-ui/user'
-import { batchApi, createHttpRequest } from '@acx-ui/utils'
+import { baseFirmwareApi }              from '@acx-ui/store'
+import { MaybePromise, RequestPayload } from '@acx-ui/types'
+import { CloudVersion }                 from '@acx-ui/user'
+import { batchApi, createHttpRequest }  from '@acx-ui/utils'
 
 const v1Header = {
   'Content-Type': 'application/vnd.ruckus.v1+json',
@@ -733,6 +731,27 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'Firmware', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
+    getVenueApModelFirmwareSchedulesList: build.query<FirmwareVenuePerApModel[], RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(FirmwareUrlsInfo.getVenueApModelFirmwareSchedulesList)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          // eslint-disable-next-line max-len
+          onActivityMessageReceived(msg, ['UpdateNowByApModel', 'ChangeUpgradeScheduleByApMode', 'SkipUpgradeSchedule'], () => {
+            api.dispatch(firmwareApi.util.invalidateTags([
+              { type: 'Firmware', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      providesTags: [{ type: 'Firmware', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
     getAllApModelFirmwareList: build.query<ApModelFirmware[], RequestPayload>({
       query: () => {
         const req = createHttpRequest(FirmwareUrlsInfo.getAllApModelFirmwareList)
@@ -914,6 +933,7 @@ export const {
   useGetScheduledFirmwareQuery,
   useLazyGetScheduledFirmwareQuery,
   useGetVenueApModelFirmwareListQuery,
+  useGetVenueApModelFirmwareSchedulesListQuery,
   useGetAllApModelFirmwareListQuery,
   usePatchVenueApModelFirmwaresMutation,
   useGetVenueApModelFirmwaresQuery,

@@ -22,6 +22,8 @@ import { baseSoftGreApi }    from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
 import { createHttpRequest } from '@acx-ui/utils'
 
+import consolidateActivations from './softGreUtils'
+
 export const softGreApi = baseSoftGreApi.injectEndpoints({
   endpoints: (build) => ({
     createSoftGre: build.mutation<CommonResult, RequestPayload<SoftGre>>({
@@ -223,7 +225,9 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           let isSame = false
           gatewayIpMaps[id] = [primaryGatewayAddress, secondaryGatewayAddress ?? '']
 
-          item.activations?.forEach(activation => {
+          const profileActivations = consolidateActivations(item, venueId)
+
+          profileActivations.forEach(activation => {
             const isEqualVenue = activation.venueId === venueId
             if (isEqualVenue) {
               activationProfiles.push(item.id)
@@ -301,14 +305,29 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           ...req,
           body: JSON.stringify(payload)
         }
-      }
+      },
+      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }]
     }),
     deactivateSoftGreProfileOnVenue: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(SoftGreUrls.deactivateSoftGreProfileOnVenue, params)
+      },
+      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }]
+    }),
+    activateSoftGreProfileOnAP: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(SoftGreUrls.deactivateSoftGreProfileOnVenue, params)
+        const req = createHttpRequest(SoftGreUrls.activateSoftGreProfileOnAP, params)
         return {
           ...req,
           body: JSON.stringify(payload)
+        }
+      }
+    }),
+    deactivateSoftGreProfileOnAP: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SoftGreUrls.deactivateSoftGreProfileOnAP, params)
+        return {
+          ...req
         }
       }
     }),
@@ -341,6 +360,8 @@ export const {
   useDectivateSoftGreMutation,
   useActivateSoftGreProfileOnVenueMutation,
   useDeactivateSoftGreProfileOnVenueMutation,
+  useActivateSoftGreProfileOnAPMutation,
+  useDeactivateSoftGreProfileOnAPMutation,
   useGetSoftGreProfileConfigurationOnVenueQuery,
   useLazyGetSoftGreProfileConfigurationOnVenueQuery,
   useGetSoftGreProfileConfigurationOnAPQuery,

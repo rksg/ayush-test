@@ -215,3 +215,37 @@ export const networkApGroup = {
   }]
 }
 
+export const mockedPortProfilesTableResult = {
+  data: [
+    {
+      id: '7d869ac0d966458d8f6d41491445f570',
+      name: 'pProfileGlobal2',
+      type: 'STATIC',
+      taggedVlans: [
+        '4'
+      ],
+      untaggedVlans: 20,
+      poeEnable: true,
+      poeClass: 'ZERO',
+      poePriority: 0,
+      portSpeed: 'NONE',
+      portProtected: false,
+      rstpAdminEdgePort: false,
+      stpBpduGuard: false,
+      stpRootGuard: false,
+      dhcpSnoopingTrust: false,
+      ipsg: false,
+      dot1x: false,
+      macAuth: false,
+      ports: [
+        '1/1/48'
+      ]
+    }
+  ],
+  fields: [
+    'id'
+  ],
+  page: 1,
+  totalCount: 2,
+  totalPages: 1
+}

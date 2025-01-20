@@ -1,19 +1,17 @@
-// TODO: move into root when switch to use intent resolver
 import { gql }               from 'graphql-request'
 import _                     from 'lodash'
 import moment                from 'moment-timezone'
 import { MessageDescriptor } from 'react-intl'
 
-import { kpiDelta, TrendTypeEnum }                       from '@acx-ui/analytics/utils'
-import { formatter }                                     from '@acx-ui/formatter'
-import { useParams }                                     from '@acx-ui/react-router-dom'
-import { intentAIApi }                                   from '@acx-ui/store'
-import { getIntl, NetworkPath, noDataDisplay, NodeType } from '@acx-ui/utils'
+import { kpiDelta, TrendTypeEnum } from '@acx-ui/analytics/utils'
+import { formatter }               from '@acx-ui/formatter'
+import { useParams }               from '@acx-ui/react-router-dom'
+import { intentAIApi }             from '@acx-ui/store'
+import { getIntl, noDataDisplay }  from '@acx-ui/utils'
 
-import { NetworkNode } from '../NetworkFilter/services'
-
-import { DisplayStates, Statuses, StatusReasons }        from './states'
-import { dataRetentionText, IntentWlan, isDataRetained } from './utils'
+import { Intent }                              from './config'
+import { Statuses }                            from './states'
+import { coldTierDataText, dataRetentionText } from './utils'
 
 export type IntentKPIConfig = {
   key: string;
@@ -24,7 +22,7 @@ export type IntentKPIConfig = {
   valueFormatter?: ReturnType<typeof formatter>;
 }
 
-export type IntentKpi = Record<`kpi_${string}`, {
+export type IntentKPI = Record<`kpi_${string}`, {
   data: {
     timestamp: string | null
     result: number | [number, number]
@@ -41,59 +39,31 @@ export type IntentConfigurationValue =
   boolean |
   null
 
-export type Intent = {
-  id: string
-  root: string
-  code: string
-  sliceId: string
-  status: Statuses
-  statusReason: StatusReasons
-  displayStatus: DisplayStates
-  metadata: object & {
-    scheduledAt: string
-    wlans?: IntentWlan[]
-    dataEndTime: string
-    preferences?: {
-      crrmFullOptimization: boolean;
-      excludedHours?: Record<string, number[]>
-      averagePowerPrice?: {
-        currency: string
-        value: number
-      }
-      excludedAPs?: [NetworkNode[]]
-    },
-    unsupportedAPs?: string[]
-  }
-  sliceType: NodeType
-  sliceValue: string
-  path: NetworkPath
-  statusTrail: Array<{
-    status: Statuses
-    statusReason: StatusReasons
-    displayStatus: DisplayStates
-    createdAt?: string
-  }>
-  updatedAt: string
+export type IntentDetail = Intent & Partial<IntentKPI> & {
   currentValue: IntentConfigurationValue
   recommendedValue: IntentConfigurationValue
-} & Partial<IntentKpi>
+  dataCheck: {
+    isDataRetained: boolean
+    isHotTierData: boolean
+  }
+}
 
 export const useIntentParams = () => {
   const { tenantId, root, ...params } = useParams() as {
     tenantId?: string
-    root?: Intent['root']
-    sliceId: Intent['sliceId']
+    root?: IntentDetail['root']
+    sliceId: IntentDetail['sliceId']
     code: string
   }
 
   return { ...params, root: (root || tenantId)! } as {
-    root: Intent['root']
-    sliceId: Intent['sliceId']
+    root: IntentDetail['root']
+    sliceId: IntentDetail['sliceId']
     code: string
   }
 }
 
-export function intentState (intent: Intent) {
+export function intentState (intent: IntentDetail) {
   switch (intent.status) {
     case Statuses.paused:
     case Statuses.na:
@@ -106,8 +76,8 @@ export function intentState (intent: Intent) {
   }
 }
 
-const kpiHelper = (kpis: IntentDetailsQueryPayload['kpis']) => {
-  return kpis.map(kpi => {
+const kpiHelper = (kpis: Pick<IntentKPIConfig, 'key' | 'deltaSign'>[]) => {
+  return kpis?.map(kpi => {
     const name = `kpi_${_.snakeCase(kpi.key)}`
     return `${name}: kpi(key: "${kpi.key}", timeZone: "${moment.tz.guess()}") {
            data {
@@ -124,9 +94,9 @@ const kpiHelper = (kpis: IntentDetailsQueryPayload['kpis']) => {
     .trim()
 }
 
-export function getKPIData (intent: Intent, config: IntentKPIConfig) {
+export function getKPIData (intent: IntentDetail, config: IntentKPIConfig) {
   const key = `kpi_${_.snakeCase(config.key)}` as `kpi_${string}`
-  const kpi = intent[key] as IntentKpi[`kpi_${string}`]
+  const kpi = intent[key] as IntentKPI[`kpi_${string}`]
   // avoid druid error will receive null
   return {
     data: kpi?.data,
@@ -135,8 +105,10 @@ export function getKPIData (intent: Intent, config: IntentKPIConfig) {
 }
 
 export function getGraphKPIs (
-  intent: Intent,
-  kpis: IntentKPIConfig[]
+  intent: IntentDetail,
+  kpis: IntentKPIConfig[],
+  isDataRetained: boolean,
+  isHotTierData: boolean
 ) {
   const { $t } = getIntl()
   const state = intentState(intent)
@@ -155,9 +127,7 @@ export function getGraphKPIs (
       delta: { value: string; trend: TrendTypeEnum } | undefined
     }
 
-    if (!isDataRetained(intent.metadata.dataEndTime)) {
-      ret.footer = $t(dataRetentionText)
-    } else if (state !== 'no-data') {
+    if (isHotTierData && isDataRetained && state !== 'no-data') {
       const result = getKPIData(intent, kpi)
       ret.value = kpi.format(_.get(result, ['data', 'result'], null))
 
@@ -173,22 +143,25 @@ export function getGraphKPIs (
           trend: TrendTypeEnum
         }
       }
+    } else if (!isHotTierData) {
+      ret.footer = $t(coldTierDataText)
+    } else if (!isDataRetained) {
+      ret.footer = $t(dataRetentionText)
     }
     return ret
   })
 }
 
-type IntentDetailsQueryPayload = {
-  root: string
-  sliceId: string
-  code: string
-  kpis: Pick<IntentKPIConfig, 'key' | 'deltaSign'>[]
-}
+type IntentDetailsQueryPayload = ReturnType<typeof useIntentParams>
 
 export const api = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
-    intentDetails: build.query<Intent | undefined, IntentDetailsQueryPayload>({
-      query: ({ root, sliceId, code, kpis }: IntentDetailsQueryPayload) => ({
+    intentDetails: build.query<
+      IntentDetail | undefined,
+      IntentDetailsQueryPayload & { preventColdTier: boolean }
+    >({
+      query: ({ preventColdTier, ...variables }) => ({
+        variables,
         document: gql`
           query IntentDetails($root: String!, $sliceId: String!, $code: String!) {
             intent(root: $root, sliceId: $sliceId, code: $code) {
@@ -197,23 +170,40 @@ export const api = intentAIApi.injectEndpoints({
               status statusReason displayStatus
               sliceType sliceValue updatedAt
               path { type name }
-              statusTrail { status statusReason displayStatus createdAt }
-              ${kpiHelper(kpis)}
-              ${!code.includes('ecoflex') ? 'currentValue recommendedValue' : ''}
+              ${!variables.code.includes('ecoflex') ? 'currentValue recommendedValue' : ''}
+              ${preventColdTier ? 'dataCheck' : ''}
             }
           }
-        `,
-        variables: { root, sliceId, code }
+        `
       }),
-
-      transformResponse: (response: { intent?: Intent }) => response.intent,
+      transformResponse: (response: { intent?: IntentDetail }) => response.intent,
       transformErrorResponse: (error, meta) =>
         ({ ...error, data: meta?.response?.data?.intent }),
       providesTags: [{ type: 'Intent', id: 'INTENT_DETAILS' }]
+    }),
+    intentKPIs: build.query<
+      IntentKPI | undefined,
+      IntentDetailsQueryPayload & { kpis: Pick<IntentKPIConfig, 'key' | 'deltaSign'>[] }
+    >({
+      query: ({ kpis, ...variables }) => ({
+        variables,
+        document: gql`
+          query IntentKPIs($root: String!, $sliceId: String!, $code: String!) {
+            intent(root: $root, sliceId: $sliceId, code: $code) {
+              ${kpiHelper(kpis)}
+            }
+          }
+        `
+      }),
+      transformResponse: (response: { intent?: Intent }) => response.intent as IntentKPI,
+      transformErrorResponse: (error, meta) =>
+        ({ ...error, data: meta?.response?.data?.intent }),
+      providesTags: [{ type: 'Intent', id: 'INTENT_KPIS' }]
     })
   })
 })
 
 export const {
-  useIntentDetailsQuery
+  useIntentDetailsQuery,
+  useIntentKPIsQuery
 } = api

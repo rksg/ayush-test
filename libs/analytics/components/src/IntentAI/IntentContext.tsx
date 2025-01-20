@@ -3,11 +3,12 @@ import React, { createContext, useContext } from 'react'
 import _                     from 'lodash'
 import { MessageDescriptor } from 'react-intl'
 
-import { Loader }    from '@acx-ui/components'
-import { formatter } from '@acx-ui/formatter'
+import { Loader }                 from '@acx-ui/components'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { formatter }              from '@acx-ui/formatter'
 
 import {
-  Intent,
+  IntentDetail,
   IntentKPIConfig,
   intentState,
   useIntentDetailsQuery,
@@ -18,15 +19,16 @@ import { isDataRetained } from './utils'
 export type IntentConfigurationConfig = {
   label: MessageDescriptor
   valueFormatter?: ReturnType<typeof formatter>
-  tooltip?: (intent: Intent) => MessageDescriptor
+  tooltip?: (intent: IntentDetail) => MessageDescriptor
 }
 
 type IIntentContext = {
-  intent: Intent
+  intent: IntentDetail
   configuration?: IntentConfigurationConfig
   kpis: IntentKPIConfig[]
-  isDataRetained: boolean
   state: ReturnType<typeof intentState>
+  isDataRetained: boolean
+  isHotTierData: boolean
 }
 
 export const IntentContext = createContext({} as IIntentContext)
@@ -43,30 +45,32 @@ export function createIntentContextProvider (
 ) {
   const Component: React.FC = function () {
     const params = useIntentParams()
-
+    const preventColdTier = [
+      useIsSplitOn(Features.RUCKUS_AI_PREVENT_COLD_TIER_QUERY_TOGGLE),
+      useIsSplitOn(Features.ACX_UI_PREVENT_COLD_TIER_QUERY_TOGGLE)
+    ].some(Boolean)
     const spec = specs[params.code]
-    const kpis = spec?.kpis
-      // pick only 2 required field
-      // which its value is primitive value type
-      // to prevent RTK Query unable to use param as cache key
-      .map(kpi => _.pick(kpi, ['key', 'deltaSign']))
-    const query = useIntentDetailsQuery({ ...params, kpis }, { skip: !spec })
-
+    const query = useIntentDetailsQuery({ ...params, preventColdTier }, { skip: !spec })
     if (!spec) return null // no matching spec
     if (query.isSuccess && !query.data) return null // 404
 
     const isDetectError = query.isError && !!_.pick(query.error, ['data'])
 
     const intent = isDetectError ?
-      (_.pick(query.error, ['data']) as { data: Intent }).data
+      (_.pick(query.error, ['data']) as { data: IntentDetail }).data
       : query.data
 
     const context: IIntentContext = {
       intent: intent!,
       configuration: spec.configuration,
       kpis: spec.kpis,
-      isDataRetained: (intent && isDataRetained(intent.metadata.dataEndTime))!,
-      state: (intent && intentState(intent))!
+      state: (intent && intentState(intent))!,
+      isDataRetained: preventColdTier
+        ? intent?.dataCheck.isDataRetained!
+        : isDataRetained(intent?.metadata.dataEndTime),
+      isHotTierData: preventColdTier
+        ? intent?.dataCheck.isHotTierData!
+        : true
     }
 
     return <Loader states={[isDetectError? _.omit(query, ['error']) : query]}>

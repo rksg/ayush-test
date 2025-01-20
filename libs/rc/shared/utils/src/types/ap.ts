@@ -12,6 +12,7 @@ import {
   PoeModeEnum,
   VenueLanPort
 } from '../models'
+import { IsolatePacketsTypeEnum } from '../models/ClientIsolationEnum'
 
 import { ApVenueStatusEnum, CountAndNames } from '.'
 
@@ -484,7 +485,12 @@ export interface LanPort {
   type?: 'ACCESS' | 'GENERAL' | 'TRUNK',
   vni: number,
   ethernetPortProfileId?: string,
-  softGreProfileId?: string
+  softGreProfileId?: string,
+  softGreEnabled?: boolean,
+  dhcpOption82?: LanPortSoftGreProfileSettings,
+  clientIsolationProfileId?: string,
+  clientIsolationEnabled?: boolean,
+  clientIsolationSettings?: LanPortClientIsolationSettings
 }
 
 export enum ApModelTypeEnum {
@@ -511,10 +517,10 @@ export interface CapabilitiesApModel {
   pictureDownloadUrl: string,
   poeModeCapabilities?: string[],
   requireOneEnabledTrunkPort: boolean,
-  simCardPrimaryEnabled: boolean,
-  simCardPrimaryRoaming: boolean,
-  simCardSecondaryEnabled: boolean,
-  simCardSecondaryRoaming: boolean,
+  simCardPrimaryEnabled?: boolean,
+  simCardPrimaryRoaming?: boolean,
+  simCardSecondaryEnabled?: boolean,
+  simCardSecondaryRoaming?: boolean,
   supportChannel144: boolean,
   supportDual5gMode: boolean,
   supportTriRadio: boolean,
@@ -534,7 +540,8 @@ export interface CapabilitiesApModel {
   supportAggressiveTxPower?: boolean,
   supportAutoCellSizing?: boolean,
   supportSmartMonitor?: boolean,
-  supportMesh5GOnly6GOnly?: boolean
+  supportMesh5GOnly6GOnly?: boolean,
+  usbPowerEnable?: boolean
 }
 
 export interface PingAp {
@@ -585,6 +592,11 @@ export interface ApLanPort {
 
 export interface ApLedSettings {
   ledEnabled: boolean,
+  useVenueSettings: boolean
+}
+
+export interface ApUsbSettings {
+  usbPortEnable: boolean,
   useVenueSettings: boolean
 }
 
@@ -697,6 +709,12 @@ export interface ApSmartMonitor {
   enabled: boolean,
   interval: number,
   threshold: number
+}
+
+export interface ApIot {
+  useVenueSettings: boolean,
+  enabled: boolean,
+  mqttBrokerAddress: string
 }
 
 export interface APExtendedGrouped extends APExtended {
@@ -980,9 +998,92 @@ export interface DhcpOption82Settings {
 export interface VenueApModelLanPortSettingsV1 {
   softGreEnabled: boolean
   softGreSettings?: LanPortSoftGreProfileSettings
+  softGreProfileId?: string
 }
 
 export interface LanPortSoftGreProfileSettings {
   dhcpOption82Enabled?: boolean
   dhcpOption82Settings?: DhcpOption82Settings
+}
+
+export interface SoftGreChanges {
+  model: string,
+  lanPorts: SoftGreLanPortChange[]
+}
+
+export enum SoftGreState {
+  Init,
+  TurnOffSoftGre,
+  TurnOnSoftGre,
+  ModifySoftGreProfile,
+  TurnOffDHCPOption82,
+  TurnOnAndModifyDHCPOption82Settings,
+  TurnOnLanPort,
+  TurnOffLanPort,
+  ResetToDefault
+}
+
+export enum SoftGreDuplicationChangeState {
+  Init,
+  OnChangeSoftGreProfile,
+  TurnOnSoftGre,
+  TurnOffSoftGre,
+  TurnOnLanPort,
+  TurnOffLanPort,
+  ResetToDefault,
+  FindTheOnlyVoter
+}
+
+export interface SoftGreDuplicationChangeDispatcher {
+  state: SoftGreDuplicationChangeState
+  softGreProfileId?: string
+  voter?: Voter
+  voters?: Voter[]
+}
+
+export interface SoftGreProfileDispatcher {
+  portId?: string,
+  state: SoftGreState,
+  index: number,
+  softGreProfileId?: string
+}
+
+export interface Voter {
+  model?: string,
+  serialNumber?: string,
+  portId: string,
+}
+
+export interface VoteTallyBoard {
+  softGreProfileId: string,
+  FQDNAddresses: string[],
+  name?: string,
+  vote: number,
+  voters: Voter[]
+}
+
+export interface SoftGreLanPortChange {
+    lanPortId: string
+    lanPortEnable?: boolean
+    venueLanPortSettings: VenueApModelLanPortSettingsV1
+}
+
+
+export interface LanPortClientIsolationSettings {
+  packetsType: IsolatePacketsTypeEnum
+  autoVrrp: boolean
+}
+
+export interface VenueLanPortSettings {
+  portId?: number
+  enabled?: boolean
+  softGreEnabled?: boolean
+  softGreSettings?: LanPortSoftGreProfileSettings
+  clientIsolationEnabled?: boolean
+  clientIsolationSettings?: LanPortClientIsolationSettings
+}
+
+export interface APLanPortSettings extends VenueLanPortSettings {
+  overwriteUntagId?: number
+  overwriteVlanMembers?: string
 }

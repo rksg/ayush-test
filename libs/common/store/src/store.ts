@@ -1,6 +1,5 @@
-import { configureStore }                                 from '@reduxjs/toolkit'
+import { configureStore, createDynamicMiddleware }        from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import dynamicMiddlewares                                 from 'redux-dynamic-middlewares'
 
 import {
   baseAdministrationApi as administrationApi,
@@ -50,10 +49,14 @@ import {
   baseWorkflowApi,
   videoCallQoeApi,
   baseRuckusAssistantApi as ruckusAssistantApi,
-  baseDirectoryServerApi as directoryServerApi
+  baseDirectoryServerApi as directoryServerApi,
+  baseClientIsolationApi as clientIsolationApi
 } from './baseApi'
+import { cancelMiddleware } from './cancelMiddleware'
 
 const isDev = process.env['NODE_ENV'] === 'development'
+
+export const dynamicMiddleware = createDynamicMiddleware()
 
 export const store = configureStore({
   reducer: {
@@ -104,7 +107,8 @@ export const store = configureStore({
     [ethernetPortProfileApi.reducerPath]: ethernetPortProfileApi.reducer,
     [edgeHqosProfilesApi.reducerPath]: edgeHqosProfilesApi.reducer,
     [ruckusAssistantApi.reducerPath]: ruckusAssistantApi.reducer,
-    [directoryServerApi.reducerPath]: directoryServerApi.reducer
+    [directoryServerApi.reducerPath]: directoryServerApi.reducer,
+    [clientIsolationApi.reducerPath]: clientIsolationApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -112,7 +116,8 @@ export const store = configureStore({
       serializableCheck: isDev ? undefined : false,
       immutableCheck: isDev ? undefined : false
     }).concat([
-      dynamicMiddlewares,
+      cancelMiddleware,
+      dynamicMiddleware.middleware,
       commonApi.middleware,
       networkApi.middleware,
       venueApi.middleware,
@@ -160,7 +165,8 @@ export const store = configureStore({
       ethernetPortProfileApi.middleware,
       edgeHqosProfilesApi.middleware,
       ruckusAssistantApi.middleware,
-      directoryServerApi.middleware
+      directoryServerApi.middleware,
+      clientIsolationApi.middleware
     ])
   },
 

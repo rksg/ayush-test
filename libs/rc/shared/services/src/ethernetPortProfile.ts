@@ -1,5 +1,4 @@
-import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import { QueryReturnValue, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 
 import {
   CommonResult,
@@ -9,13 +8,15 @@ import {
   EthernetPortProfileUrls,
   EthernetPortProfileViewData,
   EthernetPortProfile,
-  EthernetPortOverwrites,
   ApiVersionEnum,
   GetApiVersionHeader,
   CapabilitiesApModel,
   ApLanPortTypeEnum,
   EthernetPortType,
-  EthernetPortAuthType
+  EthernetPortAuthType,
+  APLanPortSettings,
+  VenueLanPortSettings,
+  LanPortsUrls
 } from '@acx-ui/rc/utils'
 import { baseEthernetPortProfileApi } from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
@@ -111,37 +112,34 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
           let apEthPortProfiles = ethList.data?.filter(
             m => m.apSerialNumbers && m.apSerialNumbers.includes(params.serialNumber!)
           ) ?? [] as EthernetPortProfileViewData[]
-          const getApPortOverwrite = async (
-            venueId:string, serialNumber:string, portId:number) => {
+          const getApPortOverwrite = async (portId:number) => {
             const apPortOverwriteReq = createHttpRequest(
-              EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId,
-              { venueId: venueId,
-                serialNumber: serialNumber,
+              LanPortsUrls.getApLanPortSettings,
+              { venueId: params?.venueId,
+                serialNumber: params?.serialNumber,
                 portId: portId.toString()
               })
             const apEthPortOverwrites = await fetchWithBQ(apPortOverwriteReq)
-            return { ...(apEthPortOverwrites.data as EthernetPortOverwrites),
+            return { ...(apEthPortOverwrites.data as APLanPortSettings),
               portId: portId }
           }
 
+          // ap level binding
           for (let eth of apEthPortProfiles) {
             eth.apPortOverwrites = []
-            for (let apActivation of (eth.apActivations ?? [])) {
+            let apActivations = eth.apActivations?.filter(
+              a => a.apSerialNumber === params.serialNumber) ?? []
+            for (let apActivation of apActivations) {
               bindingPortIds.push(apActivation.portId?.toString())
-              const portOverwrite = await getApPortOverwrite(
-                apActivation.venueId!,
-                apActivation.apSerialNumber!,
-                apActivation.portId!)
+              const portOverwrite = await getApPortOverwrite(apActivation.portId!)
               eth.apPortOverwrites?.push(portOverwrite)
             }
           }
+
+          // default capability binding
           for (let lanPort of (selectedModelCaps as CapabilitiesApModel)?.lanPorts ) {
             if (!bindingPortIds.includes(lanPort.id)) {
-              const portOverwrite = await getApPortOverwrite(
-                params?.venueId!,
-                params?.serialNumber,
-                parseInt(lanPort.id, 10)
-              )
+              const portOverwrite = await getApPortOverwrite(parseInt(lanPort.id, 10))
               const defaultType = lanPort?.defaultType
               let ethProfileId = ''
               switch (defaultType){
@@ -161,14 +159,6 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
               }
             }
           }
-          const ethOverwriteList = {
-            data: ethList.data?.filter(
-              m => !(m.apSerialNumbers && m.apSerialNumbers.includes(params.serialNumber!))
-            ).concat(apEthPortProfiles) } as TableResult<EthernetPortProfileViewData>
-
-          return ethOverwriteList
-            ? { data: ethOverwriteList }
-            : { error: ethListQuery.error as FetchBaseQueryError }
         }
 
         return ethList.data
@@ -241,7 +231,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
         return ethernetPortProfileData
           ? { data: ethernetPortProfileData }
           : { error: ethernetPortProfile.error } as QueryReturnValue<
-          EthernetPortProfile, FetchBaseQueryError>
+          EthernetPortProfile, FetchBaseQueryError, FetchBaseQueryMeta | undefined>
       },
       providesTags: [{ type: 'EthernetPortProfile', id: 'DETAIL' }]
     }),
@@ -280,7 +270,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
     }),
 
     // eslint-disable-next-line max-len
-    getEthernetPortProfileSettingsByVenueApModel: build.query<EthernetPortOverwrites, RequestPayload>({
+    getEthernetPortProfileSettingsByVenueApModel: build.query<VenueLanPortSettings, RequestPayload>({
       query: ({ params }) => {
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
         const req = createHttpRequest(
@@ -292,7 +282,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
     }),
 
     updateEthernetPortSettingsByVenueApModel:
-      build.mutation<EthernetPortOverwrites, RequestPayload>({
+      build.mutation<VenueLanPortSettings, RequestPayload>({
         query: ({ params, payload }) => {
           const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
           const req = createHttpRequest(
@@ -313,16 +303,6 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
           params,
           customHeaders
         )
-        return {
-          ...req
-        }
-      }
-    }),
-    getEthernetPortProfileOverwritesByApPortId:
-    build.query<EthernetPortOverwrites, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(
-          EthernetPortProfileUrls.getEthernetPortOverwritesByApPortId, params)
         return {
           ...req
         }
@@ -367,7 +347,6 @@ export const {
   useGetEthernetPortProfileSettingsByVenueApModelQuery,
   useUpdateEthernetPortSettingsByVenueApModelMutation,
   useActivateEthernetPortProfileOnVenueApModelPortIdMutation,
-  useGetEthernetPortProfileOverwritesByApPortIdQuery,
   useUpdateEthernetPortProfileOverwritesByApPortIdMutation,
   useActivateEthernetPortProfileOnApPortIdMutation
 } = ethernetPortProfileApi

@@ -56,7 +56,7 @@ export function CloudpathForm () {
     if(supportRadsec && (editMode || cloneMode) && data){
       setFieldsValue()
     }
-  },[data?.id])
+  },[data?.id, data?.wlan?.wlanSecurity])
 
   const setFieldsValue = () => {
     if (!data) {

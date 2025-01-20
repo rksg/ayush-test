@@ -17,7 +17,10 @@ import {
   ApRequirement,
   CompatibilitySelectedApInfo,
   FirmwareVenuePerApModel,
-  IncompatibleFeature
+  IncompatibilityFeatureGroups,
+  IncompatibilityFeatures,
+  IncompatibleFeature,
+  getCompatibilityFeatureDisplayName
 } from '@acx-ui/rc/utils'
 import { WifiScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
@@ -36,17 +39,26 @@ import {
   MinReqVersionTooltipWrapper
 } from '../styledComponents'
 
+export const IsApModelSupported = (curApModel?: string, requirements?: ApRequirement[]) => {
+  if (!curApModel || !requirements) return true // skip check
+  const supportReq = requirements.find((req) => req.models.includes(curApModel))
+  return !!supportReq
+}
 
 const RequiredVersionTooltips = (props: {
   requirements?: ApRequirement[],
-  apModelFamilies?: ApModelFamily[]
+  apModelFamilies?: ApModelFamily[],
+  curApModel?: string
 }) => {
   const { $t } = useIntl()
-  const { requirements, apModelFamilies } = props
-  const firmwareString = requirements?.map((req) => req.firmware).join(', ') ?? ''
+  const { requirements, apModelFamilies, curApModel } = props
+  const isApModelSupported = IsApModelSupported(curApModel, requirements)
+  const firmwareString = isApModelSupported
+    ? requirements?.map((req) => req.firmware).join(', ') ?? ''
+    : $t({ defaultMessage: 'Model unsupported' })
   const requirementsLen = requirements?.length ?? 0
 
-  const context = (requirements && apModelFamilies) ? requirements.map(((req, index) => {
+  const context = (requirements && apModelFamilies) ? requirements.map((req, index) => {
     const { firmware, models } = req
     return (
       <MinReqVersionTooltipWrapper key={`min_req_${index}`}>
@@ -61,14 +73,14 @@ const RequiredVersionTooltips = (props: {
         {(requirementsLen > (index+1)) && <hr /> }
       </MinReqVersionTooltipWrapper>
     )
-  })) : ''
+  }) : ''
 
   return (
     <Tooltip title={context} placement='rightTop' dottedUnderline>{firmwareString}</Tooltip>
   )
 }
 
-const useColumns = (apModelFamilies?: ApModelFamily[]) => {
+const useColumns = (apModelFamilies?: ApModelFamily[], model?: string) => {
   const { $t } = useIntl()
 
   const defaultColumns: TableProps<IncompatibleFeature>['columns'] = [{
@@ -78,7 +90,9 @@ const useColumns = (apModelFamilies?: ApModelFamily[]) => {
     defaultSortOrder: 'ascend',
     render: function (_, row) {
       const { featureName, featureType } = row
-      return <Space>{featureName} {getFeatureTypeTag(featureType)}</Space>
+      const featureDisplayName = getCompatibilityFeatureDisplayName(
+        featureName as IncompatibilityFeatures & IncompatibilityFeatureGroups)
+      return <Space>{featureDisplayName} {getFeatureTypeTag(featureType)}</Space>
     }
   }, {
     title: $t({ defaultMessage: 'Incompatible APs' }),
@@ -103,6 +117,7 @@ const useColumns = (apModelFamilies?: ApModelFamily[]) => {
       return <RequiredVersionTooltips
         requirements={requirements}
         apModelFamilies={apModelFamilies}
+        curApModel={model}
       />
     }
   }]
@@ -124,7 +139,7 @@ export const ApCompatibilityDetailTable = (props: ApCompatibilityDetailTableProp
   const { $t } = useIntl()
 
   const { data, requirementOnly = false, venueId, apInfo } = props
-  const { model='', firmwareVersion='' } = apInfo ?? {}
+  const { model, firmwareVersion='' } = apInfo ?? {}
 
   const { data: apModelFamilies } = useGetApModelFamiliesQuery({}, {
     skip: !isSupportedFwModels,
@@ -155,7 +170,7 @@ export const ApCompatibilityDetailTable = (props: ApCompatibilityDetailTableProp
     clearSelection()
   }
 
-  const columns = useColumns(apModelFamilies)
+  const columns = useColumns(apModelFamilies, model)
 
   const rowActions: TableProps<IncompatibleFeature>['rowActions'] = [{
     label: $t({ defaultMessage: 'Update Version Now' }),
@@ -200,7 +215,7 @@ export const ApCompatibilityDetailTable = (props: ApCompatibilityDetailTableProp
       <ApInfoWrapper>
         <Space>
           <div className='label' children={$t({ defaultMessage: 'Model:' })}/>
-          <div children={model} />
+          <div children={model ?? ''} />
         </Space>
         <br/>
         <Space>

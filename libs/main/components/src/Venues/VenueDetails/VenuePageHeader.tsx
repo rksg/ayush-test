@@ -2,9 +2,11 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import { usePathBasedOnConfigTemplate }    from '@acx-ui/rc/components'
 import { useVenueDetailsHeaderQuery }      from '@acx-ui/rc/services'
 import {
+  CommonUrlsInfo,
   useConfigTemplate,
   useConfigTemplateBreadcrumb,
   VenueDetailHeader
@@ -16,19 +18,21 @@ import {
 } from '@acx-ui/react-router-dom'
 import { WifiScopes, EdgeScopes, SwitchScopes }       from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey } from '@acx-ui/user'
-import { useDateFilter }                              from '@acx-ui/utils'
+import { getOpsApi, useDateFilter }                   from '@acx-ui/utils'
 
 import VenueTabs from './VenueTabs'
 
 
 function DatePicker () {
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const isDateRangeLimit = useIsSplitOn(Features.ACX_UI_DATE_RANGE_LIMIT)
 
   return <RangePicker
     selectedRange={{ startDate: moment(startDate), endDate: moment(endDate) }}
     onDateApply={setDateFilter as CallableFunction}
     showTimePicker
     selectionType={range}
+    maxMonthRange={isDateRangeLimit ? 1 : 3}
   />
 }
 
@@ -63,6 +67,7 @@ function VenuePageHeader () {
         enableTimeFilter() ? <DatePicker key={getShowWithoutRbacCheckKey('date-filter')} /> : <></>,
         ...filterByAccess([<Button
           type='primary'
+          rbacOpsIds={[getOpsApi(CommonUrlsInfo.updateVenue)]}
           scopeKey={[WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE]}
           onClick={() =>
             navigate(detailsPath, {

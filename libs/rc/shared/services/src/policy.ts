@@ -75,7 +75,8 @@ import {
   TxStatus,
   ScepKeyData,
   ServerCertificate,
-  ServerClientCertificateResult
+  ServerClientCertificateResult,
+  NewAPModel
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }                                 from '@acx-ui/store'
 import { RequestPayload }                                from '@acx-ui/types'
@@ -1136,10 +1137,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     addMacRegList: build.mutation<MacRegistrationPool, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
-        // eslint-disable-next-line max-len
-        const req = createHttpRequest(MacRegListUrlsInfo.createMacRegistrationPool, params, headers)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.createMacRegistrationPool, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1159,10 +1158,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
     }),
     updateMacRegList: build.mutation<MacRegistrationPool, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
-        // eslint-disable-next-line max-len
-        const req = createHttpRequest(MacRegListUrlsInfo.updateMacRegistrationPool, params, headers)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.updateMacRegistrationPool, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1171,10 +1168,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistrationPool', id: 'LIST' }]
     }),
     deleteMacRegList: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, customHeaders }) => {
-        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
-        // eslint-disable-next-line max-len
-        const req = createHttpRequest(MacRegListUrlsInfo.deleteMacRegistrationPool, params, headers)
+      query: ({ params }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.deleteMacRegistrationPool, params)
         return {
           ...req
         }
@@ -1193,10 +1188,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
     deleteMacRegistrations: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
-        // eslint-disable-next-line max-len
-        const req = createHttpRequest(MacRegListUrlsInfo.deleteMacRegistrations, params, headers)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.deleteMacRegistrations, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1215,9 +1208,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'MacRegistrationPool', id: 'DETAIL' }]
     }),
     addMacRegistration: build.mutation<MacRegistration, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
-        const req = createHttpRequest(MacRegListUrlsInfo.addMacRegistration, params, headers)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.addMacRegistration, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1226,10 +1218,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
     updateMacRegistration: build.mutation<MacRegistration, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
-        // eslint-disable-next-line max-len
-        const req = createHttpRequest(MacRegListUrlsInfo.updateMacRegistration, params, headers)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.updateMacRegistration, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1325,9 +1315,12 @@ export const policyApi = basePolicyApi.injectEndpoints({
         if(arg.enableRbac) {
           const res = (response as TableResult<ClientIsolationViewModel>)
           each(res.data, data => {
-            const venueIds = [...new Set(data.activations?.map(act => act.venueId))]
-            data.venueIds = venueIds
-            data.venueCount = venueIds.length
+            let venueIds: Set<string> = new Set()
+            data?.activations?.forEach(activation => venueIds.add(activation.venueId))
+            data?.venueActivations?.forEach(activation => venueIds.add(activation.venueId))
+            data?.apActivations?.forEach(activation => venueIds.add(activation.venueId))
+            data.venueIds = [...venueIds]
+            data.venueCount = venueIds.size
           })
         }
         return response as TableResult<ClientIsolationViewModel>
@@ -1986,8 +1979,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
             )
           )
 
-          if (networkIds.length <= 0) return defaultRes
-
           // query network name with networkId
           const networkQueryPayload = {
             fields: ['name', 'id'],
@@ -2000,7 +1991,48 @@ export const policyApi = basePolicyApi.injectEndpoints({
           if (networkRes.error) return defaultRes
           const networkData = networkRes.data as TableResult<Network>
 
-          // merge data
+          // apSerialNumbers group by venueId
+          const apsGroupByVenueData = activationData.data.reduce((acc:{ [key: string]: Set<string> }, item) => {
+            item.venueActivations.forEach(va => {
+              if (!acc[va.venueId]) {
+                acc[va.venueId] = new Set<string>()
+              }
+              va.apSerialNumbers?.forEach(serial => acc[va.venueId].add(serial))
+            })
+            item.apActivations.forEach(aa => {
+              if (!acc[aa.venueId]) {
+                acc[aa.venueId] = new Set<string>()
+              }
+              acc[aa.venueId].add(aa.apSerialNumber)
+            })
+            return acc
+          }, {})
+
+          // Collect AP names by serial numbers
+          let apMapping: { [key: string]: string } = {}
+          const apSerialNumbersSet = Object.values(apsGroupByVenueData).reduce((all, venueSet) => {
+            return new Set([...all, ...venueSet])
+          }, new Set())
+
+          if(apSerialNumbersSet.size > 0){
+            const apsQueryPayload = {
+              fields: ['name', 'serialNumber'],
+              filters: { serialNumber: Array.from(apSerialNumbersSet) },
+              pageSize: 10000
+            }
+            const apsReq = createHttpRequest(CommonRbacUrlsInfo.getApsList)
+            const apsRes = await fetchWithBQ({ ...apsReq, body: JSON.stringify(apsQueryPayload) })
+            if (apsRes && apsRes.data) {
+              const { data: apsData } = apsRes.data as TableResult<NewAPModel>
+              apsData.forEach((ap: NewAPModel) => {
+                if (ap.name) {
+                  apMapping[ap.serialNumber] = ap.name
+                }
+              })
+            }
+          }
+
+          // merge network data
           const venuesMap: { [key: string]: VenueUsageByClientIsolation }= {}
           activationData.data.forEach(item => {
             item.activations?.forEach(activation => {
@@ -2012,7 +2044,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
                     venueName: '',
                     address: '',
                     networkCount: 0,
-                    networkNames: []
+                    networkNames: [],
+                    apCount: 0,
+                    apNames: []
                   }
                 }
                 venuesMap[venueId].networkCount += 1
@@ -2020,11 +2054,26 @@ export const policyApi = basePolicyApi.injectEndpoints({
               }
             })
           })
+          Object.keys(apsGroupByVenueData).forEach((venueId) => {
+            if (!venuesMap[venueId]) {
+              venuesMap[venueId] = {
+                venueId: venueId,
+                venueName: '',
+                address: '',
+                networkCount: 0,
+                networkNames: [],
+                apCount: 0,
+                apNames: []
+              }
+            }
+          })
 
           venueData.data.forEach(venue => {
             if (venuesMap[venue.id]) {
               venuesMap[venue.id].venueName = venue.name
               venuesMap[venue.id].address = venue.addressLine
+              venuesMap[venue.id].apCount = apsGroupByVenueData[venue.id]?.size || 0
+              venuesMap[venue.id].apNames = Array.from(apsGroupByVenueData[venue.id] || []).map(serial => apMapping[serial] || serial)
             }
           })
 
@@ -2039,9 +2088,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     uploadMacRegistration: build.mutation<{}, RequestPayload>({
-      query: ({ params, payload, customHeaders }) => {
-        // eslint-disable-next-line max-len
-        const req = createHttpRequest(MacRegListUrlsInfo.uploadMacRegistration, params, customHeaders)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MacRegListUrlsInfo.uploadMacRegistration, params)
         return {
           ...req,
           body: payload

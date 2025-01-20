@@ -6,6 +6,7 @@ import moment                   from 'moment'
 import { IntlShape, useIntl }   from 'react-intl'
 
 import {
+  Filter,
   Loader,
   Table,
   TableProps,
@@ -77,8 +78,16 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   {
     key: 'future',
     value: $t({ defaultMessage: 'Show Future' })
+  },
+  {
+    key: 'active,future',
+    value: $t({ defaultMessage: 'Show Active & Future' })
   }
 ]
+
+const defaultSelectedFilters: Filter = {
+  status: ['active', 'future']
+}
 
 export const entitlementRefreshPayload = {
   status: 'synchronize',
@@ -216,6 +225,7 @@ export const SubscriptionTable = () => {
       key: 'status',
       filterMultiple: false,
       filterValueNullable: true,
+      filterValueArray: true,
       filterable: statusTypeFilterOpts($t),
       sorter: { compare: sortProp('status', defaultSort) },
       render: function (_, row) {
@@ -303,6 +313,7 @@ export const SubscriptionTable = () => {
         columns={columns}
         actions={hasCrossVenuesPermission() ? filterByAccess(actions) : []}
         dataSource={checkSubscriptionStatus() ? [] : subscriptionData}
+        selectedFilters={defaultSelectedFilters}
         rowKey='id'
       />
     </Loader>

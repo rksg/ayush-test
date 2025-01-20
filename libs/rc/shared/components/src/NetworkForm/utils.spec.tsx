@@ -31,7 +31,8 @@ import {
   useNetworkVxLanTunnelProfileInfo, useRadiusServer, useServicePolicyEnabledWithConfigTemplate,
   useWifiCalling, getDefaultMloOptions, useUpdateSoftGreActivations, shouldSaveRadiusServerSettings,
   shouldSaveRadiusServerProfile, getRadiusIdFromFormData, hasRadiusProfileInFormData,
-  deriveWISPrFieldsFromServerData
+  deriveWISPrFieldsFromServerData,
+  isShowDynamicVlan
 } from './utils'
 
 const mockedUseConfigTemplate = jest.fn()
@@ -128,6 +129,13 @@ describe('Network utils test', () => {
     }
     expect(hasAuthRadius(guestAccountData, guestAlwayAccessWlanData)).toBeTruthy()
 
+    // HS20 network type
+    const hs20Data = { type: NetworkTypeEnum.HOTSPOT20 }
+    const hs20WlanData = { }
+    const isSupportHotspot20NasId = true // feature flag
+    expect(hasAuthRadius(hs20Data, hs20WlanData)).toBeFalsy()
+    expect(hasAuthRadius(hs20Data, hs20WlanData, { isSupportHotspot20NasId } )).toBeTruthy()
+
     expect(hasAuthRadius({ }, {})).toBeFalsy()
   })
 
@@ -202,6 +210,63 @@ describe('Network utils test', () => {
     expect(hasAccountingRadius(guestData, guestWlanData)).toBeTruthy()
 
     expect(hasAccountingRadius({ }, {})).toBeFalsy()
+  })
+
+  it('Test the isShowDynamicVlan', () => {
+    // no data
+    expect(isShowDynamicVlan(null)).toBeFalsy()
+    // AAA network type
+    const aaaData = { type: NetworkTypeEnum.AAA, wlan: { id: 'test' } } as NetworkSaveData
+    expect(isShowDynamicVlan(aaaData)).toBeTruthy()
+
+    // DPSK
+    const dpskData = { type: NetworkTypeEnum.DPSK, wlan: { id: 'test' } } as NetworkSaveData
+    expect(isShowDynamicVlan(dpskData)).toBeTruthy()
+
+    // open
+    const openData = {
+      type: NetworkTypeEnum.OPEN,
+      wlan: {
+        id: 'test',
+        macAddressAuthentication: false
+      } } as NetworkSaveData
+    expect(isShowDynamicVlan(openData)).toBeFalsy()
+
+    // open + Mac Auth
+    const openMacAuthData = {
+      type: NetworkTypeEnum.OPEN,
+      wlan: {
+        id: 'test',
+        macAddressAuthentication: true
+      } } as NetworkSaveData
+    expect(isShowDynamicVlan(openMacAuthData)).toBeTruthy()
+
+    // WISPr + bypassMacAuth
+    const wisprMacAuthData = {
+      type: NetworkTypeEnum.CAPTIVEPORTAL,
+      guestPortal: {
+        guestNetworkType: GuestNetworkTypeEnum.WISPr
+      },
+      wlan: {
+        id: 'test',
+        bypassCPUsingMacAddressAuthentication: true
+      } } as NetworkSaveData
+    expect(isShowDynamicVlan(wisprMacAuthData)).toBeTruthy()
+
+    // PSK + MAC Auth
+    const isSupportDVlanWithPskMacAuth = true // feature flag
+    const pskMacAuth = {
+      type: NetworkTypeEnum.PSK,
+      wlan: {
+        id: 'test',
+        macAddressAuthentication: true
+      } } as NetworkSaveData
+
+    // non or turned OFF the feature flag
+    expect(isShowDynamicVlan(pskMacAuth)).toBeFalsy()
+
+    // turn ON the feature flag
+    expect(isShowDynamicVlan(pskMacAuth, { isSupportDVlanWithPskMacAuth })).toBeTruthy()
   })
 
   it('test hasVxlanTunnelProfile',async () => {
@@ -1163,4 +1228,5 @@ describe('Network utils test', () => {
       expect(deriveWISPrFieldsFromServerData(data)).toBe(data)
     })
   })
+
 })

@@ -13,6 +13,7 @@ export interface EdgeGeneralSetting {
   serialNumber?: string
   venueId?: string
   clusterId?: string
+  highAvailabilityMode?: ClusterHighAvailabilityModeEnum
   tags: string[] // TODO when tags component is ready need to change type to array
 }
 

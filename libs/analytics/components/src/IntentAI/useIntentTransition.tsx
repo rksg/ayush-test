@@ -19,7 +19,8 @@ import {
 import { Wlan }                                   from './EquiFlex/IntentAIForm/WlanSelection'
 import { useIntentContext }                       from './IntentContext'
 import { DisplayStates, Statuses, StatusReasons } from './states'
-import { IntentWlan }                             from './utils'
+import { getUserName }                            from './useIntentAIActions'
+import { IntentWlan, TransitionIntentMetadata }   from './utils'
 
 type MutationResponse = { success: boolean, errorMsg: string, errorCode: string }
 
@@ -46,6 +47,7 @@ export type IntentTransitionPayload <Preferences = unknown> = {
     scheduledAt?: string
     preferences?: Preferences
     wlans?: IntentWlan[]
+    changedByName?: string
   }
 }
 
@@ -110,7 +112,14 @@ export function createUseIntentTransition <Preferences> (
     const [doSubmit, response] = useIntentTransitionMutation()
 
     const submit = useCallback(async (values: FormValues<Preferences>) => {
-      return validateScheduleTiming(values) ? doSubmit(getFormDTO(values)) : false
+      const formDto = getFormDTO(values)
+      const metadataWithName = {
+        ...formDto?.metadata,
+        changedByName: getUserName()
+      } as TransitionIntentMetadata
+      return validateScheduleTiming(values) ? doSubmit({
+        ...formDto, metadata: metadataWithName
+      }) : false
     }, [doSubmit])
 
     useEffect(() => {

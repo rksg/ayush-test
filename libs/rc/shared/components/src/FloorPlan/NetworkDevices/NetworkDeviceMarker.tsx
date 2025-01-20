@@ -123,7 +123,8 @@ export function NetworkDeviceMarker ({
     style={
       {
         top: 'calc(' + device?.position?.yPercent + '%)',
-        left: 'calc(' + device?.position?.xPercent + '%)'
+        left: 'calc(' + device?.position?.xPercent + '%)',
+        ...(galleryMode && { transform: 'scale(.5)' })
       }
     }>
     </UI.RogueApContainer> }
@@ -134,8 +135,8 @@ export function NetworkDeviceMarker ({
         className={className}
         style={
           {
-            top: 'calc(' + device?.position?.yPercent + '%)',
-            left: 'calc(' + device?.position?.xPercent + '%)',
+            top: `calc(${device?.position?.yPercent}%${galleryMode ? ' + 6px' : ''})`,
+            left: `calc(${device?.position?.xPercent}%${galleryMode ? ' + 6px' : ''})`,
             opacity: device?.isActive ? (isDragging ? 0.5 : 1) : 0.3
           }
         }>
@@ -151,7 +152,8 @@ export function NetworkDeviceMarker ({
           } </div>
         {isApMeshEnabled && getApMeshRoleIcon()}
         {
-          allVenueRogueApAttr?.allVenueRogueApTooltipAttr?.totalRogueNumber && !perRogueApModel &&
+          // eslint-disable-next-line max-len
+          allVenueRogueApAttr?.allVenueRogueApTooltipAttr?.totalRogueNumber && !perRogueApModel && !galleryMode &&
           <UI.RogueApCountBadge
             data-testid='rogueApBadge'
             className={`mark-number-rogue

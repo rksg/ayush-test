@@ -1,5 +1,5 @@
-import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/query/react'
+import { QueryReturnValue }                        from '@reduxjs/toolkit/query'
+import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
 /* eslint-disable max-len */
 import { cloneDeep } from 'lodash'
 
@@ -28,6 +28,7 @@ import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
 import { networkApi }    from '../network'
 import {
+  fetchEnhanceRbacNetworkVenueList,
   fetchRbacAccessControlPolicyNetwork,
   fetchRbacNetworkVenueList,
   updateNetworkVenueFn
@@ -98,13 +99,68 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         if (networkDeepData && enableRbac) {
           const arg = {
             params,
-            payload: { isTemplate: true }
+            payload: { isTemplate: true, page: 1, pageSize: 10000 }
           }
 
           const {
             error: networkVenuesListQueryError,
             networkDeep
           } = await fetchRbacNetworkVenueList(arg, fetchWithBQ)
+
+          const {
+            error: accessControlPolicyNetworkError,
+            data: accessControlPolicyNetwork
+          } = await fetchRbacAccessControlPolicyNetwork(arg, fetchWithBQ)
+
+          if (networkVenuesListQueryError)
+            return { error: networkVenuesListQueryError }
+
+          if (accessControlPolicyNetworkError)
+            return { error: accessControlPolicyNetworkError }
+
+          if (networkDeep?.venues) {
+            networkDeepData.venues = cloneDeep(networkDeep.venues)
+          }
+
+          if (accessControlPolicyNetwork?.data.length > 0 && networkDeepData.wlan?.advancedCustomization) {
+            networkDeepData.wlan.advancedCustomization.accessControlEnable = true
+            networkDeepData.wlan.advancedCustomization.accessControlProfileId = accessControlPolicyNetwork.data[0].id
+          }
+        }
+
+        return networkQuery as QueryReturnValue<NetworkSaveData,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta>
+      },
+      providesTags: [{ type: 'NetworkTemplate', id: 'DETAIL' }]
+    }),
+    // replace getNetworkDeepTemplate
+    getNetworkDeepTemplateV2: build.query<NetworkSaveData | null, RequestPayload>({
+      async queryFn ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
+        if (!params?.networkId) return Promise.resolve({ data: null } as QueryReturnValue<
+          null,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta
+        >)
+
+        const networkQuery = await fetchWithBQ(
+          createHttpRequest(
+            enableRbac ? ConfigTemplateUrlsInfo.getNetworkTemplateRbac : ConfigTemplateUrlsInfo.getNetworkTemplate,
+            params
+          )
+        )
+        const networkDeepData = networkQuery.data as NetworkSaveData
+
+        if (networkDeepData && enableRbac) {
+          const arg = {
+            params,
+            payload: { isTemplate: true, page: 1, pageSize: 10000 }
+          }
+
+          const {
+            error: networkVenuesListQueryError,
+            networkDeep
+          } = await fetchEnhanceRbacNetworkVenueList(arg, fetchWithBQ)
 
           const {
             error: accessControlPolicyNetworkError,
@@ -423,6 +479,7 @@ export const {
   useAddNetworkTemplateMutation,
   useUpdateNetworkTemplateMutation,
   useGetNetworkDeepTemplateQuery,
+  useGetNetworkDeepTemplateV2Query,
   useDeleteNetworkTemplateMutation,
   useGetNetworkTemplateListQuery,
   useLazyGetNetworkTemplateListQuery,

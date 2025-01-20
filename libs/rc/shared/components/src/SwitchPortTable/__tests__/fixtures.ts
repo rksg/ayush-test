@@ -463,7 +463,7 @@ export const portSetting = [{
 }, {
   dhcpSnoopingTrust: false,
   id: '58:fb:96:0e:82:8a/1/1/5',
-  ipsg: true,
+  ipsg: false,
   lldpEnable: false,
   lldpQos: [{
     applicationType: 'GUEST_VOICE',
@@ -696,3 +696,27 @@ export const flexAuthList = {
     authTimeoutAction: 'none'
   }]
 }
+
+export const availablePortProfileList = [
+  {
+    switchId: 'c0:c5:20:aa:32:79',
+    availablePortProfiles: [
+      {
+        portProfileId: 'd66a68bc37e0470a93a76731cadeb963',
+        portProfileName: 'pProfileGlobal2',
+        configSource: 'SWITCH_LEVEL',
+        ports: '["1/1/48"]'
+      },
+      {
+        portProfileId: '4e798541527e48b09f4744c24faf0e7a',
+        portProfileName: 'pProfileGlobal',
+        configSource: 'SWITCH_LEVEL'
+      },
+      {
+        portProfileId: '61cd8961ebeb457f8a2403cd5d3a78ad',
+        portProfileName: 'pProfileGlobal3',
+        configSource: 'GLOBAL_LEVEL'
+      }
+    ]
+  }
+]
