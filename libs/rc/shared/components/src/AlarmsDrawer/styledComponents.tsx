@@ -99,4 +99,7 @@ export const Drawer = styled(AntdDrawer)`
   .ant-drawer-body {
     overflow-x: hidden;
   }
+  // .ant-btn.ant-btn-default {
+  //   display: none;
+  // }
 `
