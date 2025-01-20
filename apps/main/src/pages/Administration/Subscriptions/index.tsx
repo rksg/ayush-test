@@ -31,11 +31,12 @@ import {
   AdministrationUrlsInfo,
   sortProp,
   defaultSort,
-  dateSort
+  dateSort,
+  AdminRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { useParams }                                from '@acx-ui/react-router-dom'
 import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
-import { AccountType, noDataDisplay }               from '@acx-ui/utils'
+import { AccountType, getOpsApi, noDataDisplay }    from '@acx-ui/utils'
 
 import * as UI                from './styledComponent'
 import { SubscriptionHeader } from './SubscriptionHeader'
@@ -265,6 +266,7 @@ export const SubscriptionTable = () => {
   const actions: TableProps<Entitlement>['actions'] = [
     {
       label: $t({ defaultMessage: 'Manage Subsciptions' }),
+      rbacOpsIds: [getOpsApi(AdminRbacUrlsInfo.refreshLicensesData)],
       onClick: () => {
         const licenseUrl = get('MANAGE_LICENSES')
         window.open(licenseUrl, '_blank')
@@ -272,6 +274,7 @@ export const SubscriptionTable = () => {
     },
     {
       label: $t({ defaultMessage: 'Refresh' }),
+      rbacOpsIds: [getOpsApi(AdminRbacUrlsInfo.refreshLicensesData)],
       onClick: refreshFunc
     }
   ]
@@ -311,7 +314,7 @@ export const SubscriptionTable = () => {
       }
       <Table
         columns={columns}
-        actions={hasCrossVenuesPermission() ? filterByAccess(actions) : []} //TODO:
+        actions={hasCrossVenuesPermission() ? filterByAccess(actions) : []}
         dataSource={checkSubscriptionStatus() ? [] : subscriptionData}
         selectedFilters={defaultSelectedFilters}
         rowKey='id'

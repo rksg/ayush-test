@@ -221,6 +221,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   addTenantAuthentications: {
     method: 'post',
     url: '/tenants/authentications',
+    opsApi: 'POST:/tenants/authentications',
     newApi: true
   },
   patchTenantAuthentications: {
@@ -231,6 +232,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   updateTenantAuthentications: {
     method: 'put',
     url: '/tenants/authentications/:authenticationId',
+    opsApi: 'PUT:/tenants/authentications/{id}',
     newApi: true
   },
   deleteTenantAuthentications: {

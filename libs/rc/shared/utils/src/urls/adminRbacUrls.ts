@@ -183,6 +183,7 @@ export const AdminRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'PATCH',
     url: '/entitlements',
     oldUrl: '/entitlements/summaries?refresh=true',
+    opsApi: 'PATCH:/entitlements',
     newApi: true
   },
   //   internalRefreshLicensesData: {

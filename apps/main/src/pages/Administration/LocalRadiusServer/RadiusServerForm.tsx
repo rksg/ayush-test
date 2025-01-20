@@ -3,20 +3,33 @@ import { useEffect, useState } from 'react'
 import { Button, Col, Form, Input, Row, Space, Typography } from 'antd'
 import { useIntl }                                          from 'react-intl'
 
-import { Loader, showActionModal, showToast, Table, TableProps, PasswordInput } from '@acx-ui/components'
+import {
+  Loader,
+  showActionModal,
+  showToast,
+  Table,
+  TableProps,
+  PasswordInput
+} from '@acx-ui/components'
 import {
   useGetRadiusClientConfigQuery,
   useGetRadiusServerSettingQuery,
   useUpdateRadiusClientConfigMutation
 } from '@acx-ui/rc/services'
 import { ClientConfig, RadiusClientConfigUrlsInfo } from '@acx-ui/rc/utils'
-import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
-import { getOpsApi }                                from '@acx-ui/utils'
+import {
+  filterByAccess,
+  getUserProfile,
+  hasAllowedOperations,
+  hasCrossVenuesPermission
+} from '@acx-ui/user'
+import { getOpsApi } from '@acx-ui/utils'
 
 import { IpAddressDrawer } from './IpAddressDrawer'
 
 export function RadiusServerForm () {
   const { $t } = useIntl()
+  const { rbacOpsApiEnabled } = getUserProfile()
   const { Paragraph } = Typography
   const [ changePassword, setChangePassword ] = useState<boolean>(false)
   const [visible, setVisible] = useState(false)
@@ -116,6 +129,10 @@ export function RadiusServerForm () {
     }
   }]
 
+  const hasPermission = rbacOpsApiEnabled ?
+    hasAllowedOperations([getOpsApi(RadiusClientConfigUrlsInfo.updateRadiusClient)]):
+    hasCrossVenuesPermission()
+
   return(
     <Loader states={[{
       isLoading: queryResultDataLoading || queryServerSettingDataLoading,
@@ -150,7 +167,7 @@ export function RadiusServerForm () {
                 </Form.Item>
                 { !changePassword ?
                   <Button type='link'
-                    disabled={!hasCrossVenuesPermission()}
+                    disabled={!hasPermission}
                     onClick={() => setChangePassword(true)}>
                     {$t({ defaultMessage: 'Change' })}</Button>
                   : <>
@@ -188,11 +205,11 @@ export function RadiusServerForm () {
                 // eslint-disable-next-line max-len
                 dataSource={queryResultData?.ipAddress?.map( e => { return { key: e, ipAddress: e }})}
                 showHeader={false}
-                rowSelection={hasCrossVenuesPermission() &&
+                rowSelection={hasPermission &&
                   filterByAccess(ipTableRowActions).length > 0 && { type: 'radio' }}
                 rowActions={filterByAccess(ipTableRowActions)}
                 type={'form'}
-                actions={hasCrossVenuesPermission() ? filterByAccess([{
+                actions={hasPermission ? filterByAccess([{
                   label: $t({ defaultMessage: 'Add IP Address' }),
                   onClick: () => {
                     setVisible(true)
