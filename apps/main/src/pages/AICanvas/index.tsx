@@ -12,7 +12,7 @@ import { Button, Loader, Tooltip }               from '@acx-ui/components'
 import { SendMessageOutlined,
   HistoricalOutlined, Plus, Close, RuckusAiDog }    from '@acx-ui/icons-new'
 import { useChatAiMutation, useLazyGetChatQuery, useGetAllChatsQuery } from '@acx-ui/rc/services'
-import { ChatHistory, ChatMessage, HistoryListItem }                   from '@acx-ui/rc/utils'
+import { ChatHistory, ChatMessage }                                    from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                  from '@acx-ui/react-router-dom'
 
 import Canvas             from './Canvas'
@@ -32,7 +32,6 @@ export default function AICanvas () {
   const [isChatLoading, setIsChatLoading] = useState(true)
   const [historyVisible, setHistoryVisible] = useState(false)
   const [sessionId, setSessionId] = useState('')
-  const [history, setHistory] = useState([] as HistoryListItem[])
   const [chats, setChats] = useState([] as ChatMessage[])
   const [ searchText, setSearchText ] = useState('')
   const [ isNewChat, setIsNewChat ] = useState(false)
@@ -60,10 +59,12 @@ export default function AICanvas () {
 
   useEffect(()=>{
     if(historyData?.length) {
-      setHistoryList(historyData)
+      const latestId = historyData[historyData.length - 1].id
+      if(sessionId !== latestId) {
+        setSessionId(latestId)
+      }
     } else if(historyData?.length === 0) {
       setIsChatLoading(false)
-      setHistory([])
       setHistoryVisible(false)
       onNewChat()
     }
@@ -80,69 +81,6 @@ export default function AICanvas () {
     const response = await getChat({ params: { sessionId } }).unwrap()
     setChats(response.messages)
     setIsChatLoading(false)
-  }
-
-  const setHistoryList = (response: ChatHistory[]) => {
-    const latestId = response[response.length - 1].id
-    if(sessionId !== latestId) {
-      setSessionId(latestId)
-    }
-    const list = checkDate(response)
-    const historyList = [] as HistoryListItem[]
-    Object.keys(list).forEach(key => {
-      if(list[key].length) {
-        if(key === 'today') {
-          historyList.push({
-            duration: $t({ defaultMessage: 'Today' }),
-            history: list[key].reverse()
-          })
-        } else if(key === 'yesterday') {
-          historyList.push({
-            duration: $t({ defaultMessage: 'Yesterday' }),
-            history: list[key].reverse()
-          })
-        } else if(key === 'sevendays') {
-          historyList.push({
-            duration: $t({ defaultMessage: 'Previous 7 days' }),
-            history: list[key].reverse()
-          })
-        } else {
-          historyList.push({
-            duration: key,
-            history: list[key].reverse()
-          })
-        }
-      }
-    })
-    setHistory(historyList)
-  }
-
-  const checkDate = (chats: ChatHistory[]) => {
-    const list = {
-      today: [],
-      yesterday: [],
-      sevendays: []
-    } as { [key:string]: ChatHistory[] }
-    chats.forEach((chat: ChatHistory) => {
-      const inputDate = moment(chat.updatedDate)
-      const now = moment()
-      const diffDays = now.diff(inputDate, 'days')
-
-      if (diffDays === 0) {
-        list.today.push(chat)
-      } else if (diffDays === 1) {
-        list.yesterday.push(chat)
-      } else if (diffDays <= 7) {
-        list.sevendays.push(chat)
-      } else {
-        const title = inputDate.format('MMMM D, YYYY')
-        if(!list[title]) {
-          list[title] = []
-        }
-        list[title].push(chat)
-      }
-    })
-    return list
   }
 
   const onKeyDown = (event: React.KeyboardEvent) => {
@@ -249,8 +187,6 @@ export default function AICanvas () {
     </div>
   }
 
-
-
   return (
     <DndProvider backend={HTML5Backend}>
       <UI.Wrapper>
@@ -261,7 +197,7 @@ export default function AICanvas () {
               <div className='actions'>
                 {historyData?.length ?
                   <>
-                    <HistoricalOutlined onClick={onHistoryDrawer} />
+                    <HistoricalOutlined data-testid='historyIcon' onClick={onHistoryDrawer} />
                     <Tooltip
                       placement='right'
                       title={historyData && historyData.length >= 10
@@ -270,6 +206,7 @@ export default function AICanvas () {
                         : ''}
                     >
                       <Plus
+                        data-testid='newChatIcon'
                         className={
                           'newChat' + (historyData && historyData.length >= 10 ? ' disabled' : '')
                         }
@@ -313,14 +250,15 @@ export default function AICanvas () {
                   <div className='input'>
                     <UI.Input
                       autoFocus
+                      data-testid='search-input'
                       onKeyDown={debounce(onKeyDown, 500)}
                       value={searchText}
                       onChange={({ target: { value } }) => setSearchText(value)}
-                      data-testid='search-input'
                       style={{ height: 90, resize: 'none' }}
                       placeholder={placeholder}
                     />
                     <Button
+                      data-testid='search-button'
                       icon={<SendMessageOutlined />}
                       disabled={loading || searchText.length <= 1}
                       onClick={()=> { handleSearch() }}
@@ -335,7 +273,7 @@ export default function AICanvas () {
         <HistoryDrawer
           visible={historyVisible}
           onClose={onHistoryDrawer}
-          history={history}
+          historyData={historyData as ChatHistory[]}
           sessionId={sessionId}
           onClickChat={onClickChat}
         />
