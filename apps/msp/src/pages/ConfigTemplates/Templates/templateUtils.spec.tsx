@@ -1,11 +1,13 @@
+import userEvent from '@testing-library/user-event'
+
 import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { ConfigTemplateDriftType, ConfigTemplateType } from '@acx-ui/rc/utils'
-import { renderHook }                                  from '@acx-ui/test-utils'
+import { screen, render, renderHook }                  from '@acx-ui/test-utils'
 import { hasRoles }                                    from '@acx-ui/user'
 import { isDelegationMode }                            from '@acx-ui/utils'
 
-import { mockedUserProfile }                                                                                              from './__tests__/fixtures'
-import { getConfigTemplateDriftStatusLabel, getConfigTemplateEnforcementLabel, getConfigTemplateTypeLabel, useEcFilters } from './templateUtils'
+import { mockedUserProfile }                                                                                      from './__tests__/fixtures'
+import { ConfigTemplateDriftStatus, getConfigTemplateEnforcementLabel, getConfigTemplateTypeLabel, useEcFilters } from './templateUtils'
 
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
@@ -68,15 +70,33 @@ describe('TemplateUtils', () => {
     })
   })
 
-  describe('getConfigTemplateDriftStatusLabel', () => {
-    it('should return an empty string when driftStatus is undefined', () => {
-      expect(getConfigTemplateDriftStatusLabel(undefined)).toBe('')
+  describe('ConfigTemplateDriftStatus', () => {
+    const baseData = {
+      id: '1',
+      name: 'Template 1',
+      createdOn: 1690598400000,
+      createdBy: 'Author 1',
+      type: ConfigTemplateType.NETWORK,
+      lastModified: 1690598400000,
+      lastApplied: 1690598405000
+    }
+    it('renders empty when the Drift Status is falsy', () => {
+      const { container } = render(<ConfigTemplateDriftStatus row={baseData} />)
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(container.firstChild).toHaveTextContent('')
     })
 
-    it('should return the corresponding label when driftStatus is defined', () => {
-      // eslint-disable-next-line max-len
-      expect(getConfigTemplateDriftStatusLabel(ConfigTemplateDriftType.DRIFT_DETECTED)).toBe('Drift Detected')
-      expect(getConfigTemplateDriftStatusLabel(ConfigTemplateDriftType.IN_SYNC)).toBe('In Sync')
+    it('renders label and callback when the Drift Status is clickable', async () => {
+      const row = { ...baseData, driftStatus: ConfigTemplateDriftType.DRIFT_DETECTED }
+      const callback = jest.fn()
+      render(<ConfigTemplateDriftStatus
+        row={row}
+        callbackMap={{ [ConfigTemplateDriftType.DRIFT_DETECTED]: callback }}
+      />)
+      const span = screen.getByText('Drift Detected')
+      expect(span).toBeInTheDocument()
+      await userEvent.click(span)
+      expect(callback).toHaveBeenCalledTimes(1)
     })
   })
 
