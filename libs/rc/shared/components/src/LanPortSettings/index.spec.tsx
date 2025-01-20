@@ -633,6 +633,7 @@ describe('SoftGre Profile - Handle for R370 model', ()=> {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
       return (ff === Features.ETHERNET_PORT_PROFILE_TOGGLE ||
         ff === Features.WIFI_ETHERNET_SOFTGRE_TOGGLE ||
+        ff === Features.WIFI_R370_TOGGLE ||
         ff === Features.WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE)
     })
 
@@ -642,7 +643,8 @@ describe('SoftGre Profile - Handle for R370 model', ()=> {
     }
 
     const selectedApModelCaps = {
-      model: 'R370'
+      model: 'R370',
+      supportSGRE: false
     }
 
     render(<Provider>
@@ -671,6 +673,7 @@ describe('SoftGre Profile - Handle for R370 model', ()=> {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
       return (ff === Features.ETHERNET_PORT_PROFILE_TOGGLE ||
         ff === Features.WIFI_ETHERNET_SOFTGRE_TOGGLE ||
+        ff === Features.WIFI_R370_TOGGLE ||
         ff === Features.WIFI_ETHERNET_DHCP_OPTION_82_TOGGLE)
     })
 
@@ -708,6 +711,7 @@ describe('SoftGre Profile - Handle for R370 model', ()=> {
   it('AP Level - should not render SoftGre Tunnel when model is R370', async () => {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
       return (ff === Features.ETHERNET_PORT_PROFILE_TOGGLE ||
+        ff === Features.WIFI_R370_TOGGLE ||
         ff === Features.WIFI_ETHERNET_SOFTGRE_TOGGLE)
     })
 
@@ -718,7 +722,8 @@ describe('SoftGre Profile - Handle for R370 model', ()=> {
     }
 
     const selectedApModelCaps = {
-      model: 'R370'
+      model: 'R370',
+      supportSGRE: false
     }
 
     render(<Provider>
