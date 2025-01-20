@@ -4,8 +4,8 @@ import { useContext } from 'react'
 import { Col, Form, Input, Row, Select } from 'antd'
 import { useIntl }                       from 'react-intl'
 
-import { StepsForm, useStepFormContext }   from '@acx-ui/components'
-import { PersonalIdentityNetworkFormData } from '@acx-ui/rc/utils'
+import { StepsForm, useStepFormContext }                            from '@acx-ui/components'
+import { PersonalIdentityNetworkFormData, servicePolicyNameRegExp } from '@acx-ui/rc/utils'
 
 import { PersonalIdentityNetworkFormContext } from '../../PersonalIdentityNetworkFormContext'
 import { FieldTitle }                         from '../../styledComponents'
@@ -43,7 +43,8 @@ export const EnhancedGeneralSettingsForm = () => {
               rules={[
                 { required: true },
                 { min: 2 },
-                { max: 32 }
+                { max: 32 },
+                { validator: (_, value) => servicePolicyNameRegExp(value) }
               ]}
               validateFirst
               hasFeedback

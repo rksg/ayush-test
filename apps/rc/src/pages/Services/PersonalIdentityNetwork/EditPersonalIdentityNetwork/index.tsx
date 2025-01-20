@@ -99,7 +99,7 @@ const EditPersonalIdentityNetwork = () => {
 const getStepsByEditData = (data?: PersonalIdentityNetworks) => {
   let steps = getStepsByTopologyType(NetworkTopologyType.Wireless)
   if(data?.distributionSwitchInfos?.length || data?.accessSwitchInfos?.length) {
-    if(data?.vxlanTunnelProfileId) {
+    if(data?.tunneledWlans?.length) {
       steps = getStepsByTopologyType(NetworkTopologyType.ThreeTier)
     } else {
       steps = getStepsByTopologyType(NetworkTopologyType.TwoTier)

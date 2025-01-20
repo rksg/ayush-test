@@ -1,4 +1,5 @@
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { useIsSplitOn }     from '@acx-ui/feature-toggle'
 import {
@@ -60,14 +61,14 @@ const list = {
     },
     {
       id: 'efce7414-1c78-4312-ad5b-ae03f28dbc69',
-      name: 'Registration pool-3',
+      name: 'BeDeleted',
       description: '',
       autoCleanup: true,
       enabled: true,
       expirationEnabled: true,
       expirationType: ExpirationType.DAYS_AFTER_TIME,
       expirationOffset: 5,
-      registrationCount: 6
+      registrationCount: 0
     }
   ],
   pageable: {
@@ -228,4 +229,54 @@ describe('MacRegistrationListsTable', () => {
     fireEvent.click(editButton)
   })
 
+  it('should not allow delete selected row when identity group enable', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><MacRegistrationListsTable /></Provider>, {
+      route: { params: {
+        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      }, path: '/:tenantId' }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const row = await screen.findByRole('row', { name: /Registration pool-1/ })
+    await userEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('You are unable to delete this list due to it has Mac Registrations')).toBeVisible()
+  })
+
+  it('should allow delete selected row when identity group enable', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const mockDeleteFn = jest.fn()
+    mockServer.use(
+      rest.delete(
+        MacRegListUrlsInfo.deleteMacRegistrationPool.url,
+        (req, res, ctx) => {
+          mockDeleteFn()
+          return res(ctx.json({ requestId: '12345' }))
+        })
+    )
+
+    render(<Provider><MacRegistrationListsTable /></Provider>, {
+      route: { params: {
+        tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+      }, path: '/:tenantId' }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const row = await screen.findByRole('row', { name: /BeDeleted/ })
+    await userEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
+    expect(await screen.findByText('Delete "BeDeleted"?')).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('button', { name: /Delete List/ }))
+
+    await waitFor(() => {
+      expect(mockDeleteFn).toBeCalledTimes(1)
+    })
+  })
 })
