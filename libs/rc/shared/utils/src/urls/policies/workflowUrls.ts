@@ -71,7 +71,7 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: `PATCH:${WorkflowBaseUrl}/:id`
+    opsApi: `PATCH:${WorkflowBaseUrl}/{id}`
   },
   deleteWorkflow: {
     method: 'delete',
@@ -81,7 +81,7 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: `DELETE:${WorkflowBaseUrl}/:id`
+    opsApi: `DELETE:${WorkflowBaseUrl}/{id}`
   },
   searchWorkflows: {
     method: 'post',
@@ -105,7 +105,7 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
     method: 'post',
     url: `${WorkflowBaseUrl}/:id/uiConfigurations`,
     newApi: true,
-    opsApi: `POST:${WorkflowBaseUrl}/:id/uiConfigurations`
+    opsApi: `POST:${WorkflowBaseUrl}/{id}/uiConfigurations`
   },
   resetWorkflowUIConfig: {
     method: 'delete',
@@ -115,11 +115,11 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: `DELETE:${WorkflowBaseUrl}/:id/uiConfigurations`
+    opsApi: `DELETE:${WorkflowBaseUrl}/{id}/uiConfigurations`
   },
   getWorkflowUIConfigImage: {
     method: 'get',
-    url: `${WorkflowBaseUrl}/:id/uiConfigurations/:imageType`,
+    url: `${WorkflowBaseUrl}/{id}/uiConfigurations/:imageType`,
     newApi: true
   },
 
@@ -161,7 +161,7 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: `POST:${WorkflowStepBaseUrl}`
+    opsApi: 'POST:/workflows/{id}/steps'
   },
   createWorkflowChildStep: {
     method: 'post',
@@ -171,7 +171,7 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: `POST:${WorkflowStepBaseUrl}/:stepId/nextSteps`
+    opsApi: 'POST:/workflows/{id}/steps/{id}/nextSteps'
   },
   deleteWorkflowStep: {
     method: 'delete',
@@ -181,7 +181,7 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: `DELETE:${WorkflowStepBaseUrl}/:stepId`
+    opsApi: 'DELETE:/workflows/{id}/steps/{id}'
   },
   getWorkflowStepsById: {
     method: 'get',
@@ -211,7 +211,7 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: `POST:${WorkflowSplitOptionsBaseUrl}`
+    opsApi: 'POST:/workflows/{id}/steps/{id}/splitOptions'
   },
   createWorkflowStepUnderOption: {
     method: 'post',
@@ -221,7 +221,7 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: `POST:${WorkflowSplitOptionsBaseUrl}/:optionId/nextSteps`
+    opsApi: 'POST:/workflows/{id}/steps/{id}/splitOptions/{id}/nextSteps'
   },
   getWorkflowOptionById: {
     method: 'get',
@@ -249,7 +249,7 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: `DELETE:${WorkflowSplitOptionsBaseUrl}/:optionId`
+    opsApi: 'DELETE:/workflows/{id}/steps/{id}/splitOptions/{id}'
   },
 
   /** Workflow Enrollment Actions API endpoints */
@@ -280,7 +280,7 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: `PATCH:${WorkflowActionBaseUrl}/:actionId`
+    opsApi: `PATCH:${WorkflowActionBaseUrl}/{id}`
   },
   deleteAction: {
     method: 'delete',
@@ -290,7 +290,7 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: `DELETE:${WorkflowActionBaseUrl}/:actionId`
+    opsApi: `DELETE:${WorkflowActionBaseUrl}/{id}`
   },
   queryActions: {
     method: 'post',
@@ -330,7 +330,7 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     },
-    opsApi: `DELETE:${WorkflowActionBaseUrl}/files/:fileId`
+    opsApi: `DELETE:${WorkflowActionBaseUrl}/files/{id}`
   },
   getFile: {
     method: 'get',
