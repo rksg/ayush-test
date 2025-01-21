@@ -13,11 +13,12 @@ import { getWebhookPayloadEnumString } from './webhookConfig'
 interface SettingsTabProps {
   form: FormInstance<Webhook>
   isEditMode?: boolean
+  webhookData?: Webhook[]
 }
 
 const SettingsTab = (props: SettingsTabProps) => {
   const { $t } = useIntl()
-  const { form, isEditMode = false } = props
+  const { form, isEditMode = false, webhookData } = props
   const [testURLEnabled, setTestURLEnabled] = useState(isEditMode)
   const [sendSampleEvent] = useWebhookSendSampleEventMutation()
 
@@ -78,7 +79,15 @@ const SettingsTab = (props: SettingsTabProps) => {
     rules={[
       { required: true },
       { max: 255 },
-      { whitespace: true }
+      { whitespace: true },
+      { validator: (_, value) => {
+        if(webhookData?.map((item) => { return item.name}).includes(value)) {
+          return Promise.reject(
+            `${$t({ defaultMessage: 'Name already exists' })} `
+          )
+        }
+        return Promise.resolve()}
+      }
     ]}
     children={<Input />}
   />
@@ -89,6 +98,14 @@ const SettingsTab = (props: SettingsTabProps) => {
       label={$t({ defaultMessage: 'Webhook URL' })}
       rules={[
         { required: true },
+        { validator: (_, value) => {
+          if(webhookData?.map((item) => { return item.url}).includes(value)) {
+            return Promise.reject(
+              `${$t({ defaultMessage: 'URL already exists' })} `
+            )
+          }
+          return Promise.resolve()}
+        },
         { validator: (_, value) => URLProtocolRegExp(value) }
       ]}
       children={<Input type='url' onChange={() => updateButtonEnabled('url')} />}

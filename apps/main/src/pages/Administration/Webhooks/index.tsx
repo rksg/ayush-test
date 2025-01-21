@@ -115,6 +115,7 @@ const R1Webhooks = (props: R1WebhooksProps) => {
       visible={drawerVisible}
       setVisible={setDrawerVisible}
       selected={selectedWebhook}
+      webhookData={tableQuery.data?.data ?? []}
     />}
     <Table
       rowKey='id'
