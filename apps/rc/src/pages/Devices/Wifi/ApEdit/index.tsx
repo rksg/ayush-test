@@ -158,7 +158,7 @@ export function ApEdit () {
       },
       page: 1,
       pageSize: 10
-    } }, { skip: !targetVenueId } )
+    } }, { skip: !targetVenueId || !serialNumber } )
 
   useEffect(() => {
     if (!isGetApLoading && !isGetApCapsLoading) {
