@@ -264,7 +264,12 @@ export enum Features {
   RUCKUS_AI_PREVENT_COLD_TIER_QUERY_TOGGLE = 'ruckus-ai-prevent-cold-tier-query-toggle',
   ACX_UI_PREVENT_COLD_TIER_QUERY_TOGGLE = 'acx-ui-prevent-cold-tier-query-toggle',
   WIFI_NAS_ID_HOTSPOT20_TOGGLE = 'wifi-nas-id-for-hotspot20-network',
-  ENTITLEMENT_SOLUTION_TOKEN_TOGGLE = 'entitlement-solution-token-toggle'
+  ENTITLEMENT_SOLUTION_TOKEN_TOGGLE = 'entitlement-solution-token-toggle',
+  ENTITLEMENT_ADAPTIVE_POLICY_TOGGLE='entitlement-adaptive-policy-toggle',
+  ENTITLEMENT_PERSONAL_IDENTITY_NETWORK_TOGGLE='entitlement-personal-identity-network-toggle',
+  ENTITLEMENT_PMS_INTEGRATION_TOGGLE='entitlement-pms-integration-toggle',
+  ENTITLEMENT_SIS_INTEGRATION_TOGGLE='entitlement-sis-integration-toggle',
+  ENTITLEMENT_HYBRID_CLOUD_SECURITY_TOGGLE='entitlement-hybrid-cloud-security-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
