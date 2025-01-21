@@ -12,11 +12,13 @@ import { SelectPersonaDrawer } from './SelectPersonaDrawer'
 export const IdentitySelector = ({
   identityGroupId,
   readonly = false,
-  isEdit = false
+  isEdit = false,
+  disableAddDevices
 }: {
   identityGroupId?: string;
   readonly?: boolean;
   isEdit?: boolean;
+  disableAddDevices?: boolean;
 }) => {
   const formInstance = Form.useFormInstance()
   const selectedIdentityId = Form.useWatch('identityId', formInstance)
@@ -101,6 +103,7 @@ export const IdentitySelector = ({
         onCancel={() => setDrawerVisible(false)}
         identityId={selectedIdentityId}
         identityGroupId={identityGroupId}
+        disableAddDevices={disableAddDevices}
       />
     }
   </>

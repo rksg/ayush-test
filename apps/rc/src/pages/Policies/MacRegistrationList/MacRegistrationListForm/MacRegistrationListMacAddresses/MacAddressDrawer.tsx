@@ -128,6 +128,7 @@ export function MacAddressDrawer (props: MacAddressDrawerProps) {
             readonly={isEdit || defaultIdentityId !== undefined}
             isEdit={isEdit}
             identityGroupId={identityGroupId}
+            disableAddDevices={true}
           />
         )
       }
