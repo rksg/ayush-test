@@ -80,6 +80,7 @@ export function DpskSettingsForm (props: { defaultSelectedDpsk?: string }) {
       enableAccountingService: data.enableAccountingService,
       authRadius: data.authRadius,
       enableAuthProxy: data.enableAuthProxy,
+      enableAccountingProxy: data.enableAccountingProxy,
       accountingRadius: data.accountingRadius,
       accountingRadiusId: data.accountingRadiusId||data.accountingRadius?.id,
       authRadiusId: data.authRadiusId||data.authRadius?.id
