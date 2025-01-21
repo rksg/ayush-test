@@ -41,7 +41,7 @@ export function ImpactedSwitchesByParamDonut ({ incident, param }: DonutChartByP
 
   const topDataKey = sortedData?.at(0)?.at(0) || ''
 
-  const title=$t({ defaultMessage: 'Total Impacted Switch {param}{plural}' },
+  const title=$t({ defaultMessage: 'Switch {param}{plural}' },
     { param, plural: sortedData?.length ? 's' : '' })
   const subtitle = $t({
     defaultMessage: 'Top imapacted {param} is {value}' },
@@ -71,6 +71,7 @@ export function ImpactedSwitchesByParamDonut ({ incident, param }: DonutChartByP
               showLegend={false}
               title={title}
               subTitle={subtitle}
+              value={`${sortedData?.length || 0}`}
               legend='name-value'
               dataFormatter={(v) => $t(intlFormats.countFormat, { value: v as number })}
               data={transformData(sortedData!)}/>
